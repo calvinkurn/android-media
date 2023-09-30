@@ -1,6 +1,5 @@
 package com.tokopedia.home.beranda.data.newatf
 
-import com.tokopedia.home.beranda.data.datasource.local.dao.AtfDao
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 

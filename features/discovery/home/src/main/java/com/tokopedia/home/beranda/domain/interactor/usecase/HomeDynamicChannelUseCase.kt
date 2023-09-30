@@ -14,7 +14,7 @@ import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
 import com.tokopedia.home.beranda.data.mapper.ReminderWidgetMapper
 import com.tokopedia.home.beranda.data.mapper.ShopFlashSaleMapper
 import com.tokopedia.home.beranda.data.model.*
-import com.tokopedia.home.beranda.data.newatf.AtfMapper.mapToVisitableList
+import com.tokopedia.home.beranda.data.newatf.AtfMapper
 import com.tokopedia.home.beranda.data.newatf.HomeAtfUseCase
 import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.interactor.repository.*
@@ -98,6 +98,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
     private val homeTodoWidgetRepository: HomeTodoWidgetRepository,
     private val homeAtfUseCase: HomeAtfUseCase,
     private val homeHeaderUseCase: HomeHeaderUseCase,
+    private val atfMapper: AtfMapper,
 ) {
 
     private var CHANNEL_LIMIT_FOR_PAGINATION = 1
@@ -202,7 +203,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
         val atfFlow = homeAtfUseCase.flow.map {
             Log.d("atfflow", "COMBINE FLOW: ATF: $it")
             HomeDynamicChannelModel(
-                list = it?.mapToVisitableList().orEmpty(),
+                list = atfMapper.mapToVisitableList(it),
                 isCache = it?.isCache.orTrue()
             )
         }

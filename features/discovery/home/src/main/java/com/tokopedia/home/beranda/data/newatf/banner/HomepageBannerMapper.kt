@@ -11,18 +11,23 @@ import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.model.TrackingAttributionModel
 import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.home_component.visitable.BannerRevampDataModel
+import com.tokopedia.home.beranda.domain.model.banner.BannerDataModel as BannerDomainDataModel
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 /**
  * Created by Frenzel
  */
-object HomepageBannerMapper {
-    private const val PROMO_NAME_BANNER_CAROUSEL = "/ - p%s - slider banner - banner - %s"
-    private const val VALUE_BANNER_DEFAULT = ""
-    private const val BANNER_EXPIRY_DAYS = 15L
-    private val BANNER_EXPIRY_IN_MILLIS = TimeUnit.DAYS.toMillis(BANNER_EXPIRY_DAYS)
+class HomepageBannerMapper @Inject constructor() {
+    companion object {
+        private const val PROMO_NAME_BANNER_CAROUSEL = "/ - p%s - slider banner - banner - %s"
+        private const val VALUE_BANNER_DEFAULT = ""
+        private const val BANNER_EXPIRY_DAYS = 15L
+        private val BANNER_EXPIRY_IN_MILLIS = TimeUnit.DAYS.toMillis(BANNER_EXPIRY_DAYS)
+    }
 
-    fun com.tokopedia.home.beranda.domain.model.banner.BannerDataModel.asVisitable(
+    fun asVisitable(
+        data: BannerDomainDataModel,
         index: Int,
         atfData: AtfData,
     ): Visitable<*> {
@@ -30,19 +35,20 @@ object HomepageBannerMapper {
         return if (atfData.atfStatus == AtfKey.STATUS_ERROR) {
             ErrorStateChannelOneModel()
         } else if (HomeRollenceController.isUsingAtf2Variant()) {
-            mapToAtf2Banner(index, atfData.isCache, isExpired)
+            mapToAtf2Banner(data, index, atfData.isCache, isExpired)
         } else {
-            mapToOldBanner(index, atfData.isCache, isExpired)
+            mapToOldBanner(data, index, atfData.isCache, isExpired)
         }
     }
 
-    private fun com.tokopedia.home.beranda.domain.model.banner.BannerDataModel.mapToOldBanner(
+    private fun mapToOldBanner(
+        data: BannerDomainDataModel,
         index: Int,
         isCache: Boolean,
         isExpired: Boolean,
     ): BannerDataModel {
         val channelModel = ChannelModel(
-            channelGrids = slides?.takeIf { !isExpired }?.map {
+            channelGrids = data.slides?.takeIf { !isExpired }?.map {
                 ChannelGrid(
                     applink = it.applink,
                     campaignCode = it.campaignCode,
@@ -76,14 +82,15 @@ object HomepageBannerMapper {
         )
     }
 
-    private fun com.tokopedia.home.beranda.domain.model.banner.BannerDataModel.mapToAtf2Banner(
+    private fun mapToAtf2Banner(
+        data: BannerDomainDataModel,
         index: Int,
         isCache: Boolean,
         isExpired: Boolean,
     ): BannerRevampDataModel {
         val channelModel = ChannelModel(
             verticalPosition = index,
-            channelGrids = slides?.takeIf { !isExpired }?.map {
+            channelGrids = data.slides?.takeIf { !isExpired }?.map {
                 ChannelGrid(
                     applink = it.applink,
                     campaignCode = it.campaignCode,

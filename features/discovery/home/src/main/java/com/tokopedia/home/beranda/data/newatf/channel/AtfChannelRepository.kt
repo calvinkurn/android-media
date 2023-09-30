@@ -14,11 +14,13 @@ import com.tokopedia.home.constant.AtfKey
 import com.tokopedia.home.util.QueryParamUtils.convertToLocationParams
 import javax.inject.Inject
 
+/**
+ * Created by Frenzel
+ */
 @HomeScope
 class AtfChannelRepository @Inject constructor(
     private val homeDynamicChannelsRepository: HomeDynamicChannelsRepository,
     private val homeChooseAddressRepository: HomeChooseAddressRepository,
-    atfDao: AtfDao,
 ): AtfRepository() {
 
     @SuppressLint("PII Data Exposure")

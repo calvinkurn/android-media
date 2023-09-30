@@ -8,13 +8,15 @@ import com.tokopedia.home_component.usecase.missionwidget.HomeMissionWidgetData
 import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
 import com.tokopedia.home_component.widget.mission.MissionWidgetMapper.getAsChannelConfig
 import com.tokopedia.home_component.widget.mission.MissionWidgetMapper.getAsHomeComponentHeader
+import javax.inject.Inject
 
-object MissionWidgetMapper {
+/**
+ * Created by Frenzel
+ */
+class MissionWidgetMapper @Inject constructor() {
 
-    /**
-     * Created by Frenzel
-     */
-    fun HomeMissionWidgetData.GetHomeMissionWidget.asVisitable(
+    fun asVisitable(
+        data: HomeMissionWidgetData.GetHomeMissionWidget,
         index: Int,
         atfData: AtfData,
     ): Visitable<*> {
@@ -31,9 +33,9 @@ object MissionWidgetMapper {
             MissionWidgetListDataModel(
                 id = atfData.atfMetadata.id.toString(),
                 name = atfData.atfMetadata.name,
-                missionWidgetList = LazyLoadDataMapper.mapMissionWidgetData(missions),
-                header = header.getAsHomeComponentHeader(),
-                config = config.getAsChannelConfig(),
+                missionWidgetList = LazyLoadDataMapper.mapMissionWidgetData(data.missions),
+                header = data.header.getAsHomeComponentHeader(),
+                config = data.config.getAsChannelConfig(),
                 verticalPosition = index,
                 status = MissionWidgetListDataModel.STATUS_SUCCESS,
                 showShimmering = atfData.atfMetadata.isShimmer,

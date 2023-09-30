@@ -1,6 +1,5 @@
 package com.tokopedia.home.beranda.data.newatf.position
 
-import android.util.Log
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.home.beranda.data.datasource.local.dao.AtfDao
 import com.tokopedia.home.beranda.data.newatf.AtfDataList
@@ -23,6 +22,7 @@ class DynamicPositionRepository @Inject constructor(
     private val homeDispatcher: CoroutineDispatchers,
     private val atfDao: AtfDao,
     private val atfDataRepository: HomeAtfRepository,
+    private val atfMapper: AtfMapper,
 ) {
 
     private val _cacheFlow: MutableStateFlow<AtfDataList?> = MutableStateFlow(null)
@@ -54,7 +54,6 @@ class DynamicPositionRepository @Inject constructor(
      * Get cached and remote data in parallel
      */
     suspend fun getData() {
-        Log.d("atfflow", "4. DynamicPositionRepository - getData")
         coroutineScope {
             launch(homeDispatcher.io) {
                 getCachedData()
@@ -67,28 +66,25 @@ class DynamicPositionRepository @Inject constructor(
 
     private suspend fun getCachedData() {
         val cachedData = AtfDataList(
-            listAtfData = atfDao.getAtfDynamicPosition().map(AtfMapper::mapCacheToDomainAtfData),
+            listAtfData = atfDao.getAtfDynamicPosition().map(atfMapper::mapCacheToDomainAtfData),
             isCache = true,
             status = AtfDataList.STATUS_SUCCESS,
             needToFetchComponents = true,
         )
         _cacheFlow.emit(cachedData)
-        Log.d("atfflow", "4a. DynamicPositionRepository - getCachedData $cachedData")
     }
 
     suspend fun getRemoteData() {
         try {
             val listAtf = atfDataRepository.getRemoteData().dataList
             val remoteData = AtfDataList(
-                listAtfData = listAtf.mapIndexed(AtfMapper::mapRemoteToDomainAtfData),
+                listAtfData = listAtf.mapIndexed(atfMapper::mapRemoteToDomainAtfData),
                 isCache = false,
                 status = AtfDataList.STATUS_SUCCESS,
                 needToFetchComponents = true,
             )
             _remoteFlow.emit(remoteData)
-            Log.d("atfflow", "4b. DynamicPositionRepository - getRemoteData $remoteData")
         } catch (_: Exception) {
-            Log.d("atfflow", "4b. DynamicPositionRepository - error catched")
             _remoteFlow.emit(
                 AtfDataList(
                     listAtfData = emptyList(),
@@ -104,9 +100,7 @@ class DynamicPositionRepository @Inject constructor(
      * Save complete ATF list to cache
      */
     suspend fun saveLatestAtf(value: AtfDataList) {
-        Log.d("atfflow", "saveLatestAtf: value $value")
-        val a = value.listAtfData.map(AtfMapper::mapDomainToCacheEntity)
+        val a = value.listAtfData.map(atfMapper::mapDomainToCacheEntity)
         atfDao.saveLatestAtf(a)
-        Log.d("atfflow", "saveLatestAtf: $a")
     }
 }

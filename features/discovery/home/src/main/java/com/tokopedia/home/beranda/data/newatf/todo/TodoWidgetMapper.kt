@@ -18,13 +18,15 @@ import com.tokopedia.home_component.widget.mission.MissionWidgetMapper.getAsHome
 import com.tokopedia.home_component.widget.todo.TodoWidgetMapper.getAsChannelConfig
 import com.tokopedia.home_component.widget.todo.TodoWidgetMapper.getAsHomeComponentHeader
 import com.tokopedia.unifycomponents.CardUnify2
+import javax.inject.Inject
 
 /**
  * Created by Frenzel
  */
-object TodoWidgetMapper {
+class TodoWidgetMapper @Inject constructor() {
 
-    fun HomeTodoWidgetData.GetHomeTodoWidget.asVisitable(
+    fun asVisitable(
+        data: HomeTodoWidgetData.GetHomeTodoWidget,
         index: Int,
         atfData: AtfData,
     ): Visitable<*> {
@@ -40,9 +42,9 @@ object TodoWidgetMapper {
         } else {
             TodoWidgetListDataModel(
                 id = atfData.atfMetadata.id.toString(),
-                todoWidgetList = LazyLoadDataMapper.mapTodoWidgetData(todos),
-                header = header.getAsHomeComponentHeader(),
-                config = config.getAsChannelConfig(),
+                todoWidgetList = LazyLoadDataMapper.mapTodoWidgetData(data.todos),
+                header = data.header.getAsHomeComponentHeader(),
+                config = data.config.getAsChannelConfig(),
                 widgetParam = atfData.atfMetadata.param,
                 verticalPosition = index,
                 status = TodoWidgetListDataModel.STATUS_SUCCESS,
