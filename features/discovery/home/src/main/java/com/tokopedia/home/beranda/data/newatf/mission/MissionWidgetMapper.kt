@@ -33,7 +33,7 @@ class MissionWidgetMapper @Inject constructor() {
             MissionWidgetListDataModel(
                 id = atfData.atfMetadata.id.toString(),
                 name = atfData.atfMetadata.name,
-                missionWidgetList = LazyLoadDataMapper.mapMissionWidgetData(data.missions),
+                missionWidgetList = LazyLoadDataMapper.mapMissionWidgetData(data.missions, atfData.isCache),
                 header = data.header.getAsHomeComponentHeader(),
                 config = data.config.getAsChannelConfig(),
                 verticalPosition = index,
