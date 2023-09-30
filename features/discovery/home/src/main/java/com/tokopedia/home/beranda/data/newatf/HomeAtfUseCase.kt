@@ -86,7 +86,7 @@ class HomeAtfUseCase @Inject constructor(
         launch(homeDispatcher.io) {
             dynamicPositionRepository.flow.collect { value ->
                 if(value != null) {
-                    if(value.isDataReady()) {
+                    if(value.isAtfDataReady()) {
                         launch { emitAndSave(value) }
                     }
                     if(value.needToFetchComponents) {
@@ -109,14 +109,16 @@ class HomeAtfUseCase @Inject constructor(
 
     /**
      *
-     * Combine all flows into one, but always update whenever data changes
-     * Cons: could be heavier to when mapping
+     * Combine all flows into one ATF list, always be updated whenever data changes
      */
     private fun CoroutineScope.observeAtfComponentFlow() {
         val allFlows: List<Flow<Any?>> = listOf(dynamicPositionRepository.flow) + atfFlows
         combine(allFlows) { list ->
+            // first flow is for dynamic position
             val dynamicPos = list[0] as? AtfDataList
+            // other flows defined on atfFlows list
             val listAtfData = list.drop(1) as List<AtfData?>
+            // if dynamic position is success and not empty, populate data to list
             if(dynamicPos != null && dynamicPos.isPositionReady()) {
                 val latest = dynamicPos.updateAtfContents(listAtfData)
                 launch { emitAndSave(latest) }
