@@ -13,6 +13,7 @@ import com.tokopedia.tokopedianow.category.mapper.CategoryL2TabMapper.addProduct
 import com.tokopedia.tokopedianow.category.mapper.CategoryMenuMapper
 import com.tokopedia.tokopedianow.category.mapper.TickerMapper
 import com.tokopedia.tokopedianow.category.presentation.adapter.typefactory.listener.CategoryL2TypeFactory
+import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryQuickFilterUiModel
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.model.TokoNowAdsCarouselUiModel
@@ -91,8 +92,7 @@ class TokoNowCategoryL2TabViewModelTestOnViewCreated : TokoNowCategoryL2TabViewM
 
         verifyRequestQueryParams()
 
-        viewModel.visitableListLiveData
-            .verifyValueEquals(expectedVisitableList)
+        verifyVisitableList(expectedVisitableList)
     }
 
     @Test
@@ -231,8 +231,7 @@ class TokoNowCategoryL2TabViewModelTestOnViewCreated : TokoNowCategoryL2TabViewM
 
         verifySortFilterQueryParams()
 
-        viewModel.visitableListLiveData
-            .verifyValueEquals(expectedVisitableList)
+        verifyVisitableList(expectedVisitableList)
     }
 
     @Test
@@ -322,8 +321,7 @@ class TokoNowCategoryL2TabViewModelTestOnViewCreated : TokoNowCategoryL2TabViewM
 
         verifySortFilterQueryParams()
 
-        viewModel.visitableListLiveData
-            .verifyValueEquals(expectedVisitableList)
+        verifyVisitableList(expectedVisitableList)
     }
 
     @Test
@@ -399,6 +397,45 @@ class TokoNowCategoryL2TabViewModelTestOnViewCreated : TokoNowCategoryL2TabViewM
         viewModel.onViewCreated(data)
 
         verifyUnknownLayoutTypeNotExists()
+    }
+
+    private fun verifyVisitableList(expectedVisitableList: List<Visitable<*>>) {
+        val actualVisitableList = viewModel.visitableListLiveData.value.orEmpty()
+
+        actualVisitableList.forEachIndexed { index, actualVisitableItem ->
+            if(actualVisitableItem is CategoryQuickFilterUiModel) {
+                val expectedVisitableItem = expectedVisitableList[index] as CategoryQuickFilterUiModel
+                verifyQuickFilterUiModel(expectedVisitableItem, actualVisitableItem)
+            } else {
+                val expectedVisitableItem = expectedVisitableList[index]
+                assertEquals(expectedVisitableItem, actualVisitableItem)
+            }
+        }
+    }
+
+    private fun verifyQuickFilterUiModel(
+        expectedVisitableItem: CategoryQuickFilterUiModel,
+        actualVisitableItem: CategoryQuickFilterUiModel
+    ) {
+        assertEquals(expectedVisitableItem.id, actualVisitableItem.id)
+        assertEquals(expectedVisitableItem.mapParameter, actualVisitableItem.mapParameter)
+        assertEquals(expectedVisitableItem.state, actualVisitableItem.state)
+
+        actualVisitableItem.itemList.forEachIndexed { index, actualItem ->
+            val expectedItem = expectedVisitableItem.itemList[index]
+            assertEquals(expectedItem.chipType, actualItem.chipType)
+            assertEquals(expectedItem.showNewNotification, actualItem.showNewNotification)
+
+            val actualOptions = actualItem.filter.options
+            val expectedOptions = expectedItem.filter.options
+
+            actualOptions.forEachIndexed { idx, actualOption ->
+                val expectedOption = expectedOptions[idx]
+                assertEquals(expectedOption.name, actualOption.name)
+                assertEquals(expectedOption.key, actualOption.key)
+                assertEquals(expectedOption.value, actualOption.value)
+            }
+        }
     }
 
     private fun verifyUnknownLayoutTypeNotExists() {
