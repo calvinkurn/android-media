@@ -13,15 +13,10 @@ import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
-import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.mapProductAdsCarousel
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.removeItem
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryOpenScreenTrackerModel
 import com.tokopedia.tokopedianow.common.base.viewmodel.BaseTokoNowViewModel
-import com.tokopedia.tokopedianow.common.constant.TokoNowStaticLayoutType.Companion.PRODUCT_ADS_CAROUSEL
 import com.tokopedia.tokopedianow.common.domain.model.GetTickerData
-import com.tokopedia.tokopedianow.common.domain.param.GetProductAdsParam
-import com.tokopedia.tokopedianow.common.domain.param.GetProductAdsParam.Companion.SRC_DIRECTORY_TOKONOW
-import com.tokopedia.tokopedianow.common.domain.usecase.GetProductAdsUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
@@ -91,34 +86,6 @@ abstract class BaseCategoryViewModel(
 
     protected open suspend fun loadNextPage() {
 
-    }
-
-    protected fun getProductAds(categoryId: String) {
-        launchCatchError(block = {
-            val params = GetProductAdsParam(
-                categoryId = categoryId,
-                addressData = addressData.getAddressData(),
-                src = SRC_DIRECTORY_TOKONOW,
-                userId = getUserId()
-            ).generateQueryParams()
-
-            val response = getProductAdsUseCase.execute(params)
-
-            if (response.productList.isNotEmpty()) {
-                visitableList.mapProductAdsCarousel(
-                    response = response,
-                    miniCartData = miniCartData,
-                    hasBlockedAddToCart = hasBlockedAddToCart
-                )
-            } else {
-                removeVisitableItem(PRODUCT_ADS_CAROUSEL)
-            }
-
-            updateVisitableListLiveData()
-        }) {
-            removeVisitableItem(PRODUCT_ADS_CAROUSEL)
-            updateVisitableListLiveData()
-        }
     }
 
     protected fun sendOpenScreenTracker(id: String, name: String, url: String) {

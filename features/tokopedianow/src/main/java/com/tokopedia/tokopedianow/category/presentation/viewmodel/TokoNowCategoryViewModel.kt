@@ -27,6 +27,7 @@ import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.addProg
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.addTicker
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.findCategoryShowcaseItem
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.mapCategoryShowcase
+import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.mapProductAdsCarousel
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.removeItem
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.updateProductQuantity
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.updateWishlistStatus
@@ -45,6 +46,7 @@ import com.tokopedia.tokopedianow.common.domain.mapper.AceSearchParamMapper
 import com.tokopedia.tokopedianow.common.domain.mapper.ProductAdsMapper.addProductAdsCarousel
 import com.tokopedia.tokopedianow.common.domain.mapper.ProductAdsMapper.findAdsProductCarousel
 import com.tokopedia.tokopedianow.common.domain.model.GetTickerData
+import com.tokopedia.tokopedianow.common.domain.param.GetProductAdsParam
 import com.tokopedia.tokopedianow.common.domain.usecase.GetProductAdsUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
@@ -58,11 +60,11 @@ import javax.inject.Inject
 class TokoNowCategoryViewModel @Inject constructor(
     private val getCategoryProductUseCase: GetCategoryProductUseCase,
     private val getCategoryDetailUseCase: GetCategoryDetailUseCase,
+    private val getProductAdsUseCase: GetProductAdsUseCase,
     private val aceSearchParamMapper: AceSearchParamMapper,
     private val addressData: TokoNowLocalAddress,
     getShopAndWarehouseUseCase: GetChosenAddressWarehouseLocUseCase,
     getTargetedTickerUseCase: GetTargetedTickerUseCase,
-    getProductAdsUseCase: GetProductAdsUseCase,
     getMiniCartUseCase: GetMiniCartListSimplifiedUseCase,
     addToCartUseCase: AddToCartUseCase,
     updateCartUseCase: UpdateCartUseCase,
@@ -71,7 +73,6 @@ class TokoNowCategoryViewModel @Inject constructor(
     userSession: UserSessionInterface,
     dispatchers: CoroutineDispatchers
 ) : BaseCategoryViewModel(
-    getProductAdsUseCase = getProductAdsUseCase,
     getShopAndWarehouseUseCase = getShopAndWarehouseUseCase,
     getTargetedTickerUseCase = getTargetedTickerUseCase,
     getMiniCartUseCase = getMiniCartUseCase,
@@ -241,6 +242,34 @@ class TokoNowCategoryViewModel @Inject constructor(
         updateVisitableListLiveData()
     }
 
+    private fun getProductAds(categoryId: String) {
+        launchCatchError(block = {
+            val params = GetProductAdsParam(
+                categoryId = categoryId,
+                addressData = addressData.getAddressData(),
+                src = GetProductAdsParam.SRC_DIRECTORY_TOKONOW,
+                userId = getUserId()
+            ).generateQueryParams()
+
+            val response = getProductAdsUseCase.execute(params)
+
+            if (response.productList.isNotEmpty()) {
+                visitableList.mapProductAdsCarousel(
+                    response = response,
+                    miniCartData = miniCartData,
+                    hasBlockedAddToCart = hasBlockedAddToCart
+                )
+            } else {
+                removeVisitableItem(PRODUCT_ADS_CAROUSEL)
+            }
+
+            updateVisitableListLiveData()
+        }) {
+            removeVisitableItem(PRODUCT_ADS_CAROUSEL)
+            updateVisitableListLiveData()
+        }
+    }
+
     /**
      * -- private function section --
      */
@@ -402,7 +431,7 @@ class TokoNowCategoryViewModel @Inject constructor(
     }
 
     private fun trackProductAdsAddToCart(product: ProductCardCompactUiModel, quantity: Int) {
-        visitableList.findAdsProductCarousel(product.productId)?.let { item ->
+        visitableList.findAdsProductCarousel(product.productId).let { item ->
             _atcDataTracker.postValue(CategoryAtcTrackerModel(
                 index = item.position,
                 quantity = quantity,

@@ -13,7 +13,6 @@ import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryDetailUseCa
 import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryLayoutUseCase
 import com.tokopedia.tokopedianow.common.domain.model.GetTargetedTickerResponse
 import com.tokopedia.tokopedianow.common.domain.model.WarehouseData
-import com.tokopedia.tokopedianow.common.domain.usecase.GetProductAdsUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
@@ -23,9 +22,11 @@ import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Before
 import org.junit.Rule
 
+@OptIn(ExperimentalCoroutinesApi::class)
 open class TokoNowCategoryL2ViewModelTestFixture {
 
     @get:Rule
@@ -37,7 +38,6 @@ open class TokoNowCategoryL2ViewModelTestFixture {
     private lateinit var getCategoryLayoutUseCase: GetCategoryLayoutUseCase
     private lateinit var getCategoryDetailUseCase: GetCategoryDetailUseCase
     private lateinit var addressData: TokoNowLocalAddress
-    private lateinit var getProductAdsUseCase: GetProductAdsUseCase
     private lateinit var getTargetedTickerUseCase: GetTargetedTickerUseCase
     private lateinit var getShopAndWarehouseUseCase: GetChosenAddressWarehouseLocUseCase
     private lateinit var getMiniCartUseCase: GetMiniCartListSimplifiedUseCase
@@ -81,7 +81,6 @@ open class TokoNowCategoryL2ViewModelTestFixture {
         getCategoryLayoutUseCase = mockk(relaxed = true)
         getCategoryDetailUseCase = mockk(relaxed = true)
         addressData = mockk(relaxed = true)
-        getProductAdsUseCase = mockk(relaxed = true)
         getTargetedTickerUseCase = mockk(relaxed = true)
         getShopAndWarehouseUseCase = mockk(relaxed = true)
         getMiniCartUseCase = mockk(relaxed = true)
@@ -95,7 +94,6 @@ open class TokoNowCategoryL2ViewModelTestFixture {
             getCategoryLayoutUseCase = getCategoryLayoutUseCase,
             getCategoryDetailUseCase = getCategoryDetailUseCase,
             addressData = addressData,
-            getProductAdsUseCase = getProductAdsUseCase,
             getTargetedTickerUseCase = getTargetedTickerUseCase,
             getShopAndWarehouseUseCase = getShopAndWarehouseUseCase,
             getMiniCartUseCase = getMiniCartUseCase,
@@ -115,8 +113,14 @@ open class TokoNowCategoryL2ViewModelTestFixture {
         onGetTicker_thenReturn(warehouseId, getTargetedTickerResponse)
     }
 
-    protected fun onGetShopId_thenReturn(shopId: Long) {
+    private fun onGetShopId_thenReturn(shopId: Long) {
         every { addressData.getShopId() } returns shopId
+    }
+
+    private fun onGetTicker_thenReturn(warehouseId: Long, response: GetTargetedTickerResponse) {
+        coEvery {
+            getTargetedTickerUseCase.execute(tickerPage, warehouseId.toString())
+        } returns response
     }
 
     protected fun onGetWarehouseId_thenReturn(warehouseId: Long) {
@@ -129,12 +133,6 @@ open class TokoNowCategoryL2ViewModelTestFixture {
 
     protected fun onGetAddressData_thenReturn(data: LocalCacheModel) {
         every { addressData.getAddressData() } returns data
-    }
-
-    protected fun onGetTicker_thenReturn(warehouseId: Long, response: GetTargetedTickerResponse) {
-        coEvery {
-            getTargetedTickerUseCase.execute(tickerPage, warehouseId.toString())
-        } returns response
     }
 
     protected fun onGetCategoryLayout_thenReturn(response: CategoryGetDetailModular) {

@@ -31,7 +31,6 @@ class TokoNowCategoryL2ViewModel @Inject constructor(
     private val getCategoryLayoutUseCase: GetCategoryLayoutUseCase,
     private val getCategoryDetailUseCase: GetCategoryDetailUseCase,
     private val addressData: TokoNowLocalAddress,
-    getProductAdsUseCase: GetProductAdsUseCase,
     getTargetedTickerUseCase: GetTargetedTickerUseCase,
     getShopAndWarehouseUseCase: GetChosenAddressWarehouseLocUseCase,
     getMiniCartUseCase: GetMiniCartListSimplifiedUseCase,
@@ -42,7 +41,6 @@ class TokoNowCategoryL2ViewModel @Inject constructor(
     userSession: UserSessionInterface,
     dispatchers: CoroutineDispatchers
 ) : BaseCategoryViewModel(
-    getProductAdsUseCase = getProductAdsUseCase,
     getShopAndWarehouseUseCase = getShopAndWarehouseUseCase,
     getTargetedTickerUseCase = getTargetedTickerUseCase,
     getMiniCartUseCase = getMiniCartUseCase,
