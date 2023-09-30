@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import com.tokopedia.home.beranda.data.newatf.AtfData
 import com.tokopedia.home.beranda.data.newatf.AtfMetadata
-import com.tokopedia.home.beranda.data.newatf.AtfRepository
+import com.tokopedia.home.beranda.data.newatf.BaseAtfRepository
 import com.tokopedia.home.beranda.di.HomeScope
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeChooseAddressRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeIconRepository
@@ -20,7 +20,7 @@ import javax.inject.Inject
 class DynamicIconRepository @Inject constructor(
     private val homeIconRepository: HomeIconRepository,
     private val homeChooseAddressRepository: HomeChooseAddressRepository,
-): AtfRepository() {
+): BaseAtfRepository() {
 
     @SuppressLint("PII Data Exposure")
     override suspend fun getData(atfMetadata: AtfMetadata) {

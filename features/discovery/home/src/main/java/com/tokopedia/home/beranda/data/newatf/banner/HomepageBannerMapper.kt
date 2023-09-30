@@ -3,6 +3,7 @@ package com.tokopedia.home.beranda.data.newatf.banner
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.beranda.data.newatf.AtfData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ErrorStateChannelOneModel
+import com.tokopedia.home.beranda.presentation.view.helper.HomeRemoteConfigController
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
 import com.tokopedia.home.constant.AtfKey
 import com.tokopedia.home_component.R as home_componentR
@@ -18,13 +19,14 @@ import javax.inject.Inject
 /**
  * Created by Frenzel
  */
-class HomepageBannerMapper @Inject constructor() {
+class HomepageBannerMapper @Inject constructor(
+    homeRemoteConfigController: HomeRemoteConfigController,
+) {
     companion object {
         private const val PROMO_NAME_BANNER_CAROUSEL = "/ - p%s - slider banner - banner - %s"
         private const val VALUE_BANNER_DEFAULT = ""
-        private const val BANNER_EXPIRY_DAYS = 15L
-        private val BANNER_EXPIRY_IN_MILLIS = TimeUnit.DAYS.toMillis(BANNER_EXPIRY_DAYS)
     }
+    private val BANNER_EXPIRY_IN_MILLIS = TimeUnit.DAYS.toMillis(homeRemoteConfigController.getBannerExpiryDays())
 
     fun asVisitable(
         data: BannerDomainDataModel,

@@ -17,6 +17,7 @@ import com.tokopedia.home.constant.AtfKey
 import com.tokopedia.home_component.model.AtfContent
 import com.tokopedia.home_component.usecase.missionwidget.HomeMissionWidgetData
 import com.tokopedia.home_component.usecase.todowidget.HomeTodoWidgetData
+import com.tokopedia.home.beranda.data.model.AtfData as OldAtfData
 import javax.inject.Inject
 
 /**
@@ -32,7 +33,7 @@ class AtfMapper @Inject constructor(
 ) {
     fun mapRemoteToDomainAtfData(
         position: Int,
-        data: com.tokopedia.home.beranda.data.model.AtfData
+        data: OldAtfData
     ): AtfData {
         return AtfData(
             atfMetadata = AtfMetadata(

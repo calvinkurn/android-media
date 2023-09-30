@@ -1,9 +1,7 @@
-package com.tokopedia.home.beranda.data.newatf.position
+package com.tokopedia.home.beranda.data.newatf
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.home.beranda.data.datasource.local.dao.AtfDao
-import com.tokopedia.home.beranda.data.newatf.AtfDataList
-import com.tokopedia.home.beranda.data.newatf.AtfMapper
 import com.tokopedia.home.beranda.di.HomeScope
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeAtfRepository
 import kotlinx.coroutines.coroutineScope
@@ -100,7 +98,6 @@ class DynamicPositionRepository @Inject constructor(
      * Save complete ATF list to cache
      */
     suspend fun saveLatestAtf(value: AtfDataList) {
-        val a = value.listAtfData.map(atfMapper::mapDomainToCacheEntity)
-        atfDao.saveLatestAtf(a)
+        atfDao.saveLatestAtf(value.listAtfData.map(atfMapper::mapDomainToCacheEntity))
     }
 }

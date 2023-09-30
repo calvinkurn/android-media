@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.StateFlow
 /**
  * Created by Frenzel
  */
-abstract class AtfRepository {
+abstract class BaseAtfRepository {
 
     private val _flow: MutableStateFlow<AtfData?> = MutableStateFlow(null)
     val flow: StateFlow<AtfData?>

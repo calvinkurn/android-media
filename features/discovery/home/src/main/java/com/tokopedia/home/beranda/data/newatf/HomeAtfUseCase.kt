@@ -5,7 +5,6 @@ import com.tokopedia.home.beranda.data.newatf.banner.HomepageBannerRepository
 import com.tokopedia.home.beranda.data.newatf.channel.AtfChannelRepository
 import com.tokopedia.home.beranda.data.newatf.icon.DynamicIconRepository
 import com.tokopedia.home.beranda.data.newatf.mission.MissionWidgetRepository
-import com.tokopedia.home.beranda.data.newatf.position.DynamicPositionRepository
 import com.tokopedia.home.beranda.data.newatf.ticker.TickerRepository
 import com.tokopedia.home.beranda.data.newatf.todo.TodoWidgetRepository
 import com.tokopedia.home.beranda.di.HomeScope
@@ -109,21 +108,20 @@ class HomeAtfUseCase @Inject constructor(
     }
 
     /**
-     * Alternative 3: combine all flows into one, but always update whenever data changes
+     *
+     * Combine all flows into one, but always update whenever data changes
      * Cons: could be heavier to when mapping
      */
     private fun CoroutineScope.observeAtfComponentFlow() {
-        launch {
-            val allFlows: List<Flow<Any?>> = listOf(dynamicPositionRepository.flow) + atfFlows
-            combine(allFlows) { list ->
-                val dynamicPos = list[0] as? AtfDataList
-                val listAtfData = list.drop(1) as List<AtfData?>
-                if(dynamicPos != null && dynamicPos.isPositionReady()) {
-                    val latest = dynamicPos.updateAtfContents(listAtfData)
-                    launch { emitAndSave(latest) }
-                }
-            }.launchIn(this)
-        }
+        val allFlows: List<Flow<Any?>> = listOf(dynamicPositionRepository.flow) + atfFlows
+        combine(allFlows) { list ->
+            val dynamicPos = list[0] as? AtfDataList
+            val listAtfData = list.drop(1) as List<AtfData?>
+            if(dynamicPos != null && dynamicPos.isPositionReady()) {
+                val latest = dynamicPos.updateAtfContents(listAtfData)
+                launch { emitAndSave(latest) }
+            }
+        }.launchIn(this)
     }
 
     /**

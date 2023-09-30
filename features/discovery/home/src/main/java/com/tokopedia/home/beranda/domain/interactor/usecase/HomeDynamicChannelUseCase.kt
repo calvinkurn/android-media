@@ -201,7 +201,6 @@ class HomeDynamicChannelUseCase @Inject constructor(
         coroutineScope.launch { homeHeaderUseCase.updateBalanceWidget() }
 
         val atfFlow = homeAtfUseCase.flow.map {
-            Log.d("atfflow", "COMBINE FLOW: ATF: $it")
             HomeDynamicChannelModel(
                 list = atfMapper.mapToVisitableList(it),
                 isCache = it?.isCache.orTrue()
@@ -216,12 +215,9 @@ class HomeDynamicChannelUseCase @Inject constructor(
             val combinedList = header.list + atf.list + dc.list
             val isCache = atf.isCache || dc.isCache
             Log.d(
-                "atfflow",
-                "================================================================================================================================================================\n" +
-                "RESULT:\n" +
-                "ATF   : ${atf.list.joinToString(", ") { it::class.java.simpleName }}\n" +
-                "DC    : ${dc.list.joinToString(", ") { it::class.java.simpleName }}\n" +
-                "================================================================================================================================================================"
+                "atfflow", "RESULT:\n" +
+                "ATF   : ${atf.list.joinToString(",") { it.javaClass.simpleName }}\n" +
+                "DC    : ${dc.list.joinToString(", ") { it.javaClass.simpleName }}\n"
             )
             HomeDynamicChannelModel(list = combinedList, isCache = isCache)
         }
