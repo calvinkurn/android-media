@@ -1,7 +1,5 @@
 package com.tokopedia.home.beranda.data.newatf
 
-import com.tokopedia.home.constant.AtfKey
-
 /**
  * Created by Frenzel
  */
@@ -40,11 +38,7 @@ data class AtfDataList(
         val newDynamicPosition = listAtfData.zip(atfContents) { data, atfContent ->
             data.copy(atfContent = atfContent)
         }
-        val needToFetchComponents = atfContents.all { it == null }
-        return this.copy(
-            listAtfData = newDynamicPosition,
-            needToFetchComponents = needToFetchComponents
-        )
+        return this.copy(listAtfData = newDynamicPosition)
     }
 
     /**
@@ -69,6 +63,5 @@ data class AtfDataList(
     fun isPositionReady(): Boolean {
         return this.status == STATUS_SUCCESS
             && this.listAtfData.isNotEmpty()
-            && !this.isCache
     }
 }
