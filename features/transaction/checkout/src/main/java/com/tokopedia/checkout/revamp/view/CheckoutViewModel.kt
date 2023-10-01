@@ -784,7 +784,7 @@ class CheckoutViewModel @Inject constructor(
         }
     }
 
-    private fun shouldAnimateEntryPointWording(
+    fun shouldAnimateEntryPointWording(
         newLastApply: LastApplyUiModel,
         oldLastApply: LastApplyUiModel
     ): Boolean {
