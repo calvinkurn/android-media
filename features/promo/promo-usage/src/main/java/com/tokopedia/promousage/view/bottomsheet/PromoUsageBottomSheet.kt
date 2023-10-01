@@ -644,9 +644,12 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         binding?.clBottomSheetContent?.clipToOutline = true
         binding?.clBottomSheetContent?.clipChildren = true
         binding?.ivPromoRecommendationBackground?.loadImage(promoRecommendation.backgroundUrl)
-        binding?.ivPromoRecommendationBackground?.setBackgroundColor(
-            Color.parseColor(promoRecommendation.backgroundColor)
-        )
+        val colorHex = promoRecommendation.backgroundColor
+        if (colorHex.isNotBlank()) {
+            binding?.ivPromoRecommendationBackground?.setBackgroundColor(
+                Color.parseColor(colorHex)
+            )
+        }
         binding?.ivPromoRecommendationBackground?.visible()
         dummyAnchorPosition = if (promoRecommendation.codes.isNotEmpty()) {
             promoRecommendation.codes.size + 1
