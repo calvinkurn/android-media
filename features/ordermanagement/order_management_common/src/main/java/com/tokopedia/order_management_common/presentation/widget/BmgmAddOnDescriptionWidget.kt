@@ -25,6 +25,7 @@ import com.tokopedia.order_management_common.databinding.WidgetBmgmProductAddOnD
 import com.tokopedia.order_management_common.util.generateHapticFeedback
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.order_management_common.R as order_management_commonR
 
 class BmgmAddOnDescriptionWidget @JvmOverloads constructor(
@@ -35,6 +36,7 @@ class BmgmAddOnDescriptionWidget @JvmOverloads constructor(
 
     companion object {
         private const val DESCRIPTION_MIN_LINES = 1
+        private const val MARGIN_BOTTOM = 8
         private const val ANIMATION_DURATION = 500L
         private const val VIEW_MAX_HEIGHT_ATTRIBUTE = "maxHeight"
         private const val LABEL_ADD_ON_DESCRIPTION = "addOnDescription"
@@ -116,6 +118,19 @@ class BmgmAddOnDescriptionWidget @JvmOverloads constructor(
         setupDescriptionSeeMore()
     }
 
+    private fun isFullCopyDescription(): Boolean {
+        return receiverName.isNotBlank() && senderName.isNotBlank() && description.isNotBlank()
+    }
+
+    fun setMarginBottomAddonDescWidget() {
+        val hasDescription = senderName.isNotBlank() || receiverName.isNotBlank() == description.isNotBlank()
+        if (hasDescription) {
+            val lParams = binding.root.layoutParams as? LayoutParams
+            lParams?.bottomMargin = MARGIN_BOTTOM.toPx()
+            binding.root.layoutParams = lParams
+        }
+    }
+
     private fun setupCopyIcon() {
         binding.maskTriggerCopyArea.setOnClickListener {
             it.generateHapticFeedback()
@@ -135,10 +150,6 @@ class BmgmAddOnDescriptionWidget @JvmOverloads constructor(
             senderName,
             description
         )
-    }
-
-    private fun isFullCopyDescription(): Boolean {
-        return receiverName.isNotBlank() && senderName.isNotBlank() && description.isNotBlank()
     }
 
     @SuppressLint("ClickableViewAccessibility")

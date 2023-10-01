@@ -94,6 +94,7 @@ class BmgmAddOnViewHolder(
                 addonItemUiModel.message.stripLastDot(),
                 addonItemUiModel.descriptionExpanded
             )
+            setMarginBottomAddonDescWidget()
             listener = this@BmgmAddOnViewHolder
             show()
         }
