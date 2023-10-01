@@ -86,7 +86,7 @@ class HomeAtfUseCase @Inject constructor(
         launch(homeDispatcher.io) {
             dynamicPositionRepository.flow.collect { value ->
                 if(value != null) {
-                    if(value.isAtfDataReady()) {
+                    if(value.isPositionReady()) {
                         launch { emitAndSave(value) }
                     }
                     if(value.needToFetchComponents) {
@@ -118,8 +118,8 @@ class HomeAtfUseCase @Inject constructor(
             val dynamicPos = list[0] as? AtfDataList
             // other flows defined on atfFlows list
             val listAtfData = list.drop(1) as List<AtfData?>
-            // if dynamic position is success and not empty, populate data to list
-            if(dynamicPos != null && dynamicPos.isPositionReady()) {
+            // if remote dynamic position is ready, populate data to list
+            if(dynamicPos != null && dynamicPos.isPositionReady() && !dynamicPos.isCache) {
                 val latest = dynamicPos.updateAtfContents(listAtfData)
                 launch { emitAndSave(latest) }
             }

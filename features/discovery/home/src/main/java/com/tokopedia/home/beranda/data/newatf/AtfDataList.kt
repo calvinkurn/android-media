@@ -64,21 +64,11 @@ data class AtfDataList(
     }
 
     /**
-     * Check if dynamic position is not empty and is the latest (from remote).
+     * Check if dynamic position is not empty
      */
     fun isPositionReady(): Boolean {
         return this.status == STATUS_SUCCESS
             && this.listAtfData.isNotEmpty()
             && !this.isCache
-    }
-
-    /**
-     * Check if all ATF data is not on loading state.
-     */
-    fun isAtfDataReady(): Boolean {
-        return this.status == STATUS_SUCCESS
-            && this.listAtfData.isNotEmpty()
-            && this.listAtfData.all { it.atfStatus != AtfKey.STATUS_LOADING }
-
     }
 }
