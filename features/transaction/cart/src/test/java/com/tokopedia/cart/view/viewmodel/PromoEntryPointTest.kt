@@ -134,6 +134,17 @@ class PromoEntryPointTest : BaseCartViewModelTest() {
     }
 
     @Test
+    fun isPromoRevamp_failedCartDataNull() {
+        // given
+
+        // when
+        val isPromoRevamp = cartViewModel.isPromoRevamp()
+
+        // then
+        Assert.assertFalse(isPromoRevamp)
+    }
+
+    @Test
     fun getEntryPointInfoFromLastApply_success() {
         // given
         val lastApplyPromo = LastApplyPromo(
