@@ -24,11 +24,11 @@ class DynamicPositionRepository @Inject constructor(
 ) {
 
     private val _cacheFlow: MutableStateFlow<AtfDataList?> = MutableStateFlow(null)
-    private val cacheFlow: StateFlow<AtfDataList?>
+    val cacheFlow: StateFlow<AtfDataList?>
         get() = _cacheFlow
 
     private val _remoteFlow: MutableStateFlow<AtfDataList?> = MutableStateFlow(null)
-    private val remoteFlow: StateFlow<AtfDataList?>
+    val remoteFlow: StateFlow<AtfDataList?>
         get() = _remoteFlow
 
     /**
@@ -42,9 +42,15 @@ class DynamicPositionRepository @Inject constructor(
      */
     val flow: Flow<AtfDataList?> = combine(cacheFlow, remoteFlow) { cache, remote ->
         if(cache != null && remote != null) {
-            if(remote.positionEquals(cache))
+            if(remote.positionEquals(cache)) {
                 remote.copyAtfContentsFrom(cache)
-            else remote
+            }
+            else {
+                // IMPORTANT: when remote position is different than cache,
+                // always set needToFetchComponents to true because we need
+                // to re-fetch every ATF components data from remote
+                remote.copy(needToFetchComponents = true)
+            }
         } else cache
     }
 
@@ -72,14 +78,16 @@ class DynamicPositionRepository @Inject constructor(
         _cacheFlow.emit(cachedData)
     }
 
-    suspend fun getRemoteData() {
+    suspend fun getRemoteData(isRefresh: Boolean = false) {
         try {
             val listAtf = atfDataRepository.getRemoteData().dataList
+            // IMPORTANT: needToFetchComponents value depends on isRefresh flag,
+            // because when refresh data, we need to make sure all ATF components re-fetch data from remote
             val remoteData = AtfDataList(
                 listAtfData = listAtf.mapIndexed(atfMapper::mapRemoteToDomainAtfData),
                 isCache = false,
                 status = AtfDataList.STATUS_SUCCESS,
-                needToFetchComponents = true,
+                needToFetchComponents = isRefresh,
             )
             _remoteFlow.emit(remoteData)
         } catch (_: Exception) {

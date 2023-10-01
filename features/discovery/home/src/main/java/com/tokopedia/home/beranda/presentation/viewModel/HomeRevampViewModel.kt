@@ -582,15 +582,20 @@ open class HomeRevampViewModel @Inject constructor(
     fun getMissionWidgetRefresh() {
         findWidget<MissionWidgetListDataModel> { missionWidgetListDataModel, position ->
             launch {
-                updateWidget(
-                    missionWidgetListDataModel.copy(status = MissionWidgetListDataModel.STATUS_LOADING),
-                    position
-                )
-                updateWidget(
-                    homeMissionWidgetUseCase.get()
-                        .onMissionWidgetRefresh(missionWidgetListDataModel),
-                    position
-                )
+                if(missionWidgetListDataModel.source == MissionWidgetListDataModel.SOURCE_ATF &&
+                    homeRemoteConfigController.isUsingNewAtf()) {
+                    homeAtfUseCase.refreshData(missionWidgetListDataModel.id)
+                } else {
+                    updateWidget(
+                        missionWidgetListDataModel.copy(status = MissionWidgetListDataModel.STATUS_LOADING),
+                        position
+                    )
+                    updateWidget(
+                        homeMissionWidgetUseCase.get()
+                            .onMissionWidgetRefresh(missionWidgetListDataModel),
+                        position
+                    )
+                }
             }
         }
     }
@@ -598,15 +603,20 @@ open class HomeRevampViewModel @Inject constructor(
     fun getTodoWidgetRefresh() {
         findWidget<TodoWidgetListDataModel> { todoWidgetListDataModel, position ->
             launch {
-                updateWidget(
-                    todoWidgetListDataModel.copy(status = TodoWidgetListDataModel.STATUS_LOADING),
-                    position
-                )
-                updateWidget(
-                    homeTodoWidgetUseCase.get()
-                        .onTodoWidgetRefresh(todoWidgetListDataModel),
-                    position
-                )
+                if(todoWidgetListDataModel.source == TodoWidgetListDataModel.SOURCE_ATF &&
+                    homeRemoteConfigController.isUsingNewAtf()) {
+                    homeAtfUseCase.refreshData(todoWidgetListDataModel.id)
+                } else {
+                    updateWidget(
+                        todoWidgetListDataModel.copy(status = TodoWidgetListDataModel.STATUS_LOADING),
+                        position
+                    )
+                    updateWidget(
+                        homeTodoWidgetUseCase.get()
+                            .onTodoWidgetRefresh(todoWidgetListDataModel),
+                        position
+                    )
+                }
             }
         }
     }

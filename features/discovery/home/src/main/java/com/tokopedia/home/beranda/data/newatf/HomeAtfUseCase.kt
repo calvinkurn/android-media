@@ -64,13 +64,33 @@ class HomeAtfUseCase @Inject constructor(
     }
 
     /**
-     * Refresh ATF data (remote only)
+     * Refresh Full ATF data (dynamic position and each ATF components) from remote.
      */
     suspend fun refreshData() {
         coroutineScope {
             if(job?.isActive != true) {
                 job = launch(homeDispatcher.io) {
-                    dynamicPositionRepository.getRemoteData()
+                    dynamicPositionRepository.getRemoteData(isRefresh = true)
+                }
+            }
+        }
+    }
+
+    /**
+     * Refresh specific ATF component data from remote.
+     */
+    suspend fun refreshData(id: String) {
+        coroutineScope {
+            if(job?.isActive != true) {
+                launch(homeDispatcher.io) {
+                    flow.value?.let { value ->
+                        value.listAtfData.firstOrNull { atfData ->
+                            atfData.atfMetadata.id.toString() == id
+                        }?.let { atfData ->
+                            conditionalFetchAtfData(atfData.atfMetadata)
+                        }
+
+                    }
                 }
             }
         }
@@ -78,7 +98,7 @@ class HomeAtfUseCase @Inject constructor(
 
     /**
      * Collecting dynamic position flow.
-     * - If Dynamic Position status is success & all ATF components are not in loading state,
+     * - If Dynamic Position status is success & not empty,
      *   then emit to flow and save to cache
      * - Fetch each ATF components if needed.
      */
@@ -87,24 +107,16 @@ class HomeAtfUseCase @Inject constructor(
             dynamicPositionRepository.flow.collect { value ->
                 if(value != null) {
                     if(value.isPositionReady()) {
-                        launch { emitAndSave(value) }
+                        launch { emit(value) }
                     }
                     if(value.needToFetchComponents) {
-                        launch(homeDispatcher.io) {
-                            getEachAtfComponentData(value)
+                        value.listAtfData.forEach { data ->
+                            conditionalFetchAtfData(data.atfMetadata)
                         }
                     }
                 }
             }
         }
-    }
-
-    /**
-     * To emit latest ATF data and save it to cache
-     */
-    private suspend fun emitAndSave(value: AtfDataList) {
-        _flow.emit(value)
-        dynamicPositionRepository.saveLatestAtf(value)
     }
 
     /**
@@ -129,21 +141,23 @@ class HomeAtfUseCase @Inject constructor(
     /**
      * Fetch data for each ATF components
      */
-    private suspend fun getEachAtfComponentData(value: AtfDataList) {
-        coroutineScope {
-            launch {
-                value.listAtfData.forEach { data ->
-                    val metadata = data.atfMetadata
-                    when(metadata.component) {
-                        AtfKey.TYPE_BANNER -> launch { homepageBannerRepository.getData(metadata) }
-                        AtfKey.TYPE_ICON -> launch { dynamicIconRepository.getData(metadata) }
-                        AtfKey.TYPE_TICKER -> launch { tickerRepository.getData(metadata) }
-                        AtfKey.TYPE_CHANNEL -> launch { atfChannelRepository.getData(metadata) }
-                        AtfKey.TYPE_MISSION -> launch { missionWidgetRepository.getData(metadata) }
-                        AtfKey.TYPE_TODO -> launch { todoWidgetRepository.getData(metadata) }
-                    }
-                }
-            }
+    private fun CoroutineScope.conditionalFetchAtfData(metadata: AtfMetadata) {
+        when(metadata.component) {
+            AtfKey.TYPE_BANNER -> launch { homepageBannerRepository.getData(metadata) }
+            AtfKey.TYPE_ICON -> launch { dynamicIconRepository.getData(metadata) }
+            AtfKey.TYPE_TICKER -> launch { tickerRepository.getData(metadata) }
+            AtfKey.TYPE_CHANNEL -> launch { atfChannelRepository.getData(metadata) }
+            AtfKey.TYPE_MISSION -> launch { missionWidgetRepository.getData(metadata) }
+            AtfKey.TYPE_TODO -> launch { todoWidgetRepository.getData(metadata) }
         }
+    }
+
+    private suspend fun emit(value: AtfDataList) {
+        _flow.emit(value)
+    }
+
+    private suspend fun emitAndSave(value: AtfDataList) {
+        emit(value)
+        dynamicPositionRepository.saveLatestAtf(value)
     }
 }
