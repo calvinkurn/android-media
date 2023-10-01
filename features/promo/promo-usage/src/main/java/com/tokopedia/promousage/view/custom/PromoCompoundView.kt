@@ -402,6 +402,8 @@ class PromoCompoundView @JvmOverloads constructor(
                 promo.remainingPromoCount
             }
             if (remainingPromoCount > 1) {
+                layoutRemainingQuotaRibbon
+                    .setBackgroundResource(R.drawable.promo_usage_ic_quota_ribbon)
                 layoutRemainingQuotaRibbon.visible()
                 tpgRemainingQuota.text = context?.getString(
                     R.string.promo_usage_label_remaining_quota,
