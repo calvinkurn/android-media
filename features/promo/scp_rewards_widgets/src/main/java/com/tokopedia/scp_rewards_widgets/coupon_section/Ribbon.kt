@@ -6,8 +6,8 @@ import android.view.LayoutInflater
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.shape.ShapeAppearanceModel
-import com.tokopedia.scp_rewards_common.dpToPx
-import com.tokopedia.scp_rewards_common.parseColorOrFallback
+import com.tokopedia.scp_rewards_common.utils.dpToPx
+import com.tokopedia.scp_rewards_common.utils.parseColorOrFallback
 import com.tokopedia.scp_rewards_widgets.databinding.LayoutRibbonBinding
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 

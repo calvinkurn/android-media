@@ -372,7 +372,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
 
                 params[Int.ZERO] = param1
                 params[INDEX_ONE] = param2
-                params[INDEX_THREE] = param3
+                params[INDEX_TWO] = param3
             }
 
             TOTAL_IMG_4 -> {

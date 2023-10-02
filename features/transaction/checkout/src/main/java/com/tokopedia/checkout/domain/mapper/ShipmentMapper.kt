@@ -79,6 +79,7 @@ import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOn
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.ButtonData
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.AdditionalInfo
+import com.tokopedia.purchase_platform.common.feature.promo.domain.model.BebasOngkirInfo
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.CartEmptyInfo
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.Data
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.ErrorDefault
@@ -89,7 +90,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.domain.model.PromoSA
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.UsageSummaries
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoCheckoutErrorDefault
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyAdditionalInfoUiModel
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyBebasOngkirInfo
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyBebasOngkirInfoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyEmptyCartInfoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyErrorDetailUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyMessageInfoUiModel
@@ -619,6 +620,7 @@ class ShipmentMapper @Inject constructor() {
                     type = item.type
                     qty = productQuantity
                     uniqueId = item.uniqueId
+                    iconUrl = item.iconUrl
                 }
             )
         }
@@ -834,6 +836,7 @@ class ShipmentMapper @Inject constructor() {
             message = mapLastApplyMessageUiModel(promoData.message)
 //            listRedPromos = mapListRedPromos(promoData)
             listAllPromoCodes = mapListAllPromos(promoData)
+            userGroupMetadata = promoData.userGroupMetadata
         }
     }
 
@@ -856,8 +859,7 @@ class ShipmentMapper @Inject constructor() {
             promoSpIds = mapPromoSpId(additionalInfo)
             usageSummaries = mapLastApplyUsageSummariesUiModel(additionalInfo.listUsageSummaries)
             pomlAutoApplied = additionalInfo.pomlAutoApplied
-            bebasOngkirInfo =
-                LastApplyBebasOngkirInfo(additionalInfo.bebasOngkirInfo.isBoUnstackEnabled)
+            bebasOngkirInfo = mapLastApplyBebasOngkirInfo(additionalInfo.bebasOngkirInfo)
         }
     }
 
@@ -871,6 +873,13 @@ class ShipmentMapper @Inject constructor() {
                 currencyDetailsStr = it.currencyDetailsStr
             }
         }
+    }
+
+    private fun mapLastApplyBebasOngkirInfo(bebasOngkirInfo: BebasOngkirInfo): LastApplyBebasOngkirInfoUiModel {
+        return LastApplyBebasOngkirInfoUiModel(
+            isBoUnstackEnabled = bebasOngkirInfo.isBoUnstackEnabled,
+            isUseBebasOngkirOnly = bebasOngkirInfo.isUseBebasOngkirOnly
+        )
     }
 
     private fun mapLastApplyMessageInfoUiModel(messageInfo: MessageInfo): LastApplyMessageInfoUiModel {
@@ -978,6 +987,7 @@ class ShipmentMapper @Inject constructor() {
             description = shipmentAddressFormDataResponse.donation.description
             nominal = shipmentAddressFormDataResponse.donation.nominal
             isChecked = shipmentAddressFormDataResponse.isDonationCheckboxStatus
+            iconUrl = shipmentAddressFormDataResponse.donation.iconUrl
         }
     }
 
@@ -1035,9 +1045,11 @@ class ShipmentMapper @Inject constructor() {
             subText = shipmentAddressFormDataResponse.egoldAttributes.egoldMessage.subText
             tickerText = shipmentAddressFormDataResponse.egoldAttributes.egoldMessage.tickerText
             tooltipText = shipmentAddressFormDataResponse.egoldAttributes.egoldMessage.tooltipText
+            tooltipTitleText = shipmentAddressFormDataResponse.egoldAttributes.egoldMessage.tooltipTitleText
             hyperlinkText = shipmentAddressFormDataResponse.egoldAttributes.hyperlinkText.text
             hyperlinkUrl = shipmentAddressFormDataResponse.egoldAttributes.hyperlinkText.url
             isShowHyperlink = shipmentAddressFormDataResponse.egoldAttributes.hyperlinkText.isShow
+            iconUrl = shipmentAddressFormDataResponse.egoldAttributes.iconUrl
 
             val tmpEgoldTieringModelArrayList: ArrayList<EgoldTieringModel> = arrayListOf()
             shipmentAddressFormDataResponse.egoldAttributes.egoldTieringDataArrayList.forEach {

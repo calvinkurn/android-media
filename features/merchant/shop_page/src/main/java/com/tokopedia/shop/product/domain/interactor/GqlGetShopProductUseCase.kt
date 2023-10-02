@@ -11,6 +11,8 @@ import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
+// This Use case can only be used by Shop Page feature since the PARAM_SOURCE is hardcoded to "shop".
+// Incase any other feature wants to use this UseCase, then you may need to modify that source to be dynamic
 class GqlGetShopProductUseCase @Inject constructor(
     private val gqlUseCase: MultiRequestGraphqlUseCase
 ) : UseCase<ShopProduct.GetShopProduct>() {
@@ -41,12 +43,18 @@ class GqlGetShopProductUseCase @Inject constructor(
     companion object {
         private const val PARAM_SHOP_ID = "shopId"
         private const val PARAM_FILTER = "filter"
+        private const val PARAM_SOURCE = "source"
+        private const val PARAM_VALUE_SOURCE = "shop"
 
         @JvmStatic
-        fun createParams(shopId: String, filter: ShopProductFilterInput): Map<String, Any> =
+        fun createParams(
+            shopId: String,
+            filter: ShopProductFilterInput
+        ): Map<String, Any> =
             mapOf(
                 PARAM_SHOP_ID to shopId,
-                PARAM_FILTER to filter
+                PARAM_FILTER to filter,
+                PARAM_SOURCE to PARAM_VALUE_SOURCE
             )
     }
 }

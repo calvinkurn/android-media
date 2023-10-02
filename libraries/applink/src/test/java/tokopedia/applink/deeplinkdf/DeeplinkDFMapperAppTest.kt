@@ -29,6 +29,7 @@ import com.tokopedia.applink.DeeplinkDFMapper.DF_DIGITAL
 import com.tokopedia.applink.DeeplinkDFMapper.DF_DILAYANI_TOKOPEDIA
 import com.tokopedia.applink.DeeplinkDFMapper.DF_ENTERTAINMENT
 import com.tokopedia.applink.DeeplinkDFMapper.DF_FEED_CONTENT_CREATION
+import com.tokopedia.applink.DeeplinkDFMapper.DF_KYC_SELLERAPP
 import com.tokopedia.applink.DeeplinkDFMapper.DF_MERCHANT_LOGIN
 import com.tokopedia.applink.DeeplinkDFMapper.DF_MERCHANT_NONLOGIN
 import com.tokopedia.applink.DeeplinkDFMapper.DF_MERCHANT_PRODUCT_AR
@@ -59,7 +60,6 @@ import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import rx.Subscriber
 
 @RunWith(RobolectricTestRunner::class)
 class DeepLinkDFMapperTest : DeepLinkDFMapperTestFixture() {
@@ -325,6 +325,22 @@ class DeepLinkDFMapperTest : DeepLinkDFMapperTestFixture() {
         assertEqualDeepLinkSA("sellerapp://seller-persona", DF_SELLER_FRONT_FUNNEL)
         assertEqualDeepLinkSA("sellerapp://gold-merchant-statistic-dashboard", DF_SELLER_FRONT_FUNNEL)
         assertEqualDeepLinkSA("sellerapp://shop-score-detail", DF_SELLER_FRONT_FUNNEL)
+    }
+
+    @Test
+    fun `SA df_kyc_funnel`() {
+        every {
+            DeeplinkMapperUser.isProfileManagementM2Activated()
+        } returns true
+
+        every {
+            DeeplinkMapperUser.isRollencePrivacyCenterActivated()
+        } returns true
+
+        every {
+            DeeplinkMapperUser.isRollenceGotoKycActivated()
+        } returns true
+        assertEqualDeepLinkSA("tokopedia://goto-kyc?projectId=7", DF_KYC_SELLERAPP)
     }
 
     @Test
