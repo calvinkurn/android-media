@@ -254,7 +254,12 @@ class OfferLandingPageFragment :
             when (sharingData) {
                 is Success -> {
                     viewModel.processEvent(OlpEvent.SetSharingData(sharingData = sharingData.data))
-                    viewModel.saveBmgmImageToPhoneStorage(context, sharingData.data.offerData.imageUrl)
+                    savedImagePath = ""
+                    if (sharingData.data.offerData.imageUrl.isNotEmpty()) {
+                        viewModel.saveBmgmImageToPhoneStorage(context, sharingData.data.offerData.imageUrl)
+                    } else {
+                        openShareBottomSheet()
+                    }
                 }
 
                 is Fail -> {
