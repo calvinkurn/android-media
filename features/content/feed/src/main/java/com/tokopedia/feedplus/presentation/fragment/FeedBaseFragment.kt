@@ -40,8 +40,6 @@ import com.tokopedia.feedplus.presentation.activityresultcontract.RouteContract
 import com.tokopedia.feedplus.presentation.adapter.FeedPagerAdapter
 import com.tokopedia.feedplus.presentation.customview.UploadInfoView
 import com.tokopedia.feedplus.presentation.model.ActiveTabSource
-import com.tokopedia.feedplus.presentation.model.ContentCreationTypeItem
-import com.tokopedia.feedplus.presentation.model.CreateContentType
 import com.tokopedia.feedplus.presentation.model.FeedDataModel
 import com.tokopedia.feedplus.presentation.model.FeedMainEvent
 import com.tokopedia.feedplus.presentation.model.FeedTabModel
@@ -168,19 +166,21 @@ class FeedBaseFragment :
 
     private val openAppLink = registerForActivityResult(RouteContract()) {}
 
-    private val swipeFollowingLoginResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        // this doesn't work, bcs the viewmodel doen't survive
-        if (userSession.isLoggedIn) {
-            feedMainViewModel.setActiveTab(TAB_TYPE_FOLLOWING)
+    private val swipeFollowingLoginResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            // this doesn't work, bcs the viewmodel doen't survive
+            if (userSession.isLoggedIn) {
+                feedMainViewModel.setActiveTab(TAB_TYPE_FOLLOWING)
+            }
         }
-    }
-    private val openBrowseLoginResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        // this also doesn't work, if the previous `browseAppLink` is empty :(
-        if (userSession.isLoggedIn) {
-            val metaModel = feedMainViewModel.metaData.value
-            RouteManager.route(requireContext(), metaModel.browseApplink)
+    private val openBrowseLoginResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            // this also doesn't work, if the previous `browseAppLink` is empty :(
+            if (userSession.isLoggedIn) {
+                val metaModel = feedMainViewModel.metaData.value
+                RouteManager.route(requireContext(), metaModel.browseApplink)
+            }
         }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         childFragmentManager.addFragmentOnAttachListener { _, fragment ->
@@ -316,7 +316,6 @@ class FeedBaseFragment :
         /* TODO : Add Analytics, if any */
     }
 
-    @OptIn(ExperimentalTime::class)
     fun showSwipeOnboarding() {
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             delay(COACHMARK_START_DELAY_IN_SEC.toDuration(DurationUnit.SECONDS))
@@ -328,9 +327,9 @@ class FeedBaseFragment :
         binding.vpFeedTabItemsContainer.adapter = adapter
         binding.vpFeedTabItemsContainer.reduceDragSensitivity(3)
         binding.vpFeedTabItemsContainer.registerOnPageChangeCallback(object :
-            OnPageChangeCallback() {
+                OnPageChangeCallback() {
 
-            var shouldSendSwipeTracker = false
+                var shouldSendSwipeTracker = false
 
                 override fun onPageScrolled(
                     position: Int,
