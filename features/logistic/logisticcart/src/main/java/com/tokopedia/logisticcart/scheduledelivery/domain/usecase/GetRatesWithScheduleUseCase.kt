@@ -8,6 +8,7 @@ import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import rx.Observable
 import javax.inject.Inject
 
+@Deprecated("please use coroutine use case GetRatesWithScheduleDeliveryCoroutineUseCase")
 class GetRatesWithScheduleUseCase @Inject constructor(
     private val getRatesUseCase: GetRatesUseCase,
     private val getScheduleDeliveryUseCase: GetScheduleDeliveryUseCase,
@@ -23,7 +24,7 @@ class GetRatesWithScheduleUseCase @Inject constructor(
                         shippingRecommendationData.shippingDurationUiModels = it.shippingDurationUiModels
                         shippingRecommendationData.logisticPromo = it.logisticPromo
                         shippingRecommendationData.listLogisticPromo = it.listLogisticPromo
-                        shippingRecommendationData.preOrderModel = it.preOrderModel
+                        shippingRecommendationData.productShipmentDetailModel = it.productShipmentDetailModel
                         shippingRecommendationData.errorMessage = it.errorMessage
                         shippingRecommendationData.errorId = it.errorId
                         shippingRecommendationData

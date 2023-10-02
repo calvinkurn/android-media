@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 class TopAdsGetDashboardGroupsV3UseCase @Inject constructor(
     graphqlRepository: GraphqlRepository,
-    val userSession: UserSessionInterface,
+    val userSession: UserSessionInterface
 ) : GraphqlUseCase<DashGroupListResponse>(graphqlRepository) {
 
     init {
@@ -28,7 +28,7 @@ class TopAdsGetDashboardGroupsV3UseCase @Inject constructor(
     private fun createRequestParam(search: String, groupType: Int): RequestParams {
         val requestParam = RequestParams.create()
         val queryMap = HashMap<String, Any?>()
-        queryMap[TopAdsProductRecommendationConstants.SHOP_Id_KEY] = userSession.shopId
+        queryMap[ParamObject.SHOP_id] = userSession.shopId
         queryMap[TopAdsProductRecommendationConstants.KEYWORD] = search
         queryMap[TopAdsProductRecommendationConstants.GROUP_TYPE_KEY] = groupType
         requestParam.putAll(mapOf(ParamObject.QUERY_INPUT to queryMap))
@@ -64,6 +64,5 @@ class TopAdsGetDashboardGroupsV3UseCase @Inject constructor(
         override fun getQuery(): String = QUERY
 
         override fun getTopOperationName(): String = OPERATION_NAME
-
     }
 }

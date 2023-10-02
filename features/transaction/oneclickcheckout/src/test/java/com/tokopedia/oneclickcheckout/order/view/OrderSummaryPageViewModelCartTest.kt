@@ -28,8 +28,39 @@ import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentTicke
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccCartRequest
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccProfileRequest
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest
-import com.tokopedia.oneclickcheckout.order.view.model.*
+import com.tokopedia.oneclickcheckout.order.view.model.AddressState
+import com.tokopedia.oneclickcheckout.order.view.model.CreditCardTenorListData
+import com.tokopedia.oneclickcheckout.order.view.model.OccButtonState
+import com.tokopedia.oneclickcheckout.order.view.model.OccButtonType
+import com.tokopedia.oneclickcheckout.order.view.model.OccOnboarding
+import com.tokopedia.oneclickcheckout.order.view.model.OccPrompt
 import com.tokopedia.oneclickcheckout.order.view.model.OccPrompt.Companion.TYPE_DIALOG
+import com.tokopedia.oneclickcheckout.order.view.model.OccToasterAction
+import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
+import com.tokopedia.oneclickcheckout.order.view.model.OrderCost
+import com.tokopedia.oneclickcheckout.order.view.model.OrderCostInstallmentData
+import com.tokopedia.oneclickcheckout.order.view.model.OrderData
+import com.tokopedia.oneclickcheckout.order.view.model.OrderInsurance
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPayment
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentCreditCard
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentCreditCardAdditionalData
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentErrorData
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentGoCicilData
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentGoCicilTerms
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentInstallmentTerm
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentWalletActionData
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentWalletAdditionalData
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPreference
+import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
+import com.tokopedia.oneclickcheckout.order.view.model.OrderProfile
+import com.tokopedia.oneclickcheckout.order.view.model.OrderProfileAddress
+import com.tokopedia.oneclickcheckout.order.view.model.OrderProfilePayment
+import com.tokopedia.oneclickcheckout.order.view.model.OrderProfileShipment
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPromo
+import com.tokopedia.oneclickcheckout.order.view.model.OrderShipment
+import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
+import com.tokopedia.oneclickcheckout.order.view.model.OrderTotal
+import com.tokopedia.oneclickcheckout.order.view.model.TenorListData
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingDataItemModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingDataModel
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
@@ -342,20 +373,20 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         val shippingRecommendationData = ShippingRecommendationData().apply {
             shippingDurationUiModels = listOf(
                 ShippingDurationUiModel().apply {
-                    serviceData = ServiceData().apply {
-                        serviceId = 1
-                        serviceName = "kirimaja (2 hari)"
+                    serviceData = ServiceData(
+                        serviceId = 1,
+                        serviceName = "kirimaja (2 hari)",
                         texts = ServiceTextData()
-                    }
+                    )
                     shippingCourierViewModelList = listOf(
                         ShippingCourierUiModel().apply {
-                            productData = ProductData().apply {
-                                shipperName = "kirimin"
-                                shipperProductId = 1
-                                shipperId = 1
-                                insurance = InsuranceData()
+                            productData = ProductData(
+                                shipperName = "kirimin",
+                                shipperProductId = 1,
+                                shipperId = 1,
+                                insurance = InsuranceData(),
                                 price = PriceData()
-                            }
+                            )
                             ratesId = "0"
                         }
                     )
@@ -405,20 +436,20 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         val shippingRecommendationData = ShippingRecommendationData().apply {
             shippingDurationUiModels = listOf(
                 ShippingDurationUiModel().apply {
-                    serviceData = ServiceData().apply {
-                        serviceId = 1
-                        serviceName = "kirimaja (2 hari)"
+                    serviceData = ServiceData(
+                        serviceId = 1,
+                        serviceName = "kirimaja (2 hari)",
                         texts = ServiceTextData()
-                    }
+                    )
                     shippingCourierViewModelList = listOf(
                         ShippingCourierUiModel().apply {
-                            productData = ProductData().apply {
-                                shipperName = "kirimin"
-                                shipperProductId = 1
-                                shipperId = 1
-                                insurance = InsuranceData()
+                            productData = ProductData(
+                                shipperName = "kirimin",
+                                shipperProductId = 1,
+                                shipperId = 1,
+                                insurance = InsuranceData(),
                                 price = PriceData()
-                            }
+                            )
                             ratesId = "0"
                         }
                     )
@@ -1166,20 +1197,20 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         val shippingRecommendationData = ShippingRecommendationData().apply {
             shippingDurationUiModels = listOf(
                 ShippingDurationUiModel().apply {
-                    serviceData = ServiceData().apply {
-                        serviceId = 1
-                        serviceName = "kirimaja (2 hari)"
+                    serviceData = ServiceData(
+                        serviceId = 1,
+                        serviceName = "kirimaja (2 hari)",
                         texts = ServiceTextData()
-                    }
+                    )
                     shippingCourierViewModelList = listOf(
                         ShippingCourierUiModel().apply {
-                            productData = ProductData().apply {
-                                shipperName = "kirimin"
-                                shipperProductId = 1
-                                shipperId = 1
-                                insurance = InsuranceData()
+                            productData = ProductData(
+                                shipperName = "kirimin",
+                                shipperProductId = 1,
+                                shipperId = 1,
+                                insurance = InsuranceData(),
                                 price = PriceData()
-                            }
+                            )
                             ratesId = "0"
                         }
                     )
@@ -1215,19 +1246,19 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         val shippingRecommendationData = ShippingRecommendationData().apply {
             shippingDurationUiModels = listOf(
                 ShippingDurationUiModel().apply {
-                    serviceData = ServiceData().apply {
-                        serviceId = 1
+                    serviceData = ServiceData(
+                        serviceId = 1,
                         serviceName = "kirimaja (2 hari)"
-                    }
+                    )
                     shippingCourierViewModelList = listOf(
                         ShippingCourierUiModel().apply {
-                            productData = ProductData().apply {
-                                shipperName = "kirimin"
-                                shipperProductId = 1
-                                shipperId = 1
-                                insurance = InsuranceData()
+                            productData = ProductData(
+                                shipperName = "kirimin",
+                                shipperProductId = 1,
+                                shipperId = 1,
+                                insurance = InsuranceData(),
                                 price = PriceData()
-                            }
+                            )
                             ratesId = "0"
                         }
                     )

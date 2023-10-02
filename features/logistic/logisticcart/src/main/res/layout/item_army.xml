@@ -1,122 +1,129 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/Unify_Background"
-    android:foreground="?selectableItemBackground"
-    tools:ignore="Overdraw">
+    android:foreground="?selectableItemBackground" >
 
-    <RelativeLayout
-        android:id="@+id/rl_content"
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/img_check"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
+        android:layout_marginEnd="16dp"
+        app:icon_color_light_enable="@color/Unify_GN500"
+        app:icon_color_night_enable="@color/Unify_GN500"
+        app:icon_enable_state="true"
+        app:icon_name="CHECK_BIG"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <FrameLayout
+        android:id="@+id/fl_image_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/img_logo"
+            android:layout_width="wrap_content"
+            android:layout_height="18dp"
+
+            app:srcCompat="@drawable/ic_icon_alert"
+            tools:ignore="ContentDescription"
+            tools:visibility="visible" />
+
+    </FrameLayout>
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/lbl_cod_available_eta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/tersedia_bayar_di_tempat"
+        android:visibility="visible"
+        app:labelType="general_light_grey"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="4dp"
+        app:layout_goneMarginStart="0dp"
+        app:layout_constraintStart_toEndOf="@id/fl_image_container"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_kuota_info"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_weight="1"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintStart_toEndOf="@id/lbl_cod_available_eta"
+        app:layout_constraintTop_toTopOf="@id/fl_image_container"
+        app:typographyType="display_3"
+        tools:text="Kuota: 5x" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier_top_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="fl_image_container,lbl_cod_available_eta,tv_kuota_info" />
+
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="12dp"
+        android:lineSpacingExtra="4sp"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintEnd_toStartOf="@id/img_check"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/barrier_top_container"
+        app:layout_goneMarginEnd="0dp"
+        app:typographyType="display_2"
+        tools:text="Estimasi tiba 3 - 4 Jan" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="12dp"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintEnd_toStartOf="@id/fl_image_container"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_title"
+        app:layout_goneMarginEnd="0dp"
+        app:typographyType="display_3"
+        app:typographyWeight="reguler"
+        tools:text="pengiriman melebihi limit bebas ongkir, kamu cukup bayar Rp3.000" />
 
-        <com.tokopedia.iconunify.IconUnify
-            android:id="@+id/img_check"
-            android:layout_width="@dimen/layout_lvl3"
-            android:layout_height="@dimen/layout_lvl3"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="8dp"
-            android:contentDescription="@string/content_img_check"
-            app:icon_color_light_enable="@color/Unify_GN500"
-            app:icon_color_night_enable="@color/Unify_GN500"
-            app:icon_enable_state="true"
-            app:icon_name="CHECK_BIG" />
-
-        <LinearLayout
-            android:id="@+id/ll_top_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_toStartOf="@id/img_check"
-            android:layout_marginBottom="4dp"
-            android:orientation="horizontal">
-
-            <FrameLayout
-                android:id="@+id/fl_image_container"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:id="@+id/img_logo"
-                    android:layout_width="wrap_content"
-                    android:layout_height="20dp"
-                    app:srcCompat="@drawable/ic_icon_alert"
-                    tools:ignore="ContentDescription"
-                    tools:visibility="visible" />
-
-            </FrameLayout>
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tv_title_extra"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_lvl2"
-                android:layout_weight="1"
-                android:lineSpacingExtra="4sp"
-                android:textColor="@color/Unify_NN950_96"
-                app:typographyType="body_2"
-                tools:text="(Rp0)" />
-
-        </LinearLayout>
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/ll_top_container"
-            android:lineSpacingExtra="4sp"
-            android:textColor="@color/Unify_NN950_96"
-            app:typographyType="body_2"
-            tools:text="Bebas Ongkir (2 - 4 hari)" />
-
-        <com.tokopedia.unifycomponents.Label
-            android:id="@+id/lbl_cod_available_eta"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_title"
-            android:layout_marginTop="4dp"
-            android:text="@string/tersedia_bayar_di_tempat"
-            android:visibility="visible"
-            app:labelType="general_light_green" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_info"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/lbl_cod_available_eta"
-            android:layout_alignParentStart="true"
-            android:layout_marginTop="4dp"
-            android:layout_toStartOf="@id/img_check"
-            android:textColor="@color/Unify_NN950_68"
-            app:typographyType="body_3"
-            app:typographyWeight="reguler"
-            tools:text="pengiriman melebihi limit bebas ongkir, kamu cukup bayar Rp3.000" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_eta"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_info"
-            android:layout_alignParentStart="true"
-            android:layout_marginTop="4dp"
-            android:layout_toStartOf="@id/img_check"
-            android:textColor="@color/Unify_NN950_68"
-            app:typographyType="body_3"
-            app:typographyWeight="reguler"
-            tools:text="Estimasi tiba" />
-
-    </RelativeLayout>
-
-    <View
-        android:id="@+id/v_separator"
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier_free_shipping_info"
         android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:layout_below="@+id/rl_content"
-        android:background="@color/Unify_NN200" />
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="barrier_top_container, tv_title, tv_info"
+        tools:visibility="gone"/>
 
-</RelativeLayout>
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/v_separator"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="16dp"
+        android:background="@color/Unify_NN300"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/barrier_free_shipping_info"
+        tools:layout_constraintTop_toBottomOf="@id/tv_info" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

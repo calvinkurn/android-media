@@ -16,13 +16,13 @@ import com.tokopedia.filter.databinding.SortFilterBottomSheetChipsLayoutBinding
 import com.tokopedia.filter.databinding.SortFilterBottomSheetFilterViewHolderBinding
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.unifycomponents.ChipsUnify
-import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil;
+import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil
 import com.tokopedia.utils.view.binding.viewBinding
 
 internal class FilterViewHolder(
-        itemView: View,
-        private val recycledViewPool: RecycledViewPool,
-        private val filterViewListener: FilterViewListener
+    itemView: View,
+    private val recycledViewPool: RecycledViewPool,
+    private val filterViewListener: FilterViewListener
 ): AbstractViewHolder<FilterViewModel>(itemView) {
 
     companion object {
@@ -61,7 +61,10 @@ internal class FilterViewHolder(
     }
 
     private fun bindOptionList(element: FilterViewModel) {
-        binding?.optionRecyclerView?.swapAdapter(OptionAdapter(element, filterViewListener), false)
+        binding?.optionRecyclerView?.swapAdapter(
+            OptionAdapter(element, filterViewListener),
+            false
+        )
     }
 
     private fun bindSeeAll(element: FilterViewModel) {
@@ -80,8 +83,8 @@ internal class FilterViewHolder(
     }
 
     private class OptionAdapter(
-            val filterViewModel: FilterViewModel,
-            val filterViewListener: FilterViewListener
+        val filterViewModel: FilterViewModel,
+        val filterViewListener: FilterViewListener
     ): RecyclerView.Adapter<OptionViewHolder>() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OptionViewHolder {
@@ -97,20 +100,19 @@ internal class FilterViewHolder(
     }
 
     private class OptionViewHolder(
-            itemView: View,
-            private val filterViewModel: FilterViewModel,
-            private val filterViewListener: FilterViewListener
+        itemView: View,
+        private val filterViewModel: FilterViewModel,
+        private val filterViewListener: FilterViewListener
     ): RecyclerView.ViewHolder(itemView) {
         private var binding: SortFilterBottomSheetChipsLayoutBinding? by viewBinding()
 
         fun bind(optionViewModel: OptionViewModel) {
             val sortFilterChipsUnify = binding?.sortFilterChipsUnify ?: return
             sortFilterChipsUnify.chipText = optionViewModel.option.name
-            sortFilterChipsUnify.chipType = ChipsUnify.TYPE_NORMAL
-            sortFilterChipsUnify.chipSize = ChipsUnify.SIZE_MEDIUM
             sortFilterChipsUnify.chipType =
                     if (optionViewModel.isSelected) ChipsUnify.TYPE_SELECTED
                     else ChipsUnify.TYPE_NORMAL
+            sortFilterChipsUnify.chipSize = ChipsUnify.SIZE_MEDIUM
             sortFilterChipsUnify.showIcon(optionViewModel)
             sortFilterChipsUnify.showNewNotification = optionViewModel.option.isNew
             sortFilterChipsUnify.setOnClickListener {

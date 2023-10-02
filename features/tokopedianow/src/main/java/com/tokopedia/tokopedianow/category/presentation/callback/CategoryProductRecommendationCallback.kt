@@ -22,8 +22,25 @@ class CategoryProductRecommendationCallback(
     private val activity: FragmentActivity?,
     private val productRecommendationViewModel: TokoNowProductRecommendationViewModel?,
     private val onHideProductRecommendationWidget: () -> Unit,
-    private val onClickProductCard: (appLink: String, headerName: String, index: Int, productId: String, productName: String, productPrice: String, isOos: Boolean) -> Unit,
-    private val onImpressProductCard: (headerName: String, index: Int, productId: String, productName: String, productPrice: String, isOos: Boolean) -> Unit,
+    private val onClickProductCard: (
+        appLink: String,
+        headerName: String,
+        index: Int,
+        productId: String,
+        productName: String,
+        productPrice: String,
+        isOos: Boolean,
+        productWarehouseId: String
+    ) -> Unit,
+    private val onImpressProductCard: (
+        headerName: String,
+        index: Int,
+        productId: String,
+        productName: String,
+        productPrice: String,
+        isOos: Boolean,
+        productWarehouseId: String
+    ) -> Unit,
     private val onAddToCartBlocked: () -> Unit,
     private val onOpenLoginPage: () -> Unit,
     private val startActivityResult: (Intent, Int) -> Unit
@@ -63,7 +80,8 @@ class CategoryProductRecommendationCallback(
         product.productCardModel.productId,
         product.productCardModel.name,
         product.productCardModel.price,
-        product.productCardModel.isOos()
+        product.productCardModel.isOos(),
+        product.productCardModel.warehouseId
     )
 
     override fun productCardImpressed(
@@ -77,7 +95,8 @@ class CategoryProductRecommendationCallback(
         product.productCardModel.productId,
         product.productCardModel.name,
         product.productCardModel.price,
-        product.productCardModel.isOos()
+        product.productCardModel.isOos(),
+        product.productCardModel.warehouseId
     )
 
     override fun seeMoreClicked(

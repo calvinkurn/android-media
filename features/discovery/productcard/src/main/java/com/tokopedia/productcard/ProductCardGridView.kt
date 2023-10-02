@@ -9,6 +9,7 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.Space
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -17,6 +18,7 @@ import com.tokopedia.productcard.utils.ViewId
 import com.tokopedia.productcard.utils.ViewStubId
 import com.tokopedia.productcard.utils.expandTouchArea
 import com.tokopedia.productcard.utils.findViewById
+import com.tokopedia.productcard.utils.forceLightRed
 import com.tokopedia.productcard.utils.getDimensionPixelSize
 import com.tokopedia.productcard.utils.glideClear
 import com.tokopedia.productcard.utils.loadImage
@@ -28,7 +30,9 @@ import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.CardUnify2.Companion.ANIMATE_OVERLAY
 import com.tokopedia.unifycomponents.CardUnify2.Companion.ANIMATE_OVERLAY_BOUNCE
 import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.ColorMode
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.video_widget.VideoPlayerController
 import com.tokopedia.video_widget.VideoPlayerView
@@ -139,6 +143,46 @@ class ProductCardGridView : ConstraintLayout, IProductCardView {
     }
     private var isUsingViewStub = false
 
+    private val progressBarStock: ProgressBarUnify? by lazy(NONE) {
+        findViewById(R.id.progressBarStock)
+    }
+    private val textViewStockLabel: Typography? by lazy(NONE) {
+        findViewById(R.id.textViewStockLabel)
+    }
+    private val productName: Typography? by lazy(NONE) {
+        findViewById(R.id.textViewProductName)
+    }
+    private val productPrice: Typography? by lazy(NONE) {
+        findViewById(R.id.textViewPrice)
+    }
+    private val labelDiscount: Label? by lazy(NONE) {
+        findViewById(R.id.labelDiscount)
+    }
+    private val productSlashPrice: Typography? by lazy(NONE) {
+        findViewById(R.id.textViewSlashedPrice)
+    }
+    private val soldCount: Typography? by lazy(NONE) {
+        findViewById(R.id.textViewSales)
+    }
+    private val rating: Typography? by lazy(NONE) {
+        findViewById(R.id.salesRatingFloat)
+    }
+    private val gimmick: Typography? by lazy(NONE) {
+        findViewById(R.id.textViewGimmick)
+    }
+    private val salesRatingFloatLine: View? by lazy(NONE) {
+        findViewById(R.id.salesRatingFloatLine)
+    }
+    private val textViewIntegrity: Typography? by lazy(NONE) {
+        findViewById(R.id.textViewIntegrity)
+    }
+    private val textViewFulfillment: Typography? by lazy(NONE) {
+        findViewById(R.id.textViewFulfillment)
+    }
+    private val buttonAddToCart: UnifyButton? by lazy(NONE) {
+        findViewById(R.id.buttonAddToCart)
+    }
+
     constructor(context: Context) : super(context) {
         init()
     }
@@ -238,9 +282,8 @@ class ProductCardGridView : ConstraintLayout, IProductCardView {
         imageVideoIdentifier?.showWithCondition(productCardModel.hasVideo)
 
         renderProductCardContent(
-            productCardModel,
-            productCardModel.isWideContent,
-            productCardModel.isWideContent,
+            productCardModel = productCardModel,
+            isWideContent = productCardModel.isWideContent,
         )
 
         productCardModel
@@ -272,6 +315,10 @@ class ProductCardGridView : ConstraintLayout, IProductCardView {
         )
 
         productCardModel.layoutStrategy.renderCardHeight(this, cardViewProductCard)
+
+        if (productCardModel.forceLightModeColor) {
+            forceLightModeColor()
+        }
     }
 
     private fun cardViewAnimationOnPress(productCardModel: ProductCardModel): Int {
@@ -372,5 +419,24 @@ class ProductCardGridView : ConstraintLayout, IProductCardView {
     override fun setOnLongClickListener(l: OnLongClickListener?) {
         super.setOnLongClickListener(l)
         cardViewProductCard?.setOnLongClickListener(l)
+    }
+
+    private fun forceLightModeColor() {
+        val context = context ?: return
+
+        cardViewProductCard?.setCardUnifyBackgroundColor(ContextCompat.getColor(context, R.color.dms_static_white))
+        productName?.setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_NN950_96))
+        productPrice?.setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_NN950_96))
+        labelDiscount?.forceLightRed()
+        productSlashPrice?.setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_NN950_44))
+        soldCount?.setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_NN950_68))
+        rating?.setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_NN950_68))
+        gimmick?.setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_YN400))
+        salesRatingFloatLine?.setBackgroundColor(ContextCompat.getColor(context, R.color.dms_static_light_NN950_32))
+        textViewIntegrity?.setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_NN950_68))
+        textViewFulfillment?.setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_NN950_68))
+        textViewStockLabel?.setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_NN950_68))
+        progressBarStock?.trackDrawable?.apply { setColor(ContextCompat.getColor(context, R.color.dms_static_light_NN100)) }
+        buttonAddToCart?.applyColorMode(ColorMode.LIGHT_MODE)
     }
 }
