@@ -3,7 +3,6 @@ package com.tokopedia.inbox.universalinbox.view.adapter
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.annotation.VisibleForTesting
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -185,23 +184,6 @@ class UniversalInboxAdapter(
         return visitables.firstOrNull() is UniversalInboxWidgetMetaUiModel
     }
 
-    fun getWidgetPosition(widgetType: Int): Int {
-        var position = -1
-        try {
-            if (isWidgetMetaAdded()) {
-                val widgetMetaUiModel = visitables.firstOrNull() as? UniversalInboxWidgetMetaUiModel
-                widgetMetaUiModel?.widgetList?.forEachIndexed { index, uiModel ->
-                    if (uiModel.type == widgetType) {
-                        position = index
-                    }
-                }
-            }
-        } catch (throwable: Throwable) {
-            Timber.d(throwable)
-        }
-        return position
-    }
-
     fun tryUpdateMenuItemsAtPosition(newList: List<Visitable<in UniversalInboxTypeFactory>>) {
         try {
             val editedList = visitables.toMutableList()
@@ -300,7 +282,6 @@ class UniversalInboxAdapter(
         }
     }
 
-    @VisibleForTesting
     fun getInboxItem(position: Int): Visitable<in UniversalInboxTypeFactory> {
         return visitables[position]
     }

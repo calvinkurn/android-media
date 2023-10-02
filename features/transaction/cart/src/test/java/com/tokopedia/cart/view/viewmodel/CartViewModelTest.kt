@@ -27,6 +27,7 @@ import com.tokopedia.cartrevamp.view.uimodel.DisabledCollapsedHolderData
 import com.tokopedia.cartrevamp.view.uimodel.DisabledItemHeaderHolderData
 import com.tokopedia.cartrevamp.view.uimodel.DisabledReasonHolderData
 import com.tokopedia.cartrevamp.view.uimodel.RemoveFromWishlistEvent
+import com.tokopedia.cartrevamp.view.uimodel.SubTotalState
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.OrdersItem
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
@@ -63,14 +64,17 @@ class CartViewModelTest : BaseCartViewModelTest() {
     private lateinit var cartGlobalEventObserver: Observer<CartGlobalEvent>
     private lateinit var cartDataListObserver: Observer<ArrayList<Any>>
     private lateinit var cartCheckoutButtonStateObserver: Observer<CartCheckoutButtonState>
+    private lateinit var cartSubTotalStateObserver: Observer<SubTotalState>
 
     override fun setUp() {
         super.setUp()
         cartGlobalEventObserver = mockk { every { onChanged(any()) } just Runs }
         cartDataListObserver = mockk { every { onChanged(any()) } just Runs }
         cartCheckoutButtonStateObserver = mockk { every { onChanged(any()) } just Runs }
+        cartSubTotalStateObserver = mockk { every { onChanged(any()) } just Runs }
         cartViewModel.globalEvent.observeForever(cartGlobalEventObserver)
         cartViewModel.cartCheckoutButtonState.observeForever(cartCheckoutButtonStateObserver)
+        cartViewModel.subTotalState.observeForever(cartSubTotalStateObserver)
     }
 
     // region setAllAvailableItemCheck
@@ -1407,7 +1411,7 @@ class CartViewModelTest : BaseCartViewModelTest() {
         verifyOrder {
             cartGlobalEventObserver.onChanged(CartGlobalEvent.AdapterItemChanged(1))
             spyViewModel.reCalculateSubTotal()
-            cartGlobalEventObserver.onChanged(CartGlobalEvent.SubTotalUpdated(0.0, "0", 0.0, false))
+            cartSubTotalStateObserver.onChanged(SubTotalState(0.0, "0", 0.0, false))
         }
     }
 
