@@ -20,6 +20,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
@@ -214,8 +215,6 @@ private fun StoriesCreationMediaCover(
     onLoadMediaPreview: suspend (filePath: String) -> Bitmap?,
     modifier: Modifier = Modifier,
 ) {
-    val context = LocalContext.current
-
     val storiesMediaPreviewModifier = modifier
         .clip(RoundedCornerShape(8.dp))
         .width(108.dp)
@@ -232,7 +231,8 @@ private fun StoriesCreationMediaCover(
     storiesBitmap?.let { bitmap ->
         NestImage(
             source = ImageSource.ImageBitmap(bitmap.asImageBitmap()),
-            modifier = storiesMediaPreviewModifier
+            modifier = storiesMediaPreviewModifier,
+            contentScale = ContentScale.Crop
         )
     } ?: run {
         NestLoader(
