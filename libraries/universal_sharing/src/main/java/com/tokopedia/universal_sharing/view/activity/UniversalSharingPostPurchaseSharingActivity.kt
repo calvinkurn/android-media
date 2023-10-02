@@ -76,8 +76,9 @@ class UniversalSharingPostPurchaseSharingActivity :
         shopName: String,
         product: UniversalSharingPostPurchaseProductResponse
     ) {
-        val view = this.currentFocus
-        val bottomSheetShare = UniversalShareBottomSheet.createInstance(view)
+        val bottomSheetShare = UniversalShareBottomSheet.createInstance(
+            dismissAfterShare = false
+        )
         configShareBottomSheet(
             orderId = orderId,
             shopName = shopName,

@@ -278,7 +278,7 @@ class UniversalSharingPostPurchaseBottomSheet :
     }
 
     private fun showToaster(text: String, ctaText: String, type: Int, onClick: () -> Unit) {
-        dialog?.window?.decorView?.let {
+        binding.root.rootView?.let {
             Toaster.build(
                 view = it,
                 text = text,
