@@ -21,7 +21,7 @@ object BCAResponseMapper {
                 issuer_id = ISSUER_ID_BCA,
                 pendingBalance = pendingBalance,
                 extraPendingBalance = isExtraPendingBalance,
-                showAdditionalBalance = true
+                showAdditionalBalance = false
             ),
             isBCAGenOne = isBCAGenOne
         )

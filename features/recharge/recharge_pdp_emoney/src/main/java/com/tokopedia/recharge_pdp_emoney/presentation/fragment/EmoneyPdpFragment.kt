@@ -505,11 +505,13 @@ open class EmoneyPdpFragment :
                         TopupBillsSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER
                     )
                     favNumber?.let {
+                        hideTickerNotSupported()
                         renderClientNumber(it)
 
                         // to handle don't keep activities case, so displayed client number wont be override with client number on detailPassData
                         detailPassData.clientNumber = it.clientNumber
                         detailPassData.additionalETollBalance = ""
+                        detailPassData.isBCAGenOne = false
                     }
                 }
 
