@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Surface
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -28,6 +27,7 @@ import com.tokopedia.utils.lifecycle.collectAsStateWithLifecycle
 import com.tokopedia.stories.creation.R
 import com.tokopedia.stories.creation.view.bottomsheet.StoriesCreationErrorBottomSheet
 import com.tokopedia.stories.creation.view.bottomsheet.StoriesCreationInfoBottomSheet
+import com.tokopedia.stories.creation.view.model.StoriesMediaType
 import com.tokopedia.stories.creation.view.model.action.StoriesCreationAction
 import com.tokopedia.stories.creation.view.model.event.StoriesCreationUiEvent
 import javax.inject.Inject
@@ -53,7 +53,9 @@ class StoriesCreationActivity : BaseActivity() {
             val data = it.data
             if (data != null) {
                 val mediaFilePath = MediaPicker.result(data).originalPaths.getOrNull(0).orEmpty()
-                viewModel.submitAction(StoriesCreationAction.SetMedia(mediaFilePath))
+                val mediaType = StoriesMediaType.parse(mediaFilePath)
+
+                viewModel.submitAction(StoriesCreationAction.SetMedia(mediaFilePath, mediaType))
             } else {
                 finish()
             }
@@ -187,7 +189,7 @@ class StoriesCreationActivity : BaseActivity() {
             minVideoDuration(1000)
             maxVideoDuration(90000)
             pageType(PageType.GALLERY)
-            modeType(ModeType.VIDEO_ONLY)
+            modeType(ModeType.COMMON)
             singleSelectionMode()
             previewActionText(getString(R.string.stories_creation_continue))
         }
