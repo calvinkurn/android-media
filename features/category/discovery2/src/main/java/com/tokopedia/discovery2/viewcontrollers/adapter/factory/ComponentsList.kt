@@ -107,6 +107,8 @@ enum class ComponentsList(val id: Int, val componentName: String) {
 
     FlashSaleTokoTab(R.layout.discovery_flash_sale_toko_tabs, ComponentNames.FlashSaleTokoTab.componentName),
 
+    ViewAllCarouselCard(R.layout.discovery_carousel_view_all_card, ComponentNames.ViewAllCardCarousel.componentName),
+
     // Calendar Widget
     CalendarWidgetCarousel(R.layout.discovery_calendar_widget_carousel_layout, ComponentNames.CalendarWidgetCarousel.componentName),
     CalendarWidgetGrid(R.layout.discovery_calendar_widget_grid_layout, ComponentNames.CalendarWidgetGrid.componentName),
