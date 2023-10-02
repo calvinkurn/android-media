@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.data.balance
 
+import com.tokopedia.home.beranda.di.HomeScope
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBalanceWidgetUseCase
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
@@ -8,6 +9,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
+@HomeScope
 class HomeHeaderUseCase @Inject constructor(
     private val userSessionInterface: UserSessionInterface,
     private val homeBalanceWidgetUseCase: HomeBalanceWidgetUseCase
