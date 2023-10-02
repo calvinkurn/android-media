@@ -19,7 +19,6 @@ import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryL2Shimme
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryL2TabUiModel
 import com.tokopedia.tokopedianow.common.domain.mapper.AddressMapper
 import com.tokopedia.tokopedianow.common.domain.model.GetTickerData
-import com.tokopedia.tokopedianow.common.domain.usecase.GetProductAdsUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
@@ -67,6 +66,7 @@ class TokoNowCategoryL2ViewModel @Inject constructor(
     private var categoryTab = CategoryL2TabUiModel()
 
     override suspend fun loadFirstPage(tickerData: GetTickerData) {
+        val tickerList = tickerData.tickerList
         val warehouses = addressData.getWarehousesData()
         val getCategoryLayoutResponse = getCategoryLayoutUseCase.execute(categoryIdL2)
         val getCategoryDetailResponse = getCategoryDetailUseCase.execute(warehouses, categoryIdL1)
@@ -75,7 +75,8 @@ class TokoNowCategoryL2ViewModel @Inject constructor(
         visitableList.addChooseAddress()
         visitableList.mapToCategoryUiModel(
             getCategoryLayoutResponse,
-            getCategoryDetailResponse
+            getCategoryDetailResponse,
+            tickerList
         )
 
         categoryTab = CategoryL2Mapper.mapToCategoryTab(
