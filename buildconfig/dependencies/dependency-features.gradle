@@ -2,6 +2,7 @@ ext {
 
     // Sort and categorize alphabetically by folder name
     features = [
+			buyMoreGetMore					: ":features:merchant:buy_more_get_more",
             sellerShopNib                   : ":features:merchant:seller_shop_nib",
             sellerPersona                   : ":features:merchant:seller_persona",
             sellerMvcCreation               : ":features:merchant:seller_mvc_creation",
@@ -259,6 +260,7 @@ ext {
             ordermanagementhistory          : ":features:ordermanagement:orderhistory",
             buyerorderdetail                : ":features:ordermanagement:buyer_order_detail",
             buyercancellationorder          : ":features:ordermanagement:buyercancellationorder",
+			orderManagementCommon           : ":features:ordermanagement:order_management_common",
 
             pushNotificationCommon          : ":features:communication:push-notification-common",
             attachproduct                   : ":features:communication:attachproduct",

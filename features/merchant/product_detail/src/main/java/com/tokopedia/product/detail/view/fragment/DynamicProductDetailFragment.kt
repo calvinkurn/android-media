@@ -212,6 +212,7 @@ import com.tokopedia.product.detail.data.util.VariantMapper.generateVariantStrin
 import com.tokopedia.product.detail.data.util.roundToIntOrZero
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.tracking.APlusContentTracking
+import com.tokopedia.product.detail.tracking.BMGMTracking
 import com.tokopedia.product.detail.tracking.CommonTracker
 import com.tokopedia.product.detail.tracking.ContentWidgetTracker
 import com.tokopedia.product.detail.tracking.ContentWidgetTracking
@@ -1124,8 +1125,8 @@ open class DynamicProductDetailFragment :
         val hasQuantityEditor =
             viewModel.getDynamicProductInfoP1?.basic?.isTokoNow == true ||
                 (viewModel.productLayout.value as? Success<List<DynamicPdpDataModel>>)
-                    ?.data
-                    ?.any { it.name().contains(PAGENAME_IDENTIFIER_RECOM_ATC) } == true
+                ?.data
+                ?.any { it.name().contains(PAGENAME_IDENTIFIER_RECOM_ATC) } == true
 
         if (viewModel.getDynamicProductInfoP1 == null ||
             context == null ||
@@ -2679,7 +2680,6 @@ open class DynamicProductDetailFragment :
 
         pdpUiUpdater?.updateVariantData(title = title, processedVariant = variantProcessedData)
         pdpUiUpdater?.updateMediaScrollPosition(selectedChild?.optionIds?.firstOrNull())
-
         updateProductInfoOnVariantChanged(selectedChild)
 
         updateUi()
@@ -2738,6 +2738,11 @@ open class DynamicProductDetailFragment :
             productId ?: "",
             viewModel.p2Data.value?.arInfo ?: ProductArInfo()
         )
+
+        // update BMGM data
+        viewModel.getP2()?.bmgm?.let {
+            pdpUiUpdater?.updateBMGMSneakPeak(productId = productId.orEmpty(), bmgm = it)
+        }
     }
 
     /**
@@ -4290,7 +4295,10 @@ open class DynamicProductDetailFragment :
             sellerDistrictId = viewModel.getMultiOriginByProductId().districtId,
             lcaWarehouseId = getLcaWarehouseId(),
             campaignId = campaignId,
-            variantId = variantId
+            variantId = variantId,
+            offerId = viewModel.getP2()?.bmgm?.data?.firstOrNull {
+                it.productIDs.contains(productId)
+            }?.offerId.orEmpty()
         )
     }
 
@@ -4746,7 +4754,6 @@ open class DynamicProductDetailFragment :
             }
         }
     }
-
 
     private fun clickButtonWhenVariantTokonow() {
         if (buttonActionType == ProductDetailCommonConstant.CHECK_WISHLIST_BUTTON) {
@@ -6070,6 +6077,18 @@ open class DynamicProductDetailFragment :
             title,
             commonTracker,
             component
+        )
+    }
+
+    override fun onBMGMClicked(title: String, offerId: String, component: ComponentTrackDataModel) {
+        val commonTracker = generateCommonTracker() ?: return
+
+        BMGMTracking.onClicked(
+            title = title,
+            offerId = offerId,
+            commonTracker = commonTracker,
+            component = component,
+            trackingQueue = trackingQueue
         )
     }
 }
