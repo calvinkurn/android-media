@@ -12,7 +12,6 @@ import com.tokopedia.stories.di.StoriesInjector
 import com.tokopedia.stories.domain.model.StoriesSource
 import com.tokopedia.stories.view.fragment.StoriesGroupFragment
 import com.tokopedia.stories.view.model.StoriesArgsModel
-import com.tokopedia.stories.view.utils.ARGS_ENTRY_POINT
 import com.tokopedia.stories.view.utils.ARGS_SOURCE
 import com.tokopedia.stories.view.utils.ARGS_SOURCE_ID
 import com.tokopedia.stories.view.utils.KEY_ARGS
@@ -81,16 +80,6 @@ class StoriesActivity : BaseActivity() {
             return
         }
 
-        val path = data.pathSegments
-        val storiesArgs = StoriesArgsModel(
-            authorId = path.last().orEmpty(),
-            authorType = path.first().orEmpty(),
-            source = data.getQueryParameter(ARGS_SOURCE).ifNullOrBlank {
-                StoriesSource.SHOP_ENTRY_POINT.value
-            },
-            sourceId = data.getQueryParameter(ARGS_SOURCE_ID).orEmpty(),
-            entryPoint = data.getQueryParameter(ARGS_ENTRY_POINT).orEmpty(),
-        )
         bundle = Bundle().apply {
             putParcelable(KEY_ARGS, storiesArgs)
         }
