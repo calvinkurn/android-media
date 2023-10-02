@@ -615,7 +615,6 @@ class ShopPageHeaderFragmentTabContentWrapper :
         return tabData?.let {
             when (it.name) {
                 ShopPageHeaderTabName.HOME -> {
-                    applyPaddingTop()
                     ShopPageHomeFragment.createInstance(
                         shopId,
                         shopPageHeaderDataModel?.isOfficial ?: false,
@@ -638,7 +637,6 @@ class ShopPageHeaderFragmentTabContentWrapper :
                 }
 
                 ShopPageHeaderTabName.PRODUCT -> {
-                    removePaddingTop()
                     val shopPageProductFragment = ShopPageProductListFragment.createInstance(
                         shopId = shopId,
                         shopName = shopPageHeaderDataModel?.shopName.orEmpty(),
@@ -655,7 +653,6 @@ class ShopPageHeaderFragmentTabContentWrapper :
                 }
 
                 ShopPageHeaderTabName.SHOWCASE -> {
-                    removePaddingTop()
                     val shopShowcaseTabFragment = RouteManager.instantiateFragmentDF(
                         activity as AppCompatActivity,
                         FragmentConst.SHOP_SHOWCASE_TAB_FRAGMENT_CLASS_PATH,
@@ -681,7 +678,6 @@ class ShopPageHeaderFragmentTabContentWrapper :
                 }
 
                 ShopPageHeaderTabName.FEED -> {
-                    removePaddingTop()
                     if (isShowFeed) {
                         val feedFragment = RouteManager.instantiateFragmentDF(
                             activity as AppCompatActivity,
@@ -698,7 +694,6 @@ class ShopPageHeaderFragmentTabContentWrapper :
                 }
 
                 ShopPageHeaderTabName.REVIEW -> {
-                    removePaddingTop()
                     val reviewTabFragment = RouteManager.instantiateFragmentDF(
                         activity as AppCompatActivity,
                         SHOP_REVIEW_FRAGMENT,
@@ -710,12 +705,10 @@ class ShopPageHeaderFragmentTabContentWrapper :
                 }
 
                 ShopPageHeaderTabName.CAMPAIGN -> {
-                    removePaddingTop()
                     createCampaignTabFragment(it)
                 }
 
                 else -> {
-                    removePaddingTop()
                     null
                 }
             }
@@ -852,13 +845,5 @@ class ShopPageHeaderFragmentTabContentWrapper :
 
     fun setInitialShopLayoutData(initialShopLayoutData: HomeLayoutData?) {
         this.initialShopLayoutData = initialShopLayoutData
-    }
-    
-    private fun applyPaddingTop() {
-        viewBinding?.tabFragment?.setPadding(0, PADDING_TOP_IN_DP.toPx(), 0, 0)
-    }
-    
-    private fun removePaddingTop() {
-        viewBinding?.tabFragment?.setPadding(0, 0, 0, 0)
     }
 }

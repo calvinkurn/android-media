@@ -120,6 +120,19 @@ class ShopHomeNplCampaignViewHolder(
         setVoucherPromoOffer(model)
         configColorTheme(model)
         setShopReimaginedContainerMargin()
+
+        handleRemindMe(model)
+    }
+
+    private fun handleRemindMe(model: ShopHomeNewProductLaunchCampaignUiModel) {
+        //If campaign is ongoing, hide Remind Me bell
+        
+        if (GlobalConfig.isSellerApp()) {
+            val campaignStatus = model.data?.firstOrNull()?.statusCampaign.orEmpty().lowercase()
+            if (campaignStatus == StatusCampaign.ONGOING.statusCampaign) {
+                hideAllRemindMeLayout()
+            }
+        }
     }
 
     private fun configColorTheme(model: ShopHomeNewProductLaunchCampaignUiModel) {

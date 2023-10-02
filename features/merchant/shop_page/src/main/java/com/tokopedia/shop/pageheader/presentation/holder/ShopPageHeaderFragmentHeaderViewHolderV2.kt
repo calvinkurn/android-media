@@ -94,6 +94,7 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
     companion object {
         private const val CYCLE_DURATION = 5000L
         private const val MAXIMUM_WIDTH_STATIC_USP = 100
+        private const val NEW_SELLER_TEXT_HTML = "Penjual Baru"
     }
 
     private val chooseAddressWidget: ChooseAddressWidget?
@@ -449,23 +450,29 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
             ratingTextPairHtmlColor = Pair(textColorHighEmphasisHex, textColorLowEmphasisHex)
         }
         imageRatingIcon?.shouldShowWithAction(isShowRating) {
+            val adjustedRatingText = ratingText.replace(
+                "\$highEmphasis",
+                ratingTextPairHtmlColor.first
+            ).replace(
+                "\$lowEmphasis",
+                ratingTextPairHtmlColor.second
+            )
+            
             textRatingDescription?.apply {
-                val adjustedRatingText = ratingText.replace(
-                    "\$highEmphasis",
-                    ratingTextPairHtmlColor.first
-                ).replace(
-                    "\$lowEmphasis",
-                    ratingTextPairHtmlColor.second
-                )
                 text = MethodChecker.fromHtml(adjustedRatingText)
-                setOnClickListener {
-                    listenerHeader?.onShopReviewClicked(appLink)
-                }
+                setOnClickListener { handleShopReviewClick(adjustedRatingText, appLink) }
             }
             imageRatingIcon?.setOnClickListener {
-                listenerHeader?.onShopReviewClicked(appLink)
+                handleShopReviewClick(adjustedRatingText, appLink)
             }
         }
+    }
+
+    private fun handleShopReviewClick(adjustedRatingText: String, appLink: String) {
+        val isNewSeller = adjustedRatingText.contains(NEW_SELLER_TEXT_HTML, ignoreCase = true)
+        if (isNewSeller) return
+        
+        listenerHeader?.onShopReviewClicked(appLink)
     }
 
     private fun configDynamicUsp(listWidgetShopData: List<ShopPageHeaderWidgetUiModel>) {
