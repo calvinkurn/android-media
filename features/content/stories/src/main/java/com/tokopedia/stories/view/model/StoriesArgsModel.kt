@@ -9,4 +9,5 @@ data class StoriesArgsModel(
     val authorType: String = "",
     val source: String = "",
     val sourceId: String = "",
+    val entryPoint: String = "",
 ) : Parcelable

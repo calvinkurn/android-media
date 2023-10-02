@@ -42,6 +42,9 @@ import com.tokopedia.stories.view.components.indicator.StoriesDetailTimer
 import com.tokopedia.stories.view.model.StoriesArgsModel
 import com.tokopedia.stories.view.model.StoriesDetail
 import com.tokopedia.stories.view.model.StoriesDetailItem
+import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContent
+import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContentType
+import com.tokopedia.stories.view.model.StoriesDetailItem.StoryStatus
 import com.tokopedia.stories.view.model.StoriesGroupHeader
 import com.tokopedia.stories.view.model.StoriesUiModel
 import com.tokopedia.stories.view.utils.STORIES_GROUP_ID
@@ -257,9 +260,7 @@ class StoriesDetailFragment @Inject constructor(
     ) {
         if (prevState?.groupHeader == state.groupHeader ||
             groupId != state.selectedGroupId
-        ) {
-            return
-        }
+        ) return
 
         mAdapter.setItems(state.groupHeader)
         mAdapter.notifyItemRangeInserted(mAdapter.itemCount, state.groupHeader.size)
@@ -273,36 +274,31 @@ class StoriesDetailFragment @Inject constructor(
         if (prevState == state ||
             state == StoriesDetail() ||
             state.selectedGroupId != groupId ||
-            state.selectedDetailPosition < 0
-        ) {
-            return
-        }
+            state.selectedDetailPosition < 0 ||
+            state.detailItems.isEmpty()
+        ) return
 
         setNoInternet(false)
         setFailed(false)
         setNoContent(state.detailItems.isEmpty())
 
-        val currentItem = state.detailItems[state.selectedDetailPosition]
+        val currentItem = state.detailItems.getOrNull(state.selectedDetailPosition) ?: return
 
         storiesDetailsTimer(state)
         renderAuthor(currentItem)
         renderNotch(currentItem)
 
-        val currContent = state.detailItems.getOrNull(state.selectedDetailPosition)
-        if (
-            (currContent?.isSameContent == true || currContent == null) &&
-            currContent?.status != StoriesDetailItem.StoryStatus.Removed
-        ) return
+        if ((currentItem.isSameContent) && currentItem.status != StoryStatus.Removed) return
 
-        renderMedia(currContent.content, currContent.status)
+        renderMedia(currentItem.content, currentItem.status)
 
         showPageLoading(false)
-        binding.vStoriesKebabIcon.showWithCondition(currContent.menus.isNotEmpty())
+        binding.vStoriesKebabIcon.showWithCondition(currentItem.menus.isNotEmpty())
     }
 
-    private fun renderMedia(content: StoriesDetailItem.StoriesItemContent, status: StoriesDetailItem.StoryStatus) {
-        if (status == StoriesDetailItem.StoryStatus.Active
-            && content.type == StoriesDetailItem.StoriesItemContentType.Image) {
+    private fun renderMedia(content: StoriesItemContent, status: StoryStatus) {
+        if (status == StoryStatus.Active
+            && content.type == StoriesItemContentType.Image) {
             binding.layoutStoriesContent.ivStoriesDetailContent.loadImage(
                 content.data,
                 object : ImageLoaderStateListener {
@@ -329,7 +325,6 @@ class StoriesDetailFragment @Inject constructor(
     ) {
         if (prevState == state) return
         if (state.isAnyShown.orFalse()) pauseStories() else resumeStories()
-        showPageLoading(false)
     }
 
     private fun storiesDetailsTimer(state: StoriesDetail) {
@@ -353,7 +348,7 @@ class StoriesDetailFragment @Inject constructor(
         with(binding.vStoriesPartner) {
             tvPartnerName.text = state.author.name
             ivIcon.setImageUrl(state.author.thumbnailUrl)
-            btnFollow.gone() // purposely hide the follow button in phase 1
+            btnFollow.gone()
             if (state.author is StoryAuthor.Shop) {
                 ivBadge.setImageUrl(state.author.badgeUrl)
             }

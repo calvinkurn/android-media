@@ -80,5 +80,7 @@ internal const val KEY_CONFIG_ENABLE_STORIES_ROOM = "android_enable_content_stor
 internal const val KEY_ARGS = "shop_id"
 internal const val ARGS_SOURCE = "source"
 internal const val ARGS_SOURCE_ID = "source_id"
+internal const val ARGS_ENTRY_POINT = "entrypoint"
+internal const val STORY_GROUP_ID = "stories_group_id"
 internal const val TAG_FRAGMENT_STORIES_GROUP = "fragment_stories_group"
 internal const val TAG_FRAGMENT_STORIES_DETAIL = "fragment_stories_detail"

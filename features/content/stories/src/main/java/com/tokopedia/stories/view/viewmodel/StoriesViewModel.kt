@@ -584,7 +584,8 @@ class StoriesViewModel @AssistedInject constructor(
             authorID = args.authorId,
             authorType = args.authorType,
             source = args.source,
-            sourceID = args.sourceId
+            sourceID = args.sourceId,
+            entryPoint = args.entryPoint,
         )
         return repository.getStoriesInitialData(request)
     }
@@ -594,7 +595,8 @@ class StoriesViewModel @AssistedInject constructor(
             authorID = args.authorId,
             authorType = args.authorType,
             source = StoriesSource.STORY_GROUP.value,
-            sourceID = sourceId
+            sourceID = sourceId,
+            entryPoint = args.entryPoint,
         )
         return repository.getStoriesDetailData(request)
     }
