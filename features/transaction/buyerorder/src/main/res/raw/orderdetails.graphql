@@ -123,6 +123,7 @@ query OMSDETAILS($orderCategoryStr: String, $upstream:String, $orderId: String, 
         webURL
         method
         body
+        seatingNumbers
       }
     }
     conditionalInfo {
