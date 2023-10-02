@@ -2,7 +2,6 @@ package com.tokopedia.home.beranda.data.newatf.todo
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import com.tokopedia.home.beranda.data.datasource.local.dao.AtfDao
 import com.tokopedia.home.beranda.data.newatf.AtfData
 import com.tokopedia.home.beranda.data.newatf.AtfMetadata
 import com.tokopedia.home.beranda.data.newatf.BaseAtfRepository
@@ -13,6 +12,7 @@ import com.tokopedia.home.constant.AtfKey
 import com.tokopedia.home.util.QueryParamUtils.convertToLocationParams
 import com.tokopedia.home_component.usecase.todowidget.GetTodoWidgetUseCase
 import com.tokopedia.home_component.usecase.todowidget.HomeTodoWidgetData
+import com.tokopedia.home_component.visitable.TodoWidgetListDataModel
 import javax.inject.Inject
 
 /**
@@ -22,7 +22,6 @@ import javax.inject.Inject
 class TodoWidgetRepository @Inject constructor(
     private val todoWidgetRepository: HomeTodoWidgetRepository,
     private val homeChooseAddressRepository: HomeChooseAddressRepository,
-    atfDao: AtfDao,
 ): BaseAtfRepository() {
 
     @SuppressLint("PII Data Exposure")
@@ -50,5 +49,18 @@ class TodoWidgetRepository @Inject constructor(
             isCache = false,
         )
         emitData(atfData)
+    }
+
+    suspend fun dismissItemAt(position: Int) {
+        flow.value?.let { currentAtfData ->
+            (currentAtfData.atfContent as? HomeTodoWidgetData.GetHomeTodoWidget)?.let { currentData ->
+                val newTodoWidgetList = currentData.todos.toMutableList().apply {
+                    removeAt(position)
+                }
+                val newTodoData = currentData.copy(todos = newTodoWidgetList)
+                val newAtfData = currentAtfData.copy(atfContent = newTodoData)
+                emitData(newAtfData)
+            }
+        }
     }
 }

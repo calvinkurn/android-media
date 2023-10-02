@@ -16,6 +16,7 @@ import com.tokopedia.home.beranda.common.BaseCoRoutineScope
 import com.tokopedia.home.beranda.data.mapper.ShopFlashSaleMapper
 import com.tokopedia.home.beranda.data.model.HomeChooseAddressData
 import com.tokopedia.home.beranda.data.newatf.HomeAtfUseCase
+import com.tokopedia.home.beranda.data.newatf.todo.TodoWidgetRepository
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBalanceWidgetUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBusinessUnitUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeDynamicChannelUseCase
@@ -104,6 +105,7 @@ open class HomeRevampViewModel @Inject constructor(
     private val homeRateLimit: RateLimiter<String>,
     private val homeRemoteConfigController: HomeRemoteConfigController,
     private val homeAtfUseCase: HomeAtfUseCase,
+    private val todoWidgetRepository: TodoWidgetRepository,
 ) : BaseCoRoutineScope(homeDispatcher.get().io) {
 
     companion object {
@@ -811,16 +813,20 @@ open class HomeRevampViewModel @Inject constructor(
             )
 
             try {
-                findWidget<TodoWidgetListDataModel> { item, verticalPosition ->
-                    if (item.todoWidgetList.size == 1) {
-                        deleteWidget(item, verticalPosition)
-                    } else {
-                        val newTodoWidgetList = item.todoWidgetList.toMutableList().apply {
-                            removeAt(horizontalPosition)
-                        }
-                        val newTodoWidget = item.copy(todoWidgetList = newTodoWidgetList)
-                        homeDataModel.updateWidgetModel(newTodoWidget, item, verticalPosition) {
-                            updateHomeData(homeDataModel)
+                if(homeRemoteConfigController.isUsingNewAtf()) {
+                    todoWidgetRepository.dismissItemAt(horizontalPosition)
+                } else {
+                    findWidget<TodoWidgetListDataModel> { item, verticalPosition ->
+                        if (item.todoWidgetList.size == 1) {
+                            deleteWidget(item, verticalPosition)
+                        } else {
+                            val newTodoWidgetList = item.todoWidgetList.toMutableList().apply {
+                                removeAt(horizontalPosition)
+                            }
+                            val newTodoWidget = item.copy(todoWidgetList = newTodoWidgetList)
+                            homeDataModel.updateWidgetModel(newTodoWidget, item, verticalPosition) {
+                                updateHomeData(homeDataModel)
+                            }
                         }
                     }
                 }
