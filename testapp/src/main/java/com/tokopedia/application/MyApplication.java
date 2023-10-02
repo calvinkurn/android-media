@@ -14,6 +14,8 @@ import androidx.appcompat.app.AppCompatDelegate;
 import com.google.android.gms.security.ProviderInstaller;
 import com.google.firebase.FirebaseApp;
 import com.tkpd.remoteresourcerequest.task.ResourceDownloadManager;
+import com.tokopedia.linker.interfaces.LinkerRouter;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.tokochat.config.util.TokoChatConnection;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
@@ -65,7 +67,7 @@ public class MyApplication extends BaseMainApplication
         implements AbstractionRouter,
         NetworkRouter,
         ApplinkRouter,
-        TkpdCoreRouter {
+        TkpdCoreRouter, LinkerRouter {
 
     // Used to loadWishlist the 'native-lib' library on application startup.
     static {
@@ -404,6 +406,12 @@ public class MyApplication extends BaseMainApplication
         GlobalConfig.INTERNAL_FILE_DIR = this.getFilesDir().getAbsolutePath();
         GlobalConfig.EXTERNAL_CACHE_DIR = this.getExternalCacheDir() != null ? this.getExternalCacheDir().getAbsolutePath() : "";
         GlobalConfig.EXTERNAL_FILE_DIR = this.getExternalFilesDir(null) != null ? this.getExternalFilesDir(null).getAbsolutePath() : "";
+    }
+
+    @Override
+    public boolean getBooleanRemoteConfig(String key, boolean defaultValue) {
+        FirebaseRemoteConfigImpl remoteConfig = new FirebaseRemoteConfigImpl(this);
+        return remoteConfig.getBoolean(key, defaultValue);
     }
 
     public static class AppsflyerAnalytics extends DummyAnalytics {

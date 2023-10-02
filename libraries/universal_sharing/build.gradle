@@ -29,6 +29,10 @@ buildscript {
 android {
     namespace 'com.tokopedia.universal_sharing'
     testNamespace 'com.tokopedia.universal_sharing.test'
+
+    testOptions {
+        animationsDisabled = true
+    }
 }
 
 kapt {

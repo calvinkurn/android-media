@@ -6,6 +6,7 @@ import static com.google.firebase.analytics.FirebaseAnalytics.Param.ITEMS;
 import static com.google.firebase.analytics.FirebaseAnalytics.Param.ITEM_ID;
 import static com.google.firebase.analytics.FirebaseAnalytics.Param.ITEM_LIST;
 import static com.google.firebase.analytics.FirebaseAnalytics.Param.ITEM_NAME;
+import static com.google.firebase.analytics.FirebaseAnalytics.Param.SCREEN_NAME;
 import static com.tokopedia.core.analytics.TrackingUtils.getAfUniqueId;
 
 import android.annotation.SuppressLint;
@@ -100,6 +101,8 @@ public class GTMAnalytics extends ContextAnalytics {
     // have status that describe pending.
     private static final String CHECKOUT_PROGRESS = "checkout_progress";
     private static final String PROMOCLICK = "promoclick";
+
+    private static int prevCampaignHash = 0;
     public static String[] GENERAL_EVENT_KEYS = new String[]{
             KEY_ACTION, KEY_CATEGORY, KEY_LABEL, KEY_EVENT
     };
@@ -300,11 +303,6 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     private boolean sendEnhanceECommerceEventOrigin(Map<String, Object> value) {
-        // V4
-        clearEnhanceEcommerce();
-        pushGeneralEcommerce(clone(value));
-
-        // V5
         try {
             String keyEvent = keyEvent(clone(value));
             // prevent sending null keyevent
@@ -340,7 +338,6 @@ public class GTMAnalytics extends ContextAnalytics {
         Bundle bundle = addWrapperValue(value);
         bundle = addGclIdIfNeeded(eventName, bundle);
         pushEventV5(eventName, bundle, context);
-        pushIris(eventName, bundle);
     }
 
     @SuppressWarnings("unchecked")
@@ -861,7 +858,6 @@ public class GTMAnalytics extends ContextAnalytics {
         }
 
         pushEventV5("openScreen", wrapWithSessionIris(bundle), context);
-        iris.saveEvent(bundleToMap(bundle));
     }
 
     private void putDarkModeValue(Bundle bundle) {
@@ -1039,7 +1035,7 @@ public class GTMAnalytics extends ContextAnalytics {
         switch (keyEvent.toLowerCase()) {
             case PRODUCTVIEW:
                 String itemListString = bundle.getString(FirebaseAnalytics.Param.ITEM_LIST);
-                if (TextUtils.isEmpty(bundle.getString(FirebaseAnalytics.Param.ITEM_LIST_NAME))){
+                if (TextUtils.isEmpty(bundle.getString(FirebaseAnalytics.Param.ITEM_LIST_NAME))) {
                     bundle.putString(FirebaseAnalytics.Param.ITEM_LIST_NAME, itemListString);
                 }
                 keyEvent = FirebaseAnalytics.Event.VIEW_ITEM_LIST;
@@ -1093,6 +1089,15 @@ public class GTMAnalytics extends ContextAnalytics {
     public void sendCampaign(Map<String, Object> param) {
         if (!TrackingUtils.isValidCampaign(param)) return;
 
+        // this is to prevent double campaign sent
+        // we check the campaign hash with param. If the hash is same, we conclude that the campaign is the same campaign.
+        int hashCodeTrack = hashCodeTrack(param);
+        if (sameCampaignWithPrevCampaignSent(hashCodeTrack)) {
+            return;
+        } else {
+            saveCampaignHash(hashCodeTrack);
+        }
+
         Bundle bundle = new Bundle();
         String afUniqueId = getAfUniqueId(context);
 
@@ -1132,11 +1137,26 @@ public class GTMAnalytics extends ContextAnalytics {
 
         bundle = wrapWithSessionIris(bundle);
 
-        //v5
         pushEventV5("campaignTrack", bundle, context);
+    }
 
-        //v4
-        pushEvent("campaignTrack", bundleToMap(bundle));
+    private int hashCodeTrack(Map<String, Object> param) {
+        int hashCode = 0;
+        for (Map.Entry<String, Object> entry : param.entrySet()) {
+            if (AppEventTracking.GTM.SCREEN_NAME.equals(entry.getKey())) {
+                continue;
+            }
+            hashCode += entry.getValue().hashCode();
+        }
+        return hashCode;
+    }
+
+    private Boolean sameCampaignWithPrevCampaignSent(int hashCodeTrack) {
+        return hashCodeTrack == prevCampaignHash;
+    }
+
+    private void saveCampaignHash(int hashCodeTrack) {
+        prevCampaignHash = hashCodeTrack;
     }
 
     public void pushGeneralGtmV5Internal(Map<String, Object> params) {
@@ -1187,6 +1207,9 @@ public class GTMAnalytics extends ContextAnalytics {
             publishNewRelic(eventName, bundle);
             FirebaseAnalytics fa = FirebaseAnalytics.getInstance(context);
             fa.logEvent(eventName, bundle);
+
+            pushGeneralEcommerce(bundle);
+
             mappingToGA4(fa, eventName, bundle);
             logV5(context, eventName, bundle);
             trackEmbraceBreadcrumb(eventName, bundle);
@@ -1450,39 +1473,21 @@ public class GTMAnalytics extends ContextAnalytics {
         pushIris("", data);
     }
 
-    private void pushGeneralEcommerce(Map<String, Object> values) {
-        Map<String, Object> data = new HashMap<>(values);
-        Observable.just(data)
+    private void pushGeneralEcommerce(Bundle values) {
+        Observable.just(values)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .map(it -> {
                     if (!TextUtils.isEmpty(mGclid)) {
-                        if (it.get("event") != null) {
-                            String eventName = String.valueOf(it.get("event"));
+                        if (it.containsKey("event") && !TextUtils.isEmpty(it.getString("event"))) {
+                            String eventName = it.getString("event");
                             addGclIdIfNeeded(eventName, it);
                         }
                     }
-                    it.put(AppEventTracking.GTM.UTM_MEDIUM, UTM_MEDIUM_HOLDER);
-                    it.put(AppEventTracking.GTM.UTM_CAMPAIGN, UTM_CAMPAIGN_HOLDER);
-                    it.put(AppEventTracking.GTM.UTM_SOURCE, UTM_SOURCE_HOLDER);
-                    pushIris("", it);
+                    pushIris(it);
                     return true;
                 })
                 .subscribe(getDefaultSubscriber());
-    }
-
-    private void addGclIdIfNeeded(String eventName, Map<String, Object> values) {
-        if (null == eventName) return;
-        switch (eventName.toLowerCase()) {
-            case FirebaseAnalytics.Event.ADD_TO_CART:
-            case ADDTOCART:
-            case FirebaseAnalytics.Event.VIEW_ITEM:
-            case VIEWPRODUCT:
-            case PRODUCTVIEW:
-            case FirebaseAnalytics.Event.ECOMMERCE_PURCHASE:
-            case TRANSACTION:
-                values.put(KEY_GCLID, mGclid);
-        }
     }
 
     private Bundle addGclIdIfNeeded(String eventName, Bundle values) {
@@ -1527,14 +1532,11 @@ public class GTMAnalytics extends ContextAnalytics {
         }
     }
 
-    private void pushIris(String eventName, Bundle values) {
-        if (iris != null) {
-            if (!eventName.isEmpty()) {
-                values.putString("event", eventName);
-            }
-            if (values.get("event") != null && !String.valueOf(values.get("event")).equals("")) {
-                iris.saveEvent(values);
-            }
+    private void pushIris(Bundle values) {
+        if (iris != null &&
+                values.get("event") != null &&
+                !String.valueOf(values.get("event")).equals("")) {
+            iris.saveEvent(values);
         }
     }
 

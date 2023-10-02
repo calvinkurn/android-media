@@ -461,8 +461,11 @@ class CartRevampFragment :
         routeToHome()
     }
 
-    override fun onCartGroupNameClicked(appLink: String) {
+    override fun onCartGroupNameClicked(appLink: String, shopId: String, shopName: String, isOWOC: Boolean) {
         sendCartImpressionAnalytic()
+        if (!isOWOC && shopId.isNotEmpty()) {
+            cartPageAnalytics.eventClickAtcCartClickShop(shopId, shopName)
+        }
         routeToApplink(appLink)
     }
 
@@ -914,15 +917,13 @@ class CartRevampFragment :
         if (shopIndex >= 0) {
             val cartGroupHolderData = groupData.first()
             if (cartGroupHolderData is CartGroupHolderData) {
-                cartPageAnalytics.eventClickCollapsedProductImage(cartGroupHolderData.shop.shopId)
-                cartGroupHolderData.isCollapsed = false
-                cartGroupHolderData.clickedCollapsedProductIndex = index
-                viewModel.addItems(shopIndex + 1, cartGroupHolderData.productUiModelList)
-                onNeedToUpdateViewItem(shopIndex)
-                onNeedToInsertMultipleViewItem(
-                    shopIndex + 1,
-                    cartGroupHolderData.productUiModelList.size
+                val newCartGroupHolderData = cartGroupHolderData.copy(
+                    isCollapsed = false,
+                    clickedCollapsedProductIndex = index
                 )
+                cartPageAnalytics.eventClickCollapsedProductImage(newCartGroupHolderData.shop.shopId)
+                viewModel.cartDataList.value[shopIndex] = newCartGroupHolderData
+                viewModel.addItems(shopIndex + 1, newCartGroupHolderData.productUiModelList)
                 val layoutManager: RecyclerView.LayoutManager? = binding?.rvCart?.layoutManager
                 if (layoutManager is LinearLayoutManager) {
                     layoutManager.scrollToPositionWithOffset(
@@ -930,6 +931,12 @@ class CartRevampFragment :
                         60.dpToPx(requireContext().resources.displayMetrics)
                     )
                 }
+                val cartShopBottomHolderData = groupData.last()
+                if (cartShopBottomHolderData is CartShopBottomHolderData) {
+                    viewModel.cartDataList.value[shopIndex + 1 + newCartGroupHolderData.productUiModelList.size] =
+                        CartShopBottomHolderData(newCartGroupHolderData)
+                }
+                viewModel.cartDataList.notifyObserver()
             }
         }
     }
@@ -3150,17 +3157,18 @@ class CartRevampFragment :
             viewModel.cartModel
         )
 
-        // If action is on unavailable item, do collapse unavailable items if previously forced to expand (without user tap expand)
-        if (allDisabledCartItemData.size > 3) {
-            if (forceExpandCollapsedUnavailableItems) {
-                collapseOrExpandDisabledItem()
-            }
-        } else {
-            viewModel.removeAccordionDisabledItem()
+        if (allDisabledCartItemData.size <= 3) {
+            viewModel.removeAccordionDisabledItem(updateListResult)
         }
 
         viewModel.updateCartGroupFirstItemStatus(updateListResult)
         viewModel.updateCartDataList(updateListResult)
+
+        if (allDisabledCartItemData.size > 3) {
+            if (forceExpandCollapsedUnavailableItems) {
+                collapseOrExpandDisabledItem()
+            }
+        }
 
         viewModel.reCalculateSubTotal()
         notifyBottomCartParent()

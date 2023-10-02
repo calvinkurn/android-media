@@ -1,6 +1,7 @@
 package com.tokopedia.oneclickcheckout.order.view
 
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.CodDataPromo
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorServiceData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.EstimatedTimeArrivalPromo
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.InsuranceData
@@ -90,6 +91,11 @@ class OrderSummaryPageViewModelTestHelper {
             texts = ServiceTextData()
         )
         shippingCourierViewModelList = listOf(firstCourierSecondDuration)
+    }
+
+    val errorProductData = ErrorProductData().apply {
+        errorId = "111"
+        errorMessage = "error message"
     }
 
     val logisticPromo = LogisticPromoUiModel(

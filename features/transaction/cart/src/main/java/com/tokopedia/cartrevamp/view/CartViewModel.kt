@@ -334,16 +334,16 @@ class CartViewModel @Inject constructor(
         }
     }
 
-    fun removeAccordionDisabledItem() {
+    fun removeAccordionDisabledItem(cartDataList: ArrayList<Any>) {
         var item: DisabledAccordionHolderData? = null
-        cartDataList.value.forEach {
+        cartDataList.forEach {
             if (it is DisabledAccordionHolderData) {
                 item = it
             }
         }
 
         item?.let {
-            cartDataList.value.remove(it)
+            cartDataList.remove(it)
         }
     }
 
@@ -2083,11 +2083,11 @@ class CartViewModel @Inject constructor(
             if (data.productUiModelList.isEmpty()) {
                 toBeRemovedItems.add(cartShopBottomHolderData)
             } else if (data.isTokoNow) {
-                val needToExpand = data.isCollapsed && data.productUiModelList.size <= 3
+                val needToExpand = data.isCollapsed && data.productUiModelList.size <= 1
                 if (needToExpand) {
                     newCartDataList.addAll(index + 1, data.productUiModelList)
                     val newCartGroupHolderData = data.copy(
-                        isCollapsible = data.productUiModelList.size > 3,
+                        isCollapsible = data.productUiModelList.size > 1,
                         isCollapsed = false
                     )
                     newCartDataList[index] = newCartGroupHolderData
@@ -2097,7 +2097,7 @@ class CartViewModel @Inject constructor(
                         )
                 } else {
                     val newCartGroupHolderData =
-                        data.copy(isCollapsible = data.productUiModelList.size > 3)
+                        data.copy(isCollapsible = data.productUiModelList.size > 1)
                     newCartDataList[index] = newCartGroupHolderData
                     newCartDataList[shopBottomDataPair.second] =
                         cartShopBottomHolderData.copy(shopData = newCartGroupHolderData)
