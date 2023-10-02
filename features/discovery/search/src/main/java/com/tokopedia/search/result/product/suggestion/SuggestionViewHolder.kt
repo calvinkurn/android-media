@@ -13,6 +13,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 class SuggestionViewHolder(
     itemView: View,
     private val suggestionListener: SuggestionListener,
+    private val isReimagine: Boolean = false
 ) : AbstractViewHolder<SuggestionDataView>(itemView) {
 
     companion object {
@@ -28,7 +29,8 @@ class SuggestionViewHolder(
     }
 
     private fun bindSuggestionView(element: SuggestionDataView) {
-        val suggestionTextView =  binding?.root ?: return
+        setPadding()
+        val suggestionTextView = binding?.root ?: return
 
         suggestionTextView.addOnImpressionListener(element) {
             suggestionListener.onSuggestionImpressed(element)
@@ -42,5 +44,30 @@ class SuggestionViewHolder(
                 }
             }
         }
+    }
+
+    private fun setPadding() {
+        if (isReimagine) {
+            paddingReimagineVersion()
+        } else {
+            paddingControlVersion()
+        }
+    }
+
+    private fun paddingReimagineVersion() {
+        val suggestionTextView = binding?.suggestionTextView ?: return
+        val contextResource = suggestionTextView.context.resources
+        val paddingTop = contextResource.getDimensionPixelSize(R.dimen.search_suggestion_inspiration_carousel_padding_top_reimagine)
+        val paddingLeftRight = contextResource.getDimensionPixelSize(R.dimen.search_suggestion_inspiration_carousel_padding_left_right)
+        suggestionTextView.setPadding(paddingLeftRight, paddingTop, paddingLeftRight, 0)
+    }
+
+    private fun paddingControlVersion() {
+        val suggestionTextView = binding?.suggestionTextView ?: return
+        val contextResource = suggestionTextView.context.resources
+        val paddingTop = contextResource.getDimensionPixelSize(R.dimen.search_suggestion_inspiration_carousel_padding_top)
+        val paddingLeftRight = contextResource.getDimensionPixelSize(R.dimen.search_suggestion_inspiration_carousel_padding_left_right)
+        val paddingBottom = contextResource.getDimensionPixelSize(R.dimen.search_suggestion_inspiration_carousel_padding_bottom)
+        suggestionTextView.setPadding(paddingLeftRight, paddingTop, paddingLeftRight, paddingBottom)
     }
 }

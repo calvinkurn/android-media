@@ -246,6 +246,7 @@ const val SHIPMENT_ADDRESS_FORM_V4_QUERY =
                                 name
                                 status
                                 type
+                                icon_url
                             }
                         }
                         add_ons {
@@ -399,6 +400,7 @@ const val SHIPMENT_ADDRESS_FORM_V4_QUERY =
                 Title
                 Nominal
                 Description
+                icon_url
               }
               cod {
                 is_cod
@@ -410,6 +412,7 @@ const val SHIPMENT_ADDRESS_FORM_V4_QUERY =
                 message_logo
               }
               egold_attributes {
+                icon_url
                 eligible
                 is_tiering
                 is_opt_in
@@ -422,6 +425,7 @@ const val SHIPMENT_ADDRESS_FORM_V4_QUERY =
                   sub_text
                   ticker_text
                   tooltip_text
+                  tooltip_title_text
                 }
                 tier_data {
                   minimum_total_amount
@@ -553,7 +557,12 @@ const val SHIPMENT_ADDRESS_FORM_V4_QUERY =
                       poml_auto_applied
                       bebas_ongkir_info {
                         is_bo_unstack_enabled
+                        is_use_bebas_ongkir_only
                       }
+                    }
+                    user_group_metadata {
+                      key
+                      value
                     }
                   }
                 }
