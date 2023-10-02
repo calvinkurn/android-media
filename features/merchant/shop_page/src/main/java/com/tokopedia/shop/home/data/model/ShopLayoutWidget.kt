@@ -42,6 +42,7 @@ data class ShopLayoutWidget(
         @SerializedName("data")
         val data: List<Data> = listOf()
     ) {
+        //TODO need to sync this model on layoutV2 with header data from dynamicTab in the future so that we can map the data easier on ShopPageHomeMapper.mapToWidgetUiModel()
         data class Header(
             @SerializedName("title")
             val title: String = "",
@@ -60,7 +61,9 @@ data class ShopLayoutWidget(
             @SerializedName("etalaseID")
             val etalaseId: String = "",
             @SerializedName("isShowEtalaseName")
-            val isShowEtalaseName: Int = 1
+            val isShowEtalaseName: Int = 1,
+            @SerializedName("widgetStyle")
+            val widgetStyle: String = ""
         )
 
         data class Data(
@@ -74,6 +77,12 @@ data class ShopLayoutWidget(
                 val bundleProducts: List<BundleProduct> = listOf(),
                 @SerializedName("imageUrl")
                 val imageUrl: String = "",
+                @SerializedName("imageURL")
+                val imageURL: String = "",
+                @SerializedName("mainBannerPosition")
+                val mainBannerPosition: String = "",
+                @SerializedName("showcaseList")
+                val showcaseList: List<ShowcaseList> = emptyList(),
                 @SerializedName("appLink")
                 val appLink: String = "",
                 @SerializedName("webLink")
@@ -165,8 +174,79 @@ data class ShopLayoutWidget(
                 val linkType: String = "",
                 @SerializedName("timeInfo")
                 val timeInfo: TimeInfo = TimeInfo(),
-
+                @SerializedName("productHotspot")
+                val productHotspot: List<ProductHotspot> = listOf(),
+                @SerializedName("text")
+                val text: String = "",
+                @SerializedName("ratio")
+                val ratio: String = "",
+                @SerializedName("Title")
+                val title: String = "",
+                @SerializedName("Banner")
+                val banner: String = "",
+                @SerializedName("EtalaseList")
+                val listEtalase: List<Etalase> = listOf(),
+                @SerializedName("tabLabel")
+                val tabLabel: String = "",
+                @SerializedName("tabName")
+                val tabName: String = "",
+                @SerializedName("componentList")
+                val componentList: List<Component> = emptyList(),
+                @SerializedName("bannerID")
+                val bannerId: String = "",
         ) {
+            data class Component(
+                @SerializedName("componentID")
+                val componentID: Long = 0,
+                @SerializedName("componentName")
+                val componentName: String = "",
+                @SerializedName("componentType")
+                val componentType: String = "",
+                @SerializedName("data")
+                val data : List<Data> = emptyList()
+            ) {
+                data class Data(
+                    @SerializedName("imageURL")
+                    val imageUrl: String = "",
+                    @SerializedName("ctaText")
+                    val ctaText: String = "",
+                    @SerializedName("ctaLink")
+                    val ctaLink: String = "",
+                    @SerializedName("linkID")
+                    val linkID: Long = 0,
+                    @SerializedName("linkType")
+                    val linkType: String = "",
+                    @SerializedName("isShowProductInfo")
+                    val isShowProductInfo: Boolean = false,
+                    @SerializedName("ratio")
+                    val ratio: String = ""
+                )
+            }
+
+            data class ShowcaseList(
+                @SerializedName("showcaseID")
+                val showcaseID: String = "",
+                @SerializedName("name")
+                val name: String = "",
+                @SerializedName("imageURL")
+                val imageURL: String = "",
+                @SerializedName("ctaLink")
+                val ctaLink: String = "",
+                @SerializedName("isMainBanner")
+                val isMainBanner: Boolean = false
+            )
+            data class Etalase(
+                @SerializedName("imageUrl")
+                val imageUrl: String = "",
+                @SerializedName("desktopImageUrl")
+                val desktopImageUrl: String = "",
+                @SerializedName("linkType")
+                val linkType: String = "",
+                @SerializedName("linkID")
+                val linkId: String = "",
+                @SerializedName("Name")
+                val name: String = ""
+            )
             data class ProductBundleDetailsItem(
                 @SerializedName("bundleID")
                 val bundleId: String = "0",
@@ -305,13 +385,30 @@ data class ShopLayoutWidget(
                 val textColor: String = "",
                 @SerializedName("status")
                 val status: Int = -1,
-
-
-
-
-
-
             )
+            data class ProductHotspot(
+                @SerializedName("productID")
+                val productID: String = "",
+                @SerializedName("name")
+                val name: String = "",
+                @SerializedName("imageUrl")
+                val imageUrl: String = "",
+                @SerializedName("productUrl")
+                val productUrl: String = "",
+                @SerializedName("displayPrice")
+                val displayPrice: String = "",
+                @SerializedName("isSoldOut")
+                val isSoldOut: Boolean = false,
+                @SerializedName("coordinate")
+                val coordinate: Coordinate = Coordinate(),
+            ) {
+                data class Coordinate(
+                    @SerializedName("x")
+                    val x: String = "",
+                    @SerializedName("y")
+                    val y: String = ""
+                )
+            }
         }
     }
 }
