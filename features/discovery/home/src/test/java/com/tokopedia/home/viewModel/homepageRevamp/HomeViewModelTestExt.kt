@@ -16,6 +16,7 @@ import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
 import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
 import com.tokopedia.home.beranda.data.newatf.AtfMapper
 import com.tokopedia.home.beranda.data.newatf.HomeAtfUseCase
+import com.tokopedia.home.beranda.data.newatf.todo.TodoWidgetRepository
 import com.tokopedia.home.beranda.domain.interactor.GetDynamicChannelsUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetRechargeBUWidgetUseCase
 import com.tokopedia.home.beranda.domain.interactor.InjectCouponTimeBasedUseCase
@@ -126,6 +127,7 @@ fun createHomeViewModel(
     homeRateLimit: RateLimiter<String> = mockk(relaxed = true),
     homeRemoteConfigController: HomeRemoteConfigController = mockk(relaxed = true),
     homeAtfUseCase: HomeAtfUseCase = mockk(relaxed = true),
+    todoWidgetRepository: TodoWidgetRepository = mockk(relaxed = true),
 ): HomeRevampViewModel {
     homeBalanceWidgetUseCase.givenGetLoadingStateReturn()
     return spyk(
@@ -154,6 +156,7 @@ fun createHomeViewModel(
             homeRateLimit = homeRateLimit,
             homeRemoteConfigController = homeRemoteConfigController,
             homeAtfUseCase = homeAtfUseCase,
+            todoWidgetRepository = todoWidgetRepository,
         ),
         recordPrivateCalls = true
     )
@@ -275,7 +278,7 @@ fun HomeDynamicChannelUseCase.givenGetHomeDataError(t: Throwable = Throwable("Un
 }
 
 fun HomeDynamicChannelUseCase.givenUpdateHomeDataReturn(result: com.tokopedia.home.beranda.helper.Result<Any>) {
-    coEvery { updateHomeData() } returns flow {
+    coEvery { updateHomeData(isNewAtfMechanism = false) } returns flow {
         emit(result)
     }
 }
@@ -287,7 +290,7 @@ fun HomeBalanceWidgetUseCase.givenGetLoadingStateReturn() {
 fun HomeDynamicChannelUseCase.givenUpdateHomeDataError(t: Throwable = Throwable("Unit test simulate error")) {
     mockkStatic(Log::class)
     every { Log.getStackTraceString(t) } returns ""
-    coEvery { updateHomeData() } returns flow {
+    coEvery { updateHomeData(isNewAtfMechanism = false) } returns flow {
         throw t
     }
 }
@@ -296,7 +299,7 @@ fun HomeDynamicChannelUseCase.givenUpdateHomeDataErrorNullMessage() {
     val throwable = Throwable()
     mockkStatic(Log::class)
     every { Log.getStackTraceString(throwable) } returns ""
-    coEvery { updateHomeData() } returns flow {
+    coEvery { updateHomeData(isNewAtfMechanism = false) } returns flow {
         throw throwable
     }
 }
