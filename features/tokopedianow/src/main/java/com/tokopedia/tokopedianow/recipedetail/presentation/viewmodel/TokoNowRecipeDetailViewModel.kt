@@ -238,7 +238,7 @@ class TokoNowRecipeDetailViewModel @Inject constructor(
                 val address = getAddressUseCase(GET_ADDRESS_SOURCE)
                 addressData.updateAddressData(address)
                 checkAddressData()
-            } catch (e: Throwable) {
+            } catch (e: Exception) {
                 hideLoading()
                 showError()
             }

@@ -152,7 +152,7 @@ class MerchantPageViewModel @Inject constructor(
         launch {
             try {
                 _chooseAddress.value = Success(getChooseAddressWarehouseLocUseCase(source))
-            } catch (e: Throwable) {
+            } catch (e: Exception) {
                 _chooseAddress.value = Fail(e)
             }
         }

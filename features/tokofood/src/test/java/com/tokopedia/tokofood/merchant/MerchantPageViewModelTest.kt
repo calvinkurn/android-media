@@ -152,7 +152,7 @@ class MerchantPageViewModelTest : MerchantPageViewModelTestFixture() {
         val param = "source"
         coEvery {
             getChooseAddressWarehouseLocUseCase(param)
-        } throws Throwable()
+        } throws Exception()
         viewModel.getChooseAddress(param)
         val actualResponse = viewModel.chooseAddress.value
         assert(actualResponse is Fail)
