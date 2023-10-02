@@ -35,15 +35,13 @@ class StoriesWidgetTest {
     }
 
     @Test
-    fun `test observe stories with no shop id`() = runTest {
+    fun `test observe stories with no data`() = runTest {
         val shopStoriesStates = List(5) {
             modelBuilder.buildStoriesWidgetState(
                 shopId = it.toString()
             )
         }
-        val repo = StoriesWidgetFakeRepository(
-            forbiddenEntryPoints = listOf(StoriesEntryPoint.ProductDetail)
-        )
+        val repo = StoriesWidgetFakeRepository()
         repo.setStoriesWidgetState(shopStoriesStates)
 
         val viewModel = StoriesWidgetViewModel(StoriesEntryPoint.ShopPage, repo)

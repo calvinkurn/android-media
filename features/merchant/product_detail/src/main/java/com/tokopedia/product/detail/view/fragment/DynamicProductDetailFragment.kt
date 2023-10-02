@@ -306,6 +306,7 @@ import com.tokopedia.shop.common.widget.PartialButtonShopFollowersListener
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersView
 import com.tokopedia.stories.widget.NoAnimateAnimationStrategy
 import com.tokopedia.stories.widget.StoriesWidgetManager
+import com.tokopedia.stories.widget.domain.StoriesEntryPoint
 import com.tokopedia.stories.widget.storiesManager
 import com.tokopedia.stories.widget.domain.StoriesEntrySource
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
@@ -577,7 +578,7 @@ open class DynamicProductDetailFragment :
 
     private val compositeSubscription by lazy { CompositeSubscription() }
 
-    private val mStoriesWidgetManager by storiesManager(StoriesEntrySource.ProductDetail(productId.orEmpty())) {
+    private val mStoriesWidgetManager by storiesManager(StoriesEntryPoint.ProductDetail) {
         setScrollingParent(binding?.rvPdp)
         setAnimationStrategy(NoAnimateAnimationStrategy())
         setShowCoachMarkIfApplicable(false)

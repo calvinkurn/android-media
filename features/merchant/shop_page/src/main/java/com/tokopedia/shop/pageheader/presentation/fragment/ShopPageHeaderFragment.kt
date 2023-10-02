@@ -209,7 +209,7 @@ import com.tokopedia.shop_widget.favourite.view.activity.ShopFavouriteListActivi
 import com.tokopedia.shop_widget.mvc_locked_to_product.util.MvcLockedToProductUtil
 import com.tokopedia.shop_widget.note.view.bottomsheet.ShopNoteBottomSheet
 import com.tokopedia.stories.widget.StoriesWidgetManager
-import com.tokopedia.stories.widget.domain.StoriesEntrySource
+import com.tokopedia.stories.widget.domain.StoriesEntryPoint
 import com.tokopedia.stories.widget.storiesManager
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.*
@@ -477,8 +477,8 @@ class ShopPageHeaderFragment :
         ShopEtalaseNotFoundBottomSheet.createInstance()
     }
 
-    private val storiesManager by storiesManager(StoriesEntrySource.ShopPage(shopId)) {
-        setScrollingParent(viewBindingShopContentLayout?.appBarLayout?.parent as? View)
+    private val storiesManager by storiesManager(StoriesEntryPoint.ShopPage) {
+        setScrollingParent(viewBindingShopContentLayout?.appBarLayout?.parent as? ViewGroup)
         setAnimationStrategy(com.tokopedia.stories.widget.OneTimeAnimationStrategy())
     }
 

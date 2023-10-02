@@ -2,14 +2,13 @@ package com.tokopedia.stories.widget
 
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.widget.FrameLayout
 import androidx.core.view.children
-import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.play_common.util.addImpressionListener
 import com.tokopedia.stories.widget.databinding.LayoutStoriesBorderBinding
 import com.tokopedia.stories.widget.domain.StoriesWidgetState
 import kotlin.properties.Delegates
@@ -36,10 +35,6 @@ class StoriesWidgetLayout @JvmOverloads constructor(
         super.setOnClickListener {
             if (mState.status == StoriesStatus.NoStories) return@setOnClickListener
             mListener?.onClickedWhenHasStories(this, mState)
-        }
-
-        addImpressionListener(ImpressHolder()) {
-            mListener?.onImpressed(this, mState)
         }
     }
 
@@ -83,6 +78,7 @@ class StoriesWidgetLayout @JvmOverloads constructor(
 
     fun setState(onUpdate: (StoriesWidgetState) -> StoriesWidgetState) {
         mState = onUpdate(mState)
+        mListener?.onImpressed(this, mState)
         invalidate()
     }
 
@@ -100,6 +96,10 @@ class StoriesWidgetLayout @JvmOverloads constructor(
 
     private fun getChildBorderView(): StoriesBorderView? {
         return children.firstOrNull { it is StoriesBorderView } as? StoriesBorderView
+    }
+
+    private fun isVisibleWithinBounds(rect: Rect): Boolean {
+        return getLocalVisibleRect(rect)
     }
 
     interface Listener {
