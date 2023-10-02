@@ -51,15 +51,17 @@ class TodoWidgetRepository @Inject constructor(
         emitData(atfData)
     }
 
-    suspend fun dismissItemAt(position: Int) {
-        flow.value?.let { currentAtfData ->
-            (currentAtfData.atfContent as? HomeTodoWidgetData.GetHomeTodoWidget)?.let { currentData ->
-                val newTodoWidgetList = currentData.todos.toMutableList().apply {
-                    removeAt(position)
+    suspend fun dismissItemAt(position: Int, param: String) {
+        flow.value.let { list ->
+            list.find { it?.atfMetadata?.param == param }?.let { currentAtfData ->
+                (currentAtfData.atfContent as? HomeTodoWidgetData.GetHomeTodoWidget)?.let { currentData ->
+                    val newTodoWidgetList = currentData.todos.toMutableList().apply {
+                        removeAt(position)
+                    }
+                    val newTodoData = currentData.copy(todos = newTodoWidgetList)
+                    val newAtfData = currentAtfData.copy(atfContent = newTodoData)
+                    emitData(newAtfData)
                 }
-                val newTodoData = currentData.copy(todos = newTodoWidgetList)
-                val newAtfData = currentAtfData.copy(atfContent = newTodoData)
-                emitData(newAtfData)
             }
         }
     }

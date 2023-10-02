@@ -40,7 +40,7 @@ class HomeAtfUseCase @Inject constructor(
     val flow: StateFlow<AtfDataList?>
         get() = _flow
 
-    private val atfFlows: List<StateFlow<AtfData?>> = listOf(
+    private val atfFlows: List<StateFlow<List<AtfData?>>> = listOf(
         tickerRepository.flow,
         homepageBannerRepository.flow,
         dynamicIconRepository.flow,
@@ -129,7 +129,7 @@ class HomeAtfUseCase @Inject constructor(
             // first flow is for dynamic position
             val dynamicPos = list[0] as? AtfDataList
             // other flows defined on atfFlows list
-            val listAtfData = list.drop(1) as List<AtfData?>
+            val listAtfData = (list.drop(1) as List<List<AtfData?>>).flatten()
             // if remote dynamic position is ready, populate data to list
             if (dynamicPos != null && dynamicPos.isPositionReady() && !dynamicPos.isCache) {
                 val latest = dynamicPos.updateAtfContents(listAtfData)

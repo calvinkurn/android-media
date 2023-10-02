@@ -8,13 +8,22 @@ import kotlinx.coroutines.flow.StateFlow
  */
 abstract class BaseAtfRepository {
 
-    private val _flow: MutableStateFlow<AtfData?> = MutableStateFlow(null)
-    val flow: StateFlow<AtfData?>
+    private val _flow: MutableStateFlow<List<AtfData?>> = MutableStateFlow(emptyList())
+    val flow: StateFlow<List<AtfData?>>
         get() = _flow
 
     abstract suspend fun getData(atfMetadata: AtfMetadata)
 
     suspend fun emitData(atfData: AtfData) {
-        _flow.emit(atfData)
+        try {
+            flow.value.let { currentList ->
+                val index = currentList.indexOfFirst { it?.atfMetadata == atfData.atfMetadata }
+                val newList = currentList.toMutableList().apply {
+                    if(index == -1) add(atfData)
+                    else set(index, atfData)
+                }
+                _flow.emit(newList)
+            }
+        } catch (_: Exception) { }
     }
 }

@@ -835,7 +835,7 @@ open class HomeRevampViewModel @Inject constructor(
 
             try {
                 if (homeRemoteConfigController.isUsingNewAtf()) {
-                    todoWidgetRepository.dismissItemAt(horizontalPosition)
+                    todoWidgetRepository.dismissItemAt(horizontalPosition, param)
                 } else {
                     findWidget<TodoWidgetListDataModel> { item, verticalPosition ->
                         if (item.todoWidgetList.size == 1) {
