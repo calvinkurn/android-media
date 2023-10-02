@@ -55,9 +55,7 @@ class FlashSaleTokoTabViewModel(
         component.data?.forEach {
             it.isSelected = it.filterValue == selectedFilterValue
         }
-    }
 
-    fun reInitTabComponentData() {
         component.reInitComponentItems()
     }
 }
