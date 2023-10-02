@@ -34,7 +34,7 @@ data class AtfDataList(
      */
     fun copyAtfContentsFrom(atfDataList: AtfDataList): AtfDataList {
         val atfContents = atfDataList.listAtfData.map { it.atfContent }
-        if(atfContents.size != listAtfData.size) return this
+        if (atfContents.size != listAtfData.size) return this
         val newDynamicPosition = listAtfData.zip(atfContents) { data, atfContent ->
             data.copy(atfContent = atfContent)
         }
@@ -61,11 +61,19 @@ data class AtfDataList(
      * Check if dynamic position is not empty
      */
     fun isPositionReady(): Boolean {
-        return this.status == STATUS_SUCCESS
-            && this.listAtfData.isNotEmpty()
+        return this.status == STATUS_SUCCESS &&
+            this.listAtfData.isNotEmpty()
     }
 
     fun isDataError(): Boolean {
         return (this.status == STATUS_ERROR)
+    }
+
+    override fun equals(other: Any?): Boolean {
+        return if (this.status == STATUS_ERROR) {
+            false
+        } else {
+            super.equals(other)
+        }
     }
 }

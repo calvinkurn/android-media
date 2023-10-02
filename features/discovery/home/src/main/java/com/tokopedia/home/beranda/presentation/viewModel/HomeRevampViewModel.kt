@@ -104,7 +104,7 @@ open class HomeRevampViewModel @Inject constructor(
     private val homeRateLimit: RateLimiter<String>,
     private val homeRemoteConfigController: HomeRemoteConfigController,
     private val homeAtfUseCase: HomeAtfUseCase,
-    private val todoWidgetRepository: TodoWidgetRepository,
+    private val todoWidgetRepository: TodoWidgetRepository
 ) : BaseCoRoutineScope(homeDispatcher.get().io) {
 
     companion object {
@@ -169,9 +169,11 @@ open class HomeRevampViewModel @Inject constructor(
     var isFirstLoad = true
 
     private fun homeFlowDynamicChannel(): Flow<HomeDynamicChannelModel?> {
-        return if(homeRemoteConfigController.isUsingNewAtf()) {
+        return if (homeRemoteConfigController.isUsingNewAtf()) {
             homeUseCase.get().getNewHomeDataFlow().flowOn(homeDispatcher.get().io)
-        } else homeUseCase.get().getHomeDataFlow().flowOn(homeDispatcher.get().io)
+        } else {
+            homeUseCase.get().getHomeDataFlow().flowOn(homeDispatcher.get().io)
+        }
     }
 
     var getHomeDataJob: Job? = null
@@ -300,15 +302,7 @@ open class HomeRevampViewModel @Inject constructor(
         }
         launchCatchError(coroutineContext, block = {
             homeFlowDynamicChannel().collect { homeNewDataModel ->
-                if (homeNewDataModel?.isAtfError == true) {
-                    _updateNetworkLiveData.postValue(
-                        Result.errorGeneral(
-                            error = Throwable("Atf is error"),
-                            data = null
-                        )
-                    )
-                    HomeServerLogger.warning_error_flow(Throwable("Atf is error"))
-                }
+                validateAtfError(homeNewDataModel)
                 if (homeNewDataModel?.isCache == false) {
                     _isRequestNetworkLiveData.postValue(Event(false))
                     currentTopAdsBannerPage = homeNewDataModel.topadsPage
@@ -333,6 +327,23 @@ open class HomeRevampViewModel @Inject constructor(
             homeFlowDataCancelled = true
         }
     }
+
+    private fun validateAtfError(homeNewDataModel: HomeDynamicChannelModel?) {
+        if (homeRemoteConfigController.isUsingNewAtf() &&
+            shouldShowAtfGeneralError(homeNewDataModel)
+        ) {
+            _updateNetworkLiveData.postValue(
+                Result.errorGeneral(
+                    error = Throwable("Atf is error"),
+                    data = null
+                )
+            )
+            HomeServerLogger.warning_error_flow(Throwable("Atf is error"))
+        }
+    }
+
+    private fun shouldShowAtfGeneralError(homeNewDataModel: HomeDynamicChannelModel?) =
+        homeNewDataModel?.isAtfError == true && homeNewDataModel.list.size <= 1 && !homeNewDataModel.isCache
 
     @FlowPreview
     fun refreshHomeData() {
@@ -411,7 +422,7 @@ open class HomeRevampViewModel @Inject constructor(
     fun getRecommendationWidget(
         selectedChipProduct: BestSellerChipProductDataModel,
         currentDataModel: BestSellerRevampDataModel,
-        scrollDirection: CarouselPagingGroupChangeDirection = NO_DIRECTION,
+        scrollDirection: CarouselPagingGroupChangeDirection = NO_DIRECTION
     ) {
         if (selectedChipProduct.productModelList.isNotEmpty()) return
 
@@ -423,7 +434,7 @@ open class HomeRevampViewModel @Inject constructor(
                         visitable = homeRecommendationUseCase.get().onHomeBestSellerFilterClick(
                             currentBestSellerDataModel = currentDataModel,
                             selectedFilterChip = selectedChipProduct.chip,
-                            scrollDirection = scrollDirection,
+                            scrollDirection = scrollDirection
                         ),
                         visitableToChange = currentDataModel,
                         position = index
@@ -592,8 +603,9 @@ open class HomeRevampViewModel @Inject constructor(
     fun getMissionWidgetRefresh() {
         findWidget<MissionWidgetListDataModel> { missionWidgetListDataModel, position ->
             launch {
-                if(missionWidgetListDataModel.source == MissionWidgetListDataModel.SOURCE_ATF &&
-                    homeRemoteConfigController.isUsingNewAtf()) {
+                if (missionWidgetListDataModel.source == MissionWidgetListDataModel.SOURCE_ATF &&
+                    homeRemoteConfigController.isUsingNewAtf()
+                ) {
                     homeAtfUseCase.refreshData(missionWidgetListDataModel.id)
                 } else {
                     updateWidget(
@@ -613,8 +625,9 @@ open class HomeRevampViewModel @Inject constructor(
     fun getTodoWidgetRefresh() {
         findWidget<TodoWidgetListDataModel> { todoWidgetListDataModel, position ->
             launch {
-                if(todoWidgetListDataModel.source == TodoWidgetListDataModel.SOURCE_ATF &&
-                    homeRemoteConfigController.isUsingNewAtf()) {
+                if (todoWidgetListDataModel.source == TodoWidgetListDataModel.SOURCE_ATF &&
+                    homeRemoteConfigController.isUsingNewAtf()
+                ) {
                     homeAtfUseCase.refreshData(todoWidgetListDataModel.id)
                 } else {
                     updateWidget(
@@ -821,7 +834,7 @@ open class HomeRevampViewModel @Inject constructor(
             )
 
             try {
-                if(homeRemoteConfigController.isUsingNewAtf()) {
+                if (homeRemoteConfigController.isUsingNewAtf()) {
                     todoWidgetRepository.dismissItemAt(horizontalPosition)
                 } else {
                     findWidget<TodoWidgetListDataModel> { item, verticalPosition ->
