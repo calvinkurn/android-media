@@ -10,6 +10,7 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.sellerorder.R as sellerorderR
 
 class SomListBulkRequestPickupDialog(context: Context) {
 
@@ -26,11 +27,11 @@ class SomListBulkRequestPickupDialog(context: Context) {
     init {
         childViews = View.inflate(
             context,
-            com.tokopedia.sellerorder.R.layout.som_list_bulk_action_dialog,
+            sellerorderR.layout.som_list_bulk_action_dialog,
             null
         )
         dialogUnify =
-            DialogUnify(context, DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ILLUSTRATION).apply {
+            DialogUnify(context, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE).apply {
                 if (DeviceScreenInfo.isTablet(context)) {
                     dialogMaxWidth = getScreenWidth() / 2
                 }
@@ -45,15 +46,15 @@ class SomListBulkRequestPickupDialog(context: Context) {
     }
 
     private fun initChildView() = childViews?.run {
-        titleDialog = findViewById(com.tokopedia.sellerorder.R.id.tvSomListBulkActionDialogTitle)
+        titleDialog = findViewById(sellerorderR.id.tvSomListBulkActionDialogTitle)
         descDialog =
-            findViewById(com.tokopedia.sellerorder.R.id.tvSomListBulkActionDialogDescription)
+            findViewById(sellerorderR.id.tvSomListBulkActionDialogDescription)
         btnPrimaryDialog =
-            findViewById(com.tokopedia.sellerorder.R.id.btnSomListBulkActionDialogPrimaryButton)
+            findViewById(sellerorderR.id.btnSomListBulkActionDialogPrimaryButton)
         btnSecondaryDialog =
-            findViewById(com.tokopedia.sellerorder.R.id.btnSomListBulkActionDialogSecondaryButton)
-        loaderBulkAccept = findViewById(com.tokopedia.sellerorder.R.id.loaderBulkAccept)
-        ivBulkAcceptDialog = findViewById(com.tokopedia.sellerorder.R.id.ivBulkAcceptDialog)
+            findViewById(sellerorderR.id.btnSomListBulkActionDialogSecondaryButton)
+        loaderBulkAccept = findViewById(sellerorderR.id.loaderBulkAccept)
+        ivBulkAcceptDialog = findViewById(sellerorderR.id.ivBulkAcceptDialog)
     }
 
     fun setOnDismiss(action: () -> Unit) {
@@ -100,7 +101,7 @@ class SomListBulkRequestPickupDialog(context: Context) {
     fun showSuccess() {
         loaderBulkAccept?.hide()
         ivBulkAcceptDialog?.apply {
-            loadImage(com.tokopedia.sellerorder.R.drawable.ic_som_bulk_success)
+            loadImage(sellerorderR.drawable.ic_som_bulk_success)
             show()
         }
     }
@@ -108,7 +109,7 @@ class SomListBulkRequestPickupDialog(context: Context) {
     fun showFailed() {
         loaderBulkAccept?.hide()
         ivBulkAcceptDialog?.apply {
-            loadImage(com.tokopedia.sellerorder.R.drawable.ic_som_bulk_fail)
+            loadImage(sellerorderR.drawable.ic_som_bulk_fail)
             show()
         }
     }

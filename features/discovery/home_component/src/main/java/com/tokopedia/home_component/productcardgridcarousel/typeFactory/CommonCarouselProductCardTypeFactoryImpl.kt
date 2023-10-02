@@ -53,16 +53,8 @@ open class CommonCarouselProductCardTypeFactoryImpl(
         return SpecialReleaseItemViewHolder.LAYOUT
     }
 
-    override fun type(dataModel: CarouselMissionWidgetDataModel): Int {
-        return MissionWidgetItemViewHolder.LAYOUT
-    }
-
     override fun type(dataModel: CarouselBannerCardDataModel): Int {
         return CarouselBannerItemViewHolder.LAYOUT
-    }
-
-    override fun type(dataModel: CarouselTodoWidgetDataModel): Int {
-        return TodoWidgetItemViewHolder.LAYOUT
     }
 
     override fun type(dataModel: SpecialReleaseRevampItemDataModel): Int {
@@ -95,14 +87,8 @@ open class CommonCarouselProductCardTypeFactoryImpl(
             SpecialReleaseItemViewHolder.LAYOUT -> {
                 SpecialReleaseItemViewHolder(view, channels, cardInteraction)
             }
-            MissionWidgetItemViewHolder.LAYOUT -> {
-                MissionWidgetItemViewHolder(view, cardInteraction)
-            }
             CarouselBannerItemViewHolder.LAYOUT -> {
                 CarouselBannerItemViewHolder(view, cardInteraction)
-            }
-            TodoWidgetItemViewHolder.LAYOUT -> {
-                TodoWidgetItemViewHolder(view)
             }
             SpecialReleaseRevampItemViewHolder.LAYOUT -> {
                 SpecialReleaseRevampItemViewHolder(view)

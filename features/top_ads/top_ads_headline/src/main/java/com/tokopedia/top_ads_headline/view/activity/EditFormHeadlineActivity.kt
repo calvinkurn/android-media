@@ -134,7 +134,6 @@ class EditFormHeadlineActivity : BaseActivity(), HasComponent<HeadlineAdsCompone
                     id = groupId,
                     shopID = userSession.shopId,
                     name = stepperModel.groupName,
-                    status = sharedEditHeadlineViewModel.getStatus(),
                     priceBid = stepperModel.minBid.toFloat(),
                     dailyBudget = stepperModel.dailyBudget,
                     scheduleStart = stepperModel.startDate,

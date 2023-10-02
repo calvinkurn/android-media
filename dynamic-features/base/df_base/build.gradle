@@ -164,4 +164,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.buyerorder)
     implementation projectOrAar(rootProject.ext.features.snapshot)
     implementation projectOrAar(rootProject.ext.features.buyercancellationorder)
+
+    implementation projectOrAar(rootProject.ext.features.scpRewardsTouchpoints)
 }

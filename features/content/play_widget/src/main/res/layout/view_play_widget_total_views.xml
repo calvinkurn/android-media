@@ -6,7 +6,6 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:gravity="center"
-    tools:background="@color/Unify_Static_Black"
     >
 
     <com.tokopedia.iconunify.IconUnify
@@ -27,7 +26,6 @@
         android:maxLines="1"
         android:textColor="@color/Unify_Static_White"
         app:typographyType="display_3"
-        app:typographyWeight="bold"
         tools:text="16,5rb"
         />
 

@@ -17,7 +17,12 @@ object ProductCardMapper {
         )
     }
 
-    fun mapToProductCardCampaignModel(isHasAddToCartButton: Boolean, hasThreeDots: Boolean, productCardUiModel: ProductCardUiModel): ProductCardModel {
+    fun mapToProductCardCampaignModel(
+        isHasAddToCartButton: Boolean,
+        hasThreeDots: Boolean,
+        productCardUiModel: ProductCardUiModel,
+        forceLightModeColor: Boolean
+    ): ProductCardModel {
         val discountWithoutPercentageString = productCardUiModel.discountPercentage?.replace("%", "").orEmpty()
         val discountPercentage = if (discountWithoutPercentageString == "0") { "" } else { "$discountWithoutPercentageString%" }
         val freeOngkirObject = ProductCardModel.FreeOngkir(
@@ -40,6 +45,7 @@ object ProductCardMapper {
             addToCartButtonType = UnifyButton.Type.MAIN,
             stockBarLabel = productCardUiModel.stockLabel,
             stockBarPercentage = productCardUiModel.stockSoldPercentage,
+            forceLightModeColor = forceLightModeColor
         )
     }
 }

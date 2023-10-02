@@ -1,14 +1,20 @@
 package com.tokopedia.shop.pageheader.util
 
 import com.tokopedia.feedcomponent.data.pojo.whitelist.Whitelist
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.common.constant.ShopPageConstant
+import com.tokopedia.shop.common.constant.ShopPageConstant.FORMAT_CONVERT_PERCENTAGE_TO_HEX
 import com.tokopedia.shop.common.data.model.ShopPageGetDynamicTabResponse
 import com.tokopedia.shop.common.data.model.ShopPageGetHomeType
 import com.tokopedia.shop.common.graphql.data.isshopofficial.GetIsShopOfficialStore
 import com.tokopedia.shop.common.graphql.data.isshoppowermerchant.GetIsShopPowerMerchant
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
+import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.pageheader.ShopPageHeaderConstant.SHOP_PAGE_POWER_MERCHANT_ACTIVE
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderLayoutResponse
+import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageHeaderLayoutUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageHeaderP1HeaderData
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.*
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.BaseShopPageHeaderComponentUiModel.ComponentName.BUTTON_FOLLOW
@@ -27,7 +33,7 @@ object ShopPageHeaderMapper {
         feedWhitelistData: Whitelist,
         shopPageHeaderLayoutData: ShopPageHeaderLayoutResponse
     ): ShopPageHeaderP1HeaderData {
-        val listShopHeaderWidget = mapToShopPageHeaderLayoutUiModel(shopPageHeaderLayoutData)
+        val listShopHeaderWidget = mapToShopPageHeaderLayoutWidgetUiModel(shopPageHeaderLayoutData)
         val shopName = getShopHeaderWidgetComponentData<ShopPageHeaderBadgeTextValueComponentUiModel>(
             listShopHeaderWidget,
             SHOP_BASIC_INFO,
@@ -56,9 +62,11 @@ object ShopPageHeaderMapper {
         shopInfoCoreData: ShopInfo,
         shopPageGetDynamicTabResponse: ShopPageGetDynamicTabResponse,
         feedWhitelistData: Whitelist,
-        shopPageHeaderLayoutData: ShopPageHeaderLayoutResponse
+        shopPageHeaderLayoutData: ShopPageHeaderLayoutResponse,
+        shopPageColorSchemaDefaultConfigColor: Map<ShopPageColorSchema.ColorSchemaName, String>,
+        isEnableShopReimagined: Boolean
     ): ShopPageHeaderP1HeaderData {
-        val listShopHeaderWidget = mapToShopPageHeaderLayoutUiModel(shopPageHeaderLayoutData)
+        val listShopHeaderWidget = mapToShopPageHeaderLayoutWidgetUiModel(shopPageHeaderLayoutData)
         val shopName = getShopHeaderWidgetComponentData<ShopPageHeaderBadgeTextValueComponentUiModel>(
             listShopHeaderWidget,
             SHOP_BASIC_INFO,
@@ -69,6 +77,11 @@ object ShopPageHeaderMapper {
             SHOP_BASIC_INFO,
             SHOP_LOGO
         )?.image.orEmpty()
+        val shopPageHeaderLayoutUiModel = mapToShopPageHeaderLayoutUiModel(
+            shopPageHeaderLayoutData,
+            shopPageColorSchemaDefaultConfigColor,
+            isEnableShopReimagined
+        )
         return ShopPageHeaderP1HeaderData(
             isOfficial = shopInfoCoreData.goldOS.shopTier == ShopPageConstant.ShopTierType.OFFICIAL_STORE,
             isGoldMerchant = shopInfoCoreData.goldOS.shopTier == ShopPageConstant.ShopTierType.POWER_MERCHANT_PRO,
@@ -80,8 +93,109 @@ object ShopPageHeaderMapper {
             isWhitelist = feedWhitelistData.isWhitelist,
             feedUrl = feedWhitelistData.url,
             listShopPageHeaderWidget = listShopHeaderWidget,
-            listDynamicTabData = shopPageGetDynamicTabResponse.shopPageGetDynamicTab.tabData
+            listDynamicTabData = shopPageGetDynamicTabResponse.shopPageGetDynamicTab.tabData,
+            shopHeaderLayoutData = shopPageHeaderLayoutUiModel
         )
+    }
+
+    private fun mapToShopPageHeaderLayoutUiModel(
+        shopPageHeaderLayoutData: ShopPageHeaderLayoutResponse,
+        shopPageColorSchemaDefaultConfigColor: Map<ShopPageColorSchema.ColorSchemaName, String>,
+        isEnableShopReimagined: Boolean
+    ): ShopPageHeaderLayoutUiModel {
+        return ShopPageHeaderLayoutUiModel(
+            mapToShopPageHeaderLayoutListConfig(
+                shopPageHeaderLayoutData.shopPageGetHeaderLayout.generalComponentConfigList,
+                shopPageColorSchemaDefaultConfigColor
+            ),
+            shopPageHeaderLayoutData.shopPageGetHeaderLayout.isOverrideTheme && isEnableShopReimagined
+        )
+    }
+
+    private fun mapToShopPageHeaderLayoutListConfig(
+        generalComponentConfigList: List<ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.GeneralComponentConfigList>,
+        shopPageColorSchemaDefaultConfigColor: Map<ShopPageColorSchema.ColorSchemaName, String>
+    ): List<ShopPageHeaderLayoutUiModel.Config> {
+        return generalComponentConfigList.map {
+            ShopPageHeaderLayoutUiModel.Config(
+                it.name,
+                it.type,
+                it.data.patternColorType.lowercase(),
+                it.data.listBackgroundColor,
+                mapToListBackgroundObject(it.data.listBackgroundObject),
+                mapToListColorSchema(it.data.listColorSchema, shopPageColorSchemaDefaultConfigColor)
+            )
+        }
+    }
+
+    private fun mapToListColorSchema(
+        listColorSchema: List<ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.GeneralComponentConfigList.DataComponentConfig.ColorSchema>,
+        shopPageColorSchemaDefaultConfigColor: Map<ShopPageColorSchema.ColorSchemaName, String>
+    ): ShopPageColorSchema {
+        return ShopPageColorSchema(
+            listColorSchema = listColorSchema.map {
+                ShopPageColorSchema.ColorSchema(
+                    it.name,
+                    it.type,
+                    getHexColor(it.name, it.value, shopPageColorSchemaDefaultConfigColor)
+                )
+            }
+        )
+    }
+
+    private fun getHexColor(
+        name: String,
+        hexStringValue: String,
+        shopPageColorSchemaDefaultConfigColor: Map<ShopPageColorSchema.ColorSchemaName, String>
+    ): String {
+        return if (hexStringValue.isEmpty()) {
+            shopPageColorSchemaDefaultConfigColor[ShopPageColorSchema.ColorSchemaName.valueOf(name)].orEmpty()
+        } else {
+            parseFormattedHexString(hexStringValue)
+        }
+    }
+
+    /**
+     * This function check whether hexStringValue is formatted like #212121-20
+     * If it's match the format, then it will convert it to string hex with opacity (e.g. #33212121)
+     * otherwise it will return current hexStringValue
+     */
+    private fun parseFormattedHexString(hexStringValue: String): String {
+        val splitHexColor = hexStringValue.split("-")
+        return if (splitHexColor.size > Int.ONE) {
+            try {
+                val hexString = splitHexColor.getOrNull(Int.ZERO).orEmpty()
+                val opacityPercentage = splitHexColor.getOrNull(Int.ONE).toIntOrZero()
+                val opacityHexString = convertPercentageToOpacityHexString(opacityPercentage)
+                hexString.substring(
+                    Int.ZERO,
+                    Int.ONE
+                ) + opacityHexString + hexString.substring(Int.ONE)
+            } catch (_: Exception) {
+                ""
+            }
+        } else {
+            hexStringValue
+        }
+    }
+
+    private fun convertPercentageToOpacityHexString(opacityPercentage: Int): String {
+        return if (opacityPercentage in 0 until 100) {
+            val decimalOpacity = opacityPercentage / 100.0
+            val roundedValue = (decimalOpacity * 255).toInt()
+            String.format(FORMAT_CONVERT_PERCENTAGE_TO_HEX, roundedValue)
+        } else {
+            ""
+        }
+    }
+
+    private fun mapToListBackgroundObject(listBackgroundObject: List<ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.GeneralComponentConfigList.DataComponentConfig.BackgroundObject>): List<ShopPageHeaderLayoutUiModel.Config.BackgroundObject> {
+        return listBackgroundObject.map {
+            ShopPageHeaderLayoutUiModel.Config.BackgroundObject(
+                it.url,
+                it.type
+            )
+        }
     }
 
     private inline fun <reified T> getShopHeaderWidgetComponentData(
@@ -97,7 +211,7 @@ object ShopPageHeaderMapper {
     }
 
     private var headerComponentPosition: Int = -1
-    private fun mapToShopPageHeaderLayoutUiModel(
+    private fun mapToShopPageHeaderLayoutWidgetUiModel(
         shopPageHeaderLayoutResponseData: ShopPageHeaderLayoutResponse
     ): List<ShopPageHeaderWidgetUiModel> {
         return mutableListOf<ShopPageHeaderWidgetUiModel>().apply {

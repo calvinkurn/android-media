@@ -39,7 +39,11 @@ import com.tokopedia.feedplus.presentation.activityresultcontract.OpenCreateShor
 import com.tokopedia.feedplus.presentation.activityresultcontract.RouteContract
 import com.tokopedia.feedplus.presentation.adapter.FeedPagerAdapter
 import com.tokopedia.feedplus.presentation.customview.UploadInfoView
-import com.tokopedia.feedplus.presentation.model.*
+import com.tokopedia.feedplus.presentation.model.ActiveTabSource
+import com.tokopedia.feedplus.presentation.model.FeedDataModel
+import com.tokopedia.feedplus.presentation.model.FeedMainEvent
+import com.tokopedia.feedplus.presentation.model.FeedTabModel
+import com.tokopedia.feedplus.presentation.model.MetaModel
 import com.tokopedia.feedplus.presentation.onboarding.ImmersiveFeedOnboarding
 import com.tokopedia.feedplus.presentation.receiver.FeedMultipleSourceUploadReceiver
 import com.tokopedia.feedplus.presentation.receiver.UploadStatus
@@ -50,6 +54,7 @@ import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.play_common.shortsuploader.analytic.PlayShortsUploadAnalytic
@@ -64,7 +69,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.time.DurationUnit
-import kotlin.time.ExperimentalTime
 import kotlin.time.toDuration
 import com.tokopedia.creation.common.R as creationcommonR
 
@@ -114,15 +118,15 @@ class FeedBaseFragment :
     private var mCoachMarkJob: Job? = null
 
     private val toasterBottomMargin by lazy {
-        resources.getDimensionPixelOffset(R.dimen.feed_toaster_bottom_margin)
+        requireContext().resources.getDimensionPixelOffset(R.dimen.feed_toaster_bottom_margin)
     }
 
     private val tabExtraTopOffset24 by lazy {
-        resources.getDimensionPixelOffset(R.dimen.feed_space_24)
+        requireContext().resources.getDimensionPixelOffset(R.dimen.feed_space_24)
     }
 
     private val tabExtraTopOffset16 by lazy {
-        resources.getDimensionPixelOffset(R.dimen.feed_space_16)
+        requireContext().resources.getDimensionPixelOffset(R.dimen.feed_space_16)
     }
 
     private val adapter by lazy {
@@ -162,20 +166,19 @@ class FeedBaseFragment :
 
     private val openAppLink = registerForActivityResult(RouteContract()) {}
 
-    private val onNonLoginGoToFollowingTab =
+    private val swipeFollowingLoginResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            // this doesn't work, bcs the viewmodel doen't survive
             if (userSession.isLoggedIn) {
-                showNormalToaster(
-                    text = getString(
-                        R.string.feed_report_login_success_toaster_text,
-                        userSession.name
-                    ),
-                    duration = Toaster.LENGTH_LONG
-                )
-
                 feedMainViewModel.setActiveTab(TAB_TYPE_FOLLOWING)
-            } else {
-                feedMainViewModel.setActiveTab(TAB_TYPE_FOR_YOU)
+            }
+        }
+    private val openBrowseLoginResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            // this also doesn't work, if the previous `browseAppLink` is empty :(
+            if (userSession.isLoggedIn) {
+                val metaModel = feedMainViewModel.metaData.value
+                RouteManager.route(requireContext(), metaModel.browseApplink)
             }
         }
 
@@ -313,7 +316,6 @@ class FeedBaseFragment :
         /* TODO : Add Analytics, if any */
     }
 
-    @OptIn(ExperimentalTime::class)
     fun showSwipeOnboarding() {
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             delay(COACHMARK_START_DELAY_IN_SEC.toDuration(DurationUnit.SECONDS))
@@ -323,56 +325,45 @@ class FeedBaseFragment :
 
     private fun setupView() {
         binding.vpFeedTabItemsContainer.adapter = adapter
-
-        if (isJustLoggedIn) {
-            showJustLoggedInToaster()
-            feedMainViewModel.setActiveTab(TAB_TYPE_FOLLOWING)
-        }
-        isJustLoggedIn = false
-
         binding.vpFeedTabItemsContainer.reduceDragSensitivity(3)
         binding.vpFeedTabItemsContainer.registerOnPageChangeCallback(object :
-            OnPageChangeCallback() {
+                OnPageChangeCallback() {
 
-            var shouldSendSwipeTracker = false
+                var shouldSendSwipeTracker = false
 
-            override fun onPageScrolled(
-                position: Int,
-                positionOffset: Float,
-                positionOffsetPixels: Int
-            ) {
-                handleTabTransition(position)
-                if (!userSession.isLoggedIn &&
-                    activeTabSource.tabName == null // not coming from appLink
+                override fun onPageScrolled(
+                    position: Int,
+                    positionOffset: Float,
+                    positionOffsetPixels: Int
                 ) {
-                    if (position == TAB_SECOND_INDEX) {
-                        onNonLoginGoToFollowingTab.launch(
-                            RouteManager.getIntent(
-                                context,
-                                ApplinkConst.LOGIN
+                    handleTabTransition(position)
+                    if (!userSession.isLoggedIn &&
+                        activeTabSource.tabName == null // not coming from appLink
+                    ) {
+                        if (position == TAB_SECOND_INDEX) {
+                            swipeFollowingLoginResult.launch(
+                                RouteManager.getIntent(context, ApplinkConst.LOGIN)
                             )
-                        )
+                        }
+                    }
+
+                    if (shouldSendSwipeTracker) {
+                        if (THRESHOLD_OFFSET_HALF > positionOffset) {
+                            feedNavigationAnalytics.eventSwipeFollowingTab()
+                        } else {
+                            feedNavigationAnalytics.eventSwipeForYouTab()
+                        }
+                        shouldSendSwipeTracker = false
                     }
                 }
 
-                if (shouldSendSwipeTracker) {
-                    if (THRESHOLD_OFFSET_HALF > positionOffset) {
-                        feedNavigationAnalytics.eventSwipeFollowingTab()
-                    } else {
-                        feedNavigationAnalytics.eventSwipeForYouTab()
-                    }
-                    shouldSendSwipeTracker = false
+                override fun onPageSelected(position: Int) {
                 }
-            }
 
-            override fun onPageSelected(position: Int) {
-                selectActiveTab(position)
-            }
-
-            override fun onPageScrollStateChanged(state: Int) {
-                shouldSendSwipeTracker = state == ViewPager2.SCROLL_STATE_DRAGGING
-            }
-        })
+                override fun onPageScrollStateChanged(state: Int) {
+                    shouldSendSwipeTracker = state == ViewPager2.SCROLL_STATE_DRAGGING
+                }
+            })
 
         binding.viewVerticalSwipeOnboarding.setText(
             getString(R.string.feed_check_next_content)
@@ -589,6 +580,17 @@ class FeedBaseFragment :
             openAppLink.launch(meta.liveApplink)
         }
 
+        binding.containerFeedTopNav.btnFeedBrowse.setOnClickListener {
+            feedNavigationAnalytics.sendClickBrowseIconEvent()
+            if (!userSession.isLoggedIn) {
+                openBrowseLoginResult.launch(
+                    RouteManager.getIntent(requireContext(), ApplinkConst.LOGIN)
+                )
+            } else {
+                openAppLink.launch(meta.browseApplink)
+            }
+        }
+
         binding.containerFeedTopNav.feedUserProfileImage.setOnClickListener {
             feedNavigationAnalytics.eventClickProfileButton()
             if (feedMainViewModel.isLoggedIn) {
@@ -598,19 +600,10 @@ class FeedBaseFragment :
             }
         }
 
-        if (meta.isCreationActive && userSession.isLoggedIn) {
-            binding.containerFeedTopNav.btnFeedCreatePost.show()
-        } else {
-            binding.containerFeedTopNav.btnFeedCreatePost.hide()
-        }
-
-        if (meta.showLive) {
-            binding.containerFeedTopNav.btnFeedLive.show()
-            binding.containerFeedTopNav.labelFeedLive.show()
-        } else {
-            binding.containerFeedTopNav.btnFeedLive.hide()
-            binding.containerFeedTopNav.labelFeedLive.hide()
-        }
+        binding.containerFeedTopNav.btnFeedCreatePost.showWithCondition(meta.isCreationActive && userSession.isLoggedIn)
+        binding.containerFeedTopNav.btnFeedLive.showWithCondition(meta.showLive)
+        binding.containerFeedTopNav.labelFeedLive.showWithCondition(meta.showLive)
+        binding.containerFeedTopNav.btnFeedBrowse.showWithCondition(meta.showBrowse)
     }
 
     private fun initTabsView(tab: FeedTabModel) {
@@ -649,7 +642,12 @@ class FeedBaseFragment :
             binding.containerFeedTopNav.tyFeedSecondTab.hide()
         }
 
-        setupActiveTab(tab)
+        if (isJustLoggedIn && userSession.isLoggedIn) {
+            showJustLoggedInToaster()
+        } else {
+            setupActiveTab(tab)
+        }
+        isJustLoggedIn = false
     }
 
     private fun setupActiveTab(tab: FeedTabModel) {
@@ -693,6 +691,13 @@ class FeedBaseFragment :
                         null
                     }
                 )
+                .setBrowseIconView(
+                    if (meta.showBrowse && userSession.isLoggedIn && !feedMainViewModel.hasShownBrowseEntryPoint()) {
+                        binding.containerFeedTopNav.btnFeedBrowse
+                    } else {
+                        null
+                    }
+                )
                 .setListener(object : ImmersiveFeedOnboarding.Listener {
                     override fun onStarted() {
                     }
@@ -703,6 +708,10 @@ class FeedBaseFragment :
 
                     override fun onCompleteProfileEntryPointOnboarding() {
                         feedMainViewModel.setHasShownProfileEntryPoint()
+                    }
+
+                    override fun onCompleteBrowseEntryPointOnboarding() {
+                        feedMainViewModel.setHasShownBrowseEntryPoint()
                     }
 
                     override fun onFinished(isForcedDismiss: Boolean) {
@@ -810,7 +819,7 @@ class FeedBaseFragment :
     private fun getAllMotionScene(): List<ConstraintSet> {
         return listOf(
             binding.containerFeedTopNav.root.getConstraintSet(R.id.start),
-            binding.containerFeedTopNav.root.getConstraintSet(R.id.end),
+            binding.containerFeedTopNav.root.getConstraintSet(R.id.end)
         )
     }
 

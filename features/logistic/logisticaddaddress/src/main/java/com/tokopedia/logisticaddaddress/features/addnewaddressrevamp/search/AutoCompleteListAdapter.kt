@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.logisticCommon.domain.model.SuggestedPlace
 import com.tokopedia.logisticaddaddress.databinding.ItemDistrictSearchPageBinding
 
-class AutoCompleteListAdapter(private var listener: AutoCompleteItemListener): RecyclerView.Adapter<AutoCompleteListAdapterViewHolder>() {
+class AutoCompleteListAdapter(private var listener: AutoCompleteItemListener) : RecyclerView.Adapter<AutoCompleteListAdapterViewHolder>() {
 
     private val autoCompleteData = mutableListOf<SuggestedPlace>()
 
@@ -39,5 +39,4 @@ class AutoCompleteListAdapter(private var listener: AutoCompleteItemListener): R
         autoCompleteData.addAll(data)
         notifyDataSetChanged()
     }
-
 }

@@ -11,7 +11,7 @@ import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
-import com.tokopedia.catalog.ui.activity.CatalogDetailPageActivity
+import com.tokopedia.oldcatalog.ui.activity.CatalogDetailPageActivity
 import com.tokopedia.catalog.utils.TkpdIdlingResource
 import com.tokopedia.catalog.utils.TkpdIdlingResourceProvider
 import com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_CATALOG_ID

@@ -10,10 +10,10 @@ import android.view.MotionEvent
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.imageassets.TokopediaImageUrl
-import com.tokopedia.imageassets.utils.loadProductImage
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.imageassets.TokopediaImageUrl
+import com.tokopedia.imageassets.utils.loadProductImage
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -23,10 +23,13 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.clearImage
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerorder.R
+import com.tokopedia.sellerorder.common.presenter.model.PopUp
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_ACCEPT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_CHANGE_COURIER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_CONFIRM_SHIPPING
+import com.tokopedia.sellerorder.common.util.SomConsts.KEY_CONFIRM_SHIPPING_AUTO
+import com.tokopedia.sellerorder.common.util.SomConsts.KEY_CONFIRM_SHIPPING_DROP_OFF
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REQUEST_PICKUP
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_RESPOND_TO_CANCELLATION
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_RETURN_TO_SHIPPER
@@ -156,8 +159,9 @@ open class SomListOrderViewHolder(
                 btnQuickAction?.buttonVariant = if (firstButton.type == SomConsts.KEY_PRIMARY_DIALOG_BUTTON) UnifyButton.Variant.FILLED else UnifyButton.Variant.GHOST
                 btnQuickAction?.setOnClickListener { onQuickActionButtonClicked(element) }
                 btnQuickAction?.show()
+                btnQuickAction?.isEnabled = true
             } else {
-                btnQuickAction?.gone()
+                btnQuickAction?.isEnabled = false
             }
         }
     }
@@ -361,6 +365,7 @@ open class SomListOrderViewHolder(
             when (button.key) {
                 KEY_TRACK_SELLER -> listener.onTrackButtonClicked(element.orderId, button.url)
                 KEY_CONFIRM_SHIPPING -> listener.onConfirmShippingButtonClicked(button.displayName, element.orderId, skipValidateOrder(element))
+                KEY_CONFIRM_SHIPPING_AUTO, KEY_CONFIRM_SHIPPING_DROP_OFF -> listener.onConfirmShippingAutoButtonClicked(element.buttons.firstOrNull()?.popUp)
                 KEY_ACCEPT_ORDER -> listener.onAcceptOrderButtonClicked(button.displayName, element.orderId, skipValidateOrder(element))
                 KEY_REQUEST_PICKUP -> listener.onRequestPickupButtonClicked(button.displayName, element.orderId, skipValidateOrder(element))
                 KEY_RESPOND_TO_CANCELLATION -> listener.onRespondToCancellationButtonClicked(element)
@@ -453,6 +458,7 @@ open class SomListOrderViewHolder(
         fun onOrderClicked(order: SomListOrderUiModel)
         fun onTrackButtonClicked(orderId: String, url: String)
         fun onConfirmShippingButtonClicked(actionName: String, orderId: String, skipValidateOrder: Boolean)
+        fun onConfirmShippingAutoButtonClicked(popUp: PopUp?)
         fun onAcceptOrderButtonClicked(actionName: String, orderId: String, skipValidateOrder: Boolean)
         fun onRequestPickupButtonClicked(actionName: String, orderId: String, skipValidateOrder: Boolean)
         fun onRespondToCancellationButtonClicked(order: SomListOrderUiModel)
