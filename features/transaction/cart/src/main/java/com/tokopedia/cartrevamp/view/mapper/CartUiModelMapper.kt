@@ -39,8 +39,10 @@ import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.EpharmacyConsultationInfoResponse
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.BenefitSummaryInfo
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.SummariesItem
+import com.tokopedia.purchase_platform.common.feature.promo.domain.model.BebasOngkirInfo
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.UsageSummaries
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyAdditionalInfoUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyBebasOngkirInfoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyEmptyCartInfoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyErrorDetailUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyMessageInfoUiModel
@@ -616,7 +618,8 @@ object CartUiModelMapper {
             voucherOrders = mapListVoucherOrders(lastApplyPromoData.listVoucherOrders),
             additionalInfo = mapAdditionalInfo(lastApplyPromoData.additionalInfo),
             message = mapMessageGlobalPromo(lastApplyPromoData.message),
-            benefitSummaryInfo = mapBenefitSummaryInfo(lastApplyPromoData.benefitSummaryInfo)
+            benefitSummaryInfo = mapBenefitSummaryInfo(lastApplyPromoData.benefitSummaryInfo),
+            userGroupMetadata = lastApplyPromoData.userGroupMetadata
         )
     }
 
@@ -685,7 +688,8 @@ object CartUiModelMapper {
             messageInfo = mapMessageInfo(promoAdditionalInfo.messageInfo),
             errorDetail = mapErrorDetail(promoAdditionalInfo.errorDetail),
             emptyCartInfo = mapEmptyCartInfo(promoAdditionalInfo.emptyCartInfo),
-            usageSummaries = mapUsageSummaries(promoAdditionalInfo.usageSummaries)
+            usageSummaries = mapUsageSummaries(promoAdditionalInfo.usageSummaries),
+            bebasOngkirInfo = mapBebasOngkirInfo(promoAdditionalInfo.bebasOngkirInfo)
         )
     }
 
@@ -720,6 +724,13 @@ object CartUiModelMapper {
                 currencyDetailsStr = it.currencyDetailsStr
             )
         }
+    }
+
+    private fun mapBebasOngkirInfo(bebasOngkirInfo: BebasOngkirInfo): LastApplyBebasOngkirInfoUiModel {
+        return LastApplyBebasOngkirInfoUiModel(
+            isBoUnstackEnabled = bebasOngkirInfo.isBoUnstackEnabled,
+            isUseBebasOngkirOnly = bebasOngkirInfo.isUseBebasOngkirOnly
+        )
     }
 
     private fun mapGroupShop(shop: Shop, cartDetails: List<CartDetail>): CartShopHolderData {

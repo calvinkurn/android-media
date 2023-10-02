@@ -27,21 +27,21 @@ class DefaultTrackingManager(
 ) : TrackingManager {
 
     private val eventCategory: String = when (entryPoint) {
-        StoriesEntryPoint.ShopPage -> "shop page - buyer"
+        StoriesEntryPoint.ShopPage, StoriesEntryPoint.ShopPageReimagined -> "shop page - buyer"
         StoriesEntryPoint.ProductDetail -> "product detail page"
         StoriesEntryPoint.TopChatList -> "inbox-chat"
         StoriesEntryPoint.TopChatRoom -> "message room"
     }
 
     private val impressionTrackerId = when (entryPoint) {
-        StoriesEntryPoint.ShopPage -> "45997"
+        StoriesEntryPoint.ShopPage, StoriesEntryPoint.ShopPageReimagined -> "45997"
         StoriesEntryPoint.ProductDetail -> "45999"
         StoriesEntryPoint.TopChatList -> "46001"
         StoriesEntryPoint.TopChatRoom -> "46003"
     }
 
     private val clickTrackerId = when (entryPoint) {
-        StoriesEntryPoint.ShopPage -> "45998"
+        StoriesEntryPoint.ShopPage, StoriesEntryPoint.ShopPageReimagined -> "45998"
         StoriesEntryPoint.ProductDetail -> "46000"
         StoriesEntryPoint.TopChatList -> "46002"
         StoriesEntryPoint.TopChatRoom -> "46004"
