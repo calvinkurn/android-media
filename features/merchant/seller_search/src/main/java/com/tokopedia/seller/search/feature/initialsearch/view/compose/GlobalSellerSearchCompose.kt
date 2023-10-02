@@ -6,6 +6,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -82,15 +86,23 @@ private fun SearchBarUnify(
     searchBarPlaceholder: String,
     uiEffect: (GlobalSearchUiEvent) -> Unit
 ) {
+    val nn950Color = NestTheme.colors.NN._950
+
+    var textFieldValue by remember {
+        mutableStateOf(
+            TextFieldValue(
+                annotatedString = buildAnnotatedString {
+                    withStyle(style = SpanStyle(color = nn950Color)) {
+                        append(searchBarKeyword)
+                    }
+                },
+                selection = TextRange(searchBarKeyword.length)
+            )
+        )
+    }
+
     NestSearchBar(
-        value = TextFieldValue(
-            annotatedString = buildAnnotatedString {
-                withStyle(style = SpanStyle(color = NestTheme.colors.NN._950)) {
-                    append(searchBarKeyword)
-                }
-            },
-            selection = TextRange(searchBarKeyword.length)
-        ),
+        value = textFieldValue,
         placeholderText = searchBarPlaceholder.ifBlank { stringResource(id = R.string.placeholder_search_seller) },
         modifier = modifier,
         onSearchBarCleared = {
@@ -100,7 +112,8 @@ private fun SearchBarUnify(
             uiEffect(GlobalSearchUiEvent.OnKeyboardSearchSubmit(searchBarKeyword))
         },
         onTextChanged = {
-            uiEffect(GlobalSearchUiEvent.OnKeywordTextChanged(it))
+            textFieldValue = it
+            uiEffect(GlobalSearchUiEvent.OnKeywordTextChanged(it.text))
         }
     )
 }
