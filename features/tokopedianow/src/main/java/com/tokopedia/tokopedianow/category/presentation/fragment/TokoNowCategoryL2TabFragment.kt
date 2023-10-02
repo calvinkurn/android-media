@@ -382,6 +382,10 @@ class TokoNowCategoryL2TabFragment : Fragment() {
         }
     }
 
+    private fun showErrorToaster(message: String) {
+        showToaster(message = message, type = Toaster.TYPE_ERROR)
+    }
+
     private fun showErrorToaster(throwable: Throwable) {
         val message = throwable.message.orEmpty()
         showToaster(message = message, type = Toaster.TYPE_ERROR)
@@ -391,7 +395,7 @@ class TokoNowCategoryL2TabFragment : Fragment() {
         val message = getString(
             R.string.tokopedianow_home_toaster_description_you_are_not_be_able_to_shop
         )
-        showToaster(message = message)
+        showErrorToaster(message = message)
     }
 
     private fun onSuccessAddToCart(result: Success<AddToCartDataModel>) {
@@ -672,6 +676,7 @@ class TokoNowCategoryL2TabFragment : Fragment() {
             }
 
             override fun onProductCardAddToCartBlocked() {
+                showAddToCartBlockedToaster()
             }
         }
     }
