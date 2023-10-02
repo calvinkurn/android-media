@@ -1,6 +1,7 @@
 package com.tkpd.macrobenchmark.base
 import android.content.Intent
 import androidx.benchmark.macro.FrameTimingMetric
+import androidx.benchmark.macro.StartupMode
 import androidx.benchmark.macro.junit4.MacrobenchmarkRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
@@ -30,7 +31,7 @@ abstract class BaseFrameTimingBenchmark {
 
     @Before
     fun setupBefore() {
-        if (MacroArgs.useMock(InstrumentationRegistry.getArguments())){
+        if (MacroArgs.useMock(InstrumentationRegistry.getArguments())) {
             setupMock()
         }
         setupEnvironment()
@@ -51,7 +52,8 @@ abstract class BaseFrameTimingBenchmark {
         var currentIteration = 0
         benchmarkRule.measureTokopediaApps(
             metrics = listOf(FrameTimingMetric()),
-            packageName = packageName()
+            packageName = packageName(),
+            startupMode = StartupMode.WARM
         ) {
             val intent = getIntent()
             it.startActivityAndWait(intent)
@@ -62,6 +64,4 @@ abstract class BaseFrameTimingBenchmark {
     }
     abstract fun pageInteractionTest(currentIteration: Int)
     abstract fun getIntent(): Intent
-
-
 }

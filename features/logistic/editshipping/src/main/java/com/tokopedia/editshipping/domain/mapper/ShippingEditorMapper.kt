@@ -35,6 +35,7 @@ class ShippingEditorMapper @Inject constructor() {
         return ShipperListModel().apply {
             shippers = mapShipper(response.ongkirShippingEditor.data)
             ticker = mapTickerShipperList(response)
+            dropOffMapsUrl = response.ongkirShippingEditor.data.dropOffMapsUrl
         }
     }
 

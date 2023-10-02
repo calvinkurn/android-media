@@ -751,7 +751,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check digital smart bills appLink then should return tokopedia internal digital smart bills in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://recharge/bayarsekaligus"
+        val expectedDeepLink = ApplinkConsInternalDigital.KELOLA_TAGIHAN
         assertEqualsDeepLinkMapper(ApplinkConst.DIGITAL_SMARTBILLS, expectedDeepLink)
     }
 
