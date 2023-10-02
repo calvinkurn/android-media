@@ -41,4 +41,12 @@ object Key {
     const val itemVariant = "item_variant"
     const val creativeName = "creative_name"
     const val creativeSlot = "creative_slot"
+    const val price = "price"
+    const val itemShopId = "shop_id"
+    const val itemShopName = "shop_name"
+    const val itemShopType = "shop_type"
+    const val itemIndex = "index"
+    const val itemList = "item_list"
+
+    const val dimension40 = "dimension40"
 }

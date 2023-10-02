@@ -112,6 +112,16 @@ object Constant {
         const val TOP_ADS_GSLP_TDN = "topads gslp"
     }
 
+    object ChipSize {
+        const val LARGE = "large"
+        const val SMALL = "small"
+    }
+
+    object FullFilterType {
+        const val CATEGORY = "category"
+        const val ALL_ATTRIBUTES = "all_attributes"
+    }
+
     const val RESETTING_SELECTED_TAB = -1
 
     object ProductHighlight {
@@ -125,8 +135,17 @@ object Constant {
         const val PROMO = "promo"
     }
 
+    internal object CompType {
+        const val SHOP_CARD = "shop_card"
+    }
+
     const val REDIRECTION = "redirection"
     const val NAVIGATION = "navigation"
     const val TAB_BACKGROUND =
         "https://images.tokopedia.net/img/android/res/default_recom_tab_background.png"
+
+    internal object PropertyType {
+        const val ATF_BANNER = "atf_banner"
+        const val TARGETING_BANNER = "targeting_banner"
+    }
 }

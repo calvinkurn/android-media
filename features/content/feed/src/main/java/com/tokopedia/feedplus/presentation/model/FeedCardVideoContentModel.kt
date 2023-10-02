@@ -1,8 +1,7 @@
 package com.tokopedia.feedplus.presentation.model
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.content.common.report_content.model.FeedMenuItem
-import com.tokopedia.explore.view.adapter.Empty
+import com.tokopedia.content.common.report_content.model.ContentMenuItem
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_PLAY
 import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_X_CARD_PRODUCTS_HIGHLIGHT
 import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
@@ -35,7 +34,7 @@ data class FeedCardVideoContentModel(
     val comments: FeedCommentModel,
     val share: FeedShareModel,
     val followers: FeedFollowModel,
-    val menuItems: List<FeedMenuItem>,
+    val menuItems: List<ContentMenuItem>,
     val detailScore: List<FeedScoreModel>,
     val publishedAt: String,
     val playChannelId: String
@@ -55,12 +54,13 @@ data class FeedCardVideoContentModel(
     override fun type(typeFactory: FeedAdapterTypeFactory): Int = typeFactory.type(this)
 
     companion object {
-        val Empty get() = FeedCardVideoContentModel(id = "", typename = "", type = "",
-            author = FeedAuthorModel(id = "", type = AuthorType.Unknown, name = "", badgeUrl = "", logoUrl = "", appLink = "", encryptedUserId = "", isLive = false),
+        val Empty get() = FeedCardVideoContentModel(
+            id = "", typename = "", type = "",
+            author = FeedAuthorModel(id = "", type = AuthorType.Unknown, name = "", badgeUrl = "", logoUrl = "", appLink = "", encryptedUserId = ""),
             title = "", subtitle = "", text = "", cta = FeedCardCtaModel(), applink = "", weblink = "", actionButtonLabel = "", campaign = FeedCardCampaignModel(), hasVoucher = false,
             products = emptyList(), totalProducts = 0, media = emptyList(), hashtagApplinkFmt = "", hashtagWeblinkFmt = "", views = FeedViewModel(), like = FeedLikeModel(), comments = FeedCommentModel(),
-            share = FeedShareModel(contentId = "", author = FeedAuthorModel(id = "", type = AuthorType.Unknown, name = "", badgeUrl = "", logoUrl = "", appLink = "", encryptedUserId = "", isLive = false), appLink = "", webLink = "", mediaUrl = ""),
-            followers = FeedFollowModel(), menuItems = emptyList(), detailScore = emptyList(), publishedAt = "", playChannelId = "",
+            share = FeedShareModel(contentId = "", author = FeedAuthorModel(id = "", type = AuthorType.Unknown, name = "", badgeUrl = "", logoUrl = "", appLink = "", encryptedUserId = ""), appLink = "", webLink = "", mediaUrl = ""),
+            followers = FeedFollowModel(), menuItems = emptyList(), detailScore = emptyList(), publishedAt = "", playChannelId = ""
         )
     }
 }

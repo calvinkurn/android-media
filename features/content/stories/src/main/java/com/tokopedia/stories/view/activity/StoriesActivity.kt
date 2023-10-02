@@ -18,6 +18,7 @@ import com.tokopedia.stories.view.utils.ARGS_SOURCE_ID
 import com.tokopedia.stories.view.utils.KEY_ARGS
 import com.tokopedia.stories.view.utils.KEY_CONFIG_ENABLE_STORIES_ROOM
 import com.tokopedia.stories.view.utils.TAG_FRAGMENT_STORIES_GROUP
+import com.tokopedia.stories.view.viewmodel.StoriesViewModelFactory
 import javax.inject.Inject
 import com.tokopedia.stories.R as storiesR
 
@@ -34,6 +35,22 @@ class StoriesActivity : BaseActivity() {
         get() = _binding!!
 
     private var bundle: Bundle? = null
+
+    @Inject
+    lateinit var viewModelFactory: StoriesViewModelFactory.Creator
+
+    private val storiesArgs: StoriesArgsModel
+        get() {
+            val path = intent.data?.pathSegments
+            return StoriesArgsModel(
+                authorId = path?.last().orEmpty(),
+                authorType = path?.first().orEmpty(),
+                source = intent.data?.getQueryParameter(ARGS_SOURCE).ifNullOrBlank {
+                    StoriesSource.SHOP_ENTRY_POINT.value
+                },
+                sourceId = intent.data?.getQueryParameter(ARGS_SOURCE_ID).orEmpty(),
+            )
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
@@ -82,8 +99,9 @@ class StoriesActivity : BaseActivity() {
     private fun setupViews() {
         _binding = ActivityStoriesBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        if (isEnableStoriesRoom()) openFragment()
+        if (isEnableStoriesRoom()) {
+            openFragment()
+        }
         else finish()
     }
 
@@ -118,5 +136,4 @@ class StoriesActivity : BaseActivity() {
         super.onDestroy()
         _binding = null
     }
-
 }

@@ -25,3 +25,13 @@ fun Boolean.assertFalse() {
         .assertThat(this)
         .isFalse
 }
+
+inline fun <reified T> Any.assertType(
+    whenType: (T) -> Unit
+) {
+    Assertions
+        .assertThat(this)
+        .isInstanceOf(T::class.java)
+
+    whenType(this as T)
+}

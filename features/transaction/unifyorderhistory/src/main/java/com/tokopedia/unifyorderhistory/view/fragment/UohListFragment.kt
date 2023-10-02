@@ -78,7 +78,6 @@ import com.tokopedia.scp_rewards_touchpoints.common.ORDER_LIST_HISTORY_PAGE
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.ScpToasterHelper
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.model.AnalyticsData
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.model.ScpToasterModel
-import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.response.ScpRewardsMedalTouchPointResponse
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.viewmodel.ScpRewardsMedalTouchPointViewModel
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.helper.ViewHelper
@@ -852,8 +851,8 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
     private fun observeScpToaster() {
         scpTouchPointViewModel.medalTouchPointData.observe(viewLifecycleOwner) {
             when (it.result) {
-                is com.tokopedia.scp_rewards_touchpoints.common.Success<*> -> {
-                    val data = ((it.result as com.tokopedia.scp_rewards_touchpoints.common.Success<*>).data as ScpRewardsMedalTouchPointResponse)
+                is com.tokopedia.scp_rewards_touchpoints.common.Success -> {
+                    val data = (it.result as com.tokopedia.scp_rewards_touchpoints.common.Success).data
                     if (data.scpRewardsMedaliTouchpointOrder.isShown) {
                         view?.let { view ->
                             val finishOrderResult = (uohListViewModel.finishOrderResult.value as Success).data

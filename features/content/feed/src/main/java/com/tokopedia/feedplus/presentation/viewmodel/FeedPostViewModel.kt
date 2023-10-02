@@ -24,7 +24,7 @@ import com.tokopedia.content.common.usecase.PostUserReportUseCase
 import com.tokopedia.content.common.usecase.TrackVisitChannelBroadcasterUseCase
 import com.tokopedia.content.common.util.UiEventManager
 import com.tokopedia.createpost.common.domain.entity.SubmitPostData
-import com.tokopedia.feed.component.product.FeedTaggedProductUiModel
+import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.feedcomponent.domain.mapper.ProductMapper
 import com.tokopedia.feedcomponent.domain.usecase.FeedXGetActivityProductsUseCase
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction
@@ -35,10 +35,10 @@ import com.tokopedia.feedcomponent.presentation.utils.FeedResult
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TOPADS_HEADLINE_VALUE_SRC
 import com.tokopedia.feedplus.R
+import com.tokopedia.feedplus.domain.FeedRepository
 import com.tokopedia.feedplus.domain.mapper.MapperTopAdsXFeed.transformCpmToFeedTopAds
 import com.tokopedia.feedplus.domain.usecase.FeedCampaignCheckReminderUseCase
 import com.tokopedia.feedplus.domain.usecase.FeedCampaignReminderUseCase
-import com.tokopedia.feedplus.domain.usecase.FeedXHomeUseCase
 import com.tokopedia.feedplus.domain.usecase.FeedXRecomWidgetUseCase
 import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
 import com.tokopedia.feedplus.presentation.fragment.FeedBaseFragment
@@ -98,7 +98,7 @@ import javax.inject.Inject
  * Created By : Muhammad Furqan on 23/02/23
  */
 class FeedPostViewModel @Inject constructor(
-    private val feedXHomeUseCase: FeedXHomeUseCase,
+    private val repository: FeedRepository,
     private val addToCartUseCase: AddToCartUseCase,
     private val likeContentUseCase: SubmitLikeContentUseCase,
     private val deletePostUseCase: SubmitActionContentUseCase,
@@ -148,8 +148,8 @@ class FeedPostViewModel @Inject constructor(
     val reminderResult: LiveData<Result<FeedReminderResultModel>>
         get() = _reminderResult
 
-    private val _feedTagProductList = MutableLiveData<Result<List<FeedTaggedProductUiModel>>?>()
-    val feedTagProductList: LiveData<Result<List<FeedTaggedProductUiModel>>?>
+    private val _feedTagProductList = MutableLiveData<Result<List<ContentTaggedProductUiModel>>?>()
+    val feedTagProductList: LiveData<Result<List<ContentTaggedProductUiModel>>?>
         get() = _feedTagProductList
 
     private val _followRecommendationResult = MutableLiveData<Result<String>>()
@@ -208,7 +208,7 @@ class FeedPostViewModel @Inject constructor(
                         require(isNewData)
 
                         if (postSource.source != FeedBaseFragment.TAB_TYPE_CDP) {
-                            getRelevantPosts(postSource)
+                            repository.getRelevantPosts(postSource)
                         } else {
                             FeedModel.Empty
                         }
@@ -753,12 +753,6 @@ class FeedPostViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getRelevantPosts(postSourceModel: PostSourceModel): FeedModel {
-        return feedXHomeUseCase(
-            feedXHomeUseCase.createParamsWithId(postSourceModel.id, postSourceModel.source)
-        )
-    }
-
     private suspend fun getFeedPosts(
         source: String,
         cursor: String = "",
@@ -770,13 +764,7 @@ class FeedPostViewModel @Inject constructor(
         val detailId = if (postSourceModel?.source == FeedBaseFragment.TAB_TYPE_CDP) postSourceModel.id else ""
 
         while (response.items.isEmpty() && --thresholdGet >= 0) {
-            response = feedXHomeUseCase(
-                feedXHomeUseCase.createParams(
-                    source = source,
-                    cursor = nextCursor,
-                    detailId = detailId
-                )
-            )
+            response = repository.getPost(source, nextCursor, detailId = detailId)
             nextCursor = response.pagination.cursor
         }
 
@@ -964,14 +952,14 @@ class FeedPostViewModel @Inject constructor(
         get() = _observeBuyProduct
     private val _observeBuyProduct = MutableLiveData<Result<AddToCartDataModel>>()
 
-    private val _suspendedAddProductToCartData = MutableLiveData<FeedTaggedProductUiModel>()
-    private val _suspendedBuyProductData = MutableLiveData<FeedTaggedProductUiModel>()
+    private val _suspendedAddProductToCartData = MutableLiveData<ContentTaggedProductUiModel>()
+    private val _suspendedBuyProductData = MutableLiveData<ContentTaggedProductUiModel>()
 
-    fun suspendAddProductToCart(product: FeedTaggedProductUiModel) {
+    fun suspendAddProductToCart(product: ContentTaggedProductUiModel) {
         _suspendedAddProductToCartData.value = product
     }
 
-    fun suspendBuyProduct(product: FeedTaggedProductUiModel) {
+    fun suspendBuyProduct(product: ContentTaggedProductUiModel) {
         _suspendedBuyProductData.value = product
     }
 
@@ -987,7 +975,7 @@ class FeedPostViewModel @Inject constructor(
         }
     }
 
-    fun addProductToCart(product: FeedTaggedProductUiModel) {
+    fun addProductToCart(product: ContentTaggedProductUiModel) {
         viewModelScope.launchCatchError(block = {
             val response = addToCart(product)
             if (response.isDataError()) {
@@ -1001,7 +989,7 @@ class FeedPostViewModel @Inject constructor(
         }
     }
 
-    fun buyProduct(product: FeedTaggedProductUiModel) {
+    fun buyProduct(product: ContentTaggedProductUiModel) {
         viewModelScope.launchCatchError(block = {
             val response = addToCart(product)
             if (response.isDataError()) {
@@ -1015,7 +1003,7 @@ class FeedPostViewModel @Inject constructor(
         }
     }
 
-    private suspend fun addToCart(product: FeedTaggedProductUiModel) = withContext(dispatchers.io) {
+    private suspend fun addToCart(product: ContentTaggedProductUiModel) = withContext(dispatchers.io) {
         product.affiliate.let { affiliate ->
             if (affiliate.id.isNotEmpty() && affiliate.channel.isNotEmpty()) {
                 affiliateCookieHelper.initCookie(
@@ -1188,14 +1176,14 @@ class FeedPostViewModel @Inject constructor(
 
     fun fetchFeedProduct(
         activityId: String,
-        products: List<FeedTaggedProductUiModel>,
-        sourceType: FeedTaggedProductUiModel.SourceType
+        products: List<ContentTaggedProductUiModel>,
+        sourceType: ContentTaggedProductUiModel.SourceType
     ) {
         viewModelScope.launch {
             try {
                 _feedTagProductList.value = null
 
-                val currentList: List<FeedTaggedProductUiModel> = when {
+                val currentList: List<ContentTaggedProductUiModel> = when {
                     products.isNotEmpty() -> products
                     else -> emptyList()
                 }

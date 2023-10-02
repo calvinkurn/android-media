@@ -13,6 +13,7 @@ import com.tokopedia.applink.constant.DeeplinkConstant
 object ApplinkConstInternalMarketplace {
 
     const val HOST_MARKETPLACE = "marketplace"
+    const val HOST_HOME = "home"
 
     const val INTERNAL_MARKETPLACE = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_MARKETPLACE"
 
@@ -191,9 +192,6 @@ object ApplinkConstInternalMarketplace {
 
     // DistrictRecommendationShopSettingsActivity
     const val DISTRICT_RECOMMENDATION_SHOP_SETTINGS = "$INTERNAL_MARKETPLACE/district-recommendation-shop-settings"
-
-    // GeolocationActivity
-    const val GEOLOCATION = "$INTERNAL_MARKETPLACE/geolocation"
 
     // OnboardingActivity
     const val ONBOARDING = "$INTERNAL_MARKETPLACE/onboarding"

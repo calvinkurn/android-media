@@ -53,8 +53,10 @@ android {
 
     buildFeatures {
         viewBinding true
+        buildConfig true
         compose true
     }
+
     composeOptions {
         kotlinCompilerExtensionVersion = rootProject.ext.composeVersion
     }
@@ -65,6 +67,7 @@ android {
 
 dependencies {
     implementation projectOrAar(rootProject.ext.features.contentCommon)
+    implementation projectOrAar(rootProject.ext.features.playCommon) // todo: RoundedConstraintLayout to contentCommon
     implementation projectOrAar(rootProject.ext.features.contentAnalytic)
 
     implementation projectOrAar(rootProject.ext.libraries.applink)
@@ -80,12 +83,22 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation projectOrAar(rootProject.ext.libraries.network)
+    implementation projectOrAar(rootProject.ext.libraries.universal_sharing)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
+
+    implementation projectOrAar(rootProject.ext.features.localizationchooseaddress_common)
+    implementation projectOrAar(rootProject.ext.features.atcVariant)
+    implementation projectOrAar(rootProject.ext.features.productDetailCommon)
+    implementation projectOrAar(rootProject.ext.features.atc_common)
+    implementation projectOrAar(rootProject.ext.features.shopCommon)
+    implementation projectOrAar(rootProject.ext.features.contentAnalytic)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
+    implementation projectOrAar(rootProject.ext.features.contentCommon)
 
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
     implementation rootProject.ext.supportLibDependencies.constraintLayout
@@ -104,6 +117,7 @@ dependencies {
     kapt rootProject.ext.miscDependencies.daggerCompiler
 
     implementation rootProject.ext.networkDependencies.glide
+    implementation rootProject.ext.miscDependencies.lottie
 
     implementation rootProject.ext.debugToolsDependencies.chuck
 
@@ -114,6 +128,9 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.dialog
     implementation rootProject.ext.unifyDependencies.global_error
+    implementation rootProject.ext.composeDependencies.composeConstraint
+    implementation rootProject.ext.unifyDependencies.nestPrinciples
+    implementation rootProject.ext.unifyDependencies.nestComponents
 
     implementation rootProject.ext.composeDependencies.composeConstraint
     implementation rootProject.ext.composeDependencies.composeActivity
@@ -129,7 +146,6 @@ dependencies {
     testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
-
 }
 
 
