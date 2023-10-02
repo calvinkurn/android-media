@@ -89,6 +89,7 @@ class StoriesDetailFragment @Inject constructor(
     private val mAdapter: StoriesGroupAdapter by lazyThreadSafetyNone {
         StoriesGroupAdapter(object : StoriesGroupAdapter.Listener {
             override fun onClickGroup(position: Int, data: StoriesGroupHeader) {
+                binding.rvStoriesCategory.scrollToPosition(position)
                 trackClickGroup(position, data)
                 viewModelAction(StoriesUiAction.SelectGroup(position, false))
             }
@@ -259,6 +260,7 @@ class StoriesDetailFragment @Inject constructor(
 
         mAdapter.setItems(state.groupHeader)
         mAdapter.notifyItemRangeInserted(mAdapter.itemCount, state.groupHeader.size)
+        binding.rvStoriesCategory.scrollToPosition(state.selectedGroupPosition)
         binding.layoutDetailLoading.categoriesLoader.hide()
     }
 
