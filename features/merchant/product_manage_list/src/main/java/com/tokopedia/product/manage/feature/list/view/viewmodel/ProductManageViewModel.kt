@@ -934,7 +934,7 @@ class ProductManageViewModel @Inject constructor(
     private suspend fun editVariantStatus(result: EditVariantResult): Result<EditVariantResult> {
         return withContext(dispatchers.io) {
             val shopId = userSessionInterface.shopId
-            val variantInputParam = mapResultToUpdateParam(shopId, result)
+            val variantInputParam = mapResultToUpdateParam(shopId, result, false)
             val requestParams = EditProductVariantUseCase.createRequestParams(variantInputParam)
             val response = editProductVariantUseCase.execute(requestParams).productUpdateV3Data
 
