@@ -10,7 +10,9 @@ data class StoriesRequestModel(
     @SerializedName("source")
     val source: String,
     @SerializedName("sourceID")
-    val sourceID: String
+    val sourceID: String,
+    @SerializedName("entrypoint")
+    val entryPoint: String,
 )
 
 enum class StoriesSource(val value: String) {
