@@ -10,8 +10,8 @@ object ApplinkConstInternalContent {
     const val HOST_AFFILIATE = "affiliate"
     private const val HOST_PLAY = "play"
     private const val HOST_FEED = "feed"
-    private const val HOST_PLAY_BROADCASTER = "play-broadcaster"
-    private const val HOST_PLAY_SHORTS = "play-shorts"
+    const val HOST_PLAY_BROADCASTER = "play-broadcaster"
+    const val HOST_PLAY_SHORTS = "play-shorts"
     private const val HOST_STORIES = "stories"
 
     private const val PATH_STORIES_CREATION = "creation"
