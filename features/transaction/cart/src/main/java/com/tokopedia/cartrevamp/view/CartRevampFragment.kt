@@ -4968,11 +4968,16 @@ class CartRevampFragment :
         }
     }
 
-    override fun onBmGmChevronRightClicked(offerLandingPageLink: String) {
+    override fun onBmGmChevronRightClicked(offerLandingPageLink: String, offerId: Long, widgetCaption: String, shopId: String) {
+        cartPageAnalytics.eventClickBmGmTickerOffer(offerId, widgetCaption, shopId, userSession.userId)
         RouteManager.route(context, offerLandingPageLink)
     }
 
     override fun onBmGmTickerReloadClicked() {
         refreshCartWithSwipeToRefresh()
+    }
+
+    override fun onCartViewBmGmTicker(offerId: Long, widgetCaption: String, shopId: String) {
+        cartPageAnalytics.eventViewBmGmTickerOffer(offerId, widgetCaption, shopId, userSession.userId)
     }
 }
