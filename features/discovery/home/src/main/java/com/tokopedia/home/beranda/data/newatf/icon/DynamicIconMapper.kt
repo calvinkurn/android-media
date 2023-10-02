@@ -7,11 +7,15 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.constant.AtfKey
 import com.tokopedia.home_component.model.DynamicIconComponent
 import com.tokopedia.home_component.visitable.DynamicIconComponentDataModel
+import javax.inject.Inject
 
-object DynamicIconMapper {
+/**
+ * Created by Frenzel
+ */
+class DynamicIconMapper @Inject constructor() {
 
-    fun DynamicHomeIcon.asVisitable(
-        index: Int,
+    fun asVisitable(
+        data: DynamicHomeIcon,
         atfData: AtfData,
     ): Visitable<*> {
         return if(atfData.atfStatus == AtfKey.STATUS_ERROR) {
@@ -20,7 +24,7 @@ object DynamicIconMapper {
             DynamicIconComponentDataModel(
                 id = atfData.atfMetadata.id.toString(),
                 dynamicIconComponent = DynamicIconComponent(
-                    dynamicIcon.map {
+                    data.dynamicIcon.map {
                         DynamicIconComponent.DynamicIcon(
                             id = it.id,
                             applink = it.applinks,
@@ -38,7 +42,7 @@ object DynamicIconMapper {
                     }
                 ),
                 isCache = atfData.isCache,
-                type = type
+                type = data.type
             )
         }
     }

@@ -16,6 +16,7 @@ import com.tokopedia.home.beranda.common.BaseCoRoutineScope
 import com.tokopedia.home.beranda.data.mapper.ShopFlashSaleMapper
 import com.tokopedia.home.beranda.data.model.HomeChooseAddressData
 import com.tokopedia.home.beranda.data.newatf.HomeAtfUseCase
+import com.tokopedia.home.beranda.data.newatf.todo.TodoWidgetRepository
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBalanceWidgetUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBusinessUnitUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeDynamicChannelUseCase
@@ -70,6 +71,7 @@ import dagger.Lazy
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
@@ -103,7 +105,8 @@ open class HomeRevampViewModel @Inject constructor(
     private val homeDismissTodoWidgetUseCase: Lazy<DismissTodoWidgetUseCase>,
     private val homeRateLimit: RateLimiter<String>,
     private val homeRemoteConfigController: HomeRemoteConfigController,
-    private val homeAtfUseCase: HomeAtfUseCase
+    private val homeAtfUseCase: HomeAtfUseCase,
+    private val todoWidgetRepository: TodoWidgetRepository,
 ) : BaseCoRoutineScope(homeDispatcher.get().io) {
 
     companion object {
@@ -168,11 +171,9 @@ open class HomeRevampViewModel @Inject constructor(
     var isFirstLoad = true
 
     private fun homeFlowDynamicChannel(): Flow<HomeDynamicChannelModel?> {
-        return if (homeRemoteConfigController.isUsingNewAtf()) {
+        return if(homeRemoteConfigController.isUsingNewAtf()) {
             homeUseCase.get().getNewHomeDataFlow().flowOn(homeDispatcher.get().io)
-        } else {
-            homeUseCase.get().getHomeDataFlow().flowOn(homeDispatcher.get().io)
-        }
+        } else homeUseCase.get().getHomeDataFlow().flowOn(homeDispatcher.get().io)
     }
 
     var getHomeDataJob: Job? = null
@@ -207,7 +208,6 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     private fun updateHomeData(homeNewDynamicChannelModel: HomeDynamicChannelModel) {
-        Log.d("atfflow", "initFlow: 4 $homeNewDynamicChannelModel")
         this.homeDataModel = homeNewDynamicChannelModel
         _homeLiveDynamicChannel.postValue(homeDataModel)
         _resetNestedScrolling.postValue(Event(true))
@@ -296,15 +296,12 @@ open class HomeRevampViewModel @Inject constructor(
 
     @FlowPreview
     private fun initFlow() {
-        Log.d("atfflow", "1. ViewModel - initFlow")
         homeFlowStarted = true
         launch(homeDispatcher.get().io) {
-            Log.d("atfflow", "2. ViewModel - initFlow: homeAtfUseCase.fetchAtfDataList()")
             homeAtfUseCase.fetchAtfDataList()
         }
         launchCatchError(coroutineContext, block = {
             homeFlowDynamicChannel().collect { homeNewDataModel ->
-                Log.d("atfflow", "initFlow: 1")
                 if (homeNewDataModel?.isAtfError == true) {
                     _updateNetworkLiveData.postValue(
                         Result.errorGeneral(
@@ -315,7 +312,6 @@ open class HomeRevampViewModel @Inject constructor(
                     HomeServerLogger.warning_error_flow(Throwable("Atf is error"))
                 }
                 if (homeNewDataModel?.isCache == false) {
-                    Log.d("atfflow", "initFlow: 2")
                     _isRequestNetworkLiveData.postValue(Event(false))
                     currentTopAdsBannerPage = homeNewDataModel.topadsPage
                     onRefreshState = false
@@ -325,7 +321,6 @@ open class HomeRevampViewModel @Inject constructor(
                     updateHomeData(homeNewDataModel)
                     _trackingLiveData.postValue(Event(homeNewDataModel.list.filterIsInstance<HomeVisitable>()))
                 } else if (homeNewDataModel?.list?.size ?: 0 > 0) {
-                    Log.d("atfflow", "initFlow: 3")
                     homeNewDataModel?.let {
                         updateHomeData(it)
                     }
@@ -418,7 +413,7 @@ open class HomeRevampViewModel @Inject constructor(
     fun getRecommendationWidget(
         selectedChipProduct: BestSellerChipProductDataModel,
         currentDataModel: BestSellerRevampDataModel,
-        scrollDirection: CarouselPagingGroupChangeDirection = NO_DIRECTION
+        scrollDirection: CarouselPagingGroupChangeDirection = NO_DIRECTION,
     ) {
         if (selectedChipProduct.productModelList.isNotEmpty()) return
 
@@ -430,7 +425,7 @@ open class HomeRevampViewModel @Inject constructor(
                         visitable = homeRecommendationUseCase.get().onHomeBestSellerFilterClick(
                             currentBestSellerDataModel = currentDataModel,
                             selectedFilterChip = selectedChipProduct.chip,
-                            scrollDirection = scrollDirection
+                            scrollDirection = scrollDirection,
                         ),
                         visitableToChange = currentDataModel,
                         position = index
@@ -818,16 +813,20 @@ open class HomeRevampViewModel @Inject constructor(
             )
 
             try {
-                findWidget<TodoWidgetListDataModel> { item, verticalPosition ->
-                    if (item.todoWidgetList.size == 1) {
-                        deleteWidget(item, verticalPosition)
-                    } else {
-                        val newTodoWidgetList = item.todoWidgetList.toMutableList().apply {
-                            removeAt(horizontalPosition)
-                        }
-                        val newTodoWidget = item.copy(todoWidgetList = newTodoWidgetList)
-                        homeDataModel.updateWidgetModel(newTodoWidget, item, verticalPosition) {
-                            updateHomeData(homeDataModel)
+                if(homeRemoteConfigController.isUsingNewAtf()) {
+                    todoWidgetRepository.dismissItemAt(horizontalPosition)
+                } else {
+                    findWidget<TodoWidgetListDataModel> { item, verticalPosition ->
+                        if (item.todoWidgetList.size == 1) {
+                            deleteWidget(item, verticalPosition)
+                        } else {
+                            val newTodoWidgetList = item.todoWidgetList.toMutableList().apply {
+                                removeAt(horizontalPosition)
+                            }
+                            val newTodoWidget = item.copy(todoWidgetList = newTodoWidgetList)
+                            homeDataModel.updateWidgetModel(newTodoWidget, item, verticalPosition) {
+                                updateHomeData(homeDataModel)
+                            }
                         }
                     }
                 }

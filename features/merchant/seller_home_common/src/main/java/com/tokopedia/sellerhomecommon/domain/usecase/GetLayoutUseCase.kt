@@ -42,7 +42,8 @@ class GetLayoutUseCase(
         if (errors.isNullOrEmpty()) {
             val data = gqlResponse.getData<GetLayoutResponse>(GetLayoutResponse::class.java)
             val isFromCache = cacheStrategy.type == CacheType.CACHE_ONLY
-            return mapper.mapRemoteDataToUiData(data, isFromCache)
+            val filterPage = params.parameters[KEY_PAGE]
+            return mapper.mapRemoteDataToUiData(data, isFromCache, KEY_PAGE to filterPage)
         } else {
             throw RuntimeException(errors.firstOrNull()?.message.orEmpty())
         }
@@ -95,13 +96,19 @@ class GetLayoutUseCase(
                   dismissibleState
                   useRealtime
                 }
+                tabs {
+                  tabTitle
+                  tabName 
+                  page
+                  tag
+                }
                 shopState
                 personaStatus
               }
             }
         """
         private const val KEY_SHOP_ID = "shopID"
-        private const val KEY_PAGE = "page"
+        const val KEY_PAGE = "page"
         private const val KEY_EVENT = "event"
 
         fun getRequestParams(

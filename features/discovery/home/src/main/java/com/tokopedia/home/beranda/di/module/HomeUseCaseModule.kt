@@ -15,6 +15,7 @@ import com.tokopedia.home.beranda.data.model.GetHomeBalanceWidgetData
 import com.tokopedia.home.beranda.data.model.HomeAtfData
 import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerListHomeData
+import com.tokopedia.home.beranda.data.newatf.AtfMapper
 import com.tokopedia.home.beranda.data.newatf.HomeAtfUseCase
 import com.tokopedia.home.beranda.di.HomeScope
 import com.tokopedia.home.beranda.di.module.query.AtfQuery
@@ -143,6 +144,7 @@ class HomeUseCaseModule {
         homeTodoWidgetRepository: HomeTodoWidgetRepository,
         homeAtfUseCase: HomeAtfUseCase,
         homeHeaderUseCase: HomeHeaderUseCase,
+        atfMapper: AtfMapper
     ) = HomeDynamicChannelUseCase(
         homeDataMapper = homeDataMapper,
         bestSellerRevampMapper = bestSellerRevampMapper,
@@ -174,6 +176,7 @@ class HomeUseCaseModule {
         homeTodoWidgetRepository = homeTodoWidgetRepository,
         homeAtfUseCase = homeAtfUseCase,
         homeHeaderUseCase = homeHeaderUseCase,
+        atfMapper = atfMapper,
     )
 
     @Provides

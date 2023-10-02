@@ -1,14 +1,14 @@
 package com.tokopedia.home.beranda.data.newatf
 
-import android.util.Log
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.beranda.data.datasource.local.entity.AtfCacheEntity
-import com.tokopedia.home.beranda.data.newatf.banner.HomepageBannerMapper.asVisitable
-import com.tokopedia.home.beranda.data.newatf.icon.DynamicIconMapper.asVisitable
-import com.tokopedia.home.beranda.data.newatf.mission.MissionWidgetMapper.asVisitable
-import com.tokopedia.home.beranda.data.newatf.ticker.TickerMapper.asVisitable
-import com.tokopedia.home.beranda.data.newatf.todo.TodoWidgetMapper.asVisitable
+import com.tokopedia.home.beranda.data.newatf.banner.HomepageBannerMapper
+import com.tokopedia.home.beranda.data.newatf.channel.AtfChannelMapper
+import com.tokopedia.home.beranda.data.newatf.icon.DynamicIconMapper
+import com.tokopedia.home.beranda.data.newatf.mission.MissionWidgetMapper
+import com.tokopedia.home.beranda.data.newatf.ticker.TickerMapper
+import com.tokopedia.home.beranda.data.newatf.todo.TodoWidgetMapper
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.domain.model.DynamicHomeIcon
 import com.tokopedia.home.beranda.domain.model.Ticker
@@ -17,11 +17,23 @@ import com.tokopedia.home.constant.AtfKey
 import com.tokopedia.home_component.model.AtfContent
 import com.tokopedia.home_component.usecase.missionwidget.HomeMissionWidgetData
 import com.tokopedia.home_component.usecase.todowidget.HomeTodoWidgetData
+import com.tokopedia.home.beranda.data.model.AtfData as OldAtfData
+import javax.inject.Inject
 
-object AtfMapper {
+/**
+ * Created by Frenzel
+ */
+class AtfMapper @Inject constructor(
+    private val homepageBannerMapper: HomepageBannerMapper,
+    private val dynamicIconMapper: DynamicIconMapper,
+    private val tickerMapper: TickerMapper,
+    private val atfChannelMapper: AtfChannelMapper,
+    private val missionWidgetMapper: MissionWidgetMapper,
+    private val todoWidgetMapper: TodoWidgetMapper,
+) {
     fun mapRemoteToDomainAtfData(
         position: Int,
-        data: com.tokopedia.home.beranda.data.model.AtfData
+        data: OldAtfData
     ): AtfData {
         return AtfData(
             atfMetadata = AtfMetadata(
@@ -41,14 +53,14 @@ object AtfMapper {
         data: AtfCacheEntity,
     ): AtfData {
         return AtfData(
-             atfMetadata = AtfMetadata(
-                 id = data.id,
-                 position = data.position,
-                 name = data.name,
-                 component = data.component,
-                 param = data.param,
-                 isOptional = data.isOptional,
-                 isShimmer = data.isShimmer,
+            atfMetadata = AtfMetadata(
+                id = data.id,
+                position = data.position,
+                name = data.name,
+                component = data.component,
+                param = data.param,
+                isOptional = data.isOptional,
+                isShimmer = data.isShimmer,
             ),
             atfContent = data.getAtfContent(),
             atfStatus = data.status,
@@ -91,16 +103,17 @@ object AtfMapper {
         return gson.fromJson(this, T::class.java)
     }
 
-    fun AtfDataList.mapToVisitableList(): List<Visitable<*>> {
+    fun mapToVisitableList(data: AtfDataList?): List<Visitable<*>> {
         val visitables = mutableListOf<Visitable<*>>()
-        listAtfData.forEachIndexed { index, value ->
+        data?.listAtfData?.forEachIndexed { index, value ->
             value.atfContent.run {
                 when(this) {
-                    is BannerDataModel -> visitables.add(this.asVisitable(index, value))
-                    is DynamicHomeIcon -> visitables.add(this.asVisitable(index, value))
-                    is Ticker -> this.asVisitable(index, value.isCache)?.let { visitables.add(it) }
-                    is HomeMissionWidgetData.GetHomeMissionWidget -> visitables.add(this.asVisitable(index, value))
-                    is HomeTodoWidgetData.GetHomeTodoWidget -> visitables.add(this.asVisitable(index, value))
+                    is BannerDataModel -> visitables.add(homepageBannerMapper.asVisitable(this, index, value))
+                    is DynamicHomeIcon -> visitables.add(dynamicIconMapper.asVisitable(this, value))
+                    is Ticker -> tickerMapper.asVisitable(this, value)?.let { visitables.add(it) }
+                    is HomeMissionWidgetData.GetHomeMissionWidget -> visitables.add(missionWidgetMapper.asVisitable(this, index, value))
+                    is HomeTodoWidgetData.GetHomeTodoWidget -> visitables.add(todoWidgetMapper.asVisitable(this, index, value))
+                    is DynamicHomeChannel -> visitables.addAll(atfChannelMapper.asVisitableList(this, index, value))
                 }
             }
         }

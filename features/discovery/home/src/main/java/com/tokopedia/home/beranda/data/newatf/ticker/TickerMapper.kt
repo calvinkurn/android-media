@@ -1,37 +1,37 @@
 package com.tokopedia.home.beranda.data.newatf.ticker
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.home.beranda.data.newatf.AtfData
 import com.tokopedia.home.beranda.domain.model.Ticker
 import com.tokopedia.home.beranda.domain.model.Tickers
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TickerDataModel
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment
+import javax.inject.Inject
 
-object TickerMapper {
-    private const val LAYOUT_FLOATING = "floating"
-    private const val BE_TICKER_ANNOUNCEMENT = 0
-    private const val BE_TICKER_INFORMATION = 1
-    private const val BE_TICKER_WARNING = 2
-    private const val BE_TICKER_ERROR = 3
+/**
+ * Created by Frenzel
+ */
+class TickerMapper @Inject constructor() {
+    companion object {
+        private const val LAYOUT_FLOATING = "floating"
+        private const val BE_TICKER_ANNOUNCEMENT = 0
+        private const val BE_TICKER_INFORMATION = 1
+        private const val BE_TICKER_WARNING = 2
+        private const val BE_TICKER_ERROR = 3
+    }
 
-    fun Ticker.asVisitable(
-        index: Int,
-        isCache: Boolean
+    fun asVisitable(
+        data: Ticker,
+        atfData: AtfData,
     ): Visitable<*>? {
-        return if (!isCache) {
+        return if (!atfData.isCache) {
             if (!HomeRevampFragment.HIDE_TICKER) {
-                tickers.filter { it.layout != LAYOUT_FLOATING }.let {
-                    if (it.isNotEmpty()) {
-                        TickerDataModel(tickers = mappingTickerFromServer(it))
-                    } else {
-                        null
-                    }
+                data.tickers.filter { it.layout != LAYOUT_FLOATING }.let {
+                    if (it.isNotEmpty()) TickerDataModel(tickers = mappingTickerFromServer(it))
+                    else null
                 }
-            } else {
-                null
-            }
-        } else {
-            null
-        }
+            } else null
+        } else null
     }
 
     private fun mappingTickerFromServer(it: List<Tickers>): List<Tickers> {

@@ -2,22 +2,21 @@ package com.tokopedia.home.beranda.data.newatf.mission
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.beranda.data.newatf.AtfData
-import com.tokopedia.home.beranda.data.newatf.AtfMetadata
-import com.tokopedia.home.beranda.domain.model.DynamicHomeIcon
 import com.tokopedia.home.beranda.helper.LazyLoadDataMapper
 import com.tokopedia.home.constant.AtfKey
-import com.tokopedia.home_component.model.DynamicIconComponent
 import com.tokopedia.home_component.usecase.missionwidget.HomeMissionWidgetData
-import com.tokopedia.home_component.visitable.DynamicIconComponentDataModel
-import com.tokopedia.home_component.visitable.MissionWidgetDataModel
 import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
 import com.tokopedia.home_component.widget.mission.MissionWidgetMapper.getAsChannelConfig
 import com.tokopedia.home_component.widget.mission.MissionWidgetMapper.getAsHomeComponentHeader
-import com.tokopedia.unifycomponents.CardUnify2
+import javax.inject.Inject
 
-object MissionWidgetMapper {
+/**
+ * Created by Frenzel
+ */
+class MissionWidgetMapper @Inject constructor() {
 
-    fun HomeMissionWidgetData.GetHomeMissionWidget.asVisitable(
+    fun asVisitable(
+        data: HomeMissionWidgetData.GetHomeMissionWidget,
         index: Int,
         atfData: AtfData,
     ): Visitable<*> {
@@ -34,9 +33,9 @@ object MissionWidgetMapper {
             MissionWidgetListDataModel(
                 id = atfData.atfMetadata.id.toString(),
                 name = atfData.atfMetadata.name,
-                missionWidgetList = LazyLoadDataMapper.mapMissionWidgetData(missions),
-                header = header.getAsHomeComponentHeader(),
-                config = config.getAsChannelConfig(),
+                missionWidgetList = LazyLoadDataMapper.mapMissionWidgetData(data.missions, atfData.isCache),
+                header = data.header.getAsHomeComponentHeader(),
+                config = data.config.getAsChannelConfig(),
                 verticalPosition = index,
                 status = MissionWidgetListDataModel.STATUS_SUCCESS,
                 showShimmering = atfData.atfMetadata.isShimmer,

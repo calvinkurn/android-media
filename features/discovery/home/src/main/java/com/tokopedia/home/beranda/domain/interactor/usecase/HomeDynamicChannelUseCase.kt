@@ -14,8 +14,8 @@ import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
 import com.tokopedia.home.beranda.data.mapper.ReminderWidgetMapper
 import com.tokopedia.home.beranda.data.mapper.ShopFlashSaleMapper
 import com.tokopedia.home.beranda.data.model.*
+import com.tokopedia.home.beranda.data.newatf.AtfMapper
 import com.tokopedia.home.beranda.data.newatf.AtfDataList
-import com.tokopedia.home.beranda.data.newatf.AtfMapper.mapToVisitableList
 import com.tokopedia.home.beranda.data.newatf.HomeAtfUseCase
 import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.interactor.repository.*
@@ -98,7 +98,8 @@ class HomeDynamicChannelUseCase @Inject constructor(
     private val homeMissionWidgetRepository: HomeMissionWidgetRepository,
     private val homeTodoWidgetRepository: HomeTodoWidgetRepository,
     private val homeAtfUseCase: HomeAtfUseCase,
-    private val homeHeaderUseCase: HomeHeaderUseCase
+    private val homeHeaderUseCase: HomeHeaderUseCase,
+    private val atfMapper: AtfMapper,
 ) {
 
     private var CHANNEL_LIMIT_FOR_PAGINATION = 1
@@ -158,12 +159,12 @@ class HomeDynamicChannelUseCase @Inject constructor(
                                         isOptional = it.isOptional,
                                         content = it.content,
                                         status = it.status,
-                                        isShimmer = it.isShimmer
+                                        isShimmer = it.isShimmer,
                                     )
                                 },
                                 isProcessingAtf = true
                             ),
-                            isProcessingDynamicChannel = true
+                            isProcessingDynamicChannel = true,
                         ),
                         isCache = true,
                         addShimmeringChannel = true,
@@ -201,9 +202,8 @@ class HomeDynamicChannelUseCase @Inject constructor(
         coroutineScope.launch { homeHeaderUseCase.updateBalanceWidget() }
 
         val atfFlow = homeAtfUseCase.flow.map {
-            Log.d("atfflow", "COMBINE FLOW: ATF: $it")
             HomeDynamicChannelModel(
-                list = it?.mapToVisitableList().orEmpty(),
+                list = atfMapper.mapToVisitableList(it),
                 isCache = it?.isCache.orTrue(),
                 isAtfError = it?.status == AtfDataList.STATUS_ERROR
             )
@@ -216,14 +216,10 @@ class HomeDynamicChannelUseCase @Inject constructor(
         return combine(headerFlow, atfFlow, dynamicChannelFlow) { header, atf, dc ->
             val combinedList = header.list + atf.list + dc.list
             val isCache = atf.isCache || dc.isCache
-
             Log.d(
-                "atfflow",
-                "================================================================================================================================================================\n" +
-                    "RESULT:\n" +
-                    "ATF   : ${atf.list.joinToString(", ") { it::class.java.simpleName }}\n" +
-                    "DC    : ${dc.list.joinToString(", ") { it::class.java.simpleName }}\n" +
-                    "================================================================================================================================================================"
+                "atfflow", "RESULT:\n" +
+                "ATF   : ${atf.list.joinToString(",") { it.javaClass.simpleName }}\n" +
+                "DC    : ${dc.list.joinToString(", ") { it.javaClass.simpleName }}\n"
             )
 
             HomeDynamicChannelModel(
@@ -236,22 +232,21 @@ class HomeDynamicChannelUseCase @Inject constructor(
 
     private fun getDynamicChannelFlow(
         homeData: HomeData?,
-        isNewMechanism: Boolean
+        isNewMechanism: Boolean,
     ): Flow<HomeDynamicChannelModel> {
         return flow<HomeDynamicChannelModel> {
             topadsTdnPage = DEFAULT_TOPADS_TDN_PAGE
 
-            val dynamicChannelPlainResponse = if (isNewMechanism) {
+            val dynamicChannelPlainResponse = if(isNewMechanism)
                 homeDataMapper.mapDynamicChannel(
                     homeData = homeData,
                     isCache = isCacheDc
                 )
-            } else {
+            else
                 homeDataMapper.mapToHomeRevampViewModel(
                     homeData = homeData,
                     isCache = isCacheDc
                 )
-            }
 
             /**
              * Get choose address data
@@ -350,7 +345,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
                     },
                     mapToWidgetData = { visitableFound, data, _ ->
                         val resultList =
-                            LazyLoadDataMapper.mapMissionWidgetData(data.getHomeMissionWidget.missions)
+                            LazyLoadDataMapper.mapMissionWidgetData(data.getHomeMissionWidget.missions, false)
                         visitableFound.copy(
                             missionWidgetList = resultList,
                             header = data.getHomeMissionWidget.header.getAsHomeComponentHeader(),
@@ -522,7 +517,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
                             HomeRecommendationRepository.QUERY_PARAM to it.channelModel.widgetParam,
                             HomeRecommendationRepository.SHOP_ID to shopId
                         )
-                    }
+                    },
                 ) { visitableFound, data, position ->
                     ShopFlashSaleMapper.mapShopFlashSaleItemList(visitableFound, data)
                 }
@@ -656,7 +651,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
             val recomData = getRecommendationData(
                 activatedChip,
                 bestSellerDataModel.pageName,
-                bestSellerDataModel.widgetParam
+                bestSellerDataModel.widgetParam,
             )
 
             if (recomData.isNotEmpty() && recomData.first().recommendationItemList.isNotEmpty()) {
@@ -666,7 +661,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
                 val dataModel = bestSellerMapper.mappingRecommendationWidget(
                     recomWidget,
                     cardInteraction = true,
-                    bestSellerDataModel
+                    bestSellerDataModel,
                 )
 
                 homeDataModel.updateWidgetModel(
@@ -689,7 +684,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
         findWidget<BestSellerRevampDataModel>(homeDataModel) { bestSellerDataModel, index ->
             val recommendationFilterList = getRecommendationFilterChips(
                 bestSellerDataModel.pageName,
-                bestSellerDataModel.widgetParam
+                bestSellerDataModel.widgetParam,
             )
             val recommendationFilterIterator = recommendationFilterList.iterator()
 
@@ -701,7 +696,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
                 recommendationData = getRecommendationData(
                     activatedChip,
                     bestSellerDataModel.pageName,
-                    bestSellerDataModel.widgetParam
+                    bestSellerDataModel.widgetParam,
                 )
 
                 if (!recommendationListIsEmpty(recommendationData)) {
@@ -710,7 +705,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
                             recommendationData,
                             recommendationFilterList,
                             bestSellerDataModel,
-                            activatedChip
+                            activatedChip,
                         )
 
                     homeDataModel.updateWidgetModel(
@@ -726,8 +721,8 @@ class HomeDynamicChannelUseCase @Inject constructor(
     }
 
     private fun recommendationListIsEmpty(recommendationData: List<RecommendationWidget>): Boolean =
-        recommendationData.isEmpty() ||
-            recommendationData.first().recommendationItemList.isEmpty()
+        recommendationData.isEmpty()
+            || recommendationData.first().recommendationItemList.isEmpty()
 
     private suspend fun getRecommendationFilterChips(
         pageName: String,
@@ -749,31 +744,31 @@ class HomeDynamicChannelUseCase @Inject constructor(
     private suspend fun getRecommendationData(
         activatedChip: RecommendationFilterChipsEntity.RecommendationFilterChip?,
         pageName: String,
-        widgetParam: String
+        widgetParam: String,
     ) = if (activatedChip == null) {
-        homeRecommendationRepository.getRemoteData(
-            Bundle().apply {
-                putString(
-                    HomeRecommendationChipRepository.PAGE_NAME,
-                    pageName
-                )
-                putString(
-                    HomeRecommendationChipRepository.QUERY_PARAM,
-                    widgetParam
-                )
-            }
-        )
-    } else {
-        homeRecommendationRepository.getRemoteData(
-            Bundle().apply {
-                putString(HomeRecommendationChipRepository.PAGE_NAME, pageName)
-                putString(
-                    HomeRecommendationChipRepository.QUERY_PARAM,
-                    if (activatedChip.isActivated) activatedChip.value else ""
-                )
-            }
-        )
-    }
+            homeRecommendationRepository.getRemoteData(
+                Bundle().apply {
+                    putString(
+                        HomeRecommendationChipRepository.PAGE_NAME,
+                        pageName
+                    )
+                    putString(
+                        HomeRecommendationChipRepository.QUERY_PARAM,
+                        widgetParam
+                    )
+                }
+            )
+        } else {
+            homeRecommendationRepository.getRemoteData(
+                Bundle().apply {
+                    putString(HomeRecommendationChipRepository.PAGE_NAME, pageName)
+                    putString(
+                        HomeRecommendationChipRepository.QUERY_PARAM,
+                        if (activatedChip.isActivated) activatedChip.value else ""
+                    )
+                }
+            )
+        }
 
     private fun convertPopularKeywordDataList(popularKeywordList: HomeWidget.PopularKeywordList): MutableList<PopularKeywordDataModel> {
         val keywordList = popularKeywordList.keywords
@@ -1208,14 +1203,12 @@ class HomeDynamicChannelUseCase @Inject constructor(
                                 jobList.add(job)
                             }
                             AtfKey.TYPE_TODO -> {
-                                jobList.add(
-                                    async {
-                                        atfData.apply {
-                                            status = AtfKey.STATUS_LOADING
-                                        }
-                                        atfData
+                                jobList.add(async {
+                                    atfData.apply {
+                                        status = AtfKey.STATUS_LOADING
                                     }
-                                )
+                                    atfData
+                                })
                                 val job = async {
                                     try {
                                         homeTodoWidgetRepository.getRemoteData(
@@ -1250,14 +1243,12 @@ class HomeDynamicChannelUseCase @Inject constructor(
                                 jobList.add(job)
                             }
                             AtfKey.TYPE_MISSION -> {
-                                jobList.add(
-                                    async {
-                                        atfData.apply {
-                                            status = AtfKey.STATUS_LOADING
-                                        }
-                                        atfData
+                                jobList.add(async {
+                                    atfData.apply {
+                                        status = AtfKey.STATUS_LOADING
                                     }
-                                )
+                                    atfData
+                                })
                                 val job = async {
                                     try {
                                         homeMissionWidgetRepository.getRemoteData(

@@ -10,9 +10,12 @@ import com.tokopedia.cmhomewidget.domain.usecase.DeleteCMHomeWidgetUseCase
 import com.tokopedia.cmhomewidget.domain.usecase.GetCMHomeWidgetDataUseCase
 import com.tokopedia.gopayhomewidget.domain.usecase.ClosePayLaterWidgetUseCase
 import com.tokopedia.gopayhomewidget.domain.usecase.GetPayLaterWidgetUseCase
+import com.tokopedia.home.beranda.data.balance.HomeHeaderUseCase
 import com.tokopedia.home.beranda.data.datasource.local.HomeRoomDataSource
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
 import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
+import com.tokopedia.home.beranda.data.newatf.AtfMapper
+import com.tokopedia.home.beranda.data.newatf.HomeAtfUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetDynamicChannelsUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetRechargeBUWidgetUseCase
 import com.tokopedia.home.beranda.domain.interactor.InjectCouponTimeBasedUseCase
@@ -63,6 +66,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.NewBusinessUnitWidgetDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordListDataModel
+import com.tokopedia.home.beranda.presentation.view.helper.HomeRemoteConfigController
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.usecase.todowidget.DismissTodoWidgetUseCase
@@ -119,33 +123,37 @@ fun createHomeViewModel(
     homeMissionWidgetUseCase: HomeMissionWidgetUseCase = mockk(relaxed = true),
     homeTodoWidgetUseCase: HomeTodoWidgetUseCase = mockk(relaxed = true),
     homeDismissTodoWidgetUseCase: DismissTodoWidgetUseCase = mockk(relaxed = true),
-    homeRateLimit: RateLimiter<String> = mockk(relaxed = true)
+    homeRateLimit: RateLimiter<String> = mockk(relaxed = true),
+    homeRemoteConfigController: HomeRemoteConfigController = mockk(relaxed = true),
+    homeAtfUseCase: HomeAtfUseCase = mockk(relaxed = true),
 ): HomeRevampViewModel {
     homeBalanceWidgetUseCase.givenGetLoadingStateReturn()
     return spyk(
         HomeRevampViewModel(
-            homeDispatcher = Lazy { dispatchers },
-            homeUseCase = Lazy { getHomeUseCase },
-            userSession = Lazy { userSessionInterface },
-            homeBalanceWidgetUseCase = Lazy { homeBalanceWidgetUseCase },
-            homeSuggestedReviewUseCase = Lazy { homeSuggestedReviewUseCase },
-            homeListCarouselUseCase = Lazy { homeListCarouselUseCase },
-            homePlayUseCase = Lazy { homePlayUseCase },
-            homePopularKeywordUseCase = Lazy { homePopularKeywordUseCase },
-            homeRechargeBuWidgetUseCase = Lazy { homeRechargeBuWidgetUseCase },
-            homeRechargeRecommendationUseCase = Lazy { homeRechargeRecommendationUseCase },
-            homeRecommendationUseCase = Lazy { homeRecommendationUseCase },
-            homeSalamRecommendationUseCase = Lazy { homeSalamRecommendationUseCase },
-            homeSearchUseCase = Lazy { homeSearchUseCase },
-            homeBusinessUnitUseCase = Lazy { homeBusinessUnitUseCase },
-            getCMHomeWidgetDataUseCase = Lazy { getCMHomeWidgetDataUseCase },
-            deleteCMHomeWidgetUseCase = Lazy { deleteCMHomeWidgetUseCase },
-            deletePayLaterWidgetUseCase = Lazy { deletePayLaterWidgetUseCase },
-            getPayLaterWidgetUseCase = Lazy { getPayLaterWidgetUseCase },
-            homeMissionWidgetUseCase = Lazy { homeMissionWidgetUseCase },
-            homeTodoWidgetUseCase = Lazy { homeTodoWidgetUseCase },
-            homeDismissTodoWidgetUseCase = Lazy { homeDismissTodoWidgetUseCase },
-            homeRateLimit = homeRateLimit
+            homeDispatcher = { dispatchers },
+            homeUseCase = { getHomeUseCase },
+            userSession = { userSessionInterface },
+            homeBalanceWidgetUseCase = { homeBalanceWidgetUseCase },
+            homeSuggestedReviewUseCase = { homeSuggestedReviewUseCase },
+            homeListCarouselUseCase = { homeListCarouselUseCase },
+            homePlayUseCase = { homePlayUseCase },
+            homePopularKeywordUseCase = { homePopularKeywordUseCase },
+            homeRechargeBuWidgetUseCase = { homeRechargeBuWidgetUseCase },
+            homeRechargeRecommendationUseCase = { homeRechargeRecommendationUseCase },
+            homeRecommendationUseCase = { homeRecommendationUseCase },
+            homeSalamRecommendationUseCase = { homeSalamRecommendationUseCase },
+            homeSearchUseCase = { homeSearchUseCase },
+            homeBusinessUnitUseCase = { homeBusinessUnitUseCase },
+            getCMHomeWidgetDataUseCase = { getCMHomeWidgetDataUseCase },
+            deleteCMHomeWidgetUseCase = { deleteCMHomeWidgetUseCase },
+            deletePayLaterWidgetUseCase = { deletePayLaterWidgetUseCase },
+            getPayLaterWidgetUseCase = { getPayLaterWidgetUseCase },
+            homeMissionWidgetUseCase = { homeMissionWidgetUseCase },
+            homeTodoWidgetUseCase = { homeTodoWidgetUseCase },
+            homeDismissTodoWidgetUseCase = { homeDismissTodoWidgetUseCase },
+            homeRateLimit = homeRateLimit,
+            homeRemoteConfigController = homeRemoteConfigController,
+            homeAtfUseCase = homeAtfUseCase,
         ),
         recordPrivateCalls = true
     )
@@ -180,7 +188,10 @@ fun createHomeDynamicChannelUseCase(
     homeChooseAddressRepository: HomeChooseAddressRepository = mockk(relaxed = true),
     homeUserSessionInterface: UserSessionInterface = mockk(relaxed = true),
     homeMissionWidgetRepository: HomeMissionWidgetRepository = mockk(relaxed = true),
-    homeTodoWidgetRepository: HomeTodoWidgetRepository = mockk(relaxed = true)
+    homeTodoWidgetRepository: HomeTodoWidgetRepository = mockk(relaxed = true),
+    homeAtfUseCase: HomeAtfUseCase = mockk(relaxed = true),
+    homeHeaderUseCase: HomeHeaderUseCase = mockk(relaxed = true),
+    atfMapper: AtfMapper = mockk(relaxed = true),
 ): HomeDynamicChannelUseCase {
     return HomeDynamicChannelUseCase(
         homeBalanceWidgetUseCase = homeBalanceWidgetUseCase,
@@ -210,7 +221,10 @@ fun createHomeDynamicChannelUseCase(
         homeChooseAddressRepository = homeChooseAddressRepository,
         userSessionInterface = homeUserSessionInterface,
         homeMissionWidgetRepository = homeMissionWidgetRepository,
-        homeTodoWidgetRepository = homeTodoWidgetRepository
+        homeTodoWidgetRepository = homeTodoWidgetRepository,
+        homeAtfUseCase = homeAtfUseCase,
+        homeHeaderUseCase = homeHeaderUseCase,
+        atfMapper = atfMapper,
     )
 }
 
