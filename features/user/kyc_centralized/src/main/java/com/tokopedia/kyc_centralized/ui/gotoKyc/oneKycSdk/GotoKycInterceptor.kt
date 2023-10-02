@@ -28,6 +28,7 @@ class GotoKycInterceptor @Inject constructor(
             addHeader(KEY_X_DEVICE, "$VALUE_ANDROID-${GlobalConfig.VERSION_NAME}")
             addHeader(KEY_ACCOUNTS_AUTHORIZATION, "$VALUE_BEARER ${userSessionInterface.accessToken}")
             addHeader(KEY_X_DATA_VISOR, VisorFingerprintInstance.getDVToken(context = context))
+            addHeader(KEY_X_USER_LOCALE, VALUE_USER_LOCALE)
         }
         return chain.proceed(requestBuilder.build())
     }
@@ -35,10 +36,12 @@ class GotoKycInterceptor @Inject constructor(
     companion object {
         private const val VALUE_ANDROID = "android"
         private const val VALUE_BEARER = "Bearer"
+        private const val VALUE_USER_LOCALE = "id_ID"
         private const val KEY_X_TKPD_APP_NAME = "X-Tkpd-App-Name"
         private const val KEY_ACCOUNTS_AUTHORIZATION = "Accounts-Authorization"
         private const val KEY_X_DEVICE = "X-Device"
         private const val KEY_X_PROJECT_ID = "x-project-id"
         private const val KEY_X_DATA_VISOR = "X-Datavisor"
+        private const val KEY_X_USER_LOCALE = "x-user-locale"
     }
 }

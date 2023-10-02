@@ -46,13 +46,23 @@ class GotoKycTransparentViewModelTest {
     }
 
     @Test
-    fun `when set source then get source then return correct projectId`() {
+    fun `when set source then get source then return correct`() {
         val expectedSource = "Power Merchant"
 
         viewModel.setSource(expectedSource)
 
         val result = viewModel.source
         assertEquals(expectedSource, result)
+    }
+
+    @Test
+    fun `when set callback then get callback then return correct`() {
+        val expectedCallback = "tokopedia://webview?url=https://www.tokopedia.com"
+
+        viewModel.setCallback(expectedCallback)
+
+        val result = viewModel.callback
+        assertEquals(expectedCallback, result)
     }
 
     @Test
@@ -178,10 +188,11 @@ class GotoKycTransparentViewModelTest {
 
     @Test
     fun `when get status account linking then return linked`() {
+        val projectId = 7
         val expected = AccountLinkingStatusResult.Linked
 
-        coEvery { accountLinkingStatusUseCase(Unit) } returns expected
-        viewModel.accountLikingStatus()
+        coEvery { accountLinkingStatusUseCase(projectId) } returns expected
+        viewModel.accountLinkingStatus(projectId)
 
         val result = viewModel.accountLinkingStatus.getOrAwaitValue()
         assertTrue(result is AccountLinkingStatusResult.Linked)
@@ -190,10 +201,11 @@ class GotoKycTransparentViewModelTest {
 
     @Test
     fun `when get status account linking then return not linked`() {
+        val projectId = 7
         val expected = AccountLinkingStatusResult.NotLinked
 
-        coEvery { accountLinkingStatusUseCase(Unit) } returns expected
-        viewModel.accountLikingStatus()
+        coEvery { accountLinkingStatusUseCase(projectId) } returns expected
+        viewModel.accountLinkingStatus(projectId)
 
         val result = viewModel.accountLinkingStatus.getOrAwaitValue()
         assertTrue(result is AccountLinkingStatusResult.NotLinked)
@@ -203,10 +215,11 @@ class GotoKycTransparentViewModelTest {
 
     @Test
     fun `when get status account linking then return failed`() {
+        val projectId = 7
         val throwable = Throwable()
 
-        coEvery { accountLinkingStatusUseCase(Unit) } throws throwable
-        viewModel.accountLikingStatus()
+        coEvery { accountLinkingStatusUseCase(projectId) } throws throwable
+        viewModel.accountLinkingStatus(projectId)
 
         val result = viewModel.accountLinkingStatus.getOrAwaitValue()
         assertTrue(result is AccountLinkingStatusResult.Failed)

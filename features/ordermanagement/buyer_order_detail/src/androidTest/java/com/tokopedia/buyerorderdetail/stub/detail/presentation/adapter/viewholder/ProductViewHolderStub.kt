@@ -11,8 +11,9 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 class ProductViewHolderStub(
     itemView: View?,
     listener: PartialProductItemViewHolder.ProductViewListener,
+    bottomSheetListener: PartialProductItemViewHolder.ShareProductBottomSheetListener,
     navigator: BuyerOrderDetailNavigator
-) : ProductViewHolder(itemView, listener, navigator) {
+) : ProductViewHolder(itemView, listener, bottomSheetListener, navigator) {
 
     override fun setupButton(showBuyAgainButton: ActionButtonsUiModel.ActionButton, processing: Boolean) {
         btnBuyerOrderDetailBuyProductAgain?.apply {
