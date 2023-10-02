@@ -79,6 +79,7 @@ class MPSShopWidgetListenerDelegate(
         mpsShopWidgetProductDataView: MPSShopWidgetProductDataView?
     ) {
         mpsShopWidgetProductDataView ?: return
+
         mpsViewModel?.onAddToCart(mpsShopWidgetDataView, mpsShopWidgetProductDataView)
     }
 

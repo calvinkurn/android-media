@@ -19,4 +19,20 @@ internal class SearchBarStateTest : SearchBarViewModelTestFixtures() {
             )
         )
     }
+
+    @Test
+    fun `disable animation mps because already`() {
+        `Given no coach mark should be displayed`()
+        `Given should not animate icon plus`()
+
+        viewModel.showMps()
+
+        `Then verify coach mark local cache is called`()
+        `Then verify mps state`(
+            SearchBarState(
+                isAddButtonEnabled = true,
+                isMpsAnimationEnabled = false,
+            )
+        )
+    }
 }

@@ -1,6 +1,7 @@
 package com.tokopedia.autocompletecomponent.searchbar
 
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import io.mockk.every
 import org.junit.Test
 
 internal class SearchBarShowSearchTest: SearchBarViewModelTestFixtures()  {
@@ -77,7 +78,6 @@ internal class SearchBarShowSearchTest: SearchBarViewModelTestFixtures()  {
 
     @Test
     fun `mps search test`() {
-        `Given should not show icon plus coach mark`()
         val keyword1 = SearchBarKeyword(
             keyword = "samsung",
         )
@@ -110,7 +110,6 @@ internal class SearchBarShowSearchTest: SearchBarViewModelTestFixtures()  {
 
     @Test
     fun `mps search with skipped q1 params test`() {
-        `Given should not show icon plus coach mark`()
         val keyword1 = SearchBarKeyword(
             keyword = "samsung",
         )

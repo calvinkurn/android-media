@@ -59,7 +59,5 @@ class SuggestionActivityTest:
     private fun getBaseAppComponent() = createFakeBaseAppComponent(this)
 
     override fun finish() { }
-    override fun clickSuggestionMPS(item: BaseSuggestionDataView) {
-
-    }
+    override fun clickSuggestionMPS(item: BaseSuggestionDataView) {}
 }

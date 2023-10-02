@@ -18,13 +18,9 @@ class ViolationStateViewHolder(
     override fun bind(element: ViolationStateDataView) {
         renderImageViolation()
         renderButtonMpsViolation()
-        if(element.violationType == ViolationType.BLACKLISTED) {
-            renderTitleViolation(getString(R.string.search_mps_blacklist_response_state_title))
-            renderDescViolation(getString(R.string.search_mps_blacklist_response_state_description))
-        } else {
-            renderTitleViolation(getString(R.string.search_mps_banned_tobacco_state_title))
-            renderDescViolation(getString(R.string.search_mps_banned_tobacco_state_description))
-        }
+        val (titleViolation, descViolation) = element.violationType.getMessageTitleViolation()
+        renderTitleViolation(titleViolation)
+        renderDescViolation(descViolation)
     }
 
     private fun renderImageViolation(){
@@ -43,6 +39,20 @@ class ViolationStateViewHolder(
         binding?.buttonMPSResultViolation?.setOnClickListener {
             violationStateListener.onLearnItButtonClick()
         }
+    }
+
+    private fun ViolationType.getMessageTitleViolation() : Pair<String, String> {
+        val title = if (this == ViolationType.BLACKLISTED)
+            getString(R.string.search_mps_blacklist_response_state_title)
+        else
+            getString(R.string.search_mps_banned_tobacco_state_title)
+
+        val description = if (this == ViolationType.BLACKLISTED)
+            getString(R.string.search_mps_blacklist_response_state_description)
+        else
+            getString(R.string.search_mps_banned_tobacco_state_description)
+
+        return Pair(title, description)
     }
 
     companion object {
