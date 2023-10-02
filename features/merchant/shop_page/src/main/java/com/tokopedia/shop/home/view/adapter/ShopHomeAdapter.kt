@@ -390,10 +390,11 @@ open class ShopHomeAdapter(
                 isRemindMe?.let { isRemindMe ->
                     it.isRemindMe = isRemindMe
                     if (isClickRemindMe) {
-                        if (isRemindMe)
+                        if (isRemindMe) {
                             ++it.totalNotify
-                        else
+                        } else {
                             --it.totalNotify
+                        }
                     }
                 }
                 it.showRemindMeLoading = false
@@ -414,10 +415,11 @@ open class ShopHomeAdapter(
                 isRemindMe?.let { isRemindMe ->
                     it.isRemindMe = isRemindMe
                     if (isClickRemindMe) {
-                        if (isRemindMe)
+                        if (isRemindMe) {
                             ++it.totalNotify
-                        else
+                        } else {
                             --it.totalNotify
+                        }
                     }
                 }
                 flashSaleCampaignUiModel.isNewData = true

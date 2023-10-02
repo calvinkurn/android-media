@@ -107,6 +107,7 @@ object PromoRequestMapper {
             state = CartConstant.PARAM_CART
             skipApply = 0
             cartType = CartConstant.PARAM_DEFAULT
+            isCartCheckoutRevamp = true
         }
     }
 
@@ -283,7 +284,9 @@ object PromoRequestMapper {
                 val productDetail = ProductDetail(
                     productId = cartItem.productId.toLong(),
                     quantity = cartItem.quantity,
-                    bundleId = cartItem.bundleId.toLongOrZero()
+                    bundleId = cartItem.bundleId.toLongOrZero(),
+                    isChecked = cartItem.isSelected,
+                    cartId = cartItem.cartId
                 )
                 listProductDetail.add(productDetail)
             }
@@ -347,12 +350,12 @@ object PromoRequestMapper {
                 }
             }
         }
-
         return PromoRequest(
             codes = globalPromo,
             state = "cart",
             isSuggested = 0,
-            orders = orders
+            orders = orders,
+            isCartCheckoutRevamp = true
         )
     }
 
