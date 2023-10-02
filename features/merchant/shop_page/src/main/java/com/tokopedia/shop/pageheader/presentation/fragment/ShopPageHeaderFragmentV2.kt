@@ -407,8 +407,8 @@ class ShopPageHeaderFragmentV2 :
     private var isAlreadyGetShopPageP2Data: Boolean = false
 
     private val storiesManager by storiesManager(StoriesEntryPoint.ShopPage) {
-        setScrollingParent(viewBinding.)
         setAnimationStrategy(OneTimeAnimationStrategy())
+        setShowCoachMarkIfApplicable(false)
     }
 
     private val bottomSheetTabNotFound: ShopEtalaseNotFoundBottomSheet by lazy {
