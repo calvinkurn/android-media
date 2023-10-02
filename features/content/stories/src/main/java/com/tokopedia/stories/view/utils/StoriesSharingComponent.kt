@@ -52,8 +52,6 @@ class StoriesSharingComponent(rootView: View) {
             setShareText(getShareDescription(data.metadata.ogDescription))
             setOnDismissListener { mListener?.onDismissEvent(false, this@StoriesSharingComponent) }
             setShowListener { mListener?.onShowSharing(this@StoriesSharingComponent) }
-            if (isAdded) return@apply
-            show(fg, TAG)
         }.also {
             if (it.isAdded) return@also
             it.show(fg, TAG)
