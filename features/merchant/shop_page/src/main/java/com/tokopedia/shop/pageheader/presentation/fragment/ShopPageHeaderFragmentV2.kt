@@ -406,7 +406,7 @@ class ShopPageHeaderFragmentV2 :
     private var shopPageHeaderP1Data: ShopPageHeaderP1HeaderData? = null
     private var isAlreadyGetShopPageP2Data: Boolean = false
 
-    private val storiesManager by storiesManager(StoriesEntryPoint.ShopPage) {
+    private val storiesManager by storiesManager(StoriesEntryPoint.ShopPageReimagined) {
         setAnimationStrategy(OneTimeAnimationStrategy())
         setShowCoachMarkIfApplicable(false)
     }
