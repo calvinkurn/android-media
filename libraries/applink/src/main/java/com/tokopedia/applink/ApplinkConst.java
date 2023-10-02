@@ -132,6 +132,8 @@ public interface ApplinkConst {
     String DISCOVERY_SEARCH_UNIVERSAL = "tokopedia://universal-page";
     String DISCOVERY_HOTLIST_DETAIL = "tokopedia://hot/{alias}";
     String DISCOVERY_CATALOG = "tokopedia://catalog";
+
+    String DISCOVERY_CATALOG_PRODUCT_LIST = "tokopedia://catalog/product_list";
     String PAYMENT_BACK_TO_DEFAULT = "tokopedia://payment/backtodefault";
     String WISHLIST = "tokopedia://wishlist";
     String NEW_WISHLIST = "tokopedia://new-wishlist";
@@ -390,7 +392,7 @@ public interface ApplinkConst {
     String KYC_SELLER_DASHBOARD = "tokopedia://kyc?source=seller";
     String KYC = "tokopedia://kyc?projectId=1";
 
-    String GOTO_KYC = "tokopedia://goto-kyc?projectId={projectId}&source={source}&callback={callback}";
+    String GOTO_KYC = "tokopedia://goto-kyc?projectId={projectId}&source={source}&callBack={callBack}";
 
     String GOTO_KYC_WEBVIEW = "tokopedia://webview-kyc";
     String KYC_FORM_NO_PARAM = "tokopedia://kyc-form";

@@ -19,7 +19,7 @@ import com.tokopedia.kotlin.extensions.view.show
  */
 
 class RechargeHomepageDualIconsViewHolder(itemView: View?, val listener: RechargeHomepageItemListener) :
-        AbstractViewHolder<RechargeHomepageTrustMarkModel>(itemView) {
+    AbstractViewHolder<RechargeHomepageTrustMarkModel>(itemView) {
 
     override fun bind(element: RechargeHomepageTrustMarkModel) {
         val bind = ViewRechargeHomeDualIconsBinding.bind(itemView)
@@ -44,7 +44,7 @@ class RechargeHomepageDualIconsViewHolder(itemView: View?, val listener: Recharg
                 rvRechargeHomeDualIcons.layoutManager = layoutManager
 
                 rvRechargeHomeDualIcons.adapter =
-                        RechargeItemDualIconsAdapter(trustMarkItems, listener)
+                    RechargeItemDualIconsAdapter(trustMarkItems, listener)
 
                 root.addOnImpressionListener(section) {
                     listener.onRechargeSectionItemImpression(section)

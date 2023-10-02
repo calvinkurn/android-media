@@ -55,7 +55,7 @@ object DeeplinkMapperUser {
 
     private fun getApplinkGotoKyc(deeplink: String): String {
         return if (isRollenceGotoKycActivated()) {
-            deeplink.replace("${ApplinkConst.APPLINK_CUSTOMER_SCHEME}://", "${ApplinkConstInternalUserPlatform.NEW_INTERNAL_USER}/")
+            deeplink.replace("${ApplinkConst.APPLINK_CUSTOMER_SCHEME}://goto-kyc", "${ApplinkConstInternalUserPlatform.NEW_INTERNAL_USER}/goto-kyc")
         } else {
             ApplinkConstInternalUserPlatform.KYC_INFO_BASE + "?" + deeplink.substringAfter("?")
         }

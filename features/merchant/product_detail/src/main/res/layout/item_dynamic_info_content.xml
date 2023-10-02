@@ -30,7 +30,7 @@
         <com.tokopedia.unifycomponents.DividerUnify
             android:id="@+id/info_top_separator"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/divider_height_component"
+            android:layout_height="@dimen/thick_divider_height_component"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -122,7 +122,7 @@
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/info_bottom_separator"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/divider_height_component"
+        android:layout_height="@dimen/thick_divider_height_component"
         android:visibility="gone"
         tools:visibility="visible" />
 </LinearLayout>
