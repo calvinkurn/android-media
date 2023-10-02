@@ -30,8 +30,6 @@ data class StoriesGroupsResponseModel(
     )
 
     data class Meta(
-        @SerializedName("entrypoint")
-        val entryPoint: String = "",
         @SerializedName("selectedGroupIndex")
         val selectedGroupIndex: Int = 0,
     )

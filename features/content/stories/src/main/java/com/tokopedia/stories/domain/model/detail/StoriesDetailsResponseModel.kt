@@ -15,8 +15,6 @@ data class StoriesDetailsResponseModel(
     ) {
 
         data class Meta(
-            @SerializedName("entrypoint")
-            val entryPoint: String = "",
             @SerializedName("selectedStoryIndex")
             val selectedStoriesIndex: Int = 0,
         )
