@@ -154,6 +154,7 @@ import com.tokopedia.shop.common.util.ShopUtil.getShopPageWidgetUserAddressLocal
 import com.tokopedia.shop.common.view.ShopPageCountDrawable
 import com.tokopedia.shop.common.view.bottomsheet.ShopShareBottomSheet
 import com.tokopedia.shop.common.view.bottomsheet.listener.ShopShareBottomsheetListener
+import com.tokopedia.shop.common.view.interfaces.InterfaceShopPageHeader
 import com.tokopedia.shop.common.view.listener.InterfaceShopPageClickScrollToTop
 import com.tokopedia.shop.common.view.model.ShopPageFabConfig
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
@@ -1463,7 +1464,8 @@ class ShopPageHeaderFragment :
             isRefresh = isRefresh,
             widgetUserAddressLocalData = localCacheModel ?: LocalCacheModel(),
             extParam = extParam,
-            tabName = getSelectedTabName().takeIf { it.isNotEmpty() } ?: queryParamTab
+            tabName = getSelectedTabName().takeIf { it.isNotEmpty() } ?: queryParamTab,
+            isEnableShopReimagined = ShopUtil.isEnableShopPageReImagined(context)
         )
     }
 
@@ -1915,7 +1917,7 @@ class ShopPageHeaderFragment :
     private fun sendShopPageTabImpressionTracker() {
         listShopPageTabModel.onEach {
             if (!isMyShop) {
-                shopPageTracking?.sendImpressionShopTab(shopId, it.tabTitle)
+                shopPageTracking?.sendImpressionShopTab(shopId, it.tabName)
             }
         }
     }
@@ -1940,7 +1942,7 @@ class ShopPageHeaderFragment :
     fun getSelectedTabName(): String {
         return listShopPageTabModel.getOrNull(
             getSelectedDynamicTabPosition()
-        )?.tabTitle.orEmpty()
+        )?.tabName.orEmpty()
     }
 
     override fun onBackPressed() {
@@ -2070,7 +2072,7 @@ class ShopPageHeaderFragment :
 
     private fun sendShopPageClickTabTracker(position: Int) {
         if (!isMyShop) {
-            shopPageTracking?.clickTab(listShopPageTabModel[position].tabTitle, shopId, userId)
+            shopPageTracking?.clickTab(listShopPageTabModel[position].tabName, shopId, userId)
         }
     }
 
@@ -2149,7 +2151,7 @@ class ShopPageHeaderFragment :
 
     private fun getTabPositionBasedOnTabName(overrideTabName: String): Int {
         return listShopPageTabModel.indexOfFirst {
-            it.tabTitle == overrideTabName
+            it.tabName == overrideTabName
         }
     }
 
@@ -2357,7 +2359,7 @@ class ShopPageHeaderFragment :
             }?.let { tab ->
                 listShopPageTabModel.add(
                     ShopPageHeaderTabModel(
-                        tabTitle = it.name,
+                        tabName = it.name,
                         tabFragment = tab,
                         iconUrl = it.icon,
                         iconActiveUrl = it.iconFocus,
@@ -3651,7 +3653,7 @@ class ShopPageHeaderFragment :
                             id = shopPageHeaderDataModel?.shopId ?: "",
                             deeplink = Uri.parse(UriUtil.buildUri(ApplinkConst.SHOP, shopId))
                                 .buildUpon()
-                                .appendQueryParameter(QUERY_TAB,shopPageHeaderTabModel.tabTitle).toString()
+                                .appendQueryParameter(QUERY_TAB,shopPageHeaderTabModel.tabName).toString()
                         ),
                         index
                     )
