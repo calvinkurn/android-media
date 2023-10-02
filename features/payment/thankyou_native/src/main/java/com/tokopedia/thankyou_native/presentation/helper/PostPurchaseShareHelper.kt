@@ -63,6 +63,10 @@ class PostPurchaseShareHelper @Inject constructor(
             ApplinkConstInternalCommunication.PRODUCT_LIST_DATA,
             getPostPurchaseData(shopOrderList)
         )
+        intent.putExtra(
+            ApplinkConstInternalCommunication.SOURCE,
+            "Thankyou"
+        )
         context.startActivity(intent)
     }
 

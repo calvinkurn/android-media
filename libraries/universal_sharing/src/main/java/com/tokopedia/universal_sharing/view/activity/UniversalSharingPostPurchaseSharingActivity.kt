@@ -21,6 +21,7 @@ import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomshee
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.postpurchase.UniversalSharingPostPurchaseBottomSheetListener
 import com.tokopedia.universal_sharing.view.model.LinkProperties
 import com.tokopedia.universal_sharing.view.model.ShareModel
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class UniversalSharingPostPurchaseSharingActivity :
@@ -30,7 +31,11 @@ class UniversalSharingPostPurchaseSharingActivity :
     @Inject
     lateinit var analytics: UniversalSharebottomSheetTracker
 
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
     private var bottomSheet: UniversalSharingPostPurchaseBottomSheet? = null
+    private var source: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +52,7 @@ class UniversalSharingPostPurchaseSharingActivity :
 
     @SuppressLint("DeprecatedMethod")
     private fun setupBottomSheet() {
+        source = intent.getStringExtra(ApplinkConstInternalCommunication.SOURCE) ?: ""
         val data = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             intent.getParcelableExtra(
                 ApplinkConstInternalCommunication.PRODUCT_LIST_DATA,
@@ -146,6 +152,12 @@ class UniversalSharingPostPurchaseSharingActivity :
                     deeplink = generateApplinkPDP(product.productId),
                     desktopUrl = product.url
                 )
+            )
+            setUtmCampaignData(
+                pageName = source,
+                userId = userSession.userId,
+                pageId = "${product.productId} - $orderId", // Product Id & Order Id
+                feature = "share"
             )
             setOnDismissListener {
                 finish()
