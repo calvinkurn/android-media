@@ -285,11 +285,11 @@ class StoriesDetailFragment @Inject constructor(
         val currentItem = state.detailItems.getOrNull(state.selectedDetailPosition) ?: return
 
         storiesDetailsTimer(state)
-        renderAuthor(currentItem)
-        renderNotch(currentItem)
 
         if ((currentItem.isSameContent) && currentItem.status != StoryStatus.Removed) return
 
+        renderAuthor(currentItem)
+        renderNotch(currentItem)
         renderMedia(currentItem.content, currentItem.status)
 
         showPageLoading(false)
@@ -378,28 +378,16 @@ class StoriesDetailFragment @Inject constructor(
             when (event) {
                 TouchEventStories.PAUSE -> {
                     showStoriesComponent(false)
-                    flStoriesNext.hide()
-                    flStoriesProduct.hide()
-                    vStoriesShareIcon.hide()
-                    vStoriesKebabIcon.hide()
-                    vStoriesProductIcon.root.hide()
                     pauseStories()
                 }
-
                 TouchEventStories.RESUME -> {
                     showStoriesComponent(true)
-                    flStoriesNext.show()
-                    flStoriesProduct.show()
-                    vStoriesShareIcon.show()
-                    vStoriesKebabIcon.show()
-                    vStoriesProductIcon.root.show()
                     resumeStories()
                 }
                 TouchEventStories.NEXT_PREV -> {
                     trackTapPreviousDetail()
                     viewModelAction(PreviousDetail)
                 }
-
                 else -> {}
             }
         }
@@ -407,28 +395,16 @@ class StoriesDetailFragment @Inject constructor(
             when (event) {
                 TouchEventStories.PAUSE -> {
                     showStoriesComponent(false)
-                    flStoriesPrev.hide()
-                    flStoriesProduct.hide()
-                    vStoriesShareIcon.hide()
-                    vStoriesKebabIcon.hide()
-                    vStoriesProductIcon.root.hide()
                     pauseStories()
                 }
-
                 TouchEventStories.RESUME -> {
                     showStoriesComponent(true)
-                    flStoriesPrev.show()
-                    flStoriesProduct.show()
-                    vStoriesShareIcon.show()
-                    vStoriesKebabIcon.show()
-                    vStoriesProductIcon.root.show()
                     resumeStories()
                 }
                 TouchEventStories.NEXT_PREV -> {
                     trackTapNextDetail()
                     viewModelAction(NextDetail)
                 }
-
                 else -> {}
             }
         }
@@ -482,6 +458,11 @@ class StoriesDetailFragment @Inject constructor(
 
     private fun showStoriesComponent(isShow: Boolean) {
         binding.storiesComponent.showWithCondition(isShow)
+        binding.flStoriesNext.showWithCondition(isShow)
+        binding.flStoriesProduct.showWithCondition(isShow)
+        binding.vStoriesShareIcon.showWithCondition(isShow)
+        binding.vStoriesKebabIcon.showWithCondition(isShow)
+        binding.vStoriesProductIcon.root.showWithCondition(isShow)
     }
 
     private fun viewModelAction(event: StoriesUiAction) {
