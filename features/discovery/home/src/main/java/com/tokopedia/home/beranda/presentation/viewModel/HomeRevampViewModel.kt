@@ -1,7 +1,6 @@
 package com.tokopedia.home.beranda.presentation.viewModel
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -71,7 +70,6 @@ import dagger.Lazy
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
@@ -594,15 +592,20 @@ open class HomeRevampViewModel @Inject constructor(
     fun getMissionWidgetRefresh() {
         findWidget<MissionWidgetListDataModel> { missionWidgetListDataModel, position ->
             launch {
-                updateWidget(
-                    missionWidgetListDataModel.copy(status = MissionWidgetListDataModel.STATUS_LOADING),
-                    position
-                )
-                updateWidget(
-                    homeMissionWidgetUseCase.get()
-                        .onMissionWidgetRefresh(missionWidgetListDataModel),
-                    position
-                )
+                if(missionWidgetListDataModel.source == MissionWidgetListDataModel.SOURCE_ATF &&
+                    homeRemoteConfigController.isUsingNewAtf()) {
+                    homeAtfUseCase.refreshData(missionWidgetListDataModel.id)
+                } else {
+                    updateWidget(
+                        missionWidgetListDataModel.copy(status = MissionWidgetListDataModel.STATUS_LOADING),
+                        position
+                    )
+                    updateWidget(
+                        homeMissionWidgetUseCase.get()
+                            .onMissionWidgetRefresh(missionWidgetListDataModel),
+                        position
+                    )
+                }
             }
         }
     }
@@ -610,15 +613,20 @@ open class HomeRevampViewModel @Inject constructor(
     fun getTodoWidgetRefresh() {
         findWidget<TodoWidgetListDataModel> { todoWidgetListDataModel, position ->
             launch {
-                updateWidget(
-                    todoWidgetListDataModel.copy(status = TodoWidgetListDataModel.STATUS_LOADING),
-                    position
-                )
-                updateWidget(
-                    homeTodoWidgetUseCase.get()
-                        .onTodoWidgetRefresh(todoWidgetListDataModel),
-                    position
-                )
+                if(todoWidgetListDataModel.source == TodoWidgetListDataModel.SOURCE_ATF &&
+                    homeRemoteConfigController.isUsingNewAtf()) {
+                    homeAtfUseCase.refreshData(todoWidgetListDataModel.id)
+                } else {
+                    updateWidget(
+                        todoWidgetListDataModel.copy(status = TodoWidgetListDataModel.STATUS_LOADING),
+                        position
+                    )
+                    updateWidget(
+                        homeTodoWidgetUseCase.get()
+                            .onTodoWidgetRefresh(todoWidgetListDataModel),
+                        position
+                    )
+                }
             }
         }
     }

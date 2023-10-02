@@ -1,8 +1,8 @@
 package com.tokopedia.home.beranda.data.newatf
 
-import android.util.Log
-import com.tokopedia.home.constant.AtfKey
-
+/**
+ * Created by Frenzel
+ */
 data class AtfDataList(
     val listAtfData: List<AtfData>,
     val isCache: Boolean,
