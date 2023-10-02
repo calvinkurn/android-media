@@ -21,6 +21,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.CardWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.view.viewhelper.URLSpanNoUnderline
 import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.unifyprinciples.stringToUnifyColor
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created By @ilhamsuaib on 19/05/20
@@ -68,11 +69,16 @@ class CardViewHolder(
                 listener.setOnErrorWidget(absoluteAdapterPosition, element, data.error)
                 setupTag(element)
             }
+
             else -> {
-                showOnError(element, false)
-                showShimmer(false)
-                showViewComponent(element, true)
-                setupTag(element)
+                if (element.data?.showWidget.orFalse()) {
+                    showOnError(element, false)
+                    showShimmer(false)
+                    showViewComponent(element, true)
+                    setupTag(element)
+                } else {
+                    listener.removeWidget(absoluteAdapterPosition, element)
+                }
             }
         }
     }
@@ -121,7 +127,7 @@ class CardViewHolder(
                 )
                 containerCard.setBackgroundResource(selectableItemBg.resourceId)
             } else {
-                containerCard.setBackgroundColor(root.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN0))
+                containerCard.setBackgroundColor(root.context.getResColor(unifyprinciplesR.color.Unify_NN0))
             }
 
             if (shouldLoadAnimation) {
@@ -232,17 +238,20 @@ class CardViewHolder(
                     imgShcCardStatePlus.gone()
                     imgShcCardState.loadImage(R.drawable.bg_shc_card_stata_warning)
                 }
+
                 CardDataUiModel.State.WARNING_PLUS, CardDataUiModel.State.DANGER_PLUS -> {
                     imgShcCardState.visible()
                     imgShcCardState.loadImage(R.drawable.bg_shc_card_stata_warning)
                     imgShcCardStatePlus.visible()
                     imgShcCardStatePlus.loadImage(SellerHomeUrl.IMG_CARD_ORNAMENT_YELLOW)
                 }
+
                 CardDataUiModel.State.GOOD_PLUS -> {
                     imgShcCardState.gone()
                     imgShcCardStatePlus.visible()
                     imgShcCardStatePlus.loadImage(SellerHomeUrl.IMG_CARD_ORNAMENT_GREEN)
                 }
+
                 else -> {
                     imgShcCardState.gone()
                     imgShcCardStatePlus.gone()
