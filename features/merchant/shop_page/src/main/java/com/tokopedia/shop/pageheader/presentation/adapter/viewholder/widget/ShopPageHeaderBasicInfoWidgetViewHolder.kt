@@ -79,7 +79,6 @@ class ShopPageHeaderBasicInfoWidgetViewHolder(
         shopLogoContainer?.run {
             shopHeaderBasicInfoWidgetListener.getStoriesWidgetManager().manage(this, shopId)
         }
-//        shopLogoContainer?.startAnimation()
     }
 
     private fun setShopNameAndInfoSection(component: ShopPageHeaderBadgeTextValueComponentUiModel?) {
