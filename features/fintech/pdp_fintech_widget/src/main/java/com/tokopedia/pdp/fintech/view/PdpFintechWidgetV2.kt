@@ -9,6 +9,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStore
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.pdp.fintech.analytics.PdpFintechWidgetAnalytics
@@ -177,7 +178,7 @@ class PdpFintechWidgetV2 @JvmOverloads constructor(
     private fun setClickListener(model: WidgetDetailV3Item) {
         binding?.sliderContainer?.setOnClickListener {
             instanceProductUpdateListner?.fintechChipClicked(
-                FintechRedirectionWidgetDataClass(gatewayId = "0"),
+                FintechRedirectionWidgetDataClass(gatewayId = Int.ZERO.toString()),
                 model.androidUrl
             )
         }
@@ -185,13 +186,14 @@ class PdpFintechWidgetV2 @JvmOverloads constructor(
 
     private fun setMessagesWidget(messages: List<String>) {
         val firstTextView = Typography(context).apply {
-            text = Html.fromHtml(messages.getOrNull(Int.ZERO))
+            text = Html.fromHtml(messages.getOrNull(Int.ZERO) ?: String.EMPTY)
         }
 
         val secondTextView = Typography(context).apply {
-            text = Html.fromHtml(messages.getOrNull(Int.ONE))
+            text = Html.fromHtml(messages.getOrNull(Int.ONE) ?: String.EMPTY)
         }
-        binding?.sliderView?.setItems(arrayListOf(firstTextView, secondTextView))
+
+        binding?.sliderView?.setItems(arrayListOf(firstTextView, secondTextView), messages.size > Int.ONE)
     }
 
     fun updateIdToPriceMap(

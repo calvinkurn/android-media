@@ -36,19 +36,19 @@ class SliderView: ScrollView {
         binding = SliderViewLayoutBinding.inflate(LayoutInflater.from(context), this, true)
     }
 
-    fun setItems(views: List<View>) {
+    fun setItems(views: List<View>, shouldAnimate: Boolean) {
         if (views.isEmpty()) return
 
         views.forEachIndexed { index, view ->
-            if (index == 0) view.setPadding(0, VERTICAL_PADDING.toPx(), 0, 0)
+            if (index == 0 && shouldAnimate) view.setPadding(0, VERTICAL_PADDING.toPx(), 0, 0)
             if (index == views.size - 1) view.setPadding(0, 0, 0, VERTICAL_PADDING.toPx())
             binding?.container?.addView(view)
         }
 
-        animateScrollToViews(views)
+        animateScrollToViews(views, shouldAnimate)
     }
 
-    private fun animateScrollToViews(views: List<View>) {
+    private fun animateScrollToViews(views: List<View>, shouldAnimate: Boolean) {
         views.last().post {
             layoutParams.height = views.last().height - VERTICAL_PADDING.toPx()
             requestLayout()
@@ -82,7 +82,9 @@ class SliderView: ScrollView {
                 override fun onAnimationRepeat(animation: Animator) {}
             })
 
-            scrollAnim.start()
+            if (shouldAnimate) {
+                scrollAnim.start()
+            }
         }
     }
 
