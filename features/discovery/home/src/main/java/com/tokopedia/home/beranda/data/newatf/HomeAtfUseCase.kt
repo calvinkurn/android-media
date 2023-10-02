@@ -32,7 +32,7 @@ class HomeAtfUseCase @Inject constructor(
     private val tickerRepository: TickerRepository,
     private val atfChannelRepository: AtfChannelRepository,
     private val missionWidgetRepository: MissionWidgetRepository,
-    private val todoWidgetRepository: TodoWidgetRepository,
+    private val todoWidgetRepository: TodoWidgetRepository
 ) {
     var job: Job? = null
 
@@ -46,7 +46,7 @@ class HomeAtfUseCase @Inject constructor(
         dynamicIconRepository.flow,
         missionWidgetRepository.flow,
         todoWidgetRepository.flow,
-        atfChannelRepository.flow,
+        atfChannelRepository.flow
     )
 
     /**
@@ -54,7 +54,7 @@ class HomeAtfUseCase @Inject constructor(
      */
     suspend fun fetchAtfDataList() {
         coroutineScope {
-            //only fetch dynamic position on first load
+            // only fetch dynamic position on first load
             job = launch(homeDispatcher.io) {
                 dynamicPositionRepository.getData()
             }
@@ -68,10 +68,8 @@ class HomeAtfUseCase @Inject constructor(
      */
     suspend fun refreshData() {
         coroutineScope {
-            if(job?.isActive != true) {
-                job = launch(homeDispatcher.io) {
-                    dynamicPositionRepository.getRemoteData(isRefresh = true)
-                }
+            if (job?.isActive != true) {
+                dynamicPositionRepository.getRemoteData(isRefresh = true)
             }
         }
     }
@@ -81,7 +79,7 @@ class HomeAtfUseCase @Inject constructor(
      */
     suspend fun refreshData(id: String) {
         coroutineScope {
-            if(job?.isActive != true) {
+            if (job?.isActive != true) {
                 launch(homeDispatcher.io) {
                     flow.value?.let { value ->
                         value.listAtfData.firstOrNull { atfData ->
@@ -89,7 +87,6 @@ class HomeAtfUseCase @Inject constructor(
                         }?.let { atfData ->
                             conditionalFetchAtfData(atfData.atfMetadata)
                         }
-
                     }
                 }
             }
@@ -105,14 +102,17 @@ class HomeAtfUseCase @Inject constructor(
     private fun CoroutineScope.observeDynamicPositionFlow() {
         launch(homeDispatcher.io) {
             dynamicPositionRepository.flow.collect { value ->
-                if(value != null) {
-                    if(value.isPositionReady()) {
+                if (value != null) {
+                    if (value.isPositionReady()) {
                         launch { emit(value) }
                     }
-                    if(value.needToFetchComponents) {
+                    if (value.needToFetchComponents) {
                         value.listAtfData.forEach { data ->
                             conditionalFetchAtfData(data.atfMetadata)
                         }
+                    }
+                    if (value.isDataError()) {
+                        launch { _flow.emit(value) }
                     }
                 }
             }
@@ -131,7 +131,7 @@ class HomeAtfUseCase @Inject constructor(
             // other flows defined on atfFlows list
             val listAtfData = list.drop(1) as List<AtfData?>
             // if remote dynamic position is ready, populate data to list
-            if(dynamicPos != null && dynamicPos.isPositionReady() && !dynamicPos.isCache) {
+            if (dynamicPos != null && dynamicPos.isPositionReady() && !dynamicPos.isCache) {
                 val latest = dynamicPos.updateAtfContents(listAtfData)
                 launch { emitAndSave(latest) }
             }
@@ -142,7 +142,7 @@ class HomeAtfUseCase @Inject constructor(
      * Fetch data for each ATF components
      */
     private fun CoroutineScope.conditionalFetchAtfData(metadata: AtfMetadata) {
-        when(metadata.component) {
+        when (metadata.component) {
             AtfKey.TYPE_BANNER -> launch { homepageBannerRepository.getData(metadata) }
             AtfKey.TYPE_ICON -> launch { dynamicIconRepository.getData(metadata) }
             AtfKey.TYPE_TICKER -> launch { tickerRepository.getData(metadata) }

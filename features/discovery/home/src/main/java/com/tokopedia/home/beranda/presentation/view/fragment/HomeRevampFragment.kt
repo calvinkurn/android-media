@@ -345,6 +345,7 @@ open class HomeRevampFragment :
     lateinit var viewModel: Lazy<HomeRevampViewModel>
     private lateinit var remoteConfig: RemoteConfig
     private lateinit var userSession: UserSessionInterface
+
     @Inject
     lateinit var homeRemoteConfigController: HomeRemoteConfigController
 
@@ -563,7 +564,7 @@ open class HomeRevampFragment :
         statusBarBackground = view.findViewById(R.id.status_bar_bg)
         homeRecyclerView = view.findViewById(R.id.home_fragment_recycler_view)
         homeRecyclerView?.setHasFixedSize(true)
-        if(::homeRemoteConfigController.isInitialized) {
+        if (::homeRemoteConfigController.isInitialized) {
             homeRemoteConfigController.fetchHomeRemoteConfig()
         }
         HomeComponentRollenceController.fetchHomeComponentRollenceValue()
@@ -1211,6 +1212,13 @@ open class HomeRevampFragment :
                         NetworkErrorHelper.showEmptyState(activity, root, errorString) { onRefresh() }
                         onPageLoadTimeEnd()
                         performanceTrace?.setPageState(BlocksPerformanceTrace.BlocksPerfState.STATE_ERROR)
+                    }
+                    status == Result.Status.ERROR_ATF_NEW -> {
+                        if (getHomeViewModel().homeDataModel.list.size <= 1) {
+                            val errorString = getErrorStringWithDefault(throwable)
+                            showNetworkError(errorString)
+                            NetworkErrorHelper.showEmptyState(activity, root, errorString) { onRefresh() }
+                        }
                     }
                     else -> {
                         showLoading()

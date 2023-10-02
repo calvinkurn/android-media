@@ -12,12 +12,13 @@ import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.Reco
 import timber.log.Timber
 
 data class HomeDynamicChannelModel(
-        var list: List<Visitable<*>> = listOf(),
-        var isCache: Boolean = false,
-        val isFirstPage: Boolean = false,
-        var homeChooseAddressData: HomeChooseAddressData = HomeChooseAddressData(),
-        var topadsPage: String = "0",
-        var flowCompleted: Boolean = true
+    var list: List<Visitable<*>> = listOf(),
+    var isCache: Boolean = false,
+    val isFirstPage: Boolean = false,
+    var homeChooseAddressData: HomeChooseAddressData = HomeChooseAddressData(),
+    var topadsPage: String = "0",
+    var flowCompleted: Boolean = true,
+    var isAtfError: Boolean = false
 ) {
     private var _list: MutableList<Visitable<*>> = list.toMutableList()
 
@@ -27,69 +28,73 @@ data class HomeDynamicChannelModel(
 
     fun addWidgetModel(visitable: Visitable<*>, position: Int? = null, onListUpdated: () -> Unit = {}) {
         logChannelUpdate("Update channel: (Add widget ${visitable.javaClass.simpleName})")
-        //prevent duplicate home recommendation feed data model
+        // prevent duplicate home recommendation feed data model
         if (_list.find { it is HomeRecommendationFeedDataModel } != null &&
-                visitable is HomeRecommendationFeedDataModel) {
+            visitable is HomeRecommendationFeedDataModel
+        ) {
             return
         }
-        if((position == null || position > _list.size)) _list.add(visitable)
-        else _list.add(position, visitable)
+        if ((position == null || position > _list.size)) {
+            _list.add(visitable)
+        } else {
+            _list.add(position, visitable)
+        }
         list = _list.copy()
         onListUpdated.invoke()
     }
 
     fun deleteWidgetModel(visitable: Visitable<*>? = null, position: Int, onListUpdated: () -> Unit) {
         findVisitable(
-                visitable = visitable,
-                position = position,
-                onVisitableFoundByIndex = { pos, visitableFound ->
-                    _list.remove(visitableFound)
-                    list = _list.copy()
-                    onListUpdated.invoke()
-                },
-                onVisitableFoundById = { pos, visitableFound ->
-                    _list.remove(visitableFound)
-                    list = _list.copy()
-                    onListUpdated.invoke()
-                }
+            visitable = visitable,
+            position = position,
+            onVisitableFoundByIndex = { pos, visitableFound ->
+                _list.remove(visitableFound)
+                list = _list.copy()
+                onListUpdated.invoke()
+            },
+            onVisitableFoundById = { pos, visitableFound ->
+                _list.remove(visitableFound)
+                list = _list.copy()
+                onListUpdated.invoke()
+            }
         )
     }
 
     fun updateWidgetModel(visitable: Visitable<*>?, visitableToChange: Visitable<*>? = null, position: Int, onListUpdated: () -> Unit) {
         val visitableDest = visitableToChange ?: visitable
         findVisitable(
-                visitable = visitableDest,
-                position = position,
-                onVisitableFoundByIndex = { pos, visitableFound ->
-                    visitable?.let {
-                        _list[pos] = it
-                        list = _list.copy()
-                        onListUpdated.invoke()
-                    }
-                },
-                onVisitableFoundById = { pos, visitableFound ->
-                    visitable?.let {
-                        _list[pos] = it
-                        list = _list.copy()
-                        onListUpdated.invoke()
-                    }
+            visitable = visitableDest,
+            position = position,
+            onVisitableFoundByIndex = { pos, visitableFound ->
+                visitable?.let {
+                    _list[pos] = it
+                    list = _list.copy()
+                    onListUpdated.invoke()
                 }
+            },
+            onVisitableFoundById = { pos, visitableFound ->
+                visitable?.let {
+                    _list[pos] = it
+                    list = _list.copy()
+                    onListUpdated.invoke()
+                }
+            }
         )
     }
 
     private fun findVisitable(
-            visitable: Visitable<*>?,
-            position: Int,
-            onVisitableFoundByIndex: (Int, Visitable<*>) -> Unit,
-            onVisitableFoundById: (Int, Visitable<*>) -> Unit
+        visitable: Visitable<*>?,
+        position: Int,
+        onVisitableFoundByIndex: (Int, Visitable<*>) -> Unit,
+        onVisitableFoundById: (Int, Visitable<*>) -> Unit
     ) {
         visitable?.let {
-            //try to update by position
+            // try to update by position
             if (isValidToAssignByPosition(position, visitable)) {
                 logChannelUpdate("Find channel: (Find widget ${visitable.javaClass.simpleName}) by position")
                 onVisitableFoundByIndex.invoke(position, visitable)
             } else {
-                //else proceed by visitableId
+                // else proceed by visitableId
                 visitable.visitableId()?.let { visitableId ->
                     val findVisitableWithId = _list.withIndex().find { it.value.visitableId() ?: "" == visitableId }
                     findVisitableWithId?.let {
@@ -102,14 +107,16 @@ data class HomeDynamicChannelModel(
     }
 
     private fun isValidToAssignByPosition(position: Int, visitable: Visitable<*>): Boolean {
-        return (position != -1 && _list.isNotEmpty()
-                && _list.size > position
-                && _list[position]::class.java == visitable::class.java
-                && _list[position].visitableId() == visitable.visitableId())
+        return (
+            position != -1 && _list.isNotEmpty() &&
+                _list.size > position &&
+                _list[position]::class.java == visitable::class.java &&
+                _list[position].visitableId() == visitable.visitableId()
+            )
     }
 
     private fun visitableValidToAssign(position: Int, newList: MutableList<Visitable<*>>, visitable: Visitable<*>) =
-            position != -1 && newList.isNotEmpty() && newList.size > position && newList[position]::class.java == visitable::class.java
+        position != -1 && newList.isNotEmpty() && newList.size > position && newList[position]::class.java == visitable::class.java
 
     fun evaluateChooseAddressData() {
         val processList = _list.copy()
@@ -135,17 +142,18 @@ data class HomeDynamicChannelModel(
     }
 
     fun evaluateRecommendationSection(currentHomeRecom: HomeRecommendationFeedDataModel?): Boolean {
-        if(_list.find { it::class.java == HomeLoadingMoreModel::class.java } != null)
+        if (_list.find { it::class.java == HomeLoadingMoreModel::class.java } != null) {
             return false
+        }
 
-        //reuse the recommendation viewmodel
+        // reuse the recommendation viewmodel
         var detectHomeRecom = _list.find { visitable -> visitable is HomeRecommendationFeedDataModel }
         if (detectHomeRecom == null) {
             detectHomeRecom = currentHomeRecom
         }
         if (detectHomeRecom != null) {
             val isAddressChanged =
-                    (detectHomeRecom as? HomeRecommendationFeedDataModel)?.homeChooseAddressData != homeChooseAddressData
+                (detectHomeRecom as? HomeRecommendationFeedDataModel)?.homeChooseAddressData != homeChooseAddressData
             if (isAddressChanged) {
                 return true
             }
@@ -157,17 +165,17 @@ data class HomeDynamicChannelModel(
     }
 
     private fun copyWidget(
-            homeDynamicChannelModel: HomeDynamicChannelModel,
-            validation: (Visitable<*>) -> Boolean,
-            modification: (Visitable<*>?) -> Visitable<*>? = { null }
+        homeDynamicChannelModel: HomeDynamicChannelModel,
+        validation: (Visitable<*>) -> Boolean,
+        modification: (Visitable<*>?) -> Visitable<*>? = { null }
     ) {
         val listToCopy = homeDynamicChannelModel.list
         val widget = listToCopy.find { visitable -> validation.invoke(visitable) }
         val processedWidget =
             if (modification.invoke(widget) == null) widget else modification.invoke(widget)
-        if(processedWidget != null) {
+        if (processedWidget != null) {
             val widgetIndex = _list.indexOfFirst { visitable -> validation.invoke(visitable) }
-            if(widgetIndex != -1){
+            if (widgetIndex != -1) {
                 _list[widgetIndex] = processedWidget
             } else {
                 addWidgetModel(processedWidget)
@@ -175,8 +183,8 @@ data class HomeDynamicChannelModel(
         }
     }
 
-    private fun logChannelUpdate(message: String){
-        if(GlobalConfig.DEBUG) Timber.tag(this.javaClass.simpleName).e(message)
+    private fun logChannelUpdate(message: String) {
+        if (GlobalConfig.DEBUG) Timber.tag(this.javaClass.simpleName).e(message)
     }
 
     fun Visitable<*>.visitableId(): String? {
