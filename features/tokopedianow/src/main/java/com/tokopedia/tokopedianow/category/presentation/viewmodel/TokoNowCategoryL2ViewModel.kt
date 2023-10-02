@@ -85,7 +85,8 @@ class TokoNowCategoryL2ViewModel @Inject constructor(
             tickerData = tickerData,
             getCategoryLayoutResponse = getCategoryLayoutResponse,
             categoryDetailResponse = getCategoryDetailResponse,
-            queryParamMap = queryParamMap
+            queryParamMap = queryParamMap,
+            deepLink = deepLink
         )
 
         hidePageLoading()

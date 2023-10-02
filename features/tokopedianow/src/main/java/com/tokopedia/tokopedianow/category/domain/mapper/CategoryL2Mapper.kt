@@ -65,7 +65,8 @@ object CategoryL2Mapper {
         tickerData: GetTickerData,
         getCategoryLayoutResponse: CategoryGetDetailModular,
         categoryDetailResponse: CategoryDetailResponse,
-        queryParamMap: HashMap<String, String>
+        queryParamMap: HashMap<String, String>,
+        deepLink: String
     ): CategoryL2TabUiModel {
         val componentListResponse = getCategoryLayoutResponse.components
         val id = componentListResponse
@@ -82,7 +83,11 @@ object CategoryL2Mapper {
                 categoryIdL2 = it.id,
                 tickerData = tickerData,
                 categoryDetail = categoryDetail,
-                queryParamMap = queryParamMap
+                queryParamMap = if(deepLink.contains(it.id)) {
+                    queryParamMap
+                } else {
+                    hashMapOf()
+                }
             )
         }
 

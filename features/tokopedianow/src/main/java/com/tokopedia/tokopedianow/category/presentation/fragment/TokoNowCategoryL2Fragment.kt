@@ -49,6 +49,7 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment(), CategoryL2View {
         fun newInstance(
             categoryL1: String,
             categoryL2: String,
+            deepLink: String,
             queryParamMap: HashMap<String, String>
         ): TokoNowCategoryL2Fragment {
             return TokoNowCategoryL2Fragment().apply {
@@ -58,6 +59,7 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment(), CategoryL2View {
                 }
                 this.currentCategoryId = categoryL2
                 this.queryParamMap = queryParamMap
+                this.deepLink = deepLink
             }
         }
     }

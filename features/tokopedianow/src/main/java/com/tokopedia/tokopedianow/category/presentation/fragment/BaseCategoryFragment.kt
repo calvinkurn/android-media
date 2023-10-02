@@ -103,6 +103,7 @@ abstract class BaseCategoryFragment : Fragment(), ScreenShotListener,
         get() = viewModel.categoryIdL2
 
     protected var currentCategoryId = String.EMPTY
+    protected var deepLink: String = String.EMPTY
     protected var queryParamMap: HashMap<String, String> = hashMapOf()
 
     protected val shopId: String
@@ -662,6 +663,7 @@ abstract class BaseCategoryFragment : Fragment(), ScreenShotListener,
             categoryIdL2 = arguments?.getString(EXTRA_CATEGORY_ID_L2).orEmpty()
             currentCategoryId = this@BaseCategoryFragment.currentCategoryId
             queryParamMap = this@BaseCategoryFragment.queryParamMap
+            deepLink = this@BaseCategoryFragment.deepLink
         }
     }
 
