@@ -17,8 +17,8 @@
         android:id="@+id/img_icon"
         android:layout_width="20dp"
         android:layout_height="20dp"
-        app:icon_color_light_enable="@color/Unify_Static_White"
-        app:icon_color_night_enable="@color/Unify_Static_White"
+        app:icon_color_light_enable="@color/dms_universal_editor_tool_icon_color"
+        app:icon_color_night_enable="@color/dms_universal_editor_tool_icon_color"
         app:icon_name="TEXT" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         tools:text="Teks"
         android:layout_marginTop="4dp"
-        android:textColor="@color/Unify_Static_White"
+        android:textColor="@color/dms_universal_editor_tool_text_color"
         app:typographyType="display_3" />
 
 </LinearLayout>

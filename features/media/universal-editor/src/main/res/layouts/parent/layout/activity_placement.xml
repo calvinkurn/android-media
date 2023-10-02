@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <androidx.appcompat.widget.Toolbar
-        android:background="@color/Unify_NN1000"
+        android:background="@color/Unify_Static_Black"
         android:id="@+id/toolbar_container"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
@@ -25,5 +25,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_width="match_parent"
         android:layout_height="0dp"/>
+
+    <include layout="@layout/uc_global_loader" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

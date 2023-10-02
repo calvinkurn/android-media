@@ -32,6 +32,10 @@ class InputTextViewModel @Inject constructor(
     private val _textValue = MutableLiveData("")
     val textValue: LiveData<String> get() = _textValue
 
+    // temporary, will be adjust later when implement (event - effect) pattern so no need extra livedata
+    private val _isActivitySave = MutableLiveData(false)
+    val isActivitySave: LiveData<Boolean> get() = _isActivitySave
+
     fun updateSelectedColor(colorId: Int) {
         _selectedTextColor.value = colorId
 
@@ -88,5 +92,9 @@ class InputTextViewModel @Inject constructor(
         }
 
         return result
+    }
+
+    fun saveInputText() {
+        _isActivitySave.value = true
     }
 }

@@ -15,8 +15,6 @@ import com.tokopedia.editor.util.getEditorCacheFolderPath
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.utils.file.FileUtil
 import com.tokopedia.utils.view.binding.viewBinding
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
@@ -31,8 +29,6 @@ class PlacementImageFragment @Inject constructor(
     private var scale = 0f
     private var translateX = 0f
     private var translateY = 0f
-
-    private var loaderDialog: LoaderDialog? = null
 
     override fun initObserver() {
         viewModel.imagePath.observe(viewLifecycleOwner) {
@@ -49,7 +45,7 @@ class PlacementImageFragment @Inject constructor(
                     ucropRef.listener = object: StoryEditorUCropLayout.Listener {
                         override fun onFinish() {
                             gestureCropImage.post {
-                                ucropRef.getOverlayView()?.setTargetAspectRatio(IMAGE_RATIO)
+                                ucropRef.getOverlayView()?.setTargetAspectRatioStory(IMAGE_RATIO)
 
                                 Handler().postDelayed({
                                     scale = gestureCropImage.currentScale
@@ -64,14 +60,6 @@ class PlacementImageFragment @Inject constructor(
                         }
                     }
                 }
-            }
-        }
-
-        viewModel.isLoadingShow.observe(viewLifecycleOwner) {
-            if (it) {
-                showLoadingDialog()
-            } else {
-                hideLoadingDialog()
             }
         }
     }
@@ -158,19 +146,6 @@ class PlacementImageFragment @Inject constructor(
             gestureCropImage.postTranslate(-currentTranslateX, -currentTranslateY)
             gestureCropImage.postTranslate(translateX, translateY)
         }
-    }
-
-    private fun showLoadingDialog() {
-        context?.let {
-            loaderDialog = LoaderDialog(it)
-            loaderDialog?.setLoadingText("")
-            loaderDialog?.show()
-        }
-    }
-
-    private fun hideLoadingDialog() {
-        loaderDialog?.dismiss()
-        loaderDialog = null
     }
 
     companion object {

@@ -118,6 +118,10 @@ class InputTextFragment @Inject constructor(
                 updateHint(newText?.toString()?.isNotEmpty() == true)
                 viewModel.updateText(newText.toString())
             }
+
+            it.addTextInputWrapper.setOnClickListener {
+                viewModel.saveInputText()
+            }
         }
     }
 

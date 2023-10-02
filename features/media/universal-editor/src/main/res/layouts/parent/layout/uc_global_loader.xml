@@ -11,7 +11,7 @@
         android:id="@+id/overlay_loader"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/Unify_NN900_68"
+        android:background="@color/dms_universal_editor_loader_overlay"
         android:visibility="gone"
         tools:visibility="visible" />
 

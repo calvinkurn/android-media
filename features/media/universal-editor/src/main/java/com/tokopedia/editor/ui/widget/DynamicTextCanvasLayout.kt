@@ -98,7 +98,7 @@ class DynamicTextCanvasLayout @JvmOverloads constructor(
         val view = findViewById<EditorEditTextView>(id) ?: return
 
         // If there's an alignment changes, we have to force update the text view
-        if (view.gravity != defaultTextGravityAlignment(model.textAlign)) {
+        if (models[view.id]?.textAlign != model.textAlign) {
             removeView(view)
             addText(model)
             return

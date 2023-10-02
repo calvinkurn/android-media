@@ -66,7 +66,7 @@
         <androidx.cardview.widget.CardView
             android:id="@+id/alignment_icon_container"
             app:cardCornerRadius="20dp"
-            app:cardBackgroundColor="@color/Unify_NN900"
+            app:cardBackgroundColor="@color/dms_universal_editor_input_text_alignment_background_color"
             android:layout_width="40dp"
             android:layout_height="40dp">
 
@@ -75,7 +75,7 @@
                 android:id="@+id/alignment_icon"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                app:icon_color_light_enable="@color/Unify_NN0"
+                app:icon_color_light_enable="@color/Unify_Static_White"
                 app:icon_name="FORMAT_CENTER" />
 
         </androidx.cardview.widget.CardView>
@@ -84,7 +84,7 @@
             android:id="@+id/text_background_icon_container"
             app:cardCornerRadius="20dp"
             android:layout_marginStart="16dp"
-            app:cardBackgroundColor="@color/Unify_NN900"
+            app:cardBackgroundColor="@color/dms_universal_editor_input_text_alignment_background_color"
             android:layout_width="40dp"
             android:layout_height="40dp">
 
@@ -94,7 +94,7 @@
                 android:id="@+id/text_background_icon"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                app:icon_color_light_enable="@color/Unify_NN0" />
+                app:icon_color_light_enable="@color/Unify_Static_White" />
 
         </androidx.cardview.widget.CardView>
 
