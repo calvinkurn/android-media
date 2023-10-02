@@ -6,6 +6,7 @@ import android.view.View
 import androidx.core.view.GestureDetectorCompat
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.unifycomponents.Toaster
+import java.lang.Math.toDegrees
 import kotlin.math.atan2
 
 internal fun View.onTouchEventStories(
@@ -21,10 +22,8 @@ internal fun View.onTouchEventStories(
                 distanceX: Float,
                 distanceY: Float
             ): Boolean {
-                val angle: Float = Math.toDegrees(atan2(e1.x - e2.y, e2.x - e1.x).toDouble()).toFloat()
-                if (angle > 45 && angle <= 135) {
-                    eventAction.invoke(TouchEventStories.SWIPE_UP)
-                }
+                val angle = toDegrees(atan2(e1.x - e2.y, e2.x - e1.x).toDouble()).toFloat()
+                if (angle > 45 && angle <= 135) eventAction.invoke(TouchEventStories.SWIPE_UP)
                 return false
             }
         })
@@ -37,11 +36,15 @@ internal fun View.onTouchEventStories(
     }
     setOnTouchListener { _, p1 ->
         performClick()
-        if (p1?.action == MotionEvent.ACTION_UP) {
-            if (longPressState) {
-                longPressState = false
-                eventAction.invoke(TouchEventStories.RESUME)
-            } else eventAction.invoke(TouchEventStories.NEXT_PREV)
+        when (p1?.action) {
+            MotionEvent.ACTION_UP -> {
+                if (longPressState) {
+                    longPressState = false
+                    eventAction.invoke(TouchEventStories.RESUME)
+                } else eventAction.invoke(TouchEventStories.NEXT_PREV)
+            }
+            MotionEvent.ACTION_CANCEL -> eventAction.invoke(TouchEventStories.RESUME)
+            else -> {}
         }
         gestureDetector.onTouchEvent(p1)
         false
@@ -56,7 +59,7 @@ internal fun View.showToaster(
     message: String,
     type: Int = Toaster.TYPE_NORMAL,
     actionText: String = "",
-    bottomHeight : Int = 0,
+    bottomHeight: Int = 0,
     clickListener: View.OnClickListener = View.OnClickListener {}
 ) {
     Toaster.toasterCustomBottomHeight = bottomHeight
@@ -75,12 +78,10 @@ internal fun Int.getRandomNumber(): Int {
     return if (oldValue == newValue) newValue.plus(1) else newValue
 }
 
-
 internal const val KEY_CONFIG_ENABLE_STORIES_ROOM = "android_enable_content_stories_room"
 internal const val KEY_ARGS = "shop_id"
 internal const val ARGS_SOURCE = "source"
 internal const val ARGS_SOURCE_ID = "source_id"
 internal const val ARGS_ENTRY_POINT = "entrypoint"
-internal const val STORY_GROUP_ID = "stories_group_id"
 internal const val TAG_FRAGMENT_STORIES_GROUP = "fragment_stories_group"
 internal const val TAG_FRAGMENT_STORIES_DETAIL = "fragment_stories_detail"
