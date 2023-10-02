@@ -455,9 +455,7 @@ class StoriesDetailFragment @Inject constructor(
         binding.storiesComponent.showWithCondition(isShow)
         binding.flStoriesNext.showWithCondition(isShow)
         binding.flStoriesProduct.showWithCondition(isShow)
-        binding.vStoriesShareIcon.showWithCondition(isShow)
-        binding.vStoriesKebabIcon.showWithCondition(isShow)
-        binding.vStoriesProductIcon.root.showWithCondition(isShow)
+        binding.clSideIcons.showWithCondition(isShow)
     }
 
     private fun viewModelAction(event: StoriesUiAction) {
@@ -468,6 +466,7 @@ class StoriesDetailFragment @Inject constructor(
         rvStoriesCategory.showWithCondition(!isShowLoading)
         layoutStoriesContent.container.showWithCondition(!isShowLoading)
         layoutDetailLoading.container.showWithCondition(isShowLoading)
+        binding.clSideIcons.showWithCondition(!isShowLoading)
     }
 
     private fun trackClickGroup(position: Int, data: StoriesGroupHeader) {
