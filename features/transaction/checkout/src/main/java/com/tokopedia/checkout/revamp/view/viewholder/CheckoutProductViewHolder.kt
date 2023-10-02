@@ -165,7 +165,6 @@ class CheckoutProductViewHolder(
 
         renderAddOnProductBundle(product)
         renderAddOnGiftingProductBundle(product)
-        // TODO: [Hansen] render gifting if needed, don't forget to also hide in hideBundleViews()
     }
 
     private fun hideProductViews() {
