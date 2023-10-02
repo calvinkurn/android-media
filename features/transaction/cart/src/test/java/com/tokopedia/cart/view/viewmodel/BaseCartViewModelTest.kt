@@ -16,7 +16,6 @@ import com.tokopedia.cartrevamp.domain.usecase.BmGmGetGroupProductTickerUseCase
 import com.tokopedia.cartrevamp.domain.usecase.SetCartlistCheckboxStateUseCase
 import com.tokopedia.cartrevamp.view.CartViewModel
 import com.tokopedia.cartrevamp.view.helper.CartDataHelper
-import com.tokopedia.cartrevamp.view.processor.CartCalculator
 import com.tokopedia.cartrevamp.view.processor.CartPromoEntryPointProcessor
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.promousage.domain.usecase.PromoUsageGetPromoListRecommendationEntryPointUseCase
@@ -98,7 +97,7 @@ open class BaseCartViewModelTest {
             seamlessLoginUsecase, updateCartCounterUseCase, updateCartAndGetLastApplyUseCase,
             setCartlistCheckboxStateUseCase, followShopUseCase,
             cartShopGroupTickerAggregatorUseCase, cartPromoEntryPointProcessor,
-                bmGmGetGroupProductTickerUseCase, TestSchedulers,
+            bmGmGetGroupProductTickerUseCase, TestSchedulers,
             coroutineTestDispatchers
         )
         every { addToWishListV2UseCase.cancelJobs() } just Runs

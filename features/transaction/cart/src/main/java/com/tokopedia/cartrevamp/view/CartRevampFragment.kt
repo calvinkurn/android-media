@@ -92,6 +92,7 @@ import com.tokopedia.cartrevamp.view.uimodel.CartRecentViewItemHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartRecommendationItemHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartSectionHeaderHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartSelectedAmountHolderData
+import com.tokopedia.cartrevamp.view.uimodel.CartShopBottomHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartShopGroupTickerData
 import com.tokopedia.cartrevamp.view.uimodel.CartShopGroupTickerState
 import com.tokopedia.cartrevamp.view.uimodel.CartState
@@ -102,6 +103,7 @@ import com.tokopedia.cartrevamp.view.uimodel.DisabledAccordionHolderData
 import com.tokopedia.cartrevamp.view.uimodel.DisabledItemHeaderHolderData
 import com.tokopedia.cartrevamp.view.uimodel.EntryPointInfoEvent
 import com.tokopedia.cartrevamp.view.uimodel.FollowShopEvent
+import com.tokopedia.cartrevamp.view.uimodel.GetBmGmGroupProductTickerState
 import com.tokopedia.cartrevamp.view.uimodel.LoadRecentReviewState
 import com.tokopedia.cartrevamp.view.uimodel.LoadRecommendationState
 import com.tokopedia.cartrevamp.view.uimodel.LoadWishlistV2State
@@ -4422,7 +4424,11 @@ class CartRevampFragment :
         gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
                 return if (position != RecyclerView.NO_POSITION) {
-                    if (position < (cartAdapter?.itemCount ?: 0) && cartAdapter?.getItemViewType(position) == CartRecommendationViewHolder.LAYOUT) {
+                    if (position < (
+                        cartAdapter?.itemCount
+                            ?: 0
+                        ) && cartAdapter?.getItemViewType(position) == CartRecommendationViewHolder.LAYOUT
+                    ) {
                         SPAN_SIZE_ONE
                     } else {
                         SPAN_SIZE_TWO
