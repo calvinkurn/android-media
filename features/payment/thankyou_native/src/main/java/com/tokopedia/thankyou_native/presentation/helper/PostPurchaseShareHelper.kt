@@ -97,4 +97,8 @@ class PostPurchaseShareHelper @Inject constructor(
             shopList = shopList
         )
     }
+
+    fun getOrderIdListString(shopOrderList: List<ShopOrder>): String {
+        return shopOrderList.joinToString(separator = ",") { it.orderId }
+    }
 }
