@@ -54,6 +54,9 @@ class StoriesSharingComponent(rootView: View) {
             setShowListener { mListener?.onShowSharing(this@StoriesSharingComponent) }
             if (isAdded) return@apply
             show(fg, TAG)
+        }.also {
+            if (it.isAdded) return@also
+            it.show(fg, TAG)
         }
     }
 
