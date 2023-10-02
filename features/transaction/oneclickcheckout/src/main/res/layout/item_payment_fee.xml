@@ -15,7 +15,7 @@
         android:textColor="@color/Unify_NN950_96"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="body_3" />
+        app:typographyType="display_3" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/img_payment_fee_info"
@@ -24,6 +24,8 @@
         android:paddingStart="4dp"
         android:paddingEnd="4dp"
         app:icon_name="INFORMATION"
+        app:icon_color_light_enable="@color/Unify_NN900"
+        app:icon_color_night_enable="@color/Unify_NN900"
         app:layout_constraintBottom_toBottomOf="@+id/tv_payment_fee_price_label"
         app:layout_constraintStart_toEndOf="@+id/tv_payment_fee_price_label"
         app:layout_constraintTop_toTopOf="@+id/tv_payment_fee_price_label" />
@@ -40,7 +42,7 @@
         app:layout_constraintEnd_toStartOf="@id/tv_payment_fee_price_value"
         app:layout_constraintStart_toEndOf="@id/img_payment_fee_info"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="body_3" />
+        app:typographyType="display_3" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_payment_fee_price_value"
@@ -54,7 +56,7 @@
         app:layout_constraintStart_toEndOf="@id/tv_payment_fee_slash_price_value"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintHorizontal_bias="1"
-        app:typographyType="body_3"
+        app:typographyType="display_3"
         app:typographyWeight="bold" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

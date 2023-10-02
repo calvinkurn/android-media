@@ -4,8 +4,8 @@ import static com.tokopedia.akamai_bot_lib.UtilsKt.getExpiredTime;
 import static com.tokopedia.akamai_bot_lib.UtilsKt.setExpiredTime;
 import static com.tokopedia.graphql.util.RegisteredGqlForTopAdsTdnKt.IRIS_SESSION_ID_KEY;
 import static com.tokopedia.graphql.util.RegisteredGqlForTopAdsTdnKt.TOP_ADS_IRIS_SESSION_PREFERENCE;
-import static com.tokopedia.graphql.util.TopAdsTrackingIdUtilsKt.TOP_ADS_SHARED_PREF_KEY;
 import static com.tokopedia.graphql.util.TopAdsTrackingIdUtilsKt.RESPONSE_HEADER_KEY;
+import static com.tokopedia.graphql.util.TopAdsTrackingIdUtilsKt.TOP_ADS_SHARED_PREF_KEY;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -21,14 +21,13 @@ import com.tokopedia.akamai_bot_lib.interceptor.GqlAkamaiBotInterceptor;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.fakeresponse.FakeResponseInterceptorProvider;
 import com.tokopedia.graphql.FingerprintManager;
-import com.tokopedia.graphql.MacroInterceptorProvider;
 import com.tokopedia.graphql.data.db.GraphqlDatabase;
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlApi;
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlApiSuspend;
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlUrl;
+import com.tokopedia.graphql.interceptor.BannerEnvironmentInterceptor;
 import com.tokopedia.graphql.interceptor.MockInterceptor;
 import com.tokopedia.graphql.util.BrotliKotlinCustomObject;
-import com.tokopedia.grapqhl.beta.notif.BetaInterceptor;
 import com.tokopedia.network.CommonNetwork;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.converter.StringResponseConverter;
@@ -68,8 +67,8 @@ public class GraphqlClient {
      * Idea behind this method is A library initialisation may need some critical data.
      * In this case it was context and we need to mark on which thread the critical data will be set.
      * This approach decouples the library initialisation, we can use the any thread to initialise the library.
-    **/
-    public static void setContextData(Context context){
+     **/
+    public static void setContextData(Context context) {
         applicationContext = context.getApplicationContext();
     }
 
@@ -149,7 +148,11 @@ public class GraphqlClient {
         }
 
         tkpdOkHttpBuilder.addInterceptor(new GqlAkamaiBotInterceptor());
-        tkpdOkHttpBuilder.addInterceptor(new BetaInterceptor(context));
+
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            tkpdOkHttpBuilder.addInterceptor(new BannerEnvironmentInterceptor(context));
+        }
+
 
         sRetrofit = CommonNetwork.createRetrofit(
                 GraphqlUrl.BASE_URL,
@@ -173,7 +176,10 @@ public class GraphqlClient {
             }
         }
         tkpdOkHttpBuilder.addInterceptor(new GqlAkamaiBotInterceptor());
-        tkpdOkHttpBuilder.addInterceptor(new BetaInterceptor(context));
+
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            tkpdOkHttpBuilder.addInterceptor(new BannerEnvironmentInterceptor(context));
+        }
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             tkpdOkHttpBuilder.addInterceptor(new DeprecatedApiInterceptor(context.getApplicationContext()));
@@ -252,4 +258,6 @@ public class GraphqlClient {
         }
         return sFingerprintManager;
     }
+
+
 }

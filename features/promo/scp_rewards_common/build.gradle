@@ -13,11 +13,20 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.scp_rewards_common'
+    testNamespace 'com.tokopedia.scp_rewards_common.test'
+    buildFeatures {
+        viewBinding true
+    }
+}
+
 dependencies {
 
     implementation rootProject.ext.supportLibDependencies.appCompactV7
     implementation rootProject.ext.miscDependencies.coreKtx
     implementation projectOrAar(rootProject.ext.libraries.utils)
+    implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation (rootProject.ext.firebase.crashlytics)
 
     testImplementation rootProject.ext.testDependencies.junit

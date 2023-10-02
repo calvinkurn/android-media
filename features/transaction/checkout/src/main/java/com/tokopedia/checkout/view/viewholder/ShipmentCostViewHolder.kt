@@ -8,11 +8,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.databinding.ItemSummaryTransactionCrossSellBinding
 import com.tokopedia.checkout.databinding.ViewItemShipmentCostDetailsBinding
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener
+import com.tokopedia.checkout.view.adapter.ShipmentAddOnSummaryAdapter
 import com.tokopedia.checkout.view.uimodel.ShipmentCostModel
 import com.tokopedia.checkout.view.uimodel.ShipmentPaymentFeeModel
 import com.tokopedia.kotlin.extensions.view.gone
@@ -76,7 +78,8 @@ class ShipmentCostViewHolder(
         }
         binding.tvBookingFeePrice.text = getPriceFormat(binding.tvBookingFeeLabel, binding.tvBookingFeePrice, shipmentCost.bookingFee.toDouble())
         renderDiscount(shipmentCost)
-        renderAddOnCost(shipmentCost)
+        renderAddOnGiftingCost(shipmentCost)
+        renderSummaryAddOn(shipmentCost, itemView.context)
         if (shipmentCost.totalItem > 0) {
             Log.i("qwertyuiop", "render platform fee")
             renderPlatformFee(shipmentCost.dynamicPlatformFee)
@@ -135,7 +138,7 @@ class ShipmentCostViewHolder(
         binding.tvDiscountPrice.setTextColor(ContextCompat.getColor(binding.tvDiscountPrice.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
     }
 
-    private fun renderAddOnCost(shipmentCost: ShipmentCostModel) {
+    private fun renderAddOnGiftingCost(shipmentCost: ShipmentCostModel) {
         if (shipmentCost.hasAddOn) {
             binding.tvSummaryAddOnLabel.text = binding.root.context.getString(R.string.label_add_on_cost)
 
@@ -146,6 +149,20 @@ class ShipmentCostViewHolder(
         } else {
             binding.tvSummaryAddOnLabel.visibility = View.GONE
             binding.tvSummaryAddOnPrice.visibility = View.GONE
+        }
+    }
+
+    private fun renderSummaryAddOn(shipmentCost: ShipmentCostModel, context: Context) {
+        if (shipmentCost.listAddOnSummary.isNotEmpty()) {
+            val addOnSummaryAdapter = ShipmentAddOnSummaryAdapter(shipmentCost.listAddOnSummary)
+            binding.rvSummaryAddon.apply {
+                layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+                setHasFixedSize(true)
+                adapter = addOnSummaryAdapter
+                visible()
+            }
+        } else {
+            binding.rvSummaryAddon.gone()
         }
     }
 

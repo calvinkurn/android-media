@@ -2,6 +2,11 @@ package com.tokopedia.home_component.usecase.todowidget
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.home_component.model.ChannelConfig
+import com.tokopedia.home_component.util.ChannelStyleUtil.parseBorderStyle
+import com.tokopedia.home_component.util.ChannelStyleUtil.parseDividerSize
+import com.tokopedia.home_component.util.ChannelStyleUtil.parseImageStyle
+import com.tokopedia.home_component_header.model.ChannelHeader
 
 /**
  * Created by frenzel
@@ -10,13 +15,34 @@ class HomeTodoWidgetData {
     data class HomeTodoWidget(
         @SerializedName("getHomeToDoWidget")
         @Expose
-        val getHomeTodoWidget: GetHomeTodoWidget = GetHomeTodoWidget()
+        val getHomeTodoWidget: GetHomeTodoWidget = GetHomeTodoWidget(),
     )
 
     data class GetHomeTodoWidget(
+        @SerializedName("header")
+        @Expose
+        val header: Header = Header(),
         @SerializedName("toDos")
         @Expose
-        val todos: List<Todo> = listOf()
+        val todos: List<Todo> = listOf(),
+        @SerializedName("config")
+        @Expose
+        val config: Config = Config(),
+    )
+
+    data class Header(
+        @SerializedName("title")
+        @Expose
+        val title: String = "",
+    )
+
+    data class Config(
+        @SerializedName("styleParam")
+        @Expose
+        val styleParam: String = "",
+        @SerializedName("dividerType")
+        @Expose
+        val dividerType: Int = 0,
     )
 
     data class Todo(
@@ -58,7 +84,7 @@ class HomeTodoWidgetData {
         val feParam: String = "",
         @SerializedName("cta")
         @Expose
-        val cta: Cta = Cta()
+        val cta: Cta = Cta(),
     )
 
     data class Cta(
@@ -76,6 +102,6 @@ class HomeTodoWidgetData {
         val applink: String = "",
         @SerializedName("url")
         @Expose
-        val url: String = ""
+        val url: String = "",
     )
 }

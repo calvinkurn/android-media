@@ -2,11 +2,13 @@ package com.tokopedia.pdpsimulation.paylater.presentation.viewholder
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Paint
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
@@ -16,6 +18,7 @@ import com.tokopedia.pdpsimulation.common.analytics.PayLaterCtaClick
 import com.tokopedia.pdpsimulation.common.analytics.PayLaterTickerCtaClick
 import com.tokopedia.pdpsimulation.common.analytics.PayLaterTickerImpression
 import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationAnalytics
+import com.tokopedia.pdpsimulation.common.utils.Util
 import com.tokopedia.pdpsimulation.paylater.domain.model.Detail
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterOptionInteraction
 import com.tokopedia.pdpsimulation.paylater.helper.PayLaterHelper
@@ -171,19 +174,40 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
     private fun setPayLaterHeader(element: Detail) {
         itemView.apply {
             tvTitlePaymentPartner.text = element.gatewayDetail?.name
-            tvInstallmentAmount.text = PayLaterHelper.convertPriceValueToIdrFormat(
-                element.installment_per_month_ceil
-                    ?: 0,
-                false
+            tvInstallmentAmount.text = Util.getTextRBPRemoteConfig(
+                context,
+                PayLaterHelper.convertPriceValueToIdrFormat(
+                    element.installment_per_month_ceil
+                        ?: 0,
+                    false
+                ),
+                element.priceSection.installmentPerMonth
             )
-            if (element.tenure != 1) {
-                tvTenureMultiplier.visible()
-                tvTenureMultiplier.text =
-                    context.getString(R.string.paylater_x_tenure, element.tenure)
+
+            if (Util.isRBPOn(context)) {
+                tvTenureMultiplier.shouldShowWithAction(element.priceSection.tenure != Int.ONE) {
+                    tvTenureMultiplier.text = context.getString(R.string.paylater_x_tenure, element.priceSection.tenure)
+                }
+
+                tvPrefixInstallment.shouldShowWithAction(element.priceSection.prefix.isNotEmpty()) {
+                    tvPrefixInstallment.text = element.priceSection.prefix
+                }
+
+                tvOriginalInstallment.shouldShowWithAction(element.priceSection.originalPerMonth.isNotEmpty()) {
+                    tvOriginalInstallment.paintFlags = tvOriginalInstallment.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                    tvOriginalInstallment.text = element.priceSection.originalPerMonth
+                }
             } else {
-                tvTenureMultiplier.gone()
-                tvInstallmentAmount.text = element.optionalTenureHeader
+                if (element.tenure != Int.ONE) {
+                    tvTenureMultiplier.visible()
+                    tvTenureMultiplier.text =
+                        context.getString(R.string.paylater_x_tenure, element.tenure)
+                } else {
+                    tvTenureMultiplier.gone()
+                    tvInstallmentAmount.text = element.optionalTenureHeader
+                }
             }
+
             if (element.subheader.isNullOrEmpty()) {
                 tvInstallmentDescription.gone()
             } else {
@@ -211,6 +235,8 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
             linkingStatus = detail.linkingStatus ?: ""
             action = PdpSimulationAnalytics.CLICK_CTA_PARTNER_CARD
             promoName = detail.promoName.orEmpty()
+            previousRate = detail.previousRate
+            newRate = detail.newRate
         }
 
     @SuppressLint("PII Data Exposure")

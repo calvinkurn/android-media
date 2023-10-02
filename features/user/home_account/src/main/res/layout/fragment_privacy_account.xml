@@ -67,58 +67,13 @@
             app:layout_constraintTop_toBottomOf="@id/txt_desc_consent_social_network" />
 
         <include
-            android:id="@+id/inc_loader_link_account"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:layout_marginHorizontal="16dp"
-            layout="@layout/item_privacy_account_loader"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/dividerUnify"/>
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/txt_header_link_account"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="24dp"
-            android:text="@string/opt_link_account_header"
-            app:typographyType="display_2"
-            app:typographyWeight="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/dividerUnify" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/txt_desc_link_account"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:text="@string/opt_link_account_desc"
-            android:textColor="@color/Unify_NN600"
-            app:layout_constraintEnd_toEndOf="@+id/txt_header_link_account"
-            app:layout_constraintStart_toStartOf="@id/txt_header_link_account"
-            app:layout_constraintTop_toBottomOf="@+id/txt_header_link_account"
-            app:typographyType="display_3" />
-
-        <include
-            android:id="@+id/layout_item_link_account"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            layout="@layout/view_item_account_privacy"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txt_desc_link_account" />
-
-        <include
             android:id="@+id/layoutConsentWithdrawal"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             layout="@layout/layout_privacy_account_consent_withdrawal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/layout_item_link_account" />
+            app:layout_constraintTop_toBottomOf="@+id/dividerUnify" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

@@ -348,7 +348,9 @@ object BestSellerWidgetTracker : BaseTracking(){
                 channelId = channelId,
                 category = recommendationItem.categoryBreadcrumbs,
                 variant = "",
-                brand = ""
+                brand = "",
+                warehouseId = recommendationItem.warehouseId.toString(),
+                isFulfillment = recommendationItem.labelGroupList.hasLabelGroupFulfillment()
         )
 
     }
@@ -375,7 +377,9 @@ object BestSellerWidgetTracker : BaseTracking(){
             channelId = channelId,
             category = bestSellerProductDataModel.categoryBreadcrumbs,
             variant = "",
-            brand = ""
+            brand = "",
+            warehouseId = bestSellerProductDataModel.warehouseId,
+            isFulfillment = bestSellerProductDataModel.productCardModel.getLabelFulfillment() != null
         )
     }
 }

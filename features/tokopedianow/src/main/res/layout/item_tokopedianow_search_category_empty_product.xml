@@ -56,30 +56,28 @@
         tools:orientation="horizontal" />
 
     <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/tokonowEmptyProductGlobalSearchButton"
+        android:id="@+id/tokonowEmptyProductPrimaryButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/tokopedianow_global_search_button"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="4dp"
-        android:foreground="?attr/selectableItemBackground"
         app:layout_constraintTop_toBottomOf="@id/tokonowEmptyProductFilterList"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/tokonowEmptyProductExploreTokopediaNow"
+        app:layout_constraintEnd_toStartOf="@id/tokonowEmptyProductSecondaryButton"
         app:unifyButtonVariant="ghost"
         app:unifyButtonSize="small"
         app:unifyButtonType="alternate" />
 
     <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/tokonowEmptyProductExploreTokopediaNow"
+        android:id="@+id/tokonowEmptyProductSecondaryButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/tokopedianow_explore_tokopedia_now_button"
         android:layout_marginTop="16dp"
         android:layout_marginStart="4dp"
-        android:foreground="?attr/selectableItemBackground"
         app:layout_constraintTop_toBottomOf="@id/tokonowEmptyProductFilterList"
-        app:layout_constraintStart_toEndOf="@id/tokonowEmptyProductGlobalSearchButton"
+        app:layout_constraintStart_toEndOf="@id/tokonowEmptyProductPrimaryButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:unifyButtonVariant="filled"
         app:unifyButtonSize="small"

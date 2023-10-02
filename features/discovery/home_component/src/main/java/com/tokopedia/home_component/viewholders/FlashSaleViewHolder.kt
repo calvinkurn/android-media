@@ -68,7 +68,7 @@ class FlashSaleViewHolder(
 
     private fun setupCarousel(element: FlashSaleDataModel, parentRecycledViewPool: RecyclerView.RecycledViewPool?) {
         val channelGrids = element.channelModel.channelGrids
-        val productCardList = channelGrids.map { ChannelModelMapper.mapToProductCardModel(it, element.cardInteraction, isTopStockbar = true, cardType = CardUnify2.TYPE_CLEAR) }
+        val productCardList = channelGrids.map { ChannelModelMapper.mapToProductCardModel(it, animateOnPress = CardUnify2.ANIMATE_NONE, isTopStockbar = true, cardType = CardUnify2.TYPE_CLEAR) }
         binding?.run {
             carouselFlashSale.bindCarouselProductCardViewGrid(
                 productCardModelList = productCardList,

@@ -3,9 +3,11 @@ package com.tokopedia.home.beranda.domain.interactor.usecase
 import com.tokopedia.carouselproductcard.paging.CarouselPagingGroupChangeDirection
 import com.tokopedia.carouselproductcard.paging.CarouselPagingGroupChangeDirection.PREVIOUS
 import com.tokopedia.carouselproductcard.paging.CarouselPagingModel
+import com.tokopedia.home.beranda.data.mapper.ShopFlashSaleMapper
 import com.tokopedia.home_component.visitable.BestSellerChipDataModel
 import com.tokopedia.home_component.visitable.BestSellerChipProductDataModel
 import com.tokopedia.home_component.visitable.BestSellerProductDataModel
+import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetDataModel
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
@@ -13,9 +15,9 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import dagger.Lazy
-import java.lang.Exception
 import java.lang.Integer.min
 import javax.inject.Inject
+import kotlin.Exception
 import com.tokopedia.home.beranda.data.mapper.BestSellerMapper as BestSellerRevampMapper
 import com.tokopedia.home_component.visitable.BestSellerDataModel as BestSellerRevampDataModel
 
@@ -193,6 +195,24 @@ class HomeRecommendationUseCase @Inject constructor(
                 it.copy(chip = it.chip.activate())
             else
                 it.copy(chip = it.chip.deactivate())
+        }
+    }
+
+    suspend fun getShopFlashSaleProducts(
+        currentDataModel: ShopFlashSaleWidgetDataModel,
+        shopId: String,
+    ): ShopFlashSaleWidgetDataModel {
+        return try {
+            val recomData = getRecommendationUseCase.getData(
+                GetRecommendationRequestParam(
+                    pageName = currentDataModel.channelModel.pageName,
+                    queryParam = currentDataModel.channelModel.widgetParam,
+                    shopIds = listOf(shopId),
+                )
+            )
+            ShopFlashSaleMapper.mapShopFlashSaleItemList(currentDataModel, recomData)
+        } catch (_: Exception) {
+            ShopFlashSaleMapper.getErrorShopFlashSale(currentDataModel)
         }
     }
 }

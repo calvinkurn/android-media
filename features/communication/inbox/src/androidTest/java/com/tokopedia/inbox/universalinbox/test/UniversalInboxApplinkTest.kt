@@ -9,6 +9,7 @@ import com.tokopedia.inbox.universalinbox.test.robot.menu.MenuResult.assertAppli
 import com.tokopedia.inbox.universalinbox.test.robot.menuRobot
 import com.tokopedia.inbox.universalinbox.test.robot.recommendation.RecommendationResult.assertApplinkPDP
 import com.tokopedia.inbox.universalinbox.test.robot.recommendationRobot
+import com.tokopedia.inbox.universalinbox.test.robot.widget.WidgetResult.assertApplinkChatListDriver
 import com.tokopedia.inbox.universalinbox.test.robot.widget.WidgetResult.assertApplinkHelp
 import com.tokopedia.inbox.universalinbox.test.robot.widgetRobot
 import com.tokopedia.test.application.annotations.UiTest
@@ -22,9 +23,8 @@ class UniversalInboxApplinkTest : BaseUniversalInboxTest() {
         launchActivity()
         stubAllIntents()
         menuRobot {
-            clickMenuOnPosition(2)
+            clickMenuOnPosition(1)
         }
-
         // Then
         assertApplinkChatBuyer()
     }
@@ -35,7 +35,7 @@ class UniversalInboxApplinkTest : BaseUniversalInboxTest() {
         launchActivity()
         stubAllIntents()
         menuRobot {
-            clickMenuOnPosition(3)
+            clickMenuOnPosition(2)
         }
 
         // Then
@@ -48,7 +48,7 @@ class UniversalInboxApplinkTest : BaseUniversalInboxTest() {
         launchActivity()
         stubAllIntents()
         menuRobot {
-            clickMenuOnPosition(5)
+            clickMenuOnPosition(3)
         }
 
         // Then
@@ -61,7 +61,7 @@ class UniversalInboxApplinkTest : BaseUniversalInboxTest() {
         launchActivity()
         stubAllIntents()
         menuRobot {
-            clickMenuOnPosition(6)
+            clickMenuOnPosition(4)
         }
 
         // Then
@@ -87,13 +87,27 @@ class UniversalInboxApplinkTest : BaseUniversalInboxTest() {
         launchActivity()
         stubAllIntents()
         generalRobot {
-            scrollToPosition(12)
+            scrollToPosition(11) // trigger rv load
+            scrollToPosition(11)
         }
         recommendationRobot {
-            clickProductOnPosition(12)
+            clickProductOnPosition(11)
         }
 
         // Then
         assertApplinkPDP()
+    }
+
+    @Test
+    fun should_open_chat_list_driver() {
+        // When
+        launchActivity()
+        stubAllIntents()
+        widgetRobot {
+            clickWidgetOnPosition(0)
+        }
+
+        // Then
+        assertApplinkChatListDriver()
     }
 }

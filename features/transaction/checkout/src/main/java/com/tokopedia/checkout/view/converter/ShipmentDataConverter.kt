@@ -6,6 +6,7 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShopV2
 import com.tokopedia.checkout.domain.model.cartshipmentform.NewUpsellData
 import com.tokopedia.checkout.domain.model.cartshipmentform.Product
+import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentSubtotalAddOnData
 import com.tokopedia.checkout.domain.model.cartshipmentform.UpsellData
 import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel
@@ -20,8 +21,12 @@ import com.tokopedia.logisticcart.shipping.model.CoachmarkPlusData
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItem
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemTopModel
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnWordingModel
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.ADD_ON_PRODUCT_STATUS_MANDATORY
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant.PRODUCT_PROTECTION_INSURANCE_TYPE
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingWordingModel
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnWordingData
+import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
 import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 import javax.inject.Inject
 
@@ -275,7 +280,8 @@ class ShipmentDataConverter @Inject constructor() {
                 isAutoCourierSelection = groupShop.autoCourierSelection,
                 hasGeolocation = userAddress.longitude.isNotEmpty() && userAddress.latitude.isNotEmpty(),
                 courierSelectionErrorTitle = groupShop.courierSelectionErrorData.title,
-                courierSelectionErrorDescription = groupShop.courierSelectionErrorData.description
+                courierSelectionErrorDescription = groupShop.courierSelectionErrorData.description,
+                subtotalAddOnMap = mapSubtotalAddons(groupShop.listSubtotalAddOn)
             )
             for (cartItemModel in cartItemModels) {
                 if (cartItemModel.ethicalDrugDataModel.needPrescription && !cartItemModel.isError) {
@@ -361,6 +367,14 @@ class ShipmentDataConverter @Inject constructor() {
         return shipmentCartItemModels
     }
 
+    private fun mapSubtotalAddons(listSubtotalAddOn: List<ShipmentSubtotalAddOnData>): HashMap<Int, String> {
+        val mapSubtotal = hashMapOf<Int, String>()
+        for (subtotalItem in listSubtotalAddOn) {
+            mapSubtotal[subtotalItem.type] = subtotalItem.wording
+        }
+        return mapSubtotal
+    }
+
     private fun setCartItemModelError(shipmentCartItemModel: ShipmentCartItemModel) {
         if (shipmentCartItemModel.isAllItemError) {
             for (cartItemModel in shipmentCartItemModel.cartItemModels) {
@@ -376,7 +390,7 @@ class ShipmentDataConverter @Inject constructor() {
         groupShop: GroupShop,
         username: String,
         receiverName: String,
-        addOnOrderLevelModel: AddOnWordingModel
+        addOnOrderLevelModel: AddOnGiftingWordingModel
     ): List<CartItemModel> {
         var counterIndex = index
         return groupShopV2.products.map { product ->
@@ -400,7 +414,7 @@ class ShipmentDataConverter @Inject constructor() {
         groupShop: GroupShop,
         username: String,
         receiverName: String,
-        addOnWordingModel: AddOnWordingModel,
+        addOnWordingModel: AddOnGiftingWordingModel,
         groupShopV2: GroupShopV2
     ): CartItemModel {
         val ppp = product.purchaseProtectionPlanData
@@ -458,7 +472,7 @@ class ShipmentDataConverter @Inject constructor() {
             protectionSubTitle = if (ppp.isProtectionAvailable) ppp.protectionSubtitle else "",
             protectionLinkText = if (ppp.isProtectionAvailable) ppp.protectionLinkText else "",
             protectionLinkUrl = if (ppp.isProtectionAvailable) ppp.protectionLinkUrl else "",
-            isProtectionOptIn = if (ppp.isProtectionAvailable) ppp.isProtectionOptIn else false,
+            isProtectionOptIn = convertPppAndAddons(ppp, product),
             isProtectionCheckboxDisabled = if (ppp.isProtectionAvailable) ppp.isProtectionCheckboxDisabled else false,
             isBundlingItem = product.isBundlingItem,
             bundlingItemPosition = product.bundlingItemPosition,
@@ -472,19 +486,33 @@ class ShipmentDataConverter @Inject constructor() {
             bundleQuantity = product.bundleQuantity,
             bundleIconUrl = product.bundleIconUrl,
             analyticsProductCheckoutData = product.analyticsProductCheckoutData,
-            addOnProductLevelModel = product.addOnProduct,
+            addOnGiftingProductLevelModel = product.addOnGiftingProduct,
             ethicalDrugDataModel = product.ethicalDrugs,
             addOnDefaultFrom = username,
             addOnDefaultTo = receiverName,
             warehouseId = groupShop.fulfillmentId.toString(),
             isTokoCabang = groupShop.isFulfillment,
             cartItemPosition = index,
-            addOnOrderLevelModel = addOnWordingModel
+            addOnOrderLevelModel = addOnWordingModel,
+            addOnProduct = product.addOnProduct,
+            campaignId = product.campaignId
         )
     }
 
-    private fun convertFromAddOnWordingData(addOnWordingData: AddOnWordingData): AddOnWordingModel {
-        val addOnWordingModel = AddOnWordingModel()
+    private fun convertPppAndAddons(ppp: PurchaseProtectionPlanData, product: Product): Boolean {
+        var isProteksiProductSelected = false
+        product.addOnProduct.listAddOnProductData.forEach { addon ->
+            if (addon.type == PRODUCT_PROTECTION_INSURANCE_TYPE &&
+                (addon.status == ADD_ON_PRODUCT_STATUS_CHECK || addon.status == ADD_ON_PRODUCT_STATUS_MANDATORY)
+            ) {
+                isProteksiProductSelected = true
+            }
+        }
+        return if (ppp.isProtectionAvailable) { ppp.isProtectionOptIn } else isProteksiProductSelected
+    }
+
+    private fun convertFromAddOnWordingData(addOnWordingData: AddOnWordingData): AddOnGiftingWordingModel {
+        val addOnWordingModel = AddOnGiftingWordingModel()
         addOnWordingModel.onlyGreetingCard = addOnWordingData.onlyGreetingCard
         addOnWordingModel.packagingAndGreetingCard = addOnWordingData.packagingAndGreetingCard
         addOnWordingModel.invoiceNotSendToRecipient = addOnWordingData.invoiceNotSendToRecipient

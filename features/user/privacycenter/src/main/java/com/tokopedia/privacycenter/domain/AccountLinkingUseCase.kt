@@ -10,7 +10,7 @@ import com.tokopedia.privacycenter.data.AccountLinkingResponse
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.date.DateUtil
 import javax.inject.Inject
-
+@Deprecated("Remove this class after integrating SCP Login to Tokopedia")
 class AccountLinkingUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository,
     private val userSessionInterface: UserSessionInterface,

@@ -36,6 +36,8 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
+import com.tokopedia.addon.presentation.uimodel.AddOnExtraConstant
+import com.tokopedia.addon.presentation.uimodel.AddOnPageResult
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.analytics.performance.util.EmbraceKey
@@ -134,6 +136,7 @@ import com.tokopedia.purchase_platform.common.constant.ARGS_PAGE_SOURCE
 import com.tokopedia.purchase_platform.common.constant.ARGS_PROMO_REQUEST
 import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_DATA_RESULT
 import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_REQUEST
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CartConstant.CART_ERROR_GLOBAL
 import com.tokopedia.purchase_platform.common.constant.CartConstant.IS_TESTING_FLOW
@@ -155,6 +158,7 @@ import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashb
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackModel
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
+import com.tokopedia.purchase_platform.common.utils.removeSingleDecimalSuffix
 import com.tokopedia.purchase_platform.common.utils.rxCompoundButtonCheckDebounce
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -272,6 +276,7 @@ class CartFragment :
     private var isCheckUncheckDirectAction = true
     private var isNavToolbar = false
     private var plusCoachMark: CoachMark2? = null
+    private var availableCartItemImpressionList: MutableSet<CartItemHolderData> = mutableSetOf()
 
     // temporary variable to handle case edit bundle
     // this is useful if there are multiple same bundleId in cart
@@ -301,6 +306,7 @@ class CartFragment :
         const val NAVIGATION_EDIT_BUNDLE = 789
         const val NAVIGATION_VERIFICATION = 890
         const val NAVIGATION_APPLINK = 809
+        const val NAVIGATION_ADDON = 808
         const val WISHLIST_SOURCE_AVAILABLE_ITEM = "WISHLIST_SOURCE_AVAILABLE_ITEM"
         const val WISHLIST_SOURCE_UNAVAILABLE_ITEM = "WISHLIST_SOURCE_UNAVAILABLE_ITEM"
         const val WORDING_GO_TO_HOMEPAGE = "Kembali ke Homepage"
@@ -512,6 +518,7 @@ class CartFragment :
             NAVIGATION_EDIT_BUNDLE -> onResultFromEditBundle(resultCode, data)
             NAVIGATION_VERIFICATION -> refreshCartWithSwipeToRefresh()
             NAVIGATION_APPLINK -> refreshCartWithSwipeToRefresh()
+            NAVIGATION_ADDON -> onResultFromAddOnBottomSheet(resultCode, data)
         }
     }
 
@@ -824,7 +831,7 @@ class CartFragment :
             context?.let { context ->
                 fragmentManager?.let { fragmentManager ->
                     val promoSummaryUiModel = dPresenter.getPromoSummaryUiModel()
-                    dPresenter.getSummaryTransactionUiModel()?.let { summaryTransactionUiModel ->
+                    dPresenter.getSummaryTransactionUiModel(cartAdapter.selectedCartItemData)?.let { summaryTransactionUiModel ->
                         showSummaryTransactionBottomsheet(
                             summaryTransactionUiModel,
                             promoSummaryUiModel,
@@ -1005,7 +1012,10 @@ class CartFragment :
                 viewLifecycleOwner.lifecycle.addObserver(this)
                 setOnBackButtonClickListener(
                     disableDefaultGtmTracker = true,
-                    backButtonClickListener = ::onBackPressed
+                    backButtonClickListener = {
+                        onBackPressed()
+                        sendCartImpressionAnalytic()
+                    }
                 )
                 setIcon(
                     IconBuilder(IconBuilderFlag(pageSource = NavSource.CART)).addIcon(
@@ -1395,6 +1405,7 @@ class CartFragment :
 
     override fun onCartItemProductClicked(cartItemHolderData: CartItemHolderData) {
         cartPageAnalytics.eventClickAtcCartClickProductName(cartItemHolderData.productName)
+        sendCartImpressionAnalytic()
         routeToProductDetailPage(cartItemHolderData.productId)
     }
 
@@ -2132,13 +2143,18 @@ class CartFragment :
         }
     }
 
-    override fun onCartGroupNameClicked(appLink: String) {
+    override fun onCartGroupNameClicked(appLink: String, shopId: String, shopName: String, isOWOC: Boolean) {
+        sendCartImpressionAnalytic()
+        if (!isOWOC && shopId.isNotEmpty()) {
+            cartPageAnalytics.eventClickAtcCartClickShop(shopId, shopName)
+        }
         routeToApplink(appLink)
     }
 
     override fun onCartShopNameClicked(shopId: String?, shopName: String?, isTokoNow: Boolean) {
         if (shopId != null && shopName != null) {
             cartPageAnalytics.eventClickAtcCartClickShop(shopId, shopName)
+            sendCartImpressionAnalytic()
             if (isTokoNow) {
                 routeToTokoNowHomePage()
             } else {
@@ -3245,6 +3261,7 @@ class CartFragment :
     private fun navigateToShipmentPage() {
         FLAG_BEGIN_SHIPMENT_PROCESS = true
         FLAG_SHOULD_CLEAR_RECYCLERVIEW = true
+        sendCartImpressionAnalytic()
         routeToCheckoutPage()
     }
 
@@ -4544,5 +4561,98 @@ class CartFragment :
             cartGroupHolderData.cartShopGroupTicker.state = CartShopGroupTickerState.LOADING
             dPresenter.checkCartShopGroupTicker(cartGroupHolderData)
         }
+    }
+
+    override fun onProductAddOnClicked(cartItemData: CartItemHolderData) {
+        // tokopedia://addon/2148784281/?cartId=123123&selectedAddonIds=111,222,333&source=cart&warehouseId=789789&isTokocabang=false
+        val productId = cartItemData.productId
+        val cartId = cartItemData.cartId
+        val addOnIds = arrayListOf<String>()
+        cartItemData.addOnsProduct.listData.forEach {
+            addOnIds.add(it.id)
+        }
+
+        val deselectAddOnIds = arrayListOf<String>()
+        cartItemData.addOnsProduct.deselectListData.forEach {
+            deselectAddOnIds.add(it.id)
+        }
+
+        val price: Double
+        val discountedPrice: Double
+        if (cartItemData.campaignId == "0") {
+            price = cartItemData.productPrice
+            discountedPrice = cartItemData.productPrice
+        } else {
+            price = cartItemData.productOriginalPrice
+            discountedPrice = cartItemData.productPrice
+        }
+
+        val applinkAddon = ApplinkConst.ADDON.replace(AddOnConstant.QUERY_PARAM_ADDON_PRODUCT, productId)
+        val applink = UriUtil.buildUriAppendParams(
+            applinkAddon,
+            mapOf(
+                AddOnConstant.QUERY_PARAM_CART_ID to cartId,
+                AddOnConstant.QUERY_PARAM_SELECTED_ADDON_IDS to addOnIds.toString().replace("[", "").replace("]", ""),
+                AddOnConstant.QUERY_PARAM_DESELECTED_ADDON_IDS to deselectAddOnIds.toString().replace("[", "").replace("]", ""),
+                AddOnConstant.QUERY_PARAM_PAGE_ATC_SOURCE to AddOnConstant.SOURCE_NORMAL_CHECKOUT,
+                AddOnConstant.QUERY_PARAM_WAREHOUSE_ID to cartItemData.warehouseId,
+                AddOnConstant.QUERY_PARAM_IS_TOKOCABANG to cartItemData.isFulfillment,
+                AddOnConstant.QUERY_PARAM_CATEGORY_ID to cartItemData.categoryId,
+                AddOnConstant.QUERY_PARAM_SHOP_ID to cartItemData.shopHolderData.shopId,
+                AddOnConstant.QUERY_PARAM_QUANTITY to cartItemData.quantity,
+                AddOnConstant.QUERY_PARAM_PRICE to price.toBigDecimal().toPlainString().removeSingleDecimalSuffix(),
+                AddOnConstant.QUERY_PARAM_DISCOUNTED_PRICE to discountedPrice.toBigDecimal().toPlainString().removeSingleDecimalSuffix()
+            )
+        )
+
+        activity?.let {
+            val intent = RouteManager.getIntent(it, applink)
+            startActivityForResult(intent, NAVIGATION_ADDON)
+        }
+    }
+
+    private fun onResultFromAddOnBottomSheet(resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK) {
+            val addOnProductDataResult = data?.getParcelableExtra(AddOnExtraConstant.EXTRA_ADDON_PAGE_RESULT) ?: AddOnPageResult()
+
+            if (addOnProductDataResult.aggregatedData.isGetDataSuccess) {
+                var newAddOnWording = ""
+                if (addOnProductDataResult.aggregatedData.title.isNotEmpty()) {
+                    newAddOnWording = "${addOnProductDataResult.aggregatedData.title} <b>(${CurrencyFormatUtil.convertPriceValueToIdrFormat(addOnProductDataResult.aggregatedData.price, false).removeDecimalSuffix()})</b>"
+                }
+
+                cartAdapter.updateAddOnByCartId(addOnProductDataResult.cartId.toString(), newAddOnWording, addOnProductDataResult)
+                onNeedToRecalculate()
+            } else {
+                showToastMessageRed(addOnProductDataResult.aggregatedData.getDataErrorMessage)
+            }
+        }
+    }
+
+    override fun onAvailableCartItemImpression(availableCartItems: List<CartItemHolderData>) {
+        availableCartItemImpressionList.addAll(availableCartItems)
+    }
+
+    private fun sendCartImpressionAnalytic() {
+        val analyticData = arrayListOf<Map<String, Any>>()
+        availableCartItemImpressionList.forEach {
+            val productDataMap = mapOf(
+                ConstantTransactionAnalytics.Key.CREATIVE_NAME to "",
+                ConstantTransactionAnalytics.Key.CREATIVE_SLOT to "",
+                ConstantTransactionAnalytics.Key.ITEM_ID to it.cartId,
+                ConstantTransactionAnalytics.Key.ITEM_NAME to it.productName
+            )
+            analyticData.add(productDataMap)
+        }
+        cartPageAnalytics.sendCartImpressionEvent(analyticData, userSession.userId)
+        availableCartItemImpressionList = mutableSetOf()
+    }
+
+    override fun onAddOnsProductWidgetImpression(addOnType: Int, productId: String) {
+        cartPageAnalytics.eventViewAddOnsProductWidgetCart(addOnType, productId)
+    }
+
+    override fun onClickAddOnsProductWidgetCart(addOnType: Int, productId: String) {
+        cartPageAnalytics.eventClickAddOnsWidgetCart(addOnType, productId)
     }
 }

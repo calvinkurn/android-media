@@ -389,7 +389,14 @@ public class BranchWrapper implements WrapperInterface {
                     String userId = (String) linkerGenericRequest.getDataObj();
                     BranchHelper.sendPageViewShop(context, userId);
                 }
-
+                break;
+            case LinkerConstants.EVENT_SUBSCRIBE_PLUS:
+                if (linkerGenericRequest != null && linkerGenericRequest.getDataObj() != null &&
+                        linkerGenericRequest.getDataObj() instanceof LinkerCommerceData) {
+                    BranchHelper.sendSubscribePlusEvent(
+                            ((LinkerCommerceData) linkerGenericRequest.getDataObj()).getPaymentData(),
+                            context, ((LinkerCommerceData) linkerGenericRequest.getDataObj()).getUserData());
+                }
         }
     }
 
@@ -482,7 +489,7 @@ public class BranchWrapper implements WrapperInterface {
                 deeplinkPath = appendQueryParams(deeplinkPath, data.getAdditionalQueryParam());
             }
         } else if (LinkerData.SHOP_TYPE.equalsIgnoreCase(data.getType())) {
-            deeplinkPath = getApplinkPath(LinkerConstants.SHOP, data.getId());//"shop/" + data.getId();
+            deeplinkPath = data.getDeepLink();//"shop/" + data.getId();
         } else if (LinkerData.HOTLIST_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = getApplinkPath(LinkerConstants.DISCOVERY_HOTLIST_DETAIL, data.getId());//"hot/" + data.getId();
         } else if (LinkerData.CATALOG_TYPE.equalsIgnoreCase(data.getType())) {

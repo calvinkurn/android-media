@@ -23,6 +23,7 @@
     <dimen name="dp_64">64dp</dimen>
     <dimen name="dp_82">82dp</dimen>
     <dimen name="sp_8">8sp</dimen>
+    <dimen name="dp_1">1dp</dimen>
     <dimen name="sp_16">16sp</dimen>
     <dimen name="width_product_empty_state_buyer">133dp</dimen>
     <dimen name="play_sgc_btn_start_live_width">120dp</dimen>

@@ -2,7 +2,6 @@ package com.tokopedia.applink
 
 import android.net.Uri
 import android.os.Bundle
-import com.tokopedia.config.GlobalConfig
 import java.net.URLDecoder
 import java.util.*
 import java.util.regex.Pattern
@@ -99,7 +98,8 @@ object UriUtil {
                         uriPattern.pathSegments[i].substring(
                             1,
                             uriPattern.pathSegments[i].length - 1
-                        ), uri.pathSegments[i]
+                        ),
+                        uri.pathSegments[i]
                     )
                 }
                 i++
@@ -259,52 +259,6 @@ object UriUtil {
         }
     }
 
-    fun destructureUriToMap(
-        uriPatternString: String,
-        uri: Uri,
-        checkScheme: Boolean
-    ): MutableMap<String, Any> {
-        val result: MutableMap<String, Any> = HashMap()
-        try {
-            val uriPattern = Uri.parse(uriPatternString) ?: return result
-            if (checkScheme && uriPattern.scheme != null && uriPattern.scheme != uri.scheme) {
-                return result
-            }
-            var uriSegmentSize = uri.pathSegments.size
-            if (uriSegmentSize == 0) {
-                uriSegmentSize = uriPattern.queryParameterNames.size
-                if (uriSegmentSize > 0) {
-                    val itr: Iterator<*> = uriPattern.queryParameterNames.iterator()
-                    while (itr.hasNext()) {
-                        val paramName = itr.next().toString()
-                        val paramValue: Any? = uri.getQueryParameter(paramName)
-                        if (paramValue != null) {
-                            result[paramName] = paramValue
-                        }
-                    }
-                } else {
-                    return result
-                }
-            } else {
-                val itr: Iterator<*> = uriPattern.pathSegments.iterator()
-                var i = 0
-                while (itr.hasNext()) {
-                    val segmentName = itr.next().toString()
-                    if (segmentName.startsWith("{") &&
-                        segmentName.endsWith("}")
-                    ) {
-                        result[segmentName.substring(1, segmentName.length - 1)] =
-                            uri.pathSegments[i]
-                    }
-                    i++
-                }
-            }
-        } catch (e: Exception) {
-            return result
-        }
-        return result
-    }
-
     /**
      * Build pattern uri to uri String
      *
@@ -385,7 +339,9 @@ object UriUtil {
         val qIndex = deeplink.indexOf('?')
         val deeplinkWithoutQuery = if (uri.query?.isNotEmpty() == true && qIndex > 0) {
             deeplink.substring(0, qIndex)
-        } else deeplink
+        } else {
+            deeplink
+        }
         return if (deeplinkWithoutQuery.endsWith("/")) {
             deeplinkWithoutQuery.substringBeforeLast("/")
         } else {

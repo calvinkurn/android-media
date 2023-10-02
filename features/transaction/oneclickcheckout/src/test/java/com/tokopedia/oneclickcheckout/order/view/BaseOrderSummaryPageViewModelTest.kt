@@ -5,8 +5,7 @@ import com.google.gson.Gson
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiExternalUseCase
 import com.tokopedia.localizationchooseaddress.data.repository.ChooseAddressRepository
 import com.tokopedia.localizationchooseaddress.domain.mapper.ChooseAddressMapper
-import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
-import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
+import com.tokopedia.logisticCommon.domain.usecase.UpdatePinpointUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
@@ -22,6 +21,7 @@ import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPageCheck
 import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPageLogisticProcessor
 import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPagePaymentProcessor
 import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPagePromoProcessor
+import com.tokopedia.purchase_platform.common.feature.addons.domain.SaveAddOnStateUseCase
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.usecase.GetPrescriptionIdsUseCaseCoroutine
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
@@ -54,9 +54,6 @@ open class BaseOrderSummaryPageViewModelTest {
     lateinit var updateCartOccUseCase: UpdateCartOccUseCase
 
     @MockK(relaxed = true)
-    lateinit var eligibleForAddressUseCase: EligibleForAddressUseCase
-
-    @MockK(relaxed = true)
     lateinit var getPrescriptionIdsUseCase: GetPrescriptionIdsUseCaseCoroutine
 
     private val ratesResponseStateConverter: RatesResponseStateConverter = RatesResponseStateConverter()
@@ -68,7 +65,7 @@ open class BaseOrderSummaryPageViewModelTest {
     lateinit var chooseAddressMapper: Lazy<ChooseAddressMapper>
 
     @MockK
-    lateinit var editAddressUseCase: Lazy<EditAddressUseCase>
+    lateinit var editAddressUseCase: UpdatePinpointUseCase
 
     @MockK(relaxed = true)
     lateinit var checkoutOccUseCase: CheckoutOccUseCase
@@ -87,6 +84,9 @@ open class BaseOrderSummaryPageViewModelTest {
 
     @MockK(relaxed = true)
     lateinit var validateUsePromoRevampUseCase: Lazy<ValidateUsePromoRevampUseCase>
+
+    @MockK(relaxed = true)
+    lateinit var saveAddOnStateUseCase: SaveAddOnStateUseCase
 
     @MockK(relaxed = true)
     lateinit var userSessionInterface: UserSessionInterface
@@ -114,6 +114,7 @@ open class BaseOrderSummaryPageViewModelTest {
                 getOccCartUseCase,
                 updateCartOccUseCase,
                 getPrescriptionIdsUseCase,
+                saveAddOnStateUseCase,
                 testDispatchers
             ),
             OrderSummaryPageLogisticProcessor(
@@ -146,7 +147,7 @@ open class BaseOrderSummaryPageViewModelTest {
                 )
             },
             OrderSummaryPageCalculator(orderSummaryAnalytics, testDispatchers),
-            userSessionInterface, orderSummaryAnalytics, eligibleForAddressUseCase
+            userSessionInterface, orderSummaryAnalytics
         )
 
         coEvery { dynamicPaymentFeeUseCase.invoke(any()) } returns emptyList()

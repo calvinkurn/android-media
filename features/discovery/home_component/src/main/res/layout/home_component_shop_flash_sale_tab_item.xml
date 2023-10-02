@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/container_shop_flash_sale_tab"
+    android:layout_width="113dp"
+    android:layout_height="108dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/img_shop_flash_sale_tab_shop_image"
+        android:layout_width="68dp"
+        android:layout_height="68dp"
+        app:unify_image_type="circle"
+        android:contentDescription="@string/content_desc_shop_logo_image"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <FrameLayout
+        android:id="@+id/container_shop_flash_sale_tab_shop_badge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/shop_badge_background"
+        android:padding="1dp"
+        app:layout_constraintEnd_toEndOf="@id/img_shop_flash_sale_tab_shop_image"
+        app:layout_constraintBottom_toBottomOf="@id/img_shop_flash_sale_tab_shop_image"
+        android:translationY="2dp"
+        android:translationX="2dp">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/img_shop_flash_sale_tab_shop_badge"
+            android:layout_width="21dp"
+            android:layout_height="21dp"
+            app:unify_image_type="circle"
+            android:contentDescription="@string/content_desc_shop_badge_image"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="parent" />
+
+    </FrameLayout>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txt_shop_flash_sale_tab_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        tools:text="Rilakkuma"
+        android:textColor="@color/Unify_NN950"
+        app:typographyType="paragraph_3"
+        app:typographyWeight="bold"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:gravity="center_horizontal"
+        android:layout_marginBottom="8dp"
+        android:layout_marginHorizontal="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/img_shop_flash_sale_tab_shop_image"
+        app:layout_constraintBottom_toTopOf="@id/img_shop_flash_sale_tab_indicator"
+        app:layout_constraintVertical_bias="1"/>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/img_shop_flash_sale_tab_indicator"
+        android:layout_width="0dp"
+        android:layout_height="4dp"
+        app:srcCompat="@drawable/shop_flash_sale_tab_indicator"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

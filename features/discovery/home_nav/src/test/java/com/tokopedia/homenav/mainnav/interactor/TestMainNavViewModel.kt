@@ -52,6 +52,7 @@ class TestMainNavViewModel {
     @Before
     fun setup() {
         MockKAnnotations.init(this, relaxUnitFun = true)
+        setIsMePageRollence(false)
     }
 
     // Global
@@ -116,8 +117,13 @@ class TestMainNavViewModel {
 
         val visitableList = viewModel.mainNavLiveData.value?.dataList ?: listOf()
         val backToHomeMenu = visitableList.find { it is HomeNavMenuDataModel && it.id == ClientMenuGenerator.ID_HOME } as HomeNavMenuDataModel?
+        val separator = visitableList.find {
+            it is SeparatorDataModel && it.sectionId == MainNavConst.Section.HOME ||
+            it is SeparatorDataModel && it.sectionId == MainNavConst.Section.PROFILE
+        } as? SeparatorDataModel
 
         Assert.assertNull(backToHomeMenu)
+        Assert.assertNull(separator)
     }
 
     @Test
@@ -398,7 +404,7 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `given success when refresh shop data with control rollence then change shop name and id`() {
+    fun `given success when refresh shop data with then change shop name and id`() {
         val newShopName = "binatang kucing"
         val newShopId = "123123"
         val isLocationAdmin: Boolean = true
@@ -1391,7 +1397,7 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `given error when refresh order transaction with control rollence then show failed get order transaction`() {
+    fun `given error when refresh order transaction with then show failed get order transaction`() {
         val userSession = mockk<UserSessionInterface>()
         val getPaymentOrderNavUseCase = mockk<GetPaymentOrdersNavUseCase>()
         every { userSession.isLoggedIn } returns true

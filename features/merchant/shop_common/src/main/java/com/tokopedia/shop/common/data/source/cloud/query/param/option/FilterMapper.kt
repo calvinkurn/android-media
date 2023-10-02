@@ -41,6 +41,9 @@ class FilterMapper {
                     FilterByCondition.CampaignOnly.id -> FilterByCondition.CampaignOnly
                     FilterByCondition.NotifyMeOnly.id -> FilterByCondition.NotifyMeOnly
                     FilterByCondition.StockAvailableOnly.id -> FilterByCondition.StockAvailableOnly
+                    FilterByCondition.ProductArchival.id -> FilterByCondition.ProductArchival
+                    FilterByCondition.ProductArchivedStatus.id -> FilterByCondition.ProductArchivedStatus
+                    FilterByCondition.ProductPotentialArchivedStatus.id -> FilterByCondition.ProductPotentialArchivedStatus
                     else -> FilterByCondition.FeaturedOnly // FilterOption.FEATURED_ONLY
                 }
             }

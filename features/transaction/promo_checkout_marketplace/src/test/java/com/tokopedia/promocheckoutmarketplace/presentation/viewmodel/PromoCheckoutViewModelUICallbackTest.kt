@@ -12,6 +12,7 @@ import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.just
+import io.mockk.verify
 import org.junit.Assert
 import org.junit.Test
 
@@ -41,6 +42,23 @@ class PromoCheckoutViewModelUICallbackTest : BasePromoCheckoutViewModelTest() {
 
         // THEN
         assert(viewModel.promoListUiModel.value?.size ?: 0 > 0)
+    }
+
+    @Test
+    fun `WHEN call reset promo with clashing promo THEN should clear the clashing promo`() {
+        // GIVEN
+        viewModel.setPromoListValue(GetPromoListDataProvider.provideCurrentSelectedPromoListResponseWithClashingData())
+
+        every { analytics.eventClickResetPromo(any()) } just Runs
+
+        // WHEN
+        viewModel.resetPromo()
+
+        // THEN
+        viewModel.promoListUiModel.value?.forEach {
+            assert(it is PromoListItemUiModel)
+            assert((it as PromoListItemUiModel).uiData.currentClashingPromo.size == 0)
+        }
     }
 
     @Test
@@ -518,6 +536,68 @@ class PromoCheckoutViewModelUICallbackTest : BasePromoCheckoutViewModelTest() {
     }
 
     @Test
+    fun `WHEN click promo card with actionable CTA THEN should navigate applink`() {
+        // GIVEN
+        val response = GetPromoListDataProvider.provideGetPromoListResponseSuccessAllEligible()
+
+        coEvery { getCouponListRecommendationUseCase.setParams(any(), any()) } just Runs
+        coEvery { getCouponListRecommendationUseCase.execute(any(), any()) } answers {
+            firstArg<(CouponListRecommendationResponse) -> Unit>().invoke(response)
+        }
+        coEvery { analytics.sendClickActivatedGopayCicilEvent(any(), any(), any(), any()) } just Runs
+
+        viewModel.getPromoList(PromoRequest(), "")
+
+        var selectedPromoItemWithActionableCTA: PromoListItemUiModel? = null
+        viewModel.promoListUiModel.value?.forEach {
+            if (it is PromoListItemUiModel && it.uiState.isContainActionableGopayCicilCTA) {
+                selectedPromoItemWithActionableCTA = it
+                return@forEach
+            }
+        }
+
+        // WHEN
+        viewModel.handlePromoListAfterClickPromoItem(selectedPromoItemWithActionableCTA!!, 0)
+
+        // THEN
+        val applinkData = viewModel.getActionableApplinkNavigation.value
+        assert(applinkData == selectedPromoItemWithActionableCTA?.uiData?.cta?.applink)
+    }
+
+    @Test
+    fun `WHEN click promo card with no actionable CTA and is unselected THEN should select the product`() {
+        // GIVEN
+        val response = GetPromoListDataProvider.provideGetPromoListResponseSuccessAllEligible()
+
+        coEvery { getCouponListRecommendationUseCase.setParams(any(), any()) } just Runs
+        coEvery { getCouponListRecommendationUseCase.execute(any(), any()) } answers {
+            firstArg<(CouponListRecommendationResponse) -> Unit>().invoke(response)
+        }
+        every { analytics.eventClickSelectKupon(any(), any(), any()) } just Runs
+        every { analytics.sendClickActivatedGopayCicilEvent(any(), any(), any(), any()) } just Runs
+
+        viewModel.getPromoList(PromoRequest(), "")
+
+        var selectedPromoItemWithActionableCTA: PromoListItemUiModel? = null
+        viewModel.promoListUiModel.value?.forEach {
+            if (it is PromoListItemUiModel && !it.uiState.isContainActionableGopayCicilCTA && !it.uiState.isSelected) {
+                selectedPromoItemWithActionableCTA = it
+                return@forEach
+            }
+        }
+
+        var hasAnyPromoSelected = viewModel.isHasAnySelectedPromoItem()
+        assert(!hasAnyPromoSelected)
+
+        // WHEN
+        viewModel.handlePromoListAfterClickPromoItem(selectedPromoItemWithActionableCTA!!, 0)
+
+        // THEN
+        hasAnyPromoSelected = viewModel.isHasAnySelectedPromoItem()
+        assert(hasAnyPromoSelected)
+    }
+
+    @Test
     fun `WHEN promo tab is changed THEN set current tab to selected tab`() {
         // Given
         val promoTabUiModel = PromoTabUiModel(
@@ -530,5 +610,23 @@ class PromoCheckoutViewModelUICallbackTest : BasePromoCheckoutViewModelTest() {
 
         // Then
         assert(viewModel.promoTabUiModel.value == promoTabUiModel)
+    }
+
+    @Test
+    fun `WHEN app trigger onCleared THEN should cancel all use case JOBS`() {
+        // given
+        every { getCouponListRecommendationUseCase.cancelJobs() } just Runs
+        every { validateUseUseCase.cancelJobs() } just Runs
+        every { clearCacheAutoApplyUseCase.cancelJobs() } just Runs
+        every { getPromoSuggestionUseCase.cancelJobs() } just Runs
+
+        // when
+        viewModel.cancelAllJobs()
+
+        // then
+        verify { getCouponListRecommendationUseCase.cancelJobs() }
+        verify { validateUseUseCase.cancelJobs() }
+        verify { clearCacheAutoApplyUseCase.cancelJobs() }
+        verify { getPromoSuggestionUseCase.cancelJobs() }
     }
 }

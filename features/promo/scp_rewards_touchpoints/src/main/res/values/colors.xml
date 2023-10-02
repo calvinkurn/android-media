@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="dark_grey_nav_color">#6d7588</color>
+    <color name="scp_rewards_medal_touch_point_widget_background_color_dms">@color/cardunify_background</color>
+    <color name="scp_rewards_medal_touch_point_widget_subtitle_color_dms">@color/Unify_NN600</color>
 </resources>

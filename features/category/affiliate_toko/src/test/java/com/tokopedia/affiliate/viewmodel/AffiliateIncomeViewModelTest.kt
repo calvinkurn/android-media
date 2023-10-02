@@ -57,7 +57,7 @@ class AffiliateIncomeViewModelTest {
 
         assertEquals(
             affiliateIncomeViewModel.getAffiliateBalanceData().value,
-            affiliateBalance.affiliateBalance?.data
+            affiliateBalance.affiliateBalance?.balanceData
         )
     }
 
@@ -141,7 +141,7 @@ class AffiliateIncomeViewModelTest {
             )
         } returns transaction
         val response =
-            affiliateIncomeViewModel.convertDataToVisitables(transaction.getAffiliateTransactionHistory?.data)
+            affiliateIncomeViewModel.convertDataToVisitables(transaction.getAffiliateTransactionHistory?.transactionData)
 
         affiliateIncomeViewModel.getAffiliateTransactionHistory(PAGE_ZERO)
 
@@ -175,7 +175,7 @@ class AffiliateIncomeViewModelTest {
             )
         } returns transaction
         val response =
-            affiliateIncomeViewModel.convertDataToVisitables(transaction.getAffiliateTransactionHistory?.data)
+            affiliateIncomeViewModel.convertDataToVisitables(transaction.getAffiliateTransactionHistory?.transactionData)
 
         affiliateIncomeViewModel.getAffiliateTransactionHistory(PAGE_ZERO)
 

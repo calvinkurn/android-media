@@ -49,6 +49,7 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
               mp_bom_detail(input: ${'$'}$PARAM_INPUT) {
                 has_reso_status
                 order_id
+                group_type
                 invoice
                 invoice_url
                 payment_date
@@ -433,6 +434,12 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                   }
                 }
                 additional_data {
+                  group_order_data {
+                    tx_id
+                    icon_url
+                    title
+                    description
+                  }
                   epharmacy_data {
                     consultation_name
                     consultation_date

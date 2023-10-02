@@ -31,6 +31,7 @@ data class RecommendationItem(
     val shopId: Int = 0,
     val shopType: String = "",
     val shopName: String = "",
+    val warehouseId: Long = 0L,
     var cartId: String = "",
     var quantity: Int = 0,
     val header: String = "",
@@ -199,6 +200,8 @@ data class RecommendationItem(
             isVariant = isProductHasParentID(),
             stockQty = currentQuantity
         )
+
+    fun isUseQuantityEditor(): Boolean = addToCartType == AddToCartType.QuantityEditor
 }
 
 data class RecommendationSpecificationLabels(

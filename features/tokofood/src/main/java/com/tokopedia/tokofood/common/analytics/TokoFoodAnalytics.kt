@@ -20,8 +20,6 @@ object TokoFoodAnalytics {
     const val EVENT_CHECKOUT = "checkout"
     const val EVENT_BEGIN_CHECKOUT = "begin_checkout"
     const val EVENT_VIEW_PG_IRIS = "viewPGIris"
-    const val EVENT_VIEW_ITEM = "view_item"
-    const val EVENT_SELECT_CONTENT = "select_content"
     const val EVENT_PROMO_CLICK = "promoClick"
     const val EVENT_PROMO_VIEW = "promoView"
 

@@ -1,7 +1,5 @@
 package com.tokopedia.applink.user
 
-import android.content.Context
-import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.internal.ApplinkConsInternalHome
@@ -14,7 +12,9 @@ import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 
 object DeeplinkMapperUser {
 
-    const val ROLLENCE_GOTO_KYC = "goto_kyc_apps"
+    const val KEY_ROLLENCE_PROFILE_MANAGEMENT_M2 = "M2_Profile_Mgmt"
+    const val ROLLENCE_GOTO_KYC_MA = "goto_kyc_apps"
+    const val ROLLENCE_GOTO_KYC_SA = "goto_kyc_sellerapp"
     const val ROLLENCE_PRIVACY_CENTER = "privacy_center_and_3"
 
     fun getRegisteredNavigationUser(deeplink: String): String {
@@ -26,28 +26,55 @@ object DeeplinkMapperUser {
             deeplink == ApplinkConst.ADD_PIN_ONBOARD -> ApplinkConstInternalUserPlatform.ADD_PIN_ONBOARDING
             deeplink.startsWith(ApplinkConstInternalGlobal.ADVANCED_SETTING) -> ApplinkConstInternalUserPlatform.NEW_HOME_ACCOUNT
             deeplink.startsWith(ApplinkConstInternalGlobal.GENERAL_SETTING) -> ApplinkConstInternalUserPlatform.NEW_HOME_ACCOUNT
-            deeplink == ApplinkConst.SETTING_PROFILE -> ApplinkConstInternalUserPlatform.SETTING_PROFILE
+            deeplink == ApplinkConst.SETTING_PROFILE -> getProfileApplink()
+            deeplink == ApplinkConstInternalUserPlatform.SETTING_PROFILE -> getProfileApplink()
             deeplink == ApplinkConst.INPUT_INACTIVE_NUMBER -> ApplinkConstInternalUserPlatform.INPUT_OLD_PHONE_NUMBER
             deeplink == ApplinkConst.ADD_PHONE -> ApplinkConstInternalUserPlatform.ADD_PHONE
             deeplink == ApplinkConst.PRIVACY_CENTER -> getApplinkPrivacyCenter()
             deeplink == ApplinkConst.User.DSAR -> ApplinkConstInternalUserPlatform.DSAR
             deeplink.startsWithPattern(ApplinkConst.GOTO_KYC) || deeplink.startsWithPattern(ApplinkConstInternalUserPlatform.GOTO_KYC) -> getApplinkGotoKyc(deeplink)
+            deeplink.startsWith(ApplinkConst.GOTO_KYC_WEBVIEW) -> ApplinkConstInternalUserPlatform.GOTO_KYC_WEBVIEW
             else -> deeplink
         }
     }
 
+    private fun getProfileApplink(): String {
+        return if (isProfileManagementM2Activated()) {
+            ApplinkConstInternalUserPlatform.PROFILE_MANAGEMENT
+        } else {
+            ApplinkConstInternalUserPlatform.SETTING_PROFILE
+        }
+    }
+
+    fun isProfileManagementM2Activated(): Boolean {
+        return RemoteConfigInstance.getInstance()
+            .abTestPlatform
+            .getString(KEY_ROLLENCE_PROFILE_MANAGEMENT_M2)
+            .isNotEmpty()
+    }
+
     private fun getApplinkGotoKyc(deeplink: String): String {
-        return if (isRollenceGotoKycActivated() && !GlobalConfig.isSellerApp()) {
-            deeplink.replace("${ApplinkConst.APPLINK_CUSTOMER_SCHEME}://", "${ApplinkConstInternalUserPlatform.NEW_INTERNAL_USER}/")
+        return if (isRollenceGotoKycActivated()) {
+            deeplink.replace("${ApplinkConst.APPLINK_CUSTOMER_SCHEME}://goto-kyc", "${ApplinkConstInternalUserPlatform.NEW_INTERNAL_USER}/goto-kyc")
         } else {
             ApplinkConstInternalUserPlatform.KYC_INFO_BASE + "?" + deeplink.substringAfter("?")
         }
     }
 
-    private fun isRollenceGotoKycActivated(): Boolean {
-        return getAbTestPlatform()
-            .getString(ROLLENCE_GOTO_KYC)
-            .isNotEmpty()
+    fun isRollenceGotoKycActivated(): Boolean {
+        val rollenceKey = if (GlobalConfig.isSellerApp()) {
+            ROLLENCE_GOTO_KYC_SA
+        } else {
+            ROLLENCE_GOTO_KYC_MA
+        }
+
+        val rollence = getAbTestPlatform()
+            .getFilteredKeyByKeyName(rollenceKey)
+        return if (rollence.isNotEmpty()) {
+            getAbTestPlatform().getString(rollenceKey).isNotEmpty()
+        } else {
+            true
+        }
     }
 
     private fun getApplinkPrivacyCenter(): String {
@@ -58,7 +85,7 @@ object DeeplinkMapperUser {
         }
     }
 
-    private fun isRollencePrivacyCenterActivated(): Boolean {
+    fun isRollencePrivacyCenterActivated(): Boolean {
         return getAbTestPlatform()
             .getString(ROLLENCE_PRIVACY_CENTER)
             .isNotEmpty()

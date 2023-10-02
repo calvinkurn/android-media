@@ -271,6 +271,9 @@ data class SomDetailOrder(
                 @Expose
                 val productName: String = "",
 
+                @SerializedName("courier_info")
+                val courierInfo: String = "",
+
                 @SerializedName("is_same_day")
                 @Expose
                 val isSameDay: Int = 0,
@@ -289,7 +292,10 @@ data class SomDetailOrder(
 
                 @SerializedName("awb_upload_proof_text")
                 @Expose
-                val awbUploadProofText: String = ""
+                val awbUploadProofText: String = "",
+
+                @SerializedName("ticker_info")
+                val tickerInfo: TickerInfo? = TickerInfo()
             )
 
             data class BookingInfo(

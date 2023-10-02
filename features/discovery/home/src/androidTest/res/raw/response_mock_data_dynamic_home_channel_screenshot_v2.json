@@ -7911,6 +7911,221 @@
                     "categoryPersona": "",
                     "galaxyAttribution": "",
                     "isAutoRefreshAfterExpired": false
+                },
+                {
+                    "id": 278879,
+                    "name": "Test new rilisan spesial",
+                    "type": "",
+                    "token": "",
+                    "grids": [
+                        {
+                            "id": 5084041545,
+                            "url": "https://www.tokopedia.com/skintific/skintific-symwhite-377-dark-spot-serum-brightening-serum-20ml?source=homepage.rilisan_spesial.0.278879",
+                            "name": "SKINTIFIC SymWhite 377 Dark Spot Serum Brightening Serum 20ml",
+                            "shop": {
+                                "id": 12307751,
+                                "url": "https://www.tokopedia.com/skintific?source=homepage.rilisan_spesial.0.278879",
+                                "city": "Kota Bekasi",
+                                "name": "Skintific Official Store",
+                                "domain": "",
+                                "applink": "tokopedia://shop/12307751?source_ref=homepage.rilisan_spesial.0.278879",
+                                "imageUrl": "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/3/6/b9d7868f-c9dd-4b32-9518-756a0760b6e7.jpg",
+                                "reputation": ""
+                            },
+                            "price": "Rp 119.000",
+                            "label": "",
+                            "stock": 455,
+                            "param": "",
+                            "rating": 0,
+                            "badges": [],
+                            "applink": "tokopedia://product/5084041545?source=homepage.rilisan_spesial.0.278879",
+                            "benefit": {
+                                "type": "",
+                                "value": "Diskon Bundling 33%"
+                            },
+                            "discount": "30%",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2023/2/3/6c7e85d7-f0c0-4ec3-9326-7fb8c7eec698.jpg",
+                            "cashback": "",
+                            "isTopads": false,
+                            "minOrder": 1,
+                            "maxOrder": 0,
+                            "clusterID": 27032,
+                            "backColor": "",
+                            "textColor": "",
+                            "impression": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/2/3/6c7e85d7-f0c0-4ec3-9326-7fb8c7eec698.jpg",
+                            "freeOngkir": {
+                                "isActive": true,
+                                "imageUrl": "https://images.tokopedia.net/img/img/promo/targeting/red_bo_normal.png"
+                            },
+                            "labelGroup": [
+                                {
+                                    "url": "",
+                                    "type": "lightGreen",
+                                    "title": "Cashback",
+                                    "position": "promo"
+                                },
+                                {
+                                    "url": "",
+                                    "type": "lightGrey",
+                                    "title": "Dilayani Tokopedia",
+                                    "position": "offers"
+                                }
+                            ],
+                            "attribution": "",
+                            "warehouseID": 13056835,
+                            "countReview": 0,
+                            "expiredTime": "",
+                            "slashedPrice": "Rp 169.000",
+                            "isOutOfStock": false,
+                            "hasBuyButton": false,
+                            "campaignCode": "",
+                            "ratingAverage": "",
+                            "labelTextColor": "",
+                            "soldPercentage": 0,
+                            "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category=2265&event=click&experimentVersion=v1.4&page=0&page_name=shop_campaign_product_test&pid=5084041545&pos=1&recommendation=shop_campaign_product&rectype=shop_campaign_product&redirect=https://www.tokopedia.com/skintific/skintific-symwhite-377-dark-spot-serum-brightening-serum-20ml?catid2265=%26ref=shop_campaign_product_test_pa0_po1%26src=r3shop_campaign_product&tid=nn8YAWm0U4-nTs2Hgbd_1pqloEk=&uid=16939915&unique_id=&utime=1690991678&widget=r3_widget&xdevice=android-3.226",
+                            "productImageUrl": "",
+                            "parentProductID": 0,
+                            "labelGroupVariant": [],
+                            "discountPercentage": 30,
+                            "recommendationType": "shop_campaign_product",
+                            "categoryBreadcrumbs": "Kecantikan/Perawatan Wajah/Serum Wajah",
+                            "productViewCountFormatted": ""
+                        },
+                        {
+                            "id": 7053201407,
+                            "url": "https://www.tokopedia.com/lorealprofessionnel/l-oreal-professionnel-absolut-repair-hair-serum-rambut-rusak?source=homepage.rilisan_spesial.0.278879",
+                            "name": "L'Oreal Professionnel Absolut Repair Hair Serum- Rambut Rusak",
+                            "shop": {
+                                "id": 11104475,
+                                "url": "https://www.tokopedia.com/lorealprofessionnel?source=homepage.rilisan_spesial.0.278879",
+                                "city": "Kota Tangerang",
+                                "name": "L'Oreal Professionnel Official Store",
+                                "domain": "",
+                                "applink": "tokopedia://shop/11104475?source_ref=homepage.rilisan_spesial.0.278879",
+                                "imageUrl": "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2021/4/1/88d8d607-6cc6-49a6-a513-d7706ad35baa.jpg",
+                                "reputation": ""
+                            },
+                            "price": "Rp 298.900",
+                            "label": "",
+                            "stock": 4,
+                            "param": "",
+                            "rating": 0,
+                            "badges": [
+                                {
+                                    "title": "Official Store",
+                                    "imageUrl": "https://images.tokopedia.net/img/official_store_badge.png"
+                                }
+                            ],
+                            "applink": "tokopedia://product/7053201407?source=homepage.rilisan_spesial.0.278879",
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "discount": "30%",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2023/8/1/e6d7ae8b-55db-4045-b5dd-6ea4f2a60109.jpg",
+                            "cashback": "",
+                            "isTopads": false,
+                            "minOrder": 1,
+                            "maxOrder": 0,
+                            "clusterID": 25457,
+                            "backColor": "",
+                            "textColor": "",
+                            "impression": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/8/1/e6d7ae8b-55db-4045-b5dd-6ea4f2a60109.jpg",
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "labelGroup": [
+                                {
+                                    "url": "",
+                                    "type": "lightGreen",
+                                    "title": "Cashback",
+                                    "position": "promo"
+                                }
+                            ],
+                            "attribution": "",
+                            "warehouseID": 11107181,
+                            "countReview": 0,
+                            "expiredTime": "",
+                            "slashedPrice": "Rp 427.000",
+                            "isOutOfStock": false,
+                            "hasBuyButton": false,
+                            "campaignCode": "",
+                            "ratingAverage": "",
+                            "labelTextColor": "",
+                            "soldPercentage": 0,
+                            "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category=2172&event=click&experimentVersion=v1.4&page=0&page_name=shop_campaign_product_test&pid=7053201407&pos=2&recommendation=shop_campaign_product&rectype=shop_campaign_product&redirect=https://www.tokopedia.com/lorealprofessionnel/l-oreal-professionnel-absolut-repair-hair-serum-rambut-rusak?catid2172=%26ref=shop_campaign_product_test_pa0_po2%26src=r3shop_campaign_product&tid=nn8YAWm0U4-nTs2Hgbd_1pqloEk=&uid=16939915&unique_id=&utime=1690991678&widget=r3_widget&xdevice=android-3.226",
+                            "productImageUrl": "",
+                            "parentProductID": 0,
+                            "labelGroupVariant": [],
+                            "discountPercentage": 30,
+                            "recommendationType": "shop_campaign_product",
+                            "categoryBreadcrumbs": "Perawatan Tubuh/Perawatan Rambut/Vitamin & Serum Rambut",
+                            "productViewCountFormatted": ""
+                        }
+                    ],
+                    "layout": "rilisan_spesial",
+                    "styleParam": "dividerSize=8&borderStyle=bleeding",
+                    "header": {
+                        "id": 298450,
+                        "url": "https://www.tokopedia.com/discovery/gebyar-koleksi-spesial?source=homepage.rilisan_spesial.0.278879",
+                        "name": "Special releases today!",
+                        "applink": "tokopedia://discovery/gebyar-koleksi-spesial?source=homepage.rilisan_spesial.0.278879",
+                        "subtitle": "",
+                        "boxColor": "",
+                        "backColor": "",
+                        "backImage": "",
+                        "textColor": "#212121",
+                        "timerColor": "",
+                        "serverTime": 0,
+                        "expiredTime": "",
+                        "desktopName": "",
+                        "timerVariant": ""
+                    },
+                    "banner": {
+                        "id": 0,
+                        "cta": {
+                            "type": "",
+                            "mode": "",
+                            "text": "",
+                            "couponCode": ""
+                        },
+                        "url": "",
+                        "title": "",
+                        "applink": "",
+                        "imageUrl": "",
+                        "textColor": "",
+                        "backColor": "",
+                        "description": "",
+                        "attribution": "",
+                        "gradientColor": []
+                    },
+                    "persona": "",
+                    "brandID": "",
+                    "groupID": 240,
+                    "pageName": "shop_campaign_product_test",
+                    "persoType": 1,
+                    "categoryID": "{}",
+                    "campaignID": 0,
+                    "widgetParam": "",
+                    "dividerType": 0,
+                    "viewAllCard": {
+                        "id": 0,
+                        "title": "",
+                        "imageUrl": "",
+                        "contentType": "",
+                        "description": "",
+                        "gradientColor": []
+                    },
+                    "campaignCode": "",
+                    "campaignType": 0,
+                    "showPromoBadge": true,
+                    "pgCampaignType": "",
+                    "hasCloseButton": false,
+                    "contextualInfo": 0,
+                    "categoryPersona": "",
+                    "galaxyAttribution": "PG",
+                    "isAutoRefreshAfterExpired": false
                 }
             ]
         }

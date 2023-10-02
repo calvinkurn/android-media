@@ -2,10 +2,12 @@ package com.tokopedia.checkout.view.presenter
 
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
+import com.tokopedia.logisticCommon.data.response.KeroEditAddressResponse
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.verifyOrder
 import org.junit.Test
-import rx.Observable
+import com.tokopedia.abstraction.R as abstractionR
 
 class ShipmentViewModelEditAddressPinpointTest : BaseShipmentViewModelTest() {
 
@@ -27,14 +29,10 @@ class ShipmentViewModelEditAddressPinpointTest : BaseShipmentViewModelTest() {
         val latitude = "123"
         val longitude = "456"
 
-        every { editAddressUseCase.createObservable(any()) } returns Observable.just(
-            """
-            {
-                "data": {
-                    "is_success": 1
-                }
-            }
-            """.trimIndent()
+        coEvery { editAddressUseCase(any()) } returns KeroEditAddressResponse.Data(
+            keroEditAddress = KeroEditAddressResponse.Data.KeroEditAddress(
+                KeroEditAddressResponse.Data.KeroEditAddress.KeroEditAddressSuccessResponse(isSuccess = 1)
+            )
         )
 
         // When
@@ -71,16 +69,10 @@ class ShipmentViewModelEditAddressPinpointTest : BaseShipmentViewModelTest() {
 
         val errorMessage = "error"
 
-        every { editAddressUseCase.createObservable(any()) } returns Observable.just(
-            """
-            {
-                "data": {
-                    "is_success": 0
-                },
-                "message_error": ["$errorMessage"]
-            }
-            """.trimIndent()
-        )
+        coEvery { editAddressUseCase(any()) } returns KeroEditAddressResponse.Data(keroEditAddress = KeroEditAddressResponse.Data.KeroEditAddress(KeroEditAddressResponse.Data.KeroEditAddress.KeroEditAddressSuccessResponse(isSuccess = 0)))
+        every {
+            view.getStringResource(abstractionR.string.default_request_error_unknown)
+        } returns errorMessage
 
         // When
         viewModel.editAddressPinpoint(latitude, longitude, locationPass)
@@ -116,19 +108,10 @@ class ShipmentViewModelEditAddressPinpointTest : BaseShipmentViewModelTest() {
 
         val errorMessage = "error"
 
-        every { editAddressUseCase.createObservable(any()) } returns Observable.just(
-            """
-            {
-                "data": {
-                    "is_success": 0
-                },
-                "message_error": []
-            }
-            """.trimIndent()
-        )
+        coEvery { editAddressUseCase(any()) } returns KeroEditAddressResponse.Data(keroEditAddress = KeroEditAddressResponse.Data.KeroEditAddress(KeroEditAddressResponse.Data.KeroEditAddress.KeroEditAddressSuccessResponse(isSuccess = 0)))
 
         every {
-            view.getStringResource(com.tokopedia.abstraction.R.string.default_request_error_unknown)
+            view.getStringResource(abstractionR.string.default_request_error_unknown)
         } returns errorMessage
 
         // When
@@ -162,7 +145,7 @@ class ShipmentViewModelEditAddressPinpointTest : BaseShipmentViewModelTest() {
         val latitude = "123"
         val longitude = "456"
 
-        every { editAddressUseCase.createObservable(any()) } returns Observable.error(Throwable())
+        coEvery { editAddressUseCase(any()) } throws Throwable()
 
         // When
         viewModel.editAddressPinpoint(latitude, longitude, LocationPass())

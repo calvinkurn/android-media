@@ -14,6 +14,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.df.content.play.broadcaster'
+    testNamespace 'com.tokopedia.df.content.play.broadcaster.test'
 
     signingConfigs {
         debug {

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.tokopedia.tokochat_common.view.customview.TokoChatBubbleContainerLayout
+    <com.tokopedia.tokochat.common.view.chatroom.customview.TokoChatBubbleContainerLayout
         android:id="@+id/tokochat_layout_bubble_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -20,7 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <com.tokopedia.tokochat_common.view.customview.TokoChatMessageBubbleLayout
+            <com.tokopedia.tokochat.common.view.chatroom.customview.TokoChatMessageBubbleLayout
                 android:id="@+id/tokochat_layout_body_message_bubble"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -28,6 +28,6 @@
 
         </LinearLayout>
 
-    </com.tokopedia.tokochat_common.view.customview.TokoChatBubbleContainerLayout>
+    </com.tokopedia.tokochat.common.view.chatroom.customview.TokoChatBubbleContainerLayout>
 
 </FrameLayout>

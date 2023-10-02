@@ -1,7 +1,6 @@
 package com.tokopedia.people.builder
 
 import com.tokopedia.people.views.uimodel.ProfileSettingsUiModel
-import com.tokopedia.people.views.uimodel.UserReviewUiModel
 import com.tokopedia.people.views.uimodel.profile.FollowInfoUiModel
 import com.tokopedia.people.views.uimodel.profile.LinkUiModel
 import com.tokopedia.people.views.uimodel.profile.LivePlayChannelUiModel
@@ -25,23 +24,22 @@ class ProfileModelBuilder {
             name = "Jonathan",
             username = "jonathan",
             biography = "",
-            badges = listOf(),
             stats = ProfileStatsUiModel.Empty,
             shareLink = LinkUiModel.Empty,
             liveInfo = LivePlayChannelUiModel.Empty,
             isBlocking = false,
-            isBlockedBy = false,
+            isBlockedBy = false
         )
     }
 
     fun buildFollowInfo(
         userId: String = "123",
-        isFollowed: Boolean = false,
+        isFollowed: Boolean = false
     ): FollowInfoUiModel {
         return FollowInfoUiModel(
             userID = userId,
             encryptedUserID = userId,
-            status = isFollowed,
+            status = isFollowed
         )
     }
 
@@ -49,13 +47,13 @@ class ProfileModelBuilder {
         isActive: Boolean = false,
         showPost: Boolean = false,
         showLiveStream: Boolean = false,
-        showShortVideo: Boolean = false,
+        showShortVideo: Boolean = false
     ): ProfileCreationInfoUiModel {
         return ProfileCreationInfoUiModel(
             isActive = isActive,
             showPost = showPost,
             showLiveStream = showLiveStream,
-            showShortVideo = showShortVideo,
+            showShortVideo = showShortVideo
         )
     }
 
@@ -63,7 +61,7 @@ class ProfileModelBuilder {
         showTabs: Boolean = true,
         isShowFeedTab: Boolean = true,
         isShowVideoTab: Boolean = true,
-        isShowReviewTab: Boolean = true,
+        isShowReviewTab: Boolean = true
     ): ProfileTabUiModel {
         return ProfileTabUiModel(
             showTabs = showTabs,
@@ -84,7 +82,7 @@ class ProfileModelBuilder {
     }
 
     fun buildProfileSettings(
-        isShowReview: Boolean = true,
+        isShowReview: Boolean = true
     ): List<ProfileSettingsUiModel> {
         return listOf(
             ProfileSettingsUiModel(

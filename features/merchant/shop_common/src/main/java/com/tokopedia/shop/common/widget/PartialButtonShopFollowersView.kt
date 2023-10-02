@@ -36,12 +36,12 @@ class PartialButtonShopFollowersView private constructor(val view: View, private
         view.generateBackgroundWithShadow(
             com.tokopedia.unifyprinciples.R.color.Unify_Background,
             com.tokopedia.unifyprinciples.R.color.Unify_Static_Black_32,
-            R.dimen.dp_12,
-            R.dimen.dp_12,
+            com.tokopedia.abstraction.R.dimen.dp_12,
+            com.tokopedia.abstraction.R.dimen.dp_12,
             com.tokopedia.unifyprinciples.R.dimen.layout_lvl0,
             com.tokopedia.unifyprinciples.R.dimen.layout_lvl0,
-            R.dimen.dp_2,
-            R.dimen.dp_2,
+            com.tokopedia.abstraction.R.dimen.dp_2,
+            com.tokopedia.abstraction.R.dimen.dp_2,
             Gravity.TOP
         )
     }

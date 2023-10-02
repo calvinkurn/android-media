@@ -13,7 +13,7 @@ abstract class HomeDao{
     abstract fun getHomeData(): Flow<HomeRoomData?>
 
     @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
-    @Query("SELECT * FROM AtfCacheEntity")
+    @Query("SELECT * FROM AtfCacheEntity ORDER BY position ASC")
     abstract fun getHomeDataObject(): Flow<List<AtfCacheEntity>>
 
     @Query("DELETE FROM AtfCacheEntity")

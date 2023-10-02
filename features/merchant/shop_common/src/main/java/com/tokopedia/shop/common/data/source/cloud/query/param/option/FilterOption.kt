@@ -17,7 +17,9 @@ sealed class FilterOption(val id: String) {
         object StockAlertOnly: FilterByCondition(STOCK_ALERT_ONLY)
         object NotifyMeOnly: FilterByCondition(NOTIFY_ME_ONLY)
         object StockAvailableOnly: FilterByCondition(STOCK_AVAILABLE_ONLY)
-
+        object ProductArchival: FilterByCondition(PRODUCT_ARCHIVAL)
+        object ProductArchivedStatus: FilterByCondition(STATUS_PRODUCT_ARCHIVED)
+        object ProductPotentialArchivedStatus: FilterByCondition(STATUS_PRODUCT_ARCHIVAL_POTENTIAL)
     }
 
     data class FilterByMenu(val menuIds: List<String>): FilterOption(MENU)
@@ -45,6 +47,9 @@ sealed class FilterOption(val id: String) {
         private const val STOCK_ALERT_ONLY = "hasStockAlertOnly"
         const val NOTIFY_ME_ONLY = "haveNotifyMeOOS"
         private const val STOCK_AVAILABLE_ONLY = "isStockGuaranteed"
+        private const val PRODUCT_ARCHIVAL = "isProductArchival"
 
+        private const val STATUS_PRODUCT_ARCHIVED = "isArchived"
+        private const val STATUS_PRODUCT_ARCHIVAL_POTENTIAL = "isInGracePeriod"
     }
 }

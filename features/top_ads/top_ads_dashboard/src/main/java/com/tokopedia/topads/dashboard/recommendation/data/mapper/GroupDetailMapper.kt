@@ -2,7 +2,7 @@ package com.tokopedia.topads.dashboard.recommendation.data.mapper
 
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.top_ads_headline_usecase.model.TopAdsManageHeadlineInput2
+import com.tokopedia.topads.common.domain.model.createheadline.TopAdsManageHeadlineInput2
 import com.tokopedia.topads.common.data.response.TopadsManagePromoGroupProductInput
 import com.tokopedia.topads.common.extension.ZERO
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_0

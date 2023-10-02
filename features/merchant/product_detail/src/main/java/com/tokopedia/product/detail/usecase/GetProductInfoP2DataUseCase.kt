@@ -297,6 +297,11 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                   onboarding_message
                   show_recommendation
                 }
+                postATCLayout {
+                    layoutID
+                    postATCSession
+                    showPostATC
+                }
               }
             }
             upcomingCampaigns {
@@ -505,30 +510,6 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                 totalRating
                 totalReviewTextAndImage
             }
-            bundleInfo {
-              productID
-              bundleID
-              groupID
-              name
-              type
-              status
-              titleComponent
-              finalPriceBundling
-              originalPriceBundling
-              savingPriceBundling
-              preorderString
-              bundleItems {
-                productID
-                name
-                picURL
-                status
-                quantity
-                originalPrice
-                bundlePrice
-                discountPercentage
-                stock
-              }
-  	        }
            arInfo{
               productIDs
               applink
@@ -611,6 +592,15 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             bottomSheetEdu {
               isShow
               appLink
+            }
+            dynamicOneLiner {
+                name
+                text
+                applink
+                separator
+                icon
+                status
+                chevronPos
             }
           }
         }

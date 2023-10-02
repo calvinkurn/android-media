@@ -21,7 +21,7 @@ public class SnackbarManager {
 
     public static Snackbar make(Activity activity, String text, @Snackbar.Duration int duration) {
         Snackbar snack = Snackbar.make(activity.findViewById(android.R.id.content), text, duration);
-        TextView tv = (TextView) snack.getView().findViewById(R.id.snackbar_text);
+        TextView tv = (TextView) snack.getView().findViewById(com.google.android.material.R.id.snackbar_text);
         tv.setMaxLines(5);
 
         if (snack.isShownOrQueued())
@@ -45,7 +45,7 @@ public class SnackbarManager {
             @ColorRes int backGroundColor
     ) {
         Snackbar snack = Snackbar.make(coordinatorLayout, text, duration);
-        TextView tv = (TextView) snack.getView().findViewById(R.id.snackbar_text);
+        TextView tv = (TextView) snack.getView().findViewById(com.google.android.material.R.id.snackbar_text);
         tv.setMaxLines(5);
 
         if (snack.isShownOrQueued())

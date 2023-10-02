@@ -12,7 +12,4 @@ object HomeComponentRollenceController {
         HomeChannelHeaderRollenceController.fetchHomeHeaderRollence()
     }
 
-    fun isDynamicChannelHeaderUsingRollenceVariant(): Boolean {
-        return HomeChannelHeaderRollenceController.isHeaderUsingRollenceVariant()
-    }
 }

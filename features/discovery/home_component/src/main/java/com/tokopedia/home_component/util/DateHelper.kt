@@ -1,5 +1,7 @@
 package com.tokopedia.home_component.util
 
+import android.annotation.SuppressLint
+import com.tokopedia.kotlin.extensions.view.orZero
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -12,20 +14,21 @@ object DateHelper {
     private const val DEFAULT_VIEW_FORMAT = "dd MMM yyyy"
     private val DEFAULT_LOCALE = Locale("in", "ID")
 
-    fun getExpiredTime(expiredTimeString: String?): Date {
-        val format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZZZZ")
+    @SuppressLint("SimpleDateFormat")
+    fun getExpiredTime(
+        expiredTimeString: String?,
+        format: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZZZZ")
+    ): Date {
         return try {
-            format.parse(expiredTimeString)
-        } catch (e: Exception) {
-            e.printStackTrace()
+            expiredTimeString?.let { format.parse(it) } ?: Date()
+        } catch (_: Exception) {
             Date()
         }
     }
 
-    fun isExpired(serverTimeOffset: Long, expiredTime: Date?): Boolean {
-        val serverTime = Date(System.currentTimeMillis())
-        serverTime.time = serverTime.time + serverTimeOffset
-        return serverTime.after(expiredTime)
+    fun isExpired(serverTimeOffset: Long = 0L, expiredTime: Date?): Boolean {
+        val serverTime = Date(System.currentTimeMillis()).time + serverTimeOffset
+        return expiredTime?.time.orZero() <= serverTime
     }
 
     fun formatDateToUi(date: Date): String? {

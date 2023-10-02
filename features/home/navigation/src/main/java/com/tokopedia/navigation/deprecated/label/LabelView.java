@@ -84,9 +84,9 @@ public class LabelView extends BaseCustomView {
             if (drawableId >= 0) {
                 imageDrawable = AppCompatResources.getDrawable(getContext(), drawableId);
             }
-            imageWidth = (int) styledAttributes.getDimension(R.styleable.LabelView_nav_lv_image_width, getResources().getDimension(R.dimen.unify_space_32));
+            imageWidth = (int) styledAttributes.getDimension(R.styleable.LabelView_nav_lv_image_width, getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_32));
             imageHeight = (int) styledAttributes.getDimension(R.styleable.LabelView_nav_lv_image_height, imageWidth);
-            imageMarginRight = (int) styledAttributes.getDimension(R.styleable.LabelView_nav_lv_image_margin_right, getResources().getDimension(R.dimen.unify_space_8));
+            imageMarginRight = (int) styledAttributes.getDimension(R.styleable.LabelView_nav_lv_image_margin_right, getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_8));
             titleText = styledAttributes.getString(R.styleable.LabelView_nav_lv_title);
             titleColorValue = styledAttributes.getColor(R.styleable.LabelView_nav_lv_title_color, ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_NN950_68));
             subtitleColorValue = styledAttributes.getColor(R.styleable.LabelView_nav_lv_sub_title_color, ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_NN950_32));
@@ -97,10 +97,10 @@ public class LabelView extends BaseCustomView {
             contentTextStyleValue = styledAttributes.getInt(R.styleable.LabelView_nav_lv_content_text_style, Typeface.NORMAL);
             titleTextStyleValue = styledAttributes.getInt(R.styleable.LabelView_nav_lv_title_text_style, Typeface.NORMAL);
             maxLines = styledAttributes.getInt(R.styleable.LabelView_nav_lv_content_max_lines, 1);
-            contentTextSize = styledAttributes.getDimension(R.styleable.LabelView_nav_lv_content_text_size, getResources().getDimension(R.dimen.body_1));
+            contentTextSize = styledAttributes.getDimension(R.styleable.LabelView_nav_lv_content_text_size, getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.body_1));
             contentMaxWidthPercentage = styledAttributes.getFloat(R.styleable.LabelView_nav_lv_content_max_width_percentage, MAX_WIDTH_PERCENT_CONTENT);
             titleTextSize = styledAttributes.getDimension(R.styleable.LabelView_nav_lv_title_text_size, contentTextSize);
-            subTitleTextSize = styledAttributes.getDimension(R.styleable.LabelView_nav_lv_sub_title_text_size, getResources().getDimension(R.dimen.body_3));
+            subTitleTextSize = styledAttributes.getDimension(R.styleable.LabelView_nav_lv_sub_title_text_size, getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.body_3));
             minTitleWidth = styledAttributes.getDimensionPixelSize(R.styleable.LabelView_nav_lv_title_min_width, 0);
             isArrowShown = styledAttributes.getBoolean(R.styleable.LabelView_nav_lv_show_arrow, false);
         } finally {

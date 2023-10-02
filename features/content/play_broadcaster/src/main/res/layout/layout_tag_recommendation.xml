@@ -15,14 +15,27 @@
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_3" />
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_bro_select_tag_description"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/Unify_NN600"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@id/tv_bro_select_tag_title"
+        app:layout_constraintStart_toStartOf="@id/tv_bro_select_tag_title"
+        app:layout_constraintTop_toBottomOf="@id/tv_bro_select_tag_title"
+        app:typographyType="paragraph_2"
+        tools:text="Supaya kami bisa distribusiin ke penonton yang tepat. Perlu pilih maksimal 2." />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_tags_recommendation"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginTop="12dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_bro_select_tag_title" />
+        app:layout_constraintTop_toBottomOf="@id/tv_bro_select_tag_description" />
 
     <com.tokopedia.unifycomponents.LocalLoad
         android:id="@+id/local_load_tag_error"
@@ -40,7 +53,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl3"
         android:layout_marginEnd="@dimen/spacing_lvl3"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="gone">
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/img_no_tag"

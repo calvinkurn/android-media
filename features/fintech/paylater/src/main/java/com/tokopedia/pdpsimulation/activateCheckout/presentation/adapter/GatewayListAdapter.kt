@@ -20,7 +20,12 @@ class GatewayListAdapter(
         viewType: Int
     ): GatewayViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        return GatewayViewHolder.getViewHolder(inflater, parent, gatewayClickListener, context)
+        return GatewayViewHolder.getViewHolder(
+            inflater,
+            parent,
+            gatewayClickListener,
+            context
+        )
     }
 
 

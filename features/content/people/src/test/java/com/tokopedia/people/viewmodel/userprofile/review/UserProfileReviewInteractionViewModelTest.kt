@@ -14,8 +14,11 @@ import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSessionInterface
+import io.mockk.called
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.mockk
+import io.mockk.verify
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -93,6 +96,27 @@ class UserProfileReviewInteractionViewModelTest {
                 viewModel.submitAction(UserProfileAction.ClickLikeReview(review = mockReviewContentLike.reviewList[0]))
             } andThen {
                 reviewContent.reviewList[0].likeDislike.isLike.assertFalse()
+            }
+        }
+    }
+
+    @Test
+    fun `ClickLikeReview - like and unlike review`() {
+
+        UserProfileViewModelRobot(
+            username = mockOwnUsername,
+            repo = mockRepo,
+            dispatcher = testDispatcher,
+            userSession = mockUserSession,
+        ).start {
+            setup {
+                viewModel.submitAction(UserProfileAction.LoadUserReview(isRefresh = true))
+            } recordState {
+                viewModel.submitAction(UserProfileAction.ClickLikeReview(review = mockReviewContentUnlike.reviewList[0]))
+                viewModel.submitAction(UserProfileAction.ClickLikeReview(review = mockReviewContentUnlike.reviewList[0]))
+            } andThen {
+                reviewContent.reviewList[0].likeDislike.isLike.assertFalse()
+                coVerify(exactly = 0) { mockRepo.setLikeStatus(any(), any()) }
             }
         }
     }
