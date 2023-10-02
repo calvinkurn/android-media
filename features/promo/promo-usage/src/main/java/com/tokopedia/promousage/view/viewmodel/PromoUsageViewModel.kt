@@ -261,7 +261,7 @@ class PromoUsageViewModel @Inject constructor(
         items: List<PromoItem>,
         promoRequest: PromoRequest
     ): PromoRequest {
-        val codes = ArrayList<String>()
+        val codes = ArrayList(promoRequest.codes)
         items.forEach { item ->
             val promoCode = if (item.useSecondaryPromo) {
                 item.secondaryPromo.code
@@ -1304,7 +1304,7 @@ class PromoUsageViewModel @Inject constructor(
         items: List<PromoItem>,
         validateUsePromoRequest: ValidateUsePromoRequest
     ): ValidateUsePromoRequest {
-        val codes = ArrayList<String>()
+        val codes = ArrayList(validateUsePromoRequest.codes)
         items.forEach { item ->
             val promoCode: String
             val shopId: Long
