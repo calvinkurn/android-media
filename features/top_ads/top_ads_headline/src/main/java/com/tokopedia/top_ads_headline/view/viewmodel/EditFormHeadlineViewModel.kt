@@ -3,9 +3,9 @@ package com.tokopedia.top_ads_headline.view.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.top_ads_headline_usecase.CreateHeadlineAdsUseCase
-import com.tokopedia.top_ads_headline_usecase.model.TopAdsManageHeadlineInput
-import com.tokopedia.top_ads_headline_usecase.model.TopadsManageHeadlineAdResponse
+import com.tokopedia.topads.common.domain.usecase.CreateHeadlineAdsUseCase
+import com.tokopedia.topads.common.domain.model.createheadline.TopAdsManageHeadlineInput
+import com.tokopedia.topads.common.domain.model.createheadline.TopadsManageHeadlineAdResponse
 import javax.inject.Inject
 
 class EditFormHeadlineViewModel @Inject constructor(

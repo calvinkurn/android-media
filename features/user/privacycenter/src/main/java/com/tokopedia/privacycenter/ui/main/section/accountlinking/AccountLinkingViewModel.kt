@@ -9,7 +9,7 @@ import com.tokopedia.privacycenter.common.PrivacyCenterStateResult
 import com.tokopedia.privacycenter.domain.AccountLinkingStatus
 import com.tokopedia.privacycenter.domain.AccountLinkingUseCase
 import javax.inject.Inject
-
+@Deprecated("Remove this class after integrating SCP Login to Tokopedia")
 class AccountLinkingViewModel @Inject constructor(
     private val accountLinkingUseCase: AccountLinkingUseCase,
     dispatchers: CoroutineDispatchers

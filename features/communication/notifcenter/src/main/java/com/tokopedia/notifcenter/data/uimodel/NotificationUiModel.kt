@@ -1,95 +1,94 @@
 package com.tokopedia.notifcenter.data.uimodel
 
-
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.notifcenter.data.entity.notification.*
-import com.tokopedia.notifcenter.presentation.adapter.typefactory.notification.NotificationTypeFactory
+import com.tokopedia.notifcenter.view.adapter.typefactory.NotificationTypeFactory
 import java.util.*
 
 @SuppressLint("Invalid Data Type")
 data class NotificationUiModel(
-        @SerializedName("bottomsheet")
-        val bottomsheet: Bottomsheet = Bottomsheet(),
-        @SerializedName("button_text")
-        val buttonText: String = "",
-        @SerializedName("content")
-        val content: String = "",
-        @SerializedName("create_time")
-        val createTime: String = "",
-        @SerializedName("create_time_unix")
-        val createTimeUnix: Long = 0,
-        @SerializedName("data_notification")
-        val dataNotification: DataNotification = DataNotification(),
-        @SerializedName("expire_time")
-        val expireTime: String = "",
-        @SerializedName("expire_time_unix")
-        val expireTimeUnix: Long = 0,
-        @SerializedName("is_longer_content")
-        val isLongerContent: Boolean = false,
-        @SerializedName("notif_id")
-        val notifId: String = "",
-        @SerializedName("product_data")
-        var productData: List<ProductData> = listOf(),
-        @SerializedName("image")
-        val imageMetaData: List<ImageMetaData> = listOf(),
-        @SerializedName("read_status")
-        var readStatus: Int = 0,
-        @SerializedName("section_icon")
-        val sectionIcon: String = "",
-        @SerializedName("section_id")
-        val sectionId: String = "",
-        @SerializedName("section_key")
-        val sectionKey: String = "",
-        @SerializedName("shop_id")
-        val shopId: Long = 0,
-        @SerializedName("short_description")
-        val shortDescription: String = "",
-        @SerializedName("short_description_html")
-        val shortDescriptionHtml: String = "",
-        @SerializedName("show_bottomsheet")
-        val showBottomsheet: Boolean = false,
-        @SerializedName("status")
-        val status: Int = 0,
-        @SerializedName("subsection_key")
-        val subsectionKey: String = "",
-        @SerializedName("template_key")
-        val templateKey: String = "",
-        @SerializedName("title")
-        val title: String = "",
-        @SerializedName("total_product")
-        val totalProduct: Int = 0,
-        @SerializedName("type_bottomsheet")
-        val typeBottomsheet: Int = 0,
-        @SerializedName("type_link")
-        val typeLink: Int = 0,
-        @SerializedName("type_of_user")
-        val typeOfUser: Int = 0,
-        @SerializedName("update_time")
-        val updateTime: String = "",
-        @SerializedName("update_time_unix")
-        val updateTimeUnix: Long = 0,
-        @SerializedName("user_id")
-        val userId: Long = 0,
-        @SerializedName("notif_order_type")
-        val widgetType: Int = 0,
-        @SerializedName("track_history")
-        val trackHistory: List<TrackHistory> = listOf(),
-        @SerializedName("widget")
-        val widget: Widget = Widget(),
-        @SerializedName("is_last_journey")
-        val isLastJourney: Boolean = false,
-        @SerializedName("unique_id")
-        val order_id: String = "",
-        @SerializedName("is_show_expire")
-        val isShowExpire: Boolean = false,
-        @SerializedName("is_pinned")
-        var isPinned: Boolean = false,
-        @SerializedName("pinned_text")
-        var pinnedText: String = ""
+    @SerializedName("bottomsheet")
+    val bottomsheet: Bottomsheet = Bottomsheet(),
+    @SerializedName("button_text")
+    val buttonText: String = "",
+    @SerializedName("content")
+    val content: String = "",
+    @SerializedName("create_time")
+    val createTime: String = "",
+    @SerializedName("create_time_unix")
+    val createTimeUnix: Long = 0,
+    @SerializedName("data_notification")
+    val dataNotification: DataNotification = DataNotification(),
+    @SerializedName("expire_time")
+    val expireTime: String = "",
+    @SerializedName("expire_time_unix")
+    var expireTimeUnix: Long = 0,
+    @SerializedName("is_longer_content")
+    val isLongerContent: Boolean = false,
+    @SerializedName("notif_id")
+    val notifId: String = "",
+    @SerializedName("product_data")
+    var productData: List<ProductData> = listOf(),
+    @SerializedName("image")
+    val imageMetaData: List<ImageMetaData> = listOf(),
+    @SerializedName("read_status")
+    var readStatus: Int = 0,
+    @SerializedName("section_icon")
+    val sectionIcon: String = "",
+    @SerializedName("section_id")
+    var sectionId: String = "",
+    @SerializedName("section_key")
+    val sectionKey: String = "",
+    @SerializedName("shop_id")
+    val shopId: Long = 0,
+    @SerializedName("short_description")
+    val shortDescription: String = "",
+    @SerializedName("short_description_html")
+    val shortDescriptionHtml: String = "",
+    @SerializedName("show_bottomsheet")
+    val showBottomsheet: Boolean = false,
+    @SerializedName("status")
+    val status: Int = 0,
+    @SerializedName("subsection_key")
+    val subsectionKey: String = "",
+    @SerializedName("template_key")
+    val templateKey: String = "",
+    @SerializedName("title")
+    val title: String = "",
+    @SerializedName("total_product")
+    val totalProduct: Int = 0,
+    @SerializedName("type_bottomsheet")
+    val typeBottomsheet: Int = 0,
+    @SerializedName("type_link")
+    var typeLink: Int = 0,
+    @SerializedName("type_of_user")
+    val typeOfUser: Int = 0,
+    @SerializedName("update_time")
+    val updateTime: String = "",
+    @SerializedName("update_time_unix")
+    val updateTimeUnix: Long = 0,
+    @SerializedName("user_id")
+    val userId: Long = 0,
+    @SerializedName("notif_order_type")
+    val widgetType: Int = 0,
+    @SerializedName("track_history")
+    val trackHistory: List<TrackHistory> = listOf(),
+    @SerializedName("widget")
+    val widget: Widget = Widget(),
+    @SerializedName("is_last_journey")
+    val isLastJourney: Boolean = false,
+    @SerializedName("unique_id")
+    val order_id: String = "",
+    @SerializedName("is_show_expire")
+    var isShowExpire: Boolean = false,
+    @SerializedName("is_pinned")
+    var isPinned: Boolean = false,
+    @SerializedName("pinned_text")
+    var pinnedText: String = ""
 ) : Visitable<NotificationTypeFactory> {
 
     @delegate:Transient
@@ -194,8 +193,8 @@ data class NotificationUiModel(
     }
 
     fun noWidgetWithTrackHistory(): Boolean {
-        return typeLink == TYPE_TRACK_HISTORY && widgetType == NO_WIDGET
-                && trackHistory.isNotEmpty()
+        return typeLink == TYPE_TRACK_HISTORY && widgetType == NO_WIDGET &&
+            trackHistory.isNotEmpty()
     }
 
     fun isTrackHistory(): Boolean {

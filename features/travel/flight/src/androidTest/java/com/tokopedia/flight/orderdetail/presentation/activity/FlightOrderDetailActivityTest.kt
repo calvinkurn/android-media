@@ -73,7 +73,7 @@ class FlightOrderDetailActivityTest {
         onView(withId(R.id.tgFlightOrderTerminalNote)).perform(nestedScrollTo())
         onView(withId(R.id.btnFlightOrderDetailSendEticket)).perform(click())
         Thread.sleep(1000)
-        onView(withId(R.id.bottom_sheet_close)).perform(click())
+        onView(withId(com.tokopedia.unifycomponents.R.id.bottom_sheet_close)).perform(click())
         Thread.sleep(2000)
 
         onView(withId(R.id.containerContentOrderDetail)).perform(swipeUp())
@@ -128,7 +128,7 @@ class FlightOrderDetailActivityTest {
         onView(withId(R.id.btnFlightOrderDetailViewEticket)).perform(click())
         Thread.sleep(1000)
 
-        onView(withId(R.id.menu_webview_download)).perform(click())
+        onView(withId(com.tokopedia.webview.R.id.menu_webview_download)).perform(click())
         Thread.sleep(1000)
 
         ViewMatchers.assertThat(

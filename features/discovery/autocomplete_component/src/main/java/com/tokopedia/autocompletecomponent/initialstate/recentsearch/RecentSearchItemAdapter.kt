@@ -7,6 +7,7 @@ import com.tokopedia.autocompletecomponent.initialstate.BaseItemInitialStateSear
 
 class RecentSearchItemAdapter(
     private val listener: RecentSearchListener,
+    private val isReimagine: Boolean
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object{
@@ -39,7 +40,7 @@ class RecentSearchItemAdapter(
                         parent,
                         false
                     )
-                RecentSearchDoubleLineItemViewHolder(itemView, listener)
+                RecentSearchDoubleLineItemViewHolder(itemView, listener, isReimagine)
             }
             else -> {
                 val itemView = LayoutInflater

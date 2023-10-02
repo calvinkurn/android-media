@@ -18,12 +18,24 @@ data class RegisterProgressiveKYCData(
     val rejectionReasonCode: String = "",
 
     @SerializedName("rejectionReasonMessage")
-    val rejectionReasonMessage: String = ""
+    val rejectionReasonMessage: String = "",
+
+    @SerializedName("cooldownTimeInSeconds")
+    val cooldownTimeInSeconds: String = "",
+
+    @SerializedName("maximumAttemptsAllowed")
+    val maximumAttemptsAllowed: String = "",
+
+    @SerializedName("message")
+    val message: String = ""
 )
 
 data class RegisterProgressiveKYC(
     @SerializedName("errorMessages")
 	val errorMessages: List<String> = listOf(),
+
+    @SerializedName("errorCode")
+    val errorCode: String = "",
 
     @SerializedName("data")
 	val data: RegisterProgressiveKYCData = RegisterProgressiveKYCData()

@@ -17,6 +17,7 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
@@ -33,6 +34,7 @@ import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitori
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_VARIANT_DETAIL_TRACE
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringListener
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
+import com.tokopedia.product.addedit.common.util.DialogUtil
 import com.tokopedia.product.addedit.common.util.SharedPreferencesUtil.getFirstTimeWeightPerVariant
 import com.tokopedia.product.addedit.common.util.SharedPreferencesUtil.setFirstTimeWeightPerVariant
 import com.tokopedia.product.addedit.common.util.setFragmentToUnifyBgColor
@@ -54,6 +56,7 @@ import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.variant.presentation.dialog.MultipleVariantEditListener
 import com.tokopedia.product.addedit.variant.presentation.dialog.MultipleVariantEditSelectBottomSheet
 import com.tokopedia.product.addedit.variant.presentation.dialog.SelectVariantMainBottomSheet
+import com.tokopedia.product.addedit.variant.presentation.extension.getValueOrDefault
 import com.tokopedia.product.addedit.variant.presentation.model.MultipleVariantEditInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.OptionInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.SelectionInputModel
@@ -198,14 +201,10 @@ class AddEditProductVariantDetailFragment :
             showSelectPrimaryBottomSheet()
         }
 
-        buttonSave?.setOnClickListener {
-            submitVariantInput()
-            sendTrackerSaveVariantDetailData()
-        }
-
         observeSelectedVariantSize()
         observeHasWholesale()
         observeMaxStockThreshold()
+        observeIsSingleProductVariant()
 
         enableSku()
         setupToolbarActions()
@@ -406,10 +405,34 @@ class AddEditProductVariantDetailFragment :
     }
 
     private fun observeHasWholesale() {
-        viewModel.hasWholesale.observe(viewLifecycleOwner, {
+        viewModel.hasWholesale.observe(viewLifecycleOwner) {
             variantDetailFieldsAdapter?.updatePriceEditingStatus(!it)
             tickerVariantWholesale?.isVisible = it
-        })
+        }
+    }
+
+    private fun observeIsSingleProductVariant() {
+        viewModel.isSingleProductVariant.observe(viewLifecycleOwner) {
+            if (it) {
+                buttonSave?.setOnClickListener {
+                    invokeFieldsValidation()
+                    if (viewModel.getInputDataValidStatus()) {
+                        DialogUtil.showSingleProductVariantDialog(
+                            context ?: return@setOnClickListener
+                        ) {
+                            viewModel.updateProductInputModel()
+                            viewModel.productInputModel.getValueOrDefault().convertToNonVariant()
+                            sendResultData()
+                        }
+                    }
+                }
+            } else {
+                buttonSave?.setOnClickListener {
+                    submitVariantInput()
+                    sendTrackerSaveVariantDetailData()
+                }
+            }
+        }
     }
 
     private fun observeMaxStockThreshold() {
@@ -509,7 +532,7 @@ class AddEditProductVariantDetailFragment :
     }
 
     private fun showDTNotAllowedChangeStatusDialog(position: Int) {
-        val dialog = DialogUnify(requireContext(), DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
+        val dialog = DialogUnify(context ?: return, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
         val descriptionText = getString(R.string.product_add_edit_text_description_product_dt_cannot_deactivate).parseAsHtml()
         dialog.apply {
             setTitle(getString(R.string.product_add_edit_text_title_product_dt_cannot_deactivate))
@@ -532,20 +555,24 @@ class AddEditProductVariantDetailFragment :
         invokeFieldsValidation()
         if (viewModel.getInputDataValidStatus()) {
             viewModel.updateProductInputModel()
-            viewModel.productInputModel.value?.apply {
-                val cacheManagerId = arguments?.getString(
-                    AddEditProductConstants.EXTRA_CACHE_MANAGER_ID
-                ).orEmpty()
-                SaveInstanceCacheManager(requireContext(), cacheManagerId)
-                    .put(EXTRA_PRODUCT_INPUT_MODEL, this)
+            sendResultData()
+        }
+    }
 
-                val intent = Intent().putExtra(
-                    AddEditProductConstants.EXTRA_CACHE_MANAGER_ID,
-                    cacheManagerId
-                )
-                activity?.setResult(Activity.RESULT_OK, intent)
-                activity?.finish()
-            }
+    private fun sendResultData() {
+        viewModel.productInputModel.value?.apply {
+            val cacheManagerId = arguments?.getString(
+                AddEditProductConstants.EXTRA_CACHE_MANAGER_ID
+            ).orEmpty()
+            SaveInstanceCacheManager(requireContext(), cacheManagerId)
+                .put(EXTRA_PRODUCT_INPUT_MODEL, this)
+
+            val intent = Intent().putExtra(
+                AddEditProductConstants.EXTRA_CACHE_MANAGER_ID,
+                cacheManagerId
+            )
+            activity?.setResult(Activity.RESULT_OK, intent)
+            activity?.finish()
         }
     }
 

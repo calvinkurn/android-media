@@ -1,5 +1,10 @@
 package com.tokopedia.play.analytic.campaign
 
+import com.tokopedia.content.analytic.BusinessUnit
+import com.tokopedia.content.analytic.CurrentSite
+import com.tokopedia.content.analytic.Event
+import com.tokopedia.content.analytic.EventCategory
+import com.tokopedia.content.analytic.Key
 import com.tokopedia.play.analytic.*
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.PlayUpcomingBellStatus
@@ -23,18 +28,21 @@ class PlayCampaignAnalyticImpl @Inject constructor(
         channelId: String,
         channelType: PlayChannelType
     ) {
-        val eventAction =
-            if (sectionInfo.config.reminder == PlayUpcomingBellStatus.On) "remove ${Companion.KEY_TRACK_UPCOMING_REMINDER}" else Companion.KEY_TRACK_UPCOMING_REMINDER
+        val eventAction = if (sectionInfo.config.reminder == PlayUpcomingBellStatus.On) {
+            "remove remind me in upcoming section"
+        } else {
+            "remind me in upcoming section"
+        }
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
-                KEY_EVENT to KEY_TRACK_CLICK_TOP_ADS,
-                KEY_EVENT_ACTION to "$KEY_TRACK_CLICK - $eventAction",
-                KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
-                KEY_EVENT_LABEL to "$channelId - ${channelType.value} - ${sectionInfo.id}",
-                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                KEY_USER_ID to userId
+                Key.event to Event.clickTopAds,
+                Key.eventAction to "$KEY_TRACK_CLICK - $eventAction",
+                Key.eventCategory to EventCategory.groupChatRoom,
+                Key.eventLabel to "$channelId - ${channelType.value} - ${sectionInfo.id}",
+                Key.businessUnit to BusinessUnit.play,
+                Key.currentSite to CurrentSite.tokopediaMarketplace,
+                Key.sessionIris to TrackApp.getInstance().gtm.irisSessionId,
+                Key.userId to userId
             )
         )
     }
@@ -46,19 +54,15 @@ class PlayCampaignAnalyticImpl @Inject constructor(
     ) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
-                KEY_EVENT to KEY_TRACK_VIEW_TOP_ADS,
-                KEY_EVENT_ACTION to "impression - $KEY_TRACK_UPCOMING_REMINDER",
-                KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
-                KEY_EVENT_LABEL to "$channelId - ${channelType.value} - ${sectionInfo.id}",
-                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                KEY_USER_ID to userId
+                Key.event to Event.viewTopAdsIris,
+                Key.eventAction to "impression - remind me in upcoming section",
+                Key.eventCategory to EventCategory.groupChatRoom,
+                Key.eventLabel to "$channelId - ${channelType.value} - ${sectionInfo.id}",
+                Key.businessUnit to BusinessUnit.play,
+                Key.currentSite to CurrentSite.tokopediaMarketplace,
+                Key.sessionIris to TrackApp.getInstance().gtm.irisSessionId,
+                Key.userId to userId
             )
         )
-    }
-
-    companion object {
-        private const val KEY_TRACK_UPCOMING_REMINDER = "remind me in upcoming section"
     }
 }

@@ -99,11 +99,11 @@ class AttachProductTest {
 
         onView(withId(R.id.search_input_view)).perform(ViewActions.click())
 
-        onView(withId(R.id.searchbar_textfield)).perform(ViewActions.typeText(text))
+        onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)).perform(ViewActions.typeText(text))
 
         repositoryStub.state = TestState.FILTER
 
-        onView(withId(R.id.searchbar_textfield)).perform(pressImeActionButton())
+        onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)).perform(pressImeActionButton())
 
         //THEN
         onView(withId(R.id.recycler_view)).check(CommonAssertion.RecyclerViewItemCountAssertion(1))

@@ -45,7 +45,7 @@
     <!-- Product Icon See More -->
     <color name="play_dms_product_count_background">#FFC400</color>
     <color name="play_dms_product_count_color">#212121</color>
-    <color name="play_dms_explore_widget_icon_bg">#B32E3137</color>
+    <color name="play_dms_explore_widget_icon_bg">#B32E2F36</color>
 
     <!--Vertical Swipe-->
     <color name="play_dms_vertical_swipe_overlay">#99212121</color>
@@ -53,5 +53,7 @@
     <!--Social Proof-->
     <color name="play_dms_text_social_proof">#AD31353B</color>
     <color name="play_dms_rating_social_proof">#FFC400</color>
+    <color name="play_dms_glare_center">#AAffffff</color>
+    <color name="play_dms_glare_end">#00ffffff</color>
 
 </resources>

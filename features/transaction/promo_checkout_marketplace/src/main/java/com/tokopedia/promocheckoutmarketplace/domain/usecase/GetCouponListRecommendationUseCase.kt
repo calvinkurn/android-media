@@ -132,6 +132,13 @@ class GetCouponListRecommendationUseCase @Inject constructor(
                                         eta_txt
                                     }
                                     currency_details_str
+                                    cta {
+                                        text
+                                        url
+                                        app_link
+                                        type
+                                        json_metadata
+                                    }
                                     coachmark {
                                         is_shown
                                         title

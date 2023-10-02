@@ -31,7 +31,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChangedBy
@@ -299,11 +298,17 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
         } else {
             oldResponse.detail.reviewGalleryImages.plus(newResponse.detail.reviewGalleryImages)
         }
+        val mergedReviewGalleryVideos = if (pageToLoad == getPrevPage()) {
+            newResponse.detail.reviewGalleryVideos.plus(oldResponse.detail.reviewGalleryVideos)
+        } else {
+            oldResponse.detail.reviewGalleryVideos.plus(newResponse.detail.reviewGalleryVideos)
+        }
         return oldResponse.copy(
             reviewMedia = mergedReviewImages,
             detail = oldResponse.detail.copy(
                 reviewDetail = mergedReviewDetail,
                 reviewGalleryImages = mergedReviewGalleryImages,
+                reviewGalleryVideos = mergedReviewGalleryVideos,
                 mediaCountFmt = newResponse.detail.mediaCountFmt,
                 mediaCount = newResponse.detail.mediaCount
             ),

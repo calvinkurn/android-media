@@ -218,11 +218,13 @@
     <string name="goto_kyc_status_pending_hours">%s jam</string>
     <string name="goto_kyc_status_pending_minutes">%s menit</string>
     <string name="goto_kyc_status_pending_seconds">%s detik</string>
-    <string name="goto_kyc_status_pending_button">Balik ke %s</string>
     <string name="goto_kyc_status_pending_refresh_status">Cek Status Verifikasi</string>
     <string name="goto_kyc_status_verified_title">Hore, dokumenmu berhasil terverifikasi!</string>
     <string name="goto_kyc_status_verified_subtitle">Tenang, data yang kamu berikan akan dijaga kerahasiannya dan disimpan di sistem kami.</string>
+    <string name="goto_kyc_back_with_source">Balik ke %s</string>
     <string name="goto_kyc_back_to_source">Balik</string>
+    <string name="goto_kyc_next_to_callback">Lanjut</string>
+    <string name="goto_kyc_next_to_callback_with_source">Lanjut ke %s</string>
     <string name="goto_kyc_status_blacklisted_title">Yaah, dokumen kamu nggak sesuai Syarat &amp; Ketentuan</string>
     <string name="goto_kyc_status_blacklisted_subtitle">Untuk informasi lebih lanjut, coba hubungi Tokopedia Care ya.</string>
     <string name="goto_kyc_status_blacklisted_button">Kontak Tokopedia Care</string>
@@ -284,6 +286,8 @@
     <string name="goto_kyc_loader_wait_a_moment">Tunggu sebentar, ya…</string>
     <string name="goto_kyc_loader_data_uploading">Datamu sedang di-upload.</string>
     <string name="goto_kyc_error_from_be">Tunggu sebentar, biar Toped bereskan. Coba lagi atau kembali nanti.</string>
+    <string name="goto_kyc_error_know_code">Oops, lagi ada kendala yang perlu kami beresin. Coba lagi nanti, ya!</string>
+    <string name="goto_kyc_error_data_already_exist">Verifikasi dengan data ini udah terdaftar sebelumnya.</string>
     <string name="goto_kyc_error_no_connection">Yahh, internet kamu putus. Cek paket data atau WiFi-mu, ya.</string>
     <string name="goto_kyc_error_timeout">Yahh, waktunya udah habis nih. Coba lagi, yuk!</string>
     <string name="goto_kyc_permission_camera_denied">Akses kamera sudah ditolak, aktifkan lewat pengaturan HP ya.</string>
@@ -296,5 +300,7 @@
     <string name="goto_kyc_try_again">Coba Lagi</string>
     <string name="goto_kyc_direct_to_setting">Ke Pengaturan</string>
     <string name="goto_kyc_internet_issue">Koneksi internetmu terganggu!</string>
+    <string name="goto_kyc_failed_load_data_title">Oops, gagal memuat data</string>
+    <string name="goto_kyc_failed_load_data_subtitle">Datanya gagal dimuat jadi belum bisa lanjut proses verifikasi. Coba lagi, ya.</string>
 
 </resources>

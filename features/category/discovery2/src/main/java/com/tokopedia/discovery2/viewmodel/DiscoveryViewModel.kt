@@ -9,7 +9,6 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
@@ -22,15 +21,15 @@ import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkProductInfo
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateAtcSource
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
-import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.discovery2.*
 import com.tokopedia.discovery2.Constant.DISCOVERY_APPLINK
-import com.tokopedia.discovery2.Utils.Companion.RPC_FILTER_KEY
+import com.tokopedia.discovery2.Constant.PropertyType.ATF_BANNER
 import com.tokopedia.discovery2.Utils.Companion.toDecodedString
 import com.tokopedia.discovery2.Utils.Companion.preSelectedTab
 import com.tokopedia.discovery2.analytics.DISCOVERY_DEFAULT_PAGE_TYPE
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.data.NavToolbarConfig
 import com.tokopedia.discovery2.data.PageInfo
 import com.tokopedia.discovery2.data.ScrollData
 import com.tokopedia.discovery2.data.productcarditem.DiscoATCRequestParams
@@ -52,6 +51,8 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Compa
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.COMPONENT_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.DYNAMIC_SUBTITLE
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.EMBED_CATEGORY
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.FORCED_NAVIGATION
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.HIDE_NAV_FEATURES
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PIN_PRODUCT
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PRODUCT_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.QUERY_PARENT
@@ -106,6 +107,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     private val discoveryResponseList = MutableLiveData<Result<List<ComponentsItem>>>()
     private val discoveryLiveStateData = MutableLiveData<DiscoveryLiveState>()
     private val discoveryAnchorTabLiveData = MutableLiveData<Result<ComponentsItem>>()
+    private val discoveryNavToolbarConfig = MutableLiveData<NavToolbarConfig>()
 
     var miniCartSimplifiedData: MiniCartSimplifiedData? = null
 
@@ -140,6 +142,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     var isAffiliateInitialized = false
     private var randomUUIDAffiliate: String? = null
     private var bottomTabNavDataComponent : ComponentsItem?  = null
+    private var components: List<ComponentsItem> = listOf()
 
     @Inject
     lateinit var customTopChatUseCase: CustomTopChatUseCase
@@ -324,8 +327,10 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
         })
     }
 
-    fun getDiscoveryData(queryParameterMap: MutableMap<String, String?>, userAddressData: LocalCacheModel?) {
+    fun getDiscoveryData(queryParameterMap: MutableMap<String, String?>, userAddressData: LocalCacheModel?, isFromTabNavigation: Boolean = false) {
         pageLoadTimePerformanceInterface?.stopPreparePagePerformanceMonitoring()
+        if (!isFromTabNavigation)
+            queryParameterMap.remove(FORCED_NAVIGATION)
         launchCatchError(
                 block = {
                     pageLoadTimePerformanceInterface?.startNetworkRequestPerformanceMonitoring()
@@ -337,12 +342,13 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                             queryParameterMapWithoutRpc = it.queryParamMapWithoutRpc
                         }
                     } else {
-                        setParameterMap(queryParameterMap, queryParameterMapWithRpc, queryParameterMapWithoutRpc)
+                        setParameterMap(queryParameterMap[QUERY_PARENT], queryParameterMapWithRpc, queryParameterMapWithoutRpc)
                     }
                     val data = discoveryDataUseCase.getDiscoveryPageDataUseCase(pageIdentifier, queryParameterMap, queryParameterMapWithRpc, queryParameterMapWithoutRpc, userAddressData)
                     pageLoadTimePerformanceInterface?.stopNetworkRequestPerformanceMonitoring()
                     pageLoadTimePerformanceInterface?.startRenderPerformanceMonitoring()
                     data.let {
+                        components = it.components
                         setDiscoveryLiveState(it.pageInfo)
                         setPageInfo(it)
                         withContext(Dispatchers.Default) {
@@ -373,6 +379,17 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
             pageInfoData.additionalInfo = discoPageData.additionalInfo
             campaignCode = pageInfoData.campaignCode ?: ""
             discoveryPageInfo.value = Success(pageInfoData)
+            setNavToolbarConfigData(pageInfoData)
+        }
+    }
+
+    private fun setNavToolbarConfigData(pageInfoData: PageInfo) {
+        if (discoveryNavToolbarConfig.value == null) {
+            val firstComponent = components.firstOrNull()
+            discoveryNavToolbarConfig.value = NavToolbarConfig(
+                isExtendedLayout = firstComponent != null && firstComponent.name == ComponentNames.SliderBanner.componentName && firstComponent.properties?.type == ATF_BANNER,
+                color = pageInfoData.thematicHeader?.color.orEmpty()
+            )
         }
     }
 
@@ -381,6 +398,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     fun getDiscoveryFabLiveData(): LiveData<Result<ComponentsItem>> = discoveryFabLiveData
     fun getDiscoveryLiveStateData(): LiveData<DiscoveryLiveState> = discoveryLiveStateData
     fun getDiscoveryAnchorTabLiveData(): LiveData<Result<ComponentsItem>> = discoveryAnchorTabLiveData
+    fun getDiscoveryNavToolbarConfigLiveData(): LiveData<NavToolbarConfig> = discoveryNavToolbarConfig
 
     private fun fetchTopChatMessageId(context: Context, appLinks: String, shopId: Int) {
         val queryMap: MutableMap<String, Any> = mutableMapOf("fabShopId" to shopId, "source" to "discovery")
@@ -425,25 +443,26 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
 
     fun getMapOfQueryParameter(intentUri: Uri): Map<String, String?> {
         return mapOf(
-                SOURCE to intentUri.getQueryParameter(SOURCE),
-                COMPONENT_ID to intentUri.getQueryParameter(COMPONENT_ID),
-                ACTIVE_TAB to intentUri.getQueryParameter(ACTIVE_TAB),
-                TARGET_COMP_ID to intentUri.getQueryParameter(TARGET_COMP_ID),
-                PRODUCT_ID to intentUri.getQueryParameter(PRODUCT_ID),
-                PIN_PRODUCT to intentUri.getQueryParameter(PIN_PRODUCT),
-                CATEGORY_ID to intentUri.getQueryParameter(CATEGORY_ID),
-                EMBED_CATEGORY to intentUri.getQueryParameter(EMBED_CATEGORY),
-                RECOM_PRODUCT_ID to intentUri.getQueryParameter(RECOM_PRODUCT_ID),
-                DYNAMIC_SUBTITLE to intentUri.getQueryParameter(DYNAMIC_SUBTITLE),
-                TARGET_TITLE_ID to intentUri.getQueryParameter(TARGET_TITLE_ID),
-                CAMPAIGN_ID to intentUri.getQueryParameter(CAMPAIGN_ID),
-                VARIANT_ID to intentUri.getQueryParameter(VARIANT_ID),
-                SHOP_ID to intentUri.getQueryParameter(SHOP_ID),
-                QUERY_PARENT to intentUri.query,
-                AFFILIATE_UNIQUE_ID to intentUri.getQueryParameter(AFFILIATE_UNIQUE_ID),
-                CHANNEL to intentUri.getQueryParameter(CHANNEL),
+            SOURCE to intentUri.getQueryParameter(SOURCE),
+            COMPONENT_ID to intentUri.getQueryParameter(COMPONENT_ID),
+            ACTIVE_TAB to intentUri.getQueryParameter(ACTIVE_TAB),
+            HIDE_NAV_FEATURES to intentUri.getQueryParameter(HIDE_NAV_FEATURES),
+            TARGET_COMP_ID to intentUri.getQueryParameter(TARGET_COMP_ID),
+            PRODUCT_ID to intentUri.getQueryParameter(PRODUCT_ID),
+            PIN_PRODUCT to intentUri.getQueryParameter(PIN_PRODUCT),
+            CATEGORY_ID to intentUri.getQueryParameter(CATEGORY_ID),
+            EMBED_CATEGORY to intentUri.getQueryParameter(EMBED_CATEGORY),
+            RECOM_PRODUCT_ID to intentUri.getQueryParameter(RECOM_PRODUCT_ID),
+            DYNAMIC_SUBTITLE to intentUri.getQueryParameter(DYNAMIC_SUBTITLE),
+            TARGET_TITLE_ID to intentUri.getQueryParameter(TARGET_TITLE_ID),
+            CAMPAIGN_ID to intentUri.getQueryParameter(CAMPAIGN_ID),
+            VARIANT_ID to intentUri.getQueryParameter(VARIANT_ID),
+            SHOP_ID to intentUri.getQueryParameter(SHOP_ID),
+            QUERY_PARENT to intentUri.query,
+            AFFILIATE_UNIQUE_ID to intentUri.getQueryParameter(AFFILIATE_UNIQUE_ID),
+            CHANNEL to intentUri.getQueryParameter(CHANNEL),
 
-                )
+            )
     }
 
     fun scrollToPinnedComponent(listComponent: List<ComponentsItem>, pinnedComponentId: String?): Pair<Int,Boolean> {
@@ -475,6 +494,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                 SOURCE to bundle?.getString(SOURCE, ""),
                 COMPONENT_ID to bundle?.getString(COMPONENT_ID, ""),
                 ACTIVE_TAB to bundle?.getString(ACTIVE_TAB, ""),
+                HIDE_NAV_FEATURES to bundle?.getString(HIDE_NAV_FEATURES, ""),
                 TARGET_COMP_ID to bundle?.getString(TARGET_COMP_ID, ""),
                 PRODUCT_ID to bundle?.getString(PRODUCT_ID, ""),
                 PIN_PRODUCT to bundle?.getString(PIN_PRODUCT, ""),
@@ -489,6 +509,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                 QUERY_PARENT to bundle?.getString(QUERY_PARENT,""),
                 AFFILIATE_UNIQUE_ID to bundle?.getString(AFFILIATE_UNIQUE_ID, "")?.toDecodedString(),
                 CHANNEL to bundle?.getString(CHANNEL, ""),
+                FORCED_NAVIGATION to bundle?.getString(FORCED_NAVIGATION, ""),
         )
     }
 
@@ -576,22 +597,11 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
         }
     }
 
-    private fun setParameterMap(queryParameterMap: MutableMap<String, String?>, queryParameterMapWithRpc: MutableMap<String, String>, queryParameterMapWithoutRpc: MutableMap<String, String>) {
+    private fun setParameterMap(queryParameterMap: String?, queryParameterMapWithRpc: MutableMap<String, String>, queryParameterMapWithoutRpc: MutableMap<String, String>) {
         launchCatchError(
             (this + Dispatchers.Default).coroutineContext,
             block = {
-                val queryMap =
-                    URLParser(ApplinkConstInternalDiscovery.INTERNAL_DISCOVERY + "?" + queryParameterMap[QUERY_PARENT]).paramKeyValueMapDecoded
-                for ((key, value) in queryMap) {
-                    if (!value.isNullOrEmpty()) {
-                        if (key.startsWith(RPC_FILTER_KEY)) {
-                            val keyWithoutPrefix = key.removePrefix(RPC_FILTER_KEY)
-                            queryParameterMapWithRpc[keyWithoutPrefix] = value
-                        } else {
-                            queryParameterMapWithoutRpc[key] = value
-                        }
-                    }
-                }
+                Utils.setParameterMapUtil(queryParameterMap,queryParameterMapWithRpc,queryParameterMapWithoutRpc)
             },
             onError = {
                 it

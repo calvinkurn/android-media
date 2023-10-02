@@ -28,6 +28,8 @@ import com.tokopedia.autocompletecomponent.util.getProfileIdFromApplink
 import com.tokopedia.autocompletecomponent.util.getShopIdFromApplink
 import com.tokopedia.autocompletecomponent.util.isMps
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.discovery.common.reimagine.ReimagineRollence
+import com.tokopedia.discovery.common.reimagine.Search1InstAuto
 import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.discovery.common.utils.UrlParamUtils
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -687,4 +689,5 @@ class SuggestionPresenter @Inject constructor(
     override fun markSuggestionCoachMark() {
         coachMarkLocalCache.markShowSuggestionCoachMark()
     }
+
 }

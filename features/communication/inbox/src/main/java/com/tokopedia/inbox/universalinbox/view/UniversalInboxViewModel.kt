@@ -1,33 +1,54 @@
 package com.tokopedia.inbox.universalinbox.view
 
+import android.content.Intent
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.gojek.conversations.channel.ConversationsChannel
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.inbox.universalinbox.data.entity.UniversalInboxAllCounterResponse
-import com.tokopedia.inbox.universalinbox.data.entity.UniversalInboxWidgetMetaResponse
-import com.tokopedia.inbox.universalinbox.domain.UniversalInboxGetAllCounterUseCase
-import com.tokopedia.inbox.universalinbox.domain.UniversalInboxGetWidgetMetaUseCase
+import com.tokopedia.inbox.universalinbox.data.entity.UniversalInboxWrapperResponse
+import com.tokopedia.inbox.universalinbox.domain.mapper.UniversalInboxMenuMapper
+import com.tokopedia.inbox.universalinbox.domain.mapper.UniversalInboxMiscMapper
+import com.tokopedia.inbox.universalinbox.domain.mapper.UniversalInboxWidgetMetaMapper
+import com.tokopedia.inbox.universalinbox.domain.usecase.UniversalInboxGetAllCounterUseCase
+import com.tokopedia.inbox.universalinbox.domain.usecase.UniversalInboxGetAllDriverChannelsUseCase
+import com.tokopedia.inbox.universalinbox.domain.usecase.UniversalInboxGetInboxMenuAndWidgetMetaUseCase
+import com.tokopedia.inbox.universalinbox.domain.usecase.UniversalInboxGetProductRecommendationUseCase
+import com.tokopedia.inbox.universalinbox.util.Result
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.PAGE_NAME
-import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxWidgetMetaUiModel
-import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.inbox.universalinbox.view.uiState.UniversalInboxCombineState
+import com.tokopedia.inbox.universalinbox.view.uiState.UniversalInboxErrorUiState
+import com.tokopedia.inbox.universalinbox.view.uiState.UniversalInboxMenuUiState
+import com.tokopedia.inbox.universalinbox.view.uiState.UniversalInboxNavigationUiState
+import com.tokopedia.inbox.universalinbox.view.uiState.UniversalInboxProductRecommendationUiState
+import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationUiModel
+import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxWidgetMetaErrorUiModel
 import com.tokopedia.recommendation_widget_common.DEFAULT_VALUE_X_DEVICE
 import com.tokopedia.recommendation_widget_common.DEFAULT_VALUE_X_SOURCE
-import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.async
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -35,117 +56,386 @@ import javax.inject.Inject
 
 class UniversalInboxViewModel @Inject constructor(
     private val getAllCounterUseCase: UniversalInboxGetAllCounterUseCase,
-    private val getWidgetMetaUseCase: UniversalInboxGetWidgetMetaUseCase,
-    private val getRecommendationUseCase: GetRecommendationUseCase,
+    private val getInboxMenuAndWidgetMetaUseCase: UniversalInboxGetInboxMenuAndWidgetMetaUseCase,
+    private val getRecommendationUseCase: UniversalInboxGetProductRecommendationUseCase,
     private val addWishListV2UseCase: AddToWishlistV2UseCase,
     private val deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
+    private val getDriverChatCounterUseCase: UniversalInboxGetAllDriverChannelsUseCase,
     private val inboxMenuMapper: UniversalInboxMenuMapper,
+    private val inboxMiscMapper: UniversalInboxMiscMapper,
+    private val widgetMetaMapper: UniversalInboxWidgetMetaMapper,
     private val userSession: UserSessionInterface,
     private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main), DefaultLifecycleObserver {
 
-    private val _inboxMenu = MutableLiveData<List<Any>>()
-    val inboxMenu: LiveData<List<Any>>
-        get() = _inboxMenu
+    private val _actionFlow =
+        MutableSharedFlow<UniversalInboxAction>(extraBufferCapacity = 16)
 
-    private val _widget = MutableLiveData<Pair<UniversalInboxWidgetMetaUiModel, UniversalInboxAllCounterResponse?>>()
-    val widget: LiveData<Pair<UniversalInboxWidgetMetaUiModel, UniversalInboxAllCounterResponse?>>
-        get() = _widget
+    private val _inboxMenuUiState = MutableStateFlow(UniversalInboxMenuUiState())
+    val inboxMenuUiState = _inboxMenuUiState.asStateFlow()
 
-    private val _allCounter = MutableLiveData<Result<UniversalInboxAllCounterResponse>>()
-    val allCounter: LiveData<Result<UniversalInboxAllCounterResponse>>
-        get() = _allCounter
+    private val _inboxNavigationState = MutableSharedFlow<UniversalInboxNavigationUiState>(
+        extraBufferCapacity = 16,
+        replay = 0
+    )
+    val inboxNavigationUiState = _inboxNavigationState.asSharedFlow()
 
-    private val _firstPageRecommendation = MutableLiveData<Result<RecommendationWidget>>()
-    val firstPageRecommendation: LiveData<Result<RecommendationWidget>>
-        get() = _firstPageRecommendation
+    private val _productRecommendationState = MutableStateFlow(
+        UniversalInboxProductRecommendationUiState()
+    )
+    val productRecommendationUiState = _productRecommendationState.asStateFlow()
 
-    private val _morePageRecommendation = MutableLiveData<Result<List<RecommendationItem>>>()
-    val morePageRecommendation: LiveData<Result<List<RecommendationItem>>>
-        get() = _morePageRecommendation
+    private val _errorUiState = MutableSharedFlow<UniversalInboxErrorUiState>(
+        extraBufferCapacity = 16
+    )
+    val errorUiState = _errorUiState.asSharedFlow()
 
-    fun generateStaticMenu() {
-        val staticMenuList = inboxMenuMapper.getStaticMenu(userSession)
-        _inboxMenu.postValue(staticMenuList)
+    @VisibleForTesting
+    var driverJob: Job? = null
+
+    private var page = 1
+
+    fun setupViewModelObserver() {
+        _actionFlow.process()
+        observeInboxMenuLocalFlow()
+        observeDriverChannelFlow()
+        observeInboxMenuWidgetMetaAndCounterFlow()
+        observeProductRecommendationFlow()
+        loadInboxMenuAndWidgetMeta()
     }
 
-    fun loadWidgetMetaAndCounter() {
+    fun processAction(action: UniversalInboxAction) {
         viewModelScope.launch {
-            try {
-                val widgetMetaResponse = getWidgetMetaAsync().await()
-                val allCounterResponse = getAllCounterAsync().await()
-                val result = inboxMenuMapper.mapWidgetMetaToUiModel(
-                    widgetMetaResponse,
-                    allCounterResponse
+            _actionFlow.tryEmit(action)
+        }
+    }
+
+    /**
+     * Flow Observe
+     */
+
+    private fun Flow<UniversalInboxAction>.process() {
+        onEach {
+            when (it) {
+                // Navigation process
+                is UniversalInboxAction.NavigateWithIntent -> {
+                    navigateWithIntent(it.intent)
+                }
+                is UniversalInboxAction.NavigateToPage -> {
+                    navigateToPage(it.applink)
+                }
+
+                // General process
+                is UniversalInboxAction.RefreshPage -> {
+                    removeAllProductRecommendation(false)
+                    loadInboxMenuAndWidgetMeta()
+                }
+                is UniversalInboxAction.RefreshCounter -> {
+                    refreshCounter()
+                }
+
+                // Recommendation process
+                is UniversalInboxAction.RefreshRecommendation -> {
+                    removeAllProductRecommendation(true)
+                    page = 1 // reset page
+                    loadProductRecommendation() // Load first page
+                }
+                is UniversalInboxAction.LoadNextPage -> {
+                    loadProductRecommendation()
+                }
+
+                // Widget process
+                is UniversalInboxAction.RefreshDriverWidget -> {
+                    resetDriverChannelFlow()
+                }
+            }
+        }
+            .flowOn(dispatcher.io)
+            .launchIn(viewModelScope)
+    }
+
+    private fun observeInboxMenuLocalFlow() {
+        viewModelScope.launch {
+            getInboxMenuAndWidgetMetaUseCase.observeInboxMenuLocalSource()
+        }
+    }
+
+    private fun observeDriverChannelFlow() {
+        driverJob = viewModelScope.launch {
+            getDriverChatCounterUseCase.observeDriverChannelFlow()
+        }
+    }
+
+    private fun observeInboxMenuWidgetMetaAndCounterFlow() {
+        viewModelScope.launch {
+            combine(
+                getInboxMenuAndWidgetMetaUseCase.observe(),
+                getAllCounterUseCase.observe(),
+                getDriverChatCounterUseCase.observe()
+            ) { menu, counter, driverChannel ->
+                UniversalInboxCombineState(menu, counter, driverChannel)
+            }
+                .filterNotNull()
+                .collectLatest {
+                    withContext(dispatcher.default) {
+                        handleGetMenuAndCounterResult(it)
+                    }
+                }
+        }
+    }
+
+    private fun handleGetMenuAndCounterResult(
+        result: UniversalInboxCombineState
+    ) {
+        when {
+            // Handle success case for all
+            (
+                result.menu is Result.Success &&
+                    result.counter is Result.Success
+                ) -> {
+                onSuccessGetMenuAndCounter(
+                    result.menu.data,
+                    result.counter.data,
+                    result.driverChannel
                 )
-                _widget.value = Pair(result, allCounterResponse)
-            } catch (throwable: Throwable) {
-                Timber.d(throwable)
-                _widget.value = Pair(UniversalInboxWidgetMetaUiModel(isError = true), null)
+            }
+
+            // Handle error case for menu
+            (result.menu is Result.Error) -> {
+                setErrorWidgetMeta()
+                setFallbackInboxMenu(true)
+                showErrorMessage(
+                    Pair(result.menu.throwable, ::handleGetMenuAndCounterResult.name)
+                )
+            }
+
+            // Handle loading or error case for counter
+            (
+                result.menu is Result.Success &&
+                    (result.counter is Result.Error || result.counter is Result.Loading)
+                ) -> {
+                onSuccessGetMenuAndCounter(
+                    result.menu.data,
+                    UniversalInboxAllCounterResponse(), // Default 0 counter
+                    result.driverChannel
+                )
+            }
+
+            // Handle loading case for menu
+            result.menu is Result.Loading -> {
+                setLoadingInboxMenu()
             }
         }
     }
 
-    private suspend fun getWidgetMetaAsync(): Deferred<UniversalInboxWidgetMetaResponse?> {
-        return viewModelScope.async {
-            try {
-                getWidgetMetaUseCase(Unit).chatInboxWidgetMeta
-            } catch (throwable: Throwable) {
-                Timber.d(throwable)
-                null
+    private fun onSuccessGetMenuAndCounter(
+        inboxResponse: UniversalInboxWrapperResponse?,
+        counterResponse: UniversalInboxAllCounterResponse,
+        driverResponse: Result<List<ConversationsChannel>>
+    ) {
+        try {
+            if (inboxResponse == null) {
+                // If cache is null, it means new user or error
+                // create the default menu first
+                setFallbackInboxMenu(false)
+                return
             }
+            val widgetMeta = widgetMetaMapper.mapWidgetMetaToUiModel(
+                widgetMetaResponse = inboxResponse.chatInboxMenu.widgetMenu,
+                counterResponse = counterResponse,
+                driverCounter = driverResponse
+            ).apply {
+                this.widgetError.isError = inboxResponse.chatInboxMenu.shouldShowLocalLoad
+                this.widgetError.isLocalLoadLoading = false
+            }
+            val menuList = inboxMenuMapper.mapToInboxMenu(
+                userSession = userSession,
+                inboxMenuResponse = inboxResponse.chatInboxMenu.inboxMenu,
+                counterResponse = counterResponse
+            )
+            val miscList = inboxMiscMapper.generateMiscMenu()
+            _inboxMenuUiState.update { uiState ->
+                uiState.copy(
+                    isLoading = false,
+                    widgetMeta = widgetMeta,
+                    menuList = menuList,
+                    miscList = miscList,
+                    notificationCounter = counterResponse.notifCenterUnread.notifUnread
+                )
+            }
+        } catch (throwable: Throwable) {
+            setFallbackInboxMenu(false)
+            showErrorMessage(Pair(throwable, ::onSuccessGetMenuAndCounter.name))
         }
     }
 
-    private suspend fun getAllCounterAsync(): Deferred<UniversalInboxAllCounterResponse?> {
-        return viewModelScope.async {
-            try {
-                val result = getAllCounterUseCase(userSession.shopId)
-                _allCounter.value = Success(result)
-                result
-            } catch (throwable: Throwable) {
-                Timber.d(throwable)
-                _allCounter.value = Fail(throwable)
-                null
-            }
-        }
-    }
-
-    fun loadFirstPageRecommendation() {
+    private fun setFallbackInboxMenu(shouldShowLocalLoad: Boolean) {
         viewModelScope.launch {
-            withContext(dispatcher.io) {
-                try {
-                    val recommendationWidget = getRecommendationList(Int.ONE)
-                    _firstPageRecommendation.postValue(Success(recommendationWidget))
-                } catch (throwable: Throwable) {
-                    _firstPageRecommendation.postValue(Fail(throwable))
-                }
+            try {
+                val fallbackResult = inboxMenuMapper.generateFallbackMenu(shouldShowLocalLoad)
+                getInboxMenuAndWidgetMetaUseCase.updateCache(fallbackResult) // Update the cache to fallback
+            } catch (throwable: Throwable) {
+                // If the fallback error, nothing we can do
+                Timber.d(throwable)
+                showErrorMessage(Pair(throwable, ::setFallbackInboxMenu.name))
             }
         }
     }
 
-    fun loadMoreRecommendation(page: Int) {
+    private fun observeProductRecommendationFlow() {
         viewModelScope.launch {
-            withContext(dispatcher.io) {
-                try {
-                    val recommendationWidget = getRecommendationList(page)
-                    _morePageRecommendation.postValue(Success(recommendationWidget.recommendationItemList))
-                } catch (throwable: Throwable) {
-                    _morePageRecommendation.postValue(Fail(throwable))
+            getRecommendationUseCase.observe()
+                .collectLatest {
+                    withContext(dispatcher.default) {
+                        handleResultProductRecommendation(it)
+                    }
                 }
+        }
+    }
+
+    private fun handleResultProductRecommendation(
+        result: Result<RecommendationWidget>
+    ) {
+        when (result) {
+            is Result.Success -> {
+                _productRecommendationState.update {
+                    it.copy(
+                        isLoading = false,
+                        title = result.data.title,
+                        productRecommendation = result.data.recommendationItemList.map { item ->
+                            UniversalInboxRecommendationUiModel(item)
+                        }
+                    )
+                }
+                page++
+            }
+            is Result.Error -> {
+                setLoadingRecommendation(false)
+                showErrorMessage(Pair(result.throwable, ::handleResultProductRecommendation.name))
+            }
+            is Result.Loading -> {
+                setLoadingRecommendation(true)
             }
         }
     }
 
-    private suspend fun getRecommendationList(page: Int): RecommendationWidget {
-        val recommendationParams = GetRecommendationRequestParam(
+    /**
+     * Actions
+     */
+
+    private fun loadInboxMenuAndWidgetMeta() {
+        viewModelScope.launch {
+            try {
+                // Fetch inbox menu & widget from remote
+                getInboxMenuAndWidgetMetaUseCase.fetchInboxMenuAndWidgetMeta()
+                refreshCounter()
+            } catch (throwable: Throwable) {
+                setFallbackInboxMenu(true)
+                showErrorMessage(Pair(throwable, ::loadInboxMenuAndWidgetMeta.name))
+            }
+        }
+    }
+
+    private fun refreshCounter() {
+        viewModelScope.launch {
+            try {
+                getAllCounterUseCase.refreshCounter(userSession.shopId)
+            } catch (throwable: Throwable) {
+                showErrorMessage(Pair(throwable, ::refreshCounter.name))
+            }
+        }
+    }
+
+    private fun showErrorMessage(error: Pair<Throwable, String>) {
+        viewModelScope.launch {
+            _errorUiState.emit(UniversalInboxErrorUiState(error))
+        }
+    }
+
+    private fun setLoadingInboxMenu() {
+        viewModelScope.launch {
+            _inboxMenuUiState.update {
+                it.copy(
+                    isLoading = true
+                )
+            }
+        }
+    }
+
+    private fun setErrorWidgetMeta() {
+        viewModelScope.launch {
+            _inboxMenuUiState.update {
+                it.copy(
+                    widgetMeta = it.widgetMeta.copy(
+                        widgetError = UniversalInboxWidgetMetaErrorUiModel(
+                            isError = true,
+                            isLocalLoadLoading = false
+                        )
+                    ),
+                    isLoading = false
+                )
+            }
+        }
+    }
+
+    private fun resetDriverChannelFlow() {
+        driverJob?.cancel()
+        observeDriverChannelFlow()
+    }
+
+    private fun navigateWithIntent(intent: Intent) {
+        _inboxNavigationState.tryEmit(
+            UniversalInboxNavigationUiState(
+                intent = intent
+            )
+        )
+    }
+
+    private fun navigateToPage(applink: String) {
+        _inboxNavigationState.tryEmit(
+            UniversalInboxNavigationUiState(
+                applink = applink
+            )
+        )
+    }
+
+    private fun loadProductRecommendation() {
+        viewModelScope.launch {
+            getRecommendationUseCase.fetchProductRecommendation(getRecommendationParam(page))
+        }
+    }
+
+    private fun removeAllProductRecommendation(shouldShowLoading: Boolean) {
+        viewModelScope.launch {
+            getRecommendationUseCase.reset()
+            _productRecommendationState.update {
+                it.copy(
+                    title = "",
+                    productRecommendation = listOf(),
+                    isLoading = shouldShowLoading
+                )
+            }
+        }
+    }
+
+    private fun setLoadingRecommendation(isLoading: Boolean) {
+        viewModelScope.launch {
+            _productRecommendationState.update {
+                it.copy(isLoading = isLoading)
+            }
+        }
+    }
+
+    private fun getRecommendationParam(
+        page: Int
+    ): GetRecommendationRequestParam {
+        return GetRecommendationRequestParam(
             pageNumber = page,
             xSource = DEFAULT_VALUE_X_SOURCE,
             pageName = PAGE_NAME,
             productIds = emptyList(),
             xDevice = DEFAULT_VALUE_X_DEVICE
         )
-        return getRecommendationUseCase.getData(recommendationParams).first()
     }
 
     fun addWishlistV2(
@@ -170,6 +460,7 @@ class UniversalInboxViewModel @Inject constructor(
                     }
                 } catch (throwable: Throwable) {
                     actionListener.onErrorAddWishList(throwable, model.productId.toString())
+                    showErrorMessage(Pair(throwable, ::addWishlistV2.name))
                 }
             }
         }
@@ -202,8 +493,13 @@ class UniversalInboxViewModel @Inject constructor(
                     }
                 } catch (throwable: Throwable) {
                     actionListener.onErrorRemoveWishlist(throwable, model.productId.toString())
+                    showErrorMessage(Pair(throwable, ::removeWishlistV2.name))
                 }
             }
         }
+    }
+
+    fun getRecommendationPage(): Int {
+        return page
     }
 }

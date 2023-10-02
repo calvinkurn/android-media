@@ -69,6 +69,7 @@ import com.tokopedia.thankyou_native.presentation.viewModel.ThanksPageDataViewMo
 import com.tokopedia.thankyou_native.presentation.views.GyroView
 import com.tokopedia.thankyou_native.presentation.views.RegisterMemberShipListener
 import com.tokopedia.thankyou_native.presentation.views.TopAdsView
+import com.tokopedia.thankyou_native.presentation.views.listener.BannerListener
 import com.tokopedia.thankyou_native.presentation.views.listener.MarketplaceRecommendationListener
 import com.tokopedia.thankyou_native.recommendation.presentation.view.IRecommendationView
 import com.tokopedia.thankyou_native.recommendation.presentation.view.MarketPlaceRecommendation
@@ -95,7 +96,8 @@ abstract class ThankYouBaseFragment :
     BaseDaggerFragment(),
     OnDialogRedirectListener,
     RegisterMemberShipListener,
-    MarketplaceRecommendationListener {
+    MarketplaceRecommendationListener,
+    BannerListener {
 
     abstract fun getRecommendationContainer(): LinearLayout?
     abstract fun getFeatureListingContainer(): GyroView?
@@ -150,7 +152,7 @@ abstract class ThankYouBaseFragment :
     private val bottomContentAdapter: BottomContentAdapter by lazy(LazyThreadSafetyMode.NONE) {
         BottomContentAdapter(
             ArrayList(),
-            BottomContentFactory(this, this)
+            BottomContentFactory(this, this, this)
         )
     }
 
@@ -171,11 +173,6 @@ abstract class ThankYouBaseFragment :
         activity?.apply {
             digitalRecomTrackingQueue = TrackingQueue(this)
         }
-    }
-
-    override fun onPause() {
-        super.onPause()
-        digitalRecomTrackingQueue?.sendAll()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -736,27 +733,6 @@ abstract class ThankYouBaseFragment :
         val isAboveRecomm = cpmModel.data[0].cpm.position == 1
 
         if (isWidgetOrderingEnabled) {
-            if (!isAboveRecomm) {
-                val newList = thanksPageDataViewModel.widgetOrder.toMutableList()
-
-                val digitalIndex = newList.indexOf(DigitalRecommendationWidgetModel.TAG)
-                val marketplaceIndex = newList.indexOf(MarketplaceRecommendationWidgetModel.TAG)
-                val headlineIndex = newList.indexOf(HeadlineAdsWidgetModel.TAG)
-
-                if (headlineIndex != -1) {
-                    if (digitalIndex != -1 || marketplaceIndex != -1) {
-                        newList.removeAt(headlineIndex)
-
-                        newList.add(
-                            maxOf(marketplaceIndex, digitalIndex) + 1,
-                            HeadlineAdsWidgetModel.TAG
-                        )
-                    }
-                }
-
-                thanksPageDataViewModel.widgetOrder = newList
-            }
-
             thanksPageDataViewModel.addBottomContentWidget(HeadlineAdsWidgetModel(cpmModel))
             return
         }
@@ -782,6 +758,17 @@ abstract class ThankYouBaseFragment :
         } else if (bottomSheetContentItem.membershipType == CLOSE_MEMBERSHIP) {
             openTokomemberBottomsheet()
         }
+    }
+
+    override fun onBannerClick(bannerItem: BannerItem, position: Int) {
+        if (context == null) return
+        thankYouPageAnalytics.get().sendBannerClickEvent(thanksPageData, bannerItem, position)
+        RouteManager.route(context, bannerItem.applink)
+    }
+
+    override fun onBannerImpressed(bannerItem: BannerItem, position: Int) {
+        if (context == null) return
+        thankYouPageAnalytics.get().sendBannerImpressionEvent(thanksPageData, bannerItem, position)
     }
 
     private fun openTokomemberBottomsheet() {

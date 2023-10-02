@@ -1,8 +1,6 @@
 package com.tokopedia.media.picker.di.module
 
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
-import com.tokopedia.media.picker.data.FeatureToggleManager
-import com.tokopedia.media.picker.data.FeatureToggleManagerImpl
 import com.tokopedia.media.picker.data.MediaQueryDataSource
 import com.tokopedia.media.picker.data.MediaQueryDataSourceImpl
 import com.tokopedia.media.picker.data.repository.*
@@ -21,10 +19,6 @@ abstract class PickerModule {
     @Binds
     @ActivityScope
     abstract fun providePickerEventBus(source: PickerEventBusImpl) : PickerEventBus
-
-    @Binds
-    @ActivityScope
-    abstract fun provideFeatureToggleManager(source: FeatureToggleManagerImpl) : FeatureToggleManager
 
     @Binds
     @ActivityScope

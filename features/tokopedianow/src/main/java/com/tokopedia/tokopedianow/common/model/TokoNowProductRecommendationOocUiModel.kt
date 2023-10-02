@@ -16,7 +16,8 @@ class TokoNowProductRecommendationOocUiModel(
     var keywords: String = "",
     var categoryId: List<String> = listOf(),
     var isFirstLoad: Boolean = true,
-    var miniCartSource: MiniCartSource = MiniCartSource.TokonowRecommendationPage
+    var miniCartSource: MiniCartSource = MiniCartSource.TokonowRecommendationPage,
+    var isTokoNow: Boolean = true
 ): Visitable<TokoNowProductRecommendationOocTypeFactory> {
 
     override fun type(typeFactory: TokoNowProductRecommendationOocTypeFactory?): Int {

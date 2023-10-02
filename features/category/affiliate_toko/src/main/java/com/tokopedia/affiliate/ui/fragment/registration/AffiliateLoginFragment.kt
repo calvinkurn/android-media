@@ -13,10 +13,18 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.widget.TouchViewPager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.affiliate.*
+import com.tokopedia.affiliate.AFFILIATE_LOGIN_REQUEST_CODE
+import com.tokopedia.affiliate.AFFILIATE_MICRO_SITE_LINK
+import com.tokopedia.affiliate.AFFILIATE_REGISTER_REQUEST_CODE
+import com.tokopedia.affiliate.AFFILIATE_REQUEST_CODE_LOGOUT
+import com.tokopedia.affiliate.AffiliateAnalytics
+import com.tokopedia.affiliate.ON_BOARDING_TUTORIAL_IMAGE_1
+import com.tokopedia.affiliate.ON_BOARDING_TUTORIAL_IMAGE_2
+import com.tokopedia.affiliate.ON_BOARDING_TUTORIAL_IMAGE_3
 import com.tokopedia.affiliate.adapter.AffiliateTutorialPagerAdapter
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
+import com.tokopedia.affiliate.setAnnouncementData
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateWebViewBottomSheet
 import com.tokopedia.affiliate.viewmodel.AffiliateRegistrationSharedViewModel
 import com.tokopedia.affiliate_toko.R
@@ -156,7 +164,11 @@ class AffiliateLoginFragment : BaseDaggerFragment() {
     }
 
     private fun sendTracking() {
-        val loginText = if (userSessionInterface?.isLoggedIn == true) "login" else "non login"
+        val loginText = if (userSessionInterface?.isLoggedIn == true) {
+            "login"
+        } else {
+            "non login"
+        }
         AffiliateAnalytics.sendOpenScreenEvent(
             AffiliateAnalytics.EventKeys.OPEN_SCREEN,
             "${AffiliateAnalytics.ScreenKeys.AFFILIATE_LOGIN_SCREEN_NAME}$loginText",
@@ -275,7 +287,7 @@ class AffiliateLoginFragment : BaseDaggerFragment() {
         }
         affiliateLoginSharedViewModel?.getAffiliateAnnouncement()
             ?.observe(viewLifecycleOwner) { announcementData ->
-                if (announcementData.getAffiliateAnnouncementV2?.data?.subType != TICKER_BOTTOM_SHEET) {
+                if (announcementData.getAffiliateAnnouncementV2?.announcementData?.subType != TICKER_BOTTOM_SHEET) {
                     view?.findViewById<Ticker>(R.id.affiliate_login_ticker)
                         ?.setAnnouncementData(announcementData, activity)
                 }

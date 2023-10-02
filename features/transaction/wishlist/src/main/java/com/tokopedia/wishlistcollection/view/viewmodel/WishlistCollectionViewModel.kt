@@ -18,15 +18,17 @@ import com.tokopedia.wishlist.util.WishlistIdlingResource
 import com.tokopedia.wishlist.util.WishlistV2Consts
 import com.tokopedia.wishlist.util.WishlistV2Utils
 import com.tokopedia.wishlistcollection.data.model.WishlistCollectionTypeLayoutData
-import com.tokopedia.wishlistcollection.data.params.UpdateWishlistCollectionParams
+import com.tokopedia.wishlistcommon.data.params.UpdateWishlistCollectionParams
+import com.tokopedia.wishlistcollection.data.response.AffiliateUserDetailOnBoardingBottomSheetResponse
 import com.tokopedia.wishlistcollection.data.response.DeleteWishlistCollectionResponse
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionResponse
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionSharingDataResponse
-import com.tokopedia.wishlistcollection.data.response.UpdateWishlistCollectionResponse
+import com.tokopedia.wishlistcommon.data.response.UpdateWishlistCollectionResponse
+import com.tokopedia.wishlistcollection.domain.AffiliateUserDetailOnBoardingBottomSheetUseCase
 import com.tokopedia.wishlistcollection.domain.DeleteWishlistCollectionUseCase
 import com.tokopedia.wishlistcollection.domain.GetWishlistCollectionSharingDataUseCase
 import com.tokopedia.wishlistcollection.domain.GetWishlistCollectionUseCase
-import com.tokopedia.wishlistcollection.domain.UpdateWishlistCollectionUseCase
+import com.tokopedia.wishlistcommon.domain.UpdateWishlistCollectionUseCase
 import com.tokopedia.wishlistcollection.util.WishlistCollectionUtils
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OK
 import kotlinx.coroutines.launch
@@ -40,6 +42,7 @@ class WishlistCollectionViewModel @Inject constructor(
     private val singleRecommendationUseCase: GetSingleRecommendationUseCase,
     private val deleteWishlistProgressUseCase: DeleteWishlistProgressUseCase,
     private val getWishlistCollectionSharingDataUseCase: GetWishlistCollectionSharingDataUseCase,
+    private val affiliateUserDetailOnBoardingBottomSheetUseCase: AffiliateUserDetailOnBoardingBottomSheetUseCase,
     private val updateWishlistCollectionUseCase: UpdateWishlistCollectionUseCase
 ) : BaseViewModel(dispatcher.main) {
     private var recommSrc = ""
@@ -74,6 +77,10 @@ class WishlistCollectionViewModel @Inject constructor(
     val updateWishlistCollectionResult: LiveData<Result<UpdateWishlistCollectionResponse.UpdateWishlistCollection>>
         get() = _updateWishlistCollectionResult
 
+    private val _isUserAffiliate =
+        MutableLiveData<Result<AffiliateUserDetailOnBoardingBottomSheetResponse.AffiliateUserDetail>>()
+    val isUserAffiliate: MutableLiveData<Result<AffiliateUserDetailOnBoardingBottomSheetResponse.AffiliateUserDetail>>
+        get() = _isUserAffiliate
     fun getWishlistCollections() {
         WishlistIdlingResource.increment()
         launchCatchError(block = {
@@ -200,6 +207,18 @@ class WishlistCollectionViewModel @Inject constructor(
         }, onError = {
                 _updateWishlistCollectionResult.value = Fail(it)
             })
+    }
+
+    fun getAffiliateUserDetail() {
+        launchCatchError(
+            block = {
+                val result = affiliateUserDetailOnBoardingBottomSheetUseCase(Unit)
+                isUserAffiliate.value = Success(result.affiliateUserDetail)
+            },
+            onError = {
+                isUserAffiliate.value = Fail(it)
+            }
+        )
     }
 
     companion object {

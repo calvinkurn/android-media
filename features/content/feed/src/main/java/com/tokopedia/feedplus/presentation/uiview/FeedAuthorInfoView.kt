@@ -1,9 +1,9 @@
 package com.tokopedia.feedplus.presentation.uiview
 
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.feedplus.databinding.LayoutFeedAuthorInfoBinding
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
 import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
+import com.tokopedia.feedplus.presentation.model.FeedTopAdsTrackerDataModel
 import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -20,14 +20,18 @@ class FeedAuthorInfoView(
         author: FeedAuthorModel,
         isLive: Boolean,
         showFollow: Boolean,
-        trackerData: FeedTrackerDataModel?
+        trackerData: FeedTrackerDataModel?,
+        topAdsTrackerDataModel: FeedTopAdsTrackerDataModel?
     ) {
         with(binding) {
             imgFeedOwnerProfile.setImageUrl(author.logoUrl)
             imgFeedOwnerProfile.showWithCondition(imageConditions(author.logoUrl))
             imgFeedOwnerProfile.setOnClickListener {
+                topAdsTrackerDataModel?.let { topadsTrackerData ->
+                    feedListener.onTopAdsClick(topadsTrackerData)
+                }
                 feedListener.onAuthorProfilePictureClicked(trackerData)
-                RouteManager.route(root.context, author.appLink)
+                feedListener.onProfileClicked(author.appLink, author.type)
             }
 
             imgFeedOwnerBadge.setImageUrl(author.badgeUrl)
@@ -35,15 +39,21 @@ class FeedAuthorInfoView(
 
             tvFeedOwnerName.text = author.name
             tvFeedOwnerName.setOnClickListener {
+                topAdsTrackerDataModel?.let { topadsTrackerData ->
+                    feedListener.onTopAdsClick(topadsTrackerData)
+                }
                 feedListener.onAuthorNameClicked(trackerData)
-                RouteManager.route(root.context, author.appLink)
+                feedListener.onProfileClicked(author.appLink, author.type)
             }
 
             bindLiveLabel(isLive)
-            bindFollow(author, showFollow, trackerData)
+            bindFollow(author, showFollow, trackerData, topAdsTrackerDataModel)
 
             root.setOnClickListener {
-                navigateToAuthorProfile(author.appLink)
+                topAdsTrackerDataModel?.let { topadsTrackerData ->
+                    feedListener.onTopAdsClick(topadsTrackerData)
+                }
+                feedListener.onProfileClicked(author.appLink, author.type)
             }
         }
     }
@@ -51,10 +61,15 @@ class FeedAuthorInfoView(
     fun bindFollow(
         author: FeedAuthorModel,
         showFollow: Boolean,
-        trackerData: FeedTrackerDataModel?
+        trackerData: FeedTrackerDataModel?,
+        topAdsTrackerDataModel: FeedTopAdsTrackerDataModel?
     ) {
         if (showFollow) {
             binding.btnFeedFollow.setOnClickListener {
+                topAdsTrackerDataModel?.let { topadsTrackerData ->
+                    feedListener.onTopAdsClick(topadsTrackerData)
+                }
+
                 if (author.type.isShop) {
                     feedListener.onFollowClicked(author.id, "", true, trackerData)
                 } else if (author.type.isUser) {
@@ -78,10 +93,6 @@ class FeedAuthorInfoView(
         } else {
             binding.labelFeedLive.hide()
         }
-    }
-
-    private fun navigateToAuthorProfile(applink: String) {
-        RouteManager.route(binding.root.context, applink)
     }
 
     private fun imageConditions(url: String) = url.isNotEmpty()

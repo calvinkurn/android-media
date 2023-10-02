@@ -7,12 +7,13 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.search.result.presentation.model.TickerDataView
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.RecommendationItemViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SmallGridProductItemViewHolder
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 import com.tokopedia.search.result.product.inspirationwidget.card.SmallGridInspirationCardViewHolder
 import com.tokopedia.search.result.product.lastfilter.LastFilterDataView
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordViewHolder
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproduct.viewholder.GridInspirationProductItemViewHolder
 
 class ProductListAdapter(
     private val typeFactory: ProductListTypeFactory,
@@ -49,6 +50,9 @@ class ProductListAdapter(
                 && viewType != SmallGridProductItemViewHolder.LAYOUT_WITH_VIEW_STUB
                 && viewType != RecommendationItemViewHolder.LAYOUT
                 && viewType != SmallGridInspirationCardViewHolder.LAYOUT
+                && viewType != InspirationKeywordViewHolder.LAYOUT
+                && viewType != GridInspirationProductItemViewHolder.LAYOUT
+                && viewType != GridInspirationProductItemViewHolder.LAYOUT_WITH_VIEW_STUB
     }
 
     override fun onBindViewHolder(holder: AbstractViewHolder<*>, position: Int, payloads: List<Any>) {

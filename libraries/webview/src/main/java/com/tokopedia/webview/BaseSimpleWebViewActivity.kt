@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.PersistentCacheManager
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.track.TrackApp
@@ -111,6 +112,13 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
     override fun onResume() {
         super.onResume()
         reloadWebViewIfNeeded()
+        disableBannerEnv()
+    }
+
+    private fun disableBannerEnv() {
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            bannerEnv?.disable()
+        }
     }
 
     private fun reloadWebViewIfNeeded() {

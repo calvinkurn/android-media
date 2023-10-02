@@ -86,6 +86,7 @@
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toEndOf="@+id/authorBadge"
                     app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintHorizontal_weight="4"
                     app:layout_constraintVertical_chainStyle="packed"
                     app:typographyType="heading_6"
                     tools:text="Febrian Putra Muhammad Ilham Jamaludin Andhika Kuma Djaffri Febby Mulia"
@@ -117,7 +118,7 @@
                 <com.tokopedia.design.component.ButtonCompat
                     android:id="@+id/headerAction"
                     style="?android:attr/borderlessButtonStyle"
-                    android:layout_width="72dp"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:contentDescription="@string/content_desc_headerAction"
                     android:elevation="0dp"
@@ -126,25 +127,32 @@
                     android:visibility="visible"
                     app:buttonCompatSize="small"
                     app:buttonCompatType="primary"
+                    app:layout_constraintHorizontal_weight="2"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/menu"
+                    app:layout_constraintStart_toEndOf="@id/authorTitle"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:ignore="UnusedAttribute"
                     tools:visibility="visible" />
 
-                <ImageView
+                <com.tokopedia.iconunify.IconUnify
                     android:id="@+id/menu"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:contentDescription="@string/content_desc_menu"
-                    android:paddingStart="16dp"
-                    android:paddingLeft="16dp"
+                    android:paddingHorizontal="16dp"
                     android:visibility="visible"
+                    app:layout_constraintStart_toEndOf="@id/headerAction"
+                    app:layout_constraintHorizontal_weight="1"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_kebab"
-                    tools:ignore="ContentDescription,RtlSymmetry"
+                    app:icon_name="MENU_KEBAB_VERTICAL"
+                    android:scaleType="centerCrop"
+                    app:icon_color_light_enable="@color/Unify_NN400"
+                    app:icon_color_light_disabled="@color/Unify_NN400"
+                    app:icon_color_night_enable="@color/Unify_NN400"
+                    app:icon_color_night_disabled="@color/Unify_NN400"
                     tools:visibility="visible" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -242,17 +250,17 @@
                         android:layout_height="wrap_content"
                         app:constraint_referenced_ids="likeIcon,likeText" />
 
-                    <androidx.appcompat.widget.AppCompatImageView
+                    <com.tokopedia.iconunify.IconUnify
                         android:id="@+id/likeIcon"
                         android:layout_width="18dp"
                         android:layout_height="18dp"
                         android:layout_gravity="center"
                         android:contentDescription="@string/kol_action_like"
                         android:scaleType="fitCenter"
+                        app:icon_name="THUMB_FILLED"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/ic_thumb" />
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/likeText"
@@ -321,10 +329,11 @@
                         android:layout_marginLeft="16dp"
                         android:contentDescription="@string/kol_action_share"
                         android:scaleType="fitCenter"
+                        app:tint="@color/Unify_NN500"
                         app:layout_constraintBottom_toBottomOf="@id/commentText"
                         app:layout_constraintStart_toEndOf="@id/commentText"
                         app:layout_constraintTop_toTopOf="@id/commentText"
-                        app:srcCompat="@drawable/ic_share_grey_profile" />
+                        app:srcCompat="@drawable/iconunify_share_mobile" />
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/shareText"

@@ -29,5 +29,8 @@ data class ValidateUsePromoRequest(
     var cartType: String = "", // ocs & default & occ
 
     @field:SerializedName("state")
-    var state: String = "" // cart & checkout
+    var state: String = "", // cart & checkout
+
+    @field:SerializedName("is_cart_checkout_revamp")
+    var isCartCheckoutRevamp: Boolean = false
 ) : Parcelable

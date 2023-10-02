@@ -2,7 +2,6 @@ package com.tokopedia.tokofood.feature.purchase.purchasepage.presentation
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseProductTokoFoodPurchaseUiModel
-import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseProductTokoFoodPurchaseUiModelOld
 
 interface TokoFoodPurchaseActionListener {
 
@@ -20,15 +19,9 @@ interface TokoFoodPurchaseActionListener {
 
     fun onIconDeleteProductClicked(element: TokoFoodPurchaseProductTokoFoodPurchaseUiModel)
 
-    fun onIconDeleteProductClicked(element: TokoFoodPurchaseProductTokoFoodPurchaseUiModelOld)
-
     fun onTextChangeNotesClicked(element: TokoFoodPurchaseProductTokoFoodPurchaseUiModel)
 
-    fun onTextChangeNotesClicked(element: TokoFoodPurchaseProductTokoFoodPurchaseUiModelOld)
-
     fun onTextChangeNoteAndVariantClicked(element: TokoFoodPurchaseProductTokoFoodPurchaseUiModel)
-
-    fun onTextChangeNoteAndVariantClicked(element: TokoFoodPurchaseProductTokoFoodPurchaseUiModelOld)
 
     fun onToggleShowHideUnavailableItemsClicked()
 

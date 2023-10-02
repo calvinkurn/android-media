@@ -45,7 +45,7 @@ import javax.inject.Inject
 /**
  * Created by Yoris on 04/08/21.
  */
-
+@Deprecated("Remove this class after integrating SCP Login to Tokopedia")
 class LinkAccountFragment: BaseDaggerFragment(), AccountItemListener {
 
     @Inject

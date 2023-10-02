@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 <!--Background-->
-    <item android:bottom="10dp">
+    <item android:id="@+id/sticky_background_color" android:bottom="10dp">
         <shape>
             <solid android:color="@color/Unify_Background"/>
         </shape>

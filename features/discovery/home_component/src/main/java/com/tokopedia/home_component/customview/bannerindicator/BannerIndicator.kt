@@ -5,6 +5,7 @@ import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Looper
+import android.provider.Settings
 import android.util.AttributeSet
 import android.view.animation.LinearInterpolator
 import android.widget.LinearLayout
@@ -84,6 +85,8 @@ class BannerIndicator : LinearLayout {
         bannerAnimatorSet.resume()
     }
 
+    fun isCurrentPosition(position: Int): Boolean = currentPosition == position
+
     fun setBannerIndicators(totalBanner: Int, startFrom: Int = -1) {
         this.removeAllViews()
         this.totalBanner = totalBanner
@@ -139,32 +142,38 @@ class BannerIndicator : LinearLayout {
 
     private fun animateIndicatorBanner(progressIndicator: ProgressBar, position: Int) {
         currentPosition = position
-        bannerAnimator.addUpdateListener { animation ->
-            val value = animation.animatedValue as Int
-            progressIndicator.progress = value
-            if (value >= MAXIMUM_PROGRESS) {
-                nextTransition = if (position != Int.MAX_VALUE - Int.ONE) {
-                    position + Int.ONE
-                } else {
-                    Int.ZERO
+        if(!isAnimationTurnedOff()) {
+            bannerAnimator.addUpdateListener { animation ->
+                val value = animation.animatedValue as Int
+                progressIndicator.progress = value
+                if (value >= MAXIMUM_PROGRESS) {
+                    nextTransition = if (position != Int.MAX_VALUE - Int.ONE) {
+                        position + Int.ONE
+                    } else {
+                        Int.ZERO
+                    }
+                    android.os.Handler(Looper.getMainLooper()).postDelayed(
+                        {
+                            val index = nextTransition % totalBanner
+                            bannerAnimatorSet.removeAllListeners()
+                            bannerAnimator.removeAllUpdateListeners()
+                            minimizeIndicatorBanner(progressIndicator)
+                            getChildProgressBar(index)?.let {
+                                maximizeAnimator(it, nextTransition)
+                            }
+                            listener?.onChangePosition(
+                                index = index,
+                                position = nextTransition
+                            )
+                        },
+                        NO_DELAY
+                    )
                 }
-                android.os.Handler(Looper.getMainLooper()).postDelayed(
-                    {
-                        bannerAnimatorSet.removeAllListeners()
-                        bannerAnimator.removeAllUpdateListeners()
-                        minimizeIndicatorBanner(progressIndicator)
-                        getChildProgressBar(nextTransition % totalBanner)?.let {
-                            maximizeAnimator(it, nextTransition)
-                        }
-                        listener?.onChangePosition(nextTransition)
-                    },
-                    NO_DELAY
-                )
             }
+            bannerAnimatorSet.play(bannerAnimator)
+            bannerAnimatorSet.interpolator = LinearInterpolator()
+            bannerAnimatorSet.start()
         }
-        bannerAnimatorSet.play(bannerAnimator)
-        bannerAnimatorSet.interpolator = LinearInterpolator()
-        bannerAnimatorSet.start()
     }
 
     private fun minimizeIndicatorBanner(progressIndicator: ProgressBar) {
@@ -218,6 +227,13 @@ class BannerIndicator : LinearLayout {
             this.getChildAt(position) as ProgressBar
         } catch (_: Exception) {
             null
+        }
+    }
+    private fun isAnimationTurnedOff(): Boolean {
+        return try {
+            Settings.Global.getFloat(context.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE) == 0f
+        } catch (_: Settings.SettingNotFoundException) {
+            true
         }
     }
 }

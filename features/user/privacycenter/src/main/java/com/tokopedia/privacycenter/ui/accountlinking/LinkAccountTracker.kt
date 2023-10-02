@@ -7,7 +7,7 @@ import javax.inject.Inject
 /**
  * Created by Yoris on 21/09/21.
  */
-
+@Deprecated("Remove this class after integrating SCP Login to Tokopedia")
 class LinkAccountTracker @Inject constructor() {
 
     // tracker no.7

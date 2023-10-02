@@ -46,7 +46,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/daily_budget"
             android:layout_marginTop="24dp"
-            android:text="@string/to_maximize_your_sales_advertising_costs_will_be_set_automatically_first_you_can_set_it_again_later"
+            android:text="@string/topads_common_create_group_daily_budget_desc"
             app:typographyType="paragraph_2"
             android:textColor="@color/Unify_NN600"/>
 

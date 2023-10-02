@@ -49,9 +49,9 @@ class DateUtils {
     fun getMessage(dayRange: String, context: Context? = null): String {
         val timeZone = TimeZone.getTimeZone(TIME_ZONE)
         val calendar = Calendar.getInstance()
-        when (dayRange) {
+        return when (dayRange) {
             AffiliateBottomDatePicker.TODAY -> {
-                return try {
+                try {
                     calendar.add(Calendar.HOUR, -TWO)
                     val date = SimpleDateFormat(PATTERN, Locale.ENGLISH).format(calendar.time)
                     val time = SimpleDateFormat(HOUR_PATTERN, Locale.ENGLISH).format(calendar.time)
@@ -63,7 +63,7 @@ class DateUtils {
             }
 
             AffiliateBottomDatePicker.YESTERDAY -> {
-                return try {
+                try {
                     calendar.add(Calendar.HOUR, -THIRTY_THREE)
                     val dateFormat = SimpleDateFormat(PATTERN, Locale.ENGLISH)
                     dateFormat.timeZone = timeZone
@@ -75,7 +75,7 @@ class DateUtils {
             }
 
             AffiliateBottomDatePicker.SEVEN_DAYS -> {
-                return try {
+                try {
                     calendar.add(Calendar.HOUR, -THIRTY_THREE)
                     val lastDayFormat = SimpleDateFormat(PATTERN, Locale.ENGLISH)
                     lastDayFormat.timeZone = timeZone
@@ -92,7 +92,7 @@ class DateUtils {
             }
 
             AffiliateBottomDatePicker.THIRTY_DAYS -> {
-                return try {
+                try {
                     calendar.add(Calendar.HOUR, -THIRTY_THREE)
                     val lastDayFormat = SimpleDateFormat(PATTERN, Locale.ENGLISH)
                     lastDayFormat.timeZone = timeZone
@@ -107,7 +107,7 @@ class DateUtils {
                     String.EMPTY
                 }
             }
+            else -> String.EMPTY
         }
-        return String.EMPTY
     }
 }

@@ -8,7 +8,7 @@ import com.tokopedia.play.databinding.ViewPlayGridBinding
 import com.tokopedia.play.ui.explorewidget.PlayExploreWidgetCoordinator
 import com.tokopedia.play.ui.explorewidget.viewholder.PlayExploreWidgetViewHolder
 import com.tokopedia.play.view.uimodel.ExploreWidgetPlaceholder
-import com.tokopedia.play.view.uimodel.WidgetItemUiModel
+import com.tokopedia.play.view.uimodel.ExploreWidgetItemUiModel
 import com.tokopedia.play.view.uimodel.WidgetUiModel
 import com.tokopedia.play.widget.ui.adapter.viewholder.placeholder.PlayWidgetCardPlaceholderViewHolder
 import com.tokopedia.play.R as playR
@@ -20,9 +20,9 @@ import com.tokopedia.unifyprinciples.R as unifyR
 class WidgetAdapterDelegate private constructor() {
     internal class Widget(
         private val coordinator: PlayExploreWidgetCoordinator
-    ) : TypedAdapterDelegate<WidgetItemUiModel, WidgetUiModel, PlayExploreWidgetViewHolder.Widget>(playR.layout.view_play_grid) {
+    ) : TypedAdapterDelegate<ExploreWidgetItemUiModel, WidgetUiModel, PlayExploreWidgetViewHolder.Widget>(playR.layout.view_play_grid) {
         override fun onBindViewHolder(
-            item: WidgetItemUiModel,
+            item: ExploreWidgetItemUiModel,
             holder: PlayExploreWidgetViewHolder.Widget
         ) {
             holder.bind(item.item)

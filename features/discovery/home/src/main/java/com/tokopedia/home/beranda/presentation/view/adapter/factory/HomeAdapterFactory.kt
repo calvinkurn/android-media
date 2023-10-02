@@ -145,6 +145,12 @@ import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.home_component.visitable.SpecialReleaseDataModel
 import com.tokopedia.home_component.visitable.TodoWidgetListDataModel
 import com.tokopedia.home_component.visitable.VpsDataModel
+import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetListener
+import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetDataModel
+import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetViewHolder
+import com.tokopedia.home_component.widget.special_release.SpecialReleaseRevampDataModel
+import com.tokopedia.home_component.widget.special_release.SpecialReleaseRevampListener
+import com.tokopedia.home_component.widget.special_release.SpecialReleaseRevampViewHolder
 import com.tokopedia.play.widget.PlayWidgetViewHolder
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.recharge_component.RechargeComponentTypeFactory
@@ -195,6 +201,8 @@ class HomeAdapterFactory(
     private val flashSaleWidgetListener: FlashSaleWidgetListener,
     private val carouselPlayWidgetCallback: CarouselPlayWidgetCallback,
     private val bestSellerListener: BestSellerListener,
+    private val specialReleaseRevampListener: SpecialReleaseRevampListener,
+    private val shopFlashSaleWidgetListener: ShopFlashSaleWidgetListener,
 ) : BaseAdapterTypeFactory(),
     HomeTypeFactory,
     HomeComponentTypeFactory,
@@ -437,6 +445,14 @@ class HomeAdapterFactory(
         return com.tokopedia.home_component.viewholders.BestSellerViewHolder.LAYOUT
     }
 
+    override fun type(specialReleaseDataModel: SpecialReleaseRevampDataModel): Int {
+        return SpecialReleaseRevampViewHolder.LAYOUT
+    }
+
+    override fun type(shopFlashSaleWidgetDataModel: ShopFlashSaleWidgetDataModel): Int {
+        return ShopFlashSaleWidgetViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         val viewHolder: AbstractViewHolder<*>
         when (type) {
@@ -582,7 +598,7 @@ class HomeAdapterFactory(
             )
             CueWidgetCategoryViewHolder.LAYOUT -> viewHolder = CueWidgetCategoryViewHolder(view, cueWidgetCategoryListener)
             VpsWidgetViewHolder.LAYOUT -> viewHolder = VpsWidgetViewHolder(view, vpsWidgetListener, homeComponentListener)
-            MissionWidgetViewHolder.LAYOUT -> viewHolder = MissionWidgetViewHolder(view, missionWidgetComponentListener, cardInteraction = true)
+            MissionWidgetViewHolder.LAYOUT -> viewHolder = MissionWidgetViewHolder(view, missionWidgetComponentListener)
             Lego4ProductViewHolder.LAYOUT -> viewHolder = Lego4ProductViewHolder(view, legoProductListener, homeComponentListener, cardInteraction = true)
             MixLeftPaddingComponentViewHolder.LAYOUT ->
                 viewHolder =
@@ -610,6 +626,8 @@ class HomeAdapterFactory(
                     bestSellerListener,
                     parentRecycledViewPool
                 )
+            SpecialReleaseRevampViewHolder.LAYOUT -> viewHolder = SpecialReleaseRevampViewHolder(view, specialReleaseRevampListener)
+            ShopFlashSaleWidgetViewHolder.LAYOUT -> viewHolder = ShopFlashSaleWidgetViewHolder(view, shopFlashSaleWidgetListener)
             else -> viewHolder = super.createViewHolder(view, type)
         }
 

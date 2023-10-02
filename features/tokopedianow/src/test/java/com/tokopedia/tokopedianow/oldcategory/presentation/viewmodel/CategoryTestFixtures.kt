@@ -15,6 +15,7 @@ import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.oldcategory.domain.model.CategoryModel
 import com.tokopedia.tokopedianow.searchcategory.cartservice.CartService
+import com.tokopedia.tokopedianow.searchcategory.domain.usecase.GetFilterUseCase
 import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_DIRECTORY
 import com.tokopedia.tokopedianow.util.AddressMapperTestUtils.mapToWarehouses
@@ -46,7 +47,7 @@ open class CategoryTestFixtures {
     protected val defaultQueryParamMap = mapOf<String, String>()
     protected val getCategoryFirstPageUseCase = mockk<UseCase<CategoryModel>>(relaxed = true)
     protected val getCategoryLoadMorePageUseCase = mockk<UseCase<CategoryModel>>(relaxed = true)
-    protected val getFilterUseCase = mockk<UseCase<DynamicFilterModel>>(relaxed = true)
+    protected val getFilterUseCase = mockk<GetFilterUseCase>(relaxed = true)
     protected val getProductCountUseCase = mockk<UseCase<String>>(relaxed = true)
     protected val getMiniCartListSimplifiedUseCase = mockk<GetMiniCartListSimplifiedUseCase>(relaxed = true)
     protected val addToCartUseCase = mockk<AddToCartUseCase>(relaxed = true)

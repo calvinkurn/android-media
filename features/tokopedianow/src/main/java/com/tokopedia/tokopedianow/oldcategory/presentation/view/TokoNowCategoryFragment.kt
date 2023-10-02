@@ -613,8 +613,10 @@ class TokoNowCategoryFragment :
         }
     }
 
-    override fun refreshLayout() {
-        super.refreshLayout()
+    override fun refreshLayout(
+        needToResetQueryParams: Boolean
+    ) {
+        super.refreshLayout(needToResetQueryParams)
         refreshProductRecommendation(TOKONOW_CLP)
     }
 

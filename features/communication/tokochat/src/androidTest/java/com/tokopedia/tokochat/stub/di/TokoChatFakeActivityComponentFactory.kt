@@ -3,7 +3,7 @@ package com.tokopedia.tokochat.stub.di
 import android.app.Application
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
-import com.tokochat.tokochat_config_common.di.module.TokoChatConfigContextModule
+import com.tokopedia.tokochat.config.di.module.TokoChatConfigContextModule
 import com.tokopedia.tokochat.di.TokoChatActivityComponentFactory
 import com.tokopedia.tokochat.di.TokoChatComponent
 import com.tokopedia.tokochat.stub.di.base.DaggerFakeBaseAppComponent

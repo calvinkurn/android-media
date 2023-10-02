@@ -150,7 +150,7 @@ class NavigationEventActivityTest {
     }
 
     private fun impression_banner() {
-        Espresso.onView(ViewMatchers.withId(R.id.banner_recyclerview))
+        Espresso.onView(ViewMatchers.withId(com.tokopedia.banner.R.id.banner_recyclerview))
             .perform(RecyclerViewActions.scrollToPosition<BannerViewPagerAdapter.BannerViewHolder>(1))
     }
 
@@ -158,7 +158,7 @@ class NavigationEventActivityTest {
         Intents.intending(IntentMatchers.anyIntent())
             .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
 
-        val viewInteraction = Espresso.onView(ViewMatchers.withId(R.id.banner_recyclerview))
+        val viewInteraction = Espresso.onView(ViewMatchers.withId(com.tokopedia.banner.R.id.banner_recyclerview))
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
         viewInteraction.perform(
             RecyclerViewActions.actionOnItemAtPosition<BannerViewPagerAdapter.BannerViewHolder>(

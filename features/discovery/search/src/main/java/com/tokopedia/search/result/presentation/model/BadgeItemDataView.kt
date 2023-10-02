@@ -13,7 +13,7 @@ data class BadgeItemDataView(
         fun create(otherRelatedProductBadge: OtherRelatedProductBadge) =
             BadgeItemDataView(
                 otherRelatedProductBadge.imageUrl,
-                "",
+                otherRelatedProductBadge.title,
                 otherRelatedProductBadge.isShown,
             )
     }

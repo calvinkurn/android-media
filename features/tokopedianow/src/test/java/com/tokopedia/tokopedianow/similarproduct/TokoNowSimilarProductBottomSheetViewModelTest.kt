@@ -116,9 +116,9 @@ class TokoNowSimilarProductBottomSheetViewModelTest {
             getSimilarProductUseCase.execute(any(), any(), any())
         } returns response
 
-        addressData = TokoNowLocalAddress(mockk(relaxed = true))
+        addressData = mockk(relaxed = true)
 
-        addressData.mockPrivateField("localAddressData", returnLocalCacheModel())
+        coEvery { addressData.getWarehouseId() } returns returnLocalCacheModel().warehouse_id.toLong()
 
         viewModel = TokoNowSimilarProductBottomSheetViewModel(
             getSimilarProductUseCase,

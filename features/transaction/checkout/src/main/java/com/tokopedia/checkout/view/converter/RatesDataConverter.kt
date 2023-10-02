@@ -2,6 +2,7 @@ package com.tokopedia.checkout.view.converter
 
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop
 import com.tokopedia.checkout.domain.model.cartshipmentform.Product
+import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartData
@@ -122,6 +123,10 @@ class RatesDataConverter @Inject constructor() {
         @JvmStatic
         fun getLogisticPromoCode(itemModel: ShipmentCartItemModel): String {
             return itemModel.voucherLogisticItemUiModel?.code ?: ""
+        }
+
+        fun getLogisticPromoCode(orderModel: CheckoutOrderModel): String {
+            return orderModel.shipment.courierItemData?.selectedShipper?.logPromoCode ?: ""
         }
     }
 }

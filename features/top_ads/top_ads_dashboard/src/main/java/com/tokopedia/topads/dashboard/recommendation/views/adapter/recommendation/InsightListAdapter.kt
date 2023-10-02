@@ -90,11 +90,11 @@ class InsightListAdapter(private val onInsightItemClick: (list: ArrayList<AdGrou
                     groupCardProgressBar.progressBarColor = intArrayOf(
                         ContextCompat.getColor(
                             view.context,
-                            com.tokopedia.unifycomponents.R.color.Unify_YN500
+                            com.tokopedia.unifyprinciples.R.color.Unify_YN500
                         ),
                         ContextCompat.getColor(
                             view.context,
-                            com.tokopedia.unifycomponents.R.color.Unify_YN500
+                            com.tokopedia.unifyprinciples.R.color.Unify_YN500
                         )
 
                     )
@@ -104,11 +104,11 @@ class InsightListAdapter(private val onInsightItemClick: (list: ArrayList<AdGrou
                     groupCardProgressBar.progressBarColor = intArrayOf(
                         ContextCompat.getColor(
                             view.context,
-                            com.tokopedia.unifycomponents.R.color.Unify_YN300
+                            com.tokopedia.unifyprinciples.R.color.Unify_YN300
                         ),
                         ContextCompat.getColor(
                             view.context,
-                            com.tokopedia.unifycomponents.R.color.Unify_YN300
+                            com.tokopedia.unifyprinciples.R.color.Unify_YN300
                         )
                     )
                     groupCardProgressBar.setValue(Utils().toProgressPercent(CONST_3), false)
@@ -117,11 +117,11 @@ class InsightListAdapter(private val onInsightItemClick: (list: ArrayList<AdGrou
                     groupCardProgressBar.progressBarColor = intArrayOf(
                         ContextCompat.getColor(
                             view.context,
-                            com.tokopedia.unifycomponents.R.color.Unify_GN200
+                            com.tokopedia.unifyprinciples.R.color.Unify_GN200
                         ),
                         ContextCompat.getColor(
                             view.context,
-                            com.tokopedia.unifycomponents.R.color.Unify_GN200
+                            com.tokopedia.unifyprinciples.R.color.Unify_GN200
                         )
                     )
                     groupCardProgressBar.setValue(Utils().toProgressPercent(CONST_2), false)
@@ -134,11 +134,11 @@ class InsightListAdapter(private val onInsightItemClick: (list: ArrayList<AdGrou
                         groupCardProgressBar.progressBarColor = intArrayOf(
                             ContextCompat.getColor(
                                 view.context,
-                                com.tokopedia.unifycomponents.R.color.Unify_GN200
+                                com.tokopedia.unifyprinciples.R.color.Unify_GN200
                             ),
                             ContextCompat.getColor(
                                 view.context,
-                                com.tokopedia.unifycomponents.R.color.Unify_GN200
+                                com.tokopedia.unifyprinciples.R.color.Unify_GN200
                             )
                         )
                         groupCardProgressBar.setValue(Utils().toProgressPercent(CONST_1), false)

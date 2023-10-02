@@ -20,7 +20,8 @@ import javax.inject.Inject
 /**
  * @author by furqan on 10/06/2021
  */
-abstract class BaseFlightActivity : BaseSimpleActivity(),
+abstract class BaseFlightActivity :
+    BaseSimpleActivity(),
     TravelMenuBottomSheet.TravelMenuListener {
 
     @Inject

@@ -2,17 +2,16 @@ package com.tokopedia.inbox.universalinbox.test
 
 import com.tokopedia.inbox.universalinbox.stub.data.response.GqlResponseStub
 import com.tokopedia.inbox.universalinbox.test.base.BaseUniversalInboxTest
+import com.tokopedia.inbox.universalinbox.test.robot.generalRobot
+import com.tokopedia.inbox.universalinbox.test.robot.menu.MenuResult.assertLabelMenu
 import com.tokopedia.inbox.universalinbox.test.robot.menu.MenuResult.assertMenuCounter
 import com.tokopedia.inbox.universalinbox.test.robot.menu.MenuResult.assertMenuCounterGone
-import com.tokopedia.inbox.universalinbox.test.robot.menu.MenuResult.assertMenuSectionOnPosition
 import com.tokopedia.inbox.universalinbox.test.robot.menu.MenuResult.assertNotificationCounter
 import com.tokopedia.inbox.universalinbox.test.robot.menu.MenuResult.assertNotificationCounterGone
 import com.tokopedia.inbox.universalinbox.test.robot.menu.MenuResult.assertSellerChatMenu
 import com.tokopedia.inbox.universalinbox.test.robot.menu.MenuResult.assertShopInfo
+import com.tokopedia.inbox.universalinbox.test.robot.menu.MenuResult.assertShopInfoGone
 import com.tokopedia.inbox.universalinbox.test.robot.menuRobot
-import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.ROLLENCE_KEY
-import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.ROLLENCE_TYPE_A
-import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.ROLLENCE_TYPE_B
 import com.tokopedia.test.application.annotations.UiTest
 import org.junit.Test
 
@@ -20,35 +19,13 @@ import org.junit.Test
 class UniversalInboxMenuTest : BaseUniversalInboxTest() {
 
     @Test
-    fun should_show_inbox_menu_with_section() {
-        // When
-        launchActivity()
-
-        // Then
-        assertMenuSectionOnPosition(1)
-    }
-
-    @Test
-    fun should_show_inbox_menu_without_section() {
-        // Given
-        setABValue(ROLLENCE_KEY, ROLLENCE_TYPE_B)
-
-        // When
-        launchActivity()
-
-        // Then
-        assertMenuSectionOnPosition(1, true)
-        setABValue(ROLLENCE_KEY, ROLLENCE_TYPE_A) // Reset
-    }
-
-    @Test
     fun should_show_chat_seller_when_user_has_shop() {
         // When
         launchActivity()
 
         // Then
-        assertSellerChatMenu(position = 3, hasShop = true)
-        assertShopInfo(position = 3)
+        assertSellerChatMenu(position = 2)
+        assertShopInfo(position = 2)
     }
 
     @Test
@@ -60,7 +37,8 @@ class UniversalInboxMenuTest : BaseUniversalInboxTest() {
         launchActivity()
 
         // Then
-        assertSellerChatMenu(position = 3, hasShop = false)
+        assertSellerChatMenu(position = 1)
+        assertShopInfoGone(position = 1)
     }
 
     @Test
@@ -74,7 +52,7 @@ class UniversalInboxMenuTest : BaseUniversalInboxTest() {
         launchActivity()
 
         // Then
-        assertMenuCounter(position = 2, counterText = "5")
+        assertMenuCounter(position = 1, counterText = "5")
     }
 
     @Test
@@ -88,7 +66,7 @@ class UniversalInboxMenuTest : BaseUniversalInboxTest() {
         launchActivity()
 
         // Then
-        assertMenuCounter(position = 2, counterText = "99+")
+        assertMenuCounter(position = 1, counterText = "99+")
     }
 
     @Test
@@ -148,7 +126,7 @@ class UniversalInboxMenuTest : BaseUniversalInboxTest() {
     }
 
     @Test
-    fun should_show_pull_to_refresh() {
+    fun should_show_pull_to_refresh_and_show_counter() {
         // When
         launchActivity()
 
@@ -161,12 +139,54 @@ class UniversalInboxMenuTest : BaseUniversalInboxTest() {
         }
 
         // When
+        generalRobot {
+            scrollToPosition(0)
+        }
         menuRobot {
             swipeDown()
         }
-        Thread.sleep(1000)
 
         // Then
         assertNotificationCounter("1")
+    }
+
+    @Test
+    fun should_show_pull_to_refresh_and_remove_counter() {
+        // Given
+        GqlResponseStub.counterResponse.editAndGetResponseObject {
+            it.allCounter.notifCenterUnread.notifUnread = "1"
+        }
+
+        // When
+        launchActivity()
+
+        // Then
+        assertNotificationCounter("1")
+
+        // Given
+        GqlResponseStub.counterResponse.editAndGetResponseObject {
+            it.allCounter.notifCenterUnread.notifUnread = "0"
+        }
+
+        // When
+        generalRobot {
+            scrollToPosition(0)
+        }
+        menuRobot {
+            swipeDown()
+        }
+
+        // Then
+        assertNotificationCounterGone()
+    }
+
+    @Test
+    fun should_show_label_when_menu_has_label() {
+        // When
+        launchActivity()
+        Thread.sleep(10000)
+
+        // Then
+        assertLabelMenu(position = 5)
     }
 }

@@ -356,6 +356,23 @@ class PlayBroQuizViewModelTest {
     }
 
     @Test
+    fun `when user click unknown game option should change interactive setup type to unknown type`(){
+        coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns mockConfig
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo,
+        )
+
+        robot.use {
+            val state = it.recordState {
+                getAccountConfiguration()
+                getViewModel().submitAction(PlayBroadcastAction.ClickGameOption(GameType.Unknown))
+            }
+            Assertions.assertThat(state.interactiveSetup.type).isEqualTo(GameType.Unknown)
+        }
+    }
+
+    @Test
     fun `when user fill input option data, quiz form state form data options must filled with input option value`(){
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns mockConfig
         coEvery { mockRepo.getInteractiveConfig(any(), any()) } returns mockInteractiveConfigResponse
@@ -405,7 +422,7 @@ class PlayBroQuizViewModelTest {
     }
 
     @Test
-    fun `when user click next on quiz`() {
+    fun `when user click next on quiz from nothing to preparation`() {
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns mockConfig
         coEvery { mockRepo.getInteractiveConfig(any(), any()) } returns mockInteractiveConfigResponse
         coEvery { mockRepo.getSellerLeaderboardWithSlot(any(), any()) } returns emptyList()
@@ -425,6 +442,31 @@ class PlayBroQuizViewModelTest {
             }
 
             state.quizForm.quizFormState.assertEqualTo(QuizFormStateUiModel.Preparation)
+        }
+    }
+
+    @Test
+    fun `when user click next on quiz from preparation to set duration`() {
+        coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns mockConfig
+        coEvery { mockRepo.getInteractiveConfig(any(), any()) } returns mockInteractiveConfigResponse
+        coEvery { mockRepo.getSellerLeaderboardWithSlot(any(), any()) } returns emptyList()
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo,
+            sharedPref =  mockSharedPref,
+            broadcastTimer = mockBroadcastTimer,
+        )
+
+        robot.use {
+            val state = it.recordState {
+                getAccountConfiguration()
+                startLive()
+                it.getViewModel().submitAction(PlayBroadcastAction.ClickNextOnQuiz)
+                it.getViewModel().submitAction(PlayBroadcastAction.ClickNextOnQuiz)
+            }
+
+            state.quizForm.quizFormState.assertEqualTo(QuizFormStateUiModel.SetDuration(isLoading = false))
         }
     }
 

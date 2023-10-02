@@ -23,6 +23,7 @@ object ProductDetailConstant {
     const val PDP_RESULT_PLT_NETWORK_METRICS = "pdp_result_plt_network_metrics"
     const val PDP_RESULT_PLT_RENDER_METRICS = "pdp_result_plt_render_metrics"
     const val PDP_RESULT_TRACE = "pdp_result_trace"
+    const val PDP_RESULT_TRACE_P2_DATA = "pdp_result_trace_p2_data"
 
     // PAYLOADS
     const val PAYLOAD_WISHLIST = 1
@@ -75,6 +76,7 @@ object ProductDetailConstant {
     const val PRODUCT_WHOLESALE_INFO = "wholesale"
     const val PRODUCT_SHOP_CREDIBILITY = "shop_credibility"
     const val PRODUCT_CUSTOM_INFO = "custom_info"
+    const val PRODUCT_DYNAMIC_ONELINER = "dynamic_oneliner"
     const val PRODUCT_SHOP_ADDITIONAL = "shop_additional"
     const val PRODUCT_INSTALLMENT_INFO = "installment"
     const val PRODUCT_INSTALLMENT_PAYLATER_INFO = "installment_paylater"
@@ -109,12 +111,15 @@ object ProductDetailConstant {
     const val DILAYANI_TOKOPEDIA = "dt_info"
     const val AR_BUTTON = "button_ar"
     const val RECOM_VERTICAL = "pdp_vertical"
+    const val A_PLUS_IMAGE = "product_detail_media"
 
     // custom info title as component type
     const val CUSTOM_INFO_TITLE = "custom_info_title"
 
     // custom info title as component name
     const val OTHER_OFFERS = "other_offers"
+    const val BMGM_TYPE = "bmgm"
+    const val BMGM_SNEAK_PEEK_NAME = "bmgm_sneak_peek"
 
     // Arguments
     const val ARG_PRODUCT_ID = "ARG_PRODUCT_ID"
@@ -199,4 +204,6 @@ object ProductDetailConstant {
 
     const val HTTP_PREFIX = "http"
     const val WEBVIEW_URL_PARAM = "url"
+
+    const val A_PLUS_CONTENT_DEFAULT_EXPANDED_STATE = false
 }

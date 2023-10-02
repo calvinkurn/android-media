@@ -4,6 +4,7 @@
     <string name="colored_asterisk"><![CDATA[<font color=\'#D6001C\'>&#160;*</font>]]></string>
     <string name="label_asterisk">&#160;*</string>
     <string name="action_continue">Lanjut</string>
+    <string name="action_back">Kembali</string>
 
     <!-- add edit product screen name -->
     <string name="product_add_edit_preview">Informasi Produk</string>
@@ -563,5 +564,12 @@
     <string name="product_add_edit_dt_action_edit_variant_type">atur</string>
     <string name="product_add_edit_success_to_deactivate_format">%s berhasil dinonaktifkan.</string>
     <string name="product_add_edit_cannot_deactivate_variant_campaign">Status produk tidak dapat diubah karena sedang dijadwalkan untuk memiliki promosi diskon</string>
+
+    <!-- Single Variant Validation-->
+    <string name="product_add_edit_single_product_variant_dialog_title">Oops, produkmu hanya punya satu varian</string>
+    <string name="product_add_edit_single_product_variant_dialog_desc">Masukkan keterangan varian ini ke Nama Produk atau Deskripsi jika memang tidak ada varian lain.</string>
+    <string name="product_add_edit_single_product_variant_dialog_delete">Hapus Varian</string>
+    <string name="product_add_edit_label_coachmark_variant_removed">Harga, Stok, Berat, dan SKU akan mengikuti data dari varian yang sudah kamu hapus. Cek lagi, ya.</string>
+    <string name="product_add_edit_label_toaster_variant_removed">Tipe varian behasil dihapus.</string>
 
 </resources>
