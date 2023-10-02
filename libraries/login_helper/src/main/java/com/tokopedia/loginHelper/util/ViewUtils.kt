@@ -3,13 +3,13 @@ package com.tokopedia.loginHelper.util
 import android.view.View
 import com.tokopedia.unifycomponents.Toaster
 
-fun View?.showToaster(message: String, ctaText: String = "") {
+fun View?.showToaster(message: String, ctaText: String = "", clickListener: (View) -> Unit = {}) {
     if (this == null) return
 
     if (ctaText.isEmpty()) {
         showToaster(message)
     } else {
-        showToasterWithCta(message, ctaText)
+        showToasterWithCta(message, ctaText, clickListener)
     }
 }
 
@@ -25,13 +25,18 @@ private fun View?.showToaster(message: String) {
     }
 }
 
-private fun View?.showToasterWithCta(message: String, ctaText: String) {
+private fun View?.showToasterWithCta(
+    message: String,
+    ctaText: String,
+    clickListener: (View) -> Unit
+) {
     Toaster.build(
         this ?: return,
         message,
         Toaster.LENGTH_LONG,
         Toaster.TYPE_NORMAL,
-        ctaText
+        ctaText,
+        clickListener = clickListener
     ).apply {
         anchorView = this@showToasterWithCta
         show()

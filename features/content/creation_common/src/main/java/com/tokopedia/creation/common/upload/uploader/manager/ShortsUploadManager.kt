@@ -31,22 +31,12 @@ import javax.inject.Inject
 class ShortsUploadManager @Inject constructor(
     @ApplicationContext private val appContext: Context,
     private val notificationManager: ShortsUploadNotificationManager,
+    private val uploaderUseCase: UploaderUseCase,
+    private val updateChannelUseCase: PlayBroadcastUpdateChannelUseCase,
+    private val addMediaUseCase: BroadcasterAddMediasUseCase,
+    private val dispatchers: CoroutineDispatchers,
+    private val snapshotHelper: VideoSnapshotHelper,
 ) : CreationUploadManager {
-
-    @Inject
-    lateinit var uploaderUseCase: UploaderUseCase
-
-    @Inject
-    lateinit var updateChannelUseCase: PlayBroadcastUpdateChannelUseCase
-
-    @Inject
-    lateinit var addMediaUseCase: BroadcasterAddMediasUseCase
-
-    @Inject
-    lateinit var dispatchers: CoroutineDispatchers
-
-    @Inject
-    lateinit var snapshotHelper: VideoSnapshotHelper
 
     private var currentProgress = 0
 

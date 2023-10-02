@@ -21,23 +21,21 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.discovery2.data.ComponentsItem
-import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.MoveAction
 import com.tokopedia.discovery2.datamapper.discoComponentQuery
 import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.QUERY_PARENT
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
 import com.tokopedia.minicart.common.domain.data.*
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
+import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.user.session.UserSession
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.plus
 import java.net.URLDecoder
 import java.net.URLEncoder
 import java.text.ParseException
@@ -46,20 +44,8 @@ import java.util.*
 import java.util.regex.Pattern
 import kotlin.math.floor
 
-const val LIGHT_GREY = "lightGrey"
-const val LIGHT_BLUE = "lightBlue"
-const val LIGHT_GREEN = "lightGreen"
-const val LIGHT_RED = "lightRed"
-const val LIGHT_ORANGE = "lightOrange"
-const val DARK_GREY = "darkGrey"
-const val DARK_BLUE = "darkBlue"
-const val DARK_GREEN = "darkGreen"
-const val DARK_RED = "darkRed"
-const val DARK_ORANGE = "darkOrange"
-const val TRANSPARENT_BLACK = "transparentBlack"
 const val LABEL_PRODUCT_STATUS = "status"
 const val LABEL_PRICE = "price"
-const val PDP_APPLINK = "tokopedia://product/"
 const val TIME_DISPLAY_FORMAT = "%1$02d"
 const val DEFAULT_TIME_DATA: Long = 0
 const val CONSTANT_10_e = 1e1
@@ -69,11 +55,10 @@ const val CONSTANT_11 = 11
 const val CONSTANT_19 = 19
 
 class Utils {
-
     companion object {
         const val TIME_ZONE = "Asia/Jakarta"
         const val TIMER_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm"
-        const val TIMER_SPRINT_SALE_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss"
+        private const val TIMER_SPRINT_SALE_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss"
         const val DEFAULT_BANNER_WIDTH = 800
         const val DEFAULT_BANNER_HEIGHT = 150
         const val DEFAULT_BANNER_WEIGHT = 1.0f
@@ -82,8 +67,6 @@ class Utils {
         const val BANNER_SUBSCRIPTION_REMINDED_STATUS = 1
         const val BANNER_SUBSCRIPTION_UNREMINDED_STATUS = 0
         const val SEARCH_DEEPLINK = "tokopedia://search-autocomplete"
-        const val CART_CACHE_NAME = "CART"
-        const val CART_TOTAL_CACHE_KEY = "CACHE_TOTAL_CART"
         private const val SERIBU = 1000
         private const val SEJUTA = 1000000
         private const val SEMILIAR = 1000000000
@@ -106,12 +89,12 @@ class Utils {
         const val RPC_NEXT_PAGE = "rpc_next_page"
         const val RPC_FILTER_KEY = "rpc_"
         const val DARK_MODE = "dark_mode"
-        const val DEFAULT_ENCODING = "UTF-8"
+        private const val DEFAULT_ENCODING = "UTF-8"
 
         private val setOfKeysToNotSendToShare = mutableSetOf(
             DiscoveryActivity.AFFILIATE_UNIQUE_ID,
             DiscoveryActivity.CHANNEL,
-            DiscoveryActivity.QUERY_PARENT,
+            QUERY_PARENT,
             DiscoveryActivity.SOURCE
         )
 
@@ -124,7 +107,9 @@ class Utils {
                 // Added temp fix for disco to handled in invlaid url from backend
 
                 try {
-                    val newUrl = uri?.getQueryParameter(dimension)?.replace("[^-?0-9]+".toRegex(), " ")?.replace("?", "")
+                    val newUrl =
+                        uri?.getQueryParameter(dimension)?.replace("[^-?0-9]+".toRegex(), " ")
+                            ?.replace("?", "")
                     val parts = newUrl?.trim()?.split(" ")
                     return parts?.get(0)?.toInt()
                 } catch (e: Exception) {
@@ -145,18 +130,30 @@ class Utils {
             countView >= SERIBU && countView < SEJUTA -> {
                 getDisplayValue(getDecimalFormatted(countView / SERIBU), SERIBU_TEXT, notifyMeText)
             }
+
             countView >= SEJUTA && countView < SEMILIAR -> {
                 getDisplayValue(getDecimalFormatted(countView / SEJUTA), SEJUTA_TEXT, notifyMeText)
             }
+
             countView >= SEMILIAR -> {
-                getDisplayValue(getDecimalFormatted(countView / SEMILIAR), SEMILIAR_TEXT, notifyMeText)
+                getDisplayValue(
+                    getDecimalFormatted(countView / SEMILIAR),
+                    SEMILIAR_TEXT,
+                    notifyMeText
+                )
             }
+
             else -> ""
         }
 
-        private fun getDecimalFormatted(currentViewCount: Double) = floor(currentViewCount * CONSTANT_10_e) / CONSTANT_10_e
+        private fun getDecimalFormatted(currentViewCount: Double) =
+            floor(currentViewCount * CONSTANT_10_e) / CONSTANT_10_e
 
-        private fun getDisplayValue(convertedValue: Double, text: String, notifyMeText: String): String {
+        private fun getDisplayValue(
+            convertedValue: Double,
+            text: String,
+            notifyMeText: String
+        ): String {
             return if (convertedValue > VIEW_LIMIT) {
                 "${convertedValue.toString().replace('.', ',')} $text $notifyMeText"
             } else {
@@ -204,7 +201,11 @@ class Utils {
             return getComponentsGQLParams(componentId, pageIdentifier, queryString.toString())
         }
 
-        fun getComponentsGQLParams(componentId: String, pageIdentifier: String, queryString: String): MutableMap<String, Any> {
+        fun getComponentsGQLParams(
+            componentId: String,
+            pageIdentifier: String,
+            queryString: String
+        ): MutableMap<String, Any> {
             val queryParameterMap = mutableMapOf<String, Any>()
             queryParameterMap[IDENTIFIER] = pageIdentifier
             queryParameterMap[DEVICE] = DEVICE_VALUE
@@ -227,12 +228,30 @@ class Utils {
         fun addAddressQueryMap(userAddressData: LocalCacheModel?): MutableMap<String, String> {
             val addressQueryParameterMap = mutableMapOf<String, String>()
             userAddressData?.let {
-                if (it.address_id.isNotEmpty()) addressQueryParameterMap[Constant.ChooseAddressQueryParams.RPC_USER_ADDRESS_ID] = it.address_id
-                if (it.city_id.isNotEmpty()) addressQueryParameterMap[Constant.ChooseAddressQueryParams.RPC_USER_CITY_ID] = it.city_id
-                if (it.district_id.isNotEmpty()) addressQueryParameterMap[Constant.ChooseAddressQueryParams.RPC_USER_DISTRICT_ID] = it.district_id
-                if (it.lat.isNotEmpty()) addressQueryParameterMap[Constant.ChooseAddressQueryParams.RPC_USER_LAT] = it.lat
-                if (it.long.isNotEmpty()) addressQueryParameterMap[Constant.ChooseAddressQueryParams.RPC_USER_LONG] = it.long
-                if (it.postal_code.isNotEmpty()) addressQueryParameterMap[Constant.ChooseAddressQueryParams.RPC_USER_POST_CODE] = it.postal_code
+                if (it.address_id.isNotEmpty()) {
+                    addressQueryParameterMap[Constant.ChooseAddressQueryParams.RPC_USER_ADDRESS_ID] =
+                        it.address_id
+                }
+                if (it.city_id.isNotEmpty()) {
+                    addressQueryParameterMap[Constant.ChooseAddressQueryParams.RPC_USER_CITY_ID] =
+                        it.city_id
+                }
+                if (it.district_id.isNotEmpty()) {
+                    addressQueryParameterMap[Constant.ChooseAddressQueryParams.RPC_USER_DISTRICT_ID] =
+                        it.district_id
+                }
+                if (it.lat.isNotEmpty()) {
+                    addressQueryParameterMap[Constant.ChooseAddressQueryParams.RPC_USER_LAT] =
+                        it.lat
+                }
+                if (it.long.isNotEmpty()) {
+                    addressQueryParameterMap[Constant.ChooseAddressQueryParams.RPC_USER_LONG] =
+                        it.long
+                }
+                if (it.postal_code.isNotEmpty()) {
+                    addressQueryParameterMap[Constant.ChooseAddressQueryParams.RPC_USER_POST_CODE] =
+                        it.postal_code
+                }
             }
             return addressQueryParameterMap
         }
@@ -241,10 +260,12 @@ class Utils {
             val addressQueryParameterMap = addAddressQueryMap(userAddressData)
             userAddressData?.let {
                 if (it.warehouse_id.isNotEmpty()) {
-                    addressQueryParameterMap[Constant.ChooseAddressQueryParams.RPC_USER_WAREHOUSE_ID] = userAddressData.warehouse_id
+                    addressQueryParameterMap[Constant.ChooseAddressQueryParams.RPC_USER_WAREHOUSE_ID] =
+                        userAddressData.warehouse_id
                 }
                 if (!it.warehouses.isNullOrEmpty()) {
-                    addressQueryParameterMap[Constant.ChooseAddressQueryParams.RPC_USER_WAREHOUSE_IDS] = setUserWarehouseIds(userAddressData.warehouses)
+                    addressQueryParameterMap[Constant.ChooseAddressQueryParams.RPC_USER_WAREHOUSE_IDS] =
+                        setUserWarehouseIds(userAddressData.warehouses)
                 }
             }
             return addressQueryParameterMap
@@ -262,7 +283,10 @@ class Utils {
             return queryParameterMap[QUERY_PARENT] ?: ""
         }
 
-        fun isFutureSale(saleStartDate: String, timerFormat: String = TIMER_SPRINT_SALE_DATE_FORMAT): Boolean {
+        fun isFutureSale(
+            saleStartDate: String,
+            timerFormat: String = TIMER_SPRINT_SALE_DATE_FORMAT
+        ): Boolean {
             if (saleStartDate.isEmpty()) return false
             val currentSystemTime = Calendar.getInstance().time
             val parsedDate = parseData(saleStartDate, timerFormat)
@@ -273,7 +297,11 @@ class Utils {
             }
         }
 
-        fun isFutureSaleOngoing(saleStartDate: String, saleEndDate: String, timerFormat: String = TIMER_SPRINT_SALE_DATE_FORMAT): Boolean {
+        fun isFutureSaleOngoing(
+            saleStartDate: String,
+            saleEndDate: String,
+            timerFormat: String = TIMER_SPRINT_SALE_DATE_FORMAT
+        ): Boolean {
             if (saleStartDate.isEmpty() || saleEndDate.isEmpty()) return false
             val currentSystemTime = Calendar.getInstance().time
             val parsedSaleStartDate = parseData(saleStartDate, timerFormat)
@@ -285,7 +313,10 @@ class Utils {
             }
         }
 
-        fun isSaleOver(saleEndDate: String, timerFormat: String = TIMER_SPRINT_SALE_DATE_FORMAT): Boolean {
+        fun isSaleOver(
+            saleEndDate: String,
+            timerFormat: String = TIMER_SPRINT_SALE_DATE_FORMAT
+        ): Boolean {
             if (saleEndDate.isEmpty()) return true
             val currentSystemTime = Calendar.getInstance().time
             val parsedDate = parseData(saleEndDate, timerFormat)
@@ -365,7 +396,10 @@ class Utils {
             return DEFAULT_TIME_DATA
         }
 
-        fun getShareUrlQueryParamAppended(url: String?, queryParameterMap: Map<String, String?>?): String {
+        fun getShareUrlQueryParamAppended(
+            url: String?,
+            queryParameterMap: Map<String, String?>?
+        ): String {
             var isAllKeyNullOrEmpty = true
             val queryString = StringBuilder()
             val queryParent = queryParameterMap?.get(QUERY_PARENT)
@@ -448,13 +482,26 @@ class Utils {
             }
         }
 
-        fun corners(view: View, leftOffset: Int, topOffset: Int, rightOffset: Int, bottomOffset: Int, radius: Float) {
+        fun corners(
+            view: View,
+            leftOffset: Int,
+            topOffset: Int,
+            rightOffset: Int,
+            bottomOffset: Int,
+            radius: Float
+        ) {
             try {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     view.outlineProvider = object : ViewOutlineProvider() {
                         @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
                         override fun getOutline(view: View?, outline: Outline?) {
-                            outline?.setRoundRect(leftOffset, topOffset, (view?.width).toZeroIfNull() + rightOffset, (view?.height).toZeroIfNull() + bottomOffset, radius)
+                            outline?.setRoundRect(
+                                leftOffset,
+                                topOffset,
+                                (view?.width).toZeroIfNull() + rightOffset,
+                                (view?.height).toZeroIfNull() + bottomOffset,
+                                radius
+                            )
                         }
                     }
                     view.clipToOutline = true
@@ -470,12 +517,25 @@ class Utils {
             if (map == null) return
             products.forEach { componentsItem ->
                 componentsItem.data?.firstOrNull()?.let { dataItem ->
-                    if (dataItem.hasATC && !dataItem.parentProductId.isNullOrEmpty() && map.containsKey(MiniCartItemKey(dataItem.parentProductId ?: "", type = MiniCartItemType.PARENT))) {
-                        map.getMiniCartItemParentProduct(dataItem.parentProductId ?: "")?.totalQuantity?.let { quantity ->
+                    if (dataItem.hasATC && !dataItem.parentProductId.isNullOrEmpty() && map.containsKey(
+                            MiniCartItemKey(
+                                    dataItem.parentProductId ?: "",
+                                    type = MiniCartItemType.PARENT
+                                )
+                        )
+                    ) {
+                        map.getMiniCartItemParentProduct(
+                            dataItem.parentProductId ?: ""
+                        )?.totalQuantity?.let { quantity ->
                             dataItem.quantity = quantity
                         }
-                    } else if (dataItem.hasATC && !dataItem.productId.isNullOrEmpty() && map.containsKey(MiniCartItemKey(dataItem.productId ?: ""))) {
-                        map.getMiniCartItemProduct(dataItem.productId ?: "")?.quantity?.let { quantity ->
+                    } else if (dataItem.hasATC && !dataItem.productId.isNullOrEmpty() && map.containsKey(
+                            MiniCartItemKey(dataItem.productId ?: "")
+                        )
+                    ) {
+                        map.getMiniCartItemProduct(
+                            dataItem.productId ?: ""
+                        )?.quantity?.let { quantity ->
                             dataItem.quantity = quantity
                         }
                     }
@@ -486,7 +546,10 @@ class Utils {
         fun getParentPosition(componentsItem: ComponentsItem): Int {
             var parentComponentPosition = componentsItem.parentComponentPosition
             if (componentsItem.parentComponentId.isNotEmpty()) {
-                getComponent(componentsItem.parentComponentId, componentsItem.pageEndPoint)?.let { parentComp ->
+                getComponent(
+                    componentsItem.parentComponentId,
+                    componentsItem.pageEndPoint
+                )?.let { parentComp ->
                     parentComponentPosition = parentComp.position
                 }
             }
@@ -572,7 +635,11 @@ class Utils {
             return (dp * Resources.getSystem().displayMetrics.density)
         }
 
-        fun setParameterMapUtil(queryParameterMap: String?, queryParameterMapWithRpc: MutableMap<String, String>, queryParameterMapWithoutRpc: MutableMap<String, String>) {
+        fun setParameterMapUtil(
+            queryParameterMap: String?,
+            queryParameterMapWithRpc: MutableMap<String, String>,
+            queryParameterMapWithoutRpc: MutableMap<String, String>
+        ) {
             val queryMap =
                 URLParser(ApplinkConstInternalDiscovery.INTERNAL_DISCOVERY + "?" + queryParameterMap).paramKeyValueMapDecoded
             for ((key, value) in queryMap) {
@@ -587,7 +654,7 @@ class Utils {
             }
         }
 
-        fun routingBasedOnMoveAction(moveAction : MoveAction, fragment : Fragment){
+        fun routingBasedOnMoveAction(moveAction: MoveAction, fragment: Fragment) {
             when (moveAction.type) {
                 Constant.REDIRECTION -> {
                     if (!moveAction.value.isNullOrEmpty()) {
@@ -603,7 +670,7 @@ class Utils {
             }
         }
 
-        fun setTabSelectedBasedOnDataItem(componentItem: ComponentsItem, isSelected: Boolean){
+        fun setTabSelectedBasedOnDataItem(componentItem: ComponentsItem, isSelected: Boolean) {
             componentItem.apply {
                 if (!data.isNullOrEmpty()) {
                     data?.get(0)?.let { tabData ->
@@ -611,6 +678,89 @@ class Utils {
                     }
                 }
             }
+        }
+
+        fun navIcons(
+            navIconBuilderFlag: IconBuilderFlag,
+            onClick: () -> Unit,
+            handleGlobalNavCartClick: () -> Unit,
+            handleGlobalMenuCartClick: () -> Unit
+        ): MutableMap<Int, IconBuilder> {
+            val navIconMap = mutableMapOf<Int, IconBuilder>()
+            navIconMap[1] = IconBuilder(navIconBuilderFlag).addIcon(
+                iconId = IconList.ID_SHARE,
+                disableRouteManager = true,
+                onClick = onClick,
+                disableDefaultGtmTracker = true
+            ).addIcon(
+                iconId = IconList.ID_CART,
+                onClick = handleGlobalNavCartClick,
+                disableDefaultGtmTracker = true
+            )
+
+            navIconMap[2] = IconBuilder(navIconBuilderFlag).addIcon(
+                iconId = IconList.ID_SHARE,
+                disableRouteManager = true,
+                onClick = onClick,
+                disableDefaultGtmTracker = true
+            ).addIcon(
+                iconId = IconList.ID_NAV_GLOBAL,
+                onClick = handleGlobalMenuCartClick,
+                disableDefaultGtmTracker = true
+            )
+
+            navIconMap[3] = IconBuilder(navIconBuilderFlag).addIcon(
+                iconId = IconList.ID_SHARE,
+                disableRouteManager = true,
+                onClick = onClick,
+                disableDefaultGtmTracker = true
+            ).addIcon(
+                iconId = IconList.ID_CART,
+                onClick = handleGlobalNavCartClick,
+                disableDefaultGtmTracker = true
+            )
+                .addIcon(
+                    iconId = IconList.ID_NAV_GLOBAL,
+                    onClick = handleGlobalMenuCartClick,
+                    disableDefaultGtmTracker = true
+                )
+
+            navIconMap[12] = IconBuilder(navIconBuilderFlag).addIcon(
+                iconId = IconList.ID_SHARE,
+                disableRouteManager = true,
+                onClick = onClick,
+                disableDefaultGtmTracker = true
+            )
+
+            navIconMap[13] = IconBuilder(navIconBuilderFlag).addIcon(
+                iconId = IconList.ID_SHARE,
+                disableRouteManager = true,
+                onClick = onClick,
+                disableDefaultGtmTracker = true
+            ).addIcon(
+                iconId = IconList.ID_CART,
+                onClick = handleGlobalNavCartClick,
+                disableDefaultGtmTracker = true
+            )
+
+            navIconMap[23] = IconBuilder(navIconBuilderFlag).addIcon(
+                iconId = IconList.ID_SHARE,
+                disableRouteManager = true,
+                onClick = onClick,
+                disableDefaultGtmTracker = true
+            ).addIcon(
+                iconId = IconList.ID_NAV_GLOBAL,
+                onClick = handleGlobalMenuCartClick,
+                disableDefaultGtmTracker = true
+            )
+
+            navIconMap[123] = IconBuilder(navIconBuilderFlag).addIcon(
+                iconId = IconList.ID_SHARE,
+                disableRouteManager = true,
+                onClick = onClick,
+                disableDefaultGtmTracker = true
+            )
+            return navIconMap
         }
     }
 }

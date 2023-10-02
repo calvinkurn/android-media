@@ -122,7 +122,7 @@ class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(
                     removeConsentCollectionObserver()
                 }
             }
-            load(lifecycleOwner, viewModelStoreOwner, consentCollectionParam)
+            load(consentCollectionParam)
         }
     }
 
@@ -155,7 +155,7 @@ class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(
                     isCheckoutButtonEnabled = true
                 }
             }
-            load(lifecycleOwner, viewModelStoreOwner, consentCollectionParam)
+            load(consentCollectionParam)
         }
     }
 

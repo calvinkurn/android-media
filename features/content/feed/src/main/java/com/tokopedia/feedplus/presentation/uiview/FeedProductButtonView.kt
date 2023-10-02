@@ -5,6 +5,7 @@ import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
 import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
 import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
 import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
+import com.tokopedia.feedplus.presentation.model.FeedTopAdsTrackerDataModel
 import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
 import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView.Companion.PRODUCT_COUNT_NINETY_NINE
 import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView.Companion.PRODUCT_COUNT_ZERO
@@ -32,13 +33,14 @@ class FeedProductButtonView(
         products: List<FeedCardProductModel>,
         totalProducts: Int,
         trackerData: FeedTrackerDataModel?,
+        topAdsTrackerData: FeedTopAdsTrackerDataModel?,
         positionInFeed: Int
     ) {
         with(binding) {
             bind(products, totalProducts)
 
             icPlayProductSeeMore.setOnClickListener {
-                listener.onProductTagButtonClicked(
+                onClick(
                     postId,
                     author,
                     postType,
@@ -47,11 +49,12 @@ class FeedProductButtonView(
                     hasVoucher,
                     products,
                     trackerData,
+                    topAdsTrackerData,
                     positionInFeed
                 )
             }
             tvPlayProductCount.setOnClickListener {
-                listener.onProductTagButtonClicked(
+                onClick(
                     postId,
                     author,
                     postType,
@@ -60,10 +63,39 @@ class FeedProductButtonView(
                     hasVoucher,
                     products,
                     trackerData,
+                    topAdsTrackerData,
                     positionInFeed
                 )
             }
         }
+    }
+
+    private fun onClick(
+        postId: String,
+        author: FeedAuthorModel,
+        postType: String,
+        isFollowing: Boolean,
+        campaign: FeedCardCampaignModel,
+        hasVoucher: Boolean,
+        products: List<FeedCardProductModel>,
+        trackerData: FeedTrackerDataModel?,
+        topAdsTrackerData: FeedTopAdsTrackerDataModel?,
+        positionInFeed: Int
+    ) {
+        topAdsTrackerData?.let {
+            listener.onTopAdsClick(it)
+        }
+        listener.onProductTagButtonClicked(
+            postId,
+            author,
+            postType,
+            isFollowing,
+            campaign,
+            hasVoucher,
+            products,
+            trackerData,
+            positionInFeed
+        )
     }
 
     private fun bind(products: List<FeedCardProductModel>, totalProducts: Int) {
