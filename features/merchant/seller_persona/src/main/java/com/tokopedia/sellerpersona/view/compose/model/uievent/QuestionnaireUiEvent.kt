@@ -12,7 +12,7 @@ sealed class QuestionnaireUiEvent {
     ) : QuestionnaireUiEvent()
 
     data class OnMultipleOptionChecked(
-        val option: BaseOptionUiModel.QuestionOptionSingleUiModel,
+        val option: BaseOptionUiModel.QuestionOptionMultipleUiModel,
         val isChecked: Boolean
     ) : QuestionnaireUiEvent()
 

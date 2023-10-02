@@ -45,7 +45,7 @@ import com.tokopedia.sellerpersona.view.compose.model.uievent.ResultUiEvent
 import com.tokopedia.sellerpersona.view.model.PersonaDataUiModel
 import com.tokopedia.sellerpersona.view.model.PersonaStatus
 import com.tokopedia.sellerpersona.view.model.PersonaUiModel
-import com.tokopedia.iconunify.R as iconUnifyR
+import com.tokopedia.iconunify.R as iconunifyR
 
 /**
  * Created by @ilhamsuaib on 12/07/23.
@@ -154,11 +154,9 @@ private fun ManualSelectPersonaComponent(persona: String, onEvent: (ResultUiEven
         modifier = Modifier
             .padding(top = 26.dp, bottom = 18.dp)
             .fillMaxWidth(),
-        onClickText = { offset ->
-            annotatedString.getStringAnnotations(offset, offset).firstOrNull()?.let { span ->
-                when (span.item) {
-                    clickable -> onEvent(ResultUiEvent.SelectPersona(persona))
-                }
+        onClickText = { spannedRange ->
+            when (spannedRange.item) {
+                clickable -> onEvent(ResultUiEvent.SelectPersona(persona))
             }
         })
 }
@@ -194,7 +192,7 @@ private fun LazyListScope.renderResultContentSectionUi(data: PersonaDataUiModel)
                 .padding(start = 12.dp, end = 16.dp)
         ) {
             Icon(
-                painter = painterResource(iconUnifyR.drawable.iconunify_check),
+                painter = painterResource(iconunifyR.drawable.iconunify_check),
                 contentDescription = null,
                 tint = NestTheme.colors.GN._500,
                 modifier = Modifier.size(24.dp)
@@ -222,7 +220,7 @@ private fun LazyListScope.renderResultContentSectionUi(data: PersonaDataUiModel)
                 modifier = Modifier.padding(start = 16.dp, end = 16.dp)
             ) {
                 Icon(
-                    painter = painterResource(iconUnifyR.drawable.iconunify_lightbulb),
+                    painter = painterResource(iconunifyR.drawable.iconunify_lightbulb),
                     contentDescription = null,
                     tint = NestTheme.colors.GN._500,
                     modifier = Modifier.size(20.dp)

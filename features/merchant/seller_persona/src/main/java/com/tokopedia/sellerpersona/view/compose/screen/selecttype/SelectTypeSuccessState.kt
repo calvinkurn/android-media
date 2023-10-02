@@ -41,6 +41,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import com.google.accompanist.pager.ExperimentalPagerApi
 import com.tokopedia.nest.components.ButtonVariant
 import com.tokopedia.nest.components.NestButton
 import com.tokopedia.nest.components.NestImage
@@ -54,6 +55,7 @@ import com.tokopedia.sellerpersona.R
 import com.tokopedia.sellerpersona.view.compose.model.state.SelectTypeState
 import com.tokopedia.sellerpersona.view.compose.model.uievent.SelectTypeUiEvent
 import com.tokopedia.sellerpersona.view.model.PersonaUiModel
+import com.tokopedia.iconunify.R as iconunifyR
 
 /**
  * Created by @ilhamsuaib on 26/07/23.
@@ -63,7 +65,7 @@ private const val SUB_TITLE_FORMAT = "(%s)"
 private val CARD_WIDTH = 300.dp
 private val CARD_SPACE_DP = 16.dp
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalPagerApi::class)
 @Composable
 internal fun PersonSuccessState(
     data: SelectTypeState.Data, onEvent: (SelectTypeUiEvent) -> Unit
@@ -271,7 +273,7 @@ private fun PersonaTypeItemCard(persona: PersonaUiModel, onClicked: () -> Unit) 
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Icon(
-                            painter = painterResource(com.tokopedia.iconunify.R.drawable.iconunify_check),
+                            painter = painterResource(iconunifyR.drawable.iconunify_check),
                             contentDescription = null,
                             tint = NestTheme.colors.GN._500,
                             modifier = Modifier.size(24.dp)

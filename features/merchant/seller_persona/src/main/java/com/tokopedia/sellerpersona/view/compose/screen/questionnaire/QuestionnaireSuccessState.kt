@@ -1,19 +1,15 @@
 package com.tokopedia.sellerpersona.view.compose.screen.questionnaire
 
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
-import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.Checkbox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -24,6 +20,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.rememberPagerState
 import com.tokopedia.nest.components.ButtonVariant
 import com.tokopedia.nest.components.NestButton
 import com.tokopedia.nest.principles.NestTypography
@@ -32,12 +31,14 @@ import com.tokopedia.sellerpersona.view.compose.model.state.QuestionnaireState
 import com.tokopedia.sellerpersona.view.compose.model.uievent.QuestionnaireUiEvent
 import com.tokopedia.sellerpersona.view.model.BaseOptionUiModel
 import com.tokopedia.sellerpersona.view.model.QuestionnairePagerUiModel
+import com.tokopedia.unifycomponents.compose.NestCheckbox
+import com.tokopedia.sellerpersona.R as sellerpersonaR
 
 /**
  * Created by @ilhamsuaib on 28/07/23.
  */
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun QuestionnaireSuccessState(
     data: QuestionnaireState.Data,
@@ -46,8 +47,9 @@ fun QuestionnaireSuccessState(
     ConstraintLayout(modifier = Modifier.fillMaxSize()) {
         val (questionnairePager, prevBtn, nextBtn) = createRefs()
 
-        val listState = rememberLazyListState()
-        LazyRow(
+        val pagerState = rememberPagerState()
+        HorizontalPager(
+            count = data.questionnaireList.size,
             modifier = Modifier
                 .constrainAs(questionnairePager) {
                     top.linkTo(parent.top)
@@ -57,16 +59,14 @@ fun QuestionnaireSuccessState(
                     width = Dimension.fillToConstraints
                     height = Dimension.fillToConstraints
                 },
-            flingBehavior = rememberSnapFlingBehavior(listState),
-            userScrollEnabled = false
-        ) {
-            itemsIndexed(items = data.questionnaireList) { i, questionnaire ->
-                QuestionnairePager(i, questionnaire, event)
-            }
+            state = pagerState,
+        ) { pageIndex ->
+            val questionnaire = data.questionnaireList[pageIndex]
+            QuestionnairePager(pageIndex, questionnaire, event)
         }
 
         NestButton(
-            text = stringResource(com.tokopedia.sellerpersona.R.string.sp_previous),
+            text = stringResource(sellerpersonaR.string.sp_previous),
             modifier = Modifier.constrainAs(prevBtn) {
                 start.linkTo(parent.start, margin = 16.dp)
                 bottom.linkTo(parent.bottom, margin = 16.dp)
@@ -79,7 +79,7 @@ fun QuestionnaireSuccessState(
         )
 
         NestButton(
-            text = stringResource(com.tokopedia.sellerpersona.R.string.sp_next),
+            text = stringResource(sellerpersonaR.string.sp_next),
             modifier = Modifier.constrainAs(nextBtn) {
                 end.linkTo(parent.end, margin = 16.dp)
                 bottom.linkTo(parent.bottom, margin = 16.dp)
@@ -97,7 +97,11 @@ fun QuestionnairePager(
     questionnaire: QuestionnairePagerUiModel,
     event: (QuestionnaireUiEvent) -> Unit
 ) {
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(start = 24.dp, end = 24.dp, top = 32.dp, bottom = 32.dp)
+    ) {
         NestTypography(
             modifier = Modifier.fillMaxWidth(),
             text = questionnaire.questionTitle,
@@ -105,6 +109,7 @@ fun QuestionnairePager(
                 fontWeight = FontWeight.Bold
             )
         )
+        Spacer(modifier = Modifier.height(8.dp))
         NestTypography(
             modifier = Modifier.fillMaxWidth(),
             text = questionnaire.questionSubtitle,
@@ -112,8 +117,13 @@ fun QuestionnairePager(
                 color = NestTheme.colors.NN._600
             )
         )
-
-        LazyRow(modifier = Modifier.fillMaxSize()) {
+        Spacer(modifier = Modifier.height(24.dp))
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight(),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
             items(items = questionnaire.options.orEmpty()) { option ->
                 when (option) {
                     is BaseOptionUiModel.QuestionOptionSingleUiModel -> {
@@ -134,7 +144,19 @@ fun QuestionnaireItemMultipleAnswer(
     option: BaseOptionUiModel.QuestionOptionMultipleUiModel,
     event: (QuestionnaireUiEvent) -> Unit
 ) {
-
+    val isChecked = remember { mutableStateOf(option.isSelected) }
+    val onClick: (Boolean) -> Unit = {
+        event(QuestionnaireUiEvent.OnMultipleOptionChecked(option, it))
+        isChecked.value = it
+    }
+    NestCheckbox(
+        text = option.title,
+        isChecked = isChecked.value,
+        onCheckedChange = {
+            onClick(it)
+        },
+        modifier = Modifier.fillMaxWidth()
+    )
 }
 
 @Composable
@@ -142,39 +164,7 @@ fun QuestionnaireItemSingleAnswer(
     option: BaseOptionUiModel.QuestionOptionSingleUiModel,
     event: (QuestionnaireUiEvent) -> Unit
 ) {
-    val isChecked = remember {
-        mutableStateOf(option.isSelected)
-    }
-    val onClick: (Boolean) -> Unit = {
-        event(QuestionnaireUiEvent.OnMultipleOptionChecked(option, it))
-        isChecked.value = it
-    }
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(
-                indication = null,
-                interactionSource = MutableInteractionSource(),
-                onClick = {
-                    onClick(!isChecked.value)
-                }
-            )
-    ) {
-        Checkbox(
-            checked = isChecked.value,
-            onCheckedChange = {
-                onClick(it)
-            },
-            modifier = Modifier.wrapContentWidth()
-        )
-        NestTypography(
-            modifier = Modifier.weight(1f),
-            text = option.title,
-            textStyle = NestTheme.typography.display2.copy(
-                color = NestTheme.colors.NN._600
-            )
-        )
-    }
+    NestTypography(text = option.title, modifier = Modifier.fillMaxWidth())
 }
 
 @Preview

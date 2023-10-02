@@ -12,6 +12,10 @@ import javax.inject.Inject
 
 class QuestionnaireMapper @Inject constructor() {
 
+    companion object {
+        private const val SINGLE_OPTION_TEXT_FORMAT = "%s. %s"
+    }
+
     fun mapToUiModel(items: List<QuestionnaireModel>?): List<QuestionnairePagerUiModel> {
         return items?.map {
             QuestionnairePagerUiModel(
@@ -36,7 +40,7 @@ class QuestionnaireMapper @Inject constructor() {
             if (type == Int.ONE) {
                 BaseOptionUiModel.QuestionOptionSingleUiModel(
                     value = it.value,
-                    title = it.title
+                    title = String.format(SINGLE_OPTION_TEXT_FORMAT, it.value, it.title)
                 )
             } else {
                 BaseOptionUiModel.QuestionOptionMultipleUiModel(
