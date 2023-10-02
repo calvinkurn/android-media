@@ -27,6 +27,7 @@ data class CartModel(
     var shipmentSellerCashbackModel: ShipmentSellerCashbackModel? = null,
     var lastCartShopGroupTickerCartString: String = "",
     var toBeDeletedBundleGroupId: String = "",
+    var latestCartTotalAmount: Double = 0.0,
 
     var availableCartItemImpressionList: MutableSet<CartItemHolderData> = mutableSetOf(),
 
