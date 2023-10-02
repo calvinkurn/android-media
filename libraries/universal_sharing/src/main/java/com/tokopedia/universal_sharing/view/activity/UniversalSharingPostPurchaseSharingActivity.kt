@@ -14,6 +14,7 @@ import com.tokopedia.universal_sharing.di.ActivityComponentFactory
 import com.tokopedia.universal_sharing.model.UniversalSharingPostPurchaseModel
 import com.tokopedia.universal_sharing.tracker.UniversalSharebottomSheetTracker
 import com.tokopedia.universal_sharing.tracker.UniversalSharebottomSheetTracker.Companion.TYPE_GENERAL
+import com.tokopedia.universal_sharing.util.CurrencyUtil.toRupiahFormat
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalSharingPostPurchaseBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
@@ -21,7 +22,6 @@ import com.tokopedia.universal_sharing.view.bottomsheet.listener.postpurchase.Un
 import com.tokopedia.universal_sharing.view.model.LinkProperties
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import javax.inject.Inject
-import kotlin.math.roundToInt
 
 class UniversalSharingPostPurchaseSharingActivity :
     BaseActivity(),
@@ -106,7 +106,7 @@ class UniversalSharingPostPurchaseSharingActivity :
     ) {
         val desc = getString(
             R.string.universal_sharing_post_purchase_og_desc,
-            product.productPrice.roundToInt()
+            product.productPrice.toRupiahFormat()
         )
         bottomSheet.apply {
             init(object : ShareBottomsheetListener {
@@ -140,7 +140,7 @@ class UniversalSharingPostPurchaseSharingActivity :
                 LinkProperties(
                     linkerType = LinkerData.PRODUCT_TYPE,
                     id = product.productId,
-                    ogTitle = "${product.productName} - ${product.productPrice.roundToInt()}",
+                    ogTitle = "${product.productName} - ${product.productPrice.toRupiahFormat()}",
                     ogDescription = "$shopName - ${product.desc}",
                     ogImageUrl = "${product.images.firstOrNull()?.imageUrl}",
                     deeplink = generateApplinkPDP(product.productId),
