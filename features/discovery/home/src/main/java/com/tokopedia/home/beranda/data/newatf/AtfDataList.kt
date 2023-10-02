@@ -61,8 +61,7 @@ data class AtfDataList(
      * Check if dynamic position is not empty
      */
     fun isPositionReady(): Boolean {
-        return this.status == STATUS_SUCCESS &&
-            this.listAtfData.isNotEmpty()
+        return this.listAtfData.isNotEmpty()
     }
 
     fun isDataError(): Boolean {

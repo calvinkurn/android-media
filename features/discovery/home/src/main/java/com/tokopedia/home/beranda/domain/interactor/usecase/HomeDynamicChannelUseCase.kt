@@ -1010,7 +1010,8 @@ class HomeDynamicChannelUseCase @Inject constructor(
             launch { homeUserStatusRepository.hitHomeStatusThenIgnoreResponse() }
 
             if (isNewAtfMechanism) {
-                homeAtfUseCase.refreshData()
+                launch { homeAtfUseCase.refreshData() }
+                launch { homeHeaderUseCase.updateBalanceWidget(true) }
             } else {
                 /**
                  * 2. Get above the fold skeleton

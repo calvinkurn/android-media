@@ -44,6 +44,11 @@ class DynamicPositionRepository @Inject constructor(
         if (cache != null && remote != null) {
             if (remote.positionEquals(cache)) {
                 remote.copyAtfContentsFrom(cache)
+            } else if (remote.isDataError()) {
+                cache.copy(
+                    needToFetchComponents = false,
+                    status = remote.status
+                )
             } else {
                 // IMPORTANT: when remote position is different than cache,
                 // always set needToFetchComponents to true because we need

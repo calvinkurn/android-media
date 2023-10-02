@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 class HomeHeaderUseCase @Inject constructor(
     private val userSessionInterface: UserSessionInterface,
-    private val homeBalanceWidgetUseCase: HomeBalanceWidgetUseCase,
+    private val homeBalanceWidgetUseCase: HomeBalanceWidgetUseCase
 ) {
 
     private var currentHeaderDataModel: HomeHeaderDataModel? = null
@@ -26,8 +26,8 @@ class HomeHeaderUseCase @Inject constructor(
         )
     )
 
-    suspend fun updateBalanceWidget() {
-        if (currentHeaderDataModel == null) {
+    suspend fun updateBalanceWidget(isRefresh: Boolean = false) {
+        if (currentHeaderDataModel == null || isRefresh) {
             currentHeaderDataModel =
                 homeBalanceWidgetUseCase.onGetBalanceWidgetData(
                     previousHeaderDataModel
@@ -35,7 +35,7 @@ class HomeHeaderUseCase @Inject constructor(
             previousHeaderDataModel = currentHeaderDataModel
         }
         currentHeaderDataModel?.let {
-            _flow.emit(it)
+            _flow.emit(it.copy())
         }
     }
 }
