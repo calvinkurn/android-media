@@ -1,7 +1,7 @@
 package com.tokopedia.stories.creation.view.model.state
 
+import com.tokopedia.content.common.model.ContentMediaType
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
-import com.tokopedia.stories.creation.view.model.StoriesMediaType
 import com.tokopedia.stories.creation.view.model.StoriesCreationConfiguration
 
 /**
@@ -9,7 +9,7 @@ import com.tokopedia.stories.creation.view.model.StoriesCreationConfiguration
  */
 data class StoriesCreationUiState(
     val mediaFilePath: String,
-    val mediaType: StoriesMediaType,
+    val mediaType: ContentMediaType,
     val storiesId: String,
     val config: StoriesCreationConfiguration,
     val accountList: List<ContentAccountUiModel>,
@@ -20,7 +20,7 @@ data class StoriesCreationUiState(
         val Empty: StoriesCreationUiState
             get() = StoriesCreationUiState(
                 mediaFilePath = "",
-                mediaType = StoriesMediaType.Unknown,
+                mediaType = ContentMediaType.Unknown,
                 storiesId = "",
                 config = StoriesCreationConfiguration.Empty,
                 accountList = emptyList(),

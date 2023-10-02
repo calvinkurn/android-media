@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.content.common.model.ContentMediaType
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.picker.common.MediaPicker
@@ -27,7 +28,6 @@ import com.tokopedia.utils.lifecycle.collectAsStateWithLifecycle
 import com.tokopedia.stories.creation.R
 import com.tokopedia.stories.creation.view.bottomsheet.StoriesCreationErrorBottomSheet
 import com.tokopedia.stories.creation.view.bottomsheet.StoriesCreationInfoBottomSheet
-import com.tokopedia.stories.creation.view.model.StoriesMediaType
 import com.tokopedia.stories.creation.view.model.action.StoriesCreationAction
 import com.tokopedia.stories.creation.view.model.event.StoriesCreationUiEvent
 import javax.inject.Inject
@@ -53,7 +53,7 @@ class StoriesCreationActivity : BaseActivity() {
             val data = it.data
             if (data != null) {
                 val mediaFilePath = MediaPicker.result(data).originalPaths.getOrNull(0).orEmpty()
-                val mediaType = StoriesMediaType.parse(mediaFilePath)
+                val mediaType = ContentMediaType.parse(mediaFilePath)
 
                 viewModel.submitAction(StoriesCreationAction.SetMedia(mediaFilePath, mediaType))
             } else {

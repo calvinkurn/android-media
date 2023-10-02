@@ -2,13 +2,13 @@ package com.tokopedia.stories.creation.view.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.content.common.model.ContentMediaType
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.creation.common.upload.model.CreationUploadData
 import com.tokopedia.creation.common.upload.uploader.CreationUploader
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.stories.creation.domain.repository.StoriesCreationRepository
 import com.tokopedia.stories.creation.view.model.StoriesCreationConfiguration
-import com.tokopedia.stories.creation.view.model.StoriesMediaType
 import com.tokopedia.stories.creation.view.model.action.StoriesCreationAction
 import com.tokopedia.stories.creation.view.model.event.StoriesCreationUiEvent
 import com.tokopedia.stories.creation.view.model.state.StoriesCreationUiState
@@ -97,7 +97,7 @@ class StoriesCreationViewModel @Inject constructor(
 
     private fun handleSetMedia(
         mediaFilePath: String,
-        mediaType: StoriesMediaType,
+        mediaType: ContentMediaType,
     ) {
         _uiState.update {
             it.copy(
