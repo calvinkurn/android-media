@@ -1484,9 +1484,6 @@ public class GTMAnalytics extends ContextAnalytics {
                             addGclIdIfNeeded(eventName, it);
                         }
                     }
-                    it.putString(AppEventTracking.GTM.UTM_MEDIUM, UTM_MEDIUM_HOLDER);
-                    it.putString(AppEventTracking.GTM.UTM_CAMPAIGN, UTM_CAMPAIGN_HOLDER);
-                    it.putString(AppEventTracking.GTM.UTM_SOURCE, UTM_SOURCE_HOLDER);
                     pushIris(it);
                     return true;
                 })
