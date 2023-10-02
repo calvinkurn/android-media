@@ -154,7 +154,7 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
 
     private val filterController = FilterController()
     private val visitableList = mutableListOf<Visitable<*>>()
-    private val queryParams = mutableMapOf<String, String>()
+    private var queryParams = mutableMapOf<String, String>()
 
     private var page = FIRST_PAGE
     private var categoryIdL1: String = ""
@@ -371,6 +371,7 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
         this.components = data.componentList
         this.hasBlockedAddToCart = blockAddToCart
         this.categoryDetail = data.categoryDetail
+        this.queryParams = data.queryParamMap
     }
 
     private fun loadFirstPage() {

@@ -75,7 +75,7 @@ open class BaseCategoryViewModel(
     var categoryIdL1 = String.EMPTY
     var categoryIdL2 = String.EMPTY
     var currentCategoryId = String.EMPTY
-    var queryParamMap: HashMap<String, String>? = hashMapOf()
+    var queryParamMap: HashMap<String, String> = hashMapOf()
 
     protected open val tickerPage: String = ""
 

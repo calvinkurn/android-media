@@ -10,5 +10,6 @@ data class CategoryL2TabData(
     val categoryIdL2: String = "",
     val tickerData: GetTickerData = GetTickerData(),
     val componentList: List<Component> = emptyList(),
-    val categoryDetail: CategoryDetail = CategoryDetail()
+    val categoryDetail: CategoryDetail = CategoryDetail(),
+    val queryParamMap: HashMap<String, String> = hashMapOf()
 )

@@ -103,7 +103,7 @@ abstract class BaseCategoryFragment : Fragment(), ScreenShotListener,
         get() = viewModel.categoryIdL2
 
     protected var currentCategoryId = String.EMPTY
-    protected var queryParamMap: HashMap<String, String>? = hashMapOf()
+    protected var queryParamMap: HashMap<String, String> = hashMapOf()
 
     protected val shopId: String
         get() = viewModel.getShopId().toString()

@@ -64,7 +64,8 @@ object CategoryL2Mapper {
         categoryIdL2: String,
         tickerData: GetTickerData,
         getCategoryLayoutResponse: CategoryGetDetailModular,
-        categoryDetailResponse: CategoryDetailResponse
+        categoryDetailResponse: CategoryDetailResponse,
+        queryParamMap: HashMap<String, String>
     ): CategoryL2TabUiModel {
         val componentListResponse = getCategoryLayoutResponse.components
         val id = componentListResponse
@@ -80,7 +81,8 @@ object CategoryL2Mapper {
                 categoryIdL1 = categoryIdL1,
                 categoryIdL2 = it.id,
                 tickerData = tickerData,
-                categoryDetail = categoryDetail
+                categoryDetail = categoryDetail,
+                queryParamMap = queryParamMap
             )
         }
 
