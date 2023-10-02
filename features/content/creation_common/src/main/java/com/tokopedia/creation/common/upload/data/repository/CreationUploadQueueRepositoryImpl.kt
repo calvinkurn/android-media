@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.creation.common.upload.data.local.database.CreationUploadQueueDatabase
 import com.tokopedia.creation.common.upload.domain.repository.CreationUploadQueueRepository
 import com.tokopedia.creation.common.upload.model.CreationUploadData
+import com.tokopedia.creation.common.upload.model.UploadQueueStatus
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
@@ -21,39 +22,45 @@ class CreationUploadQueueRepositoryImpl @Inject constructor(
 ) : CreationUploadQueueRepository {
 
     override suspend fun insert(data: CreationUploadData) {
-        mutex.withLock {
-            withContext(dispatchers.io) {
-                creationUploadQueueDatabase.creationUploadQueueDao().insert(data.mapToEntity(gson))
-            }
+        lockAndSwitchContext(dispatchers) {
+            creationUploadQueueDatabase.creationUploadQueueDao().insert(data.mapToEntity(gson))
         }
     }
 
     override suspend fun getTopQueue(): CreationUploadData? {
-        return mutex.withLock {
-            withContext(dispatchers.io) {
-                val data = creationUploadQueueDatabase.creationUploadQueueDao().getTopQueue()
+        return lockAndSwitchContext(dispatchers) {
+            val data = creationUploadQueueDatabase.creationUploadQueueDao().getTopQueue()
 
-                if (data != null) {
-                    CreationUploadData.parseFromEntity(data, gson)
-                } else {
-                    null
-                }
+            if (data != null) {
+                CreationUploadData.parseFromEntity(data, gson)
+            } else {
+                null
             }
         }
     }
 
     override suspend fun deleteTopQueue() {
-        mutex.withLock {
-            withContext(dispatchers.io) {
-                creationUploadQueueDatabase.creationUploadQueueDao().deleteTopQueue()
-            }
+        lockAndSwitchContext(dispatchers) {
+            creationUploadQueueDatabase.creationUploadQueueDao().deleteTopQueue()
         }
     }
 
     override suspend fun delete(queueId: Int) {
-        mutex.withLock {
+        lockAndSwitchContext(dispatchers) {
+            creationUploadQueueDatabase.creationUploadQueueDao().delete(queueId)
+        }
+    }
+
+    override suspend fun updateStatus(queueId: Int, queueStatus: UploadQueueStatus) {
+        lockAndSwitchContext(dispatchers) {
+            creationUploadQueueDatabase.creationUploadQueueDao().updateStatus(queueId, queueStatus.value)
+        }
+    }
+
+    private suspend fun <T> lockAndSwitchContext(dispatchers: CoroutineDispatchers, onExecute: suspend () -> T): T {
+        return mutex.withLock {
             withContext(dispatchers.io) {
-                creationUploadQueueDatabase.creationUploadQueueDao().delete(queueId)
+                onExecute()
             }
         }
     }
