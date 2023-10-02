@@ -83,6 +83,13 @@ class SomGetOrderDetailUseCase @Inject constructor(
                   awb_upload_proof_text
                   awb_text_color
                   awb_upload_url
+                  ticker_info {
+                      text
+                      type
+                      action_text
+                      action_key
+                      action_url
+                  }
                 }
                 booking_info {
                   driver {
@@ -206,6 +213,10 @@ class SomGetOrderDetailUseCase @Inject constructor(
                       color
                       type
                     }
+                    template {
+                        code
+                        params 
+                      }
                   }
                 }
                 online_booking {

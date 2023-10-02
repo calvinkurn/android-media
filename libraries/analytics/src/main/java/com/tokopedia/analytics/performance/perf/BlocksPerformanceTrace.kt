@@ -121,7 +121,9 @@ class BlocksPerformanceTrace(
 
                     if (!ttilMeasured && TTILperformanceMonitoring != null && it >= FINISHED_LOADING_TTIL_BLOCKS_THRESHOLD) {
                         measureTTIL(performanceBlocks)
-                        putFullyDrawnTrace(traceName)
+                        scope.launch(Dispatchers.Main) {
+                            putFullyDrawnTrace(traceName)
+                        }
                     }
                 }
             }
