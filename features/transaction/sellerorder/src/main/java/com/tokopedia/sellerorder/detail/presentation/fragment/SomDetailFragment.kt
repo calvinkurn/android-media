@@ -145,8 +145,8 @@ import java.net.SocketTimeoutException
 import java.net.URLDecoder
 import java.net.UnknownHostException
 import javax.inject.Inject
-import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import com.tokopedia.unifycomponents.R as unifycomponentsR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**x
  * Created by fwidjaja on 2019-09-30.
@@ -849,7 +849,7 @@ open class SomDetailFragment :
         }
     }
 
-    private fun setActionConfirmShippingAuto(buttonResp: SomDetailOrder.Data.GetSomDetail.Button) {
+    private fun setActionConfirmShippingAuto(buttonResp: SomDetailOrder.GetSomDetail.Button) {
         val popUp = buttonResp.popUp
         SomConfirmShippingBottomSheet.show(context, view, popUp)
 
@@ -1073,15 +1073,15 @@ open class SomDetailFragment :
     }
 
     override fun onBmgmItemAddToCart(uiModel: ProductBmgmSectionUiModel.ProductUiModel) {
-        //no op
+        // no op
     }
 
     override fun onBmgmItemSeeSimilarProducts(uiModel: ProductBmgmSectionUiModel.ProductUiModel) {
-        //no op
+        // no op
     }
 
     override fun onBmgmItemWarrantyClaim(uiModel: ProductBmgmSectionUiModel.ProductUiModel) {
-        //no op
+        // no op
     }
 
     private fun doRejectOrder(orderRejectRequestParam: SomRejectRequestParam) {
