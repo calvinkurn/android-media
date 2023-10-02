@@ -19,6 +19,7 @@ import com.tokopedia.shop.common.util.ShopProductViewGridType
 import com.tokopedia.shop.common.util.ShopUtil.setElement
 import com.tokopedia.shop.home.WidgetName
 import com.tokopedia.shop.home.view.adapter.viewholder.*
+import com.tokopedia.shop.home.view.adapter.viewholder.advance_carousel_banner.ShopHomeDisplayAdvanceCarouselBannerViewHolder
 import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shop.product.view.datamodel.ShopProductSortFilterUiModel
@@ -62,10 +63,16 @@ open class ShopHomeAdapter(
         if (holder is ShopHomeSliderBannerViewHolder) {
             holder.resumeTimer()
         }
+        else if (holder is ShopHomeDisplayAdvanceCarouselBannerViewHolder) {
+            holder.resumeTimer()
+        }
     }
 
     override fun onViewDetachedFromWindow(holder: AbstractViewHolder<out Visitable<*>>) {
         if (holder is ShopHomeSliderBannerViewHolder) {
+            holder.pauseTimer()
+        }
+        else if(holder is ShopHomeDisplayAdvanceCarouselBannerViewHolder){
             holder.pauseTimer()
         }
         super.onViewDetachedFromWindow(holder)
@@ -301,6 +308,7 @@ open class ShopHomeAdapter(
         }
         listSliderBannerViewModel.forEach {
             (recyclerView?.findViewHolderForAdapterPosition(visitables.indexOf(it)) as? ShopHomeSliderBannerViewHolder)?.pauseTimer()
+            (recyclerView?.findViewHolderForAdapterPosition(visitables.indexOf(it)) as? ShopHomeDisplayAdvanceCarouselBannerViewHolder)?.pauseTimer()
         }
     }
 
@@ -310,6 +318,7 @@ open class ShopHomeAdapter(
         }
         listSliderBannerViewModel.forEach {
             (recyclerView?.findViewHolderForAdapterPosition(visitables.indexOf(it)) as? ShopHomeSliderBannerViewHolder)?.resumeTimer()
+            (recyclerView?.findViewHolderForAdapterPosition(visitables.indexOf(it)) as? ShopHomeDisplayAdvanceCarouselBannerViewHolder)?.resumeTimer()
         }
     }
 
@@ -449,6 +458,18 @@ open class ShopHomeAdapter(
         }
         submitList(newList)
     }
+
+    // ========== Shop Home Revamp V4 ============== //
+    fun getTerlarisWidgetUiModel(): ShopHomeV4TerlarisUiModel? {
+        return visitables.filterIsInstance<ShopHomeV4TerlarisUiModel>().firstOrNull()
+    }
+
+    fun setTerlarisWidgetData(uiModel: ShopHomeV4TerlarisUiModel) {
+        val newList = getNewVisitableItems()
+        submitList(newList)
+    }
+
+    // ========== Shop Home Revamp V4 ============== //
 
     fun getNplCampaignUiModel(campaignId: String): ShopHomeNewProductLaunchCampaignUiModel? {
         return visitables.filterIsInstance<ShopHomeNewProductLaunchCampaignUiModel>().firstOrNull {
@@ -710,5 +731,15 @@ open class ShopHomeAdapter(
 
     fun getShopHomeWidgetData(): List<BaseShopHomeWidgetUiModel> {
         return visitables.filterIsInstance<BaseShopHomeWidgetUiModel>()
+    }
+
+    fun anyFestivityOnShopHomeWidget(): Boolean {
+        return visitables.filterIsInstance<Visitable<*>>().any {
+            when (it) {
+                is BaseShopHomeWidgetUiModel -> it.isFestivity
+                is ThematicWidgetUiModel -> it.isFestivity
+                else -> false
+            }
+        }
     }
 }

@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhomecommon.presentation.model
 
 import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.sellerhomecommon.domain.model.TabModel
 import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactory
@@ -26,10 +27,11 @@ data class FilterTabWidgetUiModel(
     override var showLoadingState: Boolean = false,
     override var emptyState: WidgetEmptyStateUiModel,
     override var useRealtime: Boolean = false,
+    override val sectionId: String = Int.ZERO.toString(),
     val filterTabs: List<TabModel>? = null,
     val selectedFilterPage: String? = null,
     val filterTabMessage: String = String.EMPTY
-): BaseWidgetUiModel<BaseDataUiModel> {
+) : BaseWidgetUiModel<BaseDataUiModel> {
 
     override fun copyWidget(): BaseWidgetUiModel<BaseDataUiModel> {
         return this.copy()
