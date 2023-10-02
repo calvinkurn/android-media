@@ -18,19 +18,24 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.prod
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quickcoupon.QuickCouponViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quickfilter.QuickFilterViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.viewallcard.ViewAllCarouselViewModel
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryExtensibleFragment
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.topads.sdk.di.TopAdsUrlHitterModule
 import com.tokopedia.usercomponents.explicit.di.ExplicitViewModule
 import dagger.Component
 
-
 @DiscoveryScope
-@Component(modules = [DiscoveryModule::class,
-    DiscoveryViewModelModule::class,
-    TopAdsUrlHitterModule::class,
-    AffiliateCommonSdkModule::class,
-    ExplicitViewModule::class], dependencies = [BaseAppComponent::class])
+@Component(
+    modules = [
+        DiscoveryModule::class,
+        DiscoveryViewModelModule::class,
+        TopAdsUrlHitterModule::class,
+        AffiliateCommonSdkModule::class,
+        ExplicitViewModule::class
+    ],
+    dependencies = [BaseAppComponent::class]
+)
 interface DiscoveryComponent {
     fun inject(discoveryActivity: DiscoveryActivity)
     fun inject(discoveryExtensibleFragment: DiscoveryExtensibleFragment)
@@ -50,5 +55,6 @@ interface DiscoveryComponent {
     fun inject(myCouponItemViewModel: MyCouponItemViewModel)
     fun inject(explicitWidgetViewModel: ExplicitWidgetViewModel)
     fun inject(flashSaleTokoTabViewModel: FlashSaleTokoTabViewModel)
-    fun provideSubComponent() : UIWidgetComponent
+    fun inject(viewAllCarouselViewModel: ViewAllCarouselViewModel)
+    fun provideSubComponent(): UIWidgetComponent
 }

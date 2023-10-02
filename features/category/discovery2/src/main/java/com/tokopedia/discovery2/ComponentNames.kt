@@ -137,7 +137,9 @@ enum class ComponentNames(val componentName: String) {
     // Product Card Column List
     ProductCardColumnList(
         componentName = "product_card_column_list"
-    )
+    ),
 
-    FlashSaleTokoTab("tabs_flash_sale_toko")
+    FlashSaleTokoTab("tabs_flash_sale_toko"),
+
+    ViewAllCardCarousel("view_all_card_carousel"),
 }

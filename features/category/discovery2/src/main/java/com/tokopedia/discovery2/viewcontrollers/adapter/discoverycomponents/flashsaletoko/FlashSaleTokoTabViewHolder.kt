@@ -44,9 +44,9 @@ class FlashSaleTokoTabViewHolder(
         }
     }
 
-    override fun onViewDetachedToWindow() {
-        super.onViewDetachedToWindow()
+    override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
         viewModel?.getTabLiveData()?.removeObservers(fragment.viewLifecycleOwner)
+        super.removeObservers(lifecycleOwner)
     }
 
     override fun onShopTabClick(element: ShopTabDataModel) {

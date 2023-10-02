@@ -119,6 +119,8 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.topa
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.topadsheadline.TopAdsHeadlineViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.topquest.TopQuestViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.topquest.TopQuestViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.viewallcard.ViewAllCarouselViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.viewallcard.ViewAllCarouselViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.youtubeview.YouTubeViewViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.youtubeview.YoutubeViewViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
@@ -556,6 +558,12 @@ class DiscoveryHomeFactory {
                 ComponentsList.FlashSaleTokoTab,
                 ::FlashSaleTokoTabViewHolder,
                 ::FlashSaleTokoTabViewModel
+            )
+
+            initializeComponent(
+                ComponentsList.ViewAllCarouselCard,
+                ::ViewAllCarouselViewHolder,
+                ::ViewAllCarouselViewModel
             )
         }
 

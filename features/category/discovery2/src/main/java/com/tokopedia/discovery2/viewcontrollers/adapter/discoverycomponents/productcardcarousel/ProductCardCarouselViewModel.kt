@@ -163,7 +163,7 @@ class ProductCardCarouselViewModel(val application: Application, val components:
             }
         }
         if (templateType == LIST) {
-            maxHeightProductCard.value = productCardModelArray.getMaxHeightForListView(application.applicationContext, Dispatchers.Default) ?: 0
+            maxHeightProductCard.value = productCardModelArray.getMaxHeightForListView(application.applicationContext, Dispatchers.Default)
         } else {
             val mixLeftPadding = if (isMixLeftBannerPresent()) application.applicationContext.resources.getDimensionPixelSize(R.dimen.dp_10) else 0
             val productImageWidth = application.applicationContext.resources.getDimensionPixelSize(R.dimen.disco_product_card_width)
@@ -206,18 +206,42 @@ class ProductCardCarouselViewModel(val application: Application, val components:
         }
         productLoadState.addAll(productDataList)
         if (Utils.nextPageAvailable(components, PRODUCT_PER_PAGE)) {
-            productLoadState.add(
-                ComponentsItem(name = ComponentNames.LoadMore.componentName).apply {
-                    pageEndPoint = components.pageEndPoint
-                    parentComponentId = components.id
-                    id = ComponentNames.LoadMore.componentName
-                    loadForHorizontal = true
-                    discoveryPageData[this.pageEndPoint]?.componentMap?.set(this.id, this)
-                }
-            )
+            // TODO: We'll add component based on server's flag
+            val isSupportPagination = false
+
+            val nextPageComponent = if (isSupportPagination) {
+                constructLoadMoreComponent()
+            } else {
+                val shopAppLink = productDataList.first().data?.first()?.shopApplink
+                constructViewAllCard(shopAppLink)
+            }
+
+            productLoadState.add(nextPageComponent)
         }
         return productLoadState
     }
+
+    private fun constructLoadMoreComponent() =
+        ComponentsItem(name = ComponentNames.LoadMore.componentName).apply {
+            pageEndPoint = components.pageEndPoint
+            parentComponentId = components.id
+            id = ComponentNames.LoadMore.componentName
+            loadForHorizontal = true
+            discoveryPageData[this.pageEndPoint]?.componentMap?.set(this.id, this)
+        }
+
+
+    private fun constructViewAllCard(appLink: String?) =
+        ComponentsItem(name = ComponentNames.ViewAllCardCarousel.componentName).apply {
+            id = ComponentNames.ViewAllCardCarousel.componentName
+            data = listOf(
+                DataItem(
+                    title = "Ada produk menarik lain di toko ini!",
+                    applinks = appLink
+                )
+            )
+        }
+
     private fun addErrorReLoadView(productDataList: ArrayList<ComponentsItem>): ArrayList<ComponentsItem> {
         val productLoadState: ArrayList<ComponentsItem> = ArrayList()
         if (isMixLeftBannerPresent()) {
@@ -240,6 +264,11 @@ class ProductCardCarouselViewModel(val application: Application, val components:
 
     fun isLastPage(): Boolean {
         return !Utils.nextPageAvailable(components, PRODUCT_PER_PAGE)
+    }
+
+    fun isSupportPagination(): Boolean {
+        // TODO: The value will be provided based on server's response
+        return false
     }
 
     fun isLoadingData() = isLoading

@@ -73,6 +73,8 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
     }
 
     private fun handleCarouselPagination() {
+        if (mProductCarouselComponentViewModel?.isSupportPagination() == false) return
+
         mProductCarouselRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
