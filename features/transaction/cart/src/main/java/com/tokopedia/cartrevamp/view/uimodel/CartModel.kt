@@ -28,11 +28,12 @@ data class CartModel(
     var lastCartShopGroupTickerCartString: String = "",
     var toBeDeletedBundleGroupId: String = "",
     var latestCartTotalAmount: Double = 0.0,
+    var lastOfferId: Long = 0L,
 
-    var availableCartItemImpressionList: MutableSet<CartItemHolderData> = mutableSetOf(),
+        var availableCartItemImpressionList: MutableSet<CartItemHolderData> = mutableSetOf(),
 
     // adapter
-    var tmpCollapsedUnavailableShop: DisabledCollapsedHolderData? = null,
-    var firstCartSectionHeaderPosition: Int = -1,
-    var tmpAllUnavailableShop: MutableList<Any>? = null
+        var tmpCollapsedUnavailableShop: DisabledCollapsedHolderData? = null,
+        var firstCartSectionHeaderPosition: Int = -1,
+        var tmpAllUnavailableShop: MutableList<Any>? = null
 )
