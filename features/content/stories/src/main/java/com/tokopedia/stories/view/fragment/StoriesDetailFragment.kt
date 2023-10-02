@@ -485,10 +485,6 @@ class StoriesDetailFragment @Inject constructor(
         )
     }
 
-    private fun trackImpressionDetail(storiesId: String) {
-        analytic?.sendImpressionStoriesContent(storiesId)
-    }
-
     private fun trackTapPreviousDetail() {
         analytic?.sendClickTapPreviousContentEvent(
             storiesId = viewModel.mDetail.id,
