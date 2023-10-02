@@ -16,6 +16,10 @@ import com.tokopedia.cartrevamp.domain.usecase.SetCartlistCheckboxStateUseCase
 import com.tokopedia.cartrevamp.view.CartViewModel
 import com.tokopedia.cartrevamp.view.helper.CartDataHelper
 import com.tokopedia.cartrevamp.view.processor.CartCalculator
+import com.tokopedia.cartrevamp.view.processor.CartPromoEntryPointProcessor
+import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
+import com.tokopedia.promousage.domain.usecase.PromoUsageGetPromoListRecommendationEntryPointUseCase
+import com.tokopedia.promousage.view.mapper.PromoUsageGetPromoListRecommendationMapper
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
@@ -63,8 +67,13 @@ open class BaseCartViewModelTest {
     var updateCartCounterUseCase: UpdateCartCounterUseCase = mockk()
     var setCartlistCheckboxStateUseCase: SetCartlistCheckboxStateUseCase = mockk()
     var followShopUseCase: FollowShopUseCase = mockk()
-    val cartShopGroupTickerAggregatorUseCase: CartShopGroupTickerAggregatorUseCase = mockk()
-    val coroutineTestDispatchers: CoroutineTestDispatchers = CoroutineTestDispatchers
+    var cartShopGroupTickerAggregatorUseCase: CartShopGroupTickerAggregatorUseCase = mockk()
+    var coroutineTestDispatchers: CoroutineTestDispatchers = CoroutineTestDispatchers
+    var getPromoListRecommendationEntryPointUseCase: PromoUsageGetPromoListRecommendationEntryPointUseCase = mockk(relaxed = true)
+    var getPromoListRecommendationMapper: PromoUsageGetPromoListRecommendationMapper =
+        PromoUsageGetPromoListRecommendationMapper()
+    var chosenAddressRequestHelper: ChosenAddressRequestHelper = mockk(relaxed = true)
+    lateinit var cartPromoEntryPointProcessor: CartPromoEntryPointProcessor
     lateinit var cartViewModel: CartViewModel
 
     @get: Rule
@@ -73,6 +82,11 @@ open class BaseCartViewModelTest {
     @Before
     open fun setUp() {
         Dispatchers.setMain(coroutineTestDispatchers.coroutineDispatcher)
+        cartPromoEntryPointProcessor = CartPromoEntryPointProcessor(
+            getPromoListRecommendationEntryPointUseCase,
+            getPromoListRecommendationMapper,
+            chosenAddressRequestHelper
+        )
         cartViewModel = CartViewModel(
             getCartRevampV4UseCase, deleteCartUseCase,
             undoDeleteCartUseCase, updateCartUseCase, compositeSubscription,
@@ -81,7 +95,8 @@ open class BaseCartViewModelTest {
             getWishlistV2UseCase, getRecommendationUseCase, addToCartUseCase, addToCartExternalUseCase,
             seamlessLoginUsecase, updateCartCounterUseCase, updateCartAndGetLastApplyUseCase,
             setCartlistCheckboxStateUseCase, followShopUseCase,
-            cartShopGroupTickerAggregatorUseCase, TestSchedulers, coroutineTestDispatchers,
+            cartShopGroupTickerAggregatorUseCase, cartPromoEntryPointProcessor,
+            TestSchedulers, coroutineTestDispatchers,
             CartCalculator()
         )
         every { addToWishListV2UseCase.cancelJobs() } just Runs
