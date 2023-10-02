@@ -60,8 +60,8 @@
     <string name="label_order_priority_cost">Biaya Order Prioritas</string>
     <string name="label_promo">Promo</string>
     <string name="label_shop_summary">Ringkasan belanja</string>
-    <string name="label_add_on_subtotal">Pelengkap Produk</string>
-    <string name="label_add_on_cost">Total Pelengkap Produk</string>
+    <string name="label_add_on_subtotal">Pelengkap Hadiah</string>
+    <string name="label_add_on_cost">Total Pelengkap Hadiah</string>
     <string name="booking_fee_label">Biaya Layanan Kredit</string>
     <string name="checkout_module_label_asuransi">Asuransi</string>
     <string name="checkout_module_label_trade_in">Tukar Tambah</string>
@@ -92,6 +92,7 @@
     <string name="content_desc_tv_change_address_top">text pilih alamat lain</string>
     <string name="label_fulfilment">Dilayani Tokopedia</string>
     <string name="label_order_counter">Pesanan %d</string>
+    <string name="label_order_counter_new">PESANAN %d</string>
     <string name="estimasi_tidak_tersedia">Estimasi tidak tersedia</string>
     <string name="checkout_trade_in_default_address_info_description">
         <![CDATA[
@@ -139,4 +140,7 @@
     <string name="platform_fee_title_info">Tentang %s</string>
     <string name="platform_fee_diskon_label">Diskon %s</string>
     <string name="platform_fee_diskon_format" formatted="false">-%s</string>
+
+    <string name="checkout_label_total_shipping_insurance">Total Asuransi Pengiriman</string>
+    <string name="checkout_label_total_gifting">Total Pelengkap Hadiah</string>
 </resources>

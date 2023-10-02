@@ -109,7 +109,9 @@ data class ComponentsItem(
     var isSelectedFiltersFromQueryApplied: Boolean = false,
     var isExplicitWidgetHidden: Boolean = false,
     var myCouponList: List<MyCoupon>? = null,
-    var claimCouponList: List<CatalogWithCouponList>? = null
+    var claimCouponList: List<CatalogWithCouponList>? = null,
+    var isFirstShown: Boolean = true,
+    var itemPosition: Int = 0
 ) {
 
     private var componentsItem: List<ComponentsItem>? = null

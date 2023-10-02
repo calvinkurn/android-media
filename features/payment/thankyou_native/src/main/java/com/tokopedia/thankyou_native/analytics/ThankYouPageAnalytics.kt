@@ -12,7 +12,6 @@ import com.tokopedia.thankyou_native.analytics.EnhancedEcommerceKey.KEY_ITEM_ID
 import com.tokopedia.thankyou_native.analytics.EnhancedEcommerceKey.KEY_ITEM_NAME
 import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_BUSINESS_UNIT_NON_E_COMMERCE_VALUE
 import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_CURRENT_SITE
-import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_ECOMMERCE
 import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_EVENT
 import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_EVENT_ACTION
 import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_EVENT_CATEGORY
@@ -21,7 +20,7 @@ import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_EVENT_SELEC
 import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_EVENT_VIEW_ITEM
 import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_MERCHANT_CODE
 import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_PAYMENT_ID
-import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_PROMOTION
+import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_PROMOTIONS
 import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_TRACKER_ID
 import com.tokopedia.thankyou_native.data.mapper.*
 import com.tokopedia.thankyou_native.di.qualifier.CoroutineBackgroundDispatcher
@@ -275,7 +274,7 @@ class ThankYouPageAnalytics @Inject constructor(
             putString(KEY_EVENT_LABEL, String.EMPTY)
             putString(KEY_TRACKER_ID, TRACKER_45032)
             putString(KEY_CURRENT_SITE, thanksPageData.currentSite)
-            putBundle(KEY_PROMOTION, promotionBundle)
+            putParcelableArrayList(KEY_PROMOTIONS, arrayListOf(promotionBundle))
         }
 
         analyticTracker.sendEnhanceEcommerceEvent(KEY_EVENT_SELECT_CONTENT, bundle)
@@ -290,10 +289,10 @@ class ThankYouPageAnalytics @Inject constructor(
             putString(KEY_EVENT_LABEL, String.EMPTY)
             putString(KEY_TRACKER_ID, TRACKER_45031)
             putString(KEY_CURRENT_SITE, thanksPageData.currentSite)
-            putBundle(KEY_PROMOTION, promotionBundle)
+            putParcelableArrayList(KEY_PROMOTIONS, arrayListOf(promotionBundle))
         }
 
-        analyticTracker.sendEnhanceEcommerceEvent(KEY_EVENT_SELECT_CONTENT, bundle)
+        analyticTracker.sendEnhanceEcommerceEvent(KEY_EVENT_VIEW_ITEM, bundle)
     }
 
     private fun getEnhancedECommerceBanner(
@@ -301,7 +300,7 @@ class ThankYouPageAnalytics @Inject constructor(
         position: Int
     ): Bundle {
         return Bundle().apply {
-            putString(KEY_ITEM_NAME, banner.assetUrl)
+            putString(KEY_ITEM_NAME, banner.applink)
             putString(KEY_ITEM_ID, banner.itemId)
             putString(KEY_CREATIVE_NAME, banner.assetUrl)
             putString(KEY_CREATIVE_SLOT, position.toString())
@@ -433,6 +432,8 @@ object ParentTrackingKey {
     val KEY_PAYMENT_TYPE = "payment_type"
     val KEY_EVENT_VIEW_ITEM = "view_item"
     val KEY_EVENT_SELECT_CONTENT = "select_content"
+    val PROMO_CLICK = "promoClick"
+    val PROMO_VIEW = "promoView"
 
     val KEY_SHOP_ID = "shopId"
     val KEY_SHOP_TYPE = "shopType"
@@ -440,7 +441,7 @@ object ParentTrackingKey {
     val KEY_ECOMMERCE = "ecommerce"
     val KEY_CURRENT_SITE = "currentSite"
     val KEY_BUSINESS_UNIT = "businessUnit"
-    val KEY_PROMOTION = "promotion"
+    val KEY_PROMOTIONS = "promotions"
     const val IS_NEW_USER = "isNewUser"
     const val NEW_CUSTOMER = "new_customer"
     const val KEY_ID = "id"

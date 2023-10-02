@@ -130,7 +130,7 @@ class RecommendationCarouselWidgetView :
                         productRecommendation.name,
                         productRecommendation.imageUrl
                     )
-
+                if(model.listener?.onProductClick(productRecommendation) == true) return
                 if (model.widgetTracking != null)
                     model.widgetTracking.sendEventItemClick(productRecommendation)
                 else

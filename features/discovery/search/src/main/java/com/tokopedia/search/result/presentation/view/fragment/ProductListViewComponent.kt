@@ -6,6 +6,7 @@ import com.tokopedia.search.di.module.FilterControllerModule
 import com.tokopedia.search.di.module.IrisModule
 import com.tokopedia.search.di.module.ProductGridLayoutManagerModule
 import com.tokopedia.search.di.module.RecycledViewPoolModule
+import com.tokopedia.search.di.module.ReimagineRollenceModule
 import com.tokopedia.search.di.module.RemoteConfigModule
 import com.tokopedia.search.di.module.SearchContextModule
 import com.tokopedia.search.di.module.SearchNavigationListenerModule
@@ -89,6 +90,7 @@ import dagger.Component
     SimilarSearchModule::class,
     InspirationKeywordModule::class,
     InspirationProductModule::class,
+    ReimagineRollenceModule::class,
  ], dependencies = [BaseAppComponent::class])
 interface ProductListViewComponent {
 

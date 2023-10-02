@@ -13,6 +13,7 @@ import com.tokopedia.applink.model.Always
 import com.tokopedia.applink.model.DLP
 import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
 import com.tokopedia.applink.purchaseplatform.DeeplinkMapperUoh
+import com.tokopedia.applink.user.DeeplinkMapperUser
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import io.mockk.every
@@ -38,6 +39,7 @@ open class DeepLinkMapperTestFixture {
             mockkObject(DeeplinkMapperAccount)
             mockkObject(DeeplinkMapperCommunication)
             mockkObject(DeeplinkMapper)
+            mockkObject(DeeplinkMapperUser)
             mockkObject(PowerMerchantDeepLinkMapper)
             mockkClass(GlobalConfig::class)
             mockkStatic(RemoteConfigInstance::class)

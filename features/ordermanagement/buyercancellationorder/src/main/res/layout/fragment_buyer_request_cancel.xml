@@ -24,6 +24,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:id="@+id/loaderBuyerRequestCancel"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
             <com.tokopedia.globalerror.GlobalError
                 android:id="@+id/global_error_cancellation"
                 android:layout_width="0dp"
@@ -275,6 +284,7 @@
                     android:layout_marginStart="12dp"
                     android:layout_marginEnd="12dp"
                     android:visibility="gone"
+                    tools:visibility="visible"
                     app:card_type="border"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -286,16 +296,19 @@
 
                         <com.tokopedia.unifyprinciples.Typography
                             android:id="@+id/tvChooseReasonLabel"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="12dp"
                             android:layout_marginTop="16dp"
                             android:layout_marginBottom="16dp"
+                            android:layout_marginEnd="8dp"
                             android:text="@string/reason_placeholder"
+                            tools:text="Pilih Alasan Pilih Alasan Pilih Alasan Pilih Alasan Pilih Alasan Pilih Alasan"
                             android:textColor="@color/Unify_NN950"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintEnd_toStartOf="@id/iconChooseReason"
                             app:typographyType="display_2" />
 
                         <com.tokopedia.iconunify.IconUnify
@@ -322,6 +335,7 @@
                     android:layout_marginEnd="16dp"
                     android:text="@string/ask_2_placeholder"
                     android:visibility="gone"
+                    tools:visibility="visible"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/cardUnifyChooseReason"
@@ -336,6 +350,7 @@
                     android:layout_marginEnd="12dp"
                     android:layout_marginBottom="16dp"
                     android:visibility="gone"
+                    tools:visibility="visible"
                     app:card_type="border"
                     app:layout_constraintBottom_toTopOf="@id/btn_req_cancel"
                     app:layout_constraintTop_toBottomOf="@id/tv_sub_reason"
@@ -347,15 +362,18 @@
 
                         <com.tokopedia.unifyprinciples.Typography
                             android:id="@+id/tvChooseSubReasonLabel"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="12dp"
                             android:layout_marginTop="16dp"
                             android:layout_marginBottom="16dp"
+                            android:layout_marginEnd="8dp"
                             android:text="@string/reason_placeholder"
+                            tools:text="Pilih Alasan Pilih Alasan Pilih Alasan Pilih Alasan Pilih Alasan Pilih Alasan"
                             android:textColor="@color/Unify_NN950"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toStartOf="@id/iconChooseSubReason"
                             app:layout_constraintTop_toTopOf="parent"
                             app:typographyType="display_2" />
 

@@ -32,7 +32,7 @@ class RecommendationWidgetView : LinearLayout {
     constructor(
         context: Context,
         attrs: AttributeSet?,
-        defStyleAttr: Int,
+        defStyleAttr: Int
     ) : super(context, attrs, defStyleAttr) {
         init()
     }
@@ -46,10 +46,11 @@ class RecommendationWidgetView : LinearLayout {
     fun bind(
         model: RecommendationWidgetModel,
         parentRootView: View? = null,
+        callback: Callback? = null,
     ) {
         val lifecycleOwner = context.asLifecycleOwner() ?: return
 
-        initializeJobs(lifecycleOwner, model, parentRootView)
+        initializeJobs(lifecycleOwner, model, parentRootView, callback)
 
         recommendationWidgetViewModel?.bind(model)
     }
@@ -58,38 +59,45 @@ class RecommendationWidgetView : LinearLayout {
         lifecycleOwner: LifecycleOwner,
         model: RecommendationWidgetModel,
         parentRootView: View?,
+        callback: Callback?,
     ) {
         job?.forEach { it.cancel() }
         job?.clear()
 
         job = mutableListOf<Job>().apply {
-            add(lifecycleOwner.launchRepeatOnStarted {
-                recommendationWidgetViewModel
-                    ?.stateFlow
-                    ?.map { it.widgetMap[model.id] }
-                    ?.distinctUntilChanged()
-                    ?.collectLatest(::bind)
-            })
+            add(
+                lifecycleOwner.launchRepeatOnStarted {
+                    recommendationWidgetViewModel
+                        ?.stateFlow
+                        ?.map { it.widgetMap[model.id] }
+                        ?.distinctUntilChanged()
+                        ?.collectLatest { visitableList -> bind(visitableList, callback) }
+                }
+            )
 
-            add(lifecycleOwner.launchRepeatOnStarted {
-                recommendationWidgetViewModel
-                    ?.stateFlow
-                    ?.map { it.successMessage }
-                    ?.distinctUntilChanged()
-                    ?.collectLatest { msg -> showSuccessMessage(parentRootView, msg) }
-            })
+            add(
+                lifecycleOwner.launchRepeatOnStarted {
+                    recommendationWidgetViewModel
+                        ?.stateFlow
+                        ?.map { it.successMessage }
+                        ?.distinctUntilChanged()
+                        ?.collectLatest { msg -> showSuccessMessage(parentRootView, msg) }
+                }
+            )
 
-            add(lifecycleOwner.launchRepeatOnStarted {
-                recommendationWidgetViewModel
-                    ?.stateFlow
-                    ?.map { it.errorMessage }
-                    ?.distinctUntilChanged()
-                    ?.collectLatest { msg -> showErrorMessage(parentRootView, msg) }
-            })
+            add(
+                lifecycleOwner.launchRepeatOnStarted {
+                    recommendationWidgetViewModel
+                        ?.stateFlow
+                        ?.map { it.errorMessage }
+                        ?.distinctUntilChanged()
+                        ?.collectLatest { msg -> showErrorMessage(parentRootView, msg) }
+                }
+            )
         }
     }
 
-    private fun bind(visitableList: List<RecommendationVisitable>?) {
+    private fun bind(visitableList: List<RecommendationVisitable>?, callback: Callback?) {
         val diffUtilCallback = RecommendationWidgetViewDiffUtilCallback(
             parentView = this,
             visitableList = visitableList,
@@ -99,15 +107,29 @@ class RecommendationWidgetView : LinearLayout {
         val listUpdateCallback = RecommendationWidgetListUpdateCallback(
             parentView = this,
             visitableList = visitableList,
-            typeFactory = typeFactory,
+            typeFactory = typeFactory
         )
 
         DiffUtil
             .calculateDiff(diffUtilCallback, false)
             .dispatchUpdatesTo(listUpdateCallback)
 
-        if (visitableList.isNullOrEmpty()) hide()
-        else show()
+        renderView(visitableList, callback)
+    }
+
+    private fun renderView(
+        visitableList: List<RecommendationVisitable>?,
+        callback: Callback?,
+    ) {
+        if (visitableList.isNullOrEmpty()) {
+            hide()
+
+            if (visitableList?.isEmpty() == true)
+                callback?.onError()
+        } else {
+            show()
+            callback?.onShow()
+        }
     }
 
     private fun showSuccessMessage(parentRootView: View?, successMessage: String?) {
@@ -128,8 +150,9 @@ class RecommendationWidgetView : LinearLayout {
     }
 
     private fun showToastMessage(view: View, message: String, type: Int) {
-        if (message.isNotBlank())
+        if (message.isNotBlank()) {
             Toaster.build(view, message, Toaster.LENGTH_LONG, type).show()
+        }
 
         recommendationWidgetViewModel?.dismissMessage()
     }
@@ -140,8 +163,14 @@ class RecommendationWidgetView : LinearLayout {
         job = null
 
         forEach { view ->
-            if (view is IRecommendationWidgetView<*>)
+            if (view is IRecommendationWidgetView<*>) {
                 view.recycle()
+            }
         }
+    }
+
+    interface Callback {
+        fun onShow() { }
+        fun onError() { }
     }
 }
