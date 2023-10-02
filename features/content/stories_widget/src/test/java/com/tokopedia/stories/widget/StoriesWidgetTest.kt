@@ -1,10 +1,9 @@
 package com.tokopedia.stories.widget
 
 import com.tokopedia.stories.widget.domain.StoriesEntryPoint
-import com.tokopedia.unit.test.rule.StandardTestRule
+import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
@@ -21,7 +20,7 @@ import org.junit.Test
 class StoriesWidgetTest {
 
     @get:Rule
-    val coroutineTestRule = StandardTestRule()
+    val coroutineTestRule = UnconfinedTestRule()
 
     private val testDispatcher = coroutineTestRule.dispatchers
 
@@ -46,7 +45,6 @@ class StoriesWidgetTest {
 
         val viewModel = StoriesWidgetViewModel(StoriesEntryPoint.ShopPage, repo)
         viewModel.onIntent(StoriesWidgetIntent.GetStoriesStatus(emptyList()))
-        advanceUntilIdle()
 
         viewModel.stories.createHelper(this)
             .onValues {
@@ -72,7 +70,6 @@ class StoriesWidgetTest {
         val shopFlowHelper = shopEPViewModel.stories.createHelper(this)
         shopFlowHelper.run {
             shopEPViewModel.onIntent(StoriesWidgetIntent.GetStoriesStatus(listOf("1")))
-            advanceUntilIdle()
         }.onValues {
             Assertions.assertThat(it.last().values)
                 .containsExactly(*shopStoriesStates.toTypedArray())
@@ -82,7 +79,6 @@ class StoriesWidgetTest {
         val pdpFlowHelper = pdpEPViewModel.stories.createHelper(this)
         pdpFlowHelper.run {
             pdpEPViewModel.onIntent(StoriesWidgetIntent.GetStoriesStatus(listOf("1")))
-            advanceUntilIdle()
         }.onValues {
             Assertions.assertThat(it.last().values)
                 .isEmpty()
@@ -101,7 +97,6 @@ class StoriesWidgetTest {
 
         val viewModel = StoriesWidgetViewModel(StoriesEntryPoint.ShopPage, repo)
         viewModel.onIntent(StoriesWidgetIntent.GetStoriesStatus(listOf("1")))
-        advanceUntilIdle()
 
         viewModel.getStoriesState("0").createHelper(this)
             .onValues {
@@ -142,7 +137,6 @@ class StoriesWidgetTest {
 
         val viewModel = StoriesWidgetViewModel(StoriesEntryPoint.ShopPage, repo)
         viewModel.onIntent(StoriesWidgetIntent.GetStoriesStatus(listOf("1")))
-        advanceUntilIdle()
 
         val firstStoryHelper = viewModel.getStoriesState("0").createHelper(this)
         val secondStoryHelper = viewModel.getStoriesState("1").createHelper(this)
@@ -167,7 +161,6 @@ class StoriesWidgetTest {
         }
 
         viewModel.onIntent(StoriesWidgetIntent.GetLatestStoriesStatus)
-        advanceUntilIdle()
 
         firstStoryHelper.onValues {
             Assertions.assertThat(it.last())
@@ -209,7 +202,6 @@ class StoriesWidgetTest {
             val viewModel = StoriesWidgetViewModel(StoriesEntryPoint.ShopPage, repo)
             viewModel.onIntent(StoriesWidgetIntent.GetStoriesStatus(listOf("1")))
             viewModel.onIntent(StoriesWidgetIntent.ShowCoachMark)
-            advanceUntilIdle()
             viewModel.uiMessage.createHelper(this)
                 .onValues {
                     Assertions.assertThat(it)
@@ -242,7 +234,6 @@ class StoriesWidgetTest {
             val viewModel = StoriesWidgetViewModel(StoriesEntryPoint.ShopPage, repo)
             viewModel.onIntent(StoriesWidgetIntent.GetStoriesStatus(listOf("1")))
             viewModel.onIntent(StoriesWidgetIntent.ShowCoachMark)
-            advanceUntilIdle()
             viewModel.uiMessage.createHelper(this)
                 .onValues {
                     Assertions.assertThat(it)
@@ -272,7 +263,6 @@ class StoriesWidgetTest {
             val viewModel = StoriesWidgetViewModel(StoriesEntryPoint.ShopPage, repo)
             viewModel.onIntent(StoriesWidgetIntent.GetStoriesStatus(listOf("1")))
             viewModel.onIntent(StoriesWidgetIntent.ShowCoachMark)
-            advanceUntilIdle()
             viewModel.uiMessage.createHelper(this)
                 .onValues {
                     Assertions.assertThat(it)
@@ -302,7 +292,6 @@ class StoriesWidgetTest {
             val viewModel = StoriesWidgetViewModel(StoriesEntryPoint.ShopPage, repo)
             viewModel.onIntent(StoriesWidgetIntent.GetStoriesStatus(listOf("1")))
             viewModel.onIntent(StoriesWidgetIntent.ShowCoachMark)
-            advanceUntilIdle()
             viewModel.uiMessage.createHelper(this)
                 .onValues {
                     Assertions.assertThat(it)
@@ -330,7 +319,6 @@ class StoriesWidgetTest {
         val viewModel = StoriesWidgetViewModel(StoriesEntryPoint.ShopPage, repo)
         viewModel.onIntent(StoriesWidgetIntent.GetStoriesStatus(listOf("1")))
         viewModel.onIntent(StoriesWidgetIntent.ShowCoachMark)
-        advanceUntilIdle()
         viewModel.uiMessage.createHelper(this)
             .onValues {
                 val lastValue = it.last()
@@ -342,7 +330,6 @@ class StoriesWidgetTest {
             .run {
                 viewModel.onIntent(StoriesWidgetIntent.HasSeenCoachMark)
                 viewModel.onIntent(StoriesWidgetIntent.ShowCoachMark)
-                advanceUntilIdle()
             }.onValues {
                 Assertions.assertThat(it.lastOrNull())
                     .isEqualTo(null)
