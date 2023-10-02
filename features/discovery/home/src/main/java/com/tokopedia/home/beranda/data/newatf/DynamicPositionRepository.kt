@@ -20,7 +20,7 @@ class DynamicPositionRepository @Inject constructor(
     private val homeDispatcher: CoroutineDispatchers,
     private val atfDao: AtfDao,
     private val atfDataRepository: HomeAtfRepository,
-    private val atfMapper: AtfMapper,
+    private val atfMapper: AtfMapper
 ) {
 
     private val _cacheFlow: MutableStateFlow<AtfDataList?> = MutableStateFlow(null)
@@ -41,17 +41,18 @@ class DynamicPositionRepository @Inject constructor(
      *      - If different, then expose remote dynamic position (without content)
      */
     val flow: Flow<AtfDataList?> = combine(cacheFlow, remoteFlow) { cache, remote ->
-        if(cache != null && remote != null) {
-            if(remote.positionEquals(cache)) {
+        if (cache != null && remote != null) {
+            if (remote.positionEquals(cache)) {
                 remote.copyAtfContentsFrom(cache)
-            }
-            else {
+            } else {
                 // IMPORTANT: when remote position is different than cache,
                 // always set needToFetchComponents to true because we need
                 // to re-fetch every ATF components data from remote
                 remote.copy(needToFetchComponents = true)
             }
-        } else cache
+        } else {
+            cache
+        }
     }
 
     /**
@@ -73,12 +74,12 @@ class DynamicPositionRepository @Inject constructor(
             listAtfData = atfDao.getAtfDynamicPosition().map(atfMapper::mapCacheToDomainAtfData),
             isCache = true,
             status = AtfDataList.STATUS_SUCCESS,
-            needToFetchComponents = true,
+            needToFetchComponents = true
         )
         _cacheFlow.emit(cachedData)
     }
 
-    suspend fun getRemoteData(isRefresh: Boolean = false): Boolean {
+    suspend fun getRemoteData(isRefresh: Boolean = false) {
         try {
             val listAtf = atfDataRepository.getRemoteData().dataList
             // IMPORTANT: needToFetchComponents value depends on isRefresh flag,
@@ -87,21 +88,19 @@ class DynamicPositionRepository @Inject constructor(
                 listAtfData = listAtf.mapIndexed(atfMapper::mapRemoteToDomainAtfData),
                 isCache = false,
                 status = AtfDataList.STATUS_SUCCESS,
-                needToFetchComponents = isRefresh,
+                needToFetchComponents = isRefresh
             )
             _remoteFlow.emit(remoteData)
-            return true
         } catch (_: Exception) {
             _remoteFlow.emit(
                 AtfDataList(
                     listAtfData = emptyList(),
                     isCache = false,
                     status = AtfDataList.STATUS_ERROR,
-                    needToFetchComponents = false,
+                    needToFetchComponents = false
                 )
             )
         }
-        return false
     }
 
     /**
