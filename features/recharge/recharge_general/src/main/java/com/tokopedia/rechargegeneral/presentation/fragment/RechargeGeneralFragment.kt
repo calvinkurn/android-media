@@ -31,7 +31,6 @@ import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
-import com.tokopedia.common.topupbills.data.MultiCheckoutButtons
 import com.tokopedia.common.topupbills.data.RechargeSBMAddBillRequest
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiry
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryAttribute
@@ -40,9 +39,7 @@ import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumber
 import com.tokopedia.common.topupbills.data.TopupBillsTicker
-import com.tokopedia.common.topupbills.data.constant.MultiCheckoutConst.ACTION_MULTIPLE
-import com.tokopedia.common.topupbills.data.constant.MultiCheckoutConst.POSITION_LEFT
-import com.tokopedia.common.topupbills.data.constant.MultiCheckoutConst.POSITION_RIGHT
+import com.tokopedia.common.topupbills.data.constant.MultiCheckoutConst.ACTION_GENERAL_MYBILLS
 import com.tokopedia.common.topupbills.data.constant.MultiCheckoutConst.PREFERENCE_MULTICHECKOUT
 import com.tokopedia.common.topupbills.data.constant.MultiCheckoutConst.SHOW_COACH_MARK_MULTICHECKOUT_KEY
 import com.tokopedia.common.topupbills.data.constant.MultiCheckoutConst.WHITE_COLOR
@@ -151,6 +148,7 @@ class RechargeGeneralFragment :
 
     private var isAddSBM: Boolean = false
     private var isFromSBM: Boolean = false
+    private var coachmark: CoachMark2? = null
 
     private var operatorId: Int = 0
         set(value) {
@@ -410,6 +408,10 @@ class RechargeGeneralFragment :
         if (rechargeProductFromSlice.isNotEmpty()) {
             rechargeGeneralAnalytics.onClickSliceRecharge(userSession.userId, rechargeProductFromSlice)
             rechargeGeneralAnalytics.onOpenPageFromSlice()
+        }
+
+        context?.let {
+            coachmark = CoachMark2(it)
         }
 
         binding?.run {
@@ -1129,69 +1131,78 @@ class RechargeGeneralFragment :
     }
 
     private fun setMultiCheckoutButton(multiCheckoutButtons: RechargeGeneralDynamicField) {
-        val localCacheHandler = LocalCacheHandler(context, PREFERENCE_MULTICHECKOUT)
-        val coachMarkList = arrayListOf<CoachMark2Item>()
+        context?.let { context ->
+            val localCacheHandler = LocalCacheHandler(context, PREFERENCE_MULTICHECKOUT)
+            val coachMarkList = arrayListOf<CoachMark2Item>()
 
-        binding?.apply {
-            if (multiCheckoutButtons.items.size > Int.ONE) {
-                val (leftButton, rightButton)  = multiCheckoutButtonSeparator(multiCheckoutButtons.items)
-                if (leftButton.text.isNotEmpty() && leftButton.color.isNotEmpty() && leftButton.style.isNotEmpty()) {
-                    rechargeGeneralSecondaryButton.show()
-                    rechargeGeneralSecondaryButton.text = leftButton.text
-                    rechargeGeneralSecondaryButton.buttonVariant = variantButton(leftButton.color)
-                    rechargeGeneralSecondaryButton.setOnClickListener {
-                        chooseListenerAction(leftButton.style)
+            binding?.apply {
+                if (multiCheckoutButtons.items.size > Int.ONE) {
+                    val (leftButton, rightButton) = multiCheckoutButtonSeparator(
+                        multiCheckoutButtons.items
+                    )
+                    if (leftButton.text.isNotEmpty() && leftButton.color.isNotEmpty() && leftButton.style.isNotEmpty()) {
+                        rechargeGeneralSecondaryButton.show()
+                        rechargeGeneralSecondaryButton.text = leftButton.text
+                        rechargeGeneralSecondaryButton.buttonVariant =
+                            variantButton(leftButton.color)
+                        rechargeGeneralSecondaryButton.setOnClickListener {
+                            chooseListenerAction(leftButton.style)
+                        }
+
+                        if (leftButton.coachmark.isNotEmpty()) {
+                            coachMarkList.add(
+                                CoachMark2Item(
+                                    rechargeGeneralSecondaryButton, "", leftButton.coachmark
+                                )
+                            )
+                        }
+                    } else {
+                        rechargeGeneralSecondaryButton.hide()
                     }
 
-                    if (leftButton.coachmark.isNotEmpty()) {
+                    if (rightButton.text.isNotEmpty() && rightButton.color.isNotEmpty() && rightButton.style.isNotEmpty()) {
+                        rechargeGeneralEnquiryButton.text = rightButton.text
+                        rechargeGeneralEnquiryButton.buttonVariant =
+                            variantButton(rightButton.color)
+                        rechargeGeneralEnquiryButton.setOnClickListener {
+                            chooseListenerAction(rightButton.style)
+                        }
+
+                        if (rightButton.coachmark.isNotEmpty()) {
+                            coachMarkList.add(
+                                CoachMark2Item(
+                                    rechargeGeneralEnquiryButton, "", rightButton.coachmark
+                                )
+                            )
+                        }
+                    }
+                } else if (multiCheckoutButtons.items.size == Int.ONE) {
+                    val button = multiCheckoutButtons.items.first()
+                    rechargeGeneralEnquiryButton.text = button.text
+                    rechargeGeneralEnquiryButton.buttonVariant = variantButton(button.color)
+                    rechargeGeneralEnquiryButton.setOnClickListener {
+                        chooseListenerAction(button.style)
+                    }
+
+                    if (button.coachmark.isNotEmpty()) {
                         coachMarkList.add(
                             CoachMark2Item(
-                                rechargeGeneralSecondaryButton, "", leftButton.coachmark
+                                rechargeGeneralEnquiryButton, "", button.coachmark
                             )
                         )
                     }
                 } else {
-                    rechargeGeneralSecondaryButton.hide()
-                }
-
-                if (rightButton.text.isNotEmpty() && rightButton.color.isNotEmpty() && rightButton.style.isNotEmpty()) {
-                    rechargeGeneralEnquiryButton.text = rightButton.text
-                    rechargeGeneralEnquiryButton.buttonVariant = variantButton(rightButton.color)
-                    rechargeGeneralEnquiryButton.setOnClickListener {
-                        chooseListenerAction(rightButton.style)
-                    }
-
-                    if (rightButton.coachmark.isNotEmpty()) {
-                        coachMarkList.add(CoachMark2Item(
-                            rechargeGeneralEnquiryButton, "", rightButton.coachmark
-                        ))
-                    }
-                }
-            } else if(multiCheckoutButtons.items.size == Int.ONE) {
-                val button = multiCheckoutButtons.items.first()
-                rechargeGeneralEnquiryButton.text = button.text
-                rechargeGeneralEnquiryButton.buttonVariant = variantButton(button.color)
-                rechargeGeneralEnquiryButton.setOnClickListener {
-                    chooseListenerAction(button.style)
-                }
-
-                if (button.coachmark.isNotEmpty()) {
-                    coachMarkList.add(CoachMark2Item(
-                        rechargeGeneralEnquiryButton, "", button.coachmark
-                        )
-                    )
-                }
-            } else {
                     rechargeGeneralEnquiryButton.setOnClickListener {
                         enquire()
                     }
                 }
             }
 
-            val isCoachMarkClosed = localCacheHandler.getBoolean(SHOW_COACH_MARK_MULTICHECKOUT_KEY, false)
-            if (!isCoachMarkClosed) {
-                context?.let { context ->
-                    val coachmark = CoachMark2(context)
+            coachmark?.let { coachmark ->
+
+                val isCoachMarkClosed =
+                    localCacheHandler.getBoolean(SHOW_COACH_MARK_MULTICHECKOUT_KEY, false)
+                if (!isCoachMarkClosed && !coachmark.isShowing) {
                     coachmark.showCoachMark(coachMarkList)
                     coachmark.setOnDismissListener {
                         localCacheHandler.putBoolean(SHOW_COACH_MARK_MULTICHECKOUT_KEY, true)
@@ -1199,6 +1210,7 @@ class RechargeGeneralFragment :
                     }
                 }
             }
+        }
     }
 
     private fun multiCheckoutButtonSeparator(multiCheckoutButtons: List<RechargeGeneralDynamicField.Item>): Pair<RechargeGeneralDynamicField.Item, RechargeGeneralDynamicField.Item> {
@@ -1207,7 +1219,7 @@ class RechargeGeneralFragment :
         return Pair(leftButton, rightButton)
     }
     private fun chooseListenerAction(type: String) {
-        if (type.equals(ACTION_MULTIPLE)) {
+        if (type.equals(ACTION_GENERAL_MYBILLS)) {
             addToCartViewModel.setAtcMultiCheckoutParam()
             enquire()
         } else {
