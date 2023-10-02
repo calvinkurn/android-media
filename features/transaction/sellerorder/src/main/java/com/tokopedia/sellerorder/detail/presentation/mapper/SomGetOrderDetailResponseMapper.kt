@@ -250,7 +250,8 @@ object SomGetOrderDetailResponseMapper {
             isShippingPrinted = flagOrderMeta.isShippingPrinted,
             logisticInfo = logisticInfo,
             shipmentLogo = flagOrderMeta.shipmentLogo,
-            courierInfo = shipment.courierInfo
+            courierInfo = shipment.courierInfo,
+            shipmentTickerInfo = shipment.tickerInfo
         )
     }
 

@@ -10,7 +10,16 @@ import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSec
 import com.tokopedia.order_management_common.presentation.viewholder.BmgmSectionViewHolder
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.detail.data.model.SomDetailOrder
-import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.*
+import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.SomDetailDividerViewHolder
+import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.SomDetailHeaderViewHolder
+import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.SomDetailMVCUsageViewHolder
+import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.SomDetailNonProductBundleCardViewHolder
+import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.SomDetailPaymentsViewHolder
+import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.SomDetailPofDataViewHolder
+import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.SomDetailProductBundleCardViewHolder
+import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.SomDetailProductsViewHolder
+import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.SomDetailResolutionViewHolder
+import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.SomDetailShippingViewHolder
 import com.tokopedia.sellerorder.detail.presentation.model.DividerUiModel
 import com.tokopedia.sellerorder.detail.presentation.model.NonProductBundleUiModel
 import com.tokopedia.sellerorder.detail.presentation.model.ProductBundleUiModel
@@ -116,5 +125,6 @@ class SomDetailAdapterFactoryImpl(
         fun onCopiedAddress(address: String, str: String)
         override fun onCopyAddOnDescription(label: String, description: CharSequence)
         fun onResoClicked(redirectPath: String)
+        fun onDropOffButtonClicked(url: String)
     }
 }
