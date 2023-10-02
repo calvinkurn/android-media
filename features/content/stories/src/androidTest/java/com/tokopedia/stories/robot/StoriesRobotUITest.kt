@@ -14,9 +14,11 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import com.tokopedia.stories.analytic.StoriesAnalytics
-import com.tokopedia.stories.analytic.StoriesRoomAnalytic
-import com.tokopedia.stories.analytic.StoriesRoomAnalyticImpl
+import com.tokopedia.stories.analytics.StoriesAnalytics
+import com.tokopedia.stories.analytics.StoriesRoomAnalytic
+import com.tokopedia.stories.analytics.StoriesRoomAnalyticImpl
+import com.tokopedia.stories.analytics.StoriesSharingAnalytics
+import com.tokopedia.stories.analytics.StoriesSharingAnalyticsImpl
 import com.tokopedia.stories.data.repository.StoriesRepository
 import com.tokopedia.stories.factory.StoriesFragmentFactoryUITest
 import com.tokopedia.stories.utils.delay
@@ -26,6 +28,7 @@ import com.tokopedia.stories.view.model.StoriesArgsModel
 import com.tokopedia.stories.view.viewmodel.StoriesViewModel
 import com.tokopedia.stories.view.viewmodel.StoriesViewModelFactory
 import com.tokopedia.user.session.UserSessionInterface
+import io.mockk.mockk
 import com.tokopedia.empty_state.R as empty_stateR
 import com.tokopedia.stories.R as storiesR
 
@@ -33,7 +36,7 @@ internal class StoriesRobotUITest(
     private val args: StoriesArgsModel,
     private val handle: SavedStateHandle,
     private val repository: StoriesRepository,
-    userSession: UserSessionInterface,
+    private val userSession: UserSessionInterface,
 ) {
 
     private val viewModel: StoriesViewModel by lazy {
@@ -41,6 +44,7 @@ internal class StoriesRobotUITest(
             args = args,
             handle = handle,
             repository = repository,
+            userSession = userSession,
         )
     }
 
@@ -68,6 +72,11 @@ internal class StoriesRobotUITest(
         userSession = userSession,
     )
 
+    private val storiesSharingAnalytic = StoriesSharingAnalyticsImpl(
+        shopId = args.authorId,
+        userSession = userSession,
+    )
+
     private val storiesAnalyticFactory = object : StoriesAnalytics.Factory {
         override fun create(args: StoriesArgsModel): StoriesAnalytics {
             return StoriesAnalytics(
@@ -76,7 +85,13 @@ internal class StoriesRobotUITest(
                     override fun create(args: StoriesArgsModel): StoriesRoomAnalytic {
                         return storiesRoomAnalytic
                     }
-                })
+                },
+                sharingAnalytics = object : StoriesSharingAnalytics.Factory {
+                    override fun create(shopId: String): StoriesSharingAnalytics {
+                        return storiesSharingAnalytic
+                    }
+                }
+            )
         }
     }
 
@@ -91,6 +106,7 @@ internal class StoriesRobotUITest(
             StoriesDetailFragment::class.java to {
                 StoriesDetailFragment(
                     analyticFactory = storiesAnalyticFactory,
+                    router = mockk(relaxed = true),
                 )
             }
         )

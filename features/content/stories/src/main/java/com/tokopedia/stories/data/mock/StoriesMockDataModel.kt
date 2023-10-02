@@ -50,7 +50,7 @@ fun mockInitialDataModel(
                                 id = "0",
                                 event = StoriesDetailItemUiEvent.PAUSE,
                                 content = StoriesDetailItem.StoriesItemContent(
-                                    type = StoriesDetailItem.StoriesItemContentType.IMAGE,
+                                    type = StoriesDetailItem.StoriesItemContentType.Image,
                                     data = "https://images.tokopedia.net/img/cache/296/jJtrdn/2023/8/26/784aad6f-728a-43b4-9050-350aed7d79c6.jpg?b=UFN%25%24%3FMxq%5DyD%5BntlS6ng4Ux%5D%251Rj9%25ROt7%25g",
                                     duration = duration
                                 ),
@@ -65,7 +65,7 @@ fun mockInitialDataModel(
                                 id = "1",
                                 event = StoriesDetailItemUiEvent.PAUSE,
                                 content = StoriesDetailItem.StoriesItemContent(
-                                    type = StoriesDetailItem.StoriesItemContentType.IMAGE,
+                                    type = StoriesDetailItem.StoriesItemContentType.Image,
                                     data = "https://images.tokopedia.net/img/cache/296/jJtrdn/2023/8/26/0f1c281b-260c-47d3-9e2d-5b6dda318d7c.png?b=UCAWdEfhL8j%5D%23tfPO7a%23y%2Bf8QsfOpqa%23Znoc",
                                     duration = duration
                                 ),
@@ -80,7 +80,7 @@ fun mockInitialDataModel(
                                 id = "2",
                                 event = StoriesDetailItemUiEvent.PAUSE,
                                 content = StoriesDetailItem.StoriesItemContent(
-                                    type = StoriesDetailItem.StoriesItemContentType.IMAGE,
+                                    type = StoriesDetailItem.StoriesItemContentType.Image,
                                     data = "https://images.tokopedia.net/img/generator/LScDrk/a1198bf4080d320f6563d7e1896f1abd.jpg",
                                     duration = duration
                                 ),
@@ -108,7 +108,7 @@ fun mockInitialDataModel(
                                 id = "0",
                                 event = StoriesDetailItemUiEvent.PAUSE,
                                 content = StoriesDetailItem.StoriesItemContent(
-                                    type = StoriesDetailItem.StoriesItemContentType.IMAGE,
+                                    type = StoriesDetailItem.StoriesItemContentType.Image,
                                     data = "https://images.tokopedia.net/img/cache/296/jJtrdn/2023/8/26/784aad6f-728a-43b4-9050-350aed7d79c6.jpg?b=UFN%25%24%3FMxq%5DyD%5BntlS6ng4Ux%5D%251Rj9%25ROt7%25g",
                                     duration = duration
                                 ),
@@ -123,7 +123,7 @@ fun mockInitialDataModel(
                                 id = "1",
                                 event = StoriesDetailItemUiEvent.PAUSE,
                                 content = StoriesDetailItem.StoriesItemContent(
-                                    type = StoriesDetailItem.StoriesItemContentType.IMAGE,
+                                    type = StoriesDetailItem.StoriesItemContentType.Image,
                                     data = "https://images.tokopedia.net/img/cache/296/jJtrdn/2023/8/26/0f1c281b-260c-47d3-9e2d-5b6dda318d7c.png?b=UCAWdEfhL8j%5D%23tfPO7a%23y%2Bf8QsfOpqa%23Znoc",
                                     duration = duration
                                 ),
@@ -138,7 +138,7 @@ fun mockInitialDataModel(
                                 id = "2",
                                 event = StoriesDetailItemUiEvent.PAUSE,
                                 content = StoriesDetailItem.StoriesItemContent(
-                                    type = StoriesDetailItem.StoriesItemContentType.IMAGE,
+                                    type = StoriesDetailItem.StoriesItemContentType.Image,
                                     data = "https://images.tokopedia.net/img/generator/LScDrk/a1198bf4080d320f6563d7e1896f1abd.jpg",
                                     duration = duration
                                 ),
@@ -166,7 +166,7 @@ fun mockInitialDataModel(
                                 id = "0",
                                 event = StoriesDetailItemUiEvent.PAUSE,
                                 content = StoriesDetailItem.StoriesItemContent(
-                                    type = StoriesDetailItem.StoriesItemContentType.IMAGE,
+                                    type = StoriesDetailItem.StoriesItemContentType.Image,
                                     data = "https://images.tokopedia.net/img/cache/296/jJtrdn/2023/8/26/784aad6f-728a-43b4-9050-350aed7d79c6.jpg?b=UFN%25%24%3FMxq%5DyD%5BntlS6ng4Ux%5D%251Rj9%25ROt7%25g",
                                     duration = duration
                                 ),
@@ -181,7 +181,7 @@ fun mockInitialDataModel(
                                 id = "1",
                                 event = StoriesDetailItemUiEvent.PAUSE,
                                 content = StoriesDetailItem.StoriesItemContent(
-                                    type = StoriesDetailItem.StoriesItemContentType.IMAGE,
+                                    type = StoriesDetailItem.StoriesItemContentType.Image,
                                     data = "https://images.tokopedia.net/img/cache/296/jJtrdn/2023/8/26/0f1c281b-260c-47d3-9e2d-5b6dda318d7c.png?b=UCAWdEfhL8j%5D%23tfPO7a%23y%2Bf8QsfOpqa%23Znoc",
                                     duration = duration
                                 ),
@@ -196,7 +196,7 @@ fun mockInitialDataModel(
                                 id = "2",
                                 event = StoriesDetailItemUiEvent.PAUSE,
                                 content = StoriesDetailItem.StoriesItemContent(
-                                    type = StoriesDetailItem.StoriesItemContentType.IMAGE,
+                                    type = StoriesDetailItem.StoriesItemContentType.Image,
                                     data = "https://images.tokopedia.net/img/generator/LScDrk/a1198bf4080d320f6563d7e1896f1abd.jpg",
                                     duration = duration
                                 ),
@@ -259,7 +259,7 @@ fun mockInitialDataModelFetchPrevAndNext(): StoriesUiModel {
                             id = "0",
                             event = StoriesDetailItemUiEvent.PAUSE,
                             content = StoriesDetailItem.StoriesItemContent(
-                                type = StoriesDetailItem.StoriesItemContentType.IMAGE,
+                                type = StoriesDetailItem.StoriesItemContentType.Image,
                                 data = "https://images.tokopedia.net/img/cache/296/jJtrdn/2023/8/26/784aad6f-728a-43b4-9050-350aed7d79c6.jpg?b=UFN%25%24%3FMxq%5DyD%5BntlS6ng4Ux%5D%251Rj9%25ROt7%25g",
                                 duration = 1000
                             ),
@@ -274,7 +274,7 @@ fun mockInitialDataModelFetchPrevAndNext(): StoriesUiModel {
                             id = "1",
                             event = StoriesDetailItemUiEvent.PAUSE,
                             content = StoriesDetailItem.StoriesItemContent(
-                                type = StoriesDetailItem.StoriesItemContentType.IMAGE,
+                                type = StoriesDetailItem.StoriesItemContentType.Image,
                                 data = "https://images.tokopedia.net/img/cache/296/jJtrdn/2023/8/26/0f1c281b-260c-47d3-9e2d-5b6dda318d7c.png?b=UCAWdEfhL8j%5D%23tfPO7a%23y%2Bf8QsfOpqa%23Znoc",
                                 duration = 1000
                             ),
@@ -289,7 +289,7 @@ fun mockInitialDataModelFetchPrevAndNext(): StoriesUiModel {
                             id = "2",
                             event = StoriesDetailItemUiEvent.PAUSE,
                             content = StoriesDetailItem.StoriesItemContent(
-                                type = StoriesDetailItem.StoriesItemContentType.IMAGE,
+                                type = StoriesDetailItem.StoriesItemContentType.Image,
                                 data = "https://images.tokopedia.net/img/generator/LScDrk/a1198bf4080d320f6563d7e1896f1abd.jpg",
                                 duration = 1000
                             ),
@@ -353,7 +353,7 @@ fun mockInitialDataModelFetchPrev(): StoriesUiModel {
                             id = "0",
                             event = StoriesDetailItemUiEvent.PAUSE,
                             content = StoriesDetailItem.StoriesItemContent(
-                                type = StoriesDetailItem.StoriesItemContentType.IMAGE,
+                                type = StoriesDetailItem.StoriesItemContentType.Image,
                                 data = "https://images.tokopedia.net/img/cache/296/jJtrdn/2023/8/26/784aad6f-728a-43b4-9050-350aed7d79c6.jpg?b=UFN%25%24%3FMxq%5DyD%5BntlS6ng4Ux%5D%251Rj9%25ROt7%25g",
                                 duration = 1000
                             ),
@@ -368,7 +368,7 @@ fun mockInitialDataModelFetchPrev(): StoriesUiModel {
                             id = "1",
                             event = StoriesDetailItemUiEvent.PAUSE,
                             content = StoriesDetailItem.StoriesItemContent(
-                                type = StoriesDetailItem.StoriesItemContentType.IMAGE,
+                                type = StoriesDetailItem.StoriesItemContentType.Image,
                                 data = "https://images.tokopedia.net/img/cache/296/jJtrdn/2023/8/26/0f1c281b-260c-47d3-9e2d-5b6dda318d7c.png?b=UCAWdEfhL8j%5D%23tfPO7a%23y%2Bf8QsfOpqa%23Znoc",
                                 duration = 1000
                             ),
@@ -383,7 +383,7 @@ fun mockInitialDataModelFetchPrev(): StoriesUiModel {
                             id = "2",
                             event = StoriesDetailItemUiEvent.PAUSE,
                             content = StoriesDetailItem.StoriesItemContent(
-                                type = StoriesDetailItem.StoriesItemContentType.IMAGE,
+                                type = StoriesDetailItem.StoriesItemContentType.Image,
                                 data = "https://images.tokopedia.net/img/generator/LScDrk/a1198bf4080d320f6563d7e1896f1abd.jpg",
                                 duration = 1000
                             ),
@@ -444,7 +444,7 @@ fun mockInitialDataModelFetchNext(): StoriesUiModel {
                             id = "0",
                             event = StoriesDetailItemUiEvent.PAUSE,
                             content = StoriesDetailItem.StoriesItemContent(
-                                type = StoriesDetailItem.StoriesItemContentType.IMAGE,
+                                type = StoriesDetailItem.StoriesItemContentType.Image,
                                 data = "https://images.tokopedia.net/img/cache/296/jJtrdn/2023/8/26/784aad6f-728a-43b4-9050-350aed7d79c6.jpg?b=UFN%25%24%3FMxq%5DyD%5BntlS6ng4Ux%5D%251Rj9%25ROt7%25g",
                                 duration = 1000
                             ),
@@ -459,7 +459,7 @@ fun mockInitialDataModelFetchNext(): StoriesUiModel {
                             id = "1",
                             event = StoriesDetailItemUiEvent.PAUSE,
                             content = StoriesDetailItem.StoriesItemContent(
-                                type = StoriesDetailItem.StoriesItemContentType.IMAGE,
+                                type = StoriesDetailItem.StoriesItemContentType.Image,
                                 data = "https://images.tokopedia.net/img/cache/296/jJtrdn/2023/8/26/0f1c281b-260c-47d3-9e2d-5b6dda318d7c.png?b=UCAWdEfhL8j%5D%23tfPO7a%23y%2Bf8QsfOpqa%23Znoc",
                                 duration = 1000
                             ),
@@ -474,7 +474,7 @@ fun mockInitialDataModelFetchNext(): StoriesUiModel {
                             id = "2",
                             event = StoriesDetailItemUiEvent.PAUSE,
                             content = StoriesDetailItem.StoriesItemContent(
-                                type = StoriesDetailItem.StoriesItemContentType.IMAGE,
+                                type = StoriesDetailItem.StoriesItemContentType.Image,
                                 data = "https://images.tokopedia.net/img/generator/LScDrk/a1198bf4080d320f6563d7e1896f1abd.jpg",
                                 duration = 1000
                             ),
