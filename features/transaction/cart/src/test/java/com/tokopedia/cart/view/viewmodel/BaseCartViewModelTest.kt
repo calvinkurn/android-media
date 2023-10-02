@@ -12,10 +12,10 @@ import com.tokopedia.cart.domain.usecase.UpdateCartAndGetLastApplyUseCase
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
+import com.tokopedia.cartrevamp.domain.usecase.BmGmGetGroupProductTickerUseCase
 import com.tokopedia.cartrevamp.domain.usecase.SetCartlistCheckboxStateUseCase
 import com.tokopedia.cartrevamp.view.CartViewModel
 import com.tokopedia.cartrevamp.view.helper.CartDataHelper
-import com.tokopedia.cartrevamp.view.processor.CartCalculator
 import com.tokopedia.cartrevamp.view.processor.CartPromoEntryPointProcessor
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.promousage.domain.usecase.PromoUsageGetPromoListRecommendationEntryPointUseCase
@@ -74,6 +74,7 @@ open class BaseCartViewModelTest {
         PromoUsageGetPromoListRecommendationMapper()
     var chosenAddressRequestHelper: ChosenAddressRequestHelper = mockk(relaxed = true)
     lateinit var cartPromoEntryPointProcessor: CartPromoEntryPointProcessor
+    val bmGmGetGroupProductTickerUseCase: BmGmGetGroupProductTickerUseCase = mockk()
     lateinit var cartViewModel: CartViewModel
 
     @get: Rule
@@ -96,8 +97,8 @@ open class BaseCartViewModelTest {
             seamlessLoginUsecase, updateCartCounterUseCase, updateCartAndGetLastApplyUseCase,
             setCartlistCheckboxStateUseCase, followShopUseCase,
             cartShopGroupTickerAggregatorUseCase, cartPromoEntryPointProcessor,
-            TestSchedulers, coroutineTestDispatchers,
-            CartCalculator()
+            bmGmGetGroupProductTickerUseCase, TestSchedulers,
+            coroutineTestDispatchers
         )
         every { addToWishListV2UseCase.cancelJobs() } just Runs
         every { deleteWishlistV2UseCase.cancelJobs() } just Runs
