@@ -11,7 +11,7 @@ data class StoriesRequestModel(
     val source: String,
     @SerializedName("sourceID")
     val sourceID: String,
-    @SerializedName("entryPoint")
+    @SerializedName("entrypoint")
     val entryPoint: String,
 )
 
