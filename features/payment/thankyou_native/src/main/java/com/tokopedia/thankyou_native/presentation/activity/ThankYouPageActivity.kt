@@ -374,7 +374,7 @@ class ThankYouPageActivity :
             builderFlags = IconBuilderFlag(
                 pageSource = NavSource.THANKYOU
             )
-        ).addIcon(IconList.ID_SHARE_AB_TEST) {
+        ).addIcon(IconList.ID_SHARE) {
             postPurchaseShareHelper.get().goToSharePostPurchase(
                 this,
                 thanksPageData.shopOrder

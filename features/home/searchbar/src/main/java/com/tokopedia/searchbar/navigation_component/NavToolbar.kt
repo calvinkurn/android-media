@@ -546,20 +546,10 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
         return null
     }
 
-    // this needed to enable coachmark on wishlist detail page
+    // this needed to enable coachmark on wishlist detail page & thankyou page
     fun getShareIconView(): View? {
         val shareIconPosition = navIconAdapter?.getShareIconPosition()
         shareIconPosition?.let {
-            val viewholder = navIconRecyclerView.findViewHolderForAdapterPosition(it)
-            return viewholder?.itemView
-        }
-        return null
-    }
-
-    // this is needed to enable coachmark on share affiliate icon
-    fun getShareAffiliateIconView(): View? {
-        val shareAffiliateIconPosition = navIconAdapter?.getShareAffiliateIconPosition()
-        shareAffiliateIconPosition?.let {
             val viewholder = navIconRecyclerView.findViewHolderForAdapterPosition(it)
             return viewholder?.itemView
         }
