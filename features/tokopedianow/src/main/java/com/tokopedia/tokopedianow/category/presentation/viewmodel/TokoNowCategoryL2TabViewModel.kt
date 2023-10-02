@@ -12,6 +12,7 @@ import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_PARAMETER_ROWS_PROFILE
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet.ApplySortFilterModel
+import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
@@ -44,6 +45,7 @@ import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.map
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.removeItem
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.removeLoadMoreLoading
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.updateAllProductQuantity
+import com.tokopedia.tokopedianow.category.domain.response.CategoryDetailResponse.CategoryDetail
 import com.tokopedia.tokopedianow.category.domain.response.GetCategoryLayoutResponse.Component
 import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryProductUseCase
 import com.tokopedia.tokopedianow.category.presentation.constant.CategoryStaticLayoutId
@@ -68,6 +70,8 @@ import com.tokopedia.tokopedianow.common.model.TokoNowAdsCarouselUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationUiModel
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
+import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking
+import com.tokopedia.tokopedianow.oldcategory.domain.model.CategorySharingModel
 import com.tokopedia.tokopedianow.searchcategory.domain.mapper.VisitableMapper.updateProductItem
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
 import com.tokopedia.tokopedianow.searchcategory.domain.usecase.GetFeedbackFieldToggleUseCase
@@ -78,6 +82,7 @@ import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_DIRECTORY
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Job
 import javax.inject.Inject
@@ -112,6 +117,16 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
 ) {
 
     companion object {
+        const val DEFAULT_CATEGORY_ID = "0"
+        const val DEFAULT_DEEPLINK_PARAM = "category/l2"
+        const val DEEPLINK_PARAM_LVL_3 = "?sc=%s"
+        const val URL_PARAM_LVL_2 = "?exclude_sc=%s"
+        const val URL_PARAM_LVL_3 = "&sc=%s"
+        const val PAGE_TYPE_CATEGORY = "cat%s"
+        const val CATEGORY_LVL_1 = 1
+        const val CATEGORY_LVL_2 = 2
+        const val CATEGORY_LVL_3 = 3
+
         private const val FIRST_PAGE = 1
         private const val PRODUCT_ROWS = 9
         private const val CATEGORY_LEVEL_DEPTH = 1
@@ -125,6 +140,7 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
     private val _atcDataTracker = MutableLiveData<CategoryAtcTrackerModel>()
     private val _clickWishlistTracker = MutableLiveData<Pair<Int, String>>()
     private val _clickSimilarProductTracker = MutableLiveData<Pair<Int, String>>()
+    private val _shareLiveData = SingleLiveEvent<CategorySharingModel>()
 
     val filterProductCountLiveData: LiveData<String> = _filterProductCountLiveData
     val dynamicFilterModelLiveData: LiveData<DynamicFilterModel?> = _dynamicFilterModelLiveData
@@ -134,6 +150,7 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
     val atcDataTracker: LiveData<CategoryAtcTrackerModel> = _atcDataTracker
     val clickWishlistTracker: LiveData<Pair<Int, String>> = _clickWishlistTracker
     val clickSimilarProductTracker: LiveData<Pair<Int, String>> = _clickSimilarProductTracker
+    val shareLiveData: LiveData<CategorySharingModel> = _shareLiveData
 
     private val filterController = FilterController()
     private val visitableList = mutableListOf<Visitable<*>>()
@@ -144,6 +161,8 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
     private var categoryIdL2: String = ""
     private var tickerData: GetTickerData = GetTickerData()
     private var components: List<Component> = emptyList()
+    private var categoryDetail: CategoryDetail = CategoryDetail()
+    private var quickFilterData: DataValue = DataValue()
     private var filterBottomSheetOpened: Boolean = false
 
     private var getProductJob: Job? = null
@@ -339,6 +358,7 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
 
     fun onResume() {
         getMiniCart()
+        updateSharingDataModel()
     }
 
     private fun setCategoryData(data: CategoryL2TabData) {
@@ -350,6 +370,7 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
         this.tickerData = tickerData
         this.components = data.componentList
         this.hasBlockedAddToCart = blockAddToCart
+        this.categoryDetail = data.categoryDetail
     }
 
     private fun loadFirstPage() {
@@ -439,6 +460,7 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
             val quickFilterResponse = getSortFilterUseCase.execute(
                 queryParams = requestParams
             )
+            quickFilterData = quickFilterResponse.data
 
             val categoryFilterResponse = getCategoryFilter()
             initFilterController(quickFilterResponse, categoryFilterResponse)
@@ -456,6 +478,7 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
 
             findExcludedFilter(quickFilter)
             updateVisitableListLiveData()
+            updateSharingDataModel()
         }) {
         }
     }
@@ -779,5 +802,76 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
 
     private fun trackClickWishlistButton(index: Int, productId: String) {
         _clickWishlistTracker.postValue(Pair(index, productId))
+    }
+
+    private fun updateSharingDataModel() {
+        var categoryIdLvl2 = categoryIdL2
+        var categoryIdLvl3 = DEFAULT_CATEGORY_ID
+
+        queryParams.forEach {
+            when (it.key) {
+                "${OptionHelper.EXCLUDE_PREFIX}${SearchApiConst.SC}" -> categoryIdLvl2 = it.value
+                SearchApiConst.SC -> categoryIdLvl3 = it.value
+            }
+        }
+
+        val title = getTitleCategory(categoryIdLvl2)
+        val constructedLink = getConstructedLink(categoryDetail.data.url, categoryIdLvl2, categoryIdLvl3)
+        val utmCampaignList = getUtmCampaignList(categoryIdLvl2, categoryIdLvl3)
+
+        _shareLiveData.postValue(
+            CategorySharingModel(
+                categoryIdLvl2 = categoryIdLvl2,
+                categoryIdLvl3 = categoryIdLvl3,
+                title = title,
+                deeplinkParam = constructedLink.first,
+                url = constructedLink.second,
+                utmCampaignList = utmCampaignList
+            )
+        )
+    }
+
+    private fun getTitleCategory(categoryIdLvl2: String): String {
+        val filterList = quickFilterData.filter
+        return if (categoryIdLvl2.isNotBlank() && categoryIdLvl2 != DEFAULT_CATEGORY_ID && filterList.isNotEmpty()) {
+            filterList.first().title.removePrefix(CategoryTracking.Misc.PREFIX_ALL).trim()
+        } else {
+            categoryDetail.data.name
+        }
+    }
+
+    private fun getConstructedLink(categoryUrl: String, categoryIdLvl2: String, categoryIdLvl3: String): Pair<String, String> {
+        var deeplinkParam = "${DEFAULT_DEEPLINK_PARAM}/$categoryIdL1"
+        var url = categoryUrl
+        if (categoryIdLvl2.isNotBlank() && categoryIdLvl2 != DEFAULT_CATEGORY_ID) {
+            deeplinkParam += "/$categoryIdLvl2"
+            url += String.format(URL_PARAM_LVL_2, categoryIdLvl2)
+
+            if (categoryIdLvl3.isNotBlank() && categoryIdLvl3 != DEFAULT_CATEGORY_ID) {
+                deeplinkParam += String.format(DEEPLINK_PARAM_LVL_3, categoryIdLvl3)
+                url += String.format(URL_PARAM_LVL_3, categoryIdLvl3)
+            }
+        }
+        return Pair(deeplinkParam, url)
+    }
+
+    private fun getUtmCampaignList(categoryIdLvl2: String, categoryIdLvl3: String): List<String> {
+        val categoryId: String
+        val categoryLvl: Int
+        when {
+            categoryIdLvl3.isNotBlank() && categoryIdLvl3 != DEFAULT_CATEGORY_ID -> {
+                categoryLvl = CATEGORY_LVL_3
+                categoryId = categoryIdLvl3
+            }
+            categoryIdLvl2.isNotBlank() && categoryIdLvl2 != DEFAULT_CATEGORY_ID -> {
+                categoryLvl = CATEGORY_LVL_2
+                categoryId = categoryIdLvl2
+            }
+            else -> {
+                categoryLvl = CATEGORY_LVL_1
+                categoryId = categoryIdL1
+            }
+        }
+        return listOf(String.format(PAGE_TYPE_CATEGORY, categoryLvl), categoryId)
     }
 }

@@ -245,6 +245,12 @@ class TokoNowCategoryL2TabFragment : Fragment() {
             trackClickSimilarProduct(it.first, it.second)
         }
 
+        observe(viewModel.shareLiveData) {
+            if(isResumed) {
+                categoryL2View?.setShareModel(it)
+            }
+        }
+
         observe(viewModel.updateToolbarNotification) {
             updateToolbarNotification()
         }

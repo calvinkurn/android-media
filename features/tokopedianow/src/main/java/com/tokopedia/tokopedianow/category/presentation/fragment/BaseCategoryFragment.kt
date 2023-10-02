@@ -57,6 +57,7 @@ import com.tokopedia.tokopedianow.common.view.NoAddressEmptyStateView
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowCategoryBaseBinding
+import com.tokopedia.tokopedianow.oldcategory.domain.model.CategorySharingModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
@@ -441,6 +442,17 @@ abstract class BaseCategoryFragment : Fragment(), ScreenShotListener,
             } else {
                 hideMiniCart()
             }
+        }
+    }
+
+    protected fun setCategorySharingModel(model: CategorySharingModel) {
+        shareTokonow?.apply {
+            id = model.deeplinkParam
+            sharingUrl = model.url
+            pageIdConstituents = model.utmCampaignList
+            sharingText = context?.resources?.getString(R.string.tokopedianow_category_share_main_text, model.title).orEmpty()
+            specificPageName = context?.resources?.getString(R.string.tokopedianow_category_share_title, model.title).orEmpty()
+            specificPageDescription = context?.resources?.getString(R.string.tokopedianow_category_share_desc, model.title).orEmpty()
         }
     }
 

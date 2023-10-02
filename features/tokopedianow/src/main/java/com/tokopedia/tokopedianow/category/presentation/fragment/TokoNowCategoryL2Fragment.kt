@@ -37,6 +37,7 @@ import com.tokopedia.tokopedianow.common.util.addViewOnScreenObserver
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder.TokoNowChooseAddressWidgetListener
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowCategoryBaseBinding
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowCategoryL2Binding
+import com.tokopedia.tokopedianow.oldcategory.domain.model.CategorySharingModel
 import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.setCustomText
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -157,6 +158,10 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment(), CategoryL2View {
                 .add(container.id, fragment)
                 .commit()
         }
+    }
+
+    override fun setShareModel(model: CategorySharingModel) {
+        setCategorySharingModel(model)
     }
 
     override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
