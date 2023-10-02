@@ -77,6 +77,7 @@ const val GQL_GET_WIDGET_DETAIL_V3 =
         user_state    
         widget_type
         product_code
+        gateway_id
       }
     }
   }

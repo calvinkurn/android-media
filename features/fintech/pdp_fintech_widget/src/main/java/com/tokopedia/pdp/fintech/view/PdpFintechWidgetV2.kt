@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.pdp.fintech.analytics.FintechWidgetAnalyticsEvent
 import com.tokopedia.pdp.fintech.analytics.PdpFintechWidgetAnalytics
 import com.tokopedia.pdp.fintech.di.components.DaggerFintechWidgetComponent
 import com.tokopedia.pdp.fintech.domain.datamodel.FintechRedirectionWidgetDataClass
@@ -161,6 +162,18 @@ class PdpFintechWidgetV2 @JvmOverloads constructor(
                 setMessagesWidget(model.messages)
                 setClickListener(model)
                 setIcon(model)
+                pdpWidgetAnalytics.get().sendAnalyticsEvent(
+                    analyticsEvent = FintechWidgetAnalyticsEvent.BnplWidgetImpression(
+                        usecaseRank = model.usecaseRank.toString(),
+                        linkingStatus = model.linkingStatus,
+                        userState = model.userState,
+                        widgetType = model.widgetType,
+                        productId = productID.toString(),
+                        productPrice = productPrice.toString(),
+                        installmentAmt = model.installmentAmt.toString(),
+                        partner = model.gatewayId,
+                    )
+                )
             } ?: run {
                 instanceProductUpdateListner?.removeWidget()
             }
@@ -177,8 +190,20 @@ class PdpFintechWidgetV2 @JvmOverloads constructor(
 
     private fun setClickListener(model: WidgetDetailV3Item) {
         binding?.sliderContainer?.setOnClickListener {
+            pdpWidgetAnalytics.get().sendAnalyticsEvent(
+                analyticsEvent = FintechWidgetAnalyticsEvent.BnplWidgetClick(
+                    usecaseRank = model.usecaseRank.toString(),
+                    linkingStatus = model.linkingStatus,
+                    userState = model.userState,
+                    widgetType = model.widgetType,
+                    productId = productID.toString(),
+                    productPrice = productPrice.toString(),
+                    installmentAmt = model.installmentAmt.toString(),
+                    partner = model.gatewayId,
+                )
+            )
             instanceProductUpdateListner?.fintechChipClicked(
-                FintechRedirectionWidgetDataClass(gatewayId = Int.ZERO.toString()),
+                FintechRedirectionWidgetDataClass(gatewayId = model.gatewayId),
                 model.androidUrl
             )
         }

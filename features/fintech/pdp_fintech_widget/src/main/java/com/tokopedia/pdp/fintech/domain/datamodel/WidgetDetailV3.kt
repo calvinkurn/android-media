@@ -43,6 +43,8 @@ data class WidgetDetailV3Item(
     @SerializedName("widget_type")
     var widgetType: String = "",
     @SerializedName("product_code")
-    var productCode: String = ""
+    var productCode: String = "",
+    @SerializedName("gateway_id")
+    var gatewayId: String = "",
 ) : Parcelable
 
