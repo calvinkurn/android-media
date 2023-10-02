@@ -63,6 +63,23 @@ class CreationUploaderImpl @Inject constructor(
 
     override fun observe(): Flow<CreationUploadResult> {
         return callbackFlow {
+
+            val creationUploadData = creationUploadQueueRepository.getTopQueue()
+
+            if (creationUploadData != null) {
+                when (creationUploadData.uploadProgress) {
+                    in CreationUploadConst.PROGRESS_INIT until CreationUploadConst.PROGRESS_COMPLETED -> {
+                        trySendBlocking(CreationUploadResult.Progress(creationUploadData, creationUploadData.uploadProgress))
+                    }
+                    CreationUploadConst.PROGRESS_COMPLETED -> {
+                        trySendBlocking(CreationUploadResult.Success(creationUploadData))
+                    }
+                    CreationUploadConst.PROGRESS_FAILED -> {
+                        trySendBlocking(CreationUploadResult.Failed(creationUploadData))
+                    }
+                }
+            }
+
             val observer = Observer<CreationUploadResult> {
                 trySendBlocking(it)
             }

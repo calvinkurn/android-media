@@ -5,7 +5,6 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.creation.common.upload.data.local.database.CreationUploadQueueDatabase
 import com.tokopedia.creation.common.upload.domain.repository.CreationUploadQueueRepository
 import com.tokopedia.creation.common.upload.model.CreationUploadData
-import com.tokopedia.creation.common.upload.model.UploadQueueStatus
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
@@ -51,9 +50,9 @@ class CreationUploadQueueRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun updateStatus(queueId: Int, queueStatus: UploadQueueStatus) {
+    override suspend fun updateProgress(queueId: Int, progress: Int) {
         lockAndSwitchContext(dispatchers) {
-            creationUploadQueueDatabase.creationUploadQueueDao().updateStatus(queueId, queueStatus.value)
+            creationUploadQueueDatabase.creationUploadQueueDao().updateProgress(queueId, progress)
         }
     }
 

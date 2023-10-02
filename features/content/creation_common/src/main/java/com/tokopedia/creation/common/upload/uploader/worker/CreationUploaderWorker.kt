@@ -15,7 +15,6 @@ import com.tokopedia.creation.common.upload.domain.repository.CreationUploadQueu
 import com.tokopedia.creation.common.upload.uploader.manager.CreationUploadManagerProvider
 import com.tokopedia.creation.common.upload.di.worker.DaggerCreationUploadWorkerComponent
 import com.tokopedia.creation.common.upload.model.CreationUploadData
-import com.tokopedia.creation.common.upload.model.UploadQueueStatus
 import com.tokopedia.creation.common.upload.model.exception.NoUploadManagerException
 import com.tokopedia.creation.common.upload.model.exception.UnknownUploadTypeException
 import com.tokopedia.creation.common.upload.uploader.manager.CreationUploadManagerListener
@@ -116,9 +115,7 @@ class CreationUploaderWorker(
             )
         )
 
-        when (progress) {
-            CreationUploadConst.PROGRESS_FAILED -> queueRepository.updateStatus(data.queueId, UploadQueueStatus.Failed)
-        }
+        queueRepository.updateProgress(data.queueId, progress)
     }
 
     companion object {

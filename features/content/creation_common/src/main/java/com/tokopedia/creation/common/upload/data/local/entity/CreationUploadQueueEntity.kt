@@ -23,8 +23,8 @@ data class CreationUploadQueueEntity(
     @ColumnInfo(name = "upload_type")
     val uploadType: String = "",
 
-    @ColumnInfo(name = "queue_status")
-    val queueStatus: String = "",
+    @ColumnInfo(name = "upload_progress")
+    val uploadProgress: Int = 0,
 
     @ColumnInfo(name = "timestamp")
     val timestamp: Long = 0L,

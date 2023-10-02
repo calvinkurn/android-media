@@ -14,7 +14,7 @@ import java.util.UUID
 sealed interface CreationUploadData {
     val queueId: Int
     val uploadType: CreationUploadType
-    val queueStatus: UploadQueueStatus
+    val uploadProgress: Int
     val timestamp: Long
     val creationId: String
     val coverUri: String
@@ -52,8 +52,8 @@ sealed interface CreationUploadData {
         @SerializedName(KEY_UPLOAD_TYPE)
         override val uploadType: CreationUploadType,
 
-        @SerializedName(KEY_QUEUE_STATUS)
-        override val queueStatus: UploadQueueStatus,
+        @SerializedName(KEY_UPLOAD_PROGRESS)
+        override val uploadProgress: Int,
 
         @SerializedName(KEY_TIMESTAMP)
         override val timestamp: Long,
@@ -85,7 +85,7 @@ sealed interface CreationUploadData {
                 queueId = queueId,
                 creationId = creationId,
                 uploadType = uploadType.type,
-                queueStatus = queueStatus.value,
+                uploadProgress = uploadProgress,
                 timestamp = timestamp,
                 coverUri = coverUri,
                 sourceId = sourceId,
@@ -107,8 +107,8 @@ sealed interface CreationUploadData {
         @SerializedName(KEY_UPLOAD_TYPE)
         override val uploadType: CreationUploadType,
 
-        @SerializedName(KEY_QUEUE_STATUS)
-        override val queueStatus: UploadQueueStatus,
+        @SerializedName(KEY_UPLOAD_PROGRESS)
+        override val uploadProgress: Int,
 
         @SerializedName(KEY_TIMESTAMP)
         override val timestamp: Long,
@@ -143,7 +143,7 @@ sealed interface CreationUploadData {
                 queueId = queueId,
                 creationId = creationId,
                 uploadType = uploadType.type,
-                queueStatus = queueStatus.value,
+                uploadProgress = uploadProgress,
                 timestamp = timestamp,
                 coverUri = coverUri,
                 sourceId = sourceId,
@@ -165,8 +165,8 @@ sealed interface CreationUploadData {
         @SerializedName(KEY_UPLOAD_TYPE)
         override val uploadType: CreationUploadType,
 
-        @SerializedName(KEY_QUEUE_STATUS)
-        override val queueStatus: UploadQueueStatus,
+        @SerializedName(KEY_UPLOAD_PROGRESS)
+        override val uploadProgress: Int,
 
         @SerializedName(KEY_TIMESTAMP)
         override val timestamp: Long,
@@ -198,7 +198,7 @@ sealed interface CreationUploadData {
                 queueId = queueId,
                 creationId = creationId,
                 uploadType = uploadType.type,
-                queueStatus = queueStatus.value,
+                uploadProgress = uploadProgress,
                 timestamp = timestamp,
                 coverUri = coverUri,
                 sourceId = sourceId,
@@ -217,7 +217,7 @@ sealed interface CreationUploadData {
 
         private const val KEY_QUEUE_ID = "queueId"
         private const val KEY_UPLOAD_TYPE = "uploadType"
-        private const val KEY_QUEUE_STATUS = "queueStatus"
+        private const val KEY_UPLOAD_PROGRESS = "uploadProgress"
         private const val KEY_TIMESTAMP = "timestamp"
         private const val KEY_CREATION_ID = "creationId"
         private const val KEY_AUTHOR_ID = "authorId"
@@ -251,7 +251,7 @@ sealed interface CreationUploadData {
                         queueId = entity.queueId,
                         creationId = entity.creationId,
                         uploadType = uploadType,
-                        queueStatus = UploadQueueStatus.mapFromValue(entity.queueStatus),
+                        uploadProgress = entity.uploadProgress,
                         timestamp = entity.timestamp,
                         coverUri = entity.coverUri,
                         sourceId = entity.sourceId,
@@ -270,7 +270,7 @@ sealed interface CreationUploadData {
                         queueId = entity.queueId,
                         creationId = entity.creationId,
                         uploadType = uploadType,
-                        queueStatus = UploadQueueStatus.mapFromValue(entity.queueStatus),
+                        uploadProgress = entity.uploadProgress,
                         timestamp = entity.timestamp,
                         coverUri = entity.coverUri,
                         sourceId = entity.sourceId,
@@ -289,7 +289,7 @@ sealed interface CreationUploadData {
                         queueId = entity.queueId,
                         creationId = entity.creationId,
                         uploadType = uploadType,
-                        queueStatus = UploadQueueStatus.mapFromValue(entity.queueStatus),
+                        uploadProgress = entity.uploadProgress,
                         timestamp = entity.timestamp,
                         coverUri = entity.coverUri,
                         sourceId = entity.sourceId,
@@ -313,7 +313,7 @@ sealed interface CreationUploadData {
             return Post(
                 queueId = 0,
                 uploadType = CreationUploadType.Post,
-                queueStatus = UploadQueueStatus.Queued,
+                uploadProgress = 0,
                 timestamp = System.currentTimeMillis(),
                 creationId = creationId,
                 coverUri = coverUri,
@@ -336,7 +336,7 @@ sealed interface CreationUploadData {
             return Shorts(
                 queueId = 0,
                 uploadType = CreationUploadType.Shorts,
-                queueStatus = UploadQueueStatus.Queued,
+                uploadProgress = 0,
                 timestamp = System.currentTimeMillis(),
                 creationId = creationId,
                 mediaUriList = mediaUriList,
@@ -358,7 +358,7 @@ sealed interface CreationUploadData {
             return Stories(
                 queueId = 0,
                 uploadType = CreationUploadType.Stories,
-                queueStatus = UploadQueueStatus.Queued,
+                uploadProgress = 0,
                 timestamp = System.currentTimeMillis(),
                 creationId = creationId,
                 mediaUriList = mediaUriList,
