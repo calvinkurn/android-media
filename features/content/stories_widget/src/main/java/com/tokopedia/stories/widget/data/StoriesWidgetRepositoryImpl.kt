@@ -1,5 +1,6 @@
 package com.tokopedia.stories.widget.data
 
+import android.net.Uri
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.cachemanager.gson.GsonSingleton
 import com.tokopedia.config.GlobalConfig
@@ -70,8 +71,8 @@ internal class StoriesWidgetRepositoryImpl @Inject constructor(
             StoriesWidgetState(
                 shopId = it.id,
                 status = getStoriesStatus(anyStoryExists = it.hasStory, hasUnseenStories = it.isUnseenStoryExist),
-                appLink = it.appLink,
-                updatedAt = TimeMillis.now(),
+                appLink = appendEntryPoint(it.appLink, entryPoint),
+                updatedAt = TimeMillis.now()
             )
         }
 
@@ -118,6 +119,19 @@ internal class StoriesWidgetRepositoryImpl @Inject constructor(
             SELLERAPP_DISABLED_STORIES_ENTRY_POINTS
         } else {
             MAINAPP_DISABLED_STORIES_ENTRY_POINTS
+        }
+    }
+
+    private fun appendEntryPoint(appLink: String, entryPoint: StoriesEntryPoint): String {
+        val appLinkUri = Uri.parse(appLink)
+        return if (appLinkUri.getQueryParameter("entrypoint") != null) {
+            appLink
+        } else {
+            appLinkUri
+                .buildUpon()
+                .appendQueryParameter("entrypoint", entryPoint.trackerName)
+                .build()
+                .toString()
         }
     }
 }
