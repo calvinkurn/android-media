@@ -2,6 +2,7 @@ package com.tokopedia.stories.creation.view.viewmodel
 
 import androidx.lifecycle.ViewModel
 import com.tokopedia.stories.creation.domain.repository.StoriesCreationRepository
+import com.tokopedia.stories.creation.view.model.StoriesMediaType
 import com.tokopedia.stories.creation.view.model.action.StoriesCreationAction
 import com.tokopedia.stories.creation.view.model.event.StoriesCreationUiEvent
 import com.tokopedia.stories.creation.view.model.state.StoriesCreationUiState
@@ -31,16 +32,20 @@ class StoriesCreationViewModel @Inject constructor(
 
     fun submitAction(action: StoriesCreationAction) {
         when (action) {
-            is StoriesCreationAction.SetMedia -> handleSetMedia(action.mediaFilePath)
+            is StoriesCreationAction.SetMedia -> handleSetMedia(action.mediaFilePath, action.mediaType)
             is StoriesCreationAction.ClickAddProduct -> handleClickAddProduct()
             is StoriesCreationAction.ClickUpload -> handleClickUpload()
         }
     }
 
-    private fun handleSetMedia(mediaFilePath: String) {
+    private fun handleSetMedia(
+        mediaFilePath: String,
+        mediaType: StoriesMediaType,
+    ) {
         _uiState.update {
             it.copy(
-                mediaFilePath = mediaFilePath
+                mediaFilePath = mediaFilePath,
+                mediaType = mediaType,
             )
         }
     }

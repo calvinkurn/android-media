@@ -1,12 +1,14 @@
 package com.tokopedia.stories.creation.view.model.state
 
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.stories.creation.view.model.StoriesMediaType
 
 /**
  * Created By : Jonathan Darwin on September 06, 2023
  */
 data class StoriesCreationUiState(
     val mediaFilePath: String,
+    val mediaType: StoriesMediaType,
     val storiesId: String,
     val config: StoriesManualConfiguration,
     val accountList: List<ContentAccountUiModel>,
@@ -17,6 +19,7 @@ data class StoriesCreationUiState(
         val Empty: StoriesCreationUiState
             get() = StoriesCreationUiState(
                 mediaFilePath = "",
+                mediaType = StoriesMediaType.Unknown,
                 storiesId = "",
                 config = StoriesManualConfiguration.Empty,
                 accountList = listOf(
