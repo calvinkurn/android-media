@@ -6,5 +6,4 @@ interface BaseResponseMapper<R : Any, U : Any> {
     fun mapRemoteDataToUiData(response: R, isFromCache: Boolean, extra: Pair<String, Any?>): U {
         return mapRemoteDataToUiData(response, isFromCache)
     }
-
 }
