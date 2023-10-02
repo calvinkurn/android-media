@@ -47,6 +47,9 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.scpRewardsCommon)
     implementation projectOrAar(rootProject.ext.features.scpRewardsWidgets)
     implementation projectOrAar(rootProject.ext.libraries.applink)
+    implementation rootProject.ext.unifyDependencies.sortFilter
+    implementation rootProject.ext.unifyDependencies.iconNotification
+
 
     //Image Dependecies
     implementation rootProject.ext.networkDependencies.glide

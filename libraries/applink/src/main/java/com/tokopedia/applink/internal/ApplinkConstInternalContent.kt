@@ -7,7 +7,7 @@ import com.tokopedia.url.TokopediaUrl
 object ApplinkConstInternalContent {
 
     const val HOST_CONTENT = "content"
-    private const val HOST_AFFILIATE = "affiliate"
+    const val HOST_AFFILIATE = "affiliate"
     private const val HOST_PLAY = "play"
     private const val HOST_FEED = "feed"
     private const val HOST_PLAY_BROADCASTER = "play-broadcaster"
@@ -24,7 +24,7 @@ object ApplinkConstInternalContent {
     const val INTERNAL_AFFILIATE = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_AFFILIATE"
     const val INTERNAL_STORIES_CREATION = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_STORIES/$PATH_STORIES_CREATION"
 
-    const val INTERNAL_AFFILIATE_CREATE_POST_V2 = "$INTERNAL_AFFILIATE/create_post_v2/"
+    const val INTERNAL_AFFILIATE_CREATE_POST_V2 = "$INTERNAL_CONTENT/create_post_v2/"
     const val INTERNAL_PRODUCT_PICKER_FROM_SHOP = "$INTERNAL_CONTENT/productpickerfromshop/"
 
     const val INTERNAL_CONTENT_PRODUCT_TAG_AUTOCOMPLETE = "$INTERNAL_CONTENT/product_tag_autocomplete"

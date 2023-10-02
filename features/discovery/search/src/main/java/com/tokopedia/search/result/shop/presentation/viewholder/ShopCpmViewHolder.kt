@@ -13,8 +13,8 @@ import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener
 import com.tokopedia.utils.view.binding.viewBinding
 
 internal class ShopCpmViewHolder(
-        itemView: View,
-        val bannerAdsListener: BannerAdsListener?
+    itemView: View,
+    val bannerAdsListener: BannerAdsListener?,
 ): AbstractViewHolder<ShopCpmDataView>(itemView) {
 
     companion object {

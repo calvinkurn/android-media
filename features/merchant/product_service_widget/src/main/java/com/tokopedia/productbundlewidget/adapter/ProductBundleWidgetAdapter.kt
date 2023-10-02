@@ -15,7 +15,9 @@ import com.tokopedia.productbundlewidget.listener.ProductBundleAdapterListener
 import com.tokopedia.productbundlewidget.model.BundleTypes
 import com.tokopedia.productbundlewidget.model.BundleUiModel
 
-class ProductBundleWidgetAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ProductBundleWidgetAdapter(
+    private val isOverrideWidgetTheme: Boolean
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var bundleListItem: List<BundleUiModel> = listOf()
     private var listener: ProductBundleAdapterListener? = null
 
@@ -26,14 +28,16 @@ class ProductBundleWidgetAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>(
         return if (viewType == ProductBundleSingleViewHolder.LAYOUT) {
             ProductBundleSingleViewHolder(
                 itemView,
-                containerWidgetParam
+                containerWidgetParam,
+                isOverrideWidgetTheme = isOverrideWidgetTheme
             ).apply {
                 setListener(listener)
             }
         } else {
             ProductBundleMultipleViewHolder(
-                itemView,
-                containerWidgetParam
+                itemView = itemView,
+                containerWidgetParams = containerWidgetParam,
+                isOverrideWidgetTheme = isOverrideWidgetTheme
             ).apply {
                 setListener(listener)
             }
@@ -85,5 +89,4 @@ class ProductBundleWidgetAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>(
     fun setListener(listener: ProductBundleAdapterListener) {
         this.listener = listener
     }
-
 }
