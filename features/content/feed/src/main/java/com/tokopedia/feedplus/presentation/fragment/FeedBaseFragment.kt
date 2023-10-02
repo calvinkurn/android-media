@@ -548,6 +548,7 @@ class FeedBaseFragment :
                         is CreationUploadResult.Failed -> {
                             binding.uploadView.show()
                             binding.uploadView.setFailed()
+                            binding.uploadView.setThumbnail(uploadResult.data.notificationCover)
                             binding.uploadView.setListener(object : UploadInfoView.Listener {
                                 override fun onRetryClicked(view: UploadInfoView) {
                                     creationUploader.retry()
