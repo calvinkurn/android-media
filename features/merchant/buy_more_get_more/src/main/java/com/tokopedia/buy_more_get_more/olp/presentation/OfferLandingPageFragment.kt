@@ -27,7 +27,6 @@ import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiMode
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel.OlpEvent
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferProductListUiModel
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferProductSortingUiModel
-import com.tokopedia.buy_more_get_more.olp.domain.entity.SharingDataByOfferIdUiModel
 import com.tokopedia.buy_more_get_more.olp.domain.entity.enum.Status
 import com.tokopedia.buy_more_get_more.olp.presentation.adapter.OlpAdapter
 import com.tokopedia.buy_more_get_more.olp.presentation.adapter.OlpAdapterTypeFactoryImpl
@@ -46,6 +45,7 @@ import com.tokopedia.buy_more_get_more.sort.listener.ProductSortListener
 import com.tokopedia.campaign.delegates.HasPaginatedList
 import com.tokopedia.campaign.delegates.HasPaginatedListImpl
 import com.tokopedia.campaign.helper.BuyMoreGetMoreHelper
+import com.tokopedia.campaign.utils.constant.SharingComponentConstant
 import com.tokopedia.campaign.utils.extension.doOnDelayFinished
 import com.tokopedia.campaign.utils.extension.showToaster
 import com.tokopedia.globalerror.GlobalError
@@ -54,7 +54,7 @@ import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.toLongSafely
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.extensions.view.visibleWithCondition
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
@@ -63,7 +63,9 @@ import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.LinkProperties
+import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
@@ -139,6 +141,7 @@ class OfferLandingPageFragment :
     private var sortName = ""
     private var tncBottomSheet: TncBottomSheet? = null
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
+    private var savedImagePath = ""
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -221,6 +224,7 @@ class OfferLandingPageFragment :
                     viewModel.processEvent(OlpEvent.SetOfferingJsonData(offerInfoForBuyer.offeringJsonData))
                     viewModel.processEvent(OlpEvent.SetTncData(offerInfoForBuyer.offerings.firstOrNull()?.tnc.orEmpty()))
                     viewModel.processEvent(OlpEvent.SetEndDate(offerInfoForBuyer.offerings.firstOrNull()?.endDate.orEmpty()))
+                    viewModel.processEvent(OlpEvent.SetOfferTypeId(offerInfoForBuyer.offerings.firstOrNull()?.offerTypeId.orZero()))
                     setupTncBottomSheet()
                     fetchMiniCart()
                     setMiniCartOnOfferEnd(offerInfoForBuyer)
@@ -249,12 +253,25 @@ class OfferLandingPageFragment :
         viewModel.sharingData.observe(viewLifecycleOwner) { sharingData ->
             when (sharingData) {
                 is Success -> {
-                    openShareBottomSheet(sharingData.data)
+                    viewModel.processEvent(OlpEvent.SetSharingData(sharingData = sharingData.data))
+                    savedImagePath = ""
+                    if (sharingData.data.offerData.imageUrl.isNotEmpty()) {
+                        viewModel.saveBmgmImageToPhoneStorage(context, sharingData.data.offerData.imageUrl)
+                    } else {
+                        openShareBottomSheet()
+                    }
                 }
 
                 is Fail -> {
                     binding?.miniCartView.showToaster(sharingData.throwable.localizedMessage)
                 }
+            }
+        }
+
+        viewModel.bmgmImagePath.observe(viewLifecycleOwner) { path ->
+            if (path.isNotEmpty()) {
+                savedImagePath = path
+                openShareBottomSheet()
             }
         }
 
@@ -331,8 +348,8 @@ class OfferLandingPageFragment :
             shareButton?.setOnClickListener {
                 // get sharing data
                 tracker.sendClickShareButtonEvent(
+                    currentState.offerTypeId.toString(),
                     offerInfoForBuyer.offerings.firstOrNull()?.id.toString(),
-                    offerInfoForBuyer.nearestWarehouseIds.toSafeString(),
                     currentState.shopData.shopId.toString()
                 )
                 viewModel.processEvent(OlpEvent.GetSharingData)
@@ -383,15 +400,15 @@ class OfferLandingPageFragment :
         )
         viewModel.processEvent(
             OlpEvent.SetInitialUiState(
-                offerIds = listOf(offerId.toLongSafely()),
-                shopIds = shopIds.toLongSafely(),
+                offerIds = listOf(offerId.toLongOrZero()),
+                shopIds = shopIds.toLongOrZero(),
                 productIds = if (productIds.isNotEmpty()) {
-                    productIds.split(",").map { it.toLongSafely() }
+                    productIds.split(",").map { it.toLongOrZero() }
                 } else {
                     emptyList()
                 },
                 warehouseIds = if (warehouseIds.isNotEmpty()) {
-                    warehouseIds.split(",").map { it.toLongSafely() }
+                    warehouseIds.split(",").map { it.toLongOrZero() }
                 } else {
                     emptyList()
                 },
@@ -406,13 +423,14 @@ class OfferLandingPageFragment :
         when (requestCode) {
             REQUEST_CODE_SORT -> {
                 if (resultCode == Activity.RESULT_OK) {
+                    sortId = data?.getStringExtra(ShopProductSortActivity.SORT_VALUE) ?: ""
+                    sortName = data?.getStringExtra(ShopProductSortActivity.SORT_NAME) ?: ""
                     tracker.sendClickFilterButtonEvent(
                         currentState.offerIds.toSafeString(),
                         currentState.warehouseIds.toSafeString(),
-                        currentState.shopData.shopId.toString()
+                        currentState.shopData.shopId.toString(),
+                        sortName
                     )
-                    sortId = data?.getStringExtra(ShopProductSortActivity.SORT_VALUE) ?: ""
-                    sortName = data?.getStringExtra(ShopProductSortActivity.SORT_NAME) ?: ""
                     renderSortFilter(sortId, sortName)
                 }
             }
@@ -648,13 +666,15 @@ class OfferLandingPageFragment :
         }
     }
 
-    override fun onProductCardClicked(productId: Long, productUrl: String) {
+    override fun onProductCardClicked(product: OfferProductListUiModel.Product) {
         tracker.sendClickProductCardEvent(
             currentState.offerIds.toSafeString(),
             currentState.warehouseIds.toSafeString(),
-            currentState.shopData.shopId.toString()
+            currentState.shopData.shopId.toString(),
+            OlpTrackerUtil.generateProductCardImpressionAnalytics(mutableSetOf(product)),
+            currentState.sortName
         )
-        redirectToPDP(productId, productUrl)
+        redirectToPDP(product.productUrl)
     }
 
     override fun onProductImpressed(product: OfferProductListUiModel.Product, position: Int) {
@@ -662,10 +682,12 @@ class OfferLandingPageFragment :
     }
 
     private fun addToCartProduct(product: OfferProductListUiModel.Product) {
+        val analyticsData = OlpTrackerUtil.generateAtcNonVariantAnalytics(product, currentState.shopData)
         tracker.sendClickAtcEvent(
             currentState.offerIds.toSafeString(),
             currentState.warehouseIds.toSafeString(),
-            currentState.shopData.shopId.toString()
+            currentState.shopData.shopId.toString(),
+            analyticsData
         )
         viewModel.processEvent(OlpEvent.AddToCart(product))
     }
@@ -699,7 +721,8 @@ class OfferLandingPageFragment :
             offerId = currentState.offerIds.toSafeString(),
             warehouseId = currentState.warehouseIds.toSafeString(),
             shopId = currentState.shopData.shopId.toString(),
-            items = analyticsData
+            items = analyticsData,
+            currentState.sortName
         )
         viewModel.clearAvailableProductImpression()
     }
@@ -774,7 +797,7 @@ class OfferLandingPageFragment :
         RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_PAGE, shopId.toString())
     }
 
-    private fun redirectToPDP(productId: Long, productUrl: String) {
+    private fun redirectToPDP(productUrl: String) {
         sendProductImpressionTracker()
         RouteManager.route(context, productUrl)
     }
@@ -792,28 +815,62 @@ class OfferLandingPageFragment :
         }
     }
 
-    private fun openShareBottomSheet(sharingData: SharingDataByOfferIdUiModel) {
+    private fun openShareBottomSheet() {
         UniversalShareBottomSheet.createInstance().apply {
+            tracker.sendViewSharingChannelEvent(
+                currentState.offerTypeId.toString(),
+                currentState.offerIds.toSafeString(),
+                currentState.shopData.shopId.toString()
+            )
+            init(object : ShareBottomsheetListener {
+                override fun onShareOptionClicked(shareModel: ShareModel) {
+                    tracker.sendClickSharingChannelEvent(
+                        currentState.offerTypeId.toString(),
+                        shareModel.channel.orEmpty(),
+                        currentState.offerIds.toSafeString(),
+                        currentState.shopData.shopId.toString()
+                    )
+                    if (shareModel is ShareModel.CopyLink) {
+                        binding?.miniCartView.showToaster(
+                            message = Constant.copyLinkToastString,
+                            ctaText = Constant.actionBtnTxt
+                        )
+                    }
+                }
+
+                override fun onCloseOptionClicked() {
+                    tracker.sendClickCloseShareButtonEvent(
+                        currentState.offerTypeId.toString(),
+                        currentState.offerIds.toSafeString(),
+                        currentState.shopData.shopId.toString()
+                    )
+                }
+            })
             enableDefaultShareIntent()
+            imageSaved(savedImagePath)
             setMetaData(
-                tnTitle = sharingData.offerData.title,
-                tnImage = sharingData.offerData.imageUrl
+                tnTitle = currentState.sharingData.offerData.title,
+                tnImage = currentState.sharingData.offerData.imageUrl
+            )
+            setMinVersion(
+                minVersionAndroid = SharingComponentConstant.MIN_VERSION_ANDROID,
+                minVersioniOS = SharingComponentConstant.MIN_VERSION_IOS
             )
             setLinkProperties(
                 LinkProperties(
-                    linkerType = sharingData.offerData.pageType,
+                    linkerType = Constant.SHARING_PAGE_NAME,
                     id = currentState.offerIds.toSafeString(),
-                    ogTitle = sharingData.offerData.title,
-                    ogDescription = sharingData.offerData.description,
-                    ogImageUrl = sharingData.offerData.imageUrl,
+                    ogTitle = currentState.sharingData.offerData.title,
+                    ogDescription = currentState.sharingData.offerData.description,
+                    ogImageUrl = currentState.sharingData.offerData.imageUrl,
                     deeplink = viewModel.getDeeplink(),
-                    desktopUrl = sharingData.offerData.deeplink
+                    desktopUrl = currentState.sharingData.offerData.deeplink
                 )
             )
             setUtmCampaignData(
-                pageName = Constant.SHARING_PAGE_NAME,
+                pageName = Constant.SHARING_UTM,
                 userId = userSession.userId.toString(),
-                pageIdConstituents = listOf(
+                pageId = joinDash(
                     currentState.shopData.shopId.toString(),
                     currentState.offerIds.toSafeString(),
                     currentState.offerTypeId.toString()
@@ -821,7 +878,7 @@ class OfferLandingPageFragment :
                 feature = Constant.SHARING_FEATURE
             )
 
-            val shareText = sharingData.offerData.description.replace("%", "%%")
+            val shareText = currentState.sharingData.offerData.description.replace("%", "%%")
             val shareTextEncodedToHtmlSymbol = TextUtils.htmlEncode(shareText)
             setShareText("${MethodChecker.fromHtml(shareTextEncodedToHtmlSymbol)} %s")
         }.show(childFragmentManager, this)
@@ -850,5 +907,9 @@ class OfferLandingPageFragment :
 
     private fun List<Long>.toSafeString(): String {
         return this.firstOrNull()?.orZero().toString()
+    }
+
+    private fun joinDash(vararg s: String?): String {
+        return TextUtils.join("-", s)
     }
 }

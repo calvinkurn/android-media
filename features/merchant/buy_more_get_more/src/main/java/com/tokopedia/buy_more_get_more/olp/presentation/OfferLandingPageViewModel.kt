@@ -1,5 +1,7 @@
 package com.tokopedia.buy_more_get_more.olp.presentation
 
+import android.content.Context
+import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -13,26 +15,29 @@ import com.tokopedia.buy_more_get_more.olp.data.request.GetOfferingInfoForBuyerR
 import com.tokopedia.buy_more_get_more.olp.data.request.GetOfferingProductListRequestParam
 import com.tokopedia.buy_more_get_more.olp.data.request.GetSharingDataByOfferIDParam
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel
-import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel.OlpUiState
-import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel.OlpEvent
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel.Offering.ShopData
+import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel.OlpEvent
+import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel.OlpUiState
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferProductListUiModel
 import com.tokopedia.buy_more_get_more.olp.domain.entity.SharingDataByOfferIdUiModel
 import com.tokopedia.buy_more_get_more.olp.domain.usecase.GetOfferInfoForBuyerUseCase
 import com.tokopedia.buy_more_get_more.olp.domain.usecase.GetOfferProductListUseCase
 import com.tokopedia.buy_more_get_more.olp.domain.usecase.GetSharingDataByOfferIDUseCase
+import com.tokopedia.buy_more_get_more.olp.utils.BmgmUtil
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.searchbar.navigation_component.datamodel.TopNavNotificationModel
 import com.tokopedia.searchbar.navigation_component.domain.GetNotificationUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.image.ImageProcessingUtil
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -80,6 +85,8 @@ class OfferLandingPageViewModel @Inject constructor(
 
     private val _error = MutableLiveData<Throwable>()
     val error: LiveData<Throwable> get() = _error
+
+    val bmgmImagePath = MutableLiveData<String>()
 
     val userId: String
         get() = userSession.userId
@@ -129,6 +136,8 @@ class OfferLandingPageViewModel @Inject constructor(
             is OlpEvent.SetOfferingJsonData -> setOfferingJsonData(event.offeringJsonData)
             is OlpEvent.SetTncData -> setTncData(event.tnc)
             is OlpEvent.SetEndDate -> setEndDate(event.endDate)
+            is OlpEvent.SetOfferTypeId -> setOfferTypeId(event.offerTypeId)
+            is OlpEvent.SetSharingData -> setSharingData(event.sharingData)
         }
     }
 
@@ -138,6 +147,7 @@ class OfferLandingPageViewModel @Inject constructor(
         shopId: Long,
         productIds: List<Long> = emptyList(),
         warehouseIds: List<Long> = emptyList(),
+        sharingData: SharingDataByOfferIdUiModel = SharingDataByOfferIdUiModel(),
         localCacheModel: LocalCacheModel?
     ) {
         _uiState.update {
@@ -329,6 +339,22 @@ class OfferLandingPageViewModel @Inject constructor(
         }
     }
 
+    private fun setOfferTypeId(offerTypeId: Long) {
+        _uiState.update {
+            it.copy(
+                offerTypeId = offerTypeId
+            )
+        }
+    }
+
+    private fun setSharingData(sharingData: SharingDataByOfferIdUiModel) {
+        _uiState.update {
+            it.copy(
+                sharingData = sharingData
+            )
+        }
+    }
+
     fun addAvailableProductImpression(product: OfferProductListUiModel.Product) {
         _uiState.update {
             val list = it.availableProductImpressionList
@@ -355,5 +381,33 @@ class OfferLandingPageViewModel @Inject constructor(
             currentState.productIds.firstOrNull().toString(),
             currentState.shopData.shopId.toString()
         )
+    }
+
+    fun saveBmgmImageToPhoneStorage(context: Context?, shopSnippetUrl: String) {
+        launchCatchError(dispatchers.io, {
+            context?.let {
+                BmgmUtil.loadImageWithEmptyTarget(
+                    it,
+                    shopSnippetUrl,
+                    {
+                        fitCenter()
+                    },
+                    MediaBitmapEmptyTarget(
+                        onReady = { bitmap ->
+                            val savedFile = ImageProcessingUtil.writeImageToTkpdPath(
+                                bitmap,
+                                Bitmap.CompressFormat.PNG
+                            )
+
+                            if (savedFile != null) {
+                                bmgmImagePath.postValue(savedFile.absolutePath)
+                            }
+                        }
+                    )
+                )
+            }
+        }, onError = {
+                it.printStackTrace()
+            })
     }
 }

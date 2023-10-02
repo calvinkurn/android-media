@@ -7,6 +7,7 @@ import com.tokopedia.utils.currency.CurrencyFormatUtil
  */
 
 class BmgmCommonDataModel(
+    val bottomSheetTitle: String = "",
     val offerId: Long = 0L,
     val offerEndDate: String = "",
     val warehouseId: Long = 0L,
