@@ -38,6 +38,7 @@
             android:layout_height="match_parent"
             android:layout_marginTop="8dp"
             android:nestedScrollingEnabled="true"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            app:tabGravity="start" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
