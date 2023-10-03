@@ -41,7 +41,6 @@ class ProductCardColumnListViewModel(
     @Inject
     var userSession: UserSessionInterface? = null
 
-
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO + SupervisorJob()
 
@@ -68,11 +67,7 @@ class ProductCardColumnListViewModel(
         }
     }
 
-    fun getProduct(position: Int): DataItem?  {
-        return componentsItem.getComponentItem(position)?.data?.firstOrNull()
-    }
+    fun getProduct(position: Int): DataItem? = componentsItem.getComponentItem(position)?.data?.firstOrNull()
 
-    fun isLoggedIn(): Boolean {
-        return userSession?.isLoggedIn.orFalse()
-    }
+    fun isLoggedIn(): Boolean = userSession?.isLoggedIn.orFalse()
 }

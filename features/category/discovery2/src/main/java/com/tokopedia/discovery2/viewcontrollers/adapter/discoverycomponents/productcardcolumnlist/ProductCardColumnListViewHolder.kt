@@ -107,10 +107,10 @@ class ProductCardColumnListViewHolder(
     }
 
     private fun ProductCardColumnListViewModel.initCarouselPaging(carouselPagingGroupProductModel: CarouselPagingGroupProductModel) {
-        carouselPagingProductCard.setItemPerPage(componentsItem.getPropertyRows())
         carouselPagingProductCard.setPagingModel(
             model = CarouselPagingModel(
-                productCardGroupList = listOf(carouselPagingGroupProductModel)
+                productCardGroupList = listOf(carouselPagingGroupProductModel),
+                itemPerPage = componentsItem.getPropertyRows()
             ),
             listener = this@ProductCardColumnListViewHolder
         )
