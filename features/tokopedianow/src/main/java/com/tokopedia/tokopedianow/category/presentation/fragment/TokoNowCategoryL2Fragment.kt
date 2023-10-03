@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -236,6 +237,8 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment(), CategoryL2View {
                 addOnTabSelectedListener()
             }
             tabsUnify.customTabMode = TabLayout.MODE_SCROLLABLE
+            tabsUnify.whiteShadeRight.gone()
+            tabsUnify.whiteShadeLeft.gone()
         }
     }
 
