@@ -88,7 +88,7 @@ class QuestionnairePagerAdapter : Adapter<QuestionnairePagerAdapter.PagerViewHol
                 adapter = optionAdapter
 
                 post {
-                    val options = page.options.orEmpty()
+                    val options = page.options
                     val isItemEqual = options == optionAdapter.data
                     if (!isItemEqual) {
                         optionAdapter.clearAllElements()
@@ -99,7 +99,7 @@ class QuestionnairePagerAdapter : Adapter<QuestionnairePagerAdapter.PagerViewHol
         }
 
         private fun handleMultipleOptionSelected(option: BaseOptionUiModel.QuestionOptionMultipleUiModel) {
-            pages[absoluteAdapterPosition].options?.forEach {
+            pages[absoluteAdapterPosition].options.forEach {
                 if (it.value == option.value) {
                     it.isSelected = option.isSelected
                 }
@@ -107,7 +107,7 @@ class QuestionnairePagerAdapter : Adapter<QuestionnairePagerAdapter.PagerViewHol
         }
 
         private fun handleSingleOptionSelected(option: BaseOptionUiModel.QuestionOptionSingleUiModel) {
-            pages[absoluteAdapterPosition].options?.forEachIndexed { i, it ->
+            pages[absoluteAdapterPosition].options.forEachIndexed { i, it ->
                 if (option.isSelected) {
                     if (it.value == option.value) {
                         it.isSelected = true

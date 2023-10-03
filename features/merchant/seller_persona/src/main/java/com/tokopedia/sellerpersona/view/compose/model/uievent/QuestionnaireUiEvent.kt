@@ -11,11 +11,13 @@ sealed class QuestionnaireUiEvent {
         val persona: String = "", val throwable: Throwable? = null
     ) : QuestionnaireUiEvent()
 
-    data class OnMultipleOptionChecked(
-        val option: BaseOptionUiModel.QuestionOptionMultipleUiModel,
+    data class OnOptionItemSelected(
+        val pagePosition: Int,
+        val option: BaseOptionUiModel,
         val isChecked: Boolean
     ) : QuestionnaireUiEvent()
 
     object ClickNext : QuestionnaireUiEvent()
     object ClickPrevious : QuestionnaireUiEvent()
+    object FetchQuestionnaire : QuestionnaireUiEvent()
 }

@@ -8,18 +8,20 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.sellerpersona.view.activity.SellerPersonaActivity
 import com.tokopedia.sellerpersona.view.compose.model.state.QuestionnaireState
+import com.tokopedia.sellerpersona.view.compose.model.uievent.QuestionnaireUiEvent
 import com.tokopedia.sellerpersona.view.compose.screen.questionnaire.QuestionnaireErrorState
 import com.tokopedia.sellerpersona.view.compose.screen.questionnaire.QuestionnaireLoadingState
 import com.tokopedia.sellerpersona.view.compose.screen.questionnaire.QuestionnaireSuccessState
 import com.tokopedia.sellerpersona.view.compose.viewmodel.ComposeQuestionnaireViewModel
+import com.tokopedia.utils.lifecycle.collectAsStateWithLifecycle
 import javax.inject.Inject
 
 /**
@@ -47,10 +49,11 @@ class ComposeQuestionnaireFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         return ComposeView(inflater.context).apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
 
                 LaunchedEffect(key1 = Unit, block = {
-                    viewModel.fetchQuestionnaire()
+                    viewModel.onEvent(QuestionnaireUiEvent.FetchQuestionnaire)
                 })
 
                 NestTheme {
@@ -58,13 +61,14 @@ class ComposeQuestionnaireFragment : Fragment() {
                         modifier = Modifier.fillMaxSize(),
                         color = MaterialTheme.colors.background
                     ) {
-                        val state = viewModel.state.collectAsState()
-                        when (state.value.state) {
-                            is QuestionnaireState.State.Loading -> QuestionnaireLoadingState()
-                            is QuestionnaireState.State.Error -> QuestionnaireErrorState()
-                            is QuestionnaireState.State.Success -> QuestionnaireSuccessState(
-                                data = state.value.data,
-                                event = viewModel::onEvent
+                        val state = viewModel.state.collectAsStateWithLifecycle()
+
+                        when (val current = state.value) {
+                            is QuestionnaireState.Loading -> QuestionnaireLoadingState()
+                            is QuestionnaireState.Error -> QuestionnaireErrorState(onEvent = viewModel::onEvent)
+                            is QuestionnaireState.Success -> QuestionnaireSuccessState(
+                                data = current.data.questionnaireList,
+                                onEvent = viewModel::onEvent
                             )
                         }
                     }

@@ -22,6 +22,7 @@ import com.tokopedia.nest.components.ButtonVariant
 import com.tokopedia.nest.components.NestButton
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
+import com.tokopedia.globalerror.R as globalerrorR
 
 
 /**
@@ -43,7 +44,7 @@ internal fun ErrorStateComponent(
         verticalArrangement = Arrangement.Center
     ) {
         Image(
-            painter = painterResource(id = com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection),
+            painter = painterResource(id = globalerrorR.drawable.unify_globalerrors_connection),
             contentDescription = null,
             modifier = Modifier
                 .requiredWidth(184.dp)

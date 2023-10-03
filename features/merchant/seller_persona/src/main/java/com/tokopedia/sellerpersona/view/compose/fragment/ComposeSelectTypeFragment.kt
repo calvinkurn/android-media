@@ -14,6 +14,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -32,6 +33,7 @@ import com.tokopedia.sellerpersona.view.compose.viewmodel.ComposePersonaSelectTy
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by @ilhamsuaib on 26/01/23.
@@ -59,6 +61,7 @@ class ComposeSelectTypeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         return ComposeView(inflater.context).apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 LaunchedEffect(key1 = Unit, block = {
                     viewModel.fetchPersonaList(args = getSelectTypeArguments())
@@ -116,7 +119,7 @@ class ComposeSelectTypeFragment : Fragment() {
     private fun onChangePersonaFailed() {
         view?.run {
             val dp64 = context.resources.getDimensionPixelSize(
-                com.tokopedia.unifyprinciples.R.dimen.layout_lvl7
+                unifyprinciplesR.dimen.layout_lvl7
             )
             Toaster.toasterCustomBottomHeight = dp64
             Toaster.build(

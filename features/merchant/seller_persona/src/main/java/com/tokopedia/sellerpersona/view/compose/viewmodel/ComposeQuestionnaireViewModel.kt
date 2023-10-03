@@ -12,10 +12,11 @@ import com.tokopedia.sellerpersona.data.remote.usecase.GetPersonaQuestionnaireUs
 import com.tokopedia.sellerpersona.data.remote.usecase.SetPersonaUseCase
 import com.tokopedia.sellerpersona.view.compose.model.state.QuestionnaireState
 import com.tokopedia.sellerpersona.view.compose.model.uievent.QuestionnaireUiEvent
+import com.tokopedia.sellerpersona.view.model.BaseOptionUiModel
 import com.tokopedia.sellerpersona.view.model.QuestionnairePagerUiModel
+import com.tokopedia.sellerpersona.view.model.QuestionnaireDataUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import kotlinx.coroutines.delay
@@ -24,6 +25,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -38,55 +41,91 @@ class ComposeQuestionnaireViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers
 ) : ViewModel() {
 
-    val questionnaire: LiveData<Result<List<QuestionnairePagerUiModel>>>
-        get() = _questionnaire
     val setPersonaResult: LiveData<Result<String>>
         get() = _setPersonaResult
 
-    private val _questionnaire = MutableLiveData<Result<List<QuestionnairePagerUiModel>>>()
     private val _setPersonaResult = MutableLiveData<Result<String>>()
 
-    private val _state = MutableStateFlow(QuestionnaireState())
+    private val _state = MutableStateFlow<QuestionnaireState>(QuestionnaireState.Loading)
     val state: StateFlow<QuestionnaireState>
-        get() = _state
+        get() = _state.asStateFlow()
 
     private val _uiEvent = MutableSharedFlow<QuestionnaireUiEvent>()
     val uiEvent: SharedFlow<QuestionnaireUiEvent>
         get() = _uiEvent.asSharedFlow()
 
+    private var questionnaireData = QuestionnaireDataUiModel()
+
     fun onEvent(event: QuestionnaireUiEvent) {
+        viewModelScope.launch {
+            when (event) {
+                is QuestionnaireUiEvent.OnOptionItemSelected -> setOnOptionItemSelected(event)
+                is QuestionnaireUiEvent.FetchQuestionnaire -> fetchQuestionnaire()
+                else -> {
 
-    }
-
-    fun fetchQuestionnaire() {
-        viewModelScope.launchCatchError(block = {
-            emitLoadingState()
-            val data = withContext(dispatchers.io) {
-                getQuestionnaireUseCase.get().execute()
+                }
             }
-            delay(2000)
-            emitSuccessState(data)
-        }, onError = {
-            emitErrorState()
-        })
+        }
     }
 
-    private suspend fun emitErrorState() {
-        val errorState = _state.value.copy(state = QuestionnaireState.State.Error)
-        _state.emit(errorState)
+    private fun handleSingleOptionSelected(
+        option: BaseOptionUiModel.QuestionOptionSingleUiModel,
+        pagePosition: Int,
+        data: List<QuestionnairePagerUiModel>
+    ) {
+        data[pagePosition].options.forEach {
+            val isTheSameOption = it.value == option.value
+            it.isSelected = isTheSameOption
+        }
     }
 
-    private suspend fun emitLoadingState() {
-        val loadingState = _state.value.copy(state = QuestionnaireState.State.Loading)
-        _state.emit(loadingState)
+    private fun handleMultipleOptionSelected(
+        option: BaseOptionUiModel.QuestionOptionMultipleUiModel,
+        pagePosition: Int,
+        data: List<QuestionnairePagerUiModel>
+    ) {
+        data[pagePosition].options.forEach {
+            if (it.value == option.value) {
+                it.isSelected = !it.isSelected
+            }
+        }
     }
 
-    private suspend fun emitSuccessState(data: List<QuestionnairePagerUiModel>) {
-        val successState = _state.value.copy(
-            state = QuestionnaireState.State.Success,
-            data = state.value.data.copy(questionnaireList = data)
-        )
-        _state.emit(successState)
+    private fun setOnOptionItemSelected(
+        event: QuestionnaireUiEvent.OnOptionItemSelected
+    ) {
+        val questionnaireList = questionnaireData.questionnaireList
+        when (val option = event.option) {
+            is BaseOptionUiModel.QuestionOptionSingleUiModel -> {
+                if (option.isSelected) return
+                handleSingleOptionSelected(option, event.pagePosition, questionnaireList)
+            }
+
+            is BaseOptionUiModel.QuestionOptionMultipleUiModel -> {
+                handleMultipleOptionSelected(option, event.pagePosition, questionnaireList)
+            }
+        }
+
+        _state.value = QuestionnaireState.Success(QuestionnaireDataUiModel(questionnaireList))
+    }
+
+    private fun fetchQuestionnaire() {
+        viewModelScope.launch {
+            runCatching {
+                _state.value = QuestionnaireState.Loading
+                val data = withContext(dispatchers.io) {
+                    getQuestionnaireUseCase.get().execute()
+                }
+                setQuestionnaire(data)
+                _state.value = QuestionnaireState.Success(QuestionnaireDataUiModel(data))
+            }.onFailure {
+                _state.value = QuestionnaireState.Error
+            }
+        }
+    }
+
+    private fun setQuestionnaire(data: List<QuestionnairePagerUiModel>) {
+        questionnaireData = questionnaireData.copy(questionnaireList = data)
     }
 
     fun submitAnswer(answers: List<QuestionnaireAnswerParam>) {

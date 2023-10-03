@@ -12,6 +12,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
@@ -36,8 +37,10 @@ import com.tokopedia.sellerpersona.view.compose.viewmodel.ComposePersonaResultVi
 import com.tokopedia.sellerpersona.view.model.isActive
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.collectAsStateWithLifecycle
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by @ilhamsuaib on 17/01/23.
@@ -78,6 +81,7 @@ class ComposeResultFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         return ComposeView(inflater.context).apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
 
                 LaunchedEffect(key1 = Unit, block = {
@@ -100,7 +104,7 @@ class ComposeResultFragment : Fragment() {
                         modifier = Modifier.fillMaxSize(),
                         color = MaterialTheme.colors.background
                     ) {
-                        val state = viewModel.personaState.collectAsState()
+                        val state = viewModel.personaState.collectAsStateWithLifecycle()
 
                         when (state.value.state) {
                             is PersonaResultState.State.Loading -> ResultLoadingState()
@@ -231,7 +235,7 @@ class ComposeResultFragment : Fragment() {
     private fun showToggleErrorMessage() {
         view?.run {
             val dp64 = context.resources.getDimensionPixelSize(
-                com.tokopedia.unifyprinciples.R.dimen.layout_lvl7
+                unifyprinciplesR.dimen.layout_lvl7
             )
             Toaster.toasterCustomBottomHeight = dp64
             Toaster.build(
