@@ -60,7 +60,7 @@ class ChooseAddressViewModel @Inject constructor(
     fun getChosenAddressList(source: String, isTokonow: Boolean) {
         viewModelScope.launch(onErrorGetChosenAddressList) {
             val getChosenAddressList =
-                getChosenAddressListUseCase(GetChosenAddressParam(source, isTokonow))
+                getChosenAddressListUseCase(GetChosenAddressParam(source = source, isTokonow = isTokonow))
             _chosenAddressList.value =
                 Success(chooseAddressMapper.mapChosenAddressList(getChosenAddressList.response))
         }
@@ -76,7 +76,7 @@ class ChooseAddressViewModel @Inject constructor(
 
     fun getStateChosenAddress(source: String, isTokonow: Boolean) {
         viewModelScope.launch(onErrorGetStateChosenAddress) {
-            val getStateChosenAddress = getStateChosenAddressUseCase(GetChosenAddressParam(source, isTokonow))
+            val getStateChosenAddress = getStateChosenAddressUseCase(GetChosenAddressParam(source = source, isTokonow = isTokonow))
             _getChosenAddress.value =
                 Success(chooseAddressMapper.mapGetStateChosenAddress(getStateChosenAddress.response))
         }
@@ -85,7 +85,7 @@ class ChooseAddressViewModel @Inject constructor(
     fun getDefaultChosenAddress(latLong: String?, source: String, isTokonow: Boolean) {
         viewModelScope.launch(onErrorGetDefaultChosenAddress) {
             val getDefaultChosenAddress = getDefaultChosenAddressUseCase(
-                GetDefaultChosenAddressParam(source, latLong, isTokonow)
+                GetDefaultChosenAddressParam(source = source, latLong = latLong, isTokonow = isTokonow)
             )
             _getDefaultAddress.value =
                 Success(chooseAddressMapper.mapDefaultChosenAddress(getDefaultChosenAddress.response))
