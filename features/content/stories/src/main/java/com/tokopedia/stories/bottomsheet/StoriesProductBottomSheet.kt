@@ -1,10 +1,16 @@
 package com.tokopedia.stories.bottomsheet
 
 import android.content.DialogInterface
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowInsets
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -20,6 +26,10 @@ import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
+import com.tokopedia.play_common.util.extension.marginLp
+import com.tokopedia.play_common.view.doOnApplyWindowInsets
+import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
+import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.stories.R
 import com.tokopedia.stories.databinding.FragmentStoriesProductBinding
 import com.tokopedia.stories.view.fragment.StoriesDetailFragment
@@ -74,6 +84,15 @@ class StoriesProductBottomSheet @Inject constructor(
     private val llManager = object : LinearLayoutManager(context, RecyclerView.VERTICAL, false) {
         override fun onLayoutCompleted(state: RecyclerView.State?) {
             super.onLayoutCompleted(state)
+
+            binding.rvStoriesProduct.marginLp.updateMargins(
+                bottom = if (canRecyclerViewScroll()) {
+                    getRecyclerViewMarginBottom()
+                } else {
+                    0
+                }
+            )
+
             sendImpression()
         }
     }
@@ -101,6 +120,8 @@ class StoriesProductBottomSheet @Inject constructor(
     }
 
     private fun setupView() {
+        binding.root.maxHeight = newHeight
+
         binding.rvStoriesProduct.apply {
             adapter = productAdapter
             addOnScrollListener(scrollListener)
@@ -189,9 +210,13 @@ class StoriesProductBottomSheet @Inject constructor(
         binding.vStoriesCampaign.sectionTimer.targetDate = dt
     }
 
+    override fun onStart() {
+        super.onStart()
+        binding.rvStoriesProduct.requestApplyInsetsWhenAttached()
+    }
+
     override fun onResume() {
         super.onResume()
-        binding.root.maxHeight = newHeight
         viewModel.submitAction(StoriesUiAction.FetchProduct)
     }
 
@@ -275,6 +300,19 @@ class StoriesProductBottomSheet @Inject constructor(
     override fun onDestroyView() {
         super.onDestroyView()
         mListener = null
+    }
+
+    private fun canRecyclerViewScroll(): Boolean {
+        return binding.rvStoriesProduct.canScrollVertically(-1) ||
+            binding.rvStoriesProduct.canScrollVertically(1)
+    }
+
+    private fun getRecyclerViewMarginBottom(): Int {
+        val decorView = activity?.window?.decorView ?: return 0
+        val windowInsets = ViewCompat.getRootWindowInsets(decorView) ?: return 0
+        val navBarHeight = windowInsets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom
+        val statusBarHeight = windowInsets.getInsets(WindowInsetsCompat.Type.statusBars()).top
+        return navBarHeight + statusBarHeight
     }
 
     interface Listener {
