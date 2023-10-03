@@ -7,6 +7,7 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.encodeToUtf8
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
@@ -27,7 +28,6 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
-import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -506,23 +506,44 @@ open class GetPdpLayoutUseCase @Inject constructor(
         }.getOrNull()
         val hasCacheAvailable = error.isNullOrEmpty() && data != null
         var cacheFirstThenCloud = false // initial value is false, refer to CacheState
+        val isCampaign = isProductCampaign(layout = data)
 
-        if (hasCacheAvailable) {
-            Timber.tag("cacheable").d("get data from cache the first")
-            // the first emit cache to UI
+        // if cache data available and product non campaign, so emit to VM
+        if (hasCacheAvailable && !isCampaign) {
             processResponse(gqlResponse = gqlResponse, isCache = true, cacheFirstThenCloud = false)
             cacheFirstThenCloud = true
-        } else {
-            Timber.tag("cacheable").d("failed get p1 from cache cause it is null")
         }
 
         // hit cloud to update into cache and UI
-        Timber.tag("cacheable").d("get from cloud")
         val cacheStrategy = CacheStrategyUtil.getCacheStrategy(forceRefresh = true, cacheAge = cacheAge)
         gqlUseCase.setCacheStrategy(cacheStrategy)
         gqlResponse = gqlUseCase.executeOnBackground()
         processResponse(gqlResponse = gqlResponse, isCache = false, cacheFirstThenCloud = cacheFirstThenCloud)
-        Timber.tag("cacheable").d("------------ end ------------")
+    }
+
+    private fun isProductCampaign(layout: PdpGetLayout?): Boolean {
+        var hasCampaign = false
+
+        for (component in layout?.components.orEmpty()) {
+            if (hasCampaign) return true
+
+            when (component.type) {
+                ProductDetailConstant.ONGOING_CAMPAIGN -> {
+                    hasCampaign = component.componentData.firstOrNull()
+                        ?.campaign
+                        ?.isActive
+                        .orFalse()
+                }
+                ProductDetailConstant.PRODUCT_CONTENT -> {
+                    hasCampaign = component.componentData.firstOrNull()
+                        ?.campaign
+                        ?.isActive
+                        .orFalse()
+                }
+            }
+        }
+
+        return hasCampaign
     }
 
     private suspend fun processResponse(gqlResponse: GraphqlResponse, isCache: Boolean, cacheFirstThenCloud: Boolean) {
