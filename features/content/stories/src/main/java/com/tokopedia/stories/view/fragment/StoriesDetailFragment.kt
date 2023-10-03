@@ -347,7 +347,7 @@ class StoriesDetailFragment @Inject constructor(
         }
     }
 
-    private fun buildEventLabel(): String = "${mParentPage.args.source} - ${viewModel.storyId} - ${mParentPage.args.authorId} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker}"
+    private fun buildEventLabel(): String = "${mParentPage.args.entryPoint} - ${viewModel.storyId} - ${mParentPage.args.authorId} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker}"
 
     private fun renderAuthor(state: StoriesDetailItem) {
         with(binding.vStoriesPartner) {
