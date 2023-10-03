@@ -496,11 +496,12 @@ class StoriesViewModel @AssistedInject constructor(
         }, onError = { _storiesEvent.emit(StoriesUiEvent.ShowErrorEvent(it)) })
     }
 
-    private suspend fun moveToOtherStories() {
+    private fun moveToOtherStories() {
+        val newGroupPosition = mGroupPos.plus(1)
         when {
-            mDetailPos == mDetailSize && mDetailPos > 0 -> updateDetailData(position = mDetailPos.minus(1))
             mDetailPos < mDetailSize -> updateDetailData(position = mDetailPos)
-            else -> _storiesEvent.emit(StoriesUiEvent.FinishedAllStories)
+            newGroupPosition < mGroupSize -> handleSelectGroup(position = newGroupPosition, true)
+            else -> viewModelScope.launch { _storiesEvent.emit(StoriesUiEvent.FinishedAllStories) }
         }
     }
 
