@@ -13,6 +13,7 @@ import io.mockk.every
 import io.mockk.mockk
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -204,5 +205,14 @@ class InputTextViewModelTest {
             assertEquals(it.textAlign, fontAlignment)
             assertEquals(it.backgroundColor, backgroundColor.second)
         }
+    }
+
+    @Test
+    fun `should finish and close input page`() {
+        // When
+        viewModel.saveInputText()
+
+        // Then
+        assertTrue(viewModel.isActivitySave.getOrAwaitValue())
     }
 }
