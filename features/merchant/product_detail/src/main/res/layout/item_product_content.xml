@@ -72,7 +72,7 @@
         app:layout_constraintStart_toEndOf="@+id/txt_main_price"
         app:layout_constraintTop_toTopOf="@+id/txt_main_price"
         app:unify_image_corner_radius="0"
-        tools:srcCompat="@drawable/ic_af_byme_square" />
+        tools:srcCompat="@drawable/ic_bundle" />
 
     <com.tokopedia.unifycomponents.WishlistUnify
         android:id="@+id/fab_detail_pdp"
