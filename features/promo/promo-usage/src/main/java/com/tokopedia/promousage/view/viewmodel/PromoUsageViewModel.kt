@@ -1349,7 +1349,7 @@ class PromoUsageViewModel @Inject constructor(
                     uniqueId = item.uniqueId
                     boAdditionalData = item.boAdditionalData
                 }
-                if (item.state is PromoItemState.Selected && !item.hasClashingPromo) {
+                if (item.state is PromoItemState.Selected) {
                     // If promo is selected, add promo code to request param
                     // If unique_id == 0, means it's a global promo, else it's promo merchant
                     if (uniqueId == order.uniqueId && !order.codes.contains(promoCode)) {
