@@ -4,6 +4,7 @@ import android.graphics.BitmapFactory
 import com.tokopedia.editor.data.model.NavigationTool
 import com.tokopedia.editor.data.repository.ImageFlattenRepository
 import com.tokopedia.editor.data.repository.NavigationToolRepository
+import com.tokopedia.editor.faker.FakeMainEditorAnalytics
 import com.tokopedia.editor.faker.FakeVideoFlattenRepository
 import com.tokopedia.editor.ui.main.uimodel.MainEditorEffect
 import com.tokopedia.editor.ui.main.uimodel.MainEditorEvent
@@ -21,16 +22,17 @@ import io.mockk.mockk
 import io.mockk.mockkStatic
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertTrue
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.TemporaryFolder
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.shadows.ShadowBitmapFactory
+
 
 @RunWith(RobolectricTestRunner::class)
 class MainEditorViewModelTest {
@@ -40,10 +42,15 @@ class MainEditorViewModelTest {
     private val resourceProvider = mockk<ResourceProvider>()
     private val paramFetcher = mockk<EditorParamFetcher>()
     private val imageFlatten = mockk<ImageFlattenRepository>()
+    private val analytics = FakeMainEditorAnalytics()
 
     private val dispatchers = CoroutineTestDispatchers
 
     private lateinit var viewModel: MainEditorViewModel
+
+    @JvmField
+    @Rule
+    var tempFolder = TemporaryFolder()
 
     @Before
     fun setUp() {
@@ -53,7 +60,8 @@ class MainEditorViewModelTest {
             imageFlatten,
             resourceProvider,
             dispatchers,
-            paramFetcher
+            paramFetcher,
+            analytics
         )
 
         mockkStatic(::isVideoFormat)
@@ -141,36 +149,52 @@ class MainEditorViewModelTest {
     fun `it should able to export a video file`() = runTest {
         // Given
         val bitmap = ShadowBitmapFactory.create("", BitmapFactory.Options())
+        val filePath = tempFolder.newFile("dummy.png")
 
-        fakeVideoFlattenRepository.emit("result")
         every { isVideoFormat(any()) } returns true
+        mockParamFetcher()
+        mockNavigationTool()
 
         // When
+        onEvent(MainEditorEvent.SetupView(
+            UniversalEditorParam(
+                paths = listOf(filePath.path)
+            )
+        ))
         onEvent(MainEditorEvent.ExportMedia(bitmap))
+        fakeVideoFlattenRepository.emit("result")
 
         // Verify
         val effects = recordEffect()
         assertTrue(effects[0] is MainEditorEffect.ShowLoading)
-        assertTrue(effects[1] is MainEditorEffect.FinishEditorPage)
-        assertTrue(effects[2] is MainEditorEffect.HideLoading)
+        assertTrue(effects[1] is MainEditorEffect.HideLoading)
+        assertTrue(effects[2] is MainEditorEffect.FinishEditorPage)
     }
 
     @Test
     fun `it should fail to export a video file and show error toast`() = runTest {
         // Given
         val bitmap = ShadowBitmapFactory.create("", BitmapFactory.Options())
+        val filePath = tempFolder.newFile("dummy.png")
 
         every { resourceProvider.getString(any()) } returns ""
-        fakeVideoFlattenRepository.emit("")
+        mockParamFetcher()
+        mockNavigationTool()
 
         // When
+        onEvent(MainEditorEvent.SetupView(
+            UniversalEditorParam(
+                paths = listOf(filePath.path)
+            )
+        ))
         onEvent(MainEditorEvent.ExportMedia(bitmap))
+        fakeVideoFlattenRepository.emit("")
 
         // Verify
         val effects = recordEffect()
         assertTrue(effects[0] is MainEditorEffect.ShowLoading)
-        assertTrue(effects[1] is MainEditorEffect.ShowToastErrorMessage)
-        assertTrue(effects[2] is MainEditorEffect.HideLoading)
+        assertTrue(effects[1] is MainEditorEffect.HideLoading)
+        assertTrue(effects[2] is MainEditorEffect.ShowToastErrorMessage)
     }
 
     @Test
