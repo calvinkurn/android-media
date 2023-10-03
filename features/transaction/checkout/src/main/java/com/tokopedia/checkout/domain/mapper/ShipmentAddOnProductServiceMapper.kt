@@ -175,7 +175,7 @@ object ShipmentAddOnProductServiceMapper {
                     productLoop@ for (product in groupShopV2.products) {
                         addOnLoop@ for (addon in product.addOnProduct.listAddOnProductData) {
                             if (addon.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK || addon.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_MANDATORY) {
-                                qtyAddOn += product.productQuantity
+                                qtyAddOn += if (addon.fixedQty) 1 else product.productQuantity
                                 totalPriceAddOn = (qtyAddOn * addon.price).toLong()
                                 countMapSummaries[addon.type] = totalPriceAddOn to qtyAddOn
                             }

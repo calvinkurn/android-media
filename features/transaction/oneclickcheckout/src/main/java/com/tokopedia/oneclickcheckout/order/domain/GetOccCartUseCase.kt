@@ -207,6 +207,7 @@ class GetOccCartUseCase @Inject constructor(
 					name
 					status
 					type
+                    fixed_quantity
 				}
             }
             errors

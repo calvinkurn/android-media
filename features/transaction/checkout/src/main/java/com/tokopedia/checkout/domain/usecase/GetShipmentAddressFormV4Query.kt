@@ -247,6 +247,7 @@ const val SHIPMENT_ADDRESS_FORM_V4_QUERY =
                                 status
                                 type
                                 icon_url
+                                fixed_quantity
                             }
                         }
                         add_ons {
