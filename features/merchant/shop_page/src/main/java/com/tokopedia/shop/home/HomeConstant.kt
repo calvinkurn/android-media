@@ -19,12 +19,12 @@ object WidgetType {
     const val CARD = "card"
     const val BUNDLE = "bundle"
     const val VOUCHER_SLIDER = "voucher_slider"
-    const val DIRECT_PURCHASE = "direct_purchase"
-    const val COMPONENT = "component"
+    const val REIMAGINE_DIRECT_PURCHASE = "direct_purchase"
+    const val REIMAGINE_COMPONENT = "component"
 }
 
 /**
- * If you add a new widget name, please also add it to [WidgetNameEnum]
+ * IF YOU ADD A NEW WIDGET NAME, PLEASE ALSO ADD IT TO [WidgetNameEnum]
  */
 object WidgetName {
     const val SLIDER_BANNER = "slider_banner"
@@ -51,7 +51,7 @@ object WidgetName {
     const val BIG_CAMPAIGN_THEMATIC = "big_campaign_thematic"
     const val PERSO_PRODUCT_COMPARISON = "comparison"
     const val BANNER_TIMER = "banner_timer"
-    const val BANNER_PRODUCT_HOTSPOT = "banner_product_hotspot"
+    const val REIMAGINE_BANNER_PRODUCT_HOTSPOT = "banner_product_hotspot"
     const val SLIDER_BANNER_HIGHLIGHT = "slider_banner_highlight"
     const val PRODUCT_HIGHLIGHT = "product_highlight"
     const val VOUCHER = "voucher"
@@ -71,7 +71,7 @@ object WidgetName {
     const val IS_SHOW_ETALASE_NAME = 1
 
     val LIST_SUPPORTED_WIDGET_NAME = listOf<String>(
-        SLIDER_BANNER,
+        SLIDER_BANNER
 
     )
 }
@@ -100,8 +100,7 @@ enum class WidgetNameEnum(val value: String) {
     ETALASE_THEMATIC("etalase_thematic"),
     BIG_CAMPAIGN_THEMATIC("big_campaign_thematic"),
     PERSO_PRODUCT_COMPARISON("comparison"),
-    BANNER_TIMER("banner_timer"), 
-    BANNER_PRODUCT_HOTSPOT("banner_product_hotspot"),
+    BANNER_TIMER("banner_timer"), BANNER_PRODUCT_HOTSPOT("banner_product_hotspot"),
     SLIDER_BANNER_HIGHLIGHT("slider_banner_highlight"),
     PRODUCT_HIGHLIGHT("product_highlight"),
     VOUCHER("voucher"),

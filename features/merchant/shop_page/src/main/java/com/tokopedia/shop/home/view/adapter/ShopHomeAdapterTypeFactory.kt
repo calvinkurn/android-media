@@ -15,7 +15,6 @@ import com.tokopedia.shop.common.widget.bundle.viewholder.SingleProductBundleLis
 import com.tokopedia.shop.home.WidgetName.ADD_ONS
 import com.tokopedia.shop.home.WidgetName.ADVANCED_SLIDER_BANNER
 import com.tokopedia.shop.home.WidgetName.BANNER_PRODUCT_GROUP
-import com.tokopedia.shop.home.WidgetName.BANNER_PRODUCT_HOTSPOT
 import com.tokopedia.shop.home.WidgetName.BANNER_TIMER
 import com.tokopedia.shop.home.WidgetName.BMGM_BANNER
 import com.tokopedia.shop.home.WidgetName.BUY_AGAIN
@@ -33,6 +32,7 @@ import com.tokopedia.shop.home.WidgetName.PRODUCT_BUNDLE_MULTIPLE
 import com.tokopedia.shop.home.WidgetName.PRODUCT_BUNDLE_SINGLE
 import com.tokopedia.shop.home.WidgetName.PRODUCT_VERTICAL
 import com.tokopedia.shop.home.WidgetName.RECENT_ACTIVITY
+import com.tokopedia.shop.home.WidgetName.REIMAGINE_BANNER_PRODUCT_HOTSPOT
 import com.tokopedia.shop.home.WidgetName.REMINDER
 import com.tokopedia.shop.home.WidgetName.SHOWCASE_GRID_BIG
 import com.tokopedia.shop.home.WidgetName.SHOWCASE_GRID_MEDIUM
@@ -191,7 +191,7 @@ open class ShopHomeAdapterTypeFactory(
             BANNER_TIMER -> {
                 getShopHomeDisplayBannerTimerViewHolder(baseShopHomeWidgetUiModel)
             }
-            BANNER_PRODUCT_HOTSPOT -> {
+            REIMAGINE_BANNER_PRODUCT_HOTSPOT -> {
                 getShopHomeDisplayBannerProductHotspotViewHolder()
             }
             PRODUCT_VERTICAL -> getTerlarisViewHolder(baseShopHomeWidgetUiModel)
