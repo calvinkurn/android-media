@@ -7,6 +7,8 @@ import com.tokopedia.editor.data.repository.ImageSaveRepository
 import com.tokopedia.editor.data.repository.ImageSaveRepositoryImpl
 import com.tokopedia.editor.data.repository.NavigationToolRepository
 import com.tokopedia.editor.data.repository.NavigationToolRepositoryImpl
+import com.tokopedia.editor.data.repository.VideoExtractMetadataRepository
+import com.tokopedia.editor.data.repository.VideoExtractMetadataRepositoryImpl
 import com.tokopedia.editor.data.repository.VideoFlattenRepository
 import com.tokopedia.editor.data.repository.VideoFlattenRepositoryImpl
 import dagger.Binds
@@ -38,4 +40,10 @@ abstract class EditorRepositoryModule {
     internal abstract fun bindImageFlattenRepository(
         impl: ImageFlattenRepositoryImpl
     ): ImageFlattenRepository
+
+    @Binds
+    @ActivityScope
+    internal abstract fun bindVideoExtractMetadataRepository(
+        impl: VideoExtractMetadataRepositoryImpl
+    ): VideoExtractMetadataRepository
 }
