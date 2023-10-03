@@ -419,12 +419,14 @@ class PromoUsageViewModel @Inject constructor(
                 } else {
                     _promoPageUiState.ifSuccessSuspend { pageState ->
                         val currentItems = pageState.items
+                        val initialPromoRecommendationSelectedCodes =
+                            currentItems.getRecommendationItem()?.selectedCodes ?: emptyList()
                         val newClickedItemState = if (clickedItem.state is PromoItemState.Normal) {
                             PromoItemState.Selected
                         } else {
                             PromoItemState.Normal
                         }
-                        val newClickedItem = clickedItem.copy(
+                        var newClickedItem = clickedItem.copy(
                             state = newClickedItemState
                         )
 
@@ -474,6 +476,7 @@ class PromoUsageViewModel @Inject constructor(
                         // Calculate clash
                         val clashCalculationResult =
                             calculateClickPromo(newClickedItem, currentItems)
+                        newClickedItem = clashCalculationResult.first
                         updatedItems = clashCalculationResult.second
 
                         // Update Promo Recommendation section
@@ -486,8 +489,15 @@ class PromoUsageViewModel @Inject constructor(
                                     updatedItems
                                 )
                             updatedItems = newUpdatedItems
-                            if (updatedPromoRecommendation.selectedCodes
-                                .containsAll(updatedPromoRecommendation.codes)
+                            val updatedPromoRecommendationSelectedCodes =
+                                updatedPromoRecommendation.selectedCodes
+                            val isSelectedPromoRecommendationChanged =
+                                updatedPromoRecommendationSelectedCodes
+                                    .subtract(initialPromoRecommendationSelectedCodes.toSet())
+                                    .isNotEmpty()
+                            if (isSelectedPromoRecommendationChanged &&
+                                updatedPromoRecommendation.selectedCodes
+                                    .containsAll(updatedPromoRecommendation.codes)
                             ) {
                                 _usePromoRecommendationUiAction.postValue(
                                     UsePromoRecommendationUiAction.Success(
@@ -590,12 +600,12 @@ class PromoUsageViewModel @Inject constructor(
             }
         // Calculate clash
         val (resultItems, isCausingClash) = calculateClash(newClickedItem, updatedItems)
-        newClickedItem = newClickedItem.copy(
-            isCausingOtherPromoClash = isCausingClash
-        )
         updatedItems = resultItems
             .map { item ->
                 if (item is PromoItem && item.id == newClickedItem.id) {
+                    newClickedItem = item.copy(
+                        isCausingOtherPromoClash = isCausingClash
+                    )
                     return@map newClickedItem
                 } else {
                     return@map item
@@ -643,20 +653,15 @@ class PromoUsageViewModel @Inject constructor(
             val snapshotProcessedItems = processedItems
             snapshotProcessedItems.forEach { adjustedItem ->
                 if (adjustedItem is PromoItem &&
-                    adjustedItem.useSecondaryPromo &&
                     adjustedItem.state is PromoItemState.Selected
                 ) {
-                    if (selectedItem.clashingInfos.isNotEmpty()) {
-                        processedItems = processedItems.map { item ->
-                            if (item is PromoItem) {
-                                val (resultItem, _) = checkAndSetClashOnSelectionEvent(
-                                    item,
-                                    adjustedItem
-                                )
-                                return@map resultItem
-                            } else {
-                                return@map item
-                            }
+                    processedItems = processedItems.map { item ->
+                        if (item is PromoItem) {
+                            val (resultItem, _) =
+                                checkAndSetClashOnSelectionEvent(item, adjustedItem)
+                            return@map resultItem
+                        } else {
+                            return@map item
                         }
                     }
                 }
