@@ -10,9 +10,14 @@ import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.chat_common.data.parentreply.ParentReply
+import com.tokopedia.chat_common.domain.pojo.Attachment
+import com.tokopedia.chat_common.domain.pojo.AttachmentPojo
+import com.tokopedia.chat_common.domain.pojo.Chat
 import com.tokopedia.chat_common.domain.pojo.ChatReplies
+import com.tokopedia.chat_common.domain.pojo.ChatRepliesItem
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
+import com.tokopedia.chat_common.domain.pojo.Reply
 import com.tokopedia.chatbot.ChatbotConstant
 import com.tokopedia.chatbot.chatbot2.attachinvoice.domain.pojo.InvoiceLinkPojo
 import com.tokopedia.chatbot.chatbot2.data.csatoptionlist.CsatAttributesPojo
@@ -3198,5 +3203,113 @@ class ChatbotViewModelTest {
             .withIsDummy(true)
             .withLength(totalLength)
             .build()
+    }
+
+    @Test
+    fun `WHEN existing chat has attachment type 9 and typing block true THEN typingBlockedState should true`() {
+        // GIVEN
+        val data = GetExistingChatPojo(
+            chatReplies = ChatReplies(
+                list = listOf(
+                    ChatRepliesItem(
+                        chats = listOf(
+                            Chat(
+                                replies = listOf(
+                                    Reply(
+                                        attachment = Attachment(
+                                            type = 9,
+                                            attributes = """
+                                                {
+                                                  "is_typing_blocked_on_button_select": true
+                                                }
+                                            """.trimIndent()
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+
+        // WHEN
+        viewModel.checkIsTypingBlockedDataFromExistingChat(data)
+
+        // THEN
+        assert(viewModel.typingBlockedState.value == true)
+    }
+
+    @Test
+    fun `WHEN existing chat has attachment type 9 and typing block false THEN typingBlockedState should false`() {
+        // GIVEN
+        val data = GetExistingChatPojo(
+            chatReplies = ChatReplies(
+                list = listOf(
+                    ChatRepliesItem(
+                        chats = listOf(
+                            Chat(
+                                replies = listOf(
+                                    Reply(
+                                        attachment = Attachment(
+                                            type = 9,
+                                            attributes = """
+                                                {
+                                                  "is_typing_blocked_on_button_select": false
+                                                }
+                                            """.trimIndent()
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+
+        // WHEN
+        viewModel.checkIsTypingBlockedDataFromExistingChat(data)
+
+        // THEN
+        assert(viewModel.typingBlockedState.value == false)
+    }
+
+    @Test
+    fun `WHEN websocket chat has attachment type 9 and typing block true THEN typingBlockedState should true`() {
+        // GIVEN
+        val data = ChatSocketPojo(
+            attachment = AttachmentPojo(
+                type = "9",
+                attributes = JsonObject().apply {
+                    addProperty("is_typing_blocked_on_button_select", true)
+                }
+            )
+        )
+
+        // WHEN
+        viewModel.checkIsTypingBlockedDataFromWebSocket(data)
+
+        // THEN
+        assert(viewModel.typingBlockedState.value == true)
+    }
+
+    @Test
+    fun `WHEN websocket chat has attachment type 9 and typing block false THEN typingBlockedState should false`() {
+        // GIVEN
+        val data = ChatSocketPojo(
+            attachment = AttachmentPojo(
+                type = "9",
+                attributes = JsonObject().apply {
+                    addProperty("is_typing_blocked_on_button_select", false)
+                }
+            )
+        )
+
+        // WHEN
+        viewModel.checkIsTypingBlockedDataFromWebSocket(data)
+
+        // THEN
+        assert(viewModel.typingBlockedState.value == false)
     }
 }

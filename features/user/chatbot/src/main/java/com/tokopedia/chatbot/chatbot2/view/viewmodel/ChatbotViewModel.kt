@@ -584,7 +584,8 @@ class ChatbotViewModel @Inject constructor(
         )
     }
 
-    private fun checkIsTypingBlockedDataFromExistingChat(data: GetExistingChatPojo) {
+    @VisibleForTesting
+    fun checkIsTypingBlockedDataFromExistingChat(data: GetExistingChatPojo) {
         data.chatReplies.list.forEach { chatRepliesItem ->
             chatRepliesItem.chats.forEach { chat ->
                 chat.replies.forEach { reply ->
@@ -1072,7 +1073,8 @@ class ChatbotViewModel @Inject constructor(
         }
     }
 
-    private fun checkIsTypingBlockedDataFromWebSocket(chatResponse: ChatSocketPojo) {
+    @VisibleForTesting
+    fun checkIsTypingBlockedDataFromWebSocket(chatResponse: ChatSocketPojo) {
         val attachmentType = chatResponse.attachment?.type
         if (attachmentType != null) {
             when (attachmentType) {
