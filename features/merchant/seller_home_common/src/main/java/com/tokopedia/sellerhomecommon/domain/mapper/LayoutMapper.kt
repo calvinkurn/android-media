@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -56,6 +57,7 @@ class LayoutMapper @Inject constructor(
         private const val DOUBLE_DOTS_CALENDAR_TITLE = ":"
 
         private const val TAB_TAG = "{tab}"
+        private const val INVALID_SECTION_WIDGET_ID = "0"
     }
 
     override fun mapRemoteDataToUiData(
@@ -125,22 +127,25 @@ class LayoutMapper @Inject constructor(
             WidgetType.MULTI_LINE_GRAPH.asLowerCase() -> {
                 mapToMultiLineGraphWidget(widget, isFromCache)
             }
+
             WidgetType.ANNOUNCEMENT.asLowerCase() -> mapToAnnouncementWidget(widget, isFromCache)
             WidgetType.RECOMMENDATION.asLowerCase() -> mapToRecommendationWidget(
                 widget,
                 isFromCache
             )
+
             WidgetType.MILESTONE.asLowerCase() -> mapToMilestoneWidget(widget, isFromCache)
             WidgetType.CALENDAR.asLowerCase() -> mapToCalendarWidget(widget, isFromCache)
             WidgetType.UNIFICATION.asLowerCase() -> mapToUnificationWidget(widget, isFromCache)
             WidgetType.RICH_LIST.asLowerCase() -> mapToRichListWidget(widget, isFromCache)
             WidgetType.SECTION.asLowerCase() -> {
-                if (widget.title.isNullOrBlank()) {
+                if (widget.title.isNullOrBlank() && widget.subtitle.isNullOrBlank()) {
                     null
                 } else {
                     mapToSectionWidget(widget, isFromCache)
                 }
             }
+
             else -> null
         }
     }
@@ -160,7 +165,8 @@ class LayoutMapper @Inject constructor(
         isFromCache: Boolean
     ): RichListWidgetUiModel {
         return RichListWidgetUiModel(
-            id = (widget.id.orZero()).toString(),
+            id = widget.id.toString(),
+            sectionId = widget.sectionId.toString(),
             widgetType = widget.widgetType.orEmpty(),
             title = widget.title.orEmpty(),
             subtitle = widget.subtitle.orEmpty(),
@@ -185,7 +191,8 @@ class LayoutMapper @Inject constructor(
         isFromCache: Boolean
     ): UnificationWidgetUiModel {
         return UnificationWidgetUiModel(
-            id = (widget.id.orZero()).toString(),
+            id = widget.id.toString(),
+            sectionId = widget.sectionId.toString(),
             widgetType = widget.widgetType.orEmpty(),
             title = widget.title.orEmpty(),
             subtitle = widget.subtitle.orEmpty(),
@@ -207,7 +214,8 @@ class LayoutMapper @Inject constructor(
 
     private fun mapToCardWidget(widget: WidgetModel, fromCache: Boolean): CardWidgetUiModel {
         return CardWidgetUiModel(
-            id = (widget.id.orZero()).toString(),
+            id = widget.id.toString(),
+            sectionId = widget.sectionId.toString(),
             widgetType = widget.widgetType.orEmpty(),
             title = widget.title.orEmpty(),
             subtitle = widget.subtitle.orEmpty(),
@@ -232,7 +240,8 @@ class LayoutMapper @Inject constructor(
         fromCache: Boolean
     ): CarouselWidgetUiModel {
         return CarouselWidgetUiModel(
-            id = (widget.id.orZero()).toString(),
+            id = widget.id.toString(),
+            sectionId = widget.sectionId.toString(),
             widgetType = widget.widgetType.orEmpty(),
             title = widget.title.orEmpty(),
             subtitle = widget.subtitle.orEmpty(),
@@ -257,7 +266,8 @@ class LayoutMapper @Inject constructor(
         fromCache: Boolean
     ): DescriptionWidgetUiModel {
         return DescriptionWidgetUiModel(
-            id = (widget.id.orZero()).toString(),
+            id = widget.id.toString(),
+            sectionId = widget.sectionId.toString(),
             widgetType = widget.widgetType.orEmpty(),
             title = widget.title.orEmpty(),
             subtitle = widget.subtitle.orEmpty(),
@@ -282,7 +292,8 @@ class LayoutMapper @Inject constructor(
         fromCache: Boolean
     ): LineGraphWidgetUiModel {
         return LineGraphWidgetUiModel(
-            id = (widget.id.orZero()).toString(),
+            id = widget.id.toString(),
+            sectionId = widget.sectionId.toString(),
             widgetType = widget.widgetType.orEmpty(),
             title = widget.title.orEmpty(),
             subtitle = widget.subtitle.orEmpty(),
@@ -304,7 +315,8 @@ class LayoutMapper @Inject constructor(
 
     private fun mapToPostWidget(widget: WidgetModel, fromCache: Boolean): PostListWidgetUiModel {
         return PostListWidgetUiModel(
-            id = (widget.id.orZero()).toString(),
+            id = widget.id.toString(),
+            sectionId = widget.sectionId.toString(),
             widgetType = widget.widgetType.orEmpty(),
             title = widget.title.orEmpty(),
             subtitle = widget.subtitle.orEmpty(),
@@ -348,7 +360,8 @@ class LayoutMapper @Inject constructor(
         fromCache: Boolean
     ): ProgressWidgetUiModel {
         return ProgressWidgetUiModel(
-            id = (widget.id ?: 0L).toString(),
+            id = widget.id.toString(),
+            sectionId = widget.sectionId.toString(),
             widgetType = widget.widgetType.orEmpty(),
             title = widget.title.orEmpty(),
             subtitle = widget.subtitle.orEmpty(),
@@ -370,7 +383,8 @@ class LayoutMapper @Inject constructor(
 
     private fun mapToTableWidget(widget: WidgetModel, fromCache: Boolean): TableWidgetUiModel {
         return TableWidgetUiModel(
-            id = (widget.id ?: 0L).toString(),
+            id = widget.id.toString(),
+            sectionId = widget.sectionId.toString(),
             widgetType = widget.widgetType.orEmpty(),
             title = widget.title.orEmpty(),
             subtitle = widget.subtitle.orEmpty(),
@@ -401,7 +415,8 @@ class LayoutMapper @Inject constructor(
 
     private fun mapToSectionWidget(widget: WidgetModel, fromCache: Boolean): SectionWidgetUiModel {
         return SectionWidgetUiModel(
-            id = (widget.id.orZero()).toString(),
+            id = widget.id.toString(),
+            sectionId = widget.sectionId.toString(),
             widgetType = widget.widgetType.orEmpty(),
             title = widget.title.orEmpty(),
             subtitle = DataTemplateUtils.parseDateTemplate(widget.subtitle.orEmpty()),
@@ -425,7 +440,8 @@ class LayoutMapper @Inject constructor(
         fromCache: Boolean
     ): PieChartWidgetUiModel {
         return PieChartWidgetUiModel(
-            id = (widget.id.orZero()).toString(),
+            id = widget.id.toString(),
+            sectionId = widget.sectionId.toString(),
             widgetType = widget.widgetType.orEmpty(),
             title = widget.title.orEmpty(),
             subtitle = widget.subtitle.orEmpty(),
@@ -450,7 +466,8 @@ class LayoutMapper @Inject constructor(
         fromCache: Boolean
     ): BarChartWidgetUiModel {
         return BarChartWidgetUiModel(
-            id = (widget.id.orZero()).toString(),
+            id = widget.id.toString(),
+            sectionId = widget.sectionId.toString(),
             widgetType = widget.widgetType.orEmpty(),
             title = widget.title.orEmpty(),
             subtitle = widget.subtitle.orEmpty(),
@@ -475,7 +492,8 @@ class LayoutMapper @Inject constructor(
         isFromCache: Boolean
     ): MultiLineGraphWidgetUiModel {
         return MultiLineGraphWidgetUiModel(
-            id = (widget.id.orZero()).toString(),
+            id = widget.id.toString(),
+            sectionId = widget.sectionId.toString(),
             widgetType = widget.widgetType.orEmpty(),
             title = widget.title.orEmpty(),
             subtitle = widget.subtitle.orEmpty(),
@@ -501,7 +519,8 @@ class LayoutMapper @Inject constructor(
         isFromCache: Boolean
     ): AnnouncementWidgetUiModel {
         return AnnouncementWidgetUiModel(
-            id = (widget.id.orZero()).toString(),
+            id = widget.id.toString(),
+            sectionId = widget.sectionId.toString(),
             widgetType = widget.widgetType.orEmpty(),
             title = widget.title.orEmpty(),
             subtitle = widget.subtitle.orEmpty(),
@@ -532,7 +551,8 @@ class LayoutMapper @Inject constructor(
         isFromCache: Boolean
     ): RecommendationWidgetUiModel {
         return RecommendationWidgetUiModel(
-            id = (widget.id.orZero()).toString(),
+            id = widget.id.toString(),
+            sectionId = widget.sectionId.toString(),
             widgetType = widget.widgetType.orEmpty(),
             title = widget.title.orEmpty(),
             subtitle = widget.subtitle.orEmpty(),
@@ -557,7 +577,8 @@ class LayoutMapper @Inject constructor(
         isFromCache: Boolean
     ): MilestoneWidgetUiModel {
         return MilestoneWidgetUiModel(
-            id = (widget.id ?: 0L).toString(),
+            id = widget.id.toString(),
+            sectionId = widget.sectionId.toString(),
             widgetType = widget.widgetType.orEmpty(),
             title = widget.title.orEmpty(),
             subtitle = widget.subtitle.orEmpty(),
@@ -582,7 +603,8 @@ class LayoutMapper @Inject constructor(
         fromCache: Boolean
     ): CalendarWidgetUiModel {
         return CalendarWidgetUiModel(
-            id = (widget.id.orZero()).toString(),
+            id = widget.id.toString(),
+            sectionId = widget.sectionId.toString(),
             widgetType = widget.widgetType.orEmpty(),
             title = widget.title.orEmpty() + DOUBLE_DOTS_CALENDAR_TITLE,
             subtitle = widget.subtitle.orEmpty(),
@@ -656,7 +678,39 @@ class LayoutMapper @Inject constructor(
                 }
             }
         }
-        return mappedList
+        return removeEmptySection(mappedList)
+    }
+
+    /**
+     * Remove the empty section widget :
+     * in case, we have a section widget without child or
+     * there is a section with invalid widget type (not yet registered).
+     * So, it should be removed to avoid stacked section widget.
+     * */
+    private fun removeEmptySection(widgetList: ArrayList<BaseWidgetUiModel<out BaseDataUiModel>>): ArrayList<BaseWidgetUiModel<out BaseDataUiModel>> {
+        val widgetGroups: Map<String, List<BaseWidgetUiModel<*>>> = widgetList.groupBy {
+            it.sectionId
+        }
+        val emptySection = mutableListOf<SectionWidgetUiModel>()
+        widgetList.forEach { widget ->
+            (widget as? SectionWidgetUiModel)?.let { section ->
+                val sectionWidgetId = section.id
+                val isSectionEmpty = widgetGroups[sectionWidgetId].isNullOrEmpty()
+                if (isSectionEmpty && sectionWidgetId != INVALID_SECTION_WIDGET_ID) {
+                    emptySection.add(section)
+                }
+            }
+        }
+        if (emptySection.isEmpty()) return widgetList
+
+        emptySection.forEach {
+            val sectionIndex = widgetList.indexOf(it)
+            if (sectionIndex != RecyclerView.NO_POSITION) {
+                widgetList.remove(it)
+            }
+        }
+
+        return widgetList
     }
 
     private fun getReplacementText(tabTitle: String, tabName: String): String {

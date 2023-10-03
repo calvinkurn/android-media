@@ -88,19 +88,37 @@ class CheckoutViewModelPromoTest : BaseCheckoutViewModelTest() {
                 orders = listOf(
                     Order(
                         cartStringGroup = "123",
-                        product_details = listOf(ProductDetail(quantity = 0)),
+                        product_details = listOf(
+                            ProductDetail(
+                                quantity = 0,
+                                isChecked = true,
+                                cartId = "0"
+                            )
+                        ),
                         isChecked = true
                     ),
                     Order(
                         cartStringGroup = "234",
-                        product_details = listOf(ProductDetail(quantity = 0)),
+                        product_details = listOf(
+                            ProductDetail(
+                                quantity = 0,
+                                isChecked = true,
+                                cartId = "0"
+                            )
+                        ),
                         isChecked = true,
                         shippingId = 3,
                         spId = 1
                     ),
                     Order(
                         cartStringGroup = "345",
-                        product_details = listOf(ProductDetail(quantity = 0)),
+                        product_details = listOf(
+                            ProductDetail(
+                                quantity = 0,
+                                isChecked = true,
+                                cartId = "0"
+                            )
+                        ),
                         isChecked = true,
                         shippingId = 3,
                         spId = 1,
@@ -211,7 +229,10 @@ class CheckoutViewModelPromoTest : BaseCheckoutViewModelTest() {
                     shipment = CheckoutOrderShipment(courierItemData = CourierItemData())
                 ),
                 CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
-                CheckoutPromoModel(promo = LastApplyUiModel()),
+                CheckoutPromoModel(
+                    promo = LastApplyUiModel(),
+                    isLoading = true
+                ),
                 CheckoutCostModel(totalPriceString = "Rp0"),
                 CheckoutCrossSellGroupModel(),
                 CheckoutButtonPaymentModel(enable = true, totalPrice = "Rp0")

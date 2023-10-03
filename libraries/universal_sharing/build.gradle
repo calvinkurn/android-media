@@ -6,6 +6,10 @@ android {
     defaultConfig {
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
     }
+    buildFeatures {
+        viewBinding true
+    }
+
 
     sourceSets {
         androidTest {
@@ -88,6 +92,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.features.medialoader)
+    implementation rootProject.ext.unifyDependencies.global_error
 
     // Android Test
     androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
