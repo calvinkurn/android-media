@@ -20,8 +20,6 @@ import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
-import com.tokopedia.logisticCommon.domain.model.TickerModel
-import com.tokopedia.logisticCommon.util.TargetedTickerHelper.renderTargetedTickerView
 import com.tokopedia.manageaddress.R
 import com.tokopedia.manageaddress.data.analytics.ShareAddressAnalytics
 import com.tokopedia.manageaddress.databinding.FragmentManageAddressBinding
@@ -31,6 +29,8 @@ import com.tokopedia.manageaddress.ui.manageaddress.mainaddress.MainAddressFragm
 import com.tokopedia.manageaddress.ui.uimodel.ValidateShareAddressState
 import com.tokopedia.manageaddress.util.ManageAddressConstant
 import com.tokopedia.manageaddress.util.ManageAddressConstant.EXTRA_QUERY
+import com.tokopedia.targetedticker.TargetedTickerHelper.renderTargetedTickerView
+import com.tokopedia.targetedticker.TickerModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.setCustomText

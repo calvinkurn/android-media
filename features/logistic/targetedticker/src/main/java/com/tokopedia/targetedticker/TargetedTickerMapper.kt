@@ -1,9 +1,6 @@
-package com.tokopedia.logisticCommon.domain.mapper
+package com.tokopedia.targetedticker
 
-import com.tokopedia.logisticCommon.domain.model.TickerModel
-import com.tokopedia.logisticCommon.domain.response.GetTargetedTickerResponse
-import com.tokopedia.logisticCommon.util.StringFormatterHelper.appendEmptySpace
-import com.tokopedia.logisticCommon.util.StringFormatterHelper.appendHyperlinkText
+
 import com.tokopedia.unifycomponents.ticker.Ticker
 
 object TargetedTickerMapper {
@@ -11,6 +8,9 @@ object TargetedTickerMapper {
     const val TICKER_INFO_TYPE = "info"
     const val TICKER_WARNING_TYPE = "warning"
     const val TICKER_ERROR_TYPE = "danger"
+
+    private const val HTML_HYPERLINK_FORMAT = "<a href=\"%s\">%s</a>"
+
 
     fun convertTargetedTickerToUiModel(
         firstTickerContent: String? = null,
@@ -68,5 +68,15 @@ object TargetedTickerMapper {
                 appendHyperlinkText(label = action.label, url = action.getUrl())
             }
         }.toString()
+    }
+
+    fun StringBuilder.appendHyperlinkText(label: String, url: String) {
+        if (label.isNotBlank() && url.isNotBlank()) {
+            append(String.format(HTML_HYPERLINK_FORMAT, url, label))
+        }
+    }
+
+    fun StringBuilder.appendEmptySpace() {
+        append(" ")
     }
 }

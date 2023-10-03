@@ -1,4 +1,4 @@
-package com.tokopedia.logisticCommon.domain.model
+package com.tokopedia.targetedticker
 
 data class TickerModel(
     val item: List<TickerItem> = listOf()

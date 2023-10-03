@@ -1,4 +1,4 @@
-package com.tokopedia.logisticCommon.domain.response
+package com.tokopedia.targetedticker
 
 import com.google.gson.annotations.SerializedName
 

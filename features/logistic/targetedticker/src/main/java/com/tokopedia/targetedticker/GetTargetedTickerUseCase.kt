@@ -1,4 +1,4 @@
-package com.tokopedia.logisticCommon.domain.usecase
+package com.tokopedia.targetedticker
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -6,9 +6,6 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
-import com.tokopedia.logisticCommon.domain.param.GetTargetedTickerParam
-import com.tokopedia.logisticCommon.domain.param.GetTargetedTickerRequest
-import com.tokopedia.logisticCommon.domain.response.GetTargetedTickerResponse
 import javax.inject.Inject
 
 class GetTargetedTickerUseCase @Inject constructor(
@@ -22,7 +19,7 @@ class GetTargetedTickerUseCase @Inject constructor(
     )
 
     override suspend fun execute(params: String): GetTargetedTickerResponse {
-        return repository.request(GetTargetedTicker(), createParams(params))
+        return repository.request(graphqlQuery(), createParams(params))
     }
 
     private fun createParams(page: String): GetTargetedTickerRequest {

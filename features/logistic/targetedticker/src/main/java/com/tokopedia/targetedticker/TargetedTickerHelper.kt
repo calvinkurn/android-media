@@ -1,8 +1,7 @@
-package com.tokopedia.logisticCommon.util
+package com.tokopedia.targetedticker
 
 import android.content.Context
 import android.view.View
-import com.tokopedia.logisticCommon.domain.model.TickerModel
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter

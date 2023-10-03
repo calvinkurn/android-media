@@ -1,4 +1,4 @@
-package com.tokopedia.logisticCommon.domain.param
+package com.tokopedia.targetedticker
 
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.graphql.data.GqlParam

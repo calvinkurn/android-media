@@ -1,0 +1,66 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
+apply plugin: 'kotlin-parcelize'
+apply plugin: 'io.hansel.preprocessor.module'
+
+kapt {
+    correctErrorTypes = true
+    useBuildCache = true
+}
+repositories {
+    maven { url 'https://maven-hansel.tokopedia.com/maven' }
+}
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+android {
+    defaultConfig {
+        multiDexEnabled true
+    }
+
+    defaultConfig {
+        testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
+    }
+    namespace 'com.tokopedia.targetedticker'
+    testNamespace 'com.tokopedia.targetedticker.test'
+    buildFeatures {
+        viewBinding true
+    }
+    testOptions {
+        animationsDisabled = true
+    }
+}
+
+dependencies {
+    implementation rootProject.ext.unifyDependencies.components
+    implementation projectOrAar(rootProject.ext.libraries.graphql)
+    implementation projectOrAar(rootProject.ext.libraries.graphql)
+    implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
+    implementation projectOrAar(rootProject.ext.libraries.network)
+    implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
+    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
+
+    implementation rootProject.ext.miscDependencies.dagger
+    kapt rootProject.ext.miscDependencies.daggerCompiler
+
+}
+
+project.ext {
+    artifactId = 'targetedticker'
+    groupId = 'com.tokopedia.logistic'
+    versionName = "0.0.2"
+    artifactName ="targetedticker"
+}
+
+apply from: '../../../publish_local.gradle'
+apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'
