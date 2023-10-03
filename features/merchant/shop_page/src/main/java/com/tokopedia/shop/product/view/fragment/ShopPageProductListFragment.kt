@@ -1004,7 +1004,7 @@ class ShopPageProductListFragment :
             }
         }
         activity?.let {
-            NetworkErrorHelper.showCloseSnackbar(it, ErrorHandler.getErrorMessage(it, e))
+            showToasterError(ErrorHandler.getErrorMessage(it, e))
         }
     }
 

@@ -24,7 +24,6 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.orTrue
-import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
@@ -36,6 +35,7 @@ import com.tokopedia.sellerhomecommon.common.WidgetListener
 import com.tokopedia.sellerhomecommon.common.WidgetType
 import com.tokopedia.sellerhomecommon.common.const.DateFilterType
 import com.tokopedia.sellerhomecommon.common.const.WidgetGridSize
+import com.tokopedia.sellerhomecommon.domain.model.TabModel
 import com.tokopedia.sellerhomecommon.domain.model.TableAndPostDataKey
 import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactoryImpl
 import com.tokopedia.sellerhomecommon.presentation.model.AnnouncementWidgetUiModel
@@ -46,6 +46,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.CardWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CarouselWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.DateFilterItem
 import com.tokopedia.sellerhomecommon.presentation.model.DescriptionWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.FilterTabUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.LineGraphWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MultiLineGraphWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PieChartWidgetUiModel
@@ -59,6 +60,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.TickerItemUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TickerWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TooltipUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.WidgetFilterUiModel
+import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.FilterTabBottomSheet
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.TooltipBottomSheet
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.WidgetFilterBottomSheet
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
@@ -102,6 +104,7 @@ import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import com.tokopedia.sellerhomecommon.R as sellerhomecommonR
 
 /**
  * Created By @ilhamsuaib on 08/06/20
@@ -116,6 +119,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         private const val DEFAULT_END_DATE_NON_REGULAR_MERCHANT = 0L
         private const val DEFAULT_END_DATE_REGULAR_MERCHANT = 1L
         private const val TOAST_DURATION = 5000L
+        private const val INVALID_SECTION_WIDGET_ID = "0"
         private const val SCREEN_NAME = "statistic_page_fragment"
         private const val TAG_TOOLTIP = "statistic_tooltip"
         private const val TICKER_NAME = "statistic_page_ticker"
@@ -308,11 +312,12 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     override fun removeWidget(position: Int, widget: BaseWidgetUiModel<*>) {
+        if (position == RecyclerView.NO_POSITION) return
         recyclerView?.post {
             adapter.data.remove(widget)
             adapter.notifyItemRemoved(position)
-            checkForSectionToBeRemoved(position)
         }
+        removeEmptySection()
     }
 
     override fun setOnErrorWidget(position: Int, widget: BaseWidgetUiModel<*>, error: String) {
@@ -322,9 +327,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     override fun getIsShouldRemoveWidget(): Boolean = false
 
     override fun onRemoveWidget(position: Int) {
-        recyclerView?.post {
-            checkForSectionToBeRemoved(position)
-        }
+        removeEmptySection()
     }
 
     override fun onReloadWidget(widget: BaseWidgetUiModel<*>) {
@@ -502,7 +505,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
                 ) as? WidgetFilterBottomSheet) ?: WidgetFilterBottomSheet.newInstance()
         tableFilterBottomSheet.init(
             requireContext(),
-            com.tokopedia.sellerhomecommon.R.string.shc_select_statistic_data,
+            sellerhomecommonR.string.shc_select_statistic_data,
             element.tableFilters
         ) { filter ->
             recyclerView?.post {
@@ -518,6 +521,27 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         statisticPage?.let {
             StatisticTracker.sendShowTableTableFilterClickEvent(it, element)
         }
+    }
+
+    override fun onFilterClicked(tabs: List<TabModel>?, selectedPage: String?, title: String) {
+        FilterTabBottomSheet.createInstance(
+            title = title,
+            uiModels = tabs?.map {
+                FilterTabUiModel(
+                    tabName = it.tabName,
+                    tabKey = it.page,
+                    isSelected = it.page == selectedPage
+                )
+            }.orEmpty()
+        ).apply {
+            setFilterTabSelectListener {
+                statisticPage?.run {
+                    pageSource = it.tabKey
+                    tickerPageName = it.tabKey
+                }
+                reloadPage()
+            }
+        }.show(childFragmentManager)
     }
 
     fun setSelectedWidget(widget: String) {
@@ -825,6 +849,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
                 is SectionWidgetUiModel -> {
                     it.shouldShow = true
                 }
+
                 else -> {
                     it.isLoaded = false
                     it.data = null
@@ -1180,39 +1205,31 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         }
     }
 
-    private fun checkForSectionToBeRemoved(removedPosition: Int) {
-        val previousWidget = adapter.data.getOrNull(removedPosition.minus(Int.ONE))
-        if (previousWidget is SectionWidgetUiModel) {
-            if (adapter.data.getOrNull(removedPosition.plus(Int.ONE)) == null) {
-                removeEmptySection(removedPosition.minus(Int.ONE))
-            } else {
-                removeSectionIfEmpty(removedPosition)
+    private fun removeEmptySection() {
+        recyclerView?.post {
+            runCatching {
+                val widgetGroups: Map<String, List<BaseWidgetUiModel<*>>> =
+                    adapter.data.groupBy { it.sectionId }
+                val emptySection = mutableListOf<SectionWidgetUiModel>()
+                adapter.data.forEach { widget ->
+                    (widget as? SectionWidgetUiModel)?.let { section ->
+                        val sectionWidgetId = section.id
+                        val isSectionEmpty = widgetGroups[sectionWidgetId].isNullOrEmpty()
+                        if (isSectionEmpty && sectionWidgetId != INVALID_SECTION_WIDGET_ID) {
+                            emptySection.add(section)
+                        }
+                    }
+                }
+                if (emptySection.isEmpty()) return@post
+
+                emptySection.forEach {
+                    val widgetIndex = adapter.data.indexOf(it)
+                    if (widgetIndex != RecyclerView.NO_POSITION) {
+                        adapter.data.remove(it)
+                        adapter.notifyItemRemoved(widgetIndex)
+                    }
+                }
             }
         }
     }
-
-    private fun removeSectionIfEmpty(removedPosition: Int) {
-        var shouldRemoveSection = false
-        adapter.data?.drop(removedPosition.plus(Int.ONE))?.forEach { widget ->
-            when {
-                widget.isShowEmpty || !widget.isEmpty() -> {
-                    // If we found that the next widget should be shown, then we should not remove the section
-                    return@forEach
-                }
-                widget is SectionWidgetUiModel -> {
-                    shouldRemoveSection = true
-                    return@forEach
-                }
-            }
-        }
-        if (shouldRemoveSection) {
-            removeEmptySection(removedPosition.minus(Int.ONE))
-        }
-    }
-
-    private fun removeEmptySection(position: Int) {
-        (adapter.data.getOrNull(position) as? SectionWidgetUiModel)?.shouldShow = false
-        adapter.notifyItemChanged(position)
-    }
-
 }

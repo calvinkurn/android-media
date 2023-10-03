@@ -274,6 +274,10 @@ internal class ShopPageHeaderFragmentPagerAdapter(
 
     override fun createFragment(position: Int): Fragment = listShopPageTabModel[position].tabFragment
 
+    /**
+     * If reimagined this one will return fragment inside ShopPageHeaderFragmentTabContentWrapper
+     * Otherwise it will return fragment directly (e.g. ShopHomeTab, ShopProductTab, etc)
+     */
     fun getRegisteredFragment(position: Int): Fragment? {
         return if (ShopUtil.isEnableShopPageReImagined(ctx)) {
             val wrapperFragment = listShopPageTabModel.getOrNull(position)?.tabFragment
@@ -286,6 +290,14 @@ internal class ShopPageHeaderFragmentPagerAdapter(
             } else {
                 null
             }
+        }
+    }
+
+    fun getSelectedWrapperFragment(position: Int): Fragment? {
+        return if (listShopPageTabModel.isNotEmpty()) {
+            listShopPageTabModel.getOrNull(position)?.tabFragment
+        } else {
+            null
         }
     }
 

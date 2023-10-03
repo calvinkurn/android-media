@@ -110,7 +110,7 @@
             android:layout_width="175dp"
             android:layout_height="1dp"
             android:layout_marginLeft="12dp"
-            android:background="@color/Unify_NN50"
+            android:background="@color/dms_clr_AAB4C8_25"
             app:layout_constraintBottom_toBottomOf="@+id/terlaris_item_product_detail_1"
             app:layout_constraintLeft_toRightOf="@+id/terlaris_item_img_product_1" />
 
@@ -122,7 +122,8 @@
             android:layout_marginRight="16dp"
             android:letterSpacing="0"
             android:textAlignment="center"
-            android:textColor="@color/Unify_NN400_20"
+            app:typographyWeight="bold"
+            android:textColor="@color/dms_clr_AAB4C8_25"
             android:textSize="64sp"
             app:layout_constraintLeft_toRightOf="@+id/container_product_info_1"
             app:layout_constraintTop_toTopOf="@+id/terlaris_item_product_detail_1"
@@ -233,7 +234,7 @@
                 android:layout_height="1dp"
                 android:layout_width="175dp"
                 android:layout_marginLeft="12dp"
-                android:background="@color/Unify_NN50"/>
+                android:background="@color/dms_clr_AAB4C8_25"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="44dp"
@@ -244,9 +245,10 @@
                 android:layout_marginLeft="12dp"
                 android:layout_marginRight="16dp"
                 android:textSize="64sp"
+                app:typographyWeight="bold"
                 android:letterSpacing="0"
                 android:textAlignment="center"
-                android:textColor="@color/Unify_NN400_20"
+                android:textColor="@color/dms_clr_AAB4C8_25"
                 tools:text="2" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -354,7 +356,7 @@
                 android:layout_height="1dp"
                 android:layout_width="175dp"
                 android:layout_marginLeft="12dp"
-                android:background="@color/Unify_NN50"/>
+                android:background="@color/dms_clr_AAB4C8_25"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="44dp"
@@ -366,8 +368,9 @@
                 android:layout_marginRight="16dp"
                 android:textSize="64sp"
                 android:letterSpacing="0"
+                app:typographyWeight="bold"
                 android:layout_gravity="right"
-                android:textColor="@color/Unify_NN400_20"
+                android:textColor="@color/dms_clr_AAB4C8_25"
                 tools:text="3" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

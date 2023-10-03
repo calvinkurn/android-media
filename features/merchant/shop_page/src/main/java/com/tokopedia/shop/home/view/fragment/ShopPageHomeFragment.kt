@@ -150,6 +150,7 @@ import com.tokopedia.shop.common.widget.bundle.viewholder.SingleProductBundleLis
 import com.tokopedia.shop.common.widget.model.ShopHomeWidgetLayout
 import com.tokopedia.shop.databinding.FragmentShopPageHomeBinding
 import com.tokopedia.shop.home.WidgetName
+import com.tokopedia.shop.home.WidgetName.BMGM_BANNER
 import com.tokopedia.shop.home.WidgetName.PERSO_PRODUCT_COMPARISON
 import com.tokopedia.shop.home.WidgetName.PLAY_CAROUSEL_WIDGET
 import com.tokopedia.shop.home.WidgetName.VIDEO
@@ -1646,7 +1647,10 @@ open class ShopPageHomeFragment :
             }
         } else {
             view?.let { view ->
-                NetworkErrorHelper.showGreenCloseSnackbar(view, dataModelAtc.message.first())
+                showToastSuccess(
+                    dataModelAtc.message.firstOrNull().orEmpty(),
+                    getString(R.string.shop_page_atc_label_cta)
+                )
             }
         }
     }
@@ -1725,7 +1729,7 @@ open class ShopPageHomeFragment :
             } else {
                 ErrorHandler.getErrorMessage(context, exception)
             }
-            NetworkErrorHelper.showRedCloseSnackbar(view, errorMessage)
+            showErrorToast(errorMessage.orEmpty())
         }
     }
 
@@ -2597,19 +2601,34 @@ open class ShopPageHomeFragment :
                 creativeUrl = displayWidgetItem.imageUrl
             }
         }
-        shopPageHomeTracking.impressionDisplayWidget(
-            false,
-            shopId,
-            shopPageHomeLayoutUiModel?.masterLayoutId.toString(),
-            displayWidgetUiModel?.name ?: "",
-            displayWidgetUiModel?.widgetId ?: "",
-            ShopUtil.getActualPositionFromIndex(parentPosition),
-            displayWidgetUiModel?.header?.ratio ?: "",
-            destinationLink,
-            creativeUrl,
-            ShopUtil.getActualPositionFromIndex(adapterPosition),
-            customDimensionShopPage
-        )
+        when (displayWidgetUiModel?.name ?: "") {
+            BMGM_BANNER -> {
+                val applinkUri = Uri.parse(displayWidgetItem.appLink)
+                val offerId = applinkUri.path?.drop(Int.ONE).orEmpty()
+                shopPageHomeTracking.impressBmgmBanner(
+                    offerId,
+                    ShopUtil.getActualPositionFromIndex(parentPosition).toString(),
+                    ShopUtil.getActualPositionFromIndex(parentPosition).toString(),
+                    shopId,
+                    userId
+                )
+            }
+            else -> {
+                shopPageHomeTracking.impressionDisplayWidget(
+                    false,
+                    shopId,
+                    shopPageHomeLayoutUiModel?.masterLayoutId.toString(),
+                    displayWidgetUiModel?.name ?: "",
+                    displayWidgetUiModel?.widgetId ?: "",
+                    ShopUtil.getActualPositionFromIndex(parentPosition),
+                    displayWidgetUiModel?.header?.ratio ?: "",
+                    destinationLink,
+                    creativeUrl,
+                    ShopUtil.getActualPositionFromIndex(adapterPosition),
+                    customDimensionShopPage
+                )
+            }
+        }
     }
 
     override fun onDisplayItemClicked(
@@ -2638,27 +2657,42 @@ open class ShopPageHomeFragment :
                 ShopPageTrackingConstant.VALUE_SHOP_DECOR_BANNER
             }
         }
-        sendShopHomeWidgetClickedTracker(
-            segmentName,
-            displayWidgetUiModel?.name.orEmpty(),
-            displayWidgetUiModel?.widgetId.orEmpty(),
-            ShopUtil.getActualPositionFromIndex(parentPosition),
-            displayWidgetUiModel?.widgetMasterId.orEmpty(),
-            displayWidgetUiModel?.isFestivity.orFalse()
-        )
-        shopPageHomeTracking.clickDisplayWidget(
-            false,
-            shopId,
-            shopPageHomeLayoutUiModel?.masterLayoutId.toString(),
-            displayWidgetUiModel?.name ?: "",
-            displayWidgetUiModel?.widgetId ?: "",
-            ShopUtil.getActualPositionFromIndex(parentPosition),
-            displayWidgetUiModel?.header?.ratio ?: "",
-            destinationLink,
-            creativeUrl,
-            ShopUtil.getActualPositionFromIndex(adapterPosition),
-            customDimensionShopPage
-        )
+        when (displayWidgetUiModel?.name ?: "") {
+            BMGM_BANNER -> {
+                val applinkUri = Uri.parse(displayWidgetItem.appLink)
+                val offerId = applinkUri.path?.drop(Int.ONE).orEmpty()
+                shopPageHomeTracking.clickBmgmBanner(
+                    offerId,
+                    ShopUtil.getActualPositionFromIndex(parentPosition).toString(),
+                    ShopUtil.getActualPositionFromIndex(parentPosition).toString(),
+                    shopId,
+                    userId
+                )
+            }
+            else -> {
+                sendShopHomeWidgetClickedTracker(
+                    segmentName,
+                    displayWidgetUiModel?.name.orEmpty(),
+                    displayWidgetUiModel?.widgetId.orEmpty(),
+                    ShopUtil.getActualPositionFromIndex(parentPosition),
+                    displayWidgetUiModel?.widgetMasterId.orEmpty(),
+                    displayWidgetUiModel?.isFestivity.orFalse()
+                )
+                shopPageHomeTracking.clickDisplayWidget(
+                    false,
+                    shopId,
+                    shopPageHomeLayoutUiModel?.masterLayoutId.toString(),
+                    displayWidgetUiModel?.name ?: "",
+                    displayWidgetUiModel?.widgetId ?: "",
+                    ShopUtil.getActualPositionFromIndex(parentPosition),
+                    displayWidgetUiModel?.header?.ratio ?: "",
+                    destinationLink,
+                    creativeUrl,
+                    ShopUtil.getActualPositionFromIndex(adapterPosition),
+                    customDimensionShopPage
+                )
+            }
+        }
         context?.let {
             if (displayWidgetItem.appLink.isNotEmpty()) {
                 RouteManager.route(it, displayWidgetItem.appLink)
@@ -3118,7 +3152,10 @@ open class ShopPageHomeFragment :
                             shopHomeCarousellProductUiModel
                         )
                         view?.let { view ->
-                            NetworkErrorHelper.showGreenCloseSnackbar(view, it.message.first())
+                            showToastSuccess(
+                                it.message.firstOrNull().orEmpty(),
+                                getString(R.string.shop_page_atc_label_cta)
+                            )
                         }
                     },
                     {
@@ -3375,7 +3412,10 @@ open class ShopPageHomeFragment :
                             shopHomeCarousellProductUiModel
                         )
                         view?.let { view ->
-                            NetworkErrorHelper.showGreenCloseSnackbar(view, it.message.first())
+                            showToastSuccess(
+                                it.message.firstOrNull().orEmpty(),
+                                getString(R.string.shop_page_atc_label_cta)
+                            )
                         }
                     },
                     {
