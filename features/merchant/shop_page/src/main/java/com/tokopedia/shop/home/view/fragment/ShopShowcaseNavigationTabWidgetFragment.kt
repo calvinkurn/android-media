@@ -99,10 +99,14 @@ class ShopShowcaseNavigationTabWidgetFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         onShowcaseVisible(showcases.firstOrNull()?.id.orEmpty(), tabName)
+    }
+
+    override fun onResume() {
+        super.onResume()
         renderShowcase(showcases)
         setupColors(overrideTheme, colorScheme)
     }
-
+    
     private fun renderShowcase(
         showcases: List<Showcase>
     ) {
