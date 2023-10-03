@@ -85,7 +85,7 @@ data class StoriesDetailItem(
     }
 
     enum class StoryStatus(val value: String) {
-        Active("ACTIVE"), Removed("REMOVED"), Unknown("unknown");
+        Active("ACTIVE"), Unknown("unknown");
 
         companion object {
             private val values = StoryStatus.values()

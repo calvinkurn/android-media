@@ -283,7 +283,7 @@ class StoriesDetailFragment @Inject constructor(
 
         storiesDetailsTimer(state)
 
-        if ((currentItem.isSameContent) && currentItem.status != StoryStatus.Removed) return
+        if (currentItem.isSameContent) return
 
         renderAuthor(currentItem)
         renderNudge(currentItem)

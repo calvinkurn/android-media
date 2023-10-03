@@ -143,10 +143,7 @@ class StoriesViewModel @AssistedInject constructor(
         }
 
     val storyId: String
-        get() {
-            val currentItem = mGroupItem.detail.detailItems
-            return currentItem.getOrNull(mGroupItem.detail.selectedDetailPosition)?.id.orEmpty()
-        }
+        get() = mDetail.id
 
     val isProductAvailable: Boolean
         get() {
@@ -501,33 +498,25 @@ class StoriesViewModel @AssistedInject constructor(
 
     private fun handleDeleteStory() {
         viewModelScope.launchCatchError(block = {
-            val response = repository.deleteStory(storyId)
-            if (response) {
-                // Remove story~
-                val newList = _storiesMainData.value.groupItems.map {
-                    if (it == mGroupItem) {
-                        it.copy(
-                            detail = it.detail.copy(
-                                detailItems = it.detail.detailItems.map { item ->
-                                    if (item.id == storyId) {
-                                        item.copy(status = StoriesDetailItem.StoryStatus.Removed)
-                                    } else {
-                                        item
-                                    }
-                                }
-                            )
-                        )
-                    } else {
-                        it
-                    }
-                }
-                _storiesMainData.update { group ->
-                    group.copy(groupItems = newList)
-                }
-            } else {
+            val request = repository.deleteStory(storyId)
+            if (!request) {
                 _storiesEvent.emit(StoriesUiEvent.ShowErrorEvent(MessageErrorException()))
+                return@launchCatchError
             }
+
+            val removedItem = mGroupItem.detail.detailItems.filterNot { it == mDetail }
+            val newDetail = mGroupItem.detail.copy(detailItems = removedItem)
+            updateMainData(detail = newDetail, groupPosition = mGroupPos)
+            moveToOtherStories()
         }, onError = { _storiesEvent.emit(StoriesUiEvent.ShowErrorEvent(it)) })
+    }
+
+    private suspend fun moveToOtherStories() {
+        when {
+            mDetailPos == mDetailSize && mDetailPos > 0 -> updateDetailData(position = mDetailPos.minus(1))
+            mDetailPos < mDetailSize -> updateDetailData(position = mDetailPos)
+            else -> _storiesEvent.emit(StoriesUiEvent.FinishedAllStories)
+        }
     }
 
     private fun updateDetailData(
