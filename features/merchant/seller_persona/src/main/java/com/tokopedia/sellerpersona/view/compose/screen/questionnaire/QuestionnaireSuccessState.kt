@@ -1,5 +1,9 @@
 package com.tokopedia.sellerpersona.view.compose.screen.questionnaire
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -10,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -22,12 +27,10 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.rememberPagerState
 import com.tokopedia.nest.components.ButtonVariant
 import com.tokopedia.nest.components.NestButton
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
-import com.tokopedia.sellerpersona.view.compose.model.state.QuestionnaireState
 import com.tokopedia.sellerpersona.view.compose.model.uievent.QuestionnaireUiEvent
 import com.tokopedia.sellerpersona.view.model.BaseOptionUiModel
 import com.tokopedia.sellerpersona.view.model.QuestionnairePagerUiModel
@@ -59,8 +62,7 @@ fun QuestionnaireSuccessState(
             QuestionnairePager(pagePosition, questionnaire, onEvent)
         }
 
-        NestButton(
-            text = stringResource(sellerpersonaR.string.sp_previous),
+        NestButton(text = stringResource(sellerpersonaR.string.sp_previous),
             modifier = Modifier.constrainAs(prevBtn) {
                 start.linkTo(parent.start, margin = 16.dp)
                 bottom.linkTo(parent.bottom, margin = 16.dp)
@@ -71,8 +73,7 @@ fun QuestionnaireSuccessState(
                 onEvent(QuestionnaireUiEvent.ClickPrevious)
             })
 
-        NestButton(
-            text = stringResource(sellerpersonaR.string.sp_next),
+        NestButton(text = stringResource(sellerpersonaR.string.sp_next),
             modifier = Modifier.constrainAs(nextBtn) {
                 end.linkTo(parent.end, margin = 16.dp)
                 bottom.linkTo(parent.bottom, margin = 16.dp)
@@ -143,12 +144,9 @@ fun QuestionnaireItemMultipleAnswer(
         isChecked.value = it
     }
     NestCheckbox(
-        text = option.title,
-        isChecked = isChecked.value,
-        onCheckedChange = {
+        text = option.title, isChecked = isChecked.value, onCheckedChange = {
             onClick(it)
-        },
-        modifier = Modifier.fillMaxWidth()
+        }, modifier = Modifier.fillMaxWidth()
     )
 }
 
