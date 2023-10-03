@@ -8,7 +8,9 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
@@ -37,49 +39,62 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 @Composable
 fun StoriesProductNudge(productCount: String, onClick: () -> Unit) {
     NestTheme(darkTheme = true) {
-        val ctx = LocalContext.current
-
-        val infiniteTransition = rememberInfiniteTransition()
-        val anim by infiniteTransition.animateFloat(
-            initialValue = 1f,
-            targetValue = 10f,
-            animationSpec = infiniteRepeatable(tween(800), RepeatMode.Reverse),
-        )
-
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .wrapContentSize()
-                .graphicsLayer {
-                    translationY = anim
-                    transformOrigin = TransformOrigin.Center
-                }
-                .background(color = colorResource(id = unifyprinciplesR.color.Unify_Static_Black), shape = RoundedCornerShape(20.dp))
-                .padding(4.dp)
-                .clickable { onClick() }
+        Box(
+            Modifier.fillMaxSize(),
+            contentAlignment = Alignment.TopCenter
         ) {
-            val iconDrawable = getIconUnifyDrawable(
-                ctx,
-                IconUnify.CHEVRON_UP,
-                MethodChecker.getColor(
-                    ctx,
-                    unifyprinciplesR.color.Unify_Static_White
-                )
-            )
-            if (iconDrawable != null)
-                Image(
-                    painter = rememberImagePainter(iconDrawable), contentDescription = "",
-                    modifier = Modifier
-                        .size(24.dp)
-                )
-            NestTypography(
-                text = ctx.getString(R.string.stories_product_notch, productCount),
-                textStyle = NestTheme.typography.display2.copy(
-                    color = colorResource(
-                        id = unifyprinciplesR.color.Unify_Static_White
-                    )
-                )
-            )
+            StoriesProductBadge(productCount = productCount, onClick)
         }
+    }
+}
+
+@Composable
+private fun StoriesProductBadge(productCount: String, onClick: () -> Unit) {
+    val ctx = LocalContext.current
+
+    val infiniteTransition = rememberInfiniteTransition()
+    val anim by infiniteTransition.animateFloat(
+        initialValue = 1f,
+        targetValue = 10f,
+        animationSpec = infiniteRepeatable(tween(800), RepeatMode.Reverse),
+    )
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .wrapContentSize()
+            .graphicsLayer {
+                translationY = anim
+                transformOrigin = TransformOrigin.Center
+            }
+            .background(
+                color = colorResource(id = unifyprinciplesR.color.Unify_Static_Black),
+                shape = RoundedCornerShape(20.dp)
+            )
+            .padding(start = 8.dp, end = 12.dp, top = 4.dp, bottom = 4.dp)
+            .clickable { onClick() }
+    ) {
+        val iconDrawable = getIconUnifyDrawable(
+            ctx,
+            IconUnify.CHEVRON_UP,
+            MethodChecker.getColor(
+                ctx,
+                unifyprinciplesR.color.Unify_Static_White
+            )
+        )
+        if (iconDrawable != null)
+            Image(
+                painter = rememberImagePainter(iconDrawable), contentDescription = "",
+                modifier = Modifier
+                    .size(24.dp)
+            )
+        NestTypography(
+            text = ctx.getString(R.string.stories_product_notch, productCount),
+            textStyle = NestTheme.typography.display2.copy(
+                color = colorResource(
+                    id = unifyprinciplesR.color.Unify_Static_White
+                )
+            )
+        )
     }
 }
