@@ -40,7 +40,6 @@ import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
@@ -215,7 +214,7 @@ import com.tokopedia.shop.home.view.model.viewholder.ShopDirectPurchaseByEtalase
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageHeaderActivity
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragment
-import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragmentV2
+import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageReimagineHeaderFragment
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPageHeaderPerformanceMonitoringListener
 import com.tokopedia.shop.pageheader.util.ShopPageHeaderTabName
 import com.tokopedia.shop.product.data.model.ShopProduct
@@ -868,11 +867,13 @@ open class ShopPageHomeFragment :
             getRecyclerView(view)?.let {
                 if (it.itemDecorationCount == Int.ZERO) {
                     context?.let { ctx ->
-                        it.addItemDecoration(ShopFestivityRvItemDecoration(
-                            ctx,
-                            getBodyBackgroundHexColor(),
-                            isOverrideTheme()
-                        ))
+                        it.addItemDecoration(
+                            ShopFestivityRvItemDecoration(
+                                ctx,
+                                getBodyBackgroundHexColor(),
+                                isOverrideTheme()
+                            )
+                        )
                     }
                 }
             }
@@ -1009,7 +1010,7 @@ open class ShopPageHomeFragment :
 
     protected fun getSelectedFragment(): Fragment? {
         return if (ShopUtil.isEnableShopPageReImagined(context)) {
-            (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.getSelectedFragmentInstance()
+            (getRealParentFragment() as? ShopPageReimagineHeaderFragment)?.getSelectedFragmentInstance()
         } else {
             (getRealParentFragment() as? ShopPageHeaderFragment)?.getSelectedFragmentInstance()
         }
@@ -1890,7 +1891,7 @@ open class ShopPageHomeFragment :
                 if (firstCompletelyVisibleItemPosition == 0 && isClickToScrollToTop) {
                     isClickToScrollToTop = false
                     if (ShopUtil.isEnableShopPageReImagined(context)) {
-                        (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.expandHeader()
+                        (getRealParentFragment() as? ShopPageReimagineHeaderFragment)?.expandHeader()
                     } else {
                         (getRealParentFragment() as? ShopPageHeaderFragment)?.expandHeader()
                     }
@@ -2915,7 +2916,6 @@ open class ShopPageHomeFragment :
             )
         }
     }
-
 
     private fun trackImpressionProductAtc(
         shopHomeProductUiModel: ShopHomeProductUiModel,
@@ -4365,7 +4365,7 @@ open class ShopPageHomeFragment :
 
     private fun hideScrollToTopButton() {
         if (ShopUtil.isEnableShopPageReImagined(context)) {
-            (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.hideScrollToTopButton()
+            (getRealParentFragment() as? ShopPageReimagineHeaderFragment)?.hideScrollToTopButton()
         } else {
             (getRealParentFragment() as? ShopPageHeaderFragment)?.hideScrollToTopButton()
         }
@@ -4373,7 +4373,7 @@ open class ShopPageHomeFragment :
 
     private fun showScrollToTopButton() {
         if (ShopUtil.isEnableShopPageReImagined(context)) {
-            (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.showScrollToTopButton()
+            (getRealParentFragment() as? ShopPageReimagineHeaderFragment)?.showScrollToTopButton()
         } else {
             (getRealParentFragment() as? ShopPageHeaderFragment)?.showScrollToTopButton()
         }
@@ -4381,7 +4381,7 @@ open class ShopPageHomeFragment :
 
     protected open fun getSelectedTabName(): String {
         return if (ShopUtil.isEnableShopPageReImagined(context)) {
-            (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.getSelectedTabName().orEmpty()
+            (getRealParentFragment() as? ShopPageReimagineHeaderFragment)?.getSelectedTabName().orEmpty()
         } else {
             (getRealParentFragment() as? ShopPageHeaderFragment)?.getSelectedTabName().orEmpty()
         }
@@ -4464,7 +4464,7 @@ open class ShopPageHomeFragment :
 
     private fun showConfetti() {
         if (ShopUtil.isEnableShopPageReImagined(context)) {
-            (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.setupShopPageLottieAnimation(homeTabLottieUrl)
+            (getRealParentFragment() as? ShopPageReimagineHeaderFragment)?.setupShopPageLottieAnimation(homeTabLottieUrl)
         } else {
             (getRealParentFragment() as? ShopPageHeaderFragment)?.setupShopPageLottieAnimation(homeTabLottieUrl)
         }
@@ -4472,7 +4472,7 @@ open class ShopPageHomeFragment :
 
     private fun isShowConfetti(): Boolean {
         return if (ShopUtil.isEnableShopPageReImagined(context)) {
-            (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.isShowConfetti().orFalse()
+            (getRealParentFragment() as? ShopPageReimagineHeaderFragment)?.isShowConfetti().orFalse()
         } else {
             (getRealParentFragment() as? ShopPageHeaderFragment)?.isShowConfetti().orFalse()
         }
@@ -4480,7 +4480,7 @@ open class ShopPageHomeFragment :
 
     private fun setConfettiAlreadyShown() {
         if (ShopUtil.isEnableShopPageReImagined(context)) {
-            (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.setConfettiAlreadyShown()
+            (getRealParentFragment() as? ShopPageReimagineHeaderFragment)?.setConfettiAlreadyShown()
         } else {
             (getRealParentFragment() as? ShopPageHeaderFragment)?.setConfettiAlreadyShown()
         }
@@ -4750,7 +4750,7 @@ open class ShopPageHomeFragment :
 
     private fun updateMiniCartWidget() {
         if (ShopUtil.isEnableShopPageReImagined(context)) {
-            (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.updateMiniCartWidget()
+            (getRealParentFragment() as? ShopPageReimagineHeaderFragment)?.updateMiniCartWidget()
         } else {
             (getRealParentFragment() as? ShopPageHeaderFragment)?.updateMiniCartWidget()
         }
@@ -4995,7 +4995,7 @@ open class ShopPageHomeFragment :
         val tabValue = Uri.parse(appLink).getQueryParameter(QUERY_PARAM_TAB).orEmpty()
         if (tabValue == ShopPageHeaderTabName.CAMPAIGN) {
             if (ShopUtil.isEnableShopPageReImagined(context)) {
-                (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.selectShopTab(ShopPageHeaderTabName.CAMPAIGN, true)
+                (getRealParentFragment() as? ShopPageReimagineHeaderFragment)?.selectShopTab(ShopPageHeaderTabName.CAMPAIGN, true)
             } else {
                 (getRealParentFragment() as? ShopPageHeaderFragment)?.selectShopTab(ShopPageHeaderTabName.CAMPAIGN, true)
             }
@@ -5068,7 +5068,7 @@ open class ShopPageHomeFragment :
 
     protected fun refreshShopHeader() {
         if (ShopUtil.isEnableShopPageReImagined(context)) {
-            (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.apply {
+            (getRealParentFragment() as? ShopPageReimagineHeaderFragment)?.apply {
                 refreshData()
             }
         } else {
