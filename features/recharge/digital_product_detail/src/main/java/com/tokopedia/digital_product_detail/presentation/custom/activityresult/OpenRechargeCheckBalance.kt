@@ -7,19 +7,33 @@ import androidx.activity.result.contract.ActivityResultContract
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant
 import com.tokopedia.digital_product_detail.presentation.webview.RechargeCheckBalanceWebViewActivity
 
-class OpenRechargeCheckBalance : ActivityResultContract<String, String>() {
+class OpenRechargeCheckBalance : ActivityResultContract<String, OpenRechargeCheckBalance.CheckBalanceOTPResult>() {
 
     override fun createIntent(context: Context, input: String): Intent {
         return RechargeCheckBalanceWebViewActivity.createInstance(context, input)
     }
 
-    override fun parseResult(resultCode: Int, intent: Intent?): String {
-        var accessToken = ""
+    override fun parseResult(resultCode: Int, intent: Intent?): CheckBalanceOTPResult {
         if (resultCode == Activity.RESULT_OK) {
             if (intent != null) {
-                accessToken = intent.getStringExtra(DigitalPDPConstant.EXTRA_CHECK_BALANCE_ACCESS_TOKEN) ?: ""
+                val accessToken = intent.getStringExtra(DigitalPDPConstant.EXTRA_CHECK_BALANCE_ACCESS_TOKEN) ?: ""
+                return if (accessToken.isNotEmpty()) {
+                    CheckBalanceOTPResult.Success(accessToken)
+                } else {
+                    CheckBalanceOTPResult.EmptyToken
+                }
+            } else {
+                return CheckBalanceOTPResult.EmptyToken
             }
+        } else {
+            return CheckBalanceOTPResult.Cancelled
         }
-        return accessToken
+
+    }
+
+    sealed class CheckBalanceOTPResult {
+        object Cancelled: CheckBalanceOTPResult()
+        object EmptyToken: CheckBalanceOTPResult()
+        data class Success(val accessToken: String): CheckBalanceOTPResult()
     }
 }

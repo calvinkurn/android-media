@@ -181,12 +181,28 @@ class DigitalPDPDataPlanFragment :
     private lateinit var localCacheHandler: LocalCacheHandler
     private lateinit var productDescBottomSheet: ProductDescBottomSheet
 
-    private val indosatCheckBalanceLauncher = registerForActivityResult(OpenRechargeCheckBalance()) { accessToken ->
-        if (accessToken.isNotEmpty()) {
-            saveIndosatAccessToken(accessToken)
-        } else {
-            Toast.makeText(context, "Gagal melakukan verifikasi, mohon dicoba lagi nanti", Toast.LENGTH_LONG).show()
+    private val indosatCheckBalanceLauncher = registerForActivityResult(OpenRechargeCheckBalance()) { result ->
+        when (result) {
+            is OpenRechargeCheckBalance.CheckBalanceOTPResult.Success -> {
+                saveIndosatAccessToken(result.accessToken)
+            }
+            is OpenRechargeCheckBalance.CheckBalanceOTPResult.EmptyToken -> {
+                Toast.makeText(
+                    context,
+                    getString(com.tokopedia.digital_product_detail.R.string.check_balance_failed_verification),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+            is OpenRechargeCheckBalance.CheckBalanceOTPResult.Cancelled -> {
+                // do nothing
+            }
         }
+        digitalPDPAnalytics.clickCloseOtp(
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+            loyaltyStatus,
+            userSession.userId,
+            userSession.isLoggedIn
+        )
     }
 
     override fun getScreenName(): String = ""

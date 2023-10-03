@@ -32,10 +32,10 @@ class RechargeCheckBalanceDetailViewHolder(
                     RouteManager.route(itemView.context, model.applink)
                 }
                 checkBalanceDetailBuyButton.show()
+                mListener?.onRenderCheckBalanceDetailBuyButton(model, absoluteAdapterPosition, "")
             } else {
                 checkBalanceDetailBuyButton.hide()
             }
-            mListener?.onRenderCheckBalanceDetailBuyButton(model, absoluteAdapterPosition, "")
         }
     }
 
