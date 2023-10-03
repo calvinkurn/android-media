@@ -203,6 +203,7 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant.CLICK_TYPE_W
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.DEFAULT_PAGE_NUMBER
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.DEFAULT_X_SOURCE
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_VERTICAL_LOADING
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.PLAY_CAROUSEL
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.REMOTE_CONFIG_DEFAULT_ENABLE_PDP_CUSTOM_SHARING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.REMOTE_CONFIG_KEY_ENABLE_PDP_CUSTOM_SHARING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.REMOVE_WISHLIST
@@ -5690,7 +5691,8 @@ open class DynamicProductDetailFragment :
     }
 
     override fun onWidgetError(view: PlayWidgetView, error: PlayWidgetException) {
-        //TODO("When widget error")
+        pdpUiUpdater?.removeComponent(PLAY_CAROUSEL)
+        updateUi()
     }
 
     override fun onToggleReminderClicked(
