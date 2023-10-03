@@ -187,7 +187,6 @@ class StoriesViewModel @AssistedInject constructor(
             StoriesUiAction.SaveInstanceStateData -> handleSaveInstanceStateData()
             is StoriesUiAction.Navigate -> handleNav(action.appLink)
             StoriesUiAction.PageIsSelected -> handlePageIsSelected()
-            else -> {}
         }
     }
 
@@ -288,7 +287,10 @@ class StoriesViewModel @AssistedInject constructor(
             detailData
         }
 
-        updateDetailData(position = currentDetail.selectedDetailPositionCached, isReset = true)
+        val cachedPos = currentDetail.selectedDetailPositionCached
+        val maxPos = mDetailSize.minus(1)
+        val position = if (cachedPos > maxPos) maxPos else cachedPos
+        updateDetailData(position = position, isReset = true)
         if (currentDetail == StoriesDetail()) _storiesEvent.emit(StoriesUiEvent.EmptyDetailPage)
     }
 
