@@ -644,6 +644,6 @@
     </entry>
     <entry>
         <key>android_pdp_p1_cache_age</key>
-        <value>5</value>
+        <value>30</value>
     </entry>
 </defaultsMap>

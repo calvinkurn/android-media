@@ -38,6 +38,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
 ) : UseCase<Unit>() {
 
     companion object {
+        private const val CACHE_EXPIRED = 30L //30 minutes
         const val QUERY = """
             query pdpGetLayout(${'$'}productID : String, ${'$'}shopDomain :String, ${'$'}productKey :String, ${'$'}whID : String, ${'$'}layoutID : String, ${'$'}userLocation: pdpUserLocation, ${'$'}extParam: String, ${'$'}tokonow: pdpTokoNow) {
               pdpGetLayout(productID:${'$'}productID, shopDomain:${'$'}shopDomain,productKey:${'$'}productKey, apiVersion: 1, whID:${'$'}whID, layoutID:${'$'}layoutID, userLocation:${'$'}userLocation, extParam:${'$'}extParam, tokonow:${'$'}tokonow) {
@@ -469,7 +470,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
     private val cacheAge
         get() = remoteConfig.getLong(
             RemoteConfigKey.ENABLE_PDP_P1_CACHE_AGE,
-            CacheStrategyUtil.EXPIRY_TIME_MULTIPLIER.toLong()
+            CACHE_EXPIRED
         ).toInt()
 
     var requestParams = RequestParams.EMPTY
