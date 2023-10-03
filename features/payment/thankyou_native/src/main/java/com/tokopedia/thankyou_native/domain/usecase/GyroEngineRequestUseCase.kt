@@ -4,6 +4,10 @@ import com.google.gson.Gson
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.thankyou_native.data.mapper.PaymentItemKey
 import com.tokopedia.thankyou_native.data.mapper.StoreItemKey
 import com.tokopedia.thankyou_native.domain.model.*
@@ -69,6 +73,14 @@ class GyroEngineRequestUseCase @Inject constructor(
             )
         )
 
+    private fun getAbTestPlatform(): AbTestPlatform? {
+        return try {
+            RemoteConfigInstance.getInstance().abTestPlatform
+        } catch (e: IllegalStateException) {
+            null
+        }
+    }
+
     private fun concatMap(thanksPageData: ThanksPageData, mainGatewayCode: String): MutableMap<String, Any?>? {
         thanksPageData.gyroData?.put(IS_STATIC, "true")
         thanksPageData.gyroData?.put(AMOUNT, thanksPageData.amount.toString())
@@ -81,6 +93,11 @@ class GyroEngineRequestUseCase @Inject constructor(
         thanksPageData.gyroData?.put(IS_0S, isOfficialStore(thanksPageData).toString())
         thanksPageData.gyroData?.put(IS_ENJOY_PLUS_BENEFIT, thanksPageData.customDataOther?.isEnjoyPLus ?: "false")
         thanksPageData.gyroData?.put(IS_PLUS_TRANSACTION, thanksPageData.customDataOther?.isPlusTransaction ?: "false")
+        thanksPageData.gyroData?.put(
+            RollenceKey.THANKYOU_PAGE_WIDGET_VARIANT,
+            getAbTestPlatform()?.getString(RollenceKey.THANKYOU_PAGE_WIDGET_VARIANT, String.EMPTY)
+                ?: String.EMPTY
+        )
         return thanksPageData.gyroData
     }
 

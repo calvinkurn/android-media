@@ -25,4 +25,8 @@ data class MixTopDataModel(
     override fun type(typeFactory: HomeComponentTypeFactory): Int {
         return typeFactory.type(this)
     }
+
+    companion object {
+        const val TYP_TAG = "flashsale"
+    }
 }

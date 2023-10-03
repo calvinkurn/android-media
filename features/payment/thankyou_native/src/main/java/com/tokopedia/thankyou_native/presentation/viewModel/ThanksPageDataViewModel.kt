@@ -247,17 +247,14 @@ class ThanksPageDataViewModel @Inject constructor(
         }
     }
 
-    fun getFlashSaleData() {
+    fun getFlashSaleData(groupId: String) {
         launch(coroutineContext) {
             val a = dynamicChannelRepository.getRemoteData(Bundle().apply {
-                putString("groupIDs", "188")
+                putString("groupIDs", groupId)
             })
 
             a.dynamicHomeChannel.channels.forEachIndexed { index, item ->
                 addBottomContentWidget(
-//                    mapShopFlashSaleItemList(ShopFlashSaleMapper.mapShopFlashSaleWidgetDataModel(item, index), arrayListOf(
-//                        RecommendationWidget()
-//                    ))
                     MixTopDataModel(
                         item.mapChannelToComponent(index)
                     )
