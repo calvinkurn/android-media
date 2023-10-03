@@ -38,6 +38,11 @@ class AdminPermissionMapper @Inject constructor() {
             AdminFeature.MANAGE_SHOP -> AccessId.SHOP_SETTING_INFO
             AdminFeature.STATISTIC -> AccessId.STATISTIC
             AdminFeature.ADS_AND_PROMOTION -> AccessId.ADS_AND_PROMO
+            AdminFeature.SHOP_SETTINGS_INFO -> AccessId.SHOP_SETTING_INFO
+            AdminFeature.SHOP_SETTINGS_NOTES -> AccessId.SHOP_SETTING_NOTES
+            AdminFeature.SHOP_OPERATIONAL_HOURS -> AccessId.SHOP_SETTING_INFO
+            AdminFeature.SHOP_SETTING_ADDR -> AccessId.SHOP_SETTING_ADDRESS
+            AdminFeature.SHIPPING_EDITOR -> AccessId.SHOP_SETTING_SHIPMENT
             else -> 0
         }
     }
@@ -93,6 +98,21 @@ class AdminPermissionMapper @Inject constructor() {
                 }
                 getSellerMigrationIntent(context, SellerMigrationFeatureName.FEATURE_CENTRALIZED_PROMO, appLinks)
             }
+            AdminFeature.SHOP_SETTINGS_INFO -> {
+                RouteManager.getIntent(context, ApplinkConstInternalMarketplace.SHOP_SETTINGS_INFO)
+            }
+            AdminFeature.SHOP_SETTINGS_NOTES -> {
+                RouteManager.getIntent(context, ApplinkConstInternalMarketplace.SHOP_SETTINGS_NOTES)
+            }
+            AdminFeature.SHOP_OPERATIONAL_HOURS -> {
+                RouteManager.getIntent(context, ApplinkConstInternalMarketplace.SHOP_SETTINGS_OPERATIONAL_HOURS)
+            }
+            AdminFeature.SHOP_SETTING_ADDR -> {
+                RouteManager.getIntent(context, ApplinkConstInternalMarketplace.SHOP_SETTINGS_ADDRESS)
+            }
+            AdminFeature.SHIPPING_EDITOR -> {
+                RouteManager.getIntent(context, ApplinkConst.SELLER_SHIPPING_EDITOR)
+            }
             else -> null
         }
     }
@@ -110,6 +130,11 @@ class AdminPermissionMapper @Inject constructor() {
             AdminFeature.MANAGE_SHOP -> R.string.admin_title_shop_setting
             AdminFeature.STATISTIC -> R.string.admin_title_statistic
             AdminFeature.ADS_AND_PROMOTION -> R.string.admin_title_ads_and_promotion
+            AdminFeature.SHOP_SETTINGS_INFO -> R.string.admin_title_shop_settings_info
+            AdminFeature.SHOP_SETTINGS_NOTES -> R.string.admin_title_shop_settings_notes
+            AdminFeature.SHOP_OPERATIONAL_HOURS -> R.string.admin_title_shop_operational_hours
+            AdminFeature.SHOP_SETTING_ADDR -> R.string.admin_title_shop_settings_address
+            AdminFeature.SHIPPING_EDITOR -> R.string.admin_title_shop_shipping_editor
             else -> return String.EMPTY
         }.let { stringResId ->
             return context?.getString(stringResId).orEmpty()

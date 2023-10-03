@@ -2,6 +2,7 @@ package com.tokopedia.people.viewmodels
 
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.util.combine
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction
 import com.tokopedia.feedcomponent.people.model.MutationUiModel
@@ -22,13 +23,14 @@ import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.content.UserFeedPostsUiModel
 import com.tokopedia.people.views.uimodel.content.UserPlayVideoUiModel
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
+import com.tokopedia.people.views.uimodel.getReviewSettings
+import com.tokopedia.people.views.uimodel.mapper.UserProfileLikeStatusMapper
 import com.tokopedia.people.views.uimodel.profile.FollowInfoUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileCreationInfoUiModel
+import com.tokopedia.people.views.uimodel.profile.ProfileTabState
 import com.tokopedia.people.views.uimodel.profile.ProfileTabUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileType
 import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
-import com.tokopedia.people.views.uimodel.getReviewSettings
-import com.tokopedia.people.views.uimodel.mapper.UserProfileLikeStatusMapper
 import com.tokopedia.people.views.uimodel.saved.SavedReminderData
 import com.tokopedia.people.views.uimodel.state.UserProfileUiState
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
@@ -39,11 +41,11 @@ import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -52,8 +54,9 @@ class UserProfileViewModel @AssistedInject constructor(
     private val repo: UserProfileRepository,
     private val followRepo: UserFollowRepository,
     private val userSession: UserSessionInterface,
-    private val userProfileSharedPref: UserProfileSharedPref
-) : BaseViewModel(Dispatchers.Main) {
+    private val userProfileSharedPref: UserProfileSharedPref,
+    dispatchers: CoroutineDispatchers
+) : BaseViewModel(dispatchers.main) {
 
     @AssistedFactory
     interface Factory {
@@ -105,7 +108,13 @@ class UserProfileViewModel @AssistedInject constructor(
     val isShortVideoEntryPointShow: Boolean get() = _creationInfo.value.showShortVideo
 
     val profileTab: ProfileTabUiModel
-        get() = _profileTab.value
+        get() = when (val state = _profileTab.value) {
+            is ProfileTabState.Success -> state.profileTab
+            else -> ProfileTabUiModel()
+        }
+
+    val badges: List<ProfileUiModel.Badge>
+        get() = _profileInfo.value.badges
 
     private val isFirstTimeSeeReviewTab: Boolean
         get() = isSelfProfile &&
@@ -118,13 +127,14 @@ class UserProfileViewModel @AssistedInject constructor(
     private val _creationInfo = MutableStateFlow(ProfileCreationInfoUiModel())
     private val _profileType = MutableStateFlow(ProfileType.Unknown)
     private val _shopRecom = MutableStateFlow(ShopRecomUiModel())
-    private val _profileTab = MutableStateFlow(ProfileTabUiModel())
+    private val _profileTab = MutableStateFlow<ProfileTabState>(ProfileTabState.Unknown)
     private val _feedPostsContent = MutableStateFlow(UserFeedPostsUiModel())
     private val _videoPostContent = MutableStateFlow(UserPlayVideoUiModel.Empty)
     private val _reviewContent = MutableStateFlow(UserReviewUiModel.Empty)
     private val _isLoading = MutableStateFlow(false)
     private val _error = MutableStateFlow<Throwable?>(null)
     private val _reviewSettings = MutableStateFlow(ProfileSettingsUiModel.Empty)
+    private val _likePool = MutableStateFlow(hashMapOf<String, Boolean>())
 
     private val _uiEvent = MutableSharedFlow<UserProfileUiEvent>()
 
@@ -143,7 +153,7 @@ class UserProfileViewModel @AssistedInject constructor(
         _reviewContent,
         _isLoading,
         _error,
-        _reviewSettings,
+        _reviewSettings
     ) { profileInfo,
         followInfo,
         profileType,
@@ -172,6 +182,23 @@ class UserProfileViewModel @AssistedInject constructor(
         )
     }
 
+    init {
+        launch {
+            _likePool
+                .debounce(LIKE_REVIEW_DEBOUNCE)
+                .collect { likePool ->
+
+                    if (likePool.entries.isEmpty()) return@collect
+
+                    likePool.entries.forEach { map ->
+                        submitAction(UserProfileAction.ProcessLikeRequest(map.key, map.value))
+                    }
+
+                    _likePool.update { hashMapOf() }
+                }
+        }
+    }
+
     fun submitAction(action: UserProfileAction) {
         when (action) {
             is UserProfileAction.ClickFollowButton -> handleClickFollowButton(action.isFromLogin)
@@ -195,6 +222,7 @@ class UserProfileViewModel @AssistedInject constructor(
             is UserProfileAction.ClickSeePerformancePlayChannel -> handleClickSeePerformancePlayChannel(action.channel)
             is UserProfileAction.ClickDeletePlayChannel -> handleClickDeletePlayChannel(action.channel)
             is UserProfileAction.ClickLikeReview -> handleClickLikeReview(action.review)
+            is UserProfileAction.ProcessLikeRequest -> handleProcessLikeRequest(action.feedbackID, action.isLike)
             is UserProfileAction.ClickReviewTextSeeMore -> handleClickReviewTextSeeMore(action.review)
             is UserProfileAction.ClickProductInfo -> handleClickProductInfo(action.review)
             is UserProfileAction.ClickReviewMedia -> handleClickReviewMedia(action.feedbackID, action.attachment)
@@ -320,7 +348,7 @@ class UserProfileViewModel @AssistedInject constructor(
                     reviewList = it.reviewList + response.reviewList,
                     page = response.page,
                     hasNext = response.hasNext,
-                    status = response.status,
+                    status = response.status
                 )
             }
         }) {
@@ -577,23 +605,45 @@ class UserProfileViewModel @AssistedInject constructor(
     }
 
     private fun handleClickLikeReview(review: UserReviewUiModel.Review) {
-        launchCatchError(block = {
-            if (_reviewContent.value.reviewList.find { it.feedbackID == review.feedbackID } == null) {
-                return@launchCatchError
-            }
+        launch {
+            /** Immediate follow / unfollow feedback to user */
+            val likeDislikeAfterToggle = toggleLikeDislikeStatus(review.feedbackID) ?: return@launch
 
-            val likeDislikeAfterUpdate = toggleLikeDislikeStatus(review.feedbackID)
+            _likePool.update { likePool ->
+                HashMap(likePool).apply {
+                    if (this.contains(review.feedbackID)) {
+                        remove(review.feedbackID)
+                    } else {
+                        put(review.feedbackID, likeDislikeAfterToggle.isLike)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun handleProcessLikeRequest(feedbackId: String, isLike: Boolean) {
+        viewModelScope.launchCatchError(block = {
+            _reviewContent.value.reviewList.firstOrNull { it.feedbackID == feedbackId } ?: return@launchCatchError
 
             val response = repo.setLikeStatus(
-                feedbackID = review.feedbackID,
-                isLike = !review.likeDislike.isLike
+                feedbackID = feedbackId,
+                isLike = isLike
             )
 
-            if (response.isLike != likeDislikeAfterUpdate?.isLike) {
-                throw Exception("like response is not expected.")
+            /** Sync follow / unfollow status from BE */
+            _reviewContent.update {
+                it.copy(
+                    reviewList = it.reviewList.map { item ->
+                        if (feedbackId == item.feedbackID) {
+                            item.copy(likeDislike = response)
+                        } else {
+                            item
+                        }
+                    }
+                )
             }
         }) { throwable ->
-            toggleLikeDislikeStatus(review.feedbackID)
+            toggleLikeDislikeStatus(feedbackId)
 
             _uiEvent.emit(UserProfileUiEvent.ErrorLikeDislike(throwable))
         }
@@ -629,7 +679,7 @@ class UserProfileViewModel @AssistedInject constructor(
             _uiEvent.emit(
                 UserProfileUiEvent.OpenReviewMediaGalleryPage(
                     review = review,
-                    mediaPosition = mediaPosition,
+                    mediaPosition = mediaPosition
                 )
             )
         }
@@ -693,15 +743,17 @@ class UserProfileViewModel @AssistedInject constructor(
                 val isEmpty = result == ProfileTabUiModel()
 
                 _profileTab.update {
-                    result.copy(
-                        tabs = if (isFirstTimeSeeReviewTab) {
-                            result.tabs.map { tab ->
-                                tab.copy(isNew = tab.key == ProfileTabUiModel.Key.Review)
-                            }
-                        } else {
-                            result.tabs
-                        },
-                        showTabs = result.showTabs
+                    ProfileTabState.Success(
+                        result.copy(
+                            tabs = if (isFirstTimeSeeReviewTab) {
+                                result.tabs.map { tab ->
+                                    tab.copy(isNew = tab.key == ProfileTabUiModel.Key.Review)
+                                }
+                            } else {
+                                result.tabs
+                            },
+                            showTabs = result.showTabs
+                        )
                     )
                 }
 
@@ -716,8 +768,10 @@ class UserProfileViewModel @AssistedInject constructor(
 
                 if (isEmpty && isSelfProfile) loadShopRecom()
             },
-            onError = {
-                _uiEvent.emit(UserProfileUiEvent.ErrorGetProfileTab(it))
+            onError = { err ->
+                _profileTab.update {
+                    ProfileTabState.Error(err)
+                }
             }
         )
     }
@@ -810,5 +864,6 @@ class UserProfileViewModel @AssistedInject constructor(
         private const val DEFAULT_LIMIT = 10
         private const val DELAY_SHOW_REVIEW_ONBOARDING = 1000L
         private const val SPACE = " "
+        private const val LIKE_REVIEW_DEBOUNCE = 500L
     }
 }

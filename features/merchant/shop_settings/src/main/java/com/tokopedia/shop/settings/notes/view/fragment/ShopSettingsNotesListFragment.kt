@@ -73,7 +73,7 @@ class ShopSettingsNotesListFragment :
 
     override fun getRecyclerViewResourceId() = R.id.recycler_view
 
-    override fun getSwipeRefreshLayoutResourceId() = R.id.swipe_refresh_layout
+    override fun getSwipeRefreshLayoutResourceId() = com.tokopedia.baselist.R.id.swipe_refresh_layout
 
     override fun initInjector() {
         activity?.let {

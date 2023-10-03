@@ -16,6 +16,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.activateCheckout.domain.model.CheckoutData
@@ -33,15 +34,19 @@ import com.tokopedia.pdpsimulation.activateCheckout.helper.OccBundleHelper
 import com.tokopedia.pdpsimulation.activateCheckout.helper.OccBundleHelper.setBundleForInstalmentBottomSheet
 import com.tokopedia.pdpsimulation.activateCheckout.listner.ActivationListner
 import com.tokopedia.pdpsimulation.activateCheckout.presentation.adapter.ActivationTenureAdapter
+import com.tokopedia.pdpsimulation.activateCheckout.presentation.bottomsheet.DownRateBottomsheet
 import com.tokopedia.pdpsimulation.activateCheckout.viewmodel.PayLaterActivationViewModel
 import com.tokopedia.pdpsimulation.activateCheckout.viewmodel.ShowToasterException
 import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationEvent
+import com.tokopedia.pdpsimulation.common.constants.PARAM_CATEGORY_ID
 import com.tokopedia.pdpsimulation.common.constants.PARAM_GATEWAY_CODE
 import com.tokopedia.pdpsimulation.common.constants.PARAM_GATEWAY_ID
+import com.tokopedia.pdpsimulation.common.constants.PARAM_PARENT_ID
 import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_ID
 import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_TENURE
 import com.tokopedia.pdpsimulation.common.di.component.PdpSimulationComponent
 import com.tokopedia.pdpsimulation.common.domain.model.GetProductV3
+import com.tokopedia.pdpsimulation.common.utils.Util
 import com.tokopedia.pdpsimulation.paylater.PdpSimulationCallback
 import com.tokopedia.pdpsimulation.paylater.domain.model.InstallmentDetails
 import com.tokopedia.pdpsimulation.paylater.helper.BottomSheetNavigator
@@ -114,10 +119,14 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         val gateWayId = arguments?.getString(PARAM_GATEWAY_ID) ?: "0"
         val tenureSelected = arguments?.getString(PARAM_PRODUCT_TENURE) ?: "0"
         val gatewayCode = arguments?.getString(PARAM_GATEWAY_CODE) ?: ""
+        val parentId = arguments?.getString(PARAM_PARENT_ID)
+        val categoryId = arguments?.getString(PARAM_CATEGORY_ID)
         payLaterActivationViewModel.selectedProductId = productId
         payLaterActivationViewModel.selectedGatewayId = gateWayId
         payLaterActivationViewModel.selectedTenureSelected = tenureSelected
         payLaterActivationViewModel.selectedGatewayCode = gatewayCode
+        payLaterActivationViewModel.parentId = parentId.orEmpty()
+        payLaterActivationViewModel.categoryId = categoryId.orEmpty()
     }
 
     private fun observeCartDetail() {
@@ -236,8 +245,36 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         paylaterGetOptimizedModel = it.data
         removeErrorInTenure()
         setTenureDetailData()
+        setAdditionalInformation()
     }
 
+    private fun setAdditionalInformation() {
+        if (context == null) return
+
+        payLaterActivationViewModel.gatewayToChipMap[payLaterActivationViewModel.selectedGatewayId]?.let { checkoutData ->
+            gatewayDetailLayout.groupAdditionalInformation.shouldShowWithAction(
+                checkoutData.additionalInformation.title.isNotEmpty() && Util.isRBPOn(context)
+            ) {
+                gatewayDetailLayout.additionalInformationTitle.text = checkoutData.additionalInformation.title
+                gatewayDetailLayout.additionalInformationIcon.setImageUrl(checkoutData.additionalInformation.image)
+            }
+
+            gatewayDetailLayout.additionalInformationBottomsheetIcon.shouldShowWithAction(
+                checkoutData.additionalInformation.bottomSheet.show && Util.isRBPOn(context)
+            ) {
+                gatewayDetailLayout.additionalInformationBottomsheetIcon.setOnClickListener {
+                    DownRateBottomsheet.show(
+                        DownRateBottomsheet.createBundle(
+                            checkoutData.additionalInformation.bottomSheet.image,
+                            checkoutData.additionalInformation.bottomSheet.title,
+                            checkoutData.additionalInformation.bottomSheet.description
+                        ),
+                        childFragmentManager
+                    )
+                }
+            }
+        }
+    }
 
     private fun sendOccImpressionEvent() {
         try {
@@ -569,7 +606,10 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                     quantity.toString(),
                     checkoutData.userAmount ?: "",
                     payLaterActivationViewModel.variantName,
-                    checkoutData.tenureDetail.getOrNull(selectedTenurePosition)?.promoName.orEmpty()
+                    checkoutData.tenureDetail.getOrNull(selectedTenurePosition)?.promoName.orEmpty(),
+                    payLaterActivationViewModel.price.toString(),
+                    checkoutData.tenureDetail.getOrNull(selectedTenurePosition)?.previousRate.orEmpty(),
+                    checkoutData.tenureDetail.getOrNull(selectedTenurePosition)?.newRate.orEmpty()
                 )
             )
         }
@@ -785,6 +825,8 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                     checkoutData.tenureDetail[newPositionToSelect].tenure.toString(),
                     checkoutData.gatewayCode.orEmpty(),
                     promoName,
+                    checkoutData.tenureDetail.getOrNull(selectedTenurePosition)?.previousRate.orEmpty(),
+                    checkoutData.tenureDetail.getOrNull(selectedTenurePosition)?.newRate.orEmpty()
                 )
             )
         }

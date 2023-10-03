@@ -5,14 +5,15 @@ import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.common.utils.Utils
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PartialProductItemViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductViewHolder
-import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
 
 class ProductViewHolderStub(
     itemView: View?,
     listener: PartialProductItemViewHolder.ProductViewListener,
+    bottomSheetListener: PartialProductItemViewHolder.ShareProductBottomSheetListener,
     navigator: BuyerOrderDetailNavigator
-) : ProductViewHolder(itemView, listener, navigator) {
+) : ProductViewHolder(itemView, listener, bottomSheetListener, navigator) {
 
     override fun setupButton(showBuyAgainButton: ActionButtonsUiModel.ActionButton, processing: Boolean) {
         btnBuyerOrderDetailBuyProductAgain?.apply {

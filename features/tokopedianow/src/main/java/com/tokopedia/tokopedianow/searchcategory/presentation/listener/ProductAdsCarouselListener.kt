@@ -18,7 +18,8 @@ class ProductAdsCarouselListener(
     private val context: Context?,
     private val viewModel: BaseSearchCategoryViewModel,
     private val analytics: ProductAdsCarouselAnalytics,
-    private val startActivityResult: (Intent, Int) -> Unit
+    private val startActivityResult: (Intent, Int) -> Unit,
+    private val showToasterWhenAddToCartBlocked: () -> Unit = {}
 ): ProductAdsCarouselListener {
 
     override fun onProductCardClicked(
@@ -72,5 +73,9 @@ class ProductAdsCarouselListener(
                 startActivitResult = startActivityResult
             )
         }
+    }
+
+    override fun onProductCardAddToCartBlocked() {
+        showToasterWhenAddToCartBlocked.invoke()
     }
 }

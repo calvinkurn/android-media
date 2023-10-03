@@ -9,16 +9,23 @@ import com.tokopedia.tokopedianow.category.domain.mapper.ProductRecommendationMa
 import com.tokopedia.tokopedianow.common.util.ProductAdsMapper.createProductAdsCarousel
 import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryViewModel.Companion.NO_WAREHOUSE_ID
 import com.tokopedia.tokopedianow.common.domain.mapper.TickerMapper
+import com.tokopedia.tokopedianow.oldcategory.domain.model.CategorySharingModel
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import org.junit.Assert
 import org.junit.Test
+import java.util.*
 
 class CategoryViewCreatedTest : TokoNowCategoryMainViewModelTestFixture() {
 
     @Test
     fun `onViewCreated should return success result with loading showcase`() {
+        setAddressData(
+            warehouseId = warehouseId,
+            warehouses = getLocalWarehouseModelList(),
+            shopId = shopId
+        )
         onCategoryDetail_thenReturns()
         onTargetedTicker_thenReturns()
 
@@ -79,14 +86,31 @@ class CategoryViewCreatedTest : TokoNowCategoryMainViewModelTestFixture() {
             hasBlockedAddToCart = hasBlockedAddToCart
         )
 
+        val categoryDetail = categoryDetailResponse.categoryDetail.data
+        val categoryShareData = CategorySharingModel(
+            categoryIdLvl2 = "",
+            categoryIdLvl3 = "",
+            title = categoryDetail.name,
+            url = categoryDetail.url,
+            deeplinkParam = "category/l1/$categoryIdL1",
+            utmCampaignList = listOf(String.format(Locale.getDefault(), "cat%s", 1), categoryIdL1)
+        )
+
         verifyCategoryDetail()
         verifyTargetedTicker()
         viewModel.categoryFirstPage
             .verifyValueEquals(Success(resultList))
+        viewModel.shareLiveData
+            .verifyValueEquals(categoryShareData)
     }
 
     @Test
     fun `onViewCreated should return success result with loading showcase even though targeted ticker throws an error exception`() {
+        setAddressData(
+            warehouseId = warehouseId,
+            warehouses = getLocalWarehouseModelList(),
+            shopId = shopId
+        )
         onCategoryDetail_thenReturns()
         onTargetedTicker_thenThrows()
 

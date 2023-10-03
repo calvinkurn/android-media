@@ -51,6 +51,7 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                     ratio
                     isATC
                     isShowEtalaseName
+                    widgetStyle
                   }
                   data {
                     ... on BundleWidget {
@@ -81,6 +82,50 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                       videoUrl
                       appLink
                       webLink
+                      linkType
+                      timeInfo{
+                          timeDescription
+                          timeCounter
+                          startDate
+                          endDate
+                          bgColor
+                          textColor
+                          status
+                      }
+                      campaignID
+                      totalNotify
+                      totalNotifyWording
+                      bannerID
+                      dynamicRule {
+                        dynamicRoleData {
+                          ruleName
+                          ruleID
+                          isActive
+                          ruleAdditionalData
+                        }
+                        descriptionHeader
+                      }
+                      text
+                      mainBannerPosition
+                      showcaseList {
+                        showcaseID
+                        name
+                        imageURL
+                        ctaLink
+                        isMainBanner
+                      }
+                      productHotspot {
+                        productID
+                        name
+                        imageUrl
+                        productUrl
+                        displayPrice
+                        isSoldOut
+                        coordinate{
+                          x
+                          y
+                        }
+                      }
                     }
                     ... on EtalaseWidget {
                       imageUrl
@@ -150,6 +195,26 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                         identifier
                       }
                     }
+                    ... on DynamicComponentWidget {
+                      tabLabel
+                      tabName
+                      componentList {
+                        componentID
+                        componentName
+                        componentType
+                        data {
+                          linkType
+                          linkID
+                          ctaText
+                          ctaLink
+                          ratio
+                          imageID
+                          imageURL
+                          desktopImageURL
+                          isShowProductInfo
+                        }
+                      }
+                    }
                     ... on CampaignWidget {
                       campaignID
                       name
@@ -213,6 +278,18 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                       backgroundGradientColor {
                         firstColor
                         secondColor
+                      }
+                    }
+                    ... on DirectPurchaseWidget{
+                      ratio
+                      Title
+                      Banner
+                      EtalaseList{
+                        imageUrl
+                        desktopImageUrl
+                        linkType
+                        linkID
+                        Name
                       }
                     }
                   }

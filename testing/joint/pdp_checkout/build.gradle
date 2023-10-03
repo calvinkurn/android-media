@@ -2,6 +2,9 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
 
 android {
+    namespace 'com.tokopedia.pdpCheckout.testing'
+    testNamespace 'com.tokopedia.pdpCheckout.testing.test'
+
     defaultConfig {
         multiDexEnabled true
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
@@ -32,6 +35,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.productDetailCommon)
     implementation projectOrAar(rootProject.ext.features.purchase_platform_common)
     implementation projectOrAar(rootProject.ext.features.oneclickcheckout)
+    implementation projectOrAar(rootProject.ext.features.atcVariant)
 
     implementation projectOrAar(rootProject.ext.libraries.baseList)
     implementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest

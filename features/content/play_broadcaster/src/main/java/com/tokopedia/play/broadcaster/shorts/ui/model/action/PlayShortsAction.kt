@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.shorts.ui.model.action
 
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagItem
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 
 /**
@@ -42,7 +43,7 @@ sealed interface PlayShortsAction {
     object LoadTag : PlayShortsAction
 
     data class SelectTag(
-        val tag: PlayTagUiModel,
+        val tag: PlayTagItem,
     ) : PlayShortsAction
 
     object ClickUploadVideo : PlayShortsAction

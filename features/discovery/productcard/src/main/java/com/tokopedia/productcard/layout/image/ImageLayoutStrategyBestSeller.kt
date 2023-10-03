@@ -29,7 +29,7 @@ internal class ImageLayoutStrategyBestSeller: ImageLayoutStrategy {
     override fun getImageHeight(imageWidth: Int, productCardModel: ProductCardModel): Int =
         IMAGE_SIZE_DP.toPx()
 
-    override fun setImageSize(mediaAnchorProduct: Space?) {
+    override fun setImageSizeListView(mediaAnchorProduct: Space?) {
         val layoutParams = mediaAnchorProduct?.layoutParams
         layoutParams?.width = IMAGE_SIZE_DP.toPx()
         layoutParams?.height = IMAGE_SIZE_DP.toPx()

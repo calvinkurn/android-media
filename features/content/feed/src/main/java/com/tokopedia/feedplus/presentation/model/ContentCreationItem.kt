@@ -8,14 +8,23 @@ data class ContentCreationItem(
     var hasUsername: Boolean = false,
     var hasAcceptTnC: Boolean = false,
     var items: List<ContentCreationTypeItem> = emptyList()
-) {
-}
+)
+
+/**
+ * position matter
+ */
 enum class CreatorType(val value: String) {
-    SHOP("content-shop"),
     USER("content-user"),
+    SHOP("content-shop"),
     NONE("");
 
     val asBuyer: Boolean get() {
         return this == USER
+    }
+
+    companion object {
+        fun getTypeByValue(value: String): CreatorType {
+            return CreatorType.values().firstOrNull { it.value == value } ?: NONE
+        }
     }
 }

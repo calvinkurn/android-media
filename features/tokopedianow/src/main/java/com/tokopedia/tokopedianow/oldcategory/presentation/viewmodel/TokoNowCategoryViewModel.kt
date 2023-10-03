@@ -5,7 +5,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.discovery.common.constants.SearchApiConst
-import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -37,12 +36,12 @@ import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationUiModel
 import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper
-import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper.APPLINK_PARAM_WAREHOUSE_ID
-import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse
 import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse.CategoryListResponse.CategoryResponse
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.searchcategory.cartservice.CartService
+import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
+import com.tokopedia.tokopedianow.searchcategory.domain.usecase.GetFilterUseCase
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryTitle
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
@@ -72,7 +71,7 @@ class TokoNowCategoryViewModel @Inject constructor(
     private val getCategoryFirstPageUseCase: UseCase<CategoryModel>,
     @param:Named(CATEGORY_LOAD_MORE_PAGE_USE_CASE)
     private val getCategoryLoadMorePageUseCase: UseCase<CategoryModel>,
-    getFilterUseCase: UseCase<DynamicFilterModel>,
+    getFilterUseCase: GetFilterUseCase,
     getProductCountUseCase: UseCase<String>,
     getMiniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase,
     cartService: CartService,
@@ -215,9 +214,10 @@ class TokoNowCategoryViewModel @Inject constructor(
         )
     }
 
-    override fun createVisitableListWithEmptyProduct() {
-        super.createVisitableListWithEmptyProduct()
-
+    override fun createVisitableListWithEmptyProduct(
+        violation: AceSearchProductModel.Violation
+    ) {
+        super.createVisitableListWithEmptyProduct(violation)
         val categoryMenuIndex = minOf(visitableList.size, 2)
         val categoryMenuUIModel = TokoNowCategoryMenuUiModel(
             state = TokoNowLayoutState.LOADING
@@ -433,5 +433,17 @@ class TokoNowCategoryViewModel @Inject constructor(
         } else {
             listOf(tokonowParam[SearchApiConst.SRP_PAGE_ID] ?: "")
         }
+    }
+
+    override fun onViewReloadPage(
+        needToResetQueryParams: Boolean,
+        updateMoreQueryParams: () -> Unit
+    ) {
+        super.onViewReloadPage(
+            needToResetQueryParams = needToResetQueryParams,
+            updateMoreQueryParams = {
+                updateQueryParamWithCategoryIds()
+            }
+        )
     }
 }

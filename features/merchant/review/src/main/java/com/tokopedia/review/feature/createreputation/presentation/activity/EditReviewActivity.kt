@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
+import com.tokopedia.applink.merchant.DeeplinkMapperMerchant
 import com.tokopedia.review.R
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringListener
 import com.tokopedia.review.common.util.ReviewConstants
@@ -121,7 +122,7 @@ class EditReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>,
             reputationId = uriSegment[uriSegment.size - 2]
             rating = uri.getQueryParameter(PARAM_RATING)?.toIntOrNull() ?: DEFAULT_PRODUCT_RATING
             feedbackId = uri.getQueryParameter(ReviewConstants.PARAM_FEEDBACK_ID) ?: ""
-            utmSource = uri.getQueryParameter(ReviewConstants.PARAM_SOURCE) ?: ""
+            utmSource = uri.getQueryParameter(DeeplinkMapperMerchant.PARAM_UTM_SOURCE) ?: ""
         } else {
             productId = bundle?.getString(ReviewConstants.ARGS_PRODUCT_ID) ?: ""
             reputationId = bundle?.getString(ReviewConstants.ARGS_REPUTATION_ID) ?: ""

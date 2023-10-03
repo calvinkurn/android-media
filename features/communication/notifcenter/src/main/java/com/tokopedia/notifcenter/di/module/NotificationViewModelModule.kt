@@ -4,28 +4,29 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.notifcenter.di.scope.NotificationScope
-import com.tokopedia.notifcenter.presentation.viewmodel.NotificationViewModel
+import com.tokopedia.abstraction.common.di.scope.ActivityScope
+import com.tokopedia.notifcenter.view.NotificationViewModel
 import com.tokopedia.topads.sdk.viewmodel.TopAdsHeadlineViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
 
-@Module abstract class NotificationViewModelModule {
+@Module
+abstract class NotificationViewModelModule {
 
     @Binds
-    @NotificationScope
+    @ActivityScope
     internal abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 
     @Binds
     @IntoMap
-    @NotificationScope
+    @ActivityScope
     @ViewModelKey(NotificationViewModel::class)
     internal abstract fun notificationViewModel(viewModel: NotificationViewModel): ViewModel
 
     @Binds
     @IntoMap
-    @NotificationScope
+    @ActivityScope
     @ViewModelKey(TopAdsHeadlineViewModel::class)
     internal abstract fun provideTopAdsHeadlineViewModel(viewModel: TopAdsHeadlineViewModel): ViewModel
 

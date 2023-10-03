@@ -37,7 +37,7 @@ class DividerItemDecoration : RecyclerView.ItemDecoration() {
             val paint = Paint()
             paint.color = ContextCompat.getColor(
                 parent.context,
-                com.tokopedia.unifycomponents.R.color.Unify_NN100,
+                com.tokopedia.unifyprinciples.R.color.Unify_NN100,
             )
             c.drawRect(left.toFloat(), top.toFloat(), right.toFloat(), bottom.toFloat(), paint)
         }

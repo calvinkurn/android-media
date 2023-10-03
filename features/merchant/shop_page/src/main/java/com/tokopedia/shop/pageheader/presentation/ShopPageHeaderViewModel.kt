@@ -55,6 +55,7 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourstatus.ShopOperationalHourStatus
 import com.tokopedia.shop.common.util.ShopAsyncErrorException
 import com.tokopedia.shop.common.util.ShopUtil
+import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.pageheader.data.model.NewShopPageHeaderP1
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderLayoutResponse
@@ -181,7 +182,10 @@ class ShopPageHeaderViewModel @Inject constructor(
         etalaseId: String,
         isRefresh: Boolean,
         widgetUserAddressLocalData: LocalCacheModel,
-        extParam: String
+        extParam: String,
+        tabName: String,
+        shopPageColorSchemaDefaultConfigColor: Map<ShopPageColorSchema.ColorSchemaName, String> = mapOf(),
+        isEnableShopReimagined: Boolean
     ) {
         launchCatchError(block = {
             val shopP1DataAsync = asyncCatchError(
@@ -192,7 +196,8 @@ class ShopPageHeaderViewModel @Inject constructor(
                         shopDomain = shopDomain,
                         isRefresh = isRefresh,
                         extParam = extParam,
-                        widgetUserAddressLocalData = widgetUserAddressLocalData
+                        widgetUserAddressLocalData = widgetUserAddressLocalData,
+                        tabName = tabName
                     )
                 },
                 onError = {
@@ -266,7 +271,9 @@ class ShopPageHeaderViewModel @Inject constructor(
                                 shopInfoCoreData = shopPageHeaderP1Data.shopInfoCoreAndAssetsData,
                                 shopPageGetDynamicTabResponse = shopPageHeaderP1Data.shopPageGetDynamicTabResponse,
                                 feedWhitelistData = shopPageHeaderP1Data.feedWhitelist,
-                                shopPageHeaderLayoutData = shopPageHeaderWidgetData
+                                shopPageHeaderLayoutData = shopPageHeaderWidgetData,
+                                shopPageColorSchemaDefaultConfigColor = shopPageColorSchemaDefaultConfigColor,
+                                isEnableShopReimagined = isEnableShopReimagined
                             )
                         )
                     )
@@ -333,7 +340,8 @@ class ShopPageHeaderViewModel @Inject constructor(
         shopDomain: String,
         isRefresh: Boolean,
         extParam: String,
-        widgetUserAddressLocalData: LocalCacheModel
+        widgetUserAddressLocalData: LocalCacheModel,
+        tabName: String
     ): NewShopPageHeaderP1 {
         val useCase = getShopPageP1DataUseCase.get()
         useCase.isFromCacheFirst = !isRefresh
@@ -341,7 +349,8 @@ class ShopPageHeaderViewModel @Inject constructor(
             shopId = shopId,
             shopDomain = shopDomain,
             extParam = extParam,
-            widgetUserAddressLocalData = widgetUserAddressLocalData
+            widgetUserAddressLocalData = widgetUserAddressLocalData,
+            tabName = tabName
         )
         return useCase.executeOnBackground()
     }

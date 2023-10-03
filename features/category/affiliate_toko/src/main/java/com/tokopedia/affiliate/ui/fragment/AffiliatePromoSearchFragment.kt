@@ -34,10 +34,14 @@ import com.tokopedia.affiliate.viewmodel.AffiliatePromoViewModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -97,7 +101,8 @@ class AffiliatePromoSearchFragment :
         view?.findViewById<NavToolbar>(R.id.promo_search_navToolbar)?.run {
             viewLifecycleOwner.lifecycle.addObserver(this)
             setIcon(
-                IconBuilder().addIcon(IconList.ID_NAV_GLOBAL) {}
+                IconBuilder(builderFlags = IconBuilderFlag(pageSource = NavSource.AFFILIATE))
+                    .addIcon(IconList.ID_NAV_GLOBAL) {}
             )
             getCustomViewContentView()?.findViewById<Typography>(R.id.navbar_tittle)?.text =
                 getString(R.string.affiliate_promo)
@@ -165,8 +170,8 @@ class AffiliatePromoSearchFragment :
 
     private fun onGetAffiliateSearchData(affiliateSearchData: AffiliateSearchData) {
         resetAdapter()
-        if (affiliateSearchData.searchAffiliate?.data?.status == 0) {
-            if (affiliateSearchData.searchAffiliate?.data?.error?.errorType == 1) {
+        if (affiliateSearchData.searchAffiliate?.searchData?.status == Int.ZERO) {
+            if (affiliateSearchData.searchAffiliate?.searchData?.error?.errorType == Int.ONE) {
                 view?.rootView?.let {
                     Toaster.build(
                         it,
@@ -177,11 +182,11 @@ class AffiliatePromoSearchFragment :
                 }
                 sendSearchEvent(AffiliateAnalytics.LabelKeys.NOT_URL)
             } else {
-                affiliateSearchData.searchAffiliate?.data?.error?.let {
+                affiliateSearchData.searchAffiliate?.searchData?.error?.let {
                     adapter.addElement(AffiliatePromotionErrorCardModel(it))
                 }
                 val errorLabel =
-                    when (affiliateSearchData.searchAffiliate?.data?.error?.errorStatus) {
+                    when (affiliateSearchData.searchAffiliate?.searchData?.error?.errorStatus) {
                         AffiliatePromotionErrorCardItemVH.ERROR_STATUS_NOT_FOUND ->
                             AffiliateAnalytics.LabelKeys.PRDOUCT_URL_NOT_FOUND
                         AffiliatePromotionErrorCardItemVH.ERROR_STATUS_NOT_ELIGIBLE ->
@@ -192,7 +197,7 @@ class AffiliatePromoSearchFragment :
                 sendSearchEvent(errorLabel)
             }
         } else {
-            affiliateSearchData.searchAffiliate?.data?.cards?.firstOrNull()?.let { cards ->
+            affiliateSearchData.searchAffiliate?.searchData?.cards?.firstOrNull()?.let { cards ->
                 cards.items?.forEach {
                     it?.let {
                         it.type = cards.pageType

@@ -147,12 +147,11 @@ class ChatListActivityTest : ChatListTest() {
     }
 
     @Test
-    fun should_show_mvc_icon_when_user_on_buyer_tab_and_rollence_active() {
+    fun should_show_mvc_icon_when_user_on_buyer_tab_and_label_is_not_empty() {
         // Given
         chatListUseCase.response = exBroadcastChatListPojo
         userSession.setIsShopOwner(true)
         setLastSeenTab(isSellerTab = false)
-        setRollenceMVCIcon(isActive = true)
 
         // When
         startChatListActivity()
@@ -162,12 +161,14 @@ class ChatListActivityTest : ChatListTest() {
     }
 
     @Test
-    fun should_not_show_icon_when_user_on_buyer_tab_and_rollence_inactive() {
+    fun should_not_show_icon_when_user_on_buyer_tab_and_label_is_empty() {
         // Given
         chatListUseCase.response = exBroadcastChatListPojo
+        chatListUseCase.response.apply {
+            this.data.list.first().attributes?.labelIcon = ""
+        }
         userSession.setIsShopOwner(true)
         setLastSeenTab(isSellerTab = false)
-        setRollenceMVCIcon(isActive = false)
 
         // When
         startChatListActivity()
@@ -182,7 +183,6 @@ class ChatListActivityTest : ChatListTest() {
         chatListUseCase.response = exBroadcastChatListPojo
         userSession.setIsShopOwner(true)
         setLastSeenTab(isSellerTab = true)
-        setRollenceMVCIcon(isActive = true)
 
         // When
         startChatListActivity()

@@ -10,11 +10,7 @@ data class ResponseStub<T> (
     var isError: Boolean = false
 ) {
 
-    var responseObject: T
-
-    init {
-        responseObject = convertToResponseObject()
-    }
+    var responseObject: T = convertToResponseObject()
 
     private fun convertToResponseObject(): T {
         return AndroidFileUtil.parse(filePath, type)
@@ -24,5 +20,9 @@ data class ResponseStub<T> (
         val response = convertToResponseObject()
         altercation(response)
         responseObject = response
+    }
+
+    fun updateResponseObject() {
+        responseObject = convertToResponseObject()
     }
 }

@@ -180,13 +180,15 @@ class PayLaterViewModelTest {
                 any(),
                 finalPrice,
                 "0",
+                "",
+                "",
                 ""
             )
         } coAnswers {
             firstArg<(PayLaterGetSimulation) -> Unit>().invoke(payLaterGetSimulation)
         }
 
-        viewModel.getPayLaterAvailableDetail(finalPrice, "0", "")
+        viewModel.getPayLaterAvailableDetail(finalPrice, "0", "", "", "")
         coVerify(exactly = 1) { payLaterUiMapperUseCase.mapResponseToUi(any(), any(), any()) }
         Assert.assertEquals((viewModel.payLaterOptionsDetailLiveData.value as Success).data, list)
         assertSimulationData(payLaterGetSimulation, list)
@@ -237,12 +239,14 @@ class PayLaterViewModelTest {
                 10.0,
                 "0",
                 "",
+                "",
+                ""
             )
         } coAnswers {
             firstArg<(PayLaterGetSimulation) -> Unit>().invoke(payLaterGetSimulation)
         }
 
-        viewModel.getPayLaterAvailableDetail(10.0, "0", "")
+        viewModel.getPayLaterAvailableDetail(10.0, "0", "", "", "")
         coVerify(exactly = 1) { payLaterUiMapperUseCase.mapResponseToUi(any(), any(), any()) }
         Assert.assertEquals((viewModel.payLaterOptionsDetailLiveData.value as Success).data, list)
     }
@@ -271,12 +275,14 @@ class PayLaterViewModelTest {
                 10.0,
                 "0",
                 "",
+                "",
+                ""
             )
         } coAnswers {
             firstArg<(PayLaterGetSimulation) -> Unit>().invoke(payLaterGetSimulation)
         }
 
-        viewModel.getPayLaterAvailableDetail(10.0, "0", "")
+        viewModel.getPayLaterAvailableDetail(10.0, "0", "", "", "")
         coVerify(exactly = 1) { payLaterUiMapperUseCase.mapResponseToUi(any(), any(), any()) }
         Assert.assertEquals((viewModel.payLaterOptionsDetailLiveData.value as Success).data, list)
     }
@@ -300,11 +306,13 @@ class PayLaterViewModelTest {
                 0.0,
                 "0",
                 "",
+                "",
+                ""
             )
         } coAnswers {
             secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }
-        viewModel.getPayLaterAvailableDetail(0.0, "0", "")
+        viewModel.getPayLaterAvailableDetail(0.0, "0", "", "", "")
         coVerify(exactly = 0) { payLaterUiMapperUseCase.mapResponseToUi(any(), any(), any()) }
         Assert.assertEquals((viewModel.payLaterOptionsDetailLiveData.value as Fail).throwable,mockThrowable)
     }

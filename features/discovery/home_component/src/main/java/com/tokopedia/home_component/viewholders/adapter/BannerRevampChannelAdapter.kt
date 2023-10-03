@@ -1,62 +1,61 @@
 package com.tokopedia.home_component.viewholders.adapter
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.home_component.R
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
+import com.tokopedia.home_component.util.recordCrashlytics
+import com.tokopedia.home_component.widget.atf_banner.BannerDiffUtil
+import com.tokopedia.home_component.widget.atf_banner.BannerShimmerViewHolder
+import com.tokopedia.home_component.widget.atf_banner.BannerTypeFactoryImpl
+import com.tokopedia.home_component.widget.atf_banner.BannerVisitable
 import com.tokopedia.kotlin.extensions.view.ONE
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.unifycomponents.CardUnify2
-import com.tokopedia.unifycomponents.ImageUnify
 
 class BannerRevampChannelAdapter(
-    private var itemList: List<BannerItemModel>,
-    private val bannerItemListener: BannerItemListener,
-    private val cardContainer: CardUnify2
-) : RecyclerView.Adapter<BannerRevampChannelImageViewHolder>() {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BannerRevampChannelImageViewHolder {
-        return BannerRevampChannelImageViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.layout_banner_revamp_channel_item, parent, false), bannerItemListener, cardContainer)
+    private val bannerItemListener: BannerItemListener
+) : ListAdapter<BannerVisitable, AbstractViewHolder<BannerVisitable>>(BannerDiffUtil()) {
+
+    private val adapterTypeFactory by lazy { BannerTypeFactoryImpl(bannerItemListener) }
+
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): AbstractViewHolder<BannerVisitable> {
+        val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
+        return adapterTypeFactory.createViewHolder(view, viewType)
     }
 
-    override fun onBindViewHolder(holder: BannerRevampChannelImageViewHolder, position: Int) {
-        val index = position % itemList.size
-        if (index != RecyclerView.NO_POSITION && itemList.size > index) {
-            holder.bind(itemList[index])
+    override fun onBindViewHolder(holder: AbstractViewHolder<BannerVisitable>, position: Int) {
+        try {
+            val index = position % currentList.size
+            if (isIndexValid(index)) {
+                holder.bind(getItem(index))
+            }
+        } catch (e: Exception) {
+            e.recordCrashlytics()
+        }
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return try {
+            val index = position % currentList.size
+            return if (isIndexValid(index)) {
+                getItem(index).type(adapterTypeFactory)
+            } else BannerShimmerViewHolder.LAYOUT
+        } catch (e: Exception) {
+            e.recordCrashlytics()
+            BannerShimmerViewHolder.LAYOUT
         }
     }
 
     override fun getItemCount(): Int {
-        return if (itemList.size > Int.ONE) Integer.MAX_VALUE else itemList.size
+        return if (currentList.size > Int.ONE) Integer.MAX_VALUE else currentList.size
+    }
+
+    private fun isIndexValid(itemPosition: Int): Boolean {
+        return itemPosition != RecyclerView.NO_POSITION && currentList.size > itemPosition
     }
 }
 
-class BannerRevampChannelImageViewHolder(itemView: View, val listener: BannerItemListener, val cardContainer: CardUnify2) : RecyclerView.ViewHolder(itemView) {
-    @SuppressLint("ClickableViewAccessibility")
-    fun bind(item: BannerItemModel) {
-        val imageBanner = itemView.findViewById<ImageUnify>(R.id.image_banner_revamp)
-        imageBanner.setImageUrl(item.url)
-        imageBanner.setOnTouchListener { _, motionEvent ->
-            cardContainer.onTouchEvent(motionEvent)
-            when (motionEvent.action) {
-                MotionEvent.ACTION_DOWN, MotionEvent.ACTION_MOVE -> {
-                    listener.onLongPress()
-                }
-                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                    if (!listener.isDrag()) {
-                        listener.onRelease()
-                    }
-                }
-            }
-            return@setOnTouchListener false
-        }
-        imageBanner.setOnClickListener {
-            listener.onClick(item.position)
-        }
-        imageBanner.addOnImpressionListener(item) {
-            listener.onImpressed(item.position)
-        }
-    }
-}

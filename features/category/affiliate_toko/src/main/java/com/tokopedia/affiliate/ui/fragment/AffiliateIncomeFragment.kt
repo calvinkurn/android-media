@@ -49,8 +49,11 @@ import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImageCircle
+import com.tokopedia.searchbar.navigation_component.NavSource
+import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
@@ -188,10 +191,10 @@ class AffiliateIncomeFragment :
             onGetValidateUserData(validateUserdata)
         }
         affiliateIncomeViewModel?.getAffiliateAnnouncement()?.observe(this) { announcementData ->
-            if (announcementData.getAffiliateAnnouncementV2?.data?.subType != TICKER_BOTTOM_SHEET) {
+            if (announcementData.getAffiliateAnnouncementV2?.announcementData?.subType != TICKER_BOTTOM_SHEET) {
                 sendTickerImpression(
-                    announcementData.getAffiliateAnnouncementV2?.data?.type,
-                    announcementData.getAffiliateAnnouncementV2?.data?.id
+                    announcementData.getAffiliateAnnouncementV2?.announcementData?.type,
+                    announcementData.getAffiliateAnnouncementV2?.announcementData?.id
                 )
                 binding?.affiliateAnnouncementTicker?.setAnnouncementData(
                     announcementData,
@@ -404,7 +407,7 @@ class AffiliateIncomeFragment :
             }
         }
         binding?.withdrawalNavToolbar?.run {
-            val iconBuilder = IconBuilder()
+            val iconBuilder = IconBuilder(builderFlags = IconBuilderFlag(pageSource = NavSource.AFFILIATE))
             if (isAffiliateNCEnabled()) {
                 iconBuilder.addIcon(IconList.ID_NOTIFICATION, disableRouteManager = true) {
                     affiliateIncomeViewModel?.resetNotificationCount()

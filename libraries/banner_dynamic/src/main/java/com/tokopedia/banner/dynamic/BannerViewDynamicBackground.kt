@@ -87,9 +87,9 @@ class BannerViewDynamicBackground @JvmOverloads constructor(context: Context, at
         if (bannerRecyclerView.itemDecorationCount == 0) {
             bannerRecyclerView.addItemDecoration(
                     BannerDynamicViewDecorator(
-                            context.resources.getDimensionPixelSize(R.dimen.dp_16),
+                            context.resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16),
                             context.resources.getDimensionPixelSize(R.dimen.dp_2),
-                            context.resources.getDimensionPixelSize(R.dimen.dp_16),
+                            context.resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16),
                             context.resources.getDimensionPixelSize(R.dimen.dp_2))
             )
         }

@@ -4,8 +4,8 @@ import com.tokopedia.homenav.mainnav.view.adapter.typefactory.MainNavTypeFactory
 import com.tokopedia.topads.sdk.domain.model.ImpressHolder
 
 data class SeparatorDataModel(
-        val isSeparator: Boolean = true,
-        val sectionId: Int? = null
+        val sectionId: Int? = null,
+        val isMePageVariant: Boolean = false,
 ): MainNavVisitable, ImpressHolder() {
     override fun id(): Any = sectionId.toString()
 

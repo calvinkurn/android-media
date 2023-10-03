@@ -1,17 +1,8 @@
 package com.tokopedia.topads.common.domain.usecase
 
-import com.google.gson.reflect.TypeToken
-import com.tokopedia.common.network.coroutines.RestRequestInteractor
-import com.tokopedia.common.network.coroutines.repository.RestRepository
-import com.tokopedia.common.network.data.model.CacheType
-import com.tokopedia.common.network.data.model.RequestType
-import com.tokopedia.common.network.data.model.RestCacheStrategy
-import com.tokopedia.common.network.data.model.RestRequest
 import com.tokopedia.gql_query_annotation.GqlQuery
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.network.data.model.response.DataResponse
-import com.tokopedia.topads.common.constant.TopAdsCommonConstant
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.internal.ParamObject.GROUP_TYPE
 import com.tokopedia.topads.common.data.internal.ParamObject.KEYWORD
@@ -49,27 +40,20 @@ const val GROUP_LIST_QUERY = """
 """
 
 @GqlQuery("GetTopadsGroupListQuery", GROUP_LIST_QUERY)
-class TopAdsGetGroupListUseCase @Inject constructor(val userSession: UserSessionInterface) {
+class TopAdsGetGroupListUseCase @Inject constructor(val userSession: UserSessionInterface, graphqlRepository: GraphqlRepository) {
 
-    private val restRepository: RestRepository by lazy { RestRequestInteractor.getInstance().restRepository }
-
-    private val cacheStrategy by lazy { RestCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build() }
+    private val graphql by lazy { GraphqlUseCase<DashGroupListResponse>(graphqlRepository) }
 
     suspend fun execute(requestParams: RequestParams): DashGroupListResponse {
-        val token = object : TypeToken<DataResponse<DashGroupListResponse>>() {}.type
-        val query = GetTopadsGroupListQuery.GQL_QUERY
-        val request =
-            GraphqlRequest(query, DashGroupListResponse::class.java, requestParams.parameters)
-        val headers = java.util.HashMap<String, String>()
-        headers["Content-Type"] = "application/json"
-        val restRequest = RestRequest.Builder(TopAdsCommonConstant.TOPADS_GRAPHQL_TA_URL, token)
-            .setBody(request)
-            .setHeaders(headers)
-            .setCacheStrategy(cacheStrategy)
-            .setRequestType(RequestType.POST)
-            .build()
-        return restRepository.getResponse(restRequest)
-            .getData<DataResponse<DashGroupListResponse>>().data
+        graphql.apply {
+            setGraphqlQuery(GetTopadsGroupListQuery.GQL_QUERY)
+            setTypeClass(DashGroupListResponse::class.java)
+        }
+
+        return graphql.run {
+            setRequestParams(requestParams.parameters)
+            executeOnBackground()
+        }
     }
 
     fun setParamsForKeyWord(search: String): RequestParams {

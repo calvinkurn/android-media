@@ -40,7 +40,8 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
     private var componentPosition: Int? = null
     private var buttonNotify: UnifyButton? = null
     private var lastClickTime = 0L
-    private var interval : Int = 500
+    private var interval: Int = 500
+    private var isFulFillment: Boolean = false
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         masterProductCardItemViewModel = discoveryBaseViewModel as MasterProductCardItemViewModel
@@ -238,6 +239,14 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
         setWishlist()
         set3DotsWishlistWithAtc(dataItem)
         setSimilarProductWishlist(dataItem)
+        checkProductIsFulfillment(productCardModel)
+    }
+    private fun checkProductIsFulfillment(productCardModel: ProductCardModel) {
+        productCardModel.labelGroupList.forEach {
+            if (it.position == IS_FULFILLMENT) {
+                isFulFillment = true
+            }
+        }
     }
 
     private fun setSimilarProductWishlist(dataItem: DataItem?) {
@@ -327,7 +336,9 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
             (fragment as DiscoveryFragment).getDiscoveryAnalytics()
                 .trackProductCardClick(
                     it.components,
-                    it.isUserLoggedIn()
+                    it.isUserLoggedIn(),
+                    isFulFillment,
+                    dataItem?.warehouseId ?: 0
                 )
         }
     }
@@ -339,7 +350,9 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
             (fragment as DiscoveryFragment).getDiscoveryAnalytics()
                 .viewProductsList(
                     it.components,
-                    it.isUserLoggedIn()
+                    it.isUserLoggedIn(),
+                    isFulFillment,
+                    dataItem?.warehouseId ?: 0
                 )
         }
     }
@@ -392,5 +405,8 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
                 (fragment as DiscoveryFragment).openLoginScreen()
             }
         }
+    }
+    companion object {
+        const val IS_FULFILLMENT = "fulfillment"
     }
 }

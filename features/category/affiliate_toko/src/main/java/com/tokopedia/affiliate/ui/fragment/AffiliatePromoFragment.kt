@@ -75,7 +75,9 @@ import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -210,7 +212,7 @@ class AffiliatePromoFragment :
         }
 
         binding?.promoNavToolbar?.run {
-            val iconBuilder = IconBuilder()
+            val iconBuilder = IconBuilder(builderFlags = IconBuilderFlag(pageSource = NavSource.AFFILIATE))
             if (isAffiliateNCEnabled()) {
                 iconBuilder.addIcon(IconList.ID_NOTIFICATION, disableRouteManager = true) {
                     affiliatePromoViewModel?.resetNotificationCount()
@@ -259,7 +261,7 @@ class AffiliatePromoFragment :
 
         binding?.gamificationContainer?.isVisible = isAffiliateGamificationEnabled()
 
-        binding?.gamificationEntryCardBanner?.setOnClickListener {
+        binding?.buttonGamification?.setOnClickListener {
             val urlRedirectionAppLink = affiliateRedirection()
             if (urlRedirectionAppLink?.isNotEmpty() == true) {
                 RouteManager.route(context, urlRedirectionAppLink)
@@ -421,17 +423,17 @@ class AffiliatePromoFragment :
             onGetValidateUserData(validateUserdata)
         }
         affiliatePromoViewModel?.getAffiliateAnnouncement()?.observe(this) { announcementData ->
-            if (announcementData.getAffiliateAnnouncementV2?.data?.subType != TICKER_BOTTOM_SHEET) {
+            if (announcementData.getAffiliateAnnouncementV2?.announcementData?.subType != TICKER_BOTTOM_SHEET) {
                 sendTickerImpression(
-                    announcementData.getAffiliateAnnouncementV2?.data?.type,
-                    announcementData.getAffiliateAnnouncementV2?.data?.id
+                    announcementData.getAffiliateAnnouncementV2?.announcementData?.type,
+                    announcementData.getAffiliateAnnouncementV2?.announcementData?.id
                 )
                 binding?.affiliateAnnouncementTicker?.setAnnouncementData(
                     announcementData,
                     activity,
                     source = PAGE_ANNOUNCEMENT_PROMO_PERFORMA
                 )
-            } else if (announcementData.getAffiliateAnnouncementV2?.data?.subType == TICKER_BOTTOM_SHEET && isAffiliatePromoteHomeEnabled()) {
+            } else if (announcementData.getAffiliateAnnouncementV2?.announcementData?.subType == TICKER_BOTTOM_SHEET && isAffiliatePromoteHomeEnabled()) {
                 context?.getSharedPreferences(TICKER_SHARED_PREF, Context.MODE_PRIVATE)?.let {
                     if (it.getString(
                             USER_ID,
@@ -439,12 +441,12 @@ class AffiliatePromoFragment :
                         ) != userSessionInterface?.userId.orEmpty() || it.getLong(
                                 TICKER_ID,
                                 -1
-                            ) != announcementData.getAffiliateAnnouncementV2?.data?.id
+                            ) != announcementData.getAffiliateAnnouncementV2?.announcementData?.id
                     ) {
                         it.edit().apply {
                             putLong(
                                 TICKER_ID,
-                                announcementData.getAffiliateAnnouncementV2?.data?.id ?: 0
+                                announcementData.getAffiliateAnnouncementV2?.announcementData?.id ?: 0
                             )
                             putString(
                                 USER_ID,
@@ -454,8 +456,8 @@ class AffiliatePromoFragment :
                         }
 
                         AffiliateBottomSheetInfo.newInstance(
-                            announcementData.getAffiliateAnnouncementV2?.data?.id ?: 0,
-                            announcementData.getAffiliateAnnouncementV2?.data?.tickerData?.first()
+                            announcementData.getAffiliateAnnouncementV2?.announcementData?.id ?: 0,
+                            announcementData.getAffiliateAnnouncementV2?.announcementData?.tickerData?.first()
                         ).show(childFragmentManager, "")
                     }
                 }
@@ -705,7 +707,8 @@ class AffiliatePromoFragment :
         productIdentifier: String,
         status: Int?,
         type: String?,
-        ssaInfo: AffiliatePromotionBottomSheetParams.SSAInfo?
+        ssaInfo: AffiliatePromotionBottomSheetParams.SSAInfo?,
+        imageArray: List<String?>?
     ) {
         AffiliatePromotionBottomSheet.newInstance(
             AffiliatePromotionBottomSheetParams(

@@ -7,14 +7,16 @@ object ApplinkConsInternalDigital {
     const val HOST_DIGITAL = "digital"
     const val HOST_RECHARGE = "recharge"
     const val HOME_RECHARGE = "home"
+    const val HOST_GLOBAL = "global"
 
     const val PARAM_SMARTCARD = "calling_page_check_saldo"
     const val PARAM_BRIZZI = "brizzi_page"
 
     const val INTERNAL_DIGITAL = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_DIGITAL"
     const val INTERNAL_RECHARGE = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_RECHARGE"
+    const val INTERNAL_GLOBAL = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_GLOBAL"
 
-    //new cart checkout applink
+    // new cart checkout applink
     const val CHECKOUT_DIGITAL = "$INTERNAL_DIGITAL/checkout"
 
     const val TELCO_PREPAID_DIGITAL = "$INTERNAL_DIGITAL/telcopre"
@@ -42,6 +44,7 @@ object ApplinkConsInternalDigital {
     const val APPLINK_RECHARGE_SLICE = "tokopedia-android-internal://recharge_slice/main"
     const val SEARCH_NUMBER = "$INTERNAL_DIGITAL/searchnumber"
     const val FAVORITE_NUMBER = "$INTERNAL_DIGITAL/favoritenumber"
+    const val KELOLA_TAGIHAN = "$INTERNAL_GLOBAL/webview?titlebar=false&url=https%3A%2F%2Fwww.tokopedia.com%2Fmybills%2F%3Fshow%3Dbills"
 
     /**
      * Applink Digital PDP Revamp 2022

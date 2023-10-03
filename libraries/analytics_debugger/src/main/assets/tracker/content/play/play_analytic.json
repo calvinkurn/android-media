@@ -147,7 +147,7 @@
       "eventAction": "click buy in bottom sheet",
       "event": "add_to_cart",
       "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - \\d+ - (live|vod) - is pinned product (true|false) - beli langsung (true|false)",
+      "eventLabel": "\\d+ - \\d+ - (live|vod) - is pinned product (true|false) - beli langsung (true|false) - (terlaris|diminati|no ribbon)",
       "items": [
         {
           "shop_id": ".*",
@@ -161,7 +161,8 @@
           "shop_name": ".*",
           "item_brand": ".*",
           "item_variant": ".*",
-          "item_category": ".*"
+          "item_category": ".*",
+          "dimension115": "pinned.(true|false), ribbon.(diminati|terlaris|no ribbon)"
         }
       ],
       "sessionIris": ".*",
@@ -185,7 +186,7 @@
       "eventAction": "click atc in bottom sheet",
       "event": "add_to_cart",
       "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - \\d+ - (live|vod) - is pinned product (true|false)",
+      "eventLabel": "\\d+ - \\d+ - (live|vod) - is pinned product (true|false) - (terlaris|diminati|no ribbon)",
       "items": [
         {
           "shop_id": ".*",
@@ -220,7 +221,7 @@
       "currentSite": "tokopediamarketplace",
       "event": "view_item_list",
       "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - \\d+ - (live|vod) - product in bottom sheet - is pinned product (true|false)",
+      "eventLabel": "\\d+ - \\d+ - (live|vod) - product in bottom sheet - is pinned product (true|false) - (terlaris|diminati|no ribbon)",
       "sessionIris": ".*",
       "items": [
         {
@@ -241,7 +242,7 @@
       "clientId": ".*",
       "event": "view_item_list",
       "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - \\d+ - (live|vod) - \\d+ - is pinned product (true|false)",
+      "eventLabel": "\\d+ - \\d+ - (live|vod) - \\d+ - is pinned product (true|false) - (diminati|terlaris|no ribbon)",
       "sessionIris": ".*",
       "items": [
         {
@@ -251,7 +252,8 @@
           "item_category": ".*",
           "price": ".*",
           "item_variant": ".*",
-          "index": "\\d+(.\\d+)?"
+          "index": "\\d+(.\\d+)?",
+          "dimension115": "pinned.(true|false), ribbon.(diminati|terlaris|no ribbon)"
         }
       ],
       "item_list": "/groupchat - bottom sheet",
@@ -274,7 +276,8 @@
           "item_category": ".*",
           "price": ".*",
           "item_variant": ".*",
-          "index": "\\d+(.\\d+)?"
+          "index": "\\d+(.\\d+)?",
+          "dimension115": "pinned.(true|false), ribbon.(diminati|terlaris|no ribbon)"
         }
       ],
       "item_list": "/groupchat - bottom sheet",
@@ -286,7 +289,7 @@
       "eventAction": "click product in bottom sheet",
       "event": "select_content",
       "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - \\d+ - (live|vod) - product in bottom sheet - is pinned product (true|false)",
+      "eventLabel": "\\d+ - \\d+ - (live|vod) - product in bottom sheet - is pinned product (true|false) - (terlaris|diminati|no ribbon)",
       "items": [
         {
           "item_id": "\\d+",
@@ -296,7 +299,8 @@
           "price": "\\d+\\..*",
           "item_variant": ".*",
           "dimension40": "/groupchat - bottom sheet",
-          "index": "\\d+(.\\d+)?"
+          "index": "\\d+(.\\d+)?",
+          "dimension115": "pinned.(true|false), ribbon.(diminati|terlaris|no ribbon)"
         }
       ],
       "item_list": "/groupchat - bottom sheet",
@@ -314,7 +318,7 @@
       "eventAction": "click - product in ongoing section",
       "event": "select_content",
       "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - \\d+ - (live|vod) - \\d+ - is pinned product (true|false)",
+      "eventLabel": "\\d+ - \\d+ - (live|vod) - \\d+ - is pinned product (true|false) - (diminati|terlaris|no ribbon)",
       "items": [
         {
           "item_id": "\\d+",
@@ -324,7 +328,8 @@
           "price": "\\d+\\..*",
           "item_variant": ".*",
           "dimension40": "/groupchat - bottom sheet",
-          "index": "\\d+(.\\d+)?"
+          "index": "\\d+(.\\d+)?",
+          "dimension115": "pinned.(true|false), ribbon.(diminati|terlaris|no ribbon)"
         }
       ],
       "item_list": "/groupchat - bottom sheet",
@@ -347,7 +352,8 @@
           "price": "\\d+\\..*",
           "item_variant": ".*",
           "dimension40": "/groupchat - bottom sheet",
-          "index": "\\d+(.\\d+)?"
+          "index": "\\d+(.\\d+)?",
+          "dimension115": "pinned.(true|false), ribbon.(diminati|terlaris|no ribbon)"
         }
       ],
       "item_list": "/groupchat - bottom sheet",
@@ -360,7 +366,7 @@
       "eventAction": "click - atc in ongoing section",
       "event": "add_to_cart",
       "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - \\d+ - (live|vod) - \\d+ - is pinned product (true|false)",
+      "eventLabel": "\\d+ - \\d+ - (live|vod) - \\d+ - is pinned product (true|false) - (diminati|terlaris|no ribbon)",
       "items": [
         {
           "shop_id": ".*",
@@ -374,7 +380,8 @@
           "shop_name": ".*",
           "item_brand": ".*",
           "item_variant": ".*",
-          "item_category": ".*"
+          "item_category": ".*",
+          "dimension115": "pinned.(true|false), ribbon.(diminati|terlaris|no ribbon)"
         }
       ],
       "sessionIris": ".*",
@@ -448,7 +455,7 @@
       "eventAction": "click - buy in ongoing section",
       "event": "add_to_cart",
       "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - \\d+ - (live|vod) - \\d+ - is pinned product (true|false) - beli langsung (true|false)",
+      "eventLabel": "\\d+ - \\d+ - (live|vod) - \\d+ - is pinned product (true|false) - beli langsung (true|false) - (diminati|terlaris|no ribbon)",
       "items": [
         {
           "shop_id": ".*",
@@ -462,7 +469,8 @@
           "shop_name": ".*",
           "item_brand": ".*",
           "item_variant": ".*",
-          "item_category": ".*"
+          "item_category": ".*",
+          "dimension115": "pinned.(true|false), ribbon.(diminati|terlaris|no ribbon)"
         }
       ],
       "sessionIris": ".*",
@@ -517,7 +525,7 @@
       "eventAction": "view on featured product",
       "event": "view_item_list",
       "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - \\d+ - (live|vod) - featured product tagging",
+      "eventLabel": "\\d+ - \\d+ - (live|vod) - featured product tagging - (terlaris|diminati|no ribbon)",
       "sessionIris": ".*",
       "items": [
         {
@@ -540,7 +548,7 @@
       "eventAction": "click featured product tagging",
       "event": "select_content",
       "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - \\d+ - (live|vod) - featured product tagging",
+      "eventLabel": "\\d+ - \\d+ - (live|vod) - featured product tagging - (terlaris|diminati|no ribbon)",
       "items": [
         {
           "item_id": "\\d+",

@@ -1,6 +1,5 @@
 package com.tokopedia.play.broadcaster.domain.model
 
-import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 
 /**
@@ -46,7 +45,9 @@ data class Config(
         @SerializedName("tnc")
         val tnc: List<GetBroadcasterAuthorConfigResponse.TermsAndCondition> = emptyList(),
         @SerializedName("beautificationConfig")
-        val beautificationConfig: BeautificationConfig = BeautificationConfig()
+        val beautificationConfig: BeautificationConfig = BeautificationConfig(),
+        @SerializedName("show_save_button")
+        val showSaveButton: Boolean = false,
 ) {
         data class ScheduledTime(
                 @SerializedName("minimum")

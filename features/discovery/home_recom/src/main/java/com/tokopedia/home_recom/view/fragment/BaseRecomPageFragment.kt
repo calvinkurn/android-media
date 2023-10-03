@@ -38,8 +38,10 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
+import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
@@ -365,7 +367,7 @@ abstract class BaseRecomPageFragment<T : Visitable<*>, F : AdapterTypeFactory> :
     }
 
     private fun initNavBar() {
-        val iconBuilder = IconBuilder()
+        val iconBuilder = IconBuilder(builderFlags = IconBuilderFlag(pageSource = NavSource.TOKONOW))
                     .addIcon(IconList.ID_CART) {}
                     .addIcon(IconList.ID_NAV_GLOBAL) {}
         navToolbar?.let {

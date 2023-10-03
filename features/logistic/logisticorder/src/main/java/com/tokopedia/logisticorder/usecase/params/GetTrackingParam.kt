@@ -10,9 +10,17 @@ data class GetTrackingParam(
     @SerializedName("input")
     val trackingParam: TrackingParam = TrackingParam()
 ) : GqlParam {
+
     data class TrackingParam(
         @SerializedName("order_id")
-        val shopId: String = "",
+        val orderId: String = "",
+
+        @SerializedName("order_tx_id")
+        val orderTxId: String = "",
+
+        @SerializedName("group_type")
+        val groupType: Int = 0,
+
         @SerializedName("from")
         val from: String = ""
     ) : GqlParam

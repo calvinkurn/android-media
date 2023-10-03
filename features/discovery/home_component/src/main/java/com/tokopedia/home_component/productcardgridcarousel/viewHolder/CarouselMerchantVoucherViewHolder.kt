@@ -45,14 +45,14 @@ class CarouselMerchantVoucherViewHolder (
             binding?.imageDividerVoucher?.setColorFilter(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN400))
             binding?.imageBackgroundVoucher?.loadImageNoRounded(
                 BACKGROUND_MVC_DARK,
-                com.tokopedia.home_component.R.drawable.placeholder_grey
+                com.tokopedia.topads.sdk.R.drawable.placeholder_grey
             )
         }
         else {
             binding?.imageDividerVoucher?.setColorFilter(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN50))
             binding?.imageBackgroundVoucher?.loadImageNormal(
                 BACKGROUND_MVC_WHITE,
-                com.tokopedia.home_component.R.drawable.placeholder_grey
+                com.tokopedia.topads.sdk.R.drawable.placeholder_grey
             )
         }
         binding?.shopName?.text = element.shopName.parseAsHtml()
@@ -64,7 +64,7 @@ class CarouselMerchantVoucherViewHolder (
             binding?.shopName?.setMargin(4f.toDpInt(), 7f.toDpInt(), 0f.toDpInt(), 0f.toDpInt())
             binding?.imageBadge?.loadImageNoRounded(
                 element.iconBadge,
-                com.tokopedia.home_component.R.drawable.placeholder_grey,
+                com.tokopedia.topads.sdk.R.drawable.placeholder_grey,
                 listener = object : ImageHandler.ImageLoaderStateListener {
                     override fun successLoad() {}
 
@@ -75,7 +75,7 @@ class CarouselMerchantVoucherViewHolder (
         } else {
             failedLoadShopBadge()
         }
-        binding?.imageProduct?.loadImageNoRounded(element.imageProduct, com.tokopedia.home_component.R.drawable.placeholder_grey)
+        binding?.imageProduct?.loadImageNoRounded(element.imageProduct, com.tokopedia.topads.sdk.R.drawable.placeholder_grey)
         binding?.containerShop?.setOnClickListener {
             element.merchantVoucherComponentListener.onShopClicked(element, adapterPosition)
         }

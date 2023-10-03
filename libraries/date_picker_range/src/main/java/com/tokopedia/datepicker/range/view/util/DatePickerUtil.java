@@ -33,7 +33,7 @@ public class DatePickerUtil {
         context = Context;
         dialog = new Dialog(context);
         dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.dialog_calendar);
+        dialog.setContentView(com.tokopedia.design.R.layout.dialog_calendar);
         Year = year;
         Month = month;
         Day = day;

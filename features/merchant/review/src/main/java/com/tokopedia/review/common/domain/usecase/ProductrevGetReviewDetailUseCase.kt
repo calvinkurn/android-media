@@ -39,6 +39,7 @@ class ProductrevGetReviewDetailUseCase @Inject constructor(graphqlRepository: Gr
                         url
                       }
                       editable
+                      isRatingEditable
                       reviewerName
                       sentAsAnonymous
                       badRatingReasonFmt

@@ -10,6 +10,8 @@ data class MerchantVoucherSummary(
         val animatedInfos: List<AnimatedInfos> = listOf(),
         @SerializedName("isShown")
         @Expose
-        val isShown: Boolean = false
-
+        val isShown: Boolean = false,
+        @SerializedName("additionalData")
+        @Expose
+        val additionalData: String = ""
 )

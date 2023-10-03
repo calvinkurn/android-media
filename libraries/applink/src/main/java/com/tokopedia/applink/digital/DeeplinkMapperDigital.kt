@@ -30,7 +30,6 @@ import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.applink.purchaseplatform.DeeplinkMapperUoh.getRegisteredNavigationUohOrder
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 
-
 object DeeplinkMapperDigital {
 
     const val TEMPLATE_PARAM = "template"
@@ -65,13 +64,17 @@ object DeeplinkMapperDigital {
         val uri = Uri.parse(deeplink)
         return when {
             deeplink.startsWith(ApplinkConst.DIGITAL_PRODUCT, true) -> {
-                if(!uri.getQueryParameter(IS_ADD_SBM).isNullOrEmpty() && uri.getQueryParameter(IS_ADD_SBM) == "true" && !uri.getQueryParameter(TEMPLATE_PARAM).isNullOrEmpty()) getAddBillsTelco(deeplink)
-                else if (!uri.getQueryParameter(TEMPLATE_PARAM).isNullOrEmpty() &&
-                        !uri.getQueryParameter(MENU_ID_PARAM).isNullOrEmpty())
-                            getDigitalTemplateNavigation(context, deeplink)
-                else if (!uri.getQueryParameter(IS_FROM_WIDGET_PARAM).isNullOrEmpty()) ApplinkConsInternalDigital.CHECKOUT_DIGITAL
-                else if (isEmoneyApplink(uri)) handleEmoneyPdpApplink(context, deeplink)
-                else {
+                if (!uri.getQueryParameter(IS_ADD_SBM).isNullOrEmpty() && uri.getQueryParameter(IS_ADD_SBM) == "true" && !uri.getQueryParameter(TEMPLATE_PARAM).isNullOrEmpty()) {
+                    getAddBillsTelco(deeplink)
+                } else if (!uri.getQueryParameter(TEMPLATE_PARAM).isNullOrEmpty() &&
+                    !uri.getQueryParameter(MENU_ID_PARAM).isNullOrEmpty()
+                ) {
+                    getDigitalTemplateNavigation(context, deeplink)
+                } else if (!uri.getQueryParameter(IS_FROM_WIDGET_PARAM).isNullOrEmpty()) {
+                    ApplinkConsInternalDigital.CHECKOUT_DIGITAL
+                } else if (isEmoneyApplink(uri)) {
+                    handleEmoneyPdpApplink(context, deeplink)
+                } else {
                     UriUtil.buildUri(ApplinkConsInternalDigital.DYNAMIC_SUBHOMEPAGE_WITHOUT_PERSONALIZE, RECHARGE_SUBHOMEPAGE_PLATFORM_ID)
                 }
             }
@@ -80,22 +83,27 @@ object DeeplinkMapperDigital {
             }
             deeplink.startsWith(ApplinkConst.TELKOMSEL_OMNI) -> {
                 val paymentCode = uri.getQueryParameter(KODE_BAYAR) ?: ""
-                ApplinkConsInternalDigital.CHECKOUT_DIGITAL+"?category_id=$OMNI_CATEGORY_ID&operator_id=$OMNI_OPERATOR_ID&client_number=$paymentCode&product_id=$OMNI_PRODUCT_ID&is_from_widget=true"
+                ApplinkConsInternalDigital.CHECKOUT_DIGITAL + "?category_id=$OMNI_CATEGORY_ID&operator_id=$OMNI_OPERATOR_ID&client_number=$paymentCode&product_id=$OMNI_PRODUCT_ID&is_from_widget=true"
             }
             deeplink.startsWith(ApplinkConst.DIGITAL_SMARTCARD) -> {
                 getDigitalSmartcardNavigation(deeplink)
             }
             deeplink.startsWith(ApplinkConst.DIGITAL_SMARTBILLS) -> {
-                ApplinkConsInternalDigital.SMART_BILLS
+                ApplinkConsInternalDigital.KELOLA_TAGIHAN
             }
             deeplink.startsWith(ApplinkConst.DIGITAL_SUBHOMEPAGE_HOME) -> {
-                if (!uri.getQueryParameter(PLATFORM_ID_PARAM).isNullOrEmpty()) ApplinkConsInternalDigital.DYNAMIC_SUBHOMEPAGE
-                else UriUtil.buildUri(ApplinkConsInternalDigital.DYNAMIC_SUBHOMEPAGE_WITH_PARAM, DEFAULT_SUBHOMEPAGE_PLATFORM_ID, false.toString())
+                if (!uri.getQueryParameter(PLATFORM_ID_PARAM).isNullOrEmpty()) {
+                    ApplinkConsInternalDigital.DYNAMIC_SUBHOMEPAGE
+                } else {
+                    UriUtil.buildUri(ApplinkConsInternalDigital.DYNAMIC_SUBHOMEPAGE_WITH_PARAM, DEFAULT_SUBHOMEPAGE_PLATFORM_ID, false.toString())
+                }
             }
             deeplink.startsWith(ApplinkConst.TRAVEL_SUBHOMEPAGE) -> {
                 if (!uri.getQueryParameter(PLATFORM_ID_PARAM).isNullOrEmpty()) {
                     ApplinkConsInternalDigital.DYNAMIC_SUBHOMEPAGE
-                } else UriUtil.buildUri(ApplinkConsInternalDigital.DYNAMIC_SUBHOMEPAGE_WITH_PARAM, TRAVEL_SUBHOMEPAGE_PLATFORM_ID, false.toString())
+                } else {
+                    UriUtil.buildUri(ApplinkConsInternalDigital.DYNAMIC_SUBHOMEPAGE_WITH_PARAM, TRAVEL_SUBHOMEPAGE_PLATFORM_ID, false.toString())
+                }
             }
             deeplink.startsWith(ApplinkConst.DIGITAL_ORDER) -> {
                 getRegisteredNavigationUohOrder(context, deeplink)
@@ -121,19 +129,19 @@ object DeeplinkMapperDigital {
                     ApplinkConsInternalDigital.CREDIT_CARD_TEMPLATE
                 }
                 it == TEMPLATE_OLD_PREPAID_TELCO && categoryId == CATEGORY_ID_PULSA -> {
-                    ApplinkConsInternalDigital.DIGITAL_PDP_PULSA+"?$TEMPLATE_CATEGORY_ID=$categoryId" +
-                            "&$MENU_ID_PARAM=$NEW_MENU_ID_PULSA&$TEMPLATE_PARAM=$TEMPLATE_PULSA_DIGITAL_PDP" +
-                            "&$PARAM_PRODUCT_ID=$productId&$PARAM_CLIENT_NUMBER=$clientNumber"
+                    ApplinkConsInternalDigital.DIGITAL_PDP_PULSA + "?$TEMPLATE_CATEGORY_ID=$categoryId" +
+                        "&$MENU_ID_PARAM=$NEW_MENU_ID_PULSA&$TEMPLATE_PARAM=$TEMPLATE_PULSA_DIGITAL_PDP" +
+                        "&$PARAM_PRODUCT_ID=$productId&$PARAM_CLIENT_NUMBER=$clientNumber"
                 }
                 it == TEMPLATE_OLD_PREPAID_TELCO && categoryId == CATEGORY_ID_PAKET_DATA -> {
-                    ApplinkConsInternalDigital.DIGITAL_PDP_PAKET_DATA+"?$TEMPLATE_CATEGORY_ID=$categoryId" +
-                            "&$MENU_ID_PARAM=$NEW_MENU_ID_PAKET_DATA&$TEMPLATE_PARAM=$TEMPLATE_PAKET_DATA_DIGITAL_PDP" +
-                            "&$PARAM_PRODUCT_ID=$productId&$PARAM_CLIENT_NUMBER=$clientNumber"
+                    ApplinkConsInternalDigital.DIGITAL_PDP_PAKET_DATA + "?$TEMPLATE_CATEGORY_ID=$categoryId" +
+                        "&$MENU_ID_PARAM=$NEW_MENU_ID_PAKET_DATA&$TEMPLATE_PARAM=$TEMPLATE_PAKET_DATA_DIGITAL_PDP" +
+                        "&$PARAM_PRODUCT_ID=$productId&$PARAM_CLIENT_NUMBER=$clientNumber"
                 }
                 it == TEMPLATE_OLD_PREPAID_TELCO && categoryId == CATEGORY_ID_ROAMING -> {
-                    ApplinkConsInternalDigital.DIGITAL_PDP_PAKET_DATA+"?$TEMPLATE_CATEGORY_ID=$categoryId" +
-                            "&$MENU_ID_PARAM=$NEW_MENU_ID_ROAMING&$TEMPLATE_PARAM=$TEMPLATE_ROAMING_DIGITAL_PDP" +
-                            "&$PARAM_PRODUCT_ID=$productId&$PARAM_CLIENT_NUMBER=$clientNumber"
+                    ApplinkConsInternalDigital.DIGITAL_PDP_PAKET_DATA + "?$TEMPLATE_CATEGORY_ID=$categoryId" +
+                        "&$MENU_ID_PARAM=$NEW_MENU_ID_ROAMING&$TEMPLATE_PARAM=$TEMPLATE_ROAMING_DIGITAL_PDP" +
+                        "&$PARAM_PRODUCT_ID=$productId&$PARAM_CLIENT_NUMBER=$clientNumber"
                 }
                 it == TEMPLATE_POSTPAID_TELCO -> {
                     ApplinkConsInternalDigital.TELCO_POSTPAID_DIGITAL
@@ -164,7 +172,7 @@ object DeeplinkMapperDigital {
     private fun getAddBillsTelco(deeplink: String): String {
         val uri = Uri.parse(deeplink)
         return uri.getQueryParameter(TEMPLATE_PARAM)?.let {
-            when(it){
+            when (it) {
                 TEMPLATE_OLD_PREPAID_TELCO -> {
                     UriUtil.buildUri(ApplinkConsInternalDigital.ADD_TELCO, TEMPLATE_OLD_PREPAID_TELCO)
                 }
@@ -195,10 +203,11 @@ object DeeplinkMapperDigital {
         val paramValue = uri.getQueryParameter(ApplinkConsInternalDigital.PARAM_SMARTCARD) ?: ""
         val statusBrizzi = uri.getQueryParameter(ApplinkConsInternalDigital.PARAM_BRIZZI) ?: "false"
 
-        return if (deeplink.contains("brizzi"))
+        return if (deeplink.contains("brizzi")) {
             UriUtil.buildUri(ApplinkConsInternalDigital.INTERNAL_SMARTCARD_BRIZZI, paramValue)
-        else
+        } else {
             UriUtil.buildUri(ApplinkConsInternalDigital.INTERNAL_SMARTCARD_EMONEY, paramValue)
+        }
     }
 
     private fun isEmoneyApplink(uri: Uri): Boolean {
