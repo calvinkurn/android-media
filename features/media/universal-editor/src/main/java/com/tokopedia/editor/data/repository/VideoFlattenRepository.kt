@@ -75,7 +75,10 @@ class VideoFlattenRepositoryImpl @Inject constructor(
 
         val portraitSize = "[0:v]scale=$width:$height"
         val aspectRatioDisabled = "force_original_aspect_ratio=decrease"
-        val blackCanvas = "pad=$width:$height:(ow-iw)/2:(oh-ih)/2[video];[video][1:v]overlay=0:0"
+
+        // quick (temp) solution: increase the pad size of width and height with 1px.
+        // will address the flatten command of ffmpeg after merge.
+        val blackCanvas = "pad=${width + 1}:${height + 1}:(ow-iw)/2:(oh-ih)/2[video];[video][1:v]overlay=0:0"
 
         val filter = "$portraitSize:$aspectRatioDisabled,$blackCanvas"
         val removeAudioCommand = if (isRemoveAudio) "-an" else ""
