@@ -82,16 +82,20 @@ class TopupBillsCheckoutWidget @JvmOverloads constructor(
     }
 
     fun showMulticheckoutButtonSupport(multiCheckoutButtons: List<MultiCheckoutButtons>) {
-        showMultiCheckoutButton(multiCheckoutButtons, context, binding.btnRechargeCheckoutNext, binding.btnRechargeMultiCheckout, {
+        showMultiCheckoutButton(multiCheckoutButtons, context, binding.btnRechargeCheckoutNext, binding.btnRechargeMultiCheckout, coachMark2, {
             listener?.onClickNextBuyButton()
         }, {
             listener?.onClickMultiCheckout()
-        }, coachMark2)
+        }, {
+            listener?.onCloseCoachMark()
+        })
     }
 
     interface ActionListener {
         fun onClickNextBuyButton()
 
         fun onClickMultiCheckout()
+
+        fun onCloseCoachMark()
     }
 }

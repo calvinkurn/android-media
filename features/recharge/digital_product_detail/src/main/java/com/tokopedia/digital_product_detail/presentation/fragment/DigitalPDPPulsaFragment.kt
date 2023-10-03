@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
+import com.tokopedia.common.topupbills.analytics.CommonMultiCheckoutAnalytics
 import com.tokopedia.common.topupbills.data.TopupBillsBanner
 import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
@@ -131,6 +132,9 @@ class DigitalPDPPulsaFragment :
 
     @Inject
     lateinit var digitalPDPAnalytics: DigitalPDPAnalytics
+
+    @Inject
+    lateinit var commonMultiCheckoutAnalytics: CommonMultiCheckoutAnalytics
 
     private var binding by autoClearedNullable<FragmentDigitalPdpPulsaBinding>()
 
@@ -769,7 +773,12 @@ class DigitalPDPPulsaFragment :
     private fun onShowBuyWidget(denomGrid: DenomData) {
         binding?.let {
             it.rechargePdpPulsaBuyWidget.show()
-            it.rechargePdpPulsaBuyWidget.renderBuyWidget(denomGrid, this, viewModel.multiCheckoutButtons)
+            it.rechargePdpPulsaBuyWidget.renderBuyWidget(denomGrid, this, viewModel.multiCheckoutButtons) {
+                commonMultiCheckoutAnalytics.onCloseMultiCheckoutCoachmark(
+                    DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                    loyaltyStatus
+                )
+            }
             it.rechargePdpPulsaBuyWidget.showCoachMark()
         }
     }

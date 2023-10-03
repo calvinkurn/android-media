@@ -29,8 +29,9 @@ object MultiCheckoutConst {
 fun showMultiCheckoutButton(
     multiCheckoutButtons: List<MultiCheckoutButtons>, context: Context,
     btnCheckoutNext: UnifyButton, btnMultiCheckout: UnifyButton,
+    coachmark: CoachMark2,
     onClickNextBuyButton: () -> Unit, onClickMultiCheckout: () -> Unit,
-    coachmark: CoachMark2
+    onCloseCoachMark: () -> Unit,
 ) {
     val localCacheHandler = LocalCacheHandler(context, PREFERENCE_MULTICHECKOUT)
     val coachMarkList = arrayListOf<CoachMark2Item>()
@@ -96,6 +97,7 @@ fun showMultiCheckoutButton(
     if (!isCoachMarkClosed) {
         coachmark.showCoachMark(coachMarkList)
         coachmark.setOnDismissListener {
+            onCloseCoachMark()
             localCacheHandler.putBoolean(SHOW_COACH_MARK_MULTICHECKOUT_KEY, true)
             localCacheHandler.applyEditor()
         }

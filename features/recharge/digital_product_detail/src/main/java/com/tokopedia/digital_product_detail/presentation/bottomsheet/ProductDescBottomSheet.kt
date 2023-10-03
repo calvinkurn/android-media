@@ -141,7 +141,9 @@ class ProductDescBottomSheet : BottomSheetUnify() {
                 }
 
                 listener?.let { listener ->
-                    buyWidgetProductDesc.renderBuyWidget(denomData, listener, multiCheckoutButtons)
+                    buyWidgetProductDesc.renderBuyWidget(denomData, listener, multiCheckoutButtons) {
+                        listenerProductDesc?.onCloseCoachmark()
+                    }
                 }
                 position?.let { position ->
                     listenerProductDesc?.let { listenerProductDesc ->

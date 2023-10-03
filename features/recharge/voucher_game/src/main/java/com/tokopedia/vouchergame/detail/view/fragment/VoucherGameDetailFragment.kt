@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
+import com.tokopedia.common.topupbills.analytics.CommonMultiCheckoutAnalytics
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryMainInfo
 import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
@@ -103,9 +104,13 @@ class VoucherGameDetailFragment :
     @Inject
     lateinit var voucherGameAnalytics: VoucherGameAnalytics
 
+    @Inject
+    lateinit var commonMultiCheckoutAnalytics: CommonMultiCheckoutAnalytics
+
     lateinit var enquiryData: List<CatalogProductInput>
     var inputData: MutableMap<String, String> = mutableMapOf()
     private var inputFieldCount = 0
+    private var loyaltyStatus = ""
     var isEnquired = false
         set(value) {
             field = value
@@ -289,6 +294,7 @@ class VoucherGameDetailFragment :
         topupBillsViewModel.updateMultiCheckoutButtons(data.multiCheckoutButtons)
         if (data.catalog.label.isNotEmpty()) {
             categoryName = data.catalog.label
+            loyaltyStatus = data.userPerso.loyaltyStatus
             voucherGameAnalytics.categoryName = categoryName
             (activity as? BaseSimpleActivity)?.updateTitle(data.catalog.label)
         }
@@ -745,6 +751,12 @@ class VoucherGameDetailFragment :
 
     override fun onClickNextBuyButton() {
         processCheckoutData()
+    }
+
+    override fun onCloseCoachMark() {
+        commonMultiCheckoutAnalytics.onCloseMultiCheckoutCoachmark(
+            categoryName, loyaltyStatus
+        )
     }
 
     override fun onClickMultiCheckout() {

@@ -19,6 +19,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
+import com.tokopedia.common.topupbills.analytics.CommonMultiCheckoutAnalytics
 import com.tokopedia.common.topupbills.data.TopupBillsBanner
 import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
@@ -144,6 +145,9 @@ class DigitalPDPDataPlanFragment :
 
     @Inject
     lateinit var digitalPDPAnalytics: DigitalPDPAnalytics
+
+    @Inject
+    lateinit var commonMultiCheckoutAnalytics: CommonMultiCheckoutAnalytics
 
     private var binding by autoClearedNullable<FragmentDigitalPdpDataPlanBinding>()
 
@@ -1027,7 +1031,12 @@ class DigitalPDPDataPlanFragment :
     private fun onShowBuyWidget(denomFull: DenomData) {
         binding?.let {
             it.rechargePdpPaketDataBuyWidget.show()
-            it.rechargePdpPaketDataBuyWidget.renderBuyWidget(denomFull, this, viewModel.multiCheckoutButtons)
+            it.rechargePdpPaketDataBuyWidget.renderBuyWidget(denomFull, this, viewModel.multiCheckoutButtons) {
+                commonMultiCheckoutAnalytics.onCloseMultiCheckoutCoachmark(
+                    DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                    loyaltyStatus
+                )
+            }
             it.rechargePdpPaketDataBuyWidget.showCoachMark()
         }
     }
@@ -1381,6 +1390,12 @@ class DigitalPDPDataPlanFragment :
         )
     }
 
+    override fun onCloseCoachmark() {
+        commonMultiCheckoutAnalytics.onCloseMultiCheckoutCoachmark(
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+            loyaltyStatus
+        )
+    }
     //endregion
 
     //region ClientNumberInputFieldListener

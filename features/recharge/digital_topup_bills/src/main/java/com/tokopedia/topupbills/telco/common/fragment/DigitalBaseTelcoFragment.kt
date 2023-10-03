@@ -16,6 +16,7 @@ import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.common.topupbills.analytics.CommonMultiCheckoutAnalytics
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
 import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
 import com.tokopedia.common.topupbills.data.TopupBillsPromo
@@ -92,6 +93,9 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     @Inject
     lateinit var topupAnalytics: DigitalTopupAnalytics
 
+    @Inject
+    lateinit var commonMultiCheckoutAnalytics: CommonMultiCheckoutAnalytics
+
     protected var loyaltyStatus = ""
 
     override fun initInjector() {
@@ -133,6 +137,12 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
                     addToCartViewModel.setAtcMultiCheckoutParam()
                     setupCheckoutData()
                     processTransaction()
+                }
+
+                override fun onCloseCoachMark() {
+                    commonMultiCheckoutAnalytics.onCloseMultiCheckoutCoachmark(
+                        categoryName, loyaltyStatus
+                    )
                 }
             }
         }

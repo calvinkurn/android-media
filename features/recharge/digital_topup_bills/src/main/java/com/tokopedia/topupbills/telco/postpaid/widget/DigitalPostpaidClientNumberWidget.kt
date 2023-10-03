@@ -68,11 +68,14 @@ class DigitalPostpaidClientNumberWidget : DigitalClientNumberWidget {
 
     fun showMulticheckoutButtonSupport(multiCheckoutButtons: List<MultiCheckoutButtons>) {
         showMultiCheckoutButton(multiCheckoutButtons, context, btnMain, btnSecondary,
+            CoachMark2(context),
             {
                 postpaidListener.mainButtonClick()
             } , {
                 postpaidListener.secondaryButtonClick()
-            }, CoachMark2(context)
+            }, {
+                postpaidListener.onCloseCoachMark()
+            }
         )
     }
 }

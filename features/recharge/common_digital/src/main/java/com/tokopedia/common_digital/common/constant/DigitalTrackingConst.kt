@@ -9,6 +9,7 @@ object DigitalTrackingConst {
     object Event {
         const val ADD_TO_CART = "addToCart"
         const val VIEW_DIGITAL_IRIS = "viewDigitalIris"
+        const val CLICK_DIGITAL = "clickDigital"
     }
 
     object Category {
@@ -20,6 +21,7 @@ object DigitalTrackingConst {
     object Action {
         const val CLICK_BELI = "click beli"
         const val VIEW_PDP_PAGE = "view pdp page"
+        const val CLOSE_COACHMARK = "click close coachmark"
     }
 
     object Label {
@@ -61,5 +63,9 @@ object DigitalTrackingConst {
 
     object Other {
         const val KEY_TRACKER_ID = "trackerId"
+    }
+
+    object Id {
+        const val CLOSE_COACHMARK_ID = "47591"
     }
 }

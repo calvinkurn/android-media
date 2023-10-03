@@ -31,6 +31,7 @@ import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.common.topupbills.analytics.CommonMultiCheckoutAnalytics
 import com.tokopedia.common.topupbills.data.RechargeSBMAddBillRequest
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiry
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryAttribute
@@ -134,6 +135,9 @@ class RechargeGeneralFragment :
     lateinit var rechargeGeneralAnalytics: RechargeGeneralAnalytics
 
     @Inject
+    lateinit var commonMultiCheckoutAnalytics: CommonMultiCheckoutAnalytics
+
+    @Inject
     lateinit var mapper: RechargeGeneralMapper
 
     private var saveInstanceManager: SaveInstanceCacheManager? = null
@@ -149,6 +153,7 @@ class RechargeGeneralFragment :
     private var isAddSBM: Boolean = false
     private var isFromSBM: Boolean = false
     private var coachmark: CoachMark2? = null
+    private var loyaltyStatus: String = ""
 
     private var operatorId: Int = 0
         set(value) {
@@ -189,7 +194,7 @@ class RechargeGeneralFragment :
     private lateinit var checkoutBottomSheet: BottomSheetUnify
 
     override fun onUpdateMultiCheckout() {
-        //TODO("Not yet implemented")
+        //do nothing
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -1130,6 +1135,12 @@ class RechargeGeneralFragment :
         }
     }
 
+    private fun closeCoachmarkTrack() {
+        commonMultiCheckoutAnalytics.onCloseMultiCheckoutCoachmark(
+            categoryName, loyaltyStatus
+        )
+    }
+
     private fun setMultiCheckoutButton(multiCheckoutButtons: RechargeGeneralDynamicField) {
         context?.let { context ->
             val localCacheHandler = LocalCacheHandler(context, PREFERENCE_MULTICHECKOUT)
@@ -1205,6 +1216,7 @@ class RechargeGeneralFragment :
                 if (!isCoachMarkClosed && !coachmark.isShowing) {
                     coachmark.showCoachMark(coachMarkList)
                     coachmark.setOnDismissListener {
+                        closeCoachmarkTrack()
                         localCacheHandler.putBoolean(SHOW_COACH_MARK_MULTICHECKOUT_KEY, true)
                         localCacheHandler.applyEditor()
                     }
@@ -1279,12 +1291,13 @@ class RechargeGeneralFragment :
     }
 
     override fun processMenuDetail(data: TopupBillsMenuDetail) {
+        categoryName = data.catalog.label
+        loyaltyStatus = data.userPerso.loyaltyStatus
         if (!isAddSBM) {
             super.processMenuDetail(data)
         } else {
             onLoadingMenuDetail(false)
             isExpressCheckout = data.isExpressCheckout
-            categoryName = data.catalog.label
         }
         with(data.catalog) {
             // if using isAddSBM then we use title from sbm
@@ -1507,6 +1520,10 @@ class RechargeGeneralFragment :
 
         addToCartViewModel.setAtcMultiCheckoutParam()
         processCheckout()
+    }
+
+    override fun onCloseCoachMark() {
+        closeCoachmarkTrack()
     }
 
     private fun processCheckout() {

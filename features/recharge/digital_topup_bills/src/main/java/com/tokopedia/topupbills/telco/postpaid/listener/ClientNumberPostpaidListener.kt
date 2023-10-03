@@ -7,4 +7,6 @@ interface ClientNumberPostpaidListener {
     fun mainButtonClick()
 
     fun secondaryButtonClick()
+
+    fun onCloseCoachMark()
 }

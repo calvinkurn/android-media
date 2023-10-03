@@ -386,6 +386,13 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                     navigateToLoginPage()
                 }
             }
+
+            override fun onCloseCoachMark() {
+                commonMultiCheckoutAnalytics.onCloseMultiCheckoutCoachmark(
+                    categoryName, loyaltyStatus
+                )
+            }
+
         })
     }
 

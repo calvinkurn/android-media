@@ -25,6 +25,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.common.topupbills.analytics.CommonMultiCheckoutAnalytics
 import com.tokopedia.common.topupbills.data.TopupBillsPromo
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.common.topupbills.data.prefix_select.RechargePrefix
@@ -111,6 +112,9 @@ open class EmoneyPdpFragment :
     lateinit var rechargeAnalytics: RechargeAnalytics
 
     @Inject
+    lateinit var commonMultiCheckoutAnalytics: CommonMultiCheckoutAnalytics
+
+    @Inject
     lateinit var userSession: UserSessionInterface
 
     private var emoneyCardNumber = ""
@@ -121,6 +125,8 @@ open class EmoneyPdpFragment :
 
     private val coachMark by lazy { CoachMark2(requireContext()) }
     private val coachMarks = arrayListOf<CoachMark2Item>()
+    private var categoryName = ""
+    private var loyaltyStatus = ""
 
     val remoteConfig: RemoteConfig by lazy {
         FirebaseRemoteConfigImpl(context)
@@ -203,6 +209,8 @@ open class EmoneyPdpFragment :
                 binding.emoneyGlobalError.hide()
                 when (it) {
                     is Success -> {
+                        categoryName = it.data.catalog.label
+                        loyaltyStatus = it.data.userPerso.loyaltyStatus
                         trackEventViewPdp(it.data.catalog.label)
                         renderRecommendationsAndPromoList(it.data.recommendations, it.data.promos)
                         renderTicker(EmoneyPdpMapper.mapTopUpBillsTickersToTickersData(it.data.tickers))
@@ -775,6 +783,10 @@ open class EmoneyPdpFragment :
                 categoryIdFromPDP = detailPassData.categoryId
             )
         )
+    }
+
+    override fun onCloseCoachMark() {
+        commonMultiCheckoutAnalytics.onCloseMultiCheckoutCoachmark(categoryName, loyaltyStatus)
     }
 
     private fun proceedAddToCart(digitalCheckoutData: DigitalCheckoutPassData) {

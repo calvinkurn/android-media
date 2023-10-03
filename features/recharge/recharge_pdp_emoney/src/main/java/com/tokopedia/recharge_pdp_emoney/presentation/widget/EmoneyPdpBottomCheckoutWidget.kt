@@ -69,11 +69,14 @@ class EmoneyPdpBottomCheckoutWidget @JvmOverloads constructor(@NotNull context: 
 
     fun showMulticheckoutButtonSupport(multiCheckoutButtons: List<MultiCheckoutButtons>) {
         showMultiCheckoutButton(multiCheckoutButtons, context, binding.emoneyPdpCheckoutViewButton, binding.emoneyPdpLeftButton,
+            coachMark2,
             {
                 listener?.onClickNextBuyButton()
             } , {
                 listener?.onClickMultiCheckoutButton()
-            }, coachMark2
+            },  {
+                listener?.onCloseCoachMark()
+            }
         )
     }
 
@@ -81,6 +84,8 @@ class EmoneyPdpBottomCheckoutWidget @JvmOverloads constructor(@NotNull context: 
         fun onClickNextBuyButton()
 
         fun onClickMultiCheckoutButton()
+
+        fun onCloseCoachMark()
     }
 
 }
