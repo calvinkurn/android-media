@@ -74,7 +74,7 @@ interface DynamicProductDetailAdapterFactory {
     fun type(data: TopadsHeadlineUiModel): Int
     fun type(data: ContentWidgetDataModel): Int
     fun type(data: FintechWidgetDataModel): Int
-    fun type(data:FintechWidgetV2DataModel): Int
+    fun type(data: FintechWidgetV2DataModel): Int
     fun type(data: ProductRecommendationVerticalDataModel): Int
     fun type(data: ProductRecommendationVerticalPlaceholderDataModel): Int
     fun type(data: LoadingDataModel): Int
