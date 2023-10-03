@@ -11,10 +11,11 @@ import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.unifyprinciples.R as principleR
 import com.tokopedia.editor.R as editorR
+import com.tokopedia.unifyprinciples.R as principleR
 
-class InputTextStyleItemView(context: Context, attributeSet: AttributeSet?): CardUnify2(context, attributeSet) {
+class InputTextStyleItemView(context: Context, attributeSet: AttributeSet?) :
+    CardUnify2(context, attributeSet) {
 
     private var textContent: Typography? = null
     private var isActive: Boolean = false

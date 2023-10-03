@@ -1,7 +1,6 @@
 package com.tokopedia.editor.ui.main.component
 
 import android.view.ViewGroup
-import android.widget.RelativeLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.editor.R

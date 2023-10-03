@@ -1,8 +1,13 @@
+@file:Suppress("DEPRECATION")
+
 package com.tokopedia.editor.ui.text
 
+import android.graphics.BlendMode
+import android.graphics.BlendModeColorFilter
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.Typeface
+import android.os.Build
 import android.view.Gravity
 import android.widget.EditText
 import android.widget.LinearLayout
@@ -13,9 +18,9 @@ import com.tokopedia.editor.base.BaseEditorFragment
 import com.tokopedia.editor.databinding.FragmentInputTextBinding
 import com.tokopedia.editor.ui.widget.InputTextColorItemView
 import com.tokopedia.editor.ui.widget.InputTextStyleItemView
-import com.tokopedia.editor.util.provider.ColorProvider
 import com.tokopedia.editor.util.FontAlignment
 import com.tokopedia.editor.util.FontDetail
+import com.tokopedia.editor.util.provider.ColorProvider
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
@@ -90,7 +95,7 @@ class InputTextFragment @Inject constructor(
                 try {
                     val typeFace = Typeface.createFromAsset(context.assets, it.fontName)
                     setTypeface(typeFace, it.fontStyle)
-                } catch (_: Exception) {}
+                } catch (ignored: Throwable) {}
             }
         }
     }
@@ -137,7 +142,7 @@ class InputTextFragment @Inject constructor(
                     styleItem.setOnClickListener {
                         if (styleItem.isActive()) return@setOnClickListener
                         styleItem.setActive()
-                        fontStyleListener(styleItem.tag.toString(), fontDetail)
+                        fontStyleListener(fontDetail)
                     }
 
                     if (fontDetail == viewModel.selectedFontStyle.value) {
@@ -150,7 +155,7 @@ class InputTextFragment @Inject constructor(
         }
     }
 
-    private fun fontStyleListener(viewTag: String, fontDetail: FontDetail) {
+    private fun fontStyleListener(fontDetail: FontDetail) {
         var prevActiveStyle = ""
         viewModel.selectedFontStyle.value?.let {
             prevActiveStyle = it.fontName + it.fontStyle
@@ -237,8 +242,12 @@ class InputTextFragment @Inject constructor(
     }
 
     private fun updateEditTextDrawable(colorInt: Int) {
-        viewBinding?.addTextInput?.background?.let {
-            it.setColorFilter(colorInt, PorterDuff.Mode.DST_ATOP)
+        val textInput = viewBinding?.addTextInput
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            textInput?.background?.colorFilter = BlendModeColorFilter(colorInt, BlendMode.DST_ATOP)
+        } else {
+            textInput?.background?.setColorFilter(colorInt, PorterDuff.Mode.DST_ATOP)
         }
     }
 

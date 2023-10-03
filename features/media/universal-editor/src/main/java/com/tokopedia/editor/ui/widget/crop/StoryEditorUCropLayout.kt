@@ -6,9 +6,9 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
+import com.tokopedia.editor.R
 import com.yalantis.ucrop.callback.CropBoundsChangeListener
 import com.yalantis.ucrop.callback.OverlayViewChangeListener
-import com.tokopedia.editor.R
 
 class StoryEditorUCropLayout(context: Context, attrs: AttributeSet) :
     FrameLayout(context, attrs, 0) {

@@ -11,7 +11,6 @@ import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.editor.R
-import com.tokopedia.editor.analytics.main.editor.MainEditorAnalytics
 import com.tokopedia.editor.databinding.ActivityMainEditorBinding
 import com.tokopedia.editor.di.ModuleInjector
 import com.tokopedia.editor.ui.EditorFragmentProvider
@@ -21,10 +20,10 @@ import com.tokopedia.editor.ui.main.component.AudioStateUiComponent
 import com.tokopedia.editor.ui.main.component.GlobalLoaderUiComponent
 import com.tokopedia.editor.ui.main.component.NavigationToolUiComponent
 import com.tokopedia.editor.ui.main.component.PagerContainerUiComponent
-import com.tokopedia.editor.ui.model.ImagePlacementModel
 import com.tokopedia.editor.ui.main.uimodel.InputTextParam
 import com.tokopedia.editor.ui.main.uimodel.MainEditorEffect
 import com.tokopedia.editor.ui.main.uimodel.MainEditorEvent
+import com.tokopedia.editor.ui.model.ImagePlacementModel
 import com.tokopedia.editor.ui.model.InputTextModel
 import com.tokopedia.editor.ui.placement.PlacementImageActivity
 import com.tokopedia.editor.ui.text.InputTextActivity
@@ -49,7 +48,7 @@ import javax.inject.Inject
  * scope and area all editor tools. The universal editor module adopting a single activity,
  * which only contain a single entry point.
  *
- * To access the universal editor, please refer to use a built-in intent in [UniversalEditor] nor
+ * To access the universal editor, please refer to use a built-in intent for this Editor nor
  * you could access this page with this applink:
  *
  * @applink tokopedia-android-internal://global/universal-editor

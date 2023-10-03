@@ -20,8 +20,6 @@ import com.yalantis.ucrop.util.RectUtils
 import com.yalantis.ucrop.view.CropImageView
 import java.io.File
 import java.io.OutputStream
-import kotlin.math.abs
-import kotlin.math.max
 
 open class StoryCropImageView : CropImageView {
 
@@ -121,18 +119,24 @@ open class StoryCropImageView : CropImageView {
 
             val rotateBitmap = Bitmap.createBitmap(it, 0, 0, it.width, it.height, matrix, false)
 
-            val cropX = ((mCurrentImageRect.left * -1) / mCurrentScale ).toInt()
-            val cropY = ((mCurrentImageRect.top * -1) / mCurrentScale ).toInt()
+            val cropX = ((mCurrentImageRect.left * -1) / mCurrentScale).toInt()
+            val cropY = ((mCurrentImageRect.top * -1) / mCurrentScale).toInt()
 
             val sourceWidth = cropWidthSize / mCurrentScale
             val sourceHeight = cropHeightSize / mCurrentScale
 
             val sourceRect = Rect(cropX, cropY, (cropX + sourceWidth).toInt(), (cropY + sourceHeight).toInt())
-            val targetRect = Rect(0,0, cropWidthSize, cropHeightSize)
+            val targetRect = Rect(0, 0, cropWidthSize, cropHeightSize)
 
-            canvas.drawRect(0f, 0f, bitmapResult.width.toFloat(), bitmapResult.height.toFloat(), Paint().apply {
-                color = Color.BLACK
-            })
+            canvas.drawRect(
+                0f,
+                0f,
+                bitmapResult.width.toFloat(),
+                bitmapResult.height.toFloat(),
+                Paint().apply {
+                    color = Color.BLACK
+                })
+
             canvas.drawBitmap(rotateBitmap, sourceRect, targetRect, null)
         }
 

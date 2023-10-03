@@ -12,15 +12,12 @@ import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
 class VideoMainEditorFragment @Inject constructor(
-    private val viewModelFactory: ViewModelProvider.Factory
+    private val viewModelFactory: ViewModelProvider.Factory,
+    private val videoPlayer: EditorVideoPlayer
 ) : BaseEditorFragment(R.layout.fragment_vod_main_editor) {
 
     private val binding: FragmentVodMainEditorBinding? by viewBinding()
     private val viewModel: MainEditorViewModel by activityViewModels { viewModelFactory }
-
-    private val videoPlayer by lazy {
-        EditorVideoPlayer(requireContext())
-    }
 
     override fun initView() {
         setupViewPlayer(viewModel.filePath)
@@ -51,8 +48,7 @@ class VideoMainEditorFragment @Inject constructor(
 
     private fun setupViewPlayer(url: String) {
         binding?.playerView?.player = videoPlayer.player()
-
-        videoPlayer.videoUrl = url
+        videoPlayer.init(url, null)
         videoPlayer.start()
     }
 }

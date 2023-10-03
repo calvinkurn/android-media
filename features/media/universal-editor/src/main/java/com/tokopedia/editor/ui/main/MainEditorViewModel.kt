@@ -1,10 +1,8 @@
 package com.tokopedia.editor.ui.main
 
-import android.content.Context
 import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.editor.data.repository.NavigationToolRepository
 import com.tokopedia.editor.data.repository.VideoFlattenRepository
@@ -47,7 +45,7 @@ class MainEditorViewModel @Inject constructor(
      * A path is active file path.
      *
      * Whether comes from image placement, video source file, etc.
-     * we need to set this [activeFilePath] immediately as of current file.
+     * we need to set this [filePath] immediately as of current file.
      *
      * every single editing tool needs to update this filePath through
      * [setActiveEditableFilePath].
@@ -88,7 +86,7 @@ class MainEditorViewModel @Inject constructor(
                     analytics.finishPageClick(
                         hasText = it.hasTextAdded,
                         isMute = it.isRemoveAudio,
-                        isCropped = it.imagePlacementModel != null
+                        isCropped = it.hasPlacementEdited()
                     )
                 }
 
