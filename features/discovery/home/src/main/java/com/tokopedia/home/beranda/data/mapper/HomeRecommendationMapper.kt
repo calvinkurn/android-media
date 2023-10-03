@@ -3,7 +3,6 @@ package com.tokopedia.home.beranda.data.mapper
 import com.tokopedia.home.beranda.domain.gql.feed.Banner
 import com.tokopedia.home.beranda.domain.gql.feed.GetHomeRecommendationContent
 import com.tokopedia.home.beranda.domain.gql.feed.Product
-import com.tokopedia.home.beranda.domain.gql.feed.RecommendationProduct
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.BannerRecommendationDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationBannerTopAdsDataModel
@@ -24,12 +23,15 @@ class HomeRecommendationMapper {
         val productStack = Stack<HomeRecommendationItemDataModel>()
         // reverse stack because to get the first in
         Collections.reverse(productStack)
-        productStack.addAll(convertToHomeProductFeedModel(recommendationProduct.product, recommendationProduct.pageName, HomeRecommendationUtil.LAYOUT_NAME_LIST, tabName, pageNumber))
+        productStack.addAll(convertToHomeProductFeedModel(recommendationProduct.product, recommendationProduct.pageName, recommendationProduct.layoutName, tabName, pageNumber))
 
         val bannerStack = Stack<BannerRecommendationDataModel>()
-        // reverse stack because to get the first in
-        Collections.reverse(productStack)
-        bannerStack.addAll(convertToHomeBannerFeedModel(recommendationProduct.banners, tabName, pageNumber))
+        // ignore banner when getting list type
+        if(recommendationProduct.layoutName != LAYOUT_NAME_LIST) {
+            // reverse stack because to get the first in
+            Collections.reverse(productStack)
+            bannerStack.addAll(convertToHomeBannerFeedModel(recommendationProduct.banners, tabName, pageNumber))
+        }
 
         recommendationProduct.layoutTypes.forEachIndexed { index, layoutType ->
             when (layoutType.type) {
@@ -37,6 +39,7 @@ class HomeRecommendationMapper {
                     visitables.add(productStack.pop())
                 }
                 TYPE_BANNER -> {
+                    // ignore banner when getting list type
                     if(recommendationProduct.layoutName != LAYOUT_NAME_LIST) {
                         visitables.add(bannerStack.pop())
                     }

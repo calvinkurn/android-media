@@ -4,8 +4,8 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationItemListViewHolder
 
 object HomeRecommendationUtil {
-    const val LAYOUT_NAME_LIST = "Infinite_list_scroll"
-    const val LAYOUT_NAME_GRID = "Infinite"
+    const val LAYOUT_NAME_LIST = "infinite_list_scroll"
+    const val LAYOUT_NAME_GRID = "infinite"
 
     fun HomeRecommendationItemDataModel.getLayout(): Int {
         return when(layoutName) {
