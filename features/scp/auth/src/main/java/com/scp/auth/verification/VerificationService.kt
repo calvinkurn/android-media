@@ -23,18 +23,18 @@ class VerificationAnalyticsService @Inject constructor(
 ) : ScpAnalyticsService {
     override fun trackError(eventName: ScpAnalyticsEvent, params: Map<String, Any?>) {
         if (eventName is CVSdkAnalyticsEvent.VerificationErrorPopupShown) {
-            verificationAnalyticsMapper.trackErrorPopupViewCvSdk("", eventName.eventName, params)
+            verificationAnalyticsMapper.trackErrorPopupViewCvSdk(eventName.eventName, params)
         } else {
-            verificationAnalyticsMapper.trackFailedCvSdk("", eventName.eventName, params)
+            verificationAnalyticsMapper.trackFailedCvSdk(eventName.eventName, params)
         }
     }
 
     override fun trackEvent(eventName: ScpAnalyticsEvent, params: MutableMap<String, Any?>) {
-        verificationAnalyticsMapper.trackEventCvSdk("", eventName.eventName, params)
+        verificationAnalyticsMapper.trackEventCvSdk(eventName.eventName, params)
     }
 
     override fun trackView(eventName: ScpAnalyticsEvent, params: Map<String, Any?>) {
-        verificationAnalyticsMapper.trackScreenCvSdk("", eventName.eventName, params)
+        verificationAnalyticsMapper.trackScreenCvSdk(eventName.eventName, params)
     }
 }
 
