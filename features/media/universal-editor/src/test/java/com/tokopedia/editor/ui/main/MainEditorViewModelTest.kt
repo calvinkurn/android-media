@@ -212,6 +212,7 @@ class MainEditorViewModelTest {
         // Given
         val bitmap = ShadowBitmapFactory.create("asd", BitmapFactory.Options())
         val filePath = tempFolder.newFile("dummy.png")
+        val placementPath = tempFolder.newFile("placement_result.png")
 
         every { resourceProvider.getString(any()) } returns ""
         every { isImageFormat(any()) } returns true
@@ -225,6 +226,15 @@ class MainEditorViewModelTest {
                 paths = listOf(filePath.path)
             )
         ))
+        onEvent(MainEditorEvent.PlacementImageResult(
+            ImagePlacementModel(
+                path = placementPath.path,
+                scale = 1f,
+                angle = 0f,
+                translateY = 0f,
+                translateX = 0f
+            )
+        ))
         onEvent(MainEditorEvent.ExportMedia(
             canvasTextBitmap = bitmap,
             imageBitmap = bitmap
@@ -233,9 +243,9 @@ class MainEditorViewModelTest {
 
         // Verify
         val effects = recordEffect()
-        assertTrue(effects[0] is MainEditorEffect.ShowLoading)
-        assertTrue(effects[1] is MainEditorEffect.HideLoading)
-        assertTrue(effects[2] is MainEditorEffect.FinishEditorPage)
+        assertTrue(effects[1] is MainEditorEffect.ShowLoading)
+        assertTrue(effects[2] is MainEditorEffect.HideLoading)
+        assertTrue(effects[3] is MainEditorEffect.FinishEditorPage)
     }
 
     @Test
@@ -267,6 +277,34 @@ class MainEditorViewModelTest {
         assertTrue(effects[0] is MainEditorEffect.ShowLoading)
         assertTrue(effects[1] is MainEditorEffect.HideLoading)
         assertTrue(effects[2] is MainEditorEffect.ShowToastErrorMessage)
+    }
+
+    @Test
+    fun `it should fail export on non exists file`() = runTest {
+        // Given
+        val bitmap = ShadowBitmapFactory.create("asd", BitmapFactory.Options())
+
+        every { resourceProvider.getString(any()) } returns ""
+        every { isImageFormat(any()) } returns true
+        mockAnalytics()
+        mockParamFetcher()
+        mockNavigationTool()
+
+        // When
+        onEvent(MainEditorEvent.SetupView(
+            UniversalEditorParam(
+                paths = listOf("dummy_path.png")
+            )
+        ))
+        onEvent(MainEditorEvent.ExportMedia(
+            canvasTextBitmap = bitmap,
+            imageBitmap = bitmap
+        ))
+        fakeImageFlattenRepository.emit("")
+
+        // Verify
+        val effects = recordEffect()
+        assertTrue(effects.isEmpty())
     }
 
     @Test
@@ -330,6 +368,16 @@ class MainEditorViewModelTest {
         // Verify
         val effects = recordEffect()
         assertTrue(effects[0] is MainEditorEffect.UpdatePagerSourcePath)
+    }
+
+    @Test
+    fun `should skip image update when receive no result from placement page`() = runTest {
+        // When
+        onEvent(MainEditorEvent.PlacementImageResult(null))
+
+        // Verify
+        val effects = recordEffect()
+        assertTrue(effects.isEmpty())
     }
 
     @Test

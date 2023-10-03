@@ -95,7 +95,6 @@ class MainEditorViewModel @Inject constructor(
                     )
                 }
 
-                setAction(MainEditorEffect.ShowLoading)
                 exportFinalMedia(filePath, event.canvasTextBitmap, event.imageBitmap)
             }
             is MainEditorEvent.PlacementImagePage -> {
@@ -138,6 +137,8 @@ class MainEditorViewModel @Inject constructor(
 
         if (file.exist().not()) return
         val path = file.path ?: return
+
+        setAction(MainEditorEffect.ShowLoading)
 
         if (file.isImage()) {
             flattenImageFileWithTextCanvas(imageBitmap, canvasText)
