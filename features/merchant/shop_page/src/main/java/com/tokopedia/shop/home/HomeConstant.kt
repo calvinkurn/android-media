@@ -85,7 +85,7 @@ enum class WidgetNameEnum(val value: String) {
     PLAY_CAROUSEL_WIDGET("play"),
     VIDEO("video"),
     PRODUCT("product"),
-//    PRODUCT_VERTICAL("product_vertical"),
+    PRODUCT_VERTICAL("product_vertical"),
     RECENT_ACTIVITY("recent_activity"),
     BUY_AGAIN("buy_again"),
     REMINDER("reminder"),
