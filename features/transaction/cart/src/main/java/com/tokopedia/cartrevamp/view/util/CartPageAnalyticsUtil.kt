@@ -48,6 +48,7 @@ object CartPageAnalyticsUtil {
             setDimension45(cartItemHolderData.cartId)
             setDimension54(cartItemHolderData.isFulfillment)
             setDimension53(cartItemHolderData.productOriginalPrice > 0)
+            setDimension58(cartItemHolderData.isFulfillment)
             setProductName(cartItemHolderData.productName)
             setProductID(cartItemHolderData.productId)
             setPrice(cartItemHolderData.productPrice.toString())
@@ -71,6 +72,8 @@ object CartPageAnalyticsUtil {
             setDimension83(cartItemHolderData.freeShippingName)
             setDimension117(cartItemHolderData.bundleType)
             setDimension118(cartItemHolderData.bundleId)
+            setDimension136(cartItemHolderData.cartStringOrder)
+            setDimension137(cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId.toString())
             setCampaignId(cartItemHolderData.campaignId)
             if (cartItemHolderData.shopCartShopGroupTickerData.tickerText.isNotBlank()) {
                 val fulfillText =

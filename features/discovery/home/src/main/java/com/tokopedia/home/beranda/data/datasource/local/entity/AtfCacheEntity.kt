@@ -10,10 +10,10 @@ import com.tokopedia.home.constant.AtfKey
 @Entity
 data class AtfCacheEntity(
     @SuppressLint("Invalid Data Type")
-    @PrimaryKey
     @SerializedName("id")
     @Expose
     val id: Int = 0,
+    @PrimaryKey
     @SerializedName("position")
     @Expose
     val position: Int = 0,
@@ -38,4 +38,7 @@ data class AtfCacheEntity(
     @SerializedName("isShimmer")
     @Expose
     val isShimmer: Boolean = true,
+    @SerializedName("lastUpdate")
+    @Expose
+    val lastUpdate: Long = System.currentTimeMillis(),
 )

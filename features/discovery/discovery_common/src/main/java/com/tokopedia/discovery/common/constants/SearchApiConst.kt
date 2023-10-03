@@ -95,6 +95,7 @@ class SearchApiConst {
         const val SHOW_ADULT = "show_adult"
         const val SHOW_ADULT_ENABLED = "true"
         const val MANUAL_FILTER = "manual_filter"
+        const val LAST_CLICK = "last_click"
         const val DISABLE_AUTO_FILTER_SORT = "disable_auto_filter_sort"
 
         const val DEFAULT_VALUE_OF_SHOW_ADULT = "false"

@@ -17,6 +17,7 @@ import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.mvcwidget.views.MvcView
 import com.tokopedia.shop.R
 import com.tokopedia.shop.databinding.ItemShopHomeMerchantVoucherBinding
+import com.tokopedia.shop.home.view.listener.ShopHomeListener
 import com.tokopedia.shop.home.view.model.ShopHomeVoucherUiModel
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -28,7 +29,8 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopHomeVoucherViewHolder(
     itemView: View,
-    private val shopHomeVoucherViewHolderListener: ShopHomeVoucherViewHolderListener
+    private val shopHomeVoucherViewHolderListener: ShopHomeVoucherViewHolderListener,
+    shopHomeListener: ShopHomeListener
 ) : AbstractViewHolder<ShopHomeVoucherUiModel>(itemView) {
 
     interface ShopHomeVoucherViewHolderListener {
@@ -82,12 +84,16 @@ class ShopHomeVoucherViewHolder(
             }
         } else {
             if (model.data != null && model.data.isShown == true) {
-                if (model.data.animatedInfoList?.size.orZero() > 1)
+                if (model.data.animatedInfoList?.size.orZero() > 1) {
                     shopHomeVoucherViewHolderListener.onVoucherTokoMemberInformationImpression(model, adapterPosition)
-                else
+                } else {
                     shopHomeVoucherViewHolderListener.onVoucherImpression(model, adapterPosition)
+                }
                 merchantVoucherShimmering?.hide()
-                merchantVoucherWidget?.show()
+                merchantVoucherWidget?.apply {
+                    setOverrideWidgetTheme(isOverrideWidgetTheme = model.header.isOverrideTheme)
+                    show()
+                }
                 merchantVoucherReload?.hide()
                 merchantVoucherUiModel = model
 

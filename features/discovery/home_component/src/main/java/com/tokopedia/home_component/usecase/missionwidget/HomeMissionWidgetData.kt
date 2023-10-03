@@ -2,6 +2,7 @@ package com.tokopedia.home_component.usecase.missionwidget
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.home_component.model.AtfContent
 import com.tokopedia.home_component_header.model.ChannelHeader
 
 /**
@@ -24,7 +25,7 @@ class HomeMissionWidgetData {
         @SerializedName("config")
         @Expose
         val config: Config = Config(),
-    )
+    ): AtfContent
 
     data class Header(
         @SerializedName("title")

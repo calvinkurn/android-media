@@ -132,6 +132,8 @@ public interface ApplinkConst {
     String DISCOVERY_SEARCH_UNIVERSAL = "tokopedia://universal-page";
     String DISCOVERY_HOTLIST_DETAIL = "tokopedia://hot/{alias}";
     String DISCOVERY_CATALOG = "tokopedia://catalog";
+
+    String DISCOVERY_CATALOG_PRODUCT_LIST = "tokopedia://catalog/product_list";
     String PAYMENT_BACK_TO_DEFAULT = "tokopedia://payment/backtodefault";
     String WISHLIST = "tokopedia://wishlist";
     String NEW_WISHLIST = "tokopedia://new-wishlist";
@@ -468,6 +470,11 @@ public interface ApplinkConst {
     String DFFALLBACKURL_KEY = "dffallbackurl";
 
     String OCC = "tokopedia://occ";
+
+    String BUY_MORE_GET_MORE_OLP = "tokopedia://buymoresavemore/{offer_id}" +
+            "?warehouse_ids={warehouseIds}&" +
+            "product_ids={productIds}&" +
+            "shop_ids={shopIds}";
 
     String SELLER_MIGRATION = "tokopedia://seller/seller-migration";
 
