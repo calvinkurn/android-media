@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.FragmentShopShowcaseNavigationTabWidgetBinding
@@ -117,7 +118,9 @@ class ShopShowcaseNavigationTabWidgetFragment : BaseDaggerFragment() {
         val fourthShowcase = showcases.getOrNull(FIFTH_SHOWCASE_INDEX)
 
         mainShowcase?.let {
-            binding?.imgMainShowcase?.loadImage(mainShowcase.imageUrl)
+            binding?.imgMainShowcase?.loadImage(mainShowcase.imageUrl) {
+                setCacheStrategy(MediaCacheStrategy.NONE)
+            }
             binding?.tpgMainShowcaseTitle?.text = mainShowcase.name
 
             binding?.imgMainShowcase?.visible()
