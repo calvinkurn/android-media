@@ -48,7 +48,9 @@ class Payment(
     @SerializedName("wallet_additional_data")
     val walletAdditionalData: WalletAdditionalData = WalletAdditionalData(),
     @SerializedName("payment_fee_detail")
-    val paymentFeeDetail: List<PaymentFeeDetailResponse> = emptyList()
+    val paymentFeeDetail: List<PaymentFeeDetailResponse> = emptyList(),
+    @SerializedName("additional_data")
+    val additionalData: String = ""
 )
 
 class PaymentErrorMessage(

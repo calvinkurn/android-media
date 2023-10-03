@@ -1205,7 +1205,7 @@ class OrderSummaryPageViewModel @Inject constructor(
             return
         }
         val installmentTermList = paymentProcessor.get().getCreditCardAdminFee(
-            orderPayment.value.creditCard,
+            orderPayment.value,
             userSession.userId,
             orderCost,
             orderCart

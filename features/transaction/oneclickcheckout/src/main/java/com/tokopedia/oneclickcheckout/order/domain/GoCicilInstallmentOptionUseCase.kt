@@ -40,7 +40,8 @@ class GoCicilInstallmentOptionUseCase @Inject constructor(
             PARAM_PAYMENT_AMOUNT to param.paymentAmount,
             PARAM_ORDER_METADATA to param.orderMetadata,
             PARAM_PROMO_PARAM to param.promoParam,
-            PARAM_APP_VERSION to generateAppVersionForPayment()
+            PARAM_APP_VERSION to generateAppVersionForPayment(),
+            PARAM_ADDITIONAL_DATA to param.additionalData
         )
     }
 
@@ -53,11 +54,12 @@ class GoCicilInstallmentOptionUseCase @Inject constructor(
         private const val PARAM_ORDER_METADATA = "orderMetadata"
         private const val PARAM_PROMO_PARAM = "promoParam"
         private const val PARAM_APP_VERSION = "appVersion"
+        private const val PARAM_ADDITIONAL_DATA = "additionalData"
 
         private const val GoCicilInstallmentOptionQuery = "GoCicilInstallmentOptionQuery"
         private const val QUERY = """
-            query getInstallmentInfo(${'$'}gatewayCode: String!, ${'$'}merchantCode: String!, ${'$'}profileCode: String!, ${'$'}userDefinedValue: String!, ${'$'}paymentAmount: Float!, ${'$'}orderMetadata: String, ${'$'}promoParam: String, ${'$'}appVersion: String) {
-                getInstallmentInfo(gatewayCode: ${'$'}gatewayCode, merchantCode: ${'$'}merchantCode, profileCode: ${'$'}profileCode, userDefinedValue: ${'$'}userDefinedValue, paymentAmount: ${'$'}paymentAmount, orderMetadata: ${'$'}orderMetadata, promoParam: ${'$'}promoParam, appVersion: ${'$'}appVersion) {
+            query getInstallmentInfo(${'$'}gatewayCode: String!, ${'$'}merchantCode: String!, ${'$'}profileCode: String!, ${'$'}userDefinedValue: String!, ${'$'}paymentAmount: Float!, ${'$'}orderMetadata: String, ${'$'}promoParam: String, ${'$'}appVersion: String, ${'$'}additionalData: String) {
+                getInstallmentInfo(gatewayCode: ${'$'}gatewayCode, merchantCode: ${'$'}merchantCode, profileCode: ${'$'}profileCode, userDefinedValue: ${'$'}userDefinedValue, paymentAmount: ${'$'}paymentAmount, orderMetadata: ${'$'}orderMetadata, promoParam: ${'$'}promoParam, appVersion: ${'$'}appVersion, additionalData: ${'$'}additionalData) {
                     success
                     data {
                         ticker {

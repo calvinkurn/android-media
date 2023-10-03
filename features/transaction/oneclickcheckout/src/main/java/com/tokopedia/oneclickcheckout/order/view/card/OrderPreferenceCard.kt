@@ -22,7 +22,6 @@ import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.databinding.CardOrderPreferenceBinding
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPayment
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentCreditCard
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentCreditCardAdditionalData
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentErrorData
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentInstallmentTerm
@@ -528,7 +527,7 @@ class OrderPreferenceCard(
                         if (profile.enable) {
                             val selectedCreditCard = payment.creditCard
                             if (selectedCreditCard.availableTerms.isNotEmpty()) {
-                                listener.onCreditCardInstallmentDetailClicked(selectedCreditCard)
+                                listener.onCreditCardInstallmentDetailClicked(payment)
                             }
                         }
                     }
@@ -554,8 +553,7 @@ class OrderPreferenceCard(
                     btnChangeInstallment
                 ) {
                     if (profile.enable && !payment.isDynamicPaymentFeeError) {
-                        val selectedCreditCard = payment.creditCard
-                        listener.onCreditCardInstallmentDetailClicked(selectedCreditCard)
+                        listener.onCreditCardInstallmentDetailClicked(payment)
                     }
                 }
             } else if (payment.walletData.isGoCicil) {
@@ -641,7 +639,7 @@ class OrderPreferenceCard(
                     if (profile.enable) {
                         val creditCard = payment.creditCard
                         if (creditCard.availableTerms.isNotEmpty()) {
-                            listener.onCreditCardInstallmentDetailClicked(creditCard)
+                            listener.onCreditCardInstallmentDetailClicked(payment)
                         }
                     }
                 }
@@ -848,7 +846,7 @@ class OrderPreferenceCard(
 
         fun choosePayment(profile: OrderProfile, payment: OrderPayment)
 
-        fun onCreditCardInstallmentDetailClicked(creditCard: OrderPaymentCreditCard)
+        fun onCreditCardInstallmentDetailClicked(payment: OrderPayment)
 
         fun onGopayInstallmentDetailClicked()
 

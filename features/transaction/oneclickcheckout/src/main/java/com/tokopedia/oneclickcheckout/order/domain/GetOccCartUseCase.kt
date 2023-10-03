@@ -536,6 +536,7 @@ class GetOccCartUseCase @Inject constructor(
             tooltip_info
             type
           }
+          additional_data
         }
         shipment {
           service_id

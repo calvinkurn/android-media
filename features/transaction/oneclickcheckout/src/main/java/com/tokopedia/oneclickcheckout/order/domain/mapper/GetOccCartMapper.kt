@@ -23,41 +23,7 @@ import com.tokopedia.oneclickcheckout.order.data.get.ProfileResponse
 import com.tokopedia.oneclickcheckout.order.data.get.Shipment
 import com.tokopedia.oneclickcheckout.order.data.get.WalletAdditionalData
 import com.tokopedia.oneclickcheckout.order.data.get.WalletData
-import com.tokopedia.oneclickcheckout.order.view.model.CourierSelectionError
-import com.tokopedia.oneclickcheckout.order.view.model.OccOnboarding
-import com.tokopedia.oneclickcheckout.order.view.model.OccOnboardingCoachMark
-import com.tokopedia.oneclickcheckout.order.view.model.OccOnboardingCoachMarkDetail
-import com.tokopedia.oneclickcheckout.order.view.model.OccOnboardingTicker
-import com.tokopedia.oneclickcheckout.order.view.model.OccPrompt
-import com.tokopedia.oneclickcheckout.order.view.model.OccPromptButton
-import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
-import com.tokopedia.oneclickcheckout.order.view.model.OrderData
-import com.tokopedia.oneclickcheckout.order.view.model.OrderKero
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPayment
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentCreditCard
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentCreditCardAdditionalData
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentCreditCardsNumber
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentErrorMessage
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentErrorMessageButton
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentFee
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentGoCicilData
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentInstallmentTerm
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentOvoActionData
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentOvoAdditionalData
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentOvoCustomerData
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentRevampErrorMessage
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentRevampErrorMessageButton
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentWalletActionData
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentWalletAdditionalData
-import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
-import com.tokopedia.oneclickcheckout.order.view.model.OrderProfile
-import com.tokopedia.oneclickcheckout.order.view.model.OrderProfileAddress
-import com.tokopedia.oneclickcheckout.order.view.model.OrderProfileAddressTokoNow
-import com.tokopedia.oneclickcheckout.order.view.model.OrderProfilePayment
-import com.tokopedia.oneclickcheckout.order.view.model.OrderProfileShipment
-import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
-import com.tokopedia.oneclickcheckout.order.view.model.ProductTrackerData
-import com.tokopedia.oneclickcheckout.order.view.model.WholesalePrice
+import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.purchase_platform.common.feature.addonsproduct.data.model.AddOnsProductDataModel
 import com.tokopedia.purchase_platform.common.feature.addonsproduct.data.model.SummaryAddOnProductDataModel
 import com.tokopedia.purchase_platform.common.feature.addonsproduct.data.response.SummaryAddOnProductResponse
@@ -374,7 +340,8 @@ class GetOccCartMapper @Inject constructor() {
             bid = payment.bid,
             specificGatewayCampaignOnlyType = payment.specificGatewayCampaignOnlyType,
             walletData = mapPaymentWalletData(payment.walletAdditionalData, data.paymentAdditionalData.callbackUrl),
-            originalPaymentFees = mapPaymentFee(payment.paymentFeeDetail)
+            originalPaymentFees = mapPaymentFee(payment.paymentFeeDetail),
+            additionalData = payment.additionalData
         )
     }
 
