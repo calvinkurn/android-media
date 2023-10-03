@@ -202,12 +202,7 @@ class StoriesDetailFragment @Inject constructor(
                                 requireActivity().classLoader
                             ).show(childFragmentManager)
                     }
-                    StoriesUiEvent.OpenProduct -> {
-                        StoriesProductBottomSheet.getOrCreateFragment(
-                            childFragmentManager,
-                            requireActivity().classLoader
-                        ).show(childFragmentManager)
-                    }
+                    StoriesUiEvent.OpenProduct -> openProductBottomSheet()
                     is StoriesUiEvent.Login -> {
                         val intent = router.getIntent(requireContext(), ApplinkConst.LOGIN)
                         router.route(activityResult, intent)
@@ -256,7 +251,9 @@ class StoriesDetailFragment @Inject constructor(
     ) {
         if (prevState?.groupHeader == state.groupHeader ||
             groupId != state.selectedGroupId
-        ) return
+        ) {
+            return
+        }
 
         mAdapter.setItems(state.groupHeader)
         mAdapter.notifyItemRangeInserted(mAdapter.itemCount, state.groupHeader.size)
@@ -273,7 +270,9 @@ class StoriesDetailFragment @Inject constructor(
             state.selectedGroupId != groupId ||
             state.selectedDetailPosition < 0 ||
             state.detailItems.isEmpty()
-        ) return
+        ) {
+            return
+        }
 
         setNoInternet(false)
         setFailed(false)
@@ -294,8 +293,9 @@ class StoriesDetailFragment @Inject constructor(
     }
 
     private fun renderMedia(content: StoriesItemContent, status: StoryStatus) {
-        if (status == StoryStatus.Active
-            && content.type == StoriesItemContentType.Image) {
+        if (status == StoryStatus.Active &&
+            content.type == StoriesItemContentType.Image
+        ) {
             binding.layoutStoriesContent.ivStoriesDetailContent.loadImage(
                 content.data,
                 object : ImageLoaderStateListener {
@@ -339,7 +339,7 @@ class StoriesDetailFragment @Inject constructor(
         }
     }
 
-    private fun buildEventLabel(): String = "${mParentPage.args.source} - ${viewModel.storyId} - ${mParentPage.args.authorId} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker}"
+    private fun buildEventLabel(): String = "${mParentPage.args.entryPoint} - ${viewModel.storyId} - ${mParentPage.args.authorId} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker}"
 
     private fun renderAuthor(state: StoriesDetailItem) {
         with(binding.vStoriesPartner) {
@@ -413,7 +413,6 @@ class StoriesDetailFragment @Inject constructor(
             viewModelAction(StoriesUiAction.TapSharing)
         }
         vStoriesProductIcon.root.setOnClickListener {
-            analytic?.sendClickShoppingBagEvent(buildEventLabel())
             viewModelAction(StoriesUiAction.OpenProduct)
         }
         flStoriesProduct.onTouchEventStories { event ->
@@ -507,6 +506,14 @@ class StoriesDetailFragment @Inject constructor(
         router.route(requireContext(), appLink)
     }
 
+    private fun openProductBottomSheet() {
+        analytic?.sendClickShoppingBagEvent(buildEventLabel())
+        StoriesProductBottomSheet.getOrCreateFragment(
+            childFragmentManager,
+            requireActivity().classLoader
+        ).show(childFragmentManager)
+    }
+
     private fun openVariantBottomSheet(product: ContentTaggedProductUiModel) {
         atcVariantViewModel.setAtcBottomSheetParams(
             ProductVariantBottomSheetParams(
@@ -572,7 +579,7 @@ class StoriesDetailFragment @Inject constructor(
         view: StoriesProductBottomSheet
     ) {
         val eventLabel = "${viewModel.storyId} - ${mParentPage.args.authorId} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker} - ${product.id}"
-        analytic?.sendClickProductCardEvent(eventLabel, "stories-room - ${viewModel.storyId} - product card", listOf(product), position)
+        analytic?.sendClickProductCardEvent(eventLabel, "/stories-room - ${viewModel.storyId} - product card", listOf(product), position)
     }
 
     override fun onImpressedProduct(
