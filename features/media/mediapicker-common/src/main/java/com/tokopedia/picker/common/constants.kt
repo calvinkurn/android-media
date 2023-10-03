@@ -24,6 +24,7 @@ const val RESULT_UNIVERSAL_EDITOR = "result-universal-editor-param"
 
 // picker editor rollence
 const val PICKER_TO_EDITOR_ROLLENCE = "android_editor"
+const val PICKER_TO_IMMERSIVE_EDITOR_ROLLENCE = "android_neweditor"
 
 // picker new relic tag
 const val PICKER_SAVE_GALLERY = "PICKER_SAVE_GALLERY"
