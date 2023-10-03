@@ -154,20 +154,22 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
 
     private val filterController = FilterController()
     private val visitableList = mutableListOf<Visitable<*>>()
-    private var queryParams = mutableMapOf<String, String>()
 
     private var page = FIRST_PAGE
-    private var categoryIdL1: String = ""
-    private var categoryIdL2: String = ""
-    private var tickerData: GetTickerData = GetTickerData()
-    private var components: List<Component> = emptyList()
-    private var categoryDetail: CategoryDetail = CategoryDetail()
     private var quickFilterData: DataValue = DataValue()
+    private var categoryData: CategoryL2TabData = CategoryL2TabData()
     private var filterBottomSheetOpened: Boolean = false
 
     private var getProductJob: Job? = null
     private var excludedFilter: Option? = null
     private var isAllProductShown = false
+
+    private val categoryIdL1: String
+        get() = categoryData.categoryIdL1
+    private val categoryIdL2: String
+        get() = categoryData.categoryIdL2
+    private val queryParams
+        get() = categoryData.queryParamMap
 
     init {
         miniCartSource = MiniCartSource.TokonowCategoryPage
@@ -364,14 +366,8 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
     private fun setCategoryData(data: CategoryL2TabData) {
         val tickerData = data.tickerData
         val blockAddToCart = tickerData.blockAddToCart
-
-        this.categoryIdL1 = data.categoryIdL1
-        this.categoryIdL2 = data.categoryIdL2
-        this.tickerData = tickerData
-        this.components = data.componentList
         this.hasBlockedAddToCart = blockAddToCart
-        this.categoryDetail = data.categoryDetail
-        this.queryParams = data.queryParamMap
+        this.categoryData = data
     }
 
     private fun loadFirstPage() {
@@ -379,6 +375,9 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
             page = FIRST_PAGE
             val getProductResponse = getCategoryProduct()
             val productList = getProductResponse.searchProduct.data.productList
+
+            val tickerData = categoryData.tickerData
+            val components = categoryData.componentList
 
             if(productList.isNotEmpty()) {
                 visitableList.mapCategoryTabLayout(
