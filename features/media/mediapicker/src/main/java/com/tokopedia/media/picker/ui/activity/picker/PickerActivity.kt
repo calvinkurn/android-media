@@ -20,6 +20,7 @@ import com.tokopedia.media.R
 import com.tokopedia.media.picker.analytics.LogType
 import com.tokopedia.media.picker.analytics.Logger
 import com.tokopedia.media.picker.analytics.PickerAnalytics
+import com.tokopedia.media.picker.data.FeatureToggleManager
 import com.tokopedia.media.picker.di.PickerInjector
 import com.tokopedia.media.picker.ui.PickerFragmentFactory
 import com.tokopedia.media.picker.ui.PickerFragmentFactoryImpl
@@ -65,6 +66,9 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
 
     @Inject
     lateinit var eventBus: PickerEventBus
+
+    @Inject
+    lateinit var featureToggleManager: FeatureToggleManager
 
     protected val medias = arrayListOf<MediaUiModel>()
 
@@ -379,7 +383,7 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
     }
 
     private fun onEditorIntent(data: PickerResult) {
-        if (param.get().isImmersiveEditorEnabled()) {
+        if (param.get().isImmersiveEditorEnabled() && featureToggleManager.isImmersiveEditorEnable()) {
             // immersive editor
             val intent = UniversalEditor.
             intent(this) {
