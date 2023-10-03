@@ -260,7 +260,9 @@ class StoriesDetailFragment @Inject constructor(
     ) {
         if (prevState?.groupHeader == state.groupHeader ||
             groupId != state.selectedGroupId
-        ) return
+        ) {
+            return
+        }
 
         mAdapter.setItems(state.groupHeader)
         mAdapter.notifyItemRangeInserted(mAdapter.itemCount, state.groupHeader.size)
@@ -276,7 +278,9 @@ class StoriesDetailFragment @Inject constructor(
             state.selectedGroupId != groupId ||
             state.selectedDetailPosition < 0 ||
             state.detailItems.isEmpty()
-        ) return
+        ) {
+            return
+        }
 
         setNoInternet(false)
         setFailed(false)
@@ -297,8 +301,9 @@ class StoriesDetailFragment @Inject constructor(
     }
 
     private fun renderMedia(content: StoriesItemContent, status: StoryStatus) {
-        if (status == StoryStatus.Active
-            && content.type == StoriesItemContentType.Image) {
+        if (status == StoryStatus.Active &&
+            content.type == StoriesItemContentType.Image
+        ) {
             binding.layoutStoriesContent.ivStoriesDetailContent.loadImage(
                 content.data,
                 object : ImageLoaderStateListener {
@@ -599,7 +604,7 @@ class StoriesDetailFragment @Inject constructor(
         view: StoriesProductBottomSheet
     ) {
         val eventLabel = "${viewModel.storyId} - ${mParentPage.args.authorId} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker} - ${product.id}"
-        analytic?.sendClickProductCardEvent(eventLabel, "stories-room - ${viewModel.storyId} - product card", listOf(product), position)
+        analytic?.sendClickProductCardEvent(eventLabel, "/stories-room - ${viewModel.storyId} - product card", listOf(product), position)
     }
 
     override fun onImpressedProduct(
