@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/Unify_Static_Black"
-    android:paddingBottom="@dimen/content_common_space_16">
+    android:paddingBottom="16dp">
 
     <include
         android:id="@+id/layout_detail_loading"

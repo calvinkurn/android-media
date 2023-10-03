@@ -36,7 +36,7 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
  */
 @Composable
 fun StoriesProductNudge(productCount: String, onClick: () -> Unit) {
-    NestTheme {
+    NestTheme(darkTheme = true) {
         val ctx = LocalContext.current
 
         val infiniteTransition = rememberInfiniteTransition()
