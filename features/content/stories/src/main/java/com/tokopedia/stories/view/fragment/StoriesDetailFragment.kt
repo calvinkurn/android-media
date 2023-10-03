@@ -206,12 +206,7 @@ class StoriesDetailFragment @Inject constructor(
                                 requireActivity().classLoader
                             ).show(childFragmentManager)
                     }
-                    StoriesUiEvent.OpenProduct -> {
-                        StoriesProductBottomSheet.getOrCreateFragment(
-                            childFragmentManager,
-                            requireActivity().classLoader
-                        ).show(childFragmentManager)
-                    }
+                    StoriesUiEvent.OpenProduct -> openProductBottomSheet()
                     is StoriesUiEvent.Login -> {
                         val intent = router.getIntent(requireContext(), ApplinkConst.LOGIN)
                         router.route(activityResult, intent)
@@ -445,7 +440,6 @@ class StoriesDetailFragment @Inject constructor(
             viewModelAction(StoriesUiAction.TapSharing)
         }
         vStoriesProductIcon.root.setOnClickListener {
-            analytic?.sendClickShoppingBagEvent(buildEventLabel())
             viewModelAction(StoriesUiAction.OpenProduct)
         }
         flStoriesProduct.onTouchEventStories { event ->
@@ -537,6 +531,14 @@ class StoriesDetailFragment @Inject constructor(
 
     private fun goTo(appLink: String) {
         router.route(requireContext(), appLink)
+    }
+
+    private fun openProductBottomSheet() {
+        analytic?.sendClickShoppingBagEvent(buildEventLabel())
+        StoriesProductBottomSheet.getOrCreateFragment(
+            childFragmentManager,
+            requireActivity().classLoader
+        ).show(childFragmentManager)
     }
 
     private fun openVariantBottomSheet(product: ContentTaggedProductUiModel) {
