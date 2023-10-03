@@ -15,6 +15,7 @@ import com.tokopedia.play.widget.ui.listener.PlayWidgetInternalListener
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetType
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
+import com.tokopedia.play.widget.ui.model.error.InflateErrorException
 
 /**
  * Created by jegul on 08/10/20
@@ -103,7 +104,10 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
             PlayWidgetType.Large -> addLargeView(state.model)
             PlayWidgetType.Jumbo -> addJumboView(state.model)
             PlayWidgetType.Carousel -> addCarouselView(state.model)
-            else -> removeCurrentView()
+            else -> {
+                removeCurrentView()
+                mWidgetListener?.onWidgetError(this, InflateErrorException())
+            }
         }
     }
 

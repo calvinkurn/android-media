@@ -116,6 +116,7 @@ import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
+import com.tokopedia.play.widget.ui.model.error.PlayWidgetException
 import com.tokopedia.play.widget.ui.model.reminded
 import com.tokopedia.product.detail.BuildConfig
 import com.tokopedia.product.detail.R
@@ -5686,6 +5687,10 @@ open class DynamicProductDetailFragment :
 
     override fun onWidgetOpenAppLink(view: View, appLink: String) {
         goToApplink(appLink)
+    }
+
+    override fun onWidgetError(view: PlayWidgetView, error: PlayWidgetException) {
+        //TODO("When widget error")
     }
 
     override fun onToggleReminderClicked(
