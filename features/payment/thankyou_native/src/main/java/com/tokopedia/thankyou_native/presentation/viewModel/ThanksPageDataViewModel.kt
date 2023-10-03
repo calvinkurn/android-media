@@ -53,6 +53,10 @@ class ThanksPageDataViewModel @Inject constructor(
     @CoroutineMainDispatcher dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
 
+    companion object {
+        private const val TYP_SOURCE_ADDRESS = "typ"
+    }
+
     private val _thanksPageDataResultLiveData = MutableLiveData<Result<ThanksPageData>>()
     val thanksPageDataResultLiveData: LiveData<Result<ThanksPageData>> =
         _thanksPageDataResultLiveData
@@ -225,7 +229,7 @@ class ThanksPageDataViewModel @Inject constructor(
         launch {
             try {
                 val response =
-                    getDefaultAddressUseCase(GetDefaultChosenAddressParam(source = "typ"))
+                    getDefaultAddressUseCase(GetDefaultChosenAddressParam(source = TYP_SOURCE_ADDRESS))
                 _defaultAddressLiveData.postValue(Success(response.response))
             } catch (e: Exception) {
                 _defaultAddressLiveData.postValue(Fail(e))
