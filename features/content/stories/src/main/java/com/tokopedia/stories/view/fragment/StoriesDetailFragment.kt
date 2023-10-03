@@ -286,7 +286,7 @@ class StoriesDetailFragment @Inject constructor(
         if ((currentItem.isSameContent) && currentItem.status != StoryStatus.Removed) return
 
         renderAuthor(currentItem)
-        renderNotch(currentItem)
+        renderNudge(currentItem)
         renderMedia(currentItem.content, currentItem.status)
 
         showPageLoading(false)
@@ -427,7 +427,7 @@ class StoriesDetailFragment @Inject constructor(
         }
     }
 
-    private fun renderNotch(state: StoriesDetailItem) {
+    private fun renderNudge(state: StoriesDetailItem) {
         binding.vStoriesProductIcon.root.showWithCondition(viewModel.isProductAvailable)
         binding.vStoriesProductIcon.tvPlayProductCount.text = state.productCount
         with(binding.nudgeStoriesProduct) {
