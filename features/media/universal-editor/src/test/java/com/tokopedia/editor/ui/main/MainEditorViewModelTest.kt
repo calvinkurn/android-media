@@ -165,11 +165,13 @@ class MainEditorViewModelTest {
         mockNavigationTool()
 
         // When
-        onEvent(MainEditorEvent.SetupView(
-            UniversalEditorParam(
-                paths = listOf(filePath.path)
+        onEvent(
+            MainEditorEvent.SetupView(
+                UniversalEditorParam(
+                    paths = listOf(filePath.path)
+                )
             )
-        ))
+        )
         onEvent(MainEditorEvent.ExportMedia(bitmap))
         fakeVideoFlattenRepository.emit("result")
 
@@ -192,11 +194,13 @@ class MainEditorViewModelTest {
         mockNavigationTool()
 
         // When
-        onEvent(MainEditorEvent.SetupView(
-            UniversalEditorParam(
-                paths = listOf(filePath.path)
+        onEvent(
+            MainEditorEvent.SetupView(
+                UniversalEditorParam(
+                    paths = listOf(filePath.path)
+                )
             )
-        ))
+        )
         onEvent(MainEditorEvent.ExportMedia(bitmap))
         fakeVideoFlattenRepository.emit("")
 
@@ -210,7 +214,7 @@ class MainEditorViewModelTest {
     @Test
     fun `it should able to export a image file`() = runTest {
         // Given
-        val bitmap = ShadowBitmapFactory.create("asd", BitmapFactory.Options())
+        val bitmap = ShadowBitmapFactory.create("", BitmapFactory.Options())
         val filePath = tempFolder.newFile("dummy.png")
         val placementPath = tempFolder.newFile("placement_result.png")
 
@@ -221,24 +225,30 @@ class MainEditorViewModelTest {
         mockNavigationTool()
 
         // When
-        onEvent(MainEditorEvent.SetupView(
-            UniversalEditorParam(
-                paths = listOf(filePath.path)
+        onEvent(
+            MainEditorEvent.SetupView(
+                UniversalEditorParam(
+                    paths = listOf(filePath.path)
+                )
             )
-        ))
-        onEvent(MainEditorEvent.PlacementImageResult(
-            ImagePlacementModel(
-                path = placementPath.path,
-                scale = 1f,
-                angle = 0f,
-                translateY = 0f,
-                translateX = 0f
+        )
+        onEvent(
+            MainEditorEvent.PlacementImageResult(
+                ImagePlacementModel(
+                    path = placementPath.path,
+                    scale = 1f,
+                    angle = 0f,
+                    translateY = 0f,
+                    translateX = 0f
+                )
             )
-        ))
-        onEvent(MainEditorEvent.ExportMedia(
-            canvasTextBitmap = bitmap,
-            imageBitmap = bitmap
-        ))
+        )
+        onEvent(
+            MainEditorEvent.ExportMedia(
+                canvasTextBitmap = bitmap,
+                imageBitmap = bitmap
+            )
+        )
         fakeImageFlattenRepository.emit("result")
 
         // Verify
@@ -251,7 +261,7 @@ class MainEditorViewModelTest {
     @Test
     fun `it should fail to export a image file`() = runTest {
         // Given
-        val bitmap = ShadowBitmapFactory.create("asd", BitmapFactory.Options())
+        val bitmap = ShadowBitmapFactory.create("", BitmapFactory.Options())
         val filePath = tempFolder.newFile("dummy.png")
 
         every { resourceProvider.getString(any()) } returns ""
@@ -261,15 +271,19 @@ class MainEditorViewModelTest {
         mockNavigationTool()
 
         // When
-        onEvent(MainEditorEvent.SetupView(
-            UniversalEditorParam(
-                paths = listOf(filePath.path)
+        onEvent(
+            MainEditorEvent.SetupView(
+                UniversalEditorParam(
+                    paths = listOf(filePath.path)
+                )
             )
-        ))
-        onEvent(MainEditorEvent.ExportMedia(
-            canvasTextBitmap = bitmap,
-            imageBitmap = bitmap
-        ))
+        )
+        onEvent(
+            MainEditorEvent.ExportMedia(
+                canvasTextBitmap = bitmap,
+                imageBitmap = bitmap
+            )
+        )
         fakeImageFlattenRepository.emit("")
 
         // Verify
@@ -282,7 +296,7 @@ class MainEditorViewModelTest {
     @Test
     fun `it should fail export on non exists file`() = runTest {
         // Given
-        val bitmap = ShadowBitmapFactory.create("asd", BitmapFactory.Options())
+        val bitmap = ShadowBitmapFactory.create("", BitmapFactory.Options())
 
         every { resourceProvider.getString(any()) } returns ""
         every { isImageFormat(any()) } returns true
@@ -291,15 +305,19 @@ class MainEditorViewModelTest {
         mockNavigationTool()
 
         // When
-        onEvent(MainEditorEvent.SetupView(
-            UniversalEditorParam(
-                paths = listOf("dummy_path.png")
+        onEvent(
+            MainEditorEvent.SetupView(
+                UniversalEditorParam(
+                    paths = listOf("dummy_path.png")
+                )
             )
-        ))
-        onEvent(MainEditorEvent.ExportMedia(
-            canvasTextBitmap = bitmap,
-            imageBitmap = bitmap
-        ))
+        )
+        onEvent(
+            MainEditorEvent.ExportMedia(
+                canvasTextBitmap = bitmap,
+                imageBitmap = bitmap
+            )
+        )
         fakeImageFlattenRepository.emit("")
 
         // Verify
@@ -341,10 +359,12 @@ class MainEditorViewModelTest {
     fun `should trigger input text page open sequence`() = runTest {
         // When
         mockParamFetcher()
-        onEvent(MainEditorEvent.EditInputTextPage(
-            viewId = 0,
-            model = InputTextModel()
-        ))
+        onEvent(
+            MainEditorEvent.EditInputTextPage(
+                viewId = 0,
+                model = InputTextModel()
+            )
+        )
 
         // Verify
         val effects = recordEffect()

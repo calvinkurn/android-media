@@ -1,10 +1,7 @@
 package com.tokopedia.editor.faker
 
 import android.graphics.Bitmap
-import com.tokopedia.editor.data.repository.FlattenParam
 import com.tokopedia.editor.data.repository.ImageFlattenRepository
-import com.tokopedia.editor.data.repository.VideoFlattenRepository
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 
 class FakeImageFlattenRepository : ImageFlattenRepository {
