@@ -214,7 +214,7 @@ import com.tokopedia.seller_migration_common.R as seller_migration_commonR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 // TODO need to cleanup tracker class in the future
-class ShopPageHeaderFragmentV2 :
+class ShopPageReimagineHeaderFragment :
     BaseDaggerFragment(),
     HasComponent<ShopPageHeaderComponent>,
     ShopPageHeaderFragmentViewHolderListener,
@@ -305,7 +305,7 @@ class ShopPageHeaderFragmentV2 :
         private const val VALUE_ROLLENCE_NEW_SHOP_SHARE = "control_variant"
 
         @JvmStatic
-        fun createInstance() = ShopPageHeaderFragmentV2()
+        fun createInstance() = ShopPageReimagineHeaderFragment()
     }
 
     private var initialScrollToTopButtonMarginBottom: Int = 0
@@ -1563,7 +1563,7 @@ class ShopPageHeaderFragmentV2 :
 
     private fun initAdapter() {
         activity?.run {
-            viewPagerAdapterHeader = ShopPageHeaderFragmentPagerAdapter(this, this@ShopPageHeaderFragmentV2)
+            viewPagerAdapterHeader = ShopPageHeaderFragmentPagerAdapter(this, this@ShopPageReimagineHeaderFragment)
         }
     }
 
@@ -1699,7 +1699,7 @@ class ShopPageHeaderFragmentV2 :
         isShowFeed = shopPageHeaderP1Data.isWhitelist
         createPostUrl = shopPageHeaderP1Data.feedUrl
         shopPageHeaderDataModel = ShopPageHeaderDataModel().apply {
-            shopId = this@ShopPageHeaderFragmentV2.shopId
+            shopId = this@ShopPageReimagineHeaderFragment.shopId
             isOfficial = shopPageHeaderP1Data.isOfficial
             isGoldMerchant = shopPageHeaderP1Data.isGoldMerchant
             pmTier = shopPageHeaderP1Data.pmTier
@@ -1985,7 +1985,7 @@ class ShopPageHeaderFragmentV2 :
                 setShopId(shopId)
                 setUserId(userId)
                 setIsMyShop(isMyShop)
-                setChooseAddressListener(this@ShopPageHeaderFragmentV2)
+                setChooseAddressListener(this@ShopPageReimagineHeaderFragment)
             }
             listShopPageTabModel.add(
                 ShopPageHeaderTabModel(
@@ -2826,7 +2826,7 @@ class ShopPageHeaderFragmentV2 :
 
     private fun oldUniversalShareBottomSheet(path: String? = null) {
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance(view).apply {
-            init(this@ShopPageHeaderFragmentV2)
+            init(this@ShopPageReimagineHeaderFragment)
             path?.let {
                 setImageOnlySharingOption(true)
                 setScreenShotImagePath(path)
@@ -2848,7 +2848,7 @@ class ShopPageHeaderFragmentV2 :
                     id = shopPageHeaderDataModel?.shopId ?: ""
                 )
             )
-            val shareString = this@ShopPageHeaderFragmentV2.getString(R.string.shop_page_share_text, shopPageHeaderDataModel?.shopName)
+            val shareString = this@ShopPageReimagineHeaderFragment.getString(R.string.shop_page_share_text, shopPageHeaderDataModel?.shopName)
             setShareText("$shareString%s")
         }
 
@@ -3034,7 +3034,7 @@ class ShopPageHeaderFragmentV2 :
 
     private fun newUniversalShareBottomSheet(path: String? = null) {
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance(view).apply {
-            init(this@ShopPageHeaderFragmentV2)
+            init(this@ShopPageReimagineHeaderFragment)
 
             path?.let {
                 setImageOnlySharingOption(true)
