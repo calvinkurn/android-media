@@ -197,4 +197,8 @@ class CartPromoEntryPointProcessor @Inject constructor(
             isNoItemSelected = true
         )
     }
+
+    fun getEntryPointInfoActiveDefault(codes: List<String>): EntryPointInfoEvent {
+        return EntryPointInfoEvent.ActiveDefault(codes)
+    }
 }

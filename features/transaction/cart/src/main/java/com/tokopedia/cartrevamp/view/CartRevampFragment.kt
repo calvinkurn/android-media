@@ -3736,7 +3736,7 @@ class CartRevampFragment :
     }
 
     private fun renderPromoCheckoutButtonActiveDefault(listPromoApplied: List<String>) {
-        viewModel.getEntryPointInfoDefault()
+        viewModel.getEntryPointInfoDefault(listPromoApplied)
     }
 
     private fun renderPromoCheckoutButtonNoItemIsSelected() {

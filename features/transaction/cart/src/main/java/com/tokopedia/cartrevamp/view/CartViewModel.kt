@@ -39,7 +39,6 @@ import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.cartrevamp.domain.usecase.SetCartlistCheckboxStateUseCase
 import com.tokopedia.cartrevamp.view.helper.CartDataHelper
-import com.tokopedia.cartrevamp.view.mapper.CartUiModelMapper
 import com.tokopedia.cartrevamp.view.mapper.PromoRequestMapper
 import com.tokopedia.cartrevamp.view.processor.CartCalculator
 import com.tokopedia.cartrevamp.view.processor.CartPromoEntryPointProcessor
@@ -2741,25 +2740,13 @@ class CartViewModel @Inject constructor(
         )
     }
 
-    fun getEntryPointInfoDefault() {
-        launchCatchError(
-            context = dispatchers.main,
-            block = {
-                _entryPointInfoEvent.postValue(EntryPointInfoEvent.Loading)
-                cartModel.cartListData?.let { data ->
-                    val lastApply = CartUiModelMapper.mapLastApplySimplified(data.promo.lastApplyPromo.lastApplyPromoData)
-                    val entryPointEvent = cartPromoEntryPointProcessor
-                        .getEntryPointInfoFromLastApply(lastApply, cartModel, cartDataList.value)
-                    _entryPointInfoEvent.postValue(entryPointEvent)
-                }
-            },
-            onError = {
-                cartModel.cartListData?.let { data ->
-                    val lastApply = CartUiModelMapper.mapLastApplySimplified(data.promo.lastApplyPromo.lastApplyPromoData)
-                    _entryPointInfoEvent.postValue(EntryPointInfoEvent.Error(lastApply))
-                }
-            }
-        )
+    fun getEntryPointInfoDefault(appliedPromoCodes: List<String> = emptyList()) {
+        if (isPromoRevamp()) {
+            getEntryPointInfoFromLastApply(LastApplyUiModel())
+        } else {
+            cartPromoEntryPointProcessor
+                .getEntryPointInfoActiveDefault(appliedPromoCodes)
+        }
     }
 
     fun getEntryPointInfoNoItemSelected() {
