@@ -5,12 +5,9 @@ import com.arthenica.mobileffmpeg.Config
 import com.arthenica.mobileffmpeg.FFmpeg
 import com.tokopedia.editor.data.model.CanvasSize
 import com.tokopedia.utils.file.FileUtil
-import com.tokopedia.utils.image.ImageProcessingUtil
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import timber.log.Timber
-import java.io.File
 import javax.inject.Inject
 
 typealias FlattenParam = VideoFlattenRepositoryImpl.Param
@@ -23,20 +20,20 @@ interface VideoFlattenRepository {
 }
 
 class VideoFlattenRepositoryImpl @Inject constructor(
-    private val imageSaveRepository: ImageSaveRepository
+    private val imageSaveRepository: ImageSaveRepository,
+    private val metadataExtractorRepository: VideoExtractMetadataRepository
 ) : VideoFlattenRepository {
 
     private var executionId = 0L
 
     override fun flatten(param: FlattenParam): Flow<String> {
-        val startTime = System.currentTimeMillis()
-
         return callbackFlow {
             // this resized ratio will be used both canvas image and video output
-            val canvasSize = newRes(param.canvasSize.width, param.canvasSize.height)
+            val metadata = metadataExtractorRepository.extract(param.videoPath)
+            val canvasSize = newRes(metadata.width)
 
             // convert the bitmap from canvas layout into file
-            val textCanvasPath = imageSaveRepository.saveBitmap(param.canvasText, canvasSize)
+            val textCanvasPath = imageSaveRepository.saveBitmap(param.canvasTextBitmap, canvasSize)
             if (textCanvasPath.isEmpty()) trySend("")
 
             val command = createFfmpegParam(
@@ -48,8 +45,6 @@ class VideoFlattenRepositoryImpl @Inject constructor(
 
             executionId = FFmpeg.executeAsync(command) { _, returnCode ->
                 if (returnCode == Config.RETURN_CODE_SUCCESS) {
-                    val endTime = System.currentTimeMillis()
-                    Timber.d("flatten-video (name: ${File(param.videoPath).nameWithoutExtension}, size: ${File(param.videoPath).length()} bytes, canvas size: ${param.canvasSize}): start time ($startTime), end time ($endTime), flatten (${endTime-startTime} sec)")
                     trySend(flattenResultFilePath())
                 } else {
                     trySend("")
@@ -88,9 +83,9 @@ class VideoFlattenRepositoryImpl @Inject constructor(
         return "-i \"$videoPath\" -i \"$textPath\" -filter_complex \"$filter\" -c:a copy -f mp4 $removeAudioCommand -y ${flattenResultFilePath()}"
     }
 
-    private fun newRes(width: Int, height: Int): CanvasSize {
+    private fun newRes(width: Int): CanvasSize {
         val scaledWidth = if (width > MAX_WIDTH) MAX_WIDTH else if (width < MIN_WIDTH) MIN_WIDTH else width
-        val scaledHeight = (scaledWidth * height.toFloat() / width.toFloat()).toInt()
+        val scaledHeight = ((scaledWidth.toDouble() / RATIO_WIDTH) * RATIO_HEIGHT).toInt()
 
         return CanvasSize(scaledWidth, scaledHeight)
     }
@@ -101,8 +96,7 @@ class VideoFlattenRepositoryImpl @Inject constructor(
 
     data class Param(
         val videoPath: String,
-        val canvasText: Bitmap,
-        val canvasSize: CanvasSize,
+        val canvasTextBitmap: Bitmap,
         val isRemoveAudio: Boolean
     )
 
@@ -111,5 +105,8 @@ class VideoFlattenRepositoryImpl @Inject constructor(
 
         private const val MAX_WIDTH = 720
         private const val MIN_WIDTH = 480
+
+        private const val RATIO_WIDTH = 9
+        private const val RATIO_HEIGHT = 16
     }
 }
