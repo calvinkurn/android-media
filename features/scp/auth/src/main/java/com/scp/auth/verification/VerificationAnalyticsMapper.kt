@@ -1,6 +1,7 @@
 package com.scp.auth.verification
 
 import com.scp.verification.core.domain.common.infrastructure.CVEventFieldName
+import com.scp.verification.core.domain.common.infrastructure.CVEventName
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.interfaces.ContextAnalytics
 import com.tokopedia.user.session.UserSessionInterface
@@ -8,10 +9,10 @@ import javax.inject.Inject
 
 class VerificationAnalyticsMapper @Inject constructor(private val gtm: ContextAnalytics, private val userSession: UserSessionInterface) {
 
-    fun trackClickCvSdk(trackerId: String, eventName: String, param: Map<String, Any?>) {
+    fun trackEventCvSdk(eventName: String, param: Map<String, Any?>) {
         gtm.sendGeneralEvent(
             createData(
-                trackerId,
+                trackerIdEventFactory(eventName),
                 CLICK_ACCOUNT_EVENT,
                 CVSDK_VERIFICATION_CATEGORY,
                 eventName,
@@ -21,10 +22,10 @@ class VerificationAnalyticsMapper @Inject constructor(private val gtm: ContextAn
         )
     }
 
-    fun trackScreenCvSdk(trackerId: String, eventName: String, param: Map<String, Any?>) {
+    fun trackScreenCvSdk(eventName: String, param: Map<String, Any?>) {
         gtm.sendGeneralEvent(
             createData(
-                trackerId,
+                TRACKER_ID_SCREEN_VIEW,
                 VIEW_ACCOUNT_EVENT,
                 CVSDK_VERIFICATION_CATEGORY,
                 eventName,
@@ -34,10 +35,10 @@ class VerificationAnalyticsMapper @Inject constructor(private val gtm: ContextAn
         )
     }
 
-    fun trackFailedCvSdk(trackerId: String, eventName: String, param: Map<String, Any?>) {
+    fun trackFailedCvSdk(eventName: String, param: Map<String, Any?>) {
         gtm.sendGeneralEvent(
             createData(
-                trackerId,
+                TRACKER_ID_INPUT_SCREEN_FAILED,
                 FAILED_ACCOUNT_EVENT,
                 CVSDK_VERIFICATION_CATEGORY,
                 eventName,
@@ -47,14 +48,14 @@ class VerificationAnalyticsMapper @Inject constructor(private val gtm: ContextAn
         )
     }
 
-    fun trackErrorPopupViewCvSdk(trackerId: String, eventName: String, param: Map<String, String>) {
+    fun trackErrorPopupViewCvSdk(eventName: String, param: Map<String, Any?>) {
         gtm.sendGeneralEvent(
             createData(
-                trackerId,
+                TRACKER_ID_INPUT_SCREEN_ERROR_POPUP_VIEW,
                 VIEW_ACCOUNT_EVENT,
                 CVSDK_VERIFICATION_CATEGORY,
                 eventName,
-                createEventLabelCvSdk(param).createEventLabelFailed(),
+                createEventLabelCvSdk(param).createEventLabelPopupView(),
                 createCustomDimension(getSdkVersion(param))
             )
         )
@@ -88,6 +89,24 @@ class VerificationAnalyticsMapper @Inject constructor(private val gtm: ContextAn
             statusCode = param[CVEventFieldName.STATUS_CODE].toString()
         )
 
+    private fun trackerIdEventFactory(eventName: String): String {
+        return when (eventName) {
+            CVEventName.CVSDK_HELP_CLICKED -> TRACKER_ID_HELP_CLICKED
+            CVEventName.CVSDK_BACK_CLICKED -> TRACKER_ID_BACK_CLICKED
+            CVEventName.CVSDK_INPUT_SCREEN_SUBMIT_SUCCESSFUL -> TRACKER_ID_INPUT_SCREEN_SUBMIT_SUCCESSFUL
+            CVEventName.CVSDK_INPUT_SCREEN_RESEND_CLICKED -> TRACKER_ID_INPUT_SCREEN_RESEND_CLICKED
+            CVEventName.CVSDK_INPUT_SCREEN_RESEND_SUCCESSFUL -> TRACKER_ID_INPUT_SCREEN_RESEND_SUCCESSFUL
+            CVEventName.CVSDK_INITIATE_CALL_SUCCESSFUL -> TRACKER_ID_INITIATE_CALL_SUCCESSFUL
+            CVEventName.CVSDK_METHOD_SELECTED -> TRACKER_ID_METHOD_SELECTED
+            CVEventName.CVSDK_METHOD_SELECTION_SUCCESSFUL -> TRACKER_ID_METHOD_SELECTION_SUCCESSFUL
+            CVEventName.CVSDK_INPUT_SCREEN_TRY_ANOTHER_WAY_CLICKED -> TRACKER_ID_INPUT_SCREEN_TRY_ANOTHER_METHOD_CLICKED
+            CVEventName.CVSDK_INPUT_SCREEN_OPEN_WHATSAPP_CLICKED -> TRACKER_ID_INPUT_SCREEN_OPEN_WHATSAPP_CLICKED
+            CVEventName.CVSDK_INPUT_SCREEN_FORGOT_PIN_CLICKED -> TRACKER_ID_INPUT_SCREEN_FORGOT_PIN_CLICKED
+            CVEventName.CVSDK_INPUT_SCREEN_SUBMIT -> ""
+            else -> ""
+        }
+    }
+
     companion object {
         private const val FAILED_ACCOUNT_EVENT = "todo please replace with the correct value"
         private const val CLICK_ACCOUNT_EVENT = "clickAccount"
@@ -105,6 +124,24 @@ class VerificationAnalyticsMapper @Inject constructor(private val gtm: ContextAn
         private const val TRANSACTION_ID = "transactionID"
         private const val TYPE = "type"
         private const val COUNTRY_CODE = "countryCode"
+
+        // Tracker ID
+        private const val TRACKER_ID_SCREEN_VIEW = "47627"
+        private const val TRACKER_ID_HELP_CLICKED = "47628"
+        private const val TRACKER_ID_BACK_CLICKED = "47629"
+        private const val TRACKER_ID_INITIATE_CALL_SUCCESSFUL = "47630"
+        private const val TRACKER_ID_METHOD_SELECTED = "47631"
+        private const val TRACKER_ID_METHOD_SELECTION_SUCCESSFUL = "47632"
+        private const val TRACKER_ID_INPUT_SCREEN_SUBMIT_SUCCESSFUL = "47633"
+        private const val TRACKER_ID_INPUT_SCREEN_RESEND_CLICKED = "47634"
+        private const val TRACKER_ID_INPUT_SCREEN_RESEND_SUCCESSFUL = "47635"
+        private const val TRACKER_ID_INPUT_SCREEN_TRY_ANOTHER_METHOD_CLICKED = "47636"
+        private const val TRACKER_ID_INPUT_SCREEN_OPEN_WHATSAPP_CLICKED = "47638"
+        private const val TRACKER_ID_INPUT_SCREEN_FORGOT_PIN_CLICKED = "47639"
+        private const val TRACKER_ID_INPUT_SCREEN_FORGOT_PASSWORD_CLICKED = "47640"
+        private const val TRACKER_ID_INPUT_SCREEN_FAILED = "47641"
+        private const val TRACKER_ID_INPUT_SCREEN_ERROR_POPUP_VIEW = "47642"
+        private const val TRACKER_ID_VALIDATE_CALL_SUCCESSFUL = "47697"
     }
 }
 
