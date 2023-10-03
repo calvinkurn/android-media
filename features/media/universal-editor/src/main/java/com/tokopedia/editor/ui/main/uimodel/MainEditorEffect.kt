@@ -13,11 +13,8 @@ sealed class MainEditorEffect {
     data class FinishEditorPage(val filePath: String) : MainEditorEffect()
     data class OpenPlacementPage(val sourcePath: String, val model: ImagePlacementModel?) : MainEditorEffect()
 
-    object ShowCloseDialogConfirmation : MainEditorEffect()
-
-    object CloseMainEditorPage : MainEditorEffect()
-
     // Visibility handler
+    object ShowCloseDialogConfirmation : MainEditorEffect()
     data class ShowToastErrorMessage(val message: String) : MainEditorEffect()
     data class ParentToolbarVisibility(val visible: Boolean) : MainEditorEffect()
     data class RemoveAudioState(val isRemoved: Boolean) : MainEditorEffect()
@@ -27,6 +24,7 @@ sealed class MainEditorEffect {
     object HideLoading : MainEditorEffect()
 
     // Common
+    object CloseMainEditorPage : MainEditorEffect()
     object UpdateTextAddedState : MainEditorEffect()
     data class UpdatePagerSourcePath(val newSourcePath: String) : MainEditorEffect()
 }

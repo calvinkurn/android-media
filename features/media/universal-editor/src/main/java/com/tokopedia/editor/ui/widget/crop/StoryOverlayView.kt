@@ -2,9 +2,9 @@ package com.tokopedia.editor.ui.widget.crop
 
 import android.content.Context
 import android.content.res.TypedArray
+import android.os.Handler
 import android.util.AttributeSet
 import com.yalantis.ucrop.view.OverlayView
-import android.os.Handler
 
 class StoryOverlayView : OverlayView {
     constructor(context: Context) : super(context)

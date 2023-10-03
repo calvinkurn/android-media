@@ -10,21 +10,20 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.editor.R
-import com.tokopedia.editor.analytics.main.editor.MainEditorAnalytics
 import com.tokopedia.editor.databinding.ActivityMainEditorBinding
 import com.tokopedia.editor.di.ModuleInjector
 import com.tokopedia.editor.ui.EditorFragmentProvider
 import com.tokopedia.editor.ui.EditorFragmentProviderImpl
+import com.tokopedia.editor.ui.dialog.ConfirmationDialog
 import com.tokopedia.editor.ui.main.component.AudioStateUiComponent
 import com.tokopedia.editor.ui.main.component.GlobalLoaderUiComponent
 import com.tokopedia.editor.ui.main.component.NavigationToolUiComponent
 import com.tokopedia.editor.ui.main.component.PagerContainerUiComponent
-import com.tokopedia.editor.ui.model.ImagePlacementModel
 import com.tokopedia.editor.ui.main.uimodel.InputTextParam
 import com.tokopedia.editor.ui.main.uimodel.MainEditorEffect
 import com.tokopedia.editor.ui.main.uimodel.MainEditorEvent
+import com.tokopedia.editor.ui.model.ImagePlacementModel
 import com.tokopedia.editor.ui.model.InputTextModel
 import com.tokopedia.editor.ui.placement.PlacementImageActivity
 import com.tokopedia.editor.ui.text.InputTextActivity
@@ -49,7 +48,7 @@ import javax.inject.Inject
  * scope and area all editor tools. The universal editor module adopting a single activity,
  * which only contain a single entry point.
  *
- * To access the universal editor, please refer to use a built-in intent in [UniversalEditor] nor
+ * To access the universal editor, please refer to use a built-in intent for this Editor nor
  * you could access this page with this applink:
  *
  * @applink tokopedia-android-internal://global/universal-editor
@@ -63,6 +62,9 @@ open class MainEditorActivity : AppCompatActivity()
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var confirmationDialog: ConfirmationDialog
 
     private var isPageInitialize = false
 
@@ -158,45 +160,7 @@ open class MainEditorActivity : AppCompatActivity()
         }
 
         lifecycleScope.launchWhenCreated {
-            viewModel.uiEffect.collect {
-                when (it) {
-                    is MainEditorEffect.ShowToastErrorMessage -> {
-                        onShowToastErrorMessage(it.message)
-                    }
-                    is MainEditorEffect.OpenInputText -> {
-                        navigateToInputTextTool(it.model)
-                    }
-                    is MainEditorEffect.ParentToolbarVisibility -> {
-                        toolbar.setVisibility(it.visible)
-                        navigationTool.setVisibility(it.visible)
-                    }
-                    is MainEditorEffect.OpenPlacementPage -> {
-                        navigateToPlacementImagePage(it.sourcePath, it.model)
-                    }
-                    is MainEditorEffect.UpdatePagerSourcePath -> {
-                        pagerContainer.updateView(it.newSourcePath)
-                    }
-                    is MainEditorEffect.CloseMainEditorPage -> {
-                        finish()
-                    }
-                    is MainEditorEffect.ShowCloseDialogConfirmation -> {
-                        showConfirmationBackDialog()
-                    }
-                    is MainEditorEffect.FinishEditorPage -> {
-                        navigateBackToPickerAndFinishIntent(it.filePath)
-                    }
-                    is MainEditorEffect.UpdateTextAddedState -> {
-                        val hasTextAdded = binding.container.hasTextAdded()
-                        viewModel.onEvent(MainEditorEvent.HasTextAdded(hasTextAdded))
-                    }
-                    is MainEditorEffect.RemoveAudioState -> {
-                        navigationTool.setRemoveAudioUiState(it.isRemoved)
-                        audioMuteState.onShowOrHideAudioState(it.isRemoved)
-                    }
-                    is MainEditorEffect.ShowLoading -> globalLoader.showLoading()
-                    is MainEditorEffect.HideLoading -> globalLoader.hideLoading()
-                }
-            }
+            viewModel.uiEffect.collect(::onEffectHandler)
         }
     }
 
@@ -212,6 +176,39 @@ open class MainEditorActivity : AppCompatActivity()
         binding.container.setListener(this)
 
         isPageInitialize = true
+    }
+
+    private fun onEffectHandler(effect: MainEditorEffect) {
+        when (effect) {
+            is MainEditorEffect.ParentToolbarVisibility -> {
+                toolbar.setVisibility(effect.visible)
+                navigationTool.setVisibility(effect.visible)
+            }
+            is MainEditorEffect.CloseMainEditorPage -> {
+                viewModel.onEvent(MainEditorEvent.DisposeRemainingTasks)
+                finish()
+            }
+            is MainEditorEffect.ShowCloseDialogConfirmation -> {
+                confirmationDialog.show(this@MainEditorActivity) {
+                    viewModel.onEvent(MainEditorEvent.ClickHeaderCloseButton(true))
+                }
+            }
+            is MainEditorEffect.UpdateTextAddedState -> {
+                val hasTextAdded = binding.container.hasTextAdded()
+                viewModel.onEvent(MainEditorEvent.HasTextAdded(hasTextAdded))
+            }
+            is MainEditorEffect.RemoveAudioState -> {
+                navigationTool.setRemoveAudioUiState(effect.isRemoved)
+                audioMuteState.onShowOrHideAudioState(effect.isRemoved)
+            }
+            is MainEditorEffect.OpenPlacementPage -> navigateToPlacementImagePage(effect.sourcePath, effect.model)
+            is MainEditorEffect.UpdatePagerSourcePath -> pagerContainer.updateView(effect.newSourcePath)
+            is MainEditorEffect.FinishEditorPage -> navigateBackToPickerAndFinishIntent(effect.filePath)
+            is MainEditorEffect.ShowToastErrorMessage -> onShowToastErrorMessage(effect.message)
+            is MainEditorEffect.OpenInputText -> navigateToInputTextTool(effect.model)
+            is MainEditorEffect.ShowLoading -> globalLoader.showLoading()
+            is MainEditorEffect.HideLoading -> globalLoader.hideLoading()
+        }
     }
 
     private fun onToolClicked(@ToolType type: Int) {
@@ -290,29 +287,6 @@ open class MainEditorActivity : AppCompatActivity()
     private fun defaultActionButtonText(param: UniversalEditorParam): String {
         if (param.proceedButtonText.isNotEmpty()) return param.proceedButtonText
         return getString(R.string.universal_editor_toolbar_action_button)
-    }
-
-    private fun showConfirmationBackDialog() {
-        DialogUnify(this, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply dialog@{
-            setTitle(getString(R.string.universal_editor_main_confirmation_title))
-            setDescription(getString(R.string.universal_editor_main_confirmation_desc))
-
-            dialogPrimaryCTA.apply {
-                text = getString(R.string.universal_editor_main_confirmation_primary_cta)
-                setOnClickListener {
-                    viewModel.onEvent(MainEditorEvent.ClickHeaderCloseButton(isSkipConfirmation = true))
-                }
-            }
-
-            dialogSecondaryLongCTA.apply {
-                text = getString(R.string.universal_editor_main_confirmation_secondary_cta)
-                setOnClickListener {
-                    dismiss()
-                }
-            }
-
-            show()
-        }
     }
 
     private fun fragmentProvider(): EditorFragmentProvider {

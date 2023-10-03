@@ -1,42 +1,66 @@
 package com.tokopedia.editor.data.repository
 
-import android.content.Context
 import android.graphics.Bitmap
-import android.net.Uri
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.yalantis.ucrop.util.BitmapLoadUtils
+import com.tokopedia.editor.data.model.CanvasSize
+import com.tokopedia.utils.image.ImageProcessingUtil.getTokopediaPhotoPath
 import java.io.File
-import java.io.IOException
-import java.io.OutputStream
+import java.io.FileOutputStream
 import javax.inject.Inject
-import kotlin.jvm.Throws
 
 interface ImageSaveRepository {
-    @Throws(IOException::class)
-    fun saveBitmap(outputPath: String, bitmap: Bitmap): String
+
+    /**
+     * Save bitmap without specify the output path result,
+     *
+     * the file path will be generated using built-in tokopedia core util.
+     */
+    fun saveBitmap(bitmap: Bitmap): String
+
+    /**
+     * Save bitmap with customize the target output path.
+     */
+    fun saveBitmap(bitmap: Bitmap, outputPath: String): String
+
+    /**
+     * Generate and save scaled bitmap with width and height param with generated target path.
+     */
+    fun saveBitmap(bitmap: Bitmap, size: CanvasSize): String
 }
 
-class ImageSaveRepositoryImpl @Inject constructor(
-    @ApplicationContext private val context: Context
-): ImageSaveRepository{
+class ImageSaveRepositoryImpl @Inject constructor() : ImageSaveRepository {
 
-    override fun saveBitmap(outputPath: String, bitmap: Bitmap): String {
-        var outputStream: OutputStream? = null
+    private val compressFormat = Bitmap.CompressFormat.PNG
+
+    override fun saveBitmap(bitmap: Bitmap, outputPath: String): String {
+        val file = File(outputPath)
+        if (file.exists()) file.delete()
+
         try {
-            outputStream = context.contentResolver.openOutputStream(Uri.fromFile(File(outputPath)))
-            bitmap.compress(Bitmap.CompressFormat.PNG,
-                IMAGE_QUALITY, outputStream)
+            val out = FileOutputStream(file)
+            bitmap.compress(compressFormat, IMAGE_QUALITY, out)
             bitmap.recycle()
-        } catch (e: Exception) {
-            throw IOException(e.message)
-        } finally {
-            BitmapLoadUtils.close(outputStream)
+            out.close()
+        } catch (t: Throwable) {
+            return ""
         }
 
-        return outputPath
+        return file.path
+    }
+
+    override fun saveBitmap(bitmap: Bitmap): String {
+        val file = getTokopediaPhotoPath(compressFormat, DEFAULT_CACHE_FOLDER)
+        return saveBitmap(bitmap, file.path)
+    }
+
+    override fun saveBitmap(bitmap: Bitmap, size: CanvasSize): String {
+        val file = getTokopediaPhotoPath(compressFormat, DEFAULT_CACHE_FOLDER)
+        val newBitmap = Bitmap.createScaledBitmap(bitmap, size.width, size.height, true)
+        return saveBitmap(newBitmap, file.path)
     }
 
     companion object {
+        private const val DEFAULT_CACHE_FOLDER = "Tokopedia/"
+
         private const val IMAGE_QUALITY = 100
     }
 }

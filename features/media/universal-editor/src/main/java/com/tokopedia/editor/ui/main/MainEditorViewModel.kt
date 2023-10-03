@@ -1,10 +1,8 @@
 package com.tokopedia.editor.ui.main
 
-import android.content.Context
 import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.editor.data.repository.NavigationToolRepository
 import com.tokopedia.editor.data.repository.VideoFlattenRepository
@@ -25,10 +23,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.onCompletion
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -50,7 +45,7 @@ class MainEditorViewModel @Inject constructor(
      * A path is active file path.
      *
      * Whether comes from image placement, video source file, etc.
-     * we need to set this [activeFilePath] immediately as of current file.
+     * we need to set this [filePath] immediately as of current file.
      *
      * every single editing tool needs to update this filePath through
      * [setActiveEditableFilePath].
@@ -91,7 +86,7 @@ class MainEditorViewModel @Inject constructor(
                     analytics.finishPageClick(
                         hasText = it.hasTextAdded,
                         isMute = it.isRemoveAudio,
-                        isCropped = it.imagePlacementModel != null
+                        isCropped = it.hasPlacementEdited()
                     )
                 }
 
@@ -116,15 +111,20 @@ class MainEditorViewModel @Inject constructor(
             is MainEditorEvent.ResetActiveInputText -> {
                 _inputTextState.value = InputTextParam.reset()
             }
+            is MainEditorEvent.DisposeRemainingTasks -> {
+                videoFlattenRepository.cancel()
+            }
             is MainEditorEvent.ClickHeaderCloseButton -> {
                 analytics.backPageClick()
 
-                val currentState = mainEditorState.value
+                val isPlacementEdited = mainEditorState.value.hasPlacementEdited()
+                val isTextAdded = mainEditorState.value.hasTextAdded
 
-                val isPlacementEdited = currentState.hasPlacementEdited()
-                val isTextAdded = currentState.hasTextAdded
+                val isFlattenOngoing = if (MediaFile(filePath).isVideo()) {
+                    videoFlattenRepository.isFlattenOngoing()
+                } else true
 
-                if ((isPlacementEdited || isTextAdded) && !event.isSkipConfirmation) {
+                if ((isPlacementEdited || isTextAdded || isFlattenOngoing) && !event.isSkipConfirmation) {
                     setAction(MainEditorEffect.ShowCloseDialogConfirmation)
                 } else {
                     setAction(MainEditorEffect.CloseMainEditorPage)
@@ -133,22 +133,27 @@ class MainEditorViewModel @Inject constructor(
         }
     }
 
-    private fun exportFinalMedia(filePath: String, canvasText: Bitmap, imageBitmap: Bitmap?) {
+    private fun exportFinalMedia(filePath: String, canvasTextBitmap: Bitmap, imageBitmap: Bitmap?) {
         val file = MediaFile(filePath)
 
         if (file.exist().not()) return
         val path = file.path ?: return
 
         if (file.isImage()) {
-            flattenImageFileWithTextCanvas(imageBitmap, canvasText)
+            flattenImageFileWithTextCanvas(imageBitmap, canvasTextBitmap)
         } else {
-            flattenVideoFileWithTextCanvas(path, canvasText)
+            flattenVideoFileWithTextCanvas(path, canvasTextBitmap)
         }
     }
 
-    private fun flattenVideoFileWithTextCanvas(videoPath: String, canvasText: Bitmap) {
-        val isAudioRemoved = mainEditorState.value.isRemoveAudio
-        val param = FlattenParam(videoPath, canvasText, isAudioRemoved)
+    private fun flattenVideoFileWithTextCanvas(videoPath: String, canvasTextBitmap: Bitmap) {
+        val isRemoveAudio = mainEditorState.value.isRemoveAudio
+
+        val param = FlattenParam(
+            videoPath = videoPath,
+            canvasTextBitmap = canvasTextBitmap,
+            isRemoveAudio = isRemoveAudio
+        )
 
         viewModelScope.launch {
             videoFlattenRepository

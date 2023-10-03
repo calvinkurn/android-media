@@ -15,22 +15,20 @@ import com.google.android.exoplayer2.source.smoothstreaming.SsMediaSource
 import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import javax.inject.Inject
 
-class EditorVideoPlayer constructor(
-    private val context: Context
+class EditorVideoPlayer @Inject constructor(
+    @ApplicationContext private val context: Context,
+    private val exoPlayer: SimpleExoPlayer
 ) {
 
-    var videoUrl = ""
-
-    var listener: Listener? = null
-
-    private val exoPlayer = SimpleExoPlayer
-        .Builder(context)
-        .build()
-
     private var loopingMediaSource: LoopingMediaSource? = null
+    private var videoUrl = ""
 
-    init {
+    fun init(url: String, listener: Listener?) {
+        videoUrl = url
+
         exoPlayer.addListener(object : Player.EventListener {
             override fun onIsPlayingChanged(isPlaying: Boolean) {
                 super.onIsPlayingChanged(isPlaying)
@@ -103,5 +101,4 @@ class EditorVideoPlayer constructor(
     interface Listener {
         fun isPlayingOnChanged(isPlaying: Boolean)
     }
-
 }

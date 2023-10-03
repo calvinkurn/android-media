@@ -58,7 +58,8 @@ class PlacementImageViewModel @Inject constructor(
             async {
                 // save placement bitmap result
                 try {
-                    val resultPath = imageFlattenRepo.saveBitmap(outputPath, bitmap)
+                    val resultPath = imageFlattenRepo.saveBitmap(bitmap, outputPath)
+                    if (resultPath.isEmpty()) return@async
 
                     // matrix to model
                     val placementModel = ImagePlacementModel(
