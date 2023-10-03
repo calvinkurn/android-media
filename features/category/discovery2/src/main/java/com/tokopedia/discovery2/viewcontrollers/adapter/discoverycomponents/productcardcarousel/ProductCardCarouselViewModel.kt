@@ -206,14 +206,10 @@ class ProductCardCarouselViewModel(val application: Application, val components:
         }
         productLoadState.addAll(productDataList)
         if (Utils.nextPageAvailable(components, PRODUCT_PER_PAGE)) {
-            // TODO: We'll add component based on server's flag
-            val isSupportPagination = false
-
-            val nextPageComponent = if (isSupportPagination) {
+            val nextPageComponent = if (isSupportPagination()) {
                 constructLoadMoreComponent()
             } else {
-                val shopAppLink = productDataList.first().data?.first()?.shopApplink
-                constructViewAllCard(shopAppLink)
+                constructViewAllCard()
             }
 
             productLoadState.add(nextPageComponent)
@@ -230,16 +226,18 @@ class ProductCardCarouselViewModel(val application: Application, val components:
             discoveryPageData[this.pageEndPoint]?.componentMap?.set(this.id, this)
         }
 
-
-    private fun constructViewAllCard(appLink: String?) =
+    private fun constructViewAllCard() =
         ComponentsItem(name = ComponentNames.ViewAllCardCarousel.componentName).apply {
             id = ComponentNames.ViewAllCardCarousel.componentName
-            data = listOf(
+            val element = with(components.compAdditionalInfo?.redirection!!) {
                 DataItem(
-                    title = "Ada produk menarik lain di toko ini!",
-                    applinks = appLink
+                    title = this.bodyText,
+                    action = this.ctaText,
+                    applinks = this.applink
                 )
-            )
+            }
+
+            data = listOf(element)
         }
 
     private fun addErrorReLoadView(productDataList: ArrayList<ComponentsItem>): ArrayList<ComponentsItem> {
@@ -267,8 +265,7 @@ class ProductCardCarouselViewModel(val application: Application, val components:
     }
 
     fun isSupportPagination(): Boolean {
-        // TODO: The value will be provided based on server's response
-        return false
+        return components.compAdditionalInfo?.redirection?.applink.isNullOrEmpty()
     }
 
     fun isLoadingData() = isLoading

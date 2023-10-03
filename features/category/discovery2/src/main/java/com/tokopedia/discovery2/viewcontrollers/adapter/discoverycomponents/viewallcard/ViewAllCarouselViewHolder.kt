@@ -15,7 +15,7 @@ import com.tokopedia.viewallcard.ViewAllCard
 class ViewAllCarouselViewHolder(
     itemView: View,
     val fragment: Fragment
-): AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
+) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
 
     private var viewModel: ViewAllCarouselViewModel? = null
 
@@ -42,7 +42,7 @@ class ViewAllCarouselViewHolder(
             isTitleNumberStyle = true
             title = data.title.orEmpty()
             mode = ViewAllCard.MODE_NORMAL
-            setCta(VIEW_ALL) {
+            setCta(data.action.orEmpty()) {
                 handleClickListener(data.applinks)
             }
         }
@@ -57,9 +57,5 @@ class ViewAllCarouselViewHolder(
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
         viewModel?.getData()?.removeObservers(fragment.viewLifecycleOwner)
         super.removeObservers(lifecycleOwner)
-    }
-
-    companion object {
-        private const val VIEW_ALL = "Lihat Semua"
     }
 }
