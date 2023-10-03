@@ -807,6 +807,7 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
     private fun updateSharingDataModel() {
         var categoryIdLvl2 = categoryIdL2
         var categoryIdLvl3 = DEFAULT_CATEGORY_ID
+        val categoryDetail = categoryData.categoryDetail
 
         queryParams.forEach {
             when (it.key) {
@@ -815,7 +816,7 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
             }
         }
 
-        val title = getTitleCategory(categoryIdLvl2)
+        val title = getTitleCategory(categoryIdLvl3)
         val constructedLink = getConstructedLink(categoryDetail.data.url, categoryIdLvl2, categoryIdLvl3)
         val utmCampaignList = getUtmCampaignList(categoryIdLvl2, categoryIdLvl3)
 
@@ -831,12 +832,12 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
         )
     }
 
-    private fun getTitleCategory(categoryIdLvl2: String): String {
+    private fun getTitleCategory(categoryIdLvl3: String): String {
         val filterList = quickFilterData.filter
-        return if (categoryIdLvl2.isNotBlank() && categoryIdLvl2 != DEFAULT_CATEGORY_ID && filterList.isNotEmpty()) {
+        return if (categoryIdLvl3 != DEFAULT_CATEGORY_ID && filterList.isNotEmpty()) {
             filterList.first().title.removePrefix(CategoryTracking.Misc.PREFIX_ALL).trim()
         } else {
-            categoryDetail.data.name
+            categoryData.title
         }
     }
 
