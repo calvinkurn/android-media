@@ -1,0 +1,71 @@
+package com.tokopedia.catalog.ui.viewmodel
+
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.catalog.ui.model.CatalogDetailUiModel
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.oldcatalog.usecase.detail.CatalogDetailUseCase
+import com.tokopedia.searchbar.navigation_component.domain.GetNotificationUseCase
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.user.session.UserSessionInterface
+import javax.inject.Inject
+
+class CatalogDetailPageViewModel @Inject constructor(
+    private val dispatchers: CoroutineDispatchers,
+    private val catalogDetailUseCase: CatalogDetailUseCase,
+    private val getNotificationUseCase: GetNotificationUseCase,
+    private val userSession: UserSessionInterface
+) : BaseViewModel(dispatchers.main) {
+
+    private val _errorsToaster = MutableLiveData<Throwable>()
+    val errorsToaster: LiveData<Throwable>
+        get() = _errorsToaster
+
+    private val _catalogDetailDataModel = MutableLiveData<Result<CatalogDetailUiModel>>()
+    val catalogDetailDataModel: LiveData<Result<CatalogDetailUiModel>>
+        get() = _catalogDetailDataModel
+
+    private val _totalCartItem = MutableLiveData<Int>()
+    val totalCartItem: LiveData<Int>
+        get() = _totalCartItem
+
+    fun isUserLoggedIn(): Boolean {
+        return getUserId().isNotBlank()
+    }
+
+    fun getUserId(): String {
+        return userSession.userId
+    }
+
+    fun getProductCatalog(catalogId: String, comparedCatalogId : String) {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                catalogDetailUseCase.getCatalogDetailV4(
+                    catalogId,
+                    comparedCatalogId,
+                    _catalogDetailDataModel
+                )
+            },
+            onError = {
+                _catalogDetailDataModel.postValue(Fail(it))
+            }
+        )
+    }
+
+    fun refreshNotification() {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val result = getNotificationUseCase.executeOnBackground()
+                _totalCartItem.postValue(result.totalCart)
+            },
+            onError = {
+                _errorsToaster.postValue(it)
+            }
+        )
+    }
+}

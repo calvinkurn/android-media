@@ -93,5 +93,7 @@ class CartItemAdapter/*(private val actionListener: ActionListener) : RecyclerVi
         fun onAddOnsProductWidgetImpression(addOnType: Int, productId: String)
 
         fun onClickAddOnsProductWidgetCart(addOnType: Int, productId: String)
+
+        fun onAvailableCartItemImpression(availableCartItems: List<CartItemHolderData>)
     }
 }

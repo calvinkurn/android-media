@@ -66,10 +66,19 @@ class CartGroupViewHolder(
         renderCheckBox(cartGroupHolderData)
         renderFulfillment(cartGroupHolderData)
         renderFreeShipping(cartGroupHolderData)
+        renderIconPin(cartGroupHolderData)
         renderMaximumWeight(cartGroupHolderData)
         renderCartShopGroupTicker(cartGroupHolderData)
         validateGroupConstraintLayout(cartGroupHolderData)
         validateProductPoliciesMargin(cartGroupHolderData)
+    }
+
+    private fun renderIconPin(cartGroupHolderData: CartGroupHolderData) {
+        if (cartGroupHolderData.isShowPin) {
+            binding.iconPin.show()
+        } else {
+            binding.iconPin.gone()
+        }
     }
 
     private fun renderDivider(cartGroupHolderData: CartGroupHolderData) {
@@ -122,20 +131,21 @@ class CartGroupViewHolder(
 
         binding.tvGroupName.text = Utils.getHtmlFormat(cartGroupHolderData.groupName)
         if (cartGroupHolderData.isError) {
-            val shopId = cartGroupHolderData.productUiModelList.getOrNull(0)?.shopHolderData?.shopId
-            val shopName =
-                cartGroupHolderData.productUiModelList.getOrNull(0)?.shopHolderData?.shopName
+            val shop = cartGroupHolderData.productUiModelList.getOrNull(0)?.shopHolderData
             binding.tvGroupName.setOnClickListener {
                 actionListener.onCartShopNameClicked(
-                    shopId,
-                    shopName,
+                    shop?.shopId,
+                    shop?.shopName,
                     cartGroupHolderData.isTokoNow
                 )
             }
         } else if (cartGroupHolderData.groupAppLink.isNotEmpty()) {
             binding.tvGroupName.setOnClickListener {
                 actionListener.onCartGroupNameClicked(
-                    cartGroupHolderData.groupAppLink
+                    cartGroupHolderData.groupAppLink,
+                    cartGroupHolderData.shop.shopId,
+                    cartGroupHolderData.shop.shopName,
+                    cartGroupHolderData.isTypeOWOC()
                 )
             }
         } else {
@@ -429,7 +439,7 @@ class CartGroupViewHolder(
     }
 
     private fun renderCartShopGroupTicker(cartGroupHolderData: CartGroupHolderData) {
-        binding.itemCartBasketBuilding.vBmgmProductSeparator.gone()
+        binding.itemCartBasketBuilding.vBmgmSeparator.gone()
         if (cartGroupHolderData.hasSelectedProduct && !cartGroupHolderData.isError &&
             cartGroupHolderData.cartShopGroupTicker.enableCartAggregator &&
             !cartGroupHolderData.isOverweight

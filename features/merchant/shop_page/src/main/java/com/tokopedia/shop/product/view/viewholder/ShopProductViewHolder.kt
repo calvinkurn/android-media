@@ -1,7 +1,6 @@
 package com.tokopedia.shop.product.view.viewholder
 
 import android.view.View
-import android.widget.TextView
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
@@ -31,7 +30,8 @@ class ShopProductViewHolder(
     @param:ShopTrackProductTypeDef @field:ShopTrackProductTypeDef
     private val shopTrackType: Int,
     private val layoutType: Int,
-    private val isShowTripleDot: Boolean
+    private val isShowTripleDot: Boolean,
+    private val isOverrideTheme: Boolean
 ) : AbstractViewHolder<ShopProductUiModel>(itemView) {
     private val viewBinding: ItemShopNewproductSmallGridBinding? by viewBinding()
     private var productCard: ProductCardGridView? = null
@@ -63,7 +63,8 @@ class ShopProductViewHolder(
         val productCardModel = ShopPageProductListMapper.mapToProductCardModel(
             shopProductUiModel = shopProductUiModel,
             isWideContent = false,
-            isShowThreeDots = isShowTripleDot
+            isShowThreeDots = isShowTripleDot,
+            isForceLightMode = isOverrideTheme
         ).copy(
             stockBarLabelColor = stockBarLabelColor
         )
