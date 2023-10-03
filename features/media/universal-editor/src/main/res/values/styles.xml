@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="InputText" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="Theme.AppCompat.Light.NoActionBar.Editor.InputText" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowAnimationStyle">@null</item>
         <item name="android:windowActivityTransitions">false</item>
 
@@ -17,7 +17,7 @@
         <item name="android:statusBarColor">@color/Unify_Static_Black</item>
     </style>
 
-    <style name="MainEditor" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="Theme.AppCompat.Light.NoActionBar.Editor.Main" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:statusBarColor">@color/Unify_Static_Black</item>
     </style>
 </resources>
