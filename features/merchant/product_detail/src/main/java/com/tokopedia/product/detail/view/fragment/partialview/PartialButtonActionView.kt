@@ -190,7 +190,7 @@ class PartialButtonActionView private constructor(
             },
             onHide = { rootView, _ ->
                 if (rootView.paddingBottom == Int.ZERO) return@onKeyboardVisibleListener
-                rootView.setPadding(Int.ZERO,Int.ZERO,Int.ZERO, Int.ZERO)
+                rootView.setPadding(Int.ZERO, Int.ZERO, Int.ZERO, Int.ZERO)
             }
         )
     }
