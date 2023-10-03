@@ -18,6 +18,7 @@ import com.tokopedia.editor.util.provider.ColorProvider
 import com.tokopedia.editor.util.provider.ColorProviderImpl
 import com.tokopedia.editor.util.provider.ResourceProvider
 import com.tokopedia.editor.util.provider.ResourceProviderImpl
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import dagger.Binds
 import dagger.Module
@@ -52,6 +53,12 @@ abstract class EditorModule {
 
     @Module
     companion object {
+
+        @Provides
+        @ActivityScope
+        fun providesRemoteConfig(@ApplicationContext context: Context): RemoteConfig {
+            return FirebaseRemoteConfigImpl(context)
+        }
 
         @Provides
         @ActivityScope
