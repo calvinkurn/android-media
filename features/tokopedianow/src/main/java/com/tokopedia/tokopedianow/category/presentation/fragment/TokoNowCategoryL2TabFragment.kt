@@ -347,7 +347,13 @@ class TokoNowCategoryL2TabFragment : Fragment() {
     }
 
     private fun submitList(items: List<Visitable<*>>) {
-        categoryAdapter?.submitList(items)
+        binding?.apply {
+            recyclerView.post {
+                if(!recyclerView.isComputingLayout) {
+                    categoryAdapter?.submitList(items)
+                }
+            }
+        }
     }
 
     private fun openVariantBottomSheet(productId: String, shopId: String) {
