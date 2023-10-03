@@ -110,9 +110,6 @@ class MainEditorViewModel @Inject constructor(
             is MainEditorEvent.ManageVideoAudio -> {
                 removeVideoAudio()
             }
-            is MainEditorEvent.GlobalCanvasSize -> {
-                setCanvasSize(event.width, event.height)
-            }
             is MainEditorEvent.ResetActiveInputText -> {
                 _inputTextState.value = InputTextParam.reset()
             }
@@ -138,28 +135,26 @@ class MainEditorViewModel @Inject constructor(
         }
     }
 
-    private fun exportFinalMedia(filePath: String, canvasText: Bitmap, imageBitmap: Bitmap?) {
+    private fun exportFinalMedia(filePath: String, canvasTextBitmap: Bitmap, imageBitmap: Bitmap?) {
         val file = MediaFile(filePath)
 
         if (file.exist().not()) return
         val path = file.path ?: return
 
         if (file.isImage()) {
-            flattenImageFileWithTextCanvas(imageBitmap, canvasText)
+            flattenImageFileWithTextCanvas(imageBitmap, canvasTextBitmap)
         } else {
-            flattenVideoFileWithTextCanvas(path, canvasText)
+            flattenVideoFileWithTextCanvas(path, canvasTextBitmap)
         }
     }
 
-    private fun flattenVideoFileWithTextCanvas(videoPath: String, canvasText: Bitmap) {
+    private fun flattenVideoFileWithTextCanvas(videoPath: String, canvasTextBitmap: Bitmap) {
         val isRemoveAudio = mainEditorState.value.isRemoveAudio
-        val canvasSize = mainEditorState.value.canvasSize
 
         val param = FlattenParam(
             videoPath = videoPath,
-            canvasText = canvasText,
-            isRemoveAudio = isRemoveAudio,
-            canvasSize = canvasSize
+            canvasTextBitmap = canvasTextBitmap,
+            isRemoveAudio = isRemoveAudio
         )
 
         viewModelScope.launch {
@@ -267,12 +262,6 @@ class MainEditorViewModel @Inject constructor(
 
         _mainEditorState.setValue { copy(isRemoveAudio = isAudio) }
         setAction(MainEditorEffect.RemoveAudioState(isAudio))
-    }
-
-    private fun setCanvasSize(width: Int, height: Int) {
-        _mainEditorState.setValue {
-            copy(canvasSize = CanvasSize(width, height))
-        }
     }
 
     private fun setActiveEditableFilePath(path: String) {

@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.view.ViewTreeObserver
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -162,48 +161,7 @@ open class MainEditorActivity : AppCompatActivity()
         }
 
         lifecycleScope.launchWhenCreated {
-            viewModel.uiEffect.collect {
-                when (it) {
-                    is MainEditorEffect.ShowToastErrorMessage -> {
-                        onShowToastErrorMessage(it.message)
-                    }
-                    is MainEditorEffect.OpenInputText -> {
-                        navigateToInputTextTool(it.model)
-                    }
-                    is MainEditorEffect.ParentToolbarVisibility -> {
-                        toolbar.setVisibility(it.visible)
-                        navigationTool.setVisibility(it.visible)
-                    }
-                    is MainEditorEffect.OpenPlacementPage -> {
-                        navigateToPlacementImagePage(it.sourcePath, it.model)
-                    }
-                    is MainEditorEffect.UpdatePagerSourcePath -> {
-                        pagerContainer.updateView(it.newSourcePath)
-                    }
-                    is MainEditorEffect.CloseMainEditorPage -> {
-                        viewModel.onEvent(MainEditorEvent.DisposeRemainingTasks)
-                        finish()
-                    }
-                    is MainEditorEffect.ShowCloseDialogConfirmation -> {
-                        confirmationDialog.show(this@MainEditorActivity) {
-                            viewModel.onEvent(MainEditorEvent.ClickHeaderCloseButton(true))
-                        }
-                    }
-                    is MainEditorEffect.FinishEditorPage -> {
-                        navigateBackToPickerAndFinishIntent(it.filePath)
-                    }
-                    is MainEditorEffect.UpdateTextAddedState -> {
-                        val hasTextAdded = binding.container.hasTextAdded()
-                        viewModel.onEvent(MainEditorEvent.HasTextAdded(hasTextAdded))
-                    }
-                    is MainEditorEffect.RemoveAudioState -> {
-                        navigationTool.setRemoveAudioUiState(it.isRemoved)
-                        audioMuteState.onShowOrHideAudioState(it.isRemoved)
-                    }
-                    is MainEditorEffect.ShowLoading -> globalLoader.showLoading()
-                    is MainEditorEffect.HideLoading -> globalLoader.hideLoading()
-                }
-            }
+            viewModel.uiEffect.collect(::onEffectHandler)
         }
     }
 
@@ -218,10 +176,40 @@ open class MainEditorActivity : AppCompatActivity()
         // listeners
         binding.container.setListener(this)
 
-        // set global canvas variable
-        getOrSetCanvasSize()
-
         isPageInitialize = true
+    }
+
+    private fun onEffectHandler(effect: MainEditorEffect) {
+        when (effect) {
+            is MainEditorEffect.ParentToolbarVisibility -> {
+                toolbar.setVisibility(effect.visible)
+                navigationTool.setVisibility(effect.visible)
+            }
+            is MainEditorEffect.CloseMainEditorPage -> {
+                viewModel.onEvent(MainEditorEvent.DisposeRemainingTasks)
+                finish()
+            }
+            is MainEditorEffect.ShowCloseDialogConfirmation -> {
+                confirmationDialog.show(this@MainEditorActivity) {
+                    viewModel.onEvent(MainEditorEvent.ClickHeaderCloseButton(true))
+                }
+            }
+            is MainEditorEffect.UpdateTextAddedState -> {
+                val hasTextAdded = binding.container.hasTextAdded()
+                viewModel.onEvent(MainEditorEvent.HasTextAdded(hasTextAdded))
+            }
+            is MainEditorEffect.RemoveAudioState -> {
+                navigationTool.setRemoveAudioUiState(effect.isRemoved)
+                audioMuteState.onShowOrHideAudioState(effect.isRemoved)
+            }
+            is MainEditorEffect.OpenPlacementPage -> navigateToPlacementImagePage(effect.sourcePath, effect.model)
+            is MainEditorEffect.UpdatePagerSourcePath -> pagerContainer.updateView(effect.newSourcePath)
+            is MainEditorEffect.FinishEditorPage -> navigateBackToPickerAndFinishIntent(effect.filePath)
+            is MainEditorEffect.ShowToastErrorMessage -> onShowToastErrorMessage(effect.message)
+            is MainEditorEffect.OpenInputText -> navigateToInputTextTool(effect.model)
+            is MainEditorEffect.ShowLoading -> globalLoader.showLoading()
+            is MainEditorEffect.HideLoading -> globalLoader.hideLoading()
+        }
     }
 
     private fun onToolClicked(@ToolType type: Int) {
@@ -283,23 +271,6 @@ open class MainEditorActivity : AppCompatActivity()
         val imageBitmap = pagerContainer.getImageBitmap()
 
         viewModel.onEvent(MainEditorEvent.ExportMedia(bitmap, imageBitmap))
-    }
-
-    private fun getOrSetCanvasSize() {
-        val container = binding.canvasContainer
-
-        container.viewTreeObserver.addOnGlobalLayoutListener(
-            object : ViewTreeObserver.OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                    container.viewTreeObserver.removeOnGlobalLayoutListener(this)
-
-                    viewModel.onEvent(MainEditorEvent.GlobalCanvasSize(
-                        width = container.width,
-                        height = container.height
-                    ))
-                }
-            }
-        )
     }
 
     private fun setupToolbar(param: UniversalEditorParam) {
