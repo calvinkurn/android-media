@@ -72,6 +72,8 @@ public class BranchHelper {
         linkProperties.addControlParameter(LinkerConstants.KEY_OG_TITLE, LinkerUtils.getOgTitle(data));
         linkProperties.addControlParameter(LinkerConstants.KEY_OG_IMAGE_URL, LinkerUtils.getOgImage(data));
         linkProperties.addControlParameter(LinkerConstants.KEY_OG_DESC, LinkerUtils.getOgDesc(data));
+        linkProperties.addControlParameter(LinkerConstants.KEY_MIN_ANDROID_VERSION, data.getMinVersionAndroid());
+        linkProperties.addControlParameter(LinkerConstants.KEY_MIN_IOS_VERSION, data.getMinVersionIOS());
 
         // if uri host equals UNSAFE_TOKOPEDIA_HOST it will fail to generate the branch link
         if (isUnsafeDesktopUrl(data.renderShareUri())) {
