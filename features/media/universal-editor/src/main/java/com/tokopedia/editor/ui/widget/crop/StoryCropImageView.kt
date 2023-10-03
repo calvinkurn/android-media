@@ -7,6 +7,7 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Matrix
 import android.graphics.Paint
+import android.graphics.Rect
 import android.graphics.RectF
 import android.net.Uri
 import android.os.Handler
@@ -19,6 +20,8 @@ import com.yalantis.ucrop.util.RectUtils
 import com.yalantis.ucrop.view.CropImageView
 import java.io.File
 import java.io.OutputStream
+import kotlin.math.abs
+import kotlin.math.max
 
 open class StoryCropImageView : CropImageView {
 
@@ -63,11 +66,11 @@ open class StoryCropImageView : CropImageView {
     }
 
     override fun getMaxScale(): Float {
-        return 30f
+        return MAX_ZOOM
     }
 
     override fun getMinScale(): Float {
-        return 0.1f
+        return MIN_ZOOM
     }
 
     // used as finish listener since setImageUri process using setImageBitmap on load complete
@@ -87,53 +90,50 @@ open class StoryCropImageView : CropImageView {
             currentAngle
         )
 
+        val (cropWidthSize, cropHeightSize) = Pair(
+            mCropRect.width().toInt(),
+            mCropRect.height().toInt()
+        )
+
         val mCurrentImageRect = imageState.currentImageRect
         val mCurrentScale = imageState.currentScale
 
         val bitmapResult = Bitmap.createBitmap(
-            mCropRect.width().toInt(),
-            mCropRect.height().toInt(),
+            cropWidthSize,
+            cropHeightSize,
             Bitmap.Config.ARGB_8888
         )
-        val canvas = Canvas(bitmapResult)
 
+        val canvas = Canvas(bitmapResult)
         canvas.drawRect(
             0f,
             0f,
-            bitmapResult.width.toFloat(),
-            bitmapResult.height.toFloat(),
-            Paint()
+            cropWidthSize.toFloat(),
+            cropHeightSize.toFloat(),
+            Paint().apply {
+                color = Color.BLACK
+            }
         )
 
         viewBitmap?.let {
-            val scaledWidth = (it.width * mCurrentScale).toInt()
-            val scaledHight = (it.height * mCurrentScale).toInt()
-            val scaledBitmap = Bitmap.createScaledBitmap(it, scaledWidth, scaledHight, true)
-
             val matrix = Matrix()
             matrix.preRotate(currentAngle)
 
-            val rotatedBitmap =
-                Bitmap.createBitmap(scaledBitmap, 0, 0, scaledWidth, scaledHight, matrix, false)
+            val rotateBitmap = Bitmap.createBitmap(it, 0, 0, it.width, it.height, matrix, false)
 
-            val finalBitmap =
-                Bitmap.createBitmap(rotatedBitmap.width, rotatedBitmap.height, rotatedBitmap.config)
-            Canvas(finalBitmap).apply {
-                drawColor(Color.BLACK)
-                drawBitmap(rotatedBitmap, 0f, 0f, null)
-            }
+            val cropX = ((mCurrentImageRect.left * -1) / mCurrentScale ).toInt()
+            val cropY = ((mCurrentImageRect.top * -1) / mCurrentScale ).toInt()
 
-            val xPos = (mCropRect.left - mCurrentImageRect.left) * -1f
+            val sourceWidth = cropWidthSize / mCurrentScale
+            val sourceHeight = cropHeightSize / mCurrentScale
 
-            // top use 0f since we override the value for visual purpose on OverlayViewStories.kt on setOnTargetAspectRatio
-            val yPos = (0f - mCurrentImageRect.top) * -1f
+            val sourceRect = Rect(cropX, cropY, (cropX + sourceWidth).toInt(), (cropY + sourceHeight).toInt())
+            val targetRect = Rect(0,0, cropWidthSize, cropHeightSize)
 
-            canvas.drawBitmap(
-                finalBitmap,
-                xPos,
-                yPos,
-                null
-            )
+            canvas.drawRect(0f, 0f, bitmapResult.width.toFloat(), bitmapResult.height.toFloat(), Paint().apply {
+                color = Color.BLACK
+            })
+            canvas.drawBitmap(rotateBitmap, sourceRect, targetRect, null)
         }
 
         onFinish(
@@ -169,5 +169,8 @@ open class StoryCropImageView : CropImageView {
         private const val IMAGE_QUALITY = 100
 
         private const val FINISH_DELAY = 250L
+
+        private const val MAX_ZOOM = 20f // 20x zoom in
+        private const val MIN_ZOOM = 0.1f // 0.1x zoom out
     }
 }

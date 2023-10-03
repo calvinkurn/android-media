@@ -29,7 +29,7 @@ class MainEditorTest : EditorTest() {
     fun should_able_to_set_configurable_toolbar_component() {
         // Given
         val file = FileLoader.imageFile(context)
-        val headerTitle = R.string.universal_editor_nav_bar_add_text
+        val headerTitle = R.string.universal_editor_nav_bar_image_placement
 
         // When
         startActivity {

@@ -40,9 +40,9 @@ class InputTextStyleItemView(context: Context, attributeSet: AttributeSet?): Car
     fun setActive() {
         textContent?.let {
             it.setBackgroundColor(
-                resources.getColor(principleR.color.Unify_NN0)
+                resources.getColor(principleR.color.Unify_Static_White)
             )
-            it.setTextColorCompat(principleR.color.Unify_NN950)
+            it.setTextColorCompat(editorR.color.dms_universal_editor_input_text_style_font_color_active)
         }
         isActive = true
     }
@@ -50,9 +50,9 @@ class InputTextStyleItemView(context: Context, attributeSet: AttributeSet?): Car
     fun setInactive() {
         textContent?.let {
             it.setBackgroundColor(
-                resources.getColor(principleR.color.Unify_NN900)
+                resources.getColor(editorR.color.dms_universal_editor_input_text_style_background_color_inactive)
             )
-            it.setTextColorCompat(principleR.color.Unify_NN0)
+            it.setTextColorCompat(principleR.color.Unify_Static_White)
         }
         isActive = false
     }

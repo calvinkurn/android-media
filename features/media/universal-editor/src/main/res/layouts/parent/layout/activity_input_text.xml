@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/Unify_NN1000_68"
+    android:background="@color/dms_universal_editor_input_text_overlay"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 

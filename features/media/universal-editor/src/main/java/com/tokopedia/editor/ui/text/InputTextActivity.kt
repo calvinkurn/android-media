@@ -94,7 +94,13 @@ class InputTextActivity : BaseActivity(), NavToolbarComponent.Listener {
         setupToolbar()
     }
 
-    private fun initObserver() {}
+    private fun initObserver() {
+        viewModel.isActivitySave.observe(this) {
+            if (it) {
+                finishActivity()
+            }
+        }
+    }
 
     private fun setupToolbar() {
         toolbar.onToolbarThemeChanged(ToolbarTheme.Transparent)

@@ -11,7 +11,7 @@ import com.tokopedia.unifyprinciples.R as principleR
 class InputTextColorItemView(context: Context) : AppCompatImageView(context) {
     private val shapeDrawable = GradientDrawable()
 
-    private val strokeColor = ContextCompat.getColor(context, principleR.color.Unify_NN0)
+    private val strokeColor = ContextCompat.getColor(context, principleR.color.Unify_Static_White)
 
     init {
         val lp = LinearLayout.LayoutParams(

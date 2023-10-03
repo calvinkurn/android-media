@@ -8,7 +8,6 @@ import android.view.View
 import android.widget.FrameLayout
 import com.yalantis.ucrop.callback.CropBoundsChangeListener
 import com.yalantis.ucrop.callback.OverlayViewChangeListener
-import com.yalantis.ucrop.view.OverlayView
 import com.tokopedia.editor.R
 
 class StoryEditorUCropLayout(context: Context, attrs: AttributeSet) :
@@ -25,14 +24,20 @@ class StoryEditorUCropLayout(context: Context, attrs: AttributeSet) :
         mViewOverlay = findViewById<View>(R.id.view_overlay) as StoryOverlayView
 
         val attribute = context.obtainStyledAttributes(attrs, R.styleable.ucrop_UCropView)
-        mViewOverlay?.processStyledAttributesOpen(attribute)
+        mViewOverlay?.let {
+            it.processStyledAttributesOpen(attribute)
+            it.listener = object : StoryOverlayView.Listener {
+                override fun onAspectRatioChange() {
+                    // adjust image load positioning due to changes on overlay position placement
+                    mGestureCropImageView?.postTranslate(0f, -(it.gapDifferent))
+                }
+            }
+        }
         mGestureCropImageView?.let {
             it.processStyledAttributesOpen(attribute)
             it.setBackgroundColor(Color.BLACK)
             it.listener = object : StoryCropImageView.Listener {
                 override fun onFinish() {
-                    // adjust image load positioning due to changes on overlay position placement
-                    it.postTranslate(0f, -(mViewOverlay?.gapTop ?: 0f))
                     listener?.onFinish()
                 }
             }
@@ -57,7 +62,7 @@ class StoryEditorUCropLayout(context: Context, attrs: AttributeSet) :
         return mGestureCropImageView
     }
 
-    fun getOverlayView(): OverlayView? {
+    fun getOverlayView(): StoryOverlayView? {
         return mViewOverlay
     }
 

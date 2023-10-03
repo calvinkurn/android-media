@@ -146,10 +146,8 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
         ActivityResultContracts.StartActivityForResult()
     ) {
         if (it.resultCode == Activity.RESULT_OK) {
-            val data = it.data?.getStringExtra(RESULT_UNIVERSAL_EDITOR) ?: return@registerForActivityResult
-            val result = PickerResult(listOf(data))
-
-            onFinishIntent(result)
+            val data = it.data?.getParcelableExtra<PickerResult>(RESULT_UNIVERSAL_EDITOR) ?: return@registerForActivityResult
+            onFinishIntent(data)
         }
     }
 

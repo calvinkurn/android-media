@@ -14,9 +14,8 @@ import com.tokopedia.editor.analytics.image.placement.ImagePlacementAnalytics
 import com.tokopedia.editor.di.ModuleInjector
 import com.tokopedia.editor.ui.EditorFragmentProvider
 import com.tokopedia.editor.ui.EditorFragmentProviderImpl
+import com.tokopedia.editor.ui.main.component.GlobalLoaderUiComponent
 import com.tokopedia.editor.ui.model.ImagePlacementModel
-import com.tokopedia.editor.ui.model.InputTextModel
-import com.tokopedia.editor.ui.text.InputTextActivity
 import com.tokopedia.editor.util.getEditorCacheFolderPath
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.component.NavToolbarComponent
@@ -43,6 +42,8 @@ class PlacementImageActivity : BaseActivity(), NavToolbarComponent.Listener {
             useArrowIcon = true
         )
     }
+
+    private val globalLoader by uiComponent { GlobalLoaderUiComponent(it) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
@@ -116,6 +117,14 @@ class PlacementImageActivity : BaseActivity(), NavToolbarComponent.Listener {
                 finish()
             }
         }
+
+        viewModel.isLoadingShow.observe(this) {
+            if (it) {
+                globalLoader.showLoading()
+            } else {
+                globalLoader.hideLoading()
+            }
+        }
     }
 
     private fun fragmentProvider(): EditorFragmentProvider {
@@ -128,7 +137,7 @@ class PlacementImageActivity : BaseActivity(), NavToolbarComponent.Listener {
     private fun setupToolbar() {
         toolbar.onToolbarThemeChanged(ToolbarTheme.Transparent)
         toolbar.showContinueButtonAs(true)
-        toolbar.setTitle(getString(R.string.universal_editor_nav_bar_add_text))
+        toolbar.setTitle(getString(R.string.universal_editor_nav_bar_image_placement))
     }
 
     private fun initView() {

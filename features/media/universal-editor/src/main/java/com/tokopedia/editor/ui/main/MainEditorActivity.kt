@@ -30,6 +30,7 @@ import com.tokopedia.editor.ui.placement.PlacementImageActivity
 import com.tokopedia.editor.ui.text.InputTextActivity
 import com.tokopedia.editor.ui.widget.DynamicTextCanvasLayout
 import com.tokopedia.picker.common.EXTRA_UNIVERSAL_EDITOR_PARAM
+import com.tokopedia.picker.common.PickerResult
 import com.tokopedia.picker.common.RESULT_UNIVERSAL_EDITOR
 import com.tokopedia.picker.common.UniversalEditorParam
 import com.tokopedia.picker.common.basecomponent.uiComponent
@@ -234,8 +235,13 @@ open class MainEditorActivity : AppCompatActivity()
     }
 
     private fun navigateBackToPickerAndFinishIntent(filePath: String) {
+        val result = PickerResult(
+            originalPaths = listOf(viewModel.filePath),
+            editedImages = listOf(filePath)
+        )
+
         val intent = Intent()
-        intent.putExtra(RESULT_UNIVERSAL_EDITOR, filePath)
+        intent.putExtra(RESULT_UNIVERSAL_EDITOR, result)
         setResult(Activity.RESULT_OK, intent)
         finish()
     }

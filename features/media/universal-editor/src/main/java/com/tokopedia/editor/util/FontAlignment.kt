@@ -3,7 +3,7 @@ package com.tokopedia.editor.util
 import android.view.Gravity
 
 enum class FontAlignment(val value: Int) {
-    CENTER(0), RIGHT(1), LEFT(2);
+    CENTER(0), LEFT(1), RIGHT(2);
 
     companion object {
         private val data = values().associateBy(FontAlignment::value)
@@ -12,7 +12,7 @@ enum class FontAlignment(val value: Int) {
 
         fun FontAlignment.next(): FontAlignment {
             var newIndex = value + 1
-            if (newIndex > FontAlignment.data.size) {
+            if (newIndex > RIGHT.value) {
                 newIndex = CENTER.value
             }
 
