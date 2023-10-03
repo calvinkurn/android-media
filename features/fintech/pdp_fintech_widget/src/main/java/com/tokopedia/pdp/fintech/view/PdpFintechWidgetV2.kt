@@ -205,7 +205,7 @@ class PdpFintechWidgetV2 @JvmOverloads constructor(
             )
 
             val fintechRedirectionWidgetData =
-                FintechRedirectionWidgetDataClass(gatewayId = model.gatewayId, gatewayCode = model.productCode, tenure = model.tenure)
+                FintechRedirectionWidgetDataClass(gatewayId = model.gatewayId, gatewayCode = model.productCode, tenure = model.tenure, redirectionUrl = model.androidUrl)
 
             instanceProductUpdateListner?.fintechChipClicked(
                 fintechRedirectionWidgetData,
