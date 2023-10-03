@@ -16,6 +16,7 @@ import com.tokopedia.shop.common.data.model.ShopPageWidgetUiModel
 import com.tokopedia.shop.common.data.model.WidgetIdList
 import com.tokopedia.shop.common.domain.interactor.GqlShopPageGetDynamicTabUseCase
 import com.tokopedia.shop.home.WidgetName
+import com.tokopedia.shop.home.WidgetNameEnum
 import com.tokopedia.shop.home.WidgetType
 import com.tokopedia.shop.home.data.model.ShopLayoutWidgetV2
 import com.tokopedia.shop.home.domain.GetShopPageHomeLayoutV2UseCase
@@ -199,7 +200,8 @@ class ShopCampaignViewModelTest {
                             homeLayoutData = HomeLayoutData(
                                 widgetIdList = listOf(
                                     WidgetIdList(
-                                        widgetId = "1"
+                                        widgetId = "1",
+                                        widgetName = WidgetNameEnum.SLIDER_BANNER.value
                                     )
                                 )
                             )
@@ -232,7 +234,8 @@ class ShopCampaignViewModelTest {
                             homeLayoutData = HomeLayoutData(
                                 widgetIdList = listOf(
                                     WidgetIdList(
-                                        widgetId = "1"
+                                        widgetId = "1",
+                                        widgetName = WidgetNameEnum.SLIDER_BANNER.value
                                     )
                                 )
                             )

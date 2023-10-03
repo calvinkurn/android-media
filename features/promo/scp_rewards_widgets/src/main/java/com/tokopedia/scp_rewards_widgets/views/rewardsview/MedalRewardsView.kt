@@ -6,7 +6,7 @@ import android.widget.FrameLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
-import com.tokopedia.scp_rewards_widgets.constants.CouponState
+import com.tokopedia.scp_rewards_widgets.constants.CouponStatus
 import com.tokopedia.scp_rewards_widgets.model.MedalRewardsModel
 import com.tokopedia.scp_rewards_widgets.model.RewardsErrorModel
 
@@ -70,7 +70,7 @@ class MedalRewardsView @JvmOverloads constructor(
 
     private fun isErrorCase(data: List<MedalRewardsModel>): Boolean {
         return data.size == 1 &&
-            (data.last().status == CouponState.ERROR || data.last().status == CouponState.HIDDEN)
+            (data.last().status == CouponStatus.ERROR || data.last().status == CouponStatus.HIDDEN)
     }
 
     private fun setErrorState(error: RewardsErrorModel) {

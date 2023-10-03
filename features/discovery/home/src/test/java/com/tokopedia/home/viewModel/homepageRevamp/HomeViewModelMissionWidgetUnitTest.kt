@@ -36,12 +36,14 @@ class HomeViewModelMissionWidgetUnitTest {
     private val testDispatcher = TestCoroutineDispatcher()
     private val mockChannelModel = ChannelModel(id = "1", groupId = "2")
     private val mockFailedMissionWidget = MissionWidgetListDataModel(
-        channelModel = mockChannelModel,
-        status = MissionWidgetListDataModel.STATUS_ERROR
+        id = "123",
+        status = MissionWidgetListDataModel.STATUS_ERROR,
+        source = MissionWidgetListDataModel.SOURCE_DC,
     )
     private val mockSuccessMissionWidget = MissionWidgetListDataModel(
-        channelModel = mockChannelModel,
-        status = MissionWidgetListDataModel.STATUS_SUCCESS
+        id = "123",
+        status = MissionWidgetListDataModel.STATUS_SUCCESS,
+        source = MissionWidgetListDataModel.SOURCE_DC,
     )
 
     @Before

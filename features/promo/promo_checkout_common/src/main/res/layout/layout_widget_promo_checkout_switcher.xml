@@ -24,55 +24,6 @@
     </ViewSwitcher>
 
     <FrameLayout
-        android:id="@+id/loader_promo_checkout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/background_promo_checkout_teal"
-        android:visibility="gone">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingHorizontal="16dp"
-            android:paddingVertical="8dp">
-
-            <com.tokopedia.unifycomponents.LoaderUnify
-                android:id="@+id/loader_promo_start"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_marginEnd="8dp"
-                app:layout_constraintEnd_toStartOf="@+id/loader_promo_center"
-                app:layout_constraintHorizontal_chainStyle="packed"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:loader_type="circle" />
-
-            <com.tokopedia.unifycomponents.LoaderUnify
-                android:id="@+id/loader_promo_center"
-                android:layout_width="0dp"
-                android:layout_height="12dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/loader_promo_end"
-                app:layout_constraintStart_toEndOf="@id/loader_promo_start"
-                app:layout_constraintTop_toTopOf="parent"
-                app:loader_type="line" />
-
-            <com.tokopedia.unifycomponents.LoaderUnify
-                android:id="@+id/loader_promo_end"
-                android:layout_width="86dp"
-                android:layout_height="12dp"
-                android:layout_marginStart="8dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/loader_promo_center"
-                app:layout_constraintTop_toTopOf="parent"
-                app:loader_type="line" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </FrameLayout>
-
-    <FrameLayout
         android:id="@+id/error_promo_checkout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -110,6 +61,55 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/tv_error_promo_checkout"
                 app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/loader_promo_checkout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="8dp">
+
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:id="@+id/loader_promo_start"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginEnd="8dp"
+                app:layout_constraintEnd_toStartOf="@+id/loader_promo_center"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:loader_type="circle" />
+
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:id="@+id/loader_promo_center"
+                android:layout_width="0dp"
+                android:layout_height="12dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/loader_promo_end"
+                app:layout_constraintStart_toEndOf="@id/loader_promo_start"
+                app:layout_constraintTop_toTopOf="parent"
+                app:loader_type="line" />
+
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:id="@+id/loader_promo_end"
+                android:layout_width="86dp"
+                android:layout_height="12dp"
+                android:layout_marginStart="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/loader_promo_center"
+                app:layout_constraintTop_toTopOf="parent"
+                app:loader_type="line" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

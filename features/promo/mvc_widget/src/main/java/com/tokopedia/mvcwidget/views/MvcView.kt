@@ -2,11 +2,14 @@ package com.tokopedia.mvcwidget.views
 
 import android.app.Application
 import android.content.Context
+import android.graphics.Color
+import android.graphics.PorterDuff
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.core.content.ContextCompat
 import com.tokopedia.mvcwidget.AnimatedInfos
 import com.tokopedia.mvcwidget.MVCActivityCallbacks
 import com.tokopedia.mvcwidget.MvcData
@@ -18,7 +21,7 @@ import com.tokopedia.mvcwidget.trackers.MvcTrackerImpl
 import com.tokopedia.mvcwidget.views.activities.TransParentActivity
 import com.tokopedia.user.session.UserSession
 import java.lang.ref.WeakReference
-
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /*
 * 1. It has internal Padding of 6dp to render its shadows
@@ -34,6 +37,8 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
     var mvcTextContainerSecond: MvcTextContainer?
     var mvcContainer: View?
     var imageCouponBackground: SquareImageView?
+    var imgIconChevron: AppCompatImageView?
+    var mvcBgImg: AppCompatImageView?
 
     var mvcAnimationHandler: MvcAnimationHandler
     private var startActivityForResultFunction: (() -> Unit)? = null
@@ -56,6 +61,8 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
         mvcTextContainerFirst = this.findViewById(R.id.mvc_text_container_first)
         mvcTextContainerSecond = this.findViewById(R.id.mvc_text_container_second)
         imageCouponBackground = this.findViewById(R.id.image_coupon_bg)
+        imgIconChevron = this.findViewById(R.id.image_chevron)
+        mvcBgImg = this.findViewById(R.id.mvc_bg_img)
 
         setClicks()
 
@@ -88,12 +95,13 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
         (context.applicationContext as Application).unregisterActivityLifecycleCallbacks(mvcActivityCallbacks)
     }
 
-    fun setData(mvcData: MvcData,
-                shopId: String,
-                @MvcSource source: Int,
-                startActivityForResultFunction: (() -> Unit)? = null,
-                mvcTrackerImpl: MvcTrackerImpl = DefaultMvcTrackerImpl(),
-                productId: String = ""
+    fun setData(
+        mvcData: MvcData,
+        shopId: String,
+        @MvcSource source: Int,
+        startActivityForResultFunction: (() -> Unit)? = null,
+        mvcTrackerImpl: MvcTrackerImpl = DefaultMvcTrackerImpl(),
+        productId: String = ""
     ) {
         this.source = source
         this.shopId = shopId
@@ -126,9 +134,36 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
         }
     }
 
-    fun sendImpressionTrackerForPdp(){
-        if(this.shopId.isNotEmpty()){
-            mvcTracker.tokomemberImpressionOnPdp(this.shopId,UserSession(context).userId, isTokomember)
+    fun sendImpressionTrackerForPdp() {
+        if (this.shopId.isNotEmpty()) {
+            mvcTracker.tokomemberImpressionOnPdp(this.shopId, UserSession(context).userId, isTokomember)
         }
+    }
+
+    fun setOverrideWidgetTheme(isOverrideWidgetTheme: Boolean) {
+        if (!isOverrideWidgetTheme) return
+
+        imgIconChevron?.setColorFilter(
+            ContextCompat.getColor(context, R.color.mvc_dms_static_nn900)
+        )
+        imgIconChevron?.setColorFilter(Color.parseColor("#2E3137"), PorterDuff.Mode.SRC_IN)
+        imgIconChevron?.setBackgroundColor(
+            ContextCompat.getColor(
+                context,
+                unifyprinciplesR.color.Unify_Static_White
+            )
+        )
+        mvcBgImg?.setColorFilter(
+            Color.parseColor("#FFFFFF"),
+            PorterDuff.Mode.SRC_IN
+        )
+
+        // First container
+        mvcTextContainerFirst?.tvTitle?.setTextColor(ContextCompat.getColor(context, R.color.mvc_dms_static_nn950))
+        mvcTextContainerFirst?.tvSubTitle?.setTextColor(ContextCompat.getColor(context, R.color.mvc_dms_static_nn950))
+
+        // Second container
+        mvcTextContainerSecond?.tvTitle?.setTextColor(ContextCompat.getColor(context, R.color.mvc_dms_static_nn950))
+        mvcTextContainerSecond?.tvSubTitle?.setTextColor(ContextCompat.getColor(context, R.color.mvc_dms_static_nn950))
     }
 }

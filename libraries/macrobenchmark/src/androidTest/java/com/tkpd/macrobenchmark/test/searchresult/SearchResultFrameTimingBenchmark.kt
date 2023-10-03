@@ -18,7 +18,7 @@ import org.junit.runner.RunWith
 @LargeTest
 @SdkSuppress(minSdkVersion = 29)
 @RunWith(AndroidJUnit4::class)
-class SearchResultFrameTimingBenchmark: BaseFrameTimingBenchmark() {
+class SearchResultFrameTimingBenchmark : BaseFrameTimingBenchmark() {
     override fun setupEnvironment() {
     }
 
@@ -26,9 +26,11 @@ class SearchResultFrameTimingBenchmark: BaseFrameTimingBenchmark() {
         MacroDevOps.setupEnvironment(MacroIntent.Mock.getSearchMockIntent())
     }
     override fun pageInteractionTest(currentIteration: Int) {
-        MacroInteration.basicRecyclerviewInteraction(
-                MacroIntent.SearchResult.PACKAGE_NAME,
-                MacroIntent.SearchResult.RV_RESOURCE_ID
+        Thread.sleep(12000)
+        MacroInteration.basicFlingInteraction(
+            MacroIntent.SearchResult.PACKAGE_NAME,
+            MacroIntent.SearchResult.RV_RESOURCE_ID,
+            flingSpeed = 3000
         )
     }
 

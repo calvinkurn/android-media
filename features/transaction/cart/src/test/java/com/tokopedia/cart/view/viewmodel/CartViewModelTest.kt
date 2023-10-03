@@ -301,29 +301,29 @@ class CartViewModelTest : BaseCartViewModelTest() {
 
     // region removeAccordionDisabledItem
     @Test
-    fun `WHEN removeAccordionDisabledItem THEN DisabledItemHeaderHolderData should be removed`() {
+    fun `WHEN removeAccordionDisabledItem THEN DisabledAccordionHolderData should be removed`() {
         // GIVEN
-        val disabledItemHeaderHolderData = DisabledItemHeaderHolderData()
-        cartViewModel.cartDataList.value = arrayListOf(disabledItemHeaderHolderData)
+        val disabledAccordionHolderData = DisabledAccordionHolderData()
+        val cartDataList = arrayListOf<Any>(disabledAccordionHolderData)
 
         // WHEN
-        cartViewModel.removeAccordionDisabledItem()
+        cartViewModel.removeAccordionDisabledItem(cartDataList)
 
         // THEN
         assertEquals(
-            true,
-            cartViewModel.cartDataList.value.any { it is DisabledItemHeaderHolderData }
+            false,
+            cartDataList.any { it is DisabledAccordionHolderData }
         )
     }
 
     @Test
     fun `WHEN removeAccordionDisabledItem but DisabledItemHeaderHolderData not found THEN cartDataList should have same size`() {
         // GIVEN
-        cartViewModel.cartDataList.value = arrayListOf(CartGroupHolderData(), CartItemHolderData())
+        val cartDataList = arrayListOf<Any>(CartGroupHolderData(), CartItemHolderData())
         val previousSize = cartViewModel.cartDataList.value.size
 
         // WHEN
-        cartViewModel.removeAccordionDisabledItem()
+        cartViewModel.removeAccordionDisabledItem(cartDataList)
 
         // THEN
         assertEquals(previousSize, cartViewModel.cartDataList.value.size)
@@ -1872,18 +1872,14 @@ class CartViewModelTest : BaseCartViewModelTest() {
     }
 
     @Test
-    fun `WHEN checkAvailableShopBottomHolderData for tokonow THEN should expand if after deletion is less than or equal 3`() {
+    fun `WHEN checkAvailableShopBottomHolderData for tokonow THEN should expand if after deletion is less than or equal 1`() {
         // GIVEN
         val cartItemHolderData = CartItemHolderData(cartId = "123", isSelected = true)
-        val cartItemHolderDataTwo = CartItemHolderData(cartId = "124", isSelected = false)
-        val cartItemHolderDataThree = CartItemHolderData(cartId = "125", isSelected = true)
         val cartGroupHolderData = CartGroupHolderData(
             isTokoNow = true,
             isCollapsed = true,
             productUiModelList = mutableListOf(
-                cartItemHolderData,
-                cartItemHolderDataTwo,
-                cartItemHolderDataThree
+                cartItemHolderData
             )
         )
         val cartShopBottomHolderData = CartShopBottomHolderData(cartGroupHolderData)
@@ -1904,16 +1900,16 @@ class CartViewModelTest : BaseCartViewModelTest() {
 
         // THEN
         val newCartGroupHolderData = newCartDataList[0] as CartGroupHolderData
-        val newCartShopBottomHolderData = newCartDataList[4] as CartShopBottomHolderData
+        val newCartShopBottomHolderData = newCartDataList[2] as CartShopBottomHolderData
         assertTrue(toBeRemovedItems.isEmpty())
-        assertEquals(5, newCartDataList.size)
+        assertEquals(3, newCartDataList.size)
         assertEquals(newCartGroupHolderData, newCartShopBottomHolderData.shopData)
         assertFalse(newCartGroupHolderData.isCollapsible)
         assertFalse(newCartGroupHolderData.isCollapsed)
     }
 
     @Test
-    fun `WHEN checkAvailableShopBottomHolderData for tokonow THEN should update data only if after deletion is more than 3`() {
+    fun `WHEN checkAvailableShopBottomHolderData for tokonow THEN should update data only if after deletion is more than 1`() {
         // GIVEN
         val cartItemHolderData = CartItemHolderData(cartId = "123", isSelected = true)
         val cartItemHolderDataTwo = CartItemHolderData(cartId = "124", isSelected = false)

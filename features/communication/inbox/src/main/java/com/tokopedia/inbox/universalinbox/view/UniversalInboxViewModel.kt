@@ -24,6 +24,7 @@ import com.tokopedia.inbox.universalinbox.view.uiState.UniversalInboxMenuUiState
 import com.tokopedia.inbox.universalinbox.view.uiState.UniversalInboxNavigationUiState
 import com.tokopedia.inbox.universalinbox.view.uiState.UniversalInboxProductRecommendationUiState
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationUiModel
+import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxWidgetMetaErrorUiModel
 import com.tokopedia.recommendation_widget_common.DEFAULT_VALUE_X_DEVICE
 import com.tokopedia.recommendation_widget_common.DEFAULT_VALUE_X_SOURCE
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
@@ -201,7 +202,6 @@ class UniversalInboxViewModel @Inject constructor(
 
             // Handle error case for menu
             (result.menu is Result.Error) -> {
-                setLoadingInboxMenu(false)
                 setErrorWidgetMeta()
                 setFallbackInboxMenu(true)
                 showErrorMessage(
@@ -223,7 +223,7 @@ class UniversalInboxViewModel @Inject constructor(
 
             // Handle loading case for menu
             result.menu is Result.Loading -> {
-                setLoadingInboxMenu(true)
+                setLoadingInboxMenu()
             }
         }
     }
@@ -245,7 +245,8 @@ class UniversalInboxViewModel @Inject constructor(
                 counterResponse = counterResponse,
                 driverCounter = driverResponse
             ).apply {
-                this.isError = inboxResponse.chatInboxMenu.shouldShowLocalLoad
+                this.widgetError.isError = inboxResponse.chatInboxMenu.shouldShowLocalLoad
+                this.widgetError.isLocalLoadLoading = false
             }
             val menuList = inboxMenuMapper.mapToInboxMenu(
                 userSession = userSession,
@@ -351,11 +352,11 @@ class UniversalInboxViewModel @Inject constructor(
         }
     }
 
-    private fun setLoadingInboxMenu(isLoading: Boolean) {
+    private fun setLoadingInboxMenu() {
         viewModelScope.launch {
             _inboxMenuUiState.update {
                 it.copy(
-                    isLoading = isLoading
+                    isLoading = true
                 )
             }
         }
@@ -366,8 +367,12 @@ class UniversalInboxViewModel @Inject constructor(
             _inboxMenuUiState.update {
                 it.copy(
                     widgetMeta = it.widgetMeta.copy(
-                        isError = true
-                    )
+                        widgetError = UniversalInboxWidgetMetaErrorUiModel(
+                            isError = true,
+                            isLocalLoadLoading = false
+                        )
+                    ),
+                    isLoading = false
                 )
             }
         }

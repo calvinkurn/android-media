@@ -7,6 +7,7 @@ import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.iris.util.KEY_SESSION_IRIS
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.ExtraKey
 import com.tokopedia.track.TrackApp
+import com.tokopedia.track.builder.Tracker
 import java.util.*
 
 /**
@@ -1118,5 +1119,45 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
         )
 
         sendEnhancedEcommerce(ConstantTransactionAnalytics.EventName.REMOVE_FROM_CART_V2, bundle)
+    }
+
+    fun eventViewBmGmTickerOffer(
+        offerId: Long,
+        widgetCaption: String,
+        shopId: String,
+        userId: String
+    ) {
+        Tracker.Builder()
+            .setEvent(ConstantTransactionAnalytics.EventName.VIEW_PG_IRIS)
+            .setEventAction(ConstantTransactionAnalytics.EventAction.IMPRESSION_BMGM_RECOMMENDATION)
+            .setEventCategory(ConstantTransactionAnalytics.EventCategory.CART)
+            .setEventLabel("$offerId - $widgetCaption")
+            .setCustomProperty(ExtraKey.TRACKER_ID, ConstantTransactionAnalytics.TrackerId.VIEW_BMGM_RECOMMENDATION)
+            .setBusinessUnit(ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM)
+            .setCurrentSite(ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE)
+            .setShopId(shopId)
+            .setUserId(userId)
+            .build()
+            .send()
+    }
+
+    fun eventClickBmGmTickerOffer(
+        offerId: Long,
+        widgetCaption: String,
+        shopId: String,
+        userId: String
+    ) {
+        Tracker.Builder()
+            .setEvent(ConstantTransactionAnalytics.EventName.CLICK_PG)
+            .setEventAction(ConstantTransactionAnalytics.EventAction.CLICK_BMGM_RECOMMENDATION)
+            .setEventCategory(ConstantTransactionAnalytics.EventCategory.CART)
+            .setEventLabel("$offerId - $widgetCaption")
+            .setCustomProperty(ExtraKey.TRACKER_ID, ConstantTransactionAnalytics.TrackerId.CLICK_BMGM_RECOMMENDATION)
+            .setBusinessUnit(ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM)
+            .setCurrentSite(ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE)
+            .setShopId(shopId)
+            .setUserId(userId)
+            .build()
+            .send()
     }
 }
