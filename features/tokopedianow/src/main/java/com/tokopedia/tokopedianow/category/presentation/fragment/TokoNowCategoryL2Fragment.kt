@@ -236,9 +236,12 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment(), CategoryL2View {
                 setViewPagerCurrentItem(selectedTabPosition)
                 addOnTabSelectedListener()
             }
-            tabsUnify.customTabMode = TabLayout.MODE_SCROLLABLE
-            tabsUnify.whiteShadeRight.gone()
-            tabsUnify.whiteShadeLeft.gone()
+            tabsUnify.apply {
+                customTabMode = TabLayout.MODE_SCROLLABLE
+                customTabGravity = TabLayout.GRAVITY_START
+                whiteShadeRight.gone()
+                whiteShadeLeft.gone()
+            }
         }
     }
 
