@@ -22,8 +22,9 @@ import com.tokopedia.stories.widget.di.DaggerStoriesWidgetComponent
 import com.tokopedia.stories.widget.di.StoriesWidgetComponent
 import com.tokopedia.stories.widget.domain.StoriesEntryPoint
 import com.tokopedia.stories.widget.domain.StoriesWidgetState
-import com.tokopedia.stories.widget.tracking.DefaultTrackingManager
-import com.tokopedia.stories.widget.tracking.TrackingManager
+import com.tokopedia.stories.widget.tracking.DefaultTrackerBuilder
+import com.tokopedia.stories.widget.tracking.DefaultTrackerSender
+import com.tokopedia.stories.widget.tracking.StoriesWidgetTracker
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.Job
@@ -52,11 +53,13 @@ class StoriesWidgetManager private constructor(
     private val storiesViewListener = object : StoriesWidgetLayout.Listener {
         override fun onClickedWhenHasStories(view: StoriesWidgetLayout, state: StoriesWidgetState) {
             component.router().route(view.context, state.appLink)
-            options.trackingManager.clickEntryPoints(state)
+            val tracker = options.trackerBuilder.onClickedEntryPoint(state)
+            options.trackerSender.sendTracker(tracker)
         }
 
         override fun onImpressed(view: StoriesWidgetLayout, state: StoriesWidgetState) {
-            options.trackingManager.impressEntryPoints(state)
+            val tracker = options.trackerBuilder.onImpressedEntryPoint(state)
+            options.trackerSender.sendTracker(tracker)
         }
     }
 
@@ -165,9 +168,8 @@ class StoriesWidgetManager private constructor(
     }
 
     fun updateStories(shopIds: List<String>) {
-        if (options.trackingManager is DefaultTrackingManager) {
-            options.trackingManager.resetImpression()
-        }
+        options.trackerSender.reset()
+
         getViewModel().onIntent(
             StoriesWidgetIntent.GetStoriesStatus(shopIds)
         )
@@ -212,11 +214,11 @@ class StoriesWidgetManager private constructor(
     }
 
     private fun StoriesWidgetLayout.onAttached(shopId: String) {
+        setListener(storiesViewListener)
+
         val observer = getOrCreateObserver()
         observer.observe(shopId)
         assign(shopId, observer)
-
-        setListener(storiesViewListener)
 
         if (shopId == mShopIdCoachMarked) requestShowCoachMark()
     }
@@ -317,13 +319,9 @@ class StoriesWidgetManager private constructor(
         private var mAnimationStrategy: AnimationStrategy = NoAnimateAnimationStrategy()
         private val trackingQueue = TrackingQueue(context)
         private val userSession = UserSession(context.applicationContext)
-        private val defaultTrackingManager = DefaultTrackingManager(
-            entryPoint,
-            lifecycleOwner,
-            trackingQueue,
-            userSession
-        )
-        private var mTrackingManager: TrackingManager = defaultTrackingManager
+        private var mTrackerBuilder: StoriesWidgetTracker.Builder? = null
+        private var mTrackerSender: StoriesWidgetTracker.Sender? = null
+
         private var mShowCoachMarkIfApplicable: Boolean = true
 
         fun setScrollingParent(view: View?) = builder {
@@ -338,8 +336,12 @@ class StoriesWidgetManager private constructor(
             mShowCoachMarkIfApplicable = shouldShow
         }
 
-        fun setTrackingManager(trackingManager: TrackingManager) = builder {
-            mTrackingManager = trackingManager
+        fun setTrackerBuilder(trackerBuilder: StoriesWidgetTracker.Builder) = builder {
+            mTrackerBuilder = trackerBuilder
+        }
+
+        fun setTrackerSender(trackerSender: StoriesWidgetTracker.Sender) = builder {
+            mTrackerSender = trackerSender
         }
 
         fun build(): StoriesWidgetManager {
@@ -357,7 +359,8 @@ class StoriesWidgetManager private constructor(
                 mScrollingParent,
                 mAnimationStrategy,
                 mShowCoachMarkIfApplicable,
-                mTrackingManager
+                mTrackerBuilder ?: DefaultTrackerBuilder(entryPoint, userSession),
+                mTrackerSender ?: DefaultTrackerSender(lifecycleOwner, trackingQueue),
             )
         }
 
@@ -371,7 +374,8 @@ class StoriesWidgetManager private constructor(
         val scrollingParent: View?,
         val animStrategy: AnimationStrategy,
         val showCoachMarkIfApplicable: Boolean,
-        val trackingManager: TrackingManager
+        val trackerBuilder: StoriesWidgetTracker.Builder,
+        val trackerSender: StoriesWidgetTracker.Sender,
     )
 
     internal data class StoriesWidgetMeta(
