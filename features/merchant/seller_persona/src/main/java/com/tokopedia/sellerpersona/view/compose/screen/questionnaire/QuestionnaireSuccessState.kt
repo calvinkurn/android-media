@@ -41,28 +41,22 @@ import com.tokopedia.sellerpersona.R as sellerpersonaR
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun QuestionnaireSuccessState(
-    data: QuestionnaireState.Data,
-    event: (QuestionnaireUiEvent) -> Unit
+    data: List<QuestionnairePagerUiModel>, onEvent: (QuestionnaireUiEvent) -> Unit
 ) {
     ConstraintLayout(modifier = Modifier.fillMaxSize()) {
+
         val (questionnairePager, prevBtn, nextBtn) = createRefs()
 
-        val pagerState = rememberPagerState()
-        HorizontalPager(
-            count = data.questionnaireList.size,
-            modifier = Modifier
-                .constrainAs(questionnairePager) {
-                    top.linkTo(parent.top)
-                    bottom.linkTo(nextBtn.top, margin = 16.dp)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                    width = Dimension.fillToConstraints
-                    height = Dimension.fillToConstraints
-                },
-            state = pagerState,
-        ) { pageIndex ->
-            val questionnaire = data.questionnaireList[pageIndex]
-            QuestionnairePager(pageIndex, questionnaire, event)
+        HorizontalPager(count = data.size, modifier = Modifier.constrainAs(questionnairePager) {
+                top.linkTo(parent.top)
+                bottom.linkTo(nextBtn.top, margin = 16.dp)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+                width = Dimension.fillToConstraints
+                height = Dimension.fillToConstraints
+            }) { pagePosition ->
+            val questionnaire = data[pagePosition]
+            QuestionnairePager(pagePosition, questionnaire, onEvent)
         }
 
         NestButton(
@@ -74,9 +68,8 @@ fun QuestionnaireSuccessState(
             variant = ButtonVariant.TEXT_ONLY,
             isEnabled = false,
             onClick = {
-                event(QuestionnaireUiEvent.ClickPrevious)
-            }
-        )
+                onEvent(QuestionnaireUiEvent.ClickPrevious)
+            })
 
         NestButton(
             text = stringResource(sellerpersonaR.string.sp_next),
@@ -85,9 +78,8 @@ fun QuestionnaireSuccessState(
                 bottom.linkTo(parent.bottom, margin = 16.dp)
             },
             onClick = {
-                event(QuestionnaireUiEvent.ClickNext)
-            }
-        )
+                onEvent(QuestionnaireUiEvent.ClickNext)
+            })
     }
 }
 
@@ -100,7 +92,7 @@ fun QuestionnairePager(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(start = 24.dp, end = 24.dp, top = 32.dp, bottom = 32.dp)
+            .padding(all = 24.dp)
     ) {
         NestTypography(
             modifier = Modifier.fillMaxWidth(),
@@ -124,14 +116,14 @@ fun QuestionnairePager(
                 .wrapContentHeight(),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            items(items = questionnaire.options.orEmpty()) { option ->
+            items(items = questionnaire.options) { option ->
                 when (option) {
                     is BaseOptionUiModel.QuestionOptionSingleUiModel -> {
-                        QuestionnaireItemSingleAnswer(option, event)
+                        QuestionnaireItemSingleAnswer(pagePosition, option, event)
                     }
 
                     is BaseOptionUiModel.QuestionOptionMultipleUiModel -> {
-                        QuestionnaireItemMultipleAnswer(option, event)
+                        QuestionnaireItemMultipleAnswer(pagePosition, option, event)
                     }
                 }
             }
@@ -141,12 +133,13 @@ fun QuestionnairePager(
 
 @Composable
 fun QuestionnaireItemMultipleAnswer(
+    pagePosition: Int,
     option: BaseOptionUiModel.QuestionOptionMultipleUiModel,
     event: (QuestionnaireUiEvent) -> Unit
 ) {
     val isChecked = remember { mutableStateOf(option.isSelected) }
     val onClick: (Boolean) -> Unit = {
-        event(QuestionnaireUiEvent.OnMultipleOptionChecked(option, it))
+        event(QuestionnaireUiEvent.OnOptionItemSelected(pagePosition, option, it))
         isChecked.value = it
     }
     NestCheckbox(
@@ -161,10 +154,42 @@ fun QuestionnaireItemMultipleAnswer(
 
 @Composable
 fun QuestionnaireItemSingleAnswer(
+    pagePosition: Int,
     option: BaseOptionUiModel.QuestionOptionSingleUiModel,
     event: (QuestionnaireUiEvent) -> Unit
 ) {
-    NestTypography(text = option.title, modifier = Modifier.fillMaxWidth())
+    val borderColor = if (option.isSelected) {
+        NestTheme.colors.GN._400
+    } else {
+        NestTheme.colors.NN._300
+    }
+    val backgroundColor = if (option.isSelected) {
+        NestTheme.colors.GN._50
+    } else {
+        NestTheme.colors.NN._0
+    }
+    val roundedShape = remember {
+        RoundedCornerShape(
+            bottomStart = 12.dp, bottomEnd = 12.dp, topStart = 12.dp, topEnd = 12.dp
+        )
+    }
+
+    Column(modifier = Modifier
+        .fillMaxWidth()
+        .border(width = 1.dp, color = borderColor, shape = roundedShape)
+        .background(color = backgroundColor, shape = roundedShape)
+        .clickable(
+            indication = null, interactionSource = MutableInteractionSource()
+        ) {
+            val isChecked = !option.isSelected
+            event(QuestionnaireUiEvent.OnOptionItemSelected(pagePosition, option, isChecked))
+        }) {
+        NestTypography(
+            text = option.title, modifier = Modifier
+                .fillMaxWidth()
+                .padding(all = 12.dp)
+        )
+    }
 }
 
 @Preview
@@ -172,54 +197,45 @@ fun QuestionnaireItemSingleAnswer(
 fun QuestionnaireSuccessStatePreview() {
     NestTheme(darkTheme = false) {
         QuestionnaireSuccessState(
-            data = QuestionnaireState.Data(
-                questionnaireList = listOf(
-                    QuestionnairePagerUiModel(
-                        id = "1",
-                        questionTitle = "Apa yang biasa kamu lakukan di Tokopedia Seller?",
-                        questionSubtitle = "(Bisa pilih lebih dari 1 jawaban)",
-                        type = QuestionnairePagerUiModel.QuestionnaireType.SINGLE_ANSWER,
-                        options = listOf(
-                            BaseOptionUiModel.QuestionOptionSingleUiModel(
-                                value = "a",
-                                title = "Mengurus operasional toko (misal: balas chat dan diskusi, proses pesanan, request pick-up, update stok produk, dan lain-lain)"
-                            ),
-                            BaseOptionUiModel.QuestionOptionSingleUiModel(
-                                value = "b",
-                                title = "Mengurus operasional toko (misal: balas chat dan diskusi, proses pesanan, request pick-up, update stok produk, dan lain-lain)"
-                            ),
-                            BaseOptionUiModel.QuestionOptionSingleUiModel(
-                                value = "c",
-                                title = "Mengurus operasional toko (misal: balas chat dan diskusi, proses pesanan, request pick-up, update stok produk, dan lain-lain)"
-                            ),
-                            BaseOptionUiModel.QuestionOptionSingleUiModel(
-                                value = "d",
-                                title = "Mengurus operasional toko (misal: balas chat dan diskusi, proses pesanan, request pick-up, update stok produk, dan lain-lain)"
-                            )
+            data = listOf(
+                QuestionnairePagerUiModel(
+                    id = "1",
+                    questionTitle = "Apa yang biasa kamu lakukan di Tokopedia Seller?",
+                    questionSubtitle = "(Bisa pilih lebih dari 1 jawaban)",
+                    type = QuestionnairePagerUiModel.QuestionnaireType.SINGLE_ANSWER,
+                    options = listOf(
+                        BaseOptionUiModel.QuestionOptionSingleUiModel(
+                            value = "a",
+                            title = "Mengurus operasional toko (misal: balas chat dan diskusi, proses pesanan, request pick-up, update stok produk, dan lain-lain)"
+                        ), BaseOptionUiModel.QuestionOptionSingleUiModel(
+                            value = "b",
+                            title = "Mengurus operasional toko (misal: balas chat dan diskusi, proses pesanan, request pick-up, update stok produk, dan lain-lain)"
+                        ), BaseOptionUiModel.QuestionOptionSingleUiModel(
+                            value = "c",
+                            title = "Mengurus operasional toko (misal: balas chat dan diskusi, proses pesanan, request pick-up, update stok produk, dan lain-lain)"
+                        ), BaseOptionUiModel.QuestionOptionSingleUiModel(
+                            value = "d",
+                            title = "Mengurus operasional toko (misal: balas chat dan diskusi, proses pesanan, request pick-up, update stok produk, dan lain-lain)"
                         )
-                    ),
-                    QuestionnairePagerUiModel(
-                        id = "2",
-                        questionTitle = "Apa yang biasa kamu lakukan di Tokopedia Seller?",
-                        questionSubtitle = "(Bisa pilih lebih dari 1 jawaban)",
-                        type = QuestionnairePagerUiModel.QuestionnaireType.MULTIPLE_ANSWER,
-                        options = listOf(
-                            BaseOptionUiModel.QuestionOptionMultipleUiModel(
-                                value = "a",
-                                title = "Mengurus operasional toko (misal: balas chat dan diskusi, proses pesanan, request pick-up, update stok produk, dan lain-lain)"
-                            ),
-                            BaseOptionUiModel.QuestionOptionMultipleUiModel(
-                                value = "b",
-                                title = "Mengurus operasional toko (misal: balas chat dan diskusi, proses pesanan, request pick-up, update stok produk, dan lain-lain)"
-                            ),
-                            BaseOptionUiModel.QuestionOptionMultipleUiModel(
-                                value = "c",
-                                title = "Mengurus operasional toko (misal: balas chat dan diskusi, proses pesanan, request pick-up, update stok produk, dan lain-lain)"
-                            ),
-                            BaseOptionUiModel.QuestionOptionMultipleUiModel(
-                                value = "d",
-                                title = "Mengurus operasional toko (misal: balas chat dan diskusi, proses pesanan, request pick-up, update stok produk, dan lain-lain)"
-                            )
+                    )
+                ), QuestionnairePagerUiModel(
+                    id = "2",
+                    questionTitle = "Apa yang biasa kamu lakukan di Tokopedia Seller?",
+                    questionSubtitle = "(Bisa pilih lebih dari 1 jawaban)",
+                    type = QuestionnairePagerUiModel.QuestionnaireType.MULTIPLE_ANSWER,
+                    options = listOf(
+                        BaseOptionUiModel.QuestionOptionMultipleUiModel(
+                            value = "a",
+                            title = "Mengurus operasional toko (misal: balas chat dan diskusi, proses pesanan, request pick-up, update stok produk, dan lain-lain)"
+                        ), BaseOptionUiModel.QuestionOptionMultipleUiModel(
+                            value = "b",
+                            title = "Mengurus operasional toko (misal: balas chat dan diskusi, proses pesanan, request pick-up, update stok produk, dan lain-lain)"
+                        ), BaseOptionUiModel.QuestionOptionMultipleUiModel(
+                            value = "c",
+                            title = "Mengurus operasional toko (misal: balas chat dan diskusi, proses pesanan, request pick-up, update stok produk, dan lain-lain)"
+                        ), BaseOptionUiModel.QuestionOptionMultipleUiModel(
+                            value = "d",
+                            title = "Mengurus operasional toko (misal: balas chat dan diskusi, proses pesanan, request pick-up, update stok produk, dan lain-lain)"
                         )
                     )
                 )
