@@ -15,7 +15,7 @@
 
     <application>
         <activity
-            android:theme="@style/MainEditor"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar.Editor.Main"
             android:name="com.tokopedia.editor.ui.main.MainEditorActivity"
             android:exported="false"
             android:label="Preview"
@@ -41,7 +41,7 @@
             android:exported="false"
             android:label="Preview"
             android:screenOrientation="portrait"
-            android:theme="@style/InputText"/>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar.Editor.InputText"/>
 
         <activity
             android:noHistory="true"
