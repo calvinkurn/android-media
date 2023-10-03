@@ -1337,6 +1337,7 @@ class PromoUsageViewModel @Inject constructor(
         val orders = validateUsePromoRequest.orders.map { order ->
             var newOrder = order.copy()
             items.forEach { item ->
+                val newCodes = ArrayList(order.codes)
                 val promoCode: String
                 val uniqueId: String
                 val boAdditionalData: List<BoAdditionalData>
@@ -1352,24 +1353,22 @@ class PromoUsageViewModel @Inject constructor(
                 if (item.state is PromoItemState.Selected) {
                     // If promo is selected, add promo code to request param
                     // If unique_id == 0, means it's a global promo, else it's promo merchant
-                    if (uniqueId == order.uniqueId && !order.codes.contains(promoCode)) {
-                        val updatedCodes = order.codes
-                        updatedCodes.add(promoCode)
-                        newOrder = order.copy(codes = updatedCodes)
+                    if (uniqueId == order.uniqueId && !newCodes.contains(promoCode)) {
+                        newCodes.add(promoCode)
+                        newOrder = order.copy(codes = newCodes)
                     } else if (item.isBebasOngkir) {
                         // If coupon is bebas ongkir promo, then set shipping id and sp id
                         val boData = boAdditionalData.firstOrNull {
                             order.cartStringGroup == it.cartStringGroup
                         }
                         if (boData != null) {
-                            if (!order.codes.contains(boData.code)) {
+                            if (!newCodes.contains(boData.code)) {
                                 // if code is not already in request param, then add bo additional data
-                                val updatedCodes = order.codes
-                                updatedCodes.add(boData.code)
+                                newCodes.add(boData.code)
                                 newOrder = order.copy(
                                     shippingId = boData.shippingId.toInt(),
                                     spId = boData.spId.toInt(),
-                                    codes = updatedCodes
+                                    codes = newCodes
                                 )
                             } else {
                                 // if code already in request param, set shipping id and sp id again
@@ -1391,21 +1390,19 @@ class PromoUsageViewModel @Inject constructor(
                 } else {
                     // If promo is unselected and exist in current promo request, remove it from promo request
                     // If unique_id == 0, means it's a global promo, else it's promo merchant
-                    if (uniqueId == order.uniqueId && order.codes.contains(promoCode)) {
-                        val updatedCodes = order.codes
-                        updatedCodes.remove(promoCode)
-                        newOrder = order.copy(codes = updatedCodes)
+                    if (uniqueId == order.uniqueId && newCodes.contains(promoCode)) {
+                        newCodes.remove(promoCode)
+                        newOrder = order.copy(codes = newCodes)
                     } else if (item.isBebasOngkir) {
                         // if promo is bebas ongkir promo, then remove code only
                         val boData = item.boAdditionalData.firstOrNull {
                             order.uniqueId == it.uniqueId
                         }
                         if (boData != null) {
-                            if (order.codes.contains(boData.code)) {
-                                val updatedCodes = order.codes
-                                updatedCodes.remove(promoCode)
+                            if (newCodes.contains(boData.code)) {
+                                newCodes.remove(promoCode)
                                 newOrder = order.copy(
-                                    codes = updatedCodes,
+                                    codes = newCodes,
                                     benefitClass = "",
                                     boCampaignId = 0,
                                     shippingPrice = 0.0,
@@ -1423,7 +1420,7 @@ class PromoUsageViewModel @Inject constructor(
                     }
                 }
             }
-            newOrder
+            return@map newOrder
         }
         return validateUsePromoRequest.copy(
             codes = codes,
