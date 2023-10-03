@@ -54,10 +54,6 @@ class RejectedOrderRateCoachMark @Inject constructor(){
         }
     }
 
-    fun dismissCoachMark() {
-        coachMark?.dismissCoachMark()
-    }
-
     fun destroyCoachMark() {
         coachMark = null
     }
@@ -73,6 +69,10 @@ class RejectedOrderRateCoachMark @Inject constructor(){
                 }
             }
         }
+    }
+
+    private fun dismissCoachMark() {
+        coachMark?.dismissCoachMark()
     }
 
     private fun setHasShown(context: Context) {
