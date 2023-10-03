@@ -16,6 +16,7 @@ sealed interface StoriesUiAction {
         val product: ContentTaggedProductUiModel
     ) : StoriesUiAction
 
+    object PageIsSelected : StoriesUiAction
     object NextDetail : StoriesUiAction
     object PreviousDetail : StoriesUiAction
     object PauseStories : StoriesUiAction

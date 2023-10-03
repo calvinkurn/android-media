@@ -63,9 +63,9 @@ class StoriesGroupFragment @Inject constructor(
     private val pagerListener = object : ViewPager2.OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
             super.onPageSelected(position)
-            showSelectedGroupHighlight(position)
             viewModelAction(SetMainData(position))
             trackMoveGroup()
+            showSelectedGroupHighlight(position)
         }
     }
 
@@ -135,6 +135,7 @@ class StoriesGroupFragment @Inject constructor(
             binding.tvHighlight.animate().alpha(1f)
             delay(1000)
             binding.tvHighlight.animate().alpha(0f)
+            viewModelAction(StoriesUiAction.PageIsSelected)
         }
     }
 
