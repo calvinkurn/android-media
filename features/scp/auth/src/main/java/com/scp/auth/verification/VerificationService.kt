@@ -5,28 +5,31 @@ import com.scp.verification.core.data.common.services.contract.ScpABTestService
 import com.scp.verification.core.data.common.services.contract.ScpAnalyticsEvent
 import com.scp.verification.core.data.common.services.contract.ScpAnalyticsService
 import com.scp.verification.core.data.common.services.contract.ScpLogService
+import javax.inject.Inject
 
 object VerificationService {
-    fun getVerificationService(): VerificationServices {
+    fun getVerificationService(analyticsService: ScpAnalyticsService): VerificationServices {
         return VerificationServices(
             abTestServices = VerificationABTestService(),
             logService = VerificationLogService(),
-            analyticsService = VerificationAnalyticsService()
+            analyticsService = analyticsService
         )
     }
 }
 
-class VerificationAnalyticsService : ScpAnalyticsService {
+class VerificationAnalyticsService @Inject constructor(
+    val verificationAnalyticsMapper: VerificationAnalyticsMapper
+) : ScpAnalyticsService {
     override fun trackError(eventName: ScpAnalyticsEvent, params: Map<String, Any?>) {
-        println("sdkTrack:verif:error: $eventName, $params")
+        verificationAnalyticsMapper.trackFailedCvSdk("", eventName.eventName, params)
     }
 
     override fun trackEvent(eventName: ScpAnalyticsEvent, params: MutableMap<String, Any?>) {
-        println("sdkTrack:event: $eventName, $params")
+        verificationAnalyticsMapper.trackClickCvSdk("", eventName.eventName, params)
     }
 
     override fun trackView(eventName: ScpAnalyticsEvent, params: Map<String, Any?>) {
-        println("sdkTrack:view: $eventName, $params")
+        verificationAnalyticsMapper.trackScreenCvSdk("", eventName.eventName, params)
     }
 }
 

@@ -14,6 +14,8 @@ import com.gojek.pin.validation.ExtVerificationData
 import com.gojek.pin.validation.ExtVerificationUiConfig
 import com.gojek.pin.validation.PinSdkValidationListener
 import com.gojek.pin.validation.PinValidationResults
+import com.scp.auth.di.DaggerScpAuthComponent
+import com.scp.auth.di.ScpAuthComponent
 import com.scp.auth.verification.VerificationSdk.getCvSdkProvider
 import com.scp.login.core.domain.contracts.configs.LSdkAppConfig
 import com.scp.login.core.domain.contracts.configs.LSdkAuthConfig
@@ -26,6 +28,7 @@ import com.scp.verification.core.data.common.services.LocalCVABTestService
 import com.scp.verification.core.data.common.services.LocalCVLogService
 import com.scp.verification.core.data.common.services.contract.ScpAnalyticsEvent
 import com.scp.verification.core.data.common.services.contract.ScpAnalyticsService
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator
 import kotlinx.coroutines.CoroutineScope
@@ -36,13 +39,21 @@ object GotoSdk {
     var LSDKINSTANCE: LSdkProvider? = null
 
     private var GOTOPINSDKINSTANCE: PinManager? = null
+    private var component: ScpAuthComponent? = null
 
     private const val TOKOPEDIA_APP_TYPE = "Tokopedia"
     private const val DEVICE_TYPE = "android"
     private const val LOCALE_ID = "id"
 
+    internal fun getVerifComponent(): ScpAuthComponent? = component
+
     @JvmStatic
     fun init(application: Application): LSdkProvider? {
+        val appComponent = (application as BaseMainApplication)
+            .baseAppComponent
+        component = DaggerScpAuthComponent.builder()
+            .baseAppComponent(appComponent)
+            .build()
         LSDKINSTANCE = GotoLogin.getInstance(
             cvSdkProvider = getCvSdkProvider(application),
             gotoPinManager = getGotoPinSdkProvider(application),
@@ -108,9 +119,12 @@ object GotoSdk {
                     override fun handleOtpError(errorCode: Int, errorMessage: String, coroutineScope: CoroutineScope) {
                     }
 
-                    override fun provideAuthenticationResult(context: AppCompatActivity,
+                    override fun provideAuthenticationResult(
+                        context: AppCompatActivity,
                         uiConfig: ExtVerificationUiConfig,
-                        data: ExtVerificationData, callback: (PinValidationResults) -> Unit) {
+                        data: ExtVerificationData,
+                        callback: (PinValidationResults) -> Unit
+                    ) {
                     }
                 }
             )
