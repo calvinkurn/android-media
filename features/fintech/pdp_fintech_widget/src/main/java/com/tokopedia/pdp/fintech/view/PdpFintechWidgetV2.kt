@@ -18,6 +18,7 @@ import com.tokopedia.pdp.fintech.di.components.DaggerFintechWidgetComponent
 import com.tokopedia.pdp.fintech.domain.datamodel.FintechRedirectionWidgetDataClass
 import com.tokopedia.pdp.fintech.domain.datamodel.WidgetDetailV3
 import com.tokopedia.pdp.fintech.domain.datamodel.WidgetDetailV3Item
+import com.tokopedia.pdp.fintech.helper.Utils
 import com.tokopedia.pdp.fintech.listner.ProductUpdateListner
 import com.tokopedia.pdp.fintech.viewmodel.FintechWidgetViewModel
 import com.tokopedia.pdp_fintech.databinding.PdpFintechWidgetV2LayoutBinding
@@ -199,12 +200,16 @@ class PdpFintechWidgetV2 @JvmOverloads constructor(
                     productId = productID.toString(),
                     productPrice = productPrice.toString(),
                     installmentAmt = model.installmentAmt.toString(),
-                    partner = model.gatewayId,
+                    partner = model.productCode
                 )
             )
+
+            val fintechRedirectionWidgetData =
+                FintechRedirectionWidgetDataClass(gatewayId = model.gatewayId, gatewayCode = model.productCode, tenure = model.tenure)
+
             instanceProductUpdateListner?.fintechChipClicked(
-                FintechRedirectionWidgetDataClass(gatewayId = model.gatewayId),
-                model.androidUrl
+                fintechRedirectionWidgetData,
+                Utils.createRedirectionAppLink(fintechRedirectionWidgetData, this.productID)
             )
         }
     }

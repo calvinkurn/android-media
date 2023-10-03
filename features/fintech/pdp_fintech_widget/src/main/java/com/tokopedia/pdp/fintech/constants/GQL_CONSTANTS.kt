@@ -78,6 +78,7 @@ const val GQL_GET_WIDGET_DETAIL_V3 =
         widget_type
         product_code
         gateway_id
+        tenure
       }
     }
   }

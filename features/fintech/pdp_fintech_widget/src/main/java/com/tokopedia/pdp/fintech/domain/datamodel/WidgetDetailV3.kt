@@ -46,5 +46,7 @@ data class WidgetDetailV3Item(
     var productCode: String = "",
     @SerializedName("gateway_id")
     var gatewayId: String = "",
+    @SerializedName("tenure")
+    var tenure: Int = 0
 ) : Parcelable
 
