@@ -189,7 +189,7 @@ class IrisAnalytics private constructor(val context: Context) : Iris, CoroutineS
 
         // convert map to json then save as string
         val event = gson.toJson(map)
-        val resultEvent = TrackingMapper.reformatEvent(event, session.getSessionId())
+        val resultEvent = TrackingMapper.reformatEvent(event, session.getSessionId(), cache)
         if (WhiteList.REALTIME_EVENT_LIST.contains(eventName) && trackingRepository.getRemoteConfig()
                 .getBoolean(KEY_REMOTE_CONFIG_SEND_REALTIME, false)
         ) {

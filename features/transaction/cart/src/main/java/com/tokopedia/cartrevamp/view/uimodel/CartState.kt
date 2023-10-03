@@ -4,6 +4,9 @@ import androidx.lifecycle.LiveData
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.atcexternal.AddToCartExternalModel
 import com.tokopedia.cartcommon.data.response.common.OutOfService
+import com.tokopedia.promousage.domain.entity.PromoEntryPointInfo
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
+import com.tokopedia.cartrevamp.domain.model.bmgm.response.BmGmGetGroupProductTickerResponse
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -87,7 +90,8 @@ sealed interface DeleteCartEvent {
         val forceExpandCollapsedUnavailableItems: Boolean,
         val addWishList: Boolean,
         val isFromGlobalCheckbox: Boolean,
-        val isFromEditBundle: Boolean
+        val isFromEditBundle: Boolean,
+        val listOfferId: ArrayList<Long>
     ) : DeleteCartEvent
 
     data class Failed(
@@ -186,6 +190,55 @@ data class SubTotalState(
     val noAvailableItems: Boolean
 )
 
+sealed class EntryPointInfoEvent {
+
+    object Loading : EntryPointInfoEvent()
+
+    data class ActiveNew(
+        val lastApply: LastApplyUiModel,
+        val entryPointInfo: PromoEntryPointInfo,
+        val recommendedPromoCodes: List<String>
+    ) : EntryPointInfoEvent()
+
+    data class Active(
+        val lastApply: LastApplyUiModel,
+        val message: String
+    ) : EntryPointInfoEvent()
+
+    data class ActiveDefault(
+        val appliedPromos: List<String>
+    ) : EntryPointInfoEvent()
+
+    data class InactiveNew(
+        val lastApply: LastApplyUiModel,
+        val isNoItemSelected: Boolean = false,
+        val entryPointInfo: PromoEntryPointInfo? = null,
+        val recommendedPromoCodes: List<String>
+    ) : EntryPointInfoEvent()
+
+    data class Inactive(
+        val message: String = "",
+        val isNoItemSelected: Boolean = false
+    ) : EntryPointInfoEvent()
+
+    data class AppliedNew(
+        val lastApply: LastApplyUiModel,
+        val leftIconUrl: String,
+        val message: String,
+        val recommendedPromoCodes: List<String>
+    ) : EntryPointInfoEvent()
+
+    data class Applied(
+        val lastApply: LastApplyUiModel,
+        val message: String,
+        val detail: String
+    ) : EntryPointInfoEvent()
+
+    data class Error(
+        val lastApply: LastApplyUiModel
+    ) : EntryPointInfoEvent()
+}
+
 @Suppress("UNCHECKED_CAST")
 class CartMutableLiveData<T>(initialValue: T) : LiveData<T>(initialValue) {
 
@@ -198,4 +251,9 @@ class CartMutableLiveData<T>(initialValue: T) : LiveData<T>(initialValue) {
     fun notifyObserver() {
         this.value = this.value
     }
+}
+
+sealed interface GetBmGmGroupProductTickerState {
+    data class Success(val pairOfferIdBmGmTickerResponse: Pair<Long, BmGmGetGroupProductTickerResponse>) : GetBmGmGroupProductTickerState
+    data class Failed(val pairOfferIdThrowable: Pair<Long, Throwable>) : GetBmGmGroupProductTickerState
 }
