@@ -7,6 +7,7 @@ import android.os.Bundle
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.internal.ApplinkConstInternalCommunication
 import com.tokopedia.kotlin.extensions.view.hideKeyboard
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.universal_sharing.R
 import com.tokopedia.universal_sharing.data.model.UniversalSharingPostPurchaseProductResponse
@@ -99,7 +100,7 @@ class UniversalSharingPostPurchaseSharingActivity :
             analytics.onViewSharingChannelBottomSheetSharePostPurchase(
                 userShareType = TYPE_GENERAL,
                 productId = product.productId,
-                orderId = orderId
+                orderId = orderId.toIntOrZero().toString() // If the order ID contains any characters/strings, they should be replaced with 0
             )
         }
     }
@@ -121,7 +122,7 @@ class UniversalSharingPostPurchaseSharingActivity :
                         channel = shareModel.channel ?: "",
                         userShareType = TYPE_GENERAL,
                         productId = product.productId,
-                        orderId = orderId
+                        orderId = orderId.toIntOrZero().toString() // If the order ID contains any characters/strings, they should be replaced with 0
                     )
                 }
 
@@ -129,7 +130,7 @@ class UniversalSharingPostPurchaseSharingActivity :
                     analytics.onClickCloseBottomSheetSharePostPurchase(
                         userShareType = TYPE_GENERAL,
                         productId = product.productId,
-                        orderId = orderId
+                        orderId = orderId.toIntOrZero().toString() // If the order ID contains any characters/strings, they should be replaced with 0
                     )
                 }
             })

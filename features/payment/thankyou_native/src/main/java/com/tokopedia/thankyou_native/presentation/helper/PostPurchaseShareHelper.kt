@@ -7,6 +7,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalCommunication
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.thankyou_native.domain.model.ShopOrder
 import com.tokopedia.universal_sharing.model.UniversalSharingPostPurchaseModel
 import com.tokopedia.universal_sharing.model.UniversalSharingPostPurchaseProductModel
@@ -99,6 +100,8 @@ class PostPurchaseShareHelper @Inject constructor(
     }
 
     fun getOrderIdListString(shopOrderList: List<ShopOrder>): String {
-        return shopOrderList.joinToString(separator = ",") { it.orderId }
+        return shopOrderList.joinToString(separator = ",") {
+            it.orderId.toIntOrZero().toString() // If the order ID contains any characters/strings, they should be replaced with 0
+        }
     }
 }

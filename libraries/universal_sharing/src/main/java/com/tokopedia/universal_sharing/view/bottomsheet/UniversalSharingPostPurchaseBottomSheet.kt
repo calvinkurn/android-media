@@ -12,6 +12,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -263,7 +264,7 @@ class UniversalSharingPostPurchaseBottomSheet :
             analytics.onClickShareProductPostPurchase(
                 userShareType = TYPE_GENERAL,
                 productId = productId,
-                orderId = orderId
+                orderId = orderId.toIntOrZero().toString() // If the order ID contains any characters/strings, they should be replaced with 0
             )
         }
     }
@@ -300,14 +301,18 @@ class UniversalSharingPostPurchaseBottomSheet :
         analytics.onViewProductListPostPurchase(
             userShareType = TYPE_GENERAL,
             productIdList = productIdList.joinToString(","),
-            orderIdList = orderIdList.joinToString(",")
+            orderIdList = orderIdList.joinToString(",") {
+                it.toIntOrZero().toString() // If the order ID contains any characters/strings, they should be replaced with 0
+            }
         )
     }
 
     private fun trackClose() {
         analytics.onClickCloseProductListPostPurchase(
             userShareType = TYPE_GENERAL,
-            orderIdList = orderIdList.joinToString(",")
+            orderIdList = orderIdList.joinToString(",") {
+                it.toIntOrZero().toString() // If the order ID contains any characters/strings, they should be replaced with 0
+            }
         )
     }
 

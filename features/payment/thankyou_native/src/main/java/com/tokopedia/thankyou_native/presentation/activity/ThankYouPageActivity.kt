@@ -371,7 +371,7 @@ class ThankYouPageActivity :
     private fun getCustomizeIconBuilder(): IconBuilder {
         // Track view
         thankYouPageAnalytics.get().sendViewShareIcon(
-            orderId = postPurchaseShareHelper.get().getOrderIdListString(
+            orderIdList = postPurchaseShareHelper.get().getOrderIdListString(
                 thanksPageData.shopOrder
             )
         )
@@ -383,7 +383,7 @@ class ThankYouPageActivity :
             )
         ).addIcon(IconList.ID_SHARE) {
             thankYouPageAnalytics.get().sendClickShareIcon(
-                orderId = postPurchaseShareHelper.get().getOrderIdListString(
+                orderIdList = postPurchaseShareHelper.get().getOrderIdListString(
                     thanksPageData.shopOrder
                 )
             )
