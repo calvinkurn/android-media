@@ -44,6 +44,8 @@ class BMGMViewHolder(
             tracker = object : BMGMWidgetTracker {
                 override fun getImpressionHolder(): ImpressHolder = element.impressHolder
 
+                override fun getImpressionHolders() = listener.getImpressionHolders()
+
                 override fun onImpressed() {
                     listener.onImpressComponent(getComponentTrackData(element))
                 }
@@ -55,6 +57,8 @@ class BMGMViewHolder(
                         component = getComponentTrackData(element)
                     )
                 }
+
+                override fun isCacheable() = listener.isCacheable()
             }
         )
     }

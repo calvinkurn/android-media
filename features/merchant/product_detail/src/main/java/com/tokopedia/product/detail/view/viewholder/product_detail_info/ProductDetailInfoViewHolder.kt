@@ -2,7 +2,6 @@ package com.tokopedia.product.detail.view.viewholder.product_detail_info
 
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
