@@ -157,7 +157,7 @@ class UniversalSharingPostPurchaseSharingActivity :
             setUtmCampaignData(
                 pageName = source,
                 userId = userSession.userId,
-                pageId = "${product.productId} - $orderId", // Product Id & Order Id
+                pageId = "${product.productId}-$orderId", // Product Id & Order Id
                 feature = "share"
             )
             setOnDismissListener {
