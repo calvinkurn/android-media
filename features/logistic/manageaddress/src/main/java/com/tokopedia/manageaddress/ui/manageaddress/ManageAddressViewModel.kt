@@ -13,12 +13,8 @@ import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
-import com.tokopedia.logisticCommon.domain.mapper.TargetedTickerMapper.convertTargetedTickerToUiModel
 import com.tokopedia.logisticCommon.domain.model.AddressListModel
-import com.tokopedia.logisticCommon.domain.model.TickerModel
-import com.tokopedia.logisticCommon.domain.param.GetTargetedTickerParam
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
-import com.tokopedia.logisticCommon.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.manageaddress.domain.model.DefaultAddressParam
 import com.tokopedia.manageaddress.domain.model.DeleteAddressParam
 import com.tokopedia.manageaddress.domain.model.ManageAddressState
@@ -34,6 +30,10 @@ import com.tokopedia.manageaddress.ui.uimodel.ValidateShareAddressState
 import com.tokopedia.manageaddress.util.ManageAddressConstant
 import com.tokopedia.manageaddress.util.ManageAddressConstant.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.targetedticker.GetTargetedTickerParam
+import com.tokopedia.targetedticker.GetTargetedTickerUseCase
+import com.tokopedia.targetedticker.TargetedTickerMapper.convertTargetedTickerToUiModel
+import com.tokopedia.targetedticker.TickerModel
 import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
