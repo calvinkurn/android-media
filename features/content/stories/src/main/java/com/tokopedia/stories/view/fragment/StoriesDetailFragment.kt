@@ -507,7 +507,7 @@ class StoriesDetailFragment @Inject constructor(
                     creativeName = "",
                     creativeSlot = position.plus(1).toString(),
                     itemId = "${data.groupId} - ${data.groupName} - ${mParentPage.args.authorId}",
-                    itemName = "/ - ${viewModel.mDetail.meta.templateTracker} - stories"
+                    itemName = "/ - stories"
                 )
             )
         )
