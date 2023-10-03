@@ -19,7 +19,8 @@ class HomePageBannerRepository @Inject constructor(
     private val params = RequestParams.create()
 
     companion object {
-        const val BANNER_LOCATION_PARAM = "location"
+        const val PARAM = "param"
+        const val PARAM_LOCATION = "location"
     }
 
     init {
@@ -36,11 +37,11 @@ class HomePageBannerRepository @Inject constructor(
     }
 
     override suspend fun getRemoteData(bundle: Bundle): HomeBannerData {
-        bundle.getString(BANNER_LOCATION_PARAM, "")?.let {
-            params.putString(BANNER_LOCATION_PARAM, it)
+        bundle.getString(PARAM_LOCATION, "")?.let {
+            params.putString(PARAM_LOCATION, it)
         }
-        bundle.getString(HomeDynamicChannelsRepository.PARAMS, "")?.let {
-            params.putString(HomeDynamicChannelsRepository.PARAMS, it)
+        bundle.getString(PARAM, "")?.let {
+            params.putString(PARAM, it)
         }
         return executeOnBackground()
     }

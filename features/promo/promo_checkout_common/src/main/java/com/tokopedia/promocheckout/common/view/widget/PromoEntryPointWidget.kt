@@ -58,7 +58,10 @@ class PromoEntryPointWidget @JvmOverloads constructor(
     private var inActiveViewLeftImage: ImageUnify? = null
     private var inActiveViewWording: TextFlipper? = null
     private var inActiveViewRightIcon: IconUnify? = null
+
     private var errorView: View? = null
+    private var errorViewTitle: Typography? = null
+    private var errorViewRightIcon: IconUnify? = null
 
     private var isRounded: Boolean = false
 
@@ -74,6 +77,9 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         loaderEnd = findViewById(R.id.loader_promo_end)
 
         errorView = findViewById(R.id.error_promo_checkout)
+        errorViewTitle = findViewById(R.id.tv_error_promo_checkout)
+        errorViewRightIcon = findViewById(R.id.ic_error_promo_checkout)
+
         switcherView = findViewById(R.id.switcher_promo_checkout)
 
         activeView = switcherView?.get(0)
@@ -122,7 +128,7 @@ class PromoEntryPointWidget @JvmOverloads constructor(
             if (isRounded) {
                 loadingView?.background = ResourcesCompat.getDrawable(
                     resources,
-                    R.drawable.background_promo_checkout_teal_rounded,
+                    R.drawable.background_promo_checkout_active_teal_rounded,
                     null
                 )
                 activeViewFrame?.background = ResourcesCompat.getDrawable(
@@ -214,22 +220,82 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         }
     }
 
+    private fun View.setInvisibleForLoading() {
+        if (visibility == View.VISIBLE) {
+            visibility = View.INVISIBLE
+        }
+    }
+
     fun showLoading() {
-        loaderStart?.type = LoaderUnify.TYPE_CIRCLE
-        loaderCenter?.type = LoaderUnify.TYPE_LINE
-        loaderEnd?.type = LoaderUnify.TYPE_LINE
-        loadingView?.visibility = View.VISIBLE
-        switcherView?.visibility = View.GONE
-        errorView?.visibility = View.GONE
-        activeViewWording?.stopFlipping()
+        if (isRounded) {
+            if (errorView?.visibility == View.VISIBLE && switcherView?.visibility == View.GONE) {
+                loaderStart?.type = LoaderUnify.TYPE_CIRCLE
+                loaderCenter?.type = LoaderUnify.TYPE_LINE
+                loaderEnd?.type = LoaderUnify.TYPE_LINE
+                loadingView?.background = null
+                loadingView?.visibility = View.VISIBLE
+                errorViewTitle?.setInvisibleForLoading()
+                errorViewRightIcon?.setInvisibleForLoading()
+                activeViewWording?.stopFlipping()
+            } else if (switcherView?.visibility == View.VISIBLE && switcherView?.displayedChild == 0 && errorView?.visibility == View.GONE) {
+                loaderStart?.type = LoaderUnify.TYPE_CIRCLE
+                loaderCenter?.type = LoaderUnify.TYPE_LINE
+                loaderEnd?.type = LoaderUnify.TYPE_LINE
+                loadingView?.background = null
+                loadingView?.visibility = View.VISIBLE
+                activeViewLeftImage?.setInvisibleForLoading()
+                activeViewWording?.setInvisibleForLoading()
+                activeViewRightIcon?.setInvisibleForLoading()
+                activeViewDivider?.setInvisibleForLoading()
+                activeViewSummaryLayout?.setInvisibleForLoading()
+                activeViewWording?.stopFlipping()
+            } else if (switcherView?.visibility == View.VISIBLE && switcherView?.displayedChild == 1 && errorView?.visibility == View.GONE) {
+                loaderStart?.type = LoaderUnify.TYPE_CIRCLE
+                loaderCenter?.type = LoaderUnify.TYPE_LINE
+                loaderEnd?.type = LoaderUnify.TYPE_LINE
+                loadingView?.background = null
+                loadingView?.visibility = View.VISIBLE
+                inActiveViewLeftImage?.setInvisibleForLoading()
+                inActiveViewWording?.setInvisibleForLoading()
+                inActiveViewRightIcon?.setInvisibleForLoading()
+                activeViewWording?.stopFlipping()
+            } else {
+                loaderStart?.type = LoaderUnify.TYPE_CIRCLE
+                loaderCenter?.type = LoaderUnify.TYPE_LINE
+                loaderEnd?.type = LoaderUnify.TYPE_LINE
+                if (loadingView?.background == null) {
+                    loadingView?.background = ResourcesCompat.getDrawable(
+                        resources,
+                        R.drawable.background_promo_checkout_active_teal_rounded,
+                        null
+                    )
+                }
+                loadingView?.visibility = View.VISIBLE
+                switcherView?.visibility = View.GONE
+                errorView?.visibility = View.GONE
+                activeViewWording?.stopFlipping()
+            }
+        } else {
+            loaderStart?.type = LoaderUnify.TYPE_CIRCLE
+            loaderCenter?.type = LoaderUnify.TYPE_LINE
+            loaderEnd?.type = LoaderUnify.TYPE_LINE
+            loadingView?.visibility = View.VISIBLE
+            switcherView?.visibility = View.GONE
+            errorView?.visibility = View.GONE
+            activeViewWording?.stopFlipping()
+        }
     }
 
     fun showError(onReloadClickListener: () -> Unit) {
         errorView?.visibility = View.VISIBLE
+        errorViewTitle?.visibility = View.VISIBLE
+        errorViewRightIcon?.visibility = View.VISIBLE
         loadingView?.visibility = View.GONE
         switcherView?.visibility = View.GONE
         errorView?.setOnClickListener {
-            onReloadClickListener.invoke()
+            if (errorViewRightIcon?.visibility == View.VISIBLE) {
+                onReloadClickListener.invoke()
+            }
         }
         activeViewWording?.stopFlipping()
     }
@@ -250,12 +316,16 @@ class PromoEntryPointWidget @JvmOverloads constructor(
             }
         }
         inActiveViewRightIcon?.visibility = View.GONE
+        inActiveViewLeftImage?.visibility = View.VISIBLE
+        inActiveViewWording?.visibility = View.VISIBLE
         switcherView?.displayedChild = 1
         switcherView?.visibility = View.VISIBLE
         errorView?.visibility = View.GONE
         loadingView?.visibility = View.GONE
         inActiveView?.setOnClickListener {
-            onClickListener.invoke()
+            if (inActiveViewWording?.visibility == View.VISIBLE) {
+                onClickListener.invoke()
+            }
         }
         activeViewWording?.stopFlipping()
     }
@@ -279,6 +349,8 @@ class PromoEntryPointWidget @JvmOverloads constructor(
                 }
             }
             inActiveViewRightIcon?.visibility = View.GONE
+            inActiveViewLeftImage?.visibility = View.VISIBLE
+            inActiveViewWording?.visibility = View.VISIBLE
             if (switcherView?.displayedChild != 1) {
                 // only trigger animation if currently showing different view
                 switcherView?.displayedChild = 1
@@ -295,13 +367,17 @@ class PromoEntryPointWidget @JvmOverloads constructor(
                 }
             }
             inActiveViewRightIcon?.visibility = View.GONE
+            inActiveViewLeftImage?.visibility = View.VISIBLE
+            inActiveViewWording?.visibility = View.VISIBLE
             switcherView?.displayedChild = 1
             switcherView?.visibility = View.VISIBLE
             errorView?.visibility = View.GONE
             loadingView?.visibility = View.GONE
         }
         inActiveView?.setOnClickListener {
-            onClickListener.invoke()
+            if (inActiveViewWording?.visibility == View.VISIBLE) {
+                onClickListener.invoke()
+            }
         }
         activeViewWording?.stopFlipping()
     }
@@ -322,6 +398,8 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         activeViewDivider?.visibility = View.GONE
         activeViewTitleWording?.visibility = View.GONE
         activeViewDescWording?.visibility = View.GONE
+        activeViewLeftImage?.visibility = View.VISIBLE
+        activeViewRightIcon?.visibility = View.VISIBLE
         activeViewWording?.visibility = View.VISIBLE
         if (animate && switcherView?.visibility == View.VISIBLE) {
             activeViewLeftImage?.setImageUrl(leftImageUrl)
@@ -332,6 +410,8 @@ class PromoEntryPointWidget @JvmOverloads constructor(
                 switcherView?.displayedChild = 0
             } else if (animateWording) {
                 activeViewWording?.setText(HtmlLinkHelper(context, wording).spannedString)
+            } else {
+                activeViewWording?.setCurrentText(HtmlLinkHelper(context, wording).spannedString)
             }
             errorView?.visibility = View.GONE
             loadingView?.visibility = View.GONE
@@ -346,16 +426,22 @@ class PromoEntryPointWidget @JvmOverloads constructor(
             loadingView?.visibility = View.GONE
         }
         activeViewRightIcon?.setOnClickListener {
-            /* no-op */
+            if (activeViewWording?.visibility == View.VISIBLE) {
+                onClickListener.invoke()
+            }
         }
         activeView?.setOnClickListener {
-            onClickListener.invoke()
+            if (activeViewWording?.visibility == View.VISIBLE) {
+                onClickListener.invoke()
+            }
         }
         activeViewWording?.stopFlipping()
     }
 
     /**
      * show active state for checkout page with promo revamp with expandable & confetti
+     *
+     * onExpandCollapseListener: called with param true if user expand the summary
      */
     fun showActiveNewExpandable(
         leftImageUrl: String,
@@ -366,15 +452,22 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         isSecondaryTextEnabled: Boolean = false,
         isExpanded: Boolean = false,
         animateWording: Boolean = false,
-        onClickListener: () -> Unit = {}
+        onClickListener: () -> Unit = {},
+        onChevronExpandClickListener: (isExpanded: Boolean) -> Unit = {},
+        onSummaryExpandedListener: () -> Unit = {}
     ) {
         activeViewConfettiFrame?.visibility = View.VISIBLE
         activeViewSummaryLayout?.visibility = View.GONE
         activeViewDivider?.visibility = View.GONE
         activeViewTitleWording?.visibility = View.GONE
         activeViewDescWording?.visibility = View.GONE
+        activeViewLeftImage?.visibility = View.VISIBLE
+        activeViewRightIcon?.visibility = View.VISIBLE
         activeViewWording?.visibility = View.VISIBLE
-        if (switcherView?.visibility == View.VISIBLE) {
+        if (switcherView?.visibility == View.VISIBLE || loadingView?.visibility == View.VISIBLE) {
+            switcherView?.visibility = View.VISIBLE
+            errorView?.visibility = View.GONE
+            loadingView?.visibility = View.GONE
             activeViewLeftImage?.setImageUrl(leftImageUrl)
             if (switcherView?.displayedChild != 0) {
                 // only trigger view switch animation if currently showing different view
@@ -382,9 +475,9 @@ class PromoEntryPointWidget @JvmOverloads constructor(
                 switcherView?.displayedChild = 0
             } else if (animateWording) {
                 activeViewWording?.setText(HtmlLinkHelper(context, wording).spannedString)
+            } else {
+                activeViewWording?.setCurrentText(HtmlLinkHelper(context, wording).spannedString)
             }
-            errorView?.visibility = View.GONE
-            loadingView?.visibility = View.GONE
         } else {
             switcherView?.reset()
             activeViewLeftImage?.setImageUrl(leftImageUrl)
@@ -434,15 +527,15 @@ class PromoEntryPointWidget @JvmOverloads constructor(
                     summaryView.findViewById<View>(R.id.group_promo_checkout_summary).visibility =
                         View.GONE
                     summaryView.setOnClickListener {
-                        onClickListener.invoke()
+                        if (activeViewWording?.visibility == View.VISIBLE) {
+                            onClickListener.invoke()
+                        }
                     }
                     this.addView(summaryView)
                 } else if (groupedSummary.isNotEmpty()) {
                     val summaryView = LayoutInflater.from(this.context)
                         .inflate(R.layout.layout_promo_checkout_summary_grouping, this, false)
-                    summaryView.findViewById<Typography>(R.id.tv_promo_checkout_summary_button).visibility =
-                        View.GONE
-                    summaryView.findViewById<IconUnify>(R.id.ic_promo_checkout_summary_button).visibility =
+                    summaryView.findViewById<View>(R.id.group_promo_checkout_secondary_text).visibility =
                         View.GONE
                     val groupContainer =
                         summaryView.findViewById<View>(R.id.group_promo_checkout_summary)
@@ -473,7 +566,9 @@ class PromoEntryPointWidget @JvmOverloads constructor(
                         groupLayout.addView(summaryGroupItemView)
                     }
                     groupContainer.setOnClickListener {
-                        onClickListener.invoke()
+                        if (activeViewWording?.visibility == View.VISIBLE) {
+                            onClickListener.invoke()
+                        }
                     }
                 }
             }
@@ -481,20 +576,26 @@ class PromoEntryPointWidget @JvmOverloads constructor(
                 activeViewRightIcon?.setImage(IconUnify.CHEVRON_UP)
                 activeViewSummaryLayout?.visibility = View.VISIBLE
                 activeViewDivider?.visibility = View.VISIBLE
+                onSummaryExpandedListener.invoke()
             } else {
                 activeViewRightIcon?.setImage(IconUnify.CHEVRON_DOWN)
                 activeViewSummaryLayout?.visibility = View.GONE
                 activeViewDivider?.visibility = View.GONE
             }
             activeViewRightIcon?.setOnClickListener {
-                if (activeViewSummaryLayout?.visibility == View.VISIBLE) {
-                    activeViewRightIcon?.setImage(IconUnify.CHEVRON_DOWN)
-                    activeViewSummaryLayout?.visibility = View.GONE
-                    activeViewDivider?.visibility = View.GONE
-                } else {
-                    activeViewRightIcon?.setImage(IconUnify.CHEVRON_UP)
-                    activeViewSummaryLayout?.visibility = View.VISIBLE
-                    activeViewDivider?.visibility = View.VISIBLE
+                if (activeViewRightIcon?.visibility == View.VISIBLE) {
+                    if (activeViewSummaryLayout?.visibility == View.VISIBLE) {
+                        activeViewRightIcon?.setImage(IconUnify.CHEVRON_DOWN)
+                        activeViewSummaryLayout?.visibility = View.GONE
+                        activeViewDivider?.visibility = View.GONE
+                        onChevronExpandClickListener.invoke(false)
+                    } else {
+                        activeViewRightIcon?.setImage(IconUnify.CHEVRON_UP)
+                        activeViewSummaryLayout?.visibility = View.VISIBLE
+                        activeViewDivider?.visibility = View.VISIBLE
+                        onChevronExpandClickListener.invoke(true)
+                        onSummaryExpandedListener.invoke()
+                    }
                 }
             }
         } else {
@@ -503,6 +604,9 @@ class PromoEntryPointWidget @JvmOverloads constructor(
             activeViewRightIcon?.setOnClickListener {
                 /* no-op */
             }
+        }
+        activeView?.setOnClickListener {
+            /* no-op */
         }
         activeViewWording?.stopFlipping()
     }
@@ -521,6 +625,8 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         activeViewDivider?.visibility = View.GONE
         activeViewTitleWording?.visibility = View.GONE
         activeViewDescWording?.visibility = View.GONE
+        activeViewLeftImage?.visibility = View.VISIBLE
+        activeViewRightIcon?.visibility = View.VISIBLE
         activeViewWording?.visibility = View.VISIBLE
         switcherView?.reset()
         activeViewLeftImage?.setImageUrl(PROMO_COUPON_ICON)
@@ -531,7 +637,9 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         errorView?.visibility = View.GONE
         loadingView?.visibility = View.GONE
         activeView?.setOnClickListener {
-            onClickListener.invoke()
+            if (activeViewWording?.visibility == View.VISIBLE) {
+                onClickListener.invoke()
+            }
         }
         activeViewWording?.stopFlipping()
     }
@@ -563,6 +671,8 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         activeViewConfettiFrame?.visibility = View.GONE
         activeViewSummaryLayout?.visibility = View.GONE
         activeViewDivider?.visibility = View.GONE
+        activeViewLeftImage?.visibility = View.VISIBLE
+        activeViewRightIcon?.visibility = View.VISIBLE
         activeViewWording?.visibility = View.VISIBLE
         activeViewTitleWording?.visibility = View.GONE
         activeViewDescWording?.visibility = View.GONE
@@ -581,7 +691,9 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         errorView?.visibility = View.GONE
         loadingView?.visibility = View.GONE
         activeView?.setOnClickListener {
-            onClickListener.invoke()
+            if (activeViewWording?.visibility == View.VISIBLE) {
+                onClickListener.invoke()
+            }
         }
     }
 
@@ -603,6 +715,8 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         activeViewTitleWording?.text = HtmlLinkHelper(context, title).spannedString
         activeViewDescWording?.text = HtmlLinkHelper(context, desc).spannedString
         activeViewWording?.visibility = View.GONE
+        activeViewLeftImage?.visibility = View.VISIBLE
+        activeViewRightIcon?.visibility = View.VISIBLE
         activeViewTitleWording?.visibility = View.VISIBLE
         activeViewDescWording?.visibility = View.VISIBLE
         activeViewRightIcon?.visibility = View.VISIBLE
@@ -642,7 +756,9 @@ class PromoEntryPointWidget @JvmOverloads constructor(
             activeViewDivider?.visibility = View.GONE
         }
         activeView?.setOnClickListener {
-            onClickListener.invoke()
+            if (activeViewRightIcon?.visibility == View.VISIBLE) {
+                onClickListener.invoke()
+            }
         }
         activeViewWording?.stopFlipping()
     }
