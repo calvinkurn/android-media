@@ -82,6 +82,7 @@ class ShippingDurationViewModel @Inject constructor(
                             isOcc
                         )
                     )
+                    _shipmentAnalytic.value = ShippingDurationAnalyticState.AnalyticShippingDuration(model.shippingDurationUiModels)
                     val hasCourierPromo = checkHasCourierPromo(model.shippingDurationUiModels)
                     if (hasCourierPromo) {
                         _shipmentAnalytic.value =

@@ -1,6 +1,7 @@
 package com.tokopedia.logisticCommon.data.request
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.graphql.data.GqlParam
 
 data class AddAddressParam(
     @SerializedName("addr_name")
@@ -43,4 +44,9 @@ data class AddAddressParam(
     var isTokonowRequest: Boolean = false,
     @SerializedName("consent_json")
     val consentJson: String = ""
-)
+) : GqlParam
+
+data class KeroAgentAddressInput(
+    @SerializedName("input")
+    val param: AddAddressParam
+) : GqlParam

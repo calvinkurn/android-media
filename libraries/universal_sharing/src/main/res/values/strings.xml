@@ -66,4 +66,7 @@
     <string name="ongoing_personalized_campaign_info">Berakhir %1$s</string>
     <string name="screenshoot_success_title">Yay, screenshot &amp; link tersimpan!</string>
     <string name="personalized_campaign_message_endweek_discount">Ada diskon %1$s nih jadi %2$s. Cek di Tokopedia, deh. Bentar lagi diskonnya berakhir, lho!</string>
+    <string name="title_update_app">Yuk, Update dulu aplikasimu</string>
+    <string name="description_error_not_found">Untuk membuka halaman ini, kamu perlu update ke aplikasi Tokopedia versi terbaru.</string>
+    <string name="cta_update_app">Update Aplikasi</string>
 </resources>

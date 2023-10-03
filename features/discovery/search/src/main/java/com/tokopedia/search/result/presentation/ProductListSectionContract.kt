@@ -22,6 +22,7 @@ import com.tokopedia.search.result.product.ticker.TickerPresenter
 import com.tokopedia.search.result.product.wishlist.WishlistPresenter
 import com.tokopedia.sortfilter.SortFilterItem
 import org.json.JSONArray
+import com.tokopedia.filter.quick.SortFilterItem as SortFilterItemReimagine
 
 interface ProductListSectionContract {
     interface View : CustomerView {
@@ -69,6 +70,7 @@ interface ProductListSectionContract {
         fun setSortFilterIndicatorCounter()
         fun hideQuickFilterShimmering()
         fun setQuickFilter(items: List<SortFilterItem>)
+        fun setQuickFilterReimagine(items: List<SortFilterItemReimagine>)
         fun showOnBoarding(firstProductPosition: Int)
         fun enableProductViewTypeOnBoarding()
         fun isFilterSelected(option: Option?): Boolean

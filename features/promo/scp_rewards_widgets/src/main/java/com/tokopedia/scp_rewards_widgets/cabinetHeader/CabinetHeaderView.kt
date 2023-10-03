@@ -6,8 +6,8 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import com.tokopedia.scp_rewards_common.loadImageOrFallback
-import com.tokopedia.scp_rewards_common.parseColor
+import com.tokopedia.scp_rewards_common.utils.loadImageOrFallback
+import com.tokopedia.scp_rewards_common.utils.parseColor
 import com.tokopedia.scp_rewards_widgets.R
 import com.tokopedia.scp_rewards_widgets.databinding.WidgetCabinetHeaderBinding
 
