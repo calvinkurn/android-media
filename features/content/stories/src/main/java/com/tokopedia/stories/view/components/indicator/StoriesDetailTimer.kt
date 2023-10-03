@@ -20,12 +20,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.stories.view.model.StoriesDetailItem
 import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesDetailItemUiEvent
 import kotlinx.coroutines.delay
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 @Composable
 fun StoriesDetailTimer(
@@ -67,7 +69,7 @@ private fun StoriesDetailTimerContent(
     currentPosition: Int,
     progress: Float,
 ) {
-    NestTheme(darkTheme = false) {
+    NestTheme(darkTheme = true) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
@@ -81,11 +83,11 @@ private fun StoriesDetailTimerContent(
                         .height(2.dp)
                         .clip(RoundedCornerShape(60))
                         .weight(1f)
-                        .background(NestTheme.colors.NN._100.copy(alpha = 0.4f))
+                        .background(colorResource(id = unifyprinciplesR.color.Unify_Static_White).copy(alpha = 0.4f))
                 ) {
                     Box(
                         modifier = Modifier
-                            .background(NestTheme.colors.NN._100)
+                            .background(colorResource(id = unifyprinciplesR.color.Unify_Static_White))
                             .fillMaxHeight().let {
                                 when (index) {
                                     currentPosition -> it.fillMaxWidth(progress)

@@ -163,6 +163,8 @@ class StoriesViewModel @AssistedInject constructor(
 
     private var mLatestTrackPosition = -1
 
+    private var mIsPageSelected = false
+
     val storiesState: Flow<StoriesUiState>
         get() = combine(
             _storiesMainData,
@@ -201,6 +203,7 @@ class StoriesViewModel @AssistedInject constructor(
             StoriesUiAction.ContentIsLoaded -> handleContentIsLoaded()
             StoriesUiAction.SaveInstanceStateData -> handleSaveInstanceStateData()
             is StoriesUiAction.Navigate -> handleNav(action.appLink)
+            StoriesUiAction.PageIsSelected -> handlePageIsSelected()
             else -> {}
         }
     }
@@ -226,6 +229,7 @@ class StoriesViewModel @AssistedInject constructor(
     }
 
     private fun handleMainData(selectedGroup: Int) {
+        mIsPageSelected = false
         mLatestTrackPosition = -1
         _groupPos.update { selectedGroup }
         viewModelScope.launchCatchError(block = {
@@ -282,8 +286,13 @@ class StoriesViewModel @AssistedInject constructor(
         updateDetailData(event = RESUME, isSameContent = true)
     }
 
+    private fun handlePageIsSelected() {
+        mIsPageSelected = true
+        updateDetailData(event = if (mDetail.isSameContent) RESUME else PAUSE)
+    }
+
     private fun handleContentIsLoaded() {
-        updateDetailData(event = RESUME, isSameContent = true)
+        updateDetailData(event = if (mIsPageSelected) RESUME else PAUSE, isSameContent = true)
         checkAndHitTrackActivity()
     }
 
