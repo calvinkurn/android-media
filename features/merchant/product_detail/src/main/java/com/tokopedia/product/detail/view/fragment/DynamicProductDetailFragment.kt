@@ -2066,7 +2066,7 @@ open class DynamicProductDetailFragment :
             bottomsheetIntent.putExtra(ACTIVATION_WEBVIEW_LINK, redirectionUrl)
             startActivityForResult(bottomsheetIntent, RQUEST_CODE_ACTIVATE_GOPAY)
         } else {
-            val intent = RouteManager.getIntent(context, redirectionUrl)
+            val intent = RouteManager.getIntent(context, "tokopedia://webview?url="+redirectionUrl)
             intent.putExtra(PARAM_PARENT_ID, fintechRedirectionWidgetDataClass.parentId)
             intent.putExtra(PARAM_CATEGORY_ID, fintechRedirectionWidgetDataClass.categoryId)
             startActivityForResult(intent, RQUEST_CODE_UPDATE_FINTECH_WIDGET)
