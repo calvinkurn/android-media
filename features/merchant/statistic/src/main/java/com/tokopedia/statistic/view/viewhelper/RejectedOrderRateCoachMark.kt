@@ -1,4 +1,4 @@
-package com.tokopedia.statistic.common.delegates
+package com.tokopedia.statistic.view.viewhelper
 
 import android.content.Context
 import android.view.View
@@ -7,12 +7,13 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.statistic.R
+import javax.inject.Inject
 
 /**
  * Created by @ilhamsuaib on 03/10/23.
  */
 
-class RejectedOrderRateCoachMarkImpl : RejectedOrderRateCoachMark {
+class RejectedOrderRateCoachMark @Inject constructor(){
 
     companion object {
         const val DATA_KEY = "plusCancellationRate"
@@ -22,14 +23,14 @@ class RejectedOrderRateCoachMarkImpl : RejectedOrderRateCoachMark {
     private var coachMark: CoachMark2? = null
     private val pref: CoachMarkPreference = CoachMarkPreference
 
-    override fun setCoachMarkAnchor(dataKey: String, view: View) {
+    fun setCoachMarkAnchor(dataKey: String, view: View) {
         if (dataKey == DATA_KEY && anchor != view) {
             anchor = view
             showCoachMark()
         }
     }
 
-    override fun showCoachMark() {
+    fun showCoachMark() {
         anchor?.let { anchor ->
             if (hasShown(anchor.context)) return
 
@@ -53,15 +54,15 @@ class RejectedOrderRateCoachMarkImpl : RejectedOrderRateCoachMark {
         }
     }
 
-    override fun dismissCoachMark() {
+    fun dismissCoachMark() {
         coachMark?.dismissCoachMark()
     }
 
-    override fun destroyCoachMark() {
+    fun destroyCoachMark() {
         coachMark = null
     }
 
-    override fun iniCoachMark(context: Context) {
+    fun iniCoachMark(context: Context) {
         if (hasShown(context)) return
 
         if (coachMark == null) {

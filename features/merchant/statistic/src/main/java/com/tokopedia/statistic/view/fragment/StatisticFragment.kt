@@ -80,8 +80,7 @@ import com.tokopedia.statistic.analytics.performance.StatisticPagePerformanceTra
 import com.tokopedia.statistic.analytics.performance.StatisticPerformanceMonitoringListener
 import com.tokopedia.statistic.common.Const
 import com.tokopedia.statistic.common.StatisticPageHelper
-import com.tokopedia.statistic.common.delegates.RejectedOrderRateCoachMark
-import com.tokopedia.statistic.common.delegates.RejectedOrderRateCoachMarkImpl
+import com.tokopedia.statistic.view.viewhelper.RejectedOrderRateCoachMark
 import com.tokopedia.statistic.common.utils.DateFilterFormatUtil
 import com.tokopedia.statistic.common.utils.logger.StatisticLogger
 import com.tokopedia.statistic.databinding.FragmentStcStatisticBinding
@@ -113,7 +112,7 @@ import com.tokopedia.sellerhomecommon.R as sellerhomecommonR
  */
 
 class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFactoryImpl>(),
-    WidgetListener, RejectedOrderRateCoachMark by RejectedOrderRateCoachMarkImpl() {
+    WidgetListener {
 
     companion object {
         private const val DEFAULT_START_DATE_NON_REGULAR_MERCHANT = 1L
@@ -146,6 +145,9 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var rejectedOrderRateCoachMark: RejectedOrderRateCoachMark
 
     private val mViewModel: StatisticViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(StatisticViewModel::class.java)
@@ -236,7 +238,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         observeWidgetData(mViewModel.barChartWidgetData, WidgetType.BAR_CHART)
         observeWidgetData(mViewModel.announcementWidgetData, WidgetType.ANNOUNCEMENT)
         observeTickers()
-        iniCoachMark(view.context)
+        rejectedOrderRateCoachMark.iniCoachMark(view.context)
     }
 
     override fun onResume() {
@@ -254,7 +256,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     override fun onDestroyView() {
-        destroyCoachMark()
+        rejectedOrderRateCoachMark.destroyCoachMark()
         mLayoutManager = null
         super.onDestroyView()
     }
@@ -549,7 +551,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     override fun setCoachMarkView(dataKey: String, view: View) {
-        setCoachMarkAnchor(dataKey, view)
+        rejectedOrderRateCoachMark.setCoachMarkAnchor(dataKey, view)
     }
 
     fun setSelectedWidget(widget: String) {
@@ -687,12 +689,12 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     private fun showCardCoachMark() {
         mLayoutManager?.let { layoutManager ->
             val cardIndex = adapter.data.indexOfFirst {
-                it.dataKey == RejectedOrderRateCoachMarkImpl.DATA_KEY
+                it.dataKey == RejectedOrderRateCoachMark.DATA_KEY
             }
             val firstVisibleIndex = layoutManager.findFirstVisibleItemPosition()
             val lastVisibleIndex = layoutManager.findLastCompletelyVisibleItemPosition()
             if (cardIndex != RecyclerView.NO_POSITION && cardIndex in firstVisibleIndex..lastVisibleIndex) {
-                showCoachMark()
+                rejectedOrderRateCoachMark.showCoachMark()
             }
         }
     }
