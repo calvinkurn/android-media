@@ -63,8 +63,8 @@ android {
                         'src/main/res/layouts/chatlist/filter',
                         'src/main/res/layouts/chatlist/operationalinsight',
 
-                        'src/main/res/layouts/chatsearch/page',
-                        'src/main/res/layouts/chatsetting'
+                        'src/main/res/layouts/chatsearch',
+                        'src/main/res/layouts/chatsetting',
                         'src/main/res/layouts/chattemplate'
             }
         }
