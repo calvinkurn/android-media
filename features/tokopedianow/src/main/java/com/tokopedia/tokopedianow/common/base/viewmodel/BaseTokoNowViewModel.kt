@@ -66,7 +66,7 @@ open class BaseTokoNowViewModel(
         get() = _openLoginPage
 
     protected var hasBlockedAddToCart: Boolean = false
-    protected var miniCartData = MiniCartSimplifiedData()
+    protected var miniCartData: MiniCartSimplifiedData? = null
         private set
 
     protected val _miniCart = MutableLiveData<Result<MiniCartSimplifiedData>>()
