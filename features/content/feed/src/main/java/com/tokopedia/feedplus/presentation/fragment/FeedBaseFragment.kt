@@ -298,11 +298,8 @@ class FeedBaseFragment :
         }
     }
 
-    fun showSwipeOnboarding() {
-        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
-            delay(COACHMARK_START_DELAY_IN_SEC.toDuration(DurationUnit.SECONDS))
-            binding.viewVerticalSwipeOnboarding.showAnimated()
-        }
+    private fun showSwipeOnboarding() {
+        binding.viewVerticalSwipeOnboarding.showAnimated()
     }
 
     private fun setupView() {
@@ -811,8 +808,6 @@ class FeedBaseFragment :
         private const val PARAM_PUSH_NOTIFICATION = "push"
 
         private const val THRESHOLD_OFFSET_HALF = 0.5f
-
-        private const val COACHMARK_START_DELAY_IN_SEC = 3
 
         private const val ONBOARDING_SHOW_DELAY = 500L
     }
