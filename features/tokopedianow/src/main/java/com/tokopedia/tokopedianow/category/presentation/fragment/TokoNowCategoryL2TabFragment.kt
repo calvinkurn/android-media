@@ -119,6 +119,8 @@ class TokoNowCategoryL2TabFragment : Fragment() {
 
     private var data: CategoryL2TabData = CategoryL2TabData()
 
+    private val onScrollListener by lazy { createOnScrollListener() }
+
     var categoryL2View: CategoryL2View? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -176,7 +178,9 @@ class TokoNowCategoryL2TabFragment : Fragment() {
 
     private fun observeLiveData() {
         observe(viewModel.visitableListLiveData) {
+            removeOnScrollListener()
             submitList(it)
+            addOnScrollListener()
         }
 
         observe(viewModel.addItemToCart) {
@@ -301,12 +305,29 @@ class TokoNowCategoryL2TabFragment : Fragment() {
         binding?.recyclerView?.apply {
             addItemDecoration(HorizontalScrollDecoration())
             layoutManager = GridLayoutManager(context, SPAN_COUNT).apply {
-                addOnScrollListener(createOnScrollListener())
                 spanSizeLookup = createSpanSizeLookup()
             }
+            removeOnScrollListener()
+            addOnScrollListener()
             adapter = categoryAdapter
             addProductItemDecoration()
             itemAnimator = null
+        }
+    }
+
+    private fun addOnScrollListener() {
+        binding?.apply {
+            recyclerView.post {
+                recyclerView.addOnScrollListener(onScrollListener)
+            }
+        }
+    }
+
+    private fun removeOnScrollListener() {
+        binding?.apply {
+            recyclerView.post {
+                recyclerView.removeOnScrollListener(onScrollListener)
+            }
         }
     }
 
