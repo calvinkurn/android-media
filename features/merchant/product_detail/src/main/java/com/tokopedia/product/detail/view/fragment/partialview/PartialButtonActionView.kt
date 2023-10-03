@@ -186,7 +186,7 @@ class PartialButtonActionView private constructor(
         view.onKeyboardVisibleListener(
             onShow = { rootView, keyboardHeight ->
                 if (rootView.paddingBottom == keyboardHeight) return@onKeyboardVisibleListener
-                rootView.setPadding(Int.ZERO,Int.ZERO,Int.ZERO, keyboardHeight)
+                rootView.setPadding(Int.ZERO, Int.ZERO, Int.ZERO, keyboardHeight)
             },
             onHide = { rootView, _ ->
                 if (rootView.paddingBottom == Int.ZERO) return@onKeyboardVisibleListener
