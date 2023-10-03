@@ -20,6 +20,9 @@ import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
+import com.tokopedia.play_common.util.extension.marginLp
+import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
+import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.stories.R
 import com.tokopedia.stories.databinding.FragmentStoriesProductBinding
 import com.tokopedia.stories.view.fragment.StoriesDetailFragment
@@ -45,10 +48,9 @@ import kotlin.math.roundToInt
 /**
  * @author by astidhiyaa on 25/07/23
  */
-class StoriesProductBottomSheet @Inject constructor(
-) : BottomSheetUnify(), ContentTaggedProductBottomSheetViewHolder.Listener {
+class StoriesProductBottomSheet @Inject constructor() : BottomSheetUnify(), ContentTaggedProductBottomSheetViewHolder.Listener {
 
-    private val viewModel by activityViewModels<StoriesViewModel> { (requireParentFragment() as StoriesDetailFragment).viewModelProvider  }
+    private val viewModel by activityViewModels<StoriesViewModel> { (requireParentFragment() as StoriesDetailFragment).viewModelProvider }
 
     private var _binding: FragmentStoriesProductBinding? = null
     private val binding: FragmentStoriesProductBinding get() = _binding!!
@@ -61,7 +63,28 @@ class StoriesProductBottomSheet @Inject constructor(
         (getScreenHeight() * HEIGHT_PERCENT).roundToInt()
     }
 
-    private var mListener : Listener? = null
+    private val rvLayoutChangeListener = object : View.OnLayoutChangeListener {
+        override fun onLayoutChange(
+            view: View,
+            left: Int,
+            top: Int,
+            right: Int,
+            bottom: Int,
+            oldLeft: Int,
+            oldTop: Int,
+            oldRight: Int,
+            oldBottom: Int
+        ) {
+            val expectedMargin = getRecyclerViewMarginBottom()
+            val marginLp = view.marginLp
+
+            if (marginLp.bottomMargin >= expectedMargin) return
+            marginLp.updateMargins(bottom = expectedMargin)
+            view.requestLayout()
+        }
+    }
+
+    private var mListener: Listener? = null
 
     private val scrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -78,7 +101,7 @@ class StoriesProductBottomSheet @Inject constructor(
         }
     }
 
-    //ids of impressed products
+    // ids of impressed products
     private val impressedProducts = mutableSetOf<String>()
 
     override fun onCreateView(
@@ -101,12 +124,16 @@ class StoriesProductBottomSheet @Inject constructor(
     }
 
     private fun setupView() {
+        binding.root.maxHeight = newHeight
+
         binding.rvStoriesProduct.apply {
             adapter = productAdapter
             addOnScrollListener(scrollListener)
             layoutManager = llManager
             isNestedScrollingEnabled = false
         }
+
+        binding.rvStoriesProduct.addOnLayoutChangeListener(rvLayoutChangeListener)
     }
 
     private fun observeUiState() {
@@ -125,7 +152,7 @@ class StoriesProductBottomSheet @Inject constructor(
                     is StoriesUiEvent.ShowErrorEvent -> {
                         requireView().rootView.showToaster(
                             message = event.message.message.orEmpty(),
-                            type = Toaster.TYPE_ERROR,
+                            type = Toaster.TYPE_ERROR
                         )
                     }
 
@@ -174,7 +201,9 @@ class StoriesProductBottomSheet @Inject constructor(
 
         binding.vStoriesCampaign.sectionTimer.timerVariant = if (campaign.isOngoing) {
             TimerUnifySingle.VARIANT_MAIN
-        } else TimerUnifySingle.VARIANT_INFORMATIVE
+        } else {
+            TimerUnifySingle.VARIANT_INFORMATIVE
+        }
 
         val targetTime = when (campaign) {
             is StoriesCampaignUiModel.Ongoing -> campaign.endTime
@@ -189,9 +218,13 @@ class StoriesProductBottomSheet @Inject constructor(
         binding.vStoriesCampaign.sectionTimer.targetDate = dt
     }
 
+    override fun onStart() {
+        super.onStart()
+        binding.rvStoriesProduct.requestApplyInsetsWhenAttached()
+    }
+
     override fun onResume() {
         super.onResume()
-        binding.root.maxHeight = newHeight
         viewModel.submitAction(StoriesUiAction.FetchProduct)
     }
 
@@ -256,7 +289,7 @@ class StoriesProductBottomSheet @Inject constructor(
             val endPosition = llManager.findLastVisibleItemPosition()
             if (startPosition > -1 && endPosition < products.size) {
                 return (startPosition..endPosition)
-                    .associateBy { products[it]  }
+                    .associateBy { products[it] }
             }
         }
         return emptyMap()
@@ -274,7 +307,13 @@ class StoriesProductBottomSheet @Inject constructor(
 
     override fun onDestroyView() {
         super.onDestroyView()
+        binding.rvStoriesProduct.removeOnLayoutChangeListener(rvLayoutChangeListener)
         mListener = null
+        _binding = null
+    }
+
+    private fun getRecyclerViewMarginBottom(): Int {
+        return binding.rvStoriesProduct.height - binding.root.height
     }
 
     interface Listener {
