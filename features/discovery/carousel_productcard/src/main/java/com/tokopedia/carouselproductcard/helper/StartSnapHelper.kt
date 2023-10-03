@@ -43,7 +43,7 @@ class StartSnapHelper : LinearSnapHelper() {
 
         if (layoutManager.canScrollHorizontally()) {
             out[0] = distanceToStart(targetView, getHorizontalHelper(layoutManager))-
-                    targetView.context.resources.getDimensionPixelSize(R.dimen.dp_16)
+                    targetView.context.resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16)
         } else {
             out[0] = 0
         }

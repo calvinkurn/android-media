@@ -1,6 +1,8 @@
 package com.tokopedia.manageaddress.domain.response
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.logisticCommon.data.response.KeroAddrStateChosenAddressData
+import com.tokopedia.logisticCommon.data.response.KeroAddressRespTokonow
 
 data class DeletePeopleAddressGqlResponse(
     @SerializedName("kero_remove_address")
@@ -20,5 +22,11 @@ data class DeletePeopleAddressResponse(
 
 data class DeletePeopleAddressData(
     @SerializedName("is_success")
-    val success: Int = 0
+    val success: Int = 0,
+    @SerializedName("is_state_chosen_address_changed")
+    val isStateChosenAddressChanged: Boolean = false,
+    @SerializedName("chosen_address")
+    var chosenAddressData: KeroAddrStateChosenAddressData = KeroAddrStateChosenAddressData(),
+    @SerializedName("tokonow")
+    var tokonow: KeroAddressRespTokonow = KeroAddressRespTokonow()
 )

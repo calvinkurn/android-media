@@ -24,6 +24,8 @@ class BillDetailViewHolder(val view: View) : AbstractViewHolder<TotalFee>(view) 
     private val llContainer: LinearLayout = itemView.llContainerFeeDetail
 
     override fun bind(element: TotalFee?) {
+        clearFeeDetail()
+
         element?.let {
             tvInvoiceTotalBillValue.text = getString(R.string.thankyou_rp_without_space,
                     element.totalBillAmountStr)
@@ -35,6 +37,9 @@ class BillDetailViewHolder(val view: View) : AbstractViewHolder<TotalFee>(view) 
         }
     }
 
+    private fun clearFeeDetail() {
+        llContainer.removeAllViews()
+    }
 
     private fun addFeeDetail(context: Context, feeDetail: FeeDetail) {
         if (inflater == null)

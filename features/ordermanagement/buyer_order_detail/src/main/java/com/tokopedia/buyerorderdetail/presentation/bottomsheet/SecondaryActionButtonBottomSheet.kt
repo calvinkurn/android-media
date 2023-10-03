@@ -8,7 +8,7 @@ import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.presentation.adapter.listener.ActionButtonClickListener
 import com.tokopedia.buyerorderdetail.presentation.adapter.SecondaryActionButtonAdapter
 import com.tokopedia.buyerorderdetail.presentation.adapter.itemdecoration.SecondaryActionButtonItemDecoration
-import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
+import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
 class SecondaryActionButtonBottomSheet(

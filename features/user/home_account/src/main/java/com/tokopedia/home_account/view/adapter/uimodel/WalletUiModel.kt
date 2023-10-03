@@ -9,5 +9,6 @@ data class WalletUiModel(
     var isFailed: Boolean = false,
     var isActive: Boolean = true,
     var isVertical: Boolean = true,
-    var hideTitle: Boolean = false
+    var hideTitle: Boolean = false,
+    var statusName: String = ""
 )

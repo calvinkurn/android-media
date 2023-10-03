@@ -28,6 +28,10 @@ labels:
 [Edit Journey For Huawei Device](https://docs.google.com/document/d/156V7TudzmolCvwQ8MQGoWOTDaHuHGSHxRVu-HqNQ7_E/edit?pli=1#heading=h.w51s9gpss7d9)
 <!--end expand-->
 
+<!--start expand:September 2023-->
+Remove Edit Address V1
+<!--end expand-->
+
 ## Overview
 
 ### Background
@@ -93,9 +97,6 @@ RouteManager.getIntent(context, "${ApplinkConstInternalLogistic.EDIT_ADDRESS_REV
 | `kero_edit_address` | [Edit Address - /maps/v1/address/edit](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/572194984)  | To edit address |
 
 ## Action Items
-
-- Create applink to get pinpoint only
-- Remove Add Address V1 (still use to edit address from `money in` feature)
 
 ## Useful Links
 

@@ -56,28 +56,10 @@ class PlayBroadcastPrepareViewModel @Inject constructor(
     val observableCreateLiveStream: LiveData<NetworkResult<LiveStreamInfoUiModel>>
         get() = _observableCreateLiveStream
     private val _observableCreateLiveStream = MutableLiveData<NetworkResult<LiveStreamInfoUiModel>>()
-    private val _observableIngestUrl: LiveData<String> = MediatorLiveData<String>().apply {
-        addSource(_observableCreateLiveStream) {
-            if (it is NetworkResult.Success) setIngestUrl(it.data.ingestUrl)
-        }
-    }
 
     private var _isFromSwitchAccount = MutableStateFlow(false)
     val isFromSwitchAccount
         get() = _isFromSwitchAccount.value
-
-    private val ingestUrlObserver = object : Observer<String> {
-        override fun onChanged(t: String?) {}
-    }
-
-    init {
-        _observableIngestUrl.observeForever(ingestUrlObserver)
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        _observableIngestUrl.removeObserver(ingestUrlObserver)
-    }
 
     fun setDataFromSetupDataStore(setupDataStore: PlayBroadcastSetupDataStore) {
         mDataStore.setFromSetupStore(setupDataStore)
@@ -101,6 +83,10 @@ class PlayBroadcastPrepareViewModel @Inject constructor(
         scope.launch {
             val liveStream = doCreateLiveStream(channelId).map { playBroadcastMapper.mapLiveStream(channelId, it) }
             _observableCreateLiveStream.value = liveStream
+
+            if (liveStream is NetworkResult.Success) {
+                setIngestUrl(liveStream.data.ingestUrl)
+            }
         }
     }
 
@@ -145,9 +131,5 @@ class PlayBroadcastPrepareViewModel @Inject constructor(
 
     fun setFromSwitchAccount(value: Boolean) {
         _isFromSwitchAccount.update { value }
-    }
-
-    companion object {
-        private const val MAX_FOLLOWERS_PREVIEW = 3
     }
 }

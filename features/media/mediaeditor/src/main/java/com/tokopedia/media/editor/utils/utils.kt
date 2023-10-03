@@ -187,12 +187,14 @@ fun Context.showMemoryLimitToast(imageSize: Pair<Int, Int>, msg: String? = null,
     ).show()
 }
 
-fun showErrorLoadToaster(view: View, msg: String) {
-    newRelicLog(
-        mapOf(
-            LOAD_IMAGE_FAILED to msg
+fun showErrorLoadToaster(view: View, msg: String?) {
+    msg?.let {
+        newRelicLog(
+            mapOf(
+                LOAD_IMAGE_FAILED to it
+            )
         )
-    )
+    }
 
     if (view.isAttachedToWindow) {
         Toaster.build(

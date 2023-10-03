@@ -22,7 +22,6 @@
             android:id="@+id/view_profile_outer_ring"
             android:layout_width="76dp"
             android:layout_height="76dp"
-            android:background="@drawable/up_live_ring_bg"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:loader_type="circle" />

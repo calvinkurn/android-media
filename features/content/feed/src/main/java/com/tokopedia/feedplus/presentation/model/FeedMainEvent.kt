@@ -15,4 +15,9 @@ sealed class FeedMainEvent : UiEvent {
     object ShowSwipeOnboarding : FeedMainEvent()
 
     data class ScrollToTop(val tabKey: String) : FeedMainEvent()
+
+    data class SelectTab(
+        val data: FeedDataModel,
+        val position: Int
+    ) : FeedMainEvent()
 }

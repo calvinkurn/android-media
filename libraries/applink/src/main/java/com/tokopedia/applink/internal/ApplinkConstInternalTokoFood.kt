@@ -18,25 +18,17 @@ object ApplinkConstInternalTokoFood {
     //TokoFoodHomeFragment
     @JvmField
     val HOME = "$INTERNAL_TOKO_FOOD/home"
-    @JvmField
-    val HOME_OLD = "$INTERNAL_TOKO_FOOD/old-home"
 
     //TokoFoodCategoryFragment
     @JvmField
     val CATEGORY = "$INTERNAL_TOKO_FOOD/category"
-    @JvmField
-    val CATEGORY_OLD = "$INTERNAL_TOKO_FOOD/old-category"
 
     //TokoFoodMerchantFragment
     @JvmField
     val MERCHANT = "$INTERNAL_TOKO_FOOD/merchant"
-    @JvmField
-    val MERCHANT_OLD = "$INTERNAL_TOKO_FOOD/old-merchant"
 
     //SearchContainerFragment
     @JvmField
     val SEARCH = "$INTERNAL_TOKO_FOOD/search"
-    @JvmField
-    val SEARCH_OLD = "$INTERNAL_TOKO_FOOD/old-search"
 
 }

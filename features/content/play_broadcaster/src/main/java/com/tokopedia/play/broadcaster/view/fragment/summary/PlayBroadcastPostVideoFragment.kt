@@ -32,6 +32,7 @@ import com.tokopedia.play.broadcaster.setup.product.viewmodel.ViewModelFactoryPr
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastSummaryAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastSummaryEvent
+import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagItem
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play.broadcaster.ui.state.ChannelSummaryUiState
 import com.tokopedia.play.broadcaster.ui.state.TagUiState
@@ -294,7 +295,7 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
     /**
      * Listener
      */
-    override fun onTagClicked(view: TagListViewComponent, tag: PlayTagUiModel) {
+    override fun onTagClicked(view: TagListViewComponent, tag: PlayTagItem) {
         analytic.clickContentTag(tag.tag, !tag.isChosen)
         viewModel.submitAction(PlayBroadcastSummaryAction.ToggleTag(tag))
     }

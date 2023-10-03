@@ -15,11 +15,10 @@ import timber.log.Timber
 object DeeplinkMapperCommunication {
 
     private const val CHAT_SETTINGS = "chatsettings"
-    const val KEY_ROLLENCE_UNIVERSAL_INBOX = "inbox_universal"
-    const val ROLLENCE_TYPE_A = "inbox_varA"
-    const val ROLLENCE_TYPE_B = "inbox_varB"
 
-    const val TOKOCHAT_REMOTE_CONFIG = "android_enable_tokochat"
+    const val UNIVERSAL_INBOX_ROLLENCE = "newInbox_rollout"
+    private const val TOKOCHAT_REMOTE_CONFIG = "android_enable_tokochat"
+    const val TOKOCHAT_LIST_REMOTE_CONFIG = "android_enable_tokochat_list"
 
     /**
      * Remote Config util
@@ -76,6 +75,14 @@ object DeeplinkMapperCommunication {
         }
     }
 
+    fun getRegisteredNavigationTokoChatList(context: Context, deeplink: String): String {
+        return if (isRemoteConfigActive(context, TOKOCHAT_LIST_REMOTE_CONFIG)) {
+            ApplinkConstInternalCommunication.TOKOCHAT_LIST
+        } else {
+            ApplinkConstInternalOrder.UNIFY_ORDER_TOKOFOOD
+        }
+    }
+
     /**
      * Bubble activation mapper
      */
@@ -98,8 +105,7 @@ object DeeplinkMapperCommunication {
      */
     fun getRegisteredNavigationInbox(context: Context, deeplink: String): String {
         return if (isUserLoggedIn(context)) {
-            val useUnivInbox = isABTestActive(KEY_ROLLENCE_UNIVERSAL_INBOX) == ROLLENCE_TYPE_A ||
-                isABTestActive(KEY_ROLLENCE_UNIVERSAL_INBOX) == ROLLENCE_TYPE_B
+            val useUnivInbox = isABTestActive(UNIVERSAL_INBOX_ROLLENCE) == UNIVERSAL_INBOX_ROLLENCE
             return if (useUnivInbox) {
                 ApplinkConstInternalCommunication.UNIVERSAL_INBOX
             } else {

@@ -46,6 +46,7 @@ object TopAdsCommonConstant {
     const val STATUS_IKLAN_ACTION_ACTIVATE = "toggle_on"
     const val STATUS_IKLAN_ACTION_DEACTIVATE = "toggle_off"
     const val CURRENT_SITE = "current_site"
+    const val GROUP_IDS_KEY = "groupIDs"
 
     var TOPADS_GRAPHQL_TA_URL = when (TokopediaUrl.getInstance().TYPE) {
         Env.STAGING -> "https://gql-staging.tokopedia.com/graphql/ta"

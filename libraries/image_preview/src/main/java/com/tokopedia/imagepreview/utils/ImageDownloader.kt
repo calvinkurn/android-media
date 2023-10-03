@@ -186,7 +186,7 @@ class ImageDownloader(
     private fun getLargeTokopediaIcon(): Bitmap {
         return BitmapFactory.decodeResource(
             context.resources,
-            com.tokopedia.design.R.drawable.ic_big_notif_customerapp
+            com.tokopedia.resources.common.R.drawable.ic_big_notif_customerapp
         )
     }
 

@@ -4,9 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:paddingEnd="@dimen/unify_space_12"
-    tools:paddingStart="@dimen/spacing_lvl4"
-    tools:paddingTop="@dimen/unify_space_8"
     tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
 
     <com.tokopedia.topchat.chatroom.view.custom.message.ReplyBubbleAreaMessage
@@ -14,82 +11,67 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_chat_reply_preview_compose_area"
-        android:paddingBottom="@dimen/dp_topchat_27"
+        android:paddingBottom="27dp"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/view_border_radius"
-        app:layout_constraintEnd_toEndOf="@+id/view_border_radius"
-        app:layout_constraintStart_toStartOf="@+id/view_border_radius" />
+        app:layout_constraintBottom_toTopOf="@id/view_border_radius"
+        app:layout_constraintEnd_toEndOf="@id/view_border_radius"
+        app:layout_constraintStart_toStartOf="@id/view_border_radius" />
 
     <View
         android:id="@+id/view_border_radius"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginHorizontal="@dimen/unify_space_2"
-        android:layout_marginTop="@dimen/dp_topchat_20"
-        app:layout_constraintEnd_toEndOf="@+id/new_comment"
-        app:layout_constraintStart_toStartOf="@+id/new_comment"
-        app:layout_constraintTop_toTopOf="@+id/new_comment" />
+        android:layout_marginHorizontal="2dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toEndOf="@id/new_comment"
+        app:layout_constraintStart_toStartOf="@id/new_comment"
+        app:layout_constraintTop_toTopOf="@id/new_comment" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/send_but"
-        android:layout_width="@dimen/spacing_lvl7"
-        android:layout_height="@dimen/spacing_lvl7"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:background="@drawable/bg_topchat_send_btn_disabled"
-        android:paddingStart="@dimen/dp_topchat_10"
-        android:paddingTop="@dimen/dp_topchat_10"
-        android:paddingEnd="@dimen/dp_topchat_9"
-        android:paddingBottom="@dimen/dp_topchat_10"
+        android:paddingStart="10dp"
+        android:paddingTop="10dp"
+        android:paddingEnd="9dp"
+        android:paddingBottom="10dp"
         app:icon_color_light_enable="@color/Unify_Static_White"
         app:icon_color_night_enable="@color/Unify_NN300"
         app:icon_name="SEND_TEXT"
-        app:layout_constraintBottom_toBottomOf="@+id/new_comment"
+        app:layout_constraintBottom_toBottomOf="@id/new_comment"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <EditText
         android:id="@+id/new_comment"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/dp_topchat_6"
-        android:layout_marginBottom="@dimen/dp_topchat_14"
+        android:layout_marginEnd="6dp"
+        android:layout_marginBottom="14dp"
         android:hint="@string/chat_edit_text"
         android:inputType="textMultiLine"
         android:maxLines="5"
-        android:minHeight="@dimen/dp_topchat_40"
-        android:paddingStart="@dimen/spacing_lvl7"
-        android:paddingTop="@dimen/dp_topchat_10"
-        android:paddingEnd="@dimen/spacing_lvl8"
+        android:minHeight="40dp"
+        android:paddingTop="10dp"
+        android:paddingEnd="48dp"
         android:textColor="@color/Unify_NN950_96"
         android:textColorHint="@color/Unify_NN950_32"
-        android:textSize="@dimen/fontSize_lvl4"
-        app:layout_constraintBottom_toTopOf="@+id/tp_error_compose"
-        app:layout_constraintEnd_toStartOf="@+id/send_but"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:text="@tools:sample/lorem/random" />
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@id/tp_error_compose"
+        app:layout_constraintEnd_toStartOf="@id/send_but"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/iv_chat_sticker"
-        android:layout_width="@dimen/spacing_lvl7"
-        android:layout_height="@dimen/spacing_lvl7"
-        android:layout_marginBottom="@dimen/dp_topchat_1"
-        android:padding="@dimen/spacing_lvl3"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginBottom="1dp"
+        android:padding="8dp"
         app:icon_color_light_enable="@color/topchat_dms_icon_compose"
         app:icon_color_night_enable="@color/topchat_dms_icon_compose"
         app:icon_name="STICKER"
-        app:layout_constraintBottom_toBottomOf="@+id/new_comment"
-        app:layout_constraintStart_toStartOf="@+id/new_comment" />
-
-    <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/iv_chat_menu"
-        android:layout_width="@dimen/spacing_lvl7"
-        android:layout_height="@dimen/spacing_lvl7"
-        android:layout_marginEnd="@dimen/spacing_lvl1"
-        android:layout_marginBottom="@dimen/dp_topchat_1"
-        android:padding="@dimen/spacing_lvl3"
-        app:icon_color_light_enable="@color/topchat_dms_icon_compose"
-        app:icon_color_night_enable="@color/topchat_dms_icon_compose"
-        app:icon_name="ADD_CIRCLE"
-        app:layout_constraintBottom_toBottomOf="@+id/new_comment"
-        app:layout_constraintEnd_toEndOf="@+id/new_comment" />
+        app:layout_constraintBottom_toBottomOf="@id/new_comment"
+        app:layout_constraintEnd_toEndOf="@id/new_comment" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tp_error_compose"
@@ -100,9 +82,9 @@
         android:paddingEnd="9dp"
         android:textColor="@color/Unify_RN500"
         android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="@+id/new_comment"
-        app:layout_constraintStart_toStartOf="@+id/new_comment"
-        app:layout_constraintTop_toBottomOf="@+id/new_comment"
+        app:layout_constraintEnd_toEndOf="@id/new_comment"
+        app:layout_constraintStart_toStartOf="@id/new_comment"
+        app:layout_constraintTop_toBottomOf="@id/new_comment"
         app:typographyType="body_3"
         tools:text="Coba pendekin 123 karakter lagi, ya!"
         tools:visibility="visible" />

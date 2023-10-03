@@ -3,18 +3,29 @@ package com.tokopedia.productcard.test.list
 import android.view.View
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isEnabled
+import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.productcard.ProductCardModel.LabelGroup
 import com.tokopedia.productcard.test.ProductCardModelMatcher
 import com.tokopedia.productcard.test.R
 import com.tokopedia.productcard.utils.*
-import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.productcard.ProductCardModel.LabelGroup
 import com.tokopedia.productcard.test.getProductCardModelMatcherData
-import com.tokopedia.productcard.test.utils.*
+import com.tokopedia.productcard.test.utils.campaignLabelUrl
 import com.tokopedia.productcard.test.utils.freeOngkirImageUrl
 import com.tokopedia.productcard.test.utils.isDisplayedWithText
+import com.tokopedia.productcard.test.utils.isNotDisplayed
 import com.tokopedia.productcard.test.utils.officialStoreBadgeImageUrl
 import com.tokopedia.productcard.test.utils.productImageUrl
 import com.tokopedia.productcard.test.utils.withDrawable
+import com.tokopedia.productcard.utils.GOLD
+import com.tokopedia.productcard.utils.LABEL_GIMMICK
+import com.tokopedia.productcard.utils.LABEL_INTEGRITY
+import com.tokopedia.productcard.utils.LABEL_OVERLAY
+import com.tokopedia.productcard.utils.LABEL_PRICE
+import com.tokopedia.productcard.utils.LABEL_PRODUCT_STATUS
+import com.tokopedia.productcard.utils.LABEL_RIBBON
+import com.tokopedia.productcard.utils.LIGHT_GREEN
+import com.tokopedia.productcard.utils.LIGHT_ORANGE
+import com.tokopedia.productcard.utils.TRANSPARENT_BLACK
 import org.hamcrest.Matcher
 
 internal val productCardListTestData = getProductCardModelMatcherData(false) + mutableListOf<ProductCardModelMatcher>().also {
@@ -22,6 +33,9 @@ internal val productCardListTestData = getProductCardModelMatcherData(false) + m
     it.add(testDeleteProductButton())
     it.add(testSimilarProductButton(false))
     it.add(testBestSellerLayout())
+    it.add(testListViewExperimentLayout())
+    it.add(testListViewOverlayCampaignLayout())
+    it.add(testListViewOverlayBestSellerLayout())
 }
 
 internal val productCardListViewStubTestData= getProductCardModelMatcherData(true) + mutableListOf<ProductCardModelMatcher>().also {
@@ -133,7 +147,9 @@ private fun testSimilarProductButton(useViewStub: Boolean): ProductCardModelMatc
 
 private fun testBestSellerLayout(): ProductCardModelMatcher {
     val labelRibbon = LabelGroup(position = LABEL_RIBBON, type = GOLD, title = "#1")
-    val labelIntegrity = LabelGroup(position = LABEL_INTEGRITY, title = "Terjual 122", type = "#ae31353b")
+    val labelIntegrity =
+        LabelGroup(position = LABEL_INTEGRITY, title = "Terjual 122", type = "#ae31353b")
+    val labelETA = LabelGroup(position = LABEL_ETA, title = "Tiba 28 Feb - 1 Mar", type = TEXT_DARK_GREY)
 
     val productCardModel = ProductCardModel(
         productImageUrl = productImageUrl,
@@ -142,7 +158,7 @@ private fun testBestSellerLayout(): ProductCardModelMatcher {
         discountPercentage = "50%",
         slashedPrice = "Rp8.000.000",
         countSoldRating = "4.5",
-        labelGroupList = listOf(labelRibbon, labelIntegrity),
+        labelGroupList = listOf(labelRibbon, labelIntegrity, labelETA),
         freeOngkir = ProductCardModel.FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
         productListType = ProductCardModel.ProductListType.BEST_SELLER,
     )
@@ -161,6 +177,131 @@ private fun testBestSellerLayout(): ProductCardModelMatcher {
         R.id.imageRibbonArch to isDisplayed(),
         R.id.imageRibbonContent to isDisplayed(),
         R.id.textRibbon to isDisplayedWithText(labelRibbon.title),
+        R.id.textViewETA to isDisplayedWithText(labelETA.title),
+    )
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testListViewExperimentLayout(): ProductCardModelMatcher {
+    val labelOverlay = LabelGroup(
+        position = LABEL_OVERLAY,
+        title = "Terlaris",
+        type = LIGHT_ORANGE,
+    )
+
+    val labelETA = LabelGroup(position = LABEL_ETA, title = "Tiba 28 Feb - 1 Mar", type = TEXT_DARK_GREY)
+
+    val productCardModel = ProductCardModel(
+        productImageUrl = productImageUrl,
+        productName = "List View Layout can have 2 line in product name.............",
+        formattedPrice = "Rp8.999.000",
+        discountPercentage = "50%",
+        slashedPrice = "Rp8.000.000",
+        countSoldRating = "4.5",
+        labelGroupList = listOf(labelOverlay, labelETA),
+        freeOngkir = ProductCardModel.FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
+        productListType = ProductCardModel.ProductListType.LIST_VIEW,
+    )
+
+    val productCardMatcher = mapOf(
+        R.id.productCardImage to isDisplayed(),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.labelDiscount to isDisplayedWithText(productCardModel.discountPercentage),
+        R.id.textViewSlashedPrice to isDisplayedWithText(productCardModel.slashedPrice),
+        R.id.productCardImageSalesRatingFloat to isDisplayed(),
+        R.id.salesRatingFloat to isDisplayed(),
+        R.id.labelOverlayStatus to isDisplayedWithText(labelOverlay.title),
+        R.id.imageFreeOngkirPromo to isDisplayed(),
+        R.id.textViewETA to isDisplayedWithText(labelETA.title),
+    )
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testListViewOverlayCampaignLayout(): ProductCardModelMatcher {
+    val labelOverlay = LabelGroup(
+        position = LABEL_OVERLAY,
+        title = "Semarak Ramadan",
+        imageUrl = campaignLabelUrl,
+    )
+
+    val labelCampaign = LabelGroup(
+        position = LABEL_CAMPAIGN,
+        title = "Semarak Ramadan",
+        imageUrl = campaignLabelUrl,
+    )
+
+    val productCardModel = ProductCardModel(
+        productImageUrl = productImageUrl,
+        productName = "List View Layout with label campaign and label overlay",
+        formattedPrice = "Rp8.999.000",
+        discountPercentage = "50%",
+        slashedPrice = "Rp8.000.000",
+        countSoldRating = "4.5",
+        labelGroupList = listOf(labelOverlay, labelCampaign),
+        freeOngkir = ProductCardModel.FreeOngkir(
+            isActive = true,
+            imageUrl = freeOngkirImageUrl
+        ),
+        productListType = ProductCardModel.ProductListType.LIST_VIEW,
+    )
+
+    val productCardMatcher = mapOf(
+        R.id.productCardImage to isDisplayed(),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.labelDiscount to isDisplayedWithText(productCardModel.discountPercentage),
+        R.id.textViewSlashedPrice to isDisplayedWithText(productCardModel.slashedPrice),
+        R.id.productCardImageSalesRatingFloat to isDisplayed(),
+        R.id.salesRatingFloat to isDisplayed(),
+        R.id.labelOverlay to isDisplayedWithText(labelCampaign.title),
+        R.id.labelOverlayBackground to isDisplayed(),
+        R.id.imageFreeOngkirPromo to isDisplayed(),
+    )
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testListViewOverlayBestSellerLayout(): ProductCardModelMatcher {
+    val labelOverlay = LabelGroup(
+        position = LABEL_OVERLAY,
+        title = "Terlaris",
+        type = "#E1AA1D",
+    )
+
+    val labelBestSeller = LabelGroup(
+        position = LABEL_BEST_SELLER,
+        title = "Terlaris",
+        type = "#E1AA1D"
+    )
+
+    val productCardModel = ProductCardModel(
+        productImageUrl = productImageUrl,
+        productName = "List View Layout with label overlay and label best seller",
+        formattedPrice = "Rp8.999.000",
+        discountPercentage = "50%",
+        slashedPrice = "Rp8.000.000",
+        countSoldRating = "4.5",
+        labelGroupList = listOf(labelOverlay, labelBestSeller),
+        freeOngkir = ProductCardModel.FreeOngkir(
+            isActive = true,
+            imageUrl = freeOngkirImageUrl
+        ),
+        productListType = ProductCardModel.ProductListType.LIST_VIEW,
+    )
+
+    val productCardMatcher = mapOf(
+        R.id.productCardImage to isDisplayed(),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.labelDiscount to isDisplayedWithText(productCardModel.discountPercentage),
+        R.id.textViewSlashedPrice to isDisplayedWithText(productCardModel.slashedPrice),
+        R.id.productCardImageSalesRatingFloat to isDisplayed(),
+        R.id.salesRatingFloat to isDisplayed(),
+        R.id.labelOverlayStatus to isDisplayedWithText(labelOverlay.title),
+        R.id.imageFreeOngkirPromo to isDisplayed(),
     )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)

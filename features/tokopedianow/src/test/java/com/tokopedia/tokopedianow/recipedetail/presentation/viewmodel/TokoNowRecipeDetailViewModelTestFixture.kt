@@ -18,7 +18,6 @@ import com.tokopedia.tokopedianow.recipebookmark.domain.usecase.RemoveRecipeBook
 import com.tokopedia.tokopedianow.recipecommon.domain.model.RecipeResponse
 import com.tokopedia.tokopedianow.recipedetail.domain.usecase.GetRecipeUseCase
 import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
-import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
@@ -186,7 +185,7 @@ open class TokoNowRecipeDetailViewModelTestFixture {
     }
 
     protected fun verifyUpdateAddressDataCalled() {
-        coVerify { addressData.updateLocalData() }
+        coVerify { addressData.updateLocalDataIfAddressHasUpdated() }
     }
 
     protected fun verifyInitAffiliateCookieCalled() {

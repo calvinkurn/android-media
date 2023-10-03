@@ -55,7 +55,7 @@ open class TokoFoodPurchaseCassavaTest: BaseTokoFoodCassavaTest() {
         activityRule.activity.purchasePageScrollTo<TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel>(
             recyclerViewId = R.id.recycler_view_purchase
         )
-        onIdView(R.id.amount_cta).isViewDisplayed().onClick()
+        onIdView(com.tokopedia.totalamount.R.id.amount_cta).isViewDisplayed().onClick()
     }
 
     companion object {

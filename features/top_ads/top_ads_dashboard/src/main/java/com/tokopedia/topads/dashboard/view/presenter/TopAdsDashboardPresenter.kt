@@ -25,6 +25,7 @@ import com.tokopedia.topads.common.domain.interactor.*
 import com.tokopedia.topads.common.domain.usecase.*
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.SOURCE_HEADLINE__PAGE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
 import com.tokopedia.topads.dashboard.data.model.*
 import com.tokopedia.topads.dashboard.data.model.insightkey.InsightKeyData
@@ -32,6 +33,10 @@ import com.tokopedia.topads.dashboard.data.raw.BUDGET_RECOMMENDATION
 import com.tokopedia.topads.dashboard.data.raw.PRODUCT_RECOMMENDATION
 import com.tokopedia.topads.dashboard.data.raw.SHOP_AD_INFO
 import com.tokopedia.topads.dashboard.domain.interactor.*
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupInsightCountUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState
+import com.tokopedia.topads.dashboard.recommendation.usecase.TopAdsGetTotalAdGroupsWithInsightUseCase
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDashboardView
 import com.tokopedia.topads.headline.data.ShopAdInfo
 import com.tokopedia.usecase.RequestParams
@@ -75,6 +80,7 @@ class TopAdsDashboardPresenter @Inject constructor(
     private val getHiddenTrialUseCase: GraphqlUseCase<FreeTrialShopListResponse>,
     private val whiteListedUserUseCase: GetWhiteListedUserUseCase,
     private val topAdsGetDeletedAdsUseCase: TopAdsGetDeletedAdsUseCase,
+    private val topAdsGetTotalAdGroupsWithInsightUseCase: TopAdsGetTotalAdGroupsWithInsightUseCase,
     private val userSession: UserSessionInterface,
 ) : BaseDaggerPresenter<TopAdsDashboardView>(), CoroutineScope {
 
@@ -82,6 +88,9 @@ class TopAdsDashboardPresenter @Inject constructor(
     var isShopWhiteListed: MutableLiveData<Boolean> = MutableLiveData()
     private val _expiryDateHiddenTrial: MutableLiveData<String> = MutableLiveData()
     val expiryDateHiddenTrial: LiveData<String> = _expiryDateHiddenTrial
+
+    private var _groupAdsInsight: MutableLiveData<TopAdsListAllInsightState<GroupInsightCountUiModel>> = MutableLiveData()
+    val groupAdsInsight: LiveData<TopAdsListAllInsightState<GroupInsightCountUiModel>> = _groupAdsInsight
 
     companion object {
         const val HIDDEN_TRIAL_FEATURE = 21
@@ -139,28 +148,28 @@ class TopAdsDashboardPresenter @Inject constructor(
 
     fun getProductStats(resources: Resources, startDate: String, endDate: String, adIds: List<String>, sort: String, status: Int, onSuccess: ((GetDashboardProductStatistics) -> Unit)) {
         topAdsGetProductStatisticsUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources,
-                com.tokopedia.topads.common.R.raw.gql_query_product_statistics))
+            com.tokopedia.topads.common.R.raw.gql_query_product_statistics))
         topAdsGetProductStatisticsUseCase.setParams(startDate, endDate, adIds, sort, status)
         topAdsGetProductStatisticsUseCase.executeQuerySafeMode(
-                {
-                    onSuccess(it.getDashboardProductStatistics)
-                },
-                {
-                    it.printStackTrace()
-                })
+            {
+                onSuccess(it.getDashboardProductStatistics)
+            },
+            {
+                it.printStackTrace()
+            })
     }
 
     fun getCountProductKeyword(resources: Resources, groupIds: List<String>, onSuccess: ((List<CountDataItem>) -> Unit)) {
         topAdsGetProductKeyCountUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources,
-                R.raw.gql_query_total_products_keywords))
+            R.raw.gql_query_total_products_keywords))
         topAdsGetProductKeyCountUseCase.setParams(groupIds)
         topAdsGetProductKeyCountUseCase.executeQuerySafeMode(
-                {
-                    onSuccess(it.topAdsGetTotalAdsAndKeywords.data)
-                },
-                {
-                    it.printStackTrace()
-                })
+            {
+                onSuccess(it.topAdsGetTotalAdsAndKeywords.data)
+            },
+            {
+                it.printStackTrace()
+            })
     }
 
     fun getGroupList(search: String, onSuccess: (List<GroupListDataItem>) -> Unit) {
@@ -282,12 +291,12 @@ class TopAdsDashboardPresenter @Inject constructor(
         getHiddenTrialUseCase.setRequestParams(mapOf("shopID" to userSession.shopId.toIntOrZero()))
         getHiddenTrialUseCase.setTypeClass(FreeTrialShopListResponse::class.java)
         getHiddenTrialUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CACHE_ONLY)
-                .setExpiryTime(GraphqlConstant.ExpiryTimes.WEEK.`val`())
-                .setSessionIncluded(true)
-                .build())
+            .setExpiryTime(GraphqlConstant.ExpiryTimes.WEEK.`val`())
+            .setSessionIncluded(true)
+            .build())
         getHiddenTrialUseCase.execute({
             var data = false
-            it.topAdsGetShopWhitelistedFeature.data.forEach lit@{free->
+            it.topAdsGetShopWhitelistedFeature.data.forEach lit@{ free ->
                 if (free?.featureID == HIDDEN_TRIAL_FEATURE) {
                     data = true
                     return@lit
@@ -372,12 +381,12 @@ class TopAdsDashboardPresenter @Inject constructor(
     fun validateGroup(groupName: String, onSuccess: ((ResponseGroupValidateName.TopAdsGroupValidateNameV2) -> Unit)) {
         validGroupUseCase.setParams(groupName, "android.topads_validate_group")
         validGroupUseCase.execute(
-                {
-                    onSuccess(it.topAdsGroupValidateName)
-                },
-                { throwable ->
-                    throwable.printStackTrace()
-                })
+            {
+                onSuccess(it.topAdsGroupValidateName)
+            },
+            { throwable ->
+                throwable.printStackTrace()
+            })
     }
 
     fun createGroup(
@@ -406,15 +415,15 @@ class TopAdsDashboardPresenter @Inject constructor(
 
     fun getGroupInfo(resources: Resources, groupId: String, source: String, onSuccess: (GroupInfoResponse.TopAdsGetPromoGroup.Data) -> Unit) {
         groupInfoUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources,
-                com.tokopedia.topads.common.R.raw.query_get_group_info))
+            com.tokopedia.topads.common.R.raw.query_get_group_info))
         groupInfoUseCase.setParams(groupId, source)
         groupInfoUseCase.executeQuerySafeMode(
-                {
-                    onSuccess(it.topAdsGetPromoGroup?.data!!)
-                },
-                { throwable ->
-                    throwable.printStackTrace()
-                })
+            {
+                onSuccess(it.topAdsGetPromoGroup?.data!!)
+            },
+            { throwable ->
+                throwable.printStackTrace()
+            })
     }
 
     fun getWhiteListedUser(onSuccess: (WhiteListUserResponse.TopAdsGetShopWhitelistedFeature) -> Unit, isFinished: () -> Unit) {
@@ -424,10 +433,9 @@ class TopAdsDashboardPresenter @Inject constructor(
                 onSuccess(it)
                 isFinished.invoke()
             },
-            {
-                throwable ->
-                    throwable.printStackTrace()
-                    isFinished.invoke()
+            { throwable ->
+                throwable.printStackTrace()
+                isFinished.invoke()
             }
         )
     }
@@ -442,6 +450,22 @@ class TopAdsDashboardPresenter @Inject constructor(
     ) {
         topAdsGetDeletedAdsUseCase.setParams(page, type, startDate, endDate)
         topAdsGetDeletedAdsUseCase.execute(onSuccess, onEmptyResult)
+    }
+
+    fun getAdGroupWithInsight(adGroupType: String) {
+        launchCatchError(block = {
+            val productInsightCount = topAdsGetTotalAdGroupsWithInsightUseCase(listOf(adGroupType), SOURCE_HEADLINE__PAGE)
+
+            if (productInsightCount is TopAdsListAllInsightState.Success) {
+                val data = productInsightCount.data.topAdsGetTotalAdGroupsWithInsightByShopID.totalAdGroupsWithInsight
+                val count = GroupInsightCountUiModel(remainingAdsGroup = data.totalAdGroups - data.totalAdGroupsWithInsight, totalAdsGroup = data.totalAdGroups)
+                _groupAdsInsight.value = TopAdsListAllInsightState.Success(count)
+            } else {
+                _groupAdsInsight.value = TopAdsListAllInsightState.Success(GroupInsightCountUiModel())
+            }
+        }, onError = {
+            _groupAdsInsight.value = TopAdsListAllInsightState.Fail(it)
+        })
     }
 
     override val coroutineContext: CoroutineContext

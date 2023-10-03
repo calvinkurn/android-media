@@ -37,6 +37,7 @@ object MCCMQuery {
                 descriptions
                 pricePlain
                 slashedPricePlain
+                campaignLabelText
                 trackingData {
                     productID
                     operatorID

@@ -16,7 +16,6 @@
             android:id="@+id/ivClose"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            app:srcCompat="@drawable/ic_close_white_24"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="16dp"
             android:contentDescription="@string/kol_close_btn_content_desc" />
@@ -166,14 +165,14 @@
             android:layout_marginLeft="16dp"
             android:layout_alignParentLeft="true">
 
-            <ImageView
+            <com.tokopedia.iconunify.IconUnify
                 android:id="@+id/likeIcon"
                 android:layout_width="18dp"
                 android:layout_height="18dp"
                 android:contentDescription="@string/kol_action_like"
                 android:scaleType="fitCenter"
-                app:srcCompat="@drawable/ic_thumb_white"
                 android:visibility="visible"
+                app:icon_name="THUMB_FILLED"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/likeText"
                 app:layout_constraintTop_toTopOf="parent"
@@ -239,10 +238,10 @@
                 android:layout_height="18dp"
                 android:contentDescription="@string/kol_action_share"
                 android:scaleType="fitCenter"
-                app:srcCompat="@drawable/ic_share_grey_profile"
+                app:tint="@color/Unify_NN0"
+                app:srcCompat="@drawable/iconunify_share_mobile"
                 android:visibility="visible"
-                tools:visibility="visible"
-                app:tint="@color/Unify_NN0" />
+                tools:visibility="visible" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/shareText"

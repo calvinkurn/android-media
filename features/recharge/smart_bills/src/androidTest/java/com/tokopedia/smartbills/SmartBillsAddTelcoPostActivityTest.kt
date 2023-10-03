@@ -85,7 +85,7 @@ class SmartBillsAddTelcoPostActivityTest {
 
     private fun clickInputField(){
         Thread.sleep(2000)
-        Espresso.onView(CommonMatcher.getElementFromMatchAtPosition(ViewMatchers.withId(R.id.text_field_input), 1)).
+        Espresso.onView(CommonMatcher.getElementFromMatchAtPosition(ViewMatchers.withId(com.tokopedia.unifycomponents.R.id.text_field_input), 1)).
         perform(ViewActions.typeText("085327499272"))
         Thread.sleep(4000)
     }
@@ -98,7 +98,7 @@ class SmartBillsAddTelcoPostActivityTest {
 
     private fun click_add_inquiry(){
         Thread.sleep(2000)
-        Espresso.onView(ViewMatchers.withId(R.id.btn_sbm_add_inquiry)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        Espresso.onView(ViewMatchers.withId(com.tokopedia.common.topupbills.R.id.btn_sbm_add_inquiry)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
                 .perform(ViewActions.click())
     }
 

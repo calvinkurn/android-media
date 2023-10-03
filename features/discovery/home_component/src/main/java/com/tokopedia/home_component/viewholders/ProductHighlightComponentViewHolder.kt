@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.home_component.HomeComponentRollenceController
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.customview.DynamicChannelHeaderView
 import com.tokopedia.home_component.customview.HeaderListener
@@ -18,6 +17,7 @@ import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.home_component.visitable.ProductHighlightDataModel
+import com.tokopedia.home_component_header.util.HomeChannelHeaderRollenceController
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.productcard.ProductCardListView
@@ -85,7 +85,7 @@ class ProductHighlightComponentViewHolder(
             },
             colorMode = element.channelModel.channelBanner.gradientColor.getColorMode()
         )
-        val topPadding = if (!HomeComponentRollenceController.isDynamicChannelHeaderUsingRollenceVariant()) {
+        val topPadding = if (!HomeChannelHeaderRollenceController.isHeaderUsingRollenceVariant()) {
             view.context.resources.getDimensionPixelSize(R.dimen.home_product_highlight_content_top_padding)
         } else {
             0

@@ -104,6 +104,7 @@ val channelPausedResponse = GetChannelResponse.Channel(
 fun buildConfigurationUiModel(
     streamAllowed: Boolean = true,
     shortVideoAllowed: Boolean = false,
+    showSaveButton: Boolean = false,
     hasContent: Boolean = false,
     channelId: String = "12345",
     channelStatus: ChannelStatus = ChannelStatus.Draft,
@@ -126,6 +127,7 @@ fun buildConfigurationUiModel(
     scheduleConfig = scheduleConfig,
     tnc = tnc,
     hasContent = hasContent,
+    showSaveButton = showSaveButton,
     beautificationConfig = beautificationConfig,
 )
 

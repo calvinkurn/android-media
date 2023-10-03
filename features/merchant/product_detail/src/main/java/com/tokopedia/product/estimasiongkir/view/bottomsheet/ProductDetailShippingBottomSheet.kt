@@ -249,11 +249,6 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
     override fun onLocalizingAddressLoginSuccess() {
     }
 
-    override fun onPause() {
-        super.onPause()
-        trackingQueue.sendAll()
-    }
-
     override fun impressScheduledDelivery(prices: List<Pair<String, String>>, date: String) {
         val buyerDistrictId = arguments?.getString(ARG_BUYER_DISTRICT_ID) ?: ""
         val sellerDistrictId = arguments?.getString(ARG_SELLER_DISTRICT_ID) ?: ""

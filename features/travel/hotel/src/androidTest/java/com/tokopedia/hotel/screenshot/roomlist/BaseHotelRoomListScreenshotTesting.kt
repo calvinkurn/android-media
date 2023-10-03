@@ -55,14 +55,14 @@ abstract class BaseHotelRoomListScreenshotTesting {
         //SS testing for hotel and guest bottom sheet
         Espresso.onView(ViewMatchers.withId(R.id.hotel_room_and_guest_layout)).perform(ViewActions.click())
         CommonActions.findViewAndScreenShot(R.id.bottom_sheet_hotel_room_and_guest, filePrefix(), "bs-hotel-and-guest")
-        Espresso.onView(ViewMatchers.withId(R.id.bottom_sheet_close)).perform(ViewActions.click())
+        Espresso.onView(ViewMatchers.withId(com.tokopedia.unifycomponents.R.id.bottom_sheet_close)).perform(ViewActions.click())
 
         //SS testing for calendar
         Espresso.onView(ViewMatchers.withId(R.id.hotel_date_layout)).perform(ViewActions.click())
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
             CommonActions.takeScreenShotVisibleViewInScreen(activity.window.decorView, filePrefix(), "bs-calendar")
         }
-        Espresso.onView(ViewMatchers.withId(R.id.bottom_sheet_close)).perform(ViewActions.click())
+        Espresso.onView(ViewMatchers.withId(com.tokopedia.unifycomponents.R.id.bottom_sheet_close)).perform(ViewActions.click())
 
         //SS testing for room detail
         if(getItemCount() > 0){

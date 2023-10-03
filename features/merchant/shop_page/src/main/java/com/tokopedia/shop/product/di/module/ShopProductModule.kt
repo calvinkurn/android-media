@@ -15,6 +15,7 @@ import com.tokopedia.shop.common.graphql.data.stampprogress.MembershipStampProgr
 import com.tokopedia.shop.product.data.model.ShopFeaturedProduct
 import com.tokopedia.shop.product.di.scope.ShopProductScope
 import com.tokopedia.shop.sort.view.mapper.ShopProductSortMapper
+import com.tokopedia.universal_sharing.view.usecase.AffiliateEligibilityCheckUseCase
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -75,5 +76,11 @@ class ShopProductModule {
     @Provides
     fun provideDeleteCart(graphqlRepository: GraphqlRepository): DeleteCartUseCase {
         return DeleteCartUseCase(graphqlRepository)
+    }
+
+    @ShopProductScope
+    @Provides
+    fun provideAffiliateUseCase(graphqlRepository: GraphqlRepository): AffiliateEligibilityCheckUseCase {
+        return AffiliateEligibilityCheckUseCase(graphqlRepository)
     }
 }

@@ -112,12 +112,12 @@ class RichListRankViewHolder(
         binding?.run {
             tvShcRankNote.setTextColor(
                 root.context.getResColor(
-                    com.tokopedia.unifycomponents.R.color.Unify_NN400
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN400
                 )
             )
             tvShcRankValue.setTextColor(
                 root.context.getResColor(
-                    com.tokopedia.unifycomponents.R.color.Unify_NN400
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN400
                 )
             )
         }
@@ -127,12 +127,12 @@ class RichListRankViewHolder(
         binding?.run {
             tvShcRankNote.setTextColor(
                 root.context.getResColor(
-                    com.tokopedia.unifycomponents.R.color.Unify_NN600
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN600
                 )
             )
             tvShcRankValue.setTextColor(
                 root.context.getResColor(
-                    com.tokopedia.unifycomponents.R.color.Unify_NN600
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN600
                 )
             )
         }

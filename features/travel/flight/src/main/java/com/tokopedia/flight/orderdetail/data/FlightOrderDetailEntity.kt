@@ -213,7 +213,10 @@ class OrderDetailPayment(
     val needToPayAmountStr: String = "",
     @SerializedName("manualTransfer")
     @Expose
-    val manualTransfer: OrderDetailManualTransfer = OrderDetailManualTransfer()
+    val manualTransfer: OrderDetailManualTransfer = OrderDetailManualTransfer(),
+    @SerializedName("additionalInfo")
+    @Expose
+    val additionalInfo: String = ""
 ) {
     class OrderDetailManualTransfer(
         @SerializedName("uniqueCode")

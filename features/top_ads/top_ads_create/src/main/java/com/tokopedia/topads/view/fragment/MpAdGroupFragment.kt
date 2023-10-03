@@ -32,6 +32,7 @@ import com.tokopedia.topads.constants.MpTopadsConst.IDR_CONST
 import com.tokopedia.topads.constants.MpTopadsConst.PRODUCT_ID_PARAM
 import com.tokopedia.topads.constants.MpTopadsConst.TRUE
 import com.tokopedia.topads.create.R
+import com.tokopedia.topads.common.R as topadscommonR
 import com.tokopedia.topads.create.databinding.MpAdGroupFragmentBinding
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsAddCreditActivity
@@ -391,10 +392,10 @@ class MpAdGroupFragment :
     private fun openSuccessDialog(groupId: String) {
         val dialog = DialogUnify(requireContext(), DialogUnify.VERTICAL_ACTION, DialogUnify.WITH_ILLUSTRATION)
         dialog.setImageUrl(successImageUrl)
-        dialog.setDescription(getString(R.string.success_dailog_description))
-        dialog.setTitle(getString(R.string.product_successfully_advertised))
-        dialog.setPrimaryCTAText(getString(R.string.manage_ads_group))
-        dialog.setSecondaryCTAText(getString(R.string.stay_here))
+        dialog.setDescription(getString(topadscommonR.string.topads_common_create_group_success_dailog_desc))
+        dialog.setTitle(getString(topadscommonR.string.topads_common_product_successfully_advertised))
+        dialog.setPrimaryCTAText(getString(topadscommonR.string.topads_common_manage_ads_group))
+        dialog.setSecondaryCTAText(getString(topadscommonR.string.topads_common_stay_here))
         dialog.setPrimaryCTAClickListener {
             MpTracker.clickAdGroupCreatedManageCta()
             val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS).apply {
@@ -420,10 +421,10 @@ class MpAdGroupFragment :
 
     private fun openInsufficientCreditsDialog(dataAmount: Int) {
         val dialog = DialogUnify(requireContext(), DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
-        dialog.setDescription(getString(R.string.success_group_creation_insufficient_credits_text).replace(IDR_CONST, "Rp$dataAmount"))
-        dialog.setTitle(getString(R.string.ads_created_successfully_but_cant_appear_yet))
-        dialog.setPrimaryCTAText(getString(R.string.add_credit))
-        dialog.setSecondaryCTAText(getString(R.string.later))
+        dialog.setDescription(getString(topadscommonR.string.topads_common_insufficient_credits_error_desc).replace(IDR_CONST, "Rp$dataAmount"))
+        dialog.setTitle(getString(topadscommonR.string.topads_common_ads_created_successfully_but_cant_appear_yet))
+        dialog.setPrimaryCTAText(getString(topadscommonR.string.topads_common_add_credit))
+        dialog.setSecondaryCTAText(getString(topadscommonR.string.topads_common_later_keyword))
         dialog.setPrimaryCTAClickListener {
             MpTracker.clickAddCreditCta()
             val intent = Intent(activity, TopAdsAddCreditActivity::class.java)

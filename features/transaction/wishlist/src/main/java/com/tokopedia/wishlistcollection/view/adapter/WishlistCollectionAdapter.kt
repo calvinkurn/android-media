@@ -79,6 +79,7 @@ class WishlistCollectionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(
         fun onCariBarangClicked()
         fun onRecommendationItemImpression(recommendationItem: RecommendationItem, position: Int)
         fun onRecommendationItemClick(recommendationItem: RecommendationItem, position: Int)
+        fun onAffiliateTickerCtaClick() {}
     }
 
     fun setActionListener(collectionWishlistFragment: WishlistCollectionFragment) {

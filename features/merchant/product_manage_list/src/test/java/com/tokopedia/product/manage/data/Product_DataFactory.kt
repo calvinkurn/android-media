@@ -90,7 +90,9 @@ fun createProductUiModel(
     isEmptyStock: Boolean = false,
     isLabelGuarantee: Boolean = false,
     isTobacco: Boolean = false,
-    isDTInbound: Boolean = false
+    isDTInbound: Boolean = false,
+    isArchived: Boolean = false,
+    isInGracePeriod: Boolean = false
 ): ProductUiModel {
     return ProductUiModel(
         id,
@@ -124,6 +126,8 @@ fun createProductUiModel(
         isEmptyStock,
         isLabelGuarantee,
         isTobacco,
-        isDTInbound
+        isDTInbound,
+        isArchived,
+        isInGracePeriod
     )
 }

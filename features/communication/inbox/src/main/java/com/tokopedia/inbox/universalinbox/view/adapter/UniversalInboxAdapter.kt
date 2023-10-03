@@ -1,161 +1,307 @@
 package com.tokopedia.inbox.universalinbox.view.adapter
 
-import com.tokopedia.adapterdelegate.BaseCommonAdapter
-import com.tokopedia.inbox.universalinbox.data.entity.UniversalInboxAllCounterResponse
-import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil
-import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxMenuItemDelegate
-import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxMenuSectionDelegate
-import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxMenuSeparatorDelegate
-import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxRecommendationDelegate
-import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxRecommendationLoaderDelegate
-import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxRecommendationTitleDelegate
-import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxRecommendationWidgetDelegate
-import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxTopAdsBannerDelegate
-import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxTopAdsHeadlineDelegate
-import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxWidgetMetaDelegate
-import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxMenuListener
-import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxWidgetListener
-import com.tokopedia.inbox.universalinbox.view.uimodel.MenuItemType
-import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuSeparatorUiModel
-import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuUiModel
-import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationLoaderUiModel
+import android.annotation.SuppressLint
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.annotation.VisibleForTesting
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
+import com.tokopedia.inbox.universalinbox.view.adapter.typefactory.UniversalInboxTypeFactory
+import com.tokopedia.inbox.universalinbox.view.adapter.viewholder.UniversalInboxMenuItemViewHolder
+import com.tokopedia.inbox.universalinbox.view.adapter.viewholder.UniversalInboxMenuSeparatorViewHolder
+import com.tokopedia.inbox.universalinbox.view.adapter.viewholder.UniversalInboxRecommendationLoaderViewHolder
+import com.tokopedia.inbox.universalinbox.view.adapter.viewholder.UniversalInboxRecommendationTitleViewHolder
+import com.tokopedia.inbox.universalinbox.view.adapter.viewholder.UniversalInboxRecommendationWidgetViewHolder
+import com.tokopedia.inbox.universalinbox.view.adapter.viewholder.UniversalInboxTopAdsBannerViewHolder
+import com.tokopedia.inbox.universalinbox.view.adapter.viewholder.UniversalInboxTopAdsHeadlineViewHolder
+import com.tokopedia.inbox.universalinbox.view.adapter.viewholder.UniversalInboxWidgetMetaViewHolder
+import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationTitleUiModel
+import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationUiModel
+import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationWidgetUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopAdsBannerUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxWidgetMetaUiModel
-import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.topads.sdk.listener.TdnBannerResponseListener
-import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
-import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import timber.log.Timber
 
 class UniversalInboxAdapter(
-    userSession: UserSessionInterface,
-    widgetListener: UniversalInboxWidgetListener,
-    menuListener: UniversalInboxMenuListener,
-    tdnBannerResponseListener: TdnBannerResponseListener,
-    topAdsClickListener: TopAdsImageViewClickListener,
-    recommendationListener: RecommendationListener
-) : BaseCommonAdapter() {
+    private val typeFactory: UniversalInboxTypeFactory
+) : BaseListAdapter<Visitable<in UniversalInboxTypeFactory>, UniversalInboxTypeFactory>(
+    typeFactory
+) {
 
-    init {
-        delegatesManager.addDelegate(UniversalInboxWidgetMetaDelegate(widgetListener))
-        delegatesManager.addDelegate(UniversalInboxMenuSectionDelegate())
-        delegatesManager.addDelegate(UniversalInboxMenuItemDelegate(menuListener))
-        delegatesManager.addDelegate(
-            UniversalInboxTopAdsBannerDelegate(tdnBannerResponseListener, topAdsClickListener)
-        )
-        delegatesManager.addDelegate(UniversalInboxRecommendationWidgetDelegate())
-        delegatesManager.addDelegate(UniversalInboxRecommendationTitleDelegate())
-        delegatesManager.addDelegate(UniversalInboxRecommendationDelegate(recommendationListener))
-        delegatesManager.addDelegate(UniversalInboxRecommendationLoaderDelegate())
-        delegatesManager.addDelegate(UniversalInboxMenuSeparatorDelegate())
-        delegatesManager.addDelegate(UniversalInboxTopAdsHeadlineDelegate(userSession))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<*> {
+        val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
+        return typeFactory.createViewHolder(view, viewType)
     }
 
-    private var recommendationViewType: Int? = null
-    private var recommendationFirstPosition: Int? = null
-
-    fun getProductRecommendationViewType(): Int? {
-        if (recommendationViewType != null) {
-            return recommendationViewType
-        } else {
-            itemList.forEachIndexed { index, item ->
-                if (item is RecommendationItem) {
-                    recommendationViewType = getItemViewType(index)
-                    return recommendationViewType
-                }
+    override fun onBindViewHolder(holder: AbstractViewHolder<*>, position: Int) {
+        try {
+            val layout = holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams
+            when (getItemViewType(position)) {
+                UniversalInboxMenuItemViewHolder.LAYOUT -> layout.isFullSpan = true
+                UniversalInboxMenuSeparatorViewHolder.LAYOUT -> layout.isFullSpan = true
+                UniversalInboxWidgetMetaViewHolder.LAYOUT -> layout.isFullSpan = true
+                UniversalInboxRecommendationWidgetViewHolder.LAYOUT -> layout.isFullSpan = true
+                UniversalInboxTopAdsBannerViewHolder.LAYOUT -> layout.isFullSpan = true
+                UniversalInboxTopAdsHeadlineViewHolder.LAYOUT -> layout.isFullSpan = true
+                UniversalInboxRecommendationLoaderViewHolder.LAYOUT -> layout.isFullSpan = true
+                UniversalInboxRecommendationTitleViewHolder.LAYOUT -> layout.isFullSpan = true
             }
-            return null
+            (holder as AbstractViewHolder<Visitable<*>>).bind(visitables[position])
+        } catch (throwable: Throwable) {
+            Timber.e(throwable)
+        }
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return if (position < 0 || position >= itemCount) {
+            HideViewHolder.LAYOUT
+        } else {
+            visitables[position].type(typeFactory)
+        }
+    }
+
+    override fun onViewRecycled(holder: AbstractViewHolder<*>) {
+        holder.onViewRecycled()
+    }
+
+    private var recommendationFirstPosition: Int? = null
+    private var recommendationTitlePosition: Int? = null
+    private var recommendationWidgetPosition: Int? = null
+
+    private val loaderUiModel by lazy {
+        LoadingMoreModel()
+    }
+    private fun updateItems(newList: List<Visitable<in UniversalInboxTypeFactory>>) {
+        try {
+            val diffResult = DiffUtil.calculateDiff(
+                UniversalInboxDiffUtilCallBack(visitables, newList)
+            )
+            visitables = newList
+            diffResult.dispatchUpdatesTo(this)
+        } catch (throwable: Throwable) {
+            Timber.e(throwable)
         }
     }
 
     fun getProductRecommendationFirstPosition(): Int? {
-        if (recommendationFirstPosition != null) {
-            return recommendationFirstPosition
+        return if (checkCachedRecommendationFirstPosition()) {
+            recommendationFirstPosition
         } else {
-            itemList.forEachIndexed { index, item ->
-                if (item is RecommendationItem) {
-                    recommendationFirstPosition = index
-                    return recommendationFirstPosition
-                }
+            // get first index or -1
+            visitables.indexOfFirst {
+                it is UniversalInboxRecommendationUiModel
+            }.takeIf { it >= 0 }?.also { // get result when it not -1 (found)
+                recommendationFirstPosition = it
             }
-            return null
         }
+    }
+
+    private fun checkCachedRecommendationFirstPosition(): Boolean {
+        return recommendationFirstPosition?.let {
+            it < visitables.size && visitables[it] is UniversalInboxRecommendationUiModel
+        } ?: false
+    }
+
+    private fun getRecommendationWidgetPosition(): Int? {
+        return if (checkCachedRecommendationWidgetPosition()) {
+            recommendationWidgetPosition
+        } else {
+            // get first index or -1
+            visitables.indexOfFirst {
+                it is UniversalInboxRecommendationWidgetUiModel
+            }.takeIf { it >= 0 }?.also { // get result when it not -1 (found)
+                recommendationWidgetPosition = it
+            }
+        }
+    }
+
+    private fun checkCachedRecommendationWidgetPosition(): Boolean {
+        return recommendationWidgetPosition?.let {
+            it < visitables.size && visitables[it] is UniversalInboxRecommendationWidgetUiModel
+        } ?: false
     }
 
     private fun isRecommendationLoader(position: Int): Boolean {
-        return itemList[position]::class == UniversalInboxRecommendationLoaderUiModel::class
+        return visitables[position]::class == LoadingMoreModel::class
     }
 
-    fun getFirstLoadingPosition(): Int? {
-        if (isRecommendationLoader(itemList.lastIndex)) {
-            return itemList.lastIndex
+    private fun getFirstLoadingPosition(): Int? {
+        return if (visitables.isEmpty()) {
+            null
+        } else if (isRecommendationLoader(visitables.lastIndex)) {
+            visitables.lastIndex
         } else {
-            itemList.forEachIndexed { index, item ->
-                if (item is UniversalInboxRecommendationLoaderUiModel) {
-                    return index
-                }
-            }
+            // get first index or -1
+            visitables.indexOfFirst {
+                it is LoadingMoreModel
+            }.takeIf { it >= 0 } // get result when it not -1 (found)
         }
-        return null
     }
 
-    fun getFirstTopAdsBannerPositionPair(): Pair<Int, UniversalInboxTopAdsBannerUiModel>? {
-        itemList.forEachIndexed { index, item ->
+    fun addProductRecommendationLoader() {
+        if (getFirstLoadingPosition() != null) return
+        tryAddItemAtPosition(itemCount, loaderUiModel)
+    }
+
+    private fun getRecommendationTitlePosition(): Int? {
+        return if (checkCachedRecommendationTitlePosition()) {
+            recommendationTitlePosition
+        } else {
+            // get first index or -1
+            visitables.indexOfFirst {
+                it is UniversalInboxRecommendationTitleUiModel
+            }.takeIf { it >= 0 }?.also { // get result when it not -1 (found)
+                recommendationTitlePosition = it
+            }
+        }
+    }
+
+    private fun checkCachedRecommendationTitlePosition(): Boolean {
+        return recommendationTitlePosition?.let {
+            it < visitables.size && visitables[it] is UniversalInboxRecommendationTitleUiModel
+        } ?: false
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun updateFirstTopAdsBanner(listAds: List<TopAdsImageViewModel>) {
+        visitables.forEach loop@{ item ->
             if (item is UniversalInboxTopAdsBannerUiModel) {
-                return Pair(index, item)
+                item.ads = listAds
+                return@loop
             }
         }
-        return null
-    }
-
-    fun updateAllCounters(counterData: UniversalInboxAllCounterResponse): List<Int> {
-        val listIndex = arrayListOf<Int>()
-        itemList.forEachIndexed { index, item ->
-            if (item is UniversalInboxMenuUiModel) {
-                when (item.type) {
-                    MenuItemType.CHAT_BUYER -> {
-                        item.counter = counterData.chatUnread.unreadBuyer
-                    }
-                    MenuItemType.CHAT_SELLER -> {
-                        item.counter = counterData.chatUnread.unreadSeller
-                    }
-                    MenuItemType.DISCUSSION -> {
-                        item.counter = counterData.othersUnread.discussionUnread
-                    }
-                    MenuItemType.REVIEW -> {
-                        item.counter = counterData.othersUnread.reviewUnread
-                    }
-                }
-                listIndex.add(index)
-            } else if (item is UniversalInboxMenuSeparatorUiModel) { // Not in static menu anymore
-                return@forEachIndexed
-            }
-        }
-        return listIndex
+        // Need to use notify data set changed, because need to trigger TDN's onAttachedToWindow
+        // onAttachedToWindow is needed to be recalled after we get TDN response
+        notifyDataSetChanged()
     }
 
     fun isWidgetMetaAdded(): Boolean {
-        return itemList.firstOrNull() is UniversalInboxWidgetMetaUiModel
+        return visitables.firstOrNull() is UniversalInboxWidgetMetaUiModel
     }
 
-    fun isHelpWidgetAdded(): Boolean {
-        return try {
+    fun getWidgetPosition(widgetType: Int): Int {
+        var position = -1
+        try {
             if (isWidgetMetaAdded()) {
-                val widgetMetaUiModel = itemList.firstOrNull() as? UniversalInboxWidgetMetaUiModel
-                var result = false
-                widgetMetaUiModel?.widgetList?.forEach {
-                    if (it.type == UniversalInboxValueUtil.CHATBOT_TYPE) {
-                        result = true
+                val widgetMetaUiModel = visitables.firstOrNull() as? UniversalInboxWidgetMetaUiModel
+                widgetMetaUiModel?.widgetList?.forEachIndexed { index, uiModel ->
+                    if (uiModel.type == widgetType) {
+                        position = index
                     }
                 }
-                result
-            } else {
-                false
             }
         } catch (throwable: Throwable) {
             Timber.d(throwable)
-            false
         }
+        return position
+    }
+
+    fun tryUpdateMenuItemsAtPosition(newList: List<Visitable<in UniversalInboxTypeFactory>>) {
+        try {
+            val editedList = visitables.toMutableList()
+            val fromIndex = if (isWidgetMetaAdded()) 1 else 0
+            editedList.subList(
+                fromIndex = fromIndex,
+                // toIndex matched with item count
+                toIndex = getPositionBeforeProductRecommendation() ?: itemCount
+            ).apply {
+                clear()
+                addAll(newList) // replace the sublist
+            }
+            updateItems(editedList)
+        } catch (throwable: Throwable) {
+            Timber.d(throwable)
+        }
+    }
+
+    private fun getPositionBeforeProductRecommendation(): Int? {
+        return getRecommendationTitlePosition() ?: // Get title product recom position
+            getProductRecommendationFirstPosition() ?: // Get product recom first position
+            getFirstLoadingPosition()
+    }
+
+    fun tryUpdateProductRecommendations(
+        title: String,
+        newList: List<Visitable<in UniversalInboxTypeFactory>>
+    ) {
+        try {
+            val editedList = visitables.toMutableList()
+            if (getRecommendationTitlePosition() == null && title.isNotBlank()) {
+                editedList.add(
+                    UniversalInboxRecommendationTitleUiModel(title)
+                )
+            }
+            val productRecommendationFirstPosition = getProductRecommendationFirstPosition()
+            if (productRecommendationFirstPosition != null) {
+                editedList.subList(
+                    fromIndex = productRecommendationFirstPosition,
+                    toIndex = itemCount
+                ).apply {
+                    clear()
+                    addAll(newList) // replace the sublist
+                }
+            } else {
+                editedList.addAll(newList)
+            }
+            editedList.remove(loaderUiModel) // Remove loader if any
+            updateItems(editedList)
+        } catch (throwable: Throwable) {
+            Timber.d(throwable)
+        }
+    }
+
+    fun tryUpdateWidgetMeta(item: UniversalInboxWidgetMetaUiModel) {
+        try {
+            val widgetMetaUiModel = visitables.firstOrNull() as? UniversalInboxWidgetMetaUiModel
+            if (widgetMetaUiModel == null) {
+                tryAddItemAtPosition(0, item)
+            } else {
+                // Replace item in the list
+                val editedList = visitables.toMutableList()
+                editedList[0] = item
+                updateItems(editedList)
+            }
+        } catch (throwable: Throwable) {
+            Timber.d(throwable)
+        }
+    }
+
+    private fun tryAddItemAtPosition(position: Int, item: Visitable<in UniversalInboxTypeFactory>) {
+        try {
+            // Add to the list
+            val editedList = visitables.toMutableList()
+            editedList.add(position, item)
+            updateItems(editedList)
+        } catch (throwable: Throwable) {
+            Timber.d(throwable)
+        }
+    }
+
+    fun tryRemoveItemAtPosition(position: Int) {
+        try {
+            if (visitables.isEmpty()) return
+            val editedList = visitables.toMutableList()
+            editedList.removeAt(position)
+            updateItems(editedList)
+        } catch (throwable: Throwable) {
+            Timber.d(throwable)
+        }
+    }
+
+    fun refreshRecommendationWidget() {
+        getRecommendationWidgetPosition()?.let {
+            notifyItemChanged(it)
+        }
+    }
+
+    @VisibleForTesting
+    fun getInboxItem(position: Int): Visitable<in UniversalInboxTypeFactory> {
+        return visitables[position]
     }
 }

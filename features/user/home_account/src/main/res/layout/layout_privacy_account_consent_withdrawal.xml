@@ -47,6 +47,18 @@
             tools:listitem="@layout/view_item_account_privacy"
             tools:itemCount="5"/>
 
+        <com.tokopedia.unifycomponents.ticker.Ticker
+            android:layout_margin="8dp"
+            android:id="@+id/consentGroupTicker"
+            android:visibility="visible"
+            app:closeButtonVisibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:tickerShapeType="loose"
+            app:tickerType="announcement"
+            app:layout_constraintTop_toBottomOf="@+id/consentGroupList"/>
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout

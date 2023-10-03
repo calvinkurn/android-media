@@ -1,14 +1,15 @@
 package com.tokopedia.play.broadcaster.setup.beautification
 
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
+import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
 import com.tokopedia.play.broadcaster.setup.buildBeautificationConfig
 import com.tokopedia.play.broadcaster.setup.buildConfigurationUiModel
 import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationAssetStatus
 import com.tokopedia.test.application.annotations.CassavaTest
-import com.tokopedia.unifycomponents.Toaster
 import io.mockk.coEvery
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -18,6 +19,12 @@ import org.junit.runner.RunWith
 @CassavaTest
 @RunWith(AndroidJUnit4ClassRunner::class)
 class BeautificationAnalyticTest {
+
+    @get:Rule
+    val permissionRule = GrantPermissionRule.grant(
+        android.Manifest.permission.CAMERA,
+        android.Manifest.permission.RECORD_AUDIO
+    )
 
     private val beautificationRobot = BeautificationRobot()
 
@@ -35,54 +42,44 @@ class BeautificationAnalyticTest {
         coEvery {
             beautificationRobot.mockContentCoachMarkSharedPref.hasBeenShown(
                 ContentCoachMarkSharedPref.Key.PlayBroadcasterFaceFilter,
-                any(),
+                any()
             )
         } returns false
 
         beautificationRobot
             .launch()
-
             .performDelay(1000)
             .clickCloseBeautificationCoachMark()
             .verifyEventAction("view - beautification coachmark")
             .verifyEventAction("click - close beautification coachmark")
             .verifyOpenScreen("/play broadcast - beautification filter entry point")
-
             .clickBeautificationMenu()
             .verifyEventAction("click - beautification entry point")
             .verifyOpenScreen("/play broadcast - beauty filter creation bottomsheet")
-
             .clickCustomFace(CUSTOM_FACE_1)
             .verifyEventAction("click - custom face shaping")
             .clickCustomFace(NONE)
             .verifyEventAction("click - none beauty effects")
-
             .clickBeautificationPresetTab()
             .clickBeautificationCustomFaceTab()
             .verifyEventAction("click - beauty filter tab")
-
             .clickResetFilter()
             .clickDialogSecondaryCTA()
             .verifyEventAction("click - beauty filter reset")
-
             .clickCustomFace(CUSTOM_FACE_1)
             .performDelay()
             .slideBeautificationSlider(200f)
             .performDelay(1000)
             .verifyEventAction("click - slider beauty filter")
-
             .clickResetFilter()
             .clickDialogPrimaryCTA()
             .verifyEventAction("view - reset filter bottomsheet")
             .verifyEventAction("click - yes reset filter")
-
             .clickBeautificationPresetTab()
             .clickPreset(PRESET_1)
             .verifyEventAction("click - preset makeup")
-
             .clickPreset(NONE)
             .verifyEventAction("click - none reset preset makeup")
-
             .mock {
                 coEvery { beautificationRobot.mockBroadcaster.setFaceFilter(any(), any()) } returns false
             }
@@ -118,7 +115,6 @@ class BeautificationAnalyticTest {
             .verifyEventAction("click - download asset preset makeup")
             .verifyEventAction("click - retry download preset makeup")
             .verifyEventAction("view - failed download preset makeup")
-
             .clickBeautificationCustomFaceTab()
             .clickCustomFace(NONE)
             .mock {
@@ -138,47 +134,37 @@ class BeautificationAnalyticTest {
     fun testAnalytic_beautification_live_happyPath() {
         beautificationRobot
             .launchLive()
-
             .clickBeautificationMenuOnLivePage()
             .verifyEventAction("view - beauty filter ongoing livestream")
             .verifyEventAction("click - beauty filter ongoing livestream")
-
             .clickCustomFace(CUSTOM_FACE_2)
             .verifyEventAction("click - custom face shaping")
-
             .clickCustomFace(NONE)
             .verifyEventAction("click - none beauty effects")
-
             .clickBeautificationPresetTab()
             .clickBeautificationCustomFaceTab()
             .verifyEventAction("click - beauty filter tab")
-
             .clickResetFilter()
             .clickDialogSecondaryCTA()
             .verifyEventAction("click - beauty filter reset")
             .verifyEventAction("view - reset filter bottomsheet")
-
             .clickCustomFace(CUSTOM_FACE_1)
             .performDelay()
             .slideBeautificationSlider(200f)
             .performDelay(1000)
             .verifyEventAction("click - slider beauty filter")
-
             .clickBeautificationPresetTab()
             .clickPreset(PRESET_1)
             .performDelay()
             .slideBeautificationSlider(200f)
             .performDelay(1000)
             .verifyEventAction("click - slider beauty filter")
-
             .clickResetFilter()
             .clickDialogPrimaryCTA()
             .verifyEventAction("click - yes reset filter")
-
             .clickBeautificationPresetTab()
             .clickPreset(PRESET_2)
             .verifyEventAction("click - preset makeup")
-
             .clickPreset(NONE)
             .verifyEventAction("click - none reset preset makeup")
     }
@@ -201,7 +187,6 @@ class BeautificationAnalyticTest {
             .verifyEventAction("click - download asset preset makeup")
             .verifyEventAction("click - retry download preset makeup")
             .verifyEventAction("view - failed download preset makeup")
-
             .clickBeautificationCustomFaceTab()
             .clickCustomFace(NONE)
             .mock {

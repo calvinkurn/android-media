@@ -229,7 +229,8 @@ class DigitalDenomMapper @Inject constructor() {
                 expiredDays = it.label2,
                 discountLabel = it.discount,
                 productDescriptions = it.descriptions,
-                itemType = it.trackingData.itemType
+                itemType = it.trackingData.itemType,
+                specialLabel = it.campaignLabelText
             )
         }
     }

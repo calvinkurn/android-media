@@ -264,6 +264,10 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
         }
     }
 
+    fun setMCCMLoading() {
+        _mccmProductsData.value = RechargeNetworkResult.Loading
+    }
+
     fun getMCCMProducts(clientNumbers: List<String>, dgCategoryIds: List<Int>) {
         mccmProductsJob = viewModelScope.launchCatchError(dispatchers.main, block = {
             delay(DELAY_MULTI_TAB)
@@ -274,7 +278,7 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
                 DigitalPDPConstant.MCCM_CHANNEL_NAME
             )
             _mccmProductsData.value = RechargeNetworkResult.Success(mccmProducts)
-        }){
+        }) {
             _mccmProductsData.value = RechargeNetworkResult.Fail(it)
         }
     }

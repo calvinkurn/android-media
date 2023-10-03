@@ -52,5 +52,6 @@ internal val staging = Url(
     ONE_TRUST = "https://uat-de.onetrust.com/",
     TOKOCHAT = "https://chat-staging.tokopedia.com/tokochat/",
     AFFILIATE = "https://affiliate-staging.tokopedia.com",
-    ONE_KYC_CLICKSTREAM = "https://toko-raccoon-integration.gojekapi.com"
+    ONE_KYC_CLICKSTREAM = "https://toko-raccoon-integration.gojekapi.com",
+    GOTO_ACCOUNTS = "https://accounts-integration.goto-products.com"
 )

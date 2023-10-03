@@ -223,10 +223,10 @@ class TokoNowCategoryViewModel @Inject constructor(
         launchCatchError(block = {
             val params = GetProductAdsParam(
                 categoryId = categoryIdL1,
-                warehouseIds = addressData.getWarehouseIds(),
                 src = SRC_DIRECTORY_TOKONOW,
-                userId = getUserId()
-            )
+                userId = getUserId(),
+                addressData = getAddressData()
+            ).generateQueryParams()
 
             val response = getProductAdsUseCase.execute(params)
 
@@ -500,7 +500,6 @@ class TokoNowCategoryViewModel @Inject constructor(
             _atcDataTracker.postValue(CategoryAtcTrackerModel(
                 categoryIdL1 = categoryIdL1,
                 index = item.index,
-                warehouseId = getWarehouseId(),
                 headerName = item.headerName,
                 quantity = quantity,
                 product = product,

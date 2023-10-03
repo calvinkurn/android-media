@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.displayTextOrHide
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.presentation.adapter.model.OrderItemType
@@ -49,7 +50,7 @@ class ShopInvoiceViewHolder(val view: View) : AbstractViewHolder<ShopInvoice>(vi
     private val tvInvoiceShopShippingAddressValue = view.tvInvoiceShopShippingAddressValue
     private val tvInvoiceShopShippingAddress = view.tvInvoiceShopShippingAddress
 
-
+    private val divider = view.dividerShopShipping
 
     override fun bind(element: ShopInvoice?) {
         element?.let {
@@ -66,7 +67,7 @@ class ShopInvoiceViewHolder(val view: View) : AbstractViewHolder<ShopInvoice>(vi
             addOrderLevelAddOn(addOnItemContainer, element)
 
             element.itemDiscountStr?.let {
-                tvInvoiceShopDiscountValue.text = getString(R.string.thankyou_discounted_rp, element.itemDiscountStr)
+                tvInvoiceShopDiscountValue.text = getString(R.string.thankyou_discounted, element.itemDiscountStr)
                 tvInvoiceShopDiscountValue.visible()
                 tvInvoiceShopDiscount.visible()
 
@@ -84,46 +85,45 @@ class ShopInvoiceViewHolder(val view: View) : AbstractViewHolder<ShopInvoice>(vi
                 tvInvoiceShopItemProtectionValue.gone()
             }
 
-            element.shippingPriceStr?.let {
-                tvInvoiceShopItemShippingValue.text = getString(R.string.thankyou_rp_without_space, element.shippingPriceStr)
+            if (element.shippingPriceStr != null && !element.shouldHideShopInvoice) {
+                tvInvoiceShopItemShippingValue.text = element.shippingPriceStr
                 tvInvoiceShopItemShippingValue.visible()
                 tvInvoiceShopItemShipping.visible()
-            } ?: run {
+            } else {
                 tvInvoiceShopItemShippingValue.gone()
                 tvInvoiceShopItemShipping.gone()
             }
 
-
-            element.shippingInfo?.let {
-                if(it.isNotEmpty()) {
+            if (element.shippingInfo != null && !element.shouldHideShopInvoice) {
+                if(element.shippingInfo.isNotEmpty()) {
                     tvInvoiceShopItemCourier.text = element.shippingInfo
                     tvInvoiceShopItemCourier.visible()
                 }else{
                     tvInvoiceShopItemCourier.gone()
                 }
-            } ?: run {
+            } else {
                 tvInvoiceShopItemCourier.gone()
             }
 
-            element.discountOnShippingStr?.let {
-                tvInvoiceShopItemShippingDiscountValue.text = getString(R.string.thankyou_discounted_rp, element.discountOnShippingStr)
+            if (element.discountOnShippingStr != null && !element.shouldHideShopInvoice) {
+                tvInvoiceShopItemShippingDiscountValue.text = getString(R.string.thankyou_discounted, element.discountOnShippingStr)
                 tvInvoiceShopItemShippingDiscountValue.visible()
                 tvInvoiceShopItemShippingDiscount.visible()
-            } ?: run {
+            } else {
                 tvInvoiceShopItemShippingDiscountValue.gone()
                 tvInvoiceShopItemShippingDiscount.gone()
             }
 
-
-            element.shippingInsurancePriceStr?.let {
-                tvInvoiceShopItemShippingInsuranceValue.text = getString(R.string.thankyou_rp_without_space, element.shippingInsurancePriceStr)
+            if (element.shippingInsurancePriceStr != null && !element.shouldHideShopInvoice) {
+                tvInvoiceShopItemShippingInsuranceValue.text = element.shippingInsurancePriceStr
                 tvInvoiceShopItemShippingInsuranceValue.visible()
                 tvInvoiceShopItemShippingInsurance.visible()
-            } ?: run {
+            } else {
                 tvInvoiceShopItemShippingInsuranceValue.gone()
                 tvInvoiceShopItemShippingInsurance.gone()
             }
-            if(element.shippingAddress.isNullOrBlank()){
+
+            if(element.shippingAddress.isNullOrBlank() || element.shouldHideShopInvoice){
                 tvInvoiceShopShippingAddressValue.gone()
                 tvInvoiceShopShippingAddress.gone()
             }else{
@@ -132,6 +132,7 @@ class ShopInvoiceViewHolder(val view: View) : AbstractViewHolder<ShopInvoice>(vi
                 tvInvoiceShopShippingAddress.visible()
             }
 
+            if (it.shouldHideDivider) divider.gone() else divider.show()
         }
     }
 

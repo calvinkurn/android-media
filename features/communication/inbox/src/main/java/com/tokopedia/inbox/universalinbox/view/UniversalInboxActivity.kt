@@ -20,8 +20,8 @@ import com.tokopedia.inbox.universalinbox.util.UniversalInboxViewUtil.ICON_DEFAU
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxViewUtil.ICON_MAX_PERCENTAGE_X_POSITION
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxViewUtil.ICON_PERCENTAGE_Y_POSITION
 import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxCounterListener
-import com.tokopedia.kotlin.extensions.view.invisible
-import com.tokopedia.kotlin.extensions.view.visibleWithCondition
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.NotificationUnify
 import javax.inject.Inject
 
@@ -89,9 +89,9 @@ class UniversalInboxActivity : BaseSimpleActivity(), HasComponent<UniversalInbox
         toolbarNotificationIcon = toolbarCustomView.findViewById<IconNotification>(
             R.id.inbox_icon_notif
         ).apply {
-            notificationRef.invisible()
             setImageWithUnifyIcon(IconUnify.BELL)
             notificationGravity = Gravity.TOP or Gravity.END
+            notificationRef.gone()
             setOnClickListener {
                 listener?.onNotificationIconClicked(notificationCounter)
             }
@@ -144,8 +144,11 @@ class UniversalInboxActivity : BaseSimpleActivity(), HasComponent<UniversalInbox
                 xPosition,
                 ICON_PERCENTAGE_Y_POSITION
             )
-            notificationRef.post {
-                notificationRef.visibleWithCondition(strCounter.isNotEmpty())
+            if (strCounter.isBlank()) {
+                notificationRef.setBackgroundDrawable(null)
+                notificationRef.gone()
+            } else {
+                notificationRef.show()
             }
         }
         notificationCounter = strCounter

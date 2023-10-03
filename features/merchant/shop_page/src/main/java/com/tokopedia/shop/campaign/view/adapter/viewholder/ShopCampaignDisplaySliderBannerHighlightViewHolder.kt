@@ -5,6 +5,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.ONE
@@ -98,15 +99,21 @@ class ShopCampaignDisplaySliderBannerHighlightViewHolder(
 
     private fun setBackgroundGradient() {
         val listBackgroundColor = shopCampaignInterface.getListBackgroundColor()
-        if(listBackgroundColor.isNotEmpty()) {
-            val colors = IntArray(listBackgroundColor.size)
-            for (i in listBackgroundColor.indices) {
-                colors[i] =
-                    ShopUtil.parseColorFromHexString(listBackgroundColor.getOrNull(i).orEmpty())
+        if (listBackgroundColor.size == INT_TWO) {
+            if (listBackgroundColor.isNotEmpty()) {
+                val colors = IntArray(listBackgroundColor.size)
+                for (i in listBackgroundColor.indices) {
+                    colors[i] =
+                        ShopUtil.parseColorFromHexString(listBackgroundColor.getOrNull(i).orEmpty())
+                }
+                try {
+                    val gradient = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, colors)
+                    gradient.cornerRadius = 0f
+                    itemView.background = gradient
+                } catch (e: Exception) {
+                    FirebaseCrashlytics.getInstance().recordException(e)
+                }
             }
-            val gradient = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, colors)
-            gradient.cornerRadius = 0f
-            itemView.background = gradient
         }
     }
 

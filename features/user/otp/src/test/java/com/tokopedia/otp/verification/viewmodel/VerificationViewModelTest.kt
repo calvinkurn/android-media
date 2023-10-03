@@ -30,6 +30,7 @@ import com.tokopedia.otp.verification.domain.usecase.SendOtpUseCase
 import com.tokopedia.otp.verification.view.uimodel.DefaultOtpUiModel
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.sessioncommon.constants.SessionConstants
 import com.tokopedia.sessioncommon.data.GenerateKeyPojo
 import com.tokopedia.sessioncommon.data.KeyData
 import com.tokopedia.sessioncommon.data.pin.PinStatusData
@@ -737,7 +738,7 @@ class VerificationViewModelTest {
         val hash = "asd"
         every { RsaUtils.encryptWithSalt(any(), any(), any()) } returns hashedPin
         coEvery { checkPinHashV2UseCase(any()) } returns PinStatusResponse(PinStatusData(isNeedHash = true))
-        coEvery { generatePublicKeyUseCase() } returns GenerateKeyPojo(KeyData("abc", "bca", hash))
+        coEvery { generatePublicKeyUseCase(SessionConstants.GenerateKeyModule.PIN_V2.value) } returns GenerateKeyPojo(KeyData("abc", "bca", hash))
 
         viewmodel.otpValidate("", "", "", "", "", "", "PIN", "", "", 0)
 
@@ -778,7 +779,7 @@ class VerificationViewModelTest {
         val hash = "asd"
         every { RsaUtils.encryptWithSalt(any(), any(), any()) } returns ""
         coEvery { checkPinHashV2UseCase(any()) } returns PinStatusResponse(PinStatusData(isNeedHash = true))
-        coEvery { generatePublicKeyUseCase() } returns GenerateKeyPojo(KeyData("abc", "bca", hash))
+        coEvery { generatePublicKeyUseCase(SessionConstants.GenerateKeyModule.PIN_V2.value) } returns GenerateKeyPojo(KeyData("abc", "bca", hash))
 
         viewmodel.otpValidate("", "", "", "", "", "", "PIN", "", "", 0)
 
@@ -817,7 +818,7 @@ class VerificationViewModelTest {
     fun `Success get pub key`() {
         val mocKeyData = KeyData("abc", "bca", "aaa")
         val generateKeyResponse = GenerateKeyPojo(mocKeyData)
-        coEvery { generatePublicKeyUseCase.invoke() } returns generateKeyResponse
+        coEvery { generatePublicKeyUseCase(SessionConstants.GenerateKeyModule.PIN_V2.value) } returns generateKeyResponse
 
         runBlocking {
             assert(viewmodel.getPublicKey() == mocKeyData)
@@ -834,7 +835,7 @@ class VerificationViewModelTest {
         val encrypted = "abd123123"
         every { RsaUtils.encryptWithSalt(any(), any(), any()) } returns encrypted
         coEvery { checkPinHashV2UseCase(any()) } returns PinStatusResponse(PinStatusData(isNeedHash = true))
-        coEvery { generatePublicKeyUseCase() } returns GenerateKeyPojo(KeyData("abc", "bca", hash))
+        coEvery { generatePublicKeyUseCase(SessionConstants.GenerateKeyModule.PIN_V2.value) } returns GenerateKeyPojo(KeyData("abc", "bca", hash))
 
         val otpType = "123"
         val validateToken = "abc123"

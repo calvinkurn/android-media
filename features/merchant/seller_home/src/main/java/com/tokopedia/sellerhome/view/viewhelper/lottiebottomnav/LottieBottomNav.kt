@@ -59,6 +59,7 @@ class LottieBottomNav : LinearLayout {
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        resizeContainer()
         val parentWidth = MeasureSpec.getSize(widthMeasureSpec)
         this.setMeasuredDimension(parentWidth, buttonsHeight.toInt())
 
@@ -137,6 +138,7 @@ class LottieBottomNav : LinearLayout {
             it.layoutParams = llLayoutParam
             it.invalidate()
         }
+        invalidate()
     }
 
     private fun getLayoutAtr(attrs: AttributeSet) {
@@ -156,7 +158,6 @@ class LottieBottomNav : LinearLayout {
         )
         activeButtonColor =
             a.getColor(R.styleable.LottieBottomNav_activeButtonColor, Color.TRANSPARENT)
-        a.recycle()
 
         weightSum = 1f
         orientation = VERTICAL
@@ -233,13 +234,14 @@ class LottieBottomNav : LinearLayout {
                 // we need to set our own failure listener to avoid crash
                 // especially for xiaomi android 8
             }
+            bottomMenu.animName?.let {
+                icon.setAnimation(bottomMenu.animName)
+                icon.speed = bottomMenu.animSpeed
+            }
             if (bottomMenu.animName == null) {
                 bottomMenu.imageName?.let {
                     icon.setImageResource(it)
                 }
-            } else {
-                icon.setAnimation(bottomMenu.animName)
-                icon.speed = bottomMenu.animSpeed
             }
 
             iconList.add(index, Pair(icon, false))
@@ -272,20 +274,25 @@ class LottieBottomNav : LinearLayout {
 
                 override fun onAnimationEnd(p0: Animator) {
                     if (selectedItem != index) {
-                        bottomMenu.imageEnabledName?.let {
+                        val bottomMenuSelected = bottomMenu
+                        val iconSelected = icon
+
+                        bottomMenuSelected.imageEnabledName?.let {
                             iconPlaceholder.setImageResource(it)
                         }
-                        bottomMenu.animName?.let {
-                            icon.setAnimation(it)
-                            icon.speed = bottomMenu.animSpeed
+                        bottomMenuSelected.animName?.let {
+                            iconSelected.setAnimation(it)
+                            iconSelected.speed = bottomMenuSelected.animSpeed
                         }
                     } else {
-                        bottomMenu.imageName?.let {
+                        val bottomMenuSelected = bottomMenu
+                        val iconSelected = icon
+
+                        bottomMenuSelected.imageName?.let {
                             iconPlaceholder.setImageResource(it)
                         }
-                        bottomMenu.animToEnabledName?.let {
-                            icon.setAnimation(it)
-                            icon.speed = bottomMenu.animToEnabledSpeed
+                        bottomMenuSelected.animToEnabledName?.let {
+                            iconSelected.speed = bottomMenuSelected.animToEnabledSpeed
                         }
                     }
 
@@ -434,6 +441,7 @@ class LottieBottomNav : LinearLayout {
         resizeContainer()
 
         setupMenuItems()
+        invalidate()
     }
 
     fun setMenuClickListener(listener: IBottomClickListener) {

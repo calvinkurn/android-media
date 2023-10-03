@@ -42,7 +42,13 @@ data class KycProjectInfo(
 	val dataSource: String = "",
 
     @SerializedName("WaitMessage")
-    val waitMessage: String = ""
+    val waitMessage: String = "",
+
+    @SerializedName("ErrorMessages")
+    val errorMessages: List<String> = emptyList(),
+
+    @SerializedName("ErrorCode")
+    val errorCode: String = ""
 )
 
 data class TypeListItem(

@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.checkout.domain.model.cartshipmentform.ProductVariantsResponse
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.EthicalDrugResponse
-import com.tokopedia.purchase_platform.common.feature.gifting.data.response.AddOnsResponse
+import com.tokopedia.purchase_platform.common.feature.gifting.data.response.AddOnGiftingResponse
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.data.PurchaseProtectionPlanDataResponse
 
 data class Product(
@@ -81,7 +81,9 @@ data class Product(
     @SerializedName("variant_description_detail")
     val variantDescriptionDetail: VariantDescriptionDetail = VariantDescriptionDetail(),
     @SerializedName("add_ons")
-    val addOns: AddOnsResponse = AddOnsResponse(),
+    val addOns: AddOnGiftingResponse = AddOnGiftingResponse(),
     @SerializedName("ethical_drug")
-    val ethicalDrugResponse: EthicalDrugResponse = EthicalDrugResponse()
+    val ethicalDrugResponse: EthicalDrugResponse = EthicalDrugResponse(),
+    @SerializedName("add_ons_product")
+    val addOnsProduct: AddOnsProduct = AddOnsProduct()
 )

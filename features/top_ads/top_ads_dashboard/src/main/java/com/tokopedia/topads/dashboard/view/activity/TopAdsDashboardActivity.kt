@@ -21,9 +21,12 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
@@ -50,6 +53,7 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.PARA
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.PARAM_PRODUCT_AD
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.PARAM_SHOP_AD
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.PARAM_TAB
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.QUERY_PARAM_TAB
 import com.tokopedia.topads.dashboard.data.constant.TopAdsInsightConstants
 import com.tokopedia.topads.dashboard.data.model.FragmentTabItem
 import com.tokopedia.topads.dashboard.data.utils.Utils
@@ -65,6 +69,7 @@ import com.tokopedia.topads.dashboard.view.fragment.TopAdsDashboardBerandaFragme
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsProductIklanFragment
 import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsInsightShopKeywordRecommendationFragment
 import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsRecommendationFragment
+import com.tokopedia.topads.dashboard.view.listener.RecommendationWidgetCTAListener
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import com.tokopedia.topads.dashboard.view.sheet.CustomDatePicker
 import com.tokopedia.topads.dashboard.view.sheet.DatePickerSheet
@@ -97,7 +102,8 @@ class TopAdsDashboardActivity :
     TopAdsProductIklanFragment.AppBarAction,
     TopAdsProductIklanFragment.AdInfo,
     TopAdsHeadlineBaseFragment.AppBarActionHeadline,
-    CustomDatePicker.ActionListener {
+    CustomDatePicker.ActionListener,
+    RecommendationWidgetCTAListener {
 
     private var appBarLayout: AppBarLayout? = null
     private var tabLayout: TabsUnify? = null
@@ -144,6 +150,7 @@ class TopAdsDashboardActivity :
     lateinit var userSession: UserSessionInterface
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         initInjector()
         super.onCreate(savedInstanceState)
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
@@ -154,23 +161,29 @@ class TopAdsDashboardActivity :
         setUpClick()
         renderTabAndViewPager()
 
-        topAdsDashboardPresenter.isShopWhiteListed.observe(this, {
+        topAdsDashboardPresenter.isShopWhiteListed.observe(this) {
             if (it) {
                 topAdsDashboardPresenter.getExpiryDate(resources)
             }
-        })
-        topAdsDashboardPresenter.expiryDateHiddenTrial.observe(this, {
+        }
+        topAdsDashboardPresenter.expiryDateHiddenTrial.observe(this) {
             val intent = Intent(this, HiddenTrialActivity::class.java)
             intent.putExtra(EXPIRE, it)
             startActivity(intent)
             finish()
-        })
+        }
 
         tracker = TopAdsDashboardTracking()
         actionSendAnalyticsIfFromPushNotif()
         setPadding()
         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsOpenScreenEvent()
         setToast()
+        redirectToDashBoardTab()
+    }
+
+    private fun redirectToDashBoardTab() {
+        val tab = intent.data?.getQueryParameter(QUERY_PARAM_TAB)
+        if (!tab.isNullOrEmpty() && tab.toIntOrZero() <= CONST_3 && tab.toIntOrZero() >= Int.ZERO) switchTab(tab.toIntOrZero()) else switchTab(Int.ZERO)
     }
 
     private fun setUpClick() {
@@ -662,5 +675,10 @@ class TopAdsDashboardActivity :
                 is TopAdsDashboardBerandaFragment -> (frag.fragment as TopAdsDashboardBerandaFragment).loadSummaryStats()
             }
         }
+    }
+
+    override fun onWidgetCTAClick() {
+        ((viewPager.adapter as TopAdsDashboardBasePagerAdapter).getItem(CONST_3) as? RecommendationFragment)?.selectTab(Int.ONE)
+        switchTab(INSIGHT_PAGE)
     }
 }

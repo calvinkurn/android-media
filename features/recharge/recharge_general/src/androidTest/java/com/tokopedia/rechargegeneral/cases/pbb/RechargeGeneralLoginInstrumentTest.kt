@@ -101,7 +101,7 @@ class RechargeGeneralLoginInstrumentTest {
     private fun validate_recent_transaction() {
         onView(withId(R.id.recent_transaction_widget)).check(matches(isDisplayed()))
         onView(AllOf.allOf(
-                withId(R.id.recycler_view_menu_component),
+                withId(com.tokopedia.common.topupbills.R.id.recycler_view_menu_component),
                 isDescendantOfA(withId(R.id.recent_transaction_widget))
         )).check(matches(isDisplayed())).perform(
                 RecyclerViewActions.actionOnItemAtPosition<TopupBillsRecentNumbersAdapter.RecentNumbersItemViewHolder>(
@@ -130,15 +130,15 @@ class RechargeGeneralLoginInstrumentTest {
 
     private fun validate_promo() {
         Thread.sleep(3000)
-        onView(AllOf.allOf(withId(R.id.tab_item_text_id), withText("Promo"))).perform(click())
+        onView(AllOf.allOf(withId(com.tokopedia.unifycomponents.R.id.tab_item_text_id), withText("Promo"))).perform(click())
         Thread.sleep(1000)
         onView(withId(R.id.promo_list_widget)).check(matches(isDisplayed()))
         onView(AllOf.allOf(
-                withId(R.id.recycler_view_menu_component),
+                withId(com.tokopedia.common.topupbills.R.id.recycler_view_menu_component),
                 isDescendantOfA(withId(R.id.promo_list_widget))
         )).check(matches(isDisplayed())).perform(
                 RecyclerViewActions.actionOnItemAtPosition<TopupBillsPromoListAdapter.PromoItemViewHolder>(
-                        0, CommonActions.clickChildViewWithId(R.id.btn_copy_promo)
+                        0, CommonActions.clickChildViewWithId(com.tokopedia.common.topupbills.R.id.btn_copy_promo)
                 )
         )
         Thread.sleep(1000)
