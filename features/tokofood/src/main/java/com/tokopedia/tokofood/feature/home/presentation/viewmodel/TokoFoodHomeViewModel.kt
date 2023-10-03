@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -229,13 +230,11 @@ class TokoFoodHomeViewModel @Inject constructor(
 
     fun getChooseAddress(source: String) {
         isAddressManuallyUpdated = true
-        launch {
-            try {
-                val data = getChooseAddressWarehouseLocUseCase(source)
-                setFlowChooseAddress(data)
-            } catch (e: Throwable) {
-                setFlowChooseAddress(e)
-            }
+        launchCatchError(block = {
+            val data = getChooseAddressWarehouseLocUseCase(source)
+            setFlowChooseAddress(data)
+        }) {
+            setFlowChooseAddress(it)
         }
     }
 

@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.localizationchooseaddress.domain.model.GetDefaultChosenAddressParam
 import com.tokopedia.localizationchooseaddress.domain.response.GetDefaultChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetDefaultChosenAddressUseCase
@@ -37,7 +38,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ThanksPageDataViewModel @Inject constructor(
@@ -226,14 +226,12 @@ class ThanksPageDataViewModel @Inject constructor(
     }
 
     fun resetAddressToDefault() {
-        launch {
-            try {
-                val response =
-                    getDefaultAddressUseCase(GetDefaultChosenAddressParam(source = TYP_SOURCE_ADDRESS))
-                _defaultAddressLiveData.postValue(Success(response.response))
-            } catch (e: Exception) {
-                _defaultAddressLiveData.postValue(Fail(e))
-            }
+        launchCatchError(block = {
+            val response =
+                getDefaultAddressUseCase(GetDefaultChosenAddressParam(source = TYP_SOURCE_ADDRESS))
+            _defaultAddressLiveData.postValue(Success(response.response))
+        }) {
+            _defaultAddressLiveData.postValue(Fail(it))
         }
     }
 

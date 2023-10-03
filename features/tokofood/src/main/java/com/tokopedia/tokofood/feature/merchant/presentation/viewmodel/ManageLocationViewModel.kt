@@ -13,7 +13,6 @@ import com.tokopedia.tokofood.feature.merchant.domain.usecase.CheckDeliveryCover
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -49,13 +48,11 @@ class ManageLocationViewModel @Inject constructor(
     }
 
     fun getChooseAddress(source: String) {
-        launch {
-            try {
-                val data = getChooseAddressWarehouseLocUseCase(source)
-                _chooseAddress.postValue(Success(data))
-            } catch (e: Exception) {
-                _chooseAddress.postValue(Fail(e))
-            }
+        launchCatchError(block = {
+            val data = getChooseAddressWarehouseLocUseCase(source)
+            _chooseAddress.postValue(Success(data))
+        }) {
+            _chooseAddress.postValue(Fail(it))
         }
     }
 

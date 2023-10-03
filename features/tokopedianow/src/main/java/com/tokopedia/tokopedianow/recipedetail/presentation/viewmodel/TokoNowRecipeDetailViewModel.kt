@@ -32,7 +32,6 @@ import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.RecipeDetail
 import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.RecipeInfoUiModel
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class TokoNowRecipeDetailViewModel @Inject constructor(
@@ -233,15 +232,13 @@ class TokoNowRecipeDetailViewModel @Inject constructor(
     }
 
     private fun getAddress() {
-        launch {
-            try {
-                val address = getAddressUseCase(GET_ADDRESS_SOURCE)
-                addressData.updateAddressData(address)
-                checkAddressData()
-            } catch (e: Exception) {
-                hideLoading()
-                showError()
-            }
+        launchCatchError(block = {
+            val address = getAddressUseCase(GET_ADDRESS_SOURCE)
+            addressData.updateAddressData(address)
+            checkAddressData()
+        }) {
+            hideLoading()
+            showError()
         }
     }
 

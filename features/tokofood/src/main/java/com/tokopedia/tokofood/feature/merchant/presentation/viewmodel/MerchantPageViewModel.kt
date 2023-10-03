@@ -149,12 +149,10 @@ class MerchantPageViewModel @Inject constructor(
 
     fun getChooseAddress(source: String) {
         isAddressManuallyUpdated = true
-        launch {
-            try {
-                _chooseAddress.value = Success(getChooseAddressWarehouseLocUseCase(source))
-            } catch (e: Exception) {
-                _chooseAddress.value = Fail(e)
-            }
+        launchCatchError(block = {
+            _chooseAddress.value = Success(getChooseAddressWarehouseLocUseCase(source))
+        }) {
+            _chooseAddress.value = Fail(it)
         }
     }
 

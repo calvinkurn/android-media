@@ -216,12 +216,10 @@ class TokoNowRepurchaseViewModel @Inject constructor(
     }
 
     fun getChooseAddress(source: String) {
-        launch {
-            try {
-                _chooseAddress.postValue(Success(getChooseAddressWarehouseLocUseCase(source)))
-            } catch (e: Exception) {
-                _chooseAddress.postValue(Fail(e))
-            }
+        launchCatchError(block = {
+            _chooseAddress.postValue(Success(getChooseAddressWarehouseLocUseCase(source)))
+        }) {
+            _chooseAddress.postValue(Fail(it))
         }
     }
 
