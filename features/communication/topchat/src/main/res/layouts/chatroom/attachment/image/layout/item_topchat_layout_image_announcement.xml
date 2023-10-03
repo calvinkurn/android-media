@@ -5,10 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingLeft="@dimen/spacing_lvl4"
-    android:paddingTop="@dimen/dp_3"
-    android:paddingRight="@dimen/spacing_lvl4"
-    android:paddingBottom="@dimen/spacing_lvl2">
+    android:paddingLeft="16dp"
+    android:paddingTop="3dp"
+    android:paddingRight="16dp"
+    android:paddingBottom="4dp">
 
     <com.tokopedia.topchat.chatroom.view.custom.BroadcastBannerImageView
         android:id="@+id/image"

@@ -39,6 +39,35 @@ android {
         androidTest {
             java.srcDirs += "$projectDir/src/testCommon/java"
         }
+        main {
+            res {
+                srcDirs 'src/main/res',
+                        'src/main/res/layouts/chatroom/page',
+                        'src/main/res/layouts/chatroom/general',
+                        'src/main/res/layouts/chatroom/replyarea',
+                        'src/main/res/layouts/chatroom/sticker',
+                        'src/main/res/layouts/chatroom/messagebubble',
+                        'src/main/res/layouts/chatroom/smartreplywidget',
+                        'src/main/res/layouts/chatroom/attachment/product',
+                        'src/main/res/layouts/chatroom/attachment/productbundling',
+                        'src/main/res/layouts/chatroom/attachment/image',
+                        'src/main/res/layouts/chatroom/attachment/voucher',
+                        'src/main/res/layouts/chatroom/attachment/invoice',
+                        'src/main/res/layouts/chatroom/attachment/reviewreminder',
+                        'src/main/res/layouts/chatroom/orderprogress',
+                        'src/main/res/layouts/chatroom/broadcast',
+                        'src/main/res/layouts/chatroom/bubbles',
+
+                        'src/main/res/layouts/chatlist/page',
+                        'src/main/res/layouts/chatlist/list',
+                        'src/main/res/layouts/chatlist/filter',
+                        'src/main/res/layouts/chatlist/operationalinsight',
+
+                        'src/main/res/layouts/chatsearch/page',
+                        'src/main/res/layouts/chatsetting'
+                        'src/main/res/layouts/chattemplate'
+            }
+        }
     }
 
 }
