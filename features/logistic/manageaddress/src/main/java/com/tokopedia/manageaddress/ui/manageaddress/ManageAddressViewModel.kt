@@ -272,7 +272,7 @@ class ManageAddressViewModel @Inject constructor(
         viewModelScope.launchCatchError(
             block = {
                 val defaultAddressParam =
-                    DefaultAddressParam(id.toLong(), setAsStateChosenAddress, true)
+                    DefaultAddressParam(inputAddressId = id.toLong(), setAsStateChosenAddress = setAsStateChosenAddress, isTokonowRequest = true)
                 val resultDefaultAddress = setDefaultPeopleAddressUseCase(defaultAddressParam)
                 if (
                     resultDefaultAddress.response.status.equals(
@@ -298,7 +298,7 @@ class ManageAddressViewModel @Inject constructor(
 
     fun getStateChosenAddress(source: String) {
         viewModelScope.launch(onErrorGetStateChosenAddress) {
-            val getStateChosenAddress = getStateChosenAddressUseCase(GetChosenAddressParam(source, true))
+            val getStateChosenAddress = getStateChosenAddressUseCase(GetChosenAddressParam(source = source, isTokonow = true))
             _getChosenAddress.value =
                 Success(chooseAddressMapper.mapGetStateChosenAddress(getStateChosenAddress.response))
         }
