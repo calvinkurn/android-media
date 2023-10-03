@@ -510,6 +510,7 @@ object DeeplinkDFApp {
         DFP(INTERNAL, HOST_TOKOPEDIA_NOW, PathType.PATH, "/search"),
         DFP(INTERNAL, HOST_TOKOPEDIA_NOW, PathType.PATTERN, "/category"),
         DFP(INTERNAL, HOST_TOKOPEDIA_NOW, PathType.PATTERN, "/category/l1"),
+        DFP(INTERNAL, HOST_TOKOPEDIA_NOW, PathType.PATTERN, "/category/l2"),
         DFP(INTERNAL, HOST_TOKOPEDIA_NOW, PathType.PATH, "/repurchase-page"),
         DFP(INTERNAL, HOST_TOKOPEDIA_NOW, PathType.PATTERN, "/category-filter"),
         DFP(INTERNAL, HOST_TOKOPEDIA_NOW, PathType.PATTERN, "/educational-info"),
