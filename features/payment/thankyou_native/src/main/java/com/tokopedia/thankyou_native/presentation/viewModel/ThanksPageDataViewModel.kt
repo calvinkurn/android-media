@@ -8,6 +8,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.home_component.visitable.MixTopDataModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetDefaultChosenAddressResponse
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.convertToLocationParams
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.thankyou_native.data.mapper.FeatureRecommendationMapper
 import com.tokopedia.thankyou_native.data.mapper.PaymentPageMapper
@@ -90,15 +92,15 @@ class ThanksPageDataViewModel @Inject constructor(
         )
     }
 
-    fun checkForGoPayActivation(thanksPageData: ThanksPageData) {
+    fun checkForGoPayActivation(thanksPageData: ThanksPageData, location: String) {
         fetchWalletBalanceUseCase.cancelJobs()
         fetchWalletBalanceUseCase.getGoPayBalance {
-            getFeatureEngine(thanksPageData, it)
+            getFeatureEngine(thanksPageData, it, location)
         }
     }
 
     @VisibleForTesting
-    fun getFeatureEngine(thanksPageData: ThanksPageData, walletBalance: WalletBalance?) {
+    fun getFeatureEngine(thanksPageData: ThanksPageData, walletBalance: WalletBalance?, location: String) {
         gyroEngineRequestUseCase.cancelJobs()
         var queryParamTokomember: TokoMemberRequestParam ? = null
         gyroEngineRequestUseCase.getFeatureEngineData(
@@ -110,6 +112,8 @@ class ThanksPageDataViewModel @Inject constructor(
                     _gyroResponseLiveData.value = featureEngineData
 
                     widgetOrder = getWidgetOrder(featureEngineData)
+
+                    getFlashSaleData(FeatureRecommendationMapper.getChannelId(featureEngineData), location)
 
                     getFeatureEngineBanner(featureEngineData)?.let { bannerModel ->
                         _bannerLiveData.value = bannerModel
@@ -171,6 +175,7 @@ class ThanksPageDataViewModel @Inject constructor(
                 GyroRecommendationWidgetModel.TAG,
                 MarketplaceRecommendationWidgetModel.TAG,
                 HeadlineAdsWidgetModel.TAG,
+                "flashsale",
                 DigitalRecommendationWidgetModel.TAG,
                 BannerWidgetModel.TAG
             )
@@ -249,10 +254,13 @@ class ThanksPageDataViewModel @Inject constructor(
         }
     }
 
-    fun getFlashSaleData(groupId: String) {
+    private fun getFlashSaleData(groupId: String, location: String) {
+        if (groupId.isEmpty()) return
+
         launch(coroutineContext) {
             val a = dynamicChannelRepository.getRemoteData(Bundle().apply {
-                putString("groupIDs", groupId)
+                putString("channelIDs", groupId)
+                putString("location", location)
             })
 
             a.dynamicHomeChannel.channels.forEachIndexed { index, item ->

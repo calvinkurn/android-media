@@ -44,6 +44,7 @@ import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMap
 import com.tokopedia.localizationchooseaddress.domain.response.GetDefaultChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.convertToLocationParams
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.media.loader.module.GlideApp
 import com.tokopedia.thankyou_native.R
@@ -211,7 +212,12 @@ abstract class ThankYouBaseFragment :
     private fun getFeatureRecommendationData() {
         thanksPageData.configFlagData?.apply {
             if (isThanksWidgetEnabled && shouldHideFeatureRecom == false) {
-                thanksPageDataViewModel.checkForGoPayActivation(thanksPageData)
+                thanksPageDataViewModel.checkForGoPayActivation(
+                    thanksPageData,
+                    ChooseAddressUtils
+                        .getLocalizingAddressData(this@ThankYouBaseFragment.requireContext())
+                        .convertToLocationParams()
+                )
             }
         }
     }
