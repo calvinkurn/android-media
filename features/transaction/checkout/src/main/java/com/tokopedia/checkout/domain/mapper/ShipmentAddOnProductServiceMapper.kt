@@ -167,17 +167,17 @@ object ShipmentAddOnProductServiceMapper {
         val countMapSummaries = hashMapOf<Int, Pair<Long, Int>>()
         val listShipmentAddOnSummary: ArrayList<ShipmentAddOnSummaryModel> = arrayListOf()
 
-        var qtyAddOn = 0
-        var totalPriceAddOn: Long
         groupAddressLoop@ for (groupAddress in cartShipmentAddressFormData.groupAddress) {
             groupShopLoop@ for (groupShop in groupAddress.groupShop) {
                 groupShopV2Loop@ for (groupShopV2 in groupShop.groupShopData) {
                     productLoop@ for (product in groupShopV2.products) {
                         addOnLoop@ for (addon in product.addOnProduct.listAddOnProductData) {
                             if (addon.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK || addon.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_MANDATORY) {
-                                qtyAddOn += if (addon.fixedQty) 1 else product.productQuantity
-                                totalPriceAddOn = (qtyAddOn * addon.price).toLong()
-                                countMapSummaries[addon.type] = totalPriceAddOn to qtyAddOn
+                                val qtyAddOn = if (addon.fixedQty) 1 else product.productQuantity
+                                val priceAddOn = (qtyAddOn * addon.price).toLong()
+                                val existingMapQty = countMapSummaries[addon.type]?.second ?: 0
+                                val existingMapPrice = countMapSummaries[addon.type]?.first ?: 0L
+                                countMapSummaries[addon.type] = (priceAddOn + existingMapPrice) to (qtyAddOn + existingMapQty)
                             }
                         }
                     }
