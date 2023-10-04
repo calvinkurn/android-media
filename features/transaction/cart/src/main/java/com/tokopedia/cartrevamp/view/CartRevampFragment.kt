@@ -2442,6 +2442,8 @@ class CartRevampFragment :
                         val params = generateParamGetLastApplyPromo()
                         if (!removeAllItems && (isNeedHitUpdateCartAndValidateUse(params))) {
                             viewModel.doUpdateCartAndGetLastApply(params)
+                        } else if (!removeAllItems) {
+                            updatePromoCheckoutManualIfNoSelected(getAllAppliedPromoCodes(params))
                         }
                         viewModel.processUpdateCartCounter()
                         viewModel.updateSelectedAmount()

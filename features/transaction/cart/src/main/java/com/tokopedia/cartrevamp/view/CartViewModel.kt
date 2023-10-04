@@ -2744,8 +2744,10 @@ class CartViewModel @Inject constructor(
         if (isPromoRevamp()) {
             getEntryPointInfoFromLastApply(LastApplyUiModel())
         } else {
-            cartPromoEntryPointProcessor
-                .getEntryPointInfoActiveDefault(appliedPromoCodes)
+            _entryPointInfoEvent.postValue(
+                cartPromoEntryPointProcessor
+                    .getEntryPointInfoActiveDefault(appliedPromoCodes)
+            )
         }
     }
 
