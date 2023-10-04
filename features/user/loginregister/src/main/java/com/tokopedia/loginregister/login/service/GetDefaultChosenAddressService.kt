@@ -3,8 +3,9 @@ package com.tokopedia.loginregister.login.service
 import android.content.Context
 import android.content.Intent
 import com.tokopedia.abstraction.base.service.JobIntentServiceX
+import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.loginregister.login.di.ActivityComponentFactory
-import com.tokopedia.loginregister.login.di.LoginComponent
 import com.tokopedia.loginregister.login.domain.GetDefaultChosenAddressUseCase
 import javax.inject.Inject
 
@@ -26,11 +27,27 @@ class GetDefaultChosenAddressService : JobIntentServiceX() {
 
     override fun onHandleWork(intent: Intent) {
         try {
-            getDefaultChosenAddressUseCase.getDefaultChosenAddress( {
-                //no-op
+            getDefaultChosenAddressUseCase.getDefaultChosenAddress({
+                val address = it.data
+                val tokonow = it.tokonow
+                ChooseAddressUtils.updateLocalizingAddressDataFromOther(
+                    applicationContext,
+                    addressId = address.addressId.toString(),
+                    cityId = address.cityId.toString(),
+                    districtId = address.districtId.toString(),
+                    lat = address.latitude,
+                    long = address.longitude,
+                    label = "${address.addressName} ${address.receiverName}",
+                    postalCode = address.postalCode,
+                    shopId = tokonow.shopId.toString(),
+                    warehouseId = tokonow.warehouseId.toString(),
+                    warehouses = TokonowWarehouseMapper.mapWarehousesResponseToLocal(tokonow.warehouses),
+                    serviceType = tokonow.serviceType,
+                    lastUpdate = tokonow.tokonowLastUpdate
+                )
             }, {
                 it.printStackTrace()
-            } )
+            })
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -48,5 +65,4 @@ class GetDefaultChosenAddressService : JobIntentServiceX() {
             }
         }
     }
-
 }
