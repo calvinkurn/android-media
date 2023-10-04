@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.response.KeroMapsAutofill
 import com.tokopedia.logisticCommon.data.response.KeroAddrGetDistrictCenterResponse
@@ -24,6 +23,7 @@ import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.uimodel.Dis
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.uimodel.GetDistrictDataUiModel
 import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.PinpointNewPageFragment.Companion.LOCATION_NOT_FOUND_MESSAGE
 import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.uimodel.MapsGeocodeState
+import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.uimodel.PinpointUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -40,7 +40,10 @@ class PinpointNewPageViewModel @Inject constructor(
     private val mapsGeocodeUseCase: MapsGeocodeUseCase
 ) : ViewModel() {
 
-    private var saveAddressDataModel = SaveAddressDataModel()
+    // only set this for pinpoint webview
+    private var saveAddressDataModel: SaveAddressDataModel? = null
+    var uiModel = PinpointUiModel()
+    var addressId = ""
 
     private val _autofillDistrictData = MutableLiveData<Result<KeroMapsAutofill>>()
     val autofillDistrictData: LiveData<Result<KeroMapsAutofill>>
@@ -62,15 +65,31 @@ class PinpointNewPageViewModel @Inject constructor(
     val mapsGeocodeState: LiveData<MapsGeocodeState>
         get() = _mapsGeocodeState
 
-    fun setDistrictAndCityName(
-        districtName: String?,
-        cityName: String?
+    fun setPinpointUiModel(
+        districtName: String = "",
+        cityName: String = "",
+        lat: Double = 0.0,
+        long: Double = 0.0,
+        placeId: String = ""
     ) {
-        if (districtName?.isNotBlank() == true && cityName?.isNotBlank() == true) {
-            saveAddressDataModel.districtName = districtName
-            saveAddressDataModel.cityName = cityName
-        }
+        this.uiModel = this.uiModel.copy(
+            districtName = districtName,
+            cityName = cityName,
+            lat = lat,
+            long = long,
+            placeId = placeId
+        )
     }
+
+//    fun setDistrictAndCityName(
+//        districtName: String?,
+//        cityName: String?
+//    ) {
+//        if (districtName?.isNotBlank() == true && cityName?.isNotBlank() == true) {
+//            saveAddressDataModel.districtName = districtName
+//            saveAddressDataModel.cityName = cityName
+//        }
+//    }
 
     fun getDistrictData(lat: Double, long: Double) {
         val param = "$lat,$long"
@@ -103,7 +122,7 @@ class PinpointNewPageViewModel @Inject constructor(
     fun getDistrictBoundaries() {
         viewModelScope.launch {
             try {
-                val districtBoundary = getDistrictBoundaries(saveAddressDataModel.districtId)
+                val districtBoundary = getDistrictBoundaries(uiModel.districtId)
                 _districtBoundary.value =
                     Success(districtBoundaryMapper.mapDistrictBoundaryNew(districtBoundary))
             } catch (e: Throwable) {
@@ -115,7 +134,7 @@ class PinpointNewPageViewModel @Inject constructor(
     fun getDistrictCenter() {
         viewModelScope.launch {
             try {
-                val data = getDistrictCenter(saveAddressDataModel.districtId)
+                val data = getDistrictCenter(uiModel.districtId)
                 _districtCenter.value = Success(mapDistrictCenterResponseToUiModel(data))
             } catch (e: Throwable) {
                 _districtCenter.value = Fail(e)
@@ -137,18 +156,30 @@ class PinpointNewPageViewModel @Inject constructor(
     }
 
     fun getAddress(): SaveAddressDataModel {
-        return this.saveAddressDataModel
+        return saveAddressDataModel ?: SaveAddressDataModel(
+            districtName = uiModel.districtName,
+            cityName = uiModel.cityName,
+            provinceName = uiModel.provinceName,
+            districtId = uiModel.districtId,
+            cityId = uiModel.cityId,
+            provinceId = uiModel.provinceId,
+            postalCode = uiModel.postalCode,
+            latitude = uiModel.lat.toString(),
+            longitude = uiModel.long.toString(),
+            zipCodes = uiModel.postalCodeList,
+            title = uiModel.title
+        )
     }
 
     fun setLatLong(lat: Double, long: Double) {
-        this.saveAddressDataModel =
-            this.saveAddressDataModel.copy(latitude = lat.toString(), longitude = long.toString())
+        this.uiModel =
+            this.uiModel.copy(lat = lat, long = long)
     }
 
     fun getLocationFromLatLong() {
         getDistrictData(
-            saveAddressDataModel.latitude.toDoubleOrZero(),
-            saveAddressDataModel.longitude.toDoubleOrZero()
+            uiModel.lat,
+            uiModel.long
         )
     }
 
@@ -158,7 +189,7 @@ class PinpointNewPageViewModel @Inject constructor(
                 val response = mapsGeocodeUseCase(
                     MapsGeocodeParam(
                         input = MapsGeocodeParam.MapsGeocodeDataParam(
-                            address = "${saveAddressDataModel.districtName}, ${saveAddressDataModel.cityName}"
+                            address = "${uiModel.districtName}, ${uiModel.cityName}"
                         )
                     )
                 )
