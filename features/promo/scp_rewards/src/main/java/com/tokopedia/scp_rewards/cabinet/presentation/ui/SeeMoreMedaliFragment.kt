@@ -29,9 +29,9 @@ import com.tokopedia.scp_rewards.common.constants.NON_WHITELISTED_USER_ERROR_COD
 import com.tokopedia.scp_rewards.common.data.Error
 import com.tokopedia.scp_rewards.common.data.Loading
 import com.tokopedia.scp_rewards.common.data.Success
-import com.tokopedia.scp_rewards.common.utils.launchLink
 import com.tokopedia.scp_rewards.databinding.SeeMoreMedaliFragmentBinding
-import com.tokopedia.scp_rewards_common.EARNED_BADGE
+import com.tokopedia.scp_rewards_common.constants.EARNED_BADGE
+import com.tokopedia.scp_rewards_common.utils.launchLink
 import com.tokopedia.scp_rewards_widgets.common.GridSpacingItemDecoration
 import com.tokopedia.scp_rewards_widgets.common.model.LoadingModel
 import com.tokopedia.scp_rewards_widgets.common.model.LoadingMoreModel
@@ -217,7 +217,7 @@ class SeeMoreMedaliFragment : BaseDaggerFragment(), MedalCallbackListener {
                 }
             }
             visitableList.addAll(
-                MedaliListMapper.getMedalList(response, badgeType, false)
+                MedaliListMapper.getMedalList(response, false)
             )
             submitAdapterList(visitableList)
             binding?.viewError?.gone()
@@ -305,7 +305,7 @@ class SeeMoreMedaliFragment : BaseDaggerFragment(), MedalCallbackListener {
                 medalItem.progression.toString()
             )
         }
-        requireContext().launchLink(
+        context?.launchLink(
             appLink = medalItem.cta?.appLink,
             webLink = medalItem.cta?.deepLink
         )

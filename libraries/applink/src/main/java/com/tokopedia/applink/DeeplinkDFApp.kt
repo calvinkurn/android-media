@@ -98,7 +98,7 @@ object DeeplinkDFApp {
     fun getDeeplinkDFPatternList(isSellerapp: Boolean, context: Context): List<DFPSchemeToDF> {
         val d = getDeeplinkPattern(isSellerapp)
         if (d == null) {
-            getDfCustomerappMap().filteredOnDF(context).mapDF().also {
+            getMap(isSellerapp).filteredOnDF(context).mapDF().also {
                 if (isSellerapp) {
                     deeplinkDFPatternListSellerAppv2 = it
                 } else {
@@ -109,6 +109,12 @@ object DeeplinkDFApp {
         } else {
             return d
         }
+    }
+
+    private fun getMap(isSellerapp: Boolean) = if (isSellerapp) {
+        getDfSellerappMap()
+    } else {
+        getDfCustomerappMap()
     }
 
     fun getDeeplinkPattern(isSellerapp: Boolean): MutableList<DFPSchemeToDF>? {

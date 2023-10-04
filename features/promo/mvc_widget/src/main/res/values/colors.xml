@@ -7,4 +7,7 @@
     <color name="mvc_widget_dms_31353b">#31353B</color>
     <color name="mvcw_6831353B">#AD31353B</color>
     <color name="mvc_background_color">@color/Unify_NN0</color>
+    <color name="mvc_dms_static_nn900">#2E3137</color>
+    <color name="mvc_dms_static_nn950">#212121</color>
+
 </resources>

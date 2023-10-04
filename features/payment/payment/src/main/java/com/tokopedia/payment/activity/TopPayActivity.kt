@@ -40,12 +40,15 @@ import com.tokopedia.common.payment.utils.LINK_ACCOUNT_BACK_BUTTON_APPLINK
 import com.tokopedia.common.payment.utils.LINK_ACCOUNT_SOURCE_PAYMENT
 import com.tokopedia.common.payment.utils.LinkStatusMatcher
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.device.info.model.AdditionalInfoModel.Companion.generateJson
+import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator
 import com.tokopedia.fingerprint.util.FingerprintConstant
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.authentication.*
 import com.tokopedia.network.authentication.AuthKey.Companion.KEY_WSV4
 import com.tokopedia.network.constant.ErrorNetMessage
+import com.tokopedia.network.data.model.FingerprintModel
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.network.utils.ThemeUtils
 import com.tokopedia.payment.R
@@ -59,9 +62,11 @@ import com.tokopedia.payment.presenter.TopPayPresenter
 import com.tokopedia.payment.utils.*
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.webview.BaseWebViewFragment.TOKOPEDIA_COM
 import com.tokopedia.webview.WebViewHelper
 import kotlinx.android.synthetic.main.activity_top_pay_payment_module.*
 import rx.Observable
@@ -72,6 +77,7 @@ import timber.log.Timber
 import java.io.ByteArrayOutputStream
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
+import java.nio.charset.StandardCharsets
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -228,6 +234,7 @@ class TopPayActivity :
     }
 
     private fun setActionVar() {
+        generateDeviceInfoData()
         presenter.processUriPayment()
 
         val message = intent.getStringExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_TOASTER_MESSAGE)
@@ -240,7 +247,7 @@ class TopPayActivity :
 
     override fun renderWebViewPostUrl(url: String, postData: ByteArray, isGet: Boolean) {
         if (isGet || isInsufficientBookingStockUrl(url)) {
-            scroogeWebView?.loadUrl(url)
+            scroogeWebView?.validateAndLoadUrl(url, getFingerprintHeader())
         } else {
             scroogeWebView?.postUrl(WebViewHelper.appendGAClientIdAsQueryParam(url, this) ?: "", postData)
         }
@@ -407,7 +414,7 @@ class TopPayActivity :
     override fun onSuccessPaymentFingerprint(url: String?, paramEncode: String?) {
         fingerPrintDialogPayment?.stopListening()
         fingerPrintDialogPayment?.dismiss()
-        scroogeWebView?.loadUrl(String.format("%1\$s?%2\$s", url, paramEncode))
+        scroogeWebView?.validateAndLoadUrl(String.format(Locale.getDefault(), "%1\$s?%2\$s", url, paramEncode), getFingerprintHeader())
     }
 
     override fun onPause() {
@@ -444,7 +451,7 @@ class TopPayActivity :
         } else if (requestCode == REQUEST_CODE_LIVENESS && resultCode == Activity.RESULT_OK) {
             val redirectionUrl = intent?.getStringExtra(ApplinkConstInternalGlobal.PARAM_REDIRECT_URL) ?: ""
             if (redirectionUrl.isNotEmpty()) {
-                scroogeWebView?.loadUrl(redirectionUrl)
+                scroogeWebView?.validateAndLoadUrl(redirectionUrl, getFingerprintHeader())
             }
         } else if (requestCode == HCI_CAMERA_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             val imagePath = intent?.getStringExtra(HCI_KTP_IMAGE_PATH)
@@ -481,7 +488,7 @@ class TopPayActivity :
                     .append("'")
                     .append(it)
                     .append("')")
-                scroogeWebView?.loadUrl(jsCallbackBuilder.toString())
+                scroogeWebView?.validateAndLoadUrl(jsCallbackBuilder.toString(), getFingerprintHeader())
             }
         }
     }
@@ -501,7 +508,7 @@ class TopPayActivity :
 
     private fun reloadPayment() {
         // scroogeWebView?.reload() doesn't work
-        scroogeWebView?.loadUrl(reloadUrl)
+        scroogeWebView?.validateAndLoadUrl(reloadUrl, getFingerprintHeader())
     }
 
     private fun encodeToBase64(imagePath: String?): String? {
@@ -865,7 +872,52 @@ class TopPayActivity :
         val header = AuthHelper.getDefaultHeaderMapOld(path, strParam, "GET", CONTENT_TYPE, KEY_WSV4, DATE_FORMAT, userSession.userId, userSession, ThemeUtils.getHeader(this))
         header[HEADER_TKPD_USER_AGENT] = DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE
         header[HEADER_TKPD_SESSION_ID] = userSession.deviceId
+
+        if (remoteConfig.getBoolean(RemoteConfigKey.PAYMENT_ENABLE_ADDITIONAL_DEVICE_INFO_HEADER, true)) {
+            addFingerprintHeader(path, header)
+        }
+
         return header
+    }
+
+    private fun addFingerprintHeader(
+        path: String,
+        header: MutableMap<String, String>
+    ) {
+        val uri = Uri.parse(path)
+        val host = uri.host
+        if (host != null && host.endsWith(TOKOPEDIA_COM)) {
+            header.putAll(getFingerprintHeader())
+        }
+    }
+
+    private fun generateDeviceInfoData() {
+        if (remoteConfig.getBoolean(RemoteConfigKey.PAYMENT_ENABLE_ADDITIONAL_DEVICE_INFO_HEADER, true)) {
+            val additionalData = "$KEY_FINGERPRINT_DATA=${getFingerprintData()}&$KEY_FINTECH_FINGERPRINT_DATA=${getFintechFingerprintData()}"
+            paymentPassData?.queryString = "${paymentPassData?.queryString}&$additionalData"
+        }
+    }
+
+    private fun getFingerprintData(): String {
+        val fingerprintModel: FingerprintModel =
+            FingerprintModelGenerator.generateFingerprintModel(this@TopPayActivity.applicationContext)
+        return fingerprintModel.fingerprintHash
+    }
+
+    private fun getFintechFingerprintData(): String {
+        val additionalInfoJson = generateJson(this@TopPayActivity.applicationContext)
+            .toByteArray(StandardCharsets.UTF_8)
+        return Base64.encodeToString(additionalInfoJson, Base64.DEFAULT)
+            .replace("\n", "")
+            .replace("\r", "")
+            .trim { it <= ' ' }
+    }
+
+    private fun getFingerprintHeader(): Map<String, String> {
+        return mapOf(
+            KEY_FINGERPRINT_DATA to getFingerprintData(),
+            KEY_FINTECH_FINGERPRINT_DATA to getFintechFingerprintData()
+        )
     }
 
     fun getEnableFingerprintPayment(): Boolean {
@@ -920,6 +972,16 @@ class TopPayActivity :
         }
     }
 
+    private fun WebView.validateAndLoadUrl(url: String, additionalHeaders: Map<String, String>) {
+        val uri = Uri.parse(url)
+        val host = uri.host
+        if (host != null && host.endsWith(TOKOPEDIA_COM)) {
+            this.loadUrl(url, additionalHeaders)
+        } else {
+            this.loadUrl(url)
+        }
+    }
+
     companion object {
         const val KEY_QUERY_PAYMENT_ID = "id"
         const val KEY_QUERY_LD = "ld"
@@ -956,6 +1018,8 @@ class TopPayActivity :
 
         private const val PAYMENT_RELOAD_IS_TRUE = "payment_reload=true"
         private const val PAYMENT_RELOAD_IS_FALSE = "payment_reload=false"
+        private const val KEY_FINGERPRINT_DATA = "Fingerprint-Data"
+        private const val KEY_FINTECH_FINGERPRINT_DATA = "Fintech-Fingerprint-Data"
 
         @JvmStatic
         fun createInstance(context: Context, paymentPassData: PaymentPassData?): Intent {

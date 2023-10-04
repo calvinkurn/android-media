@@ -7,7 +7,6 @@ import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.InsetDrawable
-import android.os.Build
 import android.os.Parcel
 import android.os.Parcelable
 import android.view.TouchDelegate
@@ -17,6 +16,10 @@ import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.filter.common.data.IOption
+import com.tokopedia.filter.common.data.Option
+import com.tokopedia.filter.common.data.Option.Companion.UID_FIRST_SEPARATOR_SYMBOL
+import com.tokopedia.filter.common.data.Option.Companion.UID_SECOND_SEPARATOR_SYMBOL
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration as TkpdAbstractionDividerItemDecoration
@@ -133,3 +136,9 @@ internal fun BottomSheetUnify.setBottomSheetActionBold() {
 
 internal fun <T> Collection<T>.equalsIgnoreOrder(elements: Collection<T>) =
     this.size == elements.size && this.toSet() == elements.toSet()
+
+val IOption.isTypeRadio: Boolean
+    get() = Option.INPUT_TYPE_RADIO == inputType
+
+val IOption.uniqueId: String
+    get() = key + UID_FIRST_SEPARATOR_SYMBOL + value + UID_SECOND_SEPARATOR_SYMBOL + name
