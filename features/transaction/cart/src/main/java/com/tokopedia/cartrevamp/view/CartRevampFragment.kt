@@ -2298,6 +2298,8 @@ class CartRevampFragment :
 
         observeSelectedAmount()
 
+        observeSubTotal()
+
         observeUpdateCartEvent()
 
         observeUndoDeleteEvent()
@@ -2688,6 +2690,13 @@ class CartRevampFragment :
         }
     }
 
+    private fun observeSubTotal() {
+        viewModel.subTotalState.observe(viewLifecycleOwner) { data ->
+            updateCashback(data.subtotalCashback)
+            renderDetailInfoSubTotal(data.qty, data.subtotalPrice, data.noAvailableItems)
+        }
+    }
+
     private fun observeWishlist() {
         viewModel.wishlistV2State.observe(viewLifecycleOwner) { data ->
             when (data) {
@@ -2976,11 +2985,6 @@ class CartRevampFragment :
                 is CartGlobalEvent.UpdateAndReloadCartFailed -> {
                     hideProgressLoading()
                     showToastMessageRed(event.throwable)
-                }
-
-                is CartGlobalEvent.SubTotalUpdated -> {
-                    updateCashback(event.subtotalCashback)
-                    renderDetailInfoSubTotal(event.qty, event.subtotalPrice, event.noAvailableItems)
                 }
 
                 is CartGlobalEvent.AdapterItemChanged -> {
