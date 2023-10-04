@@ -18,6 +18,7 @@ import com.tokopedia.home.beranda.di.module.HomeDatabaseModule
 import com.tokopedia.home.beranda.di.module.HomeMapperModule
 import com.tokopedia.home.beranda.di.module.HomeUseCaseModule
 import com.tokopedia.home.beranda.presentation.view.helper.HomePrefController
+import com.tokopedia.home.beranda.presentation.view.helper.HomeRemoteConfigController
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.smart_recycler_helper.SmartExecutors
@@ -86,4 +87,10 @@ class HomeTestModule {
     fun provideLocalCacheHandler(@ApplicationContext context: Context): LocalCacheHandler {
         return LocalCacheHandler(context, CacheUtil.KEY_POPUP_INTRO_OVO_CACHE)
     }
+
+    @HomeScope
+    @Provides
+    fun provideHomeRemoteConfigController(
+        remoteConfig: RemoteConfig
+    ): HomeRemoteConfigController = HomeRemoteConfigController(remoteConfig)
 }

@@ -324,12 +324,12 @@ object CartUiModelMapper {
                         )
                         productUiModelList.add(productUiModel)
                     }
-                    productUiModelList.lastOrNull()?.apply {
-                        isFinalItem = true
-                        showErrorBottomDivider = sectionIndex != cartData.unavailableSections.lastIndex ||
-                            (sectionIndex == cartData.unavailableSections.lastIndex && groupIndex != unavailableSection.unavailableGroups.lastIndex)
-                        shouldDivideHalfErrorBottomDivider = showErrorBottomDivider && groupIndex != unavailableSection.unavailableGroups.lastIndex
-                    }
+                }
+                productUiModelList.lastOrNull()?.apply {
+                    isFinalItem = true
+                    showErrorBottomDivider = sectionIndex != cartData.unavailableSections.lastIndex ||
+                        (sectionIndex == cartData.unavailableSections.lastIndex && groupIndex != unavailableSection.unavailableGroups.lastIndex)
+                    shouldDivideHalfErrorBottomDivider = showErrorBottomDivider && groupIndex != unavailableSection.unavailableGroups.lastIndex
                 }
                 val groupUiModel = CartGroupHolderData().apply {
                     this.productUiModelList = productUiModelList
