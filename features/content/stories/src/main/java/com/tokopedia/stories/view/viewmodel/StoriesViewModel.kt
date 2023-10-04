@@ -329,22 +329,31 @@ class StoriesViewModel @AssistedInject constructor(
         updateMainData(detail = nextGroupData, groupPosition = nextGroupPos)
     }
 
-    private fun updateMainData(detail: StoriesDetail, groupPosition: Int) {
+    private fun updateMainData(
+        groupHeader: List<StoriesGroupHeader> = emptyList(),
+        groupItems: List<StoriesGroupItem> = emptyList(),
+        detail: StoriesDetail,
+        groupPosition: Int,
+    ) {
         _storiesMainData.update { group ->
             group.copy(
                 selectedGroupId = mGroup.groupId,
                 selectedGroupPosition = mGroupPos,
-                groupHeader = group.groupHeader.mapIndexed { index, storiesGroupHeader ->
-                    storiesGroupHeader.copy(isSelected = index == mGroupPos)
+                groupHeader = groupHeader.ifEmpty {
+                    group.groupHeader.mapIndexed { index, storiesGroupHeader ->
+                        storiesGroupHeader.copy(isSelected = index == mGroupPos)
+                    }
                 },
-                groupItems = group.groupItems.mapIndexed { index, storiesGroupItemUiModel ->
-                    if (index == groupPosition) {
-                        storiesGroupItemUiModel.copy(
-                            detail = detail.copy(
-                                selectedGroupId = storiesGroupItemUiModel.groupId
+                groupItems = groupItems.ifEmpty {
+                    group.groupItems.mapIndexed { index, storiesGroupItemUiModel ->
+                        if (index == groupPosition) {
+                            storiesGroupItemUiModel.copy(
+                                detail = detail.copy(
+                                    selectedGroupId = storiesGroupItemUiModel.groupId
+                                )
                             )
-                        )
-                    } else storiesGroupItemUiModel
+                        } else storiesGroupItemUiModel
+                    }
                 }
             )
         }
@@ -482,18 +491,29 @@ class StoriesViewModel @AssistedInject constructor(
     }
 
     private fun handleDeleteStory() {
-        viewModelScope.launchCatchError(block = {
-            val request = repository.deleteStory(storyId)
-            if (!request) {
-                _storiesEvent.emit(StoriesUiEvent.ShowErrorEvent(MessageErrorException()))
-                return@launchCatchError
-            }
+        viewModelScope.launch { repository.deleteStory(storyId) }
 
-            val removedItem = mGroup.detail.detailItems.filterNot { it == mDetail }
-            val newDetail = mGroup.detail.copy(detailItems = removedItem)
-            updateMainData(detail = newDetail, groupPosition = mGroupPos)
-            moveToOtherStories()
-        }, onError = { _storiesEvent.emit(StoriesUiEvent.ShowErrorEvent(it)) })
+        val removedItem = mGroup.detail.detailItems.filterNot { it.id == storyId }
+        val mainData = _storiesMainData.value
+
+        val newDetail = if (removedItem.isEmpty()) StoriesDetail()
+        else mGroup.detail.copy(detailItems = removedItem)
+
+        val newGroupHeader = if (removedItem.isEmpty()) {
+            mainData.groupHeader.filterNot { it.groupId == mGroup.detail.selectedGroupId }
+        } else emptyList()
+        val newGroupItems = if (removedItem.isEmpty()) {
+            mainData.groupItems.filterNot { it.groupId == mGroup.detail.selectedGroupId }
+        } else emptyList()
+
+        updateMainData(
+            groupHeader = newGroupHeader,
+            groupItems = newGroupItems,
+            detail = newDetail,
+            groupPosition = mGroupPos,
+        )
+
+        moveToOtherStories()
     }
 
     private fun moveToOtherStories() {

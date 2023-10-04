@@ -258,6 +258,7 @@ class StoriesDetailFragment @Inject constructor(
             groupId != state.selectedGroupId
         ) return
 
+        mAdapter.clearAllItems()
         mAdapter.setItems(state.groupHeader)
         mAdapter.notifyItemRangeInserted(mAdapter.itemCount, state.groupHeader.size)
         binding.rvStoriesCategory.scrollToPosition(state.selectedGroupPosition)

@@ -117,8 +117,6 @@ class StoriesGroupFragment @Inject constructor(
         showPageLoading(true)
 
         layoutGroupLoading.icCloseLoading.setOnClickListener { activity?.finish() }
-        if (storiesGroupViewPager.adapter != null) return@with
-        storiesGroupViewPager.adapter = pagerAdapter
         storiesGroupViewPager.setPageTransformer(StoriesPageAnimation())
         storiesGroupViewPager.registerOnPageChangeCallback(pagerListener)
     }
@@ -185,8 +183,8 @@ class StoriesGroupFragment @Inject constructor(
         setNoInternet(false)
         setFailed(false)
 
+        binding.storiesGroupViewPager.adapter = pagerAdapter
         pagerAdapter.setStoriesGroup(state)
-        pagerAdapter.notifyItemRangeChanged(pagerAdapter.itemCount, state.groupItems.size)
         selectGroupPosition(state.selectedGroupPosition, false)
 
         showPageLoading(false)
