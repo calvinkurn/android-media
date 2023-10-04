@@ -120,7 +120,6 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
         const val URL_PARAM_LVL_2 = "?exclude_sc=%s"
         const val URL_PARAM_LVL_3 = "&sc=%s"
         const val PAGE_TYPE_CATEGORY = "cat%s"
-        const val CATEGORY_LVL_1 = 1
         const val CATEGORY_LVL_2 = 2
         const val CATEGORY_LVL_3 = 3
 
@@ -829,15 +828,15 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
     private fun getConstructedLink(categoryUrl: String, categoryIdLvl2: String, categoryIdLvl3: String): Pair<String, String> {
         var deeplinkParam = "${DEFAULT_DEEPLINK_PARAM}/$categoryIdL1"
         var url = categoryUrl
-        if (categoryIdLvl2.isNotBlank() && categoryIdLvl2 != DEFAULT_CATEGORY_ID) {
-            deeplinkParam += "/$categoryIdLvl2"
-            url += String.format(URL_PARAM_LVL_2, categoryIdLvl2)
 
-            if (categoryIdLvl3.isNotBlank() && categoryIdLvl3 != DEFAULT_CATEGORY_ID) {
-                deeplinkParam += String.format(DEEPLINK_PARAM_LVL_3, categoryIdLvl3)
-                url += String.format(URL_PARAM_LVL_3, categoryIdLvl3)
-            }
+        deeplinkParam += "/$categoryIdLvl2"
+        url += String.format(URL_PARAM_LVL_2, categoryIdLvl2)
+
+        if (categoryIdLvl3 != DEFAULT_CATEGORY_ID) {
+            deeplinkParam += String.format(DEEPLINK_PARAM_LVL_3, categoryIdLvl3)
+            url += String.format(URL_PARAM_LVL_3, categoryIdLvl3)
         }
+
         return Pair(deeplinkParam, url)
     }
 
@@ -845,17 +844,13 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
         val categoryId: String
         val categoryLvl: Int
         when {
-            categoryIdLvl3.isNotBlank() && categoryIdLvl3 != DEFAULT_CATEGORY_ID -> {
+            categoryIdLvl3 != DEFAULT_CATEGORY_ID -> {
                 categoryLvl = CATEGORY_LVL_3
                 categoryId = categoryIdLvl3
             }
-            categoryIdLvl2.isNotBlank() && categoryIdLvl2 != DEFAULT_CATEGORY_ID -> {
+            else -> {
                 categoryLvl = CATEGORY_LVL_2
                 categoryId = categoryIdLvl2
-            }
-            else -> {
-                categoryLvl = CATEGORY_LVL_1
-                categoryId = categoryIdL1
             }
         }
         return listOf(String.format(PAGE_TYPE_CATEGORY, categoryLvl), categoryId)
