@@ -2,6 +2,7 @@ package com.scp.auth
 
 import android.app.Application
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import com.gojek.pin.AppInfo
@@ -28,9 +29,16 @@ import com.scp.verification.core.data.common.services.contract.ScpAnalyticsEvent
 import com.scp.verification.core.data.common.services.contract.ScpAnalyticsService
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.KEY_SP_TIMESTAMP_AB_TEST
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.SHARED_PREFERENCE_AB_TEST_PLATFORM
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import java.util.*
+import java.util.concurrent.TimeUnit
 
 object GotoSdk {
     var LSDKINSTANCE: LSdkProvider? = null
@@ -41,8 +49,10 @@ object GotoSdk {
     private const val DEVICE_TYPE = "android"
     private const val LOCALE_ID = "id"
 
+
     @JvmStatic
     fun init(application: Application): LSdkProvider? {
+        initializeAbTestVariant(application)
         LSDKINSTANCE = GotoLogin.getInstance(
             cvSdkProvider = getCvSdkProvider(application),
             gotoPinManager = getGotoPinSdkProvider(application),
@@ -75,7 +85,33 @@ object GotoSdk {
                 }
             )
         )
+        migrateExistingToken(userSession = UserSession(application))
         return LSDKINSTANCE
+    }
+
+    /*
+        Save existing user access token and refresh token (from old login flow) to sdk,
+        so users doesn't have to re-login to get Login SDK functionalities.
+    */
+    @JvmStatic
+    fun migrateExistingToken(userSession: UserSessionInterface) {
+        if (userSession.isLoggedIn &&
+            LSDKINSTANCE?.getAccessToken()?.isEmpty() == true &&
+            LSDKINSTANCE?.getRefreshToken()?.isEmpty() == true) {
+                LSDKINSTANCE?.save(userSession.accessToken, userSession.freshToken)
+        }
+    }
+
+    private fun initializeAbTestVariant(application: Application) {
+        val sharedPreferences: SharedPreferences = application.getSharedPreferences(
+            SHARED_PREFERENCE_AB_TEST_PLATFORM, Context.MODE_PRIVATE
+        )
+        val timestampAbTest = sharedPreferences.getLong(KEY_SP_TIMESTAMP_AB_TEST, 0)
+        RemoteConfigInstance.initAbTestPlatform(application)
+        val current = Date().time
+        if (current >= timestampAbTest + TimeUnit.HOURS.toMillis(1)) {
+            RemoteConfigInstance.getInstance().abTestPlatform.fetch(null)
+        }
     }
 
     private fun getGotoPinSdkProvider(application: Application): PinManager {

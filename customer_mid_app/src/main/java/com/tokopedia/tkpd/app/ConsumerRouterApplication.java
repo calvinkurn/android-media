@@ -75,7 +75,6 @@ import com.tokopedia.oms.domain.PostVerifyCartWrapper;
 import com.tokopedia.promotionstarget.presentation.GratifCmInitializer;
 import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.remoteconfig.GraphqlHelper;
-import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.tkpd.ConsumerSplashScreen;
 import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
@@ -144,7 +143,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         warmUpGQLClient();
         initIris();
         performLibraryInitialisation();
-        RemoteConfigInstance.getInstance().getABTestPlatform().fetchByType(null);
         initResourceDownloadManager();
         initGotoSDK();
     }
@@ -155,9 +153,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     private void initGotoSDK() {
         GotoSdk.init(this);
-        if (userSession.isLoggedIn() && Objects.requireNonNull(GotoSdk.INSTANCE.getLSDKINSTANCE()).getAccessToken().isEmpty()) {
-            GotoSdk.INSTANCE.getLSDKINSTANCE().save(userSession.getAccessToken(), userSession.getFreshToken());
-        }
     }
 
     private void warmUpGQLClient() {
