@@ -179,7 +179,8 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                 PromoRecommendationDelegateAdapter(
                     onClickUsePromoRecommendation,
                     onClickRecommendationPromo,
-                    onImpressionPromo
+                    onImpressionPromo,
+                    onClickClose
                 )
             )
             .add(PromoAccordionHeaderDelegateAdapter(onClickPromoAccordionHeader))
@@ -1014,6 +1015,23 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
 
     private val onImpressionPromo = { item: PromoItem ->
         processAndSendImpressionOfPromoCardNewEvent(item)
+    }
+
+    private val onClickClose = {
+        val validateUsePromoRequest = arguments?.getParcelable(BUNDLE_KEY_VALIDATE_USE)
+            ?: ValidateUsePromoRequest()
+        val boPromoCodes: List<String> = arguments?.getStringArrayList(BUNDLE_KEY_BO_PROMO_CODES)
+            ?: emptyList()
+
+        renderLoadingDialog(true)
+        viewModel.onClosePromoPage(
+            entryPoint = entryPoint,
+            validateUsePromoRequest = validateUsePromoRequest,
+            boPromoCodes = boPromoCodes,
+            isCartCheckoutRevamp = CartCheckoutRevampRollenceManager(
+                RemoteConfigInstance.getInstance().abTestPlatform
+            ).isRevamp()
+        )
     }
 
     private val onClickPromoAccordionHeader: (PromoAccordionHeaderItem) -> Unit =

@@ -28,7 +28,8 @@ import com.tokopedia.promousage.util.extension.toSpannableHtmlString
 internal class PromoRecommendationDelegateAdapter(
     private val onClickUsePromoRecommendation: () -> Unit,
     private val onClickPromo: (PromoItem) -> Unit,
-    private val onImpressionPromo: (PromoItem) -> Unit
+    private val onImpressionPromo: (PromoItem) -> Unit,
+    private val onClickClose: () -> Unit
 ) : DelegateAdapter<PromoRecommendationItem, PromoRecommendationDelegateAdapter.ViewHolder>(
     PromoRecommendationItem::class.java
 ) {
