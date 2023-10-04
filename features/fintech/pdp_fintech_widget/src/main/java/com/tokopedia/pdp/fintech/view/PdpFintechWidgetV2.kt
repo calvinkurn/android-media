@@ -2,8 +2,10 @@ package com.tokopedia.pdp.fintech.view
 
 import android.content.Context
 import android.text.Html
+import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.widget.LinearLayout
 import androidx.annotation.AttrRes
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
@@ -216,11 +218,17 @@ class PdpFintechWidgetV2 @JvmOverloads constructor(
 
     private fun setMessagesWidget(messages: List<String>) {
         val firstTextView = Typography(context).apply {
+            layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
             text = Html.fromHtml(messages.getOrNull(Int.ZERO) ?: String.EMPTY)
+            setSingleLine()
+            ellipsize = TextUtils.TruncateAt.END
         }
 
         val secondTextView = Typography(context).apply {
+            layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
             text = Html.fromHtml(messages.getOrNull(Int.ONE) ?: String.EMPTY)
+            setSingleLine()
+            ellipsize = TextUtils.TruncateAt.END
         }
 
         binding?.sliderView?.setItems(arrayListOf(firstTextView, secondTextView), messages.size > Int.ONE)
