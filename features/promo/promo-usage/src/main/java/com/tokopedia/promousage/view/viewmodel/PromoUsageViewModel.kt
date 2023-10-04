@@ -701,7 +701,9 @@ class PromoUsageViewModel @Inject constructor(
                 )
                 isCausingClash = true
             } else {
-                val state = if (resultItem.state is PromoItemState.Disabled) {
+                val state = if (resultItem.state is PromoItemState.Disabled &&
+                    resultItem.currentClashingPromoCodes.isEmpty()
+                ) {
                     PromoItemState.Normal
                 } else {
                     resultItem.state
@@ -746,7 +748,9 @@ class PromoUsageViewModel @Inject constructor(
                     )
                     isCausingClash = true
                 } else {
-                    val state = if (resultItem.state is PromoItemState.Disabled) {
+                    val state = if (resultItem.state is PromoItemState.Disabled &&
+                        resultItem.currentClashingSecondaryPromoCodes.isEmpty()
+                    ) {
                         PromoItemState.Normal
                     } else {
                         resultItem.state
@@ -758,7 +762,9 @@ class PromoUsageViewModel @Inject constructor(
                     isCausingClash = false
                 }
             } else {
-                val state = if (resultItem.state is PromoItemState.Disabled) {
+                val state = if (resultItem.state is PromoItemState.Disabled &&
+                    resultItem.currentClashingSecondaryPromoCodes.isEmpty()
+                ) {
                     PromoItemState.Normal
                 } else {
                     resultItem.state
@@ -791,7 +797,9 @@ class PromoUsageViewModel @Inject constructor(
                         )
                         isCausingClash = true
                     } else {
-                        val state = if (resultItem.state is PromoItemState.Disabled) {
+                        val state = if (resultItem.state is PromoItemState.Disabled &&
+                            resultItem.currentClashingPromoCodes.isEmpty()
+                        ) {
                             PromoItemState.Normal
                         } else {
                             resultItem.state
@@ -803,7 +811,9 @@ class PromoUsageViewModel @Inject constructor(
                         isCausingClash = false
                     }
                 } else {
-                    val state = if (resultItem.state is PromoItemState.Disabled) {
+                    val state = if (resultItem.state is PromoItemState.Disabled &&
+                        resultItem.currentClashingPromoCodes.isEmpty()
+                    ) {
                         PromoItemState.Normal
                     } else {
                         resultItem.state
