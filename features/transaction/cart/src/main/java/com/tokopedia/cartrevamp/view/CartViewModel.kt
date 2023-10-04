@@ -41,6 +41,7 @@ import com.tokopedia.cartrevamp.domain.model.bmgm.request.BmGmGetGroupProductTic
 import com.tokopedia.cartrevamp.domain.usecase.BmGmGetGroupProductTickerUseCase
 import com.tokopedia.cartrevamp.domain.usecase.SetCartlistCheckboxStateUseCase
 import com.tokopedia.cartrevamp.view.helper.CartDataHelper
+import com.tokopedia.cartrevamp.view.mapper.CartUiModelMapper
 import com.tokopedia.cartrevamp.view.mapper.PromoRequestMapper
 import com.tokopedia.cartrevamp.view.processor.CartCalculator
 import com.tokopedia.cartrevamp.view.processor.CartPromoEntryPointProcessor
@@ -2789,11 +2790,14 @@ class CartViewModel @Inject constructor(
     }
 
     fun isPromoRevamp(): Boolean {
-        cartModel.cartListData?.let { data ->
-            return PromoUsageRollenceManager()
-                .isRevamp(data.promo.lastApplyPromo.lastApplyPromoData.userGroupMetadata)
+        if (cartPromoEntryPointProcessor.isPromoRevamp == null) {
+            val isRevamp = cartModel.cartListData?.let { data ->
+                PromoUsageRollenceManager()
+                    .isRevamp(data.promo.lastApplyPromo.lastApplyPromoData.userGroupMetadata)
+            } ?: false
+            cartPromoEntryPointProcessor.isPromoRevamp = isRevamp
         }
-        return false
+        return cartPromoEntryPointProcessor.isPromoRevamp == true
     }
 
     fun getEntryPointInfoFromLastApply(lastApply: LastApplyUiModel) {
@@ -2813,7 +2817,12 @@ class CartViewModel @Inject constructor(
 
     fun getEntryPointInfoDefault(appliedPromoCodes: List<String> = emptyList()) {
         if (isPromoRevamp()) {
-            getEntryPointInfoFromLastApply(LastApplyUiModel())
+            val lastApplyUiModel = cartModel.cartListData?.let { data ->
+                CartUiModelMapper.mapLastApplySimplified(data.promo.lastApplyPromo.lastApplyPromoData)
+            }
+            lastApplyUiModel?.let {
+                getEntryPointInfoFromLastApply(lastApplyUiModel.copy(additionalInfo = lastApplyUiModel.additionalInfo.copy(usageSummaries = emptyList())))
+            }
         } else {
             _entryPointInfoEvent.postValue(
                 cartPromoEntryPointProcessor

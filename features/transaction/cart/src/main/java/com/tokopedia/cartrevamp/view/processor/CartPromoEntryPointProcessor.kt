@@ -23,7 +23,7 @@ class CartPromoEntryPointProcessor @Inject constructor(
     private val chosenAddressRequestHelper: ChosenAddressRequestHelper
 ) {
 
-    private var isPromoRevamp: Boolean? = null
+    internal var isPromoRevamp: Boolean? = null
 
     private fun generatePromoRequest(
         cartModel: CartModel,
