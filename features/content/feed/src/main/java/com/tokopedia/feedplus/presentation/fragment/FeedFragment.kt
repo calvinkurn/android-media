@@ -2028,10 +2028,12 @@ class FeedFragment :
     }
 
     private fun setDataEligibleForOnboarding() {
-        /** TODO: check if current fragment tab is active before calling the method below */
-        feedMainViewModel.setDataEligibleForOnboarding(
-            feedPostViewModel.determinePostDataEligibilityForOnboarding(data?.isFollowingTab == true)
-        )
+        val selectedTab = feedMainViewModel.selectedTab
+        if (selectedTab?.isSelected == true && selectedTab.type == data?.type) {
+            feedMainViewModel.setDataEligibleForOnboarding(
+                feedPostViewModel.determinePostDataEligibilityForOnboarding(data?.isFollowingTab == true)
+            )
+        }
     }
 
     companion object {

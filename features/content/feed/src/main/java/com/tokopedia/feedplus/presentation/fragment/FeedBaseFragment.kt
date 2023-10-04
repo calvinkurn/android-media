@@ -413,7 +413,9 @@ class FeedBaseFragment :
                         is NetworkResult.Success -> {
                             hideErrorView()
                             hideLoading()
+
                             initTabsView(state.data)
+                            handleActiveTab(state.data)
                         }
                         is NetworkResult.Error -> {
                             showErrorView(state.error)
@@ -444,9 +446,6 @@ class FeedBaseFragment :
                         }
                         FeedMainEvent.ShowSwipeOnboarding -> {
                             showSwipeOnboarding()
-                        }
-                        is FeedMainEvent.SelectTab -> {
-                            handleActiveTab(event.data, event.position)
                         }
                         else -> {}
                     }
@@ -617,8 +616,6 @@ class FeedBaseFragment :
 
         if (isJustLoggedIn && userSession.isLoggedIn) {
             showJustLoggedInToaster()
-        } else {
-            setupActiveTab(tab)
         }
         isJustLoggedIn = false
     }
@@ -750,10 +747,16 @@ class FeedBaseFragment :
      * - viewModel.setActiveTab(position);
      * - viewModel.setActiveTab(type);
      */
-    private fun handleActiveTab(dataModel: FeedDataModel, position: Int) {
-        // keep active tab updated whenever sending tracker
-        feedNavigationAnalytics.setActiveTab(dataModel)
-        binding.vpFeedTabItemsContainer.setCurrentItem(position, true)
+    private fun handleActiveTab(tab: FeedTabModel) {
+        val selectedTab = tab.data.firstOrNull { it.isSelected }
+
+        if (selectedTab == null) {
+            setupActiveTab(tab)
+        } else {
+            // keep active tab updated whenever sending tracker
+            feedNavigationAnalytics.setActiveTab(selectedTab)
+            binding.vpFeedTabItemsContainer.setCurrentItem(tab.data.indexOf(selectedTab), true)
+        }
     }
 
     private fun handleTabTransition(position: Int) {
