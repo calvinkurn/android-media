@@ -16,6 +16,8 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.tokopedianow.category.domain.response.GetCategoryLayoutResponse.CategoryGetDetailModular
 import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryProductUseCase
+import com.tokopedia.tokopedianow.category.mapper.TickerMapper
+import com.tokopedia.tokopedianow.category.presentation.model.CategoryL2TabData
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryQuickFilterUiModel
 import com.tokopedia.tokopedianow.common.domain.mapper.AceSearchParamMapper
 import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse.CategoryListResponse
@@ -83,11 +85,25 @@ open class TokoNowCategoryL2TabViewModelTestFixture {
     protected val warehouseId = 1125L
 
     protected val categoryTitle = "Bahan Makanan"
-    protected val categoryIdL1 = "12556"
-    protected val categoryIdL2 = "12557"
+    protected var categoryIdL1 = "12556"
+    protected var categoryIdL2 = "12557"
 
     protected val requestParamsSlot = slot<RequestParams>()
     protected val requestParams by lazy { requestParamsSlot.captured }
+
+    protected val data: CategoryL2TabData
+        get() {
+            val tickerData = TickerMapper.mapTickerData(getTargetedTickerResponse)
+            val componentList = getCategoryLayoutResponse.components
+
+            return CategoryL2TabData(
+                title = categoryTitle,
+                categoryIdL1 = categoryIdL1,
+                categoryIdL2 = categoryIdL2,
+                tickerData = tickerData,
+                componentList = componentList
+            )
+        }
 
     protected val warehouses = listOf(
         WarehouseData("151245", "fc"),
@@ -230,6 +246,13 @@ open class TokoNowCategoryL2TabViewModelTestFixture {
         coEvery { getProductAdsUseCase.execute(any()) } throws NullPointerException()
     }
 
+    protected fun onGetQuickFilter(
+        withQueryParams: Map<String?, Any?>,
+        thenReturn: DynamicFilterModel
+    ) {
+        coEvery { getSortFilterUseCase.execute(withQueryParams) } returns thenReturn
+    }
+
     protected fun onGetQuickFilter_thenReturn(
         response: DynamicFilterModel
     ) {
@@ -237,6 +260,13 @@ open class TokoNowCategoryL2TabViewModelTestFixture {
             source = "quick_filter_tokonow_directory"
         )
         coEvery { getSortFilterUseCase.execute(queryParams) } returns response
+    }
+
+    protected fun onGetCategoryFilter(
+        withQueryParams: Map<String?, Any?>,
+        thenReturn: DynamicFilterModel
+    ) {
+        coEvery { getSortFilterUseCase.execute(withQueryParams) } returns thenReturn
     }
 
     protected fun onGetCategoryFilter_thenReturn(response: DynamicFilterModel) {
@@ -473,16 +503,42 @@ open class TokoNowCategoryL2TabViewModelTestFixture {
 
     protected fun createRequestQueryParams(
         source: String = "tokonow_directory",
+        srpPageId: String = categoryIdL1,
+        sc: String = categoryIdL2,
         rows: Int = 12,
         page: Int? = 1
     ): MutableMap<String?, Any?> {
         return mutableMapOf<String?, Any?>().apply {
-            val aceSearchParams = createAceSearchParams(source, rows, page)
+            val aceSearchParams = createAceSearchParams(source, srpPageId, sc, rows, page)
             val filterParams = createFilterParams(source)
 
             putAll(aceSearchParams)
             putAll(filterParams)
         }
+    }
+
+    protected fun createGetCategoryFilterQueryParams(
+        srpPageId: String = categoryIdL1,
+        sc: String = categoryIdL2
+    ): Map<String?, Any?> {
+        val mapParameter = mutableMapOf<String, String>()
+        val categoryFilterQueryParams = mutableMapOf<String?, Any?>()
+
+        createRequestQueryParams(
+            source = "category_tokonow_directory",
+            srpPageId = srpPageId,
+            sc = sc
+        ).forEach {
+            it.key?.let { key ->
+                mapParameter[key] = it.value.toString()
+            }
+        }
+
+        val filterParams = FilterHelper
+            .createParamsWithoutExcludes(mapParameter)
+
+        categoryFilterQueryParams.putAll(filterParams)
+        return categoryFilterQueryParams
     }
 
     protected fun createGetProductCountRequestParams(mapParameter: Map<String, String>): RequestParams {
@@ -536,23 +592,6 @@ open class TokoNowCategoryL2TabViewModelTestFixture {
         assertEquals(expectedVisitableItem.enableSecondaryButton, actualVisitableItem.enableSecondaryButton)
     }
 
-    private fun createGetCategoryFilterQueryParams(): Map<String?, Any?> {
-        val mapParameter = mutableMapOf<String, String>()
-        val categoryFilterQueryParams = mutableMapOf<String?, Any?>()
-
-        createRequestQueryParams(source = "category_tokonow_directory").forEach {
-            it.key?.let { key ->
-                mapParameter[key] = it.value.toString()
-            }
-        }
-
-        val filterParams = FilterHelper
-            .createParamsWithoutExcludes(mapParameter)
-
-        categoryFilterQueryParams.putAll(filterParams)
-        return categoryFilterQueryParams
-    }
-
     private fun createFilterParams(source: String): MutableMap<String, String> {
         return FilterHelper.createParamsWithoutExcludes(queryParams)
             .toMutableMap()
@@ -564,13 +603,15 @@ open class TokoNowCategoryL2TabViewModelTestFixture {
 
     private fun createAceSearchParams(
         source: String,
+        srpPageId: String,
+        sc: String,
         rows: Int,
         page: Int?
     ): MutableMap<String?, Any?> {
         return aceSearchParamMapper.createRequestParams(
             source = source,
-            srpPageId = categoryIdL1,
-            sc = categoryIdL2,
+            srpPageId = srpPageId,
+            sc = sc,
             rows = rows,
             page = page
         )
