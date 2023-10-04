@@ -20,6 +20,7 @@ import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumber
 import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
 import com.tokopedia.common.topupbills.data.constant.TelcoComponentName
+import com.tokopedia.common.topupbills.data.constant.multiCheckoutButtonImpressTrackerButtonType
 import com.tokopedia.common.topupbills.data.prefix_select.RechargePrefix
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment.InputNumberActionType
@@ -71,6 +72,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     private lateinit var separator: View
     private var rechargeProductFromSlice: String = ""
     private var traceStop = false
+    private var isAlreadyTrackImpressionMultiButton = false
     private var operatorSelected: RechargePrefix? = null
         set(value) {
             field = value
@@ -495,6 +497,14 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
     override fun onUpdateMultiCheckout() {
         postpaidClientNumberWidget.showMulticheckoutButtonSupport(topupBillsViewModel.multiCheckoutButtons)
+        if (!isAlreadyTrackImpressionMultiButton) {
+            isAlreadyTrackImpressionMultiButton = true
+            commonMultiCheckoutAnalytics.onImpressMultiCheckoutButtons(
+                categoryName,
+                multiCheckoutButtonImpressTrackerButtonType(topupBillsViewModel.multiCheckoutButtons),
+                userSession.userId
+            )
+        }
     }
 
     override fun onLoadingAtc(showLoading: Boolean) {

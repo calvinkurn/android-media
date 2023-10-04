@@ -28,6 +28,7 @@ import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.common.topupbills.analytics.CommonMultiCheckoutAnalytics
 import com.tokopedia.common.topupbills.data.TopupBillsPromo
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
+import com.tokopedia.common.topupbills.data.constant.multiCheckoutButtonImpressTrackerButtonType
 import com.tokopedia.common.topupbills.data.constant.multiCheckoutButtonPromotionTracker
 import com.tokopedia.common.topupbills.data.prefix_select.RechargePrefix
 import com.tokopedia.common.topupbills.data.product.CatalogProduct
@@ -128,6 +129,7 @@ open class EmoneyPdpFragment :
     private val coachMarks = arrayListOf<CoachMark2Item>()
     private var categoryName = ""
     private var loyaltyStatus = ""
+    private var isAlreadyTrackImpressionMultiButton: Boolean = false
 
     val remoteConfig: RemoteConfig by lazy {
         FirebaseRemoteConfigImpl(context)
@@ -759,6 +761,15 @@ open class EmoneyPdpFragment :
                     ?: 0
                 )
         )
+
+        if (!isAlreadyTrackImpressionMultiButton) {
+            isAlreadyTrackImpressionMultiButton = true
+            commonMultiCheckoutAnalytics.onImpressMultiCheckoutButtons(
+                categoryName,
+                multiCheckoutButtonImpressTrackerButtonType(topUpBillsViewModel.multiCheckoutButtons),
+                userSession.userId
+            )
+        }
     }
 
     override fun onClickSeeDetailProduct(product: CatalogProduct) {

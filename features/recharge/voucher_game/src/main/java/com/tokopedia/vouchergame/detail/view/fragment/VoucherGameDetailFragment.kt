@@ -22,6 +22,7 @@ import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryMainInfo
 import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumber
+import com.tokopedia.common.topupbills.data.constant.multiCheckoutButtonImpressTrackerButtonType
 import com.tokopedia.common.topupbills.data.product.CatalogOperatorAttributes
 import com.tokopedia.common.topupbills.data.product.CatalogProductInput
 import com.tokopedia.common.topupbills.utils.AnalyticUtils
@@ -108,6 +109,7 @@ class VoucherGameDetailFragment :
     var inputData: MutableMap<String, String> = mutableMapOf()
     private var inputFieldCount = 0
     private var loyaltyStatus = ""
+    private var isAlreadyTrackImpressionMultiButton: Boolean = false
     var isEnquired = false
         set(value) {
             field = value
@@ -737,6 +739,14 @@ class VoucherGameDetailFragment :
         }
         // Try to enquire if currently not enquired
         enquireFields()
+        if (!isAlreadyTrackImpressionMultiButton) {
+            isAlreadyTrackImpressionMultiButton = true
+            commonMultiCheckoutAnalytics.onImpressMultiCheckoutButtons(
+                categoryName,
+                multiCheckoutButtonImpressTrackerButtonType(topupBillsViewModel.multiCheckoutButtons),
+                userSession.userId
+            )
+        }
     }
 
     override fun getCheckoutView(): TopupBillsCheckoutWidget? {

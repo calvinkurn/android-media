@@ -11,6 +11,7 @@ object DigitalTrackingConst {
         const val VIEW_DIGITAL_IRIS = "viewDigitalIris"
         const val CLICK_DIGITAL = "clickDigital"
         const val SELECT_CONTENT = "select_content"
+        const val VIEW_ITEM = "view_item"
     }
 
     object Category {
@@ -24,6 +25,7 @@ object DigitalTrackingConst {
         const val VIEW_PDP_PAGE = "view pdp page"
         const val CLOSE_COACHMARK = "click close coachmark"
         const val CLICK_BAYAR_LAINNYA = "click bayar lainnya"
+        const val IMPRESS_MULTI_BUTTON = "impression multicheckout button"
     }
 
     object Label {
@@ -68,6 +70,7 @@ object DigitalTrackingConst {
     }
 
     object Id {
+        const val IMPRESS_MULTI_CHECKOUT = "47590"
         const val CLOSE_COACHMARK_ID = "47591"
         const val CLICK_MULTICHECKOUT_BUTTON = "47592"
     }

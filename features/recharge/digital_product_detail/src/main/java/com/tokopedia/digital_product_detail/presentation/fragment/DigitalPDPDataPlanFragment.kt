@@ -24,6 +24,7 @@ import com.tokopedia.common.topupbills.analytics.PromotionMultiCheckout
 import com.tokopedia.common.topupbills.data.TopupBillsBanner
 import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
+import com.tokopedia.common.topupbills.data.constant.multiCheckoutButtonImpressTrackerButtonType
 import com.tokopedia.common.topupbills.data.constant.multiCheckoutButtonPromotionTracker
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoOperator
 import com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoSavedNumberActivity
@@ -165,6 +166,7 @@ class DigitalPDPDataPlanFragment :
     private var loader: LoaderDialog? = null
     private var isMCCMEmpty: Boolean = false
     private var isProductListEmpty: Boolean = false
+    private var isAlreadyTrackImpressionMultiButton: Boolean = false
 
     private lateinit var localCacheHandler: LocalCacheHandler
     private lateinit var productDescBottomSheet: ProductDescBottomSheet
@@ -1047,6 +1049,15 @@ class DigitalPDPDataPlanFragment :
                 )
             }
             it.rechargePdpPaketDataBuyWidget.showCoachMark()
+
+            if (!isAlreadyTrackImpressionMultiButton) {
+                isAlreadyTrackImpressionMultiButton = true
+                commonMultiCheckoutAnalytics.onImpressMultiCheckoutButtons(
+                    DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                    multiCheckoutButtonImpressTrackerButtonType(viewModel.multiCheckoutButtons),
+                    userSession.userId
+                )
+            }
         }
     }
 

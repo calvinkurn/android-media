@@ -12,8 +12,10 @@ import com.tokopedia.common.topupbills.data.constant.MultiCheckoutConst.POSITION
 import com.tokopedia.common.topupbills.data.constant.MultiCheckoutConst.POSITION_TWO
 import com.tokopedia.common.topupbills.data.constant.MultiCheckoutConst.PREFERENCE_MULTICHECKOUT
 import com.tokopedia.common.topupbills.data.constant.MultiCheckoutConst.SHOW_COACH_MARK_MULTICHECKOUT_KEY
+import com.tokopedia.common.topupbills.data.constant.MultiCheckoutConst.TYPE_TWO
 import com.tokopedia.common.topupbills.data.constant.MultiCheckoutConst.WHITE_COLOR
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.UnifyButton
@@ -27,6 +29,7 @@ object MultiCheckoutConst {
     const val PREFERENCE_MULTICHECKOUT = "pdp_dg_multichekout"
     const val SHOW_COACH_MARK_MULTICHECKOUT_KEY = "pdp_dg_multichekout_is_coachmark_closed"
     const val POSITION_TWO = 2
+    const val TYPE_TWO = 2
 }
 
 fun showMultiCheckoutButton(
@@ -115,6 +118,18 @@ fun multiCheckoutButtonPromotionTracker(multiCheckoutButtons: List<MultiCheckout
         multiple.text,
         if (multiple.position == POSITION_LEFT) { Int.ONE } else { POSITION_TWO }
     )
+}
+
+fun multiCheckoutButtonImpressTrackerButtonType(multiCheckoutButtons: List<MultiCheckoutButtons>): Int {
+    val multiple = multiCheckoutButtons.first {
+        it.type == ACTION_MULTIPLE
+    }
+    return when {
+        multiCheckoutButtons.size == Int.ONE -> Int.ZERO
+        multiple.position == POSITION_LEFT -> Int.ONE
+        multiple.position == POSITION_RIGHT -> TYPE_TWO
+        else -> Int.ZERO
+    }
 }
 
 private fun multiCheckoutButtonSeparator(multiCheckoutButtons: List<MultiCheckoutButtons>): Pair<MultiCheckoutButtons, MultiCheckoutButtons> {

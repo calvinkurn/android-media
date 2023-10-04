@@ -22,6 +22,7 @@ import com.tokopedia.common.topupbills.analytics.CommonMultiCheckoutAnalytics
 import com.tokopedia.common.topupbills.data.TopupBillsBanner
 import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
+import com.tokopedia.common.topupbills.data.constant.multiCheckoutButtonImpressTrackerButtonType
 import com.tokopedia.common.topupbills.data.constant.multiCheckoutButtonPromotionTracker
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoOperator
 import com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoSavedNumberActivity
@@ -151,6 +152,7 @@ class DigitalPDPPulsaFragment :
     private var inputNumberActionType = InputNumberActionType.MANUAL
     private var actionTypeTrackingJob: Job? = null
     private var loader: LoaderDialog? = null
+    private var isAlreadyTrackImpressionMultiButton: Boolean = false
 
     private val remoteConfig: RemoteConfig by lazy {
         FirebaseRemoteConfigImpl(context)
@@ -788,6 +790,14 @@ class DigitalPDPPulsaFragment :
                 )
             }
             it.rechargePdpPulsaBuyWidget.showCoachMark()
+            if (!isAlreadyTrackImpressionMultiButton) {
+                isAlreadyTrackImpressionMultiButton = true
+                commonMultiCheckoutAnalytics.onImpressMultiCheckoutButtons(
+                    DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                    multiCheckoutButtonImpressTrackerButtonType(viewModel.multiCheckoutButtons),
+                    userSession.userId
+                )
+            }
         }
     }
 
