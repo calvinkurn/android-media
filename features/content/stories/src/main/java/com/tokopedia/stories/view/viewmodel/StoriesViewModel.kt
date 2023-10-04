@@ -261,7 +261,7 @@ class StoriesViewModel @AssistedInject constructor(
     }
 
     private fun handleOnResumeStories() {
-        updateDetailData(event = RESUME, isSameContent = true)
+        updateDetailData(event = if (mDetail.isSameContent && mIsPageSelected) RESUME else PAUSE, isSameContent = true)
     }
 
     private fun handlePageIsSelected() {

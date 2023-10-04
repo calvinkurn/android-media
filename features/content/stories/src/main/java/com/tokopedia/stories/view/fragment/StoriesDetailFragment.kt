@@ -156,6 +156,11 @@ class StoriesDetailFragment @Inject constructor(
         setupAnalytic()
     }
 
+    override fun onResume() {
+        super.onResume()
+        resumeStories()
+    }
+
     private fun setupObserver() {
         setupUiStateObserver()
         setupUiEventObserver()
