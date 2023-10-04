@@ -34,7 +34,7 @@ class TokoNowCategoryL2ViewModelTest: TokoNowCategoryL2ViewModelTestFixture() {
         val categoryDetailResponse = getCategoryDetailResponse.categoryDetail.data
 
         val chooseAddressWidget = TokoNowChooseAddressWidgetUiModel(
-            trackingSource = CategoryStaticLayoutId.CHOOSE_ADDRESS,
+            id = CategoryStaticLayoutId.CHOOSE_ADDRESS,
             eventLabelHostPage = CategoryTracking.Category.TOKONOW_CATEGORY_PAGE
         )
 
@@ -93,7 +93,7 @@ class TokoNowCategoryL2ViewModelTest: TokoNowCategoryL2ViewModelTestFixture() {
         viewModel.showPageLoading()
 
         val chooseAddressWidget = TokoNowChooseAddressWidgetUiModel(
-            trackingSource = CategoryStaticLayoutId.CHOOSE_ADDRESS,
+            id = CategoryStaticLayoutId.CHOOSE_ADDRESS,
             eventLabelHostPage = CategoryTracking.Category.TOKONOW_CATEGORY_PAGE
         )
 
