@@ -16,7 +16,7 @@ import com.tokopedia.content.product.picker.sgc.model.uimodel.CampaignAndEtalase
 import com.tokopedia.content.product.picker.sgc.model.uimodel.ProductSetupAction
 import com.tokopedia.content.product.picker.sgc.model.ProductListPaging
 import com.tokopedia.content.product.picker.sgc.view.viewcomponent.EtalaseListViewComponent
-import com.tokopedia.content.common.util.bottomsheet.PlayBroadcastDialogCustomizer
+import com.tokopedia.content.common.util.bottomsheet.ContentDialogCustomizer
 import com.tokopedia.content.product.picker.databinding.BottomSheetSgcEtalaseListBinding
 import com.tokopedia.play_common.lifecycle.lifecycleBound
 import com.tokopedia.play_common.util.extension.withCache
@@ -28,7 +28,7 @@ import javax.inject.Inject
  * Created by kenny.hadisaputra on 26/01/22
  */
 class EtalaseListBottomSheet @Inject constructor(
-    private val dialogCustomizer: PlayBroadcastDialogCustomizer,
+    private val dialogCustomizer: ContentDialogCustomizer,
     private val analyticManager: EtalaseListAnalyticManager,
 ) : BaseProductSetupBottomSheet() {
 
@@ -131,11 +131,11 @@ class EtalaseListBottomSheet @Inject constructor(
         model: CampaignAndEtalaseUiModel,
     ) {
         val title = if (model.campaignList.isNotEmpty() && model.etalaseList.isNotEmpty()) {
-            getString(R.string.play_bro_campaign_and_etalase)
+            getString(R.string.campaign_and_etalase)
         } else if (model.campaignList.isNotEmpty()) {
-            getString(R.string.play_bro_campaign)
+            getString(R.string.campaign)
         } else {
-            getString(R.string.play_bro_etalase)
+            getString(R.string.etalase)
         }
         setTitle(title)
     }

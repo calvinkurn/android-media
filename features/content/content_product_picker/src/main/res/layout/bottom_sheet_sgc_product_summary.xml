@@ -32,7 +32,7 @@
             android:layout_marginTop="@dimen/spacing_lvl3"
             android:layout_marginEnd="@dimen/spacing_lvl4"
             android:layout_marginBottom="@dimen/spacing_lvl3"
-            android:text="@string/play_bro_product_summary_done"
+            android:text="@string/product_summary_done"
             app:unifyButtonSize="medium"
             app:unifyButtonType="main" />
 

@@ -46,7 +46,7 @@ class ContentProductPinnedView : ConstraintLayout {
                 )
             )
             binding.tvPin.text =
-                context.resources.getString(R.string.play_bro_unpin)
+                context.resources.getString(R.string.product_unpin)
             binding.tvPin.setTextColor(
                 MethodChecker.getColor(
                     context,
@@ -66,7 +66,7 @@ class ContentProductPinnedView : ConstraintLayout {
                 )
             )
             binding.tvPin.text =
-                context.resources.getString(R.string.play_bro_pin)
+                context.resources.getString(R.string.product_pin)
             binding.tvPin.setTextColor(
                 MethodChecker.getColor(
                     context,

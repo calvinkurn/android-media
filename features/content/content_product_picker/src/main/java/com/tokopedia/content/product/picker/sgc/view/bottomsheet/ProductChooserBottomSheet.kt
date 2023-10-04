@@ -19,7 +19,7 @@ import com.tokopedia.content.product.picker.R
 import com.tokopedia.content.product.picker.sgc.analytic.manager.ProductChooserAnalyticManager
 import com.tokopedia.content.product.picker.sgc.model.uimodel.CampaignAndEtalaseUiModel
 import com.tokopedia.content.product.picker.sgc.model.uimodel.ProductSetupAction
-import com.tokopedia.content.product.picker.sgc.model.uimodel.PlayBroProductChooserEvent
+import com.tokopedia.content.product.picker.sgc.model.uimodel.ProductChooserEvent
 import com.tokopedia.content.product.picker.sgc.model.uimodel.ProductSaveStateUiModel
 import com.tokopedia.content.product.picker.sgc.model.uimodel.ProductSetupConfig
 import com.tokopedia.content.product.picker.sgc.model.ProductListPaging
@@ -34,7 +34,7 @@ import com.tokopedia.content.product.picker.sgc.model.product.ProductUiModel
 import com.tokopedia.content.product.picker.sgc.model.result.ContentProductPickerNetworkResult
 import com.tokopedia.content.product.picker.sgc.model.result.PageResultState
 import com.tokopedia.content.product.picker.sgc.model.sort.SortUiModel
-import com.tokopedia.content.common.util.bottomsheet.PlayBroadcastDialogCustomizer
+import com.tokopedia.content.common.util.bottomsheet.ContentDialogCustomizer
 import com.tokopedia.content.product.picker.databinding.BottomSheetSgcProductChooserBinding
 import com.tokopedia.play_common.lifecycle.lifecycleBound
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
@@ -51,7 +51,7 @@ import javax.inject.Inject
  */
 class ProductChooserBottomSheet @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
-    private val dialogCustomizer: PlayBroadcastDialogCustomizer,
+    private val dialogCustomizer: ContentDialogCustomizer,
     private val analyticManager: ProductChooserAnalyticManager,
     private val router: Router,
 ) : BaseProductSetupBottomSheet(), ProductSortBottomSheet.Listener {
@@ -89,8 +89,8 @@ class ProductChooserBottomSheet @Inject constructor(
                 DialogUnify.HORIZONTAL_ACTION,
                 DialogUnify.NO_IMAGE,
             ).apply {
-                setTitle(it.getString(R.string.play_bro_product_chooser_exit_dialog_title))
-                setDescription(it.getString(R.string.play_bro_product_chooser_exit_dialog_desc))
+                setTitle(it.getString(R.string.product_chooser_exit_dialog_title))
+                setDescription(it.getString(R.string.product_chooser_exit_dialog_desc))
                 setPrimaryCTAText(it.getString(R.string.content_product_picker_cancel))
                 setSecondaryCTAText(it.getString(R.string.content_product_picker_exit))
 
@@ -244,13 +244,13 @@ class ProductChooserBottomSheet @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiEvent.collect {
                 when (it) {
-                    PlayBroProductChooserEvent.SaveProductSuccess -> {
+                    ProductChooserEvent.SaveProductSuccess -> {
                         mListener?.onSetupSuccess(this@ProductChooserBottomSheet)
                     }
-                    is PlayBroProductChooserEvent.ShowError -> {
+                    is ProductChooserEvent.ShowError -> {
                         toaster.showError(
                             err = it.error,
-                            customErrMessage = getString(R.string.play_bro_product_chooser_error_save)
+                            customErrMessage = getString(R.string.product_chooser_error_save)
                         )
                     }
                     else -> {}
@@ -319,11 +319,11 @@ class ProductChooserBottomSheet @Inject constructor(
             SelectedEtalaseModel.None ->
                 if (campaignAndEtalase.campaignList.isNotEmpty() &&
                     campaignAndEtalase.etalaseList.isNotEmpty()) {
-                    getString(R.string.play_bro_campaign_and_etalase)
+                    getString(R.string.campaign_and_etalase)
                 } else if (campaignAndEtalase.campaignList.isNotEmpty()) {
-                    getString(R.string.play_bro_campaign)
+                    getString(R.string.campaign)
                 } else {
-                    getString(R.string.play_bro_etalase)
+                    getString(R.string.etalase)
                 }
         }
 
@@ -343,7 +343,7 @@ class ProductChooserBottomSheet @Inject constructor(
 
         if (prevConfig?.shopName != config.shopName) {
             searchBarView.setPlaceholder(
-                getString(R.string.play_etalase_search_hint, config.shopName)
+                getString(R.string.product_etalase_search_hint, config.shopName)
             )
         }
     }
@@ -359,7 +359,7 @@ class ProductChooserBottomSheet @Inject constructor(
 
         setTitle(
             getString(
-                R.string.play_bro_selected_product_title,
+                R.string.selected_product_title,
                 selectedProducts.size,
                 config.maxProduct,
             )

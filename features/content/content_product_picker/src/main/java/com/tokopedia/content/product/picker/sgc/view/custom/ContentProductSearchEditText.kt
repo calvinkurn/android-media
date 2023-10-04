@@ -20,7 +20,7 @@ class ContentProductSearchEditText : AppCompatEditText {
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context!!, attrs, defStyleAttr)
 
     private val forbiddenMimeTypes = arrayOf("image/*", "image/png", "image/gif", "image/jpeg")
-    private val errorMessageForbiddenMime = context.getString(R.string.play_error_image_edit_text)
+    private val errorMessageForbiddenMime = context.getString(R.string.error_image_edit_text)
 
     override fun onCreateInputConnection(editorInfo: EditorInfo): InputConnection? {
         val inputConnection: InputConnection? = super.onCreateInputConnection(editorInfo)

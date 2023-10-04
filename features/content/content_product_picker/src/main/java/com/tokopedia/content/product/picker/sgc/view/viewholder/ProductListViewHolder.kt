@@ -34,7 +34,7 @@ class ProductListViewHolder private constructor() {
             binding.imgProduct.loadImage(item.product.imageUrl)
             binding.tvName.text = item.product.name
             binding.tvStock.text = itemView.context.getString(
-                R.string.play_bro_product_stock, item.product.stock
+                R.string.product_stock, item.product.stock
             )
 
             binding.checkboxProduct.isChecked = item.isSelected
@@ -47,7 +47,7 @@ class ProductListViewHolder private constructor() {
                 is DiscountedPrice -> {
                     binding.tvPrice.text = productPrice.discountedPrice
                     binding.labelDiscountPercentage.text = itemView.context.getString(
-                        R.string.play_bro_product_discount_template,
+                        R.string.product_discount_template,
                         productPrice.discountPercent
                     )
                     binding.tvPriceBeforeDiscount.text = productPrice.originalPrice

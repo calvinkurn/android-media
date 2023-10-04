@@ -56,7 +56,7 @@ import com.tokopedia.play.broadcaster.shorts.analytic.product.PlayShortsSetupPro
 import com.tokopedia.play.broadcaster.shorts.analytic.sender.PlayShortsAnalyticSender
 import com.tokopedia.play.broadcaster.shorts.analytic.sender.PlayShortsAnalyticSenderImpl
 import com.tokopedia.content.common.util.bottomsheet.NavigationBarColorDialogCustomizer
-import com.tokopedia.content.common.util.bottomsheet.PlayBroadcastDialogCustomizer
+import com.tokopedia.content.common.util.bottomsheet.ContentDialogCustomizer
 import com.tokopedia.content.product.picker.sgc.analytic.ContentPinnedProductAnalytic
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.util.preference.PermissionSharedPreferences
@@ -75,7 +75,7 @@ abstract class PlayShortsBindTestModule {
 
     @Binds
     @PlayShortsScope
-    abstract fun bindNavigationBarColorDialogCustomizer(customizer: NavigationBarColorDialogCustomizer): PlayBroadcastDialogCustomizer
+    abstract fun bindNavigationBarColorDialogCustomizer(customizer: NavigationBarColorDialogCustomizer): ContentDialogCustomizer
 
     /** Analytic */
     @Binds

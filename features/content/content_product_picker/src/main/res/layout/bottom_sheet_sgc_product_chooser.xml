@@ -39,7 +39,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/spacing_lvl2"
             app:chipSize="small"
-            app:chipText="@string/play_bro_etalase_sort"
+            app:chipText="@string/etalase_sort"
             app:chipType="normal"
             />
 
@@ -48,7 +48,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:chipSize="small"
-            app:chipText="@string/play_bro_etalase"
+            app:chipText="@string/etalase"
             />
 
     </LinearLayout>

@@ -79,7 +79,7 @@ import com.tokopedia.byteplus.effect.util.asset.manager.AssetManagerImpl
 import com.tokopedia.content.product.picker.sgc.analytic.ContentProductPickerSGCAnalytic
 import com.tokopedia.content.product.picker.sgc.domain.ContentProductPickerSGCRepository
 import com.tokopedia.content.common.util.bottomsheet.NavigationBarColorDialogCustomizer
-import com.tokopedia.content.common.util.bottomsheet.PlayBroadcastDialogCustomizer
+import com.tokopedia.content.common.util.bottomsheet.ContentDialogCustomizer
 import com.tokopedia.content.product.picker.sgc.analytic.ContentPinnedProductAnalytic
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.util.preference.PermissionSharedPreferences
@@ -174,7 +174,7 @@ abstract class PlayShortsBindModule {
     /** Play Broadcaster Util */
     @Binds
     @PlayShortsScope
-    abstract fun bindNavigationBarColorDialogCustomizer(customizer: NavigationBarColorDialogCustomizer): PlayBroadcastDialogCustomizer
+    abstract fun bindNavigationBarColorDialogCustomizer(customizer: NavigationBarColorDialogCustomizer): ContentDialogCustomizer
 
     /** Play Broadcaster Analytic */
     @Binds

@@ -40,14 +40,14 @@ class ProductSummaryViewHolder private constructor() {
             when(item.status) {
                 CampaignStatus.Ongoing -> {
                     binding.tvProductSummaryLabelStatus.setLabel(
-                        itemView.context.getString(R.string.play_bro_ongoing_campaign)
+                        itemView.context.getString(R.string.ongoing_campaign)
                     )
                     binding.tvProductSummaryLabelStatus.setLabelType(Label.HIGHLIGHT_LIGHT_GREEN)
                     binding.tvProductSummaryLabelStatus.visibility = View.VISIBLE
                 }
                 CampaignStatus.Ready, CampaignStatus.ReadyLocked -> {
                     binding.tvProductSummaryLabelStatus.setLabel(
-                        itemView.context.getString(R.string.play_bro_upcoming_campaign)
+                        itemView.context.getString(R.string.upcoming_campaign)
                     )
                     binding.tvProductSummaryLabelStatus.setLabelType(Label.HIGHLIGHT_LIGHT_ORANGE)
                     binding.tvProductSummaryLabelStatus.visibility = View.VISIBLE
@@ -88,14 +88,14 @@ class ProductSummaryViewHolder private constructor() {
             binding.ivProductSummaryImage.loadImage(item.product.imageUrl)
             binding.tvProductSummaryName.text = item.product.name
 
-            binding.tvCommissionFmt.text = ctx.getString(R.string.play_shorts_affiliate_commission_fmt, item.product.commissionFmt)
+            binding.tvCommissionFmt.text = ctx.getString(R.string.product_affiliate_commission_fmt, item.product.commissionFmt)
             binding.tvCommissionFmt.showWithCondition(item.product.hasCommission)
             binding.tvCommissionExtra.showWithCondition(item.product.hasCommission && item.product.extraCommission)
 
             binding.tvPinnedProductCarouselInfo.apply {
                 text = buildSpannedString {
                     if(item.product.pinStatus.isPinned) {
-                        append(ctx.getString(R.string.play_bro_pinned_product_info), fgColor, Spanned.SPAN_EXCLUSIVE_INCLUSIVE)
+                        append(ctx.getString(R.string.product_pinned_product_info), fgColor, Spanned.SPAN_EXCLUSIVE_INCLUSIVE)
                     }
                 }
                 visibility = if(text.isNullOrEmpty()) View.GONE else View.VISIBLE
@@ -105,9 +105,9 @@ class ProductSummaryViewHolder private constructor() {
             binding.tvProductSummaryEmptyStock.showWithCondition(item.product.stock.isLessThanEqualZero())
             binding.tvProductSummaryEmptyStock.text = ctx.getString(
                 if (item.product.pinStatus.isPinned) {
-                    R.string.play_bro_product_tag_stock_empty_pinned
+                    R.string.product_tag_stock_empty_pinned
                 } else {
-                    R.string.play_bro_product_tag_stock_empty
+                    R.string.product_tag_stock_empty
                 }
             )
 
@@ -121,7 +121,7 @@ class ProductSummaryViewHolder private constructor() {
                     binding.tvProductSummaryPrice.text = productPrice.discountedPrice
                     binding.tvProductSummaryOriginalPrice.text = productPrice.originalPrice
                     binding.labelProductSummaryDiscount.text = itemView.context.getString(
-                        R.string.play_bro_product_discount_template,
+                        R.string.product_discount_template,
                         productPrice.discountPercent
                     )
                     binding.labelProductSummaryDiscount.visibility = View.VISIBLE

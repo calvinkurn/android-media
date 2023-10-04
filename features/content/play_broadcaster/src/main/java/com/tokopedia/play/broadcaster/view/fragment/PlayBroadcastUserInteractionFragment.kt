@@ -865,7 +865,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                         if (event.throwable is PinnedProductException) {
                             analytic.onImpressColdDownPinProductSecondEvent(true)
                             showToaster(
-                                message = if (event.throwable.message.isEmpty()) getString(contentproductpickerR.string.play_bro_pin_product_failed) else event.throwable.message,
+                                message = if (event.throwable.message.isEmpty()) getString(contentproductpickerR.string.product_pin_failed) else event.throwable.message,
                                 type = Toaster.TYPE_ERROR
                             )
                         } else {

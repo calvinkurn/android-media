@@ -3,27 +3,27 @@ package com.tokopedia.content.product.picker.sgc.model.uimodel
 /**
  * Created by kenny.hadisaputra on 08/02/22
  */
-sealed interface PlayBroProductChooserEvent {
+sealed interface ProductChooserEvent {
 
-    object SaveProductSuccess : PlayBroProductChooserEvent
-    data class ShowError(val error: Throwable) : PlayBroProductChooserEvent
+    object SaveProductSuccess : ProductChooserEvent
+    data class ShowError(val error: Throwable) : ProductChooserEvent
 
     data class GetDataError(
         val throwable: Throwable,
         val action: (() -> Unit)? = null,
-    ) : PlayBroProductChooserEvent
+    ) : ProductChooserEvent
 
     data class DeleteProductSuccess(
         val deletedProductCount: Int
-    ) : PlayBroProductChooserEvent
+    ) : ProductChooserEvent
 
     data class DeleteProductError(
         val throwable: Throwable,
         val action: (() -> Unit)? = null,
-    ) : PlayBroProductChooserEvent
+    ) : ProductChooserEvent
 
     data class FailPinUnPinProduct(
         val throwable: Throwable,
         val isPinned: Boolean,
-    ) : PlayBroProductChooserEvent
+    ) : ProductChooserEvent
 }

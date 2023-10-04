@@ -156,7 +156,7 @@ class ProductChooserRobot(
 
     fun assertExitDialog(isShown: Boolean) {
         onView(
-            ViewMatchers.withText(context.getString(contentproductpickerR.string.play_bro_product_chooser_exit_dialog_title))
+            ViewMatchers.withText(context.getString(contentproductpickerR.string.product_chooser_exit_dialog_title))
         ).check(
             if (isShown) ViewAssertions.matches(isDisplayed())
             else doesNotExist()

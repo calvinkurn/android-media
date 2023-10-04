@@ -5,7 +5,7 @@ import android.app.Dialog
 /**
  * Created by jegul on 16/07/20
  */
-interface PlayBroadcastDialogCustomizer {
+interface ContentDialogCustomizer {
 
     fun customize(dialog: Dialog)
 }

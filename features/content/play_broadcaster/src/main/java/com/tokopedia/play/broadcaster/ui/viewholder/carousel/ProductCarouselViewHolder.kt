@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.play.broadcaster.R
 import com.tokopedia.content.product.picker.R as contentproductpickerR
 import com.tokopedia.play.broadcaster.databinding.ItemPlayBroPinnedProductCarouselBinding
 import com.tokopedia.play.broadcaster.databinding.ItemPlayBroPlaceholderCarouselBinding
@@ -46,7 +47,7 @@ class ProductCarouselViewHolder private constructor() {
                     binding.tvProductTagNormalPrice.show()
                     binding.tvProductTagDiscount.show()
                     binding.tvProductTagDiscount.text = context.getString(
-                        contentproductpickerR.string.play_bro_product_discount_template,
+                        contentproductpickerR.string.product_discount_template,
                         price.discountPercent
                     )
                     binding.tvProductTagPrice.text = price.discountedPrice
@@ -61,7 +62,7 @@ class ProductCarouselViewHolder private constructor() {
                     binding.tvProductTagNormalPrice.invisible()
                     binding.tvProductTagDiscount.hide()
                     binding.tvProductTagPrice.text = context.getString(
-                        contentproductpickerR.string.play_bro_product_tag_no_price
+                        R.string.play_bro_product_tag_no_price
                     )
                 }
             }
@@ -123,7 +124,7 @@ class ProductCarouselViewHolder private constructor() {
                     binding.tvPinnedProductCarouselPrice.text = price.discountedPrice
                     binding.tvPinnedProductCarouselOriginalPrice.text = price.originalPrice
                     binding.labelPinnedProductCarouselDiscount.text = itemView.context.getString(
-                        contentproductpickerR.string.play_bro_product_discount_template,
+                        contentproductpickerR.string.product_discount_template,
                         price.discountPercent
                     )
                     binding.labelPinnedProductCarouselDiscount.visible()

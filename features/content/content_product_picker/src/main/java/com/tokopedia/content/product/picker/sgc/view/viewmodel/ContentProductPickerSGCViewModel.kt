@@ -8,7 +8,7 @@ import com.tokopedia.content.product.picker.sgc.domain.ContentProductPickerSGCRe
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.content.product.picker.sgc.model.uimodel.CampaignAndEtalaseUiModel
-import com.tokopedia.content.product.picker.sgc.model.uimodel.PlayBroProductChooserEvent
+import com.tokopedia.content.product.picker.sgc.model.uimodel.ProductChooserEvent
 import com.tokopedia.content.product.picker.sgc.model.uimodel.PlayBroProductSummaryUiState
 import com.tokopedia.content.product.picker.sgc.model.uimodel.ProductChooserUiState
 import com.tokopedia.content.product.picker.sgc.model.uimodel.ProductSaveStateUiModel
@@ -105,9 +105,9 @@ class ContentProductPickerSGCViewModel @AssistedInject constructor(
 
     private var getProductListJob: Job? = null
 
-    private val _uiEvent = MutableSharedFlow<PlayBroProductChooserEvent>(extraBufferCapacity = 5)
+    private val _uiEvent = MutableSharedFlow<ProductChooserEvent>(extraBufferCapacity = 5)
 
-    val uiEvent: SharedFlow<PlayBroProductChooserEvent>
+    val uiEvent: SharedFlow<ProductChooserEvent>
         get() = _uiEvent
 
     val uiState: StateFlow<ProductChooserUiState> = combine(
@@ -375,9 +375,9 @@ class ContentProductPickerSGCViewModel @AssistedInject constructor(
 
             getProductTagSummary()
 
-            _uiEvent.emit(PlayBroProductChooserEvent.SaveProductSuccess)
+            _uiEvent.emit(ProductChooserEvent.SaveProductSuccess)
         }) {
-            _uiEvent.emit(PlayBroProductChooserEvent.ShowError(it))
+            _uiEvent.emit(ProductChooserEvent.ShowError(it))
         }.apply {
             invokeOnCompletion {
                 _saveState.update {
@@ -401,13 +401,13 @@ class ContentProductPickerSGCViewModel @AssistedInject constructor(
             }
             repo.setProductTags(creationId, productIds)
 
-            _uiEvent.emit(PlayBroProductChooserEvent.DeleteProductSuccess(1))
+            _uiEvent.emit(ProductChooserEvent.DeleteProductSuccess(1))
 
             getProductTagSummary()
         }) {
             _productTagSummary.value = ProductTagSummaryUiModel.Unknown
             _uiEvent.emit(
-                PlayBroProductChooserEvent.DeleteProductError(it) {
+                ProductChooserEvent.DeleteProductError(it) {
                     submitAction(ProductSetupAction.DeleteSelectedProduct(product))
                 }
             )
@@ -466,7 +466,7 @@ class ContentProductPickerSGCViewModel @AssistedInject constructor(
             }
         }) {
             product.updatePinProduct(isLoading = false, needToReset = true)
-            _uiEvent.emit(PlayBroProductChooserEvent.FailPinUnPinProduct(it, product.pinStatus.isPinned))
+            _uiEvent.emit(ProductChooserEvent.FailPinUnPinProduct(it, product.pinStatus.isPinned))
         }
     }
 

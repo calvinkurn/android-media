@@ -3,7 +3,6 @@ package com.tokopedia.play.broadcaster.view.bottomsheet
 import android.Manifest
 import android.app.Dialog
 import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.LinearLayout
@@ -13,13 +12,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.cover.picker.PlayBroCoverPickerAnalytic
 import com.tokopedia.play.broadcaster.ui.itemdecoration.CarouselCoverItemDecoration
 import com.tokopedia.play.broadcaster.ui.model.CarouselCoverUiModel
 import com.tokopedia.play.broadcaster.ui.viewholder.PlayCoverCameraViewHolder
 import com.tokopedia.play.broadcaster.ui.viewholder.PlayCoverProductViewHolder
-import com.tokopedia.content.common.util.bottomsheet.PlayBroadcastDialogCustomizer
+import com.tokopedia.content.common.util.bottomsheet.ContentDialogCustomizer
 import com.tokopedia.play.broadcaster.util.permission.PermissionHelper
 import com.tokopedia.play.broadcaster.view.adapter.PlayCoverProductAdapter
 import com.tokopedia.play.broadcaster.view.fragment.setup.cover.PlayCoverSetupFragment
@@ -33,7 +31,7 @@ import javax.inject.Inject
  */
 class PlayCoverImageChooserBottomSheet @Inject constructor(
     private val analytic: PlayBroCoverPickerAnalytic,
-    private val dialogCustomizer: PlayBroadcastDialogCustomizer
+    private val dialogCustomizer: ContentDialogCustomizer
 ) : BottomSheetUnify() {
 
     var mListener: Listener? = null

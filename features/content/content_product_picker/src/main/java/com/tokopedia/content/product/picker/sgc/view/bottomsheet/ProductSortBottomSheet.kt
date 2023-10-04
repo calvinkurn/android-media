@@ -78,7 +78,7 @@ class ProductSortBottomSheet @Inject constructor(
 
     private fun setupView() {
         mSelectedSort = arguments?.getParcelable(ARGS_SELECTED_SORT)
-        setTitle(getString(R.string.play_bro_etalase_sort))
+        setTitle(getString(R.string.etalase_sort))
         setAction(getString(R.string.content_product_picker_save)) {
             val selectedSort = mSelectedSort
             if (selectedSort != null) mListener?.onSortChosen(this, selectedSort)

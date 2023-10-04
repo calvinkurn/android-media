@@ -2,7 +2,7 @@ package com.tokopedia.content.product.picker.testcase.campaignEtalase
 
 import com.tokopedia.content.product.picker.builder.CommonUiModelBuilder
 import com.tokopedia.content.product.picker.builder.ProductSetupUiModelBuilder
-import com.tokopedia.content.product.picker.robot.PlayBroProductSetupViewModelRobot
+import com.tokopedia.content.product.picker.robot.ContentProductPickerSGCViewModelRobot
 import com.tokopedia.content.product.picker.sgc.domain.ContentProductPickerSGCRepository
 import com.tokopedia.content.product.picker.util.assertEqualTo
 import com.tokopedia.unit.test.rule.CoroutineTestRule
@@ -14,7 +14,7 @@ import org.junit.Test
 /**
  * Created By : Jonathan Darwin on February 17, 2022
  */
-internal class PlaySetupCampaignEtalaseViewModelTest {
+internal class SetupCampaignEtalaseViewModelTest {
 
     @get:Rule
     val rule: CoroutineTestRule = CoroutineTestRule()
@@ -38,7 +38,7 @@ internal class PlaySetupCampaignEtalaseViewModelTest {
         coEvery { mockRepo.getEtalaseList() } returns mockEtalaseList
         coEvery { mockRepo.getCampaignList() } returns mockCampaignList
 
-        val robot = PlayBroProductSetupViewModelRobot(
+        val robot = ContentProductPickerSGCViewModelRobot(
             dispatchers = testDispatcher,
             repo = mockRepo
         )
@@ -57,7 +57,7 @@ internal class PlaySetupCampaignEtalaseViewModelTest {
         coEvery { mockRepo.getEtalaseList() } throws mockException
         coEvery { mockRepo.getCampaignList() } throws mockException
 
-        val robot = PlayBroProductSetupViewModelRobot(
+        val robot = ContentProductPickerSGCViewModelRobot(
             dispatchers = testDispatcher,
             repo = mockRepo
         )

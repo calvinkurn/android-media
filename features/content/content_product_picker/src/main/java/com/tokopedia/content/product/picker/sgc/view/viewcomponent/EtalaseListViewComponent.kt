@@ -44,7 +44,7 @@ internal class EtalaseListViewComponent(
     ) {
         val combinedEtalaseList = buildList {
             if (campaignList.isNotEmpty()) {
-                add(EtalaseListAdapter.Model.Header(getString(R.string.play_bro_campaign)))
+                add(EtalaseListAdapter.Model.Header(getString(R.string.campaign)))
                 addAll(campaignList.map {
                     EtalaseListAdapter.Model.Campaign(
                         campaignUiModel = it,
@@ -55,7 +55,7 @@ internal class EtalaseListViewComponent(
             }
 
             if (etalaseList.isNotEmpty()) {
-                add(EtalaseListAdapter.Model.Header(getString(R.string.play_bro_etalase)))
+                add(EtalaseListAdapter.Model.Header(getString(R.string.etalase)))
                 addAll(
                     etalaseList.map {
                         EtalaseListAdapter.Model.Etalase(

@@ -2,9 +2,9 @@ package com.tokopedia.content.product.picker.testcase.summary
 
 import com.tokopedia.content.product.picker.builder.CommonUiModelBuilder
 import com.tokopedia.content.product.picker.builder.ProductSetupUiModelBuilder
-import com.tokopedia.content.product.picker.robot.PlayBroProductSetupViewModelRobot
+import com.tokopedia.content.product.picker.robot.ContentProductPickerSGCViewModelRobot
 import com.tokopedia.content.product.picker.sgc.domain.ContentProductPickerSGCRepository
-import com.tokopedia.content.product.picker.sgc.model.uimodel.PlayBroProductChooserEvent
+import com.tokopedia.content.product.picker.sgc.model.uimodel.ProductChooserEvent
 import com.tokopedia.content.product.picker.sgc.model.uimodel.ProductSetupAction
 import com.tokopedia.content.product.picker.sgc.model.uimodel.ProductTagSummaryUiModel
 import com.tokopedia.content.product.picker.util.assertEqualTo
@@ -20,7 +20,7 @@ import org.junit.jupiter.api.Assertions
 /**
  * Created By : Jonathan Darwin on February 18, 2022
  */
-class PlaySetupProductSummaryViewModelTest {
+class SetupProductSummaryViewModelTest {
 
     @get:Rule
     val rule: CoroutineTestRule = CoroutineTestRule()
@@ -42,7 +42,7 @@ class PlaySetupProductSummaryViewModelTest {
         coEvery { mockRepo.getProductTagSummarySection(any()) } returns mockProductTagSectionList
         coEvery { mockRepo.setProductTags(any(), any()) } returns Unit
 
-        val robot = PlayBroProductSetupViewModelRobot(
+        val robot = ContentProductPickerSGCViewModelRobot(
             dispatchers = testDispatcher,
             repo = mockRepo
         )
@@ -55,7 +55,7 @@ class PlaySetupProductSummaryViewModelTest {
             state.productCount.assertEqualTo(mockProductTagSectionList.sumOf { it.products.size })
             state.productTagSummary.assertEqualTo(ProductTagSummaryUiModel.Success)
             state.productTagSectionList.assertEqualTo(mockProductTagSectionList)
-            event[0].assertEqualTo(PlayBroProductChooserEvent.DeleteProductSuccess(1))
+            event[0].assertEqualTo(ProductChooserEvent.DeleteProductSuccess(1))
         }
     }
 
@@ -63,7 +63,7 @@ class PlaySetupProductSummaryViewModelTest {
     fun `when user failed delete product, it should emit fail state`() {
         coEvery { mockRepo.setProductTags(any(), any()) } throws mockException
 
-        val robot = PlayBroProductSetupViewModelRobot(
+        val robot = ContentProductPickerSGCViewModelRobot(
             dispatchers = testDispatcher,
             repo = mockRepo
         )
@@ -74,14 +74,14 @@ class PlaySetupProductSummaryViewModelTest {
             }
 
             state.productTagSummary.assertEqualTo(ProductTagSummaryUiModel.Unknown)
-            Assertions.assertTrue(event[0] is PlayBroProductChooserEvent.DeleteProductError)
+            Assertions.assertTrue(event[0] is ProductChooserEvent.DeleteProductError)
         }
     }
 
     // Product Numeration
     @Test
     fun `when user in live broadcaster, product numeration is shown`() {
-        val vm = PlayBroProductSetupViewModelRobot(
+        val vm = ContentProductPickerSGCViewModelRobot(
             isNumerationShown = true,
             dispatchers = testDispatcher
         )
@@ -92,7 +92,7 @@ class PlaySetupProductSummaryViewModelTest {
 
     @Test
     fun `when user in short video, product numeration is hidden`() {
-        val vm = PlayBroProductSetupViewModelRobot(
+        val vm = ContentProductPickerSGCViewModelRobot(
             isNumerationShown = false,
             dispatchers = testDispatcher
         )
@@ -103,7 +103,7 @@ class PlaySetupProductSummaryViewModelTest {
 
     @Test
     fun `when user in unknown video, product numeration is hidden`() {
-        val vm = PlayBroProductSetupViewModelRobot(
+        val vm = ContentProductPickerSGCViewModelRobot(
             isNumerationShown = false,
             dispatchers = testDispatcher
         )

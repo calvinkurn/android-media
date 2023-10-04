@@ -45,7 +45,7 @@
             android:layout_margin="@dimen/spacing_lvl2"
             android:background="@drawable/bg_play_product_tag_stock"
             android:padding="@dimen/spacing_lvl2"
-            tools:text="@string/play_bro_product_tag_stock_empty"
+            tools:text="@string/product_tag_stock_empty"
             android:textColor="@color/Unify_Static_White"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@id/iv_product_summary_cover"
@@ -97,7 +97,7 @@
             app:layout_constraintTop_toTopOf="@id/tv_commission_fmt"
             app:typographyType="display_3"
             app:typographyWeight="bold"
-            android:text="@string/play_shorts_affiliate_commission_extra" />
+            android:text="@string/product_affiliate_commission_extra" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_product_summary_price"
@@ -174,7 +174,7 @@
             app:layout_goneMarginStart="@dimen/spacing_lvl4"
             app:typographyType="small"
             app:typographyWeight="bold"
-            tools:text="@string/play_bro_pinned_product_info"
+            tools:text="@string/product_pinned_product_info"
             tools:textColor="@color/Unify_GN500"
             tools:visibility="gone" />
 

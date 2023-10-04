@@ -16,12 +16,12 @@ import com.tokopedia.content.common.producttag.view.uimodel.SelectedProductUiMod
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.content.product.picker.R
-import com.tokopedia.content.product.picker.sgc.model.uimodel.PlayBroProductChooserEvent
+import com.tokopedia.content.product.picker.sgc.model.uimodel.ProductChooserEvent
 import com.tokopedia.content.product.picker.sgc.model.uimodel.ProductSetupAction
 import com.tokopedia.content.product.picker.sgc.model.PriceUnknown
 import com.tokopedia.content.product.picker.sgc.model.pinnedproduct.PinProductUiModel
 import com.tokopedia.content.product.picker.sgc.model.product.ProductUiModel
-import com.tokopedia.content.common.util.bottomsheet.PlayBroadcastDialogCustomizer
+import com.tokopedia.content.common.util.bottomsheet.ContentDialogCustomizer
 import com.tokopedia.content.product.picker.databinding.BottomSheetUgcProductPickerBinding
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.util.PlayToaster
@@ -32,7 +32,7 @@ import javax.inject.Inject
  * Created by kenny.hadisaputra on 29/08/22
  */
 class ProductPickerUGCBottomSheet @Inject constructor(
-    private val dialogCustomizer: PlayBroadcastDialogCustomizer,
+    private val dialogCustomizer: ContentDialogCustomizer,
     private val analytic: ContentProductTagAnalytic,
 ) : BaseProductSetupBottomSheet() {
 
@@ -73,7 +73,7 @@ class ProductPickerUGCBottomSheet @Inject constructor(
 
         override fun onMaxSelectedProductReached() {
             toaster.showToaster(
-                message = getString(R.string.play_bro_max_selected_product_reached).format(viewModel.maxProduct),
+                message = getString(R.string.max_selected_product_reached).format(viewModel.maxProduct),
                 actionLabel = getString(R.string.content_product_picker_ok),
                 actionListener = { toaster.dismissToaster() },
                 bottomMargin = offsetToaster
@@ -214,10 +214,10 @@ class ProductPickerUGCBottomSheet @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiEvent.collect {
                 when (it) {
-                    PlayBroProductChooserEvent.SaveProductSuccess -> {
+                    ProductChooserEvent.SaveProductSuccess -> {
                         mListener?.onFinished(this@ProductPickerUGCBottomSheet)
                     }
-                    is PlayBroProductChooserEvent.ShowError -> {
+                    is ProductChooserEvent.ShowError -> {
                         toaster.showError(
                             err = it.error,
                             customErrMessage = it.error.message,

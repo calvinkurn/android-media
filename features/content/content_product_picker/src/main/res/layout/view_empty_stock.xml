@@ -8,7 +8,7 @@
     android:layout_height="wrap_content"
     android:background="@drawable/bg_play_product_tag_stock"
     android:padding="@dimen/spacing_lvl2"
-    android:text="@string/play_bro_product_tag_stock_empty"
+    android:text="@string/product_tag_stock_empty"
     android:textColor="@color/Unify_Static_White"
     app:typographyType="small"
     app:typographyWeight="bold"

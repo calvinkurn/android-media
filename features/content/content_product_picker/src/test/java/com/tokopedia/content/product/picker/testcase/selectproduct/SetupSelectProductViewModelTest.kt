@@ -1,7 +1,7 @@
 package com.tokopedia.content.product.picker.testcase.selectproduct
 
 import com.tokopedia.content.product.picker.builder.ProductSetupUiModelBuilder
-import com.tokopedia.content.product.picker.robot.PlayBroProductSetupViewModelRobot
+import com.tokopedia.content.product.picker.robot.ContentProductPickerSGCViewModelRobot
 import com.tokopedia.content.product.picker.sgc.domain.ContentProductPickerSGCRepository
 import com.tokopedia.content.product.picker.sgc.model.uimodel.ProductSetupAction
 import com.tokopedia.content.product.picker.sgc.model.OriginalPrice
@@ -19,7 +19,7 @@ import org.junit.jupiter.api.Assertions
 /**
  * Created By : Jonathan Darwin on February 18, 2022
  */
-class PlaySetupSelectProductViewModelTest {
+class SetupSelectProductViewModelTest {
 
     @get:Rule
     val rule: CoroutineTestRule = CoroutineTestRule()
@@ -42,7 +42,7 @@ class PlaySetupSelectProductViewModelTest {
         val expectedSelectedProducts = mockSelectedProducts.toMutableList()
         expectedSelectedProducts.add(mockAddedProduct)
 
-        val robot = PlayBroProductSetupViewModelRobot(
+        val robot = ContentProductPickerSGCViewModelRobot(
             productSectionList = mockProductTagSectionList,
             maxProduct = mockMaxProduct,
             dispatchers = testDispatcher,
@@ -64,7 +64,7 @@ class PlaySetupSelectProductViewModelTest {
 
         val expectedSelectedProducts = mockSelectedProducts.toMutableList()
 
-        val robot = PlayBroProductSetupViewModelRobot(
+        val robot = ContentProductPickerSGCViewModelRobot(
             productSectionList = mockProductTagSectionList,
             maxProduct = mockSelectedProducts.size,
             dispatchers = testDispatcher,
@@ -88,7 +88,7 @@ class PlaySetupSelectProductViewModelTest {
         val expectedSelectedProducts = mockSelectedProducts.toMutableList()
         expectedSelectedProducts.removeLast()
 
-        val robot = PlayBroProductSetupViewModelRobot(
+        val robot = ContentProductPickerSGCViewModelRobot(
             productSectionList = mockProductTagSectionList,
             maxProduct = mockMaxProduct,
             dispatchers = testDispatcher,
@@ -115,7 +115,7 @@ class PlaySetupSelectProductViewModelTest {
         mockNewProductTagSectionList.remove(mockSection)
         mockNewProductTagSectionList.add(mockSection.copy(products = mockNewProductList + mockAddedProduct))
 
-        val robot = PlayBroProductSetupViewModelRobot(
+        val robot = ContentProductPickerSGCViewModelRobot(
             productSectionList = mockProductTagSectionList,
             maxProduct = mockMaxProduct,
             dispatchers = testDispatcher,
@@ -142,7 +142,7 @@ class PlaySetupSelectProductViewModelTest {
             )
         )
 
-        val robot = PlayBroProductSetupViewModelRobot(
+        val robot = ContentProductPickerSGCViewModelRobot(
             productSectionList = mockInitialProductTagSectionList,
             maxProduct = mockMaxProduct,
             dispatchers = testDispatcher,
@@ -177,7 +177,7 @@ class PlaySetupSelectProductViewModelTest {
         }
         val mockInitialProductTagSectionList = emptyList<ProductTagSectionUiModel>()
 
-        val robot = PlayBroProductSetupViewModelRobot(
+        val robot = ContentProductPickerSGCViewModelRobot(
             productSectionList = mockInitialProductTagSectionList,
             maxProduct = mockMaxProduct,
             dispatchers = testDispatcher,
@@ -233,7 +233,7 @@ class PlaySetupSelectProductViewModelTest {
             )
         )
 
-        val robot = PlayBroProductSetupViewModelRobot(
+        val robot = ContentProductPickerSGCViewModelRobot(
             productSectionList = mockInitialProductTagSectionList,
             maxProduct = mockMaxProduct,
             dispatchers = testDispatcher,
@@ -269,7 +269,7 @@ class PlaySetupSelectProductViewModelTest {
         }
         val mockInitialProductTagSectionList = emptyList<ProductTagSectionUiModel>()
 
-        val robot = PlayBroProductSetupViewModelRobot(
+        val robot = ContentProductPickerSGCViewModelRobot(
             productSectionList = mockInitialProductTagSectionList,
             maxProduct = mockMaxProduct,
             dispatchers = testDispatcher,

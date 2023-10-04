@@ -9,7 +9,7 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 /**
  * Created by jegul on 16/07/20
  */
-class NavigationBarColorDialogCustomizer @Inject constructor() : PlayBroadcastDialogCustomizer {
+class NavigationBarColorDialogCustomizer @Inject constructor() : ContentDialogCustomizer {
 
     override fun customize(dialog: Dialog) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)

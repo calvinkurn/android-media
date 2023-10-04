@@ -15,7 +15,7 @@
         android:layout_marginStart="@dimen/spacing_lvl2"
         android:layout_marginEnd="@dimen/spacing_lvl2"
         app:layout_goneMarginStart="@dimen/play_dp_18"
-        android:text="@string/play_bro_pin"
+        android:text="@string/product_pin"
         android:textColor="@color/Unify_Static_White"
         app:layout_constraintBottom_toBottomOf="@+id/iv_pin"
         app:layout_constraintEnd_toEndOf="parent"

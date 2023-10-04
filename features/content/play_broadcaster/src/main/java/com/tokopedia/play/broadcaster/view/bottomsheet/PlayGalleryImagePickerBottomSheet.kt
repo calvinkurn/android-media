@@ -33,7 +33,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayCoverFromGalleryBinding
-import com.tokopedia.content.common.util.bottomsheet.PlayBroadcastDialogCustomizer
+import com.tokopedia.content.common.util.bottomsheet.ContentDialogCustomizer
 import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.unifycomponents.Toaster
 import java.io.File
@@ -43,7 +43,7 @@ import javax.inject.Inject
  * @author by furqan on 08/06/2020
  */
 class PlayGalleryImagePickerBottomSheet @Inject constructor(
-        private val dialogCustomizer: PlayBroadcastDialogCustomizer
+        private val dialogCustomizer: ContentDialogCustomizer
 ) : BottomSheetDialogFragment(),
         AlbumMediaAdapter.OnMediaClickListener,
         AlbumAdapter.OnAlbumAdapterListener,

@@ -9,9 +9,9 @@ import com.tokopedia.content.product.picker.R
  */
 fun GlobalError.productTagSummaryEmpty(onAction: () -> Unit) {
     errorIllustration.setImageResource(R.drawable.ic_empty_product_etalase)
-    errorTitle.text = context.getString(R.string.play_bro_product_summary_empty_title)
-    errorDescription.text = context.getString(R.string.play_bro_product_summary_empty_description)
-    errorAction.text = context.getString(R.string.play_bro_product_summary_empty_action_text)
+    errorTitle.text = context.getString(R.string.product_summary_empty_title)
+    errorDescription.text = context.getString(R.string.product_summary_empty_description)
+    errorAction.text = context.getString(R.string.product_summary_empty_action_text)
     errorSecondaryAction.gone()
     setActionClickListener { onAction() }
 }

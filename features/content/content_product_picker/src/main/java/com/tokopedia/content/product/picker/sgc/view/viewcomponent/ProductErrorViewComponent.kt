@@ -43,17 +43,17 @@ class ProductErrorViewComponent(
 
     private fun GlobalError.productNotFoundState() {
         errorIllustration.loadImage(getString(R.string.img_search_product_empty))
-        errorTitle.text = context.getString(R.string.play_product_not_found_title)
-        errorDescription.text = context.getString(R.string.play_product_not_found_desc)
+        errorTitle.text = context.getString(R.string.product_not_found_title)
+        errorDescription.text = context.getString(R.string.product_not_found_desc)
         errorAction.gone()
         errorSecondaryAction.gone()
     }
 
     private fun GlobalError.productEtalaseEmpty() {
         errorIllustration.setImageResource(R.drawable.ic_empty_product_etalase)
-        errorTitle.text = context.getString(R.string.play_product_etalase_empty_title)
-        errorDescription.text = context.getString(R.string.play_product_etalase_empty_desc)
-        errorAction.text = context.getString(R.string.play_bro_add_product)
+        errorTitle.text = context.getString(R.string.product_etalase_empty_title)
+        errorDescription.text = context.getString(R.string.product_etalase_empty_desc)
+        errorAction.text = context.getString(R.string.add_product)
         errorSecondaryAction.gone()
     }
 

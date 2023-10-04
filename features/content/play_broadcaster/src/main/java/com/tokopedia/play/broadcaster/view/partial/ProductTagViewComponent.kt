@@ -131,7 +131,7 @@ class ProductTagViewComponent(
                     CoachMark2Item(
                         it.itemView.findViewById(contentproductpickerR.id.view_pin_product),
                         "",
-                        getString(contentproductpickerR.string.play_bro_pinned_coachmark_desc),
+                        getString(R.string.play_bro_pinned_coachmark_desc),
                         CoachMark2.POSITION_BOTTOM
                     )
                 )

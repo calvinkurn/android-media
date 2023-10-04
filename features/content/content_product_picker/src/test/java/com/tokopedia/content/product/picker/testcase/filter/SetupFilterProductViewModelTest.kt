@@ -1,7 +1,7 @@
 package com.tokopedia.content.product.picker.testcase.filter
 
 import com.tokopedia.content.product.picker.builder.ProductSetupUiModelBuilder
-import com.tokopedia.content.product.picker.robot.PlayBroProductSetupViewModelRobot
+import com.tokopedia.content.product.picker.robot.ContentProductPickerSGCViewModelRobot
 import com.tokopedia.content.product.picker.sgc.domain.ContentProductPickerSGCRepository
 import com.tokopedia.content.product.picker.sgc.model.uimodel.ProductSetupAction
 import com.tokopedia.content.product.picker.sgc.model.etalase.SelectedEtalaseModel
@@ -15,7 +15,7 @@ import org.junit.Test
 /**
  * Created By : Jonathan Darwin on February 18, 2022
  */
-internal class PlaySetupFilterProductViewModelTest {
+internal class SetupFilterProductViewModelTest {
 
     @get:Rule
     val rule: CoroutineTestRule = CoroutineTestRule()
@@ -33,7 +33,7 @@ internal class PlaySetupFilterProductViewModelTest {
     fun `when user set sorting, it will emit uiState with new loadParam`() {
         val mockSort = SortUiModel.supportedSortList.first()
 
-        val robot = PlayBroProductSetupViewModelRobot(
+        val robot = ContentProductPickerSGCViewModelRobot(
             dispatchers = testDispatcher,
             repo = mockRepo
         )
@@ -51,7 +51,7 @@ internal class PlaySetupFilterProductViewModelTest {
     fun `when user search product with keyword, it should emit uiState with newest keyword`() {
         val keyword = "piring cantik"
 
-        val robot = PlayBroProductSetupViewModelRobot(
+        val robot = ContentProductPickerSGCViewModelRobot(
             dispatchers = testDispatcher,
             repo = mockRepo
         )
@@ -69,7 +69,7 @@ internal class PlaySetupFilterProductViewModelTest {
     fun `when user select etalase, it should emit uiState with new selected etalase`() {
         val mockSelectedEtalase = SelectedEtalaseModel.Etalase(mockEtalase)
 
-        val robot = PlayBroProductSetupViewModelRobot(
+        val robot = ContentProductPickerSGCViewModelRobot(
             dispatchers = testDispatcher,
             repo = mockRepo
         )
@@ -87,7 +87,7 @@ internal class PlaySetupFilterProductViewModelTest {
     fun `when user select campaign, it should emit uiState with new selected campaign`() {
         val mockSelectedCampaign = SelectedEtalaseModel.Campaign(mockCampaign)
 
-        val robot = PlayBroProductSetupViewModelRobot(
+        val robot = ContentProductPickerSGCViewModelRobot(
             dispatchers = testDispatcher,
             repo = mockRepo
         )

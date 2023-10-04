@@ -2,9 +2,9 @@ package com.tokopedia.content.product.picker.testcase.saveproduct
 
 import com.tokopedia.content.product.picker.builder.CommonUiModelBuilder
 import com.tokopedia.content.product.picker.builder.ProductSetupUiModelBuilder
-import com.tokopedia.content.product.picker.robot.PlayBroProductSetupViewModelRobot
+import com.tokopedia.content.product.picker.robot.ContentProductPickerSGCViewModelRobot
 import com.tokopedia.content.product.picker.sgc.domain.ContentProductPickerSGCRepository
-import com.tokopedia.content.product.picker.sgc.model.uimodel.PlayBroProductChooserEvent
+import com.tokopedia.content.product.picker.sgc.model.uimodel.ProductChooserEvent
 import com.tokopedia.content.product.picker.sgc.model.uimodel.ProductSetupAction
 import com.tokopedia.content.product.picker.util.assertEqualTo
 import com.tokopedia.unit.test.rule.CoroutineTestRule
@@ -17,7 +17,7 @@ import org.junit.Test
 /**
  * Created By : Jonathan Darwin on February 18, 2022
  */
-class PlaySetupSaveProductViewModelTest {
+class SetupSaveProductViewModelTest {
 
     @get:Rule
     val rule: CoroutineTestRule = CoroutineTestRule()
@@ -38,7 +38,7 @@ class PlaySetupSaveProductViewModelTest {
 
     @Test
     fun `when user wants to save products and success, it should trigger event success`() {
-        val robot = PlayBroProductSetupViewModelRobot(
+        val robot = ContentProductPickerSGCViewModelRobot(
             productSectionList = mockProductTagSectionList,
             dispatchers = testDispatcher,
             repo = mockRepo
@@ -55,13 +55,13 @@ class PlaySetupSaveProductViewModelTest {
             state[2].saveState.isLoading.assertEqualTo(true)
             state[3].selectedProductList.assertEqualTo(mockSelectedProducts)
             state.last().saveState.isLoading.assertEqualTo(false)
-            event.last().assertEqualTo(PlayBroProductChooserEvent.SaveProductSuccess)
+            event.last().assertEqualTo(ProductChooserEvent.SaveProductSuccess)
         }
     }
 
     @Test
     fun `when user wants to save products and success, it should load product section tag`() {
-        val robot = PlayBroProductSetupViewModelRobot(
+        val robot = ContentProductPickerSGCViewModelRobot(
             productSectionList = mockProductTagSectionList,
             dispatchers = testDispatcher,
             repo = mockRepo
@@ -87,7 +87,7 @@ class PlaySetupSaveProductViewModelTest {
 
         coEvery { mockRepo.setProductTags(any(), any()) } throws mockException
 
-        val robot = PlayBroProductSetupViewModelRobot(
+        val robot = ContentProductPickerSGCViewModelRobot(
             productSectionList = mockProductTagSectionList,
             dispatchers = testDispatcher,
             repo = mockRepo
@@ -101,7 +101,7 @@ class PlaySetupSaveProductViewModelTest {
 
             state[state.lastIndex-1].saveState.isLoading.assertEqualTo(true)
             state.last().saveState.isLoading.assertEqualTo(false)
-            event.last().assertEqualTo(PlayBroProductChooserEvent.ShowError(mockException))
+            event.last().assertEqualTo(ProductChooserEvent.ShowError(mockException))
         }
     }
 }

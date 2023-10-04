@@ -11,7 +11,7 @@ import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref.Key.ProductSummaryCommission
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.content.product.picker.R
-import com.tokopedia.content.product.picker.sgc.model.uimodel.PlayBroProductChooserEvent
+import com.tokopedia.content.product.picker.sgc.model.uimodel.ProductChooserEvent
 import com.tokopedia.content.product.picker.sgc.model.uimodel.ProductSetupAction
 import com.tokopedia.content.product.picker.sgc.model.uimodel.ProductTagSummaryUiModel
 import com.tokopedia.content.product.picker.sgc.view.viewcomponent.ProductSummaryListViewComponent
@@ -116,8 +116,8 @@ class ProductSummaryBottomSheet @Inject constructor(
         binding.root.layoutParams = binding.root.layoutParams.apply {
             height = (getScreenHeight() * SCREEN_HEIGHT_DIVIDER).toInt()
         }
-        setTitle(getString(R.string.play_bro_product_summary_title))
-        setAction(getString(R.string.play_bro_product_add_more)) {
+        setTitle(getString(R.string.product_summary_title))
+        setAction(getString(R.string.product_add_more)) {
             analytic.clickAddMoreProductOnProductSetup()
             handleAddMoreProduct()
         }
@@ -165,7 +165,7 @@ class ProductSummaryBottomSheet @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiEvent.collect { event ->
                 when (event) {
-                    is PlayBroProductChooserEvent.GetDataError -> {
+                    is ProductChooserEvent.GetDataError -> {
                         toaster.showError(
                             err = event.throwable,
                             actionLabel = getString(R.string.content_product_picker_retry),
@@ -175,31 +175,31 @@ class ProductSummaryBottomSheet @Inject constructor(
                         productSummaryListView.setProductList(emptyList(), viewModel.isEligibleForPin, viewModel.isNumerationShown)
                         showLoading(false)
                     }
-                    is PlayBroProductChooserEvent.DeleteProductSuccess -> {
+                    is ProductChooserEvent.DeleteProductSuccess -> {
                         toaster.showToaster(
                             message = getString(
-                                R.string.play_bro_product_summary_success_delete_product,
+                                R.string.product_summary_success_delete_product,
                                 event.deletedProductCount
                             ),
                         )
                     }
-                    is PlayBroProductChooserEvent.DeleteProductError -> {
+                    is ProductChooserEvent.DeleteProductError -> {
                         toaster.showError(
                             err = event.throwable,
-                            customErrMessage = getString(R.string.play_bro_product_summary_fail_to_delete_product),
+                            customErrMessage = getString(R.string.product_summary_fail_to_delete_product),
                             actionLabel = getString(R.string.content_product_picker_retry),
                             actionListener = { event.action?.invoke() },
                         )
 
                         showLoading(false)
                     }
-                    is PlayBroProductChooserEvent.FailPinUnPinProduct -> {
+                    is ProductChooserEvent.FailPinUnPinProduct -> {
                         if (event.isPinned) pinnedProductAnalytic.onImpressFailUnPinProductBottomSheet()
                         else pinnedProductAnalytic.onImpressFailPinProductBottomSheet()
                         if (event.throwable is PinnedProductException) {
                             pinnedProductAnalytic.onImpressColdDownPinProductSecondEvent(false)
                             toaster.showToaster(
-                                message = if (event.throwable.message.isEmpty()) getString(R.string.play_bro_pin_product_failed) else event.throwable.message,
+                                message = if (event.throwable.message.isEmpty()) getString(R.string.product_pin_failed) else event.throwable.message,
                                 type = Toaster.TYPE_ERROR
                             )
                         } else {
@@ -231,13 +231,13 @@ class ProductSummaryBottomSheet @Inject constructor(
         if (productCount != null) {
             setTitle(
                 getString(
-                    R.string.play_bro_product_summary_title_with_count,
+                    R.string.product_summary_title_with_count,
                     productCount,
                     viewModel.maxProduct
                 )
             )
         } else {
-            setTitle(getString(R.string.play_bro_product_summary_title))
+            setTitle(getString(R.string.product_summary_title))
         }
     }
 
@@ -258,8 +258,8 @@ class ProductSummaryBottomSheet @Inject constructor(
             val coachMark = CoachMark2(requireContext())
             val coachMarkItem = CoachMark2Item(
                 anchorView = firstTextCommission,
-                title = getString(R.string.play_shorts_affiliate_coach_mark_product_summary_commission_title),
-                description = getString(R.string.play_shorts_affiliate_coach_mark_product_summary_commission_subtitle),
+                title = getString(R.string.product_affiliate_coach_mark_product_summary_commission_title),
+                description = getString(R.string.product_affiliate_coach_mark_product_summary_commission_subtitle),
                 position = CoachMark2.POSITION_BOTTOM,
             )
 

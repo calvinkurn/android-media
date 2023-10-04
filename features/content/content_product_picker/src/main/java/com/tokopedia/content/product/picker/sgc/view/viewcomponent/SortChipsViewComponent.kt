@@ -25,7 +25,7 @@ class SortChipsViewComponent(
 
     fun setText(text: String?) {
         if (text.isNullOrBlank()) {
-            view.chipText = getString(R.string.play_bro_etalase_sort)
+            view.chipText = getString(R.string.etalase_sort)
             view.chipType = ChipsUnify.TYPE_NORMAL
         } else {
             view.chipText = text

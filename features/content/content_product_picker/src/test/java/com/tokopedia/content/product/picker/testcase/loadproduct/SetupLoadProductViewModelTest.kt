@@ -2,7 +2,7 @@ package com.tokopedia.content.product.picker.testcase.loadproduct
 
 import com.tokopedia.content.product.picker.builder.CommonUiModelBuilder
 import com.tokopedia.content.product.picker.builder.ProductSetupUiModelBuilder
-import com.tokopedia.content.product.picker.robot.PlayBroProductSetupViewModelRobot
+import com.tokopedia.content.product.picker.robot.ContentProductPickerSGCViewModelRobot
 import com.tokopedia.content.product.picker.sgc.domain.ContentProductPickerSGCRepository
 import com.tokopedia.content.product.picker.sgc.model.uimodel.ProductSetupAction
 import com.tokopedia.content.product.picker.sgc.model.PagingType
@@ -20,7 +20,7 @@ import org.junit.jupiter.api.fail
 /**
  * Created By : Jonathan Darwin on February 18, 2022
  */
-class PlaySetupLoadProductViewModelTest {
+class SetupLoadProductViewModelTest {
 
     @get:Rule
     val rule: CoroutineTestRule = CoroutineTestRule()
@@ -53,7 +53,7 @@ class PlaySetupLoadProductViewModelTest {
 
         coEvery { mockRepo.getProductsInEtalase(any(), any(), keyword, any()) } returns mockEtalasePagedDataResponse
 
-        val robot = PlayBroProductSetupViewModelRobot(
+        val robot = ContentProductPickerSGCViewModelRobot(
             productSectionList = mockProductTagSectionList,
             dispatchers = testDispatcher,
             repo = mockRepo
@@ -88,7 +88,7 @@ class PlaySetupLoadProductViewModelTest {
             cursor = "",
         )
 
-        val robot = PlayBroProductSetupViewModelRobot(
+        val robot = ContentProductPickerSGCViewModelRobot(
             productSectionList = mockProductTagSectionList,
             dispatchers = testDispatcher,
             repo = mockRepo
@@ -133,7 +133,7 @@ class PlaySetupLoadProductViewModelTest {
             hasNextPage = false,
         )
 
-        val robot = PlayBroProductSetupViewModelRobot(
+        val robot = ContentProductPickerSGCViewModelRobot(
             productSectionList = mockProductTagSectionList,
             dispatchers = testDispatcher,
             repo = mockRepo
@@ -171,7 +171,7 @@ class PlaySetupLoadProductViewModelTest {
 
         coEvery { mockRepo.getProductsInEtalase(any(), any(), any(), any()) } throws mockException
 
-        val robot = PlayBroProductSetupViewModelRobot(
+        val robot = ContentProductPickerSGCViewModelRobot(
             productSectionList = mockProductTagSectionList,
             dispatchers = testDispatcher,
             repo = mockRepo
