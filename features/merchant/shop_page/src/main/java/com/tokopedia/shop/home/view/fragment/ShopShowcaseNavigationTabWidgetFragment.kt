@@ -8,8 +8,8 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.loader.data.Resize
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.FragmentShopShowcaseNavigationTabWidgetBinding
@@ -36,6 +36,7 @@ class ShopShowcaseNavigationTabWidgetFragment : BaseDaggerFragment() {
         private const val THIRD_SHOWCASE_INDEX = 2
         private const val FOURTH_SHOWCASE_INDEX = 3
         private const val FIFTH_SHOWCASE_INDEX = 4
+        private const val DEFAULT_MAIN_SHOWCASE_IMAGE_SIZE = 200
 
         @JvmStatic
         fun newInstance(
@@ -118,7 +119,9 @@ class ShopShowcaseNavigationTabWidgetFragment : BaseDaggerFragment() {
         val fourthShowcase = showcases.getOrNull(FIFTH_SHOWCASE_INDEX)
 
         mainShowcase?.let {
-            binding?.imgMainShowcase?.loadImage(mainShowcase.imageUrl)
+            binding?.imgMainShowcase?.loadImage(mainShowcase.imageUrl) {
+                this.overrideSize(Resize(DEFAULT_MAIN_SHOWCASE_IMAGE_SIZE, DEFAULT_MAIN_SHOWCASE_IMAGE_SIZE))
+            }
             binding?.tpgMainShowcaseTitle?.text = mainShowcase.name
 
             binding?.imgMainShowcase?.visible()
