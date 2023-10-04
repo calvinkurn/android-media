@@ -130,7 +130,7 @@ class SampleLoginSDKConfigs(val context: Context) : LSdkConfig {
     override fun getAppConfigs(): LSdkAppConfig {
         val uniqueId = FingerprintModelGenerator.getFCMId(context)
         return LSdkAppConfig(
-            environment = LSdkEnvironment.DEV,
+            environment = LSdkEnvironment.INTEGRATION,
             isLogsEnabled = false,
             appLocale = "ID",
             userLang = "id",
