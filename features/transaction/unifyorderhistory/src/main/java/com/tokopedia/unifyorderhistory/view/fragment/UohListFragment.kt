@@ -574,7 +574,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
     private fun observeUohPmsCounter() {
         uohListViewModel.getUohPmsCounterResult.observe(viewLifecycleOwner) {
             if (it is Success) {
-                if (!paramUohOrder.hasActiveFilter()) {
+                if (!paramUohOrder.hasActiveFilter() && it.data.notifications.buyerOrderStatus.paymentStatus > 0) {
                     val data = UohTypeData(
                         dataObject = it.data,
                         typeLayout = UohConsts.TYPE_PMS_BUTTON
