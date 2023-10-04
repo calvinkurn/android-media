@@ -11,6 +11,8 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.transition.Fade
+import androidx.transition.TransitionManager
 import com.tkpd.atcvariant.view.bottomsheet.AtcVariantBottomSheet
 import com.tkpd.atcvariant.view.viewmodel.AtcVariantSharedViewModel
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
@@ -442,7 +444,6 @@ class StoriesDetailFragment @Inject constructor(
         binding.vStoriesProductIcon.root.showWithCondition(state.isProductAvailable)
         binding.vStoriesProductIcon.tvPlayProductCount.text = state.productCount
         with(binding.nudgeStoriesProduct) {
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 StoriesProductNudge(state.productCount) {
                     viewModelAction(StoriesUiAction.OpenProduct)
@@ -456,6 +457,11 @@ class StoriesDetailFragment @Inject constructor(
             if (state.isProductAvailable) {
                 binding.flStoriesProduct.hide()
                 delay(DELAY_SWIPE_PRODUCT_BADGE_SHOW)
+                TransitionManager.beginDelayedTransition(
+                    binding.root,
+                    Fade(Fade.IN)
+                        .addTarget(binding.flStoriesProduct)
+                )
                 binding.flStoriesProduct.show()
             } else {
                 binding.flStoriesProduct.hide()
