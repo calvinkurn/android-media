@@ -27,6 +27,7 @@ class MultiComponentMapper @Inject constructor(
         return response.fetchMultiComponentWidget.data.map { widgets ->
             MultiComponentDataUiModel(
                 dataKey = widgets.dataKey,
+                showWidget = widgets.showWidget,
                 tabs = widgets.tabs.mapIndexed { index, it ->
                     MultiComponentTab(
                         id = it.id,
