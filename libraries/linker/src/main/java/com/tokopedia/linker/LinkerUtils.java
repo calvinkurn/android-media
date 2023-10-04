@@ -102,10 +102,11 @@ public class LinkerUtils {
         return error;
     }
 
-    public static LinkerDeeplinkResult createDeeplinkData(String deeplink, String promocode) {
+    public static LinkerDeeplinkResult createDeeplinkData(String deeplink, String promocode, String minVersion) {
         LinkerDeeplinkResult linkerDeeplinkData = new LinkerDeeplinkResult();
         linkerDeeplinkData.setDeeplink(deeplink);
         linkerDeeplinkData.setPromoCode(promocode);
+        linkerDeeplinkData.setMinVersion(minVersion);
         return linkerDeeplinkData;
     }
 

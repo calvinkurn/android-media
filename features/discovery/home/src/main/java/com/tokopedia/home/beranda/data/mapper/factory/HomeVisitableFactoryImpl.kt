@@ -358,6 +358,7 @@ class HomeVisitableFactoryImpl(
                                             data.name,
                                             index,
                                             data.isShimmer,
+                                            isCache,
                                         )
                                     }
                                 )
@@ -511,13 +512,14 @@ class HomeVisitableFactoryImpl(
         name: String,
         index: Int,
         isShimmer: Boolean,
+        isCache: Boolean,
     ) {
         data?.let {
             val mission = if(!isCache) {
                 MissionWidgetListDataModel(
                     id = id.toString(),
                     name = name,
-                    missionWidgetList = LazyLoadDataMapper.mapMissionWidgetData(it.missions),
+                    missionWidgetList = LazyLoadDataMapper.mapMissionWidgetData(it.missions, isCache),
                     header = data.header.getAsHomeComponentHeader(),
                     config = data.config.getAsChannelConfig(),
                     verticalPosition = index,

@@ -27,6 +27,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalFintech
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
@@ -2098,6 +2099,15 @@ class CheckoutFragment :
                 onSuccessCheckout(it)
             }
         }
+    }
+
+    override fun onClickBmgmInfoIcon(offerId: String, shopId: String) {
+        checkoutAnalyticsCourierSelection.sendClickSnkBmgmEvent(
+            offerId,
+            shopId,
+            userSessionInterface.userId
+        )
+        RouteManager.route(context, ApplinkConstInternalGlobal.BMGM_MINI_CART)
     }
 
     private fun onTriggerEpharmacyTracker(showErrorToaster: Boolean) {

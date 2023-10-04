@@ -21,4 +21,5 @@ data class MissionWidgetDataModel(
     val isCarousel: Boolean = false,
     val shopId: String = "",
     val animateOnPress: Int = CardUnify2.ANIMATE_OVERLAY,
+    val isCache: Boolean,
 )
