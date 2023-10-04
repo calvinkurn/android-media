@@ -177,6 +177,7 @@ import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity
 import com.tokopedia.shop_widget.favourite.view.activity.ShopFavouriteListActivity
 import com.tokopedia.shop_widget.mvc_locked_to_product.util.MvcLockedToProductUtil
 import com.tokopedia.shop_widget.note.view.bottomsheet.ShopNoteBottomSheet
+import com.tokopedia.stories.widget.NoCoachMarkStrategy
 import com.tokopedia.stories.widget.OneTimeAnimationStrategy
 import com.tokopedia.stories.widget.StoriesWidgetManager
 import com.tokopedia.stories.widget.domain.StoriesEntryPoint
@@ -408,7 +409,7 @@ class ShopPageHeaderFragmentV2 :
 
     private val storiesManager by storiesManager(StoriesEntryPoint.ShopPageReimagined) {
         setAnimationStrategy(OneTimeAnimationStrategy())
-        setShowCoachMarkIfApplicable(false)
+        setCoachMarkStrategy(NoCoachMarkStrategy())
     }
 
     private val bottomSheetTabNotFound: ShopEtalaseNotFoundBottomSheet by lazy {

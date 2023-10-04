@@ -306,12 +306,10 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersListener
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersView
 import com.tokopedia.stories.widget.NoAnimateAnimationStrategy
+import com.tokopedia.stories.widget.NoCoachMarkStrategy
 import com.tokopedia.stories.widget.StoriesWidgetManager
 import com.tokopedia.stories.widget.domain.StoriesEntryPoint
-import com.tokopedia.stories.widget.domain.StoriesWidgetState
 import com.tokopedia.stories.widget.storiesManager
-import com.tokopedia.stories.widget.tracking.DefaultTrackerBuilder
-import com.tokopedia.stories.widget.tracking.StoriesWidgetTracker
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.ImageUnify
@@ -584,7 +582,7 @@ open class DynamicProductDetailFragment :
     private val mStoriesWidgetManager by storiesManager(StoriesEntryPoint.ProductDetail) {
         setScrollingParent(binding?.rvPdp)
         setAnimationStrategy(NoAnimateAnimationStrategy())
-        setShowCoachMarkIfApplicable(false)
+        setCoachMarkStrategy(NoCoachMarkStrategy())
         setTrackerBuilder(
             ProductDetailStoriesWidgetTrackerBuilder.create(productId.orEmpty(), getUserSession())
         )

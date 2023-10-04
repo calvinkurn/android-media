@@ -175,7 +175,7 @@ class StoriesWidgetManager private constructor(
         )
     }
 
-    fun hideCoachMark() {
+    private fun hideCoachMark() {
         showCoachMarkJob?.cancel()
         coachMark.hide()
     }
@@ -200,7 +200,7 @@ class StoriesWidgetManager private constructor(
     }
 
     private fun showCoachMarkOnView(view: StoriesWidgetLayout, text: String) {
-        if (!options.showCoachMarkIfApplicable || text.isBlank()) return
+        if (!options.coachMarkStrategy.canShowCoachMark() || text.isBlank()) return
         if (showCoachMarkJob?.isActive == true) return
         showCoachMarkJob = lifecycleOwner.lifecycleScope.launch {
             delay(1000)
@@ -321,8 +321,7 @@ class StoriesWidgetManager private constructor(
         private val userSession = UserSession(context.applicationContext)
         private var mTrackerBuilder: StoriesWidgetTracker.Builder? = null
         private var mTrackerSender: StoriesWidgetTracker.Sender? = null
-
-        private var mShowCoachMarkIfApplicable: Boolean = true
+        private var mCoachMarkStrategy: CoachMarkStrategy? = null
 
         fun setScrollingParent(view: View?) = builder {
             this.mScrollingParent = view
@@ -332,16 +331,16 @@ class StoriesWidgetManager private constructor(
             mAnimationStrategy = animStrategy
         }
 
-        fun setShowCoachMarkIfApplicable(shouldShow: Boolean) = builder {
-            mShowCoachMarkIfApplicable = shouldShow
-        }
-
         fun setTrackerBuilder(trackerBuilder: StoriesWidgetTracker.Builder) = builder {
             mTrackerBuilder = trackerBuilder
         }
 
         fun setTrackerSender(trackerSender: StoriesWidgetTracker.Sender) = builder {
             mTrackerSender = trackerSender
+        }
+
+        fun setCoachMarkStrategy(coachMarkStrategy: CoachMarkStrategy) = builder {
+            mCoachMarkStrategy = coachMarkStrategy
         }
 
         fun build(): StoriesWidgetManager {
@@ -358,9 +357,9 @@ class StoriesWidgetManager private constructor(
             return Options(
                 mScrollingParent,
                 mAnimationStrategy,
-                mShowCoachMarkIfApplicable,
                 mTrackerBuilder ?: DefaultTrackerBuilder(entryPoint, userSession),
                 mTrackerSender ?: DefaultTrackerSender(lifecycleOwner, trackingQueue),
+                mCoachMarkStrategy ?: DefaultCoachMarkStrategy(lifecycleOwner),
             )
         }
 
@@ -373,9 +372,9 @@ class StoriesWidgetManager private constructor(
     class Options internal constructor(
         val scrollingParent: View?,
         val animStrategy: AnimationStrategy,
-        val showCoachMarkIfApplicable: Boolean,
         val trackerBuilder: StoriesWidgetTracker.Builder,
         val trackerSender: StoriesWidgetTracker.Sender,
+        val coachMarkStrategy: CoachMarkStrategy,
     )
 
     internal data class StoriesWidgetMeta(
