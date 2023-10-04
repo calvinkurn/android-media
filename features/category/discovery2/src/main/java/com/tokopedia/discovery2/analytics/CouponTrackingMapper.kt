@@ -4,6 +4,7 @@ import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.claim_coupon.CatalogWithCouponList
 import com.tokopedia.discovery2.data.mycoupon.MyCoupon
+import com.tokopedia.discovery2.datamapper.getComponent
 
 object CouponTrackingMapper {
 
@@ -20,7 +21,8 @@ object CouponTrackingMapper {
         creativeName.orEmpty(),
         positionForParentItem,
         action.orEmpty(),
-        gtmItemName.orEmpty()
+        gtmItemName.orEmpty(),
+        tabName.orEmpty()
     )
     //endregion
 
@@ -42,7 +44,8 @@ object CouponTrackingMapper {
                 component.creativeName.orEmpty(),
                 component.position,
                 EMPTY_STRING,
-                EMPTY_STRING // TODO("Consume $gtm_item_name from server response")
+                getGTMItemName(component.parentComponentId, component.pageEndPoint),
+                component.tabName.orEmpty()
             )
         }
     }
@@ -68,8 +71,15 @@ object CouponTrackingMapper {
             creativeName.orEmpty(),
             position,
             it.buttonStr.orEmpty(),
-            EMPTY_STRING // TODO("Consume $gtm_item_name from server response")
+            getGTMItemName(parentComponentId, pageEndPoint),
+            tabName.orEmpty()
         )
     }
     //endregion
+
+    private fun getGTMItemName(componentId: String, pageName: String) =
+        getComponent(componentId, pageName)
+            ?.data?.firstOrNull()
+            ?.gtmItemName
+            .orEmpty()
 }

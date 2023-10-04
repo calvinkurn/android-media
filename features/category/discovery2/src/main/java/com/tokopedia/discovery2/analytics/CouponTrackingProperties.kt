@@ -8,5 +8,6 @@ data class CouponTrackingProperties(
     val creativeName: String,
     val position: Int,
     val action: String,
-    val gtmItem: String
+    val gtmItem: String,
+    val tabName: String
 )

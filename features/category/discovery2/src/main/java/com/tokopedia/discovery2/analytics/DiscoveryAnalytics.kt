@@ -2711,14 +2711,12 @@ open class DiscoveryAnalytics(
             ACTION_VIEW_COUPON_BANNER
         )
 
-        val impressionProperties = with(properties.first()) {
-            hashMapOf<String, Any>(
-                KEY_EVENT_LABEL to EMPTY_STRING,
-                TRACKER_ID to COUPON_IMPRESSION_TRACKER_ID,
-                USER_ID to userSession.userId,
-                KEY_E_COMMERCE to constructPromotionsProps(properties)
-            )
-        }
+        val impressionProperties = hashMapOf<String, Any>(
+            KEY_EVENT_LABEL to EMPTY_STRING,
+            TRACKER_ID to COUPON_IMPRESSION_TRACKER_ID,
+            USER_ID to userSession.userId,
+            KEY_E_COMMERCE to constructPromotionsProps(properties)
+        )
 
         impressionProperties.putAll(generalProps)
         trackingQueue.putEETracking(impressionProperties)
@@ -2747,9 +2745,8 @@ open class DiscoveryAnalytics(
             CLICK_BUTTON_CLAIM_COUPON_ACTION
         )
 
-        // TODO("Consume $mega_tab_value from server response")
         val label = with(properties) {
-            "$componentName - $action - {mega_tab_value} - $creativeName - $promoCode"
+            "$componentName - $action - $tabName - $creativeName - $promoCode"
         }
 
         val ctaClickProperties = hashMapOf<String, Any>(
@@ -2809,7 +2806,10 @@ open class DiscoveryAnalytics(
 
         propsList.forEach { dataItem ->
             val itemName = if (dataItem.gtmItem.isNotEmpty()) {
-                dataItem.gtmItem.replace("#POSITION", (dataItem.position + 1).toString())
+                dataItem.gtmItem.apply {
+                    replace("#POSITION", (dataItem.position + 1).toString())
+                    replace("#MEGA_TAB_VALUE", dataItem.tabName)
+                }
             } else {
                 EMPTY_STRING
             }
