@@ -24,12 +24,12 @@ class SearchPageViewModel @Inject constructor(
     val autoCompleteList: LiveData<Result<Place>>
         get() = _autoCompleteList
 
-    fun getAutoCompleteList(keyword: String, latlng: String) {
+    fun getAutoCompleteList(keyword: String) {
         viewModelScope.launch(onErrorAutoComplete) {
             val autoComplete = getAutoComplete(
                 GetAutoCompleteParam(
                     keyword = keyword,
-                    latLng = latlng,
+                    latLng = "",
                     isManageAddressFlow = true
                 )
             )

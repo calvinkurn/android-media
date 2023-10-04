@@ -95,11 +95,17 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
         fun newInstance(bundle: Bundle): SearchPageFragment {
             return SearchPageFragment().apply {
                 arguments = Bundle().apply {
-                    putParcelable(EXTRA_SAVE_DATA_UI_MODEL, bundle.getParcelable(EXTRA_SAVE_DATA_UI_MODEL))
+                    putParcelable(
+                        EXTRA_SAVE_DATA_UI_MODEL,
+                        bundle.getParcelable(EXTRA_SAVE_DATA_UI_MODEL)
+                    )
                     putBoolean(EXTRA_IS_POSITIVE_FLOW, bundle.getBoolean(EXTRA_IS_POSITIVE_FLOW))
                     putBoolean(EXTRA_FROM_PINPOINT, bundle.getBoolean(EXTRA_FROM_PINPOINT))
                     putBoolean(EXTRA_IS_POLYGON, bundle.getBoolean(EXTRA_IS_POLYGON))
-                    putString(EXTRA_ADDRESS_STATE, bundle.getString(EXTRA_ADDRESS_STATE, AddressUiState.AddAddress.name))
+                    putString(
+                        EXTRA_ADDRESS_STATE,
+                        bundle.getString(EXTRA_ADDRESS_STATE, AddressUiState.AddAddress.name)
+                    )
                     putString(PARAM_SOURCE, bundle.getString(PARAM_SOURCE, ""))
                     putString(EXTRA_REF, bundle.getString(EXTRA_REF, ""))
                     putBoolean(
@@ -137,8 +143,6 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
     private var isGmsAvailable: Boolean = true
     private var isPositiveFlow: Boolean = true
 
-    // delete isFromPinpoint
-    private var isFromPinpoint: Boolean = false
     private var isPolygon: Boolean = false
     private var source: String = ""
 
@@ -212,7 +216,6 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
 
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putBoolean(EXTRA_IS_POSITIVE_FLOW, isPositiveFlow)
-        outState.putBoolean(EXTRA_FROM_PINPOINT, isFromPinpoint)
         outState.putBoolean(EXTRA_IS_POLYGON, isPolygon)
         outState.putString(EXTRA_ADDRESS_STATE, addressUiState.name)
         outState.putString(PARAM_SOURCE, source)
@@ -284,24 +287,28 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
 
     override fun onItemClicked(placeId: String) {
         when (addressUiState) {
-            AddressUiState.AddAddress -> LogisticAddAddressAnalytics.onClickDropdownSuggestion(userSession.userId)
-            AddressUiState.EditAddress -> LogisticEditAddressAnalytics.onClickDropdownSuggestionAlamat(userSession.userId)
+            AddressUiState.AddAddress -> LogisticAddAddressAnalytics.onClickDropdownSuggestion(
+                userSession.userId
+            )
+
+            AddressUiState.EditAddress -> LogisticEditAddressAnalytics.onClickDropdownSuggestionAlamat(
+                userSession.userId
+            )
+
             else -> {
                 // no op
             }
         }
 
         isPolygon = false
-        if (!isPositiveFlow && isFromPinpoint) {
+        if (!isPositiveFlow) {
             goToPinpointPage(
                 placeId,
                 null,
-                null,
-                isFromAddressForm = true,
-                isPositiveFlow = false
+                null
             )
         } else {
-            goToPinpointPage(placeId, null, null, isFromAddressForm = false, isPositiveFlow = true)
+            goToPinpointPage(placeId, null, null)
         }
     }
 
@@ -319,8 +326,14 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
 
     private fun hitAnalyticOnBackPress() {
         when (addressUiState) {
-            AddressUiState.AddAddress -> LogisticAddAddressAnalytics.onClickBackArrowSearch(userSession.userId)
-            AddressUiState.EditAddress -> LogisticEditAddressAnalytics.onClickBackArrowSearch(userSession.userId)
+            AddressUiState.AddAddress -> LogisticAddAddressAnalytics.onClickBackArrowSearch(
+                userSession.userId
+            )
+
+            AddressUiState.EditAddress -> LogisticEditAddressAnalytics.onClickBackArrowSearch(
+                userSession.userId
+            )
+
             else -> {
                 // no op
             }
@@ -330,7 +343,6 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
     private fun initDataFromArguments() {
         arguments?.apply {
             isPositiveFlow = getBoolean(EXTRA_IS_POSITIVE_FLOW)
-            isFromPinpoint = getBoolean(EXTRA_FROM_PINPOINT)
             isPolygon = getBoolean(EXTRA_IS_POLYGON)
             addressUiState = getString(EXTRA_ADDRESS_STATE).toAddressUiState()
             currentLat = getDouble(EXTRA_LAT, DEFAULT_LAT)
@@ -424,7 +436,8 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
     }
 
     private fun goToAddAddressForm() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.EDIT_ADDRESS_REVAMP)
+        val intent =
+            RouteManager.getIntent(context, ApplinkConstInternalLogistic.EDIT_ADDRESS_REVAMP)
         intent.apply {
             putExtra(EXTRA_IS_POSITIVE_FLOW, false)
             putExtra(PARAM_SOURCE, source)
@@ -440,8 +453,14 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
             setOnFocusChangeListener { _, hasFocus ->
                 if (hasFocus) {
                     when (addressUiState) {
-                        AddressUiState.AddAddress -> LogisticAddAddressAnalytics.onClickFieldCariLokasi(userSession.userId)
-                        AddressUiState.EditAddress -> LogisticEditAddressAnalytics.onClickFieldCariLokasi(userSession.userId)
+                        AddressUiState.AddAddress -> LogisticAddAddressAnalytics.onClickFieldCariLokasi(
+                            userSession.userId
+                        )
+
+                        AddressUiState.EditAddress -> LogisticEditAddressAnalytics.onClickFieldCariLokasi(
+                            userSession.userId
+                        )
+
                         else -> {
                             // no op
                         }
@@ -451,8 +470,14 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
 
             setOnClickListener {
                 when (addressUiState) {
-                    AddressUiState.AddAddress -> LogisticAddAddressAnalytics.onClickFieldCariLokasi(userSession.userId)
-                    AddressUiState.EditAddress -> LogisticEditAddressAnalytics.onClickFieldCariLokasi(userSession.userId)
+                    AddressUiState.AddAddress -> LogisticAddAddressAnalytics.onClickFieldCariLokasi(
+                        userSession.userId
+                    )
+
+                    AddressUiState.EditAddress -> LogisticEditAddressAnalytics.onClickFieldCariLokasi(
+                        userSession.userId
+                    )
+
                     else -> {
                         // no op
                     }
@@ -478,12 +503,7 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
                         hideListLocation()
                     } else {
                         viewModel.getAutoCompleteList(
-                            keyword = binding?.searchPageInput?.searchBarTextField?.text.toString(),
-                            latlng = if (currentLat != DEFAULT_LAT && currentLong != DEFAULT_LONG) {
-                                "$currentLat,$currentLong"
-                            } else {
-                                ""
-                            }
+                            keyword = binding?.searchPageInput?.searchBarTextField?.text.toString()
                         )
                     }
                 }
@@ -501,8 +521,14 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
 
     private fun doGetCurrentLocation() {
         when (addressUiState) {
-            AddressUiState.AddAddress -> LogisticAddAddressAnalytics.onClickGunakanLokasiSaatIniSearch(userSession.userId)
-            AddressUiState.EditAddress -> LogisticEditAddressAnalytics.onClickGunakanLokasiSaatIniSearch(userSession.userId)
+            AddressUiState.AddAddress -> LogisticAddAddressAnalytics.onClickGunakanLokasiSaatIniSearch(
+                userSession.userId
+            )
+
+            AddressUiState.EditAddress -> LogisticEditAddressAnalytics.onClickGunakanLokasiSaatIniSearch(
+                userSession.userId
+            )
+
             else -> {
                 // no op
             }
@@ -623,6 +649,7 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
                                     } catch (sie: IntentSender.SendIntentException) {
                                         sie.printStackTrace()
                                     }
+
                                 LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE -> {
                                     val errorMessage =
                                         "Location settings are inadequate, and cannot be " + "fixed here. Fix in Settings."
@@ -695,9 +722,7 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
                 goToPinpointPage(
                     null,
                     data.latitude,
-                    data.longitude,
-                    isFromAddressForm = false,
-                    isPositiveFlow = true
+                    data.longitude
                 )
             } else {
                 fusedLocationClient?.requestLocationUpdates(
@@ -723,9 +748,7 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
                 goToPinpointPage(
                     null,
                     locationResult.lastLocation.latitude,
-                    locationResult.lastLocation.longitude,
-                    isFromAddressForm = false,
-                    isPositiveFlow = true
+                    locationResult.lastLocation.longitude
                 )
             }
         }
@@ -733,45 +756,24 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
     private fun goToPinpointPage(
         placeId: String?,
         latitude: Double?,
-        longitude: Double?,
-        isFromAddressForm: Boolean,
-        isPositiveFlow: Boolean
+        longitude: Double?
     ) {
         val bundle = Bundle()
-        bundle.putString(EXTRA_PLACE_ID, placeId)
-        latitude?.let { bundle.putDouble(EXTRA_LAT, it) }
-        longitude?.let { bundle.putDouble(EXTRA_LONG, it) }
-        bundle.putBoolean(EXTRA_IS_POSITIVE_FLOW, isPositiveFlow)
-        bundle.putBoolean(EXTRA_FROM_ADDRESS_FORM, isFromAddressForm)
+        placeId?.takeIf { it.isNotEmpty() }?.let { bundle.putString(EXTRA_PLACE_ID, placeId) }
+        latitude?.takeIf { it != 0.0 }?.let { bundle.putDouble(EXTRA_LAT, it) }
+        longitude?.takeIf { it != 0.0 }?.let { bundle.putDouble(EXTRA_LONG, it) }
         bundle.putBoolean(EXTRA_IS_POLYGON, isPolygon)
         bundle.putString(PARAM_SOURCE, source)
         bundle.putString(EXTRA_ADDRESS_STATE, addressUiState.name)
         bundle.putBoolean(EXTRA_GMS_AVAILABILITY, isGmsAvailable)
-        if (addressUiState.isAdd()) {
-            pinpointPageContract.launch(
-                context?.let {
-                    PinpointNewPageActivity.createIntent(
-                        it,
-                        bundle
-                    )
-                }
-            )
-        } else {
-            activity?.run {
-                setResult(
-                    Activity.RESULT_OK,
-                    Intent().apply {
-                        putExtra(EXTRA_PLACE_ID, placeId)
-                        latitude?.let { putExtra(EXTRA_LAT, it) }
-                        longitude?.let { putExtra(EXTRA_LONG, it) }
-                        putExtra(EXTRA_IS_POSITIVE_FLOW, isPositiveFlow)
-                        putExtra(EXTRA_FROM_ADDRESS_FORM, isFromAddressForm)
-                        putExtra(EXTRA_IS_POLYGON, isPolygon)
-                        putExtra(EXTRA_GMS_AVAILABILITY, isGmsAvailable)
-                    }
+
+        pinpointPageContract.launch(
+            context?.let {
+                PinpointNewPageActivity.createIntent(
+                    it,
+                    bundle
                 )
-                finish()
             }
-        }
+        )
     }
 }
