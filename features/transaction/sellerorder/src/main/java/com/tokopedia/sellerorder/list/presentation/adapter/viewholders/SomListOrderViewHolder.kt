@@ -161,7 +161,7 @@ open class SomListOrderViewHolder(
                 btnQuickAction?.show()
                 btnQuickAction?.isEnabled = true
             } else {
-                btnQuickAction?.isEnabled = false
+                btnQuickAction?.gone()
             }
         }
     }
