@@ -21,7 +21,6 @@ class RejectedOrderRateCoachMark @Inject constructor(){
 
     private var anchor: View? = null
     private var coachMark: CoachMark2? = null
-    private val pref: CoachMarkPreference = CoachMarkPreference
 
     fun setCoachMarkAnchor(dataKey: String, view: View) {
         if (dataKey == DATA_KEY && anchor != view) {
@@ -58,7 +57,7 @@ class RejectedOrderRateCoachMark @Inject constructor(){
         coachMark = null
     }
 
-    fun iniCoachMark(context: Context) {
+    fun initCoachMark(context: Context) {
         if (hasShown(context)) return
 
         if (coachMark == null) {
@@ -76,10 +75,10 @@ class RejectedOrderRateCoachMark @Inject constructor(){
     }
 
     private fun setHasShown(context: Context) {
-        pref.setShown(context, DATA_KEY, true)
+        CoachMarkPreference.setShown(context, DATA_KEY, true)
     }
 
     private fun hasShown(context: Context): Boolean {
-        return pref.hasShown(context, DATA_KEY)
+        return CoachMarkPreference.hasShown(context, DATA_KEY)
     }
 }
