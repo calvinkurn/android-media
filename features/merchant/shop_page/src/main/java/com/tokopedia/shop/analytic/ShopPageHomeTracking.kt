@@ -4333,7 +4333,7 @@ class ShopPageHomeTracking(
 
     private fun createTerlarisItemMap(trackerModel: ShopHomeTerlarisWidgetTrackerDataModel, shopName: String): Bundle {
         return Bundle().apply {
-            putString(DIMENSION_40, "")
+            putString(DIMENSION_40, "$ITEM_LIST_SHOP_PAGE_REIMAGINED $TERLARIS_WIDGET_VALUE")
             putString(INDEX, trackerModel.position.toString())
             putString(ITEM_BRAND, shopName)
             putString(ITEM_CATEGORY, "")
