@@ -9,6 +9,7 @@ class TokoNowCategoryL2TabViewModelTestShare: TokoNowCategoryL2TabViewModelTestF
     @Test
     fun `given apply L3 filter when onViewCreated should set category sharing model with categoryIdL3`() {
         onGetProductList(thenReturn = getProductResponse)
+        onGetQuickFilter_thenReturn(getQuickFilterResponse)
         onGetCategoryFilter_thenReturn(getCategoryFilterResponse)
 
         viewModel.onViewCreated(data)
