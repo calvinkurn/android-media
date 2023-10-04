@@ -11,7 +11,6 @@ import com.scp.auth.GotoSdk;
 import androidx.annotation.NonNull;
 import androidx.core.app.TaskStackBuilder;
 import androidx.preference.PreferenceManager;
-
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
@@ -76,6 +75,7 @@ import com.tokopedia.oms.domain.PostVerifyCartWrapper;
 import com.tokopedia.promotionstarget.presentation.GratifCmInitializer;
 import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.remoteconfig.GraphqlHelper;
+import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.tkpd.ConsumerSplashScreen;
 import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
