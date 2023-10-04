@@ -45,7 +45,7 @@ data class StoriesDetailItem(
     val event: StoriesDetailItemUiEvent = StoriesDetailItemUiEvent.PAUSE,
     val content: StoriesItemContent = StoriesItemContent(),
     val resetValue: Int = -1,
-    val isSameContent: Boolean = false,
+    val isContentLoaded: Boolean = false,
     val meta: Meta = Meta(),
     @IgnoredOnParcel val author: StoryAuthor = StoryAuthor.Unknown,
     @IgnoredOnParcel val menus: List<ContentMenuItem> = emptyList(),

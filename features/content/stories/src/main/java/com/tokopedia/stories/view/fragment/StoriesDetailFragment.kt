@@ -288,7 +288,7 @@ class StoriesDetailFragment @Inject constructor(
 
         storiesDetailsTimer(state)
 
-        if (currentItem.isSameContent) return
+        if (currentItem.isContentLoaded) return
 
         renderAuthor(currentItem)
         renderNudge(currentItem)

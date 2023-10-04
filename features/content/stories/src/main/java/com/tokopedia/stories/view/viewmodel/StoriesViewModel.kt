@@ -261,12 +261,12 @@ class StoriesViewModel @AssistedInject constructor(
     }
 
     private fun handleOnResumeStories() {
-        updateDetailData(event = if (mDetail.isSameContent && mIsPageSelected) RESUME else PAUSE, isSameContent = true)
+        updateDetailData(event = if (mDetail.isContentLoaded && mIsPageSelected) RESUME else PAUSE, isSameContent = true)
     }
 
     private fun handlePageIsSelected() {
         mIsPageSelected = true
-        updateDetailData(event = if (mDetail.isSameContent) RESUME else PAUSE)
+        updateDetailData(event = if (mDetail.isContentLoaded) RESUME else PAUSE)
     }
 
     private fun handleContentIsLoaded() {
@@ -543,7 +543,7 @@ class StoriesViewModel @AssistedInject constructor(
                     } else {
                         mResetValue
                     },
-                    isSameContent = isSameContent,
+                    isContentLoaded = isSameContent,
                     status = item.status
                 )
             }
