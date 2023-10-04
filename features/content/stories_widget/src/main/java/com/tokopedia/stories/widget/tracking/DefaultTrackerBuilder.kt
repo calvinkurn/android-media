@@ -1,8 +1,5 @@
 package com.tokopedia.stories.widget.tracking
 
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.content.analytic.BusinessUnit
 import com.tokopedia.content.analytic.CurrentSite
 import com.tokopedia.content.analytic.Event
@@ -13,18 +10,15 @@ import com.tokopedia.stories.widget.domain.StoriesWidgetState
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
-import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
 
 /**
- * Created by kenny.hadisaputra on 23/08/23
+ * Created by kenny.hadisaputra on 03/10/23
  */
-class DefaultTrackingManager(
+class DefaultTrackerBuilder(
     private val entryPoint: StoriesEntryPoint,
-    lifecycleOwner: LifecycleOwner,
-    private val trackingQueue: TrackingQueue,
     private val userSession: UserSessionInterface,
-) : TrackingManager {
+) : StoriesWidgetTracker.Builder {
 
     private val eventCategory: String = when (entryPoint) {
         StoriesEntryPoint.ShopPage, StoriesEntryPoint.ShopPageReimagined -> "shop page - buyer"
@@ -47,29 +41,16 @@ class DefaultTrackingManager(
         StoriesEntryPoint.TopChatRoom -> "46004"
     }
 
-    private val impressedShopIds = mutableSetOf<String>()
-
     private val sessionIris get() = TrackApp.getInstance().gtm.irisSessionId
 
-    init {
-        lifecycleOwner.lifecycle.addObserver(object : LifecycleEventObserver {
-            override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
-                when (event) {
-                    Lifecycle.Event.ON_PAUSE -> sendAll()
-                    else -> {}
-                }
-            }
-        })
-    }
+    override fun onImpressedEntryPoint(state: StoriesWidgetState): StoriesWidgetTracker.Data {
+        if (!isStoriesValid(state)) return StoriesWidgetTracker.Data.Empty
 
-    override fun impressEntryPoints(state: StoriesWidgetState) = requireHasStories(state) {
-        if (impressedShopIds.contains(state.shopId)) return@requireHasStories
-        impressedShopIds.add(state.shopId)
-
+        val eventAction = "view - story entry point"
         val map = BaseTrackerBuilder().constructBasicPromotionView(
             event = Event.promoView,
             eventCategory = eventCategory,
-            eventAction = "view - story entry point",
+            eventAction = eventAction,
             eventLabel = "${entryPoint.trackerName} - ${state.shopId} - story - shop",
             promotions = listOf(
                 BaseTrackerConst.Promotion(
@@ -86,14 +67,17 @@ class DefaultTrackingManager(
             .appendCustomKeyValue(Key.trackerId, impressionTrackerId)
             .build()
 
-        if (map is HashMap<String, Any>) trackingQueue.putEETracking(map)
+        return StoriesWidgetTracker.Data(state.shopId, eventAction, true, map)
     }
 
-    override fun clickEntryPoints(state: StoriesWidgetState) = requireHasStories(state) {
+    override fun onClickedEntryPoint(state: StoriesWidgetState): StoriesWidgetTracker.Data  {
+        if (!isStoriesValid(state)) return StoriesWidgetTracker.Data.Empty
+
+        val eventAction = "click - story entry point"
         val map = BaseTrackerBuilder().constructBasicPromotionClick(
             event = Event.promoClick,
             eventCategory = eventCategory,
-            eventAction = "click - story entry point",
+            eventAction = eventAction,
             eventLabel = "${entryPoint.trackerName} - ${state.shopId} - story - shop",
             promotions = listOf(
                 BaseTrackerConst.Promotion(
@@ -110,20 +94,10 @@ class DefaultTrackingManager(
             .appendCustomKeyValue(Key.trackerId, clickTrackerId)
             .build()
 
-        if (map is HashMap<String, Any>) trackingQueue.putEETracking(map)
+        return StoriesWidgetTracker.Data(state.shopId, eventAction, false, map)
     }
 
-    fun sendAll() {
-        trackingQueue.sendAll()
-    }
-
-    fun resetImpression() {
-        impressedShopIds.clear()
-    }
-
-    private fun requireHasStories(state: StoriesWidgetState, onHasStories: () -> Unit) {
-        if (state.status == StoriesStatus.NoStories) return
-        if (state.shopId.isBlank()) return
-        onHasStories()
+    private fun isStoriesValid(state: StoriesWidgetState): Boolean {
+        return state.status != StoriesStatus.NoStories && state.shopId.isNotBlank()
     }
 }

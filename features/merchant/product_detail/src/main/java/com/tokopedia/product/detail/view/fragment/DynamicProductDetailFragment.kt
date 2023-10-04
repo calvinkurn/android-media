@@ -228,6 +228,7 @@ import com.tokopedia.product.detail.tracking.ProductDetailInfoTracking
 import com.tokopedia.product.detail.tracking.ProductDetailNavigationTracker
 import com.tokopedia.product.detail.tracking.ProductDetailNavigationTracking
 import com.tokopedia.product.detail.tracking.ProductDetailServerLogger
+import com.tokopedia.product.detail.tracking.ProductDetailStoriesWidgetTrackerBuilder
 import com.tokopedia.product.detail.tracking.ProductShopReviewTracking
 import com.tokopedia.product.detail.tracking.ProductSocialProofTracking
 import com.tokopedia.product.detail.tracking.ProductThumbnailVariantTracking
@@ -308,7 +309,10 @@ import com.tokopedia.shop.common.widget.PartialButtonShopFollowersView
 import com.tokopedia.stories.widget.NoAnimateAnimationStrategy
 import com.tokopedia.stories.widget.StoriesWidgetManager
 import com.tokopedia.stories.widget.domain.StoriesEntryPoint
+import com.tokopedia.stories.widget.domain.StoriesWidgetState
 import com.tokopedia.stories.widget.storiesManager
+import com.tokopedia.stories.widget.tracking.DefaultTrackerBuilder
+import com.tokopedia.stories.widget.tracking.StoriesWidgetTracker
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.ImageUnify
@@ -582,6 +586,9 @@ open class DynamicProductDetailFragment :
         setScrollingParent(binding?.rvPdp)
         setAnimationStrategy(NoAnimateAnimationStrategy())
         setShowCoachMarkIfApplicable(false)
+        setTrackerBuilder(
+            ProductDetailStoriesWidgetTrackerBuilder.create(productId.orEmpty(), getUserSession())
+        )
     }
 
     private val scrollListener by lazy {
