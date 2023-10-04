@@ -3,6 +3,7 @@ package com.tokopedia.stories.data.mapper
 import com.tokopedia.content.common.report_content.model.ContentMenuIdentifier
 import com.tokopedia.content.common.report_content.model.ContentMenuItem
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.stories.domain.model.detail.StoriesDetailsResponseModel
 import com.tokopedia.stories.domain.model.detail.StoriesDetailsResponseModel.ContentStoriesDetails
 import com.tokopedia.stories.domain.model.group.StoriesGroupsResponseModel
@@ -17,9 +18,9 @@ import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContent
 import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContentType.Image
 import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContentType.Video
 import com.tokopedia.stories.view.model.StoriesGroupHeader
-import com.tokopedia.universal_sharing.view.model.LinkProperties
 import com.tokopedia.stories.view.model.StoriesGroupItem
 import com.tokopedia.stories.view.model.StoriesUiModel
+import com.tokopedia.universal_sharing.view.model.LinkProperties
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 import com.tokopedia.stories.R as storiesR
@@ -92,21 +93,23 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
                     menus = buildMenu(stories.interaction, stories.author),
                     share = StoriesDetailItem.Sharing(
                         isShareable = stories.interaction.shareable,
+                        shareText = stories.meta.shareTextDescription,
                         metadata = LinkProperties(
+                            linkerType = LinkerData.STORIES_TYPE,
                             ogTitle = stories.meta.shareTitle,
                             ogImageUrl = stories.meta.shareImage,
                             ogDescription = stories.meta.shareDescription,
                             deeplink = stories.appLink,
-                            desktopUrl = stories.webLink,
+                            desktopUrl = stories.webLink
                         )
                     ),
                     productCount = stories.totalProductsFmt.ifEmpty { "0" },
                     meta = Meta(
                         activityTracker = stories.meta.activityTracker,
-                        templateTracker = stories.meta.templateTracker,
+                        templateTracker = stories.meta.templateTracker
                     ),
-                    status = StoriesDetailItem.StoryStatus.getByValue(stories.status),
-                    )
+                    status = StoriesDetailItem.StoryStatus.getByValue(stories.status)
+                )
             }
         )
     }
