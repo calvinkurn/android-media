@@ -464,6 +464,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
     private fun setFocusOnPromoAttemptTextField(keyboardHeight: Int) {
         // Add padding to make voucher code text field displayed above keyboard
         binding?.rvPromo?.setMargin(0, 0, 0, keyboardHeight.toDp())
+        binding?.rvPromo?.requestLayout()
 
         val itemCount = recyclerViewAdapter.itemCount
         binding?.rvPromo?.smoothSnapToPosition(itemCount)
@@ -471,6 +472,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
 
     private fun resetFocusOnPromoAttemptTextField() {
         binding?.rvPromo?.setMargin(0, 0, 0, 0)
+        binding?.rvPromo?.requestLayout()
     }
 
     private fun setupObservers() {
