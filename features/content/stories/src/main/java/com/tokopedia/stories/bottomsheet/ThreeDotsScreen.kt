@@ -36,7 +36,7 @@ fun ThreeDotsPage(
     onDeleteStoryClicked: (ContentMenuItem) -> Unit,
     onMenuClicked: (ContentMenuItem) -> Unit = {}
 ) {
-    NestTheme {
+    NestTheme(darkTheme = true) {
         ConstraintLayout(
             modifier = Modifier
                 .fillMaxWidth()

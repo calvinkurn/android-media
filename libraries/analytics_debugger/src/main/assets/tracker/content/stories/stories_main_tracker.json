@@ -220,10 +220,10 @@
         },
         {
             "event": "clickContent",
-            "eventAction": "click - move to other group",
+            "eventAction": "click - move to other category",
             "eventCategory": "stories room",
             "eventLabel": ".* - .*",
-            "trackerId": "46059",
+            "trackerId": "46060",
             "businessUnit": "content",
             "currentSite": "(tokopediamarketplace|tokopediaseller)",
             "sessionIris": ".*",

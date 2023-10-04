@@ -38,7 +38,7 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
  */
 @Composable
 fun StoriesProductNudge(productCount: String, onClick: () -> Unit) {
-    NestTheme {
+    NestTheme(darkTheme = true) {
         Box(
             Modifier.fillMaxSize(),
             contentAlignment = Alignment.TopCenter

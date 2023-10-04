@@ -114,20 +114,6 @@ class StoriesViewModel @AssistedInject constructor(
     private val mGroupSize: Int
         get() = _storiesMainData.value.groupItems.size
 
-    private val mGroupItem: StoriesGroupItem
-        get() {
-            val groupPosition = _groupPos.value
-            return if (groupPosition < 0) {
-                StoriesGroupItem()
-            } else {
-                if (_storiesMainData.value.groupItems.size <= groupPosition) {
-                    StoriesGroupItem()
-                } else {
-                    _storiesMainData.value.groupItems[groupPosition]
-                }
-            }
-        }
-
     private val mDetailSize: Int
         get() {
             val groupPosition = _groupPos.value
@@ -143,15 +129,12 @@ class StoriesViewModel @AssistedInject constructor(
         }
 
     val storyId: String
-        get() {
-            val currentItem = mGroupItem.detail.detailItems
-            return currentItem.getOrNull(mGroupItem.detail.selectedDetailPosition)?.id.orEmpty()
-        }
+        get() = mDetail.id
 
     val isProductAvailable: Boolean
         get() {
-            val currentItem = mGroupItem.detail.detailItems
-            val productCount = currentItem.getOrNull(mGroupItem.detail.selectedDetailPosition)?.productCount
+            val currentItem = mGroup.detail.detailItems
+            val productCount = currentItem.getOrNull(mGroup.detail.selectedDetailPosition)?.productCount
             return productCount?.isNotEmpty() == true || productCount != "0"
         }
 
@@ -162,6 +145,8 @@ class StoriesViewModel @AssistedInject constructor(
         get() = _resetValue.value
 
     private var mLatestTrackPosition = -1
+
+    private var mIsPageSelected = false
 
     val storiesState: Flow<StoriesUiState>
         get() = combine(
@@ -201,7 +186,7 @@ class StoriesViewModel @AssistedInject constructor(
             StoriesUiAction.ContentIsLoaded -> handleContentIsLoaded()
             StoriesUiAction.SaveInstanceStateData -> handleSaveInstanceStateData()
             is StoriesUiAction.Navigate -> handleNav(action.appLink)
-            else -> {}
+            StoriesUiAction.PageIsSelected -> handlePageIsSelected()
         }
     }
 
@@ -228,6 +213,7 @@ class StoriesViewModel @AssistedInject constructor(
     }
 
     private fun handleMainData(selectedGroup: Int) {
+        mIsPageSelected = false
         mLatestTrackPosition = -1
         _groupPos.update { selectedGroup }
         viewModelScope.launchCatchError(block = {
@@ -290,22 +276,29 @@ class StoriesViewModel @AssistedInject constructor(
         updateDetailData(event = RESUME, isSameContent = true)
     }
 
+    private fun handlePageIsSelected() {
+        mIsPageSelected = true
+        updateDetailData(event = if (mDetail.isSameContent) RESUME else PAUSE)
+    }
+
     private fun handleContentIsLoaded() {
-        updateDetailData(event = RESUME, isSameContent = true)
+        updateDetailData(event = if (mIsPageSelected) RESUME else PAUSE, isSameContent = true)
         checkAndHitTrackActivity()
     }
 
     private suspend fun setInitialData() {
-        val isCached = mGroupItem.detail.detailItems.isNotEmpty()
-        val currentDetail = if (isCached) {
-            mGroupItem.detail
-        } else {
+        val isCached = mGroup.detail.detailItems.isNotEmpty()
+        val currentDetail = if (isCached) mGroup.detail
+        else {
             val detailData = requestStoriesDetailData(mGroup.groupId)
             updateMainData(detail = detailData, groupPosition = mGroupPos)
             detailData
         }
 
-        updateDetailData(position = currentDetail.selectedDetailPositionCached, isReset = true)
+        val cachedPos = currentDetail.selectedDetailPositionCached
+        val maxPos = mDetailSize.minus(1)
+        val position = if (cachedPos > maxPos) maxPos else cachedPos
+        updateDetailData(position = position, isReset = true)
         if (currentDetail == StoriesDetail()) _storiesEvent.emit(StoriesUiEvent.EmptyDetailPage)
     }
 
@@ -344,23 +337,30 @@ class StoriesViewModel @AssistedInject constructor(
         updateMainData(detail = nextGroupData, groupPosition = nextGroupPos)
     }
 
-    private fun updateMainData(detail: StoriesDetail, groupPosition: Int) {
+    private fun updateMainData(
+        groupHeader: List<StoriesGroupHeader> = emptyList(),
+        groupItems: List<StoriesGroupItem> = emptyList(),
+        detail: StoriesDetail,
+        groupPosition: Int,
+    ) {
         _storiesMainData.update { group ->
             group.copy(
                 selectedGroupId = mGroup.groupId,
                 selectedGroupPosition = mGroupPos,
-                groupHeader = group.groupHeader.mapIndexed { index, storiesGroupHeader ->
-                    storiesGroupHeader.copy(isSelected = index == mGroupPos)
+                groupHeader = groupHeader.ifEmpty {
+                    group.groupHeader.mapIndexed { index, storiesGroupHeader ->
+                        storiesGroupHeader.copy(isSelected = index == mGroupPos)
+                    }
                 },
-                groupItems = group.groupItems.mapIndexed { index, storiesGroupItemUiModel ->
-                    if (index == groupPosition) {
-                        storiesGroupItemUiModel.copy(
-                            detail = detail.copy(
-                                selectedGroupId = storiesGroupItemUiModel.groupId
+                groupItems = groupItems.ifEmpty {
+                    group.groupItems.mapIndexed { index, storiesGroupItemUiModel ->
+                        if (index == groupPosition) {
+                            storiesGroupItemUiModel.copy(
+                                detail = detail.copy(
+                                    selectedGroupId = storiesGroupItemUiModel.groupId
+                                )
                             )
-                        )
-                    } else {
-                        storiesGroupItemUiModel
+                        } else storiesGroupItemUiModel
                     }
                 }
             )
@@ -420,7 +420,7 @@ class StoriesViewModel @AssistedInject constructor(
     private fun getProducts() {
         viewModelScope.launchCatchError(block = {
             products.update { product -> product.copy(resultState = ResultState.Loading) }
-            val productList = repository.getStoriesProducts(args.authorId, storyId, mGroupItem.groupName)
+            val productList = repository.getStoriesProducts(args.authorId, storyId, mGroup.groupName)
             products.update { productList }
         }, onError = {
                 products.update { product -> product.copy(resultState = ResultState.Fail(it)) }
@@ -499,34 +499,38 @@ class StoriesViewModel @AssistedInject constructor(
     }
 
     private fun handleDeleteStory() {
-        viewModelScope.launchCatchError(block = {
-            val response = repository.deleteStory(storyId)
-            if (response) {
-                // Remove story~
-                val newList = _storiesMainData.value.groupItems.map {
-                    if (it == mGroupItem) {
-                        it.copy(
-                            detail = it.detail.copy(
-                                detailItems = it.detail.detailItems.map { item ->
-                                    if (item.id == storyId) {
-                                        item.copy(status = StoriesDetailItem.StoryStatus.Removed)
-                                    } else {
-                                        item
-                                    }
-                                }
-                            )
-                        )
-                    } else {
-                        it
-                    }
-                }
-                _storiesMainData.update { group ->
-                    group.copy(groupItems = newList)
-                }
-            } else {
-                _storiesEvent.emit(StoriesUiEvent.ShowErrorEvent(MessageErrorException()))
-            }
-        }, onError = { _storiesEvent.emit(StoriesUiEvent.ShowErrorEvent(it)) })
+        viewModelScope.launch { repository.deleteStory(storyId) }
+
+        val removedItem = mGroup.detail.detailItems.filterNot { it.id == storyId }
+        val mainData = _storiesMainData.value
+
+        val newDetail = if (removedItem.isEmpty()) StoriesDetail()
+        else mGroup.detail.copy(detailItems = removedItem)
+
+        val newGroupHeader = if (removedItem.isEmpty()) {
+            mainData.groupHeader.filterNot { it.groupId == mGroup.detail.selectedGroupId }
+        } else emptyList()
+        val newGroupItems = if (removedItem.isEmpty()) {
+            mainData.groupItems.filterNot { it.groupId == mGroup.detail.selectedGroupId }
+        } else emptyList()
+
+        updateMainData(
+            groupHeader = newGroupHeader,
+            groupItems = newGroupItems,
+            detail = newDetail,
+            groupPosition = mGroupPos,
+        )
+
+        moveToOtherStories()
+    }
+
+    private fun moveToOtherStories() {
+        val newGroupPosition = mGroupPos.plus(1)
+        when {
+            mDetailPos < mDetailSize -> updateDetailData(position = mDetailPos)
+            newGroupPosition < mGroupSize -> handleSelectGroup(position = newGroupPosition, true)
+            else -> viewModelScope.launch { _storiesEvent.emit(StoriesUiEvent.FinishedAllStories) }
+        }
     }
 
     private fun updateDetailData(
@@ -537,12 +541,12 @@ class StoriesViewModel @AssistedInject constructor(
     ) {
         if (position == -1) return
         _detailPos.update { position }
-        val positionCached = mGroupItem.detail.selectedDetailPositionCached
-        val currentDetail = mGroupItem.detail.copy(
+        val positionCached = mGroup.detail.selectedDetailPositionCached
+        val currentDetail = mGroup.detail.copy(
             selectedGroupId = mGroup.groupId,
             selectedDetailPosition = position,
             selectedDetailPositionCached = if (positionCached <= position) position else positionCached,
-            detailItems = mGroupItem.detail.detailItems.map { item ->
+            detailItems = mGroup.detail.detailItems.map { item ->
                 item.copy(
                     event = event,
                     resetValue = if (isReset) {
@@ -577,7 +581,7 @@ class StoriesViewModel @AssistedInject constructor(
 
     private fun checkAndHitTrackActivity() {
         viewModelScope.launchCatchError(block = {
-            val detailItem = mGroupItem.detail
+            val detailItem = mGroup.detail
             if (mDetailPos <= mLatestTrackPosition) return@launchCatchError
             mLatestTrackPosition = mDetailPos
             val trackerId = detailItem.detailItems[mLatestTrackPosition].meta.activityTracker

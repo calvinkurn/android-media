@@ -13,7 +13,6 @@ import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.content.common.util.withCache
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.stories.analytics.StoriesAnalytics
 import com.tokopedia.stories.analytics.StoriesEEModel
@@ -29,6 +28,7 @@ import com.tokopedia.stories.view.viewmodel.StoriesViewModel
 import com.tokopedia.stories.view.viewmodel.StoriesViewModelFactory
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.PauseStories
+import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.SetMainData
 import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
@@ -63,9 +63,9 @@ class StoriesGroupFragment @Inject constructor(
     private val pagerListener = object : ViewPager2.OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
             super.onPageSelected(position)
-            showSelectedGroupHighlight(position)
-            viewModelAction(StoriesUiAction.SetMainData(position))
+            viewModelAction(SetMainData(position))
             trackMoveGroup()
+            showSelectedGroupHighlight(position)
         }
     }
 
@@ -117,8 +117,6 @@ class StoriesGroupFragment @Inject constructor(
         showPageLoading(true)
 
         layoutGroupLoading.icCloseLoading.setOnClickListener { activity?.finish() }
-        if (storiesGroupViewPager.adapter != null) return@with
-        storiesGroupViewPager.adapter = pagerAdapter
         storiesGroupViewPager.setPageTransformer(StoriesPageAnimation())
         storiesGroupViewPager.registerOnPageChangeCallback(pagerListener)
     }
@@ -135,6 +133,7 @@ class StoriesGroupFragment @Inject constructor(
             binding.tvHighlight.animate().alpha(1f)
             delay(1000)
             binding.tvHighlight.animate().alpha(0f)
+            viewModelAction(StoriesUiAction.PageIsSelected)
         }
     }
 
@@ -184,8 +183,8 @@ class StoriesGroupFragment @Inject constructor(
         setNoInternet(false)
         setFailed(false)
 
+        binding.storiesGroupViewPager.adapter = pagerAdapter
         pagerAdapter.setStoriesGroup(state)
-        pagerAdapter.notifyItemRangeChanged(pagerAdapter.itemCount, state.groupItems.size)
         selectGroupPosition(state.selectedGroupPosition, false)
 
         showPageLoading(false)
