@@ -4017,22 +4017,23 @@ class ShopPageHomeTracking(
         shopId: String,
         userId: String,
         shopName: String,
-        shopType: String
+        shopType: String,
+        etalaseGroupName: String
     ) {
         val totalEtalaseGroup = atcTrackerModel.totalEtalaseGroup
         val etalaseId = atcTrackerModel.etalaseId
-        var eventLabelValue: String = if (totalEtalaseGroup == Int.ONE) {
+        val widgetVariant = if (totalEtalaseGroup == Int.ONE) {
             WIDGET_DIRECT_PURCHASE_WITHOUT_ETALASE_GROUP_VARIANT
         } else {
             WIDGET_DIRECT_PURCHASE_WITH_ETALASE_GROUP_VARIANT
         }
-        eventLabelValue = joinDash(eventLabelValue, etalaseId)
+        val eventLabel = joinDash(widgetVariant, etalaseGroupName, etalaseId)
 
         val eventBundle = Bundle().apply {
             putString(EVENT, DIRECT_PURCHASE_ADD_TO_CART)
             putString(EVENT_ACTION, REIMAGINED_CLICK_ADD_TO_CART_DIRECT_PURCHASE_WIDGET)
             putString(EVENT_CATEGORY, SHOP_PAGE_BUYER)
-            putString(EVENT_LABEL, eventLabelValue)
+            putString(EVENT_LABEL, eventLabel)
             putString(TRACKER_ID, TRACKER_ID_REIMAGINED_CLICK_ADD_TO_CART_DIRECT_PURCHASE_WIDGET)
             putString(BUSINESS_UNIT, PHYSICAL_GOODS_PASCAL_CASE)
             putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
@@ -4118,17 +4119,17 @@ class ShopPageHomeTracking(
         shopId: String,
         userId: String
     ) {
-        var eventLabelValue = if (totalEtalaseGroup == Int.ONE) {
+        val widgetVariant = if (totalEtalaseGroup == Int.ONE) {
             WIDGET_DIRECT_PURCHASE_WITHOUT_ETALASE_GROUP_VARIANT
         } else {
             WIDGET_DIRECT_PURCHASE_WITH_ETALASE_GROUP_VARIANT
         }
-        eventLabelValue = joinDash(eventLabelValue, etalaseGroupName, etalaseId)
+        val eventLabel = joinDash(widgetVariant, etalaseGroupName, etalaseId)
         val eventBundle = Bundle().apply {
             putString(EVENT, SELECT_CONTENT)
             putString(EVENT_ACTION, REIMAGINED_CLICK_ETALASE_DIRECT_PURCHASE_WIDGET)
             putString(EVENT_CATEGORY, SHOP_PAGE_BUYER)
-            putString(EVENT_LABEL, eventLabelValue)
+            putString(EVENT_LABEL, eventLabel)
             putString(TRACKER_ID, TRACKER_ID_REIMAGINED_CLICK_ETALASE_DIRECT_PURCHASE_WIDGET)
             putString(BUSINESS_UNIT, PHYSICAL_GOODS_PASCAL_CASE)
             putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)

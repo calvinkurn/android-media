@@ -1355,7 +1355,8 @@ open class ShopPageHomeFragment :
                 shopId,
                 userId,
                 shopName,
-                customDimensionShopPage.shopType.orEmpty()
+                customDimensionShopPage.shopType.orEmpty(),
+                it.etalaseGroupName
             )
         }
     }
