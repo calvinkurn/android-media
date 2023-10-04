@@ -212,6 +212,7 @@ import com.tokopedia.product.detail.data.util.VariantMapper.generateVariantStrin
 import com.tokopedia.product.detail.data.util.roundToIntOrZero
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.tracking.APlusContentTracking
+import com.tokopedia.product.detail.tracking.BMGMTracking
 import com.tokopedia.product.detail.tracking.CommonTracker
 import com.tokopedia.product.detail.tracking.ContentWidgetTracker
 import com.tokopedia.product.detail.tracking.ContentWidgetTracking
@@ -304,7 +305,6 @@ import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersListener
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersView
-import com.tokopedia.topads.detail_sheet.TopAdsDetailSheet
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.ImageUnify
@@ -485,9 +485,6 @@ open class DynamicProductDetailFragment :
 
     // This productId is only use for backend hit
     private var productId: String? = null
-
-    // this product id will be assign after thumbnail variant selected, it will use when open vbs
-    private var productIdThumbnailSelected: String? = null
     private var productKey: String? = null
     private var shopDomain: String? = null
     private var affiliateString: String? = null
@@ -561,10 +558,6 @@ open class DynamicProductDetailFragment :
                 dismiss()
             }
         }
-    }
-
-    private val topAdsDetailSheet: TopAdsDetailSheet? by lazy {
-        TopAdsDetailSheet.newInstance()
     }
 
     private val recommendationCarouselPositionSavedState = SparseIntArray()
@@ -759,6 +752,7 @@ open class DynamicProductDetailFragment :
         if (productId != null || (productKey != null && shopDomain != null)) {
             context?.let {
                 (it as? ProductDetailActivity)?.startMonitoringPltNetworkRequest()
+                EmbraceMonitoring.startMoments(ProductDetailConstant.PDP_RESULT_TRACE_P2_DATA)
                 viewModel.getProductP1(
                     ProductParams(
                         productId = productId,
@@ -1119,16 +1113,19 @@ open class DynamicProductDetailFragment :
 
     private fun reloadMiniCart() {
         val hasQuantityEditor =
-            viewModel.getDynamicProductInfoP1?.basic?.isTokoNow == true
-                || (viewModel.productLayout.value as? Success<List<DynamicPdpDataModel>>)
-                    ?.data
-                    ?.any { it.name().contains(PAGENAME_IDENTIFIER_RECOM_ATC) } == true
+            viewModel.getDynamicProductInfoP1?.basic?.isTokoNow == true ||
+                (viewModel.productLayout.value as? Success<List<DynamicPdpDataModel>>)
+                ?.data
+                ?.any { it.name().contains(PAGENAME_IDENTIFIER_RECOM_ATC) } == true
 
-        if (viewModel.getDynamicProductInfoP1 == null
-            || context == null
-            || !hasQuantityEditor
-            || firstOpenPage == true
-            || !viewModel.isUserSessionActive) return
+        if (viewModel.getDynamicProductInfoP1 == null ||
+            context == null ||
+            !hasQuantityEditor ||
+            firstOpenPage == true ||
+            !viewModel.isUserSessionActive
+        ) {
+            return
+        }
 
         val data = viewModel.getDynamicProductInfoP1
         viewModel.getMiniCart(data?.basic?.shopID ?: "")
@@ -2673,7 +2670,6 @@ open class DynamicProductDetailFragment :
 
         pdpUiUpdater?.updateVariantData(title = title, processedVariant = variantProcessedData)
         pdpUiUpdater?.updateMediaScrollPosition(selectedChild?.optionIds?.firstOrNull())
-
         updateProductInfoOnVariantChanged(selectedChild)
 
         updateUi()
@@ -2688,7 +2684,6 @@ open class DynamicProductDetailFragment :
 
         viewModel.updateDynamicProductInfoData(updatedDynamicProductInfo)
         productId = updatedDynamicProductInfo?.basic?.productID
-        productIdThumbnailSelected = productId
 
         val boeData = viewModel.getBebasOngkirDataByProductId()
         productId?.let { productId ->
@@ -2733,6 +2728,11 @@ open class DynamicProductDetailFragment :
             productId ?: "",
             viewModel.p2Data.value?.arInfo ?: ProductArInfo()
         )
+
+        // update BMGM data
+        viewModel.getP2()?.bmgm?.let {
+            pdpUiUpdater?.updateBMGMSneakPeak(productId = productId.orEmpty(), bmgm = it)
+        }
     }
 
     /**
@@ -2747,8 +2747,9 @@ open class DynamicProductDetailFragment :
         pdpUiUpdater?.updateSingleVariant(singleVariantUpdated)
         pdpUiUpdater?.updateMediaScrollPosition(optionId)
 
-        // store the product id to this variable to open vbs later
-        productIdThumbnailSelected = selectedChild?.productId.ifNull { productId.orEmpty() }
+        if (selectedChild != null) {
+            updateProductInfoOnVariantChanged(selectedChild)
+        }
 
         scrollThumbnailVariant()
 
@@ -2981,6 +2982,9 @@ open class DynamicProductDetailFragment :
                 isSuccess = it.shopInfo.shopCore.shopID.isNotEmpty()
             )
             stickyLoginView?.loadContent()
+            getRecyclerView()?.addOneTimeGlobalLayoutListener {
+                EmbraceMonitoring.stopMoments(ProductDetailConstant.PDP_RESULT_TRACE_P2_DATA)
+            }
         }
     }
 
@@ -3540,12 +3544,20 @@ open class DynamicProductDetailFragment :
         if (variantOptions.isEmpty()) { // lihat semua label clicked
             goToAtcVariant()
         } else { // chip variant clicked
-            val singleVariant = pdpUiUpdater?.productSingleVariant ?: return
-            singleVariant.mapOfSelectedVariant[variantOptions.variantCategoryKey] = variantOptions.variantId
-            val child = viewModel.getChildOfVariantSelected(singleVariant)
-            productId = child?.productId
+            onVariantContinuationToVBS(variantOptions)
             goToAtcVariant()
         }
+    }
+
+    /**
+     * Update variant selected but not refresh the pdp UI
+     * and also get product id which clicked to passing to VBS
+     */
+    private fun onVariantContinuationToVBS(variantOptions: VariantOptionWithAttribute) {
+        pdpUiUpdater?.updateVariantOneLevel(variantOptions = variantOptions)
+        val singleVariant = pdpUiUpdater?.productSingleVariant ?: return
+        val child = viewModel.getChildOfVariantSelected(singleVariant)
+        productId = child?.productId
     }
 
     override fun onThumbnailVariantSelected(variantId: String, categoryKey: String) {
@@ -3620,18 +3632,13 @@ open class DynamicProductDetailFragment :
                         saveAfterClose = false
                         cartTypeData = customCartRedirection
                     }
-                    // if pdp show single variant with thumbnail type, so product id from [productIdThumbnailSelected]
-                    // otherwise [productId]
-                    val isFromThumbnailVariant =
-                        pdpUiUpdater?.productSingleVariant?.isThumbnailType.orFalse()
-                    val pid = if (isFromThumbnailVariant) productIdThumbnailSelected else productId
 
                     viewModel.clearCacheP2Data()
 
                     AtcVariantHelper.pdpToAtcVariant(
                         context = ctx,
                         pageSource = VariantPageSource.PDP_PAGESOURCE,
-                        productId = pid.orEmpty(),
+                        productId = productId.orEmpty(),
                         productInfoP1 = p1,
                         warehouseId = warehouseId.orEmpty(),
                         pdpSession = p1.pdpSession,
@@ -3669,18 +3676,27 @@ open class DynamicProductDetailFragment :
         }
     }
 
-    private fun determineInitialOptionId(productId: String?): MutableMap<String, String> {
+    private fun determineInitialOptionId(productId: String?): Map<String, String> {
         // thumbnail variant not auto-select when first open pdp or refresh event
-        val singleVariant = pdpUiUpdater?.productSingleVariant ?: return mutableMapOf()
+        val singleVariant = pdpUiUpdater?.productSingleVariant ?: return emptyMap()
         if (singleVariant.isThumbnailType) {
-            return mutableMapOf()
+            return emptyMap()
         }
-        val variantData = viewModel.variantData ?: return mutableMapOf()
+        val variantData = viewModel.variantData ?: return emptyMap()
         val selectedChild = variantData.children.firstOrNull { it.productId == productId.orEmpty() }
         singleVariant.mapOfSelectedVariant = DynamicProductDetailMapper.determineSelectedOptionIds(
             variantData,
             selectedChild
         )
+
+        // thumbnail variant not auto-select when first open pdp or refresh event
+        // but variant lvl-2 keep selected
+        if (singleVariant.isThumbnailType) {
+            singleVariant.mapOfSelectedVariant.keys.firstOrNull()?.let {
+                singleVariant.mapOfSelectedVariant[it] = ""
+            }
+        }
+
         pdpUiUpdater?.updateSingleVariant(singleVariant)
 
         return singleVariant.mapOfSelectedVariant
@@ -4267,7 +4283,10 @@ open class DynamicProductDetailFragment :
             sellerDistrictId = viewModel.getMultiOriginByProductId().districtId,
             lcaWarehouseId = getLcaWarehouseId(),
             campaignId = campaignId,
-            variantId = variantId
+            variantId = variantId,
+            offerId = viewModel.getP2()?.bmgm?.data?.firstOrNull {
+                it.productIDs.contains(productId)
+            }?.offerId.orEmpty()
         )
     }
 
@@ -4724,19 +4743,6 @@ open class DynamicProductDetailFragment :
         }
     }
 
-    private fun showTopAdsBottomSheet() {
-        context?.let {
-            context?.let {
-                topAdsDetailSheet?.show(
-                    childFragmentManager,
-                    topAdsGetProductManage.data.adType,
-                    topAdsGetProductManage.data.adId,
-                    viewModel.p2Login.value?.topAdsGetShopInfo?.category ?: 0
-                )
-            }
-        }
-    }
-
     private fun clickButtonWhenVariantTokonow() {
         if (buttonActionType == ProductDetailCommonConstant.CHECK_WISHLIST_BUTTON) {
             DynamicProductDetailTracking.Click.eventClickOosButton(
@@ -5151,7 +5157,6 @@ open class DynamicProductDetailFragment :
     private fun updateProductId() {
         viewModel.getDynamicProductInfoP1?.let { productInfo ->
             productId = productInfo.basic.productID
-            productIdThumbnailSelected = productId // reset when p1 refresh
         }
     }
 
@@ -6056,6 +6061,18 @@ open class DynamicProductDetailFragment :
             title,
             commonTracker,
             component
+        )
+    }
+
+    override fun onBMGMClicked(title: String, offerId: String, component: ComponentTrackDataModel) {
+        val commonTracker = generateCommonTracker() ?: return
+
+        BMGMTracking.onClicked(
+            title = title,
+            offerId = offerId,
+            commonTracker = commonTracker,
+            component = component,
+            trackingQueue = trackingQueue
         )
     }
 }

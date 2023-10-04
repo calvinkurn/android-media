@@ -20,7 +20,7 @@ import kotlin.coroutines.CoroutineContext
 class SendTrackQueueService : Service(), CoroutineScope {
 
     private val trackRepository: TrackRepository by lazy {
-        TrackRepository(this)
+        TrackRepository.getInstance(this)
     }
 
 

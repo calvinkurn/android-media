@@ -8,12 +8,20 @@ object RollenceKey {
     const val AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_SMALL = "follow_green_small"
     const val AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_BIG = "follow_green_big"
     const val AB_TEST_SHOP_AFFILIATE_SHARE_ICON = "shareIconShopAff"
+    const val AB_TEST_SHOP_RE_IMAGINED = "shop_page_reimagined"
 
+
+    //home rollence section
     const val BALANCE_EXP = "Balance Widget"
     const val BALANCE_VARIANT_OLD = "Existing Balance Widget"
     const val BALANCE_VARIANT_NEW = "New Balance Widget"
     const val HOME_COMPONENT_ATF = "revamp_atf"
     const val HOME_COMPONENT_ATF_2 = "home_atf2"
+    const val HOME_LOAD_TIME_KEY = "load_time"
+    const val HOME_LOAD_TIME_CONTROL = "control_variant"
+    const val HOME_LOAD_TIME_EXP = "exp_variant"
+    //end of home rollence section
+
 
     // home component rollence section
     const val HOME_COMPONENT_DYNAMIC_CHANNEL_HEADER_EXP = "btf_revamp_header"
@@ -42,7 +50,8 @@ object RollenceKey {
     const val EXPERIMENT_VARIANT = "experiment_variant"
     const val TREATMENT_VARIANT = "treatment_variant"
     const val UOH_REPURCHASE = "uoh_buyagainexp_andr"
-    const val CHECKOUT_PLUS_NEW_UPSELL_IMPROVEMENT = "plus_xsell_pg_ui_an"
+    const val CART_CHECKOUT_REVAMP = "cartcheckout_revamp"
+    const val CART_CHECKOUT_NEW = "cart_checkout_new"
 
     // SRP Video Sneak Peek Autoplay
     const val SEARCH_VIDEO_SNEAK_PEEK_AUTOPLAY = "srp_prodvideo_3"
@@ -58,6 +67,9 @@ object RollenceKey {
     const val PRODUCT_CARD_EXPERIMENT_GIMMICK = "gimmick"
     const val PRODUCT_CARD_EXPERIMENT_PORTRAIT = "portrait"
     const val PRODUCT_CARD_EXPERIMENT_ETA = "eta"
+    const val PRODUCT_CARD_SLASHED_PRICE_CASHBACK_EXPERIMENT = "seg_sp_cb"
+    const val PRODUCT_CARD_SLASHED_PRICE_CASHBACK_SRP = "sp_cb_srp"
+    const val PRODUCT_CARD_SLASHED_PRICE_CASHBACK_ALL = "sp_cb_all"
 
     // PDP
     const val PDP_CAROUSEL_ANDROID = "pdp_carousel_android"
@@ -110,5 +122,4 @@ object RollenceKey {
     const val SEARCH_3_PRODUCT_CARD_CONTROL = "control"
     const val SEARCH_3_PRODUCT_CARD_PC_VAR = "pc_var"
     const val SEARCH_3_PRODUCT_CARD_PC_NEWLABEL_VAR = "pc_newlabel_var"
-
 }

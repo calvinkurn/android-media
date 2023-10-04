@@ -1466,6 +1466,7 @@ class CartAdapter constructor(
                     position = index
                     item.addOnsProduct.widget.wording = newAddOnWording
                     item.addOnsProduct.listData.clear()
+                    item.addOnsProduct.deselectListData.clear()
                     addOnPageResult.aggregatedData.selectedAddons.forEach {
                         if (it.getSaveAddonSelectedStatus().value == ADD_ON_PRODUCT_STATUS_CHECK ||
                             it.getSaveAddonSelectedStatus().value == ADD_ON_PRODUCT_STATUS_MANDATORY

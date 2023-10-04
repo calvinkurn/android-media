@@ -20,41 +20,49 @@ data class Result<out T>(val status: Status, val data: T?, val error: Throwable?
     companion object {
         fun <T> success(data: T?): Result<T> {
             return Result(
-                    status = Status.SUCCESS,
-                    data = data,
-                    error = null
+                status = Status.SUCCESS,
+                data = data,
+                error = null
             )
         }
 
         fun <T> error(error: Throwable, data: T? = null): Result<T> {
             return Result(
-                    status = Status.ERROR,
-                    data = data,
-                    error = error
+                status = Status.ERROR,
+                data = data,
+                error = error
             )
         }
 
         fun <T> errorPagination(error: Throwable, data: T? = null): Result<T> {
             return Result(
-                    status = Status.ERROR_PAGINATION,
-                    data = data,
-                    error = error
+                status = Status.ERROR_PAGINATION,
+                data = data,
+                error = error
             )
         }
 
         fun <T> errorAtf(error: Throwable, data: T? = null): Result<T> {
             return Result(
-                    status = Status.ERROR_ATF,
-                    data = data,
-                    error = error
+                status = Status.ERROR_ATF,
+                data = data,
+                error = error
             )
         }
 
         fun <T> errorGeneral(error: Throwable, data: T? = null): Result<T> {
             return Result(
-                    status = Status.ERROR_GENERAL,
-                    data = data,
-                    error = error
+                status = Status.ERROR_GENERAL,
+                data = data,
+                error = error
+            )
+        }
+
+        fun <T> errorNewAtfMechanism(error: Throwable, data: T? = null): Result<T> {
+            return Result(
+                status = Status.ERROR_ATF_NEW,
+                data = data,
+                error = error
             )
         }
     }
@@ -65,7 +73,8 @@ data class Result<out T>(val status: Status, val data: T?, val error: Throwable?
         ERROR_PAGINATION,
         LOADING,
         ERROR_ATF,
-        ERROR_GENERAL
+        ERROR_GENERAL,
+        ERROR_ATF_NEW
     }
 
     fun Status.isLoading() = this == Status.LOADING

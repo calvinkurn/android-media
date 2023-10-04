@@ -56,6 +56,7 @@ Show function takes four arguments:
 2. `Map<String, String>` → Map Parameter of the page, usually contains all parameters sent to Back End. This is used by the Bottom Sheet to determine active sort and filters that you have.
 3. `DynamicFilterModel` → DynamicFilterModel retrieved from Back End.
 4. `SortFilterBottomSheet.Callback` → Callback interface used by `SortFilterBottomSheet`.
+5. `isReimagine` → Optional Boolean flag to use the new Reimagine UI. Default is false.
 
 `SortFilterBottomSheet.Callback` has two functions that needs to be implemented by the page using `SortFilterBottomSheet`:
 
@@ -103,8 +104,10 @@ FilterGeneralDetailBottomSheet().show(
 Show function takes 3 arguments:
 
 1. `FragmentManager` → Use `parentFragmentManager`
-2. `Filter` → `Filter` object that contains list of `Option` to show in the bottom sheet
-3. `FilterGeneralDetailBottomSheet.Callback` → Callback interface used by `FilterGeneralDetailBottomSheet`. This callback has one function `onApplyButtonClicked`, which will be called when "Simpan" (save) button is clicked.
+2. `Filter` → `Filter` object that contains list of `Option` to show in the bottom sheet. It is also possible to send `SortModel` for sorting functionality.
+3. `FilterGeneralDetailBottomSheet.OptionCallback` → Callback interface used by `FilterGeneralDetailBottomSheet`. This callback has these function:
+   a. `onApplyButtonClicked`, which will be called when "Simpan" (save) button is clicked.
+   b. `onOptionClick`, which will be called when an option is clicked.
 
 Bottom Sheet Filter Detail configuration:
 

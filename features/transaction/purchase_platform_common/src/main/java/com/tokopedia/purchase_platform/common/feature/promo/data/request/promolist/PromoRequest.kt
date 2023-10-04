@@ -24,7 +24,9 @@ data class PromoRequest(
     @SerializedName("is_trade_in")
     var isTradeIn: Int = 0,
     @SerializedName("is_trade_in_drop_off")
-    var isTradeInDropOff: Int = 0
+    var isTradeInDropOff: Int = 0,
+    @SerializedName("is_cart_checkout_revamp")
+    var isCartCheckoutRevamp: Boolean = false
 ) : Parcelable
 
 @Parcelize
@@ -66,5 +68,9 @@ data class ProductDetail(
     var quantity: Int = -1,
     @SuppressLint("Invalid Data Type")
     @SerializedName("bundle_id")
-    var bundleId: Long = 0
+    var bundleId: Long = 0,
+    @SerializedName("is_checked")
+    var isChecked: Boolean = false,
+    @SerializedName("cart_id")
+    var cartId: String = ""
 ) : Parcelable
