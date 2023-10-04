@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -114,6 +113,10 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
 import javax.inject.Inject
+import com.tokopedia.recharge_component.R as recharge_componentR
+import com.tokopedia.abstraction.R as abstractionR
+import com.tokopedia.common_digital.R as common_digitalR
+import com.tokopedia.digital_product_detail.R as digital_product_detailR
 
 /**
  * @author by firmanda on 04/01/21
@@ -321,7 +324,7 @@ class DigitalPDPDataPlanFragment :
                     resetContactName()
                     if (selectedClientNumber.length >= MINIMUM_OPERATOR_PREFIX) {
                         setErrorInputField(
-                            getString(com.tokopedia.recharge_component.R.string.client_number_prefix_error),
+                            getString(recharge_componentR.string.client_number_prefix_error),
                             true
                         )
                     }
@@ -397,24 +400,18 @@ class DigitalPDPDataPlanFragment :
                         if (productId >= 0) {
                             viewModel.setAutoSelectedDenom(
                                 it.data.listDenomData,
-                                productId.toString()
+                                productId.toString(),
+                                DenomWidgetEnum.MCCM_FULL_VERTICAL_TYPE
                             )
                         }
                         val selectedPositionMCCM =
                             viewModel.getSelectedPositionId(it.data.listDenomData)
-                        if (it.data.isHorizontalMCCM) {
-                            onLoadingAndFailMCCMVertical()
-                            onSuccessMCCM(it.data, selectedPositionMCCM)
-                        } else {
-                            onLoadingAndFailMCCM()
-                            onSuccessMCCMVertical(it.data, selectedPositionMCCM)
-                        }
 
+                        onSuccessMCCMVertical(it.data, selectedPositionMCCM)
                         if (selectedPositionMCCM == null) {
                             onHideBuyWidget()
                         }
                     } else {
-                        onLoadingAndFailMCCM()
                         onLoadingAndFailMCCMVertical()
 
                         isMCCMEmpty = true
@@ -429,7 +426,6 @@ class DigitalPDPDataPlanFragment :
                 }
 
                 is RechargeNetworkResult.Fail, RechargeNetworkResult.Loading -> {
-                    onLoadingAndFailMCCM()
                     onLoadingAndFailMCCMVertical()
                 }
             }
@@ -659,7 +655,7 @@ class DigitalPDPDataPlanFragment :
         )
         val errMsgSub = getString(
             R.string.error_message_with_code,
-            getString(com.tokopedia.abstraction.R.string.msg_network_error_2),
+            getString(abstractionR.string.msg_network_error_2),
             errCode
         )
         binding?.run {
@@ -868,39 +864,10 @@ class DigitalPDPDataPlanFragment :
         }
     }
 
-    private fun onSuccessMCCM(denomFull: DenomWidgetModel, selectedPosition: Int?) {
-        binding?.let {
-            var selectedInitialPosition = selectedPosition
-            if (viewModel.isAutoSelectedProduct(DenomWidgetEnum.MCCM_FULL_TYPE)) {
-                viewModel.updateSelectedPositionId(selectedPosition)
-                onShowBuyWidget(viewModel.selectedFullProduct.denomData)
-            } else {
-                selectedInitialPosition = null
-            }
-            if (denomFull.listDenomData.isNotEmpty()) {
-                val colorHexInt = ContextCompat.getColor(
-                    requireContext(),
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN0
-                )
-                val colorHexString = "#${Integer.toHexString(colorHexInt)}"
-
-                it.rechargePdpPaketDataPromoWidget.show()
-                it.rechargePdpPaketDataPromoWidget.renderMCCMFull(
-                    this,
-                    denomFull,
-                    colorHexString,
-                    selectedInitialPosition
-                )
-            } else {
-                it.rechargePdpPaketDataPromoWidget.hide()
-            }
-        }
-    }
-
     private fun onSuccessMCCMVertical(denomFull: DenomWidgetModel, selectedPosition: Int?) {
         binding?.let {
             var selectedInitialPosition = selectedPosition
-            if (viewModel.isAutoSelectedProduct(DenomWidgetEnum.MCCM_FULL_TYPE)) {
+            if (viewModel.isAutoSelectedProduct(DenomWidgetEnum.MCCM_FULL_VERTICAL_TYPE)) {
                 viewModel.updateSelectedPositionId(selectedPosition)
                 onShowBuyWidget(viewModel.selectedFullProduct.denomData)
             } else {
@@ -919,21 +886,9 @@ class DigitalPDPDataPlanFragment :
         }
     }
 
-    private fun onLoadingAndFailMCCM() {
-        binding?.let {
-            it.rechargePdpPaketDataPromoWidget.hide()
-        }
-    }
-
     private fun onLoadingAndFailMCCMVertical() {
         binding?.let {
             it.rechargePdpPaketDataPromoWidgetVertical.hide()
-        }
-    }
-
-    private fun onClearSelectedMCCM(position: Int) {
-        binding?.let {
-            it.rechargePdpPaketDataPromoWidget.clearSelectedProduct(position)
         }
     }
 
@@ -950,7 +905,7 @@ class DigitalPDPDataPlanFragment :
             }
             setInputFieldStaticLabel(
                 getString(
-                    com.tokopedia.recharge_component.R.string.label_recharge_client_number_telco
+                    recharge_componentR.string.label_recharge_client_number_telco
                 )
             )
             setInputFieldType(InputFieldType.Telco)
@@ -1064,7 +1019,6 @@ class DigitalPDPDataPlanFragment :
                 }
 
                 sortFilterPaketData.hide()
-                rechargePdpPaketDataPromoWidget.hide()
                 rechargePdpPaketDataPromoWidgetVertical.hide()
                 rechargePdpPaketDataRecommendationWidget.hide()
                 rechargePdpPaketDataDenomFullWidget.hide()
@@ -1288,7 +1242,7 @@ class DigitalPDPDataPlanFragment :
                     error.title,
                     Toaster.LENGTH_LONG,
                     Toaster.TYPE_ERROR,
-                    getString(com.tokopedia.common_digital.R.string.digital_common_button_toaster)
+                    getString(common_digitalR.string.digital_common_button_toaster)
                 ) {
                     redirectError(error)
                 }.show()
@@ -1333,7 +1287,7 @@ class DigitalPDPDataPlanFragment :
                         binding?.run {
                             val defaultPadding: Int = rechargePdpPaketDataClientNumberWidget.height
                             val scrollViewMargin: Int = context?.resources?.let {
-                                it.getDimensionPixelOffset(com.tokopedia.digital_product_detail.R.dimen.nested_scroll_view_margin)
+                                it.getDimensionPixelOffset(digital_product_detailR.dimen.nested_scroll_view_margin)
                             } ?: 0
                             val dynamicPadding = defaultPadding + extraPadding - scrollViewMargin
                             rechargePdpPaketDataSvContainer.setPadding(0, dynamicPadding, 0, 0)
@@ -1586,26 +1540,11 @@ class DigitalPDPDataPlanFragment :
         isShowBuyWidget: Boolean
     ) {
         hideKeyboard()
-        if (layoutType == DenomWidgetEnum.MCCM_FULL_TYPE || layoutType == DenomWidgetEnum.FLASH_FULL_TYPE) {
+        if (layoutType == DenomWidgetEnum.MCCM_FULL_VERTICAL_TYPE) {
             if (viewModel.selectedFullProduct.denomWidgetEnum == DenomWidgetEnum.FULL_TYPE) {
                 onClearSelectedDenomFull(viewModel.selectedFullProduct.position)
             }
-
-            digitalPDPAnalytics.clickMCCMProduct(
-                productListTitle,
-                DigitalPDPCategoryUtil.getCategoryName(categoryId),
-                operator.attributes.name,
-                loyaltyStatus,
-                userSession.userId,
-                denomFull,
-                layoutType,
-                position
-            )
-        } else if (layoutType == DenomWidgetEnum.MCCM_FULL_VERTICAL_TYPE) {
-            if (viewModel.selectedFullProduct.denomWidgetEnum == DenomWidgetEnum.FULL_TYPE) {
-                onClearSelectedDenomFull(viewModel.selectedFullProduct.position)
-            }
-            digitalPDPAnalytics.clickMCCMProductNew(
+            digitalPDPAnalytics.clickMCCMProductFullVertical(
                 productListTitle,
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
@@ -1616,11 +1555,7 @@ class DigitalPDPDataPlanFragment :
                 position
             )
         } else if (layoutType == DenomWidgetEnum.FULL_TYPE) {
-            if (viewModel.selectedFullProduct.denomWidgetEnum == DenomWidgetEnum.MCCM_FULL_TYPE ||
-                viewModel.selectedFullProduct.denomWidgetEnum == DenomWidgetEnum.FLASH_FULL_TYPE ||
-                viewModel.selectedFullProduct.denomWidgetEnum == DenomWidgetEnum.MCCM_FULL_VERTICAL_TYPE
-            ) {
-                onClearSelectedMCCM(viewModel.selectedFullProduct.position)
+            if (viewModel.selectedFullProduct.denomWidgetEnum == DenomWidgetEnum.MCCM_FULL_VERTICAL_TYPE) {
                 onClearSelectedMCCMVertical(viewModel.selectedFullProduct.position)
             }
             digitalPDPAnalytics.clickProductCluster(
@@ -1650,18 +1585,8 @@ class DigitalPDPDataPlanFragment :
         position: Int,
         productListTitle: String
     ) {
-        if (layoutType == DenomWidgetEnum.MCCM_FULL_TYPE || layoutType == DenomWidgetEnum.FLASH_FULL_TYPE) {
-            digitalPDPAnalytics.impressionProductMCCM(
-                DigitalPDPCategoryUtil.getCategoryName(categoryId),
-                operator.attributes.name,
-                loyaltyStatus,
-                userSession.userId,
-                denomFull,
-                layoutType,
-                position
-            )
-        } else if (layoutType == DenomWidgetEnum.MCCM_FULL_VERTICAL_TYPE) {
-            digitalPDPAnalytics.impressMCCMProductNew(
+        if (layoutType == DenomWidgetEnum.MCCM_FULL_VERTICAL_TYPE) {
+            digitalPDPAnalytics.impressMCCMProductFullVertical(
                 productListTitle,
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,

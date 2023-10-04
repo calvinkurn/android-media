@@ -103,6 +103,11 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
 import javax.inject.Inject
+import com.tokopedia.recharge_component.R as recharge_componentR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.common_digital.R as common_digitalR
+import com.tokopedia.abstraction.R as abstractionR
+import com.tokopedia.digital_product_detail.R as digital_product_detailR
 
 /**
  * @author by firmanda on 04/01/21
@@ -259,7 +264,7 @@ class DigitalPDPPulsaFragment :
                     resetContactName()
                     if (selectedClientNumber.length >= MINIMUM_OPERATOR_PREFIX) {
                         setErrorInputField(
-                            getString(com.tokopedia.recharge_component.R.string.client_number_prefix_error),
+                            getString(recharge_componentR.string.client_number_prefix_error),
                             true
                         )
                     }
@@ -536,7 +541,7 @@ class DigitalPDPPulsaFragment :
         )
         val errMsgSub = getString(
             R.string.error_message_with_code,
-            getString(com.tokopedia.abstraction.R.string.msg_network_error_2),
+            getString(abstractionR.string.msg_network_error_2),
             errCode
         )
         binding?.run {
@@ -573,7 +578,7 @@ class DigitalPDPPulsaFragment :
             }
             setInputFieldStaticLabel(
                 getString(
-                    com.tokopedia.recharge_component.R.string.label_recharge_client_number_telco
+                    recharge_componentR.string.label_recharge_client_number_telco
                 )
             )
             setInputFieldType(InputFieldType.Telco)
@@ -729,7 +734,7 @@ class DigitalPDPPulsaFragment :
             if (denomGrid.listDenomData.isNotEmpty()) {
                 val colorHexInt = ContextCompat.getColor(
                     requireContext(),
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN0
+                    unifyprinciplesR.color.Unify_NN0
                 )
                 val colorHexString = "#${Integer.toHexString(colorHexInt)}"
 
@@ -975,7 +980,7 @@ class DigitalPDPPulsaFragment :
                     error.title,
                     Toaster.LENGTH_LONG,
                     Toaster.TYPE_ERROR,
-                    getString(com.tokopedia.common_digital.R.string.digital_common_button_toaster)
+                    getString(common_digitalR.string.digital_common_button_toaster)
                 ) {
                     redirectError(error)
                 }.show()
@@ -1051,7 +1056,7 @@ class DigitalPDPPulsaFragment :
                         binding?.run {
                             val defaultPadding: Int = rechargePdpPulsaClientNumberWidget.height
                             val scrollViewMargin: Int = context?.resources?.let {
-                                it.getDimensionPixelOffset(com.tokopedia.digital_product_detail.R.dimen.nested_scroll_view_margin)
+                                it.getDimensionPixelOffset(digital_product_detailR.dimen.nested_scroll_view_margin)
                             } ?: 0
                             val dynamicPadding = defaultPadding + extraPadding - scrollViewMargin
                             rechargePdpPulsaSvContainer.setPadding(0, dynamicPadding, 0, 0)
@@ -1201,7 +1206,7 @@ class DigitalPDPPulsaFragment :
             if (viewModel.selectedGridProduct.denomWidgetEnum == DenomWidgetEnum.GRID_TYPE) {
                 onClearSelectedDenomGrid(viewModel.selectedGridProduct.position)
             }
-            digitalPDPAnalytics.clickMCCMProduct(
+            digitalPDPAnalytics.clickMCCMGridProduct(
                 productListTitle,
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
@@ -1244,7 +1249,7 @@ class DigitalPDPPulsaFragment :
         position: Int
     ) {
         if (layoutType == DenomWidgetEnum.MCCM_GRID_TYPE || layoutType == DenomWidgetEnum.FLASH_GRID_TYPE) {
-            digitalPDPAnalytics.impressionProductMCCM(
+            digitalPDPAnalytics.impressionProductMCCMGrid(
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
                 loyaltyStatus,

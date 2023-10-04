@@ -70,7 +70,6 @@ class DigitalDenomMapper @Inject constructor() {
             })
             val denomWidgetModel =  DenomWidgetModel(
                 mainTitle = data.title,
-                isHorizontalMCCM = firstProduct.mediaUrlType.equals(MCCM_LAYOUT_TYPE_HORIZONTAL,true),
                 imageBackgroundUrl = firstProduct.mediaURL,
                 imageBackgroundUrlDarkMode = firstProduct.mediaURLDarkMode,
                 listDenomData = denomList

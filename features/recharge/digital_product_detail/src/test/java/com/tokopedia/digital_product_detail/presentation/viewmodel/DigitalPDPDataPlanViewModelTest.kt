@@ -373,7 +373,7 @@ class DigitalPDPDataPlanViewModelTest : DigitalPDPDataPlanViewModelTestFixture()
     fun `given layoutType is not match & other condition fulfilled when call isAutoSelectedProduct should return false`() {
         onGetSelectedFullProduct_thenReturn(dataFactory.getSelectedProduct())
 
-        val result = viewModel.isAutoSelectedProduct(DenomWidgetEnum.MCCM_FULL_TYPE)
+        val result = viewModel.isAutoSelectedProduct(DenomWidgetEnum.MCCM_FULL_VERTICAL_TYPE)
         verifyIsAutoSelectedProductFalse(result)
     }
 
