@@ -34,7 +34,6 @@ import kotlinx.coroutines.CoroutineScope
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 object GotoSdk {
     var LSDKINSTANCE: LSdkProvider? = null
@@ -47,7 +46,7 @@ object GotoSdk {
 
     @JvmStatic
     fun init(application: Application): LSdkProvider? {
-        initializeAbTestVariant(application)
+//        initializeAbTestVariant(application)
         LSDKINSTANCE = GotoLogin.getInstance(
             cvSdkProvider = getCvSdkProvider(application),
             gotoPinManager = getGotoPinSdkProvider(application),
@@ -104,9 +103,13 @@ object GotoSdk {
         val timestampAbTest = sharedPreferences.getLong(KEY_SP_TIMESTAMP_AB_TEST, 0)
         RemoteConfigInstance.initAbTestPlatform(application)
         val current = Date().time
-        if (current >= timestampAbTest + TimeUnit.HOURS.toMillis(1)) {
-            RemoteConfigInstance.getInstance().abTestPlatform.fetch(null)
-        }
+//        if (current >= timestampAbTest + TimeUnit.HOURS.toMillis(1)) {
+//            RemoteConfigInstance.getInstance().abTestPlatform.fetch(null)
+//        }
+        // Init abtest each time we initialize the sdk, for testing purpose
+        RemoteConfigInstance.getInstance().abTestPlatform.fetch(null)
+        println("gotosdk:No Need Init")
+
     }
 
     private fun getGotoPinSdkProvider(application: Application): PinManager {
