@@ -71,6 +71,7 @@ import com.tokopedia.logisticCommon.util.toCompositeSubs
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_ADDRESS_ID
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_ADDRESS_STATE
+import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_DISTRICT_ID
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_FROM_ADDRESS_FORM
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_GMS_AVAILABILITY
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_EDIT_WAREHOUSE
@@ -152,6 +153,7 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     // from address form
                     putBoolean(EXTRA_IS_POSITIVE_FLOW, extra.getBoolean(EXTRA_IS_POSITIVE_FLOW))
                     putString(EXTRA_ADDRESS_ID, extra.getString(EXTRA_ADDRESS_ID))
+                    putLong(EXTRA_DISTRICT_ID, extra.getLong(EXTRA_DISTRICT_ID))
 
                     // from search page
                     putString(EXTRA_PLACE_ID, extra.getString(EXTRA_PLACE_ID))
@@ -552,9 +554,10 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
             } else if (currentLong != 0.0 && currentLat != 0.0) {
                 moveMap(getLatLng(currentLat, currentLong), ZOOM_LEVEL)
                 viewModel.getDistrictData(currentLat, currentLong)
-            } else {
-                goToAddressForm()
             }
+//            else {
+//                goToAddressForm(true)
+//            }
         } else {
             val newAddress =
                 data?.getParcelableExtra<SaveAddressDataModel>(EXTRA_ADDRESS_NEW)
@@ -601,7 +604,8 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 cityName = getString(EXTRA_CITY_NAME).orEmpty(),
                 placeId = getString(EXTRA_PLACE_ID).orEmpty(),
                 lat = getDouble(EXTRA_LAT),
-                long = getDouble(EXTRA_LONG)
+                long = getDouble(EXTRA_LONG),
+                districtId = getLong(EXTRA_DISTRICT_ID)
             )
 
             isEditWarehouse = getBoolean(EXTRA_IS_EDIT_WAREHOUSE, false)
@@ -918,8 +922,7 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 LogisticAddAddressAnalytics.onClickIsiAlamatManual(userSession.userId)
                 if (isPositiveFlow) {
                     isPositiveFlow = false
-//                    viewModel.setAddress(SaveAddressDataModel())
-                    goToAddressForm()
+                    goToAddressForm(false)
                 } else {
                     activity?.run {
                         setResult(
@@ -991,7 +994,7 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 setPinpointResult()
             }
         } else {
-            goToAddressForm()
+            goToAddressForm(true)
         }
     }
 
@@ -1230,7 +1233,7 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                             SUCCESS
                         )
                     }
-                    goToAddressForm()
+                    goToAddressForm(true)
                 }
                 viewModel.uiModel = viewModel.uiModel.map(data, null)
                 updateGetDistrictBottomSheet(viewModel.uiModel)
@@ -1312,7 +1315,7 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                             it.buttonType = UnifyButton.Type.MAIN
                             it.text = getString(R.string.mismatch_btn_title)
                             it.setOnClickListener {
-                                goToAddressForm()
+                                goToAddressForm(false)
                             }
                         }
                     }
@@ -1334,7 +1337,7 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 }
             }
             isPositiveFlow = false
-            goToAddressForm()
+            goToAddressForm(false)
         }
     }
 
@@ -1353,10 +1356,12 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
         }
     }
 
-    private fun goToAddressForm() {
+    private fun goToAddressForm(saveChanges: Boolean) {
         val intent = RouteManager.getIntent(context, "${ApplinkConstInternalLogistic.EDIT_ADDRESS_REVAMP}${viewModel.addressId}")
         intent.apply {
-            putExtra(EXTRA_PINPOINT_MODEL, viewModel.uiModel)
+            if (saveChanges) {
+                putExtra(EXTRA_PINPOINT_MODEL, viewModel.uiModel)
+            }
             putExtra(EXTRA_IS_POSITIVE_FLOW, isPositiveFlow)
             putExtra(EXTRA_GMS_AVAILABILITY, isGmsAvailable)
             putExtra(EXTRA_ADDRESS_STATE, addressUiState.name)
@@ -1364,23 +1369,5 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
             addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or FLAG_ACTIVITY_SINGLE_TOP)
         }
         addressFormContract.launch(intent)
-    }
-
-    private fun setResultAddressFormNegative() {
-        // ini dipake jg di pinpoint only
-        // todo refactor buat function baru khusus yg pinpoint only
-        val saveModel = viewModel.getAddress()
-        activity?.run {
-            setResult(
-                Activity.RESULT_OK,
-                Intent().apply {
-                    putExtra(EXTRA_SAVE_DATA_UI_MODEL, saveModel)
-                    putExtra(EXTRA_NEGATIVE_FULL_FLOW, false)
-                    putExtra(EXTRA_FROM_ADDRESS_FORM, isFromAddressForm)
-                    putExtra(EXTRA_GMS_AVAILABILITY, isGmsAvailable)
-                }
-            )
-            finish()
-        }
     }
 }

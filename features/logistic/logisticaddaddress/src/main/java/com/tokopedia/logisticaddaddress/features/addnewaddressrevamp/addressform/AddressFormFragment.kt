@@ -36,12 +36,13 @@ import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_ADDRESS_ID
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_ADDRESS_STATE
-import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_FROM_ADDRESS_FORM
+import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_DISTRICT_ID
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_GMS_AVAILABILITY
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_POLYGON
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_POSITIVE_FLOW
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_LAT
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_LONG
+import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_PINPOINT_MODEL
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_RESET_TO_SEARCH_PAGE
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_SAVE_DATA_UI_MODEL
 import com.tokopedia.logisticaddaddress.common.AddressConstants.KEY_SAVE_INSTANCE_SAVE_ADDRESS_DATA_MODEL
@@ -76,6 +77,7 @@ import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollect
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class AddressFormFragment :
     BaseDaggerFragment(),
@@ -99,10 +101,7 @@ class AddressFormFragment :
         fun newInstance(extra: Bundle): AddressFormFragment {
             return AddressFormFragment().apply {
                 arguments = Bundle().apply {
-                    putParcelable(
-                        EXTRA_SAVE_DATA_UI_MODEL,
-                        extra.getParcelable(EXTRA_SAVE_DATA_UI_MODEL)
-                    )
+                    putParcelable(EXTRA_PINPOINT_MODEL, extra.getParcelable(EXTRA_PINPOINT_MODEL))
                     putString(EXTRA_ADDRESS_STATE, extra.getString(EXTRA_ADDRESS_STATE))
                     putBoolean(EXTRA_IS_POSITIVE_FLOW, extra.getBoolean(EXTRA_IS_POSITIVE_FLOW))
                     putBoolean(EXTRA_GMS_AVAILABILITY, extra.getBoolean(EXTRA_GMS_AVAILABILITY))
@@ -381,10 +380,11 @@ class AddressFormFragment :
                     val addressModel = viewModel.generateSaveDataModel(
                         saveDataModel = getParcelable(EXTRA_SAVE_DATA_UI_MODEL),
                         defaultName = userSession.name,
-                        defaultPhone = userSession.phoneNumber
+                        defaultPhone = userSession.phoneNumber,
+                        pinpointUiModel = getParcelable(EXTRA_PINPOINT_MODEL)
                     )
                     viewModel.saveDraftAddress(addressModel)
-                    isPositiveFlow = getBoolean(EXTRA_IS_POSITIVE_FLOW)
+//                    isPositiveFlow = getBoolean(EXTRA_IS_POSITIVE_FLOW)
                 }
 
                 else -> {
@@ -404,6 +404,7 @@ class AddressFormFragment :
     }
 
     private fun onPinpointResult(data: Intent?) {
+        // todo get from PinpointUiModel
         val isResetToSearchPage = data?.getBooleanExtra(EXTRA_RESET_TO_SEARCH_PAGE, false) ?: false
         if (isResetToSearchPage) {
             activity?.run {
@@ -777,7 +778,7 @@ class AddressFormFragment :
             .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
             .build()
         staticDimen8dp =
-            context?.resources?.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_8)
+            context?.resources?.getDimensionPixelOffset(unifyprinciplesR.dimen.unify_space_8)
     }
 
     private fun setupPositiveLayout(isEdit: Boolean, data: SaveAddressDataModel) {
@@ -1078,10 +1079,12 @@ class AddressFormFragment :
         viewModel.saveDataModel?.run {
             bundle.putDouble(EXTRA_LAT, latitude.toDoubleOrZero())
             bundle.putDouble(EXTRA_LONG, longitude.toDoubleOrZero())
+            bundle.putString(EXTRA_ADDRESS_ID, addressId)
+            bundle.putLong(EXTRA_DISTRICT_ID, districtId)
         }
         bundle.putBoolean(EXTRA_IS_POSITIVE_FLOW, isPositiveFlow)
-        bundle.putParcelable(EXTRA_SAVE_DATA_UI_MODEL, viewModel.saveDataModel)
-        bundle.putBoolean(EXTRA_FROM_ADDRESS_FORM, true)
+//        bundle.putParcelable(EXTRA_SAVE_DATA_UI_MODEL, viewModel.saveDataModel)
+//        bundle.putBoolean(EXTRA_FROM_ADDRESS_FORM, true)
         bundle.putBoolean(EXTRA_GMS_AVAILABILITY, isGmsAvailable)
         bundle.putString(EXTRA_ADDRESS_STATE, addressUiState.name)
         if (!isPositiveFlow && addressUiState.isAdd()) {

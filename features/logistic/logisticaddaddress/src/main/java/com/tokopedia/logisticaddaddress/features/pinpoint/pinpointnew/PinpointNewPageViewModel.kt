@@ -70,14 +70,16 @@ class PinpointNewPageViewModel @Inject constructor(
         cityName: String = "",
         lat: Double = 0.0,
         long: Double = 0.0,
-        placeId: String = ""
+        placeId: String = "",
+        districtId: Long = 0L
     ) {
         this.uiModel = this.uiModel.copy(
             districtName = districtName,
             cityName = cityName,
             lat = lat,
             long = long,
-            placeId = placeId
+            placeId = placeId,
+            districtId = districtId
         )
     }
 

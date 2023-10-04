@@ -21,6 +21,7 @@ import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressDetailUseCase
 import com.tokopedia.logisticCommon.domain.usecase.GetDefaultAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.PinpointValidationUseCase
+import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.uimodel.PinpointUiModel
 import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -76,12 +77,32 @@ class AddressFormViewModel @Inject constructor(
     fun generateSaveDataModel(
         saveDataModel: SaveAddressDataModel?,
         defaultName: String,
-        defaultPhone: String
+        defaultPhone: String,
+        pinpointUiModel: PinpointUiModel?
     ): SaveAddressDataModel {
-        return saveDataModel?.apply {
+        val addressModel = saveDataModel?.apply {
             if (this.receiverName.isEmpty()) this.receiverName = defaultName
             if (this.phone.isEmpty()) this.phone = defaultPhone
         } ?: SaveAddressDataModel(receiverName = defaultName, phone = defaultPhone)
+        pinpointUiModel?.let {
+            addressModel.run {
+                districtId = it.districtId
+                cityId = it.cityId
+                provinceId = it.provinceId
+                districtName = it.districtName
+                cityName = it.cityName
+                provinceName = it.provinceName
+                formattedAddress = it.formattedAddress
+                zipCodes = it.postalCodeList
+                postalCode = it.postalCode
+                selectedDistrict = it.selectedDistrict
+                address2 = "${it.lat}, ${it.long}"
+                latitude = it.lat.toString()
+                longitude = it.long.toString()
+                title = it.title
+            }
+        }
+        return addressModel
     }
 
     fun getAddressDetail(
