@@ -39,13 +39,13 @@ class TokoNowChooseAddressWidgetViewHolder(
 
     override fun bind(element: TokoNowChooseAddressWidgetUiModel) {
         setupChooseAddressWidget(element)
+        chooseAddressWidget?.updateWidget()
     }
 
     private fun bindChooseAddressWidget(element: TokoNowChooseAddressWidgetUiModel) {
         tokoNowView?.getFragmentPage()?.let { fragment ->
             chooseAddressWidget?.bindChooseAddress(object : ChooseAddressWidget.ChooseAddressWidgetListener {
                 override fun onLocalizingAddressUpdatedFromWidget() {
-                    chooseAddressWidget?.updateWidget()
                     tokoNowView.refreshLayoutPage()
                 }
 
