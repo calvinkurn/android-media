@@ -7,7 +7,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.epharmacy.adapters.EPharmacySecondaryActionButtonAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.epharmacy.R
+import com.tokopedia.epharmacy.adapters.decoration.EPharmacySecondaryActionButtonItemDecoration
 import com.tokopedia.epharmacy.network.response.EPharmacyOrderDetailResponse
+import com.tokopedia.epharmacy.R as epharmacyR
 
 class EPharmacySecondaryActionButtonBottomSheet(
     context: Context,
@@ -24,16 +26,17 @@ class EPharmacySecondaryActionButtonBottomSheet(
     }
 
     private fun createChildView(context: Context): RecyclerView {
-        val rvSecondaryActionButton = View.inflate(context, R.layout.item_epharmacy_order_detail_secondary_action_button, null) as RecyclerView
+        val rvSecondaryActionButton = View.inflate(context, R.layout.epharmacy_order_detail_secondary_action_button_bottomsheet, null) as RecyclerView
         rvSecondaryActionButton.apply {
             adapter = this@EPharmacySecondaryActionButtonBottomSheet.adapter
+            addItemDecoration(EPharmacySecondaryActionButtonItemDecoration(context))
         }
         return rvSecondaryActionButton
     }
 
     private fun setupEPharmacySecondaryActionButtonBottomSheet(context: Context): BottomSheetUnify {
         return BottomSheetUnify().apply {
-            setTitle("")
+            setTitle(context.getString(epharmacyR.string.epharmacy_secondary_bs_title))
             clearContentPadding = true
             showCloseIcon = true
             overlayClickDismiss = true

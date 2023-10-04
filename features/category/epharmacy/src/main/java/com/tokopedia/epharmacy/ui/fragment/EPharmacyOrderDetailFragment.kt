@@ -22,7 +22,7 @@ import com.tokopedia.epharmacy.databinding.EpharmacyOrderDetailFragmentBinding
 import com.tokopedia.epharmacy.di.EPharmacyComponent
 import com.tokopedia.epharmacy.network.response.EPharmacyOrderDetailResponse
 import com.tokopedia.epharmacy.utils.CategoryKeys.Companion.EPHARMACY_ORDER_DETAIL_PAGE
-import com.tokopedia.epharmacy.utils.EPHARMACY_ORDER_ID
+import com.tokopedia.epharmacy.utils.EPHARMACY_TOKO_CONSULTATION_ID
 import com.tokopedia.epharmacy.utils.EPharmacyAttachmentUiUpdater
 import com.tokopedia.epharmacy.viewmodel.EPharmacyOrderDetailViewModel
 import com.tokopedia.globalerror.GlobalError
@@ -47,7 +47,7 @@ class EPharmacyOrderDetailFragment : BaseDaggerFragment(), EPharmacyListener {
     private var ePharmacySecondaryButton: CardUnify? = null
     private var ePharmacyGlobalError: GlobalError? = null
 
-    private var orderId = String.EMPTY
+    private var orderId = "9e7c7910-6cc9-4397-901e-55a21c7d7e98"
     private var tConsultationId = String.EMPTY
 
     private var binding by autoClearedNullable<EpharmacyOrderDetailFragmentBinding>()
@@ -98,7 +98,7 @@ class EPharmacyOrderDetailFragment : BaseDaggerFragment(), EPharmacyListener {
     }
 
     private fun initArguments() {
-        orderId = arguments?.getString(EPHARMACY_ORDER_ID, String.EMPTY).orEmpty()
+        tConsultationId = arguments?.getString(EPHARMACY_TOKO_CONSULTATION_ID, String.EMPTY).orEmpty()
     }
 
     private fun setUpObservers() {
@@ -110,6 +110,7 @@ class EPharmacyOrderDetailFragment : BaseDaggerFragment(), EPharmacyListener {
         view.apply {
             ePharmacyRecyclerView = findViewById(R.id.epharmacy_rv)
             ePharmacyPrimaryButton = findViewById(R.id.primaryButton)
+            ePharmacyActionButton = findViewById(R.id.action_buttons)
             ePharmacySecondaryButton = findViewById(R.id.secondaryButton)
             ePharmacyGlobalError = findViewById(R.id.epharmacy_global_error)
         }
@@ -162,6 +163,7 @@ class EPharmacyOrderDetailFragment : BaseDaggerFragment(), EPharmacyListener {
 
     private fun renderButtons(buttonData: EPharmacyOrderDetailResponse.OrderButtonData?) {
         buttonData?.cta?.firstOrNull()?.let { primaryButtonData ->
+            ePharmacyActionButton?.show()
             ePharmacyPrimaryButton?.apply {
                 text = primaryButtonData.label
                 buttonVariant = EPharmacyOrderDetailResponse.OrderButtonData.mapButtonVariant(primaryButtonData.variantColor)
@@ -169,6 +171,7 @@ class EPharmacyOrderDetailFragment : BaseDaggerFragment(), EPharmacyListener {
                 setOnClickListener {
                     onPrimaryButtonClick(primaryButtonData.appUrl)
                 }
+                show()
             }
         } ?: ePharmacyPrimaryButton?.hide()
 
@@ -176,6 +179,7 @@ class EPharmacyOrderDetailFragment : BaseDaggerFragment(), EPharmacyListener {
             ePharmacySecondaryButton?.setOnClickListener {
                 onSecondaryButtonClick(secondaryButtonData)
             }
+            ePharmacySecondaryButton?.show()
         } ?: ePharmacySecondaryButton?.hide()
     }
 
@@ -186,7 +190,7 @@ class EPharmacyOrderDetailFragment : BaseDaggerFragment(), EPharmacyListener {
     private fun onSecondaryButtonClick(secondaryButtonData: List<EPharmacyOrderDetailResponse.GetConsultationOrderDetail.EPharmacyOrderButtonModel?>) {
         showSecondaryActionButtonBottomSheet(secondaryButtonData, object : EPharmacySecondaryActionButtonBottomSheet.ActionButtonClickListener {
             override fun onActionButtonClicked(isFromPrimaryButton: Boolean, button: EPharmacyOrderDetailResponse.GetConsultationOrderDetail.EPharmacyOrderButtonModel?) {
-
+                RouteManager.route(context, button?.appUrl)
             }
         })
     }

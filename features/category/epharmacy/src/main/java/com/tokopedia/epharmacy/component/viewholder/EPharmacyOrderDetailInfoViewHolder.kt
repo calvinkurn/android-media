@@ -6,12 +6,14 @@ import com.tokopedia.epharmacy.R
 import com.tokopedia.epharmacy.component.model.EPharmacyOrderDetailInfoDataModel
 import com.tokopedia.kotlin.extensions.view.displayTextOrHide
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifyprinciples.Typography
 
 class EPharmacyOrderDetailInfoViewHolder(
     val view: View
 ) : AbstractViewHolder<EPharmacyOrderDetailInfoDataModel>(view) {
 
+    private val detailProductHeader = view.findViewById<Typography>(R.id.detail_product_header)
     private val serviceTypeValue = view.findViewById<Typography>(R.id.service_type_value)
     private val providerName = view.findViewById<Typography>(R.id.service_provider_value)
     private val durationValue = view.findViewById<Typography>(R.id.duration_value)
@@ -29,6 +31,7 @@ class EPharmacyOrderDetailInfoViewHolder(
         durationValue.text = data.duration
         feesValue.text = data.fees
         setUpValidity(data.validity)
+        detailProductHeader.show()
     }
 
     private fun setUpValidity(validity: String) {

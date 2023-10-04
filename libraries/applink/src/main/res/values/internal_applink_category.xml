@@ -9,7 +9,7 @@
     <string name="catalog_library_host" translatable="false">catalog-library</string>
     <string name="applink_epharmacy_chooser" translatable="false">/chooser.*</string>
     <string name="applink_epharmacy_component" translatable="false">/component/.*\</string>
-    <string name="applink_epharmacy_order_detail" translatable="false">/order/.*\</string>
+    <string name="applink_epharmacy_order_detail" translatable="false">/consultation-detail/.*\</string>
     <string name="applink_epharmacy_edu" translatable="false">/edu/.*\</string>
     <string name="applink_epharmacy_attach_prescription" translatable="false">/attach-prescription.*</string>
     <string name="applink_epharmacy_checkout" translatable="false">/checkout.*</string>

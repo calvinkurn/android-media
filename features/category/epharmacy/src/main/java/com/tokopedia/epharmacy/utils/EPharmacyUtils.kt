@@ -309,7 +309,7 @@ object EPharmacyUtils {
         listOfComponents.add(EPharmacyOrderDetailHeaderDataModel(
             ORDER_HEADER_COMPONENT,ORDER_HEADER_COMPONENT,
             orderData?.orderStatusDesc,
-            orderData?.ticker?.type,
+            orderData?.ticker?.typeInt,
             orderData?.ticker?.message,
             orderData?.invoiceNumber,
             orderData?.invoiceUrl,

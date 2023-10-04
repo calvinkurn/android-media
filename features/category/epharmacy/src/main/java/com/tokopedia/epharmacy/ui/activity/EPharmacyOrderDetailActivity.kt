@@ -1,5 +1,6 @@
 package com.tokopedia.epharmacy.ui.activity
 
+import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -8,16 +9,16 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.epharmacy.R
 import com.tokopedia.epharmacy.di.DaggerEPharmacyComponent
 import com.tokopedia.epharmacy.di.EPharmacyComponent
-import com.tokopedia.epharmacy.ui.fragment.EPharmacyCheckoutFragment
 import com.tokopedia.epharmacy.ui.fragment.EPharmacyOrderDetailFragment
-import com.tokopedia.epharmacy.utils.EPHARMACY_ORDER_ID
+import com.tokopedia.epharmacy.utils.EPHARMACY_TOKO_CONSULTATION_ID
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
+import com.tokopedia.epharmacy.R as epharmacyR
 
 class EPharmacyOrderDetailActivity : BaseSimpleActivity(), HasComponent<EPharmacyComponent> {
 
-    private var orderId = String.EMPTY
+    private var tConsultationId = String.EMPTY
 
     private val ePharmacyComponent: EPharmacyComponent by lazy(LazyThreadSafetyMode.NONE) { initInjector() }
 
@@ -31,13 +32,12 @@ class EPharmacyOrderDetailActivity : BaseSimpleActivity(), HasComponent<EPharmac
     }
 
     private fun setPageTitle() {
-        updateTitle(getString(com.tokopedia.epharmacy.R.string.epharmacy_order_detail_title))
+        updateTitle(getString(epharmacyR.string.epharmacy_order_detail_title))
     }
 
     private fun extractParameters() {
-        intent?.data?.let { uri ->
-            orderId = uri.getQueryParameter(EPHARMACY_ORDER_ID).orEmpty()
-        }
+        val pathSegments = Uri.parse(intent.data?.path.orEmpty()).pathSegments
+        tConsultationId = if (pathSegments.size > 1) pathSegments[1].orEmpty() else String.EMPTY
     }
 
     override fun getLayoutRes() = R.layout.epharmacy_activity
@@ -48,7 +48,7 @@ class EPharmacyOrderDetailActivity : BaseSimpleActivity(), HasComponent<EPharmac
         extractParameters()
         return EPharmacyOrderDetailFragment.newInstance(
             Bundle().apply {
-                putString(EPHARMACY_ORDER_ID, orderId)
+                putString(EPHARMACY_TOKO_CONSULTATION_ID, tConsultationId)
             }
         )
     }

@@ -53,9 +53,11 @@ data class EPharmacyOrderDetailResponse(
         @SerializedName("tri_dots")
         @Expose
         val triDots: List<EPharmacyOrderButtonModel?>?,
-
-        val orderButtonData: OrderButtonData? = OrderButtonData(cta, triDots)
     ) {
+
+        val orderButtonData: OrderButtonData
+            get() = OrderButtonData(cta,triDots)
+
         data class EPharmacyOrderButtonModel(
             @SerializedName("action_type")
             @Expose
@@ -173,9 +175,9 @@ data class EPharmacyOrderDetailResponse(
                 @SerializedName("message")
                 @Expose
                 val message: String?,
-                @SerializedName("type")
+                @SerializedName("type_int")
                 @Expose
-                val type: Int?
+                val typeInt: Int?
             )
         }
     }

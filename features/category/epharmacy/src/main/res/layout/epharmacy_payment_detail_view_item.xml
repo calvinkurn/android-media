@@ -22,11 +22,9 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/divider_payment_top"
-        android:visibility="gone"
         android:layout_marginTop="16dp"
         android:layout_marginHorizontal="16dp"
         android:text="@string/epharmacy_rincian_pembayaran"
-        tools:visibility="visible"
         />
 
     <com.tokopedia.unifyprinciples.Typography
