@@ -347,6 +347,7 @@ open class HomeRevampViewModel @Inject constructor(
 
     @FlowPreview
     fun refreshHomeData() {
+        val isFirstLoad = this.isFirstLoad
         if (getHomeDataJob?.isActive == true) {
             _hideShowLoadingLiveData.postValue(Event(true))
             return
@@ -365,7 +366,10 @@ open class HomeRevampViewModel @Inject constructor(
         }
 
         getHomeDataJob = launchCatchError(coroutineContext, block = {
-            homeUseCase.get().updateHomeData(homeRemoteConfigController.isUsingNewAtf()).collect {
+            homeUseCase.get().updateHomeData(
+                homeRemoteConfigController.isUsingNewAtf(),
+                isFirstLoad
+            ).collect {
                 _updateNetworkLiveData.postValue(it)
                 if (it.status === Result.Status.ERROR_PAGINATION) {
                     removeDynamicChannelLoadingModel()

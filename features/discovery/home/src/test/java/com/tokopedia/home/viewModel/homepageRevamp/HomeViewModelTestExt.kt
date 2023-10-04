@@ -278,7 +278,7 @@ fun HomeDynamicChannelUseCase.givenGetHomeDataError(t: Throwable = Throwable("Un
 }
 
 fun HomeDynamicChannelUseCase.givenUpdateHomeDataReturn(result: com.tokopedia.home.beranda.helper.Result<Any>) {
-    coEvery { updateHomeData(isNewAtfMechanism = false) } returns flow {
+    coEvery { updateHomeData(any(), any()) } returns flow {
         emit(result)
     }
 }
@@ -290,7 +290,7 @@ fun HomeBalanceWidgetUseCase.givenGetLoadingStateReturn() {
 fun HomeDynamicChannelUseCase.givenUpdateHomeDataError(t: Throwable = Throwable("Unit test simulate error")) {
     mockkStatic(Log::class)
     every { Log.getStackTraceString(t) } returns ""
-    coEvery { updateHomeData(isNewAtfMechanism = false) } returns flow {
+    coEvery { updateHomeData(any(), any()) } returns flow {
         throw t
     }
 }
@@ -299,7 +299,7 @@ fun HomeDynamicChannelUseCase.givenUpdateHomeDataErrorNullMessage() {
     val throwable = Throwable()
     mockkStatic(Log::class)
     every { Log.getStackTraceString(throwable) } returns ""
-    coEvery { updateHomeData(isNewAtfMechanism = false) } returns flow {
+    coEvery { updateHomeData(any(), any()) } returns flow {
         throw throwable
     }
 }

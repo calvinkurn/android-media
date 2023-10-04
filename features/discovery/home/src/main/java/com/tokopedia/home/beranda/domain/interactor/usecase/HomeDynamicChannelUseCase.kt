@@ -214,12 +214,6 @@ class HomeDynamicChannelUseCase @Inject constructor(
         return combine(headerFlow, atfFlow, dynamicChannelFlow) { header, atf, dc ->
             val combinedList = header.list + atf.list + dc.list
             val isCache = atf.isCache || dc.isCache
-            Log.d(
-                "atfflow",
-                "RESULT:\n" +
-                    "ATF   : ${atf.list.joinToString(",") { it.javaClass.simpleName }}\n" +
-                    "DC    : ${dc.list.joinToString(", ") { it.javaClass.simpleName }}\n"
-            )
 
             HomeDynamicChannelModel(
                 list = combinedList,
@@ -978,7 +972,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
      *              Then emit error pagination
      *              Because there is no content that we can show, we showing error page
      */
-    fun updateHomeData(isNewAtfMechanism: Boolean = false): Flow<Result<Any>> = flow {
+    fun updateHomeData(isNewAtfMechanism: Boolean = false, isFirstLoad: Boolean = false): Flow<Result<Any>> = flow {
         coroutineScope {
             /**
              * Remote config to disable pagination by request with param 0
@@ -1010,8 +1004,10 @@ class HomeDynamicChannelUseCase @Inject constructor(
             launch { homeUserStatusRepository.hitHomeStatusThenIgnoreResponse() }
 
             if (isNewAtfMechanism) {
-                launch { homeAtfUseCase.refreshData() }
-                launch { homeHeaderUseCase.updateBalanceWidget(true) }
+                if (!isFirstLoad) {
+                    launch { homeAtfUseCase.refreshData() }
+                    launch { homeHeaderUseCase.updateBalanceWidget(true) }
+                }
             } else {
                 /**
                  * 2. Get above the fold skeleton
