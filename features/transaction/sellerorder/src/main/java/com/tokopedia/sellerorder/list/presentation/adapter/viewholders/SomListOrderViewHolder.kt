@@ -156,10 +156,15 @@ open class SomListOrderViewHolder(
             val firstButton = element.buttons.firstOrNull()
             if (firstButton != null && !element.multiSelectEnabled) {
                 btnQuickAction?.text = firstButton.displayName
-                btnQuickAction?.buttonVariant = if (firstButton.type == SomConsts.KEY_PRIMARY_DIALOG_BUTTON) UnifyButton.Variant.FILLED else UnifyButton.Variant.GHOST
+                btnQuickAction?.buttonVariant =
+                    if (firstButton.type == SomConsts.KEY_PRIMARY_DIALOG_BUTTON) UnifyButton.Variant.FILLED else UnifyButton.Variant.GHOST
                 btnQuickAction?.setOnClickListener { onQuickActionButtonClicked(element) }
-                btnQuickAction?.show()
                 btnQuickAction?.isEnabled = true
+                btnQuickAction?.show()
+            } else if (firstButton != null && (firstButton.key == KEY_CONFIRM_SHIPPING_AUTO || firstButton.key == KEY_CONFIRM_SHIPPING_DROP_OFF)) {
+                // when in bulk mode and button is FMD / FDO then show disabled button
+                btnQuickAction?.isEnabled = false
+                btnQuickAction?.show()
             } else {
                 btnQuickAction?.gone()
             }
