@@ -161,14 +161,14 @@ import com.tokopedia.shop.home.di.component.DaggerShopPageHomeComponent
 import com.tokopedia.shop.home.di.module.ShopPageHomeModule
 import com.tokopedia.shop.home.util.CheckCampaignNplException
 import com.tokopedia.shop.home.util.ShopBannerProductGroupWidgetTabDependencyProvider
-import com.tokopedia.shop.home.util.ShopHomeShowcaseNavigationDependencyProvider
+import com.tokopedia.shop.home.util.ShopHomeReimagineShowcaseNavigationDependencyProvider
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapter
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
-import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeDisplayBannerProductHotspotViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeReimagineDisplayBannerProductHotspotViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomePersoProductComparisonViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductListSellerEmptyListener
-import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeV4TerlarisViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeReimagineTerlarisViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeVoucherViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.advance_carousel_banner.ShopHomeDisplayAdvanceCarouselBannerWidgetListener
 import com.tokopedia.shop.home.view.adapter.viewholder.directpurchasebyetalase.ShopHomeDirectPurchaseByEtalaseWidgetListener
@@ -179,14 +179,14 @@ import com.tokopedia.shop.home.view.listener.ShopBannerProductGroupListener
 import com.tokopedia.shop.home.view.listener.ShopHomeCampaignNplWidgetListener
 import com.tokopedia.shop.home.view.listener.ShopHomeCardDonationListener
 import com.tokopedia.shop.home.view.listener.ShopHomeCarouselProductListener
-import com.tokopedia.shop.home.view.listener.ShopHomeDisplayBannerTimerWidgetListener
+import com.tokopedia.shop.home.view.listener.ShopHomeReimagineDisplayBannerTimerWidgetListener
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.listener.ShopHomeEndlessProductListener
 import com.tokopedia.shop.home.view.listener.ShopHomeFlashSaleWidgetListener
 import com.tokopedia.shop.home.view.listener.ShopHomeListener
 import com.tokopedia.shop.home.view.listener.ShopHomePlayWidgetListener
 import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseListWidgetListener
-import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseNavigationListener
+import com.tokopedia.shop.home.view.listener.ShopHomeReimagineShowcaseNavigationListener
 import com.tokopedia.shop.home.view.model.CarouselPlayWidgetUiModel
 import com.tokopedia.shop.home.view.model.CheckCampaignNotifyMeUiModel
 import com.tokopedia.shop.home.view.model.GetCampaignNotifyMeUiModel
@@ -245,7 +245,7 @@ import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 import kotlin.math.min
 
-open class ShopPageHomeFragment :
+open class ShopPageHomeFragmentReimagineReimagineReimagine :
     BaseListFragment<Visitable<*>, AdapterTypeFactory>(),
     ShopHomeDisplayWidgetListener,
     ShopHomeVoucherViewHolder.ShopHomeVoucherViewHolderListener,
@@ -266,11 +266,11 @@ open class ShopPageHomeFragment :
     ShopHomeProductListSellerEmptyListener,
     ShopHomeListener,
     ShopHomePersoProductComparisonViewHolder.ShopHomePersoProductComparisonViewHolderListener,
-    ShopHomeDisplayBannerTimerWidgetListener,
-    ShopHomeDisplayBannerProductHotspotViewHolder.Listener,
-    ShopHomeShowcaseNavigationListener,
-    ShopHomeShowcaseNavigationDependencyProvider,
-    ShopHomeV4TerlarisViewHolder.ShopHomeV4TerlarisViewHolderListener,
+    ShopHomeReimagineDisplayBannerTimerWidgetListener,
+    ShopHomeReimagineDisplayBannerProductHotspotViewHolder.Listener,
+    ShopHomeReimagineShowcaseNavigationListener,
+    ShopHomeReimagineShowcaseNavigationDependencyProvider,
+    ShopHomeReimagineTerlarisViewHolder.ShopHomeV4TerlarisViewHolderListener,
     ShopBannerProductGroupWidgetTabDependencyProvider,
     ShopBannerProductGroupListener,
     ShopHomeDisplayAdvanceCarouselBannerWidgetListener,
@@ -316,7 +316,7 @@ open class ShopPageHomeFragment :
             shopAttribution: String,
             shopRef: String,
             isEnableDirectPurchase: Boolean
-        ): ShopPageHomeFragment {
+        ): ShopPageHomeFragmentReimagineReimagineReimagine {
             val bundle = Bundle()
             bundle.putString(KEY_SHOP_ID, shopId)
             bundle.putBoolean(KEY_IS_OFFICIAL_STORE, isOfficialStore)
@@ -325,7 +325,7 @@ open class ShopPageHomeFragment :
             bundle.putString(KEY_SHOP_ATTRIBUTION, shopAttribution)
             bundle.putString(KEY_SHOP_REF, shopRef)
             bundle.putBoolean(KEY_ENABLE_SHOP_DIRECT_PURCHASE, isEnableDirectPurchase)
-            return ShopPageHomeFragment().apply {
+            return ShopPageHomeFragmentReimagineReimagineReimagine().apply {
                 arguments = bundle
             }
         }
@@ -430,11 +430,11 @@ open class ShopPageHomeFragment :
             shopHomeProductListSellerEmptyListener = this,
             shopHomeListener = this,
             shopPersoProductComparisonListener = this,
-            shopHomeDisplayBannerTimerWidgetListener = this,
+            shopHomeReimagineDisplayBannerTimerWidgetListener = this,
             shopHomeDisplayBannerProductHotspotListener = this,
-            shopHomeShowcaseNavigationListener = this,
-            shopHomeShowcaseNavigationDependencyProvider = this,
-            shopHomeV4TerlarisViewHolderListener = this,
+            shopHomeReimagineShowcaseNavigationListener = this,
+            shopHomeReimagineShowcaseNavigationDependencyProvider = this,
+            shopHomeReimagineTerlarisViewHolderListener = this,
             shopBannerProductGroupListener = this,
             shopBannerProductGroupWidgetTabDependencyProvider = this,
             shopHomeDisplayAdvanceCarouselBannerWidgetListener = this,
@@ -830,7 +830,7 @@ open class ShopPageHomeFragment :
                         if (!ShopUtil.isExceptionIgnored(throwable)) {
                             ShopUtil.logShopPageP2BuyerFlowAlerting(
                                 tag = SHOP_PAGE_BUYER_FLOW_TAG,
-                                functionName = this@ShopPageHomeFragment::observeShopHomeWidgetContentData.name,
+                                functionName = this@ShopPageHomeFragmentReimagineReimagineReimagine::observeShopHomeWidgetContentData.name,
                                 liveDataName = ShopHomeViewModel::shopHomeWidgetContentData.name,
                                 userId = userId,
                                 shopId = shopId,
@@ -1874,7 +1874,7 @@ open class ShopPageHomeFragment :
                 .shopPageHomeModule(ShopPageHomeModule())
                 .shopComponent(ShopComponentHelper().getComponent(application, this))
                 .build()
-                .inject(this@ShopPageHomeFragment)
+                .inject(this@ShopPageHomeFragmentReimagineReimagineReimagine)
         }
     }
 
@@ -4571,7 +4571,7 @@ open class ShopPageHomeFragment :
 
     private fun setupPlayWidget() {
         playWidgetCoordinator = PlayWidgetCoordinator(this, autoHandleLifecycleMethod = false).apply {
-            setListener(this@ShopPageHomeFragment)
+            setListener(this@ShopPageHomeFragmentReimagineReimagineReimagine)
         }
     }
 
@@ -5268,7 +5268,7 @@ open class ShopPageHomeFragment :
         return isOverrideTheme()
     }
 
-    override fun getShopPageHomeFragment(): ShopPageHomeFragment {
+    override fun getShopPageHomeFragment(): ShopPageHomeFragmentReimagineReimagineReimagine {
         return this
     }
 

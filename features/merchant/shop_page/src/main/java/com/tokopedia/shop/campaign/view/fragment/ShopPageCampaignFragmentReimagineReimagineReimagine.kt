@@ -76,7 +76,7 @@ import com.tokopedia.shop.home.WidgetName
 import com.tokopedia.shop.home.WidgetType
 import com.tokopedia.shop.home.di.component.DaggerShopPageHomeComponent
 import com.tokopedia.shop.home.di.module.ShopPageHomeModule
-import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
+import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragmentReimagineReimagineReimagine
 import com.tokopedia.shop.home.view.listener.ShopHomeListener
 import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
 import com.tokopedia.shop.home.view.model.CarouselPlayWidgetUiModel
@@ -104,8 +104,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.math.min
 
-class ShopPageCampaignFragment :
-    ShopPageHomeFragment(),
+class ShopPageCampaignFragmentReimagineReimagineReimagine :
+    ShopPageHomeFragmentReimagineReimagineReimagine(),
     WidgetConfigListener,
     ShopHomeListener,
     ShopCampaignInterface,
@@ -127,10 +127,10 @@ class ShopPageCampaignFragment :
         private const val PATTERN_HEIGHT_PERCENTAGE_FOR_DEVICE_WIDTH_BELOW_540 = 0.39f
         private const val PATTERN_HEIGHT_PERCENTAGE_FOR_DEVICE_WIDTH_ABOVE_540 = 0.48f
 
-        fun createInstance(shopId: String): ShopPageCampaignFragment {
+        fun createInstance(shopId: String): ShopPageCampaignFragmentReimagineReimagineReimagine {
             val bundle = Bundle()
             bundle.putString(KEY_SHOP_ID, shopId)
-            return ShopPageCampaignFragment().apply {
+            return ShopPageCampaignFragmentReimagineReimagineReimagine().apply {
                 arguments = bundle
             }
         }
@@ -348,7 +348,7 @@ class ShopPageCampaignFragment :
                         if (!ShopUtil.isExceptionIgnored(throwable)) {
                             ShopUtil.logShopPageP2BuyerFlowAlerting(
                                 tag = ShopPageLoggerConstant.Tag.SHOP_PAGE_BUYER_FLOW_TAG,
-                                functionName = this@ShopPageCampaignFragment::observeShopHomeWidgetContentData.name,
+                                functionName = this@ShopPageCampaignFragmentReimagineReimagineReimagine::observeShopHomeWidgetContentData.name,
                                 liveDataName = ShopHomeViewModel::shopHomeWidgetContentData.name,
                                 userId = userId,
                                 shopId = shopId,
@@ -514,7 +514,7 @@ class ShopPageCampaignFragment :
                 .shopPageHomeModule(ShopPageHomeModule())
                 .shopComponent(ShopComponentHelper().getComponent(application, this))
                 .build()
-                .inject(this@ShopPageCampaignFragment)
+                .inject(this@ShopPageCampaignFragmentReimagineReimagineReimagine)
         }
     }
 

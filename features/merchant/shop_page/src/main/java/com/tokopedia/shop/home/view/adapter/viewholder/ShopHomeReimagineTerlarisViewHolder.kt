@@ -14,7 +14,6 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.model.ShopHomeTerlarisWidgetTrackerDataModel
-import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.LayoutShopHomeV4TerlarisWidgetBinding
 import com.tokopedia.shop.home.view.adapter.ShopHomeV4TerlarisAdapter
@@ -25,7 +24,7 @@ import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.view.binding.viewBinding
 
-class ShopHomeV4TerlarisViewHolder(
+class ShopHomeReimagineTerlarisViewHolder(
     itemView: View,
     private val listener: ShopHomeV4TerlarisViewHolderListener
 ) : AbstractViewHolder<ShopHomeCarousellProductUiModel>(itemView) {

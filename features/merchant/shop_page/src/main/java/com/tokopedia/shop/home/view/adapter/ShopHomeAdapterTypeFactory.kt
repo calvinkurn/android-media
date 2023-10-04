@@ -47,14 +47,13 @@ import com.tokopedia.shop.home.WidgetName.TRENDING
 import com.tokopedia.shop.home.WidgetName.VIDEO
 import com.tokopedia.shop.home.WidgetName.VOUCHER_STATIC
 import com.tokopedia.shop.home.util.ShopBannerProductGroupWidgetTabDependencyProvider
-import com.tokopedia.shop.home.util.ShopHomeShowcaseNavigationDependencyProvider
+import com.tokopedia.shop.home.util.ShopHomeReimagineShowcaseNavigationDependencyProvider
 import com.tokopedia.shop.home.view.adapter.viewholder.CarouselPlayWidgetViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ProductGridListPlaceholderViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopCarouselProductWidgetPlaceholderViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeCardDonationViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeCarouselProductPersonalizationViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeCarousellProductViewHolder
-import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeDisplayBannerProductHotspotViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeDisplayBannerTimerPlaceholderViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeDisplayBannerTimerViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeFlashSaleViewHolder
@@ -73,13 +72,14 @@ import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductListEmptyV
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductListSellerEmptyListener
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductListSellerEmptyViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeReimagineDisplayBannerProductHotspotViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeReimagineTerlarisViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeShowcaseListBaseWidgetViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeSliderBannerPlaceholderViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeSliderBannerViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeSliderSquarePlaceholderViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeSliderSquareViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeV4TerlarisPlaceholderViewHolder
-import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeV4TerlarisViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeVideoViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeVoucherViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopLayoutLoadingShimmerViewHolder
@@ -138,11 +138,11 @@ open class ShopHomeAdapterTypeFactory(
     private val shopHomeProductListSellerEmptyListener: ShopHomeProductListSellerEmptyListener,
     private val shopHomeListener: ShopHomeListener,
     private val shopPersoProductComparisonListener: ShopHomePersoProductComparisonViewHolder.ShopHomePersoProductComparisonViewHolderListener,
-    private val shopHomeDisplayBannerTimerWidgetListener: ShopHomeDisplayBannerTimerWidgetListener,
-    private val shopHomeShowcaseNavigationListener: ShopHomeShowcaseNavigationListener,
-    private val shopHomeShowcaseNavigationDependencyProvider: ShopHomeShowcaseNavigationDependencyProvider,
-    private val shopHomeDisplayBannerProductHotspotListener: ShopHomeDisplayBannerProductHotspotViewHolder.Listener,
-    private val shopHomeV4TerlarisViewHolderListener: ShopHomeV4TerlarisViewHolder.ShopHomeV4TerlarisViewHolderListener,
+    private val shopHomeReimagineDisplayBannerTimerWidgetListener: ShopHomeReimagineDisplayBannerTimerWidgetListener,
+    private val shopHomeReimagineShowcaseNavigationListener: ShopHomeReimagineShowcaseNavigationListener,
+    private val shopHomeReimagineShowcaseNavigationDependencyProvider: ShopHomeReimagineShowcaseNavigationDependencyProvider,
+    private val shopHomeDisplayBannerProductHotspotListener: ShopHomeReimagineDisplayBannerProductHotspotViewHolder.Listener,
+    private val shopHomeReimagineTerlarisViewHolderListener: ShopHomeReimagineTerlarisViewHolder.ShopHomeV4TerlarisViewHolderListener,
     private val shopBannerProductGroupListener: ShopBannerProductGroupListener,
     private val shopBannerProductGroupWidgetTabDependencyProvider: ShopBannerProductGroupWidgetTabDependencyProvider,
     private val shopHomeDisplayAdvanceCarouselBannerWidgetListener: ShopHomeDisplayAdvanceCarouselBannerWidgetListener,
@@ -202,7 +202,7 @@ open class ShopHomeAdapterTypeFactory(
     }
 
     private fun getShopHomeDisplayBannerProductHotspotViewHolder(): Int {
-        return ShopHomeDisplayBannerProductHotspotViewHolder.LAYOUT
+        return ShopHomeReimagineDisplayBannerProductHotspotViewHolder.LAYOUT
     }
 
     open fun getShopHomeNplCampaignViewHolder(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
@@ -281,7 +281,7 @@ open class ShopHomeAdapterTypeFactory(
         return if (isShowTerlarisWidgetPlaceholder(baseShopHomeWidgetUiModel)) {
             ShopHomeV4TerlarisPlaceholderViewHolder.LAYOUT
         } else {
-            ShopHomeV4TerlarisViewHolder.LAYOUT
+            ShopHomeReimagineTerlarisViewHolder.LAYOUT
         }
     }
 
@@ -429,21 +429,21 @@ open class ShopHomeAdapterTypeFactory(
             ShopHomeShowCaseNavigationLeftMainBannerViewHolder.LAYOUT -> {
                 ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
                     parent,
-                    shopHomeShowcaseNavigationListener,
-                    shopHomeShowcaseNavigationDependencyProvider
+                    shopHomeReimagineShowcaseNavigationListener,
+                    shopHomeReimagineShowcaseNavigationDependencyProvider
                 )
             }
             ShopHomeShowCaseNavigationTopMainBannerPlaceholderViewHolder.LAYOUT -> {
                 ShopHomeShowCaseNavigationTopMainBannerPlaceholderViewHolder(parent)
             }
             ShopHomeShowCaseNavigationTopMainBannerViewHolder.LAYOUT -> {
-                ShopHomeShowCaseNavigationTopMainBannerViewHolder(parent, shopHomeShowcaseNavigationListener)
+                ShopHomeShowCaseNavigationTopMainBannerViewHolder(parent, shopHomeReimagineShowcaseNavigationListener)
             }
             ShopHomeShowCaseNavigationCarouselPlaceholderViewHolder.LAYOUT -> {
                 ShopHomeShowCaseNavigationCarouselPlaceholderViewHolder(parent)
             }
             ShopHomeShowCaseNavigationCarouselViewHolder.LAYOUT -> {
-                ShopHomeShowCaseNavigationCarouselViewHolder(parent, shopHomeShowcaseNavigationListener)
+                ShopHomeShowCaseNavigationCarouselViewHolder(parent, shopHomeReimagineShowcaseNavigationListener)
             }
             ShopHomeBannerProductGroupViewPagerVerticalPlaceholderViewHolder.LAYOUT -> {
                 ShopHomeBannerProductGroupViewPagerVerticalPlaceholderViewHolder(parent)
@@ -495,9 +495,9 @@ open class ShopHomeAdapterTypeFactory(
             ShopHomeDisplayBannerTimerPlaceholderViewHolder.LAYOUT -> ShopHomeDisplayBannerTimerPlaceholderViewHolder(parent)
             ShopHomeDisplayBannerTimerViewHolder.LAYOUT -> ShopHomeDisplayBannerTimerViewHolder(
                 parent,
-                shopHomeDisplayBannerTimerWidgetListener
+                shopHomeReimagineDisplayBannerTimerWidgetListener
             )
-            ShopHomeDisplayBannerProductHotspotViewHolder.LAYOUT -> ShopHomeDisplayBannerProductHotspotViewHolder(
+            ShopHomeReimagineDisplayBannerProductHotspotViewHolder.LAYOUT -> ShopHomeReimagineDisplayBannerProductHotspotViewHolder(
                 parent,
                 shopHomeDisplayBannerProductHotspotListener
             )
@@ -507,7 +507,7 @@ open class ShopHomeAdapterTypeFactory(
             )
             // ========= Shop Home Revamp V4 - New widgets ========= //
             ShopHomeV4TerlarisPlaceholderViewHolder.LAYOUT -> ShopHomeV4TerlarisPlaceholderViewHolder(parent)
-            ShopHomeV4TerlarisViewHolder.LAYOUT -> ShopHomeV4TerlarisViewHolder(parent, shopHomeV4TerlarisViewHolderListener)
+            ShopHomeReimagineTerlarisViewHolder.LAYOUT -> ShopHomeReimagineTerlarisViewHolder(parent, shopHomeReimagineTerlarisViewHolderListener)
             ShopHomeDirectPurchasedByEtalaseViewHolder.LAYOUT -> ShopHomeDirectPurchasedByEtalaseViewHolder(
                 parent,
                 shopHomeListener,

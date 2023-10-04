@@ -2,7 +2,7 @@ package com.tokopedia.shop.home.view.listener
 
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
 
-interface ShopHomeDisplayBannerTimerWidgetListener {
+interface ShopHomeReimagineDisplayBannerTimerWidgetListener {
     fun onDisplayBannerTimerClicked(
         position: Int,
         uiModel: ShopWidgetDisplayBannerTimerUiModel
