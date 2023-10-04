@@ -60,6 +60,12 @@ open class SomListOrderViewHolder(
         private val completedOrderStatusCodes = intArrayOf(690, 691, 695, 698, 699, 700, 701)
         private val cancelledOrderStatusCodes = intArrayOf(0, 4, 6, 10, 11, 15)
         private val endedOrderStatusCode = completedOrderStatusCodes.plus(cancelledOrderStatusCodes)
+        private val requestAndConfirmPickupKeys = mutableListOf(
+            KEY_REQUEST_PICKUP,
+            KEY_CONFIRM_SHIPPING,
+            KEY_CONFIRM_SHIPPING_AUTO,
+            KEY_CONFIRM_SHIPPING_DROP_OFF
+        )
     }
 
     protected val binding by viewBinding<ItemSomListOrderBinding>()
@@ -170,7 +176,7 @@ open class SomListOrderViewHolder(
             btnQuickAction?.setOnClickListener { onQuickActionButtonClicked(element) }
 
             if (element.multiSelectEnabled) {
-                if (firstButton.key == KEY_CONFIRM_SHIPPING_AUTO || firstButton.key == KEY_CONFIRM_SHIPPING_DROP_OFF) {
+                if (firstButton.isRequestOrConfirmPickup) {
                     btnQuickAction?.isEnabled = false
                     btnQuickAction?.show()
                 } else {
@@ -468,6 +474,11 @@ open class SomListOrderViewHolder(
     private fun skipValidateOrder(element: SomListOrderUiModel): Boolean {
         return element.cancelRequest != Int.ZERO && element.cancelRequestStatus == Int.ZERO
     }
+
+    private val SomListOrderUiModel.Button.isRequestOrConfirmPickup: Boolean
+        get() {
+            return this.key in requestAndConfirmPickupKeys
+        }
 
     interface SomListOrderItemListener {
         fun onCheckChanged()
