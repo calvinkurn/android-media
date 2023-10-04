@@ -7,7 +7,8 @@ data class ProductDetailDataModel(
     val layoutData: DynamicProductInfoP1 = DynamicProductInfoP1(),
     val listOfLayout: MutableList<DynamicPdpDataModel> = mutableListOf(),
     val variantData: ProductVariant? = null,
-    val cacheState: CacheState = CacheState()
+    val cacheState: CacheState = CacheState(),
+    val isCampaign: Boolean = false
 )
 
 data class CacheState(

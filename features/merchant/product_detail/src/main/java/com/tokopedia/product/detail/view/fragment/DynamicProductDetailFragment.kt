@@ -2897,7 +2897,11 @@ open class DynamicProductDetailFragment :
                 pdpUiUpdater = PdpUiUpdater(DynamicProductDetailMapper.hashMapLayout(it.data))
                 viewModel.getDynamicProductInfoP1?.let { dataP1 ->
                     onSuccessGetDataP1(dataP1)
-                    ProductDetailServerLogger.logBreadCrumbSuccessGetDataP1(isSuccess = true)
+                    ProductDetailServerLogger.logBreadCrumbSuccessGetDataP1(
+                        isSuccess = true,
+                        cacheState = viewModel.pdpLayout?.cacheState,
+                        isCampaign = viewModel.pdpLayout?.isCampaign.orFalse()
+                    )
                 }
             }, {
                 handleP1Error(error = it)
@@ -2910,7 +2914,7 @@ open class DynamicProductDetailFragment :
     }
 
     private fun handleP1Error(error: Throwable) {
-        if (isCacheable() && viewModel.cacheState?.isFromCache == true) {
+        if (isCacheable() && viewModel.pdpLayout?.cacheState?.isFromCache == true) {
             val view = binding?.root ?: return
             val errorModel = ProductDetailErrorHelper.getErrorType(
                 view.context,
@@ -2958,11 +2962,14 @@ open class DynamicProductDetailFragment :
                 isFromDeeplink,
                 deeplinkUrl
             )
+            val pdpLayout = viewModel.pdpLayout
             renderPageError(errorModel)
             ProductDetailServerLogger.logBreadCrumbSuccessGetDataP1(
                 isSuccess = false,
                 errorMessage = errorModel.errorMessage,
-                errorCode = errorModel.errorCode
+                errorCode = errorModel.errorCode,
+                cacheState = pdpLayout?.cacheState,
+                isCampaign = pdpLayout?.isCampaign.orFalse()
             )
         }
     }
@@ -3399,10 +3406,8 @@ open class DynamicProductDetailFragment :
         if (isCacheable()) {
             // when cache first then cloud is true, we want to keep refresh layout to UI
             // prevent interaction loading state for several component
-            val submitInitialList = viewModel.cacheState?.cacheFirstThenCloud == false
-            Timber.tag("cacheable").d("${viewModel.cacheState}")
+            val submitInitialList = viewModel.pdpLayout?.cacheState?.cacheFirstThenCloud == false
             if (submitInitialList) {
-                Timber.tag("cacheable").d("submitInitialList")
                 submitInitialList(pdpUiUpdater?.getInitialItems(viewModel.isAPlusContentExpanded()).orEmpty())
             }
         } else {

@@ -7,6 +7,7 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
+import com.tokopedia.product.detail.data.model.datamodel.CacheState
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import org.json.JSONObject
 
@@ -31,6 +32,8 @@ object ProductDetailServerLogger {
     private const val ERROR_CODE_KEY = "errorCode"
     private const val IS_TOPADS_KEY = "isTopAds"
     private const val ATC_TYPE_KEY = "atcType"
+    private const val CACHE_STATE = "cacheState"
+    private const val IS_CAMPAIGN = "isCampaign"
 
     private const val PDP_OPEN_FAIL = "PDP_OPEN_FAIL"
 
@@ -41,23 +44,25 @@ object ProductDetailServerLogger {
 
     fun logNewRelicProductCannotOpen(uri: String, throwable: Throwable) {
         ServerLogger.log(
-                Priority.P2,
-                PDP_OPEN_FAIL,
-                mapOf(
-                        TYPE_KEY to PDP_OPEN_FAIL,
-                        DESC_KEY to throwable.message.orEmpty(),
-                        URI_KEY to uri,
-                        ERR_KEY to Log.getStackTraceString(throwable)
-                                .take(ProductDetailConstant.LOG_MAX_LENGTH)
-                                .trim()
-                )
+            Priority.P2,
+            PDP_OPEN_FAIL,
+            mapOf(
+                TYPE_KEY to PDP_OPEN_FAIL,
+                DESC_KEY to throwable.message.orEmpty(),
+                URI_KEY to uri,
+                ERR_KEY to Log.getStackTraceString(throwable)
+                    .take(ProductDetailConstant.LOG_MAX_LENGTH)
+                    .trim()
+            )
         )
     }
 
-    fun logBreadCrumbFirstOpenPage(productId: String?,
-                                   shopName: String?,
-                                   productName: String?,
-                                   context: Context?) {
+    fun logBreadCrumbFirstOpenPage(
+        productId: String?,
+        shopName: String?,
+        productName: String?,
+        context: Context?
+    ) {
         val localizationString = context?.let {
             generateLocalizationString(ChooseAddressUtils.getLocalizingAddressData(it))
         } ?: ""
@@ -71,13 +76,19 @@ object ProductDetailServerLogger {
         logBreadCrumb(PDP_FIRST_OPEN_PAGE_STATE, jsonObject)
     }
 
-    fun logBreadCrumbSuccessGetDataP1(isSuccess: Boolean = false,
-                                      errorMessage: String = "",
-                                      errorCode: String = "") {
+    fun logBreadCrumbSuccessGetDataP1(
+        isSuccess: Boolean = false,
+        errorMessage: String = "",
+        errorCode: String = "",
+        cacheState: CacheState?,
+        isCampaign: Boolean
+    ) {
         val jsonObject = JSONObject().apply {
             put(IS_SUCCESS_KEY, isSuccess)
             put(ERROR_MESSAGE_KEY, errorMessage)
             put(ERROR_CODE_KEY, errorCode)
+            put(CACHE_STATE, cacheState.toString())
+            put(IS_CAMPAIGN, isCampaign)
         }
         logBreadCrumb(PDP_SUCCESS_GET_P1_STATE, jsonObject)
     }
@@ -89,10 +100,12 @@ object ProductDetailServerLogger {
         logBreadCrumb(PDP_SUCCESS_GET_P2_STATE, jsonObject)
     }
 
-    fun logBreadCrumbTopAdsIsAds(isSuccess: Boolean = false,
-                                 errorMessage: String? = "",
-                                 errorCode: Int = 0,
-                                 isTopAds: Boolean = false) {
+    fun logBreadCrumbTopAdsIsAds(
+        isSuccess: Boolean = false,
+        errorMessage: String? = "",
+        errorCode: Int = 0,
+        isTopAds: Boolean = false
+    ) {
         val jsonObject = JSONObject().apply {
             put(IS_SUCCESS_KEY, isSuccess)
             put(ERROR_MESSAGE_KEY, errorMessage)
@@ -102,9 +115,11 @@ object ProductDetailServerLogger {
         logBreadCrumb(PDP_SUCCESS_GET_TOPADS_IS_ADS_STATE, jsonObject)
     }
 
-    fun logBreadCrumbAtc(isSuccess: Boolean,
-                         errorMessage: String = "",
-                         atcType: Int) {
+    fun logBreadCrumbAtc(
+        isSuccess: Boolean,
+        errorMessage: String = "",
+        atcType: Int
+    ) {
         val jsonObject = JSONObject().apply {
             put(IS_SUCCESS_KEY, isSuccess)
             put(ERROR_MESSAGE_KEY, errorMessage)
@@ -113,8 +128,10 @@ object ProductDetailServerLogger {
         logBreadCrumb(PDP_SUCCESS_ATC_STATE, jsonObject)
     }
 
-    fun logBreadCrumbAffiliateCookie(isSuccess: Boolean,
-                                     errorMessage: String = "") {
+    fun logBreadCrumbAffiliateCookie(
+        isSuccess: Boolean,
+        errorMessage: String = ""
+    ) {
         val jsonObject = JSONObject().apply {
             put(IS_SUCCESS_KEY, isSuccess)
             put(ERROR_MESSAGE_KEY, errorMessage)
@@ -135,19 +152,20 @@ object ProductDetailServerLogger {
 
     private fun generateLocalizationString(localizationChooseAddress: LocalCacheModel): String {
         return "addressId:${localizationChooseAddress.address_id}, " +
-                "cityId: ${localizationChooseAddress.city_id}, " +
-                "districtId: ${localizationChooseAddress.district_id}, " +
-                "whId: ${localizationChooseAddress.warehouse_id}, " +
-                "serviceType: ${localizationChooseAddress.service_type}"
+            "cityId: ${localizationChooseAddress.city_id}, " +
+            "districtId: ${localizationChooseAddress.district_id}, " +
+            "whId: ${localizationChooseAddress.warehouse_id}, " +
+            "serviceType: ${localizationChooseAddress.service_type}"
     }
 
     private fun logBreadCrumb(state: String, embraceJsonData: JSONObject) {
-        EmbraceMonitoring.logBreadcrumb(String.format(
+        EmbraceMonitoring.logBreadcrumb(
+            String.format(
                 PDP_EMBRACE_BREADCRUMB_FORMAT,
                 PDP_MODULE_NAME,
                 state,
                 embraceJsonData
-        )
+            )
         )
     }
 }

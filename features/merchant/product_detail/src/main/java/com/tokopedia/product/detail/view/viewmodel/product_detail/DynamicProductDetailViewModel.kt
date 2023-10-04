@@ -49,7 +49,6 @@ import com.tokopedia.product.detail.data.model.ProductInfoP2Login
 import com.tokopedia.product.detail.data.model.ProductInfoP2Other
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.bottom_sheet_edu.BottomSheetEduUiModel
-import com.tokopedia.product.detail.data.model.datamodel.CacheState
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMediaRecomBottomSheetData
@@ -277,7 +276,7 @@ class DynamicProductDetailViewModel @Inject constructor(
     var videoTrackerData: Pair<Long, Long>? = null
 
     var getDynamicProductInfoP1: DynamicProductInfoP1? = null
-    var cacheState: CacheState? = null
+    var pdpLayout: ProductDetailDataModel? = null
         private set
     var variantData: ProductVariant? = null
     var listOfParentMedia: MutableList<Media>? = null
@@ -560,9 +559,9 @@ class DynamicProductDetailViewModel @Inject constructor(
          * refresh page in p1 the isWishlist field value doesn't updated, should updated after hit p2Login.
          * so then, for keep wishlist value didn't replace from p1, so using previous value
          */
-        cacheState = pdpLayout.cacheState
         val p1 = getDynamicProductInfoP1 ?: DynamicProductInfoP1()
         val isWishlist = p1.data.isWishlist.orFalse()
+        this.pdpLayout = pdpLayout
         getDynamicProductInfoP1 = pdpLayout.layoutData.run {
             listOfParentMedia = data.media.toMutableList()
             copy(data = data.copy(isWishlist = isWishlist))
