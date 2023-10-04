@@ -3872,7 +3872,7 @@ class ShopPageHomeTracking(
             putString(EVENT_CATEGORY, SHOP_PAGE_BUYER)
             putString(EVENT_LABEL, eventLabelValue)
             putString(TRACKER_ID, TRACKER_ID_REIMAGINED_IMPRESSION_BANNER_HOTSPOT)
-            putString(BUSINESS_UNIT, PHYSICAL_GOODS)
+            putString(BUSINESS_UNIT, PHYSICAL_GOODS_PASCAL_CASE)
             putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
             putParcelableArrayList(
                 PROMOTIONS,
@@ -3923,7 +3923,7 @@ class ShopPageHomeTracking(
             putString(EVENT_CATEGORY, SHOP_PAGE_BUYER)
             putString(EVENT_LABEL, eventLabelValue)
             putString(TRACKER_ID, TRACKER_ID_REIMAGINED_CLICK_PRODUCT_BANNER_HOTSPOT)
-            putString(BUSINESS_UNIT, PHYSICAL_GOODS)
+            putString(BUSINESS_UNIT, PHYSICAL_GOODS_PASCAL_CASE)
             putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
             putString(ITEM_LIST, ITEM_LIST_REIMAGINED_HOTSPOT_WIDGET)
             putParcelableArrayList(
@@ -3983,7 +3983,7 @@ class ShopPageHomeTracking(
             putString(EVENT_CATEGORY, SHOP_PAGE_BUYER)
             putString(EVENT_LABEL, eventLabelValue)
             putString(TRACKER_ID, TRACKER_ID_REIMAGINED_IMPRESSION_DIRECT_PURCHASE_WIDGET)
-            putString(BUSINESS_UNIT, PHYSICAL_GOODS)
+            putString(BUSINESS_UNIT, PHYSICAL_GOODS_PASCAL_CASE)
             putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
             putParcelableArrayList(
                 PROMOTIONS,
@@ -4034,7 +4034,7 @@ class ShopPageHomeTracking(
             putString(EVENT_CATEGORY, SHOP_PAGE_BUYER)
             putString(EVENT_LABEL, eventLabelValue)
             putString(TRACKER_ID, TRACKER_ID_REIMAGINED_CLICK_ADD_TO_CART_DIRECT_PURCHASE_WIDGET)
-            putString(BUSINESS_UNIT, PHYSICAL_GOODS)
+            putString(BUSINESS_UNIT, PHYSICAL_GOODS_PASCAL_CASE)
             putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
             putParcelableArrayList(
                 ITEMS,
@@ -4092,7 +4092,7 @@ class ShopPageHomeTracking(
             putString(EVENT_CATEGORY, SHOP_PAGE_BUYER)
             putString(EVENT_LABEL, eventLabelValue)
             putString(TRACKER_ID, TRACKER_ID_REIMAGINED_CLICK_ETALASE_GROUP_DIRECT_PURCHASE_WIDGET)
-            putString(BUSINESS_UNIT, PHYSICAL_GOODS)
+            putString(BUSINESS_UNIT, PHYSICAL_GOODS_PASCAL_CASE)
             putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
             putParcelableArrayList(
                 PROMOTIONS,
@@ -4130,7 +4130,7 @@ class ShopPageHomeTracking(
             putString(EVENT_CATEGORY, SHOP_PAGE_BUYER)
             putString(EVENT_LABEL, eventLabelValue)
             putString(TRACKER_ID, TRACKER_ID_REIMAGINED_CLICK_ETALASE_DIRECT_PURCHASE_WIDGET)
-            putString(BUSINESS_UNIT, PHYSICAL_GOODS)
+            putString(BUSINESS_UNIT, PHYSICAL_GOODS_PASCAL_CASE)
             putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
             putParcelableArrayList(
                 PROMOTIONS,
@@ -4171,7 +4171,7 @@ class ShopPageHomeTracking(
             putString(EVENT_CATEGORY, SHOP_PAGE_BUYER)
             putString(EVENT_LABEL, eventLabelValue)
             putString(TRACKER_ID, TRACKER_ID_REIMAGINED_IMPRESSION_PRODUCT_DIRECT_PURCHASE_WIDGET)
-            putString(BUSINESS_UNIT, PHYSICAL_GOODS)
+            putString(BUSINESS_UNIT, PHYSICAL_GOODS_PASCAL_CASE)
             putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
             putString(ITEM_LIST, ITEM_LIST_REIMAGINED_DIRECT_PURCHASE_WIDGET)
             putParcelableArrayList(
@@ -4217,7 +4217,7 @@ class ShopPageHomeTracking(
             putString(EVENT_CATEGORY, SHOP_PAGE_BUYER)
             putString(EVENT_LABEL, eventLabelValue)
             putString(TRACKER_ID, TRACKER_ID_REIMAGINED_CLICK_PRODUCT_DIRECT_PURCHASE_WIDGET)
-            putString(BUSINESS_UNIT, PHYSICAL_GOODS)
+            putString(BUSINESS_UNIT, PHYSICAL_GOODS_PASCAL_CASE)
             putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
             putString(ITEM_LIST, ITEM_LIST_REIMAGINED_DIRECT_PURCHASE_WIDGET)
             putParcelableArrayList(
