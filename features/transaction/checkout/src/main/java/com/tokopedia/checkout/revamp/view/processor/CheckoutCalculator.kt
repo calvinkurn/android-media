@@ -161,7 +161,7 @@ class CheckoutCalculator @Inject constructor(
                                     totalAddOnProductServicePrice += (addOnProductService.price * addOnQty)
                                     val totalQtyAddOn = addOnQty + (countMapSummaries[addOnProductService.type]?.second ?: 0)
                                     val totalPriceAddOn =
-                                        (cartItem.quantity * addOnProductService.price) + (
+                                        (addOnQty * addOnProductService.price) + (
                                             countMapSummaries[addOnProductService.type]?.first
                                                 ?: 0.0
                                             )
