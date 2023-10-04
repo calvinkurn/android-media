@@ -28,7 +28,6 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.LENGTH_LONG
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
@@ -38,9 +37,9 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
+import com.tokopedia.epharmacy.R as epharmacyR
 import com.tokopedia.epharmacy.network.response.EPharmacyAtcInstantResponse.CartGeneralAddToCartInstant.CartGeneralAddToCartInstantData as EPATCData
 import com.tokopedia.epharmacy.network.response.EPharmacyAtcInstantResponse.CartGeneralAddToCartInstant.CartGeneralAddToCartInstantData.BusinessDataList.BusinessData.ShoppingSummary as EPCheckoutSummary
-import com.tokopedia.epharmacy.R as epharmacyR
 
 class EPharmacyCheckoutFragment : BaseDaggerFragment() {
 
@@ -134,13 +133,6 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
                     onFailCartCheckout()
                 }
             }
-        }
-    }
-
-    private fun showToasterError(throwable: Throwable) {
-        when (throwable) {
-            is UnknownHostException, is SocketTimeoutException -> showToast(TYPE_ERROR, context?.resources?.getString(R.string.epharmacy_internet_error).orEmpty())
-            else -> showToast(TYPE_ERROR, context?.resources?.getString(R.string.epharmacy_reminder_fail).orEmpty())
         }
     }
 

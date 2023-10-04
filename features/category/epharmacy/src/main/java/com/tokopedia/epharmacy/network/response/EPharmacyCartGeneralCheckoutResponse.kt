@@ -1,8 +1,7 @@
 package com.tokopedia.epharmacy.network.response
 
-
-import com.google.gson.annotations.SerializedName
 import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
 
 data class EPharmacyCartGeneralCheckoutResponse(
     @SerializedName("checkout_cart_general")
@@ -18,7 +17,7 @@ data class EPharmacyCartGeneralCheckoutResponse(
     data class CheckoutResponse(
         @SerializedName("data")
         @Expose
-        val checkoutData: CheckoutData?,
+        val checkoutData: CheckoutData?
     ) {
         data class CheckoutData(
             @SerializedName("data")
@@ -136,11 +135,5 @@ data class EPharmacyCartGeneralCheckoutResponse(
                 )
             }
         }
-
-        data class Header(
-            @SerializedName("messages")
-            @Expose
-            val messages: List<Any?>?
-        )
     }
 }

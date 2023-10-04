@@ -1,7 +1,6 @@
 package com.tokopedia.epharmacy.ui.fragment
 
 import android.os.Bundle
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -184,13 +183,6 @@ class EPharmacyQuantityChangeFragment : BaseDaggerFragment(), EPharmacyListener 
 
     private fun observerPrescriptionError() {
         ePharmacyPrescriptionAttachmentViewModel.uploadError.observe(viewLifecycleOwner) { error ->
-        }
-    }
-
-    private fun showToasterError(throwable: Throwable) {
-        when (throwable) {
-            is UnknownHostException, is SocketTimeoutException -> showToast(Toaster.TYPE_ERROR, context?.resources?.getString(R.string.epharmacy_internet_error).orEmpty())
-            else -> showToast(Toaster.TYPE_ERROR, context?.resources?.getString(R.string.epharmacy_reminder_fail).orEmpty())
         }
     }
 
