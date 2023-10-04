@@ -186,13 +186,14 @@ class ShopBannerProductGroupWidgetTabFragment : BaseDaggerFragment() {
             adapter = bannerProductGroupAdapter
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         }
-        bannerProductGroupAdapter.setOnProductClick { selectedProduct ->
+        bannerProductGroupAdapter.setOnProductClick { selectedProduct, index ->
             onProductClick(selectedProduct)
             tracker.sendProductCarouselProductCardClick(
                 selectedProduct,
                 widgetStyle,
                 shopId,
-                userSession.userId
+                userSession.userId,
+                index
             )
         }
 

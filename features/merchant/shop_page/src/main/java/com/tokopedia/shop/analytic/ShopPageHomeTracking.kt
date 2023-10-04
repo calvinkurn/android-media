@@ -4,6 +4,7 @@ import android.os.Bundle
 import com.tokopedia.atc_common.domain.model.response.AddToCartBundleModel
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.digitsOnly
 import com.tokopedia.kotlin.extensions.view.getDigits
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -149,6 +150,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_LIST
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_LIST_PERSO_PRODUCT_COMPARISON
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_LIST_PERSO_TRENDING_WIDGET
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_LIST_REIMAGINED_ADVANCED_PRODUCT_CAROUSEL
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_LIST_REIMAGINED_DIRECT_PURCHASE_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_LIST_REIMAGINED_HOTSPOT_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_LIST_SHOP_PAGE_REIMAGINED
@@ -3723,7 +3725,8 @@ class ShopPageHomeTracking(
         product: ProductItemType,
         widgetStyle: String,
         shopId: String,
-        userId: String
+        userId: String,
+        index: Int
     ) {
         val bannerVariant = when (widgetStyle) {
             WidgetStyle.VERTICAL.id -> "vertical"
@@ -3739,13 +3742,23 @@ class ShopPageHomeTracking(
 
         val eventLabel = "$bannerVariant - $productCardVariant"
 
-        val bundledShowcase = Bundle().apply {
-            putString(CREATIVE_NAME, "")
-            putInt(CREATIVE_SLOT, 0)
+        val price = try {
+            product.price.digitsOnly().toDouble()
+        } catch (e: Exception) {
+            Int.ZERO.toDouble()
+        }
+        
+        val bundledProduct = Bundle().apply {
+            putString(DIMENSION_40, ITEM_LIST_REIMAGINED_ADVANCED_PRODUCT_CAROUSEL)
+            putInt(INDEX, index)
+            putString(ITEM_BRAND, "")
+            putString(ITEM_CATEGORY, "")
             putString(ITEM_ID, product.productId)
             putString(ITEM_NAME, product.name)
+            putString(ITEM_VARIANT, "")
+            putDouble(PRICE, price)
         }
-
+        
         val bundle = Bundle().apply {
             putString(EVENT, SELECT_CONTENT)
             putString(EVENT_ACTION, CLICK_REIMAGINED_PRODUCT_CAROUSEL)
@@ -3756,7 +3769,8 @@ class ShopPageHomeTracking(
             putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
             putString(SHOP_ID, shopId)
             putString(USER_ID, userId)
-            putParcelableArrayList(PROMOTIONS, arrayListOf(bundledShowcase))
+            putString(ITEM_LIST, ITEM_LIST_REIMAGINED_ADVANCED_PRODUCT_CAROUSEL)
+            putParcelableArrayList(ITEMS, arrayListOf(bundledProduct))
         }
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(PRODUCT_CLICK, bundle)

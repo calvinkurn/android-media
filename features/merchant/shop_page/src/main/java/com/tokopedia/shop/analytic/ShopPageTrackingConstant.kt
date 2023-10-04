@@ -339,6 +339,7 @@ object ShopPageTrackingConstant {
     const val ITEM_LIST_PERSO_PRODUCT_COMPARISON = "/shoppage - comparison"
     const val ITEM_LIST_REIMAGINED_HOTSPOT_WIDGET = "/shoppage reimagined - hotspot widget"
     const val ITEM_LIST_REIMAGINED_DIRECT_PURCHASE_WIDGET = "/shoppage reimagined - direct purchase"
+    const val ITEM_LIST_REIMAGINED_ADVANCED_PRODUCT_CAROUSEL = "/shoppage reimagined - advanced carousel"
     const val VALUE_MULTIPLE_BUNDLING = "multiple bundling"
     const val VALUE_SINGLE_BUNDLING = "single bundling"
     const val SHOP_AFFILIATE = "affiliate"
