@@ -118,9 +118,7 @@ class ShopShowcaseNavigationTabWidgetFragment : BaseDaggerFragment() {
         val fourthShowcase = showcases.getOrNull(FIFTH_SHOWCASE_INDEX)
 
         mainShowcase?.let {
-            binding?.imgMainShowcase?.loadImage(mainShowcase.imageUrl) {
-                setCacheStrategy(MediaCacheStrategy.NONE)
-            }
+            binding?.imgMainShowcase?.loadImage(mainShowcase.imageUrl)
             binding?.tpgMainShowcaseTitle?.text = mainShowcase.name
 
             binding?.imgMainShowcase?.visible()
