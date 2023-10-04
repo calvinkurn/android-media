@@ -419,8 +419,6 @@ class PromoUsageViewModel @Inject constructor(
                 } else {
                     _promoPageUiState.ifSuccessSuspend { pageState ->
                         val currentItems = pageState.items
-                        val initialPromoRecommendationSelectedCodes =
-                            currentItems.getRecommendationItem()?.selectedCodes ?: emptyList()
                         val newClickedItemState = if (clickedItem.state is PromoItemState.Normal) {
                             PromoItemState.Selected
                         } else {
@@ -482,30 +480,13 @@ class PromoUsageViewModel @Inject constructor(
                         // Update Promo Recommendation section
                         val recommendationItem = updatedItems.getRecommendationItem()
                         if (recommendationItem != null) {
-                            val (updatedPromoRecommendation, newUpdatedItems) =
+                            val (_, newUpdatedItems) =
                                 calculateRecommendedPromo(
-                                    newClickedItem,
-                                    recommendationItem,
-                                    updatedItems
+                                    clickedItem = newClickedItem,
+                                    recommendationItem = recommendationItem,
+                                    items = updatedItems
                                 )
                             updatedItems = newUpdatedItems
-                            val updatedPromoRecommendationSelectedCodes =
-                                updatedPromoRecommendation.selectedCodes
-                            val isSelectedPromoRecommendationChanged =
-                                updatedPromoRecommendationSelectedCodes
-                                    .subtract(initialPromoRecommendationSelectedCodes.toSet())
-                                    .isNotEmpty()
-                            if (isSelectedPromoRecommendationChanged &&
-                                updatedPromoRecommendation.selectedCodes
-                                    .containsAll(updatedPromoRecommendation.codes)
-                            ) {
-                                _usePromoRecommendationUiAction.postValue(
-                                    UsePromoRecommendationUiAction.Success(
-                                        updatedPromoRecommendation,
-                                        updatedItems
-                                    )
-                                )
-                            }
                         }
 
                         // Sort Promo in each sections
@@ -557,6 +538,7 @@ class PromoUsageViewModel @Inject constructor(
         recommendationItem: PromoRecommendationItem,
         items: List<DelegateAdapterItem>
     ): Pair<PromoRecommendationItem, List<DelegateAdapterItem>> {
+        val initialSelectedCodes = recommendationItem.selectedCodes
         val selectedRecommendationCodes = if (clickedItem.state is PromoItemState.Selected) {
             recommendationItem.selectedCodes.plus(clickedItem.code)
         } else {
@@ -565,9 +547,16 @@ class PromoUsageViewModel @Inject constructor(
         val updatedRecommendationItem = recommendationItem.copy(
             selectedCodes = selectedRecommendationCodes
         )
+        val updatedSelectedCodes = updatedRecommendationItem.selectedCodes
         val updatedItems = items.map { item ->
             if (item is PromoRecommendationItem) {
-                return@map updatedRecommendationItem
+                val allRecommendationCodeSelected = updatedSelectedCodes
+                    .containsAll(recommendationItem.codes)
+                val isSelectedCodesChanged = updatedSelectedCodes
+                    .subtract(initialSelectedCodes.toSet()).isNotEmpty()
+                return@map updatedRecommendationItem.copy(
+                    showAnimation = isSelectedCodesChanged && allRecommendationCodeSelected
+                )
             } else {
                 return@map item
             }
@@ -712,7 +701,9 @@ class PromoUsageViewModel @Inject constructor(
                 )
                 isCausingClash = true
             } else {
-                val state = if (resultItem.state is PromoItemState.Disabled) {
+                val state = if (resultItem.state is PromoItemState.Disabled &&
+                    resultItem.currentClashingPromoCodes.isEmpty()
+                ) {
                     PromoItemState.Normal
                 } else {
                     resultItem.state
@@ -757,7 +748,9 @@ class PromoUsageViewModel @Inject constructor(
                     )
                     isCausingClash = true
                 } else {
-                    val state = if (resultItem.state is PromoItemState.Disabled) {
+                    val state = if (resultItem.state is PromoItemState.Disabled &&
+                        resultItem.currentClashingSecondaryPromoCodes.isEmpty()
+                    ) {
                         PromoItemState.Normal
                     } else {
                         resultItem.state
@@ -769,7 +762,9 @@ class PromoUsageViewModel @Inject constructor(
                     isCausingClash = false
                 }
             } else {
-                val state = if (resultItem.state is PromoItemState.Disabled) {
+                val state = if (resultItem.state is PromoItemState.Disabled &&
+                    resultItem.currentClashingSecondaryPromoCodes.isEmpty()
+                ) {
                     PromoItemState.Normal
                 } else {
                     resultItem.state
@@ -802,7 +797,9 @@ class PromoUsageViewModel @Inject constructor(
                         )
                         isCausingClash = true
                     } else {
-                        val state = if (resultItem.state is PromoItemState.Disabled) {
+                        val state = if (resultItem.state is PromoItemState.Disabled &&
+                            resultItem.currentClashingPromoCodes.isEmpty()
+                        ) {
                             PromoItemState.Normal
                         } else {
                             resultItem.state
@@ -814,7 +811,9 @@ class PromoUsageViewModel @Inject constructor(
                         isCausingClash = false
                     }
                 } else {
-                    val state = if (resultItem.state is PromoItemState.Disabled) {
+                    val state = if (resultItem.state is PromoItemState.Disabled &&
+                        resultItem.currentClashingPromoCodes.isEmpty()
+                    ) {
                         PromoItemState.Normal
                     } else {
                         resultItem.state
@@ -1698,7 +1697,10 @@ class PromoUsageViewModel @Inject constructor(
                             }
 
                             is PromoRecommendationItem -> {
-                                return@map item.copy(selectedCodes = recommendedPromoCodes)
+                                return@map item.copy(
+                                    selectedCodes = recommendedPromoCodes,
+                                    showAnimation = true
+                                )
                             }
 
                             else -> {
