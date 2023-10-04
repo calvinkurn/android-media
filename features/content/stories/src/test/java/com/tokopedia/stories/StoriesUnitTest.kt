@@ -9,6 +9,7 @@ import com.tokopedia.stories.data.utils.mockInitialDataModel
 import com.tokopedia.stories.data.utils.mockInitialDataModelFetchNext
 import com.tokopedia.stories.data.utils.mockInitialDataModelFetchPrev
 import com.tokopedia.stories.data.utils.mockInitialDataModelFetchPrevAndNext
+import com.tokopedia.stories.data.utils.mockInitialDataModelForDeleteStories
 import com.tokopedia.stories.data.utils.mockMainDataResetValue
 import com.tokopedia.stories.robot.StoriesViewModelRobot
 import com.tokopedia.stories.util.assertEqualTo
@@ -25,6 +26,7 @@ import com.tokopedia.stories.view.model.StoriesGroupItem
 import com.tokopedia.stories.view.model.StoriesUiModel
 import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
 import com.tokopedia.unit.test.rule.CoroutineTestRule
+import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -50,12 +52,14 @@ class StoriesUnitTest {
     private val handle: SavedStateHandle = SavedStateHandle()
     private val mockRepository: StoriesRepository = mockk(relaxed = true)
     private val mockSharedPref: StoriesPreference = mockk(relaxed = true)
+    private val mockUserSession: UserSessionInterface = mockk(relaxed = true)
 
     private fun getStoriesRobot() = StoriesViewModelRobot(
         dispatchers = testDispatcher,
         args = args,
         handle = handle,
-        repository = mockRepository
+        repository = mockRepository,
+        userSession = mockUserSession,
     )
 
     @Test
@@ -67,6 +71,7 @@ class StoriesUnitTest {
         val resultDetailItems = resultGroupItem.detail.detailItems[selectedDetail]
 
         coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
+        coEvery { mockUserSession.userId } returns "123"
 
         getStoriesRobot().use { robot ->
             val state = robot.recordState {
@@ -74,12 +79,14 @@ class StoriesUnitTest {
 
                 val actualGroup = robot.getViewModel().mGroup
                 val actualDetail = robot.getViewModel().mDetail
+                val userId = robot.getViewModel().userId
 
                 val expectedGroup = resultGroupItem.mockGroupResetValue(actualGroup.detail.detailItems)
                 val expectedDetail = resultDetailItems.mockDetailResetValue(actualDetail)
 
                 actualGroup.assertEqualTo(expectedGroup)
                 actualDetail.assertEqualTo(expectedDetail)
+                userId.assertEqualTo("123")
             }
 
             val actualMainData = expectedData.mockMainDataResetValue(state.storiesMainData)
@@ -90,6 +97,7 @@ class StoriesUnitTest {
     @Test
     fun `when open stories from entry point and success fetch initial data but data is empty`() {
         coEvery { mockRepository.getStoriesInitialData(any()) } returns StoriesUiModel()
+        coEvery { mockUserSession.userId } returns ""
 
         getStoriesRobot().use { robot ->
             val state = robot.recordStateAndEvents {
@@ -97,9 +105,11 @@ class StoriesUnitTest {
 
                 val actualGroup = robot.getViewModel().mGroup
                 val actualDetail = robot.getViewModel().mDetail
+                val userId = robot.getViewModel().userId
 
                 actualGroup.assertEqualTo(StoriesGroupItem())
                 actualDetail.assertEqualTo(StoriesDetailItem())
+                userId.assertEqualTo("0")
             }
 
             state.first.storiesMainData.assertEqualTo(StoriesUiModel())
@@ -175,7 +185,7 @@ class StoriesUnitTest {
     @Test
     fun `when open stories from entry point and success fetch initial data but data detail is invalid 4`() {
         val selectedGroup = 0
-        val selectedDetail = 5
+        val selectedDetail = 10
         val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
 
         coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
@@ -185,7 +195,8 @@ class StoriesUnitTest {
             robot.entryPointTestCase(selectedGroup)
 
             val actualGroup = robot.getViewModel().mDetail
-            actualGroup.assertEqualTo(StoriesDetailItem())
+            val expectedDetail = expectedData.groupItems[selectedGroup].detail.detailItems.last().mockDetailResetValue(actualGroup)
+            actualGroup.assertEqualTo(expectedDetail)
         }
     }
 
@@ -425,7 +436,7 @@ class StoriesUnitTest {
             robot.setTrackActivity(selectedGroup)
 
             val actualDetail = robot.getViewModel().mDetail
-            actualDetail.isSameContent.assertTrue()
+            actualDetail.isContentLoaded.assertTrue()
         }
     }
 
@@ -442,7 +453,7 @@ class StoriesUnitTest {
             robot.setTrackActivity(selectedGroup)
 
             val actualDetail = robot.getViewModel().mDetail
-            actualDetail.isSameContent.assertFalse()
+            actualDetail.isContentLoaded.assertFalse()
         }
     }
 
@@ -461,7 +472,7 @@ class StoriesUnitTest {
                 robot.setTrackActivity(selectedGroup)
 
                 val actualDetail = robot.getViewModel().mDetail
-                actualDetail.isSameContent.assertTrue()
+                actualDetail.isContentLoaded.assertTrue()
             }
             event.last().assertEqualTo(StoriesUiEvent.ErrorSetTracking(expectedThrowable))
         }
@@ -676,4 +687,73 @@ class StoriesUnitTest {
             actualImpression.assertEqualTo(expectedData.groupHeader.first())
         }
     }
+
+    @Test
+    fun `when stories deleted and stories should be deleted and move to next stories`() {
+        val selectedGroup = 0
+        val selectedDetail = 0
+        val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
+
+        coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
+
+        getStoriesRobot().use { robot ->
+            val event = robot.recordEvent {
+                robot.deleteStories()
+            }
+
+            val actualSize = robot.getViewModel().mGroup.detail.detailItems.size
+            actualSize.assertEqualTo(expectedData.groupItems[selectedGroup].detail.detailItems.size.minus(1))
+
+            event.contains(StoriesUiEvent.ShowDeleteDialog)
+        }
+    }
+
+    @Test
+    fun `when stories deleted and stories should be deleted and move to next group`() {
+        val selectedGroup = 0
+        val selectedDetail = 2
+        val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
+
+        coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
+
+        getStoriesRobot().use { robot ->
+            robot.deleteStories()
+
+            val actualSize = robot.getViewModel().mGroup.detail.detailItems.size
+            actualSize.assertEqualTo(expectedData.groupItems[selectedGroup].detail.detailItems.size.minus(1))
+        }
+    }
+
+    @Test
+    fun `when stories deleted and stories should be deleted and close stories room`() {
+        val selectedGroup = 2
+        val selectedDetail = 2
+        val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
+
+        coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
+
+        getStoriesRobot().use { robot ->
+            robot.deleteStories(selectedGroup)
+
+            val actualSize = robot.getViewModel().mGroup.detail.detailItems.size
+            actualSize.assertEqualTo(expectedData.groupItems[selectedGroup].detail.detailItems.size.minus(1))
+        }
+    }
+
+    @Test
+    fun `when stories deleted and stories should be deleted until empty`() {
+        val selectedGroup = 2
+        val selectedDetail = 2
+        val expectedData = mockInitialDataModelForDeleteStories(selectedGroup, selectedDetail)
+
+        coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
+
+        getStoriesRobot().use { robot ->
+            robot.deleteStoriesUntilEmpty(selectedGroup)
+
+            val actualSize = robot.getViewModel().mGroup.detail.detailItems.size
+            actualSize.assertEqualTo(0)
+        }
+    }
+
 }

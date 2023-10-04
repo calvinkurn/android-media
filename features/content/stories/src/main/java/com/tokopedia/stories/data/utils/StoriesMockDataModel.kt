@@ -60,7 +60,7 @@ fun mockInitialDataModel(
                                     duration = 7 * 1000,
                                 ),
                                 resetValue = -1,
-                                isSameContent = false,
+                                isContentLoaded = false,
                                 meta = StoriesDetailItem.Meta(
                                     activityTracker = "12345",
                                     templateTracker = "1235df8",
@@ -75,7 +75,7 @@ fun mockInitialDataModel(
                                     duration = 7 * 1000,
                                 ),
                                 resetValue = -1,
-                                isSameContent = false,
+                                isContentLoaded = false,
                                 meta = StoriesDetailItem.Meta(
                                     activityTracker = "12345",
                                     templateTracker = "1235df8",
@@ -90,7 +90,7 @@ fun mockInitialDataModel(
                                     duration = 7 * 1000,
                                 ),
                                 resetValue = -1,
-                                isSameContent = false,
+                                isContentLoaded = false,
                                 meta = StoriesDetailItem.Meta(
                                     activityTracker = "12345",
                                     templateTracker = "1235df8",
@@ -118,7 +118,7 @@ fun mockInitialDataModel(
                                     duration = 7 * 1000,
                                 ),
                                 resetValue = -1,
-                                isSameContent = false,
+                                isContentLoaded = false,
                                 meta = StoriesDetailItem.Meta(
                                     activityTracker = "12345",
                                     templateTracker = "1235df8",
@@ -133,7 +133,7 @@ fun mockInitialDataModel(
                                     duration = 7 * 1000,
                                 ),
                                 resetValue = -1,
-                                isSameContent = false,
+                                isContentLoaded = false,
                                 meta = StoriesDetailItem.Meta(
                                     activityTracker = "12345",
                                     templateTracker = "1235df8",
@@ -148,7 +148,7 @@ fun mockInitialDataModel(
                                     duration = 7 * 1000,
                                 ),
                                 resetValue = -1,
-                                isSameContent = false,
+                                isContentLoaded = false,
                                 meta = StoriesDetailItem.Meta(
                                     activityTracker = "12345",
                                     templateTracker = "1235df8",
@@ -176,7 +176,7 @@ fun mockInitialDataModel(
                                     duration = 7 * 1000,
                                 ),
                                 resetValue = -1,
-                                isSameContent = false,
+                                isContentLoaded = false,
                                 meta = StoriesDetailItem.Meta(
                                     activityTracker = "12345",
                                     templateTracker = "1235df8",
@@ -191,7 +191,7 @@ fun mockInitialDataModel(
                                     duration = 7 * 1000,
                                 ),
                                 resetValue = -1,
-                                isSameContent = false,
+                                isContentLoaded = false,
                                 meta = StoriesDetailItem.Meta(
                                     activityTracker = "12345",
                                     templateTracker = "1235df8",
@@ -206,7 +206,125 @@ fun mockInitialDataModel(
                                     duration = 7 * 1000,
                                 ),
                                 resetValue = -1,
-                                isSameContent = false,
+                                isContentLoaded = false,
+                                meta = StoriesDetailItem.Meta(
+                                    activityTracker = "12345",
+                                    templateTracker = "1235df8",
+                                ),
+                            ),
+                        ),
+                    )
+                } else StoriesDetail(),
+            ),
+        ),
+    )
+}
+
+
+fun mockInitialDataModelForDeleteStories(
+    selectedGroup: Int = 0,
+    selectedDetail: Int = 0,
+    isCached: Boolean = true,
+): StoriesUiModel {
+    return StoriesUiModel(
+        selectedGroupId = if (isCached) "groupId $selectedGroup" else "",
+        selectedGroupPosition = selectedGroup,
+        groupHeader = listOf(
+            StoriesGroupHeader(
+                groupId = "groupId 0",
+                groupName = "Group Name 0",
+                image = "Image Group 0",
+                isSelected = 0 == selectedGroup,
+            ),
+            StoriesGroupHeader(
+                groupId = "groupId 1",
+                groupName = "Group Name 1",
+                image = "Image Group 1",
+                isSelected = 1 == selectedGroup,
+            ),
+            StoriesGroupHeader(
+                groupId = "groupId 3",
+                groupName = "Group Name 3",
+                image = "Image Group 3",
+                isSelected = 2 == selectedGroup,
+            ),
+        ),
+        groupItems = listOf(
+            StoriesGroupItem(
+                groupId = if (isCached) "groupId 0" else "",
+                groupName = "Group Name 0",
+                detail = if (isCached) {
+                    StoriesDetail(
+                        selectedGroupId = "groupId $selectedGroup",
+                        selectedDetailPosition = selectedDetail,
+                        selectedDetailPositionCached = selectedDetail,
+                        detailItems = listOf(
+                            StoriesDetailItem(
+                                id = "0",
+                                event = StoriesDetailItemUiEvent.PAUSE,
+                                content = StoriesDetailItem.StoriesItemContent(
+                                    type = StoriesDetailItem.StoriesItemContentType.Image,
+                                    data = "data 0",
+                                    duration = 7 * 1000,
+                                ),
+                                resetValue = -1,
+                                isContentLoaded = false,
+                                meta = StoriesDetailItem.Meta(
+                                    activityTracker = "12345",
+                                    templateTracker = "1235df8",
+                                ),
+                            ),
+                        ),
+                    )
+                } else StoriesDetail()
+            ),
+            StoriesGroupItem(
+                groupId = if (isCached) "groupId 1" else "",
+                groupName = "Group Name 1",
+                detail = if (isCached) {
+                    StoriesDetail(
+                        selectedGroupId = "groupId $selectedGroup",
+                        selectedDetailPosition = selectedDetail,
+                        selectedDetailPositionCached = selectedDetail,
+                        detailItems = listOf(
+                            StoriesDetailItem(
+                                id = "0",
+                                event = StoriesDetailItemUiEvent.PAUSE,
+                                content = StoriesDetailItem.StoriesItemContent(
+                                    type = StoriesDetailItem.StoriesItemContentType.Image,
+                                    data = "data 0",
+                                    duration = 7 * 1000,
+                                ),
+                                resetValue = -1,
+                                isContentLoaded = false,
+                                meta = StoriesDetailItem.Meta(
+                                    activityTracker = "12345",
+                                    templateTracker = "1235df8",
+                                ),
+                            ),
+                        ),
+                    )
+                } else StoriesDetail(),
+            ),
+            StoriesGroupItem(
+                groupId = if (isCached) "groupId 2" else "",
+                groupName = "Group Name 2",
+                detail = if (isCached) {
+                    StoriesDetail(
+                        selectedGroupId = "groupId $selectedGroup",
+                        selectedDetailPosition = selectedDetail,
+                        selectedDetailPositionCached = selectedDetail,
+                        detailItems = listOf(
+                            StoriesDetailItem(
+                                id = "0",
+                                event = StoriesDetailItemUiEvent.PAUSE,
+                                content = StoriesDetailItem.StoriesItemContent(
+                                    type = StoriesDetailItem.StoriesItemContentType.Image,
+                                    data = "data 0",
+                                    duration = 7 * 1000,
+                                ),
+                                resetValue = -1,
+                                isContentLoaded = false,
                                 meta = StoriesDetailItem.Meta(
                                     activityTracker = "12345",
                                     templateTracker = "1235df8",
@@ -269,7 +387,7 @@ fun mockInitialDataModelFetchPrevAndNext(): StoriesUiModel {
                                 duration = 7 * 1000,
                             ),
                             resetValue = -1,
-                            isSameContent = false,
+                            isContentLoaded = false,
                             meta = StoriesDetailItem.Meta(
                                 activityTracker = "12345",
                                 templateTracker = "1235df8",
@@ -284,7 +402,7 @@ fun mockInitialDataModelFetchPrevAndNext(): StoriesUiModel {
                                 duration = 7 * 1000,
                             ),
                             resetValue = -1,
-                            isSameContent = false,
+                            isContentLoaded = false,
                             meta = StoriesDetailItem.Meta(
                                 activityTracker = "12345",
                                 templateTracker = "1235df8",
@@ -299,7 +417,7 @@ fun mockInitialDataModelFetchPrevAndNext(): StoriesUiModel {
                                 duration = 7 * 1000,
                             ),
                             resetValue = -1,
-                            isSameContent = false,
+                            isContentLoaded = false,
                             meta = StoriesDetailItem.Meta(
                                 activityTracker = "12345",
                                 templateTracker = "1235df8",
@@ -363,7 +481,7 @@ fun mockInitialDataModelFetchPrev(): StoriesUiModel {
                                 duration = 7 * 1000,
                             ),
                             resetValue = -1,
-                            isSameContent = false,
+                            isContentLoaded = false,
                             meta = StoriesDetailItem.Meta(
                                 activityTracker = "12345",
                                 templateTracker = "1235df8",
@@ -378,7 +496,7 @@ fun mockInitialDataModelFetchPrev(): StoriesUiModel {
                                 duration = 7 * 1000,
                             ),
                             resetValue = -1,
-                            isSameContent = false,
+                            isContentLoaded = false,
                             meta = StoriesDetailItem.Meta(
                                 activityTracker = "12345",
                                 templateTracker = "1235df8",
@@ -393,7 +511,7 @@ fun mockInitialDataModelFetchPrev(): StoriesUiModel {
                                 duration = 7 * 1000,
                             ),
                             resetValue = -1,
-                            isSameContent = false,
+                            isContentLoaded = false,
                             meta = StoriesDetailItem.Meta(
                                 activityTracker = "12345",
                                 templateTracker = "1235df8",
@@ -454,7 +572,7 @@ fun mockInitialDataModelFetchNext(): StoriesUiModel {
                                 duration = 7 * 1000,
                             ),
                             resetValue = -1,
-                            isSameContent = false,
+                            isContentLoaded = false,
                             meta = StoriesDetailItem.Meta(
                                 activityTracker = "12345",
                                 templateTracker = "1235df8",
@@ -469,7 +587,7 @@ fun mockInitialDataModelFetchNext(): StoriesUiModel {
                                 duration = 7 * 1000,
                             ),
                             resetValue = -1,
-                            isSameContent = false,
+                            isContentLoaded = false,
                             meta = StoriesDetailItem.Meta(
                                 activityTracker = "12345",
                                 templateTracker = "1235df8",
@@ -484,7 +602,7 @@ fun mockInitialDataModelFetchNext(): StoriesUiModel {
                                 duration = 7 * 1000,
                             ),
                             resetValue = -1,
-                            isSameContent = false,
+                            isContentLoaded = false,
                             meta = StoriesDetailItem.Meta(
                                 activityTracker = "12345",
                                 templateTracker = "1235df8",

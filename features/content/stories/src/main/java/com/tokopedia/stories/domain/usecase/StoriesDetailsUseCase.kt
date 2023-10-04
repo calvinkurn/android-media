@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 class StoriesDetailsUseCase @Inject constructor(
     private val graphqlRepository: GraphqlRepository,
-    dispatchers: CoroutineDispatchers,
+    dispatchers: CoroutineDispatchers
 ) : CoroutineUseCase<StoriesRequestModel, StoriesDetailsResponseModel>(dispatchers.io) {
 
     override suspend fun execute(params: StoriesRequestModel): StoriesDetailsResponseModel {
@@ -28,8 +28,8 @@ class StoriesDetailsUseCase @Inject constructor(
 
     override fun graphqlQuery(): String {
         return """
-            query contentStoryDetails(${"$${PARAM_REQUEST}"}: ContentStoryDetailsRequest!) {
-              contentStoryDetails($PARAM_REQUEST: ${"$${PARAM_REQUEST}"}){
+            query contentStoryDetails(${"$$PARAM_REQUEST"}: ContentStoryDetailsRequest!) {
+              contentStoryDetails($PARAM_REQUEST: ${"$$PARAM_REQUEST"}){
                stories{
                     id
                     slug
@@ -65,6 +65,7 @@ class StoriesDetailsUseCase @Inject constructor(
                     meta {
                       shareTitle
                       shareDescription
+                      shareTextDescription
                       shareImage
                       hasSeen
                       activityTracker
