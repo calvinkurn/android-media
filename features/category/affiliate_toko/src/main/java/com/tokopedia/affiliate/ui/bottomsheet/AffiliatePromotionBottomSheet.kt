@@ -51,8 +51,8 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
@@ -229,14 +229,14 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                     productImage.show()
                     productImage.loadImage(params?.itemImage ?: bundle.getString(KEY_PRODUCT_IMAGE))
                 }
-                findViewById<Typography>(R.id.ssa_message)?.apply {
+                ssaMessage?.apply {
                     show()
                     text = params?.ssaInfo?.message?.parseAsHtml()
                 }
                 if (params?.ssaInfo?.ssaStatus == true) {
-                    findViewById<Group>(R.id.ssa_group).isVisible = true
+                    ssaGroup.isVisible = true
 
-                    findViewById<Label>(R.id.ssa_label).apply {
+                    ssaLabel.apply {
                         isVisible = params.ssaInfo.label.labelText.isNotBlank()
                         text = params.ssaInfo.label.labelText
                     }
