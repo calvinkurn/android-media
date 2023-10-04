@@ -32,7 +32,8 @@ object ProductDetailServerLogger {
     private const val ERROR_CODE_KEY = "errorCode"
     private const val IS_TOPADS_KEY = "isTopAds"
     private const val ATC_TYPE_KEY = "atcType"
-    private const val CACHE_STATE = "cacheState"
+    private const val IS_FROM_CACHE = "isFromCache"
+    private const val CACHE_FIRST_THEN_CLOUD = "cacheFirstThenCloud"
     private const val IS_CAMPAIGN = "isCampaign"
 
     private const val PDP_OPEN_FAIL = "PDP_OPEN_FAIL"
@@ -87,7 +88,8 @@ object ProductDetailServerLogger {
             put(IS_SUCCESS_KEY, isSuccess)
             put(ERROR_MESSAGE_KEY, errorMessage)
             put(ERROR_CODE_KEY, errorCode)
-            put(CACHE_STATE, cacheState.toString())
+            put(IS_FROM_CACHE, cacheState?.isFromCache.toString())
+            put(CACHE_FIRST_THEN_CLOUD, cacheState?.cacheFirstThenCloud.toString())
             put(IS_CAMPAIGN, isCampaign)
         }
         logBreadCrumb(PDP_SUCCESS_GET_P1_STATE, jsonObject)
