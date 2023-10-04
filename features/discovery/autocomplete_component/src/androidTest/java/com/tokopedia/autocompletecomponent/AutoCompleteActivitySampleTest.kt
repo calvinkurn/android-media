@@ -1,6 +1,7 @@
 package com.tokopedia.autocompletecomponent
 
 import android.content.Context
+import android.content.Intent
 import android.widget.EditText
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.typeText
@@ -11,6 +12,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.autocompletecomponent.searchbar.SearchBarView
 import com.tokopedia.discovery.common.utils.SharedPrefsMpsLocalCache
 import com.tokopedia.test.application.annotations.UiTest
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -23,7 +25,7 @@ class AutoCompleteActivitySampleTest {
     val activityRule = IntentsTestRule(
         AutoCompleteActivitySample::class.java,
         false,
-        true,
+        false,
     )
 
     private val context = InstrumentationRegistry.getInstrumentation().context
@@ -36,6 +38,7 @@ class AutoCompleteActivitySampleTest {
             ?.putBoolean(SharedPrefsMpsLocalCache.KEY_FIRST_MPS_SUCCESS, true)
             ?.putLong(SharedPrefsMpsLocalCache.TIME_FIRST_MPS_SUCCESS, currentTime)
             ?.apply()
+        activityRule.launchActivity(Intent())
     }
 
     private fun getSearchBar() = onView(isAssignableFrom(SearchBarView::class.java))
@@ -56,5 +59,10 @@ class AutoCompleteActivitySampleTest {
         Thread.sleep(SearchBarView.SEARCH_BAR_DELAY_MS + 100)
 
         getSuggestionContainer().isDisplayed()
+    }
+
+    @After
+    fun tearDown() {
+        activityRule.finishActivity()
     }
 }
