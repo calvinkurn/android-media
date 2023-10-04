@@ -135,6 +135,8 @@ internal class StoriesViewModelRobot(
         viewModel.submitAction(StoriesUiAction.NextDetail)
         viewModel.submitAction(StoriesUiAction.SelectGroup(selectedGroup.plus(1), true))
         viewModel.submitAction(StoriesUiAction.SetMainData(selectedGroup.plus(1)))
+        viewModel.submitAction(StoriesUiAction.PageIsSelected)
+        viewModel.submitAction(StoriesUiAction.ContentIsLoaded)
     }
 
     fun tapNextDetailToCloseRoom(selectedGroup: Int) {
@@ -152,6 +154,8 @@ internal class StoriesViewModelRobot(
         viewModel.submitAction(StoriesUiAction.PreviousDetail)
         viewModel.submitAction(StoriesUiAction.SelectGroup(selectedGroup.minus(1), true))
         viewModel.submitAction(StoriesUiAction.SetMainData(selectedGroup.minus(1)))
+        viewModel.submitAction(StoriesUiAction.ContentIsLoaded)
+        viewModel.submitAction(StoriesUiAction.PageIsSelected)
     }
 
     fun tapPrevDetailToResetTimer(selectedGroup: Int) {
@@ -179,6 +183,17 @@ internal class StoriesViewModelRobot(
         viewModel.submitAction(StoriesUiAction.CollectImpressedGroup(data))
         viewModel.submitAction(StoriesUiAction.CollectImpressedGroup(data.copy(groupId = "groupId 123")))
         viewModel.submitAction(StoriesUiAction.CollectImpressedGroup(data))
+    }
+
+    fun deleteStories(selectedGroup: Int = 0) {
+        entryPointTestCase(selectedGroup)
+        viewModel.submitAction(StoriesUiAction.DeleteStory)
+    }
+
+    fun deleteStoriesUntilEmpty(selectedGroup: Int = 0) {
+        entryPointTestCase(selectedGroup)
+        viewModel.submitAction(StoriesUiAction.ShowDeleteDialog)
+        viewModel.submitAction(StoriesUiAction.DeleteStory)
     }
 
     override fun close() {

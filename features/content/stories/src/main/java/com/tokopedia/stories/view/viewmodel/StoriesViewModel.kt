@@ -90,11 +90,7 @@ class StoriesViewModel @AssistedInject constructor(
             return if (groupPosition < 0 || detailPosition < 0) {
                 StoriesDetailItem()
             } else {
-                when {
-                    groupPosition >= _storiesMainData.value.groupItems.size -> StoriesDetailItem()
-                    detailPosition >= _storiesMainData.value.groupItems[groupPosition].detail.detailItems.size -> StoriesDetailItem()
-                    else -> _storiesMainData.value.groupItems[groupPosition].detail.detailItems[detailPosition]
-                }
+                _storiesMainData.value.groupItems[groupPosition].detail.detailItems[detailPosition]
             }
         }
 
@@ -169,6 +165,10 @@ class StoriesViewModel @AssistedInject constructor(
             is StoriesUiAction.SetMainData -> handleMainData(action.selectedGroup)
             is StoriesUiAction.SelectGroup -> handleSelectGroup(action.selectedGroup, action.showAnimation)
             is StoriesUiAction.CollectImpressedGroup -> handleCollectImpressedGroup(action.data)
+            is StoriesUiAction.Navigate -> handleNav(action.appLink)
+            is StoriesUiAction.DismissSheet -> handleDismissSheet(action.type)
+            is StoriesUiAction.ProductAction -> handleProductAction(action.action, action.product)
+            is StoriesUiAction.ShowVariantSheet -> handleVariantSheet(action.product)
             StoriesUiAction.SetInitialData -> handleSetInitialData()
             StoriesUiAction.NextDetail -> handleNext()
             StoriesUiAction.PreviousDetail -> handlePrevious()
@@ -176,17 +176,13 @@ class StoriesViewModel @AssistedInject constructor(
             StoriesUiAction.ResumeStories -> handleOnResumeStories()
             StoriesUiAction.OpenKebabMenu -> handleOpenKebab()
             StoriesUiAction.TapSharing -> handleSharing()
-            is StoriesUiAction.DismissSheet -> handleDismissSheet(action.type)
             StoriesUiAction.ShowDeleteDialog -> handleShowDialogDelete()
             StoriesUiAction.OpenProduct -> handleOpenProduct()
-            is StoriesUiAction.ProductAction -> handleProductAction(action.action, action.product)
             StoriesUiAction.FetchProduct -> getProducts()
-            is StoriesUiAction.ShowVariantSheet -> handleVariantSheet(action.product)
             StoriesUiAction.DeleteStory -> handleDeleteStory()
             StoriesUiAction.ContentIsLoaded -> handleContentIsLoaded()
-            StoriesUiAction.SaveInstanceStateData -> handleSaveInstanceStateData()
-            is StoriesUiAction.Navigate -> handleNav(action.appLink)
             StoriesUiAction.PageIsSelected -> handlePageIsSelected()
+            StoriesUiAction.SaveInstanceStateData -> handleSaveInstanceStateData()
         }
     }
 
