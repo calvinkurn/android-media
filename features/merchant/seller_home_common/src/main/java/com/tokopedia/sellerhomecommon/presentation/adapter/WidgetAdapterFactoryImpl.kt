@@ -11,6 +11,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.CalendarWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CardWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CarouselWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.DescriptionWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.FilterTabWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.LineGraphWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MilestoneWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MultiComponentWidgetUiModel
@@ -30,9 +31,9 @@ import com.tokopedia.sellerhomecommon.presentation.view.viewholder.CalendarViewH
 import com.tokopedia.sellerhomecommon.presentation.view.viewholder.CardViewHolder
 import com.tokopedia.sellerhomecommon.presentation.view.viewholder.CarouselViewHolder
 import com.tokopedia.sellerhomecommon.presentation.view.viewholder.DescriptionViewHolder
+import com.tokopedia.sellerhomecommon.presentation.view.viewholder.FilterTabViewHolder
 import com.tokopedia.sellerhomecommon.presentation.view.viewholder.LineGraphViewHolder
 import com.tokopedia.sellerhomecommon.presentation.view.viewholder.MilestoneViewHolder
-import com.tokopedia.sellerhomecommon.presentation.view.viewholder.MultiComponentViewHolder
 import com.tokopedia.sellerhomecommon.presentation.view.viewholder.MultiLineGraphViewHolder
 import com.tokopedia.sellerhomecommon.presentation.view.viewholder.PieChartViewHolder
 import com.tokopedia.sellerhomecommon.presentation.view.viewholder.PostListViewHolder
@@ -124,6 +125,10 @@ class WidgetAdapterFactoryImpl(
         return RichListViewHolder.RES_LAYOUT
     }
 
+    override fun type(filterTabWidgetUiModel: FilterTabWidgetUiModel): Int {
+        return FilterTabViewHolder.RES_LAYOUT
+    }
+
     override fun type(multiComponentWidget: MultiComponentWidgetUiModel): Int {
         return MultiComponentViewHolder.RES_LAYOUT
     }
@@ -149,6 +154,7 @@ class WidgetAdapterFactoryImpl(
             UnificationViewHolder.RES_LAYOUT -> UnificationViewHolder(parent, listener)
             RichListViewHolder.RES_LAYOUT -> RichListViewHolder(parent, listener)
             MultiComponentViewHolder.RES_LAYOUT -> MultiComponentViewHolder(parent, listener)
+            FilterTabViewHolder.RES_LAYOUT -> FilterTabViewHolder(parent, listener)
             else -> super.createViewHolder(parent, type)
         }
     }

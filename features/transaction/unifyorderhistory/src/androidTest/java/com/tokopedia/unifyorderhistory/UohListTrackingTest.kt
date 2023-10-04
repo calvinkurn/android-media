@@ -126,7 +126,7 @@ class UohListTrackingTest {
             // Force TrackingQueue to send trackers
             runBlocking {
                 suspendCoroutine<Any?> {
-                    sendTrack(GlobalScope, TrackRepository(context)) {
+                    sendTrack(GlobalScope, TrackRepository.Companion.getInstance(context)) {
                         Log.i("UohListTracking", "finish send track")
                         it.resume(null)
                     }

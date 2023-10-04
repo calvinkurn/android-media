@@ -1,8 +1,10 @@
 package com.tokopedia.kyc_centralized.ui.gotoKyc.analytics
 
+import android.annotation.SuppressLint
 import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.track.builder.Tracker
 
+@SuppressLint("PII Data Exposure")
 object GotoKycAnalytics {
 
     private const val CATEGORY_ONBOARDING_PAGE= "goto kyc onboarding page"

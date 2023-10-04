@@ -16,6 +16,7 @@ fun Long.toDate(): Date {
     return Date(this)
 }
 
+val Long.Companion.ZERO get() = 0L
 
 /**
  * Convert to non-nullable

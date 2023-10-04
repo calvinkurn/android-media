@@ -6,6 +6,7 @@ import com.tokopedia.sellerhomecommon.presentation.view.viewholder.CalendarViewH
 import com.tokopedia.sellerhomecommon.presentation.view.viewholder.CardViewHolder
 import com.tokopedia.sellerhomecommon.presentation.view.viewholder.CarouselViewHolder
 import com.tokopedia.sellerhomecommon.presentation.view.viewholder.DescriptionViewHolder
+import com.tokopedia.sellerhomecommon.presentation.view.viewholder.FilterTabViewHolder
 import com.tokopedia.sellerhomecommon.presentation.view.viewholder.LineGraphViewHolder
 import com.tokopedia.sellerhomecommon.presentation.view.viewholder.MilestoneViewHolder
 import com.tokopedia.sellerhomecommon.presentation.view.viewholder.MultiComponentViewHolder
@@ -30,4 +31,6 @@ interface WidgetListener : CardViewHolder.Listener, CarouselViewHolder.Listener,
     PieChartViewHolder.Listener, BarChartViewHolder.Listener, TickerViewHolder.Listener,
     MultiLineGraphViewHolder.Listener, AnnouncementViewHolder.Listener,
     RecommendationViewHolder.Listener, MilestoneViewHolder.Listener, CalendarViewHolder.Listener,
-    UnificationViewHolder.Listener, RichListViewHolder.Listener, MultiComponentViewHolder.Listener
+    UnificationViewHolder.Listener, RichListViewHolder.Listener, FilterTabViewHolder.Listener,
+    MultiComponentViewHolder.Listener
+

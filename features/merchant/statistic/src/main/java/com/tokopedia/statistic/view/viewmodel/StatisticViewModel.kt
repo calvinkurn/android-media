@@ -43,7 +43,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import kotlinx.coroutines.withContext
-import java.util.*
+import java.util.Date
 import javax.inject.Inject
 
 /**
@@ -164,16 +164,14 @@ class StatisticViewModel @Inject constructor(
 
     fun getCardWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
-            val result: Success<List<CardDataUiModel>> = Success(
-                withContext(dispatcher.io) {
-                    getCardDataUseCase.get().params =
-                        GetCardDataUseCase.getRequestParams(dataKeys, dynamicParameter)
-                    return@withContext getCardDataUseCase.get().executeOnBackground()
-                }
-            )
-            _cardWidgetData.postValue(result)
+            val result: Success<List<CardDataUiModel>> = Success(withContext(dispatcher.io) {
+                getCardDataUseCase.get().params =
+                    GetCardDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+                return@withContext getCardDataUseCase.get().executeOnBackground()
+            })
+            _cardWidgetData.value = result
         }, onError = {
-            _cardWidgetData.postValue(Fail(it))
+            _cardWidgetData.value = Fail(it)
         })
     }
 
