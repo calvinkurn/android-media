@@ -3788,7 +3788,7 @@ class ShopPageHomeTracking(
             putString(EVENT_CATEGORY, SHOP_PAGE_BUYER)
             putString(EVENT_LABEL, eventLabelValue)
             putString(TRACKER_ID, TRACKER_ID_REIMAGINED_IMPRESSION_BANNER_CAROUSEL)
-            putString(BUSINESS_UNIT, PHYSICAL_GOODS)
+            putString(BUSINESS_UNIT, PHYSICAL_GOODS_PASCAL_CASE)
             putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
             putParcelableArrayList(
                 PROMOTIONS,
