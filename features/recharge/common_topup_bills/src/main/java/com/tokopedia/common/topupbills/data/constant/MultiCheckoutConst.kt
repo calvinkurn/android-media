@@ -4,10 +4,12 @@ import android.content.Context
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.common.topupbills.analytics.PromotionMultiCheckout
 import com.tokopedia.common.topupbills.data.MultiCheckoutButtons
 import com.tokopedia.common.topupbills.data.constant.MultiCheckoutConst.ACTION_MULTIPLE
 import com.tokopedia.common.topupbills.data.constant.MultiCheckoutConst.POSITION_LEFT
 import com.tokopedia.common.topupbills.data.constant.MultiCheckoutConst.POSITION_RIGHT
+import com.tokopedia.common.topupbills.data.constant.MultiCheckoutConst.POSITION_TWO
 import com.tokopedia.common.topupbills.data.constant.MultiCheckoutConst.PREFERENCE_MULTICHECKOUT
 import com.tokopedia.common.topupbills.data.constant.MultiCheckoutConst.SHOW_COACH_MARK_MULTICHECKOUT_KEY
 import com.tokopedia.common.topupbills.data.constant.MultiCheckoutConst.WHITE_COLOR
@@ -24,6 +26,7 @@ object MultiCheckoutConst {
     const val WHITE_COLOR = "#FFFFFF"
     const val PREFERENCE_MULTICHECKOUT = "pdp_dg_multichekout"
     const val SHOW_COACH_MARK_MULTICHECKOUT_KEY = "pdp_dg_multichekout_is_coachmark_closed"
+    const val POSITION_TWO = 2
 }
 
 fun showMultiCheckoutButton(
@@ -102,6 +105,16 @@ fun showMultiCheckoutButton(
             localCacheHandler.applyEditor()
         }
     }
+}
+
+fun multiCheckoutButtonPromotionTracker(multiCheckoutButtons: List<MultiCheckoutButtons>): PromotionMultiCheckout {
+    val multiple = multiCheckoutButtons.first {
+        it.type == ACTION_MULTIPLE
+    }
+    return PromotionMultiCheckout(
+        multiple.text,
+        if (multiple.position == POSITION_LEFT) { Int.ONE } else { POSITION_TWO }
+    )
 }
 
 private fun multiCheckoutButtonSeparator(multiCheckoutButtons: List<MultiCheckoutButtons>): Pair<MultiCheckoutButtons, MultiCheckoutButtons> {

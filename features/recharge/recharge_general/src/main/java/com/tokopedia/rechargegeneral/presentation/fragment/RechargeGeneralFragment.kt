@@ -135,9 +135,6 @@ class RechargeGeneralFragment :
     lateinit var rechargeGeneralAnalytics: RechargeGeneralAnalytics
 
     @Inject
-    lateinit var commonMultiCheckoutAnalytics: CommonMultiCheckoutAnalytics
-
-    @Inject
     lateinit var mapper: RechargeGeneralMapper
 
     private var saveInstanceManager: SaveInstanceCacheManager? = null

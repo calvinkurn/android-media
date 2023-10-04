@@ -3,24 +3,13 @@ package com.tokopedia.recharge_pdp_emoney.presentation.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.coachmark.CoachMark2
-import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.common.topupbills.data.MultiCheckoutButtons
-import com.tokopedia.common.topupbills.data.constant.MultiCheckoutConst
-import com.tokopedia.common.topupbills.data.constant.MultiCheckoutConst.POSITION_LEFT
-import com.tokopedia.common.topupbills.data.constant.MultiCheckoutConst.POSITION_RIGHT
-import com.tokopedia.common.topupbills.data.constant.MultiCheckoutConst.PREFERENCE_MULTICHECKOUT
-import com.tokopedia.common.topupbills.data.constant.MultiCheckoutConst.SHOW_COACH_MARK_MULTICHECKOUT_KEY
-import com.tokopedia.common.topupbills.data.constant.MultiCheckoutConst.WHITE_COLOR
 import com.tokopedia.common.topupbills.data.constant.showMultiCheckoutButton
-import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.recharge_pdp_emoney.R
 import com.tokopedia.recharge_pdp_emoney.databinding.WidgetEmoneyPdpCheckoutViewBinding
 import com.tokopedia.unifycomponents.BaseCustomView
-import com.tokopedia.unifycomponents.UnifyButton
 import org.jetbrains.annotations.NotNull
 
 /**
@@ -43,6 +32,10 @@ class EmoneyPdpBottomCheckoutWidget @JvmOverloads constructor(@NotNull context: 
 
     fun onBuyButtonLoading(isLoading: Boolean) {
         binding.emoneyPdpCheckoutViewButton.isLoading = isLoading
+    }
+
+    fun onBuyButtonMultiCheckoutLoading(isLoading: Boolean) {
+        binding.emoneyPdpLeftButton.isLoading = isLoading
     }
 
     fun setVisibilityLayout(show: Boolean) {

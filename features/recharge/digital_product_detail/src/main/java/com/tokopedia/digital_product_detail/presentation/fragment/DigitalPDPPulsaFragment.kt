@@ -22,6 +22,7 @@ import com.tokopedia.common.topupbills.analytics.CommonMultiCheckoutAnalytics
 import com.tokopedia.common.topupbills.data.TopupBillsBanner
 import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
+import com.tokopedia.common.topupbills.data.constant.multiCheckoutButtonPromotionTracker
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoOperator
 import com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoSavedNumberActivity
 import com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoSavedNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
@@ -414,7 +415,14 @@ class DigitalPDPPulsaFragment :
         viewModel.addToCartMultiCheckoutResult.observe(viewLifecycleOwner) {
             hideLoadingDialog()
             context?.let { context ->
-                RouteManager.route(context, it)
+                commonMultiCheckoutAnalytics.onClickMultiCheckout(
+                    DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                    operator.attributes.name,
+                    it.channelId,
+                    userSession.userId,
+                    multiCheckoutButtonPromotionTracker(viewModel.multiCheckoutButtons)
+                )
+                RouteManager.route(context, it.redirectUrl)
             }
         }
 

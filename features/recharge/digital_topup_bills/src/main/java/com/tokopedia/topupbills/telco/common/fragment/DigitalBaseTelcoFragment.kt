@@ -93,9 +93,6 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     @Inject
     lateinit var topupAnalytics: DigitalTopupAnalytics
 
-    @Inject
-    lateinit var commonMultiCheckoutAnalytics: CommonMultiCheckoutAnalytics
-
     protected var loyaltyStatus = ""
 
     override fun initInjector() {

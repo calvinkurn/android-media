@@ -79,6 +79,7 @@ class TopupBillsCheckoutWidget @JvmOverloads constructor(
 
     fun onBuyButtonLoading(isLoading: Boolean) {
         binding.btnRechargeCheckoutNext.isLoading = isLoading
+        binding.btnRechargeMultiCheckout.isLoading = isLoading
     }
 
     fun showMulticheckoutButtonSupport(multiCheckoutButtons: List<MultiCheckoutButtons>) {

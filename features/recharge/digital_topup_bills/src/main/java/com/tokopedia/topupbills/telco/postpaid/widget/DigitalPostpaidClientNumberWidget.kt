@@ -60,6 +60,7 @@ class DigitalPostpaidClientNumberWidget : DigitalClientNumberWidget {
 
     fun setLoadingButtonEnquiry(loading: Boolean) {
         btnMain.isLoading = loading
+        btnSecondary.isLoading = loading
     }
 
     fun setPostpaidListener(listener: ClientNumberPostpaidListener) {

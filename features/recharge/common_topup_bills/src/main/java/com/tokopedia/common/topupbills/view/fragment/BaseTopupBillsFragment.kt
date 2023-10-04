@@ -16,12 +16,14 @@ import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.common.topupbills.R
+import com.tokopedia.common.topupbills.analytics.CommonMultiCheckoutAnalytics
 import com.tokopedia.common.topupbills.analytics.CommonTopupBillsAnalytics
 import com.tokopedia.common.topupbills.data.MultiCheckoutButtons
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
 import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumber
 import com.tokopedia.common.topupbills.data.catalog_plugin.RechargeCatalogPlugin
+import com.tokopedia.common.topupbills.data.constant.multiCheckoutButtonPromotionTracker
 import com.tokopedia.common.topupbills.data.express_checkout.RechargeExpressCheckoutData
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlMutation
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery
@@ -75,6 +77,9 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
     @Inject
     lateinit var commonTopupBillsAnalytics: CommonTopupBillsAnalytics
 
+    @Inject
+    lateinit var commonMultiCheckoutAnalytics: CommonMultiCheckoutAnalytics
+
     open var promoTicker: TickerPromoStackingCheckoutView? = null
 
     open var menuId: Int = 0
@@ -123,9 +128,16 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
 
         addToCartViewModel.addToCartMultiCheckoutResult.observe(
             viewLifecycleOwner
-        ) { redirectUrl ->
+        ) { data ->
             context?.let { context ->
-                RouteManager.route(context, redirectUrl)
+                commonMultiCheckoutAnalytics.onClickMultiCheckout(
+                    categoryName,
+                    operatorName,
+                    data.channelId,
+                    userSession.userId,
+                    multiCheckoutButtonPromotionTracker(topupBillsViewModel.multiCheckoutButtons)
+                )
+                RouteManager.route(context, data.redirectUrl)
             }
             onLoadingAtc(false)
         }

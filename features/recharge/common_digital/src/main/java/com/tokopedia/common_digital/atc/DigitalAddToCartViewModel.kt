@@ -9,6 +9,7 @@ import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData.Companion.PARAM_ATC_MULTICHECKOUT
 import com.tokopedia.common_digital.common.DigitalAtcErrorException
 import com.tokopedia.common_digital.common.RechargeAnalytics
+import com.tokopedia.common_digital.common.presentation.model.DigitalAtcTrackingModel
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.usecase.coroutines.Fail
@@ -37,8 +38,8 @@ class DigitalAddToCartViewModel @Inject constructor(
     val addToCartResult: LiveData<Result<String>>
         get() = _addToCartResult
 
-    private val _addToCartMultiCheckoutResult = MutableLiveData<String>()
-    val addToCartMultiCheckoutResult: LiveData<String>
+    private val _addToCartMultiCheckoutResult = MutableLiveData<DigitalAtcTrackingModel>()
+    val addToCartMultiCheckoutResult: LiveData<DigitalAtcTrackingModel>
         get() = _addToCartMultiCheckoutResult
 
     private val _errorAtc = MutableLiveData<ErrorAtc>()
@@ -62,14 +63,16 @@ class DigitalAddToCartViewModel @Inject constructor(
                     )
                 }
                 data?.let {
-                    rechargeAnalytics.eventAddToCart(it)
+                    if (atcMultiCheckoutParam.isEmpty()) {
+                        rechargeAnalytics.eventAddToCart(it)
+                    }
                     if (it.atcError != null) {
                         resetAtcMultiCheckoutParam()
                         _errorAtc.postValue(it.atcError)
                     } else {
                         if (atcMultiCheckoutParam.isNotEmpty()) {
                             resetAtcMultiCheckoutParam()
-                            _addToCartMultiCheckoutResult.postValue(it.redirectUrl)
+                            _addToCartMultiCheckoutResult.postValue(it)
                         } else if (it.categoryId.isNotEmpty()) {
                             _addToCartResult.postValue(Success(it.categoryId))
                         } else {

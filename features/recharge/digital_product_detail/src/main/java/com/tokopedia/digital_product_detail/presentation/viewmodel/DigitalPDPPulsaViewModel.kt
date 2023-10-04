@@ -102,8 +102,8 @@ class DigitalPDPPulsaViewModel @Inject constructor(
     val addToCartResult: LiveData<RechargeNetworkResult<DigitalAtcResult>>
         get() = _addToCartResult
 
-    private val _addToCartMultiCheckoutResult = MutableLiveData<String>()
-    val addToCartMultiCheckoutResult: LiveData<String>
+    private val _addToCartMultiCheckoutResult = MutableLiveData<DigitalAtcResult>()
+    val addToCartMultiCheckoutResult: LiveData<DigitalAtcResult>
         get() = _addToCartMultiCheckoutResult
 
     private val _errorAtc = MutableLiveData<ErrorAtc>()
@@ -215,7 +215,7 @@ class DigitalPDPPulsaViewModel @Inject constructor(
                 atcMultiCheckoutParam
             )
             if (atcMultiCheckoutParam.isNotEmpty()) {
-                _addToCartMultiCheckoutResult.value = categoryIdAtc.redirectUrl
+                _addToCartMultiCheckoutResult.value = categoryIdAtc
                 resetAtcMultiCheckoutParam()
             } else if (categoryIdAtc.errorAtc == null) {
                 _addToCartResult.value = RechargeNetworkResult.Success(categoryIdAtc)

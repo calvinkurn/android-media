@@ -28,6 +28,7 @@ import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.common.topupbills.analytics.CommonMultiCheckoutAnalytics
 import com.tokopedia.common.topupbills.data.TopupBillsPromo
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
+import com.tokopedia.common.topupbills.data.constant.multiCheckoutButtonPromotionTracker
 import com.tokopedia.common.topupbills.data.prefix_select.RechargePrefix
 import com.tokopedia.common.topupbills.data.product.CatalogProduct
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery
@@ -328,18 +329,26 @@ open class EmoneyPdpFragment :
 
         addToCartViewModel.addToCartMultiCheckoutResult.observe(
             viewLifecycleOwner
-        ) { redirectUrl ->
+        ) { data ->
             context?.let { context ->
-                RouteManager.route(context, redirectUrl)
+                commonMultiCheckoutAnalytics.onClickMultiCheckout(
+                    categoryName,
+                    getIssuerName(issuerId),
+                    data.channelId,
+                    userSession.userId,
+                    multiCheckoutButtonPromotionTracker(topUpBillsViewModel.multiCheckoutButtons)
+                )
+                RouteManager.route(context, data.redirectUrl)
             }
             binding.emoneyFullPageLoadingLayout.hide()
-            binding.emoneyBuyWidget.onBuyButtonLoading(false)
+            binding.emoneyBuyWidget.onBuyButtonMultiCheckoutLoading(false)
         }
 
         addToCartViewModel.errorAtc.observe(viewLifecycleOwner) {
             renderErrorMessage(MessageErrorException(it.title))
             binding.emoneyFullPageLoadingLayout.hide()
             binding.emoneyBuyWidget.onBuyButtonLoading(false)
+            binding.emoneyBuyWidget.onBuyButtonMultiCheckoutLoading(false)
         }
 
         emoneyPdpViewModel.dppoConsent.observe(viewLifecycleOwner) {
@@ -774,7 +783,7 @@ open class EmoneyPdpFragment :
     }
 
     override fun onClickMultiCheckoutButton() {
-        binding.emoneyBuyWidget.onBuyButtonLoading(true)
+        binding.emoneyBuyWidget.onBuyButtonMultiCheckoutLoading(true)
         addToCartViewModel.setAtcMultiCheckoutParam()
         proceedAddToCart(
             emoneyPdpViewModel.generateCheckoutPassData(

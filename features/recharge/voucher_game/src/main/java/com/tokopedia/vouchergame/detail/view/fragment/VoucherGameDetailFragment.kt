@@ -104,9 +104,6 @@ class VoucherGameDetailFragment :
     @Inject
     lateinit var voucherGameAnalytics: VoucherGameAnalytics
 
-    @Inject
-    lateinit var commonMultiCheckoutAnalytics: CommonMultiCheckoutAnalytics
-
     lateinit var enquiryData: List<CatalogProductInput>
     var inputData: MutableMap<String, String> = mutableMapOf()
     private var inputFieldCount = 0
@@ -162,6 +159,7 @@ class VoucherGameDetailFragment :
                 when (it) {
                     is Success -> {
                         voucherGameOperatorData = it.data.attributes
+                        operatorName = voucherGameOperatorData.name
                         setupOperatorDetail()
                     }
                     is Fail -> {

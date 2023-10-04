@@ -330,6 +330,10 @@ class DigitalSignalFragment : DigitalBaseTelcoFragment() {
             override fun secondaryButtonClick() {
                //do nothing
             }
+
+            override fun onCloseCoachMark() {
+                //do nothing
+            }
         })
     }
 
