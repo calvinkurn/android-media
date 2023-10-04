@@ -1,5 +1,6 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -14,15 +15,21 @@ import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.DaggerAddNewAddre
 
 class AddressFormActivity : BaseSimpleActivity(), HasComponent<AddNewAddressRevampComponent> {
 
+    var fragment: AddressFormFragment? = null
+
     override fun getComponent(): AddNewAddressRevampComponent {
         return DaggerAddNewAddressRevampComponent.builder()
             .baseAppComponent((application as BaseMainApplication).baseAppComponent)
             .build()
     }
 
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        fragment?.onNewIntent(intent)
+    }
+
     override fun getNewFragment(): Fragment? {
         val bundle = intent.extras
-        var fragment: AddressFormFragment? = null
 
         if (getAddressUiState(bundle).isAdd() && bundle != null) {
             fragment = AddressFormFragment.newInstance(bundle)

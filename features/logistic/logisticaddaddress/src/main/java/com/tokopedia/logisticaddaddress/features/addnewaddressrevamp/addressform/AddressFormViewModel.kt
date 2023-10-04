@@ -21,6 +21,7 @@ import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressDetailUseCase
 import com.tokopedia.logisticCommon.domain.usecase.GetDefaultAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.PinpointValidationUseCase
+import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -66,7 +67,7 @@ class AddressFormViewModel @Inject constructor(
     var saveDataModel: SaveAddressDataModel? = null
 
     val isHaveLatLong: Boolean
-        get() = saveDataModel?.let { it.latitude.isNotEmpty() || it.longitude.isNotEmpty() }
+        get() = saveDataModel?.let { it.latitude.isNotBlankOrZero() || it.longitude.isNotBlankOrZero() }
             ?: false
 
     private var tempAddress1 = ""

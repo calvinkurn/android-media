@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP
 import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.location.LocationManager
@@ -77,7 +78,6 @@ import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_POSITIV
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_LAT
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_LONG
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_NEGATIVE_FULL_FLOW
-import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_RESET_TO_SEARCH_PAGE
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_SAVE_DATA_UI_MODEL
 import com.tokopedia.logisticaddaddress.common.AddressConstants.KEY_ADDRESS_DATA
 import com.tokopedia.logisticaddaddress.databinding.BottomsheetLocationUndefinedBinding
@@ -897,6 +897,7 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                         // no op
                     }
                 }
+                isPositiveFlow = true
                 onChoosePinpoint()
             }
 
@@ -1317,31 +1318,18 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
     }
 
     private fun goToSearchPage() {
-        if (addressUiState.isEditOrPinpointOnly()) {
+        if (addressUiState.isEditOrPinpointOnly() || !isPositiveFlow) {
             context?.let {
                 searchPageContract.launch(
                     Intent(it, SearchPageActivity::class.java).apply {
                         putExtra(EXTRA_GMS_AVAILABILITY, isGmsAvailable)
                         putExtra(EXTRA_ADDRESS_STATE, addressUiState.name)
+                        putExtra(EXTRA_SAVE_DATA_UI_MODEL, viewModel.getAddress())
                     }
                 )
             }
         } else {
-            if (!isPositiveFlow) {
-                // back to addressform, reset ana state to search page
-                activity?.run {
-                    setResult(
-                        Activity.RESULT_OK,
-                        Intent().apply {
-                            putExtra(EXTRA_RESET_TO_SEARCH_PAGE, true)
-                            putExtra(EXTRA_GMS_AVAILABILITY, isGmsAvailable)
-                        }
-                    )
-                    finish()
-                }
-            } else {
-                activity?.finish()
-            }
+            activity?.finish()
         }
     }
 
@@ -1365,12 +1353,15 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 putExtra(EXTRA_GMS_AVAILABILITY, isGmsAvailable)
                 putExtra(EXTRA_ADDRESS_STATE, addressUiState.name)
                 putExtra(PARAM_SOURCE, source)
+                addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or FLAG_ACTIVITY_SINGLE_TOP)
             }
             addressFormContract.launch(intent)
         }
     }
 
     private fun setResultAddressFormNegative() {
+        // ini dipake jg di pinpoint only
+        // todo refactor buat function baru khusus yg pinpoint only
         val saveModel = viewModel.getAddress()
         activity?.run {
             setResult(

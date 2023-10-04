@@ -131,12 +131,13 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
             Manifest.permission.ACCESS_COARSE_LOCATION
         )
 
-    private var saveAddressDataModel = SaveAddressDataModel()
     var currentLat: Double = DEFAULT_LAT
     var currentLong: Double = DEFAULT_LONG
 
     private var isGmsAvailable: Boolean = true
     private var isPositiveFlow: Boolean = true
+
+    // delete isFromPinpoint
     private var isFromPinpoint: Boolean = false
     private var isPolygon: Boolean = false
     private var source: String = ""
@@ -215,7 +216,6 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
         outState.putBoolean(EXTRA_IS_POLYGON, isPolygon)
         outState.putString(EXTRA_ADDRESS_STATE, addressUiState.name)
         outState.putString(PARAM_SOURCE, source)
-        outState.putParcelable(EXTRA_SAVE_DATA_UI_MODEL, saveAddressDataModel)
         outState.putDouble(EXTRA_LAT, currentLat)
         outState.putDouble(EXTRA_LONG, currentLong)
         super.onSaveInstanceState(outState)
@@ -336,9 +336,6 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
             currentLat = getDouble(EXTRA_LAT, DEFAULT_LAT)
             currentLong = getDouble(EXTRA_LONG, DEFAULT_LONG)
             source = getString(PARAM_SOURCE, "")
-            getParcelable<SaveAddressDataModel>(EXTRA_SAVE_DATA_UI_MODEL)?.apply {
-                saveAddressDataModel = this
-            }
             getString(EXTRA_REF)?.takeIf { addressUiState.isAdd() }?.let { from ->
                 LogisticAddAddressAnalytics.sendScreenName(from)
             }
@@ -430,10 +427,10 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
         val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.EDIT_ADDRESS_REVAMP)
         intent.apply {
             putExtra(EXTRA_IS_POSITIVE_FLOW, false)
-            putExtra(EXTRA_SAVE_DATA_UI_MODEL, saveAddressDataModel)
             putExtra(PARAM_SOURCE, source)
             putExtra(EXTRA_ADDRESS_STATE, addressUiState.name)
             putExtra(EXTRA_GMS_AVAILABILITY, isGmsAvailable)
+            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
         }
         addressFormContract.launch(intent)
     }

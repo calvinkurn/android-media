@@ -1465,6 +1465,10 @@ class AddressFormFragment :
         binding?.btnSaveAddressNew?.isEnabled = isEnabled
     }
 
+    fun onNewIntent(intent: Intent?) {
+        onPinpointResult(intent)
+    }
+
     private val FragmentAddressFormBinding.addressForm: BaseFormAddressWidget
         get() = if (isPositiveFlow) this.formAddressPositiveWidget else this.formAddressNegativeWidget
 }
