@@ -211,8 +211,13 @@ class ScpAuthActivity : BaseActivity() {
         DataVisorWorker.scheduleWorker(this, true)
         TwoFactorMluHelper.clear2FaInterval(this)
 
+        getDefaultChosenAddress()
         setResult(Activity.RESULT_OK)
         finish()
+    }
+
+    private fun getDefaultChosenAddress() {
+//        GetDefaultChosenAddressService.startService(applicationContext)
     }
 
     companion object {
