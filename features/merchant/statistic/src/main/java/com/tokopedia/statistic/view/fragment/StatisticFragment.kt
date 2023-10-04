@@ -238,7 +238,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         observeWidgetData(mViewModel.barChartWidgetData, WidgetType.BAR_CHART)
         observeWidgetData(mViewModel.announcementWidgetData, WidgetType.ANNOUNCEMENT)
         observeTickers()
-        rejectedOrderRateCoachMark.iniCoachMark(view.context)
+        rejectedOrderRateCoachMark.init(view.context)
     }
 
     override fun onResume() {
@@ -256,7 +256,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     override fun onDestroyView() {
-        rejectedOrderRateCoachMark.destroyCoachMark()
+        rejectedOrderRateCoachMark.destroy()
         mLayoutManager = null
         super.onDestroyView()
     }
@@ -551,7 +551,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     override fun setCoachMarkView(dataKey: String, view: View) {
-        rejectedOrderRateCoachMark.setCoachMarkAnchor(dataKey, view)
+        rejectedOrderRateCoachMark.setAnchor(dataKey, view)
     }
 
     fun setSelectedWidget(widget: String) {
@@ -694,7 +694,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             val firstVisibleIndex = layoutManager.findFirstVisibleItemPosition()
             val lastVisibleIndex = layoutManager.findLastCompletelyVisibleItemPosition()
             if (cardIndex != RecyclerView.NO_POSITION && cardIndex in firstVisibleIndex..lastVisibleIndex) {
-                rejectedOrderRateCoachMark.showCoachMark()
+                rejectedOrderRateCoachMark.show()
             }
         }
     }

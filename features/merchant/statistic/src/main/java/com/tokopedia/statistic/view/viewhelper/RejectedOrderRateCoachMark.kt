@@ -22,14 +22,14 @@ class RejectedOrderRateCoachMark @Inject constructor(){
     private var anchor: View? = null
     private var coachMark: CoachMark2? = null
 
-    fun setCoachMarkAnchor(dataKey: String, view: View) {
+    fun setAnchor(dataKey: String, view: View) {
         if (dataKey == DATA_KEY && anchor != view) {
             anchor = view
-            showCoachMark()
+            show()
         }
     }
 
-    fun showCoachMark() {
+    fun show() {
         anchor?.let { anchor ->
             if (hasShown(anchor.context)) return
 
@@ -53,11 +53,11 @@ class RejectedOrderRateCoachMark @Inject constructor(){
         }
     }
 
-    fun destroyCoachMark() {
+    fun destroy() {
         coachMark = null
     }
 
-    fun initCoachMark(context: Context) {
+    fun init(context: Context) {
         if (hasShown(context)) return
 
         if (coachMark == null) {
