@@ -638,6 +638,7 @@ abstract class BaseCategoryFragment : Fragment(), ScreenShotListener,
             categoryShimmering.root.hide()
             oocLayout.show()
             oocLayout.actionListener = this@BaseCategoryFragment
+            hideMiniCart()
         }
     }
 
