@@ -240,9 +240,11 @@ class ThanksPageDataViewModel @Inject constructor(
             _bottomContentVisitableList.value = visitableList
         } else {
             _bottomContentVisitableList.value = visitableList.filter {
-                widgetOrder.contains((it as WidgetTag).tag)
+                if (it is MixTopDataModel) widgetOrder.contains("flashsale")
+                else widgetOrder.contains((it as WidgetTag).tag)
             }.sortedBy {
-                widgetOrder.indexOf((it as WidgetTag).tag)
+                if (it is MixTopDataModel) widgetOrder.indexOf("flashsale")
+                else widgetOrder.indexOf((it as WidgetTag).tag)
             }
         }
     }
