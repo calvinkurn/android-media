@@ -8,6 +8,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant
+import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryProductMapper.mapResponseToProductItem
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryProductMapper.updateProductCardItems
 import com.tokopedia.tokopedianow.category.domain.response.GetCategoryLayoutResponse.Component
@@ -147,10 +148,11 @@ object CategoryL2TabMapper {
         excludedFilter: Option?
     ) {
         val emptyStateUiModel = TokoNowEmptyStateNoResultUiModel(
-            activeFilterList = emptyList(),
+            activeFilterList = null,
             excludeFilter = excludedFilter,
             defaultTitle = violation.headerText,
             defaultDescription = violation.descriptionText,
+            defaultDescriptionResId = R.string.tokopedianow_empty_product_filter_l2_description,
             defaultImage = violation.imageUrl,
             enablePrimaryButton = false,
             enableSecondaryButton = false

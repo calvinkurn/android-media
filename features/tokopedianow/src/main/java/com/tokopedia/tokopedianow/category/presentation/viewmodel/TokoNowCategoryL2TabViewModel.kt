@@ -39,14 +39,12 @@ import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.fil
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.findItem
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.findProductCardItem
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.getProductIndex
-import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.mapProductAdsCarousel
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.mapCategoryTabLayout
+import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.mapProductAdsCarousel
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.mapToQuickFilter
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.removeItem
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.removeLoadMoreLoading
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.updateAllProductQuantity
-import com.tokopedia.tokopedianow.category.domain.response.CategoryDetailResponse.CategoryDetail
-import com.tokopedia.tokopedianow.category.domain.response.GetCategoryLayoutResponse.Component
 import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryProductUseCase
 import com.tokopedia.tokopedianow.category.presentation.constant.CategoryStaticLayoutId
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryAtcTrackerModel
@@ -60,7 +58,6 @@ import com.tokopedia.tokopedianow.common.domain.mapper.AceSearchParamMapper
 import com.tokopedia.tokopedianow.common.domain.mapper.AddressMapper
 import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper.mapCategoryMenuData
 import com.tokopedia.tokopedianow.common.domain.mapper.ProductAdsMapper.findAdsProductCarousel
-import com.tokopedia.tokopedianow.common.domain.model.GetTickerData
 import com.tokopedia.tokopedianow.common.domain.param.GetProductAdsParam
 import com.tokopedia.tokopedianow.common.domain.param.GetProductAdsParam.Companion.SRC_DIRECTORY_TOKONOW
 import com.tokopedia.tokopedianow.common.domain.usecase.GetCategoryListUseCase
