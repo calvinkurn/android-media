@@ -85,7 +85,6 @@ import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSe
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.UserSessionInterface
-import dagger.Lazy
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -127,7 +126,7 @@ fun createHomeViewModel(
     homeRateLimit: RateLimiter<String> = mockk(relaxed = true),
     homeRemoteConfigController: HomeRemoteConfigController = mockk(relaxed = true),
     homeAtfUseCase: HomeAtfUseCase = mockk(relaxed = true),
-    todoWidgetRepository: TodoWidgetRepository = mockk(relaxed = true),
+    todoWidgetRepository: TodoWidgetRepository = mockk(relaxed = true)
 ): HomeRevampViewModel {
     homeBalanceWidgetUseCase.givenGetLoadingStateReturn()
     return spyk(
@@ -154,9 +153,9 @@ fun createHomeViewModel(
             homeTodoWidgetUseCase = { homeTodoWidgetUseCase },
             homeDismissTodoWidgetUseCase = { homeDismissTodoWidgetUseCase },
             homeRateLimit = homeRateLimit,
-            homeRemoteConfigController = homeRemoteConfigController,
-            homeAtfUseCase = homeAtfUseCase,
-            todoWidgetRepository = todoWidgetRepository,
+            homeRemoteConfigController = { homeRemoteConfigController },
+            homeAtfUseCase = { homeAtfUseCase },
+            todoWidgetRepository = { todoWidgetRepository }
         ),
         recordPrivateCalls = true
     )
@@ -194,7 +193,7 @@ fun createHomeDynamicChannelUseCase(
     homeTodoWidgetRepository: HomeTodoWidgetRepository = mockk(relaxed = true),
     homeAtfUseCase: HomeAtfUseCase = mockk(relaxed = true),
     homeHeaderUseCase: HomeHeaderUseCase = mockk(relaxed = true),
-    atfMapper: AtfMapper = mockk(relaxed = true),
+    atfMapper: AtfMapper = mockk(relaxed = true)
 ): HomeDynamicChannelUseCase {
     return HomeDynamicChannelUseCase(
         homeBalanceWidgetUseCase = homeBalanceWidgetUseCase,
@@ -227,7 +226,7 @@ fun createHomeDynamicChannelUseCase(
         homeTodoWidgetRepository = homeTodoWidgetRepository,
         homeAtfUseCase = homeAtfUseCase,
         homeHeaderUseCase = homeHeaderUseCase,
-        atfMapper = atfMapper,
+        atfMapper = atfMapper
     )
 }
 
@@ -242,6 +241,9 @@ fun HomeSuggestedReviewUseCase.givenOnReviewDismissedReturn() {
 }
 
 fun HomeDynamicChannelUseCase.givenGetHomeDataReturn(homeDynamicChannelModel: HomeDynamicChannelModel? = createDefaultHomeDataModel()) {
+    coEvery { getNewHomeDataFlow() } returns flow {
+        emit(homeDynamicChannelModel)
+    }
     coEvery { getHomeDataFlow() } returns flow {
         emit(homeDynamicChannelModel)
     }
