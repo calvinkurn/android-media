@@ -27,6 +27,7 @@ class CarouselPagingProductCardView: ConstraintLayout {
     private var binding: CarouselPagingProductCardLayoutBinding? = null
     private var groupPaginationOnScrollListener: GroupPaginationOnScrollListener? = null
     private var layoutManager: GridLayoutManager? = null
+    private var itemDecoration: ItemDecoration? = null
 
     private val config = AttributesConfig()
 
@@ -100,16 +101,18 @@ class CarouselPagingProductCardView: ConstraintLayout {
     private fun RecyclerView.addDivider(
         model: CarouselPagingModel
     ) {
-        if (itemDecorationCount > 0) return
+        itemDecoration?.apply {
+            removeItemDecoration(this)
+        }
 
-        val itemDecoration = ItemDecoration(
+        itemDecoration = ItemDecoration(
             context,
             config.pagingPaddingHorizontal,
             model.itemPerPage,
-        )
-
-        itemDecoration.setDrawable(ItemDecoration.createDrawable(context))
-        addItemDecoration(itemDecoration)
+        ).apply {
+            setDrawable(ItemDecoration.createDrawable(context))
+            addItemDecoration(this)
+        }
     }
 
     private fun RecyclerView.addPaginationSnap() {
