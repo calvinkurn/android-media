@@ -13,8 +13,6 @@ import android.view.ViewGroup
 import android.widget.GridLayout
 import android.widget.ImageView
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.helper.widget.Layer
-import androidx.constraintlayout.widget.Group
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
@@ -260,7 +258,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
 
                 when (type) {
                     PAGE_TYPE_PDP -> {
-                        findViewById<Layer>(R.id.redirection_group).setOnClickListener {
+                        redirectionGroup.setOnClickListener {
                             RouteManager.route(
                                 context,
                                 ApplinkConst.PRODUCT_INFO.replace(
@@ -271,9 +269,9 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                         }
                     }
 
-                    PAGE_TYPE_SHOP -> findViewById<Layer>(R.id.redirection_group).setOnClickListener {
+                    PAGE_TYPE_SHOP -> redirectionGroup.setOnClickListener {
                         if (originScreen == ORIGIN_PROMO_TOKO_NOW) {
-                            findViewById<Layer>(R.id.redirection_group).setOnClickListener {
+                            redirectionGroup.setOnClickListener {
                                 RouteManager.route(
                                     context,
                                     ApplinkConst.TokopediaNow.HOME
@@ -291,7 +289,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                     }
 
                     PAGE_TYPE_CAMPAIGN -> {
-                        findViewById<Layer>(R.id.redirection_group).setOnClickListener {
+                        redirectionGroup.setOnClickListener {
                             RouteManager.route(
                                 context,
                                 appUrl

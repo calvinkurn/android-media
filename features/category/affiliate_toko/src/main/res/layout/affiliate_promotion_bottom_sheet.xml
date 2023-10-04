@@ -98,7 +98,7 @@
         android:layout_marginEnd="16dp"
         android:ellipsize="end"
         android:maxLines="2"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/icon_ssa_message"
         app:layout_constraintStart_toEndOf="@id/bs_image_barrier"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_2"
@@ -123,8 +123,8 @@
         android:layout_height="0dp"
         app:icon_name="CHEVRON_RIGHT"
         app:layout_constraintBottom_toBottomOf="@id/ssa_message"
-        app:layout_constraintStart_toEndOf="@id/ssa_message"
-        app:layout_constraintTop_toTopOf="@id/ssa_message" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/product_name" />
 
     <com.tokopedia.unifycomponents.Label
         android:id="@+id/ssa_label"
