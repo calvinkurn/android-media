@@ -1,181 +1,202 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:baselineAligned="false">
+    android:layout_height="wrap_content">
 
-    <!--Main Showcase-->
-    <FrameLayout
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imgMainShowcase"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1">
+        android:layout_height="0dp"
+        android:layout_marginTop="12dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/tpgThirdShowcaseTitle"
+        app:layout_constraintEnd_toStartOf="@+id/guideline7"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_image_corner_radius="12"
+        tools:layout_height="178dp"
+        tools:layout_width="178dp"
+        tools:visibility="visible" />
 
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/imgMainShowcase"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="invisible"
-            app:unify_image_corner_radius="12"
-            tools:src="@drawable/ic_add_photo"
-            tools:visibility="visible" />
+    <ImageView
+        android:id="@+id/imgBackgroundGradient"
+        android:layout_width="0dp"
+        android:layout_height="90dp"
+        android:background="@drawable/shop_shape_showcase_gradient_background"
+        android:elevation="1dp"
+        app:layout_constraintBottom_toBottomOf="@+id/imgMainShowcase"
+        app:layout_constraintEnd_toEndOf="@+id/imgMainShowcase"
+        app:layout_constraintStart_toStartOf="@+id/imgMainShowcase"
+        app:layout_constraintTop_toTopOf="@+id/imgMainShowcase"
+        app:layout_constraintVertical_bias="1.0" />
 
-        <ImageView
-            android:contentDescription="@string/shop_showcase_navigation_tab_widget_content_description"
-            android:id="@+id/imgBackgroundGradient"
-            android:layout_width="match_parent"
-            android:layout_height="90dp"
-            android:layout_gravity="bottom"
-            android:background="@drawable/shop_shape_showcase_gradient_background"
-            android:elevation="1dp" />
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpgMainShowcaseTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="12dp"
+        android:elevation="2dp"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="1"
+        android:minLines="1"
+        android:textColor="@color/clr_dms_icon_white"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/imgMainShowcase"
+        app:layout_constraintEnd_toEndOf="@+id/imgMainShowcase"
+        app:layout_constraintStart_toStartOf="@+id/imgMainShowcase"
+        app:layout_constraintTop_toTopOf="@+id/imgMainShowcase"
+        app:layout_constraintVertical_bias="1.0"
+        app:typographyType="display_2"
+        app:typographyWeight="bold"
+        tools:text="Power Bank"
+        tools:visibility="visible" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tpgMainShowcaseTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="12dp"
-            android:elevation="2dp"
-            android:ellipsize="end"
-            android:gravity="center"
-            android:maxLines="1"
-            android:minLines="1"
-            android:textColor="@color/clr_dms_icon_white"
-            android:visibility="invisible"
-            app:typographyType="display_2"
-            app:typographyWeight="bold"
-            tools:text="Power Bank"
-            tools:visibility="visible" />
-
-    </FrameLayout>
-
-    <!--Small Showcase-->
-    <GridLayout
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imgFirstShowcase"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_weight="1"
-        android:columnCount="2"
-        android:rowCount="4">
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="8dp"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toStartOf="@+id/imgSecondShowcase"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/guideline7"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_image_corner_radius="12"
+        tools:layout_height="68dp"
+        tools:layout_width="68dp"
+        tools:visibility="visible" />
 
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/imgFirstShowcase"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_rowWeight="1"
-            android:layout_columnWeight="1"
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpgFirstShowcaseTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="1"
+        android:minLines="1"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="@+id/imgFirstShowcase"
+        app:layout_constraintStart_toStartOf="@+id/imgFirstShowcase"
+        app:layout_constraintTop_toBottomOf="@+id/imgFirstShowcase"
+        app:typographyType="small"
+        tools:text="Tablet"
+        tools:visibility="visible" />
 
-            android:visibility="invisible"
-            app:unify_image_corner_radius="12"
-            tools:src="@drawable/ic_add_photo"
-            tools:visibility="visible" />
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imgSecondShowcase"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:visibility="invisible"
+        tools:layout_height="68dp"
+        tools:layout_width="68dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/imgFirstShowcase"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_image_corner_radius="12"
+        tools:visibility="visible" />
 
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/imgSecondShowcase"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_rowWeight="1"
-            android:layout_columnWeight="1"
-            android:layout_marginStart="8dp"
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpgSecondShowcaseTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="1"
+        android:minLines="1"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="@+id/imgSecondShowcase"
+        app:layout_constraintStart_toStartOf="@+id/imgSecondShowcase"
+        app:layout_constraintTop_toBottomOf="@+id/imgFirstShowcase"
+        app:typographyType="small"
+        tools:text="Accecories"
+        tools:visibility="visible" />
 
-            android:visibility="invisible"
-            app:unify_image_corner_radius="12"
-            tools:src="@drawable/ic_add_photo"
-            tools:visibility="visible" />
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imgThirdShowcase"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toStartOf="@+id/imgSecondShowcase"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/guideline7"
+        app:layout_constraintTop_toBottomOf="@id/tpgFirstShowcaseTitle"
+        app:unify_image_corner_radius="12"
+        tools:layout_height="68dp"
+        tools:layout_width="68dp"
+        tools:visibility="visible" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tpgFirstShowcaseTitle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_columnWeight="1"
-            android:layout_marginTop="4dp"
-            android:ellipsize="end"
-            android:gravity="center"
-            android:maxLines="1"
-            android:minLines="1"
-            android:visibility="invisible"
-            app:typographyType="small"
-            tools:text="Power Bank"
-            tools:visibility="visible" />
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpgThirdShowcaseTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="1"
+        android:minLines="1"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="@+id/imgThirdShowcase"
+        app:layout_constraintStart_toStartOf="@+id/imgThirdShowcase"
+        app:layout_constraintTop_toBottomOf="@+id/imgThirdShowcase"
+        app:typographyType="small"
+        tools:text="Handphone"
+        tools:visibility="visible" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tpgSecondShowcaseTitle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_columnWeight="1"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="4dp"
-            android:ellipsize="end"
-            android:gravity="center"
-            android:maxLines="1"
-            android:minLines="1"
-            android:visibility="invisible"
-            app:typographyType="small"
-            tools:text="Power Bank"
-            tools:visibility="visible" />
 
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/imgThirdShowcase"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_rowWeight="1"
-            android:layout_columnWeight="1"
-            android:layout_marginTop="8dp"
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imgFourthShowcase"
+        android:layout_width="0dp"
+        tools:layout_height="68dp"
+        tools:layout_width="68dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/imgThirdShowcase"
+        app:layout_constraintTop_toBottomOf="@+id/tpgSecondShowcaseTitle"
+        app:unify_image_corner_radius="12"
+        tools:visibility="visible" />
 
-            android:visibility="invisible"
-            app:unify_image_corner_radius="12"
-            tools:src="@drawable/ic_add_photo"
-            tools:visibility="visible" />
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpgFourthShowcaseTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="1"
+        android:minLines="1"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="@+id/imgFourthShowcase"
+        app:layout_constraintStart_toStartOf="@+id/imgFourthShowcase"
+        app:layout_constraintTop_toBottomOf="@+id/imgFourthShowcase"
+        app:typographyType="small"
+        tools:text="Power Bank"
+        tools:visibility="visible" />
 
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/imgFourthShowcase"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_rowWeight="1"
-            android:layout_columnWeight="1"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
 
-            android:visibility="invisible"
-            app:unify_image_corner_radius="12"
-            tools:src="@drawable/ic_add_photo"
-            tools:visibility="visible" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tpgThirdShowcaseTitle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_columnWeight="1"
-            android:layout_marginTop="4dp"
-            android:ellipsize="end"
-            android:gravity="center"
-            android:maxLines="1"
-            android:minLines="1"
-            android:visibility="invisible"
-            app:typographyType="small"
-            tools:text="Power Bank"
-            tools:visibility="visible" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tpgFourthShowcaseTitle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_columnWeight="1"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="4dp"
-            android:ellipsize="end"
-            android:gravity="center"
-            android:maxLines="1"
-            android:minLines="1"
-            android:visibility="invisible"
-            app:typographyType="small"
-            tools:text="Power Bank"
-            tools:visibility="visible" />
-        
-    </GridLayout>
-
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
