@@ -127,6 +127,9 @@ internal class PromoRecommendationDelegateAdapter(
             if (item.showAnimation) {
                 showPromoRecommendationAnimation(item)
             }
+            binding.btnBottomSheetHeaderClose.setOnClickListener {
+                onClickClose()
+            }
         }
 
         private fun showPromoRecommendationAnimation(item: PromoRecommendationItem) {
