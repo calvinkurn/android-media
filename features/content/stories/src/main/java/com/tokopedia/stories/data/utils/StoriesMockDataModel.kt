@@ -60,7 +60,7 @@ fun mockInitialDataModel(
                                     duration = 7 * 1000,
                                 ),
                                 resetValue = -1,
-                                isSameContent = false,
+                                isContentLoaded = false,
                                 meta = StoriesDetailItem.Meta(
                                     activityTracker = "12345",
                                     templateTracker = "1235df8",
@@ -75,7 +75,7 @@ fun mockInitialDataModel(
                                     duration = 7 * 1000,
                                 ),
                                 resetValue = -1,
-                                isSameContent = false,
+                                isContentLoaded = false,
                                 meta = StoriesDetailItem.Meta(
                                     activityTracker = "12345",
                                     templateTracker = "1235df8",
@@ -90,7 +90,7 @@ fun mockInitialDataModel(
                                     duration = 7 * 1000,
                                 ),
                                 resetValue = -1,
-                                isSameContent = false,
+                                isContentLoaded = false,
                                 meta = StoriesDetailItem.Meta(
                                     activityTracker = "12345",
                                     templateTracker = "1235df8",
@@ -118,7 +118,7 @@ fun mockInitialDataModel(
                                     duration = 7 * 1000,
                                 ),
                                 resetValue = -1,
-                                isSameContent = false,
+                                isContentLoaded = false,
                                 meta = StoriesDetailItem.Meta(
                                     activityTracker = "12345",
                                     templateTracker = "1235df8",
@@ -133,7 +133,7 @@ fun mockInitialDataModel(
                                     duration = 7 * 1000,
                                 ),
                                 resetValue = -1,
-                                isSameContent = false,
+                                isContentLoaded = false,
                                 meta = StoriesDetailItem.Meta(
                                     activityTracker = "12345",
                                     templateTracker = "1235df8",
@@ -148,7 +148,7 @@ fun mockInitialDataModel(
                                     duration = 7 * 1000,
                                 ),
                                 resetValue = -1,
-                                isSameContent = false,
+                                isContentLoaded = false,
                                 meta = StoriesDetailItem.Meta(
                                     activityTracker = "12345",
                                     templateTracker = "1235df8",
@@ -176,7 +176,7 @@ fun mockInitialDataModel(
                                     duration = 7 * 1000,
                                 ),
                                 resetValue = -1,
-                                isSameContent = false,
+                                isContentLoaded = false,
                                 meta = StoriesDetailItem.Meta(
                                     activityTracker = "12345",
                                     templateTracker = "1235df8",
@@ -191,7 +191,7 @@ fun mockInitialDataModel(
                                     duration = 7 * 1000,
                                 ),
                                 resetValue = -1,
-                                isSameContent = false,
+                                isContentLoaded = false,
                                 meta = StoriesDetailItem.Meta(
                                     activityTracker = "12345",
                                     templateTracker = "1235df8",
@@ -206,7 +206,7 @@ fun mockInitialDataModel(
                                     duration = 7 * 1000,
                                 ),
                                 resetValue = -1,
-                                isSameContent = false,
+                                isContentLoaded = false,
                                 meta = StoriesDetailItem.Meta(
                                     activityTracker = "12345",
                                     templateTracker = "1235df8",
@@ -268,7 +268,7 @@ fun mockInitialDataModelForDeleteStories(
                                     duration = 7 * 1000,
                                 ),
                                 resetValue = -1,
-                                isSameContent = false,
+                                isContentLoaded = false,
                                 meta = StoriesDetailItem.Meta(
                                     activityTracker = "12345",
                                     templateTracker = "1235df8",
@@ -296,7 +296,7 @@ fun mockInitialDataModelForDeleteStories(
                                     duration = 7 * 1000,
                                 ),
                                 resetValue = -1,
-                                isSameContent = false,
+                                isContentLoaded = false,
                                 meta = StoriesDetailItem.Meta(
                                     activityTracker = "12345",
                                     templateTracker = "1235df8",
@@ -324,7 +324,7 @@ fun mockInitialDataModelForDeleteStories(
                                     duration = 7 * 1000,
                                 ),
                                 resetValue = -1,
-                                isSameContent = false,
+                                isContentLoaded = false,
                                 meta = StoriesDetailItem.Meta(
                                     activityTracker = "12345",
                                     templateTracker = "1235df8",
@@ -387,7 +387,7 @@ fun mockInitialDataModelFetchPrevAndNext(): StoriesUiModel {
                                 duration = 7 * 1000,
                             ),
                             resetValue = -1,
-                            isSameContent = false,
+                            isContentLoaded = false,
                             meta = StoriesDetailItem.Meta(
                                 activityTracker = "12345",
                                 templateTracker = "1235df8",
@@ -402,7 +402,7 @@ fun mockInitialDataModelFetchPrevAndNext(): StoriesUiModel {
                                 duration = 7 * 1000,
                             ),
                             resetValue = -1,
-                            isSameContent = false,
+                            isContentLoaded = false,
                             meta = StoriesDetailItem.Meta(
                                 activityTracker = "12345",
                                 templateTracker = "1235df8",
@@ -417,7 +417,7 @@ fun mockInitialDataModelFetchPrevAndNext(): StoriesUiModel {
                                 duration = 7 * 1000,
                             ),
                             resetValue = -1,
-                            isSameContent = false,
+                            isContentLoaded = false,
                             meta = StoriesDetailItem.Meta(
                                 activityTracker = "12345",
                                 templateTracker = "1235df8",
@@ -481,7 +481,7 @@ fun mockInitialDataModelFetchPrev(): StoriesUiModel {
                                 duration = 7 * 1000,
                             ),
                             resetValue = -1,
-                            isSameContent = false,
+                            isContentLoaded = false,
                             meta = StoriesDetailItem.Meta(
                                 activityTracker = "12345",
                                 templateTracker = "1235df8",
@@ -496,7 +496,7 @@ fun mockInitialDataModelFetchPrev(): StoriesUiModel {
                                 duration = 7 * 1000,
                             ),
                             resetValue = -1,
-                            isSameContent = false,
+                            isContentLoaded = false,
                             meta = StoriesDetailItem.Meta(
                                 activityTracker = "12345",
                                 templateTracker = "1235df8",
@@ -511,7 +511,7 @@ fun mockInitialDataModelFetchPrev(): StoriesUiModel {
                                 duration = 7 * 1000,
                             ),
                             resetValue = -1,
-                            isSameContent = false,
+                            isContentLoaded = false,
                             meta = StoriesDetailItem.Meta(
                                 activityTracker = "12345",
                                 templateTracker = "1235df8",
@@ -572,7 +572,7 @@ fun mockInitialDataModelFetchNext(): StoriesUiModel {
                                 duration = 7 * 1000,
                             ),
                             resetValue = -1,
-                            isSameContent = false,
+                            isContentLoaded = false,
                             meta = StoriesDetailItem.Meta(
                                 activityTracker = "12345",
                                 templateTracker = "1235df8",
@@ -587,7 +587,7 @@ fun mockInitialDataModelFetchNext(): StoriesUiModel {
                                 duration = 7 * 1000,
                             ),
                             resetValue = -1,
-                            isSameContent = false,
+                            isContentLoaded = false,
                             meta = StoriesDetailItem.Meta(
                                 activityTracker = "12345",
                                 templateTracker = "1235df8",
@@ -602,7 +602,7 @@ fun mockInitialDataModelFetchNext(): StoriesUiModel {
                                 duration = 7 * 1000,
                             ),
                             resetValue = -1,
-                            isSameContent = false,
+                            isContentLoaded = false,
                             meta = StoriesDetailItem.Meta(
                                 activityTracker = "12345",
                                 templateTracker = "1235df8",

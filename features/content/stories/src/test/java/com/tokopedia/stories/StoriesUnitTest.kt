@@ -436,7 +436,7 @@ class StoriesUnitTest {
             robot.setTrackActivity(selectedGroup)
 
             val actualDetail = robot.getViewModel().mDetail
-            actualDetail.isSameContent.assertTrue()
+            actualDetail.isContentLoaded.assertTrue()
         }
     }
 
@@ -453,7 +453,7 @@ class StoriesUnitTest {
             robot.setTrackActivity(selectedGroup)
 
             val actualDetail = robot.getViewModel().mDetail
-            actualDetail.isSameContent.assertFalse()
+            actualDetail.isContentLoaded.assertFalse()
         }
     }
 
@@ -472,7 +472,7 @@ class StoriesUnitTest {
                 robot.setTrackActivity(selectedGroup)
 
                 val actualDetail = robot.getViewModel().mDetail
-                actualDetail.isSameContent.assertTrue()
+                actualDetail.isContentLoaded.assertTrue()
             }
             event.last().assertEqualTo(StoriesUiEvent.ErrorSetTracking(expectedThrowable))
         }

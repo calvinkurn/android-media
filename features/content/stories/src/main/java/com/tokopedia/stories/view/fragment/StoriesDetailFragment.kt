@@ -156,6 +156,11 @@ class StoriesDetailFragment @Inject constructor(
         setupAnalytic()
     }
 
+    override fun onResume() {
+        super.onResume()
+        resumeStories()
+    }
+
     private fun setupObserver() {
         setupUiStateObserver()
         setupUiEventObserver()
@@ -283,7 +288,7 @@ class StoriesDetailFragment @Inject constructor(
 
         storiesDetailsTimer(state)
 
-        if (currentItem.isSameContent) return
+        if (currentItem.isContentLoaded) return
 
         renderAuthor(currentItem)
         renderNudge(currentItem)
