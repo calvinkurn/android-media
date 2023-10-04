@@ -166,11 +166,21 @@ open class BaseCategoryViewModel(
                 val tickerList = getTickerData()
                 loadFirstPage(tickerList)
             } else {
-                _outOfCoverageState.postValue(Unit)
+                clearVisitableList()
+                showOutOfCoverageState()
             }
         }) {
             _onPageError.postValue(it)
         }
+    }
+
+    private fun clearVisitableList() {
+        visitableList.clear()
+        updateVisitableListLiveData()
+    }
+
+    private fun showOutOfCoverageState() {
+        _outOfCoverageState.postValue(Unit)
     }
 
     private fun getShopIdBeforeLoadData() {
