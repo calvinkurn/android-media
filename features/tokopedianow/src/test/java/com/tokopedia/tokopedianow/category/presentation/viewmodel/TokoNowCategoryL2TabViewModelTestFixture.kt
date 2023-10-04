@@ -16,6 +16,7 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.tokopedianow.category.domain.response.GetCategoryLayoutResponse.CategoryGetDetailModular
 import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryProductUseCase
+import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryQuickFilterUiModel
 import com.tokopedia.tokopedianow.common.domain.mapper.AceSearchParamMapper
 import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse.CategoryListResponse
 import com.tokopedia.tokopedianow.common.domain.model.GetProductAdsResponse.ProductAdsResponse
@@ -24,6 +25,7 @@ import com.tokopedia.tokopedianow.common.domain.model.WarehouseData
 import com.tokopedia.tokopedianow.common.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.GetProductAdsUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
+import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateNoResultUiModel
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.AddressMapper
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
@@ -401,6 +403,31 @@ open class TokoNowCategoryL2TabViewModelTestFixture {
         verifyGetSortFilterUseCaseCalled(expectedGetCategoryFilterQueryParams)
     }
 
+    protected fun verifyVisitableList(expectedVisitableList: List<Visitable<*>>) {
+        val actualVisitableList = viewModel.visitableListLiveData.value.orEmpty()
+
+        actualVisitableList.forEachIndexed { index, actualVisitableItem ->
+            when (actualVisitableItem) {
+                is CategoryQuickFilterUiModel -> {
+                    val expectedVisitableItem =
+                        expectedVisitableList[index] as CategoryQuickFilterUiModel
+                    verifyQuickFilterUiModel(expectedVisitableItem, actualVisitableItem)
+                }
+
+                is TokoNowEmptyStateNoResultUiModel -> {
+                    val expectedVisitableItem =
+                        expectedVisitableList[index] as TokoNowEmptyStateNoResultUiModel
+                    verifyEmptyStateUiModel(expectedVisitableItem, actualVisitableItem)
+                }
+
+                else -> {
+                    val expectedVisitableItem = expectedVisitableList[index]
+                    assertEquals(expectedVisitableItem, actualVisitableItem)
+                }
+            }
+        }
+    }
+
     protected fun createGetProductQueryParams(srpPageId: String, sc: String): MutableMap<String?, Any?> {
         return mutableMapOf<String?, Any?>().apply {
             put("user_cityId", localCacheModel.city_id)
@@ -466,6 +493,47 @@ open class TokoNowCategoryL2TabViewModelTestFixture {
         getProductCountRequestParams.putAll(getProductCountParams)
 
         return getProductCountRequestParams
+    }
+
+    private fun verifyQuickFilterUiModel(
+        expectedVisitableItem: CategoryQuickFilterUiModel,
+        actualVisitableItem: CategoryQuickFilterUiModel
+    ) {
+        assertEquals(expectedVisitableItem.id, actualVisitableItem.id)
+        assertEquals(expectedVisitableItem.mapParameter, actualVisitableItem.mapParameter)
+        assertEquals(expectedVisitableItem.state, actualVisitableItem.state)
+
+        actualVisitableItem.itemList.forEachIndexed { index, actualItem ->
+            val expectedItem = expectedVisitableItem.itemList[index]
+            assertEquals(expectedItem.chipType, actualItem.chipType)
+            assertEquals(expectedItem.showNewNotification, actualItem.showNewNotification)
+
+            val actualOptions = actualItem.filter.options
+            val expectedOptions = expectedItem.filter.options
+
+            actualOptions.forEachIndexed { idx, actualOption ->
+                val expectedOption = expectedOptions[idx]
+                assertEquals(expectedOption.name, actualOption.name)
+                assertEquals(expectedOption.key, actualOption.key)
+                assertEquals(expectedOption.value, actualOption.value)
+            }
+        }
+    }
+
+    private fun verifyEmptyStateUiModel(
+        expectedVisitableItem: TokoNowEmptyStateNoResultUiModel,
+        actualVisitableItem: TokoNowEmptyStateNoResultUiModel
+    ) {
+        assertEquals(expectedVisitableItem.id, actualVisitableItem.id)
+        assertEquals(expectedVisitableItem.activeFilterList, actualVisitableItem.activeFilterList)
+        assertEquals(expectedVisitableItem.defaultTitle, actualVisitableItem.defaultTitle)
+        assertEquals(expectedVisitableItem.defaultDescription, actualVisitableItem.defaultDescription)
+        assertEquals(expectedVisitableItem.defaultImage, actualVisitableItem.defaultImage)
+        assertEquals(expectedVisitableItem.defaultTextPrimaryButton, actualVisitableItem.defaultTextPrimaryButton)
+        assertEquals(expectedVisitableItem.defaultUrlPrimaryButton, actualVisitableItem.defaultUrlPrimaryButton)
+        assertEquals(expectedVisitableItem.excludeFilter, actualVisitableItem.excludeFilter)
+        assertEquals(expectedVisitableItem.enablePrimaryButton, actualVisitableItem.enablePrimaryButton)
+        assertEquals(expectedVisitableItem.enableSecondaryButton, actualVisitableItem.enableSecondaryButton)
     }
 
     private fun createGetCategoryFilterQueryParams(): Map<String?, Any?> {

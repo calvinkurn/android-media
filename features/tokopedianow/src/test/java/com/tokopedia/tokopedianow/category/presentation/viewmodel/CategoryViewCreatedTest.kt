@@ -1,5 +1,6 @@
 package com.tokopedia.tokopedianow.category.presentation.viewmodel
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.mapToCategoryTitle
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.mapToChooseAddress
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.mapToHeaderSpace
@@ -139,7 +140,7 @@ class CategoryViewCreatedTest : TokoNowCategoryViewModelTestFixture() {
         viewModel.onViewCreated()
 
         viewModel.visitableListLiveData
-            .verifyValueEquals(null)
+            .verifyValueEquals(emptyList<Visitable<*>>())
         viewModel.outOfCoverageState
             .verifyValueEquals(Unit)
     }

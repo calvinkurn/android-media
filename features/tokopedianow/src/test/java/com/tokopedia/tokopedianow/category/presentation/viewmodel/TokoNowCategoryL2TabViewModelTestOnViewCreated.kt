@@ -15,6 +15,8 @@ import com.tokopedia.tokopedianow.category.mapper.TickerMapper
 import com.tokopedia.tokopedianow.category.presentation.adapter.typefactory.listener.CategoryL2TypeFactory
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryQuickFilterUiModel
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
+import com.tokopedia.tokopedianow.common.domain.model.GetTargetedTickerResponse
+import com.tokopedia.tokopedianow.common.domain.model.GetTargetedTickerResponse.GetTargetedTicker.TickerResponse.Metadata
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.model.TokoNowAdsCarouselUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateNoResultUiModel
@@ -33,14 +35,16 @@ class TokoNowCategoryL2TabViewModelTestOnViewCreated : TokoNowCategoryL2TabViewM
 
     @Test
     fun `given product list not empty when call onViewCrated should update visitable list with first page items`() {
+        val getTargetedTickerOosResponse = crateGetTargetedTickerOutOfStockResponse()
+
         onGetProductList(thenReturn = getProductResponse)
         onGetProductAds(thenReturn = getProductAdsResponse)
 
         onGetQuickFilter_thenReturn(getQuickFilterResponse)
         onGetCategoryFilter_thenReturn(getCategoryFilterResponse)
-        onGetTicker_thenReturn(warehouseId, getTargetedTickerResponse)
+        onGetTicker_thenReturn(warehouseId, getTargetedTickerOosResponse)
 
-        val tickerData = TickerMapper.mapTickerData(getTargetedTickerResponse)
+        val tickerData = TickerMapper.mapTickerData(getTargetedTickerOosResponse)
         val componentList = getCategoryLayoutResponse.components
 
         val data = CategoryL2TabData(
@@ -60,8 +64,8 @@ class TokoNowCategoryL2TabViewModelTestOnViewCreated : TokoNowCategoryL2TabViewM
 
         val ticker = TokoNowTickerUiModel(
             id = "ticker_widget",
-            tickers = tickerData.tickerList,
-            hasOutOfStockTicker = false
+            tickers = tickerData.oosTickerList,
+            hasOutOfStockTicker = true
         )
 
         val quickFilter = CategoryL2QuickFilterMapper.mapQuickFilter(
@@ -180,7 +184,7 @@ class TokoNowCategoryL2TabViewModelTestOnViewCreated : TokoNowCategoryL2TabViewM
         )
 
         val emptyState = TokoNowEmptyStateNoResultUiModel(
-            activeFilterList = emptyList(),
+            activeFilterList = null,
             excludeFilter = null,
             defaultTitle = violation.headerText,
             defaultDescription = violation.descriptionText,
@@ -273,7 +277,7 @@ class TokoNowCategoryL2TabViewModelTestOnViewCreated : TokoNowCategoryL2TabViewM
         )
 
         val emptyState = TokoNowEmptyStateNoResultUiModel(
-            activeFilterList = emptyList(),
+            activeFilterList = null,
             excludeFilter = null,
             defaultTitle = violation.headerText,
             defaultDescription = violation.descriptionText,
@@ -399,43 +403,15 @@ class TokoNowCategoryL2TabViewModelTestOnViewCreated : TokoNowCategoryL2TabViewM
         verifyUnknownLayoutTypeNotExists()
     }
 
-    private fun verifyVisitableList(expectedVisitableList: List<Visitable<*>>) {
-        val actualVisitableList = viewModel.visitableListLiveData.value.orEmpty()
+    private fun crateGetTargetedTickerOutOfStockResponse(): GetTargetedTickerResponse {
+        val metadata = Metadata(type = "oosCategoryIDs", values = listOf(categoryIdL2))
+        val oosTickerResponse = getTargetedTickerResponse.getTargetedTicker!!.tickers[0]
+            .copy(metadata = listOf(metadata))
 
-        actualVisitableList.forEachIndexed { index, actualVisitableItem ->
-            if(actualVisitableItem is CategoryQuickFilterUiModel) {
-                val expectedVisitableItem = expectedVisitableList[index] as CategoryQuickFilterUiModel
-                verifyQuickFilterUiModel(expectedVisitableItem, actualVisitableItem)
-            } else {
-                val expectedVisitableItem = expectedVisitableList[index]
-                assertEquals(expectedVisitableItem, actualVisitableItem)
-            }
-        }
-    }
+        val getTargetedTickerOos = getTargetedTickerResponse
+            .getTargetedTicker!!.copy(tickers = listOf(oosTickerResponse))
 
-    private fun verifyQuickFilterUiModel(
-        expectedVisitableItem: CategoryQuickFilterUiModel,
-        actualVisitableItem: CategoryQuickFilterUiModel
-    ) {
-        assertEquals(expectedVisitableItem.id, actualVisitableItem.id)
-        assertEquals(expectedVisitableItem.mapParameter, actualVisitableItem.mapParameter)
-        assertEquals(expectedVisitableItem.state, actualVisitableItem.state)
-
-        actualVisitableItem.itemList.forEachIndexed { index, actualItem ->
-            val expectedItem = expectedVisitableItem.itemList[index]
-            assertEquals(expectedItem.chipType, actualItem.chipType)
-            assertEquals(expectedItem.showNewNotification, actualItem.showNewNotification)
-
-            val actualOptions = actualItem.filter.options
-            val expectedOptions = expectedItem.filter.options
-
-            actualOptions.forEachIndexed { idx, actualOption ->
-                val expectedOption = expectedOptions[idx]
-                assertEquals(expectedOption.name, actualOption.name)
-                assertEquals(expectedOption.key, actualOption.key)
-                assertEquals(expectedOption.value, actualOption.value)
-            }
-        }
+        return getTargetedTickerResponse.copy(getTargetedTicker = getTargetedTickerOos)
     }
 
     private fun verifyUnknownLayoutTypeNotExists() {

@@ -82,8 +82,8 @@ class TokoNowCategoryL2TabViewModelTestFilter : TokoNowCategoryL2TabViewModelTes
         )
 
         val emptyState = TokoNowEmptyStateNoResultUiModel(
-            activeFilterList = emptyList(),
-            excludeFilter = excludedFilter,
+            activeFilterList = null,
+            excludeFilter = null,
             defaultTitle = violation.headerText,
             defaultDescription = violation.descriptionText,
             defaultImage = violation.imageUrl,
@@ -132,8 +132,7 @@ class TokoNowCategoryL2TabViewModelTestFilter : TokoNowCategoryL2TabViewModelTes
             queryParams = getProductQueryParamsWithFilter
         )
 
-        viewModel.visitableListLiveData
-            .verifyValueEquals(expectedVisitableList)
+        verifyVisitableList(expectedVisitableList)
     }
 
     @Test

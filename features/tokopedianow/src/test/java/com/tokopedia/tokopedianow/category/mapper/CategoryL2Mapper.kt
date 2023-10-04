@@ -71,14 +71,14 @@ object CategoryL2Mapper {
         categoryIdL1: String,
         categoryIdL2: String,
         tickerData: GetTickerData,
-        getCategoryLayoutResponse: GetCategoryLayoutResponse.CategoryGetDetailModular?,
-        categoryDetailResponse: CategoryDetailResponse?
+        getCategoryLayoutResponse: GetCategoryLayoutResponse.CategoryGetDetailModular,
+        categoryDetailResponse: CategoryDetailResponse
     ): CategoryL2TabUiModel {
-        val componentListResponse = getCategoryLayoutResponse?.components.orEmpty()
+        val componentListResponse = getCategoryLayoutResponse.components
         val id = componentListResponse
             .firstOrNull { it.type == CategoryComponentType.TABS_HORIZONTAL_SCROLL }?.id.orEmpty()
-        val categoryDetail = categoryDetailResponse?.categoryDetail
-        val categoryChildList = categoryDetail?.data?.child.orEmpty()
+        val categoryDetail = categoryDetailResponse.categoryDetail
+        val categoryChildList = categoryDetail.data.child
         val tabComponents = componentListResponse.filterTabComponents()
 
         val categoryL2TabList = categoryChildList.map {
@@ -87,7 +87,8 @@ object CategoryL2Mapper {
                 componentList = tabComponents,
                 categoryIdL1 = categoryIdL1,
                 categoryIdL2 = it.id,
-                tickerData = tickerData
+                tickerData = tickerData,
+                categoryDetail = categoryDetail
             )
         }
 

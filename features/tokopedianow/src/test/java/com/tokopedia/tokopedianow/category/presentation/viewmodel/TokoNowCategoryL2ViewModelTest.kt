@@ -12,7 +12,9 @@ import com.tokopedia.tokopedianow.category.mapper.CategoryL2Mapper
 import com.tokopedia.tokopedianow.category.mapper.TickerMapper
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowTickerUiModel
 import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking
+import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -43,6 +45,19 @@ class TokoNowCategoryL2ViewModelTest: TokoNowCategoryL2ViewModelTestFixture() {
             state = TokoNowLayoutState.LOADED
         )
 
+        val ticker = TokoNowTickerUiModel(
+            id = "ticker_widget",
+            tickers = listOf(
+                TickerData(
+                    description = "Notification content baru sedang berkendala, Mohon cek berkala.",
+                    type = 3
+                )
+            ),
+            backgroundLightColor = "",
+            backgroundDarkColor = "",
+            hasOutOfStockTicker = false
+        )
+
         val expectedOpenScreenTracker = CategoryOpenScreenTrackerModel(
             id = categoryDetailResponse.id,
             name = categoryDetailResponse.name,
@@ -59,7 +74,8 @@ class TokoNowCategoryL2ViewModelTest: TokoNowCategoryL2ViewModelTestFixture() {
 
         val expectedVisitableList = listOf(
             chooseAddressWidget,
-            header
+            header,
+            ticker
         )
 
         viewModel.categoryTabLiveData
@@ -133,7 +149,8 @@ class TokoNowCategoryL2ViewModelTest: TokoNowCategoryL2ViewModelTestFixture() {
         val componentListResponse = getCategoryLayoutResponse.components
         val tabComponentResponse = componentListResponse.first { it.type == "tabs-horizontal-scroll" }
 
-        val categoryChildList = getCategoryDetailResponse.categoryDetail.data.child
+        val categoryDetailResponse = getCategoryDetailResponse.categoryDetail
+        val categoryChildList = categoryDetailResponse.data.child
         val tabComponents = componentListResponse.filter { supportedLayoutTypes.contains(it.type) }
 
         val categoryL2TabList = categoryChildList.map {
@@ -142,7 +159,8 @@ class TokoNowCategoryL2ViewModelTest: TokoNowCategoryL2ViewModelTestFixture() {
                 componentList = tabComponents,
                 categoryIdL1 = categoryIdL1,
                 categoryIdL2 = it.id,
-                tickerData = tickerData
+                tickerData = tickerData,
+                categoryDetail = categoryDetailResponse
             )
         }
 
