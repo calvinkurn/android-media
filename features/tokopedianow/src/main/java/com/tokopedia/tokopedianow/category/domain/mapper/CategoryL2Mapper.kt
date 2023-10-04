@@ -50,7 +50,7 @@ object CategoryL2Mapper {
 
     fun MutableList<Visitable<*>>.addChooseAddress() {
         add(TokoNowChooseAddressWidgetUiModel(
-            trackingSource = CategoryStaticLayoutId.CHOOSE_ADDRESS,
+            id = CategoryStaticLayoutId.CHOOSE_ADDRESS,
             eventLabelHostPage = TOKONOW_CATEGORY_PAGE
         ))
     }
