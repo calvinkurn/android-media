@@ -38,8 +38,8 @@ android {
 
 dependencies {
     api rootProject.ext.miscDependencies.gotoLoginSdk
-    api rootProject.ext.miscDependencies.gotoCvSdk
-    api rootProject.ext.miscDependencies.gotoPinSdk
+//    api rootProject.ext.miscDependencies.gotoCvSdk
+//    api rootProject.ext.miscDependencies.gotoPinSdk
     implementation projectOrAar(rootProject.ext.libraries.akamaiBotLib)
     implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBMP
     implementation projectOrAar(rootProject.ext.features.changePhoneNumber)
