@@ -17,6 +17,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.QuantityEditorUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.epharmacy.R as epharmacyR
 
 class EPharmacyAccordionProductItemViewHolder(val view: View, private val ePharmacyListener: EPharmacyListener?) : AbstractViewHolder<EPharmacyAccordionProductDataModel>(view) {
 
@@ -60,7 +61,7 @@ class EPharmacyAccordionProductItemViewHolder(val view: View, private val ePharm
 
             quantityChangedLayout?.show()
             initialProductQuantity.text = java.lang.String.format(
-                itemView.context.getString(com.tokopedia.epharmacy.R.string.epharmacy_barang_quantity),
+                itemView.context.getString(epharmacyR.string.epharmacy_barang_quantity),
                 dataModel?.product?.qtyComparison?.initialQty.toString()
             )
             productQuantityType.text = itemView.context.getString(R.string.epharmacy_barang)
@@ -74,13 +75,13 @@ class EPharmacyAccordionProductItemViewHolder(val view: View, private val ePharm
             dataModel?.product?.qtyComparison?.subTotal = subtotal
             totalAmount.displayTextOrHide(EPharmacyUtils.getTotalAmountFmt(subtotal))
             totalQuantity.displayTextOrHide(java.lang.String.format(
-                itemView.context.getString(com.tokopedia.epharmacy.R.string.epharmacy_subtotal_quantity_change),
+                itemView.context.getString(epharmacyR.string.epharmacy_subtotal_quantity_change),
                 dataModel?.product?.qtyComparison?.currentQty.toString()
             ))
             quantityChangedEditor.setValueChangedListener { newValue, _, _ ->
                 if(newValue == 1){
                     ePharmacyListener.onToast(Toaster.TYPE_ERROR,
-                        itemView.context.resources?.getString(com.tokopedia.epharmacy.R.string.epharmacy_minimum_quantity_reached) ?: "")
+                        itemView.context.resources?.getString(epharmacyR.string.epharmacy_minimum_quantity_reached) ?: "")
                     quantityChangedEditor.subtractButton.isEnabled = false
                 }else if(newValue == dataModel?.product?.qtyComparison?.recommendedQty){
                     quantityChangedEditor.addButton.isEnabled = false

@@ -54,4 +54,5 @@ interface EPharmacyComponent {
     fun inject(ePharmacyLoadingFragment: EPharmacyLoadingFragment)
 
     fun inject(ePharmacyOrderDetailFragment: EPharmacyOrderDetailFragment)
+
 }

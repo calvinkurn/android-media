@@ -9,6 +9,12 @@ data class EPharmacyCartGeneralCheckoutResponse(
     @Expose
     val checkout: CheckoutResponse?
 ) {
+
+    companion object {
+        const val SUCCESS = 1
+        const val ERROR = 0
+    }
+
     data class CheckoutResponse(
         @SerializedName("data")
         @Expose

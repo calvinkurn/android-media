@@ -55,4 +55,5 @@ class EPharmacyComponentActivity : BaseActivity(), HasComponent<EPharmacyCompone
             (applicationContext as BaseMainApplication)
                 .baseAppComponent
         ).build()
+
 }

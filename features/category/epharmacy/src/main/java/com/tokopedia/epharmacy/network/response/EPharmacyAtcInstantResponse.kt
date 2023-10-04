@@ -72,7 +72,7 @@ data class EPharmacyAtcInstantResponse(
                             val metadata: Metadata?,
                             @SerializedName("price")
                             @Expose
-                            val price: String?,
+                            val price: Int?,
                             @SerializedName("product_id")
                             @Expose
                             val productId: String?,

@@ -183,8 +183,20 @@ class EPharmacyOrderDetailFragment : BaseDaggerFragment(), EPharmacyListener {
         RouteManager.route(context, appUrl)
     }
 
-    private fun onSecondaryButtonClick(secondaryButtonData: List<EPharmacyOrderDetailResponse.GetConsultationOrderDetail.Cta?>) {
+    private fun onSecondaryButtonClick(secondaryButtonData: List<EPharmacyOrderDetailResponse.GetConsultationOrderDetail.EPharmacyOrderButtonModel?>) {
+        showSecondaryActionButtonBottomSheet(secondaryButtonData, object : EPharmacySecondaryActionButtonBottomSheet.ActionButtonClickListener {
+            override fun onActionButtonClicked(isFromPrimaryButton: Boolean, button: EPharmacyOrderDetailResponse.GetConsultationOrderDetail.EPharmacyOrderButtonModel?) {
 
+            }
+        })
+    }
+
+    private fun showSecondaryActionButtonBottomSheet(secondaryActionButtons: List<EPharmacyOrderDetailResponse.GetConsultationOrderDetail.EPharmacyOrderButtonModel?>, actionButtonClickListener: EPharmacySecondaryActionButtonBottomSheet.ActionButtonClickListener?) {
+        context?.let {
+            val bottomSheet = EPharmacySecondaryActionButtonBottomSheet(it, actionButtonClickListener)
+            bottomSheet.setSecondaryActionButtons(secondaryActionButtons)
+            bottomSheet.show(childFragmentManager)
+        }
     }
 
     private fun updateUi() {

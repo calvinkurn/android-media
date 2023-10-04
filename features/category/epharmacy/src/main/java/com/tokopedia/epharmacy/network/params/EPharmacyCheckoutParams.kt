@@ -9,7 +9,7 @@ data class EPharmacyCheckoutParams(
     var shopId: String = "",
     var note: String = "",
     var flowType: String? = "INSTANT",
-    var checkoutBusinessType: Int? = 0,
+    var checkoutBusinessType: Int = 49,
     var checkoutDataType: String? = "ECONSUL_ATC_INSTANT",
     var price: String? = "",
     var source: String = "econsulcheckout",

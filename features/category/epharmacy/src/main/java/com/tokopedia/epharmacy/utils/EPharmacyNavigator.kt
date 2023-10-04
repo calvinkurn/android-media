@@ -2,6 +2,7 @@ package com.tokopedia.epharmacy.utils
 
 import android.app.Activity
 import android.content.Intent
+import androidx.fragment.app.FragmentManager
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.common_epharmacy.EPHARMACY_CONSULTATION_RESULT_EXTRA
@@ -9,7 +10,9 @@ import com.tokopedia.common_epharmacy.EPHARMACY_REDIRECT_CART_RESULT_CODE
 import com.tokopedia.common_epharmacy.EPHARMACY_REDIRECT_CHECKOUT_RESULT_CODE
 import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult
 import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsGroupResponse
+import com.tokopedia.epharmacy.R
 import com.tokopedia.epharmacy.network.response.EPharmacyInitiateConsultationResponse
+import com.tokopedia.epharmacy.ui.fragment.EPharmacyQuantityChangeFragment
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.webview.ext.encode
 
@@ -71,5 +74,10 @@ internal object EPharmacyNavigator {
         } else {
             RouteManager.route(activity, appLink)
         }
+    }
+
+    fun navigateToQuantityBottomSheet(childFragmentManager: FragmentManager) {
+        childFragmentManager.beginTransaction().replace(R.id.ep_frame_content,
+            EPharmacyQuantityChangeFragment.newInstance()).commit()
     }
 }

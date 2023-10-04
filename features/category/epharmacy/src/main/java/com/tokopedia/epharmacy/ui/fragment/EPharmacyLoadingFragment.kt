@@ -29,6 +29,7 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
+import com.tokopedia.epharmacy.R as epharmacyR
 
 class EPharmacyLoadingFragment : BaseDaggerFragment(), EPharmacyListener {
 
@@ -95,8 +96,8 @@ class EPharmacyLoadingFragment : BaseDaggerFragment(), EPharmacyListener {
 
     private fun getData() {
         setDataLoading(
-            getString(com.tokopedia.epharmacy.R.string.epharmacy_chat_loading_title),
-            getString(com.tokopedia.epharmacy.R.string.epharmacy_chat_loading_description)
+            getString(epharmacyR.string.epharmacy_chat_loading_title),
+            getString(epharmacyR.string.epharmacy_chat_loading_description)
         )
         if (verifyRunnable != null) { mainHandler.postDelayed(verifyRunnable!!, DELAY_MILLIS_VERIFY) }
     }
@@ -128,11 +129,10 @@ class EPharmacyLoadingFragment : BaseDaggerFragment(), EPharmacyListener {
 
     private fun handleFail() {
         setErrorData(
-            getString(com.tokopedia.epharmacy.R.string.epharmacy_chat_loading_error_title),
-            getString(com.tokopedia.epharmacy.R.string.epharmacy_chat_loading_error_description),
-            getString(com.tokopedia.epharmacy.R.string.epharmacy_chat_loading_error_cta_text)
+            getString(epharmacyR.string.epharmacy_chat_loading_error_title),
+            getString(epharmacyR.string.epharmacy_chat_loading_error_description),
+            getString(epharmacyR.string.epharmacy_chat_loading_error_cta_text)
         )
-        return
     }
 
     private fun setErrorData(title: String, description: String, ctaText: String) {

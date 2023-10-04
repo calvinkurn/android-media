@@ -35,6 +35,7 @@ object EPharmacyAtcQuery : GqlQueryInterface {
                       message
                       custom_response
                       cart_groups {
+                        cart_group_id
                         carts {
                           cart_id
                           success

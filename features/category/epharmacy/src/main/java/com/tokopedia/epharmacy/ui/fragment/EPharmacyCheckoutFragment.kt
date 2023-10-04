@@ -16,6 +16,7 @@ import com.tokopedia.epharmacy.network.params.EPharmacyCheckoutParams
 import com.tokopedia.epharmacy.network.response.EPharmacyAtcInstantResponse
 import com.tokopedia.epharmacy.network.response.EPharmacyCartGeneralCheckoutResponse
 import com.tokopedia.epharmacy.utils.CategoryKeys.Companion.EPHARMACY_CHECKOUT_PAGE
+import com.tokopedia.epharmacy.utils.DEFAULT_ZERO_VALUE
 import com.tokopedia.epharmacy.utils.EPHARMACY_ENABLER_ID
 import com.tokopedia.epharmacy.utils.EPHARMACY_GROUP_ID
 import com.tokopedia.epharmacy.utils.EPHARMACY_TOKO_CONSULTATION_ID
@@ -47,8 +48,8 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
     private var ePharmacyData: Group? = null
     private var ePharmacyGlobalError: GlobalError? = null
 
-    private var tConsultationId = 0L
-    private var enablerId = 0L
+    private var tConsultationId = DEFAULT_ZERO_VALUE
+    private var enablerId = DEFAULT_ZERO_VALUE
     private var groupId = String.EMPTY
 
     private var ePharmacyCheckoutParams = EPharmacyCheckoutParams(ePharmacyCheckoutCartGroup = null)
@@ -254,8 +255,8 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
 
     private fun onSuccessCartCheckout(result: Success<EPharmacyCartGeneralCheckoutResponse>) {
         when (result.data.checkout?.checkoutData?.success) {
-            0 -> showToast(TYPE_ERROR, result.data.checkout?.checkoutData?.message.orEmpty())
-            1 -> successCheckout(result.data.checkout?.checkoutData?.cartGeneralResponse?.redirectUrl)
+            EPharmacyCartGeneralCheckoutResponse.ERROR -> showToast(TYPE_ERROR, result.data.checkout?.checkoutData?.message.orEmpty())
+            EPharmacyCartGeneralCheckoutResponse.SUCCESS -> successCheckout(result.data.checkout?.checkoutData?.cartGeneralResponse?.redirectUrl)
         }
     }
 

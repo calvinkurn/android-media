@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import com.tokopedia.epharmacy.R
 import com.tokopedia.epharmacy.ui.fragment.EPharmacyQuantityChangeFragment
+import com.tokopedia.epharmacy.utils.EPharmacyNavigator
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
 class EPharmacyComponentBottomSheet : BottomSheetUnify() {
@@ -30,8 +31,11 @@ class EPharmacyComponentBottomSheet : BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
         setUpTitle()
         if(savedInstanceState == null) {
-            childFragmentManager.beginTransaction().replace(R.id.ep_frame_content,
-                EPharmacyQuantityChangeFragment.newInstance()).commit()
+            when (arguments?.getString(COMPONENT_NAME)) {
+                TYPE_QUANTITY_CHANGE -> {
+                    EPharmacyNavigator.navigateToQuantityBottomSheet(childFragmentManager)
+                }
+            }
         }
     }
 
@@ -45,6 +49,8 @@ class EPharmacyComponentBottomSheet : BottomSheetUnify() {
     companion object {
 
         private const val COMPONENT_NAME = "ComponentName"
+        private const val TYPE_QUANTITY_CHANGE = "quantity-change"
+        private const val TYPE_SECONDARY_ACTIONS = "secondary-actions"
 
         fun newInstance(componentName: String): EPharmacyComponentBottomSheet {
             return EPharmacyComponentBottomSheet().apply {

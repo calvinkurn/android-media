@@ -11,8 +11,8 @@ data class EPharmacyOrderDetailResponse(
     val getConsultationOrderDetail: GetConsultationOrderDetail?
 ) {
     data class OrderButtonData(
-        val cta: List<GetConsultationOrderDetail.Cta?>?,
-        val triDots: List<GetConsultationOrderDetail.Cta?>?
+        val cta: List<GetConsultationOrderDetail.EPharmacyOrderButtonModel?>?,
+        val triDots: List<GetConsultationOrderDetail.EPharmacyOrderButtonModel?>?
     ){
         companion object {
             private const val STRING_BUTTON_TYPE_ALTERNATE = "alternate"
@@ -46,17 +46,17 @@ data class EPharmacyOrderDetailResponse(
     data class GetConsultationOrderDetail(
         @SerializedName("cta")
         @Expose
-        val cta: List<Cta?>?,
+        val cta: List<EPharmacyOrderButtonModel?>?,
         @SerializedName("data")
         @Expose
         val ePharmacyOrderData: EPharmacyOrderData?,
         @SerializedName("tri_dots")
         @Expose
-        val triDots: List<Cta?>?,
+        val triDots: List<EPharmacyOrderButtonModel?>?,
 
         val orderButtonData: OrderButtonData? = OrderButtonData(cta, triDots)
     ) {
-        data class Cta(
+        data class EPharmacyOrderButtonModel(
             @SerializedName("action_type")
             @Expose
             val actionType: String?,
@@ -71,10 +71,7 @@ data class EPharmacyOrderDetailResponse(
             val type: String?,
             @SerializedName("variant_color")
             @Expose
-            val variantColor: String?,
-            @SerializedName("web_url")
-            @Expose
-            val webUrl: String?
+            val variantColor: String?
         )
 
         data class EPharmacyOrderData(

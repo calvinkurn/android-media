@@ -24,6 +24,7 @@ import com.tokopedia.epharmacy.network.response.EPharmacyOrderDetailResponse
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.unifyprinciples.stringToUnifyColor
 import com.tokopedia.usecase.BuildConfig
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -287,7 +288,7 @@ object EPharmacyUtils {
     }
 
     fun getTotalAmountFmt(subTotal: Double?): String {
-        return "Rp$subTotal"
+        return CurrencyFormatUtil.convertPriceValueToIdrFormat(subTotal?.toLong() ?: 0L, false)
     }
 
     fun getChatDokterNote(context: Context?, operatingSchedule: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ConsultationSource.OperatingSchedule?, note: String?): String {

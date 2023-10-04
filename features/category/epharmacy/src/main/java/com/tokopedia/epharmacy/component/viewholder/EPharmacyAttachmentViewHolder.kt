@@ -37,6 +37,7 @@ import com.tokopedia.unifycomponents.QuantityEditorUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.epharmacy.R as epharmacyR
 
 class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmacyListener: EPharmacyListener?) : AbstractViewHolder<EPharmacyAttachmentDataModel?>(view) {
 
@@ -126,7 +127,7 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
 
             quantityChangedLayout?.show()
             initialProductQuantity.text = java.lang.String.format(
-                itemView.context.getString(com.tokopedia.epharmacy.R.string.epharmacy_barang_quantity),
+                itemView.context.getString(epharmacyR.string.epharmacy_barang_quantity),
                 dataModel?.quantityChangedModel?.initialQty.toString()
             )
             productQuantityType.text = itemView.context.getString(R.string.epharmacy_barang)
@@ -140,14 +141,14 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
             dataModel?.quantityChangedModel?.subTotal = subtotal
             totalAmount.displayTextOrHide(EPharmacyUtils.getTotalAmountFmt(subtotal))
             totalQuantity.displayTextOrHide(java.lang.String.format(
-                itemView.context.getString(com.tokopedia.epharmacy.R.string.epharmacy_subtotal_quantity_change),
+                itemView.context.getString(epharmacyR.string.epharmacy_subtotal_quantity_change),
                 dataModel?.quantityChangedModel?.currentQty.toString()
             ))
             quantityChangedEditor.setValueChangedListener { newValue, _, _ ->
                 ePharmacyListener.onQuantityChanged()
                 if(newValue == 1){
                     ePharmacyListener.onToast(Toaster.TYPE_ERROR,
-                        itemView.context.resources?.getString(com.tokopedia.epharmacy.R.string.epharmacy_minimum_quantity_reached) ?: "")
+                        itemView.context.resources?.getString(epharmacyR.string.epharmacy_minimum_quantity_reached) ?: "")
                     quantityChangedEditor.subtractButton.isEnabled = false
                 }else if(newValue == dataModel?.quantityChangedModel?.recommendedQty){
                     quantityChangedEditor.addButton.isEnabled = false
@@ -174,7 +175,7 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
 
     private fun renderError() {
         if (dataModel?.isError == true && dataModel?.showUploadWidget == true && EPharmacyUtils.checkIsError(dataModel)) {
-            containerUploadPrescription.setBackgroundResource(com.tokopedia.epharmacy.R.drawable.epharmacy_bg_rounded_red)
+            containerUploadPrescription.setBackgroundResource(epharmacyR.drawable.epharmacy_bg_rounded_red)
             if (dataModel?.isFirstError == true) {
                 chatDokterUploadLayout.animate()
                     .translationX(VIBRATION_ANIMATION_TRANSLATION_X.toFloat())
