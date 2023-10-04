@@ -181,6 +181,9 @@ object ProductDetailConstant {
     const val ERROR_TYPE_KEY = "error_type"
     const val EXTRAS_KEY = "extras"
     const val PDP_LOG_TAG = "BUYER_FLOW_PDP"
+    const val IS_FROM_CACHE = "isFromCache"
+    const val CACHE_FIRST_THEN_CLOUD = "cacheFirstThenCloud"
+    const val IS_CAMPAIGN = "isCampaign"
 
     const val DEFAULT_ATC_MAX_ORDER = 100
     const val DEFAULT_MIN_QTY = 1

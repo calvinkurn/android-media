@@ -6,6 +6,7 @@ import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailLayout
 import com.tokopedia.product.detail.common.data.model.rates.TokoNowParam
@@ -83,8 +84,12 @@ class GetPdpLayoutUseCaseTest {
                 gqlUseCase.executeOnBackground()
             } returns createMockGraphqlResponse(ERROR_TYPE.RUNTIME)
 
-            thrown.expect(RuntimeException::class.java)
+            useCaseTest.onError = {
+                Assert.assertTrue(it is MessageErrorException)
+            }
+
             useCaseTest.executeOnBackground()
+
             coVerify {
                 gqlUseCase.clearRequest()
                 gqlUseCase.addRequest(any())
@@ -100,7 +105,10 @@ class GetPdpLayoutUseCaseTest {
                 gqlUseCase.executeOnBackground()
             } returns createMockGraphqlResponse(ERROR_TYPE.TOBACCO)
 
-            thrown.expect(TobacoErrorException::class.java)
+            useCaseTest.onError = {
+                Assert.assertTrue(it is TobacoErrorException)
+            }
+
             useCaseTest.executeOnBackground()
 
             coVerify {
@@ -129,7 +137,7 @@ class GetPdpLayoutUseCaseTest {
             gqlUseCase.executeOnBackground()
         } returns createMockGraphqlResponse(ERROR_TYPE.SUCCESS)
 
-        useCaseTestLayoutId.requestParams = GetPdpLayoutUseCase.createParams("", "", "", "", "122", UserLocationRequest(), "", TokoNowParam())
+        useCaseTestLayoutId.requestParams = GetPdpLayoutUseCase.createParams("", "", "", "", "122", UserLocationRequest(), "", TokoNowParam(), true)
         useCaseTestLayoutId.executeOnBackground()
 
         val layoutId = useCaseTestLayoutId.requestParams.getString(ProductDetailCommonConstant.PARAM_LAYOUT_ID, "")
