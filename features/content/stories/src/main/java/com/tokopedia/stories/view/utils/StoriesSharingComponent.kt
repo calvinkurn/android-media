@@ -49,7 +49,7 @@ class StoriesSharingComponent(rootView: View) {
                 pageId = storyId,
                 feature = "share"
             )
-            setShareText(getShareDescription(data.metadata.ogDescription))
+            setShareText(getShareDescription(data.shareText))
             setOnDismissListener { mListener?.onDismissEvent(false, this@StoriesSharingComponent) }
             setShowListener { mListener?.onShowSharing(this@StoriesSharingComponent) }
         }.also {
