@@ -5185,7 +5185,13 @@ open class ShopPageHomeFragment :
         tabName: String
     ) {
         if (tabCount > 1) {
-            shopPageHomeTracking.sendShowcaseNavigationShowcaseWithinTabClick(tabName, selectedShowcase, shopId, userId)
+            shopPageHomeTracking.sendShowcaseNavigationShowcaseWithinTabClick(
+                uiModel.widgetId,
+                tabName,
+                selectedShowcase,
+                shopId,
+                userId
+            )
         } else {
             shopPageHomeTracking.sendShowcaseNavigationBannerWidgetShowcaseClick(shopId, userId, uiModel, selectedShowcase)
         }

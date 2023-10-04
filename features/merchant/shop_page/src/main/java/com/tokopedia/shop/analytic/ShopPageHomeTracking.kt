@@ -3599,6 +3599,7 @@ class ShopPageHomeTracking(
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4148
     // Tracker ID: 45949
     fun sendShowcaseNavigationShowcaseWithinTabClick(
+        widgetId: String,
         tabName: String,
         showcase: Showcase,
         shopId: String,
@@ -3608,7 +3609,7 @@ class ShopPageHomeTracking(
         val bundledShowcase = Bundle().apply {
             putString(CREATIVE_NAME, "")
             putInt(CREATIVE_SLOT, 0)
-            putString(ITEM_ID, showcase.id)
+            putString(ITEM_ID, widgetId)
             putString(ITEM_NAME, showcase.name)
         }
 
