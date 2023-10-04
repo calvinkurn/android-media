@@ -582,7 +582,11 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                     uohItemAdapter.appendPmsButton(data) { position ->
                         binding?.rvOrderList?.smoothScrollToPosition(position)
                     }
+                } else {
+                    uohItemAdapter.removePmsButton()
                 }
+            } else {
+                uohItemAdapter.removePmsButton()
             }
         }
     }
@@ -1873,7 +1877,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
 
             if (!paramUohOrder.hasActiveFilter()) {
                 uohListViewModel.getUohPmsCounterResult.value?.let {
-                    if (it is Success) {
+                    if (it is Success && it.data.notifications.buyerOrderStatus.paymentStatus > 0) {
                         val data = UohTypeData(dataObject = it.data, typeLayout = UohConsts.TYPE_PMS_BUTTON)
                         uohItemAdapter.appendPmsButton(data) { position ->
                             binding?.rvOrderList?.smoothScrollToPosition(position)
