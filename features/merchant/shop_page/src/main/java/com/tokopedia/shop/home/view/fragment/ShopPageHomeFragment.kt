@@ -245,7 +245,7 @@ import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 import kotlin.math.min
 
-open class ShopPageHomeFragmentReimagineReimagineReimagine :
+open class ShopPageHomeFragment :
     BaseListFragment<Visitable<*>, AdapterTypeFactory>(),
     ShopHomeDisplayWidgetListener,
     ShopHomeVoucherViewHolder.ShopHomeVoucherViewHolderListener,
@@ -316,7 +316,7 @@ open class ShopPageHomeFragmentReimagineReimagineReimagine :
             shopAttribution: String,
             shopRef: String,
             isEnableDirectPurchase: Boolean
-        ): ShopPageHomeFragmentReimagineReimagineReimagine {
+        ): ShopPageHomeFragment {
             val bundle = Bundle()
             bundle.putString(KEY_SHOP_ID, shopId)
             bundle.putBoolean(KEY_IS_OFFICIAL_STORE, isOfficialStore)
@@ -325,7 +325,7 @@ open class ShopPageHomeFragmentReimagineReimagineReimagine :
             bundle.putString(KEY_SHOP_ATTRIBUTION, shopAttribution)
             bundle.putString(KEY_SHOP_REF, shopRef)
             bundle.putBoolean(KEY_ENABLE_SHOP_DIRECT_PURCHASE, isEnableDirectPurchase)
-            return ShopPageHomeFragmentReimagineReimagineReimagine().apply {
+            return ShopPageHomeFragment().apply {
                 arguments = bundle
             }
         }
@@ -830,7 +830,7 @@ open class ShopPageHomeFragmentReimagineReimagineReimagine :
                         if (!ShopUtil.isExceptionIgnored(throwable)) {
                             ShopUtil.logShopPageP2BuyerFlowAlerting(
                                 tag = SHOP_PAGE_BUYER_FLOW_TAG,
-                                functionName = this@ShopPageHomeFragmentReimagineReimagineReimagine::observeShopHomeWidgetContentData.name,
+                                functionName = this@ShopPageHomeFragment::observeShopHomeWidgetContentData.name,
                                 liveDataName = ShopHomeViewModel::shopHomeWidgetContentData.name,
                                 userId = userId,
                                 shopId = shopId,
@@ -1874,7 +1874,7 @@ open class ShopPageHomeFragmentReimagineReimagineReimagine :
                 .shopPageHomeModule(ShopPageHomeModule())
                 .shopComponent(ShopComponentHelper().getComponent(application, this))
                 .build()
-                .inject(this@ShopPageHomeFragmentReimagineReimagineReimagine)
+                .inject(this@ShopPageHomeFragment)
         }
     }
 
@@ -4571,7 +4571,7 @@ open class ShopPageHomeFragmentReimagineReimagineReimagine :
 
     private fun setupPlayWidget() {
         playWidgetCoordinator = PlayWidgetCoordinator(this, autoHandleLifecycleMethod = false).apply {
-            setListener(this@ShopPageHomeFragmentReimagineReimagineReimagine)
+            setListener(this@ShopPageHomeFragment)
         }
     }
 
@@ -5268,7 +5268,7 @@ open class ShopPageHomeFragmentReimagineReimagineReimagine :
         return isOverrideTheme()
     }
 
-    override fun getShopPageHomeFragment(): ShopPageHomeFragmentReimagineReimagineReimagine {
+    override fun getShopPageHomeFragment(): ShopPageHomeFragment {
         return this
     }
 

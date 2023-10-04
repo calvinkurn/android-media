@@ -98,7 +98,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_SHARE_BOTT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_SHARE_BOTTOM_SHEET_PAGE_NAME
 import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
-import com.tokopedia.shop.campaign.view.fragment.ShopPageCampaignFragmentReimagineReimagineReimagine
+import com.tokopedia.shop.campaign.view.fragment.ShopPageCampaignFragment
 import com.tokopedia.shop.common.constant.ShopHomeType
 import com.tokopedia.shop.common.constant.ShopModerateRequestStatusCode
 import com.tokopedia.shop.common.constant.ShopPageConstant
@@ -136,7 +136,7 @@ import com.tokopedia.shop.common.view.viewmodel.ShopPageMiniCartSharedViewModel
 import com.tokopedia.shop.common.view.viewmodel.ShopProductFilterParameterSharedViewModel
 import com.tokopedia.shop.databinding.ShopHeaderFragmentBinding
 import com.tokopedia.shop.databinding.WidgetSellerMigrationBottomSheetHasPostBinding
-import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragmentReimagineReimagineReimagine
+import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderTabModel
 import com.tokopedia.shop.pageheader.di.component.DaggerShopPageHeaderComponent
@@ -2084,7 +2084,7 @@ class ShopPageReimagineHeaderFragment :
         shopPageFeedTabSharedViewModel?.clearCache()
 
         val shopPageHomeFragment: Fragment? = viewPagerAdapterHeader?.getRegisteredFragment(TAB_POSITION_HOME)
-        if (shopPageHomeFragment is ShopPageHomeFragmentReimagineReimagineReimagine) {
+        if (shopPageHomeFragment is ShopPageHomeFragment) {
             shopPageHomeFragment.clearCache()
         }
         isRefresh = true
@@ -3050,8 +3050,8 @@ class ShopPageReimagineHeaderFragment :
             val chips = ArrayList(
                 listShopPageTabModel.mapIndexed { index, shopPageHeaderTabModel ->
                     val isSelected = (index == tabLayout?.selectedTabPosition)
-                    val thumbnail = if (listShopPageTabModel[index].tabFragment is ShopPageCampaignFragmentReimagineReimagineReimagine) {
-                        (listShopPageTabModel[index].tabFragment as? ShopPageCampaignFragmentReimagineReimagineReimagine)
+                    val thumbnail = if (listShopPageTabModel[index].tabFragment is ShopPageCampaignFragment) {
+                        (listShopPageTabModel[index].tabFragment as? ShopPageCampaignFragment)
                             ?.shopCampaignTabAdapter?.getCampaignBanner()?.data?.imageUrl.orEmpty()
                     } else {
                         String.EMPTY

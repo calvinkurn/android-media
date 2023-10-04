@@ -48,7 +48,7 @@ import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE
 import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
-import com.tokopedia.shop.campaign.view.fragment.ShopPageCampaignFragmentReimagineReimagineReimagine
+import com.tokopedia.shop.campaign.view.fragment.ShopPageCampaignFragment
 import com.tokopedia.shop.common.constant.ShopHomeType
 import com.tokopedia.shop.common.data.model.HomeLayoutData
 import com.tokopedia.shop.common.data.model.ShopPageGetDynamicTabResponse
@@ -59,7 +59,7 @@ import com.tokopedia.shop.common.view.interfaces.InterfaceShopPageHeader
 import com.tokopedia.shop.common.view.listener.InterfaceShopPageClickScrollToTop
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.ShopHeaderFragmentTabContentBinding
-import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragmentReimagineReimagineReimagine
+import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel.Companion.mapperForShopShowCase
 import com.tokopedia.shop.pageheader.di.component.DaggerShopPageHeaderComponent
@@ -614,7 +614,7 @@ class ShopPageHeaderFragmentTabContentWrapper :
         return tabData?.let {
             when (it.name) {
                 ShopPageHeaderTabName.HOME -> {
-                    ShopPageHomeFragmentReimagineReimagineReimagine.createInstance(
+                    ShopPageHomeFragment.createInstance(
                         shopId,
                         shopPageHeaderDataModel?.isOfficial ?: false,
                         shopPageHeaderDataModel?.isGoldMerchant ?: false,
@@ -717,7 +717,7 @@ class ShopPageHeaderFragmentTabContentWrapper :
     private fun createCampaignTabFragment(
         tabData: ShopPageGetDynamicTabResponse.ShopPageGetDynamicTab.TabData
     ): Fragment {
-        return ShopPageCampaignFragmentReimagineReimagineReimagine.createInstance(shopId).apply {
+        return ShopPageCampaignFragment.createInstance(shopId).apply {
             setCampaignTabListBackgroundColor(tabData.listBackgroundColor)
             setListPatternImage(tabData.bgImages)
             setIsDarkTheme(tabData.isDark)

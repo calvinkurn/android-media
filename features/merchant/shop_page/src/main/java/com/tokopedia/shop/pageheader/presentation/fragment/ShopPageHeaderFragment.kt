@@ -130,7 +130,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_SHARE_BOTT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_SHARE_BOTTOM_SHEET_PAGE_NAME
 import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
-import com.tokopedia.shop.campaign.view.fragment.ShopPageCampaignFragmentReimagineReimagineReimagine
+import com.tokopedia.shop.campaign.view.fragment.ShopPageCampaignFragment
 import com.tokopedia.shop.common.constant.ShopHomeType
 import com.tokopedia.shop.common.constant.ShopModerateRequestStatusCode
 import com.tokopedia.shop.common.constant.ShopPageConstant
@@ -169,7 +169,7 @@ import com.tokopedia.shop.common.view.viewmodel.ShopProductFilterParameterShared
 import com.tokopedia.shop.databinding.NewShopPageMainBinding
 import com.tokopedia.shop.databinding.ShopPageHeaderFragmentContentLayoutBinding
 import com.tokopedia.shop.databinding.WidgetSellerMigrationBottomSheetHasPostBinding
-import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragmentReimagineReimagineReimagine
+import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel.Companion.mapperForShopShowCase
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderTabModel
@@ -2037,11 +2037,11 @@ class ShopPageHeaderFragment :
     private fun setShopLayoutDataToSelectedTab() {
         val shopLayoutData = getShopLayoutDataBasedOnSelectedTab()
         when (val selectedFragment = getSelectedFragmentInstance()) {
-            is ShopPageCampaignFragmentReimagineReimagineReimagine -> {
+            is ShopPageCampaignFragment -> {
                 selectedFragment.setListWidgetLayoutData(shopLayoutData)
             }
 
-            is ShopPageHomeFragmentReimagineReimagineReimagine -> {
+            is ShopPageHomeFragment -> {
                 selectedFragment.setListWidgetLayoutData(shopLayoutData)
             }
 
@@ -2255,7 +2255,7 @@ class ShopPageHeaderFragment :
         shopPageHeaderDataModel?.listDynamicTabData?.forEach {
             when (it.name) {
                 ShopPageHeaderTabName.HOME -> {
-                    ShopPageHomeFragmentReimagineReimagineReimagine.createInstance(
+                    ShopPageHomeFragment.createInstance(
                         shopId,
                         shopPageHeaderDataModel?.isOfficial ?: false,
                         shopPageHeaderDataModel?.isGoldMerchant ?: false,
@@ -2371,7 +2371,7 @@ class ShopPageHeaderFragment :
     private fun createCampaignTabFragment(
         tabData: ShopPageGetDynamicTabResponse.ShopPageGetDynamicTab.TabData
     ): Fragment {
-        return ShopPageCampaignFragmentReimagineReimagineReimagine.createInstance(shopId).apply {
+        return ShopPageCampaignFragment.createInstance(shopId).apply {
             setCampaignTabListBackgroundColor(tabData.listBackgroundColor)
             setListPatternImage(tabData.bgImages)
             setIsDarkTheme(tabData.isDark)
@@ -2384,7 +2384,7 @@ class ShopPageHeaderFragment :
 
     private fun getHomeFragment(): Fragment? {
         return if (isShowHomeTab()) {
-            ShopPageHomeFragmentReimagineReimagineReimagine.createInstance(
+            ShopPageHomeFragment.createInstance(
                 shopId,
                 shopPageHeaderDataModel?.isOfficial ?: false,
                 shopPageHeaderDataModel?.isGoldMerchant ?: false,
@@ -2487,7 +2487,7 @@ class ShopPageHeaderFragment :
 
         val shopPageHomeFragment: Fragment? =
             viewPagerAdapterHeader?.getRegisteredFragment(TAB_POSITION_HOME)
-        if (shopPageHomeFragment is ShopPageHomeFragmentReimagineReimagineReimagine) {
+        if (shopPageHomeFragment is ShopPageHomeFragment) {
             shopPageHomeFragment.clearCache()
         }
         isRefresh = true
@@ -3617,8 +3617,8 @@ class ShopPageHeaderFragment :
             val chips = ArrayList(
                 listShopPageTabModel.mapIndexed { index, shopPageHeaderTabModel ->
                     val isSelected = (index == tabLayout?.selectedTabPosition)
-                    val thumbnail = if (listShopPageTabModel[index].tabFragment is ShopPageCampaignFragmentReimagineReimagineReimagine) {
-                        (listShopPageTabModel[index].tabFragment as ShopPageCampaignFragmentReimagineReimagineReimagine)
+                    val thumbnail = if (listShopPageTabModel[index].tabFragment is ShopPageCampaignFragment) {
+                        (listShopPageTabModel[index].tabFragment as ShopPageCampaignFragment)
                             .shopCampaignTabAdapter.getCampaignBanner()?.data?.imageUrl.orEmpty()
                     } else {
                         String.EMPTY
