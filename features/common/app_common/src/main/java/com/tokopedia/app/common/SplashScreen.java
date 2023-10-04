@@ -203,9 +203,18 @@ public class SplashScreen extends AppCompatActivity {
     private Boolean isUnderMinVersion(String version) {
         try {
             String minVersionString = version.replaceAll("[^0-9]", "");
-            int minVersionInt = StringExtKt.toIntOrZero(minVersionString);
             String currentVersionString = GlobalConfig.VERSION_NAME.replaceAll("[^0-9]", "");
+            int minVersionInt = StringExtKt.toIntOrZero(minVersionString);
             int currentVersionInt = StringExtKt.toIntOrZero(currentVersionString);
+            if (minVersionString.length() < currentVersionString.length()) {
+                int differenceLength = currentVersionString.length() - minVersionString.length();
+                minVersionInt = minVersionInt * ((int)Math.pow(10, differenceLength));
+            }
+
+            else if (minVersionString.length() > currentVersionString.length()) {
+                int differenceLength = currentVersionString.length() - minVersionString.length();
+                currentVersionInt = currentVersionInt * ((int)Math.pow(10, differenceLength));
+            }
             return currentVersionInt < minVersionInt;
         } catch (Exception e) {
             return false;
