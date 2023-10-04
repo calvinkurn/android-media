@@ -171,15 +171,15 @@ class FeedMainViewModel @AssistedInject constructor(
         }
     }
 
-    fun onPostDataLoaded(isLoaded: Boolean) {
-        _swipeOnBoardingState.update {
-            it.copy(onDataLoaded = isLoaded)
-        }
-    }
-
     fun setReadyToShowOnboarding() {
         _swipeOnBoardingState.update {
             it.copy(isReadyToShow = true)
+        }
+    }
+
+    fun setDataEligibleForOnboarding(isEligible: Boolean) {
+        _swipeOnBoardingState.update {
+            it.copy(isDataEligibleForOnboarding = isEligible)
         }
     }
 

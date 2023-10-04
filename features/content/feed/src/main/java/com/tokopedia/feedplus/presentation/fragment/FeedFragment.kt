@@ -416,7 +416,10 @@ class FeedFragment :
             override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
                 when (event) {
                     Lifecycle.Event.ON_RESUME -> {
-                        if (checkResume(isOnResume = true)) resumeCurrentVideo()
+                        if (checkResume(isOnResume = true)) {
+                            resumeCurrentVideo()
+                            setDataEligibleForOnboarding()
+                        }
                     }
                     Lifecycle.Event.ON_PAUSE -> {
                         pauseCurrentVideo()
@@ -1215,7 +1218,8 @@ class FeedFragment :
                         }
                         feedPostViewModel.fetchTopAdsData()
                     }
-                    feedMainViewModel.onPostDataLoaded(it.data.items.isNotEmpty())
+
+                    setDataEligibleForOnboarding()
                     hideLoading()
                 }
                 is Fail -> {
@@ -2021,6 +2025,13 @@ class FeedFragment :
                 else -> containerBottomAction.hide()
             }
         }
+    }
+
+    private fun setDataEligibleForOnboarding() {
+        /** TODO: check if current fragment tab is active before calling the method below */
+        feedMainViewModel.setDataEligibleForOnboarding(
+            feedPostViewModel.determinePostDataEligibilityForOnboarding(data?.isFollowingTab == true)
+        )
     }
 
     companion object {
