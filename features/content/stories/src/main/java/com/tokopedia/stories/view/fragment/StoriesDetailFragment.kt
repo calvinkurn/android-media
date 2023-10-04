@@ -255,6 +255,7 @@ class StoriesDetailFragment @Inject constructor(
             return
         }
 
+        mAdapter.clearAllItems()
         mAdapter.setItems(state.groupHeader)
         mAdapter.notifyItemRangeInserted(mAdapter.itemCount, state.groupHeader.size)
         binding.rvStoriesCategory.scrollToPosition(state.selectedGroupPosition)
@@ -282,7 +283,7 @@ class StoriesDetailFragment @Inject constructor(
 
         storiesDetailsTimer(state)
 
-        if ((currentItem.isSameContent) && currentItem.status != StoryStatus.Removed) return
+        if (currentItem.isSameContent) return
 
         renderAuthor(currentItem)
         renderNudge(currentItem)
