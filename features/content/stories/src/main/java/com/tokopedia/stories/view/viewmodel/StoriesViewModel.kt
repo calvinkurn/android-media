@@ -90,11 +90,7 @@ class StoriesViewModel @AssistedInject constructor(
             return if (groupPosition < 0 || detailPosition < 0) {
                 StoriesDetailItem()
             } else {
-                when {
-                    groupPosition >= _storiesMainData.value.groupItems.size -> StoriesDetailItem()
-                    detailPosition >= _storiesMainData.value.groupItems[groupPosition].detail.detailItems.size -> StoriesDetailItem()
-                    else -> _storiesMainData.value.groupItems[groupPosition].detail.detailItems[detailPosition]
-                }
+                _storiesMainData.value.groupItems[groupPosition].detail.detailItems[detailPosition]
             }
         }
 
