@@ -176,16 +176,23 @@ open class SomListOrderViewHolder(
             btnQuickAction?.setOnClickListener { onQuickActionButtonClicked(element) }
 
             if (element.multiSelectEnabled) {
-                if (firstButton.isRequestOrConfirmPickup) {
-                    btnQuickAction?.isEnabled = false
-                    btnQuickAction?.show()
-                } else {
-                    btnQuickAction?.gone()
-                }
+                showQuickButtonOnBulk(firstButton, btnQuickAction)
             } else {
                 btnQuickAction?.isEnabled = true
                 btnQuickAction?.show()
             }
+        }
+    }
+
+    private fun showQuickButtonOnBulk(
+        firstButton: SomListOrderUiModel.Button,
+        buttonView: UnifyButton?
+    ) {
+        if (firstButton.isRequestOrConfirmPickup) {
+            buttonView?.isEnabled = false
+            buttonView?.show()
+        } else {
+            buttonView?.gone()
         }
     }
 
