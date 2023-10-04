@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools"
     android:paddingTop="12dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -15,16 +15,19 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tf_name"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textColor="@color/Unify_NN950"
-        android:maxEms="13"
-        android:maxLines="1"
+        android:layout_marginEnd="32dp"
         android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/Unify_NN950"
         app:layout_constraintBottom_toTopOf="@+id/tf_description"
+        app:layout_constraintEnd_toStartOf="@+id/tf_price"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/cu_addon"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="display_2" />
+        app:typographyType="display_2"
+        tool:text="@string/lorem" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tf_description"
@@ -33,6 +36,7 @@
         android:layout_marginTop="4dp"
         android:layout_marginEnd="26dp"
         android:textColor="@color/Unify_NN600"
+        tool:text="@string/lorem"
         app:layout_constraintBottom_toBottomOf="@+id/cu_addon"
         app:layout_constraintEnd_toStartOf="@+id/tf_price"
         app:layout_constraintStart_toEndOf="@+id/cu_addon"
@@ -58,7 +62,8 @@
         app:layout_constraintBottom_toTopOf="@+id/tf_slashed_price"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tf_name"
-        app:typographyType="display_2" />
+        app:typographyType="display_2"
+        tool:text="Rp.500.000" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tf_slashed_price"
