@@ -4324,7 +4324,7 @@ class ShopPageHomeTracking(
             }
 
             putParcelableArrayList(ITEMS, items)
-            putString(PRODUCT_ID, "")
+            putString(PRODUCT_ID, carouselData.firstOrNull()?.id.orEmpty())
             putString(SHOP_ID, shopId)
             putString(USER_ID, userId)
         }
@@ -4332,15 +4332,21 @@ class ShopPageHomeTracking(
     }
 
     private fun createTerlarisItemMap(trackerModel: ShopHomeTerlarisWidgetTrackerDataModel, shopName: String): Bundle {
+        val price = try {
+            trackerModel.productPrice.digitsOnly().toDouble()
+        } catch (e: Exception) {
+            Int.ZERO.toDouble()
+        }
+        
         return Bundle().apply {
             putString(DIMENSION_40, "$ITEM_LIST_SHOP_PAGE_REIMAGINED $TERLARIS_WIDGET_VALUE")
             putString(INDEX, trackerModel.position.toString())
-            putString(ITEM_BRAND, shopName)
+            putString(ITEM_BRAND, "")
             putString(ITEM_CATEGORY, "")
             putString(ITEM_ID, trackerModel.productId)
             putString(ITEM_NAME, trackerModel.productName)
             putString(ITEM_VARIANT, "")
-            putString(PRICE, trackerModel.productPrice)
+            putDouble(PRICE, price)
         }
     }
 }
