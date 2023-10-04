@@ -7,11 +7,13 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.sellerorder.detail.domain.usecase.SomGetFeeTransparencyUseCase
 import com.tokopedia.sellerorder.detail.presentation.model.TransparencyFeeUiModelWrapper
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class SomDetailTransparencyFeeViewModel @Inject constructor(
-    dispatcher: CoroutineDispatchers,
+    private val dispatcher: CoroutineDispatchers,
     private val getSomTransparencyFeeTransparencyUseCase: SomGetFeeTransparencyUseCase
 ) : BaseViewModel(dispatcher.main) {
 
@@ -21,10 +23,11 @@ class SomDetailTransparencyFeeViewModel @Inject constructor(
 
 
     fun fetchTransparencyFee(orderId: String) {
-        launchCatchError(block = {
-
+        launchCatchError(context = dispatcher.io, block = {
+            val result = getSomTransparencyFeeTransparencyUseCase.execute(orderId)
+            _transparencyFee.postValue(Success(result))
         }, onError = {
-
+            _transparencyFee.postValue(Fail(it))
         })
     }
 }

@@ -19,22 +19,24 @@ class SomDetailIncomeViewHolder(
 
     private val binding by viewBinding<DetailIncomeItemBinding>()
 
+    init {
+        setClickListener()
+    }
+
     override fun bind(element: SomDetailData) {
         val data = element.dataObject
         if (data is SomDetailIncomeUiModel) {
             setIncomeLabel(data.label)
-            setIconChevronRightClickListener()
+        }
+    }
+
+    private fun setClickListener() {
+        binding?.root?.setOnClickListener {
+            actionListener?.onDetailIncomeClicked()
         }
     }
 
     private fun setIncomeLabel(label: String) {
         binding?.tvDetailIncomeLabel?.text = label
     }
-
-    private fun setIconChevronRightClickListener() {
-        binding?.detailIncomeIcon?.setOnClickListener {
-            actionListener?.onDetailIncomeClicked()
-        }
-    }
-
 }

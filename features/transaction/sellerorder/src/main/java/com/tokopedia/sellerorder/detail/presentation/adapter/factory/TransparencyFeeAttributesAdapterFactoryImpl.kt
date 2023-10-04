@@ -14,11 +14,11 @@ class TransparencyFeeAttributesAdapterFactoryImpl(
 ) : BaseAdapterTypeFactory(),
     TransparencyFeeAdapterAttributesFactory {
     override fun type(uiModel: TransparencyFeeLabelUiModel): Int {
-        return TransparencyFeeIconViewHolder.LAYOUT
+        return TransparencyFeeLabelViewHolder.LAYOUT
     }
 
     override fun type(uiModel: TransparencyFeeIconUiModel): Int {
-        return TransparencyFeeLabelViewHolder.LAYOUT
+        return TransparencyFeeIconViewHolder.LAYOUT
     }
 
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {

@@ -8,12 +8,10 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerorder.R
-import com.tokopedia.sellerorder.databinding.ItemHeaderIncomeDetailSectionBinding
 import com.tokopedia.sellerorder.databinding.ItemSummaryIncomeDetailSectionBinding
 import com.tokopedia.sellerorder.detail.presentation.adapter.factory.DetailTransparencyFeeAdapterFactoryImpl
 import com.tokopedia.sellerorder.detail.presentation.adapter.factory.TransparencyFeeAttributesAdapterFactoryImpl
 import com.tokopedia.sellerorder.detail.presentation.model.BaseTransparencyFeeAttributes
-import com.tokopedia.sellerorder.detail.presentation.model.TransparencyFeeHeaderUiModel
 import com.tokopedia.sellerorder.detail.presentation.model.TransparencyFeeSummaryUiModel
 
 class TransparencyFeeSummaryViewHolder(
@@ -22,7 +20,7 @@ class TransparencyFeeSummaryViewHolder(
 ) : AbstractViewHolder<TransparencyFeeSummaryUiModel>(view) {
 
     companion object {
-        val LAYOUT = R.layout.item_header_income_detail_section
+        val LAYOUT = R.layout.item_summary_income_detail_section
     }
 
     private val binding = ItemSummaryIncomeDetailSectionBinding.bind(itemView)
