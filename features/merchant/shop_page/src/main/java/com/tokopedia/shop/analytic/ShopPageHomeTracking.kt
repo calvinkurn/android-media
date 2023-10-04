@@ -3645,7 +3645,6 @@ class ShopPageHomeTracking(
             widgets.firstOrNull { it.componentName == BannerProductGroupUiModel.Tab.ComponentList.ComponentName.PRODUCT }
 
         val hasBanner = bannerWidget != null
-        val hasProduct = productWidget != null
 
         val showProductInfo = productWidget?.data?.any { it.isShowProductInfo }.orFalse()
         val productCardVariant = if (showProductInfo) "with_info" else "without_info"
@@ -3659,16 +3658,6 @@ class ShopPageHomeTracking(
                 putString(ITEM_NAME, bannerWidget?.componentName?.id?.lowercase())
             }
             promotions.add(bannerBundle)
-        }
-
-        if (hasProduct) {
-            val productBundle = Bundle().apply {
-                putString(CREATIVE_NAME, "")
-                putInt(CREATIVE_SLOT, 0)
-                putString(ITEM_ID, productWidget?.componentId.toString())
-                putString(ITEM_NAME, productWidget?.componentName?.id?.lowercase())
-            }
-            promotions.add(productBundle)
         }
 
         val bannerVariant = when {
