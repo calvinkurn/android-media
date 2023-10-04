@@ -48,6 +48,6 @@ class SharedPrefsMpsLocalCache(
         private const val PREF_NAME = "MPSSharedPref"
         const val KEY_FIRST_MPS_SUCCESS = "KEY_FIRST_MPS_SUCCESS"
         const val TIME_FIRST_MPS_SUCCESS = "TIME_FIRST_MPS_SUCCESS"
-        const val THIRTY_DAYS = 2592000000L
+        private const val THIRTY_DAYS = 2592000000L
     }
 }
