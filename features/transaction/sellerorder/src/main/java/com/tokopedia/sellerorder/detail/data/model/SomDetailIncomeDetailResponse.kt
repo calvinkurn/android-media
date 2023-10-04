@@ -55,7 +55,7 @@ data class SomDetailIncomeDetailResponse(
                 val label: String? = null,
                 @SerializedName("sub_label")
                 @Expose
-                val subLabel: Any? = null,
+                val subLabel: String? = null,
                 @SerializedName("type")
                 @Expose
                 val type: String? = null,

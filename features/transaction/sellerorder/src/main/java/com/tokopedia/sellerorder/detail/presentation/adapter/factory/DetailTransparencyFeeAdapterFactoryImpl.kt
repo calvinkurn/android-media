@@ -9,13 +9,11 @@ import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.Transpar
 import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.TransparencyFeeHeaderViewHolder
 import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.TransparencyFeeLoadingViewHolder
 import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.TransparencyFeeSubComponentViewHolder
-import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.TransparencyFeeSummaryViewHolder
 import com.tokopedia.sellerorder.detail.presentation.model.TransparencyFeeComponentUiModel
 import com.tokopedia.sellerorder.detail.presentation.model.TransparencyFeeErrorStateUiModel
 import com.tokopedia.sellerorder.detail.presentation.model.TransparencyFeeHeaderUiModel
 import com.tokopedia.sellerorder.detail.presentation.model.TransparencyFeeLoadingUiModel
 import com.tokopedia.sellerorder.detail.presentation.model.TransparencyFeeSubComponentUiModel
-import com.tokopedia.sellerorder.detail.presentation.model.TransparencyFeeSummaryUiModel
 
 class DetailTransparencyFeeAdapterFactoryImpl(
     private val actionListener: ActionListener
@@ -33,10 +31,6 @@ class DetailTransparencyFeeAdapterFactoryImpl(
         return TransparencyFeeSubComponentViewHolder.LAYOUT
     }
 
-    override fun type(uiModel: TransparencyFeeSummaryUiModel): Int {
-        return TransparencyFeeSummaryViewHolder.LAYOUT
-    }
-
     override fun type(uiModel: TransparencyFeeLoadingUiModel): Int {
         return TransparencyFeeLoadingViewHolder.LAYOUT
     }
@@ -51,28 +45,19 @@ class DetailTransparencyFeeAdapterFactoryImpl(
                 parent,
                 actionListener
             )
-
             TransparencyFeeComponentViewHolder.LAYOUT -> TransparencyFeeComponentViewHolder(
                 parent,
                 actionListener
             )
-
             TransparencyFeeSubComponentViewHolder.LAYOUT -> TransparencyFeeSubComponentViewHolder(
                 parent,
                 actionListener
             )
-
-            TransparencyFeeSummaryViewHolder.LAYOUT -> TransparencyFeeSummaryViewHolder(
-                parent,
-                actionListener
-            )
-
             TransparencyFeeLoadingViewHolder.LAYOUT -> TransparencyFeeLoadingViewHolder(parent)
             TransparencyFeeErrorStateViewHolder.LAYOUT -> TransparencyFeeErrorStateViewHolder(
                 parent,
                 actionListener
             )
-
             else -> super.createViewHolder(parent, type)
         }
     }

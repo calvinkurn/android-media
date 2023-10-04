@@ -22,6 +22,15 @@ buildscript {
 android {
     namespace 'com.tokopedia.sellerorder'
     testNamespace 'com.tokopedia.sellerorder.test'
+    def pathSources = "src/main/res/"
+    sourceSets {
+        main {
+            res.srcDirs = [
+                    pathSources,
+                    pathSources + 'transparency_fee'
+            ]
+        }
+    }
     buildFeatures {
         viewBinding true
         buildConfig true

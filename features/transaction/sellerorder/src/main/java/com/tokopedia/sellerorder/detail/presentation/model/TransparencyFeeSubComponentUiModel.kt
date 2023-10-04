@@ -5,7 +5,6 @@ import com.tokopedia.sellerorder.detail.presentation.adapter.factory.DetailTrans
 data class TransparencyFeeSubComponentUiModel(
     val isFirstIndex: Boolean,
     val isLastIndex: Boolean,
-    val label: String,
     val value: String,
     val attributes: List<BaseTransparencyFeeAttributes>
 ) : BaseTransparencyFee {

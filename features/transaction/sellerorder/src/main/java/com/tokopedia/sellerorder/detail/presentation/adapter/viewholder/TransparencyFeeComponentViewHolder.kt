@@ -1,19 +1,23 @@
 package com.tokopedia.sellerorder.detail.presentation.adapter.viewholder
 
 import android.view.View
+import androidx.core.view.updatePadding
 import com.google.android.flexbox.AlignItems
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.material.shape.CornerFamily
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.databinding.ItemComponentIncomeDetailBinding
 import com.tokopedia.sellerorder.detail.presentation.adapter.factory.DetailTransparencyFeeAdapterFactoryImpl
 import com.tokopedia.sellerorder.detail.presentation.adapter.factory.TransparencyFeeAttributesAdapterFactoryImpl
 import com.tokopedia.sellerorder.detail.presentation.model.BaseTransparencyFeeAttributes
 import com.tokopedia.sellerorder.detail.presentation.model.TransparencyFeeComponentUiModel
+import com.tokopedia.unifycomponents.toPx
 
 class TransparencyFeeComponentViewHolder(
     view: View?,
@@ -24,6 +28,8 @@ class TransparencyFeeComponentViewHolder(
         val LAYOUT = R.layout.item_component_income_detail
 
         const val ROUNDED_RADIUS = 4f
+
+        private const val PADDING_VERTICAL_CONTENT = 4
     }
 
     private val binding = ItemComponentIncomeDetailBinding.bind(itemView)
@@ -34,8 +40,9 @@ class TransparencyFeeComponentViewHolder(
 
     override fun bind(element: TransparencyFeeComponentUiModel) {
         setupDividerVerticalRadius(element.isFirstIndex, element.isLastIndex)
-        setupLabel(element.label)
         setupValue(element.value)
+        setupVerticalPadding(element)
+        setupBottomDivider(element.isLastIndex)
         setAttributes(element.attributes)
     }
 
@@ -65,12 +72,23 @@ class TransparencyFeeComponentViewHolder(
         }.build()
     }
 
-    private fun setupLabel(label: String) {
-        binding.tvComponentIncomeDetailLabel.text = label
-    }
-
     private fun setupValue(value: String) {
         binding.tvComponentIncomeDetailValue.text = value
+    }
+
+    private fun setupVerticalPadding(element: TransparencyFeeComponentUiModel) {
+        binding.rvComponentIncomeDetailAttributes.updatePadding(
+            top = if (element.isFirstIndex) Int.ZERO else PADDING_VERTICAL_CONTENT.toPx(),
+            bottom = if (element.isLastIndex) Int.ZERO else PADDING_VERTICAL_CONTENT.toPx()
+        )
+        binding.tvComponentIncomeDetailValue.updatePadding(
+            top = if (element.isFirstIndex) Int.ZERO else PADDING_VERTICAL_CONTENT.toPx(),
+            bottom = if (element.isLastIndex) Int.ZERO else PADDING_VERTICAL_CONTENT.toPx()
+        )
+    }
+
+    private fun setupBottomDivider(show: Boolean) {
+        binding.dividerTransparencyFeeComponent.showWithCondition(show)
     }
 
     private fun setAttributes(attributes: List<BaseTransparencyFeeAttributes>) {

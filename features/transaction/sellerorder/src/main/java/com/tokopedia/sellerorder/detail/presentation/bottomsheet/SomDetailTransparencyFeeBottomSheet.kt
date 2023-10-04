@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.sellerorder.databinding.BottomsheetTransparencyFeeBinding
 import com.tokopedia.sellerorder.detail.di.SomDetailComponent
@@ -15,6 +16,7 @@ import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailTransparen
 import com.tokopedia.sellerorder.detail.presentation.adapter.factory.DetailTransparencyFeeAdapterFactoryImpl
 import com.tokopedia.sellerorder.detail.presentation.model.TransparencyFeeErrorStateUiModel
 import com.tokopedia.sellerorder.detail.presentation.viewmodel.SomDetailTransparencyFeeViewModel
+import com.tokopedia.sellerorder.detail.presentation.widget.TransparencyFeeSummary
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -22,7 +24,7 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class SomDetailTransparencyFeeBottomSheet : BottomSheetUnify(),
-    DetailTransparencyFeeAdapterFactoryImpl.ActionListener {
+    DetailTransparencyFeeAdapterFactoryImpl.ActionListener, TransparencyFeeSummary.Listener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -45,6 +47,10 @@ class SomDetailTransparencyFeeBottomSheet : BottomSheetUnify(),
 
     private var binding by autoClearedNullable<BottomsheetTransparencyFeeBinding>()
 
+    init {
+        clearContentPadding = true
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initInjector()
@@ -63,6 +69,7 @@ class SomDetailTransparencyFeeBottomSheet : BottomSheetUnify(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
+        setupTransparencyFeeSummaryWidget()
         observeTransparencyFee()
         fetchTransparencyFee()
     }
@@ -75,6 +82,10 @@ class SomDetailTransparencyFeeBottomSheet : BottomSheetUnify(),
     override fun onTransparencyInfoIconClicked(title: String, desc: String) {
         val transparencyFeeInfoBottomSheet = TransparencyFeeInfoBottomSheet.newInstance(title, desc)
         transparencyFeeInfoBottomSheet.show(childFragmentManager)
+    }
+
+    override fun onClickNoteLink(url: String) {
+        RouteManager.route(context, url)
     }
 
     fun show(fm: FragmentManager) {
@@ -98,6 +109,10 @@ class SomDetailTransparencyFeeBottomSheet : BottomSheetUnify(),
         }
     }
 
+    private fun setupTransparencyFeeSummaryWidget() {
+        binding?.footerTransparencyFee?.setListener(this)
+    }
+
     private fun observeTransparencyFee() {
         observe(viewModel.transparencyFee) {
             somDetailTransparencyFeeAdapter.hideLoadingShimmer()
@@ -105,6 +120,7 @@ class SomDetailTransparencyFeeBottomSheet : BottomSheetUnify(),
                 is Success -> {
                     setBottomSheetTitle(it.data.bottomSheetTitle)
                     somDetailTransparencyFeeAdapter.updateItems(it.data.transparencyFeeList)
+                    binding?.footerTransparencyFee?.updateUI(it.data.summary)
                 }
 
                 is Fail -> {
