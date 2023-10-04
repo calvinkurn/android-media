@@ -158,7 +158,6 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
     private var filterBottomSheetOpened: Boolean = false
 
     private var getProductJob: Job? = null
-    private var excludedFilter: Option? = null
     private var isAllProductShown = false
 
     private val categoryIdL1: String
@@ -431,8 +430,7 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
             visitableList.clear()
             visitableList.add(quickFilterItem)
             visitableList.addEmptyState(
-                violation = violation,
-                excludedFilter = excludedFilter
+                violation = violation
             )
             visitableList.addCategoryMenu()
             visitableList.addEmptyStateDivider()
@@ -473,7 +471,6 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
                 quickFilterUiModel = quickFilter
             )
 
-            findExcludedFilter(quickFilter)
             updateVisitableListLiveData()
             updateSharingDataModel()
         }) {
@@ -546,8 +543,10 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
         val warehouseId = addressData.getWarehouseId().toString()
 
         return asyncCatchError(block = {
-            val warehouses = AddressMapper.mapToWarehousesData(addressData.getAddressData())
-            val response = getCategoryListUseCase.execute(warehouses,
+            val localCacheModel = addressData.getAddressData()
+            val warehouses = AddressMapper.mapToWarehousesData(localCacheModel)
+            val response = getCategoryListUseCase.execute(
+                warehouses,
                 CATEGORY_LEVEL_DEPTH
             )
             visitableList.mapCategoryMenuData(response.data, warehouseId)
@@ -705,17 +704,6 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
 
         queryParams.remove(SearchApiConst.PMIN)
         queryParams.remove(SearchApiConst.PMAX)
-    }
-
-    private fun findExcludedFilter(quickFilter: CategoryQuickFilterUiModel) {
-        quickFilter.itemList.forEach { filterItem ->
-            val options = filterItem.filter.options
-            if (options.count() == 1) return
-
-            excludedFilter = options.find {
-                it.key.startsWith(OptionHelper.EXCLUDE_PREFIX)
-            }
-        }
     }
 
     private fun showLoadMoreLoading() {

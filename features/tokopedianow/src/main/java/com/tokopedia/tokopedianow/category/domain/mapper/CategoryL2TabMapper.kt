@@ -2,7 +2,6 @@ package com.tokopedia.tokopedianow.category.domain.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.constants.SearchApiConst
-import com.tokopedia.filter.common.data.Option
 import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
@@ -144,12 +143,11 @@ object CategoryL2TabMapper {
     }
 
     fun MutableList<Visitable<*>>.addEmptyState(
-        violation: AceSearchProductModel.Violation,
-        excludedFilter: Option?
+        violation: AceSearchProductModel.Violation
     ) {
         val emptyStateUiModel = TokoNowEmptyStateNoResultUiModel(
             activeFilterList = null,
-            excludeFilter = excludedFilter,
+            excludeFilter = null,
             defaultTitle = violation.headerText,
             defaultDescription = violation.descriptionText,
             defaultDescriptionResId = R.string.tokopedianow_empty_product_filter_l2_description,
