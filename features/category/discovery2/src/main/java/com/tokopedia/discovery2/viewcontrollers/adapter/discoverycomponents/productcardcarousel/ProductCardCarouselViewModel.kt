@@ -205,15 +205,17 @@ class ProductCardCarouselViewModel(val application: Application, val components:
             productLoadState.add(mixLeftComponentsItem)
         }
         productLoadState.addAll(productDataList)
-        if (Utils.nextPageAvailable(components, PRODUCT_PER_PAGE)) {
-            val nextPageComponent = if (isSupportPagination()) {
-                constructLoadMoreComponent()
-            } else {
-                constructViewAllCard()
-            }
 
-            productLoadState.add(nextPageComponent)
+        val nextPageComponent = if (Utils.nextPageAvailable(components, PRODUCT_PER_PAGE)) {
+            constructLoadMoreComponent()
+        } else if (shouldShowViewAllCard()) {
+            constructViewAllCard()
+        } else {
+            return productLoadState
         }
+
+        productLoadState.add(nextPageComponent)
+
         return productLoadState
     }
 
@@ -264,8 +266,8 @@ class ProductCardCarouselViewModel(val application: Application, val components:
         return !Utils.nextPageAvailable(components, PRODUCT_PER_PAGE)
     }
 
-    fun isSupportPagination(): Boolean {
-        return components.compAdditionalInfo?.redirection?.applink.isNullOrEmpty()
+    fun shouldShowViewAllCard(): Boolean {
+        return !components.compAdditionalInfo?.redirection?.applink.isNullOrEmpty()
     }
 
     fun isLoadingData() = isLoading
