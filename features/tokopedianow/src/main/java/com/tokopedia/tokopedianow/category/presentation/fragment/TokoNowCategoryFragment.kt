@@ -166,6 +166,7 @@ class TokoNowCategoryFragment : BaseCategoryFragment() {
         observeProductRecommendationUpdateCartItem()
         observeProductRecommendationToolbarNotification()
         observeProductRecommendationAtcDataTracker()
+        observeSharingModel()
     }
 
     private fun observeScrollNotNeeded() {
@@ -243,6 +244,12 @@ class TokoNowCategoryFragment : BaseCategoryFragment() {
                 quantity = model.quantity,
                 productWarehouseId = model.productRecommendation.productCardModel.warehouseId
             )
+        }
+    }
+
+    private fun observeSharingModel() {
+        observe(viewModel.shareLiveData) {
+            setCategorySharingModel(it)
         }
     }
 

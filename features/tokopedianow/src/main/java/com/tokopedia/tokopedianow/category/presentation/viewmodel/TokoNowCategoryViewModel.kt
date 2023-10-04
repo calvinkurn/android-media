@@ -52,8 +52,10 @@ import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
+import com.tokopedia.tokopedianow.oldcategory.domain.model.CategorySharingModel
 import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_TOKONOW_DIRECTORY
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.Deferred
 import javax.inject.Inject
 
@@ -88,6 +90,9 @@ class TokoNowCategoryViewModel @Inject constructor(
         const val BATCH_SHOWCASE_TOTAL = 3
         const val NO_WAREHOUSE_ID = "0"
         const val PRODUCT_ROWS = 7
+        const val DEFAULT_DEEPLINK_PARAM = "category/l1"
+        const val PAGE_TYPE_CATEGORY = "cat%s"
+        const val CATEGORY_LVL_1 = 1
     }
 
     init {
@@ -101,6 +106,7 @@ class TokoNowCategoryViewModel @Inject constructor(
     private val categoryL2Models: MutableList<CategoryL2Model> = mutableListOf()
     private val _atcDataTracker: MutableLiveData<CategoryAtcTrackerModel> = MutableLiveData()
     private val _scrollNotNeeded = MutableLiveData<Unit>()
+    private val _shareLiveData = SingleLiveEvent<CategorySharingModel>()
 
     /**
      * -- private mutable variable section --
@@ -114,6 +120,7 @@ class TokoNowCategoryViewModel @Inject constructor(
 
     val atcDataTracker: LiveData<CategoryAtcTrackerModel> = _atcDataTracker
     val scrollNotNeeded: LiveData<Unit> = _scrollNotNeeded
+    val shareLiveData: LiveData<CategorySharingModel> = _shareLiveData
 
     /**
      * -- override function section --
@@ -163,6 +170,7 @@ class TokoNowCategoryViewModel @Inject constructor(
         hidePageLoading()
         updateVisitableListLiveData()
         sendOpenScreenL1Tracker(detailResponse)
+        setSharingModel(detailResponse)
 
         getFirstPage()
     }
@@ -443,6 +451,28 @@ class TokoNowCategoryViewModel @Inject constructor(
                 layoutType = PRODUCT_ADS_CAROUSEL
             ))
         }
+    }
+
+    private fun setSharingModel(getCategoryDetailResponse: CategoryDetailResponse) {
+        val categoryDetail = getCategoryDetailResponse.categoryDetail
+
+        val title = categoryDetail.data.name
+        val url = categoryDetail.data.url
+        val deepLinkParam = "$DEFAULT_DEEPLINK_PARAM/$categoryIdL1"
+        val utmCampaignList = getUtmCampaignList()
+
+        _shareLiveData.postValue(CategorySharingModel(
+            categoryIdLvl2 = "",
+            categoryIdLvl3 = "",
+            title = title,
+            deeplinkParam = deepLinkParam,
+            url = url,
+            utmCampaignList = utmCampaignList
+        ))
+    }
+
+    private fun getUtmCampaignList(): List<String> {
+        return listOf(String.format(PAGE_TYPE_CATEGORY, CATEGORY_LVL_1), categoryIdL1)
     }
 
     private fun sendOpenScreenL1Tracker(detailResponse: CategoryDetailResponse) {

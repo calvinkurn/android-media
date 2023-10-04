@@ -320,7 +320,7 @@ class LottieBottomNav : LinearLayout {
                 badgeTextViewList.add(notifBadge)
                 notifBadge.tag =
                     context.getString(R.string.tag_badge_textview) + bottomMenu.id.toString()
-                notifBadge.visibility = View.INVISIBLE
+                notifBadge.visibility = View.GONE
                 imageContainer.addView(badge)
                 badge.bringToFront()
             }

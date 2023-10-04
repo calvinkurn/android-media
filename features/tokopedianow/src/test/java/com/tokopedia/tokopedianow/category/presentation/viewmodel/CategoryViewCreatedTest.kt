@@ -9,9 +9,11 @@ import com.tokopedia.tokopedianow.category.domain.mapper.CategoryNavigationMappe
 import com.tokopedia.tokopedianow.category.domain.mapper.ProductRecommendationMapper.createProductRecommendation
 import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryViewModel.Companion.NO_WAREHOUSE_ID
 import com.tokopedia.tokopedianow.common.domain.mapper.TickerMapper
+import com.tokopedia.tokopedianow.oldcategory.domain.model.CategorySharingModel
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import org.junit.Assert
 import org.junit.Test
+import java.util.*
 
 class CategoryViewCreatedTest : TokoNowCategoryViewModelTestFixture() {
 
@@ -66,10 +68,22 @@ class CategoryViewCreatedTest : TokoNowCategoryViewModelTestFixture() {
             productRecommendationUiModel
         )
 
+        val categoryDetail = categoryDetailResponse.categoryDetail.data
+        val categoryShareData = CategorySharingModel(
+            categoryIdLvl2 = "",
+            categoryIdLvl3 = "",
+            title = categoryDetail.name,
+            url = categoryDetail.url,
+            deeplinkParam = "category/l1/$categoryIdL1",
+            utmCampaignList = listOf(String.format(Locale.getDefault(), "cat%s", 1), categoryIdL1)
+        )
+
         verifyCategoryDetail()
         verifyTargetedTicker()
         viewModel.visitableListLiveData
             .verifyValueEquals(resultList)
+        viewModel.shareLiveData
+            .verifyValueEquals(categoryShareData)
     }
 
     @Test
