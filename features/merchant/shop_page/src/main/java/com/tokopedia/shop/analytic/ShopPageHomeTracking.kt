@@ -3985,7 +3985,6 @@ class ShopPageHomeTracking(
             putString(TRACKER_ID, TRACKER_ID_REIMAGINED_IMPRESSION_DIRECT_PURCHASE_WIDGET)
             putString(BUSINESS_UNIT, PHYSICAL_GOODS)
             putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
-            putString(ITEM_LIST, ITEM_LIST_REIMAGINED_HOTSPOT_WIDGET)
             putParcelableArrayList(
                 PROMOTIONS,
                 arrayListOf(
