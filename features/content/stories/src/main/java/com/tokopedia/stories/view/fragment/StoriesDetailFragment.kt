@@ -44,6 +44,7 @@ import com.tokopedia.stories.view.components.indicator.StoriesDetailTimer
 import com.tokopedia.stories.view.model.StoriesArgsModel
 import com.tokopedia.stories.view.model.StoriesDetail
 import com.tokopedia.stories.view.model.StoriesDetailItem
+import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesDetailItemUiEvent.RESUME
 import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContent
 import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContentType
 import com.tokopedia.stories.view.model.StoriesDetailItem.StoryStatus
@@ -294,7 +295,7 @@ class StoriesDetailFragment @Inject constructor(
         val prevItem = prevState?.detailItems?.getOrNull(prevState.selectedDetailPosition)
         val currentItem = state.detailItems.getOrNull(state.selectedDetailPosition) ?: return
 
-        storiesDetailsTimer(state)
+        renderTimer(state)
 
         if (currentItem.isContentLoaded) return
 
@@ -338,7 +339,11 @@ class StoriesDetailFragment @Inject constructor(
         if (state.isAnyShown.orFalse()) pauseStories() else resumeStories()
     }
 
-    private fun storiesDetailsTimer(state: StoriesDetail) {
+    private fun renderTimer(state: StoriesDetail) {
+        val data = state.detailItems[state.selectedDetailPosition]
+
+        showStoriesActionView(data.event == RESUME)
+
         with(binding.cvStoriesDetailTimer) {
             apply {
                 setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
@@ -346,7 +351,7 @@ class StoriesDetailFragment @Inject constructor(
                     StoriesDetailTimer(
                         currentPosition = state.selectedDetailPosition,
                         itemCount = state.detailItems.size,
-                        data = state.detailItems[state.selectedDetailPosition]
+                        data = data,
                     ) { if (isEligiblePage) viewModelAction(NextDetail) }
                 }
             }
@@ -371,6 +376,7 @@ class StoriesDetailFragment @Inject constructor(
     }
 
     private fun setupStoriesView() = with(binding) {
+        showStoriesActionView(false)
         showPageLoading(true)
 
         icClose.setOnClickListener { activity?.finish() }
@@ -484,9 +490,13 @@ class StoriesDetailFragment @Inject constructor(
     private fun showStoriesComponent(isShow: Boolean) {
         showSwipeProductJob?.cancel()
         binding.storiesComponent.showWithCondition(isShow)
-        binding.flStoriesNext.showWithCondition(isShow)
-        binding.flStoriesProduct.showWithCondition(isShow)
         binding.clSideIcons.showWithCondition(isShow)
+    }
+
+    private fun showStoriesActionView(isShow: Boolean) {
+        binding.flStoriesNext.showWithCondition(isShow)
+        binding.flStoriesPrev.showWithCondition(isShow)
+        binding.flStoriesProduct.showWithCondition(isShow)
     }
 
     private fun viewModelAction(event: StoriesUiAction) {
