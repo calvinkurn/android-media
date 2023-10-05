@@ -14,6 +14,7 @@ import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
@@ -148,16 +149,22 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
                 tabTotalWidth += tabWidth
             }
 
-            handleTabChange(tabsUnify, uiModel)
+            handleTabChange(tabsUnify, uiModel, tabs)
             applyTabRuleWidth(tabs, tabsUnify)
         }
 
     }
 
-    private fun handleTabChange(tabsUnify: TabsUnify, model: ShowcaseNavigationUiModel) {
+    private fun handleTabChange(
+        tabsUnify: TabsUnify,
+        model: ShowcaseNavigationUiModel,
+        tabs: List<ShowcaseTab>
+    ) {
         tabsUnify.tabLayout.addOnTabSelectedListener(object : OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                listener.onNavigationBannerTabClick(tab?.text?.toString().orEmpty())
+                val tabPosition = tab?.position.orZero()
+                val tabTitle = tabs.getOrNull(tabPosition)?.text.orEmpty()
+                listener.onNavigationBannerTabClick(tabTitle)
                 tab?.select(model)
             }
 
