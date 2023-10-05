@@ -58,5 +58,8 @@ data class CreationUploadQueueEntity(
     data class Stories(
         @SerializedName("media_uri_list")
         val mediaUriList: List<String> = emptyList(),
+
+        @SerializedName("media_type_list")
+        val mediaTypeList: List<Int> = emptyList(),
     )
 }
