@@ -113,6 +113,11 @@ class TokoNowCategoryL2Fragment : BaseCategoryFragment(), CategoryL2View {
         setupTracker()
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.onViewResume()
+    }
+
     override fun initInjector() {
         DaggerCategoryL2Component.builder()
             .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)

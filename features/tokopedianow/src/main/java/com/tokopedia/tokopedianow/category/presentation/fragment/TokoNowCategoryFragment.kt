@@ -129,6 +129,11 @@ class TokoNowCategoryFragment : BaseCategoryFragment() {
         setupOnScrollListener()
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.onViewResume()
+    }
+
     override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
         super.onCartItemsUpdated(miniCartSimplifiedData)
         productRecommendationViewModel.updateMiniCartSimplified(miniCartSimplifiedData)
