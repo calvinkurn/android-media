@@ -21,9 +21,7 @@ import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
-import org.junit.rules.ExpectedException
 import java.io.File
 import java.lang.reflect.Type
 
@@ -42,9 +40,6 @@ class GetPdpLayoutUseCaseTest {
 
     @RelaxedMockK
     lateinit var remoteConfig: RemoteConfig
-
-    @get:Rule
-    public val thrown = ExpectedException.none()
 
     private val useCaseTest by lazy {
         GetPdpLayoutUseCase(gqlUseCase, "", remoteConfig)

@@ -1348,9 +1348,9 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             getPdpLayoutUseCase.onSuccess = capture(onP1Success)
             getPdpLayoutUseCase.onError = capture(onP2Error)
             getPdpLayoutUseCase.executeOnBackground()
-        } just Runs
-
-        onP1Success.captured.invoke(dataP1)
+        } answers {
+            onP1Success.captured.invoke(dataP1)
+        }
 
         coEvery {
             getProductInfoP2LoginUseCase.executeOnBackground()

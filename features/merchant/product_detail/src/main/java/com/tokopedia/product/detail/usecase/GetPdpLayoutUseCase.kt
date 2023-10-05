@@ -606,7 +606,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
         return hasCampaign
     }
 
-    private suspend fun processResponse(
+    private fun processResponse(
         pdpLayout: PdpGetLayout?,
         error: List<GraphqlError>?,
         isCache: Boolean,
