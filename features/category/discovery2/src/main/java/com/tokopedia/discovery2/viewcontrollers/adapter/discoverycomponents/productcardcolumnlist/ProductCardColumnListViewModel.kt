@@ -69,5 +69,7 @@ class ProductCardColumnListViewModel(
 
     fun getProduct(position: Int): DataItem? = componentsItem.getComponentItem(position)?.data?.firstOrNull()
 
+    fun getItemPerPage(): Int = if (componentsItem.getComponentsItemSize() < componentsItem.getPropertyRows()) componentsItem.getComponentsItemSize() else componentsItem.getPropertyRows()
+
     fun isLoggedIn(): Boolean = userSession?.isLoggedIn.orFalse()
 }

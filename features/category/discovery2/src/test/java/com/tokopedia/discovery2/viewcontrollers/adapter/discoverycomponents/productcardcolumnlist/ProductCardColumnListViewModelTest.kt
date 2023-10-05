@@ -225,6 +225,42 @@ class ProductCardColumnListViewModelTest {
         Assert.assertEquals(isLoggedIn, viewModel.isLoggedIn())
     }
 
+    @Test
+    fun `test getting item per page when rows greater than product list size, the result should be the same as product list size`() {
+        val propertyRows = 3
+        val componentsItemSize = 2
+
+        mockPropertyRows(propertyRows)
+
+        mockComponentsItemSize(componentsItemSize)
+
+        Assert.assertEquals(componentsItemSize, viewModel.getItemPerPage())
+    }
+
+    @Test
+    fun `test getting item per page when rows lower than product list size, the result should be the same as rows`() {
+        val propertyRows = 3
+        val componentsItemSize = 4
+
+        mockPropertyRows(propertyRows)
+
+        mockComponentsItemSize(componentsItemSize)
+
+        Assert.assertEquals(propertyRows, viewModel.getItemPerPage())
+    }
+
+    @Test
+    fun `test getting item per page when rows the same as product list size, the result should be the same`() {
+        val propertyRows = 4
+        val componentsItemSize = 4
+
+        mockPropertyRows(propertyRows)
+
+        mockComponentsItemSize(componentsItemSize)
+
+        Assert.assertEquals(propertyRows, viewModel.getItemPerPage())
+    }
+
     private fun mockComponents(components: List<ComponentsItem>?) {
         coEvery {
             componentsItem.getComponentsItem()
@@ -241,6 +277,18 @@ class ProductCardColumnListViewModelTest {
         every {
             componentsItem.getComponentItem(any())
         } returns item
+    }
+
+    private fun mockPropertyRows(rows: Int) {
+        every {
+            componentsItem.getPropertyRows()
+        } returns rows
+    }
+
+    private fun mockComponentsItemSize(size: Int) {
+        every {
+            componentsItem.getComponentsItemSize()
+        } returns size
     }
 
     private fun mockUrlParser() {

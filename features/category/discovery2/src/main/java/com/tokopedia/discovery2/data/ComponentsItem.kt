@@ -144,6 +144,8 @@ data class ComponentsItem(
 
     fun getPropertyRows(): Int = properties?.rows.toIntSafely()
 
+    fun getComponentsItemSize(): Int = getComponentsItem()?.size.orZero()
+
     fun isFulfillment(dataItem: DataItem?): Boolean = dataItem?.labelsGroupList?.any { it.position == LABEL_FULFILLMENT }.orFalse()
 
     fun getWarehouseId(dataItem: DataItem?): Long = dataItem?.warehouseId.orZero()

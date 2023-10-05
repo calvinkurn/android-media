@@ -110,7 +110,7 @@ class ProductCardColumnListViewHolder(
         carouselPagingProductCard.setPagingModel(
             model = CarouselPagingModel(
                 productCardGroupList = listOf(carouselPagingGroupProductModel),
-                itemPerPage = componentsItem.getPropertyRows()
+                itemPerPage = getItemPerPage()
             ),
             listener = this@ProductCardColumnListViewHolder
         )
