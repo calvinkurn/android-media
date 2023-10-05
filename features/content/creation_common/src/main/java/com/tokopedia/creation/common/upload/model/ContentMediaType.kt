@@ -1,4 +1,4 @@
-package com.tokopedia.content.common.model
+package com.tokopedia.creation.common.upload.model
 
 import java.net.URLConnection
 

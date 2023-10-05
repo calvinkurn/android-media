@@ -1,6 +1,6 @@
 package com.tokopedia.stories.creation.view.model.action
 
-import com.tokopedia.content.common.model.ContentMediaType
+import com.tokopedia.creation.common.upload.model.ContentMediaType
 
 /**
  * Created By : Jonathan Darwin on September 06, 2023

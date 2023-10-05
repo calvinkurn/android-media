@@ -1,6 +1,6 @@
 package com.tokopedia.stories.creation.view.model.state
 
-import com.tokopedia.content.common.model.ContentMediaType
+import com.tokopedia.creation.common.upload.model.ContentMediaType
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.stories.creation.view.model.StoriesCreationConfiguration
 

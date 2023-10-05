@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.creation.common.upload.data.local.entity.CreationUploadQueueEntity
 import com.tokopedia.creation.common.upload.model.exception.UnknownUploadTypeException
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import java.util.UUID
 
@@ -189,8 +190,14 @@ sealed interface CreationUploadData {
         val mediaTypeList: List<Int>,
     ) : CreationUploadData {
 
+        val firstMediaUri: String
+            get() = mediaUriList.firstOrNull().orEmpty()
+
+        val firstMediaType: ContentMediaType
+            get() = ContentMediaType.parse(mediaTypeList.firstOrNull().orZero())
+
         override val notificationCover: String
-            get() = coverUri.ifEmpty { mediaUriList.firstOrNull().orEmpty() }
+            get() = coverUri.ifEmpty { firstMediaUri }
 
         override fun mapToEntity(gson: Gson): CreationUploadQueueEntity {
             return CreationUploadQueueEntity(
