@@ -643,6 +643,10 @@ class SmartBillsFragment :
         //do nothing
     }
 
+    override fun onCloseCoachMark() {
+        //do nothing
+    }
+
     override fun isChecked(position: Int): Boolean {
         return adapter.isChecked(position)
     }
