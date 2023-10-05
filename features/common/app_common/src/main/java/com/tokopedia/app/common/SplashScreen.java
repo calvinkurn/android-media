@@ -217,6 +217,7 @@ public class SplashScreen extends AppCompatActivity {
             }
             return currentVersionInt < minVersionInt;
         } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
     }
