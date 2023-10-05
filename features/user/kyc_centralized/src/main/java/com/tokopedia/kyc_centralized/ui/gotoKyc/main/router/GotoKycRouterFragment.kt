@@ -1,5 +1,6 @@
 package com.tokopedia.kyc_centralized.ui.gotoKyc.main.router
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.os.Build
 import android.os.Bundle
@@ -47,6 +48,7 @@ class GotoKycRouterFragment : BaseDaggerFragment() {
         return binding?.root
     }
 
+    @SuppressLint("PII Data Exposure")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -58,7 +60,8 @@ class GotoKycRouterFragment : BaseDaggerFragment() {
                     status = data?.status.orEmpty(),
                     sourcePage = data?.sourcePage.orEmpty(),
                     rejectionReason = data?.rejectionReason.orEmpty(),
-                    waitMessage = data?.waitMessage.orEmpty()
+                    waitMessage = data?.waitMessage.orEmpty(),
+                    callback = data?.callback.orEmpty()
                 )
                 gotoStatusSubmission(parameter)
             }
@@ -71,7 +74,8 @@ class GotoKycRouterFragment : BaseDaggerFragment() {
                     isKtpTaken = data?.isKtpTaken.orFalse(),
                     isSelfieTaken = data?.isSelfieTaken.orFalse(),
                     sourcePage = data?.sourcePage.orEmpty(),
-                    directShowBottomSheet = data?.directShowBottomSheet.orFalse()
+                    directShowBottomSheet = data?.directShowBottomSheet.orFalse(),
+                    callback = data?.callback.orEmpty()
                 )
                 gotoOnboardBenefitGotoKyc(parameter)
             }
@@ -79,21 +83,24 @@ class GotoKycRouterFragment : BaseDaggerFragment() {
                 val parameter = DobChallengeParam(
                     projectId = data?.projectId.orEmpty(),
                     challengeId = data?.challengeId.orEmpty(),
-                    pageSource = data?.sourcePage.orEmpty()
+                    pageSource = data?.sourcePage.orEmpty(),
+                    callback = data?.callback.orEmpty()
                 )
                 gotoDobChallenge(parameter)
             }
             PAGE_BRIDGING_ACCOUNT_LINKING -> {
                 val parameter = BridgingAccountLinkingParam(
                     projectId = data?.projectId.orEmpty(),
-                    source = data?.sourcePage.orEmpty()
+                    source = data?.sourcePage.orEmpty(),
+                    callback = data?.callback.orEmpty()
                 )
                 gotoBridgingAccountLinking(parameter)
             }
             PAGE_CAPTURE_KYC_DOCUMENTS -> {
                 val parameter = CaptureKycDocumentsParam(
                     projectId = data?.projectId.orEmpty(),
-                    source = data?.sourcePage.orEmpty()
+                    source = data?.sourcePage.orEmpty(),
+                    callback = data?.callback.orEmpty()
                 )
                 gotoCaptureKycDocuments(parameter)
             }

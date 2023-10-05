@@ -18,6 +18,7 @@ import kotlin.math.abs
 open class CircularViewPager : FrameLayout, CoroutineScope{
     companion object{
         const val SCROLL_STATE_DRAGGING = 1
+        const val FIRST_ITEM_POSITION = 1
     }
 
     var isInfinite = true
@@ -26,6 +27,7 @@ open class CircularViewPager : FrameLayout, CoroutineScope{
     var aspectRatio = 0f
     var pageMargin = 0
     var offset = 0
+    var isResumingAutoScrollDisabled = false
     open var itemAspectRatio = 0f
     private var listener: CircularPageChangeListener? = null
     private var adapter: CircularViewPagerAdapter? = null
@@ -189,9 +191,18 @@ open class CircularViewPager : FrameLayout, CoroutineScope{
     }
 
     fun resumeAutoScroll() {
-        if(isAutoScrollResumed) return
+        if(isAutoScrollResumed || isResumingAutoScrollDisabled) return
         isAutoScrollResumed = true
         autoScrollLauncher()
+    }
+
+    fun setCurrentPosition(position: Int, size: Int) {
+        if (position == FIRST_ITEM_POSITION && currentPagePosition == size) {
+            viewPager.setCurrentItem(currentPagePosition.inc(), true)
+        } else if (position != FIRST_ITEM_POSITION) {
+            viewPager.setCurrentItem(position, true)
+        }
+        currentPagePosition = position
     }
 
     fun pauseAutoScroll() {

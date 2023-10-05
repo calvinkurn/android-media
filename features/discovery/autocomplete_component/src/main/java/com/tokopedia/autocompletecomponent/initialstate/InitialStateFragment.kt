@@ -131,6 +131,7 @@ class InitialStateFragment:
             it.layoutManager = LinearLayoutManager(context, VERTICAL, false)
             it.addOnScrollListener(OnScrollListenerAutocomplete(activity))
         }
+        showMps()
     }
 
     override fun onDestroyView() {
@@ -430,11 +431,7 @@ class InitialStateFragment:
         viewModel?.onInitialStateItemSelected(item)
     }
 
-    override fun enableMps() {
-        viewModel?.enableMps()
-    }
-
-    override fun disableMps() {
-        viewModel?.disableMps()
+    private fun showMps() {
+        viewModel?.showMps()
     }
 }

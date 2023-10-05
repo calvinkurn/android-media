@@ -10,7 +10,6 @@ import com.tokopedia.common.topupbills.favoritepdp.domain.model.PrefillModel
 import com.tokopedia.common_digital.atc.data.response.ErrorAtc
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.digital_product_detail.data.model.data.DigitalAtcResult
-import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant
 import com.tokopedia.digital_product_detail.data.model.data.InputMultiTabDenomModel
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.digital_product_detail.data.model.data.TelcoFilterTagComponent
@@ -18,8 +17,6 @@ import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPTelcoRep
 import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationWidgetModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
-import com.tokopedia.unit.test.rule.CoroutineTestRule
-import com.tokopedia.unit.test.rule.StandardTestRule
 import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import io.mockk.Called
 import io.mockk.MockKAnnotations
@@ -28,9 +25,7 @@ import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.test.TestCoroutineScope
 import kotlinx.coroutines.test.TestScope
-import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.advanceUntilIdle
 import org.junit.Assert
 import org.junit.Before
@@ -377,6 +372,11 @@ abstract class DigitalPDPDataPlanViewModelTestFixture {
     protected fun verifyGetMCCMFail() {
         val actualResponse = viewModel.mccmProductsData.value
         Assert.assertTrue(actualResponse is RechargeNetworkResult.Fail)
+    }
+
+    protected fun verifyMCCMProductsbLoading(expectedResponse: RechargeNetworkResult.Loading) {
+        val actualResponse = viewModel.mccmProductsData.value
+        Assert.assertEquals(expectedResponse, actualResponse)
     }
 
     protected fun verifyGetMCCMErrorCancellation() {

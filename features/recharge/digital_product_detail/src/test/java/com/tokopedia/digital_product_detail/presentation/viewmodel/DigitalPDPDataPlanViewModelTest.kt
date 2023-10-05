@@ -11,13 +11,11 @@ import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.digital_product_detail.presentation.data.DataPlanDataFactory
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
-import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert
@@ -145,7 +143,7 @@ class DigitalPDPDataPlanViewModelTest : DigitalPDPDataPlanViewModelTestFixture()
     }
 
     @Test
-    fun `when getting favoriteNumber without prefill (or any type) should run and give success result with empty default`() = runTest{
+    fun `when getting favoriteNumber without prefill (or any type) should run and give success result with empty default`() = runTest {
         val response = dataFactory.getFavoriteNumberData(false)
         val mappedResponse = persoMapperFactory.mapDigiPersoFavoriteToModel(response)
         val favoriteNumberTypes = listOf(FavoriteNumberType.CHIP, FavoriteNumberType.LIST)
@@ -544,6 +542,14 @@ class DigitalPDPDataPlanViewModelTest : DigitalPDPDataPlanViewModelTestFixture()
 
         viewModel.setRechargeCatalogInputMultiTabLoading()
         verifyGetCatalogInputMultitabLoading(loadingResponse)
+    }
+
+    @Test
+    fun `given getMCCMProducts loading state then should get loading state`() {
+        val loadingResponse = RechargeNetworkResult.Loading
+
+        viewModel.setMCCMLoading()
+        verifyMCCMProductsbLoading(loadingResponse)
     }
 
     @Test
