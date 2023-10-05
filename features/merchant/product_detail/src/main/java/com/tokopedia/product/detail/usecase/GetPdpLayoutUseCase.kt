@@ -25,7 +25,6 @@ import com.tokopedia.product.detail.view.util.CacheStrategyUtil
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.usecase.RequestParams
-import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -33,7 +32,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
     private val gqlUseCase: MultiRequestGraphqlUseCase,
     @Named(NAME_LAYOUT_ID_DAGGER) private val layoutIdTest: String,
     private val remoteConfig: RemoteConfig
-) : UseCase<Unit>() {
+) {
 
     companion object {
         private const val CACHE_EXPIRED = 30L // 30 minutes
@@ -463,8 +462,13 @@ open class GetPdpLayoutUseCase @Inject constructor(
             }
     }
 
-    var onSuccess: ((ProductDetailDataModel) -> Unit)? = null
-    var onError: ((Throwable) -> Unit)? = null
+    interface Callback {
+        fun onSuccess(p1Data: ProductDetailDataModel)
+
+        fun onError(throwable: Throwable)
+    }
+
+    private var callback: Callback? = null
 
     var requestParams: RequestParams = RequestParams.EMPTY
 
@@ -504,7 +508,12 @@ open class GetPdpLayoutUseCase @Inject constructor(
     }.getOrNull()
 
     @GqlQuery("PdpGetLayoutQuery", QUERY)
-    override suspend fun executeOnBackground() {
+    suspend operator fun invoke(callback: Callback) {
+        this.callback = callback
+        executeOnBackground()
+    }
+
+    private suspend fun executeOnBackground() {
         prepareRequest()
 
         if (shouldCacheable && !refreshPage) {
@@ -527,7 +536,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
         )
     }
 
-    private suspend fun processRequestCacheable() {
+    private suspend fun processRequestCacheable() = runCatching {
         var gqlResponse = GraphqlCacheStrategy.Builder(CacheType.CACHE_ONLY).build().let {
             gqlUseCase.setCacheStrategy(it)
             gqlUseCase.executeOnBackground()
@@ -562,9 +571,11 @@ open class GetPdpLayoutUseCase @Inject constructor(
             cacheFirstThenCloud = cacheFirstThenCloud,
             isCampaign = isCampaign
         )
+    }.onFailure {
+        callback?.onError(it)
     }
 
-    private suspend fun processRequestNonCacheable() {
+    private suspend fun processRequestNonCacheable() = runCatching {
         val gqlResponse = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build().let {
             gqlUseCase.setCacheStrategy(it)
             gqlUseCase.executeOnBackground()
@@ -579,6 +590,8 @@ open class GetPdpLayoutUseCase @Inject constructor(
             cacheFirstThenCloud = false,
             isCampaign = isCampaign
         )
+    }.onFailure {
+        callback?.onError(it)
     }
 
     private fun isProductCampaign(layout: PdpGetLayout?): Boolean {
@@ -620,7 +633,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
                 error.mapNotNull { it.message }.joinToString(separator = ", "),
                 error.firstOrNull()?.extensions?.code.toString()
             )
-            onError?.invoke(errorMsg)
+            callback?.onError(errorMsg)
             return
         } else if (data.basicInfo.isBlacklisted) {
             gqlUseCase.clearCache()
@@ -632,7 +645,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
                     url = it.url
                 )
             }
-            onError?.invoke(tobaccoError)
+            callback?.onError(tobaccoError)
             return
         }
 
@@ -641,7 +654,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
             cacheFirstThenCloud = cacheFirstThenCloud,
             isCampaign = isCampaign
         ).also {
-            onSuccess?.invoke(it)
+            callback?.onSuccess(it)
         }
     }
 

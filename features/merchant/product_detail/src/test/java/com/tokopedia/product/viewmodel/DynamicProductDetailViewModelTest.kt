@@ -1313,7 +1313,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     private fun `co verify p1 success`() {
         // P1
         coVerify {
-            getPdpLayoutUseCase.executeOnBackground()
+            getPdpLayoutUseCase.invoke(any())
         }
 
         coVerify {
@@ -1341,15 +1341,11 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         dataP2: ProductInfoP2UiData,
         miniCart: MutableMap<String, MiniCartItem.MiniCartItemProduct>? = null
     ) {
-        val onP1Success = slot<(ProductDetailDataModel) -> Unit>()
-        val onP2Error = slot<(Throwable) -> Unit>()
-
         coEvery {
-            getPdpLayoutUseCase.onSuccess = capture(onP1Success)
-            getPdpLayoutUseCase.onError = capture(onP2Error)
-            getPdpLayoutUseCase.executeOnBackground()
+            getPdpLayoutUseCase(any())
         } answers {
-            onP1Success.captured.invoke(dataP1)
+            val callback = firstArg<GetPdpLayoutUseCase.Callback>()
+            callback.onSuccess(dataP1)
         }
 
         coEvery {
@@ -1386,13 +1382,13 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     fun `on error get product info login`() {
         val productParams = ProductParams("", "", "", "", "", "")
         coEvery {
-            getPdpLayoutUseCase.executeOnBackground()
+            getPdpLayoutUseCase(any())
         } throws Throwable()
 
         viewModel.getProductP1(productParams, userLocationLocal = getUserLocationCache())
         // P1
         coVerify {
-            getPdpLayoutUseCase.executeOnBackground()
+            getPdpLayoutUseCase(any())
         }
         assertTrue(viewModel.productLayout.value is Fail)
         Assert.assertNull(viewModel.p2Data.value)
@@ -1431,7 +1427,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         // P1
         coVerify {
-            getPdpLayoutUseCase.executeOnBackground()
+            getPdpLayoutUseCase(any())
         }
 
         coVerify {

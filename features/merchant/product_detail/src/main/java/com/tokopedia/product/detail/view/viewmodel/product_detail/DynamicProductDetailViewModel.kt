@@ -540,12 +540,15 @@ class DynamicProductDetailViewModel @Inject constructor(
                     layoutId = layoutId,
                     extParam = extParam,
                     refreshPage = refreshPage,
-                    onSuccess = {
-                        processPdpLayout(pdpLayout = it)
-                        getProductP2(urlQuery)
-                    },
-                    onError = {
-                        _productLayout.postValue(it.asFail())
+                    callback = object : GetPdpLayoutUseCase.Callback {
+                        override fun onSuccess(p1Data: ProductDetailDataModel) {
+                            processPdpLayout(pdpLayout = p1Data)
+                            getProductP2(urlQuery)
+                        }
+
+                        override fun onError(throwable: Throwable) {
+                            _productLayout.postValue(throwable.asFail())
+                        }
                     }
                 )
             }.onFailure {
@@ -1183,8 +1186,7 @@ class DynamicProductDetailViewModel @Inject constructor(
         layoutId: String,
         extParam: String,
         refreshPage: Boolean,
-        onSuccess: (ProductDetailDataModel) -> Unit,
-        onError: (Throwable) -> Unit
+        callback: GetPdpLayoutUseCase.Callback
     ) = with(getPdpLayoutUseCase.get()) {
         this.requestParams = GetPdpLayoutUseCase.createParams(
             productId,
@@ -1197,9 +1199,7 @@ class DynamicProductDetailViewModel @Inject constructor(
             generateTokoNowRequest(userLocationCache),
             refreshPage
         )
-        this.onSuccess = onSuccess
-        this.onError = onError
-        executeOnBackground()
+        invoke(callback)
     }
 
     private fun logP2Login(throwable: Throwable, productId: String) {

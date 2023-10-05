@@ -11,6 +11,7 @@ import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailLayout
 import com.tokopedia.product.detail.common.data.model.rates.TokoNowParam
 import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
+import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
 import com.tokopedia.product.detail.data.util.TobacoErrorException
 import com.tokopedia.product.detail.usecase.GetPdpLayoutUseCase
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -41,6 +42,9 @@ class GetPdpLayoutUseCaseTest {
     @RelaxedMockK
     lateinit var remoteConfig: RemoteConfig
 
+    @RelaxedMockK
+    lateinit var emptyCallback: GetPdpLayoutUseCase.Callback
+
     private val useCaseTest by lazy {
         GetPdpLayoutUseCase(gqlUseCase, "", remoteConfig)
     }
@@ -61,14 +65,20 @@ class GetPdpLayoutUseCaseTest {
                 gqlUseCase.executeOnBackground()
             } returns createMockGraphqlResponse(ERROR_TYPE.SUCCESS)
 
-            val getPdpLayoutData = useCaseTest.executeOnBackground()
+            useCaseTest.invoke(object : GetPdpLayoutUseCase.Callback {
+                override fun onSuccess(p1Data: ProductDetailDataModel) {
+                    Assert.assertTrue(p1Data.listOfLayout.isNotEmpty())
+                }
+
+                override fun onError(throwable: Throwable) {
+                }
+            })
 
             coVerify {
                 gqlUseCase.clearRequest()
                 gqlUseCase.addRequest(any())
                 gqlUseCase.executeOnBackground()
             }
-            Assert.assertNotNull(getPdpLayoutData)
         }
     }
 
@@ -79,11 +89,14 @@ class GetPdpLayoutUseCaseTest {
                 gqlUseCase.executeOnBackground()
             } returns createMockGraphqlResponse(ERROR_TYPE.RUNTIME)
 
-            useCaseTest.onError = {
-                Assert.assertTrue(it is MessageErrorException)
-            }
+            useCaseTest.invoke(object : GetPdpLayoutUseCase.Callback {
+                override fun onSuccess(p1Data: ProductDetailDataModel) {
+                }
 
-            useCaseTest.executeOnBackground()
+                override fun onError(throwable: Throwable) {
+                    Assert.assertTrue(throwable is MessageErrorException)
+                }
+            })
 
             coVerify {
                 gqlUseCase.clearRequest()
@@ -100,11 +113,14 @@ class GetPdpLayoutUseCaseTest {
                 gqlUseCase.executeOnBackground()
             } returns createMockGraphqlResponse(ERROR_TYPE.TOBACCO)
 
-            useCaseTest.onError = {
-                Assert.assertTrue(it is TobacoErrorException)
-            }
+            useCaseTest(object : GetPdpLayoutUseCase.Callback {
+                override fun onSuccess(p1Data: ProductDetailDataModel) {
+                }
 
-            useCaseTest.executeOnBackground()
+                override fun onError(throwable: Throwable) {
+                    Assert.assertTrue(throwable is TobacoErrorException)
+                }
+            })
 
             coVerify {
                 gqlUseCase.clearRequest()
@@ -120,7 +136,7 @@ class GetPdpLayoutUseCaseTest {
             gqlUseCase.executeOnBackground()
         } returns createMockGraphqlResponse(ERROR_TYPE.SUCCESS)
 
-        useCaseTestLayoutId.executeOnBackground()
+        useCaseTestLayoutId(emptyCallback)
 
         val layoutId = useCaseTestLayoutId.requestParams.getString(ProductDetailCommonConstant.PARAM_LAYOUT_ID, "")
         Assert.assertEquals(layoutId, "56")
@@ -133,7 +149,7 @@ class GetPdpLayoutUseCaseTest {
         } returns createMockGraphqlResponse(ERROR_TYPE.SUCCESS)
 
         useCaseTestLayoutId.requestParams = GetPdpLayoutUseCase.createParams("", "", "", "", "122", UserLocationRequest(), "", TokoNowParam(), true)
-        useCaseTestLayoutId.executeOnBackground()
+        useCaseTestLayoutId(emptyCallback)
 
         val layoutId = useCaseTestLayoutId.requestParams.getString(ProductDetailCommonConstant.PARAM_LAYOUT_ID, "")
         Assert.assertEquals(layoutId, "122")
