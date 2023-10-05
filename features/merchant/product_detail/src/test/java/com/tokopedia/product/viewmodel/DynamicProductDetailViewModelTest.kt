@@ -91,7 +91,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
-import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -2522,7 +2521,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     @Test
-    fun `change one time method default value`() = runTest {
+    fun `change one time method default value`() = runBlockingTest {
         val testResults = mutableListOf<OneTimeMethodState>()
 
         val job = launch {
