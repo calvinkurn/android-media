@@ -8,7 +8,8 @@ data class UniversalSharingPostPurchaseProductUiModel(
     val productId: String = "",
     val name: String = "",
     val price: String = "",
-    val imageUrl: String = ""
+    val imageUrl: String = "",
+    val shopName: String = ""
 ) : Visitable<UniversalSharingTypeFactory> {
     override fun type(typeFactory: UniversalSharingTypeFactory): Int {
         return typeFactory.type(this)

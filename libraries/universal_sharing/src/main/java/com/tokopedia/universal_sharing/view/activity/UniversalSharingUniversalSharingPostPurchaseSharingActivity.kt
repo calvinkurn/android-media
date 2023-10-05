@@ -73,12 +73,14 @@ class UniversalSharingUniversalSharingPostPurchaseSharingActivity :
 
     override fun onOpenShareBottomSheet(
         orderId: String,
+        shopName: String,
         product: UniversalSharingPostPurchaseProductResponse
     ) {
         val view = this.currentFocus
         val bottomSheetShare = UniversalShareBottomSheet.createInstance(view)
         configShareBottomSheet(
             orderId = orderId,
+            shopName = shopName,
             bottomSheet = bottomSheetShare,
             product = product
         )
@@ -97,6 +99,7 @@ class UniversalSharingUniversalSharingPostPurchaseSharingActivity :
 
     private fun configShareBottomSheet(
         orderId: String,
+        shopName: String,
         bottomSheet: UniversalShareBottomSheet,
         product: UniversalSharingPostPurchaseProductResponse
     ) {
@@ -137,7 +140,7 @@ class UniversalSharingUniversalSharingPostPurchaseSharingActivity :
                     linkerType = LinkerData.PRODUCT_TYPE,
                     id = product.productId,
                     ogTitle = "${product.productName} - ${product.productPrice.roundToInt()}",
-                    ogDescription = "${product.shop.name} - ${product.desc}",
+                    ogDescription = "$shopName - ${product.desc}",
                     ogImageUrl = "${product.images.firstOrNull()?.imageUrl}",
                     deeplink = generateApplinkPDP(product.productId),
                     desktopUrl = product.url

@@ -149,14 +149,16 @@ class UniversalSharingPostPurchaseBottomSheet :
                     adapter.updateData(it.data)
                 }
                 is Result.Error -> {
-                    setErrorView()
+                    setErrorView(it.throwable)
                 }
                 Result.Loading -> Unit // no-op
             }
         }
     }
 
-    private fun setErrorView() {
+    private fun setErrorView(
+        throwable: Throwable
+    ) {
         val errorType = if (networkUtil.isNetworkAvailable(requireContext())) {
             UniversalSharingGlobalErrorUiModel.ErrorType.ERROR_NETWORK
         } else {
@@ -164,6 +166,9 @@ class UniversalSharingPostPurchaseBottomSheet :
         }
         val errorUi = UniversalSharingGlobalErrorUiModel(errorType)
         adapter.updateData(listOf(errorUi))
+
+        // Log
+        ErrorHandler.getErrorMessage(context, throwable)
     }
 
     private suspend fun observeSharingState() {
@@ -175,11 +180,13 @@ class UniversalSharingPostPurchaseBottomSheet :
                 when {
                     (it.productData != null) -> handleOnSuccessShare(
                         orderId = it.orderId,
+                        shopName = it.shopName,
                         productData = it.productData
                     )
                     (it.error != null) -> handleOnErrorShare(
-                        productId = it.productId,
                         orderId = it.orderId,
+                        shopName = it.shopName,
+                        productId = it.productId,
                         error = it.error
                     )
                 }
@@ -189,10 +196,15 @@ class UniversalSharingPostPurchaseBottomSheet :
 
     private fun handleOnSuccessShare(
         orderId: String,
+        shopName: String,
         productData: UniversalSharingPostPurchaseProductResponse
     ) {
         if (productData.status == "ACTIVE" || productData.stock > 0) {
-            listener?.onOpenShareBottomSheet(orderId, productData)
+            listener?.onOpenShareBottomSheet(
+                orderId = orderId,
+                shopName = shopName,
+                product = productData
+            )
             shouldClosePage = false // close bottom sheet but not the activity
             dismiss()
         } else {
@@ -206,8 +218,9 @@ class UniversalSharingPostPurchaseBottomSheet :
     }
 
     private fun handleOnErrorShare(
-        productId: String,
         orderId: String,
+        shopName: String,
+        productId: String,
         error: Throwable
     ) {
         val errorMessage = if (error is UnknownHostException) {
@@ -219,7 +232,13 @@ class UniversalSharingPostPurchaseBottomSheet :
             text = errorMessage,
             ctaText = getString(R.string.universal_sharing_post_purchase_try_again),
             type = Toaster.TYPE_ERROR,
-            onClick = { onClickShare(orderId, productId) }
+            onClick = {
+                onClickShare(
+                    orderId = orderId,
+                    shopName = shopName,
+                    productId = productId
+                )
+            }
         )
     }
 
@@ -228,11 +247,16 @@ class UniversalSharingPostPurchaseBottomSheet :
         trackProductListImpression()
     }
 
-    override fun onClickShare(orderId: String, productId: String) {
+    override fun onClickShare(
+        orderId: String,
+        shopName: String,
+        productId: String
+    ) {
         if (productId.isNotBlank() && orderId.isNotBlank()) {
             viewModel.processAction(
                 UniversalSharingPostPurchaseAction.ClickShare(
                     orderId = orderId,
+                    shopName = shopName,
                     productId = productId
                 )
             )
@@ -283,7 +307,7 @@ class UniversalSharingPostPurchaseBottomSheet :
     private fun trackClose() {
         analytics.onClickCloseProductListPostPurchase(
             userShareType = TYPE_GENERAL,
-            orderIdList = orderIdList.joinToString(","),
+            orderIdList = orderIdList.joinToString(",")
         )
     }
 

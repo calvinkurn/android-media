@@ -5,6 +5,7 @@ import com.tokopedia.universal_sharing.data.model.UniversalSharingPostPurchasePr
 interface UniversalSharingPostPurchaseBottomSheetListener {
     fun onOpenShareBottomSheet(
         orderId: String,
+        shopName: String,
         product: UniversalSharingPostPurchaseProductResponse
     )
     fun onDismiss(shouldClosePage: Boolean)

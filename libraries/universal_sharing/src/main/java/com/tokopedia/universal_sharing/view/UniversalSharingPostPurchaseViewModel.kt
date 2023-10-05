@@ -54,6 +54,7 @@ class UniversalSharingPostPurchaseViewModel @Inject constructor(
                 is UniversalSharingPostPurchaseAction.ClickShare -> {
                     getDetailData(
                         orderId = it.orderId,
+                        shopName = it.shopName,
                         productId = it.productId
                     )
                 }
@@ -75,10 +76,11 @@ class UniversalSharingPostPurchaseViewModel @Inject constructor(
                 _sharingUiState.update {
                     it.copy(
                         orderId = "",
+                        shopName = "",
                         productId = "",
                         productData = null,
                         isLoading = false,
-                        error = it.error
+                        error = throwable
                     )
                 }
             }
@@ -93,6 +95,7 @@ class UniversalSharingPostPurchaseViewModel @Inject constructor(
                 _sharingUiState.update {
                     it.copy(
                         orderId = it.orderId,
+                        shopName = it.shopName,
                         productId = it.productId,
                         productData = result.data,
                         error = null,
@@ -104,6 +107,7 @@ class UniversalSharingPostPurchaseViewModel @Inject constructor(
                 _sharingUiState.update {
                     it.copy(
                         orderId = it.orderId,
+                        shopName = it.shopName,
                         productId = it.productId,
                         productData = null,
                         error = result.throwable,
@@ -148,6 +152,7 @@ class UniversalSharingPostPurchaseViewModel @Inject constructor(
 
     private fun getDetailData(
         orderId: String,
+        shopName: String,
         productId: String
     ) {
         viewModelScope.launch {
@@ -156,6 +161,7 @@ class UniversalSharingPostPurchaseViewModel @Inject constructor(
                 _sharingUiState.update {
                     it.copy(
                         orderId = orderId,
+                        shopName = shopName,
                         productId = productId
                     )
                 }
@@ -167,10 +173,11 @@ class UniversalSharingPostPurchaseViewModel @Inject constructor(
                 _sharingUiState.update {
                     it.copy(
                         orderId = orderId,
+                        shopName = shopName,
                         productId = productId,
                         productData = null,
                         isLoading = false,
-                        error = it.error
+                        error = throwable
                     )
                 }
             }

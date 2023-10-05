@@ -116,7 +116,7 @@ import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.sessioncommon.network.TkpdOldAuthInterceptor
-import com.tokopedia.universal_sharing.usecase.ExtractBranchLinkUseCase
+import com.tokopedia.universal_sharing.domain.usecase.ExtractBranchLinkUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow

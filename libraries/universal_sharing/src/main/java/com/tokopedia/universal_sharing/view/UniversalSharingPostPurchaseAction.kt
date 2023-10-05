@@ -8,6 +8,7 @@ sealed class UniversalSharingPostPurchaseAction {
     ) : UniversalSharingPostPurchaseAction()
     data class ClickShare(
         val orderId: String,
+        val shopName: String,
         val productId: String
     ) : UniversalSharingPostPurchaseAction()
 }
