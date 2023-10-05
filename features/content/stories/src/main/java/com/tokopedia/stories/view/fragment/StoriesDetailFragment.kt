@@ -44,8 +44,11 @@ import com.tokopedia.stories.view.components.indicator.StoriesDetailTimer
 import com.tokopedia.stories.view.model.StoriesArgsModel
 import com.tokopedia.stories.view.model.StoriesDetail
 import com.tokopedia.stories.view.model.StoriesDetailItem
+import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesDetailItemUiEvent.RESUME
 import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContent
-import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContentType
+import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContentType.Image
+import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContentType.Unknown
+import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContentType.Video
 import com.tokopedia.stories.view.model.StoriesDetailItem.StoryStatus
 import com.tokopedia.stories.view.model.StoriesGroupHeader
 import com.tokopedia.stories.view.model.StoriesUiModel
@@ -289,12 +292,11 @@ class StoriesDetailFragment @Inject constructor(
 
         setNoInternet(false)
         setFailed(false)
-        setNoContent(state.detailItems.isEmpty())
 
         val prevItem = prevState?.detailItems?.getOrNull(prevState.selectedDetailPosition)
         val currentItem = state.detailItems.getOrNull(state.selectedDetailPosition) ?: return
 
-        storiesDetailsTimer(state)
+        renderTimer(state)
 
         if (currentItem.isContentLoaded) return
 
@@ -307,26 +309,41 @@ class StoriesDetailFragment @Inject constructor(
     }
 
     private fun renderMedia(content: StoriesItemContent, status: StoryStatus) {
-        if (status == StoryStatus.Active &&
-            content.type == StoriesItemContentType.Image
-        ) {
-            binding.layoutStoriesContent.ivStoriesDetailContent.loadImage(
-                content.data,
-                object : ImageLoaderStateListener {
-                    override fun successLoad() {
-                        contentIsLoaded()
-                        analytic?.sendImpressionStoriesContent(viewModel.storyId)
+        when (content.type) {
+            Image -> {
+                when (status) {
+                    StoryStatus.Active -> {
+                        binding.layoutStoriesContent.ivStoriesDetailContent.loadImage(
+                            content.data,
+                            object : ImageLoaderStateListener {
+                                override fun successLoad() {
+                                    setNoContent(false)
+                                    contentIsLoaded()
+                                    analytic?.sendImpressionStoriesContent(viewModel.storyId)
+                                }
+                                override fun failedLoad() {
+                                    setNoContent(true)
+                                }
+                            }
+                        )
                     }
 
-                    override fun failedLoad() {
+                    StoryStatus.Unknown -> {
+                        setNoContent(true)
+                        contentIsLoaded()
                     }
                 }
-            )
-            binding.layoutStoriesContent.root.show()
-            binding.layoutNoContent.root.hide()
-        } else {
-            binding.layoutStoriesContent.root.hide()
-            binding.layoutNoContent.root.show()
+            }
+
+            Video -> {
+                // todo
+                setNoContent(false)
+            }
+
+            Unknown -> {
+                setNoContent(true)
+                contentIsLoaded()
+            }
         }
     }
 
@@ -338,7 +355,11 @@ class StoriesDetailFragment @Inject constructor(
         if (state.isAnyShown.orFalse()) pauseStories() else resumeStories()
     }
 
-    private fun storiesDetailsTimer(state: StoriesDetail) {
+    private fun renderTimer(state: StoriesDetail) {
+        val data = state.detailItems[state.selectedDetailPosition]
+
+        showStoriesActionView(data.event == RESUME)
+
         with(binding.cvStoriesDetailTimer) {
             apply {
                 setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
@@ -346,7 +367,7 @@ class StoriesDetailFragment @Inject constructor(
                     StoriesDetailTimer(
                         currentPosition = state.selectedDetailPosition,
                         itemCount = state.detailItems.size,
-                        data = state.detailItems[state.selectedDetailPosition]
+                        data = data,
                     ) { if (isEligiblePage) viewModelAction(NextDetail) }
                 }
             }
@@ -371,6 +392,7 @@ class StoriesDetailFragment @Inject constructor(
     }
 
     private fun setupStoriesView() = with(binding) {
+        showStoriesActionView(false)
         showPageLoading(true)
 
         icClose.setOnClickListener { activity?.finish() }
@@ -484,9 +506,13 @@ class StoriesDetailFragment @Inject constructor(
     private fun showStoriesComponent(isShow: Boolean) {
         showSwipeProductJob?.cancel()
         binding.storiesComponent.showWithCondition(isShow)
-        binding.flStoriesNext.showWithCondition(isShow)
-        binding.flStoriesProduct.showWithCondition(isShow)
         binding.clSideIcons.showWithCondition(isShow)
+    }
+
+    private fun showStoriesActionView(isShow: Boolean) {
+        binding.flStoriesNext.showWithCondition(isShow)
+        binding.flStoriesPrev.showWithCondition(isShow)
+        binding.flStoriesProduct.showWithCondition(isShow)
     }
 
     private fun viewModelAction(event: StoriesUiAction) {
@@ -581,6 +607,7 @@ class StoriesDetailFragment @Inject constructor(
     }
 
     private fun setNoContent(isShow: Boolean) = with(binding.layoutNoContent) {
+        binding.layoutStoriesContent.root.showWithCondition(!isShow)
         root.showWithCondition(isShow)
     }
 

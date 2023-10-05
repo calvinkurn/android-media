@@ -1,9 +1,14 @@
 package com.tokopedia.stories.uimodel
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
 /**
  * @author by astidhiyaa on 08/08/23
  */
-sealed class StoryAuthor {
+
+@Parcelize
+sealed class StoryAuthor : Parcelable {
     abstract val id: String
     abstract val type: AuthorType
     abstract val thumbnailUrl: String
@@ -16,8 +21,7 @@ sealed class StoryAuthor {
         val avatarUrl: String,
         val badgeUrl: String,
         override val appLink: String
-    ) :
-        StoryAuthor() {
+    ) : StoryAuthor() {
         override val id: String
             get() = shopId
         override val type: AuthorType
