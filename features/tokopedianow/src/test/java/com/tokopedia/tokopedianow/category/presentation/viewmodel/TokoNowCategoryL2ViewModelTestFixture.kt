@@ -75,7 +75,6 @@ open class TokoNowCategoryL2ViewModelTestFixture {
 
     private val tickerPage = GetTargetedTickerUseCase.CATEGORY_L2
 
-
     @Before
     fun setUp() {
         getCategoryLayoutUseCase = mockk(relaxed = true)
@@ -111,6 +110,7 @@ open class TokoNowCategoryL2ViewModelTestFixture {
         onGetShopId_thenReturn(shopId)
         onGetWarehouseId_thenReturn(warehouseId)
         onGetTicker_thenReturn(warehouseId, getTargetedTickerResponse)
+        onGetAddressData_thenReturn(LocalCacheModel())
     }
 
     private fun onGetShopId_thenReturn(shopId: Long) {

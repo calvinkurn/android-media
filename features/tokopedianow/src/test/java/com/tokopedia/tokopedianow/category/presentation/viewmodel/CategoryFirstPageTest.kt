@@ -8,8 +8,6 @@ import com.tokopedia.tokopedianow.category.domain.mapper.CategoryNavigationMappe
 import com.tokopedia.tokopedianow.category.domain.mapper.ProductRecommendationMapper
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryOpenScreenTrackerModel
 import com.tokopedia.tokopedianow.common.domain.mapper.TickerMapper
-import com.tokopedia.tokopedianow.util.TestUtils.mockSuperClassField
-import com.tokopedia.tokopedianow.util.TestUtils.mockSuperClassField
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import org.junit.Test
 
@@ -45,7 +43,7 @@ class CategoryFirstPageTest : TokoNowCategoryViewModelTestFixture() {
 
         // map choose address
         val chooseAddressUiModel = categoryDetailResponse
-            .mapToChooseAddress()
+            .mapToChooseAddress(addressData)
 
         // map ticker
         val tickerDataList = TickerMapper.mapTickerData(
@@ -132,7 +130,7 @@ class CategoryFirstPageTest : TokoNowCategoryViewModelTestFixture() {
 
         // map choose address
         val chooseAddressUiModel = categoryDetailResponse
-            .mapToChooseAddress()
+            .mapToChooseAddress(addressData)
 
         // map ticker
         val tickerDataList = TickerMapper.mapTickerData(
