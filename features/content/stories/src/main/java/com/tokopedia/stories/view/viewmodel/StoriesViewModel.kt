@@ -131,7 +131,7 @@ class StoriesViewModel @AssistedInject constructor(
         get() {
             val currentItem = mGroup.detail.detailItems
             val productCount = currentItem.getOrNull(mGroup.detail.selectedDetailPosition)?.productCount
-            return productCount?.isNotEmpty() == true || productCount != "0"
+            return productCount != "" && productCount != "0"
         }
 
     val isAnyBottomSheetShown: Boolean
@@ -355,52 +355,55 @@ class StoriesViewModel @AssistedInject constructor(
         }
     }
 
-    private fun handleOpenKebab() {
-        viewModelScope.launch {
-            _storiesEvent.emit(StoriesUiEvent.OpenKebab)
-            bottomSheetStatus.update { bottomSheet ->
-                bottomSheet.mapValues {
-                    if (it.key == BottomSheetType.Kebab) {
-                        true
-                    } else {
-                        it.value
-                    }
-                }
-            }
-        }
-    }
-
-    private fun handleDismissSheet(bottomSheetType: BottomSheetType) {
-        bottomSheetStatus.update { bottomSheet ->
-            bottomSheet.mapValues {
-                if (it.key == bottomSheetType) {
-                    false
-                } else {
-                    it.value
-                }
-            }
-        }
-    }
-
     private fun handleShowDialogDelete() {
         viewModelScope.launch {
             _storiesEvent.emit(StoriesUiEvent.ShowDeleteDialog)
         }
     }
 
+    private fun handleDismissSheet(bottomSheetType: BottomSheetType) {
+        bottomSheetStatus.update { bottomSheet ->
+            bottomSheet.mapValues {
+                if (it.key == bottomSheetType) false
+                else it.value
+            }
+        }
+    }
+
+    private fun handleOpenKebab() {
+        viewModelScope.launch {
+            _storiesEvent.emit(StoriesUiEvent.OpenKebab)
+            bottomSheetStatus.update { bottomSheet ->
+                bottomSheet.mapValues { it.key == BottomSheetType.Kebab }
+            }
+        }
+    }
+
     private fun handleOpenProduct() {
         if (bottomSheetStatus.value.isAnyShown || !isProductAvailable) return
-
         viewModelScope.launch {
             _storiesEvent.emit(StoriesUiEvent.OpenProduct)
             bottomSheetStatus.update { bottomSheet ->
-                bottomSheet.mapValues {
-                    if (it.key == BottomSheetType.Product) {
-                        true
-                    } else {
-                        it.value
-                    }
-                }
+                bottomSheet.mapValues { it.key == BottomSheetType.Product }
+            }
+        }
+    }
+
+    private fun handleSharing() {
+        viewModelScope.launch {
+            val data = mDetail.share
+            _storiesEvent.emit(StoriesUiEvent.TapSharing(data))
+            bottomSheetStatus.update { bottomSheet ->
+                bottomSheet.mapValues { it.key == BottomSheetType.Sharing }
+            }
+        }
+    }
+
+    private fun handleVariantSheet(product: ContentTaggedProductUiModel) {
+        viewModelScope.launch {
+            _storiesEvent.emit(StoriesUiEvent.ShowVariantSheet(product))
+            bottomSheetStatus.update { bottomSheet ->
+                bottomSheet.mapValues { it.key == BottomSheetType.GVBS }
             }
         }
     }
@@ -411,8 +414,8 @@ class StoriesViewModel @AssistedInject constructor(
             val productList = repository.getStoriesProducts(args.authorId, storyId, mGroup.groupName)
             products.update { productList }
         }, onError = {
-                products.update { product -> product.copy(resultState = ResultState.Fail(it)) }
-            })
+            products.update { product -> product.copy(resultState = ResultState.Fail(it)) }
+        })
     }
 
     private fun addToCart(product: ContentTaggedProductUiModel, action: StoriesProductAction) {
@@ -438,39 +441,9 @@ class StoriesViewModel @AssistedInject constructor(
         }
     }
 
-    private fun handleSharing() {
-        viewModelScope.launch {
-            val data = mDetail.share
-            _storiesEvent.emit(StoriesUiEvent.TapSharing(data))
-            bottomSheetStatus.update { bottomSheet ->
-                bottomSheet.mapValues {
-                    if (it.key == BottomSheetType.Sharing) {
-                        true
-                    } else {
-                        it.value
-                    }
-                }
-            }
-        }
-    }
     private fun handleProductAction(action: StoriesProductAction, product: ContentTaggedProductUiModel) {
         requiredLogin {
             addToCart(product, action)
-        }
-    }
-
-    private fun handleVariantSheet(product: ContentTaggedProductUiModel) {
-        viewModelScope.launch {
-            _storiesEvent.emit(StoriesUiEvent.ShowVariantSheet(product))
-            bottomSheetStatus.update { bottomSheet ->
-                bottomSheet.mapValues {
-                    if (it.key == BottomSheetType.GVBS) {
-                        true
-                    } else {
-                        it.value
-                    }
-                }
-            }
         }
     }
 

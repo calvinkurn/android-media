@@ -1,5 +1,6 @@
 package com.tokopedia.stories.data.utils
 
+import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.stories.view.model.StoriesDetail
 import com.tokopedia.stories.view.model.StoriesDetailItem
 import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesDetailItemUiEvent
@@ -11,6 +12,7 @@ fun mockInitialDataModel(
     selectedGroup: Int = 0,
     selectedDetail: Int = 0,
     isCached: Boolean = true,
+    isProductCountEmpty: Boolean = false,
 ): StoriesUiModel {
     return StoriesUiModel(
         selectedGroupId = if (isCached) "groupId $selectedGroup" else "",
@@ -65,6 +67,7 @@ fun mockInitialDataModel(
                                     activityTracker = "12345",
                                     templateTracker = "1235df8",
                                 ),
+                                productCount = if (isProductCountEmpty) "" else "0",
                             ),
                             StoriesDetailItem(
                                 id = "1",
@@ -80,6 +83,7 @@ fun mockInitialDataModel(
                                     activityTracker = "12345",
                                     templateTracker = "1235df8",
                                 ),
+                                productCount = if (isProductCountEmpty) "" else "0",
                             ),
                             StoriesDetailItem(
                                 id = "2",
@@ -95,6 +99,7 @@ fun mockInitialDataModel(
                                     activityTracker = "12345",
                                     templateTracker = "1235df8",
                                 ),
+                                productCount = if (isProductCountEmpty) "" else "0",
                             ),
                         ),
                     )
@@ -123,6 +128,7 @@ fun mockInitialDataModel(
                                     activityTracker = "12345",
                                     templateTracker = "1235df8",
                                 ),
+                                productCount = if (isProductCountEmpty) "" else "0",
                             ),
                             StoriesDetailItem(
                                 id = "1",
@@ -138,6 +144,7 @@ fun mockInitialDataModel(
                                     activityTracker = "12345",
                                     templateTracker = "1235df8",
                                 ),
+                                productCount = if (isProductCountEmpty) "" else "0",
                             ),
                             StoriesDetailItem(
                                 id = "2",
@@ -153,6 +160,7 @@ fun mockInitialDataModel(
                                     activityTracker = "12345",
                                     templateTracker = "1235df8",
                                 ),
+                                productCount = if (isProductCountEmpty) "" else "0",
                             ),
                         ),
                     )
@@ -181,6 +189,7 @@ fun mockInitialDataModel(
                                     activityTracker = "12345",
                                     templateTracker = "1235df8",
                                 ),
+                                productCount = if (isProductCountEmpty) "" else "0",
                             ),
                             StoriesDetailItem(
                                 id = "1",
@@ -196,6 +205,7 @@ fun mockInitialDataModel(
                                     activityTracker = "12345",
                                     templateTracker = "1235df8",
                                 ),
+                                productCount = if (isProductCountEmpty) "" else "0",
                             ),
                             StoriesDetailItem(
                                 id = "2",
@@ -211,6 +221,7 @@ fun mockInitialDataModel(
                                     activityTracker = "12345",
                                     templateTracker = "1235df8",
                                 ),
+                                productCount = if (isProductCountEmpty) "" else "0",
                             ),
                         ),
                     )
@@ -225,6 +236,7 @@ fun mockInitialDataModelForDeleteStories(
     selectedGroup: Int = 0,
     selectedDetail: Int = 0,
     isCached: Boolean = true,
+    isProductCountEmpty: Boolean = false,
 ): StoriesUiModel {
     return StoriesUiModel(
         selectedGroupId = if (isCached) "groupId $selectedGroup" else "",
@@ -273,6 +285,7 @@ fun mockInitialDataModelForDeleteStories(
                                     activityTracker = "12345",
                                     templateTracker = "1235df8",
                                 ),
+                                productCount = if (isProductCountEmpty) "" else "0",
                             ),
                         ),
                     )
@@ -301,6 +314,7 @@ fun mockInitialDataModelForDeleteStories(
                                     activityTracker = "12345",
                                     templateTracker = "1235df8",
                                 ),
+                                productCount = if (isProductCountEmpty) "" else "0",
                             ),
                         ),
                     )
@@ -329,6 +343,7 @@ fun mockInitialDataModelForDeleteStories(
                                     activityTracker = "12345",
                                     templateTracker = "1235df8",
                                 ),
+                                productCount = if (isProductCountEmpty) "" else "0",
                             ),
                         ),
                     )
@@ -642,4 +657,24 @@ fun StoriesGroupItem.mockGroupResetValue(expectedGroupDetail: List<StoriesDetail
 
 fun StoriesDetailItem.mockDetailResetValue(expectedDetail: StoriesDetailItem): StoriesDetailItem {
     return this.copy(resetValue = expectedDetail.resetValue)
+}
+
+fun mockContentTaggedProductUiModel(): ContentTaggedProductUiModel {
+    return ContentTaggedProductUiModel(
+        id = "",
+        parentID = "",
+        showGlobalVariant = false,
+        shop = ContentTaggedProductUiModel.Shop(id = "", name = ""),
+        title = "",
+        imageUrl = "",
+        price = ContentTaggedProductUiModel.NormalPrice(formattedPrice = "", price = 0.0),
+        appLink = "",
+        campaign = ContentTaggedProductUiModel.Campaign(
+            type = ContentTaggedProductUiModel.CampaignType.NoCampaign,
+            status = ContentTaggedProductUiModel.CampaignStatus.Upcoming,
+            isExclusiveForMember = false
+        ),
+        affiliate = ContentTaggedProductUiModel.Affiliate(id = "", channel = ""),
+        stock = ContentTaggedProductUiModel.Stock.OutOfStock,
+    )
 }
