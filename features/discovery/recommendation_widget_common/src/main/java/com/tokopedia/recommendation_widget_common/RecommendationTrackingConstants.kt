@@ -19,6 +19,7 @@ object RecommendationTrackingConstants {
 
         const val CATEGORY_PDP = "product detail page"
         const val BUSINESS_UNIT_HOME = "home & browse"
+        const val BUSINESS_UNIT_PG = "Physical Goods"
 
         const val CATEGORY_ID = "category_id"
         const val DIMENSION_40 = "dimension40"
@@ -54,6 +55,7 @@ object RecommendationTrackingConstants {
         fun String.convertToWidgetType(): String = replace("-", " ")
 
         const val CLICK_HOMEPAGE = "clickHomepage"
+        const val CLICK_PG = "clickPG"
     }
 
     object Action {

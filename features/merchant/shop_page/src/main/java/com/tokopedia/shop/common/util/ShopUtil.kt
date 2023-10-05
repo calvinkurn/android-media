@@ -14,9 +14,12 @@ import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.media.loader.data.Properties
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.RollenceKey.AB_TEST_SHOP_FOLLOW_BUTTON_KEY
 import com.tokopedia.remoteconfig.RollenceKey.AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_OLD
+import com.tokopedia.remoteconfig.RollenceKey.AB_TEST_SHOP_RE_IMAGINED
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant
 import com.tokopedia.shop.common.constant.IGNORED_FILTER_KONDISI
 import com.tokopedia.shop.common.constant.IGNORED_FILTER_PENAWARAN
@@ -156,6 +159,7 @@ object ShopUtil {
         return try {
             Color.parseColor(colorHex)
         } catch (e: Exception) {
+            //TODO need to add default color from unify, but need to pass context on param
             FirebaseCrashlytics.getInstance().recordException(e)
             Int.ZERO
         }
@@ -171,5 +175,12 @@ object ShopUtil {
         } else {
             ""
         }
+    }
+
+    fun isEnableShopPageReImagined(context: Context?): Boolean {
+        return FirebaseRemoteConfigImpl(context).getBoolean(
+            RemoteConfigKey.ENABLE_SHOP_PAGE_REIMAGINED,
+            true
+        )
     }
 }
