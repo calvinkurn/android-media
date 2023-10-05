@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.catalogcommon.R
 import com.tokopedia.catalogcommon.databinding.WidgetStickyNavigationBinding
 import com.tokopedia.catalogcommon.uimodel.StickyNavigationUiModel
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -30,6 +31,7 @@ class StickyTabNavigationViewHolder(
     override fun bind(element: StickyNavigationUiModel?) {
         binding?.let {
             it.catalogTabsUnify.tabLayout.removeAllTabs()
+            it.catalogTabsUnify.tabLayout.clearOnTabSelectedListeners()
             setupTabs(
                 element,
                 element?.widgetBackgroundColor ?: Color.TRANSPARENT
@@ -42,9 +44,12 @@ class StickyTabNavigationViewHolder(
         widgetBackgroundColor: Int
     ) {
         binding?.run {
-            element?.content?.forEach {
-                catalogTabsUnify.addNewTab(it.title)
+            if (catalogTabsUnify.tabLayout.tabCount == Int.ZERO){
+                element?.content?.forEachIndexed { index, item ->
+                    catalogTabsUnify.addNewTab(item.title)
+                }
             }
+            catalogTabsUnify.tabLayout.getTabAt(element?.currentSelectTab.orZero())?.select()
             catalogTabsUnify.customTabMode = TabLayout.MODE_FIXED
             catalogTabsUnify.tabLayout.isTabIndicatorFullWidth = false
             catalogTabsUnify.tabLayout.setBackgroundColor(widgetBackgroundColor)
@@ -52,26 +57,21 @@ class StickyTabNavigationViewHolder(
                 catalogTabsUnify.tabLayout.context,
                 R.drawable.shape_showcase_tab_indicator_color
             )
-            catalogTabsUnify.tabLayout.getTabAt(element?.currentSelectTab.orZero())?.select()
             catalogTabsUnify.tabLayout.setSelectedTabIndicator(centeredTabIndicator)
             catalogTabsUnify.tabLayout.setTabTextColors(Color.BLUE, Color.BLACK)
             catalogTabsUnify.tabLayout.addOnTabSelectedListener(object : OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
-                    if (tab?.position.orZero() != element?.currentSelectTab){
-                        element?.currentSelectTab = tab?.position.orZero()
-                        listener?.onNavigateWidget(
-                            element?.content?.get(tab?.position.orZero())?.anchorTo.orEmpty(),
-                            element?.currentSelectTab.orZero(),
-                            element?.content?.getOrNull(tab?.position.orZero())?.title.orEmpty()
-                        )
-                    }
+                    listener?.onNavigateWidget(
+                        element?.content?.get(tab?.position.orZero())?.anchorTo.orEmpty(),
+                        tab?.position.orZero(),
+                        element?.content?.getOrNull(tab?.position.orZero())?.title.orEmpty(),
+                    )
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab?) {
                 }
 
                 override fun onTabReselected(tab: TabLayout.Tab?) {
-                    element?.currentSelectTab = tab?.position.orZero()
 
                 }
 

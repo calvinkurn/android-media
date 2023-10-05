@@ -12,6 +12,7 @@ import com.tokopedia.catalogcommon.StickySingleHeaderView
 import com.tokopedia.catalogcommon.uimodel.BaseCatalogUiModel
 import com.tokopedia.catalogcommon.uimodel.StickyNavigationUiModel
 import com.tokopedia.catalogcommon.viewholder.StickyTabNavigationViewHolder
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ZERO
 
 class WidgetCatalogAdapter(
@@ -94,27 +95,10 @@ class WidgetCatalogAdapter(
         val currentWidget = visitables.getOrNull(position) as? BaseCatalogUiModel
         navigation?.let { stickyNav ->
             val indexPartOfNavigation = stickyNav.content.indexOfFirst {
-                it.anchorTo == currentWidget?.widgetName.orEmpty()
+                it.anchorWidgets.contains(currentWidget?.widgetName.orEmpty())
             }
 
-            val firstIndexPartOfNavigation = visitables.indexOfFirst {
-                val uiModel = it as BaseCatalogUiModel
-                stickyNav.content.firstOrNull()?.anchorTo.orEmpty() == uiModel.widgetName
-            }
-
-            val lastIndexPartOfNavigation = visitables.indexOfFirst {
-                val uiModel = it as BaseCatalogUiModel
-                stickyNav.content.lastOrNull()?.anchorTo.orEmpty() == uiModel.widgetName
-            }
-
-            if (indexPartOfNavigation >= Int.ZERO) {
-                changeNavigationTabActive(indexPartOfNavigation)
-            } else if (position < firstIndexPartOfNavigation) {
-                changeNavigationTabActive(Int.ZERO)
-            } else if (position >= lastIndexPartOfNavigation) {
-                val lastTabPosition = navigation.content.size - 1
-                changeNavigationTabActive(lastTabPosition)
-            }
+            changeNavigationTabActive(indexPartOfNavigation)
         }
     }
 
@@ -125,12 +109,18 @@ class WidgetCatalogAdapter(
             it is StickyNavigationUiModel
         }
 
+
         val navigation = visitables.getOrNull(indexNavigation) as? StickyNavigationUiModel
 
         if (tabPosition != navigation?.currentSelectTab) {
             navigation?.currentSelectTab = tabPosition
             visitables[indexNavigation] = navigation
-            refreshSticky()
+            if (!onStickySingleHeaderViewListener?.isStickyShowed.orFalse()){
+                notifyItemChanged(indexNavigation)
+            }else{
+                refreshSticky()
+                notifyItemChanged(indexNavigation)
+            }
         }
     }
 
@@ -148,5 +138,9 @@ class WidgetCatalogAdapter(
         return index
     }
 
+    fun findNavigationCurrentTab(): Int {
+        return (visitables.getOrNull(findPositionNavigation()) as? StickyNavigationUiModel)?.currentSelectTab
+            ?: -1
+    }
 
 }

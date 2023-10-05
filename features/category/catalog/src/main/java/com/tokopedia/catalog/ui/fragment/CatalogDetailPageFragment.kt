@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.graphics.Rect
 import android.net.Uri
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -99,6 +100,7 @@ import java.net.UnknownHostException
 import javax.inject.Inject
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
+
 class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
     StickyNavigationListener, AccordionListener, BannerListener, TrustMakerListener,
     TextDescriptionListener, VideoExpertListener, TopFeatureListener, DoubleBannerListener {
@@ -149,6 +151,8 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
 
     var catalogUrl = ""
 
+    var isChangeSelectionFromClickNavigation = false
+
     private val userSession: UserSession by lazy {
         UserSession(activity)
     }
@@ -159,7 +163,7 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
                 super.onScrolled(recyclerView, dx, dy)
                 val layoutManager = recyclerView.layoutManager as? LinearLayoutManager
 
-                val indexVisible = layoutManager?.findLastCompletelyVisibleItemPosition().orZero()
+                val indexVisible = layoutManager?.findLastVisibleItemPosition().orZero()
                 binding?.rvContent?.post {
                     if (recyclerView.scrollState == RecyclerView.SCROLL_STATE_SETTLING) {
                         widgetAdapter.autoSelectNavigation(indexVisible)
@@ -196,6 +200,7 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
             viewModel.refreshNotification()
         }
 
+
     }
 
     override fun onNavBackClicked() {
@@ -223,7 +228,7 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
     }
 
     override fun onNavigateWidget(anchorTo: String, tabPosition: Int, tabTitle: String?) {
-
+        isChangeSelectionFromClickNavigation = true
         val smoothScroller: RecyclerView.SmoothScroller = object : LinearSmoothScroller(context) {
             override fun getVerticalSnapPreference(): Int {
                 return SNAP_TO_START
@@ -231,10 +236,16 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
         }
         val anchorToPosition = widgetAdapter.findPositionWidget(anchorTo)
         val layoutManager = binding?.rvContent?.layoutManager as? LinearLayoutManager
+        widgetAdapter.changeNavigationTabActive(tabPosition)
         if (anchorToPosition >= Int.ZERO) {
-            widgetAdapter.changeNavigationTabActive(tabPosition)
-            smoothScroller.targetPosition = anchorToPosition - 2
-            layoutManager?.startSmoothScroll(smoothScroller)
+            if (tabPosition == Int.ZERO){
+                smoothScroller.targetPosition = anchorToPosition - 3
+                layoutManager?.startSmoothScroll(smoothScroller)
+            }else{
+                smoothScroller.targetPosition = anchorToPosition - 2
+                layoutManager?.startSmoothScroll(smoothScroller)
+            }
+
         }
 
         CatalogReimagineDetailAnalytics.sendEvent(
