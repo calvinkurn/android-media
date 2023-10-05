@@ -107,7 +107,9 @@ class TokoNowCategoryL2TabFragment : Fragment() {
     private var adapterTypeFactory: CategoryL2TabAdapterTypeFactory? = null
     private var categoryAdapter: CategoryL2TabAdapter? = null
 
+    @Suppress("LateinitUsage")
     private lateinit var viewModel: TokoNowCategoryL2TabViewModel
+    @Suppress("LateinitUsage")
     private lateinit var productRecommendationViewModel: TokoNowProductRecommendationViewModel
 
     private var binding by autoClearedNullable<FragmentTokopedianowL2TabBinding>()
