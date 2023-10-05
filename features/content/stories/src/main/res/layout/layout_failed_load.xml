@@ -90,40 +90,46 @@
         app:layout_constraintTop_toBottomOf="@+id/loader_circle_3"
         app:loader_type="rect" />
 
-    <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/iv_stories_failed_load"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        app:icon_color_light_enable="@color/Unify_Static_White"
-        app:icon_color_night_enable="@color/Unify_Static_White"
-        app:icon_name="RELOAD"
+    <LinearLayout
+        android:id="@+id/container_error"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_stories_failed_title"
-        android:padding="@dimen/content_common_space_8"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/stories_retry_description"
-        android:textColor="@color/Unify_Static_White"
-        app:layout_constraintEnd_toEndOf="@+id/iv_stories_failed_load"
-        app:layout_constraintStart_toStartOf="@+id/iv_stories_failed_load"
-        app:layout_constraintTop_toBottomOf="@id/iv_stories_failed_load"
-        app:typographyType="heading_3" />
+        <com.tokopedia.iconunify.IconUnify
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center_horizontal"
+            app:icon_color_light_enable="@color/Unify_Static_White"
+            app:icon_color_night_enable="@color/Unify_Static_White"
+            app:icon_name="RELOAD" />
 
-    <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/btn_stories_failed_load"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="@string/stories_retry"
-        app:unifyButtonVariant="ghost"
-        app:unifyButtonType="alternate"
-        app:unifyButtonInvers="true"
-        android:layout_marginTop="@dimen/unify_space_8"
-        app:layout_constraintEnd_toEndOf="@+id/tv_stories_failed_title"
-        app:layout_constraintStart_toStartOf="@+id/tv_stories_failed_title"
-        app:layout_constraintTop_toBottomOf="@+id/tv_stories_failed_title" />
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="12dp"
+            android:text="@string/stories_retry_description"
+            android:textColor="@color/Unify_Static_White"
+            app:typographyType="heading_3" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_stories_failed_load"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/stories_retry"
+            app:unifyButtonInvers="true"
+            app:unifyButtonSize="medium"
+            app:unifyButtonType="alternate"
+            app:unifyButtonVariant="ghost" />
+
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
