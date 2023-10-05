@@ -196,7 +196,8 @@ class UniversalInboxViewModel @Inject constructor(
                 onSuccessGetMenuAndCounter(
                     result.menu.data,
                     result.counter.data,
-                    result.driverChannel
+                    result.driverChannel,
+                    shouldTrackImpression = true
                 )
             }
 
@@ -231,7 +232,8 @@ class UniversalInboxViewModel @Inject constructor(
     private fun onSuccessGetMenuAndCounter(
         inboxResponse: UniversalInboxWrapperResponse?,
         counterResponse: UniversalInboxAllCounterResponse,
-        driverResponse: Result<List<ConversationsChannel>>
+        driverResponse: Result<List<ConversationsChannel>>,
+        shouldTrackImpression: Boolean = false
     ) {
         try {
             if (inboxResponse == null) {
@@ -260,7 +262,8 @@ class UniversalInboxViewModel @Inject constructor(
                     widgetMeta = widgetMeta,
                     menuList = menuList,
                     miscList = miscList,
-                    notificationCounter = counterResponse.notifCenterUnread.notifUnread
+                    notificationCounter = counterResponse.notifCenterUnread.notifUnread,
+                    shouldTrackImpression = shouldTrackImpression
                 )
             }
         } catch (throwable: Throwable) {
@@ -356,7 +359,8 @@ class UniversalInboxViewModel @Inject constructor(
         viewModelScope.launch {
             _inboxMenuUiState.update {
                 it.copy(
-                    isLoading = true
+                    isLoading = true,
+                    shouldTrackImpression = false
                 )
             }
         }
@@ -372,7 +376,8 @@ class UniversalInboxViewModel @Inject constructor(
                             isLocalLoadLoading = false
                         )
                     ),
-                    isLoading = false
+                    isLoading = false,
+                    shouldTrackImpression = false
                 )
             }
         }
