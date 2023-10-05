@@ -3,15 +3,13 @@ package com.tokopedia.cartrevamp.view.processor
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartModel
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
+import com.tokopedia.purchase_platform.common.constant.BmGmConstant.CART_DETAIL_TYPE_BMGM
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.utils.currency.CurrencyFormatUtil
-import javax.inject.Inject
 
-class CartCalculator @Inject constructor() {
+object CartCalculator {
 
-    companion object {
-        private const val PERCENTAGE = 100.0f
-    }
+    private const val PERCENTAGE = 100.0f
 
     fun calculatePriceMarketplaceProduct(
         allCartItemDataList: ArrayList<CartItemHolderData>,
@@ -28,6 +26,7 @@ class CartCalculator @Inject constructor() {
         val subtotalWholesaleCashbackMap = HashMap<String, Double>()
         val cartItemParentIdMap = HashMap<String, CartItemHolderData>()
         val calculatedBundlingGroupId = HashSet<String>()
+        val totalDiscountBmGmMap = HashMap<Long, Double>()
 
         for (cartItemHolderData in allCartItemDataList) {
             var itemQty =
@@ -100,6 +99,12 @@ class CartCalculator @Inject constructor() {
                     }
                 }
             }
+
+            if (cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.cartDetailType == CART_DETAIL_TYPE_BMGM && cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.totalDiscount > 0.0) {
+                if (!totalDiscountBmGmMap.containsKey(cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId)) {
+                    totalDiscountBmGmMap[cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId] = cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.totalDiscount
+                }
+            }
         }
 
         if (subtotalWholesaleBeforeSlashedPriceMap.isNotEmpty()) {
@@ -120,11 +125,17 @@ class CartCalculator @Inject constructor() {
             }
         }
 
+        if (totalDiscountBmGmMap.isNotEmpty()) {
+            for ((_, value) in totalDiscountBmGmMap) {
+                subtotalPrice -= value
+            }
+        }
+
         val pricePair = Pair(subtotalBeforeSlashedPrice, subtotalPrice)
         return Triple(totalItemQty, pricePair, subtotalCashback)
     }
 
-    private fun calculatePriceWholesaleProduct(
+    fun calculatePriceWholesaleProduct(
         cartItemHolderData: CartItemHolderData,
         itemQty: Int
     ): Triple<Double, Double, Double> {

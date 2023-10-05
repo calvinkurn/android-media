@@ -18,6 +18,7 @@ import com.tokopedia.play.PLAY_KEY_CHANNEL_RECOMMENDATION
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.cast.PlayCastNotificationAction
+import com.tokopedia.play.view.storage.PlayQueryParamStorage
 import com.tokopedia.play.databinding.ActivityPlayBinding
 import com.tokopedia.play.di.PlayInjector
 import com.tokopedia.play.util.PlayCastHelper
@@ -86,6 +87,9 @@ class PlayActivity :
     @Inject
     lateinit var analytic: PlayAnalytic
 
+    @Inject
+    lateinit var queryParamStorage: PlayQueryParamStorage
+
     private lateinit var binding: ActivityPlayBinding
 
     private lateinit var viewModel: PlayParentViewModel
@@ -132,8 +136,12 @@ class PlayActivity :
      */
     private val startChannelId: String
         get() {
-            val lastSegment = intent?.data?.lastPathSegment.orEmpty()
-            return if (lastSegment == PLAY_KEY_CHANNEL_RECOMMENDATION) "0" else lastSegment
+            return if (lastPathSegment == PLAY_KEY_CHANNEL_RECOMMENDATION) "0" else lastPathSegment
+        }
+
+    private val lastPathSegment: String
+        get() {
+            return intent?.data?.lastPathSegment.orEmpty()
         }
 
     val activeFragment: PlayFragment?
@@ -238,6 +246,8 @@ class PlayActivity :
     }
 
     override fun onPageSelected(position: Int) {
+        queryParamStorage.pageSelected = position
+
         activeFragment?.setFragmentActive(position)
         swipeCoachMarkView.hideAnimated()
     }

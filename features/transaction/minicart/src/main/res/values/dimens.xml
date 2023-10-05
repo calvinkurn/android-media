@@ -8,4 +8,5 @@
     <dimen name="dp_10">10dp</dimen>
     <dimen name="dp_4">4dp</dimen>
     <dimen name="dp_32">32dp</dimen>
+    <dimen name="bmgm_olp_mini_cart_item_height">52dp</dimen>
 </resources>
