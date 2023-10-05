@@ -243,6 +243,10 @@ internal class StoriesViewModelRobot(
         viewModel.submitAction(StoriesUiAction.ProductAction(action, product))
     }
 
+    fun testNav(appLink: String) {
+        viewModel.submitAction(StoriesUiAction.Navigate(appLink))
+    }
+
     override fun close() {
         cancelRemainingTasks()
     }

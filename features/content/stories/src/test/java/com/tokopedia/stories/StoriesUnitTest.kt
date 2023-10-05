@@ -1090,4 +1090,16 @@ class StoriesUnitTest {
         }
     }
 
+    @Test
+    fun `when navigate`() {
+        val appLink = "tokopedia://stories/shop/1234"
+        getStoriesRobot().use { robot ->
+            val event = robot.recordEvent {
+                robot.testNav(appLink)
+            }
+
+            event.last().assertEqualTo(StoriesUiEvent.NavigateEvent(appLink))
+        }
+    }
+
 }

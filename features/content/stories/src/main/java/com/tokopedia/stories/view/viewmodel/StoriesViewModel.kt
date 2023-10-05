@@ -482,6 +482,12 @@ class StoriesViewModel @AssistedInject constructor(
         moveToOtherStories()
     }
 
+    private fun handleNav(appLink: String) {
+        viewModelScope.launch {
+            _storiesEvent.emit(StoriesUiEvent.NavigateEvent(appLink))
+        }
+    }
+
     private fun moveToOtherStories() {
         val newGroupPosition = mGroupPos.plus(1)
         when {
@@ -577,12 +583,6 @@ class StoriesViewModel @AssistedInject constructor(
             action = StoriesTrackActivityActionType.LAST_SEEN.value
         )
         return repository.setStoriesTrackActivity(request)
-    }
-
-    private fun handleNav(appLink: String) {
-        viewModelScope.launch {
-            _storiesEvent.emit(StoriesUiEvent.NavigateEvent(appLink))
-        }
     }
 
     companion object {
