@@ -218,8 +218,8 @@ internal class StoriesViewModelRobot(
         viewModel.submitAction(StoriesUiAction.OpenKebabMenu)
     }
 
-    fun openProductBottomSheet(withMockProduct: Boolean = false) {
-        if (withMockProduct) entryPointTestCase(0)
+    fun openProductBottomSheet() {
+        entryPointTestCase(0)
         viewModel.submitAction(StoriesUiAction.OpenProduct)
     }
 
