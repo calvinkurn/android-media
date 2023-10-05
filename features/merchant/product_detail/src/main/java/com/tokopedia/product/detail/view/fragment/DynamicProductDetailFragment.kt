@@ -13,7 +13,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.TextUtils
-import android.util.Log
 import android.util.SparseIntArray
 import android.view.KeyEvent
 import android.view.View
@@ -97,8 +96,6 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
-import com.tokopedia.logger.ServerLogger
-import com.tokopedia.logger.utils.Priority
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.mvcwidget.views.MvcView
@@ -2902,9 +2899,14 @@ open class DynamicProductDetailFragment :
                         cacheState = viewModel.pdpLayout?.cacheState,
                         isCampaign = viewModel.pdpLayout?.isCampaign.orFalse()
                     )
+                    ProductDetailServerLogger.logNewRelicP1Success(
+                        productId = productId,
+                        cacheState = viewModel.pdpLayout?.cacheState,
+                        isCampaign = viewModel.pdpLayout?.isCampaign
+                    )
                 }
             }, {
-                handleP1Error(error = it)
+                handleObserverP1Error(error = it)
             })
 
             getRecyclerView()?.addOneTimeGlobalLayoutListener {
@@ -2913,49 +2915,14 @@ open class DynamicProductDetailFragment :
         }
     }
 
-    private fun handleP1Error(error: Throwable) {
-        if (isCacheable() && viewModel.pdpLayout?.cacheState?.isFromCache == true) {
-            val view = binding?.root ?: return
-            val errorModel = ProductDetailErrorHelper.getErrorType(
-                view.context,
-                error,
-                isFromDeeplink,
-                deeplinkUrl
-            )
-
-            when (errorModel.errorCode.toIntOrZero()) {
-                GlobalError.SERVER_ERROR, GlobalError.NO_CONNECTION -> {
-                    // TODO wording
-                    Toaster.build(
-                        view = view,
-                        text = "Koneksi internetmu terganggu!\nPastikan internetmu lancar dengan cek ulang paket data, WifFi, atau jaringan di tempatmu.",
-                        actionText = "Coba lagi",
-                        duration = LENGTH_INDEFINITE,
-                        type = TYPE_ERROR
-                    ) {
-                        loadData(true)
-                    }.show()
-                    return
-                }
-            }
-        }
-
-        handleObserverP1Error(error = error)
-    }
-
     private fun handleObserverP1Error(error: Throwable) {
-        ServerLogger.log(
-            Priority.P2,
-            "LOAD_PAGE_FAILED",
-            mapOf(
-                "type" to "pdp",
-                "desc" to error.message.orEmpty(),
-                "err" to Log.getStackTraceString(error)
-                    .take(ProductDetailConstant.LOG_MAX_LENGTH).trim()
-            )
-        )
+        ProductDetailServerLogger.logNewRelicP1Error(error = error)
         logException(error)
-        context?.let { ctx ->
+        val ctx = context ?: return
+
+        if (isPdpCacheableError()) {
+            showToasterP1Error(error = error)
+        } else {
             val errorModel = ProductDetailErrorHelper.getErrorType(
                 ctx,
                 error,
@@ -2971,6 +2938,35 @@ open class DynamicProductDetailFragment :
                 cacheState = pdpLayout?.cacheState,
                 isCampaign = pdpLayout?.isCampaign.orFalse()
             )
+        }
+    }
+
+    private fun isPdpCacheableError(): Boolean {
+        return isCacheable() && viewModel.pdpLayout?.cacheState?.isFromCache == true
+    }
+
+    private fun showToasterP1Error(error: Throwable) {
+        val view = binding?.root ?: return
+        val errorModel = ProductDetailErrorHelper.getErrorType(
+            view.context,
+            error,
+            isFromDeeplink,
+            deeplinkUrl
+        )
+
+        when (errorModel.errorCode.toIntOrZero()) {
+            GlobalError.SERVER_ERROR, GlobalError.NO_CONNECTION -> {
+                Toaster.build(
+                    view = view,
+                    text = "Koneksi internetmu terganggu!\nPastikan internetmu lancar dengan cek ulang paket data, WifFi, atau jaringan di tempatmu.",
+                    actionText = "Coba lagi",
+                    duration = LENGTH_INDEFINITE,
+                    type = TYPE_ERROR
+                ) {
+                    onSwipeRefresh()
+                }.show()
+                return
+            }
         }
     }
 

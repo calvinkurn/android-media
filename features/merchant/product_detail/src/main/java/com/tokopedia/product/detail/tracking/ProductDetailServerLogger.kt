@@ -58,6 +58,33 @@ object ProductDetailServerLogger {
         )
     }
 
+    fun logNewRelicP1Error(error: Throwable) {
+        ServerLogger.log(
+            Priority.P2,
+            "LOAD_PAGE_FAILED",
+            mapOf(
+                "type" to "pdp",
+                "desc" to error.message.orEmpty(),
+                "err" to Log.getStackTraceString(error)
+                    .take(ProductDetailConstant.LOG_MAX_LENGTH).trim()
+            )
+        )
+    }
+
+    fun logNewRelicP1Success(productId: String?, cacheState: CacheState?, isCampaign: Boolean?) {
+        ServerLogger.log(
+            Priority.P2,
+            "LOAD_PAGE_SUCCESS",
+            mapOf(
+                "type" to "pdp",
+                "productId" to productId.orEmpty(),
+                "isFromCache" to cacheState?.isFromCache.toString(),
+                "cacheFirstThenCloud" to cacheState?.cacheFirstThenCloud.toString(),
+                "isCampaign" to isCampaign.toString()
+            )
+        )
+    }
+
     fun logBreadCrumbFirstOpenPage(
         productId: String?,
         shopName: String?,

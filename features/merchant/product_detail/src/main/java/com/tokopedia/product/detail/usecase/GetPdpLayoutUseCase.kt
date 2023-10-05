@@ -463,7 +463,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
             }
     }
 
-    var onSuccess: (suspend (ProductDetailDataModel) -> Unit)? = null
+    var onSuccess: ((ProductDetailDataModel) -> Unit)? = null
     var onError: ((Throwable) -> Unit)? = null
 
     var requestParams: RequestParams = RequestParams.EMPTY

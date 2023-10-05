@@ -91,6 +91,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -109,8 +110,8 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         val selectedMiniCart = viewModel.getMiniCartItem()
 
-        Assert.assertTrue(selectedMiniCart != null)
-        Assert.assertEquals(selectedMiniCart?.productId ?: "", "518076293")
+        assertTrue(selectedMiniCart != null)
+        assertEquals(selectedMiniCart?.productId ?: "", "518076293")
     }
 
     @Test
@@ -119,7 +120,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         val selectedMiniCart = viewModel.getMiniCartItem()
 
-        Assert.assertTrue(selectedMiniCart == null)
+        assertTrue(selectedMiniCart == null)
     }
 
     @Test
@@ -127,7 +128,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         viewModel.getProductP1(ProductParams(), userLocationLocal = LocalCacheModel("123"))
 
         val data = viewModel.getUserLocationCache()
-        Assert.assertTrue(data.address_id == "123")
+        assertTrue(data.address_id == "123")
     }
 
     @Test
@@ -142,8 +143,8 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     @Test
     fun `success update video tracker data`() {
         viewModel.updateVideoTrackerData(10L, 120L)
-        Assert.assertTrue(viewModel.videoTrackerData?.first == 10L)
-        Assert.assertTrue(viewModel.videoTrackerData?.second == 120L)
+        assertTrue(viewModel.videoTrackerData?.first == 10L)
+        assertTrue(viewModel.videoTrackerData?.second == 120L)
     }
 
     @Test
@@ -155,7 +156,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     @Test
     fun `on success update talk action`() {
         viewModel.updateLastAction(DynamicProductDetailTalkGoToWriteDiscussion)
-        Assert.assertTrue(viewModel.talkLastAction is DynamicProductDetailTalkGoToWriteDiscussion)
+        assertTrue(viewModel.talkLastAction is DynamicProductDetailTalkGoToWriteDiscussion)
     }
 
     @Test
@@ -172,7 +173,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         val hasShopAuthority = spykViewModel.hasShopAuthority()
 
-        Assert.assertTrue(hasShopAuthority)
+        assertTrue(hasShopAuthority)
     }
 
     @Test
@@ -189,7 +190,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         val hasShopAuthority = spykViewModel.hasShopAuthority()
 
-        Assert.assertTrue(hasShopAuthority)
+        assertTrue(hasShopAuthority)
     }
 
     @Test
@@ -206,7 +207,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         val hasShopAuthority = spykViewModel.hasShopAuthority()
 
-        Assert.assertTrue(hasShopAuthority)
+        assertTrue(hasShopAuthority)
     }
 
     @Test
@@ -225,7 +226,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         val isShopOwner = viewModel.isShopOwner()
 
-        Assert.assertTrue(isShopOwner)
+        assertTrue(isShopOwner)
         viewModel.getDynamicProductInfoP1 = null
     }
 
@@ -245,7 +246,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         val isShopOwner = viewModel.isShopOwner()
 
-        Assert.assertFalse(isShopOwner)
+        assertFalse(isShopOwner)
         viewModel.getDynamicProductInfoP1 = null
     }
     //endregion
@@ -302,15 +303,15 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             miniCartListSimplifiedUseCase.executeOnBackground()
         }
 
-        Assert.assertEquals(viewModel.miniCartData.value, true)
-        Assert.assertEquals(shopIdSlot.captured.firstOrNull() ?: "", "312")
+        assertEquals(viewModel.miniCartData.value, true)
+        assertEquals(shopIdSlot.captured.firstOrNull() ?: "", "312")
 
         val p2MiniCart = viewModel.p2Data.value?.miniCart
         Assert.assertNotNull(p2MiniCart)
-        Assert.assertTrue(p2MiniCart?.isNotEmpty() == true)
-        Assert.assertTrue(p2MiniCart?.get("123") != null)
-        Assert.assertEquals(p2MiniCart?.get("123")?.productId ?: "", "123")
-        Assert.assertEquals(p2MiniCart?.get("123")?.quantity ?: "", 2)
+        assertTrue(p2MiniCart?.isNotEmpty() == true)
+        assertTrue(p2MiniCart?.get("123") != null)
+        assertEquals(p2MiniCart?.get("123")?.productId ?: "", "123")
+        assertEquals(p2MiniCart?.get("123")?.quantity ?: "", 2)
     }
     //endregion
 
@@ -449,7 +450,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     fun `get multi origin but p1 data is null`() {
         spykViewModel.getDynamicProductInfoP1 = null
         val data = viewModel.getMultiOriginByProductId()
-        Assert.assertEquals(data.id, "")
+        assertEquals(data.id, "")
     }
 
     @Test
@@ -592,8 +593,8 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         )
 
         val data = spykViewModel.getBebasOngkirDataByProductId()
-        Assert.assertTrue(data.imageURL == "gambar boe gan")
-        Assert.assertTrue(data.boType == 1)
+        assertTrue(data.imageURL == "gambar boe gan")
+        assertTrue(data.boType == 1)
     }
 
     @Test
@@ -609,8 +610,8 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         )
 
         val data = spykViewModel.getBebasOngkirDataByProductId()
-        Assert.assertTrue(data.imageURL == "")
-        Assert.assertTrue(data.boType == 0)
+        assertTrue(data.imageURL == "")
+        assertTrue(data.boType == 0)
     }
     //endregion
 
@@ -636,10 +637,10 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         val cartIdDeleted = cartId.captured.firstOrNull()
         Assert.assertNotNull(cartIdDeleted)
-        Assert.assertEquals(cartIdDeleted, "111")
+        assertEquals(cartIdDeleted, "111")
 
         Assert.assertNotNull(viewModel.deleteCartLiveData.value)
-        Assert.assertTrue(viewModel.deleteCartLiveData.value is Success)
+        assertTrue(viewModel.deleteCartLiveData.value is Success)
         Assert.assertNotNull(
             (viewModel.deleteCartLiveData.value as Success).data,
             "sukses delete cart"
@@ -665,10 +666,10 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         val cartIdDeleted = cartId.captured.firstOrNull()
         Assert.assertNotNull(cartIdDeleted)
-        Assert.assertEquals(cartIdDeleted, "111")
+        assertEquals(cartIdDeleted, "111")
 
         Assert.assertNotNull(viewModel.deleteCartLiveData.value)
-        Assert.assertTrue(viewModel.deleteCartLiveData.value is Fail)
+        assertTrue(viewModel.deleteCartLiveData.value is Fail)
         Assert.assertNotNull(
             (viewModel.deleteCartLiveData.value as Fail).throwable.message,
             "sukses delete cart"
@@ -695,10 +696,10 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         val result = (viewModel.updateCartLiveData.getOrAwaitValue() as Success).data
         val selectedMiniCart = viewModel.p2Data.value?.miniCart?.get("518076293")
 
-        Assert.assertEquals(result, "sukses update cart")
-        Assert.assertTrue(viewModel.p2Data.value != null)
-        Assert.assertTrue(selectedMiniCart != null)
-        Assert.assertEquals(selectedMiniCart?.quantity, updatedQuantity)
+        assertEquals(result, "sukses update cart")
+        assertTrue(viewModel.p2Data.value != null)
+        assertTrue(selectedMiniCart != null)
+        assertEquals(selectedMiniCart?.quantity, updatedQuantity)
     }
 
     @Test
@@ -719,10 +720,10 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         val result = (viewModel.updateCartLiveData.getOrAwaitValue() as Success).data
         val selectedMiniCart = viewModel.p2Data.value?.miniCart?.get("518076293")
 
-        Assert.assertEquals(result, "sukses update cart")
-        Assert.assertTrue(viewModel.p2Data.value != null)
-        Assert.assertTrue(selectedMiniCart != null)
-        Assert.assertEquals(selectedMiniCart?.quantity, updatedQuantity)
+        assertEquals(result, "sukses update cart")
+        assertTrue(viewModel.p2Data.value != null)
+        assertTrue(selectedMiniCart != null)
+        assertEquals(selectedMiniCart?.quantity, updatedQuantity)
     }
 
     @Test
@@ -746,9 +747,9 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         val result = viewModel.updateCartLiveData.getOrAwaitValue()
         val selectedMiniCart = viewModel.p2Data.value?.miniCart?.get("518076293")
 
-        Assert.assertTrue(result is Fail)
-        Assert.assertTrue(viewModel.p2Data.value != null)
-        Assert.assertTrue(selectedMiniCart == null)
+        assertTrue(result is Fail)
+        assertTrue(viewModel.p2Data.value != null)
+        assertTrue(selectedMiniCart == null)
     }
 
     @Test
@@ -768,9 +769,9 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         val result = viewModel.updateCartLiveData.getOrAwaitValue()
         val selectedMiniCart = viewModel.p2Data.value?.miniCart?.get("518076293")
 
-        Assert.assertTrue(result is Fail)
-        Assert.assertTrue(viewModel.p2Data.value != null)
-        Assert.assertTrue(selectedMiniCart == null)
+        assertTrue(result is Fail)
+        assertTrue(viewModel.p2Data.value != null)
+        assertTrue(selectedMiniCart == null)
     }
 
     @Test
@@ -805,15 +806,15 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             addToCartOccUseCase.setParams(any()).executeOnBackground().mapToAddToCartDataModel()
         }
 
-        Assert.assertTrue(viewModel.addToCartLiveData.value is Success)
+        assertTrue(viewModel.addToCartLiveData.value is Success)
 
         // assert minicart update
-        val p2MiniCart = viewModel.p2Data?.value?.miniCart
+        val p2MiniCart = viewModel.p2Data.value?.miniCart
         Assert.assertNotNull(p2MiniCart)
-        Assert.assertEquals(p2MiniCart?.size ?: 0, 2)
+        assertEquals(p2MiniCart?.size ?: 0, 2)
         Assert.assertNotNull(p2MiniCart?.get("1234"))
-        Assert.assertEquals(p2MiniCart?.get("1234")?.quantity ?: 0, 4)
-        Assert.assertEquals(p2MiniCart?.get("1234")?.cartId ?: "", "111")
+        assertEquals(p2MiniCart?.get("1234")?.quantity ?: 0, 4)
+        assertEquals(p2MiniCart?.get("1234")?.cartId ?: "", "111")
     }
 
     @Test
@@ -839,7 +840,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             addToCartOccUseCase.setParams(any()).executeOnBackground()
         }
 
-        Assert.assertTrue(viewModel.addToCartLiveData.value is Success)
+        assertTrue(viewModel.addToCartLiveData.value is Success)
     }
 
     @Test
@@ -869,7 +870,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             addToCartOccUseCase.setParams(any()).executeOnBackground()
         }
 
-        Assert.assertTrue(viewModel.addToCartLiveData.value is Fail)
+        assertTrue(viewModel.addToCartLiveData.value is Fail)
     }
 
     @Test
@@ -894,7 +895,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             addToCartOccUseCase.setParams(any()).executeOnBackground()
         }
 
-        Assert.assertTrue(viewModel.addToCartLiveData.value is Fail)
+        assertTrue(viewModel.addToCartLiveData.value is Fail)
     }
 
     @Test
@@ -920,7 +921,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             addToCartOccUseCase.setParams(any()).executeOnBackground()
         }
 
-        Assert.assertTrue(viewModel.addToCartLiveData.value is Success)
+        assertTrue(viewModel.addToCartLiveData.value is Success)
     }
 
     @Test
@@ -950,7 +951,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             addToCartOccUseCase.setParams(any()).executeOnBackground()
         }
 
-        Assert.assertTrue(viewModel.addToCartLiveData.value is Fail)
+        assertTrue(viewModel.addToCartLiveData.value is Fail)
     }
 
     @Test
@@ -984,7 +985,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             addToCartOcsUseCase.createObservable(any()).toBlocking()
         }
 
-        Assert.assertTrue(viewModel.addToCartLiveData.value is Success)
+        assertTrue(viewModel.addToCartLiveData.value is Success)
     }
 
     @Test
@@ -1022,7 +1023,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             addToCartOcsUseCase.createObservable(any()).toBlocking()
         }
 
-        Assert.assertTrue(viewModel.addToCartLiveData.value is Fail)
+        assertTrue(viewModel.addToCartLiveData.value is Fail)
     }
 
     @Test
@@ -1045,8 +1046,8 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         coVerify {
             addToCartUseCase.createObservable(any()).toBlocking().single()
         }
-        Assert.assertEquals(viewModel.atcRecomTracker.value, Success(recomItem))
-        Assert.assertEquals(viewModel.atcRecom.value, Success(atcResponseSuccess.data.message.first()))
+        assertEquals(viewModel.atcRecomTracker.value, Success(recomItem))
+        assertEquals(viewModel.atcRecom.value, Success(atcResponseSuccess.data.message.first()))
     }
 
     @Test
@@ -1069,8 +1070,8 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         coVerify {
             addToCartUseCase.createObservable(any()).toBlocking().single()
         }
-        Assert.assertEquals(viewModel.atcRecomTracker.value, Success(recomItem))
-        Assert.assertEquals(viewModel.atcRecom.value, Success(atcResponseSuccess.data.message.first()))
+        assertEquals(viewModel.atcRecomTracker.value, Success(recomItem))
+        assertEquals(viewModel.atcRecom.value, Success(atcResponseSuccess.data.message.first()))
     }
     //endregion
 
@@ -1080,16 +1081,16 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         `on success get product info login`()
         val productWithTicker = viewModel.p2Data.value?.getTickerByProductId("518076293")
 
-        Assert.assertEquals(
+        assertEquals(
             productWithTicker?.first()?.message,
             "Untuk sementara barang ini tidak dijual. Kamu bisa wishlist barang ini atau Cari Barang Serupa."
         )
-        Assert.assertEquals(productWithTicker?.first()?.title, "barang tidak tersedia")
-        Assert.assertEquals(
+        assertEquals(productWithTicker?.first()?.title, "barang tidak tersedia")
+        assertEquals(
             productWithTicker?.first()?.actionLink,
             "https://www.tokopedia.com/rekomendasi/2086995432?ref=recom_oos"
         )
-        Assert.assertEquals(productWithTicker?.first()?.action, "applink")
+        assertEquals(productWithTicker?.first()?.action, "applink")
     }
 
     @Test
@@ -1097,10 +1098,10 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         `on success get product info login`()
         val productWithTicker = viewModel.p2Data.value?.getTickerByProductId("518076286")
 
-        Assert.assertEquals(productWithTicker?.size, 2)
+        assertEquals(productWithTicker?.size, 2)
 
-        Assert.assertEquals(productWithTicker?.first()?.message, "ticker 1 message")
-        Assert.assertEquals(productWithTicker?.get(1)?.message, "ticker 2 message")
+        assertEquals(productWithTicker?.first()?.message, "ticker 1 message")
+        assertEquals(productWithTicker?.get(1)?.message, "ticker 2 message")
     }
 
     @Test
@@ -1136,30 +1137,31 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             "",
             userLocation,
             "",
-            tokoNow
+            tokoNow,
+            true
         )
 
         viewModel.getProductP1(productParams, true, "", userLocationLocal = getUserLocationCache())
 
         verify { viewModel.onResetAlreadyRecomHit() }
 
-        Assert.assertTrue(
+        assertTrue(
             getPdpLayoutUseCase.requestParams.getString(
                 PARAM_PRODUCT_ID,
                 ""
             ) == productId
         )
-        Assert.assertTrue(
+        assertTrue(
             getPdpLayoutUseCase.requestParams.getString(PARAM_PRODUCT_KEY, "").isEmpty()
         )
-        Assert.assertTrue(
+        assertTrue(
             getPdpLayoutUseCase.requestParams.getString(PARAM_SHOP_DOMAIN, "").isEmpty()
         )
-        Assert.assertTrue((getPdpLayoutUseCase.requestParams.getObject(PARAM_USER_LOCATION) as? UserLocationRequest) != null)
+        assertTrue((getPdpLayoutUseCase.requestParams.getObject(PARAM_USER_LOCATION) as? UserLocationRequest) != null)
 
-        Assert.assertTrue((getPdpLayoutUseCase.requestParams.getObject(PARAM_TOKONOW) as? TokoNowParam)?.shopId == "456")
-        Assert.assertTrue((getPdpLayoutUseCase.requestParams.getObject(PARAM_TOKONOW) as? TokoNowParam)?.warehouseId == "789")
-        Assert.assertTrue((getPdpLayoutUseCase.requestParams.getObject(PARAM_TOKONOW) as? TokoNowParam)?.serviceType == "now15")
+        assertTrue((getPdpLayoutUseCase.requestParams.getObject(PARAM_TOKONOW) as? TokoNowParam)?.shopId == "456")
+        assertTrue((getPdpLayoutUseCase.requestParams.getObject(PARAM_TOKONOW) as? TokoNowParam)?.warehouseId == "789")
+        assertTrue((getPdpLayoutUseCase.requestParams.getObject(PARAM_TOKONOW) as? TokoNowParam)?.serviceType == "now15")
     }
 
     @Test
@@ -1184,33 +1186,34 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             "",
             userLocation,
             "",
-            tokoNow
+            tokoNow,
+            true
         )
 
         viewModel.getProductP1(productParams, true, " ", userLocationLocal = getUserLocationCache())
 
         verify { viewModel.onResetAlreadyRecomHit() }
 
-        Assert.assertTrue(
+        assertTrue(
             getPdpLayoutUseCase.requestParams.getString(PARAM_PRODUCT_ID, "").isEmpty()
         )
-        Assert.assertTrue(
+        assertTrue(
             getPdpLayoutUseCase.requestParams.getString(
                 PARAM_PRODUCT_KEY,
                 ""
             ) == productKey
         )
-        Assert.assertTrue(
+        assertTrue(
             getPdpLayoutUseCase.requestParams.getString(
                 PARAM_SHOP_DOMAIN,
                 ""
             ) == shopDomain
         )
-        Assert.assertTrue((getPdpLayoutUseCase.requestParams.getObject(PARAM_USER_LOCATION) as? UserLocationRequest)?.districtID == "123")
+        assertTrue((getPdpLayoutUseCase.requestParams.getObject(PARAM_USER_LOCATION) as? UserLocationRequest)?.districtID == "123")
 
-        Assert.assertTrue((getPdpLayoutUseCase.requestParams.getObject(PARAM_TOKONOW) as? TokoNowParam)?.shopId == "456")
-        Assert.assertTrue((getPdpLayoutUseCase.requestParams.getObject(PARAM_TOKONOW) as? TokoNowParam)?.warehouseId == "789")
-        Assert.assertTrue((getPdpLayoutUseCase.requestParams.getObject(PARAM_TOKONOW) as? TokoNowParam)?.serviceType == "now15")
+        assertTrue((getPdpLayoutUseCase.requestParams.getObject(PARAM_TOKONOW) as? TokoNowParam)?.shopId == "456")
+        assertTrue((getPdpLayoutUseCase.requestParams.getObject(PARAM_TOKONOW) as? TokoNowParam)?.warehouseId == "789")
+        assertTrue((getPdpLayoutUseCase.requestParams.getObject(PARAM_TOKONOW) as? TokoNowParam)?.serviceType == "now15")
     }
 
     @Test
@@ -1234,7 +1237,8 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             "",
             userLocation,
             extParam.encodeToUtf8(),
-            tokoNow
+            tokoNow,
+            true
         )
 
         viewModel.getProductP1(
@@ -1243,7 +1247,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             extParam = extParam
         )
 
-        Assert.assertTrue(
+        assertTrue(
             getPdpLayoutUseCase.requestParams.getString(
                 PARAM_EXT_PARAM,
                 ""
@@ -1284,26 +1288,26 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         `co verify p1 success`()
 
-        Assert.assertTrue(viewModel.productLayout.value is Success)
+        assertTrue(viewModel.productLayout.value is Success)
         Assert.assertNotNull(viewModel.p2Data.value)
-        Assert.assertTrue(
+        assertTrue(
             viewModel.p2Data.value?.miniCart?.any {
                 it.key == "518076293"
             } ?: false
         )
         Assert.assertNotNull(viewModel.p2Other.value)
         Assert.assertNotNull(viewModel.p2Login.value)
-        Assert.assertTrue(viewModel.topAdsImageView.value is Success)
+        assertTrue(viewModel.topAdsImageView.value is Success)
 
         val p1Result = (viewModel.productLayout.value as Success).data
-        Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.PRODUCT_VARIANT_INFO })
-        Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.PRODUCT_SHIPPING_INFO })
+        assertTrue(p1Result.none { it.name() == ProductDetailConstant.PRODUCT_VARIANT_INFO })
+        assertTrue(p1Result.none { it.name() == ProductDetailConstant.PRODUCT_SHIPPING_INFO })
         // update: palugada unused component wholesales_info
-        Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.PRODUCT_WHOLESALE_INFO })
-        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.TRADE_IN } == 1)
-        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.REPORT } == 1)
-        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.SHIPMENT } == 1)
-        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.AR_BUTTON } == 1)
+        assertTrue(p1Result.none { it.name() == ProductDetailConstant.PRODUCT_WHOLESALE_INFO })
+        assertTrue(p1Result.count { it.name() == ProductDetailConstant.TRADE_IN } == 1)
+        assertTrue(p1Result.count { it.name() == ProductDetailConstant.REPORT } == 1)
+        assertTrue(p1Result.count { it.name() == ProductDetailConstant.SHIPMENT } == 1)
+        assertTrue(p1Result.count { it.name() == ProductDetailConstant.AR_BUTTON } == 1)
     }
 
     private fun `co verify p1 success`() {
@@ -1337,9 +1341,16 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         dataP2: ProductInfoP2UiData,
         miniCart: MutableMap<String, MiniCartItem.MiniCartItemProduct>? = null
     ) {
+        val onP1Success = slot<(ProductDetailDataModel) -> Unit>()
+        val onP2Error = slot<(Throwable) -> Unit>()
+
         coEvery {
+            getPdpLayoutUseCase.onSuccess = capture(onP1Success)
+            getPdpLayoutUseCase.onError = capture(onP2Error)
             getPdpLayoutUseCase.executeOnBackground()
-        } returns dataP1
+        } just Runs
+
+        onP1Success.captured.invoke(dataP1)
 
         coEvery {
             getProductInfoP2LoginUseCase.executeOnBackground()
@@ -1383,7 +1394,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         coVerify {
             getPdpLayoutUseCase.executeOnBackground()
         }
-        Assert.assertTrue(viewModel.productLayout.value is Fail)
+        assertTrue(viewModel.productLayout.value is Fail)
         Assert.assertNull(viewModel.p2Data.value)
         Assert.assertNull(viewModel.p2Login.value)
         Assert.assertNull(viewModel.p2Other.value)
@@ -1442,7 +1453,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             getProductInfoP2LoginUseCase.executeOnBackground()
         }
 
-        Assert.assertTrue(viewModel.productLayout.value is Success)
+        assertTrue(viewModel.productLayout.value is Success)
         Assert.assertNotNull(viewModel.p2Data.value)
         Assert.assertNotNull(viewModel.p2Other.value)
         Assert.assertNull(viewModel.p2Login.value)
@@ -1477,23 +1488,25 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             refreshPage = true,
             userLocationLocal = getUserLocationCache()
         )
-        verify { viewModel.onResetAlreadyRecomHit() }
+        verify {
+            viewModel.onResetAlreadyRecomHit()
+        }
 
         val p1Result = (viewModel.productLayout.value as Success).data
-        Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.TRADE_IN })
-        Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.PRODUCT_SHIPPING_INFO })
-        Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.VALUE_PROP })
+        assertTrue(p1Result.none { it.name() == ProductDetailConstant.TRADE_IN })
+        assertTrue(p1Result.none { it.name() == ProductDetailConstant.PRODUCT_SHIPPING_INFO })
+        assertTrue(p1Result.none { it.name() == ProductDetailConstant.VALUE_PROP })
         // remove unused palugada
-        Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.PRODUCT_WHOLESALE_INFO })
-        Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.PRODUCT_INSTALLMENT_PAYLATER_INFO })
-        Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.PRODUCT_FULLFILMENT })
-        Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.ORDER_PRIORITY })
+        assertTrue(p1Result.none { it.name() == ProductDetailConstant.PRODUCT_WHOLESALE_INFO })
+        assertTrue(p1Result.none { it.name() == ProductDetailConstant.PRODUCT_INSTALLMENT_PAYLATER_INFO })
+        assertTrue(p1Result.none { it.name() == ProductDetailConstant.PRODUCT_FULLFILMENT })
+        assertTrue(p1Result.none { it.name() == ProductDetailConstant.ORDER_PRIORITY })
 
-        Assert.assertTrue(p1Result.any { it.name() == ProductDetailConstant.MEDIA })
-        Assert.assertTrue(p1Result.any { it.name() == ProductDetailConstant.TICKER_INFO })
-        Assert.assertTrue(p1Result.any { it.name() == ProductDetailConstant.PRODUCT_CONTENT })
-        Assert.assertTrue(p1Result.any { it.name() == ProductDetailConstant.PRODUCT_PROTECTION })
-        Assert.assertTrue(p1Result.any { it.name() == ProductDetailConstant.SHIPMENT })
+        assertTrue(p1Result.any { it.name() == ProductDetailConstant.MEDIA })
+        assertTrue(p1Result.any { it.name() == ProductDetailConstant.TICKER_INFO })
+        assertTrue(p1Result.any { it.name() == ProductDetailConstant.PRODUCT_CONTENT })
+        assertTrue(p1Result.any { it.name() == ProductDetailConstant.PRODUCT_PROTECTION })
+        assertTrue(p1Result.any { it.name() == ProductDetailConstant.SHIPMENT })
     }
 
     @Test
@@ -1531,10 +1544,10 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         verify { viewModel.onResetAlreadyRecomHit() }
 
         val p1Result = (viewModel.productLayout.value as Success).data
-        Assert.assertTrue(p1Result.none { it.type() == ProductDetailConstant.PRODUCT_LIST })
-        Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.PLAY_CAROUSEL })
-        Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.REPORT })
-        Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.AR_BUTTON })
+        assertTrue(p1Result.none { it.type() == ProductDetailConstant.PRODUCT_LIST })
+        assertTrue(p1Result.none { it.name() == ProductDetailConstant.PLAY_CAROUSEL })
+        assertTrue(p1Result.none { it.name() == ProductDetailConstant.REPORT })
+        assertTrue(p1Result.none { it.name() == ProductDetailConstant.AR_BUTTON })
     }
 
     @Test
@@ -1577,7 +1590,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         verify { viewModel.onResetAlreadyRecomHit() }
 
         val p1Result = (viewModel.productLayout.value as Success).data
-        Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.AR_BUTTON })
+        assertTrue(p1Result.none { it.name() == ProductDetailConstant.AR_BUTTON })
     }
     // endregion
 
@@ -1587,7 +1600,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         val variantData = ProductDetailTestUtil.getMockVariant()
         viewModel.processVariant(variantData, mutableMapOf())
 
-        Assert.assertTrue(viewModel.singleVariantData.value != null)
+        assertTrue(viewModel.singleVariantData.value != null)
     }
 
     @Test
@@ -1604,7 +1617,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         } returns expectedVariantCategory
 
         viewModel.processVariant(productVariant, mapOfSelectedOptionIds)
-        Assert.assertTrue(viewModel.singleVariantData.value == expectedVariantCategory)
+        assertTrue(viewModel.singleVariantData.value == expectedVariantCategory)
     }
 
     @Test
@@ -1619,7 +1632,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         } returns null
 
         viewModel.processVariant(productVariant, mapOfSelectedOptionIds)
-        Assert.assertTrue(viewModel.singleVariantData.value == null)
+        assertTrue(viewModel.singleVariantData.value == null)
     }
 
     @Test
@@ -1639,7 +1652,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         val childVariant = viewModel.getChildOfVariantSelected(
             singleVariant = null
         )
-        Assert.assertTrue(childVariant == null)
+        assertTrue(childVariant == null)
     }
 
     @Test
@@ -1648,7 +1661,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         val childVariant = viewModel.getChildOfVariantSelected(
             singleVariant = ProductSingleVariantDataModel()
         )
-        Assert.assertTrue(childVariant == null)
+        assertTrue(childVariant == null)
     }
 
     private fun `child options id is available when get child of variant selected`(
@@ -1664,13 +1677,13 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         )
 
         // assert the expectation
-        Assert.assertTrue(
+        assertTrue(
             p1Result.any {
                 it.type() == ProductDetailConstant.PRODUCT_VARIANT_INFO &&
                     it.name() == ProductDetailConstant.MINI_VARIANT_OPTIONS
             }
         )
-        Assert.assertTrue(childVariant?.optionIds?.firstOrNull() != null)
+        assertTrue(childVariant?.optionIds?.firstOrNull() != null)
     }
 
     @Test
@@ -1684,8 +1697,8 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             singleVariant = singleVariant
         )
 
-        Assert.assertTrue(viewModel.variantData == null)
-        Assert.assertTrue(childVariant == null)
+        assertTrue(viewModel.variantData == null)
+        assertTrue(childVariant == null)
     }
 
     private fun `on success get pdp layout mini variants options`() {
@@ -1804,8 +1817,8 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         }
 
         with(slot.captured) {
-            Assert.assertEquals(productId, this.pageId)
-            Assert.assertTrue(source is AffiliateSdkPageSource.PDP)
+            assertEquals(productId, this.pageId)
+            assertTrue(source is AffiliateSdkPageSource.PDP)
         }
     }
 
@@ -1883,7 +1896,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         } returns Observable.just(data)
 
         viewModel.updateCartCounerUseCase {
-            Assert.assertEquals(it, data)
+            assertEquals(it, data)
         }
 
         verify {
@@ -1909,8 +1922,8 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             toggleFavoriteUseCase.executeOnBackground(any())
         }
 
-        Assert.assertEquals((viewModel.toggleFavoriteResult.value as Success).data.first, true)
-        Assert.assertEquals((viewModel.toggleFavoriteResult.value as Success).data.second, false)
+        assertEquals((viewModel.toggleFavoriteResult.value as Success).data.first, true)
+        assertEquals((viewModel.toggleFavoriteResult.value as Success).data.second, false)
     }
 
     @Test
@@ -1930,8 +1943,8 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             toggleFavoriteUseCase.executeOnBackground(any())
         }
 
-        Assert.assertEquals((viewModel.toggleFavoriteResult.value as Success).data.first, true)
-        Assert.assertEquals((viewModel.toggleFavoriteResult.value as Success).data.second, isNpl)
+        assertEquals((viewModel.toggleFavoriteResult.value as Success).data.first, true)
+        assertEquals((viewModel.toggleFavoriteResult.value as Success).data.second, isNpl)
     }
 
     @Test
@@ -1947,7 +1960,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             toggleFavoriteUseCase.executeOnBackground(any())
         }
 
-        Assert.assertTrue(viewModel.toggleFavoriteResult.value is Fail)
+        assertTrue(viewModel.toggleFavoriteResult.value is Fail)
     }
     // endregion ToggleFavorite
 
@@ -1963,7 +1976,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         viewModel.getDiscussionMostHelpful("", "")
         coVerify { discussionMostHelpfulUseCase.executeOnBackground() }
 
-        Assert.assertEquals(
+        assertEquals(
             expectedResponse,
             (viewModel.discussionMostHelpful.value as Success).data
         )
@@ -1980,7 +1993,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         viewModel.getDiscussionMostHelpful("", "")
         coVerify { discussionMostHelpfulUseCase.executeOnBackground() }
 
-        Assert.assertTrue(viewModel.discussionMostHelpful.value is Fail)
+        assertTrue(viewModel.discussionMostHelpful.value is Fail)
     }
     // endregion Discussion
 
@@ -2010,11 +2023,11 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             )
         }
 
-        Assert.assertTrue(viewModel.topAdsRecomChargeData.value is Fail)
-        Assert.assertEquals(isSuccess.captured, false)
-        Assert.assertEquals(errorMessage.captured, "error")
+        assertTrue(viewModel.topAdsRecomChargeData.value is Fail)
+        assertEquals(isSuccess.captured, false)
+        assertEquals(errorMessage.captured, "error")
 
-        Assert.assertEquals(
+        assertEquals(
             (viewModel.topAdsRecomChargeData.value as Fail).throwable.message,
             "error"
         )
@@ -2053,10 +2066,10 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             )
         }
 
-        Assert.assertTrue(expectedResponse.data.status.error_code in 200..300 && expectedResponse.data.productList[0].isCharge)
-        Assert.assertEquals(isSuccess.captured, true)
-        Assert.assertEquals(errorCode.captured, 200)
-        Assert.assertEquals(isTopAds.captured, true)
+        assertTrue(expectedResponse.data.status.error_code in 200..300 && expectedResponse.data.productList[0].isCharge)
+        assertEquals(isSuccess.captured, true)
+        assertEquals(errorCode.captured, 200)
+        assertEquals(isTopAds.captured, true)
     }
     // endregion
 
@@ -2081,9 +2094,9 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         coVerify {
             addToCartUseCase.createObservable(any()).toBlocking().single()
         }
-        Assert.assertTrue(!atcResponseSuccess.isStatusError())
-        Assert.assertTrue(viewModel.atcRecomTracker.value is Success)
-        Assert.assertEquals(Success(recomItem), viewModel.atcRecomTracker.value)
+        assertTrue(!atcResponseSuccess.isStatusError())
+        assertTrue(viewModel.atcRecomTracker.value is Success)
+        assertEquals(Success(recomItem), viewModel.atcRecomTracker.value)
     }
 
     @Test
@@ -2104,7 +2117,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             addToCartUseCase.createObservable(any()).toBlocking().single()
         }
 
-        Assert.assertTrue(viewModel.atcRecom.value is Fail)
+        assertTrue(viewModel.atcRecom.value is Fail)
     }
 
     @Test
@@ -2120,7 +2133,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             addToCartUseCase.createObservable(any()).toBlocking().single()
         }
 
-        Assert.assertTrue(viewModel.atcRecom.value is Fail)
+        assertTrue(viewModel.atcRecom.value is Fail)
     }
 
     @Test
@@ -2144,7 +2157,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             miniCartListSimplifiedUseCase.executeOnBackground()
         }
 
-        Assert.assertTrue(viewModel.atcRecom.value is Success)
+        assertTrue(viewModel.atcRecom.value is Success)
     }
 
     @Test
@@ -2166,7 +2179,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             updateCartUseCase.executeOnBackground()
         }
 
-        Assert.assertTrue(viewModel.atcRecom.value is Fail)
+        assertTrue(viewModel.atcRecom.value is Fail)
     }
 
     @Test
@@ -2186,7 +2199,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             updateCartUseCase.executeOnBackground()
         }
 
-        Assert.assertTrue(viewModel.atcRecom.value is Fail)
+        assertTrue(viewModel.atcRecom.value is Fail)
     }
 
     @Test
@@ -2215,7 +2228,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             miniCartListSimplifiedUseCase.executeOnBackground()
         }
 
-        Assert.assertTrue(viewModel.atcRecom.value is Success)
+        assertTrue(viewModel.atcRecom.value is Success)
     }
 
     @Test
@@ -2238,7 +2251,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             deleteCartUseCase.executeOnBackground()
         }
 
-        Assert.assertTrue(viewModel.atcRecom.value is Fail)
+        assertTrue(viewModel.atcRecom.value is Fail)
     }
 
     @Test
@@ -2257,7 +2270,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             deleteCartUseCase.executeOnBackground()
         }
 
-        Assert.assertTrue(viewModel.atcRecom.value is Fail)
+        assertTrue(viewModel.atcRecom.value is Fail)
     }
 
     // endregion
@@ -2280,7 +2293,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     fun `verify isWithList in getDynamicProductInfoP1 is true after add wishlist`() {
         viewModel.getDynamicProductInfoP1 = DynamicProductInfoP1()
         `verify add to wishlistv2 returns success`()
-        Assert.assertTrue(viewModel.getDynamicProductInfoP1?.data?.isWishlist.orFalse())
+        assertTrue(viewModel.getDynamicProductInfoP1?.data?.isWishlist.orFalse())
     }
 
     @Test
@@ -2367,10 +2380,10 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         val p2Ar = viewModel.p2Data.value?.arInfo
         Assert.assertNotNull(p2Ar)
         p2Ar?.let {
-            Assert.assertEquals(it.isProductIdContainsAr("518076293"), true)
-            Assert.assertEquals(it.isProductIdContainsAr("518076286"), false)
-            Assert.assertEquals(it.isProductIdContainsAr("948021897"), false)
-            Assert.assertEquals(it.isProductIdContainsAr("518076287"), false)
+            assertEquals(it.isProductIdContainsAr("518076293"), true)
+            assertEquals(it.isProductIdContainsAr("518076286"), false)
+            assertEquals(it.isProductIdContainsAr("948021897"), false)
+            assertEquals(it.isProductIdContainsAr("518076287"), false)
         }
     }
     //endregion
@@ -2409,18 +2422,18 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         val actualBuyerMediaCount = viewModel.p2Data.value?.imageReview?.buyerMediaCount
         val actualSocialProofText = viewModel.p2Data.value?.imageReview?.staticSocialProofText
 
-        Assert.assertEquals("Invalid video count.", expectedVideoCount, actualVideoCount)
-        Assert.assertEquals("Invalid image count.", expectedImageCount, actualImageCount)
-        Assert.assertTrue(
+        assertEquals("Invalid video count.", expectedVideoCount, actualVideoCount)
+        assertEquals("Invalid image count.", expectedImageCount, actualImageCount)
+        assertTrue(
             "Should show see more thumbnail on last position but was not show",
             showingSeeMoreThumbnailOnLastThumbnailOnly
         )
-        Assert.assertEquals(
+        assertEquals(
             "Invalid buyer media count.",
             expectedBuyerMediaCount,
             actualBuyerMediaCount
         )
-        Assert.assertEquals(
+        assertEquals(
             "Invalid social proof text",
             expectedSocialProofText,
             actualSocialProofText
@@ -2509,11 +2522,11 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             RecommendationNowAffiliateData()
         )
 
-        Assert.assertEquals(recommItem, viewModel.atcRecomTokonowNonLogin.value)
+        assertEquals(recommItem, viewModel.atcRecomTokonowNonLogin.value)
     }
 
     @Test
-    fun `change one time method default value`() = runBlockingTest {
+    fun `change one time method default value`() = runTest {
         val testResults = mutableListOf<OneTimeMethodState>()
 
         val job = launch {
@@ -2522,8 +2535,8 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         viewModel.changeOneTimeMethod(event = OneTimeMethodEvent.Empty)
 
-        Assert.assertTrue(testResults.first().event is OneTimeMethodEvent.Empty)
-        Assert.assertEquals(testResults.first().impressRestriction, false)
+        assertTrue(testResults.first().event is OneTimeMethodEvent.Empty)
+        assertEquals(testResults.first().impressRestriction, false)
 
         job.cancel()
     }
@@ -2540,39 +2553,39 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         }
 
         // second assignment, because the first one is default value which OneTimeMethodEvent.Empty
-        Assert.assertEquals(testResults[currentIndex()].impressRestriction, false)
+        assertEquals(testResults[currentIndex()].impressRestriction, false)
 
         /**
          * list size still 2 because we don't assign the same hit variant tracker because of this code
          * if (_oneTimeMethod.value.impressRestriction) return
          * This is like verify in stateflow, we dont want to call update again if we assign the same value
          */
-        Assert.assertTrue(testResults.size == currentSize)
+        assertTrue(testResults.size == currentSize)
 
         val reData = RestrictionData(productId = "123")
         // region impress restriction
         viewModel.changeOneTimeMethod(event = OneTimeMethodEvent.ImpressRestriction(reData))
         currentSize++
-        Assert.assertTrue(testResults[currentIndex()].event is OneTimeMethodEvent.ImpressRestriction)
-        Assert.assertTrue((testResults[currentIndex()].event as OneTimeMethodEvent.ImpressRestriction).reData.productId == "123")
-        Assert.assertEquals(testResults[currentIndex()].impressRestriction, true)
+        assertTrue(testResults[currentIndex()].event is OneTimeMethodEvent.ImpressRestriction)
+        assertTrue((testResults[currentIndex()].event as OneTimeMethodEvent.ImpressRestriction).reData.productId == "123")
+        assertEquals(testResults[currentIndex()].impressRestriction, true)
 
         // re-assign and make sure we dont want to update the data, since we need to run every event exactly once
         viewModel.changeOneTimeMethod(event = OneTimeMethodEvent.ImpressRestriction(reData))
-        Assert.assertTrue(testResults.size == currentSize)
+        assertTrue(testResults.size == currentSize)
         // endregion
 
         // region validate general edu bs
         viewModel.changeOneTimeMethod(event = OneTimeMethodEvent.ImpressGeneralEduBs("applink"))
         currentSize++
-        Assert.assertTrue(testResults.size == currentSize)
-        Assert.assertTrue(testResults[currentIndex()].event is OneTimeMethodEvent.ImpressGeneralEduBs)
+        assertTrue(testResults.size == currentSize)
+        assertTrue(testResults[currentIndex()].event is OneTimeMethodEvent.ImpressGeneralEduBs)
         val edu = testResults[currentIndex()].event as OneTimeMethodEvent.ImpressGeneralEduBs
-        Assert.assertTrue(edu.appLink == "applink")
+        assertTrue(edu.appLink == "applink")
 
         // re-assign
         viewModel.changeOneTimeMethod(event = OneTimeMethodEvent.ImpressGeneralEduBs("applink"))
-        Assert.assertTrue(testResults.size == currentSize)
+        assertTrue(testResults.size == currentSize)
         // endregion
 
         job.cancel()
@@ -2589,7 +2602,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         viewModel.showProductMediaRecomBottomSheet("Dummy", "Dummy", "123", false)
 
         coVerify(exactly = 1) { getRecommendationUseCase.getData(any()) }
-        Assert.assertTrue(viewModel.productMediaRecomBottomSheetState.value is ProductMediaRecomBottomSheetState.ShowingData)
+        assertTrue(viewModel.productMediaRecomBottomSheetState.value is ProductMediaRecomBottomSheetState.ShowingData)
     }
 
     @Test
@@ -2601,7 +2614,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         viewModel.showProductMediaRecomBottomSheet("Dummy", "Dummy", "123", false)
 
         coVerify(exactly = 1) { getRecommendationUseCase.getData(any()) }
-        Assert.assertTrue(viewModel.productMediaRecomBottomSheetState.value is ProductMediaRecomBottomSheetState.Dismissed)
+        assertTrue(viewModel.productMediaRecomBottomSheetState.value is ProductMediaRecomBottomSheetState.Dismissed)
     }
 
     @Test
@@ -2613,7 +2626,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         viewModel.showProductMediaRecomBottomSheet("Dummy", "Dummy", "123", false)
 
         coVerify(exactly = 1) { getRecommendationUseCase.getData(any()) }
-        Assert.assertTrue(viewModel.productMediaRecomBottomSheetState.value is ProductMediaRecomBottomSheetState.ShowingError)
+        assertTrue(viewModel.productMediaRecomBottomSheetState.value is ProductMediaRecomBottomSheetState.ShowingError)
     }
 
     @Test
@@ -2621,14 +2634,14 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         coEvery {
             getRecommendationUseCase.getData(any())
         } answers {
-            Assert.assertTrue(viewModel.productMediaRecomBottomSheetState.value is ProductMediaRecomBottomSheetState.Loading)
+            assertTrue(viewModel.productMediaRecomBottomSheetState.value is ProductMediaRecomBottomSheetState.Loading)
             throw Exception("Dummy")
         }
 
         viewModel.showProductMediaRecomBottomSheet("Dummy", "Dummy", "123", false)
 
         coVerify(exactly = 1) { getRecommendationUseCase.getData(any()) }
-        Assert.assertTrue(viewModel.productMediaRecomBottomSheetState.value is ProductMediaRecomBottomSheetState.ShowingError)
+        assertTrue(viewModel.productMediaRecomBottomSheetState.value is ProductMediaRecomBottomSheetState.ShowingError)
     }
 
     @Test
@@ -2689,7 +2702,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         viewModel.dismissProductMediaRecomBottomSheet()
 
-        Assert.assertTrue(viewModel.productMediaRecomBottomSheetState.value is ProductMediaRecomBottomSheetState.Dismissed)
+        assertTrue(viewModel.productMediaRecomBottomSheetState.value is ProductMediaRecomBottomSheetState.Dismissed)
     }
 
     private fun getUserLocationCache(): LocalCacheModel {
@@ -2714,9 +2727,9 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         // then
         val showEdu = viewModel.showBottomSheetEdu.getOrAwaitValue()
-        Assert.assertTrue(showEdu != null)
-        Assert.assertTrue(showEdu?.isShow == true)
-        Assert.assertTrue(!showEdu?.appLink.isNullOrBlank())
+        assertTrue(showEdu != null)
+        assertTrue(showEdu?.isShow == true)
+        assertTrue(!showEdu?.appLink.isNullOrBlank())
     }
 
     @Test
@@ -2736,7 +2749,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         // then
         val showEdu = viewModel.showBottomSheetEdu.getOrAwaitValue()
-        Assert.assertTrue(showEdu == null)
+        assertTrue(showEdu == null)
     }
 
     @Test
@@ -2756,7 +2769,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         // then
         val showEdu = viewModel.showBottomSheetEdu.getOrAwaitValue()
-        Assert.assertTrue(showEdu == null)
+        assertTrue(showEdu == null)
     }
     // endregion
 
@@ -2775,9 +2788,9 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         Assert.assertNotNull(spykViewModel.getP1())
         Assert.assertNotNull(spykViewModel.getVariant())
 
-        Assert.assertTrue(spykViewModel.getP2() == p2Expected)
-        Assert.assertTrue(spykViewModel.getP1() == p1Expected)
-        Assert.assertTrue(spykViewModel.getVariant() == variantExpected)
+        assertTrue(spykViewModel.getP2() == p2Expected)
+        assertTrue(spykViewModel.getP1() == p1Expected)
+        assertTrue(spykViewModel.getVariant() == variantExpected)
     }
     // endregion
 
