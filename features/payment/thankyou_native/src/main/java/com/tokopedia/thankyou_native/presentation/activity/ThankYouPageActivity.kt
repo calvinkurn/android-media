@@ -369,12 +369,24 @@ class ThankYouPageActivity :
     }
 
     private fun getCustomizeIconBuilder(): IconBuilder {
+        // Track view
+        thankYouPageAnalytics.get().sendViewShareIcon(
+            orderIdList = postPurchaseShareHelper.get().getOrderIdListString(
+                thanksPageData.shopOrder
+            )
+        )
+
         // asc order from left to right
         return IconBuilder(
             builderFlags = IconBuilderFlag(
                 pageSource = NavSource.THANKYOU
             )
-        ).addIcon(IconList.ID_SHARE_AB_TEST) {
+        ).addIcon(IconList.ID_SHARE) {
+            thankYouPageAnalytics.get().sendClickShareIcon(
+                orderIdList = postPurchaseShareHelper.get().getOrderIdListString(
+                    thanksPageData.shopOrder
+                )
+            )
             postPurchaseShareHelper.get().goToSharePostPurchase(
                 this,
                 thanksPageData.shopOrder

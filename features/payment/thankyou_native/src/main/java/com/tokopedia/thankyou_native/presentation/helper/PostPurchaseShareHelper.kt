@@ -7,6 +7,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalCommunication
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.thankyou_native.domain.model.ShopOrder
 import com.tokopedia.universal_sharing.model.UniversalSharingPostPurchaseModel
 import com.tokopedia.universal_sharing.model.UniversalSharingPostPurchaseProductModel
@@ -32,9 +33,11 @@ class PostPurchaseShareHelper @Inject constructor(
                 CoachMark2Item(
                     anchorView = anchorView,
                     title = context.getString(
-                        thankyou_nativeR.string.thankyou_postpurchase_share_onboarding_title),
+                        thankyou_nativeR.string.thankyou_postpurchase_share_onboarding_title
+                    ),
                     description = context.getString(
-                        thankyou_nativeR.string.thankyou_postpurchase_share_onboarding_desc)
+                        thankyou_nativeR.string.thankyou_postpurchase_share_onboarding_desc
+                    )
                 )
             )
             coachMark2.showCoachMark(coachMark2Item)
@@ -61,6 +64,10 @@ class PostPurchaseShareHelper @Inject constructor(
             ApplinkConstInternalCommunication.PRODUCT_LIST_DATA,
             getPostPurchaseData(shopOrderList)
         )
+        intent.putExtra(
+            ApplinkConstInternalCommunication.SOURCE,
+            "Thankyou"
+        )
         context.startActivity(intent)
     }
 
@@ -72,6 +79,7 @@ class PostPurchaseShareHelper @Inject constructor(
             // Loop each product in each shop
             it.purchaseItemList.forEach { item ->
                 val productData = UniversalSharingPostPurchaseProductModel(
+                    orderId = it.orderId,
                     productId = item.productId,
                     productName = item.productName,
                     productPrice = item.priceStr,
@@ -89,5 +97,11 @@ class PostPurchaseShareHelper @Inject constructor(
         return UniversalSharingPostPurchaseModel(
             shopList = shopList
         )
+    }
+
+    fun getOrderIdListString(shopOrderList: List<ShopOrder>): String {
+        return shopOrderList.joinToString(separator = ",") {
+            it.orderId.toIntOrZero().toString() // If the order ID contains any characters/strings, they should be replaced with 0
+        }
     }
 }

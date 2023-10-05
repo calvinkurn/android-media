@@ -37,7 +37,11 @@ class UniversalSharingPostPurchaseProductViewHolder(
 
     private fun bindListener(element: UniversalSharingPostPurchaseProductUiModel) {
         binding?.universalSharingLayoutBtnShare?.setOnClickListener {
-            listener.onClickShare(element.productId)
+            listener.onClickShare(
+                orderId = element.orderId,
+                shopName = element.shopName,
+                productId = element.productId
+            )
         }
     }
 

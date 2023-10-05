@@ -12,14 +12,17 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.R
 import com.tokopedia.universal_sharing.data.model.UniversalSharingPostPurchaseProductResponse
 import com.tokopedia.universal_sharing.databinding.UniversalSharingPostPurchaseBottomsheetBinding
-import com.tokopedia.universal_sharing.di.UniversalSharingComponentFactory
+import com.tokopedia.universal_sharing.di.ActivityComponentFactory
 import com.tokopedia.universal_sharing.model.UniversalSharingPostPurchaseModel
+import com.tokopedia.universal_sharing.tracker.UniversalSharebottomSheetTracker
+import com.tokopedia.universal_sharing.tracker.UniversalSharebottomSheetTracker.Companion.TYPE_GENERAL
 import com.tokopedia.universal_sharing.util.NetworkUtil
 import com.tokopedia.universal_sharing.util.Result
 import com.tokopedia.universal_sharing.view.UniversalSharingPostPurchaseAction
@@ -44,6 +47,9 @@ class UniversalSharingPostPurchaseBottomSheet :
     @Inject
     lateinit var networkUtil: NetworkUtil
 
+    @Inject
+    lateinit var analytics: UniversalSharebottomSheetTracker
+
     private var _binding: UniversalSharingPostPurchaseBottomsheetBinding? = null
     private val binding: UniversalSharingPostPurchaseBottomsheetBinding get() = _binding!!
 
@@ -51,8 +57,11 @@ class UniversalSharingPostPurchaseBottomSheet :
 
     private val typeFactory = UniversalSharingTypeFactoryImpl(this)
     private val adapter = UniversalSharingPostPurchaseAdapter(typeFactory)
+
     private var data = UniversalSharingPostPurchaseModel()
     private var shouldClosePage: Boolean = true
+    private val orderIdList = mutableSetOf<String>()
+    private val productIdList = mutableSetOf<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,7 +84,7 @@ class UniversalSharingPostPurchaseBottomSheet :
     }
 
     private fun initInjector() {
-        UniversalSharingComponentFactory.instance.createComponent(
+        ActivityComponentFactory.instance.createActivityComponent(
             requireContext().applicationContext as Application
         ).inject(this)
     }
@@ -86,6 +95,7 @@ class UniversalSharingPostPurchaseBottomSheet :
         clearContentPadding = true // remove default margin
         isDragable = false // should be not draggable
         this.setCloseClickListener {
+            trackClose()
             listener?.onClickClose()
         }
         this.setOnDismissListener {
@@ -140,21 +150,26 @@ class UniversalSharingPostPurchaseBottomSheet :
                     adapter.updateData(it.data)
                 }
                 is Result.Error -> {
-                    setErrorView()
+                    setErrorView(it.throwable)
                 }
                 Result.Loading -> Unit // no-op
             }
         }
     }
 
-    private fun setErrorView() {
+    private fun setErrorView(
+        throwable: Throwable
+    ) {
         val errorType = if (networkUtil.isNetworkAvailable(requireContext())) {
-            UniversalSharingGlobalErrorUiModel.ErrorType.ERROR_NETWORK
-        } else {
             UniversalSharingGlobalErrorUiModel.ErrorType.ERROR_GENERAL
+        } else {
+            UniversalSharingGlobalErrorUiModel.ErrorType.ERROR_NETWORK
         }
         val errorUi = UniversalSharingGlobalErrorUiModel(errorType)
         adapter.updateData(listOf(errorUi))
+
+        // Log
+        ErrorHandler.getErrorMessage(context, throwable)
     }
 
     private suspend fun observeSharingState() {
@@ -164,16 +179,33 @@ class UniversalSharingPostPurchaseBottomSheet :
             } else {
                 binding.universalSharingLayoutLoading.hide()
                 when {
-                    (it.productData != null) -> handleOnSuccessShare(it.productData)
-                    (it.error != null) -> handleOnErrorShare(it.productId, it.error)
+                    (it.productData != null) -> handleOnSuccessShare(
+                        orderId = it.orderId,
+                        shopName = it.shopName,
+                        productData = it.productData
+                    )
+                    (it.error != null) -> handleOnErrorShare(
+                        orderId = it.orderId,
+                        shopName = it.shopName,
+                        productId = it.productId,
+                        error = it.error
+                    )
                 }
             }
         }
     }
 
-    private fun handleOnSuccessShare(productData: UniversalSharingPostPurchaseProductResponse) {
-        if (productData.status == "ACTIVE" || productData.stock > 0) {
-            listener?.onOpenShareBottomSheet(productData)
+    private fun handleOnSuccessShare(
+        orderId: String,
+        shopName: String,
+        productData: UniversalSharingPostPurchaseProductResponse
+    ) {
+        if (productData.status == "ACTIVE" && productData.stock > 0) {
+            listener?.onOpenShareBottomSheet(
+                orderId = orderId,
+                shopName = shopName,
+                product = productData
+            )
             shouldClosePage = false // close bottom sheet but not the activity
             dismiss()
         } else {
@@ -187,6 +219,8 @@ class UniversalSharingPostPurchaseBottomSheet :
     }
 
     private fun handleOnErrorShare(
+        orderId: String,
+        shopName: String,
         productId: String,
         error: Throwable
     ) {
@@ -199,17 +233,39 @@ class UniversalSharingPostPurchaseBottomSheet :
             text = errorMessage,
             ctaText = getString(R.string.universal_sharing_post_purchase_try_again),
             type = Toaster.TYPE_ERROR,
-            onClick = { onClickShare(productId) }
+            onClick = {
+                onClickShare(
+                    orderId = orderId,
+                    shopName = shopName,
+                    productId = productId
+                )
+            }
         )
     }
 
     private fun setupInitialData() {
         viewModel.processAction(UniversalSharingPostPurchaseAction.RefreshData(data))
+        trackProductListImpression()
     }
 
-    override fun onClickShare(productId: String) {
-        if (productId.isNotBlank()) {
-            viewModel.processAction(UniversalSharingPostPurchaseAction.ClickShare(productId))
+    override fun onClickShare(
+        orderId: String,
+        shopName: String,
+        productId: String
+    ) {
+        if (productId.isNotBlank() && orderId.isNotBlank()) {
+            viewModel.processAction(
+                UniversalSharingPostPurchaseAction.ClickShare(
+                    orderId = orderId,
+                    shopName = shopName,
+                    productId = productId
+                )
+            )
+            analytics.onClickShareProductPostPurchase(
+                userShareType = TYPE_GENERAL,
+                productId = productId,
+                orderId = orderId.toIntOrZero().toString() // If the order ID contains any characters/strings, they should be replaced with 0
+            )
         }
     }
 
@@ -223,7 +279,7 @@ class UniversalSharingPostPurchaseBottomSheet :
     }
 
     private fun showToaster(text: String, ctaText: String, type: Int, onClick: () -> Unit) {
-        dialog?.window?.decorView?.let {
+        binding.root.rootView?.let {
             Toaster.build(
                 view = it,
                 text = text,
@@ -233,6 +289,31 @@ class UniversalSharingPostPurchaseBottomSheet :
                 clickListener = { onClick() }
             ).show()
         }
+    }
+
+    private fun trackProductListImpression() {
+        data.shopList.forEach { shopList ->
+            shopList.productList.forEach {
+                orderIdList.add(it.orderId)
+                productIdList.add(it.productId)
+            }
+        }
+        analytics.onViewProductListPostPurchase(
+            userShareType = TYPE_GENERAL,
+            productIdList = productIdList.joinToString(","),
+            orderIdList = orderIdList.joinToString(",") {
+                it.toIntOrZero().toString() // If the order ID contains any characters/strings, they should be replaced with 0
+            }
+        )
+    }
+
+    private fun trackClose() {
+        analytics.onClickCloseProductListPostPurchase(
+            userShareType = TYPE_GENERAL,
+            orderIdList = orderIdList.joinToString(",") {
+                it.toIntOrZero().toString() // If the order ID contains any characters/strings, they should be replaced with 0
+            }
+        )
     }
 
     companion object {

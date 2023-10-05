@@ -6,5 +6,9 @@ sealed class UniversalSharingPostPurchaseAction {
     data class RefreshData(
         val data: UniversalSharingPostPurchaseModel
     ) : UniversalSharingPostPurchaseAction()
-    data class ClickShare(val productId: String) : UniversalSharingPostPurchaseAction()
+    data class ClickShare(
+        val orderId: String,
+        val shopName: String,
+        val productId: String
+    ) : UniversalSharingPostPurchaseAction()
 }

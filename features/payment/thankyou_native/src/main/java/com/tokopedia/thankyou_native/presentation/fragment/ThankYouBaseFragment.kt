@@ -917,8 +917,8 @@ abstract class ThankYouBaseFragment :
             activity?.let {
                 val navToolbar: NavToolbar? = it.findViewById(R.id.globalNabToolbar)
                 navToolbar?.let { toolbar ->
-                    toolbar.getShareAffiliateIconView()?.let { id ->
-                        context?.let {  context ->
+                    toolbar.getShareIconView()?.let { id ->
+                        context?.let { context ->
                             postPurchaseShareHelper.get().showCoachMarkShare(
                                 context = context,
                                 anchorView = id

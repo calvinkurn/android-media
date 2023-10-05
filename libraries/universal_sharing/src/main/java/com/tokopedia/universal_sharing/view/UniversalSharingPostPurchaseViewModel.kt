@@ -52,11 +52,15 @@ class UniversalSharingPostPurchaseViewModel @Inject constructor(
                     loadData(it.data)
                 }
                 is UniversalSharingPostPurchaseAction.ClickShare -> {
-                    getDetailData(it.productId)
+                    getDetailData(
+                        orderId = it.orderId,
+                        shopName = it.shopName,
+                        productId = it.productId
+                    )
                 }
             }
         }
-        .launchIn(viewModelScope)
+            .launchIn(viewModelScope)
     }
 
     private fun observeDetailProductFlow() {
@@ -71,10 +75,12 @@ class UniversalSharingPostPurchaseViewModel @Inject constructor(
                 // If flow error, reset everything
                 _sharingUiState.update {
                     it.copy(
+                        orderId = "",
+                        shopName = "",
                         productId = "",
                         productData = null,
                         isLoading = false,
-                        error = it.error
+                        error = throwable
                     )
                 }
             }
@@ -88,6 +94,8 @@ class UniversalSharingPostPurchaseViewModel @Inject constructor(
             is Result.Success -> {
                 _sharingUiState.update {
                     it.copy(
+                        orderId = it.orderId,
+                        shopName = it.shopName,
                         productId = it.productId,
                         productData = result.data,
                         error = null,
@@ -98,6 +106,8 @@ class UniversalSharingPostPurchaseViewModel @Inject constructor(
             is Result.Error -> {
                 _sharingUiState.update {
                     it.copy(
+                        orderId = it.orderId,
+                        shopName = it.shopName,
                         productId = it.productId,
                         productData = null,
                         error = result.throwable,
@@ -140,12 +150,20 @@ class UniversalSharingPostPurchaseViewModel @Inject constructor(
         }
     }
 
-    private fun getDetailData(productId: String) {
+    private fun getDetailData(
+        orderId: String,
+        shopName: String,
+        productId: String
+    ) {
         viewModelScope.launch {
             try {
                 // Set product id
                 _sharingUiState.update {
-                    it.copy(productId = productId)
+                    it.copy(
+                        orderId = orderId,
+                        shopName = shopName,
+                        productId = productId
+                    )
                 }
                 // Get data from remote
                 getDetailProductUseCase.getDetailProduct(productId)
@@ -154,9 +172,12 @@ class UniversalSharingPostPurchaseViewModel @Inject constructor(
                 // Update to error state
                 _sharingUiState.update {
                     it.copy(
+                        orderId = orderId,
+                        shopName = shopName,
+                        productId = productId,
                         productData = null,
                         isLoading = false,
-                        error = it.error
+                        error = throwable
                     )
                 }
             }

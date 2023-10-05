@@ -20,7 +20,7 @@ class UniversalSharingPostPurchaseMapper @Inject constructor() {
             result.add(shopUiModel)
             // Add products
             it.productList.forEach { product ->
-                val productUiModel = generateProductUiModel(product)
+                val productUiModel = generateProductUiModel(it.shopName, product)
                 result.add(productUiModel)
             }
         }
@@ -54,13 +54,16 @@ class UniversalSharingPostPurchaseMapper @Inject constructor() {
     }
 
     private fun generateProductUiModel(
+        shopName: String,
         product: UniversalSharingPostPurchaseProductModel
     ): UniversalSharingPostPurchaseProductUiModel {
         return UniversalSharingPostPurchaseProductUiModel(
+            orderId = product.orderId,
             productId = product.productId,
             name = product.productName,
             price = product.productPrice,
-            imageUrl = product.imageUrl
+            imageUrl = product.imageUrl,
+            shopName = shopName
         )
     }
 }

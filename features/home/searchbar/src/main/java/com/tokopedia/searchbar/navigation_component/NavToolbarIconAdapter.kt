@@ -170,11 +170,6 @@ internal class NavToolbarIconAdapter(
         model?.let { return iconConfig.iconList.indexOf(model) }
         return null
     }
-    fun getShareAffiliateIconPosition(): Int? {
-        val model = iconConfig.iconList.find { it.id == IconList.ID_SHARE_AB_TEST }
-        model?.let { return iconConfig.iconList.indexOf(model) }
-        return null
-    }
     fun getNoteBookPosition(): Int? {
         val model = iconConfig.iconList.find { it.id == IconList.ID_NOTEBOOK }
         model?.let { return iconConfig.iconList.indexOf(model) }
