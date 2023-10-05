@@ -41,8 +41,8 @@ class MilestoneMapper @Inject constructor(
     }
 
     fun mapToUiModel(it: MilestoneData, isFromCache: Boolean): MilestoneDataUiModel {
-        val missions = mapGetMilestoneMission(it.mission.orEmpty())
-        val finishCard = mapGetMilestoneFinish(it.finishMission)
+        val missions = mapGetMilestoneMission(it.showNumber.orFalse(), it.mission.orEmpty())
+        val finishCard = mapGetMilestoneFinish(it.showNumber.orFalse(), it.finishMission)
         val areAllMissionsCompleted = missions.all { m -> m.missionCompletionStatus }
         val allMissions = if (areAllMissionsCompleted) {
             finishCard.plus(missions)
@@ -75,7 +75,10 @@ class MilestoneMapper @Inject constructor(
         return seconds.times(ONE_SECOND_MILLIS)
     }
 
-    private fun mapGetMilestoneMission(missionData: List<MilestoneData.Mission>): List<MilestoneMissionUiModel> {
+    private fun mapGetMilestoneMission(
+        showNumber: Boolean,
+        missionData: List<MilestoneData.Mission>
+    ): List<MilestoneMissionUiModel> {
         return missionData.map {
             val buttonMissionData = it.button
             return@map MilestoneMissionUiModel(
@@ -91,6 +94,7 @@ class MilestoneMapper @Inject constructor(
                     appLink = buttonMissionData?.applink.orEmpty(),
                     buttonStatus = getButtonStatus(buttonMissionData?.buttonStatus)
                 ),
+                showNumber = showNumber,
                 missionProgress = MissionProgressUiModel(
                     description = it.progress?.description.orEmpty(),
                     percentage = it.progress?.percentage.orZero(),
@@ -101,7 +105,10 @@ class MilestoneMapper @Inject constructor(
         }
     }
 
-    private fun mapGetMilestoneFinish(finishData: MilestoneData.FinishMission): List<MilestoneFinishMissionUiModel> {
+    private fun mapGetMilestoneFinish(
+        showNumber: Boolean,
+        finishData: MilestoneData.FinishMission
+    ): List<MilestoneFinishMissionUiModel> {
         val buttonFinishData = finishData.button ?: return emptyList()
         if (buttonFinishData.title.isBlank()) {
             return emptyList()
@@ -112,6 +119,7 @@ class MilestoneMapper @Inject constructor(
             imageUrl = finishData.imageUrl.orEmpty(),
             title = finishData.title.orEmpty(),
             subTitle = finishData.subtitle.orEmpty(),
+            showNumber = showNumber,
             missionButton = MissionButtonUiModel(
                 title = buttonFinishData.title,
                 url = buttonFinishData.url,

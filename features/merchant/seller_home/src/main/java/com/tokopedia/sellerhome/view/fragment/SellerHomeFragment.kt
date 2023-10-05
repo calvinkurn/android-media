@@ -597,7 +597,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     override fun onMilestoneMissionActionClickedListener(
-        element: MilestoneWidgetUiModel, mission: BaseMilestoneMissionUiModel, missionPosition: Int
+        mission: BaseMilestoneMissionUiModel, missionPosition: Int
     ) {
         when (mission) {
             is MilestoneMissionUiModel -> {
