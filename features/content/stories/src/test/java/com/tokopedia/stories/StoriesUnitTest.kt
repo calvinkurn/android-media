@@ -2,6 +2,7 @@ package com.tokopedia.stories
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.SavedStateHandle
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.stories.data.repository.StoriesRepository
 import com.tokopedia.stories.data.utils.mockContentTaggedProductUiModel
@@ -26,6 +27,7 @@ import com.tokopedia.stories.view.model.StoriesDetailItem
 import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesDetailItemUiEvent
 import com.tokopedia.stories.view.model.StoriesGroupItem
 import com.tokopedia.stories.view.model.StoriesUiModel
+import com.tokopedia.stories.view.viewmodel.action.StoriesProductAction
 import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
 import com.tokopedia.stories.view.viewmodel.state.BottomSheetType
 import com.tokopedia.stories.view.viewmodel.state.ProductBottomSheetUiState
@@ -87,7 +89,8 @@ class StoriesUnitTest {
                 val actualDetail = robot.getViewModel().mDetail
                 val userId = robot.getViewModel().userId
 
-                val expectedGroup = resultGroupItem.mockGroupResetValue(actualGroup.detail.detailItems)
+                val expectedGroup =
+                    resultGroupItem.mockGroupResetValue(actualGroup.detail.detailItems)
                 val expectedDetail = resultDetailItems.mockDetailResetValue(actualDetail)
 
                 actualGroup.assertEqualTo(expectedGroup)
@@ -178,7 +181,9 @@ class StoriesUnitTest {
         val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
 
         coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
-        coEvery { mockRepository.getStoriesDetailData(any()) } returns expectedData.groupItems[selectedGroup.minus(1)].detail
+        coEvery { mockRepository.getStoriesDetailData(any()) } returns expectedData.groupItems[selectedGroup.minus(
+            1
+        )].detail
 
         getStoriesRobot().use { robot ->
             robot.entryPointTestCase(selectedGroup)
@@ -201,7 +206,8 @@ class StoriesUnitTest {
             robot.entryPointTestCase(selectedGroup)
 
             val actualGroup = robot.getViewModel().mDetail
-            val expectedDetail = expectedData.groupItems[selectedGroup].detail.detailItems.last().mockDetailResetValue(actualGroup)
+            val expectedDetail = expectedData.groupItems[selectedGroup].detail.detailItems.last()
+                .mockDetailResetValue(actualGroup)
             actualGroup.assertEqualTo(expectedDetail)
         }
     }
@@ -240,7 +246,8 @@ class StoriesUnitTest {
                 val actualGroup = robot.getViewModel().mGroup
                 val actualDetail = robot.getViewModel().mDetail
 
-                val expectedGroup = resultGroupItem.mockGroupResetValue(actualGroup.detail.detailItems)
+                val expectedGroup =
+                    resultGroupItem.mockGroupResetValue(actualGroup.detail.detailItems)
                 val expectedDetail = resultDetailItems.mockDetailResetValue(actualDetail)
 
                 actualGroup.assertEqualTo(expectedGroup)
@@ -385,7 +392,8 @@ class StoriesUnitTest {
                 val actualGroup = robot.getViewModel().mGroup
                 val actualDetail = robot.getViewModel().mDetail
 
-                val expectedGroup = resultGroupItem.mockGroupResetValue(actualGroup.detail.detailItems)
+                val expectedGroup =
+                    resultGroupItem.mockGroupResetValue(actualGroup.detail.detailItems)
                 val expectedDetail = resultDetailItems.mockDetailResetValue(actualDetail)
 
                 actualGroup.assertEqualTo(expectedGroup)
@@ -419,7 +427,8 @@ class StoriesUnitTest {
                 val actualGroup = robot.getViewModel().mGroup
                 val actualDetail = robot.getViewModel().mDetail
 
-                val expectedGroup = resultGroupItem.mockGroupResetValue(actualGroup.detail.detailItems)
+                val expectedGroup =
+                    resultGroupItem.mockGroupResetValue(actualGroup.detail.detailItems)
                 val expectedDetail = resultDetailItems.mockDetailResetValue(actualDetail)
 
                 actualGroup.assertEqualTo(expectedGroup)
@@ -719,7 +728,10 @@ class StoriesUnitTest {
         coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
 
         getStoriesRobot().use { robot ->
-            robot.collectImpressionGroupDuplicate(selectedGroup, expectedData.groupHeader[selectedGroup])
+            robot.collectImpressionGroupDuplicate(
+                selectedGroup,
+                expectedData.groupHeader[selectedGroup]
+            )
 
             val actualImpression = robot.getViewModel().impressedGroupHeader.first()
             actualImpression.assertEqualTo(expectedData.groupHeader.first())
@@ -740,7 +752,11 @@ class StoriesUnitTest {
             }
 
             val actualSize = robot.getViewModel().mGroup.detail.detailItems.size
-            actualSize.assertEqualTo(expectedData.groupItems[selectedGroup].detail.detailItems.size.minus(1))
+            actualSize.assertEqualTo(
+                expectedData.groupItems[selectedGroup].detail.detailItems.size.minus(
+                    1
+                )
+            )
 
             event.contains(StoriesUiEvent.ShowDeleteDialog)
         }
@@ -758,7 +774,11 @@ class StoriesUnitTest {
             robot.deleteStories()
 
             val actualSize = robot.getViewModel().mGroup.detail.detailItems.size
-            actualSize.assertEqualTo(expectedData.groupItems[selectedGroup].detail.detailItems.size.minus(1))
+            actualSize.assertEqualTo(
+                expectedData.groupItems[selectedGroup].detail.detailItems.size.minus(
+                    1
+                )
+            )
         }
     }
 
@@ -774,7 +794,11 @@ class StoriesUnitTest {
             robot.deleteStories(selectedGroup)
 
             val actualSize = robot.getViewModel().mGroup.detail.detailItems.size
-            actualSize.assertEqualTo(expectedData.groupItems[selectedGroup].detail.detailItems.size.minus(1))
+            actualSize.assertEqualTo(
+                expectedData.groupItems[selectedGroup].detail.detailItems.size.minus(
+                    1
+                )
+            )
         }
     }
 
@@ -943,7 +967,8 @@ class StoriesUnitTest {
             val stateEventOpen = robot.recordStateAndEvents {
                 robot.openVariantBottomSheet(mockSharingData)
             }
-            stateEventOpen.second.last().assertEqualTo(StoriesUiEvent.ShowVariantSheet(mockSharingData))
+            stateEventOpen.second.last()
+                .assertEqualTo(StoriesUiEvent.ShowVariantSheet(mockSharingData))
             stateEventOpen.first.bottomSheetStatus.mapValues {
                 if (it.key == BottomSheetType.GVBS) it.value.assertTrue()
                 else it.value.assertFalse()
@@ -976,6 +1001,7 @@ class StoriesUnitTest {
             state.productSheet.assertEqualTo(mockProduct)
         }
     }
+
     @Test
     fun `when get product and fail`() {
         val mockThrows = Throwable("any fail")
@@ -988,6 +1014,79 @@ class StoriesUnitTest {
             }
 
             state.productSheet.resultState.assertEqualTo(ResultState.Fail(mockThrows))
+        }
+    }
+
+    @Test
+    fun `when product action and success atc`() {
+        val action = StoriesProductAction.Atc
+        val product = mockContentTaggedProductUiModel()
+
+        coEvery { mockRepository.addToCart(any(), any(), any(), any()) } returns true
+        coEvery { mockUserSession.isLoggedIn } returns true
+
+        getStoriesRobot().use { robot ->
+            val event = robot.recordEvent {
+                robot.productAction(action, product)
+            }
+
+            event.last().assertEqualTo(
+                StoriesUiEvent.ProductSuccessEvent(
+                    action,
+                    R.string.stories_product_atc_success
+                )
+            )
+        }
+    }
+
+    @Test
+    fun `when product action and success buy`() {
+        val action = StoriesProductAction.Buy
+        val product = mockContentTaggedProductUiModel()
+
+        coEvery { mockRepository.addToCart(any(), any(), any(), any()) } returns true
+        coEvery { mockUserSession.isLoggedIn } returns true
+
+        getStoriesRobot().use { robot ->
+            val event = robot.recordEvent {
+                robot.productAction(action, product)
+            }
+
+            event.last().assertEqualTo(StoriesUiEvent.NavigateEvent(ApplinkConst.CART))
+        }
+    }
+
+    @Test
+    fun `when product action and fail`() {
+        val action = StoriesProductAction.Buy
+        val product = mockContentTaggedProductUiModel()
+
+        coEvery { mockRepository.addToCart(any(), any(), any(), any()) } returns false
+        coEvery { mockUserSession.isLoggedIn } returns true
+
+        getStoriesRobot().use { robot ->
+            val event = robot.recordEvent {
+                robot.productAction(action, product)
+            }
+
+            event.last().assertType<StoriesUiEvent.ShowErrorEvent> {}
+        }
+    }
+
+    @Test
+    fun `when product action and not login`() {
+        val action = StoriesProductAction.Atc
+        val product = mockContentTaggedProductUiModel()
+
+        coEvery { mockRepository.addToCart(any(), any(), any(), any()) } returns true
+        coEvery { mockUserSession.isLoggedIn } returns false
+
+        getStoriesRobot().use { robot ->
+            val event = robot.recordEvent {
+                robot.productAction(action, product)
+            }
+
+            event.last().assertType<StoriesUiEvent.Login> {}
         }
     }
 

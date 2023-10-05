@@ -177,7 +177,7 @@ class StoriesViewModel @AssistedInject constructor(
             StoriesUiAction.TapSharing -> handleSharing()
             StoriesUiAction.ShowDeleteDialog -> handleShowDialogDelete()
             StoriesUiAction.OpenProduct -> handleOpenProduct()
-            StoriesUiAction.FetchProduct -> getProducts()
+            StoriesUiAction.FetchProduct -> handleGetProducts()
             StoriesUiAction.DeleteStory -> handleDeleteStory()
             StoriesUiAction.ContentIsLoaded -> handleContentIsLoaded()
             StoriesUiAction.PageIsSelected -> handlePageIsSelected()
@@ -407,13 +407,19 @@ class StoriesViewModel @AssistedInject constructor(
         }
     }
 
-    private fun getProducts() {
+    private fun handleGetProducts() {
         viewModelScope.launchCatchError(block = {
             _productsState.update { product -> product.copy(resultState = ResultState.Loading) }
             val productList = repository.getStoriesProducts(args.authorId, storyId, mGroup.groupName)
             _productsState.value = productList
         }) { exception ->
             _productsState.update { product -> product.copy(resultState = ResultState.Fail(exception)) }
+        }
+    }
+
+    private fun handleProductAction(action: StoriesProductAction, product: ContentTaggedProductUiModel) {
+        requiredLogin {
+            addToCart(product, action)
         }
     }
 
@@ -426,23 +432,15 @@ class StoriesViewModel @AssistedInject constructor(
                     shopId = args.authorId,
                     productName = product.title
                 )
+                if (!response) throw MessageErrorException()
 
-                if (response) {
-                    if (action == StoriesProductAction.Atc) {
-                        _storiesEvent.emit(StoriesUiEvent.ProductSuccessEvent(action, R.string.stories_product_atc_success))
-                    } else {
-                        _storiesEvent.emit(StoriesUiEvent.NavigateEvent(appLink = ApplinkConst.CART))
-                    }
-                } else {
-                    throw MessageErrorException()
-                }
-            }, onError = { _storiesEvent.emit(StoriesUiEvent.ShowErrorEvent(it)) })
-        }
-    }
-
-    private fun handleProductAction(action: StoriesProductAction, product: ContentTaggedProductUiModel) {
-        requiredLogin {
-            addToCart(product, action)
+                _storiesEvent.emit(
+                    if (action == StoriesProductAction.Atc) StoriesUiEvent.ProductSuccessEvent(
+                        action,
+                        R.string.stories_product_atc_success,
+                    ) else StoriesUiEvent.NavigateEvent(appLink = ApplinkConst.CART)
+                )
+            }) { _storiesEvent.emit(StoriesUiEvent.ShowErrorEvent(it)) }
         }
     }
 

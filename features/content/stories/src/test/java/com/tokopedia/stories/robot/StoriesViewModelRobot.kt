@@ -8,6 +8,7 @@ import com.tokopedia.stories.view.model.StoriesArgsModel
 import com.tokopedia.stories.view.model.StoriesGroupHeader
 import com.tokopedia.stories.view.model.StoriesUiModel
 import com.tokopedia.stories.view.viewmodel.StoriesViewModel
+import com.tokopedia.stories.view.viewmodel.action.StoriesProductAction
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
 import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
 import com.tokopedia.stories.view.viewmodel.state.BottomSheetType
@@ -236,6 +237,10 @@ internal class StoriesViewModelRobot(
 
     fun getProducts() {
         viewModel.submitAction(StoriesUiAction.FetchProduct)
+    }
+
+    fun productAction(action: StoriesProductAction, product: ContentTaggedProductUiModel) {
+        viewModel.submitAction(StoriesUiAction.ProductAction(action, product))
     }
 
     override fun close() {
