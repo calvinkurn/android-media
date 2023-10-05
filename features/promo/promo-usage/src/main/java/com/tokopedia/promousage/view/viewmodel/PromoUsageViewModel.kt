@@ -220,6 +220,7 @@ class PromoUsageViewModel @Inject constructor(
         }
         _promoPageUiState.postValue(
             PromoPageUiState.Success(
+                hasPromoRecommendationSection = promoRecommendation != null,
                 tickerInfo = tickerInfo,
                 items = items,
                 savingInfo = savingInfo,
