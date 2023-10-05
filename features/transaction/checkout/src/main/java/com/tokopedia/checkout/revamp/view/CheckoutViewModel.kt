@@ -1307,6 +1307,15 @@ class CheckoutViewModel @Inject constructor(
         )
     }
 
+    fun generateValidateUsePromoRequestForPromoUsage(): ValidateUsePromoRequest {
+        return promoProcessor.generateValidateUsePromoRequestForPromoUsage(
+            listData.value,
+            isTradeIn,
+            isTradeInByDropOff,
+            isOneClickShipment
+        )
+    }
+
     fun generateCouponListRecommendationRequest(): PromoRequest {
         return promoProcessor.generateCouponListRecommendationRequest(
             listData.value,
