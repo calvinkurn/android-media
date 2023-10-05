@@ -2,6 +2,7 @@ package com.tokopedia.stories
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.SavedStateHandle
+import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.stories.data.repository.StoriesRepository
 import com.tokopedia.stories.data.utils.mockContentTaggedProductUiModel
 import com.tokopedia.stories.data.utils.mockDetailResetValue
@@ -27,6 +28,7 @@ import com.tokopedia.stories.view.model.StoriesGroupItem
 import com.tokopedia.stories.view.model.StoriesUiModel
 import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
 import com.tokopedia.stories.view.viewmodel.state.BottomSheetType
+import com.tokopedia.stories.view.viewmodel.state.ProductBottomSheetUiState
 import com.tokopedia.stories.view.viewmodel.state.isAnyShown
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.universal_sharing.view.model.LinkProperties
@@ -956,6 +958,36 @@ class StoriesUnitTest {
                 else it.value.assertFalse()
             }
             stateClose.bottomSheetStatus.isAnyShown.assertFalse()
+        }
+    }
+
+    @Test
+    fun `when get product and success`() {
+        val mockProduct = ProductBottomSheetUiState.Empty
+
+        coEvery { mockRepository.getStoriesProducts(any(), any(), any()) } returns mockProduct
+
+        getStoriesRobot().use { robot ->
+            val state = robot.recordState {
+                robot.getProducts()
+            }
+
+            state.productSheet.resultState.assertEqualTo(ResultState.Loading)
+            state.productSheet.assertEqualTo(mockProduct)
+        }
+    }
+    @Test
+    fun `when get product and fail`() {
+        val mockThrows = Throwable("any fail")
+
+        coEvery { mockRepository.getStoriesProducts(any(), any(), any()) } throws mockThrows
+
+        getStoriesRobot().use { robot ->
+            val state = robot.recordState {
+                robot.getProducts()
+            }
+
+            state.productSheet.resultState.assertEqualTo(ResultState.Fail(mockThrows))
         }
     }
 

@@ -234,6 +234,10 @@ internal class StoriesViewModelRobot(
         viewModel.submitAction(StoriesUiAction.DismissSheet(type))
     }
 
+    fun getProducts() {
+        viewModel.submitAction(StoriesUiAction.FetchProduct)
+    }
+
     override fun close() {
         cancelRemainingTasks()
     }

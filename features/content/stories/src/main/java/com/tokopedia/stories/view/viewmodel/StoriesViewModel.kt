@@ -56,10 +56,9 @@ class StoriesViewModel @AssistedInject constructor(
         fun create(args: StoriesArgsModel, handle: SavedStateHandle): StoriesViewModel
     }
 
-    private val bottomSheetStatus = MutableStateFlow(BottomSheetStatusDefault)
-    private val products = MutableStateFlow(ProductBottomSheetUiState.Empty)
-
-    private val _storiesMainData = MutableStateFlow(StoriesUiModel())
+    private val _storiesMainDataState = MutableStateFlow(StoriesUiModel())
+    private val _bottomSheetStatusState = MutableStateFlow(BottomSheetStatusDefault)
+    private val _productsState = MutableStateFlow(ProductBottomSheetUiState.Empty)
 
     private val _storiesEvent = MutableSharedFlow<StoriesUiEvent>(extraBufferCapacity = 100)
     val storiesEvent: Flow<StoriesUiEvent>
@@ -75,10 +74,10 @@ class StoriesViewModel @AssistedInject constructor(
             return if (groupPosition < 0) {
                 StoriesGroupItem()
             } else {
-                if (groupPosition >= _storiesMainData.value.groupItems.size) {
+                if (groupPosition >= _storiesMainDataState.value.groupItems.size) {
                     StoriesGroupItem()
                 } else {
-                    _storiesMainData.value.groupItems[groupPosition]
+                    _storiesMainDataState.value.groupItems[groupPosition]
                 }
             }
         }
@@ -90,7 +89,7 @@ class StoriesViewModel @AssistedInject constructor(
             return if (groupPosition < 0 || detailPosition < 0) {
                 StoriesDetailItem()
             } else {
-                _storiesMainData.value.groupItems[groupPosition].detail.detailItems[detailPosition]
+                _storiesMainDataState.value.groupItems[groupPosition].detail.detailItems[detailPosition]
             }
         }
 
@@ -99,7 +98,7 @@ class StoriesViewModel @AssistedInject constructor(
         get() = _impressedGroupHeader
 
     private val mStoriesMainData: StoriesUiModel
-        get() = _storiesMainData.value
+        get() = _storiesMainDataState.value
 
     private val mGroupPos: Int
         get() = _groupPos.value
@@ -108,7 +107,7 @@ class StoriesViewModel @AssistedInject constructor(
         get() = _detailPos.value
 
     private val mGroupSize: Int
-        get() = _storiesMainData.value.groupItems.size
+        get() = _storiesMainDataState.value.groupItems.size
 
     private val mDetailSize: Int
         get() {
@@ -116,10 +115,10 @@ class StoriesViewModel @AssistedInject constructor(
             return if (groupPosition < 0) {
                 0
             } else {
-                if (groupPosition >= _storiesMainData.value.groupItems.size) {
+                if (groupPosition >= _storiesMainDataState.value.groupItems.size) {
                     0
                 } else {
-                    _storiesMainData.value.groupItems[groupPosition].detail.detailItems.size
+                    _storiesMainDataState.value.groupItems[groupPosition].detail.detailItems.size
                 }
             }
         }
@@ -135,7 +134,7 @@ class StoriesViewModel @AssistedInject constructor(
         }
 
     val isAnyBottomSheetShown: Boolean
-        get() = bottomSheetStatus.value.isAnyShown
+        get() = _bottomSheetStatusState.value.isAnyShown
 
     private val mResetValue: Int
         get() = _resetValue.value
@@ -146,9 +145,9 @@ class StoriesViewModel @AssistedInject constructor(
 
     val storiesState: Flow<StoriesUiState>
         get() = combine(
-            _storiesMainData,
-            bottomSheetStatus,
-            products
+            _storiesMainDataState,
+            _bottomSheetStatusState,
+            _productsState
         ) { storiesMainData, sheetStatus, product ->
             StoriesUiState(
                 storiesMainData = storiesMainData,
@@ -194,7 +193,7 @@ class StoriesViewModel @AssistedInject constructor(
         if (storiesMainData == null) {
             launchRequestInitialData()
         } else {
-            _storiesMainData.value = storiesMainData
+            _storiesMainDataState.value = storiesMainData
             _groupPos.value = groupPosition
             _detailPos.value = detailPosition
         }
@@ -331,7 +330,7 @@ class StoriesViewModel @AssistedInject constructor(
         detail: StoriesDetail,
         groupPosition: Int,
     ) {
-        _storiesMainData.update { group ->
+        _storiesMainDataState.update { group ->
             group.copy(
                 selectedGroupId = mGroup.groupId,
                 selectedGroupPosition = mGroupPos,
@@ -362,7 +361,7 @@ class StoriesViewModel @AssistedInject constructor(
     }
 
     private fun handleDismissSheet(bottomSheetType: BottomSheetType) {
-        bottomSheetStatus.update { bottomSheet ->
+        _bottomSheetStatusState.update { bottomSheet ->
             bottomSheet.mapValues {
                 if (it.key == bottomSheetType) false
                 else it.value
@@ -373,17 +372,17 @@ class StoriesViewModel @AssistedInject constructor(
     private fun handleOpenKebab() {
         viewModelScope.launch {
             _storiesEvent.emit(StoriesUiEvent.OpenKebab)
-            bottomSheetStatus.update { bottomSheet ->
+            _bottomSheetStatusState.update { bottomSheet ->
                 bottomSheet.mapValues { it.key == BottomSheetType.Kebab }
             }
         }
     }
 
     private fun handleOpenProduct() {
-        if (bottomSheetStatus.value.isAnyShown || !isProductAvailable) return
+        if (_bottomSheetStatusState.value.isAnyShown || !isProductAvailable) return
         viewModelScope.launch {
             _storiesEvent.emit(StoriesUiEvent.OpenProduct)
-            bottomSheetStatus.update { bottomSheet ->
+            _bottomSheetStatusState.update { bottomSheet ->
                 bottomSheet.mapValues { it.key == BottomSheetType.Product }
             }
         }
@@ -393,7 +392,7 @@ class StoriesViewModel @AssistedInject constructor(
         viewModelScope.launch {
             val data = mDetail.share
             _storiesEvent.emit(StoriesUiEvent.TapSharing(data))
-            bottomSheetStatus.update { bottomSheet ->
+            _bottomSheetStatusState.update { bottomSheet ->
                 bottomSheet.mapValues { it.key == BottomSheetType.Sharing }
             }
         }
@@ -402,7 +401,7 @@ class StoriesViewModel @AssistedInject constructor(
     private fun handleVariantSheet(product: ContentTaggedProductUiModel) {
         viewModelScope.launch {
             _storiesEvent.emit(StoriesUiEvent.ShowVariantSheet(product))
-            bottomSheetStatus.update { bottomSheet ->
+            _bottomSheetStatusState.update { bottomSheet ->
                 bottomSheet.mapValues { it.key == BottomSheetType.GVBS }
             }
         }
@@ -410,12 +409,12 @@ class StoriesViewModel @AssistedInject constructor(
 
     private fun getProducts() {
         viewModelScope.launchCatchError(block = {
-            products.update { product -> product.copy(resultState = ResultState.Loading) }
+            _productsState.update { product -> product.copy(resultState = ResultState.Loading) }
             val productList = repository.getStoriesProducts(args.authorId, storyId, mGroup.groupName)
-            products.update { productList }
-        }, onError = {
-            products.update { product -> product.copy(resultState = ResultState.Fail(it)) }
-        })
+            _productsState.value = productList
+        }) { exception ->
+            _productsState.update { product -> product.copy(resultState = ResultState.Fail(exception)) }
+        }
     }
 
     private fun addToCart(product: ContentTaggedProductUiModel, action: StoriesProductAction) {
@@ -463,7 +462,7 @@ class StoriesViewModel @AssistedInject constructor(
         viewModelScope.launch { repository.deleteStory(storyId) }
 
         val removedItem = mGroup.detail.detailItems.filterNot { it.id == storyId }
-        val mainData = _storiesMainData.value
+        val mainData = _storiesMainDataState.value
 
         val newDetail = if (removedItem.isEmpty()) StoriesDetail()
         else mGroup.detail.copy(detailItems = removedItem)
@@ -527,7 +526,7 @@ class StoriesViewModel @AssistedInject constructor(
 
     private fun launchRequestInitialData() {
         viewModelScope.launchCatchError(block = {
-            _storiesMainData.value = requestStoriesInitialData()
+            _storiesMainDataState.value = requestStoriesInitialData()
             _groupPos.value = mStoriesMainData.selectedGroupPosition
 
             if (mGroup == StoriesGroupItem()) _storiesEvent.emit(StoriesUiEvent.EmptyGroupPage)
