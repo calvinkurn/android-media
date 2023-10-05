@@ -285,8 +285,7 @@ class EventRedeemRevampFragment : BaseDaggerFragment(),
             tgValueDate.show()
             tgTitleSumTicket.show()
             tgValueSumTicket.show()
-            tgTitleSeatingNumber.show()
-            tgValueSeatingNumber.show()
+            showSeatingNumbers()
             tgTitleRedeem.show()
             btnRedeem.show()
             tfRedeem.show()
@@ -307,8 +306,7 @@ class EventRedeemRevampFragment : BaseDaggerFragment(),
             tgValueDate.hide()
             tgTitleSumTicket.hide()
             tgValueSumTicket.hide()
-            tgTitleSeatingNumber.hide()
-            tgValueSeatingNumber.hide()
+            hideSeatingNumbers()
             tgTitleRedeem.hide()
             btnRedeem.hide()
             tfRedeem.hide()
@@ -354,12 +352,10 @@ class EventRedeemRevampFragment : BaseDaggerFragment(),
             tgValueDate.text = redeem.schedule.showData
             tgValueSumTicket.text = redeem.quantity.toString()
             if (redeem.seatingNumbers.isNotEmpty()) {
-                tgValueSeatingNumber.show()
-                tgTitleSeatingNumber.show()
+                showSeatingNumbers()
                 tgValueSeatingNumber.text = redeem.seatingNumbers
             } else {
-                tgValueSeatingNumber.hide()
-                tgTitleSeatingNumber.hide()
+               hideSeatingNumbers()
             }
             renderRedeemLayout(redeem)
         }
@@ -508,6 +504,20 @@ class EventRedeemRevampFragment : BaseDaggerFragment(),
             errorMessage?.let {
                 Toaster.build(view, errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
             }
+        }
+    }
+
+    private fun showSeatingNumbers() {
+        binding?.apply {
+            tgValueSeatingNumber.show()
+            tgTitleSeatingNumber.show()
+        }
+    }
+
+    private fun hideSeatingNumbers() {
+        binding?.apply {
+            tgValueSeatingNumber.hide()
+            tgTitleSeatingNumber.hide()
         }
     }
 
