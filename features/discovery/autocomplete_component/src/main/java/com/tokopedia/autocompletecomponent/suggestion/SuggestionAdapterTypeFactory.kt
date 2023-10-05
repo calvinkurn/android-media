@@ -27,7 +27,7 @@ class SuggestionAdapterTypeFactory(
     private val suggestionListener: SuggestionListener,
     private val suggestionTopShopListener: SuggestionTopShopListener,
     private val suggestionChipListener: SuggestionChipListener,
-    private var isReimagine: Boolean
+    private val isReimagine: Boolean
 ) : BaseAdapterTypeFactory(), SuggestionTypeFactory {
 
     override fun type(suggestionTitleDataView: SuggestionTitleDataView): Int {

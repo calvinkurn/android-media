@@ -6,6 +6,7 @@ import com.tokopedia.atc_common.domain.model.response.atcexternal.AddToCartExter
 import com.tokopedia.cartcommon.data.response.common.OutOfService
 import com.tokopedia.promousage.domain.entity.PromoEntryPointInfo
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
+import com.tokopedia.cartrevamp.domain.model.bmgm.response.BmGmGetGroupProductTickerResponse
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -28,12 +29,6 @@ sealed class CartGlobalEvent {
     object SuccessClearRedPromosThenGoToPromo : CartGlobalEvent()
     object SuccessClearRedPromosThenGoToCheckout : CartGlobalEvent()
     data class UpdateAndReloadCartFailed(val throwable: Throwable) : CartGlobalEvent()
-    data class SubTotalUpdated(
-        val subtotalCashback: Double,
-        val qty: String,
-        val subtotalPrice: Double,
-        val noAvailableItems: Boolean
-    ) : CartGlobalEvent()
 
     data class AdapterItemChanged(
         val position: Int
@@ -95,7 +90,8 @@ sealed interface DeleteCartEvent {
         val forceExpandCollapsedUnavailableItems: Boolean,
         val addWishList: Boolean,
         val isFromGlobalCheckbox: Boolean,
-        val isFromEditBundle: Boolean
+        val isFromEditBundle: Boolean,
+        val listOfferId: ArrayList<Long>
     ) : DeleteCartEvent
 
     data class Failed(
@@ -187,6 +183,13 @@ sealed interface UpdateCartPromoState {
     data class Failed(val throwable: Throwable) : UpdateCartPromoState
 }
 
+data class SubTotalState(
+    val subtotalCashback: Double,
+    val qty: String,
+    val subtotalPrice: Double,
+    val noAvailableItems: Boolean
+)
+
 sealed class EntryPointInfoEvent {
 
     object Loading : EntryPointInfoEvent()
@@ -248,4 +251,9 @@ class CartMutableLiveData<T>(initialValue: T) : LiveData<T>(initialValue) {
     fun notifyObserver() {
         this.value = this.value
     }
+}
+
+sealed interface GetBmGmGroupProductTickerState {
+    data class Success(val pairOfferIdBmGmTickerResponse: Pair<Long, BmGmGetGroupProductTickerResponse>) : GetBmGmGroupProductTickerState
+    data class Failed(val pairOfferIdThrowable: Pair<Long, Throwable>) : GetBmGmGroupProductTickerState
 }

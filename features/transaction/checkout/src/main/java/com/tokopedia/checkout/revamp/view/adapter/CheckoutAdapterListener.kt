@@ -138,4 +138,9 @@ interface CheckoutAdapterListener {
     fun onInsuranceTncClicked()
 
     fun onProcessToPayment()
+
+    fun onClickBmgmInfoIcon(
+        offerId: String,
+        shopId: String
+    )
 }

@@ -14,8 +14,12 @@ android {
             res.srcDirs = [
                     pathSources,
                     pathSources + 'detail',
-                    pathSources + 'detail/a_plus_content'
+                    pathSources + 'detail/a_plus_content',
+                    pathSources + 'detail/bmgm'
             ]
+        }
+        androidTest {
+            resources.srcDirs += "$projectDir/src/androidTest/resources"
         }
     }
 
@@ -44,7 +48,6 @@ android {
         viewBinding true
         buildConfig true
     }
-
 }
 
 buildscript {
