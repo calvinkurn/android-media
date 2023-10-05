@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tokopedia.universal_sharing">
 
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
@@ -27,10 +28,11 @@
         </activity>
 
         <activity
-            android:name=".view.activity.PostPurchaseSharingActivity"
+            android:name=".view.activity.UniversalSharingPostPurchaseSharingActivity"
             android:screenOrientation="portrait"
             android:exported="false"
-            android:theme="@style/Theme.White">
+            android:launchMode="singleTask"
+            android:theme="@style/Theme.AppCompat.Transparent.NoActionBar.GlobalSharing">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 

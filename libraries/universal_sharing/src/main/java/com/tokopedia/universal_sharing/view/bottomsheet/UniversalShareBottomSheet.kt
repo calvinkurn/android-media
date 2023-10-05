@@ -55,6 +55,9 @@ import com.tokopedia.universal_sharing.constants.BroadcastChannelType
 import com.tokopedia.universal_sharing.constants.ImageGeneratorConstants
 import com.tokopedia.universal_sharing.di.ActivityComponentFactory
 import com.tokopedia.universal_sharing.di.UniversalShareComponent
+import com.tokopedia.universal_sharing.domain.usecase.ExtractBranchLinkUseCase
+import com.tokopedia.universal_sharing.domain.usecase.ImageGeneratorUseCase
+import com.tokopedia.universal_sharing.domain.usecase.ImagePolicyUseCase
 import com.tokopedia.universal_sharing.model.BroadcastChannelModel
 import com.tokopedia.universal_sharing.model.CampaignStatus
 import com.tokopedia.universal_sharing.model.ImageGeneratorParamModel
@@ -66,9 +69,6 @@ import com.tokopedia.universal_sharing.model.TickerShareModel
 import com.tokopedia.universal_sharing.model.WishlistCollectionParamModel
 import com.tokopedia.universal_sharing.model.generateImageGeneratorParam
 import com.tokopedia.universal_sharing.tracker.UniversalSharebottomSheetTracker
-import com.tokopedia.universal_sharing.usecase.ExtractBranchLinkUseCase
-import com.tokopedia.universal_sharing.usecase.ImageGeneratorUseCase
-import com.tokopedia.universal_sharing.usecase.ImagePolicyUseCase
 import com.tokopedia.universal_sharing.util.DateUtil
 import com.tokopedia.universal_sharing.util.MimeType
 import com.tokopedia.universal_sharing.util.UniversalShareConst
@@ -219,6 +219,9 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
     private var personalizedMessage = ""
     private var personalizedImage = ""
     private var personalizedCampaignModel: PersonalizedCampaignModel? = null
+
+    // Flag to show toaster without dismiss
+    private var dismissAfterShare = true
 
     // parent fragment lifecycle observer
     private val parentFragmentLifecycleObserver by lazy {
@@ -1482,17 +1485,20 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
                 object : ShareCallback {
                     override fun urlCreated(linkerShareResult: LinkerShareResult) {
                         shareModel.subjectName = subjectShare
+                        val view = fragmentView ?: dialog?.window?.decorView
                         SharingUtil.executeShareIntent(
                             shareModel,
                             linkerShareResult,
                             activity,
-                            fragmentView,
+                            view,
                             String.format(
                                 shareText,
                                 linkerShareResult.url
                             )
                         )
-                        dismiss()
+                        if (dismissAfterShare) {
+                            dismiss()
+                        }
                     }
 
                     override fun onError(linkerError: LinkerError) {
@@ -1568,6 +1574,15 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
          */
         fun createInstance(fragmentView: View?) = UniversalShareBottomSheet().apply {
             this.fragmentView = fragmentView
+        }
+
+        /**
+         * if you're using [enableDefaultShareIntent] and don't want to hide bottomsheet after share,
+         * please create the instance using this function
+         * otherwise the toaster after clicking `salin link` won't show
+         */
+        fun createInstance(dismissAfterShare: Boolean) = UniversalShareBottomSheet().apply {
+            this.dismissAfterShare = dismissAfterShare
         }
     }
 }
