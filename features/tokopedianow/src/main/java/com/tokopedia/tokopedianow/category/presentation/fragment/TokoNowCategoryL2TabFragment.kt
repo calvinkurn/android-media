@@ -1043,6 +1043,7 @@ class TokoNowCategoryL2TabFragment : Fragment() {
                 if(data.hasOutOfStockTicker) {
                     trackClickCloseOutOfStockTicker()
                 }
+                viewModel.removeTicker()
             }
         }
     }
