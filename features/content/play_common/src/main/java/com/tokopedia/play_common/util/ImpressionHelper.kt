@@ -10,6 +10,30 @@ import com.tokopedia.kotlin.model.ImpressHolder
 /**
  * Created by kenny.hadisaputra on 24/08/22
  */
+fun View.addImpressionListener(onView: () -> Unit): ImpressionListener {
+    val vto = viewTreeObserver
+    val scrollListener = ViewTreeObserver.OnScrollChangedListener {
+        if (viewIsVisible(this@addImpressionListener)) onView()
+    }
+    vto.addOnScrollChangedListener(scrollListener)
+
+    val attachStateListener = object : View.OnAttachStateChangeListener {
+        override fun onViewAttachedToWindow(v: View) {
+        }
+
+        override fun onViewDetachedFromWindow(v: View) {
+            if (vto.isAlive) vto.removeOnScrollChangedListener(scrollListener)
+            if (viewTreeObserver.isAlive) vto.removeOnScrollChangedListener(scrollListener)
+            v.removeOnAttachStateChangeListener(this)
+        }
+    }
+    addOnAttachStateChangeListener(attachStateListener)
+
+    if (viewIsVisible(this)) onView()
+
+    return ImpressionListener(scrollListener, attachStateListener)
+}
+
 fun View.addImpressionListener(
     impressHolder: ImpressHolder,
     onView: () -> Unit
@@ -34,7 +58,6 @@ fun View.addImpressionListener(
 
         attachStateListener = object : View.OnAttachStateChangeListener {
             override fun onViewAttachedToWindow(v: View) {
-
             }
 
             override fun onViewDetachedFromWindow(v: View) {
@@ -52,6 +75,12 @@ fun View.addImpressionListener(
     }
 }
 
+fun View.removeImpressionListener(listener: ImpressionListener) {
+    val vto = viewTreeObserver
+    if (vto.isAlive) vto.removeOnScrollChangedListener(listener.scrollListener)
+    removeOnAttachStateChangeListener(listener.attachListener)
+}
+
 private fun viewIsVisible(view: View?): Boolean {
     if (view == null) {
         return false
@@ -66,9 +95,15 @@ private fun viewIsVisible(view: View?): Boolean {
     val X = location[0] + offset
     val Y = location[1] + offset
     return if (screen.top <= Y && screen.bottom >= Y &&
-        screen.left <= X && screen.right >= X) {
+        screen.left <= X && screen.right >= X
+    ) {
         true
     } else {
         false
     }
 }
+
+data class ImpressionListener(
+    internal val scrollListener: ViewTreeObserver.OnScrollChangedListener,
+    internal val attachListener: View.OnAttachStateChangeListener
+)

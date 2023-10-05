@@ -25,7 +25,6 @@ import com.tokopedia.stories.widget.domain.StoriesWidgetState
 import com.tokopedia.stories.widget.tracking.DefaultTrackerBuilder
 import com.tokopedia.stories.widget.tracking.DefaultTrackerSender
 import com.tokopedia.stories.widget.tracking.StoriesWidgetTracker
-import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -317,7 +316,6 @@ class StoriesWidgetManager private constructor(
 
         private var mScrollingParent: View? = null
         private var mAnimationStrategy: AnimationStrategy = NoAnimateAnimationStrategy()
-        private val trackingQueue = TrackingQueue(context)
         private val userSession = UserSession(context.applicationContext)
         private var mTrackerBuilder: StoriesWidgetTracker.Builder? = null
         private var mTrackerSender: StoriesWidgetTracker.Sender? = null
@@ -358,8 +356,8 @@ class StoriesWidgetManager private constructor(
                 mScrollingParent,
                 mAnimationStrategy,
                 mTrackerBuilder ?: DefaultTrackerBuilder(entryPoint, userSession),
-                mTrackerSender ?: DefaultTrackerSender(lifecycleOwner, trackingQueue),
-                mCoachMarkStrategy ?: DefaultCoachMarkStrategy(lifecycleOwner),
+                mTrackerSender ?: DefaultTrackerSender(),
+                mCoachMarkStrategy ?: DefaultCoachMarkStrategy(lifecycleOwner)
             )
         }
 
@@ -374,7 +372,7 @@ class StoriesWidgetManager private constructor(
         val animStrategy: AnimationStrategy,
         val trackerBuilder: StoriesWidgetTracker.Builder,
         val trackerSender: StoriesWidgetTracker.Sender,
-        val coachMarkStrategy: CoachMarkStrategy,
+        val coachMarkStrategy: CoachMarkStrategy
     )
 
     internal data class StoriesWidgetMeta(

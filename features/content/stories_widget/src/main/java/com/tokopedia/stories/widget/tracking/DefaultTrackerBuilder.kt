@@ -1,5 +1,6 @@
 package com.tokopedia.stories.widget.tracking
 
+import android.os.Bundle
 import com.tokopedia.content.analytic.BusinessUnit
 import com.tokopedia.content.analytic.CurrentSite
 import com.tokopedia.content.analytic.Event
@@ -7,9 +8,6 @@ import com.tokopedia.content.analytic.Key
 import com.tokopedia.stories.widget.StoriesStatus
 import com.tokopedia.stories.widget.domain.StoriesEntryPoint
 import com.tokopedia.stories.widget.domain.StoriesWidgetState
-import com.tokopedia.track.TrackApp
-import com.tokopedia.track.builder.BaseTrackerBuilder
-import com.tokopedia.track.builder.util.BaseTrackerConst
 import com.tokopedia.user.session.UserSessionInterface
 
 /**
@@ -17,7 +15,7 @@ import com.tokopedia.user.session.UserSessionInterface
  */
 class DefaultTrackerBuilder(
     private val entryPoint: StoriesEntryPoint,
-    private val userSession: UserSessionInterface,
+    private val userSession: UserSessionInterface
 ) : StoriesWidgetTracker.Builder {
 
     private val eventCategory: String = when (entryPoint) {
@@ -41,60 +39,121 @@ class DefaultTrackerBuilder(
         StoriesEntryPoint.TopChatRoom -> "46004"
     }
 
-    private val sessionIris get() = TrackApp.getInstance().gtm.irisSessionId
-
     override fun onImpressedEntryPoint(state: StoriesWidgetState): StoriesWidgetTracker.Data {
         if (!isStoriesValid(state)) return StoriesWidgetTracker.Data.Empty
 
+        val eventName = Event.viewItem
         val eventAction = "view - story entry point"
-        val map = BaseTrackerBuilder().constructBasicPromotionView(
-            event = Event.promoView,
-            eventCategory = eventCategory,
-            eventAction = eventAction,
-            eventLabel = "${entryPoint.trackerName} - ${state.shopId} - story - shop",
-            promotions = listOf(
-                BaseTrackerConst.Promotion(
-                    id = state.shopId,
-                    name = "/ - ${state.shopId} - stories entry point",
-                    creative = "",
-                    position = "",
+
+        val trackerBundle = Bundle().apply {
+            putString(Key.event, eventName)
+            putString(Key.eventCategory, eventCategory)
+            putString(Key.eventAction, eventAction)
+            putString(Key.eventLabel, "${entryPoint.trackerName} - ${state.shopId} - story - shop")
+            putParcelableArrayList(
+                Key.promotions,
+                arrayListOf(
+                    Bundle().apply {
+                        putString(Key.itemId, state.shopId)
+                        putString(Key.itemName, "/ - ${state.shopId} - stories entry point")
+                        putString(Key.creativeSlot, "")
+                        putString(Key.creativeName, "")
+                    }
                 )
             )
-        ).appendUserId(userSession.userId)
-            .appendBusinessUnit(BusinessUnit.content)
-            .appendCurrentSite(CurrentSite.tokopediaMarketplace)
-            .appendCustomKeyValue(Key.sessionIris, sessionIris)
-            .appendCustomKeyValue(Key.trackerId, impressionTrackerId)
-            .build()
+            putString(Key.userId, userSession.userId)
+            putString(Key.businessUnit, BusinessUnit.content)
+            putString(Key.currentSite, CurrentSite.tokopediaMarketplace)
+            putString(Key.trackerId, impressionTrackerId)
+        }
+//
+//        val map = BaseTrackerBuilder().constructBasicPromotionView(
+//            event = eventName,
+//            eventCategory = eventCategory,
+//            eventAction = eventAction,
+//            eventLabel = "${entryPoint.trackerName} - ${state.shopId} - story - shop",
+//            promotions = listOf(
+//                BaseTrackerConst.Promotion(
+//                    id = state.shopId,
+//                    name = "/ - ${state.shopId} - stories entry point",
+//                    creative = "",
+//                    position = "",
+//                )
+//            )
+//        ).appendUserId(userSession.userId)
+//            .appendBusinessUnit(BusinessUnit.content)
+//            .appendCurrentSite(CurrentSite.tokopediaMarketplace)
+//            .appendCustomKeyValue(Key.sessionIris, sessionIris)
+//            .appendCustomKeyValue(Key.trackerId, impressionTrackerId)
+//            .build()
 
-        return StoriesWidgetTracker.Data(state.shopId, eventAction, true, map)
+        return StoriesWidgetTracker.Data(
+            state.shopId,
+            eventName,
+            eventAction,
+            true,
+            trackerBundle
+        )
     }
 
-    override fun onClickedEntryPoint(state: StoriesWidgetState): StoriesWidgetTracker.Data  {
+    override fun onClickedEntryPoint(state: StoriesWidgetState): StoriesWidgetTracker.Data {
         if (!isStoriesValid(state)) return StoriesWidgetTracker.Data.Empty
 
+//        val eventName = Event.selectContent
+//        val eventAction = "click - story entry point"
+//
+//        val map = BaseTrackerBuilder().constructBasicPromotionClick(
+//            event = eventName,
+//            eventCategory = eventCategory,
+//            eventAction = eventAction,
+//            eventLabel = "${entryPoint.trackerName} - ${state.shopId} - story - shop",
+//            promotions = listOf(
+//                BaseTrackerConst.Promotion(
+//                    id = state.shopId,
+//                    name = "/ - ${state.shopId} - stories entry point",
+//                    creative = "",
+//                    position = "",
+//                )
+//            )
+//        ).appendUserId(userSession.userId)
+//            .appendBusinessUnit(BusinessUnit.content)
+//            .appendCurrentSite(CurrentSite.tokopediaMarketplace)
+//            .appendCustomKeyValue(Key.sessionIris, sessionIris)
+//            .appendCustomKeyValue(Key.trackerId, clickTrackerId)
+//            .build()
+
+        val eventName = Event.selectContent
         val eventAction = "click - story entry point"
-        val map = BaseTrackerBuilder().constructBasicPromotionClick(
-            event = Event.promoClick,
-            eventCategory = eventCategory,
-            eventAction = eventAction,
-            eventLabel = "${entryPoint.trackerName} - ${state.shopId} - story - shop",
-            promotions = listOf(
-                BaseTrackerConst.Promotion(
-                    id = state.shopId,
-                    name = "/ - ${state.shopId} - stories entry point",
-                    creative = "",
-                    position = "",
+
+        val trackerBundle = Bundle().apply {
+            putString(Key.event, eventName)
+            putString(Key.eventCategory, eventCategory)
+            putString(Key.eventAction, eventAction)
+            putString(Key.eventLabel, "${entryPoint.trackerName} - ${state.shopId} - story - shop")
+            putParcelableArrayList(
+                Key.promotions,
+                arrayListOf(
+                    Bundle().apply {
+                        putString(Key.itemId, state.shopId)
+                        putString(Key.itemName, "/ - ${state.shopId} - stories entry point")
+                        putString(Key.creativeSlot, "")
+                        putString(Key.creativeName, "")
+                    }
                 )
             )
-        ).appendUserId(userSession.userId)
-            .appendBusinessUnit(BusinessUnit.content)
-            .appendCurrentSite(CurrentSite.tokopediaMarketplace)
-            .appendCustomKeyValue(Key.sessionIris, sessionIris)
-            .appendCustomKeyValue(Key.trackerId, clickTrackerId)
-            .build()
+            putString(Key.userId, userSession.userId)
+            putString(Key.businessUnit, BusinessUnit.content)
+            putString(Key.currentSite, CurrentSite.tokopediaMarketplace)
+            putString(Key.trackerId, clickTrackerId)
+        }
 
-        return StoriesWidgetTracker.Data(state.shopId, eventAction, false, map)
+        return StoriesWidgetTracker.Data(
+            state.shopId,
+            eventName,
+            eventAction,
+            false,
+            trackerBundle
+        )
     }
 
     private fun isStoriesValid(state: StoriesWidgetState): Boolean {
