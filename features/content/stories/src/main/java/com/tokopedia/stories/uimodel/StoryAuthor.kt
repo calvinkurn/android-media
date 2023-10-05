@@ -3,6 +3,7 @@ package com.tokopedia.stories.uimodel
 /**
  * @author by astidhiyaa on 08/08/23
  */
+
 sealed class StoryAuthor {
     abstract val id: String
     abstract val type: AuthorType
@@ -16,8 +17,7 @@ sealed class StoryAuthor {
         val avatarUrl: String,
         val badgeUrl: String,
         override val appLink: String
-    ) :
-        StoryAuthor() {
+    ) : StoryAuthor() {
         override val id: String
             get() = shopId
         override val type: AuthorType

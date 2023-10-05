@@ -16,6 +16,7 @@ import com.tokopedia.stories.view.model.StoriesDetailItem.Meta
 import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesDetailItemUiEvent
 import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContent
 import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContentType.Image
+import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContentType.Unknown
 import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContentType.Video
 import com.tokopedia.stories.view.model.StoriesGroupHeader
 import com.tokopedia.stories.view.model.StoriesGroupItem
@@ -83,9 +84,17 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
                     id = stories.id,
                     event = StoriesDetailItemUiEvent.PAUSE,
                     content = StoriesItemContent(
-                        type = if (stories.media.type == Image.value) Image else Video,
+                        type = when (stories.media.type) {
+                            Image.value -> Image
+                            Video.value -> Video
+                            else -> Unknown
+                        },
                         data = stories.media.link,
-                        duration = 7 * 1000
+                        duration = when (stories.media.type) {
+                            Image.value -> DEFAULT_DURATION
+                            Video.value -> ERROR_DURATION
+                            else -> ERROR_DURATION
+                        }
                     ),
                     resetValue = -1,
                     isContentLoaded = false,
@@ -152,5 +161,10 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
                 appLink = author.appLink
             )
         }
+    }
+
+    companion object {
+        private const val DEFAULT_DURATION = 7 * 1000
+        private const val ERROR_DURATION = 3 * 1000
     }
 }

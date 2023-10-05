@@ -1,45 +1,37 @@
 package com.tokopedia.stories.view.model
 
-import android.os.Parcelable
 import com.tokopedia.content.common.report_content.model.ContentMenuItem
 import com.tokopedia.stories.uimodel.StoryAuthor
 import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContentType.Image
 import com.tokopedia.universal_sharing.view.model.LinkProperties
-import kotlinx.parcelize.IgnoredOnParcel
-import kotlinx.parcelize.Parcelize
 
-@Parcelize
 data class StoriesUiModel(
     val selectedGroupId: String = "",
     val selectedGroupPosition: Int = -1,
     val groupHeader: List<StoriesGroupHeader> = emptyList(),
     val groupItems: List<StoriesGroupItem> = emptyList()
-) : Parcelable
+)
 
-@Parcelize
 data class StoriesGroupHeader(
     val groupId: String = "",
     val groupName: String = "",
     val image: String = "",
     val isSelected: Boolean = false
-) : Parcelable
+)
 
-@Parcelize
 data class StoriesGroupItem(
     val groupId: String = "",
     val groupName: String = "",
     val detail: StoriesDetail = StoriesDetail()
-) : Parcelable
+)
 
-@Parcelize
 data class StoriesDetail(
     val selectedGroupId: String = "",
     val selectedDetailPosition: Int = -1,
     val selectedDetailPositionCached: Int = -1,
     val detailItems: List<StoriesDetailItem> = emptyList()
-) : Parcelable
+)
 
-@Parcelize
 data class StoriesDetailItem(
     val id: String = "",
     val event: StoriesDetailItemUiEvent = StoriesDetailItemUiEvent.PAUSE,
@@ -47,28 +39,26 @@ data class StoriesDetailItem(
     val resetValue: Int = -1,
     val isContentLoaded: Boolean = false,
     val meta: Meta = Meta(),
-    @IgnoredOnParcel val author: StoryAuthor = StoryAuthor.Unknown,
-    @IgnoredOnParcel val menus: List<ContentMenuItem> = emptyList(),
     val productCount: String = "",
-    @IgnoredOnParcel val share: Sharing = Sharing.Empty,
-    @IgnoredOnParcel val status: StoryStatus = StoryStatus.Unknown
-) : Parcelable {
+    val author: StoryAuthor = StoryAuthor.Unknown,
+    val menus: List<ContentMenuItem> = emptyList(),
+    val share: Sharing = Sharing.Empty,
+    val status: StoryStatus = StoryStatus.Unknown,
+) {
 
-    @Parcelize
     data class Meta(
         val activityTracker: String = "",
         val templateTracker: String = ""
-    ) : Parcelable
+    )
 
-    @Parcelize
     data class StoriesItemContent(
         val type: StoriesItemContentType = Image,
         val data: String = "",
         val duration: Int = -1
-    ) : Parcelable
+    )
 
     enum class StoriesItemContentType(val value: String) {
-        Image("image"), Video("video")
+        Image("image"), Video("video"), Unknown("unknown")
     }
 
     enum class StoriesDetailItemUiEvent {
@@ -81,7 +71,12 @@ data class StoriesDetailItem(
         val metadata: LinkProperties
     ) {
         companion object {
-            val Empty get() = Sharing(isShareable = false, shareText = "", metadata = LinkProperties())
+            val Empty
+                get() = Sharing(
+                    isShareable = false,
+                    shareText = "",
+                    metadata = LinkProperties(),
+                )
         }
     }
 
@@ -100,5 +95,5 @@ data class StoriesDetailItem(
         }
     }
 
-    val isProductAvailable: Boolean = productCount.isNotEmpty() || productCount != "0"
+    val isProductAvailable: Boolean = productCount.isNotEmpty() && productCount != "0"
 }
