@@ -177,7 +177,10 @@ class ComposeQuestionnaireViewModel @Inject constructor(
                         .execute(shopId, String.EMPTY, answers)
                 }
 
+                //dismiss Next Button loading state
                 successSuccessState(data.copy(isNextButtonLoading = false))
+
+                //navigate to result page with new persona
                 emitUiEffect(QuestionnaireUiEffect.NavigateToResultPage(persona))
             }.onFailure {
                 //dismiss Next Button loading state

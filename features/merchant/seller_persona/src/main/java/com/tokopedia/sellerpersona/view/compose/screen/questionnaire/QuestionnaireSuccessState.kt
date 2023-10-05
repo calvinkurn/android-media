@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalPagerApi::class)
+
 package com.tokopedia.sellerpersona.view.compose.screen.questionnaire
 
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -45,6 +47,7 @@ import com.tokopedia.sellerpersona.view.compose.model.uievent.QuestionnaireUserE
 import com.tokopedia.sellerpersona.view.model.BaseOptionUiModel
 import com.tokopedia.sellerpersona.view.model.QuestionnaireDataUiModel
 import com.tokopedia.sellerpersona.view.model.QuestionnairePagerUiModel
+import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.compose.NestCheckbox
 import com.tokopedia.unifycomponents.compose.NestProgressBar
 import com.tokopedia.sellerpersona.R as sellerpersonaR
@@ -53,7 +56,9 @@ import com.tokopedia.sellerpersona.R as sellerpersonaR
  * Created by @ilhamsuaib on 28/07/23.
  */
 
-@OptIn(ExperimentalPagerApi::class, ExperimentalFoundationApi::class)
+private const val MAX_PROGRESS = 100
+
+@OptIn(ExperimentalFoundationApi::class, ExperimentalPagerApi::class)
 @Composable
 fun QuestionnaireSuccessState(
     data: QuestionnaireDataUiModel,
@@ -72,14 +77,21 @@ fun QuestionnaireSuccessState(
                 moveToNextPage(pagerState, data.currentPage)
             })
 
-            NestProgressBar(isSmooth = true, modifier = Modifier
-                .constrainAs(progressBar) {
-                    top.linkTo(parent.top)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                    width = Dimension.fillToConstraints
-                }
-                .height(4.dp))
+            val progressBarValue by rememberProgressValue(data)
+
+            NestProgressBar(
+                isSmooth = true,
+                value = progressBarValue,
+                colorType = ProgressBarUnify.COLOR_GREEN,
+                modifier = Modifier
+                    .constrainAs(progressBar) {
+                        top.linkTo(parent.top)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                        width = Dimension.fillToConstraints
+                    }
+                    .height(2.dp)
+            )
 
             HorizontalPager(
                 count = questionnaireList.size,
@@ -132,6 +144,21 @@ fun QuestionnaireSuccessState(
                     onEvent(QuestionnaireUserEvent.ClickNext)
                 }
             )
+        }
+    }
+}
+
+@Composable
+fun rememberProgressValue(data: QuestionnaireDataUiModel): State<Int> {
+    val currentPage = data.currentPage.plus(1)
+    val pageCount = data.questionnaireList.size
+    return remember(data.currentPage) {
+        derivedStateOf {
+            return@derivedStateOf if (pageCount == 0) {
+                0
+            } else {
+                currentPage.times(MAX_PROGRESS).div(pageCount)
+            }
         }
     }
 }
@@ -252,7 +279,6 @@ suspend fun moveToNextPage(pagerState: PagerState, nextPage: Int) {
     }
 }
 
-@OptIn(ExperimentalPagerApi::class)
 @Composable
 @NonRestartableComposable
 fun LaunchOnPagerSwipeEffect(pagerState: PagerState, onEvent: (QuestionnaireUserEvent) -> Unit) {
