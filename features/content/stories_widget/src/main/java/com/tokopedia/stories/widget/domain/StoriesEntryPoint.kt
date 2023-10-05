@@ -11,6 +11,6 @@ enum class StoriesEntryPoint(
     ShopPage("shop_page", "shop-page", "shop"),
     ShopPageReimagined("shop_page_reimagined", "shop-page", "shop"),
     ProductDetail("product_detail", "pdp-page", "pdp"),
-    TopChatList("top_chat_list", "topchat-page", "chatlist"),
+    TopChatList("top_chat_list", "topchat-list", "chatlist"),
     TopChatRoom("top_chat_room", "topchat-page", "chatroom")
 }
