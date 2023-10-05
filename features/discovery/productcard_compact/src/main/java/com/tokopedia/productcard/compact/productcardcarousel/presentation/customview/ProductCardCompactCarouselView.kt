@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.productcard.compact.databinding.LayoutProductCardCompactCarouselViewBinding
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.adapter.ProductCardCompactCarouselAdapter
@@ -29,10 +28,6 @@ class ProductCardCompactCarouselView @JvmOverloads constructor(
     ProductCardCompactCarouselItemViewHolder.ProductCardCarouselItemListener,
     ProductCardCompactCarouselSeeMoreViewHolder.ProductCardCompactCarouselSeeMoreListener,
     CoroutineScope {
-
-    companion object {
-        private const val MAX_RECYCLE_VIEWS_VIEW_POOL = 99
-    }
 
     private val adapter: ProductCardCompactCarouselAdapter by lazy {
         ProductCardCompactCarouselAdapter(
@@ -114,19 +109,6 @@ class ProductCardCompactCarouselView @JvmOverloads constructor(
         listener?.onSeeMoreClicked(
             seeMoreUiModel = seeMoreUiModel
         )
-    }
-
-    fun setRecycledViewPool(
-        newRecycledViewPool: RecycledViewPool?
-    ) {
-        binding.root.apply {
-            setRecycledViewPool(newRecycledViewPool)
-            (layoutManager as? LinearLayoutManager)?.recycleChildrenOnDetach = true
-            recycledViewPool.setMaxRecycledViews(
-                ProductCardCompactCarouselItemViewHolder.LAYOUT,
-                MAX_RECYCLE_VIEWS_VIEW_POOL
-            )
-        }
     }
 
     fun bindItems(

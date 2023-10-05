@@ -127,8 +127,7 @@ class HomeAdapterTypeFactory(
     private val productCarouselChipListener: HomeProductCarouselChipsViewListener? = null,
     private val productBundleWidgetListener: ProductBundleWidgetListener? = null,
     private val tokoNowBundleWidgetListener: TokoNowBundleWidgetListener? = null,
-    private val homeHeaderListener: HomeHeaderListener? = null,
-    private val recycledViewPool: RecyclerView.RecycledViewPool? = null,
+    private val homeHeaderListener: HomeHeaderListener? = null
 ):  BaseAdapterTypeFactory(),
     HomeTypeFactory,
     HomeComponentTypeFactory,
@@ -201,8 +200,7 @@ class HomeAdapterTypeFactory(
                 itemView = view,
                 listener = homeProductRecomListener,
                 rtrListener = rtrListener,
-                rtrAnalytics = rtrAnalytics,
-                parentRecycledViewPool = recycledViewPool
+                rtrAnalytics = rtrAnalytics
             )
             HomeEmptyStateViewHolder.LAYOUT -> HomeEmptyStateViewHolder(view, tokoNowView)
             HomeLoadingStateViewHolder.LAYOUT -> HomeLoadingStateViewHolder(view)

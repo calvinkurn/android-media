@@ -282,8 +282,7 @@ class TokoNowHomeFragment :
                 productCarouselChipListener = createProductCarouselChipListener(),
                 productBundleWidgetListener = bundleWidgetCallback,
                 tokoNowBundleWidgetListener = bundleWidgetCallback,
-                homeHeaderListener = createHomeHeaderListener(),
-                recycledViewPool = recycledViewPool
+                homeHeaderListener = createHomeHeaderListener()
             )
         )
     }
@@ -308,9 +307,6 @@ class TokoNowHomeFragment :
     private var switcherCoachMark: SwitcherCoachMark? = null
     private var playWidgetCoordinator: PlayWidgetCoordinator? = null
     private var bannerComponentCallback: BannerComponentCallback? = null
-
-    private val recycledViewPool
-        get() = RecyclerView.RecycledViewPool()
 
     private val homeMainToolbarHeight: Int
         get() {

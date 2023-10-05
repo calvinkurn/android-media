@@ -21,7 +21,6 @@ class HomeProductRecomViewHolder(
     private val listener: HomeProductRecomListener? = null,
     private val rtrListener: RealTimeRecommendationListener? = null,
     private val rtrAnalytics: RealTimeRecommendationAnalytics? = null,
-    parentRecycledViewPool: RecyclerView.RecycledViewPool? = null,
 ) : AbstractViewHolder<HomeProductRecomUiModel>(itemView),
     ProductCardCompactCarouselView.ProductCardCompactCarouselListener,
     TokoNowDynamicHeaderView.TokoNowDynamicHeaderListener {
@@ -35,12 +34,6 @@ class HomeProductRecomViewHolder(
 
     private var channelId = ""
     private var headerName = ""
-
-    init {
-        binding?.productRecommendation?.setRecycledViewPool(
-            recycledViewPool = parentRecycledViewPool
-        )
-    }
 
     override fun bind(element: HomeProductRecomUiModel) {
         binding?.apply {
