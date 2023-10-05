@@ -65,7 +65,7 @@ public class SplashScreen extends AppCompatActivity {
 
     @NotNull
     private boolean fetchRemoteConfig() {
-        remoteConfig = FirebaseRemoteConfigImpl.getInstance(getApplication());
+        remoteConfig = new FirebaseRemoteConfigImpl(this);
         remoteConfig.fetch(getRemoteConfigListener());
         return true;
     }

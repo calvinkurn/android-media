@@ -37,7 +37,7 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
     public FirebaseRemoteConfigImpl(Context context) {
         try {
             this.firebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
-        } catch (Exception ignored) {} // FirebaseApp is not intialized, ignoring the error and handle it with default value
+        } catch (Exception ignored) { } // FirebaseApp is not intialized, ignoring the error and handle it with default value
 
         if (GlobalConfig.isAllowDebuggingTools() && context != null) {
             this.sharedPrefs = context.getSharedPreferences(CACHE_NAME, Context.MODE_PRIVATE);
@@ -210,8 +210,6 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
                 firebaseRemoteConfig.addOnConfigUpdateListener(getConfigRealtimeUpdateListener());
             }
         } catch (Exception e) {
-            //todo log to crashlytics or serverlogger
-            Log.e(REMOTE_CONFIG_REAL_TIME, String.format("Remote config error: %s", e.getStackTrace()));
             FirebaseCrashlytics.getInstance().recordException(e);
         }
     }
@@ -222,14 +220,12 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
             public void onUpdate(@NonNull ConfigUpdate configUpdate) {
                 Log.d(REMOTE_CONFIG_REAL_TIME, String.format("Updated keys: %s", configUpdate.getUpdatedKeys()));
                 firebaseRemoteConfig.activate().addOnFailureListener(e -> {
-                    //todo log to crashlytics or serverlogger
                     FirebaseCrashlytics.getInstance().recordException(e);
                 });
             }
 
             @Override
             public void onError(FirebaseRemoteConfigException error) {
-                //todo log to crashlytics or serverlogger
                 FirebaseCrashlytics.getInstance().recordException(error);
             }
         };

@@ -64,7 +64,4 @@ class RemoteConfigStub : RemoteConfig {
     override fun setString(key: String?, value: String?) {}
 
     override fun fetch(listener: RemoteConfig.Listener?) {}
-    override fun setRealtimeUpdate(realTimeUpdateListener: RemoteConfig.RealTimeUpdateListener?) {
-        // no op
-    }
 }

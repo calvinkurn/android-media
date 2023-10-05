@@ -35,10 +35,6 @@ internal class ProductCardDummyRemoteConfig(
 
             override fun fetch(listener: RemoteConfig.Listener?) {
             }
-
-            override fun setRealtimeUpdate(realTimeUpdateListener: RemoteConfig.RealTimeUpdateListener?) {
-                // no op
-            }
         }
     }
 }
