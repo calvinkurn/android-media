@@ -223,7 +223,8 @@ class StoriesUnitTest {
                 robot.initialDataTestCase()
             }
 
-            event.last().assertType<StoriesUiEvent.ErrorGroupPage> { }
+            event.last().assertType<StoriesUiEvent.ErrorGroupPage> {}
+            (event.last() as StoriesUiEvent.ErrorGroupPage).onClick()
         }
     }
 
@@ -335,6 +336,7 @@ class StoriesUnitTest {
 
             state.first.storiesMainData.groupItems[selectedGroup].detail.assertEqualTo(StoriesDetail())
             state.second.last().assertType<StoriesUiEvent.ErrorDetailPage> { }
+            (state.second.last() as StoriesUiEvent.ErrorDetailPage).onClick()
         }
     }
 
@@ -1087,6 +1089,7 @@ class StoriesUnitTest {
             }
 
             event.last().assertType<StoriesUiEvent.Login> {}
+            (event.last() as StoriesUiEvent.Login).onLoggedIn()
         }
     }
 
