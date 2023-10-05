@@ -67,7 +67,7 @@ data class StoriesDetailItem(
     ) : Parcelable
 
     enum class StoriesItemContentType(val value: String) {
-        Image("image"), Video("video")
+        Image("image"), Video("video"), Unknown("unknown")
     }
 
     enum class StoriesDetailItemUiEvent {
