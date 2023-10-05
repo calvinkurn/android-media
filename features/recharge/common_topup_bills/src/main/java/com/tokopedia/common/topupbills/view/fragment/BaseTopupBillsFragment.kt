@@ -39,6 +39,7 @@ import com.tokopedia.common_digital.atc.utils.DeviceUtil
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
+import com.tokopedia.common_digital.common.presentation.model.DigitalAtcTrackingModel
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -130,13 +131,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
             viewLifecycleOwner
         ) { data ->
             context?.let { context ->
-                commonMultiCheckoutAnalytics.onClickMultiCheckout(
-                    categoryName,
-                    operatorName,
-                    data.channelId,
-                    userSession.userId,
-                    multiCheckoutButtonPromotionTracker(topupBillsViewModel.multiCheckoutButtons)
-                )
+                onTrackMultiCheckoutAtc(data)
                 RouteManager.route(context, data.redirectUrl)
             }
             onLoadingAtc(false)
@@ -547,6 +542,8 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
     abstract fun onLoadingMenuDetail(showLoading: Boolean)
 
     abstract fun onUpdateMultiCheckout()
+
+    abstract fun onTrackMultiCheckoutAtc(atc: DigitalAtcTrackingModel)
 
     abstract fun onLoadingAtc(showLoading: Boolean)
 

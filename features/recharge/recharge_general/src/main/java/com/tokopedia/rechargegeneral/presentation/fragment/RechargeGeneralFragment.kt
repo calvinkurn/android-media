@@ -31,6 +31,7 @@ import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.common.topupbills.analytics.PromotionMultiCheckout
 import com.tokopedia.common.topupbills.data.RechargeSBMAddBillRequest
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiry
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryAttribute
@@ -62,6 +63,7 @@ import com.tokopedia.common.topupbills.widget.TopupBillsInputFieldWidget
 import com.tokopedia.common_digital.atc.DigitalAddToCartViewModel
 import com.tokopedia.common_digital.atc.data.response.ErrorAtc
 import com.tokopedia.common_digital.common.presentation.bottomsheet.DigitalDppoConsentBottomSheet
+import com.tokopedia.common_digital.common.presentation.model.DigitalAtcTrackingModel
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
@@ -152,6 +154,7 @@ class RechargeGeneralFragment :
     private var coachmark: CoachMark2? = null
     private var loyaltyStatus: String = ""
     private var isAlreadyTrackImpressionMultiButton: Boolean = false
+    private var multiCheckoutButton: RechargeGeneralDynamicField? = null
 
     private var operatorId: Int = 0
         set(value) {
@@ -193,6 +196,20 @@ class RechargeGeneralFragment :
 
     override fun onUpdateMultiCheckout() {
         //do nothing
+    }
+
+    override fun onTrackMultiCheckoutAtc(atc: DigitalAtcTrackingModel) {
+        multiCheckoutButton?.let { multiCheckoutButton ->
+            commonMultiCheckoutAnalytics.onClickMultiCheckout(
+                categoryName,
+                operatorName,
+                atc.channelId,
+                userSession.userId,
+                multiCheckoutButtonPromotion(
+                    multiCheckoutButton.items
+                )
+            )
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -627,18 +644,20 @@ class RechargeGeneralFragment :
 
         if (productData.enquiryFields.isNotEmpty()) {
             val enquiryFields = productData.enquiryFields.toMutableList()
-            val multiCheckoutButton = productData.enquiryFields.find { it.style ==  INPUT_TYPE_MULTIBUTTONS }
+            multiCheckoutButton = productData.enquiryFields.find { it.style ==  INPUT_TYPE_MULTIBUTTONS }
             val enquiryInfo = productData.enquiryFields.find { it.style == INPUT_TYPE_ENQUIRY_INFO }
             if (multiCheckoutButton != null) {
-                enquiryFields.remove(multiCheckoutButton)
-                setMultiCheckoutButton(multiCheckoutButton)
-                if (!isAlreadyTrackImpressionMultiButton) {
-                    isAlreadyTrackImpressionMultiButton = true
-                    commonMultiCheckoutAnalytics.onImpressMultiCheckoutButtons(
-                        categoryName,
-                        multiCheckoutButtonCheckButtonType(multiCheckoutButton.items),
-                        userSession.userId
-                    )
+                multiCheckoutButton?.let { multiCheckoutButton ->
+                    enquiryFields.remove(multiCheckoutButton)
+                    setMultiCheckoutButton(multiCheckoutButton)
+                    if (!isAlreadyTrackImpressionMultiButton) {
+                        isAlreadyTrackImpressionMultiButton = true
+                        commonMultiCheckoutAnalytics.onImpressMultiCheckoutButtons(
+                            categoryName,
+                            multiCheckoutButtonCheckButtonType(multiCheckoutButton.items),
+                            userSession.userId
+                        )
+                    }
                 }
             } else if (enquiryInfo != null) {
                 if (!isAlreadyTrackImpressionMultiButton) {
@@ -1249,6 +1268,17 @@ class RechargeGeneralFragment :
         val button = multiCheckoutButtons.first()
         val buttonType = if(button.style == ACTION_GENERAL_MYBILLS) Int.ONE else 2
         return buttonType
+    }
+
+    private fun multiCheckoutButtonPromotion(multiCheckoutButtons: List<RechargeGeneralDynamicField.Item>): PromotionMultiCheckout {
+        val buttonType = multiCheckoutButtonCheckButtonType(multiCheckoutButtons)
+        val multiCheckoutButtonText = multiCheckoutButtons.first{
+            it.style == ACTION_GENERAL_MYBILLS
+        }.text
+
+        return PromotionMultiCheckout(
+           multiCheckoutButtonText, buttonType
+        )
     }
     private fun chooseListenerAction(type: String) {
         if (type.equals(ACTION_GENERAL_MYBILLS)) {
