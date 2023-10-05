@@ -106,7 +106,7 @@ class AtfMapper @Inject constructor(
     fun mapToVisitableList(data: AtfDataList?): List<Visitable<*>> {
         val visitables = mutableListOf<Visitable<*>>()
         data?.listAtfData?.forEachIndexed { index, value ->
-            value.atfContent.run {
+            value.atfContent?.run {
                 when(this) {
                     is BannerDataModel -> visitables.add(homepageBannerMapper.asVisitable(this, index, value))
                     is DynamicHomeIcon -> visitables.add(dynamicIconMapper.asVisitable(this, value))
