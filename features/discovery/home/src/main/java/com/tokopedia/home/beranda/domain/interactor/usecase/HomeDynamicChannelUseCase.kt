@@ -223,7 +223,10 @@ class HomeDynamicChannelUseCase @Inject constructor(
             HomeDynamicChannelModel(
                 list = combinedList,
                 isCache = isCache,
-                isAtfError = atf.isAtfError
+                isAtfError = atf.isAtfError,
+                homeChooseAddressData = dc.homeChooseAddressData,
+                flowCompleted = dc.flowCompleted,
+                topadsPage = dc.topadsPage,
             )
         }
     }
