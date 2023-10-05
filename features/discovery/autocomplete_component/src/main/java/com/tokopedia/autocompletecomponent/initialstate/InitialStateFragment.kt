@@ -37,6 +37,8 @@ import com.tokopedia.autocompletecomponent.util.HasViewModelFactory
 import com.tokopedia.autocompletecomponent.util.OnScrollListenerAutocomplete
 import com.tokopedia.autocompletecomponent.util.SCREEN_UNIVERSEARCH
 import com.tokopedia.autocompletecomponent.util.getModifiedApplink
+import com.tokopedia.discovery.common.reimagine.ReimagineRollence
+import com.tokopedia.discovery.common.reimagine.Search1InstAuto
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
@@ -86,18 +88,25 @@ class InitialStateFragment:
     }
 
     private var performanceMonitoring: PerformanceMonitoring? = null
-    private val initialStateAdapterTypeFactory = InitialStateAdapterTypeFactory(
-        recentViewListener = this,
-        recentSearchListener = this,
-        productLineListener = this,
-        popularSearchListener = this,
-        dynamicInitialStateListener = this,
-        curatedCampaignListener = this,
-        chipListener = this,
-        searchBarEducationListener = this,
-        mpsChipListener = this,
-    )
-    private val initialStateAdapter = InitialStateAdapter(initialStateAdapterTypeFactory)
+
+    var reimagineRollence: ReimagineRollence? = null
+        @Inject set
+
+    private val initialStateAdapter by lazy {
+        val initialStateAdapterTypeFactory = InitialStateAdapterTypeFactory(
+            recentViewListener = this,
+            recentSearchListener = this,
+            productLineListener = this,
+            popularSearchListener = this,
+            dynamicInitialStateListener = this,
+            curatedCampaignListener = this,
+            chipListener = this,
+            searchBarEducationListener = this,
+            mpsChipListener = this,
+            isReimagine = reimagineRollence?.search1InstAuto() != Search1InstAuto.CONTROL
+        )
+        InitialStateAdapter(initialStateAdapterTypeFactory)
+    }
 
     private val recyclerViewInitialState by lazy {
         view?.findViewById<RecyclerView?>(R.id.recyclerViewInitialState)

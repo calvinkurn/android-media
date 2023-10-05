@@ -61,6 +61,8 @@ object UniversalInboxValueUtil {
     const val CHATBOT_TYPE = 1
     const val GOJEK_TYPE = 101
 
+    const val GOJEK_REPLACE_TEXT = "{order_counter}"
+
     /**
      * Static Menu
      */
@@ -76,7 +78,6 @@ object UniversalInboxValueUtil {
 
     // TopAds
     const val COMPONENT_NAME_TOP_ADS = "Inbox Recommendation Top Ads"
-    const val SHIFTING_INDEX = 1
 
     // TopAds - Banner
     const val TOP_ADS_BANNER_COUNT = 2

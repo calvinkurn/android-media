@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.common.util
 
+import android.animation.ObjectAnimator
 import android.content.Context
 import android.content.res.Resources.getSystem
 import android.graphics.Paint
@@ -24,6 +25,7 @@ import androidx.window.layout.WindowLayoutInfo
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.topchat.R
 import com.tokopedia.utils.resources.isDarkMode
+import timber.log.Timber
 
 object ViewUtil {
 
@@ -35,6 +37,9 @@ object ViewUtil {
     const val EMPTY_STATE = 0
     const val FLAT_STATE = 1
     const val HALF_OPEN_STATE = 2
+
+    // Rotate Degree
+    const val FORTY_FIVE_DEGREE = 45f
 
     @Suppress("MagicNumber")
     fun generateBackgroundWithShadow(
@@ -362,6 +367,24 @@ object ViewUtil {
             FoldingFeature.State.FLAT -> FLAT_STATE
             FoldingFeature.State.HALF_OPENED -> HALF_OPEN_STATE
             else -> EMPTY_STATE
+        }
+    }
+
+    fun rotateView(
+        view:View?,
+        startDegree: Float,
+        endDegree: Float,
+        duration: Long = 300L
+    ) {
+        try {
+            view?.let {
+                val animator = ObjectAnimator.ofFloat(
+                    it, "rotation", startDegree, endDegree)
+                animator.duration = duration
+                animator.start()
+            }
+        } catch (throwable: Throwable) {
+            Timber.d(throwable)
         }
     }
 }

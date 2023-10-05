@@ -7,17 +7,15 @@ import com.tokopedia.home_component.productcardgridcarousel.dataModel.*
 import com.tokopedia.home_component.widget.special_release.SpecialReleaseRevampItemDataModel
 
 interface CommonCarouselProductCardTypeFactory: AdapterTypeFactory {
-    fun type(cardDataModelCarousel: CarouselEmptyCardDataModel): Int
-    fun type(dataModel: CarouselProductCardDataModel): Int
-    fun type(dataModelCarousel: CarouselSeeMorePdpDataModel): Int
-    fun type(dataModel: CarouselFeaturedShopCardDataModel): Int
+    fun type(cardDataModelCarousel: CarouselEmptyCardDataModel): Int = 0
+    fun type(dataModel: CarouselProductCardDataModel): Int = 0
+    fun type(dataModelCarousel: CarouselSeeMorePdpDataModel): Int = 0
+    fun type(dataModel: CarouselFeaturedShopCardDataModel): Int = 0
     fun type(dataModel: CarouselViewAllCardDataModel): Int = 0
     fun type(dataModel: CarouselCampaignCardDataModel): Int = 0
     fun type(dataModel: CarouselMerchantVoucherDataModel): Int = 0
     fun type(dataModel: CarouselSpecialReleaseDataModel): Int = 0
-    fun type(dataModel: CarouselMissionWidgetDataModel): Int = 0
     fun type(dataModel: CarouselBannerCardDataModel): Int = 0
-    fun type(dataModel: CarouselTodoWidgetDataModel): Int = 0
     fun type(dataModel: SpecialReleaseRevampItemDataModel): Int = 0
 
     override fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*>

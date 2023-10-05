@@ -119,6 +119,9 @@ dari Feed.</string>
     <string name="feed_onboarding_create_content_subtitle">Buat video hingga 90 detik tentang pengalaman belanja atau promosi produk yang menginspirasi!</string>
     <string name="feed_onboarding_profile_entry_point_title">Cek profil kamu di sini, yuk!</string>
     <string name="feed_onboarding_profile_entry_point_subtitle">Kamu juga bisa buat profil yang menarik dan bikin banyak orang penasaran dengan kontenmu.</string>
+    <string name="feed_onboarding_browse_entry_point_title">Temukan berbagai konten seru</string>
+    <string name="feed_onboarding_browse_entry_point_subtitle">Dapetin inspirasi belanja dari konten kreatif lainnya, yuk!</string>
+
     <string name="feed_for_you_label">Untuk Kamu</string>
     <string name="feed_following_label">Following</string>
     <string name="feed_live_label">LIVE</string>

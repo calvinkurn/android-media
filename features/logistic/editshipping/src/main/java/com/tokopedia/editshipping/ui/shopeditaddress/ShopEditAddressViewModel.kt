@@ -8,11 +8,15 @@ import com.tokopedia.editshipping.domain.mapper.AutoCompleteMapper
 import com.tokopedia.editshipping.domain.model.shopeditaddress.DistrictLocation
 import com.tokopedia.editshipping.domain.model.shopeditaddress.ShopEditAddressState
 import com.tokopedia.logisticCommon.data.entity.response.KeroMapsAutofill
-import com.tokopedia.logisticCommon.data.repository.KeroRepository
 import com.tokopedia.logisticCommon.data.repository.ShopLocationRepository
 import com.tokopedia.logisticCommon.data.response.KeroDistrictRecommendation
 import com.tokopedia.logisticCommon.data.response.shoplocation.ShopLocCheckCouriers
-import com.tokopedia.logisticCommon.data.response.shoplocation.ShopLocUpdateWarehouse
+import com.tokopedia.logisticCommon.domain.param.GetDistrictGeoCodeParam
+import com.tokopedia.logisticCommon.domain.param.GetDistrictParam
+import com.tokopedia.logisticCommon.domain.param.GetZipCodeParam
+import com.tokopedia.logisticCommon.domain.usecase.GetDistrictGeoCodeUseCase
+import com.tokopedia.logisticCommon.domain.usecase.GetDistrictUseCase
+import com.tokopedia.logisticCommon.domain.usecase.GetZipCodeUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -21,7 +25,9 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ShopEditAddressViewModel @Inject constructor(
-    private val repo: KeroRepository,
+    private val getDistrict: GetDistrictUseCase,
+    private val getZipCodeUseCase: GetZipCodeUseCase,
+    private val getDistrictGeoCode: GetDistrictGeoCodeUseCase,
     private val shopRepo: ShopLocationRepository,
     private val mapper: AutoCompleteMapper
 ) : ViewModel() {
@@ -30,8 +36,8 @@ class ShopEditAddressViewModel @Inject constructor(
     val districtLocation: LiveData<Result<DistrictLocation>>
         get() = _districtLocation
 
-    private val _saveEditShop = MutableLiveData<ShopEditAddressState<ShopLocUpdateWarehouse>>()
-    val saveEditShop: LiveData<ShopEditAddressState<ShopLocUpdateWarehouse>>
+    private val _saveEditShop = MutableLiveData<ShopEditAddressState<String>>()
+    val saveEditShop: LiveData<ShopEditAddressState<String>>
         get() = _saveEditShop
 
     private val _zipCodeList = MutableLiveData<Result<KeroDistrictRecommendation>>()
@@ -48,21 +54,21 @@ class ShopEditAddressViewModel @Inject constructor(
 
     fun getDistrictLocation(placeId: String) {
         viewModelScope.launch(onErrorGetDistrictLocation) {
-            val districtLoc = repo.getDistrict(placeId)
+            val districtLoc = getDistrict(GetDistrictParam(placeId))
             _districtLocation.value = Success(mapper.mapDistrictLoc(districtLoc))
         }
     }
 
     fun getZipCode(districtId: String) {
         viewModelScope.launch(onErrorGetZipCode) {
-            val zipCode = repo.getZipCode(districtId)
+            val zipCode = getZipCodeUseCase(GetZipCodeParam(districtId = districtId))
             _zipCodeList.value = Success(zipCode.keroDistrictDetails)
         }
     }
 
-    fun getDistrictGeocode(latlon: String?) {
+    fun getDistrictGeocode(latlon: String) {
         viewModelScope.launch(onErrorGetDistrictGeocode) {
-            val reverseGeocode = repo.getDistrictGeocode(latlon)
+            val reverseGeocode = getDistrictGeoCode(GetDistrictGeoCodeParam(latLng = latlon))
             _districtGeocode.value = Success(reverseGeocode.keroMapsAutofill)
         }
     }
@@ -79,16 +85,16 @@ class ShopEditAddressViewModel @Inject constructor(
         _saveEditShop.value = ShopEditAddressState.Loading
         viewModelScope.launch(onErrorSaveEditShopLocation) {
             val saveEditLocation = shopRepo.saveEditShopLocation(
-                shopId,
-                warehouseId,
-                warehouseName,
-                districtId,
-                latLon,
-                addressDetail,
-                postalCode
+                shopId = shopId,
+                warehouseId = warehouseId,
+                warehouseName = warehouseName,
+                districtId = districtId,
+                latLon = latLon,
+                addressDetail = addressDetail,
+                postalCode = postalCode
             )
             _saveEditShop.value =
-                ShopEditAddressState.Success(saveEditLocation.shopLocUpdateWarehouse)
+                ShopEditAddressState.Success(warehouseName)
         }
     }
 

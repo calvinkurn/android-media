@@ -31,7 +31,7 @@
     <string name="branch_sdk_key_pro" translatable="false">key_live_abhHgIh1DQiuPxdBNg9EXepdDugwwkHr</string>
     <string name="branch_sdk_key_sa" translatable="false">key_live_abhHgIh1DQiuPxdBNg9EXepdDugwwkHr</string>
 
-    <string name="thanos_token_key" translatable="false">pcS4d507axr3xgCxa84qu_Tuc9cXKynH4smhSipeDmM=</string>
+    <string name="thanos_token_key" translatable="false">7vxKNT2l-qrdjkytc5yFj5NoE002IfGKTVMIBJG1JOM=</string>
 
     <string name="gojek_sso_client_id" translatable="false">tokopedia:consumer:app</string>
     <string name="gojek_sso_client_secret" translatable="false">qmcpRpZPBC7DTRNQiI7dIkuGoxrqsu</string>

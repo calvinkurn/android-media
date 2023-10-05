@@ -1,5 +1,6 @@
 package com.tokopedia.buyerorderdetail.presentation.adapter
 
+import android.content.Context
 import android.graphics.Color
 import android.text.TextUtils
 import android.text.method.LinkMovementMethod
@@ -18,7 +19,6 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
 
-
 class AddonsItemAdapter(private val addonsItemList: List<AddonsListUiModel.AddonItemUiModel>) :
     RecyclerView.Adapter<AddonsItemAdapter.ViewHolder>() {
 
@@ -26,7 +26,8 @@ class AddonsItemAdapter(private val addonsItemList: List<AddonsListUiModel.Addon
         return ViewHolder(
             ItemBuyerOrderDetailAddonsListBinding.inflate(
                 LayoutInflater.from(parent.context),
-                parent, false
+                parent,
+                false
             )
         )
     }
@@ -61,11 +62,7 @@ class AddonsItemAdapter(private val addonsItemList: List<AddonsListUiModel.Addon
         }
 
         private fun ItemBuyerOrderDetailAddonsListBinding.setDataViews(item: AddonsListUiModel.AddonItemUiModel) {
-            tvBomDetailAddonsName.text = root.context.getString(
-                R.string.order_addons_type_and_name,
-                item.type,
-                item.addOnsName
-            )
+            tvBomDetailAddonsName.text = getAddonNameText(root.context, item)
             ivBomDetailAddonsThumbnail.setImageUrl(item.addOnsThumbnailUrl)
             tvBomDetailAddonsPriceQuantity.text =
                 root.context.getString(
@@ -73,6 +70,18 @@ class AddonsItemAdapter(private val addonsItemList: List<AddonsListUiModel.Addon
                     item.quantity,
                     item.priceText
                 )
+        }
+
+        private fun getAddonNameText(context: Context, item: AddonsListUiModel.AddonItemUiModel): String {
+            return if (item.providedByShopItself) {
+                context.getString(
+                    R.string.order_addons_type_and_name,
+                    item.type,
+                    item.addOnsName
+                )
+            } else {
+                item.type
+            }
         }
 
         private fun ItemBuyerOrderDetailAddonsListBinding.setupToMetadata(toStr: String) {

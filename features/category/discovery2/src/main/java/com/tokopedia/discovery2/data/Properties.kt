@@ -34,6 +34,9 @@ data class Properties(
         @SerializedName("type")
         val type: String? = null,
 
+        @SerializedName("is_disabled_auto_slide")
+        val isDisabledAutoSlide: Boolean? = null,
+
         @SerializedName("comp_type")
         val compType: String? = null,
 
@@ -93,6 +96,12 @@ data class Properties(
 
         @SerializedName("category_slug")
         val categorySlug: String? = "",
+
+        @SerializedName("chip_size")
+        val chipSize: String? = "",
+
+        @SerializedName("full_filter_type")
+        var fullFilterType: String? = "",
 
         @SerializedName("supergraphic_image_url")
         val supergraphicImageUrl: String? = "",

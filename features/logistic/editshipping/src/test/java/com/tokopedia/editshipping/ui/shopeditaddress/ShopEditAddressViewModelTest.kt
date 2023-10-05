@@ -7,15 +7,16 @@ import com.tokopedia.editshipping.domain.model.shopeditaddress.DistrictLocation
 import com.tokopedia.editshipping.domain.model.shopeditaddress.ShopEditAddressState
 import com.tokopedia.logisticCommon.data.entity.response.AutoFillResponse
 import com.tokopedia.logisticCommon.data.entity.response.KeroMapsAutofill
-import com.tokopedia.logisticCommon.data.repository.KeroRepository
 import com.tokopedia.logisticCommon.data.repository.ShopLocationRepository
 import com.tokopedia.logisticCommon.data.response.GetDistrictDetailsResponse
 import com.tokopedia.logisticCommon.data.response.GetDistrictResponse
 import com.tokopedia.logisticCommon.data.response.KeroDistrictRecommendation
 import com.tokopedia.logisticCommon.data.response.shoplocation.ShopLocCheckCouriers
 import com.tokopedia.logisticCommon.data.response.shoplocation.ShopLocCheckCouriersNewLocResponse
-import com.tokopedia.logisticCommon.data.response.shoplocation.ShopLocUpdateWarehouse
 import com.tokopedia.logisticCommon.data.response.shoplocation.ShopLocationUpdateWarehouseResponse
+import com.tokopedia.logisticCommon.domain.usecase.GetDistrictGeoCodeUseCase
+import com.tokopedia.logisticCommon.domain.usecase.GetDistrictUseCase
+import com.tokopedia.logisticCommon.domain.usecase.GetZipCodeUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -36,15 +37,19 @@ class ShopEditAddressViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private val keroRepo: KeroRepository = mockk(relaxed = true)
+    private val getDistrict: GetDistrictUseCase = mockk(relaxed = true)
+    private val getZipCode: GetZipCodeUseCase = mockk(relaxed = true)
+    private val getDistrictGeoCode: GetDistrictGeoCodeUseCase = mockk(relaxed = true)
     private val shopRepo: ShopLocationRepository = mockk(relaxed = true)
     private val autoCompleteMapper = AutoCompleteMapper()
 
     private val districtLocationObserver: Observer<Result<DistrictLocation>> = mockk(relaxed = true)
-    private val zipCodeListObserver: Observer<Result<KeroDistrictRecommendation>> = mockk(relaxed = true)
+    private val zipCodeListObserver: Observer<Result<KeroDistrictRecommendation>> =
+        mockk(relaxed = true)
     private val districtGeocodeObserver: Observer<Result<KeroMapsAutofill>> = mockk(relaxed = true)
-    private val checkCouriersObserver: Observer<ShopEditAddressState<ShopLocCheckCouriers>> = mockk(relaxed = true)
-    private val saveEditShopObserver: Observer<ShopEditAddressState<ShopLocUpdateWarehouse>> = mockk(relaxed = true)
+    private val checkCouriersObserver: Observer<ShopEditAddressState<ShopLocCheckCouriers>> =
+        mockk(relaxed = true)
+    private val saveEditShopObserver: Observer<ShopEditAddressState<String>> = mockk(relaxed = true)
 
     private lateinit var shopEditAddressViewModel: ShopEditAddressViewModel
 
@@ -53,7 +58,8 @@ class ShopEditAddressViewModelTest {
     @Before
     fun setup() {
         Dispatchers.setMain(TestCoroutineDispatcher())
-        shopEditAddressViewModel = ShopEditAddressViewModel(keroRepo, shopRepo, autoCompleteMapper)
+        shopEditAddressViewModel =
+            ShopEditAddressViewModel(getDistrict, getZipCode, getDistrictGeoCode, shopRepo, autoCompleteMapper)
         shopEditAddressViewModel.districtLocation.observeForever(districtLocationObserver)
         shopEditAddressViewModel.zipCodeList.observeForever(zipCodeListObserver)
         shopEditAddressViewModel.districtGeocode.observeForever(districtGeocodeObserver)
@@ -63,49 +69,54 @@ class ShopEditAddressViewModelTest {
 
     @Test
     fun `Get latlong from placeId success`() {
-        coEvery { keroRepo.getDistrict(any()) } returns GetDistrictResponse()
+        coEvery { getDistrict(any()) } returns GetDistrictResponse()
         shopEditAddressViewModel.getDistrictLocation("123")
         verify { districtLocationObserver.onChanged(match { it is Success }) }
     }
 
     @Test
     fun `Get latlong from placeId failed`() {
-        coEvery { keroRepo.getDistrict(any()) } throws defaultThrowable
+        coEvery { getDistrict(any()) } throws defaultThrowable
         shopEditAddressViewModel.getDistrictLocation("123")
         verify { districtLocationObserver.onChanged(match { it is Fail }) }
     }
 
     @Test
     fun `Get ZipCode list success`() {
-        coEvery { keroRepo.getZipCode(any()) } returns GetDistrictDetailsResponse()
+        coEvery { getZipCode(any()) } returns GetDistrictDetailsResponse()
         shopEditAddressViewModel.getZipCode("123")
         verify { zipCodeListObserver.onChanged(match { it is Success }) }
     }
 
     @Test
     fun `Get ZipCpde list failed`() {
-        coEvery { keroRepo.getZipCode(any()) } throws defaultThrowable
+        coEvery { getZipCode(any()) } throws defaultThrowable
         shopEditAddressViewModel.getZipCode("123")
         verify { zipCodeListObserver.onChanged(match { it is Fail }) }
     }
 
     @Test
     fun `Get formatted address from latlon Success`() {
-        coEvery { keroRepo.getDistrictGeocode(any()) } returns AutoFillResponse()
+        coEvery { getDistrictGeoCode(any()) } returns AutoFillResponse()
         shopEditAddressViewModel.getDistrictGeocode("123,123")
         verify { districtGeocodeObserver.onChanged(match { it is Success }) }
     }
 
     @Test
     fun `Get formatted address from latlon failed`() {
-        coEvery { keroRepo.getDistrictGeocode(any()) } throws defaultThrowable
+        coEvery { getDistrictGeoCode(any()) } throws defaultThrowable
         shopEditAddressViewModel.getDistrictGeocode("123,123")
         verify { districtGeocodeObserver.onChanged(match { it is Fail }) }
     }
 
     @Test
     fun `Check couriers availability success`() {
-        coEvery { shopRepo.shopCheckCouriersNewLoc(any(), any()) } returns ShopLocCheckCouriersNewLocResponse()
+        coEvery {
+            shopRepo.shopCheckCouriersNewLoc(
+                any(),
+                any()
+            )
+        } returns ShopLocCheckCouriersNewLocResponse()
         shopEditAddressViewModel.checkCouriersAvailability(998, 123)
         verify { checkCouriersObserver.onChanged(match { it is ShopEditAddressState.Success }) }
     }
@@ -122,7 +133,15 @@ class ShopEditAddressViewModelTest {
         coEvery {
             shopRepo.saveEditShopLocation(any(), any(), any(), any(), any(), any(), any())
         } returns ShopLocationUpdateWarehouseResponse()
-        shopEditAddressViewModel.saveEditShopLocation(12, 998, "warehouse", 222, "1231,4131", "jakarta utara", "1123")
+        shopEditAddressViewModel.saveEditShopLocation(
+            12,
+            998,
+            "warehouse",
+            222,
+            "1231,4131",
+            "jakarta utara",
+            "1123"
+        )
         verify { saveEditShopObserver.onChanged(match { it is ShopEditAddressState.Success }) }
     }
 
@@ -131,7 +150,15 @@ class ShopEditAddressViewModelTest {
         coEvery {
             shopRepo.saveEditShopLocation(any(), any(), any(), any(), any(), any(), any())
         } throws defaultThrowable
-        shopEditAddressViewModel.saveEditShopLocation(12, 998, "warehouse", 222, "1231,4131", "jakarta utara", "1123")
+        shopEditAddressViewModel.saveEditShopLocation(
+            12,
+            998,
+            "warehouse",
+            222,
+            "1231,4131",
+            "jakarta utara",
+            "1123"
+        )
         verify { saveEditShopObserver.onChanged(match { it is ShopEditAddressState.Fail }) }
     }
 }

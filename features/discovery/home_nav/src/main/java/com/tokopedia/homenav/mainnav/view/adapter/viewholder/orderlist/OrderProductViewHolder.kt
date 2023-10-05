@@ -100,7 +100,9 @@ class OrderProductViewHolder(itemView: View, val mainNavListener: MainNavListene
         itemView.setOnClickListener {
             mainNavListener.onOrderCardClicked(
                 productModel.navProductModel.applink,
-                productModel.navProductModel.statusText
+                productModel.navProductModel.statusText,
+                productModel.navProductModel.id,
+                productModel.position
             )
         }
     }

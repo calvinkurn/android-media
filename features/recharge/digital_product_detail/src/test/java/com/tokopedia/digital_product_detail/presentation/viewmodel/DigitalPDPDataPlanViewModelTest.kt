@@ -604,6 +604,14 @@ class DigitalPDPDataPlanViewModelTest : DigitalPDPDataPlanViewModelTestFixture()
     }
 
     @Test
+    fun `given getMCCMProducts loading state then should get loading state`() {
+        val loadingResponse = RechargeNetworkResult.Loading
+
+        viewModel.setMCCMLoading()
+        verifyMCCMProductsbLoading(loadingResponse)
+    }
+
+    @Test
     fun `when getting catalogInputMultitab should run and give error result`() =
         runTest {
             val errorResponse = MessageErrorException("")

@@ -15,7 +15,7 @@ internal fun List<PostAtcLayout.Component>.mapToUiModel(
 ): List<PostAtcUiModel> = mapNotNull {
     when (it.type) {
         PRODUCT_INFO -> toProductInfoUiModel(it)
-        RECOMMENDATION -> toRecommendationUiModel(it)
+        RECOMMENDATION -> toRecommendationUiModel(it, postAtcInfo)
         ADDONS -> toAddonsUiModel(it, postAtcInfo)
         else -> null
     }
@@ -34,10 +34,19 @@ private fun toProductInfoUiModel(component: PostAtcLayout.Component): ProductInf
     )
 }
 
-private fun toRecommendationUiModel(component: PostAtcLayout.Component): RecommendationUiModel {
+private fun toRecommendationUiModel(
+    component: PostAtcLayout.Component,
+    postAtcInfo: PostAtcInfo
+): RecommendationUiModel {
+    val data = component.data.firstOrNull()
     return RecommendationUiModel(
         name = component.name,
-        type = component.type
+        type = component.type,
+        queryParam = data?.queryParam.orEmpty(),
+        warehouseId = postAtcInfo.warehouseInfo.warehouseId,
+        productId = postAtcInfo.productId,
+        offerId = data?.offerId.orEmpty(),
+        shopId = postAtcInfo.shopId
     )
 }
 

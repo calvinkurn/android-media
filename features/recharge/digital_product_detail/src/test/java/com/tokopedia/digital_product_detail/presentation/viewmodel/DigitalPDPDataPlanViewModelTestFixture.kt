@@ -444,6 +444,11 @@ abstract class DigitalPDPDataPlanViewModelTestFixture {
         Assert.assertTrue(actualResponse is RechargeNetworkResult.Fail)
     }
 
+    protected fun verifyMCCMProductsbLoading(expectedResponse: RechargeNetworkResult.Loading) {
+        val actualResponse = viewModel.mccmProductsData.value
+        Assert.assertEquals(expectedResponse, actualResponse)
+    }
+
     protected fun verifyGetMCCMErrorCancellation() {
         val actualResponse = viewModel.mccmProductsData.value
         Assert.assertNull(actualResponse)

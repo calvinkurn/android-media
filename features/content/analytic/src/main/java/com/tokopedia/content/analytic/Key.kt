@@ -38,4 +38,6 @@ object Key {
     const val itemBrand = "item_brand"
     const val itemCategory = "item_category"
     const val itemVariant = "item_variant"
+
+    const val pageSource = "pageSource"
 }

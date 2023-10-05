@@ -29,4 +29,5 @@
     <string name="path_tokopedia_now_recipe_filter" translatable="false">/recipe/filter</string>
     <string name="path_tokopedia_now_recipe_similar_product" translatable="false">/recipe/similar-product-bottomsheet</string>
     <string name="path_tokopedia_now_recipe_ingredient" translatable="false">/recipe/ingredient-bottomsheet</string>
+    <string name="path_tokopedia_now_buyer_communication" translatable="false">/buyer-communication</string>
 </resources>

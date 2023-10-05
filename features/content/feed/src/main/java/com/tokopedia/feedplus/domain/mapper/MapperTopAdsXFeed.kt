@@ -41,8 +41,7 @@ object MapperTopAdsXFeed {
             badgeUrl = data?.cpm?.badges?.firstOrNull()?.imageUrl.orEmpty(),
             logoUrl = data?.cpm?.cpmImage?.fullEcs.orEmpty(),
             appLink = data?.applinks.orEmpty(),
-            encryptedUserId = "",
-            isLive = false
+            encryptedUserId = ""
         )
 
         val mediaList = topAdsShop?.products?.mapIndexed { index, product ->
@@ -92,6 +91,7 @@ object MapperTopAdsXFeed {
             ),
             adViewUri = data?.cpm?.uri.orEmpty(),
             adViewUrl = data?.cpm?.cpmImage?.fullUrl.orEmpty(),
+            adClickUrl = data?.adClickUrl.orEmpty(),
             share = currentModel.share.copy(
                 contentId = data?.id.orEmpty(),
                 author = feedAuthor,

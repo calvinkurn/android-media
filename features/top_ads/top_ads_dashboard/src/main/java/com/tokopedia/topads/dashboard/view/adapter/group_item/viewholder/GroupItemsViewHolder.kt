@@ -2,7 +2,7 @@ package com.tokopedia.topads.dashboard.view.adapter.group_item.viewholder
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.topads.dashboard.data.model.CountDataItem
+import com.tokopedia.topads.common.data.model.CountDataItem
 import com.tokopedia.topads.common.data.response.groupitem.DataItem
 
 /**
