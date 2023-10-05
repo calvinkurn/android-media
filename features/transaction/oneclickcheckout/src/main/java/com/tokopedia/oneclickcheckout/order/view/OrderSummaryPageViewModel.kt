@@ -79,7 +79,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Named
-import javax.inject.Named
 
 class OrderSummaryPageViewModel @Inject constructor(
     private val executorDispatchers: CoroutineDispatchers,
