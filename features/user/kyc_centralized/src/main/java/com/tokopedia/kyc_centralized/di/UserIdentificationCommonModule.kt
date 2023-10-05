@@ -16,7 +16,7 @@ import dagger.Module
 import dagger.Provides
 
 @Module
-class UserIdentificationCommonModule {
+open class UserIdentificationCommonModule {
 
     /*
     * WARNING!!!
@@ -27,7 +27,7 @@ class UserIdentificationCommonModule {
 
     @ActivityScope
     @Provides
-    fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
+    open fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
     }
 

@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,15 +16,28 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
-import com.tokopedia.scp_rewards.common.utils.launchLink
+import com.tokopedia.scp_rewards.R
 import com.tokopedia.scp_rewards.databinding.FragmentCouponListBinding
 import com.tokopedia.scp_rewards.detail.di.MedalDetailComponent
 import com.tokopedia.scp_rewards.detail.presentation.viewmodel.CouponListViewModel
+import com.tokopedia.scp_rewards_common.utils.launchLink
+import com.tokopedia.scp_rewards_widgets.constants.CouponStatus
 import com.tokopedia.scp_rewards_widgets.coupon_list.CouponListViewTypeFactory
+import com.tokopedia.scp_rewards_widgets.model.CouponListActiveEmptyModel
+import com.tokopedia.scp_rewards_widgets.model.CouponListHistoryEmptyModel
+import com.tokopedia.scp_rewards_widgets.model.CouponListHistoryErrorModel
+import com.tokopedia.scp_rewards_widgets.model.FilterModel
 import com.tokopedia.scp_rewards_widgets.model.MedalBenefitModel
+import com.tokopedia.sortfilter.SortFilterItem
+import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
+import com.tokopedia.scp_rewards_widgets.R as scp_rewards_widgetsR
 
 class CouponListFragment : BaseDaggerFragment() {
 
@@ -44,6 +58,8 @@ class CouponListFragment : BaseDaggerFragment() {
     private var _binding: FragmentCouponListBinding? = null
     private val binding get() = _binding!!
 
+    private var couponListCallBack: OnCouponListCallBack? = null
+
     private val listAdapter by lazy {
         BaseAdapter(
             CouponListViewTypeFactory({ data, position ->
@@ -58,17 +74,21 @@ class CouponListFragment : BaseDaggerFragment() {
                     context?.launchLink(data.appLink, data.url)
                 }
             }, { data ->
-                context?.launchLink(data.appLink, data.url)
+                if (couponListViewModel.couponPageStatus != CouponStatus.EXPIRED) {
+                    context?.launchLink(data.appLink, data.url)
+                }
             })
         )
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentCouponListBinding.inflate(inflater, container, false)
         return binding.root
     }
-
-    private var list: List<MedalBenefitModel>? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -79,6 +99,88 @@ class CouponListFragment : BaseDaggerFragment() {
 
     private fun observeViewModel() {
         observeCouponAutoApply()
+        observeCouponList()
+    }
+
+    private fun observeCouponList() {
+        couponListViewModel.couponListLiveData.observe(viewLifecycleOwner) {
+            it?.let { safeState ->
+                when (safeState) {
+                    is CouponListViewModel.CouponState.Error -> {
+                        listAdapter.setVisitables(
+                            listOf(
+                                CouponListHistoryErrorModel(
+                                    context?.let { context ->
+                                        ContextCompat.getDrawable(
+                                            context,
+                                            scp_rewards_widgetsR.drawable.ic_coupon_error
+                                        )
+                                    }
+                                )
+                            )
+                        )
+                    }
+                    CouponListViewModel.CouponState.Loading -> {}
+                    is CouponListViewModel.CouponState.Success -> {
+                        couponListCallBack?.onReceiveCoupons(
+                            couponListViewModel.couponPageStatus.orEmpty(),
+                            couponListViewModel.totalItemsCount
+                        )
+                        listAdapter.setVisitables(safeState.list)
+                        handleCouponState()
+                    }
+                    is CouponListViewModel.CouponState.ActiveTabEmpty -> {
+                        couponListCallBack?.onReceiveCoupons(
+                            couponListViewModel.couponPageStatus.orEmpty(),
+                            0
+                        )
+                        listAdapter.setVisitables(
+                            listOf(
+                                CouponListActiveEmptyModel(
+                                    getString(R.string.coupon_list_active_empty_title),
+                                    getString(R.string.coupon_list_active_empty_subtitle),
+                                    context?.let { context ->
+                                        ContextCompat.getDrawable(
+                                            context,
+                                            scp_rewards_widgetsR.drawable.ic_bonus_active_empty
+                                        )
+                                    }
+                                )
+                            )
+                        )
+                    }
+                    is CouponListViewModel.CouponState.HistoryTabEmpty -> {
+                        listAdapter.setVisitables(
+                            listOf(
+                                CouponListHistoryEmptyModel(
+                                    getString(R.string.coupon_list_history_empty_title),
+                                    getString(R.string.coupon_list_history_empty_subtitle)
+                                ) { couponListCallBack?.goToTab(CouponStatus.ACTIVE) }
+                            )
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    private fun handleCouponState() {
+        when (couponListViewModel.couponPageStatus) {
+            CouponStatus.INACTIVE -> {
+                binding.lockedWarning.show()
+                binding.filterList.hide()
+            }
+
+            CouponStatus.ACTIVE -> {
+                binding.lockedWarning.hide()
+                binding.filterList.show()
+            }
+
+            else -> {
+                binding.filterList.hide()
+                binding.lockedWarning.hide()
+            }
+        }
     }
 
     private fun observeCouponAutoApply() {
@@ -124,23 +226,19 @@ class CouponListFragment : BaseDaggerFragment() {
         listAdapter.setElement(position, benefit.apply { isLoading = toShow })
     }
 
-    private fun showToastAndNavigateToLink(
-        message: String?,
-        appLink: String?,
-        url: String?
-    ) {
+    private fun showToastAndNavigateToLink(message: String?, appLink: String?, url: String?) {
         Toaster.apply {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
                 toasterCustomBottomHeight = getNavigationBarHeight()
             }
-        }.build(binding.root, message.orEmpty())
+        }
+            .build(binding.root, message.orEmpty())
             .addCallback(object : Snackbar.Callback() {
                 override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
                     super.onDismissed(transientBottomBar, event)
                     context?.launchLink(appLink, url)
                 }
-            })
-            .show()
+            }).show()
     }
 
     private fun getNavigationBarHeight(): Int {
@@ -161,11 +259,17 @@ class CouponListFragment : BaseDaggerFragment() {
 
     @SuppressLint("DeprecatedMethod")
     private fun extractData() {
-        val status = arguments?.getString(PAGE_STATUS)
-        list = arguments?.getParcelableArrayList<MedalBenefitModel?>(COUPON_LIST)
-
-        if (list == null) {
-            couponListViewModel.getCouponList(sourceName = "", type = status.orEmpty())
+        val list = arguments?.getParcelableArrayList<MedalBenefitModel?>(COUPON_LIST)
+        val filterList = arguments?.getParcelableArrayList<FilterModel?>(FILTER_LIST)
+        couponListViewModel.setFilters(filterList)
+        couponListViewModel.setPageStatus(arguments?.getString(PAGE_STATUS))
+        if (list != null) {
+            couponListViewModel.setCouponsList(list)
+        } else {
+            couponListViewModel.getCouponList(
+                medaliSlug = arguments?.getString(MEDALI_SLUG).orEmpty(),
+                sourceName = ""
+            )
         }
     }
 
@@ -174,9 +278,37 @@ class CouponListFragment : BaseDaggerFragment() {
             adapter = listAdapter
             layoutManager = LinearLayoutManager(context)
         }
+        initialiseFilters()
+    }
 
-        if (list != null) {
-            listAdapter.setVisitables(list)
+    private fun initialiseFilters() {
+        couponListViewModel.filtersList?.let { filters ->
+            val list = filters.map { filter ->
+                SortFilterItem(
+                    title = filter.text.orEmpty(),
+                    iconUrl = filter.iconImageURL.orEmpty(),
+                    listener = {
+                        couponListViewModel.getFilteredData(filter)
+                    }
+                ).apply {
+                    type = if (filter.isSelected) {
+                        ChipsUnify.TYPE_SELECTED
+                    } else {
+                        ChipsUnify.TYPE_NORMAL
+                    }
+                }
+            }
+            binding.filterList.parentListener = {
+                binding.filterList.resetAllFilters()
+                couponListViewModel.getFilteredData(FilterModel())
+            }
+            binding.filterList.addItem(list as ArrayList<SortFilterItem>)
+            // Explicitly hiding textview so that only close icon is visible
+            binding.filterList.textView?.hide()
+            context?.let {
+                binding.filterList.filterIcon?.background =
+                    getIconUnifyDrawable(it, IconUnify.CLOSE)
+            }
         }
     }
 
@@ -186,13 +318,30 @@ class CouponListFragment : BaseDaggerFragment() {
     }
 
     companion object {
-        private const val COUPON_LIST = "list"
+        private const val COUPON_LIST = "couponlist"
+        private const val FILTER_LIST = "filterlist"
         private const val PAGE_STATUS = "pageStatus"
-        fun newInstance(pageStatus: String, list: List<MedalBenefitModel>? = null) = CouponListFragment().apply {
+        private const val MEDALI_SLUG = "medaliSlug"
+        fun newInstance(
+            pageStatus: String,
+            medaliSlug: String,
+            list: List<MedalBenefitModel>? = null,
+            filters: List<FilterModel>? = null,
+            onCouponListCallBack: OnCouponListCallBack
+        ) = CouponListFragment().apply {
             arguments = bundleOf(
                 PAGE_STATUS to pageStatus,
-                COUPON_LIST to list
+                MEDALI_SLUG to medaliSlug,
+                COUPON_LIST to list,
+                FILTER_LIST to filters
             )
+
+            this.couponListCallBack = onCouponListCallBack
         }
+    }
+
+    interface OnCouponListCallBack {
+        fun onReceiveCoupons(couponStatus: String, count: Int)
+        fun goToTab(couponStatus: String)
     }
 }

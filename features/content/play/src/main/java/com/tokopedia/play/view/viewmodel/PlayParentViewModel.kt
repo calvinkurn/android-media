@@ -16,6 +16,9 @@ import com.tokopedia.play_common.model.result.PageInfo
 import com.tokopedia.play_common.model.result.PageResult
 import com.tokopedia.play_common.model.result.PageResultState
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.play.PLAY_KEY_PAGE_SOURCE_NAME
+import com.tokopedia.play.PLAY_KEY_WIDGET_ID
+import com.tokopedia.play.view.storage.PlayQueryParamStorage
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play_common.model.ui.ArchivedUiModel
 import com.tokopedia.play_common.util.event.Event
@@ -24,7 +27,6 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 /**
  * Created by jegul on 19/01/21
@@ -35,6 +37,7 @@ class PlayParentViewModel @AssistedInject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val userSession: UserSessionInterface,
     private val repo: PlayViewerRepository,
+    private val queryParamStorage: PlayQueryParamStorage,
     pageMonitoring: PlayPltPerformanceCallback,
 ) : ViewModel() {
 
@@ -66,6 +69,12 @@ class PlayParentViewModel @AssistedInject constructor(
     val startingChannelId: String?
         get() = handle[PLAY_KEY_CHANNEL_ID]
 
+    private val pageSourceName: String
+        get() = handle[PLAY_KEY_PAGE_SOURCE_NAME] ?: ""
+
+    private val widgetId: String
+        get() = handle[PLAY_KEY_WIDGET_ID] ?: ""
+
     private val mVideoStartMillis: String?
         get() = handle[KEY_START_TIME]
 
@@ -78,6 +87,9 @@ class PlayParentViewModel @AssistedInject constructor(
     )
 
     init {
+        queryParamStorage.pageSourceName = pageSourceName.ifEmpty { source.type }
+        queryParamStorage.widgetId = widgetId
+
         pageMonitoring.startNetworkRequestPerformanceMonitoring()
         loadNextPage()
     }
@@ -88,11 +100,20 @@ class PlayParentViewModel @AssistedInject constructor(
         val isFromPiP = bundle.getBoolean(IS_FROM_PIP, false)
 
         if (!isFromPiP && !channelId.isNullOrEmpty()) {
+            val sourceType: String = bundle.getString(PLAY_KEY_SOURCE_TYPE, "")
+            val widgetId = bundle.getString(PLAY_KEY_WIDGET_ID, "")
+            val pageSourceName = bundle.getString(PLAY_KEY_PAGE_SOURCE_NAME, "")
+
             handle.set(PLAY_KEY_CHANNEL_ID, channelId)
-            handle.set(PLAY_KEY_SOURCE_TYPE, bundle.get(PLAY_KEY_SOURCE_TYPE))
+            handle.set(PLAY_KEY_SOURCE_TYPE, sourceType)
             handle.set(PLAY_KEY_SOURCE_ID, bundle.get(PLAY_KEY_SOURCE_ID))
+            handle.set(PLAY_KEY_PAGE_SOURCE_NAME, pageSourceName)
+            handle.set(PLAY_KEY_WIDGET_ID, widgetId)
             handle.set(KEY_START_TIME, bundle.get(KEY_START_TIME))
             handle.set(KEY_SHOULD_TRACK, bundle.get(KEY_SHOULD_TRACK))
+
+            queryParamStorage.pageSourceName = pageSourceName.ifEmpty { sourceType }
+            queryParamStorage.widgetId = widgetId
 
             mNextKey = getNextChannelIdKey(channelId, source)
             loadNextPage()

@@ -7,18 +7,33 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.address.WarehouseDataModel
 import com.tokopedia.logisticCommon.data.mapper.AddAddressMapper
-import com.tokopedia.logisticCommon.data.repository.KeroRepository
+import com.tokopedia.logisticCommon.data.request.AddAddressParam
+import com.tokopedia.logisticCommon.data.request.EditAddressParam
 import com.tokopedia.logisticCommon.data.response.DataAddAddress
 import com.tokopedia.logisticCommon.data.response.DefaultAddressData
 import com.tokopedia.logisticCommon.data.response.KeroEditAddressResponse
 import com.tokopedia.logisticCommon.data.response.PinpointValidationResponse
+import com.tokopedia.logisticCommon.domain.param.GetDefaultAddressParam
+import com.tokopedia.logisticCommon.domain.param.GetDetailAddressParam
+import com.tokopedia.logisticCommon.domain.param.PinpointValidationParam
+import com.tokopedia.logisticCommon.domain.usecase.AddAddressUseCase
+import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
+import com.tokopedia.logisticCommon.domain.usecase.GetAddressDetailUseCase
+import com.tokopedia.logisticCommon.domain.usecase.GetDefaultAddressUseCase
+import com.tokopedia.logisticCommon.domain.usecase.PinpointValidationUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class AddressFormViewModel @Inject constructor(private val repo: KeroRepository) : ViewModel() {
+class AddressFormViewModel @Inject constructor(
+    private val getAddressDetail: GetAddressDetailUseCase,
+    private val getDefaultAddress: GetDefaultAddressUseCase,
+    private val addAddress: AddAddressUseCase,
+    private val saveEditAddress: EditAddressUseCase,
+    private val validatePinpoint: PinpointValidationUseCase
+) : ViewModel() {
 
     companion object {
         const val MIN_CHAR_PHONE_NUMBER = 9
@@ -76,7 +91,13 @@ class AddressFormViewModel @Inject constructor(private val repo: KeroRepository)
         if (draftAddressDataModel == null) {
             viewModelScope.launch {
                 try {
-                    val addressDetail = repo.getAddressDetail(addressId, sourceValue, needToTrack = true)
+                    val addressDetail = getAddressDetail(
+                        GetDetailAddressParam(
+                            addressIds = addressId,
+                            source = sourceValue,
+                            needToTrack = true
+                        )
+                    )
                     addressDetail.keroGetAddress.data.firstOrNull()?.let {
                         AddAddressMapper.mapAddressDetailToSaveAddressDataModel(it).apply {
                             saveDataModel = this
@@ -102,7 +123,7 @@ class AddressFormViewModel @Inject constructor(private val repo: KeroRepository)
     fun getDefaultAddress(source: String) {
         viewModelScope.launch {
             try {
-                val defaultAddress = repo.getDefaultAddress(source, needToTrack = true)
+                val defaultAddress = getDefaultAddress(GetDefaultAddressParam(source, true))
                 _defaultAddress.value = Success(defaultAddress.response.data)
             } catch (e: Throwable) {
                 _defaultAddress.value = Fail(e)
@@ -117,7 +138,8 @@ class AddressFormViewModel @Inject constructor(private val repo: KeroRepository)
         saveDataModel?.let { model ->
             viewModelScope.launch {
                 try {
-                    val saveAddressData = repo.saveAddress(model, sourceValue, consentJson)
+                    val saveAddressData =
+                        addAddress(model.toAddAddressParam(sourceValue, consentJson))
 
                     saveAddressData.keroAddAddress.data.takeIf {
                         it.isSuccess == 1
@@ -132,6 +154,32 @@ class AddressFormViewModel @Inject constructor(private val repo: KeroRepository)
         }
     }
 
+    private fun SaveAddressDataModel.toAddAddressParam(
+        source: String,
+        consentJson: String
+    ): AddAddressParam {
+        return AddAddressParam(
+            addrName = this.addressName,
+            receiverName = this.receiverName,
+            address1 = this.address1,
+            address1Notes = this.address1Notes,
+            address2 = this.address2,
+            postalCode = this.postalCode,
+            phone = this.phone,
+            province = this.provinceId.toString(),
+            city = this.cityId.toString(),
+            district = this.districtId.toString(),
+            latitude = this.latitude,
+            longitude = this.longitude,
+            isAnaPositive = this.isAnaPositive,
+            setAsPrimaryAddress = this.setAsPrimaryAddresss,
+            applyNameAsNewUserFullname = this.applyNameAsNewUserFullname,
+            source = source,
+            isTokonowRequest = this.isTokonowRequest,
+            consentJson = consentJson
+        )
+    }
+
     private fun SaveAddressDataModel.updateDataWarehouses(data: DataAddAddress) {
         id = data.addrId
         warehouseId = data.tokonow.warehouseId
@@ -144,7 +192,7 @@ class AddressFormViewModel @Inject constructor(private val repo: KeroRepository)
     fun saveEditAddress(model: SaveAddressDataModel, sourceValue: String) {
         viewModelScope.launch {
             try {
-                val editAddressData = repo.editAddress(model, sourceValue)
+                val editAddressData = saveEditAddress(model.toEditAddressParam(sourceValue))
                 saveDataModel = editAddressData.keroEditAddress.data.toSaveAddressDataModel()
                 _editAddress.value = Success(editAddressData.keroEditAddress.data)
             } catch (e: Throwable) {
@@ -153,14 +201,36 @@ class AddressFormViewModel @Inject constructor(private val repo: KeroRepository)
         }
     }
 
+    private fun SaveAddressDataModel.toEditAddressParam(sourceValue: String): EditAddressParam {
+        return EditAddressParam(
+            addressId = this.id,
+            addressName = this.addressName,
+            receiverName = this.receiverName,
+            address1 = this.address1,
+            address1Notes = this.address1Notes,
+            address2 = this.address2,
+            postalCode = this.postalCode,
+            district = this.districtId.toString(),
+            city = this.cityId.toString(),
+            province = this.provinceId.toString(),
+            phone = this.phone,
+            latitude = this.latitude,
+            longitude = this.longitude,
+            source = sourceValue,
+            isTokonowRequest = this.isTokonowRequest
+        )
+    }
+
     fun validatePinpoint(model: SaveAddressDataModel) {
         viewModelScope.launch {
             try {
-                val pinpointValidationResult = repo.pinpointValidation(
-                    model.districtId.toInt(),
-                    model.latitude,
-                    model.longitude,
-                    model.postalCode
+                val pinpointValidationResult = validatePinpoint(
+                    PinpointValidationParam(
+                        model.districtId,
+                        model.latitude,
+                        model.longitude,
+                        model.postalCode
+                    )
                 )
 
                 _pinpointValidation.value =
@@ -322,7 +392,12 @@ class AddressFormViewModel @Inject constructor(private val repo: KeroRepository)
 
         val tokonowData = this.tokonow
         val warehouses =
-            tokonowData.warehouses.map { WarehouseDataModel(warehouseId = it.warehouseId, serviceType = it.serviceType) }
+            tokonowData.warehouses.map {
+                WarehouseDataModel(
+                    warehouseId = it.warehouseId,
+                    serviceType = it.serviceType
+                )
+            }
         return SaveAddressDataModel(
             id = addressData.addressId,
             addressName = addressData.addressName,

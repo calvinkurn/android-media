@@ -2197,14 +2197,14 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
             isApplyLogisticPromo = true,
             logisticPromoViewModel = helper.logisticPromo,
             logisticPromoShipping = ShippingCourierUiModel().apply {
-                productData = ProductData().apply {
+                productData = ProductData(
                     shipperProductId = 1
-                }
+                )
             },
             insurance = OrderInsurance(
-                InsuranceData().apply {
+                InsuranceData(
                     insurancePrice = 100.0
-                },
+                ),
                 isCheckInsurance = true
             ),
             serviceName = "service"

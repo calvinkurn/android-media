@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.kol.R
+import com.tokopedia.kol.databinding.FragmentContentReportBinding
 import com.tokopedia.kol.feature.report.di.DaggerContentReportComponent
 import com.tokopedia.kol.feature.report.view.activity.ContentReportActivity
 import com.tokopedia.kol.feature.report.view.adapter.ReportReasonAdapter
@@ -21,13 +22,16 @@ import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.kotlin.extensions.view.hideLoading
 import com.tokopedia.kotlin.extensions.view.showLoading
 import com.tokopedia.unifycomponents.Toaster
-import kotlinx.android.synthetic.main.fragment_content_report.*
 import javax.inject.Inject
 
 /**
  * @author by milhamj on 08/11/18.
  */
 class ContentReportFragment : BaseDaggerFragment(), ContentReportContract.View {
+
+    private var _binding: FragmentContentReportBinding? = null
+    private val binding: FragmentContentReportBinding
+        get() = _binding!!
 
     private var contentId = 0
     private lateinit var adapter: ReportReasonAdapter
@@ -63,8 +67,9 @@ class ContentReportFragment : BaseDaggerFragment(), ContentReportContract.View {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_content_report, container, false)
+    ): View {
+        _binding = FragmentContentReportBinding.inflate(layoutInflater)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -74,26 +79,31 @@ class ContentReportFragment : BaseDaggerFragment(), ContentReportContract.View {
         initView()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         presenter.detachView()
     }
 
     override fun hideKeyboard() {
-        reasonInput.isCursorVisible = false
+        binding.reasonInput.isCursorVisible = false
         KeyboardHandler.DropKeyboard(activity, view)
     }
 
     override fun enableSendBtn() {
-        sendBtn.isEnabled = true
+        binding.sendBtn.isEnabled = true
     }
 
     override fun showLoading() {
-        mainView.showLoading()
+        binding.mainView.showLoading()
     }
 
     override fun hideLoading() {
-        mainView.hideLoading()
+        binding.mainView.hideLoading()
     }
 
     override fun onSuccessSendReport() {
@@ -104,12 +114,10 @@ class ContentReportFragment : BaseDaggerFragment(), ContentReportContract.View {
     }
 
     override fun onErrorSendReport(message: String) {
-        mainView?.let {
+        binding.mainView.let {
             Toaster.make(
                 it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
-                clickListener = View.OnClickListener {
-                    sendReport()
-                }
+                clickListener = { sendReport() }
             )
         }
     }
@@ -130,17 +138,17 @@ class ContentReportFragment : BaseDaggerFragment(), ContentReportContract.View {
     }
 
     private fun initView() {
-        sendBtn.isEnabled = false
-        reasonRv.adapter = adapter
+        binding.sendBtn.isEnabled = false
+        binding.reasonRv.adapter = adapter
         adapter.addAll(getReasonList())
 
-        reasonInput.afterTextChanged {
-            reasonInput.isCursorVisible = true
+        binding.reasonInput.afterTextChanged {
+            binding.reasonInput.isCursorVisible = true
             adapter.setCustomTypeSelected()
-            sendBtn.isEnabled = it.isEmpty().not()
+            binding.sendBtn.isEnabled = it.isEmpty().not()
         }
 
-        sendBtn.setOnClickListener { sendReport() }
+        binding.sendBtn.setOnClickListener { sendReport() }
     }
 
     private fun getReasonList(): MutableList<ReportReasonUiModel> {
@@ -175,7 +183,7 @@ class ContentReportFragment : BaseDaggerFragment(), ContentReportContract.View {
 
     private fun sendReport() {
         val isCustomType = adapter.getSelectedItem().type == adapter.getCustomTypeString()
-        val reasonMessage = if (isCustomType) reasonInput.text.toString() else adapter.getSelectedItem().description
+        val reasonMessage = if (isCustomType) binding.reasonInput.text.toString() else adapter.getSelectedItem().description
 
         presenter.sendReport(
             contentId,

@@ -203,6 +203,8 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_SHOP_HOME_NPL_WIDGET = "android_enable_shop_home_npl_widget";
 
+    public static final String ENABLE_SHOP_PAGE_REIMAGINED = "android_enable_shop_page_re_imagined";
+
     public static final String ENABLE_OLD_SELLER_MVC_ROUTING_TO_NEW_SELLER_MVC = "android_enable_old_seller_mvc_routing_to_new_seller_mvc";
 
     public static final String ENABLE_CURSOR_EMBRACE_LOGGING = "android_newrelic_cursor_out_of_bound";
@@ -263,6 +265,16 @@ public class RemoteConfigKey {
     public static final String ENABLE_BANNER_ENVIRONMENT = "android_enable_banner_environment";
 
     public static final String FINTECH_ENABLE_ADDITIONAL_DEVICE_INFO_HEADER = "android_fintech_enable_additional_device_info";
+
+    public static final String ANDROID_ENABLE_NEW_FINGERPRINT_HEADER_DATA = "android_enable_new_fingerprint_header_data";
+
+    public static final String PAYMENT_ENABLE_ADDITIONAL_DEVICE_INFO_HEADER = "android_payment_enable_additional_device_info";
+
+    public static final String CONTENT_EXOPLAYER_CUSTOM_LOAD_CONTROL = "android_content_exoplayer_custom_load_control";
+
+    public static final String HOME_ATF_REFACTORING = "android_home_atf_refactoring";
+
+    public static final String HOME_HPB_CACHE_EXPIRY = "android_home_hpb_cache_expiry";
 
     public static final String ANDROID_IS_ENABLE_ORDER_STATUS_DETAIL = "android_is_enable_order_status_detail_test";
 
