@@ -39,6 +39,7 @@ class SliderView: ScrollView {
     fun setItems(views: List<View>, shouldAnimate: Boolean) {
         if (views.isEmpty()) return
 
+        binding?.container?.removeAllViews()
         views.forEachIndexed { index, view ->
             if (index == 0 && shouldAnimate) view.setPadding(0, VERTICAL_PADDING.toPx(), 0, 0)
             if (index == views.size - 1) view.setPadding(0, 0, 0, VERTICAL_PADDING.toPx())
