@@ -36,8 +36,8 @@
         app:typographyType="display_3"
         tools:text="Berakhir dalam" />
 
-    <com.tokopedia.unifycomponents.timer.TimerUnifySingle
-        android:id="@+id/tus_count_down"
+    <ViewStub
+        android:id="@+id/tus_count_down_view_stub"
         android:layout_width="0dp"
         android:layout_height="20dp"
         android:layout_centerVertical="true"

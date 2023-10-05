@@ -11,6 +11,8 @@ import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimode
 import com.tokopedia.tokopedianow.common.analytics.RealTimeRecommendationAnalytics
 import com.tokopedia.tokopedianow.common.listener.RealTimeRecommendationListener
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.customview.ProductCardCompactCarouselView
+import com.tokopedia.tokopedianow.common.util.ViewUtil.inflateView
+import com.tokopedia.tokopedianow.common.view.RealTimeRecommendationCarouselView
 import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowProductRecommendationBinding
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
@@ -31,6 +33,7 @@ class HomeProductRecomViewHolder(
     }
 
     private var binding: ItemTokopedianowProductRecommendationBinding? by viewBinding()
+    private var realtimeRecommendationView: RealTimeRecommendationCarouselView? = null
 
     private var channelId = ""
     private var headerName = ""
@@ -66,10 +69,20 @@ class HomeProductRecomViewHolder(
     }
 
     private fun renderRealTimeRecom(element: HomeProductRecomUiModel) {
-        binding?.realTimeRecommendationCarousel?.apply {
-            listener = rtrListener
-            analytics = rtrAnalytics
-            bind(element.realTimeRecom)
+        if(element.realTimeRecom.productList.isNotEmpty()) {
+            binding?.apply {
+                if(realtimeRecommendationView == null) {
+                    val view = realTimeRecommendationViewStub
+                        .inflateView(R.layout.layout_tokopedianow_rtr_carousel_view)
+                    realtimeRecommendationView = view.findViewById(R.id.real_time_recommendation_carousel)
+                }
+
+                realtimeRecommendationView?.apply {
+                    listener = rtrListener
+                    analytics = rtrAnalytics
+                    bind(element.realTimeRecom)
+                }
+            }
         }
     }
 

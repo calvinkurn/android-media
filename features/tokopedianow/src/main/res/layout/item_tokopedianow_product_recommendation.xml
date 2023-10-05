@@ -9,8 +9,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <com.tokopedia.tokopedianow.common.view.RealTimeRecommendationCarouselView
-        android:id="@+id/realTimeRecommendationCarousel"
+    <ViewStub
+        android:id="@+id/real_time_recommendation_view_stub"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 </LinearLayout>
