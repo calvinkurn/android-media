@@ -1,5 +1,6 @@
 package com.tokopedia.digital_product_detail.presentation.viewmodel
 
+import com.tokopedia.common.topupbills.data.MultiCheckoutButtons
 import com.tokopedia.common.topupbills.favoritepdp.data.mapper.DigitalPersoMapper
 import com.tokopedia.common.topupbills.favoritepdp.util.FavoriteNumberType
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
@@ -19,6 +20,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
+import org.junit.Assert
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
@@ -793,6 +795,22 @@ class DigitalPDPDataPlanViewModelTest : DigitalPDPDataPlanViewModelTestFixture()
 
         val result = viewModel.isFilterChanged(changedFilter)
         verifyFilterIsChanged(result)
+    }
+
+    @Test
+    fun updateMultiCheckoutButtonsTest() {
+        val multiCheckoutButtons = listOf(
+            MultiCheckoutButtons(
+            text = "Halo",
+            color = "#FFFFFFF",
+            coachmark = "Show Coachmak",
+            position = "1",
+            type = "multiple"
+        )
+        )
+
+        viewModel.updateMultiCheckoutButtons(multiCheckoutButtons)
+        Assert.assertEquals(viewModel.multiCheckoutButtons, multiCheckoutButtons)
     }
 
     companion object {

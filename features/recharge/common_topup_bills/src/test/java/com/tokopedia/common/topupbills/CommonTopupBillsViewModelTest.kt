@@ -1,6 +1,7 @@
 package com.tokopedia.common.topupbills
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.common.topupbills.data.MultiCheckoutButtons
 import com.tokopedia.common.topupbills.data.TelcoCatalogMenuDetailData
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryQuery
@@ -474,5 +475,19 @@ class CommonTopupBillsViewModelTest {
         testCoroutineRule.coroutineDispatcher.advanceTimeBy(1_000L)
 
         verify { digitalCheckVoucherUseCase.execute(any(), any()) }
+    }
+
+    @Test
+    fun updateMultiCheckoutButtonsTest() {
+        val multiCheckoutButtons = listOf(MultiCheckoutButtons(
+            text = "Halo",
+            color = "#FFFFFFF",
+            coachmark = "Show Coachmak",
+            position = "1",
+            type = "multiple"
+        ))
+
+        topupBillsViewModel.updateMultiCheckoutButtons(multiCheckoutButtons)
+        Assert.assertEquals(topupBillsViewModel.multiCheckoutButtons, multiCheckoutButtons)
     }
 }
