@@ -110,6 +110,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.IMPRESSI
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.IMPRESSION_PERSO_PRODUCT_COMPARISON
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.IMPRESSION_PRODUCT_ATC
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.IMPRESSION_REIMAGINED_BANNER_PRODUCT_CAROUSEL
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.IMPRESSION_REIMAGINED_PRODUCT_CAROUSEL
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.IMPRESSION_REIMAGINED_SHOWCASE_NAVIGATION
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.IMPRESSION_REIMAGINED_SHOWCASE_NAVIGATION_WITH_TAB
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.REIMAGINED_CLICK_ADD_TO_CART_DIRECT_PURCHASE_WIDGET
@@ -249,6 +250,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESSION_PERSONALIZATION_TRENDING_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESSION_PERSONALIZATION_TRENDING_WIDGET_ITEM
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESSION_REIMAGINED_BANNER_PRODUCT_CAROUSEL
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESSION_REIMAGINED_PRODUCT_CAROUSEL
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESSION_REIMAGINED_SHOWCASE_NAVIGATION
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESSION_REIMAGINED_SHOWCASE_NAVIGATION_WITH_TAB
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESSION_SHOP_DECOR
@@ -325,6 +327,7 @@ import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.shop.home.view.model.banner_product_group.BannerProductGroupUiModel
 import com.tokopedia.shop.home.view.model.banner_product_group.BannerProductGroupUiModel.WidgetStyle
 import com.tokopedia.shop.home.view.model.banner_product_group.appearance.ProductItemType
+import com.tokopedia.shop.home.view.model.banner_product_group.appearance.ShopHomeBannerProductGroupItemType
 import com.tokopedia.shop.home.view.model.showcase_navigation.Showcase
 import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseNavigationUiModel
 import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.CarouselAppearance
@@ -3635,7 +3638,7 @@ class ShopPageHomeTracking(
     //region Product carousel widget tracker
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4148
     // Tracker ID: 45950
-    fun sendProductCarouselImpression(
+    fun sendBannerOnProductCarouselImpression(
         widgetStyle: String,
         widgets: List<BannerProductGroupUiModel.Tab.ComponentList>,
         shopId: String,
@@ -3687,6 +3690,78 @@ class ShopPageHomeTracking(
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(PROMO_VIEW, bundle)
     }
 
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4148
+    // Tracker ID: 46621
+    fun sendProductCarouselImpression(
+        widgetStyle: String,
+        productCarouselComponentList: List<BannerProductGroupUiModel.Tab.ComponentList>,
+        productCarouselItemType: List<ShopHomeBannerProductGroupItemType>,
+        shopId: String,
+        userId: String
+    ) {
+        val bannerWidget = productCarouselComponentList.firstOrNull { it.componentName == BannerProductGroupUiModel.Tab.ComponentList.ComponentName.DISPLAY_SINGLE_COLUMN }
+        val productWidget = productCarouselComponentList.firstOrNull { it.componentName == BannerProductGroupUiModel.Tab.ComponentList.ComponentName.PRODUCT }
+
+        val hasBanner = bannerWidget != null
+        val showProductInfo = productWidget?.data?.any { it.isShowProductInfo }.orFalse()
+        val productCardVariant = if (showProductInfo) "with_info" else "without_info"
+        val bannerVariant = when {
+            hasBanner && widgetStyle == WidgetStyle.VERTICAL.id -> "vertical"
+            hasBanner && widgetStyle == WidgetStyle.HORIZONTAL.id -> "horizontal"
+            !hasBanner -> "no_banner"
+            else -> "no_banner"
+        }
+
+        val eventLabel = "$bannerVariant - $productCardVariant"
+
+        val productBundles = productCarouselItemType.toProductBundles()
+        
+        val bundle = Bundle().apply {
+            putString(EVENT, VIEW_ITEM_LIST)
+            putString(EVENT_ACTION, IMPRESSION_REIMAGINED_PRODUCT_CAROUSEL)
+            putString(EVENT_CATEGORY, SHOP_PAGE_BUYER)
+            putString(EVENT_LABEL, eventLabel)
+            putString(TRACKER_ID, TRACKER_ID_IMPRESSION_REIMAGINED_PRODUCT_CAROUSEL)
+            putString(BUSINESS_UNIT, PHYSICAL_GOODS_PASCAL_CASE)
+            putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
+            putString(SHOP_ID, shopId)
+            putString(USER_ID, userId)
+            putString(ITEM_LIST, ITEM_LIST_REIMAGINED_ADVANCED_PRODUCT_CAROUSEL)
+            putParcelableArrayList(ITEMS, productBundles)
+        }
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(PRODUCT_VIEW, bundle)
+    }
+
+    private fun List<ShopHomeBannerProductGroupItemType>.toProductBundles(): ArrayList<Bundle> {
+        val productBundles = ArrayList<Bundle>()
+        val products = filterIsInstance<ProductItemType>()
+        
+        products.forEachIndexed { index, product ->
+            val price = try {
+                product.price.digitsOnly().toDouble()
+            } catch (e: Exception) {
+                Int.ZERO.toDouble()
+            }
+            
+            val productBundle = Bundle().apply {
+                putString(DIMENSION_40, ITEM_LIST_REIMAGINED_ADVANCED_PRODUCT_CAROUSEL)
+                putInt(INDEX, index.inc())
+                putString(ITEM_BRAND, "")
+                putString(ITEM_CATEGORY, "")
+                putString(ITEM_ID, product.productId)
+                putString(ITEM_NAME, product.name)
+                putString(ITEM_VARIANT, "")
+                putDouble(PRICE, price)
+            }
+
+            productBundles.add(productBundle)
+        }
+        
+        return productBundles
+    }
+    
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4148
     // Tracker ID: 45951
     fun sendProductCarouselBannerClick(

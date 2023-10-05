@@ -487,6 +487,7 @@ object ShopPageTrackingConstant {
 
         // Product Carousel Widget
         const val IMPRESSION_REIMAGINED_BANNER_PRODUCT_CAROUSEL = "reimagined - impression advanced carousel"
+        const val IMPRESSION_REIMAGINED_PRODUCT_CAROUSEL = "reimagined - impression product advanced carousel"
         const val CLICK_REIMAGINED_BANNER_PRODUCT_CAROUSEL = "reimagined - click banner advanced carousel"
         const val CLICK_REIMAGINED_PRODUCT_CAROUSEL = "reimagined - click product advanced carousel"
     }
@@ -574,8 +575,10 @@ object ShopPageTrackingConstant {
 
         // Product Carousel Widget
         const val TRACKER_ID_IMPRESSION_REIMAGINED_BANNER_PRODUCT_CAROUSEL = "45950"
+        const val TRACKER_ID_IMPRESSION_REIMAGINED_PRODUCT_CAROUSEL = "46621"
         const val TRACKER_ID_CLICK_REIMAGINED_BANNER_PRODUCT_CAROUSEL = "45951"
         const val TRACKER_ID_CLICK_REIMAGINED_PRODUCT_CAROUSEL = "45952"
+        
         const val TRACKER_ID_REIMAGINED_IMPRESSION_HEADER_SHOP = "45906"
         const val TRACKER_ID_REIMAGINED_CLICK_HEADER_SHOP_NAME = "45907"
         const val TRACKER_ID_REIMAGINED_CLICK_HEADER_SHOP_REVIEW = "45908"
