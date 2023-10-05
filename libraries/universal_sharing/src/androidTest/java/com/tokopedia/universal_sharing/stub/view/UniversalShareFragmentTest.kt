@@ -1,4 +1,4 @@
-package com.tokopedia.common.view
+package com.tokopedia.universal_sharing.stub.view
 
 import android.os.Bundle
 import android.view.LayoutInflater

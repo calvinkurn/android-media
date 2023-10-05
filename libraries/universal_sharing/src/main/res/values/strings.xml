@@ -74,5 +74,5 @@
     <string name="universal_sharing_post_purchase_try_again">Coba Lagi</string>
     <string name="universal_sharing_post_purchase_product_unavailable">Yaah, barang ini sudah nggak tersedia. move on ke barang lainnya, yuk!</string>
     <string name="universal_sharing_post_purchase_ok">Oke</string>
-    <string name="universal_sharing_post_purchase_og_desc">Coba cek ini di Tokopedia, deh. Harganya Rp%1$d.</string>
+    <string name="universal_sharing_post_purchase_og_desc">Coba cek ini di Tokopedia, deh. Harganya %1$s.</string>
 </resources>

@@ -1,4 +1,4 @@
-package com.tokopedia.universal_sharing
+package com.tokopedia.universal_sharing.stub.common
 
 import org.hamcrest.Description
 import org.hamcrest.Matcher

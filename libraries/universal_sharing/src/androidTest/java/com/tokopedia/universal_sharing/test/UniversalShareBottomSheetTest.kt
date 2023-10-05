@@ -1,52 +1,78 @@
-package com.tokopedia.universal_sharing
+package com.tokopedia.universal_sharing.test
 
 import android.app.Activity
 import android.app.Instrumentation
+import android.content.Context
 import android.content.Intent
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
-import androidx.test.espresso.intent.rule.IntentsTestRule
-import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.common.stub.FakeActivityComponentFactory
-import com.tokopedia.common.stub.FakeGraphqlRepository
-import com.tokopedia.common.view.UniversalShareTestActivity
+import androidx.test.platform.app.InstrumentationRegistry
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.universal_sharing.stub.di.FakeActivityComponentFactory
+import com.tokopedia.universal_sharing.stub.data.repository.FakeGraphqlRepository
+import com.tokopedia.universal_sharing.stub.view.UniversalShareTestActivity
 import com.tokopedia.universal_sharing.di.ActivityComponentFactory
+import com.tokopedia.universal_sharing.stub.common.ActivityScenarioTestRule
+import com.tokopedia.universal_sharing.stub.common.MockTimber
+import com.tokopedia.universal_sharing.stub.common.UserSessionStub
+import com.tokopedia.universal_sharing.test.robot.universalSharingRobot
+import com.tokopedia.universal_sharing.test.robot.validate
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.model.AffiliateInput
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import timber.log.Timber
+import javax.inject.Inject
 
 class UniversalShareBottomSheetTest {
 
-    private lateinit var fakeGraphqlRepository: FakeGraphqlRepository
-    private lateinit var baseAppComponent: BaseAppComponent
-    private val testComponent = FakeActivityComponentFactory()
+    @get:Rule
+    var activityTestRule = ActivityScenarioTestRule<UniversalShareTestActivity>()
+
+    private val context: Context = InstrumentationRegistry.getInstrumentation().targetContext
+
+    @Inject
+    lateinit var userSession: UserSessionStub
+
+    @ApplicationContext
+    @Inject
+    lateinit var fakeGraphqlRepository: FakeGraphqlRepository
+
     private lateinit var timber: MockTimber
 
-    @get:Rule
-    var activityTestRule = IntentsTestRule(
-        UniversalShareTestActivity::class.java,
-        false,
-        false
-    )
-
     @Before
-    fun setup() {
+    fun beforeTest() {
+        Intents.init()
+        setupTimber()
+        setupDaggerComponent()
+        setupEarlyEnv()
+    }
+
+    @After
+    fun afterTest() {
+        Intents.release()
+    }
+
+    private fun setupTimber() {
         timber = MockTimber()
         Timber.plant(timber)
-        baseAppComponent = stubAppGraphqlRepo()
+    }
 
-        //we will use this to manipulate on extract branch link
-        ActivityComponentFactory.instance = testComponent
-        fakeGraphqlRepository = baseAppComponent.graphqlRepository() as FakeGraphqlRepository
+    private fun setupDaggerComponent() {
+        val fakeComponent = FakeActivityComponentFactory()
+        ActivityComponentFactory.instance = fakeComponent
+        fakeComponent.universalSharingComponent.inject(this)
+    }
+
+    private fun setupEarlyEnv() {
+        userSession.setUserLoginStatus(true)
     }
 
     @Test
     fun sharingPDP_NonLoginUser_ImageOptionsFromMedia() {
-        testComponent.isLogin = false
-
+        userSession.setUserLoginStatus(false)
         universalSharingRobot {
             runTest(UniversalShareModel.getDefaultPDPBottomSheet())
             scrollHorizontalIOnImagesOptions(3)
@@ -62,7 +88,6 @@ class UniversalShareBottomSheetTest {
 
     @Test
     fun sharingPDP_LoginUser_6ImagesOptionsFromMedia_UserNotRegisterOnAffiliate_NotEligibleAffiliate_EligibleCommission() {
-        testComponent.isLogin = true
         fakeGraphqlRepository.mockParam = FakeGraphqlRepository.MockParam.NOT_REGISTERED
 
         universalSharingRobot {
@@ -83,7 +108,6 @@ class UniversalShareBottomSheetTest {
 
     @Test
     fun sharingPDP_LoginUser_2ImagesOptionsFromMedia_UserRegisteredOnAffiliate_EligibleAffiliateAndCommission() {
-        testComponent.isLogin = true
         fakeGraphqlRepository.mockParam = FakeGraphqlRepository.MockParam.ELIGIBLE_COMMISSION
 
         universalSharingRobot {
@@ -104,7 +128,6 @@ class UniversalShareBottomSheetTest {
 
     @Test
     fun sharingPDP_LoginUser_2ImagesOptionsFromMedia_UserRegisteredOnAffiliate_NotEligibleAffiliateAndCommission() {
-        testComponent.isLogin = true
         fakeGraphqlRepository.mockParam = FakeGraphqlRepository.MockParam.NOT_ELIGIBLE_COMMISSION
 
         universalSharingRobot {
@@ -125,7 +148,6 @@ class UniversalShareBottomSheetTest {
 
     @Test
     fun sharingShop_LoginUser_ShowShopChips() {
-        testComponent.isLogin = true
         var onTitleChipPropertiesSelected = ""
 
         universalSharingRobot {
@@ -148,8 +170,10 @@ class UniversalShareBottomSheetTest {
     }
 
     private fun runTest(bottomSheet: UniversalShareBottomSheet) {
-        activityTestRule.launchActivity(Intent())
-        activityTestRule.activity.getShareFragment().showUniversalBottomSheet(bottomSheet)
+        activityTestRule.launchActivity(Intent(context, UniversalShareTestActivity::class.java))
+        (activityTestRule.activity as UniversalShareTestActivity)
+            .getShareFragment()
+            .showUniversalBottomSheet(bottomSheet)
         Intents.intending(IntentMatchers.anyIntent())
             .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }

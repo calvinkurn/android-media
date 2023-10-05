@@ -12,13 +12,14 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.R
 import com.tokopedia.universal_sharing.data.model.UniversalSharingPostPurchaseProductResponse
 import com.tokopedia.universal_sharing.databinding.UniversalSharingPostPurchaseBottomsheetBinding
-import com.tokopedia.universal_sharing.di.UniversalSharingComponentFactory
+import com.tokopedia.universal_sharing.di.ActivityComponentFactory
 import com.tokopedia.universal_sharing.model.UniversalSharingPostPurchaseModel
 import com.tokopedia.universal_sharing.tracker.UniversalSharebottomSheetTracker
 import com.tokopedia.universal_sharing.tracker.UniversalSharebottomSheetTracker.Companion.TYPE_GENERAL
@@ -83,7 +84,7 @@ class UniversalSharingPostPurchaseBottomSheet :
     }
 
     private fun initInjector() {
-        UniversalSharingComponentFactory.instance.createComponent(
+        ActivityComponentFactory.instance.createActivityComponent(
             requireContext().applicationContext as Application
         ).inject(this)
     }
@@ -160,9 +161,9 @@ class UniversalSharingPostPurchaseBottomSheet :
         throwable: Throwable
     ) {
         val errorType = if (networkUtil.isNetworkAvailable(requireContext())) {
-            UniversalSharingGlobalErrorUiModel.ErrorType.ERROR_NETWORK
-        } else {
             UniversalSharingGlobalErrorUiModel.ErrorType.ERROR_GENERAL
+        } else {
+            UniversalSharingGlobalErrorUiModel.ErrorType.ERROR_NETWORK
         }
         val errorUi = UniversalSharingGlobalErrorUiModel(errorType)
         adapter.updateData(listOf(errorUi))
@@ -199,7 +200,7 @@ class UniversalSharingPostPurchaseBottomSheet :
         shopName: String,
         productData: UniversalSharingPostPurchaseProductResponse
     ) {
-        if (productData.status == "ACTIVE" || productData.stock > 0) {
+        if (productData.status == "ACTIVE" && productData.stock > 0) {
             listener?.onOpenShareBottomSheet(
                 orderId = orderId,
                 shopName = shopName,
@@ -263,7 +264,7 @@ class UniversalSharingPostPurchaseBottomSheet :
             analytics.onClickShareProductPostPurchase(
                 userShareType = TYPE_GENERAL,
                 productId = productId,
-                orderId = orderId
+                orderId = orderId.toIntOrZero().toString() // If the order ID contains any characters/strings, they should be replaced with 0
             )
         }
     }
@@ -278,7 +279,7 @@ class UniversalSharingPostPurchaseBottomSheet :
     }
 
     private fun showToaster(text: String, ctaText: String, type: Int, onClick: () -> Unit) {
-        dialog?.window?.decorView?.let {
+        binding.root.rootView?.let {
             Toaster.build(
                 view = it,
                 text = text,
@@ -300,14 +301,18 @@ class UniversalSharingPostPurchaseBottomSheet :
         analytics.onViewProductListPostPurchase(
             userShareType = TYPE_GENERAL,
             productIdList = productIdList.joinToString(","),
-            orderIdList = orderIdList.joinToString(",")
+            orderIdList = orderIdList.joinToString(",") {
+                it.toIntOrZero().toString() // If the order ID contains any characters/strings, they should be replaced with 0
+            }
         )
     }
 
     private fun trackClose() {
         analytics.onClickCloseProductListPostPurchase(
             userShareType = TYPE_GENERAL,
-            orderIdList = orderIdList.joinToString(",")
+            orderIdList = orderIdList.joinToString(",") {
+                it.toIntOrZero().toString() // If the order ID contains any characters/strings, they should be replaced with 0
+            }
         )
     }
 

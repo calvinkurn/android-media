@@ -7,30 +7,36 @@ import android.os.Bundle
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.internal.ApplinkConstInternalCommunication
 import com.tokopedia.kotlin.extensions.view.hideKeyboard
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.universal_sharing.R
 import com.tokopedia.universal_sharing.data.model.UniversalSharingPostPurchaseProductResponse
-import com.tokopedia.universal_sharing.di.UniversalSharingComponentFactory
+import com.tokopedia.universal_sharing.di.ActivityComponentFactory
 import com.tokopedia.universal_sharing.model.UniversalSharingPostPurchaseModel
 import com.tokopedia.universal_sharing.tracker.UniversalSharebottomSheetTracker
 import com.tokopedia.universal_sharing.tracker.UniversalSharebottomSheetTracker.Companion.TYPE_GENERAL
+import com.tokopedia.universal_sharing.util.CurrencyUtil.toRupiahFormat
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalSharingPostPurchaseBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.postpurchase.UniversalSharingPostPurchaseBottomSheetListener
 import com.tokopedia.universal_sharing.view.model.LinkProperties
 import com.tokopedia.universal_sharing.view.model.ShareModel
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
-import kotlin.math.roundToInt
 
-class UniversalSharingUniversalSharingPostPurchaseSharingActivity :
+class UniversalSharingPostPurchaseSharingActivity :
     BaseActivity(),
     UniversalSharingPostPurchaseBottomSheetListener {
 
     @Inject
     lateinit var analytics: UniversalSharebottomSheetTracker
 
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
     private var bottomSheet: UniversalSharingPostPurchaseBottomSheet? = null
+    private var source: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,13 +46,14 @@ class UniversalSharingUniversalSharingPostPurchaseSharingActivity :
     }
 
     private fun initInjector() {
-        UniversalSharingComponentFactory.instance.createComponent(
+        ActivityComponentFactory.instance.createActivityComponent(
             applicationContext as Application
         ).inject(this)
     }
 
     @SuppressLint("DeprecatedMethod")
     private fun setupBottomSheet() {
+        source = intent.getStringExtra(ApplinkConstInternalCommunication.SOURCE) ?: ""
         val data = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             intent.getParcelableExtra(
                 ApplinkConstInternalCommunication.PRODUCT_LIST_DATA,
@@ -66,7 +73,7 @@ class UniversalSharingUniversalSharingPostPurchaseSharingActivity :
         if (bottomSheet?.isAdded == false) { // only 1 bottom sheet allowed
             bottomSheet?.show(
                 supportFragmentManager,
-                ::UniversalSharingUniversalSharingPostPurchaseSharingActivity.name
+                ::UniversalSharingPostPurchaseSharingActivity.name
             )
         }
     }
@@ -76,8 +83,9 @@ class UniversalSharingUniversalSharingPostPurchaseSharingActivity :
         shopName: String,
         product: UniversalSharingPostPurchaseProductResponse
     ) {
-        val view = this.currentFocus
-        val bottomSheetShare = UniversalShareBottomSheet.createInstance(view)
+        val bottomSheetShare = UniversalShareBottomSheet.createInstance(
+            dismissAfterShare = false
+        )
         configShareBottomSheet(
             orderId = orderId,
             shopName = shopName,
@@ -87,12 +95,12 @@ class UniversalSharingUniversalSharingPostPurchaseSharingActivity :
         if (!bottomSheetShare.isAdded) { // only 1 bottomsheet allowed
             bottomSheetShare.show(
                 supportFragmentManager,
-                ::UniversalSharingUniversalSharingPostPurchaseSharingActivity.name
+                ::UniversalSharingPostPurchaseSharingActivity.name
             )
             analytics.onViewSharingChannelBottomSheetSharePostPurchase(
                 userShareType = TYPE_GENERAL,
                 productId = product.productId,
-                orderId = orderId
+                orderId = orderId.toIntOrZero().toString() // If the order ID contains any characters/strings, they should be replaced with 0
             )
         }
     }
@@ -105,7 +113,7 @@ class UniversalSharingUniversalSharingPostPurchaseSharingActivity :
     ) {
         val desc = getString(
             R.string.universal_sharing_post_purchase_og_desc,
-            product.productPrice.roundToInt()
+            product.productPrice.toRupiahFormat()
         )
         bottomSheet.apply {
             init(object : ShareBottomsheetListener {
@@ -114,7 +122,7 @@ class UniversalSharingUniversalSharingPostPurchaseSharingActivity :
                         channel = shareModel.channel ?: "",
                         userShareType = TYPE_GENERAL,
                         productId = product.productId,
-                        orderId = orderId
+                        orderId = orderId.toIntOrZero().toString() // If the order ID contains any characters/strings, they should be replaced with 0
                     )
                 }
 
@@ -122,7 +130,7 @@ class UniversalSharingUniversalSharingPostPurchaseSharingActivity :
                     analytics.onClickCloseBottomSheetSharePostPurchase(
                         userShareType = TYPE_GENERAL,
                         productId = product.productId,
-                        orderId = orderId
+                        orderId = orderId.toIntOrZero().toString() // If the order ID contains any characters/strings, they should be replaced with 0
                     )
                 }
             })
@@ -139,12 +147,18 @@ class UniversalSharingUniversalSharingPostPurchaseSharingActivity :
                 LinkProperties(
                     linkerType = LinkerData.PRODUCT_TYPE,
                     id = product.productId,
-                    ogTitle = "${product.productName} - ${product.productPrice.roundToInt()}",
+                    ogTitle = "${product.productName} - ${product.productPrice.toRupiahFormat()}",
                     ogDescription = "$shopName - ${product.desc}",
                     ogImageUrl = "${product.images.firstOrNull()?.imageUrl}",
                     deeplink = generateApplinkPDP(product.productId),
                     desktopUrl = product.url
                 )
+            )
+            setUtmCampaignData(
+                pageName = source,
+                userId = userSession.userId,
+                pageId = "${product.productId}-$orderId", // Product Id & Order Id
+                feature = "share"
             )
             setOnDismissListener {
                 finish()

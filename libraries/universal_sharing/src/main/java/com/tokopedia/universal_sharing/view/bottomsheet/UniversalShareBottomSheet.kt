@@ -220,6 +220,9 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
     private var personalizedImage = ""
     private var personalizedCampaignModel: PersonalizedCampaignModel? = null
 
+    // Flag to show toaster without dismiss
+    private var dismissAfterShare = true
+
     // parent fragment lifecycle observer
     private val parentFragmentLifecycleObserver by lazy {
         object : DefaultLifecycleObserver {
@@ -1482,17 +1485,20 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
                 object : ShareCallback {
                     override fun urlCreated(linkerShareResult: LinkerShareResult) {
                         shareModel.subjectName = subjectShare
+                        val view = fragmentView ?: dialog?.window?.decorView
                         SharingUtil.executeShareIntent(
                             shareModel,
                             linkerShareResult,
                             activity,
-                            fragmentView,
+                            view,
                             String.format(
                                 shareText,
                                 linkerShareResult.url
                             )
                         )
-                        dismiss()
+                        if (dismissAfterShare) {
+                            dismiss()
+                        }
                     }
 
                     override fun onError(linkerError: LinkerError) {
@@ -1568,6 +1574,15 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
          */
         fun createInstance(fragmentView: View?) = UniversalShareBottomSheet().apply {
             this.fragmentView = fragmentView
+        }
+
+        /**
+         * if you're using [enableDefaultShareIntent] and don't want to hide bottomsheet after share,
+         * please create the instance using this function
+         * otherwise the toaster after clicking `salin link` won't show
+         */
+        fun createInstance(dismissAfterShare: Boolean) = UniversalShareBottomSheet().apply {
+            this.dismissAfterShare = dismissAfterShare
         }
     }
 }

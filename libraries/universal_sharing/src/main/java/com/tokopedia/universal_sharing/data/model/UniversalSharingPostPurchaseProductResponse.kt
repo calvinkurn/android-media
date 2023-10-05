@@ -19,13 +19,13 @@ data class UniversalSharingPostPurchaseProductResponse(
     val productPrice: Double = 0.0,
 
     @SerializedName("stock")
-    val stock: Int = 0,
+    var stock: Int = 0,
 
     @SerializedName("description")
     val desc: String = "",
 
     @SerializedName("status")
-    val status: String = "",
+    var status: String = "",
 
     @SerializedName("url")
     val url: String = "",
