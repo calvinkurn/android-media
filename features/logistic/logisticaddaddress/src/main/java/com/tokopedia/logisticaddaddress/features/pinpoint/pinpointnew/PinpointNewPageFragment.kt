@@ -636,37 +636,14 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
     private fun fetchData() {
         if (viewModel.uiModel.placeId.isNotEmpty()) {
             viewModel.getDistrictLocation(viewModel.uiModel.placeId)
+        } else if (viewModel.uiModel.hasPinpoint()) {
+            viewModel.getLocationFromLatLong()
+        } else if (viewModel.uiModel.districtId != 0L) {
+            viewModel.getDistrictCenter()
+        } else if (viewModel.uiModel.hasDistrictAndCityName) {
+            viewModel.getGeocodeByDistrictAndCityName()
         } else if (addressUiState.isPinpointOnly()) {
-            if (viewModel.uiModel.hasPinpoint()) {
-                viewModel.getLocationFromLatLong()
-            } else if (viewModel.uiModel.hasDistrictAndCityName) {
-                viewModel.getGeocodeByDistrictAndCityName()
-            } else {
-                getCurrentLocation()
-            }
-        } else {
-            if (viewModel.uiModel.hasPinpoint()) {
-                viewModel.getLocationFromLatLong()
-            } else {
-                viewModel.getDistrictCenter()
-            }
-//            if (viewModel.uiModel.hasPinpoint()) {
-//                // negative flow but already pinpoint before
-//                binding?.mapsEmpty?.visibility = View.GONE
-//                binding?.mapViews?.visibility = View.VISIBLE
-//
-//                showDistrictBottomSheet()
-//                moveMap(
-//                    getLatLng(
-//                        viewModel.uiModel.lat,
-//                        viewModel.uiModel.long
-//                    ),
-//                    ZOOM_LEVEL
-//                )
-//                updateGetDistrictBottomSheet(viewModel.uiModel)
-//            } else {
-//                viewModel.getDistrictCenter()
-//            }
+            getCurrentLocation()
         }
     }
 
