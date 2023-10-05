@@ -43,6 +43,7 @@ import com.tokopedia.tokopedianow.category.di.module.CategoryContextModule
 import com.tokopedia.tokopedianow.category.presentation.adapter.CategoryL2TabAdapter
 import com.tokopedia.tokopedianow.category.presentation.adapter.differ.CategoryL2TabDiffer
 import com.tokopedia.tokopedianow.category.presentation.adapter.typefactory.CategoryL2TabAdapterTypeFactory
+import com.tokopedia.tokopedianow.category.presentation.decoration.CategoryL2SpacingDecoration
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryAtcTrackerModel
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryL2TabData
 import com.tokopedia.tokopedianow.category.presentation.view.CategoryL2View
@@ -57,7 +58,7 @@ import com.tokopedia.tokopedianow.common.listener.ProductAdsCarouselListener
 import com.tokopedia.tokopedianow.common.model.TokoNowTickerUiModel
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuItemUiModel
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
-import com.tokopedia.tokopedianow.common.util.RecyclerViewGridUtil.addProductItemDecoration
+import com.tokopedia.tokopedianow.common.util.RecyclerViewGridUtil.addCategoryProductItemDecoration
 import com.tokopedia.tokopedianow.common.view.TokoNowProductRecommendationView.TokoNowProductRecommendationListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowTickerViewHolder.TokoNowTickerTrackerListener
@@ -305,15 +306,15 @@ class TokoNowCategoryL2TabFragment : Fragment() {
 
     private fun setupRecyclerView() {
         binding?.recyclerView?.apply {
+            addCategoryProductItemDecoration()
             addItemDecoration(HorizontalScrollDecoration())
+            addItemDecoration(CategoryL2SpacingDecoration())
             layoutManager = GridLayoutManager(context, SPAN_COUNT).apply {
                 spanSizeLookup = createSpanSizeLookup()
             }
             removeOnScrollListener()
             addOnScrollListener()
             adapter = categoryAdapter
-            addProductItemDecoration()
-            itemAnimator = null
         }
     }
 
