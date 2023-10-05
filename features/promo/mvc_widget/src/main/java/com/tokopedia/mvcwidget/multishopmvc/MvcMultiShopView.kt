@@ -13,6 +13,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
@@ -32,6 +33,7 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class MvcMultiShopView @JvmOverloads constructor(
     context: Context,
@@ -90,6 +92,8 @@ class MvcMultiShopView @JvmOverloads constructor(
         }
         if (item.products?.size != null && item.products.isNotEmpty()) {
             if (item.products.size == 1) {
+                productParentTwo?.gone()
+
                 productParentOne?.show()
                 item.products[0]?.imageURL?.let {
                     if (it.isNotEmpty()) {
@@ -282,17 +286,17 @@ class MvcMultiShopView @JvmOverloads constructor(
     private fun setStrokeColor(view: Typography?) {
         val drawable = view?.background as GradientDrawable
         drawable.setStroke(
-            view.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl1)
+            view.context.resources.getDimension(unifyprinciplesR.dimen.spacing_lvl1)
                 .toInt(),
             ContextCompat.getColor(
                 view.context,
-                com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+                unifyprinciplesR.color.Unify_Static_White
             )
         )
         view.setTextColor(
             ContextCompat.getColor(
                 view.context,
-                com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+                unifyprinciplesR.color.Unify_Static_White
             )
         )
     }
