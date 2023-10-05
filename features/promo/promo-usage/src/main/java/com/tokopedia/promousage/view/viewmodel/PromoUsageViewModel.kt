@@ -418,6 +418,7 @@ class PromoUsageViewModel @Inject constructor(
                     _promoCtaUiAction.postValue(PromoCtaUiAction.RegisterGoPayLaterCicil(clickedItem.cta))
                 } else {
                     _promoPageUiState.ifSuccessSuspend { pageState ->
+                        if (pageState.isCalculating) return@ifSuccessSuspend
                         _promoPageUiState.postValue(
                             pageState.copy(
                                 isCalculating = true
