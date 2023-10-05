@@ -20,7 +20,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductShipmentDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ShipmentPlusData
 import com.tokopedia.product.detail.databinding.ItemPdpShimmerShipmentBinding
-import com.tokopedia.product.detail.databinding.ItemShipmentBinding
+import com.tokopedia.product.detail.databinding.ItemShipmentOldBinding
 import com.tokopedia.product.detail.databinding.ItemShipmentOptionBinding
 import com.tokopedia.product.detail.databinding.ViewShipmentBinding
 import com.tokopedia.product.detail.databinding.ViewShipmentErrorBinding
@@ -40,7 +40,7 @@ class ShipmentViewHolder(
 ) : AbstractViewHolder<ProductShipmentDataModel>(view) {
 
     companion object {
-        val LAYOUT = R.layout.item_shipment
+        val LAYOUT = R.layout.item_shipment_old
 
         private const val TIPS_TYPE = "tips"
         private const val TICKER_INFO_TYPE = "info"
@@ -51,7 +51,7 @@ class ShipmentViewHolder(
     }
 
     private val context = view.context
-    private val binding = ItemShipmentBinding.bind(view)
+    private val binding = ItemShipmentOldBinding.bind(view)
 
     private var componentTrackDataModel: ComponentTrackDataModel? = null
 

@@ -1,36 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/pdp_shipment"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:layout_height="wrap_content">
 
-    <com.tokopedia.unifycomponents.DividerUnify
-        android:id="@+id/pdp_shipment_separator"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/thick_divider_height_component"
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/pdp_shipment_background"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:unify_image_disable_shimmering_placeholder="true"
+        app:unify_image_placeholder="@android:color/transparent"
+        tools:src="@tools:sample/avatars" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/pdp_shipment_header_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="12dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintBottom_toBottomOf="@id/pdp_shipment_header_price"
+        app:layout_constraintEnd_toStartOf="@id/pdp_shipment_header_price"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/pdp_shipment_header_price"
+        tools:layout_width="100dp"
+        tools:src="@tools:sample/avatars" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/pdp_shipment_header_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="16dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toStartOf="@id/pdp_shipment_header_slash_price"
+        app:layout_constraintStart_toEndOf="@id/pdp_shipment_header_logo"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="display_1"
+        app:typographyWeight="bold"
+        tools:text="Ongkir Instant 3 jam mulai Rp40.000" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/pdp_shipment_header_slash_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintBottom_toBottomOf="@id/pdp_shipment_header_price"
+        app:layout_constraintEnd_toStartOf="@id/pdp_shipment_chevron"
+        app:layout_constraintStart_toEndOf="@id/pdp_shipment_header_price"
+        app:layout_constraintTop_toTopOf="@id/pdp_shipment_header_price"
+        app:typographyType="display_2"
+        tools:text="Rp10.000" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/pdp_shipment_chevron"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        app:icon_name="CHEVRON_RIGHT"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ViewStub
-        android:id="@+id/pdp_shipment_state_main"
+    <LinearLayout
+        android:id="@+id/pdp_shipment_container_body"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout="@layout/view_shipment"
-        tools:visibility="visible" />
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@id/pdp_shipment_header_price" />
 
-    <ViewStub
-        android:id="@+id/pdp_shipment_state_loading"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout="@layout/item_pdp_shimmer_shipment"
-        tools:visibility="visible" />
-
-    <ViewStub
-        android:id="@+id/pdp_shipment_state_error"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout="@layout/view_shipment_error"
-        tools:visibility="visible" />
-
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

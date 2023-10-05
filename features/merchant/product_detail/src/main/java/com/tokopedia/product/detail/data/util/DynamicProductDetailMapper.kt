@@ -32,6 +32,7 @@ import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.product.detail.common.mapper.AtcVariantMapper
+import com.tokopedia.product.detail.component.shipment.ShipmentUiModel
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.datamodel.ArButtonDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
@@ -360,6 +361,11 @@ object DynamicProductDetailMapper {
                 ProductDetailConstant.BMGM_TYPE -> {
                     listOfComponent.add(
                         BMGMUiModel(type = component.type, name = component.componentName)
+                    )
+                }
+                ProductDetailConstant.SHIPMENT_V3 -> {
+                    listOfComponent.add(
+                        ShipmentUiModel(type = component.type, name = component.componentName)
                     )
                 }
             }
