@@ -115,6 +115,8 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import timber.log.Timber
 import javax.inject.Inject
+import com.tokopedia.resources.common.R as resourcescommonR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class RechargeGeneralFragment :
     BaseTopupBillsFragment(),
@@ -323,7 +325,7 @@ class RechargeGeneralFragment :
                                 errorMessage.orEmpty(),
                                 Toaster.LENGTH_LONG,
                                 Toaster.TYPE_ERROR,
-                                getString(com.tokopedia.resources.common.R.string.general_label_ok)
+                                getString(resourcescommonR.string.general_label_ok)
                             ).show()
                         }
                     }
@@ -360,7 +362,7 @@ class RechargeGeneralFragment :
                                 errorMessage,
                                 Toaster.LENGTH_LONG,
                                 Toaster.TYPE_ERROR,
-                                getString(com.tokopedia.resources.common.R.string.general_label_ok)
+                                getString(resourcescommonR.string.general_label_ok)
                             ).show()
                         }
                     } else {
@@ -394,7 +396,7 @@ class RechargeGeneralFragment :
                             errorMessage.orEmpty(),
                             Toaster.LENGTH_LONG,
                             Toaster.TYPE_ERROR,
-                            getString(com.tokopedia.resources.common.R.string.general_label_ok)
+                            getString(resourcescommonR.string.general_label_ok)
                         ).show()
                     }
                 }
@@ -1437,7 +1439,7 @@ class RechargeGeneralFragment :
                 errorMessage.orEmpty(),
                 Toaster.LENGTH_LONG,
                 Toaster.TYPE_ERROR,
-                getString(com.tokopedia.resources.common.R.string.general_label_ok)
+                getString(resourcescommonR.string.general_label_ok)
             ).show()
 
             if (isAddSBM) {
@@ -1471,7 +1473,7 @@ class RechargeGeneralFragment :
                 errorMessage.orEmpty(),
                 Toaster.LENGTH_LONG,
                 Toaster.TYPE_ERROR,
-                getString(com.tokopedia.resources.common.R.string.general_label_ok)
+                getString(resourcescommonR.string.general_label_ok)
             ).show()
         }
     }
@@ -1490,7 +1492,7 @@ class RechargeGeneralFragment :
                 errorMessage.orEmpty(),
                 Toaster.LENGTH_LONG,
                 Toaster.TYPE_ERROR,
-                getString(com.tokopedia.resources.common.R.string.general_label_ok)
+                getString(resourcescommonR.string.general_label_ok)
             ).show()
         }
     }
@@ -1765,7 +1767,7 @@ class RechargeGeneralFragment :
                 val iconUnify = getIconUnifyDrawable(
                     ctx,
                     IconUnify.INFORMATION,
-                    ContextCompat.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_NN900)
+                    ContextCompat.getColor(ctx, unifyprinciplesR.color.Unify_NN900)
                 )
                 iconUnify?.toBitmap()?.let {
                     getItem(0).setOnMenuItemClickListener {
@@ -1787,7 +1789,7 @@ class RechargeGeneralFragment :
             val iconUnify = getIconUnifyDrawable(
                 ctx,
                 IconUnify.MENU_KEBAB_VERTICAL,
-                ContextCompat.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_NN900)
+                ContextCompat.getColor(ctx, unifyprinciplesR.color.Unify_NN900)
             )
             iconUnify?.toBitmap()?.let {
                 getItem(1).setOnMenuItemClickListener {
@@ -1858,7 +1860,7 @@ class RechargeGeneralFragment :
         private const val TAG_GENERAL_CONSENT_BOTTOM_SHEET = "GENERAL_CONSENT_BOTTOM_SHEET"
         private const val TOOLBAR_ICON_SIZE = 64
 
-        val ITEM_DECORATOR_SIZE = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3
+        val ITEM_DECORATOR_SIZE = unifyprinciplesR.dimen.spacing_lvl3
 
         fun newInstance(
             categoryId: Int,

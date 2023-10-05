@@ -84,6 +84,10 @@ import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.utils.lifecycle.autoCleared
 import javax.inject.Inject
 import kotlin.math.abs
+import com.tokopedia.common_digital.R as common_digitalR
+import com.tokopedia.globalerror.R as globalerrorR
+import com.tokopedia.unifycomponents.R as unifycomponentsR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * @author by jessica on 29/03/21
@@ -589,7 +593,7 @@ open class EmoneyPdpFragment :
         if ((error.message ?: "").contains(EmoneyPdpViewModel.ERROR_GRPC_TIMEOUT, true)) {
             errorThrowable = MessageErrorException(
                 getString(
-                    com.tokopedia.common_digital.R.string.digital_common_grpc_toaster
+                    common_digitalR.string.digital_common_grpc_toaster
                 )
             )
         }
@@ -608,7 +612,7 @@ open class EmoneyPdpFragment :
             renderErrorMessage(throwable)
             binding.emoneyPdpShimmeringLayout.root.hide()
         })
-        binding.emoneyGlobalError.findViewById<GlobalError>(com.tokopedia.globalerror.R.id.globalerror_view)
+        binding.emoneyGlobalError.findViewById<GlobalError>(globalerrorR.id.globalerror_view)
             ?.apply {
                 gravity = Gravity.CENTER
             }
@@ -725,7 +729,7 @@ open class EmoneyPdpFragment :
         }
         binding.emoneyPdpViewPager.show()
         binding.emoneyPdpProductWidget.showPaddingBottom(
-            context?.resources?.getDimensionPixelOffset(com.tokopedia.unifycomponents.R.dimen.spacing_lvl6)
+            context?.resources?.getDimensionPixelOffset(unifycomponentsR.dimen.spacing_lvl6)
                 ?: 0
         )
         binding.emoneyBuyWidgetLayout.hide()
@@ -753,11 +757,11 @@ open class EmoneyPdpFragment :
         binding.emoneyBuyWidgetLayout.invalidate()
         binding.emoneyPdpProductWidget.showPaddingBottom(
             kotlin.math.max(
-                context?.resources?.getDimensionPixelOffset(com.tokopedia.unifycomponents.R.dimen.unify_space_64)
+                context?.resources?.getDimensionPixelOffset(unifycomponentsR.dimen.unify_space_64)
                     ?: 0,
                 binding.emoneyBuyWidgetLayout.measuredHeight
             ) + (
-                context?.resources?.getDimensionPixelOffset(com.tokopedia.unifycomponents.R.dimen.spacing_lvl6)
+                context?.resources?.getDimensionPixelOffset(unifycomponentsR.dimen.spacing_lvl6)
                     ?: 0
                 )
         )
@@ -941,7 +945,7 @@ open class EmoneyPdpFragment :
                 val iconUnify = getIconUnifyDrawable(
                     ctx,
                     IconUnify.INFORMATION,
-                    ContextCompat.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_NN900)
+                    ContextCompat.getColor(ctx, unifyprinciplesR.color.Unify_NN900)
                 )
                 iconUnify?.toBitmap()?.let {
                     getItem(0).setOnMenuItemClickListener {
@@ -963,7 +967,7 @@ open class EmoneyPdpFragment :
             val iconUnify = getIconUnifyDrawable(
                 ctx,
                 IconUnify.MENU_KEBAB_VERTICAL,
-                ContextCompat.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_NN900)
+                ContextCompat.getColor(ctx, unifyprinciplesR.color.Unify_NN900)
             )
             iconUnify?.toBitmap()?.let {
                 getItem(1).setOnMenuItemClickListener {

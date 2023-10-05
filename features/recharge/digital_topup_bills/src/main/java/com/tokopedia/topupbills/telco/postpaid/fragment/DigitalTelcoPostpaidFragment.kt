@@ -56,6 +56,7 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_digital_telco_postpaid.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import com.tokopedia.common_digital.R as common_digitalR
 
 /**
  * Created by nabillasabbaha on 06/05/19.
@@ -541,7 +542,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                     error.title,
                     Toaster.LENGTH_LONG,
                     Toaster.TYPE_ERROR,
-                    getString(com.tokopedia.common_digital.R.string.digital_common_button_toaster)
+                    getString(common_digitalR.string.digital_common_button_toaster)
                 ) {
                     redirectError(error)
                 }.show()

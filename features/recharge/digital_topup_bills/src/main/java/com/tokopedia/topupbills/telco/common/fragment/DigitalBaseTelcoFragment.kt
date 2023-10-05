@@ -58,6 +58,8 @@ import kotlinx.coroutines.Job
 import java.util.regex.Pattern
 import javax.inject.Inject
 import kotlin.math.abs
+import com.tokopedia.abstraction.R as abstractionR
+import com.tokopedia.resources.common.R as resourcescommonR
 
 /**
  * Created by nabillasabbaha on 23/05/19.
@@ -428,7 +430,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
             activity,
             pageContainer,
             errMsg,
-            "${getString(com.tokopedia.abstraction.R.string.msg_network_error_2)}. Kode Error: ($errCode)",
+            "${getString(abstractionR.string.msg_network_error_2)}. Kode Error: ($errCode)",
             null,
             DEFAULT_ICON_RES
         ) {
@@ -489,7 +491,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
                 errorMessage.orEmpty(),
                 Toaster.LENGTH_LONG,
                 Toaster.TYPE_ERROR,
-                getString(com.tokopedia.resources.common.R.string.general_label_ok)
+                getString(resourcescommonR.string.general_label_ok)
             ).show()
         }
     }
@@ -508,7 +510,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
                 errorMessage.orEmpty(),
                 Toaster.LENGTH_LONG,
                 Toaster.TYPE_ERROR,
-                getString(com.tokopedia.resources.common.R.string.general_label_ok)
+                getString(resourcescommonR.string.general_label_ok)
             ).show()
         }
     }

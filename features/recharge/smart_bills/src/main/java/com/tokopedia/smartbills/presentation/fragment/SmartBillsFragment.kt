@@ -80,6 +80,9 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
+import com.tokopedia.resources.common.R as resourcescommonR
+import com.tokopedia.globalerror.R as globalerrorR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * @author by resakemal on 17/05/20
@@ -285,7 +288,7 @@ class SmartBillsFragment :
                                     ErrorHandler.getErrorMessage(context, throwable),
                                     Toaster.LENGTH_INDEFINITE,
                                     Toaster.TYPE_ERROR,
-                                    getString(com.tokopedia.resources.common.R.string.general_label_ok)
+                                    getString(resourcescommonR.string.general_label_ok)
                                 ).show()
                             }
 
@@ -317,7 +320,7 @@ class SmartBillsFragment :
                                 ErrorHandler.getErrorMessage(context, throwable),
                                 Toaster.LENGTH_INDEFINITE,
                                 Toaster.TYPE_ERROR,
-                                getString(com.tokopedia.resources.common.R.string.general_label_ok)
+                                getString(resourcescommonR.string.general_label_ok)
                             ).show()
                         }
                     }
@@ -340,7 +343,7 @@ class SmartBillsFragment :
                                     getString(R.string.smart_bills_add_bills_bottom_sheet_catalog_empty),
                                     Toaster.LENGTH_LONG,
                                     Toaster.TYPE_ERROR,
-                                    getString(com.tokopedia.resources.common.R.string.general_label_ok)
+                                    getString(resourcescommonR.string.general_label_ok)
                                 ).show()
                             }
                         }
@@ -353,7 +356,7 @@ class SmartBillsFragment :
                                 ErrorHandler.getErrorMessage(context, it.throwable),
                                 Toaster.LENGTH_LONG,
                                 Toaster.TYPE_ERROR,
-                                getString(com.tokopedia.resources.common.R.string.general_label_ok)
+                                getString(resourcescommonR.string.general_label_ok)
                             ).show()
                         }
                     }
@@ -373,7 +376,7 @@ class SmartBillsFragment :
                                 message,
                                 Toaster.LENGTH_LONG,
                                 Toaster.TYPE_NORMAL,
-                                getString(com.tokopedia.resources.common.R.string.general_label_ok)
+                                getString(resourcescommonR.string.general_label_ok)
                             ).show()
                         }
                         swipeToRefresh?.isRefreshing = true
@@ -389,7 +392,7 @@ class SmartBillsFragment :
                             ErrorHandler.getErrorMessage(context, it.throwable),
                             Toaster.LENGTH_LONG,
                             Toaster.TYPE_ERROR,
-                            getString(com.tokopedia.resources.common.R.string.general_label_ok)
+                            getString(resourcescommonR.string.general_label_ok)
                         ).show()
                     }
                 }
@@ -447,7 +450,7 @@ class SmartBillsFragment :
                     message,
                     Toaster.LENGTH_LONG,
                     Toaster.TYPE_NORMAL,
-                    getString(com.tokopedia.resources.common.R.string.general_label_ok)
+                    getString(resourcescommonR.string.general_label_ok)
                 ).show()
             }
         }
@@ -920,7 +923,7 @@ class SmartBillsFragment :
                     ErrorHandler.Builder().build()
                 )
                 errorTitle.text = errMsg
-                errorDescription.text = "${getString(com.tokopedia.globalerror.R.string.noConnectionDesc)} " +
+                errorDescription.text = "${getString(globalerrorR.string.noConnectionDesc)} " +
                     "Kode Error: ($errCode)"
                 sbmLoaderUnify.hide()
                 setActionClickListener {
@@ -965,7 +968,7 @@ class SmartBillsFragment :
             val isTickerShown = tickerSmartBills.visibility == View.VISIBLE
             val resource = when {
                 isTickerShown && !isTickerClosed -> R.dimen.smart_bills_view_separator_ticker
-                isLowHeight ->  com.tokopedia.unifyprinciples.R.dimen.layout_lvl7
+                isLowHeight ->  unifyprinciplesR.dimen.layout_lvl7
                 else -> R.dimen.smart_bills_view_separator
             }
             val params: ViewGroup.LayoutParams = viewSpacerSbm.layoutParams

@@ -94,6 +94,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
 import javax.inject.Inject
+import com.tokopedia.abstraction.R as abstractionR
+import com.tokopedia.digital_product_detail.R as digital_product_detailR
+import com.tokopedia.recharge_component.R as recharge_componentR
 
 class DigitalPDPTokenListrikFragment :
     BaseDaggerFragment(),
@@ -396,7 +399,7 @@ class DigitalPDPTokenListrikFragment :
         )
         val errMsgSub = getString(
             R.string.error_message_with_code,
-            getString(com.tokopedia.abstraction.R.string.msg_network_error_2),
+            getString(abstractionR.string.msg_network_error_2),
             errCode
         )
         binding?.run {
@@ -807,7 +810,7 @@ class DigitalPDPTokenListrikFragment :
                         binding?.run {
                             val defaultPadding: Int = rechargePdpTokenListrikClientNumberWidget.height
                             val scrollViewMargin: Int = context?.resources?.let {
-                                it.getDimensionPixelOffset(com.tokopedia.digital_product_detail.R.dimen.nested_scroll_view_margin)
+                                it.getDimensionPixelOffset(digital_product_detailR.dimen.nested_scroll_view_margin)
                             } ?: 0
                             val dynamicPadding = defaultPadding + extraPadding - scrollViewMargin
                             rechargePdpTokenListrikSvContainer.setPadding(0, dynamicPadding, 0, 0)
@@ -839,7 +842,7 @@ class DigitalPDPTokenListrikFragment :
         binding?.rechargePdpTokenListrikClientNumberWidget?.run {
             setInputFieldStaticLabel(
                 getString(
-                    com.tokopedia.recharge_component.R.string.label_recharge_client_number_token_listrik
+                    recharge_componentR.string.label_recharge_client_number_token_listrik
                 )
             )
             setInputFieldType(InputFieldType.Listrik)
@@ -921,7 +924,7 @@ class DigitalPDPTokenListrikFragment :
         )
         intent.putExtra(
             EXTRA_UPDATED_TITLE,
-            getString(com.tokopedia.digital_product_detail.R.string.qr_scanner_title_scan_barcode)
+            getString(digital_product_detailR.string.qr_scanner_title_scan_barcode)
         )
         startActivityForResult(intent, RESULT_CODE_QR_SCAN)
     }
