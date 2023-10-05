@@ -1882,6 +1882,8 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                         uohItemAdapter.appendPmsButton(data) { position ->
                             binding?.rvOrderList?.smoothScrollToPosition(position)
                         }
+                    } else {
+                        uohItemAdapter.removePmsButton()
                     }
                 }
             } else {
