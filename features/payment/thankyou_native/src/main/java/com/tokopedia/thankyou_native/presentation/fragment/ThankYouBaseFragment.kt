@@ -190,11 +190,14 @@ abstract class ThankYouBaseFragment :
             addRecommendation(getRecommendationContainer())
             getTopTickerData()
             thanksPageDataViewModel.resetAddressToDefault()
-            topadsHeadlineView.getHeadlineAds(
-                ThanksPageHelper.getHeadlineAdsParam(0, userSession.userId, TOP_ADS_SRC),
-                this::showTopAdsHeadlineView,
-                this::hideTopAdsHeadlineView
-            )
+
+            if (thanksPageData.configFlagData?.shouldHideProductRecom != true) {
+                topadsHeadlineView.getHeadlineAds(
+                    ThanksPageHelper.getHeadlineAdsParam(0, userSession.userId, TOP_ADS_SRC),
+                    this::showTopAdsHeadlineView,
+                    this::hideTopAdsHeadlineView
+                )
+            }
         }
     }
 
@@ -273,6 +276,8 @@ abstract class ThankYouBaseFragment :
         pageType: DigitalRecommendationPage
     ) {
         if (::thanksPageData.isInitialized) {
+            if (thanksPageData.configFlagData?.shouldHideDigitalRecom == true) return
+
             if (isWidgetOrderingEnabled) {
                 thanksPageDataViewModel.addBottomContentWidget(
                     DigitalRecommendationWidgetModel(
@@ -284,8 +289,6 @@ abstract class ThankYouBaseFragment :
                 )
                 return
             }
-
-            if (thanksPageData.configFlagData?.shouldHideDigitalRecom == true) return
 
             iDigitalRecommendationView = containerView?.let { container ->
                 val view = getRecommendationView(digitalRecommendationLayout)
