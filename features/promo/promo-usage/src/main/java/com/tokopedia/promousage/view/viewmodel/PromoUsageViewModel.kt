@@ -418,6 +418,11 @@ class PromoUsageViewModel @Inject constructor(
                     _promoCtaUiAction.postValue(PromoCtaUiAction.RegisterGoPayLaterCicil(clickedItem.cta))
                 } else {
                     _promoPageUiState.ifSuccessSuspend { pageState ->
+                        _promoPageUiState.postValue(
+                            pageState.copy(
+                                isCalculating = true
+                            )
+                        )
                         val currentItems = pageState.items
                         val newClickedItemState = if (clickedItem.state is PromoItemState.Normal) {
                             PromoItemState.Selected
@@ -460,7 +465,6 @@ class PromoUsageViewModel @Inject constructor(
                         _promoPageUiState.postValue(
                             pageState.copy(
                                 items = updatedItems,
-                                isCalculating = needToShowLoading,
                                 isReload = false
                             )
                         )
