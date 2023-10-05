@@ -82,4 +82,9 @@ object DigitalTrackingConst {
         const val ITEM_NAME = "item_name"
         const val PROMOTION = "promotions"
     }
+
+    object PatternString {
+        const val TWO_STRING_PATTERN = "%s_%s"
+        const val THREE_STRING_PATTERN = "%s - %s - %s"
+    }
 }

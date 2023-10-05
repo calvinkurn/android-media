@@ -8,6 +8,8 @@ import com.tokopedia.common_digital.common.constant.DigitalTrackingConst.Action.
 import com.tokopedia.common_digital.common.constant.DigitalTrackingConst.Event.SELECT_CONTENT
 import com.tokopedia.common_digital.common.constant.DigitalTrackingConst.Event.VIEW_ITEM
 import com.tokopedia.common_digital.common.constant.DigitalTrackingConst.Label.USER_ID
+import com.tokopedia.common_digital.common.constant.DigitalTrackingConst.PatternString.THREE_STRING_PATTERN
+import com.tokopedia.common_digital.common.constant.DigitalTrackingConst.PatternString.TWO_STRING_PATTERN
 import com.tokopedia.common_digital.common.constant.DigitalTrackingConst.Promotion.CREATIVE_NAME
 import com.tokopedia.common_digital.common.constant.DigitalTrackingConst.Promotion.CREATIVE_SLOT
 import com.tokopedia.common_digital.common.constant.DigitalTrackingConst.Promotion.ITEM_ID
@@ -15,6 +17,8 @@ import com.tokopedia.common_digital.common.constant.DigitalTrackingConst.Promoti
 import com.tokopedia.common_digital.common.constant.DigitalTrackingConst.Promotion.PROMOTION
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
+import java.util.*
+import kotlin.collections.ArrayList
 
 class CommonMultiCheckoutAnalytics {
 
@@ -24,7 +28,8 @@ class CommonMultiCheckoutAnalytics {
             putString(
                 TrackAppUtils.EVENT_LABEL,
                 String.format(
-                    "%s_%s",
+                    Locale.getDefault(),
+                    TWO_STRING_PATTERN,
                     categoryName,
                     loyaltyStatus
                 )
@@ -60,7 +65,8 @@ class CommonMultiCheckoutAnalytics {
             putString(TrackAppUtils.EVENT_CATEGORY, RechargeAnalytics.DIGITAL_HOMEPAGE)
             putString(
                 TrackAppUtils.EVENT_LABEL, String.format(
-                    "%s - %s - %s",
+                    Locale.getDefault(),
+                    THREE_STRING_PATTERN,
                     categoryName,
                     operatorName,
                     channelId
@@ -94,7 +100,8 @@ class CommonMultiCheckoutAnalytics {
             putString(TrackAppUtils.EVENT_CATEGORY, RechargeAnalytics.DIGITAL_HOMEPAGE)
             putString(
                 TrackAppUtils.EVENT_LABEL, String.format(
-                    "%s_%s",
+                    Locale.getDefault(),
+                    TWO_STRING_PATTERN,
                     categoryName,
                     buttonType.toString(),
                 )

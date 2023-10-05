@@ -17,8 +17,8 @@ import com.tokopedia.unifycomponents.UnifyButton
  */
 class DigitalPostpaidClientNumberWidget : DigitalClientNumberWidget {
 
-    private lateinit var btnMain: UnifyButton
-    private lateinit var btnSecondary: UnifyButton
+    private var btnMain: UnifyButton? = null
+    private var btnSecondary: UnifyButton? = null
     private lateinit var postpaidListener: ClientNumberPostpaidListener
 
     constructor(context: Context) : super(context) {
@@ -47,20 +47,20 @@ class DigitalPostpaidClientNumberWidget : DigitalClientNumberWidget {
     }
 
     fun resetClientNumberPostpaid() {
-        btnMain.show()
+        btnMain?.show()
     }
 
     fun resetEnquiryResult() {
-        btnMain.show()
+        btnMain?.show()
     }
 
     fun setButtonEnquiry(enable: Boolean) {
-        btnMain.isClickable = enable
+        btnMain?.isClickable = enable
     }
 
     fun setLoadingButtonEnquiry(loading: Boolean) {
-        btnMain.isLoading = loading
-        btnSecondary.isLoading = loading
+        btnMain?.isLoading = loading
+        btnSecondary?.isLoading = loading
     }
 
     fun setPostpaidListener(listener: ClientNumberPostpaidListener) {
@@ -68,15 +68,19 @@ class DigitalPostpaidClientNumberWidget : DigitalClientNumberWidget {
     }
 
     fun showMulticheckoutButtonSupport(multiCheckoutButtons: List<MultiCheckoutButtons>) {
-        showMultiCheckoutButton(multiCheckoutButtons, context, btnMain, btnSecondary,
-            CoachMark2(context),
-            {
-                postpaidListener.mainButtonClick()
-            } , {
-                postpaidListener.secondaryButtonClick()
-            }, {
-                postpaidListener.onCloseCoachMark()
+        btnMain?.let { btnMain ->
+            btnSecondary?.let { btnSecondary ->
+                showMultiCheckoutButton(multiCheckoutButtons, context, btnMain, btnSecondary,
+                    CoachMark2(context),
+                    {
+                        postpaidListener.mainButtonClick()
+                    }, {
+                        postpaidListener.secondaryButtonClick()
+                    }, {
+                        postpaidListener.onCloseCoachMark()
+                    }
+                )
             }
-        )
+        }
     }
 }
