@@ -2,13 +2,16 @@ package com.tokopedia.stories.robot
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.stories.data.repository.StoriesRepository
 import com.tokopedia.stories.view.model.StoriesArgsModel
 import com.tokopedia.stories.view.model.StoriesGroupHeader
 import com.tokopedia.stories.view.model.StoriesUiModel
 import com.tokopedia.stories.view.viewmodel.StoriesViewModel
+import com.tokopedia.stories.view.viewmodel.action.StoriesProductAction
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
 import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
+import com.tokopedia.stories.view.viewmodel.state.BottomSheetType
 import com.tokopedia.stories.view.viewmodel.state.StoriesUiState
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
@@ -170,6 +173,21 @@ internal class StoriesViewModelRobot(
 
     fun tapResumeStories(selectedGroup: Int) {
         entryPointTestCase(selectedGroup)
+        viewModel.submitAction(StoriesUiAction.PageIsSelected)
+        viewModel.submitAction(StoriesUiAction.ContentIsLoaded)
+        viewModel.submitAction(StoriesUiAction.ResumeStories)
+    }
+
+    fun tapResumeStoriesButContentNotLoaded(selectedGroup: Int) {
+        entryPointTestCase(selectedGroup)
+        viewModel.submitAction(StoriesUiAction.PageIsSelected)
+        viewModel.submitAction(StoriesUiAction.ResumeStories)
+    }
+
+
+    fun tapResumeStoriesButPageIsNotSelected(selectedGroup: Int) {
+        entryPointTestCase(selectedGroup)
+        viewModel.submitAction(StoriesUiAction.ContentIsLoaded)
         viewModel.submitAction(StoriesUiAction.ResumeStories)
     }
 
@@ -194,6 +212,39 @@ internal class StoriesViewModelRobot(
         entryPointTestCase(selectedGroup)
         viewModel.submitAction(StoriesUiAction.ShowDeleteDialog)
         viewModel.submitAction(StoriesUiAction.DeleteStory)
+    }
+
+    fun openKebabBottomSheet() {
+        viewModel.submitAction(StoriesUiAction.OpenKebabMenu)
+    }
+
+    fun openProductBottomSheet() {
+        entryPointTestCase(0)
+        viewModel.submitAction(StoriesUiAction.OpenProduct)
+    }
+
+    fun openShareBottomSheet() {
+        viewModel.submitAction(StoriesUiAction.TapSharing)
+    }
+
+    fun openVariantBottomSheet(product: ContentTaggedProductUiModel) {
+        viewModel.submitAction(StoriesUiAction.ShowVariantSheet(product))
+    }
+
+    fun closeBottomSheet(type: BottomSheetType) {
+        viewModel.submitAction(StoriesUiAction.DismissSheet(type))
+    }
+
+    fun testGetProducts() {
+        viewModel.submitAction(StoriesUiAction.FetchProduct)
+    }
+
+    fun testProductAction(action: StoriesProductAction, product: ContentTaggedProductUiModel) {
+        viewModel.submitAction(StoriesUiAction.ProductAction(action, product))
+    }
+
+    fun testNav(appLink: String) {
+        viewModel.submitAction(StoriesUiAction.Navigate(appLink))
     }
 
     override fun close() {
