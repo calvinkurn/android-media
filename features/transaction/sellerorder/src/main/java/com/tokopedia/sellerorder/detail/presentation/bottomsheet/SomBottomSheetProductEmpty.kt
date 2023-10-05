@@ -16,13 +16,12 @@ import com.tokopedia.sellerorder.detail.data.model.SomReasonRejectData
 import com.tokopedia.unifycomponents.ticker.Ticker
 
 class SomBottomSheetProductEmpty(
-        context: Context
+    context: Context
 ) : SomBaseRejectOrderBottomSheet<BottomsheetSecondaryBinding>(context, LAYOUT, SomConsts.TITLE_PILIH_PRODUK_KOSONG), SomBottomSheetStockEmptyAdapter.ProductCheckChangedListener {
 
     companion object {
         private val LAYOUT = R.layout.bottomsheet_secondary
     }
-
 
     private var rejectReason: SomReasonRejectData.Data.SomRejectReason? = null
     private var orderId: String = ""
@@ -99,7 +98,7 @@ class SomBottomSheetProductEmpty(
         }
     }
 
-    fun setProducts(listProduct: List<SomDetailOrder.Data.GetSomDetail.Details.Product>) {
+    fun setProducts(listProduct: List<SomDetailOrder.GetSomDetail.Details.Product>) {
         somBottomSheetStockEmptyAdapter.listProduct = listProduct.toMutableList()
         somBottomSheetStockEmptyAdapter.notifyDataSetChanged()
     }

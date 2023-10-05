@@ -89,6 +89,7 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant.RECOM_VERTIC
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.SHOPADS_CAROUSEL
 import com.tokopedia.product.detail.view.util.checkIfNumber
 import com.tokopedia.product.detail.view.viewholder.a_plus_content.APlusImageUiModel
+import com.tokopedia.product.detail.view.viewholder.bmgm.BMGMUiModel
 import com.tokopedia.product.detail.view.widget.CampaignRibbon
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselTrackingConst
@@ -296,7 +297,8 @@ object DynamicProductDetailMapper {
                     listOfComponent.add(
                         FintechWidgetDataModel(
                             type = component.type,
-                            name = component.componentName
+                            name = component.componentName,
+                            widgetSession = System.currentTimeMillis()
                         )
                     )
                 }
@@ -348,6 +350,11 @@ object DynamicProductDetailMapper {
                         )
                         firstAPlusMedia = false
                     }
+                }
+                ProductDetailConstant.BMGM_TYPE -> {
+                    listOfComponent.add(
+                        BMGMUiModel(type = component.type, name = component.componentName)
+                    )
                 }
             }
         }

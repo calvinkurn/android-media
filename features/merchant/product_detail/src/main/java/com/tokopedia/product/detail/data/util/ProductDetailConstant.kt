@@ -23,6 +23,7 @@ object ProductDetailConstant {
     const val PDP_RESULT_PLT_NETWORK_METRICS = "pdp_result_plt_network_metrics"
     const val PDP_RESULT_PLT_RENDER_METRICS = "pdp_result_plt_render_metrics"
     const val PDP_RESULT_TRACE = "pdp_result_trace"
+    const val PDP_RESULT_TRACE_P2_DATA = "pdp_result_trace_p2_data"
 
     // PAYLOADS
     const val PAYLOAD_WISHLIST = 1
@@ -119,6 +120,8 @@ object ProductDetailConstant {
 
     // custom info title as component name
     const val OTHER_OFFERS = "other_offers"
+    const val BMGM_TYPE = "bmgm"
+    const val BMGM_SNEAK_PEEK_NAME = "bmgm_sneak_peek"
 
     // Arguments
     const val ARG_PRODUCT_ID = "ARG_PRODUCT_ID"

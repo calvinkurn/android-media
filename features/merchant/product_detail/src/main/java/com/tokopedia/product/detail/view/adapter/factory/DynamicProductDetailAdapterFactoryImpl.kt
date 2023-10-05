@@ -90,6 +90,8 @@ import com.tokopedia.product.detail.view.viewholder.TopAdsHeadlineViewHolder
 import com.tokopedia.product.detail.view.viewholder.ViewToViewWidgetViewHolder
 import com.tokopedia.product.detail.view.viewholder.a_plus_content.APlusImageUiModel
 import com.tokopedia.product.detail.view.viewholder.a_plus_content.APlusImageViewHolder
+import com.tokopedia.product.detail.view.viewholder.bmgm.BMGMUiModel
+import com.tokopedia.product.detail.view.viewholder.bmgm.BMGMViewHolder
 import com.tokopedia.product.detail.view.viewholder.product_detail_info.ProductDetailInfoViewHolder
 import com.tokopedia.product.detail.view.viewholder.product_variant_thumbail.ProductThumbnailVariantViewHolder
 import com.tokopedia.product.detail.view.viewholder.show_review.ProductShopReviewViewHolder
@@ -100,7 +102,7 @@ class DynamicProductDetailAdapterFactoryImpl(
     private val variantListener: AtcVariantListener,
     private val userId: String,
     private val playWidgetCoordinator: PlayWidgetCoordinator,
-    private val affiliateCookieHelper: AffiliateCookieHelper,
+    private val affiliateCookieHelper: AffiliateCookieHelper
 ) : BaseAdapterTypeFactory(), DynamicProductDetailAdapterFactory {
     override fun type(data: ProductRecommendationDataModel): Int {
         return ProductRecommendationViewHolder.LAYOUT
@@ -273,6 +275,10 @@ class DynamicProductDetailAdapterFactoryImpl(
         return APlusImageViewHolder.LAYOUT
     }
 
+    override fun type(data: BMGMUiModel): Int {
+        return BMGMViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             FintechWidgetViewHolder.LAYOUT -> FintechWidgetViewHolder(view, listener)
@@ -280,7 +286,7 @@ class DynamicProductDetailAdapterFactoryImpl(
             ProductRecommendationViewHolder.LAYOUT -> ProductRecommendationViewHolder(
                 view,
                 listener,
-                affiliateCookieHelper,
+                affiliateCookieHelper
             )
             PdpRecommendationWidgetViewHolder.LAYOUT -> PdpRecommendationWidgetViewHolder(view, listener)
             ProductDiscussionMostHelpfulViewHolder.LAYOUT -> ProductDiscussionMostHelpfulViewHolder(
@@ -378,6 +384,7 @@ class DynamicProductDetailAdapterFactoryImpl(
             OngoingCampaignViewHolder.LAYOUT -> OngoingCampaignViewHolder(view, listener)
             DynamicOneLinerViewHolder.LAYOUT -> DynamicOneLinerViewHolder(view, listener)
             APlusImageViewHolder.LAYOUT -> APlusImageViewHolder(view, listener)
+            BMGMViewHolder.LAYOUT -> BMGMViewHolder(view, listener)
             else -> super.createViewHolder(view, type)
         }
     }

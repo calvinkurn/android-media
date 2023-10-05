@@ -7,6 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import com.tokopedia.unifyprinciples.R as unifyR
 import androidx.lifecycle.ViewModelProvider
@@ -43,6 +45,7 @@ import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollectionParam
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.*
@@ -76,6 +79,21 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(),
 
     @Inject
     lateinit var kycSharedPreference: KycSharedPreference
+
+    @Inject
+    lateinit var userSessionInterface: UserSessionInterface
+
+    private val startLoginForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+        when (result.resultCode) {
+            Activity.RESULT_OK -> {
+                saveInitDataToPreference()
+            }
+            else -> {
+                activity?.setResult(Activity.RESULT_CANCELED)
+                activity?.finish()
+            }
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -114,10 +132,26 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(),
         initObserver(view)
 
         if (projectId != KycStatus.DEFAULT.code) {
-            saveInitDataToPreference()
+            handleRequireLogin()
         } else {
             toggleNotFoundView(true)
         }
+    }
+
+    private fun handleRequireLogin() {
+        if (userSessionInterface.isLoggedIn) {
+            saveInitDataToPreference()
+        } else {
+            gotoLogin()
+        }
+    }
+
+    private fun gotoLogin() {
+        val intent = RouteManager.getIntent(
+            context,
+            ApplinkConstInternalUserPlatform.LOGIN
+        )
+        startLoginForResult.launch(intent)
     }
 
     private fun saveInitDataToPreference() {

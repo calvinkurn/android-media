@@ -8,7 +8,7 @@ import dagger.Module
 import dagger.Provides
 
 @Module
-class UniversalShareModule {
+open class UniversalShareModule {
 
     @Provides
     open fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {

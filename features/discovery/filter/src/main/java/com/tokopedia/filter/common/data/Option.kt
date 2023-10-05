@@ -8,23 +8,23 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 class Option(@SerializedName("name")
              @Expose
-             var name: String = "",
+             override var name: String = "",
 
              @SerializedName("key")
              @Expose
-             var key: String = "",
+             override var key: String = "",
 
              @SerializedName("value")
              @Expose
-             var value: String = "",
+             override var value: String = "",
 
              @SerializedName(value = "input_type", alternate = ["inputType"])
              @Expose
-             var inputType: String = "",
+             override var inputType: String = "",
 
              @SerializedName(value = "hex_color", alternate = ["hexColor"])
              @Expose
-             var hexColor: String = "",
+             override var hexColor: String = "",
 
              @SerializedName("metric")
              @Expose
@@ -44,11 +44,11 @@ class Option(@SerializedName("name")
 
              @SerializedName("icon")
              @Expose
-             var iconUrl: String = "",
+             override var iconUrl: String = "",
 
              @SerializedName(value = "description", alternate = ["Description"])
              @Expose
-             var description: String = "",
+             override var description: String = "",
 
              @SerializedName(value = "is_popular", alternate = ["isPopular"])
              @Expose
@@ -56,29 +56,30 @@ class Option(@SerializedName("name")
 
              @SerializedName(value = "is_new", alternate = ["isNew"])
              @Expose
-             var isNew: Boolean = false,
+             override var isNew: Boolean = false,
 
              @SerializedName("child")
              @Expose
              var levelTwoCategoryList: List<LevelTwoCategory> = listOf(),
 
-             var inputState: String = "") : Parcelable, Cloneable {
+             override var inputState: String = ""
+) : Parcelable, Cloneable, IOption {
 
     public override fun clone(): Option {
         return Option(
-                name = name,
-                key = key,
-                value = value,
-                inputType = inputType,
-                hexColor = hexColor,
-                metric = metric,
-                totalData = totalData,
-                valMin = valMin,
-                iconUrl = iconUrl,
-                description = description,
-                isPopular = isPopular,
-                isNew = isNew,
-                inputState = inputState
+            name = name,
+            key = key,
+            value = value,
+            inputType = inputType,
+            hexColor = hexColor,
+            metric = metric,
+            totalData = totalData,
+            valMin = valMin,
+            iconUrl = iconUrl,
+            description = description,
+            isPopular = isPopular,
+            isNew = isNew,
+            inputState = inputState
         )
     }
 
@@ -126,8 +127,8 @@ class Option(@SerializedName("name")
         val option = other as Option
 
         return (this.key == option.key
-                && this.value == option.value
-                && this.name == option.name)
+            && this.value == option.value
+            && this.name == option.name)
     }
 
     companion object {
