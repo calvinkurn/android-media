@@ -43,7 +43,6 @@ import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_POSITIV
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_LAT
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_LONG
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_PINPOINT_MODEL
-import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_RESET_TO_SEARCH_PAGE
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_SAVE_DATA_UI_MODEL
 import com.tokopedia.logisticaddaddress.common.AddressConstants.KEY_SAVE_INSTANCE_SAVE_ADDRESS_DATA_MODEL
 import com.tokopedia.logisticaddaddress.databinding.BottomsheetLocationUnmatchedBinding
@@ -63,6 +62,7 @@ import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomF
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomFragment.Companion.INTENT_DISTRICT_RECOMMENDATION_ADDRESS_IS_PINPOINT
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomFragment.Companion.INTENT_DISTRICT_RECOMMENDATION_ADDRESS_ZIPCODE
 import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.PinpointNewPageActivity
+import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.uimodel.PinpointUiModel
 import com.tokopedia.logisticaddaddress.utils.AddEditAddressUtil
 import com.tokopedia.logisticaddaddress.utils.TextInputUtil.setWrapperError
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -154,7 +154,7 @@ class AddressFormFragment :
         }
 
     // page state
-    private var isPositiveFlow: Boolean = true
+    private var isPositiveFlow: Boolean = false
     private var addressUiState: AddressUiState = AddressUiState.AddAddress
 
     // address validations
@@ -404,25 +404,23 @@ class AddressFormFragment :
     }
 
     private fun onPinpointResult(data: Intent?) {
-        // todo get from PinpointUiModel
-        val isResetToSearchPage = data?.getBooleanExtra(EXTRA_RESET_TO_SEARCH_PAGE, false) ?: false
-        if (isResetToSearchPage) {
-            activity?.run {
-                setResult(Activity.RESULT_OK, Intent())
-                finish()
-            }
-        }
+//        val isResetToSearchPage = data?.getBooleanExtra(EXTRA_RESET_TO_SEARCH_PAGE, false) ?: false
+//        if (isResetToSearchPage) {
+//            activity?.run {
+//                setResult(Activity.RESULT_OK, Intent())
+//                finish()
+//            }
+//        }
 
         val addressDataFromPinpoint =
-            data?.getParcelableExtra<SaveAddressDataModel>(EXTRA_SAVE_DATA_UI_MODEL)
-                ?: data?.getParcelableExtra(EXTRA_ADDRESS_NEW)
+            data?.getParcelableExtra<PinpointUiModel>(EXTRA_PINPOINT_MODEL)
 
         // if user make any changes from pinpoint page, then update data in this page
         if (addressDataFromPinpoint != null) {
             if (addressUiState.isEdit()) {
                 if (viewModel.isDifferentLatLong(
-                        addressDataFromPinpoint.latitude,
-                        addressDataFromPinpoint.longitude
+                        addressDataFromPinpoint.lat.toString(),
+                        addressDataFromPinpoint.long.toString()
                     )
                 ) {
                     if (viewModel.isDifferentDistrictId(addressDataFromPinpoint.districtId) && !isPositiveFlow) {
@@ -441,7 +439,22 @@ class AddressFormFragment :
             }
 
             addressDataFromPinpoint.apply {
-                viewModel.saveDataModel = this
+                viewModel.saveDataModel = viewModel.saveDataModel?.copy(
+                    title = this.title,
+                    districtName = this.districtName,
+                    cityName = this.cityName,
+                    provinceName = this.provinceName,
+                    districtId = this.districtId,
+                    cityId = this.cityId,
+                    provinceId = this.provinceId,
+                    postalCode = this.postalCode,
+                    latitude = this.lat.toString(),
+                    longitude = this.long.toString(),
+                    zipCodes = this.postalCodeList,
+                    formattedAddress = this.formattedAddress,
+                    selectedDistrict = this.selectedDistrict,
+                    address2 = "${this.lat}, ${this.long}"
+                )
                 binding?.apply {
                     formAddressNegativeWidget.setDistrict(formattedAddress)
                     cardAddressPinpointWidget.setAddressDistrict(formattedAddress)
@@ -651,9 +664,9 @@ class AddressFormFragment :
             binding?.loaderAddressForm?.gone()
             when (it) {
                 is Success -> {
-                    if (addressUiState.isEdit()) {
-                        isPositiveFlow = it.data.hasPinpoint().orFalse()
-                    }
+//                    if (addressUiState.isEdit()) {
+                    isPositiveFlow = it.data.hasPinpoint().orFalse()
+//                    }
                     prepareLayout(it.data)
                 }
 

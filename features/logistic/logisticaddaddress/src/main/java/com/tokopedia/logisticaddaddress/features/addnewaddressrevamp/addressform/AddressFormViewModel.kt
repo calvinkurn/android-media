@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.address.WarehouseDataModel
 import com.tokopedia.logisticCommon.data.mapper.AddAddressMapper
@@ -22,7 +23,6 @@ import com.tokopedia.logisticCommon.domain.usecase.GetAddressDetailUseCase
 import com.tokopedia.logisticCommon.domain.usecase.GetDefaultAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.PinpointValidationUseCase
 import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.uimodel.PinpointUiModel
-import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -68,7 +68,7 @@ class AddressFormViewModel @Inject constructor(
     var saveDataModel: SaveAddressDataModel? = null
 
     val isHaveLatLong: Boolean
-        get() = saveDataModel?.let { it.latitude.isNotBlankOrZero() || it.longitude.isNotBlankOrZero() }
+        get() = saveDataModel?.let { it.latitude.isNotEmptyOrZero() || it.longitude.isNotEmptyOrZero() }
             ?: false
 
     private var tempAddress1 = ""
@@ -441,4 +441,8 @@ class AddressFormViewModel @Inject constructor(
             !it.isIdentifierIgnorable()
         }
     }
+}
+
+private fun String.isNotEmptyOrZero(): Boolean {
+    return this.isNotEmpty() && this.toDoubleOrZero() != 0.0
 }
