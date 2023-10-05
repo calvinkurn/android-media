@@ -20,6 +20,7 @@ import com.tokopedia.recharge_component.presentation.util.CustomDividerItemDecor
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.toDp
 import org.jetbrains.annotations.NotNull
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class RechargeCheckBalanceWidget @JvmOverloads constructor(
     @NotNull context: Context,
@@ -81,7 +82,7 @@ class RechargeCheckBalanceWidget @JvmOverloads constructor(
                     IconUnify.WARNING,
                     MethodChecker.getColor(
                         context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_YN500
+                        unifyprinciplesR.color.Unify_YN500
                     )
                 )
                 show()
@@ -91,7 +92,7 @@ class RechargeCheckBalanceWidget @JvmOverloads constructor(
                     IconUnify.CHEVRON_RIGHT,
                     MethodChecker.getColor(
                         context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_YN500
+                        unifyprinciplesR.color.Unify_YN500
                     )
                 )
             }
@@ -104,7 +105,7 @@ class RechargeCheckBalanceWidget @JvmOverloads constructor(
             checkBalanceWarningTxt.setTextColor(
                 MethodChecker.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_YN500
+                    unifyprinciplesR.color.Unify_YN500
                 )
             )
         }
@@ -118,7 +119,7 @@ class RechargeCheckBalanceWidget @JvmOverloads constructor(
                     IconUnify.WARNING,
                     MethodChecker.getColor(
                         context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_RN500
+                        unifyprinciplesR.color.Unify_RN500
                     )
                 )
                 show()
@@ -128,7 +129,7 @@ class RechargeCheckBalanceWidget @JvmOverloads constructor(
                     IconUnify.CHEVRON_RIGHT,
                     MethodChecker.getColor(
                         context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_RN500
+                        unifyprinciplesR.color.Unify_RN500
                     )
                 )
             }
@@ -141,7 +142,7 @@ class RechargeCheckBalanceWidget @JvmOverloads constructor(
             checkBalanceWarningTxt.setTextColor(
                 MethodChecker.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_RN500
+                    unifyprinciplesR.color.Unify_RN500
                 )
             )
         }
@@ -156,7 +157,7 @@ class RechargeCheckBalanceWidget @JvmOverloads constructor(
                     IconUnify.CHEVRON_RIGHT,
                     MethodChecker.getColor(
                         context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                        unifyprinciplesR.color.Unify_NN600
                     )
                 )
             }
@@ -169,7 +170,7 @@ class RechargeCheckBalanceWidget @JvmOverloads constructor(
             checkBalanceWarningTxt.setTextColor(
                 MethodChecker.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                    unifyprinciplesR.color.Unify_NN600
                 )
             )
         }

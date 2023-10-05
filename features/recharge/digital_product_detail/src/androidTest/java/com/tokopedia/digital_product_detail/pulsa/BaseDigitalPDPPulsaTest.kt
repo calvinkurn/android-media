@@ -25,7 +25,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoSavedNumberActivity
 import com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoSavedNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
 import com.tokopedia.common.topupbills.favoritepage.view.model.TopupBillsSavedNumber
-import com.tokopedia.digital_product_detail.R
 import com.tokopedia.digital_product_detail.presentation.activity.DigitalPDPPulsaActivity
 import com.tokopedia.digital_product_detail.presentation.webview.RechargeCheckBalanceWebViewActivity
 import com.tokopedia.digital_product_detail.utils.CustomViewAction
@@ -37,6 +36,10 @@ import com.tokopedia.test.application.environment.interceptor.mock.MockModelConf
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.core.AllOf.allOf
 import org.junit.Rule
+import com.tokopedia.analyticsdebugger.R as analyticsdebuggerR
+import com.tokopedia.recharge_component.R as recharge_componentR
+import com.tokopedia.sortfilter.R as sortfilterR
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 abstract class BaseDigitalPDPPulsaTest {
 
@@ -118,31 +121,31 @@ abstract class BaseDigitalPDPPulsaTest {
     }
 
     protected fun clientNumberWidget_typeNumber(number: String) {
-        onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input))
+        onView(withId(unifycomponentsR.id.text_field_input))
             .perform(typeText(number))
     }
 
     protected fun clientNumberWidget_clickClearIcon() {
-        onView(withId(com.tokopedia.unifycomponents.R.id.text_field_icon_close)).perform(click())
+        onView(withId(unifycomponentsR.id.text_field_icon_close)).perform(click())
     }
 
     protected fun clientNumberWidget_clickContactIcon() {
-        onView(withId(com.tokopedia.unifycomponents.R.id.text_field_icon_2)).perform(click())
+        onView(withId(unifycomponentsR.id.text_field_icon_2)).perform(click())
     }
 
     protected fun clientNumberWidget_clickCheckBalanceOTPWidget() {
-        onView(withId(com.tokopedia.recharge_component.R.id.check_balance_otp_title)).perform(click())
+        onView(withId(recharge_componentR.id.check_balance_otp_title)).perform(click())
     }
 
     protected fun clientNumberWidget_clickCheckBalanceWidget() {
-        onView(withId(com.tokopedia.recharge_component.R.id.check_balance_rv)).perform(click())
+        onView(withId(recharge_componentR.id.check_balance_rv)).perform(click())
     }
 
     protected fun favoriteChips_clickChip_withText(text: String) {
         onView(
             allOf(
-                withId(com.tokopedia.analyticsdebugger.R.id.chip_text),
-                isDescendantOfA(withId(com.tokopedia.sortfilter.R.id.sort_filter_items)),
+                withId(analyticsdebuggerR.id.chip_text),
+                isDescendantOfA(withId(sortfilterR.id.sort_filter_items)),
                 withText(text)
             )
         ).perform(click())
@@ -156,15 +159,15 @@ abstract class BaseDigitalPDPPulsaTest {
     }
 
     protected fun buyWidget_clickChevron() {
-        onView(withId(com.tokopedia.recharge_component.R.id.icon_buy_widget_chevron)).perform(click())
+        onView(withId(recharge_componentR.id.icon_buy_widget_chevron)).perform(click())
     }
 
     protected fun recommendations_clickCard() {
-        onView(withId(com.tokopedia.recharge_component.R.id.rv_recharge_recommendation_card_title)).perform(click())
+        onView(withId(recharge_componentR.id.rv_recharge_recommendation_card_title)).perform(click())
     }
 
     protected fun mccm_clickCard_withIndex(index: Int) {
-        onView(withId(com.tokopedia.recharge_component.R.id.rv_mccm_grid))
+        onView(withId(recharge_componentR.id.rv_mccm_grid))
             .perform(
                 scrollToPosition<DenomGridViewHolder>(index),
                 RecyclerViewActions.actionOnItemAtPosition<DenomGridViewHolder>(index, click())
@@ -172,8 +175,8 @@ abstract class BaseDigitalPDPPulsaTest {
     }
 
     protected fun denom_clickCard_withIndex(index: Int) {
-        onView(withId(com.tokopedia.recharge_component.R.id.tg_denom_grid_widget_title)).perform(nestedScrollTo())
-        onView(withId(com.tokopedia.recharge_component.R.id.rv_denom_grid_card))
+        onView(withId(recharge_componentR.id.tg_denom_grid_widget_title)).perform(nestedScrollTo())
+        onView(withId(recharge_componentR.id.rv_denom_grid_card))
             .perform(
                 scrollToPosition<DenomGridViewHolder>(index),
                 RecyclerViewActions.actionOnItemAtPosition<DenomGridViewHolder>(index, click())
@@ -181,22 +184,22 @@ abstract class BaseDigitalPDPPulsaTest {
     }
 
     protected fun checkBalanceOTPBottomSheet_clickButton() {
-        onView(withId(com.tokopedia.recharge_component.R.id.bottomsheet_otp_button)).perform(click())
+        onView(withId(recharge_componentR.id.bottomsheet_otp_button)).perform(click())
     }
 
     protected fun checkBalanceBottomSheet_clickItem_withIndex(index: Int) {
-        onView(withId(com.tokopedia.recharge_component.R.id.recharge_check_balance_detail_rv))
+        onView(withId(recharge_componentR.id.recharge_check_balance_detail_rv))
             .perform(
                 RecyclerViewActions
                     .actionOnItemAtPosition<RechargeCheckBalanceDetailViewHolder>(
                         index,
-                        CustomViewAction.clickChildViewWithId(com.tokopedia.recharge_component.R.id.check_balance_detail_buy_button)
+                        CustomViewAction.clickChildViewWithId(recharge_componentR.id.check_balance_detail_buy_button)
                     )
             )
     }
 
     protected fun checkBalanceBottomSheet_clickCloseIcon() {
-        onView(withId(com.tokopedia.unifycomponents.R.id.bottom_sheet_close)).perform(click())
+        onView(withId(unifycomponentsR.id.bottom_sheet_close)).perform(click())
     }
 
     abstract fun getApplink(): String

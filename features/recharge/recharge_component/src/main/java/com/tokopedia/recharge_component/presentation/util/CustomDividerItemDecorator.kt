@@ -1,6 +1,5 @@
 package com.tokopedia.recharge_component.presentation.util
 
-import android.R
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Rect
@@ -63,7 +62,9 @@ class CustomDividerItemDecorator(
             left = parent.paddingLeft
             right = parent.width - parent.paddingRight
             canvas.clipRect(
-                left, parent.paddingTop, right,
+                left,
+                parent.paddingTop,
+                right,
                 parent.height - parent.paddingBottom
             )
         } else {
@@ -90,8 +91,10 @@ class CustomDividerItemDecorator(
             top = parent.paddingTop
             bottom = parent.height - parent.paddingBottom
             canvas.clipRect(
-                parent.paddingLeft, top,
-                parent.width - parent.paddingRight, bottom
+                parent.paddingLeft,
+                top,
+                parent.width - parent.paddingRight,
+                bottom
             )
         } else {
             top = 0
@@ -110,7 +113,9 @@ class CustomDividerItemDecorator(
     }
 
     override fun getItemOffsets(
-        outRect: Rect, view: View, parent: RecyclerView,
+        outRect: Rect,
+        view: View,
+        parent: RecyclerView,
         state: RecyclerView.State
     ) {
         if (mOrientation == VERTICAL) {
@@ -123,6 +128,6 @@ class CustomDividerItemDecorator(
     companion object {
         const val HORIZONTAL = LinearLayout.HORIZONTAL
         const val VERTICAL = LinearLayout.VERTICAL
-        private val ATTRS = intArrayOf(R.attr.listDivider)
+        private val ATTRS = intArrayOf(android.R.attr.listDivider)
     }
 }

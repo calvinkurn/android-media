@@ -1,5 +1,6 @@
 package com.tokopedia.recharge_component.presentation.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -7,7 +8,7 @@ import com.tokopedia.recharge_component.databinding.ViewRechargeCheckBalanceUnit
 import com.tokopedia.recharge_component.model.check_balance.RechargeCheckBalanceUnitModel
 import com.tokopedia.recharge_component.presentation.adapter.viewholder.RechargeCheckBalanceUnitViewHolder
 
-class RechargeCheckBalanceUnitAdapter: RecyclerView.Adapter<RechargeCheckBalanceUnitViewHolder>() {
+class RechargeCheckBalanceUnitAdapter : RecyclerView.Adapter<RechargeCheckBalanceUnitViewHolder>() {
 
     private var balanceInfo = listOf<RechargeCheckBalanceUnitModel>()
     private var unitListener: RechargeCheckBalanceUnitViewHolder.RechargeCheckBalanceUnitListener? = null
@@ -30,6 +31,7 @@ class RechargeCheckBalanceUnitAdapter: RecyclerView.Adapter<RechargeCheckBalance
 
     override fun getItemCount(): Int = balanceInfo.size
 
+    @SuppressLint("NotifyDataSetChanged")
     fun setBalanceInfo(balanceInfo: List<RechargeCheckBalanceUnitModel>) {
         this.balanceInfo = balanceInfo
         notifyDataSetChanged()
