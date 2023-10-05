@@ -190,9 +190,12 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
     }
 
     private fun renderTimer(endSale: Date?) {
-        shimmerSaleTimer.invisible()
+        shimmerSaleTimer.gone()
 
-        if (endSale == null) return
+        if (endSale == null) {
+            saleTimer.gone()
+            return
+        }
 
         saleTimer.apply {
             val parsedCalendar: Calendar = Calendar.getInstance()
