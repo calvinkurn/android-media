@@ -149,7 +149,9 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/guideline_bot">
+        app:layout_constraintTop_toBottomOf="@id/guideline_bot"
+        android:visibility="gone"
+        >
 
         <androidx.compose.ui.platform.ComposeView
             android:id="@+id/nudge_stories_product"

@@ -12,7 +12,7 @@ data class StoriesUiModel(
     val selectedGroupId: String = "",
     val selectedGroupPosition: Int = -1,
     val groupHeader: List<StoriesGroupHeader> = emptyList(),
-    val groupItems: List<StoriesGroupItem> = emptyList(),
+    val groupItems: List<StoriesGroupItem> = emptyList()
 ) : Parcelable
 
 @Parcelize
@@ -20,14 +20,14 @@ data class StoriesGroupHeader(
     val groupId: String = "",
     val groupName: String = "",
     val image: String = "",
-    val isSelected: Boolean = false,
+    val isSelected: Boolean = false
 ) : Parcelable
 
 @Parcelize
 data class StoriesGroupItem(
     val groupId: String = "",
     val groupName: String = "",
-    val detail: StoriesDetail = StoriesDetail(),
+    val detail: StoriesDetail = StoriesDetail()
 ) : Parcelable
 
 @Parcelize
@@ -35,7 +35,7 @@ data class StoriesDetail(
     val selectedGroupId: String = "",
     val selectedDetailPosition: Int = -1,
     val selectedDetailPositionCached: Int = -1,
-    val detailItems: List<StoriesDetailItem> = emptyList(),
+    val detailItems: List<StoriesDetailItem> = emptyList()
 ) : Parcelable
 
 @Parcelize
@@ -56,14 +56,14 @@ data class StoriesDetailItem(
     @Parcelize
     data class Meta(
         val activityTracker: String = "",
-        val templateTracker: String = "",
+        val templateTracker: String = ""
     ) : Parcelable
 
     @Parcelize
     data class StoriesItemContent(
         val type: StoriesItemContentType = Image,
         val data: String = "",
-        val duration: Int = -1,
+        val duration: Int = -1
     ) : Parcelable
 
     enum class StoriesItemContentType(val value: String) {
@@ -77,10 +77,11 @@ data class StoriesDetailItem(
     @Parcelize
     data class Sharing(
         val isShareable: Boolean,
-        val metadata: LinkProperties,
-    ): Parcelable {
+        val shareText: String,
+        val metadata: LinkProperties
+    ) {
         companion object {
-            val Empty get() = Sharing(isShareable = false, metadata = LinkProperties())
+            val Empty get() = Sharing(isShareable = false, shareText = "", metadata = LinkProperties())
         }
     }
 
@@ -98,4 +99,6 @@ data class StoriesDetailItem(
             }
         }
     }
+
+    val isProductAvailable: Boolean = productCount.isNotEmpty() || productCount != "0"
 }
