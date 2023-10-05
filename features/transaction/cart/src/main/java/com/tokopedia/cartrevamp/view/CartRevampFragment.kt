@@ -1772,6 +1772,31 @@ class CartRevampFragment :
         }
     }
 
+    private fun getBoPromoCodes(): List<String> {
+        return when {
+            viewModel.cartModel.isLastApplyResponseStillValid -> {
+                val lastApplyPromo =
+                    viewModel.cartModel.cartListData?.promo?.lastApplyPromo ?: LastApplyPromo()
+                lastApplyPromo.lastApplyPromoData
+                    .listVoucherOrders
+                    .filter { it.isTypeLogistic() }
+                    .map { it.code }
+            }
+
+            viewModel.cartModel.lastValidateUseRequest != null -> {
+                val promoUiModel =
+                    viewModel.cartModel.lastValidateUseResponse?.promoUiModel ?: PromoUiModel()
+                promoUiModel.voucherOrderUiModels
+                    .filter { it.isTypeLogistic() }
+                    .map { it.code }
+            }
+
+            else -> {
+                emptyList()
+            }
+        }
+    }
+
     private fun generateParamGetLastApplyPromo(): ValidateUsePromoRequest {
         return when {
             viewModel.cartModel.isLastApplyResponseStillValid -> {
@@ -2524,6 +2549,8 @@ class CartRevampFragment :
                         val params = generateParamGetLastApplyPromo()
                         if (!removeAllItems && (isNeedHitUpdateCartAndValidateUse(params))) {
                             viewModel.doUpdateCartAndGetLastApply(params)
+                        } else if (!removeAllItems) {
+                            updatePromoCheckoutManualIfNoSelected(getAllAppliedPromoCodes(params))
                         }
                         viewModel.processUpdateCartCounter()
                         viewModel.updateSelectedAmount()
@@ -3858,7 +3885,7 @@ class CartRevampFragment :
     }
 
     private fun renderPromoCheckoutButtonActiveDefault(listPromoApplied: List<String>) {
-        viewModel.getEntryPointInfoDefault()
+        viewModel.getEntryPointInfoDefault(listPromoApplied)
     }
 
     private fun renderPromoCheckoutButtonNoItemIsSelected() {
@@ -4103,6 +4130,7 @@ class CartRevampFragment :
                 val bottomSheetPromo = PromoUsageBottomSheet.newInstance(
                     entryPoint = PromoPageEntryPoint.CART_PAGE,
                     promoRequest = generateParamsCouponList(),
+                    boPromoCodes = getBoPromoCodes(),
                     validateUsePromoRequest = generateParamGetLastApplyPromo(),
                     totalAmount = getCurrentTotalPrice(),
                     listener = this@CartRevampFragment
