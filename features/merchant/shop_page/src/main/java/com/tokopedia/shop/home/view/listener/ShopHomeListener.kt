@@ -17,5 +17,4 @@ interface ShopHomeListener {
     fun getShopPageHomeFragment(): ShopPageHomeFragment
 
     fun getPatternColorType(): String
-
 }

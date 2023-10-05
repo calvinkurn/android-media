@@ -28,7 +28,7 @@ import com.tokopedia.shop.home.util.DateHelper
 import com.tokopedia.shop.home.util.DateHelper.SHOP_CAMPAIGN_BANNER_TIMER_MORE_THAN_1_DAY_DATE_FORMAT_ENDED
 import com.tokopedia.shop.home.util.DateHelper.SHOP_NPL_CAMPAIGN_WIDGET_MORE_THAT_1_DAY_DATE_FORMAT
 import com.tokopedia.shop.home.util.DateHelper.millisecondsToDays
-import com.tokopedia.shop.home.view.listener.ShopHomeDisplayBannerTimerWidgetListener
+import com.tokopedia.shop.home.view.listener.ShopHomeReimagineDisplayBannerTimerWidgetListener
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
 import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.unifycomponents.ImageUnify
@@ -49,7 +49,7 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ShopHomeDisplayBannerTimerViewHolder(
     itemView: View,
-    private val listener: ShopHomeDisplayBannerTimerWidgetListener
+    private val listener: ShopHomeReimagineDisplayBannerTimerWidgetListener
 ) : AbstractViewHolder<ShopWidgetDisplayBannerTimerUiModel>(itemView), CoroutineScope {
 
     private val viewBinding: ItemShopHomeDisplayBannerTimerBinding? by viewBinding()

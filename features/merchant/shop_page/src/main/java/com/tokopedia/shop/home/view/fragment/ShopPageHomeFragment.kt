@@ -161,14 +161,14 @@ import com.tokopedia.shop.home.di.component.DaggerShopPageHomeComponent
 import com.tokopedia.shop.home.di.module.ShopPageHomeModule
 import com.tokopedia.shop.home.util.CheckCampaignNplException
 import com.tokopedia.shop.home.util.ShopBannerProductGroupWidgetTabDependencyProvider
-import com.tokopedia.shop.home.util.ShopHomeShowcaseNavigationDependencyProvider
+import com.tokopedia.shop.home.util.ShopHomeReimagineShowcaseNavigationDependencyProvider
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapter
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
-import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeDisplayBannerProductHotspotViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeReimagineDisplayBannerProductHotspotViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomePersoProductComparisonViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductListSellerEmptyListener
-import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeV4TerlarisViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeReimagineTerlarisViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeVoucherViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.advance_carousel_banner.ShopHomeDisplayAdvanceCarouselBannerWidgetListener
 import com.tokopedia.shop.home.view.adapter.viewholder.directpurchasebyetalase.ShopHomeDirectPurchaseByEtalaseWidgetListener
@@ -179,14 +179,14 @@ import com.tokopedia.shop.home.view.listener.ShopBannerProductGroupListener
 import com.tokopedia.shop.home.view.listener.ShopHomeCampaignNplWidgetListener
 import com.tokopedia.shop.home.view.listener.ShopHomeCardDonationListener
 import com.tokopedia.shop.home.view.listener.ShopHomeCarouselProductListener
-import com.tokopedia.shop.home.view.listener.ShopHomeDisplayBannerTimerWidgetListener
+import com.tokopedia.shop.home.view.listener.ShopHomeReimagineDisplayBannerTimerWidgetListener
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.listener.ShopHomeEndlessProductListener
 import com.tokopedia.shop.home.view.listener.ShopHomeFlashSaleWidgetListener
 import com.tokopedia.shop.home.view.listener.ShopHomeListener
 import com.tokopedia.shop.home.view.listener.ShopHomePlayWidgetListener
 import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseListWidgetListener
-import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseNavigationListener
+import com.tokopedia.shop.home.view.listener.ShopHomeReimagineShowcaseNavigationListener
 import com.tokopedia.shop.home.view.model.CarouselPlayWidgetUiModel
 import com.tokopedia.shop.home.view.model.CheckCampaignNotifyMeUiModel
 import com.tokopedia.shop.home.view.model.GetCampaignNotifyMeUiModel
@@ -266,11 +266,11 @@ open class ShopPageHomeFragment :
     ShopHomeProductListSellerEmptyListener,
     ShopHomeListener,
     ShopHomePersoProductComparisonViewHolder.ShopHomePersoProductComparisonViewHolderListener,
-    ShopHomeDisplayBannerTimerWidgetListener,
-    ShopHomeDisplayBannerProductHotspotViewHolder.Listener,
-    ShopHomeShowcaseNavigationListener,
-    ShopHomeShowcaseNavigationDependencyProvider,
-    ShopHomeV4TerlarisViewHolder.ShopHomeV4TerlarisViewHolderListener,
+    ShopHomeReimagineDisplayBannerTimerWidgetListener,
+    ShopHomeReimagineDisplayBannerProductHotspotViewHolder.Listener,
+    ShopHomeReimagineShowcaseNavigationListener,
+    ShopHomeReimagineShowcaseNavigationDependencyProvider,
+    ShopHomeReimagineTerlarisViewHolder.ShopHomeV4TerlarisViewHolderListener,
     ShopBannerProductGroupWidgetTabDependencyProvider,
     ShopBannerProductGroupListener,
     ShopHomeDisplayAdvanceCarouselBannerWidgetListener,
@@ -430,11 +430,11 @@ open class ShopPageHomeFragment :
             shopHomeProductListSellerEmptyListener = this,
             shopHomeListener = this,
             shopPersoProductComparisonListener = this,
-            shopHomeDisplayBannerTimerWidgetListener = this,
+            shopHomeReimagineDisplayBannerTimerWidgetListener = this,
             shopHomeDisplayBannerProductHotspotListener = this,
-            shopHomeShowcaseNavigationListener = this,
-            shopHomeShowcaseNavigationDependencyProvider = this,
-            shopHomeV4TerlarisViewHolderListener = this,
+            shopHomeReimagineShowcaseNavigationListener = this,
+            shopHomeReimagineShowcaseNavigationDependencyProvider = this,
+            shopHomeReimagineTerlarisViewHolderListener = this,
             shopBannerProductGroupListener = this,
             shopBannerProductGroupWidgetTabDependencyProvider = this,
             shopHomeDisplayAdvanceCarouselBannerWidgetListener = this,

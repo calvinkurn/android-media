@@ -30,7 +30,7 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
-class ShopHomeDisplayBannerProductHotspotViewHolder(
+class ShopHomeReimagineDisplayBannerProductHotspotViewHolder(
     itemView: View,
     private val listener: Listener
 ) : AbstractViewHolder<ShopWidgetDisplayBannerProductHotspotUiModel>(itemView),

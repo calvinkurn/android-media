@@ -4,7 +4,7 @@ import com.tokopedia.shop.home.view.model.showcase_navigation.Showcase
 import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseNavigationUiModel
 import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.ShopHomeShowcaseNavigationBannerWidgetAppearance
 
-interface ShopHomeShowcaseNavigationListener {
+interface ShopHomeReimagineShowcaseNavigationListener {
     fun onNavigationBannerViewAllShowcaseClick(
         viewAllCtaAppLink: String,
         appearance: ShopHomeShowcaseNavigationBannerWidgetAppearance,
