@@ -1,6 +1,7 @@
 package com.tokopedia.tokopedianow.category.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.LiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
@@ -285,10 +286,10 @@ open class TokoNowCategoryL2TabViewModelTestFixture {
         coEvery { getSortFilterUseCase.execute(any()) } throws NullPointerException()
     }
 
-    protected fun onGetTicker_thenReturn(warehouseId: Long, response: GetTargetedTickerResponse) {
+    protected fun onGetTicker(withWarehouseId: Long = warehouseId, thenReturn: GetTargetedTickerResponse) {
         coEvery {
-            getTargetedTickerUseCase.execute(tickerPage, warehouseId.toString())
-        } returns response
+            getTargetedTickerUseCase.execute(tickerPage, withWarehouseId.toString())
+        } returns thenReturn
     }
 
     protected fun onGetCategoryList_thenReturn(response: CategoryListResponse) {
@@ -433,6 +434,11 @@ open class TokoNowCategoryL2TabViewModelTestFixture {
         verifyGetSortFilterUseCaseCalled(expectedGetCategoryFilterQueryParams)
     }
 
+    protected inline fun<reified T> LiveData<List<Visitable<*>>>.verifyVisitableNotExists() {
+        val item = value.orEmpty().firstOrNull { it is T }
+        assertEquals(null, item)
+    }
+
     protected fun verifyVisitableList(expectedVisitableList: List<Visitable<*>>) {
         val actualVisitableList = viewModel.visitableListLiveData.value.orEmpty()
 
@@ -456,6 +462,20 @@ open class TokoNowCategoryL2TabViewModelTestFixture {
                 }
             }
         }
+    }
+
+    protected fun crateGetTargetedTickerOutOfStockResponse(): GetTargetedTickerResponse {
+        val metadata = GetTargetedTickerResponse.GetTargetedTicker.TickerResponse.Metadata(
+            type = "oosCategoryIDs",
+            values = listOf(categoryIdL2)
+        )
+        val oosTickerResponse = getTargetedTickerResponse.getTargetedTicker!!.tickers[0]
+            .copy(metadata = listOf(metadata))
+
+        val getTargetedTickerOos = getTargetedTickerResponse
+            .getTargetedTicker!!.copy(tickers = listOf(oosTickerResponse))
+
+        return getTargetedTickerResponse.copy(getTargetedTicker = getTargetedTickerOos)
     }
 
     protected fun createGetProductQueryParams(srpPageId: String, sc: String): MutableMap<String?, Any?> {

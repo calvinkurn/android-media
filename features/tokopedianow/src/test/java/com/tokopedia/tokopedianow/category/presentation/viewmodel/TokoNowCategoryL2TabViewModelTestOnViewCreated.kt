@@ -5,18 +5,15 @@ import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant
-import com.tokopedia.tokopedianow.category.presentation.constant.CategoryStaticLayoutId
-import com.tokopedia.tokopedianow.category.presentation.model.CategoryEmptyStateDivider
-import com.tokopedia.tokopedianow.category.presentation.model.CategoryL2TabData
 import com.tokopedia.tokopedianow.category.mapper.CategoryL2QuickFilterMapper
 import com.tokopedia.tokopedianow.category.mapper.CategoryL2TabMapper.addProductCardItems
 import com.tokopedia.tokopedianow.category.mapper.CategoryMenuMapper
 import com.tokopedia.tokopedianow.category.mapper.TickerMapper
 import com.tokopedia.tokopedianow.category.presentation.adapter.typefactory.listener.CategoryL2TypeFactory
-import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryQuickFilterUiModel
+import com.tokopedia.tokopedianow.category.presentation.constant.CategoryStaticLayoutId
+import com.tokopedia.tokopedianow.category.presentation.model.CategoryEmptyStateDivider
+import com.tokopedia.tokopedianow.category.presentation.model.CategoryL2TabData
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
-import com.tokopedia.tokopedianow.common.domain.model.GetTargetedTickerResponse
-import com.tokopedia.tokopedianow.common.domain.model.GetTargetedTickerResponse.GetTargetedTicker.TickerResponse.Metadata
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.model.TokoNowAdsCarouselUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateNoResultUiModel
@@ -42,7 +39,7 @@ class TokoNowCategoryL2TabViewModelTestOnViewCreated : TokoNowCategoryL2TabViewM
 
         onGetQuickFilter_thenReturn(getQuickFilterResponse)
         onGetCategoryFilter_thenReturn(getCategoryFilterResponse)
-        onGetTicker_thenReturn(warehouseId, getTargetedTickerOosResponse)
+        onGetTicker(thenReturn = getTargetedTickerOosResponse)
 
         val tickerData = TickerMapper.mapTickerData(getTargetedTickerOosResponse)
         val componentList = getCategoryLayoutResponse.components
@@ -401,17 +398,6 @@ class TokoNowCategoryL2TabViewModelTestOnViewCreated : TokoNowCategoryL2TabViewM
         viewModel.onViewCreated(data)
 
         verifyUnknownLayoutTypeNotExists()
-    }
-
-    private fun crateGetTargetedTickerOutOfStockResponse(): GetTargetedTickerResponse {
-        val metadata = Metadata(type = "oosCategoryIDs", values = listOf(categoryIdL2))
-        val oosTickerResponse = getTargetedTickerResponse.getTargetedTicker!!.tickers[0]
-            .copy(metadata = listOf(metadata))
-
-        val getTargetedTickerOos = getTargetedTickerResponse
-            .getTargetedTicker!!.copy(tickers = listOf(oosTickerResponse))
-
-        return getTargetedTickerResponse.copy(getTargetedTicker = getTargetedTickerOos)
     }
 
     private fun verifyUnknownLayoutTypeNotExists() {

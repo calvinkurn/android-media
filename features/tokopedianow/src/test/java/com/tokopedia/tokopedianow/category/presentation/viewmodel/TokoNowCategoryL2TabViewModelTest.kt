@@ -1,11 +1,10 @@
 package com.tokopedia.tokopedianow.category.presentation.viewmodel
 
-import androidx.lifecycle.LiveData
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokopedianow.category.mapper.TickerMapper
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryL2TabData
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowTickerUiModel
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.unit.test.ext.verifyValueEquals
@@ -40,7 +39,7 @@ class TokoNowCategoryL2TabViewModelTest: TokoNowCategoryL2TabViewModelTestFixtur
         viewModel.removeProductRecommendationWidget()
 
         viewModel.visitableListLiveData
-            .verifyRecommendationWidgetNotExists()
+            .verifyVisitableNotExists<TokoNowProductRecommendationUiModel>()
     }
 
     @Test
@@ -229,11 +228,32 @@ class TokoNowCategoryL2TabViewModelTest: TokoNowCategoryL2TabViewModelTestFixtur
         verifyGetMiniCartUseCaseCalled()
     }
 
-    private fun LiveData<List<Visitable<*>>>.verifyRecommendationWidgetNotExists() {
-        val visitableList = value.orEmpty()
-        val recommendationWidget = visitableList.firstOrNull {
-            it is TokoNowProductRecommendationUiModel
-        }
-        assertEquals(null, recommendationWidget)
+    @Test
+    fun `given oos ticker when removeTicker should remove oos ticker item from visitable list`() {
+        val getTargetedTickerOosResponse = crateGetTargetedTickerOutOfStockResponse()
+
+        onGetProductList(thenReturn = getProductResponse)
+        onGetProductAds(thenReturn = getProductAdsResponse)
+
+        onGetQuickFilter_thenReturn(getQuickFilterResponse)
+        onGetCategoryFilter_thenReturn(getCategoryFilterResponse)
+        onGetTicker(thenReturn = getTargetedTickerOosResponse)
+
+        val tickerData = TickerMapper.mapTickerData(getTargetedTickerOosResponse)
+        val componentList = getCategoryLayoutResponse.components
+
+        val data = CategoryL2TabData(
+            title = categoryTitle,
+            categoryIdL1 = categoryIdL1,
+            categoryIdL2 = categoryIdL2,
+            tickerData = tickerData,
+            componentList = componentList
+        )
+
+        viewModel.onViewCreated(data)
+        viewModel.removeTicker()
+
+        viewModel.visitableListLiveData
+            .verifyVisitableNotExists<TokoNowTickerUiModel>()
     }
 }
