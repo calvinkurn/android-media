@@ -13,6 +13,7 @@ fun mockInitialDataModel(
     selectedDetail: Int = 0,
     isCached: Boolean = true,
     isProductCountEmpty: Boolean = false,
+    productCount: Int = 0,
 ): StoriesUiModel {
     return StoriesUiModel(
         selectedGroupId = if (isCached) "groupId $selectedGroup" else "",
@@ -67,7 +68,7 @@ fun mockInitialDataModel(
                                     activityTracker = "12345",
                                     templateTracker = "1235df8",
                                 ),
-                                productCount = if (isProductCountEmpty) "" else "0",
+                                productCount = if (isProductCountEmpty) "" else "$productCount",
                             ),
                             StoriesDetailItem(
                                 id = "1",
@@ -83,7 +84,7 @@ fun mockInitialDataModel(
                                     activityTracker = "12345",
                                     templateTracker = "1235df8",
                                 ),
-                                productCount = if (isProductCountEmpty) "" else "0",
+                                productCount = if (isProductCountEmpty) "" else "$productCount",
                             ),
                             StoriesDetailItem(
                                 id = "2",
@@ -99,7 +100,7 @@ fun mockInitialDataModel(
                                     activityTracker = "12345",
                                     templateTracker = "1235df8",
                                 ),
-                                productCount = if (isProductCountEmpty) "" else "0",
+                                productCount = if (isProductCountEmpty) "" else "$productCount",
                             ),
                         ),
                     )
@@ -128,7 +129,7 @@ fun mockInitialDataModel(
                                     activityTracker = "12345",
                                     templateTracker = "1235df8",
                                 ),
-                                productCount = if (isProductCountEmpty) "" else "0",
+                                productCount = if (isProductCountEmpty) "" else "$productCount",
                             ),
                             StoriesDetailItem(
                                 id = "1",
@@ -144,7 +145,7 @@ fun mockInitialDataModel(
                                     activityTracker = "12345",
                                     templateTracker = "1235df8",
                                 ),
-                                productCount = if (isProductCountEmpty) "" else "0",
+                                productCount = if (isProductCountEmpty) "" else "$productCount",
                             ),
                             StoriesDetailItem(
                                 id = "2",
@@ -160,7 +161,7 @@ fun mockInitialDataModel(
                                     activityTracker = "12345",
                                     templateTracker = "1235df8",
                                 ),
-                                productCount = if (isProductCountEmpty) "" else "0",
+                                productCount = if (isProductCountEmpty) "" else "$productCount",
                             ),
                         ),
                     )
@@ -189,7 +190,7 @@ fun mockInitialDataModel(
                                     activityTracker = "12345",
                                     templateTracker = "1235df8",
                                 ),
-                                productCount = if (isProductCountEmpty) "" else "0",
+                                productCount = if (isProductCountEmpty) "" else "$productCount",
                             ),
                             StoriesDetailItem(
                                 id = "1",
@@ -205,7 +206,7 @@ fun mockInitialDataModel(
                                     activityTracker = "12345",
                                     templateTracker = "1235df8",
                                 ),
-                                productCount = if (isProductCountEmpty) "" else "0",
+                                productCount = if (isProductCountEmpty) "" else "$productCount",
                             ),
                             StoriesDetailItem(
                                 id = "2",
@@ -221,7 +222,7 @@ fun mockInitialDataModel(
                                     activityTracker = "12345",
                                     templateTracker = "1235df8",
                                 ),
-                                productCount = if (isProductCountEmpty) "" else "0",
+                                productCount = if (isProductCountEmpty) "" else "$productCount",
                             ),
                         ),
                     )
@@ -237,6 +238,7 @@ fun mockInitialDataModelForDeleteStories(
     selectedDetail: Int = 0,
     isCached: Boolean = true,
     isProductCountEmpty: Boolean = false,
+    productCount: Int = 0,
 ): StoriesUiModel {
     return StoriesUiModel(
         selectedGroupId = if (isCached) "groupId $selectedGroup" else "",
@@ -285,7 +287,7 @@ fun mockInitialDataModelForDeleteStories(
                                     activityTracker = "12345",
                                     templateTracker = "1235df8",
                                 ),
-                                productCount = if (isProductCountEmpty) "" else "0",
+                                productCount = if (isProductCountEmpty) "" else "$productCount",
                             ),
                         ),
                     )
@@ -314,7 +316,7 @@ fun mockInitialDataModelForDeleteStories(
                                     activityTracker = "12345",
                                     templateTracker = "1235df8",
                                 ),
-                                productCount = if (isProductCountEmpty) "" else "0",
+                                productCount = if (isProductCountEmpty) "" else "$productCount",
                             ),
                         ),
                     )
@@ -343,7 +345,7 @@ fun mockInitialDataModelForDeleteStories(
                                     activityTracker = "12345",
                                     templateTracker = "1235df8",
                                 ),
-                                productCount = if (isProductCountEmpty) "" else "0",
+                                productCount = if (isProductCountEmpty) "" else "$productCount",
                             ),
                         ),
                     )
