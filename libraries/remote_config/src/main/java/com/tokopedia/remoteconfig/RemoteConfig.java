@@ -1,6 +1,5 @@
 package com.tokopedia.remoteconfig;
 
-
 import java.util.Set;
 
 /**

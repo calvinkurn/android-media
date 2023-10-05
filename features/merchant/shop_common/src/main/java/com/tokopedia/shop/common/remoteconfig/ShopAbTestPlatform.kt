@@ -17,7 +17,7 @@ import rx.schedulers.Schedulers
 import java.lang.Exception
 import java.util.*
 
-class ShopAbTestPlatform(
+class ShopAbTestPlatform (
     context: Context
 ) : RemoteConfig {
     private var irisSession: IrisSession = IrisSession(context)
