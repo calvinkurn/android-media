@@ -11,6 +11,8 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.transition.Fade
+import androidx.transition.TransitionManager
 import com.tkpd.atcvariant.view.bottomsheet.AtcVariantBottomSheet
 import com.tkpd.atcvariant.view.viewmodel.AtcVariantSharedViewModel
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
@@ -67,7 +69,10 @@ import com.tokopedia.stories.view.viewmodel.state.BottomSheetType
 import com.tokopedia.stories.view.viewmodel.state.isAnyShown
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.view.model.ShareModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class StoriesDetailFragment @Inject constructor(
@@ -109,6 +114,8 @@ class StoriesDetailFragment @Inject constructor(
     private val atcVariantViewModel by lazyThreadSafetyNone {
         ViewModelProvider(requireActivity())[AtcVariantSharedViewModel::class.java]
     }
+
+    private var showSwipeProductJob: Job? = null
 
     private val groupId: String
         get() = arguments?.getString(STORIES_GROUP_ID).orEmpty()
@@ -284,6 +291,7 @@ class StoriesDetailFragment @Inject constructor(
         setFailed(false)
         setNoContent(state.detailItems.isEmpty())
 
+        val prevItem = prevState?.detailItems?.getOrNull(prevState.selectedDetailPosition)
         val currentItem = state.detailItems.getOrNull(state.selectedDetailPosition) ?: return
 
         storiesDetailsTimer(state)
@@ -291,7 +299,7 @@ class StoriesDetailFragment @Inject constructor(
         if (currentItem.isContentLoaded) return
 
         renderAuthor(currentItem)
-        renderNudge(currentItem)
+        renderNudge(prevItem, currentItem)
         renderMedia(currentItem.content, currentItem.status)
 
         showPageLoading(false)
@@ -432,17 +440,32 @@ class StoriesDetailFragment @Inject constructor(
         }
     }
 
-    private fun renderNudge(state: StoriesDetailItem) {
-        binding.vStoriesProductIcon.root.showWithCondition(viewModel.isProductAvailable)
+    private fun renderNudge(prevState: StoriesDetailItem?, state: StoriesDetailItem) {
+        binding.vStoriesProductIcon.root.showWithCondition(state.isProductAvailable)
         binding.vStoriesProductIcon.tvPlayProductCount.text = state.productCount
         with(binding.nudgeStoriesProduct) {
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 StoriesProductNudge(state.productCount) {
                     viewModelAction(StoriesUiAction.OpenProduct)
                 }
             }
-            showWithCondition(viewModel.isProductAvailable)
+        }
+
+        if (prevState?.id == state.id) return
+        showSwipeProductJob?.cancel()
+        showSwipeProductJob = viewLifecycleOwner.lifecycleScope.launch {
+            if (state.isProductAvailable) {
+                binding.flStoriesProduct.hide()
+                delay(DELAY_SWIPE_PRODUCT_BADGE_SHOW)
+                TransitionManager.beginDelayedTransition(
+                    binding.root,
+                    Fade(Fade.IN)
+                        .addTarget(binding.flStoriesProduct)
+                )
+                binding.flStoriesProduct.show()
+            } else {
+                binding.flStoriesProduct.hide()
+            }
         }
     }
 
@@ -459,6 +482,7 @@ class StoriesDetailFragment @Inject constructor(
     }
 
     private fun showStoriesComponent(isShow: Boolean) {
+        showSwipeProductJob?.cancel()
         binding.storiesComponent.showWithCondition(isShow)
         binding.flStoriesNext.showWithCondition(isShow)
         binding.flStoriesProduct.showWithCondition(isShow)
@@ -603,6 +627,8 @@ class StoriesDetailFragment @Inject constructor(
     }
 
     companion object {
+        private const val DELAY_SWIPE_PRODUCT_BADGE_SHOW = 2000L
+
         private const val VARIANT_BOTTOM_SHEET_TAG = "atc variant bottom sheet"
 
         fun getFragment(
