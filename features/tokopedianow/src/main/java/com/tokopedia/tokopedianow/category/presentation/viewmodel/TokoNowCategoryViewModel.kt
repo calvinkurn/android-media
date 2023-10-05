@@ -131,6 +131,7 @@ class TokoNowCategoryViewModel @Inject constructor(
 
     override suspend fun loadFirstPage(tickerData: GetTickerData) {
         val warehouses = addressData.getWarehousesData()
+        val localCacheModel = addressData.getAddressData()
         val detailResponse = getCategoryDetailUseCase.execute(
             categoryIdL1 = categoryIdL1,
             warehouses = warehouses
@@ -146,7 +147,8 @@ class TokoNowCategoryViewModel @Inject constructor(
             detailResponse = detailResponse
         )
         visitableList.addChooseAddress(
-            detailResponse = detailResponse
+            detailResponse = detailResponse,
+            localCacheModel = localCacheModel
         )
         visitableList.addTicker(
             detailResponse = detailResponse,

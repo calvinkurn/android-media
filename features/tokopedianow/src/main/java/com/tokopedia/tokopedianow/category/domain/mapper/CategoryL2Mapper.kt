@@ -1,6 +1,7 @@
 package com.tokopedia.tokopedianow.category.domain.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.filterTabComponents
 import com.tokopedia.tokopedianow.category.domain.response.CategoryDetailResponse
 import com.tokopedia.tokopedianow.category.domain.response.GetCategoryLayoutResponse.CategoryGetDetailModular
@@ -48,10 +49,13 @@ object CategoryL2Mapper {
             }
     }
 
-    fun MutableList<Visitable<*>>.addChooseAddress() {
+    fun MutableList<Visitable<*>>.addChooseAddress(
+        localCacheModel: LocalCacheModel
+    ) {
         add(TokoNowChooseAddressWidgetUiModel(
             id = CategoryStaticLayoutId.CHOOSE_ADDRESS,
-            eventLabelHostPage = TOKONOW_CATEGORY_PAGE
+            eventLabelHostPage = TOKONOW_CATEGORY_PAGE,
+            localCacheModel = localCacheModel
         ))
     }
 

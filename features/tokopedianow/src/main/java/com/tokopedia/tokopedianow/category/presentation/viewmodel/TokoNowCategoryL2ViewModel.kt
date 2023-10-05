@@ -68,11 +68,12 @@ class TokoNowCategoryL2ViewModel @Inject constructor(
     override suspend fun loadFirstPage(tickerData: GetTickerData) {
         val tickerList = tickerData.tickerList
         val warehouses = addressData.getWarehousesData()
+        val localCacheModel = addressData.getAddressData()
         val getCategoryLayoutResponse = getCategoryLayoutUseCase.execute(categoryIdL2)
         val getCategoryDetailResponse = getCategoryDetailUseCase.execute(warehouses, categoryIdL1)
 
         visitableList.clear()
-        visitableList.addChooseAddress()
+        visitableList.addChooseAddress(localCacheModel)
         visitableList.mapToCategoryUiModel(
             getCategoryLayoutResponse,
             getCategoryDetailResponse,
@@ -96,9 +97,12 @@ class TokoNowCategoryL2ViewModel @Inject constructor(
     }
 
     fun showPageLoading() {
+        val localCacheModel = addressData.getAddressData()
+
         visitableList.clear()
-        visitableList.addChooseAddress()
+        visitableList.addChooseAddress(localCacheModel)
         visitableList.add(CategoryL2ShimmerUiModel)
+
         updateVisitableListLiveData()
     }
 
