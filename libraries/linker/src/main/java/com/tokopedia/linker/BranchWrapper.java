@@ -563,6 +563,8 @@ public class BranchWrapper implements WrapperInterface {
             deeplinkPath = data.getDeepLink();
         } else if (LinkerData.FLIGHT_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = data.getDeepLink();
+        } else if (LinkerData.STORIES_TYPE.equalsIgnoreCase(data.getType())) {
+            deeplinkPath = data.getDeepLink();
         }
 
         if (LinkerData.INDI_CHALLENGE_TYPE.equalsIgnoreCase(data.getType())) {

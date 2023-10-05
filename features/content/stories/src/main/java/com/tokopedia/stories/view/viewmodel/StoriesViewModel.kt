@@ -129,8 +129,7 @@ class StoriesViewModel @AssistedInject constructor(
     val isProductAvailable: Boolean
         get() {
             val currentItem = mGroup.detail.detailItems
-            val productCount = currentItem.getOrNull(mGroup.detail.selectedDetailPosition)?.productCount
-            return productCount != "" && productCount != "0"
+            return currentItem.getOrNull(mGroup.detail.selectedDetailPosition)?.isProductAvailable == true
         }
 
     val isAnyBottomSheetShown: Boolean
