@@ -2790,7 +2790,6 @@ open class DiscoveryAnalytics(
             KEY_EVENT to event,
             KEY_EVENT_CATEGORY to eventDiscoveryCategory,
             KEY_EVENT_ACTION to action,
-            KEY_EVENT_LABEL to KEY_EVENT_LABEL,
             BUSINESS_UNIT to HOME_BROWSE,
             CURRENT_SITE to TOKOPEDIA_MARKET_PLACE,
             PAGE_PATH to removedDashPageIdentifier,
@@ -2806,10 +2805,7 @@ open class DiscoveryAnalytics(
 
         propsList.forEach { dataItem ->
             val itemName = if (dataItem.gtmItem.isNotEmpty()) {
-                dataItem.gtmItem.apply {
-                    replace("#POSITION", (dataItem.position + 1).toString())
-                    replace("#MEGA_TAB_VALUE", dataItem.tabName)
-                }
+                replacePlaceholder(dataItem)
             } else {
                 EMPTY_STRING
             }
@@ -2829,6 +2825,17 @@ open class DiscoveryAnalytics(
                 KEY_PROMOTIONS to list
             )
         )
+    }
+
+    private fun replacePlaceholder(props: CouponTrackingProperties): String {
+        var replacedName = props.gtmItem.replace(
+            "#POSITION",
+            (props.position + 1).toString()
+        )
+
+        replacedName = replacedName.replace("#MEGA_TAB_VALUE", props.tabName)
+
+        return replacedName
     }
 
     //endregion
