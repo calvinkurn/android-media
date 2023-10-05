@@ -1,12 +1,6 @@
 package com.scp.auth
 
-import android.content.Context
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.viewModelScope
-import com.scp.login.sso.bridge.SSOHostBridge
-import com.scp.login.sso.data.SSOHostData
-import com.scp.login.sso.utils.Environment
-import com.scp.verification.core.data.common.device.DeviceInfoImpl
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.network.refreshtoken.EncoderDecoder
@@ -44,20 +38,6 @@ class ScpAuthViewModel @Inject constructor(
             "Bearer",
             EncoderDecoder.Encrypt(GotoSdk.LSDKINSTANCE?.getRefreshToken(), userSessionInterface.refreshTokenIV)
         )
-    }
-
-    fun updateSsoHostData(context: Context, token: String) {
-        viewModelScope.launch {
-            val ssoHostData = SSOHostData(
-                clientId = "tokopedia:consumer:android",
-                clientSecret = "uPu4ieJOyPnf7sAS6ENCrBSvRMhF1g",
-                deviceId = DeviceInfoImpl(context).getDeviceID(),
-                environment = Environment.Dev
-            )
-            val ssoBridge = SSOHostBridge.getSsoHostBridge()
-            ssoBridge.initBridge(context, ssoHostData)
-            ssoBridge.saveAccessToken(context, token)
-        }
     }
 
 }

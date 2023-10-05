@@ -2,6 +2,7 @@ package com.scp.auth
 
 import android.app.Application
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import com.gojek.pin.AppInfo
@@ -14,11 +15,8 @@ import com.gojek.pin.validation.ExtVerificationData
 import com.gojek.pin.validation.ExtVerificationUiConfig
 import com.gojek.pin.validation.PinSdkValidationListener
 import com.gojek.pin.validation.PinValidationResults
+import com.scp.auth.authentication.LoginSdkConfigs
 import com.scp.auth.verification.VerificationSdk.getCvSdkProvider
-import com.scp.login.core.domain.contracts.configs.LSdkAppConfig
-import com.scp.login.core.domain.contracts.configs.LSdkAuthConfig
-import com.scp.login.core.domain.contracts.configs.LSdkConfig
-import com.scp.login.core.domain.contracts.configs.LSdkEnvironment
 import com.scp.login.core.domain.contracts.services.LSdkServices
 import com.scp.login.init.GotoLogin
 import com.scp.login.init.contracts.LSdkProvider
@@ -27,10 +25,15 @@ import com.scp.verification.core.data.common.services.LocalCVLogService
 import com.scp.verification.core.data.common.services.contract.ScpAnalyticsEvent
 import com.scp.verification.core.data.common.services.contract.ScpAnalyticsService
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.KEY_SP_TIMESTAMP_AB_TEST
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.SHARED_PREFERENCE_AB_TEST_PLATFORM
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import java.util.*
 
 object GotoSdk {
     var LSDKINSTANCE: LSdkProvider? = null
@@ -43,10 +46,11 @@ object GotoSdk {
 
     @JvmStatic
     fun init(application: Application): LSdkProvider? {
+//        initializeAbTestVariant(application)
         LSDKINSTANCE = GotoLogin.getInstance(
             cvSdkProvider = getCvSdkProvider(application),
             gotoPinManager = getGotoPinSdkProvider(application),
-            configurations = SampleLoginSDKConfigs(application),
+            configurations = LoginSdkConfigs(application),
             application = application,
             services = LSdkServices(
                 abTestServices = LocalCVABTestService(),
@@ -75,7 +79,37 @@ object GotoSdk {
                 }
             )
         )
+        migrateExistingToken(userSession = UserSession(application))
         return LSDKINSTANCE
+    }
+
+    /*
+        Save existing user access token and refresh token (from old login flow) to sdk,
+        so users doesn't have to re-login to get Login SDK functionalities.
+    */
+    @JvmStatic
+    fun migrateExistingToken(userSession: UserSessionInterface) {
+        if (userSession.isLoggedIn &&
+            LSDKINSTANCE?.getAccessToken()?.isEmpty() == true &&
+            LSDKINSTANCE?.getRefreshToken()?.isEmpty() == true) {
+                LSDKINSTANCE?.save(userSession.accessToken, userSession.freshToken)
+        }
+    }
+
+    private fun initializeAbTestVariant(application: Application) {
+        val sharedPreferences: SharedPreferences = application.getSharedPreferences(
+            SHARED_PREFERENCE_AB_TEST_PLATFORM, Context.MODE_PRIVATE
+        )
+        val timestampAbTest = sharedPreferences.getLong(KEY_SP_TIMESTAMP_AB_TEST, 0)
+        RemoteConfigInstance.initAbTestPlatform(application)
+        val current = Date().time
+//        if (current >= timestampAbTest + TimeUnit.HOURS.toMillis(1)) {
+//            RemoteConfigInstance.getInstance().abTestPlatform.fetch(null)
+//        }
+        // Init abtest each time we initialize the sdk, for testing purpose
+        RemoteConfigInstance.getInstance().abTestPlatform.fetch(null)
+        println("gotosdk:No Need Init")
+
     }
 
     private fun getGotoPinSdkProvider(application: Application): PinManager {
@@ -123,23 +157,5 @@ object GotoSdk {
         val model = Build.MODEL
 
         return "$manufacturer $model"
-    }
-}
-
-class SampleLoginSDKConfigs(val context: Context) : LSdkConfig {
-    override fun getAppConfigs(): LSdkAppConfig {
-        val uniqueId = FingerprintModelGenerator.getFCMId(context)
-        return LSdkAppConfig(
-            environment = LSdkEnvironment.DEV,
-            isLogsEnabled = false,
-            appLocale = "ID",
-            userLang = "id",
-            userType = "toko_user",
-            uniqueId = uniqueId
-        )
-    }
-
-    override fun getAuthConfigs(): LSdkAuthConfig {
-        return LSdkAuthConfig(clientID = "tokopedia:consumer:android", clientSecret = "uPu4ieJOyPnf7sAS6ENCrBSvRMhF1g", gotoPinclientID = "uPu4ieJOyPnf7sAS6ENCrBSvRMhF1g")
     }
 }

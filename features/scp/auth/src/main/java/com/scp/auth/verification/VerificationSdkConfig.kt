@@ -28,7 +28,7 @@ class VerificationSdkConfig(val context: Context) : VerificationSDKConfigs {
     }
 
     private fun getEnvironment(): VerificationEnvironment {
-        return VerificationEnvironment.DEV
+        return VerificationEnvironment.INTEGRATION
 //        return if (GlobalConfig.DEBUG) {
 //            VerificationEnvironment.INTEGRATION
 //        } else {

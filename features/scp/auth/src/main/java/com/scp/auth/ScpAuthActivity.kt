@@ -6,8 +6,6 @@ import android.graphics.Bitmap
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
 import com.scp.auth.di.DaggerScpAuthComponent
-import com.scp.auth.utils.goToChangePIN
-import com.scp.auth.utils.goToForgotPassword
 import com.scp.auth.utils.goToInactivePhoneNumber
 import com.scp.login.common.utils.LoginImageLoader
 import com.scp.login.core.domain.common.UserCredential
@@ -204,15 +202,19 @@ class ScpAuthActivity : BaseActivity() {
     fun postLoginAction() {
         registerPushNotif()
         submitIntegrityApi()
-        viewModel.updateSsoHostData(this, GotoSdk.LSDKINSTANCE?.getAccessToken() ?: "")
 //        setTrackingUserId(userSession.userId)
 //        setFCM()
         SubmitDeviceWorker.scheduleWorker(this, true)
         DataVisorWorker.scheduleWorker(this, true)
         TwoFactorMluHelper.clear2FaInterval(this)
 
+        getDefaultChosenAddress()
         setResult(Activity.RESULT_OK)
         finish()
+    }
+
+    private fun getDefaultChosenAddress() {
+//        GetDefaultChosenAddressService.startService(applicationContext)
     }
 
     companion object {

@@ -123,7 +123,6 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.kotlinTest
     testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
-    implementation projectOrAar(rootProject.ext.features.scpAuth)
 }
 
 project.ext {
