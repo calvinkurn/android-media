@@ -24,12 +24,15 @@ import com.tokopedia.checkout.revamp.view.processor.CheckoutToasterProcessor
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutPageToaster
 import com.tokopedia.checkout.view.converter.ShipmentDataRequestConverter
 import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
+import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.logisticCommon.domain.usecase.UpdatePinpointUseCase
 import com.tokopedia.logisticcart.scheduledelivery.domain.usecase.GetRatesWithScheduleDeliveryCoroutineUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiCoroutineUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesCoroutineUseCase
+import com.tokopedia.promousage.domain.usecase.PromoUsageGetPromoListRecommendationEntryPointUseCase
+import com.tokopedia.promousage.view.mapper.PromoUsageGetPromoListRecommendationMapper
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.feature.addons.domain.SaveAddOnStateUseCase
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.usecase.GetPrescriptionIdsUseCaseCoroutine
@@ -126,6 +129,15 @@ open class BaseCheckoutViewModelTest {
     @MockK(relaxed = true)
     lateinit var mTrackerPurchaseProtection: CheckoutAnalyticsPurchaseProtection
 
+    @MockK(relaxed = true)
+    lateinit var getPromoListRecommendationEntryPointUseCase: PromoUsageGetPromoListRecommendationEntryPointUseCase
+
+    var getPromoListRecommendationMapper: PromoUsageGetPromoListRecommendationMapper =
+        PromoUsageGetPromoListRecommendationMapper()
+
+    @MockK(relaxed = true)
+    lateinit var chosenAddressRequestHelper: ChosenAddressRequestHelper
+
     private val dispatchers: CoroutineDispatchers = CoroutineTestDispatchers
 
     lateinit var viewModel: CheckoutViewModel
@@ -160,6 +172,9 @@ open class BaseCheckoutViewModelTest {
             CheckoutPromoProcessor(
                 clearCacheAutoApplyStackUseCase,
                 validateUsePromoRevampUseCase,
+                getPromoListRecommendationEntryPointUseCase,
+                getPromoListRecommendationMapper,
+                chosenAddressRequestHelper,
                 mTrackerShipment,
                 toasterProcessor,
                 helper,

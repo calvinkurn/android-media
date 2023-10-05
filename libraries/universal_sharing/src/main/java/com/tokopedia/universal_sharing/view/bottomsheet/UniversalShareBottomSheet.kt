@@ -106,17 +106,23 @@ import com.tokopedia.universal_sharing.R as universal_sharingR
  */
 open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<UniversalShareComponent> {
 
-    @Inject lateinit var userSession: UserSessionInterface
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
-    @Inject lateinit var extractBranchLinkUseCase: ExtractBranchLinkUseCase
+    @Inject
+    lateinit var extractBranchLinkUseCase: ExtractBranchLinkUseCase
 
-    @Inject lateinit var affiliateUsecase: AffiliateEligibilityCheckUseCase
+    @Inject
+    lateinit var affiliateUsecase: AffiliateEligibilityCheckUseCase
 
-    @Inject lateinit var shareTracker: UniversalSharebottomSheetTracker
+    @Inject
+    lateinit var shareTracker: UniversalSharebottomSheetTracker
 
-    @Inject lateinit var imagePolicyUseCase: ImagePolicyUseCase
+    @Inject
+    lateinit var imagePolicyUseCase: ImagePolicyUseCase
 
-    @Inject lateinit var imageGeneratorUseCase: ImageGeneratorUseCase
+    @Inject
+    lateinit var imageGeneratorUseCase: ImageGeneratorUseCase
 
     // View
     private var fragmentView: View? = null
@@ -136,6 +142,10 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
     // View - Chip
     private var chipOptionHeader: Typography? = null
     private var lstChip: RecyclerView? = null
+
+    // Min Version for Sharing
+    private var minVersionAndroid: String? = null
+    private var minVersioniOS: String? = null
 
     // Options Flag
     private var featureFlagRemoteConfigKey: String = ""
@@ -607,6 +617,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
                     DateUtil.getDateCampaignInfo(model.startTime)
                 )
             }
+
             CampaignStatus.ON_GOING -> {
                 personalizedMessage = if (model.discountPercentage != 0F) {
                     context.getString(
@@ -625,6 +636,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
                     DateUtil.getDateCampaignInfo(model.endTime)
                 )
             }
+
             CampaignStatus.END_SOON -> {
                 personalizedMessage = if (model.discountPercentage != 0F) {
                     context.getString(
@@ -645,6 +657,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
                     DateUtil.getDateCampaignInfo(model.endTime)
                 )
             }
+
             CampaignStatus.END_BY_A_WEEK -> {
                 personalizedMessage = if (model.discountPercentage != 0F) {
                     context.getString(
@@ -663,6 +676,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
                     DateUtil.getDateCampaignInfo(model.endTime)
                 )
             }
+
             CampaignStatus.NO_CAMPAIGN -> {
                 /* no-op */
             }
@@ -727,6 +741,14 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
             shareSheetType = SCREENSHOT_SHARE_SHEET
         }
         return shareSheetType
+    }
+
+    /**
+     * use this method to set min version
+     */
+    fun setMinVersion(minVersionAndroid: String, minVersioniOS: String) {
+        this.minVersionAndroid = minVersionAndroid
+        this.minVersioniOS = minVersioniOS
     }
 
     fun clearData() {
@@ -1021,6 +1043,8 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
             deepLink = linkProperties?.deeplink
             id = linkProperties?.id
             linkAffiliateType = affiliateInput?.affiliateLinkType?.value
+            minVersionAndroid = this@UniversalShareBottomSheet.minVersionAndroid
+            minVersionIOS = this@UniversalShareBottomSheet.minVersioniOS
         }
         return LinkerShareData().apply {
             this.linkerData = linkerData
@@ -1065,10 +1089,10 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
                 }
             }
         }, onError = {
-                clearLoader()
-                removeHandlerTimeout()
-                it.printStackTrace()
-            })
+            clearLoader()
+            removeHandlerTimeout()
+            it.printStackTrace()
+        })
         handler = Handler(Looper.getMainLooper())
         handler?.postDelayed({
             clearLoader()
@@ -1083,7 +1107,8 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
 
     private suspend fun executeExtractBranchLink(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility): String {
         return try {
-            extractBranchLinkUseCase(generateAffiliateLinkEligibility.banner?.ctaLink ?: "").android_deeplink
+            extractBranchLinkUseCase(generateAffiliateLinkEligibility.banner?.ctaLink
+                ?: "").android_deeplink
         } catch (ignore: Exception) {
             ""
         }
@@ -1134,7 +1159,8 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
                 affiliateCommissionTextView?.text = Html.fromHtml(commissionMessage)
             }
             affiliateCommissionTextView?.visibility = View.VISIBLE
-            shareTracker.viewOnAffiliateRegisterTicker(true, affiliateInput?.getIdFactory() ?: "", affiliateInput?.pageType ?: "")
+            shareTracker.viewOnAffiliateRegisterTicker(true, affiliateInput?.getIdFactory()
+                ?: "", affiliateInput?.pageType ?: "")
             userType = KEY_AFFILIATE_USER
             return
         }
@@ -1157,7 +1183,8 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
             if (banner.title.isBlank() && banner.message.isBlank()) return
 
             affiliateRegisterContainer?.visible()
-            shareTracker.viewOnAffiliateRegisterTicker(false, affiliateInput?.getIdFactory() ?: "", affiliateInput?.pageType ?: "")
+            shareTracker.viewOnAffiliateRegisterTicker(false, affiliateInput?.getIdFactory()
+                ?: "", affiliateInput?.pageType ?: "")
 
             val id = affiliateInput?.getIdFactory() ?: ""
             val page = affiliateInput?.pageType ?: ""
@@ -1188,12 +1215,15 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
                 ImageGeneratorConstants.ImageGeneratorSourceId.AB_TEST_PDP -> {
                     executePdpContextualImage(shareModel)
                 }
+
                 ImageGeneratorConstants.ImageGeneratorSourceId.SHOP_PAGE -> {
                     executeContextualImage<ShopPageParamModel>(shareModel)
                 }
+
                 ImageGeneratorConstants.ImageGeneratorSourceId.WISHLIST_COLLECTION -> {
                     executeContextualImage<WishlistCollectionParamModel>(shareModel)
                 }
+
                 else -> {
                     addImageGeneratorData(ImageGeneratorConstants.ImageGeneratorKeys.PLATFORM, shareModel.platform)
                     addImageGeneratorData(ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_IMAGE_URL, ogImageUrl)
@@ -1216,8 +1246,8 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
             val listOfParams = result.generateImageGeneratorParam(imageGeneratorParam!!)
             executeImageGeneratorUseCase(listOfParams, shareModel)
         }, onError = {
-                executeSharingFlow(shareModel)
-            })
+            executeSharingFlow(shareModel)
+        })
     }
 
     private fun executePdpContextualImage(shareModel: ShareModel) {
@@ -1237,8 +1267,8 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
             val listOfParams = result.generateImageGeneratorParam(imageGeneratorParam!!)
             executeImageGeneratorUseCase(listOfParams, shareModel)
         }, onError = {
-                executeSharingFlow(shareModel)
-            })
+            executeSharingFlow(shareModel)
+        })
     }
 
     private fun executeMediaImageSharingFlow(shareModel: ShareModel, mediaImageUrl: String) {
@@ -1303,9 +1333,9 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
                 }
             }
         }, onError = {
-                it.printStackTrace()
-                executeSharingFlow(shareModel)
-            })
+            it.printStackTrace()
+            executeSharingFlow(shareModel)
+        })
     }
 
     private fun generateRemoteConfigSocialMediaOrdering() {

@@ -16,4 +16,8 @@ open class HomeDatabaseModule{
     @HomeScope
     @Provides
     fun provideHomeDao(homeDatabase: HomeDatabase) = homeDatabase.homeDao()
+
+    @HomeScope
+    @Provides
+    fun provideHomeAtfDao(homeDatabase: HomeDatabase) = homeDatabase.homeAtfDao()
 }
