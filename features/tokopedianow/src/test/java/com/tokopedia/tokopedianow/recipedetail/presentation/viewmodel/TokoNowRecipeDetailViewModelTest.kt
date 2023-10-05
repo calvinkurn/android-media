@@ -697,19 +697,27 @@ class TokoNowRecipeDetailViewModelTest : TokoNowRecipeDetailViewModelTestFixture
         }
     }
 
-//    @Test
-//    fun `when onClickBookmarkBtn should call update address data and add loading to layout list`() {
-//        viewModel.refreshPage()
-//
-//        val expectedLayoutList = listOf(
-//            RecipeDetailLoadingUiModel
-//        )
-//
-//        verifyUpdateAddressDataCalled()
-//
-//        viewModel.layoutList
-//            .verifyValueEquals(expectedLayoutList)
-//    }
+    @Test
+    fun `when onClickBookmarkBtn should call update address data and add error ui model to layout list`() {
+        val firstShopId = 0L // invalid shopId
+        val secondShopId = 1L
+
+        val addressResponse = GetStateChosenAddressResponse()
+
+        onGetShopId_thenReturn(firstShopId, secondShopId)
+        onGetAddressData_thenReturn(addressResponse)
+
+        viewModel.refreshPage()
+
+        val expectedLayoutList = listOf(
+            TokoNowServerErrorUiModel
+        )
+
+        verifyUpdateAddressDataCalled()
+
+        viewModel.layoutList
+            .verifyValueEquals(expectedLayoutList)
+    }
 
     @Test
     fun `when layoutItemList error should do nothing`() {
