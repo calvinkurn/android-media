@@ -238,7 +238,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         observeWidgetData(mViewModel.barChartWidgetData, WidgetType.BAR_CHART)
         observeWidgetData(mViewModel.announcementWidgetData, WidgetType.ANNOUNCEMENT)
         observeTickers()
-        rejectedOrderRateCoachMark.init(view.context)
+        rejectedOrderRateCoachMark.init(view.context, userSession.userId)
     }
 
     override fun onResume() {

@@ -17,8 +17,10 @@ class RejectedOrderRateCoachMark @Inject constructor(){
 
     companion object {
         const val DATA_KEY = "plusCancellationRate"
+        const val PREF_KEY_FORMAT = "${DATA_KEY}_%s"
     }
 
+    private var userId: String = ""
     private var anchor: View? = null
     private var coachMark: CoachMark2? = null
 
@@ -57,7 +59,8 @@ class RejectedOrderRateCoachMark @Inject constructor(){
         coachMark = null
     }
 
-    fun init(context: Context) {
+    fun init(context: Context, userId: String) {
+        this.userId = userId
         if (hasShown(context)) return
 
         if (coachMark == null) {
@@ -75,10 +78,12 @@ class RejectedOrderRateCoachMark @Inject constructor(){
     }
 
     private fun setHasShown(context: Context) {
-        CoachMarkPreference.setShown(context, DATA_KEY, true)
+        CoachMarkPreference.setShown(context, getPrefKey(), true)
     }
 
     private fun hasShown(context: Context): Boolean {
-        return CoachMarkPreference.hasShown(context, DATA_KEY)
+        return CoachMarkPreference.hasShown(context, getPrefKey())
     }
+
+    private fun getPrefKey() = String.format(PREF_KEY_FORMAT, userId)
 }
