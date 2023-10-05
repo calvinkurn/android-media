@@ -319,6 +319,8 @@ class FeedMainViewModelTest {
         if (feedTabs is NetworkResult.Success) {
             assert(feedTabs.data.data[0].isSelected)
             assert(!feedTabs.data.data[1].isSelected)
+
+            assert(viewModel.selectedTab?.type == feedTabs.data.data[0].type)
         } else {
             fail("Feed tabs should be NetworkResult.Success")
         }
@@ -341,6 +343,7 @@ class FeedMainViewModelTest {
         if (feedTabs is NetworkResult.Success) {
             assert(!feedTabs.data.data[0].isSelected)
             assert(feedTabs.data.data[1].isSelected)
+            assert(viewModel.selectedTab?.type == feedTabs.data.data[1].type)
         } else {
             fail("Feed tabs should be NetworkResult.Success")
         }
@@ -363,6 +366,7 @@ class FeedMainViewModelTest {
         if (feedTabs is NetworkResult.Success) {
             assert(!feedTabs.data.data[0].isSelected)
             assert(!feedTabs.data.data[1].isSelected)
+            assert(viewModel.selectedTab == null)
         } else {
             fail("Feed tabs should be NetworkResult.Success")
         }
@@ -387,6 +391,8 @@ class FeedMainViewModelTest {
         if (feedTabs is NetworkResult.Success) {
             assert(feedTabs.data.data[0].isSelected)
             assert(!feedTabs.data.data[1].isSelected)
+
+            assert(viewModel.selectedTab?.type == feedTabs.data.data[0].type)
         } else {
             fail("Feed tabs should be NetworkResult.Success")
         }
@@ -411,6 +417,8 @@ class FeedMainViewModelTest {
         if (feedTabs is NetworkResult.Success) {
             assert(!feedTabs.data.data[0].isSelected)
             assert(feedTabs.data.data[1].isSelected)
+
+            assert(viewModel.selectedTab?.type == feedTabs.data.data[1].type)
         } else {
             fail("Feed tabs should be NetworkResult.Success")
         }
@@ -428,7 +436,14 @@ class FeedMainViewModelTest {
         coEvery { uiEventManager.emitEvent(any()) } coAnswers {}
 
         viewModel.setActiveTab("unknown")
-        coVerify(exactly = 0) { uiEventManager.emitEvent(any()) }
+        val feedTabs = viewModel.feedTabs.value
+        if (feedTabs is NetworkResult.Success) {
+            assert(!feedTabs.data.data[0].isSelected)
+            assert(!feedTabs.data.data[1].isSelected)
+            assert(viewModel.selectedTab == null)
+        } else {
+            fail("Feed tabs should be NetworkResult.Success")
+        }
     }
 
     @Test
