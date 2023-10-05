@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalPagerApi::class)
-
 package com.tokopedia.sellerpersona.view.compose.screen.questionnaire
 
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -43,6 +41,7 @@ import com.tokopedia.nest.components.ButtonVariant
 import com.tokopedia.nest.components.NestButton
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
+import com.tokopedia.sellerpersona.view.compose.component.disabledHorizontalPointerInputScroll
 import com.tokopedia.sellerpersona.view.compose.model.uievent.QuestionnaireUserEvent
 import com.tokopedia.sellerpersona.view.model.BaseOptionUiModel
 import com.tokopedia.sellerpersona.view.model.QuestionnaireDataUiModel
@@ -102,7 +101,7 @@ fun QuestionnaireSuccessState(
                     end.linkTo(parent.end)
                     width = Dimension.fillToConstraints
                     height = Dimension.fillToConstraints
-                },
+                }.disabledHorizontalPointerInputScroll(),
                 key = { pagePosition ->
                     questionnaireList[pagePosition].id
                 },
@@ -279,6 +278,7 @@ suspend fun moveToNextPage(pagerState: PagerState, nextPage: Int) {
     }
 }
 
+@OptIn(ExperimentalPagerApi::class)
 @Composable
 @NonRestartableComposable
 fun LaunchOnPagerSwipeEffect(pagerState: PagerState, onEvent: (QuestionnaireUserEvent) -> Unit) {
