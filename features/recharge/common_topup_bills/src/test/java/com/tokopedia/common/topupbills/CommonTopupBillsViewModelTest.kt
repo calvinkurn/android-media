@@ -471,7 +471,7 @@ class CommonTopupBillsViewModelTest {
         every { digitalCheckVoucherUseCase.execute(any(), any()) } returns Unit
 
         topupBillsViewModel.checkVoucher("", PromoDigitalModel())
-        advanceTimeBy(1_000L)
+        testCoroutineRule.coroutineDispatcher.advanceTimeBy(1_000L)
 
         verify { digitalCheckVoucherUseCase.execute(any(), any()) }
     }

@@ -92,7 +92,7 @@ class DigitalAddToCartViewModelTest {
         )
 
         coEvery {
-            digitalAddToCartUseCase.execute(any(), any(), any())
+            digitalAddToCartUseCase.execute(any(), any(), any(), "")
         } returns dummyResponse
         coEvery { userSession.isLoggedIn } returns true
         coEvery { userSession.userId } returns "123"
@@ -115,7 +115,7 @@ class DigitalAddToCartViewModelTest {
     fun addToCart_loggedIn_returnsErrorAtc() {
         // Given
         coEvery {
-            digitalAddToCartUseCase.execute(any(), any(), any())
+            digitalAddToCartUseCase.execute(any(), any(), any(), "")
         } throws DigitalAtcErrorException(getRawErrors())
 
         coEvery { userSession.isLoggedIn } returns true
@@ -139,7 +139,7 @@ class DigitalAddToCartViewModelTest {
     fun addToCart_loggedInNullId_returnsNoConnectionError() {
         // Given
         coEvery {
-            digitalAddToCartUseCase.execute(any(), any(), any())
+            digitalAddToCartUseCase.execute(any(), any(), any(), "")
         } returns null
         coEvery { userSession.isLoggedIn } returns true
         coEvery { userSession.userId } returns "123"
@@ -167,7 +167,7 @@ class DigitalAddToCartViewModelTest {
         val errorMessage = "this is error message"
         val throwable = Throwable(errorMessage)
         coEvery {
-            digitalAddToCartUseCase.execute(any(), any(), any())
+            digitalAddToCartUseCase.execute(any(), any(), any(), "")
         } throws throwable
         coEvery { userSession.isLoggedIn } returns true
         coEvery { userSession.userId } returns "123"
