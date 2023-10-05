@@ -218,8 +218,7 @@ class HomeAdapterTypeFactory(
                 itemView = view,
                 homeLeftCarouselAtcCallback = homeLeftCarouselAtcListener,
                 rtrListener = rtrListener,
-                rtrAnalytics = rtrAnalytics,
-                parentRecycledViewPool = recycledViewPool
+                rtrAnalytics = rtrAnalytics
             )
             HomePlayWidgetViewHolder.LAYOUT -> HomePlayWidgetViewHolder(createPlayWidgetViewHolder(view))
             HomeClaimCouponWidgetItemViewHolder.LAYOUT -> HomeClaimCouponWidgetItemViewHolder(view, claimCouponWidgetItemListener, claimCouponWidgetItemTracker)

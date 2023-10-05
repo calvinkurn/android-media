@@ -310,7 +310,7 @@ class TokoNowHomeFragment :
     private var bannerComponentCallback: BannerComponentCallback? = null
 
     private val recycledViewPool
-        get() = rvHome?.recycledViewPool ?: RecyclerView.RecycledViewPool()
+        get() = RecyclerView.RecycledViewPool()
 
     private val homeMainToolbarHeight: Int
         get() {

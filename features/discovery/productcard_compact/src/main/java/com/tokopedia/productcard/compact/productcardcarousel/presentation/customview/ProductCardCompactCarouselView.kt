@@ -30,6 +30,10 @@ class ProductCardCompactCarouselView @JvmOverloads constructor(
     ProductCardCompactCarouselSeeMoreViewHolder.ProductCardCompactCarouselSeeMoreListener,
     CoroutineScope {
 
+    companion object {
+        private const val MAX_RECYCLE_VIEWS_VIEW_POOL = 99
+    }
+
     private val adapter: ProductCardCompactCarouselAdapter by lazy {
         ProductCardCompactCarouselAdapter(
             ProductCardCompactCarouselDiffer(),
@@ -113,9 +117,16 @@ class ProductCardCompactCarouselView @JvmOverloads constructor(
     }
 
     fun setRecycledViewPool(
-        recycledViewPool: RecycledViewPool?
+        newRecycledViewPool: RecycledViewPool?
     ) {
-        binding.root.setRecycledViewPool(recycledViewPool)
+        binding.root.apply {
+            setRecycledViewPool(newRecycledViewPool)
+            (layoutManager as? LinearLayoutManager)?.recycleChildrenOnDetach = true
+            recycledViewPool.setMaxRecycledViews(
+                ProductCardCompactCarouselItemViewHolder.LAYOUT,
+                MAX_RECYCLE_VIEWS_VIEW_POOL
+            )
+        }
     }
 
     fun bindItems(
