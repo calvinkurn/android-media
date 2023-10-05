@@ -13,8 +13,8 @@ class LoginSdkConfigs(val context: Context) : LSdkConfig {
         return LSdkAppConfig(
             environment = LSdkEnvironment.INTEGRATION,
             isLogsEnabled = false,
-            appLocale = "ID",
-            userLang = "id",
+            appLocale = "id-ID",
+            userLang = "id-ID",
             userType = "toko_user",
             uniqueId = uniqueId
         )

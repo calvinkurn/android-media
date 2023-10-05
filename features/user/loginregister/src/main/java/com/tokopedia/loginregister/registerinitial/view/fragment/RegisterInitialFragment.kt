@@ -750,7 +750,11 @@ class RegisterInitialFragment :
                 if (registerCheckData.isExist) {
                     showRegisteredPhoneDialog(registerCheckData.view)
                 } else {
-                    showProceedWithPhoneDialog(registerCheckData.view)
+                    if (loginCredential.isNotEmpty()) {
+                        startVerificationFlow(registerCheckData.view)
+                    } else {
+                        showProceedWithPhoneDialog(registerCheckData.view)
+                    }
                 }
             }
             LoginConstants.LoginType.EMAIL_TYPE -> {
@@ -1288,25 +1292,29 @@ class RegisterInitialFragment :
         registerInitialRouter.goToChooseAccountPage(this, accessToken, phoneNumber)
     }
 
+    private fun startVerificationFlow(phone: String) {
+        showProgressBar()
+        registerAnalytics.trackClickYesButtonPhoneDialog()
+        userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_PHONE
+        activity?.let {
+            val intent = registerInitialRouter.goToVerification(
+                phone = phone,
+                otpType = RegisterConstants.OtpType.OTP_REGISTER_PHONE_NUMBER,
+                context = requireContext()
+            )
+            startActivityForResult(
+                intent,
+                RegisterConstants.Request.REQUEST_VERIFY_PHONE_REGISTER_PHONE
+            )
+        }
+    }
+
     private fun showProceedWithPhoneDialog(phone: String) {
         val dialog = ProceedWithPhoneDialog.createDialog(context, phone)
         registerAnalytics.trackClickPhoneSignUpButton()
         dialog?.setPrimaryCTAClickListener {
-            showProgressBar()
-            registerAnalytics.trackClickYesButtonPhoneDialog()
             dialog.dismiss()
-            userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_PHONE
-            activity?.let {
-                val intent = registerInitialRouter.goToVerification(
-                    phone = phone,
-                    otpType = RegisterConstants.OtpType.OTP_REGISTER_PHONE_NUMBER,
-                    context = requireContext()
-                )
-                startActivityForResult(
-                    intent,
-                    RegisterConstants.Request.REQUEST_VERIFY_PHONE_REGISTER_PHONE
-                )
-            }
+            startVerificationFlow(phone)
         }
         dialog?.setSecondaryCTAClickListener {
             registerAnalytics.trackClickChangeButtonPhoneDialog()
