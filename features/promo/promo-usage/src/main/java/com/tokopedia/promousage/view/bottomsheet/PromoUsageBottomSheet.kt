@@ -281,7 +281,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun setupView() {
-        renderContent(false)
+        renderContent(isVisible = false, hasPromoRecommendationSection = false)
         renderLoadingShimmer(true)
 
         val totalAmount = arguments?.getDouble(BUNDLE_KEY_TOTAL_AMOUNT) ?: 0.0
@@ -545,7 +545,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
             when (state) {
                 is PromoPageUiState.Initial -> {
                     renderHeader(false)
-                    renderContent(false)
+                    renderContent(isVisible = false, hasPromoRecommendationSection = false)
                     renderLoadingDialog(false)
                     renderLoadingShimmer(true)
                     hideSavingInfo()
@@ -559,7 +559,10 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                     submitItems(state.items)
                     renderLoadingDialog(false)
                     renderLoadingShimmer(false)
-                    renderContent(true)
+                    renderContent(
+                        isVisible = true,
+                        hasPromoRecommendationSection = state.hasPromoRecommendationSection
+                    )
                     renderSavingInfo(state.savingInfo)
                     renderError(false)
                     renderTickerInfo(state.tickerInfo)
@@ -574,7 +577,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                     renderHeader(true)
                     renderLoadingShimmer(false)
                     renderLoadingDialog(false)
-                    renderContent(false)
+                    renderContent(isVisible = false, hasPromoRecommendationSection = false)
                     renderError(true, state.exception)
                     hideSavingInfo()
                     refreshBottomSheetHeight(state)
@@ -739,7 +742,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         binding?.clBottomSheetHeader?.isVisible = isVisible
     }
 
-    private fun renderContent(isVisible: Boolean) {
+    private fun renderContent(isVisible: Boolean, hasPromoRecommendationSection: Boolean) {
         context?.let {
             binding?.rlBottomSheetWrapper?.background =
                 BottomSheetUtil.generateBackgroundDrawableWithColor(
@@ -763,8 +766,14 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         }
         binding?.rlBottomSheetWrapper?.clipToOutline = true
         binding?.clBottomSheetContent?.clipChildren = true
+        binding?.clBottomSheetHeader?.isVisible = isVisible
         binding?.rvPromo?.isVisible = isVisible
         binding?.cvTotalAmount?.isVisible = isVisible
+        if (isVisible && hasPromoRecommendationSection) {
+            binding?.rvPromo?.setPadding(0, 0, 0, 0)
+        } else {
+            binding?.rvPromo?.setPadding(0, BOTTOM_SHEET_HEADER_HEIGHT_IN_DP.toPx(), 0, 0)
+        }
     }
 
     private fun renderSavingInfo(promoSavingInfo: PromoSavingInfo) {
