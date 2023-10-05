@@ -165,7 +165,7 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
 
                 val indexVisible = layoutManager?.findLastVisibleItemPosition().orZero()
                 binding?.rvContent?.post {
-                    if (recyclerView.scrollState == RecyclerView.SCROLL_STATE_SETTLING) {
+                    if (recyclerView.scrollState == RecyclerView.SCROLL_STATE_IDLE) {
                         widgetAdapter.autoSelectNavigation(indexVisible)
                     }
                 }
@@ -308,7 +308,6 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
                 toolbar.updateToolbarAppearance(scrollProgress, navigationProperties)
             }
         })
-        widgetAdapter.refreshSticky()
     }
 
     private fun FragmentCatalogReimagineDetailPageBinding.setupToolbar(

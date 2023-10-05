@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:paddingLeft="@dimen/tab_item_padding"
+    android:paddingRight="@dimen/tab_item_padding"
+    android:orientation="horizontal">
+
+    <ImageView
+        android:id="@+id/tab_item_image_id"
+        android:layout_width="@dimen/tab_icon_width"
+        android:layout_height="@dimen/tab_icon_height"
+        android:layout_gravity="center_vertical"
+        android:layout_marginRight="@dimen/tab_icon_margin_right"
+        android:visibility="gone" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/tab_item_icon_unify_id"
+        android:layout_width="@dimen/tab_icon_width"
+        android:layout_height="@dimen/tab_icon_height"
+        android:layout_gravity="center_vertical"
+        android:layout_marginRight="@dimen/tab_icon_margin_right"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/tab_item_text_wrapper_id"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="0"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tab_item_text_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:ellipsize="end"
+            android:maxLines="1"
+            tools:text="Tes"
+            android:textColor="@color/tab_text_selector_color"
+            app:typographyType="display_2"
+            android:singleLine="true"
+            app:typographyWeight="bold"
+            android:textAlignment="center" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tab_item_counter_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical" />
+
+        <com.tokopedia.unifycomponents.NotificationUnify
+            android:id="@+id/tab_item_notification_id"
+            android:layout_width="@dimen/tab_notif_width"
+            android:layout_height="@dimen/tab_notif_height"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/tab_notif_margin_left"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tab_item_label_new_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/tab_label_margin_left"
+            android:background="@drawable/unify_tabs_label_new"
+            android:paddingLeft="@dimen/tab_label_padding"
+            android:paddingRight="@dimen/tab_label_padding"
+            android:text="BARU"
+            android:textColor="#fff"
+            android:textSize="8sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,7 +1,6 @@
 package com.tokopedia.catalogcommon.adapter
 
 import android.os.Handler
-import android.util.Log
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -13,7 +12,8 @@ import com.tokopedia.catalogcommon.uimodel.BaseCatalogUiModel
 import com.tokopedia.catalogcommon.uimodel.StickyNavigationUiModel
 import com.tokopedia.catalogcommon.viewholder.StickyTabNavigationViewHolder
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.unifycomponents.TabsUnify
+import com.tokopedia.catalogcommon.R as catalogcommonR
 
 class WidgetCatalogAdapter(
     private val baseListAdapterTypeFactory: CatalogAdapterFactoryImpl
@@ -109,17 +109,18 @@ class WidgetCatalogAdapter(
             it is StickyNavigationUiModel
         }
 
-
         val navigation = visitables.getOrNull(indexNavigation) as? StickyNavigationUiModel
 
         if (tabPosition != navigation?.currentSelectTab) {
             navigation?.currentSelectTab = tabPosition
             visitables[indexNavigation] = navigation
-            if (!onStickySingleHeaderViewListener?.isStickyShowed.orFalse()){
+            if (!onStickySingleHeaderViewListener?.isStickyShowed.orFalse()) {
                 notifyItemChanged(indexNavigation)
-            }else{
+            } else {
+                Handler().post{
+                    notifyItemChanged(indexNavigation)
+                }
                 refreshSticky()
-                notifyItemChanged(indexNavigation)
             }
         }
     }
