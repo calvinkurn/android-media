@@ -285,6 +285,8 @@ class EventRedeemRevampFragment : BaseDaggerFragment(),
             tgValueDate.show()
             tgTitleSumTicket.show()
             tgValueSumTicket.show()
+            tgTitleSeatingNumber.show()
+            tgValueSeatingNumber.show()
             tgTitleRedeem.show()
             btnRedeem.show()
             tfRedeem.show()
@@ -305,6 +307,8 @@ class EventRedeemRevampFragment : BaseDaggerFragment(),
             tgValueDate.hide()
             tgTitleSumTicket.hide()
             tgValueSumTicket.hide()
+            tgTitleSeatingNumber.hide()
+            tgValueSeatingNumber.hide()
             tgTitleRedeem.hide()
             btnRedeem.hide()
             tfRedeem.hide()
@@ -349,6 +353,14 @@ class EventRedeemRevampFragment : BaseDaggerFragment(),
             tgValueTypeTicket.text = redeem.schedule.name
             tgValueDate.text = redeem.schedule.showData
             tgValueSumTicket.text = redeem.quantity.toString()
+            if (redeem.seatingNumbers.isNotEmpty()) {
+                tgValueSeatingNumber.show()
+                tgTitleSeatingNumber.show()
+                tgValueSeatingNumber.text = redeem.seatingNumbers
+            } else {
+                tgValueSeatingNumber.hide()
+                tgTitleSeatingNumber.hide()
+            }
             renderRedeemLayout(redeem)
         }
     }
