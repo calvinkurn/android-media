@@ -2,7 +2,6 @@ package com.tkpd.macrobenchmark.test.recharge
 
 import android.content.Intent
 import androidx.benchmark.macro.StartupMode
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.filters.SdkSuppress
 import com.tkpd.macrobenchmark.base.BaseStartupBenchmark
@@ -11,11 +10,10 @@ import com.tkpd.macrobenchmark.util.MacroInteration
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 
-
 @LargeTest
 @SdkSuppress(minSdkVersion = 29)
 @RunWith(Parameterized::class)
-class DigitalPDPPulsaStartupBenchmark(startupMode: StartupMode): BaseStartupBenchmark(startupMode) {
+class DigitalPDPPulsaStartupBenchmark(startupMode: StartupMode) : BaseStartupBenchmark(startupMode) {
     override fun getIntent(): Intent = MacroIntent.DigitalProductDetail.getPulsaPdpIntent()
 
     override fun setupEnvironment() {}
@@ -29,6 +27,5 @@ class DigitalPDPPulsaStartupBenchmark(startupMode: StartupMode): BaseStartupBenc
         )
     }
 
-    override fun traceName(): String = "digital_pdp_pulsa"
-
+    override fun traceName(): String = ""
 }
