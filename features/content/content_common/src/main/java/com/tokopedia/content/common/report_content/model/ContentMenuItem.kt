@@ -11,7 +11,7 @@ data class ContentMenuItem(
     val type: ContentMenuIdentifier,
     val appLink: String = "",
     val contentData: FeedContentData? = null
-): Parcelable
+) : Parcelable
 
 /**
  * Feed only~
@@ -22,7 +22,7 @@ data class FeedContentData(
     val postId: String,
     val authorId: String,
     val rowNumber: Int = 0 // absolutePosition
-): Parcelable
+) : Parcelable
 
 enum class ContentMenuIdentifier {
     Edit,

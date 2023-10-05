@@ -79,9 +79,14 @@ data class StoriesDetailItem(
         val isShareable: Boolean,
         val shareText: String,
         val metadata: LinkProperties
-    ): Parcelable {
+    ) : Parcelable {
         companion object {
-            val Empty get() = Sharing(isShareable = false, shareText = "", metadata = LinkProperties())
+            val Empty
+                get() = Sharing(
+                    isShareable = false,
+                    shareText = "",
+                    metadata = LinkProperties(),
+                )
         }
     }
 

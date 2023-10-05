@@ -12,4 +12,4 @@ data class LinkProperties(
     val ogImageUrl: String = "",
     val deeplink: String = "",
     val desktopUrl: String = ""
-): Parcelable
+) : Parcelable
