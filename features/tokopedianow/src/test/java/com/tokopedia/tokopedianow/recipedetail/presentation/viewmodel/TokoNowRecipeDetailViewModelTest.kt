@@ -699,14 +699,6 @@ class TokoNowRecipeDetailViewModelTest : TokoNowRecipeDetailViewModelTestFixture
 
     @Test
     fun `when onClickBookmarkBtn should call update address data and add error ui model to layout list`() {
-        val firstShopId = 0L // invalid shopId
-        val secondShopId = 1L
-
-        val addressResponse = GetStateChosenAddressResponse()
-
-        onGetShopId_thenReturn(firstShopId, secondShopId)
-        onGetAddressData_thenReturn(addressResponse)
-
         viewModel.refreshPage()
 
         val expectedLayoutList = listOf(
