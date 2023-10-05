@@ -33,7 +33,6 @@ import com.tokopedia.stories.view.viewmodel.state.BottomSheetType
 import com.tokopedia.stories.view.viewmodel.state.ProductBottomSheetUiState
 import com.tokopedia.stories.view.viewmodel.state.isAnyShown
 import com.tokopedia.unit.test.rule.CoroutineTestRule
-import com.tokopedia.universal_sharing.view.model.LinkProperties
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.every
@@ -934,10 +933,7 @@ class StoriesUnitTest {
 
     @Test
     fun `when open share bottom sheet and close`() {
-        val mockSharingData = StoriesDetailItem.Sharing(
-            isShareable = false,
-            metadata = LinkProperties()
-        )
+        val mockSharingData = StoriesDetailItem.Sharing.Empty
 
         getStoriesRobot().use { robot ->
             val stateEventOpen = robot.recordStateAndEvents {
