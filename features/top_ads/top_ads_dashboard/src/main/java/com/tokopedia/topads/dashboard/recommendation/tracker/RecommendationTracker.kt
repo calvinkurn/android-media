@@ -3,6 +3,10 @@ package com.tokopedia.topads.dashboard.recommendation.tracker
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.topads.dashboard.recommendation.tracker.RecommendationTrackerConst.Action.CLICK_GROUP_LIST
 import com.tokopedia.topads.dashboard.recommendation.tracker.RecommendationTrackerConst.Action.CLICK_GROUP_LIST_HOMEPAGE
+import com.tokopedia.topads.dashboard.recommendation.tracker.RecommendationTrackerConst.Action.CLICK_LIHAT_SELENGKAPNYA_IKLAN_PRODUK
+import com.tokopedia.topads.dashboard.recommendation.tracker.RecommendationTrackerConst.Action.CLICK_LIHAT_SELENGKAPNYA_IKLAN_TOKO
+import com.tokopedia.topads.dashboard.recommendation.tracker.RecommendationTrackerConst.Action.CLICK_LIHAT_SELENGKAPNYA_SARAN_TOPADS
+import com.tokopedia.topads.dashboard.recommendation.tracker.RecommendationTrackerConst.Action.CLICK_LIHAT_SELENGKAPNYA_SARAN_TOPADS_HEADLINE
 import com.tokopedia.topads.dashboard.recommendation.tracker.RecommendationTrackerConst.Action.CLICK_PRODUCT_OOS
 import com.tokopedia.topads.dashboard.recommendation.tracker.RecommendationTrackerConst.Action.CLICK_PRODUCT_RECOMMENDATION
 import com.tokopedia.topads.dashboard.recommendation.tracker.RecommendationTrackerConst.Action.CLICK_SELENGKAPNYA_HOMEPAGE
@@ -12,8 +16,12 @@ import com.tokopedia.topads.dashboard.recommendation.tracker.RecommendationTrack
 import com.tokopedia.topads.dashboard.recommendation.tracker.RecommendationTrackerConst.Action.CLICK_SUBMIT_NEGATIVE_KEYWORD
 import com.tokopedia.topads.dashboard.recommendation.tracker.RecommendationTrackerConst.Action.CLICK_SUBMIT_POSITIVE_KEYWORD
 import com.tokopedia.topads.dashboard.recommendation.tracker.RecommendationTrackerConst.Action.CLICK_SUBMIT_PRODUCT_RECOMMENDATION
+import com.tokopedia.topads.dashboard.recommendation.tracker.RecommendationTrackerConst.Action.CLICK_TAB_SARAN_TOPADS
 import com.tokopedia.topads.dashboard.recommendation.tracker.RecommendationTrackerConst.EVENT_CATEGORY_HOMEPAGE
 import com.tokopedia.topads.dashboard.recommendation.tracker.RecommendationTrackerConst.EVENT_CATEGORY_INSIGHT_CENTRE
+import com.tokopedia.topads.dashboard.recommendation.tracker.RecommendationTrackerConst.EVENT_CATEGORY_MANUAL_ADS_DASHBOARD
+import com.tokopedia.topads.dashboard.recommendation.tracker.RecommendationTrackerConst.EVENT_CATEGORY_TOPADS_DASHBOARD_HEADLINE
+import com.tokopedia.topads.dashboard.recommendation.tracker.RecommendationTrackerConst.EVENT_CATEGORY_TOPADS_DETAIL_GROUP_IKLAN
 import com.tokopedia.topads.dashboard.recommendation.tracker.RecommendationTrackerConst.EVENT_LABEL_EXISTING_GROUP
 import com.tokopedia.topads.dashboard.recommendation.tracker.RecommendationTrackerConst.EVENT_LABEL_NEW_GROUP
 import com.tokopedia.topads.dashboard.recommendation.tracker.RecommendationTrackerConst.getTrackerId
@@ -136,6 +144,51 @@ object RecommendationTracker : BaseTrackerConst() {
         map[TrackerId.KEY] = getTrackerId(CLICK_SUBMIT_PRODUCT_RECOMMENDATION)
         map[Label.KEY] = EVENT_LABEL_NEW_GROUP
         map[Category.KEY] = EVENT_CATEGORY_INSIGHT_CENTRE
+        trackApp.sendGeneralEvent(map)
+    }
+
+    fun clickTabSaranTopads() {
+        val map = fillCommonData()
+        map[Action.KEY] = CLICK_TAB_SARAN_TOPADS
+        map[TrackerId.KEY] = getTrackerId(CLICK_TAB_SARAN_TOPADS)
+        map[Label.KEY] = String.EMPTY
+        map[Category.KEY] = EVENT_CATEGORY_INSIGHT_CENTRE
+        trackApp.sendGeneralEvent(map)
+    }
+
+    fun clickLihatSelengkapnyaSaranTopads() {
+        val map = fillCommonData()
+        map[Action.KEY] = CLICK_LIHAT_SELENGKAPNYA_SARAN_TOPADS
+        map[TrackerId.KEY] = getTrackerId(CLICK_LIHAT_SELENGKAPNYA_SARAN_TOPADS)
+        map[Label.KEY] = String.EMPTY
+        map[Category.KEY] = EVENT_CATEGORY_MANUAL_ADS_DASHBOARD
+        trackApp.sendGeneralEvent(map)
+    }
+
+    fun clickLihatSelengkapnyaIklanProduk() {
+        val map = fillCommonData()
+        map[Action.KEY] = CLICK_LIHAT_SELENGKAPNYA_IKLAN_PRODUK
+        map[TrackerId.KEY] = getTrackerId(CLICK_LIHAT_SELENGKAPNYA_IKLAN_PRODUK)
+        map[Label.KEY] = String.EMPTY
+        map[Category.KEY] = EVENT_CATEGORY_TOPADS_DETAIL_GROUP_IKLAN
+        trackApp.sendGeneralEvent(map)
+    }
+
+    fun clickLihatSelengkapnyaSaranTopadsHeadline() {
+        val map = fillCommonData()
+        map[Action.KEY] = CLICK_LIHAT_SELENGKAPNYA_SARAN_TOPADS_HEADLINE
+        map[TrackerId.KEY] = getTrackerId(CLICK_LIHAT_SELENGKAPNYA_SARAN_TOPADS_HEADLINE)
+        map[Label.KEY] = String.EMPTY
+        map[Category.KEY] = EVENT_CATEGORY_TOPADS_DASHBOARD_HEADLINE
+        trackApp.sendGeneralEvent(map)
+    }
+
+    fun clickLihatSelengkapnyaIklanToko() {
+        val map = fillCommonData()
+        map[Action.KEY] = CLICK_LIHAT_SELENGKAPNYA_IKLAN_TOKO
+        map[TrackerId.KEY] = getTrackerId(CLICK_LIHAT_SELENGKAPNYA_IKLAN_TOKO)
+        map[Label.KEY] = String.EMPTY
+        map[Category.KEY] = EVENT_CATEGORY_TOPADS_DETAIL_GROUP_IKLAN
         trackApp.sendGeneralEvent(map)
     }
 }
