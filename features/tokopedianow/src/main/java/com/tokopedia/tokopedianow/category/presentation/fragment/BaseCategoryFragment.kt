@@ -71,6 +71,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 abstract class BaseCategoryFragment : Fragment(), ScreenShotListener,
     ShareBottomsheetListener, PermissionListener, MiniCartWidgetListener,
@@ -699,7 +700,7 @@ abstract class BaseCategoryFragment : Fragment(), ScreenShotListener,
 
     private fun getMiniCartHeight(): Int {
         val space16 = context?.resources?.getDimension(
-            com.tokopedia.unifyprinciples.R.dimen.unify_space_16
+            unifyprinciplesR.dimen.unify_space_16
         )?.toInt().orZero()
         return binding?.miniCartWidget?.height.orZero() - space16
     }

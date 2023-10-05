@@ -1,7 +1,7 @@
 package com.tokopedia.tokopedianow.category.domain.response
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.tokopedianow.category.presentation.constant.CategoryComponentType.Companion.TABS_HORIZONTAL_SCROLL
 
 data class GetCategoryLayoutResponse(
     @SerializedName("categoryGetDetailModular")
@@ -15,13 +15,7 @@ data class GetCategoryLayoutResponse(
         val basicInfo: BasicInfo = BasicInfo(),
         @SerializedName("components")
         val components: List<Component> = emptyList()
-    ) {
-        fun getCategoryNameList(): List<String> {
-            return components.find { it.type == TABS_HORIZONTAL_SCROLL }
-                ?.getTabCategoryNameList()
-                ?: emptyList()
-        }
-    }
+    )
 
     data class Header(
         @SerializedName("code")
@@ -31,6 +25,7 @@ data class GetCategoryLayoutResponse(
     )
 
     data class BasicInfo(
+        @SuppressLint("Invalid Data Type")
         @SerializedName("id")
         val id: String = "",
         @SerializedName("name")
@@ -39,6 +34,7 @@ data class GetCategoryLayoutResponse(
         val tree: Int? = null,
         @SerializedName("parent")
         val parent: Int? = null,
+        @SuppressLint("Invalid Data Type")
         @SerializedName("rootId")
         val rootId: Int? = null,
         @SerializedName("url")
@@ -86,6 +82,7 @@ data class GetCategoryLayoutResponse(
     )
 
     data class RelatedCategory(
+        @SuppressLint("Invalid Data Type")
         @SerializedName("id")
         val id: Int? = null
     )
@@ -97,6 +94,7 @@ data class GetCategoryLayoutResponse(
         val name: String? = null,
         @SerializedName("type")
         val type: String? = null,
+        @SuppressLint("Invalid Data Type")
         @SerializedName("targetID")
         val targetID: Int? = null,
         @SerializedName("sticky")
@@ -107,7 +105,7 @@ data class GetCategoryLayoutResponse(
         val data: List<ComponentData> = emptyList()
     ) {
         fun getTabCategoryNameList(): List<String> {
-            return data.mapNotNull { it.categoryName }
+            return data.map { it.categoryName }
         }
     }
 

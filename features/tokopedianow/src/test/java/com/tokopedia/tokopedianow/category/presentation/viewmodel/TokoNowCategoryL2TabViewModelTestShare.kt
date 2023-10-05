@@ -3,6 +3,7 @@ package com.tokopedia.tokopedianow.category.presentation.viewmodel
 import com.tokopedia.tokopedianow.oldcategory.domain.model.CategorySharingModel
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import org.junit.Test
+import java.util.*
 
 class TokoNowCategoryL2TabViewModelTestShare: TokoNowCategoryL2TabViewModelTestFixture() {
 
@@ -52,7 +53,7 @@ class TokoNowCategoryL2TabViewModelTestShare: TokoNowCategoryL2TabViewModelTestF
             title = "Buah",
             deeplinkParam = "category/l2/$categoryIdL1/$categoryIdL2?sc=$categoryIdL3",
             url = "${data.categoryDetail.data.url}?exclude_sc=$categoryIdL2&sc=$categoryIdL3",
-            utmCampaignList = listOf(String.format("cat3", 3), categoryIdL3)
+            utmCampaignList = listOf(String.format(Locale.getDefault(), "cat3", 3), categoryIdL3)
         )
 
         viewModel.shareLiveData
