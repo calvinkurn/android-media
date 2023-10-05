@@ -189,6 +189,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
     }
 
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
+    private var balanceJob: Job? = null
 
     @FlowPreview
     @ExperimentalCoroutinesApi
@@ -198,7 +199,9 @@ class HomeDynamicChannelUseCase @Inject constructor(
                 list = listOf(it)
             )
         }
-        coroutineScope.launch { homeHeaderUseCase.updateBalanceWidget() }
+        if(balanceJob?.isActive != true) {
+            balanceJob = coroutineScope.launch { homeHeaderUseCase.updateBalanceWidget() }
+        }
 
         val atfFlow = homeAtfUseCase.flow.map {
             HomeDynamicChannelModel(
@@ -254,7 +257,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
                 )
             }
 
-            if (userSessionInterface.isLoggedIn) {
+            if (userSessionInterface.isLoggedIn && !isNewMechanism) {
                 /**
                  * Get header data
                  */
