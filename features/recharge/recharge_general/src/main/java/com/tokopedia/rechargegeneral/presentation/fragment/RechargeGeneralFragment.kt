@@ -66,6 +66,7 @@ import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
@@ -150,6 +151,7 @@ class RechargeGeneralFragment :
     private var isFromSBM: Boolean = false
     private var coachmark: CoachMark2? = null
     private var loyaltyStatus: String = ""
+    private var isAlreadyTrackImpressionMultiButton: Boolean = false
 
     private var operatorId: Int = 0
         set(value) {
@@ -630,7 +632,23 @@ class RechargeGeneralFragment :
             if (multiCheckoutButton != null) {
                 enquiryFields.remove(multiCheckoutButton)
                 setMultiCheckoutButton(multiCheckoutButton)
+                if (!isAlreadyTrackImpressionMultiButton) {
+                    isAlreadyTrackImpressionMultiButton = true
+                    commonMultiCheckoutAnalytics.onImpressMultiCheckoutButtons(
+                        categoryName,
+                        multiCheckoutButtonCheckButtonType(multiCheckoutButton.items),
+                        userSession.userId
+                    )
+                }
             } else if (enquiryInfo != null) {
+                if (!isAlreadyTrackImpressionMultiButton) {
+                    isAlreadyTrackImpressionMultiButton = true
+                    commonMultiCheckoutAnalytics.onImpressMultiCheckoutButtons(
+                        categoryName,
+                        Int.ZERO,
+                        userSession.userId
+                    )
+                }
                 enquiryFields.remove(enquiryInfo)
                 // Set enquiry button label
                 setEnquiryButtonLabel(enquiryInfo.text)
@@ -1225,6 +1243,12 @@ class RechargeGeneralFragment :
         val leftButton = multiCheckoutButtons.first()
         val rightButton = multiCheckoutButtons[Int.ONE]
         return Pair(leftButton, rightButton)
+    }
+
+    private fun multiCheckoutButtonCheckButtonType(multiCheckoutButtons: List<RechargeGeneralDynamicField.Item>): Int {
+        val button = multiCheckoutButtons.first()
+        val buttonType = if(button.style == ACTION_GENERAL_MYBILLS) Int.ONE else 2
+        return buttonType
     }
     private fun chooseListenerAction(type: String) {
         if (type.equals(ACTION_GENERAL_MYBILLS)) {
