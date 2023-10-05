@@ -45,6 +45,9 @@ class BlocksPerformanceTrace(
         const val FINISHED_LOADING_TTIL_BLOCKS_THRESHOLD = 3
 
         const val ANDROID_TRACE_FULLY_DRAWN = "reportFullyDrawn() for %s"
+
+        const val COOKIE_TTFL = 77
+        const val COOKIE_TTIL = 78
     }
 
     private var startCurrentTimeMillis = 0L
@@ -110,6 +113,14 @@ class BlocksPerformanceTrace(
 
         if (isPerformanceTraceEnabled) {
             startCurrentTimeMillis = System.currentTimeMillis()
+            beginAsyncSystraceSection(
+                "PageLoadTime.AsyncTTFL$traceName",
+                COOKIE_TTFL
+            )
+            beginAsyncSystraceSection(
+                "PageLoadTime.AsyncTTIL$traceName",
+                COOKIE_TTIL
+            )
             TTFLperformanceMonitoring?.startTrace("ttfl_perf_trace_$traceName")
             TTILperformanceMonitoring?.startTrace("ttil_perf_trace_$traceName")
 
@@ -136,6 +147,18 @@ class BlocksPerformanceTrace(
                 }
             }
             this.onLaunchTimeFinished = onLaunchTimeFinished
+        }
+    }
+
+    fun beginAsyncSystraceSection(methodName: String, cookie: Int) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            Trace.beginAsyncSection(methodName, cookie)
+        }
+    }
+
+    fun endAsyncSystraceSection(methodName: String, cookie: Int) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            Trace.endAsyncSection(methodName, cookie)
         }
     }
 
@@ -283,11 +306,13 @@ class BlocksPerformanceTrace(
     private fun finishTTIL(state: BlocksPerfState, listOfLoadableComponent: Set<String> = setOf()) {
         cancelPerformanceTrace(state, TTILperformanceMonitoring, listOfLoadableComponent)
         ttilMeasured = true
+        endAsyncSystraceSection("PageLoadTime.AsyncTTIL$traceName", COOKIE_TTIL)
     }
 
     private fun finishTTFL(state: BlocksPerfState, listOfLoadableComponent: Set<String> = setOf()) {
         cancelPerformanceTrace(state, TTFLperformanceMonitoring, listOfLoadableComponent)
         ttflMeasured = true
+        endAsyncSystraceSection("PageLoadTime.AsyncTTFL$traceName", COOKIE_TTFL)
     }
 
     private fun createBlocksPerformanceModel() = BlocksPerformanceModel(
