@@ -994,7 +994,7 @@ class StoriesUnitTest {
 
         getStoriesRobot().use { robot ->
             val state = robot.recordState {
-                robot.getProducts()
+                robot.testGetProducts()
             }
 
             state.productSheet.resultState.assertEqualTo(ResultState.Loading)
@@ -1010,7 +1010,7 @@ class StoriesUnitTest {
 
         getStoriesRobot().use { robot ->
             val state = robot.recordState {
-                robot.getProducts()
+                robot.testGetProducts()
             }
 
             state.productSheet.resultState.assertEqualTo(ResultState.Fail(mockThrows))
@@ -1027,7 +1027,7 @@ class StoriesUnitTest {
 
         getStoriesRobot().use { robot ->
             val event = robot.recordEvent {
-                robot.productAction(action, product)
+                robot.testProductAction(action, product)
             }
 
             event.last().assertEqualTo(
@@ -1049,7 +1049,7 @@ class StoriesUnitTest {
 
         getStoriesRobot().use { robot ->
             val event = robot.recordEvent {
-                robot.productAction(action, product)
+                robot.testProductAction(action, product)
             }
 
             event.last().assertEqualTo(StoriesUiEvent.NavigateEvent(ApplinkConst.CART))
@@ -1066,7 +1066,7 @@ class StoriesUnitTest {
 
         getStoriesRobot().use { robot ->
             val event = robot.recordEvent {
-                robot.productAction(action, product)
+                robot.testProductAction(action, product)
             }
 
             event.last().assertType<StoriesUiEvent.ShowErrorEvent> {}
@@ -1083,7 +1083,7 @@ class StoriesUnitTest {
 
         getStoriesRobot().use { robot ->
             val event = robot.recordEvent {
-                robot.productAction(action, product)
+                robot.testProductAction(action, product)
             }
 
             event.last().assertType<StoriesUiEvent.Login> {}

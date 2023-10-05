@@ -235,11 +235,11 @@ internal class StoriesViewModelRobot(
         viewModel.submitAction(StoriesUiAction.DismissSheet(type))
     }
 
-    fun getProducts() {
+    fun testGetProducts() {
         viewModel.submitAction(StoriesUiAction.FetchProduct)
     }
 
-    fun productAction(action: StoriesProductAction, product: ContentTaggedProductUiModel) {
+    fun testProductAction(action: StoriesProductAction, product: ContentTaggedProductUiModel) {
         viewModel.submitAction(StoriesUiAction.ProductAction(action, product))
     }
 
