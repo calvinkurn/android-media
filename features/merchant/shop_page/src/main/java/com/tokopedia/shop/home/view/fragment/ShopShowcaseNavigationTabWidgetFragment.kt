@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.data.Resize
 import com.tokopedia.media.loader.loadImage
@@ -21,6 +22,7 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlin.collections.ArrayList
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.ShopPageHomeTracking
+import com.tokopedia.unifycomponents.toPx
 import javax.inject.Inject
 
 class ShopShowcaseNavigationTabWidgetFragment : BaseDaggerFragment() {
@@ -36,7 +38,11 @@ class ShopShowcaseNavigationTabWidgetFragment : BaseDaggerFragment() {
         private const val THIRD_SHOWCASE_INDEX = 2
         private const val FOURTH_SHOWCASE_INDEX = 3
         private const val FIFTH_SHOWCASE_INDEX = 4
-        private const val DEFAULT_MAIN_SHOWCASE_IMAGE_SIZE = 200
+        private const val TWO = 2
+        private const val HALF_OF_SCREEN_WIDTH = 0.5
+        private const val MARGIN_8_IN_DP = 8
+        private const val MARGIN_4_IN_DP = 4
+        private const val TEXT_SIZE_HEIGHT_IN_DP = 12
 
         @JvmStatic
         fun newInstance(
@@ -118,9 +124,29 @@ class ShopShowcaseNavigationTabWidgetFragment : BaseDaggerFragment() {
         val thirdShowcase = showcases.getOrNull(FOURTH_SHOWCASE_INDEX)
         val fourthShowcase = showcases.getOrNull(FIFTH_SHOWCASE_INDEX)
 
+        val showcaseNavigationWidgetMaxWidth = getScreenWidth()
+        
+        //Main showcase
+        val mainImageMaxWidth = (showcaseNavigationWidgetMaxWidth * HALF_OF_SCREEN_WIDTH).toInt()
+        val mainImageMaxHeight = mainImageMaxWidth
+        
+        //Small showcase
+        val smallImageContainerMaxWidth = showcaseNavigationWidgetMaxWidth - mainImageMaxWidth
+        val smallImageContainerMaxHeight = mainImageMaxHeight
+        val smallImageContainerLeftMargin = MARGIN_8_IN_DP.toPx()
+        val smallImageContainerMiddleMargin = MARGIN_8_IN_DP.toPx()
+        
+        val smallImageTextSizeHeight = TEXT_SIZE_HEIGHT_IN_DP.toPx()
+        val smallImageTextSizeMarginTop = MARGIN_4_IN_DP.toPx()
+        val smallImageFirstAndSecondRowMargin = MARGIN_8_IN_DP.toPx()
+        
+        
+        val smallImageWidth = ((smallImageContainerMaxWidth - smallImageContainerLeftMargin - smallImageContainerMiddleMargin ) / TWO)
+        val smallImageHeight = ((smallImageContainerMaxHeight - (TWO * smallImageTextSizeHeight) - (TWO * smallImageTextSizeMarginTop) - smallImageFirstAndSecondRowMargin) / TWO) 
+        
         mainShowcase?.let {
             binding?.imgMainShowcase?.loadImage(mainShowcase.imageUrl) {
-                this.overrideSize(Resize(DEFAULT_MAIN_SHOWCASE_IMAGE_SIZE, DEFAULT_MAIN_SHOWCASE_IMAGE_SIZE))
+                this.overrideSize(Resize(mainImageMaxWidth, mainImageMaxHeight))
             }
             binding?.tpgMainShowcaseTitle?.text = mainShowcase.name
 
@@ -132,7 +158,9 @@ class ShopShowcaseNavigationTabWidgetFragment : BaseDaggerFragment() {
         }
 
         firstShowcase?.let {
-            binding?.imgFirstShowcase?.loadImage(firstShowcase.imageUrl)
+            binding?.imgFirstShowcase?.loadImage(firstShowcase.imageUrl) {
+                this.overrideSize(Resize(smallImageWidth, smallImageHeight))
+            }
             binding?.tpgFirstShowcaseTitle?.text = firstShowcase.name
 
             binding?.imgFirstShowcase?.visible()
@@ -143,7 +171,9 @@ class ShopShowcaseNavigationTabWidgetFragment : BaseDaggerFragment() {
         }
 
         secondShowcase?.let {
-            binding?.imgSecondShowcase?.loadImage(secondShowcase.imageUrl)
+            binding?.imgSecondShowcase?.loadImage(secondShowcase.imageUrl) {
+                this.overrideSize(Resize(smallImageWidth, smallImageHeight))
+            }
             binding?.tpgSecondShowcaseTitle?.text = secondShowcase.name
 
             binding?.imgSecondShowcase?.visible()
@@ -154,7 +184,9 @@ class ShopShowcaseNavigationTabWidgetFragment : BaseDaggerFragment() {
         }
 
         thirdShowcase?.let {
-            binding?.imgThirdShowcase?.loadImage(thirdShowcase.imageUrl)
+            binding?.imgThirdShowcase?.loadImage(thirdShowcase.imageUrl) {
+                this.overrideSize(Resize(smallImageWidth, smallImageHeight))
+            }
             binding?.tpgThirdShowcaseTitle?.text = thirdShowcase.name
 
             binding?.imgThirdShowcase?.visible()
@@ -165,7 +197,9 @@ class ShopShowcaseNavigationTabWidgetFragment : BaseDaggerFragment() {
         }
 
         fourthShowcase?.let {
-            binding?.imgFourthShowcase?.loadImage(fourthShowcase.imageUrl)
+            binding?.imgFourthShowcase?.loadImage(fourthShowcase.imageUrl) {
+                this.overrideSize(Resize(smallImageWidth, smallImageHeight))
+            }
             binding?.tpgFourthShowcaseTitle?.text = fourthShowcase.name
 
             binding?.imgFourthShowcase?.visible()
