@@ -22,11 +22,19 @@ sealed class BaseOptionUiModel(
         override var isSelected: Boolean = false
     ) : BaseOptionUiModel(value, title, isSelected) {
 
+        companion object {
+            private const val SINGLE_OPTION_TEXT_FORMAT = "%s. %s"
+        }
+
         override fun type(typeFactory: OptionAdapterFactory): Int {
             return typeFactory.type(this)
         }
 
         override fun copyData(): BaseOptionUiModel = this.copy()
+
+        fun getFormattedText(): String {
+            return String.format(SINGLE_OPTION_TEXT_FORMAT, value, title)
+        }
     }
 
     data class QuestionOptionMultipleUiModel(

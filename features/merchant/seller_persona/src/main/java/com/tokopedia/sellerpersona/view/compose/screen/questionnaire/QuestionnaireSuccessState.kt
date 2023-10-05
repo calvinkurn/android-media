@@ -94,14 +94,16 @@ fun QuestionnaireSuccessState(
 
             HorizontalPager(
                 count = questionnaireList.size,
-                modifier = Modifier.constrainAs(questionnairePager) {
-                    top.linkTo(progressBar.bottom)
-                    bottom.linkTo(nextBtn.top, margin = 16.dp)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                    width = Dimension.fillToConstraints
-                    height = Dimension.fillToConstraints
-                }.disabledHorizontalPointerInputScroll(),
+                modifier = Modifier
+                    .constrainAs(questionnairePager) {
+                        top.linkTo(progressBar.bottom)
+                        bottom.linkTo(nextBtn.top, margin = 16.dp)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                        width = Dimension.fillToConstraints
+                        height = Dimension.fillToConstraints
+                    }
+                    .disabledHorizontalPointerInputScroll(),
                 key = { pagePosition ->
                     questionnaireList[pagePosition].id
                 },
@@ -262,8 +264,9 @@ fun QuestionnaireItemSingleAnswer(
                 event(QuestionnaireUserEvent.OnOptionItemSelected(pagePosition, option, isChecked))
             }
     ) {
+        val optionText = remember { option.getFormattedText() }
         NestTypography(
-            text = option.title, modifier = Modifier
+            text = optionText, modifier = Modifier
                 .fillMaxWidth()
                 .padding(all = 12.dp)
         )
