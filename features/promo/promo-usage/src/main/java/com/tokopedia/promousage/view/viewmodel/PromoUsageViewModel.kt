@@ -1098,7 +1098,8 @@ class PromoUsageViewModel @Inject constructor(
         _promoPageUiState.ifSuccess { pageState ->
             if (isChangedFromInitialState()) {
                 val hasSelectedPromo = pageState.items.getSelectedPromoCodes().isNotEmpty()
-                if (hasSelectedPromo) {
+                val hasSelectedBoPromo = boPromoCodes.isNotEmpty()
+                if (hasSelectedPromo || hasSelectedBoPromo) {
                     onApplyPromo(
                         entryPoint = entryPoint,
                         validateUsePromoRequest = validateUsePromoRequest,
@@ -1820,7 +1821,8 @@ class PromoUsageViewModel @Inject constructor(
         _promoPageUiState.ifSuccess { pageState ->
             if (isChangedFromInitialState()) {
                 val hasSelectedPromo = pageState.items.getSelectedPromoCodes().isNotEmpty()
-                if (hasSelectedPromo) {
+                val hasSelectedBoPromo = boPromoCodes.isNotEmpty()
+                if (hasSelectedPromo || hasSelectedBoPromo) {
                     onApplyPromo(
                         entryPoint = entryPoint,
                         validateUsePromoRequest = validateUsePromoRequest,
@@ -1914,7 +1916,8 @@ class PromoUsageViewModel @Inject constructor(
             if (isChangedFromInitialState()) {
                 val appliedPromos = pageState.items.getSelectedPromos()
                 val hasSelectedPromo = appliedPromos.isNotEmpty()
-                if (hasSelectedPromo) {
+                val hasSelectedBoPromo = boPromoCodes.isNotEmpty()
+                if (hasSelectedPromo || hasSelectedBoPromo) {
                     onApplyPromo(
                         entryPoint = entryPoint,
                         validateUsePromoRequest = validateUsePromoRequest,

@@ -1772,6 +1772,31 @@ class CartRevampFragment :
         }
     }
 
+    private fun getBoPromoCodes(): List<String> {
+        return when {
+            viewModel.cartModel.isLastApplyResponseStillValid -> {
+                val lastApplyPromo =
+                    viewModel.cartModel.cartListData?.promo?.lastApplyPromo ?: LastApplyPromo()
+                lastApplyPromo.lastApplyPromoData
+                    .listVoucherOrders
+                    .filter { it.isTypeLogistic() }
+                    .map { it.code }
+            }
+
+            viewModel.cartModel.lastValidateUseRequest != null -> {
+                val promoUiModel =
+                    viewModel.cartModel.lastValidateUseResponse?.promoUiModel ?: PromoUiModel()
+                promoUiModel.voucherOrderUiModels
+                    .filter { it.isTypeLogistic() }
+                    .map { it.code }
+            }
+
+            else -> {
+                emptyList()
+            }
+        }
+    }
+
     private fun generateParamGetLastApplyPromo(): ValidateUsePromoRequest {
         return when {
             viewModel.cartModel.isLastApplyResponseStillValid -> {
@@ -4105,6 +4130,7 @@ class CartRevampFragment :
                 val bottomSheetPromo = PromoUsageBottomSheet.newInstance(
                     entryPoint = PromoPageEntryPoint.CART_PAGE,
                     promoRequest = generateParamsCouponList(),
+                    boPromoCodes = getBoPromoCodes(),
                     validateUsePromoRequest = generateParamGetLastApplyPromo(),
                     totalAmount = getCurrentTotalPrice(),
                     listener = this@CartRevampFragment
