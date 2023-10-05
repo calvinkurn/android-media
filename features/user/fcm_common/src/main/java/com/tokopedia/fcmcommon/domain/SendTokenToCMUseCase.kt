@@ -1,6 +1,5 @@
 package com.tokopedia.fcmcommon.domain
 
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.fcmcommon.common.FcmConstant
 import com.tokopedia.fcmcommon.data.CmAddToken
 import com.tokopedia.fcmcommon.data.TokenResponse
@@ -9,6 +8,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
+import com.tokopedia.network.exception.MessageErrorException
 import kotlinx.coroutines.Dispatchers
 import java.util.*
 import javax.inject.Inject

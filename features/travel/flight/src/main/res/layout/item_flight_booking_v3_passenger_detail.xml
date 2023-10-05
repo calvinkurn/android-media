@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         app:typographyType="body_2"
         tools:text="Paspor | "
-        android:textColor="@color/Unify_N700_44"
+        android:textColor="@color/Unify_NN950_44"
         />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         app:typographyType="body_2"
         tools:text="ABX123 lalallalallalalallalal gegeggegege uuuuu iiiiii aaaaa"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         android:lines="1"
         android:ellipsize="end"/>
 

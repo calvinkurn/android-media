@@ -2,18 +2,18 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:paddingBottom="16dp"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:paddingBottom="16dp">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/shop_credibility_ava"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginStart="16dp"
+        app:layout_constraintBottom_toBottomOf="@+id/shop_credibility_location"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="@+id/shop_credibility_name"
-        app:layout_constraintBottom_toBottomOf="@+id/shop_credibility_location"
         tools:src="@tools:sample/avatars" />
 
     <com.tokopedia.unifycomponents.ImageUnify
@@ -31,6 +31,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="6dp"
+        android:layout_marginTop="16dp"
         android:layout_marginBottom="2dp"
         android:ellipsize="end"
         android:maxLines="1"
@@ -40,7 +41,6 @@
         app:layout_constraintLeft_toRightOf="@id/shop_credibility_badge"
         app:layout_constraintRight_toLeftOf="@id/shop_credibility_partner"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="16dp"
         app:layout_constraintVertical_chainStyle="packed"
         app:layout_goneMarginEnd="16dp"
         app:layout_goneMarginLeft="8dp"
@@ -198,9 +198,9 @@
         android:layout_marginStart="12dp"
         android:layout_marginTop="12dp"
         android:layout_marginEnd="12dp"
-        app:layout_goneMarginTop="8dp"
         android:layout="@layout/view_credibility_ticker"
         app:layout_constraintTop_toBottomOf="@id/shop_credibility_info_desc_2"
+        app:layout_goneMarginTop="8dp"
         tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

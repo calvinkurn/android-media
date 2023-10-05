@@ -18,6 +18,7 @@
     <string name="up_lb_post">Postingan</string>
     <string name="up_lb_follower">Follower</string>
     <string name="up_btn_profile">Ubah Profil</string>
+    <string name="up_lb_review">Ulasan</string>
     <string name="up_lb_followers">Follower</string>
     <string name="up_lb_following">Following</string>
     <string name="up_lb_no_follower">No follower</string>
@@ -34,6 +35,9 @@
 
     <string name="up_title_followers">%s Follower</string>
     <string name="up_title_following">%s Following</string>
+
+    <string name="up_share_text_with_username_template">Lihat konten menarik dari %1s (%2s), yuk!😍\n%3s</string>
+    <string name="up_share_text_template">Lihat konten menarik dari %1s, yuk!😍\n%2s</string>
     
     <!--Block-->
     <string name="up_block_user">Blokir pengguna</string>
@@ -56,4 +60,26 @@
     <string name="up_play_video_link_copied">Link disalin!</string>
     <string name="up_play_video_deleted">Video telah dihapus.</string>
 
+    <!-- Review Tab -->
+    <string name="up_profile_settings_title">Pengaturan Profil</string>
+    <string name="up_profile_settings_review_text">Tampilkan ulasan publik di Halaman Profil</string>
+    <string name="up_profile_review_onboarding_title">Yay, kini ulasan publikmu bisa otomatis tampil di profil!</string>
+    <string-array name="up_profile_review_onboarding_desc">
+        <item>Ulasanmu bisa menginspirasi lebih banyak pengguna</item>
+        <item>Kamu juga bisa cari inspirasi dari ulasannya pengguna lain</item>
+        <item>Bisa dapat lebih banyak followers berkat ulasanmu yang tepercaya</item>
+        <item>Ulasan dengan produk sensitif (rokok, produk dewasa, pakaian dalam, dll) tidak akan ditampilkan di profilmu</item>
+    </string-array>
+    <string name="up_profile_review_onboarding_see_my_review">Lihat Ulasan Saya</string>
+    <string name="up_profile_review_onboarding_hide_review">Tidak mau menampilkan ulasan di profil?\nSembunyikan ulasan di Pengaturan Profil</string>
+    <string name="up_profile_self_review_hidden_title">Ulasan kamu disembunyikan</string>
+    <string name="up_profile_self_review_hidden_desc">Mau tampilkan ulasannya di sini? Ubah aja \ndi Pengaturan Profil</string>
+    <string name="up_profile_other_review_hidden_title">Ulasan disembunyikan</string>
+    <string name="up_profile_other_review_hidden_desc">Kamu bisa lihat ulasannya kalau %s nanti \nganti pengaturan profilnya, ya.</string>
+    <string name="up_profile_self_review_empty_title">Kamu belum ada ulasan</string>
+    <string name="up_profile_self_review_empty_desc">Ayo Buat Ulasan dulu, supaya kamu bisa \nmenginspirasi pengguna lain!</string>
+    <string name="up_profile_other_review_empty_title">Belum ada ulasan</string>
+    <string name="up_profile_create_review">Buat Ulasan</string>
+    <string name="up_profile_user_review_product_variant_template">Varian: %s</string>
+    <string name="up_profile_user_review_text_template">%s... Selengkapnya</string>
 </resources>

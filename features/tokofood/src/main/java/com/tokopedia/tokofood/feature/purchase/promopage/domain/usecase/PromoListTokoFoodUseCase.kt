@@ -35,7 +35,7 @@ private const val QUERY = """
     """
 
 @GqlQuery("PromoListTokofood", QUERY)
-class PromoListTokoFoodUseCase @Inject constructor(
+open class PromoListTokoFoodUseCase @Inject constructor(
     repository: GraphqlRepository,
     private val chosenAddressRequestHelper: TokoFoodChosenAddressRequestHelper
 ): GraphqlUseCase<PromoListTokoFoodResponse>(repository) {
@@ -45,7 +45,7 @@ class PromoListTokoFoodUseCase @Inject constructor(
         setGraphqlQuery(PromoListTokofood())
     }
 
-    suspend fun execute(source: String,
+    open suspend fun execute(source: String,
                         merchantId: String,
                         cartList: List<String>): CartGeneralPromoListDataData {
         val param = generateParams(

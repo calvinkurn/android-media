@@ -1,16 +1,16 @@
 package com.tokopedia.affiliate.ui.activity
 
-
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.widget.FrameLayout
-import androidx.constraintlayout.widget.Group
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.affiliate.AFFILIATE_APP_LINK
 import com.tokopedia.affiliate.AFFILIATE_SPLASH_TIME
 import com.tokopedia.affiliate.di.AffiliateComponent
@@ -20,50 +20,66 @@ import com.tokopedia.affiliate.ui.fragment.registration.AffiliatePortfolioFragme
 import com.tokopedia.affiliate.ui.fragment.registration.AffiliateTermsAndConditionFragment
 import com.tokopedia.affiliate.viewmodel.AffiliateRegistrationSharedViewModel
 import com.tokopedia.affiliate_toko.R
+import com.tokopedia.affiliate_toko.databinding.AffiliateRegistrationLayoutBinding
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelActivity
-import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-class AffiliateRegistrationActivity: BaseViewModelActivity<AffiliateRegistrationSharedViewModel>() {
+class AffiliateRegistrationActivity :
+    BaseSimpleActivity(),
+    HasComponent<AffiliateComponent> {
+    private val affiliateComponent: AffiliateComponent by lazy(LazyThreadSafetyMode.NONE) { initInject() }
 
     @Inject
-    lateinit var userSessionInterface: UserSessionInterface
+    @JvmField
+    var userSessionInterface: UserSessionInterface? = null
 
     @Inject
-    lateinit var viewModelProvider: ViewModelProvider.Factory
+    @JvmField
+    var viewModelProvider: ViewModelProvider.Factory? = null
 
     private var affiliateRegistrationSharedViewModel: AffiliateRegistrationSharedViewModel? = null
 
+    private var binding: AffiliateRegistrationLayoutBinding? = null
+
     private var productId: String? = null
-
-    override fun getViewModelType(): Class<AffiliateRegistrationSharedViewModel> {
-        return AffiliateRegistrationSharedViewModel::class.java
-    }
-
-    override fun setViewModel(viewModel: BaseViewModel) {
-        affiliateRegistrationSharedViewModel = viewModel as AffiliateRegistrationSharedViewModel
-    }
+    private var source: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        productId = intent.getStringExtra(PRODUCT_ID_KEY)
+        component.injectRegistrationActivity(this)
+        binding = AffiliateRegistrationLayoutBinding.inflate(layoutInflater)
+        setContentView(binding?.root)
+        affiliateRegistrationSharedViewModel =
+            viewModelProvider?.let { ViewModelProvider(this, it) }
+                ?.get(AffiliateRegistrationSharedViewModel::class.java)
+
+        val queryData = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent.getSerializableExtra(QUERY_PARAM, Pair::class.java)
+        } else {
+            intent.getSerializableExtra(QUERY_PARAM) as? Pair<*, *>
+        }
+        when (queryData?.first) {
+            PRODUCT_ID_KEY -> productId = queryData.second.toString()
+            SOURCE_KEY -> source = queryData.second.toString()
+        }
         setupView(savedInstanceState == null)
     }
 
     private fun setupView(isSavedInstanceStateNull: Boolean) {
         initObserver()
-        if(isSavedInstanceStateNull) initFragment()
+        if (isSavedInstanceStateNull) initFragment()
     }
 
     private fun initFragment() {
-        supportFragmentManager.beginTransaction().add(R.id.parent_view,AffiliateLoginFragment.getFragmentInstance(),AffiliateLoginFragment.TAG).commit()
+        supportFragmentManager.beginTransaction().add(
+            R.id.parent_view,
+            AffiliateLoginFragment.getFragmentInstance(),
+            AffiliateLoginFragment.TAG
+        ).commit()
     }
-
 
     private fun initObserver() {
         affiliateRegistrationSharedViewModel?.getUserAction()?.observe(this) {
@@ -74,15 +90,18 @@ class AffiliateRegistrationActivity: BaseViewModelActivity<AffiliateRegistration
                         AffiliatePortfolioFragment.TAG
                     )
                 }
+
                 AffiliateRegistrationSharedViewModel.UserAction.NaigateToTermsAndFragment -> {
                     openFragment(
                         AffiliateTermsAndConditionFragment.getFragmentInstance(),
                         AffiliateTermsAndConditionFragment.TAG
                     )
                 }
+
                 AffiliateRegistrationSharedViewModel.UserAction.RegistrationSucces -> {
                     showSplashScreen()
                 }
+
                 else -> {}
             }
         }
@@ -91,24 +110,38 @@ class AffiliateRegistrationActivity: BaseViewModelActivity<AffiliateRegistration
     private var showingSplashScreen = false
     private fun showSplashScreen() {
         showingSplashScreen = true
-        findViewById<FrameLayout>(R.id.parent_view)?.hide()
-        findViewById<Typography>(R.id.splash_title).text =
+        binding?.parentView?.hide()
+        binding?.splashTitle?.text =
             getString(R.string.affiliate_hai_ana_selamat_bergabung_di_tokopedia_affiliate).replace(
                 "{name}",
-                userSessionInterface.name
+                userSessionInterface?.name.orEmpty()
             )
-        findViewById<Group>(R.id.splash_group)?.show()
-        splashHandler = Handler(Looper.getMainLooper())
-        splashHandler?.postDelayed(splashRunnable, AFFILIATE_SPLASH_TIME)
+        binding?.splashGroup?.show()
+        if (source == SOURCE_WISHLIST) {
+            binding?.actionContainer?.show()
+            binding?.backToWishlist?.apply {
+                setOnClickListener {
+                    finish()
+                }
+            }
+            binding?.goToPromote?.apply {
+                setOnClickListener {
+                    openAffiliate()
+                }
+            }
+        } else {
+            splashHandler = Handler(Looper.getMainLooper())
+            splashHandler?.postDelayed(splashRunnable, AFFILIATE_SPLASH_TIME)
+        }
     }
 
     private var splashHandler: Handler? = null
 
     private val splashRunnable = Runnable {
-        findViewById<Group>(R.id.splash_group)?.hide()
+        binding?.splashGroup?.hide()
         if (productId == null) {
             openAffiliate()
-        } else if (productId?.isEmpty() == true) {
+        } else if (productId.isNullOrBlank()) {
             finish()
         } else {
             openPdp()
@@ -124,49 +157,42 @@ class AffiliateRegistrationActivity: BaseViewModelActivity<AffiliateRegistration
         RouteManager.route(this, AFFILIATE_APP_LINK)
         finish()
     }
+
     private fun openPdp() {
         RouteManager.route(this, "tokopedia://product/$productId")
         finish()
     }
 
-    private fun openFragment(fragment: Fragment,tag: String) {
-        supportFragmentManager.beginTransaction().add(R.id.parent_view,fragment).addToBackStack(
+    private fun openFragment(fragment: Fragment, tag: String) {
+        supportFragmentManager.beginTransaction().add(R.id.parent_view, fragment).addToBackStack(
             tag
         ).commit()
     }
-
 
     override fun getNewFragment(): Fragment? {
         return null
     }
 
-    override fun initInject() {
-        getComponent().injectRegistrationActivity(this)
-    }
+    override fun getComponent(): AffiliateComponent = affiliateComponent
 
-    override fun getVMFactory(): ViewModelProvider.Factory {
-        return viewModelProvider
-    }
-
-    private fun getComponent(): AffiliateComponent =
+    private fun initInject() =
         DaggerAffiliateComponent
             .builder()
             .baseAppComponent((application as BaseMainApplication).baseAppComponent)
             .build()
 
-    companion object{
+    companion object {
+        private const val QUERY_PARAM = "query_param"
         private const val PRODUCT_ID_KEY = "productId"
-        fun newInstance(context: Context, productId: String? = null) {
+        private const val SOURCE_KEY = "source"
+        private const val SOURCE_WISHLIST = "wishlist"
+        fun newInstance(context: Context, queryData: Pair<String, String?>? = null) {
             context.startActivity(
                 Intent(context, AffiliateRegistrationActivity::class.java).apply {
-                    putExtra(PRODUCT_ID_KEY, productId)
+                    putExtra(QUERY_PARAM, queryData)
                 }
             )
         }
-    }
-
-    override fun onBackPressed() {
-        if(!showingSplashScreen) super.onBackPressed()
     }
 
     override fun getLayoutRes(): Int = R.layout.affiliate_registration_layout

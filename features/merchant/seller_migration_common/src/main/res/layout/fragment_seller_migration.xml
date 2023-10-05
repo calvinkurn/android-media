@@ -25,7 +25,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginRight="16dp"
                 android:text="@string/seller_migration_fragment_header_title"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                 app:typographyType="heading_2" />
 
             <com.tokopedia.unifycomponents.ImageUnify
@@ -44,7 +44,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginRight="16dp"
                 android:text="@string/seller_migration_fragment_advantages_title"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                 app:typographyType="heading_4" />
 
             <include
@@ -67,7 +67,7 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:text="@string/seller_migration_fragment_body_title"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                 app:typographyType="heading_4" />
 
             <com.tokopedia.unifycomponents.TabsUnify

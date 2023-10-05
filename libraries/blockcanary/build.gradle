@@ -1,6 +1,8 @@
 apply plugin: 'com.android.library'
 
 android {
+    namespace 'com.github.moduth.blockcanary'
+    testNamespace 'com.github.moduth.blockcanary.test'
     compileSdkVersion rootProject.ext.compileSdkVersion
 
     defaultConfig {

@@ -199,7 +199,6 @@ class OfficialHomeFragment :
                 OfficialStoreLegoBannerComponentCallback(this),
                 OSMixLeftComponentCallback(this),
                 OSMixTopComponentCallback(this),
-                OSFeaturedBrandCallback(this, tracking),
                 OSFeaturedShopDCCallback(this),
                 recyclerView?.recycledViewPool,
                 OSMerchantVoucherCallback(this),

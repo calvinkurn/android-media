@@ -33,8 +33,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.*
-import kotlinx.coroutines.test.runTest
-import okhttp3.internal.wait
 import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
@@ -73,7 +71,6 @@ class CampaignListViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-
     @RelaxedMockK
     lateinit var checkTimeMotionTimer: Observer<in Int>
 
@@ -109,21 +106,20 @@ class CampaignListViewModelTest {
         unmockkAll()
     }
 
-
     //region getCampaigns
     @Test
     fun `When search keyword is number, campaign name should be changed to empty string`() =
         runBlocking {
-            //Given
+            // Given
             val rows = 0
             val offset = 10
             val statusIds = listOf(CampaignStatus.DRAFT.id)
             val searchKeyword = "12345"
 
-            //When
+            // When
             viewModel.getCampaigns(rows, offset, statusIds, searchKeyword)
 
-            //Then
+            // Then
             coVerify {
                 getSellerCampaignListUseCase.execute(
                     rows = rows,
@@ -138,16 +134,16 @@ class CampaignListViewModelTest {
     @Test
     fun `When search keyword is string, campaign id params should be changed to 0`() =
         runBlocking {
-            //Given
+            // Given
             val rows = 0
             val offset = 10
             val statusIds = listOf(CampaignStatus.DRAFT.id)
             val searchKeyword = "Adidas Bosque"
 
-            //When
+            // When
             viewModel.getCampaigns(rows, offset, statusIds, searchKeyword)
 
-            //Then
+            // Then
             coVerify {
                 getSellerCampaignListUseCase.execute(
                     rows = rows,
@@ -162,7 +158,7 @@ class CampaignListViewModelTest {
     @Test
     fun `When get campaign success, observer should successfully received the data`() =
         runBlocking {
-            //Given
+            // Given
             val campaignMeta = CampaignMeta(
                 totalCampaign = 20,
                 totalCampaignActive = 5,
@@ -186,20 +182,18 @@ class CampaignListViewModelTest {
                 )
             } returns campaignMeta
 
-            //When
+            // When
             viewModel.getCampaigns(rows, offset, statusIds, searchKeyword)
 
-
-            //Then
+            // Then
             val actual = viewModel.campaigns.getOrAwaitValue()
             assertEquals(expected, actual)
         }
 
-
     @Test
     fun `When get campaign error, observer should receive error result`() =
         runBlocking {
-            //Given
+            // Given
             val rows = 0
             val offset = 10
             val statusIds = listOf(CampaignStatus.ONGOING.id)
@@ -217,10 +211,10 @@ class CampaignListViewModelTest {
                 )
             } throws error
 
-            //When
+            // When
             viewModel.getCampaigns(rows, offset, statusIds, searchKeyword)
 
-            //Then
+            // Then
             val actual = viewModel.campaigns.getOrAwaitValue()
             assertEquals(expected, actual)
         }
@@ -230,34 +224,33 @@ class CampaignListViewModelTest {
     @Test
     fun `When get campaign prerequisite data success, observer should successfully received the data`() =
         runBlocking {
-            //Given
+            // Given
             val campaignPrerequisiteData = CampaignPrerequisiteData(drafts = listOf())
             val expected = Success(campaignPrerequisiteData)
 
             coEvery { getCampaignPrerequisiteDataUseCase.execute() } returns campaignPrerequisiteData
 
-            //When
+            // When
             viewModel.getCampaignPrerequisiteData()
 
-            //Then
+            // Then
             val actual = viewModel.campaignPrerequisiteData.getOrAwaitValue()
             assertEquals(expected, actual)
         }
 
-
     @Test
     fun `When get campaign prerequisite data error, observer should receive error result`() =
         runBlocking {
-            //Given
+            // Given
             val error = MessageErrorException("Server error")
             val expected = Fail(error)
 
             coEvery { getCampaignPrerequisiteDataUseCase.execute() } throws error
 
-            //When
+            // When
             viewModel.getCampaignPrerequisiteData()
 
-            //Then
+            // Then
             val actual = viewModel.campaignPrerequisiteData.getOrAwaitValue()
             assertEquals(expected, actual)
         }
@@ -267,36 +260,35 @@ class CampaignListViewModelTest {
     @Test
     fun `When get share component metadata success, observer should successfully received the data`() =
         runBlocking {
-            //Given
-            val campaignId : Long = 1001
+            // Given
+            val campaignId: Long = 1001
             val shareComponentMetadata = mockk<ShareComponentMetadata>()
             val expected = Success(shareComponentMetadata)
 
             coEvery { getShareComponentMetadataUseCase.execute(campaignId) } returns shareComponentMetadata
 
-            //When
+            // When
             viewModel.getShareComponentMetadata(campaignId)
 
-            //Then
+            // Then
             val actual = viewModel.shareComponentMetadata.getOrAwaitValue()
             assertEquals(expected, actual)
         }
 
-
     @Test
     fun `When get share component metadata error, observer should receive error result`() =
         runBlocking {
-            //Given
-            val campaignId : Long = 1001
+            // Given
+            val campaignId: Long = 1001
             val error = MessageErrorException("Server error")
             val expected = Fail(error)
 
             coEvery { getShareComponentMetadataUseCase.execute(campaignId) } throws error
 
-            //When
+            // When
             viewModel.getShareComponentMetadata(campaignId)
 
-            //Then
+            // Then
             val actual = viewModel.shareComponentMetadata.getOrAwaitValue()
             assertEquals(expected, actual)
         }
@@ -306,38 +298,37 @@ class CampaignListViewModelTest {
     @Test
     fun `When get share component thumbnail image url success, observer should successfully received the data`() =
         runBlocking {
-            //Given
-            val campaignId : Long = 1001
+            // Given
+            val campaignId: Long = 1001
             val thumbnailImageUrl = "https://images.tokopedia.com/some-banner.png"
             val campaign = buildCampaignUiModel(campaignId)
             val expected = Success(thumbnailImageUrl)
 
             coEvery { generateCampaignBannerUseCase.execute(campaignId) } returns thumbnailImageUrl
 
-            //When
+            // When
             viewModel.onMoreMenuShareClicked(campaign)
 
-            //Then
+            // Then
             val actual = viewModel.shareComponentThumbnailImageUrl.getOrAwaitValue()
             assertEquals(expected, actual)
         }
 
-
     @Test
     fun `When get share component thumbnail image url error, observer should receive error result`() =
         runBlocking {
-            //Given
-            val campaignId : Long = 1001
+            // Given
+            val campaignId: Long = 1001
             val error = MessageErrorException("Server error")
             val campaign = buildCampaignUiModel(campaignId)
             val expected = Fail(error)
 
             coEvery { generateCampaignBannerUseCase.execute(campaignId) } throws error
 
-            //When
+            // When
             viewModel.onMoreMenuShareClicked(campaign)
 
-            //Then
+            // Then
             val actual = viewModel.shareComponentThumbnailImageUrl.getOrAwaitValue()
             assertEquals(expected, actual)
         }
@@ -348,10 +339,10 @@ class CampaignListViewModelTest {
             val campaignId: Long = 1001
             val campaign = buildCampaignUiModel(campaignId)
 
-            //When
+            // When
             viewModel.onMoreMenuShareClicked(campaign)
 
-            //Then
+            // Then
             coVerify { tracker.sendClickShareCampaignPopupEvent(campaign) }
         }
     //endregion
@@ -360,36 +351,35 @@ class CampaignListViewModelTest {
     @Test
     fun `When validating campaign creation eligibility success, observer should successfully received the data`() =
         runBlocking {
-            //Given
-            val vpsPackageId : Long = 1
+            // Given
+            val vpsPackageId: Long = 1
             val campaignCreationEligibility = mockk<CampaignCreationEligibility>()
             val expected = Success(campaignCreationEligibility)
 
             coEvery { validateCampaignCreationEligibility.execute(vpsPackageId = vpsPackageId) } returns campaignCreationEligibility
 
-            //When
+            // When
             viewModel.validateCampaignCreationEligibility(vpsPackageId)
 
-            //Then
+            // Then
             val actual = viewModel.creationEligibility.getOrAwaitValue()
             assertEquals(expected, actual)
         }
 
-
     @Test
     fun `When validating campaign creation eligibility error, observer should receive error result`() =
         runBlocking {
-            //Given
+            // Given
             val vpsPackageId: Long = 1
             val error = MessageErrorException("Server error")
             val expected = Fail(error)
 
             coEvery { validateCampaignCreationEligibility.execute(vpsPackageId) } throws error
 
-            //When
+            // When
             viewModel.validateCampaignCreationEligibility(vpsPackageId)
 
-            //Then
+            // Then
             val actual = viewModel.creationEligibility.getOrAwaitValue()
             assertEquals(expected, actual)
         }
@@ -399,35 +389,34 @@ class CampaignListViewModelTest {
     @Test
     fun `When get shop decor status success, observer should successfully received the data`() =
         runBlocking {
-            //Given
+            // Given
             val mockedShopHomeType = ""
             val shopPageGetHomeType = ShopPageGetHomeType()
             val expected = Success(mockedShopHomeType)
 
             coEvery { getShopPageHomeTypeUseCase.executeOnBackground() } returns shopPageGetHomeType
 
-            //When
+            // When
             viewModel.getShopDecorStatus()
 
-            //Then
+            // Then
             val actual = viewModel.shopDecorStatus.getOrAwaitValue()
             assertEquals(expected, actual)
         }
 
-
     @Test
     fun `When get shop decor status error, observer should receive error result`() =
         runBlocking {
-            //Given
+            // Given
             val error = MessageErrorException("Server error")
             val expected = Fail(error)
 
             coEvery { getShopPageHomeTypeUseCase.executeOnBackground() } throws error
 
-            //When
+            // When
             viewModel.getShopDecorStatus()
 
-            //Then
+            // Then
             val actual = viewModel.shopDecorStatus.getOrAwaitValue()
             assertEquals(expected, actual)
         }
@@ -437,7 +426,7 @@ class CampaignListViewModelTest {
     @Test
     fun `When get vps packages success, observer should successfully received the data`() =
         runBlocking {
-            //Given
+            // Given
             val packageStartTime = Date().time
             val packageEndTime = Date().advanceDayBy(days = 1).time
             val vpsPackage = VpsPackage(
@@ -456,28 +445,27 @@ class CampaignListViewModelTest {
 
             coEvery { getSellerCampaignPackageListUseCase.execute() } returns response
 
-            //When
+            // When
             viewModel.getVpsPackages()
 
-            //Then
+            // Then
             val actual = viewModel.vpsPackages.getOrAwaitValue()
             assertEquals(expected, actual)
         }
 
-
     @Test
     fun `When get vps packages error, observer should receive error result`() =
         runBlocking {
-            //Given
+            // Given
             val error = MessageErrorException("Server error")
             val expected = Fail(error)
 
             coEvery { getSellerCampaignPackageListUseCase.execute() } throws error
 
-            //When
+            // When
             viewModel.getVpsPackages()
 
-            //Then
+            // Then
             val actual = viewModel.vpsPackages.getOrAwaitValue()
             assertEquals(expected, actual)
         }
@@ -493,7 +481,7 @@ class CampaignListViewModelTest {
 
     @Test
     fun `When get selected campaign id, should return correct values`() {
-        val campaignId : Long = 1001
+        val campaignId: Long = 1001
         viewModel.setSelectedCampaignId(campaignId)
 
         assertEquals(campaignId, viewModel.getSelectedCampaignId())
@@ -514,10 +502,9 @@ class CampaignListViewModelTest {
         coVerify { tracker.sendClickViewCampaignDetailPopUpEvent() }
     }
 
-
     @Test
     fun `When press cancel campaign, should send tracker`() {
-        val campaignId : Long = 1001
+        val campaignId: Long = 1001
         val campaign = buildCampaignUiModel(campaignId)
 
         viewModel.onMoreMenuCancelClicked(campaign)
@@ -527,7 +514,7 @@ class CampaignListViewModelTest {
 
     @Test
     fun `When press stop campaign, should send tracker`() {
-        val campaignId : Long = 1001
+        val campaignId: Long = 1001
         val campaign = buildCampaignUiModel(campaignId)
 
         viewModel.onMoreMenuStopClicked(campaign)
@@ -537,7 +524,7 @@ class CampaignListViewModelTest {
 
     @Test
     fun `When press edit campaign, should send tracker`() {
-        val campaignId : Long = 1001
+        val campaignId: Long = 1001
         val campaign = buildCampaignUiModel(campaignId)
 
         viewModel.onMoreMenuEditClicked(campaign)
@@ -547,7 +534,7 @@ class CampaignListViewModelTest {
 
     @Test
     fun `When get vps packages success and function findActiveVpsPackagesCount invoked, should return correct vps packages count`() {
-        //Given
+        // Given
         val packageStartTime = Date().time
         val packageEndTime = Date().advanceDayBy(days = 1).time
         val vpsPackage = VpsPackage(
@@ -566,33 +553,33 @@ class CampaignListViewModelTest {
 
         coEvery { getSellerCampaignPackageListUseCase.execute() } returns vpsPackages
 
-        //When
+        // When
         viewModel.getVpsPackages()
 
-        //Then
+        // Then
         val actual = viewModel.findActiveVpsPackagesCount()
         assertEquals(expected, actual)
     }
 
     @Test
     fun `When get vps packages return empty list and function findActiveVpsPackagesCount invoked, vps package count should be 0`() {
-        //Given
+        // Given
         val error = MessageErrorException("Server error")
         val expected = 0
 
         coEvery { getSellerCampaignPackageListUseCase.execute() } throws error
 
-        //When
+        // When
         viewModel.getVpsPackages()
 
-        //Then
+        // Then
         val actual = viewModel.findActiveVpsPackagesCount()
         assertEquals(expected, actual)
     }
 
     @Test
     fun `When having vps package with expired date more than 3 days, should return correct data`() {
-        //Given
+        // Given
         val packageStartTime = Date().time
         val packageEndTime = Date().advanceDayBy(days = 4).time
         val vpsPackage = VpsPackage(
@@ -608,16 +595,16 @@ class CampaignListViewModelTest {
         val vpsPackages = listOf(vpsPackage)
         val expected = VpsPackageAvailability(totalQuota = 50, remainingQuota = 45, isNearExpirePackageAvailable = false, packageNearExpire = 0)
 
-        //When
+        // When
         val actual = viewModel.getPackageAvailability(vpsPackages)
 
-        //Then
+        // Then
         assertEquals(expected, actual)
     }
 
     @Test
     fun `When having vps package with expired date less than 3 days, isNearExpirePackageAvailable should be true`() {
-        //Given
+        // Given
         val now = Date()
         val packageStartTime = now.decreaseHourBy(desiredHourToBeDecreased = 24).time
         val packageEndTime = now.advanceDayBy(days = 2).time
@@ -637,16 +624,16 @@ class CampaignListViewModelTest {
         val vpsPackages = listOf(vpsPackage)
         val expected = VpsPackageAvailability(totalQuota = 50, remainingQuota = 45, isNearExpirePackageAvailable = true, packageNearExpire = 1)
 
-        //When
+        // When
         val actual = viewModel.getPackageAvailability(vpsPackages)
 
-        //Then
+        // Then
         assertEquals(expected, actual)
     }
 
     @Test
     fun `When having vps package with expiration within 3 days, isNearExpirePackageAvailable should be true`() {
-        //Given
+        // Given
         val now = Date()
         val packageStartTime = now.decreaseHourBy(desiredHourToBeDecreased = 24).time
         val packageEndTime = now.advanceDayBy(days = 3).time
@@ -666,16 +653,16 @@ class CampaignListViewModelTest {
         val vpsPackages = listOf(vpsPackage)
         val expected = VpsPackageAvailability(totalQuota = 50, remainingQuota = 45, isNearExpirePackageAvailable = true, packageNearExpire = 1)
 
-        //When
+        // When
         val actual = viewModel.getPackageAvailability(vpsPackages)
 
-        //Then
+        // Then
         assertEquals(expected, actual)
     }
 
     @Test
     fun `When having shop tier benefit package expiration less than 3 days, isNearExpirePackageAvailable should be false`() {
-        //Given
+        // Given
         val now = Date()
         val packageStartTime = now.decreaseHourBy(desiredHourToBeDecreased = 24).time
         val packageEndTime = now.advanceDayBy(days = 3).time
@@ -695,10 +682,10 @@ class CampaignListViewModelTest {
         val vpsPackages = listOf(vpsPackage)
         val expected = VpsPackageAvailability(totalQuota = 50, remainingQuota = 45, isNearExpirePackageAvailable = false, packageNearExpire = 0)
 
-        //When
+        // When
         val actual = viewModel.getPackageAvailability(vpsPackages)
 
-        //Then
+        // Then
         assertEquals(expected, actual)
     }
 
@@ -729,31 +716,32 @@ class CampaignListViewModelTest {
             CampaignUiModel.ThematicInfo(0, 0, "", 0, ""),
             Date(),
             Date(),
-            CampaignUiModel.PackageInfo(packageId = 1, packageName = "VPS Package Eltie")
+            CampaignUiModel.PackageInfo(packageId = 1, packageName = "VPS Package Eltie"),
+            isOosImprovement = false
         )
     }
 
     @Test
-    fun `checkTimeMotionTimer is active`(){
+    fun `checkTimeMotionTimer is active`() {
         viewModel.startAnimationOfWarningQuota()
         assertTrue(viewModel.isTimerForFlipRunning())
     }
 
     @Test
-    fun `checkTimeMotionTimer is not active`(){
+    fun `checkTimeMotionTimer is not active`() {
         viewModel.startAnimationOfWarningQuota()
         viewModel.stopAnimationOfWarningQuota()
         assertFalse(viewModel.isTimerForFlipRunning())
     }
 
     @Test
-    fun `checkTimeMotionTimer wait until 5 second`(){
-            viewModel.startAnimationOfWarningQuota()
-            assertEquals(1, viewModel.timeToFlip.getOrAwaitValue())
+    fun `checkTimeMotionTimer wait until 5 second`() {
+        viewModel.startAnimationOfWarningQuota()
+        assertEquals(1, viewModel.timeToFlip.getOrAwaitValue())
     }
 
     @Test
-    fun `checkTimeMotionTimer wait until 10 second`(){
+    fun `checkTimeMotionTimer wait until 10 second`() {
         viewModel.startAnimationOfWarningQuota()
         runBlocking {
             delay(11000L)

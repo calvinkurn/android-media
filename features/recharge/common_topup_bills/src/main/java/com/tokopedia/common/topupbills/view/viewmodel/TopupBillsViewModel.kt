@@ -4,7 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.common.topupbills.data.*
+import com.tokopedia.common.topupbills.data.TelcoCatalogMenuDetailData
+import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
+import com.tokopedia.common.topupbills.data.TopupBillsEnquiryQuery
+import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
+import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumber
+import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberData
 import com.tokopedia.common.topupbills.data.catalog_plugin.RechargeCatalogPlugin
 import com.tokopedia.common.topupbills.data.express_checkout.RechargeExpressCheckout
 import com.tokopedia.common.topupbills.data.express_checkout.RechargeExpressCheckoutData
@@ -30,7 +35,11 @@ import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import rx.Subscriber
 import javax.inject.Inject
 
@@ -86,8 +95,9 @@ class TopupBillsViewModel @Inject constructor(
 
                 // If data is pending delay query call
                 with(data.enquiry) {
-                    if (status == STATUS_PENDING && retryDuration > RETRY_DURATION)
+                    if (status == STATUS_PENDING && retryDuration > RETRY_DURATION) {
                         delay((retryDuration.toLong()) * MS_TO_S_DURATION)
+                    }
                 }
             } while (data.enquiry.status != STATUS_DONE)
 
@@ -148,8 +158,12 @@ class TopupBillsViewModel @Inject constructor(
             val favoriteNumber = rechargeFavoriteNumberUseCase.apply {
                 setRequestParams(categoryIds, emptyList(), CHANNEL_FAVORITE_NUMBER_LIST)
             }.executeOnBackground()
-            _favNumberData.postValue(Success(FavoriteNumberDataMapper
-                .mapPersoFavNumberItemToSearchDataView(favoriteNumber.persoFavoriteNumber.items)))
+            _favNumberData.postValue(
+                Success(
+                    FavoriteNumberDataMapper
+                        .mapPersoFavNumberItemToSearchDataView(favoriteNumber.persoFavoriteNumber.items)
+                )
+            )
         }) {
             _favNumberData.postValue(Fail(Throwable(it.message)))
         }
@@ -204,13 +218,11 @@ class TopupBillsViewModel @Inject constructor(
             }
 
             override fun onCompleted() {
-
             }
 
             override fun onError(e: Throwable?) {
                 _checkVoucherData.value = Fail(e ?: MessageErrorException(e?.message))
             }
-
         }
     }
 

@@ -13,5 +13,7 @@ data class ProductDraft(
         var shipmentInputModel: ShipmentInputModel = ShipmentInputModel(),
         var variantInputModel: String = "",
         var productId: Long = 0L,
-        var draftId: Long = 0L
+        var draftId: Long = 0L,
+        val isCorrupt: Boolean = false,
+        val corruptedData: String = ""
 ): Parcelable

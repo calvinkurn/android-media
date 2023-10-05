@@ -80,10 +80,12 @@ class DetailEditorViewModel @Inject constructor(
 
     fun setContrast(value: Float?, sourceBitmap: Bitmap?) {
         if (value == null || sourceBitmap == null) return
-        _contrastFilter.value = contrastFilterRepository.contrast(
+        contrastFilterRepository.contrast(
             value,
             sourceBitmap.copy(sourceBitmap.config, true)
-        )
+        )?.let {
+            _contrastFilter.value = it
+        }
     }
 
     fun setRemoveBackground(filePath: String, onError: (t: Throwable) -> Unit) {
@@ -231,6 +233,19 @@ class DetailEditorViewModel @Inject constructor(
         return addTextFilterRepository.generateOverlayText(
             size,
             data
+        )
+    }
+
+    fun cropImage(source: Bitmap, cropRotateUiModel: EditorCropRotateUiModel): Bitmap? {
+        val (offsetX, offsetY, imageWidth, imageHeight) = cropRotateUiModel
+        return bitmapCreationRepository.createBitmap(
+            BitmapCreation.cropBitmap(
+                source,
+                x = offsetX,
+                y = offsetY,
+                width = imageWidth,
+                height = imageHeight
+            )
         )
     }
 

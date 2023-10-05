@@ -35,10 +35,12 @@ internal fun View.renderProductCardRibbon(
         archView.setImageResource(ribbonBackgroundPair.first)
         contentView.setImageResource(ribbonBackgroundPair.second)
 
+        val previousText = textView?.text
         textView?.text = labelRibbon.title
-        contentView?.requestLayout()
-    }
-    else {
+
+        if (previousText?.length != labelRibbon.title.length)
+            contentView.requestLayout()
+    } else {
         archView?.gone()
         contentView?.gone()
         textView?.gone()

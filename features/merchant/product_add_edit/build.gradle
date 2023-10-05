@@ -17,6 +17,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.product.addedit'
+    testNamespace 'com.tokopedia.product.addedit.test'
     packagingOptions {
         exclude 'META-INF/**'
     }
@@ -53,7 +55,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation projectOrAar(rootProject.ext.libraries.analytics)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
     implementation projectOrAar(rootProject.ext.libraries.logger)
     implementation projectOrAar(rootProject.ext.libraries.utils)

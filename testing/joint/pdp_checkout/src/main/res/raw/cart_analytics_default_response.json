@@ -1,10 +1,9 @@
 [
   {
     "data": {
-      "status": "OK",
-      "cart_revamp_v3": {
-        "error_message": [],
+      "cart_revamp_v4": {
         "status": "OK",
+        "error_message": [],
         "data": {
           "errors": [],
           "popup_error_message": "",
@@ -114,6 +113,208 @@
             ],
             "available_group": [
               {
+                "group_type": 0,
+                "ui_group_type": 0,
+                "group_information": {
+                  "name": "najajaj",
+                  "badge_url": "",
+                  "description": "Warehouse Grogol",
+                  "description_badge_url": ""
+                },
+                "group_shop_v2_cart": [
+                  {
+                    "cart_string_order": "2538088-0-2051993-KEY_OWOC",
+                    "shop": {
+                      "shop_ticker": "",
+                      "maximum_weight_wording": "",
+                      "maximum_shipping_weight": 0,
+                      "is_tokonow": false,
+                      "shop_alert_message": "",
+                      "shop_id": 2538088,
+                      "admin_ids": [],
+                      "shop_name": "najajaj",
+                      "shop_image": "https://images.tokopedia.net/img/cache/215-square/shops-1/2019/9/12/2538088/2538088_1bf7af42-c7e7-4da3-8a8d-11bcf69c38d8.jpg",
+                      "shop_url": "https://www.tokopedia.com/nabillashopsd",
+                      "shop_status": 1,
+                      "postal_code": "12910",
+                      "latitude": "-6.227031026858751",
+                      "longitude": "106.8331340700388",
+                      "district_name": "Setiabudi",
+                      "origin": 2270,
+                      "address_street": "Jalan Professor Doktor Satrio, Setia Budi, 97923",
+                      "city_name": "Jakarta Selatan",
+                      "province_name": "DKI Jakarta",
+                      "country_name": "Indonesia",
+                      "is_allow_manage": false,
+                      "shop_domain": "nabillashopsd",
+                      "is_gold": 0,
+                      "is_official": 0,
+                      "shop_type_info": {
+                        "shop_tier": 0,
+                        "shop_grade": 0,
+                        "badge": "",
+                        "badge_svg": "",
+                        "title": "Regular Merchant"
+                      }
+                    },
+                    "cart_details": [
+                      {
+                        "bundle_detail": {
+                          "bundle_description": "",
+                          "bundle_group_id": "",
+                          "bundle_id": 0,
+                          "bundle_max_order": 0,
+                          "bundle_min_order": 0,
+                          "bundle_name": "",
+                          "bundle_original_price": 0,
+                          "bundle_original_price_fmt": "",
+                          "bundle_price": 0,
+                          "bundle_price_fmt": "",
+                          "bundle_qty": 0,
+                          "bundle_quota": 0,
+                          "bundle_status": "",
+                          "bundle_type": "",
+                          "edit_app_link": "",
+                          "slash_price_label": "",
+                          "bundle_icon_url": ""
+                        },
+                        "products": [
+                          {
+                            "checkbox_state": true,
+                            "cart_id": 3171478367,
+                            "product_information": [],
+                            "product_tracker_data": {
+                              "attribution": "",
+                              "tracker_list_name": ""
+                            },
+                            "isWishlist": false,
+                            "product_id": 1422569176,
+                            "product_name": "Sepeda biru",
+                            "product_price_fmt": "Rp10.000",
+                            "product_price": 10000,
+                            "parent_id": 0,
+                            "category_id": 3499,
+                            "category": "Olahraga / Sepeda / Sepeda Gunung",
+                            "catalog_id": 0,
+                            "wholesale_price": [],
+                            "product_weight": 1000,
+                            "product_weight_fmt": "1kg",
+                            "product_condition": 1,
+                            "product_status": 1,
+                            "product_url": "https://www.tokopedia.com/nabillashopsd/sepeda-biru",
+                            "product_returnable": 0,
+                            "is_freereturns": 0,
+                            "is_preorder": 0,
+                            "product_cashback": "",
+                            "product_min_order": 1,
+                            "product_max_order": 30000,
+                            "product_rating": "0.000000",
+                            "product_invenage_value": 10,
+                            "product_invenage_total": {
+                              "by_user": {
+                                "in_cart": 0,
+                                "last_stock_less_than": 0
+                              },
+                              "by_user_text": {
+                                "in_cart": "",
+                                "last_stock_less_than": "",
+                                "complete": ""
+                              },
+                              "is_counted_by_user": false,
+                              "by_product": {
+                                "in_cart": 0,
+                                "last_stock_less_than": 0
+                              },
+                              "by_product_text": {
+                                "in_cart": "",
+                                "last_stock_less_than": "",
+                                "complete": ""
+                              },
+                              "is_counted_by_product": false
+                            },
+                            "product_switch_invenage": 1,
+                            "price_changes": {
+                              "changes_state": 0,
+                              "amount_difference": 0,
+                              "original_amount": 10000,
+                              "description": "Harga Normal"
+                            },
+                            "product_price_currency": 1,
+                            "product_image": {
+                              "image_src": "https://images.tokopedia.net/img/cache/700/VqbcmM/2020/12/14/28f9ecf8-1540-4ab1-9b35-1dab6248d543.jpg",
+                              "image_src_100_square": "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2020/12/14/28f9ecf8-1540-4ab1-9b35-1dab6248d543.jpg",
+                              "image_src_200_square": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2020/12/14/28f9ecf8-1540-4ab1-9b35-1dab6248d543.jpg",
+                              "image_src_300": "https://images.tokopedia.net/img/cache/300/VqbcmM/2020/12/14/28f9ecf8-1540-4ab1-9b35-1dab6248d543.jpg",
+                              "image_src_square": "https://images.tokopedia.net/img/cache/500-square/VqbcmM/2020/12/14/28f9ecf8-1540-4ab1-9b35-1dab6248d543.jpg"
+                            },
+                            "product_all_images": "[{\"file_name\":\"28f9ecf8-1540-4ab1-9b35-1dab6248d543.jpg\",\"file_path\":\"VqbcmM/2020/12/14\",\"status\":2}]",
+                            "product_notes": "",
+                            "product_quantity": 4,
+                            "product_weight_unit_code": 2,
+                            "product_weight_unit_text": "kg",
+                            "last_update_price": "1615793365",
+                            "is_update_price": false,
+                            "product_preorder": {
+                              "duration_day": "0",
+                              "duration_text": "",
+                              "duration_unit_code": "0",
+                              "duration_unit_text": "",
+                              "duration_value": "0"
+                            },
+                            "product_showcase": {
+                              "name": "",
+                              "id": 0
+                            },
+                            "product_alias": "sepeda-biru",
+                            "sku": "",
+                            "campaign_id": 0,
+                            "product_original_price": 0,
+                            "product_price_original_fmt": "",
+                            "is_slash_price": false,
+                            "free_returns": {
+                              "free_returns_logo": ""
+                            },
+                            "product_finsurance": 1,
+                            "is_wishlisted": true,
+                            "is_ppp": false,
+                            "is_cod": true,
+                            "warehouse_id": 2051993,
+                            "is_parent": false,
+                            "is_campaign_error": false,
+                            "is_blacklisted": false,
+                            "free_shipping": {
+                              "eligible": true,
+                              "badge_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_new_reguler.png"
+                            },
+                            "free_shipping_extra": {
+                              "eligible": false,
+                              "badge_url": ""
+                            },
+                            "free_shipping_general": {
+                              "bo_name": "bebas ongkir",
+                              "bo_type": 1,
+                              "badge_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_new_reguler.png"
+                            },
+                            "booking_stock": 0,
+                            "is_product_volume_weight": false,
+                            "initial_price": 10000,
+                            "initial_price_fmt": "Rp10.000",
+                            "slash_price_label": "",
+                            "product_warning_message": "",
+                            "product_alert_message": "",
+                            "variant_description_detail": {
+                              "variant_name": [],
+                              "variant_description": ""
+                            }
+                          }
+                        ],
+                        "errors": [],
+                        "messages": []
+                      }
+                    ]
+                  }
+                ],
+                "cart_string": "_2538088-0-2051993-KEY_OWOC",
                 "user_address_id": 0,
                 "shipment_information": {
                   "shop_location": "Jakarta Selatan",
@@ -140,196 +341,7 @@
                   "is_pinned": false,
                   "coachmark_message": ""
                 },
-                "shop": {
-                  "shop_ticker": "",
-                  "maximum_weight_wording": "",
-                  "maximum_shipping_weight": 0,
-                  "is_tokonow": false,
-                  "shop_alert_message": "",
-                  "shop_id": 2538088,
-                  "admin_ids": [],
-                  "shop_name": "najajaj",
-                  "shop_image": "https://images.tokopedia.net/img/cache/215-square/shops-1/2019/9/12/2538088/2538088_1bf7af42-c7e7-4da3-8a8d-11bcf69c38d8.jpg",
-                  "shop_url": "https://www.tokopedia.com/nabillashopsd",
-                  "shop_status": 1,
-                  "postal_code": "12910",
-                  "latitude": "-6.227031026858751",
-                  "longitude": "106.8331340700388",
-                  "district_name": "Setiabudi",
-                  "origin": 2270,
-                  "address_street": "Jalan Professor Doktor Satrio, Setia Budi, 97923",
-                  "city_name": "Jakarta Selatan",
-                  "province_name": "DKI Jakarta",
-                  "country_name": "Indonesia",
-                  "is_allow_manage": false,
-                  "shop_domain": "nabillashopsd",
-                  "is_gold": 0,
-                  "is_official": 0,
-                  "shop_type_info": {
-                    "shop_tier": 0,
-                    "shop_grade": 0,
-                    "badge": "",
-                    "badge_svg": "",
-                    "title": "Regular Merchant"
-                  }
-                },
                 "promo_codes": [],
-                "cart_string": "2538088-0-2051993",
-                "cart_details": [
-                  {
-                    "bundle_detail": {
-                      "bundle_description": "",
-                      "bundle_group_id": "",
-                      "bundle_id": 0,
-                      "bundle_max_order": 0,
-                      "bundle_min_order": 0,
-                      "bundle_name": "",
-                      "bundle_original_price": 0,
-                      "bundle_original_price_fmt": "",
-                      "bundle_price": 0,
-                      "bundle_price_fmt": "",
-                      "bundle_qty": 0,
-                      "bundle_quota": 0,
-                      "bundle_status": "",
-                      "bundle_type": "",
-                      "edit_app_link": "",
-                      "slash_price_label": "",
-                      "bundle_icon_url": ""
-                    },
-                    "products": [
-                      {
-                        "checkbox_state": true,
-                        "cart_id": 3171478367,
-                        "product_information": [],
-                        "product_tracker_data": {
-                          "attribution": "",
-                          "tracker_list_name": ""
-                        },
-                        "isWishlist": false,
-                        "product_id": 1422569176,
-                        "product_name": "Sepeda biru",
-                        "product_price_fmt": "Rp10.000",
-                        "product_price": 10000,
-                        "parent_id": 0,
-                        "category_id": 3499,
-                        "category": "Olahraga / Sepeda / Sepeda Gunung",
-                        "catalog_id": 0,
-                        "wholesale_price": [],
-                        "product_weight": 1000,
-                        "product_weight_fmt": "1kg",
-                        "product_condition": 1,
-                        "product_status": 1,
-                        "product_url": "https://www.tokopedia.com/nabillashopsd/sepeda-biru",
-                        "product_returnable": 0,
-                        "is_freereturns": 0,
-                        "is_preorder": 0,
-                        "product_cashback": "",
-                        "product_min_order": 1,
-                        "product_max_order": 30000,
-                        "product_rating": "0.000000",
-                        "product_invenage_value": 10,
-                        "product_invenage_total": {
-                          "by_user": {
-                            "in_cart": 0,
-                            "last_stock_less_than": 0
-                          },
-                          "by_user_text": {
-                            "in_cart": "",
-                            "last_stock_less_than": "",
-                            "complete": ""
-                          },
-                          "is_counted_by_user": false,
-                          "by_product": {
-                            "in_cart": 0,
-                            "last_stock_less_than": 0
-                          },
-                          "by_product_text": {
-                            "in_cart": "",
-                            "last_stock_less_than": "",
-                            "complete": ""
-                          },
-                          "is_counted_by_product": false
-                        },
-                        "product_switch_invenage": 1,
-                        "price_changes": {
-                          "changes_state": 0,
-                          "amount_difference": 0,
-                          "original_amount": 10000,
-                          "description": "Harga Normal"
-                        },
-                        "product_price_currency": 1,
-                        "product_image": {
-                          "image_src": "https://images.tokopedia.net/img/cache/700/VqbcmM/2020/12/14/28f9ecf8-1540-4ab1-9b35-1dab6248d543.jpg",
-                          "image_src_100_square": "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2020/12/14/28f9ecf8-1540-4ab1-9b35-1dab6248d543.jpg",
-                          "image_src_200_square": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2020/12/14/28f9ecf8-1540-4ab1-9b35-1dab6248d543.jpg",
-                          "image_src_300": "https://images.tokopedia.net/img/cache/300/VqbcmM/2020/12/14/28f9ecf8-1540-4ab1-9b35-1dab6248d543.jpg",
-                          "image_src_square": "https://images.tokopedia.net/img/cache/500-square/VqbcmM/2020/12/14/28f9ecf8-1540-4ab1-9b35-1dab6248d543.jpg"
-                        },
-                        "product_all_images": "[{\"file_name\":\"28f9ecf8-1540-4ab1-9b35-1dab6248d543.jpg\",\"file_path\":\"VqbcmM/2020/12/14\",\"status\":2}]",
-                        "product_notes": "",
-                        "product_quantity": 4,
-                        "product_weight_unit_code": 2,
-                        "product_weight_unit_text": "kg",
-                        "last_update_price": "1615793365",
-                        "is_update_price": false,
-                        "product_preorder": {
-                          "duration_day": "0",
-                          "duration_text": "",
-                          "duration_unit_code": "0",
-                          "duration_unit_text": "",
-                          "duration_value": "0"
-                        },
-                        "product_showcase": {
-                          "name": "",
-                          "id": 0
-                        },
-                        "product_alias": "sepeda-biru",
-                        "sku": "",
-                        "campaign_id": 0,
-                        "product_original_price": 0,
-                        "product_price_original_fmt": "",
-                        "is_slash_price": false,
-                        "free_returns": {
-                          "free_returns_logo": ""
-                        },
-                        "product_finsurance": 1,
-                        "is_wishlisted": true,
-                        "is_ppp": false,
-                        "is_cod": true,
-                        "warehouse_id": 2051993,
-                        "is_parent": false,
-                        "is_campaign_error": false,
-                        "is_blacklisted": false,
-                        "free_shipping": {
-                          "eligible": true,
-                          "badge_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_new_reguler.png"
-                        },
-                        "free_shipping_extra": {
-                          "eligible": false,
-                          "badge_url": ""
-                        },
-                        "free_shipping_general": {
-                          "bo_name": "bebas ongkir",
-                          "bo_type": 1,
-                          "badge_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_new_reguler.png"
-                        },
-                        "booking_stock": 0,
-                        "is_product_volume_weight": false,
-                        "initial_price": 10000,
-                        "initial_price_fmt": "Rp10.000",
-                        "slash_price_label": "",
-                        "product_warning_message": "",
-                        "product_alert_message": "",
-                        "variant_description_detail": {
-                          "variant_name": [],
-                          "variant_description": ""
-                        }
-                      }
-                    ],
-                    "errors": [],
-                    "messages": []
-                  }
-                ],
                 "total_cart_details_error": 0,
                 "total_cart_price": 40000,
                 "errors": [],
@@ -360,6 +372,336 @@
                 "checkbox_state": true
               },
               {
+                "group_type": 0,
+                "ui_group_type": 0,
+                "group_information": {
+                  "name": "HefShop",
+                  "badge_url": "",
+                  "description": "Warehouse Grogol",
+                  "description_badge_url": ""
+                },
+                "group_shop_v2_cart": [
+                  {
+                    "cart_string_order": "1960918-0-1562849-KEY_OWOC",
+                    "shop": {
+                      "shop_ticker": "",
+                      "maximum_weight_wording": "",
+                      "maximum_shipping_weight": 0,
+                      "is_tokonow": false,
+                      "shop_alert_message": "",
+                      "shop_id": 1960918,
+                      "admin_ids": [],
+                      "shop_name": "HefShop",
+                      "shop_image": "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2021/10/11/0e2ec133-aab8-4da1-8273-8e51a44e4f18.png",
+                      "shop_url": "https://www.tokopedia.com/hefshop",
+                      "shop_status": 1,
+                      "postal_code": "12930",
+                      "latitude": "-6.221185614630283",
+                      "longitude": "106.81950543075801",
+                      "district_name": "Setiabudi",
+                      "origin": 2270,
+                      "address_street": "Tokopedia Tower lt. 42, Setiabudi, Jakarta Selatan",
+                      "city_name": "Jakarta Selatan",
+                      "province_name": "DKI Jakarta",
+                      "country_name": "Indonesia",
+                      "is_allow_manage": false,
+                      "shop_domain": "hefshop",
+                      "is_gold": 0,
+                      "is_official": 0,
+                      "shop_type_info": {
+                        "shop_tier": 0,
+                        "shop_grade": 0,
+                        "badge": "",
+                        "badge_svg": "",
+                        "title": "Regular Merchant"
+                      }
+                    },
+                    "cart_details": [
+                      {
+                        "bundle_detail": {
+                          "bundle_description": "",
+                          "bundle_group_id": "",
+                          "bundle_id": 0,
+                          "bundle_max_order": 0,
+                          "bundle_min_order": 0,
+                          "bundle_name": "",
+                          "bundle_original_price": 0,
+                          "bundle_original_price_fmt": "",
+                          "bundle_price": 0,
+                          "bundle_price_fmt": "",
+                          "bundle_qty": 0,
+                          "bundle_quota": 0,
+                          "bundle_status": "",
+                          "bundle_type": "",
+                          "edit_app_link": "",
+                          "slash_price_label": "",
+                          "bundle_icon_url": ""
+                        },
+                        "products": [
+                          {
+                            "checkbox_state": false,
+                            "cart_id": 2883070895,
+                            "product_information": [],
+                            "product_tracker_data": {
+                              "attribution": "",
+                              "tracker_list_name": ""
+                            },
+                            "isWishlist": false,
+                            "product_id": 1379312301,
+                            "product_name": "intel",
+                            "product_price_fmt": "Rp3.505",
+                            "product_price": 3505,
+                            "parent_id": 0,
+                            "category_id": 3999,
+                            "category": "Komputer & Laptop / Komponen Laptop / Processor Laptop",
+                            "catalog_id": 0,
+                            "wholesale_price": [],
+                            "product_weight": 500,
+                            "product_weight_fmt": "500gr",
+                            "product_condition": 1,
+                            "product_status": 1,
+                            "product_url": "https://www.tokopedia.com/hefshop/intel",
+                            "product_returnable": 0,
+                            "is_freereturns": 0,
+                            "is_preorder": 0,
+                            "product_cashback": "",
+                            "product_min_order": 1,
+                            "product_max_order": 30000,
+                            "product_rating": "0.000000",
+                            "product_invenage_value": 1,
+                            "product_invenage_total": {
+                              "by_user": {
+                                "in_cart": 0,
+                                "last_stock_less_than": 0
+                              },
+                              "by_user_text": {
+                                "in_cart": "",
+                                "last_stock_less_than": "",
+                                "complete": ""
+                              },
+                              "is_counted_by_user": false,
+                              "by_product": {
+                                "in_cart": 0,
+                                "last_stock_less_than": 0
+                              },
+                              "by_product_text": {
+                                "in_cart": "",
+                                "last_stock_less_than": "",
+                                "complete": ""
+                              },
+                              "is_counted_by_product": false
+                            },
+                            "product_switch_invenage": 1,
+                            "price_changes": {
+                              "changes_state": 0,
+                              "amount_difference": 0,
+                              "original_amount": 0,
+                              "description": ""
+                            },
+                            "product_price_currency": 1,
+                            "product_image": {
+                              "image_src": "https://images.tokopedia.net/img/cache/700/VqbcmM/2020/11/27/2e6c5a90-81f6-4e9c-9724-1c8ea0e7ffce.jpg",
+                              "image_src_100_square": "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2020/11/27/2e6c5a90-81f6-4e9c-9724-1c8ea0e7ffce.jpg",
+                              "image_src_200_square": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2020/11/27/2e6c5a90-81f6-4e9c-9724-1c8ea0e7ffce.jpg",
+                              "image_src_300": "https://images.tokopedia.net/img/cache/300/VqbcmM/2020/11/27/2e6c5a90-81f6-4e9c-9724-1c8ea0e7ffce.jpg",
+                              "image_src_square": "https://images.tokopedia.net/img/cache/500-square/VqbcmM/2020/11/27/2e6c5a90-81f6-4e9c-9724-1c8ea0e7ffce.jpg"
+                            },
+                            "product_all_images": "[{\"file_name\":\"2e6c5a90-81f6-4e9c-9724-1c8ea0e7ffce.jpg\",\"file_path\":\"VqbcmM/2020/11/27\",\"status\":2}]",
+                            "product_notes": "",
+                            "product_quantity": 1,
+                            "product_weight_unit_code": 1,
+                            "product_weight_unit_text": "gr",
+                            "last_update_price": "1626086609",
+                            "is_update_price": false,
+                            "product_preorder": {
+                              "duration_day": "0",
+                              "duration_text": "",
+                              "duration_unit_code": "0",
+                              "duration_unit_text": "",
+                              "duration_value": "0"
+                            },
+                            "product_showcase": {
+                              "name": "",
+                              "id": 0
+                            },
+                            "product_alias": "intel",
+                            "sku": "",
+                            "campaign_id": 0,
+                            "product_original_price": 0,
+                            "product_price_original_fmt": "",
+                            "is_slash_price": false,
+                            "free_returns": {
+                              "free_returns_logo": ""
+                            },
+                            "product_finsurance": 0,
+                            "is_wishlisted": true,
+                            "is_ppp": false,
+                            "is_cod": true,
+                            "warehouse_id": 1562849,
+                            "is_parent": false,
+                            "is_campaign_error": false,
+                            "is_blacklisted": false,
+                            "free_shipping": {
+                              "eligible": false,
+                              "badge_url": ""
+                            },
+                            "free_shipping_extra": {
+                              "eligible": false,
+                              "badge_url": ""
+                            },
+                            "free_shipping_general": {
+                              "bo_name": "",
+                              "bo_type": 0,
+                              "badge_url": ""
+                            },
+                            "booking_stock": 0,
+                            "is_product_volume_weight": false,
+                            "initial_price": 0,
+                            "initial_price_fmt": "Rp0",
+                            "slash_price_label": "",
+                            "product_warning_message": "Sisa 1",
+                            "product_alert_message": "",
+                            "variant_description_detail": {
+                              "variant_name": [],
+                              "variant_description": ""
+                            }
+                          },
+                          {
+                            "checkbox_state": false,
+                            "cart_id": 2852334881,
+                            "product_information": [],
+                            "product_tracker_data": {
+                              "attribution": "",
+                              "tracker_list_name": ""
+                            },
+                            "isWishlist": false,
+                            "product_id": 1086767909,
+                            "product_name": "jual pipi",
+                            "product_price_fmt": "Rp1.000",
+                            "product_price": 1000,
+                            "parent_id": 0,
+                            "category_id": 380,
+                            "category": "Fashion Anak & Bayi / Baju & Sepatu Bayi / Pakaian Bayi Laki-laki",
+                            "catalog_id": 0,
+                            "wholesale_price": [],
+                            "product_weight": 500,
+                            "product_weight_fmt": "500gr",
+                            "product_condition": 1,
+                            "product_status": 1,
+                            "product_url": "https://www.tokopedia.com/hefshop/jual-pipi",
+                            "product_returnable": 0,
+                            "is_freereturns": 0,
+                            "is_preorder": 0,
+                            "product_cashback": "",
+                            "product_min_order": 1,
+                            "product_max_order": 30000,
+                            "product_rating": "0.000000",
+                            "product_invenage_value": 1000,
+                            "product_invenage_total": {
+                              "by_user": {
+                                "in_cart": 0,
+                                "last_stock_less_than": 0
+                              },
+                              "by_user_text": {
+                                "in_cart": "",
+                                "last_stock_less_than": "",
+                                "complete": ""
+                              },
+                              "is_counted_by_user": false,
+                              "by_product": {
+                                "in_cart": 0,
+                                "last_stock_less_than": 0
+                              },
+                              "by_product_text": {
+                                "in_cart": "",
+                                "last_stock_less_than": "",
+                                "complete": ""
+                              },
+                              "is_counted_by_product": false
+                            },
+                            "product_switch_invenage": 1,
+                            "price_changes": {
+                              "changes_state": 0,
+                              "amount_difference": 0,
+                              "original_amount": 0,
+                              "description": ""
+                            },
+                            "product_price_currency": 1,
+                            "product_image": {
+                              "image_src": "https://images.tokopedia.net/img/cache/700/VqbcmM/2020/8/10/ffa0c299-6817-408b-aa9c-b352144e0c46.jpg",
+                              "image_src_100_square": "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2020/8/10/ffa0c299-6817-408b-aa9c-b352144e0c46.jpg",
+                              "image_src_200_square": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2020/8/10/ffa0c299-6817-408b-aa9c-b352144e0c46.jpg",
+                              "image_src_300": "https://images.tokopedia.net/img/cache/300/VqbcmM/2020/8/10/ffa0c299-6817-408b-aa9c-b352144e0c46.jpg",
+                              "image_src_square": "https://images.tokopedia.net/img/cache/500-square/VqbcmM/2020/8/10/ffa0c299-6817-408b-aa9c-b352144e0c46.jpg"
+                            },
+                            "product_all_images": "[{\"file_name\":\"ffa0c299-6817-408b-aa9c-b352144e0c46.jpg\",\"file_path\":\"VqbcmM/2020/8/10\",\"status\":2},{\"file_name\":\"f5c94b90-3c0c-4bef-9b3d-30f4c788410e.jpg\",\"file_path\":\"VqbcmM/2020/8/10\",\"status\":1}]",
+                            "product_notes": "",
+                            "product_quantity": 1,
+                            "product_weight_unit_code": 1,
+                            "product_weight_unit_text": "gr",
+                            "last_update_price": "1623912211",
+                            "is_update_price": false,
+                            "product_preorder": {
+                              "duration_day": "0",
+                              "duration_text": "",
+                              "duration_unit_code": "0",
+                              "duration_unit_text": "",
+                              "duration_value": "0"
+                            },
+                            "product_showcase": {
+                              "name": "",
+                              "id": 0
+                            },
+                            "product_alias": "jual-pipi",
+                            "sku": "",
+                            "campaign_id": 0,
+                            "product_original_price": 0,
+                            "product_price_original_fmt": "",
+                            "is_slash_price": false,
+                            "free_returns": {
+                              "free_returns_logo": ""
+                            },
+                            "product_finsurance": 0,
+                            "is_wishlisted": true,
+                            "is_ppp": false,
+                            "is_cod": true,
+                            "warehouse_id": 1562849,
+                            "is_parent": false,
+                            "is_campaign_error": false,
+                            "is_blacklisted": false,
+                            "free_shipping": {
+                              "eligible": false,
+                              "badge_url": ""
+                            },
+                            "free_shipping_extra": {
+                              "eligible": false,
+                              "badge_url": ""
+                            },
+                            "free_shipping_general": {
+                              "bo_name": "bebas ongkir",
+                              "bo_type": 0,
+                              "badge_url": ""
+                            },
+                            "booking_stock": 0,
+                            "is_product_volume_weight": false,
+                            "initial_price": 0,
+                            "initial_price_fmt": "Rp0",
+                            "slash_price_label": "",
+                            "product_warning_message": "",
+                            "product_alert_message": "",
+                            "variant_description_detail": {
+                              "variant_name": [],
+                              "variant_description": ""
+                            }
+                          }
+                        ],
+                        "errors": [],
+                        "messages": []
+                      }
+                    ]
+                  }
+                ],
+                "cart_string": "_1960918-0-1562849-KEY_OWOC",
                 "user_address_id": 0,
                 "shipment_information": {
                   "shop_location": "Jakarta Selatan",
@@ -386,324 +728,7 @@
                   "is_pinned": false,
                   "coachmark_message": ""
                 },
-                "shop": {
-                  "shop_ticker": "",
-                  "maximum_weight_wording": "",
-                  "maximum_shipping_weight": 0,
-                  "is_tokonow": false,
-                  "shop_alert_message": "",
-                  "shop_id": 1960918,
-                  "admin_ids": [],
-                  "shop_name": "HefShop",
-                  "shop_image": "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2021/10/11/0e2ec133-aab8-4da1-8273-8e51a44e4f18.png",
-                  "shop_url": "https://www.tokopedia.com/hefshop",
-                  "shop_status": 1,
-                  "postal_code": "12930",
-                  "latitude": "-6.221185614630283",
-                  "longitude": "106.81950543075801",
-                  "district_name": "Setiabudi",
-                  "origin": 2270,
-                  "address_street": "Tokopedia Tower lt. 42, Setiabudi, Jakarta Selatan",
-                  "city_name": "Jakarta Selatan",
-                  "province_name": "DKI Jakarta",
-                  "country_name": "Indonesia",
-                  "is_allow_manage": false,
-                  "shop_domain": "hefshop",
-                  "is_gold": 0,
-                  "is_official": 0,
-                  "shop_type_info": {
-                    "shop_tier": 0,
-                    "shop_grade": 0,
-                    "badge": "",
-                    "badge_svg": "",
-                    "title": "Regular Merchant"
-                  }
-                },
                 "promo_codes": [],
-                "cart_string": "1960918-0-1562849",
-                "cart_details": [
-                  {
-                    "bundle_detail": {
-                      "bundle_description": "",
-                      "bundle_group_id": "",
-                      "bundle_id": 0,
-                      "bundle_max_order": 0,
-                      "bundle_min_order": 0,
-                      "bundle_name": "",
-                      "bundle_original_price": 0,
-                      "bundle_original_price_fmt": "",
-                      "bundle_price": 0,
-                      "bundle_price_fmt": "",
-                      "bundle_qty": 0,
-                      "bundle_quota": 0,
-                      "bundle_status": "",
-                      "bundle_type": "",
-                      "edit_app_link": "",
-                      "slash_price_label": "",
-                      "bundle_icon_url": ""
-                    },
-                    "products": [
-                      {
-                        "checkbox_state": false,
-                        "cart_id": 2883070895,
-                        "product_information": [],
-                        "product_tracker_data": {
-                          "attribution": "",
-                          "tracker_list_name": ""
-                        },
-                        "isWishlist": false,
-                        "product_id": 1379312301,
-                        "product_name": "intel",
-                        "product_price_fmt": "Rp3.505",
-                        "product_price": 3505,
-                        "parent_id": 0,
-                        "category_id": 3999,
-                        "category": "Komputer \u0026 Laptop / Komponen Laptop / Processor Laptop",
-                        "catalog_id": 0,
-                        "wholesale_price": [],
-                        "product_weight": 500,
-                        "product_weight_fmt": "500gr",
-                        "product_condition": 1,
-                        "product_status": 1,
-                        "product_url": "https://www.tokopedia.com/hefshop/intel",
-                        "product_returnable": 0,
-                        "is_freereturns": 0,
-                        "is_preorder": 0,
-                        "product_cashback": "",
-                        "product_min_order": 1,
-                        "product_max_order": 30000,
-                        "product_rating": "0.000000",
-                        "product_invenage_value": 1,
-                        "product_invenage_total": {
-                          "by_user": {
-                            "in_cart": 0,
-                            "last_stock_less_than": 0
-                          },
-                          "by_user_text": {
-                            "in_cart": "",
-                            "last_stock_less_than": "",
-                            "complete": ""
-                          },
-                          "is_counted_by_user": false,
-                          "by_product": {
-                            "in_cart": 0,
-                            "last_stock_less_than": 0
-                          },
-                          "by_product_text": {
-                            "in_cart": "",
-                            "last_stock_less_than": "",
-                            "complete": ""
-                          },
-                          "is_counted_by_product": false
-                        },
-                        "product_switch_invenage": 1,
-                        "price_changes": {
-                          "changes_state": 0,
-                          "amount_difference": 0,
-                          "original_amount": 0,
-                          "description": ""
-                        },
-                        "product_price_currency": 1,
-                        "product_image": {
-                          "image_src": "https://images.tokopedia.net/img/cache/700/VqbcmM/2020/11/27/2e6c5a90-81f6-4e9c-9724-1c8ea0e7ffce.jpg",
-                          "image_src_100_square": "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2020/11/27/2e6c5a90-81f6-4e9c-9724-1c8ea0e7ffce.jpg",
-                          "image_src_200_square": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2020/11/27/2e6c5a90-81f6-4e9c-9724-1c8ea0e7ffce.jpg",
-                          "image_src_300": "https://images.tokopedia.net/img/cache/300/VqbcmM/2020/11/27/2e6c5a90-81f6-4e9c-9724-1c8ea0e7ffce.jpg",
-                          "image_src_square": "https://images.tokopedia.net/img/cache/500-square/VqbcmM/2020/11/27/2e6c5a90-81f6-4e9c-9724-1c8ea0e7ffce.jpg"
-                        },
-                        "product_all_images": "[{\"file_name\":\"2e6c5a90-81f6-4e9c-9724-1c8ea0e7ffce.jpg\",\"file_path\":\"VqbcmM/2020/11/27\",\"status\":2}]",
-                        "product_notes": "",
-                        "product_quantity": 1,
-                        "product_weight_unit_code": 1,
-                        "product_weight_unit_text": "gr",
-                        "last_update_price": "1626086609",
-                        "is_update_price": false,
-                        "product_preorder": {
-                          "duration_day": "0",
-                          "duration_text": "",
-                          "duration_unit_code": "0",
-                          "duration_unit_text": "",
-                          "duration_value": "0"
-                        },
-                        "product_showcase": {
-                          "name": "",
-                          "id": 0
-                        },
-                        "product_alias": "intel",
-                        "sku": "",
-                        "campaign_id": 0,
-                        "product_original_price": 0,
-                        "product_price_original_fmt": "",
-                        "is_slash_price": false,
-                        "free_returns": {
-                          "free_returns_logo": ""
-                        },
-                        "product_finsurance": 0,
-                        "is_wishlisted": true,
-                        "is_ppp": false,
-                        "is_cod": true,
-                        "warehouse_id": 1562849,
-                        "is_parent": false,
-                        "is_campaign_error": false,
-                        "is_blacklisted": false,
-                        "free_shipping": {
-                          "eligible": false,
-                          "badge_url": ""
-                        },
-                        "free_shipping_extra": {
-                          "eligible": false,
-                          "badge_url": ""
-                        },
-                        "free_shipping_general": {
-                          "bo_name": "",
-                          "bo_type": 0,
-                          "badge_url": ""
-                        },
-                        "booking_stock": 0,
-                        "is_product_volume_weight": false,
-                        "initial_price": 0,
-                        "initial_price_fmt": "Rp0",
-                        "slash_price_label": "",
-                        "product_warning_message": "Sisa 1",
-                        "product_alert_message": "",
-                        "variant_description_detail": {
-                          "variant_name": [],
-                          "variant_description": ""
-                        }
-                      },
-                      {
-                        "checkbox_state": false,
-                        "cart_id": 2852334881,
-                        "product_information": [],
-                        "product_tracker_data": {
-                          "attribution": "",
-                          "tracker_list_name": ""
-                        },
-                        "isWishlist": false,
-                        "product_id": 1086767909,
-                        "product_name": "jual pipi",
-                        "product_price_fmt": "Rp1.000",
-                        "product_price": 1000,
-                        "parent_id": 0,
-                        "category_id": 380,
-                        "category": "Fashion Anak \u0026 Bayi / Baju \u0026 Sepatu Bayi / Pakaian Bayi Laki-laki",
-                        "catalog_id": 0,
-                        "wholesale_price": [],
-                        "product_weight": 500,
-                        "product_weight_fmt": "500gr",
-                        "product_condition": 1,
-                        "product_status": 1,
-                        "product_url": "https://www.tokopedia.com/hefshop/jual-pipi",
-                        "product_returnable": 0,
-                        "is_freereturns": 0,
-                        "is_preorder": 0,
-                        "product_cashback": "",
-                        "product_min_order": 1,
-                        "product_max_order": 30000,
-                        "product_rating": "0.000000",
-                        "product_invenage_value": 1000,
-                        "product_invenage_total": {
-                          "by_user": {
-                            "in_cart": 0,
-                            "last_stock_less_than": 0
-                          },
-                          "by_user_text": {
-                            "in_cart": "",
-                            "last_stock_less_than": "",
-                            "complete": ""
-                          },
-                          "is_counted_by_user": false,
-                          "by_product": {
-                            "in_cart": 0,
-                            "last_stock_less_than": 0
-                          },
-                          "by_product_text": {
-                            "in_cart": "",
-                            "last_stock_less_than": "",
-                            "complete": ""
-                          },
-                          "is_counted_by_product": false
-                        },
-                        "product_switch_invenage": 1,
-                        "price_changes": {
-                          "changes_state": 0,
-                          "amount_difference": 0,
-                          "original_amount": 0,
-                          "description": ""
-                        },
-                        "product_price_currency": 1,
-                        "product_image": {
-                          "image_src": "https://images.tokopedia.net/img/cache/700/VqbcmM/2020/8/10/ffa0c299-6817-408b-aa9c-b352144e0c46.jpg",
-                          "image_src_100_square": "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2020/8/10/ffa0c299-6817-408b-aa9c-b352144e0c46.jpg",
-                          "image_src_200_square": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2020/8/10/ffa0c299-6817-408b-aa9c-b352144e0c46.jpg",
-                          "image_src_300": "https://images.tokopedia.net/img/cache/300/VqbcmM/2020/8/10/ffa0c299-6817-408b-aa9c-b352144e0c46.jpg",
-                          "image_src_square": "https://images.tokopedia.net/img/cache/500-square/VqbcmM/2020/8/10/ffa0c299-6817-408b-aa9c-b352144e0c46.jpg"
-                        },
-                        "product_all_images": "[{\"file_name\":\"ffa0c299-6817-408b-aa9c-b352144e0c46.jpg\",\"file_path\":\"VqbcmM/2020/8/10\",\"status\":2},{\"file_name\":\"f5c94b90-3c0c-4bef-9b3d-30f4c788410e.jpg\",\"file_path\":\"VqbcmM/2020/8/10\",\"status\":1}]",
-                        "product_notes": "",
-                        "product_quantity": 1,
-                        "product_weight_unit_code": 1,
-                        "product_weight_unit_text": "gr",
-                        "last_update_price": "1623912211",
-                        "is_update_price": false,
-                        "product_preorder": {
-                          "duration_day": "0",
-                          "duration_text": "",
-                          "duration_unit_code": "0",
-                          "duration_unit_text": "",
-                          "duration_value": "0"
-                        },
-                        "product_showcase": {
-                          "name": "",
-                          "id": 0
-                        },
-                        "product_alias": "jual-pipi",
-                        "sku": "",
-                        "campaign_id": 0,
-                        "product_original_price": 0,
-                        "product_price_original_fmt": "",
-                        "is_slash_price": false,
-                        "free_returns": {
-                          "free_returns_logo": ""
-                        },
-                        "product_finsurance": 0,
-                        "is_wishlisted": true,
-                        "is_ppp": false,
-                        "is_cod": true,
-                        "warehouse_id": 1562849,
-                        "is_parent": false,
-                        "is_campaign_error": false,
-                        "is_blacklisted": false,
-                        "free_shipping": {
-                          "eligible": false,
-                          "badge_url": ""
-                        },
-                        "free_shipping_extra": {
-                          "eligible": false,
-                          "badge_url": ""
-                        },
-                        "free_shipping_general": {
-                          "bo_name": "bebas ongkir",
-                          "bo_type": 0,
-                          "badge_url": ""
-                        },
-                        "booking_stock": 0,
-                        "is_product_volume_weight": false,
-                        "initial_price": 0,
-                        "initial_price_fmt": "Rp0",
-                        "slash_price_label": "",
-                        "product_warning_message": "",
-                        "product_alert_message": "",
-                        "variant_description_detail": {
-                          "variant_name": [],
-                          "variant_description": ""
-                        }
-                      }
-                    ],
-                    "errors": [],
-                    "messages": []
-                  }
-                ],
                 "total_cart_details_error": 0,
                 "total_cart_price": 4505,
                 "errors": [],

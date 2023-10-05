@@ -2,7 +2,7 @@ package com.tokopedia.search.result.mps.analytics
 
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.utils.Dimension90Utils
-import com.tokopedia.product.detail.common.extensions.ifNullOrBlank
+import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.search.analytics.SearchEventTracking
 import com.tokopedia.search.result.mps.domain.model.MPSModel
 

@@ -42,6 +42,8 @@ class ShopProductResultPageAnalyticTest {
         private const val SHOP_PAGE_PRODUCT_RESULT_PAGE_PRODUCT_CARD_TRACKER_MATCHER_PATH = "tracker/shop/shop_page_product_result_product_card_tracker.json"
         private const val SHOP_PAGE_PRODUCT_RESULT_PAGE_CLICK_SORT_TRACKER_MATCHER_PATH = "tracker/shop/shop_page_product_result_page_click_sort_tracker.json"
         private const val SAMPLE_SHOP_ID = "3418893"
+        private const val SAMPLE_ETALASE = "etalase"
+
     }
 
     @get:Rule
@@ -57,6 +59,7 @@ class ShopProductResultPageAnalyticTest {
         activityRule.launchActivity(
             Intent().apply {
                 putExtra(ShopParamConstant.EXTRA_SHOP_ID, SAMPLE_SHOP_ID)
+                putExtra(ShopParamConstant.EXTRA_ETALASE_ID,SAMPLE_ETALASE)
             }
         )
     }
@@ -71,7 +74,7 @@ class ShopProductResultPageAnalyticTest {
 
     private fun validateTracker() {
         activityRule.activity.finish()
-        waitForData(2000)
+        waitForData(5000)
         // click sort tracker
         doAnalyticDebuggerTest(SHOP_PAGE_PRODUCT_RESULT_PAGE_CLICK_SORT_TRACKER_MATCHER_PATH)
 
@@ -115,7 +118,7 @@ class ShopProductResultPageAnalyticTest {
             RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(clickedItemPosition, click())
         )
         Espresso.onView(firstView(withId(R.id.recycler_view))).perform(
-            RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(clickedItemPosition, CommonActions.clickChildViewWithId(R.id.imageThreeDots))
+            RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(clickedItemPosition, CommonActions.clickChildViewWithId(com.tokopedia.productcard.R.id.imageThreeDots))
         )
     }
 
@@ -129,7 +132,7 @@ class ShopProductResultPageAnalyticTest {
                 ComponentNameMatchers.hasClassName("com.tokopedia.shop.sort.view.activity.ShopProductSortActivity")
             )
         ).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, mockIntentData))
-        Espresso.onView(AllOf.allOf(withText("Urutkan"), isDescendantOfA(withId(R.id.sort_filter_items_wrapper))))
+        Espresso.onView(AllOf.allOf(withText("Urutkan"), isDescendantOfA(withId(com.tokopedia.sortfilter.R.id.sort_filter_items_wrapper))))
             .check(matches(isDisplayed())).perform(click())
     }
 }

@@ -10,6 +10,8 @@ data class UohFinishOrder(
         @SerializedName("success")
         val success: Int = 0,
         @SerializedName("message")
-        val message: List<String> = listOf()
+        val message: List<String> = listOf(),
+        @SerializedName("order_id")
+        var orderId:String = ""
     )
 }

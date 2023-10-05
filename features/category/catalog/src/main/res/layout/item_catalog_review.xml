@@ -38,7 +38,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/catalog_shop_review_widget"
         app:typographyType="body_2"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         tools:visibility="visible"
         tools:text="Saya sangat puas sekali!! Awalnya saya gak percaya. Dengan memakai headphone ini, saya dapat mendengarkan percakapan tetangga sebelah rumah.. Selengkapnya" />
 
@@ -50,8 +50,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginEnd="8dp"
         app:icon_name="CHEVRON_RIGHT"
-        app:icon_color_light_enable="@color/Unify_N700_68"
-        app:icon_color_light_disabled="@color/Unify_N700_68"
+        app:icon_color_light_enable="@color/Unify_NN950_68"
+        app:icon_color_light_disabled="@color/Unify_NN950_68"
         />
 
     <androidx.recyclerview.widget.RecyclerView

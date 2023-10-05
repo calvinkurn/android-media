@@ -2,6 +2,7 @@ package com.tokopedia.buyerorder.recharge.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.buyerorder.recharge.data.request.RechargeOrderDetailRequest
+import com.tokopedia.buyerorder.recharge.data.response.DigitalPaymentInfoMessage
 import com.tokopedia.buyerorder.recharge.domain.RechargeEmoneyVoidUseCase
 import com.tokopedia.buyerorder.recharge.domain.RechargeOrderDetailUseCase
 import com.tokopedia.buyerorder.recharge.presentation.model.*
@@ -297,7 +298,12 @@ class RechargeOrderDetailViewModelTest {
                 paymentDetails = emptyList(),
                 totalPriceLabel = "",
                 totalPrice = "",
-                additionalTicker = null
+                additionalTicker = null,
+                paymentInfoMessage = RechargePaymentInfoMessage(
+                    "Belum termasuk biaya layanan, jasa aplikasi dan biaya lainnya.",
+                    "Lihat SK",
+                    "tokopedia://mybills",
+                )
             ),
             helpUrl = "",
             actionButtonList = RechargeOrderDetailActionButtonListModel(

@@ -4,22 +4,22 @@ import android.os.Bundle
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.tokopedia.adapterdelegate.AdapterDelegatesManager
+import com.tokopedia.product.detail.postatc.view.component.addons.AddonsDelegate
 import com.tokopedia.product.detail.postatc.view.component.error.ErrorDelegate
 import com.tokopedia.product.detail.postatc.view.component.fallback.FallbackDelegate
 import com.tokopedia.product.detail.postatc.view.component.loading.LoadingDelegate
 import com.tokopedia.product.detail.postatc.view.component.productinfo.ProductInfoDelegate
-import com.tokopedia.product.detail.postatc.view.component.recommendation.RecommendationDelegate
+import com.tokopedia.product.detail.postatc.view.component.recommendation.GlobalRecommendationDelegate
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
 class PostAtcAdapter(
-    listener: PostAtcListener,
+    callback: PostAtcCallback,
     private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.Main.immediate,
     override val coroutineContext: CoroutineContext = coroutineDispatcher
 ) : ListAdapter<PostAtcUiModel, PostAtcViewHolder<*>>(PostAtcDiffItemCallback), CoroutineScope {
@@ -32,11 +32,12 @@ class PostAtcAdapter(
 
     init {
         delegatesManager
-            .addDelegate(ProductInfoDelegate(listener))
-            .addDelegate(RecommendationDelegate(listener))
-            .addDelegate(ErrorDelegate(listener))
+            .addDelegate(AddonsDelegate(callback))
+            .addDelegate(ErrorDelegate(callback))
+            .addDelegate(FallbackDelegate(callback))
+            .addDelegate(GlobalRecommendationDelegate(callback))
             .addDelegate(LoadingDelegate())
-            .addDelegate(FallbackDelegate(listener))
+            .addDelegate(ProductInfoDelegate(callback))
     }
 
     private val mapUiModels = mutableMapOf<Int, PostAtcUiModel>()

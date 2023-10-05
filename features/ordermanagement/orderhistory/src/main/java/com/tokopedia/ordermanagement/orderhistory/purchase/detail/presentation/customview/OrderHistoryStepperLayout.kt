@@ -7,7 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
-import com.tkpd.library.utils.ImageHandler
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.ordermanagement.orderhistory.R
 import com.tokopedia.ordermanagement.orderhistory.purchase.detail.model.history.viewmodel.OrderHistoryData
 import com.tokopedia.unifyprinciples.Typography
@@ -41,6 +41,10 @@ class OrderHistoryStepperLayout : LinearLayout {
         model.orderListData.firstOrNull()?.color?.let {
             title.setTextColor(Color.parseColor(it))
         }
-        if (model.historyImage.isEmpty()) visibility = View.GONE else ImageHandler.LoadImage(stepperImage, model.historyImage)
+        if (model.historyImage.isEmpty()) {
+            visibility = View.GONE
+        } else {
+            stepperImage.loadImage(model.historyImage)
+        }
     }
 }

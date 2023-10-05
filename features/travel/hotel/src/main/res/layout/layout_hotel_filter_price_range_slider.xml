@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="start"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             app:typographyType="body_3"
             tools:text="pmin label" />
 
@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="end"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             app:typographyType="body_3"
             tools:text="pmax label" />
 
@@ -45,7 +45,7 @@
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/min_value"
             style="@style/TextView.Title"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/hotel_minus4dp"
@@ -68,14 +68,14 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/layout_lvl2"
             android:layout_marginRight="@dimen/layout_lvl2"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             app:typographyType="body_3"
             android:text="@string/price_range_separator_symbol" />
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/max_value"
             style="@style/TextView.Title"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/hotel_minus4dp"

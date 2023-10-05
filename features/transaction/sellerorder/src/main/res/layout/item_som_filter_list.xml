@@ -14,7 +14,7 @@
         android:layout_alignParentStart="true"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl4"
-        android:textColor="@color/Unify_N700"
+        android:textColor="@color/Unify_NN950"
         app:typographyType="heading_4"
         app:typographyWeight="bold" />
 
@@ -27,7 +27,7 @@
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:text="@string/title_see_all"
         android:layout_alignTop="@id/tvTitleHeaderSomFilter"
-        android:textColor="@color/Unify_G500"
+        android:textColor="@color/Unify_GN500"
         android:visibility="gone"
         app:typographyType="body_2"
         app:typographyWeight="reguler" />

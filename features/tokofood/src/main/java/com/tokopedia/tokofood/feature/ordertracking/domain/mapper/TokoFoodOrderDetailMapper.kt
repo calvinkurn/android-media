@@ -11,13 +11,12 @@ import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderDe
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ToolbarLiveTrackingUiModel
 import javax.inject.Inject
 
-class TokoFoodOrderDetailMapper @Inject constructor(
+open class TokoFoodOrderDetailMapper @Inject constructor(
     private val orderLiveTrackingMapper: ITokoFoodOrderLiveTrackingMapper,
     private val orderCompletedMapper: ITokoFoodOrderCompletedMapper
 ) {
 
     fun mapToOrderDetailResultUiModel(orderDetailResponse: TokoFoodOrderDetailResponse.TokofoodOrderDetail): OrderDetailResultUiModel {
-
         val orderStatus = orderDetailResponse.orderStatus.status
 
         val orderDetailList = when (orderStatus) {
@@ -47,28 +46,30 @@ class TokoFoodOrderDetailMapper @Inject constructor(
 
     private fun mapFoodItemListUiModel(
         foodList:
-        List<TokoFoodOrderDetailResponse.TokofoodOrderDetail.Item>
+            List<TokoFoodOrderDetailResponse.TokofoodOrderDetail.Item>
     ): List<BaseOrderTrackingTypeFactory> {
         return mutableListOf<BaseOrderTrackingTypeFactory>().apply {
-            addAll(foodList.map {
-                FoodItemUiModel(
-                    cartId = it.cartId,
-                    categoryId = it.categoryId,
-                    categoryName = it.categoryName,
-                    itemId = it.itemId,
-                    foodName = it.displayName,
-                    quantity = it.quantity,
-                    priceStr = it.price,
-                    notes = it.notes.orEmpty(),
-                    addOnVariantList = mapToAddonVariantUiModel(it)
-                )
-            })
+            addAll(
+                foodList.map {
+                    FoodItemUiModel(
+                        cartId = it.cartId,
+                        categoryId = it.categoryId,
+                        categoryName = it.categoryName,
+                        itemId = it.itemId,
+                        foodName = it.displayName,
+                        quantity = it.quantity,
+                        priceStr = it.price,
+                        notes = it.notes.orEmpty(),
+                        addOnVariantList = mapToAddonVariantUiModel(it)
+                    )
+                }
+            )
         }
     }
 
     private fun mapToAddonVariantUiModel(
         foodItem:
-        TokoFoodOrderDetailResponse.TokofoodOrderDetail.Item
+            TokoFoodOrderDetailResponse.TokofoodOrderDetail.Item
     ): List<AddonVariantItemUiModel> {
         return foodItem.variants?.map {
             AddonVariantItemUiModel(displayName = it.displayName, optionName = it.optionName)
@@ -96,7 +97,7 @@ class TokoFoodOrderDetailMapper @Inject constructor(
 
     private fun mapToToolbarLiveTrackingUiModel(
         orderDetailResponse:
-        TokoFoodOrderDetailResponse.TokofoodOrderDetail
+            TokoFoodOrderDetailResponse.TokofoodOrderDetail
     ) = ToolbarLiveTrackingUiModel(
         merchantName = orderDetailResponse.merchant.displayName,
         orderStatusTitle = orderDetailResponse.orderStatus.title,
@@ -106,6 +107,8 @@ class TokoFoodOrderDetailMapper @Inject constructor(
                 append(" ")
                 append(orderDetailResponse.eta.time)
             }.toString()
-        } else ""
+        } else {
+            ""
+        }
     )
 }

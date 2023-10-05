@@ -12,8 +12,10 @@ data class FintechWidgetDataModel(
     var categoryId: String? = null,
     var idToPriceUrlMap: HashMap<String, FintechPriceDataModel> = HashMap(),
     var isLoggedIn: Boolean = false,
-    var shopId: String = ""
-): DynamicPdpDataModel {
+    var shopId: String = "",
+    var parentId: String = "",
+    val widgetSession: Long = 0L
+) : DynamicPdpDataModel {
 
     override fun type() = type
 
@@ -23,9 +25,11 @@ data class FintechWidgetDataModel(
 
     override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
         return newData is FintechWidgetDataModel &&
-            (newData.productId == this.productId &&
-                newData.idToPriceUrlMap == this.idToPriceUrlMap &&
-                newData.isLoggedIn == this.isLoggedIn)
+            (
+                newData.productId == this.productId &&
+                    newData.idToPriceUrlMap == this.idToPriceUrlMap &&
+                    newData.isLoggedIn == this.isLoggedIn
+                )
     }
 
     override fun newInstance() = this.copy()

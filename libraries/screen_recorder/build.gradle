@@ -13,6 +13,11 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.screenrecorder'
+    testNamespace 'com.tokopedia.screenrecorder.test'
+}
+
 dependencies {
     implementation rootProject.ext.supportLibDependencies.appCompactV7
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7

@@ -1,6 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.tokopedia.updateinactivephone"
     android:versionCode="1"
     android:versionName="1.0.0">
 
@@ -15,19 +14,19 @@
             android:value="true" />
 
         <activity
-            android:name=".stub.features.accountlist.InactivePhoneAccountListActivityStub"
+            android:name="com.tokopedia.updateinactivephone.stub.features.accountlist.InactivePhoneAccountListActivityStub"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <activity
-            android:name=".stub.features.successpage.InactivePhoneSuccessPageActivityStub"
+            android:name="com.tokopedia.updateinactivephone.stub.features.successpage.InactivePhoneSuccessPageActivityStub"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <activity
-            android:name=".stub.features.submitnewphone.InactivePhoneSubmitDataActivityStub"
+            android:name="com.tokopedia.updateinactivephone.stub.features.submitnewphone.InactivePhoneSubmitDataActivityStub"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <activity
-            android:name=".stub.features.inputoldphonenumber.InputOldPhoneNumberActivityStub"
+            android:name="com.tokopedia.updateinactivephone.stub.features.inputoldphonenumber.InputOldPhoneNumberActivityStub"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
     </application>

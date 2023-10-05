@@ -61,6 +61,10 @@ class ClaimCouponItemViewModelTest {
     fun `test for application`() {
         assert(viewModel.application === application)
     }
+    @Test
+    fun `test for componentData`() {
+        assert(viewModel.getComponentData().value === componentsItem)
+    }
 
     @Test
     fun `test for claimCouponClickUseCase useCase`() {
@@ -89,10 +93,8 @@ class ClaimCouponItemViewModelTest {
     @Test
     fun getClaimCouponData() {
         val claimString = "claimString"
-        val data = arrayListOf(CatalogWithCouponList(status = claimString))
+        val data = arrayListOf(CatalogWithCouponList(buttonStr = claimString))
         every { componentsItem.claimCouponList } returns data
-
-        viewModel.onAttachToViewHolder()
 
         assertEquals(viewModel.getClaimCouponData(), data.firstOrNull())
     }
@@ -101,8 +103,6 @@ class ClaimCouponItemViewModelTest {
     fun `getComponentData when dataItem is null`() {
         every { componentsItem.claimCouponList } returns null
 
-        viewModel.onAttachToViewHolder()
-
         assertEquals(viewModel.getClaimCouponData(), null)
     }
 
@@ -110,8 +110,6 @@ class ClaimCouponItemViewModelTest {
     fun `getComponentData when claimButtonStr is null`() {
         val data = arrayListOf(CatalogWithCouponList())
         every { componentsItem.claimCouponList } returns data
-
-        viewModel.onAttachToViewHolder()
 
         assertEquals(viewModel.getClaimCouponData()?.status, HABIS)
     }

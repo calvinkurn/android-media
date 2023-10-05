@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import com.bumptech.glide.load.Key
 import com.bumptech.glide.load.Transformation
 import com.tokopedia.media.loader.listener.MediaListener
+import com.tokopedia.media.loader.listener.NetworkResponseListener
 import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.media.loader.wrapper.MediaDataSource
 import com.tokopedia.media.loader.wrapper.MediaDecodeFormat
@@ -31,7 +32,10 @@ data class Properties(
     internal var fitCenter: Boolean = false,
     internal var isAdaptiveSizeImageRequest: Boolean = false,
     internal var accessToken: String = "",
-    internal var userId: String = ""
+    internal var userId: String = "",
+    internal var shouldTrackNetwork: Boolean = false,
+    internal var isForceClearHeaderCache: Boolean = false,
+    internal var setNetworkResponse: NetworkResponseListener? = null
 ) {
 
     /*
@@ -66,6 +70,17 @@ data class Properties(
 
     internal fun setImageSize(width: Int, height: Int) = apply {
         this.imageViewSize = Pair(width, height)
+    }
+
+    // flag to able to invoke the [NetworkResponseListener] callback
+    fun shouldTrackNetworkResponse(value: Boolean) = apply {
+        this.shouldTrackNetwork = value
+    }
+
+    // because the header response stored on the disk cache, the page owners have control to
+    // set either clear-able cache or not if the cache is not persistent.
+    fun setForceClearHeaderCache(value: Boolean) = apply {
+        this.isForceClearHeaderCache = value
     }
 
     // to display the image with specific time to delay (ms)
@@ -154,6 +169,28 @@ data class Properties(
         }
     }
 
+    // listener to track the header response
+    fun networkResponse(
+        invoke: (List<Header>) -> Unit = { _ -> },
+    ) = apply {
+        setNetworkResponse = object : NetworkResponseListener {
+            override fun header(data: List<Header>, type: FailureType?) {
+                invoke(data)
+            }
+        }
+    }
+
+    // listener to track the header response and failure type
+    fun networkResponse(
+        invoke: (List<Header>, FailureType?) -> Unit = { _, _ -> },
+    ) = apply {
+        setNetworkResponse = object : NetworkResponseListener {
+            override fun header(data: List<Header>, type: FailureType?) {
+                invoke(data, type)
+            }
+        }
+    }
+
     // mapping single transform
     fun transform(transform: Transformation<Bitmap>) = apply {
         this.transform = transform
@@ -179,18 +216,14 @@ data class Properties(
         this.centerInside = true
     }
 
-    // adaptive image size request
+    // the adaptive size enabling to set the image size scale based on containers
     fun adaptiveImageSizeRequest(isAdaptive: Boolean) = apply {
         this.isAdaptiveSizeImageRequest = isAdaptive
     }
 
-    fun userSessionAccessToken(token: String) = apply {
-        this.accessToken = token
-    }
-
-    fun userId(userId: String) = apply {
-        this.userId = userId
-    }
+    // accessToken and userId used to load the secure image using [loadSecureImage]
+    fun userSessionAccessToken(token: String) = apply { this.accessToken = token }
+    fun userId(userId: String) = apply { this.userId = userId }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -221,7 +254,9 @@ data class Properties(
             fitCenter == other.fitCenter &&
             accessToken == other.accessToken &&
             userId == other.userId &&
-            isAdaptiveSizeImageRequest == other.isAdaptiveSizeImageRequest
+            isAdaptiveSizeImageRequest == other.isAdaptiveSizeImageRequest &&
+            shouldTrackNetwork == other.shouldTrackNetwork &&
+            isForceClearHeaderCache == other.isForceClearHeaderCache
     }
 
     override fun hashCode(): Int {
@@ -252,6 +287,8 @@ data class Properties(
         result = 3 * result + accessToken.hashCode()
         result = 3 * result + userId.hashCode()
         result = 3 * result + isAdaptiveSizeImageRequest.hashCode()
+        result = 3 * result + shouldTrackNetwork.hashCode()
+        result = 3 * result + isForceClearHeaderCache.hashCode()
         return result
     }
 

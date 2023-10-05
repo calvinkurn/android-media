@@ -5,6 +5,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.databinding.HomeBannerItemMissionWidgetBinding
+import com.tokopedia.home_component.listener.MissionWidgetComponentListener
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselMissionWidgetDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.unifycomponents.CardUnify2
@@ -15,7 +16,7 @@ import com.tokopedia.utils.view.binding.viewBinding
  */
 class MissionWidgetItemViewHolder(
     view: View,
-    private val cardInteraction: Boolean = false
+    private val missionWidgetComponentListener: MissionWidgetComponentListener,
 ) : AbstractViewHolder<CarouselMissionWidgetDataModel>(view) {
 
     private var binding: HomeBannerItemMissionWidgetBinding? by viewBinding()
@@ -31,21 +32,17 @@ class MissionWidgetItemViewHolder(
 
     private fun setLayout(element: CarouselMissionWidgetDataModel) {
         binding?.run {
-            cardContainerMissionWidget.animateOnPress = if (cardInteraction) {
-                CardUnify2.ANIMATE_OVERLAY_BOUNCE
-            } else {
-                CardUnify2.ANIMATE_OVERLAY
-            }
+            cardContainerMissionWidget.animateOnPress = element.animateOnPress
             cardContainerMissionWidget.rootView.setOnClickListener {
-                element.missionWidgetComponentListener.onMissionClicked(element, absoluteAdapterPosition)
+                missionWidgetComponentListener.onMissionClicked(element, element.cardPosition)
             }
             cardContainerMissionWidget.rootView.addOnImpressionListener(element) {
-                element.missionWidgetComponentListener.onMissionImpressed(element, absoluteAdapterPosition)
+                missionWidgetComponentListener.onMissionImpressed(element, element.cardPosition)
             }
-            imageMissionWidget.setImageUrl(element.imageURL)
-            titleMissionWidget.text = element.title
+            imageMissionWidget.setImageUrl(element.data.imageURL)
+            titleMissionWidget.text = element.data.title
             subtitleMissionWidget.height = element.subtitleHeight
-            subtitleMissionWidget.text = element.subTitle
+            subtitleMissionWidget.text = element.data.subTitle
             subtitleMissionWidget.maxLines = MAX_LINES_MISSION_WIDGET
             subtitleMissionWidget.ellipsize = TextUtils.TruncateAt.END
         }

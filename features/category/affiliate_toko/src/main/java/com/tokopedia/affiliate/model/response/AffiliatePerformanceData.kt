@@ -8,7 +8,7 @@ data class AffiliatePerformanceData(
 ) {
     data class GetAffiliateItemsPerformanceList(
         @SerializedName("Data")
-        var `data`: Data?
+        var itemPerformanceListData: Data?
     ) {
         data class Data(
             @SerializedName("Error")

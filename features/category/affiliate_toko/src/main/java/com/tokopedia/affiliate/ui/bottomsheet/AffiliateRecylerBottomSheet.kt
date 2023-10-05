@@ -32,15 +32,14 @@ import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
 
-class AffiliateRecylerBottomSheet: BottomSheetUnify() {
+class AffiliateRecylerBottomSheet : BottomSheetUnify() {
     private var contentView: View? = null
-    private var type: String =""
+    private var type: String = ""
     private var titleSheet: String = ""
     private var subText: String = ""
     private var filterType: String = ""
     private var tickerDesc: String = ""
-    private var listItem :Any? = null
-
+    private var listItem: Any? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         init()
@@ -54,15 +53,21 @@ class AffiliateRecylerBottomSheet: BottomSheetUnify() {
         private const val TICKER_INFO = "tickerInfo"
         const val TYPE_WITHDRAWAL = "withdrawalType"
         const val TYPE_HOME = "homeType"
-        fun newInstance(type: String, title: String?, subText: String?, list: Any?, filterType: String = "",tickerInfo: String? = ""
+        fun newInstance(
+            type: String,
+            title: String?,
+            subText: String?,
+            list: Any?,
+            filterType: String = "",
+            tickerInfo: String? = ""
         ): AffiliateRecylerBottomSheet {
             return AffiliateRecylerBottomSheet().apply {
                 arguments = Bundle().apply {
-                    putString(TYPE,type)
-                    putString(TITLE,title)
-                    putString(SUB_TEXT,subText)
-                    putString(FILTER_TYPE,filterType)
-                    putString(TICKER_INFO,tickerInfo)
+                    putString(TYPE, type)
+                    putString(TITLE, title)
+                    putString(SUB_TEXT, subText)
+                    putString(FILTER_TYPE, filterType)
+                    putString(TICKER_INFO, tickerInfo)
                 }
                 listItem = list
             }
@@ -75,8 +80,11 @@ class AffiliateRecylerBottomSheet: BottomSheetUnify() {
         showCloseIcon = true
         showKnob = false
         clearContentPadding = true
-        contentView = View.inflate(context,
-            R.layout.affiliate_traffic_attribution_bottom_sheet_attribute, null)
+        contentView = View.inflate(
+            context,
+            R.layout.affiliate_traffic_attribution_bottom_sheet_attribute,
+            null
+        )
         setTitle(titleSheet)
         contentView?.findViewById<Typography>(R.id.traffic_attribution_text)?.apply {
             text = subText
@@ -89,16 +97,16 @@ class AffiliateRecylerBottomSheet: BottomSheetUnify() {
     }
 
     private fun initDivider() {
-        if((listItem as? List<*>)?.isNotEmpty() == true && type == TYPE_HOME ) {
+        if ((listItem as? List<*>)?.isNotEmpty() == true && type == TYPE_HOME) {
             contentView?.findViewById<DividerUnify>(R.id.divider_2)?.show()
             setTicker()
-        }else{
+        } else {
             contentView?.findViewById<DividerUnify>(R.id.divider_2)?.gone()
         }
     }
 
     private fun setTicker() {
-        if(tickerDesc.isNotEmpty()){
+        if (tickerDesc.isNotEmpty()) {
             contentView?.findViewById<CardUnify2>(R.id.affiliate_metric_announcement_ticker_cv)?.isVisible = true
             contentView?.findViewById<Typography>(R.id.affiliate_metric_announcement_ticker)?.apply {
                 text = tickerDesc
@@ -107,37 +115,36 @@ class AffiliateRecylerBottomSheet: BottomSheetUnify() {
     }
 
     private fun initList(listItem: Any?) {
-        if(type == TYPE_HOME){
+        if (type == TYPE_HOME) {
             var metricList = (listItem as? List<AffiliateUserPerformaListItemData.GetAffiliatePerformance.Data.UserData.Metrics.Tooltip.SubMetrics?>)
-            metricList =  metricList?.sortedBy { subMetrics -> subMetrics?.order  }
+            metricList = metricList?.sortedBy { subMetrics -> subMetrics?.order }
             metricList?.forEachIndexed { index, subMetrics ->
-                if(index == metricList.lastIndex) subMetrics?.isLastItem = true
+                if (index == metricList.lastIndex) subMetrics?.isLastItem = true
                 viewModel?.itemList?.add(AffiliateTrafficAttributionModel(subMetrics))
             }
-        }
-        else if(type == TYPE_WITHDRAWAL){
+        } else if (type == TYPE_WITHDRAWAL) {
             (listItem as? List<AffiliateCommissionDetailsData.GetAffiliateCommissionDetail.Data.Detail.Tooltip>?)?.forEach {
-                if(it.tooltipType == "divider")
+                if (it.tooltipType == "divider") {
                     viewModel?.itemList?.add(AffiliateBottomDividerItemModel())
-                else
+                } else {
                     viewModel?.itemList?.add(AffiliateWithrawalInfoAttributionModel(it))
+                }
             }
         }
-
     }
 
-    private var viewModel:AffiliateRecyclerViewModel? = null
+    private var viewModel: AffiliateRecyclerViewModel? = null
     private fun initViewModel() {
-        viewModel = ViewModelProvider(this,viewModelProvider).get(AffiliateRecyclerViewModel::class.java)
+        viewModel = ViewModelProvider(this, viewModelProvider).get(AffiliateRecyclerViewModel::class.java)
     }
 
     private fun initBundle() {
         arguments?.let { bundle ->
-            type = bundle.getString(TYPE,"")
-            titleSheet = bundle.getString(TITLE,"")
-            subText = bundle.getString(SUB_TEXT,"")
-            filterType = bundle.getString(FILTER_TYPE,"")
-            tickerDesc = bundle.getString(TICKER_INFO,"")
+            type = bundle.getString(TYPE, "")
+            titleSheet = bundle.getString(TITLE, "")
+            subText = bundle.getString(SUB_TEXT, "")
+            filterType = bundle.getString(FILTER_TYPE, "")
+            tickerDesc = bundle.getString(TICKER_INFO, "")
         }
     }
 
@@ -148,9 +155,9 @@ class AffiliateRecylerBottomSheet: BottomSheetUnify() {
     }
 
     private fun setData() {
-       dataRv?.layoutManager = LinearLayoutManager(context)
-       dataRv?.adapter = adapter
-       adapter.submitList(viewModel?.itemList as List<Visitable<*>>?)
+        dataRv?.layoutManager = LinearLayoutManager(context)
+        dataRv?.adapter = adapter
+        adapter.submitList(viewModel?.itemList as? List<Visitable<*>>)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -170,5 +177,4 @@ class AffiliateRecylerBottomSheet: BottomSheetUnify() {
             .builder()
             .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
             .build()
-
 }

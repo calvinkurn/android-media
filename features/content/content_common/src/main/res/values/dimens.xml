@@ -26,4 +26,7 @@
     <dimen name="feed_shop_recom_shimmer_height">160dp</dimen>
     <dimen name="content_common_dp_200">200dp</dimen>
     <dimen name="feed_recommendation_width">220dp</dimen>
+
+    <!--User Report-->
+    <dimen name="content_user_report_list_divider_height">0.5dp</dimen>
 </resources>

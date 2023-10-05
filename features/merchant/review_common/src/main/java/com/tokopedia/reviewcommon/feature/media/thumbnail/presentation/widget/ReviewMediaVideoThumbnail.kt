@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.media.loader.clearImage
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.utils.RemoteConfig
 import com.tokopedia.network.utils.ErrorHandler
@@ -50,9 +51,16 @@ class ReviewMediaVideoThumbnail @JvmOverloads constructor(
         super.onMeasure(widthMeasureSpec, widthMeasureSpec)
     }
 
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        uiState?.let { updateUi(it) }
+    }
+
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        if (!RemoteConfig.glideM3U8ThumbnailLoaderEnabled(context)) {
+        if (RemoteConfig.glideM3U8ThumbnailLoaderEnabled(context)) {
+            binding.ivReviewMediaVideoThumbnail.clearImage()
+        } else {
             reviewVideoPlayer.cleanupVideoPlayer()
         }
     }

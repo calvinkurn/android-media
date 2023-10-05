@@ -30,7 +30,8 @@ object LastApplyUiMapper {
             additionalInfo = mapAdditionalInfo(promoUiModel.additionalInfoUiModel),
             message = mapMessageUiModel(promoUiModel.messageUiModel),
             defaultEmptyPromoMessage = if (promoUiModel.titleDescription.isNotBlank()) promoUiModel.titleDescription else "",
-            benefitSummaryInfo = promoUiModel.benefitSummaryInfoUiModel
+            benefitSummaryInfo = promoUiModel.benefitSummaryInfoUiModel,
+            userGroupMetadata = promoUiModel.userGroupMetadata
         )
     }
 
@@ -48,7 +49,9 @@ object LastApplyUiMapper {
         return LastApplyVoucherOrdersItemUiModel(
             code = promoCheckoutVoucherOrdersItemUiModel.code,
             uniqueId = promoCheckoutVoucherOrdersItemUiModel.uniqueId,
-            message = mapMessageUiModel(promoCheckoutVoucherOrdersItemUiModel.messageUiModel)
+            message = mapMessageUiModel(promoCheckoutVoucherOrdersItemUiModel.messageUiModel),
+            cartStringGroup = promoCheckoutVoucherOrdersItemUiModel.cartStringGroup,
+            type = promoCheckoutVoucherOrdersItemUiModel.type
         )
     }
 

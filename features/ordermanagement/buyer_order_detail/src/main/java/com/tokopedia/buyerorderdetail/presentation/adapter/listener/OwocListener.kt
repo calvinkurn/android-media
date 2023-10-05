@@ -1,0 +1,11 @@
+package com.tokopedia.buyerorderdetail.presentation.adapter.listener
+
+import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OwocErrorStateViewHolder
+import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OwocProductListHeaderViewHolder
+import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OwocProductListToggleViewHolder
+
+interface OwocSectionGroupListener : OwocErrorStateViewHolder.Listener
+
+interface OwocProductListListener : OwocProductListToggleViewHolder.Listener
+
+interface OwocProductListHeaderListener : OwocProductListHeaderViewHolder.Listener

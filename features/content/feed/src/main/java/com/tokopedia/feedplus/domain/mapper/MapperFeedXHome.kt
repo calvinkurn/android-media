@@ -8,6 +8,7 @@ import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.data.FeedXAuthor
 import com.tokopedia.feedplus.data.FeedXCampaign
 import com.tokopedia.feedplus.data.FeedXCard
+import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_FOLLOW_RECOM
 import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_PLAY_LIVE
 import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_TOP_ADS
 import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_X_CARD_PLACEHOLDER
@@ -30,11 +31,13 @@ import com.tokopedia.feedplus.presentation.model.FeedCardCtaGradientModel
 import com.tokopedia.feedplus.presentation.model.FeedCardCtaModel
 import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
 import com.tokopedia.feedplus.presentation.model.FeedCardLivePreviewContentModel
+import com.tokopedia.feedplus.presentation.model.FeedCardProductAffiliate
 import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
 import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
 import com.tokopedia.feedplus.presentation.model.FeedCommentItemModel
 import com.tokopedia.feedplus.presentation.model.FeedCommentModel
 import com.tokopedia.feedplus.presentation.model.FeedFollowModel
+import com.tokopedia.feedplus.presentation.model.FeedFollowRecommendationModel
 import com.tokopedia.feedplus.presentation.model.FeedLikeModel
 import com.tokopedia.feedplus.presentation.model.FeedMediaModel
 import com.tokopedia.feedplus.presentation.model.FeedMediaTagging
@@ -64,6 +67,8 @@ class MapperFeedXHome @Inject constructor(
                     transformToFeedCardVideo(card)
                 } else if (isLivePreviewPost(card)) {
                     transformToFeedCardLivePreview(card)
+                } else if (isFollowRecomWidget(card)) {
+                    transformToFollowRecomWidget(card)
                 } else {
                     transformToFeedCardImage(card)
                 }
@@ -89,6 +94,7 @@ class MapperFeedXHome @Inject constructor(
             cta = card.cta.let { cta ->
                 FeedCardCtaModel(
                     texts = cta.texts,
+                    subtitles = cta.subtitles,
                     color = cta.color,
                     colorGradient = cta.colorGradient.map { color ->
                         FeedCardCtaGradientModel(
@@ -220,6 +226,8 @@ class MapperFeedXHome @Inject constructor(
             }
         )
 
+    private fun transformToFollowRecomWidget(card: FeedXCard) = FeedFollowRecommendationModel.Empty.copy(id = card.id)
+
     private fun transformAuthor(author: FeedXAuthor): FeedAuthorModel = FeedAuthorModel(
         id = author.id,
         type = AuthorType.from(author.type),
@@ -227,17 +235,25 @@ class MapperFeedXHome @Inject constructor(
         badgeUrl = author.badgeUrl,
         logoUrl = author.logoUrl,
         appLink = author.applink,
-        encryptedUserId = author.encryptedUserId,
-        isLive = author.isLive
+        encryptedUserId = author.encryptedUserId
     )
 
     private fun transformProduct(product: FeedXProduct): FeedCardProductModel =
         FeedCardProductModel(
             id = product.id,
+            isParent = product.isParent,
+            parentID = product.parentID,
+            hasVariant = product.hasVariant,
             name = product.name,
             coverUrl = product.coverUrl,
             weblink = product.weblink,
             applink = product.applink,
+            affiliate = product.affiliate.let {
+                FeedCardProductAffiliate(
+                    it.id,
+                    it.channel
+                )
+            },
             star = product.star,
             price = product.price,
             priceFmt = product.priceFmt,
@@ -260,7 +276,8 @@ class MapperFeedXHome @Inject constructor(
             stockSoldPercentage = product.stockSoldPercentage,
             cartable = product.cartable,
             isCashback = product.isCashback,
-            cashbackFmt = product.cashbackFmt
+            cashbackFmt = product.cashbackFmt,
+            isAvailable = product.isAvailable
         )
 
     private fun transformMedia(media: FeedXMedia): FeedMediaModel =
@@ -323,8 +340,7 @@ class MapperFeedXHome @Inject constructor(
                             badgeUrl = author.badgeUrl,
                             logoUrl = author.logoUrl,
                             appLink = author.applink,
-                            encryptedUserId = author.encryptedUserId,
-                            isLive = author.isLive
+                            encryptedUserId = author.encryptedUserId
                         )
                     },
                     text = item.text
@@ -455,6 +471,9 @@ class MapperFeedXHome @Inject constructor(
     private fun isTopAdsPost(card: FeedXCard) =
         card.typename == TYPE_FEED_X_CARD_PLACEHOLDER && card.type == TYPE_FEED_TOP_ADS
 
+    private fun isFollowRecomWidget(card: FeedXCard) =
+        card.typename == TYPE_FEED_X_CARD_PLACEHOLDER && card.type == TYPE_FEED_FOLLOW_RECOM
+
     private fun shouldShow(card: FeedXCard) =
-        isImagesPost(card) || isVideoPost(card) || isLivePreviewPost(card)
+        isImagesPost(card) || isVideoPost(card) || isLivePreviewPost(card) || isFollowRecomWidget(card)
 }

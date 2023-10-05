@@ -28,7 +28,7 @@
         android:layout_marginEnd="@dimen/spacing_lvl3"
         android:text="@string/play_widget_banner_fallback_text"
         android:textAlignment="center"
-        android:textColor="@color/Unify_G500"
+        android:textColor="@color/Unify_GN500"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/fl_border"
         app:layout_constraintEnd_toEndOf="@id/fl_border"

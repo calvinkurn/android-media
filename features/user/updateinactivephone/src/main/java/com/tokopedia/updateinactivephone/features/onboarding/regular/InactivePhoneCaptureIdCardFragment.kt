@@ -116,7 +116,7 @@ class InactivePhoneCaptureIdCardFragment : BaseInactivePhoneOnboardingFragment()
                 val gapWidth = DP_12.pxToDp(resources.displayMetrics)
                 val margin = DP_8.pxToDp(resources.displayMetrics)
                 val span = SpannableString(text)
-                val color = MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N100)
+                val color = MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN200)
 
                 val bulletSpan: BulletSpan = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     BulletSpan(gapWidth, color, radius)

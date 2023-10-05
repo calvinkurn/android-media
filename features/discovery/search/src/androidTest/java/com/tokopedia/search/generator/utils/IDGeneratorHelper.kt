@@ -4,13 +4,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.contrib.RecyclerViewActions
+import com.tokopedia.search.BuildConfig
 import com.tokopedia.search.getProductListAdapter
 import com.tokopedia.search.perform
 import com.tokopedia.test.application.id_generator.FileWriter
 import com.tokopedia.test.application.id_generator.PrintCondition
 import com.tokopedia.test.application.id_generator.ViewHierarchyPrinter
 import com.tokopedia.test.application.id_generator.writeGeneratedViewIds
-import com.tokopedia.search.BuildConfig
 
 object IDGeneratorHelper {
     private val printConditions = listOf(
@@ -36,11 +36,11 @@ object IDGeneratorHelper {
 
     private val viewPrinter = ViewHierarchyPrinter(
         printConditions,
-        packageName = BuildConfig.APPLICATION_ID,
+        packageName = BuildConfig.LIBRARY_PACKAGE_NAME
     )
     private val rootViewPrinter = ViewHierarchyPrinter(
         rootPrintCondition,
-        packageName = BuildConfig.APPLICATION_ID,
+        packageName = BuildConfig.LIBRARY_PACKAGE_NAME
     )
     private val fileWriter = FileWriter()
     private val savedFileName = mutableListOf<String>()
@@ -64,7 +64,7 @@ object IDGeneratorHelper {
             recyclerView.perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(index))
 
             recyclerView?.findViewHolderForAdapterPosition(index)?.let {
-               printView(it.itemView, it.javaClass.simpleName)
+                printView(it.itemView, it.javaClass.simpleName)
             }
         }
     }
@@ -72,7 +72,7 @@ object IDGeneratorHelper {
     private fun saveFile(text: String, fileName: String) {
         if (!savedFileName.contains(fileName)) {
             fileWriter.writeGeneratedViewIds(
-                "search_${fileName}.csv",
+                "search_$fileName.csv",
                 text
             )
             savedFileName.add(fileName)

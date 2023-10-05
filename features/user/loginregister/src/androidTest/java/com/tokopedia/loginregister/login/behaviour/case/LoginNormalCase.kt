@@ -19,7 +19,9 @@ import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import androidx.test.espresso.matcher.RootMatchers.isDialog
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
@@ -31,8 +33,6 @@ import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity
 import com.tokopedia.loginregister.stub.Config
-import com.tokopedia.sessioncommon.data.GenerateKeyPojo
-import com.tokopedia.sessioncommon.data.KeyData
 import com.tokopedia.sessioncommon.data.LoginToken
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
@@ -228,10 +228,6 @@ class LoginNormalCase : LoginBase() {
         val loginToken = LoginToken(accessToken = "abc123")
         val loginPojo = LoginTokenPojo(loginToken)
         loginTokenUseCaseStub.response = loginPojo
-
-        val keyData = KeyData(key = "abc1234", hash = "1234")
-        val keyResponse = GenerateKeyPojo(keyData = keyData)
-        generatePublicKeyUseCaseStub.response = keyResponse
 
         val profileInfo = ProfileInfo(userId = "123456", fullName = "CHARACTER_NOT_ALLOWED")
         val profilePojo = ProfilePojo(profileInfo)

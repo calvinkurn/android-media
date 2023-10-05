@@ -7,13 +7,18 @@ import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.data.MoveAction
 import com.tokopedia.discovery2.data.multibannerresponse.timmerwithbanner.TimerDataModel
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.timerbanners.SaleCountDownTimer
 import java.text.SimpleDateFormat
 import java.util.*
 
-class ContentCardItemViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel() {
+class ContentCardItemViewModel(
+    val application: Application,
+    val components: ComponentsItem,
+    val position: Int
+) : DiscoveryBaseViewModel() {
     private val componentData: MutableLiveData<ComponentsItem> = MutableLiveData()
     private var timeCounter: SaleCountDownTimer? = null
     private val elapsedTime: Long = 1000
@@ -51,30 +56,34 @@ class ContentCardItemViewModel(val application: Application, val components: Com
             val parsedEndDate = Utils.parseFlashSaleDate(timerData)
             SimpleDateFormat(Utils.TIMER_DATE_FORMAT, Locale.getDefault())
                 .parse(parsedEndDate)?.let { parsedDate ->
-                val saleTimeMillis = parsedDate.time - currentSystemTime.time
-                if (saleTimeMillis > 0) {
-                    if (futureSaleTab) {
-                        mutableTimerText.value =
-                            application.resources.getString(R.string.discovery_sale_begins_in)
+                    val saleTimeMillis = parsedDate.time - currentSystemTime.time
+                    if (saleTimeMillis > 0) {
+                        if (futureSaleTab) {
+                            mutableTimerText.value =
+                                application.resources.getString(R.string.discovery_sale_begins_in)
+                        } else {
+                            mutableTimerText.value =
+                                application.resources.getString(R.string.discovery_sale_ends_in)
+                        }
+                        timeCounter = SaleCountDownTimer(
+                            saleTimeMillis,
+                            elapsedTime,
+                            showDays = true
+                        ) { timerModel ->
+                            if (timerModel.timeFinish) {
+                                stopTimer()
+                                startTimer()
+                            }
+                            mutableTimeDiffModel.value = timerModel
+                        }
+                        timeCounter?.start()
                     } else {
                         mutableTimerText.value =
                             application.resources.getString(R.string.discovery_sale_ends_in)
-                    }
-                    timeCounter = SaleCountDownTimer(saleTimeMillis, elapsedTime, showDays = true) { timerModel ->
-                        if (timerModel.timeFinish) {
-                            stopTimer()
-                            startTimer()
-                        }
+                        val timerModel = TimerDataModel(hours = 0, minutes = 0, seconds = 0)
                         mutableTimeDiffModel.value = timerModel
                     }
-                    timeCounter?.start()
-                } else {
-                    mutableTimerText.value =
-                        application.resources.getString(R.string.discovery_sale_ends_in)
-                    val timerModel = TimerDataModel(hours = 0, minutes = 0, seconds = 0)
-                    mutableTimeDiffModel.value = timerModel
                 }
-            }
         }
     }
 
@@ -85,8 +94,8 @@ class ContentCardItemViewModel(val application: Application, val components: Com
 
     fun getComponentLiveData(): LiveData<ComponentsItem> = componentData
 
-    fun getNavigationUrl(): String? {
-        return getDataItem()?.landingPage?.appLink
+    fun getNavigationAction(): MoveAction? {
+        return getDataItem()?.landingPage?.moveAction
     }
 
     private fun getDataItem(): DataItem? {

@@ -2,10 +2,10 @@ package com.tokopedia.play.data.repository
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.play.domain.GetUserReportListUseCase
-import com.tokopedia.play.domain.PostUserReportUseCase
+import com.tokopedia.content.common.usecase.GetUserReportListUseCase
+import com.tokopedia.content.common.usecase.PostUserReportUseCase
 import com.tokopedia.play.domain.repository.PlayViewerUserReportRepository
-import com.tokopedia.play.view.uimodel.PlayUserReportReasoningUiModel
+import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play.widget.ui.model.PartnerType
 import com.tokopedia.user.session.UserSessionInterface
@@ -48,7 +48,7 @@ class PlayViewerUserReportRepositoryImpl @Inject constructor(
                 reasonId = reasonId,
                 timestamp = timestamp,
                 reportDesc = reportDesc,
-                partnerType = partnerType,
+                partnerType = PostUserReportUseCase.PartnerType.getTypeFromPlay(partnerType.value),
             )
         postUserReportUseCase.setRequestParams(request.parameters)
         val response = postUserReportUseCase.executeOnBackground()

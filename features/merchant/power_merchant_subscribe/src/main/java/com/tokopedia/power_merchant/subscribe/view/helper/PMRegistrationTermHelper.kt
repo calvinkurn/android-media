@@ -52,12 +52,12 @@ object PMRegistrationTermHelper {
                 val textColor = if (isEligibleShopScore) {
                     PMCommonUtils.getHexColor(
                         context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_G500
+                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
                     )
                 } else {
                     PMCommonUtils.getHexColor(
                         context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_R600
+                        com.tokopedia.unifyprinciples.R.color.Unify_RN500
                     )
                 }
                 title = context.getString(
@@ -82,7 +82,7 @@ object PMRegistrationTermHelper {
             if (isEligibleShopScore) {
                 val textColor = PMCommonUtils.getHexColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_G500
+                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
                 )
                 title = context.getString(R.string.pm_term_shop_score, textColor, shopScoreFmt)
                 description = context.getString(
@@ -93,7 +93,7 @@ object PMRegistrationTermHelper {
             } else {
                 val textColor = PMCommonUtils.getHexColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_R600
+                    com.tokopedia.unifyprinciples.R.color.Unify_RN500
                 )
                 title = context.getString(R.string.pm_term_shop_score, textColor, shopScoreFmt)
                 description = context.getString(

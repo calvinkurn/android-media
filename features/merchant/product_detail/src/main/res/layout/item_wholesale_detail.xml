@@ -19,7 +19,7 @@
             android:id="@+id/courier_item_name"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             app:typographyType="display_2"
             tools:text="Name" />
 
@@ -29,7 +29,7 @@
             android:layout_height="match_parent"
             android:layout_marginTop="1dp"
             app:typographyType="display_3"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             tools:text="info" />
 
     </LinearLayout>

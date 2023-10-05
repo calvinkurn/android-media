@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:paddingVertical="10dp">
+    android:paddingVertical="6dp">
     
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_penalty_calculation_score_detail"

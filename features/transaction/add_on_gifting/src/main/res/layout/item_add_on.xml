@@ -9,7 +9,7 @@
         android:id="@+id/divider_add_on"
         android:layout_width="match_parent"
         android:layout_height="8dp"
-        android:background="@color/Unify_N75"
+        android:background="@color/Unify_NN50"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

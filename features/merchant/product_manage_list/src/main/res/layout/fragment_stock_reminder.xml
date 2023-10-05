@@ -184,7 +184,7 @@
         android:id="@+id/cardSaveBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardBackgroundColor="@color/Unify_N0"
+        app:cardBackgroundColor="@color/Unify_NN0"
         app:cardElevation="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -236,7 +236,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:background="@color/Unify_N0" />
+            android:background="@color/Unify_NN0" />
 
     </RelativeLayout>
 

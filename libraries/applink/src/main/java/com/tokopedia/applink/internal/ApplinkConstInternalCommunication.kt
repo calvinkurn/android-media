@@ -8,8 +8,14 @@ import com.tokopedia.applink.constant.DeeplinkConstant
 object ApplinkConstInternalCommunication {
 
     const val HOST_COMMUNICATION = "communication"
-    const val INTERNAL_COMMUNICATION = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_COMMUNICATION}"
+    const val INTERNAL_COMMUNICATION = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_COMMUNICATION"
 
-    //TokoChatActivity
-    const val TOKO_CHAT = "${INTERNAL_COMMUNICATION}/tokochat"
+    // TokoChatActivity
+    const val TOKO_CHAT = "$INTERNAL_COMMUNICATION/tokochat"
+
+    // TokoChat List
+    const val TOKOCHAT_LIST = "$INTERNAL_COMMUNICATION/tokochat/list"
+
+    // UniversalInboxActivity
+    const val UNIVERSAL_INBOX = "$INTERNAL_COMMUNICATION/universal-inbox"
 }

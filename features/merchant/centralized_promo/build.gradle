@@ -4,6 +4,8 @@ apply plugin: 'io.hansel.preprocessor.module'
 apply plugin: 'kotlin-parcelize'
 
 android {
+    namespace 'com.tokopedia.centralizedpromo'
+    testNamespace 'com.tokopedia.centralizedpromo.test'
     packagingOptions {
         exclude 'META-INF/**'
     }
@@ -42,7 +44,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.baseList)
     implementation projectOrAar(rootProject.ext.libraries.graphql)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.utils)

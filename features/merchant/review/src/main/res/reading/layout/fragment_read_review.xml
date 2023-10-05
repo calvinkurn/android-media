@@ -85,7 +85,7 @@
             android:id="@+id/read_review_network_error"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/Unify_N0"
+            android:background="@color/Unify_NN0"
             android:gravity="center"
             android:visibility="gone"
             app:globalerrors_type="NO_CONNECTION" />

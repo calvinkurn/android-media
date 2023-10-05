@@ -11,7 +11,7 @@ import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
 @GqlQuery("TokoFoodOrderStatusQuery", TOKO_FOOD_ORDER_STATUS_QUERY)
-class GetTokoFoodOrderStatusUseCase @Inject constructor(
+open class GetTokoFoodOrderStatusUseCase @Inject constructor(
     private val useCase: GraphqlUseCase<TokoFoodOrderStatusResponse>,
     private val mapper: TokoFoodOrderStatusMapper
 ) {
@@ -20,16 +20,16 @@ class GetTokoFoodOrderStatusUseCase @Inject constructor(
         useCase.setTypeClass(TokoFoodOrderStatusResponse::class.java)
     }
 
-    suspend fun execute(orderId: String): OrderStatusLiveTrackingUiModel {
+    open suspend fun execute(orderId: String): OrderStatusLiveTrackingUiModel {
         useCase.setRequestParams(createRequestParamsOrderDetail(orderId))
         return try {
             mapper.mapToOrderStatusLiveTrackingUiModel(useCase.executeOnBackground().tokofoodOrderDetail)
         } catch (e: Exception) {
-            throw MessageErrorException("${ORDER_STATUS_POOL_STATE}: ${e.localizedMessage}")
+            throw MessageErrorException("$ORDER_STATUS_POOL_STATE: ${e.localizedMessage}")
         }
     }
 
-    private fun createRequestParamsOrderDetail(orderId: String): Map<String, Any> {
+    fun createRequestParamsOrderDetail(orderId: String): Map<String, Any> {
         return RequestParams.create().apply {
             putString(ORDER_ID_KEY, orderId)
         }.parameters

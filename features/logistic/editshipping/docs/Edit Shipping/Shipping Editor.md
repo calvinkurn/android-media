@@ -17,6 +17,10 @@ title: Shipping Editor
 
 ## Release Notes
 
+<!--start expand:1 September 2023-->
+Remove Shop Single Location
+<!--end expand-->
+
 <!--start expand:20 Jan 2023 (MA-3.204/SA-2.134)-->
 [Whitelabel Instan](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2104460915/Whitelabel+Instan)
 <!--end expand-->
@@ -29,15 +33,13 @@ title: Shipping Editor
 
 ### Background
 
-Tokopedia facilitates seller to set up courier with a feature called `Shipping Editor`. There are 2 different pages for this `Shipping Editor`, the first one is for default seller (only have one warehouse), we called it **Single Location**, other for seller that have multiple warehouse or **Multi-Location**. Before, seller that have multiple warehouse, only can set up their courier through TokoCabang managed by Tokopedia’s partners. But now, all seller can manage their own courier in Tokopedia’s app.
-
-Shipping Editor on **Single-Loc** handle shop edit address and courier selection in one page. Meanwhile, Shipping Editor on **Multi-Loc** only handle courier selection, but having interconnection with shop edit address in another page.
+Tokopedia facilitates seller to set up courier with a feature called `Shipping Editor`.
 
 ![](../res/shippingeditor/loc_shipping_editor.png)
 
 ## Navigation
 
-- Both pages can be accessed with this app link `tokopedia-android-internal://marketplace/shop-settings-shipping`
+- Shipping editor page can be accessed with this app link `tokopedia-android-internal://marketplace/shop-settings-shipping`
 
 ![](../res/shippingeditor/navigation.png)
 
@@ -47,11 +49,6 @@ Shipping Editor on **Single-Loc** handle shop edit address and courier selection
 
 ## Tech Stack
 
-- Shipping Editor (Single - Loc)
-  - MVP
-  - Java - Kotlin
-  - Retrofit
-  - **Still using REST**
 - Shipping Editor (Multi-Loc)
   - MVVM
   - Kotlin
@@ -59,16 +56,6 @@ Shipping Editor on **Single-Loc** handle shop edit address and courier selection
   - Coroutines
 
 ### GQL & API List
-
-- Single Loc
-
-
-
-| **GQL & API Name** | **Documentation Link** | **Description** |
-| --- | --- | --- |
-| `keroMapsAutofill` | [GMaps Autofill District Geocode - /maps/geocode/get-district](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/694818899) | To get district detail from latlong |
-| `get_shipping_info.pl` | - | To get shipping editor info |
-| `shippingEditorMobilePopup` | [BO Deactivation Confirmation Popup](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/862292063/BO+Deactivation+Confirmation+Popup)  | To validate new shipper selection (deactivate Bebas Ongkir) |
 
 - Multi Loc
 

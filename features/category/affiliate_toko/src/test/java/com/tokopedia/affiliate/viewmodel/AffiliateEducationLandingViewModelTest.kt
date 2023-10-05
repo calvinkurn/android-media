@@ -15,6 +15,7 @@ import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationTutoria
 import com.tokopedia.affiliate.usecase.AffiliateEducationArticleCardsUseCase
 import com.tokopedia.affiliate.usecase.AffiliateEducationBannerUseCase
 import com.tokopedia.affiliate.usecase.AffiliateEducationCategoryTreeUseCase
+import com.tokopedia.affiliate.usecase.AffiliateGetUnreadNotificationUseCase
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -35,11 +36,13 @@ class AffiliateEducationLandingViewModelTest {
     private val educationBannerUseCase: AffiliateEducationBannerUseCase = mockk()
     private val educationCategoryUseCase: AffiliateEducationCategoryTreeUseCase = mockk()
     private val educationArticleCardsUseCase: AffiliateEducationArticleCardsUseCase = mockk()
+    private val affiliateGetUnreadNotificationUseCase: AffiliateGetUnreadNotificationUseCase = mockk()
     private val viewModel: AffiliateEducationLandingViewModel = spyk(
         AffiliateEducationLandingViewModel(
             educationBannerUseCase,
             educationCategoryUseCase,
-            educationArticleCardsUseCase
+            educationArticleCardsUseCase,
+            affiliateGetUnreadNotificationUseCase
         )
     )
     private val educationLandingDataObserver: Observer<List<Visitable<AffiliateAdapterTypeFactory>>> =
@@ -273,5 +276,28 @@ class AffiliateEducationLandingViewModelTest {
             false,
             viewModel.getEducationPageData().value?.any { it is AffiliateEducationTutorialRVUiModel }
         )
+    }
+
+    @Test
+    fun `successfully getting unread notification count`() {
+        coEvery {
+            affiliateGetUnreadNotificationUseCase.getUnreadNotifications()
+        } returns 5
+
+        viewModel.fetchUnreadNotificationCount()
+        assertEquals(5, viewModel.getUnreadNotificationCount().value)
+    }
+
+    @Test
+    fun `should reset notification count to zero`() {
+        coEvery {
+            affiliateGetUnreadNotificationUseCase.getUnreadNotifications()
+        } returns 5
+
+        viewModel.fetchUnreadNotificationCount()
+        assertEquals(5, viewModel.getUnreadNotificationCount().value)
+
+        viewModel.resetNotificationCount()
+        assertEquals(0, viewModel.getUnreadNotificationCount().value)
     }
 }

@@ -6,7 +6,7 @@ import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomShee
 import dagger.Component
 
 @ActivityScope
-@Component(modules = [UniversalShareModule::class], dependencies = [BaseAppComponent::class])
+@Component(modules = [UniversalShareModule::class, UniversalShareUseCaseModule::class], dependencies = [BaseAppComponent::class])
 interface UniversalShareComponent {
     fun inject(universalShareBottomSheet: UniversalShareBottomSheet)
 }

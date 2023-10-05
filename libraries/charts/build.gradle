@@ -2,6 +2,8 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
 
 android {
+    namespace 'com.tokopedia.charts'
+    testNamespace 'com.tokopedia.charts.test'
     buildFeatures {
         viewBinding true
     }
@@ -13,7 +15,7 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.recyclerViewV7
 
     implementation rootProject.ext.libraries.mpAndroidChart
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
 }
 
 project.ext {

@@ -19,6 +19,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.SELLER_MVC_CREATE
 import com.tokopedia.campaign.delegates.HasPaginatedList
 import com.tokopedia.campaign.delegates.HasPaginatedListImpl
+import com.tokopedia.campaign.entity.RemoteTicker
 import com.tokopedia.campaign.utils.constant.DateConstant
 import com.tokopedia.campaign.utils.extension.routeToUrl
 import com.tokopedia.campaign.utils.extension.showToaster
@@ -48,12 +49,12 @@ import com.tokopedia.mvc.common.util.UrlConstant.URL_MAIN_ARTICLE
 import com.tokopedia.mvc.databinding.SmvcFragmentMvcListBinding
 import com.tokopedia.mvc.databinding.SmvcFragmentMvcListFooterBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
-import com.tokopedia.mvc.domain.entity.RemoteTicker
 import com.tokopedia.mvc.domain.entity.ShareComponentMetaData
 import com.tokopedia.mvc.domain.entity.Voucher
 import com.tokopedia.mvc.domain.entity.VoucherCreationQuota
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
 import com.tokopedia.mvc.domain.entity.enums.PromoType
+import com.tokopedia.mvc.domain.entity.enums.PromotionStatus
 import com.tokopedia.mvc.domain.entity.enums.VoucherServiceType
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.presentation.bottomsheet.FilterVoucherBottomSheet
@@ -109,7 +110,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import kotlinx.coroutines.flow.collect
 import java.util.*
 import javax.inject.Inject
 
@@ -364,7 +364,7 @@ class MvcListFragment :
         val voucherEndTime = voucher.finishTime.toDate(
             DateConstant.DATE_WITH_SECOND_PRECISION_ISO_8601
         )
-        val promoType = PromoType.values().firstOrNull { value -> value.text == voucher.typeFormatted }
+        val promoType = PromoType.values().firstOrNull { value -> value.id == voucher.type }
             ?: PromoType.FREE_SHIPPING
 
         val shareComponentParam = getShareComponentData(
@@ -416,7 +416,7 @@ class MvcListFragment :
         return voucher.let {
             ShareComponentInstanceBuilder.Param(
                 isVoucherProduct = it.isLockToProduct,
-                voucherId = it.id,
+                galadrielVoucherId = it.galadrielVoucherId,
                 isPublic = it.isPublic,
                 voucherCode = it.code,
                 voucherStartDate = voucherStartTime,
@@ -470,7 +470,7 @@ class MvcListFragment :
             onShareOptionsClicked = { shareModel ->
                 handleShareOptionSelection(
                     voucher.isLockToProduct,
-                    shareComponentParam.voucherId,
+                    shareComponentParam.galadrielVoucherId,
                     shareModel,
                     title,
                     description,
@@ -491,7 +491,7 @@ class MvcListFragment :
 
     private fun handleShareOptionSelection(
         isProductVoucher: Boolean,
-        voucherId: Long,
+        galadrielVoucherId: Long,
         shareModel: ShareModel,
         title: String,
         description: String,
@@ -521,12 +521,13 @@ class MvcListFragment :
 
         val linkerDataGenerator = LinkerDataGenerator()
         val linkerShareData = linkerDataGenerator.generate(
-            voucherId,
+            galadrielVoucherId,
             userSession.shopId,
             shopDomain,
             shareModel,
             title,
-            outgoingDescription
+            outgoingDescription,
+            isProductVoucher
         )
         LinkerManager.getInstance().executeShareRequest(
             LinkerUtils.createShareRequest(
@@ -884,8 +885,17 @@ class MvcListFragment :
     }
 
     private fun deleteVoucher(voucher: Voucher) {
-        if (voucher.isSubsidy) {
-            showCallTokopediaCareDialog(voucher.status)
+        if (voucher.isFromVps() ||
+            voucher.isGetSubsidy() ||
+            !voucher.isEditable
+        ) {
+            if (voucher.subsidyDetail.programDetail.promotionStatus == PromotionStatus.APPROVED ||
+                voucher.subsidyDetail.programDetail.promotionStatus == PromotionStatus.REGISTERED
+            ) {
+                showCallTokopediaCareDialog(voucher.status)
+            } else {
+                showConfirmationStopVoucherDialog(voucher)
+            }
         } else {
             showConfirmationStopVoucherDialog(voucher)
         }

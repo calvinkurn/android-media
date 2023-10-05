@@ -77,7 +77,7 @@ class SeamlessLoginTest : BaseCartTest() {
             val captured = slot.captured
             captured.onError(errorMessage)
         }
-        val adsId = null
+        val adsId = ""
         every { view.getAdsId() } returns adsId
 
         // WHEN

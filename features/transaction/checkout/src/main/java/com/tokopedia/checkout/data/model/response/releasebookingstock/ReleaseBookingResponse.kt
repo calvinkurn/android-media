@@ -1,4 +1,4 @@
-package com.tokopedia.checkout.data.model.response
+package com.tokopedia.checkout.data.model.response.releasebookingstock
 
 import com.google.gson.annotations.SerializedName
 

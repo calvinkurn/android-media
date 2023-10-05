@@ -5,11 +5,13 @@ import com.tokopedia.home.analytics.HomePageTracking.ECOMMERCE
 import com.tokopedia.home.analytics.HomePageTracking.PROMOTIONS
 import com.tokopedia.home.analytics.v2.BaseTracking.Event.PROMO_CLICK
 import com.tokopedia.home.analytics.v2.BaseTracking.Event.PROMO_VIEW
+import com.tokopedia.home_component.visitable.BestSellerProductDataModel
 import com.tokopedia.recommendation_widget_common.extension.hasLabelGroupFulfillment
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
+import com.tokopedia.home_component.visitable.BestSellerDataModel as BestSellerRevampDataModel
 import com.tokopedia.track.constant.TrackerConstant.TRACKER_ID
 
 /**
@@ -50,6 +52,38 @@ object BestSellerWidgetTracker : BaseTracking(){
                 .appendChannelId(bestSellerDataModel.id)
                 .build()
 
+    fun getImpressionTracker(
+        bestSellerProductDataModel: BestSellerProductDataModel,
+        bestSellerDataModel: BestSellerRevampDataModel,
+        userId: String,
+        position: Int
+    ) = BaseTrackerBuilder()
+            .constructBasicProductView(
+                event = Event.PRODUCT_VIEW,
+                eventCategory = Category.HOMEPAGE,
+                eventAction = IMPRESSION_ON_PRODUCT.format(BEST_SELLER),
+                eventLabel = Label.NONE,
+                list = getCustomListBestSellerString(
+                    bestSellerProductDataModel,
+                    position,
+                    bestSellerDataModel,
+                ),
+                buildCustomList = buildCustomListBestSeller(position, bestSellerDataModel),
+                products = listOf(
+                    mapToProductTracking(
+                        bestSellerProductDataModel,
+                        bestSellerDataModel.id,
+                        bestSellerDataModel.title,
+                        bestSellerDataModel.pageName,
+                    )
+                )
+            )
+            .appendBusinessUnit(BusinessUnit.DEFAULT)
+            .appendCurrentSite(CurrentSite.DEFAULT)
+            .appendUserId(userId)
+            .appendChannelId(bestSellerDataModel.id)
+            .build()
+
     private fun buildCustomListBestSeller(position: Int, bestSellerDataModel: BestSellerDataModel): (BaseTrackerConst.Product) -> String {
         return {
             String.format(
@@ -62,6 +96,25 @@ object BestSellerWidgetTracker : BaseTracking(){
                     bestSellerDataModel.chipsPosition,
                     "",
                     it.headerName
+            )
+        }
+    }
+
+    private fun buildCustomListBestSeller(
+        position: Int,
+        bestSellerDataModel: BestSellerRevampDataModel
+    ): (BaseTrackerConst.Product) -> String {
+        return {
+            String.format(
+                LIST_BEST_SELLER,
+                position + 1,
+                if (it.isTopAds == true) TOPADS else NONTOPADS,
+                CAROUSEL,
+                it.recommendationType,
+                it.pageName,
+                bestSellerDataModel.activeChipPosition,
+                "",
+                it.headerName
             )
         }
     }
@@ -80,22 +133,96 @@ object BestSellerWidgetTracker : BaseTracking(){
         )
     }
 
+    private fun getCustomListBestSellerString(
+        bestSellerProductDataModel: BestSellerProductDataModel,
+        position: Int,
+        bestSellerDataModel: BestSellerRevampDataModel,
+    ): String {
+        return String.format(
+            LIST_BEST_SELLER,
+            position + 1,
+            if (bestSellerProductDataModel.isTopAds) TOPADS else NONTOPADS,
+            CAROUSEL,
+            bestSellerProductDataModel.recommendationType,
+            bestSellerProductDataModel.pageName,
+            bestSellerDataModel.activeChipPosition,
+            "",
+            bestSellerProductDataModel.header
+        )
+    }
+
     fun sendClickTracker(recommendationItem: RecommendationItem, bestSellerDataModel: BestSellerDataModel, userId: String, position: Int) {
+        val bestSellerId = bestSellerDataModel.id
+        val bestSellerTitle = bestSellerDataModel.title
+        val productTrackingMap = mapToProductTracking(
+            recommendationItem,
+            bestSellerId,
+            bestSellerTitle,
+            bestSellerDataModel.pageName
+        )
+        val listName = getCustomListBestSellerString(recommendationItem, position, bestSellerDataModel)
+        val customListBestSeller = buildCustomListBestSeller(position, bestSellerDataModel)
+
+        sendClickTracker(
+            bestSellerId,
+            bestSellerTitle,
+            listName,
+            productTrackingMap,
+            customListBestSeller,
+            userId
+        )
+    }
+
+    fun sendClickTracker(
+        bestSellerProductDataModel: BestSellerProductDataModel,
+        bestSellerDataModel: BestSellerRevampDataModel,
+        userId: String,
+        position: Int,
+    ) {
+        val bestSellerId = bestSellerDataModel.id
+        val bestSellerTitle = bestSellerDataModel.title
+        val productTrackingMap = mapToProductTracking(
+            bestSellerProductDataModel,
+            bestSellerId,
+            bestSellerTitle,
+            bestSellerDataModel.pageName
+        )
+        val listName = getCustomListBestSellerString(bestSellerProductDataModel, position, bestSellerDataModel)
+        val customListBestSeller = buildCustomListBestSeller(position, bestSellerDataModel)
+
+        sendClickTracker(
+            bestSellerId,
+            bestSellerTitle,
+            listName,
+            productTrackingMap,
+            customListBestSeller,
+            userId
+        )
+    }
+
+    private fun sendClickTracker(
+        bestSellerId: String,
+        bestSellerTitle: String,
+        listName: String,
+        productTrackingMap: BaseTrackerConst.Product,
+        customListBestSeller: (BaseTrackerConst.Product) -> String,
+        userId: String
+    ) {
         val tracker = BaseTrackerBuilder()
-                .constructBasicProductClick(
-                        event = Event.PRODUCT_CLICK,
-                        eventCategory = Category.HOMEPAGE,
-                        eventAction = CLICK_ON_PRODUCT.format(BEST_SELLER),
-                        eventLabel = "${bestSellerDataModel.id} - ${bestSellerDataModel.title}",
-                        list = getCustomListBestSellerString(recommendationItem, position, bestSellerDataModel),
-                        products = listOf(mapToProductTracking(recommendationItem, bestSellerDataModel.id, bestSellerDataModel.title, bestSellerDataModel.pageName)),
-                        buildCustomList = buildCustomListBestSeller(position, bestSellerDataModel)
-                )
-                .appendBusinessUnit(BusinessUnit.DEFAULT)
-                .appendCurrentSite(CurrentSite.DEFAULT)
-                .appendUserId(userId)
-                .appendChannelId(bestSellerDataModel.id)
-                .build()
+            .constructBasicProductClick(
+                event = Event.PRODUCT_CLICK,
+                eventCategory = Category.HOMEPAGE,
+                eventAction = CLICK_ON_PRODUCT.format(BEST_SELLER),
+                eventLabel = "$bestSellerId - $bestSellerTitle",
+                list = listName,
+                products = listOf(productTrackingMap),
+                buildCustomList = customListBestSeller
+            )
+            .appendBusinessUnit(BusinessUnit.DEFAULT)
+            .appendCurrentSite(CurrentSite.DEFAULT)
+            .appendUserId(userId)
+            .appendChannelId(bestSellerId)
+            .build()
         getTracker().sendEnhanceEcommerceEvent(tracker)
     }
 
@@ -221,8 +348,38 @@ object BestSellerWidgetTracker : BaseTracking(){
                 channelId = channelId,
                 category = recommendationItem.categoryBreadcrumbs,
                 variant = "",
-                brand = ""
+                brand = "",
+                warehouseId = recommendationItem.warehouseId.toString(),
+                isFulfillment = recommendationItem.labelGroupList.hasLabelGroupFulfillment()
         )
 
+    }
+
+    private fun mapToProductTracking(
+        bestSellerProductDataModel: BestSellerProductDataModel,
+        channelId: String,
+        headerName: String,
+        pageName: String
+    ): BaseTrackerConst.Product{
+        return BaseTrackerConst.Product(
+            id = bestSellerProductDataModel.productId,
+            name = bestSellerProductDataModel.name,
+            isTopAds = bestSellerProductDataModel.isTopAds,
+            recommendationType = bestSellerProductDataModel.recommendationType,
+            headerName = headerName,
+            isCarousel = true,
+            productPrice = bestSellerProductDataModel.price.toString(),
+            productPosition = bestSellerProductDataModel.position.toString(),
+            isFreeOngkir = bestSellerProductDataModel.isFreeOngkirActive && !bestSellerProductDataModel.hasLabelGroupFulfillment(),
+            isFreeOngkirExtra = bestSellerProductDataModel.isFreeOngkirActive && bestSellerProductDataModel.hasLabelGroupFulfillment(),
+            pageName = pageName,
+            cartId = bestSellerProductDataModel.cartId,
+            channelId = channelId,
+            category = bestSellerProductDataModel.categoryBreadcrumbs,
+            variant = "",
+            brand = "",
+            warehouseId = bestSellerProductDataModel.warehouseId,
+            isFulfillment = bestSellerProductDataModel.productCardModel.getLabelFulfillment() != null
+        )
     }
 }

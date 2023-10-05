@@ -27,10 +27,7 @@ class ClaimCouponViewModelTest {
     private val viewModel: ClaimCouponViewModel by lazy {
         spyk(ClaimCouponViewModel(application, componentsItem, 99))
     }
-
-    private val claimCouponUseCase: ClaimCouponUseCase by lazy {
-        mockk()
-    }
+    private val claimCouponUseCase: ClaimCouponUseCase = mockk()
 
     @Before
     @Throws(Exception::class)
@@ -55,14 +52,14 @@ class ClaimCouponViewModelTest {
     @Test
     fun onAttachToViewHolder() {
         runBlocking {
-            viewModel.claimCouponUseCase = claimCouponUseCase
             val list = mockk<ArrayList<ComponentsItem>>(relaxed = true)
             every { componentsItem.getComponentsItem() } returns list
             every { componentsItem.id } returns "s"
             val properties = Properties(categorySlug = "abc,jasd,kahfsd")
             every { componentsItem.properties } returns properties
             every { componentsItem.pageEndPoint } returns "s"
-            coEvery { viewModel.claimCouponUseCase?.getClickCouponData(any(), any(), any()) } returns mockk()
+            viewModel.claimCouponUseCase = claimCouponUseCase
+            coEvery { claimCouponUseCase.getClickCouponData(any(),any(),any()) } returns mockk()
 
             viewModel.onAttachToViewHolder()
 

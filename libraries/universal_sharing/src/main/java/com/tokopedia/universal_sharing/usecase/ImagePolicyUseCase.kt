@@ -1,5 +1,6 @@
 package com.tokopedia.universal_sharing.usecase
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
@@ -8,7 +9,7 @@ import com.tokopedia.universal_sharing.model.ImagePolicyResponse
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
-class ImagePolicyUseCase @Inject constructor(private val graphqlRepository: GraphqlRepository) : CoroutineUseCase<String, ImagePolicyResponse>(Dispatchers.IO) {
+class ImagePolicyUseCase @Inject constructor(@ApplicationContext private val graphqlRepository: GraphqlRepository) : CoroutineUseCase<String, ImagePolicyResponse>(Dispatchers.IO) {
     override fun graphqlQuery(): String {
         return """
               query imagenerator_policy(${'$'}sourceID:String!) {

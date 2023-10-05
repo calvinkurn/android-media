@@ -22,6 +22,7 @@ import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.getDigits
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntSafely
@@ -36,17 +37,21 @@ import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.searchbar.data.HintData
+import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.category.analytic.CategoryAnalytic
 import com.tokopedia.tokopedianow.category.di.component.CategoryComponent
+import com.tokopedia.tokopedianow.category.domain.mapper.ProductRecommendationMapper.createRequestParam
 import com.tokopedia.tokopedianow.category.presentation.adapter.CategoryAdapter
 import com.tokopedia.tokopedianow.category.presentation.adapter.differ.CategoryDiffer
 import com.tokopedia.tokopedianow.category.presentation.adapter.typefactory.CategoryAdapterTypeFactory
 import com.tokopedia.tokopedianow.category.presentation.callback.CategoryNavigationCallback
+import com.tokopedia.tokopedianow.category.presentation.callback.CategoryProductCardAdsCallback
 import com.tokopedia.tokopedianow.category.presentation.callback.CategoryProductRecommendationCallback
 import com.tokopedia.tokopedianow.category.presentation.callback.CategoryShowcaseHeaderCallback
 import com.tokopedia.tokopedianow.category.presentation.callback.CategoryShowcaseItemCallback
@@ -56,10 +61,12 @@ import com.tokopedia.tokopedianow.category.presentation.callback.ProductCardComp
 import com.tokopedia.tokopedianow.category.presentation.callback.TokoNowCategoryMenuCallback
 import com.tokopedia.tokopedianow.category.presentation.callback.TokoNowChooseAddressWidgetCallback
 import com.tokopedia.tokopedianow.category.presentation.callback.TokoNowViewCallback
+import com.tokopedia.tokopedianow.category.presentation.model.CategoryAtcTrackerModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryShowcaseItemUiModel
-import com.tokopedia.tokopedianow.category.presentation.util.CategoryLayoutType
+import com.tokopedia.tokopedianow.category.presentation.util.CategoryLayoutType.CATEGORY_SHOWCASE
 import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryViewModel
 import com.tokopedia.tokopedianow.common.constant.RequestCode
+import com.tokopedia.tokopedianow.common.constant.TokoNowStaticLayoutType.Companion.PRODUCT_ADS_CAROUSEL
 import com.tokopedia.tokopedianow.common.model.ShareTokonow
 import com.tokopedia.tokopedianow.common.util.GlobalErrorUtil
 import com.tokopedia.tokopedianow.common.util.StringUtil.getOrDefaultZeroString
@@ -69,9 +76,11 @@ import com.tokopedia.tokopedianow.common.view.NoAddressEmptyStateView
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder
 import com.tokopedia.tokopedianow.common.viewmodel.TokoNowProductRecommendationViewModel
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowCategoryBaseBinding
+import com.tokopedia.tokopedianow.oldcategory.domain.model.CategorySharingModel
 import com.tokopedia.tokopedianow.similarproduct.presentation.activity.TokoNowSimilarProductBottomSheetActivity
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
+import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
@@ -82,13 +91,13 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class TokoNowCategoryFragment : BaseDaggerFragment(),
+class TokoNowCategoryFragment :
+    BaseDaggerFragment(),
     ScreenShotListener,
     ShareBottomsheetListener,
     PermissionListener,
     MiniCartWidgetListener,
-    NoAddressEmptyStateView.ActionListener
-{
+    NoAddressEmptyStateView.ActionListener {
     companion object {
         private const val SCROLL_DOWN_DIRECTION = 1
         private const val START_SWIPE_PROGRESS_POSITION = 120
@@ -138,6 +147,7 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
                 tokoNowProductRecommendationListener = createProductRecommendationCallback(),
                 productCardCompactListener = createProductCardCompactCallback(),
                 productCardCompactSimilarProductTrackerListener = createProductCardCompactSimilarProductTrackerCallback(),
+                productAdsCarouselListener = createProductCardAdsCallback(),
                 recycledViewPool = recycledViewPool,
                 lifecycleOwner = viewLifecycleOwner
             ),
@@ -188,7 +198,7 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
 
     private var shareTokonow: ShareTokonow? = null
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
-    private var screenshotDetector : ScreenshotDetector? = null
+    private var screenshotDetector: ScreenshotDetector? = null
 
     /**
      * -- override function section --
@@ -231,12 +241,12 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
     }
 
     override fun onStop() {
-        UniversalShareBottomSheet.clearState(screenshotDetector)
+        SharingUtil.clearState(screenshotDetector)
         super.onStop()
     }
 
     override fun onDestroy() {
-        UniversalShareBottomSheet.clearState(screenshotDetector)
+        SharingUtil.clearState(screenshotDetector)
         recycledViewPool.clear()
         super.onDestroy()
     }
@@ -250,12 +260,12 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
         return binding?.root
     }
 
-    override fun screenShotTaken() {
+    override fun screenShotTaken(path: String) {
         updateShareCategoryData(
             isScreenShot = true,
             thumbNailTitle = context?.resources?.getString(R.string.tokopedianow_share_thumbnail_title_ss).orEmpty()
         )
-        showUniversalShareBottomSheet(shareTokonow)
+        showUniversalShareBottomSheet(shareTokonow, path)
     }
 
     override fun permissionAction(action: String, label: String) {
@@ -386,7 +396,7 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
         oosLayout.hide()
     }
 
-    private fun FragmentTokopedianowCategoryBaseBinding.setupGlobalErrorPageNotFound(){
+    private fun FragmentTokopedianowCategoryBaseBinding.setupGlobalErrorPageNotFound() {
         globalError.apply {
             errorAction.text = getString(R.string.tokopedianow_common_error_state_button_back_to_tokonow_home_page)
             errorSecondaryAction.show()
@@ -437,7 +447,7 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
             bringToFront()
             setToolbarPageName(PAGE_NAME)
             setIcon(
-                IconBuilder()
+                IconBuilder(builderFlags = IconBuilderFlag(pageSource = NavSource.TOKONOW))
                     .addShare()
                     .addCart()
                     .addNavGlobal()
@@ -468,7 +478,6 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
         }
     }
 
-
     private fun NavToolbar.setupNavigationToolbarInteraction() {
         activity?.let { setupToolbarWithStatusBar(activity = it) }
         viewLifecycleOwner.lifecycle.addObserver(this)
@@ -493,7 +502,7 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
                 warehouseId = viewModel.getWarehouseId()
             )
         },
-        disableDefaultGtmTracker = true,
+        disableDefaultGtmTracker = true
     )
 
     private fun IconBuilder.addShare() = addIcon(
@@ -539,8 +548,8 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
         linkerType = LinkerData.NOW_TYPE
     )
 
-    private fun shareClicked(shareCategoryTokonow: ShareTokonow?){
-        if(UniversalShareBottomSheet.isCustomSharingEnabled(context)){
+    private fun shareClicked(shareCategoryTokonow: ShareTokonow?) {
+        if (SharingUtil.isCustomSharingEnabled(context)) {
             showUniversalShareBottomSheet(
                 shareCategoryTokonow = shareCategoryTokonow
             )
@@ -554,8 +563,13 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun showUniversalShareBottomSheet(shareCategoryTokonow: ShareTokonow?) {
+    private fun showUniversalShareBottomSheet(shareCategoryTokonow: ShareTokonow?, path: String? = null) {
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+            setFeatureFlagRemoteConfigKey()
+            path?.let {
+                setImageOnlySharingOption(true)
+                setScreenShotImagePath(path)
+            }
             init(this@TokoNowCategoryFragment)
             setUtmCampaignData(
                 pageName = PAGE_SHARE_NAME,
@@ -565,9 +579,9 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
             )
             setMetaData(
                 tnTitle = shareCategoryTokonow?.thumbNailTitle.orEmpty(),
-                tnImage = shareCategoryTokonow?.thumbNailImage.orEmpty(),
+                tnImage = shareCategoryTokonow?.thumbNailImage.orEmpty()
             )
-            //set the Image Url of the Image that represents page
+            // set the Image Url of the Image that represents page
             setOgImageUrl(imgUrl = shareCategoryTokonow?.ogImageUrl.orEmpty())
         }
 
@@ -626,7 +640,7 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
     }
 
     private fun createNavRecyclerViewOnScrollListener(
-        navToolbar: NavToolbar,
+        navToolbar: NavToolbar
     ): RecyclerView.OnScrollListener {
         val transitionRange = context?.resources?.getDimensionPixelSize(R.dimen.tokopedianow_searchbar_transition_range).orZero()
         return NavRecyclerViewScrollListener(
@@ -659,7 +673,7 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
 
     private fun setupScreenshotDetector() {
         context?.let {
-            screenshotDetector = UniversalShareBottomSheet.createAndStartScreenShotDetector(
+            screenshotDetector = SharingUtil.createAndStartScreenShotDetector(
                 context = it,
                 screenShotListener = this,
                 fragment = this,
@@ -685,13 +699,20 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
         context?.apply {
             return ChooseAddressUtils.isLocalizingAddressHasUpdated(
                 context = this,
-                localizingAddressStateData =  addressData
+                localizingAddressStateData = addressData
             )
         }
         return false
     }
 
-    private fun refreshLayout() = viewModel.refreshLayout()
+    private fun refreshLayout() {
+        refreshProductRecommendation()
+        viewModel.refreshLayout()
+    }
+
+    private fun refreshProductRecommendation() {
+        productRecommendationViewModel.updateProductRecommendation(createRequestParam(listOf(categoryIdL1)))
+    }
 
     private fun getMiniCart() = viewModel.getMiniCart()
 
@@ -713,6 +734,8 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
         observeRefreshState()
         observeOosState()
         observeOpenScreenTracker()
+        observeOpenLoginPage()
+        observeSharingModel()
     }
 
     private fun observeCategoryHeader() {
@@ -881,19 +904,24 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
         }
     }
 
+    private fun observeOpenLoginPage() {
+        observe(viewModel.openLoginPage) {
+            openLoginPage()
+        }
+    }
+
+    private fun observeSharingModel() {
+        observe(viewModel.shareLiveData) {
+            setCategorySharingModel(it)
+        }
+    }
+
     private fun observeAtcDataTracker() {
         viewModel.atcDataTracker.observe(viewLifecycleOwner) { model ->
-            analytic.categoryShowcaseAnalytic.sendClickAtcOnShowcaseLEvent(
-                categoryIdL1 = categoryIdL1,
-                index = model.index,
-                productId = model.productId,
-                warehouseId = model.warehouseId,
-                isOos = model.isOos,
-                name = model.name,
-                price = model.price,
-                headerName = model.headerName,
-                quantity = model.quantity
-            )
+            when(model.layoutType) {
+                CATEGORY_SHOWCASE.name -> trackCategoryShowcaseAddToCart(model)
+                PRODUCT_ADS_CAROUSEL -> trackProductAdsAddToCart(model)
+            }
         }
     }
 
@@ -903,13 +931,24 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
                 categoryIdL1 = categoryIdL1,
                 index = model.position,
                 productId = model.productRecommendation.getProductId(),
-                warehouseId = viewModel.getWarehouseId(),
                 isOos = model.productRecommendation.productCardModel.isOos(),
                 name = model.productRecommendation.getProductName(),
                 price = model.productRecommendation.getProductPrice().toIntSafely(),
                 headerName = model.productRecommendation.headerName,
-                quantity = model.quantity
+                quantity = model.quantity,
+                productWarehouseId = model.productRecommendation.productCardModel.warehouseId
             )
+        }
+    }
+
+    private fun setCategorySharingModel(model: CategorySharingModel) {
+        shareTokonow?.apply {
+            id = model.deeplinkParam
+            sharingUrl = model.url
+            pageIdConstituents = model.utmCampaignList
+            sharingText = context?.resources?.getString(R.string.tokopedianow_category_share_main_text, model.title).orEmpty()
+            specificPageName = context?.resources?.getString(R.string.tokopedianow_category_share_title, model.title).orEmpty()
+            specificPageDescription = context?.resources?.getString(R.string.tokopedianow_category_share_desc, model.title).orEmpty()
         }
     }
 
@@ -931,7 +970,8 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
         productId: String,
         productName: String,
         productPrice: String,
-        isOos: Boolean
+        isOos: Boolean,
+        productWarehouseId: String
     ) {
         clickProductCard(appLink)
 
@@ -940,10 +980,10 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
             headerName = headerName,
             index = index.getTrackerPosition(),
             productId = productId,
-            warehouseId = viewModel.getWarehouseId(),
             isOos = isOos,
             name = productName,
-            price = productPrice.getDigits()?.toLong().orZero()
+            price = productPrice.getDigits()?.toLong().orZero(),
+            productWarehouseId = productWarehouseId
         )
     }
 
@@ -954,7 +994,8 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
         productId: String,
         productName: String,
         productPrice: String,
-        isOos: Boolean
+        isOos: Boolean,
+        productWarehouseId: String
     ) {
         clickProductCard(appLink)
 
@@ -963,10 +1004,10 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
             headerName = headerName,
             index = index.getTrackerPosition(),
             productId = productId,
-            warehouseId = viewModel.getWarehouseId(),
             isOos = isOos,
             name = productName,
-            price = productPrice.getDigits()?.toLong().orZero()
+            price = productPrice.getDigits()?.toLong().orZero(),
+            productWarehouseId = productWarehouseId
         )
     }
 
@@ -976,17 +1017,18 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
         productId: String,
         productName: String,
         productPrice: String,
-        isOos: Boolean
+        isOos: Boolean,
+        productWarehouseId: String
     ) {
         analytic.categoryShowcaseAnalytic.sendImpressionProductInShowcaseLEvent(
             categoryIdL1 = categoryIdL1,
             headerName = headerName,
             index = index.getTrackerPosition(),
             productId = productId,
-            warehouseId = viewModel.getWarehouseId(),
             isOos = isOos,
             name = productName,
-            price = productPrice.getDigits()?.toLong().orZero()
+            price = productPrice.getDigits()?.toLong().orZero(),
+            productWarehouseId = productWarehouseId
         )
     }
 
@@ -996,17 +1038,18 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
         productId: String,
         productName: String,
         productPrice: String,
-        isOos: Boolean
+        isOos: Boolean,
+        productWarehouseId: String
     ) {
         analytic.categoryProductRecommendationAnalytic.sendImpressionProductCarouselEvent(
             categoryIdL1 = categoryIdL1,
             headerName = headerName,
             index = index.getTrackerPosition(),
             productId = productId,
-            warehouseId = viewModel.getWarehouseId(),
             isOos = isOos,
             name = productName,
-            price = productPrice.getDigits()?.toLong().orZero()
+            price = productPrice.getDigits()?.toLong().orZero(),
+            productWarehouseId = productWarehouseId
         )
     }
 
@@ -1038,57 +1081,76 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
     }
 
     private fun clickCategoryMenu(
-        categoryRecomIdL1: String
+        categoryRecomIdL1: String,
+        headerName: String
     ) {
         analytic.categoryMenuAnalytic.sendClickCategoryRecomWidgetEvent(
             categoryIdL1 = categoryIdL1,
             categoryRecomIdL1 = categoryRecomIdL1,
-            warehouseId = viewModel.getWarehouseId()
+            warehouseId = viewModel.getWarehouseId(),
+            headerName = headerName
         )
     }
 
     private fun impressCategoryMenu(
-        categoryRecomIdL1: String
+        categoryRecomIdL1: String,
+        headerName: String
     ) {
         analytic.categoryMenuAnalytic.sendImpressionCategoryRecomWidgetEvent(
             categoryIdL1 = categoryIdL1,
             categoryRecomIdL1 = categoryRecomIdL1,
-            warehouseId = viewModel.getWarehouseId()
+            warehouseId = viewModel.getWarehouseId(),
+            headerName = headerName
         )
     }
 
     private fun clickSeeMoreShowcase(
+        headerName: String,
         categoryIdL2: String
     ) {
         analytic.categoryShowcaseAnalytic.sendClickArrowButtonShowcaseLEvent(
             categoryIdL1 = categoryIdL1,
             categoryIdL2 = categoryIdL2,
-            warehouseId = viewModel.getWarehouseId()
+            warehouseId = viewModel.getWarehouseId(),
+            headerName = headerName
         )
     }
 
-    private fun changeProductCardQuantity(
-        position: Int,
-        product: CategoryShowcaseItemUiModel,
-        quantity: Int
-    ) {
-        if (!viewModel.isLoggedIn()) {
-            openLoginPage()
-        } else {
-            viewModel.onCartQuantityChanged(
-                productId = product.productCardModel.productId,
-                quantity = quantity,
-                stock = product.productCardModel.availableStock,
-                shopId = shopId,
-                position = position,
-                isOos = product.productCardModel.isOos(),
-                name = product.productCardModel.name,
-                categoryIdL1 = categoryIdL1,
-                price = product.productCardModel.price.getDigits().orZero(),
-                headerName = product.headerName,
-                layoutType = CategoryLayoutType.CATEGORY_SHOWCASE,
-            )
-        }
+    private fun trackCategoryShowcaseAddToCart(model: CategoryAtcTrackerModel) {
+        analytic.categoryShowcaseAnalytic.sendClickAtcOnShowcaseLEvent(
+            categoryIdL1 = categoryIdL1,
+            index = model.index,
+            productId = model.product.productId,
+            isOos = model.product.isOos(),
+            name = model.product.name,
+            price = model.product.getPriceLong(),
+            headerName = model.headerName,
+            quantity = model.quantity,
+            productWarehouseId = model.product.warehouseId
+        )
+    }
+
+    private fun trackProductAdsAddToCart(model: CategoryAtcTrackerModel) {
+        val title = getString(R.string.tokopedianow_product_ads_carousel_title)
+        analytic.productAdsAnalytic.trackProductAddToCart(
+            position = model.index,
+            title = title,
+            quantity = model.quantity,
+            shopId = model.shopId,
+            shopName = model.shopName,
+            shopType = model.shopType,
+            categoryBreadcrumbs = model.categoryBreadcrumbs,
+            product = model.product
+        )
+    }
+
+    private fun changeProductCardQuantity(product: CategoryShowcaseItemUiModel, quantity: Int) {
+        viewModel.onCartQuantityChanged(
+            product = product.productCardModel,
+            shopId = product.shopId,
+            quantity = quantity,
+            layoutType = CATEGORY_SHOWCASE.name
+        )
     }
 
     private fun hideProductRecommendationWidget() = viewModel.removeProductRecommendation()
@@ -1096,22 +1158,23 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
     private fun showMiniCart(
         data: MiniCartSimplifiedData
     ) {
-        val miniCartWidget = binding?.miniCartWidget
         val showMiniCartWidget = data.isShowMiniCartWidget
-
-        if(showMiniCartWidget) {
+        if (showMiniCartWidget) {
             val pageName = MiniCartAnalytics.Page.HOME_PAGE
             val shopIds = listOf(shopId)
             val source = MiniCartSource.TokonowHome
-            miniCartWidget?.initialize(
-                shopIds = shopIds,
-                fragment = this,
-                listener = this,
-                pageName = pageName,
-                source = source
-            )
-            miniCartWidget?.show()
-            miniCartWidget?.hideTopContentView()
+            binding?.apply {
+                miniCartWidget.initialize(
+                    shopIds = shopIds,
+                    fragment = this@TokoNowCategoryFragment,
+                    listener = this@TokoNowCategoryFragment,
+                    pageName = pageName,
+                    source = source
+                )
+                miniCartWidgetShadow?.show()
+                miniCartWidget.show()
+                miniCartWidget.hideTopContentView()
+            }
         } else {
             hideMiniCart()
         }
@@ -1185,7 +1248,10 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
     }
 
     private fun hideMiniCart() {
-        binding?.miniCartWidget?.hide()
+        binding?.apply {
+            miniCartWidgetShadow.hide()
+            miniCartWidget.hide()
+        }
     }
     private fun clickWishlistButton(
         productId: String,
@@ -1194,8 +1260,8 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
         ctaToaster: String,
         type: Int,
         ctaClickListener: (() -> Unit)?
-    ){
-        if(isWishlistSelected) {
+    ) {
+        if (isWishlistSelected) {
             analytic.categoryOosProductAnalytic.trackClickAddToWishlist(
                 warehouseId = viewModel.getWarehouseId(),
                 productId = productId
@@ -1225,7 +1291,6 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
 
     private fun createTitleCallback() = CategoryTitleCallback(
         context = context,
-        warehouseId = viewModel.getWarehouseId(),
         onClickMoreCategories = ::clickMoreCategories
     )
 
@@ -1252,7 +1317,7 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
     private fun createTokoNowViewCallback() = TokoNowViewCallback(
         fragment = this@TokoNowCategoryFragment
     ) {
-        viewModel.refreshLayout()
+        refreshLayout()
     }
 
     private fun createTokoNowCategoryMenuCallback() = TokoNowCategoryMenuCallback(
@@ -1292,5 +1357,16 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
 
     private fun createProductCardCompactSimilarProductTrackerCallback(): ProductCardCompactSimilarProductTrackerCallback {
         return ProductCardCompactSimilarProductTrackerCallback(analytic.categoryOosProductAnalytic)
+    }
+
+    private fun createProductCardAdsCallback(): CategoryProductCardAdsCallback {
+        return CategoryProductCardAdsCallback(
+            context = context,
+            viewModel = viewModel,
+            analytic = analytic.productAdsAnalytic,
+            categoryIdL1 = categoryIdL1,
+            startActivityResult = ::startActivityForResult,
+            showToasterWhenAddToCartBlocked = ::showToasterWhenAddToCartBlocked
+        )
     }
 }

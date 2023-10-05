@@ -38,11 +38,11 @@ class StickerViewModel @Inject constructor(
             if (cache != null && !needUpdate && isPreviousRequestSuccess) return@launchCatchError
             getStickerList(stickerGroupUID)
         }, onError = {
-            withContext(dispatcher.main) {
-                saveFailRequestState(stickerGroupUID)
-                _stickers.value = Fail(it)
-            }
-        })
+                withContext(dispatcher.main) {
+                    saveFailRequestState(stickerGroupUID)
+                    _stickers.value = Fail(it)
+                }
+            })
     }
 
     private suspend fun getStickerList(stickerGroupUID: String) {
@@ -58,11 +58,10 @@ class StickerViewModel @Inject constructor(
     private fun getCacheStickerGroup(stickerUID: String): StickerResponse? {
         return try {
             val key = generateCacheKey(stickerUID)
-             cacheManager.loadCache(key, StickerResponse::class.java)
+            cacheManager.loadCache(key, StickerResponse::class.java)
         } catch (e: Throwable) {
             null
         }
-
     }
 
     private fun generateCacheKey(stickerUID: String): String {
@@ -90,7 +89,7 @@ class StickerViewModel @Inject constructor(
     private fun getPreviousRequestState(stickerUID: String): Boolean {
         return try {
             val stateCacheKey = generateStateCacheKey(stickerUID)
-            cacheManager.getPreviousState(stateCacheKey)
+            cacheManager.getPreviousState(stateCacheKey, false)
         } catch (throwable: Throwable) {
             throwable.printStackTrace()
             false
@@ -104,5 +103,4 @@ class StickerViewModel @Inject constructor(
     companion object {
         private const val STATE_KEY = "state"
     }
-
 }

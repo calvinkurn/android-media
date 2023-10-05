@@ -39,7 +39,7 @@ class PdpOccJourneyTest {
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
 
     @get:Rule
-    var cassavaRule = CassavaTestRule(isFromNetwork = true, sendValidationResult = false)
+    var cassavaRule = CassavaTestRule(isFromNetwork = true, sendValidationResult = true)
 
     private val productDetailInterceptor = ProductDetailInterceptor()
     private var idlingResource: IdlingResource? = null

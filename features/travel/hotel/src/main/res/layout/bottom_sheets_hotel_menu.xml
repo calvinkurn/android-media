@@ -13,7 +13,7 @@
         android:paddingTop="@dimen/layout_lvl1"
         android:paddingBottom="@dimen/layout_lvl3"
         android:text="@string/hotel_bottom_menu_transaction_list"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:typographyType="body_2"
         app:typographyWeight="bold" />
 
@@ -30,7 +30,7 @@
         android:paddingTop="@dimen/layout_lvl3"
         android:paddingBottom="@dimen/layout_lvl3"
         android:text="@string/hotel_bottom_menu_promo"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:typographyType="body_2"
         app:typographyWeight="bold" />
 
@@ -47,7 +47,7 @@
         android:paddingTop="@dimen/layout_lvl3"
         android:paddingBottom="@dimen/layout_lvl3"
         android:text="@string/hotel_bottom_menu_help"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:typographyType="body_2"
         app:typographyWeight="bold" />
 

@@ -80,12 +80,12 @@ private fun View?.showToasterErrorWithCta(errorMessage: String, ctaText: String)
 fun generateLeftMessageBackgroundWithoutCorner(view: View?): Drawable? {
     return ViewUtil.generateBackgroundWithShadow(
         view,
-        com.tokopedia.unifyprinciples.R.color.Unify_G200,
+        com.tokopedia.unifyprinciples.R.color.Unify_GN100,
         com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
         com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
         com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
         com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-        com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+        com.tokopedia.unifyprinciples.R.color.Unify_NN950_20,
         R.dimen.dp_chatbot_2,
         R.dimen.dp_chatbot_1,
         Gravity.CENTER,
@@ -97,12 +97,12 @@ fun generateLeftMessageBackgroundWithoutCorner(view: View?): Drawable? {
 fun generateRightMessageBackgroundWithoutCorner(view: View?): Drawable? {
     return ViewUtil.generateBackgroundWithShadow(
         view,
-        com.tokopedia.unifyprinciples.R.color.Unify_G200,
+        com.tokopedia.unifyprinciples.R.color.Unify_GN100,
         com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
         com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
         com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
         com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-        com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+        com.tokopedia.unifyprinciples.R.color.Unify_NN950_20,
         R.dimen.dp_chatbot_2,
         R.dimen.dp_chatbot_1,
         Gravity.CENTER,
@@ -113,8 +113,8 @@ fun generateRightMessageBackgroundWithoutCorner(view: View?): Drawable? {
 
 fun generateLeftMessageBackground(
     view: View?,
-    @ColorRes backgroundColor: Int = com.tokopedia.unifyprinciples.R.color.Unify_N0,
-    @ColorRes shadowColor: Int = com.tokopedia.unifyprinciples.R.color.Unify_N700_20
+    @ColorRes backgroundColor: Int = com.tokopedia.unifyprinciples.R.color.Unify_NN0,
+    @ColorRes shadowColor: Int = com.tokopedia.unifyprinciples.R.color.Unify_NN950_20
 ): Drawable? {
     return ViewUtil.generateBackgroundWithShadow(
         view,
@@ -133,7 +133,7 @@ fun generateLeftMessageBackground(
 fun generateRightMessageBackground(
     view: View?,
     @ColorRes backgroundColor: Int = R.color.chatbot_dms_right_chat_message_bg,
-    @ColorRes shadowColor: Int = com.tokopedia.unifyprinciples.R.color.Unify_N700_20
+    @ColorRes shadowColor: Int = com.tokopedia.unifyprinciples.R.color.Unify_NN950_20
 ): Drawable? {
     return ViewUtil.generateBackgroundWithShadow(
         view,
@@ -161,7 +161,7 @@ object ChatBackground {
                 R.dimen.dp_chatbot_20,
                 R.dimen.dp_chatbot_20,
                 R.dimen.dp_chatbot_20,
-                com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+                com.tokopedia.unifyprinciples.R.color.Unify_NN950_20,
                 R.dimen.dp_chatbot_2,
                 R.dimen.dp_chatbot_1,
                 Gravity.CENTER
@@ -173,7 +173,7 @@ object ChatBackground {
                 R.dimen.dp_chatbot_20,
                 R.dimen.dp_chatbot_20,
                 R.dimen.dp_chatbot_20,
-                com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+                com.tokopedia.unifyprinciples.R.color.Unify_NN950_20,
                 R.dimen.dp_chatbot_2,
                 R.dimen.dp_chatbot_1,
                 Gravity.CENTER

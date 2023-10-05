@@ -6,20 +6,20 @@ import androidx.test.core.app.ApplicationProvider
 import com.tokopedia.applink.DeeplinkMapper
 import com.tokopedia.applink.FirebaseRemoteConfigInstance
 import com.tokopedia.applink.account.DeeplinkMapperAccount
+import com.tokopedia.applink.communication.DeeplinkMapperCommunication
 import com.tokopedia.applink.home.DeeplinkMapperHome
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant
 import com.tokopedia.applink.model.Always
 import com.tokopedia.applink.model.DLP
 import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
 import com.tokopedia.applink.purchaseplatform.DeeplinkMapperUoh
+import com.tokopedia.applink.user.DeeplinkMapperUser
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import io.mockk.every
 import io.mockk.mockkClass
 import io.mockk.mockkObject
 import io.mockk.mockkStatic
-import io.mockk.unmockkAll
-import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
 
@@ -37,7 +37,9 @@ open class DeepLinkMapperTestFixture {
             mockkObject(DeeplinkMapperMerchant)
             mockkObject(DeeplinkMapperHome)
             mockkObject(DeeplinkMapperAccount)
+            mockkObject(DeeplinkMapperCommunication)
             mockkObject(DeeplinkMapper)
+            mockkObject(DeeplinkMapperUser)
             mockkObject(PowerMerchantDeepLinkMapper)
             mockkClass(GlobalConfig::class)
             mockkStatic(RemoteConfigInstance::class)

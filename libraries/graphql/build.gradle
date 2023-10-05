@@ -13,6 +13,8 @@ buildscript {
     }
 }
 android {
+    namespace 'com.tokopedia.graphql'
+    testNamespace 'com.tokopedia.graphql.test'
     configurations {
         all {
             resolutionStrategy {

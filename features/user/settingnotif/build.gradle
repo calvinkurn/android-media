@@ -7,6 +7,8 @@ repositories {
 }
 
 android {
+    namespace 'com.tokopedia.settingnotif'
+    testNamespace 'com.tokopedia.settingnotif.test'
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
@@ -29,7 +31,6 @@ buildscript {
 }
 
 dependencies {
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.baseList)

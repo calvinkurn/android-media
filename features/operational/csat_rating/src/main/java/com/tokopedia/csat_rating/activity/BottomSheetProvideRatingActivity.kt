@@ -255,7 +255,7 @@ open class BottomSheetProvideRatingActivity : BaseSimpleActivity() {
         return LinearLayoutManager(this)
     }
 
-    fun setFilterList(filterList: List<BadCsatReasonListItem>) {
+    private fun setFilterList(filterList: List<BadCsatReasonListItem>) {
         filterReview?.updateLayoutManager(getLayoutManager())
         val filterItems = ArrayList<QuickFilterItem>()
         var finishFilter: QuickFilterItem? = null
@@ -317,7 +317,7 @@ open class BottomSheetProvideRatingActivity : BaseSimpleActivity() {
         finish()
     }
 
-    fun getSelectedItem(): String {
+    private fun getSelectedItem(): String {
         var filters = ""
         for (filter in selectedOption) {
             filters += "$filter;"

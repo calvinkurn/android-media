@@ -4,55 +4,40 @@ import android.content.Context
 import android.content.Intent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.product.detail.common.postatc.PostAtcParams
 
 object PostAtcHelper {
 
     /**
-     * Copy of Param in PostAtcActivity.kt
+     * Additional Parameters for PostAtcActivity.kt
      */
-    private const val PARAM_CART_ID = "cartID"
-    private const val PARAM_LAYOUT_ID = "layoutID"
-    private const val PARAM_PAGE_SOURCE = "pageSource"
+    const val POST_ATC_PARAMS = "post_atc_params"
+    const val POST_ATC_PARAMS_CACHE_ID = "post_atc_params_cache_id"
 
     fun start(
         context: Context,
         productId: String,
-        layoutId: String = "",
-        cartId: String = "",
-        pageSource: Source = Source.Default
+        postAtcParams: PostAtcParams
     ) {
-        val intent = getIntent(
-            context,
-            productId,
-            layoutId,
-            cartId,
-            pageSource
-        )
-        context.startActivity(intent)
+        val cacheManager = SaveInstanceCacheManager(context, true)
+        cacheManager.put(POST_ATC_PARAMS, postAtcParams)
+        getIntent(context, productId) { intent ->
+            intent.putExtra(POST_ATC_PARAMS_CACHE_ID, cacheManager.id)
+            context.startActivity(intent)
+        }
     }
 
     fun getIntent(
         context: Context,
         productId: String,
-        layoutId: String = "",
-        cartId: String = "",
-        pageSource: Source = Source.Default
-    ): Intent {
-        return RouteManager.getIntent(
+        onIntent: (Intent) -> Unit
+    ) {
+        val intent = RouteManager.getIntent(
             context,
             ApplinkConstInternalMarketplace.POST_ATC,
             productId
-        ).apply {
-            putExtra(PARAM_CART_ID, cartId)
-            putExtra(PARAM_LAYOUT_ID, layoutId)
-            putExtra(PARAM_PAGE_SOURCE, pageSource.name)
-        }
-    }
-
-    sealed class Source(
-        open val name: String
-    ) {
-        object PDP : Source("product detail page")
-        object Default : Source("")
+        )
+        onIntent.invoke(intent)
     }
 }

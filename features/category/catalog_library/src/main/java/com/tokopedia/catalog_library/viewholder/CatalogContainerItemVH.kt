@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.catalog_library.R
 import com.tokopedia.catalog_library.adapter.CatalogLibraryAdapter
 import com.tokopedia.catalog_library.adapter.CatalogLibraryDiffUtil
-import com.tokopedia.common_category.decoration.GridSpacingItemDecoration
+import com.tokopedia.catalog_library.adapter.CatalogLibraryGridSpacingItemDecoration
 import com.tokopedia.catalog_library.adapter.factory.CatalogHomepageAdapterFactoryImpl
 import com.tokopedia.catalog_library.listener.CatalogLibraryListener
 import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDM
@@ -86,7 +86,7 @@ class CatalogContainerItemVH(
     private fun renderRecyclerView(element: CatalogContainerDM) {
         containerRV.apply {
             layoutManager = if (element.isGrid) {
-                addItemDecoration(GridSpacingItemDecoration(CatalogLihatVH.COLUMN_COUNT, 0.toPx(), false))
+                addItemDecoration(CatalogLibraryGridSpacingItemDecoration(CatalogLihatVH.COLUMN_COUNT, 0.toPx(), false))
                 GridLayoutManager(itemView.context, element.columnCount)
             } else {
                 LinearLayoutManager(itemView.context, element.orientationRecyclerView, false)

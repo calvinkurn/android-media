@@ -20,6 +20,6 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/dp_10"
         android:text="@string/save_title"
-        android:textColor="@color/Unify_N0"/>
+        android:textColor="@color/Unify_NN0"/>
 
 </LinearLayout>

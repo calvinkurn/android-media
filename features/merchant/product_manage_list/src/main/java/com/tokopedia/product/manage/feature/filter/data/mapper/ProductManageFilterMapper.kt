@@ -165,6 +165,7 @@ class ProductManageFilterMapper {
                 SortOption.SortId.PRICE.name -> SortOption.SortByPrice(sortOrderOption)
                 SortOption.SortId.DEFAULT.name -> SortOption.SortByDefault(sortOrderOption)
                 SortOption.SortId.STOCK.name -> SortOption.SortByStock(sortOrderOption)
+                SortOption.SortId.ARCHIVAL.name -> SortOption.SortByArchival(sortOrderOption)
                 else -> null
             }
         }
@@ -211,6 +212,8 @@ class ProductManageFilterMapper {
                         FilterOption.FilterByCondition.StockAlertOnly.id -> FilterOption.FilterByCondition.StockAlertOnly
                         FilterOption.FilterByCondition.NotifyMeOnly.id -> FilterOption.FilterByCondition.NotifyMeOnly
                         FilterOption.FilterByCondition.StockAvailableOnly.id -> FilterOption.FilterByCondition.StockAvailableOnly
+                        FilterOption.FilterByCondition.ProductArchivedStatus.id -> FilterOption.FilterByCondition.ProductArchivedStatus
+                        FilterOption.FilterByCondition.ProductPotentialArchivedStatus.id -> FilterOption.FilterByCondition.ProductPotentialArchivedStatus
                         else -> FilterOption.FilterByCondition.FeaturedOnly
                     }
                     selectedData.add(mappedData)

@@ -18,7 +18,7 @@ internal open class SearchBarViewModelTestFixtures {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    protected val coachMarkLocalCache: CoachMarkLocalCache = mockk()
+    protected val coachMarkLocalCache: CoachMarkLocalCache = mockk(relaxed = true)
     protected val mpsLocalCache: MpsLocalCache = mockk()
     protected lateinit var viewModel: SearchBarViewModel
 
@@ -45,7 +45,7 @@ internal open class SearchBarViewModelTestFixtures {
     }
 
     protected fun `Given mps is enabled`() {
-        viewModel.enableMps()
+        viewModel.showMps()
     }
 
     protected fun `Given mps enabled and no coach mark should be displayed`() {

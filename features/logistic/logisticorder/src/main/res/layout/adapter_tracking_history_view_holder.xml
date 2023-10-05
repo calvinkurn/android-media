@@ -32,7 +32,7 @@
         app:layout_constraintRight_toLeftOf="@id/date"
         app:layout_constraintEnd_toStartOf="@id/date"
         app:typographyType="heading_5"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         tools:text="Loren Ipsum " />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -40,7 +40,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:typographyType="body_3"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         app:layout_constraintTop_toTopOf="@id/dot_image"
         app:layout_constraintBottom_toBottomOf="@id/dot_image"
         app:layout_constraintLeft_toRightOf="@id/title"
@@ -62,7 +62,7 @@
         app:layout_constraintStart_toStartOf="@id/dot_image"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintEnd_toEndOf="@id/dot_image"
-        android:background="@color/Unify_N700" />
+        android:background="@color/Unify_NN950" />
 
 
 
@@ -74,7 +74,7 @@
         android:layout_marginRight="5dp"
         android:paddingTop="5dp"
         app:typographyType="body_3"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         app:layout_constraintStart_toEndOf="@id/dot_image"
         app:layout_constraintLeft_toRightOf="@id/dot_image"
         app:layout_constraintEnd_toEndOf="parent"
@@ -90,7 +90,7 @@
         android:layout_marginRight="5dp"
         android:paddingTop="5dp"
         app:typographyType="body_3"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         app:layout_constraintStart_toEndOf="@id/dot_image"
         app:layout_constraintLeft_toRightOf="@id/dot_image"
         app:layout_constraintEnd_toEndOf="parent"

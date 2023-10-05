@@ -901,207 +901,6 @@
                     }
                 },
                 {
-                    "id": 38550,
-                    "group_id": 218,
-                    "galaxy_attribution": "PG",
-                    "persona": "",
-                    "brand_id": "",
-                    "category_persona": "",
-                    "name": "Android Test - 4 Banners Auto",
-                    "layout": "4_banners_auto",
-                    "type": "inspiration",
-                    "showPromoBadge": false,
-                    "categoryID": "{}",
-                    "perso_type": 1,
-                    "campaignCode": "",
-                    "has_close_button": false,
-                    "isAutoRefreshAfterExpired": false,
-                    "header": {
-                        "id": 38789,
-                        "name": "Android Test - 4 Banners Auto",
-                        "subtitle": "",
-                        "url": "",
-                        "applink": "",
-                        "serverTime": 0,
-                        "expiredTime": "",
-                        "backColor": "",
-                        "backImage": "",
-                        "textColor": ""
-                    },
-                    "grids": [
-                        {
-                            "id": 1768,
-                            "back_color": "red",
-                            "name": "Atasan Wanita",
-                            "url": "https://www.tokopedia.com/rekomendasi/0/d/?ref=channel_banner&category_id=1768&search_ref=homepage.4_banners_auto.2.1768.38550&max_cashback=96",
-                            "applink": "tokopedia://rekomendasi/0/d/?ref=channel_banner&max_cashback=96&category_id=1768&search_ref=homepage.4_banners_auto.2.1768.38550",
-                            "price": "",
-                            "slashedPrice": "",
-                            "discount": "",
-                            "imageUrl": "https://images.tokopedia.net/img/attachment/2020/3/18/77305583/77305583_7fc832de-911f-4c53-87e4-d9f97d7d52ed.png",
-                            "label": "",
-                            "soldPercentage": 0,
-                            "attribution": "",
-                            "productClickUrl": "",
-                            "impression": "",
-                            "cashback": "",
-                            "isTopads": false,
-                            "freeOngkir": {
-                                "isActive": false,
-                                "imageUrl": ""
-                            },
-                            "productViewCountFormatted": "",
-                            "isOutOfStock": false,
-                            "warehouseID": 0,
-                            "minOrder": 0,
-                            "shop": {
-                                "shopID": 0
-                            },
-                            "labelGroup": [],
-                            "has_buy_button": false,
-                            "rating": 0,
-                            "count_review": 0,
-                            "benefit": {
-                                "type": "Cashback Hingga",
-                                "value": "96%"
-                            },
-                            "textColor": ""
-                        },
-                        {
-                            "id": 1899,
-                            "back_color": "red",
-                            "name": "Jilbab",
-                            "url": "https://www.tokopedia.com/rekomendasi/0/d/?ref=channel_banner&max_cashback=99&category_id=1899&search_ref=homepage.4_banners_auto.2.1899.38550",
-                            "applink": "tokopedia://rekomendasi/0/d/?ref=channel_banner&search_ref=homepage.4_banners_auto.2.1899.38550&max_cashback=99&category_id=1899",
-                            "price": "",
-                            "slashedPrice": "",
-                            "discount": "",
-                            "imageUrl": "https://images.tokopedia.net/img/attachment/2020/3/19/82120085/82120085_dbf48ae0-045c-46d7-a3ad-b7e10ef6f91b.png",
-                            "label": "",
-                            "soldPercentage": 0,
-                            "attribution": "",
-                            "productClickUrl": "",
-                            "impression": "",
-                            "cashback": "",
-                            "isTopads": false,
-                            "freeOngkir": {
-                                "isActive": false,
-                                "imageUrl": ""
-                            },
-                            "productViewCountFormatted": "",
-                            "isOutOfStock": false,
-                            "warehouseID": 0,
-                            "minOrder": 0,
-                            "shop": {
-                                "shopID": 0
-                            },
-                            "labelGroup": [],
-                            "has_buy_button": false,
-                            "rating": 0,
-                            "count_review": 0,
-                            "benefit": {
-                                "type": "Cashback Hingga",
-                                "value": "99%"
-                            },
-                            "textColor": ""
-                        },
-                        {
-                            "id": 863,
-                            "back_color": "red",
-                            "name": "Pendidikan",
-                            "url": "https://www.tokopedia.com/rekomendasi/0/d/?ref=channel_banner&max_cashback=95&category_id=863&search_ref=homepage.4_banners_auto.2.863.38550",
-                            "applink": "tokopedia://rekomendasi/0/d/?ref=channel_banner&max_cashback=95&category_id=863&search_ref=homepage.4_banners_auto.2.863.38550",
-                            "price": "",
-                            "slashedPrice": "",
-                            "discount": "",
-                            "imageUrl": "https://images.tokopedia.net/img/attachment/2020/3/20/77305583/77305583_db19aa4e-bb1e-4cfd-a2c0-df81be5fd429.png",
-                            "label": "",
-                            "soldPercentage": 0,
-                            "attribution": "",
-                            "productClickUrl": "",
-                            "impression": "",
-                            "cashback": "",
-                            "isTopads": false,
-                            "freeOngkir": {
-                                "isActive": false,
-                                "imageUrl": ""
-                            },
-                            "productViewCountFormatted": "",
-                            "isOutOfStock": false,
-                            "warehouseID": 0,
-                            "minOrder": 0,
-                            "shop": {
-                                "shopID": 0
-                            },
-                            "labelGroup": [],
-                            "has_buy_button": false,
-                            "rating": 0,
-                            "count_review": 0,
-                            "benefit": {
-                                "type": "Cashback Hingga",
-                                "value": "95%"
-                            },
-                            "textColor": ""
-                        },
-                        {
-                            "id": 3441,
-                            "back_color": "red",
-                            "name": "Perlengkapan Cuci Piring",
-                            "url": "https://www.tokopedia.com/rekomendasi/0/d/?ref=channel_banner&max_cashback=99&category_id=3441&search_ref=homepage.4_banners_auto.2.3441.38550",
-                            "applink": "tokopedia://rekomendasi/0/d/?ref=channel_banner&max_cashback=99&category_id=3441&search_ref=homepage.4_banners_auto.2.3441.38550",
-                            "price": "",
-                            "slashedPrice": "",
-                            "discount": "",
-                            "imageUrl": "https://images.tokopedia.net/img/attachment/2020/3/18/82120085/82120085_a38bd671-0d6b-433e-8e89-582315a8690a.png",
-                            "label": "",
-                            "soldPercentage": 0,
-                            "attribution": "",
-                            "productClickUrl": "",
-                            "impression": "",
-                            "cashback": "",
-                            "isTopads": false,
-                            "freeOngkir": {
-                                "isActive": false,
-                                "imageUrl": ""
-                            },
-                            "productViewCountFormatted": "",
-                            "isOutOfStock": false,
-                            "warehouseID": 0,
-                            "minOrder": 0,
-                            "shop": {
-                                "shopID": 0
-                            },
-                            "labelGroup": [],
-                            "has_buy_button": false,
-                            "rating": 0,
-                            "count_review": 0,
-                            "benefit": {
-                                "type": "Cashback Hingga",
-                                "value": "99%"
-                            },
-                            "textColor": ""
-                        }
-                    ],
-                    "banner": {
-                        "id": 0,
-                        "title": "",
-                        "description": "",
-                        "url": "",
-                        "back_color": "",
-                        "cta": {
-                            "type": "",
-                            "mode": "",
-                            "text": "",
-                            "coupon_code": ""
-                        },
-                        "applink": "",
-                        "text_color": "",
-                        "image_url": "",
-                        "attribution": "",
-                        "gradient_color": []
-                    }
-                },
-                {
                     "banner": {
                         "applink": "tokopedia://discovery/kejar-diskon?source=homepage.6_image_auto.0.71344",
                         "attribution": "",
@@ -6435,208 +6234,6 @@
                     }
                 },
                 {
-                    "id": 38551,
-                    "group_id": 218,
-                    "galaxy_attribution": "PG",
-                    "persona": "",
-                    "brand_id": "",
-                    "category_persona": "",
-                    "name": "Android Test - 4 Banners Auto Padding",
-                    "layout": "4_banners_auto",
-                    "styleParam": "borderStyle=padding&dividerSize=8",
-                    "type": "inspiration",
-                    "showPromoBadge": false,
-                    "categoryID": "{}",
-                    "perso_type": 1,
-                    "campaignCode": "",
-                    "has_close_button": false,
-                    "isAutoRefreshAfterExpired": false,
-                    "header": {
-                        "id": 38789,
-                        "name": "Android Test - 4 Banners Auto",
-                        "subtitle": "",
-                        "url": "",
-                        "applink": "",
-                        "serverTime": 0,
-                        "expiredTime": "",
-                        "backColor": "",
-                        "backImage": "",
-                        "textColor": ""
-                    },
-                    "grids": [
-                        {
-                            "id": 1768,
-                            "back_color": "red",
-                            "name": "Atasan Wanita",
-                            "url": "https://www.tokopedia.com/rekomendasi/0/d/?ref=channel_banner&category_id=1768&search_ref=homepage.4_banners_auto.2.1768.38550&max_cashback=96",
-                            "applink": "tokopedia://rekomendasi/0/d/?ref=channel_banner&max_cashback=96&category_id=1768&search_ref=homepage.4_banners_auto.2.1768.38550",
-                            "price": "",
-                            "slashedPrice": "",
-                            "discount": "",
-                            "imageUrl": "https://ecs7.tokopedia.net/img/attachment/2020/3/18/77305583/77305583_7fc832de-911f-4c53-87e4-d9f97d7d52ed.png",
-                            "label": "",
-                            "soldPercentage": 0,
-                            "attribution": "",
-                            "productClickUrl": "",
-                            "impression": "",
-                            "cashback": "",
-                            "isTopads": false,
-                            "freeOngkir": {
-                                "isActive": false,
-                                "imageUrl": ""
-                            },
-                            "productViewCountFormatted": "",
-                            "isOutOfStock": false,
-                            "warehouseID": 0,
-                            "minOrder": 0,
-                            "shop": {
-                                "shopID": 0
-                            },
-                            "labelGroup": [],
-                            "has_buy_button": false,
-                            "rating": 0,
-                            "count_review": 0,
-                            "benefit": {
-                                "type": "Cashback Hingga",
-                                "value": "96%"
-                            },
-                            "textColor": ""
-                        },
-                        {
-                            "id": 1899,
-                            "back_color": "red",
-                            "name": "Jilbab",
-                            "url": "https://www.tokopedia.com/rekomendasi/0/d/?ref=channel_banner&max_cashback=99&category_id=1899&search_ref=homepage.4_banners_auto.2.1899.38550",
-                            "applink": "tokopedia://rekomendasi/0/d/?ref=channel_banner&search_ref=homepage.4_banners_auto.2.1899.38550&max_cashback=99&category_id=1899",
-                            "price": "",
-                            "slashedPrice": "",
-                            "discount": "",
-                            "imageUrl": "https://ecs7.tokopedia.net/img/attachment/2020/3/19/82120085/82120085_dbf48ae0-045c-46d7-a3ad-b7e10ef6f91b.png",
-                            "label": "",
-                            "soldPercentage": 0,
-                            "attribution": "",
-                            "productClickUrl": "",
-                            "impression": "",
-                            "cashback": "",
-                            "isTopads": false,
-                            "freeOngkir": {
-                                "isActive": false,
-                                "imageUrl": ""
-                            },
-                            "productViewCountFormatted": "",
-                            "isOutOfStock": false,
-                            "warehouseID": 0,
-                            "minOrder": 0,
-                            "shop": {
-                                "shopID": 0
-                            },
-                            "labelGroup": [],
-                            "has_buy_button": false,
-                            "rating": 0,
-                            "count_review": 0,
-                            "benefit": {
-                                "type": "Cashback Hingga",
-                                "value": "99%"
-                            },
-                            "textColor": ""
-                        },
-                        {
-                            "id": 863,
-                            "back_color": "red",
-                            "name": "Pendidikan",
-                            "url": "https://www.tokopedia.com/rekomendasi/0/d/?ref=channel_banner&max_cashback=95&category_id=863&search_ref=homepage.4_banners_auto.2.863.38550",
-                            "applink": "tokopedia://rekomendasi/0/d/?ref=channel_banner&max_cashback=95&category_id=863&search_ref=homepage.4_banners_auto.2.863.38550",
-                            "price": "",
-                            "slashedPrice": "",
-                            "discount": "",
-                            "imageUrl": "https://ecs7.tokopedia.net/img/attachment/2020/3/20/77305583/77305583_db19aa4e-bb1e-4cfd-a2c0-df81be5fd429.png",
-                            "label": "",
-                            "soldPercentage": 0,
-                            "attribution": "",
-                            "productClickUrl": "",
-                            "impression": "",
-                            "cashback": "",
-                            "isTopads": false,
-                            "freeOngkir": {
-                                "isActive": false,
-                                "imageUrl": ""
-                            },
-                            "productViewCountFormatted": "",
-                            "isOutOfStock": false,
-                            "warehouseID": 0,
-                            "minOrder": 0,
-                            "shop": {
-                                "shopID": 0
-                            },
-                            "labelGroup": [],
-                            "has_buy_button": false,
-                            "rating": 0,
-                            "count_review": 0,
-                            "benefit": {
-                                "type": "Cashback Hingga",
-                                "value": "95%"
-                            },
-                            "textColor": ""
-                        },
-                        {
-                            "id": 3441,
-                            "back_color": "red",
-                            "name": "Perlengkapan Cuci Piring",
-                            "url": "https://www.tokopedia.com/rekomendasi/0/d/?ref=channel_banner&max_cashback=99&category_id=3441&search_ref=homepage.4_banners_auto.2.3441.38550",
-                            "applink": "tokopedia://rekomendasi/0/d/?ref=channel_banner&max_cashback=99&category_id=3441&search_ref=homepage.4_banners_auto.2.3441.38550",
-                            "price": "",
-                            "slashedPrice": "",
-                            "discount": "",
-                            "imageUrl": "https://ecs7.tokopedia.net/img/attachment/2020/3/18/82120085/82120085_a38bd671-0d6b-433e-8e89-582315a8690a.png",
-                            "label": "",
-                            "soldPercentage": 0,
-                            "attribution": "",
-                            "productClickUrl": "",
-                            "impression": "",
-                            "cashback": "",
-                            "isTopads": false,
-                            "freeOngkir": {
-                                "isActive": false,
-                                "imageUrl": ""
-                            },
-                            "productViewCountFormatted": "",
-                            "isOutOfStock": false,
-                            "warehouseID": 0,
-                            "minOrder": 0,
-                            "shop": {
-                                "shopID": 0
-                            },
-                            "labelGroup": [],
-                            "has_buy_button": false,
-                            "rating": 0,
-                            "count_review": 0,
-                            "benefit": {
-                                "type": "Cashback Hingga",
-                                "value": "99%"
-                            },
-                            "textColor": ""
-                        }
-                    ],
-                    "banner": {
-                        "id": 0,
-                        "title": "",
-                        "description": "",
-                        "url": "",
-                        "back_color": "",
-                        "cta": {
-                            "type": "",
-                            "mode": "",
-                            "text": "",
-                            "coupon_code": ""
-                        },
-                        "applink": "",
-                        "text_color": "",
-                        "image_url": "",
-                        "attribution": "",
-                        "gradient_color": []
-                    }
-                },
-                {
                     "id": 6999442,
                     "dividerType": 0,
                     "group_id": 57,
@@ -7979,6 +7576,190 @@
                             "#06A04A",
                             "#1DCC67"
                         ]
+                    }
+                },
+                {
+                    "id": 278879,
+                    "dividerType": 0,
+                    "group_id": 240,
+                    "galaxy_attribution": "PG",
+                    "persona": "",
+                    "brand_id": "",
+                    "category_persona": "",
+                    "name": "Test new rilisan spesial",
+                    "layout": "rilisan_spesial",
+                    "campaignType": 0,
+                    "type": "",
+                    "pageName": "shop_campaign_product_test",
+                    "showPromoBadge": true,
+                    "categoryID": "{}",
+                    "perso_type": 1,
+                    "campaignCode": "",
+                    "has_close_button": false,
+                    "isAutoRefreshAfterExpired": false,
+                    "token": "",
+                    "widgetParam": "",
+                    "contextualInfo": 0,
+                    "viewAllCard": {
+                        "id": 0,
+                        "contentType": "",
+                        "title": "",
+                        "description": "",
+                        "imageUrl": "",
+                        "gradientColor": []
+                    },
+                    "header": {
+                        "id": 298450,
+                        "name": "Special releases today!",
+                        "subtitle": "",
+                        "url": "https://www.tokopedia.com/discovery/gebyar-koleksi-spesial?source=homepage.rilisan_spesial.0.278879",
+                        "applink": "tokopedia://discovery/gebyar-koleksi-spesial?source=homepage.rilisan_spesial.0.278879",
+                        "serverTime": 0,
+                        "expiredTime": "",
+                        "backColor": "",
+                        "backImage": "",
+                        "textColor": "#212121"
+                    },
+                    "grids": [
+                        {
+                            "campaignCode": "",
+                            "id": 5084041545,
+                            "back_color": "",
+                            "name": "SKINTIFIC SymWhite 377 Dark Spot Serum Brightening Serum 20ml",
+                            "expiredTime": "",
+                            "url": "https://www.tokopedia.com/skintific/skintific-symwhite-377-dark-spot-serum-brightening-serum-20ml?source=homepage.rilisan_spesial.0.278879",
+                            "applink": "tokopedia://product/5084041545?source=homepage.rilisan_spesial.0.278879",
+                            "price": "Rp 119.000",
+                            "slashedPrice": "Rp 169.000",
+                            "discount": "30%",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2023/2/3/6c7e85d7-f0c0-4ec3-9326-7fb8c7eec698.jpg",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category=2265&event=click&experimentVersion=v1.4&page=0&page_name=shop_campaign_product_test&pid=5084041545&pos=1&recommendation=shop_campaign_product&rectype=shop_campaign_product&redirect=https://www.tokopedia.com/skintific/skintific-symwhite-377-dark-spot-serum-brightening-serum-20ml?catid2265=%26ref=shop_campaign_product_test_pa0_po1%26src=r3shop_campaign_product&tid=Nw-f8pZcPBigN0x4sYEfuQH3vaE=&uid=16939915&unique_id=&utime=1690991762&widget=r3_widget&xdevice=android-3.150",
+                            "impression": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/2/3/6c7e85d7-f0c0-4ec3-9326-7fb8c7eec698.jpg",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": true,
+                                "imageUrl": "https://images.tokopedia.net/img/img/promo/targeting/red_bo_normal.png"
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 13056835,
+                            "minOrder": 1,
+                            "recommendationType": "shop_campaign_product",
+                            "shop": {
+                                "shopID": 12307751,
+                                "name": "Skintific Official Store",
+                                "city": "Kota Bekasi",
+                                "imageUrl": "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/3/6/b9d7868f-c9dd-4b32-9518-756a0760b6e7.jpg",
+                                "url": "https://www.tokopedia.com/skintific?source=homepage.rilisan_spesial.0.278879",
+                                "applink": "tokopedia://shop/12307751?source_ref=homepage.rilisan_spesial.0.278879"
+                            },
+                            "labelGroup": [
+                                {
+                                    "title": "Cashback",
+                                    "position": "promo",
+                                    "type": "lightGreen",
+                                    "url": ""
+                                },
+                                {
+                                    "title": "Dilayani Tokopedia",
+                                    "position": "offers",
+                                    "type": "lightGrey",
+                                    "url": ""
+                                }
+                            ],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "ratingAverage": "",
+                            "count_review": 0,
+                            "benefit": {
+                                "type": "",
+                                "value": "Diskon Bundling 33%"
+                            },
+                            "textColor": "",
+                            "badges": []
+                        },
+                        {
+                            "campaignCode": "",
+                            "id": 7053201407,
+                            "back_color": "",
+                            "name": "L'Oreal Professionnel Absolut Repair Hair Serum- Rambut Rusak",
+                            "expiredTime": "",
+                            "url": "https://www.tokopedia.com/lorealprofessionnel/l-oreal-professionnel-absolut-repair-hair-serum-rambut-rusak?source=homepage.rilisan_spesial.0.278879",
+                            "applink": "tokopedia://product/7053201407?source=homepage.rilisan_spesial.0.278879",
+                            "price": "Rp 298.900",
+                            "slashedPrice": "Rp 427.000",
+                            "discount": "30%",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2023/8/1/e6d7ae8b-55db-4045-b5dd-6ea4f2a60109.jpg",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category=2172&event=click&experimentVersion=v1.4&page=0&page_name=shop_campaign_product_test&pid=7053201407&pos=2&recommendation=shop_campaign_product&rectype=shop_campaign_product&redirect=https://www.tokopedia.com/lorealprofessionnel/l-oreal-professionnel-absolut-repair-hair-serum-rambut-rusak?catid2172=%26ref=shop_campaign_product_test_pa0_po2%26src=r3shop_campaign_product&tid=Nw-f8pZcPBigN0x4sYEfuQH3vaE=&uid=16939915&unique_id=&utime=1690991762&widget=r3_widget&xdevice=android-3.150",
+                            "impression": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/8/1/e6d7ae8b-55db-4045-b5dd-6ea4f2a60109.jpg",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 11107181,
+                            "minOrder": 1,
+                            "recommendationType": "shop_campaign_product",
+                            "shop": {
+                                "shopID": 11104475,
+                                "name": "L'Oreal Professionnel Official Store",
+                                "city": "Kota Tangerang",
+                                "imageUrl": "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2021/4/1/88d8d607-6cc6-49a6-a513-d7706ad35baa.jpg",
+                                "url": "https://www.tokopedia.com/lorealprofessionnel?source=homepage.rilisan_spesial.0.278879",
+                                "applink": "tokopedia://shop/11104475?source_ref=homepage.rilisan_spesial.0.278879"
+                            },
+                            "labelGroup": [
+                                {
+                                    "title": "Cashback",
+                                    "position": "promo",
+                                    "type": "lightGreen",
+                                    "url": ""
+                                }
+                            ],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "ratingAverage": "",
+                            "count_review": 0,
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "textColor": "",
+                            "badges": [
+                                {
+                                    "title": "Official Store",
+                                    "image_url": "https://images.tokopedia.net/img/official_store_badge.png"
+                                }
+                            ]
+                        }
+                    ],
+                    "banner": {
+                        "id": 0,
+                        "title": "",
+                        "description": "",
+                        "url": "",
+                        "back_color": "",
+                        "cta": {
+                            "type": "",
+                            "mode": "",
+                            "text": "",
+                            "coupon_code": ""
+                        },
+                        "applink": "",
+                        "text_color": "",
+                        "image_url": "",
+                        "attribution": "",
+                        "gradient_color": []
                     }
                 }
             ]

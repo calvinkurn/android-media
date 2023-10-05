@@ -30,14 +30,14 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/unify_space_48"
         tools:layout_height="100dp"
-        app:buttonColor="@color/Unify_N500"
+        app:buttonColor="@color/Unify_NN600"
         app:buttonContainerBackgroundColor="@color/Unify_Background"
         app:buttonsHeight="@dimen/unify_space_48"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:setViewPagerSwipeable="false"
-        app:viewPagerBackground="@color/Unify_N0"
+        app:viewPagerBackground="@color/Unify_NN0"
         android:visibility="gone"
         xmlns:tools="http://schemas.android.com/tools" />
     <com.tokopedia.unifycomponents.LoaderUnify

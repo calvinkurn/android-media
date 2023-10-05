@@ -45,10 +45,8 @@ class ValidateUsePromoRevampUseCase @Inject constructor(
     @GqlQuery(QUERY_VALIDATE_USE, VALIDATE_USE_QUERY)
     override suspend fun executeOnBackground(): ValidateUsePromoRevampUiModel {
         val param = paramValidateUse?.copy() ?: throw RuntimeException("Param has not been initialized")
-
         val request = GraphqlRequest(ValidateUseQuery(), ValidateUseResponse::class.java, getParams(param))
         val validateUseGqlResponse = graphqlRepository.response(listOf(request)).getSuccessData<ValidateUseResponse>()
-
         return ValidateUsePromoCheckoutMapper.mapToValidateUseRevampPromoUiModel(validateUseGqlResponse.validateUsePromoRevamp)
     }
 }

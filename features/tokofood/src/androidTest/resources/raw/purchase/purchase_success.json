@@ -1,0 +1,219 @@
+{
+  "cart_general_cart_list": {
+    "header": {
+      "process_time": 0,
+      "messages": [],
+      "reason": "",
+      "error_code": ""
+    },
+    "data": {
+      "success": 1,
+      "message": "",
+      "data": {
+        "shopping_summary": {
+          "business_breakdown": [
+            {
+              "business_id": "2fe98008-ac73-4cb9-ba7f-d8bf77eedcac",
+              "custom_response": {
+                "hide_summary": false
+              },
+              "total_bill": 72000,
+              "total_bill_fmt": "Rp72.000",
+              "product": {
+                "title": "Total Harga (1 item)",
+                "total_price": 72000,
+                "total_price_fmt": "Rp72.000",
+                "total_quantity": 1,
+                "total_cart": 1,
+                "custom_response": {"info":{"image_url":"","bottomsheet":{"title":"","description":""}}}
+              },
+              "add_ons": []
+            }
+          ]
+        },
+        "business_data": [
+          {
+            "business_id": "2fe98008-ac73-4cb9-ba7f-d8bf77eedcac",
+            "success": 1,
+            "message": "",
+            "ticker": null,
+            "additional_grouping": {
+              "details": [
+                {
+                  "additional_group_id": "available_section",
+                  "cart_ids": [
+                    "4351b325f-d0cf-4ba9-8d0a-3bce7e8c96c1"
+                  ],
+                  "message": "",
+                  "custom_response": {}
+                }
+              ]
+            },
+            "custom_response": {
+              "user_address": {
+                "address_id": 4772309,
+                "phone": "6289668223964",
+                "address_name": "Rumah",
+                "receiver_name": "Tabah Muhammad Fathan",
+                "status": 1,
+                "address": "Sinduadi, Mlati, Kab. Sleman, D.I. Yogyakarta [Tokopedia Note: rumah]"
+              },
+              "promo": {
+                "title": "",
+                "subtitle": "",
+                "hide_promo": true
+              },
+              "popup_message": "",
+              "popup_error_message": "",
+              "popup_message_type": "promo",
+              "error_unblocking": "error",
+              "shipping": {
+                "name": "Gojek Instan",
+                "logo_url": "https://images.tokopedia.net/img/tokofood/cart/gojek.png",
+                "eta": "Tiba Dalam 40 menit",
+                "price": 23500,
+                "price_fmt": "Rp23.500"
+              },
+              "shop": {
+                "shop_id": "20b84b59-b2d7-4b50-a57f-a9c6b66db422",
+                "name": "Burger King, Setiabudi One"
+              },
+              "checkout_additional_data": {
+                "data_type": "TOKOFOOD_CART_GENERAL",
+                "flow_type": "BASIC",
+                "checkout_business_id": 42
+              },
+              "shopping_summary": {
+                "total": {
+                  "cost": 141278,
+                  "savings": 112222
+                },
+                "cost_breakdown": {
+                  "total_cart_price": {
+                    "original_amount": 220000,
+                    "amount": 120000
+                  },
+                  "outlet_fee": {
+                    "original_amount": 0,
+                    "amount": 0
+                  },
+                  "platform_fee": {
+                    "original_amount": 5000,
+                    "amount": 5000
+                  },
+                  "delivery_fee": {
+                    "original_amount": 23500,
+                    "amount": 23500,
+                    "surge": {
+                      "is_surge_price": false,
+                      "factor": 0
+                    }
+                  },
+                  "reimbursement_fee": {
+                    "original_amount": 5000,
+                    "amount": 5000
+                  }
+                },
+                "discount_breakdown": [
+                  {
+                    "discount_id": "",
+                    "title": "Promo",
+                    "amount": 100000,
+                    "scope": "CART",
+                    "type": "SKU_PROMOTIONS"
+                  },
+                  {
+                    "discount_id": "5e493b38-7eb1-4cb7-8ea0-fb6cf3a422cd",
+                    "title": "",
+                    "amount": 12222,
+                    "scope": "CART_DELIVERY",
+                    "type": "MARKDOWN"
+                  }
+                ]
+              }
+            },
+            "cart_groups": [
+              {
+                "cart_group_id": "2a0293ca-42d7-4cef-817e-35b6666c9069-4746414",
+                "success": 1,
+                "carts": [
+                  {
+                    "cart_id": "4351b325f-d0cf-4ba9-8d0a-3bce7e8c96c0",
+                    "success": 1,
+                    "product_id": "31b3b5fa-1ec4-4ab6-9c85-198ebd5640db",
+                    "shop_id": "2a0293ca-42d7-4cef-817e-35b6666c9069",
+                    "quantity": 1,
+                    "metadata": {
+                      "notes": "note1",
+                      "variants": [
+                        {
+                          "variant_id": "3f2a4962-f93c-4605-a533-1693a3f59426",
+                          "option_id": "bdc07d66-575f-4d2b-97cb-c6dd7514b8f2"
+                        },
+                        {
+                          "variant_id": "bb104bdb-2a13-4c35-9292-73f144b126b7",
+                          "option_id": "2f0adc8d-90eb-42d0-b093-e4b6445fe6a1"
+                        }
+                      ]
+                    },
+                    "custom_response": {
+                      "category_id": "b8610cc6-38db-4b19-9e21-b5ff3993a5aa",
+                      "notes": "note1",
+                      "variants": [
+                        {
+                          "variant_id": "3f2a4962-f93c-4605-a533-1693a3f59426",
+                          "name": "Drink",
+                          "rules": {
+                            "selection_rule": {
+                              "type": 1,
+                              "max_quantity": 1,
+                              "min_quantity": 1,
+                              "required": true
+                            }
+                          },
+                          "options": [
+                            {
+                              "option_id": "bdc07d66-575f-4d2b-97cb-c6dd7514b8f2",
+                              "is_selected": true,
+                              "name": "Cola",
+                              "price": 10000,
+                              "price_fmt": "Rp10.000"
+                            }
+                          ]
+                        },
+                        {
+                          "variant_id": "bb104bdb-2a13-4c35-9292-73f144b126b7",
+                          "name": "Additional Toppings",
+                          "rules": {
+                            "selection_rule": {
+                              "type": 2,
+                              "max_quantity": 4,
+                              "min_quantity": 0,
+                              "required": false
+                            }
+                          },
+                          "options": [
+                            {
+                              "option_id": "2f0adc8d-90eb-42d0-b093-e4b6445fe6a1",
+                              "is_selected": true,
+                              "name": "Cheese",
+                              "price": 2000,
+                              "price_fmt": "Rp2.000"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    "price": 72000,
+                    "price_fmt": "Rp72.000"
+                  }
+                ],
+                "custom_response": {}
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

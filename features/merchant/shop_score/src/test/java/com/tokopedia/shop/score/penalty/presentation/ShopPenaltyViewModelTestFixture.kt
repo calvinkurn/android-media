@@ -78,10 +78,12 @@ abstract class ShopPenaltyViewModelTestFixture {
         unmockkAll()
     }
 
-    protected fun onGetShopPenaltyDetailMergeUseCase_thenReturn() {
+    protected fun onGetShopPenaltyDetailMergeUseCase_thenReturn(
+        penaltyDetail: ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail = ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail()
+    ) {
         coEvery {
             getShopPenaltyDetailMergeUseCase.get().executeOnBackground()
-        } returns Pair(ShopPenaltySummaryTypeWrapper(), ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail())
+        } returns Pair(ShopPenaltySummaryTypeWrapper(), penaltyDetail)
     }
 
     protected fun onGetShopPenaltyDetailMergeUseCaseError_thenReturn(exception: Throwable) {

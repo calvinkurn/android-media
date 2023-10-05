@@ -60,8 +60,8 @@ public class ExploreImageViewHolder extends AbstractViewHolder<ExploreImageViewM
     private int getBadgeId(ExploreImageViewModel element) {
         switch (element.getCardType()) {
             case Youtube:
-            case Video: return R.drawable.ic_affiliate_video;
-            case Multi: return R.drawable.ic_affiliate_multi;
+            case Video: return com.tokopedia.feedcomponent.R.drawable.ic_affiliate_video;
+            case Multi: return com.tokopedia.feedcomponent.R.drawable.ic_affiliate_multi;
             default : return 0;
         }
     }

@@ -111,7 +111,7 @@
     <string name="desc_calculation_open_seller_app_within_90_days">Membuka Tokopedia Seller dalam waktu 90 hari</string>
     <string name="desc_calculation_open_seller_app">Membuka Tokopedia Seller</string>
 
-    <string name="total_deduction_point_performance">Pengurangan poin performa sebanyak <![CDATA[<b>%s poin.</b>]]></string>
+    <string name="total_deduction_point_performance">Total poin Penalti Sedang Berlangsung bertambah sebanyak <![CDATA[<b>%s poin.</b>]]></string>
     <string name="title_due_to_violations">Akibat Pelanggaran</string>
     <string name="title_penalty_type">Jenis Pelanggaran:</string>
     <string name="cta_penalty_detail_summary">Cek Definisi Penalti</string>

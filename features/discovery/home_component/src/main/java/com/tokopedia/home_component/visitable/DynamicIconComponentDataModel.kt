@@ -1,6 +1,8 @@
 package com.tokopedia.home_component.visitable
 
 import android.os.Bundle
+import com.tokopedia.analytics.performance.perf.BlocksLoadableComponent
+import com.tokopedia.analytics.performance.perf.LoadableComponent
 import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.model.DynamicIconComponent
 import com.tokopedia.kotlin.model.ImpressHolder
@@ -15,7 +17,10 @@ data class DynamicIconComponentDataModel(
         val type: Int,
         val dynamicIconComponent: DynamicIconComponent,
         val currentFetch: Long = Calendar.getInstance().timeInMillis
-) : HomeComponentVisitable, ImpressHolder(){
+) : HomeComponentVisitable, ImpressHolder(), LoadableComponent by BlocksLoadableComponent(
+    { dynamicIconComponent.dynamicIcon.size > 3 },
+    "HomeDynamicIcon"
+) {
     override fun visitableId(): String {
         return id
     }

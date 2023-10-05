@@ -36,19 +36,17 @@ class CalendarWidgetItemViewModelTest {
     private val stringTest = "stringTest"
     private var context: Context = mockk()
 
-    private var pushSubscriptionResponse: PushSubscriptionResponse = spyk(PushSubscriptionResponse(NotifierSetReminder(isSuccess = 1)))
-    private var pushUnSubscriptionResponse: PushUnSubscriptionResponse = spyk(PushUnSubscriptionResponse(NotifierSetReminder(isSuccess = 1)))
-    private var pushStatusResponse: PushStatusResponse = spyk(PushStatusResponse(NotifierCheckReminder(status = 1)))
+    private var pushSubscriptionResponse: PushSubscriptionResponse =
+        spyk(PushSubscriptionResponse(NotifierSetReminder(isSuccess = 1)))
+    private var pushUnSubscriptionResponse: PushUnSubscriptionResponse =
+        spyk(PushUnSubscriptionResponse(NotifierSetReminder(isSuccess = 1)))
+    private var pushStatusResponse: PushStatusResponse =
+        spyk(PushStatusResponse(NotifierCheckReminder(status = 1)))
+    private val subScribeToUseCase: SubScribeToUseCase = mockk()
+    private val checkPushStatusUseCase: CheckPushStatusUseCase = mockk()
 
-    private val viewModel: CalendarWidgetItemViewModel = spyk(CalendarWidgetItemViewModel(application, componentsItem, 99))
-
-    private val checkPushStatusUseCase: CheckPushStatusUseCase by lazy {
-        mockk()
-    }
-
-    private val subScribeToUseCase: SubScribeToUseCase by lazy {
-        mockk()
-    }
+    private val viewModel: CalendarWidgetItemViewModel =
+        spyk(CalendarWidgetItemViewModel(application, componentsItem, 99))
 
     @Before
     @Throws(Exception::class)
@@ -113,14 +111,15 @@ class CalendarWidgetItemViewModelTest {
 
             assertEquals(viewModel.getPushBannerStatusData().value, Pair(false, stringTest))
 
-            val pushUnSubscriptionResponse1: PushUnSubscriptionResponse = spyk(PushUnSubscriptionResponse(null))
-            coEvery { viewModel.subScribeToUseCase?.unSubscribeToPush(any()) } returns pushUnSubscriptionResponse1
+            val pushUnSubscriptionResponse1: PushUnSubscriptionResponse =
+                spyk(PushUnSubscriptionResponse(null))
+            coEvery { subScribeToUseCase.unSubscribeToPush(any()) } returns pushUnSubscriptionResponse1
 
             viewModel.unSubscribeUserForPushNotification("1")
 
             assertEquals(viewModel.getPushBannerStatusData().value != null, true)
 
-            coEvery { viewModel.subScribeToUseCase?.unSubscribeToPush(any()) } throws Exception("error")
+            coEvery { subScribeToUseCase.unSubscribeToPush(any()) } throws Exception("error")
 
             viewModel.unSubscribeUserForPushNotification("1")
 
@@ -132,20 +131,20 @@ class CalendarWidgetItemViewModelTest {
     fun `test for checkUserPushStatus`() {
         every { viewModel.isUserLoggedIn() } returns true
         viewModel.checkPushStatusUseCase = checkPushStatusUseCase
-        coEvery { viewModel.checkPushStatusUseCase?.checkPushStatus(any()) } returns pushStatusResponse
+        coEvery { checkPushStatusUseCase.checkPushStatus(any()) } returns pushStatusResponse
 
         viewModel.checkUserPushStatus("1")
 
         assertEquals(viewModel.getPushBannerSubscriptionData().value, true)
 
-        coEvery { viewModel.checkPushStatusUseCase?.checkPushStatus(any()) } throws Exception("error")
+        coEvery { checkPushStatusUseCase.checkPushStatus(any()) } throws Exception("error")
 
         viewModel.checkUserPushStatus("1")
 
         assertEquals(viewModel.getPushBannerSubscriptionData().value != null, true)
 
         val pushStatusResponse1: PushStatusResponse = spyk(PushStatusResponse(null))
-        coEvery { viewModel.checkPushStatusUseCase?.checkPushStatus(any()) } returns pushStatusResponse1
+        coEvery { checkPushStatusUseCase.checkPushStatus(any()) } returns pushStatusResponse1
 
         viewModel.checkUserPushStatus("1")
 

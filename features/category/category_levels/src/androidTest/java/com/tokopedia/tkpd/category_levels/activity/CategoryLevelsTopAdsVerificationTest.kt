@@ -13,10 +13,12 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.categorylevels.view.activity.CategoryRevampActivity
+import com.tokopedia.discovery2.ComponentNames
+import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem.MasterProductCardItemViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardrevamp.ProductCardRevampViewHolder
 import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
-import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupTopAdsDetector
 import org.junit.After
@@ -25,7 +27,9 @@ import org.junit.Rule
 import org.junit.Test
 
 class CategoryLevelsTopAdsVerificationTest {
-    private var topAdsAssertion: TopAdsAssertion? = null
+    private val context = InstrumentationRegistry.getInstrumentation().targetContext
+    private var topAdsCount = 0
+    private val topAdsAssertion = TopAdsAssertion(context) { topAdsCount }
 
     @get:Rule
     var grantPermissionRule: GrantPermissionRule = GrantPermissionRule.grant(Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -41,10 +45,6 @@ class CategoryLevelsTopAdsVerificationTest {
 
     @Before
     fun setTopAdsAssertion() {
-        topAdsAssertion = TopAdsAssertion(
-                activityRule.activity,
-                activityRule.activity.application as TopAdsVerificatorInterface
-        )
         val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
         activityRule.launchActivity(Intent(targetContext, CategoryRevampActivity::class.java).apply {
             data = Uri.parse("tokopedia-android-internal://category/25?categoryName=Audio")
@@ -53,21 +53,57 @@ class CategoryLevelsTopAdsVerificationTest {
 
     @After
     fun deleteDatabase() {
-        topAdsAssertion?.after()
+        topAdsAssertion.after()
     }
 
     @Test
     fun testTopAdsCategory() {
         waitForData()
 
-        val productsRecyclerView = activityRule.activity.findViewById<RecyclerView>(com.tokopedia.discovery2.R.id.recycler_view)
-        val itemCount = productsRecyclerView.adapter?.itemCount?:0
+        val productsRecyclerView =
+            activityRule.activity.findViewById<RecyclerView>(com.tokopedia.discovery2.R.id.recycler_view)
+        val itemCount = productsRecyclerView.adapter?.itemCount ?: 0
+        val itemList = (productsRecyclerView.adapter as DiscoveryRecycleAdapter).currentList
+        topAdsCount = calculateTopAdsCount(itemList)
 
         for (i in 0 until itemCount) {
             scrollRecyclerViewToPosition(productsRecyclerView, i)
             checkProductOnDynamicChannel(productsRecyclerView, i)
         }
-        topAdsAssertion?.assert()
+        topAdsAssertion.assert()
+    }
+
+      private fun calculateTopAdsCount(itemList: List<ComponentsItem>): Int {
+        var count = 0
+        for (item in itemList) {
+            count += countTopAdsInItem(item)
+        }
+        return count
+    }
+
+     private fun countTopAdsInItem(item: ComponentsItem): Int {
+        var count = 0
+
+        when (item.name) {
+            ComponentNames.ProductCardRevampItem.componentName -> {
+                if (item.data?.firstOrNull()?.isTopads == true) {
+                    count++
+                }
+            }
+            ComponentNames.MasterProductCardItemList.componentName -> {
+                if (item.data?.firstOrNull()?.isTopads == true) {
+                    count++
+                }
+            }
+            ComponentNames.ProductCardCarousel.componentName -> {
+                item.data?.let { componentItemsList ->
+                    for (grid in componentItemsList) {
+                        if (grid.isTopads == true) count++
+                    }
+                }
+            }
+        }
+        return count
     }
 
     private fun checkProductOnDynamicChannel(recyclerView: RecyclerView, i: Int) {

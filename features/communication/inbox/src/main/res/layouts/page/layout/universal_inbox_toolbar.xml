@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/inbox_layout_toolbar"
+    android:layout_width="match_parent"
+    android:layout_height="45dp"
+    android:orientation="vertical">
+    
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/inbox_icon_back"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginStart="12dp"
+        app:icon_name="ARROW_BACK"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/inbox_icon_back"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginStart="12dp"
+        app:typographyType="display_1"
+        app:typographyWeight="bold"
+        android:text="@string/inbox_title"/>
+
+    <com.tokopedia.iconnotification.IconNotification
+        android:id="@+id/inbox_icon_notif"
+        android:layout_width="40dp"
+        android:layout_height="26dp"
+        android:animateLayoutChanges="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:iconNotificationGravity="top|end" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -51,7 +51,7 @@ class AffiliateSharedProductCardsItemVH(
                     setTextColor(
                         MethodChecker.getColor(
                             itemView.context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_G500
+                            com.tokopedia.unifyprinciples.R.color.Unify_GN500
                         )
                     )
                     text = getString(R.string.affiliate_active)

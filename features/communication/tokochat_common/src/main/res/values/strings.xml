@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">tokochat_common</string>
+    <string name="title_chatlist">Chat Driver</string>
 
     <string name="tokochat_is_typing">"lagi ngetik"</string>
     <string name="tokochat_read_more">Baca Selengkapnya</string>
@@ -55,4 +56,12 @@
     <string name="tokochat_bubbles_awareness_activate_setting_button">Mau Aktifin!</string>
 
     <string name="tokochat_bubbles_ticker_desc"><![CDATA[Akses chat sama driver jadi makin mudah dan cepet, lho. <a href="#">Cobain Bubbles, Yuk!</a>]]>.</string>
+
+    <string name="tokochat_list_error_back_to_home">Ke Homepage</string>
+
+    <string name="tokochat_list_empty_chat_title">Belum ada chat</string>
+    <string name="tokochat_list_empty_chat_subtitle">Coba ngobrol dengan driver, yuk!</string>
+
+    <string name="tokochat_list_default_message">Ayo chat driver buat lacak pesananmu.</string>
+    <string name="tokochat_list_driver_order_type">· %s</string>
 </resources>

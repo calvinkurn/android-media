@@ -18,17 +18,16 @@ sealed class PlayUpcomingUiEvent {
     /**
      * Upcoming
      */
-    data class RemindMeEvent(val message: UiString, val isSuccess: Boolean): PlayUpcomingUiEvent()
-    object RefreshChannelEvent: PlayUpcomingUiEvent()
+    data class RemindMeEvent(val message: UiString, val isSuccess: Boolean) : PlayUpcomingUiEvent()
+    object RefreshChannelEvent : PlayUpcomingUiEvent()
 
     /**
      * Share Experience
      */
-    data class SaveTemporarySharingImage(val imageUrl: String): PlayUpcomingUiEvent()
     data class OpenSharingOptionEvent(val title: String, val coverUrl: String, val userId: String, val channelId: String) : PlayUpcomingUiEvent()
-    data class OpenSelectedSharingOptionEvent(val linkerShareResult: LinkerShareResult?, val shareModel: ShareModel, val shareString: String): PlayUpcomingUiEvent()
-    object CloseShareExperienceBottomSheet: PlayUpcomingUiEvent()
-    object ErrorGenerateShareLink: PlayUpcomingUiEvent()
+    data class OpenSelectedSharingOptionEvent(val linkerShareResult: LinkerShareResult?, val shareModel: ShareModel, val shareString: String) : PlayUpcomingUiEvent()
+    object CloseShareExperienceBottomSheet : PlayUpcomingUiEvent()
+    object ErrorGenerateShareLink : PlayUpcomingUiEvent()
 
     /**
      * Other

@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tokopedia.attachvoucher">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application>
         <activity
-            android:name=".stub.view.AttachVoucherActivityStub"
+            android:name="com.tokopedia.attachvoucher.stub.view.AttachVoucherActivityStub"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AttachCommon"
             android:exported="false">
