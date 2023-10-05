@@ -21,8 +21,7 @@ sealed class StoryAuthor : Parcelable {
         val avatarUrl: String,
         val badgeUrl: String,
         override val appLink: String
-    ) :
-        StoryAuthor() {
+    ) : StoryAuthor() {
         override val id: String
             get() = shopId
         override val type: AuthorType
