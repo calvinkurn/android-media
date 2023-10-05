@@ -121,11 +121,5 @@
             app:launchSingleTop="true"
             app:popUpTo="@id/composeQuestionnaireFragment"
             app:popUpToInclusive="true" />
-        <action
-            android:id="@+id/actionQuestionnaireToResultCompose"
-            app:destination="@id/composeResultFragment"
-            app:launchSingleTop="true"
-            app:popUpTo="@id/composeQuestionnaireFragment"
-            app:popUpToInclusive="true" />
     </fragment>
 </navigation>

@@ -14,6 +14,8 @@ sealed class BaseOptionUiModel(
     open var isSelected: Boolean
 ) : Visitable<OptionAdapterFactory> {
 
+    abstract fun copyData(): BaseOptionUiModel
+
     data class QuestionOptionSingleUiModel(
         override val value: String = String.EMPTY,
         override val title: String = String.EMPTY,
@@ -23,9 +25,11 @@ sealed class BaseOptionUiModel(
         override fun type(typeFactory: OptionAdapterFactory): Int {
             return typeFactory.type(this)
         }
+
+        override fun copyData(): BaseOptionUiModel = this.copy()
     }
 
-    class QuestionOptionMultipleUiModel(
+    data class QuestionOptionMultipleUiModel(
         override val value: String = String.EMPTY,
         override val title: String = String.EMPTY,
         override var isSelected: Boolean = false
@@ -34,5 +38,7 @@ sealed class BaseOptionUiModel(
         override fun type(typeFactory: OptionAdapterFactory): Int {
             return typeFactory.type(this)
         }
+
+        override fun copyData(): BaseOptionUiModel = this.copy()
     }
 }

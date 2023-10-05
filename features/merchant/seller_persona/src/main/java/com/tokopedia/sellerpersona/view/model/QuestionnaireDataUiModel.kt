@@ -5,5 +5,7 @@ package com.tokopedia.sellerpersona.view.model
  */
 
 data class QuestionnaireDataUiModel(
+    val currentPage: Int = 0,
+    val isNextButtonLoading: Boolean = false,
     val questionnaireList: List<QuestionnairePagerUiModel> = emptyList()
 )

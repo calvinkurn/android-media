@@ -13,15 +13,23 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import com.tokopedia.nest.principles.ui.NestTheme
+import com.tokopedia.sellerpersona.R
 import com.tokopedia.sellerpersona.view.activity.SellerPersonaActivity
 import com.tokopedia.sellerpersona.view.compose.model.state.QuestionnaireState
-import com.tokopedia.sellerpersona.view.compose.model.uievent.QuestionnaireUiEvent
+import com.tokopedia.sellerpersona.view.compose.model.uieffect.QuestionnaireUiEffect
+import com.tokopedia.sellerpersona.view.compose.model.uievent.QuestionnaireUserEvent
 import com.tokopedia.sellerpersona.view.compose.screen.questionnaire.QuestionnaireErrorState
 import com.tokopedia.sellerpersona.view.compose.screen.questionnaire.QuestionnaireLoadingState
 import com.tokopedia.sellerpersona.view.compose.screen.questionnaire.QuestionnaireSuccessState
 import com.tokopedia.sellerpersona.view.compose.viewmodel.ComposeQuestionnaireViewModel
+import com.tokopedia.sellerpersona.view.fragment.PersonaQuestionnaireFragmentDirections
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import com.tokopedia.utils.lifecycle.collectAsStateWithLifecycle
+import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
 /**
@@ -44,22 +52,28 @@ class ComposeQuestionnaireFragment : Fragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         return ComposeView(inflater.context).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
 
                 LaunchedEffect(key1 = Unit, block = {
-                    viewModel.onEvent(QuestionnaireUiEvent.FetchQuestionnaire)
+                    viewModel.uiEffect.collectLatest {
+                        when (it) {
+                            is QuestionnaireUiEffect.NavigateToResultPage -> navigateToResultPage(it.personaName)
+                            is QuestionnaireUiEffect.ShowGeneralErrorToast -> showGeneralErrorToaster()
+                        }
+                    }
+                })
+
+                LaunchedEffect(key1 = Unit, block = {
+                    viewModel.onEvent(QuestionnaireUserEvent.FetchQuestionnaire)
                 })
 
                 NestTheme {
                     Surface(
-                        modifier = Modifier.fillMaxSize(),
-                        color = MaterialTheme.colors.background
+                        modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background
                     ) {
                         val state = viewModel.state.collectAsStateWithLifecycle()
 
@@ -67,13 +81,38 @@ class ComposeQuestionnaireFragment : Fragment() {
                             is QuestionnaireState.Loading -> QuestionnaireLoadingState()
                             is QuestionnaireState.Error -> QuestionnaireErrorState(onEvent = viewModel::onEvent)
                             is QuestionnaireState.Success -> QuestionnaireSuccessState(
-                                data = current.data.questionnaireList,
+                                data = current.data,
                                 onEvent = viewModel::onEvent
                             )
                         }
                     }
                 }
             }
+        }
+    }
+
+    private fun navigateToResultPage(personaName: String) {
+        view?.let {
+            val action = ComposeQuestionnaireFragmentDirections.actionQuestionnaireToResult(
+                paramPersona = personaName
+            )
+            Navigation.findNavController(it).navigate(action)
+        }
+    }
+
+    private fun showGeneralErrorToaster() {
+        view?.run {
+            val dp48 = context.resources.getDimensionPixelSize(
+                unifyprinciplesR.dimen.layout_lvl6
+            )
+            Toaster.toasterCustomBottomHeight = dp48
+            Toaster.build(
+                rootView,
+                context.getString(R.string.sp_toaster_error_message),
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_ERROR,
+                context.getString(R.string.sp_oke)
+            ).show()
         }
     }
 
