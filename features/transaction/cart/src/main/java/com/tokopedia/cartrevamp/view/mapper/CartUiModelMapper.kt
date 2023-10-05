@@ -152,10 +152,7 @@ object CartUiModelMapper {
                         cartGroupBmGmHolderData = mapGroupBmGmHolder(availableGroup.cartString, cartDetail, availableShop.cartStringOrder)
                     }
                 }
-                productUiModelList.lastOrNull()?.apply {
-                    isFinalItem = shopIndex == groupShopCount - 1
-                    showBmGmBottomDivider = shouldShowBmGmBottomDivider
-                }
+                productUiModelList.lastOrNull()?.isFinalItem = shopIndex == groupShopCount - 1
             }
             val groupUiModel = CartGroupHolderData().apply {
                 this.productUiModelList = productUiModelList
