@@ -7,6 +7,7 @@ import com.tokopedia.discovery2.databinding.DiscoveryFlashSaleTokoTabsBinding
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.flashsaletoko.FlashSaleTokoTabMapper.mapToShopTabDataModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.CLICK_UNIFY_TAB
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.home_component.widget.shop_tab.ShopTabDataModel
@@ -52,9 +53,33 @@ class FlashSaleTokoTabViewHolder(
     override fun onShopTabClick(element: ShopTabDataModel) {
         viewModel?.onTabClick(element.id)
 
+        val position = updateCurrentTabPosition(element)
+        trackTabClick(position)
+    }
+
+    private fun updateCurrentTabPosition(element: ShopTabDataModel): Int {
         val position = viewModel?.getTabLiveData()?.value
             ?.indexOfFirst { it.data?.first()?.filterValue == element.id } ?: -1
 
-        (fragment as DiscoveryFragment).currentTabPosition = position + 1
+        (fragment as? DiscoveryFragment)?.currentTabPosition = position + 1
+
+        return position
+    }
+
+    private fun trackTabClick(position: Int) {
+        val analytics = (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics() ?: return
+
+        val component = viewModel?.component
+        val parentPosition = viewModel?.position ?: 0
+
+        component?.data?.let {
+            analytics.trackUnifyTabsClick(
+                component.id,
+                parentPosition,
+                it[position],
+                position,
+                CLICK_UNIFY_TAB
+            )
+        }
     }
 }
