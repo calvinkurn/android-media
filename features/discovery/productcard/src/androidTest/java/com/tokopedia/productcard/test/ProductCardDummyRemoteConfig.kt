@@ -5,11 +5,11 @@ import com.tokopedia.remoteconfig.RemoteConfig
 
 internal class ProductCardDummyRemoteConfig(
     private val getBoolean: (key: String?, defaultValue: Boolean) -> Boolean = { _, _ -> false },
-    private val getString: (key: String?, defaultValue: String?) -> String = { _, _ -> "" }
+    private val getString: (key: String?, defaultValue: String?) -> String = { _, _ -> "" },
 ) {
 
     fun get(): Lazy<RemoteConfig?> = lazyThreadSafetyNone {
-        object : RemoteConfig {
+        object: RemoteConfig {
             override fun getKeysByPrefix(prefix: String?): MutableSet<String> = mutableSetOf()
 
             override fun getBoolean(key: String?): Boolean = getBoolean(key, false)
@@ -31,9 +31,11 @@ internal class ProductCardDummyRemoteConfig(
                 getString.invoke(key, defaultValue)
 
             override fun setString(key: String?, value: String?) {
+
             }
 
             override fun fetch(listener: RemoteConfig.Listener?) {
+
             }
         }
     }
