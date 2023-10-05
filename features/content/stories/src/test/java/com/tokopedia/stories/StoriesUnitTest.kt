@@ -1,7 +1,6 @@
 package com.tokopedia.stories
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.SavedStateHandle
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.stories.data.repository.StoriesRepository
@@ -56,7 +55,6 @@ class StoriesUnitTest {
         source = "shop-entrypoint",
         sourceId = "1234"
     )
-    private val handle: SavedStateHandle = SavedStateHandle()
     private val mockRepository: StoriesRepository = mockk(relaxed = true)
     private val mockSharedPref: StoriesPreference = mockk(relaxed = true)
     private val mockUserSession: UserSessionInterface = mockk(relaxed = true)
@@ -64,7 +62,6 @@ class StoriesUnitTest {
     private fun getStoriesRobot() = StoriesViewModelRobot(
         dispatchers = testDispatcher,
         args = args,
-        handle = handle,
         repository = mockRepository,
         userSession = mockUserSession,
     )
@@ -224,38 +221,6 @@ class StoriesUnitTest {
 
             event.last().assertType<StoriesUiEvent.ErrorGroupPage> {}
             (event.last() as StoriesUiEvent.ErrorGroupPage).onClick()
-        }
-    }
-
-    @Test
-    fun `when open stories from entry point and using saved state data`() {
-        val selectedGroup = 0
-        val selectedDetail = 0
-        val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
-        val resultGroupItem = expectedData.groupItems[selectedGroup]
-        val resultDetailItems = resultGroupItem.detail.detailItems[selectedDetail]
-
-        getStoriesRobot().use { robot ->
-            val state = robot.recordState {
-                robot.entryPointTestCaseUsingSavedState(
-                    mainData = expectedData,
-                    selectedGroup = selectedGroup,
-                    selectedDetail = selectedDetail
-                )
-
-                val actualGroup = robot.getViewModel().mGroup
-                val actualDetail = robot.getViewModel().mDetail
-
-                val expectedGroup =
-                    resultGroupItem.mockGroupResetValue(actualGroup.detail.detailItems)
-                val expectedDetail = resultDetailItems.mockDetailResetValue(actualDetail)
-
-                actualGroup.assertEqualTo(expectedGroup)
-                actualDetail.assertEqualTo(expectedDetail)
-            }
-
-            val actualMainData = expectedData.mockMainDataResetValue(state.storiesMainData)
-            state.storiesMainData.assertEqualTo(actualMainData)
         }
     }
 

@@ -24,7 +24,6 @@ import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
@@ -178,13 +177,17 @@ class StoriesDetailFragment @Inject constructor(
 
     private fun setupUiStateObserver() {
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            viewModel.storiesState.withCache().collectLatest { (prevState, state) ->
-                renderStoriesGroupHeader(prevState?.storiesMainData, state.storiesMainData)
-                renderStoriesDetail(
-                    prevState?.storiesMainData?.groupItems?.get(prevState.storiesMainData.selectedGroupPosition.orZero())?.detail,
-                    state.storiesMainData.groupItems[state.storiesMainData.selectedGroupPosition].detail
-                )
-                observeBottomSheetStatus(prevState?.bottomSheetStatus, state.bottomSheetStatus)
+            viewModel.storiesState.withCache().collectLatest { (prevState, currState) ->
+                renderStoriesGroupHeader(prevState?.storiesMainData, currState.storiesMainData)
+
+                if (prevState?.storiesMainData != null && prevState.storiesMainData != StoriesUiModel()) {
+                    val prev = prevState.storiesMainData.groupItems
+                        .getOrNull(prevState.storiesMainData.selectedGroupPosition)?.detail
+                    val curr = currState.storiesMainData.groupItems
+                        .getOrNull(currState.storiesMainData.selectedGroupPosition)?.detail
+                    renderStoriesDetail(prev, curr)
+                }
+                observeBottomSheetStatus(prevState?.bottomSheetStatus, currState.bottomSheetStatus)
             }
         }
     }
@@ -279,16 +282,15 @@ class StoriesDetailFragment @Inject constructor(
 
     private fun renderStoriesDetail(
         prevState: StoriesDetail?,
-        state: StoriesDetail
+        state: StoriesDetail?
     ) {
         if (prevState == state ||
             state == StoriesDetail() ||
+            state == null ||
             state.selectedGroupId != groupId ||
             state.selectedDetailPosition < 0 ||
             state.detailItems.isEmpty()
-        ) {
-            return
-        }
+        ) return
 
         setNoInternet(false)
         setFailed(false)
@@ -520,10 +522,11 @@ class StoriesDetailFragment @Inject constructor(
     }
 
     private fun showPageLoading(isShowLoading: Boolean) = with(binding) {
+        cvStoriesDetailTimer.showWithCondition(isShowLoading)
         rvStoriesCategory.showWithCondition(!isShowLoading)
         layoutStoriesContent.container.showWithCondition(!isShowLoading)
         layoutDetailLoading.container.showWithCondition(isShowLoading)
-        binding.clSideIcons.showWithCondition(!isShowLoading)
+        clSideIcons.showWithCondition(!isShowLoading)
     }
 
     private fun trackClickGroup(position: Int, data: StoriesGroupHeader) {

@@ -1,9 +1,5 @@
 package com.tokopedia.universal_sharing.view.model
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
-
-@Parcelize
 data class LinkProperties(
     val linkerType: String = "",
     val id: String = "",
@@ -12,4 +8,4 @@ data class LinkProperties(
     val ogImageUrl: String = "",
     val deeplink: String = "",
     val desktopUrl: String = ""
-) : Parcelable
+)
