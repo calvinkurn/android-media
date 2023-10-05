@@ -11,13 +11,13 @@ class CartHorizontalItemDecoration(val paddingLeft: Int, val paddingRight: Int) 
         val itemCount = state.itemCount
         if (position == 0) {
             outRect.left = paddingLeft
-            outRect.right = parent.context?.resources?.getDimension(R.dimen.dp_4)?.toInt() ?: 0
+            outRect.right = parent.context?.resources?.getDimension(com.tokopedia.cart.R.dimen.dp_4)?.toInt() ?: 0
         } else if (position == itemCount - 1) {
             outRect.right = paddingRight
-            outRect.left = parent.context?.resources?.getDimension(R.dimen.dp_4)?.toInt() ?: 0
+            outRect.left = parent.context?.resources?.getDimension(com.tokopedia.cart.R.dimen.dp_4)?.toInt() ?: 0
         } else {
-            outRect.right = parent.context?.resources?.getDimension(R.dimen.dp_4)?.toInt() ?: 0
-            outRect.left = parent.context?.resources?.getDimension(R.dimen.dp_4)?.toInt() ?: 0
+            outRect.right = parent.context?.resources?.getDimension(com.tokopedia.cart.R.dimen.dp_4)?.toInt() ?: 0
+            outRect.left = parent.context?.resources?.getDimension(com.tokopedia.cart.R.dimen.dp_4)?.toInt() ?: 0
         }
     }
 }

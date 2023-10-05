@@ -8,7 +8,8 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.play.R
-import com.tokopedia.play.view.uimodel.PlayUserReportReasoningUiModel
+import com.tokopedia.content.common.R as commonR
+import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifycomponents.TextAreaUnify2
 import com.tokopedia.unifycomponents.UnifyButton
@@ -19,15 +20,15 @@ import com.tokopedia.unifycomponents.UnifyButton
 class PlayUserReportSubmissionViewComponent(
     container: ViewGroup,
     private val listener: Listener
-) : ViewComponent(container, R.id.cl_user_report_submission_sheet) {
+) : ViewComponent(container, commonR.id.cl_user_report_submission_sheet) {
 
-    private val btnBack: IconUnify = findViewById(com.tokopedia.play_common.R.id.iv_sheet_close)
+    private val btnBack: IconUnify = findViewById(commonR.id.iv_sheet_close)
 
-    private val tvTitle: TextView = findViewById(R.id.tv_user_report_title)
-    private val tvDesc: TextView = findViewById(R.id.tv_user_report_desc)
-    private val etSubmission: TextAreaUnify2 = findViewById(R.id.et_detail_report)
-    private val btnSubmit: UnifyButton = findViewById(R.id.btn_action)
-    private val tvFooter: TextView = findViewById(R.id.tv_user_report_footer)
+    private val tvTitle: TextView = findViewById(commonR.id.tv_user_report_title)
+    private val tvDesc: TextView = findViewById(commonR.id.tv_user_report_desc)
+    private val etSubmission: TextAreaUnify2 = findViewById(commonR.id.et_detail_report)
+    private val btnSubmit: UnifyButton = findViewById(commonR.id.btn_action)
+    private val tvFooter: TextView = findViewById(commonR.id.tv_user_report_footer)
 
     private val errorFieldPrefix: String = "Isi"
 
@@ -55,7 +56,7 @@ class PlayUserReportSubmissionViewComponent(
 
         findViewById<TextView>(com.tokopedia.play_common.R.id.tv_sheet_title).text = getString(R.string.play_kebab_report_title)
 
-        tvFooter.text = MethodChecker.fromHtml(getString(R.string.play_user_report_footer))
+        tvFooter.text = MethodChecker.fromHtml(getString(commonR.string.content_user_report_footer))
         tvFooter.setOnClickListener {
             listener.onFooterClicked(this@PlayUserReportSubmissionViewComponent)
         }
@@ -87,9 +88,9 @@ class PlayUserReportSubmissionViewComponent(
 
     private fun getFieldMessage(isError: Boolean) : String{
         return if(isError){
-            getString(R.string.play_user_report_text_area_min, errorFieldPrefix, minChar)
+            getString(commonR.string.content_user_report_text_area_min, errorFieldPrefix, minChar)
         }else{
-            getString(R.string.play_user_report_text_area_min, "", minChar)
+            getString(commonR.string.content_user_report_text_area_min, "", minChar)
         }
     }
 

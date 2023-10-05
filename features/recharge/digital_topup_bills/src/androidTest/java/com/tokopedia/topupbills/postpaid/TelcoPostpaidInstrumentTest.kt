@@ -115,8 +115,8 @@ class TelcoPostpaidInstrumentTest {
         Thread.sleep(2000)
 
         val viewInteraction = onView(AllOf.allOf(
-            AllOf.allOf(withId(R.id.recycler_view_menu_component),
-                withParent(withId(R.id.layout_widget)),
+            AllOf.allOf(withId(com.tokopedia.common.topupbills.R.id.recycler_view_menu_component),
+                withParent(withId(com.tokopedia.common.topupbills.R.id.layout_widget)),
                 isDisplayed()))).check(matches(isDisplayed()))
 
         promoItem_clickCopyButton(viewInteraction)
@@ -124,9 +124,9 @@ class TelcoPostpaidInstrumentTest {
 
         Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
         promoItem_click(viewInteraction)
-        onView(withId(R.id.recycler_view_menu_component)).perform(swipeUp())
+        onView(withId(com.tokopedia.common.topupbills.R.id.recycler_view_menu_component)).perform(swipeUp())
         Thread.sleep(1000)
-        onView(withId(R.id.recycler_view_menu_component)).perform(swipeUp())
+        onView(withId(com.tokopedia.common.topupbills.R.id.recycler_view_menu_component)).perform(swipeUp())
         Thread.sleep(3000)
     }
 

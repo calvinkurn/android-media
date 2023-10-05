@@ -14,6 +14,6 @@
         app:typographyType="body_3"
         app:typographyWeight="reguler"
         android:layout_marginTop="8dp"
-        android:textColor="@color/Unify_N700_68"/>
+        android:textColor="@color/Unify_NN950_68"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

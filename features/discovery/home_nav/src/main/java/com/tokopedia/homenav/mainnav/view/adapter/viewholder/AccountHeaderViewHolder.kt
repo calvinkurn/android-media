@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.seller.SellerAdapter
 import com.tokopedia.homenav.common.util.animateProfileBadge
@@ -146,8 +147,7 @@ class AccountHeaderViewHolder(itemView: View,
         btnSettings.visible()
 
         layoutLoginHeader.setOnClickListener {
-            TrackingProfileSection.onClickProfileSection(userSession.userId)
-            mainNavListener.onProfileSectionClicked()
+            mainNavListener.onProfileSectionClicked(TrackingProfileSection.CLICK_USER_ACCOUNT, ApplinkConst.ACCOUNT)
         }
 
         /**
@@ -293,8 +293,8 @@ class AccountHeaderViewHolder(itemView: View,
                                 profileMembership.tokopointPointAmount
                             )
                             val span = SpannableString(spanText)
-                            span.setSpan(ForegroundColorSpan(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)), 0, profileMembership.tokopointExternalAmount.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                            span.setSpan(ForegroundColorSpan(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)), profileMembership.tokopointExternalAmount.length + 1, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                            span.setSpan(ForegroundColorSpan(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96)), 0, profileMembership.tokopointExternalAmount.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                            span.setSpan(ForegroundColorSpan(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68)), profileMembership.tokopointExternalAmount.length + 1, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                             tvOvo.setText(span, TextView.BufferType.SPANNABLE)
                             usrOvoBadge.setImageUrl(profileMembership.tokopointBadgeUrl)
                         }
@@ -374,12 +374,10 @@ class AccountHeaderViewHolder(itemView: View,
         val btnRegister: UnifyButton = layoutNonLogin.findViewById(R.id.btn_register)
 
         btnLogin.setOnClickListener {
-            TrackingProfileSection.onClickLoginButton("")
             mainNavListener.onProfileLoginClicked()
         }
 
         btnRegister.setOnClickListener {
-            TrackingProfileSection.onClickRegisterButton("")
             mainNavListener.onProfileRegisterClicked()
         }
     }

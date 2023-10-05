@@ -62,6 +62,8 @@ data class PersoRecommendationItem(
     val trackingData: TrackingData,
     @SerializedName("descriptions")
     val descriptions: List<String>,
+    @SerializedName("campaignLabelText")
+    val campaignLabelText: String = "",
 )
 
 data class TrackingData(

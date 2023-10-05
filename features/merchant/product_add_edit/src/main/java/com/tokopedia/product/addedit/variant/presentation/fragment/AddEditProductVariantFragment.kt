@@ -59,7 +59,7 @@ import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitori
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringListener
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.EXTRA_CACHE_MANAGER_ID
 import com.tokopedia.product.addedit.common.util.AddEditProductUploadErrorHandler
-import com.tokopedia.product.addedit.common.util.DTDialogUtil
+import com.tokopedia.product.addedit.common.util.DialogUtil
 import com.tokopedia.product.addedit.common.util.HorizontalItemDecoration
 import com.tokopedia.product.addedit.common.util.RecyclerViewItemDecoration
 import com.tokopedia.product.addedit.common.util.RemoteConfig
@@ -448,16 +448,18 @@ class AddEditProductVariantFragment :
     }
 
     override fun onCustomVariantTypeCountChanged(count: Int) {
-        buttonAddVariantType.isEnabled = count < MAX_CUSTOM_VARIANT_TYPE
-        titleLayoutVariantType.isActionButtonVisible = count.isMoreThanZero()
+        view?.post {
+            buttonAddVariantType.isEnabled = count < MAX_CUSTOM_VARIANT_TYPE
+            titleLayoutVariantType.isActionButtonVisible = count.isMoreThanZero()
+        }
     }
 
     override fun onVariantTypeDisabledSelected(adapterPosition: Int) {
-        DTDialogUtil.showDTStockDialog(context ?: return, DTDialogUtil.UserAction.EDIT)
+        DialogUtil.showDTStockDialog(context ?: return, DialogUtil.UserAction.EDIT)
     }
 
     override fun onVariantTypeDisabledDeselected(adapterPosition: Int) {
-        DTDialogUtil.showDTStockDialog(context ?: return, DTDialogUtil.UserAction.EDIT)
+        DialogUtil.showDTStockDialog(context ?: return, DialogUtil.UserAction.EDIT)
     }
 
     private fun deselectVariantType(
@@ -699,11 +701,11 @@ class AddEditProductVariantFragment :
     ) {
         val product = viewModel.productInputModel.value
         val hasDTStock = product?.variantInputModel?.products?.find {
-            it.combination[layoutPosition] == position && it.hasDTStock
+            it.combination.getOrNull(layoutPosition) == position && it.hasDTStock
         } != null
 
         if (hasDTStock) {
-            DTDialogUtil.showDTVariantDialog(context ?: return)
+            DialogUtil.showDTVariantDialog(context ?: return)
         } else {
             val variantData = viewModel.getVariantData(layoutPosition)
             val variantId = variantData.variantID
@@ -933,9 +935,9 @@ class AddEditProductVariantFragment :
 
             bottomSheet.setHasDTStock(viewModel.hasDTStock.value.orFalse())
             bottomSheet.setOnHasDTStockListener {
-                DTDialogUtil.showDTStockDialog(
+                DialogUtil.showDTStockDialog(
                     context ?: return@setOnHasDTStockListener,
-                    DTDialogUtil.UserAction.REMOVE
+                    DialogUtil.UserAction.REMOVE
                 )
             }
 
@@ -1223,14 +1225,14 @@ class AddEditProductVariantFragment :
             buttonAddVariantType.isEnabled = !it
             if (it) {
                 buttonAddVariantType.setOnDisabledClickListener {
-                    DTDialogUtil.showDTStockDialog(
+                    DialogUtil.showDTStockDialog(
                         context ?: return@setOnDisabledClickListener,
-                        DTDialogUtil.UserAction.ADD_VARIANT_TYPE
+                        DialogUtil.UserAction.ADD_VARIANT_TYPE
                     )
                 }
                 titleLayoutVariantType.setActionButtonOnClickListener { view ->
-                    DTDialogUtil.showDTStockDialog(view.context,
-                        DTDialogUtil.UserAction.EDIT_VARIANT_TYPE
+                    DialogUtil.showDTStockDialog(view.context,
+                        DialogUtil.UserAction.EDIT_VARIANT_TYPE
                     )                
                 }
             } else {
@@ -1894,7 +1896,7 @@ class AddEditProductVariantFragment :
             actionTextView?.setOnClickListener {
                 val product = viewModel.productInputModel.value
                 if (product?.hasDTStock.orFalse()) {
-                    DTDialogUtil.showDTVariantDialog(context ?: return@setOnClickListener)
+                    DialogUtil.showDTVariantDialog(context ?: return@setOnClickListener)
                 } else {
                     showRemoveVariantDialog()
                 }

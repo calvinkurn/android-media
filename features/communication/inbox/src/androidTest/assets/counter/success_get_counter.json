@@ -1,0 +1,16 @@
+{
+  "notifications": {
+    "inbox": {
+      "talk": 0,
+      "ticket": 0,
+      "review": 0
+    },
+    "chat": {
+      "unreadsSeller": 0,
+      "unreadsUser": 0
+    },
+    "notifcenter_unread": {
+      "notif_unread": "0"
+    }
+  }
+}

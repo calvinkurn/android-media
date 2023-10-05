@@ -77,19 +77,19 @@ class TopAdsOnBoardingActivity : BaseSimpleActivity(),
                 stepperOne?.setBackgroundColor(
                     ContextCompat.getColor(
                         this,
-                        com.tokopedia.unifyprinciples.R.color.Unify_G500
+                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
                     )
                 )
                 stepperTwo?.setBackgroundColor(
                     ContextCompat.getColor(
                         this,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N75
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN50
                     )
                 )
                 stepperThree?.setBackgroundColor(
                     ContextCompat.getColor(
                         this,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N75
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN50
                     )
                 )
             }
@@ -97,19 +97,19 @@ class TopAdsOnBoardingActivity : BaseSimpleActivity(),
                 stepperOne?.setBackgroundColor(
                     ContextCompat.getColor(
                         this,
-                        com.tokopedia.unifyprinciples.R.color.Unify_G500
+                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
                     )
                 )
                 stepperTwo?.setBackgroundColor(
                     ContextCompat.getColor(
                         this,
-                        com.tokopedia.unifyprinciples.R.color.Unify_G500
+                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
                     )
                 )
                 stepperThree?.setBackgroundColor(
                     ContextCompat.getColor(
                         this,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N75
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN50
                     )
                 )
             }
@@ -118,19 +118,19 @@ class TopAdsOnBoardingActivity : BaseSimpleActivity(),
                 stepperOne?.setBackgroundColor(
                     ContextCompat.getColor(
                         this,
-                        com.tokopedia.unifyprinciples.R.color.Unify_G500
+                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
                     )
                 )
                 stepperTwo?.setBackgroundColor(
                     ContextCompat.getColor(
                         this,
-                        com.tokopedia.unifyprinciples.R.color.Unify_G500
+                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
                     )
                 )
                 stepperThree?.setBackgroundColor(
                     ContextCompat.getColor(
                         this,
-                        com.tokopedia.unifyprinciples.R.color.Unify_G500
+                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
                     )
                 )
 

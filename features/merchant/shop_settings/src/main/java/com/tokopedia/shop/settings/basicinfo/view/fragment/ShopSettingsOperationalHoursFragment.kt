@@ -343,7 +343,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
 
     private fun setupToolbar() {
         headerOpsHour?.apply {
-            val rightIconDrawableColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700)
+            val rightIconDrawableColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
             addRightIcon(com.tokopedia.iconunify.R.drawable.iconunify_help).setColorFilter(rightIconDrawableColor)
             setNavigationOnClickListener {
                 activity?.onBackPressed()
@@ -366,7 +366,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
     private fun setBackgroundColor() {
         activity?.run {
             window.decorView.setBackgroundColor(
-                ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+                ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
             )
         }
     }

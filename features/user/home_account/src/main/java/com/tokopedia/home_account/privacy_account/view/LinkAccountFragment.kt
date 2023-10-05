@@ -45,7 +45,7 @@ import javax.inject.Inject
 /**
  * Created by Yoris on 04/08/21.
  */
-
+@Deprecated("Remove this class after integrating SCP Login to Tokopedia")
 class LinkAccountFragment: BaseDaggerFragment(), AccountItemListener {
 
     @Inject
@@ -136,7 +136,7 @@ class LinkAccountFragment: BaseDaggerFragment(), AccountItemListener {
                 }
 
                 override fun updateDrawState(ds: TextPaint) {
-                    ds.color = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                    ds.color = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
                 }
             },
             message.indexOf(CONTACT_INDEX),

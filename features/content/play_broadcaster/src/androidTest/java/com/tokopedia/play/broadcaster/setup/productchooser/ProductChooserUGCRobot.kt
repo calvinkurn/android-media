@@ -132,7 +132,7 @@ class ProductChooserUGCRobot(
         }
     }
 
-    val scenario = launchFragment(themeResId = R.style.AppTheme) {
+    val scenario = launchFragment(themeResId = com.tokopedia.empty_state.R.style.AppTheme) {
         ProductSetupContainer(viewModel, onAttach) {
             when (it) {
                 ProductTagParentFragment::class.java.name -> {

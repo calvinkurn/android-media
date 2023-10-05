@@ -42,9 +42,12 @@ class OccLogisticTestInterceptor : BaseOccInterceptor() {
             } else if (customGetShippingDurationResponsePath != null) {
                 return mockResponse(copy, getJsonFromResource(customGetShippingDurationResponsePath!!))
             }
-            return mockResponse(copy, getJsonFromResource(
-                GET_SHIPPING_DURATION_DEFAULT_RESPONSE_PATH
-            ))
+            return mockResponse(
+                copy,
+                getJsonFromResource(
+                    GET_SHIPPING_DURATION_DEFAULT_RESPONSE_PATH
+                )
+            )
         }
         if (requestString.contains(SET_CHOSEN_ADDRESS_QUERY)) {
             return mockResponse(copy, getJsonFromResource(SET_CHOSEN_ADDRESS_DEFAULT_RESPONSE_PATH))

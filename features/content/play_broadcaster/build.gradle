@@ -1,6 +1,13 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-parcelize'
+
+kapt {
+    correctErrorTypes = true
+    useBuildCache = true
+}
 
 buildscript {
     repositories {
@@ -14,6 +21,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.play.broadcaster'
+    testNamespace 'com.tokopedia.play.broadcaster.test'
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
@@ -54,13 +63,13 @@ android {
 dependencies {
     implementation projectOrAar(rootProject.ext.features.mediauploader)
     implementation projectOrAar(rootProject.ext.features.contentCommon)
+    implementation projectOrAar(rootProject.ext.features.contentAnalytic)
     implementation projectOrAar(rootProject.ext.features.playCommon)
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.features.shopCommon)
     implementation projectOrAar(rootProject.ext.features.liveBroadcaster)
     implementation project(rootProject.ext.features.mediapickerCommon)
 
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.adapterDelegate)
@@ -156,6 +165,8 @@ dependencies {
     }
     androidTestImplementation projectOrAar(rootProject.ext.features.contentTest)
     kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
+    kapt rootProject.ext.miscDependencies.daggerCompiler
+    kapt rootProject.ext.supportLibDependencies.kotlinMetaData
 
     //For Ui test
     androidTestImplementation rootProject.ext.unifyDependencies.sortFilter

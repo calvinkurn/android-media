@@ -30,7 +30,7 @@ class DateFilterClickViewHolder(
 
     override fun bind(element: DateFilterItem.Click) {
         with(binding) {
-            root.setBackgroundColor(root.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            root.setBackgroundColor(root.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN0))
 
             tvStcDateRangeLabel.text = element.label
             tvStcDefaultDateRange.text =

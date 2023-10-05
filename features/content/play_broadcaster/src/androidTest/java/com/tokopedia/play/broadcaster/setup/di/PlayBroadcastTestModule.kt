@@ -5,9 +5,9 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.broadcaster.revamp.Broadcaster
-import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
 import com.tokopedia.byteplus.effect.util.asset.checker.AssetChecker
 import com.tokopedia.content.common.analytic.entrypoint.PlayPerformanceDashboardEntryPointAnalytic
+import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.mediauploader.common.di.MediaUploaderModule
@@ -24,6 +24,7 @@ import com.tokopedia.play.broadcaster.analytic.setup.title.PlayBroSetupTitleAnal
 import com.tokopedia.play.broadcaster.analytic.summary.PlayBroadcastSummaryAnalytic
 import com.tokopedia.play.broadcaster.analytic.ugc.PlayBroadcastAccountAnalytic
 import com.tokopedia.play.broadcaster.di.ActivityRetainedScope
+import com.tokopedia.play.broadcaster.domain.usecase.GetAddedChannelTagsUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetChannelUseCase
 import com.tokopedia.play.broadcaster.pusher.timer.PlayBroadcastTimer
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
@@ -60,7 +61,8 @@ class PlayBroadcastTestModule(
     private val mockCoachMarkSharedPref: ContentCoachMarkSharedPref,
     private val mockBroadcastTimer: PlayBroadcastTimer,
     private val mockGetChannelUseCase: GetChannelUseCase,
-    private val mockValueWrapper: PlayBroadcastValueWrapper,
+    private val mockGetAddedTagUseCase: GetAddedChannelTagsUseCase,
+    private val mockValueWrapper: PlayBroadcastValueWrapper
 ) {
 
     @Provides
@@ -86,6 +88,10 @@ class PlayBroadcastTestModule(
     @ActivityRetainedScope
     @Provides
     fun provideGetChannelUseCase(): GetChannelUseCase = mockGetChannelUseCase
+
+    @ActivityRetainedScope
+    @Provides
+    fun provideGetAddedChannelTagsUseCase(): GetAddedChannelTagsUseCase = mockGetAddedTagUseCase
 
     @ActivityRetainedScope
     @Provides
@@ -124,7 +130,7 @@ class PlayBroadcastTestModule(
             userSession,
             dispatchers,
             context,
-            localCacheHandler,
+            localCacheHandler
         )
     }
 
@@ -143,7 +149,7 @@ class PlayBroadcastTestModule(
         accountAnalytic: PlayBroadcastAccountAnalytic,
         shortsEntryPointAnalytic: PlayShortsEntryPointAnalytic,
         performanceDashboardEntryPointAnalytic: PlayPerformanceDashboardEntryPointAnalytic,
-        beautificationAnalytic: PlayBroadcastBeautificationAnalytic,
+        beautificationAnalytic: PlayBroadcastBeautificationAnalytic
     ): PlayBroadcastAnalytic {
         return PlayBroadcastAnalytic(
             userSession,
@@ -158,7 +164,7 @@ class PlayBroadcastTestModule(
             accountAnalytic,
             shortsEntryPointAnalytic,
             performanceDashboardEntryPointAnalytic,
-            beautificationAnalytic,
+            beautificationAnalytic
         )
     }
 

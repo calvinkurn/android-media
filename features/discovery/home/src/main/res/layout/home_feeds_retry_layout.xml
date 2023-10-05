@@ -24,8 +24,8 @@
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:background="@drawable/home_feed_rounded_corners"
-        android:backgroundTint="@color/Unify_G500"
-        android:textColor="@color/Unify_N0"
+        android:backgroundTint="@color/Unify_GN500"
+        android:textColor="@color/Unify_NN0"
         android:gravity="center"
         android:padding="10dp"
         android:text="@string/home_feed_retry_button" />

@@ -230,4 +230,7 @@
         <item>(view)? my $type1 booking(s)?</item>
     </string-array>
 
+    <!--    Category  -->
+    <string name="label_affiliate">Affiliate</string>
+
 </resources>

@@ -35,6 +35,10 @@ class ChatAttachmentUseCaseStub @Inject constructor(
         "product_bundling/success_get_chat_attachment_bundling.json"
     private val tickerReminderAttachmentPath =
         "ticker_reminder/success_get_chat_attachment_ticker_reminder.json"
+    private val buyerArchivedProductPath =
+        "buyer/success_get_chat_attachments_archived_product.json"
+    private val sellerArchivedProductPath =
+        "seller/success_get_chat_attachments_archived_product.json"
 
     val chatAttachmentNoVariant: ChatAttachmentResponse
         get() = alterResponseOf(defaultChatAttachmentResponsePath) {
@@ -261,6 +265,23 @@ class ChatAttachmentUseCaseStub @Inject constructor(
      * <!-- End Product Bundling -->
      */
 
+    /**
+     * <!-- Start Product Archived -->
+     */
+    val productArchivedAttachment: ChatAttachmentResponse
+        get() = alterResponseOf(buyerArchivedProductPath) {
+            // no op
+        }
+
+    val productArchivedAttachmentSeller: ChatAttachmentResponse
+        get() = alterResponseOf(sellerArchivedProductPath) {
+            // no-op
+        }
+
+    /**
+     * <!-- End Product Archived -->
+     */
+
     private fun alterAttachmentAttributesAt(
         position: Int,
         responseObj: JsonObject,
@@ -295,5 +316,4 @@ class ChatAttachmentUseCaseStub @Inject constructor(
     private val campaign_label = "campaign_label"
     private val wording_end_state = "wording_end_state"
     private val is_campaign = "is_campaign"
-
 }

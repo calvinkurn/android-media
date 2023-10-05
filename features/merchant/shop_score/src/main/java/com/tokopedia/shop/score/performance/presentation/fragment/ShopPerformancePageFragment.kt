@@ -33,6 +33,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.applink.shopscore.ShopScoreDeepLinkMapper
+import com.tokopedia.applink.shopscore.ShopScoreDeepLinkMapper.getInternalApplinkPenalty
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
@@ -853,7 +854,7 @@ open class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     private fun goToPenaltyPage() {
-        context?.let { RouteManager.route(it, ApplinkConstInternalMarketplace.SHOP_PENALTY) }
+        context?.let { RouteManager.route(it, getInternalApplinkPenalty(it)) }
     }
 
     private fun goToPowerMerchantSubscribe() {

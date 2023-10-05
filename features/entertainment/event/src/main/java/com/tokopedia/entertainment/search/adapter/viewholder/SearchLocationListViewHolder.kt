@@ -11,34 +11,33 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.entertainment.R
+import com.tokopedia.entertainment.databinding.EntSearchCityAdapterItemBinding
+import com.tokopedia.entertainment.databinding.EntSearchLocationSuggestionBinding
 import com.tokopedia.entertainment.search.Link
 import com.tokopedia.entertainment.search.adapter.SearchEventViewHolder
 import com.tokopedia.entertainment.search.adapter.viewmodel.SearchLocationModel
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.model.ImpressHolder
-import kotlinx.android.synthetic.main.ent_search_city_adapter_item.view.*
-import kotlinx.android.synthetic.main.ent_search_location_suggestion.view.*
-import timber.log.Timber
-import java.util.*
+import com.tokopedia.utils.view.binding.viewBinding
+import java.util.Locale
 
 class SearchLocationListViewHolder(val view: View, val onClicked: (() -> Unit),
                                    val listener: SearchLocationListener
 ) : SearchEventViewHolder<SearchLocationModel>(view) {
 
-    val locationListAdapter = LocationAdapter(listener)
-
+    private val locationListAdapter = LocationAdapter(listener)
+    private val binding: EntSearchLocationSuggestionBinding? by viewBinding()
     init {
-        with(itemView) {
-            recycler_view_location.apply {
-                setHasFixedSize(true)
-                layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-                adapter = locationListAdapter
-            }
+        binding?.recyclerViewLocation?.run {
+             setHasFixedSize(true)
+             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+             adapter = locationListAdapter
+        }
 
-            lihatSemua.setOnClickListener {
-                Timber.tag("Lihat").w("Clicked")
-                onClicked.invoke()
-            }
+        binding?.lihatSemua?.setOnClickListener {
+             onClicked.invoke()
         }
     }
 
@@ -48,12 +47,13 @@ class SearchLocationListViewHolder(val view: View, val onClicked: (() -> Unit),
         locationListAdapter.notifyDataSetChanged()
 
         if (element.allLocation) {
-            itemView.lihatSemua.visibility = View.GONE
+            binding?.lihatSemua?.visibility = View.GONE
         }
     }
 
     companion object {
         val LAYOUT = R.layout.ent_search_location_suggestion
+        private const val QUERY_CATEGORY =  "?id_city={id_city}&query_text={query_text}"
     }
 
     data class LocationSuggestion(
@@ -72,55 +72,58 @@ class SearchLocationListViewHolder(val view: View, val onClicked: (() -> Unit),
         lateinit var spannable: SpannableStringBuilder
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LocationViewHolder {
-            return LocationViewHolder(LayoutInflater.from(parent.context)
-                    .inflate(R.layout.ent_search_city_adapter_item, parent, false))
+            val binding = EntSearchCityAdapterItemBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
+            return LocationViewHolder(binding, searchQuery, listLocation, listener)
         }
 
         override fun getItemCount(): Int = listLocation.size
 
         override fun onBindViewHolder(holder: LocationViewHolder, position: Int) {
-            val location: LocationSuggestion = listLocation.get(position)
-
-            holder.view.loc_name.text = getSpannableText(location.city, searchQuery)
-            holder.view.loc_type.text = location.type
-
-            holder.view.setOnClickListener {
-                listener.clickLocationEvent(location,
-                        listLocation.get(position), position)
-                goToDetail(holder, location.city, location.id_city)
-            }
-
-            holder.view.addOnImpressionListener(location, {
-                listener.impressionLocationEvent(listLocation.get(position),position)
-            })
+            holder.bind(listLocation[position])
         }
+    }
 
-        private fun getSpannableText(city_full_text: String, text_to_bold: String):
-                SpannableStringBuilder {
-            spannable = SpannableStringBuilder(city_full_text)
+    class LocationViewHolder(val binding: EntSearchCityAdapterItemBinding, val searchQuery: String, val listLocation: List<LocationSuggestion>, val listener: SearchLocationListener) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(location: LocationSuggestion) {
+            with(binding) {
+                locName.text = getSpannableText(location.city, searchQuery)
+                locType.text = location.type
+
+                root.setOnClickListener {
+                    listener.clickLocationEvent(location,
+                        listLocation.get(position), position)
+                    val intent = RouteManager.getIntent(root.context,
+                        Link.EVENT_CATEGORY + QUERY_CATEGORY,
+                        location.id_city, location.city)
+                    root.context.startActivity(intent)
+                }
+
+                root.addOnImpressionListener(location) {
+                    listener.impressionLocationEvent(listLocation.get(position), position)
+                }
+            }
+        }
+        private fun getSpannableText(cityFullText: String, textToBold: String):
+            SpannableStringBuilder {
+            val spannable = SpannableStringBuilder(cityFullText)
             try {
-                val startIndex = city_full_text.toLowerCase(Locale.US)
-                        .indexOf(text_to_bold.toLowerCase(Locale.US)) + text_to_bold.length
-                spannable.setSpan(StyleSpan(Typeface.BOLD), startIndex, city_full_text.length,
-                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                if (startIndex - 1 - text_to_bold.length > -1)
-                    spannable.setSpan(StyleSpan(Typeface.BOLD), 0, startIndex -
-                            text_to_bold.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                val startIndex = cityFullText.lowercase(Locale.US)
+                    .indexOf(textToBold.lowercase(Locale.US)) + textToBold.length
+                spannable.setSpan(StyleSpan(Typeface.BOLD), startIndex, cityFullText.length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                if (startIndex - Int.ONE - textToBold.length > -Int.ONE)
+                    spannable.setSpan(StyleSpan(Typeface.BOLD), Int.ZERO, startIndex -
+                        textToBold.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
             return spannable
         }
-
-        fun goToDetail(holder: LocationViewHolder, query_text: String, id_city: String) {
-            val intent = RouteManager.getIntent(holder.view.context,
-                    Link.EVENT_CATEGORY + "?id_city={id_city}&query_text={query_text}",
-                    id_city, query_text)
-            holder.view.context.startActivity(intent)
-        }
     }
-
-    class LocationViewHolder(val view: View) : RecyclerView.ViewHolder(view)
 
     interface SearchLocationListener{
         fun impressionLocationEvent(listsCity: SearchLocationListViewHolder.LocationSuggestion, position: Int)

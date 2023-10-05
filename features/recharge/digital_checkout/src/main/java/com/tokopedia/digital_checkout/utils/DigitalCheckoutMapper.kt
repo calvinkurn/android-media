@@ -155,6 +155,10 @@ object DigitalCheckoutMapper {
             cartDigitalInfoData.channelId = responseRechargeGetCart.response.channelId
             cartDigitalInfoData.collectionPointId =
                 responseRechargeGetCart.response.collectionPointId
+            cartDigitalInfoData.collectionPointVersion =
+                responseRechargeGetCart.response.collectionPointVersion
+            cartDigitalInfoData.collectionDataElements =
+                responseRechargeGetCart.response.collectionDataElements
 
             return cartDigitalInfoData
         } catch (e: Exception) {

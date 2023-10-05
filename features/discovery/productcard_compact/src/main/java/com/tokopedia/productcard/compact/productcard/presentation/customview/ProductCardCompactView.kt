@@ -308,11 +308,11 @@ class ProductCardCompactView @JvmOverloads constructor(
             progressBarColor = intArrayOf(
                 ContextCompat.getColor(
                     context,
-                    com.tokopedia.unifycomponents.R.color.Unify_RN600
+                    com.tokopedia.unifyprinciples.R.color.Unify_RN600
                 ),
                 ContextCompat.getColor(
                     context,
-                    com.tokopedia.unifycomponents.R.color.Unify_RN500
+                    com.tokopedia.unifyprinciples.R.color.Unify_RN500
                 )
             )
             adjustFireIcon(progressBarLabel)

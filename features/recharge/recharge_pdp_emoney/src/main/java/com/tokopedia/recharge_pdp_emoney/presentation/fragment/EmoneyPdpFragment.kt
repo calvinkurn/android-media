@@ -288,6 +288,7 @@ open class EmoneyPdpFragment :
             Observer {
                 when (it) {
                     is Success -> {
+                        showProducts()
                         renderProducts(
                             it.data.product.dataCollections.firstOrNull()?.products
                                 ?: listOf()
@@ -735,7 +736,7 @@ open class EmoneyPdpFragment :
             product.attributes.pricePlain,
             userSession.userId
         )
-        val bottomSheet = EmoneyProductDetailBottomSheet(product)
+        val bottomSheet = EmoneyProductDetailBottomSheet.newBottomSheet(product)
         bottomSheet.show(childFragmentManager, TAG)
     }
 

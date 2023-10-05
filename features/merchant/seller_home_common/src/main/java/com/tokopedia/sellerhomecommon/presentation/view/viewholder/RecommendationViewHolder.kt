@@ -220,7 +220,7 @@ class RecommendationViewHolder(
                     openAppLink(element)
                 }
                 val iconColor = root.context.getResColor(
-                    com.tokopedia.unifyprinciples.R.color.Unify_G400
+                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
                 )
                 val iconWidth = root.context.resources.getDimension(
                     com.tokopedia.unifyprinciples.R.dimen.layout_lvl3
@@ -335,12 +335,12 @@ class RecommendationViewHolder(
         }
 
     private fun getProgressState(value: Int, max: Int): ShopScorePMWidget.State {
-        val textColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+        val textColor = com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
         val barColor = when (value * max / INT_100) {
-            in INT_80..INT_100 -> com.tokopedia.unifyprinciples.R.color.Unify_G400
-            in INT_70..INT_79 -> com.tokopedia.unifyprinciples.R.color.Unify_G300
-            in INT_60..INT_69 -> com.tokopedia.unifyprinciples.R.color.Unify_Y300
-            else -> com.tokopedia.unifyprinciples.R.color.Unify_R500
+            in INT_80..INT_100 -> com.tokopedia.unifyprinciples.R.color.Unify_GN500
+            in INT_70..INT_79 -> com.tokopedia.unifyprinciples.R.color.Unify_GN300
+            in INT_60..INT_69 -> com.tokopedia.unifyprinciples.R.color.Unify_YN300
+            else -> com.tokopedia.unifyprinciples.R.color.Unify_RN500
         }
         return ShopScorePMWidget.State.Custom(textColor, barColor, barColor)
     }

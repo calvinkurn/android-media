@@ -2,9 +2,9 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <shape android:shape="oval">
-            <solid android:color="@color/Unify_N0"/>
+            <solid android:color="@color/Unify_NN0"/>
             <size android:width="@dimen/swd_radio_button" android:height="@dimen/swd_radio_button"/>
-            <stroke android:width="@dimen/spacing_lvl1" android:color="@color/Unify_N200"/>
+            <stroke android:width="@dimen/spacing_lvl1" android:color="@color/Unify_NN500"/>
         </shape>
     </item>
 </layer-list>

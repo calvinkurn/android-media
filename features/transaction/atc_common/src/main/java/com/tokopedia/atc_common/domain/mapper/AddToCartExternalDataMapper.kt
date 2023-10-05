@@ -43,27 +43,27 @@ class AddToCartExternalDataMapper @Inject constructor() {
 
     fun map(response: AddToCartOccMultiExternalGqlResponse): AddToCartOccMultiDataModel {
         return AddToCartOccMultiDataModel(
-                errorMessage = response.response.errorMessage,
-                status = response.response.status,
-                data = mapData(response.response.data)
+            errorMessage = response.response.errorMessage,
+            status = response.response.status,
+            data = mapData(response.response.data)
         )
     }
 
     private fun mapData(dataResponse: OccMultiExternalDataResponse): AddToCartOccMultiData {
         return AddToCartOccMultiData(
-                success = dataResponse.success,
-                message = dataResponse.message,
-                cart = mapCartData(dataResponse.data)
+            success = dataResponse.success,
+            message = dataResponse.message,
+            cart = mapCartData(dataResponse.data)
         )
     }
 
     private fun mapCartData(data: List<AddToCartOccMultiExternalDataResponse>): List<AddToCartOccMultiCartData> {
         return data.map {
             AddToCartOccMultiCartData(
-                    cartId = it.cartId,
-                    productId = it.productId,
-                    quantity = it.quantity,
-                    shopId = it.shopId,
+                cartId = it.cartId,
+                productId = it.productId,
+                quantity = it.quantity,
+                shopId = it.shopId
             )
         }
     }

@@ -73,9 +73,7 @@ object FlashSaleTracking: BaseTrackerConst() {
             Items.ITEM_ID to grid.id,
             Items.ITEM_NAME to grid.name,
             Items.ITEM_VARIANT to Value.NONE_OTHER,
-            Items.PRICE to "%.2f".format(convertRupiahToInt(
-                grid.price
-            ).toFloat())
+            Items.PRICE to convertRupiahToInt(grid.price).toFloat().toString()
         )
     }
 
@@ -116,7 +114,7 @@ object FlashSaleTracking: BaseTrackerConst() {
                 putString(Items.ITEM_ID, grid.id)
                 putString(Items.ITEM_NAME, grid.name)
                 putString(Items.ITEM_VARIANT, Value.NONE_OTHER)
-                putFloat(Items.PRICE, "%.2f".format(convertRupiahToInt(grid.price).toFloat()).toFloat())
+                putString(Items.PRICE, convertRupiahToInt(grid.price).toFloat().toString())
             }))
             putString(TrackerId.KEY, TRACKER_ID_CLICK)
         }

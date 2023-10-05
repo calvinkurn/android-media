@@ -71,7 +71,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/spacing_lvl4"
                 android:layout_marginRight="@dimen/spacing_lvl4"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                 app:typographyType="heading_3"
                 tools:text="Promo tiket pesawat" />
 
@@ -89,7 +89,7 @@
                 android:layout_marginLeft="@dimen/spacing_lvl4"
                 android:layout_marginRight="@dimen/spacing_lvl4"
                 android:text="@string/flight_show_all_promo_text"
-                android:textColor="@color/Unify_G500"
+                android:textColor="@color/Unify_GN500"
                 app:typographyType="body_3" />
         </LinearLayout>
 

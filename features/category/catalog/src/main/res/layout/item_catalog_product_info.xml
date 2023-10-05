@@ -35,7 +35,7 @@
         android:layout_marginStart="@dimen/spacing_lvl4"
         tools:text="Apple"
         app:typographyType="body_3"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -62,7 +62,7 @@
         android:layout_marginTop="@dimen/spacing_lvl3"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:layout_marginStart="@dimen/spacing_lvl4"
-        android:background="@color/Unify_N75"
+        android:background="@color/Unify_NN50"
         />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -78,7 +78,7 @@
         android:maxLines="1"
         android:ellipsize="end"
         app:typographyType="body_3"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -162,7 +162,7 @@
         android:text="@string/catalog_lihat_selengkapnya"
         app:typographyType="body_3"
         app:typographyWeight="bold"
-        android:textColor="@color/Unify_G500"
+        android:textColor="@color/Unify_GN500"
         />
 
 

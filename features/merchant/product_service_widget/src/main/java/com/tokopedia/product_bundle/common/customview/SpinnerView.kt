@@ -85,10 +85,10 @@ class SpinnerView : BaseCustomView {
     private fun refreshViews() {
         if (text.isEmpty()) {
             tvSpinner?.text = placeholderText
-            tvSpinner?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
+            tvSpinner?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_44))
         } else {
             tvSpinner?.text = text
-            tvSpinner?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+            tvSpinner?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96))
         }
     }
 

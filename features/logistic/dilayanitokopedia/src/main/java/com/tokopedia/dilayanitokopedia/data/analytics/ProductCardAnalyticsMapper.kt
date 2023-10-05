@@ -2,6 +2,7 @@ package com.tokopedia.dilayanitokopedia.data.analytics
 
 import com.tokopedia.dilayanitokopedia.ui.recommendation.adapter.datamodel.HomeRecommendationItemDataModel
 import com.tokopedia.home_component.model.ChannelGrid
+import java.util.*
 
 /**
  * Created by irpan on 23/05/23.
@@ -14,7 +15,7 @@ object ProductCardAnalyticsMapper {
             productName = channelGrid.name,
             price = channelGrid.price,
             productBrand = channelGrid.brandId,
-            productCategory = channelGrid.categoryId
+            categoryBreadcrumbs = channelGrid.categoryBreadcrumbs.lowercase(Locale.getDefault())
         )
     }
 
@@ -29,8 +30,8 @@ object ProductCardAnalyticsMapper {
             productName = product.name,
             price = product.price,
             productBrand = "",
-            productCategory = "",
-            productVariant = ""
+            productVariant = "",
+            categoryBreadcrumbs = homeRecommendationItemDataModel.product.categoryBreadcrumbs.lowercase(Locale.getDefault())
         )
     }
 }

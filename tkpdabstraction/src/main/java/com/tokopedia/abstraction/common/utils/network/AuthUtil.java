@@ -1,5 +1,7 @@
 package com.tokopedia.abstraction.common.utils.network;
 
+import static com.tokopedia.network.authentication.AuthConstant.HEADER_X_THEME;
+
 import android.content.Context;
 import android.os.Build;
 import android.util.Base64;
@@ -8,9 +10,8 @@ import androidx.collection.ArrayMap;
 
 import com.tokopedia.abstraction.common.utils.MapNulRemover;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
-import com.tokopedia.network.authentication.AuthConstant;
-import com.tokopedia.network.authentication.AuthHelper;
 import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.network.authentication.AuthConstant;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.security.InvalidKeyException;
@@ -81,7 +82,7 @@ public class AuthUtil {
 
     public static Map<String, String> generateHeadersWithXUserId(
             String path, String strParam, String method, String authKey, String contentType,
-            String userId, UserSessionInterface session
+            String userId, UserSessionInterface session, String theme
     ) {
         String date = generateDate(DATE_FORMAT);
         String contentMD5 = generateContentMd5(strParam);
@@ -111,6 +112,7 @@ public class AuthUtil {
         headerMap.put(HEADER_USER_ID, userId);
         headerMap.put(HEADER_X_TKPD_USER_ID, userId);
         headerMap.put(HEADER_DEVICE, "android-" + GlobalConfig.VERSION_NAME);
+        headerMap.put(HEADER_X_THEME, theme);
         return headerMap;
     }
 

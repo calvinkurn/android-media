@@ -56,7 +56,9 @@
           "dimension61": ".+",
           "dimension90": ".*",
           "dimension115": ".*",
-          "dimension131": ".*"
+          "dimension131": ".*",
+          "dimension56": ".+",
+          "dimension58": ".+"
         }
       ]
     },
@@ -80,7 +82,9 @@
           "dimension61": ".+",
           "dimension90": ".*",
           "dimension115": ".*",
-          "dimension131": ".*"
+          "dimension131": ".*",
+          "dimension56": ".+",
+          "dimension58": ".+"
         }
       ]
     }

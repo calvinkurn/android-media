@@ -118,6 +118,7 @@ object ProductTrackingConstant {
         const val KEY_DIMENSION_40 = "dimension40"
         const val KEY_DIMENSION_45 = "dimension45"
         const val KEY_DIMENSION_54 = "dimension54"
+        const val KEY_DIMENSION_56 = "dimension56"
         const val KEY_DIMENSION_79 = "dimension79"
         const val KEY_DIMENSION_80 = "dimension80"
         const val KEY_DIMENSION_81 = "dimension81"
@@ -244,6 +245,13 @@ object ProductTrackingConstant {
         const val VIEW_ITEM = "view_item"
         const val PROMO_VIEW = "promoView"
         const val PROMOTIONS = "promotions"
+
+        const val CLICK_SHARE_REGULER = "general"
+        const val CLICK_SHARE_AFFILIATE_ICON = "affiliate"
+
+        const val A_PLUS_MORE = "baca selengkapnya"
+        const val A_PLUS_LESS = "lihat lebih sedikit"
+        const val IN_A_PLUS = "in a plus"
     }
 
     object Label {
@@ -340,5 +348,7 @@ object ProductTrackingConstant {
         const val TRACKER_ID_IMPRESS_SPECIFICATION = "36326"
         const val TRACKER_ID_CLICK_LOCATION_RESTRICTION = "40907"
         const val TRACKER_ID_IMPRESSION_LOCATION_RESTRICTION = "40906"
+        const val TRACKER_ID_CLICK_A_PLUS_MORE = "45824"
+        const val TRACKER_ID_CLICK_A_PLUS_LESS = "45825"
     }
 }

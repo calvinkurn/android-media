@@ -43,6 +43,16 @@ sealed class FilterTabUiModel(
         isSelected
     )
 
+    data class Archival(
+        override val count: Int,
+        override var isSelected: Boolean = false
+    ) : FilterTabUiModel(
+        R.string.product_manage_filter_archival,
+        count,
+        ProductStatus.isProductArchival,
+        isSelected
+    )
+
     override fun type(typeFactory: ProductFilterAdapterFactory): Int {
         return typeFactory.type(this)
     }
@@ -50,6 +60,7 @@ sealed class FilterTabUiModel(
     enum class FilterId {
         ACTIVE,
         INACTIVE,
-        VIOLATION
+        VIOLATION,
+        isProductArchival
     }
 }

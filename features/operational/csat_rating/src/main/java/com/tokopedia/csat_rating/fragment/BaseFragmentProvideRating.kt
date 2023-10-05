@@ -320,7 +320,7 @@ open class BaseFragmentProvideRating :
         mTxtFinished.show()
     }
 
-    fun initObserver() {
+    private fun initObserver() {
         initObserverOfScreenEmojiState()
     }
 

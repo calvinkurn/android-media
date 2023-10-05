@@ -3,7 +3,6 @@ package com.tokopedia.digital.home
 import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
-import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.typeText
@@ -16,9 +15,9 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.filters.LargeTest
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.banner.BannerViewPagerAdapter
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
+import com.tokopedia.banner.BannerViewPagerAdapter
 import com.tokopedia.digital.home.presentation.activity.RechargeHomepageActivity
 import com.tokopedia.digital.home.presentation.adapter.RechargeItemCategoryAdapter
 import com.tokopedia.digital.home.presentation.adapter.RechargeItemFavoriteAdapter
@@ -33,6 +32,9 @@ import org.hamcrest.core.AllOf
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import com.tokopedia.banner.R as bannerR
+import com.tokopedia.home_component.R as home_componentR
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 @RunWith(AndroidJUnit4ClassRunner::class)
 @LargeTest
@@ -88,75 +90,93 @@ class RechargeHomepageInstrumentTest {
 
     private fun check_search_category() {
         onView(withId(R.id.digital_homepage_search_view)).check(matches(isDisplayed()))
-                .perform(click())
+            .perform(click())
         Thread.sleep(1000)
-        onView(withId(R.id.searchbar_textfield)).check(matches(isDisplayed())).perform(typeText("pulsa"))
+        onView(withId(unifycomponentsR.id.searchbar_textfield)).check(matches(isDisplayed())).perform(typeText("pulsa"))
         Thread.sleep(1000)
         val viewInteraction = onView(withId(R.id.recycler_view)).check(matches(isDisplayed()))
-        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<DigitalHomePageSearchViewHolder>(
-                0, click())
+        viewInteraction.perform(
+            RecyclerViewActions.actionOnItemAtPosition<DigitalHomePageSearchViewHolder>(
+                0,
+                click()
+            )
         )
     }
 
     private fun check_banner_section() {
-        onView(withId(R.id.recycler_view)).perform(RecyclerViewActions.actionOnItemAtPosition<RechargeHomepageBannerViewHolder>(0,
-                        CommonActions.clickChildViewWithId(R.id.recharge_image_banner_homepage)
-        ))
+        onView(withId(R.id.recycler_view)).perform(
+            RecyclerViewActions.actionOnItemAtPosition<RechargeHomepageBannerViewHolder>(
+                0,
+                CommonActions.clickChildViewWithId(R.id.recharge_image_banner_homepage)
+            )
+        )
         Thread.sleep(1000)
-        onView(withId(R.id.recycler_view)).perform(RecyclerViewActions.actionOnItemAtPosition<RechargeHomepageBannerViewHolder>(0,
+        onView(withId(R.id.recycler_view)).perform(
+            RecyclerViewActions.actionOnItemAtPosition<RechargeHomepageBannerViewHolder>(
+                0,
                 CommonActions.clickChildViewWithId(R.id.see_all_promo)
-        ))
+            )
+        )
         Thread.sleep(1000)
     }
 
     private fun check_favorite_section() {
         onView(withId(R.id.recycler_view)).perform(
-                RecyclerViewActions.scrollToPosition<RechargeHomepageFavoriteViewHolder>(1)
+            RecyclerViewActions.scrollToPosition<RechargeHomepageFavoriteViewHolder>(1)
         )
         Thread.sleep(1000)
         val viewInteraction = onView(withId(R.id.rv_recharge_home_favorites)).check(matches(isDisplayed()))
-        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<RechargeItemFavoriteAdapter.DigitalItemFavoriteViewHolder>(
-                0, click())
+        viewInteraction.perform(
+            RecyclerViewActions.actionOnItemAtPosition<RechargeItemFavoriteAdapter.DigitalItemFavoriteViewHolder>(
+                0,
+                click()
+            )
         )
     }
 
     private fun check_category_section() {
         onView(withId(R.id.recycler_view)).perform(
-                RecyclerViewActions.scrollToPosition<RechargeHomepageCategoryViewHolder>(2)
+            RecyclerViewActions.scrollToPosition<RechargeHomepageCategoryViewHolder>(2)
         )
         Thread.sleep(1000)
         val viewInteraction = onView(AllOf.allOf(withId(R.id.rv_recharge_home_category), hasSibling(withText("Prabayar & Pascabayar")))).check(matches(isDisplayed()))
-        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<RechargeItemCategoryAdapter.DigitalItemSubmenuCategoryViewHolder>(
-                0, click())
+        viewInteraction.perform(
+            RecyclerViewActions.actionOnItemAtPosition<RechargeItemCategoryAdapter.DigitalItemSubmenuCategoryViewHolder>(
+                0,
+                click()
+            )
         )
         Thread.sleep(1000)
     }
 
     private fun check_trustmark_section() {
         onView(withId(R.id.recycler_view)).perform(
-                RecyclerViewActions.scrollToPosition<RechargeHomepageDualIconsViewHolder>(7)
+            RecyclerViewActions.scrollToPosition<RechargeHomepageDualIconsViewHolder>(8)
         )
         Thread.sleep(1000)
         val viewInteraction = onView(withId(R.id.rv_recharge_home_dual_icons)).check(matches(isDisplayed()))
-        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<RechargeHomepageDualIconsViewHolder>(
-                0, click())
+        viewInteraction.perform(
+            RecyclerViewActions.actionOnItemAtPosition<RechargeHomepageDualIconsViewHolder>(
+                0,
+                click()
+            )
         )
         Thread.sleep(1000)
     }
 
     private fun check_reminder_section() {
         onView(withId(R.id.recycler_view)).perform(
-                RecyclerViewActions.scrollToPosition<ReminderWidgetViewHolder>(8)
+            RecyclerViewActions.scrollToPosition<ReminderWidgetViewHolder>(9)
         )
         Thread.sleep(1000)
-        onView(withId(R.id.reminder_recommendation_widget_container)).check(matches(isDisplayed()))
-        onView(withId(R.id.btn_reminder_recommendation)).perform(click())
+        onView(withId(home_componentR.id.reminder_recommendation_widget_container)).check(matches(isDisplayed()))
+        onView(withId(home_componentR.id.btn_reminder_recommendation)).perform(click())
         Thread.sleep(1000)
     }
 
     private fun check_dual_banners_section() {
         onView(withId(R.id.recycler_view)).perform(
-                RecyclerViewActions.scrollToPosition<RechargeHomepageDualBannersViewHolder>(9)
+            RecyclerViewActions.scrollToPosition<RechargeHomepageDualBannersViewHolder>(10)
         )
         Thread.sleep(3000)
         onView(withId(R.id.view_recharge_home_dual_banners_container)).check(matches(isDisplayed()))
@@ -166,31 +186,37 @@ class RechargeHomepageInstrumentTest {
 
     private fun check_lego_banners_section() {
         onView(withId(R.id.recycler_view)).perform(
-                RecyclerViewActions.scrollToPosition<DynamicLegoBannerViewHolder>(10)
+            RecyclerViewActions.scrollToPosition<DynamicLegoBannerViewHolder>(11)
         )
         Thread.sleep(1000)
         val viewInteraction = onView(withId(R.id.recycleList)).check(matches(isDisplayed()))
-        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<DynamicLegoBannerViewHolder.LegoItemViewHolder>(
-                0, click())
+        viewInteraction.perform(
+            RecyclerViewActions.actionOnItemAtPosition<DynamicLegoBannerViewHolder.LegoItemViewHolder>(
+                0,
+                click()
+            )
         )
         Thread.sleep(1000)
     }
 
     private fun check_product_cards_section() {
         onView(withId(R.id.recycler_view)).perform(
-                RecyclerViewActions.scrollToPosition<RechargeHomepageProductCardsViewHolder>(11)
+            RecyclerViewActions.scrollToPosition<RechargeHomepageProductCardsViewHolder>(12)
         )
         Thread.sleep(1000)
         val viewInteraction = onView(withId(R.id.rv_recharge_home_product_cards)).check(matches(isDisplayed()))
-        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<RechargeItemProductCardsAdapter.RechargeItemProductCardViewHolder>(
-                0, click())
+        viewInteraction.perform(
+            RecyclerViewActions.actionOnItemAtPosition<RechargeItemProductCardsAdapter.RechargeItemProductCardViewHolder>(
+                0,
+                click()
+            )
         )
         Thread.sleep(1000)
     }
 
     private fun check_single_banner_section() {
         onView(withId(R.id.recycler_view)).perform(
-                RecyclerViewActions.scrollToPosition<RechargeHomepageSingleBannerViewHolder>(13)
+            RecyclerViewActions.scrollToPosition<RechargeHomepageSingleBannerViewHolder>(14)
         )
         Thread.sleep(1000)
         onView(withId(R.id.view_recharge_home_single_banner_container)).check(matches(isDisplayed()))
@@ -200,7 +226,7 @@ class RechargeHomepageInstrumentTest {
 
     private fun check_product_banner_section() {
         onView(withId(R.id.recycler_view)).perform(
-                RecyclerViewActions.scrollToPosition<RechargeHomepageProductBannerViewHolder>(14)
+            RecyclerViewActions.scrollToPosition<RechargeHomepageProductBannerViewHolder>(15)
         )
         Thread.sleep(1000)
         onView(withId(R.id.view_recharge_home_product_banner_product_card)).check(matches(isDisplayed()))
@@ -210,30 +236,33 @@ class RechargeHomepageInstrumentTest {
         Thread.sleep(1000)
     }
 
-    private fun check_swipe_banner_section(){
+    private fun check_swipe_banner_section() {
         Thread.sleep(2000)
         onView(withId(R.id.recycler_view)).perform(
-            RecyclerViewActions.scrollToPosition<RechargeHomepageSwipeBannerViewHolder>(13)
+            RecyclerViewActions.scrollToPosition<RechargeHomepageSwipeBannerViewHolder>(14)
         )
         Thread.sleep(2000)
-        onView(withId(R.id.banner_recyclerview)).check(matches(isDisplayed()))
-        onView(withId(R.id.banner_recyclerview)).perform(RecyclerViewActions
-            .actionOnItemAtPosition<BannerViewPagerAdapter.BannerViewHolder>(0, click()))
+        onView(withId(bannerR.id.banner_recyclerview)).check(matches(isDisplayed()))
+        onView(withId(bannerR.id.banner_recyclerview)).perform(
+            RecyclerViewActions
+                .actionOnItemAtPosition<BannerViewPagerAdapter.BannerViewHolder>(0, click())
+        )
     }
 
-    private fun check_3_icons_section(){
+    private fun check_3_icons_section() {
         Thread.sleep(1000)
         onView(withId(R.id.recycler_view)).perform(
-            RecyclerViewActions.scrollToPosition<RechargeHomepageThreeIconsViewHolder>(14)
+            RecyclerViewActions.scrollToPosition<RechargeHomepageThreeIconsViewHolder>(15)
         )
         onView(withId(R.id.rv_three_icons)).check(matches(isDisplayed()))
     }
 
-    private fun check_product_card_custom_banner_section(){
+    private fun check_product_card_custom_banner_section() {
         Thread.sleep(1000)
         onView(withId(R.id.recycler_view)).perform(
             RecyclerViewActions.scrollTo<RechargeHomepageProductCardCustomBannerV2ViewHolder>(
-                hasDescendant(withText("Dummy Channel")))
+                hasDescendant(withText("Dummy Channel"))
+            )
         )
         onView(withId(R.id.rv_recharge_product)).check(matches(isDisplayed()))
         onView(withId(R.id.rv_recharge_product)).perform(

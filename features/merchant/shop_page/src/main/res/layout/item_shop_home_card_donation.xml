@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.unifycomponents.CardUnify2 xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/shop_home_card_donation_card_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="3dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginBottom="8dp"
     app:card_background_color="@color/Unify_Background"
     app:card_type="border">
 
@@ -36,10 +37,10 @@
             android:layout_weight="1"
             android:ellipsize="end"
             android:maxLines="2"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             app:typographyType="body_3"
             tools:text="Selama Ramadan, sebagian keuntungan toko akan didonasikan. Selengkapnya" />
 
     </LinearLayout>
 
-</com.tokopedia.unifycomponents.CardUnify>
+</com.tokopedia.unifycomponents.CardUnify2>

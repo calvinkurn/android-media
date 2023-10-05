@@ -1,6 +1,7 @@
 package com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.DialogInterface
 import android.content.Intent
@@ -14,8 +15,6 @@ import android.view.ViewGroup
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
-import com.gojek.kyc.sdk.core.extensions.isKtpExist
-import com.gojek.kyc.sdk.core.extensions.isSelfieExist
 import com.gojek.OneKycSdk
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -24,9 +23,9 @@ import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.databinding.LayoutGotoKycOnboardNonProgressiveBinding
 import com.tokopedia.kyc_centralized.di.DaggerGoToKycComponent
 import com.tokopedia.kyc_centralized.ui.gotoKyc.analytics.GotoKycAnalytics
-import com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycMainActivity
-import com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycMainParam
-import com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycRouterFragment
+import com.tokopedia.kyc_centralized.ui.gotoKyc.main.router.GotoKycMainActivity
+import com.tokopedia.kyc_centralized.ui.gotoKyc.main.router.GotoKycMainParam
+import com.tokopedia.kyc_centralized.ui.gotoKyc.main.router.GotoKycRouterFragment
 import com.tokopedia.kyc_centralized.util.KycSharedPreference
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -46,10 +45,13 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
 
     private var projectId = ""
     private var source = ""
+    private var callback = ""
     private var isAccountLinked = false
     private var isReload = false
+    private var isLaunchCallback = false
 
     private var dismissDialogWithDataListener: (Boolean) -> Unit = {}
+    private var dismissDialogLaunchCallBackListener: (Unit) -> Unit = {}
 
     private val startKycForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
         when (result.resultCode) {
@@ -63,6 +65,10 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
                 isReload = true
                 dismiss()
             }
+            KYCConstant.ActivityResult.LAUNCH_CALLBACK -> {
+                isLaunchCallback = true
+                dismiss()
+            }
         }
     }
 
@@ -72,11 +78,12 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
         activity?.finish()
     }
 
-    private val requestPermissionLocation = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+    private val requestPermissionCamera = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
         if (isGranted) {
             val parameter = GotoKycMainParam(
                 projectId = projectId,
-                sourcePage = source
+                sourcePage = source,
+                callback = callback
             )
             gotoCaptureKycDocuments(parameter)
         } else {
@@ -94,6 +101,7 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
             projectId = it.getString(PROJECT_ID).orEmpty()
             source = it.getString(SOURCE).orEmpty()
             isAccountLinked = it.getBoolean(ACCOUNT_LINKED)
+            callback = it.getString(CALLBACK).orEmpty()
         }
     }
 
@@ -132,8 +140,6 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
         )
 
         binding?.consentGotoKycNonProgressive?.load(
-            lifecycleOwner = viewLifecycleOwner,
-            viewModelStoreOwner = this,
             consentCollectionParam = consentParam
         )
 
@@ -151,11 +157,12 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
             if (isAccountLinked or (binding?.layoutAccountLinking?.root?.isShown == false)) {
                 activity?.let {
                     if (ContextCompat.checkSelfPermission(it, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                        requestPermissionLocation.launch(Manifest.permission.CAMERA)
+                        requestPermissionCamera.launch(Manifest.permission.CAMERA)
                     } else {
                         val parameter = GotoKycMainParam(
                             projectId = projectId,
-                            sourcePage = source
+                            sourcePage = source,
+                            callback = callback
                         )
                         gotoCaptureKycDocuments(parameter)
                     }
@@ -163,7 +170,8 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
             } else {
                 val parameter = GotoKycMainParam(
                     projectId = projectId,
-                    sourcePage = source
+                    sourcePage = source,
+                    callback = callback
                 )
                 gotoBridgingAccountLinking(parameter)
             }
@@ -186,6 +194,7 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
 
     }
 
+    @SuppressLint("PII Data Exposure")
     private fun setUpViewKtp() {
         binding?.layoutKtp?.apply {
             imgItemOnboard.loadImageWithoutPlaceholder(
@@ -254,7 +263,11 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
 
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
-        dismissDialogWithDataListener(isReload)
+        if (isLaunchCallback) {
+            dismissDialogLaunchCallBackListener(Unit)
+        } else {
+            dismissDialogWithDataListener(isReload)
+        }
 
         GotoKycAnalytics.sendClickOnButtonCloseOnboardingBottomSheet(
             projectId = projectId,
@@ -266,18 +279,24 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
         dismissDialogWithDataListener = isReload
     }
 
+    fun setOnLaunchCallbackListener(isLaunchCallback: (Unit) -> Unit) {
+        dismissDialogLaunchCallBackListener = isLaunchCallback
+    }
+
     companion object {
         private const val PROJECT_ID = "project_id"
         private const val SOURCE = "source"
+        private const val CALLBACK = "callBack"
         private const val ACCOUNT_LINKED = "account_linked"
         private const val PACKAGE = "package"
 
-        fun newInstance(projectId: String, source: String = "", isAccountLinked: Boolean) =
+        fun newInstance(projectId: String, source: String = "", isAccountLinked: Boolean, callback: String) =
             OnboardNonProgressiveBottomSheet().apply {
                 arguments = Bundle().apply {
                     putString(PROJECT_ID, projectId)
                     putString(SOURCE, source)
                     putBoolean(ACCOUNT_LINKED, isAccountLinked)
+                    putString(CALLBACK, callback)
                 }
             }
     }

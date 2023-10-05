@@ -64,7 +64,7 @@ public class PromoDetailGroupCodeViewHolder extends RecyclerView.ViewHolder {
 
         this.ivChevronIcon.setOnClickListener(chevronListener());
         this.ivChevronIcon.setImageResource(isDetailOpen ?
-            R.drawable.ic_arrow_up_grey : R.drawable.ic_arrow_down_grey);
+            com.tokopedia.design.R.drawable.ic_arrow_up_grey : com.tokopedia.design.R.drawable.ic_arrow_down_grey);
 
         this.tvGroupCodeTitle.setVisibility(TextUtils.isEmpty(viewModel.getGroupCodeTitle()) ?
                 View.GONE : View.VISIBLE);
@@ -114,6 +114,6 @@ public class PromoDetailGroupCodeViewHolder extends RecyclerView.ViewHolder {
         isDetailOpen = !isDetailOpen;
         this.rlDetailGroupCodeLayout.setVisibility(isDetailOpen ? View.VISIBLE : View.GONE);
         this.ivChevronIcon.setImageDrawable(MethodChecker.getDrawable(context,(isDetailOpen ?
-                R.drawable.ic_arrow_up_grey : R.drawable.ic_arrow_down_grey)));
+                com.tokopedia.design.R.drawable.ic_arrow_up_grey : com.tokopedia.design.R.drawable.ic_arrow_down_grey)));
     }
 }

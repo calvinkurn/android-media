@@ -16,6 +16,11 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.kolcommon'
+    testNamespace 'com.tokopedia.kolcommon.test'
+}
+
 dependencies {
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
 

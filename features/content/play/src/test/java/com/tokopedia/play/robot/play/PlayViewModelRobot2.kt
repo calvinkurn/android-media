@@ -243,3 +243,9 @@ fun createPlayViewModelRobot(
         liveRoomMetricsCommon = liveRoomMetricsCommon
     ).apply(fn)
 }
+
+internal fun <T> Any.getPrivateField(name: String): T {
+    val field = this.javaClass.getDeclaredField(name)
+    field.isAccessible = true
+    return field.get(this) as T
+}

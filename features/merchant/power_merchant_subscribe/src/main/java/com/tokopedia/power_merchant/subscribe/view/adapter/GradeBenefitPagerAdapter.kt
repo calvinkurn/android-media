@@ -127,6 +127,9 @@ class GradeBenefitPagerAdapter(
                     )
                     showTicker(message)
                 }
+                else -> {
+                    hideTicker()
+                }
             }
         }
 
@@ -148,8 +151,17 @@ class GradeBenefitPagerAdapter(
         private fun showTicker(message: String) {
             binding.run {
                 viewPmTargetAchievement.gone()
+                dividerPmGradeBenefit.visible()
                 tickerPmAchievementInfo.visible()
                 tickerPmAchievementInfo.setTextDescription(message)
+            }
+        }
+
+        private fun hideTicker() {
+            binding.run {
+                dividerPmGradeBenefit.gone()
+                tickerPmAchievementInfo.gone()
+                viewPmTargetAchievement.gone()
             }
         }
 

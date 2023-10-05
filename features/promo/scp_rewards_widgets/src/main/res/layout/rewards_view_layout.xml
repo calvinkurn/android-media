@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="@dimen/dp_16"
+    android:layout_marginBottom="@dimen/dp_16"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <com.tokopedia.scp_rewards_widgets.views.CouponImageView
+        android:id="@+id/coupon_view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/coupon_image_default_height"
+        android:scaleType="centerCrop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/reward_expiry_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
+        app:layout_constraintStart_toStartOf="@+id/coupon_view"
+        app:layout_constraintTop_toBottomOf="@+id/coupon_view"
+        app:typographyType="small" />
+</androidx.constraintlayout.widget.ConstraintLayout>

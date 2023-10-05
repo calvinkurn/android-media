@@ -44,7 +44,7 @@
             <View
                 android:layout_width="@dimen/nfc_common_dp_local_1"
                 android:layout_height="match_parent"
-                android:background="@color/Unify_N75" />
+                android:background="@color/Unify_NN50" />
 
             <LinearLayout
                 android:layout_width="@dimen/layout_lvl0"
@@ -59,7 +59,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/spacing_lvl2"
                     android:text="@string/emoney_nfc_card_info_label_card_number"
-                    android:textColor="@color/Unify_N700_68"
+                    android:textColor="@color/Unify_NN950_68"
                     app:typographyType="body_3" />
 
                 <com.tokopedia.unifycomponents.LoaderUnify
@@ -75,7 +75,7 @@
                     android:id="@+id/text_card_number"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/Unify_N700_96"
+                    android:textColor="@color/Unify_NN950_96"
                     app:typographyWeight="bold"
                     app:typographyType="body_2"
                     tools:text="1234 - 1234 - 1234 - 1234" />
@@ -96,7 +96,7 @@
         <View
             android:layout_width="wrap_content"
             android:layout_height="@dimen/nfc_common_dp_local_1"
-            android:background="@color/Unify_N75" />
+            android:background="@color/Unify_NN50" />
 
         <LinearLayout
             android:id="@+id/view_remaining_balance"
@@ -113,7 +113,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/spacing_lvl2"
                 android:gravity="center"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN950_68"
                 android:text="@string/emoney_nfc_card_info_label_card_balance"
                 app:typographyType="body_3"
                 />
@@ -135,7 +135,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/spacing_lvl3"
                 android:gravity="center"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                 app:typographyWeight="bold"
                 app:typographyType="heading_2"
                 tools:text="Rp 800.000" />
@@ -157,7 +157,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:typographyType="body_3"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN950_68"
                 tools:text="(12 Mei 2018, 06:50)" />
 
             <com.tokopedia.unifycomponents.LoaderUnify

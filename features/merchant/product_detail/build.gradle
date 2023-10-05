@@ -5,6 +5,23 @@ apply plugin: 'io.hansel.preprocessor.module'
 apply plugin: 'kotlin-parcelize'
 
 android {
+    namespace 'com.tokopedia.product.detail'
+    testNamespace 'com.tokopedia.product.detail.test'
+
+    def pathSources = "src/main/res/"
+    sourceSets {
+        main {
+            res.srcDirs = [
+                    pathSources,
+                    pathSources + 'detail',
+                    pathSources + 'detail/a_plus_content',
+                    pathSources + 'detail/bmgm'
+            ]
+        }
+        androidTest {
+            resources.srcDirs += "$projectDir/src/androidTest/resources"
+        }
+    }
 
     sourceSets.each {
         it.java.srcDirs += "src/$it.name/kotlin"
@@ -31,7 +48,6 @@ android {
         viewBinding true
         buildConfig true
     }
-
 }
 
 buildscript {
@@ -54,7 +70,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.baseList)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.commonNetwork)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.imagePreview)
     implementation projectOrAar(rootProject.ext.libraries.analytics)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
@@ -74,7 +89,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.searchbar)
     implementation projectOrAar(rootProject.ext.features.shopCommon)
     implementation projectOrAar(rootProject.ext.features.topAdsSdk)
-    implementation projectOrAar(rootProject.ext.features.topAdsDetailSheet)
     implementation projectOrAar(rootProject.ext.features.wishlistCommonV2)
     implementation projectOrAar(rootProject.ext.features.affiliateCommon)
     implementation projectOrAar(rootProject.ext.features.purchase_platform_common)

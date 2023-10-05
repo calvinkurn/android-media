@@ -88,13 +88,13 @@ class PromoCheckoutListViewHolder(val view: View?, val listenerTrackingCoupon: L
     }
 
     private fun setTimerDisabled() {
-        view?.imagePeriod?.setColorFilter(ContextCompat.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Unify_N100))
-        view?.imageMinTrans?.setColorFilter(ContextCompat.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Unify_N100))
+        view?.imagePeriod?.setColorFilter(ContextCompat.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Unify_NN200))
+        view?.imageMinTrans?.setColorFilter(ContextCompat.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Unify_NN200))
     }
 
     private fun setTimerEnabled() {
-        view?.imagePeriod?.setColorFilter(ContextCompat.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Unify_G400))
-        view?.imageMinTrans?.setColorFilter(ContextCompat.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Unify_G400))
+        view?.imagePeriod?.setColorFilter(ContextCompat.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
+        view?.imageMinTrans?.setColorFilter(ContextCompat.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
     }
 
     fun setDateUsage(element: PromoCheckoutListModel?) {

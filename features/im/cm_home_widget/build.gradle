@@ -19,6 +19,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.cmhomewidget'
+    testNamespace 'com.tokopedia.cmhomewidget.test'
     buildFeatures {
         viewBinding true
     }
@@ -44,7 +46,7 @@ dependencies {
 
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation projectOrAar(rootProject.ext.libraries.usersession)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress)
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor

@@ -14,7 +14,7 @@
         android:layout_marginEnd="@dimen/spacing_lvl3"
         android:layout_marginBottom="@dimen/spacing_lvl4"
         android:background="@color/transparent"
-        android:textColor="@color/Unify_N700_32"
+        android:textColor="@color/Unify_NN950_32"
         android:textSize="@dimen/sp_12"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

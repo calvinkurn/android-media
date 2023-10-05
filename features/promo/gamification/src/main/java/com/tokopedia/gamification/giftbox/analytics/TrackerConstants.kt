@@ -64,6 +64,7 @@ object GiftBoxAction {
     const val CLICK_KE_HOME_BUTTON = "click ke home button"
     const val VIEW_PRODUCT_RECOM = "view product recommendation"
     const val CLICK_LG = "click tokopedia seru button"
+    const val CLICK_COUPON_IMAGE = "click coupon image"
 }
 
 object GiftBoxLabel {

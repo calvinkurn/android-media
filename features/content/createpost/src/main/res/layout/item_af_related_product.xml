@@ -41,7 +41,7 @@
         android:gravity="center_vertical|start"
         android:lineSpacingExtra="6sp"
         android:maxLines="1"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:typographyType="display_2"
         tools:text="Merries Baby Diapers Terbaik sedunia Jangan beli yang lain, yang lain palsu" />
 
@@ -64,7 +64,7 @@
         android:gravity="center_vertical|start"
         android:lineSpacingExtra="6sp"
         android:maxLines="1"
-        android:textColor="@color/Unify_B500"
+        android:textColor="@color/Unify_BN500"
         app:typographyType="display_3"
         app:typographyWeight="bold"
         tools:text="Komisi Rp8.400.123" />
@@ -97,7 +97,7 @@
         android:layout_alignStart="@id/name"
         android:layout_alignLeft="@id/name"
         android:layout_marginTop="16dp"
-        android:background="@color/Unify_N100"
+        android:background="@color/Unify_NN200"
         android:visibility="visible"
         tools:visibility="gone" />
 
@@ -107,7 +107,7 @@
         android:layout_height="0.5dp"
         android:layout_below="@+id/thumbnail"
         android:layout_marginTop="16dp"
-        android:background="@color/Unify_N100"
+        android:background="@color/Unify_NN200"
         android:visibility="gone"
         tools:visibility="visible" />
 </RelativeLayout>

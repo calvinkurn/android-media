@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:clipToPadding="false"
+    android:clipChildren="false"
+    android:layout_marginTop="12dp"
+    android:layout_marginBottom="10dp"
+    android:paddingLeft="-12dp"
+    android:paddingRight="-12dp">
+
+    <com.tokopedia.shop.campaign.view.customview.ShopCampaignTabWidgetHeaderView
+        android:id="@+id/header_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <com.tokopedia.carouselproductcard.CarouselProductCardView
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:clipToPadding="false"
+        android:clipChildren="false"
+        android:id="@+id/recyclerViewCarousel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none"
+        app:useDefaultItemDecorator="false" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:id="@+id/recyclerViewCarouselSingleOrDoubleProductCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false" />
+</LinearLayout>

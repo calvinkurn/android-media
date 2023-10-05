@@ -122,7 +122,7 @@ fun clickPromoListItemViewHolder() = object : ViewAction {
     }
 
     override fun perform(uiController: UiController?, view: View?) {
-        view?.findViewById<View>(R.id.card_promo_item)!!.performClick()
+        view?.findViewById<View>(R.id.promo_constraint_wrapper)!!.performClick()
     }
 }
 

@@ -33,12 +33,12 @@
                 android:id="@+id/hotel_cancellation_room_duration_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/Unify_N0" />
+                android:background="@color/Unify_NN0" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/hotel_6dp"
-                android:background="@color/Unify_N50" />
+                android:background="@color/Unify_NN50" />
 
             <com.tokopedia.hotel.cancellation.presentation.widget.HotelCancellationPolicyWidget
                 android:id="@+id/hotel_cancellation_policy_widget"
@@ -48,7 +48,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/hotel_6dp"
-                android:background="@color/Unify_N50" />
+                android:background="@color/Unify_NN50" />
 
             <include
                 android:id="@+id/layoutHotelCancellationRefundDetail"
@@ -72,7 +72,7 @@
                 android:layout_marginRight="@dimen/layout_lvl2"
                 android:layout_marginBottom="@dimen/layout_lvl2"
                 android:gravity="center"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN950_68"
                 app:typographyType="body_3"
                 tools:text="alawlkndjanfjenfjrbhfbrhgbhgb" />
         </LinearLayout>

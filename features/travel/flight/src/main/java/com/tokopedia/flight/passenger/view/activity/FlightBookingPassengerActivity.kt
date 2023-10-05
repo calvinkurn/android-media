@@ -44,23 +44,24 @@ class FlightBookingPassengerActivity : BaseFlightActivity(), HasComponent<Flight
 
     override fun getNewFragment(): Fragment {
         return FlightBookingPassengerFragment.newInstance(
-                depatureId = intent.getStringExtra(EXTRA_DEPATURE) ?: "",
-                passengerModel = passengerModel ?: FlightBookingPassengerModel(),
-                luggageModels = intent.getParcelableArrayListExtra(EXTRA_LUGGAGES) ?: listOf(),
-                mealModels = intent.getParcelableArrayListExtra(EXTRA_MEALS) ?: listOf(),
-                isAirAsiaAirlines = intent.getBooleanExtra(EXTRA_IS_AIRASIA, false),
-                isMandatoryIdentificationNumber = intent.getBooleanExtra(EXTRA_IS_IDENTIFICATION_NUMBER, false),
-                depatureDate = intent.getStringExtra(EXTRA_DEPARTURE_DATE) ?: "",
-                requestId = intent.getStringExtra(EXTRA_REQUEST_ID) ?: "",
-                isDomestic = intent.getBooleanExtra(EXTRA_IS_DOMESTIC, false),
-                returnId = intent.getStringExtra(EXTRA_RETURN),
-                autofillName = intent.getStringExtra(EXTRA_AUTOFILL_NAME) ?: "")
+            depatureId = intent.getStringExtra(EXTRA_DEPATURE) ?: "",
+            passengerModel = passengerModel ?: FlightBookingPassengerModel(),
+            luggageModels = intent.getParcelableArrayListExtra(EXTRA_LUGGAGES) ?: listOf(),
+            mealModels = intent.getParcelableArrayListExtra(EXTRA_MEALS) ?: listOf(),
+            isAirAsiaAirlines = intent.getBooleanExtra(EXTRA_IS_AIRASIA, false),
+            isMandatoryIdentificationNumber = intent.getBooleanExtra(EXTRA_IS_IDENTIFICATION_NUMBER, false),
+            depatureDate = intent.getStringExtra(EXTRA_DEPARTURE_DATE) ?: "",
+            requestId = intent.getStringExtra(EXTRA_REQUEST_ID) ?: "",
+            isDomestic = intent.getBooleanExtra(EXTRA_IS_DOMESTIC, false),
+            returnId = intent.getStringExtra(EXTRA_RETURN),
+            autofillName = intent.getStringExtra(EXTRA_AUTOFILL_NAME) ?: ""
+        )
     }
 
     override fun getComponent(): FlightPassengerComponent {
         return DaggerFlightPassengerComponent.builder()
-                .flightComponent(getFlightComponent())
-                .build()
+            .flightComponent(getFlightComponent())
+            .build()
     }
 
     override fun navigateToHelpPage() {
@@ -81,18 +82,20 @@ class FlightBookingPassengerActivity : BaseFlightActivity(), HasComponent<Flight
         const val EXTRA_IS_DOMESTIC = "EXTRA_IS_DOMESTIC"
         const val EXTRA_AUTOFILL_NAME = "EXTRA_AUTOFILL_NAME"
 
-        fun getCallingIntent(activity: Activity,
-                             depatureId: String,
-                             returnId: String,
-                             bookingPassengerModel: FlightBookingPassengerModel,
-                             luggageModels: List<FlightBookingAmenityMetaModel>,
-                             mealModels: List<FlightBookingAmenityMetaModel>,
-                             isAirAsiaAirlines: Boolean,
-                             isMandatoryIdentificationNumber: Boolean,
-                             depatureDate: String,
-                             requestId: String,
-                             isDomestic: Boolean,
-                             autofillName: String = ""): Intent {
+        fun getCallingIntent(
+            activity: Activity,
+            depatureId: String,
+            returnId: String,
+            bookingPassengerModel: FlightBookingPassengerModel,
+            luggageModels: List<FlightBookingAmenityMetaModel>,
+            mealModels: List<FlightBookingAmenityMetaModel>,
+            isAirAsiaAirlines: Boolean,
+            isMandatoryIdentificationNumber: Boolean,
+            depatureDate: String,
+            requestId: String,
+            isDomestic: Boolean,
+            autofillName: String = ""
+        ): Intent {
             val intent = Intent(activity, FlightBookingPassengerActivity::class.java)
             intent.putExtra(EXTRA_DEPATURE, depatureId)
             intent.putExtra(EXTRA_RETURN, returnId)
@@ -109,14 +112,16 @@ class FlightBookingPassengerActivity : BaseFlightActivity(), HasComponent<Flight
             return intent
         }
 
-        fun getCallingIntent(activity: Activity,
-                             depatureId: String,
-                             bookingPassengerModel: FlightBookingPassengerModel,
-                             luggageModels: List<FlightBookingAmenityMetaModel>,
-                             mealModels: List<FlightBookingAmenityMetaModel>,
-                             requestId: String,
-                             isDomestic: Boolean,
-                             autofillName: String = ""): Intent {
+        fun getCallingIntent(
+            activity: Activity,
+            depatureId: String,
+            bookingPassengerModel: FlightBookingPassengerModel,
+            luggageModels: List<FlightBookingAmenityMetaModel>,
+            mealModels: List<FlightBookingAmenityMetaModel>,
+            requestId: String,
+            isDomestic: Boolean,
+            autofillName: String = ""
+        ): Intent {
             val intent = Intent(activity, FlightBookingPassengerActivity::class.java)
             intent.putExtra(EXTRA_DEPATURE, depatureId)
             intent.putExtra(EXTRA_PASSENGER, bookingPassengerModel)
@@ -129,5 +134,4 @@ class FlightBookingPassengerActivity : BaseFlightActivity(), HasComponent<Flight
             return intent
         }
     }
-
 }

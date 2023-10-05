@@ -6,4 +6,8 @@ import com.tokopedia.discovery2.data.notifier.NotifierSetReminder
 data class PushUnSubscriptionResponse(
         @SerializedName("notifier_unsetReminder")
         val notifierSetReminder: NotifierSetReminder? = null
-)
+) {
+    fun isSuccess() = notifierSetReminder?.isSuccess == 1 || notifierSetReminder?.isSuccess == 2
+
+    fun getErrorMessage(): String = notifierSetReminder?.errorMessage.orEmpty()
+}

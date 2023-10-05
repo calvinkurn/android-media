@@ -20,6 +20,6 @@
         android:id="@+id/header_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/Unify_N0"/>
+        android:background="@color/Unify_NN0"/>
 
 </FrameLayout>

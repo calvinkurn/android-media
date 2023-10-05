@@ -6,5 +6,5 @@
     android:layout_height="wrap_content"
     android:layout_marginEnd="@dimen/spacing_lvl4"
     android:layout_marginRight="@dimen/spacing_lvl4"
-    android:textColor="@color/Unify_Y500"
+    android:textColor="@color/Unify_YN500"
     tools:text="00:00:00" />

@@ -45,8 +45,8 @@
                     android:layout_height="18dp"
                     app:icon_name="ADD"
                     android:layout_centerInParent="true"
-                    app:icon_color_light_enable="@color/Unify_G500"
-                    app:icon_color_night_enable="@color/Unify_G500"/>
+                    app:icon_color_light_enable="@color/Unify_GN500"
+                    app:icon_color_night_enable="@color/Unify_GN500"/>
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/label_new_collection"

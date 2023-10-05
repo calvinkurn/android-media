@@ -29,13 +29,13 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.recharge_component.R
+import com.tokopedia.recharge_component.databinding.HomeRechargeBuWidgetMixLeftBinding
 import com.tokopedia.recharge_component.listener.RechargeBUWidgetListener
 import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
 import com.tokopedia.recharge_component.model.RechargeBUWidgetProductCardModel
 import com.tokopedia.recharge_component.model.RechargePerso
 import com.tokopedia.recharge_component.model.WidgetSource
 import com.tokopedia.recharge_component.presentation.adapter.RechargeBUWidgetProductCardTypeFactoryImpl
-import kotlinx.android.synthetic.main.home_recharge_bu_widget_mix_left.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -47,8 +47,11 @@ import kotlin.math.abs
 class RechargeBUWidgetMixLeftViewHolder(
     itemView: View,
     val listener: RechargeBUWidgetListener
-) : AbstractViewHolder<RechargeBUWidgetDataModel>(itemView), CoroutineScope,
+) : AbstractViewHolder<RechargeBUWidgetDataModel>(itemView),
+    CoroutineScope,
     CommonProductCardCarouselListener {
+
+    private val binding = HomeRechargeBuWidgetMixLeftBinding.bind(itemView)
 
     lateinit var dataModel: RechargeBUWidgetDataModel
 
@@ -67,7 +70,6 @@ class RechargeBUWidgetMixLeftViewHolder(
 
     private var isCacheData = false
 
-
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_recharge_bu_widget_mix_left
@@ -85,7 +87,7 @@ class RechargeBUWidgetMixLeftViewHolder(
     override fun bind(element: RechargeBUWidgetDataModel) {
         dataModel = element
         if (element.data.items.isNotEmpty()) {
-            itemView.recharge_bu_content_shimmering.hide()
+            binding.rechargeBuContentShimmering.root.hide()
             isCacheData = element.isDataCache
             initVar()
             setupBackground(element)
@@ -100,7 +102,7 @@ class RechargeBUWidgetMixLeftViewHolder(
                 }
             }
         } else {
-            itemView.recharge_bu_content_shimmering.show()
+            binding.rechargeBuContentShimmering.root.show()
             val source = element.channel.widgetParam.removePrefix("?section=")
             listener.getRechargeBUWidget(WidgetSource.findSourceByString(source))
         }
@@ -142,8 +144,8 @@ class RechargeBUWidgetMixLeftViewHolder(
     private fun setChannelDivider(element: RechargeBUWidgetDataModel) {
         ChannelWidgetUtil.validateHomeComponentDivider(
             channelModel = element.channel,
-            dividerTop = itemView.home_component_divider_header,
-            dividerBottom = itemView.home_component_divider_footer
+            dividerTop = binding.homeComponentDividerHeader,
+            dividerBottom = binding.homeComponentDividerFooter
         )
     }
 
@@ -159,8 +161,9 @@ class RechargeBUWidgetMixLeftViewHolder(
         if (imageUrl.isNotEmpty()) {
             val gradientColor = element.data.option2
             image.addOnImpressionListener(element.channel) {
-                if (!isCacheData)
+                if (!isCacheData) {
                     listener.onRechargeBUWidgetBannerImpression(dataModel)
+                }
             }
             image.layout(
                 RESET_IMAGE_LAYOUT_VALUE,
@@ -290,9 +293,11 @@ class RechargeBUWidgetMixLeftViewHolder(
         val currentTimeInSeconds = currentDate.time / SECOND_IN_MILIS
 
         val parser = SimpleDateFormat(EXPIRED_DATE_PATTERN)
-        val expiredTime = if (element.data.endTime.isNotEmpty())
+        val expiredTime = if (element.data.endTime.isNotEmpty()) {
             parser.format(Date(element.data.endTime.toLong() * SECOND_IN_MILIS))
-        else ""
+        } else {
+            ""
+        }
 
         val channel = element.channel.copy(
             channelHeader = element.channel.channelHeader.copy(
@@ -308,18 +313,21 @@ class RechargeBUWidgetMixLeftViewHolder(
                 )
             )
         )
-        headerView.setChannel(channel, object : HeaderListener {
-            override fun onSeeAllClick(link: String) {
-                listener.onRechargeBUWidgetClickSeeAllButton(element)
-            }
+        headerView.setChannel(
+            channel,
+            object : HeaderListener {
+                override fun onSeeAllClick(link: String) {
+                    listener.onRechargeBUWidgetClickSeeAllButton(element)
+                }
 
-            override fun onChannelExpired(channelModel: ChannelModel) {
-                itemView.recharge_bu_widget_header_view.hide()
-                itemView.home_recharge_container.hide()
-                itemView.recharge_bu_content_shimmering.show()
-                val source = element.channel.widgetParam.removePrefix("?section=")
-                listener.getRechargeBUWidget(WidgetSource.findSourceByString(source))
+                override fun onChannelExpired(channelModel: ChannelModel) {
+                    binding.rechargeBuWidgetHeaderView.hide()
+                    binding.homeRechargeContainer.hide()
+                    binding.rechargeBuContentShimmering.root.show()
+                    val source = element.channel.widgetParam.removePrefix("?section=")
+                    listener.getRechargeBUWidget(WidgetSource.findSourceByString(source))
+                }
             }
-        })
+        )
     }
 }

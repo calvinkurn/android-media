@@ -51,6 +51,7 @@ object SimilarProductRecommendationTracking {
     private const val FIELD_DIMENSION_83 = "dimension83"
     private const val FIELD_DIMENSION_90 = "dimension90"
     private const val FIELD_DIMENSION_40 = "dimension40"
+    private const val FIELD_DIMENSION_56 = "dimension56"
 
     private const val LIST_PRODUCT_RECOMMENDATION = "/similarrecommendation - rekomendasi untuk anda - %s - ref: %s%s"
     private const val LIST_PRODUCT_RECOMMENDATION_NON_LOGIN = "/similarrecommendation - non login - rekomendasi untuk anda - %s - ref: %s%s"
@@ -103,7 +104,8 @@ object SimilarProductRecommendationTracking {
                     FIELD_ATTRIBUTE, VALUE_EMPTY,
                     FIELD_DIMENSION_61, item.dimension61,
                     FIELD_DIMENSION_90, internalRef,
-                    FIELD_DIMENSION_40, list
+                    FIELD_DIMENSION_40, list,
+                    FIELD_DIMENSION_56, item.warehouseId.toString(),
                 )
             )
         )
@@ -126,7 +128,8 @@ object SimilarProductRecommendationTracking {
             FIELD_PRODUCT_POSITION, position,
             FIELD_DIMENSION_90, internalRef,
             FIELD_DIMENSION_61, item.dimension61,
-            FIELD_DIMENSION_40, list
+            FIELD_DIMENSION_40, list,
+            FIELD_DIMENSION_56, item.warehouseId.toString(),
         )
     }
 

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -12,6 +13,8 @@ import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.smoothSnapToPosition
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PageErrorDataModel
@@ -29,6 +32,10 @@ import javax.inject.Inject
  * Created by Yehezkiel on 05/01/21
  */
 abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactory> : BaseDaggerFragment() {
+
+    companion object {
+        private const val INSTANT_SMOOTH_SCROLL_MILLISECONDS_PER_INCH = 0.1f
+    }
 
     var productAdapter: ProductDetailAdapter? = null
     var productDaggerComponent: ProductDetailComponent? = null
@@ -136,6 +143,34 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
             getRecyclerView()?.post {
                 try {
                     getRecyclerView()?.smoothScrollToPosition(position)
+                } catch (_: Throwable) { }
+            }
+        }
+    }
+
+    /**
+     * "Instantly" scroll and snap to the specified RecyclerView item position. This function triggers
+     * a smooth scroll position with the speed of 0.1 ms per inch so that it looks like an instant scroll
+     * (the default smooth scroll speed is 25 ms per inch).
+     *
+     * @param position The position of the item we want to scroll into
+     * @param snapMode The snap mode preference must be any of the option provided on [LinearSmoothScroller]
+     */
+    fun snapScrollToPosition(position: Int, snapMode: Int = LinearSmoothScroller.SNAP_TO_START) {
+        if (position > RecyclerView.NO_POSITION) {
+            getRecyclerView()?.post {
+                try {
+                    val offsetY = binding
+                        ?.pdpNavigation
+                        ?.getNavigationTabHeight()
+                        ?.plus(binding?.pdpNavtoolbar?.height.orZero())
+                        .orZero()
+                    getRecyclerView()?.smoothSnapToPosition(
+                        position = position,
+                        snapMode = snapMode,
+                        topOffset = offsetY,
+                        millisecondsPerInch = INSTANT_SMOOTH_SCROLL_MILLISECONDS_PER_INCH
+                    )
                 } catch (_: Throwable) { }
             }
         }

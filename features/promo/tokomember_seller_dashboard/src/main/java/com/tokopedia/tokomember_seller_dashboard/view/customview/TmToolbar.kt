@@ -94,9 +94,9 @@ class TmToolbar @JvmOverloads constructor(
         else {
             currentToolbarState = ToolbarState.TOOLBAR_DARK
             val whiteColor =
-                MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+                MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
             val greyColor =
-                MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N400)
+                MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN600)
             toggleNavigationIconColor(whiteColor, greyColor)
             val colorAnim = ObjectAnimator.ofInt(
                 tvToolbarTitle, "textColor",
@@ -113,9 +113,9 @@ class TmToolbar @JvmOverloads constructor(
         else {
             currentToolbarState = ToolbarState.TOOLBAR_TRANSPARENT
             val whiteColor =
-                MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+                MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
             val greyColor =
-                MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N400)
+                MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN600)
             toggleNavigationIconColor(greyColor, whiteColor)
             val colorAnim = ObjectAnimator.ofInt(tvToolbarTitle, "textColor", greyColor, whiteColor)
             colorAnim.duration = DURATION_200
@@ -134,7 +134,7 @@ class TmToolbar @JvmOverloads constructor(
     }
 
     fun applyAlphaToToolbarBackground(alpha: Float) {
-        mContext?.resources?.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0)?.let { adjustAlpha(it, alpha) }?.let {
+        mContext?.resources?.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN0)?.let { adjustAlpha(it, alpha) }?.let {
             setBackgroundColor(it)
         }
     }

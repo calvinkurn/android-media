@@ -12,7 +12,9 @@ import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartGqlResponse
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.network.authentication.AuthHelper
@@ -24,13 +26,16 @@ import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryNavigati
 import com.tokopedia.tokopedianow.category.presentation.util.MiniCartMapper
 import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryViewModel.Companion.BATCH_SHOWCASE_TOTAL
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
+import com.tokopedia.tokopedianow.common.domain.model.GetProductAdsResponse
+import com.tokopedia.tokopedianow.common.domain.model.GetProductAdsResponse.ProductAdsResponse
 import com.tokopedia.tokopedianow.common.domain.model.GetTargetedTickerResponse
+import com.tokopedia.tokopedianow.common.domain.model.WarehouseData
+import com.tokopedia.tokopedianow.common.domain.usecase.GetProductAdsUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
 import com.tokopedia.tokopedianow.searchcategory.jsonToObject
-import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
@@ -49,8 +54,6 @@ open class TokoNowCategoryMainViewModelTestFixture {
      */
     private lateinit var localAddress: TokoNowLocalAddress
 
-    private val privateFieldLocalAddress = "localAddressData"
-
     private val categoryProductResponse1 = "category/ace-search-product-1-aneka-sayuran.json".jsonToObject<AceSearchProductModel>()
     private val categoryProductResponse2 = "category/ace-search-product-2-bawang.json".jsonToObject<AceSearchProductModel>()
     private val categoryProductResponse3 = "category/ace-search-product-3-buah-buahan.json".jsonToObject<AceSearchProductModel>()
@@ -68,7 +71,18 @@ open class TokoNowCategoryMainViewModelTestFixture {
     protected lateinit var addressData: LocalCacheModel
 
     protected val categoryIdL1: String = "123"
-    protected val warehouseId: String = "345"
+    protected val warehouseId: String = "15125512"
+    protected val serviceType: String = "2h"
+    protected val warehouses = listOf(
+        WarehouseData(
+            warehouseId = "15125512",
+            serviceType = "fc"
+        ),
+        WarehouseData(
+            warehouseId = "14231455",
+            serviceType = "hub"
+        )
+    )
     protected val shopId: String = "11122"
     protected val navToolbarHeight: Int = 100
 
@@ -77,6 +91,7 @@ open class TokoNowCategoryMainViewModelTestFixture {
     protected val addToCartGqlResponse = "category/add-to-cart-product.json".jsonToObject<AddToCartGqlResponse>()
     protected val updateProductInCartResponse = "category/update-product-in-cart.json".jsonToObject<UpdateCartGqlResponse>()
     protected val removeProductFromCartResponse = "category/remove-product-from-cart.json".jsonToObject<RemoveFromCartData>()
+    protected val getProductAdsResponse = "common/get-product-ads-response.json".jsonToObject<GetProductAdsResponse>()
 
     protected val categoryProductResponseMap = mapOf(
         "4859" to categoryProductResponse1,
@@ -94,20 +109,31 @@ open class TokoNowCategoryMainViewModelTestFixture {
 
     @RelaxedMockK
     lateinit var getCategoryDetailUseCase: GetCategoryDetailUseCase
+
     @RelaxedMockK
     lateinit var getCategoryProductUseCase: GetCategoryProductUseCase
+
+    @RelaxedMockK
+    lateinit var getProductAdsUseCase: GetProductAdsUseCase
+
     @RelaxedMockK
     lateinit var getMiniCartUseCase: GetMiniCartListSimplifiedUseCase
+
     @RelaxedMockK
     lateinit var userSession: UserSessionInterface
+
     @RelaxedMockK
     lateinit var addToCartUseCase: AddToCartUseCase
+
     @RelaxedMockK
     lateinit var updateCartUseCase: UpdateCartUseCase
+
     @RelaxedMockK
-    lateinit var deleteCartUseCase:DeleteCartUseCase
+    lateinit var deleteCartUseCase: DeleteCartUseCase
+
     @RelaxedMockK
     lateinit var affiliateService: NowAffiliateService
+
     @RelaxedMockK
     lateinit var getTargetedTickerUseCase: GetTargetedTickerUseCase
 
@@ -120,7 +146,7 @@ open class TokoNowCategoryMainViewModelTestFixture {
 
     @Before
     fun setUp() {
-        localAddress = TokoNowLocalAddress(mockk(relaxed = true))
+        localAddress = mockk(relaxed = true)
         setAddressData(
             warehouseId = warehouseId,
             shopId = shopId
@@ -131,8 +157,9 @@ open class TokoNowCategoryMainViewModelTestFixture {
         viewModel = TokoNowCategoryViewModel(
             getCategoryDetailUseCase = getCategoryDetailUseCase,
             getCategoryProductUseCase = getCategoryProductUseCase,
-            categoryIdL1 = categoryIdL1,
+            getProductAdsUseCase = getProductAdsUseCase,
             addressData = localAddress,
+            categoryIdL1 = categoryIdL1,
             userSession = userSession,
             getMiniCartUseCase = getMiniCartUseCase,
             addToCartUseCase = addToCartUseCase,
@@ -142,6 +169,8 @@ open class TokoNowCategoryMainViewModelTestFixture {
             getTargetedTickerUseCase = getTargetedTickerUseCase,
             dispatchers = CoroutineTestDispatchersProvider
         )
+
+        onGetIsLoggedIn_thenReturn(loggedIn = true)
     }
 
     /**
@@ -150,18 +179,29 @@ open class TokoNowCategoryMainViewModelTestFixture {
 
     protected fun setAddressData(
         warehouseId: String,
-        shopId: String
+        shopId: String,
+        warehouses: List<LocalWarehouseModel> = emptyList()
     ) {
+        val warehousesData = warehouses.map {
+            WarehouseData(it.warehouse_id.toString(), it.service_type)
+        }
+
         addressData = LocalCacheModel(
+            warehouses = warehouses,
             warehouse_id = warehouseId,
             shop_id = shopId
         )
-        localAddress.mockPrivateField(
-            name = privateFieldLocalAddress,
-            value = LocalCacheModel(
-                warehouse_id = warehouseId,
-                shop_id = shopId
-            )
+
+        coEvery { localAddress.getWarehouseId() } returns warehouseId.toLong()
+        coEvery { localAddress.getShopId() } returns shopId.toLong()
+        coEvery { localAddress.getWarehousesData() } returns warehousesData
+        coEvery { localAddress.getAddressData() } returns addressData
+    }
+
+    protected fun getLocalWarehouseModelList(): List<LocalWarehouseModel> = warehouses.map {
+        LocalWarehouseModel(
+            warehouse_id = it.warehouseId.toLongOrZero(),
+            service_type = it.serviceType
         )
     }
 
@@ -178,8 +218,8 @@ open class TokoNowCategoryMainViewModelTestFixture {
     protected fun onCategoryDetail_thenReturns() {
         coEvery {
             getCategoryDetailUseCase.execute(
-                categoryIdL1 = categoryIdL1,
-                warehouseId = warehouseId
+                warehouses = warehouses,
+                categoryIdL1 = categoryIdL1
             )
         } returns categoryDetailResponse
     }
@@ -187,8 +227,8 @@ open class TokoNowCategoryMainViewModelTestFixture {
     protected fun onCategoryDetail_thenThrows() {
         coEvery {
             getCategoryDetailUseCase.execute(
-                categoryIdL1 = categoryIdL1,
-                warehouseId = warehouseId
+                warehouses = warehouses,
+                categoryIdL1 = categoryIdL1
             )
         } throws Exception()
     }
@@ -221,6 +261,14 @@ open class TokoNowCategoryMainViewModelTestFixture {
                 )
             } returns categoryProductResponse
         }
+    }
+
+    protected fun onGetProductAds_thenReturn(response: ProductAdsResponse) {
+        coEvery { getProductAdsUseCase.execute(any()) } returns response
+    }
+
+    private fun onGetIsLoggedIn_thenReturn(loggedIn: Boolean) {
+        coEvery { userSession.isLoggedIn } returns loggedIn
     }
 
     protected fun onCategoryProduct_thenThrows(
@@ -296,7 +344,6 @@ open class TokoNowCategoryMainViewModelTestFixture {
         }
     }
 
-
     protected fun onGetMiniCart_thenReturns() {
         coEvery {
             getMiniCartUseCase.executeOnBackground()
@@ -310,8 +357,8 @@ open class TokoNowCategoryMainViewModelTestFixture {
     protected fun verifyCategoryDetail() {
         coVerify {
             getCategoryDetailUseCase.execute(
-                categoryIdL1 = categoryIdL1,
-                warehouseId = warehouseId
+                warehouses = warehouses,
+                categoryIdL1 = categoryIdL1
             )
         }
     }
@@ -323,6 +370,10 @@ open class TokoNowCategoryMainViewModelTestFixture {
                 page = GetTargetedTickerUseCase.CATEGORY_PAGE
             )
         }
+    }
+
+    protected fun verifyGetProductAdsParam(expectedParam: Map<String?, Any>) {
+        coVerify { getProductAdsUseCase.execute(expectedParam) }
     }
 
     /**
@@ -383,5 +434,4 @@ open class TokoNowCategoryMainViewModelTestFixture {
             }
         }
     }
-
 }

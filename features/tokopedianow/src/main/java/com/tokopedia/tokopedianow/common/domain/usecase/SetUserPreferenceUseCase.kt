@@ -5,10 +5,9 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.tokopedianow.common.constant.ServiceType.NOW_15M
 import com.tokopedia.tokopedianow.common.constant.ServiceType.NOW_20M
-import com.tokopedia.tokopedianow.common.constant.ServiceType.NOW_2H
+import com.tokopedia.tokopedianow.common.domain.mapper.AddressMapper
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
-import com.tokopedia.tokopedianow.common.domain.model.WarehouseData
 import com.tokopedia.tokopedianow.common.domain.query.SetUserPreferenceQuery
 import com.tokopedia.tokopedianow.common.util.StringUtil.getOrDefaultZeroString
 import com.tokopedia.usecase.RequestParams
@@ -29,12 +28,7 @@ class SetUserPreferenceUseCase @Inject constructor(graphqlRepository: GraphqlRep
         graphql.apply {
             val serviceTypeParam = if (serviceType == NOW_20M) NOW_15M else serviceType
 
-            val warehouses = localCacheModel.warehouses.map {
-                WarehouseData(
-                    it.warehouse_id.toString(),
-                    it.service_type
-                )
-            }
+            val warehouses = AddressMapper.mapToWarehousesData(localCacheModel)
 
             val shopId = localCacheModel.shop_id
             val warehouse = warehouses.firstOrNull { it.serviceType == serviceTypeParam }

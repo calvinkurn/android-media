@@ -36,7 +36,7 @@ private const val QUERY = """
     """
 
 @GqlQuery("TokoFoodCheckoutGeneral", QUERY)
-class CheckoutGeneralTokoFoodUseCase @Inject constructor(
+open class CheckoutGeneralTokoFoodUseCase @Inject constructor(
     repository: GraphqlRepository
 ) : GraphqlUseCase<CheckoutGeneralTokoFoodResponse>(repository) {
 
@@ -45,7 +45,7 @@ class CheckoutGeneralTokoFoodUseCase @Inject constructor(
         setGraphqlQuery(TokoFoodCheckoutGeneral())
     }
 
-    suspend fun execute(params: CartGeneralCartListData): CheckoutGeneralTokoFoodResponse{
+    open suspend fun execute(params: CartGeneralCartListData): CheckoutGeneralTokoFoodResponse{
         val param = generateParam(params)
         setRequestParams(param)
         return executeOnBackground()

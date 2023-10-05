@@ -52,7 +52,7 @@ class TrackingHistoryAdapter(
             binding.run {
                 title.run {
                     text = DateUtil.formatDate("yyyy-MM-dd", "EEEE, dd MMM yyyy", data.date)
-                    setTextColor(MethodChecker.getColor(itemView.context, if (position == 0) com.tokopedia.unifyprinciples.R.color.Unify_G400 else com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                    setTextColor(MethodChecker.getColor(itemView.context, if (position == 0) com.tokopedia.unifyprinciples.R.color.Unify_GN500 else com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
                 }
                 date.text = "${DateUtil.formatDate("HH:mm:ss", "HH:mm",data.time)} WIB"
                 description.text = if (data.status.isNotEmpty()) MethodChecker.fromHtml(data.status) else ""
@@ -61,16 +61,16 @@ class TrackingHistoryAdapter(
                 } else {
                     courierNameHistory.visibility = View.GONE
                 }
-                var dotColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N75)
+                var dotColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN50)
                 if (position == 0) {
-                    dotColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G400)
+                    dotColor = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
                     dotTrail.visibility = View.VISIBLE
-                    dotTrail.setBackgroundColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N75))
+                    dotTrail.setBackgroundColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN50))
                 } else if (position == trackingHistoryData.size - 1) {
                     dotTrail.visibility = View.GONE
                 } else {
                     dotTrail.visibility = View.VISIBLE
-                    dotTrail.setBackgroundColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N75))
+                    dotTrail.setBackgroundColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN50))
                 }
                 dotImage.setImageDrawable(
                     getIconUnifyDrawable(

@@ -53,14 +53,14 @@ class BalanceAndPointItemViewHolder(
         if (isCobrand) {
             type.let {
                 if (it == TYPE_LINK) {
-                    setTitleColor(com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                    setTitleColor(com.tokopedia.unifyprinciples.R.color.Unify_GN500)
                 } else {
                     setTitleColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950)
                 }
             }
         } else {
             if (!checkAnyNumbers(text ?: "")) {
-                setTitleColor(com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                setTitleColor(com.tokopedia.unifyprinciples.R.color.Unify_GN500)
             }
         }
 
@@ -90,7 +90,7 @@ class BalanceAndPointItemViewHolder(
         binding?.homeAccountItemBalanceAndPointSubtitle?.setTextColor(
             ContextCompat.getColor(
                 view.context,
-                com.tokopedia.unifyprinciples.R.color.Unify_N700
+                com.tokopedia.unifyprinciples.R.color.Unify_NN950
             )
         )
     }

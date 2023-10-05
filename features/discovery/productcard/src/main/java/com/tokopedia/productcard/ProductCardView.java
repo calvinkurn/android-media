@@ -10,7 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.design.base.BaseCustomView;
+import com.tokopedia.unifycomponents.BaseCustomView;
 import com.tokopedia.unifyprinciples.Typography;
 
 import androidx.annotation.NonNull;

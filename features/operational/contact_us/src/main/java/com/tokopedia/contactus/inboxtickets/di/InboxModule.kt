@@ -19,12 +19,6 @@ class InboxModule(private val context: Context) {
         return context
     }
 
-    @ActivityScope
-    @Provides
-    fun provideSharedPreference(context: Context?): SharedPreferences {
-        return PreferenceManager.getDefaultSharedPreferences(context)
-    }
-
     @Provides
     fun provideUserSession(): UserSessionInterface {
         return UserSession(context)

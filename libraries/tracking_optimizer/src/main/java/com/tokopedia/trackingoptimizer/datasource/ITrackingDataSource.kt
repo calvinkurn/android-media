@@ -4,9 +4,11 @@ import com.tokopedia.trackingoptimizer.model.EventModel
 
 interface ITrackingDataSource<U : Any> {
 
-    fun put(event: EventModel,
-            customDimension: HashMap<String, Any>? = null,
-            enhanceECommerceMap: HashMap<String, Any>? = null)
+    fun put(
+        event: EventModel,
+        customDimension: HashMap<String, Any>? = null,
+        enhanceECommerceMap: HashMap<String, Any>? = null
+    )
 
     fun put(model: U)
 
@@ -17,5 +19,7 @@ interface ITrackingDataSource<U : Any> {
     fun delete(event: EventModel)
 
     fun delete()
+
+    fun hasRowExist(): Boolean
 
 }

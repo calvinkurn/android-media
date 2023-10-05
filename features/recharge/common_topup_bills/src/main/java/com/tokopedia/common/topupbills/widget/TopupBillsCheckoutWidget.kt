@@ -3,9 +3,7 @@ package com.tokopedia.common.topupbills.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.View
 import android.widget.FrameLayout
-import com.tokopedia.common.topupbills.R
 import com.tokopedia.common.topupbills.databinding.ViewTopupBillsCheckoutBinding
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -43,7 +41,6 @@ class TopupBillsCheckoutWidget @JvmOverloads constructor(
         }
 
     init {
-        View.inflate(context, R.layout.view_topup_bills_checkout, this)
         binding.rechargeCheckoutPromoTicker.enableView()
     }
 

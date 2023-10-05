@@ -15,6 +15,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.mediauploader'
+    testNamespace 'com.tokopedia.mediauploader.test'
     sourceSets.each {
         it.java.srcDirs += "src/$it.name/kotlin"
     }
@@ -39,7 +41,6 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.url
 
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.libraries.usersession)

@@ -113,15 +113,11 @@ class DtHomeViewModelTest {
         Assert.assertFalse(viewModel.isOnLoading)
     }
 
-    /**
-     *
-     * buat test sendiri si anchor tab
-     * getAnchorTabMenu
-     *
-     */
-
     @Test
     fun `verify get anchor tab list`() {
+        // check empty
+        Assert.assertNull(viewModel.menuList)
+
         // Inject
         val groupId = "1"
         val feParam = "$KEY_ANCHOR_IDENTIFIER=${KEYWOARD_CHANNEL_GROUP_ID}$groupId"
@@ -225,6 +221,7 @@ class DtHomeViewModelTest {
 
         // When
         viewModel.getHomeLayout(LocalCacheModel())
+        viewModel.getAnchorTabMenu(LocalCacheModel())
 
         // Then
         Assert.assertNotNull(viewModel.isLastWidgetIsRecommendationForYou())
@@ -251,6 +248,7 @@ class DtHomeViewModelTest {
         verify {
             homeLayoutListObserver.onChanged(Fail(mockThrowable))
         }
+        Assert.assertFalse(viewModel.isOnLoading)
     }
 
     @Test

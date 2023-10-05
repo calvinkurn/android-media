@@ -73,7 +73,7 @@ class CheckoutEventActivityTest {
     @Test
     fun validateCheckoutEvent() {
         Thread.sleep(5000)
-        onView(AllOf.allOf(withId(R.id.tg_event_checkout_widget_pessanger_name), isDisplayed())).perform(click())
+        onView(AllOf.allOf(withId(R.id.widget_event_checkout_pessanger), isDisplayed())).perform(click())
         Thread.sleep(3000)
         onView(withId(R.id.recycler_view)).perform(RecyclerViewActions.actionOnItemAtPosition<EventPDPTextFieldViewHolder>(0, typeText("Firmanda Mulyawan Nugroho")))
         Thread.sleep(3000)

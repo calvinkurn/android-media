@@ -21,4 +21,18 @@ class GetAddOnByID {
     @SerializedName("AddOnByIDResponse")
     @Expose
     var addOnByIDResponse: List<Addon> = emptyList()
+
+    @SerializedName("AggregatedData")
+    @Expose
+    var aggregatedData: AggregatedData = AggregatedData()
+
+    data class AggregatedData (
+        @SerializedName("Title")
+        val title: String = "",
+
+        @SerializedName("Price")
+        val price: Long = 0,
+    )
 }
+
+

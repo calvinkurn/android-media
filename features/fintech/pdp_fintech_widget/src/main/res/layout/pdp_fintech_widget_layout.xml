@@ -5,15 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.tokopedia.unifycomponents.DividerUnify
-        android:id="@+id/divider1"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/spacing_lvl1"
-        android:background="@color/Unify_NN50"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/quickText"
         android:layout_width="0dp"
@@ -21,7 +12,7 @@
         android:layout_marginStart="@dimen/pdp_fintech_widget_16_dp"
         android:layout_marginTop="@dimen/pdp_fintech_widget_14_dp"
         android:layout_marginEnd="@dimen/pdp_fintech_widget_16_dp"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:typographyWeight="bold"
         app:typographyType="display_2"
         tools:text = "Demo Title kjdfnv fkjdsng dlkjfng jfskng kjxfng kjfng"
@@ -29,7 +20,7 @@
         android:maxLines="1"
         app:layout_constraintRight_toLeftOf="@id/pdp_fintech_widget_see_more"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/divider1" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/pdp_fintech_widget_see_more"

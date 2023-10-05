@@ -30,7 +30,7 @@
         android:id="@+id/tv_campaign_stock_count_variant"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/Unify_G500"
+        android:textColor="@color/Unify_GN500"
         android:gravity="center_vertical"
         android:visibility="gone"
         app:typographyType="heading_6"

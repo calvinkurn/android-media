@@ -232,7 +232,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
             if (searchBarType == SEARCH_BAR_TYPE_SOLID) {
                 binding.digitalHomepageToolbar.toOnScrolledMode()
                 binding.digitalHomepageOrderList.setColorFilter(
-                    ContextCompat.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_N200),
+                    ContextCompat.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_NN500),
                     PorterDuff.Mode.MULTIPLY
                 )
                 searchBarContainer.background = MethodChecker.getDrawable(

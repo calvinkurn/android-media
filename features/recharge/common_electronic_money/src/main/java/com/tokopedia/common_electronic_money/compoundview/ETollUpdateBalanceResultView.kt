@@ -86,10 +86,10 @@ class ETollUpdateBalanceResultView @JvmOverloads constructor(@NotNull context: C
     fun showError(errorMessage: String) {
         textLabelProgressTitle.visibility = View.VISIBLE
         textLabelProgressTitle.text = resources.getString(R.string.emoney_nfc_update_card_balance_failed_title)
-        textLabelProgressTitle.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_R600))
+        textLabelProgressTitle.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_RN500))
         textLabelProgressMessage.visibility = View.VISIBLE
         textLabelProgressMessage.text = errorMessage
-        textLabelProgressMessage.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N300))
+        textLabelProgressMessage.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN500))
         eTollCardInfoView.visibility = View.VISIBLE
         eTollCardInfoView.removeCardInfo()
         buttonTopup.visibility = View.GONE
@@ -97,10 +97,10 @@ class ETollUpdateBalanceResultView @JvmOverloads constructor(@NotNull context: C
 
     fun showLoading() {
         textLabelProgressTitle.visibility = View.VISIBLE
-        textLabelProgressTitle.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700))
+        textLabelProgressTitle.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950))
         textLabelProgressTitle.text = resources.getString(R.string.emoney_nfc_update_card_balance_progress_label_title)
         textLabelProgressMessage.visibility = View.VISIBLE
-        textLabelProgressMessage.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N300))
+        textLabelProgressMessage.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN500))
         textLabelProgressMessage.text = resources.getString(R.string.emoney_nfc_update_card_balance_progress_label_message)
         eTollCardInfoView.visibility = View.VISIBLE
         eTollCardInfoView.showLoading()

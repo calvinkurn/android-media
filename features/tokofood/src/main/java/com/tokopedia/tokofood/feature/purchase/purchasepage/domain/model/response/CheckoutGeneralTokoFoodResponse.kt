@@ -11,11 +11,6 @@ data class CheckoutGeneralTokoFoodResponse(
     val checkoutGeneralTokoFood: CheckoutGeneralTokoFood = CheckoutGeneralTokoFood()
 )
 
-data class CheckoutGeneralTokoFoodResponseOld(
-    @SerializedName("checkout_general_v2")
-    val checkoutGeneralTokoFood: CheckoutGeneralTokoFood = CheckoutGeneralTokoFood()
-)
-
 data class CheckoutGeneralTokoFood(
     @SerializedName("header")
     val header: Header = Header(),

@@ -11,11 +11,9 @@ import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
-import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
+import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
-import com.tokopedia.unit.test.rule.CoroutineTestRule
-import com.tokopedia.unit.test.rule.StandardTestRule
 import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
@@ -77,6 +75,7 @@ open class BaseTokoNowViewModelTestFixture {
         }
 
         onGetIsOutOfCoverage_thenReturn(outOfCoverage = false)
+        onGetUserLoggedIn_thenReturn(isLoggedIn = true)
     }
 
     protected fun onAddToCart_thenReturn(response: AddToCartDataModel) {
@@ -157,6 +156,10 @@ open class BaseTokoNowViewModelTestFixture {
 
     protected fun onInitAffiliateCookie_thenReturn(error: Throwable) {
         coEvery { affiliateHelper.initCookie(any(), any(), any()) } throws error
+    }
+
+    protected fun onGetTickerDataAsync_thenReturn(error: Throwable) {
+        coEvery { getTargetedTickerUseCase.execute(anyString(), anyString()) } throws error
     }
 
     protected fun verifyGetMiniCartUseCaseCalled() {

@@ -40,8 +40,8 @@
                         android:layout_gravity="center"
                         android:layout_marginStart="4dp"
                         android:layout_marginEnd="4dp"
-                        app:icon_color_light_enable="@color/Unify_N0"
-                        app:icon_color_night_enable="@color/Unify_N0"
+                        app:icon_color_light_enable="@color/Unify_NN0"
+                        app:icon_color_night_enable="@color/Unify_NN0"
                         app:icon_name="PRODUCT"
                         app:unify_image_type="circle" />
 

@@ -32,15 +32,18 @@ class ComparisonWidgetView : FrameLayout, CoroutineScope {
     private var comparisonListModel: ComparisonListModel? = null
     private var adapter: ComparedItemAdapter? = null
     private var comparedAdapter: ComparisonWidgetAdapter? = null
+    private var isAnchorClickable: Boolean = false
 
     private var userSessionInterface = UserSession(context)
 
     private val masterJob = SupervisorJob()
     override val coroutineContext = masterJob + Dispatchers.IO
 
-    constructor(context: Context) : super(context)
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+    constructor(context: Context) : super(context) { init() }
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) { init(attrs) }
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+        init(attrs)
+    }
 
     private var rv_comparison_widget: RecyclerView? = null
     private var rv_compared_item: RecyclerView? = null
@@ -48,7 +51,10 @@ class ComparisonWidgetView : FrameLayout, CoroutineScope {
     private var btn_see_more: TextView? = null
     private var btn_collapse: LinearLayout? = null
     private var comparison_widget_container: LinearLayout? = null
-    init {
+
+    private fun init(attrs: AttributeSet? = null) {
+        initAttributes(attrs)
+
         LayoutInflater.from(context).inflate(R.layout.view_comparison_widget, this)
         rv_comparison_widget = rootView.findViewById(R.id.rv_comparison_widget)
         rv_compared_item = rootView.findViewById(R.id.rv_compared_item)
@@ -64,16 +70,38 @@ class ComparisonWidgetView : FrameLayout, CoroutineScope {
         switchToCollapsedState(resources.getDimensionPixelSize(R.dimen.comparison_widget_collapsed_height))
     }
 
+    private fun initAttributes(attrs: AttributeSet?) {
+        attrs ?: return
+
+        val typedArray = context.obtainStyledAttributes(
+            attrs,
+            R.styleable.ComparisonWidgetView, 0, 0)
+
+        try {
+            isAnchorClickable = typedArray.getBoolean(R.styleable.ComparisonWidgetView_clickableAnchor, false)
+        } finally {
+            typedArray.recycle()
+        }
+    }
+
     fun setComparisonWidgetData(
         recommendationWidget: RecommendationWidget,
         comparisonWidgetInterface: ComparisonWidgetInterface,
         recommendationTrackingModel: RecommendationTrackingModel,
-        trackingQueue: TrackingQueue?
+        trackingQueue: TrackingQueue?,
+        isAnchorClickable: Boolean? = null,
     ) {
         launch {
             try {
+                isAnchorClickable?.let { this@ComparisonWidgetView.isAnchorClickable = it }
+
                 val comparisonListModel =
-                    ComparisonWidgetMapper.mapToComparisonWidgetModel(recommendationWidget, context)
+                    ComparisonWidgetMapper.mapToComparisonWidgetModel(
+                        recommendationWidget,
+                        context,
+                        this@ComparisonWidgetView.isAnchorClickable,
+                    )
+
                 if (this@ComparisonWidgetView.adapter == null) {
                     launch(Dispatchers.Main) {
                         tv_header_title?.text = comparisonListModel.recommendationWidget?.title

@@ -1,6 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.tokopedia.otp"
     android:versionCode="1"
     android:versionName="1.0.0">
 
@@ -15,7 +14,7 @@
             android:value="true" />
 
         <activity
-            android:name=".stub.verification.view.activity.VerificationActivityStub"
+            android:name="com.tokopedia.otp.stub.verification.view.activity.VerificationActivityStub"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
     </application>

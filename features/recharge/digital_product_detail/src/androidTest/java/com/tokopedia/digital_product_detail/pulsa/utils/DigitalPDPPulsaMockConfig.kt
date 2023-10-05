@@ -44,7 +44,7 @@ class DigitalPDPPulsaMockConfig: MockModelConfig() {
         private const val KEY_QUERY_MENU_DETAIL = "rechargeCatalogMenuDetail"
         private const val KEY_QUERY_OPERATOR_PREFIX = "rechargeCatalogPrefixSelect"
         private const val KEY_QUERY_CATALOG_INPUT_MULTITAB = "rechargeCatalogProductInputMultiTab"
-        private const val KEY_CHANNEL_RECOMMENDATION = "recharge_pdp_last_trx_client_number"
+        private const val KEY_CHANNEL_RECOMMENDATION = "pulsa_pdp_last_transaction"
         private const val KEY_CHANNEL_FAVORITE_NUMBER = "favorite_number_prefill"
         private const val KEY_CHANNEL_FAVORITE_NUMBER_WITHOUT_PREFILL = "favorite_number_chips"
 

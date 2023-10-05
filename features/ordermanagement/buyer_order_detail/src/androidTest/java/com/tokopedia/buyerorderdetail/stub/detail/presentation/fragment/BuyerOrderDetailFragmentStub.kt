@@ -18,11 +18,16 @@ class BuyerOrderDetailFragmentStub : BuyerOrderDetailFragment() {
             digitalRecommendationListener = this,
             courierInfoViewHolderListener = this,
             productListToggleListener = this,
+            scpRewardsMedalTouchPointWidgetListener = this,
             pofRefundInfoListener = this,
+            owocInfoListener = this,
+            bmgmListener = this,
             productViewListener = this,
+            bottomSheetListener = this,
             navigator = navigator,
             buyerOrderDetailBindRecomWidgetListener = this,
             orderResolutionListener = this,
+            recyclerViewSharedPool = recyclerViewSharedPool
         )
     }
 

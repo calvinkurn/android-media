@@ -29,6 +29,7 @@ object ShopPageTrackingConstant {
     const val VIEW_ITEM_LIST = "view_item_list"
     const val SELECT_CONTENT = "select_content"
     const val BUNDLING_ADD_TO_CART = "add_to_cart"
+    const val VIEW_PG_IRIS = "viewPGIris"
 
     // category
     const val SHOP_PAGE_SELLER = "shop page - seller"
@@ -40,6 +41,7 @@ object ShopPageTrackingConstant {
     const val SETTING_PAGE_SELLER = "setting page - seller"
     const val SHOP_PROFILE_PAGE_BUYER = "shop profile page - buyer"
     const val SHOP_CAMPAIGN_TAB_EVENT_CATEGORY = "shop page - buyer - campaign tab"
+    const val ETALASE_SHOP = "etalase shop"
 
     // ACTION
     const val INFO = "info"
@@ -100,6 +102,7 @@ object ShopPageTrackingConstant {
     const val ACTION_IMPRESSION_SHOP_HEADER_BUYER = "impression shop header"
     const val ACTION_IMPRESSION_SHOP_HEADER_SELLER = "impression shop header seller"
     const val CLICK_SHARE_BUTTON = "click - share button"
+
     const val CLICK_GLOBAL_HEADER = "click global header"
     const val CLICK_CLOSE_SHARE_BOTTOM_SHEET = "click - close share bottom sheet"
     const val CLICK_CLOSE_SCREENSHOT_SHARE_BOTTOM_SHEET = "click - close screenshot share bottom sheet"
@@ -131,6 +134,10 @@ object ShopPageTrackingConstant {
     const val PRODUCT_LIST_IMPRESSION_SHOP_DECOR = "product list impression - shop decor"
     const val CLICK_PRODUCT_SHOP_DECOR = "click product - shop decor"
     const val PACKAGE_VARIANT = "package variant"
+    const val CLICK_SHARE_CHIPS = "click - share contextual chip"
+    const val VIEW_SHARE_CHIPS = "view - share contextual chip"
+    const val IMPRESSION_BMGM_BANNER = "impression bmgm banner"
+    const val CLICK_BMGM_BANNER = "click bmgm banner"
 
     // label
     const val CLICK_SHARE = "click share"
@@ -153,6 +160,7 @@ object ShopPageTrackingConstant {
     const val CLICK_ADD_NOTE = "click add note"
     const val BUSINESS_UNIT = "businessUnit"
     const val PHYSICAL_GOODS = "physical goods"
+    const val PHYSICAL_GOODS_PASCAL_CASE = "Physical Goods"
     const val HOME_AND_BROWSE = "home & browse"
     const val SHARING_EXPERIENCE = "sharingexperience"
     const val CURRENT_SITE = "currentSite"
@@ -214,6 +222,9 @@ object ShopPageTrackingConstant {
     const val LABEL_SHOP_DECOR_CLICK = "click - shop decor"
     const val IMPRESSION_SHOP_BANNER_LABEL = "impression - shop banner - campaign tab - %1s - %2s"
     const val CLICK_SHOP_BANNER_LABEL = "click - shop banner - campaign tab - %1s - %2s"
+    const val CLICK_SHARE_REGULER = "general"
+    const val CLICK_SHARE_AFFILIATE_ICON = "affiliate"
+    const val LABEL_BMGM_BANNER = "%1s-%2s-%3s"
 
     // key
     const val EVENT = "event"
@@ -328,7 +339,10 @@ object ShopPageTrackingConstant {
     const val VALUE_STRING_ZERO = "0"
     const val VALUE_SHOP_PAGE_THEMATIC = "/shoppagethematic"
     const val ITEM_LIST_PERSO_TRENDING_WIDGET = "/shoppage - trending"
+    const val ITEM_LIST_SHOP_PAGE_REIMAGINED = "/shoppage reimagined -"
     const val ITEM_LIST_PERSO_PRODUCT_COMPARISON = "/shoppage - comparison"
+    const val ITEM_LIST_REIMAGINED_HOTSPOT_WIDGET = "/shoppage reimagined - hotspot widget"
+    const val ITEM_LIST_REIMAGINED_DIRECT_PURCHASE_WIDGET = "/shoppage reimagined - direct purchase"
     const val VALUE_MULTIPLE_BUNDLING = "multiple bundling"
     const val VALUE_SINGLE_BUNDLING = "single bundling"
     const val SHOP_AFFILIATE = "affiliate"
@@ -337,6 +351,16 @@ object ShopPageTrackingConstant {
     const val NULL_VALUE = "null"
     const val CLICK_SHOP_HEADER = "click shop header"
     const val CLICK_SELLER = "click - seller"
+    const val REIMAGINE_IMPRESSION_VALUE = "reimagined - impression product"
+    const val REIMAGINE_CLICK_VALUE = "reimagined - click product"
+    const val TERLARIS_WIDGET_VALUE = "terlaris"
+    const val HIGHLIGHT_WIDGET = "highlight widget"
+    const val HOME_ANCHOR = "home anchor"
+    const val PLAY_WIDGET = "play widget"
+    const val VALUE_SHOP_HEADER_BACKGROUND_VIDEO = "video"
+    const val VALUE_SHOP_HEADER_BACKGROUND_IMAGE = "image"
+    const val VALUE_SHOP_HEADER_BACKGROUND_COLOR = "color"
+    const val VALUE_SHOP_HEADER_BACKGROUND_STANDARD = "standard"
 
     // trackerId
     const val TRACKER_ID_CLICK_SHARE_BUTTON = "10544"
@@ -347,6 +371,12 @@ object ShopPageTrackingConstant {
     const val TRACKER_ID_VIEW_SCREEN_SHOT_BOTTOM_SHEET = "10552"
     const val TRACKER_ID_CLOSE_SCREEN_SHOT_SHARE_BOTTOM_SHEET = "10553"
     const val TRACKER_ID_SCREEN_SHOT_CLICK_SHARING_CHANNEL = "10554"
+    const val TRACKER_ID_CLICK_SHARE_IN_SHOP_ETALASE = "45699"
+    const val TRACKER_ID_CLICK_CLOSE_SHARE_IN_SHOP_ETALASE = "45700"
+    const val TRACKER_ID_CLICK_SHARE_OPTION_SHOP_ETALASE = "45701"
+    const val TRACKER_ID_IMPRESSION_UNIVERSAL_SHARE_IN_SHOP_ETALASE = "45702"
+    const val TRACKER_ID_CLICK_CHIPS_TAB_SHOP_PAGE = "45135"
+    const val TRACKER_ID_SHOW_CHIPS_TAB_SHOP_PAGE = "45134"
 
     // dimension83
     const val BOE = "BoE"
@@ -378,9 +408,12 @@ object ShopPageTrackingConstant {
     const val SHOP_PAGE_SHARE_BOTTOM_SHEET_FEATURE_NAME = "share"
     const val SHOP_PRODUCT_ATC_QUANTITY_INCREASE = "increase"
     const val SHOP_PRODUCT_ATC_QUANTITY_DECREASE = "decrease"
+    const val WIDGET_DIRECT_PURCHASE_WITH_ETALASE_GROUP_VARIANT = "with etalase group"
+    const val WIDGET_DIRECT_PURCHASE_WITHOUT_ETALASE_GROUP_VARIANT = "without etalase group"
     object Event {
         const val DIRECT_PURCHASE_ADD_TO_CART = "add_to_cart"
         const val VIEW_PG_IRIS = "viewPGIris"
+        const val OPEN_SCREEN = "openScreen"
     }
 
     object EventAction {
@@ -401,10 +434,69 @@ object ShopPageTrackingConstant {
         const val ALL_PRODUCT_IMPRESSION = "product list impression"
         const val IMPRESSION_PERSO_PRODUCT_COMPARISON = "product list impression - home - comparison"
         const val CLICK_PERSO_PRODUCT_COMPARISON = "click product - home - comparison"
+        const val CAMPAIGN_TAB_COUPON_DETAIL_IMPRESSION = "campaign tab - impression kupon detail"
+        const val CAMPAIGN_TAB_COUPON_DETAIL_CLICK = "campaign tab - click kupon detail"
+        const val CAMPAIGN_TAB_COUPON_LIST_IMPRESSION = "campaign tab - impression kupon list"
+        const val CAMPAIGN_TAB_COUPON_IMPRESSION = "campaign tab - impression kupon"
+        const val CAMPAIGN_TAB_COUPON_CLICK = "campaign tab - click kupon"
+        const val IMPRESSION_EXCLUSIVE_LAUNCH_WIDGET = "impression exclusive launch widget"
+        const val CLICK_REMIND_ME_EXCLUSIVE_LAUNCH_WIDGET = "click remind me exclusive launch widget"
+        const val CLICK_EXCLUSIVE_LAUNCH_WIDGET = "click exclusive launch widget"
+        const val IMPRESSION_MAIN_BANNER_CAMPAIGN_TAB = "campaign tab - impression main banner"
+        const val CLICK_REMIND_ME_MAIN_BANNER_CAMPAIGN_TAB = "campaign tab - click remind me main banner"
+        const val IMPRESSION_TITLE_WIDGET = "campaign tab - impression title widget"
+        const val CLICK_TITLE_WIDGET = "campaign tab - click title widget"
+        const val IMPRESSION_PRODUCT_HIGHLIGHT_WIDGET = "campaign tab - impression product highlight"
+        const val CLICK_PRODUCT_HIGHLIGHT_WIDGET = "campaign tab - click product highlight"
+        const val IMPRESSION_VOUCHER_SLIDER_WIDGET = "campaign tab - impression kupon"
+        const val CLICK_CTA_VOUCHER_SLIDER_ITEM_WIDGET = "campaign tab - click kupon"
+        const val CLICK_SEE_MORE_VOUCHER_SLIDER_ITEM_WIDGET = "campaign tab - click see more kupon"
+        const val CLICK_VOUCHER_SLIDER_ITEM_WIDGET = "campaign tab - click kupon other"
+        const val IMPRESSION_BANNER_WIDGET = "campaign tab - impression banner"
+        const val CLICK_BANNER_WIDGET = "campaign tab - click banner"
+        const val IMPRESSION_PRODUCT_SLIDER_BANNER_HIGHLIGHT = "campaign tab - impression product home anchor"
+        const val CLICK_PRODUCT_SLIDER_BANNER_HIGHLIGHT = "campaign tab - click product home anchor"
+        const val CLICK_CTA_SLIDER_BANNER_HIGHLIGHT = "campaign tab - click jelajahi home anchor"
+        const val IMPRESSION_CAMPAIGN_PLAY_WIDGET_ITEM = "campaign tab - impression product play"
+        const val CLICK_CAMPAIGN_PLAY_WIDGET_ITEM = "campaign tab - click product play"
+        const val REIMAGINED_IMPRESSION_SHOP_HEADER = "reimagined - impression shop header"
+        const val REIMAGINED_CLICK_HEADER_SHOP_NAME = "reimagined - click header shop name"
+        const val REIMAGINED_CLICK_HEADER_SHOP_REVIEW = "reimagined - click header shop review"
+        const val REIMAGINED_CLICK_HEADER_SHOP_USP = "reimagined - click header shop usp"
+        const val REIMAGINED_CLICK_HEADER_SHOP_CHAT = "reimagined - click header shop chat"
+        const val REIMAGINED_CLICK_HEADER_SHOP_FOLLOW = "reimagined - click header shop follow"
+        const val REIMAGINED_IMPRESSION_BOTTOM_NAV = "reimagined - impression bottom navigation"
+        const val REIMAGINED_CLICK_BOTTOM_NAV = "reimagined - click bottom navigation"
+        const val REIMAGINED_IMPRESSION_BANNER_CAROUSEL = "reimagined - impression banner carousel"
+        const val REIMAGINED_CLICK_BANNER_CAROUSEL = "reimagined - click banner carousel"
+        const val REIMAGINED_IMPRESSION_BANNER_HOTSPOT = "reimagined - impression banner hotspot"
+        const val REIMAGINED_CLICK_PRODUCT_BANNER_HOTSPOT = "reimagined - click product hotspot"
+        const val REIMAGINED_IMPRESSION_DIRECT_PURCHASE_WIDGET = "reimagined - impression direct purchase widget"
+        const val REIMAGINED_CLICK_ADD_TO_CART_DIRECT_PURCHASE_WIDGET = "reimagined - click add to cart direct purchase widget"
+        const val REIMAGINED_CLICK_ETALASE_GROUP_DIRECT_PURCHASE_WIDGET = "reimagined - click etalase group direct purchase widget"
+        const val REIMAGINED_CLICK_ETALASE_DIRECT_PURCHASE_WIDGET = "reimagined - click etalase direct purchase widget"
+        const val REIMAGINED_IMPRESSION_PRODUCT_DIRECT_PURCHASE_WIDGET = "reimagined - impression product direct purchase widget"
+        const val REIMAGINED_CLICK_PRODUCT_DIRECT_PURCHASE_WIDGET = "reimagined - click product direct purchase widget"
+
+        // Showcase Navigation Widget - Without tab
+        const val IMPRESSION_REIMAGINED_SHOWCASE_NAVIGATION = "reimagined - impression navigasi etalase banner"
+        const val CLICK_REIMAGINED_SHOWCASE_NAVIGATION = "reimagined - click navigasi etalase banner"
+        const val CLICK_REIMAGINED_SHOWCASE_NAVIGATION_VIEW_ALL = "reimagined - click navigasi etalase all"
+
+        // Showcase Navigation Widget - With tab
+        const val IMPRESSION_REIMAGINED_SHOWCASE_NAVIGATION_WITH_TAB = "reimagined - impression navigasi etalase with tab"
+        const val CLICK_REIMAGINED_SHOWCASE_NAVIGATION_WITH_TAB = "reimagined - click tab navigasi etalase with tab"
+        const val CLICK_REIMAGINED_BANNER_SHOWCASE_NAVIGATION_WITH_TAB = "reimagined - click banner navigasi etalase with tab"
+
+        // Product Carousel Widget
+        const val IMPRESSION_REIMAGINED_BANNER_PRODUCT_CAROUSEL = "reimagined - impression advanced carousel"
+        const val CLICK_REIMAGINED_BANNER_PRODUCT_CAROUSEL = "reimagined - click banner advanced carousel"
+        const val CLICK_REIMAGINED_PRODUCT_CAROUSEL = "reimagined - click product advanced carousel"
     }
 
     object EventCategory {
         const val SHOP_PAGE_BUYER_DIRECT_PURCHASE = "shop page - buyer - direct purchase"
+        const val SHOP_PAGE_BUYER = "shop page - buyer"
     }
 
     object TrackerId {
@@ -434,6 +526,8 @@ object ShopPageTrackingConstant {
         const val TRACKER_ID_ALL_PRODUCT_CLICKED = "21760"
         const val TRACKER_ID_ALL_PRODUCT_IMPRESSION = "21759"
         const val TRACKER_ID_CLICK_SHOP_DECOR = "21831"
+        const val TRACKER_ID_REIMAGINE_IMPRESSION_TERLARIS_WIDGET = "45953"
+        const val TRACKER_ID_REIMAGINE_CLICK_TERLARIS_WIDGET = "45954"
         const val TRACKER_ID_IMPRESSION_SHOP_DECOR = "21833"
         const val TRACKER_ID_THEMATIC_WIDGET_IMPRESSION = "27069"
         const val TRACKER_ID_THEMATIC_WIDGET_PRODUCT_CARD_IMPRESSION = "27070"
@@ -446,6 +540,65 @@ object ShopPageTrackingConstant {
         const val TRACKER_ID_IMPRESSION_SHOP_PERSO_PRODUCT_COMPARISON = "43123"
         const val TRACKER_ID_CLICK_SHOP_PERSO_PRODUCT_COMPARISON = "43124"
 
+        const val TRACKER_ID_EXCLUSIVE_LAUNCH_VOUCHER_DETAIL_IMPRESSION = "44415"
+        const val TRACKER_ID_EXCLUSIVE_LAUNCH_VOUCHER_CLICK = "44416"
+        const val TRACKER_ID_EXCLUSIVE_LAUNCH_VOUCHER_LIST_IMPRESSION = "44408"
+        const val TRACKER_ID_EXCLUSIVE_LAUNCH_VOUCHER_IMPRESSION = "44348"
+        const val TRACKER_ID_EXCLUSIVE_LAUNCH_VOUCHER_CLICK_ON_CAMPAIGN_TAB = "44349"
+        const val TRACKER_ID_IMPRESSION_BANNER_TIMER_HOME_TAB = "44337"
+        const val TRACKER_ID_CLICK_REMIND_ME_BANNER_TIMER_HOME_TAB = "44338"
+        const val TRACKER_ID_CLICK_CTA_BANNER_TIMER_HOME_TAB = "44339"
+        const val TRACKER_ID_OPEN_SCREEN_CAMPAIGN_TAB = "44340"
+        const val TRACKER_ID_IMPRESSION_MAIN_BANNER_CAMPAIGN_TAB = "44341"
+        const val TRACKER_ID_CLICK_REMIND_ME_MAIN_BANNER_CAMPAIGN_TAB = "44342"
+        const val TRACKER_ID_IMPRESSION_TITLE_WIDGET = "44343"
+        const val TRACKER_ID_CLICK_TITLE_WIDGET = "44344"
+        const val TRACKER_ID_IMPRESSION_PRODUCT_HIGHLIGHT = "44346"
+        const val TRACKER_ID_CLICK_PRODUCT_HIGHLIGHT = "44347"
+        const val TRACKER_ID_IMPRESSION_VOUCHER_SLIDER = "44348"
+        const val TRACKER_ID_CLICK_CTA_VOUCHER_SLIDER_ITEM = "44349"
+        const val TRACKER_ID_CLICK_SEE_MORE_VOUCHER_SLIDER_ITEM = "44350"
+        const val TRACKER_ID_CLICK_VOUCHER_SLIDER_ITEM = "44351"
+        const val TRACKER_ID_IMPRESSION_BANNER_WIDGET = "44359"
+        const val TRACKER_ID_CLICK_BANNER_WIDGET = "44360"
+        const val TRACKER_ID_IMPRESSION_PLAY_WIDGET = "44363"
+        const val TRACKER_ID_CLICK_PLAY_WIDGET = "44364"
+        const val TRACKER_ID_IMPRESSION_SLIDER_BANNER_HIGHLIGHT_WIDGET = "44365"
+        const val TRACKER_ID_CLICK_PRODUCT_SLIDER_BANNER_HIGHLIGHT_WIDGET = "44366"
+        const val TRACKER_ID_CLICK_EXPLORE_SHOP_SLIDER_BANNER_HIGHLIGHT_WIDGET = "44368"
+        const val TRACKER_ID_IMPRESS_BMGM_BANNER = "46749"
+        const val TRACKER_ID_CLICK_BMGM_BANNER = "46750"
+
+        // Showcase Navigation Widget
+        const val TRACKER_ID_IMPRESSION_REIMAGINED_SHOWCASE_NAVIGATION = "45924"
+        const val TRACKER_ID_CLICK_REIMAGINED_SHOWCASE_NAVIGATION = "45925"
+        const val TRACKER_ID_CLICK_VIEW_ALL_REIMAGINED_SHOWCASE_NAVIGATION = "45926"
+        const val TRACKER_ID_IMPRESSION_REIMAGINED_SHOWCASE_NAVIGATION_WITH_TAB = "45927"
+        const val TRACKER_ID_CLICK_REIMAGINED_SHOWCASE_NAVIGATION_WITH_TAB = "45928"
+        const val TRACKER_ID_CLICK_REIMAGINED_BANNER_SHOWCASE_NAVIGATION_WITH_TAB = "45929"
+
+        // Product Carousel Widget
+        const val TRACKER_ID_IMPRESSION_REIMAGINED_BANNER_PRODUCT_CAROUSEL = "45950"
+        const val TRACKER_ID_CLICK_REIMAGINED_BANNER_PRODUCT_CAROUSEL = "45951"
+        const val TRACKER_ID_CLICK_REIMAGINED_PRODUCT_CAROUSEL = "45952"
+        const val TRACKER_ID_REIMAGINED_IMPRESSION_HEADER_SHOP = "45906"
+        const val TRACKER_ID_REIMAGINED_CLICK_HEADER_SHOP_NAME = "45907"
+        const val TRACKER_ID_REIMAGINED_CLICK_HEADER_SHOP_REVIEW = "45908"
+        const val TRACKER_ID_REIMAGINED_CLICK_HEADER_SHOP_USP = "45909"
+        const val TRACKER_ID_REIMAGINED_CLICK_HEADER_SHOP_CHAT = "45911"
+        const val TRACKER_ID_REIMAGINED_CLICK_HEADER_SHOP_FOLLOW = "45912"
+        const val TRACKER_ID_REIMAGINED_IMPRESSION_BOTTOM_NAV = "45913"
+        const val TRACKER_ID_REIMAGINED_CLICK_BOTTOM_NAV = "45914"
+        const val TRACKER_ID_REIMAGINED_IMPRESSION_BANNER_CAROUSEL = "45920"
+        const val TRACKER_ID_REIMAGINED_CLICK_BANNER_CAROUSEL = "45921"
+        const val TRACKER_ID_REIMAGINED_IMPRESSION_BANNER_HOTSPOT = "45922"
+        const val TRACKER_ID_REIMAGINED_CLICK_PRODUCT_BANNER_HOTSPOT = "45923"
+        const val TRACKER_ID_REIMAGINED_IMPRESSION_DIRECT_PURCHASE_WIDGET = "45955"
+        const val TRACKER_ID_REIMAGINED_CLICK_ETALASE_GROUP_DIRECT_PURCHASE_WIDGET = "45956"
+        const val TRACKER_ID_REIMAGINED_CLICK_ETALASE_DIRECT_PURCHASE_WIDGET = "459557"
+        const val TRACKER_ID_REIMAGINED_CLICK_ADD_TO_CART_DIRECT_PURCHASE_WIDGET = "45958"
+        const val TRACKER_ID_REIMAGINED_IMPRESSION_PRODUCT_DIRECT_PURCHASE_WIDGET = "46620"
+        const val TRACKER_ID_REIMAGINED_CLICK_PRODUCT_DIRECT_PURCHASE_WIDGET = "45959"
     }
 
     object Key {

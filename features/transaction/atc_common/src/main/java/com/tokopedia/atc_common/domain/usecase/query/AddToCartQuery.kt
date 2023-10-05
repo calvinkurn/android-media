@@ -20,6 +20,12 @@ val QUERY_ADD_TO_CART = """
                       uc_ut_param
                       is_trade_in
                       message
+                      is_fulfillment
+                      add_ons {
+                         id
+                         unique_id
+                         status
+                      }
                     }
                     error_reporter {
                       eligible
@@ -32,7 +38,7 @@ val QUERY_ADD_TO_CART = """
                     }
                 }
             }
-        """.trimIndent()
+""".trimIndent()
 
 val MUTATION_ADD_TO_CART_BUNDLE = """
     mutation add_to_cart_bundle(${'$'}params: AddToCartBundleParam, ${'$'}chosen_address: ChosenAddressParam, ${'$'}dummy: Int) {

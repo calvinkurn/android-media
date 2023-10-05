@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.shorts.robot
 
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.robot.PlayBroProductSetupViewModelRobot
@@ -12,6 +13,7 @@ import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
 import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsUiEvent
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUiState
 import com.tokopedia.play.broadcaster.shorts.view.viewmodel.PlayShortsViewModel
+import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play_common.shortsuploader.PlayShortsUploader
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
@@ -40,6 +42,18 @@ class PlayShortsViewModelRobot(
         dataStore = dataStore,
     )
 
+    val title: String
+        get() = viewModel.title
+
+    val maxTitleCharacter: Int
+        get() = viewModel.maxTitleCharacter
+
+    val productSectionList: List<ProductTagSectionUiModel>
+        get() = viewModel.productSectionList
+
+    val maxProduct: Int
+        get() = viewModel.maxProduct
+
     val isAllMandatoryMenuChecked: Boolean
         get() = viewModel.isAllMandatoryMenuChecked
 
@@ -49,8 +63,14 @@ class PlayShortsViewModelRobot(
     val isAllowChangeAccount: Boolean
         get() = viewModel.isAllowChangeAccount
 
+    val accountList: List<ContentAccountUiModel>
+        get() = viewModel.accountList
+
     val tncList: List<TermsAndConditionUiModel>
         get() = viewModel.tncList
+
+    val isSelectedAccountAffiliate: Boolean
+        get() = viewModel.isSelectedAccountAffiliate
 
     fun setUp(fn: PlayShortsViewModelRobot.() -> Unit): PlayShortsViewModelRobot {
         fn()

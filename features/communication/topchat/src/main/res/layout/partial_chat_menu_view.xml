@@ -10,8 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:overScrollMode="never"
-        android:paddingTop="@dimen/spacing_lvl5"
-        android:paddingBottom="@dimen/spacing_lvl5"
+        android:paddingBottom="16dp"
         android:visibility="gone"
         tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         tools:spanCount="4"
@@ -20,15 +19,9 @@
     <com.tokopedia.topchat.chatroom.view.custom.ChatMenuStickerView
         android:id="@+id/ll_sticker_container"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_topchat_192"
+        android:layout_height="192dp"
         android:orientation="vertical"
         android:visibility="gone"
         tools:visibility="visible" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/spacing_lvl3"
-        android:layout_gravity="top"
-        android:background="@drawable/bg_shadow_attachment_menu_chat_common" />
 
 </merge>

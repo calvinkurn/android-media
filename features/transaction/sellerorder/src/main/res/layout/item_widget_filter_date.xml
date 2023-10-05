@@ -13,7 +13,7 @@
         android:paddingHorizontal="12dp"
         android:paddingVertical="11dp"
         android:text="@string/select_date"
-        android:textColor="@color/Unify_N700_44"
+        android:textColor="@color/Unify_NN950_44"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="display_1"
         tools:background="@drawable/bg_som_filter_date_border" />

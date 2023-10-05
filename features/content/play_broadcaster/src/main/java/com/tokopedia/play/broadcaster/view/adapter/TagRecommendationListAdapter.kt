@@ -1,7 +1,7 @@
 package com.tokopedia.play.broadcaster.view.adapter
 
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
-import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
+import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagItem
 import com.tokopedia.play.broadcaster.ui.viewholder.TagViewHolder
 import com.tokopedia.play.broadcaster.view.adapter.delegate.TagAdapterDelegate
 
@@ -19,7 +19,7 @@ class TagRecommendationListAdapter(
     }
 
     override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
-        if(oldItem is PlayTagUiModel && newItem is PlayTagUiModel)
+        if(oldItem is PlayTagItem && newItem is PlayTagItem)
             return oldItem.tag == newItem.tag
         return oldItem == newItem
     }

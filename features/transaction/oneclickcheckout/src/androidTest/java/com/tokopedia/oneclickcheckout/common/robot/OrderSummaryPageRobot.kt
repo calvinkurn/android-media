@@ -37,6 +37,10 @@ import org.hamcrest.BaseMatcher
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.junit.Assert.assertEquals
+import com.tokopedia.dialog.R as dialogR
+import com.tokopedia.logisticcart.R as logisticcartR
+import com.tokopedia.purchase_platform.common.R as purchase_platformcommonR
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 fun orderSummaryPage(func: OrderSummaryPageRobot.() -> Unit) = OrderSummaryPageRobot().apply(func)
 
@@ -49,7 +53,7 @@ const val DEBOUNCE_TIME = 100L
 class OrderSummaryPageRobot {
 
     fun closeBottomSheet() {
-        onView(withId(com.tokopedia.unifycomponents.R.id.bottom_sheet_close)).perform(click())
+        onView(withId(unifycomponentsR.id.bottom_sheet_close)).perform(click())
     }
 
     fun clickAddProductQuantity(index: Int = 0, times: Int = 1) {
@@ -62,7 +66,7 @@ class OrderSummaryPageRobot {
                     override fun getDescription(): String = "click add product quantity"
 
                     override fun perform(uiController: UiController?, view: View) {
-                        val addButton = view.findViewById<View>(com.tokopedia.unifycomponents.R.id.quantity_editor_add)
+                        val addButton = view.findViewById<View>(unifycomponentsR.id.quantity_editor_add_anim)
                         for (i in 0 until times) {
                             addButton.performClick()
                         }
@@ -83,7 +87,7 @@ class OrderSummaryPageRobot {
                     override fun getDescription(): String = "click minus product quantity"
 
                     override fun perform(uiController: UiController?, view: View) {
-                        val minusButton = view.findViewById<View>(com.tokopedia.unifycomponents.R.id.quantity_editor_substract)
+                        val minusButton = view.findViewById<View>(unifycomponentsR.id.quantity_editor_substract_anim)
                         for (i in 0 until times) {
                             minusButton.performClick()
                         }
@@ -142,7 +146,7 @@ class OrderSummaryPageRobot {
                     override fun getDescription(): String = "click change duration"
 
                     override fun perform(uiController: UiController?, view: View) {
-                        click().perform(uiController, view.findViewById(com.tokopedia.logisticcart.R.id.btn_change_duration))
+                        click().perform(uiController, view.findViewById(logisticcartR.id.btn_change_duration))
                     }
                 }
             )
@@ -195,7 +199,7 @@ class OrderSummaryPageRobot {
                     override fun getDescription(): String = "click change courier"
 
                     override fun perform(uiController: UiController?, view: View) {
-                        view.findViewById<View>(com.tokopedia.logisticcart.R.id.btn_change_courier).performClick()
+                        view.findViewById<View>(logisticcartR.id.btn_change_courier).performClick()
                     }
                 }
             )
@@ -223,7 +227,7 @@ class OrderSummaryPageRobot {
                     override fun getDescription(): String = "click shipping error action"
 
                     override fun perform(uiController: UiController?, view: View) {
-                        view.findViewById<View>(com.tokopedia.logisticcart.R.id.tv_shipping_error_message).performClick()
+                        view.findViewById<View>(logisticcartR.id.tv_shipping_error_message).performClick()
                     }
                 }
             )
@@ -251,7 +255,7 @@ class OrderSummaryPageRobot {
                     override fun getDescription(): String = "click shipping reload action"
 
                     override fun perform(uiController: UiController?, view: View) {
-                        view.findViewById<View>(com.tokopedia.logisticcart.R.id.btn_reload_shipping).performClick()
+                        view.findViewById<View>(logisticcartR.id.btn_reload_shipping).performClick()
                     }
                 }
             )
@@ -301,7 +305,7 @@ class OrderSummaryPageRobot {
                     override fun getDescription(): String = "click apply shipment promo from ticker"
 
                     override fun perform(uiController: UiController?, view: View) {
-                        view.findViewById<View>(com.tokopedia.logisticcart.R.id.ticker_action).performClick()
+                        view.findViewById<View>(logisticcartR.id.ticker_action).performClick()
                     }
                 }
             )
@@ -387,7 +391,7 @@ class OrderSummaryPageRobot {
             )
         )
         waitForBottomSheet()
-        onView(withId(com.tokopedia.unifycomponents.R.id.bottom_sheet_header)).perform(swipeUpTop())
+        onView(withId(unifycomponentsR.id.bottom_sheet_header)).perform(swipeUpTop())
         InstallmentDetailBottomSheetRobot().apply(func)
     }
 
@@ -415,7 +419,7 @@ class OrderSummaryPageRobot {
             )
         )
         waitForBottomSheet()
-        onView(withId(com.tokopedia.unifycomponents.R.id.bottom_sheet_header)).perform(swipeUpTop())
+        onView(withId(unifycomponentsR.id.bottom_sheet_header)).perform(swipeUpTop())
         GoCicilInstallmentDetailBottomSheetRobot().apply(func)
     }
 
@@ -443,7 +447,7 @@ class OrderSummaryPageRobot {
             )
         )
         waitForBottomSheet()
-        onView(withId(com.tokopedia.unifycomponents.R.id.bottom_sheet_header)).perform(swipeUpTop())
+        onView(withId(unifycomponentsR.id.bottom_sheet_header)).perform(swipeUpTop())
         InstallmentDetailBottomSheetRobot().apply(func)
     }
 
@@ -503,13 +507,13 @@ class OrderSummaryPageRobot {
     fun clickButtonContinueWithRedPromo() {
         // Wait for bottom sheet to fully appear
         waitForBottomSheet()
-        onView(withId(com.tokopedia.purchase_platform.common.R.id.btn_continue)).perform(click())
+        onView(withId(purchase_platformcommonR.id.btn_continue)).perform(click())
     }
 
     fun clickDialogPrimaryButton() {
         // Wait for dialog to fully appear
         waitForBottomSheet()
-        onView(withId(com.tokopedia.dialog.R.id.dialog_btn_primary)).perform(click())
+        onView(withId(dialogR.id.dialog_btn_primary)).perform(click())
     }
 
     fun pay() {
@@ -679,7 +683,7 @@ class OrderSummaryPageRobot {
                             assertEquals(tickerMessage, view.findViewById<Typography>(R.id.occ_custom_ticker_description).text.toString())
                         } else if (tickerMessage != null) {
                             assertEquals(View.VISIBLE, view.findViewById<Ticker>(R.id.ticker_order_shop).visibility)
-                            assertEquals(tickerMessage, view.findViewById<TextView>(com.tokopedia.unifycomponents.R.id.ticker_description).text.toString())
+                            assertEquals(tickerMessage, view.findViewById<TextView>(unifycomponentsR.id.ticker_description).text.toString())
                             assertEquals(View.GONE, view.findViewById<View>(R.id.occ_custom_ticker_error).visibility)
                         } else {
                             assertEquals(View.GONE, view.findViewById<View>(R.id.ticker_order_shop).visibility)
@@ -756,7 +760,7 @@ class OrderSummaryPageRobot {
                                     )
                                     is LinearLayout -> assertEquals(
                                         productInfo[i],
-                                        ((productInfoGroup.getChildAt(i) as LinearLayout).findViewById(com.tokopedia.purchase_platform.common.R.id.pp_label_product_info_add_on) as Typography).text.toString()
+                                        ((productInfoGroup.getChildAt(i) as LinearLayout).findViewById(purchase_platformcommonR.id.pp_label_product_info_add_on) as Typography).text.toString()
                                     )
                                 }
                             }
@@ -764,7 +768,7 @@ class OrderSummaryPageRobot {
                         } else {
                             assertEquals(0, productInfoGroup.childCount)
                         }
-                        assertEquals(productQty.toString(), view.findViewById<TextView>(com.tokopedia.unifycomponents.R.id.quantity_editor_qty).text.toString())
+                        assertEquals(productQty.toString(), view.findViewById<TextView>(unifycomponentsR.id.quantity_editor_qty).text.toString())
                         if (productNotes != null) {
                             assertEquals(View.GONE, view.findViewById<Typography>(R.id.tv_product_notes_placeholder).visibility)
                             assertEquals(View.VISIBLE, view.findViewById<Typography>(R.id.tv_product_notes_edit).visibility)
@@ -793,7 +797,7 @@ class OrderSummaryPageRobot {
                     override fun getDescription(): String = "assert product $index quantity"
 
                     override fun perform(uiController: UiController?, view: View) {
-                        assertEquals(qty.toString(), view.findViewById<TextView>(com.tokopedia.unifycomponents.R.id.quantity_editor_qty).text.toString())
+                        assertEquals(qty.toString(), view.findViewById<TextView>(unifycomponentsR.id.quantity_editor_qty).text.toString())
                     }
                 }
             )
@@ -818,7 +822,7 @@ class OrderSummaryPageRobot {
                     override fun perform(uiController: UiController?, view: View) {
                         if (tickerMessage != null) {
                             assertEquals(View.VISIBLE, view.findViewById<View>(R.id.ticker_order_product).visibility)
-                            assertEquals(tickerMessage, view.findViewById<TextView>(com.tokopedia.unifycomponents.R.id.ticker_description).text.toString())
+                            assertEquals(tickerMessage, view.findViewById<TextView>(unifycomponentsR.id.ticker_description).text.toString())
                         } else {
                             assertEquals(View.GONE, view.findViewById<View>(R.id.ticker_order_product).visibility)
                         }
@@ -923,30 +927,30 @@ class OrderSummaryPageRobot {
 
                     override fun perform(uiController: UiController?, view: View) {
                         if (shippingDuration != null) {
-                            assertEquals(shippingDuration, view.findViewById<Typography>(com.tokopedia.logisticcart.R.id.tv_shipping_duration).text.toString())
-                            assertEquals(View.VISIBLE, view.findViewById<View>(com.tokopedia.logisticcart.R.id.tv_shipping_duration).visibility)
+                            assertEquals(shippingDuration, view.findViewById<Typography>(logisticcartR.id.tv_shipping_duration).text.toString())
+                            assertEquals(View.VISIBLE, view.findViewById<View>(logisticcartR.id.tv_shipping_duration).visibility)
                         } else {
-                            assertEquals(View.GONE, view.findViewById<View>(com.tokopedia.logisticcart.R.id.tv_shipping_duration).visibility)
+                            assertEquals(View.GONE, view.findViewById<View>(logisticcartR.id.tv_shipping_duration).visibility)
                         }
-                        assertEquals(shippingCourier, view.findViewById<Typography>(com.tokopedia.logisticcart.R.id.tv_shipping_courier).text.toString())
-                        assertEquals(View.VISIBLE, view.findViewById<View>(com.tokopedia.logisticcart.R.id.tv_shipping_courier).visibility)
+                        assertEquals(shippingCourier, view.findViewById<Typography>(logisticcartR.id.tv_shipping_courier).text.toString())
+                        assertEquals(View.VISIBLE, view.findViewById<View>(logisticcartR.id.tv_shipping_courier).visibility)
                         if (shippingPrice != null) {
-                            assertEquals(shippingPrice, view.findViewById<Typography>(com.tokopedia.logisticcart.R.id.tv_shipping_price).text.toString())
-                            assertEquals(View.VISIBLE, view.findViewById<View>(com.tokopedia.logisticcart.R.id.tv_shipping_price).visibility)
+                            assertEquals(shippingPrice, view.findViewById<Typography>(logisticcartR.id.tv_shipping_price).text.toString())
+                            assertEquals(View.VISIBLE, view.findViewById<View>(logisticcartR.id.tv_shipping_price).visibility)
                         } else {
-                            assertEquals(View.GONE, view.findViewById<View>(com.tokopedia.logisticcart.R.id.tv_shipping_price).visibility)
+                            assertEquals(View.GONE, view.findViewById<View>(logisticcartR.id.tv_shipping_price).visibility)
                         }
                         if (shippingEta != null) {
-                            assertEquals(shippingEta, view.findViewById<Typography>(com.tokopedia.logisticcart.R.id.tv_shipping_courier_eta).text.toString())
-                            assertEquals(View.VISIBLE, view.findViewById<View>(com.tokopedia.logisticcart.R.id.tv_shipping_courier_eta).visibility)
+                            assertEquals(shippingEta, view.findViewById<Typography>(logisticcartR.id.tv_shipping_courier_eta).text.toString())
+                            assertEquals(View.VISIBLE, view.findViewById<View>(logisticcartR.id.tv_shipping_courier_eta).visibility)
                         } else {
-                            assertEquals(View.GONE, view.findViewById<View>(com.tokopedia.logisticcart.R.id.tv_shipping_courier_eta).visibility)
+                            assertEquals(View.GONE, view.findViewById<View>(logisticcartR.id.tv_shipping_courier_eta).visibility)
                         }
                         if (shippingNotes != null) {
-                            assertEquals(shippingNotes, view.findViewById<Typography>(com.tokopedia.logisticcart.R.id.tv_shipping_courier_notes).text.toString())
-                            assertEquals(View.VISIBLE, view.findViewById<View>(com.tokopedia.logisticcart.R.id.tv_shipping_courier_notes).visibility)
+                            assertEquals(shippingNotes, view.findViewById<Typography>(logisticcartR.id.tv_shipping_courier_notes).text.toString())
+                            assertEquals(View.VISIBLE, view.findViewById<View>(logisticcartR.id.tv_shipping_courier_notes).visibility)
                         } else {
-                            assertEquals(View.GONE, view.findViewById<View>(com.tokopedia.logisticcart.R.id.tv_shipping_courier_notes).visibility)
+                            assertEquals(View.GONE, view.findViewById<View>(logisticcartR.id.tv_shipping_courier_notes).visibility)
                         }
                     }
                 }
@@ -972,24 +976,24 @@ class OrderSummaryPageRobot {
                     override fun getDescription(): String = "assert shipment promo"
 
                     override fun perform(uiController: UiController?, view: View) {
-                        val tickerPromo = view.findViewById<View>(com.tokopedia.logisticcart.R.id.ticker_shipping_promo)
+                        val tickerPromo = view.findViewById<View>(logisticcartR.id.ticker_shipping_promo)
                         if (hasPromo) {
                             assertEquals(View.VISIBLE, tickerPromo.visibility)
-                            val title = view.findViewById<Typography>(com.tokopedia.logisticcart.R.id.ticker_shipping_promo_title)
+                            val title = view.findViewById<Typography>(logisticcartR.id.ticker_shipping_promo_title)
                             if (promoTitle != null) {
                                 assertEquals(promoTitle, title.text.toString())
                                 assertEquals(View.VISIBLE, title.visibility)
                             } else {
                                 assertEquals(View.GONE, title.visibility)
                             }
-                            val subtitle = view.findViewById<Typography>(com.tokopedia.logisticcart.R.id.ticker_shipping_promo_subtitle)
+                            val subtitle = view.findViewById<Typography>(logisticcartR.id.ticker_shipping_promo_subtitle)
                             if (promoSubtitle != null) {
                                 assertEquals(promoSubtitle, subtitle.text.toString())
                                 assertEquals(View.VISIBLE, subtitle.visibility)
                             } else {
                                 assertEquals(View.GONE, subtitle.visibility)
                             }
-                            val desc = view.findViewById<Typography>(com.tokopedia.logisticcart.R.id.ticker_shipping_promo_description)
+                            val desc = view.findViewById<Typography>(logisticcartR.id.ticker_shipping_promo_description)
                             if (promoDescription != null) {
                                 assertEquals(promoDescription, desc.text.toString())
                                 assertEquals(View.VISIBLE, desc.visibility)
@@ -1023,7 +1027,7 @@ class OrderSummaryPageRobot {
                     override fun getDescription(): String = "assert shipment error"
 
                     override fun perform(uiController: UiController?, view: View) {
-                        val tvError = view.findViewById<Typography>(com.tokopedia.logisticcart.R.id.tv_shipping_error_message)
+                        val tvError = view.findViewById<Typography>(logisticcartR.id.tv_shipping_error_message)
                         assertEquals(View.VISIBLE, tvError.visibility)
                         assertEquals(errorMessage, tvError.text.toString())
                     }
@@ -1050,10 +1054,10 @@ class OrderSummaryPageRobot {
                     override fun getDescription(): String = "assert shipment disable"
 
                     override fun perform(uiController: UiController?, view: View) {
-                        val tvErrorTitle = view.findViewById<Typography>(com.tokopedia.logisticcart.R.id.tv_shipping_courier)
+                        val tvErrorTitle = view.findViewById<Typography>(logisticcartR.id.tv_shipping_courier)
                         assertEquals(View.VISIBLE, tvErrorTitle.visibility)
                         assertEquals(title, tvErrorTitle.text.toString())
-                        val tvErrorDescription = view.findViewById<Typography>(com.tokopedia.logisticcart.R.id.tv_shipping_price)
+                        val tvErrorDescription = view.findViewById<Typography>(logisticcartR.id.tv_shipping_price)
                         assertEquals(View.VISIBLE, tvErrorDescription.visibility)
                         assertEquals(description, tvErrorDescription.text.toString())
                     }
@@ -1406,26 +1410,26 @@ class OrderSummaryPageRobot {
     fun assertPromptBottomSheetVisible(title: String = "", description: String = "", primaryButton: String = "", secondaryButton: String? = null) {
         onView(withId(R.id.es_checkout)).check(matches(isDisplayed()))
         if (title.isNotEmpty()) {
-            onView(withId(com.tokopedia.unifycomponents.R.id.empty_state_title_id)).check(matches(withText(title)))
+            onView(withId(unifycomponentsR.id.empty_state_title_id)).check(matches(withText(title)))
         }
         if (description.isNotEmpty()) {
-            onView(withId(com.tokopedia.unifycomponents.R.id.empty_state_description_id)).check(matches(withText(description)))
+            onView(withId(unifycomponentsR.id.empty_state_description_id)).check(matches(withText(description)))
         }
         if (primaryButton.isNotEmpty()) {
-            onView(withId(com.tokopedia.unifycomponents.R.id.empty_state_cta_id)).check(matches(isDisplayed())).check(matches(withText(primaryButton)))
+            onView(withId(unifycomponentsR.id.empty_state_cta_id)).check(matches(isDisplayed())).check(matches(withText(primaryButton)))
         }
         if (!secondaryButton.isNullOrEmpty()) {
-            onView(withId(com.tokopedia.unifycomponents.R.id.empty_state_secondary_cta_id)).check(matches(isDisplayed())).check(matches(withText(secondaryButton)))
+            onView(withId(unifycomponentsR.id.empty_state_secondary_cta_id)).check(matches(isDisplayed())).check(matches(withText(secondaryButton)))
         }
     }
 
     fun assertPromptDialogVisible(title: String = "", description: String = "", primaryButton: String = "", secondaryButton: String? = null) {
-        onView(withId(com.tokopedia.dialog.R.id.dialog_container)).check(matches(isDisplayed()))
+        onView(withId(dialogR.id.dialog_container)).check(matches(isDisplayed()))
         if (title.isNotEmpty()) {
-            onView(withId(com.tokopedia.dialog.R.id.dialog_title)).check(matches(withText(title)))
+            onView(withId(dialogR.id.dialog_title)).check(matches(withText(title)))
         }
         if (description.isNotEmpty()) {
-            onView(withId(com.tokopedia.dialog.R.id.dialog_description)).check(
+            onView(withId(dialogR.id.dialog_description)).check(
                 matches(
                     withText(
                         description
@@ -1434,11 +1438,11 @@ class OrderSummaryPageRobot {
             )
         }
         if (primaryButton.isNotEmpty()) {
-            onView(withId(com.tokopedia.dialog.R.id.dialog_btn_primary)).check(matches(isDisplayed()))
+            onView(withId(dialogR.id.dialog_btn_primary)).check(matches(isDisplayed()))
                 .check(matches(withText(primaryButton)))
         }
         if (!secondaryButton.isNullOrEmpty()) {
-            onView(withId(com.tokopedia.dialog.R.id.dialog_btn_secondary)).check(matches(isDisplayed()))
+            onView(withId(dialogR.id.dialog_btn_secondary)).check(matches(isDisplayed()))
                 .check(matches(withText(secondaryButton)))
         }
     }
@@ -1464,11 +1468,11 @@ class OrderSummaryPageRobot {
                     override fun perform(uiController: UiController?, view: View) {
                         assertEquals(
                             prescriptionText,
-                            view.findViewById<Typography>(com.tokopedia.purchase_platform.common.R.id.upload_prescription_text).text.toString()
+                            view.findViewById<Typography>(purchase_platformcommonR.id.upload_prescription_text).text.toString()
                         )
                         assertEquals(
                             descriptionText,
-                            view.findViewById<Typography>(com.tokopedia.purchase_platform.common.R.id.upload_description_text).text.toString()
+                            view.findViewById<Typography>(purchase_platformcommonR.id.upload_description_text).text.toString()
                         )
                     }
                 }

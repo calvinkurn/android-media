@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.gojek.conversations.groupbooking.ConversationsGroupBookingListener
 import com.gojek.conversations.network.ConversationsNetworkError
-import com.tokochat.tokochat_config_common.util.TokoChatConnection
+import com.tokopedia.tokochat.config.util.TokoChatConnection
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -27,7 +27,7 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.loaderdialog.LoaderDialog
-import com.tokopedia.tokochat_common.util.TokoChatValueUtil
+import com.tokopedia.tokochat.common.util.TokoChatValueUtil
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.common.util.TokofoodExt.showErrorToaster
@@ -58,7 +58,7 @@ import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
 import javax.inject.Inject
 
-class BaseTokoFoodOrderTrackingFragment :
+open class BaseTokoFoodOrderTrackingFragment :
     BaseDaggerFragment(),
     RecyclerViewPollerListener,
     OrderTrackingListener,
@@ -78,7 +78,7 @@ class BaseTokoFoodOrderTrackingFragment :
         OrderTrackingAdapterTypeFactoryImpl(this, this)
     }
 
-    private val orderTrackingAdapter by lazy {
+    open val orderTrackingAdapter by lazy {
         OrderTrackingAdapter(orderTrackingAdapterTypeFactory)
     }
 

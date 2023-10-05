@@ -9,10 +9,12 @@ import com.tokopedia.chatbot.ChatbotConstant
 import com.tokopedia.chatbot.ChatbotConstant.QUERY_SOURCE_TYPE
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.chatbot2.attachinvoice.domain.pojo.InvoiceLinkPojo
+import com.tokopedia.chatbot.chatbot2.data.rejectreasons.DynamicAttachmentRejectReasons
 import com.tokopedia.chatbot.chatbot2.data.submitoption.SubmitOptionInput
 import com.tokopedia.chatbot.chatbot2.view.uimodel.chatactionbubble.ChatActionBubbleUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.helpfullquestion.HelpFullQuestionsUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.invoice.AttachInvoiceSingleUiModel
+import com.tokopedia.chatbot.chatbot2.view.uimodel.quickreply.QuickReplyUiModel
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ValidImageAttachment
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -171,4 +173,18 @@ fun getValuesForArticleEntry(uri: Uri): Map<String, String> {
 
 private fun getQueryParam(uri: Uri, key: String): String {
     return uri.getQueryParameter(key).toBlankOrString()
+}
+
+fun DynamicAttachmentRejectReasons.toQuickReplyUiModel(): List<QuickReplyUiModel> {
+    return this.helpfulQuestion.newQuickRepliesList.map {
+        it.toQuickReplyUiModel()
+    }
+}
+
+fun DynamicAttachmentRejectReasons.RejectReasonHelpfulQuestion.RejectReasonNewQuickReply.toQuickReplyUiModel(): QuickReplyUiModel {
+    return QuickReplyUiModel(
+        this.text,
+        this.value,
+        this.action
+    )
 }

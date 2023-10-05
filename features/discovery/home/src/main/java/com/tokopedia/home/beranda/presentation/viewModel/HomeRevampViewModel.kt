@@ -5,12 +5,17 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.carouselproductcard.paging.CarouselPagingGroupChangeDirection
+import com.tokopedia.carouselproductcard.paging.CarouselPagingGroupChangeDirection.NO_DIRECTION
 import com.tokopedia.cmhomewidget.domain.usecase.DeleteCMHomeWidgetUseCase
 import com.tokopedia.cmhomewidget.domain.usecase.GetCMHomeWidgetDataUseCase
 import com.tokopedia.gopayhomewidget.domain.usecase.ClosePayLaterWidgetUseCase
 import com.tokopedia.gopayhomewidget.domain.usecase.GetPayLaterWidgetUseCase
 import com.tokopedia.home.beranda.common.BaseCoRoutineScope
+import com.tokopedia.home.beranda.data.mapper.ShopFlashSaleMapper
 import com.tokopedia.home.beranda.data.model.HomeChooseAddressData
+import com.tokopedia.home.beranda.data.newatf.HomeAtfUseCase
+import com.tokopedia.home.beranda.data.newatf.todo.TodoWidgetRepository
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBalanceWidgetUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBusinessUnitUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeDynamicChannelUseCase
@@ -39,20 +44,21 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomePayLaterWidgetDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.NewBusinessUnitWidgetDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordListDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ReviewDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TickerDataModel
+import com.tokopedia.home.beranda.presentation.view.helper.HomeRemoteConfigController
 import com.tokopedia.home.util.HomeServerLogger
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.model.ReminderEnum
 import com.tokopedia.home_component.usecase.todowidget.DismissTodoWidgetUseCase
+import com.tokopedia.home_component.visitable.BestSellerChipProductDataModel
 import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
-import com.tokopedia.home_component.visitable.QuestWidgetModel
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.home_component.visitable.TodoWidgetListDataModel
+import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetDataModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
@@ -68,6 +74,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import com.tokopedia.home_component.visitable.BestSellerDataModel as BestSellerRevampDataModel
 
 @FlowPreview
 @SuppressLint("SyntheticAccessor")
@@ -94,7 +101,10 @@ open class HomeRevampViewModel @Inject constructor(
     private val homeMissionWidgetUseCase: Lazy<HomeMissionWidgetUseCase>,
     private val homeTodoWidgetUseCase: Lazy<HomeTodoWidgetUseCase>,
     private val homeDismissTodoWidgetUseCase: Lazy<DismissTodoWidgetUseCase>,
-    private val homeRateLimit: RateLimiter<String>
+    private val homeRateLimit: RateLimiter<String>,
+    private val homeRemoteConfigController: HomeRemoteConfigController,
+    private val homeAtfUseCase: HomeAtfUseCase,
+    private val todoWidgetRepository: TodoWidgetRepository
 ) : BaseCoRoutineScope(homeDispatcher.get().io) {
 
     companion object {
@@ -158,7 +168,13 @@ open class HomeRevampViewModel @Inject constructor(
     var currentTopAdsBannerPage: String = "1"
     var isFirstLoad = true
 
-    private fun homeFlowDynamicChannel(): Flow<HomeDynamicChannelModel?> { return homeUseCase.get().getHomeDataFlow().flowOn(homeDispatcher.get().io) }
+    private fun homeFlowDynamicChannel(): Flow<HomeDynamicChannelModel?> {
+        return if (homeRemoteConfigController.isUsingNewAtf()) {
+            homeUseCase.get().getNewHomeDataFlow().flowOn(homeDispatcher.get().io)
+        } else {
+            homeUseCase.get().getHomeDataFlow().flowOn(homeDispatcher.get().io)
+        }
+    }
 
     var getHomeDataJob: Job? = null
 
@@ -281,8 +297,12 @@ open class HomeRevampViewModel @Inject constructor(
     @FlowPreview
     private fun initFlow() {
         homeFlowStarted = true
+        launch(homeDispatcher.get().io) {
+            homeAtfUseCase.fetchAtfDataList()
+        }
         launchCatchError(coroutineContext, block = {
             homeFlowDynamicChannel().collect { homeNewDataModel ->
+                validateAtfError(homeNewDataModel)
                 if (homeNewDataModel?.isCache == false) {
                     _isRequestNetworkLiveData.postValue(Event(false))
                     currentTopAdsBannerPage = homeNewDataModel.topadsPage
@@ -308,6 +328,23 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
+    private fun validateAtfError(homeNewDataModel: HomeDynamicChannelModel?) {
+        if (homeRemoteConfigController.isUsingNewAtf() &&
+            shouldShowAtfGeneralError(homeNewDataModel)
+        ) {
+            _updateNetworkLiveData.postValue(
+                Result.errorGeneral(
+                    error = Throwable("Atf is error"),
+                    data = null
+                )
+            )
+            HomeServerLogger.warning_error_flow(Throwable("Atf is error"))
+        }
+    }
+
+    private fun shouldShowAtfGeneralError(homeNewDataModel: HomeDynamicChannelModel?) =
+        homeNewDataModel?.isAtfError == true && homeNewDataModel.list.size <= 1 && !homeNewDataModel.isCache
+
     @FlowPreview
     fun refreshHomeData() {
         if (getHomeDataJob?.isActive == true) {
@@ -328,7 +365,7 @@ open class HomeRevampViewModel @Inject constructor(
         }
 
         getHomeDataJob = launchCatchError(coroutineContext, block = {
-            homeUseCase.get().updateHomeData().collect {
+            homeUseCase.get().updateHomeData(homeRemoteConfigController.isUsingNewAtf()).collect {
                 _updateNetworkLiveData.postValue(it)
                 if (it.status === Result.Status.ERROR_PAGINATION) {
                     removeDynamicChannelLoadingModel()
@@ -382,6 +419,31 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
+    fun getRecommendationWidget(
+        selectedChipProduct: BestSellerChipProductDataModel,
+        currentDataModel: BestSellerRevampDataModel,
+        scrollDirection: CarouselPagingGroupChangeDirection = NO_DIRECTION
+    ) {
+        if (selectedChipProduct.productModelList.isNotEmpty()) return
+
+        findWidget<BestSellerRevampDataModel>(
+            predicate = { it.visitableId() == currentDataModel.visitableId() },
+            actionOnFound = { _, index ->
+                launch {
+                    updateWidget(
+                        visitable = homeRecommendationUseCase.get().onHomeBestSellerFilterClick(
+                            currentBestSellerDataModel = currentDataModel,
+                            selectedFilterChip = selectedChipProduct.chip,
+                            scrollDirection = scrollDirection
+                        ),
+                        visitableToChange = currentDataModel,
+                        position = index
+                    )
+                }
+            }
+        )
+    }
+
     fun getOneClickCheckoutHomeComponent(channel: ChannelModel, grid: ChannelGrid, position: Int) {
         launchCatchError(coroutineContext, block = {
             _oneClickCheckoutHomeComponent.postValue(
@@ -405,14 +467,6 @@ open class HomeRevampViewModel @Inject constructor(
                     _errorEventLiveData.postValue(Event(Throwable()))
                 }
             }
-        }
-    }
-
-    fun updateBannerTotalView(channelId: String?, totalView: String?) {
-        if (channelId == null || totalView == null) return
-        findWidget<PlayCardDataModel>(predicate = { it.playCardHome?.channelId == channelId }) { playCard, index ->
-            val newPlayCard = playCard.copy(playCardHome = playCard.playCardHome?.copy(totalView = totalView))
-            updateWidget(newPlayCard, index)
         }
     }
 
@@ -549,15 +603,21 @@ open class HomeRevampViewModel @Inject constructor(
     fun getMissionWidgetRefresh() {
         findWidget<MissionWidgetListDataModel> { missionWidgetListDataModel, position ->
             launch {
-                updateWidget(
-                    missionWidgetListDataModel.copy(status = MissionWidgetListDataModel.STATUS_LOADING),
-                    position
-                )
-                updateWidget(
-                    homeMissionWidgetUseCase.get()
-                        .onMissionWidgetRefresh(missionWidgetListDataModel),
-                    position
-                )
+                if (missionWidgetListDataModel.source == MissionWidgetListDataModel.SOURCE_ATF &&
+                    homeRemoteConfigController.isUsingNewAtf()
+                ) {
+                    homeAtfUseCase.refreshData(missionWidgetListDataModel.id)
+                } else {
+                    updateWidget(
+                        missionWidgetListDataModel.copy(status = MissionWidgetListDataModel.STATUS_LOADING),
+                        position
+                    )
+                    updateWidget(
+                        homeMissionWidgetUseCase.get()
+                            .onMissionWidgetRefresh(missionWidgetListDataModel),
+                        position
+                    )
+                }
             }
         }
     }
@@ -565,15 +625,21 @@ open class HomeRevampViewModel @Inject constructor(
     fun getTodoWidgetRefresh() {
         findWidget<TodoWidgetListDataModel> { todoWidgetListDataModel, position ->
             launch {
-                updateWidget(
-                    todoWidgetListDataModel.copy(status = TodoWidgetListDataModel.STATUS_LOADING),
-                    position
-                )
-                updateWidget(
-                    homeTodoWidgetUseCase.get()
-                        .onTodoWidgetRefresh(todoWidgetListDataModel),
-                    position
-                )
+                if (todoWidgetListDataModel.source == TodoWidgetListDataModel.SOURCE_ATF &&
+                    homeRemoteConfigController.isUsingNewAtf()
+                ) {
+                    homeAtfUseCase.refreshData(todoWidgetListDataModel.id)
+                } else {
+                    updateWidget(
+                        todoWidgetListDataModel.copy(status = TodoWidgetListDataModel.STATUS_LOADING),
+                        position
+                    )
+                    updateWidget(
+                        homeTodoWidgetUseCase.get()
+                            .onTodoWidgetRefresh(todoWidgetListDataModel),
+                        position
+                    )
+                }
             }
         }
     }
@@ -653,6 +719,16 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
+    fun reconstructPlayWidgetAppLink(appLink: String): String {
+        var playWidgetId = ""
+
+        findWidget<CarouselPlayWidgetDataModel> { playWidget, _ ->
+            playWidgetId = playWidget.homeChannel.id
+        }
+
+        return homePlayUseCase.get().reconstructAppLink(appLink, playWidgetId)
+    }
+
     fun updateChooseAddressData(homeChooseAddressData: HomeChooseAddressData) {
         this.homeDataModel.setAndEvaluateHomeChooseAddressData(homeChooseAddressData)
         findWidget<HomeHeaderDataModel> { headerModel, index ->
@@ -672,13 +748,6 @@ open class HomeRevampViewModel @Inject constructor(
             updateHomeData(homeDataModel)
         }
     }
-
-    fun deleteQuestWidget() {
-        findWidget<QuestWidgetModel> { questWidgetModel, index ->
-            deleteWidget(questWidgetModel, index)
-        }
-    }
-
     fun getCMHomeWidgetData(isForceRefresh: Boolean = true) {
         findWidget<CMHomeWidgetDataModel> { cmHomeWidgetDataModel, index ->
             launchCatchError(coroutineContext, {
@@ -775,18 +844,45 @@ open class HomeRevampViewModel @Inject constructor(
             )
 
             try {
-                findWidget<TodoWidgetListDataModel> { item, verticalPosition ->
-                    if (item.todoWidgetList.size == 1) {
-                        deleteWidget(item, verticalPosition)
-                    } else {
-                        val newTodoWidgetList = item.todoWidgetList.toMutableList().apply {
-                            removeAt(horizontalPosition)
+                if (homeRemoteConfigController.isUsingNewAtf()) {
+                    todoWidgetRepository.dismissItemAt(horizontalPosition, param)
+                } else {
+                    findWidget<TodoWidgetListDataModel> { item, verticalPosition ->
+                        if (item.todoWidgetList.size == 1) {
+                            deleteWidget(item, verticalPosition)
+                        } else {
+                            val newTodoWidgetList = item.todoWidgetList.toMutableList().apply {
+                                removeAt(horizontalPosition)
+                            }
+                            val newTodoWidget = item.copy(todoWidgetList = newTodoWidgetList)
+                            homeDataModel.updateWidgetModel(newTodoWidget, item, verticalPosition) {
+                                updateHomeData(homeDataModel)
+                            }
                         }
-                        val newTodoWidget = item.copy(todoWidgetList = newTodoWidgetList)
-                        homeDataModel.updateWidgetModel(newTodoWidget, item, verticalPosition) { }
                     }
                 }
             } catch (_: Exception) { }
         }
+    }
+
+    fun getShopFlashSale(currentDataModel: ShopFlashSaleWidgetDataModel, shopId: String) {
+        findWidget<ShopFlashSaleWidgetDataModel>(
+            predicate = { it.visitableId() == currentDataModel.visitableId() },
+            actionOnFound = { _, index ->
+                launch {
+                    updateWidget(
+                        visitable = ShopFlashSaleMapper.getLoadingShopFlashSale(currentDataModel),
+                        visitableToChange = currentDataModel,
+                        position = index
+                    )
+                    val newDataModel = homeRecommendationUseCase.get().getShopFlashSaleProducts(currentDataModel, shopId)
+                    updateWidget(
+                        visitable = newDataModel,
+                        visitableToChange = currentDataModel,
+                        position = index
+                    )
+                }
+            }
+        )
     }
 }

@@ -14,6 +14,11 @@ buildscript {
         classpath rootProject.ext.miscDependencies.hansel
     }
 }
+android {
+    namespace 'com.tokopedia.campaign.shake.landing'
+    testNamespace 'com.tokopedia.campaign.shake.landing.test'
+}
+
 dependencies {
 
     implementation fileTree(include: ['*.jar'], dir: 'libs')

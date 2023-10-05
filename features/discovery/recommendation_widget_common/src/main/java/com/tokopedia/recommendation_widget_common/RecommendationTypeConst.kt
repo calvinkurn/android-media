@@ -7,4 +7,5 @@ object RecommendationTypeConst {
     const val TYPE_INFINITE = "Infinite"
     const val TYPE_COMPARISON_WIDGET = "Comparison-Widget"
     const val TYPE_COMPARISON_BPC_WIDGET = "comparison-widget-bpc"
+    const val TYPE_LIMIT_VERTICAL = "limit-vertical"
 }

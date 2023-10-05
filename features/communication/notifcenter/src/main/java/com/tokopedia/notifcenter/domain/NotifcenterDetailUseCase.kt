@@ -1,206 +1,34 @@
 package com.tokopedia.notifcenter.domain
 
+import androidx.annotation.Keep
+import com.google.gson.annotations.SerializedName
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.graphql.coroutines.data.extensions.request
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.GqlParam
+import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.inboxcommon.RoleType
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.notifcenter.data.entity.notification.NotifcenterDetailResponse
 import com.tokopedia.notifcenter.data.entity.notification.NotificationDetailResponseModel
 import com.tokopedia.notifcenter.data.entity.notification.Paging
 import com.tokopedia.notifcenter.data.mapper.NotifcenterDetailMapper
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancelChildren
-import kotlinx.coroutines.withContext
 import java.util.*
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
+import kotlin.collections.ArrayList
 
-open class NotifcenterDetailUseCase @Inject constructor(
-    private val gqlUseCase: GraphqlUseCase<NotifcenterDetailResponse>,
+class NotifcenterDetailUseCase @Inject constructor(
+    @ApplicationContext private val repository: GraphqlRepository,
     private val mapper: NotifcenterDetailMapper,
-    private var dispatchers: CoroutineDispatchers
-) : CoroutineScope {
+    dispatchers: CoroutineDispatchers
+) : CoroutineUseCase<NotifcenterDetailUseCase.Param, NotificationDetailResponseModel>(dispatchers.io) {
 
-    var timeZone = TimeZone.getDefault().id
-    var pagingNew = Paging()
-    var pagingEarlier = Paging()
+    private var timeZone = TimeZone.getDefault().id
+    private var pagingNew = Paging()
+    private var pagingEarlier = Paging()
+    private var newArrayFields = arrayListOf(NEW)
 
-    override val coroutineContext: CoroutineContext
-        get() = SupervisorJob() + dispatchers.main
-
-    fun getFirstPageNotification(
-        filter: Long,
-        @RoleType
-        role: Int,
-        onSuccess: (NotificationDetailResponseModel) -> Unit,
-        onError: (Throwable) -> Unit
-    ) {
-        val fields = if (!hasFilter(filter)) {
-            arrayOf("new")
-        } else {
-            emptyArray()
-        }
-        val params = generateParam(
-            filter,
-            role,
-            "",
-            fields
-        )
-        val needSectionTitle = !hasFilter(filter)
-        val needLoadMoreButton = needSectionTitle
-        getNotifications(
-            params,
-            onSuccess,
-            onError,
-            { response ->
-                mapper.mapFirstPage(
-                    response = response,
-                    needSectionTitle = needSectionTitle,
-                    needLoadMoreButton = needLoadMoreButton,
-                    needDivider = needDividerOnFirstPage(role)
-                )
-            },
-            { response ->
-                updateNewPaging(response)
-                updateEarlierPaging(response)
-            }
-        )
-    }
-
-    fun getMoreNewNotifications(
-        filter: Long,
-        @RoleType
-        role: Int,
-        onSuccess: (NotificationDetailResponseModel) -> Unit,
-        onError: (Throwable) -> Unit
-    ) {
-        val params = generateParam(
-            filter,
-            role,
-            pagingNew.lastNotifId,
-            arrayOf("new")
-        )
-        val needLoadMoreButton = !hasFilter(filter)
-        getNotifications(
-            params,
-            onSuccess,
-            onError,
-            { response ->
-                mapper.mapNewSection(response, false, needLoadMoreButton)
-            },
-            { response ->
-                updateNewPaging(response)
-            }
-        )
-    }
-
-    fun getMoreEarlierNotifications(
-        filter: Long,
-        @RoleType
-        role: Int,
-        onSuccess: (NotificationDetailResponseModel) -> Unit,
-        onError: (Throwable) -> Unit
-    ) {
-        val params = generateParam(
-            filter,
-            role,
-            pagingEarlier.lastNotifId,
-            emptyArray()
-        )
-        val needLoadMoreButton = !hasFilter(filter)
-        getNotifications(
-            params,
-            onSuccess,
-            onError,
-            { response ->
-                mapper.mapEarlierSection(response, false, needLoadMoreButton)
-            },
-            { response ->
-                updateEarlierPaging(response)
-            }
-        )
-    }
-
-    private fun hasFilter(filter: Long): Boolean {
-        return filter != FILTER_NONE
-    }
-
-    private fun needDividerOnFirstPage(@RoleType role: Int): Boolean {
-        return when (role) {
-            RoleType.BUYER, RoleType.SELLER -> false
-            RoleType.AFFILIATE -> true
-            else -> false
-        }
-    }
-
-    private fun getNotifications(
-        params: Map<String, Any?>,
-        onSuccess: (NotificationDetailResponseModel) -> Unit,
-        onError: (Throwable) -> Unit,
-        mapping: (response: NotifcenterDetailResponse) -> NotificationDetailResponseModel,
-        onResponseReady: (response: NotifcenterDetailResponse) -> Unit
-    ) {
-        launchCatchError(
-            dispatchers.io,
-            {
-                val response = gqlUseCase.apply {
-                    setTypeClass(NotifcenterDetailResponse::class.java)
-                    setRequestParams(params)
-                    setGraphqlQuery(query)
-                }.executeOnBackground()
-                val items = mapping(response)
-                withContext(dispatchers.main) {
-                    onResponseReady(response)
-                    onSuccess(items)
-                }
-            },
-            {
-                withContext(dispatchers.main) {
-                    onError(it)
-                }
-            }
-        )
-    }
-
-    private fun updateNewPaging(response: NotifcenterDetailResponse) {
-        pagingNew = response.notifcenterDetail.newPaging
-    }
-
-    private fun updateEarlierPaging(response: NotifcenterDetailResponse) {
-        pagingEarlier = response.notifcenterDetail.paging
-    }
-
-    private fun generateParam(
-        filter: Long,
-        @RoleType
-        role: Int,
-        lastNotifId: String,
-        fields: Array<String>
-    ): Map<String, Any?> {
-        return mapOf(
-            PARAM_TYPE_ID to role,
-            PARAM_TAG_ID to filter,
-            PARAM_TIMEZONE to timeZone,
-            PARAM_LAST_NOTIF_ID to lastNotifId,
-            PARAM_FIELDS to fields
-        )
-    }
-
-    fun cancelRunningOperation() {
-        coroutineContext.cancelChildren()
-    }
-
-    companion object {
-        const val FILTER_NONE: Long = 0
-
-        private const val PARAM_TYPE_ID = "type_id"
-        private const val PARAM_TAG_ID = "tag_id"
-        private const val PARAM_TIMEZONE = "timezone"
-        private const val PARAM_LAST_NOTIF_ID = "last_notif_id"
-        private const val PARAM_FIELDS = "fields"
-
-        private val query = """
+    override fun graphqlQuery(): String = """
             query notifcenter_detail_v3(
                 $$PARAM_TYPE_ID: Int
             	$$PARAM_TAG_ID: Int
@@ -517,6 +345,136 @@ open class NotifcenterDetailUseCase @Inject constructor(
             		}
             	}
             }
-        """.trimIndent()
+    """.trimIndent()
+
+    override suspend fun execute(params: Param): NotificationDetailResponseModel {
+        return when (params.loadType) {
+            NotificationDetailLoadType.FIRST_PAGE -> {
+                getFirstPageNotification(params)
+            }
+            NotificationDetailLoadType.LOAD_MORE_NEW -> {
+                getMoreNewNotifications(params)
+            }
+            NotificationDetailLoadType.LOAD_MORE_EARLIER -> {
+                getMoreEarlierNotifications(params)
+            }
+        }
+    }
+
+    private suspend fun getFirstPageNotification(params: Param): NotificationDetailResponseModel {
+        params.apply {
+            fields = if (!hasFilter(params.filter)) {
+                newArrayFields
+            } else {
+                arrayListOf()
+            }
+            timeZone = this@NotifcenterDetailUseCase.timeZone
+        }
+
+        val needSectionTitleAndLoadMoreButton = !hasFilter(params.filter)
+        val response = repository.request<Param, NotifcenterDetailResponse>(
+            graphqlQuery(),
+            params
+        )
+        val result = mapper.mapFirstPage(
+            response = response,
+            needSectionTitle = needSectionTitleAndLoadMoreButton,
+            needLoadMoreButton = needSectionTitleAndLoadMoreButton,
+            needDivider = needDividerOnFirstPage(params.role)
+        )
+        updateNewPaging(response)
+        updateEarlierPaging(response)
+        return result
+    }
+
+    private suspend fun getMoreNewNotifications(
+        params: Param
+    ): NotificationDetailResponseModel {
+        params.apply {
+            fields = newArrayFields
+            timeZone = this@NotifcenterDetailUseCase.timeZone
+            lastNotifId = pagingNew.lastNotifId
+        }
+        val needLoadMoreButton = !hasFilter(params.filter)
+        val response = repository.request<Param, NotifcenterDetailResponse>(
+            graphqlQuery(),
+            params
+        )
+        val result = mapper.mapNewSection(response, false, needLoadMoreButton)
+        updateNewPaging(response)
+        return result
+    }
+
+    private suspend fun getMoreEarlierNotifications(
+        params: Param
+    ): NotificationDetailResponseModel {
+        params.apply {
+            fields = arrayListOf()
+            timeZone = this@NotifcenterDetailUseCase.timeZone
+            lastNotifId = pagingEarlier.lastNotifId
+        }
+        val needLoadMoreButton = !hasFilter(params.filter)
+        val response = repository.request<Param, NotifcenterDetailResponse>(
+            graphqlQuery(),
+            params
+        )
+        val result = mapper.mapEarlierSection(response, false, needLoadMoreButton)
+        updateEarlierPaging(response)
+        return result
+    }
+
+    private fun hasFilter(filter: Long): Boolean {
+        return filter != FILTER_NONE
+    }
+
+    private fun needDividerOnFirstPage(@RoleType role: Int): Boolean {
+        return when (role) {
+            RoleType.BUYER, RoleType.SELLER -> false
+            RoleType.AFFILIATE -> true
+            else -> false
+        }
+    }
+
+    private fun updateNewPaging(response: NotifcenterDetailResponse) {
+        pagingNew = response.notifcenterDetail.newPaging
+    }
+
+    private fun updateEarlierPaging(response: NotifcenterDetailResponse) {
+        pagingEarlier = response.notifcenterDetail.paging
+    }
+
+    data class Param(
+        @SerializedName(PARAM_TAG_ID)
+        val filter: Long,
+        @RoleType
+        @SerializedName(PARAM_TYPE_ID)
+        val role: Int,
+        @SerializedName(PARAM_TIMEZONE)
+        var timeZone: String = "",
+        @SerializedName(PARAM_LAST_NOTIF_ID)
+        var lastNotifId: String = "",
+        @SerializedName(PARAM_FIELDS)
+        var fields: ArrayList<String> = arrayListOf()
+    ) : GqlParam {
+        var loadType: NotificationDetailLoadType = NotificationDetailLoadType.FIRST_PAGE
+    }
+
+    @Keep
+    enum class NotificationDetailLoadType {
+        FIRST_PAGE,
+        LOAD_MORE_NEW,
+        LOAD_MORE_EARLIER
+    }
+
+    companion object {
+        const val FILTER_NONE: Long = 0
+
+        private const val PARAM_TYPE_ID = "type_id"
+        private const val PARAM_TAG_ID = "tag_id"
+        private const val PARAM_TIMEZONE = "timezone"
+        private const val PARAM_LAST_NOTIF_ID = "last_notif_id"
+        private const val PARAM_FIELDS = "fields"
+
+        private const val NEW = "new"
     }
 }

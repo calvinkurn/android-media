@@ -29,12 +29,12 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginTop">@dimen/dp_8</item>
         <item name="typographyType">heading_6</item>
-        <item name="android:textColor">@color/Unify_N700_68</item>
+        <item name="android:textColor">@color/Unify_NN950_68</item>
     </style>
 
     <style name="BottomSheetInsightTitle">
         <item name="typographyType">heading_6</item>
-        <item name="android:textColor">@color/Unify_N700_96</item>
+        <item name="android:textColor">@color/Unify_NN950_96</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginTop">@dimen/dp_8</item>

@@ -26,6 +26,7 @@ object TokoChatAnalyticsConstants {
 
     const val TOKOCHAT_DETAIL = "tokochat detail"
     const val TOKOCHAT_BUBBLE_CHATROOM = "tokochat bubble chatroom"
+    const val TOKOCHAT_CHATLIST = "tokochat chatlist"
 
     const val CLICK_CALL_BUTTON_FROM_CHATROOM = "click call button from chatroom"
     const val TRACKER_ID_39069 = "39069"
@@ -108,4 +109,10 @@ object TokoChatAnalyticsConstants {
 
     const val CLICK_CHECK_HERE_ONBOARDING_TICKER = "click check here onboarding ticker"
     const val TRACKER_ID_43192 = "43192"
+
+    const val IMPRESSION_ON_DRIVER_CHAT_LIST = "impression on driver chat list"
+    const val TRACKER_ID_45236 = "45236"
+
+    const val CLICK_ON_DRIVER_CHAT_LIST = "click on driver chat list"
+    const val TRACKER_ID_45237 = "45237"
 }

@@ -3,18 +3,17 @@ package com.tokopedia.affiliate.ui.fragment.education
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
-import android.widget.TextView
+import android.widget.EditText
 import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.affiliate.AFFILIATE_HELP_URL_WEBVIEW
+import com.tokopedia.affiliate.AFFILIATE_NC
 import com.tokopedia.affiliate.AFFILIATE_PRIVACY_POLICY_URL_WEBVIEW
+import com.tokopedia.affiliate.AffiliateAnalytics
 import com.tokopedia.affiliate.EDUCATION_ARTICLE_DETAIL_PROD_URL
 import com.tokopedia.affiliate.EDUCATION_ARTICLE_DETAIL_STAGING_URL
 import com.tokopedia.affiliate.PAGE_EDUCATION_EVENT
@@ -26,18 +25,27 @@ import com.tokopedia.affiliate.interfaces.AffiliateEducationEventArticleClickInt
 import com.tokopedia.affiliate.interfaces.AffiliateEducationLearnClickInterface
 import com.tokopedia.affiliate.interfaces.AffiliateEducationSocialCTAClickInterface
 import com.tokopedia.affiliate.interfaces.AffiliateEducationTopicTutorialClickInterface
-import com.tokopedia.affiliate.ui.activity.AffiliateActivity
 import com.tokopedia.affiliate.ui.activity.AffiliateEducationSearchActivity
 import com.tokopedia.affiliate.ui.activity.AffiliateEducationSeeAllActivity
 import com.tokopedia.affiliate.viewmodel.AffiliateEducationLandingViewModel
 import com.tokopedia.affiliate_toko.R
+import com.tokopedia.affiliate_toko.databinding.AffiliateEducationLandingPageBinding
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
-import com.tokopedia.unifycomponents.SearchBarUnify
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.searchbar.data.HintData
+import com.tokopedia.searchbar.navigation_component.NavSource
+import com.tokopedia.searchbar.navigation_component.NavToolbar
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
+import com.tokopedia.searchbar.navigation_component.icons.IconList
+import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
@@ -51,7 +59,6 @@ class AffiliateEducationLandingPage :
     AffiliateEducationBannerClickInterface {
 
     private var eduViewModel: AffiliateEducationLandingViewModel? = null
-    private var searchBar: SearchBarUnify? = null
 
     @JvmField
     @Inject
@@ -60,6 +67,12 @@ class AffiliateEducationLandingPage :
     @JvmField
     @Inject
     var userSessionInterface: UserSessionInterface? = null
+
+    @Inject
+    @JvmField
+    var remoteConfig: RemoteConfigInstance? = null
+
+    private var binding by autoClearedNullable<AffiliateEducationLandingPageBinding>()
 
     override fun getViewModelType(): Class<AffiliateEducationLandingViewModel> {
         return AffiliateEducationLandingViewModel::class.java
@@ -80,6 +93,12 @@ class AffiliateEducationLandingPage :
             .build().injectEducationLandingPage(this)
     }
 
+    private fun isAffiliateNCEnabled() =
+        remoteConfig?.abTestPlatform?.getString(
+            AFFILIATE_NC,
+            ""
+        ) == AFFILIATE_NC
+
     companion object {
 
         private const val IS_APP_LINK = "isAppLink"
@@ -95,7 +114,7 @@ class AffiliateEducationLandingPage :
             )
         }
 
-        private val kamusSlug = if (TokopediaUrl.getInstance().GQL.contains("staging")) {
+        private val kamusSlug = if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
             "imagetest"
         } else {
             "kamus-affiliate"
@@ -106,10 +125,12 @@ class AffiliateEducationLandingPage :
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.affiliate_education_landing_page, container, false)
-        searchBar = view.findViewById(R.id.edukasi_navToolbar)
-        return view
+    ): View {
+        return AffiliateEducationLandingPageBinding.inflate(
+            inflater,
+            container,
+            false
+        ).also { binding = it }.root
     }
 
     override fun onFragmentBackPressed(): Boolean {
@@ -119,7 +140,25 @@ class AffiliateEducationLandingPage :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setSearchListener(searchBar)
+        binding?.eduNavToolbar?.run {
+            val iconBuilder = IconBuilder(builderFlags = IconBuilderFlag(pageSource = NavSource.AFFILIATE))
+            if (isAffiliateNCEnabled()) {
+                iconBuilder.addIcon(IconList.ID_NOTIFICATION, disableRouteManager = true) {
+                    eduViewModel?.resetNotificationCount()
+                    sendNotificationClickEvent()
+                    RouteManager.route(
+                        context,
+                        ApplinkConstInternalMarketplace.AFFILIATE_NOTIFICATION
+                    )
+                }
+            }
+            iconBuilder.addIcon(IconList.ID_NAV_GLOBAL) {}
+            setIcon(iconBuilder)
+            setOnBackButtonClickListener {
+                activity?.finish()
+            }
+            setSearchListener(this)
+        }
         eduViewModel?.getEducationLandingPageData()
         eduViewModel?.getEducationPageData()?.observe(viewLifecycleOwner) {
             val adapter =
@@ -135,51 +174,62 @@ class AffiliateEducationLandingPage :
                     userId = userSessionInterface?.userId.orEmpty()
                 )
             adapter.setVisitables(it)
-            view.findViewById<RecyclerView>(R.id.rv_education_page).adapter = adapter
+            binding?.rvEducationPage?.adapter = adapter
         }
         if (arguments?.getBoolean(IS_HELP_APP_LINK, false) == true) {
             onBantuanClick()
         }
+        if (isAffiliateNCEnabled()) {
+            eduViewModel?.fetchUnreadNotificationCount()
+            eduViewModel?.getUnreadNotificationCount()?.observe(this) { count ->
+                binding?.eduNavToolbar?.apply {
+                    setCentralizedBadgeCounter(IconList.ID_NOTIFICATION, count)
+                }
+            }
+        }
     }
 
-    private fun setSearchListener(searchBar: SearchBarUnify?) {
-        val searchTextField = searchBar?.searchBarTextField
-        val searchClearButton = searchBar?.searchBarIcon
+    private fun sendNotificationClickEvent() {
+        AffiliateAnalytics.sendEvent(
+            AffiliateAnalytics.EventKeys.CLICK_CONTENT,
+            AffiliateAnalytics.ActionKeys.CLICK_NOTIFICATION_ENTRY_POINT,
+            AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE,
+            "",
+            userSessionInterface?.userId.orEmpty()
+        )
+    }
 
-        searchTextField?.imeOptions = EditorInfo.IME_ACTION_SEARCH
-        searchTextField?.setOnEditorActionListener(object : TextView.OnEditorActionListener {
-            override fun onEditorAction(view: TextView?, actionId: Int, even: KeyEvent?): Boolean {
-                if (actionId == EditorInfo.IME_ACTION_SEARCH && searchTextField.text.toString().trim()
-                        .isNotEmpty()
-                ) {
+    private fun setSearchListener(navToolbar: NavToolbar) {
+        navToolbar.setupSearchbar(
+            hints = listOf(
+                HintData(
+                    placeholder = getString(R.string.affiliate_landing_page_search_passive_placeholder)
+                )
+            ),
+            searchbarType = NavToolbar.Companion.SearchBarType.TYPE_EDITABLE,
+            editorActionCallback = { searchQuery ->
+                if (searchQuery.isNotBlank()) {
                     context?.let {
                         startActivity(
                             AffiliateEducationSearchActivity.createIntent(
                                 it,
-                                searchTextField.text.toString().trim()
+                                searchQuery.trim()
                             )
                         )
+                    }.also {
+                        navToolbar.clearSearchbarText()
                     }
-                    searchBar.searchBarTextField.text.clear()
-                    return true
-                } else {
-                    searchTextField.text.clear()
                 }
-                return false
             }
-        })
-
-        searchTextField?.setOnFocusChangeListener { _, isFocus ->
-            searchBar.searchBarPlaceholder = if (isFocus) {
-                getString(R.string.affiliate_landing_page_search_active_placeholder)
-            } else {
-                getString(R.string.affiliate_landing_page_search_passive_placeholder)
+        )
+        navToolbar.findViewById<EditText>(com.tokopedia.searchbar.R.id.et_search)
+            ?.setOnFocusChangeListener { v: View, hasFocus ->
+                (v as EditText).hint = if (hasFocus) {
+                    getString(R.string.affiliate_landing_page_search_active_placeholder)
+                } else {
+                    getString(R.string.affiliate_landing_page_search_passive_placeholder)
+                }
             }
-        }
-
-        searchClearButton?.setOnClickListener {
-            searchTextField?.text?.clear()
-        }
     }
 
     override fun onSeeMoreClick(pageType: String) {
@@ -240,7 +290,7 @@ class AffiliateEducationLandingPage :
             "%s?title=%s&url=%s%s?navigation=hide",
             ApplinkConst.WEBVIEW,
             title.replace(" ", "+"),
-            if (TokopediaUrl.getInstance().GQL.contains("staging")) {
+            if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
                 EDUCATION_ARTICLE_DETAIL_STAGING_URL
             } else {
                 EDUCATION_ARTICLE_DETAIL_PROD_URL
@@ -272,23 +322,19 @@ class AffiliateEducationLandingPage :
     }
 
     fun handleBack() {
-        if (arguments?.getBoolean(IS_APP_LINK, false) == true) {
-            if (activity?.isTaskRoot == true) {
-                context?.let {
-                    startActivity(
-                        RouteManager.getIntent(
-                            it,
-                            ApplinkConst.HOME
-                        )
-                    ).also {
-                        activity?.finish()
-                    }
+        if (arguments?.getBoolean(IS_APP_LINK, false) == true && activity?.isTaskRoot == true) {
+            context?.let {
+                startActivity(
+                    RouteManager.getIntent(
+                        it,
+                        ApplinkConst.HOME
+                    )
+                ).also {
+                    activity?.finish()
                 }
-            } else {
-                activity?.finish()
             }
         } else {
-            (activity as? AffiliateActivity)?.handleBackButton(false)
+            activity?.finish()
         }
     }
 }

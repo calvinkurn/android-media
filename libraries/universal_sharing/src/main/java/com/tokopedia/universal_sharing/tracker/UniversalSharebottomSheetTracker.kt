@@ -4,9 +4,10 @@ import android.os.Bundle
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
-import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
+import javax.inject.Inject
 
-class UniversalSharebottomSheetTracker(private val userSession: UserSession) {
+class UniversalSharebottomSheetTracker @Inject constructor(private val userSession: UserSessionInterface) {
 
     companion object {
         private const val EVENT_BUSINESS_UNIT = "businessUnit"

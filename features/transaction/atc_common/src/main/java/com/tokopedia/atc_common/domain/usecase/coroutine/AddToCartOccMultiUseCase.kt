@@ -16,9 +16,11 @@ import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-open class AddToCartOccMultiUseCase @Inject constructor(@ApplicationContext private val graphqlRepository: GraphqlRepository,
-                                                   private val addToCartDataMapper: AddToCartDataMapper,
-                                                   private val chosenAddressAddToCartRequestHelper: ChosenAddressRequestHelper) : UseCase<AddToCartOccMultiDataModel>() {
+open class AddToCartOccMultiUseCase @Inject constructor(
+    @ApplicationContext private val graphqlRepository: GraphqlRepository,
+    private val addToCartDataMapper: AddToCartDataMapper,
+    private val chosenAddressAddToCartRequestHelper: ChosenAddressRequestHelper
+) : UseCase<AddToCartOccMultiDataModel>() {
 
     private var requestParams: AddToCartOccMultiRequestParams? = null
 
@@ -45,37 +47,46 @@ open class AddToCartOccMultiUseCase @Inject constructor(@ApplicationContext priv
         val result = addToCartDataMapper.mapAddToCartOccMultiResponse(addToCartOccGqlResponse)
         if (!result.isStatusError()) {
             sentParams.carts.forEach {
-                AddToCartBaseAnalytics.sendAppsFlyerTracking(it.productId, it.productName, it.price,
-                        it.quantity, it.category)
-                AddToCartBaseAnalytics.sendBranchIoTracking(it.productId, it.productName, it.price,
-                        it.quantity, it.category, it.categoryLevel1Id,
-                        it.categoryLevel1Name, it.categoryLevel2Id, it.categoryLevel2Name,
-                        it.categoryLevel3Id, it.categoryLevel3Name, sentParams.userId)
+                AddToCartBaseAnalytics.sendAppsFlyerTracking(
+                    it.productId,
+                    it.productName,
+                    it.price,
+                    it.quantity,
+                    it.category
+                )
+                AddToCartBaseAnalytics.sendBranchIoTracking(
+                    it.productId, it.productName, it.price,
+                    it.quantity, it.category, it.categoryLevel1Id,
+                    it.categoryLevel1Name, it.categoryLevel2Id, it.categoryLevel2Name,
+                    it.categoryLevel3Id, it.categoryLevel3Name, sentParams.userId
+                )
             }
         }
         return result
     }
 
     private fun getParams(addToCartRequest: AddToCartOccMultiRequestParams): Map<String, Any?> {
-        return mapOf(PARAM to mapOf(
+        return mapOf(
+            PARAM to mapOf(
                 PARAM_CARTS to addToCartRequest.carts.map {
                     mapOf<String, Any?>(
-                            PARAM_CART_ID to it.cartId,
-                            PARAM_PRODUCT_ID to it.productId,
-                            PARAM_SHOP_ID to it.shopId,
-                            PARAM_QUANTITY to it.quantity,
-                            PARAM_NOTES to it.notes,
-                            PARAM_WAREHOUSE_ID to it.warehouseId,
-                            PARAM_ATTRIBUTION to it.attribution,
-                            PARAM_LIST_TRACKER to it.listTracker,
-                            PARAM_UC_PARAMS to it.ucParam
+                        PARAM_CART_ID to it.cartId,
+                        PARAM_PRODUCT_ID to it.productId,
+                        PARAM_SHOP_ID to it.shopId,
+                        PARAM_QUANTITY to it.quantity,
+                        PARAM_NOTES to it.notes,
+                        PARAM_WAREHOUSE_ID to it.warehouseId,
+                        PARAM_ATTRIBUTION to it.attribution,
+                        PARAM_LIST_TRACKER to it.listTracker,
+                        PARAM_UC_PARAMS to it.ucParam
                     )
                 },
                 PARAM_CHOSEN_ADDRESS to chosenAddressAddToCartRequestHelper.getChosenAddress(),
                 PARAM_LANG to addToCartRequest.lang,
                 PARAM_SOURCE to addToCartRequest.source,
                 PARAM_ATC_FROM_EXTERNAL_SOURCE to addToCartRequest.atcFromExternalSource
-        ))
+            )
+        )
     }
 
     companion object {

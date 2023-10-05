@@ -6,7 +6,10 @@ import com.tokopedia.play.broadcaster.shorts.domain.manager.PlayShortsAccountMan
 import com.tokopedia.play.broadcaster.shorts.robot.PlayShortsViewModelRobot
 import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
 import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsUiEvent
+import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel
 import com.tokopedia.play.broadcaster.util.assertEqualTo
+import com.tokopedia.play.broadcaster.util.assertFalse
+import com.tokopedia.play.broadcaster.util.assertTrue
 import com.tokopedia.play.broadcaster.util.assertType
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
@@ -43,6 +46,8 @@ class PlayShortsAccountViewModelTest {
     private val mockConfig = uiModelBuilder.buildShortsConfig()
     private val mockConfigBanned = uiModelBuilder.buildShortsConfig(isBanned = true)
 
+    private val mockUserAffiliateFalse = uiModelBuilder.buildBroadcasterCheckAffiliate(affiliateName = "", isAffiliate = false,)
+
     private val mockException = Exception("Network Error")
 
     @get:Rule
@@ -66,6 +71,7 @@ class PlayShortsAccountViewModelTest {
         coEvery { mockRepo.getShortsConfiguration(any(), any()) } returns mockConfig
         coEvery { mockAccountManager.getBestEligibleAccount(any(), any()) } returns mockAccountUser
         coEvery { mockAccountManager.switchAccount(any(), any()) } returns mockAccountShop
+        coEvery { mockRepo.getBroadcasterCheckAffiliate() } returns mockUserAffiliateFalse
 
         PlayShortsViewModelRobot(
             repo = mockRepo,
@@ -78,6 +84,8 @@ class PlayShortsAccountViewModelTest {
             }
 
             state.selectedAccount.assertEqualTo(mockAccountShop)
+            it.accountList.assertEqualTo(mockAccountList)
+            state.bannerPreparation.assertEqualTo(listOf())
         }
     }
 
@@ -87,6 +95,7 @@ class PlayShortsAccountViewModelTest {
         coEvery { mockRepo.getShortsConfiguration(any(), any()) } returns mockConfig
         coEvery { mockAccountManager.getBestEligibleAccount(any(), any()) } returns mockAccountShop
         coEvery { mockAccountManager.switchAccount(any(), any()) } returns mockAccountUser
+        coEvery { mockRepo.getBroadcasterCheckAffiliate() } returns mockUserAffiliateFalse
 
         PlayShortsViewModelRobot(
             repo = mockRepo,
@@ -99,6 +108,8 @@ class PlayShortsAccountViewModelTest {
             }
 
             state.selectedAccount.assertEqualTo(mockAccountUser)
+            it.accountList.assertEqualTo(mockAccountList)
+            state.bannerPreparation.assertEqualTo(listOf(PlayBroadcastPreparationBannerModel(PlayBroadcastPreparationBannerModel.TYPE_SHORTS_AFFILIATE)))
         }
     }
 
@@ -123,6 +134,7 @@ class PlayShortsAccountViewModelTest {
             }
 
             state.selectedAccount.assertEqualTo(mockAccountShop)
+            it.accountList.assertEqualTo(mockAccountList)
         }
     }
 
@@ -173,6 +185,25 @@ class PlayShortsAccountViewModelTest {
 
             state.selectedAccount.assertEqualTo(mockAccountShop)
             events.last().assertType<PlayShortsUiEvent.AccountBanned>()
+            it.accountList.assertEqualTo(mockAccountList)
+        }
+    }
+
+    @Test
+    fun playShorts_preparation_account_switchAccount_isAllowChangeAccount() {
+
+        PlayShortsViewModelRobot(
+            repo = mockRepo,
+            accountManager = mockAccountManager
+        ).use {
+
+            coEvery { mockAccountManager.isAllowChangeAccount(any()) } returns true
+
+            it.isAllowChangeAccount.assertTrue()
+
+            coEvery { mockAccountManager.isAllowChangeAccount(any()) } returns false
+
+            it.isAllowChangeAccount.assertFalse()
         }
     }
 }

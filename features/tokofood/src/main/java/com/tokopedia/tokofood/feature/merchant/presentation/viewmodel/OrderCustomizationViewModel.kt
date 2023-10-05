@@ -2,7 +2,9 @@ package com.tokopedia.tokofood.feature.merchant.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.feature.merchant.presentation.mapper.TokoFoodMerchantUiModelMapper
 import com.tokopedia.tokofood.feature.merchant.presentation.model.AddOnUiModel
@@ -14,8 +16,10 @@ class OrderCustomizationViewModel @Inject constructor(
 ) : ViewModel() {
 
     var baseProductPrice: Double = 0.0
+    private var lastQuantity = Int.ONE
 
     fun calculateSubtotalPrice(baseProductPrice: Double, quantity: Int, addOnUiModels: List<AddOnUiModel?>): Double {
+        lastQuantity = quantity
         var subTotalPrice = baseProductPrice
         addOnUiModels.forEach { addOnUiModel ->
             addOnUiModel?.run {
@@ -33,7 +37,10 @@ class OrderCustomizationViewModel @Inject constructor(
 
     fun getCustomListItems(cartId: String, productUiModel: ProductUiModel): List<CustomListItem> {
         return if (cartId.isBlank() || productUiModel.customOrderDetails.isEmpty()) { resetMasterData(productUiModel.customListItems) }
-        else productUiModel.customOrderDetails.firstOrNull { it.cartId == cartId }?.customListItems ?: listOf()
+        else productUiModel.customOrderDetails
+            .firstOrNull { it.cartId == cartId }
+            ?.customListItems
+            .orEmpty()
     }
 
     private fun resetMasterData(customListItems: List<CustomListItem>): List<CustomListItem> {
@@ -82,7 +89,7 @@ class OrderCustomizationViewModel @Inject constructor(
     ): UpdateParam {
         productUiModel.cartId = cartId
         productUiModel.orderNote = orderNote
-        productUiModel.orderQty = orderQty
+        productUiModel.orderQty = orderQty.takeIf { it.isMoreThanZero() } ?: lastQuantity
         return TokoFoodMerchantUiModelMapper.mapProductUiModelToAtcRequestParam(
                 shopId = shopId,
                 productUiModels = listOf(productUiModel),

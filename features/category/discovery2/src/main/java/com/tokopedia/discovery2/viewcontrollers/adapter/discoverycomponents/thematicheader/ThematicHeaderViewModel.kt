@@ -20,4 +20,11 @@ class ThematicHeaderViewModel(
         componentData.value = component
     }
 
+    fun fetchLottieState(): Boolean {
+        return component.isLottieAlreadyAnimated
+    }
+
+    fun setLottieState(state: Boolean) {
+        component.isLottieAlreadyAnimated = state
+    }
 }

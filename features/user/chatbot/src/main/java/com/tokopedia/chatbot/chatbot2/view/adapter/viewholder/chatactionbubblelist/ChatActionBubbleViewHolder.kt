@@ -20,7 +20,7 @@ class ChatActionBubbleViewHolder(itemView: View) : BaseChatActionBubbleViewHolde
         chatActionMessage.setTextColor(
             MethodChecker.getColor(
                 itemView.context,
-                (com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
+                (com.tokopedia.unifyprinciples.R.color.Unify_NN950_96)
             )
         )
         customerCareImage.hide()

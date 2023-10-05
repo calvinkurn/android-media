@@ -57,7 +57,7 @@ class SpecificationValueViewHolder(
             isError = errorMessage.isNotEmpty()
             setText(selectedSpecification.data)
             setTextInputLayoutHintColor(textAreaWrapper, itemView.context,
-                com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
+                com.tokopedia.unifyprinciples.R.color.Unify_NN950_68)
             tooltipRequired?.isVisible = selectedSpecification.required
         }
     }
