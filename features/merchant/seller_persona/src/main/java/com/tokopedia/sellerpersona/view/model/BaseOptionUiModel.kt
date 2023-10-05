@@ -33,7 +33,7 @@ sealed class BaseOptionUiModel(
         override fun copyData(): BaseOptionUiModel = this.copy()
 
         fun getFormattedText(): String {
-            return String.format(SINGLE_OPTION_TEXT_FORMAT, value, title)
+            return String.format(SINGLE_OPTION_TEXT_FORMAT, value.uppercase(), title)
         }
     }
 
