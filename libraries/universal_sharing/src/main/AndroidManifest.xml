@@ -27,10 +27,21 @@
         </activity>
 
         <activity
-            android:name="com.tokopedia.sharingexperience.view.PostPurchaseSharingActivity"
+            android:name=".view.activity.PostPurchaseSharingActivity"
             android:screenOrientation="portrait"
             android:exported="false"
             android:theme="@style/Theme.White">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_communication"
+                    android:pathPattern="@string/path_post_purchase_sharing"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
         </activity>
 
     </application>
