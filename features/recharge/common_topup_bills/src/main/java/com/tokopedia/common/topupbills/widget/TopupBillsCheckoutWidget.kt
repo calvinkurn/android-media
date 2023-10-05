@@ -6,12 +6,15 @@ import android.view.LayoutInflater
 import android.widget.FrameLayout
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.common.topupbills.data.MultiCheckoutButtons
+import com.tokopedia.common.topupbills.data.constant.MultiCheckoutConst
 import com.tokopedia.common.topupbills.data.constant.showMultiCheckoutButton
 import com.tokopedia.common.topupbills.databinding.ViewTopupBillsCheckoutBinding
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.toPx
 import org.jetbrains.annotations.NotNull
 
 /**
@@ -58,6 +61,7 @@ class TopupBillsCheckoutWidget @JvmOverloads constructor(
         if (show) {
             binding.buyLayout.show()
             coachMark2.container?.show()
+            coachMark2.container?.setPadding(Int.ZERO, MultiCheckoutConst.PADDING_TOP.toPx(), Int.ZERO, Int.ZERO)
         } else {
             binding.buyLayout.hide()
             coachMark2.container?.hide()

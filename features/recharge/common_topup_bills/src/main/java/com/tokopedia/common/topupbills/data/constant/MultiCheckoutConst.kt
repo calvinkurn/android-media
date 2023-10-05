@@ -7,6 +7,7 @@ import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.common.topupbills.analytics.PromotionMultiCheckout
 import com.tokopedia.common.topupbills.data.MultiCheckoutButtons
 import com.tokopedia.common.topupbills.data.constant.MultiCheckoutConst.ACTION_MULTIPLE
+import com.tokopedia.common.topupbills.data.constant.MultiCheckoutConst.PADDING_TOP
 import com.tokopedia.common.topupbills.data.constant.MultiCheckoutConst.POSITION_LEFT
 import com.tokopedia.common.topupbills.data.constant.MultiCheckoutConst.POSITION_RIGHT
 import com.tokopedia.common.topupbills.data.constant.MultiCheckoutConst.POSITION_TWO
@@ -30,6 +31,7 @@ object MultiCheckoutConst {
     const val SHOW_COACH_MARK_MULTICHECKOUT_KEY = "pdp_dg_multichekout_is_coachmark_closed"
     const val POSITION_TWO = 2
     const val TYPE_TWO = 2
+    const val PADDING_TOP = -4
 }
 
 fun showMultiCheckoutButton(

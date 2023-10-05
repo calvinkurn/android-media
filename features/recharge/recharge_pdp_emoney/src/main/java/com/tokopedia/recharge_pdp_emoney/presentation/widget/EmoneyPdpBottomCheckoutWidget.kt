@@ -5,11 +5,14 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.common.topupbills.data.MultiCheckoutButtons
+import com.tokopedia.common.topupbills.data.constant.MultiCheckoutConst
 import com.tokopedia.common.topupbills.data.constant.showMultiCheckoutButton
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.recharge_pdp_emoney.databinding.WidgetEmoneyPdpCheckoutViewBinding
 import com.tokopedia.unifycomponents.BaseCustomView
+import com.tokopedia.unifycomponents.toPx
 import org.jetbrains.annotations.NotNull
 
 /**
@@ -50,6 +53,7 @@ class EmoneyPdpBottomCheckoutWidget @JvmOverloads constructor(@NotNull context: 
 
     fun showCoachMark() {
         coachMark2.container?.show()
+        coachMark2.container?.setPadding(Int.ZERO, MultiCheckoutConst.PADDING_TOP.toPx(), Int.ZERO, Int.ZERO)
     }
 
     fun hideCoachMark() {
