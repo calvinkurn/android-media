@@ -482,6 +482,7 @@ class StoriesDetailFragment @Inject constructor(
     }
 
     private fun showStoriesComponent(isShow: Boolean) {
+        showSwipeProductJob?.cancel()
         binding.storiesComponent.showWithCondition(isShow)
         binding.flStoriesNext.showWithCondition(isShow)
         binding.flStoriesProduct.showWithCondition(isShow)
