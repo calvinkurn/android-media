@@ -76,6 +76,7 @@ import com.tokopedia.tokopedianow.common.view.NoAddressEmptyStateView
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder
 import com.tokopedia.tokopedianow.common.viewmodel.TokoNowProductRecommendationViewModel
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowCategoryBaseBinding
+import com.tokopedia.tokopedianow.oldcategory.domain.model.CategorySharingModel
 import com.tokopedia.tokopedianow.similarproduct.presentation.activity.TokoNowSimilarProductBottomSheetActivity
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
@@ -734,6 +735,7 @@ class TokoNowCategoryFragment :
         observeOosState()
         observeOpenScreenTracker()
         observeOpenLoginPage()
+        observeSharingModel()
     }
 
     private fun observeCategoryHeader() {
@@ -908,6 +910,12 @@ class TokoNowCategoryFragment :
         }
     }
 
+    private fun observeSharingModel() {
+        observe(viewModel.shareLiveData) {
+            setCategorySharingModel(it)
+        }
+    }
+
     private fun observeAtcDataTracker() {
         viewModel.atcDataTracker.observe(viewLifecycleOwner) { model ->
             when(model.layoutType) {
@@ -930,6 +938,17 @@ class TokoNowCategoryFragment :
                 quantity = model.quantity,
                 productWarehouseId = model.productRecommendation.productCardModel.warehouseId
             )
+        }
+    }
+
+    private fun setCategorySharingModel(model: CategorySharingModel) {
+        shareTokonow?.apply {
+            id = model.deeplinkParam
+            sharingUrl = model.url
+            pageIdConstituents = model.utmCampaignList
+            sharingText = context?.resources?.getString(R.string.tokopedianow_category_share_main_text, model.title).orEmpty()
+            specificPageName = context?.resources?.getString(R.string.tokopedianow_category_share_title, model.title).orEmpty()
+            specificPageDescription = context?.resources?.getString(R.string.tokopedianow_category_share_desc, model.title).orEmpty()
         }
     }
 
