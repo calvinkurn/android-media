@@ -14,6 +14,7 @@ import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
 import com.tokopedia.home.beranda.data.mapper.ReminderWidgetMapper
 import com.tokopedia.home.beranda.data.mapper.ShopFlashSaleMapper
 import com.tokopedia.home.beranda.data.model.*
+import com.tokopedia.home.beranda.data.newatf.AtfDataList
 import com.tokopedia.home.beranda.data.newatf.AtfMapper
 import com.tokopedia.home.beranda.data.newatf.HomeAtfUseCase
 import com.tokopedia.home.beranda.domain.interactor.*
@@ -206,7 +207,8 @@ class HomeDynamicChannelUseCase @Inject constructor(
         val atfFlow = homeAtfUseCase.flow.map {
             HomeDynamicChannelModel(
                 list = atfMapper.mapToVisitableList(it),
-                isCache = it?.isCache.orTrue()
+                isCache = it?.isCache.orTrue(),
+                isAtfError = it?.status == AtfDataList.STATUS_ERROR
             )
         }
 
