@@ -42,6 +42,12 @@ class TokoNowChooseAddressWidgetViewHolder(
         chooseAddressWidget?.updateWidget()
     }
 
+    override fun bind(element: TokoNowChooseAddressWidgetUiModel?, payloads: MutableList<Any>) {
+        if(payloads.firstOrNull() == true) {
+            chooseAddressWidget?.updateWidget()
+        }
+    }
+
     private fun bindChooseAddressWidget(element: TokoNowChooseAddressWidgetUiModel) {
         tokoNowView?.getFragmentPage()?.let { fragment ->
             chooseAddressWidget?.bindChooseAddress(object : ChooseAddressWidget.ChooseAddressWidgetListener {

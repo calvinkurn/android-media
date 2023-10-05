@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryQuickFilterUiModel
 import com.tokopedia.tokopedianow.common.base.adapter.BaseTokopediaNowDiffer
 import com.tokopedia.tokopedianow.common.model.TokoNowAdsCarouselUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 
 class CategoryL2TabDiffer : BaseTokopediaNowDiffer() {
@@ -17,6 +18,8 @@ class CategoryL2TabDiffer : BaseTokopediaNowDiffer() {
             } else if (oldItem is ProductItemDataView && newItem is ProductItemDataView) {
                 oldItem.productCardModel.productId == newItem.productCardModel.productId
             } else if (oldItem is CategoryQuickFilterUiModel && newItem is CategoryQuickFilterUiModel) {
+                oldItem.id == newItem.id
+            } else if (oldItem is TokoNowChooseAddressWidgetUiModel && newItem is TokoNowChooseAddressWidgetUiModel) {
                 oldItem.id == newItem.id
             } else {
                 oldItem == newItem
@@ -38,7 +41,9 @@ class CategoryL2TabDiffer : BaseTokopediaNowDiffer() {
             oldItem.getChangePayload(newItem)
         } else if (oldItem is CategoryQuickFilterUiModel && newItem is CategoryQuickFilterUiModel) {
             oldItem.getChangePayload(newItem)
-        } else {
+        } else if (oldItem is TokoNowChooseAddressWidgetUiModel && newItem is TokoNowChooseAddressWidgetUiModel) {
+            oldItem.getChangePayload(newItem)
+        }else {
             super.getChangePayload(oldItemPosition, newItemPosition)
         }
     }
