@@ -10,7 +10,7 @@ import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryQuickFilterUiModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategorySortFilterItemUiModel
-import com.tokopedia.tokopedianow.databinding.ItemTokopedianowSearchCategoryQuickFilterBinding
+import com.tokopedia.tokopedianow.databinding.ItemTokopedianowCategoryQuickFilterBinding
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -22,15 +22,15 @@ class CategoryQuickFilterViewHolder(
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_tokopedianow_search_category_quick_filter
+        val LAYOUT = R.layout.item_tokopedianow_category_quick_filter
 
         private const val ONE_OPTION_COUNT = 1
     }
 
-    private var binding: ItemTokopedianowSearchCategoryQuickFilterBinding? by viewBinding()
+    private var binding: ItemTokopedianowCategoryQuickFilterBinding? by viewBinding()
 
     override fun bind(quickFilter: CategoryQuickFilterUiModel) {
-        binding?.tokoNowSearchCategoryQuickFilter?.apply {
+        binding?.sortFilter?.apply {
             val sortFilterItemList = quickFilter.itemList.map {
                 val filter = it.filter
                 val options = filter.options
@@ -67,7 +67,7 @@ class CategoryQuickFilterViewHolder(
 
     override fun bind(quickFilter: CategoryQuickFilterUiModel, payloads: MutableList<Any>) {
         if (payloads.firstOrNull() != null) {
-            binding?.tokoNowSearchCategoryQuickFilter?.apply {
+            binding?.sortFilter?.apply {
                 val chipItemList = chipItems.orEmpty()
 
                 if(chipItemList.isNotEmpty()) {
