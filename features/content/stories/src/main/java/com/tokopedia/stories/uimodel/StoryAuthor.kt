@@ -1,14 +1,10 @@
 package com.tokopedia.stories.uimodel
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
-
 /**
  * @author by astidhiyaa on 08/08/23
  */
 
-@Parcelize
-sealed class StoryAuthor : Parcelable {
+sealed class StoryAuthor {
     abstract val id: String
     abstract val type: AuthorType
     abstract val thumbnailUrl: String
