@@ -9,7 +9,6 @@ import com.tokopedia.home_account.privacy_account.data.DataSetConsent
 import com.tokopedia.home_account.privacy_account.domain.GetConsentSocialNetworkUseCase
 import com.tokopedia.home_account.privacy_account.domain.SetConsentSocialNetworkUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -21,7 +20,7 @@ import javax.inject.Inject
 
 class PrivacyAccountViewModel @Inject constructor(
     private val getConsentSocialNetworkUseCase: GetConsentSocialNetworkUseCase,
-    private val setConsentSocialNetworkUseCase: SetConsentSocialNetworkUseCase
+    private val setConsentSocialNetworkUseCase: SetConsentSocialNetworkUseCase,
     dispatcher: CoroutineDispatchers
 ): BaseViewModel(dispatcher.main), LifecycleObserver {
 
