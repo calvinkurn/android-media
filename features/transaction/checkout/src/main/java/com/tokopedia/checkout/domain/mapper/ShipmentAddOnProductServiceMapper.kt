@@ -22,7 +22,7 @@ object ShipmentAddOnProductServiceMapper {
         cartItemModel.addOnProduct.listAddOnProductData.forEach { addOn ->
             val addOnRequest = AddOnDataRequest()
             addOnRequest.addOnId = addOn.id
-            addOnRequest.addOnQty = 1
+            addOnRequest.addOnQty = if (addOn.fixedQty) 1 else cartItemModel.quantity
             addOnRequest.addOnUniqueId = addOn.uniqueId
             addOnRequest.addOnType = addOn.type
             addOnRequest.addOnStatus = addOn.status
@@ -57,7 +57,7 @@ object ShipmentAddOnProductServiceMapper {
                 cartItem.addOnProduct.listAddOnProductData.forEach { addOnProduct ->
                     val addOnDataRequest = AddOnDataRequest(
                         addOnId = addOnProduct.id,
-                        addOnQty = cartItem.quantity,
+                        addOnQty = if (addOnProduct.fixedQty) 1 else cartItem.quantity,
                         addOnUniqueId = addOnProduct.uniqueId,
                         addOnType = addOnProduct.type,
                         addOnStatus = addOnProduct.status
@@ -95,7 +95,7 @@ object ShipmentAddOnProductServiceMapper {
         product.addOnProduct.listAddOnProductData.forEach { addOn ->
             val addOnRequest = AddOnDataRequest()
             addOnRequest.addOnId = addOn.id
-            addOnRequest.addOnQty = 1
+            addOnRequest.addOnQty = if (addOn.fixedQty) 1 else product.quantity
             addOnRequest.addOnUniqueId = addOn.uniqueId
             addOnRequest.addOnType = addOn.type
             addOnRequest.addOnStatus = addOn.status
@@ -130,7 +130,7 @@ object ShipmentAddOnProductServiceMapper {
                 cartItem.addOnProduct.listAddOnProductData.forEach { addOnProduct ->
                     val addOnDataRequest = AddOnDataRequest(
                         addOnId = addOnProduct.id,
-                        addOnQty = cartItem.quantity,
+                        addOnQty = if (addOnProduct.fixedQty) 1 else cartItem.quantity,
                         addOnUniqueId = addOnProduct.uniqueId,
                         addOnType = addOnProduct.type,
                         addOnStatus = addOnProduct.status
