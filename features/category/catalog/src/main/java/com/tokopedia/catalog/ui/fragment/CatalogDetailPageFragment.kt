@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -96,6 +97,10 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.launch
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -152,27 +157,29 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
 
     var catalogUrl = ""
 
-    var isChangeSelectionFromClickNavigation = false
-
     private val userSession: UserSession by lazy {
         UserSession(activity)
     }
+
+    var selectNavigationFromScroll = true
+
 
     private val recyclerViewScrollListener: RecyclerView.OnScrollListener by lazy {
         object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 val layoutManager = recyclerView.layoutManager as? LinearLayoutManager
-
                 binding?.rvContent?.post {
-                    if (!recyclerView.canScrollVertically(RecyclerView.FOCUS_DOWN)) {
-                        val indexVisible = layoutManager?.findLastVisibleItemPosition().orZero()
-                        widgetAdapter.autoSelectNavigation(indexVisible)
-                    }else{
-                        val indexVisible = layoutManager?.findFirstVisibleItemPosition().orZero()
-                        widgetAdapter.autoSelectNavigation(indexVisible)
+                    CoroutineScope(Dispatchers.Main).launch {
+                        if (!recyclerView.canScrollVertically(RecyclerView.FOCUS_DOWN)) {
+                            val indexVisible = layoutManager?.findLastVisibleItemPosition().orZero()
+                            viewModel.emitScrollEvent(indexVisible)
+                        } else {
+                            val indexVisible =
+                                layoutManager?.findFirstVisibleItemPosition().orZero()
+                            viewModel.emitScrollEvent(indexVisible)
+                        }
                     }
-
                 }
             }
         }
@@ -205,7 +212,6 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
             viewModel.refreshNotification()
         }
 
-
     }
 
     override fun onNavBackClicked() {
@@ -233,7 +239,7 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
     }
 
     override fun onNavigateWidget(anchorTo: String, tabPosition: Int, tabTitle: String?) {
-        isChangeSelectionFromClickNavigation = true
+        selectNavigationFromScroll = false
         val smoothScroller: RecyclerView.SmoothScroller = object : LinearSmoothScroller(context) {
             override fun getVerticalSnapPreference(): Int {
                 return SNAP_TO_START
@@ -243,18 +249,19 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
         val layoutManager = binding?.rvContent?.layoutManager as? LinearLayoutManager
         widgetAdapter.changeNavigationTabActive(tabPosition)
         if (anchorToPosition >= Int.ZERO) {
-            binding?.rvContent?.removeOnScrollListener(recyclerViewScrollListener)
             if (tabPosition == Int.ZERO) {
                 smoothScroller.targetPosition = anchorToPosition - 3
+                layoutManager?.startSmoothScroll(smoothScroller)
+            } else if (tabPosition == (widgetAdapter.findNavigationCount()-1)) {
+                smoothScroller.targetPosition = anchorToPosition
                 layoutManager?.startSmoothScroll(smoothScroller)
             } else {
                 smoothScroller.targetPosition = anchorToPosition - 2
                 layoutManager?.startSmoothScroll(smoothScroller)
             }
             Handler(Looper.getMainLooper()).postDelayed({
-                binding?.rvContent?.addOnScrollListener(recyclerViewScrollListener)
+                selectNavigationFromScroll = true
             }, 500)
-
         }
 
         CatalogReimagineDetailAnalytics.sendEvent(
@@ -292,6 +299,14 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
                 view, errorMessage, duration = Toaster.LENGTH_LONG,
                 type = Toaster.TYPE_ERROR
             ).show()
+        }
+
+        CoroutineScope(Dispatchers.Main).launch {
+            viewModel.scrollEvents.debounce(300).collect {
+                if (selectNavigationFromScroll) {
+                    widgetAdapter.autoSelectNavigation(it)
+                }
+            }
         }
     }
 

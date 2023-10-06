@@ -12,8 +12,6 @@ import com.tokopedia.catalogcommon.uimodel.BaseCatalogUiModel
 import com.tokopedia.catalogcommon.uimodel.StickyNavigationUiModel
 import com.tokopedia.catalogcommon.viewholder.StickyTabNavigationViewHolder
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.unifycomponents.TabsUnify
-import com.tokopedia.catalogcommon.R as catalogcommonR
 
 class WidgetCatalogAdapter(
     private val baseListAdapterTypeFactory: CatalogAdapterFactoryImpl
@@ -93,6 +91,7 @@ class WidgetCatalogAdapter(
         val navigation = visitables.getOrNull(indexNavigation) as? StickyNavigationUiModel
 
         val currentWidget = visitables.getOrNull(position) as? BaseCatalogUiModel
+
         navigation?.let { stickyNav ->
             val indexPartOfNavigation = stickyNav.content.indexOfFirst {
                 it.anchorWidgets.contains(currentWidget?.widgetName.orEmpty())
@@ -135,6 +134,17 @@ class WidgetCatalogAdapter(
     fun findPositionNavigation(): Int {
         val index = visitables.indexOfFirst {
             it is StickyNavigationUiModel
+        }
+        return index
+    }
+
+    fun findNavigationCount(): Int {
+        val index = visitables.indexOfFirst {
+            it is StickyNavigationUiModel
+        }
+        if (index != -1){
+            val nav = visitables[index] as StickyNavigationUiModel
+            return  nav.content.size
         }
         return index
     }
