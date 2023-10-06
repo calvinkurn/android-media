@@ -216,7 +216,7 @@ class MvcMultiShopView @JvmOverloads constructor(
             TransParentActivity.getIntent(
                 context,
                 shopId,
-                0,
+                MvcSource.DEFAULT,
                 shopApplink,
                 shopName,
                 mvcActivityCallbacks.hashCodeForMVC
