@@ -114,14 +114,18 @@ class StoriesGroupFragment @Inject constructor(
     private fun setupViews() = with(binding) {
         showPageLoading(true)
 
-        root.doOnApplyWindowInsets { _, insets, _, _ ->
-            val topInsetsMargin = (insets.getInsets(WindowInsetsCompat.Type.statusBars())).top
-            root.setMargin(top = topInsetsMargin, bottom = 0, left = 0, right = 0)
-        }
+        setupTopInsets()
 
         layoutGroupLoading.icCloseLoading.setOnClickListener { activity?.finish() }
         storiesGroupViewPager.setPageTransformer(StoriesPageAnimation())
         storiesGroupViewPager.registerOnPageChangeCallback(pagerListener)
+    }
+
+    private fun setupTopInsets() = with(binding) {
+        root.doOnApplyWindowInsets { _, insets, _, _ ->
+            val topInsetsMargin = (insets.getInsets(WindowInsetsCompat.Type.statusBars())).top
+            root.setMargin(top = topInsetsMargin, bottom = 0, left = 0, right = 0)
+        }
     }
 
     private fun setupObserver() {
