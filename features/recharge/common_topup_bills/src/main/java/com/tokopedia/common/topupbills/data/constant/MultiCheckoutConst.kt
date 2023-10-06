@@ -1,5 +1,6 @@
 package com.tokopedia.common.topupbills.data.constant
 
+import android.annotation.SuppressLint
 import android.content.Context
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.coachmark.CoachMark2
@@ -7,7 +8,6 @@ import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.common.topupbills.analytics.PromotionMultiCheckout
 import com.tokopedia.common.topupbills.data.MultiCheckoutButtons
 import com.tokopedia.common.topupbills.data.constant.MultiCheckoutConst.ACTION_MULTIPLE
-import com.tokopedia.common.topupbills.data.constant.MultiCheckoutConst.PADDING_TOP
 import com.tokopedia.common.topupbills.data.constant.MultiCheckoutConst.POSITION_LEFT
 import com.tokopedia.common.topupbills.data.constant.MultiCheckoutConst.POSITION_RIGHT
 import com.tokopedia.common.topupbills.data.constant.MultiCheckoutConst.POSITION_TWO
@@ -26,6 +26,7 @@ object MultiCheckoutConst {
     const val POSITION_RIGHT = "right"
     const val ACTION_MULTIPLE = "multiple"
     const val ACTION_GENERAL_MYBILLS = "mybills_page"
+    @SuppressLint("UnsupportedDarkModeColor")
     const val WHITE_COLOR = "#FFFFFF"
     const val PREFERENCE_MULTICHECKOUT = "pdp_dg_multichekout"
     const val SHOW_COACH_MARK_MULTICHECKOUT_KEY = "pdp_dg_multichekout_is_coachmark_closed"
