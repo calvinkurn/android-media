@@ -204,6 +204,7 @@ class ProductDirectPurchaseViewHolder private constructor() {
                 tvRating.hide()
             }
             else {
+                iconRating.visible()
                 tvRating.visible()
                 tvRating.text = data.ratingAverage
             }
