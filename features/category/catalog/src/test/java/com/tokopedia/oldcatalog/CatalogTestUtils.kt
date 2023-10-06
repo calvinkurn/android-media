@@ -1,4 +1,4 @@
-package com.tokopedia.catalog
+package com.tokopedia.oldcatalog
 
 import java.io.File
 
