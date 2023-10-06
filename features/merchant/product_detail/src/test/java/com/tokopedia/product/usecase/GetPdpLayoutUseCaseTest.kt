@@ -11,14 +11,15 @@ import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailLayout
 import com.tokopedia.product.detail.common.data.model.rates.TokoNowParam
 import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
-import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
 import com.tokopedia.product.detail.data.util.TobacoErrorException
 import com.tokopedia.product.detail.usecase.GetPdpLayoutUseCase
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Before
@@ -42,15 +43,12 @@ class GetPdpLayoutUseCaseTest {
     @RelaxedMockK
     lateinit var remoteConfig: RemoteConfig
 
-    @RelaxedMockK
-    lateinit var emptyCallback: GetPdpLayoutUseCase.Callback
-
     private val useCaseTest by lazy {
-        GetPdpLayoutUseCase(gqlUseCase, "", remoteConfig)
+        GetPdpLayoutUseCase(gqlUseCase, "", remoteConfig, CoroutineTestDispatchersProvider)
     }
 
     private val useCaseTestLayoutId by lazy {
-        GetPdpLayoutUseCase(gqlUseCase, "56", remoteConfig)
+        GetPdpLayoutUseCase(gqlUseCase, "56", remoteConfig, CoroutineTestDispatchersProvider)
     }
 
     @Before
@@ -59,74 +57,60 @@ class GetPdpLayoutUseCaseTest {
     }
 
     @Test
-    fun onSuccessExecuteOnBackground() {
-        runBlocking {
-            coEvery {
-                gqlUseCase.executeOnBackground()
-            } returns createMockGraphqlResponse(ERROR_TYPE.SUCCESS)
+    fun onSuccessExecuteOnBackground() = runBlocking {
+        coEvery {
+            gqlUseCase.executeOnBackground()
+        } returns createMockGraphqlResponse(ERROR_TYPE.SUCCESS)
 
-            useCaseTest.invoke(object : GetPdpLayoutUseCase.Callback {
-                override fun onSuccess(p1Data: ProductDetailDataModel) {
-                    Assert.assertTrue(p1Data.listOfLayout.isNotEmpty())
-                }
+        val result = useCaseTest.executeOnBackground().first()
+        Assert.assertTrue(result.listOfLayout.isNotEmpty())
 
-                override fun onError(throwable: Throwable) {
-                }
-            })
-
-            coVerify {
-                gqlUseCase.clearRequest()
-                gqlUseCase.addRequest(any())
-                gqlUseCase.executeOnBackground()
-            }
+        coVerify {
+            gqlUseCase.clearRequest()
+            gqlUseCase.addRequest(any())
+            gqlUseCase.executeOnBackground()
         }
     }
 
     @Test
-    fun onDataNullExecuteOnBackground() {
-        runBlocking {
-            coEvery {
-                gqlUseCase.executeOnBackground()
-            } returns createMockGraphqlResponse(ERROR_TYPE.RUNTIME)
+    fun onDataNullExecuteOnBackground() = runBlocking {
+        coEvery {
+            gqlUseCase.executeOnBackground()
+        } returns createMockGraphqlResponse(ERROR_TYPE.RUNTIME)
 
-            useCaseTest.invoke(object : GetPdpLayoutUseCase.Callback {
-                override fun onSuccess(p1Data: ProductDetailDataModel) {
-                }
+        runCatching {
+            useCaseTest.executeOnBackground().first()
+        }.onSuccess {
+            Assert.fail()
+        }.onFailure {
+            Assert.assertTrue(it is MessageErrorException)
+        }
 
-                override fun onError(throwable: Throwable) {
-                    Assert.assertTrue(throwable is MessageErrorException)
-                }
-            })
-
-            coVerify {
-                gqlUseCase.clearRequest()
-                gqlUseCase.addRequest(any())
-                gqlUseCase.executeOnBackground()
-            }
+        coVerify {
+            gqlUseCase.clearRequest()
+            gqlUseCase.addRequest(any())
+            gqlUseCase.executeOnBackground()
         }
     }
 
     @Test
-    fun onErrorTobaccoExecuteOnBackground() {
-        runBlocking {
-            coEvery {
-                gqlUseCase.executeOnBackground()
-            } returns createMockGraphqlResponse(ERROR_TYPE.TOBACCO)
+    fun onErrorTobaccoExecuteOnBackground() = runBlocking {
+        coEvery {
+            gqlUseCase.executeOnBackground()
+        } returns createMockGraphqlResponse(ERROR_TYPE.TOBACCO)
 
-            useCaseTest(object : GetPdpLayoutUseCase.Callback {
-                override fun onSuccess(p1Data: ProductDetailDataModel) {
-                }
+        runCatching {
+            useCaseTest.executeOnBackground().first()
+        }.onSuccess {
+            Assert.fail()
+        }.onFailure {
+            Assert.assertTrue(it is TobacoErrorException)
+        }
 
-                override fun onError(throwable: Throwable) {
-                    Assert.assertTrue(throwable is TobacoErrorException)
-                }
-            })
-
-            coVerify {
-                gqlUseCase.clearRequest()
-                gqlUseCase.addRequest(any())
-                gqlUseCase.executeOnBackground()
-            }
+        coVerify {
+            gqlUseCase.clearRequest()
+            gqlUseCase.addRequest(any())
+            gqlUseCase.executeOnBackground()
         }
     }
 
@@ -136,7 +120,7 @@ class GetPdpLayoutUseCaseTest {
             gqlUseCase.executeOnBackground()
         } returns createMockGraphqlResponse(ERROR_TYPE.SUCCESS)
 
-        useCaseTestLayoutId(emptyCallback)
+        useCaseTestLayoutId.executeOnBackground()
 
         val layoutId = useCaseTestLayoutId.requestParams.getString(ProductDetailCommonConstant.PARAM_LAYOUT_ID, "")
         Assert.assertEquals(layoutId, "56")
@@ -149,7 +133,7 @@ class GetPdpLayoutUseCaseTest {
         } returns createMockGraphqlResponse(ERROR_TYPE.SUCCESS)
 
         useCaseTestLayoutId.requestParams = GetPdpLayoutUseCase.createParams("", "", "", "", "122", UserLocationRequest(), "", TokoNowParam(), true)
-        useCaseTestLayoutId(emptyCallback)
+        useCaseTestLayoutId.executeOnBackground()
 
         val layoutId = useCaseTestLayoutId.requestParams.getString(ProductDetailCommonConstant.PARAM_LAYOUT_ID, "")
         Assert.assertEquals(layoutId, "122")
