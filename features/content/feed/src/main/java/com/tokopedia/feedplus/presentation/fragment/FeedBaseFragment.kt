@@ -748,7 +748,7 @@ class FeedBaseFragment :
      * - viewModel.setActiveTab(type);
      */
     private fun handleActiveTab(tab: FeedTabModel) {
-        val selectedTab = tab.data.firstOrNull { it.isSelected }
+        val selectedTab = feedMainViewModel.selectedTab
 
         if (selectedTab == null) {
             setupActiveTab(tab)
