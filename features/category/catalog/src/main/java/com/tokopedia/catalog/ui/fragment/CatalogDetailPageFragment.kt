@@ -6,6 +6,8 @@ import android.graphics.Color
 import android.graphics.Rect
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -169,7 +171,6 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
                     }else{
                         val indexVisible = layoutManager?.findFirstVisibleItemPosition().orZero()
                         widgetAdapter.autoSelectNavigation(indexVisible)
-
                     }
 
                 }
@@ -242,6 +243,7 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
         val layoutManager = binding?.rvContent?.layoutManager as? LinearLayoutManager
         widgetAdapter.changeNavigationTabActive(tabPosition)
         if (anchorToPosition >= Int.ZERO) {
+            binding?.rvContent?.removeOnScrollListener(recyclerViewScrollListener)
             if (tabPosition == Int.ZERO) {
                 smoothScroller.targetPosition = anchorToPosition - 3
                 layoutManager?.startSmoothScroll(smoothScroller)
@@ -249,6 +251,9 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
                 smoothScroller.targetPosition = anchorToPosition - 2
                 layoutManager?.startSmoothScroll(smoothScroller)
             }
+            Handler(Looper.getMainLooper()).postDelayed({
+                binding?.rvContent?.addOnScrollListener(recyclerViewScrollListener)
+            }, 500)
 
         }
 
