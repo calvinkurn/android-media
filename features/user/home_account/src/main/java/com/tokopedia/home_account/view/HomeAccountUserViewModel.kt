@@ -117,9 +117,6 @@ class HomeAccountUserViewModel @Inject constructor(
     val balanceAndPoint: LiveData<ResultBalanceAndPoint<WalletappGetAccountBalance>>
         get() = _balanceAndPoint
 
-    private val _phoneNo = MutableLiveData<String>()
-    val phoneNo: LiveData<String> get() = _phoneNo
-
     private val _safeModeStatus = MutableLiveData<Boolean>()
     val safeModeStatus: LiveData<Boolean> get() = _safeModeStatus
 
