@@ -212,6 +212,7 @@ class ProductDirectPurchaseViewHolder private constructor() {
                 tvSoldCount.hide()
             }
             else {
+                tvSoldCount.visible()
                 tvSoldCount.text = data.label
             }
             if(data.label.isNotEmpty() && data.ratingAverage.isNotEmpty()){
