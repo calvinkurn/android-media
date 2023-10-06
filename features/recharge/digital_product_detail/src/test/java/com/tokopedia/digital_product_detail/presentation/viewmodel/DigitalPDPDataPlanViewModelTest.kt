@@ -475,6 +475,17 @@ class DigitalPDPDataPlanViewModelTest : DigitalPDPDataPlanViewModelTestFixture()
     }
 
     @Test
+    fun `when getting addToCartMultiCheckout should run and return success`() {
+        val response = mapAtcFactory.mapAtcToResult(dataFactory.getAddToCartData())
+        onGetAddToCartMultiChekout_thenReturn(response)
+
+        viewModel.setAtcMultiCheckoutParam()
+        viewModel.addToCart(RequestBodyIdentifier(), "")
+        verifyAddToCartMultiCheckoutRepoGetCalled()
+        verifyAddToCartMultiChekoutSuccess(response)
+    }
+
+    @Test
     fun `when getting addToCart should run and return notNull error from gql`() {
         val error = dataFactory.getErrorAtcFromGql()
         onGetAddToCart_thenReturn(error)

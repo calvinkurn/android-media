@@ -220,6 +220,7 @@ class DigitalPDPPulsaViewModel @Inject constructor(
             } else if (categoryIdAtc.errorAtc == null) {
                 _addToCartResult.value = RechargeNetworkResult.Success(categoryIdAtc)
             } else {
+                resetAtcMultiCheckoutParam()
                 _errorAtc.value = categoryIdAtc.errorAtc
             }
         }) {

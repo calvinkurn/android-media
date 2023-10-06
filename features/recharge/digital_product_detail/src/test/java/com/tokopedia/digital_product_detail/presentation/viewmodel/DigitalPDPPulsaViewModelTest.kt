@@ -1,5 +1,6 @@
 package com.tokopedia.digital_product_detail.presentation.viewmodel
 
+import com.tokopedia.common.topupbills.data.MultiCheckoutButtons
 import com.tokopedia.common.topupbills.favoritepdp.data.mapper.DigitalPersoMapper
 import com.tokopedia.common.topupbills.favoritepdp.util.FavoriteNumberType
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
@@ -17,6 +18,7 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.test.runTest
+import org.junit.Assert
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
@@ -498,6 +500,17 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPPulsaViewModelTestFixture() {
     }
 
     @Test
+    fun `when getting addToCartMultiCheckout should run and return success`() {
+        val response = mapAtcFactory.mapAtcToResult(dataFactory.getAddToCartData())
+        onGetAddToCartMultiChekout_thenReturn(response)
+
+        viewModel.setAtcMultiCheckoutParam()
+        viewModel.addToCart(RequestBodyIdentifier(), "")
+        verifyAddToCartMultiCheckoutRepoGetCalled()
+        verifyAddToCartMultiChekoutSuccess(response)
+    }
+
+    @Test
     fun `when getting addToCart should run and return notNull error from gql`() {
         val error = dataFactory.getErrorAtcFromGql()
         onGetAddToCart_thenReturn(error)
@@ -689,6 +702,22 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPPulsaViewModelTestFixture() {
         val expectedResult = viewModel.isEmptyDenomMCCM(listDenom, listMccm)
 
         verifyDenomAndMCCMIsEmpty(expectedResult)
+    }
+
+    @Test
+    fun updateMultiCheckoutButtonsTest() {
+        val multiCheckoutButtons = listOf(
+            MultiCheckoutButtons(
+                text = "Halo",
+                color = "#FFFFFFF",
+                coachmark = "Show Coachmak",
+                position = "1",
+                type = "multiple"
+            )
+        )
+
+        viewModel.updateMultiCheckoutButtons(multiCheckoutButtons)
+        Assert.assertEquals(viewModel.multiCheckoutButtons, multiCheckoutButtons)
     }
 
     companion object {
