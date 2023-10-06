@@ -9,6 +9,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sellerhomecommon.domain.mapper.MultiComponentMapper
 import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
 import com.tokopedia.sellerhomecommon.domain.model.FetchMultiComponentResponse
+import com.tokopedia.sellerhomecommon.domain.model.ParamCommonWidgetModel
 import com.tokopedia.sellerhomecommon.presentation.model.MultiComponentDataUiModel
 import com.tokopedia.usecase.RequestParams
 
@@ -69,10 +70,14 @@ class GetMultiComponentDataUseCase(
         private const val DATA_KEYS = "dataKeys"
 
         fun createRequestParams(
-            dataKey: List<String>
+            dataKey: List<String>,
+            dynamicParameter: ParamCommonWidgetModel
         ): RequestParams = RequestParams.create().apply {
             val dataKeys = dataKey.map {
-                DataKeyModel(key = it)
+                DataKeyModel(
+                    key = it,
+                    jsonParams = dynamicParameter.toJsonString()
+                )
             }
             putObject(DATA_KEYS, dataKeys)
         }

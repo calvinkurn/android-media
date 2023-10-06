@@ -649,7 +649,8 @@ class LayoutMapper @Inject constructor(
             isLoading = false,
             isFromCache = fromCache,
             emptyState = widget.emptyStateModel.mapToUiModel(),
-            useRealtime = widget.useRealtime
+            useRealtime = widget.useRealtime,
+            sectionId = widget.sectionId.toString()
         )
     }
 

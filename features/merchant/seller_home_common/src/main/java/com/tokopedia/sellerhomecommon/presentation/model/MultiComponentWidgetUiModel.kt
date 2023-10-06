@@ -24,7 +24,8 @@ data class MultiComponentWidgetUiModel(
     override var showLoadingState: Boolean = false,
     override var emptyState: WidgetEmptyStateUiModel,
     override var useRealtime: Boolean = false,
-    var isInitialLoad:Boolean = true
+    override val sectionId: String,
+    var isInitialLoad:Boolean = true,
 ): BaseWidgetUiModel<MultiComponentDataUiModel> {
 
     override fun copyWidget(): BaseWidgetUiModel<MultiComponentDataUiModel> {
