@@ -17,23 +17,16 @@ class OpenRechargeCheckBalance : ActivityResultContract<String, OpenRechargeChec
         if (resultCode == Activity.RESULT_OK) {
             if (intent != null) {
                 val accessToken = intent.getStringExtra(DigitalPDPConstant.EXTRA_CHECK_BALANCE_ACCESS_TOKEN) ?: ""
-                return if (accessToken.isNotEmpty()) {
-                    CheckBalanceOTPResult.Success(accessToken)
-                } else {
-                    CheckBalanceOTPResult.EmptyToken
+                if (accessToken.isNotEmpty()) {
+                    return CheckBalanceOTPResult.Success(accessToken)
                 }
-            } else {
-                return CheckBalanceOTPResult.EmptyToken
             }
-        } else {
-            return CheckBalanceOTPResult.Cancelled
         }
-
+        return CheckBalanceOTPResult.EmptyToken
     }
 
     sealed class CheckBalanceOTPResult {
-        object Cancelled: CheckBalanceOTPResult()
-        object EmptyToken: CheckBalanceOTPResult()
-        data class Success(val accessToken: String): CheckBalanceOTPResult()
+        object EmptyToken : CheckBalanceOTPResult()
+        data class Success(val accessToken: String) : CheckBalanceOTPResult()
     }
 }

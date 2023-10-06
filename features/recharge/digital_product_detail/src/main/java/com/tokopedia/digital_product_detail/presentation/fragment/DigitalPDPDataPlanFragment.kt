@@ -198,9 +198,6 @@ class DigitalPDPDataPlanFragment :
                     Toast.LENGTH_LONG
                 ).show()
             }
-            is OpenRechargeCheckBalance.CheckBalanceOTPResult.Cancelled -> {
-                // do nothing
-            }
         }
         digitalPDPAnalytics.clickCloseOtp(
             DigitalPDPCategoryUtil.getCategoryName(categoryId),

@@ -184,12 +184,9 @@ class DigitalPDPPulsaFragment :
             is OpenRechargeCheckBalance.CheckBalanceOTPResult.EmptyToken -> {
                 Toast.makeText(
                     context,
-                    getString(com.tokopedia.digital_product_detail.R.string.check_balance_failed_verification),
+                    getString(digital_product_detailR.string.check_balance_failed_verification),
                     Toast.LENGTH_LONG
                 ).show()
-            }
-            is OpenRechargeCheckBalance.CheckBalanceOTPResult.Cancelled -> {
-                // do nothing
             }
         }
         digitalPDPAnalytics.clickCloseOtp(

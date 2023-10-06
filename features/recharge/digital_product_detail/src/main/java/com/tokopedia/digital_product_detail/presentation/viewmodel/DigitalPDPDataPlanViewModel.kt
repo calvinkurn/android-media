@@ -20,6 +20,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.digital_product_detail.data.model.data.DigitalAtcResult
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.CHECKOUT_NO_PROMO
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.CHECK_BALANCE_FAIL_THRESHOLD
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.DELAY_CLIENT_NUMBER_TRANSITION
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.DELAY_MULTI_TAB
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.DELAY_PREFIX_TIME
@@ -518,6 +519,5 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
     companion object {
         const val FILTER_PARAM_NAME = "param_name"
         const val FILTER_VALUE = "value"
-        private const val CHECK_BALANCE_FAIL_THRESHOLD = 3
     }
 }

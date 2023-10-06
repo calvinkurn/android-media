@@ -20,6 +20,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.digital_product_detail.data.model.data.DigitalAtcResult
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.CHECKOUT_NO_PROMO
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.CHECK_BALANCE_FAIL_THRESHOLD
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.DELAY_CLIENT_NUMBER_TRANSITION
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.DELAY_MULTI_TAB
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.DELAY_PREFIX_TIME
@@ -403,9 +404,5 @@ class DigitalPDPPulsaViewModel @Inject constructor(
                 delay(skipMs)
             }
         }
-    }
-
-    companion object {
-        private const val CHECK_BALANCE_FAIL_THRESHOLD = 3
     }
 }

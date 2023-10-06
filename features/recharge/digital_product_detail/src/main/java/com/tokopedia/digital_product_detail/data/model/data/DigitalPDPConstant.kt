@@ -49,4 +49,6 @@ object DigitalPDPConstant {
     const val INDOSAT_CHECK_BALANCE_TYPE_OTP = "otp"
     const val INDOSAT_CHECK_BALANCE_TYPE_WIDGET = "widget"
     const val INDOSAT_CHECK_BALANCE_TYPE_ERROR = "error"
+
+    const val CHECK_BALANCE_FAIL_THRESHOLD = 3
 }
