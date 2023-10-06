@@ -1,13 +1,14 @@
-package com.tokopedia.statistic.common
+package com.tokopedia.statistic.view.viewhelper
 
 import android.content.Context
 import android.content.SharedPreferences
 import android.view.View
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
-import com.tokopedia.statistic.R
+import com.tokopedia.statistic.R.string
 
-class StatisticCoachMarkHelper(context: Context) {
+
+class MultiComponentTabCoachMark(context: Context) {
 
     companion object {
         private const val PREF_NAME = "statistic_coachmark_pref"
@@ -21,27 +22,36 @@ class StatisticCoachMarkHelper(context: Context) {
 
     private val editor = sharedPref?.edit()
 
-
     fun showCoachMarkMultiComponent(targetView: View?) {
         val shouldShowCoachMark =
             getCoachMarkState(STC_COACHMARK_MULTI_COMPONENT) == false
 
         if (targetView != null && shouldShowCoachMark) {
             initCoachMarkView(targetView.context)
-
             val coachMarkList = arrayListOf<CoachMark2Item>()
             coachMarkList.add(
                 CoachMark2Item(
                     targetView,
-                    targetView.context.getString(R.string.stc_multi_component_coachmark_title),
-                    targetView.context.getString(R.string.stc_multi_component_coachmark_description),
+                    targetView.context.getString(string.stc_multi_component_coachmark_title),
+                    targetView.context.getString(string.stc_multi_component_coachmark_description),
                     CoachMark2.POSITION_BOTTOM
                 )
             )
 
             coachMarkView?.showCoachMark(coachMarkList, null, 0)
-            setCoachMarkState(STC_COACHMARK_MULTI_COMPONENT, true)
         }
+    }
+
+    fun hideCoachMark() {
+        coachMarkView?.hideCoachMark()
+    }
+
+    fun setCoachMarkMultiComponentShown() {
+        setCoachMarkState(STC_COACHMARK_MULTI_COMPONENT, true)
+    }
+
+    fun destroy() {
+        coachMarkView = null
     }
 
     private fun initCoachMarkView(context: Context) {

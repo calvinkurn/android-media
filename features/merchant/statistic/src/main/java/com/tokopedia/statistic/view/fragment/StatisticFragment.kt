@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.google.android.gms.common.util.DeviceProperties
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.analytics.performance.PerformanceMonitoring
@@ -83,16 +84,17 @@ import com.tokopedia.statistic.analytics.performance.StatisticPagePerformanceTra
 import com.tokopedia.statistic.analytics.performance.StatisticPagePerformanceTraceNameConst.TABLE_WIDGET_TRACE
 import com.tokopedia.statistic.analytics.performance.StatisticPerformanceMonitoringListener
 import com.tokopedia.statistic.common.Const
-import com.tokopedia.statistic.common.StatisticCoachMarkHelper
 import com.tokopedia.statistic.common.StatisticPageHelper
 import com.tokopedia.statistic.common.utils.DateFilterFormatUtil
 import com.tokopedia.statistic.common.utils.logger.StatisticLogger
 import com.tokopedia.statistic.databinding.FragmentStcStatisticBinding
 import com.tokopedia.statistic.di.StatisticComponent
+import com.tokopedia.statistic.view.adapter.StatisticAdapter
 import com.tokopedia.statistic.view.bottomsheet.ActionMenuBottomSheet
 import com.tokopedia.statistic.view.bottomsheet.DateFilterBottomSheet
 import com.tokopedia.statistic.view.model.StatisticPageUiModel
 import com.tokopedia.statistic.view.viewhelper.FragmentListener
+import com.tokopedia.statistic.view.viewhelper.MultiComponentTabCoachMark
 import com.tokopedia.statistic.view.viewhelper.RejectedOrderRateCoachMark
 import com.tokopedia.statistic.view.viewhelper.StatisticItemDecoration
 import com.tokopedia.statistic.view.viewhelper.StatisticLayoutManager
@@ -158,9 +160,9 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         ViewModelProvider(this, viewModelFactory).get(StatisticViewModel::class.java)
     }
 
-    private val coachMarkHelper: StatisticCoachMarkHelper? by lazy {
+    private val multiComponentCoachMark: MultiComponentTabCoachMark? by lazy {
         context?.let {
-            StatisticCoachMarkHelper(it)
+            MultiComponentTabCoachMark(it)
         }
     }
 
@@ -271,10 +273,12 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         super.onPause()
         hideTooltipIfExist()
         hideMonthPickerIfExist()
+        multiComponentCoachMark?.hideCoachMark()
     }
 
     override fun onDestroyView() {
         rejectedOrderRateCoachMark.destroy()
+        multiComponentCoachMark?.setCoachMarkMultiComponentShown()
         mLayoutManager = null
         super.onDestroyView()
     }
@@ -309,6 +313,12 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
     override fun getAdapterTypeFactory(): WidgetAdapterFactoryImpl {
         return WidgetAdapterFactoryImpl(this)
+    }
+
+    override fun createAdapterInstance(): BaseListAdapter<BaseWidgetUiModel<*>, WidgetAdapterFactoryImpl> {
+        return StatisticAdapter(adapterTypeFactory) {
+            multiComponentCoachMark?.hideCoachMark()
+        }
     }
 
     override fun getScreenName(): String = SCREEN_NAME
@@ -590,7 +600,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     override fun showCoachMarkFirstTab(view: View) {
-        coachMarkHelper?.showCoachMarkMultiComponent(view)
+        multiComponentCoachMark?.showCoachMarkMultiComponent(view)
     }
 
     override fun clickMultiComponentTab(tabName: String) {
@@ -1166,7 +1176,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         notifyWidgetChangedPayload(test, UPDATE_MULTI_COMPONENT_DETAIL)
     }
 
-    private fun notifyWidgetChangedPayload(widget: BaseWidgetUiModel<*>, payload:Int) {
+    private fun notifyWidgetChangedPayload(widget: BaseWidgetUiModel<*>, payload: Int) {
         recyclerView?.post {
             val widgetPosition = adapter.data.indexOf(widget)
             if (widgetPosition != RecyclerView.NO_POSITION) {

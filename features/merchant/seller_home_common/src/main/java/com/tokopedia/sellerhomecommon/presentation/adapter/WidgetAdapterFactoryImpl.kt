@@ -34,6 +34,7 @@ import com.tokopedia.sellerhomecommon.presentation.view.viewholder.DescriptionVi
 import com.tokopedia.sellerhomecommon.presentation.view.viewholder.FilterTabViewHolder
 import com.tokopedia.sellerhomecommon.presentation.view.viewholder.LineGraphViewHolder
 import com.tokopedia.sellerhomecommon.presentation.view.viewholder.MilestoneViewHolder
+import com.tokopedia.sellerhomecommon.presentation.view.viewholder.MultiComponentViewHolder
 import com.tokopedia.sellerhomecommon.presentation.view.viewholder.MultiLineGraphViewHolder
 import com.tokopedia.sellerhomecommon.presentation.view.viewholder.PieChartViewHolder
 import com.tokopedia.sellerhomecommon.presentation.view.viewholder.PostListViewHolder
