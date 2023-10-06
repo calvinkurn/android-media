@@ -113,23 +113,23 @@ fun showMultiCheckoutButton(
 }
 
 fun multiCheckoutButtonPromotionTracker(multiCheckoutButtons: List<MultiCheckoutButtons>): PromotionMultiCheckout {
-    val multiple = multiCheckoutButtons.first {
+    val multiple = multiCheckoutButtons.firstOrNull {
         it.type == ACTION_MULTIPLE
     }
     return PromotionMultiCheckout(
-        multiple.text,
-        if (multiple.position == POSITION_LEFT) { Int.ONE } else { POSITION_TWO }
+        multiple?.text ?: "",
+        if (multiple?.position == POSITION_LEFT) { Int.ONE } else { POSITION_TWO }
     )
 }
 
 fun multiCheckoutButtonImpressTrackerButtonType(multiCheckoutButtons: List<MultiCheckoutButtons>): Int {
-    val multiple = multiCheckoutButtons.first {
+    val multiple = multiCheckoutButtons.firstOrNull {
         it.type == ACTION_MULTIPLE
     }
     return when {
         multiCheckoutButtons.size == Int.ONE -> Int.ZERO
-        multiple.position == POSITION_LEFT -> Int.ONE
-        multiple.position == POSITION_RIGHT -> TYPE_TWO
+        multiple?.position == POSITION_LEFT -> Int.ONE
+        multiple?.position == POSITION_RIGHT -> TYPE_TWO
         else -> Int.ZERO
     }
 }
