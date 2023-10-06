@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.tracking
 
+import android.os.Bundle
 import com.tokopedia.stories.widget.domain.StoriesEntryPoint
 import com.tokopedia.stories.widget.domain.StoriesWidgetState
 import com.tokopedia.stories.widget.tracking.DefaultTrackerBuilder
@@ -17,7 +18,7 @@ class ProductDetailStoriesWidgetTrackerBuilder private constructor(
     override fun onImpressedEntryPoint(state: StoriesWidgetState): StoriesWidgetTracker.Data {
         val data = defaultTrackerBuilder.onImpressedEntryPoint(state)
         return data.copy(
-            bundle = data.bundle.apply {
+            bundle = Bundle(data.bundle).apply {
                 putString("productId", productId)
             }
         )
@@ -26,7 +27,7 @@ class ProductDetailStoriesWidgetTrackerBuilder private constructor(
     override fun onClickedEntryPoint(state: StoriesWidgetState): StoriesWidgetTracker.Data {
         val data = defaultTrackerBuilder.onClickedEntryPoint(state)
         return data.copy(
-            bundle = data.bundle.apply {
+            bundle = Bundle(data.bundle).apply {
                 putString("productId", productId)
             }
         )
