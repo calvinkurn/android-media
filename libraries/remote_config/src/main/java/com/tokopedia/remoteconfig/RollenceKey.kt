@@ -10,8 +10,7 @@ object RollenceKey {
     const val AB_TEST_SHOP_AFFILIATE_SHARE_ICON = "shareIconShopAff"
     const val AB_TEST_SHOP_RE_IMAGINED = "shop_page_reimagined"
 
-
-    //home rollence section
+    // home rollence section
     const val BALANCE_EXP = "Balance Widget"
     const val BALANCE_VARIANT_OLD = "Existing Balance Widget"
     const val BALANCE_VARIANT_NEW = "New Balance Widget"
@@ -20,8 +19,7 @@ object RollenceKey {
     const val HOME_LOAD_TIME_KEY = "load_time"
     const val HOME_LOAD_TIME_CONTROL = "control_variant"
     const val HOME_LOAD_TIME_EXP = "exp_variant"
-    //end of home rollence section
-
+    // end of home rollence section
 
     // home component rollence section
     const val HOME_COMPONENT_DYNAMIC_CHANNEL_HEADER_EXP = "btf_revamp_header"
@@ -103,9 +101,6 @@ object RollenceKey {
 
     // Wishlist
     const val WISHLIST_AFFILIATE_TICKER = "aff_ticker_col"
-
-    // New Universal Share BottomSheet in Shop
-    const val NEW_UNIVERSAL_SHARE_BOTTOM_SHEET = "shop_sharing"
 
     // Search Reimagine
     const val SEARCH_1_INST_AUTO = "search_1_inst_auto"
