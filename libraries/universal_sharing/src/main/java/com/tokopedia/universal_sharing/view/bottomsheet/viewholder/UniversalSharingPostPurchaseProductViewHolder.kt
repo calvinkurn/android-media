@@ -17,10 +17,19 @@ class UniversalSharingPostPurchaseProductViewHolder(
 
     private val binding: UniversalSharingPostPurchaseProductItemBinding? by viewBinding()
 
+    init {
+        binding?.universalSharingLayoutBtnShare?.setOnClickListener {
+            val uiModel = itemView.tag as? UniversalSharingPostPurchaseProductUiModel
+            uiModel?.let {
+                setupListener(it)
+            }
+        }
+    }
+
     override fun bind(element: UniversalSharingPostPurchaseProductUiModel) {
         bindImage(element)
         bindProduct(element)
-        bindListener(element)
+        itemView.tag = element
     }
 
     private fun bindImage(element: UniversalSharingPostPurchaseProductUiModel) {
@@ -35,14 +44,12 @@ class UniversalSharingPostPurchaseProductViewHolder(
         binding?.universalSharingTvProductPrice?.text = finalPriceText
     }
 
-    private fun bindListener(element: UniversalSharingPostPurchaseProductUiModel) {
-        binding?.universalSharingLayoutBtnShare?.setOnClickListener {
-            listener.onClickShare(
-                orderId = element.orderId,
-                shopName = element.shopName,
-                productId = element.productId
-            )
-        }
+    private fun setupListener(element: UniversalSharingPostPurchaseProductUiModel) {
+        listener.onClickShare(
+            orderId = element.orderId,
+            shopName = element.shopName,
+            productId = element.productId
+        )
     }
 
     companion object {

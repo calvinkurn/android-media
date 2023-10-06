@@ -5,6 +5,8 @@ import android.app.Application
 import android.os.Build
 import android.os.Bundle
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalCommunication
 import com.tokopedia.kotlin.extensions.view.hideKeyboard
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -180,6 +182,6 @@ class UniversalSharingPostPurchaseSharingActivity :
     }
 
     private fun generateApplinkPDP(productId: String): String {
-        return "tokopedia://product/$productId"
+        return UriUtil.buildUri(ApplinkConst.PRODUCT_INFO, productId)
     }
 }

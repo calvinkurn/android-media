@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.universal_sharing.model.UniversalSharingPostPurchaseModel
 import com.tokopedia.universal_sharing.model.UniversalSharingPostPurchaseProductModel
 import com.tokopedia.universal_sharing.model.UniversalSharingPostPurchaseShopModel
+import com.tokopedia.universal_sharing.util.UniversalShareConst
 import com.tokopedia.universal_sharing.view.bottomsheet.typefactory.UniversalSharingTypeFactory
 import com.tokopedia.universal_sharing.view.model.UniversalSharingPostPurchaseProductUiModel
 import com.tokopedia.universal_sharing.view.model.UniversalSharingPostPurchaseShopTitleUiModel
@@ -40,15 +41,12 @@ class UniversalSharingPostPurchaseMapper @Inject constructor() {
 
     private fun getIconUrl(shopType: UniversalSharingPostPurchaseShopModel.ShopType): String {
         return when (shopType) {
-            UniversalSharingPostPurchaseShopModel.ShopType.OFFICIAL_STORE -> {
-                "https://ecs7.tokopedia.net/img/autocomplete/ic_os.png"
-            }
-            UniversalSharingPostPurchaseShopModel.ShopType.PM -> {
-                "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro.png"
-            }
-            UniversalSharingPostPurchaseShopModel.ShopType.PM_PRO -> {
-                "https://ecs7.tokopedia.net/img/autocomplete/ic_pm.png"
-            }
+            UniversalSharingPostPurchaseShopModel.ShopType.OFFICIAL_STORE ->
+                UniversalShareConst.ShopTypeIcon.OFFICIAL_STORE
+            UniversalSharingPostPurchaseShopModel.ShopType.PM ->
+                UniversalShareConst.ShopTypeIcon.PM
+            UniversalSharingPostPurchaseShopModel.ShopType.PM_PRO ->
+                UniversalShareConst.ShopTypeIcon.PM_PRO
             UniversalSharingPostPurchaseShopModel.ShopType.REGULAR -> ""
         }
     }
