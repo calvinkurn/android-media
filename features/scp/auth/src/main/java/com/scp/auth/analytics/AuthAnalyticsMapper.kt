@@ -94,13 +94,28 @@ class AuthAnalyticsMapper {
             createData(
                 trackerIdEventFactory(eventName),
                 VIEW_ACCOUNT_EVENT,
-                LSdkEventName.LSDK_POPUP_VIEW
+                getPopupCategoryFactory(param),
+                getPopupActionType(eventName, param),
+                getPopupEventLabel(eventName, param),
+                createCustomDimension(getSdkVersion(param))
             )
         )
     }
 
+    private fun getPopupCategoryFactory(param: Map<String, Any?>): String {
+        val loginError = "login error"
+        return if (param[CVEventFieldName.TYPE] == "dialog") {
+            createPopupCategory(loginError)
+        } else {
+            createScreenCategory(loginError)
+        }
+    }
+
     private fun createScreenCategory(page: String): String =
         "goto $page page"
+
+    private fun createPopupCategory(page: String): String =
+        "goto $page popup"
 
     private fun createScreenAction(page: String): String = "view on $page"
 
@@ -164,6 +179,48 @@ class AuthAnalyticsMapper {
 
     private fun getVerificationType(param: Map<String, Any?>): String = param[LSdkAnalyticFieldName.VERIFICATION_TYPE].toString()
 
+    private fun getPopupActionType(eventName: String, param: Map<String, Any?>): String {
+        return when (eventName) {
+            LSdkEventName.LSDK_POPUP_VIEW -> {
+                if (param[CVEventFieldName.TYPE] == POPUP_TYPE_DIALOG) {
+                    return createScreenAction("error popup")
+                } else {
+                    return createScreenAction("error page")
+                }
+            }
+
+            LSdkEventName.LSDK_POPUP_ACTION -> {
+                if (param[CVEventFieldName.TYPE] == POPUP_TYPE_DIALOG) {
+                    return createClickAction("click on contact tokopedia care")
+                } else {
+                    return createScreenAction("click on button coba lagi")
+                }
+            }
+            else -> ""
+        }
+    }
+
+    private fun getPopupEventLabel(eventName: String, param: Map<String, Any?>): String {
+        return when (eventName) {
+            LSdkEventName.LSDK_POPUP_VIEW -> {
+                if (param[CVEventFieldName.TYPE] == POPUP_TYPE_DIALOG) {
+                    return "" // todo ask alman/yoris
+                } else {
+                    return "${param[CVEventFieldName.ERROR_TYPE]} - ${getTransactionId(param)}"
+                }
+            }
+
+            LSdkEventName.LSDK_POPUP_ACTION -> {
+                if (param[CVEventFieldName.TYPE] == POPUP_TYPE_DIALOG) {
+                    return "" // todo ask alman/yoris
+                } else {
+                    return "${param[CVEventFieldName.ERROR_TYPE]} - ${getTransactionId(param)}"
+                }
+            }
+            else -> ""
+        }
+    }
+
     private fun getVerificationLabel(eventName: String, param: Map<String, Any?>): String {
         val type = getVerificationType(param)
         return when (eventName) {
@@ -205,6 +262,7 @@ class AuthAnalyticsMapper {
         private const val SDK_VERSION = "sdkVersion"
         private const val BUSINESS_UNIT = "businessUnit"
         private const val TRACKER_ID = "trackerId"
+        private const val POPUP_TYPE_DIALOG = "dialog"
 
         // static category
         private const val MFA_CATEGORY = "goto login mfa"
