@@ -1,10 +1,10 @@
-package com.tokopedia.catalog.viewmodel
+package com.tokopedia.oldcatalog.viewmodel
 
 import android.os.Build
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.google.gson.JsonObject
-import com.tokopedia.catalog.CatalogTestUtils
+import com.tokopedia.oldcatalog.CatalogTestUtils
 import com.tokopedia.oldcatalog.model.raw.CatalogProductItem
 import com.tokopedia.oldcatalog.model.raw.CatalogSearchProductResponse
 import com.tokopedia.oldcatalog.model.raw.ProductListResponse

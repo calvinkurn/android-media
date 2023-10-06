@@ -1,9 +1,9 @@
-package com.tokopedia.catalog.viewmodel
+package com.tokopedia.oldcatalog.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.google.gson.JsonObject
-import com.tokopedia.catalog.CatalogTestUtils
+import com.tokopedia.oldcatalog.CatalogTestUtils
 import com.tokopedia.oldcatalog.model.datamodel.BaseCatalogDataModel
 import com.tokopedia.oldcatalog.model.datamodel.CatalogForYouModel
 import com.tokopedia.oldcatalog.model.raw.CatalogComparisonProductsResponse

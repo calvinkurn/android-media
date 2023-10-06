@@ -116,6 +116,7 @@ import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
+import com.tokopedia.play.widget.ui.model.error.PlayWidgetException
 import com.tokopedia.play.widget.ui.model.reminded
 import com.tokopedia.product.detail.BuildConfig
 import com.tokopedia.product.detail.R
@@ -202,6 +203,7 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant.CLICK_TYPE_W
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.DEFAULT_PAGE_NUMBER
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.DEFAULT_X_SOURCE
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_VERTICAL_LOADING
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.PLAY_CAROUSEL
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.REMOTE_CONFIG_DEFAULT_ENABLE_PDP_CUSTOM_SHARING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.REMOTE_CONFIG_KEY_ENABLE_PDP_CUSTOM_SHARING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.REMOVE_WISHLIST
@@ -5710,6 +5712,11 @@ open class DynamicProductDetailFragment :
 
     override fun onWidgetOpenAppLink(view: View, appLink: String) {
         goToApplink(appLink)
+    }
+
+    override fun onWidgetError(view: PlayWidgetView, error: PlayWidgetException) {
+        pdpUiUpdater?.removeComponent(PLAY_CAROUSEL)
+        updateUi()
     }
 
     override fun onToggleReminderClicked(

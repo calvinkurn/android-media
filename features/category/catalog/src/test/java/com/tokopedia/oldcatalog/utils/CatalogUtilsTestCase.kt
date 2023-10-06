@@ -1,10 +1,10 @@
-package com.tokopedia.catalog.utils
+package com.tokopedia.oldcatalog.utils
 
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.catalog.CatalogTestUtils
+import com.tokopedia.oldcatalog.CatalogTestUtils
 import com.tokopedia.oldcatalog.model.util.CatalogUtil
 import io.mockk.MockKAnnotations
 import io.mockk.mockkStatic
