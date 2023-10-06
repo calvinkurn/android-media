@@ -3,7 +3,6 @@ package com.tokopedia.remoteconfig;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -28,8 +27,6 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
     private static final String CACHE_NAME = "RemoteConfigDebugCache";
     private static final long THIRTY_MINUTES = TimeUnit.MINUTES.toSeconds(30);
     private static final long CONFIG_CACHE_EXPIRATION = THIRTY_MINUTES;
-
-    private static final String REMOTE_CONFIG_REAL_TIME = "RemoteConfigRealTime";
 
     private FirebaseRemoteConfig firebaseRemoteConfig;
     private SharedPreferences sharedPrefs;
@@ -217,7 +214,6 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
         return new ConfigUpdateListener() {
             @Override
             public void onUpdate(@NonNull ConfigUpdate configUpdate) {
-                Log.d(REMOTE_CONFIG_REAL_TIME, String.format("Updated keys: %s", configUpdate.getUpdatedKeys()));
                 firebaseRemoteConfig.activate().addOnFailureListener(e -> {
                     FirebaseCrashlytics.getInstance().recordException(e);
                 });
