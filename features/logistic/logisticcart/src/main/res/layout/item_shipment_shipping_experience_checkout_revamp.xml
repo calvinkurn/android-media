@@ -132,7 +132,7 @@
             app:layout_constraintTop_toBottomOf="@id/label_selected_shipping_duration"
             app:typographyType="display_3"
             app:typographyWeight="bold"
-            tools:text="JNE (Rp9.000)nsakfaklfsklajsklfjnaklrqerl;kq" />
+            tools:text="JNE (Rp9.000)" />
 
         <com.tokopedia.unifycomponents.Label
             android:id="@+id/lbl_cod_available"
