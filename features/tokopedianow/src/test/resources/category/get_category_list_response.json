@@ -1,0 +1,180 @@
+{
+  "header": {
+    "process_time": 0.01804731,
+    "messages": [],
+    "reason": "",
+    "error_code": ""
+  },
+  "data": [
+    {
+      "id": "4807",
+      "name": "Bumbu Masakan",
+      "url": "https://www.tokopedia.com/now/category/bumbu-masakan",
+      "isAdult": 0,
+      "applinks": "tokopedia://now/category/4807",
+      "imageUrl": "https://images.tokopedia.net/img/WgKiGm/2023/6/30/ffcd401c-2e6d-4ef1-9b46-f8c577a57445.jpg",
+      "color": "#FFFAE6",
+      "child": []
+    },
+    {
+      "id": "4858",
+      "name": "Sayur \u0026 Buah Segar",
+      "url": "https://www.tokopedia.com/now/category/sayur-buah-segar",
+      "isAdult": 0,
+      "applinks": "tokopedia://now/category/4858",
+      "imageUrl": "https://images.tokopedia.net/img/WgKiGm/2023/6/30/4824a1f9-a534-4667-a8c9-d45ea28dba9c.jpg",
+      "color": "#FFFAE6",
+      "child": []
+    },
+    {
+      "id": "4681",
+      "name": "Snack \u0026 Es Krim",
+      "url": "https://www.tokopedia.com/now/category/snack-es-krim",
+      "isAdult": 0,
+      "applinks": "tokopedia://now/category/4681",
+      "imageUrl": "https://images.tokopedia.net/img/WgKiGm/2022/3/2/b07973b6-0cf0-44e2-8a9a-0e484c9469b7.jpg",
+      "color": "#FFFAE6",
+      "child": []
+    },
+    {
+      "id": "4737",
+      "name": "Perlengkapan Kebersihan",
+      "url": "https://www.tokopedia.com/now/category/perlengkapan-kebersihan",
+      "isAdult": 0,
+      "applinks": "tokopedia://now/category/4737",
+      "imageUrl": "https://images.tokopedia.net/img/WgKiGm/2023/6/30/7e9e7023-55bc-44dc-b1e6-0fd959dfdd93.jpg",
+      "color": "#EBFFFE",
+      "child": []
+    },
+    {
+      "id": "4652",
+      "name": "Daging \u0026 Seafood",
+      "url": "https://www.tokopedia.com/now/category/daging-seafood",
+      "isAdult": 0,
+      "applinks": "tokopedia://now/category/4652",
+      "imageUrl": "https://images.tokopedia.net/img/WgKiGm/2023/6/30/1279a1fd-fbf9-4809-9b65-3333cf76983b.jpg",
+      "color": "#EBFFFE",
+      "child": []
+    },
+    {
+      "id": "4766",
+      "name": "Perawatan Tubuh \u0026 Kecantikan",
+      "url": "https://www.tokopedia.com/now/category/perawatan-tubuh-kecantikan",
+      "isAdult": 0,
+      "applinks": "tokopedia://now/category/4766",
+      "imageUrl": "https://images.tokopedia.net/img/WgKiGm/2023/6/30/76a8c325-1eb9-4a5a-b075-3f2f28b056e7.jpg",
+      "color": "#EBFFFE",
+      "child": []
+    },
+    {
+      "id": "4809",
+      "name": "Telur \u0026 Olahan Susu",
+      "url": "https://www.tokopedia.com/now/category/telur-olahan-susu",
+      "isAdult": 0,
+      "applinks": "tokopedia://now/category/4809",
+      "imageUrl": "https://images.tokopedia.net/img/WgKiGm/2023/6/30/da83d353-0ceb-4087-ac70-6126a78fc330.jpg",
+      "color": "#EBFFFE",
+      "child": []
+    },
+    {
+      "id": "4666",
+      "name": "Mie, Pasta \u0026 Bihun",
+      "url": "https://www.tokopedia.com/now/category/mie-pasta-bihun",
+      "isAdult": 0,
+      "applinks": "tokopedia://now/category/4666",
+      "imageUrl": "https://images.tokopedia.net/img/WgKiGm/2023/6/30/d1af6ef8-6516-4a1c-844c-3d85d0b73de4.jpg",
+      "color": "#FBF4FF",
+      "child": []
+    },
+    {
+      "id": "4709",
+      "name": "Ibu \u0026 Bayi",
+      "url": "https://www.tokopedia.com/now/category/ibu-bayi",
+      "isAdult": 0,
+      "applinks": "tokopedia://now/category/4709",
+      "imageUrl": "https://images.tokopedia.net/img/WgKiGm/2023/6/30/e415125d-1549-464a-a470-53ab6828b42d.jpg",
+      "color": "#EBFFFE",
+      "child": []
+    },
+    {
+      "id": "4722",
+      "name": "Perlindungan Tubuh",
+      "url": "https://www.tokopedia.com/now/category/perlindungan-tubuh",
+      "isAdult": 0,
+      "applinks": "tokopedia://now/category/4722",
+      "imageUrl": "https://images.tokopedia.net/img/WgKiGm/2023/6/30/b712721a-838c-4e90-a3d5-5f79babe2869.jpg",
+      "color": "#FFFAE6",
+      "child": []
+    },
+    {
+      "id": "5026",
+      "name": "Rumah Tangga",
+      "url": "https://www.tokopedia.com/now/category/rumah-tangga",
+      "isAdult": 0,
+      "applinks": "tokopedia://now/category/5026",
+      "imageUrl": "https://images.tokopedia.net/img/WgKiGm/2023/6/30/6f1b62c3-6c5a-453e-ad5f-f49d685fc679.jpg",
+      "color": "#FBF4FF",
+      "child": []
+    },
+    {
+      "id": "4657",
+      "name": "Makanan Jadi",
+      "url": "https://www.tokopedia.com/now/category/makanan-jadi",
+      "isAdult": 0,
+      "applinks": "tokopedia://now/category/4657",
+      "imageUrl": "https://images.tokopedia.net/img/WgKiGm/2023/6/30/500bf126-9ab0-4ebf-9806-3a91d16c64eb.jpg",
+      "color": "#FFFAE6",
+      "child": []
+    },
+    {
+      "id": "4693",
+      "name": "Makanan Sarapan",
+      "url": "https://www.tokopedia.com/now/category/makanan-sarapan",
+      "isAdult": 0,
+      "applinks": "tokopedia://now/category/4693",
+      "imageUrl": "https://images.tokopedia.net/img/WgKiGm/2023/6/30/b60ffc48-74c0-4e07-b8b1-855936b596dd.jpg",
+      "color": "#FBF4FF",
+      "child": []
+    },
+    {
+      "id": "5028",
+      "name": "Minuman",
+      "url": "https://www.tokopedia.com/now/category/minuman",
+      "isAdult": 0,
+      "applinks": "tokopedia://now/category/5028",
+      "imageUrl": "https://images.tokopedia.net/img/WgKiGm/2023/6/30/62a9f68e-8a75-44c7-a446-4b1ba755f882.jpg",
+      "color": "#EBFFFE",
+      "child": []
+    },
+    {
+      "id": "5000",
+      "name": "Beras \u0026 Makanan Kering",
+      "url": "https://www.tokopedia.com/now/category/beras-makanan-kering",
+      "isAdult": 0,
+      "applinks": "tokopedia://now/category/5000",
+      "imageUrl": "https://images.tokopedia.net/img/WgKiGm/2023/6/30/9e588b6d-b130-426d-92c1-a43115d57e1e.jpg",
+      "color": "#FFFAE6",
+      "child": []
+    },
+    {
+      "id": "5060",
+      "name": "Gadget \u0026 Elektronik",
+      "url": "https://www.tokopedia.com/now/category/gadget-elektronik",
+      "isAdult": 0,
+      "applinks": "tokopedia://now/category/5060",
+      "imageUrl": "https://images.tokopedia.net/img/WgKiGm/2023/6/30/36c7fb6f-17f5-4d27-9912-8a598cb98e88.jpg",
+      "color": "#FBF4FF",
+      "child": []
+    },
+    {
+      "id": "5338",
+      "name": "Produk Dewasa",
+      "url": "https://www.tokopedia.com/now/category/produk-dewasa",
+      "isAdult": 1,
+      "applinks": "tokopedia://now/category/5338",
+      "imageUrl": "https://images.tokopedia.net/img/WgKiGm/2022/7/28/a3f94a26-8425-4c78-9cb8-f8decbea8253.jpg",
+      "color": "#FBF4FF",
+      "child": []
+    }
+  ]
+}

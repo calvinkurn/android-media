@@ -1,0 +1,540 @@
+{
+  "status": {
+    "error_code": 0,
+    "message": "OK"
+  },
+  "header": {
+    "process_time": 0.084437958,
+    "total_data": 6
+  },
+  "data": [
+    {
+      "id": "196751284",
+      "ad_ref_key": "",
+      "redirect": "https://www.tokopedia.com/11515028tknw",
+      "sticker_id": "0",
+      "sticker_image": "",
+      "product_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_jfop1hHsK7bm-Orfua9fBjUstiHsJRHpyOoseFUiFirfuprfB5QBY2gmUEUMeWufWMq32BuA-BQR-OgfhZoJuJ_prEeuCC6_ViZVYm33zDPuxHb_zsZfHdzVV513zJ3AU7ejPFrjW5uV2yr1rfZJVUy7ODqpCtgJheyOV6_APVPM-dyR1OejP1rVVG3IeNy7WVP7hjZS-jgfHReZO5POuFZAxFg1KOoRgkefWkH7zOofP-ufPcQBV9PIoW13Psr3PGefJOPBHd3A-J8SoFgAKibm-7q3OBUsthosjOHsUaHAyRbm-srcHi6syFHmFircYpq9z2Qfdi6sJDUMVDgaUEUMzBgiUDUMNOQ3-BrBY5gBYxgIHi6syDUMNOQ3-BrBYxgIowrMuhUstaHmFiyfV79fBjraUE3pedo_KDoAKfHmF76_Up9ZFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUMzBgiUDUSgBrSo2Qfdi6i-fHiUDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBkuMWouOJp_7PoH1h9_9PquOB7_jP-8B2_HAu6Hjg2_VzzouBk1MB6zJ7O_MOzPO22Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBke3BHe72E3_UN8u23692qu7gN3_-Sq1Y2Z9P-QsnYUiFiyfhOrRzBrBY2gVYfHiUEosypHiFirI-2yfuwyMBjUstfHACY?sid\u003dd-WkfijeT2eoruglR4EDO7%3AAPA91bH_BYdluXL-4cKc8DQoQdDX24BGprKoTZXqG6HAHcMlk0hdLPcQNL7Evbxcu5BGTpQJXt9cKEwLdJrdgc7A-owUpH8peH57vjCkj3Du7gIWgFnQWtsmQgcqgJCa5vS8X2Dzspd8\u0026src\u003ddirectory_tokonow\u0026pub_unit\u003d0\u0026pub_domain\u003d0\u0026dv\u003dandroid\u0026page\u003d1\u0026t\u003dandroid\u0026pub_id\u003d0\u0026management_type\u003d1\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2F11515028tknw%2Fflash-sale-salak%3Fsrc%3Dtopads\u0026ob\u003d23",
+      "product_wishlist_url": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEH_jfop1hHsK7bm-Orfua9fBjUstiHsJRHpyOoseFUiFirfuprfB5QBY2gmUEUMeWufWMq32BuA-BQR-OgfhZoJuJ_prEeuCC6_ViZVYm33zDPuxHb_zsZfHdzVV513zJ3AU7ejPFrjW5uV2yr1rfZJVUy7ODqpCtgJheyOV6_APVPM-dyR1OejP1rVVG3IeNy7WVP7hjZS-jgfHReZO5POuFZAxFg1KOoRgkefWkH7zOofP-ufPcQBV9PIoW13Psr3PGefJOPBHd3A-J8SoFgAKibm-7q3OBUsthosjOHsUaHAyRbm-srcHi6syFHmFircYpq9z2Qfdi6sJDUMVDgaUEUMzBgiUDUMNOQ3-BrBY5gBYxgIHi6syDUMNOQ3-BrBYxgIowrMuhUstaHmFiyfV79fBjraUE3pedo_KDoAKfHmF76_Up9ZFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUMzBgiUDUSgBrSo2Qfdi6i-fHiUDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBkuMWouOJp_7PoH1h9_9PquOB7_jP-8B2_HAu6Hjg2_VzzouBk1MB6zJ7O_MOzPO22Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBke3BHe72E3_UN8u23692qu7gN3_-Sq1Y2Z9P-QsnYUiFiyfhOrRzBrBY2gVYfHiUEosypHiFirI-2yfuwyMBjUstfHACY?page\u003d1\u0026pub_unit\u003d0\u0026pub_domain\u003d0\u0026src\u003ddirectory_tokonow\u0026pub_id\u003d0\u0026ob\u003d23\u0026uid\u003d217365640\u0026t\u003dandroid\u0026sid\u003dd-WkfijeT2eoruglR4EDO7%3AAPA91bH_BYdluXL-4cKc8DQoQdDX24BGprKoTZXqG6HAHcMlk0hdLPcQNL7Evbxcu5BGTpQJXt9cKEwLdJrdgc7A-owUpH8peH57vjCkj3Du7gIWgFnQWtsmQgcqgJCa5vS8X2Dzspd8\u0026product_id\u003d7029764088\u0026management_type\u003d1\u0026dv\u003dandroid\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2F11515028tknw%2Fflash-sale-salak%3Fsrc%3Dtopads",
+      "shop_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_jfop1hHsK7bm-Orfua9fBjUstiHsJRHpyOoseFUiFirfuprfB5QBY2gmUEUMeWufWMq32BuA-BQR-OgfhZoJuJ_prEeuCC6_ViZVYm33zDPuxHb_zsZfHdzVV513zJ3AU7ejPFrjW5uV2yr1rfZJVUy7ODqpCtgJheyOV6_APVPM-dyR1OejP1rVVG3IeNy7WVP7hjZS-jgfHReZO5POuFZAxFg1KOoRgkefWkH7zOofP-ufPcQBV9PIoW13Psr3PGefJOPBHd3A-J8SoFgAKibm-7q3OBUsthosjOHsUaHAyRbm-srcHi6syFHmFircYpq9z2Qfdi6sJDUMVDgaUEUMzBgiUDUMNOQ3-BrBY5gBYxgIHi6syDUMNOQ3-BrBYxgIowrMuhUstaHmFiyfV79fBjraUE3pedo_KDoAKfHmF76_Up9ZFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUMzBgiUDUSgBrSo2Qfdi6i-fHiUDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBkuMWouOJp_7PoH1h9_9PquOB7_jP-8B2_HAu6Hjg2_VzzouBk1MB6zJ7O_MOzPO22Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBke3BHe72E3_UN8u23692qu7gN3_-Sq1Y2Z9P-QsnYUiFiyfhOrRzBrBY2gVYfHiUEosypHiFirI-2yfuwyMBjUstfHACY?sid\u003dd-WkfijeT2eoruglR4EDO7%3AAPA91bH_BYdluXL-4cKc8DQoQdDX24BGprKoTZXqG6HAHcMlk0hdLPcQNL7Evbxcu5BGTpQJXt9cKEwLdJrdgc7A-owUpH8peH57vjCkj3Du7gIWgFnQWtsmQgcqgJCa5vS8X2Dzspd8\u0026dv\u003dandroid\u0026pub_id\u003d0\u0026ob\u003d23\u0026t\u003dandroid\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2F11515028tknw\u0026src\u003ddirectory_tokonow\u0026management_type\u003d1\u0026pub_unit\u003d0\u0026pub_domain\u003d0\u0026page\u003d1",
+      "tag": 0,
+      "product": {
+        "id": "7029764088",
+        "name": "flash_sale_salak",
+        "category_breadcrumb": "",
+        "wishlist": false,
+        "image": {
+          "m_ecs": "https://images.tokopedia.net/img/cache/300/hDjmkQ/2022/11/22/c79df332-0cef-458a-add7-2a3d989c3a3a.jpg"
+        },
+        "uri": "https://www.tokopedia.com/11515028tknw/flash-sale-salak?src\u003dtopads",
+        "relative_uri": "11515028tknw/flash-sale-salak",
+        "price_format": "Rp100.000",
+        "price_range": "",
+        "wholesale_price": [],
+        "count_talk_format": "0",
+        "count_review_format": "0",
+        "category": {
+          "id": "4923"
+        },
+        "product_preorder": false,
+        "product_wholesale": false,
+        "free_return": "https://images.tokopedia.net/img/blank.gif",
+        "product_cashback": false,
+        "product_new_label": false,
+        "product_cashback_rate": "",
+        "product_rating": 0,
+        "product_rating_format": "",
+        "product_item_sold_payment_verified": "Terjual 4",
+        "product_minimum_order": 1,
+        "free_ongkir": {
+          "is_active": false,
+          "img_url": ""
+        },
+        "campaign": {
+          "original_price": "",
+          "discount_percentage": 0
+        },
+        "label_group": [
+          {
+            "position": "weight",
+            "type": "textDarkGrey",
+            "title": "100 gr",
+            "url": ""
+          }
+        ],
+        "customvideo_url": "",
+        "parent_id": "0",
+        "max_order": 500,
+        "stock": 500
+      },
+      "shop": {
+        "id": "11515028",
+        "name": "11515028tknw",
+        "domain": "11515028tknw",
+        "location": "",
+        "city": "",
+        "gold_shop": false,
+        "gold_shop_badge": true,
+        "lucky_shop": "https://clover.tokopedia.com/badges/merchant/v1?shop_id\u003d11515028",
+        "uri": "https://www.tokopedia.com/11515028tknw",
+        "owner_id": "162395342",
+        "is_owner": false,
+        "shop_is_official": true,
+        "shop_rating_avg": "",
+        "badges": [
+          {
+            "title": "Free Return",
+            "image_url": "https://images.tokopedia.net/img/blank.gif",
+            "show": false
+          },
+          {
+            "title": "Official Store",
+            "image_url": "https://images.tokopedia.net/ta/icon/badge/OS-Badge-80.png",
+            "show": true
+          }
+        ]
+      },
+      "applinks": "tokopedia://product/7029764088?src\u003dtopads"
+    },
+    {
+      "id": "196751286",
+      "ad_ref_key": "",
+      "redirect": "https://www.tokopedia.com/11515028tknw",
+      "sticker_id": "0",
+      "sticker_image": "",
+      "product_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_jfop1hHsKfbm-Orfua9fBjUstiHsJRHpyOoseFUiFirfuprfB5QBY2gmUEUMeWufWMq32BuA-BQR-OgfhZoJuJ_prEeuCC6_ViZVYm33zDPuxHb_zsZfHdzVV513zJ3AU7ejPFrjW5uV2yr1rfZJVUy7ODqpCtgJheyOV6_APVPM-dyR1OejP1rVVG3IeNy7WVP7hjZS-jgfHReZO5POuFZAxFg1KOoRgkefWkH7zOofP-ufPcQBV9PIoW13Psr3PGefJOPBHd3A-J8SoFgAKibm-7q3OBUsthosjOHsUaHAyRbm-srcHi6syFHmFircYpq9z2Qfdi6sUDUMVDgaUEUMzBgiUDUMNOQ3-BrBY5gBYxgIHi6syDUMNOQ3-BrBYxgIowrMuhUstaHmFiyfV79fBjraUE3pedo_KDoAKfHmF76_Jh9ZFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUMzBgiUDUSgBrSo2Qfdi6i-fHiUDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBkuMWouOJp_7PoH1h9_9PquOB7_jP-8B2_HAu6Hjg2_VzzouBk1MB6zJ7O_MOzPO22Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBke3BHe72E3_UN8u23692qu7gN3_-Sq1Y2Z9P-QsnYUiFiyfhOrRzBrBY2gVYfHiUEHpyFo_KDUSCaq3oB9f-2gmUEosnFwe?management_type\u003d1\u0026pub_unit\u003d0\u0026ob\u003d23\u0026pub_id\u003d0\u0026t\u003dandroid\u0026src\u003ddirectory_tokonow\u0026page\u003d1\u0026sid\u003dd-WkfijeT2eoruglR4EDO7%3AAPA91bH_BYdluXL-4cKc8DQoQdDX24BGprKoTZXqG6HAHcMlk0hdLPcQNL7Evbxcu5BGTpQJXt9cKEwLdJrdgc7A-owUpH8peH57vjCkj3Du7gIWgFnQWtsmQgcqgJCa5vS8X2Dzspd8\u0026pub_domain\u003d0\u0026dv\u003dandroid\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2F11515028tknw%2Fwms-jambu-kristal%3Fsrc%3Dtopads",
+      "product_wishlist_url": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEH_jfop1hHsKfbm-Orfua9fBjUstiHsJRHpyOoseFUiFirfuprfB5QBY2gmUEUMeWufWMq32BuA-BQR-OgfhZoJuJ_prEeuCC6_ViZVYm33zDPuxHb_zsZfHdzVV513zJ3AU7ejPFrjW5uV2yr1rfZJVUy7ODqpCtgJheyOV6_APVPM-dyR1OejP1rVVG3IeNy7WVP7hjZS-jgfHReZO5POuFZAxFg1KOoRgkefWkH7zOofP-ufPcQBV9PIoW13Psr3PGefJOPBHd3A-J8SoFgAKibm-7q3OBUsthosjOHsUaHAyRbm-srcHi6syFHmFircYpq9z2Qfdi6sUDUMVDgaUEUMzBgiUDUMNOQ3-BrBY5gBYxgIHi6syDUMNOQ3-BrBYxgIowrMuhUstaHmFiyfV79fBjraUE3pedo_KDoAKfHmF76_Jh9ZFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUMzBgiUDUSgBrSo2Qfdi6i-fHiUDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBkuMWouOJp_7PoH1h9_9PquOB7_jP-8B2_HAu6Hjg2_VzzouBk1MB6zJ7O_MOzPO22Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBke3BHe72E3_UN8u23692qu7gN3_-Sq1Y2Z9P-QsnYUiFiyfhOrRzBrBY2gVYfHiUEHpyFo_KDUSCaq3oB9f-2gmUEosnFwe?pub_unit\u003d0\u0026page\u003d1\u0026sid\u003dd-WkfijeT2eoruglR4EDO7%3AAPA91bH_BYdluXL-4cKc8DQoQdDX24BGprKoTZXqG6HAHcMlk0hdLPcQNL7Evbxcu5BGTpQJXt9cKEwLdJrdgc7A-owUpH8peH57vjCkj3Du7gIWgFnQWtsmQgcqgJCa5vS8X2Dzspd8\u0026ob\u003d23\u0026dv\u003dandroid\u0026pub_domain\u003d0\u0026product_id\u003d6269646235\u0026pub_id\u003d0\u0026management_type\u003d1\u0026t\u003dandroid\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2F11515028tknw%2Fwms-jambu-kristal%3Fsrc%3Dtopads\u0026src\u003ddirectory_tokonow\u0026uid\u003d217365640",
+      "shop_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_jfop1hHsKfbm-Orfua9fBjUstiHsJRHpyOoseFUiFirfuprfB5QBY2gmUEUMeWufWMq32BuA-BQR-OgfhZoJuJ_prEeuCC6_ViZVYm33zDPuxHb_zsZfHdzVV513zJ3AU7ejPFrjW5uV2yr1rfZJVUy7ODqpCtgJheyOV6_APVPM-dyR1OejP1rVVG3IeNy7WVP7hjZS-jgfHReZO5POuFZAxFg1KOoRgkefWkH7zOofP-ufPcQBV9PIoW13Psr3PGefJOPBHd3A-J8SoFgAKibm-7q3OBUsthosjOHsUaHAyRbm-srcHi6syFHmFircYpq9z2Qfdi6sUDUMVDgaUEUMzBgiUDUMNOQ3-BrBY5gBYxgIHi6syDUMNOQ3-BrBYxgIowrMuhUstaHmFiyfV79fBjraUE3pedo_KDoAKfHmF76_Jh9ZFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUMzBgiUDUSgBrSo2Qfdi6i-fHiUDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBkuMWouOJp_7PoH1h9_9PquOB7_jP-8B2_HAu6Hjg2_VzzouBk1MB6zJ7O_MOzPO22Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBke3BHe72E3_UN8u23692qu7gN3_-Sq1Y2Z9P-QsnYUiFiyfhOrRzBrBY2gVYfHiUEHpyFo_KDUSCaq3oB9f-2gmUEosnFwe?dv\u003dandroid\u0026sid\u003dd-WkfijeT2eoruglR4EDO7%3AAPA91bH_BYdluXL-4cKc8DQoQdDX24BGprKoTZXqG6HAHcMlk0hdLPcQNL7Evbxcu5BGTpQJXt9cKEwLdJrdgc7A-owUpH8peH57vjCkj3Du7gIWgFnQWtsmQgcqgJCa5vS8X2Dzspd8\u0026ob\u003d23\u0026page\u003d1\u0026src\u003ddirectory_tokonow\u0026pub_id\u003d0\u0026management_type\u003d1\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2F11515028tknw\u0026pub_unit\u003d0\u0026pub_domain\u003d0\u0026t\u003dandroid",
+      "tag": 0,
+      "product": {
+        "id": "6269646235",
+        "name": "wms_jambu_kristal",
+        "category_breadcrumb": "",
+        "wishlist": false,
+        "image": {
+          "m_ecs": "https://images.tokopedia.net/img/cache/300/hDjmkQ/2022/9/19/2a3025a0-c767-40da-8f03-17aacd3a90b4.jpg"
+        },
+        "uri": "https://www.tokopedia.com/11515028tknw/wms-jambu-kristal?src\u003dtopads",
+        "relative_uri": "11515028tknw/wms-jambu-kristal",
+        "price_format": "Rp15.000",
+        "price_range": "",
+        "wholesale_price": [],
+        "count_talk_format": "0",
+        "count_review_format": "0",
+        "category": {
+          "id": "4911"
+        },
+        "product_preorder": false,
+        "product_wholesale": false,
+        "free_return": "https://images.tokopedia.net/img/blank.gif",
+        "product_cashback": false,
+        "product_new_label": false,
+        "product_cashback_rate": "",
+        "product_rating": 0,
+        "product_rating_format": "",
+        "product_item_sold_payment_verified": "Terjual 36",
+        "product_minimum_order": 1,
+        "free_ongkir": {
+          "is_active": false,
+          "img_url": ""
+        },
+        "campaign": {
+          "original_price": "",
+          "discount_percentage": 0
+        },
+        "label_group": [
+          {
+            "position": "weight",
+            "type": "textDarkGrey",
+            "title": "450 gr",
+            "url": ""
+          }
+        ],
+        "customvideo_url": "",
+        "parent_id": "0",
+        "max_order": 97,
+        "stock": 97
+      },
+      "shop": {
+        "id": "11515028",
+        "name": "11515028tknw",
+        "domain": "11515028tknw",
+        "location": "",
+        "city": "",
+        "gold_shop": false,
+        "gold_shop_badge": true,
+        "lucky_shop": "https://clover.tokopedia.com/badges/merchant/v1?shop_id\u003d11515028",
+        "uri": "https://www.tokopedia.com/11515028tknw",
+        "owner_id": "162395342",
+        "is_owner": false,
+        "shop_is_official": true,
+        "shop_rating_avg": "",
+        "badges": [
+          {
+            "title": "Free Return",
+            "image_url": "https://images.tokopedia.net/img/blank.gif",
+            "show": false
+          },
+          {
+            "title": "Official Store",
+            "image_url": "https://images.tokopedia.net/ta/icon/badge/OS-Badge-80.png",
+            "show": true
+          }
+        ]
+      },
+      "applinks": "tokopedia://product/6269646235?src\u003dtopads"
+    },
+    {
+      "id": "196751293",
+      "ad_ref_key": "",
+      "redirect": "https://www.tokopedia.com/11515028tknw",
+      "sticker_id": "0",
+      "sticker_image": "",
+      "product_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_jfop1hHsjpbm-Orfua9fBjUstiHsJRHpyOoseFUiFirfuprfB5QBY2gmUEUMeWufWMq32BuA-BQR-OgfhZoJuJ_prEeuCC6_ViZVYm33zDPuxHb_zsZfHdzVV513zJ3AU7ejPFrjW5uV2yr1rfZJVUy7ODqpCtgJheyOV6_APVPM-dyR1OejP1rVVG3IeNy7WVP7hjZS-jgfHReZO5POuFZAxFg1KOoRgkefWkH7zOofP-ufPcQBV9PIoW13Psr3PGefJOPBHd3A-J8SoFgAKibm-7q3OBUsthosjOHsUaHAyRbm-srcHi6syFHmFircYpq9z2Qfdi6sHDUMVDgaUEUMzBgiUDUMNOQ3-BrBY5gBYxgIHi6syDUMNOQ3-BrBYxgIowrMuhUstaHmFiyfV79fBjraUE3pedo_KDoAKfHmFOHpUh9ZFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUMzBgiUDUSgBrSo2Qfdi6i-fHiUDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBkuMWouOJp_7PoH1h9_9PquOB7_jP-8B2_HAu6Hjg2_VzzouBk1MB6zJ7O_MOzPO22Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBke3BHe72E3_UN8u23692qu7gN3_-Sq1Y2Z9P-QsnYUiFiyfhOrRzBrBY2gVYfHiUEosypHiFirI-2yfuwyMBjUstfHACY?page\u003d1\u0026sid\u003dd-WkfijeT2eoruglR4EDO7%3AAPA91bH_BYdluXL-4cKc8DQoQdDX24BGprKoTZXqG6HAHcMlk0hdLPcQNL7Evbxcu5BGTpQJXt9cKEwLdJrdgc7A-owUpH8peH57vjCkj3Du7gIWgFnQWtsmQgcqgJCa5vS8X2Dzspd8\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2F11515028tknw%2Fmultiple-sirsak%3Fsrc%3Dtopads\u0026pub_domain\u003d0\u0026dv\u003dandroid\u0026pub_id\u003d0\u0026pub_unit\u003d0\u0026management_type\u003d1\u0026t\u003dandroid\u0026src\u003ddirectory_tokonow\u0026ob\u003d23",
+      "product_wishlist_url": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEH_jfop1hHsjpbm-Orfua9fBjUstiHsJRHpyOoseFUiFirfuprfB5QBY2gmUEUMeWufWMq32BuA-BQR-OgfhZoJuJ_prEeuCC6_ViZVYm33zDPuxHb_zsZfHdzVV513zJ3AU7ejPFrjW5uV2yr1rfZJVUy7ODqpCtgJheyOV6_APVPM-dyR1OejP1rVVG3IeNy7WVP7hjZS-jgfHReZO5POuFZAxFg1KOoRgkefWkH7zOofP-ufPcQBV9PIoW13Psr3PGefJOPBHd3A-J8SoFgAKibm-7q3OBUsthosjOHsUaHAyRbm-srcHi6syFHmFircYpq9z2Qfdi6sHDUMVDgaUEUMzBgiUDUMNOQ3-BrBY5gBYxgIHi6syDUMNOQ3-BrBYxgIowrMuhUstaHmFiyfV79fBjraUE3pedo_KDoAKfHmFOHpUh9ZFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUMzBgiUDUSgBrSo2Qfdi6i-fHiUDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBkuMWouOJp_7PoH1h9_9PquOB7_jP-8B2_HAu6Hjg2_VzzouBk1MB6zJ7O_MOzPO22Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBke3BHe72E3_UN8u23692qu7gN3_-Sq1Y2Z9P-QsnYUiFiyfhOrRzBrBY2gVYfHiUEosypHiFirI-2yfuwyMBjUstfHACY?r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2F11515028tknw%2Fmultiple-sirsak%3Fsrc%3Dtopads\u0026pub_domain\u003d0\u0026page\u003d1\u0026ob\u003d23\u0026pub_id\u003d0\u0026product_id\u003d5208528771\u0026management_type\u003d1\u0026t\u003dandroid\u0026dv\u003dandroid\u0026uid\u003d217365640\u0026sid\u003dd-WkfijeT2eoruglR4EDO7%3AAPA91bH_BYdluXL-4cKc8DQoQdDX24BGprKoTZXqG6HAHcMlk0hdLPcQNL7Evbxcu5BGTpQJXt9cKEwLdJrdgc7A-owUpH8peH57vjCkj3Du7gIWgFnQWtsmQgcqgJCa5vS8X2Dzspd8\u0026pub_unit\u003d0\u0026src\u003ddirectory_tokonow",
+      "shop_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_jfop1hHsjpbm-Orfua9fBjUstiHsJRHpyOoseFUiFirfuprfB5QBY2gmUEUMeWufWMq32BuA-BQR-OgfhZoJuJ_prEeuCC6_ViZVYm33zDPuxHb_zsZfHdzVV513zJ3AU7ejPFrjW5uV2yr1rfZJVUy7ODqpCtgJheyOV6_APVPM-dyR1OejP1rVVG3IeNy7WVP7hjZS-jgfHReZO5POuFZAxFg1KOoRgkefWkH7zOofP-ufPcQBV9PIoW13Psr3PGefJOPBHd3A-J8SoFgAKibm-7q3OBUsthosjOHsUaHAyRbm-srcHi6syFHmFircYpq9z2Qfdi6sHDUMVDgaUEUMzBgiUDUMNOQ3-BrBY5gBYxgIHi6syDUMNOQ3-BrBYxgIowrMuhUstaHmFiyfV79fBjraUE3pedo_KDoAKfHmFOHpUh9ZFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUMzBgiUDUSgBrSo2Qfdi6i-fHiUDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBkuMWouOJp_7PoH1h9_9PquOB7_jP-8B2_HAu6Hjg2_VzzouBk1MB6zJ7O_MOzPO22Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBke3BHe72E3_UN8u23692qu7gN3_-Sq1Y2Z9P-QsnYUiFiyfhOrRzBrBY2gVYfHiUEosypHiFirI-2yfuwyMBjUstfHACY?r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2F11515028tknw\u0026pub_id\u003d0\u0026sid\u003dd-WkfijeT2eoruglR4EDO7%3AAPA91bH_BYdluXL-4cKc8DQoQdDX24BGprKoTZXqG6HAHcMlk0hdLPcQNL7Evbxcu5BGTpQJXt9cKEwLdJrdgc7A-owUpH8peH57vjCkj3Du7gIWgFnQWtsmQgcqgJCa5vS8X2Dzspd8\u0026ob\u003d23\u0026t\u003dandroid\u0026src\u003ddirectory_tokonow\u0026page\u003d1\u0026pub_unit\u003d0\u0026management_type\u003d1\u0026pub_domain\u003d0\u0026dv\u003dandroid",
+      "tag": 0,
+      "product": {
+        "id": "5208528771",
+        "name": "multiple_sirsak",
+        "category_breadcrumb": "",
+        "wishlist": false,
+        "image": {
+          "m_ecs": "https://images.tokopedia.net/img/cache/300/hDjmkQ/2022/8/4/47ac3719-38f7-44d8-b3d8-c63f6abcbea0.jpg"
+        },
+        "uri": "https://www.tokopedia.com/11515028tknw/multiple-sirsak?src\u003dtopads",
+        "relative_uri": "11515028tknw/multiple-sirsak",
+        "price_format": "Rp2.000",
+        "price_range": "",
+        "wholesale_price": [],
+        "count_talk_format": "0",
+        "count_review_format": "1",
+        "category": {
+          "id": "5321"
+        },
+        "product_preorder": false,
+        "product_wholesale": false,
+        "free_return": "https://images.tokopedia.net/img/blank.gif",
+        "product_cashback": false,
+        "product_new_label": false,
+        "product_cashback_rate": "",
+        "product_rating": 100,
+        "product_rating_format": "5.0",
+        "product_item_sold_payment_verified": "Terjual 3",
+        "product_minimum_order": 1,
+        "free_ongkir": {
+          "is_active": false,
+          "img_url": ""
+        },
+        "campaign": {
+          "original_price": "",
+          "discount_percentage": 0
+        },
+        "label_group": [
+          {
+            "position": "weight",
+            "type": "textDarkGrey",
+            "title": "100 gr",
+            "url": ""
+          }
+        ],
+        "customvideo_url": "",
+        "parent_id": "0",
+        "max_order": 500,
+        "stock": 500
+      },
+      "shop": {
+        "id": "11515028",
+        "name": "11515028tknw",
+        "domain": "11515028tknw",
+        "location": "",
+        "city": "",
+        "gold_shop": false,
+        "gold_shop_badge": true,
+        "lucky_shop": "https://clover.tokopedia.com/badges/merchant/v1?shop_id\u003d11515028",
+        "uri": "https://www.tokopedia.com/11515028tknw",
+        "owner_id": "162395342",
+        "is_owner": false,
+        "shop_is_official": true,
+        "shop_rating_avg": "",
+        "badges": [
+          {
+            "title": "Free Return",
+            "image_url": "https://images.tokopedia.net/img/blank.gif",
+            "show": false
+          },
+          {
+            "title": "Official Store",
+            "image_url": "https://images.tokopedia.net/ta/icon/badge/OS-Badge-80.png",
+            "show": true
+          }
+        ]
+      },
+      "applinks": "tokopedia://product/5208528771?src\u003dtopads"
+    },
+    {
+      "id": "196751289",
+      "ad_ref_key": "",
+      "redirect": "https://www.tokopedia.com/11515028tknw",
+      "sticker_id": "0",
+      "sticker_image": "",
+      "product_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_jfop1hHsKNbm-Orfua9fBjUstiHsJRHpyOoseFUiFirfuprfB5QBY2gmUEUMeWufWMq32BuA-BQR-OgfhZoJuJ_prEeuCC6_ViZVYm33zDPuxHb_zsZfHdzVV513zJ3AU7ejPFrjW5uV2yr1rfZJVUy7ODqpCtgJheyOV6_APVPM-dyR1OejP1rVVG3IeNy7WVP7hjZS-jgfHReZO5POuFZAxFg1KOoRgkefWkH7zOofP-ufPcQBV9PIoW13Psr3PGefJOPBHd3A-J8SoFgAKibm-7q3OBUsthosjOHsUaHAyRbm-srcHi6syFHmFircYpq9z2Qfdi6seDUMVDgaUEUMzBgiUDUMNOQ3-BrBY5gBYxgIHi6syDUMNOQ3-BrBYxgIowrMuhUstaHmFiyfV79fBjraUE3pedo_KDoAKfHmF76_nd9ZFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUMzBgiUDUSgBrSo2Qfdi6i-fHiUDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBkuMWouOJp_7PoH1h9_9PquOB7_jP-8B2_HAu6Hjg2_VzzouBk1MB6zJ7O_MOzPO22Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBke3BHe72E3_UN8u23692qu7gN3_-Sq1Y2Z9P-QsnYUiFiyfhOrRzBrBY2gVYfHiUEosypHiFirI-2yfuwyMBjUstfHACY?page\u003d1\u0026pub_id\u003d0\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2F11515028tknw%2Fmultiple-blueberry%3Fsrc%3Dtopads\u0026src\u003ddirectory_tokonow\u0026sid\u003dd-WkfijeT2eoruglR4EDO7%3AAPA91bH_BYdluXL-4cKc8DQoQdDX24BGprKoTZXqG6HAHcMlk0hdLPcQNL7Evbxcu5BGTpQJXt9cKEwLdJrdgc7A-owUpH8peH57vjCkj3Du7gIWgFnQWtsmQgcqgJCa5vS8X2Dzspd8\u0026pub_unit\u003d0\u0026ob\u003d23\u0026dv\u003dandroid\u0026management_type\u003d1\u0026t\u003dandroid\u0026pub_domain\u003d0",
+      "product_wishlist_url": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEH_jfop1hHsKNbm-Orfua9fBjUstiHsJRHpyOoseFUiFirfuprfB5QBY2gmUEUMeWufWMq32BuA-BQR-OgfhZoJuJ_prEeuCC6_ViZVYm33zDPuxHb_zsZfHdzVV513zJ3AU7ejPFrjW5uV2yr1rfZJVUy7ODqpCtgJheyOV6_APVPM-dyR1OejP1rVVG3IeNy7WVP7hjZS-jgfHReZO5POuFZAxFg1KOoRgkefWkH7zOofP-ufPcQBV9PIoW13Psr3PGefJOPBHd3A-J8SoFgAKibm-7q3OBUsthosjOHsUaHAyRbm-srcHi6syFHmFircYpq9z2Qfdi6seDUMVDgaUEUMzBgiUDUMNOQ3-BrBY5gBYxgIHi6syDUMNOQ3-BrBYxgIowrMuhUstaHmFiyfV79fBjraUE3pedo_KDoAKfHmF76_nd9ZFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUMzBgiUDUSgBrSo2Qfdi6i-fHiUDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBkuMWouOJp_7PoH1h9_9PquOB7_jP-8B2_HAu6Hjg2_VzzouBk1MB6zJ7O_MOzPO22Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBke3BHe72E3_UN8u23692qu7gN3_-Sq1Y2Z9P-QsnYUiFiyfhOrRzBrBY2gVYfHiUEosypHiFirI-2yfuwyMBjUstfHACY?ob\u003d23\u0026t\u003dandroid\u0026src\u003ddirectory_tokonow\u0026pub_id\u003d0\u0026product_id\u003d5208528831\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2F11515028tknw%2Fmultiple-blueberry%3Fsrc%3Dtopads\u0026management_type\u003d1\u0026dv\u003dandroid\u0026sid\u003dd-WkfijeT2eoruglR4EDO7%3AAPA91bH_BYdluXL-4cKc8DQoQdDX24BGprKoTZXqG6HAHcMlk0hdLPcQNL7Evbxcu5BGTpQJXt9cKEwLdJrdgc7A-owUpH8peH57vjCkj3Du7gIWgFnQWtsmQgcqgJCa5vS8X2Dzspd8\u0026uid\u003d217365640\u0026page\u003d1\u0026pub_domain\u003d0\u0026pub_unit\u003d0",
+      "shop_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_jfop1hHsKNbm-Orfua9fBjUstiHsJRHpyOoseFUiFirfuprfB5QBY2gmUEUMeWufWMq32BuA-BQR-OgfhZoJuJ_prEeuCC6_ViZVYm33zDPuxHb_zsZfHdzVV513zJ3AU7ejPFrjW5uV2yr1rfZJVUy7ODqpCtgJheyOV6_APVPM-dyR1OejP1rVVG3IeNy7WVP7hjZS-jgfHReZO5POuFZAxFg1KOoRgkefWkH7zOofP-ufPcQBV9PIoW13Psr3PGefJOPBHd3A-J8SoFgAKibm-7q3OBUsthosjOHsUaHAyRbm-srcHi6syFHmFircYpq9z2Qfdi6seDUMVDgaUEUMzBgiUDUMNOQ3-BrBY5gBYxgIHi6syDUMNOQ3-BrBYxgIowrMuhUstaHmFiyfV79fBjraUE3pedo_KDoAKfHmF76_nd9ZFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUMzBgiUDUSgBrSo2Qfdi6i-fHiUDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBkuMWouOJp_7PoH1h9_9PquOB7_jP-8B2_HAu6Hjg2_VzzouBk1MB6zJ7O_MOzPO22Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBke3BHe72E3_UN8u23692qu7gN3_-Sq1Y2Z9P-QsnYUiFiyfhOrRzBrBY2gVYfHiUEosypHiFirI-2yfuwyMBjUstfHACY?pub_unit\u003d0\u0026page\u003d1\u0026pub_domain\u003d0\u0026ob\u003d23\u0026management_type\u003d1\u0026t\u003dandroid\u0026src\u003ddirectory_tokonow\u0026pub_id\u003d0\u0026sid\u003dd-WkfijeT2eoruglR4EDO7%3AAPA91bH_BYdluXL-4cKc8DQoQdDX24BGprKoTZXqG6HAHcMlk0hdLPcQNL7Evbxcu5BGTpQJXt9cKEwLdJrdgc7A-owUpH8peH57vjCkj3Du7gIWgFnQWtsmQgcqgJCa5vS8X2Dzspd8\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2F11515028tknw\u0026dv\u003dandroid",
+      "tag": 0,
+      "product": {
+        "id": "5208528831",
+        "name": "multiple_blueberry",
+        "category_breadcrumb": "",
+        "wishlist": false,
+        "image": {
+          "m_ecs": "https://images.tokopedia.net/img/cache/300/hDjmkQ/2022/8/4/150379d2-c847-491d-bfab-a80646f7d891.jpg"
+        },
+        "uri": "https://www.tokopedia.com/11515028tknw/multiple-blueberry?src\u003dtopads",
+        "relative_uri": "11515028tknw/multiple-blueberry",
+        "price_format": "Rp1.000",
+        "price_range": "",
+        "wholesale_price": [],
+        "count_talk_format": "0",
+        "count_review_format": "0",
+        "category": {
+          "id": "4908"
+        },
+        "product_preorder": false,
+        "product_wholesale": false,
+        "free_return": "https://images.tokopedia.net/img/blank.gif",
+        "product_cashback": false,
+        "product_new_label": false,
+        "product_cashback_rate": "",
+        "product_rating": 0,
+        "product_rating_format": "",
+        "product_item_sold_payment_verified": "Terjual 3",
+        "product_minimum_order": 1,
+        "free_ongkir": {
+          "is_active": false,
+          "img_url": ""
+        },
+        "campaign": {
+          "original_price": "",
+          "discount_percentage": 0
+        },
+        "label_group": [
+          {
+            "position": "weight",
+            "type": "textDarkGrey",
+            "title": "100 gr",
+            "url": ""
+          }
+        ],
+        "customvideo_url": "",
+        "parent_id": "0",
+        "max_order": 500,
+        "stock": 500
+      },
+      "shop": {
+        "id": "11515028",
+        "name": "11515028tknw",
+        "domain": "11515028tknw",
+        "location": "",
+        "city": "",
+        "gold_shop": false,
+        "gold_shop_badge": true,
+        "lucky_shop": "https://clover.tokopedia.com/badges/merchant/v1?shop_id\u003d11515028",
+        "uri": "https://www.tokopedia.com/11515028tknw",
+        "owner_id": "162395342",
+        "is_owner": false,
+        "shop_is_official": true,
+        "shop_rating_avg": "",
+        "badges": [
+          {
+            "title": "Free Return",
+            "image_url": "https://images.tokopedia.net/img/blank.gif",
+            "show": false
+          },
+          {
+            "title": "Official Store",
+            "image_url": "https://images.tokopedia.net/ta/icon/badge/OS-Badge-80.png",
+            "show": true
+          }
+        ]
+      },
+      "applinks": "tokopedia://product/5208528831?src\u003dtopads"
+    },
+    {
+      "id": "196751288",
+      "ad_ref_key": "",
+      "redirect": "https://www.tokopedia.com/11515028tknw",
+      "sticker_id": "0",
+      "sticker_image": "",
+      "product_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_jfop1hHsKdbm-Orfua9fBjUstiHsJRHpyOoseFUiFirfuprfB5QBY2gmUEUMeWufWMq32BuA-BQR-OgfhZoJuJ_prEeuCC6_ViZVYm33zDPuxHb_zsZfHdzVV513zJ3AU7ejPFrjW5uV2yr1rfZJVUy7ODqpCtgJheyOV6_APVPM-dyR1OejP1rVVG3IeNy7WVP7hjZS-jgfHReZO5POuFZAxFg1KOoRgkefWkH7zOofP-ufPcQBV9PIoW13Psr3PGefJOPBHd3A-J8SoFgAKibm-7q3OBUsthosjOHsUaHAyRbm-srcHi6syFHmFircYpq9z2Qfdi6s1DUMVDgaUEUMzBgiUDUMNOQ3-BrBY5gBYxgIHi6syDUMNOQ3-BrBYxgIowrMuhUstaHmFiyfV79fBjraUE3pedo_KDoAKfHmFOH_jd9ZFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUMzBgiUDUSgBrSo2Qfdi6i-fHiUDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBkuMWouOJp_7PoH1h9_9PquOB7_jP-8B2_HAu6Hjg2_VzzouBk1MB6zJ7O_MOzPO22Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBke3BHe72E3_UN8u23692qu7gN3_-Sq1Y2Z9P-QsnYUiFiyfhOrRzBrBY2gVYfHiUEosypHiFirI-2yfuwyMBjUstfHACY?ob\u003d23\u0026pub_domain\u003d0\u0026src\u003ddirectory_tokonow\u0026pub_id\u003d0\u0026management_type\u003d1\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2F11515028tknw%2Fmultiple-nangka%3Fsrc%3Dtopads\u0026t\u003dandroid\u0026page\u003d1\u0026dv\u003dandroid\u0026sid\u003dd-WkfijeT2eoruglR4EDO7%3AAPA91bH_BYdluXL-4cKc8DQoQdDX24BGprKoTZXqG6HAHcMlk0hdLPcQNL7Evbxcu5BGTpQJXt9cKEwLdJrdgc7A-owUpH8peH57vjCkj3Du7gIWgFnQWtsmQgcqgJCa5vS8X2Dzspd8\u0026pub_unit\u003d0",
+      "product_wishlist_url": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEH_jfop1hHsKdbm-Orfua9fBjUstiHsJRHpyOoseFUiFirfuprfB5QBY2gmUEUMeWufWMq32BuA-BQR-OgfhZoJuJ_prEeuCC6_ViZVYm33zDPuxHb_zsZfHdzVV513zJ3AU7ejPFrjW5uV2yr1rfZJVUy7ODqpCtgJheyOV6_APVPM-dyR1OejP1rVVG3IeNy7WVP7hjZS-jgfHReZO5POuFZAxFg1KOoRgkefWkH7zOofP-ufPcQBV9PIoW13Psr3PGefJOPBHd3A-J8SoFgAKibm-7q3OBUsthosjOHsUaHAyRbm-srcHi6syFHmFircYpq9z2Qfdi6s1DUMVDgaUEUMzBgiUDUMNOQ3-BrBY5gBYxgIHi6syDUMNOQ3-BrBYxgIowrMuhUstaHmFiyfV79fBjraUE3pedo_KDoAKfHmFOH_jd9ZFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUMzBgiUDUSgBrSo2Qfdi6i-fHiUDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBkuMWouOJp_7PoH1h9_9PquOB7_jP-8B2_HAu6Hjg2_VzzouBk1MB6zJ7O_MOzPO22Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBke3BHe72E3_UN8u23692qu7gN3_-Sq1Y2Z9P-QsnYUiFiyfhOrRzBrBY2gVYfHiUEosypHiFirI-2yfuwyMBjUstfHACY?product_id\u003d5208528992\u0026dv\u003dandroid\u0026pub_unit\u003d0\u0026pub_domain\u003d0\u0026management_type\u003d1\u0026t\u003dandroid\u0026ob\u003d23\u0026uid\u003d217365640\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2F11515028tknw%2Fmultiple-nangka%3Fsrc%3Dtopads\u0026src\u003ddirectory_tokonow\u0026sid\u003dd-WkfijeT2eoruglR4EDO7%3AAPA91bH_BYdluXL-4cKc8DQoQdDX24BGprKoTZXqG6HAHcMlk0hdLPcQNL7Evbxcu5BGTpQJXt9cKEwLdJrdgc7A-owUpH8peH57vjCkj3Du7gIWgFnQWtsmQgcqgJCa5vS8X2Dzspd8\u0026page\u003d1\u0026pub_id\u003d0",
+      "shop_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_jfop1hHsKdbm-Orfua9fBjUstiHsJRHpyOoseFUiFirfuprfB5QBY2gmUEUMeWufWMq32BuA-BQR-OgfhZoJuJ_prEeuCC6_ViZVYm33zDPuxHb_zsZfHdzVV513zJ3AU7ejPFrjW5uV2yr1rfZJVUy7ODqpCtgJheyOV6_APVPM-dyR1OejP1rVVG3IeNy7WVP7hjZS-jgfHReZO5POuFZAxFg1KOoRgkefWkH7zOofP-ufPcQBV9PIoW13Psr3PGefJOPBHd3A-J8SoFgAKibm-7q3OBUsthosjOHsUaHAyRbm-srcHi6syFHmFircYpq9z2Qfdi6s1DUMVDgaUEUMzBgiUDUMNOQ3-BrBY5gBYxgIHi6syDUMNOQ3-BrBYxgIowrMuhUstaHmFiyfV79fBjraUE3pedo_KDoAKfHmFOH_jd9ZFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUMzBgiUDUSgBrSo2Qfdi6i-fHiUDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBkuMWouOJp_7PoH1h9_9PquOB7_jP-8B2_HAu6Hjg2_VzzouBk1MB6zJ7O_MOzPO22Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBke3BHe72E3_UN8u23692qu7gN3_-Sq1Y2Z9P-QsnYUiFiyfhOrRzBrBY2gVYfHiUEosypHiFirI-2yfuwyMBjUstfHACY?pub_id\u003d0\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2F11515028tknw\u0026management_type\u003d1\u0026t\u003dandroid\u0026src\u003ddirectory_tokonow\u0026pub_unit\u003d0\u0026ob\u003d23\u0026dv\u003dandroid\u0026pub_domain\u003d0\u0026page\u003d1\u0026sid\u003dd-WkfijeT2eoruglR4EDO7%3AAPA91bH_BYdluXL-4cKc8DQoQdDX24BGprKoTZXqG6HAHcMlk0hdLPcQNL7Evbxcu5BGTpQJXt9cKEwLdJrdgc7A-owUpH8peH57vjCkj3Du7gIWgFnQWtsmQgcqgJCa5vS8X2Dzspd8",
+      "tag": 0,
+      "product": {
+        "id": "5208528992",
+        "name": "multiple_nangka",
+        "category_breadcrumb": "",
+        "wishlist": false,
+        "image": {
+          "m_ecs": "https://images.tokopedia.net/img/cache/300/hDjmkQ/2022/8/4/e5ac14c0-efea-4a24-bd4b-e4165e2d61dc.jpg"
+        },
+        "uri": "https://www.tokopedia.com/11515028tknw/multiple-nangka?src\u003dtopads",
+        "relative_uri": "11515028tknw/multiple-nangka",
+        "price_format": "Rp1.500",
+        "price_range": "",
+        "wholesale_price": [],
+        "count_talk_format": "0",
+        "count_review_format": "0",
+        "category": {
+          "id": "5198"
+        },
+        "product_preorder": false,
+        "product_wholesale": false,
+        "free_return": "https://images.tokopedia.net/img/blank.gif",
+        "product_cashback": false,
+        "product_new_label": false,
+        "product_cashback_rate": "",
+        "product_rating": 0,
+        "product_rating_format": "",
+        "product_item_sold_payment_verified": "Terjual 2",
+        "product_minimum_order": 1,
+        "free_ongkir": {
+          "is_active": false,
+          "img_url": ""
+        },
+        "campaign": {
+          "original_price": "",
+          "discount_percentage": 0
+        },
+        "label_group": [
+          {
+            "position": "weight",
+            "type": "textDarkGrey",
+            "title": "100 gr",
+            "url": ""
+          }
+        ],
+        "customvideo_url": "",
+        "parent_id": "0",
+        "max_order": 500,
+        "stock": 500
+      },
+      "shop": {
+        "id": "11515028",
+        "name": "11515028tknw",
+        "domain": "11515028tknw",
+        "location": "",
+        "city": "",
+        "gold_shop": false,
+        "gold_shop_badge": true,
+        "lucky_shop": "https://clover.tokopedia.com/badges/merchant/v1?shop_id\u003d11515028",
+        "uri": "https://www.tokopedia.com/11515028tknw",
+        "owner_id": "162395342",
+        "is_owner": false,
+        "shop_is_official": true,
+        "shop_rating_avg": "",
+        "badges": [
+          {
+            "title": "Free Return",
+            "image_url": "https://images.tokopedia.net/img/blank.gif",
+            "show": false
+          },
+          {
+            "title": "Official Store",
+            "image_url": "https://images.tokopedia.net/ta/icon/badge/OS-Badge-80.png",
+            "show": true
+          }
+        ]
+      },
+      "applinks": "tokopedia://product/5208528992?src\u003dtopads"
+    },
+    {
+      "id": "196751285",
+      "ad_ref_key": "",
+      "redirect": "https://www.tokopedia.com/11515028tknw",
+      "sticker_id": "0",
+      "sticker_image": "",
+      "product_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_jfop1hHsKObm-Orfua9fBjUstiHsJRHpyOoseFUiFirfuprfB5QBY2gmUEUMeWufWMq32BuA-BQR-OgfhZoJuJ_prEeuCC6_ViZVYm33zDPuxHb_zsZfHdzVV513zJ3AU7ejPFrjW5uV2yr1rfZJVUy7ODqpCtgJheyOV6_APVPM-dyR1OejP1rVVG3IeNy7WVP7hjZS-jgfHReZO5POuFZAxFg1KOoRgkefWkH7zOofP-ufPcQBV9PIoW13Psr3PGefJOPBHd3A-J8SoFgAKibm-7q3OBUsthosjOHsUaHAyRbm-srcHi6syFHmFircYpq9z2Qfdi6syDUMVDgaUEUMzBgiUDUMNOQ3-BrBY5gBYxgIHi6syDUMNOQ3-BrBYxgIowrMuhUstaHmFiyfV79fBjraUE3pedo_KDoAKfHmF76_JR9ZFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUMzBgiUDUSgBrSo2Qfdi6i-fHiUDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBkuMWouOJp_7PoH1h9_9PquOB7_jP-8B2_HAu6Hjg2_VzzouBk1MB6zJ7O_MOzPO22Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBke3BHe72E3_UN8u23692qu7gN3_-Sq1Y2Z9P-QsnYUiFiyfhOrRzBrBY2gVYfHiUEosypHiFirI-2yfuwyMBjUstfHACY?r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2F11515028tknw%2Fmultiple-lemon%3Fsrc%3Dtopads\u0026ob\u003d23\u0026t\u003dandroid\u0026src\u003ddirectory_tokonow\u0026pub_unit\u003d0\u0026dv\u003dandroid\u0026page\u003d1\u0026management_type\u003d1\u0026sid\u003dd-WkfijeT2eoruglR4EDO7%3AAPA91bH_BYdluXL-4cKc8DQoQdDX24BGprKoTZXqG6HAHcMlk0hdLPcQNL7Evbxcu5BGTpQJXt9cKEwLdJrdgc7A-owUpH8peH57vjCkj3Du7gIWgFnQWtsmQgcqgJCa5vS8X2Dzspd8\u0026pub_id\u003d0\u0026pub_domain\u003d0",
+      "product_wishlist_url": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEH_jfop1hHsKObm-Orfua9fBjUstiHsJRHpyOoseFUiFirfuprfB5QBY2gmUEUMeWufWMq32BuA-BQR-OgfhZoJuJ_prEeuCC6_ViZVYm33zDPuxHb_zsZfHdzVV513zJ3AU7ejPFrjW5uV2yr1rfZJVUy7ODqpCtgJheyOV6_APVPM-dyR1OejP1rVVG3IeNy7WVP7hjZS-jgfHReZO5POuFZAxFg1KOoRgkefWkH7zOofP-ufPcQBV9PIoW13Psr3PGefJOPBHd3A-J8SoFgAKibm-7q3OBUsthosjOHsUaHAyRbm-srcHi6syFHmFircYpq9z2Qfdi6syDUMVDgaUEUMzBgiUDUMNOQ3-BrBY5gBYxgIHi6syDUMNOQ3-BrBYxgIowrMuhUstaHmFiyfV79fBjraUE3pedo_KDoAKfHmF76_JR9ZFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUMzBgiUDUSgBrSo2Qfdi6i-fHiUDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBkuMWouOJp_7PoH1h9_9PquOB7_jP-8B2_HAu6Hjg2_VzzouBk1MB6zJ7O_MOzPO22Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBke3BHe72E3_UN8u23692qu7gN3_-Sq1Y2Z9P-QsnYUiFiyfhOrRzBrBY2gVYfHiUEosypHiFirI-2yfuwyMBjUstfHACY?pub_unit\u003d0\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2F11515028tknw%2Fmultiple-lemon%3Fsrc%3Dtopads\u0026page\u003d1\u0026pub_domain\u003d0\u0026pub_id\u003d0\u0026ob\u003d23\u0026sid\u003dd-WkfijeT2eoruglR4EDO7%3AAPA91bH_BYdluXL-4cKc8DQoQdDX24BGprKoTZXqG6HAHcMlk0hdLPcQNL7Evbxcu5BGTpQJXt9cKEwLdJrdgc7A-owUpH8peH57vjCkj3Du7gIWgFnQWtsmQgcqgJCa5vS8X2Dzspd8\u0026uid\u003d217365640\u0026src\u003ddirectory_tokonow\u0026t\u003dandroid\u0026product_id\u003d5208528902\u0026dv\u003dandroid\u0026management_type\u003d1",
+      "shop_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_jfop1hHsKObm-Orfua9fBjUstiHsJRHpyOoseFUiFirfuprfB5QBY2gmUEUMeWufWMq32BuA-BQR-OgfhZoJuJ_prEeuCC6_ViZVYm33zDPuxHb_zsZfHdzVV513zJ3AU7ejPFrjW5uV2yr1rfZJVUy7ODqpCtgJheyOV6_APVPM-dyR1OejP1rVVG3IeNy7WVP7hjZS-jgfHReZO5POuFZAxFg1KOoRgkefWkH7zOofP-ufPcQBV9PIoW13Psr3PGefJOPBHd3A-J8SoFgAKibm-7q3OBUsthosjOHsUaHAyRbm-srcHi6syFHmFircYpq9z2Qfdi6syDUMVDgaUEUMzBgiUDUMNOQ3-BrBY5gBYxgIHi6syDUMNOQ3-BrBYxgIowrMuhUstaHmFiyfV79fBjraUE3pedo_KDoAKfHmF76_JR9ZFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUMzBgiUDUSgBrSo2Qfdi6i-fHiUDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBkuMWouOJp_7PoH1h9_9PquOB7_jP-8B2_HAu6Hjg2_VzzouBk1MB6zJ7O_MOzPO22Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBke3BHe72E3_UN8u23692qu7gN3_-Sq1Y2Z9P-QsnYUiFiyfhOrRzBrBY2gVYfHiUEosypHiFirI-2yfuwyMBjUstfHACY?management_type\u003d1\u0026t\u003dandroid\u0026ob\u003d23\u0026dv\u003dandroid\u0026src\u003ddirectory_tokonow\u0026r\u003dhttps%3A%2F%2Fwww.tokopedia.com%2F11515028tknw\u0026pub_unit\u003d0\u0026pub_id\u003d0\u0026pub_domain\u003d0\u0026page\u003d1\u0026sid\u003dd-WkfijeT2eoruglR4EDO7%3AAPA91bH_BYdluXL-4cKc8DQoQdDX24BGprKoTZXqG6HAHcMlk0hdLPcQNL7Evbxcu5BGTpQJXt9cKEwLdJrdgc7A-owUpH8peH57vjCkj3Du7gIWgFnQWtsmQgcqgJCa5vS8X2Dzspd8",
+      "tag": 0,
+      "product": {
+        "id": "5208528902",
+        "name": "multiple_lemon",
+        "category_breadcrumb": "",
+        "wishlist": false,
+        "image": {
+          "m_ecs": "https://images.tokopedia.net/img/cache/300/hDjmkQ/2022/8/4/57731708-34a7-4f8e-9a3d-a267e8675028.jpg"
+        },
+        "uri": "https://www.tokopedia.com/11515028tknw/multiple-lemon?src\u003dtopads",
+        "relative_uri": "11515028tknw/multiple-lemon",
+        "price_format": "Rp4.000",
+        "price_range": "",
+        "wholesale_price": [],
+        "count_talk_format": "0",
+        "count_review_format": "0",
+        "category": {
+          "id": "4917"
+        },
+        "product_preorder": false,
+        "product_wholesale": false,
+        "free_return": "https://images.tokopedia.net/img/blank.gif",
+        "product_cashback": false,
+        "product_new_label": false,
+        "product_cashback_rate": "",
+        "product_rating": 0,
+        "product_rating_format": "",
+        "product_item_sold_payment_verified": "Terjual 7",
+        "product_minimum_order": 1,
+        "free_ongkir": {
+          "is_active": false,
+          "img_url": ""
+        },
+        "campaign": {
+          "original_price": "",
+          "discount_percentage": 0
+        },
+        "label_group": [
+          {
+            "position": "weight",
+            "type": "textDarkGrey",
+            "title": "100 gr",
+            "url": ""
+          }
+        ],
+        "customvideo_url": "",
+        "parent_id": "0",
+        "max_order": 500,
+        "stock": 500
+      },
+      "shop": {
+        "id": "11515028",
+        "name": "11515028tknw",
+        "domain": "11515028tknw",
+        "location": "",
+        "city": "",
+        "gold_shop": false,
+        "gold_shop_badge": true,
+        "lucky_shop": "https://clover.tokopedia.com/badges/merchant/v1?shop_id\u003d11515028",
+        "uri": "https://www.tokopedia.com/11515028tknw",
+        "owner_id": "162395342",
+        "is_owner": false,
+        "shop_is_official": true,
+        "shop_rating_avg": "",
+        "badges": [
+          {
+            "title": "Free Return",
+            "image_url": "https://images.tokopedia.net/img/blank.gif",
+            "show": false
+          },
+          {
+            "title": "Official Store",
+            "image_url": "https://images.tokopedia.net/ta/icon/badge/OS-Badge-80.png",
+            "show": true
+          }
+        ]
+      },
+      "applinks": "tokopedia://product/5208528902?src\u003dtopads"
+    }
+  ]
+}

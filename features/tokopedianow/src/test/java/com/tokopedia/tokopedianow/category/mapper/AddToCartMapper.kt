@@ -1,4 +1,4 @@
-package com.tokopedia.tokopedianow.category.presentation.util
+package com.tokopedia.tokopedianow.category.mapper
 
 import com.google.gson.Gson
 import com.tokopedia.atc_common.data.model.response.AddToCartGqlResponse
