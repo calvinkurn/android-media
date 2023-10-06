@@ -275,9 +275,4 @@ public class RemoteConfigKey {
     public static final String HOME_ATF_REFACTORING = "android_home_atf_refactoring";
 
     public static final String HOME_HPB_CACHE_EXPIRY = "android_home_hpb_cache_expiry";
-
-    public static final String ANDROID_IS_ENABLE_ORDER_STATUS_DETAIL = "android_is_enable_order_status_detail_test";
-
-    public static final String ANDROID_IS_ENABLE_SOM_STATUS_DETAIL = "android_is_enable_som_status_detail_test";
-
 }
