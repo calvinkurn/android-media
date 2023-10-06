@@ -96,7 +96,6 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
 
     fun submitList(visitables: List<DynamicPdpDataModel>) {
         rvPdp?.post {
-            val start = System.nanoTime()
             var position = 0
             (getRecyclerView()?.layoutManager as? CenterLayoutManager)?.let { layoutManager ->
                 val lastVisibleItemPosition = IntArray(layoutManager.getSpanCount())
