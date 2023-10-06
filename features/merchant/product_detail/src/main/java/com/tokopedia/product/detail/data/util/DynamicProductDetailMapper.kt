@@ -306,7 +306,8 @@ object DynamicProductDetailMapper {
                     listOfComponent.add(
                         FintechWidgetV2DataModel(
                             type = component.type,
-                            name = component.componentName
+                            name = component.componentName,
+                            widgetSession = System.currentTimeMillis()
                         )
                     )
                 }

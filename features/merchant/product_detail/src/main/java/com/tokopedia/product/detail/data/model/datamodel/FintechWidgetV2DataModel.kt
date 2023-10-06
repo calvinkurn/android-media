@@ -13,7 +13,8 @@ data class FintechWidgetV2DataModel(
     var idToPriceUrlMap: HashMap<String, FintechPriceURLDataModel> = HashMap(),
     var isLoggedIn: Boolean = false,
     var shopId: String = "",
-    var parentId: String = ""
+    var parentId: String = "",
+    val widgetSession: Long = 0L
 ): DynamicPdpDataModel {
 
     override fun type() = type
