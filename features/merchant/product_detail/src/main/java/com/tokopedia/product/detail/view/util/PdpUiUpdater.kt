@@ -843,7 +843,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             removeComponent(ProductDetailConstant.ORDER_PRIORITY)
         }
 
-        if (it.helpfulReviews?.isEmpty() == true && countReview.toIntOrZero() == 0) {
+        if (!it.rating.showRatingReview) {
             removeComponent(ProductDetailConstant.REVIEW)
         }
 
