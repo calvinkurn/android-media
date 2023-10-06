@@ -9,6 +9,7 @@ import com.tokopedia.shop.home.di.scope.ShopPageHomeScope
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeFlashSaleTncBottomSheetViewModel
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeNplCampaignTncBottomSheetViewModel
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
+import com.tokopedia.shop.home.view.viewmodel.ShopBannerProductGroupWidgetTabViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -39,4 +40,9 @@ abstract class ShopPageHomeViewModelModule {
     @IntoMap
     @ViewModelKey(ShopCampaignViewModel::class)
     internal abstract fun shopCampaignTabViewModel(viewModel: ShopCampaignViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(ShopBannerProductGroupWidgetTabViewModel::class)
+    internal abstract fun shopBannerProductGroupWidgetTabViewModel(viewModel: ShopBannerProductGroupWidgetTabViewModel): ViewModel
 }

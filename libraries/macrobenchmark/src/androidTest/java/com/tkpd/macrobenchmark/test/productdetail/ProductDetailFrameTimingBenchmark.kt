@@ -32,7 +32,7 @@ class ProductDetailFrameTimingBenchmark : BaseFrameTimingBenchmark() {
         Thread.sleep(10000)
         val density = InstrumentationRegistry.getInstrumentation()
             .context.resources.displayMetrics.density
-        val defaultFeelingSpeed = 7500
+        val defaultFeelingSpeed = 3000
         val speed = (defaultFeelingSpeed * density).toInt()
 
         MacroInteration.basicFlingInteraction(

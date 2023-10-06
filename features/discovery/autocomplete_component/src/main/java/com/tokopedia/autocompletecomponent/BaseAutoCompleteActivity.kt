@@ -42,6 +42,7 @@ import com.tokopedia.autocompletecomponent.searchbar.SearchBarKeywordListener
 import com.tokopedia.autocompletecomponent.searchbar.SearchBarState
 import com.tokopedia.autocompletecomponent.searchbar.SearchBarView
 import com.tokopedia.autocompletecomponent.searchbar.SearchBarViewModel
+import com.tokopedia.autocompletecomponent.suggestion.BaseSuggestionDataView
 import com.tokopedia.autocompletecomponent.suggestion.SuggestionFragment
 import com.tokopedia.autocompletecomponent.suggestion.SuggestionFragment.Companion.SUGGESTION_FRAGMENT_TAG
 import com.tokopedia.autocompletecomponent.suggestion.SuggestionFragment.SuggestionViewUpdateListener
@@ -49,6 +50,7 @@ import com.tokopedia.autocompletecomponent.suggestion.di.DaggerSuggestionCompone
 import com.tokopedia.autocompletecomponent.suggestion.di.SuggestionComponent
 import com.tokopedia.autocompletecomponent.suggestion.di.SuggestionViewListenerModule
 import com.tokopedia.autocompletecomponent.util.HasViewModelFactory
+import com.tokopedia.autocompletecomponent.util.SuggestionMPSListener
 import com.tokopedia.autocompletecomponent.util.UrlParamHelper
 import com.tokopedia.autocompletecomponent.util.addComponentId
 import com.tokopedia.autocompletecomponent.util.addQueryIfEmpty
@@ -83,6 +85,7 @@ open class BaseAutoCompleteActivity: BaseActivity(),
     InitialStateViewUpdateListener,
     SearchBarKeywordListener,
     SearchBarView.SearchBarViewListener,
+    SuggestionMPSListener,
     HasViewModelFactory {
 
     private val searchBarView by lazy {
@@ -167,8 +170,6 @@ open class BaseAutoCompleteActivity: BaseActivity(),
             false
         )
         if (isKeywordAddedCoachMarkAlreadyDisplayed) viewModel?.markCoachMarkKeywordAddedAlreadyDisplayed()
-        val isMpsEnabled = savedInstanceState.getBoolean(KEY_IS_MPS_ENABLED, false)
-        if (isMpsEnabled) viewModel?.enableMps()
     }
 
     private fun getSearchParameterFromIntent(savedInstanceState: Bundle?): SearchParameter {
@@ -261,7 +262,7 @@ open class BaseAutoCompleteActivity: BaseActivity(),
         val suggestionComponent = createSuggestionComponent()
 
         val initialStateFragment = InitialStateFragment.create(initialStateComponent)
-        val suggestionFragment = SuggestionFragment.create(suggestionComponent)
+        val suggestionFragment = SuggestionFragment.create(suggestionComponent, this)
 
         commitFragments(initialStateFragment, suggestionFragment)
     }
@@ -577,7 +578,7 @@ open class BaseAutoCompleteActivity: BaseActivity(),
     }
 
     private fun renderSearchBarState(state: SearchBarState) {
-        if (state.isMpsEnabled) showMps() else hideMps()
+        showMps()
         if (state.isMpsAnimationEnabled) enableMpsIconAnimation() else disableMpsIconAnimation()
         if (state.shouldShowCoachMark) {
             showPlusIconCoachMark()
@@ -607,11 +608,6 @@ open class BaseAutoCompleteActivity: BaseActivity(),
         searchBarView.showAddButton()
     }
 
-    private fun hideMps() {
-        searchBarView.setMPSEnabled(false)
-        searchBarView.hideAddButton()
-    }
-
     private fun enableMpsIconAnimation() {
         searchBarView.setMPSAnimationEnabled(true)
         searchBarView.startMpsAnimation()
@@ -619,6 +615,7 @@ open class BaseAutoCompleteActivity: BaseActivity(),
     private fun disableMpsIconAnimation() {
         searchBarView.stopMpsAnimation()
         searchBarView.setMPSAnimationEnabled(false)
+        searchBarView.enableAddButton()
     }
 
     override fun showSuggestionView() {
@@ -687,7 +684,6 @@ open class BaseAutoCompleteActivity: BaseActivity(),
         outState.putInt(KEY_ACTIVE_KEYWORD_POSITION, activeKeyword?.position ?: 0)
         outState.putBoolean(KEY_KEYWORD_ADDED_COACH_MARK_DISPLAYED, viewModel?.isCoachMarkKeywordAddedAlreadyDisplayed ?: false)
         outState.putBoolean(KEY_ICON_PLUS_COACH_MARK_DISPLAYED, viewModel?.isCoachMarkIconPlusAlreadyDisplayed ?: false)
-        outState.putBoolean(KEY_IS_MPS_ENABLED, viewModel?.isMpsEnabled ?: false)
         super.onSaveInstanceState(outState)
     }
 
@@ -731,12 +727,15 @@ open class BaseAutoCompleteActivity: BaseActivity(),
         )
     }
 
+    override fun clickSuggestionMPS(item: BaseSuggestionDataView) {
+        viewModel?.onKeywordAdded(item)
+    }
+
     companion object {
         private const val KEY_SEARCH_PARAMETER = "KEY_SEARCH_PARAMETER"
         private const val KEY_ACTIVE_KEYWORD = "KEY_ACTIVE_KEYWORD"
         private const val KEY_ACTIVE_KEYWORD_POSITION = "KEY_ACTIVE_KEYWORD_POSITION"
         private const val KEY_KEYWORD_ADDED_COACH_MARK_DISPLAYED = "KEY_KEYWORD_ADDED_COACH_MARK_DISPLAYED"
         private const val KEY_ICON_PLUS_COACH_MARK_DISPLAYED = "KEY_ICON_PLUS_COACH_MARK_DISPLAYED"
-        private const val KEY_IS_MPS_ENABLED = "KEY_IS_MPS_ENABLED"
     }
 }

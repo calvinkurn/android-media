@@ -5,7 +5,7 @@ import com.tokopedia.inbox.universalinbox.view.adapter.typefactory.UniversalInbo
 
 data class UniversalInboxWidgetMetaUiModel(
     val widgetList: ArrayList<UniversalInboxWidgetUiModel> = arrayListOf(),
-    var isError: Boolean = false
+    val widgetError: UniversalInboxWidgetMetaErrorUiModel = UniversalInboxWidgetMetaErrorUiModel()
 ) : Visitable<UniversalInboxTypeFactory> {
 
     override fun type(typeFactory: UniversalInboxTypeFactory): Int {
@@ -19,7 +19,8 @@ data class UniversalInboxWidgetMetaUiModel(
         ): Boolean {
             return (
                 areListTheSame(oldItem.widgetList, newItem.widgetList) &&
-                    oldItem.isError == newItem.isError
+                    oldItem.widgetError == newItem.widgetError &&
+                    areErrorStateTheSame(oldItem.widgetError, newItem.widgetError)
                 )
         }
 
@@ -40,5 +41,18 @@ data class UniversalInboxWidgetMetaUiModel(
                             oldItem.isError == newItem.isError
                     }
         }
+
+        private fun areErrorStateTheSame(
+            oldItem: UniversalInboxWidgetMetaErrorUiModel,
+            newItem: UniversalInboxWidgetMetaErrorUiModel
+        ): Boolean {
+            return oldItem.isError == newItem.isError &&
+                oldItem.isLocalLoadLoading == newItem.isLocalLoadLoading
+        }
     }
 }
+
+data class UniversalInboxWidgetMetaErrorUiModel(
+    var isError: Boolean = false,
+    var isLocalLoadLoading: Boolean = false
+)

@@ -15,13 +15,13 @@ data class FintechWidgetDataModel(
     var idToPriceUrlMap: HashMap<String, FintechPriceDataModel> = HashMap(),
     var isLoggedIn: Boolean = false,
     var shopId: String = "",
-    var parentId: String = ""
+    var parentId: String = "",
+    val widgetSession: Long = 0L
 ) : DynamicPdpDataModel,
     LoadableComponent by BlocksLoadableComponent(
         { false },
         "FintechWidgetDataModel"
     ) {
-
     override fun type() = type
 
     override fun type(typeFactory: DynamicProductDetailAdapterFactory) = typeFactory.type(this)

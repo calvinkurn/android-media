@@ -540,4 +540,7 @@ interface DynamicProductDetailListener {
     fun onImpressAPlus(trackerData: APlusImageUiModel.TrackerData)
 
     fun getBlocksPerformanceTrace(): BlocksPerformanceTrace?
+
+    // region BMGM
+    fun onBMGMClicked(title: String, offerId: String, component: ComponentTrackDataModel)
 }

@@ -7,12 +7,12 @@ import android.os.Handler
 import android.os.Looper
 import android.os.Message
 import android.util.Log
+import android.os.Trace
 import android.view.Choreographer
 import android.view.View
 import androidx.lifecycle.LifecycleCoroutineScope
 import com.tokopedia.abstraction.base.view.listener.TouchListenerActivity
 import com.tokopedia.analytics.performance.PerformanceMonitoring
-import com.tokopedia.analytics.performance.perf.PerformanceTraceDebugger.takeScreenshot
 import com.tokopedia.iris.IrisAnalytics
 import com.tokopedia.iris.IrisPerformanceData
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -44,6 +44,8 @@ class BlocksPerformanceTrace(
 
         const val FINISHED_LOADING_TTFL_BLOCKS_THRESHOLD = 1
         const val FINISHED_LOADING_TTIL_BLOCKS_THRESHOLD = 3
+
+        const val ANDROID_TRACE_FULLY_DRAWN = "reportFullyDrawn() for %s"
     }
 
     private var startCurrentTimeMillis = 0L
@@ -121,6 +123,9 @@ class BlocksPerformanceTrace(
 
                     if (!ttilMeasured && TTILperformanceMonitoring != null && it >= FINISHED_LOADING_TTIL_BLOCKS_THRESHOLD) {
                         measureTTIL(performanceBlocks)
+                        scope.launch(Dispatchers.Main) {
+                            putFullyDrawnTrace(traceName)
+                        }
                     }
                 }
             }
@@ -136,13 +141,26 @@ class BlocksPerformanceTrace(
         }
     }
 
+    private fun putFullyDrawnTrace(traceName: String) {
+        try {
+            Trace.beginSection(
+                String.format(
+                    ANDROID_TRACE_FULLY_DRAWN,
+                    traceName
+                )
+            )
+        } finally {
+            Trace.endSection()
+        }
+    }
+
     fun debugPerformanceTrace(
         activity: Activity?,
         summaryModel: BlocksSummaryModel,
         type: String,
         view: View
     ) {
-        activity?.takeScreenshot(type, view)
+//        activity?.takeScreenshot(type, view)
         Toaster.build(
             view,
             "" +

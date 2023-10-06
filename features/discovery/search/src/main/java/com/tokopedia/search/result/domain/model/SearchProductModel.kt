@@ -338,6 +338,10 @@ data class SearchProductModel(
         @Expose
         val imageUrl: String = "",
 
+        @SerializedName("title")
+        @Expose
+        val title: String = "",
+
         @SerializedName("show")
         @Expose
         val isShown: Boolean = false

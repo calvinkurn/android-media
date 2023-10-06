@@ -14,6 +14,8 @@ data class GetLayoutResponse(
 data class GetSellerDashboardLayout(
     @SerializedName("widget")
     val widget: List<WidgetModel>? = emptyList(),
+    @SerializedName("tabs")
+    val tabs: List<TabModel>? = emptyList(),
     @SerializedName("shopState")
     val shopState: Long = 0,
     @SerializedName("personaStatus")
