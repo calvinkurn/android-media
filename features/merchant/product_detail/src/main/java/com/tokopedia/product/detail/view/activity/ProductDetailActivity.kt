@@ -249,6 +249,7 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
 
     override fun onCreate(savedInstanceState: Bundle?) {
         try {
+            initBlocksPLTMonitoring()
             userSessionInterface = UserSession(this)
             isFromDeeplink = intent.getBooleanExtra(PARAM_IS_FROM_DEEPLINK, false)
 
@@ -344,15 +345,7 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
         finish()
     }
 
-    private fun initPLTMonitoring() {
-        pageLoadTimePerformanceMonitoring = PageLoadTimePerformanceCallback(
-            ProductDetailConstant.PDP_RESULT_PLT_PREPARE_METRICS,
-            ProductDetailConstant.PDP_RESULT_PLT_NETWORK_METRICS,
-            ProductDetailConstant.PDP_RESULT_PLT_RENDER_METRICS
-        )
-        pageLoadTimePerformanceMonitoring?.startMonitoring(ProductDetailConstant.PDP_RESULT_TRACE)
-        pageLoadTimePerformanceMonitoring?.startPreparePagePerformanceMonitoring()
-
+    private fun initBlocksPLTMonitoring() {
         blocksPerformanceTrace = BlocksPerformanceTrace(
             this,
             "perf_trace_pdp",
@@ -368,6 +361,15 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
                 )
             }
         }
+    }
+    private fun initPLTMonitoring() {
+        pageLoadTimePerformanceMonitoring = PageLoadTimePerformanceCallback(
+            ProductDetailConstant.PDP_RESULT_PLT_PREPARE_METRICS,
+            ProductDetailConstant.PDP_RESULT_PLT_NETWORK_METRICS,
+            ProductDetailConstant.PDP_RESULT_PLT_RENDER_METRICS
+        )
+        pageLoadTimePerformanceMonitoring?.startMonitoring(ProductDetailConstant.PDP_RESULT_TRACE)
+        pageLoadTimePerformanceMonitoring?.startPreparePagePerformanceMonitoring()
     }
 
     private fun initPerformanceMonitoring() {
