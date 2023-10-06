@@ -2,4 +2,5 @@
 <resources>
     <color name="dms_high_emphasis">#212121</color>
     <color name="dms_low_emphasis">#6D7588</color>
+    <color name="dms_static_GN100">#C9FDE0</color>
 </resources>

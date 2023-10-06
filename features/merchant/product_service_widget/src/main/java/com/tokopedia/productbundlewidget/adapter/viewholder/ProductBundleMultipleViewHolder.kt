@@ -228,9 +228,14 @@ class ProductBundleMultipleViewHolder(
 
     private fun overrideWidgetTheme() {
         if (isOverrideWidgetTheme) {
-            viewBinding?.bundleWidgetHeaderContainer?.let {
-                it.tvBundleNameLarge.setTextColor(ContextCompat.getColor(itemView.context, R.color.dms_high_emphasis))
+//            viewBinding?.bundleWidgetHeaderContainer?.let {
+//                it.tvBundleNameLarge.setTextColor(ContextCompat.getColor(itemView.context, R.color.dms_high_emphasis))
+//            }
+            viewBinding?.let {
+                it.bundleWidgetHeaderContainer.tvBundleNameLarge.setTextColor(ContextCompat.getColor(itemView.context, R.color.dms_high_emphasis))
+                it.bundleWidgetFooter.savingAmountContainer.setBackgroundColor(ContextCompat.getColor(R.color.dms_static_GN100))
             }
+
             widgetContainer?.setBackgroundColor(ContextCompat.getColor(itemView.context, unifyprinciplesR.color.Unify_Static_White))
             typographyBundleName?.setTextColor(ContextCompat.getColor(itemView.context, R.color.dms_high_emphasis))
             typographyBundlePreOrder?.setTextColor(ContextCompat.getColor(itemView.context, R.color.dms_low_emphasis))
