@@ -122,6 +122,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
@@ -539,18 +540,13 @@ class DynamicProductDetailViewModel @Inject constructor(
                     whId = productParams.warehouseId.orEmpty(),
                     layoutId = layoutId,
                     extParam = extParam,
-                    refreshPage = refreshPage,
-                    callback = object : GetPdpLayoutUseCase.Callback {
-                        override fun onSuccess(p1Data: ProductDetailDataModel) {
-                            processPdpLayout(pdpLayout = p1Data)
-                            getProductP2(urlQuery)
-                        }
-
-                        override fun onError(throwable: Throwable) {
-                            _productLayout.postValue(throwable.asFail())
-                        }
-                    }
-                )
+                    refreshPage = refreshPage
+                ).catch {
+                    _productLayout.postValue(it.asFail())
+                }.collectLatest {
+                    processPdpLayout(pdpLayout = it)
+                    getProductP2(urlQuery)
+                }
             }.onFailure {
                 _productLayout.postValue(it.asFail())
             }
@@ -1185,8 +1181,7 @@ class DynamicProductDetailViewModel @Inject constructor(
         whId: String,
         layoutId: String,
         extParam: String,
-        refreshPage: Boolean,
-        callback: GetPdpLayoutUseCase.Callback
+        refreshPage: Boolean
     ) = with(getPdpLayoutUseCase.get()) {
         this.requestParams = GetPdpLayoutUseCase.createParams(
             productId,
@@ -1199,7 +1194,8 @@ class DynamicProductDetailViewModel @Inject constructor(
             generateTokoNowRequest(userLocationCache),
             refreshPage
         )
-        invoke(callback)
+
+        executeOnBackground()
     }
 
     private fun logP2Login(throwable: Throwable, productId: String) {

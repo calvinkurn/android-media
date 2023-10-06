@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.usecase
 
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
@@ -25,13 +26,20 @@ import com.tokopedia.product.detail.view.util.CacheStrategyUtil
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.usecase.RequestParams
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 import javax.inject.Named
 
+@OptIn(ExperimentalCoroutinesApi::class)
 open class GetPdpLayoutUseCase @Inject constructor(
     private val gqlUseCase: MultiRequestGraphqlUseCase,
     @Named(NAME_LAYOUT_ID_DAGGER) private val layoutIdTest: String,
-    private val remoteConfig: RemoteConfig
+    private val remoteConfig: RemoteConfig,
+    private val dispatcher: CoroutineDispatchers
 ) {
 
     companion object {
@@ -462,14 +470,6 @@ open class GetPdpLayoutUseCase @Inject constructor(
             }
     }
 
-    interface Callback {
-        fun onSuccess(p1Data: ProductDetailDataModel)
-
-        fun onError(throwable: Throwable)
-    }
-
-    private var callback: Callback? = null
-
     var requestParams: RequestParams = RequestParams.EMPTY
 
     val shouldCacheable
@@ -508,18 +508,17 @@ open class GetPdpLayoutUseCase @Inject constructor(
     }.getOrNull()
 
     @GqlQuery("PdpGetLayoutQuery", QUERY)
-    suspend operator fun invoke(callback: Callback) {
-        this.callback = callback
-        executeOnBackground()
-    }
-
-    private suspend fun executeOnBackground() {
+    suspend fun executeOnBackground(): Flow<ProductDetailDataModel> {
         prepareRequest()
 
-        if (shouldCacheable && !refreshPage) {
+        return if (shouldCacheable && !refreshPage) {
             processRequestCacheable()
         } else {
-            processRequestNonCacheable()
+            processRequestAlwaysCloud(
+                cacheState = CacheState(isFromCache = false, cacheFirstThenCloud = false)
+            ).let {
+                flowOf(it)
+            }
         }
     }
 
@@ -536,62 +535,63 @@ open class GetPdpLayoutUseCase @Inject constructor(
         )
     }
 
-    private suspend fun processRequestCacheable() = runCatching {
-        var gqlResponse = GraphqlCacheStrategy.Builder(CacheType.CACHE_ONLY).build().let {
+    private fun processRequestCacheable() = flow {
+        val pdpLayoutCache = processRequestCacheOnly()
+        var cacheState = pdpLayoutCache.cacheState
+
+        if (cacheState.isFromCache) {
+            // is from cache, emit for the first
+            emit(pdpLayoutCache)
+
+            cacheState = cacheState.copy(cacheFirstThenCloud = true)
+        }
+
+        val pdpLayoutCloud = processRequestAlwaysCloud(cacheState = cacheState)
+        emit(pdpLayoutCloud)
+    }.flowOn(dispatcher.io)
+
+    private suspend fun processRequestCacheOnly(): ProductDetailDataModel {
+        val response = GraphqlCacheStrategy.Builder(CacheType.CACHE_ONLY).build().let {
             gqlUseCase.setCacheStrategy(it)
             gqlUseCase.executeOnBackground()
         }
-        val error = gqlResponse.getPdpLayoutError()
-        val data = gqlResponse.getPdpLayout()
+        val error = response.getPdpLayoutError()
+        val data = response.getPdpLayout()
         val hasCacheAvailable = error.isNullOrEmpty() && data != null
-        var cacheFirstThenCloud = false // initial value is false, refer to CacheState
         val isCampaign = isProductCampaign(layout = data)
+        val cacheState = CacheState(isFromCache = false, cacheFirstThenCloud = false)
 
         // if cache data available and product non campaign, so emit to VM
-        if (hasCacheAvailable && !isCampaign) {
+        return if (hasCacheAvailable && !isCampaign) {
+            // expected cache state is fromCache is true and cacheFirstThenCloud is false
             processResponse(
                 pdpLayout = data,
                 error = error,
-                isCache = true,
-                cacheFirstThenCloud = false,
+                cacheState = cacheState.copy(isFromCache = true),
                 isCampaign = false // always false in here
             )
-            cacheFirstThenCloud = true
+        } else {
+            // expected cache state is fromCache is false and cacheFirstThenCloud is false
+            ProductDetailDataModel(cacheState = cacheState)
         }
-
-        // hit cloud to update into cache and UI
-        gqlResponse = CacheStrategyUtil.getCacheStrategy(forceRefresh = true, cacheAge = cacheAge).let {
-            gqlUseCase.setCacheStrategy(it)
-            gqlUseCase.executeOnBackground()
-        }
-        processResponse(
-            pdpLayout = gqlResponse.getPdpLayout(),
-            error = gqlResponse.getPdpLayoutError(),
-            isCache = false,
-            cacheFirstThenCloud = cacheFirstThenCloud,
-            isCampaign = isCampaign
-        )
-    }.onFailure {
-        callback?.onError(it)
     }
 
-    private suspend fun processRequestNonCacheable() = runCatching {
-        val gqlResponse = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build().let {
-            gqlUseCase.setCacheStrategy(it)
-            gqlUseCase.executeOnBackground()
-        }
-        val data = gqlResponse.getPdpLayout()
-        val error = gqlResponse.getPdpLayoutError()
+    private suspend fun processRequestAlwaysCloud(cacheState: CacheState): ProductDetailDataModel {
+        val response = CacheStrategyUtil.getCacheStrategy(forceRefresh = true, cacheAge = cacheAge)
+            .let {
+                gqlUseCase.setCacheStrategy(it)
+                gqlUseCase.executeOnBackground()
+            }
+        val data = response.getPdpLayout()
+        val error = response.getPdpLayoutError()
         val isCampaign = isProductCampaign(layout = data)
-        processResponse(
+
+        return processResponse(
             pdpLayout = data,
             error = error,
-            isCache = false,
-            cacheFirstThenCloud = false,
+            cacheState = cacheState,
             isCampaign = isCampaign
         )
-    }.onFailure {
-        callback?.onError(it)
     }
 
     private fun isProductCampaign(layout: PdpGetLayout?): Boolean {
@@ -607,6 +607,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
                         ?.isActive
                         .orFalse()
                 }
+
                 ProductDetailConstant.PRODUCT_CONTENT -> {
                     hasCampaign = component.componentData.firstOrNull()
                         ?.campaign
@@ -622,10 +623,9 @@ open class GetPdpLayoutUseCase @Inject constructor(
     private fun processResponse(
         pdpLayout: PdpGetLayout?,
         error: List<GraphqlError>?,
-        isCache: Boolean,
-        cacheFirstThenCloud: Boolean,
+        cacheState: CacheState,
         isCampaign: Boolean
-    ) {
+    ): ProductDetailDataModel {
         val data = pdpLayout ?: PdpGetLayout()
 
         if (!error.isNullOrEmpty()) {
@@ -633,8 +633,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
                 error.mapNotNull { it.message }.joinToString(separator = ", "),
                 error.firstOrNull()?.extensions?.code.toString()
             )
-            callback?.onError(errorMsg)
-            return
+            throw errorMsg
         } else if (data.basicInfo.isBlacklisted) {
             gqlUseCase.clearCache()
             val tobaccoError = data.basicInfo.blacklistMessage.let {
@@ -645,27 +644,19 @@ open class GetPdpLayoutUseCase @Inject constructor(
                     url = it.url
                 )
             }
-            callback?.onError(tobaccoError)
-            return
+            throw tobaccoError
         }
 
-        data.mapIntoModel(
-            isCache = isCache,
-            cacheFirstThenCloud = cacheFirstThenCloud,
-            isCampaign = isCampaign
-        ).also {
-            callback?.onSuccess(it)
-        }
+        return data.mapIntoModel(cacheState = cacheState, isCampaign = isCampaign)
     }
 
     private fun PdpGetLayout.mapIntoModel(
-        isCache: Boolean,
-        cacheFirstThenCloud: Boolean,
+        cacheState: CacheState,
         isCampaign: Boolean
     ): ProductDetailDataModel {
         val initialLayoutData = DynamicProductDetailMapper.mapIntoVisitable(components)
             .filterNot {
-                if (isCache) {
+                if (cacheState.isFromCache) {
                     ignoreComponentInCache.contains(it.type())
                 } else {
                     false
@@ -673,8 +664,6 @@ open class GetPdpLayoutUseCase @Inject constructor(
             }.toMutableList()
         val getDynamicProductInfoP1 = DynamicProductDetailMapper.mapToDynamicProductDetailP1(this)
         val p1VariantData = DynamicProductDetailMapper.mapVariantIntoOldDataClass(this)
-        val cacheState =
-            CacheState(isFromCache = isCache, cacheFirstThenCloud = cacheFirstThenCloud)
         return ProductDetailDataModel(
             layoutData = getDynamicProductInfoP1,
             listOfLayout = initialLayoutData,
