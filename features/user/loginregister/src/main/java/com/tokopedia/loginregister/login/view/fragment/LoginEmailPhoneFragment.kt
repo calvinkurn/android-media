@@ -407,7 +407,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     private fun checkLoginOption() {
-        if (GlobalConfig.isSellerApp()){
+        if (GlobalConfig.isSellerApp()) {
             viewModel.checkLoginOption(
                 isEnableSeamless = false,
                 isEnableFingerprint = false,
@@ -419,7 +419,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         }
         showLoadingOverlay()
     }
-
 
     private fun showLoadingOverlay() {
         viewBinding?.loginLoadingOverlay?.root?.show()
@@ -1075,6 +1074,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             if (GlobalConfig.isSellerApp()) {
                 setLoginSuccessSellerApp()
             } else {
+                getDefaultChosenAddress()
                 val bundle = Bundle()
 
                 if (isFromRegister) {
@@ -1368,7 +1368,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                 onSuccessLogin()
             }
         }
-        getDefaultChosenAddress()
     }
 
     override fun onErrorGetUserInfo(): (Throwable) -> Unit {
