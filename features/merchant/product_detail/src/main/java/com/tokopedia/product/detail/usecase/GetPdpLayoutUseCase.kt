@@ -26,7 +26,6 @@ import com.tokopedia.product.detail.view.util.CacheStrategyUtil
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.usecase.RequestParams
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
@@ -34,7 +33,6 @@ import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 import javax.inject.Named
 
-@OptIn(ExperimentalCoroutinesApi::class)
 open class GetPdpLayoutUseCase @Inject constructor(
     private val gqlUseCase: MultiRequestGraphqlUseCase,
     @Named(NAME_LAYOUT_ID_DAGGER) private val layoutIdTest: String,
