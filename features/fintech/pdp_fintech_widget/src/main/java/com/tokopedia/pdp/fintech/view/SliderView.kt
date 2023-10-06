@@ -51,7 +51,7 @@ class SliderView: ScrollView {
     }
 
     private fun animateScrollToViews(views: List<View>, shouldAnimate: Boolean) {
-        views.last().invalidate()
+        views.last().requestLayout()
         views.last().post {
             layoutParams.height = views.last().height - VERTICAL_PADDING.toPx()
             requestLayout()
