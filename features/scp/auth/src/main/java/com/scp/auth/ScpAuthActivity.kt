@@ -89,7 +89,7 @@ class ScpAuthActivity : BaseActivity() {
                     subtitle = "Masuk atau daftar hanya dalam beberapa langkah mudah"
                 ),
                 chooseAccountConfigs = LSdkChooseAccountUiConfigs(
-                    title = "Select Account to continue"
+                    title = "Pilih akun untuk lanjut"
                 )
             ),
             additionalHeaders = TkpdAdditionalHeaders(this),
