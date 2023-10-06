@@ -66,26 +66,6 @@ class DefaultTrackerBuilder(
             putString(Key.currentSite, CurrentSite.tokopediaMarketplace)
             putString(Key.trackerId, impressionTrackerId)
         }
-//
-//        val map = BaseTrackerBuilder().constructBasicPromotionView(
-//            event = eventName,
-//            eventCategory = eventCategory,
-//            eventAction = eventAction,
-//            eventLabel = "${entryPoint.trackerName} - ${state.shopId} - story - shop",
-//            promotions = listOf(
-//                BaseTrackerConst.Promotion(
-//                    id = state.shopId,
-//                    name = "/ - ${state.shopId} - stories entry point",
-//                    creative = "",
-//                    position = "",
-//                )
-//            )
-//        ).appendUserId(userSession.userId)
-//            .appendBusinessUnit(BusinessUnit.content)
-//            .appendCurrentSite(CurrentSite.tokopediaMarketplace)
-//            .appendCustomKeyValue(Key.sessionIris, sessionIris)
-//            .appendCustomKeyValue(Key.trackerId, impressionTrackerId)
-//            .build()
 
         return StoriesWidgetTracker.Data(
             state.shopId,
@@ -98,29 +78,6 @@ class DefaultTrackerBuilder(
 
     override fun onClickedEntryPoint(state: StoriesWidgetState): StoriesWidgetTracker.Data {
         if (!isStoriesValid(state)) return StoriesWidgetTracker.Data.Empty
-
-//        val eventName = Event.selectContent
-//        val eventAction = "click - story entry point"
-//
-//        val map = BaseTrackerBuilder().constructBasicPromotionClick(
-//            event = eventName,
-//            eventCategory = eventCategory,
-//            eventAction = eventAction,
-//            eventLabel = "${entryPoint.trackerName} - ${state.shopId} - story - shop",
-//            promotions = listOf(
-//                BaseTrackerConst.Promotion(
-//                    id = state.shopId,
-//                    name = "/ - ${state.shopId} - stories entry point",
-//                    creative = "",
-//                    position = "",
-//                )
-//            )
-//        ).appendUserId(userSession.userId)
-//            .appendBusinessUnit(BusinessUnit.content)
-//            .appendCurrentSite(CurrentSite.tokopediaMarketplace)
-//            .appendCustomKeyValue(Key.sessionIris, sessionIris)
-//            .appendCustomKeyValue(Key.trackerId, clickTrackerId)
-//            .build()
 
         val eventName = Event.selectContent
         val eventAction = "click - story entry point"
