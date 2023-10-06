@@ -19,14 +19,16 @@ import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import java.io.File
 import java.lang.reflect.Type
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class GetPdpLayoutUseCaseTest {
 
     companion object {
@@ -57,10 +59,10 @@ class GetPdpLayoutUseCaseTest {
     }
 
     @Test
-    fun onSuccessExecuteOnBackground() = runBlocking {
+    fun onSuccessExecuteOnBackground() = runTest {
         coEvery {
             gqlUseCase.executeOnBackground()
-        } returns createMockGraphqlResponse(ERROR_TYPE.SUCCESS)
+        } returns createMockGraphqlResponse(ErrorType.SUCCESS)
 
         val result = useCaseTest.executeOnBackground().first()
         Assert.assertTrue(result.listOfLayout.isNotEmpty())
@@ -73,10 +75,10 @@ class GetPdpLayoutUseCaseTest {
     }
 
     @Test
-    fun onDataNullExecuteOnBackground() = runBlocking {
+    fun onDataNullExecuteOnBackground() = runTest {
         coEvery {
             gqlUseCase.executeOnBackground()
-        } returns createMockGraphqlResponse(ERROR_TYPE.RUNTIME)
+        } returns createMockGraphqlResponse(ErrorType.RUNTIME)
 
         runCatching {
             useCaseTest.executeOnBackground().first()
@@ -94,10 +96,10 @@ class GetPdpLayoutUseCaseTest {
     }
 
     @Test
-    fun onErrorTobaccoExecuteOnBackground() = runBlocking {
+    fun onErrorTobaccoExecuteOnBackground() = runTest {
         coEvery {
             gqlUseCase.executeOnBackground()
-        } returns createMockGraphqlResponse(ERROR_TYPE.TOBACCO)
+        } returns createMockGraphqlResponse(ErrorType.TOBACCO)
 
         runCatching {
             useCaseTest.executeOnBackground().first()
@@ -115,10 +117,10 @@ class GetPdpLayoutUseCaseTest {
     }
 
     @Test
-    fun `given layout id from dev option should match`() = runBlocking {
+    fun `given layout id from dev option should match`() = runTest {
         coEvery {
             gqlUseCase.executeOnBackground()
-        } returns createMockGraphqlResponse(ERROR_TYPE.SUCCESS)
+        } returns createMockGraphqlResponse(ErrorType.SUCCESS)
 
         useCaseTestLayoutId.executeOnBackground()
 
@@ -127,10 +129,10 @@ class GetPdpLayoutUseCaseTest {
     }
 
     @Test
-    fun `given layout id from dev and from param should use from param`() = runBlocking {
+    fun `given layout id from dev and from param should use from param`() = runTest {
         coEvery {
             gqlUseCase.executeOnBackground()
-        } returns createMockGraphqlResponse(ERROR_TYPE.SUCCESS)
+        } returns createMockGraphqlResponse(ErrorType.SUCCESS)
 
         useCaseTestLayoutId.requestParams = GetPdpLayoutUseCase.createParams("", "", "", "", "122", UserLocationRequest(), "", TokoNowParam(), true)
         useCaseTestLayoutId.executeOnBackground()
@@ -139,12 +141,12 @@ class GetPdpLayoutUseCaseTest {
         Assert.assertEquals(layoutId, "122")
     }
 
-    private fun createMockGraphqlResponse(type: ERROR_TYPE): GraphqlResponse {
+    private fun createMockGraphqlResponse(type: ErrorType): GraphqlResponse {
         return when (type) {
-            ERROR_TYPE.TOBACCO -> {
+            ErrorType.TOBACCO -> {
                 createMockGraphqlErrorResponseTobacco()
             }
-            ERROR_TYPE.RUNTIME -> {
+            ErrorType.RUNTIME -> {
                 createMockGraphqlErrorResponseDataNull()
             }
             else -> {
@@ -201,7 +203,7 @@ class GetPdpLayoutUseCaseTest {
     }
 }
 
-internal enum class ERROR_TYPE {
+internal enum class ErrorType {
     TOBACCO,
     RUNTIME,
     SUCCESS

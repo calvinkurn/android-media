@@ -45,7 +45,6 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductMediaRecomBottom
 import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulResponseWrapper
 import com.tokopedia.product.detail.data.model.ui.OneTimeMethodEvent
-import com.tokopedia.product.detail.data.model.ui.OneTimeMethodState
 import com.tokopedia.product.detail.data.util.DynamicProductDetailTalkGoToWriteDiscussion
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.tracking.ProductDetailServerLogger
@@ -88,9 +87,10 @@ import io.mockk.mockkObject
 import io.mockk.slot
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -616,7 +616,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
     //region atc
     @Test
-    fun `on success delete cart tokonow non var`() = runBlockingTest {
+    fun `on success delete cart tokonow non var`() = runTest {
         `on success get product info login`()
         val mockData = RemoveFromCartData(
             data = com.tokopedia.cartcommon.data.response.deletecart.Data(
@@ -650,7 +650,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     @Test
-    fun `on error delete cart tokonow non var`() = runBlockingTest {
+    fun `on error delete cart tokonow non var`() = runTest {
         `on success get product info login`()
         val cartId = slot<List<String>>()
 
@@ -679,7 +679,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     @Test
-    fun `on success update cart tokonow with minicart data`() = runBlockingTest {
+    fun `on success update cart tokonow with minicart data`() = runTest {
         `on success get product info login`()
         val mockData = UpdateCartV2Data(data = Data(message = "sukses update cart"))
         val currentMiniCartMock =
@@ -702,7 +702,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     @Test
-    fun `on success update cart tokonow with empty minicart data`() = runBlockingTest {
+    fun `on success update cart tokonow with empty minicart data`() = runTest {
         // fulfil empty data minicart
         `on success get product info non login`()
         val mockData = UpdateCartV2Data(data = Data(message = "sukses update cart"))
@@ -726,7 +726,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     @Test
-    fun `on fail update cart tokonow`() = runBlockingTest {
+    fun `on fail update cart tokonow`() = runTest {
         // fulfil empty data minicart
         `on success get product info non login`()
         val mockData = UpdateCartV2Data(
@@ -752,7 +752,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     @Test
-    fun `on fail update cart throwable tokonow`() = runBlockingTest {
+    fun `on fail update cart throwable tokonow`() = runTest {
         // fulfil empty data minicart
         `on success get product info non login`()
         val currentMiniCartMock =
@@ -774,7 +774,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     @Test
-    fun `on success normal atc tokonow`() = runBlockingTest {
+    fun `on success normal atc tokonow`() = runTest {
         `on success get product info login`()
         val addToCartOcsRequestParams = AddToCartRequestParams()
         val atcResponseSuccess = AddToCartDataModel(
@@ -817,7 +817,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     @Test
-    fun `on success normal atc`() = runBlockingTest {
+    fun `on success normal atc`() = runTest {
         val addToCartOcsRequestParams = AddToCartRequestParams()
         val atcResponseSuccess = AddToCartDataModel(data = DataModel(success = 1), status = "OK")
 
@@ -843,7 +843,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     @Test
-    fun `on error normal atc`() = runBlockingTest {
+    fun `on error normal atc`() = runTest {
         val addToCartOcsRequestParams = AddToCartRequestParams()
         val atcResponseError = AddToCartDataModel(
             data = DataModel(success = 0),
@@ -873,7 +873,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     @Test
-    fun `on error normal atc cause result null`() = runBlockingTest {
+    fun `on error normal atc cause result null`() = runTest {
         val addToCartOcsRequestParams = AddToCartRequestParams()
 
         coEvery {
@@ -898,7 +898,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     @Test
-    fun `on success ocs atc`() = runBlockingTest {
+    fun `on success ocs atc`() = runTest {
         val addToCartOcsRequestParams = AddToCartOcsRequestParams()
         val atcResponseSuccess = AddToCartDataModel(data = DataModel(success = 1), status = "OK")
 
@@ -924,7 +924,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     @Test
-    fun `on error ocs atc`() = runBlockingTest {
+    fun `on error ocs atc`() = runTest {
         val addToCartOcsRequestParams = AddToCartOcsRequestParams()
         val atcResponseError = AddToCartDataModel(
             data = DataModel(success = 0),
@@ -954,7 +954,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     @Test
-    fun `on success occ atc`() = runBlockingTest {
+    fun `on success occ atc`() = runTest {
         val addToCartOccRequestParams = AddToCartOccMultiRequestParams(
             carts = listOf(
                 AddToCartOccMultiCartParam(
@@ -988,7 +988,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     @Test
-    fun `on error occ atc`() = runBlockingTest {
+    fun `on error occ atc`() = runTest {
         val addToCartOccRequestParams = AddToCartOccMultiRequestParams(
             carts = listOf(
                 AddToCartOccMultiCartParam(
@@ -1312,7 +1312,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     private fun `co verify p1 success`() {
         // P1
         coVerify {
-            getPdpLayoutUseCase.invoke(any())
+            getPdpLayoutUseCase.executeOnBackground()
         }
 
         coVerify {
@@ -1341,11 +1341,8 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         miniCart: MutableMap<String, MiniCartItem.MiniCartItemProduct>? = null
     ) {
         coEvery {
-            getPdpLayoutUseCase(any())
-        } answers {
-            val callback = firstArg<GetPdpLayoutUseCase.Callback>()
-            callback.onSuccess(dataP1)
-        }
+            getPdpLayoutUseCase.executeOnBackground()
+        } returns flowOf(dataP1)
 
         coEvery {
             getProductInfoP2LoginUseCase.executeOnBackground()
@@ -1380,14 +1377,15 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     @Test
     fun `on error get product info login`() {
         val productParams = ProductParams("", "", "", "", "", "")
+
         coEvery {
-            getPdpLayoutUseCase(any())
+            getPdpLayoutUseCase.executeOnBackground()
         } throws Throwable()
 
         viewModel.getProductP1(productParams, userLocationLocal = getUserLocationCache())
         // P1
         coVerify {
-            getPdpLayoutUseCase(any())
+            getPdpLayoutUseCase.executeOnBackground()
         }
         assertTrue(viewModel.productLayout.value is Fail)
         Assert.assertNull(viewModel.p2Data.value)
@@ -1426,7 +1424,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         // P1
         coVerify {
-            getPdpLayoutUseCase(any())
+            getPdpLayoutUseCase.executeOnBackground()
         }
 
         coVerify {
@@ -1961,7 +1959,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
     // region Discussion Most Helpful
     @Test
-    fun `on success getDiscussionMostHelpful`() = runBlockingTest {
+    fun `on success getDiscussionMostHelpful`() = runTest {
         val expectedResponse = DiscussionMostHelpfulResponseWrapper()
 
         coEvery {
@@ -1978,7 +1976,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     @Test
-    fun `on error getDiscussionMostHelpful`() = runBlockingTest {
+    fun `on error getDiscussionMostHelpful`() = runTest {
         val expectedError = Throwable()
 
         coEvery {
@@ -1994,7 +1992,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
     // region getProductTopadsStatus
     @Test
-    fun `when get topads status then verify error response`() = runBlockingTest {
+    fun `when get topads status then verify error response`() = runTest {
         val productId = "12345"
         val paramsTest = "txsc=asdf"
 
@@ -2029,7 +2027,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     @Test
-    fun `when get topads status then verify success response and enable to charge`() = runBlockingTest {
+    fun `when get topads status then verify success response and enable to charge`() = runTest {
         val productId = "12345"
         val paramsTest = "txsc=asdf"
         val expectedResponse = TopadsIsAdsQuery(
@@ -2070,7 +2068,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
     // region tokonow recom section
     @Test
-    fun `test add to cart non variant then return success cart data`() = runBlockingTest {
+    fun `test add to cart non variant then return success cart data`() = runTest {
         val recomItem = RecommendationItem(productId = 12345, shopId = 123)
         val quantity = 1
         val atcResponseSuccess = AddToCartDataModel(
@@ -2095,7 +2093,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     @Test
-    fun `test add to cart non variant then return failed with message`() = runBlockingTest {
+    fun `test add to cart non variant then return failed with message`() = runTest {
         val recomItem = RecommendationItem(productId = 12345, shopId = 123)
         val quantity = 1
         val atcResponseError = AddToCartDataModel(
@@ -2116,7 +2114,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     @Test
-    fun `test add to cart non variant then return failed with throwable`() = runBlockingTest {
+    fun `test add to cart non variant then return failed with throwable`() = runTest {
         val recomItem = RecommendationItem(productId = 12345, shopId = 123)
         val quantity = 1
         coEvery {
@@ -2132,7 +2130,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     @Test
-    fun `test update cart non variant then return success cart data`() = runBlockingTest {
+    fun `test update cart non variant then return success cart data`() = runTest {
         val recomItem = RecommendationItem(productId = 12345, shopId = 123)
         val miniCart = MiniCartItem.MiniCartItemProduct(
             productId = recomItem.productId.toString(),
@@ -2156,7 +2154,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     @Test
-    fun `test update cart non variant then return failed with message`() = runBlockingTest {
+    fun `test update cart non variant then return failed with message`() = runTest {
         val recomItem = RecommendationItem(productId = 12345, shopId = 123)
         val miniCart = MiniCartItem.MiniCartItemProduct(
             productId = recomItem.productId.toString(),
@@ -2178,7 +2176,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     @Test
-    fun `test update cart non variant then return error throwable`() = runBlockingTest {
+    fun `test update cart non variant then return error throwable`() = runTest {
         val recomItem = RecommendationItem(productId = 12345, shopId = 123)
         val miniCart = MiniCartItem.MiniCartItemProduct(
             productId = recomItem.productId.toString(),
@@ -2198,7 +2196,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     @Test
-    fun `test delete cart non variant then return success cart data`() = runBlockingTest {
+    fun `test delete cart non variant then return success cart data`() = runTest {
         val recomItem = RecommendationItem(productId = 12345, shopId = 123)
         val miniCart = MiniCartItem.MiniCartItemProduct(
             productId = recomItem.productId.toString(),
@@ -2227,7 +2225,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     @Test
-    fun `test delete cart non variant then return failed with message`() = runBlockingTest {
+    fun `test delete cart non variant then return failed with message`() = runTest {
         val recomItem = RecommendationItem(productId = 12345, shopId = 123)
         val miniCart = MiniCartItem.MiniCartItemProduct(
             productId = recomItem.productId.toString(),
@@ -2250,7 +2248,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     @Test
-    fun `test delete cart non variant then return error throwable`() = runBlockingTest {
+    fun `test delete cart non variant then return error throwable`() = runTest {
         val recomItem = RecommendationItem(productId = 12345, shopId = 123)
         val miniCart = MiniCartItem.MiniCartItemProduct(
             productId = recomItem.productId.toString(),
@@ -2521,69 +2519,48 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     @Test
-    fun `change one time method default value`() = runBlockingTest {
-        val testResults = mutableListOf<OneTimeMethodState>()
-
-        val job = launch {
-            viewModel.oneTimeMethodState.toList(testResults)
+    fun `change one time method default value`() = runTest {
+        val oneTimeMethodState = { viewModel.oneTimeMethodState.value }
+        backgroundScope.launch {
+            viewModel.oneTimeMethodState.collect()
         }
 
         viewModel.changeOneTimeMethod(event = OneTimeMethodEvent.Empty)
 
-        assertTrue(testResults.first().event is OneTimeMethodEvent.Empty)
-        assertEquals(testResults.first().impressRestriction, false)
-
-        job.cancel()
+        assertTrue(oneTimeMethodState().event is OneTimeMethodEvent.Empty)
+        assertEquals(oneTimeMethodState().impressRestriction, false)
     }
 
     @Test
-    fun `change one time method assign all value`() = runBlockingTest {
-        val testResults = mutableListOf<OneTimeMethodState>()
-        var currentSize = 1 // increase each first call changeOneTimeMethod
-        val currentIndex = {
-            currentSize - 1
-        }
-        val job = launch {
-            viewModel.oneTimeMethodState.toList(testResults)
+    fun `change one time method assign all value`() = runTest {
+        val oneTimeMethodState = { viewModel.oneTimeMethodState.value }
+        backgroundScope.launch {
+            viewModel.oneTimeMethodState.collect()
         }
 
         // second assignment, because the first one is default value which OneTimeMethodEvent.Empty
-        assertEquals(testResults[currentIndex()].impressRestriction, false)
-
-        /**
-         * list size still 2 because we don't assign the same hit variant tracker because of this code
-         * if (_oneTimeMethod.value.impressRestriction) return
-         * This is like verify in stateflow, we dont want to call update again if we assign the same value
-         */
-        assertTrue(testResults.size == currentSize)
+        assertEquals(oneTimeMethodState().impressRestriction, false)
 
         val reData = RestrictionData(productId = "123")
         // region impress restriction
         viewModel.changeOneTimeMethod(event = OneTimeMethodEvent.ImpressRestriction(reData))
-        currentSize++
-        assertTrue(testResults[currentIndex()].event is OneTimeMethodEvent.ImpressRestriction)
-        assertTrue((testResults[currentIndex()].event as OneTimeMethodEvent.ImpressRestriction).reData.productId == "123")
-        assertEquals(testResults[currentIndex()].impressRestriction, true)
+        assertTrue(oneTimeMethodState().event is OneTimeMethodEvent.ImpressRestriction)
+        assertTrue((oneTimeMethodState().event as OneTimeMethodEvent.ImpressRestriction).reData.productId == "123")
+        assertEquals(oneTimeMethodState().impressRestriction, true)
 
         // re-assign and make sure we dont want to update the data, since we need to run every event exactly once
         viewModel.changeOneTimeMethod(event = OneTimeMethodEvent.ImpressRestriction(reData))
-        assertTrue(testResults.size == currentSize)
         // endregion
 
         // region validate general edu bs
         viewModel.changeOneTimeMethod(event = OneTimeMethodEvent.ImpressGeneralEduBs("applink"))
-        currentSize++
-        assertTrue(testResults.size == currentSize)
-        assertTrue(testResults[currentIndex()].event is OneTimeMethodEvent.ImpressGeneralEduBs)
-        val edu = testResults[currentIndex()].event as OneTimeMethodEvent.ImpressGeneralEduBs
+        assertTrue(oneTimeMethodState().event is OneTimeMethodEvent.ImpressGeneralEduBs)
+        val edu = oneTimeMethodState().event as OneTimeMethodEvent.ImpressGeneralEduBs
         assertTrue(edu.appLink == "applink")
 
         // re-assign
         viewModel.changeOneTimeMethod(event = OneTimeMethodEvent.ImpressGeneralEduBs("applink"))
-        assertTrue(testResults.size == currentSize)
         // endregion
-
-        job.cancel()
     }
 
     @Test
