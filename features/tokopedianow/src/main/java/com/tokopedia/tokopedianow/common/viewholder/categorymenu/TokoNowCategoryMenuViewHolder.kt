@@ -22,6 +22,7 @@ import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuU
 import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowCategoryMenuBinding
 import com.tokopedia.tokopedianow.oldcategory.utils.TOKONOW_CATEGORY_L1
+import com.tokopedia.tokopedianow.oldcategory.utils.TOKONOW_CATEGORY_L2
 import com.tokopedia.utils.view.binding.viewBinding
 
 class TokoNowCategoryMenuViewHolder(
@@ -92,7 +93,7 @@ class TokoNowCategoryMenuViewHolder(
 
     private fun ItemTokopedianowCategoryMenuBinding.showLoadingState() {
         llCategory.hide()
-        rvCategory.hide()
+        recyclerView.hide()
         header.hide()
         categoryShimmering.categoryShimmeringLayout.show()
     }
@@ -103,7 +104,7 @@ class TokoNowCategoryMenuViewHolder(
         categoryShimmering.categoryShimmeringLayout.hide()
         llCategory.hide()
         header.show()
-        rvCategory.show()
+        recyclerView.show()
 
         showCategoryMenu(
             data = data
@@ -124,7 +125,8 @@ class TokoNowCategoryMenuViewHolder(
 
     private fun ItemTokopedianowCategoryMenuBinding.setHeader(data: TokoNowCategoryMenuUiModel) {
         headerName = data.title.ifEmpty {
-            if (data.source == TOKONOW_CATEGORY_L1) {
+            val source = data.source
+                    if (source == TOKONOW_CATEGORY_L1 || source == TOKONOW_CATEGORY_L2) {
                 root.context.getString(R.string.tokopedianow_category_l1_category_menu_title)
             } else {
                 root.context.getString(R.string.tokopedianow_repurchase_category_menu_title)
@@ -141,7 +143,7 @@ class TokoNowCategoryMenuViewHolder(
     }
 
     private fun ItemTokopedianowCategoryMenuBinding.setCategoryList(data: TokoNowCategoryMenuUiModel) {
-        rvCategory.run {
+        recyclerView.run {
             adapter = this@TokoNowCategoryMenuViewHolder.adapter
             layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
         }
@@ -163,7 +165,7 @@ class TokoNowCategoryMenuViewHolder(
             }
 
             categoryShimmering.categoryShimmeringLayout.hide()
-            rvCategory.hide()
+            recyclerView.hide()
             header.hide()
         }
     }
