@@ -22,7 +22,6 @@ import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
@@ -50,8 +49,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickCtaActionInOrderDetail
@@ -204,10 +201,6 @@ open class SomDetailFragment :
         view?.let { if (it is ViewGroup) BottomSheetManager(it, childFragmentManager) else null }
     }
 
-    private val remoteConfig: FirebaseRemoteConfigImpl by lazy {
-        FirebaseRemoteConfigImpl(context)
-    }
-
     private fun createChatIcon(context: Context): IconUnify {
         return IconUnify(requireContext(), IconUnify.CHAT).apply {
             setOnClickListener {
@@ -308,7 +301,6 @@ open class SomDetailFragment :
         setHasOptionsMenu(true)
         setupBackgroundColor()
         setupToolbar()
-        showOrHideTvRemoteConfigRealTime()
         prepareLayout()
         observingDetail()
         observingAcceptOrder()
@@ -378,11 +370,6 @@ open class SomDetailFragment :
         rejectCancelOrder()
     }
 
-    private fun showOrHideTvRemoteConfigRealTime() {
-        val isShowRemoteConfigRealTime = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_IS_ENABLE_SOM_STATUS_DETAIL)
-        binding?.tvRemoteConfigRealTime?.showWithCondition(isShowRemoteConfigRealTime)
-    }
-
     private fun checkUserRole() {
         showLoading()
         if (connectionMonitor?.isConnected == true) {
@@ -439,7 +426,6 @@ open class SomDetailFragment :
                         if (detailResponse == null) false else detailResponse != it.data.getSomDetail
                     detailResponse = it.data.getSomDetail
                     dynamicPriceResponse = it.data.somDynamicPriceResponse
-                    showOrHideTvRemoteConfigRealTime()
                     renderDetail(
                         it.data.getSomDetail,
                         it.data.somDynamicPriceResponse,
