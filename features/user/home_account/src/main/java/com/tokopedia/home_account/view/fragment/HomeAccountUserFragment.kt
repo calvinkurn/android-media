@@ -1815,8 +1815,6 @@ open class HomeAccountUserFragment :
 
     override fun onClick(pageSource: String, tokopediaPlusDataModel: TokopediaPlusDataModel) {
         tokopediaAnalytics.sendClickOnTokopediaPlusButtonEvent(tokopediaPlusDataModel.isSubscriber)
-        val intent = RouteManager.getIntent(context, tokopediaPlusDataModel.applink)
-        startActivity(intent)
     }
 
     override fun onAddPhoneClicked() {

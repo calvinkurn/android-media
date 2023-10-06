@@ -2,9 +2,6 @@ package com.tokopedia.home_account.view
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import com.tokopedia.home_account.consentWithdrawal.data.ConsentGroupListDataModel
-import com.tokopedia.home_account.consentWithdrawal.data.GetConsentGroupListDataModel
-import com.tokopedia.home_account.consentWithdrawal.domain.GetConsentGroupListUseCase
 import com.tokopedia.home_account.getOrAwaitValue
 import com.tokopedia.home_account.privacy_account.data.GetConsentDataModel
 import com.tokopedia.home_account.privacy_account.data.SetConsentDataModel
@@ -34,9 +31,7 @@ class PrivacyAccountViewModelTest {
 
     private val getConsentSocialNetworkUseCase = mockk<GetConsentSocialNetworkUseCase>(relaxed = true)
     private val setConsentSocialNetworkUseCase = mockk<SetConsentSocialNetworkUseCase>(relaxed = true)
-    private val getConsentGroupListUseCase = mockk<GetConsentGroupListUseCase>(relaxed = true)
 
-    private var getConsentGroupListObserver = mockk<Observer<Result<ConsentGroupListDataModel>>>(relaxed = true)
     private val throwable = mockk<Throwable>(relaxed = true)
 
     @Before
@@ -44,16 +39,8 @@ class PrivacyAccountViewModelTest {
         viewModel = PrivacyAccountViewModel(
             getConsentSocialNetworkUseCase,
             setConsentSocialNetworkUseCase,
-            getConsentGroupListUseCase,
             CoroutineTestDispatchersProvider
         )
-
-        viewModel.getConsentGroupList.observeForever(getConsentGroupListObserver)
-    }
-
-    @After
-    fun tearDown() {
-        viewModel.getConsentGroupList.removeObserver(getConsentGroupListObserver)
     }
 
     @Test
@@ -97,56 +84,5 @@ class PrivacyAccountViewModelTest {
 
         val result = viewModel.setConsentSocialNetwork.getOrAwaitValue()
         assertTrue(Fail(throwable) == result)
-    }
-
-    @Test
-    fun `get consent group list - success flow`() {
-        val successResponse = ConsentGroupListDataModel(
-            success = true
-        )
-
-        val mockResponse = GetConsentGroupListDataModel(successResponse)
-
-        coEvery {
-            getConsentGroupListUseCase(Unit)
-        } returns mockResponse
-
-        viewModel.getConsentGroupList()
-
-        assert(viewModel.getConsentGroupList.value is Success)
-        assert((viewModel.getConsentGroupList.value as Success).data.success)
-    }
-
-    @Test
-    fun `get consent group list - failed flow - from BE`() {
-        val failedResponse = ConsentGroupListDataModel(
-            success = false,
-            errorMessages = listOf(
-                "Opss!, Something wrong!"
-            )
-        )
-
-        val mockResponse = GetConsentGroupListDataModel(failedResponse)
-
-        coEvery {
-            getConsentGroupListUseCase(Unit)
-        } returns mockResponse
-
-        viewModel.getConsentGroupList()
-
-        assert(viewModel.getConsentGroupList.value is Fail)
-        assert((viewModel.getConsentGroupList.value as Fail).throwable.message.toString() == mockResponse.consentGroupList.errorMessages.toString())
-    }
-
-    @Test
-    fun `get consent group list - failed flow - from Exception`() {
-        coEvery {
-            getConsentGroupListUseCase(Unit)
-        } throws throwable
-
-        viewModel.getConsentGroupList()
-
-        assert(viewModel.getConsentGroupList.value is Fail)
-        assert((viewModel.getConsentGroupList.value as Fail).throwable == throwable)
     }
 }
