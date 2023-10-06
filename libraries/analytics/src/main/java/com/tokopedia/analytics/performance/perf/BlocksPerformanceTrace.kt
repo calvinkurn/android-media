@@ -319,8 +319,8 @@ internal fun List<Any>.getFinishedLoadableComponent(): MutableList<String> {
 }
 
 internal fun List<Any>.allLoadableComponentFinished(): Boolean {
-    val loadableComponents = this.filter { it is LoadableComponent }
-    return loadableComponents.filter { it is LoadableComponent && it.isLoading() }.isEmpty()
+    return this.filter { it is LoadableComponent && it.isLoading() }
+        .isEmpty()
 }
 
 /**
