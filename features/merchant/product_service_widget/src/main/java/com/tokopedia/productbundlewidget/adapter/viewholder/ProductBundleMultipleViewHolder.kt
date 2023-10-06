@@ -2,7 +2,6 @@ package com.tokopedia.productbundlewidget.adapter.viewholder
 
 import android.graphics.Paint
 import android.graphics.PorterDuff
-import android.graphics.drawable.GradientDrawable
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -231,19 +230,13 @@ class ProductBundleMultipleViewHolder(
 
     private fun overrideWidgetTheme() {
         if (isOverrideWidgetTheme) {
-            val bgBundlePromotion = R.drawable.bg_productbundle_promotion       // ContextCompat.getDrawable(itemView.context, R.drawable.bg_productbundle_promotion)
-            val drawable = MethodChecker.getDrawable(itemView.context, bgBundlePromotion)
-
-
-//            val staticGn100 = "#C9FDE0"
             viewBinding?.let {
                 it.bundleWidgetHeaderContainer.tvBundleNameLarge.setTextColor(ContextCompat.getColor(itemView.context, R.color.dms_high_emphasis))
-                drawable.setColorFilter(ContextCompat.getColor(itemView.context, R.color.dms_static_GN100), PorterDuff.Mode.SRC_ATOP)
-//                it.bundleWidgetFooter.savingAmountContainer.setBackgroundColor(ContextCompat.getColor(itemView.context, R.color.dms_static_GN100))
-//                val shapeDrawable = it.bundleWidgetFooter.savingAmountContainer.background as GradientDrawable
-//                shapeDrawable.setColor(ContextCompat.getColor(itemView.context, R.color.dms_static_GN100))
-//                it.bundleWidgetFooter.savingAmountContainer.background = bgBundlePromotion. setColorFilter(ContextCompat.getColor(itemView.context, staticGn100))
             }
+
+            val bgBundlePromotion = R.drawable.bg_productbundle_promotion
+            val drawable = MethodChecker.getDrawable(itemView.context, bgBundlePromotion)
+            drawable.setColorFilter(ContextCompat.getColor(itemView.context, R.color.dms_static_GN100), PorterDuff.Mode.SRC_ATOP)
 
             widgetContainer?.setBackgroundColor(ContextCompat.getColor(itemView.context, unifyprinciplesR.color.Unify_Static_White))
             typographyBundleName?.setTextColor(ContextCompat.getColor(itemView.context, R.color.dms_high_emphasis))

@@ -1,6 +1,7 @@
 package com.tokopedia.productbundlewidget.adapter.viewholder
 
 import android.graphics.Paint
+import android.graphics.PorterDuff
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -9,6 +10,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.flexbox.FlexboxLayout
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
@@ -57,6 +59,7 @@ class ProductBundleSingleViewHolder(
     private val bundleDetailAdapter = ProductBundleSingleAdapter()
     private var cardBundling: CardUnify? = null
     private var icBundleDiscount: IconUnify? = null
+    private var tvBundleSinglePackage: Typography? = null
 
     init {
         viewBinding?.apply {
@@ -73,6 +76,7 @@ class ProductBundleSingleViewHolder(
             widgetContainer = bundleWidgetContainer
             cardBundling = container
             icBundleDiscount = bundleWidgetFooter.icBundleDiscount
+            tvBundleSinglePackage = tvBundleSinglePackage
         }
         initBundleDetailsRecyclerView()
     }
@@ -251,8 +255,11 @@ class ProductBundleSingleViewHolder(
         if (isOverrideWidgetTheme) {
             viewBinding?.let {
                 it.bundleWidgetHeaderContainer.tvBundleNameLarge.setTextColor(ContextCompat.getColor(itemView.context, R.color.dms_high_emphasis))
-                it.bundleWidgetFooter.savingAmountContainer.setBackgroundColor(ContextCompat.getColor(itemView.context, R.color.dms_static_GN100))
             }
+
+            val bgBundlePromotion = R.drawable.bg_productbundle_promotion
+            val drawable = MethodChecker.getDrawable(itemView.context, bgBundlePromotion)
+            drawable.setColorFilter(ContextCompat.getColor(itemView.context, R.color.dms_static_GN100), PorterDuff.Mode.SRC_ATOP)
 
             widgetContainer?.setBackgroundColor(ContextCompat.getColor(itemView.context, unifyprinciplesR.color.Unify_Static_White))
             typographyBundleName?.setTextColor(ContextCompat.getColor(itemView.context, R.color.dms_high_emphasis))
@@ -262,7 +269,7 @@ class ProductBundleSingleViewHolder(
             typographyBundleProductOriginalPrice?.setTextColor(ContextCompat.getColor(itemView.context, R.color.dms_low_emphasis))
             typographyBundleProductSavingAmount?.setTextColor(ContextCompat.getColor(itemView.context, R.color.dms_high_emphasis))
             icBundleDiscount?.setImage(newLightEnable = ContextCompat.getColor(itemView.context, R.color.dms_high_emphasis))
-
+            tvBundleSinglePackage?.setTextColor(ContextCompat.getColor(itemView.context, R.color.dms_high_emphasis))
             buttonAtc?.applyColorMode(colorMode = ColorMode.LIGHT_MODE)
         }
     }
