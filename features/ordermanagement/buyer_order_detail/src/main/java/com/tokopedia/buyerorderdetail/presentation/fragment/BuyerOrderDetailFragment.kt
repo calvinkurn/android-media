@@ -117,7 +117,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.text.currency.StringUtils
-import java.lang.Exception
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.util.*
@@ -988,7 +987,7 @@ open class BuyerOrderDetailFragment :
         }
     }
 
-    private fun isScpRewardTouchPointEnabled(): Boolean = remoteConfig?.getBoolean(SCP_REWARDS_MEDALI_TOUCH_POINT, true) == true
+    private fun isScpRewardTouchPointEnabled(): Boolean = remoteConfig.getBoolean(SCP_REWARDS_MEDALI_TOUCH_POINT, true)
 
     override fun onOwocInfoClicked(txId: String) {
         BuyerOrderDetailTracker.sendClickOnOrderGroupWidget(viewModel.getOrderId())

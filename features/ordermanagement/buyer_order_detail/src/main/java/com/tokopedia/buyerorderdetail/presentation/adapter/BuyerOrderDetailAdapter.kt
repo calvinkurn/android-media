@@ -236,9 +236,7 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
         context: Context?,
         productListHeaderUiModel: ProductListUiModel.ProductListHeaderUiModel
     ) {
-        if (productListHeaderUiModel.shouldShow(context)) {
-            add(productListHeaderUiModel)
-        }
+        if (productListHeaderUiModel.shouldShow(context)) add(productListHeaderUiModel)
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addTickerDetailsSection(
