@@ -14,7 +14,7 @@ class VerificationAnalyticsMapper @Inject constructor(private val gtm: ContextAn
             createData(
                 trackerIdEventFactory(eventName),
                 CLICK_ACCOUNT_EVENT,
-                CVSDK_SCREEN_CATEGORY,
+                trackerCategoryFactory(eventName),
                 eventName,
                 createEventLabelCvSdk(param).createEventLabelClick(),
                 createCustomDimension(getSdkVersion(param))
@@ -27,7 +27,7 @@ class VerificationAnalyticsMapper @Inject constructor(private val gtm: ContextAn
             createData(
                 TRACKER_ID_SCREEN_VIEW,
                 VIEW_ACCOUNT_EVENT,
-                CVSDK_SCREEN_CATEGORY,
+                trackerCategoryFactory(eventName),
                 eventName,
                 createEventLabelCvSdk(param).createEventLabelView(),
                 createCustomDimension(getSdkVersion(param))
@@ -40,7 +40,7 @@ class VerificationAnalyticsMapper @Inject constructor(private val gtm: ContextAn
             createData(
                 TRACKER_ID_INPUT_SCREEN_FAILED,
                 FAILED_ACCOUNT_EVENT,
-                CVSDK_SCREEN_CATEGORY,
+                trackerCategoryFactory(eventName),
                 eventName,
                 createEventLabelCvSdk(param).createEventLabelFailed(),
                 createCustomDimension(getSdkVersion(param))
@@ -53,7 +53,7 @@ class VerificationAnalyticsMapper @Inject constructor(private val gtm: ContextAn
             createData(
                 TRACKER_ID_INPUT_SCREEN_ERROR_POPUP_VIEW,
                 VIEW_ACCOUNT_EVENT,
-                CVSDK_SCREEN_CATEGORY,
+                trackerCategoryFactory(eventName),
                 eventName,
                 createEventLabelCvSdk(param).createEventLabelPopupView(),
                 createCustomDimension(getSdkVersion(param))
@@ -102,19 +102,23 @@ class VerificationAnalyticsMapper @Inject constructor(private val gtm: ContextAn
             CVEventName.CVSDK_INPUT_SCREEN_TRY_ANOTHER_WAY_CLICKED -> TRACKER_ID_INPUT_SCREEN_TRY_ANOTHER_METHOD_CLICKED
             CVEventName.CVSDK_INPUT_SCREEN_OPEN_WHATSAPP_CLICKED -> TRACKER_ID_INPUT_SCREEN_OPEN_WHATSAPP_CLICKED
             CVEventName.CVSDK_INPUT_SCREEN_FORGOT_PIN_CLICKED -> TRACKER_ID_INPUT_SCREEN_FORGOT_PIN_CLICKED
-            CVEventName.CVSDK_INPUT_SCREEN_SUBMIT -> ""
+            CVEventName.CVSDK_INPUT_SCREEN_SUBMIT -> TRACKER_ID_INPUT_SCREEN_SUBMIT
+            CVEventName.CVSDK_INPUT_SCREEN_FORGOT_PASSWORD_CLICKED -> TRACKER_ID_INPUT_SCREEN_FORGOT_PASSWORD_CLICKED
+            CVEventName.CVSDK_VALIDATE_CALL_SUCCESSFUL -> TRACKER_ID_VALIDATE_CALL_SUCCESSFUL
             else -> ""
         }
     }
 
     private fun trackerCategoryFactory(eventName: String): String {
-        return when(eventName) {
+        return when (eventName) {
             CVEventName.CVSDK_METHOD_SELECTED, CVEventName.CVSDK_METHOD_SELECTION_SUCCESSFUL -> CVSDK_METHOD_SCREEN_CATEGORY
             CVEventName.CVSDK_INPUT_SCREEN_SUBMIT_SUCCESSFUL, CVEventName.CVSDK_INPUT_SCREEN_RESEND_CLICKED,
             CVEventName.CVSDK_INPUT_SCREEN_RESEND_SUCCESSFUL, CVEventName.CVSDK_INPUT_SCREEN_TRY_ANOTHER_WAY_CLICKED,
-                CVEventName.CVSDK_INPUT_SCREEN_OPEN_WHATSAPP_CLICKED, CVEventName.CVSDK_INPUT_SCREEN_FORGOT_PIN_CLICKED,
-                CVEventName.CVSDK_INPUT_SCREEN_FORG
-
+            CVEventName.CVSDK_INPUT_SCREEN_OPEN_WHATSAPP_CLICKED, CVEventName.CVSDK_INPUT_SCREEN_FORGOT_PIN_CLICKED,
+            CVEventName.CVSDK_INPUT_SCREEN_FORGOT_PASSWORD_CLICKED, CVEventName.CVSDK_VALIDATE_CALL_SUCCESSFUL,
+            CVEventName.CVSDK_INPUT_SCREEN_SUBMIT -> CVSDK_INPUT_SCREEN_CATEGORY
+            CVEventName.CVSDK_ERROR_POPUP_VIEWED -> CVSDK_ERROR_POPUP_CATEGORY
+            else -> CVSDK_SCREEN_CATEGORY
         }
     }
 
@@ -125,7 +129,7 @@ class VerificationAnalyticsMapper @Inject constructor(private val gtm: ContextAn
         private const val CVSDK_SCREEN_CATEGORY = "cvsdk screen"
         private const val CVSDK_INPUT_SCREEN_CATEGORY = "cvsdk input screen"
         private const val CVSDK_METHOD_SCREEN_CATEGORY = "cvsdk method selection screen"
-
+        private const val CVSDK_ERROR_POPUP_CATEGORY = "cvsdk error popup"
 
         private const val ANDROID_ID = "androidId"
         private const val SDK_VERSION = "sdkVersion"
@@ -156,6 +160,7 @@ class VerificationAnalyticsMapper @Inject constructor(private val gtm: ContextAn
         private const val TRACKER_ID_INPUT_SCREEN_FAILED = "47641"
         private const val TRACKER_ID_INPUT_SCREEN_ERROR_POPUP_VIEW = "47642"
         private const val TRACKER_ID_VALIDATE_CALL_SUCCESSFUL = "47697"
+        private const val TRACKER_ID_INPUT_SCREEN_SUBMIT = "47708"
     }
 }
 
