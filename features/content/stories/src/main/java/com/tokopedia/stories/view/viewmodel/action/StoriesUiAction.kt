@@ -29,7 +29,6 @@ sealed interface StoriesUiAction {
     object DeleteStory : StoriesUiAction
     object ContentIsLoaded : StoriesUiAction
     object SetInitialData : StoriesUiAction
-    object SaveInstanceStateData : StoriesUiAction
 }
 
 enum class StoriesProductAction {

@@ -52,7 +52,7 @@ class StoriesGroupFragment @Inject constructor(
             arguments?.getParcelable(KEY_ARGS) ?: StoriesArgsModel()
         }
 
-    val viewModelProvider get() = viewModelFactory.create(requireActivity(), args)
+    val viewModelProvider get() = viewModelFactory.create(args)
 
     private val analytic: StoriesAnalytics get() = analyticFactory.create(args)
 
@@ -96,11 +96,6 @@ class StoriesGroupFragment @Inject constructor(
         setupObserver()
 
         viewModelAction(StoriesUiAction.SetInitialData)
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        viewModelAction(StoriesUiAction.SaveInstanceStateData)
     }
 
     override fun onPause() {
@@ -226,12 +221,12 @@ class StoriesGroupFragment @Inject constructor(
 
     private fun trackImpressionGroup() {
         analytic.sendViewStoryCircleEvent(
-            currentCircle = viewModel.mGroup.groupId,
+            currentCircle = viewModel.mGroup.groupName,
             promotions = viewModel.impressedGroupHeader.mapIndexed { index, storiesGroupHeader ->
                 StoriesEEModel(
                     creativeName = "",
                     creativeSlot = index.plus(1).toString(),
-                    itemId = "${storiesGroupHeader.groupId} - ${storiesGroupHeader.groupName} - ${args.authorId}",
+                    itemId = "${viewModel.mGroup.groupId} - ${storiesGroupHeader.groupId} - ${args.authorId}",
                     itemName = "/ - stories",
                 )
             },
