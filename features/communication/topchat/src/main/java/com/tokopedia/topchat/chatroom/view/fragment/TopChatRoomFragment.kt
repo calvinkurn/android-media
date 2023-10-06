@@ -875,7 +875,7 @@ open class TopChatRoomFragment :
         }
         viewModel.getTickerReminder(isSeller())
         interlocutorShopType = chatRoom.shopType
-        mStoriesWidgetManager.updateStories(listOf(chatRoom.headerModel.shopId))
+        if (!isSeller()) mStoriesWidgetManager.updateStories(listOf(chatRoom.headerModel.shopId))
     }
 
     private fun setupFirstTimeForSeller() {
