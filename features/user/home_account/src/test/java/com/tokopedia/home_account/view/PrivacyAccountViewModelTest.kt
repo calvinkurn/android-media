@@ -1,7 +1,6 @@
 package com.tokopedia.home_account.view
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.Observer
 import com.tokopedia.home_account.getOrAwaitValue
 import com.tokopedia.home_account.privacy_account.data.GetConsentDataModel
 import com.tokopedia.home_account.privacy_account.data.SetConsentDataModel
@@ -10,11 +9,10 @@ import com.tokopedia.home_account.privacy_account.domain.SetConsentSocialNetwork
 import com.tokopedia.home_account.privacy_account.viewmodel.PrivacyAccountViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import io.mockk.*
+import io.mockk.coEvery
+import io.mockk.mockk
 import junit.framework.Assert.assertTrue
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
