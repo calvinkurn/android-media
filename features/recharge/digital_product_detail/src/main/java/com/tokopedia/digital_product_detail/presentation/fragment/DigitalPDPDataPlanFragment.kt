@@ -46,6 +46,7 @@ import com.tokopedia.common_digital.atc.data.response.ErrorAtc
 import com.tokopedia.common_digital.atc.utils.DeviceUtil
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.digital_product_detail.R
+import com.tokopedia.digital_product_detail.data.model.data.DigitalAtcResult
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.APPLINK_OMNI_DATA_CODE
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.FAVNUM_PERMISSION_CHECKER_IS_DENIED
@@ -533,13 +534,7 @@ class DigitalPDPDataPlanFragment :
         viewModel.addToCartMultiCheckoutResult.observe(viewLifecycleOwner) {
             hideLoadingDialog()
             context?.let { context ->
-                commonMultiCheckoutAnalytics.onClickMultiCheckout(
-                    DigitalPDPCategoryUtil.getCategoryName(categoryId),
-                    operator.attributes.name,
-                    it.channelId,
-                    userSession.userId,
-                    multiCheckoutButtonPromotionTracker(viewModel.multiCheckoutButtons)
-                )
+                trackOnClickMultiCheckout(it)
                 RouteManager.route(context, it.redirectUrl)
             }
         }
@@ -567,6 +562,15 @@ class DigitalPDPDataPlanFragment :
         }
     }
 
+    private fun trackOnClickMultiCheckout(atc: DigitalAtcResult) {
+        commonMultiCheckoutAnalytics.onClickMultiCheckout(
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+            operator.attributes.name,
+            atc.channelId,
+            userSession.userId,
+            multiCheckoutButtonPromotionTracker(viewModel.multiCheckoutButtons)
+        )
+    }
     private fun onSuccessOmniChannel(otherComponents: List<TelcoOtherComponent>) {
         otherComponents.forEach {
             if (it.name == OTHER_COMPONENT_APPLINK_OMNI) {

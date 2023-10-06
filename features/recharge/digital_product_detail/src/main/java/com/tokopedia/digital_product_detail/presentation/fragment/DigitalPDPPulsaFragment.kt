@@ -44,6 +44,7 @@ import com.tokopedia.common_digital.atc.data.response.ErrorAtc
 import com.tokopedia.common_digital.atc.utils.DeviceUtil
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.digital_product_detail.R
+import com.tokopedia.digital_product_detail.data.model.data.DigitalAtcResult
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.DEFAULT_ICON_RES
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.EXTRA_PARAM
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.FAVNUM_PERMISSION_CHECKER_IS_DENIED
@@ -422,13 +423,7 @@ class DigitalPDPPulsaFragment :
         viewModel.addToCartMultiCheckoutResult.observe(viewLifecycleOwner) {
             hideLoadingDialog()
             context?.let { context ->
-                commonMultiCheckoutAnalytics.onClickMultiCheckout(
-                    DigitalPDPCategoryUtil.getCategoryName(categoryId),
-                    operator.attributes.name,
-                    it.channelId,
-                    userSession.userId,
-                    multiCheckoutButtonPromotionTracker(viewModel.multiCheckoutButtons)
-                )
+                trackOnClickMultiCheckout(it)
                 RouteManager.route(context, it.redirectUrl)
             }
         }
@@ -454,6 +449,16 @@ class DigitalPDPPulsaFragment :
                 }
             }
         })
+    }
+
+    private fun trackOnClickMultiCheckout(atc: DigitalAtcResult) {
+        commonMultiCheckoutAnalytics.onClickMultiCheckout(
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+            operator.attributes.name,
+            atc.channelId,
+            userSession.userId,
+            multiCheckoutButtonPromotionTracker(viewModel.multiCheckoutButtons)
+        )
     }
 
     private fun getRecommendations() {

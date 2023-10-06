@@ -45,62 +45,97 @@ fun showMultiCheckoutButton(
     val localCacheHandler = LocalCacheHandler(context, PREFERENCE_MULTICHECKOUT)
     val coachMarkList = arrayListOf<CoachMark2Item>()
     if (multiCheckoutButtons.size > Int.ONE) {
-        val (leftButton, rightButton) = multiCheckoutButtonSeparator(multiCheckoutButtons)
-        if (leftButton.position.isNotEmpty() && leftButton.text.isNotEmpty() && leftButton.color.isNotEmpty() && leftButton.type.isNotEmpty()) {
-            btnMultiCheckout.show()
-            btnMultiCheckout.text = leftButton.text
-            btnMultiCheckout.buttonVariant = variantButton(leftButton.color)
-            btnMultiCheckout.setOnClickListener {
-                chooseListenerAction(leftButton.type, onClickNextBuyButton, onClickMultiCheckout)
-            }
-
-            if (leftButton.coachmark.isNotEmpty()) {
-                coachMarkList.add(
-                    CoachMark2Item(
-                        btnMultiCheckout, "", leftButton.coachmark
-                    )
-                )
-            }
-        } else {
-            btnMultiCheckout.hide()
-        }
-
-        if (rightButton.position.isNotEmpty() && rightButton.text.isNotEmpty() && rightButton.color.isNotEmpty() && rightButton.type.isNotEmpty()) {
-            btnCheckoutNext.text = rightButton.text
-            btnCheckoutNext.buttonVariant = variantButton(rightButton.color)
-            btnCheckoutNext.setOnClickListener {
-                chooseListenerAction(rightButton.type, onClickNextBuyButton, onClickMultiCheckout)
-            }
-
-            if (rightButton.coachmark.isNotEmpty()) {
-                coachMarkList.add(
-                    CoachMark2Item(
-                        btnCheckoutNext, "", rightButton.coachmark
-                    )
-                )
-            }
-        }
+        processMultipleButton(multiCheckoutButtons, btnCheckoutNext, btnMultiCheckout,
+            onClickNextBuyButton, onClickMultiCheckout, coachMarkList)
     } else if (multiCheckoutButtons.size == Int.ONE) {
-        val button = multiCheckoutButtons.first()
-        btnCheckoutNext.text = button.text
-        btnCheckoutNext.buttonVariant = variantButton(button.color)
-        btnCheckoutNext.setOnClickListener {
-            chooseListenerAction(button.type, onClickNextBuyButton, onClickMultiCheckout)
-        }
-
-        if (button.coachmark.isNotEmpty()) {
-            coachMarkList.add(
-                CoachMark2Item(
-                    btnCheckoutNext, "", button.coachmark
-                )
-            )
-        }
+        processOneButton(multiCheckoutButtons, btnCheckoutNext, coachMarkList, onClickNextBuyButton,
+            onClickMultiCheckout)
     } else {
         btnCheckoutNext.setOnClickListener {
             onClickNextBuyButton()
         }
     }
 
+    coachMarkUpdate(coachmark, localCacheHandler, coachMarkList, onCloseCoachMark)
+}
+
+private fun processMultipleButton(multiCheckoutButtons: List<MultiCheckoutButtons>,
+                                  btnCheckoutNext: UnifyButton, btnMultiCheckout: UnifyButton,
+                                  onClickNextBuyButton: () -> Unit, onClickMultiCheckout: () -> Unit,
+                                  coachMarkList: ArrayList<CoachMark2Item>
+) {
+    val (leftButton, rightButton) = multiCheckoutButtonSeparator(multiCheckoutButtons)
+    processLeftButton(leftButton, btnMultiCheckout, onClickNextBuyButton, onClickMultiCheckout, coachMarkList)
+    processRightButton(rightButton, btnCheckoutNext, onClickNextBuyButton, onClickMultiCheckout, coachMarkList)
+}
+
+
+private fun processLeftButton(leftButton: MultiCheckoutButtons, btnMultiCheckout: UnifyButton,
+                              onClickNextBuyButton: () -> Unit, onClickMultiCheckout: () -> Unit,
+                              coachMarkList: ArrayList<CoachMark2Item>) {
+    if (leftButton.position.isNotEmpty() && leftButton.text.isNotEmpty() && leftButton.color.isNotEmpty()
+        && leftButton.type.isNotEmpty()) {
+        btnMultiCheckout.show()
+        btnMultiCheckout.text = leftButton.text
+        btnMultiCheckout.buttonVariant = variantButton(leftButton.color)
+        btnMultiCheckout.setOnClickListener {
+            chooseListenerAction(leftButton.type, onClickNextBuyButton, onClickMultiCheckout)
+        }
+
+        if (leftButton.coachmark.isNotEmpty()) {
+            coachMarkList.add(
+                CoachMark2Item(
+                    btnMultiCheckout, "", leftButton.coachmark
+                )
+            )
+        }
+    } else {
+        btnMultiCheckout.hide()
+    }
+}
+
+private fun processRightButton(rightButton: MultiCheckoutButtons,
+                               btnCheckoutNext: UnifyButton,
+                               onClickNextBuyButton: () -> Unit, onClickMultiCheckout: () -> Unit,
+                               coachMarkList: ArrayList<CoachMark2Item>) {
+    if (rightButton.position.isNotEmpty() && rightButton.text.isNotEmpty() && rightButton.color.isNotEmpty()
+        && rightButton.type.isNotEmpty()) {
+        btnCheckoutNext.text = rightButton.text
+        btnCheckoutNext.buttonVariant = variantButton(rightButton.color)
+        btnCheckoutNext.setOnClickListener {
+            chooseListenerAction(rightButton.type, onClickNextBuyButton, onClickMultiCheckout)
+        }
+
+        if (rightButton.coachmark.isNotEmpty()) {
+            coachMarkList.add(
+                CoachMark2Item(
+                    btnCheckoutNext, "", rightButton.coachmark
+                )
+            )
+        }
+    }
+}
+private fun processOneButton(multiCheckoutButtons: List<MultiCheckoutButtons>, btnCheckoutNext: UnifyButton,
+                                 coachMarkList: ArrayList<CoachMark2Item>, onClickNextBuyButton: () -> Unit,
+                                 onClickMultiCheckout: () -> Unit) {
+    val button = multiCheckoutButtons.first()
+    btnCheckoutNext.text = button.text
+    btnCheckoutNext.buttonVariant = variantButton(button.color)
+    btnCheckoutNext.setOnClickListener {
+        chooseListenerAction(button.type, onClickNextBuyButton, onClickMultiCheckout)
+    }
+
+    if (button.coachmark.isNotEmpty()) {
+        coachMarkList.add(
+            CoachMark2Item(
+                btnCheckoutNext, "", button.coachmark
+            )
+        )
+    }
+}
+
+private fun coachMarkUpdate(coachmark: CoachMark2, localCacheHandler: LocalCacheHandler,
+                            coachMarkList: ArrayList<CoachMark2Item>, onCloseCoachMark: () -> Unit) {
     val isCoachMarkClosed = localCacheHandler.getBoolean(SHOW_COACH_MARK_MULTICHECKOUT_KEY, false)
 
     if (!isCoachMarkClosed) {

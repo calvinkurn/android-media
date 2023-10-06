@@ -1183,60 +1183,10 @@ class RechargeGeneralFragment :
 
             binding?.apply {
                 if (multiCheckoutButtons.items.size > Int.ONE) {
-                    val (leftButton, rightButton) = multiCheckoutButtonSeparator(
-                        multiCheckoutButtons.items
-                    )
-                    if (leftButton.text.isNotEmpty() && leftButton.color.isNotEmpty() && leftButton.style.isNotEmpty()) {
-                        rechargeGeneralSecondaryButton.show()
-                        rechargeGeneralSecondaryButton.text = leftButton.text
-                        rechargeGeneralSecondaryButton.buttonVariant =
-                            variantButton(leftButton.color)
-                        rechargeGeneralSecondaryButton.setOnClickListener {
-                            chooseListenerAction(leftButton.style)
-                        }
-
-                        if (leftButton.coachmark.isNotEmpty()) {
-                            coachMarkList.add(
-                                CoachMark2Item(
-                                    rechargeGeneralSecondaryButton, "", leftButton.coachmark
-                                )
-                            )
-                        }
-                    } else {
-                        rechargeGeneralSecondaryButton.hide()
-                    }
-
-                    if (rightButton.text.isNotEmpty() && rightButton.color.isNotEmpty() && rightButton.style.isNotEmpty()) {
-                        rechargeGeneralEnquiryButton.text = rightButton.text
-                        rechargeGeneralEnquiryButton.buttonVariant =
-                            variantButton(rightButton.color)
-                        rechargeGeneralEnquiryButton.setOnClickListener {
-                            chooseListenerAction(rightButton.style)
-                        }
-
-                        if (rightButton.coachmark.isNotEmpty()) {
-                            coachMarkList.add(
-                                CoachMark2Item(
-                                    rechargeGeneralEnquiryButton, "", rightButton.coachmark
-                                )
-                            )
-                        }
-                    }
+                    processMultipleButton(multiCheckoutButtons, rechargeGeneralEnquiryButton,
+                        rechargeGeneralSecondaryButton, coachMarkList)
                 } else if (multiCheckoutButtons.items.size == Int.ONE) {
-                    val button = multiCheckoutButtons.items.first()
-                    rechargeGeneralEnquiryButton.text = button.text
-                    rechargeGeneralEnquiryButton.buttonVariant = variantButton(button.color)
-                    rechargeGeneralEnquiryButton.setOnClickListener {
-                        chooseListenerAction(button.style)
-                    }
-
-                    if (button.coachmark.isNotEmpty()) {
-                        coachMarkList.add(
-                            CoachMark2Item(
-                                rechargeGeneralEnquiryButton, "", button.coachmark
-                            )
-                        )
-                    }
+                    processOneButton(multiCheckoutButtons, rechargeGeneralEnquiryButton, coachMarkList)
                 } else {
                     rechargeGeneralEnquiryButton.setOnClickListener {
                         enquire()
@@ -1244,17 +1194,94 @@ class RechargeGeneralFragment :
                 }
             }
 
-            coachmark?.let { coachmark ->
+            updateCoachMark(localCacheHandler, coachMarkList)
+        }
+    }
 
-                val isCoachMarkClosed =
-                    localCacheHandler.getBoolean(SHOW_COACH_MARK_MULTICHECKOUT_KEY, false)
-                if (!isCoachMarkClosed && !coachmark.isShowing) {
-                    coachmark.showCoachMark(coachMarkList)
-                    coachmark.setOnDismissListener {
-                        closeCoachmarkTrack()
-                        localCacheHandler.putBoolean(SHOW_COACH_MARK_MULTICHECKOUT_KEY, true)
-                        localCacheHandler.applyEditor()
-                    }
+    private fun processMultipleButton(multiCheckoutButtons: RechargeGeneralDynamicField,
+                                      rechargeGeneralEnquiryButton: UnifyButton, rechargeGeneralSecondaryButton: UnifyButton,
+                                      coachMarkList: ArrayList<CoachMark2Item>) {
+        val (leftButton, rightButton) = multiCheckoutButtonSeparator(
+            multiCheckoutButtons.items
+        )
+        processLeftButton(leftButton, rechargeGeneralSecondaryButton, coachMarkList)
+        processRightButton(rightButton, rechargeGeneralEnquiryButton, coachMarkList)
+    }
+
+    private fun processRightButton(rightButton: RechargeGeneralDynamicField.Item,
+                                   rechargeGeneralEnquiryButton: UnifyButton,
+                                   coachMarkList: ArrayList<CoachMark2Item>) {
+        if (rightButton.text.isNotEmpty() && rightButton.color.isNotEmpty() && rightButton.style.isNotEmpty()) {
+            rechargeGeneralEnquiryButton.text = rightButton.text
+            rechargeGeneralEnquiryButton.buttonVariant =
+                variantButton(rightButton.color)
+            rechargeGeneralEnquiryButton.setOnClickListener {
+                chooseListenerAction(rightButton.style)
+            }
+
+            if (rightButton.coachmark.isNotEmpty()) {
+                coachMarkList.add(
+                    CoachMark2Item(
+                        rechargeGeneralEnquiryButton, "", rightButton.coachmark
+                    )
+                )
+            }
+        }
+    }
+
+    private fun processLeftButton(leftButton: RechargeGeneralDynamicField.Item,
+                                  rechargeGeneralSecondaryButton: UnifyButton,
+                                  coachMarkList: ArrayList<CoachMark2Item>) {
+        if (leftButton.text.isNotEmpty() && leftButton.color.isNotEmpty() && leftButton.style.isNotEmpty()) {
+            rechargeGeneralSecondaryButton.show()
+            rechargeGeneralSecondaryButton.text = leftButton.text
+            rechargeGeneralSecondaryButton.buttonVariant =
+                variantButton(leftButton.color)
+            rechargeGeneralSecondaryButton.setOnClickListener {
+                chooseListenerAction(leftButton.style)
+            }
+
+            if (leftButton.coachmark.isNotEmpty()) {
+                coachMarkList.add(
+                    CoachMark2Item(
+                        rechargeGeneralSecondaryButton, "", leftButton.coachmark
+                    )
+                )
+            }
+        } else {
+            rechargeGeneralSecondaryButton.hide()
+        }
+    }
+
+    private fun processOneButton(multiCheckoutButtons: RechargeGeneralDynamicField,
+                                 rechargeGeneralEnquiryButton: UnifyButton, coachMarkList: ArrayList<CoachMark2Item>) {
+        val button = multiCheckoutButtons.items.first()
+        rechargeGeneralEnquiryButton.text = button.text
+        rechargeGeneralEnquiryButton.buttonVariant = variantButton(button.color)
+        rechargeGeneralEnquiryButton.setOnClickListener {
+            chooseListenerAction(button.style)
+        }
+
+        if (button.coachmark.isNotEmpty()) {
+            coachMarkList.add(
+                CoachMark2Item(
+                    rechargeGeneralEnquiryButton, "", button.coachmark
+                )
+            )
+        }
+    }
+    private fun updateCoachMark(localCacheHandler: LocalCacheHandler,
+                                coachMarkList: ArrayList<CoachMark2Item>) {
+        coachmark?.let { coachmark ->
+
+            val isCoachMarkClosed =
+                localCacheHandler.getBoolean(SHOW_COACH_MARK_MULTICHECKOUT_KEY, false)
+            if (!isCoachMarkClosed && !coachmark.isShowing) {
+                coachmark.showCoachMark(coachMarkList)
+                coachmark.setOnDismissListener {
+                    closeCoachmarkTrack()
+                    localCacheHandler.putBoolean(SHOW_COACH_MARK_MULTICHECKOUT_KEY, true)
+                    localCacheHandler.applyEditor()
                 }
             }
         }

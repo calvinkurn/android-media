@@ -42,6 +42,7 @@ import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.common_digital.common.presentation.bottomsheet.DigitalDppoConsentBottomSheet
+import com.tokopedia.common_digital.common.presentation.model.DigitalAtcTrackingModel
 import com.tokopedia.common_digital.common.presentation.model.DigitalCategoryDetailPassData
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.globalerror.GlobalError
@@ -337,13 +338,7 @@ open class EmoneyPdpFragment :
             viewLifecycleOwner
         ) { data ->
             context?.let { context ->
-                commonMultiCheckoutAnalytics.onClickMultiCheckout(
-                    categoryName,
-                    getIssuerName(issuerId),
-                    data.channelId,
-                    userSession.userId,
-                    multiCheckoutButtonPromotionTracker(topUpBillsViewModel.multiCheckoutButtons)
-                )
+                trackOnClickMultiCheckout(data)
                 RouteManager.route(context, data.redirectUrl)
             }
             binding.emoneyFullPageLoadingLayout.hide()
@@ -365,6 +360,16 @@ open class EmoneyPdpFragment :
                 is Fail -> {}
             }
         }
+    }
+
+    private fun trackOnClickMultiCheckout(data: DigitalAtcTrackingModel) {
+        commonMultiCheckoutAnalytics.onClickMultiCheckout(
+            categoryName,
+            getIssuerName(issuerId),
+            data.channelId,
+            userSession.userId,
+            multiCheckoutButtonPromotionTracker(topUpBillsViewModel.multiCheckoutButtons)
+        )
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
