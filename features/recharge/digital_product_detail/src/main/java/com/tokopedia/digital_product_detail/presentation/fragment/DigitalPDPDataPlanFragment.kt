@@ -128,6 +128,11 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
 import javax.inject.Inject
+import com.tokopedia.abstraction.R as abstractionR
+import com.tokopedia.common_digital.R as common_digitalR
+import com.tokopedia.digital_product_detail.R as digital_product_detailR
+import com.tokopedia.recharge_component.R as recharge_componentR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * @author by firmanda on 04/01/21
@@ -189,7 +194,7 @@ class DigitalPDPDataPlanFragment :
             is OpenRechargeCheckBalance.CheckBalanceOTPResult.EmptyToken -> {
                 Toast.makeText(
                     context,
-                    getString(com.tokopedia.digital_product_detail.R.string.check_balance_failed_verification),
+                    getString(digital_product_detailR.string.check_balance_failed_verification),
                     Toast.LENGTH_LONG
                 ).show()
             }
@@ -362,7 +367,7 @@ class DigitalPDPDataPlanFragment :
                     resetContactName()
                     if (selectedClientNumber.length >= MINIMUM_OPERATOR_PREFIX) {
                         setErrorInputField(
-                            getString(com.tokopedia.recharge_component.R.string.client_number_prefix_error),
+                            getString(recharge_componentR.string.client_number_prefix_error),
                             true
                         )
                     }
@@ -732,7 +737,7 @@ class DigitalPDPDataPlanFragment :
         )
         val errMsgSub = getString(
             R.string.error_message_with_code,
-            getString(com.tokopedia.abstraction.R.string.msg_network_error_2),
+            getString(abstractionR.string.msg_network_error_2),
             errCode
         )
         binding?.run {
@@ -1087,7 +1092,7 @@ class DigitalPDPDataPlanFragment :
             if (denomFull.listDenomData.isNotEmpty()) {
                 val colorHexInt = ContextCompat.getColor(
                     requireContext(),
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN0
+                    unifyprinciplesR.color.Unify_NN0
                 )
                 val colorHexString = "#${Integer.toHexString(colorHexInt)}"
 
@@ -1157,7 +1162,7 @@ class DigitalPDPDataPlanFragment :
             }
             setInputFieldStaticLabel(
                 getString(
-                    com.tokopedia.recharge_component.R.string.label_recharge_client_number_telco
+                    recharge_componentR.string.label_recharge_client_number_telco
                 )
             )
             setInputFieldType(InputFieldType.Telco)
@@ -1496,7 +1501,7 @@ class DigitalPDPDataPlanFragment :
                     error.title,
                     Toaster.LENGTH_LONG,
                     Toaster.TYPE_ERROR,
-                    getString(com.tokopedia.common_digital.R.string.digital_common_button_toaster)
+                    getString(common_digitalR.string.digital_common_button_toaster)
                 ) {
                     redirectError(error)
                 }.show()
@@ -1541,7 +1546,7 @@ class DigitalPDPDataPlanFragment :
                         binding?.run {
                             val defaultPadding: Int = rechargePdpPaketDataClientNumberWidget.height
                             val scrollViewMargin: Int = context?.resources?.let {
-                                it.getDimensionPixelOffset(com.tokopedia.digital_product_detail.R.dimen.nested_scroll_view_margin)
+                                it.getDimensionPixelOffset(digital_product_detailR.dimen.nested_scroll_view_margin)
                             } ?: 0
                             val dynamicPadding = defaultPadding + extraPadding - scrollViewMargin
                             rechargePdpPaketDataSvContainer.setPadding(0, dynamicPadding, 0, 0)

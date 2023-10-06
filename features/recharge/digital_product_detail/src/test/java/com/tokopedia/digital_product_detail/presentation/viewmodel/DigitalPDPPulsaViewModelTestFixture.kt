@@ -369,6 +369,10 @@ abstract class DigitalPDPPulsaViewModelTestFixture {
         Assert.assertTrue(actualResponse is RechargeNetworkResult.Fail)
     }
 
+    protected fun verifyGetRechargeCheckBalanceIsCancelled() {
+        Assert.assertTrue(viewModel.checkBalanceJob?.isCancelled == true)
+    }
+
     protected fun verifySaveRechargeUserAccessTokenLoading(expectedResponse: RechargeNetworkResult.Loading) {
         val actualResponse = viewModel.saveAccessTokenResult.value
         Assert.assertEquals(expectedResponse, actualResponse)

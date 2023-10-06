@@ -649,6 +649,17 @@ class DigitalPDPDataPlanViewModelTest : DigitalPDPDataPlanViewModelTestFixture()
     }
 
     @Test
+    fun `when cancelCheckBalanceJob called the job should be cancelled and live data should not emit value`() {
+        val response = dataFactory.getRechargeCheckBalanceData()
+        val mappedResponse = digitalPersoMapperFactory.mapDigiPersoToCheckBalanceModel(response.digitalPersoData)
+        onGetRechargeCheckBalance_thenReturn(mappedResponse)
+
+        viewModel.getRechargeCheckBalance(listOf(), listOf())
+        viewModel.cancelCheckBalanceJob()
+        verifyGetRechargeCheckBalanceIsCancelled()
+    }
+
+    @Test
     fun `when cancelRecommendationJob called the job should be cancelled and live data should not emit`() {
         val response = dataFactory.getRecommendationData()
         val mappedResponse =
@@ -867,6 +878,7 @@ class DigitalPDPDataPlanViewModelTest : DigitalPDPDataPlanViewModelTestFixture()
         viewModel.checkBalanceFailCounter = 0
 
         val actualResult = viewModel.isCheckBalanceFailedMoreThanThreeTimes()
+        Assert.assertTrue(viewModel.checkBalanceFailCounter == 0)
         Assert.assertFalse(actualResult)
     }
 
@@ -875,6 +887,7 @@ class DigitalPDPDataPlanViewModelTest : DigitalPDPDataPlanViewModelTestFixture()
         viewModel.checkBalanceFailCounter = 3
 
         val actualResult = viewModel.isCheckBalanceFailedMoreThanThreeTimes()
+        Assert.assertTrue(viewModel.checkBalanceFailCounter == 3)
         Assert.assertTrue(actualResult)
     }
 
