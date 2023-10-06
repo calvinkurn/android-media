@@ -45,7 +45,6 @@ class NewBusinessUnitViewHolder(
         loadingView.hide()
         recyclerView.hide()
         errorView.hide()
-        if(recyclerView.adapter == null) {
             adapter = BusinessUnitItemAdapter(
                 tabIndex = model?.tabPosition ?: -1,
                 tabId = model?.tabId ?: "",
@@ -57,7 +56,6 @@ class NewBusinessUnitViewHolder(
                 userId = listener.userId,
             )
             recyclerView.adapter = adapter
-        }
         adapter?.setPositionWidgetOnHome(positionWidget)
         if(model?.list != null){
             recyclerView.show()
