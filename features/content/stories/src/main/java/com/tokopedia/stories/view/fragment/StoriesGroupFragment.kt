@@ -6,14 +6,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.content.common.util.withCache
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.stories.analytics.StoriesAnalytics
 import com.tokopedia.stories.analytics.StoriesEEModel
 import com.tokopedia.stories.databinding.FragmentStoriesGroupBinding
@@ -111,9 +114,18 @@ class StoriesGroupFragment @Inject constructor(
     private fun setupViews() = with(binding) {
         showPageLoading(true)
 
+        setupTopInsets()
+
         layoutGroupLoading.icCloseLoading.setOnClickListener { activity?.finish() }
         storiesGroupViewPager.setPageTransformer(StoriesPageAnimation())
         storiesGroupViewPager.registerOnPageChangeCallback(pagerListener)
+    }
+
+    private fun setupTopInsets() = with(binding) {
+        root.doOnApplyWindowInsets { _, insets, _, _ ->
+            val topInsetsMargin = (insets.getInsets(WindowInsetsCompat.Type.statusBars())).top
+            root.setMargin(top = topInsetsMargin, bottom = 0, left = 0, right = 0)
+        }
     }
 
     private fun setupObserver() {
