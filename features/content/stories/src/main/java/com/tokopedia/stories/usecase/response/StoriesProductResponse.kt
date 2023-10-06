@@ -59,10 +59,10 @@ data class StoriesProductResponse(
             val discountFmt: String = "",
 
             @SerializedName("price")
-            val price: Int = 0,
+            val price: Double = 0.0,
 
             @SerializedName("priceDiscount")
-            val priceDiscount: Int = 0,
+            val priceDiscount: Double = 0.0,
 
             @SerializedName("priceDiscountFmt")
             val priceDiscountFmt: String = "",
@@ -71,13 +71,13 @@ data class StoriesProductResponse(
             val priceFmt: String = "",
 
             @SerializedName("priceOriginal")
-            val priceOriginal: Int = 0,
+            val priceOriginal: Double = 0.0,
 
             @SerializedName("priceOriginalFmt")
             val priceOriginalFmt: String = "",
 
             @SerializedName("priceMasked")
-            val priceMasked: Float = 0f,
+            val priceMasked: Double = 0.0,
 
             @SerializedName("priceMaskedFmt")
             val priceMaskedFmt: String = "",

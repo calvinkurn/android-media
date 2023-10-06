@@ -6,7 +6,7 @@ import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.content.common.ui.viewholder.ContentTaggedProductBottomSheetViewHolder
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
-import com.tokopedia.content.common.R as commonR
+import com.tokopedia.content.common.R as contentcommonR
 
 /**
  * Created by meyta.taliti on 11/05/23.
@@ -35,7 +35,7 @@ class ContentTaggedProductBottomSheetAdapter(
 
     class Delegate(
         private val listener: ContentTaggedProductBottomSheetViewHolder.Listener
-    ): TypedAdapterDelegate<ContentTaggedProductUiModel, ContentTaggedProductUiModel, ContentTaggedProductBottomSheetViewHolder>(commonR.layout.item_content_tagged_product) {
+    ): TypedAdapterDelegate<ContentTaggedProductUiModel, ContentTaggedProductUiModel, ContentTaggedProductBottomSheetViewHolder>(contentcommonR.layout.item_content_tagged_product) {
 
         override fun onBindViewHolder(
             item: ContentTaggedProductUiModel,

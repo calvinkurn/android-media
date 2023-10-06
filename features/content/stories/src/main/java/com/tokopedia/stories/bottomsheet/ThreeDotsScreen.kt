@@ -24,7 +24,7 @@ import com.tokopedia.content.common.report_content.model.ContentMenuItem
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
-import com.tokopedia.unifyprinciples.R
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * @author by astidhiyaa on 31/07/23
@@ -78,11 +78,11 @@ fun ItemMenu(menu: ContentMenuItem, onMenuClicked: (ContentMenuItem) -> Unit) {
 
         val styleColor = when (menu.type) {
             ContentMenuIdentifier.Report, ContentMenuIdentifier.Delete -> {
-                R.color.Unify_RN500
+                unifyprinciplesR.color.Unify_RN500
             }
 
             else -> {
-                R.color.Unify_NN900
+                unifyprinciplesR.color.Unify_NN900
             }
         }
 
