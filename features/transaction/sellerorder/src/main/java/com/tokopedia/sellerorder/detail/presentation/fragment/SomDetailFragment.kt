@@ -44,7 +44,6 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.EMPTY
-import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.kotlin.extensions.view.gone
@@ -114,6 +113,7 @@ import com.tokopedia.sellerorder.databinding.FragmentSomDetailBinding
 import com.tokopedia.sellerorder.detail.analytic.performance.SomDetailLoadTimeMonitoring
 import com.tokopedia.sellerorder.detail.data.model.GetResolutionTicketStatusResponse
 import com.tokopedia.sellerorder.detail.data.model.SetDelivered
+import com.tokopedia.sellerorder.detail.data.model.SomDetailData
 import com.tokopedia.sellerorder.detail.data.model.SomDetailOrder
 import com.tokopedia.sellerorder.detail.data.model.SomDynamicPriceResponse
 import com.tokopedia.sellerorder.detail.data.model.SomReasonRejectData
@@ -124,6 +124,7 @@ import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailLogisticI
 import com.tokopedia.sellerorder.detail.presentation.activity.SomSeeInvoiceActivity
 import com.tokopedia.sellerorder.detail.presentation.adapter.factory.SomDetailAdapterFactoryImpl
 import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.SomDetailAddOnViewHolder
+import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.SomDetailIncomeViewHolder
 import com.tokopedia.sellerorder.detail.presentation.bottomsheet.BottomSheetManager
 import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBaseRejectOrderBottomSheet
 import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetRejectOrderAdapter
@@ -133,8 +134,8 @@ import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomDetailTransp
 import com.tokopedia.sellerorder.detail.presentation.fragment.SomDetailLogisticInfoFragment.Companion.KEY_ID_CACHE_MANAGER_INFO_ALL
 import com.tokopedia.sellerorder.detail.presentation.mapper.SomDetailMapper
 import com.tokopedia.sellerorder.detail.presentation.model.LogisticInfoAllWrapper
+import com.tokopedia.sellerorder.detail.presentation.model.SomDetailIncomeUiModel
 import com.tokopedia.sellerorder.detail.presentation.viewmodel.SomDetailViewModel
-import com.tokopedia.sellerorder.list.presentation.fragments.SomListFragment
 import com.tokopedia.sellerorder.orderextension.presentation.model.OrderExtensionRequestInfoUiModel
 import com.tokopedia.sellerorder.orderextension.presentation.viewmodel.SomOrderExtensionViewModel
 import com.tokopedia.unifycomponents.Toaster
@@ -195,6 +196,9 @@ open class SomDetailFragment :
     private var somOrderHasCancellationRequestDialog: SomOrderHasRequestCancellationDialog? = null
     private val chatIcon: IconUnify by lazy {
         createChatIcon(requireContext())
+    }
+    private val transparencyFeeCoachMarkHandler by lazy(LazyThreadSafetyMode.NONE) {
+        TransparencyFeeCoachMarkHandler()
     }
     protected val orderExtensionViewModel: SomOrderExtensionViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(SomOrderExtensionViewModel::class.java)
@@ -651,6 +655,7 @@ open class SomDetailFragment :
                 resolutionTicketStatusResponse
             )
         )
+        transparencyFeeCoachMarkHandler.attach()
     }
 
     private fun renderButtons() {
@@ -1526,42 +1531,6 @@ buttonResp.key.equals(KEY_CONFIRM_SHIPPING_AUTO, true) || buttonResp.key.equals(
         }
     }
 
-    private fun showCoachMarkTransparencyFee(transparencyFeeEntryPointView: View) {
-        context?.let {
-            if (!CoachMarkPreference.hasShown(
-                    it,
-                    SHARED_PREF_DETAIL_TRANSPARENCY_FEE_COACH_MARK
-                )
-            ) {
-                val coachMarkMessage = getString(
-                    sellerorderR.string.som_transparency_fee_entry_point_coachmark
-                )
-
-                val coachMarkItem = CoachMark2Item(
-                    anchorView = transparencyFeeEntryPointView,
-                    title = String.EMPTY,
-                    description = coachMarkMessage,
-                    position = CoachMark2.POSITION_TOP
-                )
-
-                val transparencyFeeEntryPointCoachMark = CoachMark2(it)
-                transparencyFeeEntryPointCoachMark.run {
-                    onFinishListener = {
-                        CoachMarkPreference.setShown(
-                            it,
-                            SHARED_PREF_DETAIL_TRANSPARENCY_FEE_COACH_MARK,
-                            true
-                        )
-                    }
-                    isDismissed = false
-                    showCoachMark(
-                        step = arrayListOf(coachMarkItem)
-                    )
-                }
-            }
-        }
-    }
-
     protected open fun observeOrderExtensionRequestInfo() {
         orderExtensionViewModel.orderExtensionRequestInfo.observe(viewLifecycleOwner) { result ->
             if (result.message.isNotBlank() || result.throwable != null) {
@@ -1705,5 +1674,96 @@ buttonResp.key.equals(KEY_CONFIRM_SHIPPING_AUTO, true) || buttonResp.key.equals(
 
     protected fun getAdapterTypeFactory(): SomDetailAdapterFactoryImpl {
         return SomDetailAdapterFactoryImpl(this, recyclerViewSharedPool)
+    }
+
+    inner class TransparencyFeeCoachMarkHandler: RecyclerView.OnScrollListener() {
+
+        private val transparencyFeeEntryPointCoachMark by lazy(LazyThreadSafetyMode.NONE) {
+            context?.let { CoachMark2(it) }
+        }
+
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            val layoutManager = recyclerView.layoutManager as? LinearLayoutManager ?: return
+            val firstCompletelyVisibleItemPos = layoutManager.findFirstCompletelyVisibleItemPosition()
+            val lastCompletelyVisibleItemPos = layoutManager.findLastVisibleItemPosition()
+            var isTransparencyFeeItemCompletelyVisible = false
+            var transparencyFeeChevron: View? = null
+            for (i in firstCompletelyVisibleItemPos..lastCompletelyVisibleItemPos) {
+                val itemView = layoutManager.findViewByPosition(i)
+                transparencyFeeChevron = itemView?.findViewById(R.id.detail_income_icon)
+                if (
+                    itemView != null &&
+                    transparencyFeeChevron != null &&
+                    layoutManager.getItemViewType(itemView) == SomDetailIncomeViewHolder.LAYOUT
+                ) {
+                    isTransparencyFeeItemCompletelyVisible = true
+                    break
+                }
+            }
+            if (isTransparencyFeeItemCompletelyVisible && transparencyFeeChevron != null) {
+                showCoachMarkTransparencyFee(transparencyFeeChevron)
+            } else {
+                hideCoachMarkTransparencyFee()
+            }
+        }
+
+        fun attach() {
+            val containIncomeDetailSection = somDetailAdapter.list.any {
+                it is SomDetailData && it.dataObject is SomDetailIncomeUiModel
+            }
+            binding?.rvDetail?.removeOnScrollListener(this)
+            if (containIncomeDetailSection && !transparencyFeeCoachMarkHasShown()) {
+                binding?.rvDetail?.addOnScrollListener(this)
+            }
+        }
+
+        private fun transparencyFeeCoachMarkHasShown(): Boolean {
+            return context?.let { context ->
+                CoachMarkPreference.hasShown(
+                    context = context,
+                    tag = SHARED_PREF_DETAIL_TRANSPARENCY_FEE_COACH_MARK
+                )
+            }.orFalse()
+        }
+
+        private fun showCoachMarkTransparencyFee(transparencyFeeEntryPointView: View) {
+            context?.let { context ->
+                if (
+                    transparencyFeeEntryPointCoachMark?.isShowing != true &&
+                    !transparencyFeeCoachMarkHasShown()
+                ) {
+                    val coachMarkMessage = getString(
+                        sellerorderR.string.som_transparency_fee_entry_point_coachmark
+                    )
+
+                    val coachMarkItem = CoachMark2Item(
+                        anchorView = transparencyFeeEntryPointView,
+                        title = String.EMPTY,
+                        description = coachMarkMessage,
+                        position = CoachMark2.POSITION_TOP
+                    )
+
+                    transparencyFeeEntryPointCoachMark?.run {
+                        onDismissListener = {
+                            CoachMarkPreference.setShown(
+                                context = context,
+                                tag = SHARED_PREF_DETAIL_TRANSPARENCY_FEE_COACH_MARK,
+                                hasShown = true
+                            )
+                            binding?.rvDetail?.removeOnScrollListener(this@TransparencyFeeCoachMarkHandler)
+                        }
+                        isDismissed = false
+                        showCoachMark(step = arrayListOf(coachMarkItem))
+                    }
+                }
+            }
+        }
+
+        private fun hideCoachMarkTransparencyFee() {
+            transparencyFeeEntryPointCoachMark?.run {
+                onDismissListener = {}
+                dismissCoachMark()
+            }
+        }
     }
 }
