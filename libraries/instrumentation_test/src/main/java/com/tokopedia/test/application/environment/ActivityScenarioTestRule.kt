@@ -1,4 +1,4 @@
-package com.tokopedia.universal_sharing.stub.common
+package com.tokopedia.test.application.environment
 
 import android.app.Activity
 import android.content.Intent

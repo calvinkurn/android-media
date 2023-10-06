@@ -1,10 +1,11 @@
 package com.tokopedia.universal_sharing.test.robot.universalsharing
 
-import androidx.test.espresso.Espresso
-import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.test.application.matcher.RecyclerViewMatcher
 import com.tokopedia.test.application.matcher.hasViewHolderOf
@@ -17,107 +18,107 @@ import org.hamcrest.CoreMatchers
 object UniversalSharingResult {
 
     fun shouldShowTitleBottomSheet() {
-        Espresso.onView(ViewMatchers.withText(R.string.label_to_social_media_text))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        onView(withText(R.string.label_to_social_media_text))
+            .check(matches(ViewMatchers.isDisplayed()))
         Thread.sleep(1000)
     }
 
     fun shouldShowTitleHeadingImageOptions() {
-        Espresso.onView(ViewMatchers.withText(R.string.img_options_heading))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        onView(withText(R.string.img_options_heading))
+            .check(matches(ViewMatchers.isDisplayed()))
     }
 
     fun shouldShowTitleChipOptions() {
-        Espresso.onView(ViewMatchers.withText(R.string.chip_options_heading))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        onView(withText(R.string.chip_options_heading))
+            .check(matches(ViewMatchers.isDisplayed()))
     }
 
     fun shouldShowImagesOptions(position: Int) {
-        Espresso.onView(ViewMatchers.withId(R.id.image_list_container))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        Espresso.onView(RecyclerViewMatcher(R.id.image_list_container).atPosition(position))
-            .check(ViewAssertions.matches(ViewMatchers.hasDescendant(ViewMatchers.withId(R.id.checked_circle))))
+        onView(ViewMatchers.withId(R.id.image_list_container))
+            .check(matches(ViewMatchers.isDisplayed()))
+        onView(RecyclerViewMatcher(R.id.image_list_container).atPosition(position))
+            .check(matches(ViewMatchers.hasDescendant(ViewMatchers.withId(R.id.checked_circle))))
     }
 
     fun shouldShowThumbnailShare() {
-        Espresso.onView(ViewMatchers.withId(R.id.thumb_nail_image))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        Espresso.onView(ViewMatchers.withId(R.id.thumb_nail_title))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        Espresso.onView(ViewMatchers.withId(R.id.tokopedia_link))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        onView(ViewMatchers.withId(R.id.thumb_nail_image))
+            .check(matches(ViewMatchers.isDisplayed()))
+        onView(ViewMatchers.withId(R.id.thumb_nail_title))
+            .check(matches(ViewMatchers.isDisplayed()))
+        onView(ViewMatchers.withId(R.id.tokopedia_link))
+            .check(matches(ViewMatchers.isDisplayed()))
     }
 
     fun shouldShowRegisterAffiliateTicker() {
-        Espresso.onView(ViewMatchers.withId(R.id.iv_affiliate))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        Espresso.onView(ViewMatchers.withId(R.id.tv_title_affiliate))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        Espresso.onView(ViewMatchers.withId(R.id.tv_new))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        Espresso.onView(ViewMatchers.withId(R.id.tv_description_affiliate))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        Espresso.onView(ViewMatchers.withId(R.id.iv_right_arrow))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        onView(ViewMatchers.withId(R.id.iv_affiliate))
+            .check(matches(ViewMatchers.isDisplayed()))
+        onView(ViewMatchers.withId(R.id.tv_title_affiliate))
+            .check(matches(ViewMatchers.isDisplayed()))
+        onView(ViewMatchers.withId(R.id.tv_new))
+            .check(matches(ViewMatchers.isDisplayed()))
+        onView(ViewMatchers.withId(R.id.tv_description_affiliate))
+            .check(matches(ViewMatchers.isDisplayed()))
+        onView(ViewMatchers.withId(R.id.iv_right_arrow))
+            .check(matches(ViewMatchers.isDisplayed()))
     }
 
     fun shouldShowCommissionAffiliate() {
-        Espresso.onView(ViewMatchers.withId(R.id.affilate_commision))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        onView(ViewMatchers.withId(R.id.affilate_commision))
+            .check(matches(ViewMatchers.isDisplayed()))
     }
 
     fun shouldHideCommissionAffiliate() {
-        Espresso.onView(ViewMatchers.withId(R.id.affilate_commision))
-            .check(ViewAssertions.matches(CoreMatchers.not(ViewMatchers.isDisplayed())))
+        onView(ViewMatchers.withId(R.id.affilate_commision))
+            .check(matches(CoreMatchers.not(ViewMatchers.isDisplayed())))
     }
 
     fun shouldShowDefaultShareMediaList() {
-        Espresso.onView(ViewMatchers.withId(R.id.copy_link_img))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        Espresso.onView(ViewMatchers.withId(R.id.copy_link_txtv))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        Espresso.onView(ViewMatchers.withId(R.id.sms_img))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        Espresso.onView(ViewMatchers.withId(R.id.sms_link_txtv))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        Espresso.onView(ViewMatchers.withId(R.id.email_img))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        Espresso.onView(ViewMatchers.withId(R.id.email_link_txtv))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        Espresso.onView(ViewMatchers.withId(R.id.others_img))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        Espresso.onView(ViewMatchers.withId(R.id.others_link_txtv))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        onView(ViewMatchers.withId(R.id.copy_link_img))
+            .check(matches(ViewMatchers.isDisplayed()))
+        onView(ViewMatchers.withId(R.id.copy_link_txtv))
+            .check(matches(ViewMatchers.isDisplayed()))
+        onView(ViewMatchers.withId(R.id.sms_img))
+            .check(matches(ViewMatchers.isDisplayed()))
+        onView(ViewMatchers.withId(R.id.sms_link_txtv))
+            .check(matches(ViewMatchers.isDisplayed()))
+        onView(ViewMatchers.withId(R.id.email_img))
+            .check(matches(ViewMatchers.isDisplayed()))
+        onView(ViewMatchers.withId(R.id.email_link_txtv))
+            .check(matches(ViewMatchers.isDisplayed()))
+        onView(ViewMatchers.withId(R.id.others_img))
+            .check(matches(ViewMatchers.isDisplayed()))
+        onView(ViewMatchers.withId(R.id.others_link_txtv))
+            .check(matches(ViewMatchers.isDisplayed()))
     }
 
     /**
      * without sharing SMS if setImageOnlySharingOption(true)
      */
     fun shouldShowShareMediaListIfImageOnlySharingOptions() {
-        Espresso.onView(ViewMatchers.withId(R.id.copy_link_img))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        Espresso.onView(ViewMatchers.withId(R.id.copy_link_txtv))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        Espresso.onView(ViewMatchers.withId(R.id.email_img))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        Espresso.onView(ViewMatchers.withId(R.id.email_link_txtv))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        Espresso.onView(ViewMatchers.withId(R.id.others_img))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        Espresso.onView(ViewMatchers.withId(R.id.others_link_txtv))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        onView(ViewMatchers.withId(R.id.copy_link_img))
+            .check(matches(ViewMatchers.isDisplayed()))
+        onView(ViewMatchers.withId(R.id.copy_link_txtv))
+            .check(matches(ViewMatchers.isDisplayed()))
+        onView(ViewMatchers.withId(R.id.email_img))
+            .check(matches(ViewMatchers.isDisplayed()))
+        onView(ViewMatchers.withId(R.id.email_link_txtv))
+            .check(matches(ViewMatchers.isDisplayed()))
+        onView(ViewMatchers.withId(R.id.others_img))
+            .check(matches(ViewMatchers.isDisplayed()))
+        onView(ViewMatchers.withId(R.id.others_link_txtv))
+            .check(matches(ViewMatchers.isDisplayed()))
     }
 
     fun shouldShowTabChips() {
-        Espresso.onView(ViewMatchers.withId(R.id.lst_chip))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        Espresso.onView(ViewMatchers.withId(R.id.lst_chip))
-            .check(ViewAssertions.matches(hasViewHolderOf(ChipViewHolder::class.java)))
+        onView(ViewMatchers.withId(R.id.lst_chip))
+            .check(matches(ViewMatchers.isDisplayed()))
+        onView(ViewMatchers.withId(R.id.lst_chip))
+            .check(matches(hasViewHolderOf(ChipViewHolder::class.java)))
     }
 
     fun shouldShowSelectionTabChips(position: Int) {
-        Espresso.onView(RecyclerViewMatcher(R.id.lst_chip).atPosition(position))
-            .check(ViewAssertions.matches(ViewMatchers.hasDescendant(ViewMatchers.withId(R.id.view_chip))))
+        onView(RecyclerViewMatcher(R.id.lst_chip).atPosition(position))
+            .check(matches(ViewMatchers.hasDescendant(ViewMatchers.withId(R.id.view_chip))))
     }
 
     fun hasTitleChipSharing(title: String) {

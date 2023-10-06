@@ -8,13 +8,13 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.universal_sharing.stub.di.FakeActivityComponentFactory
-import com.tokopedia.universal_sharing.stub.data.repository.FakeGraphqlRepository
-import com.tokopedia.universal_sharing.stub.view.UniversalShareTestActivity
+import com.tokopedia.test.application.environment.ActivityScenarioTestRule
 import com.tokopedia.universal_sharing.di.ActivityComponentFactory
-import com.tokopedia.universal_sharing.stub.common.ActivityScenarioTestRule
 import com.tokopedia.universal_sharing.stub.common.MockTimber
 import com.tokopedia.universal_sharing.stub.common.UserSessionStub
+import com.tokopedia.universal_sharing.stub.data.repository.FakeGraphqlRepository
+import com.tokopedia.universal_sharing.stub.di.FakeActivityComponentFactory
+import com.tokopedia.universal_sharing.stub.view.UniversalShareTestActivity
 import com.tokopedia.universal_sharing.test.robot.universalSharingRobot
 import com.tokopedia.universal_sharing.test.robot.validate
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
@@ -91,9 +91,11 @@ class UniversalShareBottomSheetTest {
         fakeGraphqlRepository.mockParam = FakeGraphqlRepository.MockParam.NOT_REGISTERED
 
         universalSharingRobot {
-            runTest(UniversalShareModel.getDefaultPDPBottomSheet().apply {
-                enableAffiliateCommission(anyInput())
-            })
+            runTest(
+                UniversalShareModel.getDefaultPDPBottomSheet().apply {
+                    enableAffiliateCommission(anyInput())
+                }
+            )
             scrollHorizontalIOnImagesOptions(3)
             clickOnSpecificImageOption(2)
         } validate {
@@ -111,9 +113,11 @@ class UniversalShareBottomSheetTest {
         fakeGraphqlRepository.mockParam = FakeGraphqlRepository.MockParam.ELIGIBLE_COMMISSION
 
         universalSharingRobot {
-            runTest(UniversalShareModel.getPDPBottomSheetWith2ImagesOption().apply {
-                enableAffiliateCommission(anyInput())
-            })
+            runTest(
+                UniversalShareModel.getPDPBottomSheetWith2ImagesOption().apply {
+                    enableAffiliateCommission(anyInput())
+                }
+            )
             scrollHorizontalIOnImagesOptions(1)
             clickOnSpecificImageOption(1)
         } validate {
@@ -131,9 +135,11 @@ class UniversalShareBottomSheetTest {
         fakeGraphqlRepository.mockParam = FakeGraphqlRepository.MockParam.NOT_ELIGIBLE_COMMISSION
 
         universalSharingRobot {
-            runTest(UniversalShareModel.getPDPBottomSheetWith2ImagesOption().apply {
-                enableAffiliateCommission(anyInput())
-            })
+            runTest(
+                UniversalShareModel.getPDPBottomSheetWith2ImagesOption().apply {
+                    enableAffiliateCommission(anyInput())
+                }
+            )
             scrollHorizontalIOnImagesOptions(1)
             clickOnSpecificImageOption(1)
         } validate {
@@ -151,11 +157,13 @@ class UniversalShareBottomSheetTest {
         var onTitleChipPropertiesSelected = ""
 
         universalSharingRobot {
-            runTest(UniversalShareModel.getShopBottomSheet().apply {
-                onChipChangedListener {
-                    onTitleChipPropertiesSelected = it.title
+            runTest(
+                UniversalShareModel.getShopBottomSheet().apply {
+                    onChipChangedListener {
+                        onTitleChipPropertiesSelected = it.title
+                    }
                 }
-            })
+            )
             scrollHorizontalOnChips(4)
             clickOnSpecificChip(2)
         } validate {

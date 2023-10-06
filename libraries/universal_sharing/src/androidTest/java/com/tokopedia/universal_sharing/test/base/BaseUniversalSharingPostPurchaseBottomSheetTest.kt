@@ -5,11 +5,11 @@ import android.content.Intent
 import androidx.test.espresso.intent.Intents
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.applink.internal.ApplinkConstInternalCommunication
+import com.tokopedia.test.application.environment.ActivityScenarioTestRule
 import com.tokopedia.universal_sharing.di.ActivityComponentFactory
 import com.tokopedia.universal_sharing.model.UniversalSharingPostPurchaseModel
 import com.tokopedia.universal_sharing.model.UniversalSharingPostPurchaseProductModel
 import com.tokopedia.universal_sharing.model.UniversalSharingPostPurchaseShopModel
-import com.tokopedia.universal_sharing.stub.common.ActivityScenarioTestRule
 import com.tokopedia.universal_sharing.stub.common.NetworkUtilStub
 import com.tokopedia.universal_sharing.stub.data.response.GqlResponseStub
 import com.tokopedia.universal_sharing.stub.di.FakeActivityComponentFactory
