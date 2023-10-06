@@ -150,7 +150,12 @@ class ProductBundleMultipleViewHolder(
                 listener = listener,
                 isOverrideWidgetTheme = isOverrideWidgetTheme
             )
-            addItemDecoration(MultipleBundleItemDecoration(context))
+            addItemDecoration(
+                MultipleBundleItemDecoration(
+                    context = context,
+                    isOverrideWidgetTheme = isOverrideWidgetTheme
+                )
+            )
         }
         (rvBundleProducts?.adapter as ProductBundleMultipleAdapter).updateDataSet(
             displayedProducts,

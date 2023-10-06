@@ -8,17 +8,27 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.product_service_widget.R
 import com.tokopedia.unifycomponents.toPx
 import kotlin.math.roundToInt
 
-
-class MultipleBundleItemDecoration(context: Context) : RecyclerView.ItemDecoration() {
+class MultipleBundleItemDecoration(context: Context, isOverrideWidgetTheme: Boolean) : RecyclerView.ItemDecoration() {
     private var divider: Drawable?
 
     init {
-        divider = getIconUnifyDrawable(context,
-            IconUnify.ADD,
-            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN600))
+        divider = if (isOverrideWidgetTheme) {
+            getIconUnifyDrawable(
+                context,
+                IconUnify.ADD,
+                ContextCompat.getColor(context, R.color.dms_low_emphasis)
+            )
+        } else {
+            getIconUnifyDrawable(
+                context,
+                IconUnify.ADD,
+                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN600)
+            )
+        }
     }
 
     override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
@@ -30,8 +40,12 @@ class MultipleBundleItemDecoration(context: Context) : RecyclerView.ItemDecorati
             val right = mBounds.right + PLUS_ICON_SIZE.toPx() * HORIZONTAL_PERCENT_ADJUSTMENT
             val left = mBounds.right - PLUS_ICON_SIZE.toPx() * HORIZONTAL_PERCENT_ADJUSTMENT
 
-            divider?.setBounds(left.roundToInt(), PLUS_ICON_TOP_POS.toPx(),
-                right.roundToInt(), PLUS_ICON_TOP_POS.toPx() + PLUS_ICON_SIZE.toPx())
+            divider?.setBounds(
+                left.roundToInt(),
+                PLUS_ICON_TOP_POS.toPx(),
+                right.roundToInt(),
+                PLUS_ICON_TOP_POS.toPx() + PLUS_ICON_SIZE.toPx()
+            )
             divider?.draw(c)
         }
     }
