@@ -39,12 +39,12 @@ import com.tokopedia.nest.principles.ui.NestNN
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
 import com.tokopedia.sellerpersona.R
-import com.tokopedia.sellerpersona.view.compose.component.Switch
 import com.tokopedia.sellerpersona.view.compose.model.state.PersonaResultState
 import com.tokopedia.sellerpersona.view.compose.model.uievent.ResultUiEvent
 import com.tokopedia.sellerpersona.view.model.PersonaDataUiModel
 import com.tokopedia.sellerpersona.view.model.PersonaStatus
 import com.tokopedia.sellerpersona.view.model.PersonaUiModel
+import com.tokopedia.unifycomponents.compose.NestSwitch
 import com.tokopedia.iconunify.R as iconunifyR
 
 /**
@@ -101,7 +101,7 @@ private fun ResultFooterSectionUi(data: PersonaDataUiModel, onEvent: (ResultUiEv
                     )
                 )
             }
-            Switch(isSwitchedOn = data.isSwitchChecked) {
+            NestSwitch(isChecked = data.isSwitchChecked) {
                 onEvent(ResultUiEvent.CheckChanged(it))
             }
         }

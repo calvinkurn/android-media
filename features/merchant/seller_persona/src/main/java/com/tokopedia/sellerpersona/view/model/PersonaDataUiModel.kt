@@ -1,5 +1,6 @@
 package com.tokopedia.sellerpersona.view.model
 
+import androidx.compose.runtime.Immutable
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.sellerpersona.R
 import com.tokopedia.sellerpersona.view.compose.model.args.PersonaArgsUiModel
@@ -8,6 +9,7 @@ import com.tokopedia.sellerpersona.view.compose.model.args.PersonaArgsUiModel
  * Created by @ilhamsuaib on 30/01/23.
  */
 
+@Immutable
 data class PersonaDataUiModel(
     //default data
     val persona: String = String.EMPTY,

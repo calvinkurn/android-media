@@ -1,5 +1,6 @@
 package com.tokopedia.sellerpersona.view.compose.model.state
 
+import androidx.compose.runtime.Immutable
 import com.tokopedia.sellerpersona.view.compose.model.args.PersonaArgsUiModel
 import com.tokopedia.sellerpersona.view.model.PersonaUiModel
 
@@ -11,6 +12,8 @@ data class SelectTypeState(
     val state: State = State.Loading,
     val data: Data = Data()
 ) {
+
+    @Immutable
     data class Data(
         val personaList: List<PersonaUiModel> = emptyList(),
         val args: PersonaArgsUiModel = PersonaArgsUiModel(),
