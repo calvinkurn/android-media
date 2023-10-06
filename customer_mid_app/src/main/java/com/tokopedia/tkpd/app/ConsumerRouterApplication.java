@@ -11,7 +11,6 @@ import com.scp.auth.GotoSdk;
 import androidx.annotation.NonNull;
 import androidx.core.app.TaskStackBuilder;
 import androidx.preference.PreferenceManager;
-
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
@@ -141,7 +140,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         GraphqlClient.setContextData(getApplicationContext());
         GraphqlClient.init(getApplicationContext(), getAuthenticator());
         NetworkClient.init(getApplicationContext());
-        initGotoSDK();
         warmUpGQLClient();
         initIris();
         performLibraryInitialisation();
@@ -155,9 +153,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     private void initGotoSDK() {
         GotoSdk.init(this);
-        if (userSession.isLoggedIn() && Objects.requireNonNull(GotoSdk.INSTANCE.getLSDKINSTANCE()).getAccessToken().isEmpty()) {
-            GotoSdk.INSTANCE.getLSDKINSTANCE().save(userSession.getAccessToken(), userSession.getFreshToken());
-        }
     }
 
     private void warmUpGQLClient() {
