@@ -73,6 +73,9 @@ class DigitalPDPPulsaCassavaTest : BaseDigitalPDPPulsaTest() {
     }
 
     private fun interactWithCheckBalanceWidget() {
+        clientNumberWidget_clickClearIcon()
+        clientNumberWidget_typeNumber("085808580858")
+        Thread.sleep(4000)
         clientNumberWidget_clickCheckBalanceWidget()
 
         Thread.sleep(2000)
