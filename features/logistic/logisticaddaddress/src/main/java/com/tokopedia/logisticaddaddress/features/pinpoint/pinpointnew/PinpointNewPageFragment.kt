@@ -559,6 +559,7 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
 //                goToAddressForm(true)
 //            }
         } else {
+            // todo i think this is not reachable ? because extra_address_new source is from address form
             val newAddress =
                 data?.getParcelableExtra<SaveAddressDataModel>(EXTRA_ADDRESS_NEW)
             val isFromAddressForm = data?.getBooleanExtra(EXTRA_FROM_ADDRESS_FORM, false)
@@ -986,6 +987,7 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
             setResult(
                 Activity.RESULT_OK,
                 Intent().apply {
+                    putExtra(EXTRA_PINPOINT_MODEL, viewModel.uiModel)
                     putExtra(EXTRA_SAVE_DATA_UI_MODEL, saveModel)
                     putExtra(EXTRA_NEGATIVE_FULL_FLOW, false)
                 }
@@ -1215,7 +1217,7 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                             SUCCESS
                         )
                     }
-                    goToAddressForm(true)
+                    onChoosePinpoint()
                 }
                 viewModel.uiModel = viewModel.uiModel.map(data, null)
                 updateGetDistrictBottomSheet(viewModel.uiModel)
