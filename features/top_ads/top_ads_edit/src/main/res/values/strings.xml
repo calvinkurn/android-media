@@ -104,6 +104,7 @@
     <string name="edit_ad_item_title_potential_performance">Potensi tampil</string>
     <string name="selected_product">%d produk dipilih</string>
     <string name="ads_search_item_template">Biaya iklan %s dan %s kata kunci</string>
+    <string name="top_ads_text_info_browse_bid"><![CDATA[Iklanmu akan tampil pada bagian halaman strategis seperti di halaman home, keranjang, inbox dan detail produk. <strong><span style="color:#00AA5B">Pelajari</span></strong>]]></string>
 
 
 </resources>

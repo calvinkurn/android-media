@@ -186,6 +186,9 @@ class EditAdGroupFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding?.header?.setNavigationOnClickListener { activity?.onBackPressed() }
+
         binding?.recyclerView?.apply {
             layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
             adapter = createEditAdGroupAdapter
@@ -437,7 +440,7 @@ class EditAdGroupFragment : BaseDaggerFragment() {
         settingsType: String
     ): String {
         val bidSetting = bidSettings.find { it.bidType == settingsType }
-        return formatFloatWithSeparators(bidSetting?.priceBid)
+        return CurrencyFormatHelper.convertToRupiah(bidSetting?.priceBid?.toInt().toString())
     }
 
     private fun getSettingModeText(bidAutomatic: Boolean): String {
@@ -506,9 +509,9 @@ class EditAdGroupFragment : BaseDaggerFragment() {
             }
 
             CreateEditAdGroupItemTag.PRODUCT -> {
-                val addedCount = dataProduct.getParcelableArrayList<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem>(Constants.ADDED_PRODUCTS)?.size
+                val addedCount = dataProduct.getParcelableArrayList<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem>(Constants.ADDED_PRODUCTS_NEW)?.size
                     ?: 0
-                val deleteCount = dataProduct.getParcelableArrayList<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem>(Constants.DELETED_PRODUCTS)?.size
+                val deleteCount = dataProduct.getParcelableArrayList<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem>(Constants.DELETED_PRODUCTS_NEW)?.size
                     ?: 0
                 val count = productListIds.size + addedCount - deleteCount
                 createEditAdGroupAdapter.updateValue(CreateEditAdGroupItemTag.PRODUCT, getProductText(count))
@@ -521,7 +524,7 @@ class EditAdGroupFragment : BaseDaggerFragment() {
                 val count = (countDataItemsResponse?.get(0)?.totalKeywords ?: 0) + added - deleted
                 createEditAdGroupAdapter.updateValue(CreateEditAdGroupItemTag.ADS_SEARCH,
                     requireActivity().getString(R.string.ads_search_item_template,
-                        getPriceBidSearch(),
+                        getNewPriceBidSearch(dataKeyword),
                         count.toString()))
                 showToast("Pengaturan Iklan di Pencarian berhasil diterapkan.")
             }
@@ -541,6 +544,11 @@ class EditAdGroupFragment : BaseDaggerFragment() {
             else -> {}
         }
 
+    }
+
+    private fun getNewPriceBidSearch(bidSettings: HashMap<String, Any?>): String {
+        val bids: ArrayList<TopAdsBidSettingsModel>? = bidSettings[BID_TYPE] as? ArrayList<TopAdsBidSettingsModel>
+        return CurrencyFormatHelper.convertToRupiah(bids?.firstOrNull()?.priceBid?.toInt().toString())
     }
 
     private fun showToast(msg: String) {
@@ -596,7 +604,7 @@ class EditAdGroupFragment : BaseDaggerFragment() {
         val dailyBudget: String = if (editedDailyBudget == "0") groupInfoResponse?.dailyBudget?.toInt().toString() else editedDailyBudget.removeCommaRawString()
         val formattedDailyBudget = CurrencyFormatHelper.convertToRupiah(dailyBudget)
         formattedDailyBudget.let {
-            EditAdGroupDailyBudgetBottomSheet.newInstance(it, formattedBudget, productListIds, priceBids).show(parentFragmentManager) { dailyBudget, isToggleOn ->
+            EditAdGroupDailyBudgetBottomSheet.newInstance(it, formattedBudget, productListIds, priceBids, isBidAutomatic).show(parentFragmentManager) { dailyBudget, isToggleOn ->
                 if (isToggleOn)
                     dataGroup[Constants.DAILY_BUDGET] = dailyBudget
                 else

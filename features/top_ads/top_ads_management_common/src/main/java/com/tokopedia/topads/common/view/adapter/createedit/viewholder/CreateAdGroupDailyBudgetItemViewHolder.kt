@@ -8,20 +8,25 @@ import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.topads.common.R
 import com.tokopedia.topads.common.databinding.TopadsCreateDailyBudgetItemAdGroupBinding
 import com.tokopedia.topads.common.domain.model.createedit.CreateAdGroupDailyBudgetItemUiModel
+import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.utils.text.currency.NumberTextWatcher
 
 class CreateAdGroupDailyBudgetItemViewHolder(private val viewBinding: TopadsCreateDailyBudgetItemAdGroupBinding) : AbstractViewHolder<CreateAdGroupDailyBudgetItemUiModel>(viewBinding.root) {
 
+    var minBudget = "0"
+    val maxBudget = "10000000"
     override fun bind(element: CreateAdGroupDailyBudgetItemUiModel) {
         viewBinding.adItemTitle.text = element.title
         viewBinding.editAdItemSubtitle.text = element.subtitle
+        setInitialValues(element.dailyBudget)
+        val dailyBudget = CurrencyFormatHelper.convertToRupiah(element.dailyBudget)
         if (element.isDailyBudgetEnabled) {
             viewBinding.dailyBudgetSwitch.isChecked = true
             viewBinding.recommendationBudget.show()
-            viewBinding.recommendationBudget.editText.setText(String.format("Rp %s", element.dailyBudget))
+            viewBinding.recommendationBudget.editText.setText(String.format("Rp %s", dailyBudget))
         } else {
             viewBinding.dailyBudgetSwitch.isChecked = false
-            viewBinding.recommendationBudget.editText.setText(String.format("Rp %s", element.dailyBudget))
+            viewBinding.recommendationBudget.editText.setText(String.format("Rp %s", dailyBudget))
             viewBinding.recommendationBudget.hide()
         }
         setClicksOnViews(element)
@@ -30,18 +35,27 @@ class CreateAdGroupDailyBudgetItemViewHolder(private val viewBinding: TopadsCrea
 
     }
 
+    private fun setInitialValues(dailyBudget: String) {
+        minBudget = dailyBudget
+    }
+
     private fun setInteractionOnViews(element: CreateAdGroupDailyBudgetItemUiModel) {
         viewBinding.recommendationBudget.editText.addTextChangedListener(object : NumberTextWatcher(viewBinding.recommendationBudget.editText) {
             override fun onNumberChanged(number: Double) {
                 super.onNumberChanged(number)
-                element.onDailyBudgetChange(number)
-                if (number < element.dailyBudget.toDoubleOrZero()) {
+                if (number < minBudget.toDoubleOrZero()) {
                     viewBinding.recommendationBudget.isInputError = true
-                    viewBinding.recommendationBudget.setMessage(String.format("Minimum %s", "Rp32.000"))
+                    viewBinding.recommendationBudget.setMessage(String.format("Minimum Rp%s", CurrencyFormatHelper.convertToRupiah(minBudget)))
+                    element.onDailyBudgetChange(false)
+                } else if (number > 10000000) {
+                    viewBinding.recommendationBudget.isInputError = true
+                    viewBinding.recommendationBudget.setMessage(String.format("Maksimum Rp%s", CurrencyFormatHelper.convertToRupiah(maxBudget)))
+                    element.onDailyBudgetChange(false)
                 } else {
                     element.dailyBudget = number.toString()
                     viewBinding.recommendationBudget.isInputError = false
                     viewBinding.recommendationBudget.setMessage(String.EMPTY)
+                    element.onDailyBudgetChange(true)
                 }
             }
         })

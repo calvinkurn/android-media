@@ -19,7 +19,9 @@ import com.tokopedia.topads.edit.data.SharedViewModel
 import com.tokopedia.topads.common.data.response.GetAdProductResponse
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
 import com.tokopedia.topads.edit.utils.Constants.ADDED_PRODUCTS
+import com.tokopedia.topads.edit.utils.Constants.ADDED_PRODUCTS_NEW
 import com.tokopedia.topads.edit.utils.Constants.DELETED_PRODUCTS
+import com.tokopedia.topads.edit.utils.Constants.DELETED_PRODUCTS_NEW
 import com.tokopedia.topads.edit.utils.Constants.EXISTING_IDS
 import com.tokopedia.topads.edit.utils.Constants.GROUP_ID
 import com.tokopedia.topads.edit.utils.Constants.REQUEST_OK
@@ -37,6 +39,7 @@ import com.tokopedia.topads.edit.view.adapter.edit_product.viewmodel.EditProduct
 import com.tokopedia.topads.edit.view.adapter.edit_product.viewmodel.EditProductItemViewModel
 import com.tokopedia.topads.edit.view.model.EditFormDefaultViewModel
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
@@ -264,6 +267,8 @@ class EditProductFragment : BaseDaggerFragment() {
         adapter.notifyDataSetChanged()
         totalCount += product?.size ?: 0
         updateItemCount()
+        Toaster.build(requireView(), String.format("%d produk berhasil ditambah.", product?.count())
+            ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show()
         btnState = true
         buttonStateCallback?.setButtonState()
     }
@@ -292,6 +297,8 @@ class EditProductFragment : BaseDaggerFragment() {
         deleted.addAll(getDeletedArray())
         bundle.putParcelableArrayList(ADDED_PRODUCTS, added)
         bundle.putParcelableArrayList(DELETED_PRODUCTS, deleted)
+        bundle.putParcelableArrayList(ADDED_PRODUCTS_NEW, added)
+        bundle.putParcelableArrayList(DELETED_PRODUCTS_NEW, deleted)
         return bundle
     }
 

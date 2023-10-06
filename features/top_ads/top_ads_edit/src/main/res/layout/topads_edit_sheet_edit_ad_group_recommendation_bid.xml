@@ -6,6 +6,7 @@
     android:orientation="vertical">
 
     <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/browse_txt_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/top_ads_edit_ad_group_recommendation_bid_bottom_sheet_desc"

@@ -10,24 +10,32 @@ import android.widget.LinearLayout
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.CONST_1
 import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
+import com.tokopedia.topads.common.domain.model.createedit.CreateEditAdGroupItemAdsPotentialWidgetUiModel
+import com.tokopedia.topads.common.view.sheet.CreatePotentialPerformanceSheet
 import com.tokopedia.topads.edit.databinding.TopadsEditSheetEditAdGroupDailyBudgetBinding
 import com.tokopedia.topads.edit.di.DaggerTopAdsEditComponent
 import com.tokopedia.topads.edit.di.module.TopAdEditModule
 import com.tokopedia.topads.edit.viewmodel.EditAdGroupViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.utils.text.currency.NumberTextWatcher
 import javax.inject.Inject
 import com.tokopedia.topads.edit.R as topadseditR
 
 class EditAdGroupDailyBudgetBottomSheet : BottomSheetUnify() {
 
+    private var performanceData: MutableList<CreateEditAdGroupItemAdsPotentialWidgetUiModel>? = null
+    private var isBidAutomatic: Boolean = false
+    private var minBudget: Int = 0
+    private var maxBudget: Int = 0
     private var bids: MutableList<Float?> = mutableListOf()
     private var productIds: List<String> = mutableListOf()
     private var suggestedDailyBudget: String = "0"
@@ -82,6 +90,7 @@ class EditAdGroupDailyBudgetBottomSheet : BottomSheetUnify() {
         viewModel.performanceData.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
+                    this.performanceData = it.data
                     val data = it.data.getOrNull(2)
                     data?.let { performanceData ->
                         binding?.amount?.text = String.format("%sx", performanceData.retention)
@@ -100,32 +109,49 @@ class EditAdGroupDailyBudgetBottomSheet : BottomSheetUnify() {
     }
 
     private fun initView() {
+        setBudget()
         setListeners()
         if (dailyBudget == "0") {
             binding?.toggle?.isChecked = false
-            binding?.textField?.isEnabled = false
+            binding?.textField?.hide()
             binding?.editAdGroupNamCta?.isEnabled = false
         } else {
             binding?.toggle?.isChecked = true
-            binding?.textField?.isEnabled = true
+            binding?.textField?.show()
             binding?.editAdGroupNamCta?.isEnabled = true
             binding?.textField?.editText?.setText(dailyBudget)
         }
 
     }
 
+    private fun setBudget() {
+        minBudget = if (!isBidAutomatic) {
+            val searchBid = bids.firstOrNull()
+            val browseBid = bids.getOrNull(CONST_1)
+            if ((searchBid ?: 0f) > (browseBid ?: 0f)) (searchBid?.toInt())?.times(40)
+                ?: 0 else (browseBid?.toInt())?.times(40) ?: 0
+        } else {
+            16000
+        }
+        maxBudget = 10000000
+    }
+
     private fun setListeners() {
         binding?.textField?.editText?.addTextChangedListener(object : NumberTextWatcher(binding?.textField?.editText!!) {
             override fun onNumberChanged(number: Double) {
                 super.onNumberChanged(number)
-
-                if (dailyBudget == "0" && number >= suggestedDailyBudget.removeCommaRawString().toDoubleOrZero()) {
-                    binding?.editAdGroupNamCta?.isEnabled = true
-                    viewModel.getPerformanceData(productIds, bids, number.toFloat())
-                } else if (dailyBudget.toFloatOrZero() >= 0f && number < suggestedDailyBudget.removeCommaRawString().toDoubleOrZero()) {
+                if (number < minBudget) {
+                    binding?.textField?.isInputError = true
+                    binding?.textField?.setMessage(String.format("Minimum Rp%s", CurrencyFormatHelper.convertToRupiah(minBudget.toString())))
+                    binding?.editAdGroupNamCta?.isEnabled = false
+                } else if (number > maxBudget) {
+                    binding?.textField?.isInputError = true
+                    binding?.textField?.setMessage(String.format("Maksimum Rp%s", CurrencyFormatHelper.convertToRupiah(maxBudget.toString())))
                     binding?.editAdGroupNamCta?.isEnabled = false
                 } else {
                     binding?.editAdGroupNamCta?.isEnabled = true
+                    binding?.textField?.isInputError = false
+                    binding?.textField?.setMessage(String.EMPTY)
                     viewModel.getPerformanceData(productIds, bids, number.toFloat())
                 }
             }
@@ -139,16 +165,22 @@ class EditAdGroupDailyBudgetBottomSheet : BottomSheetUnify() {
 
         binding?.toggle?.setOnCheckedChangeListener { _: CompoundButton, state: Boolean ->
             if (state) {
-                binding?.textField?.isEnabled = true
+                binding?.textField?.show()
                 if (dailyBudget.removeCommaRawString().toFloatOrZero() < suggestedDailyBudget.removeCommaRawString().toFloatOrZero()) {
                     binding?.editAdGroupNamCta?.isEnabled = true
                 }
                 binding?.textField?.editText?.setText(suggestedDailyBudget)
             } else {
-                binding?.textField?.isEnabled = false
+                binding?.textField?.hide()
                 binding?.editAdGroupNamCta?.isEnabled = false
                 binding?.editAdGroupNamCta?.isEnabled = true
             }
+        }
+        binding?.icon?.setOnClickListener {
+            CreatePotentialPerformanceSheet.newInstance(
+                performanceData?.firstOrNull()?.retention.toIntOrZero(),
+                performanceData?.getOrNull(CONST_1)?.retention.toIntOrZero()
+            ).show(childFragmentManager)
         }
     }
 
@@ -167,12 +199,14 @@ class EditAdGroupDailyBudgetBottomSheet : BottomSheetUnify() {
             suggestedDailyBudget: String,
             productIds: List<String>,
             bids: MutableList<Float?>,
+            isBidAutomatic: Boolean,
         ): EditAdGroupDailyBudgetBottomSheet =
             EditAdGroupDailyBudgetBottomSheet().apply {
                 this.dailyBudget = dailyBudget
                 this.suggestedDailyBudget = suggestedDailyBudget
                 this.productIds = productIds
                 this.bids = bids
+                this.isBidAutomatic = isBidAutomatic
             }
     }
 }

@@ -43,7 +43,9 @@ object Constants {
     const val KEYWORD_TYPE_NEGATIVE_EXACT = 22
     const val REQUEST_OK = 1
     const val ADDED_PRODUCTS = "addedProducts"
+    const val ADDED_PRODUCTS_NEW = "addedProductsNew"
     const val DELETED_PRODUCTS = "deletedProducts"
+    const val DELETED_PRODUCTS_NEW = "deletedProductsNew"
 
     const val PUBLISHED = "published"
 

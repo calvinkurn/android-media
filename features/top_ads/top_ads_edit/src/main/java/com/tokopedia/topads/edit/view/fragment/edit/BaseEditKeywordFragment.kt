@@ -63,6 +63,7 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.utils.text.currency.NumberTextWatcher
 import javax.inject.Inject
 import com.tokopedia.topads.common.R as topadscommonR
@@ -418,6 +419,9 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
         var bidSettings: ArrayList<TopAdsBidSettingsModel>? = arrayListOf()
         var bidInfoDataItem: List<GroupEditInput.Group.TopadsSuggestionBidSetting>? = null
         var bidGroup = 0
+        val list = arguments?.getParcelableArrayList<TopAdsBidSettingsModel>("bidList")
+        list?.getOrNull(0)?.priceBid = CurrencyFormatHelper.convertRupiahToDouble(budget?.editText?.text.toString()).toFloat()
+
 
         if (!isAutoBid) {
             if (fragments?.get(0) is EditKeywordsFragment) {
@@ -427,7 +431,7 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
                 editedKeywordsPos = bundle.getParcelableArrayList(POSITIVE_EDIT)
                 positivekeywordsAll = bundle.getParcelableArrayList(POSITIVE_KEYWORD_ALL)
                 bidGroup = budget?.editText?.text?.toString()?.removeCommaRawString().toIntOrZero()
-                bidSettings = bundle.getParcelableArrayList(BID_TYPE)
+                bidSettings = list
                 bidInfoDataItem = (fragments[0] as EditKeywordsFragment).getSuggestedBidSettings()
             }
             if (fragments?.get(1) is EditNegativeKeywordsFragment) {

@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.text.SpannableString
 import android.text.TextPaint
 import android.text.style.ClickableSpan
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,6 +21,7 @@ import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.topads.UrlConstant
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.BROAD_POSITIVE
@@ -34,6 +34,7 @@ import com.tokopedia.topads.common.data.response.KeywordDataItem
 import com.tokopedia.topads.common.data.response.TopadsBidInfo
 import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
 import com.tokopedia.topads.common.sheet.TopAdsToolTipBottomSheet
+import com.tokopedia.topads.common.view.sheet.CreatePotentialPerformanceSheet
 import com.tokopedia.topads.common.view.sheet.TopAdsEditKeywordBidSheet
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.CreateManualAdsStepperModel
@@ -96,6 +97,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
     private lateinit var info2: ImageUnify
     private lateinit var bidList: RecyclerView
     private lateinit var txtInfo: Typography
+    private lateinit var potentialPerformanceIcon: IconUnify
     private lateinit var impressionPerformanceValueSearch: Typography
 //    private lateinit var bottomLayout: ConstraintLayout
 //    private lateinit var tipLayout: ConstraintLayout
@@ -151,6 +153,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         bidList = view.findViewById(R.id.bid_list)
         txtInfo = view.findViewById(R.id.txtInfo)
         impressionPerformanceValueSearch = view.findViewById(R.id.impressionPerformanceValueSearch)
+        potentialPerformanceIcon = view.findViewById(R.id.potential_performance_icon)
 //        bottomLayout = view.findViewById(com.tokopedia.topads.common.R.id.bottom)
 //        tipLayout = view.findViewById(com.tokopedia.topads.common.R.id.tipView)
 //        view.findViewById<TextFieldUnify>(com.tokopedia.topads.common.R.id.biaya_pencarian).hide()
@@ -330,7 +333,6 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
                     impressionPerformanceValueSearch.text = String.format("%sx", it.data.umpGetImpressionPrediction.impressionPredictionData.impression.finalImpression)
                 }
                 else -> {
-                    Log.e("BidsInfo", "Inside setObservers $it")
                 }
             }
         }
@@ -503,15 +505,24 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
                 stepperModel?.finalSearchBidPerClick = result
                 when {
                     result >= suggestBidPerClick -> {
-                        setMessageErrorField("Biaya optimal ✔️", "0", false)
-                        stepperModel?.selectedProductIds?.let {
-                            viewModel.getPerformanceData(it, result.toFloat(), -1f, -1f)
+                        if (result > maxBid.toDoubleOrZero() && maxBid.toIntOrZero() != 0){
+                            setMessageErrorField(getString(topadscommonR.string.max_bid_error_new), maxBid, true)
+                            actionEnable(false)
+                        } else{
+                            setMessageErrorField("Biaya optimal ✔️", "0", false)
+                            stepperModel?.selectedProductIds?.let {
+                                viewModel.getPerformanceData(it, result.toFloat(), -1f, -1f)
+                            }
+                            actionEnable(true)
                         }
-                        actionEnable(true)
+                    }
+
+                    result < minBid.toDouble() && maxBid.toIntOrZero() != 0 -> {
+                        setMessageErrorField(getString(topadscommonR.string.min_bid_error_new), minBid, true)
+                        actionEnable(false)
                     }
 
                     else -> {
-//                        setMessageErrorField(getString(com.tokopedia.topads.dashboard.R.string.topads_insight_recommended_bid_apply), "550", true)
                         budget.setMessage(getClickableString(suggestBidPerClick))
                         actionEnable(true)
                     }
@@ -551,6 +562,13 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
                         "Semakin tinggi biaya iklanmu, maka semakin tinggi peluang iklanmu ditampilkan."
                 )
             }.show(childFragmentManager)
+        }
+        potentialPerformanceIcon.setOnClickListener {
+            CreatePotentialPerformanceSheet.newInstance(
+                stepperModel?.searchPrediction
+                    ?: 0,
+                stepperModel?.recomPrediction ?: 0
+            ).show(childFragmentManager)
         }
     }
 

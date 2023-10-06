@@ -255,6 +255,7 @@
     </p>
 ]]></string>
     <string name="top_ads_create_bottom_sheet_title">Produk dipilih (%s)</string>
+    <string name="top_ads_create_keyword_bottom_sheet_title">Kata kunci (%s)</string>
 
     <string-array name="sort_product_list_array">
         <item>Terlaris</item>

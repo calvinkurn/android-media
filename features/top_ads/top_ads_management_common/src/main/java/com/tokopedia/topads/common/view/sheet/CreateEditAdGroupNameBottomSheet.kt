@@ -1,11 +1,13 @@
 package com.tokopedia.topads.common.view.sheet
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ExpandableListView.OnChildClickListener
 import androidx.fragment.app.FragmentManager
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.topads.common.databinding.TopadsEditSheetEditAdGroupNameBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.topads.common.R as topadscommonR
@@ -31,16 +33,35 @@ class CreateEditAdGroupNameBottomSheet() : BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setListeners()
         initView(binding)
+    }
+
+    private fun setListeners() {
+        binding?.textField?.editText?.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                if (p0.toString().trim() == groupName) {
+                    binding?.editAdGroupNameCta?.isEnabled = false
+                }
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                binding?.editAdGroupNameCta?.isEnabled = p0.toString().trim() != groupName && (p0?.length
+                    ?: Int.ZERO) < 70
+            }
+
+            override fun afterTextChanged(p0: Editable?) {}
+        })
+
+        binding?.editAdGroupNameCta?.setOnClickListener {
+            clickListener.invoke(binding?.textField?.editText?.text.toString())
+            dismiss()
+        }
     }
 
     private fun initView(view: TopadsEditSheetEditAdGroupNameBinding?) {
         context?.let {
             binding?.textField?.editText?.setText(groupName)
-            binding?.editAdGroupNameCta?.setOnClickListener {
-                clickListener.invoke(binding?.textField?.editText?.text.toString())
-                dismiss()
-            }
         }
     }
 

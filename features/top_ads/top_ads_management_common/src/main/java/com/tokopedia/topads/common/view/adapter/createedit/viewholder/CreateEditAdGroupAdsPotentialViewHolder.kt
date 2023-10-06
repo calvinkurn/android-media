@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.common.databinding.TopadsCreateEditItemAdsPotentialAdGroupBinding
 import com.tokopedia.topads.common.databinding.TopadsCreateEditItemAdsPotentialWidgetAdGroupBinding
@@ -17,7 +18,8 @@ class CreateEditAdGroupAdsPotentialViewHolder(private val viewBinding: TopadsCre
     override fun bind(element: CreateEditAdGroupItemAdsPotentialUiModel) {
         viewBinding.editAdItemAdsPotentialTitle.text = element.title
         viewBinding.editAdItemAdsPotentialFooter.text = element.footer
-
+        viewBinding.space.showWithCondition(element.title.isNotEmpty())
+        viewBinding.editAdItemAdsPotentialTitle.showWithCondition(element.title.isNotEmpty())
         when (element.state) {
             CreateEditAdGroupItemState.ERROR -> setContentError()
             CreateEditAdGroupItemState.LOADED -> setContentLoaded(element.listWidget)

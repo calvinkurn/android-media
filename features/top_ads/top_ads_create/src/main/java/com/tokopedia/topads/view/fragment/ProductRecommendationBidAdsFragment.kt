@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.common.sheet.TopAdsToolTipBottomSheet
+import com.tokopedia.topads.common.view.sheet.CreatePotentialPerformanceSheet
 import com.tokopedia.topads.create.databinding.TopadsCreateFragmentRecommendationBudgetBinding
 import com.tokopedia.topads.data.CreateManualAdsStepperModel
 import com.tokopedia.topads.di.CreateAdsComponent
@@ -143,6 +144,14 @@ class ProductRecommendationBidAdsFragment : BaseStepperFragment<CreateManualAdsS
                 }.show(childFragmentManager)
             }
 
+        }
+
+        binding?.infoImpressionPrediction?.setOnClickListener {
+            CreatePotentialPerformanceSheet.newInstance(
+                stepperModel?.searchPrediction
+                    ?: 0,
+                stepperModel?.recomPrediction ?: 0
+            ).show(childFragmentManager)
         }
     }
 

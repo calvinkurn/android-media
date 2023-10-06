@@ -10,7 +10,7 @@ data class CreateAdGroupDailyBudgetItemUiModel(
     var isDailyBudgetEnabled: Boolean = true,
     var hasDivider: Boolean = false,
     val onSwitchChange: (isSwitchOn: Boolean) -> Unit,
-    val onDailyBudgetChange: (isSwitchOn: Double) -> Unit,
+    val onDailyBudgetChange: (isEnable: Boolean) -> Unit,
     val clickListener: () -> Unit,
 ) : CreateEditItemUiModel {
 

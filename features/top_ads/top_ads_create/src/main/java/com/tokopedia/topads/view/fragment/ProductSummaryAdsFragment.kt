@@ -13,6 +13,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.formatTo
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -114,7 +115,7 @@ class ProductSummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperMode
                     stepperModel?.maxBid.toString()),
                 isManualAdBid = true,
                 isItemClickable = true
-            ) {openKeywordListBottomSheet()},
+            ) { openKeywordListBottomSheet() },
             CreateAdGroupItemUiModel(
                 CreateEditAdGroupItemTag.ADS_RECOMMENDATION,
                 "Iklan di Rekomendasi",
@@ -189,13 +190,8 @@ class ProductSummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperMode
         isDailyBudgetOn = isChecked
     }
 
-    private fun onDailyBudgetChange(number: Double) {
-        if (number < (stepperModel?.dailyBudget ?: 0)) {
-            binding?.createProductAdButton?.isEnabled = false
-        } else {
-            stepperModel?.dailyBudget = number.toInt()
-            binding?.createProductAdButton?.isEnabled = true
-        }
+    private fun onDailyBudgetChange(isEnable: Boolean) {
+        binding?.createProductAdButton?.isEnabled = isEnable
     }
 
     private fun createProductAdGroup() {
@@ -327,13 +323,15 @@ class ProductSummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperMode
                 CreateEditAdGroupItemTag.NAME,
                 "Nama Grup Iklan",
                 "Group 01 ",
-            ) {},
+                isEditable = true,
+                isItemClickable = true,
+            ) { editGroupName() },
             CreateAdGroupItemUiModel(
                 CreateEditAdGroupItemTag.PRODUCT,
                 "Produk",
                 String.format("%d produk", stepperModel?.selectedProductIds?.count()),
                 isItemClickable = true
-            ) {openProductListBottomSheet()},
+            ) { openProductListBottomSheet() },
             CreateAdGroupItemUiModel(
                 CreateEditAdGroupItemTag.ADS_SEARCH,
                 "Iklan di Pencarian",
@@ -393,9 +391,14 @@ class ProductSummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperMode
         super.onViewCreated(view, savedInstanceState)
         setDailyBudget()
         setUpView()
+        setInitialNameCounter()
         checkForAutoFillGroupName()
         setUpClicksOnViews()
 
+    }
+
+    private fun setInitialNameCounter() {
+        counter = 0
     }
 
     private fun setUpClicksOnViews() {
@@ -406,7 +409,12 @@ class ProductSummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperMode
 
     private fun setDailyBudget() {
         if (stepperModel?.autoBidState?.isEmpty() == true) {
-            stepperModel?.dailyBudget = (stepperModel?.finalSearchBidPerClick ?: 0) * MULTIPLIER
+            stepperModel?.dailyBudget = if ((stepperModel?.finalSearchBidPerClick
+                    ?: Int.ZERO) > (stepperModel?.finalRecommendationBidPerClick ?: Int.ZERO)) {
+                (stepperModel?.finalSearchBidPerClick ?: 0) * MULTIPLIER
+            } else {
+                (stepperModel?.finalRecommendationBidPerClick ?: 0) * MULTIPLIER
+            }
         } else {
             stepperModel?.dailyBudget = AUTOBID_DEFUALT_BUDGET
         }
@@ -484,8 +492,7 @@ class ProductSummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperMode
             activity,
             throwable.message,
             Snackbar.LENGTH_LONG
-        )
-            .show()
+        ).show()
     }
 
     private fun onErrorActivation(error: String?) {
@@ -501,5 +508,4 @@ class ProductSummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperMode
         binding?.createLoading?.hide()
         binding?.createProductAdButton?.isEnabled = true
     }
-
 }

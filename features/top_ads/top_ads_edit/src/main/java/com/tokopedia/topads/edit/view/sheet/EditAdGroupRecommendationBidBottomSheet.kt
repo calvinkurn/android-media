@@ -8,14 +8,17 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.topads.common.view.sheet.TopAdsToolTipBottomSheet
 import com.tokopedia.topads.edit.databinding.TopadsEditSheetEditAdGroupRecommendationBidBinding
 import com.tokopedia.topads.edit.di.DaggerTopAdsEditComponent
 import com.tokopedia.topads.edit.di.module.TopAdEditModule
 import com.tokopedia.topads.edit.viewmodel.EditAdGroupViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.utils.text.currency.NumberTextWatcher
 import javax.inject.Inject
 import com.tokopedia.topads.edit.R as topadseditR
@@ -105,11 +108,25 @@ class EditAdGroupRecommendationBidBottomSheet : BottomSheetUnify() {
             clickListener?.invoke(binding?.textField?.editText?.text.toString())
             dismiss()
         }
+        binding?.browseTxtInfo?.setOnClickListener {
+            TopAdsToolTipBottomSheet.newInstance().also {
+                it.setTitle("Iklan di Rekomendasi")
+                it.setDescription(
+                    "Iklanmu akan tampil pada berbagai halaman strategis seperti di halaman home, keranjang, inbox dan detail produk.\n" +
+                        "\n" +
+                        "Sistem Tokopedia akan menampilkan iklan produkmu dengan kemampuan teknologi yang dapat menyesuaikan ketertarikan dan riwayat penjelajahan calon pembeli memungkinkan iklanmu menjangkau calon pembeli dengan lebih luas dan tepat.\n" +
+                        "\n" +
+                        "Tips:\n" +
+                        "Semakin tinggi biaya iklanmu, maka semakin tinggi peluang iklanmu ditampilkan."
+                )
+            }.show(childFragmentManager)
+        }
     }
 
     private fun initView() {
         context?.let {
-            binding?.textField?.editText?.setText(priceBid.toString())
+            binding?.textField?.editText?.setText(CurrencyFormatHelper.convertToRupiah(priceBid?.toInt().toString()))
+            binding?.browseTxtInfo?.text = MethodChecker.fromHtml(getString(topadseditR.string.top_ads_text_info_browse_bid))
         }
     }
 

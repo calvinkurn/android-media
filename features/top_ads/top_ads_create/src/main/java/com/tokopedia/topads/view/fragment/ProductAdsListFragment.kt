@@ -59,7 +59,6 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
     private var notPromoted: ChipsUnify? = null
     private var promoted: ChipsUnify? = null
     private var swipeRefreshLayout: SwipeToRefresh? = null
-    private var tipBtn: FloatingButtonUnify? = null
     private var btnNext: UnifyButton? = null
     private var selectProductInfo: Typography? = null
     private var tvToolTipText: Typography? = null
@@ -119,6 +118,8 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
             stepperModel?.redirectionToSummary = false
             stepperListener?.getToFragment(UrlConstant.FRAGMENT_NUMBER_4, stepperModel)
         }
+
+        (activity as? StepperActivity)?.removeIcon()
     }
 
     private fun getSelectedProductAdId(): MutableList<String> {
@@ -139,7 +140,10 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
 
     override fun populateView() {
         if (activity is StepperActivity)
-            (activity as StepperActivity).updateToolbarTitle(getString(R.string.product_list_step))
+            (activity as StepperActivity).apply {
+                updateToolbarTitle(getString(R.string.product_list_step))
+                addIcon()
+            }
     }
 
     override fun getScreenName(): String {
@@ -162,7 +166,6 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         notPromoted = view.findViewById(R.id.not_promoted)
         promoted = view.findViewById(R.id.promoted)
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout)
-        tipBtn = view.findViewById(R.id.tip_btn)
         btnNext = view.findViewById(R.id.btn_next)
         selectProductInfo = view.findViewById(R.id.select_product_info)
         setAdapter()
@@ -214,37 +217,7 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         btnNext?.setOnClickListener {
             gotoNextPage()
         }
-        val tooltipView =
-            layoutInflater.inflate(com.tokopedia.topads.common.R.layout.tooltip_custom_view, null)
-                .apply {
-                    tvToolTipText = this.findViewById(com.tokopedia.topads.common.R.id.tooltip_text)
-                    tvToolTipText?.text =
-                        getString(com.tokopedia.topads.common.R.string.tip_memilih_produk)
 
-                    imgTooltipIcon = this.findViewById(com.tokopedia.topads.common.R.id.tooltip_icon)
-                    imgTooltipIcon?.setImageDrawable(view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_tips))
-                }
-
-        tipBtn?.addItem(tooltipView)
-        tipBtn?.setOnClickListener {
-            val tipsList: ArrayList<TipsUiModel> = ArrayList()
-            tipsList.apply {
-                add(TipsUiRowModel(R.string.pilih_produk_yang_berada_dalam,
-                    com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist))
-                add(TipsUiRowModel(R.string.pilih_produk_dengan_ulasan_terbanyak,
-                    com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist))
-                add(TipsUiRowModel(R.string.pilih_produk_terpopuler,
-                    com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist))
-            }
-            val tipsListSheet =
-                context?.let { it1 -> TipsListSheet.newInstance(it1, tipsList = tipsList) }
-            tipsListSheet?.showHeader = true
-            tipsListSheet?.showKnob = false
-            tipsListSheet?.setTitle(getString(com.tokopedia.topads.common.R.string.tip_memilih_produk))
-            tipsListSheet?.show(childFragmentManager, "")
-            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_TIPS_PRODUCT_IKLAN,
-                "")
-        }
         btnSort?.setOnClickListener {
             sortProductList.show(childFragmentManager, "")
         }

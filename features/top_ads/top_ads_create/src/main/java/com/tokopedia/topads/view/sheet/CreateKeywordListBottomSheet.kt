@@ -27,7 +27,7 @@ class CreateKeywordListBottomSheet : BottomSheetUnify() {
         isHideable = true
         showCloseIcon = true
         setChild(viewBinding.root)
-        setTitle((String.format(getString(R.string.top_ads_create_bottom_sheet_title),
+        setTitle((String.format(getString(R.string.top_ads_create_keyword_bottom_sheet_title),
             keyWordList.count().toString())))
         return super.onCreateView(inflater, container, savedInstanceState)
     }

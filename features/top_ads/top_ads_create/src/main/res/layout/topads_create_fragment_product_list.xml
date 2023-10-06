@@ -128,15 +128,6 @@
 
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
-    <com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
-        android:id="@+id/tip_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:fbType="group"
-        app:layout_constraintBottom_toTopOf="@+id/shadow_bottom"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
     <View
         android:id="@+id/shadow_bottom"
         android:layout_width="0dp"
