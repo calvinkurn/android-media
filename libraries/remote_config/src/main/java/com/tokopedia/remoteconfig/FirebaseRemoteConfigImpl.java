@@ -180,7 +180,7 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
     public void fetch(@Nullable final Listener listener) {
         try {
             if (firebaseRemoteConfig != null) {
-                setRealtimeUpdate()
+                setRealtimeUpdate();
                 firebaseRemoteConfig.setDefaultsAsync(R.xml.remote_config_default);
                 FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
                         .setMinimumFetchIntervalInSeconds(CONFIG_CACHE_EXPIRATION)
