@@ -406,8 +406,11 @@ class CartViewModel @Inject constructor(
             -1 -> wishlistIndex
             else -> min(cartModel.firstCartSectionHeaderPosition, wishlistIndex)
         }
-        cartDataList.value.add(++wishlistIndex, cartWishlistHolderData)
-        cartDataList.notifyObserver()
+        val insertedWishlistIndex = ++wishlistIndex
+        if (insertedWishlistIndex < cartDataList.value.size) {
+            cartDataList.value.add(insertedWishlistIndex, cartWishlistHolderData)
+            cartDataList.notifyObserver()
+        }
     }
 
     fun hasReachAllShopItems(data: Any): Boolean {
@@ -984,8 +987,11 @@ class CartViewModel @Inject constructor(
             -1 -> recentViewIndex
             else -> min(cartModel.firstCartSectionHeaderPosition, recentViewIndex)
         }
-        cartDataList.value.add(++recentViewIndex, cartRecentViewHolderData)
-        cartDataList.notifyObserver()
+        val insertedRecentViewIndex = ++recentViewIndex
+        if (insertedRecentViewIndex < cartDataList.value.size) {
+            cartDataList.value.add(insertedRecentViewIndex, cartRecentViewHolderData)
+            cartDataList.notifyObserver()
+        }
     }
 
     fun processGetWishlistV2Data() {
@@ -1097,8 +1103,11 @@ class CartViewModel @Inject constructor(
         if (recommendationPage == 1) {
             addCartTopAdsHeadlineData(++recommendationIndex)
         }
-        cartDataList.value.addAll(++recommendationIndex, cartRecommendationItemHolderDataList)
-        cartDataList.notifyObserver()
+        val insertedRecommendationIndex = ++recommendationIndex
+        if (insertedRecommendationIndex < cartDataList.value.size) {
+            cartDataList.value.add(insertedRecommendationIndex, cartRecommendationItemHolderDataList)
+            cartDataList.notifyObserver()
+        }
     }
 
     fun addCartTopAdsHeadlineData(index: Int) {
