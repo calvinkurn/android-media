@@ -25,9 +25,8 @@ class RejectedOrderRateCoachMark @Inject constructor(){
     private var coachMark: CoachMark2? = null
 
     fun setAnchor(dataKey: String, view: View) {
-        if (dataKey == DATA_KEY && anchor != view) {
+        if (dataKey == DATA_KEY) {
             anchor = view
-            show()
         }
     }
 
@@ -50,7 +49,7 @@ class RejectedOrderRateCoachMark @Inject constructor(){
             cm.showCoachMark(items)
 
             anchor.doOnDetach {
-                dismissCoachMark()
+                dismiss()
             }
         }
     }
@@ -73,8 +72,8 @@ class RejectedOrderRateCoachMark @Inject constructor(){
         }
     }
 
-    private fun dismissCoachMark() {
-        coachMark?.dismissCoachMark()
+    fun dismiss() {
+        coachMark?.hideCoachMark()
     }
 
     private fun setHasShown(context: Context) {
