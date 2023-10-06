@@ -28,6 +28,7 @@ import com.tokopedia.logisticaddaddress.domain.usecase.MapsGeocodeUseCase
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.uimodel.DistrictBoundaryResponseUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.uimodel.DistrictCenterUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.uimodel.GetDistrictDataUiModel
+import com.tokopedia.logisticaddaddress.features.pinpoint.PinpointFragment
 import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.PinpointNewPageFragment.Companion.BOTTOMSHEET_NOT_FOUND_LOC
 import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.PinpointNewPageFragment.Companion.LOCATION_NOT_FOUND_MESSAGE
 import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.uimodel.MapsGeocodeState
@@ -39,6 +40,12 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
+private val PinpointUiModel.anaNegativeFullFlow: Boolean
+    get() {
+        // todo need to test first
+        return this.districtId != 0L
+    }
 
 class PinpointViewModel @Inject constructor(
     private val getDistrict: GetDistrictUseCase,
@@ -159,14 +166,30 @@ class PinpointViewModel @Inject constructor(
                         isManageAddressFlow = true
                     )
                 )
-                _autofillDistrictData.value = Success(districtData.keroMapsAutofill)
+                if (districtData.keroMapsAutofill.messageError.isEmpty()) {
+                    if (uiState.isAdd() && uiModel.anaNegativeFullFlow && districtData.keroMapsAutofill.data.districtId != uiModel.districtId) {
+                        // is polygon but coordinate not in selected district
+                        _action.value = PinpointAction.InvalidDistrictPinpoint
+                    } else {
+                        uiModel = uiModel.map(districtData.keroMapsAutofill.data, null)
+                        _action.value = PinpointAction.UpdatePinpointDetail(
+                            uiModel.title,
+                            uiModel.formattedAddress
+                        )
+                    }
+                } else {
+                    districtData.keroMapsAutofill.messageError.getOrNull(0)?.run {
+                        checkErrorMessage(this)
+                    }
+                }
+//                _autofillDistrictData.value = Success(districtData.keroMapsAutofill)
             } catch (e: Throwable) {
-                _autofillDistrictData.value = Fail(e)
+                checkErrorMessage(e.message.toString())
             }
         }
     }
 
-    private fun locationNotFound() {
+    private fun locationNotFound(showIllustationMap: Boolean) {
         val invalidLocationDetail =
             if (uiModel.hasPinpoint() || uiState.isPinpointOnly()) {
                 "Tenang, kamu bisa pilih ulang lokasimu atau pakai lokasimu sebelumnya."
@@ -197,7 +220,7 @@ class PinpointViewModel @Inject constructor(
             title = "Yaah, lokasimu tidak terdeteksi",
             detail = invalidLocationDetail,
             imageUrl = TokopediaImageUrl.LOCATION_NOT_FOUND,
-            showMapIllustration = false,
+            showMapIllustration = showIllustationMap,
             buttonState = buttonState
         )
     }
@@ -218,20 +241,42 @@ class PinpointViewModel @Inject constructor(
                     _action.value = PinpointAction.MoveMap(latitude, longitude)
                 }
                 if ((responseModel.postalCode.isEmpty() && uiModel.postalCode.isEmpty()) || responseModel.districtId == 0L) {
-                    locationNotFound()
+                    locationNotFound(false)
                 } else {
                     uiModel = uiModel.map(responseModel, null)
                     if (responseModel.errMessage.isNullOrEmpty()) {
                         _action.value = PinpointAction.UpdatePinpointDetail(uiModel.title, uiModel.formattedAddress)
                     } else if (responseModel.errMessage?.contains(LOCATION_NOT_FOUND_MESSAGE) == true) {
-                        locationNotFound()
+                        locationNotFound(false)
                     }
                 }
 //                _districtLocation.value = Success(getDistrictMapper.map(districtLoc))
             } catch (e: Throwable) {
 //                _districtLocation.value = Fail(e)
+                checkErrorMessage(e.message.toString())
             }
         }
+    }
+
+    private fun checkErrorMessage(message: String) {
+        when {
+            message.contains(PinpointFragment.FOREIGN_COUNTRY_MESSAGE) -> locationOutOfReach()
+            message.contains(PinpointFragment.LOCATION_NOT_FOUND_MESSAGE) -> locationNotFound(true)
+            else -> {
+                locationNotFound(true)
+            }
+        }
+    }
+
+    private fun locationOutOfReach() {
+        _action.value = PinpointAction.LocationInvalid(
+            type = BOTTOMSHEET_NOT_FOUND_LOC,
+            title = "Lokasi di luar jangkauan",
+            detail = "Saat ini Tokopedia hanya melayani pengiriman di Indonesia saja. Pilih ulang lokasimu, ya.",
+            imageUrl = TokopediaImageUrl.LOCATION_NOT_FOUND,
+            showMapIllustration = false,
+            buttonState = if (uiState.isAdd()) PinpointAction.LocationInvalid.ButtonState() else null
+        )
     }
 
     fun getDistrictBoundaries() {

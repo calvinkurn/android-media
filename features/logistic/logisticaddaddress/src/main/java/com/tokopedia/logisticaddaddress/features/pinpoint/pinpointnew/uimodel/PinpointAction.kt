@@ -23,4 +23,6 @@ sealed interface PinpointAction {
     data class MoveMap(val lat: Double, val long: Double) : PinpointAction
 
     data class UpdatePinpointDetail(val title: String, val description: String) : PinpointAction
+
+    object InvalidDistrictPinpoint : PinpointAction
 }
