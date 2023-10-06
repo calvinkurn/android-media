@@ -2766,9 +2766,9 @@ class CartRevampFragment :
                 animation.start()
 
                 Handler(Looper.getMainLooper()).postDelayed({
-                    context?.let { ctx ->
+                    context?.let { ctx2 ->
                         val inWishlistColor = ContextCompat.getColor(
-                            ctx,
+                            ctx2,
                             unifyprinciplesR.color.Unify_RN500
                         )
                         wishlistIcon.setImage(
