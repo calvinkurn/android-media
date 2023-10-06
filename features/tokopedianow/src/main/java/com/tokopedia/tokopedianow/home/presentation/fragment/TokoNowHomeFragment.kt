@@ -2053,7 +2053,8 @@ class TokoNowHomeFragment :
             userSession = userSession,
             viewModel = viewModelTokoNow,
             analytics = analytics,
-            startActivityForResult = this::startActivityForResult
+            startActivityForResult = this::startActivityForResult,
+            onBlockAddToCartListener = ::showToasterWhenAddToCartBlocked
         )
     }
 
