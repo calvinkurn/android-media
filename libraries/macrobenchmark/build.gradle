@@ -53,4 +53,5 @@ dependencies {
     androidTestImplementation 'androidx.benchmark:benchmark-macro-junit4:1.2.0-alpha06'
     androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
     implementation projectOrAar(rootProject.ext.libraries.macrobenchmarkUtil)
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
 }
