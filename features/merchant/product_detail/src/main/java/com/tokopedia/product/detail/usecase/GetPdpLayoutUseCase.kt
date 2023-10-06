@@ -515,7 +515,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
             processRequestCacheable()
         } else {
             processRequestAlwaysCloud(
-                cacheState = CacheState(isFromCache = false, cacheFirstThenCloud = false)
+                cacheState = CacheState(cacheFirstThenCloud = false)
             ).let {
                 flowOf(it)
             }
@@ -589,7 +589,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
         return processResponse(
             pdpLayout = data,
             error = error,
-            cacheState = cacheState,
+            cacheState = cacheState.copy(isFromCache = false),
             isCampaign = isCampaign
         )
     }

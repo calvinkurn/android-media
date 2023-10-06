@@ -2942,7 +2942,7 @@ open class DynamicProductDetailFragment :
     }
 
     private fun isPdpCacheableError(): Boolean {
-        return isCacheable() && viewModel.pdpLayout?.cacheState?.isFromCache == true
+        return isCacheable() && viewModel.pdpLayout?.cacheState?.hasCached.orFalse()
     }
 
     private fun showToasterP1Error(error: Throwable) {
@@ -2956,6 +2956,8 @@ open class DynamicProductDetailFragment :
 
         when (errorModel.errorCode.toIntOrZero()) {
             GlobalError.SERVER_ERROR, GlobalError.NO_CONNECTION -> {
+                binding?.swipeRefreshPdp?.isRefreshing = false
+
                 Toaster.build(
                     view = view,
                     text = "Koneksi internetmu terganggu!\nPastikan internetmu lancar dengan cek ulang paket data, WifFi, atau jaringan di tempatmu.",
@@ -2965,7 +2967,6 @@ open class DynamicProductDetailFragment :
                 ) {
                     onSwipeRefresh()
                 }.show()
-                return
             }
         }
     }
