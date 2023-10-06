@@ -70,6 +70,7 @@ import com.tokopedia.shop.common.extension.showToasterError
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.ShopUtilExt.setAnchorViewToShopHeaderBottomViewContainer
+import com.tokopedia.shop.common.view.interfaces.InterfaceShopPageHeader
 import com.tokopedia.shop.databinding.FragmentShopPageCampaignBinding
 import com.tokopedia.shop.home.WidgetName
 import com.tokopedia.shop.home.WidgetType
@@ -89,9 +90,8 @@ import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetVoucherSliderUiModel
 import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
-import com.tokopedia.shop.common.view.interfaces.InterfaceShopPageHeader
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragment
-import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragmentV2
+import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageReimagineHeaderFragment
 import com.tokopedia.shop.pageheader.util.ShopPageHeaderTabName
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.unifycomponents.ImageUnify
@@ -124,8 +124,8 @@ class ShopPageCampaignFragment :
         private const val QUERY_PARAM_TAB = "tab"
         private const val PATTERN_CROP_TOP_PERCENTAGE = 0.25
         private const val DEVICE_WIDTH_540 = 540
-        private const val PATTERN_HEIGHT_PERCENTAGE_FOR_DEVICE_WIDTH_BELOW_540  = 0.39f
-        private const val PATTERN_HEIGHT_PERCENTAGE_FOR_DEVICE_WIDTH_ABOVE_540  = 0.48f
+        private const val PATTERN_HEIGHT_PERCENTAGE_FOR_DEVICE_WIDTH_BELOW_540 = 0.39f
+        private const val PATTERN_HEIGHT_PERCENTAGE_FOR_DEVICE_WIDTH_ABOVE_540 = 0.48f
 
         fun createInstance(shopId: String): ShopPageCampaignFragment {
             val bundle = Bundle()
@@ -195,7 +195,7 @@ class ShopPageCampaignFragment :
     }
 
     private fun observeShopReminderButtonStatusSharedVieModel() {
-        shopReminderButtonStatusSharedVieModel?.sharedBannerTimerUiModel?.observe(viewLifecycleOwner) {bannerTimerUiModel ->
+        shopReminderButtonStatusSharedVieModel?.sharedBannerTimerUiModel?.observe(viewLifecycleOwner) { bannerTimerUiModel ->
             if (!shopCampaignTabAdapter.isLoading && getSelectedFragment() != this) {
                 bannerTimerUiModel?.let {
                     viewModelCampaign?.updateBannerTimerWidgetUiModel(
@@ -207,7 +207,7 @@ class ShopPageCampaignFragment :
         }
     }
     private fun observeUpdatedBannerTimerUiModelData() {
-        viewModelCampaign?.updatedBannerTimerUiModelData?.observe(viewLifecycleOwner) {bannerTimerUiModel ->
+        viewModelCampaign?.updatedBannerTimerUiModelData?.observe(viewLifecycleOwner) { bannerTimerUiModel ->
             bannerTimerUiModel?.let {
                 shopReminderButtonStatusSharedVieModel?.updateSharedBannerTimerData(it)
             }
@@ -394,7 +394,7 @@ class ShopPageCampaignFragment :
         constraintSet.clone(view as? ConstraintLayout)
         val heightPercentage = if (screenWidth <= DEVICE_WIDTH_540) {
             PATTERN_HEIGHT_PERCENTAGE_FOR_DEVICE_WIDTH_BELOW_540
-        } else{
+        } else {
             PATTERN_HEIGHT_PERCENTAGE_FOR_DEVICE_WIDTH_ABOVE_540
         }
         constraintSet.constrainPercentHeight(imageUnify.id, heightPercentage)
@@ -460,7 +460,7 @@ class ShopPageCampaignFragment :
             listWidgetContentData
                 .filterIsInstance<ShopWidgetDisplayBannerTimerUiModel>()
                 .firstOrNull().let { bannerTimerWidget ->
-                    if(bannerTimerWidget?.data?.status == StatusCampaign.UPCOMING) {
+                    if (bannerTimerWidget?.data?.status == StatusCampaign.UPCOMING) {
                         viewModel?.getBannerTimerRemindMeStatus(bannerTimerWidget.getCampaignId())
                     }
                 }
@@ -531,8 +531,8 @@ class ShopPageCampaignFragment :
                         .orZero()
                 if (firstCompletelyVisibleItemPosition == 0 && isClickToScrollToTop) {
                     isClickToScrollToTop = false
-                    if(ShopUtil.isEnableShopPageReImagined(context)){
-                        (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.expandHeader()
+                    if (ShopUtil.isEnableShopPageReImagined(context)) {
+                        (getRealParentFragment() as? ShopPageReimagineHeaderFragment)?.expandHeader()
                     } else {
                         (getRealParentFragment() as? ShopPageHeaderFragment)?.expandHeader()
                     }
@@ -640,7 +640,7 @@ class ShopPageCampaignFragment :
             viewModelCampaign?.getWidgetContentData(
                 listWidgetLayoutToLoad.toList(),
                 shopId,
-                widgetUserAddressLocalData,
+                widgetUserAddressLocalData
             )
         }
     }
@@ -665,8 +665,9 @@ class ShopPageCampaignFragment :
     override fun loadData(page: Int) {}
 
     override fun scrollToTop(isUserClick: Boolean) {
-        if(isUserClick)
+        if (isUserClick) {
             isClickToScrollToTop = true
+        }
         getRecyclerView(view)?.scrollToPosition(0)
     }
 
@@ -675,16 +676,16 @@ class ShopPageCampaignFragment :
     }
 
     private fun hideScrollToTopButton() {
-        if(ShopUtil.isEnableShopPageReImagined(context)){
-            (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.hideScrollToTopButton()
+        if (ShopUtil.isEnableShopPageReImagined(context)) {
+            (getRealParentFragment() as? ShopPageReimagineHeaderFragment)?.hideScrollToTopButton()
         } else {
             (getRealParentFragment() as? ShopPageHeaderFragment)?.hideScrollToTopButton()
         }
     }
 
     private fun showScrollToTopButton() {
-        if(ShopUtil.isEnableShopPageReImagined(context)){
-            (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.showScrollToTopButton()
+        if (ShopUtil.isEnableShopPageReImagined(context)) {
+            (getRealParentFragment() as? ShopPageReimagineHeaderFragment)?.showScrollToTopButton()
         } else {
             (getRealParentFragment() as? ShopPageHeaderFragment)?.showScrollToTopButton()
         }
@@ -785,8 +786,8 @@ class ShopPageCampaignFragment :
     private fun checkShouldSelectHomeTab(appLink: String) {
         val tabValue = Uri.parse(appLink).getQueryParameter(QUERY_PARAM_TAB).orEmpty()
         if (tabValue == ShopPageHeaderTabName.HOME) {
-            if(ShopUtil.isEnableShopPageReImagined(context)){
-                (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.selectShopTab(ShopPageHeaderTabName.HOME, true)
+            if (ShopUtil.isEnableShopPageReImagined(context)) {
+                (getRealParentFragment() as? ShopPageReimagineHeaderFragment)?.selectShopTab(ShopPageHeaderTabName.HOME, true)
             } else {
                 (getRealParentFragment() as? ShopPageHeaderFragment)?.selectShopTab(ShopPageHeaderTabName.HOME, true)
             }
@@ -870,7 +871,9 @@ class ShopPageCampaignFragment :
     private fun sendClickCtaHeaderTitle(widgetId: String) {
         shopCampaignTabTracker.clickCtaHeaderTitle(
             ShopPageCampaignTrackingMapper.mapToShopCampaignWidgetHeaderTitleTrackerDataModel(
-                widgetId, shopId, userId
+                widgetId,
+                shopId,
+                userId
             )
         )
     }
@@ -889,10 +892,12 @@ class ShopPageCampaignFragment :
         header: BaseShopHomeWidgetUiModel.Header,
         widgetId: String
     ) {
-        if(header.title.isNotEmpty()){
+        if (header.title.isNotEmpty()) {
             shopCampaignTabTracker.impressionWidgetHeaderTitle(
                 ShopPageCampaignTrackingMapper.mapToShopCampaignWidgetHeaderTitleTrackerDataModel(
-                    widgetId, shopId, userId
+                    widgetId,
+                    shopId,
+                    userId
                 )
             )
         }
@@ -936,7 +941,7 @@ class ShopPageCampaignFragment :
         position: Int
     ) {
         if (isLogin) {
-            if(viewModelCampaign?.isLoadingRedeemVoucher() == false) {
+            if (viewModelCampaign?.isLoadingRedeemVoucher() == false) {
                 sendClickCtaVoucherSliderItemTracker(parentUiModel, model)
                 redeemCampaignVoucherSlider(parentUiModel, model)
             }
@@ -989,8 +994,8 @@ class ShopPageCampaignFragment :
             shopId = shopId,
             useDarkBackground = isCampaignTabDarkMode(),
             voucherSlugs = listCategorySlug,
-            campaignId = "", //TODO: replace with real id
-            widgetId = "" //TODO: replace with real id
+            campaignId = "", // TODO: replace with real id
+            widgetId = "" // TODO: replace with real id
         )
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
@@ -1011,13 +1016,15 @@ class ShopPageCampaignFragment :
             widgetId = widgetId
         ).apply {
             setOnVoucherRedeemSuccess { redeemResult ->
-                handleRedeemVoucherSuccess(ShopPageCampaignMapper.mapToShopCampaignRedeemPromoVoucherResult(
-                    slug,
-                    couponCode,
-                    campaignId,
-                    widgetId,
-                    redeemResult
-                ))
+                handleRedeemVoucherSuccess(
+                    ShopPageCampaignMapper.mapToShopCampaignRedeemPromoVoucherResult(
+                        slug,
+                        couponCode,
+                        campaignId,
+                        widgetId,
+                        redeemResult
+                    )
+                )
             }
             setOnVoucherUseSuccess { showUseVoucherSuccess() }
         }
@@ -1027,7 +1034,7 @@ class ShopPageCampaignFragment :
     private fun showUseVoucherSuccess() {
         val toasterMessage = context?.getString(R.string.shop_page_use_voucher_success).orEmpty()
         showToaster(
-            message = toasterMessage ,
+            message = toasterMessage,
             view = view ?: return,
             ctaText = "",
             onCtaClicked = {},
@@ -1098,7 +1105,7 @@ class ShopPageCampaignFragment :
     override fun onTimerFinished(uiModel: ShopWidgetDisplayBannerTimerUiModel) {
         shopCampaignTabAdapter.removeWidget(uiModel)
         endlessRecyclerViewScrollListener.resetState()
-        if(getSelectedFragment() == this){
+        if (getSelectedFragment() == this) {
             refreshShopHeader()
         }
     }
@@ -1345,7 +1352,7 @@ class ShopPageCampaignFragment :
         }
     }
 
-    private fun getShopHeaderBottomViewContainer(): View?{
+    private fun getShopHeaderBottomViewContainer(): View? {
         return (getRealParentFragment() as? InterfaceShopPageHeader)?.getBottomViewContainer()
     }
 }

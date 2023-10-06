@@ -40,12 +40,12 @@ import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_PRODU
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.view.interfaces.HasSharedViewModel
+import com.tokopedia.shop.common.view.interfaces.InterfaceShopPageHeader
 import com.tokopedia.shop.common.view.interfaces.ShopPageSharedListener
 import com.tokopedia.shop.common.view.viewmodel.ShopPageFeedTabSharedViewModel
 import com.tokopedia.shop.info.view.activity.ShopInfoActivity
-import com.tokopedia.shop.common.view.interfaces.InterfaceShopPageHeader
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragment
-import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragmentV2
+import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageReimagineHeaderFragment
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPageHeaderPerformanceMonitoringListener
 
 class ShopPageHeaderActivity :
@@ -88,7 +88,7 @@ class ShopPageHeaderActivity :
         initPerformanceMonitoring()
         checkIfAppLinkToShopInfo()
         checkIfApplinkRedirectedForMigration()
-        if(ShopUtil.isEnableShopPageReImagined(this)){
+        if (ShopUtil.isEnableShopPageReImagined(this)) {
             configStatusBarAndSetFullScreen()
         }
         super.onCreate(savedInstanceState)
@@ -105,10 +105,10 @@ class ShopPageHeaderActivity :
     }
 
     override fun getNewFragment(): Fragment = if (ShopUtil.isEnableShopPageReImagined(this)) {
-            ShopPageHeaderFragmentV2.createInstance()
-        } else {
-            ShopPageHeaderFragment.createInstance()
-        }
+        ShopPageReimagineHeaderFragment.createInstance()
+    } else {
+        ShopPageHeaderFragment.createInstance()
+    }
 
     override fun getComponent(): ShopComponent = ShopComponentHelper().getComponent(application, this)
 
@@ -167,9 +167,9 @@ class ShopPageHeaderActivity :
         when (requestCode) {
             MvcView.REQUEST_CODE -> {
                 if (resultCode == MvcView.RESULT_CODE_OK) {
-                    if(ShopUtil.isEnableShopPageReImagined(this)) {
-                        (fragment as? ShopPageHeaderFragmentV2)?.refreshData()
-                    }else {
+                    if (ShopUtil.isEnableShopPageReImagined(this)) {
+                        (fragment as? ShopPageReimagineHeaderFragment)?.refreshData()
+                    } else {
                         (fragment as? ShopPageHeaderFragment)?.refreshData()
                     }
                 }
@@ -245,8 +245,8 @@ class ShopPageHeaderActivity :
     }
 
     override fun createPdpAffiliateLink(basePdpAppLink: String): String {
-        return if(ShopUtil.isEnableShopPageReImagined(this)) {
-            (fragment as? ShopPageHeaderFragmentV2)?.createPdpAffiliateLink(basePdpAppLink)
+        return if (ShopUtil.isEnableShopPageReImagined(this)) {
+            (fragment as? ShopPageReimagineHeaderFragment)?.createPdpAffiliateLink(basePdpAppLink)
                 .orEmpty()
         } else {
             (fragment as? ShopPageHeaderFragment)?.createPdpAffiliateLink(basePdpAppLink)
@@ -259,8 +259,8 @@ class ShopPageHeaderActivity :
         isVariant: Boolean,
         stockQty: Int
     ) {
-        if(ShopUtil.isEnableShopPageReImagined(this)){
-            (fragment as? ShopPageHeaderFragmentV2)?.createAffiliateCookieAtcProduct(
+        if (ShopUtil.isEnableShopPageReImagined(this)) {
+            (fragment as? ShopPageReimagineHeaderFragment)?.createAffiliateCookieAtcProduct(
                 productId,
                 isVariant,
                 stockQty
