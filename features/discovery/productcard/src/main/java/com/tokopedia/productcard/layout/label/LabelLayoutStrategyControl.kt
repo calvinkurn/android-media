@@ -17,49 +17,45 @@ import com.tokopedia.productcard.utils.renderLabelOverlay
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
 
-internal class LabelLayoutStrategyControl : LabelLayoutStrategy {
+internal class LabelLayoutStrategyControl: LabelLayoutStrategy {
     override fun renderLabelReposition(
         labelRepositionBackground: ImageView?,
         labelReposition: Typography?,
-        productCardModel: ProductCardModel
+        productCardModel: ProductCardModel,
     ) {
         com.tokopedia.productcard.utils.renderLabelReposition(
             false,
             labelRepositionBackground,
             labelReposition,
-            productCardModel.getLabelReposition()
+            productCardModel.getLabelReposition(),
         )
     }
 
     override fun renderTextGimmick(view: View, productCardModel: ProductCardModel) {
         val textViewGimmick = view.findViewById<Typography?>(R.id.textViewGimmick)
-        if (productCardModel.isShowLabelGimmick()) {
+        if (productCardModel.isShowLabelGimmick())
             textViewGimmick?.initLabelGroup(productCardModel.getLabelGimmick())
-        } else {
+        else
             textViewGimmick?.initLabelGroup(null)
-        }
     }
 
     override fun getGimmickSectionHeight(
         context: Context,
-        productCardModel: ProductCardModel
+        productCardModel: ProductCardModel,
     ): Int {
         return if (productCardModel.isShowLabelGimmick()) {
             val labelGimmick = productCardModel.getLabelGimmick()
 
-            if (labelGimmick != null && labelGimmick.title.isNotEmpty()) {
+            if (labelGimmick != null && labelGimmick.title.isNotEmpty())
                 context.resources.getDimensionPixelSize(R.dimen.product_card_text_view_gimmick_height)
-            } else {
-                0
-            }
-        } else {
-            0
+            else 0
         }
+        else 0
     }
 
     override fun renderLabelBestSeller(
         labelBestSeller: Typography?,
-        productCardModel: ProductCardModel
+        productCardModel: ProductCardModel,
     ) {
         val isShowBestSeller = productCardModel.isShowLabelBestSeller()
         com.tokopedia.productcard.utils.renderLabelBestSeller(
@@ -71,33 +67,29 @@ internal class LabelLayoutStrategyControl : LabelLayoutStrategy {
 
     override fun getLabelBestSellerHeight(
         context: Context,
-        productCardModel: ProductCardModel
+        productCardModel: ProductCardModel,
     ): Int {
         val hasLabelBestSeller = productCardModel.isShowLabelBestSeller()
 
-        return if (hasLabelBestSeller) {
+        return if (hasLabelBestSeller)
             context.resources.getDimensionPixelSize(R.dimen.product_card_label_best_seller_height)
-        } else {
-            0
-        }
+        else 0
     }
 
     override fun getGridViewContentMarginTop(
         context: Context,
-        productCardModel: ProductCardModel
+        productCardModel: ProductCardModel,
     ): Int {
         val hasLabelBestSeller = productCardModel.isShowLabelBestSeller()
 
-        return if (hasLabelBestSeller) {
+        return if (hasLabelBestSeller)
             0
-        } else {
-            context.resources.getDimensionPixelSize(R.dimen.product_card_content_margin)
-        }
+        else context.resources.getDimensionPixelSize(R.dimen.product_card_content_margin)
     }
 
     override fun renderLabelBestSellerCategorySide(
         textCategorySide: Typography?,
-        productCardModel: ProductCardModel
+        productCardModel: ProductCardModel,
     ) {
         val isShowCategorySide = productCardModel.isShowLabelCategorySide()
 
@@ -110,7 +102,7 @@ internal class LabelLayoutStrategyControl : LabelLayoutStrategy {
 
     override fun renderLabelBestSellerCategoryBottom(
         textCategoryBottom: Typography?,
-        productCardModel: ProductCardModel
+        productCardModel: ProductCardModel,
     ) {
         val isShowCategoryBottom = productCardModel.isShowLabelCategoryBottom()
 
@@ -123,25 +115,22 @@ internal class LabelLayoutStrategyControl : LabelLayoutStrategy {
 
     override fun getTextCategoryBottomHeight(
         context: Context,
-        productCardModel: ProductCardModel
+        productCardModel: ProductCardModel,
     ): Int {
         val hasLabelCategoryBottom = productCardModel.isShowLabelCategoryBottom()
 
-        return if (hasLabelCategoryBottom) {
+        return if (hasLabelCategoryBottom)
             context.resources.getDimensionPixelSize(R.dimen.product_card_label_best_seller_category_bottom_height)
-        } else {
-            0
-        }
+        else 0
     }
 
     override fun renderLabelPrice(view: View, productCardModel: ProductCardModel) {
         val labelPrice = view.findViewById<Label?>(R.id.labelPrice)
 
-        if (productCardModel.isShowLabelPrice()) {
+        if (productCardModel.isShowLabelPrice())
             labelPrice?.initLabelGroup(productCardModel.getLabelPrice())
-        } else {
+        else
             labelPrice?.initLabelGroup(null)
-        }
 
         val labelPriceReposition = view.findViewById<Label?>(R.id.labelPriceReposition)
         labelPriceReposition?.initLabelGroup(null)
@@ -161,6 +150,7 @@ internal class LabelLayoutStrategyControl : LabelLayoutStrategy {
         val textViewReviewCountMarginTop = view.context.resources.getDimensionPixelSize(R.dimen.product_card_text_review_count_margin_top)
         val imageFreeOngkirPromoMarginTop = view.context.resources.getDimensionPixelSize(R.dimen.product_card_free_ongkir_badge_margin_top)
 
+
         contentLayout?.applyConstraintSet {
             it.clear(R.id.imageShopBadge, ConstraintSet.TOP)
             it.clear(R.id.textViewShopLocation, ConstraintSet.TOP)
@@ -174,42 +164,42 @@ internal class LabelLayoutStrategyControl : LabelLayoutStrategy {
                 ConstraintSet.TOP,
                 R.id.labelPriceBarrier,
                 ConstraintSet.BOTTOM,
-                shopBadgeMarginTop
+                shopBadgeMarginTop,
             )
             it.connect(
                 R.id.textViewShopLocation,
                 ConstraintSet.TOP,
                 R.id.labelPriceBarrier,
                 ConstraintSet.BOTTOM,
-                textViewShopLocationMarginTop
+                textViewShopLocationMarginTop,
             )
             it.connect(
                 R.id.imageFulfillment,
                 ConstraintSet.TOP,
                 R.id.labelPriceBarrier,
                 ConstraintSet.BOTTOM,
-                imageFulfillmentnMarginTop
+                imageFulfillmentnMarginTop,
             )
             it.connect(
                 R.id.linearLayoutImageRating,
                 ConstraintSet.TOP,
                 R.id.textViewFulfillment,
                 ConstraintSet.BOTTOM,
-                linearLayoutImageRatingMarginTop
+                linearLayoutImageRatingMarginTop,
             )
             it.connect(
                 R.id.textViewReviewCount,
                 ConstraintSet.TOP,
                 R.id.textViewFulfillment,
                 ConstraintSet.BOTTOM,
-                textViewReviewCountMarginTop
+                textViewReviewCountMarginTop,
             )
             it.connect(
                 R.id.imageFreeOngkirPromo,
                 ConstraintSet.TOP,
                 R.id.imageShopRating,
                 ConstraintSet.BOTTOM,
-                imageFreeOngkirPromoMarginTop
+                imageFreeOngkirPromoMarginTop,
             )
         }
     }
@@ -224,7 +214,7 @@ internal class LabelLayoutStrategyControl : LabelLayoutStrategy {
             isShowCampaign,
             labelCampaignBackground,
             labelCampaign,
-            productCardModel
+            productCardModel,
         )
     }
 
@@ -238,7 +228,7 @@ internal class LabelLayoutStrategyControl : LabelLayoutStrategy {
             false,
             labelOverlayBackground,
             labelOverlay,
-            productCardModel.getLabelOverlay()
+            productCardModel.getLabelOverlay(),
         )
     }
 
