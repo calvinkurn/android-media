@@ -2,6 +2,7 @@ package tokopedia.applink.deeplink
 
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.DeeplinkMapper
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.home.DeeplinkMapperHome
@@ -9,15 +10,65 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
+import com.tokopedia.applink.model.Always
 import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
 import com.tokopedia.config.GlobalConfig
 import io.mockk.every
+import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 class DeepLinkMapperSellerAppTest : DeepLinkMapperTestFixture() {
+
+    companion object {
+        // This a reminder to developer.
+        // If this size is modified, please also add unit test for the added deeplink.
+        const val SIZE_HOST = 31
+        const val SIZE_PATH = 71
+    }
+
+    @Throws(RuntimeException::class)
+    @Test
+    fun `deeplinkPatternTokopediaSchemeList check`() {
+        // This test is a reminder for developer.
+        // If there is any mapping changed/added/deleted, developer should change the SIZE_MAPPER
+        // also there developer should also add the corresponding unit test for the deeplink.
+        Assert.assertEquals(
+            SIZE_HOST,
+            DeeplinkMapper.getSellerappSchemeList().size
+        )
+        var totalPath = 0
+        var key = ""
+        var alphabeticalOrder = true
+        val entryKeyNotAlphabetical = mutableListOf<String>()
+        DeeplinkMapper.getSellerappSchemeList().forEach { entry ->
+            if (entry.key < key) {
+                entryKeyNotAlphabetical.add(entry.key)
+                alphabeticalOrder = false
+            } else if (entry.key == key) {
+                throw RuntimeException("There is duplicate key: " + entry.key)
+            }
+            key = entry.key
+            totalPath += entry.value.size
+
+            var alwaysLogicFound = false
+            for (value in entry.value) {
+                if (value.logic !is Always && alwaysLogicFound) {
+                    throw RuntimeException("Logic goTo should always in bottom. Key: " + entry.key)
+                }
+                if (value.logic is Always) {
+                    alwaysLogicFound = true
+                }
+            }
+        }
+        Assert.assertEquals(SIZE_PATH, totalPath)
+        // alphabetical order improve readability in code
+        if (!alphabeticalOrder) {
+            throw RuntimeException(entryKeyNotAlphabetical.joinToString(", ") + " is not alphabetical")
+        }
+    }
 
     override fun setup() {
         super.setup()
@@ -171,6 +222,7 @@ class DeepLinkMapperSellerAppTest : DeepLinkMapperTestFixture() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/seller-mvc/create/shop/"
         assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.CREATE_VOUCHER, expectedDeepLink)
     }
+
     @Test
     fun `check seller search appLink then should return tokopedia internal seller search in sellerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/seller-search"

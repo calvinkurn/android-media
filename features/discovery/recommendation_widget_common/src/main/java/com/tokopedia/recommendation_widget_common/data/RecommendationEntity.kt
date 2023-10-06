@@ -239,6 +239,9 @@ data class RecommendationEntity(
         @SerializedName("thematicID")
         val thematicID: Long = 0L
 
+        @SerializedName("endDate")
+        val endDate: String = ""
+
         class Assets {
             @SerializedName("banner")
             val banner: Banner? = Banner()

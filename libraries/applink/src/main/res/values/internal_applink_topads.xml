@@ -33,5 +33,5 @@
     <string name="path_topads_click_tracker_link" translatable="false">/promo/v1/clicks/.*</string>
     <string name="path_topads_mp_ads_creation">/mp-ad-creation</string>
     <string name="path_topads_see_ads_performance">/see-ads-performance</string>
-
+    <string name="path_topads_product_recommendation">/product-recommendation</string>
 </resources>

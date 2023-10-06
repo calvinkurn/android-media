@@ -21,17 +21,21 @@ import org.junit.Test
 import java.util.ArrayList
 
 @ExperimentalCoroutinesApi
-class AffiliateTermsAndConditionViewModelTest{
+class AffiliateTermsAndConditionViewModelTest {
     private val userSessionInterface: UserSessionInterface = mockk()
     private val affiliateOnBoardingUseCase: AffiliateOnBoardingUseCase = mockk()
-    private val affiliateTermViewModel = spyk(AffiliateTermsAndConditionViewModel (userSessionInterface,affiliateOnBoardingUseCase))
+    private val affiliateTermViewModel = spyk(
+        AffiliateTermsAndConditionViewModel(
+            affiliateOnBoardingUseCase
+        )
+    )
+
     @get:Rule
     var rule = InstantTaskExecutorRule()
 
     @Before
     @Throws(Exception::class)
     fun setUp() {
-
         MockKAnnotations.init(this)
         Dispatchers.setMain(TestCoroutineDispatcher())
     }
@@ -45,14 +49,13 @@ class AffiliateTermsAndConditionViewModelTest{
     /**************************** affiliateOnBoarding() *******************************************/
     @Test
     fun `Affiliate Onboarding`() {
-        val affiliateOnboarding : AffiliateOnBoardingData.OnBoardAffiliate? = mockk(relaxed = true)
+        val affiliateOnboarding: AffiliateOnBoardingData.OnBoardAffiliate? = mockk(relaxed = true)
         coEvery { affiliateOnBoardingUseCase.affiliateOnBoarding(any()) } returns affiliateOnboarding
 
         affiliateTermViewModel.affiliateOnBoarding(ArrayList())
 
-        assertEquals(affiliateTermViewModel.getOnBoardingData().value , affiliateOnboarding)
-        assertEquals(affiliateTermViewModel.progressBar().value,false)
-
+        assertEquals(affiliateTermViewModel.getOnBoardingData().value, affiliateOnboarding)
+        assertEquals(affiliateTermViewModel.progressBar().value, false)
     }
 
     @Test
@@ -63,6 +66,6 @@ class AffiliateTermsAndConditionViewModelTest{
         affiliateTermViewModel.affiliateOnBoarding(ArrayList())
 
         assertEquals(affiliateTermViewModel.getErrorMessage().value, exception)
-        assertEquals(affiliateTermViewModel.progressBar().value,false)
+        assertEquals(affiliateTermViewModel.progressBar().value, false)
     }
 }

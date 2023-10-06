@@ -73,8 +73,11 @@ class ShipmentCartItemViewHolder(
         val isFirstItem = cartItem.cartItemPosition == 0
         renderBundlingInfo(cartItem, isFirstItem)
         renderAddOnGiftingProductLevel(cartItem, cartItem.addOnOrderLevelModel)
-        renderAddOnProduct(cartItem)
-        if (cartItem.isBundlingItem) renderAddOnBundlingProduct(cartItem)
+        if (cartItem.isBundlingItem) {
+            renderAddOnBundlingProduct(cartItem)
+        } else {
+            renderAddOnProduct(cartItem)
+        }
     }
 
     private fun renderShopInfo(cartItem: CartItemModel) {
@@ -429,6 +432,7 @@ class ShipmentCartItemViewHolder(
     }
 
     private fun renderAddOnProduct(cartItemModel: CartItemModel) {
+        binding.llAddonProductBundling.gone()
         if (cartItemModel.addOnProduct.listAddOnProductData.isEmpty()) {
             binding.llAddonProduct.gone()
         } else {

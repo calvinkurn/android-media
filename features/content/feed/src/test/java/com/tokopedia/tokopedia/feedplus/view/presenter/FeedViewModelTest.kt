@@ -90,12 +90,15 @@ import com.tokopedia.topads.sdk.domain.model.Data
 import com.tokopedia.topads.sdk.domain.model.Shop
 import com.tokopedia.unit.test.ext.getOrAwaitValue
 import com.tokopedia.unit.test.rule.CoroutineTestRule
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.mockk
+import io.mockk.mockkObject
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -129,6 +132,13 @@ class FeedViewModelTest {
     private val mockFollowingUsecase: GetFollowingUseCase = mockk(relaxed = true)
 
     private val gqlFailed = MessageErrorException("ooPs")
+
+    @Before
+    fun setUp() {
+        mockkObject(PostUpcomingCampaignReminderUseCase) {
+            coEvery { PostUpcomingCampaignReminderUseCase.createParam(any(), any()) } returns RequestParams()
+        }
+    }
 
     /**
      * Send Report
@@ -964,7 +974,7 @@ class FeedViewModelTest {
      */
 
     @Test
-    fun `set unset reminder - succes from gql`() {
+    fun `set unset reminder - success from gql`() {
         val expected = PostUpcomingCampaign(response = UpcomingCampaignResponse(success = true))
         coEvery { mockPostReminderCampaign.executeOnBackground() } returns expected
         create(

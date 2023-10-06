@@ -5,7 +5,8 @@ import com.tokopedia.applink.constant.DeeplinkConstant
 
 object ApplinkConstInternalUserPlatform {
 
-    private const val HOST_USER = "user"
+    const val HOST_USER = "user"
+    const val HOST_PEOPLE = "people"
 
 //    private const val INTERNAL_USER = "${DeeplinkConstant.SCHEME_INTERNAL}://${ApplinkConstInternalGlobal.HOST_GLOBAL}"
 
@@ -409,6 +410,18 @@ object ApplinkConstInternalUserPlatform {
         "$PARAM_PROJECT_ID={$PARAM_PROJECT_ID}&" +
         "$PARAM_SOURCE={$PARAM_SOURCE}&" +
         "$PARAM_CALL_BACK={$PARAM_CALL_BACK}"
+
+    /**
+     * ## Webview GoTo KYC
+     * ### Open Webview with JS that can launch Goto KYC
+     *
+     * @class       : WebviewWithGotoKycActivity
+     * @Applink     : "tokopedia-android-internal://user/webview-kyc"
+     * @param
+     *  - projectId    : required | String | ref: [PARAM_PROJECT_ID]
+     *  - source       : required only for BU | String | ref: [PARAM_SOURCE]
+     **/
+    const val GOTO_KYC_WEBVIEW = "$NEW_INTERNAL_USER/webview-kyc"
 
     /**
      * ## KYC Param | type

@@ -60,6 +60,7 @@ import com.tokopedia.notifications.settings.NotificationReminderPrompt
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.unifycomponents.toPx
 import timber.log.Timber
+import java.util.Locale
 import javax.inject.Inject
 
 class GiftBoxDailyFragment : GiftBoxBaseFragment(), RewardContainerListener {
@@ -460,6 +461,9 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment(), RewardContainerListener {
                     if (code == HTTP_STATUS_OK) {
                         if (autoApplyMessage.isNotEmpty() && context != null) {
                             CustomToast.show(context!!, autoApplyMessage)
+                        } else {
+                            val applySuccessMessage = getString(R.string.apply_coupon_success_toast_message)
+                            CustomToast.show(context!!, applySuccessMessage)
                         }
                     } else {
                         if (!messageList.isNullOrEmpty()) {
@@ -614,6 +618,13 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment(), RewardContainerListener {
             } else {
                 viewModel.unSetReminder()
             }
+        }
+    }
+
+    private fun setClickEventOnSeru() {
+        tokoButtonContainer.btnThird.setOnClickListener {
+            GtmEvents.clickSeruButton(viewModel.campaignSlug.orEmpty())
+            RouteManager.route(context, String.format(Locale.getDefault(), "%s?url=%s", ApplinkConst.WEBVIEW, Constants.SERU_WEBLINK))
         }
     }
 
@@ -967,12 +978,24 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment(), RewardContainerListener {
     }
 
     override fun onTrigger(position: Int) {
-        val benefitType = giftBoxRewardEntity?.gamiCrack?.benefits?.get(position)?.benefitType
-        if (benefitType == BenefitType.GO_PAY_COINS) {
-            return
+        val benefits = giftBoxRewardEntity?.gamiCrack?.benefits
+
+        val item = rewardContainer.couponList[position]
+        var findPosition: Int? = null
+        if (item is GetCouponDetail) {
+            val targetReferenceId = item.referenceId
+            findPosition = benefits?.indexOfFirst {
+                it.referenceID.equals(targetReferenceId)
+            }
         }
-        applyCoupon(position)
-        routeBasedOnActionButton()
+        findPosition?.let {
+            val benefitType = benefits?.get(it)?.benefitType
+            if (benefitType == BenefitType.GO_PAY_COINS) {
+                return
+            }
+            applyCoupon(it)
+            routeBasedOnActionButton()
+        }
     }
 
     private fun routeBasedOnActionButton() {

@@ -1,7 +1,7 @@
 package com.tokopedia.tokofood.feature.ordertracking.domain.usecase
 
 import androidx.lifecycle.LiveData
-import com.tokochat.tokochat_config_common.repository.TokoChatRepository
+import com.tokopedia.tokochat.config.repository.TokoChatRepository
 import javax.inject.Inject
 
 open class GetUnreadChatCountUseCase @Inject constructor(

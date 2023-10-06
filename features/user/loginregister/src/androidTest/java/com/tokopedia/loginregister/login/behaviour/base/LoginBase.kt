@@ -93,7 +93,7 @@ open class LoginBase : LoginRegisterBase() {
     }
 
     fun clickForgotPass() {
-        val viewInteraction = onView(withId(R.id.forgot_pass)).check(matches(isDisplayed()))
+        val viewInteraction = onView(withId(R.id.need_help)).check(matches(isDisplayed()))
         viewInteraction.perform(click())
 
         waitOnView(withId(R.id.ub_forgot_password)).perform(click())

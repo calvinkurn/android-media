@@ -17,12 +17,12 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.kotlin.extensions.view.ONE
-import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.CONST_0
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.model.FragmentTabItem
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
@@ -47,6 +47,7 @@ import com.tokopedia.unifycomponents.setCounter
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.htmltags.HtmlUtil
 import timber.log.Timber
 import javax.inject.Inject
 import kotlin.math.abs
@@ -65,6 +66,7 @@ class RecommendationFragment : BaseDaggerFragment() {
     private var emptyStateRecyclerView: RecyclerView? = null
     private var pageControlEmptyState: PageControl? = null
     private var potentialProductCard: View? = null
+    private var productOutOfStockCard: View? = null
 
     private var mCurrentState = TopAdsProductIklanFragment.State.IDLE
     private var collapseStateCallBack: TopAdsHeadlineBaseFragment.AppBarActionHeadline? = null
@@ -132,6 +134,7 @@ class RecommendationFragment : BaseDaggerFragment() {
         emptyStateRecyclerView = view.findViewById(R.id.emptyStateView)
         pageControlEmptyState = view.findViewById(R.id.pageControlEmptyState)
         potentialProductCard = view.findViewById(R.id.topads_insight_center_product_widget_potential)
+        productOutOfStockCard = view.findViewById(R.id.topads_insight_center_product_out_of_stock_widget)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -140,6 +143,12 @@ class RecommendationFragment : BaseDaggerFragment() {
         viewModel?.loadRecommendationPage()
         setUpObserver()
         settingClickListener()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel?.fetchRecommendationStatistics()
+        viewModel?.getOutOfStockProducts()
     }
 
     private fun setAppBarListener() {
@@ -175,10 +184,11 @@ class RecommendationFragment : BaseDaggerFragment() {
         }
 
         potentialProductCard?.setOnClickListener {
-            RouteManager.route(
-                activity,
-                "tokopedia://webview?url=https://ta.tokopedia.com/v2/manage/recommendation/eligible-product"
-            )
+            RouteManager.route(activity, ApplinkConstInternalTopAds.TOPADS_PRODUCT_RECOMMENDATION)
+        }
+
+        productOutOfStockCard?.setOnClickListener {
+            RouteManager.route(activity, "${ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST}?filter=isEmptyStockOnly")
         }
     }
 
@@ -213,6 +223,45 @@ class RecommendationFragment : BaseDaggerFragment() {
                 }
             }
         }
+
+        viewModel?.recommendationStatsLiveData?.observe(viewLifecycleOwner){
+            when(it){
+                is Success -> {
+                    if(it.data.productRecommendationStats.count > CONST_0) {
+                        potentialProductCard?.showWithCondition(true)
+                        potentialProductCard?.findViewById<Typography>(
+                            R.id.title
+                        )?.text = HtmlUtil.fromHtml(String.format(getString(R.string.topads_insight_centre_suggestion_insight_count),it.data.productRecommendationStats.count))
+                    } else {
+                        potentialProductCard?.showWithCondition(false)
+                    }
+                }
+                is Fail -> {
+                    potentialProductCard?.showWithCondition(false)
+                }
+            }
+        }
+
+        viewModel?.productInsightLiveData?.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    if (it.data.topadsInsightProducts?.data?.product.isNullOrEmpty()) {
+                        productOutOfStockCard?.showWithCondition(false)
+                    } else {
+                        productOutOfStockCard?.showWithCondition(true)
+                        productOutOfStockCard?.findViewById<Typography>(
+                            R.id.title
+                        )?.text = HtmlUtil.fromHtml(String.format(
+                            getString(R.string.topads_insight_centre_out_of_products),
+                            it.data.topadsInsightProducts?.data?.product?.size
+                        ))
+                    }
+                }
+                is Fail -> {
+                    productOutOfStockCard?.showWithCondition(false)
+                }
+            }
+        }
     }
 
     private fun showGlobalError() {
@@ -236,7 +285,7 @@ class RecommendationFragment : BaseDaggerFragment() {
                 context?.getString(R.string.topads_insight_no_active_ads_title)
             insightWidgetIcon?.loadImage(
                 ContextCompat.getDrawable(
-                    context!!,
+                    requireContext(),
                     R.drawable.performance_widget_default_icon
                 )
             )
@@ -269,7 +318,7 @@ class RecommendationFragment : BaseDaggerFragment() {
             insightWidgetTitle?.text = context?.getString(R.string.topads_insight_max_out_title)
             insightWidgetIcon?.loadImage(
                 ContextCompat.getDrawable(
-                    context!!,
+                    requireContext(),
                     R.drawable.perfomace_widget_optimized_icon
                 )
             )
@@ -282,7 +331,7 @@ class RecommendationFragment : BaseDaggerFragment() {
             )
             insightWidgetIcon?.loadImage(
                 ContextCompat.getDrawable(
-                    context!!,
+                    requireContext(),
                     R.drawable.performance_widget_default_icon
                 )
             )
@@ -293,7 +342,7 @@ class RecommendationFragment : BaseDaggerFragment() {
             )
             insightWidgetIcon?.loadImage(
                 ContextCompat.getDrawable(
-                    context!!,
+                    requireContext(),
                     R.drawable.performance_widget_default_icon
                 )
             )

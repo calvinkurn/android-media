@@ -10,6 +10,7 @@ import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilter
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.extension.LAYOUTTYPE_HORIZONTAL_ATC
+import com.tokopedia.recommendation_widget_common.extension.PAGENAME_IDENTIFIER_RECOM_ATC
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
@@ -142,7 +143,7 @@ class GetProductRecommendationUseCase @Inject constructor(
 
     private fun updateRecomWhenTokoNow(response: RecommendationWidget,
                                        miniCart: MutableMap<String, MiniCartItem.MiniCartItemProduct>?): RecommendationWidget {
-        return if (response.layoutType == LAYOUTTYPE_HORIZONTAL_ATC) {
+        return if (response.hasQuantityEditor()) {
             response.recommendationItemList.forEach { item ->
                 miniCart?.let {
                     if (item.isProductHasParentID()) {

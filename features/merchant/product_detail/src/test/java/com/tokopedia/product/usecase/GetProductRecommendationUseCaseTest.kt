@@ -164,11 +164,13 @@ class GetProductRecommendationUseCaseTest {
                     recommendationItemList = listOf(RecommendationItem(
                             productId = 1,
                             parentID= 11,
-                            quantity = 2
+                            quantity = 2,
+                            addToCartType = RecommendationItem.AddToCartType.QuantityEditor,
                     ), RecommendationItem(
                             productId = 2,
                             parentID = 22,
-                            quantity = 3
+                            quantity = 3,
+                            addToCartType = RecommendationItem.AddToCartType.QuantityEditor,
                     ))
             )
 

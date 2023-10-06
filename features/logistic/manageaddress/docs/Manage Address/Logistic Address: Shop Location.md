@@ -20,6 +20,10 @@ labels:
 
 ## Release Notes
 
+<!--start expand:1 September 2023-->
+Remove Shop Single Location
+<!--end expand-->
+
 <!--start expand:18 Dec 2020-->
 
 <!--end expand-->
@@ -95,8 +99,6 @@ or also with this internal applink
 ---
 
 ## Action Items
-
-- Revamp shop location (single location) if re-enabled again
 
 ## Useful Links
 

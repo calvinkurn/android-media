@@ -629,4 +629,45 @@ class TokoChatAnalytics(private val isFromBubble: Boolean = false) {
         )
         tracking.sendGeneralEvent(mapData)
     }
+
+    fun viewDriverChatList(
+        listChatPair: Map<String, Int>
+    ) {
+        var label = ""
+        listChatPair.forEach {
+            label = if (label.isNotBlank()) {
+                "$label - ${it.key} - ${it.value}"
+            } else {
+                "${it.key} - ${it.value}"
+            }
+        }
+        val mapData = mapOf(
+            TrackAppUtils.EVENT to TokoChatAnalyticsConstants.VIEW_COMMUNICATION_IRIS,
+            TrackAppUtils.EVENT_ACTION to TokoChatAnalyticsConstants.IMPRESSION_ON_DRIVER_CHAT_LIST,
+            TrackAppUtils.EVENT_CATEGORY to TokoChatAnalyticsConstants.TOKOCHAT_CHATLIST,
+            TrackAppUtils.EVENT_LABEL to label,
+            TokoChatAnalyticsConstants.TRACKER_ID to TokoChatAnalyticsConstants.TRACKER_ID_45236,
+            TokoChatAnalyticsConstants.BUSSINESS_UNIT to TokoChatAnalyticsConstants.COMMUNICATION,
+            TokoChatAnalyticsConstants.CURRENT_SITE to TokoChatAnalyticsConstants.TOKOPEDIA_MARKETPLACE
+        )
+        tracking.sendGeneralEvent(mapData)
+    }
+
+    fun clickDriverChatList(
+        gojekOrderId: String,
+        serviceTypeName: String,
+        counter: Int,
+        chatDuration: String
+    ) {
+        val mapData = mapOf(
+            TrackAppUtils.EVENT to TokoChatAnalyticsConstants.CLICK_COMMUNICATION,
+            TrackAppUtils.EVENT_ACTION to TokoChatAnalyticsConstants.CLICK_ON_DRIVER_CHAT_LIST,
+            TrackAppUtils.EVENT_CATEGORY to TokoChatAnalyticsConstants.TOKOCHAT_CHATLIST,
+            TrackAppUtils.EVENT_LABEL to "$gojekOrderId - $serviceTypeName - $counter - $chatDuration",
+            TokoChatAnalyticsConstants.TRACKER_ID to TokoChatAnalyticsConstants.TRACKER_ID_45237,
+            TokoChatAnalyticsConstants.BUSSINESS_UNIT to TokoChatAnalyticsConstants.COMMUNICATION,
+            TokoChatAnalyticsConstants.CURRENT_SITE to TokoChatAnalyticsConstants.TOKOPEDIA_MARKETPLACE
+        )
+        tracking.sendGeneralEvent(mapData)
+    }
 }

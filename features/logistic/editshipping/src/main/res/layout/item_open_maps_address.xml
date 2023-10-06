@@ -24,13 +24,13 @@
         app:unifyButtonVariant="ghost"
         app:unifyButtonSize="small"/>
 
-    <ImageView
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/icon_pointer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/btn_open_map"
         android:layout_centerHorizontal="true"
-        android:contentDescription="@string/pointer"
-        app:srcCompat="@drawable/ic_green_pointer" />
+        app:icon_name="LOCATION_FILLED"
+        app:icon_color_light_enable="@color/Unify_GN500" />
 
 </RelativeLayout>

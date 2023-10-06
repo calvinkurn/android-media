@@ -5,9 +5,9 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.analytics.v2.LegoBannerTracking
 import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaultDataSource
+import com.tokopedia.home.beranda.data.mapper.ShopFlashSaleMapper
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.domain.model.HomeChannelData
-import com.tokopedia.home_component.util.HomeComponentRemoteConfigController
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.util.ServerTimeOffsetUtil
@@ -15,6 +15,7 @@ import com.tokopedia.home_component.model.ReminderEnum
 import com.tokopedia.home_component.util.ChannelStyleUtil.BORDER_STYLE_PADDING
 import com.tokopedia.home_component.util.ChannelStyleUtil.parseBorderStyle
 import com.tokopedia.home_component.util.ChannelStyleUtil.parseDividerSize
+import com.tokopedia.home_component.util.HomeComponentRemoteConfigController
 import com.tokopedia.home_component.visitable.*
 import com.tokopedia.home_component.widget.special_release.SpecialReleaseRevampDataModel
 import com.tokopedia.home_component_header.model.ChannelHeader
@@ -208,6 +209,9 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 }
                 DynamicHomeChannel.Channels.LAYOUT_SPECIAL_RELEASE_REVAMP -> {
                     createSpecialReleaseRevamp(channel, position)
+                }
+                DynamicHomeChannel.Channels.LAYOUT_SPECIAL_SHOP_FLASH_SALE -> {
+                    createShopFlashSale(channel, position)
                 }
             }
         }
@@ -717,11 +721,12 @@ class HomeDynamicChannelVisitableFactoryImpl(
         verticalPosition: Int
     ): Visitable<*> {
         return TodoWidgetListDataModel(
-            channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(
-                channel,
-                verticalPosition
-            ),
-            status = TodoWidgetListDataModel.STATUS_LOADING
+            id = channel.id,
+            widgetParam = channel.widgetParam,
+            verticalPosition = verticalPosition,
+            status = TodoWidgetListDataModel.STATUS_LOADING,
+            showShimmering = channel.isShimmer,
+            source = TodoWidgetListDataModel.SOURCE_DC,
         )
     }
 
@@ -776,11 +781,12 @@ class HomeDynamicChannelVisitableFactoryImpl(
         if (!isCache) {
             visitableList.add(
                 MissionWidgetListDataModel(
-                    channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(
-                        channel,
-                        verticalPosition
-                    ),
-                    status = MissionWidgetListDataModel.STATUS_LOADING
+                    id = channel.id,
+                    name = channel.name,
+                    verticalPosition = verticalPosition,
+                    status = MissionWidgetListDataModel.STATUS_LOADING,
+                    showShimmering = channel.isShimmer,
+                    source = MissionWidgetListDataModel.SOURCE_DC,
                 )
             )
         }
@@ -910,12 +916,14 @@ class HomeDynamicChannelVisitableFactoryImpl(
     }
 
     private fun createTodoWidget(channel: DynamicHomeChannel.Channels, verticalPosition: Int) {
-        visitableList.add(
-            mappingTodoWidgetComponent(
-                channel,
-                verticalPosition
+        if (!isCache) {
+            visitableList.add(
+                mappingTodoWidgetComponent(
+                    channel,
+                    verticalPosition
+                )
             )
-        )
+        }
     }
 
     private fun createDealsWidget(channel: DynamicHomeChannel.Channels, verticalPosition: Int) {
@@ -949,6 +957,12 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 verticalPosition
             )
         )
+    }
+
+    private fun createShopFlashSale(channel: DynamicHomeChannel.Channels, verticalPosition: Int) {
+        if(!isCache) {
+            visitableList.add(ShopFlashSaleMapper.mapShopFlashSaleWidgetDataModel(channel, verticalPosition))
+        }
     }
 
     override fun build(): List<Visitable<*>> = visitableList

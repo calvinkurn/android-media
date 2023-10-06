@@ -49,6 +49,9 @@ class OwocProductViewHolder(
                         setupProductThumbnail(newItem.productThumbnailUrl)
                     }
                     owocPartialProductItemViewHolder?.bindProductItemPayload(oldItem, newItem)
+                    if (oldItem.addonsListUiModel != newItem.addonsListUiModel) {
+                        setupAddonSection(newItem.addonsListUiModel)
+                    }
                     return
                 }
             }
