@@ -11,7 +11,7 @@
             "label1": "Dengan input OTP untuk konfirmasi, kamu bisa tampilin sisa paket data kamu, biar gak perlu bolak-balik cek lagi deh!",
             "textLink": "Masukkan OTP",
             "appLink": "tokopedia://webview?url\u003dhttps://myim3app.indosatooredo.com/partnerlogin?auth_code\u003dabcde",
-            "mediaUrlType": "NonOTP",
+            "mediaUrlType": "otp",
             "campaignLabelText": "",
             "campaignLabelTextColor": "",
             "widgets": [],

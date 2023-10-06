@@ -11,7 +11,7 @@
             "label1": "",
             "textLink": "",
             "appLink": "",
-            "mediaUrlType": "",
+            "mediaUrlType": "widget",
             "campaignLabelText": "Ada paket kamu yang berakhir \u003cb\u003e2 hari lagi\u003c/b\u003e",
             "campaignLabelTextColor": "#F94D63",
             "widgets": [
@@ -37,21 +37,27 @@
                 "subtitle": "Berakhir dalam 2 hari",
                 "subtitleColor": "#F94D63",
                 "applink": "tokopedia://digital/cart?category_id\u003d55\u0026client_number\u003d087820903964\u0026idem_potency_key\u003d1681212441-55-087820903964-26766-5\u0026operator_id\u003d5\u0026product_id\u003d26766",
-                "buttonText": "Beli Lagi"
+                "buttonText": "Beli Lagi",
+                "productID": "1234",
+                "price": "10000"
               },
               {
                 "title": "Freedom Internet 2GB + Bonus Kuota Zona Hingga 2GB",
                 "subtitle": "Berakhir dalam 3 hari",
                 "subtitleColor": "#F94D63",
                 "applink": "tokopedia://digital/cart?category_id\u003d55\u0026client_number\u003d087820903964\u0026idem_potency_key\u003d1681212441-55-087820903964-26766-5\u0026operator_id\u003d5\u0026product_id\u003d26766",
-                "buttonText": "Beli Lagi"
+                "buttonText": "Beli Lagi",
+                "productID": "123",
+                "price": "10000"
               },
               {
                 "title": "Freedom U 45GB",
                 "subtitle": "Berakhir dalam 30 hari",
                 "subtitleColor": "#6D7588",
                 "applink": "",
-                "buttonText": ""
+                "buttonText": "",
+                "productID": "12",
+                "price": "10000"
               }
             ]
           }
