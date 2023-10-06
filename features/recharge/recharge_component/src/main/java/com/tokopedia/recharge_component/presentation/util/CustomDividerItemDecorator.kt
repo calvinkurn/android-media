@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.LinearLayout
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.orZero
 
 /**
  * This class is copied from DividerItemDecorator,
@@ -76,9 +77,9 @@ class CustomDividerItemDecorator(
             val child = parent.getChildAt(i)
             parent.getDecoratedBoundsWithMargins(child, mBounds)
             val bottom = (mBounds.bottom + Math.round(ViewCompat.getTranslationY(child))).toInt()
-            val top = bottom - mDivider!!.intrinsicHeight
-            mDivider!!.setBounds(left, top, right, bottom)
-            mDivider!!.draw(canvas)
+            val top = bottom - mDivider?.intrinsicHeight.orZero()
+            mDivider?.setBounds(left, top, right, bottom)
+            mDivider?.draw(canvas)
         }
         canvas.restore()
     }
@@ -103,11 +104,11 @@ class CustomDividerItemDecorator(
         val childCount = parent.childCount
         for (i in 0 until childCount - 1) {
             val child = parent.getChildAt(i)
-            parent.layoutManager!!.getDecoratedBoundsWithMargins(child, mBounds)
+            parent.layoutManager?.getDecoratedBoundsWithMargins(child, mBounds)
             val right = (mBounds.right + Math.round(ViewCompat.getTranslationX(child))).toInt()
-            val left = right - mDivider!!.intrinsicWidth
-            mDivider!!.setBounds(left, top, right, bottom)
-            mDivider!!.draw(canvas)
+            val left = right - mDivider?.intrinsicWidth.orZero()
+            mDivider?.setBounds(left, top, right, bottom)
+            mDivider?.draw(canvas)
         }
         canvas.restore()
     }
@@ -119,9 +120,9 @@ class CustomDividerItemDecorator(
         state: RecyclerView.State
     ) {
         if (mOrientation == VERTICAL) {
-            outRect[0, 0, 0] = mDivider!!.intrinsicHeight
+            outRect[0, 0, 0] = mDivider?.intrinsicHeight.orZero()
         } else {
-            outRect[0, 0, mDivider!!.intrinsicWidth] = 0
+            outRect[0, 0, mDivider?.intrinsicWidth.orZero()] = 0
         }
     }
 

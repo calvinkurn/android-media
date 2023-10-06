@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -190,13 +189,24 @@ class DigitalPDPDataPlanFragment :
         when (result) {
             is OpenRechargeCheckBalance.CheckBalanceOTPResult.Success -> {
                 saveIndosatAccessToken(result.accessToken)
+                view?.let {
+                    Toaster.build(
+                        it,
+                        getString(digital_product_detailR.string.check_balance_failed_verification),
+                        Toaster.LENGTH_LONG,
+                        Toaster.TYPE_NORMAL
+                    ).show()
+                }
             }
             is OpenRechargeCheckBalance.CheckBalanceOTPResult.EmptyToken -> {
-                Toast.makeText(
-                    context,
-                    getString(digital_product_detailR.string.check_balance_failed_verification),
-                    Toast.LENGTH_LONG
-                ).show()
+                view?.let {
+                    Toaster.build(
+                        it,
+                        getString(digital_product_detailR.string.check_balance_failed_verification),
+                        Toaster.LENGTH_LONG,
+                        Toaster.TYPE_NORMAL
+                    ).show()
+                }
             }
         }
         digitalPDPAnalytics.clickCloseOtp(
