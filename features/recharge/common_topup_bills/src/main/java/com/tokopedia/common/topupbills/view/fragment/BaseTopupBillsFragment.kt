@@ -531,7 +531,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
         isExpressCheckout = data.isExpressCheckout
         categoryName = data.catalog.label
         rechargeAnalytics.eventViewPdpPage(categoryName, userSession.userId)
-        topupBillsViewModel.updateMultiCheckoutButtons(data.multiCheckoutButtons)
+        topupBillsViewModel.multiCheckoutButtons = data.multiCheckoutButtons
         onUpdateMultiCheckout()
     }
 

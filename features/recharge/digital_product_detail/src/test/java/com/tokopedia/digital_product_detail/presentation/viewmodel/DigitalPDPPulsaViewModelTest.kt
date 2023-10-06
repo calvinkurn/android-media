@@ -704,22 +704,6 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPPulsaViewModelTestFixture() {
         verifyDenomAndMCCMIsEmpty(expectedResult)
     }
 
-    @Test
-    fun updateMultiCheckoutButtonsTest() {
-        val multiCheckoutButtons = listOf(
-            MultiCheckoutButtons(
-                text = "Halo",
-                color = "#FFFFFFF",
-                coachmark = "Show Coachmak",
-                position = "1",
-                type = "multiple"
-            )
-        )
-
-        viewModel.updateMultiCheckoutButtons(multiCheckoutButtons)
-        Assert.assertEquals(viewModel.multiCheckoutButtons, multiCheckoutButtons)
-    }
-
     companion object {
         const val MENU_ID = 289
     }

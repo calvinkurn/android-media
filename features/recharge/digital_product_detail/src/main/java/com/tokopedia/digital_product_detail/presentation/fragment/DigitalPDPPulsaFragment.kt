@@ -504,7 +504,7 @@ class DigitalPDPPulsaFragment :
     private fun onSuccessGetMenuDetail(data: MenuDetailModel) {
         (activity as BaseSimpleActivity).updateTitle(data.catalog.label)
         loyaltyStatus = data.userPerso.loyaltyStatus
-        viewModel.updateMultiCheckoutButtons(data.multiCheckoutButtons)
+        viewModel.multiCheckoutButtons = data.multiCheckoutButtons
         getFavoriteNumbers(
             listOf(
                 FavoriteNumberType.PREFILL,

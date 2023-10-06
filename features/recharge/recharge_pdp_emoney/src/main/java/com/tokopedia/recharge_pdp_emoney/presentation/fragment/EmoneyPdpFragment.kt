@@ -222,7 +222,7 @@ open class EmoneyPdpFragment :
                         trackEventViewPdp(it.data.catalog.label)
                         renderRecommendationsAndPromoList(it.data.recommendations, it.data.promos)
                         renderTicker(EmoneyPdpMapper.mapTopUpBillsTickersToTickersData(it.data.tickers))
-                        topUpBillsViewModel.updateMultiCheckoutButtons(it.data.multiCheckoutButtons)
+                        topUpBillsViewModel.multiCheckoutButtons  = it.data.multiCheckoutButtons
                     }
                     is Fail -> {
                         renderFullPageError(it.throwable)

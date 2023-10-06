@@ -348,10 +348,6 @@ class DigitalPDPPulsaViewModel @Inject constructor(
         return listDenomData.isEmpty() && listMCCMData.isEmpty()
     }
 
-    fun updateMultiCheckoutButtons(multiCheckoutButtons: List<MultiCheckoutButtons>) {
-        this.multiCheckoutButtons = multiCheckoutButtons
-    }
-
     fun runThrottleJob(
         skipMs: Long = DELAY_CLIENT_NUMBER_TRANSITION,
         destinationFunction: () -> Unit

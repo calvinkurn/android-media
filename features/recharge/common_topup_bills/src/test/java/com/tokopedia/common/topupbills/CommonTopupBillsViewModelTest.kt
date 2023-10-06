@@ -476,18 +476,4 @@ class CommonTopupBillsViewModelTest {
 
         verify { digitalCheckVoucherUseCase.execute(any(), any()) }
     }
-
-    @Test
-    fun updateMultiCheckoutButtonsTest() {
-        val multiCheckoutButtons = listOf(MultiCheckoutButtons(
-            text = "Halo",
-            color = "#FFFFFFF",
-            coachmark = "Show Coachmak",
-            position = "1",
-            type = "multiple"
-        ))
-
-        topupBillsViewModel.updateMultiCheckoutButtons(multiCheckoutButtons)
-        Assert.assertEquals(topupBillsViewModel.multiCheckoutButtons, multiCheckoutButtons)
-    }
 }

@@ -422,10 +422,6 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
         setFilterDataParam(filterData)
     }
 
-    fun updateMultiCheckoutButtons(multiCheckoutButtons: List<MultiCheckoutButtons>) {
-        this.multiCheckoutButtons = multiCheckoutButtons
-    }
-
     private fun setFilterDataParam(filterTagComponents: List<TelcoFilterTagComponent>) {
         filterData = filterTagComponents
         filterData.forEach {

@@ -296,7 +296,7 @@ class VoucherGameDetailFragment :
 
     override fun processMenuDetail(data: TopupBillsMenuDetail) {
         super.processMenuDetail(data)
-        topupBillsViewModel.updateMultiCheckoutButtons(data.multiCheckoutButtons)
+        topupBillsViewModel.multiCheckoutButtons = data.multiCheckoutButtons
         if (data.catalog.label.isNotEmpty()) {
             categoryName = data.catalog.label
             loyaltyStatus = data.userPerso.loyaltyStatus

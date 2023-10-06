@@ -353,10 +353,6 @@ class TopupBillsViewModel @Inject constructor(
         return mapOf(EXPRESS_PARAM_NAME to key, EXPRESS_PARAM_VALUE to value)
     }
 
-    fun updateMultiCheckoutButtons(multiCheckoutButtons: List<MultiCheckoutButtons>) {
-        this.multiCheckoutButtons = multiCheckoutButtons
-    }
-
     companion object {
         const val CHANNEL_FAVORITE_NUMBER_LIST = "favorite_number_list"
 
