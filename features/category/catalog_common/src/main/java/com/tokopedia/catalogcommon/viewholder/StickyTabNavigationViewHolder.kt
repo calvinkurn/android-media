@@ -38,8 +38,6 @@ class StickyTabNavigationViewHolder(
         binding?.let {
             it.catalogTabsUnify.removeAllTabs()
             it.catalogTabsUnify.clearOnTabSelectedListeners()
-//            it.catalogTabsUnify.removeAllTabs()
-//            it.catalogTabsUnify.clearOnTabSelectedListeners()
             setupTabs(
                 element,
                 element?.widgetBackgroundColor ?: Color.TRANSPARENT
