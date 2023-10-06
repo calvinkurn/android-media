@@ -134,7 +134,7 @@
         android:visibility="gone"
         app:labelType="highlight_light_green"
         app:layout_constraintStart_toStartOf="@id/bs_bottom_image_barrier"
-        app:layout_constraintTop_toBottomOf="@id/bs_bottom_image_barrier"
+        app:layout_constraintTop_toBottomOf="@id/ssa_message"
         tools:text="Komisi Extra"
         tools:visibility="visible" />
 
