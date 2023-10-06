@@ -8,7 +8,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -119,7 +118,8 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
         private const val COLOR_VALUE_MAX = 255
         private const val LOGIN_REQUEST_CODE = 1001
         const val CATALOG_DETAIL_PAGE_FRAGMENT_TAG = "CATALOG_DETAIL_PAGE_FRAGMENT_TAG"
-
+        private const val POSITION_THREE_IN_WIDGET_LIST = 3
+        private const val POSITION_TWO_IN_WIDGET_LIST = 2
         fun newInstance(catalogId: String): CatalogDetailPageFragment {
             val fragment = CatalogDetailPageFragment()
             val bundle = Bundle()
@@ -250,13 +250,13 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
         widgetAdapter.changeNavigationTabActive(tabPosition)
         if (anchorToPosition >= Int.ZERO) {
             if (tabPosition == Int.ZERO) {
-                smoothScroller.targetPosition = anchorToPosition - 3
+                smoothScroller.targetPosition = anchorToPosition - POSITION_THREE_IN_WIDGET_LIST
                 layoutManager?.startSmoothScroll(smoothScroller)
             } else if (tabPosition == (widgetAdapter.findNavigationCount()-1)) {
                 smoothScroller.targetPosition = anchorToPosition
                 layoutManager?.startSmoothScroll(smoothScroller)
             } else {
-                smoothScroller.targetPosition = anchorToPosition - 2
+                smoothScroller.targetPosition = anchorToPosition - POSITION_TWO_IN_WIDGET_LIST
                 layoutManager?.startSmoothScroll(smoothScroller)
             }
             Handler(Looper.getMainLooper()).postDelayed({
