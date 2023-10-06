@@ -10,6 +10,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
 import com.tokopedia.productcard.utils.applyConstraintSet
+import com.tokopedia.productcard.utils.forceLightGreen
 import com.tokopedia.productcard.utils.initLabelGroup
 import com.tokopedia.productcard.utils.renderLabelCampaign
 import com.tokopedia.productcard.utils.renderLabelOverlay
@@ -133,6 +134,11 @@ internal class LabelLayoutStrategyControl: LabelLayoutStrategy {
 
         val labelPriceReposition = view.findViewById<Label?>(R.id.labelPriceReposition)
         labelPriceReposition?.initLabelGroup(null)
+
+        if (productCardModel.forceLightModeColor) {
+            labelPrice?.forceLightGreen()
+            labelPriceReposition?.forceLightGreen()\
+        }
     }
 
     override fun configContentPosition(view: View) {
