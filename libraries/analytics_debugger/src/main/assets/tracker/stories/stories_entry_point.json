@@ -3,11 +3,11 @@
   "mode": "exact",
   "query": [
     {
-      "eventAction": "click - story entry point",
-      "event": "select_content",
-      "eventCategory": "(shop page - buyer|product detail page|inbox-chat|message room)",
-      "eventLabel": "(shop-page|pdp-page|topchat-page) - \\d+ - (story|live) - (user|shop)",
-      "promotion": [
+      "eventAction": "view - story entry point",
+      "event": "view_item",
+      "eventCategory": "shop page - buyer",
+      "eventLabel": ".* - \\d+ - (story|live) - (user|shop)",
+      "promotions": [
         {
           "item_id": "\\d+",
           "item_name": "/ - \\d+ - stories entry point",
@@ -15,17 +15,40 @@
           "creative_slot": ""
         }
       ],
+      "trackerId": "45997",
       "sessionIris": ".*",
       "currentSite": "tokopediamarketplace",
       "userId": ".*",
-      "businessUnit": "content"
+      "businessUnit": "content",
+      "clientId": ".*"
     },
+    {
+      "eventAction": "click - story entry point",
+      "event": "select_content",
+      "eventCategory": "shop page - buyer",
+      "eventLabel": ".* - \\d+ - (story|live) - (user|shop)",
+      "promotions": [
+        {
+          "item_id": "\\d+",
+          "item_name": "/ - \\d+ - stories entry point",
+          "creative_name": "",
+          "creative_slot": ""
+        }
+      ],
+      "trackerId": "45998",
+      "sessionIris": ".*",
+      "currentSite": "tokopediamarketplace",
+      "userId": ".*",
+      "businessUnit": "content",
+      "clientId": ".*"
+    },
+
     {
       "eventAction": "view - story entry point",
       "event": "view_item",
-      "eventCategory": "(shop page - buyer|product detail page|inbox-chat|message room)",
-      "eventLabel": "(shop-page|pdp-page|topchat-page) - \\d+ - (story|live) - (user|shop)",
-      "promotion": [
+      "eventCategory": "product detail page",
+      "eventLabel": ".* - \\d+ - (story|live) - (user|shop)",
+      "promotions": [
         {
           "item_id": "\\d+",
           "item_name": "/ - \\d+ - stories entry point",
@@ -33,10 +56,116 @@
           "creative_slot": ""
         }
       ],
+      "trackerId": "45999",
       "sessionIris": ".*",
       "currentSite": "tokopediamarketplace",
       "userId": ".*",
-      "businessUnit": "content"
+      "businessUnit": "content",
+      "clientId": ".*",
+      "productId": "\\d+"
+    },
+    {
+      "eventAction": "click - story entry point",
+      "event": "select_content",
+      "eventCategory": "product detail page",
+      "eventLabel": ".* - \\d+ - (story|live) - (user|shop)",
+      "promotions": [
+        {
+          "item_id": "\\d+",
+          "item_name": "/ - \\d+ - stories entry point",
+          "creative_name": "",
+          "creative_slot": ""
+        }
+      ],
+      "trackerId": "46000",
+      "sessionIris": ".*",
+      "currentSite": "tokopediamarketplace",
+      "userId": ".*",
+      "businessUnit": "content",
+      "clientId": ".*",
+      "productId": "\\d+"
+    },
+
+    {
+      "eventAction": "view - story entry point",
+      "event": "view_item",
+      "eventCategory": "inbox-chat",
+      "eventLabel": ".* - \\d+ - (story|live) - (user|shop)",
+      "promotions": [
+        {
+          "item_id": "\\d+",
+          "item_name": "/ - \\d+ - stories entry point",
+          "creative_name": "",
+          "creative_slot": ""
+        }
+      ],
+      "trackerId": "46001",
+      "sessionIris": ".*",
+      "currentSite": "tokopediamarketplace",
+      "userId": ".*",
+      "businessUnit": "content",
+      "clientId": ".*"
+    },
+    {
+      "eventAction": "click - story entry point",
+      "event": "select_content",
+      "eventCategory": "inbox-chat",
+      "eventLabel": ".* - \\d+ - (story|live) - (user|shop)",
+      "promotions": [
+        {
+          "item_id": "\\d+",
+          "item_name": "/ - \\d+ - stories entry point",
+          "creative_name": "",
+          "creative_slot": ""
+        }
+      ],
+      "trackerId": "46002",
+      "sessionIris": ".*",
+      "currentSite": "tokopediamarketplace",
+      "userId": ".*",
+      "businessUnit": "content",
+      "clientId": ".*"
+    },
+
+    {
+      "eventAction": "view - story entry point",
+      "event": "view_item",
+      "eventCategory": "message room",
+      "eventLabel": ".* - \\d+ - (story|live) - (user|shop)",
+      "promotions": [
+        {
+          "item_id": "\\d+",
+          "item_name": "/ - \\d+ - stories entry point",
+          "creative_name": "",
+          "creative_slot": ""
+        }
+      ],
+      "trackerId": "46003",
+      "sessionIris": ".*",
+      "currentSite": "tokopediamarketplace",
+      "userId": ".*",
+      "businessUnit": "content",
+      "clientId": ".*"
+    },
+    {
+      "eventAction": "click - story entry point",
+      "event": "select_content",
+      "eventCategory": "message room",
+      "eventLabel": ".* - \\d+ - (story|live) - (user|shop)",
+      "promotions": [
+        {
+          "item_id": "\\d+",
+          "item_name": "/ - \\d+ - stories entry point",
+          "creative_name": "",
+          "creative_slot": ""
+        }
+      ],
+      "trackerId": "46004",
+      "sessionIris": ".*",
+      "currentSite": "tokopediamarketplace",
+      "userId": ".*",
+      "businessUnit": "content",
+      "clientId": ".*"
     }
   ]
 }
