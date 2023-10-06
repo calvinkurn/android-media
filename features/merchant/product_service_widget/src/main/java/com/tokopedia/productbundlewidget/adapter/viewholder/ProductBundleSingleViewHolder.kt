@@ -59,7 +59,7 @@ class ProductBundleSingleViewHolder(
     private val bundleDetailAdapter = ProductBundleSingleAdapter()
     private var cardBundling: CardUnify? = null
     private var icBundleDiscount: IconUnify? = null
-    private var tvBundleSinglePackage: Typography? = null
+    private var tvpographyBundleSinglePackage: Typography? = null
 
     init {
         viewBinding?.apply {
@@ -76,7 +76,7 @@ class ProductBundleSingleViewHolder(
             widgetContainer = bundleWidgetContainer
             cardBundling = container
             icBundleDiscount = bundleWidgetFooter.icBundleDiscount
-            tvBundleSinglePackage = tvBundleSinglePackage
+            tvpographyBundleSinglePackage = tvBundleSinglePackage
         }
         initBundleDetailsRecyclerView()
     }
@@ -269,7 +269,7 @@ class ProductBundleSingleViewHolder(
             typographyBundleProductOriginalPrice?.setTextColor(ContextCompat.getColor(itemView.context, R.color.dms_low_emphasis))
             typographyBundleProductSavingAmount?.setTextColor(ContextCompat.getColor(itemView.context, R.color.dms_high_emphasis))
             icBundleDiscount?.setImage(newLightEnable = ContextCompat.getColor(itemView.context, R.color.dms_high_emphasis))
-            tvBundleSinglePackage?.setTextColor(ContextCompat.getColor(itemView.context, R.color.dms_high_emphasis))
+            tvpographyBundleSinglePackage?.setTextColor(ContextCompat.getColor(itemView.context, R.color.dms_high_emphasis))
             buttonAtc?.applyColorMode(colorMode = ColorMode.LIGHT_MODE)
         }
     }
