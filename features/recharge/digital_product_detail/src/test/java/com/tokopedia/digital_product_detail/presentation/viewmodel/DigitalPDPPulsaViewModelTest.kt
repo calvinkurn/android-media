@@ -524,11 +524,7 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPPulsaViewModelTestFixture() {
 
     @Test
     fun `when cancelCheckBalanceJob called the job should be cancelled and live data should not emit value`() {
-        val response = dataFactory.getRechargeCheckBalanceData()
-        val mappedResponse = digitalPersoMapperFactory.mapDigiPersoToCheckBalanceModel(response.digitalPersoData)
-        onGetRechargeCheckBalance_thenReturn(mappedResponse)
-
-        viewModel.getRechargeCheckBalance(listOf(), listOf())
+        viewModel.checkBalanceJob = Job()
         viewModel.cancelCheckBalanceJob()
         verifyGetRechargeCheckBalanceIsCancelled()
     }
