@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.orFalse
@@ -107,17 +108,11 @@ class ShopShowcaseNavigationTabWidgetFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         onShowcaseVisible(showcases.firstOrNull()?.id.orEmpty(), tabName)
-    }
-
-    override fun onResume() {
-        super.onResume()
         renderShowcase(showcases)
         setupColors(overrideTheme, colorScheme)
     }
     
-    private fun renderShowcase(
-        showcases: List<Showcase>
-    ) {
+    private fun renderShowcase(showcases: List<Showcase>) {
         val mainShowcase = showcases.getOrNull(FIRST_SHOWCASE_INDEX)
         val firstShowcase = showcases.getOrNull(SECOND_SHOWCASE_INDEX)
         val secondShowcase = showcases.getOrNull(THIRD_SHOWCASE_INDEX)
@@ -145,6 +140,7 @@ class ShopShowcaseNavigationTabWidgetFragment : BaseDaggerFragment() {
         val smallImageHeight = ((smallImageContainerMaxHeight - (TWO * smallImageTextSizeHeight) - (TWO * smallImageTextSizeMarginTop) - smallImageFirstAndSecondRowMargin) / TWO) 
         
         mainShowcase?.let {
+            binding?.imgMainShowcase?.size(mainImageMaxWidth, mainImageMaxHeight)
             binding?.imgMainShowcase?.loadImage(mainShowcase.imageUrl) {
                 this.overrideSize(Resize(mainImageMaxWidth, mainImageMaxHeight))
             }
@@ -158,6 +154,7 @@ class ShopShowcaseNavigationTabWidgetFragment : BaseDaggerFragment() {
         }
 
         firstShowcase?.let {
+            binding?.imgFirstShowcase?.size(smallImageWidth, smallImageHeight)
             binding?.imgFirstShowcase?.loadImage(firstShowcase.imageUrl) {
                 this.overrideSize(Resize(smallImageWidth, smallImageHeight))
             }
@@ -171,6 +168,7 @@ class ShopShowcaseNavigationTabWidgetFragment : BaseDaggerFragment() {
         }
 
         secondShowcase?.let {
+            binding?.imgSecondShowcase?.size(smallImageWidth, smallImageHeight)
             binding?.imgSecondShowcase?.loadImage(secondShowcase.imageUrl) {
                 this.overrideSize(Resize(smallImageWidth, smallImageHeight))
             }
@@ -184,9 +182,11 @@ class ShopShowcaseNavigationTabWidgetFragment : BaseDaggerFragment() {
         }
 
         thirdShowcase?.let {
+            binding?.imgThirdShowcase?.size(smallImageWidth, smallImageHeight)
             binding?.imgThirdShowcase?.loadImage(thirdShowcase.imageUrl) {
                 this.overrideSize(Resize(smallImageWidth, smallImageHeight))
             }
+            
             binding?.tpgThirdShowcaseTitle?.text = thirdShowcase.name
 
             binding?.imgThirdShowcase?.visible()
@@ -197,6 +197,7 @@ class ShopShowcaseNavigationTabWidgetFragment : BaseDaggerFragment() {
         }
 
         fourthShowcase?.let {
+            binding?.imgFourthShowcase?.size(smallImageWidth, smallImageHeight)
             binding?.imgFourthShowcase?.loadImage(fourthShowcase.imageUrl) {
                 this.overrideSize(Resize(smallImageWidth, smallImageHeight))
             }
@@ -210,6 +211,14 @@ class ShopShowcaseNavigationTabWidgetFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun ImageView.size(widthPx: Int, heightPx: Int) {
+        val layoutParams = this.layoutParams
+        layoutParams.width = heightPx
+        layoutParams.height = heightPx
+        
+        this.layoutParams = layoutParams
+    }
+    
     fun setOnShowcaseClick(onShowcaseClick: (Showcase, String) -> Unit) {
         this.onShowcaseClick = onShowcaseClick
     }
