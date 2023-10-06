@@ -99,6 +99,11 @@ public interface LinkerConstants {
     String KEY_CLIENT_TIME_STAMP = "client_timestamp";
     String KEY_AMOUNT = "amount";
 
+    String KEY_MIN_ANDROID_VERSION = "an_min_version";
+    String KEY_MAX_ANDROID_VERSION = "an_max_version";
+    String KEY_MIN_IOS_VERSION = "ios_min_version";
+    String KEY_MAX_IOS_VERSION = "ios_max_version";
+
     String LABEL_SHARING = "sharing";
     String EMAIL_LABLE = "email";
     String PHONE_LABLE = "phone";
@@ -175,5 +180,4 @@ public interface LinkerConstants {
 
     String QUERY_INITIATOR = "?";
     String QUERY_PARAM_SEGREGATOR = "&";
-
 }

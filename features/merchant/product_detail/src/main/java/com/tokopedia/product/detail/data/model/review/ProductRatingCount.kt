@@ -12,5 +12,8 @@ data class ProductRatingCount(
     val totalRating: String = "",
     @SerializedName("totalReviewTextAndImage")
     @Expose
-    val totalReviewTextAndImage: String = ""
+    val totalReviewTextAndImage: String = "",
+    @SerializedName("showRatingReview")
+    @Expose
+    val showRatingReview: Boolean = true
 )

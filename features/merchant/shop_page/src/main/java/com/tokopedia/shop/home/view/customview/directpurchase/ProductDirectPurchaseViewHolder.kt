@@ -23,6 +23,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.util.ShopUtilExt.setAdaptiveLabelDiscountColor
 import com.tokopedia.unifycomponents.CardUnify2.Companion.TYPE_BORDER
@@ -203,12 +204,15 @@ class ProductDirectPurchaseViewHolder private constructor() {
                 tvRating.hide()
             }
             else {
+                iconRating.visible()
+                tvRating.visible()
                 tvRating.text = data.ratingAverage
             }
             if (data.label.isEmpty()) {
                 tvSoldCount.hide()
             }
             else {
+                tvSoldCount.visible()
                 tvSoldCount.text = data.label
             }
             if(data.label.isNotEmpty() && data.ratingAverage.isNotEmpty()){

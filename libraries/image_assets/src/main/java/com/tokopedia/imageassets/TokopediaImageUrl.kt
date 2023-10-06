@@ -391,4 +391,6 @@ object TokopediaImageUrl {
     const val IMG_TOKOCHAT_LIST_EMPTY = "https://images.tokopedia.net/img/android/communication/tokochat/tokochat_list_empty.png"
     const val IMG_EDITSHIPPING_AWB_OTOMATIS = "https://images.tokopedia.net/img/logistic/editshipping/awb_otomatis.png"
     const val IMG_EDITSHIPPING_NON_TUNAI = "https://images.tokopedia.net/img/logistic/editshipping/non_tunai.png"
+    const val OLP_GLOBAL_ERROR_ILLUSTRATION = "https://images.tokopedia.net/img/frontend/illustration/global_state_page_not_found.png"
+    const val OLP_SERVER_ERROR_ILLUSTRATION = "https://images.tokopedia.net/img/frontend/illustration/global_state_server_error.png"
 }

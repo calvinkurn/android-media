@@ -122,7 +122,8 @@ class ShopHomeFlashSaleViewHolder(
         val titleColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS)
         val subTitleColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_LOW_EMPHASIS)
         val ctaColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.ICON_ENABLED_HIGH_COLOR)
-        val informationIconColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.ICON_CTA_LINK_COLOR)
+        val informationIconColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.ICON_ENABLED_HIGH_COLOR)
+        
         flashSaleCampaignNameView?.setTextColor(titleColor)
         timerDescriptionView?.setTextColor(subTitleColor)
         iconCtaChevron?.setColorFilter(ctaColor, PorterDuff.Mode.SRC_ATOP)

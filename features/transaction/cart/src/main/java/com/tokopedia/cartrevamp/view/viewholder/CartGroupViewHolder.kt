@@ -439,7 +439,7 @@ class CartGroupViewHolder(
     }
 
     private fun renderCartShopGroupTicker(cartGroupHolderData: CartGroupHolderData) {
-        binding.itemCartBasketBuilding.vBmgmProductSeparator.gone()
+        binding.itemCartBasketBuilding.vBmgmSeparator.gone()
         if (cartGroupHolderData.hasSelectedProduct && !cartGroupHolderData.isError &&
             cartGroupHolderData.cartShopGroupTicker.enableCartAggregator &&
             !cartGroupHolderData.isOverweight
