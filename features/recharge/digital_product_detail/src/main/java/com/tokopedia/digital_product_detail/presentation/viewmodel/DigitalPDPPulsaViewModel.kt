@@ -291,7 +291,6 @@ class DigitalPDPPulsaViewModel @Inject constructor(
             val result = repo.saveRechargeUserBalanceAccessToken(msisdn, accessToken)
             _saveAccessTokenResult.value = RechargeNetworkResult.Success(result)
         }) {
-            println(">>> ${it.message}")
             _saveAccessTokenResult.value = RechargeNetworkResult.Fail(it)
         }
     }
