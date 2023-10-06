@@ -43,9 +43,6 @@ import com.tokopedia.gm.common.utils.ShopScoreReputationErrorLogger
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreConstant
@@ -128,10 +125,6 @@ open class ShopPerformancePageFragment : BaseDaggerFragment(),
         context?.let { PenaltyDotBadge(it) }
     }
 
-    private val remoteConfig by lazy {
-        FirebaseRemoteConfigImpl(context)
-    }
-
     private var counterPenalty = 0L
     private var menu: Menu? = null
 
@@ -160,7 +153,6 @@ open class ShopPerformancePageFragment : BaseDaggerFragment(),
         startNetworkRequestPerformanceMonitoring()
         stopPreparePerformancePageMonitoring()
         super.onViewCreated(view, savedInstanceState)
-        showOrHideTvRemoteConfigRealTime()
         setPageBackground()
         setupActionBar()
         setupAdapter()
@@ -330,11 +322,6 @@ open class ShopPerformancePageFragment : BaseDaggerFragment(),
      */
     override fun onRMSectionToPMPage() {
         goToPowerMerchantSubscribe()
-    }
-
-    private fun showOrHideTvRemoteConfigRealTime() {
-        val isShowRemoteConfigRealTime = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_IS_ENABLE_ORDER_STATUS_DETAIL)
-        binding?.tvRemoteConfigRealTime?.showWithCondition(isShowRemoteConfigRealTime)
     }
 
     private fun goToSellerMigrationPage(context: Context, appLinks: ArrayList<String>) {
@@ -922,7 +909,6 @@ open class ShopPerformancePageFragment : BaseDaggerFragment(),
                 is Success -> {
                     stopNetworkRequestPerformanceMonitoring()
                     startRenderPerformanceMonitoring()
-                    showOrHideTvRemoteConfigRealTime()
                     shopPerformanceAdapter.setShopPerformanceData(it.data.first)
                     this.shopScoreWrapperResponse = it.data.second
                     val headerShopPerformanceUiModel =
