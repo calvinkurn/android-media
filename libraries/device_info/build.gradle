@@ -36,6 +36,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.logger)
     implementation rootProject.ext.firebase.core
     implementation projectOrAar(rootProject.ext.libraries.utils)
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 }
 
 project.ext {

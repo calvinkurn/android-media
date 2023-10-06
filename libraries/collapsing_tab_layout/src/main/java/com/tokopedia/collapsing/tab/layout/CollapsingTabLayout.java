@@ -150,7 +150,7 @@ public class CollapsingTabLayout extends TabLayout {
     private void initResources() {
         tabMaxHeight = getResources().getDimensionPixelSize(R.dimen.tab_home_feed_max_height);
         tabMinHeight = getResources().getDimensionPixelSize(R.dimen.tab_home_feed_min_height);
-        leftmostItemPadding = getResources().getDimensionPixelSize(R.dimen.dp_16);
+        leftmostItemPadding = getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16);
     }
 
     private void initAnimator() {

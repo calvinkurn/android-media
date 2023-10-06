@@ -19,6 +19,6 @@ class DigitalCartRobot {
 
     fun clickCheckout() {
         /** Change this intending to specific class later when you want to implement thankyou page */
-        onView(withId(R.id.btnCheckout)).perform(click())
+        onView(withId(com.tokopedia.digital_checkout.R.id.btnCheckout)).perform(click())
     }
 }

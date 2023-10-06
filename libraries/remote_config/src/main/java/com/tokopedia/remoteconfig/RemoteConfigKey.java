@@ -50,6 +50,8 @@ public class RemoteConfigKey {
 
     public static final String IRIS_GTM_ENABLED_TOGGLE = "app_iris_gtm_enabled";
     public static final String IRIS_GTM_CONFIG_TOGGLE = "android_customer_iris_config";
+    public static final String IRIS_PERF_CONFIG = "android_customer_iris_perf_config";
+    public static final String IRIS_PERFORMANCE_TOGGLE = "android_customer_iris_performance_config";
     public static final String IRIS_WORK_MANAGER_ENABLE = "android_iris_work_manager_enabled";
 
 
@@ -143,6 +145,8 @@ public class RemoteConfigKey {
 
     public static final String KYC_USING_SELFIE = "android_main_app_enabled_kyc_selfie";
     public static final String GOTO_ONE_KYC_CLICKSTREAM = "android_one_kyc_clickstream";
+    public static final String GOTO_ONE_KYC_CONFIG = "android_one_kyc_exp_unified_kyc_configs";
+    public static final String GOTO_ONE_KYC_AURORA = "android_one_kyc_release_kyc_aurora_configs";
 
     public static final String HOME_ENABLE_PAGINATION = "android_customer_home_enable_pagination";
     public static final String HOME_REMOVE_PAGINATION = "android_customer_home_remove_pagination";
@@ -197,6 +201,8 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_SHOP_HOME_NPL_WIDGET = "android_enable_shop_home_npl_widget";
 
+    public static final String ENABLE_SHOP_PAGE_REIMAGINED = "android_enable_shop_page_re_imagined";
+
     public static final String ENABLE_OLD_SELLER_MVC_ROUTING_TO_NEW_SELLER_MVC = "android_enable_old_seller_mvc_routing_to_new_seller_mvc";
 
     public static final String ENABLE_CURSOR_EMBRACE_LOGGING = "android_newrelic_cursor_out_of_bound";
@@ -245,4 +251,26 @@ public class RemoteConfigKey {
     public static final String IS_SHOP_PENALTY_NEW_PAGE = "android_shop_penalty_new";
 
     public static final String SCP_REWARDS_MEDALI_TOUCH_POINT = "android_scp_rewards_medali_touch_point";
+
+    public static final String ANDROID_FINTECH_ENABLE_RISK_BASED_PRICING = "android_fintech_enable_risk_based_pricing";
+
+    public static final String IS_TOKOCHAT_BUBBLES_ENABLED = "android_tokochat_bubbles_enabled";
+
+    public static final String HOME_NEW_LEGO_TRACKING = "android_home_enable_new_lego_tracking";
+
+    public static final String CONTACT_US_DISABLE_FORCE_RELOAD_URLS = "android_contact_us_disable_force_reload_urls";
+
+    public static final String ENABLE_BANNER_ENVIRONMENT = "android_enable_banner_environment";
+
+    public static final String FINTECH_ENABLE_ADDITIONAL_DEVICE_INFO_HEADER = "android_fintech_enable_additional_device_info";
+
+    public static final String ANDROID_ENABLE_NEW_FINGERPRINT_HEADER_DATA = "android_enable_new_fingerprint_header_data";
+
+    public static final String PAYMENT_ENABLE_ADDITIONAL_DEVICE_INFO_HEADER = "android_payment_enable_additional_device_info";
+
+    public static final String CONTENT_EXOPLAYER_CUSTOM_LOAD_CONTROL = "android_content_exoplayer_custom_load_control";
+
+    public static final String HOME_ATF_REFACTORING = "android_home_atf_refactoring";
+
+    public static final String HOME_HPB_CACHE_EXPIRY = "android_home_hpb_cache_expiry";
 }

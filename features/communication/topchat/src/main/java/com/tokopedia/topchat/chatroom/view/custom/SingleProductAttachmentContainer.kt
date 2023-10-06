@@ -13,7 +13,6 @@ import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
@@ -80,16 +79,16 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     private var parentMetaData: ParentViewHolderMetaData? = null
     private val bgOpposite: Drawable? by lazy(LazyThreadSafetyMode.NONE) {
         ViewUtil.generateBackgroundWithShadow(
-          this,
-          com.tokopedia.unifyprinciples.R.color.Unify_NN0,
-          com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-          com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-          com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-          com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-          ViewUtil.getShadowColorViewHolder(context),
-          R.dimen.dp_topchat_2,
-          R.dimen.dp_topchat_1,
-          Gravity.CENTER
+            this,
+            com.tokopedia.unifyprinciples.R.color.Unify_NN0,
+            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+            ViewUtil.getShadowColorViewHolder(context),
+            R.dimen.dp_topchat_2,
+            R.dimen.dp_topchat_1,
+            Gravity.CENTER
         )
     }
     private var bgSender: Drawable? = null
@@ -120,14 +119,19 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     }
 
     constructor(
-        context: Context?, attrs: AttributeSet?, defStyleAttr: Int
+        context: Context?,
+        attrs: AttributeSet?,
+        defStyleAttr: Int
     ) : super(context, attrs, defStyleAttr) {
         initAttr(context, attrs)
     }
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     constructor(
-        context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int
+        context: Context?,
+        attrs: AttributeSet?,
+        defStyleAttr: Int,
+        defStyleRes: Int
     ) : super(context, attrs, defStyleAttr, defStyleRes) {
         initAttr(context, attrs)
     }
@@ -178,7 +182,10 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     private fun initAttr(context: Context?, attrs: AttributeSet?) {
         if (context == null || attrs == null) return
         context.theme.obtainStyledAttributes(
-            attrs, R.styleable.SingleProductAttachmentContainer, 0, 0
+            attrs,
+            R.styleable.SingleProductAttachmentContainer,
+            0,
+            0
         ).apply {
             try {
                 widthMultiplier = getFloat(
@@ -273,7 +280,8 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     }
 
     private fun initViewHolderData(
-        adapterPosition: Int, parentMetaData: ParentViewHolderMetaData?
+        adapterPosition: Int,
+        parentMetaData: ParentViewHolderMetaData?
     ) {
         this.adapterPosition = adapterPosition
         this.parentMetaData = parentMetaData
@@ -367,7 +375,8 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         if (product.hasColorVariant()) {
             productColorVariant?.show()
             productColorVariantValue?.text = ellipsizeLongText(
-                product.colorVariant, MAX_VARIANT_LABEL_CHAR
+                product.colorVariant,
+                MAX_VARIANT_LABEL_CHAR
             )
         } else {
             productColorVariant?.hide()
@@ -376,7 +385,8 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         if (product.hasSizeVariant()) {
             productSizeVariant?.show()
             productVariantSize?.text = ellipsizeLongText(
-                product.sizeVariant, MAX_VARIANT_LABEL_CHAR
+                product.sizeVariant,
+                MAX_VARIANT_LABEL_CHAR
             )
         } else {
             productSizeVariant?.hide()
@@ -394,7 +404,11 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     }
 
     private fun bindSellerRemainingStock(product: ProductAttachmentUiModel) {
-        if (commonListener?.isSeller() == true && !product.isUpcomingCampaign) {
+        // Show only when user is seller, product is not upcoming product and not product archived
+        if (commonListener?.isSeller() == true &&
+            !product.isUpcomingCampaign &&
+            !product.isProductArchived()
+        ) {
             sellerStockContainer?.show()
             bindSellerStockCount(product)
             bindSellerStockType(product)
@@ -429,8 +443,12 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     }
 
     private fun bindSellerUpdateStockBtn(product: ProductAttachmentUiModel) {
+        // Only show button seller update stock when
+        // user is seller, product is not product campaign and not product archived
+        // note: can show footer is for buyer
         if (product.canShowFooter || commonListener?.isSeller() == false ||
-            product.isProductCampaign() || !enableUpdateStockSeller()
+            product.isProductCampaign() || !enableUpdateStockSeller() ||
+            product.isProductArchived()
         ) {
             btnUpdateStockContainer?.hide()
         } else {
@@ -589,7 +607,11 @@ class SingleProductAttachmentContainer : ConstraintLayout {
 
     private fun bindEmptyStockLabel(product: ProductAttachmentUiModel) {
         label?.apply {
-            if (product.hasEmptyStock() && !product.isUpcomingCampaign) {
+            // Show stok habis only when product is empty but not archived and not upcoming product
+            if (product.hasEmptyStock() &&
+                !product.isProductArchived() &&
+                !product.isUpcomingCampaign
+            ) {
                 show()
                 setText(R.string.title_topchat_empty_stock)
                 unlockFeature = true
@@ -650,7 +672,11 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     }
 
     private fun bindWishList(product: ProductAttachmentUiModel) {
-        if (product.hasEmptyStock() || product.isUpcomingCampaign) {
+        // Show wishlist only when product is empty but not archived
+        // or product is upcoming campaign (0 because campaign is not started)
+        if ((product.hasEmptyStock() && !product.isProductArchived()) ||
+            product.isUpcomingCampaign
+        ) {
             btnWishList?.show()
             setupWishlistButton(product)
         } else {

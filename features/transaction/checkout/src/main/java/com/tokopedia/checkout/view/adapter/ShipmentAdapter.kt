@@ -16,7 +16,6 @@ import com.tokopedia.checkout.databinding.ItemTickerShippingCompletionBinding
 import com.tokopedia.checkout.databinding.ItemUpsellBinding
 import com.tokopedia.checkout.databinding.ViewItemShipmentCostDetailsBinding
 import com.tokopedia.checkout.databinding.ViewItemShipmentRecipientAddressBinding
-import com.tokopedia.checkout.utils.ShipmentRollenceUtil
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener
 import com.tokopedia.checkout.view.converter.RatesDataConverter
 import com.tokopedia.checkout.view.uimodel.CrossSellModel
@@ -44,7 +43,6 @@ import com.tokopedia.checkout.view.viewholder.ShipmentDonationViewHolder
 import com.tokopedia.checkout.view.viewholder.ShipmentEmasViewHolder
 import com.tokopedia.checkout.view.viewholder.ShipmentInsuranceTncViewHolder
 import com.tokopedia.checkout.view.viewholder.ShipmentNewUpsellImprovementViewHolder
-import com.tokopedia.checkout.view.viewholder.ShipmentNewUpsellViewHolder
 import com.tokopedia.checkout.view.viewholder.ShipmentRecipientAddressViewHolder
 import com.tokopedia.checkout.view.viewholder.ShipmentTickerAnnouncementViewHolder
 import com.tokopedia.checkout.view.viewholder.ShipmentTickerErrorViewHolder
@@ -61,11 +59,12 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemTopModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
+import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnProductDataItemModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.view.UploadPrescriptionListener
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.view.UploadPrescriptionViewHolder
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.view.UploadPrescriptionViewHolder.Companion.ITEM_VIEW_UPLOAD
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnWordingModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingWordingModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashbackListener
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackModel
@@ -129,6 +128,7 @@ class ShipmentAdapter @Inject constructor(
     private var isShowOnboarding = false
     var lastChooseCourierItemPosition = 0
     var lastServiceId = 0
+    var indexSubtotal = 0
 
     fun setShowOnboarding(showOnboarding: Boolean) {
         isShowOnboarding = showOnboarding
@@ -193,11 +193,7 @@ class ShipmentAdapter @Inject constructor(
             }
 
             is ShipmentNewUpsellModel -> {
-                return if (ShipmentRollenceUtil.enableCheckoutNewUpsellImprovement()) {
-                    ShipmentNewUpsellImprovementViewHolder.LAYOUT
-                } else {
-                    ShipmentNewUpsellViewHolder.ITEM_VIEW_UPSELL
-                }
+                return ShipmentNewUpsellImprovementViewHolder.LAYOUT
             }
 
             is ShipmentCartItemTopModel -> {
@@ -316,10 +312,6 @@ class ShipmentAdapter @Inject constructor(
                 )
             }
 
-            ShipmentNewUpsellViewHolder.ITEM_VIEW_UPSELL -> {
-                return ShipmentNewUpsellViewHolder(view, shipmentAdapterActionListener)
-            }
-
             ShipmentNewUpsellImprovementViewHolder.LAYOUT -> {
                 return ShipmentNewUpsellImprovementViewHolder(view, shipmentAdapterActionListener)
             }
@@ -329,7 +321,7 @@ class ShipmentAdapter @Inject constructor(
             }
 
             ShipmentCartItemViewHolder.LAYOUT -> {
-                return ShipmentCartItemViewHolder(view, this@ShipmentAdapter)
+                return ShipmentCartItemViewHolder(view, this@ShipmentAdapter, layoutInflater)
             }
 
             ShipmentCartItemExpandViewHolder.LAYOUT -> {
@@ -417,10 +409,6 @@ class ShipmentAdapter @Inject constructor(
                 (holder as ShipmentUpsellViewHolder).bind(data as ShipmentUpsellModel)
             }
 
-            ShipmentNewUpsellViewHolder.ITEM_VIEW_UPSELL -> {
-                (holder as ShipmentNewUpsellViewHolder).bind(data as ShipmentNewUpsellModel)
-            }
-
             ShipmentNewUpsellImprovementViewHolder.LAYOUT -> {
                 (holder as ShipmentNewUpsellImprovementViewHolder).bind(data as ShipmentNewUpsellModel)
             }
@@ -457,6 +445,7 @@ class ShipmentAdapter @Inject constructor(
     override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
         super.onViewRecycled(holder)
         (holder as? ShipmentCartItemBottomViewHolder)?.unsubscribeDebouncer()
+        (holder as? ShipmentCartItemViewHolder)?.unsubscribeDebouncer()
     }
 
     fun clearCompositeSubscription() {
@@ -1041,6 +1030,16 @@ class ShipmentAdapter @Inject constructor(
             return 0
         }
 
+    val shipmentSubtotalPosition: Int
+        get() {
+            for (i in shipmentDataList.indices) {
+                if (shipmentDataList[i] is ShipmentCostModel) {
+                    return i
+                }
+            }
+            return 0
+        }
+
     fun getAddOnOrderLevelPosition(cartString: String): Int {
         for (i in shipmentDataList.indices) {
             if (shipmentDataList[i] is ShipmentCartItemModel) {
@@ -1059,12 +1058,24 @@ class ShipmentAdapter @Inject constructor(
         for (i in shipmentDataList.indices) {
             if (shipmentDataList[i] is CartItemModel) {
                 val cartItemModel = shipmentDataList[i] as CartItemModel
-                if (cartItemModel.cartStringGroup == cartString && cartItemModel.cartId == cartId && cartItemModel.addOnProductLevelModel.addOnsButtonModel.title.isNotEmpty()) {
+                if (cartItemModel.cartStringGroup == cartString && cartItemModel.cartId == cartId && cartItemModel.addOnGiftingProductLevelModel.addOnsButtonModel.title.isNotEmpty()) {
                     return i
                 }
             }
         }
         return 0
+    }
+
+    fun getAddOnProductServicePosition(cartId: Long): Pair<Int, CartItemModel?> {
+        for (i in shipmentDataList.indices) {
+            if (shipmentDataList[i] is CartItemModel) {
+                val cartItemModel = shipmentDataList[i] as CartItemModel
+                if (cartItemModel.cartId == cartId) {
+                    return i to cartItemModel
+                }
+            }
+        }
+        return 0 to null
     }
 
     val promoCheckoutPosition: Int
@@ -1252,24 +1263,25 @@ class ShipmentAdapter @Inject constructor(
     override fun onCheckPurchaseProtection(position: Int, cartItem: CartItemModel) {
         val (shipmentCartItemPosition, shipmentCartItem) =
             getShipmentCartItemByCartString(cartItem.cartStringGroup)
+        val index = shipmentCartItem.cartItemModels.indexOfFirst { it.productId == cartItem.productId }
         if (cartItem.isProtectionOptIn && shipmentCartItem.selectedShipmentDetailData?.useDropshipper == true) {
             shipmentCartItem.selectedShipmentDetailData?.useDropshipper = false
             shipmentCartItem.cartItemModels =
                 shipmentCartItem.cartItemModels.toMutableList().apply {
-                    set(position + shipmentCartItem.cartItemModels.size - shipmentCartItemPosition, cartItem)
+                    set(index, cartItem)
                 }
             shipmentDataList[shipmentCartItemPosition] = shipmentCartItem
-            notifyItemChanged(shipmentCartItemPosition)
+            shipmentAdapterActionListener.onNeedUpdateViewItem(shipmentCartItemPosition)
             shipmentDataList[position] = cartItem
-            notifyItemChanged(position)
+            shipmentAdapterActionListener.onNeedUpdateViewItem(position)
             shipmentAdapterActionListener.onPurchaseProtectionLogicError()
         } else {
             shipmentCartItem.cartItemModels =
                 shipmentCartItem.cartItemModels.toMutableList().apply {
-                    set(position + shipmentCartItem.cartItemModels.size - shipmentCartItemPosition, cartItem)
+                    set(index, cartItem)
                 }
             shipmentDataList[shipmentCartItemPosition] = shipmentCartItem
-            notifyItemChanged(shipmentCartItemPosition)
+            shipmentAdapterActionListener.onNeedUpdateViewItem(shipmentCartItemPosition)
             shipmentDataList[position] = cartItem
         }
         shipmentAdapterActionListener.onPurchaseProtectionChangeListener(position)
@@ -1282,13 +1294,17 @@ class ShipmentAdapter @Inject constructor(
 
     override fun onClickAddOnProductLevel(
         cartItem: CartItemModel,
-        addOnWording: AddOnWordingModel
+        addOnWording: AddOnGiftingWordingModel
     ) {
         shipmentAdapterActionListener.openAddOnProductLevelBottomSheet(cartItem, addOnWording)
     }
 
     override fun onImpressionAddOnProductLevel(productId: String) {
         shipmentAdapterActionListener.addOnProductLevelImpression(productId)
+    }
+
+    override fun onImpressionAddOnProductService(addonType: Int, productId: String) {
+        shipmentAdapterActionListener.addOnProductServiceImpression(addonType, productId)
     }
 
     override fun onClickCollapseGroupProduct(
@@ -1334,12 +1350,29 @@ class ShipmentAdapter @Inject constructor(
         position: Int,
         shipmentCartItemModel: ShipmentCartItemModel
     ) {
+        indexSubtotal = position
         shipmentDataList[position] = shipmentCartItemModel
         notifyItemChanged(position)
+    }
+
+    override fun onCheckboxAddonProductListener(isChecked: Boolean, addOnProductDataItemModel: AddOnProductDataItemModel, cartItemModel: CartItemModel, bindingAdapterPosition: Int) {
+        shipmentAdapterActionListener.onCheckboxAddonProductListener(isChecked, addOnProductDataItemModel, cartItemModel, bindingAdapterPosition)
+    }
+
+    override fun onClickAddonProductInfoIcon(addOnDataInfoLink: String) {
+        shipmentAdapterActionListener.onClickAddonProductInfoIcon(addOnDataInfoLink)
+    }
+
+    override fun onClickSeeAllAddOnProductService(cartItemModel: CartItemModel) {
+        shipmentAdapterActionListener.onClickSeeAllAddOnProductService(cartItemModel)
     }
 
     fun updateItem(item: Any, position: Int) {
         shipmentDataList[position] = item
         notifyItemChanged(position)
+    }
+
+    fun updateSubtotal() {
+        notifyItemChanged(indexSubtotal)
     }
 }

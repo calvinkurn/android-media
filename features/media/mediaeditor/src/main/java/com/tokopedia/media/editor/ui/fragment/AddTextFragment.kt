@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.activityViewModels
@@ -77,6 +78,8 @@ class AddTextFragment @Inject constructor(
             viewModel.textData.textPosition = value
         }
 
+    private val positionButtonList: MutableList<LinearLayout> = mutableListOf()
+
     fun getInputResult(): EditorAddTextUiModel {
         return EditorAddTextUiModel(
             textAlignment = alignmentIndex,
@@ -106,18 +109,11 @@ class AddTextFragment @Inject constructor(
 
         when (viewModel.pageMode.value) {
             AddTextActivity.TEXT_MODE -> {
-                viewBinding?.textOverlayContainer?.show()
-
-                viewBinding?.addTextInput?.requestFocus()
-                activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
+                setupTextMode()
             }
 
             AddTextActivity.POSITION_MODE -> {
-                viewBinding?.let {
-                    it.positionOverlayContainer.show()
-                    it.actionBtnContainer.show()
-                }
-
+                setupPositionMode()
                 implementAddTextData()
             }
         }
@@ -128,14 +124,13 @@ class AddTextFragment @Inject constructor(
         initListener()
         initFontColor()
         initTextChangeListener()
-        initPositionButton()
 
         setColorGradient()
     }
 
     override fun initObserver() {
-        viewModel.imgUrl.observe(viewLifecycleOwner) {
-            viewBinding?.addTextFragmentImg?.loadImage(it)
+        viewModel.imgUrl.observe(viewLifecycleOwner) { imgUrl ->
+            viewBinding?.addTextFragmentImg?.loadImage(imgUrl)
         }
     }
 
@@ -185,21 +180,19 @@ class AddTextFragment @Inject constructor(
     ) {
         viewBinding?.let {
             // left -> right -> top -> bottom
-            val positionViewContainer = it.positionOverlayContainer
-            for (i in 0 until positionViewContainer.childCount) {
-                // skip top & left when template is using background
-                if (viewModel.textData.textTemplate == AddTextTemplateMode.BACKGROUND && (i == 0 || i == 2)) {
-                    continue
+            positionButtonList.forEachIndexed { index, view ->
+                if (viewModel.textData.textTemplate == AddTextTemplateMode.BACKGROUND && (index == 0 || index == 2)) {
+                    return@forEachIndexed
                 }
 
-                positionViewContainer.getChildAt(i).apply {
-                    if (i == positionIndex.value) {
+                view.apply {
+                    if (index == positionIndex.value) {
                         this.hide()
                     } else {
                         this.show()
                     }
 
-                    viewAction(this, i)
+                    viewAction(this, index)
                 }
             }
         }
@@ -264,16 +257,18 @@ class AddTextFragment @Inject constructor(
     private fun changeTextAndColor(icon: IconUnify) {
         isColorState = !isColorState
 
-        if (isColorState) {
-            viewBinding?.fontColorContainer?.show()
-            viewBinding?.fontSelectionContainer?.hide()
+        viewBinding?.let {
+            if (isColorState) {
+                it.fontColorContainer.show()
+                it.fontSelectionContainer.hide()
 
-            icon.setImage(IconUnify.TEXT)
-        } else {
-            viewBinding?.fontColorContainer?.hide()
-            viewBinding?.fontSelectionContainer?.show()
+                icon.setImage(IconUnify.TEXT)
+            } else {
+                it.fontColorContainer.hide()
+                it.fontSelectionContainer.show()
 
-            setColorGradient()
+                setColorGradient()
+            }
         }
     }
 
@@ -386,20 +381,20 @@ class AddTextFragment @Inject constructor(
         positionIndex = viewModel.textData.textPosition
     }
 
-    private fun initPositionButton() {
-        val positionViewContainer = viewBinding?.positionOverlayContainer
+    private fun initPositionButtonSize() {
+        val positionViewContainer = viewBinding?.addTextFragmentImg
 
         positionViewContainer?.post {
             positionViewContainer.let {
                 val size = (it.width.coerceAtMost(it.height) * POSITION_BOX_PERCENTAGE).toInt()
-                for (i in 0 until it.childCount) {
-                    it.getChildAt(i).apply {
+                positionButtonList.forEach { view ->
+                    view.apply {
                         this.layoutParams.apply {
                             width = size
                             height = size
                         }
-                        requestLayout()
                     }
+                    view.requestLayout()
                 }
             }
         }
@@ -415,6 +410,37 @@ class AddTextFragment @Inject constructor(
         viewBinding?.textColor?.setImageDrawable(
             ContextCompat.getDrawable(requireContext(), editorR.drawable.ic_color_gradient)
         )
+    }
+
+    private fun setupPositionMode() {
+        viewBinding?.let {
+            it.actionBtnContainer.show()
+            it.overlayAddText.show()
+
+            it.addTextFragmentImg.requestLayout()
+
+            positionButtonList.add(it.positionButtonLeft)
+            positionButtonList.add(it.positionButtonRight)
+            positionButtonList.add(it.positionButtonTop)
+            positionButtonList.add(it.positionButtonBottom)
+
+            initPositionButtonSize()
+        }
+    }
+
+    private fun setupTextMode() {
+        viewBinding?.let {
+            it.addTextInput.show()
+            it.addTextInput.requestFocus()
+
+            it.colorAlignmentContainer.show()
+
+            it.backgroundOverlayText.show()
+
+            it.fontSelectionContainer.show()
+
+            activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
+        }
     }
 
     companion object {

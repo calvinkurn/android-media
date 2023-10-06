@@ -171,7 +171,6 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.image.ImageProcessingUtil
-import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -292,7 +291,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var shopShareData: ShopShareDataUiModel? = null
     private var shopImageFilePath: String = ""
-    private var binding by autoClearedNullable<FragmentSahBinding>()
+    private var binding: FragmentSahBinding? = null
     private var isNewSellerState: Boolean = false
 
     private val recyclerView: RecyclerView?
@@ -368,8 +367,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         shopShareHelper.removeTemporaryShopImage(shopImageFilePath)
+        binding = null
+        super.onDestroy()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -963,12 +963,15 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private fun getWidgetLayout() {
-        val deviceHeight = if (isLazyLoadEnabled) {
+        sellerHomeViewModel.getWidgetLayout(getDeviceHeight(), TRIGGER_INITIAL_LOAD)
+    }
+
+    private fun getDeviceHeight(): Float? {
+        return if (isLazyLoadEnabled) {
             deviceDisplayHeight
         } else {
             null
         }
-        sellerHomeViewModel.getWidgetLayout(deviceHeight, TRIGGER_INITIAL_LOAD)
     }
 
     private fun showUnificationWidgetCoachMark() {
@@ -1182,12 +1185,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
         sahGlobalError.gone()
         emptyState?.gone()
-        val deviceHeight = if (isLazyLoadEnabled) {
-            deviceDisplayHeight
-        } else {
-            null
-        }
-        sellerHomeViewModel.getWidgetLayout(deviceHeight, trigger)
+        sellerHomeViewModel.getWidgetLayout(getDeviceHeight(), trigger)
         sellerHomeViewModel.getTicker()
     }
 

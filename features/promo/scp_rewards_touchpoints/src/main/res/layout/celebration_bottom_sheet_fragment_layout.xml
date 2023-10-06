@@ -9,18 +9,21 @@
         android:layout_height="wrap_content">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/parent_container"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:background="@drawable/background_bottomsheet_round">
 
             <ViewFlipper
                 android:id="@+id/main_flipper"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <com.tokopedia.unifycomponents.LoaderUnify
                     android:id="@+id/loader"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="@dimen/dp_50"
+                    android:layout_height="@dimen/dp_50"
                     android:layout_gravity="center"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -30,9 +33,7 @@
 
                 <include
                     android:id="@+id/main_view"
-                    layout="@layout/celebration_bottom_sheet_main_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    layout="@layout/celebration_bottom_sheet_main_layout" />
 
                 <com.tokopedia.globalerror.GlobalError
                     android:id="@+id/error_view"
@@ -43,10 +44,10 @@
 
             <com.tokopedia.iconunify.IconUnify
                 android:id="@+id/btn_close"
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:layout_marginStart="19dp"
-                android:layout_marginTop="19dp"
+                android:layout_width="@dimen/dp_56"
+                android:layout_height="@dimen/dp_56"
+                android:paddingHorizontal="@dimen/dp_16"
+                android:paddingVertical="@dimen/dp_16"
                 app:icon_name="CLOSE"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

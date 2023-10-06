@@ -5,6 +5,9 @@ import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.ViewGroup
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -32,12 +35,14 @@ import com.tokopedia.unifyprinciples.R as unifyR
 class UserReviewViewHolder private constructor() {
 
     class Review(
+        private val lifecycleOwner: LifecycleOwner,
         private val binding: ItemUserReviewBinding,
         private val listener: Listener
     ) : RecyclerView.ViewHolder(binding.root) {
 
         private val adapter by lazyThreadSafetyNone {
             UserReviewMediaAdapter(
+                lifecycleOwner,
                 listener = object : UserReviewMediaAdapter.Listener {
                     override fun onMediaClick(
                         feedbackId: String,
@@ -199,9 +204,11 @@ class UserReviewViewHolder private constructor() {
             private const val Y_SCROLL_BUFFER = 10
             private const val MAX_REVIEW_CHAR = 140
             fun create(
+                lifecycleOwner: LifecycleOwner,
                 parent: ViewGroup,
                 listener: Listener
             ) = Review(
+                lifecycleOwner,
                 ItemUserReviewBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,

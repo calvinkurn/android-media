@@ -159,7 +159,7 @@ class ContentCommentBottomSheet @Inject constructor(
                     prevLength - selEnd // calculate cursor distance from end of text
 
                 val newText =
-                    TagMentionBuilder.spanText(txt.toSpanned(), textLength = newLength.orZero())
+                    TagMentionBuilder.spanText(txt.toSpanned(), textLength = newLength.orZero(), ctx = requireContext())
                 binding.newComment.text?.clear()
                 binding.newComment.append(newText)
 
@@ -382,7 +382,7 @@ class ContentCommentBottomSheet @Inject constructor(
             binding.commentGlobalError.setType(GlobalError.NO_CONNECTION)
             binding.commentGlobalError.errorSecondaryAction.show()
             binding.commentGlobalError.errorSecondaryAction.text =
-                getString(R.string.content_comment_error_secondary)
+                getString(R.string.content_global_error_secondary_text)
             binding.commentGlobalError.setSecondaryActionClickListener {
                 val intent = Intent(Settings.ACTION_WIRELESS_SETTINGS)
                 router.route(requireActivity(), intent)

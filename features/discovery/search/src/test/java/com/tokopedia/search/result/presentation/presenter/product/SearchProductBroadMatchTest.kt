@@ -216,6 +216,7 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
         badgeItemDataViewList.listShouldBe(otherRelatedProduct.badgeList) { actual, expected ->
             actual.imageUrl shouldBe expected.imageUrl
             actual.isShown shouldBe expected.isShown
+            actual.title shouldBe expected.title
         }
 
         labelGroupDataList.listShouldBe(otherRelatedProduct.labelGroupList) { actual, expected ->
@@ -237,6 +238,7 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
         carouselProductType.hasThreeDots shouldBe true
 
         componentId shouldBe otherRelatedProduct.componentId
+        warehouseID shouldBe otherRelatedProduct.warehouseIdDefault
     }
 
     @Test

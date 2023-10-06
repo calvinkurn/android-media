@@ -1,267 +1,287 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fillViewport="true"
-    android:scrollbars="none"
-    android:background="@color/Unify_Background">
+    android:layout_height="match_parent">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        android:scrollbars="none"
+        android:background="@color/Unify_Background"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/btnCta">
 
-        <com.tokopedia.unifycomponents.ticker.Ticker
-            android:id="@+id/withdrawalSuccessTicker"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            app:closeButtonVisibility="gone"
-            app:descriptionText="description"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:tickerShapeType="full"
-            app:tickerType="warning" />
+            android:layout_height="wrap_content">
 
-        <com.tokopedia.unifycomponents.CardUnify
-            android:id="@+id/cardUnifyJoinRekeningProgram"
-            android:layout_width="@dimen/unify_space_0"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/unify_space_8"
-            android:layout_marginEnd="@dimen/unify_space_8"
-            android:padding="@dimen/unify_space_12"
-            android:visibility="gone"
-            app:card_type="shadow"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <com.tokopedia.unifycomponents.ticker.Ticker
+                android:id="@+id/withdrawalSuccessTicker"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:closeButtonVisibility="gone"
+                app:descriptionText="description"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tickerShapeType="full"
+                app:tickerType="warning" />
 
-                <com.tokopedia.unifycomponents.ImageUnify
-                    android:id="@+id/ivRekeningPremium"
-                    android:layout_width="@dimen/layout_lvl5"
-                    android:layout_height="@dimen/layout_lvl5"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/swd_ic_power_merchant"
-                    app:unify_image_corner_radius="0" />
+            <com.tokopedia.unifycomponents.CardUnify
+                android:id="@+id/cardUnifyJoinRekeningProgram"
+                android:layout_width="@dimen/unify_space_0"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_8"
+                android:layout_marginEnd="@dimen/unify_space_8"
+                android:padding="@dimen/unify_space_12"
+                android:visibility="gone"
+                app:card_type="shadow"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/tvComeOnJoinRP"
-                    android:layout_width="@dimen/unify_space_0"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/unify_space_12"
-                    android:layout_marginLeft="@dimen/unify_space_12"
-                    android:text="@string/swd_come_on_join_rp"
-                    android:textColor="@color/Unify_NN950_96"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/ivRekeningPremium"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:typographyType="heading_5"
-                    app:typographyWeight="bold" />
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/tvComeOnJoinRPDescriptionClickable"
-                    android:layout_width="@dimen/unify_space_0"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/unify_space_12"
-                    android:layout_marginLeft="@dimen/unify_space_12"
-                    android:layout_marginTop="@dimen/unify_space_4"
-                    android:text="@string/swd_come_on_join_rp_description"
-                    android:textColor="@color/Unify_NN950_68"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/ivRekeningPremium"
-                    app:layout_constraintTop_toBottomOf="@+id/tvComeOnJoinRP"
-                    app:typographyType="body_3" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                    <com.tokopedia.unifycomponents.ImageUnify
+                        android:id="@+id/ivRekeningPremium"
+                        android:layout_width="@dimen/layout_lvl5"
+                        android:layout_height="@dimen/layout_lvl5"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/swd_ic_power_merchant"
+                        app:unify_image_corner_radius="0" />
 
-        </com.tokopedia.unifycomponents.CardUnify>
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/tvComeOnJoinRP"
+                        android:layout_width="@dimen/unify_space_0"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/unify_space_12"
+                        android:layout_marginLeft="@dimen/unify_space_12"
+                        android:text="@string/swd_come_on_join_rp"
+                        android:textColor="@color/Unify_NN900"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/ivRekeningPremium"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:typographyType="heading_5"
+                        app:typographyWeight="bold" />
 
-        <androidx.constraintlayout.widget.Barrier
-            android:id="@+id/barrier"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:barrierDirection="bottom"
-            app:constraint_referenced_ids="withdrawalSuccessTicker,cardUnifyJoinRekeningProgram" />
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/tvComeOnJoinRPDescriptionClickable"
+                        android:layout_width="@dimen/unify_space_0"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/unify_space_12"
+                        android:layout_marginLeft="@dimen/unify_space_12"
+                        android:layout_marginTop="@dimen/unify_space_4"
+                        android:text="@string/swd_come_on_join_rp_description"
+                        android:textColor="@color/Unify_NN600"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/ivRekeningPremium"
+                        app:layout_constraintTop_toBottomOf="@+id/tvComeOnJoinRP"
+                        app:typographyType="body_3" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.tokopedia.unifycomponents.CardUnify>
 
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/ivWithdrawalSuccess"
-            android:layout_width="@dimen/swd_success_image_size"
-            android:layout_height="@dimen/swd_success_image_size"
-            android:layout_marginTop="@dimen/unify_space_16"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/barrier" />
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/barrier"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="bottom"
+                app:constraint_referenced_ids="withdrawalSuccessTicker,cardUnifyJoinRekeningProgram" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tvWithdrawalTitle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:gravity="center"
-            android:textColor="@color/Unify_NN950"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ivWithdrawalSuccess"
-            app:typographyType="heading_3"
-            app:typographyWeight="bold"
-            tools:text="@string/swd_withdrawal_being_processed_title" />
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/ivWithdrawalSuccess"
+                android:layout_width="@dimen/swd_success_image_size"
+                android:layout_height="@dimen/swd_success_image_size"
+                android:layout_marginTop="@dimen/unify_space_16"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/barrier" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tvWithdrawalTimeNote"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="16dp"
-            android:gravity="center"
-            android:textColor="@color/Unify_NN600"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvWithdrawalTitle"
-            app:typographyType="paragraph_2"
-            tools:text="@string/swd_withdrawal_process_time" />
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvWithdrawalTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:gravity="center"
+                android:textColor="@color/Unify_NN950"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ivWithdrawalSuccess"
+                app:typographyType="heading_3"
+                app:typographyWeight="bold"
+                tools:text="@string/swd_withdrawal_being_processed_title" />
 
-        <com.tokopedia.unifycomponents.DividerUnify
-            android:id="@+id/divider1"
-            android:layout_width="@dimen/unify_space_0"
-            android:layout_height="@dimen/layout_lvl1"
-            android:layout_marginTop="@dimen/unify_space_24"
-            android:background="@color/Unify_NN50"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvWithdrawalTimeNote" />
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvWithdrawalTimeNote"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="16dp"
+                android:gravity="center"
+                android:textColor="@color/Unify_NN600"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvWithdrawalTitle"
+                app:typographyType="paragraph_2"
+                tools:text="@string/swd_withdrawal_process_time" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tvWithdrawTitle"
-            android:layout_width="@dimen/unify_space_0"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/unify_space_16"
-            android:layout_marginTop="@dimen/unify_space_16"
-            android:layout_marginEnd="@dimen/unify_space_16"
-            android:text="@string/swd_ttl_withdraw_dtl"
-            android:textColor="@color/Unify_NN950"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/divider1"
-            app:typographyType="display_1"
-            app:typographyWeight="bold" />
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/ivBankImage"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginEnd="16dp"
+                android:scaleType="fitCenter"
+                app:layout_constraintEnd_toEndOf="@id/tvAccountDestination"
+                app:layout_constraintTop_toTopOf="@id/tvBankName"
+                app:layout_constraintBottom_toBottomOf="@id/tvBankName"/>
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tvAccountDestination"
-            android:layout_width="@dimen/unify_space_0"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/unify_space_16"
-            android:layout_marginTop="@dimen/unify_space_12"
-            android:layout_marginEnd="@dimen/unify_space_16"
-            android:text="@string/swd_destination_account"
-            android:textColor="@color/Unify_NN600"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvWithdrawTitle"
-            app:typographyType="paragraph_3" />
+            <com.tokopedia.unifycomponents.CardUnify2
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:card_type="border"
+                app:layout_constraintStart_toStartOf="@id/tvAccountDestination"
+                app:layout_constraintEnd_toEndOf="@id/tvAccountDestination"
+                app:layout_constraintTop_toTopOf="@id/tvAccountDestination"
+                app:layout_constraintBottom_toBottomOf="@id/spaceBottomCard"/>
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tvBankName"
-            android:layout_width="@dimen/unify_space_0"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/unify_space_16"
-            android:layout_marginLeft="@dimen/unify_space_16"
-            android:textColor="@color/Unify_NN950"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvAccountDestination"
-            app:typographyType="paragraph_2"
-            app:typographyWeight="bold"
-            tools:text="PT. BCA (BANK CENTRAL ASIA) TBK" />
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvAccountDestination"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="16dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:paddingTop="12dp"
+                android:text="@string/swd_destination_account"
+                android:textColor="@color/Unify_NN600"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvWithdrawalTimeNote"
+                app:typographyType="paragraph_3" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tvAccountNumber"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:textColor="@color/Unify_NN600"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvBankName"
-            app:typographyType="small"
-            tools:text="0123456762 - Prasetyo Pambudi" />
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvBankName"
+                android:layout_width="@dimen/unify_space_0"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_16"
+                android:layout_marginLeft="@dimen/unify_space_16"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:textColor="@color/Unify_NN950"
+                app:layout_constraintEnd_toStartOf="@id/ivBankImage"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvAccountDestination"
+                app:typographyType="display_2"
+                app:typographyWeight="bold"
+                tools:text="PT. BCA (BANK CENTRAL ASIA) TBK" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tvTotalWithdrawal"
-            android:layout_width="@dimen/unify_space_0"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:text="@string/swd_ttl_total"
-            android:textColor="@color/Unify_NN600"
-            app:typographyType="paragraph_3"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvAccountNumber" />
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvAccountNumber"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:textColor="@color/Unify_NN600"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvBankName"
+                app:typographyType="small"
+                tools:text="0123456762 - Prasetyo Pambudi" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tvTotalWithdrawalAmount"
-            android:layout_width="@dimen/unify_space_0"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/unify_space_16"
-            android:layout_marginLeft="@dimen/unify_space_16"
-            android:textColor="@color/Unify_NN950"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvTotalWithdrawal"
-            app:typographyType="paragraph_2"
-            app:typographyWeight="bold"
-            tools:text="Rp10.000" />
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvTotalWithdrawal"
+                android:layout_width="@dimen/unify_space_0"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:text="@string/swd_ttl_total"
+                android:textColor="@color/Unify_NN600"
+                app:typographyType="paragraph_3"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvAccountNumber" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tvAdminFees"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="4dp"
-            android:textColor="@color/Unify_NN600"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvTotalWithdrawalAmount"
-            app:typographyType="small"
-            tools:text="Dikenai biaya admin Rp5.000"
-            tools:visibility="visible" />
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvTotalWithdrawalAmount"
+                android:layout_width="@dimen/unify_space_0"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_16"
+                android:layout_marginLeft="@dimen/unify_space_16"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:textColor="@color/Unify_NN950"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvTotalWithdrawal"
+                app:typographyType="paragraph_2"
+                app:typographyWeight="bold"
+                tools:text="Rp10.000" />
 
-        <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/btnCta"
-            android:layout_width="@dimen/unify_space_0"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/unify_space_16"
-            android:layout_marginTop="@dimen/unify_space_32"
-            android:layout_marginEnd="@dimen/unify_space_16"
-            android:layout_marginBottom="@dimen/unify_space_24"
-            android:fontFamily="sans-serif-medium"
-            android:gravity="center"
-            android:text="@string/swd_back_to_saldo_detail"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvAdminFees"
-            app:unifyButtonSize="medium"
-            app:unifyButtonVariant="filled" />
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvAdminFees"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="4dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:textColor="@color/Unify_NN600"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvTotalWithdrawalAmount"
+                app:typographyType="small"
+                tools:text="Dikenai biaya admin Rp5.000"
+                tools:visibility="visible" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</ScrollView>
+            <Space
+                android:id="@+id/spaceBottomCard"
+                android:layout_width="0dp"
+                android:layout_height="12dp"
+                app:layout_constraintTop_toBottomOf="@id/tvAdminFees"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnCta"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/unify_space_32"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        android:layout_marginBottom="@dimen/unify_space_24"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="center"
+        android:text="@string/swd_back_to_saldo_detail"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:unifyButtonSize="medium"
+        app:unifyButtonVariant="filled" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

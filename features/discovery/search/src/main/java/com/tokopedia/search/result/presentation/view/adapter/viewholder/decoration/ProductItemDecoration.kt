@@ -7,15 +7,24 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.productcard.IProductCardView
+import com.tokopedia.productcard.ProductCardListView
 import com.tokopedia.search.R
+import com.tokopedia.search.result.presentation.model.ProductItemDataView
+import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter
 import com.tokopedia.search.utils.BASE_RADIUS_AREA
 import com.tokopedia.search.utils.CORNER_RADIUS_DEGREE
 import com.tokopedia.search.utils.VERTICAL_SHADOW_MULTIPLIER
+import com.tokopedia.unifycomponents.toPx
 import kotlin.math.cos
 import kotlin.math.roundToInt
 
-class ProductItemDecoration(private val spacing: Int) : ItemDecoration() {
+class ProductItemDecoration(
+    private val spacing: Int,
+    private val adapter: ProductListAdapter? = null,
+) : ItemDecoration() {
 
     private var verticalCardViewOffset = 0
     private var horizontalCardViewOffset = 0
@@ -29,6 +38,11 @@ class ProductItemDecoration(private val spacing: Int) : ItemDecoration() {
         R.layout.search_result_product_big_grid_inspiration_card_layout,
         R.layout.search_result_product_small_grid_inspiration_card_layout,
         R.layout.search_result_same_session_recommendation_product_layout,
+        R.layout.search_inspiration_seamless_product_card,
+        R.layout.search_inspiration_seamless_product_card_with_viewstub,
+        R.layout.search_inspiration_seamless_product_card_list,
+        R.layout.search_inspiration_seamless_product_card_list_with_viewstub,
+        R.layout.search_inspiration_semless_keyword
     )
 
     override fun getItemOffsets(outRect: Rect,
@@ -36,31 +50,42 @@ class ProductItemDecoration(private val spacing: Int) : ItemDecoration() {
                                 parent: RecyclerView,
                                 state: RecyclerView.State) {
 
-        val absolutePos = parent.getChildAdapterPosition(view)
+        val adapterPosition = parent.getChildAdapterPosition(view)
 
-        if (isProductItem(parent, absolutePos)) {
+        if (isProductItem(parent, adapterPosition)) {
             val relativePos = getProductItemRelativePosition(parent, view)
             val totalSpanCount = getTotalSpanCount(parent)
+            val visitable = adapter?.itemList?.getOrNull(adapterPosition)
+            val isListViewExperiment = isListViewExperiment(visitable, view)
+
+            val listViewExperimentHorizontalOffset = if (isListViewExperiment) 8.toPx() else 0
 
             verticalCardViewOffset = getVerticalCardViewOffset(view)
-            horizontalCardViewOffset = getHorizontalCardViewOffset(view)
+            horizontalCardViewOffset = getHorizontalCardViewOffset(view) + listViewExperimentHorizontalOffset
 
             outRect.left = getLeftOffset(relativePos, totalSpanCount)
-            outRect.top = getTopOffset(parent, absolutePos, relativePos, totalSpanCount)
+            outRect.top = getTopOffset(parent, adapterPosition, relativePos, totalSpanCount)
             outRect.right = getRightOffset(relativePos, totalSpanCount)
             outRect.bottom = getBottomOffsetNotBottomItem()
         }
     }
 
     private fun getProductItemRelativePosition(parent: RecyclerView, view: View): Int {
-        return if (view.layoutParams is StaggeredGridLayoutManager.LayoutParams)
-            getProductItemRelativePositionStaggeredGrid(view)
-        else getProductItemRelativePositionNotStaggeredGrid(parent, view)
+        return when (view.layoutParams) {
+            is StaggeredGridLayoutManager.LayoutParams -> getProductItemRelativePositionStaggeredGrid(view)
+            is GridLayoutManager.LayoutParams -> getProductItemRelativePositionGrid(view)
+            else -> getProductItemRelativePositionNotStaggeredGrid(parent, view)
+        }
     }
 
     private fun getProductItemRelativePositionStaggeredGrid(view: View): Int {
         val staggeredGridLayoutParams = view.layoutParams as StaggeredGridLayoutManager.LayoutParams
         return staggeredGridLayoutParams.spanIndex
+    }
+
+    private fun getProductItemRelativePositionGrid(view: View): Int {
+        val gridLayoutParams = view.layoutParams as GridLayoutManager.LayoutParams
+        return gridLayoutParams.spanIndex
     }
 
     private fun getProductItemRelativePositionNotStaggeredGrid(parent: RecyclerView, view: View): Int {
@@ -76,6 +101,11 @@ class ProductItemDecoration(private val spacing: Int) : ItemDecoration() {
                 is StaggeredGridLayoutManager -> layoutManager.spanCount
                 else -> 1
             }
+
+    private fun isListViewExperiment(visitable: Visitable<*>?, view: View?) =
+        view is ProductCardListView
+            && visitable is ProductItemDataView
+            && SearchConstant.ProductListType.LIST_VIEW == visitable.productListType
 
     private fun getHorizontalCardViewOffset(view: View) =
             when (view) {

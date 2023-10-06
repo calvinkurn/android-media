@@ -48,6 +48,12 @@ android {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_11
     }
+    buildFeatures {
+        compose true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = rootProject.ext.composeVersion
+    }
 }
 
 dependencies {

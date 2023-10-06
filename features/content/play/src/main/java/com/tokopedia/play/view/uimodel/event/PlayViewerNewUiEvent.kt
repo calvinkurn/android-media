@@ -127,13 +127,13 @@ data class ChangeCampaignReminderFailed(val error: Throwable) : PlayViewerNewUiE
  * Follow
  */
 
-object FailedFollow : PlayViewerNewUiEvent()
+object FailedFollow: PlayViewerNewUiEvent()
+data class CommentVisibilityEvent(val isOpen: Boolean): PlayViewerNewUiEvent()
 
 /**
  * Explore Widget
  */
-object ExploreWidgetInitialState : PlayViewerNewUiEvent()
 
-data class CommentVisibilityEvent(val isOpen: Boolean) : PlayViewerNewUiEvent()
+object ExploreWidgetNextTab: PlayViewerNewUiEvent()
 
-data class ShowVariantSheet(val product: PlayProductUiModel.Product, val forcePushTop: Boolean) : PlayViewerNewUiEvent()
+data class ShowVariantSheet(val product: PlayProductUiModel.Product, val forcePushTop: Boolean): PlayViewerNewUiEvent()

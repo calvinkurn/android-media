@@ -1,6 +1,7 @@
 package com.tokopedia.recommendation_widget_common.presentation.model
 
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem.AddToCartType.QuantityEditor
 import java.util.UUID
 
 data class RecommendationWidget(
@@ -27,13 +28,18 @@ data class RecommendationWidget(
     val headerBackColor: String = "",
     val recommendationConfig: RecommendationConfig = RecommendationConfig(),
     var recommendationBanner: RecommendationBanner? = null,
+    val endDate: String = "",
     // for recom PDP since there is possibility gql return empty page name and recom list
     var recomUiPageName: String = pageName,
     var isTokonow: Boolean = false,
-    val channelId: String = ""
+    val channelId: String = "",
 ) {
 
     val affiliateTrackerId: String = UUID.randomUUID().toString()
+
+    fun hasQuantityEditor() = recommendationItemList.any {
+        it.addToCartType == QuantityEditor
+    }
 
     fun copyRecomItemList(): List<RecommendationItem> {
         val newList = mutableListOf<RecommendationItem>()

@@ -31,6 +31,7 @@ import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.chatbubble.CustomC
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.chatbubble.LeftChatMessageUnifyViewHolder
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.chatbubble.RightChatMessageUnifyViewHolder
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.dynamicAttachment.DynamicAttachmentTextViewHolder
+import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.dynamicAttachment.DynamicOwocInvoiceViewHolder
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.dynamicAttachment.DynamicStickyButtonViewHolder
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.invoice.AttachedInvoiceSelectionViewHolder
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.invoice.AttachedInvoiceSentViewHolder
@@ -39,6 +40,7 @@ import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.ChatActio
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.ChatOptionListListener
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.ChatRatingListener
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.ChatbotAdapterListener
+import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.ChatbotOwocListener
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.CsatOptionListListener
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.DynamicStickyButtonListener
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.StickyActionButtonClickListener
@@ -46,6 +48,7 @@ import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.VideoUplo
 import com.tokopedia.chatbot.chatbot2.view.uimodel.chatactionbubble.ChatActionSelectionBubbleUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.csatoptionlist.CsatOptionsUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.dynamicattachment.DynamicAttachmentTextUiModel
+import com.tokopedia.chatbot.chatbot2.view.uimodel.dynamicattachment.DynamicOwocInvoiceUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.dynamicattachment.DynamicStickyButtonUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.helpfullquestion.HelpFullQuestionsUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.invoice.AttachInvoiceSelectionUiModel
@@ -76,6 +79,7 @@ open class ChatbotTypeFactoryImpl(
     private val replyBubbleListener: ReplyBubbleAreaMessage.Listener,
     private val videoUploadListener: VideoUploadListener,
     private val dynamicStickyButtonListener: DynamicStickyButtonListener,
+    private val dynamicOwocListener: ChatbotOwocListener,
     private val userSession: UserSessionInterface
 ) :
     BaseChatTypeFactoryImpl(
@@ -130,6 +134,11 @@ open class ChatbotTypeFactoryImpl(
                 chatLinkHandlerListener,
                 dynamicStickyButtonListener
             )
+            DynamicOwocInvoiceViewHolder.LAYOUT -> DynamicOwocInvoiceViewHolder(
+                parent,
+                chatLinkHandlerListener,
+                dynamicOwocListener
+            )
             else -> createViewHolder(parent, type)
         }
     }
@@ -152,6 +161,10 @@ open class ChatbotTypeFactoryImpl(
 
     override fun type(dynamicAttachmentTextUiModel: DynamicAttachmentTextUiModel): Int {
         return DynamicAttachmentTextViewHolder.LAYOUT
+    }
+
+    override fun type(dynamicOwocInvoiceUiModel: DynamicOwocInvoiceUiModel): Int {
+        return DynamicOwocInvoiceViewHolder.LAYOUT
     }
 
     override fun type(chatSepratorUiModel: ChatSepratorUiModel): Int {

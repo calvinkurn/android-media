@@ -197,7 +197,7 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
             } else {
                 textTitleParent.setPadding(
                     if (isTitleImagePresent) {
-                        it.getDimensionPixelOffset(R.dimen.dp_4)
+                        it.getDimensionPixelOffset(com.tokopedia.abstraction.R.dimen.dp_4)
                     } else {
                         it.getDimensionPixelOffset(
                             R.dimen.dp_16
@@ -264,7 +264,11 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
     }
 
     private fun navigateToAppLink(data: DataItem) {
-        lihatSemuaViewModel?.navigate(fragment.activity, data.btnApplink)
+        if (data.moveAction?.type != null) {
+            Utils.routingBasedOnMoveAction(data.moveAction, fragment)
+        } else {
+            lihatSemuaViewModel?.navigate(fragment.activity, data.btnApplink)
+        }
     }
 
     interface OnLihatSemuaClickListener {

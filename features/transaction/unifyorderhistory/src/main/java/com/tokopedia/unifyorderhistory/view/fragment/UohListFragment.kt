@@ -25,7 +25,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkConst.Transaction
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
-import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_DALAM_PROSES
@@ -73,12 +72,15 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey.SCP_REWARDS_MEDALI_TOUCH_POINT
+import com.tokopedia.scp_rewards_touchpoints.common.Error
+import com.tokopedia.scp_rewards_touchpoints.common.ORDER_LIST_HISTORY_PAGE
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.ScpToasterHelper
-import com.tokopedia.scp_rewards_touchpoints.touchpoints.analytics.ScpRewardsToasterAnalytics.sendViewToasterEvent
-import com.tokopedia.scp_rewards_touchpoints.touchpoints.model.ScpRewardsMedaliTouchPointModel
-import com.tokopedia.scp_rewards_touchpoints.touchpoints.viewmodel.ScpRewardsMedaliTouchPointViewModel
+import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.model.AnalyticsData
+import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.model.ScpToasterModel
+import com.tokopedia.scp_rewards_touchpoints.touchpoints.viewmodel.ScpRewardsMedalTouchPointViewModel
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.helper.ViewHelper
+import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
@@ -293,7 +295,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
     }
 
     private val scpTouchPointViewModel by lazy {
-        ViewModelProvider(this, viewModelFactory)[ScpRewardsMedaliTouchPointViewModel::class.java]
+        ViewModelProvider(this, viewModelFactory)[ScpRewardsMedalTouchPointViewModel::class.java]
     }
 
     companion object {
@@ -419,11 +421,17 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                 onSuccessCreateReview(data?.getStringExtra(CREATE_REVIEW_MESSAGE) ?: getString(R.string.uoh_review_create_success_toaster, userSession.name))
             } else if (resultCode == Activity.RESULT_FIRST_USER) {
                 onFailCreateReview(data?.getStringExtra(CREATE_REVIEW_MESSAGE) ?: getString(R.string.uoh_review_create_invalid_to_review))
+            } else {
+                onCancelCreateReview()
             }
             currIndexNeedUpdate = -1
             orderIdNeedUpdated = ""
-        } else if (requestCode == BULK_REVIEW_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            onSuccessCreateReview(data?.getStringExtra(ApplinkConstInternalMarketplace.BULK_CREATE_REVIEW_MESSAGE) ?: getString(R.string.uoh_review_create_success_toaster, userSession.name))
+        } else if (requestCode == BULK_REVIEW_REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                onSuccessCreateReview(data?.getStringExtra(ApplinkConstInternalMarketplace.BULK_CREATE_REVIEW_MESSAGE) ?: getString(R.string.uoh_review_create_success_toaster, userSession.name))
+            } else {
+                onCancelCreateReview()
+            }
             currIndexNeedUpdate = -1
             orderIdNeedUpdated = ""
         } else if (requestCode == UOH_CANCEL_ORDER) {
@@ -540,7 +548,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
     private fun observeUohPmsCounter() {
         uohListViewModel.getUohPmsCounterResult.observe(viewLifecycleOwner) {
             if (it is Success) {
-                if (!paramUohOrder.hasActiveFilter()) {
+                if (!paramUohOrder.hasActiveFilter() && it.data.notifications.buyerOrderStatus.paymentStatus > 0) {
                     val data = UohTypeData(
                         dataObject = it.data,
                         typeLayout = UohConsts.TYPE_PMS_BUTTON
@@ -548,7 +556,11 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                     uohItemAdapter.appendPmsButton(data) { position ->
                         binding?.rvOrderList?.smoothScrollToPosition(position)
                     }
+                } else {
+                    uohItemAdapter.removePmsButton()
                 }
+            } else {
+                uohItemAdapter.removePmsButton()
             }
         }
     }
@@ -583,12 +595,12 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                     }
                 }
             )
-            var pageSource = ""
-            if (activityOrderHistory != PARAM_HOME) {
+            val pageSource = if (activityOrderHistory != PARAM_HOME) {
                 uohNavtoolbar.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
                 statusbar.visibility = View.GONE
+                NavSource.UOH
             } else {
-                pageSource = ApplinkConsInternalNavigation.SOURCE_HOME_UOH
+                NavSource.HOME_UOH
             }
             val icons = IconBuilder(
                 IconBuilderFlag(pageSource = pageSource)
@@ -815,20 +827,33 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
     }
 
     private fun observeScpToaster() {
-        scpTouchPointViewModel.touchPointData.observe(viewLifecycleOwner) {
-            if (it is com.tokopedia.scp_rewards_touchpoints.common.Success<*>) {
-                val data = (it.data as ScpRewardsMedaliTouchPointModel)
-                if (data.scpRewardsMedaliTouchpointOrder.isShown) {
-                    view?.let { view ->
-                        ScpToasterHelper.showToaster(
-                            view = view,
-                            data = data
-                        )
-                        sendViewToasterEvent(
-                            badgeId = data.scpRewardsMedaliTouchpointOrder.medaliTouchpointOrder.medaliID.toString()
-                        )
+        scpTouchPointViewModel.medalTouchPointData.observe(viewLifecycleOwner) {
+            when (it.result) {
+                is com.tokopedia.scp_rewards_touchpoints.common.Success -> {
+                    val data = (it.result as com.tokopedia.scp_rewards_touchpoints.common.Success).data
+                    if (data.scpRewardsMedaliTouchpointOrder.isShown) {
+                        view?.let { view ->
+                            val finishOrderResult = (uohListViewModel.finishOrderResult.value as Success).data
+                            ScpToasterHelper.showToaster(
+                                view = view,
+                                data = ScpToasterModel(
+                                    analyticsData = AnalyticsData(
+                                        orderId = finishOrderResult.orderId,
+                                        pagePath = ORDER_LIST_HISTORY_PAGE,
+                                        pageType = ORDER_LIST_HISTORY_PAGE
+                                    ),
+                                    responseData = data
+                                )
+                            )
+                        }
+                    } else {
+                        showFinishOrderToaster()
                     }
                 }
+                is Error -> {
+                    showFinishOrderToaster()
+                }
+                else -> {}
             }
         }
     }
@@ -853,17 +878,32 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
             when (it) {
                 is Success -> {
                     responseFinishOrder = it.data
-                    showFinishOrderToaster()
-                    if (isScpRewardTouchPointEnabled()) {
-                        scpTouchPointViewModel.getTouchPoint(
-                            orderId = responseFinishOrder.orderId.toLongOrZero(),
-                            sourceName = SOURCE_NAME
-                        )
+                    if (responseFinishOrder.success == 1) {
+                        if (isScpRewardTouchPointEnabled()) {
+                            scpTouchPointViewModel.getMedalTouchPoint(
+                                orderId = responseFinishOrder.orderId.toLongOrZero(),
+                                sourceName = SOURCE_NAME
+                            )
+                        } else {
+                            showFinishOrderToaster()
+                        }
+                        loadUohItemDelay(orderIdNeedUpdated, currIndexNeedUpdate)
+                    } else {
+                        if (responseFinishOrder.message.isNotEmpty()) {
+                            responseFinishOrder.message.firstOrNull()?.let { errorMessage ->
+                                showToaster(errorMessage, Toaster.TYPE_ERROR)
+                            }
+                        } else {
+                            context?.getString(R.string.fail_cancellation)?.let { commonErrorMessage ->
+                                showToaster(commonErrorMessage, Toaster.TYPE_ERROR)
+                            }
+                        }
                     }
                 }
                 is Fail -> {
-                    responseFinishOrder.message.firstOrNull()
-                        ?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
+                    responseFinishOrder.message.firstOrNull()?.let { errorMessage ->
+                        showToaster(errorMessage, Toaster.TYPE_ERROR)
+                    }
                 }
             }
         }
@@ -1811,11 +1851,13 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
 
             if (!paramUohOrder.hasActiveFilter()) {
                 uohListViewModel.getUohPmsCounterResult.value?.let {
-                    if (it is Success) {
+                    if (it is Success && it.data.notifications.buyerOrderStatus.paymentStatus > 0) {
                         val data = UohTypeData(dataObject = it.data, typeLayout = UohConsts.TYPE_PMS_BUTTON)
                         uohItemAdapter.appendPmsButton(data) { position ->
                             binding?.rvOrderList?.smoothScrollToPosition(position)
                         }
+                    } else {
+                        uohItemAdapter.removePmsButton()
                     }
                 }
             } else {
@@ -2247,7 +2289,18 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                         }
                     }
                 }
-                userSession.userId?.let { UohAnalytics.clickPrimaryButtonOnOrderCard(order.verticalCategory, button.label, it) }
+                userSession.userId?.let { userId ->
+                    val eventLabel = if (button.label.contains(other = UohConsts.ULAS_LABEL, ignoreCase = true)) {
+                        UohConsts.EVENT_LABEL_ULAS_BUTTON
+                    } else {
+                        button.label
+                    }
+                    UohAnalytics.clickPrimaryButtonOnOrderCard(
+                        verticalLabel = order.verticalCategory,
+                        primaryButton = eventLabel,
+                        userId = userId
+                    )
+                }
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -2391,6 +2444,15 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         }
     }
 
+    override fun onReviewRatingClicked(index: Int, order: UohListOrder.UohOrders.Order, appLink: String) {
+        UohAnalytics.clickPrimaryButtonOnOrderCard(
+            verticalLabel = order.verticalCategory,
+            primaryButton = UohConsts.EVENT_LABEL_STAR_RATING,
+            userId = userSession.userId
+        )
+        handleRouting(appLink, index, order)
+    }
+
     private fun doChatSeller(appUrl: String, order: UohListOrder.UohOrders.Order) {
         var invoiceCode = ""
         var invoiceUrl = ""
@@ -2504,6 +2566,10 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         loadUohItemDelay(orderIdNeedUpdated, currIndexNeedUpdate)
     }
 
+    private fun onCancelCreateReview() {
+        uohItemAdapter.resetReviewRatingWidgetAtIndex(orderIdNeedUpdated)
+    }
+
     private fun goToOrderExtension(order: UohListOrder.UohOrders.Order, index: Int) {
         val params = mapOf<String, Any>(ApplinkConstInternalOrder.PARAM_ORDER_ID to order.verticalID)
         val appLink = UriUtil.buildUriAppendParams(
@@ -2532,8 +2598,6 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
 
     private fun showFinishOrderToaster() {
         if (responseFinishOrder.success == 1) {
-            responseFinishOrder.message.firstOrNull()
-                ?.let { it1 -> showToaster(it1, Toaster.TYPE_NORMAL) }
             loadUohItemDelay(orderIdNeedUpdated, currIndexNeedUpdate)
         } else {
             if (responseFinishOrder.message.isNotEmpty()) {

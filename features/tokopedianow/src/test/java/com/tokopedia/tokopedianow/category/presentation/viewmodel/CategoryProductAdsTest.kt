@@ -9,10 +9,10 @@ import com.tokopedia.tokopedianow.category.domain.mapper.CategoryNavigationMappe
 import com.tokopedia.tokopedianow.category.domain.mapper.ProductRecommendationMapper
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryAtcTrackerModel
 import com.tokopedia.tokopedianow.category.presentation.util.AddToCartMapper
-import com.tokopedia.tokopedianow.common.util.ProductAdsMapper
 import com.tokopedia.tokopedianow.common.constant.TokoNowStaticLayoutType.Companion.PRODUCT_ADS_CAROUSEL
 import com.tokopedia.tokopedianow.common.domain.mapper.TickerMapper
 import com.tokopedia.tokopedianow.common.domain.param.GetProductAdsParam
+import com.tokopedia.tokopedianow.common.util.ProductAdsMapper
 import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
 import com.tokopedia.unit.test.ext.getOrAwaitValue
 import com.tokopedia.unit.test.ext.verifyValueEquals
@@ -113,11 +113,11 @@ class CategoryProductAdsTest : TokoNowCategoryMainViewModelTestFixture() {
 
         val expectedGetProductAdsParam = GetProductAdsParam(
             categoryId = categoryIdL1,
-            warehouseIds = "15125512,14231455",
             src = "directory_tokonow",
             page = 1,
-            userId = userId
-        )
+            userId = userId,
+            addressData = addressData
+        ).generateQueryParams()
 
         verifyGetProductAdsParam(expectedGetProductAdsParam)
 
@@ -208,11 +208,11 @@ class CategoryProductAdsTest : TokoNowCategoryMainViewModelTestFixture() {
 
         val expectedGetProductAdsParam = GetProductAdsParam(
             categoryId = categoryIdL1,
-            warehouseIds = "15125512,14231455",
             src = "directory_tokonow",
             page = 1,
-            userId = userId
-        )
+            userId = userId,
+            addressData = addressData
+        ).generateQueryParams()
 
         verifyGetProductAdsParam(expectedGetProductAdsParam)
 

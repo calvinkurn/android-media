@@ -5,14 +5,15 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <ImageView
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/img_location"
         android:layout_width="22dp"
         android:layout_height="26dp"
         android:layout_marginStart="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/tv_warehouse_name"
-        tools:ignore="ContentDescription"/>
+        app:icon_name="LOCATION"
+        app:icon_color_light_enable="@color/Unify_GN500" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_warehouse_name"

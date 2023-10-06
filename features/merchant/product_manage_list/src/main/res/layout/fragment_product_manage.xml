@@ -159,6 +159,7 @@
         tools:visibility="visible">
 
         <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btnChangeAll"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/product_manage_button_multi_edit"

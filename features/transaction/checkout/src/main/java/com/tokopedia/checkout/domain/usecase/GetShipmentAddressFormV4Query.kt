@@ -82,6 +82,10 @@ const val SHIPMENT_ADDRESS_FORM_V4_QUERY =
                   }
                 }
                 group_shop {
+                  subtotal_add_ons {
+                      wording
+                      type
+                  }
                   group_type
                   ui_group_type
                   group_information {
@@ -94,6 +98,7 @@ const val SHIPMENT_ADDRESS_FORM_V4_QUERY =
                     status
                     add_on_data {
                       add_on_id
+                      add_on_unique_id
                       add_on_qty
                       add_on_price
                       add_on_metadata {
@@ -223,12 +228,62 @@ const val SHIPMENT_ADDRESS_FORM_V4_QUERY =
                         slash_price_label
                         bundle_icon_url
                       }
+                      cart_detail_info {
+                        cart_detail_type
+                        bmgm {
+                          offer_id
+                          offer_name
+                          offer_icon
+                          offer_message
+                          offer_status
+                          offer_landing_page_link
+                          total_discount
+                          offer_json_data
+                          tier_product {
+                            tier_id
+                            tier_name
+                            tier_message
+                            tier_discount_text
+                            tier_discount_amount
+                            price_before_benefit
+                            price_after_benefit
+                            list_product {
+                              product_id
+                              warehouse_id
+                              quantity
+                              price_before_benefit
+                              price_after_benefit
+                              cart_id
+                            }
+                          }
+                        }
+                      }
                       products {
                         origin_warehouse_ids
+                        add_ons_product {
+                            icon_url
+                            title
+                            bottomsheet {
+                                title
+                                applink
+                                is_shown
+                            }
+                            data {
+                                id
+                                unique_id
+                                price
+                                info_link
+                                name
+                                status
+                                type
+                                icon_url
+                            }
+                        }
                         add_ons {
                           status
                           add_on_data {
                             add_on_id
+                            add_on_unique_id
                             add_on_qty
                             add_on_price
                             add_on_metadata {
@@ -375,6 +430,7 @@ const val SHIPMENT_ADDRESS_FORM_V4_QUERY =
                 Title
                 Nominal
                 Description
+                icon_url
               }
               cod {
                 is_cod
@@ -386,6 +442,7 @@ const val SHIPMENT_ADDRESS_FORM_V4_QUERY =
                 message_logo
               }
               egold_attributes {
+                icon_url
                 eligible
                 is_tiering
                 is_opt_in
@@ -398,6 +455,7 @@ const val SHIPMENT_ADDRESS_FORM_V4_QUERY =
                   sub_text
                   ticker_text
                   tooltip_text
+                  tooltip_title_text
                 }
                 tier_data {
                   minimum_total_amount
@@ -529,7 +587,12 @@ const val SHIPMENT_ADDRESS_FORM_V4_QUERY =
                       poml_auto_applied
                       bebas_ongkir_info {
                         is_bo_unstack_enabled
+                        is_use_bebas_ongkir_only
                       }
+                    }
+                    user_group_metadata {
+                      key
+                      value
                     }
                   }
                 }
@@ -569,6 +632,10 @@ const val SHIPMENT_ADDRESS_FORM_V4_QUERY =
                 image
               }
               cart_data
+              add_ons_summary {
+                wording
+                type
+              }
               upsell_v2 {
                 is_show
                 is_selected

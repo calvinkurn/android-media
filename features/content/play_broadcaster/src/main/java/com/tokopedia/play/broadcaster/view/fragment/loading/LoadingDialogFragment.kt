@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.play.broadcaster.R
@@ -40,12 +39,12 @@ class LoadingDialogFragment : DialogFragment() {
     }
 
     fun show(fragmentManager: FragmentManager) {
-        if(!isAdded) showNow(fragmentManager, LoadingDialogFragment::class.java.simpleName)
+        if (!isAdded) showNow(fragmentManager, LoadingDialogFragment::class.java.simpleName)
     }
 
     private fun setupView(view: View) {
         loader = view.findViewById(R.id.loader)
-        loader.type = when(mLoaderType) {
+        loader.type = when (mLoaderType) {
             LoaderType.CIRCULAR -> LoaderUnify.TYPE_CIRCULAR
             LoaderType.CIRCULAR_WHITE -> LoaderUnify.TYPE_CIRCULAR_WHITE
         }
@@ -55,13 +54,14 @@ class LoadingDialogFragment : DialogFragment() {
 
         fun get(
             fragmentManager: FragmentManager,
-            classLoader: ClassLoader,
+            classLoader: ClassLoader
         ): LoadingDialogFragment {
             val oldInstance = fragmentManager.findFragmentByTag(
                 LoadingDialogFragment::class.java.simpleName
             ) as? LoadingDialogFragment
-            return if (oldInstance != null) oldInstance
-            else {
+            return if (oldInstance != null) {
+                oldInstance
+            } else {
                 val fragmentFactory = fragmentManager.fragmentFactory
                 fragmentFactory.instantiate(
                     classLoader,

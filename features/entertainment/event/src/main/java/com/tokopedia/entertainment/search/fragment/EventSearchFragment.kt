@@ -1,8 +1,6 @@
 package com.tokopedia.entertainment.search.fragment
 
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,30 +14,37 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.common.util.EventQuery.getEventHistory
 import com.tokopedia.entertainment.common.util.EventQuery.getEventSearchLocation
+import com.tokopedia.entertainment.databinding.EntSearchFragmentBinding
 import com.tokopedia.entertainment.search.Link
+import com.tokopedia.entertainment.search.activity.EventSearchActivity
 import com.tokopedia.entertainment.search.adapter.SearchEventAdapter
 import com.tokopedia.entertainment.search.adapter.factory.SearchTypeFactoryImp
 import com.tokopedia.entertainment.search.adapter.viewholder.SearchEventListViewHolder
 import com.tokopedia.entertainment.search.adapter.viewholder.SearchLocationListViewHolder
 import com.tokopedia.entertainment.search.analytics.EventSearchPageTracking
 import com.tokopedia.entertainment.search.di.EventSearchComponent
+import com.tokopedia.entertainment.search.listener.EventSearchBarActionListener
+import com.tokopedia.entertainment.search.listener.EventSearchBarDataListener
 import com.tokopedia.entertainment.search.viewmodel.EventSearchViewModel
 import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.ent_search_activity.*
-import kotlinx.android.synthetic.main.ent_search_fragment.*
-import kotlinx.coroutines.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.Job
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 
 class EventSearchFragment : BaseDaggerFragment(), CoroutineScope,
         SearchEventListViewHolder.SearchEventListListener,
-        SearchLocationListViewHolder.SearchLocationListener
+        SearchLocationListViewHolder.SearchLocationListener, EventSearchBarActionListener
 {
 
     lateinit var searchadapter:SearchEventAdapter
@@ -55,8 +60,15 @@ class EventSearchFragment : BaseDaggerFragment(), CoroutineScope,
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    private var binding by autoClearedNullable<EntSearchFragmentBinding>()
+
     var job: Job = Job()
 
+    private var searchBarDataListener: EventSearchBarDataListener? = null
+
+    fun setListener(searchBarDataListener: EventSearchBarDataListener) {
+        this.searchBarDataListener = searchBarDataListener
+    }
     private fun initializePerformance(){
         performanceMonitoring = PerformanceMonitoring.start(ENT_SEARCH_PERFORMANCE)
     }
@@ -70,7 +82,8 @@ class EventSearchFragment : BaseDaggerFragment(), CoroutineScope,
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.ent_search_fragment, container, false)
+        binding = EntSearchFragmentBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -85,14 +98,14 @@ class EventSearchFragment : BaseDaggerFragment(), CoroutineScope,
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        (activity as EventSearchActivity).eventSearchBarActionListener = this
         observeSearchList()
         setupAdapter()
-        initSearchBar()
         setupSwipeRefresh()
     }
 
     private fun setupSwipeRefresh(){
-        swipe_refresh_layout.setOnRefreshListener {
+        binding?.swipeRefreshLayout?.setOnRefreshListener {
             initializePerformance()
             getData(CacheType.ALWAYS_CLOUD)
         }
@@ -101,7 +114,7 @@ class EventSearchFragment : BaseDaggerFragment(), CoroutineScope,
     private fun setupAdapter(){
         searchadapter = SearchEventAdapter(SearchTypeFactoryImp(::allLocation, this, this))
 
-        recycler_viewParent.apply {
+        binding?.recyclerViewParent?.run {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
             adapter = searchadapter
@@ -114,7 +127,7 @@ class EventSearchFragment : BaseDaggerFragment(), CoroutineScope,
             performanceMonitoring.stopTrace()
         })
 
-        viewModel.isItRefreshing.observe(viewLifecycleOwner, Observer { swipe_refresh_layout.isRefreshing = it })
+        viewModel.isItRefreshing.observe(viewLifecycleOwner, Observer { binding?.swipeRefreshLayout?.isRefreshing = it })
 
         viewModel.errorReport.observe(viewLifecycleOwner,
                 Observer {
@@ -129,12 +142,14 @@ class EventSearchFragment : BaseDaggerFragment(), CoroutineScope,
     }
 
     private fun getData(cacheType: CacheType = CacheType.CACHE_FIRST){
-        swipe_refresh_layout.isRefreshing = true
-        if(activity?.txt_search?.searchBarTextField?.text?.toString()!!.isNotEmpty()
-                || activity?.txt_search?.searchBarTextField?.text?.toString()!!.isNotBlank()){
-            viewModel.getSearchData(activity?.txt_search?.searchBarTextField?.text?.toString()!!, cacheType, getEventSearchLocation())
-        } else{
-            viewModel.getHistorySearch(cacheType, getEventHistory(), userSession.isLoggedIn)
+        binding?.swipeRefreshLayout?.isRefreshing = true
+        searchBarDataListener?.getKeyWord()?.let { keyword ->
+            if(keyword.toString().isNotEmpty()
+                || keyword.toString().isNotBlank()){
+                viewModel.getSearchData(keyword.toString(), cacheType, getEventSearchLocation())
+            } else{
+                viewModel.getHistorySearch(cacheType, getEventHistory(), userSession.isLoggedIn)
+            }
         }
     }
 
@@ -142,27 +157,19 @@ class EventSearchFragment : BaseDaggerFragment(), CoroutineScope,
         RouteManager.route(context, Link.EVENT_LOCATION)
     }
 
-    private fun initSearchBar(){
-        activity?.txt_search?.searchBarTextField?.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(p0: Editable?) {}
-
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
-            override fun onTextChanged(keyword: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                if (keyword.toString().isEmpty()) {
-                    if (job.isActive) job.cancel()
-                    viewModel.cancelRequest()
-                    viewModel.getHistorySearch(CacheType.CACHE_FIRST, getEventHistory(), userSession.isLoggedIn)
-                } else {
-                    if (job.isActive) job.cancel()
-                    job = launch {
-                        delay(DELAY_TIME)
-                        EventSearchPageTracking.getInstance().clickSearchBarOnKeyWordSearchActivity(keyword.toString())
-                        viewModel.getSearchData(keyword.toString(), CacheType.CACHE_FIRST, getEventSearchLocation())
-                    }
-                }
+    override fun afterSearchBarTextChanged(keyword: CharSequence?) {
+        if (keyword.toString().isEmpty()) {
+            if (job.isActive) job.cancel()
+            viewModel.cancelRequest()
+            viewModel.getHistorySearch(CacheType.CACHE_FIRST, getEventHistory(), userSession.isLoggedIn)
+        } else {
+            if (job.isActive) job.cancel()
+            job = launch {
+                delay(DELAY_TIME)
+                EventSearchPageTracking.getInstance().clickSearchBarOnKeyWordSearchActivity(keyword.toString())
+                viewModel.getSearchData(keyword.toString(), CacheType.CACHE_FIRST, getEventSearchLocation())
             }
-        })
+        }
     }
 
     override val coroutineContext: CoroutineContext
@@ -170,7 +177,7 @@ class EventSearchFragment : BaseDaggerFragment(), CoroutineScope,
 
     override fun clickEventSearchSuggestion(event: SearchEventListViewHolder.KegiatanSuggestion, listsEvent: List<SearchEventListViewHolder.KegiatanSuggestion>, position: Int) {
         RouteManager.route(context, event.app_url)
-        EventSearchPageTracking.getInstance().onClickedEventSearchSuggestion(event, listsEvent, position + 1, userSession.userId)
+        EventSearchPageTracking.getInstance().onClickedEventSearchSuggestion(event, listsEvent, position + Int.ONE, userSession.userId)
         activity?.finish()
     }
 

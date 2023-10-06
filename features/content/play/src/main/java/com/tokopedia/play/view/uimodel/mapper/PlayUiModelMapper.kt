@@ -154,6 +154,11 @@ class PlayUiModelMapper @Inject constructor(
             isNumerationShown = prevDetail.isNumerationShown,
             rating = prevDetail.rating,
             soldQuantity = prevDetail.soldQuantity,
+            label = PlayProductUiModel.Product.Label(
+                rankType = prevDetail.label.rankType.ifEmpty { PlayProductUiModel.Product.Label.RIBBON_TYPE_DEFAULT },
+                rankFmt = prevDetail.label.rankFmt,
+                rankColors = prevDetail.label.rankColors,
+            )
         )
     }
 }

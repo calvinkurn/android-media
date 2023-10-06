@@ -9,6 +9,8 @@
         android:id="@+id/collection_ticker_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="2dp"
+        android:layout_marginTop="2dp"
         android:layout_marginBottom="10dp">
 
         <RelativeLayout
@@ -17,8 +19,8 @@
 
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/wishlist_collection_ticker_bg"
-                android:layout_width="334dp"
-                android:layout_height="73dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"/>
 
             <com.tokopedia.iconunify.IconUnify
@@ -35,21 +37,22 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
-                android:layout_marginStart="14dp"
+                android:paddingVertical="11dp"
+                android:layout_marginHorizontal="14dp"
                 android:orientation="vertical">
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/wishlist_collection_ticker_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:typographyType="body_2"
+                    app:typographyType="display_2"
                     app:typographyWeight="bold"/>
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/wishlist_collection_ticker_desc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:typographyType="body_3"/>
+                    app:typographyType="display_3"/>
 
             </LinearLayout>
 

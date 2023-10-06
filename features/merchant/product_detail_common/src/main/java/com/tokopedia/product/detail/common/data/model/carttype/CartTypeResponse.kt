@@ -48,7 +48,10 @@ data class CartTypeData(
     val hideFloatingButton: Boolean = false,
     @SerializedName("override_buttons")
     @Expose
-    var overrideButtons: List<AvailableButton> = listOf()
+    var overrideButtons: List<AvailableButton> = listOf(),
+    @SerializedName("postATCLayout")
+    @Expose
+    val postAtcLayout: PostAtcLayout = PostAtcLayout()
 ) {
 
     // especially PDP, VBS as is
@@ -80,3 +83,15 @@ data class AvailableButton(
         return cartType == ProductDetailCommonConstant.KEY_DEFAULT_OOS || cartType == ProductDetailCommonConstant.KEY_REMIND_ME || cartType == ProductDetailCommonConstant.KEY_CHECK_WISHLIST
     }
 }
+
+data class PostAtcLayout(
+    @SerializedName("layoutID")
+    @Expose
+    val layoutId: String = "",
+    @SerializedName("postATCSession")
+    @Expose
+    val postAtcSession: String = "",
+    @SerializedName("showPostATC")
+    @Expose
+    val showPostAtc: Boolean = false
+)

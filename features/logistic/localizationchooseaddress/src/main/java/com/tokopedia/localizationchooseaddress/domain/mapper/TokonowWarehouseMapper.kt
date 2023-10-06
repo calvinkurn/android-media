@@ -23,4 +23,8 @@ object TokonowWarehouseMapper {
     fun mapWarehouseItemToLocal(warehouses: List<RefreshTokonowDataResponse.Data.RefreshTokonowData.RefreshTokonowDataSuccess.WarehouseItem>) : List<LocalWarehouseModel> {
         return warehouses.map { LocalWarehouseModel(warehouse_id = it.warehouseId.toLongOrZero(), service_type = it.serviceType) }
     }
+
+    fun mapWarehousesDataModelToLocal(warehouses: List<WarehouseDataModel>) : List<LocalWarehouseModel> {
+        return warehouses.map { LocalWarehouseModel(warehouse_id = it.warehouseId, service_type = it.serviceType) }
+    }
 }

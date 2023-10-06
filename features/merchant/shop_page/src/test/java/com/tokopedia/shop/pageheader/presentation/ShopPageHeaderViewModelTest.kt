@@ -129,6 +129,7 @@ class ShopPageHeaderViewModelTest {
     private lateinit var shopPageHeaderViewModel: ShopPageHeaderViewModel
 
     private val SAMPLE_SHOP_ID = "123"
+    private val mockShopHomeTabName = "HomeTab"
     private val mockExtParam = "fs_widget%3D23600"
 
     private val addressWidgetData: LocalCacheModel = LocalCacheModel()
@@ -203,7 +204,10 @@ class ShopPageHeaderViewModelTest {
             "",
             false,
             addressWidgetData,
-            mockExtParam
+            mockExtParam,
+            mockShopHomeTabName,
+            mapOf(),
+            false
         )
         coVerify { getShopPageP1DataUseCase.get().executeOnBackground() }
         assertTrue(shopPageHeaderViewModel.shopPageP1Data.value is Success)
@@ -238,7 +242,10 @@ class ShopPageHeaderViewModelTest {
             etalaseId = "",
             isRefresh = false,
             widgetUserAddressLocalData = addressWidgetData,
-            extParam = mockExtParam
+            extParam = mockExtParam,
+            tabName = mockShopHomeTabName,
+            mapOf(),
+            false
         )
         coVerify { getShopPageP1DataUseCase.get().executeOnBackground() }
         assertTrue(shopPageHeaderViewModel.shopPageP1Data.value is Success)
@@ -268,7 +275,9 @@ class ShopPageHeaderViewModelTest {
                 shopInfoCoreData = any(),
                 shopPageGetDynamicTabResponse = any(),
                 feedWhitelistData = any(),
-                shopPageHeaderLayoutData = any()
+                shopPageHeaderLayoutData = any(),
+                mapOf(),
+                false
             )
         } throws Exception()
         shopPageHeaderViewModel.getNewShopPageTabData(
@@ -281,7 +290,10 @@ class ShopPageHeaderViewModelTest {
             "",
             false,
             addressWidgetData,
-            mockExtParam
+            mockExtParam,
+            mockShopHomeTabName,
+            mapOf(),
+            false
         )
         coVerify { getShopPageP1DataUseCase.get().executeOnBackground() }
         assertTrue(shopPageHeaderViewModel.shopPageP1Data.value is Fail)
@@ -300,7 +312,10 @@ class ShopPageHeaderViewModelTest {
             "",
             true,
             addressWidgetData,
-            mockExtParam
+            mockExtParam,
+            mockShopHomeTabName,
+            mapOf(),
+            false
         )
         coVerify { getShopPageP1DataUseCase.get().executeOnBackground() }
         assertTrue(shopPageHeaderViewModel.shopPageP1Data.value is Fail)
@@ -319,7 +334,10 @@ class ShopPageHeaderViewModelTest {
             "",
             true,
             addressWidgetData,
-            mockExtParam
+            mockExtParam,
+            mockShopHomeTabName,
+            mapOf(),
+            false
         )
         assertTrue(shopPageHeaderViewModel.shopPageP1Data.value != null)
     }

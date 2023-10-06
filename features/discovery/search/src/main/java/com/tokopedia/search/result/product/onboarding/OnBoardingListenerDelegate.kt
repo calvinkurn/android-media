@@ -2,6 +2,8 @@ package com.tokopedia.search.result.product.onboarding
 
 import android.content.Context
 import android.view.View
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.coachmark.CoachMark2
@@ -11,6 +13,8 @@ import com.tokopedia.search.R
 import com.tokopedia.search.di.qualifier.SearchContext
 import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
+import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
+import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.ChooseAddressViewHolder
 import com.tokopedia.search.result.presentation.view.fragment.RecyclerViewUpdater
 import com.tokopedia.search.result.product.similarsearch.SimilarSearchOnBoardingView
 import com.tokopedia.search.utils.contextprovider.ContextProvider
@@ -21,7 +25,6 @@ import javax.inject.Inject
 @SearchScope
 class OnBoardingListenerDelegate @Inject constructor(
     private val recyclerViewUpdater: RecyclerViewUpdater,
-    private val staggeredGridLayoutManager: StaggeredGridLayoutManager,
     @SearchContext context: Context,
 ) : SimilarSearchOnBoardingView, ContextProvider by WeakReferenceContextProvider(context) {
 
@@ -33,7 +36,64 @@ class OnBoardingListenerDelegate @Inject constructor(
     private var shouldShowCoachmark = true
     private var firstProductPosition = -1
 
-    fun showOnBoarding(firstProductPosition: Int) {
+    private var shouldShowProductViewTypeCoachmark = false
+
+    fun enableProductViewTypeCoachmark() {
+        shouldShowProductViewTypeCoachmark = true
+    }
+
+    fun showProductViewTypeOnBoarding() {
+        if (coachMark != null || !shouldShowProductViewTypeCoachmark) return
+
+        buildCoachMark2()
+
+        recyclerViewUpdater.recyclerView?.postDelayed({
+            showProductViewTypeCoachmark(getChooseAddressView())
+        }, ON_BOARDING_DELAY_MS)
+    }
+
+    private fun getChooseAddressView(): View? {
+        val chooseAddressItemPosition = recyclerViewUpdater.itemList?.indexOfFirst {
+            it is ChooseAddressDataView
+        } ?: -1
+        val viewHolder = recyclerViewUpdater
+            .recyclerView
+            ?.findViewHolderForAdapterPosition(chooseAddressItemPosition)
+            ?: return null
+
+        return if (viewHolder is ChooseAddressViewHolder)  {
+            viewHolder.getChangeViewButton()
+        } else null
+    }
+
+    private fun showProductViewTypeCoachmark(view: View?) {
+        val coachMark2ItemList = createProductViewTypeCoachMark2ItemList(view)
+        if (coachMark2ItemList.isEmpty()) return
+
+        coachMark?.showCoachMark(coachMark2ItemList, null, 0)
+    }
+
+    private fun createProductViewTypeCoachMark2ItemList(
+        changeViewTypeView: View?
+    ): ArrayList<CoachMark2Item> {
+        val coachMarkItemList = ArrayList<CoachMark2Item>()
+
+        if (changeViewTypeView != null)
+            coachMarkItemList.add(createViewTypeLabelCoachMark2Item(changeViewTypeView))
+
+        return coachMarkItemList
+    }
+
+    private fun createViewTypeLabelCoachMark2Item(changeViewTypeView: View): CoachMark2Item {
+        return CoachMark2Item(
+            changeViewTypeView,
+            context?.getString(R.string.search_product_view_type_onboarding_title) ?: "",
+            context?.getString(R.string.search_product_view_type_onboarding_description)?: "",
+            CoachMark2.POSITION_BOTTOM
+        )
+    }
+
+    fun showProductWithBOEOnBoarding(firstProductPosition: Int) {
         if (coachMark != null || !shouldShowCoachmark) return
 
         this.firstProductPosition = firstProductPosition
@@ -42,7 +102,7 @@ class OnBoardingListenerDelegate @Inject constructor(
 
         val productWithBOELabel = getFirstProductWithBOELabel(firstProductPosition)
         recyclerViewUpdater.recyclerView?.postDelayed({
-            showCoachmark(productWithBOELabel)
+            showBOECoachmark(productWithBOELabel)
         }, ON_BOARDING_DELAY_MS)
     }
 
@@ -68,19 +128,20 @@ class OnBoardingListenerDelegate @Inject constructor(
                 coachMark = null
             }
             onDismissListener = {
+                shouldShowProductViewTypeCoachmark = false
                 shouldShowCoachmark = false
             }
         }
     }
 
-    private fun showCoachmark(view: View?) {
-        val coachMark2ItemList = createCoachMark2ItemList(view)
+    private fun showBOECoachmark(view: View?) {
+        val coachMark2ItemList = createBOECoachMark2ItemList(view)
         if (coachMark2ItemList.isEmpty()) return
 
         coachMark?.showCoachMark(coachMark2ItemList, null, 0)
     }
 
-    private fun createCoachMark2ItemList(boeLabelProductCard: View?): ArrayList<CoachMark2Item> {
+    private fun createBOECoachMark2ItemList(boeLabelProductCard: View?): ArrayList<CoachMark2Item> {
         val coachMarkItemList = ArrayList<CoachMark2Item>()
 
         if (boeLabelProductCard != null)
@@ -100,12 +161,29 @@ class OnBoardingListenerDelegate @Inject constructor(
 
     fun createScrollListener(): RecyclerView.OnScrollListener {
         return object: RecyclerView.OnScrollListener() {
+
+            private fun RecyclerView.LayoutManager?.findFirstVisibleItemPosition() : Int {
+                return when(this) {
+                    is GridLayoutManager -> findFirstVisibleItemPosition()
+                    is StaggeredGridLayoutManager -> max(findFirstVisibleItemPositions(null).asList())
+                    is LinearLayoutManager -> findFirstVisibleItemPosition()
+                    else -> -1
+                }
+            }
+            private fun RecyclerView.LayoutManager?.findLastVisibleItemPosition() : Int {
+                return when(this) {
+                    is GridLayoutManager -> findLastVisibleItemPosition()
+                    is StaggeredGridLayoutManager -> max(findLastVisibleItemPositions(null).asList())
+                    is LinearLayoutManager -> findLastVisibleItemPosition()
+                    else -> -1
+                }
+            }
+
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                val visibleItems = staggeredGridLayoutManager.findFirstVisibleItemPositions(null)
-                val lastVisibleItems = staggeredGridLayoutManager.findLastVisibleItemPositions(null)
-                if (max(lastVisibleItems.asList()) >= firstProductPosition
-                    && max(visibleItems.asList()) < firstProductPosition) {
-                    showOnBoarding(firstProductPosition)
+                val visibleItem = recyclerView.layoutManager.findFirstVisibleItemPosition()
+                val lastVisibleItem = recyclerView.layoutManager.findLastVisibleItemPosition()
+                if (firstProductPosition in (visibleItem + 1)..lastVisibleItem) {
+                    showProductWithBOEOnBoarding(firstProductPosition)
                 } else {
                     coachMark?.hideCoachMark()
                 }

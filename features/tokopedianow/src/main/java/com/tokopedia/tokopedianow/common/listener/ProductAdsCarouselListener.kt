@@ -23,4 +23,6 @@ interface ProductAdsCarouselListener {
         position: Int,
         product: ProductCardCompactCarouselItemUiModel
     )
+
+    fun onProductCardAddToCartBlocked()
 }

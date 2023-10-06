@@ -33,7 +33,7 @@ import com.tokopedia.screenshot_observer.Screenshot;
 import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
-
+import com.tokopedia.analytics.performance.fpi.FrameMetricsMonitoring;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -104,7 +104,7 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
         super.onCreate();
         setupAppScreenMode();
         setupAlphaObserver();
-
+        registerAppLifecycleCallbacks();
     }
 
     public void CheckAndTraceAppStartIfEnabled() {
@@ -188,5 +188,11 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
             map.put("error", Log.getStackTraceString(throwable));
             ServerLogger.log(Priority.P1, "WORK_MANAGER", map);
         }).build();
+    }
+
+    private void registerAppLifecycleCallbacks() {
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            registerActivityLifecycleCallbacks(new FrameMetricsMonitoring(this));
+        }
     }
 }

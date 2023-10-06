@@ -8,7 +8,6 @@ import android.text.Spanned
 import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
-import android.text.style.StyleSpan
 import android.view.View
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -52,13 +51,24 @@ class RechargeOrderDetailPaymentViewHolder(
             }
 
             element.paymentInfoMessage?.let { paymentInfo ->
-                tgRechargePaymentInfo.text = String.format(getString(R.string.payment_info_string_combine), paymentInfo.message, paymentInfo.urlText)
-                tgRechargePaymentInfo.makeLinks(Pair(paymentInfo.urlText, View.OnClickListener {
-                    listener.onClickTnC(paymentInfo.appLink)
-                }))
+                if (paymentInfo.message.isNotEmpty()) {
+                    tgRechargePaymentInfo.show()
+                    icRechargePaymentInfo.show()
+                    tgRechargePaymentInfo.text = String.format(
+                        getString(R.string.payment_info_string_combine),
+                        paymentInfo.message,
+                        paymentInfo.urlText
+                    )
+                    tgRechargePaymentInfo.makeLinks(Pair(paymentInfo.urlText, View.OnClickListener {
+                        listener.onClickTnC(paymentInfo.appLink)
+                    }))
 
-                tgRechargePaymentInfo.setOnClickListener {
-                    listener.onClickTnC(paymentInfo.appLink)
+                    tgRechargePaymentInfo.setOnClickListener {
+                        listener.onClickTnC(paymentInfo.appLink)
+                    }
+                } else {
+                    tgRechargePaymentInfo.hide()
+                    icRechargePaymentInfo.hide()
                 }
             }
         }

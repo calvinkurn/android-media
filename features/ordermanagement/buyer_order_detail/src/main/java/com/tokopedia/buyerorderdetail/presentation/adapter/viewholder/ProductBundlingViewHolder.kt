@@ -87,6 +87,11 @@ class ProductBundlingViewHolder(
         }
     }
 
+    override fun onBundleWarrantyClaim(uiModel: ProductListUiModel.ProductUiModel) {
+        navigator.openAppLink(uiModel.button.url, true)
+        BuyerOrderDetailTracker.eventClickWarrantyClaim(uiModel.orderId)
+    }
+
     override fun onBundleItemAddToCart(uiModel: ProductListUiModel.ProductUiModel) {
         listener.onPurchaseAgainButtonClicked(uiModel)
     }
@@ -116,6 +121,10 @@ class ProductBundlingViewHolder(
         }
     }
 
+    private fun setupBundleTotalPrice(price: String) {
+        bundlingPriceText?.text = price
+    }
+
     private fun setupBundleHeader(bundleName: String, bundleIconUrl: String) {
         bundlingNameText?.text = bundleName
         val iconUrl =
@@ -129,10 +138,6 @@ class ProductBundlingViewHolder(
 
     private fun setupBundleItems(bundleItemList: List<ProductListUiModel.ProductUiModel>) {
         bundleItemAdapter.setItems(bundleItemList)
-    }
-
-    private fun setupBundleTotalPrice(price: String) {
-        bundlingPriceText?.text = price
     }
 
     interface Listener {

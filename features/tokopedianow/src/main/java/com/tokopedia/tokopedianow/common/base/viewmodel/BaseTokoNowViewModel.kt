@@ -149,7 +149,7 @@ open class BaseTokoNowViewModel(
 
     fun getWarehouseId(): String = addressData.getWarehouseId().toString()
 
-    fun updateAddressData() = addressData.updateLocalData()
+    fun updateAddressData() = addressData.updateLocalDataIfAddressHasUpdated()
 
     fun getAddressData() = addressData.getAddressData()
 
@@ -223,7 +223,7 @@ open class BaseTokoNowViewModel(
     ) {
         if (hasBlockedAddToCart) {
             // this only blocks add to cart when using repurchase widget
-            _blockAddToCart.value = Unit
+            _blockAddToCart.postValue(Unit)
         } else {
             changeQuantityJob?.cancel()
             val productId = product.id

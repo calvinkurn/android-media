@@ -49,7 +49,6 @@
     <string name="menu_account_title_instant_payment">Pembayaran Instan</string>
     <string name="menu_account_title_security">Keamanan Akun</string>
     <string name="menu_account_title_notification">Notifikasi</string>
-    <string name="menu_account_title_account_link">Akun yang Tersambung</string>
     <string name="menu_account_title_privacy_account">Privasi Akun</string>
     <string name="menu_account_title_explicit_profile">Preferensi Belanja</string>
     <string name="menu_account_title_shake">Shake Shake</string>
@@ -77,8 +76,7 @@
     <string name="menu_account_desc_instant_payment">E-wallet, kartu kredit, &amp; debit instan terdaftar</string>
     <string name="menu_account_desc_security">Kata sandi, PIN, &amp; verifikasi data diri</string>
     <string name="menu_account_desc_notification">Atur segala jenis pesan notifikasi</string>
-    <string name="menu_account_desc_account_link">Atur akun yang tersambung ke Tokopedia</string>
-    <string name="menu_account_desc_privacy_account">Atur penggunaan data &amp; akun yang tersambung</string>
+    <string name="menu_account_desc_privacy_account">Atur penggunaan data</string>
     <string name="menu_account_desc_explicit_profile">Atur rekomendasi produk sesuai pilihanmu</string>
     <string name="menu_account_desc_shake">Goyang HP untuk dapat promo menarik</string>
     <string name="menu_account_desc_geolocation">Atur rekomendasi berdasarkan lokasi</string>

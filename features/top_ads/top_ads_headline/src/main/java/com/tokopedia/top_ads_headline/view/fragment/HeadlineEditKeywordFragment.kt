@@ -42,7 +42,7 @@ import com.tokopedia.top_ads_headline.view.activity.EditTopAdsHeadlineKeywordAct
 import com.tokopedia.top_ads_headline.view.activity.SaveButtonState
 import com.tokopedia.top_ads_headline.view.viewmodel.HeadlineEditKeywordViewModel
 import com.tokopedia.top_ads_headline.view.viewmodel.SharedEditHeadlineViewModel
-import com.tokopedia.top_ads_headline_usecase.model.TopAdsManageHeadlineInput
+import com.tokopedia.topads.common.domain.model.createheadline.TopAdsManageHeadlineInput
 import com.tokopedia.topads.common.data.internal.ParamObject.GROUP_ID
 import com.tokopedia.topads.common.data.response.GetKeywordResponse
 import com.tokopedia.topads.common.data.response.KeywordDataItem

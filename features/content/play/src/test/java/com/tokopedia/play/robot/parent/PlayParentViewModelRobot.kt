@@ -9,6 +9,7 @@ import com.tokopedia.play.helper.ClassBuilder
 import com.tokopedia.play.view.monitoring.PlayPltPerformanceCallback
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.storage.PlayChannelStateStorage
+import com.tokopedia.play.view.storage.PlayQueryParamStorage
 import com.tokopedia.play.view.uimodel.mapper.PlayChannelDetailsWithRecomMapper
 import com.tokopedia.play.view.viewmodel.PlayParentViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -27,6 +28,7 @@ class PlayParentViewModelRobot(
     userSession: UserSessionInterface,
     repo: PlayViewerRepository,
     pageMonitoring: PlayPltPerformanceCallback,
+    queryParamStorage: PlayQueryParamStorage,
 ) {
 
     val viewModel: PlayParentViewModel
@@ -42,6 +44,7 @@ class PlayParentViewModelRobot(
             userSession = userSession,
             repo = repo,
             pageMonitoring = pageMonitoring,
+            queryParamStorage = queryParamStorage,
         )
     }
 
@@ -55,6 +58,7 @@ fun givenParentViewModelRobot(
     userSession: UserSessionInterface = mockk(relaxed = true),
     repo: PlayViewerRepository = mockk(relaxed = true),
     pageMonitoring: PlayPltPerformanceCallback = mockk(relaxed = true),
+    queryParamStorage: PlayQueryParamStorage = mockk(relaxed = true),
     fn: PlayParentViewModelRobot.() -> Unit = {}
 ): PlayParentViewModelRobot {
     return PlayParentViewModelRobot(
@@ -63,7 +67,8 @@ fun givenParentViewModelRobot(
         dispatchers = dispatchers,
         userSession = userSession,
         repo = repo,
-        pageMonitoring = pageMonitoring
+        pageMonitoring = pageMonitoring,
+        queryParamStorage = queryParamStorage,
     ).apply(fn)
 }
 

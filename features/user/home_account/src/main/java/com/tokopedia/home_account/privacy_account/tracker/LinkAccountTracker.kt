@@ -6,7 +6,7 @@ import com.tokopedia.track.TrackAppUtils
 /**
  * Created by Yoris on 21/09/21.
  */
-
+@Deprecated("Remove this class after integrating SCP Login to Tokopedia")
 class LinkAccountTracker {
 
     // tracker no.7

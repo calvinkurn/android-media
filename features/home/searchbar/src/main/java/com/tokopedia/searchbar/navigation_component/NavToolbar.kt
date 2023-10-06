@@ -132,6 +132,8 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
     private var searchbarType: Int? = null
     private var darkIconColor: Int? = getDarkIconColor()
     private var lightIconColor: Int? = getLightIconColor()
+    private var navToolbarIconCustomDarkColor: Int? = null
+    private var navToolbarIconCustomLightColor: Int? = null
 
     private val navIconRecyclerView: RecyclerView by lazy(LazyThreadSafetyMode.NONE) {
         findViewById(R.id.rv_icon_list)
@@ -255,7 +257,7 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
         val iconConfig = iconBuilder.build()
         viewModel?.setRegisteredIconList(iconConfig)
         this.useCentralizedIconNotification = iconConfig.useCentralizedIconNotification
-        navIconAdapter = NavToolbarIconAdapter(iconConfig, this)
+        navIconAdapter = NavToolbarIconAdapter(iconConfig, this, {navToolbarIconCustomLightColor}, {navToolbarIconCustomDarkColor})
         navIconAdapter?.setHasStableIds(true)
         navIconRecyclerView.adapter = navIconAdapter
         navIconRecyclerView.itemAnimator = null
@@ -477,7 +479,10 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
         return layoutCustomView
     }
 
-    fun setBackButtonType(newBackType: Int? = null) {
+    fun setBackButtonType(
+        newBackType: Int? = null,
+        onClick: () -> Unit = { }
+    ) {
         newBackType?.let { backType = newBackType }
 
         if (backType != BACK_TYPE_NONE) {
@@ -491,6 +496,7 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
                         componentName = IconList.NAME_BACK_BUTTON,
                         userId = getUserId()
                     )
+                    onClick.invoke()
                     (context as? Activity)?.onBackPressed()
                 }
             }
@@ -926,5 +932,23 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
                 activity = activity
             )
         }
+    }
+
+    fun setupSearchBarWithStaticLightModeColor() {
+        val searchBackgroundColor = getDrawable(R.drawable.nav_toolbar_searchbar_bg_corner_static)
+        val blendIconSearchColor =
+            blendColor(getColor(R.color.searchbar_dms_search_icon_dark_color))
+        val hintTextColor = getColor(R.color.searchbar_dms_text_color)
+        layoutSearch.background = searchBackgroundColor
+        iconSearchMagnify.colorFilter = blendIconSearchColor
+        etSearch.setHintTextColor(hintTextColor)
+    }
+
+    fun setNavToolbarIconCustomColor(
+        navToolbarIconCustomLightColor: Int,
+        navToolbarIconCustomDarkColor: Int
+    ){
+        this.navToolbarIconCustomLightColor = navToolbarIconCustomLightColor
+        this.navToolbarIconCustomDarkColor = navToolbarIconCustomDarkColor
     }
 }
