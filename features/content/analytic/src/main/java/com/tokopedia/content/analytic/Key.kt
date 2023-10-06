@@ -40,6 +40,9 @@ object Key {
     const val itemCategory = "item_category"
     const val itemVariant = "item_variant"
 
+    const val creativeName = "creative_name"
+    const val creativeSlot = "creative_slot"
+
     const val pageSource = "pageSource"
     const val creativeName = "creative_name"
     const val creativeSlot = "creative_slot"

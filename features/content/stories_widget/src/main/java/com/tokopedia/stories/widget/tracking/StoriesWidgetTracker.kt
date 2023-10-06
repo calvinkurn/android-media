@@ -1,5 +1,6 @@
 package com.tokopedia.stories.widget.tracking
 
+import android.os.Bundle
 import com.tokopedia.stories.widget.domain.StoriesWidgetState
 
 /**
@@ -21,16 +22,18 @@ interface StoriesWidgetTracker {
 
     data class Data(
         val shopId: String,
+        val eventName: String,
         val eventAction: String,
         val isImpression: Boolean,
-        val map: Map<String, Any>,
+        val bundle: Bundle
     ) {
         companion object {
             val Empty = Data(
                 shopId = "",
+                eventName = "",
                 eventAction = "",
                 isImpression = false,
-                map = emptyMap(),
+                bundle = Bundle.EMPTY
             )
         }
     }

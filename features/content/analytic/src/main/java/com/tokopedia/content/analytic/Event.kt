@@ -26,6 +26,9 @@ object Event {
     const val promoView = "promoView"
     const val promoClick = "promoClick"
 
+    const val viewItem = "view_item"
+    const val selectContent = "select_content"
+
     const val productView = "productView"
     const val productClick = "productClick"
 
