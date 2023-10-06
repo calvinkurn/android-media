@@ -4220,20 +4220,20 @@ class CartRevampFragment :
     }
 
     private fun generateBulkActionCoachMark(position: Int) {
-        context?.let {
-            isMockMainFlowCoachMarkShown = false
-            val onBoardingData = viewModel.cartModel.cartListData?.onboardingData ?: return
-            if (onBoardingData.size < BULK_ACTION_ONBOARDING_MIN_QUANTITY_INDEX + 1) {
-                return
-            }
-            val bulkActionCoachMarkItems: ArrayList<CoachMark2Item> = arrayListOf()
-            val selectedAmountData = onBoardingData[BULK_ACTION_ONBOARDING_SELECTED_AMOUNT_DELETE_INDEX]
-            val minQuantityOnboardingData = onBoardingData[BULK_ACTION_ONBOARDING_MIN_QUANTITY_INDEX]
+        isMockMainFlowCoachMarkShown = false
+        val onBoardingData = viewModel.cartModel.cartListData?.onboardingData ?: return
+        if (onBoardingData.size < BULK_ACTION_ONBOARDING_MIN_QUANTITY_INDEX + 1) {
+            return
+        }
+        val bulkActionCoachMarkItems: ArrayList<CoachMark2Item> = arrayListOf()
+        val selectedAmountData = onBoardingData[BULK_ACTION_ONBOARDING_SELECTED_AMOUNT_DELETE_INDEX]
+        val minQuantityOnboardingData = onBoardingData[BULK_ACTION_ONBOARDING_MIN_QUANTITY_INDEX]
 
-            val data = viewModel.cartDataList.value
+        val data = viewModel.cartDataList.value
 
-            binding?.rvCart?.apply {
-                post {
+        binding?.rvCart?.apply {
+            post {
+                context?.let {
                     if (position > 0) {
                         binding?.topLayout?.textActionDelete?.let {
                             bulkActionCoachMarkItems.add(
