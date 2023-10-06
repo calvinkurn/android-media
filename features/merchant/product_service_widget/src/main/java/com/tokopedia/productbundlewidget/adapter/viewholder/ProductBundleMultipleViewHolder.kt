@@ -233,7 +233,7 @@ class ProductBundleMultipleViewHolder(
 //            }
             viewBinding?.let {
                 it.bundleWidgetHeaderContainer.tvBundleNameLarge.setTextColor(ContextCompat.getColor(itemView.context, R.color.dms_high_emphasis))
-                it.bundleWidgetFooter.savingAmountContainer.setBackgroundColor(ContextCompat.getColor(R.color.dms_static_GN100))
+                it.bundleWidgetFooter.savingAmountContainer.setBackgroundColor(ContextCompat.getColor(itemView.context, R.color.dms_static_GN100))
             }
 
             widgetContainer?.setBackgroundColor(ContextCompat.getColor(itemView.context, unifyprinciplesR.color.Unify_Static_White))
