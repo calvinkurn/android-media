@@ -4,12 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.media.loader.data.Resize
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
@@ -107,17 +107,11 @@ class ShopShowcaseNavigationTabWidgetFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         onShowcaseVisible(showcases.firstOrNull()?.id.orEmpty(), tabName)
-    }
-
-    override fun onResume() {
-        super.onResume()
         renderShowcase(showcases)
         setupColors(overrideTheme, colorScheme)
     }
     
-    private fun renderShowcase(
-        showcases: List<Showcase>
-    ) {
+    private fun renderShowcase(showcases: List<Showcase>) {
         val mainShowcase = showcases.getOrNull(FIRST_SHOWCASE_INDEX)
         val firstShowcase = showcases.getOrNull(SECOND_SHOWCASE_INDEX)
         val secondShowcase = showcases.getOrNull(THIRD_SHOWCASE_INDEX)
@@ -127,27 +121,18 @@ class ShopShowcaseNavigationTabWidgetFragment : BaseDaggerFragment() {
         val showcaseNavigationWidgetMaxWidth = getScreenWidth()
         
         //Main showcase
-        val mainImageMaxWidth = (showcaseNavigationWidgetMaxWidth * HALF_OF_SCREEN_WIDTH).toInt()
-        val mainImageMaxHeight = mainImageMaxWidth
+        val mainImageMaxSize = (showcaseNavigationWidgetMaxWidth * HALF_OF_SCREEN_WIDTH).toInt()
         
         //Small showcase
-        val smallImageContainerMaxWidth = showcaseNavigationWidgetMaxWidth - mainImageMaxWidth
-        val smallImageContainerMaxHeight = mainImageMaxHeight
-        val smallImageContainerLeftMargin = MARGIN_8_IN_DP.toPx()
-        val smallImageContainerMiddleMargin = MARGIN_8_IN_DP.toPx()
-        
         val smallImageTextSizeHeight = TEXT_SIZE_HEIGHT_IN_DP.toPx()
         val smallImageTextSizeMarginTop = MARGIN_4_IN_DP.toPx()
         val smallImageFirstAndSecondRowMargin = MARGIN_8_IN_DP.toPx()
         
-        
-        val smallImageWidth = ((smallImageContainerMaxWidth - smallImageContainerLeftMargin - smallImageContainerMiddleMargin ) / TWO)
-        val smallImageHeight = ((smallImageContainerMaxHeight - (TWO * smallImageTextSizeHeight) - (TWO * smallImageTextSizeMarginTop) - smallImageFirstAndSecondRowMargin) / TWO) 
+        val smallImageSize = ((mainImageMaxSize - (TWO * smallImageTextSizeHeight) - (TWO * smallImageTextSizeMarginTop) - smallImageFirstAndSecondRowMargin) / TWO) 
         
         mainShowcase?.let {
-            binding?.imgMainShowcase?.loadImage(mainShowcase.imageUrl) {
-                this.overrideSize(Resize(mainImageMaxWidth, mainImageMaxHeight))
-            }
+            binding?.imgMainShowcase?.size(mainImageMaxSize)
+            binding?.imgMainShowcase?.loadImage(mainShowcase.imageUrl)
             binding?.tpgMainShowcaseTitle?.text = mainShowcase.name
 
             binding?.imgMainShowcase?.visible()
@@ -158,9 +143,8 @@ class ShopShowcaseNavigationTabWidgetFragment : BaseDaggerFragment() {
         }
 
         firstShowcase?.let {
-            binding?.imgFirstShowcase?.loadImage(firstShowcase.imageUrl) {
-                this.overrideSize(Resize(smallImageWidth, smallImageHeight))
-            }
+            binding?.imgFirstShowcase?.size(smallImageSize)
+            binding?.imgFirstShowcase?.loadImage(firstShowcase.imageUrl)
             binding?.tpgFirstShowcaseTitle?.text = firstShowcase.name
 
             binding?.imgFirstShowcase?.visible()
@@ -171,9 +155,8 @@ class ShopShowcaseNavigationTabWidgetFragment : BaseDaggerFragment() {
         }
 
         secondShowcase?.let {
-            binding?.imgSecondShowcase?.loadImage(secondShowcase.imageUrl) {
-                this.overrideSize(Resize(smallImageWidth, smallImageHeight))
-            }
+            binding?.imgSecondShowcase?.size(smallImageSize)
+            binding?.imgSecondShowcase?.loadImage(secondShowcase.imageUrl)
             binding?.tpgSecondShowcaseTitle?.text = secondShowcase.name
 
             binding?.imgSecondShowcase?.visible()
@@ -184,9 +167,8 @@ class ShopShowcaseNavigationTabWidgetFragment : BaseDaggerFragment() {
         }
 
         thirdShowcase?.let {
-            binding?.imgThirdShowcase?.loadImage(thirdShowcase.imageUrl) {
-                this.overrideSize(Resize(smallImageWidth, smallImageHeight))
-            }
+            binding?.imgThirdShowcase?.size(smallImageSize)
+            binding?.imgThirdShowcase?.loadImage(thirdShowcase.imageUrl)
             binding?.tpgThirdShowcaseTitle?.text = thirdShowcase.name
 
             binding?.imgThirdShowcase?.visible()
@@ -197,9 +179,8 @@ class ShopShowcaseNavigationTabWidgetFragment : BaseDaggerFragment() {
         }
 
         fourthShowcase?.let {
-            binding?.imgFourthShowcase?.loadImage(fourthShowcase.imageUrl) {
-                this.overrideSize(Resize(smallImageWidth, smallImageHeight))
-            }
+            binding?.imgFourthShowcase?.size(smallImageSize)
+            binding?.imgFourthShowcase?.loadImage(fourthShowcase.imageUrl)
             binding?.tpgFourthShowcaseTitle?.text = fourthShowcase.name
 
             binding?.imgFourthShowcase?.visible()
@@ -210,6 +191,14 @@ class ShopShowcaseNavigationTabWidgetFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun ImageView.size(sizePx: Int) {
+        val layoutParams = this.layoutParams
+        layoutParams.width = sizePx
+        layoutParams.height = sizePx
+        
+        this.layoutParams = layoutParams
+    }
+    
     fun setOnShowcaseClick(onShowcaseClick: (Showcase, String) -> Unit) {
         this.onShowcaseClick = onShowcaseClick
     }

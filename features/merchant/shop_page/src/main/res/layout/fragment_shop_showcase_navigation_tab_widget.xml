@@ -25,6 +25,7 @@
         android:layout_height="90dp"
         android:background="@drawable/shop_shape_showcase_gradient_background"
         android:elevation="1dp"
+        android:contentDescription="@string/shop_content_description_gradient_black"
         app:layout_constraintBottom_toBottomOf="@+id/imgMainShowcase"
         app:layout_constraintEnd_toEndOf="@+id/imgMainShowcase"
         app:layout_constraintStart_toStartOf="@+id/imgMainShowcase"

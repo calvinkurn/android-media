@@ -1,6 +1,7 @@
 package com.tokopedia.shop.analytic
 
 import android.os.Bundle
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.atc_common.domain.model.response.AddToCartBundleModel
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ONE
@@ -3742,6 +3743,7 @@ class ShopPageHomeTracking(
             val price = try {
                 product.price.digitsOnly().toDouble()
             } catch (e: Exception) {
+                FirebaseCrashlytics.getInstance().recordException(e)
                 Int.ZERO.toDouble()
             }
             
@@ -3820,6 +3822,7 @@ class ShopPageHomeTracking(
         val price = try {
             product.price.digitsOnly().toDouble()
         } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
             Int.ZERO.toDouble()
         }
         
@@ -4410,6 +4413,7 @@ class ShopPageHomeTracking(
         val price = try {
             trackerModel.productPrice.digitsOnly().toDouble()
         } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
             Int.ZERO.toDouble()
         }
         
