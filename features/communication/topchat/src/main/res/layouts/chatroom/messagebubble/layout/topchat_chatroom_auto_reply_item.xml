@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <View
+        android:id="@+id/topchat_auto_reply_divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="12dp"
+        android:background="@color/Unify_NN50"/>
+    
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/topchat_icon_auto_reply"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        app:layout_constraintTop_toTopOf="@id/topchat_tv_auto_reply_title"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/topchat_tv_auto_reply_title"
+        android:layout_marginStart="8dp"
+        tools:icon_name="PRODUCT"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/topchat_tv_auto_reply_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintTop_toBottomOf="@id/topchat_auto_reply_divider"
+        app:layout_constraintLeft_toRightOf="@id/topchat_icon_auto_reply"
+        app:layout_constraintRight_toRightOf="parent"
+        app:typographyType="display_2"
+        app:typographyWeight="bold"
+        android:maxLines="1"
+        android:ellipsize="end"
+        tools:text="@tools:sample/lorem/random"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/topchat_tv_auto_reply_desc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@id/topchat_tv_auto_reply_title"
+        app:layout_constraintLeft_toLeftOf="@id/topchat_icon_auto_reply"
+        app:layout_constraintRight_toRightOf="@id/topchat_tv_auto_reply_title"
+        app:typographyType="display_1"
+        android:maxLines="3"
+        android:ellipsize="end"
+        tools:text="@tools:sample/lorem/random"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

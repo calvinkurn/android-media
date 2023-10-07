@@ -98,7 +98,7 @@ object MsgBubbleResult {
         matcher: Matcher<View>
     ) {
         generalResult {
-            assertViewInRecyclerViewAt(position, R.id.img_sr_blue_dot, matcher)
+            assertViewInRecyclerViewAt(position, R.id.topchat_chatroom_iv_header_role_blue_dot, matcher)
         }
     }
 }

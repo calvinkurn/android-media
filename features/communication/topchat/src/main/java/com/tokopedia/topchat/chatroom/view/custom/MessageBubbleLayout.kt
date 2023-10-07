@@ -109,7 +109,7 @@ class MessageBubbleLayout : ViewGroup {
     private fun initViewBinding() {
         fxChat = findViewById(R.id.fxChat)
         replyBubbleContainer = findViewById(R.id.cl_reply_container)
-        bodyMsgContainer = findViewById(R.id.ll_body_msg_container)
+        bodyMsgContainer = findViewById(R.id.topchat_chatroom_ll_container_message_bubble)
     }
 
     private fun initFlexboxChatLayout() {
@@ -227,7 +227,7 @@ class MessageBubbleLayout : ViewGroup {
     }
 
     companion object {
-        val LAYOUT = R.layout.partial_chat_messsage_bubble
+        val LAYOUT = R.layout.topchat_chatroom_partial_chat_messsage_bubble
 
         const val LEFT_MSG_ORIENTATION = 0
         const val RIGHT_MSG_ORIENTATION = 1

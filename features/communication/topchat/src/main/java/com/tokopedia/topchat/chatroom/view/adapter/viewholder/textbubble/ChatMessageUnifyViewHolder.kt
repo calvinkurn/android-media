@@ -30,26 +30,36 @@ import com.tokopedia.topchat.chatroom.view.custom.MessageBubbleLayout
 import com.tokopedia.topchat.chatroom.view.custom.message.ReplyBubbleAreaMessage
 import com.tokopedia.unifyprinciples.Typography
 
+/**
+ * Layout guide:
+ * { chat_bubble_unify_item }
+ *      { partial_header_role_user }
+ *      { partial_header_info }
+ *      { MessageBubbleLayout /  partial_chat_message_bubble }
+ *          { ReplyBubbleAreaMessage / partial_reply_bubble }
+ *          { FlexBoxChatLayout / partial_flexbox_chat_bubble } -> Message text here
+ *          { ViewStub -> auto_reply_list }
+ */
 class ChatMessageUnifyViewHolder(
     itemView: View?,
-    protected val msgCliclLinkListener: ChatLinkHandlerListener,
+    msgClickLinkListener: ChatLinkHandlerListener,
     private val commonListener: CommonViewHolderListener,
     private val adapterListener: AdapterListener,
     private val chatMsgListener: FlexBoxChatLayout.Listener,
     private val replyBubbleListener: ReplyBubbleAreaMessage.Listener
 ) : BaseChatViewHolder<MessageUiModel>(itemView) {
 
-    private val messageBubble: MessageBubbleLayout? = itemView?.findViewById(R.id.mb_bubble_msg)
-    private val llMsgContainer: LinearLayout? = itemView?.findViewById(R.id.ll_msg_container)
+    private val messageBubble: MessageBubbleLayout? = itemView?.findViewById(R.id.topchat_chatroom_message_bubble_layout)
+    private val llMsgContainer: LinearLayout? = itemView?.findViewById(R.id.topchat_chatroom_bcl_message_bubble)
     private val fxChat: FlexBoxChatLayout? = itemView?.findViewById(R.id.fxChat)
-    private val onTouchListener = MessageOnTouchListener(msgCliclLinkListener)
-    private val headerInfo: LinearLayout? = itemView?.findViewById(R.id.ll_header_info)
+    private val onTouchListener = MessageOnTouchListener(msgClickLinkListener)
+    private val headerInfo: LinearLayout? = itemView?.findViewById(R.id.topchat_chatroom_ll_header_info_message_bubble)
 
     private val headerRole: Typography? = itemView?.findViewById(R.id.tvRole)
-    private val smartReplyBlueDot: ImageView? = itemView?.findViewById(R.id.img_sr_blue_dot)
+    private val smartReplyBlueDot: ImageView? = itemView?.findViewById(R.id.topchat_chatroom_iv_header_role_blue_dot)
     private val header: LinearLayout? = itemView?.findViewById(R.id.llRoleUser)
     private val bodyMsgContainer: LinearLayout? = itemView?.findViewById(
-        R.id.ll_body_msg_container
+        R.id.topchat_chatroom_ll_container_message_bubble
     )
 
     private val topMarginOpposite: Float = getOppositeMargin(itemView?.context)
@@ -286,7 +296,7 @@ class ChatMessageUnifyViewHolder(
     }
 
     companion object {
-        val LAYOUT = R.layout.item_topchat_chat_bubble_unify
+        val LAYOUT = R.layout.topchat_chatroom_chat_bubble_unify_item
         const val TYPE_BANNED = 2
     }
 }

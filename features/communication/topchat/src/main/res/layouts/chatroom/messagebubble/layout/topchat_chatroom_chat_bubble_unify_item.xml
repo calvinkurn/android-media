@@ -2,12 +2,12 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/fl_msg_container"
+    android:id="@+id/topchat_chatroom_fl_message_bubble"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <com.tokopedia.topchat.chatroom.view.custom.BubbleContainerLayout
-        android:id="@+id/ll_msg_container"
+        android:id="@+id/topchat_chatroom_bcl_message_bubble"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -16,49 +16,36 @@
             android:id="@+id/llRoleUser"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/spacing_lvl2"
+            android:layout_marginEnd="4dp"
             android:gravity="end"
             android:orientation="horizontal"
-            android:paddingTop="@dimen/unify_space_2"
+            android:paddingTop="2dp"
             android:visibility="gone"
             tools:ignore="RtlSymmetry"
             tools:visibility="visible">
 
-            <include layout="@layout/item_topchat_header_role_user" />
+            <include layout="@layout/topchat_chatroom_partial_header_role_user" />
 
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/ll_header_info"
+            android:id="@+id/topchat_chatroom_ll_header_info_message_bubble"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_topchat_20"
-            android:layout_marginStart="@dimen/unify_space_4"
+            android:layout_height="20dp"
+            android:layout_marginStart="4dp"
             android:orientation="horizontal">
 
-            <ImageView
-                android:layout_width="@dimen/layout_lvl2"
-                android:layout_height="@dimen/layout_lvl2"
-                android:layout_gravity="center_vertical"
-                android:contentDescription="@string/topchat_desc_broadcast_icon"
-                app:srcCompat="@drawable/ic_topchat_broadcast_grey" />
+            <include layout="@layout/topchat_chatroom_partial_header_info" />
 
-            <com.tokopedia.unifyprinciples.Typography
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="@dimen/spacing_lvl2"
-                android:text="@string/title_topchat_reply_from_broadcast"
-                app:typographyType="body_3"
-                app:typographyWeight="bold" />
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/ll_body_msg_container"
+            android:id="@+id/topchat_chatroom_ll_container_message_bubble"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <com.tokopedia.topchat.chatroom.view.custom.MessageBubbleLayout
-                android:id="@+id/mb_bubble_msg"
+                android:id="@+id/topchat_chatroom_message_bubble_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:messageOrientation="LEFT"/>

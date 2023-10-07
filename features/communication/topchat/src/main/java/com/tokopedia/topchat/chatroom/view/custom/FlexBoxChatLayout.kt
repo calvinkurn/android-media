@@ -6,15 +6,20 @@ import android.content.Context
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.os.Build
+import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+import android.view.ViewStub
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.data.MessageUiModel
 import com.tokopedia.iconunify.IconUnify
@@ -23,17 +28,24 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaButtonAttachment
 import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaMessageAttachment
+import com.tokopedia.topchat.chatroom.view.adapter.TopChatAutoReplyAdapter
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.topchat.chatroom.view.adapter.util.MessageOnTouchListener
+import com.tokopedia.topchat.chatroom.view.uimodel.autoreply.TopChatAutoReplyUiModel
+import com.tokopedia.topchat.databinding.TopchatChatroomAutoReplyListBinding
+import timber.log.Timber
 import kotlin.math.abs
 
 
 class FlexBoxChatLayout : ViewGroup {
 
+//    private val binding = TopchatChatroomPartialFlexboxChatBubbleBinding.inflate(
+//        LayoutInflater.from(context), this
+//    )
+
     var listener: Listener? = null
     var checkMark: ImageView? = null
         private set
-    private var timeStamp: TextView? = null
     private var hourTime: TextView? = null
 
     /**
@@ -49,6 +61,10 @@ class FlexBoxChatLayout : ViewGroup {
         private set
     var icon: IconUnify? = null
         private set
+
+    private var autoReplyViewStub: ViewStub? = null
+    private var autoReplyBinding: TopchatChatroomAutoReplyListBinding? = null
+    private var isAutoReplyViewStubInflated = false
 
     /**
      * Header direct child
@@ -137,6 +153,8 @@ class FlexBoxChatLayout : ViewGroup {
             headerTitle = it.findViewById(R.id.tp_header_title)
             headerCta = it.findViewById(R.id.tp_header_cta)
             headerDivider = it.findViewById(R.id.v_header_divider)
+
+            autoReplyViewStub = it.findViewById(R.id.topchat_chatroom_viewstub_auto_reply)
         }
         initCheckMarkVisibility()
     }
@@ -154,11 +172,11 @@ class FlexBoxChatLayout : ViewGroup {
         }
     }
 
-    fun setMessage(msg: CharSequence?) {
+    private fun setMessage(msg: CharSequence?) {
         message?.text = msg
     }
 
-    fun setMessageTypeFace(chat: MessageUiModel) {
+    private fun setMessageTypeFace(chat: MessageUiModel) {
         val typeface = if (chat.isDeleted()) {
             Typeface.ITALIC
         } else {
@@ -181,10 +199,6 @@ class FlexBoxChatLayout : ViewGroup {
         checkMark?.hide()
     }
 
-    fun changeReadStatus(readStatus: Drawable?) {
-        checkMark?.setImageDrawable(readStatus)
-    }
-
     @SuppressLint("ClickableViewAccessibility")
     fun setMessageOnTouchListener(onTouchListener: MessageOnTouchListener) {
         message?.setOnTouchListener(onTouchListener)
@@ -197,10 +211,6 @@ class FlexBoxChatLayout : ViewGroup {
     fun showInfo(label: String) {
         info?.text = label
         info?.show()
-    }
-
-    fun getMsg(): String {
-        return message?.text.toString()
     }
 
     fun renderHeaderAttachment(
@@ -568,10 +578,106 @@ class FlexBoxChatLayout : ViewGroup {
         constructor(source: ViewGroup.LayoutParams?) : super(source)
     }
 
+    /**
+     * Set Message Body
+     * If source is auto_reply, check for JSON
+     */
+    fun setMessageBody(messageUiModel: MessageUiModel) {
+        if (messageUiModel.isFromAutoReply()) {
+            setAutoReplyMessageBody(messageUiModel)
+        } else {
+            setRegularMessageBody(messageUiModel)
+        }
+    }
+
+    private fun setRegularMessageBody(messageUiModel: MessageUiModel) {
+        val htmlMessage = MethodChecker.fromHtml(messageUiModel.message)
+        setMessageTypeFace(messageUiModel)
+        setMessage(htmlMessage)
+    }
+
+    private fun setAutoReplyMessageBody(messageUiModel: MessageUiModel) {
+        try {
+            val listType = object : TypeToken<List<TopChatAutoReplyUiModel>>() {}.type
+            val result = Gson().fromJson<List<TopChatAutoReplyUiModel>>(
+                messageUiModel.message, listType
+            )
+            if (!isAutoReplyViewStubInflated) {
+                isAutoReplyViewStubInflated = true
+                autoReplyViewStub?.setOnInflateListener { _, view ->
+                    autoReplyBinding = TopchatChatroomAutoReplyListBinding.bind(view)
+                    bindAutoReplyView(messageUiModel, result)
+                }
+                autoReplyViewStub?.inflate()
+            } else {
+                bindAutoReplyView(messageUiModel = messageUiModel, autoReplyList = result)
+            }
+        } catch (throwable: Throwable) {
+            /**
+             * If fail then the message is history message
+             * New Auto Reply should be in JSON format
+             * Render with regular message body
+             */
+            Timber.d(throwable)
+            setRegularMessageBody(messageUiModel)
+        }
+    }
+
+    private fun bindAutoReplyView(
+        messageUiModel: MessageUiModel,
+        autoReplyList: List<TopChatAutoReplyUiModel>
+    ) {
+        val autoReplyItemList = autoReplyList.filter {
+            it.getIcon() != null // Check only for auto reply item
+        }
+        bindAutoReplyMessage(
+            autoReplyList = autoReplyList,
+            messageUiModel = messageUiModel,
+            shouldLimitWelcomeMessage = autoReplyItemList.isNotEmpty()
+        )
+        bindAutoReplyRecyclerView(
+            autoReplyItemList = autoReplyItemList
+        )
+    }
+
+    private fun bindAutoReplyMessage(
+        autoReplyList: List<TopChatAutoReplyUiModel>,
+        messageUiModel: MessageUiModel,
+        shouldLimitWelcomeMessage: Boolean
+    ) {
+        setMessageTypeFace(messageUiModel)
+        val welcomeMessage = autoReplyList.firstOrNull {
+            it.getIcon() == null // Check only for welcome message
+        }
+        setMessage(welcomeMessage?.getMessage())
+        if (shouldLimitWelcomeMessage) {
+            message?.maxLines = 3
+            message?.ellipsize = TextUtils.TruncateAt.END
+        }
+    }
+
+    private fun bindAutoReplyRecyclerView(
+        autoReplyItemList: List<TopChatAutoReplyUiModel>
+    ) {
+        if (autoReplyItemList.isNotEmpty()) {
+            val adapter = TopChatAutoReplyAdapter()
+            autoReplyBinding?.topchatChatroomRvAutoReply?.adapter = adapter
+            autoReplyBinding?.topchatChatroomRvAutoReply?.layoutManager =
+                LinearLayoutManager(context)
+            autoReplyBinding?.topchatChatroomRvAutoReply?.itemAnimator = null
+            adapter.updateItem(autoReplyItemList)
+            autoReplyBinding?.topchatChatroomRvAutoReply?.show()
+            autoReplyBinding?.topchatTvAutoReplyDesc?.show()
+        } else {
+            autoReplyBinding?.topchatChatroomRvAutoReply?.hide()
+            autoReplyBinding?.topchatTvAutoReplyDesc?.hide()
+        }
+    }
+
     companion object {
         const val DEFAULT_USE_MAX_WIDTH = false
         const val DEFAULT_SHOW_CHECK_MARK = true
         const val REPLY_WIDTH_OFFSET = 5
-        val LAYOUT = R.layout.flexbox_chat_message
+        val LAYOUT = R.layout.topchat_chatroom_partial_flexbox_chat_bubble
     }
 }

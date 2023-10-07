@@ -204,7 +204,7 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
     }
 
     companion object {
-        val LAYOUT = R.layout.partial_text_reply_bubble
+        val LAYOUT = R.layout.topchat_chatroom_partial_reply_bubble
     }
 
 }

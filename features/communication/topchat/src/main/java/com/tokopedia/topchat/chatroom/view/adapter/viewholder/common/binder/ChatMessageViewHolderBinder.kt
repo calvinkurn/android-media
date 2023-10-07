@@ -94,9 +94,7 @@ object ChatMessageViewHolderBinder {
         chat: MessageUiModel,
         fxChat: FlexBoxChatLayout?
     ) {
-        val htmlMessage = MethodChecker.fromHtml(chat.message)
-        fxChat?.setMessageTypeFace(chat)
-        fxChat?.setMessage(htmlMessage)
+        fxChat?.setMessageBody(chat)
     }
 
     fun bindOnTouchMessageListener(

@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingBottom="@dimen/unify_space_12"
+        android:paddingBottom="12dp"
         android:visibility="gone"
         tools:visibility="visible">
 
@@ -59,7 +59,14 @@
         android:textIsSelectable="false"
         app:typographyType="body_1"
         tools:ignore="RtlHardcoded"
-        tools:text="Mau cari susu yang bisa buat keker dlm satu malam ada gak ya gan?" />
+        tools:text="@tools:sample/lorem/random"
+        tools:maxLines="3"/>
+
+    <ViewStub
+        android:id="@+id/topchat_chatroom_viewstub_auto_reply"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout="@layout/topchat_chatroom_auto_reply_list" />
 
     <LinearLayout
         android:id="@+id/llStatus"
