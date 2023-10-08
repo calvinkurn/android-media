@@ -24,7 +24,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener
-import androidx.recyclerview.widget.SimpleItemAnimator
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -90,6 +89,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.revamp.CartCheckoutRevampRollenceManager
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.user.session.UserSessionInterface
@@ -319,7 +319,6 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         }
         binding?.rvPromo?.layoutManager = layoutManager
         binding?.rvPromo?.adapter = recyclerViewAdapter
-        (binding?.rvPromo?.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
         when (entryPoint) {
             PromoPageEntryPoint.CART_PAGE -> {
                 binding?.tpgTotalAmountLabel?.visible()
@@ -648,11 +647,17 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
             is PromoPageUiState.Success -> {
                 when (entryPoint) {
                     PromoPageEntryPoint.CART_PAGE -> {
-                        binding?.buttonBuy?.isClickable = !state.isCalculating
+                        setBuyButton(
+                            isEnabled = !state.isCalculating,
+                            isLoading = state.isCalculating
+                        )
                     }
 
                     PromoPageEntryPoint.CHECKOUT_PAGE, PromoPageEntryPoint.OCC_PAGE -> {
-                        binding?.buttonBackToShipment?.isClickable = !state.isCalculating
+                        setBackToShipmentButton(
+                            isEnabled = !state.isCalculating,
+                            isLoading = state.isCalculating
+                        )
                     }
                 }
             }
@@ -660,6 +665,30 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
             else -> {
                 // no-op
             }
+        }
+    }
+
+    private fun setBuyButton(
+        isEnabled: Boolean = true,
+        isLoading: Boolean = false
+    ) {
+        binding?.buttonBuy?.apply {
+            this.buttonType = UnifyButton.Type.MAIN
+            this.buttonVariant = UnifyButton.Variant.FILLED
+            this.isEnabled = isEnabled
+            this.isLoading = isLoading
+        }
+    }
+
+    private fun setBackToShipmentButton(
+        isEnabled: Boolean = true,
+        isLoading: Boolean = false
+    ) {
+        binding?.buttonBuy?.apply {
+            this.buttonType = UnifyButton.Type.MAIN
+            this.buttonVariant = UnifyButton.Variant.FILLED
+            this.isEnabled = isEnabled
+            this.isLoading = isLoading
         }
     }
 
@@ -671,9 +700,9 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                         .minus(BOTTOM_SHEET_MARGIN_TOP_IN_DP.toPx())
                         .minus(BOTTOM_SHEET_HEADER_HEIGHT_IN_DP.toPx())
                     val constraintSet = ConstraintSet()
-                    constraintSet.clone(layoutShimmer.clShimmerContainer)
+                    constraintSet.clone(layoutShimmer.root)
                     constraintSet.constrainMaxHeight(R.id.clShimmerContainer, maxShimmerHeight)
-                    constraintSet.applyTo(layoutShimmer.clShimmerContainer)
+                    constraintSet.applyTo(layoutShimmer.root)
                 }
             }
 
@@ -701,8 +730,15 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                 }
             }
 
-            else -> {
-                // no-op
+            is PromoPageUiState.Error -> {
+                binding?.run {
+                    val maxErrorHeight = getScreenHeight()
+                        .minus(BOTTOM_SHEET_MARGIN_TOP_IN_DP.toPx())
+                    val constraintSet = ConstraintSet()
+                    constraintSet.clone(rlBottomSheetWrapper)
+                    constraintSet.constrainHeight(R.id.layoutGlobalError, maxErrorHeight)
+                    constraintSet.applyTo(rlBottomSheetWrapper)
+                }
             }
         }
     }

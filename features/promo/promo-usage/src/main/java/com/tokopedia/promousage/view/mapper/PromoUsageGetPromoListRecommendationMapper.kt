@@ -21,7 +21,7 @@ import com.tokopedia.promousage.domain.entity.PromoItemState
 import com.tokopedia.promousage.domain.entity.PromoPageSection
 import com.tokopedia.promousage.domain.entity.PromoPageTickerInfo
 import com.tokopedia.promousage.domain.entity.PromoSavingInfo
-import com.tokopedia.promousage.domain.entity.SecondaryPromoItem
+import com.tokopedia.promousage.domain.entity.list.SecondaryPromoItem
 import com.tokopedia.promousage.domain.entity.list.PromoAccordionHeaderItem
 import com.tokopedia.promousage.domain.entity.list.PromoAccordionViewAllItem
 import com.tokopedia.promousage.domain.entity.list.PromoAttemptItem
@@ -221,15 +221,27 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
         val secondaryClashingInfos =
             secondaryCoupon?.clashingInfos?.filter { selectedPromoCodes.contains(it.code) } ?: emptyList()
 
-        var state: PromoItemState = if (primaryClashingInfos.isNotEmpty() && secondaryCoupon != null && secondaryClashingInfos.isNotEmpty()) {
-            PromoItemState.Disabled(secondaryClashingInfos.first().message)
-        } else if (primaryClashingInfos.isNotEmpty() && secondaryCoupon == null) {
-            PromoItemState.Disabled(primaryClashingInfos.first().message)
-        } else {
-            if (isSelected) {
-                PromoItemState.Selected
+        var state: PromoItemState = if (secondaryCoupon != null) {
+            if (secondaryClashingInfos.isNotEmpty()) {
+                PromoItemState.Disabled(secondaryClashingInfos.first().message)
+            } else if (primaryClashingInfos.isNotEmpty()) {
+                PromoItemState.Disabled(primaryClashingInfos.first().message)
             } else {
-                PromoItemState.Normal
+                if (isSelected) {
+                    PromoItemState.Selected
+                } else {
+                    PromoItemState.Normal
+                }
+            }
+        } else {
+            if (primaryClashingInfos.isNotEmpty()) {
+                PromoItemState.Disabled(primaryClashingInfos.first().message)
+            } else {
+                if (isSelected) {
+                    PromoItemState.Selected
+                } else {
+                    PromoItemState.Normal
+                }
             }
         }
         if (coupon.radioCheckState == "disabled") {

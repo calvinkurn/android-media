@@ -224,7 +224,8 @@ class PromoUsageViewModel @Inject constructor(
                 tickerInfo = tickerInfo,
                 items = items,
                 savingInfo = savingInfo,
-                isReload = true
+                isReload = true,
+                isCalculating = false
             )
         )
         onSuccess?.invoke(items)
@@ -420,12 +421,12 @@ class PromoUsageViewModel @Inject constructor(
                 } else {
                     _promoPageUiState.ifSuccessSuspend { pageState ->
                         if (pageState.isCalculating) return@ifSuccessSuspend
-                        _promoPageUiState.postValue(
-                            pageState.copy(
-                                isCalculating = true
-                            )
+                        var updatedState = pageState.copy()
+                        val currentItems = updatedState.items
+                        updatedState = updatedState.copy(
+                            isCalculating = true
                         )
-                        val currentItems = pageState.items
+                        _promoPageUiState.postValue(updatedState)
                         val newClickedItemState = if (clickedItem.state is PromoItemState.Normal) {
                             PromoItemState.Selected
                         } else {
@@ -437,7 +438,7 @@ class PromoUsageViewModel @Inject constructor(
 
                         // Show artificial loading for MVC promo
                         var needToShowLoading = false
-                        var updatedItems = pageState.items
+                        var updatedItems = updatedState.items
                             .map { item ->
                                 if (item is PromoRecommendationItem) {
                                     return@map item.copy(isCalculating = true)
@@ -448,7 +449,10 @@ class PromoUsageViewModel @Inject constructor(
                                         item.state is PromoItemState.Disabled ||
                                             item.state is PromoItemState.Ineligible ||
                                             item.state is PromoItemState.Selected
-                                    if (!isClickedItem && isMvcPromo && !isDisabledOrIneligibleOrSelected) {
+                                    val isVisibleAndExpanded =
+                                        item.isVisible && item.isExpanded
+                                    if (isMvcPromo && isVisibleAndExpanded
+                                        && !isClickedItem && !isDisabledOrIneligibleOrSelected) {
                                         if (!needToShowLoading) {
                                             needToShowLoading = true
                                         }
@@ -464,12 +468,11 @@ class PromoUsageViewModel @Inject constructor(
                                     return@map item
                                 }
                             }
-                        _promoPageUiState.postValue(
-                            pageState.copy(
-                                items = updatedItems,
-                                isReload = false
-                            )
+                        updatedState = updatedState.copy(
+                            items = updatedItems,
+                            isReload = false
                         )
+                        _promoPageUiState.postValue(updatedState)
 
                         if (needToShowLoading) {
                             PromoUsageIdlingResource.increment()
@@ -504,29 +507,34 @@ class PromoUsageViewModel @Inject constructor(
                         // Update SavingInfo section
                         val updatedSavingInfo = calculatePromoSavingInfo(
                             items = updatedItems,
-                            previousSavingInfo = pageState.savingInfo
+                            previousSavingInfo = updatedState.savingInfo
                         )
 
                         // Remove isCalculating after all process is done
                         updatedItems = updatedItems.map { item ->
-                            if (item is PromoRecommendationItem) {
-                                return@map item.copy(isCalculating = false)
-                            } else if (item is PromoItem) {
-                                return@map item.copy(isCalculating = false)
-                            } else {
-                                return@map item
+                            when (item) {
+                                is PromoRecommendationItem -> {
+                                    return@map item.copy(isCalculating = false)
+                                }
+
+                                is PromoItem -> {
+                                    return@map item.copy(isCalculating = false)
+                                }
+
+                                else -> {
+                                    return@map item
+                                }
                             }
                         }
 
                         // Update items
-                        _promoPageUiState.postValue(
-                            pageState.copy(
-                                items = updatedItems,
-                                savingInfo = updatedSavingInfo,
-                                isCalculating = false,
-                                isReload = false
-                            )
+                        updatedState = pageState.copy(
+                            items = updatedItems,
+                            savingInfo = updatedSavingInfo,
+                            isCalculating = false,
+                            isReload = false
                         )
+                        _promoPageUiState.postValue(updatedState)
 
                         // Tell UI about clicked promo (for auto scroll, tracker, etc..)
                         _clickPromoUiAction.postValue(ClickPromoUiAction.Updated(newClickedItem))
@@ -545,7 +553,9 @@ class PromoUsageViewModel @Inject constructor(
         items: List<DelegateAdapterItem>
     ): Pair<PromoRecommendationItem, List<DelegateAdapterItem>> {
         val initialSelectedCodes = recommendationItem.selectedCodes
-        val selectedRecommendationCodes = if (clickedItem.state is PromoItemState.Selected) {
+        val isRecommendedCodeSelected = clickedItem.state is PromoItemState.Selected
+            && clickedItem.isRecommended
+        val selectedRecommendationCodes = if (isRecommendedCodeSelected) {
             recommendationItem.selectedCodes.plus(clickedItem.code)
         } else {
             recommendationItem.selectedCodes.minus(clickedItem.code)
@@ -583,8 +593,7 @@ class PromoUsageViewModel @Inject constructor(
                     if (newClickedItem.isRecommended) {
                         if (newClickedItem.state is PromoItemState.Normal) {
                             return@map item.copy(
-                                selectedCodes = item.selectedCodes.toMutableList()
-                                    .minus(newClickedItem.code)
+                                selectedCodes = item.selectedCodes.minus(newClickedItem.code)
                             )
                         }
                     }

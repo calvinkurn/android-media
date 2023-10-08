@@ -22,6 +22,7 @@ import com.tokopedia.promousage.domain.entity.list.PromoItem
 import com.tokopedia.promousage.domain.entity.list.PromoRecommendationItem
 import com.tokopedia.promousage.util.composite.CompositeAdapter
 import com.tokopedia.promousage.util.composite.DelegateAdapter
+import com.tokopedia.promousage.util.composite.DelegatePayload
 import com.tokopedia.promousage.util.extension.toSpannableHtmlString
 
 
@@ -44,6 +45,23 @@ internal class PromoRecommendationDelegateAdapter(
         viewHolder.bind(item)
     }
 
+    override fun bindViewHolder(
+        item: PromoRecommendationItem,
+        viewHolder: ViewHolder,
+        payloads: MutableList<Any>
+    ) {
+        val payload = payloads
+            .firstOrNull { it is DelegatePayload.UpdatePromoRecommendation }
+            as? DelegatePayload.UpdatePromoRecommendation
+        val isReload = payload?.isReload ?: true
+        val isPromoStateUpdated = payload?.isPromoStateUpdated ?: true
+        viewHolder.bind(
+            item = item,
+            isReload = isReload,
+            isPromoStateUpdated = isPromoStateUpdated
+        )
+    }
+
     inner class ViewHolder(
         private val binding: PromoUsageItemVoucherRecommendationBinding
     ) : RecyclerView.ViewHolder(binding.root) {
@@ -55,10 +73,32 @@ internal class PromoRecommendationDelegateAdapter(
         }
         private val layoutManager by lazy { LinearLayoutManager(itemView.context) }
 
-        fun bind(item: PromoRecommendationItem) {
+        fun bind(
+            item: PromoRecommendationItem,
+            isReload: Boolean = true,
+            isPromoStateUpdated: Boolean = true
+        ) {
+            if (isReload) {
+                setupRecyclerView()
+                renderBackground(item)
+            }
+            if (isPromoStateUpdated) {
+                submitItems(item)
+                renderContent(item)
+                setupListener(item)
+            }
+        }
+
+        private fun setupRecyclerView() {
             binding.rvPromoRecommendation.layoutManager = layoutManager
             binding.rvPromoRecommendation.adapter = adapter
+        }
+
+        private fun submitItems(item: PromoRecommendationItem) {
             adapter.submit(item.promos)
+        }
+
+        private fun renderBackground(item: PromoRecommendationItem) {
             val colorHex = item.backgroundColor
             if (colorHex.isNotBlank()) {
                 binding.clContainer.setBackgroundColor(
@@ -87,15 +127,9 @@ internal class PromoRecommendationDelegateAdapter(
                 postScale(scale, scale)
             }
             binding.ivPromoRecommendationBackground.visible()
-            binding.btnRecommendationUseVoucher.setOnClickListener {
-                if (!item.isCalculating) {
-                    startButtonAnimation {
-                        startMessageAnimation(item.messageSelected) {
-                            onClickUsePromoRecommendation()
-                        }
-                    }
-                }
-            }
+        }
+
+        private fun renderContent(item: PromoRecommendationItem) {
             if (item.selectedCodes.containsAll(item.codes)) {
                 binding.tpgRecommendationTitle.text =
                     item.messageSelected.toSpannableHtmlString(binding.tpgRecommendationTitle.context)
@@ -126,6 +160,18 @@ internal class PromoRecommendationDelegateAdapter(
             }
             if (item.showAnimation) {
                 showPromoRecommendationAnimation(item)
+            }
+        }
+
+        private fun setupListener(item: PromoRecommendationItem) {
+            binding.btnRecommendationUseVoucher.setOnClickListener {
+                if (!item.isCalculating) {
+                    startButtonAnimation {
+                        startMessageAnimation(item.messageSelected) {
+                            onClickUsePromoRecommendation()
+                        }
+                    }
+                }
             }
             binding.btnBottomSheetHeaderClose.setOnClickListener {
                 onClickClose()
