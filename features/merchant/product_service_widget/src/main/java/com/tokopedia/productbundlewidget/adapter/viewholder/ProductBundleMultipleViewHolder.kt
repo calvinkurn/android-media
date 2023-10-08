@@ -241,10 +241,6 @@ class ProductBundleMultipleViewHolder(
                 shapeDrawable.setColor(ContextCompat.getColor(itemView.context, R.color.dms_static_GN100))
             }
 
-//            val bgBundlePromotion = R.drawable.bg_productbundle_promotion
-//            val drawable = MethodChecker.getDrawable(itemView.context, bgBundlePromotion)
-//            drawable.setColorFilter(ContextCompat.getColor(itemView.context, R.color.dms_static_GN100), PorterDuff.Mode.SRC_ATOP)
-
             widgetContainer?.setBackgroundColor(ContextCompat.getColor(itemView.context, unifyprinciplesR.color.Unify_Static_White))
             typographyBundleName?.setTextColor(ContextCompat.getColor(itemView.context, R.color.dms_high_emphasis))
             typographyBundlePreOrder?.setTextColor(ContextCompat.getColor(itemView.context, R.color.dms_low_emphasis))
