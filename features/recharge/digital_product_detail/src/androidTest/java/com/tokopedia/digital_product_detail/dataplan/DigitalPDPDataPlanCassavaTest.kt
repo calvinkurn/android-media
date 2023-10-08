@@ -116,6 +116,7 @@ class DigitalPDPDataPlanCassavaTest : BaseDigitalPDPDataPlanTest() {
     }
 
     private fun interactWithCheckBalanceWidget() {
+        Thread.sleep(2000)
         clientNumberWidget_clickClearIcon()
         clientNumberWidget_typeNumber("085808580858")
         Thread.sleep(4000)

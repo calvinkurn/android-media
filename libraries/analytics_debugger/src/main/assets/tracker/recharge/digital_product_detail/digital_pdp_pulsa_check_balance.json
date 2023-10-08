@@ -47,24 +47,17 @@
       "sessionIris": ".*"
     },
     {
-      "event": "openScreen",
-      "isLoggedInStatus": ".*",
-      "screenName": "iframe-otp",
-      "trackerId": "43701",
       "businessUnit": "recharge",
-      "currentSite": "tokopediadigitalRecharge",
-      "userId": ".*",
-      "sessionIris": ".*"
-    },
-    {
-      "event": "openScreen",
+      "eventCategory": "digital - homepage",
       "trackerId": "43702",
+      "currentSite": "tokopediadigitalRecharge",
       "isLoggedInStatus": ".*",
       "screenName": "iframe-otp",
-      "businessUnit": "recharge",
-      "currentSite": "tokopediadigitalRecharge",
+      "event": "clickDigital",
       "userId": ".*",
-      "sessionIris": ".*"
+      "eventAction": "click close otp",
+      "sessionIris": ".*",
+      "eventLabel": ".* - .*"
     }
   ]
 }

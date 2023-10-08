@@ -189,14 +189,6 @@ class DigitalPDPDataPlanFragment :
         when (result) {
             is OpenRechargeCheckBalance.CheckBalanceOTPResult.Success -> {
                 saveIndosatAccessToken(result.accessToken)
-                view?.let {
-                    Toaster.build(
-                        it,
-                        getString(digital_product_detailR.string.check_balance_failed_verification),
-                        Toaster.LENGTH_LONG,
-                        Toaster.TYPE_NORMAL
-                    ).show()
-                }
             }
             is OpenRechargeCheckBalance.CheckBalanceOTPResult.EmptyToken -> {
                 view?.let {
