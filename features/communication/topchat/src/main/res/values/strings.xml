@@ -305,4 +305,5 @@ yang ditemukan</string>
     <!-- Topchat Auto Reply -->
     <string name="topchat_message_auto_reply_read_more">Baca Selengkapnya</string>
     <string name="topchat_message_auto_reply_label">Dikirim otomatis oleh penjual</string>
+    <string name="topchat_message_auto_reply_bs_title">Informasi Toko</string>
 </resources>

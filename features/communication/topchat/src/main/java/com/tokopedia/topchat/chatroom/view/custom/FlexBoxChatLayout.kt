@@ -107,6 +107,10 @@ class FlexBoxChatLayout : ViewGroup {
 
     interface Listener {
         fun changeAddress(attachment: HeaderCtaButtonAttachment)
+        fun onClickReadMoreAutoReply(
+            welcomeMessage: TopChatAutoReplyUiModel,
+            list: List<TopChatAutoReplyUiModel>
+        )
     }
 
     override fun setBackground(background: Drawable?) {
@@ -627,28 +631,29 @@ class FlexBoxChatLayout : ViewGroup {
         messageUiModel: MessageUiModel,
         autoReplyList: List<TopChatAutoReplyUiModel>
     ) {
+        val welcomeMessage = autoReplyList.firstOrNull {
+            it.getIcon() == null // Check only for welcome message
+        }
         val autoReplyItemList = autoReplyList.filter {
             it.getIcon() != null // Check only for auto reply item
         }
         bindAutoReplyMessage(
-            autoReplyList = autoReplyList,
+            welcomeMessage = welcomeMessage,
             messageUiModel = messageUiModel,
             shouldLimitWelcomeMessage = autoReplyItemList.isNotEmpty()
         )
         bindAutoReplyRecyclerView(
+            welcomeMessage = welcomeMessage,
             autoReplyItemList = autoReplyItemList
         )
     }
 
     private fun bindAutoReplyMessage(
-        autoReplyList: List<TopChatAutoReplyUiModel>,
+        welcomeMessage: TopChatAutoReplyUiModel?,
         messageUiModel: MessageUiModel,
         shouldLimitWelcomeMessage: Boolean
     ) {
         setMessageTypeFace(messageUiModel)
-        val welcomeMessage = autoReplyList.firstOrNull {
-            it.getIcon() == null // Check only for welcome message
-        }
         setMessage(welcomeMessage?.getMessage())
         if (shouldLimitWelcomeMessage) {
             message?.maxLines = 3
@@ -657,6 +662,7 @@ class FlexBoxChatLayout : ViewGroup {
     }
 
     private fun bindAutoReplyRecyclerView(
+        welcomeMessage: TopChatAutoReplyUiModel?,
         autoReplyItemList: List<TopChatAutoReplyUiModel>
     ) {
         if (autoReplyItemList.isNotEmpty()) {
@@ -667,11 +673,23 @@ class FlexBoxChatLayout : ViewGroup {
             autoReplyBinding?.topchatChatroomRvAutoReply?.itemAnimator = null
             adapter.updateItem(autoReplyItemList)
             autoReplyBinding?.topchatChatroomRvAutoReply?.show()
-            autoReplyBinding?.topchatTvAutoReplyDesc?.show()
+            bindAutoReplyText(welcomeMessage, autoReplyItemList)
         } else {
             autoReplyBinding?.topchatChatroomRvAutoReply?.hide()
             autoReplyBinding?.topchatTvAutoReplyDesc?.hide()
         }
+    }
+
+    private fun bindAutoReplyText(
+        welcomeMessage: TopChatAutoReplyUiModel?,
+        autoReplyItemList: List<TopChatAutoReplyUiModel>
+    ) {
+        autoReplyBinding?.topchatTvAutoReplyDesc?.setOnClickListener {
+            welcomeMessage?.let {
+                listener?.onClickReadMoreAutoReply(it, autoReplyItemList)
+            }
+        }
+        autoReplyBinding?.topchatTvAutoReplyDesc?.show()
     }
 
     companion object {

@@ -135,6 +135,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.TopchatPr
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwBubbleViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwQuestionViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.BannedChatMessageViewHolder
+import com.tokopedia.topchat.chatroom.view.bottomsheet.TopChatAutoReplyDetailBottomSheet
 import com.tokopedia.topchat.chatroom.view.bottomsheet.TopChatGuideChatBottomSheet
 import com.tokopedia.topchat.chatroom.view.bottomsheet.TopchatBottomSheetBuilder
 import com.tokopedia.topchat.chatroom.view.bottomsheet.TopchatBottomSheetBuilder.MENU_ID_COPY_TO_CLIPBOARD
@@ -167,6 +168,7 @@ import com.tokopedia.topchat.chatroom.view.uimodel.ReviewUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.uimodel.SendableVoucherPreviewUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.TopchatProductAttachmentPreviewUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.autoreply.TopChatAutoReplyUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundlingUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatRoomWebSocketViewModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatViewModel
@@ -3497,10 +3499,6 @@ open class TopChatRoomFragment :
         return getBooleanArgument(IS_FROM_ANOTHER_CALL, savedInstanceState)
     }
 
-    private fun isSrwNewDesign(): Boolean {
-        return abTestPlatform.getString(AB_TEST_NEW_SRW, AB_TEST_OLD_SRW) == AB_TEST_NEW_SRW
-    }
-
     protected fun isUploadImageSecure(): Boolean {
         return abTestPlatform.getString(
             key = ROLLENCE_UPLOAD_SECURE,
@@ -3511,6 +3509,16 @@ open class TopChatRoomFragment :
     override fun onClickCheckGuide() {
         view?.hideKeyboard()
         TopChatGuideChatBottomSheet().show(childFragmentManager)
+    }
+
+    override fun onClickReadMoreAutoReply(
+        welcomeMessage: TopChatAutoReplyUiModel,
+        list: List<TopChatAutoReplyUiModel>
+    ) {
+        view?.hideKeyboard()
+        TopChatAutoReplyDetailBottomSheet().show(
+            childFragmentManager, welcomeMessage, list
+        )
     }
 
     companion object {
@@ -3532,8 +3540,6 @@ open class TopChatRoomFragment :
         private const val ELLIPSIZE_MAX_CHAR = 20
         private const val PREFIX_SELLER_APPLINK = "sellerapp://"
 
-        const val AB_TEST_NEW_SRW = "srw_new_design"
-        const val AB_TEST_OLD_SRW = "control_variant"
         const val ROLLENCE_UPLOAD_SECURE = "chat_upsecure_an"
 
         fun createInstance(bundle: Bundle): BaseChatFragment {
