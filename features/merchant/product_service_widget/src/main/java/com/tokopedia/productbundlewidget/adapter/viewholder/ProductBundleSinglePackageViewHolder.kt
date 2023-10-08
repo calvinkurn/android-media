@@ -20,26 +20,32 @@ class ProductBundleSinglePackageViewHolder(itemView: View): RecyclerView.ViewHol
 
     private var viewBinding: ItemProductbundleSingleProductBinding? by viewBinding()
 
-    fun bind(singleBundleDetailVariant: BundleDetailUiModel) {
+    fun bind(
+        singleBundleDetailVariant: BundleDetailUiModel,
+        isOverrideWidgetTheme: Boolean
+    ) {
         viewBinding?.singleBundleVariantPackageContainer?.apply {
             text = singleBundleDetailVariant.minOrderWording
-            buttonType = if (singleBundleDetailVariant.isSelected)
-                UnifyButton.Type.MAIN else UnifyButton.Type.ALTERNATE
-            if (singleBundleDetailVariant.isSelected) {
-                background.setTint(
-                    ContextCompat.getColor(
-                        context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_GN50
-                    )
-                )
-                background.setTintMode(PorterDuff.Mode.MULTIPLY)
+            buttonType = if (singleBundleDetailVariant.isSelected) UnifyButton.Type.MAIN else UnifyButton.Type.ALTERNATE
+
+            if (isOverrideWidgetTheme) {
+                if (singleBundleDetailVariant.isSelected) {
+                    background.setTint(ContextCompat.getColor(context, R.color.dms_static_GN50))
+                    background.setTintMode(PorterDuff.Mode.MULTIPLY)
+                } else {
+                    val textColor = ContextCompat.getColor(context, R.color.dms_high_emphasis)
+                    setTextColor(textColor)
+                }
             } else {
-                val textColor = ContextCompat.getColor(
-                    context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN950
-                )
-                setTextColor(textColor)
+                if (singleBundleDetailVariant.isSelected) {
+                    background.setTint(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN50))
+                    background.setTintMode(PorterDuff.Mode.MULTIPLY)
+                } else {
+                    val textColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+                    setTextColor(textColor)
+                }
             }
+
         }
     }
 }

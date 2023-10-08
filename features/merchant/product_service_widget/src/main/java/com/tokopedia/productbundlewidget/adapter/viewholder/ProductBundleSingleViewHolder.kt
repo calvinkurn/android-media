@@ -271,5 +271,6 @@ class ProductBundleSingleViewHolder(
             labelBundleDiscount?.forceLightRed()
             buttonAtc?.applyColorMode(colorMode = ColorMode.LIGHT_MODE)
         }
+        bundleDetailAdapter.setIsOverrideWidgetTheme(isOverrideWidgetTheme)
     }
 }
