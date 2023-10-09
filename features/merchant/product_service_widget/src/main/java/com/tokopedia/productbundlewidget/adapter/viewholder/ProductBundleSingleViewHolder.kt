@@ -255,8 +255,12 @@ class ProductBundleSingleViewHolder(
         if (isOverrideWidgetTheme) {
             viewBinding?.let {
                 it.bundleWidgetHeaderContainer.tvBundleNameLarge.setTextColor(ContextCompat.getColor(itemView.context, R.color.dms_high_emphasis))
+
                 val shapeDrawable = it.bundleWidgetFooter.savingAmountContainer.background as GradientDrawable
                 shapeDrawable.setColor(ContextCompat.getColor(itemView.context, R.color.dms_static_GN100))
+
+                val bgDrawable = ContextCompat.getDrawable(itemView.context, R.drawable.bg_productbundle_image_light_mode)
+                it.layoutBundleImage.background = bgDrawable
             }
 
             widgetContainer?.setBackgroundColor(ContextCompat.getColor(itemView.context, unifyprinciplesR.color.Unify_Static_White))
