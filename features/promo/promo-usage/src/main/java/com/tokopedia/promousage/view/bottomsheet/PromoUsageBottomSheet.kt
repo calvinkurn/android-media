@@ -90,7 +90,6 @@ import com.tokopedia.purchase_platform.common.revamp.CartCheckoutRevampRollenceM
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -174,7 +173,14 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
     private var binding by autoClearedNullable<PromoUsageBottomsheetBinding>()
     var listener: Listener? = null
     private val maxBottomSheetHeight: Int by lazy {
-        getScreenHeight() - BOTTOM_SHEET_MARGIN_TOP_IN_DP.toPx()
+        getScreenHeight() - getKeyboardHeight() - BOTTOM_SHEET_MARGIN_TOP_IN_DP.toPx()
+    }
+
+    private fun getKeyboardHeight(): Int {
+//        val keyboardHeight = WindowInsetsCompat.CONSUMED.getInsets(
+//            WindowInsetsCompat.Type.ime()
+//        ).bottom
+        return 0
     }
 
     private val recyclerViewAdapter by lazy {
@@ -472,7 +478,8 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
 
     private fun setFocusOnPromoAttemptTextField(keyboardHeight: Int) {
         // Add padding to make voucher code text field displayed above keyboard
-        binding?.rvPromo?.setMargin(0, 0, 0, keyboardHeight.toDp())
+//        binding?.rvPromo?.setMargin(0, 0, 0, keyboardHeight.toDp())
+        binding?.rvPromo?.setMargin(0, 0, 0, 0)
         binding?.rvPromo?.requestLayout()
 
         val itemCount = recyclerViewAdapter.itemCount
