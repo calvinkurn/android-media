@@ -63,7 +63,7 @@ class DigitalPDPPulsaViewModel @Inject constructor(
     var selectedGridProduct = SelectedProduct()
     var recomCheckoutUrl = ""
     var multiCheckoutButtons: List<MultiCheckoutButtons> = listOf()
-    private var atcMultiCheckoutParam : String = ""
+    private var atcMultiCheckoutParam: String = ""
 
     var checkBalanceFailCounter = 0
 
@@ -108,15 +108,13 @@ class DigitalPDPPulsaViewModel @Inject constructor(
     val addToCartResult: LiveData<RechargeNetworkResult<DigitalAtcResult>>
         get() = _addToCartResult
 
-<<<<<<< HEAD
     private val _indosatCheckBalance = MutableLiveData<RechargeNetworkResult<DigitalCheckBalanceModel>>()
     val indosatCheckBalance: LiveData<RechargeNetworkResult<DigitalCheckBalanceModel>>
         get() = _indosatCheckBalance
-=======
+
     private val _addToCartMultiCheckoutResult = MutableLiveData<DigitalAtcResult>()
     val addToCartMultiCheckoutResult: LiveData<DigitalAtcResult>
         get() = _addToCartMultiCheckoutResult
->>>>>>> fd04c4bd1c1e1ae2941d9495e3958e9208cfe4f9
 
     private val _errorAtc = MutableLiveData<ErrorAtc>()
     val errorAtc: LiveData<ErrorAtc>
