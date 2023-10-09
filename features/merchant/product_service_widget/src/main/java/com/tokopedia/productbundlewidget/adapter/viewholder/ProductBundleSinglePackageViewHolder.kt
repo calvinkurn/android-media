@@ -9,9 +9,10 @@ import com.tokopedia.product_service_widget.R
 import com.tokopedia.product_service_widget.databinding.ItemProductbundleSingleProductBinding
 import com.tokopedia.productbundlewidget.model.BundleDetailUiModel
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.ColorMode
 import com.tokopedia.utils.view.binding.viewBinding
 
-class ProductBundleSinglePackageViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+class ProductBundleSinglePackageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     companion object {
         @LayoutRes
@@ -32,9 +33,11 @@ class ProductBundleSinglePackageViewHolder(itemView: View): RecyclerView.ViewHol
                 if (singleBundleDetailVariant.isSelected) {
                     background.setTint(ContextCompat.getColor(context, R.color.dms_static_GN50))
                     background.setTintMode(PorterDuff.Mode.MULTIPLY)
+                    applyColorMode(colorMode = ColorMode.LIGHT_MODE)
                 } else {
                     val textColor = ContextCompat.getColor(context, R.color.dms_high_emphasis)
                     setTextColor(textColor)
+                    applyColorMode(colorMode = ColorMode.LIGHT_MODE)
                 }
             } else {
                 if (singleBundleDetailVariant.isSelected) {
@@ -45,7 +48,6 @@ class ProductBundleSinglePackageViewHolder(itemView: View): RecyclerView.ViewHol
                     setTextColor(textColor)
                 }
             }
-
         }
     }
 }
