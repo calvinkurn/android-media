@@ -23,8 +23,10 @@ import androidx.annotation.Keep
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
@@ -1352,7 +1354,7 @@ class CartRevampFragment :
             viewModel.doUpdateCartAndGetLastApply(params)
         } else {
             if (cartItemHolderData.isTokoNow) {
-                emitTokoNowData()
+                viewModel.emitTokonowUpdated()
             }
             viewModel.getEntryPointInfoDefault()
         }
@@ -1365,14 +1367,6 @@ class CartRevampFragment :
             val cartGroupHolderData = CartDataHelper.getCartGroupHolderDataByCartItemHolderData(viewModel.cartDataList.value, cartItemHolderData)
             if (cartGroupHolderData != null) {
                 getGroupProductTicker(cartItemHolderData)
-            }
-        }
-    }
-
-    private fun emitTokoNowData() {
-        if (view != null) {
-            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
-                viewModel.emitTokonowUpdated(true)
             }
         }
     }
@@ -2291,11 +2285,13 @@ class CartRevampFragment :
 
     private fun initViewModel() {
         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
-            viewModel.tokoNowProductUpdater.debounce(TOKONOW_UPDATER_DEBOUNCE).collectLatest {
-                viewModel.processUpdateCartData(
-                    fireAndForget = true,
-                    onlyTokoNowProducts = true
-                )
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.tokoNowProductUpdater.debounce(TOKONOW_UPDATER_DEBOUNCE).collectLatest {
+                    viewModel.processUpdateCartData(
+                        fireAndForget = true,
+                        onlyTokoNowProducts = true
+                    )
+                }
             }
         }
 

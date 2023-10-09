@@ -2530,8 +2530,10 @@ class CartViewModel @Inject constructor(
         }
     }
 
-    suspend fun emitTokonowUpdated(value: Boolean) {
-        _tokoNowProductUpdater.emit(value)
+    fun emitTokonowUpdated() {
+        viewModelScope.launch {
+            _tokoNowProductUpdater.emit(true)
+        }
     }
 
     fun generateCartBundlingPromotionsAnalyticsData(
