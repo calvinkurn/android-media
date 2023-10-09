@@ -19,9 +19,13 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
+import com.tokopedia.common.topupbills.analytics.CommonMultiCheckoutAnalytics
+import com.tokopedia.common.topupbills.analytics.PromotionMultiCheckout
 import com.tokopedia.common.topupbills.data.TopupBillsBanner
 import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
+import com.tokopedia.common.topupbills.data.constant.multiCheckoutButtonImpressTrackerButtonType
+import com.tokopedia.common.topupbills.data.constant.multiCheckoutButtonPromotionTracker
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoOperator
 import com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoSavedNumberActivity
 import com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoSavedNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
@@ -42,6 +46,7 @@ import com.tokopedia.common_digital.atc.data.response.ErrorAtc
 import com.tokopedia.common_digital.atc.utils.DeviceUtil
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.digital_product_detail.R
+import com.tokopedia.digital_product_detail.data.model.data.DigitalAtcResult
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.APPLINK_OMNI_DATA_CODE
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.FAVNUM_PERMISSION_CHECKER_IS_DENIED
@@ -167,6 +172,9 @@ class DigitalPDPDataPlanFragment :
     @Inject
     lateinit var digitalPDPAnalytics: DigitalPDPAnalytics
 
+    @Inject
+    lateinit var commonMultiCheckoutAnalytics: CommonMultiCheckoutAnalytics
+
     private var binding by autoClearedNullable<FragmentDigitalPdpDataPlanBinding>()
 
     private var operator = TelcoOperator()
@@ -181,6 +189,7 @@ class DigitalPDPDataPlanFragment :
     private var loader: LoaderDialog? = null
     private var isMCCMEmpty: Boolean = false
     private var isProductListEmpty: Boolean = false
+    private var isAlreadyTrackImpressionMultiButton: Boolean = false
 
     private lateinit var localCacheHandler: LocalCacheHandler
     private lateinit var productDescBottomSheet: ProductDescBottomSheet
@@ -578,6 +587,14 @@ class DigitalPDPDataPlanFragment :
             }
         }
 
+        viewModel.addToCartMultiCheckoutResult.observe(viewLifecycleOwner) {
+            hideLoadingDialog()
+            context?.let { context ->
+                trackOnClickMultiCheckout(it)
+                RouteManager.route(context, it.redirectUrl)
+            }
+        }
+
         viewModel.errorAtc.observe(viewLifecycleOwner) {
             hideLoadingDialog()
             if (it.atcErrorPage.isShowErrorPage) {
@@ -601,6 +618,15 @@ class DigitalPDPDataPlanFragment :
         }
     }
 
+    private fun trackOnClickMultiCheckout(atc: DigitalAtcResult) {
+        commonMultiCheckoutAnalytics.onClickMultiCheckout(
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+            operator.attributes.name,
+            atc.channelId,
+            userSession.userId,
+            multiCheckoutButtonPromotionTracker(viewModel.multiCheckoutButtons)
+        )
+    }
     private fun onSuccessOmniChannel(otherComponents: List<TelcoOtherComponent>) {
         otherComponents.forEach {
             if (it.name == OTHER_COMPONENT_APPLINK_OMNI) {
@@ -717,6 +743,7 @@ class DigitalPDPDataPlanFragment :
     private fun onSuccessGetMenuDetail(data: MenuDetailModel) {
         (activity as BaseSimpleActivity).updateTitle(data.catalog.label)
         loyaltyStatus = data.userPerso.loyaltyStatus
+        viewModel.multiCheckoutButtons = data.multiCheckoutButtons
         getFavoriteNumbers(
             listOf(
                 FavoriteNumberType.CHIP,
@@ -1232,13 +1259,29 @@ class DigitalPDPDataPlanFragment :
     private fun onShowBuyWidget(denomFull: DenomData) {
         binding?.let {
             it.rechargePdpPaketDataBuyWidget.show()
-            it.rechargePdpPaketDataBuyWidget.renderBuyWidget(denomFull, this)
+            it.rechargePdpPaketDataBuyWidget.renderBuyWidget(denomFull, this, viewModel.multiCheckoutButtons) {
+                commonMultiCheckoutAnalytics.onCloseMultiCheckoutCoachmark(
+                    DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                    loyaltyStatus
+                )
+            }
+            it.rechargePdpPaketDataBuyWidget.showCoachMark()
+
+            if (!isAlreadyTrackImpressionMultiButton) {
+                isAlreadyTrackImpressionMultiButton = true
+                commonMultiCheckoutAnalytics.onImpressMultiCheckoutButtons(
+                    DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                    multiCheckoutButtonImpressTrackerButtonType(viewModel.multiCheckoutButtons),
+                    userSession.userId
+                )
+            }
         }
     }
 
     private fun onHideBuyWidget() {
         binding?.let {
             it.rechargePdpPaketDataBuyWidget.hide()
+            it.rechargePdpPaketDataBuyWidget.hideCoachMark()
         }
     }
 
@@ -1584,6 +1627,12 @@ class DigitalPDPDataPlanFragment :
         )
     }
 
+    override fun onCloseCoachmark() {
+        commonMultiCheckoutAnalytics.onCloseMultiCheckoutCoachmark(
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+            loyaltyStatus
+        )
+    }
     //endregion
 
     //region ClientNumberInputFieldListener
@@ -1726,6 +1775,26 @@ class DigitalPDPDataPlanFragment :
             binding?.rechargePdpPaketDataClientNumberWidget?.startShakeAnimation()
             productDescBottomSheet?.dismiss()
         } else {
+            if (userSession.isLoggedIn) {
+                addToCart()
+            } else {
+                navigateToLoginPage()
+            }
+        }
+    }
+
+    override fun onClickedButtonMultiCheckout(denom: DenomData) {
+        viewModel.updateCheckoutPassData(
+            denom,
+            userSession.userId.generateRechargeCheckoutToken(),
+            binding?.rechargePdpPaketDataClientNumberWidget?.getInputNumber() ?: "",
+            operator.id
+        )
+        if (binding?.rechargePdpPaketDataClientNumberWidget?.isErrorMessageShown() == true) {
+            binding?.rechargePdpPaketDataClientNumberWidget?.startShakeAnimation()
+            productDescBottomSheet?.dismiss()
+        } else {
+            viewModel.setAtcMultiCheckoutParam()
             if (userSession.isLoggedIn) {
                 addToCart()
             } else {
@@ -1904,6 +1973,7 @@ class DigitalPDPDataPlanFragment :
         childFragmentManager?.let {
             productDescBottomSheet = ProductDescBottomSheet.getInstance()
             productDescBottomSheet.setDenomData(denomFull)
+            productDescBottomSheet.setMultiCheckoutButtons(viewModel.multiCheckoutButtons)
             productDescBottomSheet.setLayoutType(layoutType)
             productDescBottomSheet.setProductListTitle(productListTitle)
             productDescBottomSheet.setPosition(position)

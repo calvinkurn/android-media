@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.common.topupbills.data.MultiCheckoutButtons
 import com.tokopedia.common.topupbills.data.prefix_select.RechargeCatalogPrefixSelect
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
 import com.tokopedia.common.topupbills.favoritepdp.domain.model.AutoCompleteModel
@@ -15,6 +16,7 @@ import com.tokopedia.common.topupbills.favoritepdp.util.FavoriteNumberType
 import com.tokopedia.common_digital.atc.data.response.ErrorAtc
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
+import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData.Companion.PARAM_ATC_MULTICHECKOUT
 import com.tokopedia.common_digital.common.DigitalAtcErrorException
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.digital_product_detail.data.model.data.DigitalAtcResult
@@ -64,6 +66,8 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
     var isEligibleToBuy = false
     var selectedFullProduct = SelectedProduct()
     var recomCheckoutUrl = ""
+    var multiCheckoutButtons: List<MultiCheckoutButtons> = listOf()
+    private var atcMultiCheckoutParam : String = ""
 
     var checkBalanceFailCounter = 0
 
@@ -109,6 +113,10 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
     private val _indosatCheckBalance = MutableLiveData<RechargeNetworkResult<DigitalCheckBalanceModel>>()
     val indosatCheckBalance: LiveData<RechargeNetworkResult<DigitalCheckBalanceModel>>
         get() = _indosatCheckBalance
+
+    private val _addToCartMultiCheckoutResult = MutableLiveData<DigitalAtcResult>()
+    val addToCartMultiCheckoutResult: LiveData<DigitalAtcResult>
+        get() = _addToCartMultiCheckoutResult
 
     private val _errorAtc = MutableLiveData<ErrorAtc>()
     val errorAtc: LiveData<ErrorAtc>
@@ -244,11 +252,16 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
             val categoryIdAtc = repo.addToCart(
                 digitalCheckoutPassData,
                 digitalIdentifierParam,
-                userId
+                userId,
+                atcMultiCheckoutParam
             )
-            if (categoryIdAtc.errorAtc == null) {
+            if (atcMultiCheckoutParam.isNotEmpty()) {
+                _addToCartMultiCheckoutResult.value = categoryIdAtc
+                resetAtcMultiCheckoutParam()
+            } else if (categoryIdAtc.errorAtc == null) {
                 _addToCartResult.value = RechargeNetworkResult.Success(categoryIdAtc)
             } else {
+                resetAtcMultiCheckoutParam()
                 _errorAtc.value = categoryIdAtc.errorAtc
             }
         }) {
@@ -514,6 +527,14 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
                 delay(skipMs)
             }
         }
+    }
+
+    fun setAtcMultiCheckoutParam() {
+        atcMultiCheckoutParam = PARAM_ATC_MULTICHECKOUT
+    }
+
+    private fun resetAtcMultiCheckoutParam() {
+        atcMultiCheckoutParam = ""
     }
 
     companion object {
