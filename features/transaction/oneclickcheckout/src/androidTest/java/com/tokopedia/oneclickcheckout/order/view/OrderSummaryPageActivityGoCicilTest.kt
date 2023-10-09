@@ -29,7 +29,7 @@ import org.junit.Test
 class OrderSummaryPageActivityGoCicilTest {
 
     @get:Rule
-    val activityRule = IntentsTestRule(OrderSummaryPageActivity::class.java, false, false)
+    val activityRule = IntentsTestRule(TestOrderSummaryPageActivity::class.java, false, false)
 
     @get:Rule
     val freshIdlingResourceTestRule = FreshIdlingResourceTestRule()

@@ -6,15 +6,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.content.common.util.withCache
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.stories.analytics.StoriesAnalytics
 import com.tokopedia.stories.analytics.StoriesEEModel
 import com.tokopedia.stories.databinding.FragmentStoriesGroupBinding
@@ -29,6 +31,7 @@ import com.tokopedia.stories.view.viewmodel.StoriesViewModel
 import com.tokopedia.stories.view.viewmodel.StoriesViewModelFactory
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.PauseStories
+import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.SetMainData
 import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
@@ -52,7 +55,7 @@ class StoriesGroupFragment @Inject constructor(
             arguments?.getParcelable(KEY_ARGS) ?: StoriesArgsModel()
         }
 
-    val viewModelProvider get() = viewModelFactory.create(requireActivity(), args)
+    val viewModelProvider get() = viewModelFactory.create(args)
 
     private val analytic: StoriesAnalytics get() = analyticFactory.create(args)
 
@@ -63,9 +66,9 @@ class StoriesGroupFragment @Inject constructor(
     private val pagerListener = object : ViewPager2.OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
             super.onPageSelected(position)
-            showSelectedGroupHighlight(position)
-            viewModelAction(StoriesUiAction.SetMainData(position))
+            viewModelAction(SetMainData(position))
             trackMoveGroup()
+            showSelectedGroupHighlight(position)
         }
     }
 
@@ -98,11 +101,6 @@ class StoriesGroupFragment @Inject constructor(
         viewModelAction(StoriesUiAction.SetInitialData)
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        viewModelAction(StoriesUiAction.SaveInstanceStateData)
-    }
-
     override fun onPause() {
         super.onPause()
         viewModelAction(PauseStories)
@@ -116,11 +114,18 @@ class StoriesGroupFragment @Inject constructor(
     private fun setupViews() = with(binding) {
         showPageLoading(true)
 
+        setupTopInsets()
+
         layoutGroupLoading.icCloseLoading.setOnClickListener { activity?.finish() }
-        if (storiesGroupViewPager.adapter != null) return@with
-        storiesGroupViewPager.adapter = pagerAdapter
         storiesGroupViewPager.setPageTransformer(StoriesPageAnimation())
         storiesGroupViewPager.registerOnPageChangeCallback(pagerListener)
+    }
+
+    private fun setupTopInsets() = with(binding) {
+        root.doOnApplyWindowInsets { _, insets, _, _ ->
+            val topInsetsMargin = (insets.getInsets(WindowInsetsCompat.Type.statusBars())).top
+            root.setMargin(top = topInsetsMargin, bottom = 0, left = 0, right = 0)
+        }
     }
 
     private fun setupObserver() {
@@ -135,6 +140,7 @@ class StoriesGroupFragment @Inject constructor(
             binding.tvHighlight.animate().alpha(1f)
             delay(1000)
             binding.tvHighlight.animate().alpha(0f)
+            viewModelAction(StoriesUiAction.PageIsSelected)
         }
     }
 
@@ -184,8 +190,8 @@ class StoriesGroupFragment @Inject constructor(
         setNoInternet(false)
         setFailed(false)
 
+        binding.storiesGroupViewPager.adapter = pagerAdapter
         pagerAdapter.setStoriesGroup(state)
-        pagerAdapter.notifyItemRangeChanged(pagerAdapter.itemCount, state.groupItems.size)
         selectGroupPosition(state.selectedGroupPosition, false)
 
         showPageLoading(false)
@@ -227,12 +233,12 @@ class StoriesGroupFragment @Inject constructor(
 
     private fun trackImpressionGroup() {
         analytic.sendViewStoryCircleEvent(
-            currentCircle = viewModel.mGroup.groupId,
+            currentCircle = viewModel.mGroup.groupName,
             promotions = viewModel.impressedGroupHeader.mapIndexed { index, storiesGroupHeader ->
                 StoriesEEModel(
                     creativeName = "",
                     creativeSlot = index.plus(1).toString(),
-                    itemId = "${storiesGroupHeader.groupId} - ${storiesGroupHeader.groupName} - ${args.authorId}",
+                    itemId = "${viewModel.mGroup.groupId} - ${storiesGroupHeader.groupId} - ${args.authorId}",
                     itemName = "/ - stories",
                 )
             },

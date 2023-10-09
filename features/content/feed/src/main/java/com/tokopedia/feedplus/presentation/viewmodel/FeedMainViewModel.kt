@@ -10,6 +10,7 @@ import com.tokopedia.createpost.common.domain.usecase.cache.DeleteMediaPostCache
 import com.tokopedia.feedplus.domain.FeedRepository
 import com.tokopedia.feedplus.presentation.model.ActiveTabSource
 import com.tokopedia.feedplus.presentation.model.CreateContentType
+import com.tokopedia.feedplus.presentation.model.FeedDataModel
 import com.tokopedia.feedplus.presentation.model.FeedMainEvent
 import com.tokopedia.feedplus.presentation.model.FeedTabModel
 import com.tokopedia.feedplus.presentation.model.MetaModel
@@ -91,6 +92,17 @@ class FeedMainViewModel @AssistedInject constructor(
             } != null
         }
 
+    val selectedTab: FeedDataModel?
+        get() {
+            val tabs = _feedTabs.value
+
+            return if (tabs is NetworkResult.Success<FeedTabModel>) {
+                tabs.data.data.firstOrNull { it.isSelected }
+            } else {
+                null
+            }
+        }
+
     init {
         viewModelScope.launch {
             _swipeOnBoardingState
@@ -118,8 +130,15 @@ class FeedMainViewModel @AssistedInject constructor(
         viewModelScope.launch {
             val tabModel = (_feedTabs.value as? NetworkResult.Success<FeedTabModel>)?.data ?: return@launch
             if (position < tabModel.data.size) {
-                val data = tabModel.data[position]
-                emitEvent(FeedMainEvent.SelectTab(data, position))
+                _feedTabs.value = NetworkResult.Success(
+                    tabModel.copy(
+                        data = tabModel.data.mapIndexed { idx, tab ->
+                            tab.copy(
+                                isSelected = idx == position
+                            )
+                        }
+                    )
+                )
             }
         }
     }
@@ -130,12 +149,15 @@ class FeedMainViewModel @AssistedInject constructor(
     fun setActiveTab(type: String) {
         viewModelScope.launch {
             val tabModel = (_feedTabs.value as? NetworkResult.Success<FeedTabModel>)?.data ?: return@launch
-            tabModel.data.forEachIndexed { index, tab ->
-                if (tab.type.equals(type, true)) {
-                    emitEvent(FeedMainEvent.SelectTab(tab, index))
-                    return@forEachIndexed
-                }
-            }
+            _feedTabs.value = NetworkResult.Success(
+                tabModel.copy(
+                    data = tabModel.data.map { tab ->
+                        tab.copy(
+                            isSelected = tab.type.equals(type, true)
+                        )
+                    }
+                )
+            )
         }
     }
 
@@ -171,15 +193,15 @@ class FeedMainViewModel @AssistedInject constructor(
         }
     }
 
-    fun onPostDataLoaded(isLoaded: Boolean) {
-        _swipeOnBoardingState.update {
-            it.copy(onDataLoaded = isLoaded)
-        }
-    }
-
     fun setReadyToShowOnboarding() {
         _swipeOnBoardingState.update {
             it.copy(isReadyToShow = true)
+        }
+    }
+
+    fun setDataEligibleForOnboarding(isEligible: Boolean) {
+        _swipeOnBoardingState.update {
+            it.copy(isDataEligibleForOnboarding = isEligible)
         }
     }
 

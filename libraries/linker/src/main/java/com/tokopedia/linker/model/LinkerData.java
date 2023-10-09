@@ -9,8 +9,6 @@ import androidx.annotation.Nullable;
 
 import com.tokopedia.linker.LinkerUtils;
 
-import java.util.Objects;
-
 
 public class LinkerData implements Parcelable {
     public static final String TAG = LinkerData.class.getSimpleName();
@@ -94,6 +92,8 @@ public class LinkerData implements Parcelable {
     private boolean isAffiliate;
     private String additionalQueryParam;
     private String linkAffiliateType;
+    private String minVersionAndroid = "";
+    private String minVersionIOS = "";
 
     public String getCustmMsg() {
         return custmMsg;
@@ -152,6 +152,8 @@ public class LinkerData implements Parcelable {
         isAffiliate = in.readByte() != 0;
         additionalQueryParam = in.readString();
         linkAffiliateType = in.readString();
+        minVersionAndroid = in.readString();
+        minVersionIOS = in.readString();
     }
 
     @Override
@@ -201,6 +203,24 @@ public class LinkerData implements Parcelable {
         dest.writeByte((byte) (isAffiliate ? 1 : 0));
         dest.writeString(additionalQueryParam);
         dest.writeString(linkAffiliateType);
+        dest.writeString(minVersionAndroid);
+        dest.writeString(minVersionIOS);
+    }
+
+    public String getMinVersionIOS() {
+        return minVersionIOS;
+    }
+
+    public void setMinVersionIOS(String minVersionIOS) {
+        this.minVersionIOS = minVersionIOS;
+    }
+
+    public String getMinVersionAndroid() {
+        return minVersionAndroid;
+    }
+
+    public void setMinVersionAndroid(String minVersionAndroid) {
+        this.minVersionAndroid = minVersionAndroid;
     }
 
     @Override
@@ -729,6 +749,8 @@ public class LinkerData implements Parcelable {
         private boolean isAffiliate;
         private String additionalQueryParam;
         private String linkAffiliateType;
+        private String minVersionAndroid;
+        private String minVersionIOS;
 
         private Builder() {
         }
@@ -963,6 +985,16 @@ public class LinkerData implements Parcelable {
 
         public Builder setLinkTypeAffiliate(String type) {
             this.linkAffiliateType = type;
+            return this;
+        }
+
+        public Builder setMinVersionAndroid(String minVersionAndroid) {
+            this.minVersionAndroid = minVersionAndroid;
+            return this;
+        }
+
+        public Builder setMinVersionIOS(String minVersionIOS) {
+            this.minVersionIOS = minVersionIOS;
             return this;
         }
 

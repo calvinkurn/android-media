@@ -811,6 +811,8 @@ class TokoNowHomeFragment :
     }
 
     private fun onClickShareButton() {
+        shareHomeTokonow = createShareHomeTokonow()
+
         updateShareHomeData(
             pageIdConstituents = listOf(PAGE_TYPE_HOME),
             isScreenShot = false,

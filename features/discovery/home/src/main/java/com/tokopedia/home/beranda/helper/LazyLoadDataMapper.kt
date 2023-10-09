@@ -10,7 +10,10 @@ import com.tokopedia.unifycomponents.CardUnify2
  * Created by dhaba
  */
 object LazyLoadDataMapper {
-    fun mapMissionWidgetData(missionWidgetList: List<HomeMissionWidgetData.Mission>): List<MissionWidgetDataModel> {
+    fun mapMissionWidgetData(
+        missionWidgetList: List<HomeMissionWidgetData.Mission>,
+        isCache: Boolean
+    ): List<MissionWidgetDataModel> {
         return missionWidgetList.map {
             MissionWidgetDataModel(
                 id = it.id,
@@ -28,6 +31,7 @@ object LazyLoadDataMapper {
                 isCarousel = it.isCarousel,
                 shopId = it.shopId,
                 animateOnPress = CardUnify2.ANIMATE_OVERLAY_BOUNCE,
+                isCache = isCache,
             )
         }
     }

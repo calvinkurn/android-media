@@ -21,6 +21,8 @@ import com.tokopedia.search.result.mps.filter.quickfilter.QuickFilterDataView
 import com.tokopedia.search.result.mps.filter.quickfilter.QuickFilterViewModel
 import com.tokopedia.search.result.mps.shopwidget.MPSShopWidgetDataView
 import com.tokopedia.search.result.mps.shopwidget.MPSShopWidgetProductDataView
+import com.tokopedia.search.result.mps.variantstate.BottomSheetVariantViewModel
+import com.tokopedia.search.result.product.addtocart.AddToCartConstant
 import com.tokopedia.search.utils.ChooseAddressWrapper
 import com.tokopedia.search.utils.mvvm.SearchViewModel
 import com.tokopedia.search.utils.toSearchParams
@@ -51,7 +53,8 @@ class MPSViewModel @Inject constructor(
     SearchViewModel<MPSState>,
     QuickFilterViewModel,
     BottomSheetFilterViewModel,
-    AddToCartViewModel {
+    AddToCartViewModel,
+    BottomSheetVariantViewModel {
 
     private val _stateFlow = MutableStateFlow(mpsState)
 
@@ -173,6 +176,17 @@ class MPSViewModel @Inject constructor(
         mpsShopWidget: MPSShopWidgetDataView,
         mpsShopWidgetProduct: MPSShopWidgetProductDataView,
     ) {
+        if (isProductHasVariant(mpsShopWidgetProduct)){
+            updateState { it.openBottomSheetVariant(mpsShopWidget, mpsShopWidgetProduct) }
+        } else {
+            addToCart(mpsShopWidget, mpsShopWidgetProduct)
+        }
+    }
+
+    private fun addToCart(
+        mpsShopWidget: MPSShopWidgetDataView,
+        mpsShopWidgetProduct: MPSShopWidgetProductDataView,
+    ){
         addToCartUseCase.run {
             setParams(AddToCartUseCase.getMinimumParams(
                 mpsShopWidgetProduct.id,
@@ -233,5 +247,12 @@ class MPSViewModel @Inject constructor(
             userSession.userId,
         )
         mpsTracking.trackGeneralSearch(generalSearchTracking)
+    }
+
+    private fun isProductHasVariant(product: MPSShopWidgetProductDataView): Boolean =
+        product.parentId != "" && product.parentId != AddToCartConstant.DEFAULT_PARENT_ID
+
+    override fun onBottomSheetVariantDismissed() {
+        updateState { it.dismissBottomSheetVariant() }
     }
 }

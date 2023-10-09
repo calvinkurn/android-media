@@ -15,7 +15,7 @@ import dagger.assisted.AssistedInject
 
 class StoriesRoomAnalyticImpl @AssistedInject constructor(
     @Assisted private val args: StoriesArgsModel,
-    private val userSession: UserSessionInterface,
+    private val userSession: UserSessionInterface
 ) : StoriesRoomAnalytic {
 
     @AssistedFactory
@@ -49,7 +49,7 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
     // Tracker ID: 46043
     override fun sendViewStoryCircleEvent(
         currentCircle: String,
-        promotions: List<StoriesEEModel>,
+        promotions: List<StoriesEEModel>
     ) {
         val itemList = promotions.map {
             Bundle().apply {
@@ -75,7 +75,7 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             Event.viewItem,
-            eventDataLayer,
+            eventDataLayer
         )
     }
 
@@ -134,7 +134,7 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
     // Tracker ID: 46049
     override fun sendClickStoryCircleEvent(
         currentCircle: String,
-        promotions: List<StoriesEEModel>,
+        promotions: List<StoriesEEModel>
     ) {
         val itemList = promotions.map {
             Bundle().apply {
@@ -160,7 +160,7 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             Event.selectContent,
-            eventDataLayer,
+            eventDataLayer
         )
     }
 
@@ -185,7 +185,7 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
     // Tracker ID: 46051
     override fun sendViewProductCardEvent(
         eventLabel: String,
-        items : Map<ContentTaggedProductUiModel, Int>
+        items: Map<ContentTaggedProductUiModel, Int>
     ) {
         if (items.isEmpty()) return
         val listOfProducts = items.map {
@@ -214,7 +214,7 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
         }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             Event.viewItemList,
-            eventDataLayer,
+            eventDataLayer
         )
     }
 
@@ -224,18 +224,21 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
         eventLabel: String,
         itemList: String,
         items: List<ContentTaggedProductUiModel>,
-        position: Int,
+        position: Int
     ) {
         val listOfProducts = items.map {
             Bundle().apply {
                 putInt(Key.itemIndex, position + 1)
                 putString(Key.itemId, it.id)
                 putString(Key.itemName, it.title)
-                putFloat(Key.price, when (val price = it.price){
-                    is ContentTaggedProductUiModel.DiscountedPrice -> price.price.toFloat()
-                    is ContentTaggedProductUiModel.CampaignPrice -> price.price.toFloat()
-                    is ContentTaggedProductUiModel.NormalPrice -> price.price.toFloat()
-                })
+                putFloat(
+                    Key.price,
+                    when (val price = it.price) {
+                        is ContentTaggedProductUiModel.DiscountedPrice -> price.price.toFloat()
+                        is ContentTaggedProductUiModel.CampaignPrice -> price.price.toFloat()
+                        is ContentTaggedProductUiModel.NormalPrice -> price.price.toFloat()
+                    }
+                )
                 putString(Key.itemShopId, args.authorId)
                 putString(Key.itemShopType, args.authorType)
                 putString(Key.dimension40, itemList)
@@ -256,7 +259,7 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
         }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             Event.selectContent,
-            eventDataLayer,
+            eventDataLayer
         )
     }
 
@@ -266,18 +269,21 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
         eventLabel: String,
         items: List<ContentTaggedProductUiModel>,
         position: Int,
-        shopName: String,
+        shopName: String
     ) {
         val itemList = items.map {
             Bundle().apply {
                 putInt(Key.itemIndex, position + 1)
                 putString(Key.itemId, it.id)
                 putString(Key.itemName, it.title)
-                putFloat(Key.price, when (val price = it.price){
-                    is ContentTaggedProductUiModel.DiscountedPrice -> price.price.toFloat()
-                    is ContentTaggedProductUiModel.CampaignPrice -> price.price.toFloat()
-                    is ContentTaggedProductUiModel.NormalPrice -> price.price.toFloat()
-                })
+                putFloat(
+                    Key.price,
+                    when (val price = it.price) {
+                        is ContentTaggedProductUiModel.DiscountedPrice -> price.price.toFloat()
+                        is ContentTaggedProductUiModel.CampaignPrice -> price.price.toFloat()
+                        is ContentTaggedProductUiModel.NormalPrice -> price.price.toFloat()
+                    }
+                )
                 putString(Key.itemShopId, args.authorId)
                 putString(Key.itemShopType, args.authorType)
                 putString(Key.itemShopName, shopName)
@@ -298,7 +304,7 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
         }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             Event.add_to_cart,
-            eventDataLayer,
+            eventDataLayer
         )
     }
 
@@ -315,11 +321,14 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
                 putInt(Key.itemIndex, position + 1)
                 putString(Key.itemId, it.id)
                 putString(Key.itemName, it.title)
-                putFloat(Key.price, when (val price = it.price){
-                    is ContentTaggedProductUiModel.DiscountedPrice -> price.price.toFloat()
-                    is ContentTaggedProductUiModel.CampaignPrice -> price.price.toFloat()
-                    is ContentTaggedProductUiModel.NormalPrice -> price.price.toFloat()
-                })
+                putFloat(
+                    Key.price,
+                    when (val price = it.price) {
+                        is ContentTaggedProductUiModel.DiscountedPrice -> price.price.toFloat()
+                        is ContentTaggedProductUiModel.CampaignPrice -> price.price.toFloat()
+                        is ContentTaggedProductUiModel.NormalPrice -> price.price.toFloat()
+                    }
+                )
                 putString(Key.itemShopId, args.authorId)
                 putString(Key.itemShopType, args.authorType)
                 putString(Key.itemShopName, shopName)
@@ -340,7 +349,7 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
         }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             Event.add_to_cart,
-            eventDataLayer,
+            eventDataLayer
         )
     }
 
@@ -350,7 +359,7 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
         storiesId: String,
         creatorType: String,
         contentType: String,
-        currentCircle: String,
+        currentCircle: String
     ) {
         Tracker.Builder()
             .setEvent(Event.clickContent)
@@ -372,7 +381,7 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
         storiesId: String,
         creatorType: String,
         contentType: String,
-        currentCircle: String,
+        currentCircle: String
     ) {
         Tracker.Builder()
             .setEvent(Event.clickContent)
@@ -389,7 +398,7 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
     }
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4155
-    // Tracker ID: 46059
+    // Tracker ID: 46060
     override fun sendClickMoveToOtherGroup() {
         Tracker.Builder()
             .setEvent(Event.clickContent)
@@ -411,7 +420,7 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
         storiesId: String,
         creatorType: String,
         contentType: String,
-        currentCircle: String,
+        currentCircle: String
     ) {
         Tracker.Builder()
             .setEvent(Event.clickContent)
@@ -426,5 +435,4 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
             .build()
             .send()
     }
-
 }

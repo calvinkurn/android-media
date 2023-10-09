@@ -52,7 +52,6 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
             hideShimmering()
             hideBasicInfoThreeDots()
             showTitle()
-            binding.dividerMostHelpfulReviewThumbnails.show()
             val componentData = getComponentTrackData(it)
             view.addOnImpressionListener(element.impressHolder) {
                 listener.onImpressComponent(componentData)
@@ -229,7 +228,6 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
             reviewRating.hide()
             reviewCount.hide()
             reviewMediaThumbnails.hide()
-            dividerMostHelpfulReviewThumbnails.hide()
             basicInfoMostHelpfulReview.hide()
             txtDescReviewPdp.hide()
         }
@@ -237,7 +235,6 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
 
     private fun hideMostHelpfulElements() {
         binding.apply {
-            dividerMostHelpfulReviewThumbnails.hide()
             basicInfoMostHelpfulReview.hide()
             txtDescReviewPdp.hide()
         }

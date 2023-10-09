@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.shopwidget.shopcard.ShopCardModel
 import com.tokopedia.shopwidget.shopcard.ShopCardView
 import com.tokopedia.topads.sdk.R
 import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_8
@@ -97,7 +98,6 @@ class TopAdsBannerViewReimagine : TopAdsBannerView {
                     topAdsCarousel.hide()
                     shopAdsProductView.hide()
                     adsBannerShopCardView?.visible()
-                    adsBannerShopCardView?.setCardUnifyStyle(true)
                     shopAdsWithThreeProducts.hide()
                     container?.setBackgroundResource(0)
                     (container?.layoutParams as? MarginLayoutParams)?.setMargins(0, 4.toPx(), 0, 0)
@@ -207,6 +207,10 @@ class TopAdsBannerViewReimagine : TopAdsBannerView {
             list?.hide()
             setWidget(cpmData, appLink, adsClickUrl, shopAdsWithThreeProducts, topAdsBannerViewClickListener, hasAddProductToCartButton)
         }
+    }
+
+    override fun mapToShopCardModel(cpmData: CpmData): ShopCardModel {
+        return super.mapToShopCardModel(cpmData).copy(isReimagine = true)
     }
 
     private fun renderHeaderSeeMore(cpmData: CpmData, appLink: String, adsClickUrl: String) {

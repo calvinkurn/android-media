@@ -7,9 +7,8 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.tokopedia.stories.view.fragment.StoriesDetailFragment
-import com.tokopedia.stories.view.utils.SHOP_ID
-import com.tokopedia.stories.view.utils.STORIES_GROUP_ID
 import com.tokopedia.stories.view.model.StoriesUiModel
+import com.tokopedia.stories.view.utils.STORIES_GROUP_ID
 
 class StoriesGroupPagerAdapter(
     private val fragmentManager: FragmentManager,
@@ -23,6 +22,7 @@ class StoriesGroupPagerAdapter(
 
     fun setStoriesGroup(data: StoriesUiModel) {
         _groupData = data
+        notifyItemRangeChanged(itemCount, data.groupItems.size)
     }
 
     fun getCurrentPageGroupName(position: Int): String {

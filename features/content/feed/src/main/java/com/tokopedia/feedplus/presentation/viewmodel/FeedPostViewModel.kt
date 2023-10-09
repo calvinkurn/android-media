@@ -1242,6 +1242,16 @@ class FeedPostViewModel @Inject constructor(
         }
     }
 
+    fun determinePostDataEligibilityForOnboarding(isFollowingTab: Boolean): Boolean {
+        val postItems = _feedHome.value?.items ?: return false
+
+        return if (isFollowingTab) {
+            postItems.firstOrNull() !is FeedFollowRecommendationModel
+        } else {
+            postItems.isNotEmpty()
+        }
+    }
+
     private val Result<FeedModel>.cursor: String
         get() = pagination.cursor
 

@@ -1,6 +1,8 @@
 package com.tokopedia.stories
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.content.common.types.ResultState
 import androidx.lifecycle.SavedStateHandle
 import com.tokopedia.stories.data.mock.mockDetailResetValue
 import com.tokopedia.stories.data.mock.mockGroupResetValue
@@ -10,6 +12,15 @@ import com.tokopedia.stories.data.mock.mockInitialDataModelFetchPrev
 import com.tokopedia.stories.data.mock.mockInitialDataModelFetchPrevAndNext
 import com.tokopedia.stories.data.mock.mockMainDataResetValue
 import com.tokopedia.stories.data.repository.StoriesRepository
+import com.tokopedia.stories.data.utils.mockContentTaggedProductUiModel
+import com.tokopedia.stories.data.utils.mockDetailResetValue
+import com.tokopedia.stories.data.utils.mockGroupResetValue
+import com.tokopedia.stories.data.utils.mockInitialDataModel
+import com.tokopedia.stories.data.utils.mockInitialDataModelFetchNext
+import com.tokopedia.stories.data.utils.mockInitialDataModelFetchPrev
+import com.tokopedia.stories.data.utils.mockInitialDataModelFetchPrevAndNext
+import com.tokopedia.stories.data.utils.mockInitialDataModelForDeleteStories
+import com.tokopedia.stories.data.utils.mockMainDataResetValue
 import com.tokopedia.stories.robot.StoriesViewModelRobot
 import com.tokopedia.stories.util.assertEqualTo
 import com.tokopedia.stories.util.assertFalse
@@ -23,8 +34,13 @@ import com.tokopedia.stories.view.model.StoriesDetailItem
 import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesDetailItemUiEvent
 import com.tokopedia.stories.view.model.StoriesGroupItem
 import com.tokopedia.stories.view.model.StoriesUiModel
+import com.tokopedia.stories.view.viewmodel.action.StoriesProductAction
 import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
+import com.tokopedia.stories.view.viewmodel.state.BottomSheetType
+import com.tokopedia.stories.view.viewmodel.state.ProductBottomSheetUiState
+import com.tokopedia.stories.view.viewmodel.state.isAnyShown
 import com.tokopedia.unit.test.rule.CoroutineTestRule
+import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -47,15 +63,15 @@ class StoriesUnitTest {
         source = "shop-entrypoint",
         sourceId = "1234"
     )
-    private val handle: SavedStateHandle = SavedStateHandle()
     private val mockRepository: StoriesRepository = mockk(relaxed = true)
     private val mockSharedPref: StoriesPreference = mockk(relaxed = true)
+    private val mockUserSession: UserSessionInterface = mockk(relaxed = true)
 
     private fun getStoriesRobot() = StoriesViewModelRobot(
         dispatchers = testDispatcher,
         args = args,
-        handle = handle,
-        repository = mockRepository
+        repository = mockRepository,
+        userSession = mockUserSession,
     )
 
     @Test
@@ -67,6 +83,7 @@ class StoriesUnitTest {
         val resultDetailItems = resultGroupItem.detail.detailItems[selectedDetail]
 
         coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
+        coEvery { mockUserSession.userId } returns "123"
 
         getStoriesRobot().use { robot ->
             val state = robot.recordState {
@@ -74,12 +91,15 @@ class StoriesUnitTest {
 
                 val actualGroup = robot.getViewModel().mGroup
                 val actualDetail = robot.getViewModel().mDetail
+                val userId = robot.getViewModel().userId
 
-                val expectedGroup = resultGroupItem.mockGroupResetValue(actualGroup.detail.detailItems)
+                val expectedGroup =
+                    resultGroupItem.mockGroupResetValue(actualGroup.detail.detailItems)
                 val expectedDetail = resultDetailItems.mockDetailResetValue(actualDetail)
 
                 actualGroup.assertEqualTo(expectedGroup)
                 actualDetail.assertEqualTo(expectedDetail)
+                userId.assertEqualTo("123")
             }
 
             val actualMainData = expectedData.mockMainDataResetValue(state.storiesMainData)
@@ -90,6 +110,7 @@ class StoriesUnitTest {
     @Test
     fun `when open stories from entry point and success fetch initial data but data is empty`() {
         coEvery { mockRepository.getStoriesInitialData(any()) } returns StoriesUiModel()
+        coEvery { mockUserSession.userId } returns ""
 
         getStoriesRobot().use { robot ->
             val state = robot.recordStateAndEvents {
@@ -97,9 +118,11 @@ class StoriesUnitTest {
 
                 val actualGroup = robot.getViewModel().mGroup
                 val actualDetail = robot.getViewModel().mDetail
+                val userId = robot.getViewModel().userId
 
                 actualGroup.assertEqualTo(StoriesGroupItem())
                 actualDetail.assertEqualTo(StoriesDetailItem())
+                userId.assertEqualTo("0")
             }
 
             state.first.storiesMainData.assertEqualTo(StoriesUiModel())
@@ -162,7 +185,9 @@ class StoriesUnitTest {
         val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
 
         coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
-        coEvery { mockRepository.getStoriesDetailData(any()) } returns expectedData.groupItems[selectedGroup.minus(1)].detail
+        coEvery { mockRepository.getStoriesDetailData(any()) } returns expectedData.groupItems[selectedGroup.minus(
+            1
+        )].detail
 
         getStoriesRobot().use { robot ->
             robot.entryPointTestCase(selectedGroup)
@@ -175,7 +200,7 @@ class StoriesUnitTest {
     @Test
     fun `when open stories from entry point and success fetch initial data but data detail is index out of bound 4`() {
         val selectedGroup = 0
-        val selectedDetail = 5
+        val selectedDetail = 10
         val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
 
         coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
@@ -185,7 +210,9 @@ class StoriesUnitTest {
             robot.entryPointTestCase(selectedGroup)
 
             val actualGroup = robot.getViewModel().mDetail
-            actualGroup.assertEqualTo(StoriesDetailItem())
+            val expectedDetail = expectedData.groupItems[selectedGroup].detail.detailItems.last()
+                .mockDetailResetValue(actualGroup)
+            actualGroup.assertEqualTo(expectedDetail)
         }
     }
 
@@ -200,38 +227,8 @@ class StoriesUnitTest {
                 robot.initialDataTestCase()
             }
 
-            event.last().assertType<StoriesUiEvent.ErrorGroupPage> { }
-        }
-    }
-
-    @Test
-    fun `when open stories from entry point and using saved state data`() {
-        val selectedGroup = 0
-        val selectedDetail = 0
-        val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
-        val resultGroupItem = expectedData.groupItems[selectedGroup]
-        val resultDetailItems = resultGroupItem.detail.detailItems[selectedDetail]
-
-        getStoriesRobot().use { robot ->
-            val state = robot.recordState {
-                robot.entryPointTestCaseUsingSavedState(
-                    mainData = expectedData,
-                    selectedGroup = selectedGroup,
-                    selectedDetail = selectedDetail
-                )
-
-                val actualGroup = robot.getViewModel().mGroup
-                val actualDetail = robot.getViewModel().mDetail
-
-                val expectedGroup = resultGroupItem.mockGroupResetValue(actualGroup.detail.detailItems)
-                val expectedDetail = resultDetailItems.mockDetailResetValue(actualDetail)
-
-                actualGroup.assertEqualTo(expectedGroup)
-                actualDetail.assertEqualTo(expectedDetail)
-            }
-
-            val actualMainData = expectedData.mockMainDataResetValue(state.storiesMainData)
-            state.storiesMainData.assertEqualTo(actualMainData)
+            event.last().assertType<StoriesUiEvent.ErrorGroupPage> {}
+            (event.last() as StoriesUiEvent.ErrorGroupPage).onClick()
         }
     }
 
@@ -311,6 +308,7 @@ class StoriesUnitTest {
 
             state.first.storiesMainData.groupItems[selectedGroup].detail.assertEqualTo(StoriesDetail())
             state.second.last().assertType<StoriesUiEvent.ErrorDetailPage> { }
+            (state.second.last() as StoriesUiEvent.ErrorDetailPage).onClick()
         }
     }
 
@@ -368,7 +366,8 @@ class StoriesUnitTest {
                 val actualGroup = robot.getViewModel().mGroup
                 val actualDetail = robot.getViewModel().mDetail
 
-                val expectedGroup = resultGroupItem.mockGroupResetValue(actualGroup.detail.detailItems)
+                val expectedGroup =
+                    resultGroupItem.mockGroupResetValue(actualGroup.detail.detailItems)
                 val expectedDetail = resultDetailItems.mockDetailResetValue(actualDetail)
 
                 actualGroup.assertEqualTo(expectedGroup)
@@ -402,7 +401,8 @@ class StoriesUnitTest {
                 val actualGroup = robot.getViewModel().mGroup
                 val actualDetail = robot.getViewModel().mDetail
 
-                val expectedGroup = resultGroupItem.mockGroupResetValue(actualGroup.detail.detailItems)
+                val expectedGroup =
+                    resultGroupItem.mockGroupResetValue(actualGroup.detail.detailItems)
                 val expectedDetail = resultDetailItems.mockDetailResetValue(actualDetail)
 
                 actualGroup.assertEqualTo(expectedGroup)
@@ -425,7 +425,7 @@ class StoriesUnitTest {
             robot.setTrackActivity(selectedGroup)
 
             val actualDetail = robot.getViewModel().mDetail
-            actualDetail.isSameContent.assertTrue()
+            actualDetail.isContentLoaded.assertTrue()
         }
     }
 
@@ -442,7 +442,7 @@ class StoriesUnitTest {
             robot.setTrackActivity(selectedGroup)
 
             val actualDetail = robot.getViewModel().mDetail
-            actualDetail.isSameContent.assertFalse()
+            actualDetail.isContentLoaded.assertFalse()
         }
     }
 
@@ -461,7 +461,7 @@ class StoriesUnitTest {
                 robot.setTrackActivity(selectedGroup)
 
                 val actualDetail = robot.getViewModel().mDetail
-                actualDetail.isSameContent.assertTrue()
+                actualDetail.isContentLoaded.assertTrue()
             }
             event.last().assertEqualTo(StoriesUiEvent.ErrorSetTracking(expectedThrowable))
         }
@@ -646,6 +646,38 @@ class StoriesUnitTest {
     }
 
     @Test
+    fun `when stories open and user tap resume but content not loaded resume`() {
+        val selectedGroup = 0
+        val selectedDetail = 0
+        val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
+
+        coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
+
+        getStoriesRobot().use { robot ->
+            robot.tapResumeStoriesButContentNotLoaded(selectedGroup)
+
+            val actualEvent = robot.getViewModel().mDetail.event
+            actualEvent.assertEqualTo(StoriesDetailItemUiEvent.PAUSE)
+        }
+    }
+
+    @Test
+    fun `when stories open and user tap resume but page is not selected resume`() {
+        val selectedGroup = 0
+        val selectedDetail = 0
+        val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
+
+        coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
+
+        getStoriesRobot().use { robot ->
+            robot.tapResumeStoriesButPageIsNotSelected(selectedGroup)
+
+            val actualEvent = robot.getViewModel().mDetail.event
+            actualEvent.assertEqualTo(StoriesDetailItemUiEvent.PAUSE)
+        }
+    }
+
+    @Test
     fun `when stories open and collect impression group`() {
         val selectedGroup = 0
         val selectedDetail = 0
@@ -670,10 +702,385 @@ class StoriesUnitTest {
         coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
 
         getStoriesRobot().use { robot ->
-            robot.collectImpressionGroupDuplicate(selectedGroup, expectedData.groupHeader[selectedGroup])
+            robot.collectImpressionGroupDuplicate(
+                selectedGroup,
+                expectedData.groupHeader[selectedGroup]
+            )
 
             val actualImpression = robot.getViewModel().impressedGroupHeader.first()
             actualImpression.assertEqualTo(expectedData.groupHeader.first())
         }
     }
+
+    @Test
+    fun `when stories deleted and stories should be deleted and move to next stories`() {
+        val selectedGroup = 0
+        val selectedDetail = 0
+        val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
+
+        coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
+
+        getStoriesRobot().use { robot ->
+            val event = robot.recordEvent {
+                robot.deleteStories()
+            }
+
+            val actualSize = robot.getViewModel().mGroup.detail.detailItems.size
+            actualSize.assertEqualTo(
+                expectedData.groupItems[selectedGroup].detail.detailItems.size.minus(
+                    1
+                )
+            )
+
+            event.contains(StoriesUiEvent.ShowDeleteDialog)
+        }
+    }
+
+    @Test
+    fun `when stories deleted and stories should be deleted and move to next group`() {
+        val selectedGroup = 0
+        val selectedDetail = 2
+        val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
+
+        coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
+
+        getStoriesRobot().use { robot ->
+            robot.deleteStories()
+
+            val actualSize = robot.getViewModel().mGroup.detail.detailItems.size
+            actualSize.assertEqualTo(
+                expectedData.groupItems[selectedGroup].detail.detailItems.size.minus(
+                    1
+                )
+            )
+        }
+    }
+
+    @Test
+    fun `when stories deleted and stories should be deleted and close stories room`() {
+        val selectedGroup = 2
+        val selectedDetail = 2
+        val expectedData = mockInitialDataModel(selectedGroup, selectedDetail)
+
+        coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
+
+        getStoriesRobot().use { robot ->
+            robot.deleteStories(selectedGroup)
+
+            val actualSize = robot.getViewModel().mGroup.detail.detailItems.size
+            actualSize.assertEqualTo(
+                expectedData.groupItems[selectedGroup].detail.detailItems.size.minus(
+                    1
+                )
+            )
+        }
+    }
+
+    @Test
+    fun `when stories deleted and stories should be deleted until empty`() {
+        val selectedGroup = 2
+        val selectedDetail = 2
+        val expectedData = mockInitialDataModelForDeleteStories(selectedGroup, selectedDetail)
+
+        coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
+
+        getStoriesRobot().use { robot ->
+            robot.deleteStoriesUntilEmpty(selectedGroup)
+
+            val actualSize = robot.getViewModel().mGroup.detail.detailItems.size
+            actualSize.assertEqualTo(0)
+        }
+    }
+
+    @Test
+    fun `when open kebab bottom sheet and close`() {
+        getStoriesRobot().use { robot ->
+            val stateEventOpen = robot.recordStateAndEvents {
+                robot.openKebabBottomSheet()
+            }
+            robot.getViewModel().isAnyBottomSheetShown.assertTrue()
+            stateEventOpen.second.last().assertEqualTo(StoriesUiEvent.OpenKebab)
+            stateEventOpen.first.bottomSheetStatus.mapValues {
+                if (it.key == BottomSheetType.Kebab) it.value.assertTrue()
+                else it.value.assertFalse()
+            }
+            stateEventOpen.first.bottomSheetStatus.isAnyShown.assertTrue()
+
+            val stateClose = robot.recordState {
+                robot.closeBottomSheet(BottomSheetType.Kebab)
+            }
+            robot.getViewModel().isAnyBottomSheetShown.assertFalse()
+            stateClose.bottomSheetStatus.mapValues {
+                if (it.key == BottomSheetType.Kebab) it.value.assertFalse()
+                else it.value.assertFalse()
+            }
+            stateClose.bottomSheetStatus.isAnyShown.assertFalse()
+        }
+    }
+
+    @Test
+    fun `when open product bottom sheet and close`() {
+        val expectedData = mockInitialDataModel(productCount = 5)
+
+        coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
+        coEvery { mockRepository.getStoriesDetailData(any()) } returns expectedData.groupItems.first().detail
+
+        getStoriesRobot().use { robot ->
+            val stateEventOpen = robot.recordStateAndEvents {
+                robot.openProductBottomSheet()
+            }
+            robot.getViewModel().isAnyBottomSheetShown.assertTrue()
+            stateEventOpen.second.last().assertEqualTo(StoriesUiEvent.OpenProduct)
+            stateEventOpen.first.bottomSheetStatus.mapValues {
+                if (it.key == BottomSheetType.Product) it.value.assertTrue()
+                else it.value.assertFalse()
+            }
+            stateEventOpen.first.bottomSheetStatus.isAnyShown.assertTrue()
+
+            val stateClose = robot.recordState {
+                robot.closeBottomSheet(BottomSheetType.Product)
+            }
+            robot.getViewModel().isAnyBottomSheetShown.assertFalse()
+            stateClose.bottomSheetStatus.mapValues {
+                if (it.key == BottomSheetType.Product) it.value.assertFalse()
+                else it.value.assertFalse()
+            }
+            stateClose.bottomSheetStatus.isAnyShown.assertFalse()
+        }
+    }
+
+    @Test
+    fun `when open product bottom sheet and unable to open 1`() {
+        val expectedData = mockInitialDataModel(productCount = 5)
+
+        coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
+        coEvery { mockRepository.getStoriesDetailData(any()) } returns expectedData.groupItems.first().detail
+
+        getStoriesRobot().use { robot ->
+            val stateEventOpen = robot.recordStateAndEvents {
+                robot.openKebabBottomSheet()
+                robot.openProductBottomSheet()
+            }
+            robot.getViewModel().isAnyBottomSheetShown.assertTrue()
+            stateEventOpen.second.contains(StoriesUiEvent.OpenKebab)
+            stateEventOpen.first.bottomSheetStatus.mapValues {
+                if (it.key == BottomSheetType.Kebab) it.value.assertTrue()
+                else it.value.assertFalse()
+            }
+            stateEventOpen.first.bottomSheetStatus.isAnyShown.assertTrue()
+        }
+    }
+
+    @Test
+    fun `when open product bottom sheet and unable to open 2`() {
+        val expectedData = mockInitialDataModel(isProductCountEmpty = true)
+
+        coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
+        coEvery { mockRepository.getStoriesDetailData(any()) } returns expectedData.groupItems.first().detail
+
+        getStoriesRobot().use { robot ->
+            val state = robot.recordState {
+                robot.openProductBottomSheet()
+            }
+            robot.getViewModel().isProductAvailable.assertFalse()
+            robot.getViewModel().isAnyBottomSheetShown.assertFalse()
+            state.bottomSheetStatus.mapValues {
+                if (it.key == BottomSheetType.Product) it.value.assertFalse()
+                else it.value.assertFalse()
+            }
+            state.bottomSheetStatus.isAnyShown.assertFalse()
+        }
+    }
+
+    @Test
+    fun `when open product bottom sheet and unable to open 3`() {
+        val expectedData = mockInitialDataModel(isProductCountEmpty = true)
+
+        coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
+        coEvery { mockRepository.getStoriesDetailData(any()) } returns expectedData.groupItems.first().detail
+
+        getStoriesRobot().use { robot ->
+            val state = robot.recordState {
+                robot.openProductBottomSheet()
+            }
+            robot.getViewModel().isProductAvailable.assertFalse()
+            robot.getViewModel().isAnyBottomSheetShown.assertFalse()
+            state.bottomSheetStatus.mapValues {
+                if (it.key == BottomSheetType.Product) it.value.assertFalse()
+                else it.value.assertFalse()
+            }
+            state.bottomSheetStatus.isAnyShown.assertFalse()
+        }
+    }
+
+    @Test
+    fun `when open share bottom sheet and close`() {
+        val mockSharingData = StoriesDetailItem.Sharing.Empty
+
+        getStoriesRobot().use { robot ->
+            val stateEventOpen = robot.recordStateAndEvents {
+                robot.openShareBottomSheet()
+            }
+            stateEventOpen.second.last().assertEqualTo(StoriesUiEvent.TapSharing(mockSharingData))
+            stateEventOpen.first.bottomSheetStatus.mapValues {
+                if (it.key == BottomSheetType.Sharing) it.value.assertTrue()
+                else it.value.assertFalse()
+            }
+            stateEventOpen.first.bottomSheetStatus.isAnyShown.assertTrue()
+
+            val stateClose = robot.recordState {
+                robot.closeBottomSheet(BottomSheetType.Sharing)
+            }
+            stateClose.bottomSheetStatus.mapValues {
+                if (it.key == BottomSheetType.Sharing) it.value.assertFalse()
+                else it.value.assertFalse()
+            }
+            stateClose.bottomSheetStatus.isAnyShown.assertFalse()
+        }
+    }
+
+    @Test
+    fun `when open variant bottom sheet and close`() {
+        val mockSharingData = mockContentTaggedProductUiModel()
+
+        getStoriesRobot().use { robot ->
+            val stateEventOpen = robot.recordStateAndEvents {
+                robot.openVariantBottomSheet(mockSharingData)
+            }
+            stateEventOpen.second.last()
+                .assertEqualTo(StoriesUiEvent.ShowVariantSheet(mockSharingData))
+            stateEventOpen.first.bottomSheetStatus.mapValues {
+                if (it.key == BottomSheetType.GVBS) it.value.assertTrue()
+                else it.value.assertFalse()
+            }
+            stateEventOpen.first.bottomSheetStatus.isAnyShown.assertTrue()
+
+            val stateClose = robot.recordState {
+                robot.closeBottomSheet(BottomSheetType.GVBS)
+            }
+            stateClose.bottomSheetStatus.mapValues {
+                if (it.key == BottomSheetType.GVBS) it.value.assertFalse()
+                else it.value.assertFalse()
+            }
+            stateClose.bottomSheetStatus.isAnyShown.assertFalse()
+        }
+    }
+
+    @Test
+    fun `when get product and success`() {
+        val mockProduct = ProductBottomSheetUiState.Empty
+
+        coEvery { mockRepository.getStoriesProducts(any(), any(), any()) } returns mockProduct
+
+        getStoriesRobot().use { robot ->
+            val state = robot.recordState {
+                robot.testGetProducts()
+            }
+
+            state.productSheet.resultState.assertEqualTo(ResultState.Loading)
+            state.productSheet.assertEqualTo(mockProduct)
+        }
+    }
+
+    @Test
+    fun `when get product and fail`() {
+        val mockThrows = Throwable("any fail")
+
+        coEvery { mockRepository.getStoriesProducts(any(), any(), any()) } throws mockThrows
+
+        getStoriesRobot().use { robot ->
+            val state = robot.recordState {
+                robot.testGetProducts()
+            }
+
+            state.productSheet.resultState.assertEqualTo(ResultState.Fail(mockThrows))
+        }
+    }
+
+    @Test
+    fun `when product action and success atc`() {
+        val action = StoriesProductAction.Atc
+        val product = mockContentTaggedProductUiModel()
+
+        coEvery { mockRepository.addToCart(any(), any(), any(), any()) } returns true
+        coEvery { mockUserSession.isLoggedIn } returns true
+
+        getStoriesRobot().use { robot ->
+            val event = robot.recordEvent {
+                robot.testProductAction(action, product)
+            }
+
+            event.last().assertEqualTo(
+                StoriesUiEvent.ProductSuccessEvent(
+                    action,
+                    R.string.stories_product_atc_success
+                )
+            )
+        }
+    }
+
+    @Test
+    fun `when product action and success buy`() {
+        val action = StoriesProductAction.Buy
+        val product = mockContentTaggedProductUiModel()
+
+        coEvery { mockRepository.addToCart(any(), any(), any(), any()) } returns true
+        coEvery { mockUserSession.isLoggedIn } returns true
+
+        getStoriesRobot().use { robot ->
+            val event = robot.recordEvent {
+                robot.testProductAction(action, product)
+            }
+
+            event.last().assertEqualTo(StoriesUiEvent.NavigateEvent(ApplinkConst.CART))
+        }
+    }
+
+    @Test
+    fun `when product action and fail`() {
+        val action = StoriesProductAction.Buy
+        val product = mockContentTaggedProductUiModel()
+
+        coEvery { mockRepository.addToCart(any(), any(), any(), any()) } returns false
+        coEvery { mockUserSession.isLoggedIn } returns true
+
+        getStoriesRobot().use { robot ->
+            val event = robot.recordEvent {
+                robot.testProductAction(action, product)
+            }
+
+            event.last().assertType<StoriesUiEvent.ShowErrorEvent> {}
+        }
+    }
+
+    @Test
+    fun `when product action and not login`() {
+        val action = StoriesProductAction.Atc
+        val product = mockContentTaggedProductUiModel()
+
+        coEvery { mockRepository.addToCart(any(), any(), any(), any()) } returns true
+        coEvery { mockUserSession.isLoggedIn } returns false
+
+        getStoriesRobot().use { robot ->
+            val event = robot.recordEvent {
+                robot.testProductAction(action, product)
+            }
+
+            event.last().assertType<StoriesUiEvent.Login> {}
+            (event.last() as StoriesUiEvent.Login).onLoggedIn()
+        }
+    }
+
+    @Test
+    fun `when navigate`() {
+        val appLink = "tokopedia://stories/shop/1234"
+        getStoriesRobot().use { robot ->
+            val event = robot.recordEvent {
+                robot.testNav(appLink)
+            }
+
+            event.last().assertEqualTo(StoriesUiEvent.NavigateEvent(appLink))
+        }
+    }
+
 }

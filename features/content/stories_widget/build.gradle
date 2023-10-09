@@ -1,0 +1,79 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: 'kotlin-kapt'
+
+android {
+    namespace 'com.tokopedia.stories.widget'
+    testNamespace 'com.tokopedia.stories.widget.test'
+    buildFeatures {
+        viewBinding true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = rootProject.ext.composeVersion
+    }
+}
+
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+dependencies {
+    implementation projectOrAar(rootProject.ext.libraries.applink)
+    implementation projectOrAar(rootProject.ext.libraries.graphql)
+    implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
+    implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
+    implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
+
+    implementation projectOrAar(rootProject.ext.features.contentCommon)
+    //to use viewlifecyclebound, will move it to content common in the next improvement
+    implementation projectOrAar(rootProject.ext.features.playCommon)
+    implementation projectOrAar(rootProject.ext.features.storiesInternal)
+    implementation projectOrAar(rootProject.ext.features.contentAnalytic)
+    implementation projectOrAar(rootProject.ext.libraries.track)
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
+
+    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+    implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
+
+    implementation rootProject.ext.miscDependencies.dataStorePreferences
+    implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
+    implementation rootProject.ext.miscDependencies.viewModel
+    implementation rootProject.ext.miscDependencies.viewModelKtx
+
+    implementation rootProject.ext.unifyDependencies.coach_mark
+    implementation rootProject.ext.unifyDependencies.nestPrinciples
+    implementation rootProject.ext.unifyDependencies.nestComponents
+
+    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
+
+    kapt rootProject.ext.supportLibDependencies.kotlinMetaData
+
+    implementation rootProject.ext.miscDependencies.dagger
+    kapt rootProject.ext.miscDependencies.daggerCompiler
+
+    testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
+    testImplementation rootProject.ext.testDependencies.junit
+    testImplementation rootProject.ext.testDependencies.assertJCore
+}
+
+project.ext {
+    artifactId = 'stories-widget'
+    groupId = 'com.tokopedia.content'
+    versionName = "0.0.1"
+    artifactName = "stories_widget-release"
+}
+
+apply from: '../../../publish_local.gradle'
+apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'

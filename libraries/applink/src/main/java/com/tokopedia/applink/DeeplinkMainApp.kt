@@ -169,6 +169,9 @@ object DeeplinkMainApp {
                 DeeplinkMapperUoh.getRegisteredNavigationUohOrder(c, d)
             }
         ),
+        "buymoresavemore" to mutableListOf(
+            DLP.goTo(DeeplinkMapperMerchant::getRegisteredNavigationForOfferLandingPage)
+        ),
         "cart" to mutableListOf(
             DLP.goTo { deeplink: String ->
                 DeeplinkMapperMarketplace.getRegisteredNavigationMarketplace(deeplink)
@@ -1211,6 +1214,12 @@ object DeeplinkMainApp {
                 DeeplinkMapperOrder.getSnapshotOrderInternalAppLink(deeplink)
             }
         ),
+        "stories" to mutableListOf(
+            DLP.matchPattern(
+                "shop/{shop_id}",
+                DeeplinkMapperContent::getRegisteredNavigation
+            )
+        ),
         "talk" to mutableListOf(
             DLP.goTo { deeplink: String ->
                 DeeplinkMapper.getRegisteredNavigationTalk(deeplink)
@@ -1237,12 +1246,6 @@ object DeeplinkMainApp {
             DLP.goTo { deeplink: String ->
                 DeeplinkMapperPromo.getRegisteredNavigationTokopoints(deeplink)
             }
-        ),
-        "stories" to mutableListOf(
-            DLP.matchPattern(
-                "shop/{shop_id}",
-                DeeplinkMapperContent::getRegisteredNavigation
-            ),
         ),
         "topads" to mutableListOf(
             DLP.startsWith("create-manual-ads") { _: String ->

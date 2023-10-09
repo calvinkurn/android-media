@@ -24,31 +24,10 @@ android {
     namespace 'com.tokopedia.stories'
     testNamespace 'com.tokopedia.stories.test'
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
-    }
-
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11
-    }
-
     defaultConfig {
         multiDexEnabled true
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
         consumerProguardFiles 'proguard-rules.pro'
-    }
-
-    buildTypes {
-        debug {
-            ext.enableHansel = project.hasProperty('hanselEnableDebug')
-            testCoverageEnabled (project.hasProperty('coverage'))
-        }
-        release {
-            ext.enableHansel = !project.hasProperty('hanselDisableRelease')
-            minifyEnabled false
-            consumerProguardFiles 'proguard-rules.pro'
-        }
     }
 
     buildFeatures {

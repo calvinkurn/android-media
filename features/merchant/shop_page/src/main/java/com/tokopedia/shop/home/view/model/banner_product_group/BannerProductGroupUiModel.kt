@@ -13,7 +13,7 @@ data class BannerProductGroupUiModel(
     override val widgetId: String = "",
     override val layoutOrder: Int = -1,
     override val name: String = WidgetName.BANNER_PRODUCT_GROUP,
-    override val type: String = WidgetType.COMPONENT,
+    override val type: String = WidgetType.REIMAGINE_COMPONENT,
     override val header: Header = Header(),
     override val isFestivity: Boolean = false,
     val title: String = "",

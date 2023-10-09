@@ -70,6 +70,7 @@ internal object OmsDetailsQuery {
                   webURL
                   method
                   body
+                  seatingNumbers
                 }
               }
               tapActions {

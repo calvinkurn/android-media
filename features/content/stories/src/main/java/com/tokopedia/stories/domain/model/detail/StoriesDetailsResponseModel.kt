@@ -4,19 +4,19 @@ import com.google.gson.annotations.SerializedName
 
 data class StoriesDetailsResponseModel(
     @SerializedName("contentStoryDetails")
-    val data: ContentStoriesDetails = ContentStoriesDetails(),
+    val data: ContentStoriesDetails = ContentStoriesDetails()
 ) {
 
     data class ContentStoriesDetails(
         @SerializedName("meta")
         val meta: Meta = Meta(),
         @SerializedName("stories")
-        val stories: List<Stories> = emptyList(),
+        val stories: List<Stories> = emptyList()
     ) {
 
         data class Meta(
             @SerializedName("selectedStoryIndex")
-            val selectedStoriesIndex: Int = 0,
+            val selectedStoriesIndex: Int = 0
         )
 
         data class Stories(
@@ -43,7 +43,7 @@ data class StoriesDetailsResponseModel(
             @SerializedName("totalProductsFmt")
             val totalProductsFmt: String = "",
             @SerializedName("webLink")
-            val webLink: String = "",
+            val webLink: String = ""
         ) {
 
             data class Author(
@@ -68,14 +68,14 @@ data class StoriesDetailsResponseModel(
                 @SerializedName("type")
                 val type: Int = 0,
                 @SerializedName("webLink")
-                val webLink: String = "",
+                val webLink: String = ""
             )
 
             data class Media(
                 @SerializedName("link")
                 val link: String = "",
                 @SerializedName("type")
-                val type: String = "",
+                val type: String = ""
             )
 
             data class Interaction(
@@ -86,7 +86,7 @@ data class StoriesDetailsResponseModel(
                 @SerializedName("reportable")
                 val reportable: Boolean = false,
                 @SerializedName("shareable")
-                val shareable: Boolean = false,
+                val shareable: Boolean = false
             )
 
             data class MetaX(
@@ -94,6 +94,8 @@ data class StoriesDetailsResponseModel(
                 val hasSeen: Boolean = false,
                 @SerializedName("shareDescription")
                 val shareDescription: String = "",
+                @SerializedName("shareTextDescription")
+                val shareTextDescription: String = "",
                 @SerializedName("shareImage")
                 val shareImage: String = "",
                 @SerializedName("shareTitle")
@@ -101,7 +103,7 @@ data class StoriesDetailsResponseModel(
                 @SerializedName("activityTracker")
                 val activityTracker: String = "",
                 @SerializedName("templateTracker")
-                val templateTracker: String = "",
+                val templateTracker: String = ""
             )
         }
     }

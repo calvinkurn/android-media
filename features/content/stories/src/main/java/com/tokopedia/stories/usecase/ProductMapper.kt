@@ -22,7 +22,7 @@ class ProductMapper @Inject constructor() {
                 id = product.id,
                 shop = ContentTaggedProductUiModel.Shop(
                     id = shopId,
-                    name = "", //TODO()
+                    name = "",
                 ),
                 appLink = product.appLink,
                 title = product.name,
@@ -31,19 +31,19 @@ class ProductMapper @Inject constructor() {
                     ContentTaggedProductUiModel.CampaignPrice(
                         originalFormattedPrice = product.priceFmt,
                         formattedPrice = product.priceMaskedFmt,
-                        price = product.priceMasked.toDouble()
+                        price = product.priceMasked
                     )
                 } else if (product.isDiscount) {
                     ContentTaggedProductUiModel.DiscountedPrice(
                         discount = product.discount,
                         originalFormattedPrice = product.priceOriginalFmt,
                         formattedPrice = product.priceDiscountFmt,
-                        price = product.priceDiscount.toDouble()
+                        price = product.priceDiscount
                     )
                 } else {
                     ContentTaggedProductUiModel.NormalPrice(
                         formattedPrice = product.priceFmt,
-                        price = product.price.toDouble()
+                        price = product.price
                     )
                 },
                 campaign = campaign,

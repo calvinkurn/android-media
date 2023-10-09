@@ -1,5 +1,6 @@
 package com.tokopedia.stories.data.mock
 
+import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.stories.view.model.StoriesDetail
 import com.tokopedia.stories.view.model.StoriesDetailItem
 import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesDetailItemUiEvent
@@ -11,6 +12,8 @@ fun mockInitialDataModel(
     selectedGroup: Int = 0,
     selectedDetail: Int = 0,
     isCached: Boolean = true,
+    isProductCountEmpty: Boolean = false,
+    productCount: Int = 0,
     duration: Int = 500,
 ): StoriesUiModel {
     return StoriesUiModel(
@@ -55,11 +58,12 @@ fun mockInitialDataModel(
                                     duration = duration
                                 ),
                                 resetValue = -1,
-                                isSameContent = false,
+                                isContentLoaded = false,
                                 meta = StoriesDetailItem.Meta(
                                     activityTracker = "12345",
                                     templateTracker = "1235df8",
                                 ),
+                                productCount = if (isProductCountEmpty) "" else "$productCount",
                             ),
                             StoriesDetailItem(
                                 id = "1",
@@ -70,11 +74,12 @@ fun mockInitialDataModel(
                                     duration = duration
                                 ),
                                 resetValue = -1,
-                                isSameContent = false,
+                                isContentLoaded = false,
                                 meta = StoriesDetailItem.Meta(
                                     activityTracker = "12345",
                                     templateTracker = "1235df8",
                                 ),
+                                productCount = if (isProductCountEmpty) "" else "$productCount",
                             ),
                             StoriesDetailItem(
                                 id = "2",
@@ -85,11 +90,12 @@ fun mockInitialDataModel(
                                     duration = duration
                                 ),
                                 resetValue = -1,
-                                isSameContent = false,
+                                isContentLoaded = false,
                                 meta = StoriesDetailItem.Meta(
                                     activityTracker = "12345",
                                     templateTracker = "1235df8",
                                 ),
+                                productCount = if (isProductCountEmpty) "" else "$productCount",
                             ),
                         ),
                     )
@@ -113,11 +119,12 @@ fun mockInitialDataModel(
                                     duration = duration
                                 ),
                                 resetValue = -1,
-                                isSameContent = false,
+                                isContentLoaded = false,
                                 meta = StoriesDetailItem.Meta(
                                     activityTracker = "12345",
                                     templateTracker = "1235df8",
                                 ),
+                                productCount = if (isProductCountEmpty) "" else "$productCount",
                             ),
                             StoriesDetailItem(
                                 id = "1",
@@ -128,11 +135,12 @@ fun mockInitialDataModel(
                                     duration = duration
                                 ),
                                 resetValue = -1,
-                                isSameContent = false,
+                                isContentLoaded = false,
                                 meta = StoriesDetailItem.Meta(
                                     activityTracker = "12345",
                                     templateTracker = "1235df8",
                                 ),
+                                productCount = if (isProductCountEmpty) "" else "$productCount",
                             ),
                             StoriesDetailItem(
                                 id = "2",
@@ -143,11 +151,12 @@ fun mockInitialDataModel(
                                     duration = duration
                                 ),
                                 resetValue = -1,
-                                isSameContent = false,
+                                isContentLoaded = false,
                                 meta = StoriesDetailItem.Meta(
                                     activityTracker = "12345",
                                     templateTracker = "1235df8",
                                 ),
+                                productCount = if (isProductCountEmpty) "" else "$productCount",
                             ),
                         ),
                     )
@@ -171,11 +180,12 @@ fun mockInitialDataModel(
                                     duration = duration
                                 ),
                                 resetValue = -1,
-                                isSameContent = false,
+                                isContentLoaded = false,
                                 meta = StoriesDetailItem.Meta(
                                     activityTracker = "12345",
                                     templateTracker = "1235df8",
                                 ),
+                                productCount = if (isProductCountEmpty) "" else "$productCount",
                             ),
                             StoriesDetailItem(
                                 id = "1",
@@ -186,11 +196,12 @@ fun mockInitialDataModel(
                                     duration = duration
                                 ),
                                 resetValue = -1,
-                                isSameContent = false,
+                                isContentLoaded = false,
                                 meta = StoriesDetailItem.Meta(
                                     activityTracker = "12345",
                                     templateTracker = "1235df8",
                                 ),
+                                productCount = if (isProductCountEmpty) "" else "$productCount",
                             ),
                             StoriesDetailItem(
                                 id = "2",
@@ -201,11 +212,135 @@ fun mockInitialDataModel(
                                     duration = duration
                                 ),
                                 resetValue = -1,
-                                isSameContent = false,
+                                isContentLoaded = false,
                                 meta = StoriesDetailItem.Meta(
                                     activityTracker = "12345",
                                     templateTracker = "1235df8",
                                 ),
+                                productCount = if (isProductCountEmpty) "" else "$productCount",
+                            ),
+                        ),
+                    )
+                } else StoriesDetail(),
+            ),
+        ),
+    )
+}
+
+
+fun mockInitialDataModelForDeleteStories(
+    selectedGroup: Int = 0,
+    selectedDetail: Int = 0,
+    isCached: Boolean = true,
+    isProductCountEmpty: Boolean = false,
+    productCount: Int = 0,
+): StoriesUiModel {
+    return StoriesUiModel(
+        selectedGroupId = if (isCached) "groupId $selectedGroup" else "",
+        selectedGroupPosition = selectedGroup,
+        groupHeader = listOf(
+            StoriesGroupHeader(
+                groupId = "groupId 0",
+                groupName = "Group Name 0",
+                image = "Image Group 0",
+                isSelected = 0 == selectedGroup,
+            ),
+            StoriesGroupHeader(
+                groupId = "groupId 1",
+                groupName = "Group Name 1",
+                image = "Image Group 1",
+                isSelected = 1 == selectedGroup,
+            ),
+            StoriesGroupHeader(
+                groupId = "groupId 3",
+                groupName = "Group Name 3",
+                image = "Image Group 3",
+                isSelected = 2 == selectedGroup,
+            ),
+        ),
+        groupItems = listOf(
+            StoriesGroupItem(
+                groupId = if (isCached) "groupId 0" else "",
+                groupName = "Group Name 0",
+                detail = if (isCached) {
+                    StoriesDetail(
+                        selectedGroupId = "groupId $selectedGroup",
+                        selectedDetailPosition = selectedDetail,
+                        selectedDetailPositionCached = selectedDetail,
+                        detailItems = listOf(
+                            StoriesDetailItem(
+                                id = "0",
+                                event = StoriesDetailItemUiEvent.PAUSE,
+                                content = StoriesDetailItem.StoriesItemContent(
+                                    type = StoriesDetailItem.StoriesItemContentType.Image,
+                                    data = "data 0",
+                                    duration = 7 * 1000,
+                                ),
+                                resetValue = -1,
+                                isContentLoaded = false,
+                                meta = StoriesDetailItem.Meta(
+                                    activityTracker = "12345",
+                                    templateTracker = "1235df8",
+                                ),
+                                productCount = if (isProductCountEmpty) "" else "$productCount",
+                            ),
+                        ),
+                    )
+                } else StoriesDetail()
+            ),
+            StoriesGroupItem(
+                groupId = if (isCached) "groupId 1" else "",
+                groupName = "Group Name 1",
+                detail = if (isCached) {
+                    StoriesDetail(
+                        selectedGroupId = "groupId $selectedGroup",
+                        selectedDetailPosition = selectedDetail,
+                        selectedDetailPositionCached = selectedDetail,
+                        detailItems = listOf(
+                            StoriesDetailItem(
+                                id = "0",
+                                event = StoriesDetailItemUiEvent.PAUSE,
+                                content = StoriesDetailItem.StoriesItemContent(
+                                    type = StoriesDetailItem.StoriesItemContentType.Image,
+                                    data = "data 0",
+                                    duration = 7 * 1000,
+                                ),
+                                resetValue = -1,
+                                isContentLoaded = false,
+                                meta = StoriesDetailItem.Meta(
+                                    activityTracker = "12345",
+                                    templateTracker = "1235df8",
+                                ),
+                                productCount = if (isProductCountEmpty) "" else "$productCount",
+                            ),
+                        ),
+                    )
+                } else StoriesDetail(),
+            ),
+            StoriesGroupItem(
+                groupId = if (isCached) "groupId 2" else "",
+                groupName = "Group Name 2",
+                detail = if (isCached) {
+                    StoriesDetail(
+                        selectedGroupId = "groupId $selectedGroup",
+                        selectedDetailPosition = selectedDetail,
+                        selectedDetailPositionCached = selectedDetail,
+                        detailItems = listOf(
+                            StoriesDetailItem(
+                                id = "0",
+                                event = StoriesDetailItemUiEvent.PAUSE,
+                                content = StoriesDetailItem.StoriesItemContent(
+                                    type = StoriesDetailItem.StoriesItemContentType.Image,
+                                    data = "data 0",
+                                    duration = 7 * 1000,
+                                ),
+                                resetValue = -1,
+                                isContentLoaded = false,
+                                meta = StoriesDetailItem.Meta(
+                                    activityTracker = "12345",
+                                    templateTracker = "1235df8",
+                                ),
+                                productCount = if (isProductCountEmpty) "" else "$productCount",
                             ),
                         ),
                     )
@@ -264,7 +399,7 @@ fun mockInitialDataModelFetchPrevAndNext(): StoriesUiModel {
                                 duration = 1000
                             ),
                             resetValue = -1,
-                            isSameContent = false,
+                            isContentLoaded = false,
                             meta = StoriesDetailItem.Meta(
                                 activityTracker = "12345",
                                 templateTracker = "1235df8",
@@ -279,7 +414,7 @@ fun mockInitialDataModelFetchPrevAndNext(): StoriesUiModel {
                                 duration = 1000
                             ),
                             resetValue = -1,
-                            isSameContent = false,
+                            isContentLoaded = false,
                             meta = StoriesDetailItem.Meta(
                                 activityTracker = "12345",
                                 templateTracker = "1235df8",
@@ -294,7 +429,7 @@ fun mockInitialDataModelFetchPrevAndNext(): StoriesUiModel {
                                 duration = 1000
                             ),
                             resetValue = -1,
-                            isSameContent = false,
+                            isContentLoaded = false,
                             meta = StoriesDetailItem.Meta(
                                 activityTracker = "12345",
                                 templateTracker = "1235df8",
@@ -358,7 +493,7 @@ fun mockInitialDataModelFetchPrev(): StoriesUiModel {
                                 duration = 1000
                             ),
                             resetValue = -1,
-                            isSameContent = false,
+                            isContentLoaded = false,
                             meta = StoriesDetailItem.Meta(
                                 activityTracker = "12345",
                                 templateTracker = "1235df8",
@@ -373,7 +508,7 @@ fun mockInitialDataModelFetchPrev(): StoriesUiModel {
                                 duration = 1000
                             ),
                             resetValue = -1,
-                            isSameContent = false,
+                            isContentLoaded = false,
                             meta = StoriesDetailItem.Meta(
                                 activityTracker = "12345",
                                 templateTracker = "1235df8",
@@ -388,7 +523,7 @@ fun mockInitialDataModelFetchPrev(): StoriesUiModel {
                                 duration = 1000
                             ),
                             resetValue = -1,
-                            isSameContent = false,
+                            isContentLoaded = false,
                             meta = StoriesDetailItem.Meta(
                                 activityTracker = "12345",
                                 templateTracker = "1235df8",
@@ -449,7 +584,7 @@ fun mockInitialDataModelFetchNext(): StoriesUiModel {
                                 duration = 1000
                             ),
                             resetValue = -1,
-                            isSameContent = false,
+                            isContentLoaded = false,
                             meta = StoriesDetailItem.Meta(
                                 activityTracker = "12345",
                                 templateTracker = "1235df8",
@@ -464,7 +599,7 @@ fun mockInitialDataModelFetchNext(): StoriesUiModel {
                                 duration = 1000
                             ),
                             resetValue = -1,
-                            isSameContent = false,
+                            isContentLoaded = false,
                             meta = StoriesDetailItem.Meta(
                                 activityTracker = "12345",
                                 templateTracker = "1235df8",
@@ -479,7 +614,7 @@ fun mockInitialDataModelFetchNext(): StoriesUiModel {
                                 duration = 1000
                             ),
                             resetValue = -1,
-                            isSameContent = false,
+                            isContentLoaded = false,
                             meta = StoriesDetailItem.Meta(
                                 activityTracker = "12345",
                                 templateTracker = "1235df8",
@@ -519,4 +654,24 @@ fun StoriesGroupItem.mockGroupResetValue(expectedGroupDetail: List<StoriesDetail
 
 fun StoriesDetailItem.mockDetailResetValue(expectedDetail: StoriesDetailItem): StoriesDetailItem {
     return this.copy(resetValue = expectedDetail.resetValue)
+}
+
+fun mockContentTaggedProductUiModel(): ContentTaggedProductUiModel {
+    return ContentTaggedProductUiModel(
+        id = "",
+        parentID = "",
+        showGlobalVariant = false,
+        shop = ContentTaggedProductUiModel.Shop(id = "", name = ""),
+        title = "",
+        imageUrl = "",
+        price = ContentTaggedProductUiModel.NormalPrice(formattedPrice = "", price = 0.0),
+        appLink = "",
+        campaign = ContentTaggedProductUiModel.Campaign(
+            type = ContentTaggedProductUiModel.CampaignType.NoCampaign,
+            status = ContentTaggedProductUiModel.CampaignStatus.Upcoming,
+            isExclusiveForMember = false
+        ),
+        affiliate = ContentTaggedProductUiModel.Affiliate(id = "", channel = ""),
+        stock = ContentTaggedProductUiModel.Stock.OutOfStock,
+    )
 }

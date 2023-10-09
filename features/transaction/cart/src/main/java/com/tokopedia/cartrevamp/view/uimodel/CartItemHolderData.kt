@@ -100,7 +100,10 @@ data class CartItemHolderData(
     var wholesalePriceFormatted: String? = null,
 
     // AddOns Product
-    var addOnsProduct: CartAddOnData = CartAddOnData()
+    var addOnsProduct: CartAddOnData = CartAddOnData(),
+
+    // BMGM
+    var cartBmGmTickerData: CartBmGmTickerData = CartBmGmTickerData()
 ) : ImpressHolder() {
     companion object {
         const val BUNDLING_ITEM_DEFAULT = 0
