@@ -19,6 +19,7 @@ import com.tokopedia.review.feature.ovoincentive.usecase.GetProductIncentiveOvo
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import com.tokopedia.usecase.coroutines.Fail as CoroutineFail
@@ -94,16 +95,19 @@ class ReviewPendingViewModel @Inject constructor(
     }
 
     fun getBulkReview() {
-        launchCatchError(block = {
-            val userId = userSession.userId
-            val data = bulkReviewUseCase.execute(userId)
-            if (data.list.isNotEmpty()) {
-                _bulkReview.postValue(CoroutineSuccess(data))
-            } else {
-                _bulkReview.postValue(null)
-            }
-        }, onError = {
+        launch {
+            runCatching {
+                val userId = userSession.userId
+                bulkReviewUseCase.execute(userId)
+            }.onSuccess { data ->
+                if (data.list.isNotEmpty()) {
+                    _bulkReview.postValue(CoroutineSuccess(data))
+                } else {
+                    _bulkReview.postValue(null)
+                }
+            }.onFailure {
                 _bulkReview.postValue(CoroutineFail(it))
-            })
+            }
+        }
     }
 }
