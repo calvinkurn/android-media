@@ -3,6 +3,7 @@ package com.tokopedia.oneclickcheckout.order.view
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiExternalUseCase
+import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.localizationchooseaddress.data.repository.ChooseAddressRepository
 import com.tokopedia.localizationchooseaddress.domain.mapper.ChooseAddressMapper
 import com.tokopedia.logisticCommon.domain.usecase.UpdatePinpointUseCase
@@ -21,6 +22,8 @@ import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPageCheck
 import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPageLogisticProcessor
 import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPagePaymentProcessor
 import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPagePromoProcessor
+import com.tokopedia.promousage.domain.usecase.PromoUsageGetPromoListRecommendationEntryPointUseCase
+import com.tokopedia.promousage.view.mapper.PromoUsageGetPromoListRecommendationMapper
 import com.tokopedia.purchase_platform.common.feature.addons.domain.SaveAddOnStateUseCase
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.usecase.GetPrescriptionIdsUseCaseCoroutine
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ClearCacheAutoApplyStackUseCase
@@ -56,7 +59,8 @@ open class BaseOrderSummaryPageViewModelTest {
     @MockK(relaxed = true)
     lateinit var getPrescriptionIdsUseCase: GetPrescriptionIdsUseCaseCoroutine
 
-    private val ratesResponseStateConverter: RatesResponseStateConverter = RatesResponseStateConverter()
+    private val ratesResponseStateConverter: RatesResponseStateConverter =
+        RatesResponseStateConverter()
 
     @MockK
     lateinit var chooseAddressRepository: Lazy<ChooseAddressRepository>
@@ -97,6 +101,15 @@ open class BaseOrderSummaryPageViewModelTest {
     @MockK(relaxed = true)
     lateinit var gson: Gson
 
+    @MockK(relaxed = true)
+    lateinit var getPromoListRecommendationEntryPointUseCase: PromoUsageGetPromoListRecommendationEntryPointUseCase
+
+    private var getPromoListRecommendationMapper: PromoUsageGetPromoListRecommendationMapper =
+        PromoUsageGetPromoListRecommendationMapper()
+
+    @MockK(relaxed = true)
+    lateinit var chosenAddressRequestHelper: ChosenAddressRequestHelper
+
     val testDispatchers: CoroutineTestDispatchers = CoroutineTestDispatchers
 
     lateinit var helper: OrderSummaryPageViewModelTestHelper
@@ -135,6 +148,9 @@ open class BaseOrderSummaryPageViewModelTest {
             OrderSummaryPagePromoProcessor(
                 validateUsePromoRevampUseCase,
                 clearCacheAutoApplyStackUseCase,
+                getPromoListRecommendationEntryPointUseCase,
+                getPromoListRecommendationMapper,
+                chosenAddressRequestHelper,
                 orderSummaryAnalytics,
                 testDispatchers
             ),
@@ -147,7 +163,7 @@ open class BaseOrderSummaryPageViewModelTest {
                 )
             },
             OrderSummaryPageCalculator(orderSummaryAnalytics, testDispatchers),
-            userSessionInterface, orderSummaryAnalytics
+            userSessionInterface, orderSummaryAnalytics, 1000L
         )
 
         coEvery { dynamicPaymentFeeUseCase.invoke(any()) } returns emptyList()
