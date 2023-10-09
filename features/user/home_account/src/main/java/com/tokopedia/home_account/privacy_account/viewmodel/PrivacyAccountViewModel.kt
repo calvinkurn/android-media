@@ -5,8 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.home_account.consentWithdrawal.data.ConsentGroupListDataModel
-import com.tokopedia.home_account.consentWithdrawal.domain.GetConsentGroupListUseCase
 import com.tokopedia.home_account.privacy_account.data.DataSetConsent
 import com.tokopedia.home_account.privacy_account.data.LinkStatusResponse
 import com.tokopedia.home_account.privacy_account.domain.GetConsentSocialNetworkUseCase
@@ -30,7 +28,6 @@ class PrivacyAccountViewModel @Inject constructor(
     private val setConsentSocialNetworkUseCase: SetConsentSocialNetworkUseCase,
     private val getLinkStatusUseCase: GetLinkStatusUseCase,
     private val getProfileUseCase: GetUserProfile,
-    private val getConsentGroupListUseCase: GetConsentGroupListUseCase,
     private val userSession: UserSessionInterface,
     dispatcher: CoroutineDispatchers
 ): BaseViewModel(dispatcher.main), LifecycleObserver {
@@ -45,10 +42,6 @@ class PrivacyAccountViewModel @Inject constructor(
 
     private val _setConsentSocialNetwork = MutableLiveData<Result<DataSetConsent>>()
     val setConsentSocialNetwork: LiveData<Result<DataSetConsent>> get() = _setConsentSocialNetwork
-
-    private val _getConsentGroupList = MutableLiveData<Result<ConsentGroupListDataModel>>()
-    val getConsentGroupList: LiveData<Result<ConsentGroupListDataModel>>
-        get() = _getConsentGroupList
 
     init {
         getConsentSocialNetwork()
@@ -89,18 +82,5 @@ class PrivacyAccountViewModel @Inject constructor(
         }, onError = {
             _linkStatus.value = Fail(it)
         })
-    }
-
-    fun getConsentGroupList() {
-        launchCatchError(coroutineContext, {
-            val response = getConsentGroupListUseCase(Unit)
-            if (response.consentGroupList.success) {
-                _getConsentGroupList.value = Success(response.consentGroupList)
-            } else {
-                _getConsentGroupList.value = Fail(MessageErrorException(response.consentGroupList.errorMessages.toString()))
-            }
-        }) {
-            _getConsentGroupList.value = Fail(it)
-        }
     }
 }

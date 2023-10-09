@@ -103,21 +103,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
         <activity
-            android:name=".requestpickup.presentation.activity.SomConfirmReqPickupActivity"
-            android:label="@string/title_som_confirm_req_pickup"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
-        <activity
-            android:name=".confirmshipping.presentation.activity.SomConfirmShippingActivity"
-            android:label="@string/title_som_confirm_shipping"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
-        <activity
-            android:name=".confirmshipping.presentation.activity.SomScanResiActivity"
-            android:label="@string/title_som_scan_barcode"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
-        <activity
             android:name="com.tokopedia.sellerorder.detail.presentation.activity.SomDetailBookingCodeActivity"
             android:label="@string/title_som_booking_code"
             android:screenOrientation="portrait"

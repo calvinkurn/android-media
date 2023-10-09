@@ -105,7 +105,7 @@ class TokoNowSimilarProductBottomSheetViewModelTest {
             "",
             "",
             0F,
-            0,0,"","","",
+            0,0,"","","", "",
             0,"","",0,
             listOf(ProductRecommendationResponse.ProductRecommendationWidgetSingle.Data.RecommendationItem.WholesalePriceItem(0, 0, 0, "")),0
         )

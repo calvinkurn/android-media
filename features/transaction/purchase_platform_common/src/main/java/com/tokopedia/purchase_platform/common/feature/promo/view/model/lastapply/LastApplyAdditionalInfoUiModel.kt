@@ -12,5 +12,5 @@ data class LastApplyAdditionalInfoUiModel(
     var usageSummaries: List<LastApplyUsageSummariesUiModel> = emptyList(),
     var promoSpIds: List<PromoSpIdUiModel> = emptyList(),
     var pomlAutoApplied: Boolean = false,
-    var bebasOngkirInfo: LastApplyBebasOngkirInfo = LastApplyBebasOngkirInfo()
+    var bebasOngkirInfo: LastApplyBebasOngkirInfoUiModel = LastApplyBebasOngkirInfoUiModel()
 ) : Parcelable

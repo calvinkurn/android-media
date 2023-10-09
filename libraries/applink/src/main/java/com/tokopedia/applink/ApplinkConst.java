@@ -132,6 +132,8 @@ public interface ApplinkConst {
     String DISCOVERY_SEARCH_UNIVERSAL = "tokopedia://universal-page";
     String DISCOVERY_HOTLIST_DETAIL = "tokopedia://hot/{alias}";
     String DISCOVERY_CATALOG = "tokopedia://catalog";
+
+    String DISCOVERY_CATALOG_PRODUCT_LIST = "tokopedia://catalog/product_list";
     String PAYMENT_BACK_TO_DEFAULT = "tokopedia://payment/backtodefault";
     String WISHLIST = "tokopedia://wishlist";
     String NEW_WISHLIST = "tokopedia://new-wishlist";
@@ -469,6 +471,11 @@ public interface ApplinkConst {
 
     String OCC = "tokopedia://occ";
 
+    String BUY_MORE_GET_MORE_OLP = "tokopedia://buymoresavemore/{offer_id}" +
+            "?warehouse_ids={warehouseIds}&" +
+            "product_ids={productIds}&" +
+            "shop_ids={shopIds}";
+
     String SELLER_MIGRATION = "tokopedia://seller/seller-migration";
 
     String ACCOUNT_HOST = "account";
@@ -637,6 +644,7 @@ public interface ApplinkConst {
         String SEARCH = "tokopedia://now/search";
         String OLD_CATEGORY = "tokopedia://now/category";
         String CATEGORY = "tokopedia://now/category/l1";
+        String CATEGORY_L2 = "tokopedia://now/category/l2";
         String REPURCHASE = "tokopedia://now/repurchase-page";
         String RECIPE_DETAIL = "tokopedia://now/recipe/detail/{recipe_id}";
         String RECIPE_BOOKMARK = "tokopedia://now/recipe/bookmarks";

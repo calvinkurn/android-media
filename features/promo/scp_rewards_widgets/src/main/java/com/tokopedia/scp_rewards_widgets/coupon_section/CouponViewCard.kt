@@ -14,9 +14,9 @@ import com.google.android.material.shape.ShapeAppearanceModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.scp_rewards_common.dpToPx
-import com.tokopedia.scp_rewards_common.grayScaleFilter
-import com.tokopedia.scp_rewards_common.parseColorOrFallback
+import com.tokopedia.scp_rewards_common.utils.dpToPx
+import com.tokopedia.scp_rewards_common.utils.grayScaleFilter
+import com.tokopedia.scp_rewards_common.utils.parseColorOrFallback
 import com.tokopedia.scp_rewards_widgets.databinding.ItemCouponLayoutBinding
 import com.tokopedia.scp_rewards_widgets.model.MedalBenefitModel
 import com.tokopedia.scp_rewards_widgets.R as scp_rewards_widgetsR
@@ -122,7 +122,7 @@ class CouponViewCard @JvmOverloads constructor(
             }
             root.post {
                 val additionalInfoColor = if (data.isActive) {
-                    context.parseColorOrFallback(data.additionalInfoColor, scp_rewards_widgetsR.color.coupon_card_background)
+                    context.parseColorOrFallback(data.additionalInfoColor, unifyPrinciplesR.color.Unify_PN100)
                 } else {
                     ContextCompat.getColor(context, unifyPrinciplesR.color.Unify_NN50)
                 }

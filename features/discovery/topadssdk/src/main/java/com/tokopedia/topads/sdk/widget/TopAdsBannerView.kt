@@ -701,24 +701,7 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         val productList = cpmData.cpm.cpmShop.products
 
         adsBannerShopCardView?.setShopCardModel(
-                ShopCardModel(
-                    id = cpmData.cpm.cpmShop.id,
-                    name = cpmData.cpm.cpmShop.name,
-                    image = cpmData.cpm.cpmImage.fullEcs,
-                    location = context.getString(R.string.title_promote_by),
-                    goldShop = if (cpmData.cpm.cpmShop.isPowerMerchant) 1 else 0,
-                    productList = productList.map {
-                        ShopCardModel.ShopItemProduct(
-                                id = it.id,
-                                name = it.name,
-                                priceFormat = it.priceFormat,
-                                imageUrl = it.imageProduct.imageUrl
-                        )
-                    },
-                    isOfficial = cpmData.cpm.cpmShop.isOfficial,
-                    isPMPro = cpmData.cpm.cpmShop.isPMPro,
-                    impressHolder = cpmData.cpm.cpmShop.imageShop
-                ),
+                mapToShopCardModel(cpmData),
                 object : ShopCardListener {
                     override fun onItemImpressed() {
                         impressionListener?.onImpressionHeadlineAdsItem(0, cpmData)
@@ -762,6 +745,28 @@ open class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                         )
                 }
             }
+        )
+    }
+
+    protected open fun mapToShopCardModel(cpmData: CpmData): ShopCardModel {
+        val productList = cpmData.cpm.cpmShop.products
+        return ShopCardModel(
+            id = cpmData.cpm.cpmShop.id,
+            name = cpmData.cpm.cpmShop.name,
+            image = cpmData.cpm.cpmImage.fullEcs,
+            location = context.getString(R.string.title_promote_by),
+            goldShop = if (cpmData.cpm.cpmShop.isPowerMerchant) 1 else 0,
+            productList = productList.map {
+                ShopCardModel.ShopItemProduct(
+                    id = it.id,
+                    name = it.name,
+                    priceFormat = it.priceFormat,
+                    imageUrl = it.imageProduct.imageUrl
+                )
+            },
+            isOfficial = cpmData.cpm.cpmShop.isOfficial,
+            isPMPro = cpmData.cpm.cpmShop.isPMPro,
+            impressHolder = cpmData.cpm.cpmShop.imageShop
         )
     }
 

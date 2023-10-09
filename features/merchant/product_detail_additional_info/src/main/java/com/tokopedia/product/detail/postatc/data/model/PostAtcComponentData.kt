@@ -24,6 +24,10 @@ data class PostAtcComponentData(
     @Expose
     val queryParam: String = "",
 
+    @SerializedName("offerID")
+    @Expose
+    val offerId: String = "",
+
     @SerializedName("thematicID")
     @Expose
     val thematicId: String = ""
