@@ -32,6 +32,11 @@ class ReviewPendingAdapter(
         }
     }
 
+    /**
+     * There is only 1 Bulk Review Recommendation Widget
+     * if indexOfBulkReview > -1 : Bulk Review Exists, Update Data
+     * else : Bulk Review Not Found, Insert One
+     */
     fun insertBulkReview(bulkReviewUiModel: BulkReviewUiModel) {
         val indexOfBulkReview = visitables.indexOfFirst { it is BulkReviewUiModel }
         if (indexOfBulkReview > -1) {
@@ -50,8 +55,15 @@ class ReviewPendingAdapter(
         }
     }
 
+    /**
+     * Since Bulk Review Recommendation restricted to be only 1 items.
+     * (Restricted at insertBulkReview)
+     * It is safe to check using indexOfFirst
+     */
     fun removeBulkReview() {
-        visitables.removeAll { it is BulkReviewUiModel }
+        val target = visitables.indexOfFirst { it is BulkReviewUiModel }
+        visitables.removeAt(target)
+        notifyItemRemoved(target)
     }
 
     fun getItemPosition(uiModel: CoachMarkUiModel?): Int {

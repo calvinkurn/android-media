@@ -24,6 +24,11 @@ class BulkReviewViewHolder(
 ) : AbstractViewHolder<BulkReviewUiModel>(view) {
     companion object {
         val LAYOUT = R.layout.item_bulk_review
+
+        private const val PRODUCT_CARD_SIZE = 52
+        private const val PRODUCT_CARD_MARGIN = 8
+        private const val STAR_ANIMATION_DELAY = 100L
+        private const val STAR_FINISHED_DELAY = 200L
     }
 
     private val binding = ItemBulkReviewBinding.bind(view).apply {
@@ -61,9 +66,9 @@ class BulkReviewViewHolder(
                     if (disableClick) return
                     disableClick = true
                     CoroutineScope(Dispatchers.Main).launch {
-                        delay(100L * position)
+                        delay(STAR_ANIMATION_DELAY * position)
                         listener.onClickStarBulkReview(title, data.appLink, position)
-                        delay(200L)
+                        delay(STAR_FINISHED_DELAY)
                         bulkReviewStars.resetStars()
                         disableClick = false
                     }
@@ -82,8 +87,8 @@ class BulkReviewViewHolder(
         val context = binding.root.context
         val layoutInflater = LayoutInflater.from(context)
         return ItemReviewPendingBulkCardProductBinding.inflate(layoutInflater).apply {
-            val layoutParams = MarginLayoutParams(52.toPx(), 52.toPx())
-            if (addMargin) layoutParams.marginStart = 8.toPx()
+            val layoutParams = MarginLayoutParams(PRODUCT_CARD_SIZE.toPx(), PRODUCT_CARD_SIZE.toPx())
+            if (addMargin) layoutParams.marginStart = PRODUCT_CARD_MARGIN.toPx()
             root.layoutParams = layoutParams
 
             reviewPendingBulkCardProductImage.setImageUrl(imageUrl)
