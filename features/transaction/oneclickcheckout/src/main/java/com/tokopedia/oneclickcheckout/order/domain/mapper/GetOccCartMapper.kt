@@ -585,7 +585,8 @@ class GetOccCartMapper @Inject constructor() {
                 name = data.name,
                 status = data.status,
                 type = data.type,
-                productQuantity = product.productQuantity
+                productQuantity = if (data.fixedQuantity) 1 else product.productQuantity,
+                fixedQuantity = data.fixedQuantity
             )
         }
     )

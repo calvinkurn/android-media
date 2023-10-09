@@ -143,4 +143,5 @@
 
     <string name="checkout_label_total_shipping_insurance">Total Asuransi Pengiriman</string>
     <string name="checkout_label_total_gifting">Total Pelengkap Hadiah</string>
+    <string name="bmgm_mini_cart_bottom_sheet_title">Buy More Save More</string>
 </resources>

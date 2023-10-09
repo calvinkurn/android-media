@@ -32,7 +32,10 @@ data class RechargeGeneralDynamicField(
         val dataCollections: List<DataCollection> = listOf(),
         @SerializedName("validations")
         @Expose
-        val validations: List<Validation> = listOf()
+        val validations: List<Validation> = listOf(),
+        @SerializedName("items")
+        @Expose
+        val items: List<Item> = listOf(),
 ) {
 
     class DataCollection(
@@ -56,5 +59,32 @@ data class RechargeGeneralDynamicField(
             @SerializedName("message")
             @Expose
             val message: String = ""
+    )
+
+    class Item(
+            @SerializedName("name")
+            @Expose
+            val name: String = "",
+            @SerializedName("text")
+            @Expose
+            val text: String = "",
+            @SerializedName("style")
+            @Expose
+            val style: String = "",
+            @SerializedName("placeholder")
+            @Expose
+            val placeholder: String = "",
+            @SerializedName("help")
+            @Expose
+            val help: String = "",
+            @SerializedName("validations")
+            @Expose
+            val validations: List<Validation> = listOf(),
+            @SerializedName("color")
+            @Expose
+            val color: String = "",
+            @SerializedName("coachmark")
+            @Expose
+            val coachmark: String = "",
     )
 }
