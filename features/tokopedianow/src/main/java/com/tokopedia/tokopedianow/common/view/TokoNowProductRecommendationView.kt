@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.gone
@@ -172,6 +173,12 @@ class TokoNowProductRecommendationView @JvmOverloads constructor(
         position: Int
     ) {
         binding.productCardCarousel.scrollToPosition(position)
+    }
+
+    fun setRecycledViewPool(
+        recycledViewPool: RecycledViewPool?
+    ) {
+        binding.productCardCarousel.setRecycledViewPool(recycledViewPool)
     }
 
     private fun bindHeader(
