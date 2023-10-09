@@ -96,6 +96,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_ch
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView
 import com.tokopedia.home.beranda.presentation.view.helper.HomePrefController
+import com.tokopedia.home.beranda.presentation.view.helper.HomeRemoteConfigController
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
 import com.tokopedia.home.beranda.presentation.view.helper.getPositionWidgetVertical
 import com.tokopedia.home.beranda.presentation.view.helper.isHomeTokonowCoachmarkShown
@@ -346,6 +347,9 @@ open class HomeRevampFragment :
     private lateinit var userSession: UserSessionInterface
 
     @Inject
+    lateinit var homeRemoteConfigController: HomeRemoteConfigController
+
+    @Inject
     lateinit var homePrefController: HomePrefController
     private lateinit var root: FrameLayout
     private var refreshLayout: ParentIconSwipeRefreshLayout? = null
@@ -560,6 +564,9 @@ open class HomeRevampFragment :
         statusBarBackground = view.findViewById(R.id.status_bar_bg)
         homeRecyclerView = view.findViewById(R.id.home_fragment_recycler_view)
         homeRecyclerView?.setHasFixedSize(true)
+        if (::homeRemoteConfigController.isInitialized) {
+            homeRemoteConfigController.fetchHomeRemoteConfig()
+        }
         HomeComponentRollenceController.fetchHomeComponentRollenceValue()
         context?.let {
             HomeRollenceController.fetchHomeRollenceValue(it)
@@ -1205,6 +1212,13 @@ open class HomeRevampFragment :
                         NetworkErrorHelper.showEmptyState(activity, root, errorString) { onRefresh() }
                         onPageLoadTimeEnd()
                         performanceTrace?.setPageState(BlocksPerformanceTrace.BlocksPerfState.STATE_ERROR)
+                    }
+                    status == Result.Status.ERROR_ATF_NEW -> {
+                        if (getHomeViewModel().homeDataModel.list.size <= 1) {
+                            val errorString = getErrorStringWithDefault(throwable)
+                            showNetworkError(errorString)
+                            NetworkErrorHelper.showEmptyState(activity, root, errorString) { onRefresh() }
+                        }
                     }
                     else -> {
                         showLoading()
@@ -2517,7 +2531,9 @@ open class HomeRevampFragment :
 
     override fun onWidgetOpenAppLink(view: View, appLink: String) {
         context?.let {
-            startActivityForResult(RouteManager.getIntent(it, appLink), REQUEST_CODE_PLAY_ROOM_PLAY_WIDGET)
+            val newAppLink = getHomeViewModel().reconstructPlayWidgetAppLink(appLink)
+
+            startActivityForResult(RouteManager.getIntent(it, newAppLink), REQUEST_CODE_PLAY_ROOM_PLAY_WIDGET)
         }
     }
 

@@ -95,7 +95,8 @@ class MissionWidgetViewHolder(
                 subtitleHeight = subtitleHeight,
                 verticalPosition = element.verticalPosition,
                 cardPosition = index,
-                animateOnPress = item.animateOnPress
+                animateOnPress = item.animateOnPress,
+                isCache = item.isCache,
             )
         }
     }
