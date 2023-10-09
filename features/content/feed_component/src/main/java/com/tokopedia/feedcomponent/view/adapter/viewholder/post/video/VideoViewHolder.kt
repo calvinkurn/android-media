@@ -28,18 +28,17 @@ class VideoViewHolder(private val listener: VideoViewListener) :
 
     override var layoutRes = R.layout.item_post_video
     var isPlaying = false
-    
-    private val ivImage: ImageView = itemView.findViewById(R.id.image)
-    private val icPlay: ImageUnify = itemView.findViewById(R.id.ic_play)
-    private val frameVideo: FrameLayout = itemView.findViewById(R.id.frame_video)
-    private val layoutVideo: VideoPlayerView = itemView.findViewById(R.id.layout_video)
 
     companion object {
         const val STRING_DEFAULT_TRANSCODING = "customerTrans"
-        const val TAG = "TAG_VIDEO_VIEW_HOLDER"
     }
 
     override fun bind(element: VideoModel) {
+        val ivImage: ImageView = itemView.findViewById(R.id.image)
+        val icPlay: ImageUnify = itemView.findViewById(R.id.ic_play)
+        val frameVideo: FrameLayout = itemView.findViewById(R.id.frame_video)
+        val layoutVideo: VideoPlayerView = itemView.findViewById(R.id.layout_video)
+
         if (!element.url.contains(STRING_DEFAULT_TRANSCODING)) {
             ivImage.setImageResource(designR.drawable.ic_loading_image)
             ivImage.setOnClickListener {
@@ -72,9 +71,9 @@ class VideoViewHolder(private val listener: VideoViewListener) :
         )
         ivImage.loadImage(element.thumbnail)
         if (canPlayVideo(element)) {
-            playVideo(element.url)
+            playVideo(frameVideo, layoutVideo, icPlay, ivImage, element.url)
         } else {
-            stopVideo()
+            stopVideo(layoutVideo)
         }
     }
 
@@ -82,7 +81,12 @@ class VideoViewHolder(private val listener: VideoViewListener) :
         return element.canPlayVideo && ContentNetworkListener.isWifiEnabled(itemView.context)
     }
 
-    private fun playVideo(url: String) {
+    private fun playVideo(
+        frameVideo: FrameLayout,
+        layoutVideo: VideoPlayerView,
+        icPlay: ImageUnify,
+        ivImage: ImageView,
+        url: String) {
         if (!isPlaying) {
             frameVideo.invisible()
             if (URLUtil.isValidUrl(url))
@@ -108,7 +112,7 @@ class VideoViewHolder(private val listener: VideoViewListener) :
         }
     }
 
-    private fun stopVideo() {
+    private fun stopVideo(layoutVideo: VideoPlayerView) {
         if (isPlaying) {
             layoutVideo.stopPlayback()
             layoutVideo.gone()
