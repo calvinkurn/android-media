@@ -38,7 +38,7 @@
 
                 <data
                     android:host="@string/host_user"
-                    android:pathPattern="@string/path_new_consent_withdrawal"
+                    android:pathPattern="@string/path_consent_withdrawal"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
 

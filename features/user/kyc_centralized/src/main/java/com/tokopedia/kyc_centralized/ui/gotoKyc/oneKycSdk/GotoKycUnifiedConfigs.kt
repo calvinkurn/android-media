@@ -54,17 +54,32 @@ class GotoKycUnifiedConfigs : UnifiedKycConfigs {
 
     // Usage for Toko: Deeplink for Help CTA in Challenge Screen(FR Challenge)
     override fun getPartnerKycFrChallengeQuestionsHelpPageId(kycSdkPartner: KycSdkPartner): String {
-        return "${ApplinkConst.WEBVIEW}?url=${TokopediaUrl.getInstance().WEB}help/article/a-4048"
+        /*
+        * base url (https://www.tokopedia.com/) is set statically for staging and production environments
+        * because the url between the both is different and
+        * to make it easier to organize logic and content the article, the url set to production only
+        * */
+        return "${ApplinkConst.WEBVIEW}?url=https://www.tokopedia.com/help/article/a-4048"
     }
 
     // Usage for Toko: Deeplink for Help CTA in Consent Screen
     override fun getPartnerKycConsentHelpPageId(kycSdkPartner: KycSdkPartner): String {
-        return "${ApplinkConst.WEBVIEW}?url=${TokopediaUrl.getInstance().WEB}help/article/a-4046"
+        /*
+        * base url (https://www.tokopedia.com/) is set statically for staging and production environments
+        * because the url between the both is different and
+        * to make it easier to organize logic and content the article, the url set to production only
+        * */
+        return "${ApplinkConst.WEBVIEW}?url=https://www.tokopedia.com/help/article/a-4046"
     }
 
     // Usage for Toko: Deeplink for Help CTA in Masked User Details Screen
     override fun getPartnerKycUserDetailHelpPageId(kycSdkPartner: KycSdkPartner): String {
-        return "${ApplinkConst.WEBVIEW}?url=${TokopediaUrl.getInstance().WEB}help/article/a-4047"
+        /*
+        * base url (https://www.tokopedia.com/) is set statically for staging and production environments
+        * because the url between the both is different and
+        * to make it easier to organize logic and content the article, the url set to production only
+        * */
+        return "${ApplinkConst.WEBVIEW}?url=https://www.tokopedia.com/help/article/a-4047"
     }
 
     // Use the given implementation

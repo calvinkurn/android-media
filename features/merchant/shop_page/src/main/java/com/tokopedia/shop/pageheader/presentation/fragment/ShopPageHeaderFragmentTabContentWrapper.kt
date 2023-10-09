@@ -76,7 +76,6 @@ import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopPageHeaderW
 import com.tokopedia.shop.pageheader.util.ShopPageHeaderTabName
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.view.fragment.ShopPageProductListFragment
-import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.resources.isDarkMode
 import java.net.URLEncoder
@@ -201,11 +200,11 @@ class ShopPageHeaderFragmentTabContentWrapper :
     }
 
     private fun getShopPageTrackingSGCPlay(): ShopPageTrackingSGCPlayWidget? {
-        return (parentFragment as? ShopPageHeaderFragmentV2)?.shopPageTrackingSGCPlay
+        return (parentFragment as? ShopPageReimagineHeaderFragment)?.shopPageTrackingSGCPlay
     }
 
     private fun getShopPageTracking(): ShopPageTrackingBuyer? {
-        return (parentFragment as? ShopPageHeaderFragmentV2)?.shopPageTracking
+        return (parentFragment as? ShopPageReimagineHeaderFragment)?.shopPageTracking
     }
 
     private fun getHeaderListener(): ShopPageHeaderFragmentViewHolderListener? {
@@ -311,7 +310,7 @@ class ShopPageHeaderFragmentTabContentWrapper :
 
     private fun iniSwipeRefreshLayout() {
         refreshLayout?.setOnRefreshListener {
-            (parentFragment as? ShopPageHeaderFragmentV2)?.refreshData()
+            (parentFragment as? ShopPageReimagineHeaderFragment)?.refreshData()
         }
     }
 
@@ -600,15 +599,15 @@ class ShopPageHeaderFragmentTabContentWrapper :
     }
 
     private fun clickShopShare() {
-        (parentFragment as? ShopPageHeaderFragmentV2)?.clickShopShare()
+        (parentFragment as? ShopPageReimagineHeaderFragment)?.clickShopShare()
     }
 
     private fun clickSearch() {
-        (parentFragment as? ShopPageHeaderFragmentV2)?.clickSearch()
+        (parentFragment as? ShopPageReimagineHeaderFragment)?.clickSearch()
     }
 
     private fun clickSettingButton() {
-        (parentFragment as? ShopPageHeaderFragmentV2)?.clickSettingButton()
+        (parentFragment as? ShopPageReimagineHeaderFragment)?.clickSettingButton()
     }
 
     private fun createContentFragment(): Fragment? {
@@ -714,7 +713,7 @@ class ShopPageHeaderFragmentTabContentWrapper :
             }
         }
     }
-    
+
     private fun createCampaignTabFragment(
         tabData: ShopPageGetDynamicTabResponse.ShopPageGetDynamicTab.TabData
     ): Fragment {

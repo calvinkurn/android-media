@@ -21,6 +21,9 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import org.hamcrest.*
+import com.tokopedia.productcard.R as productcardR
+import com.tokopedia.searchbar.R as searchbarR
+import com.tokopedia.sortfilter.R as sortfilterR
 
 /**
  * Created by fwidjaja on 08/11/20.
@@ -38,7 +41,7 @@ class UohRobot {
         onView(withId(R.id.rv_order_list))
             .perform(
                 RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
-                    1,
+                    0,
                     clickOnViewChild(R.id.uoh_btn_action_1)
                 )
             )
@@ -76,7 +79,7 @@ class UohRobot {
     }
 
     fun doSearch(str: String) {
-        onView(withId(com.tokopedia.searchbar.R.id.et_search))
+        onView(withId(searchbarR.id.et_search))
             .perform(ViewActions.typeText(str)).perform(ViewActions.pressImeActionButton())
         waitForData()
     }
@@ -88,7 +91,7 @@ class UohRobot {
     }
 
     fun clickFilterStatus() {
-        onView(nthChildOf(withId(com.tokopedia.sortfilter.R.id.sort_filter_items), 0))
+        onView(nthChildOf(withId(sortfilterR.id.sort_filter_items), 0))
             .perform(click())
         waitForData()
     }
@@ -100,7 +103,7 @@ class UohRobot {
     }
 
     fun clickFilterCategory() {
-        onView(nthChildOf(withId(com.tokopedia.sortfilter.R.id.sort_filter_items), 1))
+        onView(nthChildOf(withId(sortfilterR.id.sort_filter_items), 1))
             .perform(click())
         waitForData()
     }
@@ -112,7 +115,7 @@ class UohRobot {
     }
 
     fun clickFilterDate() {
-        onView(nthChildOf(withId(com.tokopedia.sortfilter.R.id.sort_filter_items), 2))
+        onView(nthChildOf(withId(sortfilterR.id.sort_filter_items), 2))
             .perform(scrollTo(), click())
         waitForData()
     }
@@ -134,7 +137,7 @@ class UohRobot {
             .perform(
                 RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
                     5,
-                    clickOnViewChild(com.tokopedia.productcard.R.id.buttonAddToCart)
+                    clickOnViewChild(productcardR.id.buttonAddToCart)
                 )
             )
         waitForData()

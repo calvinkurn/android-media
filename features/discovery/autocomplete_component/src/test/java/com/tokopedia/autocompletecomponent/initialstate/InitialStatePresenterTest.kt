@@ -339,7 +339,6 @@ internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
         `Test Initial State Data`(initialStateData)
 
         `Then verify initial state view will call showInitialStateResult behavior`()
-        `Then verify mps enabled`(initialStateData)
     }
 
     @Test
@@ -361,12 +360,5 @@ internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
         `Then verify MpsDataView`(
             visitableList, expectedData, expectedDefaultDimension90, keyword,
         )
-    }
-
-    private fun `Then verify mps enabled`(initialState: InitialStateUniverse) {
-        initialState.isMps shouldBe true
-        verify {
-            initialStateView.enableMps()
-        }
     }
 }

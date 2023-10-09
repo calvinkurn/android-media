@@ -34,13 +34,15 @@
         app:layout_constraintBottom_toBottomOf="@id/iv_product"
         app:layout_constraintRight_toRightOf="@id/iv_product">
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <com.tokopedia.iconunify.IconUnify
             android:id="@+id/ivplus"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_gravity="center"
-            android:tint="@color/Unify_NN900"
-            app:srcCompat="@drawable/iconunify_add" />
+            app:icon_color_light_disabled="@color/dms_clr_NN_900_light"
+            app:icon_color_light_enable="@color/dms_clr_NN_900_light"
+            app:icon_name="ADD" />
+        
     </androidx.cardview.widget.CardView>
 
     <com.tokopedia.unifyprinciples.Typography
@@ -135,8 +137,8 @@
             android:adjustViewBounds="true"
             android:gravity="center"
             android:scaleType="centerCrop"
-            app:icon_color_light_enable="@color/Unify_YN300"
-            app:icon_color_night_enable="@color/Unify_YN300"
+            app:icon_color_light_enable="@color/dms_static_Unify_Y300_light"
+            app:icon_color_night_enable="@color/dms_static_Unify_Y300_light"
             app:icon_name="STAR_FILLED"
             tools:visibility="visible" />
 
@@ -155,7 +157,8 @@
             android:id="@+id/tvDotSeparator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="2dp"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"
             android:ellipsize="end"
             android:maxLines="1"
             android:textColor="@color/Unify_NN950_68"
@@ -166,7 +169,6 @@
             android:id="@+id/tvSoldCount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="2dp"
             android:ellipsize="end"
             android:maxLines="1"
             android:textColor="@color/Unify_NN950_68"

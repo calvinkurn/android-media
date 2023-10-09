@@ -116,7 +116,6 @@ class CheckoutCalculator @Inject constructor(
         var hasAddOnSelected = false
         var totalAddOnGiftingPrice = 0.0
         var totalAddOnProductServicePrice = 0.0
-        var qtyAddOn = 0
         var totalBmgmDiscount = 0.0
         val countMapSummaries = hashMapOf<Int, Pair<Double, Int>>()
         val listShipmentAddOnSummary: ArrayList<ShipmentAddOnSummaryModel> = arrayListOf()
@@ -159,13 +158,9 @@ class CheckoutCalculator @Inject constructor(
                             for (addOnProductService in cartItem.addOnProduct.listAddOnProductData) {
                                 if (addOnProductService.isChecked) {
                                     totalAddOnProductServicePrice += (addOnProductService.price * cartItem.quantity)
-                                    if (countMapSummaries.containsKey(addOnProductService.type)) {
-                                        qtyAddOn += cartItem.quantity
-                                    } else {
-                                        qtyAddOn = cartItem.quantity
-                                    }
+                                    val qtyAddOn = cartItem.quantity + (countMapSummaries[addOnProductService.type]?.second ?: 0)
                                     val totalPriceAddOn =
-                                        (qtyAddOn * addOnProductService.price) + (
+                                        (cartItem.quantity * addOnProductService.price) + (
                                             countMapSummaries[addOnProductService.type]?.first
                                                 ?: 0.0
                                             )
