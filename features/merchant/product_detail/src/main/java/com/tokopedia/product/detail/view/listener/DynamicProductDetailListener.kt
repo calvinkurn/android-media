@@ -31,6 +31,7 @@ import com.tokopedia.recommendation_widget_common.widget.viewtoview.ViewToViewIt
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
+import com.tokopedia.stories.widget.StoriesWidgetManager
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.user.session.UserSessionInterface
@@ -45,6 +46,7 @@ interface DynamicProductDetailListener {
     fun getProductInfo(): DynamicProductInfoP1?
     fun getTrackingQueueInstance(): TrackingQueue
     fun getUserSession(): UserSessionInterface
+    fun getStoriesWidgetManager(): StoriesWidgetManager
 
     /**
      * ProductMediaViewHolder
@@ -537,4 +539,7 @@ interface DynamicProductDetailListener {
      */
     fun onToggleAPlus(expanded: Boolean, trackerData: APlusImageUiModel.TrackerData)
     fun onImpressAPlus(trackerData: APlusImageUiModel.TrackerData)
+
+    // region BMGM
+    fun onBMGMClicked(title: String, offerId: String, component: ComponentTrackDataModel)
 }

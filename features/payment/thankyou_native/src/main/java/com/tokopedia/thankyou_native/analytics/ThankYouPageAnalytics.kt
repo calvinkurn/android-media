@@ -10,9 +10,9 @@ import com.tokopedia.thankyou_native.analytics.EnhancedEcommerceKey.KEY_CREATIVE
 import com.tokopedia.thankyou_native.analytics.EnhancedEcommerceKey.KEY_CREATIVE_SLOT
 import com.tokopedia.thankyou_native.analytics.EnhancedEcommerceKey.KEY_ITEM_ID
 import com.tokopedia.thankyou_native.analytics.EnhancedEcommerceKey.KEY_ITEM_NAME
+import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_BUSINESS_UNIT
 import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_BUSINESS_UNIT_NON_E_COMMERCE_VALUE
 import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_CURRENT_SITE
-import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_ECOMMERCE
 import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_EVENT
 import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_EVENT_ACTION
 import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_EVENT_CATEGORY
@@ -21,7 +21,7 @@ import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_EVENT_SELEC
 import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_EVENT_VIEW_ITEM
 import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_MERCHANT_CODE
 import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_PAYMENT_ID
-import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_PROMOTION
+import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_PROMOTIONS
 import com.tokopedia.thankyou_native.analytics.ParentTrackingKey.KEY_TRACKER_ID
 import com.tokopedia.thankyou_native.data.mapper.*
 import com.tokopedia.thankyou_native.di.qualifier.CoroutineBackgroundDispatcher
@@ -42,11 +42,10 @@ import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import javax.inject.Inject
 
-
 class ThankYouPageAnalytics @Inject constructor(
-        val userSession: dagger.Lazy<UserSessionInterface>,
-        @CoroutineMainDispatcher val mainDispatcher: CoroutineDispatcher,
-        @CoroutineBackgroundDispatcher val bgDispatcher: CoroutineDispatcher
+    val userSession: dagger.Lazy<UserSessionInterface>,
+    @CoroutineMainDispatcher val mainDispatcher: CoroutineDispatcher,
+    @CoroutineBackgroundDispatcher val bgDispatcher: CoroutineDispatcher
 ) {
 
     private val IDR = "IDR"
@@ -62,7 +61,6 @@ class ThankYouPageAnalytics @Inject constructor(
         customDimension[KEY_MERCHANT_CODE] = merchantCode ?: ""
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName, customDimension)
     }
-
 
     fun postThankYouPageLoadedEvent(thanksPageData: ThanksPageData) {
         if (thanksPageData.pushGtm) {
@@ -93,8 +91,8 @@ class ThankYouPageAnalytics @Inject constructor(
                 }
             }
         }, onError = {
-            it.printStackTrace()
-        })
+                it.printStackTrace()
+            })
     }
 
     private fun senDigitalThankYouPageDataLoadEvent(thanksPageData: ThanksPageData) {
@@ -108,8 +106,8 @@ class ThankYouPageAnalytics @Inject constructor(
                 }
             }
         }, onError = {
-            it.printStackTrace()
-        })
+                it.printStackTrace()
+            })
     }
 
     private fun processDataForGTM(eventData: String) {
@@ -117,45 +115,49 @@ class ThankYouPageAnalytics @Inject constructor(
         val eventList: JsonArray = gson.fromJson(eventData, object : TypeToken<JsonArray>() {}.type)
 
         eventList.forEach { data ->
-            val eventMap: MutableMap<String, Any> = gson.fromJson(data, object : TypeToken<Map<String, Any>>(){}.type)
+            val eventMap: MutableMap<String, Any> = gson.fromJson(data, object : TypeToken<Map<String, Any>>() {}.type)
             analyticTracker.sendEnhanceEcommerceEvent(eventMap)
         }
     }
 
     private fun getParentTrackingNode(thanksPageData: ThanksPageData, shopOrder: ShopOrder): MutableMap<String, Any> {
         return mutableMapOf(
-                ParentTrackingKey.KEY_EVENT to thanksPageData.event,
-                ParentTrackingKey.KEY_EVENT_CATEGORY to thanksPageData.eventCategory,
-                ParentTrackingKey.KEY_EVENT_ACTION to shopOrder.storeType,
-                ParentTrackingKey.KEY_EVENT_LABEL to thanksPageData.eventLabel,
-                ParentTrackingKey.KEY_PAYMENT_ID to thanksPageData.paymentID,
-                ParentTrackingKey.KEY_PAYMENT_STATUS to thanksPageData.paymentStatus,
-                ParentTrackingKey.KEY_PAYMENT_TYPE to thanksPageData.paymentType,
-                ParentTrackingKey.KEY_CURRENT_SITE to thanksPageData.currentSite,
-                ParentTrackingKey.KEY_BUSINESS_UNIT to thanksPageData.businessUnit,
-                ParentTrackingKey.KEY_PROFILE_ID to thanksPageData.profileCode
+            ParentTrackingKey.KEY_EVENT to thanksPageData.event,
+            ParentTrackingKey.KEY_EVENT_CATEGORY to thanksPageData.eventCategory,
+            ParentTrackingKey.KEY_EVENT_ACTION to shopOrder.storeType,
+            ParentTrackingKey.KEY_EVENT_LABEL to thanksPageData.eventLabel,
+            ParentTrackingKey.KEY_PAYMENT_ID to thanksPageData.paymentID,
+            ParentTrackingKey.KEY_PAYMENT_STATUS to thanksPageData.paymentStatus,
+            ParentTrackingKey.KEY_PAYMENT_TYPE to thanksPageData.paymentType,
+            KEY_CURRENT_SITE to thanksPageData.currentSite,
+            KEY_BUSINESS_UNIT to thanksPageData.businessUnit,
+            ParentTrackingKey.KEY_PROFILE_ID to thanksPageData.profileCode
         )
     }
 
     private fun getEnhancedECommerceNode(orderedItem: ShopOrder): Map<String, Any> {
-        return mapOf(ECommerceNodeTrackingKey.KEY_CURRENCY_CODE to IDR,
-                ECommerceNodeTrackingKey.KEY_PURCHASE to getPurchasedEventNodeByShop(orderedItem))
+        return mapOf(
+            ECommerceNodeTrackingKey.KEY_CURRENCY_CODE to IDR,
+            ECommerceNodeTrackingKey.KEY_PURCHASE to getPurchasedEventNodeByShop(orderedItem)
+        )
     }
 
     private fun getPurchasedEventNodeByShop(orderedItem: ShopOrder): Map<String, Any> {
-        return mapOf(PurchaseNodeTrackingKey.KEY_ACTION_FIELD to getActionFieldNode(orderedItem),
-                PurchaseNodeTrackingKey.KEY_PRODUCTS to getECommerceProductNodeList(orderedItem.purchaseItemList))
+        return mapOf(
+            PurchaseNodeTrackingKey.KEY_ACTION_FIELD to getActionFieldNode(orderedItem),
+            PurchaseNodeTrackingKey.KEY_PRODUCTS to getECommerceProductNodeList(orderedItem.purchaseItemList)
+        )
     }
 
     private fun getActionFieldNode(orderedItem: ShopOrder): Map<String, Any?> {
-        val storeName = orderedItem.storeName?:""
+        val storeName = orderedItem.storeName ?: ""
         return mapOf(
-                ParentTrackingKey.KEY_ID to orderedItem.orderId,
-                ActionFieldNodeTrackingKey.KEY_AFFILIATION to storeName,
-                ActionFieldNodeTrackingKey.KEY_REVENUE to orderedItem.revenue.toString(),
-                ActionFieldNodeTrackingKey.KEY_TAX to if (orderedItem.tax > 0) orderedItem.tax else null,
-                ActionFieldNodeTrackingKey.KEY_SHIPPING to orderedItem.shippingAmount.toString(),
-                ActionFieldNodeTrackingKey.KEY_COUPON to orderedItem.coupon
+            ParentTrackingKey.KEY_ID to orderedItem.orderId,
+            ActionFieldNodeTrackingKey.KEY_AFFILIATION to storeName,
+            ActionFieldNodeTrackingKey.KEY_REVENUE to orderedItem.revenue.toString(),
+            ActionFieldNodeTrackingKey.KEY_TAX to if (orderedItem.tax > 0) orderedItem.tax else null,
+            ActionFieldNodeTrackingKey.KEY_SHIPPING to orderedItem.shippingAmount.toString(),
+            ActionFieldNodeTrackingKey.KEY_COUPON to orderedItem.coupon
         )
     }
 
@@ -177,10 +179,11 @@ class ThankYouPageAnalytics @Inject constructor(
     }
 
     fun sendBackPressedEvent(profileId: String, paymentId: String) {
-        val map = TrackAppUtils.gtmData(EVENT_NAME_CLICK_ORDER,
-                EVENT_CATEGORY_ORDER_COMPLETE,
-                EVENT_ACTION_CLICK_BACK,
-                ""
+        val map = TrackAppUtils.gtmData(
+            EVENT_NAME_CLICK_ORDER,
+            EVENT_CATEGORY_ORDER_COMPLETE,
+            EVENT_ACTION_CLICK_BACK,
+            ""
         )
         map[ParentTrackingKey.KEY_PROFILE_ID] = profileId
         addCommonTrackingData(map, paymentId)
@@ -194,10 +197,11 @@ class ThankYouPageAnalytics @Inject constructor(
             is WaitingPaymentPage -> EVENT_LABEL_DEFERRED
             else -> ""
         }
-        val map = TrackAppUtils.gtmData(EVENT_NAME_CLICK_ORDER,
-                EVENT_CATEGORY_ORDER_COMPLETE,
-                EVENT_ACTION_LIHAT_DETAIL,
-                eventLabel
+        val map = TrackAppUtils.gtmData(
+            EVENT_NAME_CLICK_ORDER,
+            EVENT_CATEGORY_ORDER_COMPLETE,
+            EVENT_ACTION_LIHAT_DETAIL,
+            eventLabel
         )
         map[ParentTrackingKey.KEY_PROFILE_ID] = profileId
         addCommonTrackingData(map, paymentId)
@@ -205,10 +209,11 @@ class ThankYouPageAnalytics @Inject constructor(
     }
 
     fun sendCheckTransactionListEvent(profileId: String, paymentId: String) {
-        val map = TrackAppUtils.gtmData(EVENT_NAME_CLICK_ORDER,
-                EVENT_CATEGORY_ORDER_COMPLETE,
-                EVENT_ACTION_CHECK_TRANSACTION_LIST,
-                ""
+        val map = TrackAppUtils.gtmData(
+            EVENT_NAME_CLICK_ORDER,
+            EVENT_CATEGORY_ORDER_COMPLETE,
+            EVENT_ACTION_CHECK_TRANSACTION_LIST,
+            ""
         )
         map[ParentTrackingKey.KEY_PROFILE_ID] = profileId
         addCommonTrackingData(map, paymentId)
@@ -216,10 +221,11 @@ class ThankYouPageAnalytics @Inject constructor(
     }
 
     fun onCheckPaymentStatusClick(profileId: String, paymentId: String) {
-        val map = TrackAppUtils.gtmData(EVENT_NAME_CLICK_ORDER,
-                EVENT_CATEGORY_ORDER_COMPLETE,
-                EVENT_ACTION_CLICK_CHECK_PAYMENT_STATUS,
-                ""
+        val map = TrackAppUtils.gtmData(
+            EVENT_NAME_CLICK_ORDER,
+            EVENT_CATEGORY_ORDER_COMPLETE,
+            EVENT_ACTION_CLICK_CHECK_PAYMENT_STATUS,
+            ""
         )
         addCommonTrackingData(map, paymentId)
         map[ParentTrackingKey.KEY_PROFILE_ID] = profileId
@@ -233,10 +239,11 @@ class ThankYouPageAnalytics @Inject constructor(
             is WaitingPaymentPage -> EVENT_LABEL_DEFERRED
             else -> ""
         }
-        val map =   TrackAppUtils.gtmData(EVENT_NAME_CLICK_ORDER,
-                EVENT_CATEGORY_ORDER_COMPLETE,
-                EVENT_ACTION_BELANJA_LAGI,
-                eventLabel
+        val map = TrackAppUtils.gtmData(
+            EVENT_NAME_CLICK_ORDER,
+            EVENT_CATEGORY_ORDER_COMPLETE,
+            EVENT_ACTION_BELANJA_LAGI,
+            eventLabel
         )
         map[ParentTrackingKey.KEY_PROFILE_ID] = profileId
         addCommonTrackingData(map, paymentId)
@@ -244,22 +251,23 @@ class ThankYouPageAnalytics @Inject constructor(
     }
 
     fun sendSalinButtonClickEvent(profileId: String, paymentMethod: String, paymentId: String) {
-        val map = TrackAppUtils.gtmData(EVENT_NAME_CLICK_ORDER,
-                EVENT_CATEGORY_ORDER_COMPLETE,
-                EVENT_ACTION_SALIN_CLICK,
-                paymentMethod
+        val map = TrackAppUtils.gtmData(
+            EVENT_NAME_CLICK_ORDER,
+            EVENT_CATEGORY_ORDER_COMPLETE,
+            EVENT_ACTION_SALIN_CLICK,
+            paymentMethod
         )
         map[ParentTrackingKey.KEY_PROFILE_ID] = profileId
         addCommonTrackingData(map, paymentId)
         analyticTracker.sendGeneralEvent(map)
     }
 
-
     fun sendOnHowtoPayClickEvent(profileId: String, paymentId: String) {
-        val map = TrackAppUtils.gtmData(EVENT_NAME_CLICK_ORDER,
-                EVENT_CATEGORY_ORDER_COMPLETE,
-                EVENT_ACTION_LIHAT_CARA_PEMBARYAN_CLICK,
-                ""
+        val map = TrackAppUtils.gtmData(
+            EVENT_NAME_CLICK_ORDER,
+            EVENT_CATEGORY_ORDER_COMPLETE,
+            EVENT_ACTION_LIHAT_CARA_PEMBARYAN_CLICK,
+            ""
         )
         map[ParentTrackingKey.KEY_PROFILE_ID] = profileId
         addCommonTrackingData(map, paymentId)
@@ -275,7 +283,7 @@ class ThankYouPageAnalytics @Inject constructor(
             putString(KEY_EVENT_LABEL, String.EMPTY)
             putString(KEY_TRACKER_ID, TRACKER_45032)
             putString(KEY_CURRENT_SITE, thanksPageData.currentSite)
-            putBundle(KEY_PROMOTION, promotionBundle)
+            putParcelableArrayList(KEY_PROMOTIONS, arrayListOf(promotionBundle))
         }
 
         analyticTracker.sendEnhanceEcommerceEvent(KEY_EVENT_SELECT_CONTENT, bundle)
@@ -290,10 +298,10 @@ class ThankYouPageAnalytics @Inject constructor(
             putString(KEY_EVENT_LABEL, String.EMPTY)
             putString(KEY_TRACKER_ID, TRACKER_45031)
             putString(KEY_CURRENT_SITE, thanksPageData.currentSite)
-            putBundle(KEY_PROMOTION, promotionBundle)
+            putParcelableArrayList(KEY_PROMOTIONS, arrayListOf(promotionBundle))
         }
 
-        analyticTracker.sendEnhanceEcommerceEvent(KEY_EVENT_SELECT_CONTENT, bundle)
+        analyticTracker.sendEnhanceEcommerceEvent(KEY_EVENT_VIEW_ITEM, bundle)
     }
 
     private fun getEnhancedECommerceBanner(
@@ -301,7 +309,7 @@ class ThankYouPageAnalytics @Inject constructor(
         position: Int
     ): Bundle {
         return Bundle().apply {
-            putString(KEY_ITEM_NAME, banner.assetUrl)
+            putString(KEY_ITEM_NAME, banner.applink)
             putString(KEY_ITEM_ID, banner.itemId)
             putString(KEY_CREATIVE_NAME, banner.assetUrl)
             putString(KEY_CREATIVE_SLOT, position.toString())
@@ -311,15 +319,15 @@ class ThankYouPageAnalytics @Inject constructor(
     private fun addCommonTrackingData(map: MutableMap<String, Any>, paymentId: String) {
         map[ParentTrackingKey.KEY_USER_ID] = userSession.get().userId
         map[ParentTrackingKey.KEY_PAYMENT_ID_NON_E_COMMERCE] = paymentId
-        map[ParentTrackingKey.KEY_BUSINESS_UNIT]= KEY_BUSINESS_UNIT_NON_E_COMMERCE_VALUE
+        map[KEY_BUSINESS_UNIT] = KEY_BUSINESS_UNIT_NON_E_COMMERCE_VALUE
     }
 
-
-    fun sendPushGtmFalseEvent(profileId: String, paymentId:String) {
-        val map = TrackAppUtils.gtmData(EVENT_NAME_CLICK_ORDER,
-                EVENT_CATEGORY_ORDER_COMPLETE,
-                EVENT_ACTION_PUSH_GTM_FALSE,
-                paymentId
+    fun sendPushGtmFalseEvent(profileId: String, paymentId: String) {
+        val map = TrackAppUtils.gtmData(
+            EVENT_NAME_CLICK_ORDER,
+            EVENT_CATEGORY_ORDER_COMPLETE,
+            EVENT_ACTION_PUSH_GTM_FALSE,
+            paymentId
         )
         map[ParentTrackingKey.KEY_PROFILE_ID] = profileId
         analyticTracker.sendGeneralEvent(map)
@@ -360,7 +368,7 @@ class ThankYouPageAnalytics @Inject constructor(
                 afValue[AFInAppEventParameterName.RECEIPT_ID] = thanksPageData.paymentID
                 afValue[AFInAppEventType.ORDER_ID] = orderIds
                 afValue[ParentTrackingKey.AF_SHIPPING_PRICE] = shipping
-                afValue[ParentTrackingKey.AF_PURCHASE_SITE] = when(ThankPageTypeMapper.getThankPageType(thanksPageData)){
+                afValue[ParentTrackingKey.AF_PURCHASE_SITE] = when (ThankPageTypeMapper.getThankPageType(thanksPageData)) {
                     MarketPlaceThankPage -> MARKET_PLACE
                     else -> DIGITAL
                 }
@@ -388,6 +396,38 @@ class ThankYouPageAnalytics @Inject constructor(
         }, onError = { it.printStackTrace() })
     }
 
+    fun sendViewShareIcon(
+        userShareType: String = "general",
+        orderIdList: String
+    ) {
+        val map = TrackAppUtils.gtmData(
+            EVENT_NAME_VIEW_COMMUNICATION,
+            EVENT_CATEGORY_SHARE,
+            EVENT_ACTION_VIEW_SHARE,
+            "$userShareType - $orderIdList"
+        )
+        map[KEY_TRACKER_ID] = TRACKER_46217
+        map[KEY_BUSINESS_UNIT] = BUSINESS_UNIT_SHARE
+        map[KEY_CURRENT_SITE] = CURRENT_SITE_MARKETPLACE
+        analyticTracker.sendGeneralEvent(map)
+    }
+
+    fun sendClickShareIcon(
+        userShareType: String = "general",
+        orderIdList: String
+    ) {
+        val map = TrackAppUtils.gtmData(
+            EVENT_NAME_CLICK_COMMUNICATION,
+            EVENT_CATEGORY_SHARE,
+            EVENT_ACTION_CLICK_SHARE,
+            "$userShareType - $orderIdList"
+        )
+        map[KEY_TRACKER_ID] = TRACKER_46218
+        map[KEY_BUSINESS_UNIT] = BUSINESS_UNIT_SHARE
+        map[KEY_CURRENT_SITE] = CURRENT_SITE_MARKETPLACE
+        analyticTracker.sendGeneralEvent(map)
+    }
+
     private fun addSlashInCategory(category: String?): String {
         return if (category.isNullOrBlank()) {
             ""
@@ -396,12 +436,15 @@ class ThankYouPageAnalytics @Inject constructor(
         }
     }
 
-
     companion object {
         const val EVENT_NAME_CLICK_ORDER = "clickOrder"
-        const val EVENT_CATEGORY_ORDER_COMPLETE = "order complete"
-        const val EVENT_ACTION_CLICK_BACK = "click back arrow"
+        const val EVENT_NAME_VIEW_COMMUNICATION = "viewCommunicationIris"
+        const val EVENT_NAME_CLICK_COMMUNICATION = "clickCommunication"
 
+        const val EVENT_CATEGORY_ORDER_COMPLETE = "order complete"
+        const val EVENT_CATEGORY_SHARE = "share - thank you page"
+
+        const val EVENT_ACTION_CLICK_BACK = "click back arrow"
         const val EVENT_ACTION_LIHAT_DETAIL = "click lihat detail tagihan"
         const val EVENT_ACTION_CHECK_TRANSACTION_LIST = "click check transactions list"
         const val EVENT_ACTION_BELANJA_LAGI = "click belanja lagi"
@@ -410,6 +453,8 @@ class ThankYouPageAnalytics @Inject constructor(
         const val EVENT_ACTION_CLICK_CHECK_PAYMENT_STATUS = "click cek status pembayaran"
         const val EVENT_ACTION_CLICK_BANNER = "click banner in thank you page"
         const val EVENT_ACTION_VIEW_BANNER = "view banner in thank you page"
+        const val EVENT_ACTION_VIEW_SHARE = "view - share on thank you page"
+        const val EVENT_ACTION_CLICK_SHARE = "click - share on thank you page"
 
         const val EVENT_LABEL_INSTANT = "instant"
         const val EVENT_LABEL_DEFERRED = "deffer"
@@ -418,9 +463,13 @@ class ThankYouPageAnalytics @Inject constructor(
         const val EVENT_ACTION_PUSH_GTM_FALSE = "push false gtm"
         const val TRACKER_45032 = "45032"
         const val TRACKER_45031 = "45031"
+        const val TRACKER_46217 = "46217"
+        const val TRACKER_46218 = "46218"
+
+        const val BUSINESS_UNIT_SHARE = "sharingexperience"
+        const val CURRENT_SITE_MARKETPLACE = "tokopediamarketplace"
     }
 }
-
 
 object ParentTrackingKey {
     val KEY_EVENT = "event"
@@ -433,6 +482,8 @@ object ParentTrackingKey {
     val KEY_PAYMENT_TYPE = "payment_type"
     val KEY_EVENT_VIEW_ITEM = "view_item"
     val KEY_EVENT_SELECT_CONTENT = "select_content"
+    val PROMO_CLICK = "promoClick"
+    val PROMO_VIEW = "promoView"
 
     val KEY_SHOP_ID = "shopId"
     val KEY_SHOP_TYPE = "shopType"
@@ -440,7 +491,7 @@ object ParentTrackingKey {
     val KEY_ECOMMERCE = "ecommerce"
     val KEY_CURRENT_SITE = "currentSite"
     val KEY_BUSINESS_UNIT = "businessUnit"
-    val KEY_PROMOTION = "promotion"
+    val KEY_PROMOTIONS = "promotions"
     const val IS_NEW_USER = "isNewUser"
     const val NEW_CUSTOMER = "new_customer"
     const val KEY_ID = "id"
@@ -451,7 +502,6 @@ object ParentTrackingKey {
     const val VALUE_IDR = "IDR"
     const val AF_KEY_CATEGORY_NAME = "category"
     const val AF_KEY_CRITEO = "criteo_track_transaction"
-
 
     const val KEY_USER_ID = "userId"
     const val KEY_PROFILE_ID = "profileId"

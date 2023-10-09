@@ -71,14 +71,12 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfigKey.HOME_ENABLE_AUTO_REFRESH_UOH
 import com.tokopedia.remoteconfig.RemoteConfigKey.SCP_REWARDS_MEDALI_TOUCH_POINT
 import com.tokopedia.scp_rewards_touchpoints.common.Error
 import com.tokopedia.scp_rewards_touchpoints.common.ORDER_LIST_HISTORY_PAGE
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.ScpToasterHelper
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.model.AnalyticsData
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.model.ScpToasterModel
-import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.response.ScpRewardsMedalTouchPointResponse
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.viewmodel.ScpRewardsMedalTouchPointViewModel
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.helper.ViewHelper
@@ -362,15 +360,6 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         const val POF_REQUEST_CODE = 600
     }
 
-    private fun isAutoRefreshEnabled(): Boolean {
-        return try {
-            val firebaseRemoteConfig = FirebaseRemoteConfigImpl(context)
-            return firebaseRemoteConfig.getBoolean(HOME_ENABLE_AUTO_REFRESH_UOH)
-        } catch (e: Exception) {
-            false
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         userSession = UserSession(context)
@@ -402,27 +391,11 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         refreshUohData()
     }
 
-    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
-        super.setUserVisibleHint(isVisibleToUser)
-        launchAutoRefresh(isVisibleToUser)
-    }
-
     private fun checkLogin() {
         if (userSession.isLoggedIn) {
             loadFilters()
         } else {
             startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
-        }
-    }
-
-    private fun launchAutoRefresh(isVisibleToUser: Boolean = true) {
-        if (isVisibleToUser && isAutoRefreshEnabled()) {
-            binding?.run {
-                globalErrorUoh.gone()
-                rvOrderList.visible()
-                rvOrderList.scrollToPosition(0)
-            }
-            refreshUohData()
         }
     }
 
@@ -575,7 +548,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
     private fun observeUohPmsCounter() {
         uohListViewModel.getUohPmsCounterResult.observe(viewLifecycleOwner) {
             if (it is Success) {
-                if (!paramUohOrder.hasActiveFilter()) {
+                if (!paramUohOrder.hasActiveFilter() && it.data.notifications.buyerOrderStatus.paymentStatus > 0) {
                     val data = UohTypeData(
                         dataObject = it.data,
                         typeLayout = UohConsts.TYPE_PMS_BUTTON
@@ -583,7 +556,11 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                     uohItemAdapter.appendPmsButton(data) { position ->
                         binding?.rvOrderList?.smoothScrollToPosition(position)
                     }
+                } else {
+                    uohItemAdapter.removePmsButton()
                 }
+            } else {
+                uohItemAdapter.removePmsButton()
             }
         }
     }
@@ -852,8 +829,8 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
     private fun observeScpToaster() {
         scpTouchPointViewModel.medalTouchPointData.observe(viewLifecycleOwner) {
             when (it.result) {
-                is com.tokopedia.scp_rewards_touchpoints.common.Success<*> -> {
-                    val data = ((it.result as com.tokopedia.scp_rewards_touchpoints.common.Success<*>).data as ScpRewardsMedalTouchPointResponse)
+                is com.tokopedia.scp_rewards_touchpoints.common.Success -> {
+                    val data = (it.result as com.tokopedia.scp_rewards_touchpoints.common.Success).data
                     if (data.scpRewardsMedaliTouchpointOrder.isShown) {
                         view?.let { view ->
                             val finishOrderResult = (uohListViewModel.finishOrderResult.value as Success).data
@@ -1874,11 +1851,13 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
 
             if (!paramUohOrder.hasActiveFilter()) {
                 uohListViewModel.getUohPmsCounterResult.value?.let {
-                    if (it is Success) {
+                    if (it is Success && it.data.notifications.buyerOrderStatus.paymentStatus > 0) {
                         val data = UohTypeData(dataObject = it.data, typeLayout = UohConsts.TYPE_PMS_BUTTON)
                         uohItemAdapter.appendPmsButton(data) { position ->
                             binding?.rvOrderList?.smoothScrollToPosition(position)
                         }
+                    } else {
+                        uohItemAdapter.removePmsButton()
                     }
                 }
             } else {

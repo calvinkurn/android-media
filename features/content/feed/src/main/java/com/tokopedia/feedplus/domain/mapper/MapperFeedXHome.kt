@@ -2,8 +2,8 @@ package com.tokopedia.feedplus.domain.mapper
 
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.content.common.report_content.model.FeedContentData
-import com.tokopedia.content.common.report_content.model.FeedMenuIdentifier
-import com.tokopedia.content.common.report_content.model.FeedMenuItem
+import com.tokopedia.content.common.report_content.model.ContentMenuIdentifier
+import com.tokopedia.content.common.report_content.model.ContentMenuItem
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.data.FeedXAuthor
 import com.tokopedia.feedplus.data.FeedXCampaign
@@ -138,7 +138,7 @@ class MapperFeedXHome @Inject constructor(
             publishedAt = card.publishedAt,
             maxDiscountPercentage = card.maximumDiscountPercentage,
             maxDiscountPercentageFmt = card.maximumDiscountPercentageFmt,
-            topAdsId = if (isTopAdsPost(card)) card.id else "",
+            topAdsId = if (isTopAdsPost(card)) card.id else ""
         )
     }
 
@@ -236,8 +236,7 @@ class MapperFeedXHome @Inject constructor(
         badgeUrl = author.badgeUrl,
         logoUrl = author.logoUrl,
         appLink = author.applink,
-        encryptedUserId = author.encryptedUserId,
-        isLive = author.isLive
+        encryptedUserId = author.encryptedUserId
     )
 
     private fun transformProduct(product: FeedXProduct): FeedCardProductModel =
@@ -279,7 +278,7 @@ class MapperFeedXHome @Inject constructor(
             cartable = product.cartable,
             isCashback = product.isCashback,
             cashbackFmt = product.cashbackFmt,
-            isAvailable = product.isAvailable,
+            isAvailable = product.isAvailable
         )
 
     private fun transformMedia(media: FeedXMedia): FeedMediaModel =
@@ -342,8 +341,7 @@ class MapperFeedXHome @Inject constructor(
                             badgeUrl = author.badgeUrl,
                             logoUrl = author.logoUrl,
                             appLink = author.applink,
-                            encryptedUserId = author.encryptedUserId,
-                            isLive = author.isLive
+                            encryptedUserId = author.encryptedUserId
                         )
                     },
                     text = item.text
@@ -390,7 +388,7 @@ class MapperFeedXHome @Inject constructor(
             (author.type.isUser && author.id == userSession.userId)
     }
 
-    private fun getMenuItems(author: FeedAuthorModel, card: FeedXCard): List<FeedMenuItem> {
+    private fun getMenuItems(author: FeedAuthorModel, card: FeedXCard): List<ContentMenuItem> {
         val contentData = FeedContentData(
             card.text,
             card.id,
@@ -400,10 +398,10 @@ class MapperFeedXHome @Inject constructor(
             if (isMyContent(author)) {
                 if (card.performanceSummaryPageLink.isNotBlank()) {
                     add(
-                        FeedMenuItem(
+                        ContentMenuItem(
                             iconUnify = IconUnify.GRAPH,
                             name = contentcommonR.string.performance_see,
-                            type = FeedMenuIdentifier.SeePerformance,
+                            type = ContentMenuIdentifier.SeePerformance,
                             appLink = card.performanceSummaryPageLink,
                             contentData = contentData
                         )
@@ -411,10 +409,10 @@ class MapperFeedXHome @Inject constructor(
                 }
                 if (card.insightSummaryPageLink.isNotBlank()) {
                     add(
-                        FeedMenuItem(
+                        ContentMenuItem(
                             iconUnify = IconUnify.GRAPH_REPORT,
                             name = contentcommonR.string.performance_learn_video_insight,
-                            type = FeedMenuIdentifier.LearnVideoInsight,
+                            type = ContentMenuIdentifier.LearnVideoInsight,
                             appLink = card.insightSummaryPageLink,
                             contentData = contentData
                         )
@@ -422,39 +420,39 @@ class MapperFeedXHome @Inject constructor(
                 }
             }
             add(
-                FeedMenuItem(
+                ContentMenuItem(
                     iconUnify = IconUnify.VISIBILITY,
                     name = R.string.feed_watch_mode,
-                    type = FeedMenuIdentifier.WatchMode,
+                    type = ContentMenuIdentifier.WatchMode,
                     contentData = contentData
                 )
             )
             if (isVideoPost(card)) {
                 add(
-                    FeedMenuItem(
+                    ContentMenuItem(
                         iconUnify = IconUnify.VOLUME_MUTE,
                         name = R.string.feed_mute_label,
-                        type = FeedMenuIdentifier.Mute,
+                        type = ContentMenuIdentifier.Mute,
                         contentData = contentData
                     )
                 )
             }
             if (isReportable(card)) {
                 add(
-                    FeedMenuItem(
+                    ContentMenuItem(
                         iconUnify = IconUnify.WARNING,
                         name = contentcommonR.string.content_common_menu_report,
-                        type = FeedMenuIdentifier.Report,
+                        type = ContentMenuIdentifier.Report,
                         contentData = contentData
                     )
                 )
             }
             if (card.deletable) {
                 add(
-                    FeedMenuItem(
+                    ContentMenuItem(
                         iconUnify = IconUnify.DELETE,
                         name = contentcommonR.string.content_common_menu_delete,
-                        type = FeedMenuIdentifier.Delete,
+                        type = ContentMenuIdentifier.Delete,
                         contentData = contentData
                     )
                 )

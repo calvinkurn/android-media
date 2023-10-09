@@ -171,7 +171,8 @@ class ShippingDurationViewHolder(
                     shippingDurationAdapterListener?.onShippingDurationChoosen(
                         shippingDurationUiModel.shippingCourierViewModelList,
                         cartPosition,
-                        shippingDurationUiModel.serviceData
+                        shippingDurationUiModel.serviceData,
+                        shippingDurationUiModel
                     )
                 }
             }

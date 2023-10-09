@@ -33,6 +33,7 @@ const val MAX_ROW = "MAX_ROW"
 
 const val IRIS_ENABLED = "iris_enabled"
 const val IRIS_PERFORMANCE_ENABLED = "iris_performance_enabled"
+const val IRIS_HAS_VISIT = "visit"
 const val REMOTE_CONFIG_IRIS_DB_FLUSH = "android_main_app_line_iris_db_flush"
 const val REMOTE_CONFIG_IRIS_DB_SEND = "android_main_app_line_iris_db_send"
 const val REMOTE_CONFIG_IRIS_BATCH_SEND = "android_main_app_line_iris_batch_send"

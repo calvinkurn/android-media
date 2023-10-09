@@ -135,8 +135,17 @@ object Constant {
         const val PROMO = "promo"
     }
 
+    internal object CompType {
+        const val SHOP_CARD = "shop_card"
+    }
+
     const val REDIRECTION = "redirection"
     const val NAVIGATION = "navigation"
     const val TAB_BACKGROUND =
         "https://images.tokopedia.net/img/android/res/default_recom_tab_background.png"
+
+    internal object PropertyType {
+        const val ATF_BANNER = "atf_banner"
+        const val TARGETING_BANNER = "targeting_banner"
+    }
 }

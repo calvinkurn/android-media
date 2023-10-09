@@ -31,9 +31,9 @@ class HomeIconRepository @Inject constructor(
         return GraphqlRequest(query, HomeIconData::class.java, mapOf(PARAM to param, PARAM_LOCATION to locationParams))
     }
 
-    companion object{
-        private const val PARAM = "param"
-        private const val PARAM_LOCATION = "location"
+    companion object {
+        const val PARAM = "param"
+        const val PARAM_LOCATION = "location"
     }
 
     override suspend fun getRemoteData(bundle: Bundle): HomeIconData {

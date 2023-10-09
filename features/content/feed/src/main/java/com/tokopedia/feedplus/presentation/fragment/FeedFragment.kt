@@ -38,15 +38,15 @@ import com.tokopedia.content.common.navigation.people.UserProfileActivityResult
 import com.tokopedia.content.common.report_content.bottomsheet.ContentReportBottomSheet
 import com.tokopedia.content.common.report_content.bottomsheet.ContentSubmitReportBottomSheet
 import com.tokopedia.content.common.report_content.bottomsheet.ContentThreeDotsMenuBottomSheet
-import com.tokopedia.content.common.report_content.model.FeedMenuIdentifier
-import com.tokopedia.content.common.report_content.model.FeedMenuItem
+import com.tokopedia.content.common.report_content.model.ContentMenuIdentifier
+import com.tokopedia.content.common.report_content.model.ContentMenuItem
 import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
 import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.feed.component.product.FeedTaggedProductBottomSheet
-import com.tokopedia.feed.component.product.FeedTaggedProductUiModel
+import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.feedcomponent.bottomsheets.FeedFollowersOnlyBottomSheet
 import com.tokopedia.feedcomponent.presentation.utils.FeedResult
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
@@ -86,6 +86,7 @@ import com.tokopedia.feedplus.presentation.model.PostSourceModel
 import com.tokopedia.feedplus.presentation.model.type.AuthorType
 import com.tokopedia.feedplus.presentation.uiview.FeedCampaignRibbonType
 import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView
+import com.tokopedia.feedplus.presentation.util.OverscrollEdgeEffectFactory
 import com.tokopedia.feedplus.presentation.util.VideoPlayerManager
 import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
 import com.tokopedia.feedplus.presentation.viewmodel.FeedPostViewModel
@@ -419,7 +420,10 @@ class FeedFragment :
             override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
                 when (event) {
                     Lifecycle.Event.ON_RESUME -> {
-                        if (checkResume(isOnResume = true)) resumeCurrentVideo()
+                        if (checkResume(isOnResume = true)) {
+                            resumeCurrentVideo()
+                            setDataEligibleForOnboarding()
+                        }
                     }
                     Lifecycle.Event.ON_PAUSE -> {
                         pauseCurrentVideo()
@@ -512,7 +516,7 @@ class FeedFragment :
 
     override fun onMenuClicked(
         id: String,
-        menuItems: List<FeedMenuItem>,
+        menuItems: List<ContentMenuItem>,
         trackerModel: FeedTrackerDataModel
     ) {
         currentTrackerData = trackerModel
@@ -534,14 +538,13 @@ class FeedFragment :
             }
         }
     }
-
     override fun onProfileClicked(appLink: String, type: AuthorType) {
         goToProfilePage(appLink, type.isShop)
     }
 
-    override fun onMenuItemClick(feedMenuItem: FeedMenuItem, contentId: String) {
-        when (feedMenuItem.type) {
-            FeedMenuIdentifier.Report -> {
+    override fun onMenuItemClick(contentMenuItem: ContentMenuItem, contentId: String) {
+        when (contentMenuItem.type) {
+            ContentMenuIdentifier.Report -> {
                 if (!userSession.isLoggedIn) {
                     onGoToLogin()
                 } else {
@@ -567,7 +570,7 @@ class FeedFragment :
                 }
             }
 
-            FeedMenuIdentifier.WatchMode -> {
+            ContentMenuIdentifier.WatchMode -> {
                 val position = getCurrentPosition()
                 if (position >= ZERO) {
                     adapter.showClearView(position)
@@ -578,22 +581,22 @@ class FeedFragment :
                 }
             }
 
-            FeedMenuIdentifier.Edit -> {
+            ContentMenuIdentifier.Edit -> {
                 val intent = RouteManager.getIntent(context, INTERNAL_AFFILIATE_CREATE_POST_V2)
                 intent.putExtra(PARAM_AUTHOR_TYPE, TYPE_CONTENT_PREVIEW_PAGE)
                 intent.putExtra(
                     CreatePostViewModel.TAG,
                     CreatePostViewModel().apply {
-                        caption = feedMenuItem.contentData?.caption.orEmpty()
-                        postId = feedMenuItem.contentData?.postId.orEmpty()
-                        editAuthorId = feedMenuItem.contentData?.authorId.orEmpty()
+                        caption = contentMenuItem.contentData?.caption.orEmpty()
+                        postId = contentMenuItem.contentData?.postId.orEmpty()
+                        editAuthorId = contentMenuItem.contentData?.authorId.orEmpty()
                     }
                 )
 
                 startActivity(intent)
             }
 
-            FeedMenuIdentifier.Delete -> {
+            ContentMenuIdentifier.Delete -> {
                 context?.let {
                     DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
                         setTitle(getString(feedplusR.string.dialog_delete_post_title))
@@ -601,8 +604,8 @@ class FeedFragment :
                         setPrimaryCTAText(getString(feedplusR.string.feed_delete))
                         setPrimaryCTAClickListener {
                             feedPostViewModel.doDeletePost(
-                                feedMenuItem.contentData?.postId.orEmpty(),
-                                feedMenuItem.contentData?.rowNumber.orZero()
+                                contentMenuItem.contentData?.postId.orEmpty(),
+                                contentMenuItem.contentData?.rowNumber.orZero()
                             )
                             dismiss()
                         }
@@ -615,9 +618,9 @@ class FeedFragment :
                 }
             }
 
-            FeedMenuIdentifier.SeePerformance,
-            FeedMenuIdentifier.LearnVideoInsight -> {
-                RouteManager.route(requireContext(), feedMenuItem.appLink)
+            ContentMenuIdentifier.SeePerformance,
+            ContentMenuIdentifier.LearnVideoInsight -> {
+                RouteManager.route(requireContext(), contentMenuItem.appLink)
             }
 
             FeedMenuIdentifier.Mute -> {
@@ -1200,6 +1203,7 @@ class FeedFragment :
             it.rvFeedPost.removeOnScrollListener(contentScrollListener)
             it.rvFeedPost.addOnScrollListener(contentScrollListener)
             it.rvFeedPost.itemAnimator = null
+            it.rvFeedPost.edgeEffectFactory = OverscrollEdgeEffectFactory()
         }
     }
 
@@ -1217,19 +1221,21 @@ class FeedFragment :
                                 )
                             )
                         }
+                        updateBottomActionView(RecyclerView.NO_POSITION)
                     } else {
                         adapter.setList(it.data.items) {
                             if (_binding == null) return@setList
                             updateBottomActionView(getCurrentPosition())
                         }
                         context?.let { ctx ->
-                            if (feedPostViewModel.shouldShowNoMoreContent) {
+                            if (feedPostViewModel.shouldShowNoMoreContent && !isCdp) {
                                 adapter.addElement(FeedNoContentModel.getNoMoreContentInstance(ctx))
                             }
                         }
                         feedPostViewModel.fetchTopAdsData()
                     }
-                    feedMainViewModel.onPostDataLoaded(it.data.items.isNotEmpty())
+
+                    setDataEligibleForOnboarding()
                     hideLoading()
                 }
                 is Fail -> {
@@ -1620,7 +1626,7 @@ class FeedFragment :
         RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
     }
 
-    override fun onProductCardClicked(product: FeedTaggedProductUiModel, itemPosition: Int) {
+    override fun onProductCardClicked(product: ContentTaggedProductUiModel, itemPosition: Int) {
         if (product.appLink.isEmpty()) return
 
         currentTrackerData?.let { data ->
@@ -1638,15 +1644,15 @@ class FeedFragment :
     }
 
     override fun onAddToCartProductButtonClicked(
-        product: FeedTaggedProductUiModel,
+        product: ContentTaggedProductUiModel,
         itemPosition: Int
     ) {
         if (!checkForFollowerBottomSheet(
                 currentTrackerData?.activityId ?: "",
                 itemPosition,
                 when (product.campaign.status) {
-                    is FeedTaggedProductUiModel.CampaignStatus.Upcoming -> FeedCardCampaignModel.UPCOMING
-                    is FeedTaggedProductUiModel.CampaignStatus.Ongoing -> FeedCardCampaignModel.ONGOING
+                    is ContentTaggedProductUiModel.CampaignStatus.Upcoming -> FeedCardCampaignModel.UPCOMING
+                    is ContentTaggedProductUiModel.CampaignStatus.Ongoing -> FeedCardCampaignModel.ONGOING
                     else -> FeedCardCampaignModel.NO
                 },
                 product.campaign.isExclusiveForMember
@@ -1668,7 +1674,7 @@ class FeedFragment :
         }
     }
 
-    private fun checkAddToCartAction(product: FeedTaggedProductUiModel) {
+    private fun checkAddToCartAction(product: ContentTaggedProductUiModel) {
         when {
             userSession.isLoggedIn -> {
                 if (product.showGlobalVariant) {
@@ -1757,14 +1763,14 @@ class FeedFragment :
         }
     }
 
-    private fun convertToSourceType(type: String): FeedTaggedProductUiModel.SourceType =
+    private fun convertToSourceType (type: String) : ContentTaggedProductUiModel.SourceType  =
         when (type) {
-            FeedXCard.TYPE_FEED_ASGC_RESTOCK, FeedXCard.TYPE_FEED_ASGC_NEW_PRODUCTS, FeedXCard.TYPE_FEED_ASGC_SHOP_DISCOUNT,
-            FeedXCard.TYPE_FEED_ASGC_SHOP_FLASH_SALE, FeedXCard.TYPE_FEED_ASGC_SPECIAL_RELEASE, TYPE_FEED_TOP_ADS -> FeedTaggedProductUiModel.SourceType.NonOrganic
-            else -> FeedTaggedProductUiModel.SourceType.Organic
-        }
+        FeedXCard.TYPE_FEED_ASGC_RESTOCK, FeedXCard.TYPE_FEED_ASGC_NEW_PRODUCTS, FeedXCard.TYPE_FEED_ASGC_SHOP_DISCOUNT,
+        FeedXCard.TYPE_FEED_ASGC_SHOP_FLASH_SALE, FeedXCard.TYPE_FEED_ASGC_SPECIAL_RELEASE, TYPE_FEED_TOP_ADS -> ContentTaggedProductUiModel.SourceType.NonOrganic
+        else -> ContentTaggedProductUiModel.SourceType.Organic
+    }
 
-    private fun openVariantBottomSheet(product: FeedTaggedProductUiModel) {
+    private fun openVariantBottomSheet(product: ContentTaggedProductUiModel) {
         atcVariantViewModel.setAtcBottomSheetParams(
             ProductVariantBottomSheetParams(
                 trackerCdListName = currentTrackerData?.activityId.orEmpty(),
@@ -1791,13 +1797,13 @@ class FeedFragment :
         }
     }
 
-    override fun onBuyProductButtonClicked(product: FeedTaggedProductUiModel, itemPosition: Int) {
+    override fun onBuyProductButtonClicked(product: ContentTaggedProductUiModel, itemPosition: Int) {
         if (!checkForFollowerBottomSheet(
                 currentTrackerData?.activityId ?: "",
                 itemPosition,
                 when (product.campaign.status) {
-                    is FeedTaggedProductUiModel.CampaignStatus.Upcoming -> FeedCardCampaignModel.UPCOMING
-                    is FeedTaggedProductUiModel.CampaignStatus.Ongoing -> FeedCardCampaignModel.ONGOING
+                    is ContentTaggedProductUiModel.CampaignStatus.Upcoming -> FeedCardCampaignModel.UPCOMING
+                    is ContentTaggedProductUiModel.CampaignStatus.Ongoing -> FeedCardCampaignModel.ONGOING
                     else -> FeedCardCampaignModel.NO
                 },
                 product.campaign.isExclusiveForMember
@@ -1827,7 +1833,7 @@ class FeedFragment :
     override val mvcLiveData: LiveData<Result<TokopointsCatalogMVCSummary>?>
         get() = feedPostViewModel.merchantVoucherLiveData
 
-    override val productListLiveData: LiveData<Result<List<FeedTaggedProductUiModel>>?>
+    override val productListLiveData: LiveData<Result<List<ContentTaggedProductUiModel>>?>
         get() = feedPostViewModel.feedTagProductList
 
     override fun sendMvcImpressionTracker(mvcList: List<AnimatedInfos?>) {
@@ -2072,6 +2078,15 @@ class FeedFragment :
                 }
                 else -> containerBottomAction.hide()
             }
+        }
+    }
+
+    private fun setDataEligibleForOnboarding() {
+        val selectedTab = feedMainViewModel.selectedTab
+        if (selectedTab?.isSelected == true && selectedTab.type == data?.type) {
+            feedMainViewModel.setDataEligibleForOnboarding(
+                feedPostViewModel.determinePostDataEligibilityForOnboarding(data?.isFollowingTab == true)
+            )
         }
     }
 

@@ -20,6 +20,7 @@ class ShopHomeCarouselProductAdapterTypeFactory(
     private val carouselProductCardOnItemImpressedListener: CarouselProductCardListener.OnItemImpressedListener?,
     private val carouselProductCardOnItemATCNonVariantClickListener: CarouselProductCardListener.OnATCNonVariantClickListener?,
     private val carouselProductCardOnItemAddVariantClickListener: CarouselProductCardListener.OnAddVariantClickListener?,
+    private val isOverrideWidgetTheme: Boolean
 ) : BaseAdapterTypeFactory(), TypeFactoryShopHomeProductCarousel {
 
     override fun type(shopHomeProductViewModel: ShopHomeProductUiModel): Int {
@@ -37,24 +38,26 @@ class ShopHomeCarouselProductAdapterTypeFactory(
         return when (type) {
             ShopHomeCarouselProductItemListViewHolder.LAYOUT -> {
                 ShopHomeCarouselProductItemListViewHolder(
-                    parent,
-                    listProductCardModel,
-                    carouselProductCardOnItemAddToCartListener,
-                    carouselProductCardOnItemClickListener,
-                    carouselProductCardOnItemImpressedListener,
-                    carouselProductCardOnItemATCNonVariantClickListener,
-                    carouselProductCardOnItemAddVariantClickListener
+                    itemView = parent,
+                    listProductCardModel = listProductCardModel,
+                    carouselProductCardOnItemAddToCartListener = carouselProductCardOnItemAddToCartListener,
+                    carouselProductCardOnItemClickListener = carouselProductCardOnItemClickListener,
+                    carouselProductCardOnItemImpressedListener = carouselProductCardOnItemImpressedListener,
+                    carouselProductCardOnItemATCNonVariantClickListener = carouselProductCardOnItemATCNonVariantClickListener,
+                    carouselProductCardOnItemAddVariantClickListener = carouselProductCardOnItemAddVariantClickListener,
+                    isOverrideWidgetTheme = isOverrideWidgetTheme
                 )
             }
             ShopHomeCarouselProductItemBigGridViewHolder.LAYOUT -> {
                 ShopHomeCarouselProductItemBigGridViewHolder(
-                    parent,
-                    listProductCardModel,
-                    carouselProductCardOnItemAddToCartListener,
-                    carouselProductCardOnItemClickListener,
-                    carouselProductCardOnItemImpressedListener,
-                    carouselProductCardOnItemATCNonVariantClickListener,
-                    carouselProductCardOnItemAddVariantClickListener,
+                    itemView = parent,
+                    listProductCardModel = listProductCardModel,
+                    carouselProductCardOnItemAddToCartListener = carouselProductCardOnItemAddToCartListener,
+                    carouselProductCardOnItemClickListener = carouselProductCardOnItemClickListener,
+                    carouselProductCardOnItemImpressedListener = carouselProductCardOnItemImpressedListener,
+                    carouselProductCardOnItemATCNonVariantClickListener = carouselProductCardOnItemATCNonVariantClickListener,
+                    carouselProductCardOnItemAddVariantClickListener = carouselProductCardOnItemAddVariantClickListener,
+                    isOverrideWidgetTheme = isOverrideWidgetTheme
                 )
             }
             else -> {
