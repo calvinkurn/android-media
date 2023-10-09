@@ -22,6 +22,7 @@ import com.tokopedia.stories.analytics.StoriesEEModel
 import com.tokopedia.stories.databinding.FragmentStoriesGroupBinding
 import com.tokopedia.stories.view.adapter.StoriesGroupPagerAdapter
 import com.tokopedia.stories.view.animation.StoriesPageAnimation
+import com.tokopedia.stories.view.custom.StoriesErrorView
 import com.tokopedia.stories.view.model.StoriesArgsModel
 import com.tokopedia.stories.view.model.StoriesUiModel
 import com.tokopedia.stories.view.utils.KEY_ARGS
@@ -209,6 +210,14 @@ class StoriesGroupFragment @Inject constructor(
 
     private fun setNoInternet(isShow: Boolean, onClick : () -> Unit = {}) = with(binding.layoutStoriesNoInet) {
         showWithCondition(isShow)
+        type = StoriesErrorView.Type.NoInternet
+        setAction { onClick() }
+        setCloseAction { activity?.finish() }
+    }
+
+    private fun setErrorType(errorType: StoriesErrorView.Type, isShow: Boolean, onClick: () -> Unit = {}) = with(binding.layoutStoriesNoInet) {
+        showWithCondition(isShow)
+        type = errorType
         setAction { onClick() }
         setCloseAction { activity?.finish() }
     }

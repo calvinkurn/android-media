@@ -8,6 +8,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.stories.databinding.LayoutErrorViewBinding
+import com.tokopedia.stories.R
 
 /**
  * @author by astidhiyaa on 09/10/23
@@ -26,16 +27,19 @@ class StoriesErrorView : ConstraintLayout {
         this, true
     )
 
-    private var type : Type = Type.Unknown
+    var type : Type = Type.Unknown
         set(value) {
             field = value
             val (title, description, image) =
                 when (value) {
-                    else -> Triple ("Ini title", "ini desc", IconUnify.ERROR)
+                    Type.NoContent -> Triple(R.string.stories_content_unavailable, null, IconUnify.IMAGE)
+                    Type.NoInternet -> Triple(R.string.stories_content_no_network_title, R.string.stories_content_no_network_description, IconUnify.SIGNAL_INACTIVE)
+                    Type.FailedLoad -> Triple(null, R.string.stories_retry_description, IconUnify.RELOAD)
+                    else -> Triple (null, null, IconUnify.ERROR)
                 }
             binding.storiesErrorIcon.setImage(newIconId = image)
-            binding.storiesErrorTitle.text = title
-            binding.storiesErrorDesc.text = description
+            binding.storiesErrorTitle.text = title?.let { context.getString(it) }
+            binding.storiesErrorDesc.text = description?.let { context.getString(it) }
         }
 
     //isRetryAble
