@@ -298,11 +298,8 @@ class FeedBaseFragment :
         }
     }
 
-    fun showSwipeOnboarding() {
-        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
-            delay(COACHMARK_START_DELAY_IN_SEC.toDuration(DurationUnit.SECONDS))
-            binding.viewVerticalSwipeOnboarding.showAnimated()
-        }
+    private fun showSwipeOnboarding() {
+        binding.viewVerticalSwipeOnboarding.showAnimated()
     }
 
     private fun setupView() {
@@ -416,7 +413,9 @@ class FeedBaseFragment :
                         is NetworkResult.Success -> {
                             hideErrorView()
                             hideLoading()
+
                             initTabsView(state.data)
+                            handleActiveTab(state.data)
                         }
                         is NetworkResult.Error -> {
                             showErrorView(state.error)
@@ -447,9 +446,6 @@ class FeedBaseFragment :
                         }
                         FeedMainEvent.ShowSwipeOnboarding -> {
                             showSwipeOnboarding()
-                        }
-                        is FeedMainEvent.SelectTab -> {
-                            handleActiveTab(event.data, event.position)
                         }
                         else -> {}
                     }
@@ -620,8 +616,6 @@ class FeedBaseFragment :
 
         if (isJustLoggedIn && userSession.isLoggedIn) {
             showJustLoggedInToaster()
-        } else {
-            setupActiveTab(tab)
         }
         isJustLoggedIn = false
     }
@@ -753,10 +747,16 @@ class FeedBaseFragment :
      * - viewModel.setActiveTab(position);
      * - viewModel.setActiveTab(type);
      */
-    private fun handleActiveTab(dataModel: FeedDataModel, position: Int) {
-        // keep active tab updated whenever sending tracker
-        feedNavigationAnalytics.setActiveTab(dataModel)
-        binding.vpFeedTabItemsContainer.setCurrentItem(position, true)
+    private fun handleActiveTab(tab: FeedTabModel) {
+        val selectedTab = feedMainViewModel.selectedTab
+
+        if (selectedTab == null) {
+            setupActiveTab(tab)
+        } else {
+            // keep active tab updated whenever sending tracker
+            feedNavigationAnalytics.setActiveTab(selectedTab)
+            binding.vpFeedTabItemsContainer.setCurrentItem(tab.data.indexOf(selectedTab), true)
+        }
     }
 
     private fun handleTabTransition(position: Int) {
@@ -811,8 +811,6 @@ class FeedBaseFragment :
         private const val PARAM_PUSH_NOTIFICATION = "push"
 
         private const val THRESHOLD_OFFSET_HALF = 0.5f
-
-        private const val COACHMARK_START_DELAY_IN_SEC = 3
 
         private const val ONBOARDING_SHOW_DELAY = 500L
     }

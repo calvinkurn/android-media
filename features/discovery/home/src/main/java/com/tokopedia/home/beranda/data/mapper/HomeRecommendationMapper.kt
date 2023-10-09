@@ -8,6 +8,8 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationBannerTopAdsDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationUtil
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationUtil.LAYOUT_NAME_LIST
 import java.util.*
 
 class HomeRecommendationMapper {
@@ -21,12 +23,15 @@ class HomeRecommendationMapper {
         val productStack = Stack<HomeRecommendationItemDataModel>()
         // reverse stack because to get the first in
         Collections.reverse(productStack)
-        productStack.addAll(convertToHomeProductFeedModel(recommendationProduct.product, recommendationProduct.pageName, tabName, pageNumber))
+        productStack.addAll(convertToHomeProductFeedModel(recommendationProduct.product, recommendationProduct.pageName, recommendationProduct.layoutName, tabName, pageNumber))
 
         val bannerStack = Stack<BannerRecommendationDataModel>()
-        // reverse stack because to get the first in
-        Collections.reverse(productStack)
-        bannerStack.addAll(convertToHomeBannerFeedModel(recommendationProduct.banners, tabName, pageNumber))
+        // ignore banner when getting list type
+        if(recommendationProduct.layoutName != LAYOUT_NAME_LIST) {
+            // reverse stack because to get the first in
+            Collections.reverse(productStack)
+            bannerStack.addAll(convertToHomeBannerFeedModel(recommendationProduct.banners, tabName, pageNumber))
+        }
 
         recommendationProduct.layoutTypes.forEachIndexed { index, layoutType ->
             when (layoutType.type) {
@@ -34,7 +39,10 @@ class HomeRecommendationMapper {
                     visitables.add(productStack.pop())
                 }
                 TYPE_BANNER -> {
-                    visitables.add(bannerStack.pop())
+                    // ignore banner when getting list type
+                    if(recommendationProduct.layoutName != LAYOUT_NAME_LIST) {
+                        visitables.add(bannerStack.pop())
+                    }
                 }
                 TYPE_BANNER_ADS -> {
                     visitables.add(HomeRecommendationBannerTopAdsDataModel(position = index))
@@ -71,12 +79,12 @@ class HomeRecommendationMapper {
         return bannerFeedViewModels
     }
 
-    private fun convertToHomeProductFeedModel(products: List<Product>, pageName: String, tabName: String, pageNumber: Int): List<HomeRecommendationItemDataModel> {
+    private fun convertToHomeProductFeedModel(products: List<Product>, pageName: String, layoutName: String, tabName: String, pageNumber: Int): List<HomeRecommendationItemDataModel> {
         val homeFeedViewModels = ArrayList<HomeRecommendationItemDataModel>()
         for (position in products.indices) {
             val product = products[position]
 
-            homeFeedViewModels.add(HomeRecommendationItemDataModel(product, pageName, (((pageNumber - 1) * products.size) + position + 1), tabName))
+            homeFeedViewModels.add(HomeRecommendationItemDataModel(product, pageName, layoutName, (((pageNumber - 1) * products.size) + position + 1), tabName))
         }
         return homeFeedViewModels
     }
