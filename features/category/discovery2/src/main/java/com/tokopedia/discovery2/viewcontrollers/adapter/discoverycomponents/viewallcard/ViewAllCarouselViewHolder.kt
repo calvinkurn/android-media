@@ -42,9 +42,9 @@ class ViewAllCarouselViewHolder(
             isTitleNumberStyle = true
             title = data.title.orEmpty()
             mode = ViewAllCard.MODE_NORMAL
-            setCta(data.action.orEmpty()) {
-                handleClickListener(data.applinks)
-            }
+            setCta(data.action.orEmpty())
+
+            handleClickListener(data.applinks)
         }
     }
 
