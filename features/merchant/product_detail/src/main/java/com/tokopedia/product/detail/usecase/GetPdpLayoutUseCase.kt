@@ -482,7 +482,8 @@ open class GetPdpLayoutUseCase @Inject constructor(
     private val refreshPage
         get() = requestParams.getBoolean(ProductDetailCommonConstant.PARAM_REFRESH_PAGE, false)
 
-    private val ignoreComponentInCache by lazy {
+    // public for unit test only
+    val ignoreComponentInCache by lazy {
         listOf(
             ProductDetailConstant.PRODUCT_LIST,
             ProductDetailConstant.VIEW_TO_VIEW,

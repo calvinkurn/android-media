@@ -88,6 +88,7 @@ import io.mockk.slot
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
@@ -2808,6 +2809,32 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     @Test
     fun `initial aPlusContentExpanded value should be false`() {
         assertFalse(viewModel.isAPlusContentExpanded())
+    }
+
+    /** PDP Cacheable **/
+    @Test
+    fun `checkable is true`() {
+        coEvery { getPdpLayoutUseCase.shouldCacheable } returns true
+        assertTrue(viewModel.isCacheable())
+
+        coEvery { getPdpLayoutUseCase.shouldCacheable } returns false
+        assertFalse(viewModel.isCacheable())
+    }
+
+    @Test
+    fun `pdp get layout throwable within use-case flow`() {
+        val productParams = ProductParams()
+
+        coEvery {
+            getPdpLayoutUseCase.executeOnBackground()
+        } answers { flow { throw Throwable() } }
+
+        viewModel.getProductP1(productParams, userLocationLocal = getUserLocationCache())
+
+        coVerify {
+            getPdpLayoutUseCase.executeOnBackground()
+        }
+        assertTrue(viewModel.productLayout.value is Fail)
     }
 
     companion object {

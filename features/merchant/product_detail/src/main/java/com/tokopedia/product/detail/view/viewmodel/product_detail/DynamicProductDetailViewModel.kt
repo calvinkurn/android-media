@@ -686,7 +686,8 @@ class DynamicProductDetailViewModel @Inject constructor(
             _addToCartLiveData.value = result.asSuccess()
         }
     }
-    private fun getProductP2(urlQuery: String = "") {
+
+    private fun getProductP2(urlQuery: String) {
         launch(context = dispatcher.io) {
             runCatching {
                 val productLayout = (_productLayout.value as? Success)?.data.orEmpty()
