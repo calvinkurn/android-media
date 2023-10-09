@@ -6,7 +6,7 @@ import com.tokopedia.home.R
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
-import com.tokopedia.productcard.ProductCardGridView
+import com.tokopedia.productcard.ProductCardListView
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.smart_recycler_helper.SmartAbstractViewHolder
 import com.tokopedia.smart_recycler_helper.SmartListener
@@ -15,15 +15,14 @@ import com.tokopedia.smart_recycler_helper.SmartListener
  * Created by Lukas on 2019-07-15
  */
 
-class HomeRecommendationItemViewHolder(itemView: View, private val cardInteraction: Boolean = false) : SmartAbstractViewHolder<HomeRecommendationItemDataModel>(itemView) {
+class HomeRecommendationItemListViewHolder(itemView: View, private val cardInteraction: Boolean = false) : SmartAbstractViewHolder<HomeRecommendationItemDataModel>(itemView) {
 
     companion object{
         @LayoutRes
-        val LAYOUT = R.layout.home_feed_item
-        const val PM_PRO_TITLE = "Power Merchant Pro"
+        val LAYOUT = R.layout.home_feed_item_list
     }
 
-    private val productCardView by lazy { itemView.findViewById<ProductCardGridView>(R.id.productCardView) }
+    private val productCardView by lazy { itemView.findViewById<ProductCardListView>(R.id.productCardView) }
 
     private fun setLayout(element: HomeRecommendationItemDataModel, listener: HomeRecommendationListener){
         val productCardModelLabelGroupList = element.product.labelGroup.map {
