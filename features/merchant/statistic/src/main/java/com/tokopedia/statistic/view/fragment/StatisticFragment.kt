@@ -94,7 +94,7 @@ import com.tokopedia.statistic.view.bottomsheet.ActionMenuBottomSheet
 import com.tokopedia.statistic.view.bottomsheet.DateFilterBottomSheet
 import com.tokopedia.statistic.view.model.StatisticPageUiModel
 import com.tokopedia.statistic.view.viewhelper.FragmentListener
-import com.tokopedia.statistic.view.viewhelper.MultiComponentTabCoachMark
+import com.tokopedia.statistic.view.viewhelper.MultiComponentTabUiInteractor
 import com.tokopedia.statistic.view.viewhelper.RejectedOrderRateCoachMark
 import com.tokopedia.statistic.view.viewhelper.StatisticItemDecoration
 import com.tokopedia.statistic.view.viewhelper.StatisticLayoutManager
@@ -160,9 +160,9 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         ViewModelProvider(this, viewModelFactory).get(StatisticViewModel::class.java)
     }
 
-    private val multiComponentCoachMark: MultiComponentTabCoachMark? by lazy {
+    private val multiComponentUiInteractor: MultiComponentTabUiInteractor? by lazy {
         context?.let {
-            MultiComponentTabCoachMark(it)
+            MultiComponentTabUiInteractor(it)
         }
     }
 
@@ -273,12 +273,12 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         super.onPause()
         hideTooltipIfExist()
         hideMonthPickerIfExist()
-        multiComponentCoachMark?.hideCoachMark()
+        multiComponentUiInteractor?.hideCoachMark()
     }
 
     override fun onDestroyView() {
         rejectedOrderRateCoachMark.destroy()
-        multiComponentCoachMark?.setCoachMarkMultiComponentShown()
+        multiComponentUiInteractor?.setCoachMarkMultiComponentShown()
         mLayoutManager = null
         super.onDestroyView()
     }
@@ -317,7 +317,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
     override fun createAdapterInstance(): BaseListAdapter<BaseWidgetUiModel<*>, WidgetAdapterFactoryImpl> {
         return StatisticAdapter(adapterTypeFactory) {
-            multiComponentCoachMark?.hideCoachMark()
+            multiComponentUiInteractor?.hideCoachMark()
         }
     }
 
@@ -600,7 +600,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     override fun showCoachMarkFirstTab(view: View) {
-        multiComponentCoachMark?.showCoachMarkMultiComponent(view)
+        multiComponentUiInteractor?.showCoachMarkMultiComponent(view)
     }
 
     override fun clickMultiComponentTab(tabName: String) {
@@ -983,6 +983,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         super.renderList(mWidgetList)
 
         scrollToWidgetBySelectedDataKey()
+        scrollToWawasanPlus(mWidgetList)
 
         if (isFirstLoad) {
             recyclerView?.post {
@@ -991,6 +992,30 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             isFirstLoad = false
         } else {
             requestVisibleWidgetsData()
+        }
+    }
+
+    private fun scrollToWawasanPlus(mWidgetList: MutableList<BaseWidgetUiModel<*>>) {
+        if (selectedWidget.isNotEmpty() &&
+            multiComponentUiInteractor?.shouldAutoScroll() == false
+        ) return
+
+        try {
+            val wawasanPlusIndex = mWidgetList.indexOfFirst {
+                it is MultiComponentWidgetUiModel
+            }
+
+            if (wawasanPlusIndex == RecyclerView.NO_POSITION) {
+                return
+            }
+
+            recyclerView?.post {
+                mLayoutManager?.scrollToPositionWithOffset(wawasanPlusIndex, 100)
+                multiComponentUiInteractor?.setAlreadyAutoScroll()
+            }
+
+        } catch (e: Throwable) {
+            Timber.e(e)
         }
     }
 

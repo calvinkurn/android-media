@@ -8,11 +8,12 @@ import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.statistic.R.string
 
 
-class MultiComponentTabCoachMark(context: Context) {
+class MultiComponentTabUiInteractor(context: Context) {
 
     companion object {
         private const val PREF_NAME = "statistic_coachmark_pref"
         private const val STC_COACHMARK_MULTI_COMPONENT = "coachmark_multi_component_tab"
+        private const val STC_AUTO_SCROLL_MULTI_COMPONENT = "auto_scroll_multi_component_tab"
     }
 
     private val sharedPref: SharedPreferences? by lazy {
@@ -48,9 +49,19 @@ class MultiComponentTabCoachMark(context: Context) {
 
     fun setCoachMarkMultiComponentShown() {
         setCoachMarkState(STC_COACHMARK_MULTI_COMPONENT, true)
+        destroy()
     }
 
-    fun destroy() {
+    fun shouldAutoScroll(): Boolean {
+        return sharedPref?.getBoolean(STC_AUTO_SCROLL_MULTI_COMPONENT, false) ?: false
+    }
+
+    fun setAlreadyAutoScroll() {
+        editor?.putBoolean(STC_AUTO_SCROLL_MULTI_COMPONENT, true)
+        editor?.apply()
+    }
+
+    private fun destroy() {
         coachMarkView = null
     }
 
