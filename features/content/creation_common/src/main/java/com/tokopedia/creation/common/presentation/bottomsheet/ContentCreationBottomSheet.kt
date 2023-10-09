@@ -10,9 +10,13 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.creation.common.R
+import com.tokopedia.creation.common.di.ContentCreationComponent
+import com.tokopedia.creation.common.di.DaggerContentCreationComponent
 import com.tokopedia.creation.common.presentation.components.ContentCreationComponent
+import com.tokopedia.creation.common.presentation.model.ContentCreationConfigModel
 import com.tokopedia.creation.common.presentation.model.ContentCreationItemModel
 import com.tokopedia.creation.common.presentation.viewmodel.ContentCreationViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -23,7 +27,7 @@ import com.tokopedia.utils.lifecycle.collectAsStateWithLifecycle
  */
 class ContentCreationBottomSheet : BottomSheetUnify() {
 
-    var viewModelFactory: ViewModelProvider.Factory? = null
+    private var factory: ViewModelProvider.Factory? = null
     private var viewModel: ContentCreationViewModel? = null
 
     @StringRes
@@ -31,6 +35,12 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
 
     var shouldShowPerformanceAction: Boolean = false
     var listener: ContentCreationBottomSheetListener? = null
+    private var creationConfig: ContentCreationConfigModel = ContentCreationConfigModel.Empty
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        factory = createComponent().contentCreationFactory()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,8 +50,6 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
         isDragable = true
         isHideable = true
         bottomSheetBehaviorDefaultState = BottomSheetBehavior.STATE_EXPANDED
-
-        renderHeaderView()
 
         val composeView = ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
@@ -77,11 +85,14 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
 
         activity?.let {
-            viewModelFactory?.let { factory ->
-                viewModel = ViewModelProvider(it, factory)[ContentCreationViewModel::class.java]
-                viewModel?.fetchConfig()
+            if (factory == null) {
+                factory = createComponent().contentCreationFactory()
             }
+
+            viewModel = ViewModelProvider(it, factory!!)[ContentCreationViewModel::class.java]
         }
+
+        renderHeaderView()
     }
 
     private fun renderHeaderView() {
@@ -97,23 +108,30 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
                     )
                 }
             }
+
+            viewModel?.fetchConfig(creationConfig)
         }
     }
 
     fun show(
         fragmentManager: FragmentManager,
         @StringRes title: Int? = null,
-        showPerformanceAction: Boolean = false
+        showPerformanceAction: Boolean = false,
+        creationConfig: ContentCreationConfigModel = ContentCreationConfigModel.Empty
     ) {
         title?.let {
             this.title = it
         }
         this.shouldShowPerformanceAction = showPerformanceAction
-
-        renderHeaderView()
+        this.creationConfig = creationConfig
 
         if (!isAdded) show(fragmentManager, TAG)
     }
+
+    private fun createComponent(): ContentCreationComponent =
+        DaggerContentCreationComponent.builder()
+            .baseAppComponent((context?.applicationContext as BaseMainApplication).baseAppComponent)
+            .build()
 
     interface ContentCreationBottomSheetListener {
         fun onCreationItemSelected(data: ContentCreationItemModel)

@@ -186,7 +186,6 @@ class FeedBaseFragment :
         childFragmentManager.addFragmentOnAttachListener { _, fragment ->
             when (fragment) {
                 is ContentCreationBottomSheet -> {
-                    fragment.viewModelFactory = viewModelFactory
                     fragment.listener = this
                     fragment.shouldShowPerformanceAction = false
                 }
@@ -268,6 +267,7 @@ class FeedBaseFragment :
 
                 openAppLink.launch(ApplinkConst.PLAY_BROADCASTER)
             }
+
             ContentCreationTypeEnum.POST -> {
                 feedNavigationAnalytics.eventClickCreatePost()
 
@@ -437,14 +437,17 @@ class FeedBaseFragment :
                             hideErrorView()
                             showLoading()
                         }
+
                         is NetworkResult.Success -> {
                             hideErrorView()
                             hideLoading()
                             initTabsView(state.data)
                         }
+
                         is NetworkResult.Error -> {
                             showErrorView(state.error)
                         }
+
                         NetworkResult.Unknown -> {
                             // ignore
                         }
@@ -469,12 +472,15 @@ class FeedBaseFragment :
                         FeedMainEvent.HasJustLoggedIn -> {
                             showJustLoggedInToaster()
                         }
+
                         FeedMainEvent.ShowSwipeOnboarding -> {
                             showSwipeOnboarding()
                         }
+
                         is FeedMainEvent.SelectTab -> {
                             handleActiveTab(event.data, event.position)
                         }
+
                         else -> {}
                     }
 
@@ -497,6 +503,7 @@ class FeedBaseFragment :
                             binding.uploadView.setProgress(status.progress)
                             binding.uploadView.setThumbnail(status.thumbnailUrl)
                         }
+
                         is UploadStatus.Finished -> {
                             binding.uploadView.hide()
 
@@ -525,6 +532,7 @@ class FeedBaseFragment :
                                 )
                             }
                         }
+
                         is UploadStatus.Failed -> {
                             binding.uploadView.setFailed()
                             binding.uploadView.setListener(object : UploadInfoView.Listener {
@@ -656,9 +664,11 @@ class FeedBaseFragment :
             source.tabName != null -> {
                 feedMainViewModel.setActiveTab(source.tabName)
             }
+
             source.index > -1 && source.index < tab.data.size -> {
                 selectActiveTab(source.index)
             }
+
             else -> selectActiveTab(0)
         }
     }

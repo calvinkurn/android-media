@@ -53,10 +53,10 @@ class ContentCreationEntryPointWidget @JvmOverloads constructor(
 
     var onClickListener: () -> Unit = {}
 
-    val component = createComponent()
-    val factory: ViewModelProvider.Factory = component.contentCreationFactory()
+    private val component = createComponent()
+    private val factory: ViewModelProvider.Factory = component.contentCreationFactory()
 
-    var viewModel: ContentCreationViewModel? = null
+    private var viewModel: ContentCreationViewModel? = null
     var creationBottomSheetListener: ContentCreationBottomSheet.ContentCreationBottomSheetListener? =
         null
 
@@ -84,7 +84,7 @@ class ContentCreationEntryPointWidget @JvmOverloads constructor(
     override fun Content() {
         val creationConfig = viewModel?.creationConfig?.collectAsStateWithLifecycle()?.value
 
-        if (creationConfig is Success && creationConfig.data.creationItems.isNotEmpty())
+        if (creationConfig is Success && creationConfig.data.creationItems.isNotEmpty()) {
             ContentCreationEntryPointComponent(
                 iconId = IconUnify.VIDEO,
                 text = MethodChecker.fromHtml(stringResource(id = creationcommonR.string.content_creation_entry_point_desription))
@@ -96,9 +96,13 @@ class ContentCreationEntryPointWidget @JvmOverloads constructor(
                 getFragmentManager()?.let { fm ->
                     ContentCreationBottomSheet
                         .getFragment(fm, context.classLoader)
-                        .show(fm)
+                        .show(
+                            fm,
+                            creationConfig = creationConfig.data
+                        )
                 }
             }
+        }
     }
 
     fun fetchConfig() {
@@ -129,7 +133,6 @@ class ContentCreationEntryPointWidget @JvmOverloads constructor(
         } catch (_: Throwable) {
             null
         }
-
 }
 
 @Composable
@@ -190,8 +193,7 @@ fun ContentCreationEntryPointComponentPreview() {
     ContentCreationEntryPointComponent(
         iconId = IconUnify.VIDEO,
         text = "Promosikan produkmu dengan Live, Video, Foto & Story",
-        buttonText = "Buat Konten",
+        buttonText = "Buat Konten"
     ) {
-
     }
 }
