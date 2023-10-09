@@ -21,7 +21,7 @@ class CarouselProductCardView: FrameLayout {
 
     private val adapter: Adapter by lazyThreadSafetyNone {
         Adapter(CarouselProductCardTypeFactoryImpl()) {
-            recyclerView?.requestLayout()
+            requestLayout()
         }
     }
 
@@ -69,8 +69,6 @@ class CarouselProductCardView: FrameLayout {
             adapter = this@CarouselProductCardView.adapter
 
             itemAnimator = null
-
-            setHasFixedSize(true)
 
             snapHelper.attachToRecyclerView(this)
 

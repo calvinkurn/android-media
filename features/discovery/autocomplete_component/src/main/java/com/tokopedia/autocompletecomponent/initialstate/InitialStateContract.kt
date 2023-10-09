@@ -96,8 +96,6 @@ interface InitialStateContract {
 
         fun trackEventClickSearchBarEducation(item: BaseItemInitialStateSearch)
 
-        fun enableMps()
-        fun disableMps()
     }
 
     interface Presenter : CustomerPresenter<View> {

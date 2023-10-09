@@ -3,20 +3,21 @@ package com.tokopedia.digital_product_detail.presentation.data
 import com.google.gson.Gson
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
 import com.tokopedia.common.topupbills.favoritecommon.data.TopupBillsPersoFavNumberData
-import com.tokopedia.common_digital.atc.data.response.ResponseCartData
-import com.tokopedia.digital_product_detail.data.model.data.DigitalCatalogProductInputMultiTab
-import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
-import com.tokopedia.digital_product_detail.data.model.data.DigitalDigiPersoGetPersonalizedItem
-import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.common.topupbills.favoritepdp.data.model.PersoFavNumberGroup
-import com.tokopedia.digital_product_detail.presentation.util.JsonToString
-import com.tokopedia.recharge_component.model.denom.DenomData
-import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.common.topupbills.favoritepdp.domain.model.MenuDetailModel
 import com.tokopedia.common_digital.atc.data.response.AtcErrorButton
 import com.tokopedia.common_digital.atc.data.response.AtcErrorPage
 import com.tokopedia.common_digital.atc.data.response.ErrorAtc
+import com.tokopedia.common_digital.atc.data.response.ResponseCartData
+import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.digital_product_detail.data.model.data.DigitalAtcResult
+import com.tokopedia.digital_product_detail.data.model.data.DigitalCatalogProductInputMultiTab
+import com.tokopedia.digital_product_detail.data.model.data.DigitalDigiPersoGetPersonalizedItem
+import com.tokopedia.digital_product_detail.data.model.data.DigitalSaveAccessTokenResponse
+import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
+import com.tokopedia.digital_product_detail.presentation.util.JsonToString
+import com.tokopedia.recharge_component.model.denom.DenomData
+import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
 
 class PulsaDataFactory {
@@ -148,6 +149,20 @@ class PulsaDataFactory {
         )
     }
 
+    fun getRechargeCheckBalanceData(): DigitalDigiPersoGetPersonalizedItem {
+        return gson.fromJson(
+            gson.JsonToString(GET_RECHARGE_CHECK_BALANCE),
+            DigitalDigiPersoGetPersonalizedItem::class.java
+        )
+    }
+
+    fun saveRechargeUserAccessToken(): DigitalSaveAccessTokenResponse {
+        return gson.fromJson(
+            gson.JsonToString(SAVE_RECHARGE_USER_ACCESS_TOKEN),
+            DigitalSaveAccessTokenResponse::class.java
+        )
+    }
+
     fun getAddToCartData(): ResponseCartData {
         return gson.fromJson(
             gson.JsonToString(GET_ADD_TO_CART),
@@ -155,13 +170,13 @@ class PulsaDataFactory {
         )
     }
 
-    fun getErrorAtcFromGql(): DigitalAtcResult{
+    fun getErrorAtcFromGql(): DigitalAtcResult {
         return DigitalAtcResult(
             errorAtc = getErrorAtc()
         )
     }
 
-    fun getErrorAtc(): ErrorAtc{
+    fun getErrorAtc(): ErrorAtc {
         return ErrorAtc(
             status = 400,
             title = "this is an error",
@@ -193,6 +208,8 @@ class PulsaDataFactory {
         const val GET_PREFIX_OPERATOR_EMPTY_VALIDATION = "common_telco/get_prefix_operator_empty_validation_mock.json"
         const val GET_MENU_DETAIL = "pulsa/get_menu_detail_mock.json"
         const val ERROR_UNVERIFIED_PHONE_NUMBER = "common_telco/unverified_phone_number_error_mock.json"
+        const val GET_RECHARGE_CHECK_BALANCE = "pulsa/get_recharge_check_balance_mock.json"
+        const val SAVE_RECHARGE_USER_ACCESS_TOKEN = "common_telco/save_recharge_user_access_token_mock.json"
 
         const val CATEGORY_ID = "1"
         const val OPERATOR_ID = "5"
