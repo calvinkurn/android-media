@@ -401,14 +401,14 @@ class CartViewModel @Inject constructor(
                 wishlistIndex = index
             }
         }
-        cartDataList.value.add(++wishlistIndex, cartSectionHeaderHolderData)
-        cartModel.firstCartSectionHeaderPosition = when (cartModel.firstCartSectionHeaderPosition) {
-            -1 -> wishlistIndex
-            else -> min(cartModel.firstCartSectionHeaderPosition, wishlistIndex)
-        }
-        val insertedWishlistIndex = ++wishlistIndex
-        if (insertedWishlistIndex < cartDataList.value.size) {
-            cartDataList.value.add(insertedWishlistIndex, cartWishlistHolderData)
+
+        if (cartDataList.value.isNotEmpty()) {
+            cartDataList.value.add(++wishlistIndex, cartSectionHeaderHolderData)
+            cartModel.firstCartSectionHeaderPosition = when (cartModel.firstCartSectionHeaderPosition) {
+                -1 -> wishlistIndex
+                else -> min(cartModel.firstCartSectionHeaderPosition, wishlistIndex)
+            }
+            cartDataList.value.add(++wishlistIndex, cartWishlistHolderData)
             cartDataList.notifyObserver()
         }
     }
@@ -982,14 +982,14 @@ class CartViewModel @Inject constructor(
                 recentViewIndex = index
             }
         }
-        cartDataList.value.add(++recentViewIndex, cartSectionHeaderHolderData)
-        cartModel.firstCartSectionHeaderPosition = when (cartModel.firstCartSectionHeaderPosition) {
-            -1 -> recentViewIndex
-            else -> min(cartModel.firstCartSectionHeaderPosition, recentViewIndex)
-        }
-        val insertedRecentViewIndex = ++recentViewIndex
-        if (insertedRecentViewIndex < cartDataList.value.size) {
-            cartDataList.value.add(insertedRecentViewIndex, cartRecentViewHolderData)
+
+        if (cartDataList.value.isNotEmpty()) {
+            cartDataList.value.add(++recentViewIndex, cartSectionHeaderHolderData)
+            cartModel.firstCartSectionHeaderPosition = when (cartModel.firstCartSectionHeaderPosition) {
+                -1 -> recentViewIndex
+                else -> min(cartModel.firstCartSectionHeaderPosition, recentViewIndex)
+            }
+            cartDataList.value.add(++recentViewIndex, cartRecentViewHolderData)
             cartDataList.notifyObserver()
         }
     }
@@ -1091,21 +1091,21 @@ class CartViewModel @Inject constructor(
                 recommendationIndex = index
             }
         }
-        cartSectionHeaderHolderData?.let {
-            cartDataList.value.add(++recommendationIndex, cartSectionHeaderHolderData)
-            cartModel.firstCartSectionHeaderPosition =
-                when (cartModel.firstCartSectionHeaderPosition) {
-                    -1 -> recommendationIndex
-                    else -> min(cartModel.firstCartSectionHeaderPosition, recommendationIndex)
-                }
-        }
 
-        if (recommendationPage == 1) {
-            addCartTopAdsHeadlineData(++recommendationIndex)
-        }
-        val insertedRecommendationIndex = ++recommendationIndex
-        if (insertedRecommendationIndex < cartDataList.value.size) {
-            cartDataList.value.add(insertedRecommendationIndex, cartRecommendationItemHolderDataList)
+        if (cartDataList.value.isNotEmpty()) {
+            cartSectionHeaderHolderData?.let {
+                cartDataList.value.add(++recommendationIndex, cartSectionHeaderHolderData)
+                cartModel.firstCartSectionHeaderPosition =
+                    when (cartModel.firstCartSectionHeaderPosition) {
+                        -1 -> recommendationIndex
+                        else -> min(cartModel.firstCartSectionHeaderPosition, recommendationIndex)
+                    }
+            }
+
+            if (recommendationPage == 1) {
+                addCartTopAdsHeadlineData(++recommendationIndex)
+            }
+            cartDataList.value.add(++recommendationIndex, cartRecommendationItemHolderDataList)
             cartDataList.notifyObserver()
         }
     }
