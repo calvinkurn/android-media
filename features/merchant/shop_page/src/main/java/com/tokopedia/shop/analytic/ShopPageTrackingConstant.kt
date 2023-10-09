@@ -343,6 +343,7 @@ object ShopPageTrackingConstant {
     const val ITEM_LIST_PERSO_PRODUCT_COMPARISON = "/shoppage - comparison"
     const val ITEM_LIST_REIMAGINED_HOTSPOT_WIDGET = "/shoppage reimagined - hotspot widget"
     const val ITEM_LIST_REIMAGINED_DIRECT_PURCHASE_WIDGET = "/shoppage reimagined - direct purchase"
+    const val ITEM_LIST_REIMAGINED_ADVANCED_PRODUCT_CAROUSEL = "/shoppage reimagined - advanced carousel"
     const val VALUE_MULTIPLE_BUNDLING = "multiple bundling"
     const val VALUE_SINGLE_BUNDLING = "single bundling"
     const val SHOP_AFFILIATE = "affiliate"
@@ -490,6 +491,7 @@ object ShopPageTrackingConstant {
 
         // Product Carousel Widget
         const val IMPRESSION_REIMAGINED_BANNER_PRODUCT_CAROUSEL = "reimagined - impression advanced carousel"
+        const val IMPRESSION_REIMAGINED_PRODUCT_CAROUSEL = "reimagined - impression product advanced carousel"
         const val CLICK_REIMAGINED_BANNER_PRODUCT_CAROUSEL = "reimagined - click banner advanced carousel"
         const val CLICK_REIMAGINED_PRODUCT_CAROUSEL = "reimagined - click product advanced carousel"
     }
@@ -574,13 +576,15 @@ object ShopPageTrackingConstant {
         const val TRACKER_ID_CLICK_REIMAGINED_SHOWCASE_NAVIGATION = "45925"
         const val TRACKER_ID_CLICK_VIEW_ALL_REIMAGINED_SHOWCASE_NAVIGATION = "45926"
         const val TRACKER_ID_IMPRESSION_REIMAGINED_SHOWCASE_NAVIGATION_WITH_TAB = "45927"
-        const val TRACKER_ID_CLICK_REIMAGINED_SHOWCASE_NAVIGATION_WITH_TAB = "45928"
-        const val TRACKER_ID_CLICK_REIMAGINED_BANNER_SHOWCASE_NAVIGATION_WITH_TAB = "45929"
+        const val TRACKER_ID_CLICK_REIMAGINED_SHOWCASE_NAVIGATION_WITH_TAB = "45948"
+        const val TRACKER_ID_CLICK_REIMAGINED_BANNER_SHOWCASE_NAVIGATION_WITH_TAB = "45949"
 
         // Product Carousel Widget
         const val TRACKER_ID_IMPRESSION_REIMAGINED_BANNER_PRODUCT_CAROUSEL = "45950"
+        const val TRACKER_ID_IMPRESSION_REIMAGINED_PRODUCT_CAROUSEL = "46621"
         const val TRACKER_ID_CLICK_REIMAGINED_BANNER_PRODUCT_CAROUSEL = "45951"
         const val TRACKER_ID_CLICK_REIMAGINED_PRODUCT_CAROUSEL = "45952"
+        
         const val TRACKER_ID_REIMAGINED_IMPRESSION_HEADER_SHOP = "45906"
         const val TRACKER_ID_REIMAGINED_CLICK_HEADER_SHOP_NAME = "45907"
         const val TRACKER_ID_REIMAGINED_CLICK_HEADER_SHOP_REVIEW = "45908"
@@ -595,7 +599,7 @@ object ShopPageTrackingConstant {
         const val TRACKER_ID_REIMAGINED_CLICK_PRODUCT_BANNER_HOTSPOT = "45923"
         const val TRACKER_ID_REIMAGINED_IMPRESSION_DIRECT_PURCHASE_WIDGET = "45955"
         const val TRACKER_ID_REIMAGINED_CLICK_ETALASE_GROUP_DIRECT_PURCHASE_WIDGET = "45956"
-        const val TRACKER_ID_REIMAGINED_CLICK_ETALASE_DIRECT_PURCHASE_WIDGET = "459557"
+        const val TRACKER_ID_REIMAGINED_CLICK_ETALASE_DIRECT_PURCHASE_WIDGET = "45957"
         const val TRACKER_ID_REIMAGINED_CLICK_ADD_TO_CART_DIRECT_PURCHASE_WIDGET = "45958"
         const val TRACKER_ID_REIMAGINED_IMPRESSION_PRODUCT_DIRECT_PURCHASE_WIDGET = "46620"
         const val TRACKER_ID_REIMAGINED_CLICK_PRODUCT_DIRECT_PURCHASE_WIDGET = "45959"

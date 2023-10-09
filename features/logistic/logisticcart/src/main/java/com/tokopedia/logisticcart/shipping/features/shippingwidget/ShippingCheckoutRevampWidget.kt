@@ -686,6 +686,9 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
             iconChevronChooseCourier.setOnClickListener {
                 mListener?.onChangeCourierClickListener(shippingWidgetUiModel.currentAddress)
             }
+            viewSpaceNormalShippingCourier.setOnClickListener {
+                mListener?.onChangeCourierClickListener(shippingWidgetUiModel.currentAddress)
+            }
         }
     }
 
