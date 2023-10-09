@@ -72,11 +72,17 @@ class OrderSummaryPageCartProcessor @Inject constructor(
         return result
     }
 
-    suspend fun getOccCart(source: String, gatewayCode: String, tenor: Int): ResultGetOccCart {
+    suspend fun getOccCart(
+        source: String,
+        gatewayCode: String,
+        tenor: Int,
+        isCartReimagine: Boolean
+    ): ResultGetOccCart {
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.io) {
             try {
-                val orderData = getOccCartUseCase.executeSuspend(getOccCartUseCase.createRequestParams(source, gatewayCode, tenor))
+                val orderData = getOccCartUseCase
+                    .executeSuspend(getOccCartUseCase.createRequestParams(source, gatewayCode, tenor, isCartReimagine))
                 return@withContext ResultGetOccCart(
                     orderCart = orderData.cart,
                     orderPreference = OrderPreference(orderData.ticker, orderData.onboarding, orderData.preference.isValidProfile),

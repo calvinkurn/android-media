@@ -18,9 +18,6 @@ data class HomeData(
     @SerializedName("dynamicHomeIcon")
     @Expose
     var dynamicHomeIcon: DynamicHomeIcon = DynamicHomeIcon(),
-    @SerializedName("homeFlag")
-    @Expose
-    var homeFlag: HomeFlag = HomeFlag(),
     @SerializedName("token")
     @Expose
     var token: String = "",

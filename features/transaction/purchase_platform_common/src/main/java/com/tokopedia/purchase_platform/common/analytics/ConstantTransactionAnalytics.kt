@@ -78,6 +78,8 @@ object ConstantTransactionAnalytics {
         const val CLICK_CX = "clickCX"
         const val SELECT_CONTENT = "select_content"
         const val REMOVE_FROM_CART_V2 = "remove_from_cart"
+        const val CLICK_PG = "clickPG"
+        const val VIEW_PG_IRIS = "viewPGIris"
     }
 
     object EventCategory {
@@ -416,6 +418,11 @@ object ConstantTransactionAnalytics {
         const val CLICK_NOTE_ICON = "click note icon"
         const val CLICK_BUTTON_MIN_TO_DELETE_CART = "click button - to delete cart"
         const val IMPRESSION_CART = "impression cart"
+
+        // BMGM
+        const val CLICK_SNK_BMGM = "click snk bmgm"
+        const val CLICK_BMGM_RECOMMENDATION = "click bmgm recommendation"
+        const val IMPRESSION_BMGM_RECOMMENDATION = "impression bmgm recommendation"
     }
 
     object EventLabel {
@@ -515,6 +522,7 @@ object ConstantTransactionAnalytics {
         const val DIMENSION_BUSINESS_UNIT_HOME_BROWSE = "home & browse"
         const val DIMENSION_BUSINESS_UNIT_FINTECH = "fintech"
         const val DIMENSION_BUSINESS_UNIT_PROMO = "promo"
+        const val DIMENSION_SESSION_IRIS = "sessionIris"
     }
 
     object TrackerId {
@@ -569,5 +577,10 @@ object ConstantTransactionAnalytics {
         const val CLICK_NOTE_ICON = "46929"
         const val IMPRESSION_CART = "46932"
         const val CLICK_BUTTON_MIN_TO_DELETE_CART = "46933"
+
+        // BMGM
+        const val CLICK_SNK_BMGM = "46781"
+        const val CLICK_BMGM_RECOMMENDATION = "47209"
+        const val VIEW_BMGM_RECOMMENDATION = "47208"
     }
 }

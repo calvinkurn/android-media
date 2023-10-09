@@ -57,7 +57,8 @@ class DeleteCartTest : BaseCartViewModelTest() {
                 forceExpandCollapsedUnavailableItems = false,
                 isFromGlobalCheckbox = true,
                 isFromEditBundle = false,
-                addWishList = false
+                addWishList = false,
+                listOfferId = arrayListOf()
             ),
             cartViewModel.deleteCartEvent.value
         )
@@ -101,7 +102,8 @@ class DeleteCartTest : BaseCartViewModelTest() {
                 forceExpandCollapsedUnavailableItems = false,
                 isFromGlobalCheckbox = false,
                 isFromEditBundle = false,
-                addWishList = false
+                addWishList = false,
+                listOfferId = arrayListOf()
             ),
             cartViewModel.deleteCartEvent.value
         )
@@ -145,7 +147,8 @@ class DeleteCartTest : BaseCartViewModelTest() {
                 forceExpandCollapsedUnavailableItems = false,
                 isFromGlobalCheckbox = false,
                 isFromEditBundle = false,
-                addWishList = false
+                addWishList = false,
+                listOfferId = arrayListOf()
             ),
             cartViewModel.deleteCartEvent.value
         )
