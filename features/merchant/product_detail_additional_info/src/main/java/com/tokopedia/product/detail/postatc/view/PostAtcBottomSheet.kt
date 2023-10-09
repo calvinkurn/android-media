@@ -9,6 +9,8 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.updatePadding
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.google.firebase.crashlytics.BuildConfig
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.globalerror.GlobalError
@@ -170,8 +172,9 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcBottomSheetDelegate {
             adapter.replaceComponents(it.data)
             updateFooter()
         }, fail = {
-                showError(it)
-            })
+            showError(it)
+            logException(it)
+        })
         PostAtcTracking.impressionPostAtcBottomSheet(
             trackingQueue,
             userSession.userId,
@@ -182,6 +185,17 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcBottomSheetDelegate {
     /**
      * End of Observe ViewModel
      */
+
+    private fun logException(t: Throwable) {
+        if (BuildConfig.DEBUG) return t.printStackTrace()
+
+        val errorMessage = String.format(
+            getString(R.string.pdp_post_atc_log_error_get_layout),
+            userSession.userId,
+            t.message
+        )
+        FirebaseCrashlytics.getInstance().recordException(Exception(errorMessage, t))
+    }
 
     private fun updateFooter() {
         val data = viewModel.postAtcInfo.footer
