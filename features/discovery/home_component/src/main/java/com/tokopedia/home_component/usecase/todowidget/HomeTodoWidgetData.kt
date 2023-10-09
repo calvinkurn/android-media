@@ -2,6 +2,7 @@ package com.tokopedia.home_component.usecase.todowidget
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.home_component.model.AtfContent
 import com.tokopedia.home_component.model.ChannelConfig
 import com.tokopedia.home_component.util.ChannelStyleUtil.parseBorderStyle
 import com.tokopedia.home_component.util.ChannelStyleUtil.parseDividerSize
@@ -28,7 +29,7 @@ class HomeTodoWidgetData {
         @SerializedName("config")
         @Expose
         val config: Config = Config(),
-    )
+    ): AtfContent
 
     data class Header(
         @SerializedName("title")

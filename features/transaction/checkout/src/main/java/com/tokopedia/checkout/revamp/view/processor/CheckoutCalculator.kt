@@ -116,7 +116,7 @@ class CheckoutCalculator @Inject constructor(
         var hasAddOnSelected = false
         var totalAddOnGiftingPrice = 0.0
         var totalAddOnProductServicePrice = 0.0
-        var qtyAddOn = 0
+        var totalBmgmDiscount = 0.0
         val countMapSummaries = hashMapOf<Int, Pair<Double, Int>>()
         val listShipmentAddOnSummary: ArrayList<ShipmentAddOnSummaryModel> = arrayListOf()
         val checkoutCostModel = listData.cost()!!
@@ -143,6 +143,9 @@ class CheckoutCalculator @Inject constructor(
                         } else {
                             totalItemPrice += cartItem.quantity * cartItem.price
                         }
+                        if (cartItem.isBMGMItem && cartItem.bmgmItemPosition == ShipmentMapper.BMGM_ITEM_HEADER) {
+                            totalBmgmDiscount += cartItem.bmgmTotalDiscount
+                        }
                         if (cartItem.addOnGiftingProductLevelModel.status == 1) {
                             if (cartItem.addOnGiftingProductLevelModel.addOnsDataItemModelList.isNotEmpty()) {
                                 for (addOnsData in cartItem.addOnGiftingProductLevelModel.addOnsDataItemModelList) {
@@ -154,19 +157,16 @@ class CheckoutCalculator @Inject constructor(
                         if (cartItem.addOnProduct.listAddOnProductData.isNotEmpty()) {
                             for (addOnProductService in cartItem.addOnProduct.listAddOnProductData) {
                                 if (addOnProductService.isChecked) {
-                                    totalAddOnProductServicePrice += (addOnProductService.price * cartItem.quantity)
-                                    if (countMapSummaries.containsKey(addOnProductService.type)) {
-                                        qtyAddOn += cartItem.quantity
-                                    } else {
-                                        qtyAddOn = cartItem.quantity
-                                    }
+                                    val addOnQty = if (addOnProductService.fixedQty) 1 else cartItem.quantity
+                                    totalAddOnProductServicePrice += (addOnProductService.price * addOnQty)
+                                    val totalQtyAddOn = addOnQty + (countMapSummaries[addOnProductService.type]?.second ?: 0)
                                     val totalPriceAddOn =
-                                        (qtyAddOn * addOnProductService.price) + (
+                                        (addOnQty * addOnProductService.price) + (
                                             countMapSummaries[addOnProductService.type]?.first
                                                 ?: 0.0
                                             )
                                     countMapSummaries[addOnProductService.type] =
-                                        totalPriceAddOn to qtyAddOn
+                                        totalPriceAddOn to totalQtyAddOn
                                 }
                             }
                         }
@@ -221,12 +221,12 @@ class CheckoutCalculator @Inject constructor(
         }
         totalPrice =
             totalItemPrice + finalShippingFee + insuranceFee + totalPurchaseProtectionPrice + additionalFee + totalBookingFee -
-            shipmentCost.productDiscountAmount - tradeInPrice + totalAddOnGiftingPrice + totalAddOnProductServicePrice
+            shipmentCost.productDiscountAmount - tradeInPrice + totalAddOnGiftingPrice + totalAddOnProductServicePrice -
+            totalBmgmDiscount
         shipmentCost = shipmentCost.copy(totalWeight = totalWeight)
         shipmentCost = shipmentCost.copy(additionalFee = additionalFee)
         shipmentCost = shipmentCost.copy(originalItemPrice = totalItemPrice)
-        shipmentCost =
-            shipmentCost.copy(finalItemPrice = totalItemPrice - shipmentCost.productDiscountAmount)
+        shipmentCost = shipmentCost.copy(finalItemPrice = totalItemPrice - shipmentCost.productDiscountAmount - totalBmgmDiscount)
         shipmentCost = shipmentCost.copy(totalItem = totalItem)
         shipmentCost = shipmentCost.copy(originalShippingFee = shippingFee)
         shipmentCost = shipmentCost.copy(finalShippingFee = finalShippingFee)

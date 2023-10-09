@@ -30,6 +30,6 @@ data class SomDetailShipping(
     val isShippingPrinted: Boolean = false,
     val shipmentLogo: String = "",
     val courierInfo: String = "",
-    val logisticInfo: SomDetailOrder.Data.GetSomDetail.LogisticInfo = SomDetailOrder.Data.GetSomDetail.LogisticInfo(),
+    val logisticInfo: SomDetailOrder.GetSomDetail.LogisticInfo = SomDetailOrder.GetSomDetail.LogisticInfo(),
     val shipmentTickerInfo: TickerInfo? = TickerInfo()
 )

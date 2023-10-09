@@ -3650,18 +3650,16 @@ class ShopPageHeaderFragment :
             val chips = ArrayList(
                 listShopPageTabModel.mapIndexed { index, shopPageHeaderTabModel ->
                     val isSelected = (index == tabLayout?.selectedTabPosition)
-                    val thumbnail =
-                        if (listShopPageTabModel[index].tabFragment is ShopPageCampaignFragment) {
-                            (listShopPageTabModel[index].tabFragment as ShopPageCampaignFragment)
-                                .shopCampaignTabAdapter.getCampaignBanner()?.data?.imageUrl.orEmpty()
-                        } else {
-                            String.EMPTY
-                        }
+                    val thumbnail = if (listShopPageTabModel[index].tabFragment is ShopPageCampaignFragment) {
+                        (listShopPageTabModel[index].tabFragment as ShopPageCampaignFragment)
+                            .shopCampaignTabAdapter.getCampaignBanner()?.data?.imageUrl.orEmpty()
+                    } else {
+                        String.EMPTY
+                    }
 
-                    val shopUrl =
-                        Uri.parse(UriUtil.buildUri(shopPageHeaderDataModel?.shopCoreUrl ?: ""))
-                            .buildUpon()
-                            .appendPath(listShopPageTabModel[index].tabPathUrl).toString()
+                    val shopUrl = Uri.parse(UriUtil.buildUri(shopPageHeaderDataModel?.shopCoreUrl ?: ""))
+                        .buildUpon()
+                        .appendPath(listShopPageTabModel[index].tabPathUrl).toString()
 
                     shopPageHeaderTabModel.map(
                         isSelected,
@@ -3674,18 +3672,13 @@ class ShopPageHeaderFragment :
                             id = shopPageHeaderDataModel?.shopId ?: "",
                             deeplink = Uri.parse(UriUtil.buildUri(ApplinkConst.SHOP, shopId))
                                 .buildUpon()
-                                .appendQueryParameter(QUERY_TAB, shopPageHeaderTabModel.tabName)
-                                .toString()
+                                .appendQueryParameter(QUERY_TAB, shopPageHeaderTabModel.tabName).toString()
                         ),
                         index
                     )
                 }
             )
-            shopPageTracking?.showChipsInUniversalSharingBottomSheet(
-                chips.joinToString("-"),
-                shopId,
-                userId
-            )
+            shopPageTracking?.showChipsInUniversalSharingBottomSheet(chips.joinToString("-"), shopId, userId)
 
             val targetIndex = Int.ZERO
             chips.swap(tabLayout?.selectedTabPosition.orZero(), targetIndex)
