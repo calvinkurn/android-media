@@ -5208,7 +5208,7 @@ class CartRevampFragment :
     }
 
     override fun onApplyPromoFailed(throwable: Throwable) {
-        // no-op
+        showToastMessageRed(throwable)
     }
 
     override fun onClearPromoSuccess(
@@ -5229,7 +5229,7 @@ class CartRevampFragment :
     }
 
     override fun onClearPromoFailed(throwable: Throwable) {
-        // no-op
+        showToastMessageRed(throwable)
     }
 
     private fun getGroupProductTicker(cartItemHolderData: CartItemHolderData) {

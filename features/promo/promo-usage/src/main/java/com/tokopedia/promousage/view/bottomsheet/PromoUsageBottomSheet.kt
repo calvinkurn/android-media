@@ -711,9 +711,9 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                     var maxPromoHeight = getScreenHeight()
                         .minus(BOTTOM_SHEET_MARGIN_TOP_IN_DP.toPx())
                         .minus(BOTTOM_SHEET_TOTAL_AMOUNT_HEIGHT_IN_DP.toPx())
-                    val hasTickerInfo = state.tickerInfo.message.isNotBlank()
-                        && state.tickerInfo.iconUrl.isNotBlank()
-                        && state.tickerInfo.backgroundUrl.isNotBlank()
+                    val hasTickerInfo = state.tickerInfo.message.isNotBlank() &&
+                        state.tickerInfo.iconUrl.isNotBlank() &&
+                        state.tickerInfo.backgroundUrl.isNotBlank()
                     if (hasTickerInfo) {
                         maxPromoHeight = maxPromoHeight
                             .minus(BOTTOM_SHEET_TICKER_INFO_HEIGHT_IN_DP.toPx())
@@ -947,7 +947,6 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
 
                 is ClearPromoUiAction.Failed -> {
                     renderLoadingDialog(false)
-                    showToastError(uiAction.throwable)
                     listener?.onClearPromoFailed(uiAction.throwable)
                     processAndSendClickCheckoutPromoEvent(false, emptyList())
                     dismiss()
@@ -978,7 +977,6 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
 
                 is ApplyPromoUiAction.Failed -> {
                     renderLoadingDialog(false)
-                    showToastError(uiAction.throwable)
                     listener?.onApplyPromoFailed(uiAction.throwable)
                     processAndSendClickCheckoutPromoEvent(false, emptyList())
                     dismiss()
@@ -1181,11 +1179,11 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun showToastError(throwable: Throwable) {
-        binding?.root?.context?.let { showToastError(throwable.getErrorMessage(it)) }
+        activity?.let { showToastError(throwable.getErrorMessage(it)) }
     }
 
     private fun showToastError(message: String) {
-        binding?.root?.let {
+        parentFragment?.view?.let {
             Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
         }
     }
