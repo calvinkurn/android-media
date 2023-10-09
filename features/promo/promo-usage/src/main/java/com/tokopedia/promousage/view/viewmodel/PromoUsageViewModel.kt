@@ -451,8 +451,9 @@ class PromoUsageViewModel @Inject constructor(
                                             item.state is PromoItemState.Selected
                                     val isVisibleAndExpanded =
                                         item.isVisible && item.isExpanded
-                                    if (isMvcPromo && isVisibleAndExpanded
-                                        && !isClickedItem && !isDisabledOrIneligibleOrSelected) {
+                                    if (isMvcPromo && isVisibleAndExpanded &&
+                                        !isClickedItem && !isDisabledOrIneligibleOrSelected
+                                    ) {
                                         if (!needToShowLoading) {
                                             needToShowLoading = true
                                         }
@@ -553,8 +554,8 @@ class PromoUsageViewModel @Inject constructor(
         items: List<DelegateAdapterItem>
     ): Pair<PromoRecommendationItem, List<DelegateAdapterItem>> {
         val initialSelectedCodes = recommendationItem.selectedCodes
-        val isRecommendedCodeSelected = clickedItem.state is PromoItemState.Selected
-            && clickedItem.isRecommended
+        val isRecommendedCodeSelected = clickedItem.state is PromoItemState.Selected &&
+            clickedItem.isRecommended
         val selectedRecommendationCodes = if (isRecommendedCodeSelected) {
             recommendationItem.selectedCodes.plus(clickedItem.code)
         } else {
@@ -1796,6 +1797,7 @@ class PromoUsageViewModel @Inject constructor(
                         previousSavingInfo = pageState.savingInfo
                     )
                     updatedItems = sortPromo(updatedItems)
+                    updatedItems = addTncPromo(updatedItems)
                     _promoPageUiState.postValue(
                         pageState.copy(
                             items = updatedItems,
