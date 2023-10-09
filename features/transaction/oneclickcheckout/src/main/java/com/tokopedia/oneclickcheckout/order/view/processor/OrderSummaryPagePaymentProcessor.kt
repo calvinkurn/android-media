@@ -1,6 +1,7 @@
 package com.tokopedia.oneclickcheckout.order.view.processor
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.oneclickcheckout.common.PAYMENT_CC_TYPE_TENOR_FULL
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.order.data.creditcard.CartDetailsItem
@@ -90,13 +91,14 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(
 
     private fun mapAfpbToInstallmentTerm(tenor: TenorListData): OrderPaymentInstallmentTerm {
         var intTerm = 0
-        if (tenor.type != PAYMENT_CC_TYPE_TENOR_FULL) intTerm = tenor.type.toInt()
+        if (tenor.type != PAYMENT_CC_TYPE_TENOR_FULL) intTerm = tenor.type.toIntOrZero()
         return OrderPaymentInstallmentTerm(
             term = intTerm,
             isEnable = !tenor.disable,
             fee = tenor.fee,
             monthlyAmount = tenor.amount,
-            description = tenor.desc
+            description = tenor.desc,
+            gatewayCode = tenor.gatewayCode
         )
     }
 

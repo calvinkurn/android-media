@@ -1728,7 +1728,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
         }
 
         override fun choosePayment(profile: OrderProfile, payment: OrderPayment) {
-            val currentGatewayCode = profile.payment.gatewayCode
+            val currentGatewayCode = payment.gatewayCode
             orderSummaryAnalytics.eventClickArrowToChangePaymentOption(currentGatewayCode, userSession.get().userId)
             val intent = Intent(context, PaymentListingActivity::class.java).apply {
                 putExtra(PaymentListingActivity.EXTRA_ADDRESS_ID, profile.address.addressId)

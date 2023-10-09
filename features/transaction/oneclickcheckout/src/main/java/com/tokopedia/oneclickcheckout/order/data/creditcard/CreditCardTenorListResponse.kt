@@ -41,5 +41,8 @@ data class TenorListItem(
     val disabled: Boolean = false,
 
     @SerializedName("type")
-    val type: String = ""
+    val type: String = "",
+
+    @SerializedName("gateway_code")
+    val gatewayCode: String = ""
 )

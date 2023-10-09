@@ -137,7 +137,8 @@ data class OrderPaymentInstallmentTerm(
     var isError: Boolean = false,
     var fee: Double = 0.0,
     var monthlyAmount: Double = 0.0,
-    var description: String = ""
+    var description: String = "",
+    var gatewayCode: String = ""
 )
 
 data class OrderPaymentOvoAdditionalData(

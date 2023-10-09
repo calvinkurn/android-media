@@ -46,7 +46,8 @@ class CreditCardTenorListUseCase @Inject constructor(@ApplicationContext private
                 amount = it.amount,
                 fee = it.fee,
                 rate = it.rate,
-                disable = it.disabled
+                disable = it.disabled,
+                gatewayCode = it.gatewayCode
             )
             arrayListTenor.add(tenor)
         }
@@ -58,18 +59,19 @@ class CreditCardTenorListUseCase @Inject constructor(@ApplicationContext private
 
         val QUERY = """
             mutation creditCardTenorList(${'$'}input: CreditCardTenorListRequest!) {
-            creditCardTenorList(input:${'$'}input) {
-                process_time
-                error_code
-                error_msg
-                tenor_list {
-                    type
-                    bank
-                    description
-                    amount
-                    fee
-                    rate
-                    disabled
+                creditCardTenorList(input:${'$'}input) {
+                    process_time
+                    error_code
+                    error_msg
+                    tenor_list {
+                        type
+                        bank
+                        description
+                        amount
+                        fee
+                        rate
+                        disabled
+                        gateway_code
                     }
                 }
             }

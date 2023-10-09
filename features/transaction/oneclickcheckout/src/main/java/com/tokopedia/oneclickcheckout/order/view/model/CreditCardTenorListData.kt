@@ -17,5 +17,6 @@ data class TenorListData(
     val amount: Double = 0.0,
     val fee: Double = 0.0,
     val rate: Double = 0.0,
-    val disable: Boolean = false
+    val disable: Boolean = false,
+    val gatewayCode: String = ""
 )

@@ -176,7 +176,7 @@ class OrderSummaryPageCartProcessor @Inject constructor(
             val realServiceId = orderShipment.getRealServiceId()
             val selectedGoCicilTerm = orderPayment.walletData.goCicilData.selectedTerm
             val profile = UpdateCartOccProfileRequest(
-                gatewayCode = orderProfile.payment.gatewayCode,
+                gatewayCode = orderPayment.gatewayCode,
                 metadata = metadata,
                 addressId = orderProfile.address.addressId,
                 serviceId = if (realServiceId == 0) orderProfile.shipment.serviceId.toIntOrZero() else realServiceId,
