@@ -22,11 +22,14 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.digital_product_detail.data.model.data.DigitalAtcResult
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.CHECKOUT_NO_PROMO
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.CHECK_BALANCE_FAIL_THRESHOLD
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.DELAY_CLIENT_NUMBER_TRANSITION
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.DELAY_MULTI_TAB
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.DELAY_PREFIX_TIME
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.VALIDATOR_DELAY_TIME
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
+import com.tokopedia.digital_product_detail.domain.model.DigitalCheckBalanceModel
+import com.tokopedia.digital_product_detail.domain.model.DigitalSaveAccessTokenResultModel
 import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPTelcoRepository
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
@@ -53,13 +56,16 @@ class DigitalPDPPulsaViewModel @Inject constructor(
     var catalogProductJob: Job? = null
     var recommendationJob: Job? = null
     var clientNumberThrottleJob: Job? = null
+    var checkBalanceJob: Job? = null
     var operatorData: TelcoCatalogPrefixSelect =
         TelcoCatalogPrefixSelect(RechargeCatalogPrefixSelect())
     var isEligibleToBuy = false
     var selectedGridProduct = SelectedProduct()
     var recomCheckoutUrl = ""
     var multiCheckoutButtons: List<MultiCheckoutButtons> = listOf()
-    private var atcMultiCheckoutParam : String = ""
+    private var atcMultiCheckoutParam: String = ""
+
+    var checkBalanceFailCounter = 0
 
     val digitalCheckoutPassData = DigitalCheckoutPassData.Builder()
         .action(DigitalCheckoutPassData.DEFAULT_ACTION)
@@ -102,6 +108,10 @@ class DigitalPDPPulsaViewModel @Inject constructor(
     val addToCartResult: LiveData<RechargeNetworkResult<DigitalAtcResult>>
         get() = _addToCartResult
 
+    private val _indosatCheckBalance = MutableLiveData<RechargeNetworkResult<DigitalCheckBalanceModel>>()
+    val indosatCheckBalance: LiveData<RechargeNetworkResult<DigitalCheckBalanceModel>>
+        get() = _indosatCheckBalance
+
     private val _addToCartMultiCheckoutResult = MutableLiveData<DigitalAtcResult>()
     val addToCartMultiCheckoutResult: LiveData<DigitalAtcResult>
         get() = _addToCartMultiCheckoutResult
@@ -118,6 +128,10 @@ class DigitalPDPPulsaViewModel @Inject constructor(
         MutableLiveData<RechargeNetworkResult<RecommendationWidgetModel>>()
     val recommendationData: LiveData<RechargeNetworkResult<RecommendationWidgetModel>>
         get() = _recommendationData
+
+    private val _saveAccessTokenResult = MutableLiveData<RechargeNetworkResult<DigitalSaveAccessTokenResultModel>>()
+    val saveAccessTokenResult: LiveData<RechargeNetworkResult<DigitalSaveAccessTokenResultModel>>
+        get() = _saveAccessTokenResult
 
     fun setMenuDetailLoading() {
         _menuDetailData.value = RechargeNetworkResult.Loading
@@ -195,6 +209,10 @@ class DigitalPDPPulsaViewModel @Inject constructor(
         recommendationJob?.cancel()
     }
 
+    fun cancelCheckBalanceJob() {
+        checkBalanceJob?.cancel()
+    }
+
     fun cancelValidatorJob() {
         validatorJob?.cancel()
     }
@@ -252,6 +270,47 @@ class DigitalPDPPulsaViewModel @Inject constructor(
         }) {
             _recommendationData.value = RechargeNetworkResult.Fail(it)
         }
+    }
+
+    fun setRechargeCheckBalanceLoading() {
+        _indosatCheckBalance.value = RechargeNetworkResult.Loading
+    }
+
+    fun getRechargeCheckBalance(
+        clientNumbers: List<String>,
+        dgCategoryIds: List<Int>
+    ) {
+        checkBalanceJob = viewModelScope.launchCatchError(dispatchers.main, block = {
+            val persoData = repo.getRechargeCheckBalance(
+                clientNumbers,
+                dgCategoryIds,
+                emptyList(),
+                DigitalPDPConstant.PERSO_CHANNEL_NAME_INDOSAT_CHECK_BALANCE
+            )
+            _indosatCheckBalance.value = RechargeNetworkResult.Success(persoData)
+        }) {
+            _indosatCheckBalance.value = RechargeNetworkResult.Fail(it)
+        }
+    }
+
+    fun setRechargeUserAccessTokenLoading() {
+        _saveAccessTokenResult.value = RechargeNetworkResult.Loading
+    }
+
+    fun saveRechargeUserAccessToken(
+        msisdn: String,
+        accessToken: String
+    ) {
+        viewModelScope.launchCatchError(dispatchers.main, block = {
+            val result = repo.saveRechargeUserBalanceAccessToken(msisdn, accessToken)
+            _saveAccessTokenResult.value = RechargeNetworkResult.Success(result)
+        }) {
+            _saveAccessTokenResult.value = RechargeNetworkResult.Fail(it)
+        }
+    }
+
+    fun isCheckBalanceFailedMoreThanThreeTimes(): Boolean {
+        return checkBalanceFailCounter >= CHECK_BALANCE_FAIL_THRESHOLD
     }
 
     fun updateCheckoutPassData(
