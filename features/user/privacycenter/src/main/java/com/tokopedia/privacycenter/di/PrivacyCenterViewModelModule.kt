@@ -9,7 +9,6 @@ import com.tokopedia.privacycenter.ui.consentwithdrawal.ConsentWithdrawalViewMod
 import com.tokopedia.privacycenter.ui.dsar.DsarViewModel
 import com.tokopedia.privacycenter.ui.dsar.addemail.DsarAddEmailViewModel
 import com.tokopedia.privacycenter.ui.main.PrivacyCenterViewModel
-import com.tokopedia.privacycenter.ui.main.section.accountlinking.AccountLinkingViewModel
 import com.tokopedia.privacycenter.ui.main.section.consentwithdrawal.ConsentWithdrawalSectionViewModel
 import com.tokopedia.privacycenter.ui.main.section.privacypolicy.PrivacyPolicySectionViewModel
 import com.tokopedia.privacycenter.ui.main.section.recommendation.RecommendationViewModel
@@ -31,11 +30,6 @@ abstract class PrivacyCenterViewModelModule {
     @IntoMap
     @ViewModelKey(PrivacyCenterViewModel::class)
     internal abstract fun bindPrivacyCenterViewModel(viewModel: PrivacyCenterViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(AccountLinkingViewModel::class)
-    internal abstract fun bindAccountLinkingViewModel(viewModel: AccountLinkingViewModel): ViewModel
 
     @Binds
     @IntoMap
