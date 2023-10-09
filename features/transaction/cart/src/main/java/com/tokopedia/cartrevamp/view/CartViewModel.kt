@@ -1105,7 +1105,7 @@ class CartViewModel @Inject constructor(
             if (recommendationPage == 1) {
                 addCartTopAdsHeadlineData(++recommendationIndex)
             }
-            cartDataList.value.add(++recommendationIndex, cartRecommendationItemHolderDataList)
+            cartDataList.value.addAll(++recommendationIndex, cartRecommendationItemHolderDataList)
             cartDataList.notifyObserver()
         }
     }
