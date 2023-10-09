@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: 'kotlin-kapt'
 
 android {
     namespace 'com.tokopedia.stories.internal'
@@ -26,6 +27,11 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     
     implementation rootProject.ext.miscDependencies.dataStorePreferences
+
+    kapt rootProject.ext.supportLibDependencies.kotlinMetaData
+
+    implementation rootProject.ext.miscDependencies.dagger
+    kapt rootProject.ext.miscDependencies.daggerCompiler
 }
 
 project.ext {
