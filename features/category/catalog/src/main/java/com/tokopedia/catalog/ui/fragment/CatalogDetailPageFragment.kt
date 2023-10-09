@@ -6,6 +6,8 @@ import android.graphics.Color
 import android.graphics.Rect
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -94,10 +96,15 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.launch
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+
 
 class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
     StickyNavigationListener, AccordionListener, BannerListener, TrustMakerListener,
@@ -111,7 +118,8 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
         private const val COLOR_VALUE_MAX = 255
         private const val LOGIN_REQUEST_CODE = 1001
         const val CATALOG_DETAIL_PAGE_FRAGMENT_TAG = "CATALOG_DETAIL_PAGE_FRAGMENT_TAG"
-
+        private const val POSITION_THREE_IN_WIDGET_LIST = 3
+        private const val POSITION_TWO_IN_WIDGET_LIST = 2
         fun newInstance(catalogId: String): CatalogDetailPageFragment {
             val fragment = CatalogDetailPageFragment()
             val bundle = Bundle()
@@ -153,16 +161,24 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
         UserSession(activity)
     }
 
+    var selectNavigationFromScroll = true
+
+
     private val recyclerViewScrollListener: RecyclerView.OnScrollListener by lazy {
         object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 val layoutManager = recyclerView.layoutManager as? LinearLayoutManager
-
-                val indexVisible = layoutManager?.findLastCompletelyVisibleItemPosition().orZero()
                 binding?.rvContent?.post {
-                    if (recyclerView.scrollState == RecyclerView.SCROLL_STATE_SETTLING) {
-                        widgetAdapter.autoSelectNavigation(indexVisible)
+                    CoroutineScope(Dispatchers.Main).launch {
+                        if (!recyclerView.canScrollVertically(RecyclerView.FOCUS_DOWN)) {
+                            val indexVisible = layoutManager?.findLastVisibleItemPosition().orZero()
+                            viewModel.emitScrollEvent(indexVisible)
+                        } else {
+                            val indexVisible =
+                                layoutManager?.findFirstVisibleItemPosition().orZero()
+                            viewModel.emitScrollEvent(indexVisible)
+                        }
                     }
                 }
             }
@@ -223,7 +239,7 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
     }
 
     override fun onNavigateWidget(anchorTo: String, tabPosition: Int, tabTitle: String?) {
-
+        selectNavigationFromScroll = false
         val smoothScroller: RecyclerView.SmoothScroller = object : LinearSmoothScroller(context) {
             override fun getVerticalSnapPreference(): Int {
                 return SNAP_TO_START
@@ -231,10 +247,21 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
         }
         val anchorToPosition = widgetAdapter.findPositionWidget(anchorTo)
         val layoutManager = binding?.rvContent?.layoutManager as? LinearLayoutManager
+        widgetAdapter.changeNavigationTabActive(tabPosition)
         if (anchorToPosition >= Int.ZERO) {
-            widgetAdapter.changeNavigationTabActive(tabPosition)
-            smoothScroller.targetPosition = anchorToPosition - 2
-            layoutManager?.startSmoothScroll(smoothScroller)
+            if (tabPosition == Int.ZERO) {
+                smoothScroller.targetPosition = anchorToPosition - POSITION_THREE_IN_WIDGET_LIST
+                layoutManager?.startSmoothScroll(smoothScroller)
+            } else if (tabPosition == (widgetAdapter.findNavigationCount()-1)) {
+                smoothScroller.targetPosition = anchorToPosition
+                layoutManager?.startSmoothScroll(smoothScroller)
+            } else {
+                smoothScroller.targetPosition = anchorToPosition - POSITION_TWO_IN_WIDGET_LIST
+                layoutManager?.startSmoothScroll(smoothScroller)
+            }
+            Handler(Looper.getMainLooper()).postDelayed({
+                selectNavigationFromScroll = true
+            }, 500)
         }
 
         CatalogReimagineDetailAnalytics.sendEvent(
@@ -259,7 +286,7 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
                 binding?.setupPriceCtaWidget(it.data.priceCtaProperties)
                 binding?.stickySingleHeaderView?.stickyPosition =
                     widgetAdapter.findPositionNavigation()
-            } else if (it is Fail){
+            } else if (it is Fail) {
                 binding?.showPageError(it.throwable)
             }
         }
@@ -268,8 +295,18 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
         }
         viewModel.errorsToaster.observe(viewLifecycleOwner) {
             val errorMessage = ErrorHandler.getErrorMessage(view.context, it)
-            Toaster.build(view, errorMessage, duration = Toaster.LENGTH_LONG,
-                type = Toaster.TYPE_ERROR).show()
+            Toaster.build(
+                view, errorMessage, duration = Toaster.LENGTH_LONG,
+                type = Toaster.TYPE_ERROR
+            ).show()
+        }
+
+        CoroutineScope(Dispatchers.Main).launch {
+            viewModel.scrollEvents.debounce(300).collect {
+                if (selectNavigationFromScroll) {
+                    widgetAdapter.autoSelectNavigation(it)
+                }
+            }
         }
     }
 
@@ -297,7 +334,6 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
                 toolbar.updateToolbarAppearance(scrollProgress, navigationProperties)
             }
         })
-        widgetAdapter.refreshSticky()
     }
 
     private fun FragmentCatalogReimagineDetailPageBinding.setupToolbar(
@@ -389,12 +425,14 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
             trackerId = TRACKER_ID_IMPRESSION_PRICE
         )
     }
+
     private fun FragmentCatalogReimagineDetailPageBinding.showPageError(throwable: Throwable) {
         val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
         when (throwable) {
             is UnknownHostException, is SocketTimeoutException -> {
                 gePageError.setType(GlobalError.NO_CONNECTION)
             }
+
             else -> {
                 gePageError.setType(GlobalError.SERVER_ERROR)
             }
@@ -416,16 +454,17 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
     ) {
 
 
-        val impressionImageDescription = if (imageDescription.isNotEmpty()){
-            imageDescription.subList(Int.ZERO, currentPositionVisibility+1)
-        }else{
+        val impressionImageDescription = if (imageDescription.isNotEmpty()) {
+            imageDescription.subList(Int.ZERO, currentPositionVisibility + 1)
+        } else {
             emptyList()
         }
-        val impressionbrandImageUrl = brandImageUrl.subList(Int.ZERO, currentPositionVisibility+1)
-        val list = arrayListOf<HashMap<String,String>>()
-        for (index in impressionbrandImageUrl.indices){
-            val promotions = hashMapOf<String,String>()
-            promotions[CatalogTrackerConstant.KEY_CREATIVE_NAME] = impressionImageDescription.getOrNull(index).orEmpty()
+        val impressionbrandImageUrl = brandImageUrl.subList(Int.ZERO, currentPositionVisibility + 1)
+        val list = arrayListOf<HashMap<String, String>>()
+        for (index in impressionbrandImageUrl.indices) {
+            val promotions = hashMapOf<String, String>()
+            promotions[CatalogTrackerConstant.KEY_CREATIVE_NAME] =
+                impressionImageDescription.getOrNull(index).orEmpty()
             promotions[CatalogTrackerConstant.KEY_CREATIVE_SLOT] = index.toString()
             promotions[CatalogTrackerConstant.KEY_ITEM_ID] = catalogId
             promotions[CatalogTrackerConstant.KEY_ITEM_NAME] =
@@ -509,9 +548,9 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
     }
 
     override fun onVideoExpertImpression(itemHasSaw: List<ExpertReviewUiModel.ItemExpertReviewUiModel>) {
-        val list = arrayListOf<HashMap<String,String>>()
-        for (index in itemHasSaw.indices){
-            val promotions = hashMapOf<String,String>()
+        val list = arrayListOf<HashMap<String, String>>()
+        for (index in itemHasSaw.indices) {
+            val promotions = hashMapOf<String, String>()
             promotions[CatalogTrackerConstant.KEY_CREATIVE_NAME] = itemHasSaw[index].title
             promotions[CatalogTrackerConstant.KEY_CREATIVE_SLOT] = index.toString()
             promotions[CatalogTrackerConstant.KEY_ITEM_ID] = catalogId
@@ -555,10 +594,11 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
     }
 
     override fun onTrustMakerImpression(currentVisibleTrustMaker: List<TrustMakerUiModel.ItemTrustMakerUiModel>) {
-        val list = arrayListOf<HashMap<String,String>>()
-        for (index in currentVisibleTrustMaker.indices){
-            val promotions = hashMapOf<String,String>()
-            promotions[CatalogTrackerConstant.KEY_CREATIVE_NAME] = currentVisibleTrustMaker[index].title
+        val list = arrayListOf<HashMap<String, String>>()
+        for (index in currentVisibleTrustMaker.indices) {
+            val promotions = hashMapOf<String, String>()
+            promotions[CatalogTrackerConstant.KEY_CREATIVE_NAME] =
+                currentVisibleTrustMaker[index].title
             promotions[CatalogTrackerConstant.KEY_CREATIVE_SLOT] = index.toString()
             promotions[CatalogTrackerConstant.KEY_ITEM_ID] = catalogId
             promotions[CatalogTrackerConstant.KEY_ITEM_NAME] = EVENT_TRUSTMAKER_IMPRESSION
@@ -577,9 +617,9 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
     }
 
     override fun onTopFeatureImpression(items: List<TopFeaturesUiModel.ItemTopFeatureUiModel>) {
-        val list = arrayListOf<HashMap<String,String>>()
-        for (index in items.indices){
-            val promotions = hashMapOf<String,String>()
+        val list = arrayListOf<HashMap<String, String>>()
+        for (index in items.indices) {
+            val promotions = hashMapOf<String, String>()
             promotions[CatalogTrackerConstant.KEY_CREATIVE_NAME] = items[index].name
             promotions[CatalogTrackerConstant.KEY_CREATIVE_SLOT] = index.toString()
             promotions[CatalogTrackerConstant.KEY_ITEM_ID] = catalogId
