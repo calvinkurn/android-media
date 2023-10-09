@@ -1352,9 +1352,7 @@ class CartRevampFragment :
             viewModel.doUpdateCartAndGetLastApply(params)
         } else {
             if (cartItemHolderData.isTokoNow) {
-                viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
-                    viewModel.emitTokonowUpdated(true)
-                }
+                emitTokoNowData()
             }
             viewModel.getEntryPointInfoDefault()
         }
@@ -1367,6 +1365,14 @@ class CartRevampFragment :
             val cartGroupHolderData = CartDataHelper.getCartGroupHolderDataByCartItemHolderData(viewModel.cartDataList.value, cartItemHolderData)
             if (cartGroupHolderData != null) {
                 getGroupProductTicker(cartItemHolderData)
+            }
+        }
+    }
+
+    private fun emitTokoNowData() {
+        if (view != null) {
+            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
+                viewModel.emitTokonowUpdated(true)
             }
         }
     }
@@ -2617,7 +2623,7 @@ class CartRevampFragment :
             when (data) {
                 is LoadRecommendationState.Success -> {
                     hideItemLoading()
-                    if (data.recommendationWidgets[0].recommendationItemList.isNotEmpty()) {
+                    if (data.recommendationWidgets.isNotEmpty() && data.recommendationWidgets[0].recommendationItemList.isNotEmpty()) {
                         renderRecommendation(data.recommendationWidgets[0])
                     }
                     setHasTriedToLoadRecommendation()
