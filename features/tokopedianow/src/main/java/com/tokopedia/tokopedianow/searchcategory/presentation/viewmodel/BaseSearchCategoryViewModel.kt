@@ -59,13 +59,13 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.common.constant.ServiceType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
+import com.tokopedia.tokopedianow.common.constant.TokoNowStaticLayoutType.Companion.PRODUCT_ADS_CAROUSEL
 import com.tokopedia.tokopedianow.common.domain.mapper.ProductAdsMapper.mapProductAdsCarousel
 import com.tokopedia.tokopedianow.common.domain.mapper.TickerMapper
 import com.tokopedia.tokopedianow.common.domain.model.GetProductAdsResponse.ProductAdsResponse
 import com.tokopedia.tokopedianow.common.domain.model.GetTargetedTickerResponse
 import com.tokopedia.tokopedianow.common.domain.mapper.AddressMapper.mapToWarehouses
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference
-import com.tokopedia.tokopedianow.common.domain.param.GetProductAdsParam
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.common.model.NowAffiliateAtcData
 import com.tokopedia.tokopedianow.common.model.TokoNowAdsCarouselUiModel
@@ -397,8 +397,7 @@ abstract class BaseSearchCategoryViewModel(
 
     protected open fun createRequestParams(): RequestParams {
         val tokonowQueryParam = createTokonowQueryParams()
-        val productAdsParam = createProductAdsParam()
-            .generateQueryParams()
+        val productAdsParam = createGetProductAdsParam()
 
         val requestParams = RequestParams.create()
         requestParams.putObject(TOKONOW_QUERY_PARAMS, tokonowQueryParam)
@@ -418,7 +417,7 @@ abstract class BaseSearchCategoryViewModel(
         return tokonowQueryParam
     }
 
-    protected open fun createProductAdsParam(): GetProductAdsParam = GetProductAdsParam()
+    protected open fun createProductAdsParam(): MutableMap<String?, Any> = mutableMapOf()
 
     protected open fun appendMandatoryParams(tokonowQueryParam: MutableMap<String, Any>) {
         appendDeviceParam(tokonowQueryParam)
@@ -468,6 +467,13 @@ abstract class BaseSearchCategoryViewModel(
 
     private fun appendQueryParam(tokonowQueryParam: MutableMap<String, Any>) {
         tokonowQueryParam.putAll(FilterHelper.createParamsWithoutExcludes(queryParam))
+    }
+
+    private fun createGetProductAdsParam(): Map<String?, Any> {
+        val params = createProductAdsParam().also {
+            it.putAll(FilterHelper.createParamsWithoutExcludes(queryParam))
+        }
+        return params
     }
 
     protected fun onGetFirstPageSuccess(
@@ -804,9 +810,10 @@ abstract class BaseSearchCategoryViewModel(
     ) {
         if(response.productList.isNotEmpty()) {
             contentVisitableList.add(mapProductAdsCarousel(
-                response,
-                miniCartWidgetLiveData.value,
-                hasBlockedAddToCart
+                id = PRODUCT_ADS_CAROUSEL,
+                response = response,
+                miniCartData = miniCartWidgetLiveData.value,
+                hasBlockedAddToCart = hasBlockedAddToCart
             ))
         }
     }

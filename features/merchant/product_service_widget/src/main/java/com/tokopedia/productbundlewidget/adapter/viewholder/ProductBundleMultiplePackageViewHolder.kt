@@ -3,6 +3,7 @@ package com.tokopedia.productbundlewidget.adapter.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.media.loader.loadImage
@@ -39,8 +40,10 @@ class ProductBundleMultiplePackageViewHolder(
     fun bind(
         item: BundleProductUiModel,
         onViewImpression: (position: Int) -> Unit,
-        onClickImpression: (position: Int) -> Unit
+        onClickImpression: (position: Int) -> Unit,
+        isOverrideWidgetTheme: Boolean
     ) {
+        overrideWidgetTheme(isOverrideWidgetTheme = isOverrideWidgetTheme)
         val context = itemView.context
         val productName = context.getString(
             R.string.bundlewidget_product_title_format, item.productCount, item.productName)
@@ -48,5 +51,11 @@ class ProductBundleMultiplePackageViewHolder(
         imageBundleProduct?.loadImage(item.productImageUrl)
         itemView.addOnImpressionListener(item) { onViewImpression.invoke(absoluteAdapterPosition) }
         itemView.setOnClickListener { onClickImpression.invoke(absoluteAdapterPosition) }
+    }
+
+    private fun overrideWidgetTheme(isOverrideWidgetTheme: Boolean) {
+        if (isOverrideWidgetTheme) {
+            typographyBundleProductName?.setTextColor(ContextCompat.getColor(itemView.context, R.color.dms_high_emphasis))
+        }
     }
 }

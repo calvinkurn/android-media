@@ -51,7 +51,8 @@ class ValidateUsePromoCheckoutMapper {
                 benefitSummaryInfoUiModel = mapToBenefitSummaryInfoUiModel(promo.benefitSummaryInfo),
                 voucherOrderUiModels = ArrayList(mapListVoucherOrders(promo.voucherOrders)),
                 tickerInfoUiModel = mapTickerInfoUiModel(promo.tickerInfo),
-                trackingDetailUiModels = mapTrackingDetails(promo.trackingDetails)
+                trackingDetailUiModels = mapTrackingDetails(promo.trackingDetails),
+                userGroupMetadata = promo.userGroupMetadata
             )
         }
 

@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/container_tab_shimmering"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:loader_type="rect" />
+
+    <LinearLayout
+        android:id="@+id/container_tab_shimmering"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:baselineAligned="false">
+
+        <FrameLayout
+            android:id="@+id/tab_1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.25"
+            android:paddingLeft="24dp"
+            android:paddingTop="10dp"
+            android:paddingRight="24dp"
+            android:paddingBottom="10dp"
+            app:layout_constraintHorizontal_weight="0.2"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/tab_2"
+            app:layout_constraintTop_toBottomOf="@id/button_1">
+
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center"
+                app:loader_corner_radius="5dp"
+                app:loader_type="rect" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/tab_2"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.25"
+            android:paddingLeft="24dp"
+            android:paddingTop="10dp"
+            android:paddingRight="24dp"
+            android:paddingBottom="10dp"
+            app:layout_constraintHorizontal_weight="0.2"
+            app:layout_constraintLeft_toRightOf="@id/tab_1"
+            app:layout_constraintRight_toLeftOf="@id/tab_3"
+            app:layout_constraintTop_toBottomOf="@id/button_1">
+
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center"
+                app:loader_corner_radius="5dp"
+                app:loader_type="rect" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/tab_3"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.25"
+            android:paddingLeft="24dp"
+            android:paddingTop="10dp"
+            android:paddingRight="24dp"
+            android:paddingBottom="10dp"
+            app:layout_constraintHorizontal_weight="0.2"
+            app:layout_constraintLeft_toRightOf="@id/tab_2"
+            app:layout_constraintRight_toLeftOf="@id/tab_4"
+            app:layout_constraintTop_toBottomOf="@id/button_1">
+
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center"
+                app:loader_corner_radius="5dp"
+                app:loader_type="rect" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/tab_4"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.25"
+            android:paddingLeft="24dp"
+            android:paddingTop="10dp"
+            android:paddingRight="24dp"
+            android:paddingBottom="10dp"
+            app:layout_constraintHorizontal_weight="0.2"
+            app:layout_constraintLeft_toRightOf="@id/tab_3"
+            app:layout_constraintRight_toLeftOf="@id/tab_5"
+            app:layout_constraintTop_toBottomOf="@id/button_1">
+
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center"
+                app:loader_corner_radius="5dp"
+                app:loader_type="rect" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/tab_5"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.25"
+            android:paddingLeft="24dp"
+            android:paddingTop="10dp"
+            android:paddingRight="24dp"
+            android:paddingBottom="10dp"
+            app:layout_constraintHorizontal_weight="0.2"
+            app:layout_constraintLeft_toRightOf="@id/tab_4"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/button_1">
+
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center"
+                app:loader_corner_radius="5dp"
+                app:loader_type="rect" />
+        </FrameLayout>
+    </LinearLayout>
+
+
+    <View
+        android:id="@+id/tab_indicator"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/Unify_NN50"
+        app:layout_constraintBottom_toTopOf="@id/container_tab_shimmering" />
+
+    <!--  Content 1  -->
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

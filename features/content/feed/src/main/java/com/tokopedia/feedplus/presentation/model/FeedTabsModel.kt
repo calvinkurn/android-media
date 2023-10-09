@@ -25,7 +25,7 @@ data class FeedTabsModel(
 
 data class FeedTabModel(
     val data: List<FeedDataModel>,
-    val activeTabSource: ActiveTabSource
+    val activeTabSource: ActiveTabSource,
 )
 
 @Parcelize
@@ -34,7 +34,8 @@ data class FeedDataModel(
     val key: String,
     val type: String,
     val position: Int,
-    val isActive: Boolean
+    val isActive: Boolean,
+    val isSelected: Boolean,
 ) : Parcelable {
 
     val isFollowingTab = this.type == TAB_TYPE_FOLLOWING
@@ -47,7 +48,9 @@ data class MetaModel(
     val isCreationActive: Boolean,
     val showLive: Boolean,
     val liveApplink: String,
-    val entryPoints: List<ContentCreationTypeItem>
+    val entryPoints: List<ContentCreationTypeItem>,
+    val showBrowse: Boolean,
+    val browseApplink: String
 ) {
     companion object {
         val Empty: MetaModel
@@ -58,7 +61,9 @@ data class MetaModel(
                 isCreationActive = false,
                 showLive = false,
                 liveApplink = "",
-                entryPoints = emptyList()
+                entryPoints = emptyList(),
+                showBrowse = false,
+                browseApplink = ""
             )
     }
 }

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.home_component.model.AtfContent
 import com.tokopedia.kotlin.model.ImpressHolder
 import kotlin.collections.ArrayList
 
@@ -11,7 +12,7 @@ data class DynamicHomeChannel(
     @Expose
     @SerializedName("channels")
     var channels: List<Channels> = listOf()
-) {
+): AtfContent {
 
     data class Channels(
         @Expose
@@ -102,7 +103,10 @@ data class DynamicHomeChannel(
         var isCache: Boolean = true,
         @SerializedName("styleParam")
         @Expose
-        var styleParam: String = ""
+        var styleParam: String = "",
+        @SerializedName("isShimmer")
+        @Expose
+        var isShimmer: Boolean = true,
     ) : ImpressHolder() {
 
         private var position: Int = 0

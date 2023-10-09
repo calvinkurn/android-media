@@ -4,27 +4,36 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.address.WarehouseDataModel
 import com.tokopedia.logisticCommon.data.mapper.AddAddressMapper
-import com.tokopedia.logisticCommon.data.repository.KeroRepository
+import com.tokopedia.logisticCommon.data.request.AddAddressParam
+import com.tokopedia.logisticCommon.data.request.EditAddressParam
 import com.tokopedia.logisticCommon.data.response.DataAddAddress
 import com.tokopedia.logisticCommon.data.response.DefaultAddressData
 import com.tokopedia.logisticCommon.data.response.KeroEditAddressResponse
 import com.tokopedia.logisticCommon.data.response.PinpointValidationResponse
-import com.tokopedia.logisticaddaddress.common.AddressConstants
-import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.uimodel.FieldType
-import com.tokopedia.url.Env
-import com.tokopedia.url.TokopediaUrl
+import com.tokopedia.logisticCommon.domain.param.GetDefaultAddressParam
+import com.tokopedia.logisticCommon.domain.param.GetDetailAddressParam
+import com.tokopedia.logisticCommon.domain.param.PinpointValidationParam
+import com.tokopedia.logisticCommon.domain.usecase.AddAddressUseCase
+import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
+import com.tokopedia.logisticCommon.domain.usecase.GetAddressDetailUseCase
+import com.tokopedia.logisticCommon.domain.usecase.GetDefaultAddressUseCase
+import com.tokopedia.logisticCommon.domain.usecase.PinpointValidationUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class AddressFormViewModel @Inject constructor(private val repo: KeroRepository) : ViewModel() {
+class AddressFormViewModel @Inject constructor(
+    private val getAddressDetail: GetAddressDetailUseCase,
+    private val getDefaultAddress: GetDefaultAddressUseCase,
+    private val addAddress: AddAddressUseCase,
+    private val saveEditAddress: EditAddressUseCase,
+    private val validatePinpoint: PinpointValidationUseCase
+) : ViewModel() {
 
     companion object {
         const val MIN_CHAR_PHONE_NUMBER = 9
@@ -54,37 +63,7 @@ class AddressFormViewModel @Inject constructor(private val repo: KeroRepository)
     val pinpointValidation: LiveData<Result<PinpointValidationResponse.PinpointValidations.PinpointValidationResponseData>>
         get() = _pinpointValidation
 
-    var source: String = ""
-    var isGmsAvailable: Boolean = true
-    val isTokonow: Boolean
-        get() = source == ManageAddressSource.TOKONOW.source
-
     var saveDataModel: SaveAddressDataModel? = null
-    var isPositiveFlow: Boolean = true
-    var isEdit: Boolean = false
-    var addressId: String = ""
-    val validateFields: ArrayList<FieldType>
-        get() = if (isPositiveFlow) {
-            validatePositiveFlow
-        } else {
-            validateNegativeFlow
-        }
-
-    private val validatePositiveFlow = arrayListOf(
-        FieldType.PHONE_NUMBER,
-        FieldType.RECEIVER_NAME,
-        FieldType.COURIER_NOTE,
-        FieldType.ADDRESS,
-        FieldType.LABEL
-    )
-
-    private val validateNegativeFlow = arrayListOf(
-        FieldType.COURIER_NOTE,
-        FieldType.ADDRESS,
-        FieldType.LABEL,
-        FieldType.PHONE_NUMBER,
-        FieldType.RECEIVER_NAME
-    )
 
     val isHaveLatLong: Boolean
         get() = saveDataModel?.let { it.latitude.isNotEmpty() || it.longitude.isNotEmpty() }
@@ -93,30 +72,7 @@ class AddressFormViewModel @Inject constructor(private val repo: KeroRepository)
     private var tempAddress1 = ""
     private var tempAddress2 = ""
 
-    fun setDataFromArguments(
-        isEdit: Boolean,
-        saveDataModel: SaveAddressDataModel?,
-        isPositiveFlow: Boolean,
-        addressId: String,
-        source: String,
-        name: String,
-        phone: String,
-        onViewEditAddressPageNew: () -> Unit
-    ) {
-        this.isEdit = isEdit
-        if (!isEdit) {
-            val addressData = generateSaveDataModel(saveDataModel, name, phone)
-            this.saveDataModel = addressData
-            addressData.let { _addressDetail.value = Success(it) }
-            this.isPositiveFlow = isPositiveFlow
-        } else {
-            onViewEditAddressPageNew.invoke()
-            this.addressId = addressId
-        }
-        this.source = source
-    }
-
-    private fun generateSaveDataModel(
+    fun generateSaveDataModel(
         saveDataModel: SaveAddressDataModel?,
         defaultName: String,
         defaultPhone: String
@@ -127,11 +83,21 @@ class AddressFormViewModel @Inject constructor(private val repo: KeroRepository)
         } ?: SaveAddressDataModel(receiverName = defaultName, phone = defaultPhone)
     }
 
-    fun getAddressDetail(draftAddressDataModel: SaveAddressDataModel?) {
+    fun getAddressDetail(
+        addressId: String,
+        sourceValue: String,
+        draftAddressDataModel: SaveAddressDataModel?
+    ) {
         if (draftAddressDataModel == null) {
             viewModelScope.launch {
                 try {
-                    val addressDetail = repo.getAddressDetail(addressId, getSourceValue(), needToTrack = true)
+                    val addressDetail = getAddressDetail(
+                        GetDetailAddressParam(
+                            addressIds = addressId,
+                            source = sourceValue,
+                            needToTrack = true
+                        )
+                    )
                     addressDetail.keroGetAddress.data.firstOrNull()?.let {
                         AddAddressMapper.mapAddressDetailToSaveAddressDataModel(it).apply {
                             saveDataModel = this
@@ -142,7 +108,6 @@ class AddressFormViewModel @Inject constructor(private val repo: KeroRepository)
                                 currentLong = longitude
                             )
 
-                            isPositiveFlow = hasPinpoint().orFalse()
                             _addressDetail.value = Success(this)
                         }
                     }
@@ -158,7 +123,7 @@ class AddressFormViewModel @Inject constructor(private val repo: KeroRepository)
     fun getDefaultAddress(source: String) {
         viewModelScope.launch {
             try {
-                val defaultAddress = repo.getDefaultAddress(source, needToTrack = true)
+                val defaultAddress = getDefaultAddress(GetDefaultAddressParam(source, true))
                 _defaultAddress.value = Success(defaultAddress.response.data)
             } catch (e: Throwable) {
                 _defaultAddress.value = Fail(e)
@@ -166,11 +131,15 @@ class AddressFormViewModel @Inject constructor(private val repo: KeroRepository)
         }
     }
 
-    fun saveAddress(consentJson: String) {
+    fun saveAddress(
+        consentJson: String,
+        sourceValue: String
+    ) {
         saveDataModel?.let { model ->
             viewModelScope.launch {
                 try {
-                    val saveAddressData = repo.saveAddress(model, getSourceValue(), consentJson)
+                    val saveAddressData =
+                        addAddress(model.toAddAddressParam(sourceValue, consentJson))
 
                     saveAddressData.keroAddAddress.data.takeIf {
                         it.isSuccess == 1
@@ -185,6 +154,32 @@ class AddressFormViewModel @Inject constructor(private val repo: KeroRepository)
         }
     }
 
+    private fun SaveAddressDataModel.toAddAddressParam(
+        source: String,
+        consentJson: String
+    ): AddAddressParam {
+        return AddAddressParam(
+            addrName = this.addressName,
+            receiverName = this.receiverName,
+            address1 = this.address1,
+            address1Notes = this.address1Notes,
+            address2 = this.address2,
+            postalCode = this.postalCode,
+            phone = this.phone,
+            province = this.provinceId.toString(),
+            city = this.cityId.toString(),
+            district = this.districtId.toString(),
+            latitude = this.latitude,
+            longitude = this.longitude,
+            isAnaPositive = this.isAnaPositive,
+            setAsPrimaryAddress = this.setAsPrimaryAddresss,
+            applyNameAsNewUserFullname = this.applyNameAsNewUserFullname,
+            source = source,
+            isTokonowRequest = this.isTokonowRequest,
+            consentJson = consentJson
+        )
+    }
+
     private fun SaveAddressDataModel.updateDataWarehouses(data: DataAddAddress) {
         id = data.addrId
         warehouseId = data.tokonow.warehouseId
@@ -194,10 +189,10 @@ class AddressFormViewModel @Inject constructor(private val repo: KeroRepository)
         serviceType = data.tokonow.serviceType
     }
 
-    fun saveEditAddress(model: SaveAddressDataModel) {
+    fun saveEditAddress(model: SaveAddressDataModel, sourceValue: String) {
         viewModelScope.launch {
             try {
-                val editAddressData = repo.editAddress(model, getSourceValue())
+                val editAddressData = saveEditAddress(model.toEditAddressParam(sourceValue))
                 saveDataModel = editAddressData.keroEditAddress.data.toSaveAddressDataModel()
                 _editAddress.value = Success(editAddressData.keroEditAddress.data)
             } catch (e: Throwable) {
@@ -206,22 +201,36 @@ class AddressFormViewModel @Inject constructor(private val repo: KeroRepository)
         }
     }
 
-    private fun getSourceValue(): String {
-        return if (isTokonow) {
-            ManageAddressSource.LOCALIZED_ADDRESS_WIDGET.source
-        } else {
-            source
-        }
+    private fun SaveAddressDataModel.toEditAddressParam(sourceValue: String): EditAddressParam {
+        return EditAddressParam(
+            addressId = this.id,
+            addressName = this.addressName,
+            receiverName = this.receiverName,
+            address1 = this.address1,
+            address1Notes = this.address1Notes,
+            address2 = this.address2,
+            postalCode = this.postalCode,
+            district = this.districtId.toString(),
+            city = this.cityId.toString(),
+            province = this.provinceId.toString(),
+            phone = this.phone,
+            latitude = this.latitude,
+            longitude = this.longitude,
+            source = sourceValue,
+            isTokonowRequest = this.isTokonowRequest
+        )
     }
 
     fun validatePinpoint(model: SaveAddressDataModel) {
         viewModelScope.launch {
             try {
-                val pinpointValidationResult = repo.pinpointValidation(
-                    model.districtId.toInt(),
-                    model.latitude,
-                    model.longitude,
-                    model.postalCode
+                val pinpointValidationResult = validatePinpoint(
+                    PinpointValidationParam(
+                        model.districtId,
+                        model.latitude,
+                        model.longitude,
+                        model.postalCode
+                    )
                 )
 
                 _pinpointValidation.value =
@@ -378,26 +387,17 @@ class AddressFormViewModel @Inject constructor(private val repo: KeroRepository)
         }
     }
 
-    fun getCollectionId(): String {
-        return if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
-            if (isEdit) {
-                AddressConstants.EDIT_ADDRESS_COLLECTION_ID_STAGING
-            } else {
-                AddressConstants.ADD_ADDRESS_COLLECTION_ID_STAGING
-            }
-        } else {
-            if (isEdit) {
-                AddressConstants.EDIT_ADDRESS_COLLECTION_ID_PRODUCTION
-            } else {
-                AddressConstants.ADD_ADDRESS_COLLECTION_ID_PRODUCTION
-            }
-        }
-    }
-
     private fun KeroEditAddressResponse.Data.KeroEditAddress.KeroEditAddressSuccessResponse.toSaveAddressDataModel(): SaveAddressDataModel {
         val addressData = this.chosenAddressData
+
         val tokonowData = this.tokonow
-        val warehouses = tokonowData.warehouses.map { WarehouseDataModel(warehouseId = it.warehouseId, serviceType = it.serviceType) }
+        val warehouses =
+            tokonowData.warehouses.map {
+                WarehouseDataModel(
+                    warehouseId = it.warehouseId,
+                    serviceType = it.serviceType
+                )
+            }
         return SaveAddressDataModel(
             id = addressData.addressId,
             addressName = addressData.addressName,
@@ -412,5 +412,11 @@ class AddressFormViewModel @Inject constructor(private val repo: KeroRepository)
             serviceType = tokonowData.serviceType,
             warehouses = warehouses
         )
+    }
+
+    fun removeUnprintableCharacter(text: String): String {
+        return text.filter {
+            !it.isIdentifierIgnorable()
+        }
     }
 }

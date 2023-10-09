@@ -10,9 +10,14 @@ import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.chat_common.data.parentreply.ParentReply
+import com.tokopedia.chat_common.domain.pojo.Attachment
+import com.tokopedia.chat_common.domain.pojo.AttachmentPojo
+import com.tokopedia.chat_common.domain.pojo.Chat
 import com.tokopedia.chat_common.domain.pojo.ChatReplies
+import com.tokopedia.chat_common.domain.pojo.ChatRepliesItem
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
+import com.tokopedia.chat_common.domain.pojo.Reply
 import com.tokopedia.chatbot.ChatbotConstant
 import com.tokopedia.chatbot.chatbot2.attachinvoice.domain.pojo.InvoiceLinkPojo
 import com.tokopedia.chatbot.chatbot2.data.csatoptionlist.CsatAttributesPojo
@@ -87,6 +92,7 @@ import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.sessioncommon.network.TkpdOldAuthInterceptor
 import com.tokopedia.unit.test.rule.CoroutineTestRule
+import com.tokopedia.universal_sharing.usecase.ExtractBranchLinkUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -144,6 +150,7 @@ class ChatbotViewModelTest {
     private lateinit var getExistingChatMapper: ChatbotGetExistingChatMapper
     private lateinit var uploaderUseCase: UploaderUseCase
     private lateinit var chipGetChatRatingListUseCase: ChipGetChatRatingListUseCase
+    private lateinit var extractBranchLinkUseCase: ExtractBranchLinkUseCase
     private lateinit var chatbotWebSocket: ChatbotWebSocket
     private lateinit var chatbotWebSocketStateHandler: ChatbotWebSocketStateHandler
     private lateinit var dispatcher: CoroutineDispatchers
@@ -181,6 +188,7 @@ class ChatbotViewModelTest {
         chatbotWebSocketStateHandler = mockk(relaxed = true)
         dispatcher = testRule.dispatchers
         uploaderUseCase = mockk(relaxed = true)
+        extractBranchLinkUseCase = mockk(relaxed = true)
         chatResponse = mockk(relaxed = true)
         chatBotSecureImageUploadUseCase = mockk(relaxed = true)
 
@@ -206,6 +214,7 @@ class ChatbotViewModelTest {
                 chatbotWebSocket,
                 chatbotWebSocketStateHandler,
                 chatBotSecureImageUploadUseCase,
+                extractBranchLinkUseCase,
                 testRule.dispatchers
             )
     }
@@ -1954,6 +1963,7 @@ class ChatbotViewModelTest {
                 any(),
                 any(),
                 any(),
+                any(),
                 any()
             )
         } returns mockk(relaxed = true)
@@ -1961,6 +1971,7 @@ class ChatbotViewModelTest {
         every {
             chatbotWebSocket.send(
                 ChatbotSendableWebSocketParam.generateParamSendBubbleAction(
+                    any(),
                     any(),
                     any(),
                     any(),
@@ -1975,6 +1986,7 @@ class ChatbotViewModelTest {
         verify {
             chatbotWebSocket.send(
                 ChatbotSendableWebSocketParam.generateParamSendBubbleAction(
+                    any(),
                     any(),
                     any(),
                     any(),
@@ -1995,6 +2007,7 @@ class ChatbotViewModelTest {
                 any(),
                 any(),
                 any(),
+                any(),
                 any()
             )
         } returns mockk(relaxed = true)
@@ -2002,6 +2015,7 @@ class ChatbotViewModelTest {
         every {
             chatbotWebSocket.send(
                 ChatbotSendableWebSocketParam.generateParamSendQuickReplyEventArticle(
+                    any(),
                     any(),
                     any(),
                     any(),
@@ -2017,6 +2031,7 @@ class ChatbotViewModelTest {
         verify {
             chatbotWebSocket.send(
                 ChatbotSendableWebSocketParam.generateParamSendQuickReplyEventArticle(
+                    any(),
                     any(),
                     any(),
                     any(),
@@ -2037,6 +2052,7 @@ class ChatbotViewModelTest {
                 any(),
                 any(),
                 any(),
+                any(),
                 any()
             )
         } returns mockk(relaxed = true)
@@ -2044,6 +2060,7 @@ class ChatbotViewModelTest {
         every {
             chatbotWebSocket.send(
                 ChatbotSendableWebSocketParam.generateParamSendQuickReply(
+                    any(),
                     any(),
                     any(),
                     any(),
@@ -2058,6 +2075,7 @@ class ChatbotViewModelTest {
         verify {
             chatbotWebSocket.send(
                 ChatbotSendableWebSocketParam.generateParamSendQuickReply(
+                    any(),
                     any(),
                     any(),
                     any(),
@@ -3154,6 +3172,26 @@ class ChatbotViewModelTest {
         verify { ticketListContactUsUsecase.cancelJobs() }
     }
 
+    @Test
+    fun extractBranchLinkTest() {
+        coEvery { extractBranchLinkUseCase.invoke(any()).android_deeplink } returns "tokopedia://home"
+        viewModel.extractBranchLink("")
+        assertNotNull(viewModel.applink.value)
+    }
+
+    @Test
+    fun extractBranchLinkExceptionTest() {
+        val exception = java.lang.Exception("Validate Data Exception")
+
+        coEvery { extractBranchLinkUseCase.invoke(any()).android_deeplink } throws exception
+        viewModel.extractBranchLink("")
+
+        assertNotNull(viewModel.applink.value)
+        viewModel.applink.value?.let {
+            assertTrue(it.isEmpty())
+        }
+    }
+
     private fun generateChatUiModelWithVideo(video: String, totalLength: Long): VideoUploadUiModel {
         return VideoUploadUiModel.Builder().withMsgId("123")
             .withFromUid("456")
@@ -3165,5 +3203,113 @@ class ChatbotViewModelTest {
             .withIsDummy(true)
             .withLength(totalLength)
             .build()
+    }
+
+    @Test
+    fun `WHEN existing chat has attachment type 9 and typing block true THEN typingBlockedState should true`() {
+        // GIVEN
+        val data = GetExistingChatPojo(
+            chatReplies = ChatReplies(
+                list = listOf(
+                    ChatRepliesItem(
+                        chats = listOf(
+                            Chat(
+                                replies = listOf(
+                                    Reply(
+                                        attachment = Attachment(
+                                            type = 9,
+                                            attributes = """
+                                                {
+                                                  "is_typing_blocked_on_button_select": true
+                                                }
+                                            """.trimIndent()
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+
+        // WHEN
+        viewModel.checkIsTypingBlockedDataFromExistingChat(data)
+
+        // THEN
+        assert(viewModel.typingBlockedState.value == true)
+    }
+
+    @Test
+    fun `WHEN existing chat has attachment type 9 and typing block false THEN typingBlockedState should false`() {
+        // GIVEN
+        val data = GetExistingChatPojo(
+            chatReplies = ChatReplies(
+                list = listOf(
+                    ChatRepliesItem(
+                        chats = listOf(
+                            Chat(
+                                replies = listOf(
+                                    Reply(
+                                        attachment = Attachment(
+                                            type = 9,
+                                            attributes = """
+                                                {
+                                                  "is_typing_blocked_on_button_select": false
+                                                }
+                                            """.trimIndent()
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+
+        // WHEN
+        viewModel.checkIsTypingBlockedDataFromExistingChat(data)
+
+        // THEN
+        assert(viewModel.typingBlockedState.value == false)
+    }
+
+    @Test
+    fun `WHEN websocket chat has attachment type 9 and typing block true THEN typingBlockedState should true`() {
+        // GIVEN
+        val data = ChatSocketPojo(
+            attachment = AttachmentPojo(
+                type = "9",
+                attributes = JsonObject().apply {
+                    addProperty("is_typing_blocked_on_button_select", true)
+                }
+            )
+        )
+
+        // WHEN
+        viewModel.checkIsTypingBlockedDataFromWebSocket(data)
+
+        // THEN
+        assert(viewModel.typingBlockedState.value == true)
+    }
+
+    @Test
+    fun `WHEN websocket chat has attachment type 9 and typing block false THEN typingBlockedState should false`() {
+        // GIVEN
+        val data = ChatSocketPojo(
+            attachment = AttachmentPojo(
+                type = "9",
+                attributes = JsonObject().apply {
+                    addProperty("is_typing_blocked_on_button_select", false)
+                }
+            )
+        )
+
+        // WHEN
+        viewModel.checkIsTypingBlockedDataFromWebSocket(data)
+
+        // THEN
+        assert(viewModel.typingBlockedState.value == false)
     }
 }

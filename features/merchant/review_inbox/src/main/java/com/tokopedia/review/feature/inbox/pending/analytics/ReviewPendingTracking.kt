@@ -16,23 +16,23 @@ object ReviewPendingTracking {
 
     fun eventClickCard(reputationId: String, productId: String, userId: String, isEligible: Boolean, source: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                generateTrackingMap(
-                        String.format(ReviewPendingTrackingConstants.EVENT_LABEL_INCENTIVE, reputationId, productId, isEligible.toString()),
-                        ReviewPendingTrackingConstants.EVENT_ACTION_CLICK_PRODUCT_CARD,
-                        userId,
-                        source
-                )
+            generateTrackingMap(
+                String.format(ReviewPendingTrackingConstants.EVENT_LABEL_INCENTIVE, reputationId, productId, isEligible.toString()),
+                ReviewPendingTrackingConstants.EVENT_ACTION_CLICK_PRODUCT_CARD,
+                userId,
+                source
+            )
         )
     }
 
     fun eventClickRatingStar(reputationId: String, productId: String, starRating: Int, userId: String, isEligible: Boolean, source: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                generateTrackingMap(
-                        String.format(ReviewPendingTrackingConstants.EVENT_LABEL_PENDING, reputationId, productId, isEligible.toString()),
-                        String.format(ReviewPendingTrackingConstants.EVENT_ACTION_CLICK_STAR, starRating.toString()),
-                        userId,
-                        source
-                )
+            generateTrackingMap(
+                String.format(ReviewPendingTrackingConstants.EVENT_LABEL_PENDING, reputationId, productId, isEligible.toString()),
+                String.format(ReviewPendingTrackingConstants.EVENT_ACTION_CLICK_STAR, starRating.toString()),
+                userId,
+                source
+            )
         )
     }
 
@@ -102,16 +102,61 @@ object ReviewPendingTracking {
             .sendGeneralEvent()
     }
 
+    fun trackClickBulkReviewCard(title: String, userId: String) {
+        mutableMapOf<String, Any>()
+            .appendGeneralEventData(
+                eventName = ReviewPendingTrackingConstants.EVENT_NAME_CLICK_PG,
+                eventCategory = ReviewPendingTrackingConstants.EVENT_CATEGORY_VALUE_BULK_REVIEW_PAGE,
+                eventAction = ReviewPendingTrackingConstants.EVENT_ACTION_VALUE_CLICK_BULK_REVIEW_CARD,
+                eventLabel = "title:$title"
+            )
+            .appendBusinessUnit(ReviewPendingTrackingConstants.PDP_BUSINESS_UNIT)
+            .appendCurrentSite(ReviewPendingTrackingConstants.CREDIBILITY_CURRENT_SITE)
+            .appendTrackerIdIfNotBlank(ReviewPendingTrackingConstants.TRACKER_ID_CLICK_BULK_REVIEW_CARD)
+            .appendUserId(userId)
+            .sendGeneralEvent()
+    }
+
+    fun trackClickStarBulkReviewCard(title: String, userId: String) {
+        mutableMapOf<String, Any>()
+            .appendGeneralEventData(
+                eventName = ReviewPendingTrackingConstants.EVENT_NAME_CLICK_PG,
+                eventCategory = ReviewPendingTrackingConstants.EVENT_CATEGORY_VALUE_BULK_REVIEW_PAGE,
+                eventAction = ReviewPendingTrackingConstants.EVENT_ACTION_VALUE_CLICK_STAR_BULK_REVIEW_CARD,
+                eventLabel = "title:$title"
+            )
+            .appendBusinessUnit(ReviewPendingTrackingConstants.PDP_BUSINESS_UNIT)
+            .appendCurrentSite(ReviewPendingTrackingConstants.CREDIBILITY_CURRENT_SITE)
+            .appendTrackerIdIfNotBlank(ReviewPendingTrackingConstants.TRACKER_ID_CLICK_STAR_BULK_REVIEW_CARD)
+            .appendUserId(userId)
+            .sendGeneralEvent()
+    }
+
+    fun trackImpressBulkReviewCard(title: String, userId: String) {
+        mutableMapOf<String, Any>()
+            .appendGeneralEventData(
+                eventName = ReviewPendingTrackingConstants.EVENT_NAME_VIEW_PG,
+                eventCategory = ReviewPendingTrackingConstants.EVENT_CATEGORY_VALUE_BULK_REVIEW_PAGE,
+                eventAction = ReviewPendingTrackingConstants.EVENT_ACTION_VALUE_IMPRESSION_BULK_REVIEW_CARD,
+                eventLabel = "title:$title"
+            )
+            .appendBusinessUnit(ReviewPendingTrackingConstants.PDP_BUSINESS_UNIT)
+            .appendCurrentSite(ReviewPendingTrackingConstants.CREDIBILITY_CURRENT_SITE)
+            .appendTrackerIdIfNotBlank(ReviewPendingTrackingConstants.TRACKER_ID_IMPRESSION_BULK_REVIEW_CARD)
+            .appendUserId(userId)
+            .sendGeneralEvent()
+    }
+
     private fun generateTrackingMap(label: String, action: String, userId: String, source: String): Map<String, String> {
         with(ReviewTrackingConstant) {
             return mapOf(
-                    EVENT to EVENT_CLICK_REVIEW,
-                    EVENT_CATEGORY to ReviewInboxTrackingConstants.EVENT_CATEGORY_PENDING_TAB,
-                    EVENT_ACTION to action,
-                    EVENT_LABEL to label,
-                    KEY_SCREEN_NAME to ReviewInboxTrackingConstants.SCREEN_NAME,
-                    KEY_USER_ID to "$userId,",
-                    KEY_PAGE_SOURCE to source
+                EVENT to EVENT_CLICK_REVIEW,
+                EVENT_CATEGORY to ReviewInboxTrackingConstants.EVENT_CATEGORY_PENDING_TAB,
+                EVENT_ACTION to action,
+                EVENT_LABEL to label,
+                KEY_SCREEN_NAME to ReviewInboxTrackingConstants.SCREEN_NAME,
+                KEY_USER_ID to "$userId,",
+                KEY_PAGE_SOURCE to source
             )
         }
     }

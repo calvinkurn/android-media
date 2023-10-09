@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import android.view.View
 
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationItemViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationItemGridViewHolder
 
 class HomeFeedItemDecoration(private val spacing: Int) : RecyclerView.ItemDecoration() {
 
@@ -35,7 +35,7 @@ class HomeFeedItemDecoration(private val spacing: Int) : RecyclerView.ItemDecora
         val adapter = parent.adapter
         return if (viewPosition < 0 || viewPosition > adapter!!.itemCount - 1) {
             false
-        } else adapter.getItemViewType(viewPosition) == HomeRecommendationItemViewHolder.LAYOUT
+        } else adapter.getItemViewType(viewPosition) == HomeRecommendationItemGridViewHolder.LAYOUT
     }
 
     private fun isTopProductItem(viewPosition: Int): Boolean {

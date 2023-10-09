@@ -8,6 +8,8 @@ import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
+import com.tokopedia.digital_product_detail.pulsa.utils.DigitalPDPPulsaMockConfig
+import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import org.hamcrest.MatcherAssert
 import org.hamcrest.core.IsNot
@@ -15,7 +17,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class DigitalPDPPulsaCassavaTest: BaseDigitalPDPPulsaTest() {
+class DigitalPDPPulsaCassavaTest : BaseDigitalPDPPulsaTest() {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
 
@@ -27,6 +29,8 @@ class DigitalPDPPulsaCassavaTest: BaseDigitalPDPPulsaTest() {
             .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }
 
+    override fun getMockModelConfig(): MockModelConfig = DigitalPDPPulsaMockConfig()
+
     @Before
     fun setUp() {
         InstrumentationAuthHelper.loginInstrumentationTestUser1()
@@ -37,6 +41,7 @@ class DigitalPDPPulsaCassavaTest: BaseDigitalPDPPulsaTest() {
     fun validate_cassava() {
         Thread.sleep(2000)
         interactWithClientNumberWidget()
+        interactWithCheckBalanceWidget()
         interactWithFavoriteChip()
         interactWithAutoComplete()
         interactWithRecommendationWidget()
@@ -64,6 +69,21 @@ class DigitalPDPPulsaCassavaTest: BaseDigitalPDPPulsaTest() {
         clientNumberWidget_typeNumber("0812")
         clientNumberWidget_typeNumber("3456")
         clientNumberWidget_typeNumber("7890")
+        Espresso.closeSoftKeyboard()
+    }
+
+    private fun interactWithCheckBalanceWidget() {
+        Thread.sleep(2000)
+        clientNumberWidget_clickClearIcon()
+        clientNumberWidget_typeNumber("085808580858")
+        Thread.sleep(4000)
+        clientNumberWidget_clickCheckBalanceWidget()
+
+        Thread.sleep(2000)
+        checkBalanceBottomSheet_clickItem_withIndex(0)
+
+        Thread.sleep(1000)
+        checkBalanceBottomSheet_clickCloseIcon()
     }
 
     private fun interactWithFavoriteChip() {
