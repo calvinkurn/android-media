@@ -91,7 +91,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(
     }
 
     private fun initListener() {
-        inputNumberField.icon1.run {
+        inputNumberField.icon2.run {
             setOnClickListener { listener.onNavigateToContact(false) }
             setImageDrawable(getIconUnifyDrawable(context, IconUnify.CONTACT))
             show()

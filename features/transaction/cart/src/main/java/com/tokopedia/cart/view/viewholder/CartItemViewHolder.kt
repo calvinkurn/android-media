@@ -26,6 +26,7 @@ import com.tokopedia.cart.databinding.ItemAddonCartIdentifierBinding
 import com.tokopedia.cart.databinding.ItemCartProductBinding
 import com.tokopedia.cart.view.adapter.cart.CartItemAdapter
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.kotlin.extensions.view.gone
@@ -90,6 +91,12 @@ class CartItemViewHolder constructor(
     fun bindData(data: CartItemHolderData, viewHolderListener: ViewHolderListener?, dataSize: Int) {
         this.viewHolderListener = viewHolderListener
         this.dataSize = dataSize
+
+        itemView.addOnImpressionListener(data, onView = {
+            if (!data.isError) {
+                actionListener?.onAvailableCartItemImpression(listOf(data))
+            }
+        })
 
         renderAlpha(data)
         renderShopInfo(data)

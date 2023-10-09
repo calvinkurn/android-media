@@ -63,6 +63,9 @@ class GotoKycDefaultCard : KycPlusCardFactory {
                 view = contentView,
                 showCloseIcon = false
             )
+
+            bottomSheetDialog.setCanceledOnTouchOutside(false)
+
             return GotoKycSdkBottomSheet(
                 activity = activity,
                 bottomSheetDialog = bottomSheetDialog,

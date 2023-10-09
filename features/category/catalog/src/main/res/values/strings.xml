@@ -41,4 +41,11 @@
     <string name="catalog_katalog_tokopedia">Katalog Tokopedia</string>
     <string name="catalog_entry_banner_product_count">Temukan %1$s Katalog lainnya</string>
     <string name="catalog_entry_banner_title">di %1$s</string>
+    <string name="text_empty_product_list">Nggak ada barang yang sesuai dari filter ini</string>
+    <string name="text_message__fail">Oops, permintaan kamu tidak dapat diproses.</string>
+    <string name="text_empty_state_title">Nggak ada barang yang sesuai dari filter ini</string>
+    <string name="text_empty_state_desc">Coba kurangi filter yang lagi aktif atau reset filter.</string>
+    <string name="text_reset_filter">Reset Filter</string>
+    <string name="catalog_action_product_list">Lihat Pilihan</string>
+
 </resources>

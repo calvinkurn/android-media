@@ -1,5 +1,8 @@
 package com.tokopedia.feedplus.analytics
 
+import com.tokopedia.content.analytic.BusinessUnit
+import com.tokopedia.content.analytic.CurrentSite
+import com.tokopedia.content.analytic.Key
 import com.tokopedia.feedplus.analytics.FeedAnalytics.Companion.BUSINESS_UNIT_CONTENT
 import com.tokopedia.feedplus.analytics.FeedAnalytics.Companion.CURRENT_SITE_MARKETPLACE
 import com.tokopedia.feedplus.analytics.FeedAnalytics.Companion.KEY_BUSINESS_UNIT_EVENT
@@ -13,6 +16,7 @@ import com.tokopedia.track.TrackAppUtils.EVENT
 import com.tokopedia.track.TrackAppUtils.EVENT_ACTION
 import com.tokopedia.track.TrackAppUtils.EVENT_CATEGORY
 import com.tokopedia.track.TrackAppUtils.EVENT_LABEL
+import com.tokopedia.track.builder.Tracker
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -20,7 +24,7 @@ import javax.inject.Inject
  * Created By : Muhammad Furqan on 16/04/23
  */
 class FeedNavigationAnalytics @Inject constructor(
-    userSession: UserSessionInterface
+    private val userSession: UserSessionInterface
 ) {
 
     private object Event {
@@ -40,7 +44,8 @@ class FeedNavigationAnalytics @Inject constructor(
         const val CLICK_PROFILE_BUTTON = "click - user profile entry point"
     }
 
-    private val userId = userSession.userId
+    private val userId: String
+        get() = userSession.userId
 
     private val activeTab: String
         get() {
@@ -150,6 +155,20 @@ class FeedNavigationAnalytics @Inject constructor(
                 "41479"
             )
         )
+    }
+
+    fun sendClickBrowseIconEvent() {
+        Tracker.Builder()
+            .setEvent(com.tokopedia.content.analytic.Event.clickContent)
+            .setEventAction("click - browse icon")
+            .setEventCategory(com.tokopedia.content.analytic.EventCategory.unifiedFeed)
+            .setEventLabel("$userId - $activeTab")
+            .setCustomProperty(Key.trackerId, "45724")
+            .setBusinessUnit(BusinessUnit.content)
+            .setCurrentSite(CurrentSite.tokopediaMarketplace)
+            .setUserId(userId)
+            .build()
+            .send()
     }
 
     private fun generateGeneralTrackerData(

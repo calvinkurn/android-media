@@ -543,13 +543,13 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
     }
 
     private fun showChatNotificationCounter(unreadSeller: Int) {
-        val badgeVisibility = if (unreadSeller <= Int.ZERO) View.INVISIBLE else View.VISIBLE
+        val badgeVisibility = if (unreadSeller <= Int.ZERO) View.GONE else View.VISIBLE
         binding?.sahBottomNav?.setBadge(unreadSeller, FragmentType.CHAT, badgeVisibility)
     }
 
     private fun showOrderNotificationCounter(orderStatus: NotificationSellerOrderStatusUiModel) {
         val notificationCount = orderStatus.newOrder.plus(orderStatus.readyToShip)
-        val badgeVisibility = if (notificationCount <= Int.ZERO) View.INVISIBLE else View.VISIBLE
+        val badgeVisibility = if (notificationCount <= Int.ZERO) View.GONE else View.VISIBLE
         binding?.sahBottomNav?.setBadge(notificationCount, FragmentType.ORDER, badgeVisibility)
     }
 

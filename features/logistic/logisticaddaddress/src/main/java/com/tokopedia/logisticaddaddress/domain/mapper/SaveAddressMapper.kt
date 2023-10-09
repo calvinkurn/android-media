@@ -3,10 +3,9 @@ package com.tokopedia.logisticaddaddress.domain.mapper
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.response.Data
 import com.tokopedia.logisticaddaddress.domain.model.Address
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
-import javax.inject.Inject
+import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.uimodel.GetDistrictDataUiModel
 
-class SaveAddressMapper @Inject constructor() {
+object SaveAddressMapper {
 
     fun map(
         autoFillModel: Data,
@@ -72,7 +71,7 @@ class SaveAddressMapper @Inject constructor() {
             this.cityId = address.cityId
             this.provinceId = address.provinceId
             this.districtId = address.districtId
-            this.zipCodes = address.zipCodes
+            this.zipCodes = address.zipCodes.toList()
             this.postalCode = postalCode
             this.formattedAddress =
                 "${address.districtName}, ${address.cityName}, ${address.provinceName}"

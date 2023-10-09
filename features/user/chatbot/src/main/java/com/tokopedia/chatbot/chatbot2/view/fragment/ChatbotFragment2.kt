@@ -1022,6 +1022,16 @@ class ChatbotFragment2 :
                 }
             }
         }
+
+        viewModel.applink.observe(viewLifecycleOwner) { applink ->
+            context?.let { context ->
+                RouteManager.route(context, applink)
+            }
+        }
+
+        viewModel.typingBlockedState.observe(viewLifecycleOwner) {
+            handleIsTypingBlocked(it)
+        }
     }
 
     private fun handleAddAttachmentButtonViewState(toShow: Boolean) {
@@ -1939,6 +1949,14 @@ class ChatbotFragment2 :
                 SendableUiModel.generateStartTime(),
                 opponentId
             )
+            handleIsTypingBlocked(model.isTypingBlocked)
+        }
+    }
+
+    private fun handleIsTypingBlocked(isTypingBlocked: Boolean) {
+        if (isTypingBlocked) {
+            hideReplyBox()
+        } else {
             enableTyping()
         }
     }
@@ -1997,6 +2015,8 @@ class ChatbotFragment2 :
                     )
                 if (isNeedAuthToken && RouteManager.isSupportApplink(activity, applinkWebview)) {
                     RouteManager.route(activity, applinkWebview)
+                } else if (isBranchIOLink(url)) {
+                    viewModel.extractBranchLink(url)
                 } else {
                     super.onGoToWebView(url, id)
                 }

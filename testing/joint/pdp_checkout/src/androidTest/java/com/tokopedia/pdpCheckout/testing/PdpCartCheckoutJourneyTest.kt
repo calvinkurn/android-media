@@ -16,6 +16,7 @@ import com.tokopedia.pdpCheckout.testing.product.detail.ProductDetailRobot
 import com.tokopedia.pdpCheckout.testing.product.detail.RESPONSE_P1_PATH
 import com.tokopedia.pdpCheckout.testing.product.detail.RESPONSE_P2_DATA_PATH
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
+import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.test.application.environment.interceptor.mock.MockInterceptor
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
@@ -25,6 +26,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
+@CassavaTest
 class PdpCartCheckoutJourneyTest {
 
     @get:Rule
