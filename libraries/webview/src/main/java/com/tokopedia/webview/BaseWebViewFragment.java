@@ -309,9 +309,9 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private String getIdentifierUserAgent() {
         String identifierUserAgent;
         if (GlobalConfig.isSellerApp()) {
-            identifierUserAgent = " Sellerapp Tokopedia webview ";
+            identifierUserAgent = " Mobile webview Sellerapp Tokopedia ";
         } else {
-            identifierUserAgent = " Tokopedia webview ";
+            identifierUserAgent = " Mobile webview Tokopedia ";
         }
         return identifierUserAgent;
     }
