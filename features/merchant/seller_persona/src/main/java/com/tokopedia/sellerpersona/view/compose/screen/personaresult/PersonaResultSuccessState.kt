@@ -109,7 +109,7 @@ private fun ResultFooterSectionUi(data: PersonaDataUiModel, onEvent: (ResultUiEv
                     )
                 )
             }
-            NestSwitch(isChecked = data.isSwitchChecked) {
+            NestSwitch(defaultIsChecked = data.isSwitchChecked) {
                 onEvent(ResultUiEvent.OnSwitchCheckChanged(it))
             }
         }
@@ -123,9 +123,11 @@ private fun ResultFooterSectionUi(data: PersonaDataUiModel, onEvent: (ResultUiEv
         Spacer(modifier = Modifier.height(24.dp))
         if (data.isApplyButtonVisible()) {
             NestButton(
-                text = stringResource(data.getApplyButtonStringRes()), onClick = {
+                text = stringResource(data.getApplyButtonStringRes()),
+                onClick = {
                     onEvent(ResultUiEvent.ApplyChanges(data.persona, data.isSwitchChecked))
-                }, modifier = Modifier.fillMaxWidth()
+                },
+                modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.height(16.dp))
         }
