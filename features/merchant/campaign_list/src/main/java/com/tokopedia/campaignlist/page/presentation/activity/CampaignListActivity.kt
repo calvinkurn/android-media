@@ -6,6 +6,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.text.TextRange
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
@@ -100,6 +101,7 @@ class CampaignListActivity : BaseActivity(), ShareBottomsheetListener {
                 val uiState = viewModel.uiState.collectAsState()
 
                 val searchBarKeyword = remember { mutableStateOf("") }
+                val keywordTextRange = remember { mutableStateOf(TextRange(searchBarKeyword.value.length)) }
 
                 CampaignListScreen(
                     uiState = uiState.value,
@@ -135,15 +137,18 @@ class CampaignListActivity : BaseActivity(), ShareBottomsheetListener {
                             statusId = campaignStatusId
                         )
                     },
-                    onSearchBarKeywordChanged = {
-                        searchBarKeyword.value = it
+                    onSearchBarKeywordChanged = { text, textRange ->
+                        keywordTextRange.value = textRange
+                        searchBarKeyword.value = text
                     },
                     onSearchbarCleared = {
+                        keywordTextRange.value = TextRange.Zero
                         searchBarKeyword.value = ""
                         viewModel.getCampaignList()
                     },
                     onTickerDismissed = { viewModel.onEvent(CampaignListViewModel.UiEvent.DismissTicker) },
                     onToolbarBackIconPressed = { finish() },
+                    textRangeKeyword = keywordTextRange.value,
                     onCampaignScrolled = { campaign ->
                         tracker.sendCampaignImpressionEvent(campaign.campaignId, userSession.shopId)
                     }
