@@ -15,11 +15,11 @@ import com.tokopedia.recharge_component.presentation.util.CustomDividerItemDecor
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
-class RechargeCheckBalanceDetailBottomSheet: BottomSheetUnify() {
+class RechargeCheckBalanceDetailBottomSheet : BottomSheetUnify() {
 
     private var binding by autoClearedNullable<BottomsheetRechargeCheckBalanceDetailBinding>()
     private var checkBalanceDetailAdapter: RechargeCheckBalanceDetailAdapter? = null
-    private lateinit var checkBalanceDetailModels: List<RechargeCheckBalanceDetailModel>
+    private var checkBalanceDetailModels: List<RechargeCheckBalanceDetailModel>? = null
     private var checkBalanceDetailBottomSheetListener: RechargeCheckBalanceDetailBottomSheetListener? = null
     private var checkBalanceDetailViewHolderListener: RechargeCheckBalanceDetailViewHolder.RechargeCheckBalanceDetailViewHolderListener? = null
     private var productListName: String = ""
@@ -72,7 +72,7 @@ class RechargeCheckBalanceDetailBottomSheet: BottomSheetUnify() {
 
     private fun renderBottomSheet() {
         checkBalanceDetailAdapter = RechargeCheckBalanceDetailAdapter().apply {
-            setCheckBalanceDetails(checkBalanceDetailModels)
+            setCheckBalanceDetails(checkBalanceDetailModels ?: emptyList())
             setCheckBalanceDetailViewHolderListener(object : RechargeCheckBalanceDetailViewHolder.RechargeCheckBalanceDetailViewHolderListener {
                 override fun onRenderCheckBalanceDetailBuyButton(
                     model: RechargeCheckBalanceDetailModel,

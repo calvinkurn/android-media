@@ -5,17 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.recharge_component.databinding.BottomsheetRechargeCheckBalanceOtpBinding
 import com.tokopedia.recharge_component.model.check_balance.RechargeCheckBalanceOTPBottomSheetModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
-class RechargeCheckBalanceOTPBottomSheet: BottomSheetUnify() {
+class RechargeCheckBalanceOTPBottomSheet : BottomSheetUnify() {
 
     private var binding by autoClearedNullable<BottomsheetRechargeCheckBalanceOtpBinding>()
-    private lateinit var bottomSheetModel: RechargeCheckBalanceOTPBottomSheetModel
+    private var bottomSheetModel: RechargeCheckBalanceOTPBottomSheetModel? = null
     private var mListener: RechargeCheckBalanceOTPBottomSheetListener? = null
 
     fun show(fragmentManager: FragmentManager) {
@@ -52,12 +51,12 @@ class RechargeCheckBalanceOTPBottomSheet: BottomSheetUnify() {
 
     private fun renderBottomSheet() {
         binding?.run {
-            setTitle(bottomSheetModel.title)
-            bottomsheetOtpImage.loadImage(bottomSheetModel.mediaUrl)
-            bottomsheetOtpDescription.text = bottomSheetModel.description
-            bottomsheetOtpButton.text = bottomSheetModel.buttonText
+            setTitle(bottomSheetModel?.title.orEmpty())
+            bottomsheetOtpImage.loadImage(bottomSheetModel?.mediaUrl.orEmpty())
+            bottomsheetOtpDescription.text = bottomSheetModel?.description.orEmpty()
+            bottomsheetOtpButton.text = bottomSheetModel?.buttonText.orEmpty()
             bottomsheetOtpButton.setOnClickListener {
-                mListener?.onClickButton(bottomSheetModel.buttonAppLink)
+                mListener?.onClickButton(bottomSheetModel?.buttonAppLink.orEmpty())
                 dismiss()
             }
             mListener?.onRenderCheckBalanceOTPBottomSheet()
