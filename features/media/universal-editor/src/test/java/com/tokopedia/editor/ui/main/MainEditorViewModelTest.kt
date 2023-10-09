@@ -1,16 +1,21 @@
 package com.tokopedia.editor.ui.main
 
 import android.graphics.BitmapFactory
+import com.tokopedia.editor.analytics.main.editor.MainEditorAnalytics
 import com.tokopedia.editor.data.model.NavigationTool
 import com.tokopedia.editor.data.repository.NavigationToolRepository
+import com.tokopedia.editor.faker.FakeImageFlattenRepository
 import com.tokopedia.editor.faker.FakeVideoFlattenRepository
+import com.tokopedia.editor.ui.main.uimodel.InputTextParam
 import com.tokopedia.editor.ui.main.uimodel.MainEditorEffect
 import com.tokopedia.editor.ui.main.uimodel.MainEditorEvent
+import com.tokopedia.editor.ui.model.ImagePlacementModel
 import com.tokopedia.editor.ui.model.InputTextModel
 import com.tokopedia.editor.util.provider.ResourceProvider
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.picker.common.UniversalEditorParam
 import com.tokopedia.picker.common.types.ToolType
+import com.tokopedia.picker.common.utils.isImageFormat
 import com.tokopedia.picker.common.utils.isVideoFormat
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import io.mockk.Runs
@@ -18,18 +23,22 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkStatic
+import io.mockk.runs
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.TemporaryFolder
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.shadows.ShadowBitmapFactory
+
 
 @RunWith(RobolectricTestRunner::class)
 class MainEditorViewModelTest {
@@ -38,22 +47,31 @@ class MainEditorViewModelTest {
     private val fakeVideoFlattenRepository = FakeVideoFlattenRepository()
     private val resourceProvider = mockk<ResourceProvider>()
     private val paramFetcher = mockk<EditorParamFetcher>()
+    private val fakeImageFlattenRepository = FakeImageFlattenRepository()
+    private val analytics = mockk<MainEditorAnalytics>()
 
     private val dispatchers = CoroutineTestDispatchers
 
     private lateinit var viewModel: MainEditorViewModel
+
+    @JvmField
+    @Rule
+    var tempFolder = TemporaryFolder()
 
     @Before
     fun setUp() {
         viewModel = MainEditorViewModel(
             navigationToolRepository,
             fakeVideoFlattenRepository,
+            fakeImageFlattenRepository,
             resourceProvider,
             dispatchers,
-            paramFetcher
+            paramFetcher,
+            analytics
         )
 
         mockkStatic(::isVideoFormat)
+        mockkStatic(::isImageFormat)
     }
 
     @Test
@@ -78,6 +96,7 @@ class MainEditorViewModelTest {
         val model = InputTextModel(text = "add a new text")
 
         // Verify
+        mockAnalytics()
         onEvent(MainEditorEvent.AddInputTextPage)
 
         val effects = recordEffect()
@@ -138,36 +157,172 @@ class MainEditorViewModelTest {
     fun `it should able to export a video file`() = runTest {
         // Given
         val bitmap = ShadowBitmapFactory.create("", BitmapFactory.Options())
+        val filePath = tempFolder.newFile("dummy.mp4")
 
-        fakeVideoFlattenRepository.emit("result")
         every { isVideoFormat(any()) } returns true
+        mockAnalytics()
+        mockParamFetcher()
+        mockNavigationTool()
 
         // When
+        onEvent(
+            MainEditorEvent.SetupView(
+                UniversalEditorParam(
+                    paths = listOf(filePath.path)
+                )
+            )
+        )
         onEvent(MainEditorEvent.ExportMedia(bitmap))
+        fakeVideoFlattenRepository.emit("result")
 
         // Verify
         val effects = recordEffect()
         assertTrue(effects[0] is MainEditorEffect.ShowLoading)
-        assertTrue(effects[1] is MainEditorEffect.FinishEditorPage)
-        assertTrue(effects[2] is MainEditorEffect.HideLoading)
+        assertTrue(effects[1] is MainEditorEffect.HideLoading)
+        assertTrue(effects[2] is MainEditorEffect.FinishEditorPage)
     }
 
     @Test
     fun `it should fail to export a video file and show error toast`() = runTest {
         // Given
         val bitmap = ShadowBitmapFactory.create("", BitmapFactory.Options())
+        val filePath = tempFolder.newFile("dummy.mp4")
 
         every { resourceProvider.getString(any()) } returns ""
-        fakeVideoFlattenRepository.emit("")
+        mockAnalytics()
+        mockParamFetcher()
+        mockNavigationTool()
 
         // When
+        onEvent(
+            MainEditorEvent.SetupView(
+                UniversalEditorParam(
+                    paths = listOf(filePath.path)
+                )
+            )
+        )
         onEvent(MainEditorEvent.ExportMedia(bitmap))
+        fakeVideoFlattenRepository.emit("")
 
         // Verify
         val effects = recordEffect()
         assertTrue(effects[0] is MainEditorEffect.ShowLoading)
-        assertTrue(effects[1] is MainEditorEffect.ShowToastErrorMessage)
+        assertTrue(effects[1] is MainEditorEffect.HideLoading)
+        assertTrue(effects[2] is MainEditorEffect.ShowToastErrorMessage)
+    }
+
+    @Test
+    fun `it should able to export a image file`() = runTest {
+        // Given
+        val bitmap = ShadowBitmapFactory.create("", BitmapFactory.Options())
+        val filePath = tempFolder.newFile("dummy.png")
+        val placementPath = tempFolder.newFile("placement_result.png")
+
+        every { resourceProvider.getString(any()) } returns ""
+        every { isImageFormat(any()) } returns true
+        mockAnalytics()
+        mockParamFetcher()
+        mockNavigationTool()
+
+        // When
+        onEvent(
+            MainEditorEvent.SetupView(
+                UniversalEditorParam(
+                    paths = listOf(filePath.path)
+                )
+            )
+        )
+        onEvent(
+            MainEditorEvent.PlacementImageResult(
+                ImagePlacementModel(
+                    path = placementPath.path,
+                    scale = 1f,
+                    angle = 0f,
+                    translateY = 0f,
+                    translateX = 0f
+                )
+            )
+        )
+        onEvent(
+            MainEditorEvent.ExportMedia(
+                canvasTextBitmap = bitmap,
+                imageBitmap = bitmap
+            )
+        )
+        fakeImageFlattenRepository.emit("result")
+
+        // Verify
+        val effects = recordEffect()
+        assertTrue(effects[1] is MainEditorEffect.ShowLoading)
         assertTrue(effects[2] is MainEditorEffect.HideLoading)
+        assertTrue(effects[3] is MainEditorEffect.FinishEditorPage)
+    }
+
+    @Test
+    fun `it should fail to export a image file`() = runTest {
+        // Given
+        val bitmap = ShadowBitmapFactory.create("", BitmapFactory.Options())
+        val filePath = tempFolder.newFile("dummy.png")
+
+        every { resourceProvider.getString(any()) } returns ""
+        every { isImageFormat(any()) } returns true
+        mockAnalytics()
+        mockParamFetcher()
+        mockNavigationTool()
+
+        // When
+        onEvent(
+            MainEditorEvent.SetupView(
+                UniversalEditorParam(
+                    paths = listOf(filePath.path)
+                )
+            )
+        )
+        onEvent(
+            MainEditorEvent.ExportMedia(
+                canvasTextBitmap = bitmap,
+                imageBitmap = bitmap
+            )
+        )
+        fakeImageFlattenRepository.emit("")
+
+        // Verify
+        val effects = recordEffect()
+        assertTrue(effects[0] is MainEditorEffect.ShowLoading)
+        assertTrue(effects[1] is MainEditorEffect.HideLoading)
+        assertTrue(effects[2] is MainEditorEffect.ShowToastErrorMessage)
+    }
+
+    @Test
+    fun `it should fail export on non exists file`() = runTest {
+        // Given
+        val bitmap = ShadowBitmapFactory.create("", BitmapFactory.Options())
+
+        every { resourceProvider.getString(any()) } returns ""
+        every { isImageFormat(any()) } returns true
+        mockAnalytics()
+        mockParamFetcher()
+        mockNavigationTool()
+
+        // When
+        onEvent(
+            MainEditorEvent.SetupView(
+                UniversalEditorParam(
+                    paths = listOf("dummy_path.png")
+                )
+            )
+        )
+        onEvent(
+            MainEditorEvent.ExportMedia(
+                canvasTextBitmap = bitmap,
+                imageBitmap = bitmap
+            )
+        )
+        fakeImageFlattenRepository.emit("")
+
+        // Verify
+        val effects = recordEffect()
+        assertTrue(effects.isEmpty())
     }
 
     @Test
@@ -177,6 +332,130 @@ class MainEditorViewModelTest {
 
         // Then
         assertTrue(viewModel.inputTextState.value.model == null)
+    }
+
+    @Test
+    fun `should update text flag on text is added`() = runTest {
+        // When
+        onEvent(MainEditorEvent.HasTextAdded(true))
+
+        // Verify
+        assertTrue(viewModel.mainEditorState.value.hasTextAdded)
+    }
+
+    @Test
+    fun `should trigger placement page open sequence`() = runTest {
+        // When
+        mockParamFetcher()
+        mockAnalytics()
+        onEvent(MainEditorEvent.PlacementImagePage)
+
+        // Verify
+        val effects = recordEffect()
+        assertTrue(effects[0] is MainEditorEffect.OpenPlacementPage)
+    }
+
+    @Test
+    fun `should trigger input text page open sequence`() = runTest {
+        // When
+        mockParamFetcher()
+        onEvent(
+            MainEditorEvent.EditInputTextPage(
+                viewId = 0,
+                model = InputTextModel()
+            )
+        )
+
+        // Verify
+        val effects = recordEffect()
+        assertTrue(effects[0] is MainEditorEffect.OpenInputText)
+    }
+
+    @Test
+    fun `should update image when receive result from placement page`() = runTest {
+        // Given
+        val newImage = ImagePlacementModel(
+            path = "cache/new_image.png",
+            scale = 1f,
+            angle = 0f,
+            translateX = 0f,
+            translateY = 0f
+        )
+
+        // When
+        onEvent(MainEditorEvent.PlacementImageResult(newImage))
+
+        // Verify
+        val effects = recordEffect()
+        assertTrue(effects[0] is MainEditorEffect.UpdatePagerSourcePath)
+    }
+
+    @Test
+    fun `should skip image update when receive no result from placement page`() = runTest {
+        // When
+        onEvent(MainEditorEvent.PlacementImageResult(null))
+
+        // Verify
+        val effects = recordEffect()
+        assertTrue(effects.isEmpty())
+    }
+
+    @Test
+    fun `should flatten with mute audio`() = runTest {
+        // When
+        onEvent(MainEditorEvent.ManageVideoAudio)
+
+        // Verify
+        val effects = recordEffect()
+        assertTrue(effects[0] is MainEditorEffect.RemoveAudioState)
+        assertTrue(viewModel.mainEditorState.value.isRemoveAudio)
+    }
+
+    @Test
+    fun `should flatten with audio`() = runTest {
+        // When
+        onEvent(MainEditorEvent.ManageVideoAudio)
+        onEvent(MainEditorEvent.ManageVideoAudio)
+
+        // Verify
+        val effects = recordEffect()
+        assertTrue(effects[0] is MainEditorEffect.RemoveAudioState)
+        assertFalse(viewModel.mainEditorState.value.isRemoveAudio)
+    }
+
+    @Test
+    fun `should reset current active input text`() = runTest {
+        // Given
+        val expectedInputTextParam = InputTextParam()
+
+        // When
+        onEvent(MainEditorEvent.ResetActiveInputText)
+
+        // Verify
+        assertEquals(expectedInputTextParam, viewModel.inputTextState.value)
+    }
+
+    @Test
+    fun `should close editor home page on close clicked`() = runTest {
+        // When
+        mockAnalytics()
+        onEvent(MainEditorEvent.ClickHeaderCloseButton(true))
+
+        // Verify
+        val effects = recordEffect()
+        assertTrue(effects[0] is MainEditorEffect.CloseMainEditorPage)
+    }
+
+    @Test
+    fun `should close editor home page on close clicked with confirmation dialog`() = runTest {
+        // When
+        mockAnalytics()
+        onEvent(MainEditorEvent.HasTextAdded(true))
+        onEvent(MainEditorEvent.ClickHeaderCloseButton())
+
+        // Verify
+        val effects = recordEffect()
+        assertTrue(effects[0] is MainEditorEffect.ShowCloseDialogConfirmation)
     }
 
     private fun recordEffect(): List<MainEditorEffect> {
@@ -195,6 +474,9 @@ class MainEditorViewModelTest {
     }
 
     private fun mockParamFetcher() {
+        every { paramFetcher.get() } returns UniversalEditorParam(
+            paths = listOf("cache/dummy_path.png")
+        )
         every { paramFetcher.set(any()) } just Runs
     }
 
@@ -208,5 +490,12 @@ class MainEditorViewModelTest {
 
     private fun onEvent(event: MainEditorEvent) {
         viewModel.onEvent(event)
+    }
+
+    private fun mockAnalytics() {
+        every { analytics.backPageClick() } just runs
+        every { analytics.toolTextClick() } just runs
+        every { analytics.finishPageClick(any(), any(), any()) } just runs
+        every { analytics.toolAdjustCropClick() } just runs
     }
 }

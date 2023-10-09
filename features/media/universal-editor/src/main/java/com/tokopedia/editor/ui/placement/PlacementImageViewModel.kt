@@ -25,7 +25,7 @@ class PlacementImageViewModel @Inject constructor(
 
     var initialImageMatrix: FloatArray? = null
 
-    var isLoadingShow = MutableLiveData(false)
+    val isLoadingShow = MutableLiveData(false)
 
     private var _placementModelResult = MutableLiveData<ImagePlacementModel>(null)
     val placementModelResult get() = _placementModelResult
@@ -62,7 +62,7 @@ class PlacementImageViewModel @Inject constructor(
                     if (resultPath.isEmpty()) return@async
 
                     // matrix to model
-                    val placementModel = ImagePlacementModel(
+                    val imagePlacementModel = ImagePlacementModel(
                         path = resultPath,
                         scale = scale,
                         angle = angle,
@@ -70,9 +70,8 @@ class PlacementImageViewModel @Inject constructor(
                         translateY = translateY
                     )
 
-                    _placementModelResult.postValue(placementModel)
-                } catch (_: Exception) {
-                }
+                    _placementModelResult.postValue(imagePlacementModel)
+                } catch (_: Exception) {}
             }
         }
     }
