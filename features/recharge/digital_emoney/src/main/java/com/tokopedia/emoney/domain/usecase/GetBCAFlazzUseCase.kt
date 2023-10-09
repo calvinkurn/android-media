@@ -1,23 +1,23 @@
 package com.tokopedia.emoney.domain.usecase
 
-import com.tokopedia.emoney.domain.query.UpdateBalanceEmoneyDKIJakcard
+import com.tokopedia.emoney.domain.query.UpdateBalanceBCAFlazz
+import com.tokopedia.emoney.domain.request.BCAFlazzRequest
 import com.tokopedia.emoney.domain.request.CommonBodyEnc
-import com.tokopedia.emoney.domain.request.JakCardRequest
-import com.tokopedia.emoney.domain.response.JakCardResponse
+import com.tokopedia.emoney.domain.response.BCAFlazzResponse
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import javax.inject.Inject
 
-class GetJakCardUseCase @Inject constructor(
-    graphqlRepository: GraphqlRepository,
-): GraphqlUseCase<JakCardResponse>(graphqlRepository) {
+class GetBCAFlazzUseCase @Inject constructor(
+    graphqlRepository: GraphqlRepository
+): GraphqlUseCase<BCAFlazzResponse>(graphqlRepository) {
 
     init {
-        setGraphqlQuery(UpdateBalanceEmoneyDKIJakcard())
-        setTypeClass(JakCardResponse::class.java)
+        setGraphqlQuery(UpdateBalanceBCAFlazz())
+        setTypeClass(BCAFlazzResponse::class.java)
     }
 
-    suspend fun execute(params: JakCardRequest): JakCardResponse {
+    suspend fun execute(params: BCAFlazzRequest): BCAFlazzResponse {
         setRequestParams(mapParams(params))
         return executeOnBackground()
     }
@@ -29,7 +29,7 @@ class GetJakCardUseCase @Inject constructor(
         return mapBody
     }
 
-    private fun mapParams(params: JakCardRequest): HashMap<String, Any> {
+    private fun mapParams(params: BCAFlazzRequest): HashMap<String, Any> {
         val mapParams = HashMap<String, Any>()
         mapParams[ENC_BODY] = mapBody(params.body)
         return mapParams

@@ -12,7 +12,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.DeadObjectException
 import android.view.View
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -33,7 +32,7 @@ import com.tokopedia.common_electronic_money.util.NfcCardErrorTypeDef
 import com.tokopedia.emoney.R
 import com.tokopedia.emoney.di.DaggerDigitalEmoneyComponent
 import com.tokopedia.emoney.domain.request.JakCardStatus
-import com.tokopedia.emoney.domain.response.BCAResponseMapper
+import com.tokopedia.emoney.domain.response.BCAFlazzResponseMapper
 import com.tokopedia.emoney.integration.BCAConstResult.GEN_1_CARD
 import com.tokopedia.emoney.integration.BCAConstResult.GEN_2_CARD
 import com.tokopedia.emoney.integration.BCALibrary
@@ -42,8 +41,6 @@ import com.tokopedia.emoney.viewmodel.BCABalanceViewModel
 import com.tokopedia.emoney.viewmodel.EmoneyBalanceViewModel
 import com.tokopedia.emoney.viewmodel.JakCardBalanceViewModel
 import com.tokopedia.emoney.viewmodel.TapcashBalanceViewModel
-import com.tokopedia.kotlin.extensions.view.ONE
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.exception.MessageErrorException
@@ -133,6 +130,8 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
         val tag = intent.getParcelableExtra<Tag>(NfcAdapter.EXTRA_TAG)
         val rawPublicKey = getPublicKey()
         val rawPrivateKey = getPrivateKey()
+        val bRawPublicKey = getBPublicKey()
+        val bRawPrivateKey = getBPrivateKey()
         if (CardUtils.isTapcashCard(intent)) {
             issuerActive = ISSUER_ID_TAP_CASH
             showLoading(getOperatorName(issuerActive))
@@ -161,11 +160,12 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
         } else {
             initializeBCALibs(tag)
             val bcaIsMyCard = bcaLibrary.C_BCAIsMyCard()
-            if(bcaIsMyCard.strLogRsp.startsWith(GEN_2_CARD)) {
-                bcaBalanceViewModel.processBCATagBalance(IsoDep.get(tag), TEMP_M_ID, TEMP_T_ID)
-            } else if(bcaIsMyCard.strLogRsp.startsWith(GEN_1_CARD)){
-                val dataBalance = bcaLibrary.C_BCACheckBalance()
-                showCardLastBalance(BCAResponseMapper.bcaMapper(dataBalance, true, pendingBalance = 0))
+            val dataBalance = bcaLibrary.C_BCACheckBalance()
+            val isoDep = IsoDep.get(tag)
+            if(bcaIsMyCard.strLogRsp.startsWith(GEN_2_CARD) && dataBalance.cardNo.isNotEmpty()) {
+                bcaBalanceViewModel.processBCATagBalance(isoDep, TEMP_M_ID, TEMP_T_ID, bRawPublicKey, bRawPrivateKey)
+            } else if(bcaIsMyCard.strLogRsp.startsWith(GEN_1_CARD) && dataBalance.cardNo.isNotEmpty()){
+                bcaBalanceViewModel.processBCACheckBalanceGen1(isoDep, bRawPublicKey, bRawPrivateKey)
             } else {
                 context?.let { context ->
                     showError(
@@ -477,6 +477,22 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
             getString(com.tokopedia.keys.R.string.qazwsxedc)
         } else {
             getString(com.tokopedia.keys.R.string.plmoknijb)
+        }
+    }
+
+    private fun getBPublicKey(): String {
+        return if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
+            getString(com.tokopedia.keys.R.string.mvjskails)
+        } else {
+            getString(com.tokopedia.keys.R.string.ujalsfndm)
+        }
+    }
+
+    private fun getBPrivateKey(): String {
+        return if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
+            getString(com.tokopedia.keys.R.string.uklfhjskl)
+        } else {
+            getString(com.tokopedia.keys.R.string.ienfkjfnl)
         }
     }
 

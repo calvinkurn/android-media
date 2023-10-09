@@ -4,23 +4,22 @@ import com.tokopedia.common_electronic_money.data.AttributesEmoneyInquiry
 import com.tokopedia.common_electronic_money.data.EmoneyInquiry
 import com.tokopedia.common_electronic_money.util.NFCUtils
 import com.tokopedia.emoney.integration.data.JNIResult
-import com.tokopedia.kotlin.extensions.view.ZERO
 
-object BCAResponseMapper {
+object BCAFlazzResponseMapper {
     private const val ISSUER_ID_BCA = 5
-    fun bcaMapper(result: JNIResult, isBCAGenOne: Boolean, isExtraPendingBalance: Boolean = false, pendingBalance: Int): EmoneyInquiry {
+    fun bcaMapper(cardNo: String, balance: Int, imageUrl: String, isBCAGenOne: Boolean, pendingBalance: Int): EmoneyInquiry {
         return EmoneyInquiry(
             attributesEmoneyInquiry = AttributesEmoneyInquiry(
                 buttonText = "Top Up Sekarang",
-                cardNumber = result.cardNo,
-                imageIssuer = "https://images.tokopedia.net/img/recharge/operator/FlazzBCA.png",
-                lastBalance = result.balance,
+                cardNumber = cardNo,
+                imageIssuer = imageUrl,
+                lastBalance = balance,
                 payload = "",
                 status = 1,
-                formattedCardNumber = NFCUtils.formatCardUID(result.cardNo),
+                formattedCardNumber = NFCUtils.formatCardUID(cardNo),
                 issuer_id = ISSUER_ID_BCA,
                 pendingBalance = pendingBalance,
-                extraPendingBalance = isExtraPendingBalance,
+                extraPendingBalance = pendingBalance > 0,
                 showAdditionalBalance = false
             ),
             isBCAGenOne = isBCAGenOne
