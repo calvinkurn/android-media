@@ -72,6 +72,7 @@ import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_P
 import com.tokopedia.search.result.product.performancemonitoring.runCustomMetric
 import com.tokopedia.search.result.product.postprocessing.PostProcessingFilter
 import com.tokopedia.search.result.product.recommendation.RecommendationPresenterDelegate
+import com.tokopedia.search.result.product.requestparamgenerator.LastClickedProductIdProviderImpl
 import com.tokopedia.search.result.product.requestparamgenerator.RequestParamsGenerator
 import com.tokopedia.search.result.product.responsecode.ResponseCodeImpl
 import com.tokopedia.search.result.product.responsecode.ResponseCodeProvider
@@ -161,8 +162,9 @@ class ProductListPresenter @Inject constructor(
     private val similarSearchOnBoardingPresenterDelegate: SimilarSearchOnBoardingPresenterDelegate,
     private val inspirationKeywordPresenter: InspirationKeywordPresenterDelegate,
     private val inspirationProductItemPresenter: InspirationProductPresenterDelegate,
-    private val reimagineRollence: ReimagineRollence
-) : BaseDaggerPresenter<ProductListSectionContract.View>(),
+    private val reimagineRollence: ReimagineRollence,
+    private val lastClickProductIdProvider: LastClickedProductIdProviderImpl,
+): BaseDaggerPresenter<ProductListSectionContract.View>(),
     ProductListSectionContract.Presenter,
     Pagination by paginationImpl,
     BannerAdsPresenter by BannerAdsPresenterDelegate(topAdsHeadlineHelper),
@@ -226,7 +228,6 @@ class ProductListPresenter @Inject constructor(
             ""
         }
     }
-
 
     override fun attachView(view: ProductListSectionContract.View) {
         super.attachView(view)
@@ -512,6 +513,7 @@ class ProductListPresenter @Inject constructor(
         externalReference = searchParameter.getValueString(SearchApiConst.SRP_EXT_REF)
         dimension90 = Dimension90Utils.getDimension90(searchParameter)
         additionalParams = ""
+        lastClickProductIdProvider.lastClickedProductId = ""
 
         val requestParams = requestParamsGenerator.createInitializeSearchParam(
             searchParameter,
@@ -1365,6 +1367,8 @@ class ProductListPresenter @Inject constructor(
         )
 
         view.routeToProductDetail(item, adapterPosition)
+
+        lastClickProductIdProvider.lastClickedProductId = item.productID
     }
 
     override fun trackProductClick(item: ProductItemDataView) {

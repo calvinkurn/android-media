@@ -17,16 +17,18 @@ import javax.inject.Inject
 class AddToCartVariantBottomSheetLauncher @Inject constructor(
     @SearchContext
     context: Context?,
-    fragmentProvider: FragmentProvider,
-): ContextProvider by WeakReferenceContextProvider(context),
+    fragmentProvider: FragmentProvider
+) : ContextProvider by WeakReferenceContextProvider(context),
     FragmentProvider by fragmentProvider {
 
     private var onCheckout: ((ProductVariantResult) -> Unit)? = {}
+    private var onDismiss: (() -> Unit)? = {}
 
     fun launch(
         productId: String,
         shopId: String,
         trackerCDListName: String,
+        onDismiss: (() -> Unit)? = {},
         onCheckout: (ProductVariantResult) -> Unit
     ) {
         val context = context ?: return
@@ -37,10 +39,11 @@ class AddToCartVariantBottomSheetLauncher @Inject constructor(
             pageSource = VariantPageSource.SRP_PAGESOURCE,
             shopId = shopId,
             trackerCdListName = trackerCDListName,
-            startActivitResult = ::startActivityResult,
+            startActivitResult = ::startActivityResult
         )
 
         this.onCheckout = onCheckout
+        this.onDismiss = onDismiss
     }
 
     private fun startActivityResult(intent: Intent, requestCode: Int) {
@@ -53,9 +56,12 @@ class AddToCartVariantBottomSheetLauncher @Inject constructor(
         AtcVariantHelper.onActivityResultAtcVariant(context, requestCode, data) {
             if (this.requestCode == REQUEST_CODE_CHECKOUT) {
                 onCheckout?.invoke(this)
+            } else {
+                onDismiss?.invoke()
             }
 
             onCheckout = null
+            onDismiss = null
         }
     }
 }

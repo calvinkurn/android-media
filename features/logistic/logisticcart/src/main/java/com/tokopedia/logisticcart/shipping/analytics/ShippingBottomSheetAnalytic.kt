@@ -8,6 +8,7 @@ import com.tokopedia.track.TrackApp
 
 object ShippingBottomSheetAnalytic {
     private const val EVENT_NAME = "checkout_progress"
+    private const val EVENT_NAME_IMPRESSION = "viewPGIris"
     private const val EVENT_CATEGORY = "courier selection"
     private const val TRACKER_ID_KEY = "trackerId"
     private const val BUSINESS_UNIT = "physical goods"
@@ -58,7 +59,7 @@ object ShippingBottomSheetAnalytic {
     ) {
         val bundle = Bundle()
         bundle.run {
-            putString(KEY_EVENT, EVENT_NAME)
+            putString(KEY_EVENT, EVENT_NAME_IMPRESSION)
             putString(KEY_EVENT_ACTION, EVENT_ACTION_IMPRESSION_BEBAS_ONGKIR)
             putString(KEY_EVENT_CATEGORY, EVENT_CATEGORY)
             putString(KEY_EVENT_LABEL, bebasOngkir.eventLabel())
@@ -78,7 +79,7 @@ object ShippingBottomSheetAnalytic {
                 }
             )
         }
-        sendTracker(bundle)
+        sendTracker(EVENT_NAME_IMPRESSION, bundle)
     }
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4193
@@ -112,7 +113,7 @@ object ShippingBottomSheetAnalytic {
                 }
             )
         }
-        sendTracker(bundle)
+        sendTracker(EVENT_NAME, bundle)
     }
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4193
@@ -145,7 +146,7 @@ object ShippingBottomSheetAnalytic {
                 }
             )
         }
-        sendTracker(bundle)
+        sendTracker(EVENT_NAME, bundle)
     }
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4193
@@ -159,7 +160,7 @@ object ShippingBottomSheetAnalytic {
     ) {
         val bundle = Bundle()
         bundle.run {
-            putString(KEY_EVENT, EVENT_NAME)
+            putString(KEY_EVENT, EVENT_NAME_IMPRESSION)
             putString(KEY_EVENT_ACTION, EVENT_ACTION_VIEW_DURATION)
             putString(KEY_EVENT_CATEGORY, EVENT_CATEGORY)
             putString(KEY_EVENT_LABEL, shippingService.eventLabel())
@@ -178,11 +179,11 @@ object ShippingBottomSheetAnalytic {
                 }
             )
         }
-        sendTracker(bundle)
+        sendTracker(EVENT_NAME_IMPRESSION, bundle)
     }
 
-    private fun sendTracker(dataMap: Bundle) {
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(EVENT_NAME, dataMap)
+    private fun sendTracker(eventName: String, dataMap: Bundle) {
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(eventName, dataMap)
     }
 
     private fun LogisticPromoUiModel.eventLabel(): String {
