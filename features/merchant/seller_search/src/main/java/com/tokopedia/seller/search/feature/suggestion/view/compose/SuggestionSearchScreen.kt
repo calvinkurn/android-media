@@ -83,6 +83,7 @@ import com.tokopedia.seller.search.feature.suggestion.view.viewmodel.SuggestionS
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
+import com.tokopedia.seller.search.R as sellersearchR
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -129,8 +130,7 @@ fun SuggestionSearchScreen(
 
         LazyColumn(
             Modifier
-                .fillMaxSize()
-                .padding(bottom = 8.dp),
+                .fillMaxSize(),
             state = lazyListState
         ) {
             itemsIndexed(
@@ -215,7 +215,7 @@ fun SellerSuggestionNoResult(uiEvent: (SuggestionSearchUiEvent) -> Unit) {
         val (tvTitleNoResult, tvDescNoResult) = createRefs()
 
         NestTypography(
-            text = stringResource(id = com.tokopedia.seller.search.R.string.message_initial_search_no_result),
+            text = stringResource(id = sellersearchR.string.message_initial_search_no_result),
             textStyle = NestTheme.typography.display1.copy(
                 fontWeight = FontWeight.Bold
             ),
@@ -227,7 +227,7 @@ fun SellerSuggestionNoResult(uiEvent: (SuggestionSearchUiEvent) -> Unit) {
         )
 
         NestTypography(
-            text = stringResource(id = com.tokopedia.seller.search.R.string.message_initial_search_try_another_keyword),
+            text = stringResource(id = sellersearchR.string.message_initial_search_try_another_keyword),
             textStyle = NestTheme.typography.display2,
             modifier = Modifier.constrainAs(tvDescNoResult) {
                 top.linkTo(tvTitleNoResult.bottom, margin = 4.dp)
@@ -329,7 +329,7 @@ fun SearchResultFaqItem(
         )
 
         NestImage(
-            source = ImageSource.Painter(source = com.tokopedia.seller.search.R.drawable.ic_to_top),
+            source = ImageSource.Painter(source = sellersearchR.drawable.ic_to_top),
             type = NestImageType.Rect(rounded = 0.dp),
             contentDescription = null,
             modifier = Modifier
