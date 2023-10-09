@@ -36,7 +36,6 @@ import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.setTextColorCompat
 import com.tokopedia.kotlin.extensions.view.smoothSnapToPosition
 import com.tokopedia.kotlin.extensions.view.splitByThousand
@@ -173,14 +172,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
     private var binding by autoClearedNullable<PromoUsageBottomsheetBinding>()
     var listener: Listener? = null
     private val maxBottomSheetHeight: Int by lazy {
-        getScreenHeight() - getKeyboardHeight() - BOTTOM_SHEET_MARGIN_TOP_IN_DP.toPx()
-    }
-
-    private fun getKeyboardHeight(): Int {
-//        val keyboardHeight = WindowInsetsCompat.CONSUMED.getInsets(
-//            WindowInsetsCompat.Type.ime()
-//        ).bottom
-        return 0
+        getScreenHeight() - BOTTOM_SHEET_MARGIN_TOP_IN_DP.toPx()
     }
 
     private val recyclerViewAdapter by lazy {
@@ -464,10 +456,9 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         activity?.let { activity ->
             ViewCompat.setOnApplyWindowInsetsListener(activity.window.decorView) { view: View, insets: WindowInsetsCompat ->
                 val isKeyboardVisible = insets.isVisible(WindowInsetsCompat.Type.ime())
-                val keyboardHeight = insets.getInsets(WindowInsetsCompat.Type.ime()).bottom
                 if (isKeyboardVisible) {
                     // isKeyboardVisible means user tap voucher code text field
-                    setFocusOnPromoAttemptTextField(keyboardHeight)
+                    setFocusOnPromoAttemptTextField()
                 } else {
                     resetFocusOnPromoAttemptTextField()
                 }
@@ -476,10 +467,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         }
     }
 
-    private fun setFocusOnPromoAttemptTextField(keyboardHeight: Int) {
-        // Add padding to make voucher code text field displayed above keyboard
-//        binding?.rvPromo?.setMargin(0, 0, 0, keyboardHeight.toDp())
-        binding?.rvPromo?.setMargin(0, 0, 0, 0)
+    private fun setFocusOnPromoAttemptTextField() {
         binding?.rvPromo?.requestLayout()
 
         val itemCount = recyclerViewAdapter.itemCount
@@ -487,7 +475,6 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun resetFocusOnPromoAttemptTextField() {
-        binding?.rvPromo?.setMargin(0, 0, 0, 0)
         binding?.rvPromo?.requestLayout()
     }
 
