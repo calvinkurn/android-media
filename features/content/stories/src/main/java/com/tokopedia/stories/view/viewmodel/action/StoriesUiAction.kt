@@ -29,6 +29,7 @@ sealed interface StoriesUiAction {
     object DeleteStory : StoriesUiAction
     object ContentIsLoaded : StoriesUiAction
     object SetInitialData : StoriesUiAction
+    object RetryDetailPage : StoriesUiAction
 }
 
 enum class StoriesProductAction {

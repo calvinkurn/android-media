@@ -322,7 +322,10 @@ class StoriesDetailFragment @Inject constructor(
                                     analytic?.sendImpressionStoriesContent(viewModel.storyId)
                                 }
                                 override fun failedLoad() {
-                                    setNoContent(true)
+                                    setFailed(true)
+                                    binding.layoutStoriesFailed.btnStoriesFailedLoad.setOnClickListener {
+                                        viewModelAction(StoriesUiAction.SetInitialData) //TODO() adjust error state into one layout
+                                    }
                                 }
                             }
                         )
