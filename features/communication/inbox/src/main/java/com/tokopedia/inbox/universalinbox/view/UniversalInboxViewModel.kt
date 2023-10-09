@@ -24,6 +24,7 @@ import com.tokopedia.inbox.universalinbox.view.uiState.UniversalInboxMenuUiState
 import com.tokopedia.inbox.universalinbox.view.uiState.UniversalInboxNavigationUiState
 import com.tokopedia.inbox.universalinbox.view.uiState.UniversalInboxProductRecommendationUiState
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationUiModel
+import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxWidgetMetaErrorUiModel
 import com.tokopedia.recommendation_widget_common.DEFAULT_VALUE_X_DEVICE
 import com.tokopedia.recommendation_widget_common.DEFAULT_VALUE_X_SOURCE
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
@@ -195,13 +196,13 @@ class UniversalInboxViewModel @Inject constructor(
                 onSuccessGetMenuAndCounter(
                     result.menu.data,
                     result.counter.data,
-                    result.driverChannel
+                    result.driverChannel,
+                    shouldTrackImpression = true
                 )
             }
 
             // Handle error case for menu
             (result.menu is Result.Error) -> {
-                setLoadingInboxMenu(false)
                 setErrorWidgetMeta()
                 setFallbackInboxMenu(true)
                 showErrorMessage(
@@ -223,7 +224,7 @@ class UniversalInboxViewModel @Inject constructor(
 
             // Handle loading case for menu
             result.menu is Result.Loading -> {
-                setLoadingInboxMenu(true)
+                setLoadingInboxMenu()
             }
         }
     }
@@ -231,7 +232,8 @@ class UniversalInboxViewModel @Inject constructor(
     private fun onSuccessGetMenuAndCounter(
         inboxResponse: UniversalInboxWrapperResponse?,
         counterResponse: UniversalInboxAllCounterResponse,
-        driverResponse: Result<List<ConversationsChannel>>
+        driverResponse: Result<List<ConversationsChannel>>,
+        shouldTrackImpression: Boolean = false
     ) {
         try {
             if (inboxResponse == null) {
@@ -245,7 +247,8 @@ class UniversalInboxViewModel @Inject constructor(
                 counterResponse = counterResponse,
                 driverCounter = driverResponse
             ).apply {
-                this.isError = inboxResponse.chatInboxMenu.shouldShowLocalLoad
+                this.widgetError.isError = inboxResponse.chatInboxMenu.shouldShowLocalLoad
+                this.widgetError.isLocalLoadLoading = false
             }
             val menuList = inboxMenuMapper.mapToInboxMenu(
                 userSession = userSession,
@@ -259,7 +262,8 @@ class UniversalInboxViewModel @Inject constructor(
                     widgetMeta = widgetMeta,
                     menuList = menuList,
                     miscList = miscList,
-                    notificationCounter = counterResponse.notifCenterUnread.notifUnread
+                    notificationCounter = counterResponse.notifCenterUnread.notifUnread,
+                    shouldTrackImpression = shouldTrackImpression
                 )
             }
         } catch (throwable: Throwable) {
@@ -351,11 +355,12 @@ class UniversalInboxViewModel @Inject constructor(
         }
     }
 
-    private fun setLoadingInboxMenu(isLoading: Boolean) {
+    private fun setLoadingInboxMenu() {
         viewModelScope.launch {
             _inboxMenuUiState.update {
                 it.copy(
-                    isLoading = isLoading
+                    isLoading = true,
+                    shouldTrackImpression = false
                 )
             }
         }
@@ -366,8 +371,13 @@ class UniversalInboxViewModel @Inject constructor(
             _inboxMenuUiState.update {
                 it.copy(
                     widgetMeta = it.widgetMeta.copy(
-                        isError = true
-                    )
+                        widgetError = UniversalInboxWidgetMetaErrorUiModel(
+                            isError = true,
+                            isLocalLoadLoading = false
+                        )
+                    ),
+                    isLoading = false,
+                    shouldTrackImpression = false
                 )
             }
         }

@@ -26,7 +26,8 @@ import java.util.concurrent.TimeUnit
  */
 class PlayAnalytic(
     private val userSession: UserSessionInterface,
-    private val trackingQueue: TrackingQueue
+    private val trackingQueue: TrackingQueue,
+    private val dimensionTrackingHelper: PlayDimensionTrackingHelper
 ) {
     val channelId: String
         get() = mChannelId
@@ -181,7 +182,18 @@ class PlayAnalytic(
 
         val items = arrayListOf<Bundle>().apply {
             products.forEach {
-                add(productsToBundle(it.key.product, it.value, "bottom sheet"))
+                add(
+                    productsToBundle(
+                        product = it.key.product,
+                        position = it.value,
+                        sourceFrom = "bottom sheet",
+                        dimension90 = if (section != ProductSectionType.Upcoming) {
+                            dimensionTrackingHelper.getDimension90()
+                        } else {
+                            ""
+                        }
+                    )
+                )
             }
         }
 
@@ -196,6 +208,12 @@ class PlayAnalytic(
             putString(Key.businessUnit, BusinessUnit.play)
             putParcelableArrayList(KEY_EVENT_ITEMS, items)
             putString(KEY_ITEM_LIST, "/groupchat - bottom sheet")
+
+            when (section) {
+                ProductSectionType.Upcoming -> {}
+                ProductSectionType.Active -> putString(Key.trackerId, "27571")
+                else -> putString(Key.trackerId, "35078")
+            }
         }
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
@@ -226,11 +244,30 @@ class PlayAnalytic(
                 "ecommerce" to hashMapOf(
                     "click" to hashMapOf(
                         "actionField" to hashMapOf("list" to "/groupchat - bottom sheet"),
-                        "products" to listOf(convertProductToHashMapWithList(product, position + 1, "bottom sheet"))
+                        "products" to listOf(
+                            convertProductToHashMapWithList(
+                                product = product,
+                                position = position + 1,
+                                sourceFrom = "bottom sheet",
+                                dimension90 = if (sectionInfo.config.type != ProductSectionType.Upcoming) {
+                                    dimensionTrackingHelper.getDimension90()
+                                } else {
+                                    ""
+                                }
+                            )
+                        )
                     )
                 )
             ),
-            generateBaseTracking(product = product, sectionInfo.config.type)
+            generateBaseTracking(
+                product = product,
+                type = sectionInfo.config.type,
+                trackerId = when (sectionInfo.config.type) {
+                    ProductSectionType.Upcoming -> ""
+                    ProductSectionType.Active -> "27572"
+                    else -> "16356"
+                }
+            )
         )
     }
 
@@ -279,7 +316,11 @@ class PlayAnalytic(
                     )
                 )
             ),
-            generateBaseTracking(product = product, sectionInfo.config.type)
+            generateBaseTracking(
+                product = product,
+                type = sectionInfo.config.type,
+                trackerId = "",
+            )
         )
     }
 
@@ -382,7 +423,12 @@ class PlayAnalytic(
                     "currencyCode" to "IDR",
                     "impressions" to mutableListOf<HashMap<String, Any>>().apply {
                         products.forEach {
-                            add(convertProductToHashMapWithList(it.first, it.second + 1, "featured product"))
+                            add(convertProductToHashMapWithList(
+                                product = it.first,
+                                position = it.second + 1,
+                                sourceFrom = "featured product",
+                                dimension90 = dimensionTrackingHelper.getDimension90()
+                            ))
                         }
                     }
                 )
@@ -391,7 +437,8 @@ class PlayAnalytic(
                 Key.currentSite to CurrentSite.tokopediaMarketplace,
                 Key.sessionIris to TrackApp.getInstance().gtm.irisSessionId,
                 Key.userId to userId,
-                Key.businessUnit to BusinessUnit.play
+                Key.businessUnit to BusinessUnit.play,
+                Key.trackerId to "8074",
             )
         )
     }
@@ -408,7 +455,14 @@ class PlayAnalytic(
                 "ecommerce" to hashMapOf(
                     "click" to hashMapOf(
                         "actionField" to hashMapOf("list" to "/groupchat - featured product"),
-                        "products" to listOf(convertProductToHashMapWithList(featuredProduct, position, "featured product"))
+                        "products" to listOf(
+                            convertProductToHashMapWithList(
+                                product = featuredProduct,
+                                position = position,
+                                sourceFrom = "featured product",
+                                dimension90 = dimensionTrackingHelper.getDimension90()
+                            )
+                        )
                     )
                 )
             ),
@@ -422,7 +476,8 @@ class PlayAnalytic(
                 KEY_PRODUCT_ID to featuredProduct.id,
                 KEY_PRODUCT_NAME to featuredProduct.title,
                 KEY_PRODUCT_URL to featuredProduct.applink.toString(),
-                KEY_CHANNEL to mChannelName
+                KEY_CHANNEL to mChannelName,
+                Key.trackerId to "8075"
             )
         )
     }
@@ -496,25 +551,18 @@ class PlayAnalytic(
     /**
      * Private methods
      */
-    private fun convertProductsToListOfObject(
-        listOfProducts: List<PlayProductUiModel.Product>,
+    private fun convertProductToHashMapWithList(
+        product: PlayProductUiModel.Product,
+        position: Int,
         sourceFrom: String,
-        startPosition: Int = 0
-    ): MutableList<HashMap<String, Any>> {
-        val products = mutableListOf<HashMap<String, Any>>()
-        listOfProducts.forEachIndexed { index, product ->
-            val position = startPosition + index
-            products.add(convertProductToHashMapWithList(product, position, sourceFrom))
-        }
-        return products
-    }
-
-    private fun convertProductToHashMapWithList(product: PlayProductUiModel.Product, position: Int, sourceFrom: String): HashMap<String, Any> {
+        dimension90: String,
+    ): HashMap<String, Any> {
         val dimension115 = buildString {
             append("pinned.${product.isPinned}, ")
             append("ribbon.${product.label.rankType}")
         }
-        return hashMapOf(
+
+        return hashMapOf<String, Any>(
             "name" to product.title,
             "id" to product.id,
             "price" to when (product.price) {
@@ -527,10 +575,19 @@ class PlayAnalytic(
             "list" to "/groupchat - $sourceFrom",
             "position" to position,
             "dimension115" to dimension115
-        )
+        ).apply {
+            if (dimension90.isNotEmpty()) {
+                put("dimension90", dimension90)
+            }
+        }
     }
 
-    private fun productsToBundle(product: PlayProductUiModel.Product, position: Int, sourceFrom: String): Bundle =
+    private fun productsToBundle(
+        product: PlayProductUiModel.Product,
+        position: Int,
+        sourceFrom: String,
+        dimension90: String,
+    ): Bundle =
         Bundle().apply {
             putString("item_name", product.title)
             putString("item_id", product.id)
@@ -545,10 +602,18 @@ class PlayAnalytic(
             putString("item_category", "")
             putString("item_variant", "")
             putString("dimension40", "/groupchat - $sourceFrom")
+            if (dimension90.isNotEmpty()) {
+                putString("dimension90", dimension90)
+            }
             putInt("index", position)
         }
 
-    private fun convertProductAndShopToHashMapWithList(product: PlayProductUiModel.Product, shopInfo: PlayPartnerInfo, dimension39: String = ""): HashMap<String, Any> {
+    private fun convertProductAndShopToHashMapWithList(
+        product: PlayProductUiModel.Product,
+        shopInfo: PlayPartnerInfo,
+        dimension39: String,
+        dimension90: String,
+    ): HashMap<String, Any> {
         return hashMapOf(
             "name" to product.title,
             "id" to product.id,
@@ -560,6 +625,7 @@ class PlayAnalytic(
             "category" to "",
             "variant" to "",
             "dimension39" to dimension39,
+            "dimension90" to dimension90,
             "category_id" to "",
             "quantity" to product.minQty,
             "shop_id" to shopInfo.id,
@@ -620,11 +686,25 @@ class PlayAnalytic(
                 "ecommerce" to hashMapOf(
                     "currencyCode" to "IDR",
                     "add" to hashMapOf(
-                        "products" to listOf(convertProductAndShopToHashMapWithList(product, shopInfo, "/groupchat - bottom sheet"))
+                        "products" to listOf(
+                            convertProductAndShopToHashMapWithList(
+                                product = product,
+                                shopInfo = shopInfo,
+                                dimension39 = "/groupchat - bottom sheet",
+                                dimension90 = dimensionTrackingHelper.getDimension90()
+                            )
+                        )
                     )
                 )
             ),
-            generateBaseTracking(product = product, sectionInfo.config.type)
+            generateBaseTracking(
+                product = product,
+                type = sectionInfo.config.type,
+                trackerId = when (sectionInfo.config.type) {
+                    ProductSectionType.Active -> "27574"
+                    else -> "16347"
+                }
+            )
         )
     }
 
@@ -650,80 +730,24 @@ class PlayAnalytic(
                 "ecommerce" to hashMapOf(
                     "currencyCode" to "IDR",
                     "add" to hashMapOf(
-                        "products" to listOf(convertProductAndShopToHashMapWithList(product, shopInfo, "/groupchat - bottom sheet"))
+                        "products" to listOf(
+                            convertProductAndShopToHashMapWithList(
+                                product = product,
+                                shopInfo = shopInfo,
+                                dimension39 = "/groupchat - bottom sheet",
+                                dimension90 = dimensionTrackingHelper.getDimension90()
+                            )
+                        )
                     )
                 )
             ),
-            generateBaseTracking(product = product, sectionInfo.config.type)
-        )
-    }
-
-    private fun clickAtcButtonInVariant(
-        trackingQueue: TrackingQueue,
-        product: PlayProductUiModel.Product,
-        cartId: String,
-        shopInfo: PlayPartnerInfo
-    ) {
-        trackingQueue.putEETracking(
-            EventModel(
-                Event.addToCart,
-                EventCategory.groupChatRoom,
-                "click atc in varian page",
-                "$mChannelId - ${product.id} - ${mChannelType.value}"
-            ),
-            hashMapOf(
-                "ecommerce" to hashMapOf(
-                    "currencyCode" to "IDR",
-                    "add" to hashMapOf(
-                        "products" to listOf(convertProductAndShopToHashMapWithList(product, shopInfo, "/groupchat - varian page"))
-                    )
-                )
-            ),
-            hashMapOf(
-                Key.businessUnit to BusinessUnit.play,
-                Key.currentSite to CurrentSite.tokopediaMarketplace,
-                Key.sessionIris to TrackApp.getInstance().gtm.irisSessionId,
-                Key.userId to userId,
-                Key.isLoggedInStatus to isLoggedIn,
-                KEY_PRODUCT_ID to product.id,
-                KEY_PRODUCT_NAME to product.title,
-                KEY_PRODUCT_URL to product.applink.toString(),
-                KEY_CHANNEL to mChannelName
-            )
-        )
-    }
-
-    private fun clickBeliButtonInVariant(
-        trackingQueue: TrackingQueue,
-        product: PlayProductUiModel.Product,
-        cartId: String,
-        shopInfo: PlayPartnerInfo
-    ) {
-        trackingQueue.putEETracking(
-            EventModel(
-                Event.addToCart,
-                EventCategory.groupChatRoom,
-                "click beli in varian page",
-                "$mChannelId - ${product.id} - ${mChannelType.value}"
-            ),
-            hashMapOf(
-                "ecommerce" to hashMapOf(
-                    "currencyCode" to "IDR",
-                    "add" to hashMapOf(
-                        "products" to listOf(convertProductAndShopToHashMapWithList(product, shopInfo, "/groupchat - varian page"))
-                    )
-                )
-            ),
-            hashMapOf(
-                Key.businessUnit to BusinessUnit.play,
-                Key.currentSite to CurrentSite.tokopediaMarketplace,
-                Key.sessionIris to TrackApp.getInstance().gtm.irisSessionId,
-                Key.userId to userId,
-                Key.isLoggedInStatus to isLoggedIn,
-                KEY_PRODUCT_ID to product.id,
-                KEY_PRODUCT_NAME to product.title,
-                KEY_PRODUCT_URL to product.applink.toString(),
-                KEY_CHANNEL to mChannelName
+            generateBaseTracking(
+                product = product,
+                type = sectionInfo.config.type,
+                trackerId = when (sectionInfo.config.type) {
+                    ProductSectionType.Active -> "27573"
+                    else -> "13888"
+                }
             )
         )
     }
@@ -831,7 +855,9 @@ class PlayAnalytic(
             .setBusinessUnit(BusinessUnit.play)
             .setCurrentSite(CurrentSite.tokopediaMarketplace)
             .setCustomProperty(Key.isLoggedInStatus, isLoggedIn)
+            .setCustomProperty(Key.pageSource, dimensionTrackingHelper.getDimension90())
             .setCustomProperty(Key.screenName, "/group-chat-room/$channelId/${channelType.value}/is coachmark true")
+            .setCustomProperty(Key.sessionIris, TrackApp.getInstance().gtm.irisSessionId)
             .setUserId(userId)
             .build()
             .send()
@@ -861,7 +887,11 @@ class PlayAnalytic(
         return "$mChannelId - ${product.id} - ${mChannelType.value} - $campaignId - is pinned product ${product.isPinned} - $rankType"
     }
 
-    private fun generateBaseTracking(product: PlayProductUiModel.Product, type: ProductSectionType): HashMap<String, Any> {
+    private fun generateBaseTracking(
+        product: PlayProductUiModel.Product,
+        type: ProductSectionType,
+        trackerId: String,
+    ): HashMap<String, Any> {
         val base: HashMap<String, Any> = hashMapOf(
             Key.businessUnit to BusinessUnit.play,
             Key.currentSite to CurrentSite.tokopediaMarketplace,
@@ -876,6 +906,13 @@ class PlayAnalytic(
                     KEY_PRODUCT_NAME to product.title,
                     KEY_PRODUCT_URL to product.applink.toString(),
                     KEY_CHANNEL to mChannelName
+                )
+            )
+        }
+        if (trackerId.isNotEmpty()) {
+            base.putAll(
+                mapOf(
+                    Key.trackerId to trackerId
                 )
             )
         }

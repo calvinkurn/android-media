@@ -154,6 +154,7 @@ import com.tokopedia.shop.common.util.ShopUtil.getShopPageWidgetUserAddressLocal
 import com.tokopedia.shop.common.view.ShopPageCountDrawable
 import com.tokopedia.shop.common.view.bottomsheet.ShopShareBottomSheet
 import com.tokopedia.shop.common.view.bottomsheet.listener.ShopShareBottomsheetListener
+import com.tokopedia.shop.common.view.interfaces.InterfaceShopPageHeader
 import com.tokopedia.shop.common.view.listener.InterfaceShopPageClickScrollToTop
 import com.tokopedia.shop.common.view.model.ShopPageFabConfig
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
@@ -469,7 +470,7 @@ class ShopPageHeaderFragment :
     }
     private var queryParamTab: String = ""
 
-    private val bottomSheetTabNotFound:ShopEtalaseNotFoundBottomSheet by lazy{
+    private val bottomSheetTabNotFound: ShopEtalaseNotFoundBottomSheet by lazy {
         ShopEtalaseNotFoundBottomSheet.createInstance()
     }
 
@@ -546,22 +547,22 @@ class ShopPageHeaderFragment :
             is ShopPageHeaderContentCreationOptionBottomSheet -> {
                 childFragment.setData(mBroadcasterConfig)
                 childFragment.setListener(object :
-                    ShopPageHeaderContentCreationOptionBottomSheet.Listener {
-                    override fun onShortsCreationClicked() {
-                        goToShortsCreation()
-                    }
+                        ShopPageHeaderContentCreationOptionBottomSheet.Listener {
+                        override fun onShortsCreationClicked() {
+                            goToShortsCreation()
+                        }
 
-                    override fun onBroadcastCreationClicked() {
-                        goToBroadcaster()
-                    }
+                        override fun onBroadcastCreationClicked() {
+                            goToBroadcaster()
+                        }
 
-                    override fun onPerformanceDashboardEntryClicked() {
-                        playPerformanceDashboardEntryPointAnalytic.onClickPerformanceDashboardEntryPointShopPage(
-                            shopHeaderViewModel?.userShopId.orEmpty()
-                        )
-                        goToPerformanceDashboard()
-                    }
-                })
+                        override fun onPerformanceDashboardEntryClicked() {
+                            playPerformanceDashboardEntryPointAnalytic.onClickPerformanceDashboardEntryPointShopPage(
+                                shopHeaderViewModel?.userShopId.orEmpty()
+                            )
+                            goToPerformanceDashboard()
+                        }
+                    })
             }
         }
     }
@@ -1454,7 +1455,8 @@ class ShopPageHeaderFragment :
             isRefresh = isRefresh,
             widgetUserAddressLocalData = localCacheModel ?: LocalCacheModel(),
             extParam = extParam,
-            tabName = getSelectedTabName().takeIf { it.isNotEmpty() } ?: queryParamTab
+            tabName = getSelectedTabName().takeIf { it.isNotEmpty() } ?: queryParamTab,
+            isEnableShopReimagined = ShopUtil.isEnableShopPageReImagined(context)
         )
     }
 
@@ -1539,10 +1541,12 @@ class ShopPageHeaderFragment :
     }
 
     private fun isCartShownInNewNavToolbar(): Boolean {
-        return !GlobalConfig.isSellerApp() && (remoteConfig?.getBoolean(
-            RemoteConfigKey.ENABLE_CART_ICON_IN_SHOP,
-            true
-        ) == true)
+        return !GlobalConfig.isSellerApp() && (
+            remoteConfig?.getBoolean(
+                RemoteConfigKey.ENABLE_CART_ICON_IN_SHOP,
+                true
+            ) == true
+            )
     }
 
     private fun showSellerViewToolbar() {
@@ -1906,7 +1910,7 @@ class ShopPageHeaderFragment :
     private fun sendShopPageTabImpressionTracker() {
         listShopPageTabModel.onEach {
             if (!isMyShop) {
-                shopPageTracking?.sendImpressionShopTab(shopId, it.tabTitle)
+                shopPageTracking?.sendImpressionShopTab(shopId, it.tabName)
             }
         }
     }
@@ -1931,7 +1935,7 @@ class ShopPageHeaderFragment :
     fun getSelectedTabName(): String {
         return listShopPageTabModel.getOrNull(
             getSelectedDynamicTabPosition()
-        )?.tabTitle.orEmpty()
+        )?.tabName.orEmpty()
     }
 
     override fun onBackPressed() {
@@ -2061,7 +2065,7 @@ class ShopPageHeaderFragment :
 
     private fun sendShopPageClickTabTracker(position: Int) {
         if (!isMyShop) {
-            shopPageTracking?.clickTab(listShopPageTabModel[position].tabTitle, shopId, userId)
+            shopPageTracking?.clickTab(listShopPageTabModel[position].tabName, shopId, userId)
         }
     }
 
@@ -2110,7 +2114,7 @@ class ShopPageHeaderFragment :
                     }
                 }
                 selectedPosition = getTabPositionBasedOnTabName(overrideTabName)
-                if (selectedPosition == -1 && listShopPageTabModel.isNotEmpty()){
+                if (selectedPosition == -1 && listShopPageTabModel.isNotEmpty()) {
                     bottomSheetTabNotFound.show(childFragmentManager)
                     selectedPosition = Int.ZERO
                 }
@@ -2140,7 +2144,7 @@ class ShopPageHeaderFragment :
 
     private fun getTabPositionBasedOnTabName(overrideTabName: String): Int {
         return listShopPageTabModel.indexOfFirst {
-            it.tabTitle == overrideTabName
+            it.tabName == overrideTabName
         }
     }
 
@@ -2348,7 +2352,7 @@ class ShopPageHeaderFragment :
             }?.let { tab ->
                 listShopPageTabModel.add(
                     ShopPageHeaderTabModel(
-                        tabTitle = it.name,
+                        tabName = it.name,
                         tabFragment = tab,
                         iconUrl = it.icon,
                         iconActiveUrl = it.iconFocus,
@@ -3596,7 +3600,6 @@ class ShopPageHeaderFragment :
     }
 
     private fun newUniversalShareBottomSheet(path: String? = null) {
-
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance(view).apply {
             init(this@ShopPageHeaderFragment)
 
@@ -3614,13 +3617,12 @@ class ShopPageHeaderFragment :
             val chips = ArrayList(
                 listShopPageTabModel.mapIndexed { index, shopPageHeaderTabModel ->
                     val isSelected = (index == tabLayout?.selectedTabPosition)
-                    val thumbnail = if (listShopPageTabModel[index].tabFragment is ShopPageCampaignFragment){
+                    val thumbnail = if (listShopPageTabModel[index].tabFragment is ShopPageCampaignFragment) {
                         (listShopPageTabModel[index].tabFragment as ShopPageCampaignFragment)
                             .shopCampaignTabAdapter.getCampaignBanner()?.data?.imageUrl.orEmpty()
-                    }else{
+                    } else {
                         String.EMPTY
                     }
-
 
                     val shopUrl = Uri.parse(UriUtil.buildUri(shopPageHeaderDataModel?.shopCoreUrl ?: ""))
                         .buildUpon()
@@ -3637,20 +3639,17 @@ class ShopPageHeaderFragment :
                             id = shopPageHeaderDataModel?.shopId ?: "",
                             deeplink = Uri.parse(UriUtil.buildUri(ApplinkConst.SHOP, shopId))
                                 .buildUpon()
-                                .appendQueryParameter(QUERY_TAB,shopPageHeaderTabModel.tabTitle).toString()
+                                .appendQueryParameter(QUERY_TAB, shopPageHeaderTabModel.tabName).toString()
                         ),
                         index
                     )
-
                 }
             )
-            shopPageTracking?.showChipsInUniversalSharingBottomSheet(chips.joinToString("-"),shopId,userId)
+            shopPageTracking?.showChipsInUniversalSharingBottomSheet(chips.joinToString("-"), shopId, userId)
 
             val targetIndex = Int.ZERO
             chips.swap(tabLayout?.selectedTabPosition.orZero(), targetIndex)
             setChipList(chips = chips)
-
-
         }
 
         configShopShareBottomSheetImpressionTracker()
@@ -3845,11 +3844,11 @@ class ShopPageHeaderFragment :
         }
         universalShareBottomSheet?.enableAffiliateCommission(inputShare)
         universalShareBottomSheet?.show(activity?.supportFragmentManager, this, screenShotDetector)
-        //pageId = shopId-tabName
+        // pageId = shopId-tabName
         universalShareBottomSheet?.setUtmCampaignData(
             SHOP_PAGE_SHARE_BOTTOM_SHEET_PAGE_NAME,
             userId.ifEmpty { "0" },
-            shopId+"-${listShopPageTabModel.getOrNull(selectedPosition)?.chipsWording.orEmpty()}",
+            shopId + "-${listShopPageTabModel.getOrNull(selectedPosition)?.chipsWording.orEmpty()}",
             SHOP_PAGE_SHARE_BOTTOM_SHEET_FEATURE_NAME
         )
 
@@ -3857,29 +3856,28 @@ class ShopPageHeaderFragment :
             shopPageTracking?.clickChipsInUniversalSharingBottomSheet(it.title, shopId, userId)
 
             universalShareBottomSheet?.setShareText("${it.shareText} %s")
-            if (it.title == CHIPS_NAME_CAMPAIGN){
+            if (it.title == CHIPS_NAME_CAMPAIGN) {
                 universalShareBottomSheet?.getImageFromMedia(false)
-            }else{
+            } else {
                 universalShareBottomSheet?.setImageGeneratorParam(shopPageParamModel)
                 universalShareBottomSheet?.getImageFromMedia(shopPageParamModel.shopProfileImgUrl.isNotEmpty())
             }
 
-            if (it.title == CHIPS_NAME_TOKO_PAGE){
+            if (it.title == CHIPS_NAME_TOKO_PAGE) {
                 universalShareBottomSheet?.showAffiliateTicker()
-            }else{
+            } else {
                 universalShareBottomSheet?.hideAffiliateTicker()
             }
             universalShareBottomSheet?.setUtmCampaignData(
                 SHOP_PAGE_SHARE_BOTTOM_SHEET_PAGE_NAME,
                 userId.ifEmpty { "0" },
-                shopId+"-${it.title}",
+                shopId + "-${it.title}",
                 SHOP_PAGE_SHARE_BOTTOM_SHEET_FEATURE_NAME
             )
         }
-
     }
 
-    private fun getPathTab(tabName:String) : String{
+    private fun getPathTab(tabName: String): String {
         return when (tabName) {
             ShopPageHeaderTabName.HOME -> {
                 PATH_HOME
@@ -3903,7 +3901,7 @@ class ShopPageHeaderFragment :
             ShopPageHeaderTabName.CAMPAIGN -> {
                 PATH_CAMPAIGN
             }
-            else ->{
+            else -> {
                 ""
             }
         }

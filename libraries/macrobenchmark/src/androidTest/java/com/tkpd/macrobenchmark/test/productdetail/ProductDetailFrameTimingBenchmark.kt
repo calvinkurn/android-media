@@ -31,7 +31,7 @@ class ProductDetailFrameTimingBenchmark : BaseFrameTimingBenchmark() {
     override fun pageInteractionTest(currentIteration: Int) {
         val density = InstrumentationRegistry.getInstrumentation()
             .context.resources.displayMetrics.density
-        val defaultFeelingSpeed = 7500
+        val defaultFeelingSpeed = 3000
         val speed = (defaultFeelingSpeed * density).toInt()
 
         MacroInteration.basicFlingInteraction(

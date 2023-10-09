@@ -13,28 +13,20 @@ import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.home_account.R
 import com.tokopedia.home_account.analytics.HomeAccountAnalytics
-import com.tokopedia.home_account.consentWithdrawal.data.ConsentGroupListDataModel
 import com.tokopedia.home_account.databinding.FragmentPrivacyAccountBinding
 import com.tokopedia.home_account.privacy_account.di.LinkAccountComponent
-import com.tokopedia.home_account.privacy_account.listener.PrivacyAccountListener
-import com.tokopedia.home_account.privacy_account.view.adapter.PrivacyAccountAdapter
 import com.tokopedia.home_account.privacy_account.view.bottomsheet.ClarificationDataUsageBottomSheet
 import com.tokopedia.home_account.privacy_account.view.bottomsheet.VerificationEnabledDataUsageBottomSheet
 import com.tokopedia.home_account.privacy_account.viewmodel.PrivacyAccountViewModel
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visibleWithCondition
 import com.tokopedia.loaderdialog.LoaderDialog
-import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -43,7 +35,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class PrivacyAccountFragment : BaseDaggerFragment(), PrivacyAccountListener {
+class PrivacyAccountFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -61,9 +53,6 @@ class PrivacyAccountFragment : BaseDaggerFragment(), PrivacyAccountListener {
 
     private var remoteConfigInstance: RemoteConfigInstance = RemoteConfigInstance.getInstance()
     private var viewBinding by autoClearedNullable<FragmentPrivacyAccountBinding>()
-    private val privacyAccountAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        PrivacyAccountAdapter(this)
-    }
 
     private var clarificationDataUsageBottomSheet: ClarificationDataUsageBottomSheet? = null
     private var verificationEnabledDataUsageBottomSheet: VerificationEnabledDataUsageBottomSheet? =
@@ -93,7 +82,6 @@ class PrivacyAccountFragment : BaseDaggerFragment(), PrivacyAccountListener {
         initObserver()
         setViewDescSocialNetworkConsent()
         setViewDataUsageLoading()
-        renderConsentWithdrawal()
     }
 
     private fun initObserver() {
@@ -127,28 +115,6 @@ class PrivacyAccountFragment : BaseDaggerFragment(), PrivacyAccountListener {
                     showToasterFailedSetConsent(isChecked)
                 }
             }
-        }
-
-        viewModel.getConsentGroupList.observe(viewLifecycleOwner) {
-            when (it) {
-                is Success -> {
-                    onSuccessGetConsentGroupList(it.data)
-                }
-
-                is Fail -> {
-                    onFailedGetConsentGroupList(it.throwable)
-                }
-            }
-        }
-    }
-
-    private fun renderConsentWithdrawal() {
-        if (isShowConsentWithdrawal()) {
-            viewBinding?.layoutConsentWithdrawal?.root?.show()
-            setViewConsentWithdrawalLoading()
-            viewModel.getConsentGroupList()
-        } else {
-            viewBinding?.layoutConsentWithdrawal?.root?.hide()
         }
     }
 
@@ -314,44 +280,6 @@ class PrivacyAccountFragment : BaseDaggerFragment(), PrivacyAccountListener {
         )
     }
 
-    private fun onFailedGetConsentGroupList(throwable: Throwable) {
-        viewBinding?.layoutConsentWithdrawal?.root?.hide()
-
-        if (throwable !is MessageErrorException) {
-            ErrorHandler.getErrorMessage(context, throwable)
-        } else {
-            showToasterError(throwable.message.toString())
-        }
-    }
-
-    private fun onSuccessGetConsentGroupList(data: ConsentGroupListDataModel) {
-        viewBinding?.layoutConsentWithdrawal?.apply {
-            mainLayout.show()
-            loaderShimmering.hide()
-
-            consentGroupList.apply {
-                adapter = privacyAccountAdapter
-
-                data.groups.sortedBy { it.priority }
-                privacyAccountAdapter.setItems(data.groups)
-            }
-
-            if (data.ticker.isNotEmpty()) {
-                consentGroupTicker.visibility = View.VISIBLE
-                consentGroupTicker.setTextDescription(data.ticker)
-            } else {
-                consentGroupTicker.visibility = View.GONE
-            }
-        }
-    }
-
-    private fun setViewConsentWithdrawalLoading() {
-        viewBinding?.layoutConsentWithdrawal?.apply {
-            mainLayout.hide()
-            loaderShimmering.show()
-        }
-    }
-
     private fun showToasterError(errorMsg: String) {
         Toaster.build(requireView(), errorMsg, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
     }
@@ -361,27 +289,11 @@ class PrivacyAccountFragment : BaseDaggerFragment(), PrivacyAccountListener {
         return super.onFragmentBackPressed()
     }
 
-    override fun onConsentGroupClicked(id: String) {
-        val intent = RouteManager.getIntent(
-            context,
-            ApplinkConstInternalUserPlatform.CONSENT_WITHDRAWAL,
-            id
-        )
-
-        startActivity(intent)
-    }
-
-    private fun isShowConsentWithdrawal(): Boolean = remoteConfigInstance
-        .abTestPlatform
-        .getString(ROLLENCE_KEY_CONSENT_WITHDRAWAL) == ROLLENCE_KEY_CONSENT_WITHDRAWAL
-
     companion object {
         private const val TAG_BOTTOM_SHEET_CLARIFICATION = "TAG BOTTOM SHEET CLARIFICATION"
         private const val TAG_BOTTOM_SHEET_VERIFICATION = "TAG BOTTOM SHEET VERIFICATION"
         private const val TEXT_LINK_DESC_CONSENT_SOCIAL_NETWORK = "Cek Data yang Dipakai"
         private const val SET_CONSENT_SUCCESS = 1
-
-        private const val ROLLENCE_KEY_CONSENT_WITHDRAWAL = "cpcw_and"
 
         private val SCREEN_NAME = PrivacyAccountFragment::class.java.simpleName
 
