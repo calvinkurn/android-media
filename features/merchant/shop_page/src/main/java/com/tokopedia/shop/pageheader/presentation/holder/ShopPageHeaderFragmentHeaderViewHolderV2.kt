@@ -19,6 +19,7 @@ import com.google.android.exoplayer2.ui.PlayerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.creation.common.presentation.customviews.ContentCreationEntryPointWidget
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
@@ -47,7 +48,6 @@ import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.convertUrlToBitmapAndLoadImage
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.ShopHeaderFragmentTabContentBinding
-import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopPageHeaderPlayWidgetViewHolder
 import com.tokopedia.shop.pageheader.presentation.bottomsheet.ShopPageHeaderRequestUnmoderateBottomSheet
 import com.tokopedia.shop.pageheader.presentation.uimodel.ShopFollowButtonUiModel
@@ -136,14 +136,8 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
         get() = viewBinding?.buttonChat
     private val buttonFollow: UnifyButton?
         get() = viewBinding?.buttonFollow
-    private val widgetPlayRootContainer: View?
-        get() = viewBinding?.widgetPlayEntryPoint?.widgetPlayRootContainer
-    private val playSgcWidgetContainer: View?
-        get() = viewBinding?.widgetPlayEntryPoint?.playSgcWidgetContainer
-    private val tvStartCreateContentDesc: Typography?
-        get() = viewBinding?.widgetPlayEntryPoint?.tvStartCreateContentDesc
-    private val playSgcBtnStartLive: View?
-        get() = viewBinding?.widgetPlayEntryPoint?.playSgcBtnStartLive
+    private val widgetPlayRootContainer: ContentCreationEntryPointWidget?
+        get() = viewBinding?.widgetPlayEntryPoint
 
     private var coachMark: CoachMark2? = null
     private val tickerShopStatus: Ticker? = viewBinding?.tickerShopStatus
@@ -191,54 +185,25 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
         val modelComponent =
             shopSgcPlayData?.componentPages?.filterIsInstance<ShopPageHeaderPlayWidgetButtonComponentUiModel>()
                 ?.firstOrNull()
-        if (null != shopSgcPlayData && null != modelComponent?.shopPageHeaderDataModel) {
-            modelComponent.shopPageHeaderDataModel?.let { shopPageHeaderDataModel ->
-                if (allowContentCreation(shopPageHeaderDataModel)) {
-                    showPlayWidget()
-                    setupTextContentSgcWidget(shopPageHeaderDataModel)
-                    shopPageTrackingSGCPlayWidget?.onImpressionSGCContent(shopId = shopPageHeaderDataModel.shopId)
-                    playSgcBtnStartLive?.setOnClickListener {
-                        shopPageTrackingSGCPlayWidget?.onClickSGCContent(shopId = shopPageHeaderDataModel.shopId)
-                        shopPagePlayWidgetListener?.onStartLiveStreamingClicked(
-                            modelComponent,
-                            shopSgcPlayData,
-                            shopPageHeaderDataModel.broadcaster
-                        )
-                    }
-                } else {
-                    hidePlayWidget()
-                }
+
+        if (null != shopSgcPlayData && modelComponent != null) {
+            listenerHeader?.let {
+                widgetPlayRootContainer?.creationBottomSheetListener =
+                    it.getContentCreationListener()
             }
-        } else {
-            hidePlayWidget()
+            widgetPlayRootContainer?.onClickListener = {
+                shopPageTrackingSGCPlayWidget?.onClickSGCContent(
+                    shopId = modelComponent.shopPageHeaderDataModel?.shopId.orEmpty()
+                )
+                shopPagePlayWidgetListener?.onStartLiveStreamingClicked(
+                    modelComponent,
+                    shopSgcPlayData,
+                )
+            }
+            widgetPlayRootContainer?.fetchConfig()
+
+            shopPageTrackingSGCPlayWidget?.onImpressionSGCContent(shopId = modelComponent.shopPageHeaderDataModel?.shopId.orEmpty())
         }
-    }
-
-    private fun showPlayWidget() {
-        widgetPlayRootContainer?.show()
-        playSgcWidgetContainer?.show()
-    }
-
-    private fun hidePlayWidget() {
-        widgetPlayRootContainer?.hide()
-        playSgcWidgetContainer?.hide()
-    }
-
-    private fun allowContentCreation(dataModel: ShopPageHeaderDataModel): Boolean {
-        return isStreamAllowed(dataModel) || isShortsVideoAllowed(dataModel)
-    }
-
-    private fun setupTextContentSgcWidget(dataModel: ShopPageHeaderDataModel) {
-        if (tvStartCreateContentDesc?.text?.isNotBlank() == true) return
-        tvStartCreateContentDesc?.text = MethodChecker.fromHtml(context.getString(R.string.shop_page_play_widget_desription))
-    }
-
-    private fun isStreamAllowed(dataModel: ShopPageHeaderDataModel): Boolean {
-        return dataModel.broadcaster.streamAllowed
-    }
-
-    private fun isShortsVideoAllowed(dataModel: ShopPageHeaderDataModel): Boolean {
-        return dataModel.broadcaster.shortVideoAllowed
     }
 
     private fun getShopSgcPlayData(listWidgetShopData: List<ShopPageHeaderWidgetUiModel>): ShopPageHeaderWidgetUiModel? {
@@ -294,14 +259,20 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
         val shopStatusText = getShopBasicDataShopNameComponent(
             shopBasicData
         )?.text?.getOrNull(Int.ONE)?.textHtml.orEmpty()
-        val shopStaticUspUrl = getShopPerformanceFreeShippingComponent(shopPerformanceData)?.image.orEmpty()
+        val shopStaticUspUrl =
+            getShopPerformanceFreeShippingComponent(shopPerformanceData)?.image.orEmpty()
         val isShowShopOnlineStatus = shopStatusText.isNotEmpty()
         val isShowShopStaticUsp = shopStaticUspUrl.isNotEmpty()
         sectionShopStatus?.shouldShowWithAction(isShowShopOnlineStatus || isShowShopStaticUsp) {}
         shopStatusSectionDotSeparator?.shouldShowWithAction(isShowShopOnlineStatus && isShowShopStaticUsp) {}
         imageShopStaticUsp?.shouldShowWithAction(isShowShopStaticUsp) {
             imageShopStaticUsp?.loadImage(shopStaticUspUrl) {
-                overrideSize(Resize(MAXIMUM_WIDTH_STATIC_USP.toPx(), imageShopStaticUsp?.layoutParams?.height.orZero()))
+                overrideSize(
+                    Resize(
+                        MAXIMUM_WIDTH_STATIC_USP.toPx(),
+                        imageShopStaticUsp?.layoutParams?.height.orZero()
+                    )
+                )
             }
         }
         val onlineStatusTextPairHtmlColor: Pair<String, String>
@@ -369,7 +340,8 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
             getShopPerformanceShopRatingComponent(shopPerformanceData)?.text?.firstOrNull()?.textLink.orEmpty()
         val ratingText =
             getShopPerformanceShopRatingComponent(shopPerformanceData)?.text?.firstOrNull()?.textHtml.orEmpty()
-        val initialUspValue = listWidgetShopData.getDynamicUspComponent()?.text?.map { it.textHtml }.orEmpty()
+        val initialUspValue =
+            listWidgetShopData.getDynamicUspComponent()?.text?.map { it.textHtml }.orEmpty()
         val isShowRating = ratingText.isNotEmpty()
         val isShowDynamicUsp = initialUspValue.isNotEmpty()
         val ratingTextPairHtmlColor: Pair<String, String>
@@ -408,7 +380,7 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
                 "\$lowEmphasis",
                 ratingTextPairHtmlColor.second
             )
-            
+
             textRatingDescription?.apply {
                 text = MethodChecker.fromHtml(adjustedRatingText)
                 setOnClickListener { handleShopReviewClick(adjustedRatingText, appLink) }
@@ -422,12 +394,13 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
     private fun handleShopReviewClick(adjustedRatingText: String, appLink: String) {
         val isNewSeller = adjustedRatingText.contains(NEW_SELLER_TEXT_HTML, ignoreCase = true)
         if (isNewSeller) return
-        
+
         listenerHeader?.onShopReviewClicked(appLink)
     }
 
     private fun configDynamicUsp(listWidgetShopData: List<ShopPageHeaderWidgetUiModel>) {
-        val listDynamicUspValue = listWidgetShopData.getDynamicUspComponent()?.text?.map { it.textHtml }.orEmpty()
+        val listDynamicUspValue =
+            listWidgetShopData.getDynamicUspComponent()?.text?.map { it.textHtml }.orEmpty()
         updateDynamicUspValue(listDynamicUspValue.firstOrNull().orEmpty())
         textDynamicUspPerformance?.setOnClickListener {
             listenerHeader?.onUspClicked(listDynamicUspValue)
@@ -532,7 +505,8 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
         val isFollowing = model.isFollowing
         buttonFollow?.apply {
             buttonSize = UnifyButton.Size.MICRO
-            buttonVariant = UnifyButton.Variant.FILLED.takeIf { !isFollowing } ?: UnifyButton.Variant.GHOST
+            buttonVariant =
+                UnifyButton.Variant.FILLED.takeIf { !isFollowing } ?: UnifyButton.Variant.GHOST
             buttonType = UnifyButton.Type.MAIN
             val isShowLoading = model.isShowLoading
             if (!isShowLoading) {
@@ -576,7 +550,10 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
     }
 
     private fun applyWhiteTintColorToVoucherFollowerImage(voucherFollowerBitmap: Bitmap) {
-        val tintColor = MethodChecker.getColor(context, unifyprinciplesR.color.Unify_Static_White) // Replace with your desired tint color
+        val tintColor = MethodChecker.getColor(
+            context,
+            unifyprinciplesR.color.Unify_Static_White
+        ) // Replace with your desired tint color
         val canvas = Canvas(voucherFollowerBitmap)
         val paint = Paint()
         val filter = PorterDuffColorFilter(tintColor, PorterDuff.Mode.SRC_IN)
@@ -897,7 +874,8 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
     }
 
     fun startDynamicUspCycle(listWidgetShopData: List<ShopPageHeaderWidgetUiModel>) {
-        val listDynamicUspValue = listWidgetShopData.getDynamicUspComponent()?.text?.map { it.textHtml }.orEmpty()
+        val listDynamicUspValue =
+            listWidgetShopData.getDynamicUspComponent()?.text?.map { it.textHtml }.orEmpty()
         if (timer == null && listDynamicUspValue.isNotEmpty()) {
             timer = Timer()
             timer?.scheduleAtFixedRate(

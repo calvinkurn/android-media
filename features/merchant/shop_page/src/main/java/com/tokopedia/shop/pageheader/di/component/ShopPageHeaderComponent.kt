@@ -1,6 +1,5 @@
 package com.tokopedia.shop.pageheader.di.component
 
-import com.tokopedia.creation.common.di.ContentCreationModule
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.pageheader.di.module.ShopPageBindModule
 import com.tokopedia.shop.pageheader.di.module.ShopPageHeaderModule
@@ -17,8 +16,7 @@ import dagger.Component
 @Component(
     modules = [
         ShopPageHeaderModule::class,
-        ShopPageBindModule::class,
-        ContentCreationModule::class
+        ShopPageBindModule::class
     ],
     dependencies = [ShopComponent::class]
 )

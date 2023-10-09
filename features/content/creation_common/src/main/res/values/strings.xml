@@ -22,4 +22,8 @@
     <string name="content_creation_failed_network_title">Ada gangguan di rumah Toped!</string>
     <string name="content_creation_failed_network_description">Tunggu sebentar, biar Toped bereskan. Coba lagi atau kembali nanti.</string>
     <string name="content_creation_failed_network_image_url">https://images.tokopedia.net/img/content/creation/content_creation_network-error.png</string>
+
+    <string name="content_creation_entry_point_button_label">Buat Konten</string>
+    <string name="content_creation_entry_point_desription"><![CDATA[Promosikan produkmu dengan <b>Live, Video, Foto & Story</b>!]]></string>
+
 </resources>

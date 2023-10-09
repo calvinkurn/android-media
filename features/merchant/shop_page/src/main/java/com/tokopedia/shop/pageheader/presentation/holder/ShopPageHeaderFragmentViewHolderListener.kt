@@ -1,5 +1,6 @@
 package com.tokopedia.shop.pageheader.presentation.holder
 
+import com.tokopedia.creation.common.presentation.bottomsheet.ContentCreationBottomSheet
 import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestResult
 import com.tokopedia.shop.pageheader.presentation.bottomsheet.ShopPageHeaderRequestUnmoderateBottomSheet
 
@@ -23,4 +24,6 @@ interface ShopPageHeaderFragmentViewHolderListener {
     fun onFollowButtonClicked(){}
 
     fun onUspClicked(listDynamicUspValue: List<String>) {}
+
+    fun getContentCreationListener(): ContentCreationBottomSheet.ContentCreationBottomSheetListener
 }
