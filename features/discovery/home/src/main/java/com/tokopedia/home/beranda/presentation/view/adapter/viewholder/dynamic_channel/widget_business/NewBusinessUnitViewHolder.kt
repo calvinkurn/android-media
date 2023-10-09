@@ -15,13 +15,13 @@ class NewBusinessUnitViewHolder(
     view: View,
     private val listener: BusinessUnitListener,
     private val cardInteraction: Boolean = false,
-): RecyclerView.ViewHolder(view) {
+) : RecyclerView.ViewHolder(view) {
     private val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_view)
     private val loadingView = view.findViewById<View>(R.id.loading_layout)
     private val errorView = view.findViewById<LocalLoad>(R.id.error_bu_unit_widget)
     private var adapter: BusinessUnitItemAdapter? = null
     private val startSnapHelper: GravitySnapHelper by lazy { GravitySnapHelper(Gravity.START) }
-    private val listenerBusinessUnitItemTrackerListener = object : BusinessUnitItemTrackerListener{
+    private val listenerBusinessUnitItemTrackerListener = object : BusinessUnitItemTrackerListener {
         override fun onClickTracking(tracker: HashMap<String, Any>) {
             listener.sendEnhanceEcommerce(tracker)
         }
@@ -41,50 +41,60 @@ class NewBusinessUnitViewHolder(
         startSnapHelper.attachToRecyclerView(recyclerView)
     }
 
-    fun onBind(model: BusinessUnitDataModel?, positionWidget: Int){
+    fun onBind(model: BusinessUnitDataModel?, positionWidget: Int) {
         loadingView.hide()
         recyclerView.hide()
         errorView.hide()
-            adapter = BusinessUnitItemAdapter(
-                tabIndex = model?.tabPosition ?: -1,
-                tabId = model?.tabId ?: "",
-                tabName = model?.tabName ?: "",
-                channelId = model?.channelId ?: "",
-                campaignCode = model?.campaignCode ?: "",
-                listenerBusinessTrackerTracker = listenerBusinessUnitItemTrackerListener,
-                cardInteraction = cardInteraction,
-                userId = listener.userId,
+        if (recyclerView.adapter == null) {
+            adapter = BusinessUnitItemAdapter()
+        } else {
+            adapter?.submitList(
+                model,
+                listenerBusinessUnitItemTrackerListener,
+                cardInteraction,
+                listener.userId
             )
-            recyclerView.adapter = adapter
+        }
+        recyclerView.adapter = adapter
         adapter?.setPositionWidgetOnHome(positionWidget)
-        if(model?.list != null){
+        if (model?.list != null) {
             recyclerView.show()
             loadingView.hide()
-            if(model.list.isEmpty()){
+            if (model.list.isEmpty()) {
                 errorView.show()
             }
-            adapter?.submitList(model.list)
+            adapter?.submitList(
+                model,
+                listenerBusinessUnitItemTrackerListener,
+                cardInteraction,
+                listener.userId
+            )
         } else {
             loadingView.show()
             listener.getBusinessUnit(adapterPosition)
         }
     }
 
-    fun onBind(model: BusinessUnitDataModel?, payload: List<Any>, positionWidget: Int){
-        if(model?.list != null){
+    fun onBind(model: BusinessUnitDataModel?, payload: List<Any>, positionWidget: Int) {
+        if (model?.list != null) {
             adapter?.setPositionWidgetOnHome(positionWidget)
-            adapter?.submitList(model.list)
+            adapter?.submitList(
+                model,
+                listenerBusinessUnitItemTrackerListener,
+                cardInteraction,
+                listener.userId
+            )
         }
     }
 
-    interface BusinessUnitListener{
+    interface BusinessUnitListener {
         fun getBusinessUnit(position: Int)
         fun sendEnhanceEcommerce(tracker: HashMap<String, Any>)
         fun putEnhanceEcommerce(tracker: HashMap<String, Any>)
         val userId: String
     }
 
-    interface BusinessUnitItemTrackerListener{
+    interface BusinessUnitItemTrackerListener {
         fun onClickTracking(tracker: HashMap<String, Any>)
         fun onImpressTracking(tracker: HashMap<String, Any>)
     }
