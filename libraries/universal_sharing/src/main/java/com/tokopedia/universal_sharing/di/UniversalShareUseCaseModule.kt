@@ -7,10 +7,10 @@ import com.tokopedia.universal_sharing.data.api.ExtractBranchLinkApi
 import com.tokopedia.universal_sharing.data.model.BranchLinkErrorResponse
 import com.tokopedia.universal_sharing.data.repository.ExtractBranchLinkDataStore
 import com.tokopedia.universal_sharing.data.repository.ExtractBranchLinkRepository
+import com.tokopedia.universal_sharing.domain.usecase.ImageGeneratorUseCase
+import com.tokopedia.universal_sharing.domain.usecase.ImagePolicyUseCase
 import com.tokopedia.universal_sharing.model.ImageGeneratorModel
 import com.tokopedia.universal_sharing.model.ImagePolicyResponse
-import com.tokopedia.universal_sharing.usecase.ImageGeneratorUseCase
-import com.tokopedia.universal_sharing.usecase.ImagePolicyUseCase
 import com.tokopedia.universal_sharing.view.model.GenerateAffiliateLinkEligibility
 import com.tokopedia.universal_sharing.view.usecase.AffiliateEligibilityCheckUseCase
 import com.tokopedia.url.TokopediaUrl
