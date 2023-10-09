@@ -1795,6 +1795,7 @@ class PromoUsageViewModel @Inject constructor(
                         previousSavingInfo = pageState.savingInfo
                     )
                     updatedItems = sortPromo(updatedItems)
+                    updatedItems = addTncPromo(updatedItems)
                     _promoPageUiState.postValue(
                         pageState.copy(
                             items = updatedItems,

@@ -36,7 +36,6 @@ import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.setTextColorCompat
 import com.tokopedia.kotlin.extensions.view.smoothSnapToPosition
 import com.tokopedia.kotlin.extensions.view.splitByThousand
@@ -90,7 +89,6 @@ import com.tokopedia.purchase_platform.common.revamp.CartCheckoutRevampRollenceM
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -458,10 +456,9 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         activity?.let { activity ->
             ViewCompat.setOnApplyWindowInsetsListener(activity.window.decorView) { view: View, insets: WindowInsetsCompat ->
                 val isKeyboardVisible = insets.isVisible(WindowInsetsCompat.Type.ime())
-                val keyboardHeight = insets.getInsets(WindowInsetsCompat.Type.ime()).bottom
                 if (isKeyboardVisible) {
                     // isKeyboardVisible means user tap voucher code text field
-                    setFocusOnPromoAttemptTextField(keyboardHeight)
+                    setFocusOnPromoAttemptTextField()
                 } else {
                     resetFocusOnPromoAttemptTextField()
                 }
@@ -470,9 +467,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         }
     }
 
-    private fun setFocusOnPromoAttemptTextField(keyboardHeight: Int) {
-        // Add padding to make voucher code text field displayed above keyboard
-        binding?.rvPromo?.setMargin(0, 0, 0, keyboardHeight.toDp())
+    private fun setFocusOnPromoAttemptTextField() {
         binding?.rvPromo?.requestLayout()
 
         val itemCount = recyclerViewAdapter.itemCount
@@ -480,7 +475,6 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun resetFocusOnPromoAttemptTextField() {
-        binding?.rvPromo?.setMargin(0, 0, 0, 0)
         binding?.rvPromo?.requestLayout()
     }
 
