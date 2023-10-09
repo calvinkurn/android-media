@@ -2,7 +2,6 @@ package com.tokopedia.tokopedianow.home.presentation.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -43,11 +42,9 @@ class HomeQuestSequenceWidgetViewHolder(
     private var stubBinding: PartialTokopedianowViewStubDcTitleBinding? by viewBinding()
 
     private val adapter by lazy {
-        val asyncDifferConfig = AsyncDifferConfig.Builder(HomeListDiffer())
-            .build()
         HomeAdapter(
-            asyncDifferConfig = asyncDifferConfig,
-            typeFactory = HomeAdapterTypeFactory(homeQuestSequenceWidgetListener = listener)
+            typeFactory = HomeAdapterTypeFactory(homeQuestSequenceWidgetListener = listener),
+            differ = HomeListDiffer(),
         )
     }
 
@@ -149,7 +146,7 @@ class HomeQuestSequenceWidgetViewHolder(
             HomeQuestTitleUiModel(isErrorState = true),
             HomeQuestWidgetUiModel(isErrorState = true)
         )
-        adapter.submitList(widgets as List<Visitable<*>>?)
+        adapter.submitList(widgets)
     }
 
     private fun setTitle(title: String) {
