@@ -68,10 +68,10 @@ fun GlobalSellerSearchView(
                     horizontal = 16.dp,
                     vertical = 8.dp
                 ),
+            textRangeKeyword = uiState.selection,
             searchBarKeyword = uiState.searchBarKeyword,
             searchBarPlaceholder = uiState.searchBarPlaceholder,
-            uiEffect = uiEffect,
-            textRangeKeyword = uiState.selection
+            uiEffect = uiEffect
         )
     }
 }
