@@ -388,6 +388,7 @@ class StoriesDetailFragment @Inject constructor(
                 analytic?.sendClickShopNameEvent(buildEventLabel())
                 viewModelAction(StoriesUiAction.Navigate(state.author.appLink))
             }
+            root.show()
         }
     }
 
@@ -507,6 +508,7 @@ class StoriesDetailFragment @Inject constructor(
         showSwipeProductJob?.cancel()
         binding.storiesComponent.showWithCondition(isShow)
         binding.clSideIcons.showWithCondition(isShow)
+        binding.vStoriesPartner.root.showWithCondition(isShow)
     }
 
     private fun showStoriesActionView(isShow: Boolean) {
