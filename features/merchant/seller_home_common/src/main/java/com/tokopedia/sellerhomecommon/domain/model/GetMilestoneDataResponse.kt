@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhomecommon.domain.model
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 data class GetMilestoneDataResponse(
@@ -27,6 +28,10 @@ data class MilestoneData(
     val errorMsg: String? = "",
     @SerializedName("finishMission")
     val finishMission: FinishMission = FinishMission(),
+    @SerializedName("questStatus")
+    val questStatus: Int = 0,
+    @SerializedName("reward")
+    val reward: Reward = Reward(),
     @SerializedName("mission")
     val mission: List<Mission>? = emptyList(),
     @SerializedName("progressBar")
@@ -66,6 +71,22 @@ data class MilestoneData(
         val subtitle: String? = "",
         @SerializedName("title")
         val title: String? = ""
+    )
+
+    data class Reward(
+        @SerializedName("isHaveReward")
+        val isHaveReward: Boolean = false,
+        @SerializedName("rewardTitle")
+        val rewardTitle: String = "",
+        @SerializedName("rewardSubtitle")
+        val rewardSubtitle: String = "",
+        @SuppressLint("Invalid Data Type")
+        @SerializedName("rewardID")
+        val rewardId: Int = 0,
+        @SerializedName("rewardStatus")
+        val rewardStatus: Int = 0,
+        @SerializedName("button")
+        val button: RewardButton = RewardButton()
     )
 
     data class Cta(
@@ -113,6 +134,21 @@ data class ButtonFinish(
     val url: String = "",
     @SerializedName("urlType")
     val urlType: Int = 0
+)
+
+data class RewardButton(
+    @SerializedName("applink")
+    val applink: String = "",
+    @SerializedName("buttonStatus")
+    val buttonStatus: Int = 0,
+    @SerializedName("title")
+    val title: String = "",
+    @SerializedName("url")
+    val url: String = "",
+    @SerializedName("urlType")
+    val urlType: Int = 0,
+    @SerializedName("buttonStyleType")
+    val buttonStyleType: Int = 0
 )
 
 data class MissionProgressModel(

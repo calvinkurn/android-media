@@ -176,7 +176,7 @@ class MilestoneViewHolder(
     private fun setOnCloseWidgetClicked(element: MilestoneWidgetUiModel) {
         element.data?.milestoneMissions?.let { missions ->
             val finishMissionCard = missions.firstOrNull { it is MilestoneFinishMissionUiModel }
-            finishMissionCard?.let {
+            (finishMissionCard as? MilestoneFinishMissionUiModel)?.let {
                 val position = missions.indexOf(it)
                 listener.onMilestoneMissionActionClickedListener(it, position)
             }

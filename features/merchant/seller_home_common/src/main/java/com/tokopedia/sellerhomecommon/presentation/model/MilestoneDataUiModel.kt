@@ -19,7 +19,7 @@ data class MilestoneDataUiModel(
     val showNumber: Boolean = false,
     val isError: Boolean = false,
     val milestoneProgress: MilestoneProgressbarUiModel = MilestoneProgressbarUiModel(),
-    val milestoneMissions: List<BaseMilestoneMissionUiModel> = emptyList(),
+    val milestoneMissions: List<Visitable<MilestoneAdapterTypeFactory>> = emptyList(),
     val milestoneCta: MilestoneCtaUiModel = MilestoneCtaUiModel(),
     val deadlineMillis: Long = 0L
 ) : BaseDataUiModel, LastUpdatedDataInterface {

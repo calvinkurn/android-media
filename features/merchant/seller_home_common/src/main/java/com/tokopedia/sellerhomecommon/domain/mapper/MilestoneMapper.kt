@@ -1,20 +1,25 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.orTrue
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.sellerhomecommon.data.WidgetLastUpdatedSharedPrefInterface
 import com.tokopedia.sellerhomecommon.domain.model.GetMilestoneDataResponse
 import com.tokopedia.sellerhomecommon.domain.model.MilestoneData
 import com.tokopedia.sellerhomecommon.domain.model.MissionProgressBar
+import com.tokopedia.sellerhomecommon.presentation.adapter.factory.MilestoneAdapterTypeFactory
 import com.tokopedia.sellerhomecommon.presentation.model.BaseMilestoneMissionUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MilestoneCtaUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MilestoneDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MilestoneFinishMissionUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.MilestoneItemRewardUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MilestoneMissionUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MilestoneProgressbarUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MissionButtonUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MissionProgressUiModel
+import com.tokopedia.unifycomponents.UnifyButton
 import javax.inject.Inject
 
 class MilestoneMapper @Inject constructor(
@@ -41,14 +46,34 @@ class MilestoneMapper @Inject constructor(
     }
 
     fun mapToUiModel(it: MilestoneData, isFromCache: Boolean): MilestoneDataUiModel {
-        val missions = mapGetMilestoneMission(it.showNumber.orFalse(), it.mission.orEmpty())
-        val finishCard = mapGetMilestoneFinish(it.showNumber.orFalse(), it.finishMission)
-        val areAllMissionsCompleted = missions.all { m -> m.missionCompletionStatus }
+        val missions: List<Visitable<MilestoneAdapterTypeFactory>> = mapGetMilestoneMission(it.showNumber.orFalse(), it.mission.orEmpty())
+        val finishCard: List<Visitable<MilestoneAdapterTypeFactory>> = mapGetMilestoneFinish(it.showNumber.orFalse(), it.finishMission)
+        val areAllMissionsCompleted =
+            missions.all { m -> (m as? BaseMilestoneMissionUiModel)?.missionCompletionStatus == true }
         val allMissions = if (areAllMissionsCompleted) {
             finishCard.plus(missions)
         } else {
             missions.plus(finishCard)
+        }.toMutableList()
+
+        if (finishCard.isEmpty() && it.reward.isHaveReward) {
+            val rewardCard = mapGetMilestoneReward(it.reward)
+            allMissions.add(Int.ZERO, rewardCard)
         }
+
+        // TODO: Remove this dummy
+        allMissions.add(
+            0,
+            MilestoneItemRewardUiModel(
+                "Selessaikan misi & dapatkan hadiah",
+                "Untuk 99 orang tercepat",
+                "Detail Hadiah",
+                UnifyButton.Variant.FILLED,
+                MilestoneItemRewardUiModel.ButtonStatus.DISABLED,
+                ""
+            )
+        )
+
         return MilestoneDataUiModel(
             dataKey = it.dataKey.orEmpty(),
             error = it.errorMsg.orEmpty(),
@@ -129,6 +154,28 @@ class MilestoneMapper @Inject constructor(
             )
         )
         return listOf(finishedMission)
+    }
+
+    private fun mapGetMilestoneReward(
+        rewardData: MilestoneData.Reward
+    ): MilestoneItemRewardUiModel {
+        return MilestoneItemRewardUiModel(
+            title = rewardData.rewardTitle,
+            subtitle = rewardData.rewardSubtitle,
+            buttonText = rewardData.button.title,
+            buttonStatus = rewardData.button.buttonStatus,
+            buttonVariant = getButtonVariant(rewardData.button.buttonStyleType),
+            buttonApplink = rewardData.button.applink
+        )
+    }
+
+    private fun getButtonVariant(buttonType: Int): Int {
+        // TODO: Make value similar to nest library
+        return when(buttonType) {
+            1 -> UnifyButton.Variant.TEXT_ONLY
+            2 -> UnifyButton.Variant.FILLED
+            else -> UnifyButton.Variant.GHOST
+        }
     }
 
     private fun getUrlType(urlType: Int?): BaseMilestoneMissionUiModel.UrlType {

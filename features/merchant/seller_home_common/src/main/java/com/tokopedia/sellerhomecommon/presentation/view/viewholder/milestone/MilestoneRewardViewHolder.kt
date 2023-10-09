@@ -3,11 +3,14 @@ package com.tokopedia.sellerhomecommon.presentation.view.viewholder.milestone
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.databinding.ShcItemMissionRewardMilestoneWidgetBinding
 import com.tokopedia.sellerhomecommon.presentation.adapter.MilestoneMissionAdapter
 import com.tokopedia.sellerhomecommon.presentation.model.MilestoneItemRewardUiModel
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.utils.view.binding.viewBinding
 
 class MilestoneRewardViewHolder(
@@ -25,27 +28,78 @@ class MilestoneRewardViewHolder(
     override fun bind(element: MilestoneItemRewardUiModel) {
         binding?.run {
             tvShcMissionRewardTitle.text = element.title
-            tvShcMissionRewardDesc.text = element.description
+            tvShcMissionRewardDesc.text = element.subtitle
         }
         setupCtaButton(element)
     }
 
     private fun setupCtaButton(element: MilestoneItemRewardUiModel) {
         if (element.buttonText.isNotBlank()) {
-            // TODO: set button by type
-            when(element.buttonType) {
-                0 -> {
-                    binding?.tvShcMissionRewardCta?.run {
-                        text = element.buttonText
-                        setOnClickListener {
-                            listener.onRewardActionClick(element)
-                        }
-                    }
-                }
+            if (element.buttonVariant == UnifyButton.Variant.TEXT_ONLY) {
+                setupRewardTextCta(element)
+                binding?.btnShcMissionReward?.gone()
+            } else {
+                setupRewardButtonCta(element)
+                binding?.tvShcMissionRewardCta?.gone()
             }
         } else {
             binding?.tvShcMissionRewardCta?.gone()
             binding?.btnShcMissionReward?.gone()
+        }
+    }
+
+    private fun setupRewardTextCta(element: MilestoneItemRewardUiModel) {
+        binding?.tvShcMissionRewardCta?.run {
+            when(element.buttonStatus) {
+                MilestoneItemRewardUiModel.ButtonStatus.HIDDEN -> {
+                    gone()
+                }
+                MilestoneItemRewardUiModel.ButtonStatus.ENABLED -> {
+                    visible()
+                    setTextColor(MethodChecker.getColor(context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_GN500))
+                    setOnClickListener {
+                        listener.onRewardActionClick(element)
+                    }
+                }
+                MilestoneItemRewardUiModel.ButtonStatus.DISABLED -> {
+                    visible()
+                    setTextColor(MethodChecker.getColor(context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN300))
+                    setOnClickListener(null)
+                }
+            }
+            text = element.buttonText
+        }
+    }
+
+    private fun setupRewardButtonCta(element: MilestoneItemRewardUiModel) {
+        binding?.btnShcMissionReward?.run {
+            text = element.buttonText
+            buttonVariant = element.buttonVariant
+            buttonType =
+                if (element.buttonVariant == UnifyButton.Variant.GHOST) {
+                    UnifyButton.Type.ALTERNATE
+                } else {
+                    UnifyButton.Type.MAIN
+                }
+            when(element.buttonStatus) {
+                MilestoneItemRewardUiModel.ButtonStatus.HIDDEN -> {
+                    gone()
+                }
+                MilestoneItemRewardUiModel.ButtonStatus.ENABLED -> {
+                    visible()
+                    isEnabled = true
+                    setOnClickListener {
+                        listener.onRewardActionClick(element)
+                    }
+                }
+                MilestoneItemRewardUiModel.ButtonStatus.DISABLED -> {
+                    visible()
+                    isEnabled = false
+                    setOnClickListener(null)
+                }
+            }
         }
     }
 }
