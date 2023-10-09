@@ -15,6 +15,7 @@ import com.gojek.pin.validation.ExtVerificationData
 import com.gojek.pin.validation.ExtVerificationUiConfig
 import com.gojek.pin.validation.PinSdkValidationListener
 import com.gojek.pin.validation.PinValidationResults
+import com.scp.auth.analytics.AuthAnalyticsMapper
 import com.scp.auth.authentication.LoginSdkConfigs
 import com.scp.auth.di.DaggerScpAuthComponent
 import com.scp.auth.di.ScpAuthComponent
@@ -71,21 +72,20 @@ object GotoSdk {
                         eventName: ScpAnalyticsEvent,
                         params: Map<String, Any?>
                     ) {
-                        println("sdkTrack:view: $eventName, $params")
+                        AuthAnalyticsMapper.trackScreenLsdk(eventName.eventName, params)
                     }
 
                     override fun trackError(
                         eventName: ScpAnalyticsEvent,
                         params: Map<String, Any?>
                     ) {
-                        println("sdkTrack:error: $eventName, $params")
                     }
 
                     override fun trackEvent(
                         eventName: ScpAnalyticsEvent,
                         params: MutableMap<String, Any?>
                     ) {
-                        println("sdkTrack:event: $eventName, $params")
+                        AuthAnalyticsMapper.trackEventLsdk(eventName.eventName, params)
                     }
                 }
             )

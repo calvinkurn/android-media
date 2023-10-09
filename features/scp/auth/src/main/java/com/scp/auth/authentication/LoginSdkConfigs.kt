@@ -6,6 +6,7 @@ import com.scp.login.core.domain.contracts.configs.LSdkAuthConfig
 import com.scp.login.core.domain.contracts.configs.LSdkConfig
 import com.scp.login.core.domain.contracts.configs.LSdkEnvironment
 import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator
+import com.tokopedia.keys.R as keysR
 
 class LoginSdkConfigs(val context: Context) : LSdkConfig {
     override fun getAppConfigs(): LSdkAppConfig {
@@ -21,6 +22,6 @@ class LoginSdkConfigs(val context: Context) : LSdkConfig {
     }
 
     override fun getAuthConfigs(): LSdkAuthConfig {
-        return LSdkAuthConfig(clientID = "tokopedia:consumer:android", clientSecret = "uPu4ieJOyPnf7sAS6ENCrBSvRMhF1g", gotoPinclientID = "a8533f47-040b-49a1-b0c7-d818b9499a2f-ICP")
+        return LSdkAuthConfig(clientID = "tokopedia:consumer:android", clientSecret = "uPu4ieJOyPnf7sAS6ENCrBSvRMhF1g", gotoPinclientID = context.getString(keysR.string.gotopin_client_id))
     }
 }
