@@ -8,6 +8,7 @@ import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
+import com.tokopedia.logisticCommon.data.entity.response.Data
 import com.tokopedia.logisticCommon.data.entity.response.KeroMapsAutofill
 import com.tokopedia.logisticCommon.data.response.KeroAddrGetDistrictCenterResponse
 import com.tokopedia.logisticCommon.domain.param.GetDistrictGeoCodeParam
@@ -29,8 +30,8 @@ import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.uimodel.Dis
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.uimodel.DistrictCenterUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.uimodel.GetDistrictDataUiModel
 import com.tokopedia.logisticaddaddress.features.pinpoint.PinpointFragment
-import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.PinpointNewPageFragment.Companion.BOTTOMSHEET_NOT_FOUND_LOC
 import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.PinpointNewPageFragment.Companion.LOCATION_NOT_FOUND_MESSAGE
+import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.uimodel.BottomSheetState
 import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.uimodel.MapsGeocodeState
 import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.uimodel.PinpointAction
 import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.uimodel.PinpointUiModel
@@ -88,6 +89,9 @@ class PinpointViewModel @Inject constructor(
     val action: LiveData<PinpointAction>
         get() = _action
 
+    private val _pinpointBottomSheet = MutableLiveData<BottomSheetState>()
+    val pinpointBottomSheet: LiveData<BottomSheetState>
+        get() = _pinpointBottomSheet
     fun onViewCreated(
         districtName: String = "",
         cityName: String = "",
@@ -112,7 +116,7 @@ class PinpointViewModel @Inject constructor(
         this.uiState = uiState
     }
 
-    fun fetchData(addressUiState: AddressUiState) {
+    fun fetchData() {
         if (uiModel.placeId.isNotEmpty()) {
             getDistrictLocation(uiModel.placeId)
         } else if (uiModel.hasPinpoint()) {
@@ -121,7 +125,7 @@ class PinpointViewModel @Inject constructor(
             getDistrictCenter()
         } else if (uiModel.hasDistrictAndCityName) {
             getGeocodeByDistrictAndCityName()
-        } else if (addressUiState.isPinpointOnly()) {
+        } else if (uiState.isPinpointOnly()) {
             _action.value = PinpointAction.GetCurrentLocation
         }
     }
@@ -170,11 +174,19 @@ class PinpointViewModel @Inject constructor(
                     if (uiState.isAdd() && uiModel.anaNegativeFullFlow && districtData.keroMapsAutofill.data.districtId != uiModel.districtId) {
                         // is polygon but coordinate not in selected district
                         _action.value = PinpointAction.InvalidDistrictPinpoint
+                        _pinpointBottomSheet.value = BottomSheetState.LocationDetail(
+                            title = "",
+                            description = "",
+                            buttonPrimary = createButtonPrimary(success = false, enable = false),
+                            buttonSecondary = createButtonSecondary(enable = true)
+                        )
                     } else {
                         uiModel = uiModel.map(districtData.keroMapsAutofill.data, null)
-                        _action.value = PinpointAction.UpdatePinpointDetail(
-                            uiModel.title,
-                            uiModel.formattedAddress
+                        _pinpointBottomSheet.value = BottomSheetState.LocationDetail(
+                            title = uiModel.title,
+                            description = uiModel.formattedAddress,
+                            buttonPrimary = createButtonPrimary(success = true, enable = true),
+                            buttonSecondary = createButtonSecondary(enable = true)
                         )
                     }
                 } else {
@@ -189,6 +201,27 @@ class PinpointViewModel @Inject constructor(
         }
     }
 
+    private fun createButtonSecondary(enable: Boolean): BottomSheetState.LocationDetail.LocationDetailButtonUiModel {
+        return BottomSheetState.LocationDetail.LocationDetailButtonUiModel(
+            show = uiState.isAdd(),
+            state = uiState,
+            enable = enable
+        )
+    }
+
+    private fun isCoordinateInsideDistrict(districtData: Data): Boolean {
+        return uiState.isAdd() && uiModel.anaNegativeFullFlow && districtData.districtId != uiModel.districtId
+    }
+
+    private fun createButtonPrimary(success: Boolean, enable: Boolean): BottomSheetState.LocationDetail.PrimaryButtonUiModel {
+        return BottomSheetState.LocationDetail.PrimaryButtonUiModel(
+            show = true,
+            state = BottomSheetState.LocationDetail.PrimaryButtonUiModel.PrimaryButtonState(addressUiState = uiState, success = success),
+            enable = enable,
+            text = if (uiState.isPinpointOnly()) { "Pilih Lokasi Ini" } else { "Pilih Lokasi & Lanjut Isi Alamat" }
+        )
+    }
+
     private fun locationNotFound(showIllustationMap: Boolean) {
         val invalidLocationDetail =
             if (uiModel.hasPinpoint() || uiState.isPinpointOnly()) {
@@ -196,27 +229,42 @@ class PinpointViewModel @Inject constructor(
             } else {
                 "Tenang, kamu bisa pilih ulang lokasimu atau tetap menyimpan alamat tanpa pinpoint."
             }
-        val buttonState: PinpointAction.LocationInvalid.ButtonState? = if (uiState.isPinpointOnly()) {
-            null // gone
+        val buttonState: BottomSheetState.LocationInvalid.ButtonInvalidModel = if (uiState.isPinpointOnly()) {
+            BottomSheetState.LocationInvalid.ButtonInvalidModel(
+                show = false,
+                state = BottomSheetState.LocationInvalid.LocationInvalidType.LOCATION_NOT_FOUND
+            )
         } else if (uiState.isEdit()) {
             if (uiModel.hasPinpoint()) {
-                null // gone
+                BottomSheetState.LocationInvalid.ButtonInvalidModel(
+                    show = false,
+                    state = BottomSheetState.LocationInvalid.LocationInvalidType.LOCATION_NOT_FOUND
+                )
             } else {
-                PinpointAction.LocationInvalid.ButtonState(
+                BottomSheetState.LocationInvalid.ButtonInvalidModel(
                     variant = UnifyButton.Variant.GHOST,
                     type = UnifyButton.Type.MAIN,
-                    text = "Mengerti"
+                    text = "Mengerti",
+                    show = true,
+                    state = BottomSheetState.LocationInvalid.LocationInvalidType.LOCATION_NOT_FOUND
                 )
             }
         } else {
             if (uiState.isAdd()) {
-                PinpointAction.LocationInvalid.ButtonState()
+                BottomSheetState.LocationInvalid.ButtonInvalidModel(
+                    show = true,
+                    state = BottomSheetState.LocationInvalid.LocationInvalidType.LOCATION_NOT_FOUND
+                )
             } else {
-                null
+                BottomSheetState.LocationInvalid.ButtonInvalidModel(
+                    show = false,
+                    state = BottomSheetState.LocationInvalid.LocationInvalidType.LOCATION_NOT_FOUND
+                )
             }
         }
-        _action.value = PinpointAction.LocationInvalid(
-            type = BOTTOMSHEET_NOT_FOUND_LOC,
+
+        _pinpointBottomSheet.value = BottomSheetState.LocationInvalid(
+            type = BottomSheetState.LocationInvalid.LocationInvalidType.LOCATION_NOT_FOUND,
             title = "Yaah, lokasimu tidak terdeteksi",
             detail = invalidLocationDetail,
             imageUrl = TokopediaImageUrl.LOCATION_NOT_FOUND,
@@ -245,7 +293,12 @@ class PinpointViewModel @Inject constructor(
                 } else {
                     uiModel = uiModel.map(responseModel, null)
                     if (responseModel.errMessage.isNullOrEmpty()) {
-                        _action.value = PinpointAction.UpdatePinpointDetail(uiModel.title, uiModel.formattedAddress)
+                        _pinpointBottomSheet.value = BottomSheetState.LocationDetail(
+                            title = uiModel.title,
+                            description = uiModel.formattedAddress,
+                            buttonPrimary = createButtonPrimary(success = true, enable = true),
+                            buttonSecondary = createButtonSecondary(enable = true)
+                        )
                     } else if (responseModel.errMessage?.contains(LOCATION_NOT_FOUND_MESSAGE) == true) {
                         locationNotFound(false)
                     }
@@ -269,13 +322,16 @@ class PinpointViewModel @Inject constructor(
     }
 
     private fun locationOutOfReach() {
-        _action.value = PinpointAction.LocationInvalid(
-            type = BOTTOMSHEET_NOT_FOUND_LOC,
+        _pinpointBottomSheet.value = BottomSheetState.LocationInvalid(
+            type = BottomSheetState.LocationInvalid.LocationInvalidType.OUT_OF_COVERAGE,
             title = "Lokasi di luar jangkauan",
             detail = "Saat ini Tokopedia hanya melayani pengiriman di Indonesia saja. Pilih ulang lokasimu, ya.",
             imageUrl = TokopediaImageUrl.LOCATION_NOT_FOUND,
             showMapIllustration = false,
-            buttonState = if (uiState.isAdd()) PinpointAction.LocationInvalid.ButtonState() else null
+            buttonState = BottomSheetState.LocationInvalid.ButtonInvalidModel(
+                show = false,
+                state = BottomSheetState.LocationInvalid.LocationInvalidType.OUT_OF_COVERAGE
+            )
         )
     }
 
@@ -295,9 +351,18 @@ class PinpointViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val data = getDistrictCenter(uiModel.districtId)
-                _districtCenter.value = Success(mapDistrictCenterResponseToUiModel(data))
+                _action.value = PinpointAction.MoveMap(
+                    data.keroAddrGetDistrictCenter.district.latitude,
+                    data.keroAddrGetDistrictCenter.district.longitude
+                )
+                getDistrictData(
+                    data.keroAddrGetDistrictCenter.district.latitude,
+                    data.keroAddrGetDistrictCenter.district.longitude
+                )
+//                _districtCenter.value = Success(mapDistrictCenterResponseToUiModel(data))
             } catch (e: Throwable) {
-                _districtCenter.value = Fail(e)
+//                _districtCenter.value = Fail(e)
+                // todo show toaster maybe?
             }
         }
     }
@@ -355,18 +420,22 @@ class PinpointViewModel @Inject constructor(
                 )
 
                 response.firstLocation?.apply {
-                    setLatLong(
-                        lat = lat,
-                        long = lng
+                    _action.value = PinpointAction.MoveMap(
+                        lat,
+                        lng
+                    )
+                    getDistrictData(
+                        lat,
+                        lng
                     )
 
-                    _mapsGeocodeState.value = MapsGeocodeState.Success(this)
+//                    _mapsGeocodeState.value = MapsGeocodeState.Success(this)
                 } ?: kotlin.run {
-                    _mapsGeocodeState.value = MapsGeocodeState.Fail(LOCATION_NOT_FOUND_MESSAGE)
+                    locationNotFound(true)
                 }
             },
             onError = {
-                _mapsGeocodeState.value = MapsGeocodeState.Fail(it.message.orEmpty())
+                checkErrorMessage(it.message.orEmpty())
             }
         )
     }
