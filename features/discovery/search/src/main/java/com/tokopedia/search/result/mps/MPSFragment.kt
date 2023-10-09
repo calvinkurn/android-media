@@ -1,5 +1,6 @@
 package com.tokopedia.search.result.mps
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +15,8 @@ import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.discovery.common.State
 import com.tokopedia.discovery.common.State.Error
 import com.tokopedia.discovery.common.State.Success
@@ -25,9 +28,12 @@ import com.tokopedia.search.result.SearchViewModel
 import com.tokopedia.search.result.mps.addtocart.AddToCartView
 import com.tokopedia.search.result.mps.chooseaddress.ChooseAddressListener
 import com.tokopedia.search.result.mps.emptystate.EmptyStateListener
+import com.tokopedia.search.result.mps.violationstate.ViolationStateListener
 import com.tokopedia.search.result.mps.filter.bottomsheet.BottomSheetFilterView
 import com.tokopedia.search.result.mps.filter.quickfilter.QuickFilterView
 import com.tokopedia.search.result.mps.shopwidget.MPSShopWidgetListenerDelegate
+import com.tokopedia.search.result.mps.variantstate.BottomSheetVariantView
+import com.tokopedia.search.result.product.addtocart.AddToCartVariantBottomSheetLauncher
 import com.tokopedia.search.utils.BackToTopView
 import com.tokopedia.search.utils.FragmentProvider
 import com.tokopedia.search.utils.mvvm.RefreshableView
@@ -49,7 +55,8 @@ class MPSFragment @Inject constructor(
     FragmentProvider,
     BackToTopView,
     ListListener,
-    EmptyStateListener {
+    EmptyStateListener,
+    ViolationStateListener {
 
     private val viewModel: MPSViewModel? by viewModels { viewModelFactory }
     private val searchViewModel: SearchViewModel? by viewModels { viewModelFactory }
@@ -57,6 +64,9 @@ class MPSFragment @Inject constructor(
     private val recycledViewPool = RecycledViewPool()
     private var mpsListAdapter: MPSListAdapter? = null
     private var endlessScrollListener: EndlessScrollListener? = null
+    private val atcVariantBottomSheetLauncher: AddToCartVariantBottomSheetLauncher by lazy {
+        AddToCartVariantBottomSheetLauncher(this.context, this)
+    }
 
     override fun getScreenName(): String = ""
 
@@ -84,6 +94,7 @@ class MPSFragment @Inject constructor(
         initBottomSheetFilter()
         initAddToCartView()
         initSwipeRefreshLayout()
+        initOpenVariantBottomSheetView()
     }
 
     private fun initRecyclerView() {
@@ -107,9 +118,10 @@ class MPSFragment @Inject constructor(
                 context,
                 viewModel,
                 trackingQueue,
-                iris,
+                iris
             ),
             emptyStateListener = this,
+            restrictedStateListener = this
         )
 
         mpsListAdapter = MPSListAdapter(mpsTypeFactory, this)
@@ -140,6 +152,10 @@ class MPSFragment @Inject constructor(
 
     private fun initAddToCartView() {
         AddToCartView(viewModel, context, view).onStateRefresh(MPSState::addToCartState)
+    }
+
+    private fun initOpenVariantBottomSheetView() {
+        BottomSheetVariantView(viewModel, context, atcVariantBottomSheetLauncher).onStateRefresh(MPSState::bottomSheetVariantState)
     }
 
     private fun <P> RefreshableView<P>.onStateRefresh(prop: KProperty1<MPSState, P>) {
@@ -215,6 +231,15 @@ class MPSFragment @Inject constructor(
         viewModel?.resetFilter()
     }
 
+    override fun onLearnItButtonClick() {
+        RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, LEARNLINK)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        atcVariantBottomSheetLauncher.onActivityResult(requestCode, resultCode, data)
+    }
+
     companion object {
 
         @JvmStatic
@@ -227,5 +252,6 @@ class MPSFragment @Inject constructor(
                 MPSFragment::class.java.name,
             ) as MPSFragment
         }
+        private const val LEARNLINK = "https://www.tokopedia.com/terms#item"
     }
 }

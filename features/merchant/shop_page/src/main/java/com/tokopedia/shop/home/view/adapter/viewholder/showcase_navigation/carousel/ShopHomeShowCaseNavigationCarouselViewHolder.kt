@@ -11,17 +11,17 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.ItemShopHomeShowcaseNavigationCarouselBannerBinding
 import com.tokopedia.shop.home.view.adapter.viewholder.showcase_navigation.ShopHomeShowCaseNavigationAdapter
-import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseNavigationListener
+import com.tokopedia.shop.home.view.listener.ShopHomeReimagineShowcaseNavigationListener
+import com.tokopedia.shop.home.view.model.showcase_navigation.Showcase
+import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseNavigationUiModel
 import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.CarouselAppearance
 import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.ShopHomeShowcaseNavigationBannerWidgetAppearance
-import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseNavigationUiModel
-import com.tokopedia.shop.home.view.model.showcase_navigation.Showcase
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 class ShopHomeShowCaseNavigationCarouselViewHolder(
     itemView: View,
-    private val listener: ShopHomeShowcaseNavigationListener
+    private val listener: ShopHomeReimagineShowcaseNavigationListener
 ) :
     AbstractViewHolder<ShowcaseNavigationUiModel>(itemView) {
 
@@ -31,7 +31,6 @@ class ShopHomeShowCaseNavigationCarouselViewHolder(
     }
 
     private val viewBinding: ItemShopHomeShowcaseNavigationCarouselBannerBinding? by viewBinding()
-
 
     override fun bind(model: ShowcaseNavigationUiModel) {
         if (model.appearance is CarouselAppearance) {

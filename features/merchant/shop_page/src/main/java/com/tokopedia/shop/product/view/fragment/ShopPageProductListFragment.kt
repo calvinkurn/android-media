@@ -22,7 +22,6 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
@@ -87,7 +86,7 @@ import com.tokopedia.shop.common.view.viewmodel.ShopProductFilterParameterShared
 import com.tokopedia.shop.common.widget.MembershipBottomSheetSuccess
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageHeaderActivity
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragment
-import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragmentV2
+import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageReimagineHeaderFragment
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPageHeaderPerformanceMonitoringListener
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent
@@ -310,7 +309,7 @@ class ShopPageProductListFragment :
                 if (firstCompletelyVisibleItemPosition == 0 && isClickToScrollToTop) {
                     isClickToScrollToTop = false
                     if (ShopUtil.isEnableShopPageReImagined(context)) {
-                        (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.expandHeader()
+                        (getRealParentFragment() as? ShopPageReimagineHeaderFragment)?.expandHeader()
                     } else {
                         (getRealParentFragment() as? ShopPageHeaderFragment)?.expandHeader()
                     }
@@ -623,7 +622,7 @@ class ShopPageProductListFragment :
 
     private fun getSelectedTabName(): String {
         return if (ShopUtil.isEnableShopPageReImagined(context)) {
-            (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.getSelectedTabName().orEmpty()
+            (getRealParentFragment() as? ShopPageReimagineHeaderFragment)?.getSelectedTabName().orEmpty()
         } else {
             (getRealParentFragment() as? ShopPageHeaderFragment)?.getSelectedTabName().orEmpty()
         }
@@ -1364,7 +1363,7 @@ class ShopPageProductListFragment :
 
     private fun updateMiniCartWidget() {
         if (ShopUtil.isEnableShopPageReImagined(context)) {
-            (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.updateMiniCartWidget()
+            (getRealParentFragment() as? ShopPageReimagineHeaderFragment)?.updateMiniCartWidget()
         } else {
             (getRealParentFragment() as? ShopPageHeaderFragment)?.updateMiniCartWidget()
         }
@@ -1384,7 +1383,7 @@ class ShopPageProductListFragment :
 
     private fun getSelectedFragment(): Fragment? {
         return if (ShopUtil.isEnableShopPageReImagined(context)) {
-            (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.getSelectedFragmentInstance()
+            (getRealParentFragment() as? ShopPageReimagineHeaderFragment)?.getSelectedFragmentInstance()
         } else {
             (getRealParentFragment() as? ShopPageHeaderFragment)?.getSelectedFragmentInstance()
         }
@@ -1730,7 +1729,7 @@ class ShopPageProductListFragment :
 
     private fun isShopWidgetAlreadyShown(): Boolean {
         return if (ShopUtil.isEnableShopPageReImagined(context)) {
-            (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.isShopWidgetAlreadyShown() ?: false
+            (getRealParentFragment() as? ShopPageReimagineHeaderFragment)?.isShopWidgetAlreadyShown() ?: false
         } else {
             (getRealParentFragment() as? ShopPageHeaderFragment)?.isShopWidgetAlreadyShown() ?: false
         }
@@ -1953,7 +1952,7 @@ class ShopPageProductListFragment :
 
     private fun hideScrollToTopButton() {
         if (ShopUtil.isEnableShopPageReImagined(context)) {
-            (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.hideScrollToTopButton()
+            (getRealParentFragment() as? ShopPageReimagineHeaderFragment)?.hideScrollToTopButton()
         } else {
             (getRealParentFragment() as? ShopPageHeaderFragment)?.hideScrollToTopButton()
         }
@@ -1961,7 +1960,7 @@ class ShopPageProductListFragment :
 
     private fun showScrollToTopButton() {
         if (ShopUtil.isEnableShopPageReImagined(context)) {
-            (getRealParentFragment() as? ShopPageHeaderFragmentV2)?.showScrollToTopButton()
+            (getRealParentFragment() as? ShopPageReimagineHeaderFragment)?.showScrollToTopButton()
         } else {
             (getRealParentFragment() as? ShopPageHeaderFragment)?.showScrollToTopButton()
         }

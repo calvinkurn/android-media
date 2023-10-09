@@ -167,6 +167,7 @@
                 app:layout_constraintTop_toTopOf="@+id/terlaris_product_detail_1"
                 android:layout_marginLeft="12dp"
                 android:textSize="64sp"
+                app:typographyWeight="bold"
                 android:letterSpacing="0"
                 android:gravity="center"
                 android:textColor="@color/dms_clr_AAB4C8_25"
@@ -287,6 +288,7 @@
                 app:layout_constraintTop_toTopOf="@+id/terlaris_product_detail_2"
                 android:layout_marginLeft="12dp"
                 android:textSize="64sp"
+                app:typographyWeight="bold"
                 android:letterSpacing="0"
                 android:gravity="center"
                 android:textColor="@color/dms_clr_AAB4C8_25"
@@ -408,6 +410,7 @@
                 android:layout_marginLeft="12dp"
                 android:textSize="64sp"
                 android:letterSpacing="0"
+                app:typographyWeight="bold"
                 android:gravity="center"
                 android:textColor="@color/dms_clr_AAB4C8_25"
                 tools:text="3" />
