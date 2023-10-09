@@ -44,8 +44,6 @@ object Key {
     const val creativeSlot = "creative_slot"
 
     const val pageSource = "pageSource"
-    const val creativeName = "creative_name"
-    const val creativeSlot = "creative_slot"
     const val price = "price"
     const val itemShopId = "shop_id"
     const val itemShopName = "shop_name"
