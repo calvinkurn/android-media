@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.creation.common.upload.data.local.entity.CreationUploadQueueEntity
 import com.tokopedia.creation.common.upload.model.exception.UnknownUploadTypeException
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import java.util.UUID
 
@@ -188,10 +189,19 @@ sealed interface CreationUploadData {
 
         @SerializedName(KEY_MEDIA_URI_LIST)
         val mediaUriList: List<String>,
+
+        @SerializedName(KEY_MEDIA_TYPE_LIST)
+        val mediaTypeList: List<Int>,
     ) : CreationUploadData {
 
+        val firstMediaUri: String
+            get() = mediaUriList.firstOrNull().orEmpty()
+
+        val firstMediaType: ContentMediaType
+            get() = ContentMediaType.parse(mediaTypeList.firstOrNull().orZero())
+
         override val notificationCover: String
-            get() = coverUri.ifEmpty { mediaUriList.firstOrNull().orEmpty() }
+            get() = coverUri.ifEmpty { firstMediaUri }
 
         override fun mapToEntity(gson: Gson): CreationUploadQueueEntity {
             return CreationUploadQueueEntity(
@@ -207,6 +217,7 @@ sealed interface CreationUploadData {
                 data = gson.toJson(
                     CreationUploadQueueEntity.Stories(
                         mediaUriList = mediaUriList,
+                        mediaTypeList = mediaTypeList,
                     )
                 )
             )
@@ -223,6 +234,7 @@ sealed interface CreationUploadData {
         private const val KEY_AUTHOR_ID = "authorId"
         private const val KEY_AUTHOR_TYPE = "authorType"
         private const val KEY_MEDIA_URI_LIST = "mediaUriList"
+        private const val KEY_MEDIA_TYPE_LIST = "mediaTypeList"
         private const val KEY_COVER_URI = "coverUri"
         private const val KEY_SOURCE_ID = "sourceId"
         private const val KEY_DRAFT_ID = "draftId"
@@ -296,6 +308,7 @@ sealed interface CreationUploadData {
                         authorId = entity.authorId,
                         authorType = entity.authorType,
                         mediaUriList = storiesEntity.mediaUriList,
+                        mediaTypeList = storiesEntity.mediaTypeList,
                     )
                 }
                 else -> throw UnknownUploadTypeException()
@@ -350,6 +363,7 @@ sealed interface CreationUploadData {
         fun buildForStories(
             creationId: String,
             mediaUriList: List<String>,
+            mediaTypeList: List<Int>,
             coverUri: String,
             sourceId: String,
             authorId: String,
@@ -362,6 +376,7 @@ sealed interface CreationUploadData {
                 timestamp = System.currentTimeMillis(),
                 creationId = creationId,
                 mediaUriList = mediaUriList,
+                mediaTypeList = mediaTypeList,
                 coverUri = coverUri,
                 sourceId = sourceId,
                 authorId = authorId,

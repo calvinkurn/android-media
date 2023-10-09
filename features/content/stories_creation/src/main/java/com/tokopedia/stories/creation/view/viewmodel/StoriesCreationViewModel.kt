@@ -2,7 +2,7 @@ package com.tokopedia.stories.creation.view.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tokopedia.content.common.model.ContentMediaType
+import com.tokopedia.creation.common.upload.model.ContentMediaType
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.creation.common.upload.model.CreationUploadData
 import com.tokopedia.creation.common.upload.uploader.CreationUploader
@@ -133,6 +133,7 @@ class StoriesCreationViewModel @Inject constructor(
             val data = CreationUploadData.buildForStories(
                 creationId = state.config.storiesId,
                 mediaUriList = listOf(state.mediaFilePath),
+                mediaTypeList = listOf(state.mediaType.code),
                 coverUri = "",
                 sourceId = "",
                 authorId = state.selectedAccount.id,

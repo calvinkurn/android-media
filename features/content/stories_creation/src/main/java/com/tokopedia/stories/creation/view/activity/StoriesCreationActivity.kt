@@ -12,7 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
-import com.tokopedia.content.common.model.ContentMediaType
+import com.tokopedia.creation.common.upload.model.ContentMediaType
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.picker.common.MediaPicker
