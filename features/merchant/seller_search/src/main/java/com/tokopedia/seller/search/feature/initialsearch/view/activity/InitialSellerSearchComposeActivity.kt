@@ -9,12 +9,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.SoftwareKeyboardController
+import androidx.compose.ui.text.TextRange
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.commit
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.seller.search.common.GlobalSearchSellerComponentBuilder
 import com.tokopedia.seller.search.common.GlobalSearchSellerConstant
@@ -141,7 +143,7 @@ class InitialSellerSearchComposeActivity :
             when (it) {
                 is GlobalSearchUiEvent.OnSearchBarCleared -> {
                     SellerSearchTracking.clickClearSearchBoxEvent(userSession.userId)
-                    viewModel.setTypingSearch(String.EMPTY)
+                    viewModel.setTypingSearch(String.EMPTY, TextRange(Int.ZERO))
                 }
 
                 is GlobalSearchUiEvent.OnBackButtonClicked -> {
@@ -153,7 +155,8 @@ class InitialSellerSearchComposeActivity :
                 }
 
                 is GlobalSearchUiEvent.OnKeyboardSearchSubmit -> {
-                    viewModel.setTypingSearch(it.searchBarKeyword)
+                    val textRange = TextRange(it.searchBarKeyword.length)
+                    viewModel.setTypingSearch(it.searchBarKeyword, textRange)
                     softwareKeyboardController?.hide()
                 }
 
@@ -202,7 +205,8 @@ class InitialSellerSearchComposeActivity :
     }
 
     private fun setSearchKeyword() {
-        viewModel.setTypingSearch(getKeywordFromIntent())
+        val keyword = getKeywordFromIntent()
+        viewModel.setTypingSearch(keyword, TextRange(keyword.length))
     }
 
     private fun getKeywordFromIntent(): String =
@@ -257,6 +261,7 @@ class InitialSellerSearchComposeActivity :
     }
 
     override fun setKeywordSearchBarView(keyword: String) {
-        viewModel.setTypingSearch(keyword)
+        val textRange = TextRange(keyword.length)
+        viewModel.setTypingSearch(keyword, textRange)
     }
 }

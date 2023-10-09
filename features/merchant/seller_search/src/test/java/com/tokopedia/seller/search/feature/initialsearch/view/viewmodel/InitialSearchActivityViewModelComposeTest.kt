@@ -1,5 +1,6 @@
 package com.tokopedia.seller.search.feature.initialsearch.view.viewmodel
 
+import androidx.compose.ui.text.TextRange
 import com.tokopedia.seller.search.feature.initialsearch.view.model.compose.GlobalSearchUiEvent
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
@@ -50,7 +51,7 @@ class InitialSearchActivityViewModelComposeTest :
 
         runTest {
             for (keyword in expectedKeywordList) {
-                viewModel.onUiEffect(GlobalSearchUiEvent.OnKeywordTextChanged(keyword))
+                viewModel.onUiEffect(GlobalSearchUiEvent.OnKeywordTextChanged(keyword, TextRange(keyword.length)))
             }
 
             advanceUntilIdle()

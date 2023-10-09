@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -21,7 +22,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.tokopedia.nest.components.NestImage
@@ -39,7 +42,6 @@ fun GlobalSellerSearchView(
     modifier: Modifier,
     uiState: GlobalSearchUiState,
     uiEffect: (GlobalSearchUiEvent) -> Unit,
-    focusRequester: FocusRequester,
     keyboardController: SoftwareKeyboardController?
 ) {
     Row(
@@ -65,16 +67,11 @@ fun GlobalSellerSearchView(
                 .padding(
                     horizontal = 16.dp,
                     vertical = 8.dp
-                )
-                .focusRequester(focusRequester)
-                .onFocusChanged { focusState ->
-                    if (focusState.isFocused) {
-                        focusRequester.requestFocus()
-                    }
-                },
+                ),
             searchBarKeyword = uiState.searchBarKeyword,
             searchBarPlaceholder = uiState.searchBarPlaceholder,
-            uiEffect = uiEffect
+            uiEffect = uiEffect,
+            textRangeKeyword = uiState.selection
         )
     }
 }
@@ -82,29 +79,60 @@ fun GlobalSellerSearchView(
 @Composable
 private fun SearchBarUnify(
     modifier: Modifier,
+    textRangeKeyword: TextRange,
     searchBarKeyword: String,
     searchBarPlaceholder: String,
     uiEffect: (GlobalSearchUiEvent) -> Unit
 ) {
-    val nn950Color = NestTheme.colors.NN._950
+    val searchBarFocusRequester = remember { FocusRequester() }
 
-    var textFieldValue by remember {
+    LaunchedEffect(key1 = Unit, block = {
+        searchBarFocusRequester.requestFocus()
+    })
+
+    val annotatedString = buildAnnotatedString {
+        withStyle(
+            SpanStyle(
+                color = NestTheme.colors.NN._950,
+                fontWeight = FontWeight.Normal,
+                textDecoration = TextDecoration.None
+            )
+        ) {
+            append(searchBarKeyword)
+        }
+    }
+
+    var textRangeValue by remember(textRangeKeyword) {
+        mutableStateOf(textRangeKeyword)
+    }
+
+    var textFieldValueState by remember {
         mutableStateOf(
             TextFieldValue(
-                annotatedString = buildAnnotatedString {
-                    withStyle(style = SpanStyle(color = nn950Color)) {
-                        append(searchBarKeyword)
-                    }
-                },
-                selection = TextRange(searchBarKeyword.length)
+                annotatedString = annotatedString
             )
         )
     }
 
+    val textFieldValue = textFieldValueState.copy(
+        annotatedString = annotatedString,
+        selection = textRangeValue
+    )
+
+    var lastTextValue by remember(annotatedString.text) { mutableStateOf(annotatedString.text) }
+
     NestSearchBar(
         value = textFieldValue,
-        placeholderText = searchBarPlaceholder.ifBlank { stringResource(id = R.string.placeholder_search_seller) },
-        modifier = modifier,
+        placeholderText = searchBarPlaceholder.ifBlank {
+            stringResource(id = R.string.placeholder_search_seller)
+        },
+        modifier = modifier
+            .focusRequester(searchBarFocusRequester)
+            .onFocusChanged { focusState ->
+                if (focusState.isFocused) {
+                    searchBarFocusRequester.requestFocus()
+                }
+            },
         onSearchBarCleared = {
             uiEffect(GlobalSearchUiEvent.OnSearchBarCleared)
         },
@@ -112,8 +140,16 @@ private fun SearchBarUnify(
             uiEffect(GlobalSearchUiEvent.OnKeyboardSearchSubmit(searchBarKeyword))
         },
         onTextChanged = {
-            textFieldValue = it
-            uiEffect(GlobalSearchUiEvent.OnKeywordTextChanged(it.text))
+            textRangeValue = it.selection
+
+            textFieldValueState = it
+
+            val stringChangedSinceLastInvocation = lastTextValue != it.text
+            lastTextValue = it.text
+
+            if (stringChangedSinceLastInvocation) {
+                uiEffect(GlobalSearchUiEvent.OnKeywordTextChanged(it.text, it.selection))
+            }
         }
     )
 }

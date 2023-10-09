@@ -1,5 +1,6 @@
 package com.tokopedia.seller.search.feature.initialsearch.view.viewmodel
 
+import androidx.compose.ui.text.TextRange
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -53,7 +54,7 @@ class InitialSearchActivityComposeViewModel @Inject constructor(
         viewModelScope.launch {
             when (event) {
                 is GlobalSearchUiEvent.OnKeywordTextChanged -> {
-                    setTypingSearch(event.searchBarKeyword)
+                    setTypingSearch(event.searchBarKeyword, event.selection)
                 }
                 else -> {
                     _uiEffect.emit(event)
@@ -79,11 +80,11 @@ class InitialSearchActivityComposeViewModel @Inject constructor(
         }
     }
 
-    fun setTypingSearch(keyword: String) {
+    fun setTypingSearch(searchBarKeyword: String, selection: TextRange) {
         _globalSearchUiState.update {
-            it.copy(searchBarKeyword = keyword)
+            it.copy(searchBarKeyword = searchBarKeyword, selection = selection)
         }
-        searchTypingStateFlow.tryEmit(keyword)
+        searchTypingStateFlow.tryEmit(searchBarKeyword)
     }
 
     companion object {
