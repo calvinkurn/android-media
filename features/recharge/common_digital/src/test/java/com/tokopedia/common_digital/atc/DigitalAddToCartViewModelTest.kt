@@ -1,9 +1,10 @@
 package com.tokopedia.common_digital.atc
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.common.topupbills.response.CommonTopupbillsDummyData.getDummyCartDataWithErrors
-import com.tokopedia.common.topupbills.response.CommonTopupbillsDummyData.getRawErrors
 import com.tokopedia.common_digital.atc.DigitalAddToCartViewModel.Companion.MESSAGE_ERROR_NON_LOGIN
+import com.tokopedia.common_digital.atc.data.response.AtcErrorButton
+import com.tokopedia.common_digital.atc.data.response.AtcErrorPage
+import com.tokopedia.common_digital.atc.data.response.ErrorAtc
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.DigitalAtcErrorException
@@ -92,7 +93,7 @@ class DigitalAddToCartViewModelTest {
         )
 
         coEvery {
-            digitalAddToCartUseCase.execute(any(), any(), any())
+            digitalAddToCartUseCase.execute(any(), any(), any(), "")
         } returns dummyResponse
         coEvery { userSession.isLoggedIn } returns true
         coEvery { userSession.userId } returns "123"
@@ -112,10 +113,90 @@ class DigitalAddToCartViewModelTest {
     }
 
     @Test
+    fun addToCart_loggedIn_returnsSuccessDataWithCategoryId() {
+        // Given
+        val dummyResponse = DigitalAtcTrackingModel(
+            cartId = "17211378",
+            productId = "",
+            operatorName = "",
+            categoryId = "2",
+            categoryName = "",
+            priceText = "",
+            pricePlain = 0.0,
+            isInstantCheckout = false,
+            source = 0,
+            userId = "123",
+            isSpecialProduct = false,
+            channelId = ""
+        )
+
+        coEvery {
+            digitalAddToCartUseCase.execute(any(), any(), any(), "")
+        } returns dummyResponse
+        coEvery { userSession.isLoggedIn } returns true
+        coEvery { userSession.userId } returns "123"
+
+        // When
+        val digitalCheckoutPassData = DigitalCheckoutPassData()
+        digitalCheckoutPassData.categoryId = "1"
+        digitalAddToCartViewModel.addToCart(
+            digitalCheckoutPassData,
+            RequestBodyIdentifier()
+        )
+
+        // Then
+        val resultData = digitalAddToCartViewModel.addToCartResult.value
+        assertNotNull(resultData)
+        assert(resultData is Success)
+        assert((resultData as Success).data == "2")
+    }
+
+    @Test
+    fun addToCartWithMultiCheckoutParam_loggedIn_returnsSuccessData() {
+        // Given
+        val redirectUrl = "tokopedia://home"
+        val dummyResponse = DigitalAtcTrackingModel(
+            redirectUrl = redirectUrl,
+            cartId = "17211378",
+            productId = "",
+            operatorName = "",
+            categoryId = "",
+            categoryName = "",
+            priceText = "",
+            pricePlain = 0.0,
+            isInstantCheckout = false,
+            source = 0,
+            userId = "123",
+            isSpecialProduct = false,
+            channelId = "1"
+        )
+
+        coEvery {
+            digitalAddToCartUseCase.execute(any(), any(), any(), "pdp_to_multi_checkout")
+        } returns dummyResponse
+        coEvery { userSession.isLoggedIn } returns true
+        coEvery { userSession.userId } returns "123"
+
+        // When
+        val digitalCheckoutPassData = DigitalCheckoutPassData()
+        digitalCheckoutPassData.categoryId = "1"
+        digitalAddToCartViewModel.setAtcMultiCheckoutParam()
+        digitalAddToCartViewModel.addToCart(
+            digitalCheckoutPassData,
+            RequestBodyIdentifier()
+        )
+
+        // Then
+        val resultData = digitalAddToCartViewModel.addToCartMultiCheckoutResult.value
+        assertNotNull(resultData)
+        assert(resultData?.redirectUrl == redirectUrl)
+    }
+
+    @Test
     fun addToCart_loggedIn_returnsErrorAtc() {
         // Given
         coEvery {
-            digitalAddToCartUseCase.execute(any(), any(), any())
+            digitalAddToCartUseCase.execute(any(), any(), any(), "")
         } throws DigitalAtcErrorException(getRawErrors())
 
         coEvery { userSession.isLoggedIn } returns true
@@ -139,7 +220,7 @@ class DigitalAddToCartViewModelTest {
     fun addToCart_loggedInNullId_returnsNoConnectionError() {
         // Given
         coEvery {
-            digitalAddToCartUseCase.execute(any(), any(), any())
+            digitalAddToCartUseCase.execute(any(), any(), any(), "")
         } returns null
         coEvery { userSession.isLoggedIn } returns true
         coEvery { userSession.userId } returns "123"
@@ -167,7 +248,7 @@ class DigitalAddToCartViewModelTest {
         val errorMessage = "this is error message"
         val throwable = Throwable(errorMessage)
         coEvery {
-            digitalAddToCartUseCase.execute(any(), any(), any())
+            digitalAddToCartUseCase.execute(any(), any(), any(), "")
         } throws throwable
         coEvery { userSession.isLoggedIn } returns true
         coEvery { userSession.userId } returns "123"
@@ -188,4 +269,51 @@ class DigitalAddToCartViewModelTest {
         val throwableResult = (resultData as Fail).throwable
         assert(throwableResult.message == errorMessage)
     }
+
+    fun getDummyCartDataWithErrors(): ErrorAtc {
+        return ErrorAtc(
+            status = 400,
+            title = "this is an error",
+            atcErrorPage = AtcErrorPage(
+                isShowErrorPage = true,
+                title = "Waduh Ada Error",
+                subTitle = "Hayolo Ada Error",
+                imageUrl = "https://images.tokopedia.net/img/verify_account.png",
+                buttons = listOf(
+                    AtcErrorButton(
+                        label = "Tambah Nomor HP",
+                        url = "https://tokopedia.com",
+                        appLinkUrl = "tokopedia://home",
+                        type = "primary"
+                    )
+                )
+            )
+        )
+    }
+
+    fun getRawErrors() = """
+        {
+          "errors": [
+            {
+              "id": "1104",
+              "status": 400,
+              "title": "this is an error",
+              "error_page": {
+                "show_error_page": true,
+                "title": "Waduh Ada Error",
+                "sub_title": "Hayolo Ada Error",
+                "image_url": "https://images.tokopedia.net/img/verify_account.png",
+                "buttons": [
+                  {
+                    "label" : "Tambah Nomor HP",
+                    "url": "https://tokopedia.com",
+                    "applink_url": "tokopedia://home",
+                    "type": "primary"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+    """.trimIndent()
 }

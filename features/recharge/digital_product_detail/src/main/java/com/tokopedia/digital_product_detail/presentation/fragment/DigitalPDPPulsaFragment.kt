@@ -18,9 +18,12 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
+import com.tokopedia.common.topupbills.analytics.CommonMultiCheckoutAnalytics
 import com.tokopedia.common.topupbills.data.TopupBillsBanner
 import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
+import com.tokopedia.common.topupbills.data.constant.multiCheckoutButtonImpressTrackerButtonType
+import com.tokopedia.common.topupbills.data.constant.multiCheckoutButtonPromotionTracker
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoOperator
 import com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoSavedNumberActivity
 import com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoSavedNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
@@ -41,6 +44,7 @@ import com.tokopedia.common_digital.atc.data.response.ErrorAtc
 import com.tokopedia.common_digital.atc.utils.DeviceUtil
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.digital_product_detail.R
+import com.tokopedia.digital_product_detail.data.model.data.DigitalAtcResult
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.DEFAULT_ICON_RES
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.EXTRA_PARAM
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.FAVNUM_PERMISSION_CHECKER_IS_DENIED
@@ -103,6 +107,11 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
 import javax.inject.Inject
+import com.tokopedia.recharge_component.R as recharge_componentR
+import com.tokopedia.abstraction.R as abstractionR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.common_digital.R as common_digitalR
+import com.tokopedia.digital_product_detail.R as digital_product_detailR
 
 /**
  * @author by firmanda on 04/01/21
@@ -132,6 +141,9 @@ class DigitalPDPPulsaFragment :
     @Inject
     lateinit var digitalPDPAnalytics: DigitalPDPAnalytics
 
+    @Inject
+    lateinit var commonMultiCheckoutAnalytics: CommonMultiCheckoutAnalytics
+
     private var binding by autoClearedNullable<FragmentDigitalPdpPulsaBinding>()
 
     private lateinit var localCacheHandler: LocalCacheHandler
@@ -146,6 +158,7 @@ class DigitalPDPPulsaFragment :
     private var inputNumberActionType = InputNumberActionType.MANUAL
     private var actionTypeTrackingJob: Job? = null
     private var loader: LoaderDialog? = null
+    private var isAlreadyTrackImpressionMultiButton: Boolean = false
 
     private val remoteConfig: RemoteConfig by lazy {
         FirebaseRemoteConfigImpl(context)
@@ -259,7 +272,7 @@ class DigitalPDPPulsaFragment :
                     resetContactName()
                     if (selectedClientNumber.length >= MINIMUM_OPERATOR_PREFIX) {
                         setErrorInputField(
-                            getString(com.tokopedia.recharge_component.R.string.client_number_prefix_error),
+                            getString(recharge_componentR.string.client_number_prefix_error),
                             true
                         )
                     }
@@ -407,6 +420,14 @@ class DigitalPDPPulsaFragment :
             }
         })
 
+        viewModel.addToCartMultiCheckoutResult.observe(viewLifecycleOwner) {
+            hideLoadingDialog()
+            context?.let { context ->
+                trackOnClickMultiCheckout(it)
+                RouteManager.route(context, it.redirectUrl)
+            }
+        }
+
         viewModel.errorAtc.observe(viewLifecycleOwner) {
             hideLoadingDialog()
             if (it.atcErrorPage.isShowErrorPage) {
@@ -428,6 +449,16 @@ class DigitalPDPPulsaFragment :
                 }
             }
         })
+    }
+
+    private fun trackOnClickMultiCheckout(atc: DigitalAtcResult) {
+        commonMultiCheckoutAnalytics.onClickMultiCheckout(
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+            operator.attributes.name,
+            atc.channelId,
+            userSession.userId,
+            multiCheckoutButtonPromotionTracker(viewModel.multiCheckoutButtons)
+        )
     }
 
     private fun getRecommendations() {
@@ -473,6 +504,7 @@ class DigitalPDPPulsaFragment :
     private fun onSuccessGetMenuDetail(data: MenuDetailModel) {
         (activity as BaseSimpleActivity).updateTitle(data.catalog.label)
         loyaltyStatus = data.userPerso.loyaltyStatus
+        viewModel.multiCheckoutButtons = data.multiCheckoutButtons
         getFavoriteNumbers(
             listOf(
                 FavoriteNumberType.PREFILL,
@@ -536,7 +568,7 @@ class DigitalPDPPulsaFragment :
         )
         val errMsgSub = getString(
             R.string.error_message_with_code,
-            getString(com.tokopedia.abstraction.R.string.msg_network_error_2),
+            getString(abstractionR.string.msg_network_error_2),
             errCode
         )
         binding?.run {
@@ -573,7 +605,7 @@ class DigitalPDPPulsaFragment :
             }
             setInputFieldStaticLabel(
                 getString(
-                    com.tokopedia.recharge_component.R.string.label_recharge_client_number_telco
+                    recharge_componentR.string.label_recharge_client_number_telco
                 )
             )
             setInputFieldType(InputFieldType.Telco)
@@ -729,7 +761,7 @@ class DigitalPDPPulsaFragment :
             if (denomGrid.listDenomData.isNotEmpty()) {
                 val colorHexInt = ContextCompat.getColor(
                     requireContext(),
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN0
+                    unifyprinciplesR.color.Unify_NN0
                 )
                 val colorHexString = "#${Integer.toHexString(colorHexInt)}"
 
@@ -761,13 +793,28 @@ class DigitalPDPPulsaFragment :
     private fun onShowBuyWidget(denomGrid: DenomData) {
         binding?.let {
             it.rechargePdpPulsaBuyWidget.show()
-            it.rechargePdpPulsaBuyWidget.renderBuyWidget(denomGrid, this)
+            it.rechargePdpPulsaBuyWidget.renderBuyWidget(denomGrid, this, viewModel.multiCheckoutButtons) {
+                commonMultiCheckoutAnalytics.onCloseMultiCheckoutCoachmark(
+                    DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                    loyaltyStatus
+                )
+            }
+            it.rechargePdpPulsaBuyWidget.showCoachMark()
+            if (!isAlreadyTrackImpressionMultiButton) {
+                isAlreadyTrackImpressionMultiButton = true
+                commonMultiCheckoutAnalytics.onImpressMultiCheckoutButtons(
+                    DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                    multiCheckoutButtonImpressTrackerButtonType(viewModel.multiCheckoutButtons),
+                    userSession.userId
+                )
+            }
         }
     }
 
     private fun onHideBuyWidget() {
         binding?.let {
             it.rechargePdpPulsaBuyWidget.hide()
+            it.rechargePdpPulsaBuyWidget.hideCoachMark()
         }
     }
 
@@ -975,7 +1022,7 @@ class DigitalPDPPulsaFragment :
                     error.title,
                     Toaster.LENGTH_LONG,
                     Toaster.TYPE_ERROR,
-                    getString(com.tokopedia.common_digital.R.string.digital_common_button_toaster)
+                    getString(common_digitalR.string.digital_common_button_toaster)
                 ) {
                     redirectError(error)
                 }.show()
@@ -1051,7 +1098,7 @@ class DigitalPDPPulsaFragment :
                         binding?.run {
                             val defaultPadding: Int = rechargePdpPulsaClientNumberWidget.height
                             val scrollViewMargin: Int = context?.resources?.let {
-                                it.getDimensionPixelOffset(com.tokopedia.digital_product_detail.R.dimen.nested_scroll_view_margin)
+                                it.getDimensionPixelOffset(digital_product_detailR.dimen.nested_scroll_view_margin)
                             } ?: 0
                             val dynamicPadding = defaultPadding + extraPadding - scrollViewMargin
                             rechargePdpPulsaSvContainer.setPadding(0, dynamicPadding, 0, 0)
@@ -1274,6 +1321,21 @@ class DigitalPDPPulsaFragment :
             binding?.rechargePdpPulsaClientNumberWidget?.getInputNumber() ?: "",
             operator.id
         )
+        if (userSession.isLoggedIn) {
+            addToCart()
+        } else {
+            navigateToLoginPage()
+        }
+    }
+
+    override fun onClickedButtonMultiCheckout(denom: DenomData) {
+        viewModel.updateCheckoutPassData(
+            denom,
+            userSession.userId.generateRechargeCheckoutToken(),
+            binding?.rechargePdpPulsaClientNumberWidget?.getInputNumber() ?: "",
+            operator.id
+        )
+        viewModel.setAtcMultiCheckoutParam()
         if (userSession.isLoggedIn) {
             addToCart()
         } else {
