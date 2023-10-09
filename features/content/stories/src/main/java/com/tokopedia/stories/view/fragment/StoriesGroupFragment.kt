@@ -160,8 +160,7 @@ class StoriesGroupFragment @Inject constructor(
                     is StoriesUiEvent.ErrorGroupPage -> {
                         showPageLoading(false)
                         if (event.throwable.isNetworkError) {
-                            setNoInternet(true)
-                            binding.layoutStoriesNoInet.btnStoriesNoInetRetry.setOnClickListener { run { event.onClick() } }
+                            setNoInternet(true) { event.onClick() }
                         } else {
                             setFailed(true)
                             binding.layoutStoriesFailed.btnStoriesFailedLoad.setOnClickListener { run { event.onClick() } }
@@ -208,11 +207,10 @@ class StoriesGroupFragment @Inject constructor(
         storiesGroupViewPager.showWithCondition(!isShowLoading)
     }
 
-    private fun setNoInternet(isShow: Boolean) = with(binding.layoutStoriesNoInet) {
-        root.showWithCondition(isShow)
-        icCloseLoading.setOnClickListener {
-            activity?.finish()
-        }
+    private fun setNoInternet(isShow: Boolean, onClick : () -> Unit = {}) = with(binding.layoutStoriesNoInet) {
+        showWithCondition(isShow)
+        setAction { onClick() }
+        setCloseAction { activity?.finish() }
     }
 
     private fun setFailed(isShow: Boolean) = with(binding.layoutStoriesFailed) {

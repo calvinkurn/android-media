@@ -9,10 +9,16 @@
     <include
         android:id="@+id/layout_group_loading"
         layout="@layout/layout_loading_page" />
-
-    <include
+    <!--  Rename  -->
+    <com.tokopedia.stories.view.custom.StoriesErrorView
         android:id="@+id/layout_stories_no_inet"
-        layout="@layout/layout_no_internet"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:translationZ="1dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         android:visibility="gone"/>
 
     <include

@@ -204,7 +204,6 @@ class StoriesDetailFragment @Inject constructor(
                     is StoriesUiEvent.ErrorDetailPage -> {
                         if (event.throwable.isNetworkError) {
                             setNoInternet(true)
-                            binding.layoutStoriesNoInet.btnStoriesNoInetRetry.setOnClickListener { run { event.onClick() } }
                         } else {
                             setFailed(true)
                             binding.layoutStoriesFailed.btnStoriesFailedLoad.setOnClickListener { run { event.onClick() } }
@@ -317,7 +316,6 @@ class StoriesDetailFragment @Inject constructor(
                             content.data,
                             object : ImageLoaderStateListener {
                                 override fun successLoad() {
-                                    setNoContent(false)
                                     contentIsLoaded()
                                     analytic?.sendImpressionStoriesContent(viewModel.storyId)
                                 }
@@ -603,8 +601,9 @@ class StoriesDetailFragment @Inject constructor(
     }
 
     private fun setNoInternet(isShow: Boolean) = with(binding.layoutStoriesNoInet) {
-        root.showWithCondition(isShow)
-        icCloseLoading.setOnClickListener { activity?.finish() }
+        showWithCondition(isShow)
+        setAction { viewModelAction(StoriesUiAction.RetryDetailPage) } //TODO() parse from param
+        setCloseAction { activity?.finish() }
     }
 
     private fun setFailed(isShow: Boolean) = with(binding.layoutStoriesFailed) {
