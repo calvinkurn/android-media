@@ -21,12 +21,12 @@ import com.tokopedia.promousage.domain.entity.PromoItemState
 import com.tokopedia.promousage.domain.entity.PromoPageSection
 import com.tokopedia.promousage.domain.entity.PromoPageTickerInfo
 import com.tokopedia.promousage.domain.entity.PromoSavingInfo
-import com.tokopedia.promousage.domain.entity.list.SecondaryPromoItem
 import com.tokopedia.promousage.domain.entity.list.PromoAccordionHeaderItem
 import com.tokopedia.promousage.domain.entity.list.PromoAccordionViewAllItem
 import com.tokopedia.promousage.domain.entity.list.PromoAttemptItem
 import com.tokopedia.promousage.domain.entity.list.PromoItem
 import com.tokopedia.promousage.domain.entity.list.PromoRecommendationItem
+import com.tokopedia.promousage.domain.entity.list.SecondaryPromoItem
 import com.tokopedia.promousage.util.composite.DelegateAdapterItem
 import javax.inject.Inject
 
@@ -205,7 +205,11 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
         recommendedPromoCodes: List<String>,
         selectedPromoCodes: List<String>
     ): PromoItem {
-        val secondaryCoupon: SecondaryCoupon? = coupon.secondaryCoupon.firstOrNull()
+        val secondaryCoupon: SecondaryCoupon? = if (!recommendedPromoCodes.contains(coupon.code)) {
+            coupon.secondaryCoupon.firstOrNull()
+        } else {
+            null
+        }
         val remainingPromoCount = couponSection.couponGroups
             .firstOrNull { it.id == coupon.groupId }?.count ?: 1
 
@@ -216,10 +220,23 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
                 )
         val isSelected = coupon.isSelected || secondaryCoupon?.isSelected ?: false
 
+        val currentPromoCodes = mutableListOf(coupon.code)
+        if (secondaryCoupon != null) {
+            currentPromoCodes.add(secondaryCoupon.code)
+        }
         val primaryClashingInfos =
-            coupon.clashingInfos.filter { selectedPromoCodes.contains(it.code) }
+            coupon.clashingInfos
+                .filter {
+                    !currentPromoCodes.contains(it.code) &&
+                        selectedPromoCodes.contains(it.code)
+                }
         val secondaryClashingInfos =
-            secondaryCoupon?.clashingInfos?.filter { selectedPromoCodes.contains(it.code) } ?: emptyList()
+            secondaryCoupon?.clashingInfos
+                ?.filter {
+                    !currentPromoCodes.contains(it.code) &&
+                        selectedPromoCodes.contains(it.code)
+                }
+                ?: emptyList()
 
         var state: PromoItemState = if (secondaryCoupon != null) {
             if (secondaryClashingInfos.isNotEmpty()) {
@@ -249,7 +266,8 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
         }
 
         val benefitDetail = coupon.benefitDetails.firstOrNull() ?: BenefitDetail()
-        val selectedPromoInSection = couponSection.coupons.filter { it.isSelected }
+        val selectedPromoInSection = couponSection
+            .coupons.filter { c -> c.isSelected || c.secondaryCoupon.any { it.isSelected } }
         val isExpanded = when (couponSection.id) {
             PromoPageSection.SECTION_RECOMMENDATION -> {
                 true
