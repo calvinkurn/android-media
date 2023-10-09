@@ -33,6 +33,7 @@ object Key {
     const val id = "id"
     const val name = "name"
 
+    const val items = "items"
     const val itemId = "item_id"
     const val itemName = "item_name"
     const val itemBrand = "item_brand"
@@ -43,4 +44,14 @@ object Key {
     const val creativeSlot = "creative_slot"
 
     const val pageSource = "pageSource"
+    const val creativeName = "creative_name"
+    const val creativeSlot = "creative_slot"
+    const val price = "price"
+    const val itemShopId = "shop_id"
+    const val itemShopName = "shop_name"
+    const val itemShopType = "shop_type"
+    const val itemIndex = "index"
+    const val itemList = "item_list"
+
+    const val dimension40 = "dimension40"
 }

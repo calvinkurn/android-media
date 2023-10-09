@@ -146,6 +146,7 @@
 /features/content/play_common/                          @tokopedia/android-minionlance-dev
 /features/content/play_broadcaster/                     @tokopedia/android-minionlance-dev
 /features/content/play_widget/                          @tokopedia/android-minionlance-dev
+/features/content/stories/                              @tokopedia/android-minionlance-dev
 /features/content/stories_widget/                       @tokopedia/android-minionlance-dev
 /features/content/stories_internal/                     @tokopedia/android-minionlance-dev
 

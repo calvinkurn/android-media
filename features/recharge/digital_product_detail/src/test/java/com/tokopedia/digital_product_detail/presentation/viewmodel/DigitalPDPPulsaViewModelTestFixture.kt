@@ -116,13 +116,19 @@ abstract class DigitalPDPPulsaViewModelTestFixture {
 
     protected fun onGetAddToCart_thenReturn(response: DigitalAtcResult) {
         coEvery {
-            repo.addToCart(any(), any(), any())
+            repo.addToCart(any(), any(), any(), "")
+        } returns response
+    }
+
+    protected fun onGetAddToCartMultiChekout_thenReturn(response: DigitalAtcResult) {
+        coEvery {
+            repo.addToCart(any(), any(), any(), "pdp_to_multi_checkout")
         } returns response
     }
 
     protected fun onGetAddToCart_thenReturn(errorThrowable: Throwable) {
         coEvery {
-            repo.addToCart(any(), any(), any())
+            repo.addToCart(any(), any(), any(), "")
         } throws errorThrowable
     }
 
@@ -159,7 +165,11 @@ abstract class DigitalPDPPulsaViewModelTestFixture {
     }
 
     protected fun verifyAddToCartRepoGetCalled() {
-        coVerify { repo.addToCart(any(), any(), any()) }
+        coVerify { repo.addToCart(any(), any(), any(), "") }
+    }
+
+    protected fun verifyAddToCartMultiCheckoutRepoGetCalled() {
+        coVerify { repo.addToCart(any(), any(), any(), "pdp_to_multi_checkout") }
     }
 
     protected fun verifyGetFavoriteNumberLoading(expectedResponse: RechargeNetworkResult.Loading) {
@@ -242,6 +252,14 @@ abstract class DigitalPDPPulsaViewModelTestFixture {
         Assert.assertEquals(
             expectedResponse,
             (actualResponse as RechargeNetworkResult.Success).data
+        )
+    }
+
+    protected fun verifyAddToCartMultiChekoutSuccess(expectedResponse: DigitalAtcResult) {
+        val actualResponse = viewModel.addToCartMultiCheckoutResult.value
+        Assert.assertEquals(
+            expectedResponse,
+            actualResponse
         )
     }
 
