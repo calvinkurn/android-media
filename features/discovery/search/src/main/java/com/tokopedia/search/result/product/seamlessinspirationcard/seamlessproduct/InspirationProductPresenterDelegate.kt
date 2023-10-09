@@ -3,6 +3,7 @@ package com.tokopedia.search.result.product.seamlessinspirationcard.seamlessprod
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.product.ClassNameProvider
+import com.tokopedia.search.result.product.requestparamgenerator.LastClickedProductIdProviderImpl
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import javax.inject.Inject
 
@@ -10,7 +11,8 @@ import javax.inject.Inject
 class InspirationProductPresenterDelegate @Inject constructor(
     private val inspirationProductTracker: InspirationProductView,
     private val topAdsUrlHitter: TopAdsUrlHitter,
-    private val classNameProvider: ClassNameProvider
+    private val classNameProvider: ClassNameProvider,
+    private val lastClickedProductIdProviderImpl: LastClickedProductIdProviderImpl,
 ) : InspirationProductPresenter {
     override fun onInspirationProductItemImpressed(inspirationProductData: InspirationProductItemDataView) {
         if (inspirationProductData.isOrganicAds)
@@ -34,6 +36,8 @@ class InspirationProductPresenterDelegate @Inject constructor(
 
         if (inspirationProductData.isOrganicAds)
             sendTrackingClickInspirationCarouselAds(inspirationProductData)
+
+        lastClickedProductIdProviderImpl.lastClickedProductId = inspirationProductData.id
     }
 
     private fun sendTrackingImpressInspirationCarouselAds(product: InspirationProductItemDataView) {

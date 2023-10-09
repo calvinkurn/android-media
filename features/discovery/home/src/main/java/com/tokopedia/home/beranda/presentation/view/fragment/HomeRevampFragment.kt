@@ -2531,7 +2531,9 @@ open class HomeRevampFragment :
 
     override fun onWidgetOpenAppLink(view: View, appLink: String) {
         context?.let {
-            startActivityForResult(RouteManager.getIntent(it, appLink), REQUEST_CODE_PLAY_ROOM_PLAY_WIDGET)
+            val newAppLink = getHomeViewModel().reconstructPlayWidgetAppLink(appLink)
+
+            startActivityForResult(RouteManager.getIntent(it, newAppLink), REQUEST_CODE_PLAY_ROOM_PLAY_WIDGET)
         }
     }
 

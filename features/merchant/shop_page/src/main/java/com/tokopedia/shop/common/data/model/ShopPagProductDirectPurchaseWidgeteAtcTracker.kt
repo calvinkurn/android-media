@@ -8,5 +8,6 @@ data class ShopPageProductDirectPurchaseWidgetAtcTracker(
     val productName: String,
     val productPrice: String,
     val isVariant: Boolean,
-    val minOrder: Int
+    val minOrder: Int,
+    val etalaseGroupName: String
 )
