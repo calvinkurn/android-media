@@ -167,7 +167,8 @@ class TokoNowHomeViewModelTestTicker : TokoNowHomeViewModelTestFixture() {
                         maxOrder = repurchaseProductMaxOrder,
                         position = repurchaseProductPosition,
                         originalPosition = repurchaseProductPosition,
-                        headerName = repurchaseProductTitle
+                        headerName = repurchaseProductTitle,
+                        blockAddToCart = true
                     )
                 ),
                 state = TokoNowLayoutState.SHOW
