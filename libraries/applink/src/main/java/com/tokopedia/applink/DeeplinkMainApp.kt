@@ -523,7 +523,9 @@ object DeeplinkMainApp {
             }
         ),
         "universal-editor" to mutableListOf(
-            DLP.matchPattern("", ApplinkConstInternalMedia.INTERNAL_UNIVERSAL_MEDIA_EDITOR)
+            DLP.matchPattern("") { _: String ->
+                ApplinkConstInternalMedia.INTERNAL_UNIVERSAL_MEDIA_EDITOR
+            }
         ),
         "media-picker" to mutableListOf(
             DLP.matchPattern("") { _: String ->
