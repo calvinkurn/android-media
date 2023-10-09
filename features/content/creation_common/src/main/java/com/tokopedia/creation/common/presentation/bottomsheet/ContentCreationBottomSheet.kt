@@ -39,7 +39,11 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        factory = createComponent().contentCreationFactory()
+
+        activity?.let {
+            factory = createComponent().contentCreationFactory()
+            viewModel = ViewModelProvider(it, factory!!)[ContentCreationViewModel::class.java]
+        }
     }
 
     override fun onCreateView(
@@ -83,14 +87,6 @@ class ContentCreationBottomSheet : BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        activity?.let {
-            if (factory == null) {
-                factory = createComponent().contentCreationFactory()
-            }
-
-            viewModel = ViewModelProvider(it, factory!!)[ContentCreationViewModel::class.java]
-        }
 
         renderHeaderView()
     }
