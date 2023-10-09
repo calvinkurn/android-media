@@ -16,6 +16,7 @@ import com.tokopedia.feedplus.presentation.model.FeedTabModel
 import com.tokopedia.feedplus.presentation.model.MetaModel
 import com.tokopedia.feedplus.presentation.model.SwipeOnboardingStateModel
 import com.tokopedia.feedplus.presentation.onboarding.OnBoardingPreferences
+import com.tokopedia.feedplus.presentation.util.FeedContentManager
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted
@@ -67,9 +68,6 @@ class FeedMainViewModel @AssistedInject constructor(
 
     private val _isPageResumed = MutableLiveData<Boolean>(null)
     val isPageResumed get() = _isPageResumed
-
-    private val _isMuted = MutableStateFlow<Boolean?>(null)
-    val isMuted get() = _isMuted.asStateFlow()
 
     private val _swipeOnBoardingState = MutableStateFlow(
         SwipeOnboardingStateModel.Empty.copy(
@@ -130,11 +128,11 @@ class FeedMainViewModel @AssistedInject constructor(
     }
 
     fun muteSound() {
-        _isMuted.value = true
+        FeedContentManager.muteState.value = true
     }
 
     fun unmuteSound() {
-        _isMuted.value = false
+        FeedContentManager.muteState.value = false
     }
 
     fun setActiveTab(position: Int) {

@@ -43,10 +43,10 @@ import com.tokopedia.content.common.report_content.model.ContentMenuItem
 import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
 import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.content.common.util.Router
+import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.feed.component.product.FeedTaggedProductBottomSheet
-import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.feedcomponent.bottomsheets.FeedFollowersOnlyBottomSheet
 import com.tokopedia.feedcomponent.presentation.utils.FeedResult
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
@@ -86,12 +86,12 @@ import com.tokopedia.feedplus.presentation.model.PostSourceModel
 import com.tokopedia.feedplus.presentation.model.type.AuthorType
 import com.tokopedia.feedplus.presentation.uiview.FeedCampaignRibbonType
 import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView
+import com.tokopedia.feedplus.presentation.util.FeedContentManager
 import com.tokopedia.feedplus.presentation.util.OverscrollEdgeEffectFactory
 import com.tokopedia.feedplus.presentation.util.VideoPlayerManager
 import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
 import com.tokopedia.feedplus.presentation.viewmodel.FeedPostViewModel
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
@@ -400,7 +400,7 @@ class FeedFragment :
             )
         }
 
-        override fun isMuted(): Boolean = feedMainViewModel.isMuted.value.orFalse()
+        override fun isMuted(): Boolean = FeedContentManager.muteState.value
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -623,11 +623,11 @@ class FeedFragment :
                 RouteManager.route(requireContext(), contentMenuItem.appLink)
             }
 
-            FeedMenuIdentifier.Mute -> {
+            ContentMenuIdentifier.Mute -> {
                 feedMainViewModel.muteSound()
             }
 
-            FeedMenuIdentifier.Unmute -> {
+            ContentMenuIdentifier.Unmute -> {
                 feedMainViewModel.unmuteSound()
             }
         }
@@ -1044,7 +1044,7 @@ class FeedFragment :
         feedFollowersOnlyBottomSheet?.dismiss()
     }
 
-    override fun isMuted(): Boolean = feedMainViewModel.isMuted.value.orFalse()
+    override fun isMuted(): Boolean = FeedContentManager.muteState.value
 
     private fun onAttachChildFragment(fragmentManager: FragmentManager, childFragment: Fragment) {
         when (childFragment) {
@@ -1404,9 +1404,7 @@ class FeedFragment :
     private fun observeMuteUnmute() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                feedMainViewModel.isMuted.collect { isMuted ->
-                    if (isMuted == null) return@collect
-
+                FeedContentManager.muteState.collect { isMuted ->
                     updateCurrentVideoVolume(isMuted)
                 }
             }
@@ -1459,13 +1457,15 @@ class FeedFragment :
         }
     }
 
-    private fun updateThreeDotsMenuItems(menuItems: List<FeedMenuItem>): List<FeedMenuItem> =
+    private fun updateThreeDotsMenuItems(menuItems: List<ContentMenuItem>): List<ContentMenuItem> =
         menuItems.map {
+            val isMuted = FeedContentManager.muteState.value
+
             when (it.type) {
-                FeedMenuIdentifier.Mute, FeedMenuIdentifier.Unmute -> it.copy(
-                    iconUnify = if (feedMainViewModel.isMuted.value.orFalse()) IconUnify.VOLUME_UP else IconUnify.VOLUME_MUTE,
-                    type = if (feedMainViewModel.isMuted.value.orFalse()) FeedMenuIdentifier.Unmute else FeedMenuIdentifier.Mute,
-                    name = if (feedMainViewModel.isMuted.value.orFalse()) feedplusR.string.feed_unmute_label else feedplusR.string.feed_mute_label
+                ContentMenuIdentifier.Mute, ContentMenuIdentifier.Unmute -> it.copy(
+                    iconUnify = if (isMuted) IconUnify.VOLUME_UP else IconUnify.VOLUME_MUTE,
+                    type = if (isMuted) ContentMenuIdentifier.Unmute else ContentMenuIdentifier.Mute,
+                    name = if (isMuted) feedplusR.string.feed_unmute_label else feedplusR.string.feed_mute_label
                 )
                 else -> it
             }

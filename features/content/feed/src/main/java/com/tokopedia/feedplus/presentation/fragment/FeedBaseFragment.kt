@@ -48,6 +48,7 @@ import com.tokopedia.feedplus.presentation.onboarding.ImmersiveFeedOnboarding
 import com.tokopedia.feedplus.presentation.receiver.FeedMultipleSourceUploadReceiver
 import com.tokopedia.feedplus.presentation.receiver.UploadStatus
 import com.tokopedia.feedplus.presentation.receiver.UploadType
+import com.tokopedia.feedplus.presentation.util.FeedContentManager
 import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
@@ -68,8 +69,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.time.DurationUnit
-import kotlin.time.toDuration
 import com.tokopedia.content.common.R as contentcommonR
 
 /**
@@ -274,6 +273,7 @@ class FeedBaseFragment :
 
                 openAppLink.launch(ApplinkConst.PLAY_BROADCASTER)
             }
+
             CreateContentType.Post -> {
                 feedNavigationAnalytics.eventClickCreatePost()
 
@@ -308,6 +308,7 @@ class FeedBaseFragment :
 
                 openCreateShorts.launch()
             }
+
             else -> {}
         }
     }
@@ -350,8 +351,8 @@ class FeedBaseFragment :
                 }
             }
 
-                override fun onPageSelected(position: Int) {
-                }
+            override fun onPageSelected(position: Int) {
+            }
 
             override fun onPageScrollStateChanged(state: Int) {
                 shouldSendSwipeTracker = state == ViewPager2.SCROLL_STATE_DRAGGING
@@ -430,6 +431,7 @@ class FeedBaseFragment :
                             hideErrorView()
                             showLoading()
                         }
+
                         is NetworkResult.Success -> {
                             hideErrorView()
                             hideLoading()
@@ -437,9 +439,11 @@ class FeedBaseFragment :
                             initTabsView(state.data)
                             handleActiveTab(state.data)
                         }
+
                         is NetworkResult.Error -> {
                             showErrorView(state.error)
                         }
+
                         NetworkResult.Unknown -> {
                             // ignore
                         }
@@ -464,9 +468,11 @@ class FeedBaseFragment :
                         FeedMainEvent.HasJustLoggedIn -> {
                             showJustLoggedInToaster()
                         }
+
                         FeedMainEvent.ShowSwipeOnboarding -> {
                             showSwipeOnboarding()
                         }
+
                         else -> {}
                     }
 
@@ -489,6 +495,7 @@ class FeedBaseFragment :
                             binding.uploadView.setProgress(status.progress)
                             binding.uploadView.setThumbnail(status.thumbnailUrl)
                         }
+
                         is UploadStatus.Finished -> {
                             binding.uploadView.hide()
 
@@ -517,6 +524,7 @@ class FeedBaseFragment :
                                 )
                             }
                         }
+
                         is UploadStatus.Failed -> {
                             binding.uploadView.setFailed()
                             binding.uploadView.setListener(object : UploadInfoView.Listener {
@@ -544,9 +552,7 @@ class FeedBaseFragment :
     private fun observeMuteUnmute() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                feedMainViewModel.isMuted.collect { isMuted ->
-                    if (isMuted == null) return@collect
-
+                FeedContentManager.muteState.collectLatest { isMuted ->
                     if (isMuted) {
                         binding.ivFeedMuteUnmute.setImageDrawable(muteAnimatedVector)
                         muteAnimatedVector?.start()
@@ -664,9 +670,11 @@ class FeedBaseFragment :
             source.tabName != null -> {
                 feedMainViewModel.setActiveTab(source.tabName)
             }
+
             source.index > -1 && source.index < tab.data.size -> {
                 selectActiveTab(source.index)
             }
+
             else -> selectActiveTab(0)
         }
     }
