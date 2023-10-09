@@ -158,21 +158,27 @@ class ComposePersonaResultViewModel @Inject constructor(
 
     private fun getLoadingState(): PersonaResultState {
         val lastState = _personaState.value
-        return lastState.copy(state = PersonaResultState.State.Loading, data = lastState.data)
+        return lastState.copy(
+            state = PersonaResultState.State.Loading,
+            data = lastState.data,
+            hasImpressed = false
+        )
     }
 
     private fun getErrorState(args: PersonaArgsUiModel, throwable: Throwable): PersonaResultState {
         val lastState = _personaState.value
         return lastState.copy(
             state = PersonaResultState.State.Error(throwable),
-            data = lastState.data.copy(args = args)
+            data = lastState.data.copy(args = args),
+            hasImpressed = false
         )
     }
 
     private suspend fun updatePersonaLocalData(status: PersonaStatus) {
         val lastState = _personaState.value
         val personaStatusState = lastState.copy(
-            data = lastState.data.copy(isApplyLoading = false, personaStatus = status)
+            data = lastState.data.copy(isApplyLoading = false, personaStatus = status),
+            hasImpressed = false
         )
         _personaState.emit(personaStatusState)
     }

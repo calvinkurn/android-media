@@ -2,6 +2,7 @@ package com.tokopedia.sellerpersona.view.compose.screen.selecttype
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import com.tokopedia.sellerpersona.R
 import com.tokopedia.sellerpersona.view.compose.component.ErrorStateComponent
 import com.tokopedia.sellerpersona.view.compose.model.uievent.SelectTypeUiEvent
@@ -19,4 +20,12 @@ internal fun SelectTypeErrorState(onEvent: (SelectTypeUiEvent) -> Unit) {
             onEvent(SelectTypeUiEvent.Reload)
         }
     )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun SelectTypeErrorStatePreview() {
+    SelectTypeErrorState {
+
+    }
 }

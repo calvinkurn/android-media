@@ -23,7 +23,7 @@ data class SelectTypeState(
     sealed class State {
         object Loading : State()
         object Success : State()
-        data class Error(val e: Exception) : State()
+        data class Error(val t: Throwable) : State()
     }
 
     data class Ui(

@@ -25,6 +25,7 @@ import com.tokopedia.sellerpersona.R
 import com.tokopedia.sellerpersona.view.activity.SellerPersonaActivity
 import com.tokopedia.sellerpersona.view.compose.model.args.PersonaArgsUiModel
 import com.tokopedia.sellerpersona.view.compose.model.state.SelectTypeState
+import com.tokopedia.sellerpersona.view.compose.model.uieffect.SelectTypeUiEffect
 import com.tokopedia.sellerpersona.view.compose.model.uievent.SelectTypeUiEvent
 import com.tokopedia.sellerpersona.view.compose.screen.selecttype.PersonSuccessState
 import com.tokopedia.sellerpersona.view.compose.screen.selecttype.SelectTypeErrorState
@@ -64,14 +65,11 @@ class ComposeSelectTypeFragment : Fragment() {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 LaunchedEffect(key1 = Unit, block = {
-                    viewModel.fetchPersonaList(args = getSelectTypeArguments())
-
-                    viewModel.uiEvent.collectLatest {
+                    viewModel.onEvent(SelectTypeUiEvent.FetchPersonaList(arguments = getSelectTypeArguments()))
+                    viewModel.uiEffect.collectLatest {
                         when (it) {
-                            is SelectTypeUiEvent.CloseThePage -> closeThePage()
-                            is SelectTypeUiEvent.OnPersonaChanged -> setOnPersonaChanged(it)
-                            else -> {/* no-op */
-                            }
+                            is SelectTypeUiEffect.CloseThePage -> closeThePage()
+                            is SelectTypeUiEffect.OnPersonaChanged -> setOnPersonaChanged(it)
                         }
                     }
                 })
@@ -100,8 +98,8 @@ class ComposeSelectTypeFragment : Fragment() {
         }
     }
 
-    private fun setOnPersonaChanged(model: SelectTypeUiEvent.OnPersonaChanged) {
-        val isSuccess = model.exception == null
+    private fun setOnPersonaChanged(model: SelectTypeUiEffect.OnPersonaChanged) {
+        val isSuccess = model.throwable == null
         if (isSuccess) {
             val action = ComposeSelectTypeFragmentDirections.actionSelectTypeToResult(
                 paramPersona = model.persona

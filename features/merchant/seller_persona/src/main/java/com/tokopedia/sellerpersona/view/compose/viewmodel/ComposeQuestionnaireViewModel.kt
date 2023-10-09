@@ -60,6 +60,48 @@ class ComposeQuestionnaireViewModel @Inject constructor(
         }
     }
 
+    private fun fetchQuestionnaire() {
+        viewModelScope.launch {
+            runCatching {
+                emitNonSuccessState(QuestionnaireState.Loading)
+                val data = withContext(dispatchers.io) {
+                    getQuestionnaireUseCase.get().execute()
+                }
+                successSuccessState(QuestionnaireDataUiModel(questionnaireList = data))
+            }.onFailure {
+                emitNonSuccessState(QuestionnaireState.Error)
+            }
+        }
+    }
+
+    private fun submitAnswer() {
+        viewModelScope.launch {
+            runCatching {
+                //show Next Button loading state
+                successSuccessState(data.copy(isNextButtonLoading = true))
+
+                val answers = data.questionnaireList.map { pager ->
+                    QuestionnaireAnswerParam(id = pager.id.toLongOrZero(),
+                        answers = pager.options.filter { it.isSelected }.map { it.value })
+                }
+                val persona = withContext(dispatchers.io) {
+                    val shopId = userSession.get().shopId
+                    return@withContext setPersonaUseCase.get()
+                        .execute(shopId, String.EMPTY, answers)
+                }
+
+                //dismiss Next Button loading state
+                successSuccessState(data.copy(isNextButtonLoading = false))
+
+                //navigate to result page with new persona
+                emitUiEffect(QuestionnaireUiEffect.NavigateToResultPage(persona))
+            }.onFailure {
+                //dismiss Next Button loading state
+                successSuccessState(data.copy(isNextButtonLoading = false))
+            }
+        }
+    }
+
     private fun moveToPrevPage() {
         val currentPage = data.currentPage
         val canMovePrev = currentPage > 0
@@ -145,47 +187,5 @@ class ComposeQuestionnaireViewModel @Inject constructor(
 
     private suspend fun emitUiEffect(uiEffect: QuestionnaireUiEffect) {
         _uiEffect.emit(uiEffect)
-    }
-
-    private fun fetchQuestionnaire() {
-        viewModelScope.launch {
-            runCatching {
-                emitNonSuccessState(QuestionnaireState.Loading)
-                val data = withContext(dispatchers.io) {
-                    getQuestionnaireUseCase.get().execute()
-                }
-                successSuccessState(QuestionnaireDataUiModel(questionnaireList = data))
-            }.onFailure {
-                emitNonSuccessState(QuestionnaireState.Error)
-            }
-        }
-    }
-
-    private fun submitAnswer() {
-        viewModelScope.launch {
-            runCatching {
-                //show Next Button loading state
-                successSuccessState(data.copy(isNextButtonLoading = true))
-
-                val answers = data.questionnaireList.map { pager ->
-                    QuestionnaireAnswerParam(id = pager.id.toLongOrZero(),
-                        answers = pager.options.filter { it.isSelected }.map { it.value })
-                }
-                val persona = withContext(dispatchers.io) {
-                    val shopId = userSession.get().shopId
-                    return@withContext setPersonaUseCase.get()
-                        .execute(shopId, String.EMPTY, answers)
-                }
-
-                //dismiss Next Button loading state
-                successSuccessState(data.copy(isNextButtonLoading = false))
-
-                //navigate to result page with new persona
-                emitUiEffect(QuestionnaireUiEffect.NavigateToResultPage(persona))
-            }.onFailure {
-                //dismiss Next Button loading state
-                successSuccessState(data.copy(isNextButtonLoading = false))
-            }
-        }
     }
 }

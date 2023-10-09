@@ -7,6 +7,7 @@ import com.tokopedia.sellerpersona.data.remote.usecase.GetPersonaListUseCase
 import com.tokopedia.sellerpersona.data.remote.usecase.SetPersonaUseCase
 import com.tokopedia.sellerpersona.view.compose.model.args.PersonaArgsUiModel
 import com.tokopedia.sellerpersona.view.compose.model.state.SelectTypeState
+import com.tokopedia.sellerpersona.view.compose.model.uieffect.SelectTypeUiEffect
 import com.tokopedia.sellerpersona.view.compose.model.uievent.SelectTypeUiEvent
 import com.tokopedia.sellerpersona.view.model.PersonaUiModel
 import com.tokopedia.user.session.UserSessionInterface
@@ -36,55 +37,60 @@ class ComposePersonaSelectTypeViewModel @Inject constructor(
     val state: StateFlow<SelectTypeState>
         get() = _state.asStateFlow()
 
-    private val _uiEvent = MutableSharedFlow<SelectTypeUiEvent>()
-    val uiEvent: SharedFlow<SelectTypeUiEvent>
-        get() = _uiEvent.asSharedFlow()
+    private val _uiEffect = MutableSharedFlow<SelectTypeUiEffect>()
+    val uiEffect: SharedFlow<SelectTypeUiEffect>
+        get() = _uiEffect.asSharedFlow()
 
-    fun fetchPersonaList(args: PersonaArgsUiModel) {
+    fun onEvent(event: SelectTypeUiEvent) {
         viewModelScope.launch {
-            try {
+            when (event) {
+                is SelectTypeUiEvent.FetchPersonaList -> fetchPersonaList(args = event.arguments)
+                is SelectTypeUiEvent.Reload -> reloadPage()
+                is SelectTypeUiEvent.ClickPersonaCard -> updateSelectedState(event.persona)
+                is SelectTypeUiEvent.ClickSelectButton -> submitSelectedType()
+            }
+        }
+    }
+
+    private fun fetchPersonaList(args: PersonaArgsUiModel) {
+        viewModelScope.launch {
+            runCatching {
                 emitLoadingState()
                 val data = withContext(dispatchers.io) {
                     getPersonaListUseCase.get().execute()
                 }
                 emitSuccessState(data, args)
-            } catch (e: Exception) {
-                emitErrorState(e)
+            }.onFailure {
+                emitErrorState(it)
             }
         }
     }
 
-    fun onEvent(event: SelectTypeUiEvent) = viewModelScope.launch {
-        when (event) {
-            is SelectTypeUiEvent.Reload -> reloadPage()
-            is SelectTypeUiEvent.ClickPersonaCard -> updateSelectedState(event.persona)
-            is SelectTypeUiEvent.ClickSelectButton -> submitSelectedType()
-            else -> _uiEvent.emit(event)
-        }
-    }
 
     private suspend fun setPersona(persona: String) {
-        try {
-            emitSelectButtonLoading(isLoading = true)
-            val result = withContext(dispatchers.io) {
-                val shopId = userSession.get().shopId
-                return@withContext setPersonaUseCase.get().execute(
-                    shopId = shopId, persona = persona, answers = emptyList()
-                )
+        viewModelScope.launch {
+            runCatching {
+                emitSelectButtonLoading(isLoading = true)
+                val result = withContext(dispatchers.io) {
+                    val shopId = userSession.get().shopId
+                    return@withContext setPersonaUseCase.get().execute(
+                        shopId = shopId, persona = persona, answers = emptyList()
+                    )
+                }
+                emitSelectButtonLoading(isLoading = false)
+                emitOnPersonaChanged(persona = result)
+            }.onFailure {
+                emitSelectButtonLoading(isLoading = false)
+                emitOnPersonaChanged(t = it)
             }
-            emitSelectButtonLoading(isLoading = false)
-            emitOnPersonaChanged(persona = result)
-        } catch (e: Exception) {
-            emitSelectButtonLoading(isLoading = false)
-            emitOnPersonaChanged(e = e)
         }
     }
 
-    private suspend fun emitOnPersonaChanged(persona: String = "", e: Exception? = null) {
-        _uiEvent.emit(
-            SelectTypeUiEvent.OnPersonaChanged(
+    private suspend fun emitOnPersonaChanged(persona: String = "", t: Throwable? = null) {
+        _uiEffect.emit(
+            SelectTypeUiEffect.OnPersonaChanged(
                 persona = persona,
-                exception = e
+                throwable = t
             )
         )
     }
@@ -147,11 +153,11 @@ class ComposePersonaSelectTypeViewModel @Inject constructor(
     }
 
     private suspend fun eventCloseThePage(persona: String) {
-        _uiEvent.emit(SelectTypeUiEvent.CloseThePage(persona))
+        _uiEffect.emit(SelectTypeUiEffect.CloseThePage(persona))
     }
 
-    private suspend fun emitErrorState(e: Exception) {
-        val errorState = _state.value.copy(state = SelectTypeState.State.Error(e))
+    private suspend fun emitErrorState(t: Throwable) {
+        val errorState = _state.value.copy(state = SelectTypeState.State.Error(t))
         _state.emit(errorState)
     }
 
