@@ -199,7 +199,6 @@ class StoriesDetailFragment @Inject constructor(
                 when (event) {
                     is StoriesUiEvent.EmptyDetailPage -> {
                         setNoContent(true)
-                        showPageLoading(false)
                     }
 
                     is StoriesUiEvent.ErrorDetailPage -> {
@@ -210,7 +209,6 @@ class StoriesDetailFragment @Inject constructor(
                             setFailed(true)
                             binding.layoutStoriesFailed.btnStoriesFailedLoad.setOnClickListener { run { event.onClick() } }
                         }
-                        showPageLoading(false)
                     }
 
                     StoriesUiEvent.OpenKebab -> {
