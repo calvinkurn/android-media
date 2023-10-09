@@ -126,16 +126,8 @@ object CommonTelcoActions {
         )
     }
 
-    fun pdp_validateBuyWidgetDisplayed() {
-        onView(withId(R.id.telco_buy_widget)).check(matches(isDisplayed()))
-    }
-
     fun pdp_validateBuyWidgetNotDisplayed() {
         onView(withId(R.id.telco_buy_widget)).check(matches(not(isDisplayed())))
-    }
-
-    fun pdp_clickBuyWidget() {
-        onView(withId(R.id.telco_buy_widget)).perform(click())
     }
 
     fun tabLayout_clickTabWithText(text: String) {

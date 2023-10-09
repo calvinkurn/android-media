@@ -35,6 +35,8 @@ data class AddOnsProductResponse(
         @SerializedName("status")
         val status: Int = 1,
         @SerializedName("type")
-        val type: Int = 1
+        val type: Int = 1,
+        @SerializedName("fixed_quantity")
+        val fixedQuantity: Boolean = false
     )
 }

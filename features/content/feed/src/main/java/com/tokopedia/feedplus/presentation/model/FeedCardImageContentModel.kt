@@ -1,7 +1,7 @@
 package com.tokopedia.feedplus.presentation.model
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.content.common.report_content.model.FeedMenuItem
+import com.tokopedia.content.common.report_content.model.ContentMenuItem
 import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_TOP_ADS
 import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_X_CARD_PLACEHOLDER
 import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_X_CARD_PRODUCTS_HIGHLIGHT
@@ -36,7 +36,7 @@ data class FeedCardImageContentModel(
     val comments: FeedCommentModel,
     val share: FeedShareModel,
     val followers: FeedFollowModel,
-    val menuItems: List<FeedMenuItem>,
+    val menuItems: List<ContentMenuItem>,
     val detailScore: List<FeedScoreModel>,
     val publishedAt: String,
     val maxDiscountPercentage: Int,

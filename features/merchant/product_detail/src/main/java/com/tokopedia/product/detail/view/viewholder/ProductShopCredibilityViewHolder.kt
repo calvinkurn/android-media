@@ -34,7 +34,7 @@ import com.tokopedia.unifyprinciples.Typography
  */
 class ProductShopCredibilityViewHolder(
     private val view: View,
-    private val listener: DynamicProductDetailListener
+    private val listener: DynamicProductDetailListener,
 ) : AbstractViewHolder<ProductShopCredibilityDataModel>(view) {
 
     companion object {
@@ -332,6 +332,7 @@ class ProductShopCredibilityViewHolder(
         }
 
         shopCredibilityAva.loadImageCircle(element.shopAva)
+        listener.getStoriesWidgetManager().manage(storiesBorder, element.shopId)
     }
 
     private fun isNewShopBadgeEnabled() = true
