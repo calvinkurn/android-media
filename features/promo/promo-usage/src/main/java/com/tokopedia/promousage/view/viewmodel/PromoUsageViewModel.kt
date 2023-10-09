@@ -422,18 +422,16 @@ class PromoUsageViewModel @Inject constructor(
                     _promoPageUiState.ifSuccessSuspend { pageState ->
                         if (pageState.isCalculating) return@ifSuccessSuspend
                         var updatedState = pageState.copy()
-                        val currentItems = updatedState.items
                         updatedState = updatedState.copy(
                             isCalculating = true
                         )
                         _promoPageUiState.postValue(updatedState)
-                        val newClickedItemState = if (clickedItem.state is PromoItemState.Normal) {
-                            PromoItemState.Selected
-                        } else {
-                            PromoItemState.Normal
-                        }
                         var newClickedItem = clickedItem.copy(
-                            state = newClickedItemState
+                            state = if (clickedItem.state is PromoItemState.Normal) {
+                                PromoItemState.Selected
+                            } else {
+                                PromoItemState.Normal
+                            }
                         )
 
                         // Show artificial loading for MVC promo
@@ -443,7 +441,7 @@ class PromoUsageViewModel @Inject constructor(
                                 if (item is PromoRecommendationItem) {
                                     return@map item.copy(isCalculating = true)
                                 } else if (item is PromoItem) {
-                                    val isClickedItem = item.code == clickedItem.code
+                                    val isClickedItem = item.code == newClickedItem.code
                                     val isMvcPromo = item.shopId > 0
                                     val isDisabledOrIneligibleOrSelected =
                                         item.state is PromoItemState.Disabled ||
@@ -451,8 +449,9 @@ class PromoUsageViewModel @Inject constructor(
                                             item.state is PromoItemState.Selected
                                     val isVisibleAndExpanded =
                                         item.isVisible && item.isExpanded
-                                    if (isMvcPromo && isVisibleAndExpanded
-                                        && !isClickedItem && !isDisabledOrIneligibleOrSelected) {
+                                    if (isMvcPromo && isVisibleAndExpanded &&
+                                        !isClickedItem && !isDisabledOrIneligibleOrSelected
+                                    ) {
                                         if (!needToShowLoading) {
                                             needToShowLoading = true
                                         }
@@ -482,7 +481,7 @@ class PromoUsageViewModel @Inject constructor(
 
                         // Calculate clash
                         val clashCalculationResult =
-                            calculateClickPromo(newClickedItem, currentItems)
+                            calculateClickPromo(newClickedItem, updatedItems)
                         newClickedItem = clashCalculationResult.first
                         updatedItems = clashCalculationResult.second
 
@@ -542,7 +541,7 @@ class PromoUsageViewModel @Inject constructor(
                 }
             },
             onError = {
-                // no-op
+                Timber.e(it)
             }
         )
     }
@@ -553,8 +552,8 @@ class PromoUsageViewModel @Inject constructor(
         items: List<DelegateAdapterItem>
     ): Pair<PromoRecommendationItem, List<DelegateAdapterItem>> {
         val initialSelectedCodes = recommendationItem.selectedCodes
-        val isRecommendedCodeSelected = clickedItem.state is PromoItemState.Selected
-            && clickedItem.isRecommended
+        val isRecommendedCodeSelected = clickedItem.state is PromoItemState.Selected &&
+            clickedItem.isRecommended
         val selectedRecommendationCodes = if (isRecommendedCodeSelected) {
             recommendationItem.selectedCodes.plus(clickedItem.code)
         } else {
