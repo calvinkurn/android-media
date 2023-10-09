@@ -13,11 +13,12 @@ import android.graphics.PorterDuffXfermode
 import android.graphics.RectF
 import android.graphics.Shader
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
 import androidx.core.animation.addListener
 import androidx.interpolator.view.animation.FastOutLinearInInterpolator
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.pxToDp
+import com.tokopedia.stories.widget.R
 import com.tokopedia.stories.widget.animation.LinearEasingInterpolator
 import kotlin.math.min
 
@@ -70,7 +71,10 @@ internal class StoriesBorderView : View {
 
     init {
         setWillNotDraw(false)
-        seenStoriesPaint.color = Color.parseColor("#80BFC9D9")
+        seenStoriesPaint.color = MethodChecker.getColor(
+            context,
+            R.color.stories_widget_dms_seen_all_stories
+        )
 
         setOriginalTransformationValue()
     }
@@ -192,7 +196,6 @@ internal class StoriesBorderView : View {
         val minSize = min(width, height)
         val sizeInDp = minSize.pxToDp(resources.displayMetrics)
 
-        Log.d("StoriesBorderView", "Size in dp: $sizeInDp")
         val borderInPx = when {
             sizeInDp >= 64 -> 2f
             sizeInDp < 32 -> 1f
@@ -208,8 +211,14 @@ internal class StoriesBorderView : View {
             0f,
             width.toFloat(),
             height.toFloat(),
-            Color.parseColor("#FF83ECB2"),
-            Color.parseColor("#FF00AA5B"),
+            MethodChecker.getColor(
+                context,
+                R.color.stories_widget_dms_has_unseen_stories_gradient_first
+            ),
+            MethodChecker.getColor(
+                context,
+                R.color.stories_widget_dms_has_unseen_stories_gradient_second
+            ),
             Shader.TileMode.CLAMP
         )
         gradientStoriesPaint.shader = shader

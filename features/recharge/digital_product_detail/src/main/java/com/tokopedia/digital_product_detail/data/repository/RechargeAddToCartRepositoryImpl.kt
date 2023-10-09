@@ -20,12 +20,14 @@ class RechargeAddToCartRepositoryImpl @Inject constructor(
     override suspend fun addToCart(
         digitalCheckoutPassData: DigitalCheckoutPassData,
         digitalIdentifierParam: RequestBodyIdentifier,
-        userId: String
+        userId: String,
+        atcMultiCheckoutParam: String
     ): DigitalAtcResult = withContext(dispatchers.io) {
         val addToCart = getDigitalAddToCartUseCase.execute(
             digitalCheckoutPassData = digitalCheckoutPassData,
             userId = userId,
-            digitalIdentifierParam = digitalIdentifierParam
+            digitalIdentifierParam = digitalIdentifierParam,
+            atcMultiCheckoutParam = atcMultiCheckoutParam
         )
 
         addToCart?.let {

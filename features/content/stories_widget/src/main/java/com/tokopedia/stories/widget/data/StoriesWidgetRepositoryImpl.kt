@@ -109,7 +109,7 @@ internal class StoriesWidgetRepositoryImpl @Inject constructor(
                 StoriesEntryPointRemoteConfigResponse::class.java
             )
             mappedConfig.disabledEntryPoints
-        } catch (e: NullPointerException) {
+        } catch (_: NullPointerException) {
             emptyList()
         }
     }

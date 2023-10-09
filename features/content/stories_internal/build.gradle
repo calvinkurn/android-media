@@ -1,26 +1,14 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: 'kotlin-kapt'
 
 android {
     namespace 'com.tokopedia.stories.internal'
     testNamespace 'com.tokopedia.stories.internal.test'
 
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11
-    }
-
     composeOptions {
         kotlinCompilerExtensionVersion = rootProject.ext.composeVersion
-    }
-
-    defaultConfig {
-        multiDexEnabled true
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
     }
 }
 
@@ -39,6 +27,11 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     
     implementation rootProject.ext.miscDependencies.dataStorePreferences
+
+    kapt rootProject.ext.supportLibDependencies.kotlinMetaData
+
+    implementation rootProject.ext.miscDependencies.dagger
+    kapt rootProject.ext.miscDependencies.daggerCompiler
 }
 
 project.ext {

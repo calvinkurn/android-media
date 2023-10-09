@@ -18,5 +18,9 @@ data class Body(
 
     @SerializedName("method")
     @Expose
-    val method: String = ""
+    val method: String = "",
+
+    @SerializedName("seatingNumbers")
+    @Expose
+    val seatingNumbers: String = ""
 ) : Serializable, Parcelable

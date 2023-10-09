@@ -722,6 +722,30 @@ class FeedPostViewModelTest {
         assert(data.items[13] is FeedCardLivePreviewContentModel)
         assert(data.items[14] is FeedFollowRecommendationModel)
         assert(data.items[15] is FeedNoContentModel)
+
+        assert(viewModel.determinePostDataEligibilityForOnboarding(isFollowingTab = false))
+        assert(viewModel.determinePostDataEligibilityForOnboarding(isFollowingTab = true))
+    }
+
+    @Test
+    fun onFetchFeedPosts_whenSuccessWithOnlyFollowRecomWidget() {
+        // given
+        coEvery { repository.getPost(any(), any(), any()) } returns getDummyFollowRecommendationWidgetOnlyModel()
+        coEvery { feedXRecomWidgetUseCase(any()) } returns getDummyProfileRecommendationList()
+
+        // when
+        viewModel.fetchFeedPosts("", postSource = PostSourceModel("1", FeedBaseFragment.TAB_TYPE_CDP))
+
+        // then
+        assert(!viewModel.shouldShowNoMoreContent)
+        assert(viewModel.feedHome.value is Success)
+
+        val data = (viewModel.feedHome.value as Success).data
+        assert(data.items.size == 1)
+        assert(data.items[0] is FeedFollowRecommendationModel)
+
+        assert(viewModel.determinePostDataEligibilityForOnboarding(isFollowingTab = false))
+        assert(!viewModel.determinePostDataEligibilityForOnboarding(isFollowingTab = true))
     }
 
     @Test
@@ -2086,6 +2110,17 @@ class FeedPostViewModelTest {
             ),
             FeedFollowRecommendationModel.Empty.copy(id = "follow-recommendation"),
             FeedNoContentModel(0, "", "", "")
+        ),
+        pagination = FeedPaginationModel(
+            "",
+            true,
+            10
+        )
+    )
+
+    private fun getDummyFollowRecommendationWidgetOnlyModel() = FeedModel(
+        items = listOf(
+            FeedFollowRecommendationModel.Empty.copy(id = "follow-recommendation"),
         ),
         pagination = FeedPaginationModel(
             "",

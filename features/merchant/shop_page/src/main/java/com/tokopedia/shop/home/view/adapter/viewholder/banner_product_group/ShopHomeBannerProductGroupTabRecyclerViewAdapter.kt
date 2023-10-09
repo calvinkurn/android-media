@@ -24,7 +24,7 @@ import com.tokopedia.unifycomponents.R as unifycomponentsR
 class ShopHomeBannerProductGroupTabRecyclerViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var items = mutableListOf<ShopHomeBannerProductGroupItemType>()
-    private var onProductClick: (ProductItemType) -> Unit = {}
+    private var onProductClick: (ProductItemType, Int) -> Unit = { _, _ -> }
     private var onVerticalBannerClick: (VerticalBannerItemType) -> Unit = {}
 
     companion object {
@@ -116,8 +116,11 @@ class ShopHomeBannerProductGroupTabRecyclerViewAdapter : RecyclerView.Adapter<Re
                 renderRatingAndSoldCount(product)
 
                 setupColors(item.overrideTheme, item.colorSchema)
-
-                binding.root.setOnClickListener { onProductClick(product) }
+               
+                binding.root.setOnClickListener {
+                    val productIndex = bindingAdapterPosition.inc()    
+                    onProductClick(product, productIndex) 
+                }
             }
         }
 
@@ -267,7 +270,7 @@ class ShopHomeBannerProductGroupTabRecyclerViewAdapter : RecyclerView.Adapter<Re
         diffResult.dispatchUpdatesTo(this)
     }
 
-    fun setOnProductClick(onProductClick: (ProductItemType) -> Unit) {
+    fun setOnProductClick(onProductClick: (ProductItemType, Int) -> Unit) {
         this.onProductClick = onProductClick
     }
 

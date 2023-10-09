@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: 'kotlin-kapt'
 
 android {
     namespace 'com.tokopedia.stories.widget'
@@ -9,21 +10,8 @@ android {
         viewBinding true
     }
 
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11
-    }
-
     composeOptions {
         kotlinCompilerExtensionVersion = rootProject.ext.composeVersion
-    }
-
-    defaultConfig {
-        multiDexEnabled true
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
     }
 }
 
@@ -69,7 +57,14 @@ dependencies {
 
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
 
+    kapt rootProject.ext.supportLibDependencies.kotlinMetaData
+
+    implementation rootProject.ext.miscDependencies.dagger
+    kapt rootProject.ext.miscDependencies.daggerCompiler
+
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
+    testImplementation rootProject.ext.testDependencies.junit
+    testImplementation rootProject.ext.testDependencies.assertJCore
 }
 
 project.ext {
