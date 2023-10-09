@@ -18,6 +18,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -58,6 +59,13 @@ private const val CORPORATE_EMPLOYEE = "corporate-employee"
 internal fun ResultSuccessState(
     state: PersonaResultState, onEvent: (ResultUiEvent) -> Unit
 ) {
+
+    LaunchedEffect(key1 = state.hasImpressed, block = {
+        if (!state.hasImpressed) {
+            onEvent(ResultUiEvent.OnResultImpressedEvent)
+        }
+    })
+
     LazyColumn(modifier = Modifier.fillMaxSize()) {
         item {
             ResultHeaderSectionUi(state.data.personaData)
@@ -102,7 +110,7 @@ private fun ResultFooterSectionUi(data: PersonaDataUiModel, onEvent: (ResultUiEv
                 )
             }
             NestSwitch(isChecked = data.isSwitchChecked) {
-                onEvent(ResultUiEvent.CheckChanged(it))
+                onEvent(ResultUiEvent.OnSwitchCheckChanged(it))
             }
         }
         NestTypography(
@@ -147,7 +155,8 @@ private fun ManualSelectPersonaComponent(persona: String, onEvent: (ResultUiEven
             append(" $clickable")
         }
     }
-    NestTypography(text = annotatedString,
+    NestTypography(
+        text = annotatedString,
         textStyle = NestTheme.typography.display3.copy(
             color = NestTheme.colors.NN._600, textAlign = TextAlign.Center
         ),
@@ -158,7 +167,8 @@ private fun ManualSelectPersonaComponent(persona: String, onEvent: (ResultUiEven
             when (spannedRange.item) {
                 clickable -> onEvent(ResultUiEvent.SelectPersona(persona))
             }
-        })
+        }
+    )
 }
 
 private fun LazyListScope.renderResultContentSectionUi(data: PersonaDataUiModel) {
@@ -299,26 +309,27 @@ private fun ResultHeaderSectionUi(persona: PersonaUiModel) {
 @Composable
 fun PreviewPersonaResultScreen() {
     NestTheme(darkTheme = false) {
-        ResultSuccessState(state = PersonaResultState(
-            state = PersonaResultState.State.Success,
-            data = PersonaDataUiModel(
-                persona = "corporate-supervisor-owner",
-                personaStatus = PersonaStatus.ACTIVE,
-                personaData = PersonaUiModel(
-                    value = "corporate-supervisor-owner",
-                    headerTitle = "Gedongan",
-                    headerSubTitle = "Pemilik Toko",
-                    avatarImage = "https://images.tokopedia.net/img/android/sellerapp/seller_persona/img_persona_avatar_gedongan-min.png",
-                    backgroundImage = "https://images.tokopedia.net/img/android/sellerapp/seller_persona/img_persona_background_gedongan-min.png",
-                    bodyTitle = "Pilih tipe ini jika kamu:",
-                    itemList = listOf(
-                        "Menerima 1-10 pesanan per hari",
-                        "Punya toko fisik (offline)",
-                        "Punya pegawai yang mengurus operasional toko",
-                        "Sering mencari peluang untuk strategi baru"
-                    )
-                ),
-            )
-        ), onEvent = {})
+        ResultSuccessState(
+            state = PersonaResultState(
+                state = PersonaResultState.State.Success,
+                data = PersonaDataUiModel(
+                    persona = "corporate-supervisor-owner",
+                    personaStatus = PersonaStatus.ACTIVE,
+                    personaData = PersonaUiModel(
+                        value = "corporate-supervisor-owner",
+                        headerTitle = "Gedongan",
+                        headerSubTitle = "Pemilik Toko",
+                        avatarImage = "https://images.tokopedia.net/img/android/sellerapp/seller_persona/img_persona_avatar_gedongan-min.png",
+                        backgroundImage = "https://images.tokopedia.net/img/android/sellerapp/seller_persona/img_persona_background_gedongan-min.png",
+                        bodyTitle = "Pilih tipe ini jika kamu:",
+                        itemList = listOf(
+                            "Menerima 1-10 pesanan per hari",
+                            "Punya toko fisik (offline)",
+                            "Punya pegawai yang mengurus operasional toko",
+                            "Sering mencari peluang untuk strategi baru"
+                        )
+                    ),
+                )
+            ), onEvent = {})
     }
 }

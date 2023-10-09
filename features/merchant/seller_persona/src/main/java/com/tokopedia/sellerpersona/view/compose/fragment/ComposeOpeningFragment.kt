@@ -10,7 +10,6 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.sellerpersona.analytics.SellerPersonaTracking
 import com.tokopedia.sellerpersona.view.activity.SellerPersonaActivity
 import com.tokopedia.sellerpersona.view.compose.screen.PersonaOpeningScreen
@@ -31,13 +30,11 @@ class ComposeOpeningFragment : Fragment() {
         return ComposeView(inflater.context).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
-                NestTheme {
-                    PersonaOpeningScreen(
-                        onImpressed = ::sendImpressionEvent,
-                        onNext = ::onNextClicked,
-                        onBack = ::onBackClicked
-                    )
-                }
+                PersonaOpeningScreen(
+                    onImpressed = ::sendImpressionEvent,
+                    onNext = ::onNextClicked,
+                    onBack = ::onBackClicked
+                )
             }
         }
     }

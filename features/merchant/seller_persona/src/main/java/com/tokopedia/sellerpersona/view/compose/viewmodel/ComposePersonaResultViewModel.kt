@@ -3,12 +3,12 @@ package com.tokopedia.sellerpersona.view.compose.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.sellerpersona.common.Constants
 import com.tokopedia.sellerpersona.data.remote.usecase.GetPersonaDataUseCase
 import com.tokopedia.sellerpersona.data.remote.usecase.TogglePersonaUseCase
 import com.tokopedia.sellerpersona.view.compose.model.args.PersonaArgsUiModel
 import com.tokopedia.sellerpersona.view.compose.model.state.PersonaResultState
+import com.tokopedia.sellerpersona.view.compose.model.uievent.ResultUiEffect
 import com.tokopedia.sellerpersona.view.compose.model.uievent.ResultUiEvent
 import com.tokopedia.sellerpersona.view.model.PersonaDataUiModel
 import com.tokopedia.sellerpersona.view.model.PersonaStatus
@@ -41,29 +41,62 @@ class ComposePersonaResultViewModel @Inject constructor(
     val personaState: StateFlow<PersonaResultState>
         get() = _personaState.asStateFlow()
 
-    private val _uiEvent = MutableSharedFlow<ResultUiEvent>()
-    val uiEvent: SharedFlow<ResultUiEvent>
-        get() = _uiEvent.asSharedFlow()
+    private val _uiEffect = MutableSharedFlow<ResultUiEffect>()
+    val uiEffect: SharedFlow<ResultUiEffect>
+        get() = _uiEffect.asSharedFlow()
 
     fun onEvent(event: ResultUiEvent) = viewModelScope.launch {
         when (event) {
             is ResultUiEvent.ApplyChanges -> onApplyClicked(event)
-            is ResultUiEvent.CheckChanged -> onCheckedChanged(event)
+            is ResultUiEvent.OnSwitchCheckChanged -> onCheckedChanged(event)
             is ResultUiEvent.Reload -> reloadPage()
-            else -> _uiEvent.emit(event)
+            is ResultUiEvent.FetchPersonaData -> fetchPersonaData(event.arguments)
+            is ResultUiEvent.RetakeQuiz -> setEffect(ResultUiEffect.NavigateToQuestionnaire)
+            is ResultUiEvent.SelectPersona -> setEffect(ResultUiEffect.NavigateToSelectPersona(event.currentPersona))
+            is ResultUiEvent.OnResultImpressedEvent -> setOnResultImpressedEvent()
         }
     }
 
-    fun fetchPersonaData(args: PersonaArgsUiModel) {
-        viewModelScope.launchCatchError(block = {
-            _personaState.emit(getLoadingState())
-            val result = getPersonaDataUseCase.get().execute(
-                shopId = userSession.get().shopId, page = Constants.PERSONA_PAGE_PARAM
-            )
-            _personaState.emit(getSuccessState(args, result))
-        }, onError = {
-            _personaState.emit(getErrorState(args, it))
-        })
+    private fun fetchPersonaData(args: PersonaArgsUiModel) {
+        viewModelScope.launch {
+            runCatching {
+                _personaState.emit(getLoadingState())
+                val result = getPersonaDataUseCase.get().execute(
+                    shopId = userSession.get().shopId, page = Constants.PERSONA_PAGE_PARAM
+                )
+                _personaState.emit(getSuccessState(args, result))
+            }.onFailure {
+                _personaState.emit(getErrorState(args, it))
+            }
+        }
+    }
+
+    private fun toggleUserPersona(status: PersonaStatus) {
+        viewModelScope.launch {
+            runCatching {
+                emitApplyButtonLoadingState(isLoading = true)
+                val toggleStatus = withContext(dispatchers.io) {
+                    togglePersonaUseCase.get().execute(
+                        userSession.get().shopId, status
+                    )
+                }
+                updatePersonaLocalData(toggleStatus)
+                setEffect(ResultUiEffect.OnPersonaStatusChanged(personaStatus = toggleStatus))
+            }.onFailure {
+                emitApplyButtonLoadingState(isLoading = false)
+                setEffect(ResultUiEffect.OnPersonaStatusChanged(throwable = it))
+            }
+        }
+    }
+
+    private suspend fun setOnResultImpressedEvent() {
+        setEffect(ResultUiEffect.SendImpressionResultTracking)
+        val state = _personaState.value
+        _personaState.emit(state.copy(hasImpressed = true))
+    }
+
+    private suspend fun setEffect(effect: ResultUiEffect) {
+        _uiEffect.emit(effect)
     }
 
     private fun reloadPage() {
@@ -71,46 +104,36 @@ class ComposePersonaResultViewModel @Inject constructor(
         fetchPersonaData(args)
     }
 
-    private fun toggleUserPersona(status: PersonaStatus) {
-        viewModelScope.launchCatchError(block = {
-            emitApplyButtonLoadingState(isLoading = true)
-            val toggleStatus = withContext(dispatchers.io) {
-                togglePersonaUseCase.get().execute(
-                    userSession.get().shopId, status
-                )
-            }
-            updatePersonaLocalData(toggleStatus)
-            onEvent(
-                ResultUiEvent.OnPersonaStatusChanged(personaStatus = toggleStatus)
-            )
-        }, onError = {
-            emitApplyButtonLoadingState(isLoading = false)
-            onEvent(ResultUiEvent.OnPersonaStatusChanged(throwable = it))
-        })
-    }
-
-    private fun onApplyClicked(event: ResultUiEvent.ApplyChanges) {
+    private suspend fun onApplyClicked(event: ResultUiEvent.ApplyChanges) {
         val status = if (event.isActive) {
             PersonaStatus.ACTIVE
         } else {
             PersonaStatus.INACTIVE
         }
         toggleUserPersona(status)
+        setEffect(
+            ResultUiEffect.SendClickApplyTracking(
+                persona = event.persona,
+                isActive = event.isActive
+            )
+        )
     }
 
     private suspend fun emitApplyButtonLoadingState(isLoading: Boolean) {
         val lastState = _personaState.value
-        val buttonLoadingState =
-            lastState.copy(data = lastState.data.copy(isApplyLoading = isLoading))
+        val buttonLoadingState = lastState.copy(
+            data = lastState.data.copy(isApplyLoading = isLoading)
+        )
         _personaState.emit(buttonLoadingState)
     }
 
-    private suspend fun onCheckedChanged(event: ResultUiEvent.CheckChanged) {
+    private suspend fun onCheckedChanged(event: ResultUiEvent.OnSwitchCheckChanged) {
         val lastState = _personaState.value
         val checkedChangedState = lastState.copy(
             data = lastState.data.copy(isSwitchChecked = event.isChecked)
         )
         _personaState.emit(checkedChangedState)
+        setEffect(ResultUiEffect.SendSwitchCheckedChangedTracking)
     }
 
     private fun getSuccessState(
@@ -121,10 +144,15 @@ class ComposePersonaResultViewModel @Inject constructor(
         return if (isSwitchCheckedByDefault) {
             lastState.copy(
                 state = PersonaResultState.State.Success,
-                data = data.copy(isSwitchChecked = true, args = args)
+                data = data.copy(isSwitchChecked = true, args = args),
+                hasImpressed = false
             )
         } else {
-            lastState.copy(state = PersonaResultState.State.Success, data = data.copy(args = args))
+            lastState.copy(
+                state = PersonaResultState.State.Success,
+                data = data.copy(args = args),
+                hasImpressed = false
+            )
         }
     }
 

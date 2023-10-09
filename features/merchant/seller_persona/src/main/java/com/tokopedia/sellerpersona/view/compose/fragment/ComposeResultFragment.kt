@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
@@ -29,10 +28,11 @@ import com.tokopedia.sellerpersona.data.local.PersonaSharedPref
 import com.tokopedia.sellerpersona.view.activity.SellerPersonaActivity
 import com.tokopedia.sellerpersona.view.compose.model.args.PersonaArgsUiModel
 import com.tokopedia.sellerpersona.view.compose.model.state.PersonaResultState
+import com.tokopedia.sellerpersona.view.compose.model.uievent.ResultUiEffect
 import com.tokopedia.sellerpersona.view.compose.model.uievent.ResultUiEvent
-import com.tokopedia.sellerpersona.view.compose.screen.personaresult.ResultSuccessState
 import com.tokopedia.sellerpersona.view.compose.screen.personaresult.ResultErrorState
 import com.tokopedia.sellerpersona.view.compose.screen.personaresult.ResultLoadingState
+import com.tokopedia.sellerpersona.view.compose.screen.personaresult.ResultSuccessState
 import com.tokopedia.sellerpersona.view.compose.viewmodel.ComposePersonaResultViewModel
 import com.tokopedia.sellerpersona.view.model.isActive
 import com.tokopedia.unifycomponents.Toaster
@@ -85,15 +85,19 @@ class ComposeResultFragment : Fragment() {
             setContent {
 
                 LaunchedEffect(key1 = Unit, block = {
-                    viewModel.fetchPersonaData(args = getResultArguments())
-
-                    viewModel.uiEvent.collectLatest {
+                    viewModel.onEvent(ResultUiEvent.FetchPersonaData(getResultArguments()))
+                    viewModel.uiEffect.collectLatest {
                         when (it) {
-                            is ResultUiEvent.RetakeQuiz -> retakeQuiz()
-                            is ResultUiEvent.ApplyChanges -> sendClickApplyTracker(it)
-                            is ResultUiEvent.OnPersonaStatusChanged -> onPersonaStatusChanged(it)
-                            is ResultUiEvent.SelectPersona -> selectPersonaType(it)
-                            else -> {/* no-op */
+                            is ResultUiEffect.NavigateToQuestionnaire -> navigateToQuestionnaire()
+                            is ResultUiEffect.NavigateToSelectPersona -> navigateToSelectPersona(it)
+                            is ResultUiEffect.OnPersonaStatusChanged -> onPersonaStatusChanged(it)
+                            is ResultUiEffect.SendClickApplyTracking -> sendClickApplyTracking(it)
+                            is ResultUiEffect.SendSwitchCheckedChangedTracking -> {
+                                SellerPersonaTracking.sendClickSellerPersonaResultToggleActiveEvent()
+                            }
+
+                            is ResultUiEffect.SendImpressionResultTracking -> {
+                                SellerPersonaTracking.sendImpressionSellerPersonaResultEvent()
                             }
                         }
                     }
@@ -113,8 +117,7 @@ class ComposeResultFragment : Fragment() {
                                 updateActiveStatusFlag(state.value.data.personaStatus.isActive())
                                 updateAnyChangesFlag(state.value.data.isSwitchChecked)
                                 ResultSuccessState(
-                                    state = state.value,
-                                    onEvent = viewModel::onEvent
+                                    state = state.value, onEvent = viewModel::onEvent
                                 )
                             }
                         }
@@ -135,7 +138,7 @@ class ComposeResultFragment : Fragment() {
         return PersonaArgsUiModel(paramPersona = paramPersona)
     }
 
-    private fun onPersonaStatusChanged(data: ResultUiEvent.OnPersonaStatusChanged) {
+    private fun onPersonaStatusChanged(data: ResultUiEffect.OnPersonaStatusChanged) {
         updateActiveStatusFlag(data.personaStatus.isActive())
         if (data.isSuccess()) {
             goToSellerHome()
@@ -152,7 +155,7 @@ class ComposeResultFragment : Fragment() {
         isPersonaActive = isActive
     }
 
-    private fun sendClickApplyTracker(data: ResultUiEvent.ApplyChanges) {
+    private fun sendClickApplyTracking(data: ResultUiEffect.SendClickApplyTracking) {
         SellerPersonaTracking.sendClickSellerPersonaResultSavePersonaEvent(
             persona = data.persona, isActive = data.isActive
         )
@@ -164,20 +167,20 @@ class ComposeResultFragment : Fragment() {
         )
     }
 
-    private fun selectPersonaType(data: ResultUiEvent.SelectPersona) {
+    private fun navigateToSelectPersona(data: ResultUiEffect.NavigateToSelectPersona) {
         view?.let {
-            val action = ComposeResultFragmentDirections
-                .actionToSelectTypeScreen(data.currentPersona)
+            val action =
+                ComposeResultFragmentDirections.actionToSelectTypeScreen(data.currentPersona)
             Navigation.findNavController(it).navigate(action)
             SellerPersonaTracking.sendClickSellerPersonaResultSelectPersonaEvent()
         }
     }
 
-    private fun retakeQuiz() {
+    private fun navigateToQuestionnaire() {
         view?.let {
-            val action = ComposeResultFragmentDirections.actionResultFragmentToQuestionnaireFragment()
-            Navigation.findNavController(it)
-                .navigate(action)
+            val action =
+                ComposeResultFragmentDirections.actionResultFragmentToQuestionnaireFragment()
+            Navigation.findNavController(it).navigate(action)
             SellerPersonaTracking.sendClickSellerPersonaResultRetakeQuizEvent()
         }
     }

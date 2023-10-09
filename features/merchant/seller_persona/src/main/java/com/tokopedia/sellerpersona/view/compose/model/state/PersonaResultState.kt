@@ -10,7 +10,10 @@ import com.tokopedia.sellerpersona.view.model.PersonaDataUiModel
 @Immutable
 data class PersonaResultState(
     val state: State = State.Loading,
-    val data: PersonaDataUiModel = PersonaDataUiModel()
+    val data: PersonaDataUiModel = PersonaDataUiModel(),
+
+    //impression holder
+    val hasImpressed: Boolean = false
 ) {
 
     sealed class State {
