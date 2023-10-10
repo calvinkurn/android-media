@@ -769,7 +769,7 @@ class CheckoutViewModel @Inject constructor(
 
             if (checkoutModel != null && oldCheckoutModel != null) {
                 val entryPointInfo = promoProcessor
-                    .getEntryPointInfo(cleanPromoFromPromoRequest(generateCouponListRecommendationRequest(checkoutItems)))
+                    .getEntryPointInfo(cleanPromoFromPromoRequest(generateCouponListRecommendationRequestWithListData(checkoutItems)))
                 return checkoutItems.map { model ->
                     if (model is CheckoutPromoModel) {
                         return@map model.copy(
@@ -1325,9 +1325,18 @@ class CheckoutViewModel @Inject constructor(
         )
     }
 
-    fun generateCouponListRecommendationRequest(newListData: List<CheckoutItem>? = null): PromoRequest {
+    fun generateCouponListRecommendationRequest(): PromoRequest {
         return promoProcessor.generateCouponListRecommendationRequest(
-            newListData ?: listData.value,
+            listData.value,
+            isTradeIn,
+            isTradeInByDropOff,
+            isOneClickShipment
+        )
+    }
+
+    fun generateCouponListRecommendationRequestWithListData(newListData: List<CheckoutItem>): PromoRequest {
+        return promoProcessor.generateCouponListRecommendationRequest(
+            newListData,
             isTradeIn,
             isTradeInByDropOff,
             isOneClickShipment
