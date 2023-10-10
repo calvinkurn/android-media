@@ -411,14 +411,7 @@ class OtherMenuViewModel @Inject constructor(
                 val data = withContext(dispatcher.io) {
                     getTopAdsShopInfoUseCase.execute(userSession.shopId)
                 }
-                var topadsUsage = false
-                for (it in data.data.ads){
-                    if(it.isUsed){
-                        topadsUsage = true
-                        break
-                    }
-                }
-                _isTopAdsShopUsed.value = topadsUsage
+                _isTopAdsShopUsed.value = data.data.ads.any { it.isUsed }
             },
             onError = {
                 _isTopAdsShopUsed.value = false
