@@ -15,7 +15,6 @@ import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimode
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.domain.model.RepurchaseProduct
-import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.data.createHomeProductCardUiModel
@@ -281,7 +280,7 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
                 removeAbleWidgets = listOf()
             )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-            viewModel.onScroll(2, LocalCacheModel(), listOf(), true)
+            viewModel.onScroll(2, LocalCacheModel(), listOf())
             viewModel.getMiniCart(listOf(shopId), warehouseId)
             viewModel.onCartQuantityChanged(channelId, productId, 4, shopId, 1, false, type)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
@@ -440,7 +439,7 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
                 removeAbleWidgets = listOf()
             )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-            viewModel.onScroll(2, LocalCacheModel(), listOf(), true)
+            viewModel.onScroll(2, LocalCacheModel(), listOf())
             viewModel.getMiniCart(listOf(shopId), warehouseId)
             viewModel.onCartQuantityChanged(channelId, productId, 4, shopId, 1, false, type)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
@@ -553,7 +552,7 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
                 removeAbleWidgets = listOf()
             )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-            viewModel.onScroll(2, LocalCacheModel(), listOf(), true)
+            viewModel.onScroll(2, LocalCacheModel(), listOf())
             viewModel.getMiniCart(listOf(shopId), warehouseId)
             viewModel.onCartQuantityChanged(channelId, productId, 4, shopId, 1, false, type)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
@@ -618,7 +617,7 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
                 removeAbleWidgets = listOf()
             )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-            viewModel.onScroll(2, LocalCacheModel(), listOf(), true)
+            viewModel.onScroll(2, LocalCacheModel(), listOf())
             viewModel.getMiniCart(listOf(shopId), warehouseId)
             viewModel.onCartQuantityChanged(channelId, productId, 0, shopId, 1, false, type)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
@@ -762,7 +761,7 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
                 removeAbleWidgets = listOf()
             )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-            viewModel.onScroll(2, LocalCacheModel(), listOf(), true)
+            viewModel.onScroll(2, LocalCacheModel(), listOf())
             viewModel.getMiniCart(listOf(shopId), warehouseId)
             viewModel.onCartQuantityChanged(channelId, productId, 0, shopId, 1, false, type)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
@@ -810,7 +809,7 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
 
             onGetHomeLayoutData_thenReturn(listOf(homeRecomResponse))
 
-            viewModel.onScroll(2, LocalCacheModel(), listOf(), true)
+            viewModel.onScroll(2, LocalCacheModel(), listOf())
             viewModel.onCartQuantityChanged(channelId, productId, quantity, shopId, 1, false, type)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
 
@@ -863,7 +862,7 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
                 removeAbleWidgets = listOf()
             )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-            viewModel.onScroll(2, LocalCacheModel(), listOf(), true)
+            viewModel.onScroll(2, LocalCacheModel(), listOf())
             viewModel.onCartQuantityChanged(channelId, "3", quantity, shopId, 1, false, type)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
 
@@ -918,7 +917,7 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
 
             onGetHomeLayoutData_thenReturn(listOf(homeRecomResponse))
 
-            viewModel.onScroll(2, LocalCacheModel(), listOf(), true)
+            viewModel.onScroll(2, LocalCacheModel(), listOf())
             viewModel.onCartQuantityChanged(channelId, "3", quantity, shopId, 1, false, type)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
 
@@ -975,7 +974,7 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
                 removeAbleWidgets = listOf()
             )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-            viewModel.onScroll(2, LocalCacheModel(), listOf(), true)
+            viewModel.onScroll(2, LocalCacheModel(), listOf())
             viewModel.onCartQuantityChanged(
                 channelId,
                 "2",
@@ -1056,7 +1055,7 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
 
             viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-            viewModel.onScroll(2, LocalCacheModel(), listOf(), false)
+            viewModel.onScroll(2, LocalCacheModel(), listOf())
             viewModel.onCartQuantityChanged(
                 channelId,
                 "2",
@@ -1139,7 +1138,7 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
                 removeAbleWidgets = listOf()
             )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-            viewModel.onScroll(2, LocalCacheModel(), listOf(), true)
+            viewModel.onScroll(2, LocalCacheModel(), listOf())
             viewModel.onCartQuantityChanged(
                 channelId,
                 "4",
@@ -1174,7 +1173,7 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
                 removeAbleWidgets = listOf()
             )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-            viewModel.onScroll(2, LocalCacheModel(), listOf(), true)
+            viewModel.onScroll(2, LocalCacheModel(), listOf())
             viewModel.onCartQuantityChanged(
                 channelId,
                 "4",
@@ -1348,7 +1347,7 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
                 removeAbleWidgets = listOf()
             )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-            viewModel.onScroll(2, LocalCacheModel(), listOf(), true)
+            viewModel.onScroll(2, LocalCacheModel(), listOf())
             viewModel.onCartQuantityChanged(
                 channelId,
                 "4",
@@ -1394,7 +1393,7 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
                 removeAbleWidgets = listOf()
             )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-            viewModel.onScroll(2, LocalCacheModel(), listOf(), true)
+            viewModel.onScroll(2, LocalCacheModel(), listOf())
             viewModel.onCartQuantityChanged(
                 channelId,
                 "4",
@@ -1428,7 +1427,7 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
                 removeAbleWidgets = listOf()
             )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-            viewModel.onScroll(2, LocalCacheModel(), listOf(), true)
+            viewModel.onScroll(2, LocalCacheModel(), listOf())
             viewModel.onCartQuantityChanged(
                 channelId,
                 "4",

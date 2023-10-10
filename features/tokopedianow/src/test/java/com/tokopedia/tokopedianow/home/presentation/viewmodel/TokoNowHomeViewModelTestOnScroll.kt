@@ -8,7 +8,6 @@ import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
-import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.data.createHomeLayoutData
 import com.tokopedia.tokopedianow.data.createHomeLayoutListForBannerOnly
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
@@ -58,7 +57,7 @@ class TokoNowHomeViewModelTestOnScroll : TokoNowHomeViewModelTestFixture() {
 
         onGetHomeLayoutData_thenReturn(listOf(secondBanner))
 
-        viewModel.onScroll(1, LocalCacheModel(), listOf(), true)
+        viewModel.onScroll(1, LocalCacheModel(), listOf())
 
         val layoutList = listOf(
             createHomeHeaderUiModel(),
@@ -114,7 +113,7 @@ class TokoNowHomeViewModelTestOnScroll : TokoNowHomeViewModelTestFixture() {
             removeAbleWidgets = listOf()
         )
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-        viewModel.onScroll(index, LocalCacheModel(), listOf(), true)
+        viewModel.onScroll(index, LocalCacheModel(), listOf())
 
         verifyGetHomeLayoutDataUseCaseCalled(times = 1)
     }
@@ -155,9 +154,9 @@ class TokoNowHomeViewModelTestOnScroll : TokoNowHomeViewModelTestFixture() {
 
         onGetHomeLayoutData_thenReturn(loadMoreLayoutResponse)
 
-        viewModel.onScroll(1, LocalCacheModel(), listOf(), true)
-        viewModel.onScroll(0, LocalCacheModel(), listOf(), true)
-        viewModel.onScroll(0, LocalCacheModel(), listOf(), true)
+        viewModel.onScroll(1, LocalCacheModel(), listOf())
+        viewModel.onScroll(0, LocalCacheModel(), listOf())
+        viewModel.onScroll(0, LocalCacheModel(), listOf())
 
         verifyGetHomeLayoutDataUseCaseCalled(times = 2)
     }
@@ -206,7 +205,7 @@ class TokoNowHomeViewModelTestOnScroll : TokoNowHomeViewModelTestFixture() {
         )
         addHomeLayoutItem(progressBar)
 
-        viewModel.onScroll(4, LocalCacheModel(), listOf(), true)
+        viewModel.onScroll(4, LocalCacheModel(), listOf())
 
         verifyGetHomeLayoutDataUseCaseCalled(times = 1)
     }
@@ -223,7 +222,7 @@ class TokoNowHomeViewModelTestOnScroll : TokoNowHomeViewModelTestFixture() {
 
         onGetHomeLayoutData_thenReturn(MessageErrorException())
 
-        viewModel.onScroll(1, LocalCacheModel(), listOf(), true)
+        viewModel.onScroll(1, LocalCacheModel(), listOf())
 
         verifyGetHomeLayoutDataUseCaseCalled(times = 2)
     }
