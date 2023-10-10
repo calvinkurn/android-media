@@ -161,10 +161,10 @@ class StoriesGroupFragment @Inject constructor(
                     is StoriesUiEvent.SelectGroup -> selectGroupPosition(event.position, event.showAnimation)
                     is StoriesUiEvent.ErrorGroupPage -> {
                         showPageLoading(false)
-                        setErrorType(if (event.throwable.isNetworkError) StoriesErrorView.Type.NoInternet else StoriesErrorView.Type.FailedLoad, true) { event.onClick()}
+                        setErrorType(if (event.throwable.isNetworkError) StoriesErrorView.Type.NoInternet else StoriesErrorView.Type.FailedLoad) { event.onClick()}
                     }
                     StoriesUiEvent.EmptyGroupPage -> {
-                        setErrorType(StoriesErrorView.Type.NoStories, true)
+                        setErrorType(StoriesErrorView.Type.NoStories)
                         showPageLoading(false)
                     }
                     StoriesUiEvent.FinishedAllStories -> activity?.finish()
@@ -203,8 +203,8 @@ class StoriesGroupFragment @Inject constructor(
         storiesGroupViewPager.showWithCondition(!isShowLoading)
     }
 
-    private fun setErrorType(errorType: StoriesErrorView.Type, isShow: Boolean, onClick: () -> Unit = {}) = with(binding.vStoriesError) {
-        showWithCondition(isShow)
+    private fun setErrorType(errorType: StoriesErrorView.Type, onClick: () -> Unit = {}) = with(binding.vStoriesError) {
+        show()
         type = errorType
         setAction { onClick() }
         setCloseAction { activity?.finish() }
