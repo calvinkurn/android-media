@@ -21,8 +21,10 @@ import com.tokopedia.oneclickcheckout.common.interceptor.VALIDATE_USE_PROMO_REVA
 import com.tokopedia.oneclickcheckout.common.interceptor.VALIDATE_USE_PROMO_REVAMP_CASHBACK_FULL_APPLIED_RESPONSE
 import com.tokopedia.oneclickcheckout.common.interceptor.VALIDATE_USE_PROMO_REVAMP_CASHBACK_HALF_APPLIED_RESPONSE
 import com.tokopedia.oneclickcheckout.common.robot.orderSummaryPage
+import com.tokopedia.oneclickcheckout.common.robot.waitForBottomSheet
 import com.tokopedia.oneclickcheckout.common.rule.FreshIdlingResourceTestRule
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageActivity
+import com.tokopedia.oneclickcheckout.order.view.TestOrderSummaryPageActivity
 import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import org.hamcrest.MatcherAssert.assertThat
@@ -36,11 +38,10 @@ class OrderSummaryPageActivityTrackingTest {
 
     companion object {
         private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME = "tracker/transaction/one_click_checkout_order_summary.json"
-        private const val ANALYTIC_VALIDATOR_PROMO_RED_STATE_QUERY_FILE_NAME = "tracker/transaction/one_click_checkout_order_summary_promo_red_state.json"
     }
 
     @get:Rule
-    var activityRule = IntentsTestRule(OrderSummaryPageActivity::class.java, false, false)
+    var activityRule = IntentsTestRule(TestOrderSummaryPageActivity::class.java, false, false)
 
     @get:Rule
     val freshIdlingResourceTestRule = FreshIdlingResourceTestRule()
@@ -96,7 +97,7 @@ class OrderSummaryPageActivityTrackingTest {
             }
 
             // wait for bottom sheet to fully close
-            Thread.sleep(2000)
+            waitForBottomSheet()
             clickButtonPromo()
 
             promoInterceptor.customValidateUseResponsePath = VALIDATE_USE_PROMO_REVAMP_BBO_APPLIED_RESPONSE

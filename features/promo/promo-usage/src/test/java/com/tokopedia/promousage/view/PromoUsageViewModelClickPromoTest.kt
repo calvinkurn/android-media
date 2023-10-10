@@ -15,7 +15,6 @@ import com.tokopedia.promousage.domain.entity.list.PromoItem
 import com.tokopedia.promousage.view.viewmodel.ClickPromoUiAction
 import com.tokopedia.promousage.view.viewmodel.PromoCtaUiAction
 import com.tokopedia.promousage.view.viewmodel.PromoPageUiState
-import com.tokopedia.promousage.view.viewmodel.UsePromoRecommendationUiAction
 import io.mockk.coEvery
 import org.junit.Test
 
@@ -87,7 +86,6 @@ class PromoUsageViewModelClickPromoTest : BasePromoUsageViewModelTest() {
         }
         assert(hasSelectedRecommendedPromo == true)
         assert(viewModel.clickPromoUiAction.value is ClickPromoUiAction.Updated)
-        assert(viewModel.usePromoRecommendationUiAction.value is UsePromoRecommendationUiAction.Success)
     }
 
     @Test

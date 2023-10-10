@@ -1,7 +1,10 @@
 package com.tokopedia.catalogcommon.viewholder
 
 import android.graphics.Color
+import android.view.LayoutInflater
 import android.view.View
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import com.google.android.material.tabs.TabLayout
@@ -10,8 +13,12 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.catalogcommon.R
 import com.tokopedia.catalogcommon.databinding.WidgetStickyNavigationBinding
 import com.tokopedia.catalogcommon.uimodel.StickyNavigationUiModel
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.unifycomponents.R as unifycomponentsR
+
 
 class StickyTabNavigationViewHolder(
     itemView: View,
@@ -29,7 +36,8 @@ class StickyTabNavigationViewHolder(
 
     override fun bind(element: StickyNavigationUiModel?) {
         binding?.let {
-            it.catalogTabsUnify.tabLayout.removeAllTabs()
+            it.catalogTabsUnify.removeAllTabs()
+            it.catalogTabsUnify.clearOnTabSelectedListeners()
             setupTabs(
                 element,
                 element?.widgetBackgroundColor ?: Color.TRANSPARENT
@@ -42,36 +50,41 @@ class StickyTabNavigationViewHolder(
         widgetBackgroundColor: Int
     ) {
         binding?.run {
-            element?.content?.forEach {
-                catalogTabsUnify.addNewTab(it.title)
+
+            if (catalogTabsUnify.tabCount == Int.ZERO){
+                element?.content?.forEachIndexed { index, item ->
+                    val customText = LayoutInflater.from(itemView.context)
+                        .inflate(R.layout.custom_tab_text, null) as LinearLayout
+                    val textView = customText.findViewById<Typography>(R.id.tab_item_text_id)
+                    textView.setText(item.title)
+                    textView.setLineSpacing(4f,1f)
+                    catalogTabsUnify.addTab(catalogTabsUnify.newTab().setCustomView(customText))
+
+                }
             }
-            catalogTabsUnify.customTabMode = TabLayout.MODE_FIXED
-            catalogTabsUnify.tabLayout.isTabIndicatorFullWidth = false
-            catalogTabsUnify.tabLayout.setBackgroundColor(widgetBackgroundColor)
+            catalogTabsUnify.getTabAt(element?.currentSelectTab.orZero())?.select()
+            catalogTabsUnify.tabMode = TabLayout.MODE_FIXED
+            catalogTabsUnify.isTabIndicatorFullWidth = false
+            catalogTabsUnify.setBackgroundColor(widgetBackgroundColor)
             val centeredTabIndicator = ContextCompat.getDrawable(
-                catalogTabsUnify.tabLayout.context,
+                catalogTabsUnify.context,
                 R.drawable.shape_showcase_tab_indicator_color
             )
-            catalogTabsUnify.tabLayout.getTabAt(element?.currentSelectTab.orZero())?.select()
-            catalogTabsUnify.tabLayout.setSelectedTabIndicator(centeredTabIndicator)
-            catalogTabsUnify.tabLayout.setTabTextColors(Color.BLUE, Color.BLACK)
-            catalogTabsUnify.tabLayout.addOnTabSelectedListener(object : OnTabSelectedListener {
+            catalogTabsUnify.setSelectedTabIndicator(centeredTabIndicator)
+            catalogTabsUnify.setTabTextColors(Color.BLUE, Color.BLACK)
+            catalogTabsUnify.addOnTabSelectedListener(object : OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
-                    if (tab?.position.orZero() != element?.currentSelectTab){
-                        element?.currentSelectTab = tab?.position.orZero()
-                        listener?.onNavigateWidget(
-                            element?.content?.get(tab?.position.orZero())?.anchorTo.orEmpty(),
-                            element?.currentSelectTab.orZero(),
-                            element?.content?.getOrNull(tab?.position.orZero())?.title.orEmpty()
-                        )
-                    }
+                    listener?.onNavigateWidget(
+                        element?.content?.get(tab?.position.orZero())?.anchorTo.orEmpty(),
+                        tab?.position.orZero(),
+                        element?.content?.getOrNull(tab?.position.orZero())?.title.orEmpty(),
+                    )
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab?) {
-                }
+                                  }
 
                 override fun onTabReselected(tab: TabLayout.Tab?) {
-                    element?.currentSelectTab = tab?.position.orZero()
 
                 }
 

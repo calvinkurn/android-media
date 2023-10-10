@@ -23,6 +23,7 @@ data class ProductShopCredibilityDataModel(
     val type: String = String.EMPTY,
 
     var shopLastActive: String = String.EMPTY,
+    var shopId: String = String.EMPTY,
     var shopName: String = String.EMPTY,
     var shopAva: String = String.EMPTY,
     var shopLocation: String = String.EMPTY,

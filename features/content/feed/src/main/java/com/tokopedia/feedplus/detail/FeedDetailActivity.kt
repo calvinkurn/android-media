@@ -72,7 +72,8 @@ class FeedDetailActivity : BaseActivity() {
                         key = TAB_TYPE_CDP,
                         type = source,
                         position = TAB_FIRST_INDEX,
-                        isActive = true
+                        isActive = true,
+                        isSelected = false,
                     ),
                     extrasData,
                     intent?.getStringExtra(ApplinkConstInternalContent.UF_EXTRA_FEED_ENTRY_POINT)

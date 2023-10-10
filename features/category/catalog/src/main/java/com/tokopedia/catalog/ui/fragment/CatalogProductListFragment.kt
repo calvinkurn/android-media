@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -66,6 +67,7 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 import com.tokopedia.abstraction.R as abstractionR
 import com.tokopedia.catalog.R as catalogR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class CatalogProductListFragment :
     BaseListFragment<Visitable<*>, CatalogProductListAdapterFactoryImpl>(),
@@ -759,18 +761,18 @@ class CatalogProductListFragment :
     }
 
     private fun initToolbar() {
-        binding?.apply {
-            toolbar.shareButton?.hide()
-            toolbar.searchButton?.hide()
-            toolbar.title = catalogTitle
-            toolbar.cartButton?.setOnClickListener {
+        binding?.toolbar?.apply {
+            shareButton?.hide()
+            searchButton?.hide()
+            title = catalogTitle
+            cartButton?.setOnClickListener {
                 if (viewModel.isUserLoggedIn()) {
                     RouteManager.route(context, ApplinkConst.CART)
                 } else {
                     goToLoginPage()
                 }
             }
-            toolbar.setNavigationOnClickListener {
+            setNavigationOnClickListener {
                 CatalogReimagineDetailAnalytics.sendEvent(
                     event = CatalogTrackerConstant.EVENT_VIEW_CLICK_PG,
                     action = CatalogTrackerConstant.EVENT_ACTION_CLICK_BACK_BUTTON,
@@ -780,6 +782,7 @@ class CatalogProductListFragment :
                 )
                 activity?.finish()
             }
+            setColors(MethodChecker.getColor(context, unifyprinciplesR.color.Unify_NN950))
         }
     }
 

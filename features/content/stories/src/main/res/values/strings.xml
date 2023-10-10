@@ -1,0 +1,17 @@
+<resources>
+    <string name="stories_delete_story_title">Hapus Story</string>
+    <string name="stories_delete_story_description">Kamu yakin ingin menghapus story ini?</string>
+    <string name="stories_product_bottomsheet_title">Produk pilihan</string>
+    <string name="stories_product_notch">Lihat %1s Produk</string>
+    <string name="stories_product_atc_success">1 barang berhasil ditambahkan ke keranjang</string>
+    <string name="stories_retry">Coba Lagi</string>
+    <string name="stories_retry_description">Yaah, gagal memuat konten</string>
+    <string name="stories_content_unavailable">Yaah, konten sudah tidak tersedia</string>
+    <string name="stories_content_no_network_title">Koneksi internetmu terganggu!</string>
+    <string name="stories_content_no_network_description">Yuk, pastikan internetmu lancar dengan cek ulang paket data, WiFi, atau jaringan di tempatmu.</string>
+    <string name="stories_onboard_move_category">Pindah Kategori</string>
+    <string name="stories_onboard_back">Balik</string>
+    <string name="stories_onboard_next">Lanjut</string>
+    <string name="stories_onboard_see_product">Lihat Produk</string>
+    <string name="stories_product_see_cart">Lihat</string>
+</resources>

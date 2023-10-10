@@ -17,8 +17,8 @@ import com.tokopedia.productcard.utils.forceLightRed
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.model.ShopHomeTerlarisWidgetTrackerDataModel
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
-import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeV4TerlarisViewHolder
-import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeV4TerlarisViewHolder.Companion.PRODUCT_THREE
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeReimagineTerlarisViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeReimagineTerlarisViewHolder.Companion.PRODUCT_THREE
 import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 import com.tokopedia.unifycomponents.ImageUnify
@@ -27,7 +27,7 @@ import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 
 class ShopHomeV4TerlarisAdapter(
-    private val listener: ShopHomeV4TerlarisViewHolder.ShopHomeV4TerlarisViewHolderListener,
+    private val listener: ShopHomeReimagineTerlarisViewHolder.ShopHomeV4TerlarisViewHolderListener,
     private val isOverrideTheme: Boolean,
     private val colorSchema: ShopPageColorSchema,
     private val element: ShopHomeCarousellProductUiModel
