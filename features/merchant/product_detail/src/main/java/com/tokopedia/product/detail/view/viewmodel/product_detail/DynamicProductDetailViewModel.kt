@@ -491,27 +491,23 @@ class DynamicProductDetailViewModel @Inject constructor(
      * If variant change, make sure this function is called after update product Id
      */
     fun getMultiOriginByProductId(): WarehouseInfo {
-        getDynamicProductInfoP1?.let {
-            return p2Data.value?.nearestWarehouseInfo?.get(it.basic.productID) ?: WarehouseInfo()
-        }
-
-        return WarehouseInfo()
+        val p1Data = getDynamicProductInfoP1 ?: return WarehouseInfo()
+        val p2Data = p2Data.value ?: return WarehouseInfo()
+        return p2Data.nearestWarehouseInfo[p1Data.basic.productID] ?: WarehouseInfo()
     }
 
     fun processVariant(
         data: ProductVariant,
-        mapOfSelectedVariant: Map<String, String>?
+        mapOfSelectedVariant: Map<String, String>
     ) {
-        launch(dispatcher.io) {
+        launch(context = dispatcher.io) {
             runCatching {
                 ProductDetailVariantLogic.determineVariant(
-                    mapOfSelectedOptionIds = mapOfSelectedVariant.orEmpty(),
+                    mapOfSelectedOptionIds = mapOfSelectedVariant,
                     productVariant = data
                 )
             }.onSuccess {
-                launch(dispatcher.main) {
-                    _singleVariantData.postValue(it)
-                }
+                _singleVariantData.postValue(it)
             }
         }
     }

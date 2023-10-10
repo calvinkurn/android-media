@@ -37,6 +37,7 @@ import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product.detail.common.data.model.re.RestrictionData
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
+import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
 import com.tokopedia.product.detail.data.model.ProductInfoP2Login
 import com.tokopedia.product.detail.data.model.ProductInfoP2Other
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
@@ -447,17 +448,41 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
     //region getMultiOriginByProductId
     @Test
-    fun `get multi origin but p1 data is null`() {
-        spykViewModel.getDynamicProductInfoP1 = null
-        val data = viewModel.getMultiOriginByProductId()
-        assertEquals(data.id, "")
+    fun `get multi origin but p1 & p2 data not null`() {
+        val expected = WarehouseInfo(id = "1")
+        spykViewModel.getDynamicProductInfoP1 = DynamicProductInfoP1(basic = BasicInfo(productID = "123"))
+        every { spykViewModel.p2Data.value } returns ProductInfoP2UiData(
+            nearestWarehouseInfo = mapOf("123" to expected)
+        )
+        val data = spykViewModel.getMultiOriginByProductId()
+        assertEquals(expected.id, data.id)
     }
 
     @Test
-    fun `get multi origin but p1 data not null`() {
+    fun `get multi origin but p1 data is null`() {
+        spykViewModel.getDynamicProductInfoP1 = null
+        val data = viewModel.getMultiOriginByProductId()
+        assertTrue(data.id.isBlank())
+    }
+
+    @Test
+    fun `get multi origin but p2 data not null`() {
         spykViewModel.getDynamicProductInfoP1 = DynamicProductInfoP1()
+        every { spykViewModel.p2Data.value } returns null
+
         val data = spykViewModel.getMultiOriginByProductId()
-        Assert.assertNotNull(data.id)
+        assertTrue(data.id.isBlank())
+    }
+
+    @Test
+    fun `get multi origin but warehouse id unavailable`() {
+        val expected = WarehouseInfo(id = "1")
+        spykViewModel.getDynamicProductInfoP1 = DynamicProductInfoP1()
+        every { spykViewModel.p2Data.value } returns ProductInfoP2UiData(
+            nearestWarehouseInfo = mapOf("123" to expected)
+        )
+        val data = spykViewModel.getMultiOriginByProductId()
+        assertTrue(data.id.isBlank())
     }
     //endregion
 
@@ -1624,6 +1649,21 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         every {
             ProductDetailVariantLogic.determineVariant(mapOfSelectedOptionIds, productVariant)
         } returns null
+
+        viewModel.processVariant(productVariant, mapOfSelectedOptionIds)
+        assertTrue(viewModel.singleVariantData.value == null)
+    }
+
+    @Test
+    fun `determine variant is throw`() {
+        val productVariant = ProductVariant()
+        val mapOfSelectedOptionIds = mutableMapOf<String, String>()
+
+        mockkObject(ProductDetailVariantLogic)
+
+        every {
+            ProductDetailVariantLogic.determineVariant(mapOfSelectedOptionIds, productVariant)
+        } throws Throwable()
 
         viewModel.processVariant(productVariant, mapOfSelectedOptionIds)
         assertTrue(viewModel.singleVariantData.value == null)

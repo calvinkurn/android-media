@@ -538,7 +538,7 @@ open class DynamicProductDetailFragment :
             playWidgetCoordinator = PlayWidgetCoordinator(this).apply {
                 setListener(this@DynamicProductDetailFragment)
             },
-            affiliateCookieHelper.get(),
+            affiliateCookieHelper.get()
         )
     }
     private val adapter by lazy {
@@ -3744,10 +3744,7 @@ open class DynamicProductDetailFragment :
         } else {
             // ignore auto-select variant when first load pdp in thumbnail variant
             val selectedOptionIds = determineInitialOptionId(productId)
-            viewModel.processVariant(
-                data,
-                selectedOptionIds
-            )
+            viewModel.processVariant(data, selectedOptionIds)
         }
     }
 
