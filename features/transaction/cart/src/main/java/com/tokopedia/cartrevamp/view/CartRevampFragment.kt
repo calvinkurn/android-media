@@ -1478,8 +1478,8 @@ class CartRevampFragment :
                 AddOnConstant.QUERY_PARAM_CATEGORY_ID to cartItemData.categoryId,
                 AddOnConstant.QUERY_PARAM_SHOP_ID to cartItemData.shopHolderData.shopId,
                 AddOnConstant.QUERY_PARAM_QUANTITY to cartItemData.quantity,
-                AddOnConstant.QUERY_PARAM_PRICE to price.toString().removeSingleDecimalSuffix(),
-                AddOnConstant.QUERY_PARAM_DISCOUNTED_PRICE to discountedPrice.toString()
+                AddOnConstant.QUERY_PARAM_PRICE to price.toBigDecimal().toPlainString().removeSingleDecimalSuffix(),
+                AddOnConstant.QUERY_PARAM_DISCOUNTED_PRICE to discountedPrice.toBigDecimal().toPlainString()
                     .removeSingleDecimalSuffix()
             )
         )
@@ -1769,6 +1769,31 @@ class CartRevampFragment :
             GlobalError.NO_CONNECTION
         } else {
             GlobalError.SERVER_ERROR
+        }
+    }
+
+    private fun getBoPromoCodes(): List<String> {
+        return when {
+            viewModel.cartModel.isLastApplyResponseStillValid -> {
+                val lastApplyPromo =
+                    viewModel.cartModel.cartListData?.promo?.lastApplyPromo ?: LastApplyPromo()
+                lastApplyPromo.lastApplyPromoData
+                    .listVoucherOrders
+                    .filter { it.isTypeLogistic() }
+                    .map { it.code }
+            }
+
+            viewModel.cartModel.lastValidateUseRequest != null -> {
+                val promoUiModel =
+                    viewModel.cartModel.lastValidateUseResponse?.promoUiModel ?: PromoUiModel()
+                promoUiModel.voucherOrderUiModels
+                    .filter { it.isTypeLogistic() }
+                    .map { it.code }
+            }
+
+            else -> {
+                emptyList()
+            }
         }
     }
 
@@ -2524,6 +2549,8 @@ class CartRevampFragment :
                         val params = generateParamGetLastApplyPromo()
                         if (!removeAllItems && (isNeedHitUpdateCartAndValidateUse(params))) {
                             viewModel.doUpdateCartAndGetLastApply(params)
+                        } else if (!removeAllItems) {
+                            updatePromoCheckoutManualIfNoSelected(getAllAppliedPromoCodes(params))
                         }
                         viewModel.processUpdateCartCounter()
                         viewModel.updateSelectedAmount()
@@ -3148,46 +3175,52 @@ class CartRevampFragment :
         wishlistIcon: IconUnify,
         animatedWishlistImage: ImageView
     ) {
-        wishlistIcon.invisible()
-        animatedWishlistImage.show()
-        val animation: AnimatedVectorDrawableCompat? =
-            AnimatedVectorDrawableCompat.create(requireContext(), R.drawable.wishlist)
-        if (animation != null) {
-            animatedWishlistImage.background = animation
-            animation.start()
+        context?.let { ctx ->
+            wishlistIcon.invisible()
+            animatedWishlistImage.show()
+            val animation: AnimatedVectorDrawableCompat? =
+                AnimatedVectorDrawableCompat.create(ctx, R.drawable.wishlist)
+            if (animation != null) {
+                animatedWishlistImage.background = animation
+                animation.start()
 
-            Handler(Looper.getMainLooper()).postDelayed({
-                val inWishlistColor = ContextCompat.getColor(
-                    requireContext(),
-                    unifyprinciplesR.color.Unify_RN500
-                )
-                wishlistIcon.setImage(
-                    IconUnify.HEART_FILLED,
-                    inWishlistColor,
-                    inWishlistColor,
-                    inWishlistColor,
-                    inWishlistColor
-                )
-                animatedWishlistImage.gone()
-                wishlistIcon.show()
-            }, 1000L)
+                Handler(Looper.getMainLooper()).postDelayed({
+                    context?.let { ctx2 ->
+                        val inWishlistColor = ContextCompat.getColor(
+                            ctx2,
+                            unifyprinciplesR.color.Unify_RN500
+                        )
+                        wishlistIcon.setImage(
+                            IconUnify.HEART_FILLED,
+                            inWishlistColor,
+                            inWishlistColor,
+                            inWishlistColor,
+                            inWishlistColor
+                        )
+                        animatedWishlistImage.gone()
+                        wishlistIcon.show()
+                    }
+                }, 1000L)
+            }
+            viewModel.processGetWishlistV2Data()
         }
-        viewModel.processGetWishlistV2Data()
     }
 
     private fun onRemoveFromWishlistSuccess(wishlistIcon: IconUnify, position: Int) {
-        val notInWishlistColor = ContextCompat.getColor(
-            requireContext(),
-            unifyprinciplesR.color.Unify_NN500
-        )
-        wishlistIcon.setImage(
-            IconUnify.HEART,
-            notInWishlistColor,
-            notInWishlistColor,
-            notInWishlistColor,
-            notInWishlistColor
-        )
-        onNeedToUpdateViewItem(position)
+        context?.let { ctx ->
+            val notInWishlistColor = ContextCompat.getColor(
+                ctx,
+                unifyprinciplesR.color.Unify_NN500
+            )
+            wishlistIcon.setImage(
+                IconUnify.HEART,
+                notInWishlistColor,
+                notInWishlistColor,
+                notInWishlistColor,
+                notInWishlistColor
+            )
+            onNeedToUpdateViewItem(position)
+        }
     }
 
     private fun onDeleteCartDataSuccess(
@@ -3858,7 +3891,7 @@ class CartRevampFragment :
     }
 
     private fun renderPromoCheckoutButtonActiveDefault(listPromoApplied: List<String>) {
-        viewModel.getEntryPointInfoDefault()
+        viewModel.getEntryPointInfoDefault(listPromoApplied)
     }
 
     private fun renderPromoCheckoutButtonNoItemIsSelected() {
@@ -4103,6 +4136,7 @@ class CartRevampFragment :
                 val bottomSheetPromo = PromoUsageBottomSheet.newInstance(
                     entryPoint = PromoPageEntryPoint.CART_PAGE,
                     promoRequest = generateParamsCouponList(),
+                    boPromoCodes = getBoPromoCodes(),
                     validateUsePromoRequest = generateParamGetLastApplyPromo(),
                     totalAmount = getCurrentTotalPrice(),
                     listener = this@CartRevampFragment
@@ -4480,59 +4514,61 @@ class CartRevampFragment :
     }
 
     private fun showBulkActionCoachMark() {
-        bulkActionCoachMark?.dismissCoachMark()
-        plusCoachMark?.dismissCoachMark()
-        mainFlowCoachMark?.dismissCoachMark()
-        if ((
-            viewModel.cartModel.cartListData?.onboardingData?.size
-                ?: 0
-            ) < BULK_ACTION_ONBOARDING_MIN_QUANTITY_INDEX
-        ) {
-            return
-        }
+        context?.let {
+            bulkActionCoachMark?.dismissCoachMark()
+            plusCoachMark?.dismissCoachMark()
+            mainFlowCoachMark?.dismissCoachMark()
+            if ((
+                viewModel.cartModel.cartListData?.onboardingData?.size
+                    ?: 0
+                ) < BULK_ACTION_ONBOARDING_MIN_QUANTITY_INDEX
+            ) {
+                return
+            }
 
-        bulkActionCoachMark = CoachMark2(requireContext())
-        bulkActionCoachMark?.setStepListener(object : CoachMark2.OnStepListener {
-            override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
-                val selectedAmountCoachMarkIndex = 1
-                if (currentIndex == selectedAmountCoachMarkIndex && isMockMainFlowCoachMarkShown) {
-                    val topItemPosition =
-                        (binding?.rvCart?.layoutManager as GridLayoutManager).findFirstVisibleItemPosition()
-                    if (topItemPosition == RecyclerView.NO_POSITION) return
+            bulkActionCoachMark = CoachMark2(it)
+            bulkActionCoachMark?.setStepListener(object : CoachMark2.OnStepListener {
+                override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
+                    val selectedAmountCoachMarkIndex = 1
+                    if (currentIndex == selectedAmountCoachMarkIndex && isMockMainFlowCoachMarkShown) {
+                        val topItemPosition =
+                            (binding?.rvCart?.layoutManager as GridLayoutManager).findFirstVisibleItemPosition()
+                        if (topItemPosition == RecyclerView.NO_POSITION) return
 
-                    val adapterData = viewModel.cartDataList.value
-                    if (topItemPosition >= adapterData.size) return
+                        val adapterData = viewModel.cartDataList.value
+                        if (topItemPosition >= adapterData.size) return
 
-                    val firstVisibleItemData = adapterData[topItemPosition]
+                        val firstVisibleItemData = adapterData[topItemPosition]
 
-                    val needToScroll = CartDataHelper.hasReachAllShopItems(firstVisibleItemData)
+                        val needToScroll = CartDataHelper.hasReachAllShopItems(firstVisibleItemData)
 
-                    if (needToScroll) {
-                        binding?.rvCart?.smoothScrollToPosition(0)
+                        if (needToScroll) {
+                            binding?.rvCart?.smoothScrollToPosition(0)
+                        }
+
+                        isMockMainFlowCoachMarkShown = false
                     }
 
-                    isMockMainFlowCoachMarkShown = false
+                    bulkActionCoachMarkLastActiveIndex = currentIndex
                 }
-
-                bulkActionCoachMarkLastActiveIndex = currentIndex
+            })
+            bulkActionCoachMark?.simpleCloseIcon?.setOnClickListener {
+                bulkActionCoachMark?.dismissCoachMark()
+                hasShowBulkActionCoachMark = false
             }
-        })
-        bulkActionCoachMark?.simpleCloseIcon?.setOnClickListener {
-            bulkActionCoachMark?.dismissCoachMark()
-            hasShowBulkActionCoachMark = false
-        }
-        bulkActionCoachMark?.stepCloseIcon?.setOnClickListener {
-            bulkActionCoachMark?.dismissCoachMark()
-            hasShowBulkActionCoachMark = false
-        }
-        bulkActionCoachMark?.onFinishListener = {
-            hasShowBulkActionCoachMark = false
-        }
+            bulkActionCoachMark?.stepCloseIcon?.setOnClickListener {
+                bulkActionCoachMark?.dismissCoachMark()
+                hasShowBulkActionCoachMark = false
+            }
+            bulkActionCoachMark?.onFinishListener = {
+                hasShowBulkActionCoachMark = false
+            }
 
-        val layoutManager: GridLayoutManager = binding?.rvCart?.layoutManager as GridLayoutManager
-        val position = layoutManager.findFirstCompletelyVisibleItemPosition()
+            val layoutManager: GridLayoutManager = binding?.rvCart?.layoutManager as GridLayoutManager
+            val position = layoutManager.findFirstCompletelyVisibleItemPosition()
 
-        generateBulkActionCoachMark(position)
+            generateBulkActionCoachMark(position)
+        }
     }
 
     private fun generateBulkActionCoachMark(position: Int) {
@@ -4549,51 +4585,65 @@ class CartRevampFragment :
 
         binding?.rvCart?.apply {
             post {
-                if (position > 0) {
-                    binding?.topLayout?.textActionDelete?.let {
-                        bulkActionCoachMarkItems.add(
-                            CoachMark2Item(
-                                it,
-                                "",
-                                selectedAmountData.text,
-                                CoachMark2.POSITION_BOTTOM
+                context?.let {
+                    if (position > 0) {
+                        binding?.topLayout?.textActionDelete?.let {
+                            bulkActionCoachMarkItems.add(
+                                CoachMark2Item(
+                                    it,
+                                    "",
+                                    selectedAmountData.text,
+                                    CoachMark2.POSITION_BOTTOM
+                                )
                             )
-                        )
+                        }
+                    } else {
+                        val selectedAmountViewHolder = findViewHolderForAdapterPosition(0)
+                        if (selectedAmountViewHolder is CartSelectedAmountViewHolder) {
+                            val textActionDeleteView =
+                                selectedAmountViewHolder.getTextActionDeleteView()
+                            bulkActionCoachMarkItems.add(
+                                CoachMark2Item(
+                                    textActionDeleteView,
+                                    "",
+                                    selectedAmountData.text,
+                                    CoachMark2.POSITION_BOTTOM
+                                )
+                            )
+                        }
                     }
-                } else {
-                    val selectedAmountViewHolder = findViewHolderForAdapterPosition(0)
-                    if (selectedAmountViewHolder is CartSelectedAmountViewHolder) {
-                        val textActionDeleteView =
-                            selectedAmountViewHolder.getTextActionDeleteView()
-                        bulkActionCoachMarkItems.add(
-                            CoachMark2Item(
-                                textActionDeleteView,
-                                "",
-                                selectedAmountData.text,
-                                CoachMark2.POSITION_BOTTOM
-                            )
-                        )
-                    }
-                }
 
-                val nearestItemHolderDataPosition =
-                    CartDataHelper.getNearestCartItemHolderDataPosition(position, data)
+                    val nearestItemHolderDataPosition =
+                        CartDataHelper.getNearestCartItemHolderDataPosition(position, data)
 
-                if (nearestItemHolderDataPosition != RecyclerView.NO_POSITION) {
-                    val nearestCartItemViewHolder =
-                        findViewHolderForAdapterPosition(nearestItemHolderDataPosition)
-                    if (nearestCartItemViewHolder is CartItemViewHolder) {
-                        val quantityView =
-                            nearestCartItemViewHolder.getItemViewBinding().qtyEditorProduct.subtractButton
-                        bulkActionCoachMarkItems.add(
-                            CoachMark2Item(
-                                quantityView,
-                                "",
-                                minQuantityOnboardingData.text,
-                                CoachMark2.POSITION_BOTTOM
+                    if (nearestItemHolderDataPosition != RecyclerView.NO_POSITION) {
+                        val nearestCartItemViewHolder =
+                            findViewHolderForAdapterPosition(nearestItemHolderDataPosition)
+                        if (nearestCartItemViewHolder is CartItemViewHolder) {
+                            val quantityView =
+                                nearestCartItemViewHolder.getItemViewBinding().qtyEditorProduct.subtractButton
+                            bulkActionCoachMarkItems.add(
+                                CoachMark2Item(
+                                    quantityView,
+                                    "",
+                                    minQuantityOnboardingData.text,
+                                    CoachMark2.POSITION_BOTTOM
+                                )
                             )
-                        )
-                    } else if (nearestCartItemViewHolder == null && bulkActionCoachMarkItems.isNotEmpty()) {
+                        } else if (nearestCartItemViewHolder == null && bulkActionCoachMarkItems.isNotEmpty()) {
+                            binding?.root?.let {
+                                bulkActionCoachMarkItems.add(
+                                    CoachMark2Item(
+                                        it,
+                                        "",
+                                        minQuantityOnboardingData.text,
+                                        CoachMark2.POSITION_BOTTOM
+                                    )
+                                )
+                                isMockMainFlowCoachMarkShown = true
+                            }
+                        }
+                    } else if (bulkActionCoachMarkItems.isNotEmpty()) {
                         binding?.root?.let {
                             bulkActionCoachMarkItems.add(
                                 CoachMark2Item(
@@ -4606,27 +4656,15 @@ class CartRevampFragment :
                             isMockMainFlowCoachMarkShown = true
                         }
                     }
-                } else if (bulkActionCoachMarkItems.isNotEmpty()) {
-                    binding?.root?.let {
-                        bulkActionCoachMarkItems.add(
-                            CoachMark2Item(
-                                it,
-                                "",
-                                minQuantityOnboardingData.text,
-                                CoachMark2.POSITION_BOTTOM
-                            )
-                        )
-                        isMockMainFlowCoachMarkShown = true
-                    }
-                }
 
-                bulkActionCoachMark?.showCoachMark(
-                    bulkActionCoachMarkItems,
-                    null,
-                    bulkActionCoachMarkLastActiveIndex
-                )
-                hasShowBulkActionCoachMark = true
-                CoachMarkPreference.setShown(requireContext(), CART_BULK_ACTION_COACH_MARK, true)
+                    bulkActionCoachMark?.showCoachMark(
+                        bulkActionCoachMarkItems,
+                        null,
+                        bulkActionCoachMarkLastActiveIndex
+                    )
+                    hasShowBulkActionCoachMark = true
+                    CoachMarkPreference.setShown(it, CART_BULK_ACTION_COACH_MARK, true)
+                }
             }
         }
     }

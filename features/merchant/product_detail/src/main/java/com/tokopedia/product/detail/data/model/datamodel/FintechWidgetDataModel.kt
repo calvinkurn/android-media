@@ -1,6 +1,8 @@
 package com.tokopedia.product.detail.data.model.datamodel
 
 import android.os.Bundle
+import com.tokopedia.analytics.performance.perf.BlocksLoadableComponent
+import com.tokopedia.analytics.performance.perf.LoadableComponent
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.pdp.fintech.view.FintechPriceURLDataModel
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
@@ -15,8 +17,11 @@ data class FintechWidgetDataModel(
     var shopId: String = "",
     var parentId: String = "",
     val widgetSession: Long = 0L
-) : DynamicPdpDataModel {
-
+) : DynamicPdpDataModel,
+    LoadableComponent by BlocksLoadableComponent(
+        { false },
+        "FintechWidgetDataModel"
+    ) {
     override fun type() = type
 
     override fun type(typeFactory: DynamicProductDetailAdapterFactory) = typeFactory.type(this)
@@ -37,4 +42,8 @@ data class FintechWidgetDataModel(
     override fun getChangePayload(newData: DynamicPdpDataModel): Bundle? = null
 
     override val impressHolder = ImpressHolder()
+
+    override fun isLoading(): Boolean {
+        return productId.isEmpty()
+    }
 }

@@ -509,6 +509,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                 ratingScore
                 totalRating
                 totalReviewTextAndImage
+                showRatingReview
             }
            arInfo{
               productIDs
