@@ -8,6 +8,8 @@ import android.graphics.BlendModeColorFilter
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.os.Build
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
@@ -23,6 +25,88 @@ class EditorEditTextView @JvmOverloads constructor(
     context: Context,
     attributeSet: AttributeSet? = null
 ) : AppCompatEditText(context, attributeSet) {
+
+    private var unNormalizeText = ""
+    private var charLimit = 5
+    private var textWatcher: TextWatcher? = null
+    private var isWatcherIgnored = false
+
+    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
+//        checkCharLimit()
+        if (charLimit > 0) {
+            implementTextWatcher()
+        }
+        super.onLayout(changed, left, top, right, bottom)
+    }
+
+    private fun checkCharLimit() {
+        var tempString = CHAR_DUMMY
+
+        for (i in 1 until 1000) {
+            val charWidth = this.paint.measureText(tempString)
+            if (charWidth > this.width) {
+                charLimit = i - CHAR_LIMIT_TOLERANCE
+                break
+            }
+
+            tempString += CHAR_DUMMY
+        }
+    }
+
+    private fun implementTextWatcher() {
+        textWatcher = object: TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+                if (!isWatcherIgnored) {
+                    val isNeedReplace = autoNewLine(p0?.toString() ?: "")
+                    if (isNeedReplace) {
+                        isWatcherIgnored = true
+                        val finalText = normalizeValue(unNormalizeText)
+                        setText(finalText)
+                        setSelection(finalText.length)
+                        isWatcherIgnored = false
+                    }
+                }
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+        }
+
+        this.addTextChangedListener(textWatcher)
+    }
+
+    private fun autoNewLine(textParam: String): Boolean {
+        if (textParam.isEmpty()) return false
+        val textStringBuilder = StringBuilder(textParam)
+
+        return if (textParam.length > charLimit) {
+            val tempText = java.lang.StringBuilder(textParam)
+            var i = charLimit
+            val charCode = "\n"
+
+            while(tempText.indexOf(charCode) != -1) {
+                val indexTarget = tempText.indexOf(charCode)
+                tempText.delete(0, indexTarget + 1)
+                i += indexTarget + 1
+            }
+
+            while(tempText.length > charLimit) {
+                tempText.delete(0, charLimit)
+                textStringBuilder.insert(i, charCode)
+            }
+
+            unNormalizeText = textStringBuilder.toString()
+
+            true
+        } else {
+            false
+        }
+    }
+
+    private fun normalizeValue(text: String): String {
+        return text
+    }
+
 
     /**
      * Set default properties for [EditorEditTextView]
@@ -87,5 +171,8 @@ class EditorEditTextView @JvmOverloads constructor(
     companion object {
         private const val DEFAULT_FONT_SIZE = 16f
         private const val DEFAULT_BACKGROUND_PADDING = 4
+
+        private const val CHAR_DUMMY = "W"
+        private const val CHAR_LIMIT_TOLERANCE = 2
     }
 }
