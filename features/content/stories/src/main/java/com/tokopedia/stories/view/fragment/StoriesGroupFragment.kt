@@ -13,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.content.common.util.withCache
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -160,15 +161,10 @@ class StoriesGroupFragment @Inject constructor(
                     is StoriesUiEvent.SelectGroup -> selectGroupPosition(event.position, event.showAnimation)
                     is StoriesUiEvent.ErrorGroupPage -> {
                         showPageLoading(false)
-                        if (event.throwable.isNetworkError) {
-                            setNoInternet(true) { event.onClick() }
-                        } else {
-                            setFailed(true)
-                            binding.layoutStoriesFailed.btnStoriesFailedLoad.setOnClickListener { run { event.onClick() } }
-                        }
+                        setErrorType(if (event.throwable.isNetworkError) StoriesErrorView.Type.NoInternet else StoriesErrorView.Type.FailedLoad, true) { event.onClick()}
                     }
                     StoriesUiEvent.EmptyGroupPage -> {
-                        setEmptyPage(true)
+                        setErrorType(StoriesErrorView.Type.NoContent, true)
                         showPageLoading(false)
                     }
                     StoriesUiEvent.FinishedAllStories -> activity?.finish()
@@ -187,8 +183,7 @@ class StoriesGroupFragment @Inject constructor(
             state.selectedGroupPosition < 0
         ) return
 
-        setNoInternet(false)
-        setFailed(false)
+        hideError()
 
         binding.storiesGroupViewPager.adapter = pagerAdapter
         pagerAdapter.setStoriesGroup(state)
@@ -208,35 +203,14 @@ class StoriesGroupFragment @Inject constructor(
         storiesGroupViewPager.showWithCondition(!isShowLoading)
     }
 
-    private fun setNoInternet(isShow: Boolean, onClick : () -> Unit = {}) = with(binding.layoutStoriesNoInet) {
-        showWithCondition(isShow)
-        type = StoriesErrorView.Type.NoInternet
-        setAction { onClick() }
-        setCloseAction { activity?.finish() }
-    }
-
-    private fun setErrorType(errorType: StoriesErrorView.Type, isShow: Boolean, onClick: () -> Unit = {}) = with(binding.layoutStoriesNoInet) {
+    private fun setErrorType(errorType: StoriesErrorView.Type, isShow: Boolean, onClick: () -> Unit = {}) = with(binding.vStoriesError) {
         showWithCondition(isShow)
         type = errorType
         setAction { onClick() }
         setCloseAction { activity?.finish() }
     }
 
-    private fun setFailed(isShow: Boolean) = with(binding.layoutStoriesFailed) {
-        root.showWithCondition(isShow)
-        icCloseLoading.setOnClickListener {
-            activity?.finish()
-        }
-    }
-
-    private fun setEmptyPage(isShow: Boolean) = with(binding.layoutNoContent) {
-        root.translationZ = 1f
-        root.showWithCondition(isShow)
-        icCloseLoading.show()
-        icCloseLoading.setOnClickListener {
-            activity?.finish()
-        }
-    }
+    private fun hideError() = binding.vStoriesError.gone()
 
     private fun trackImpressionGroup() {
         analytic.sendViewStoryCircleEvent(

@@ -4,11 +4,12 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.stories.databinding.LayoutErrorViewBinding
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.stories.R
+import com.tokopedia.stories.databinding.LayoutErrorViewBinding
 
 /**
  * @author by astidhiyaa on 09/10/23
@@ -27,33 +28,58 @@ class StoriesErrorView : ConstraintLayout {
         this, true
     )
 
-    var type : Type = Type.Unknown
+    var type: Type = Type.Unknown
         set(value) {
             field = value
             val (title, description, image) =
                 when (value) {
-                    Type.NoContent -> Triple(R.string.stories_content_unavailable, null, IconUnify.IMAGE)
-                    Type.NoInternet -> Triple(R.string.stories_content_no_network_title, R.string.stories_content_no_network_description, IconUnify.SIGNAL_INACTIVE)
-                    Type.FailedLoad -> Triple(null, R.string.stories_retry_description, IconUnify.RELOAD)
-                    else -> Triple (null, null, IconUnify.ERROR)
+                    Type.NoContent -> Triple(
+                        R.string.stories_content_unavailable,
+                        null,
+                        IconUnify.IMAGE
+                    )
+
+                    Type.NoInternet -> Triple(
+                        R.string.stories_content_no_network_title,
+                        R.string.stories_content_no_network_description,
+                        IconUnify.SIGNAL_INACTIVE
+                    )
+
+                    Type.FailedLoad -> Triple(
+                        null,
+                        R.string.stories_retry_description,
+                        IconUnify.RELOAD
+                    )
+
+                    else -> Triple(null, null, IconUnify.ERROR)
                 }
             binding.storiesErrorIcon.setImage(newIconId = image)
             binding.storiesErrorTitle.text = title?.let { context.getString(it) }
             binding.storiesErrorDesc.text = description?.let { context.getString(it) }
+            binding.btnStoriesNoInetRetry.showWithCondition(value != Type.NoContent)
+            binding.loaderGroup.showWithCondition(value != Type.NoContent)
         }
 
-    //isRetryAble
-    //hasShimmer / has upper
-    //full screen
+    var isFullScreen: Boolean = true
+        set(value) {
+            field = value
+            val layoutParams = if (value) LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+            ) else
+                LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+                )
+            binding.root.layoutParams = layoutParams
+        }
 
     fun setAction(action: (View) -> Unit) {
         binding.btnStoriesNoInetRetry.setOnClickListener(action)
-        binding.btnStoriesNoInetRetry.show()
     }
 
-    fun setCloseAction (action: (View) -> Unit) {
+    fun setCloseAction(action: (View) -> Unit) {
         binding.icCloseLoading.setOnClickListener(action)
-        binding.icCloseLoading.show()
     }
 
     enum class Type {

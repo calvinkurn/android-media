@@ -31,8 +31,7 @@
         android:clickable="true"
         android:focusable="true"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/view_timer"
-        android:visibility="gone"/>
+        app:layout_constraintTop_toBottomOf="@id/view_timer" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_circle_1"
@@ -95,10 +94,10 @@
         app:loader_type="rect" />
 
     <androidx.constraintlayout.widget.Group
-        android:id="@+id/upper_group"
+        android:id="@+id/loader_group"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="view_timer, loader_circle_1, loader_circle_2,loader_circle_3, loader_react_1, loader_react_2, loader_react_3"/>
+        app:constraint_referenced_ids="loader_circle_1, loader_circle_2,loader_circle_3, loader_react_1, loader_react_2, loader_react_3"/>
 
     <LinearLayout
         android:id="@+id/container_error"
@@ -146,7 +145,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:visibility="gone"
             android:clickable="true"
             android:focusable="true"
             android:text="@string/stories_retry"
