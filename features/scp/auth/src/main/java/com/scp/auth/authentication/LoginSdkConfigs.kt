@@ -1,26 +1,37 @@
 package com.scp.auth.authentication
 
 import android.content.Context
+import com.scp.auth.ScpConstants
 import com.scp.login.core.domain.contracts.configs.LSdkAppConfig
 import com.scp.login.core.domain.contracts.configs.LSdkAuthConfig
 import com.scp.login.core.domain.contracts.configs.LSdkConfig
 import com.scp.login.core.domain.contracts.configs.LSdkEnvironment
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator
+import com.tokopedia.keys.R as keysR
 
 class LoginSdkConfigs(val context: Context) : LSdkConfig {
     override fun getAppConfigs(): LSdkAppConfig {
         val uniqueId = FingerprintModelGenerator.getFCMId(context)
         return LSdkAppConfig(
-            environment = LSdkEnvironment.INTEGRATION,
+            environment = getEnvironment(),
             isLogsEnabled = false,
-            appLocale = "id-ID",
-            userLang = "id-ID",
-            userType = "toko_user",
+            appLocale = ScpConstants.APP_LOCALE,
+            userLang = ScpConstants.APP_LOCALE,
+            userType = ScpConstants.TOKO_USER_TYPE,
             uniqueId = uniqueId
         )
     }
 
     override fun getAuthConfigs(): LSdkAuthConfig {
-        return LSdkAuthConfig(clientID = "tokopedia:consumer:android", clientSecret = "uPu4ieJOyPnf7sAS6ENCrBSvRMhF1g", gotoPinclientID = "a8533f47-040b-49a1-b0c7-d818b9499a2f-ICP")
+        return LSdkAuthConfig(clientID = context.getString(keysR.string.lsdk_client_id), clientSecret = context.getString(keysR.string.lsdk_client_secret), gotoPinclientID = context.getString(keysR.string.goto_pin_client_id))
+    }
+
+    private fun getEnvironment(): LSdkEnvironment {
+        return if (GlobalConfig.DEBUG || GlobalConfig.isAllowDebuggingTools()) {
+            LSdkEnvironment.INTEGRATION
+        } else {
+            LSdkEnvironment.PROD
+        }
     }
 }
