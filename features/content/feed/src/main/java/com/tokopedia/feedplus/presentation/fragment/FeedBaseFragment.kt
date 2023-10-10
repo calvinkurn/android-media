@@ -15,7 +15,6 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -48,7 +47,6 @@ import com.tokopedia.feedplus.presentation.onboarding.ImmersiveFeedOnboarding
 import com.tokopedia.feedplus.presentation.receiver.FeedMultipleSourceUploadReceiver
 import com.tokopedia.feedplus.presentation.receiver.UploadStatus
 import com.tokopedia.feedplus.presentation.receiver.UploadType
-import com.tokopedia.feedplus.presentation.util.FeedContentManager
 import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
@@ -132,14 +130,6 @@ class FeedBaseFragment :
             appLinkExtras = arguments ?: Bundle.EMPTY,
             entryPoint = getEntryPoint().orEmpty()
         )
-    }
-
-    private val muteAnimatedVector by lazy {
-        AnimatedVectorDrawableCompat.create(requireContext(), R.drawable.ic_feed_mute_animated)
-    }
-
-    private val unmuteAnimatedVector by lazy {
-        AnimatedVectorDrawableCompat.create(requireContext(), R.drawable.ic_feed_unmute_animated)
     }
 
     private val isFromPushNotif: Boolean
@@ -233,8 +223,6 @@ class FeedBaseFragment :
         observeEvent()
 
         observeUpload()
-
-        observeMuteUnmute()
     }
 
     override fun onStart() {
@@ -546,24 +534,6 @@ class FeedBaseFragment :
                         }
                     }
                 }
-        }
-    }
-
-    private fun observeMuteUnmute() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                FeedContentManager.muteState.collectLatest { isMuted ->
-                    if (isMuted == null) return@collectLatest
-
-                    if (isMuted) {
-                        binding.ivFeedMuteUnmute.setImageDrawable(muteAnimatedVector)
-                        muteAnimatedVector?.start()
-                    } else {
-                        binding.ivFeedMuteUnmute.setImageDrawable(unmuteAnimatedVector)
-                        unmuteAnimatedVector?.start()
-                    }
-                }
-            }
         }
     }
 

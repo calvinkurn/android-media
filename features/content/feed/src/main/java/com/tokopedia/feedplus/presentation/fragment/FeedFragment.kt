@@ -19,6 +19,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_IDLE
 import com.tkpd.atcvariant.view.bottomsheet.AtcVariantBottomSheet
 import com.tkpd.atcvariant.view.viewmodel.AtcVariantSharedViewModel
@@ -53,6 +54,7 @@ import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.feedcomponent.util.FeedVideoCache
 import com.tokopedia.feedcomponent.util.util.DataMapper
 import com.tokopedia.feedcomponent.view.widget.FeedExoPlayer
+import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.analytics.FeedAnalytics
 import com.tokopedia.feedplus.analytics.FeedFollowRecommendationAnalytics
 import com.tokopedia.feedplus.analytics.FeedMVCAnalytics
@@ -162,6 +164,14 @@ class FeedFragment :
 
     private val atcVariantViewModel by lazyThreadSafetyNone {
         ViewModelProvider(requireActivity())[AtcVariantSharedViewModel::class.java]
+    }
+
+    private val muteAnimatedVector by lazy {
+        AnimatedVectorDrawableCompat.create(requireContext(), R.drawable.ic_feed_mute_animated)
+    }
+
+    private val unmuteAnimatedVector by lazy {
+        AnimatedVectorDrawableCompat.create(requireContext(), R.drawable.ic_feed_unmute_animated)
     }
 
     private val videoPlayerManager by lazy { VideoPlayerManager(requireContext()) }
@@ -1426,6 +1436,14 @@ class FeedFragment :
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 FeedContentManager.muteState.collectLatest { isMuted ->
                     if (isMuted == null) return@collectLatest
+
+                    if (isMuted) {
+                        binding.ivFeedMuteUnmute.setImageDrawable(muteAnimatedVector)
+                        muteAnimatedVector?.start()
+                    } else {
+                        binding.ivFeedMuteUnmute.setImageDrawable(unmuteAnimatedVector)
+                        unmuteAnimatedVector?.start()
+                    }
 
                     updateCurrentVideoVolume(isMuted)
                 }
