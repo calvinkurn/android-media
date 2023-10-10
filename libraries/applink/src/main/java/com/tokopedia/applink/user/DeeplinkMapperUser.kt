@@ -16,6 +16,7 @@ object DeeplinkMapperUser {
     const val ROLLENCE_GOTO_KYC_MA = "goto_kyc_apps"
     const val ROLLENCE_GOTO_KYC_SA = "goto_kyc_sellerapp"
     const val ROLLENCE_PRIVACY_CENTER = "privacy_center_and_3"
+    const val ROLLENCE_FUNDS_AND_INVESTMENT_COMPOSE = "android_fundinvest"
 
     fun getRegisteredNavigationUser(deeplink: String): String {
         return when {
@@ -34,6 +35,7 @@ object DeeplinkMapperUser {
             deeplink == ApplinkConst.User.DSAR -> ApplinkConstInternalUserPlatform.DSAR
             deeplink.startsWithPattern(ApplinkConst.GOTO_KYC) || deeplink.startsWithPattern(ApplinkConstInternalUserPlatform.GOTO_KYC) -> getApplinkGotoKyc(deeplink)
             deeplink.startsWith(ApplinkConst.GOTO_KYC_WEBVIEW) -> ApplinkConstInternalUserPlatform.GOTO_KYC_WEBVIEW
+            deeplink == ApplinkConstInternalUserPlatform.FUNDS_AND_INVESTMENT -> getFundsAndInvestmentApplink()
             else -> deeplink
         }
     }
@@ -95,6 +97,18 @@ object DeeplinkMapperUser {
         return deeplink.replace(
             DeeplinkConstant.SCHEME_TOKOPEDIA_SLASH,
             ApplinkConstInternalUserPlatform.NEW_INTERNAL_USER+"/")
+    }
+
+    fun getFundsAndInvestmentApplink(): String {
+        val isRollenceActivated = getAbTestPlatform()
+            .getString(ROLLENCE_FUNDS_AND_INVESTMENT_COMPOSE)
+            .isNotEmpty()
+
+        return if (isRollenceActivated) {
+            ApplinkConstInternalUserPlatform.FUNDS_AND_INVESTMENT_COMPOSE
+        } else {
+            ApplinkConstInternalUserPlatform.FUNDS_AND_INVESTMENT
+        }
     }
 
     private fun getAbTestPlatform(): AbTestPlatform =
