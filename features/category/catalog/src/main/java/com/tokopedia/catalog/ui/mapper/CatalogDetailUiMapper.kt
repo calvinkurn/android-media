@@ -47,8 +47,8 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.oldcatalog.model.raw.CatalogResponseData
 import javax.inject.Inject
 import com.tokopedia.catalogcommon.R as catalogcommonR
-import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import com.tokopedia.unifycomponents.R as unifycomponentsR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class CatalogDetailUiMapper @Inject constructor(
     @ApplicationContext private val context: Context
@@ -214,7 +214,11 @@ class CatalogDetailUiMapper @Inject constructor(
                     }
                     found != -1
                 }.firstOrNull().orEmpty()
-                StickyNavigationUiModel.StickyNavigationItemData(nav.title, eligibleName)
+                StickyNavigationUiModel.StickyNavigationItemData(
+                    nav.title,
+                    eligibleName,
+                    nav.eligibleNames.joinToString(",")
+                )
             }.orEmpty()
         )
     }

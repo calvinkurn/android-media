@@ -33,6 +33,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
+import com.tokopedia.analytics.performance.perf.BlocksPerformanceTrace
 import com.tokopedia.analytics.performance.util.EmbraceKey
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.applink.ApplinkConst
@@ -4203,6 +4204,10 @@ open class DynamicProductDetailFragment :
                 }
             }
         }
+    }
+
+    override fun getBlocksPerformanceTrace(): BlocksPerformanceTrace? {
+        return getProductDetailActivity()?.getBlocksPerformanceMonitoring()
     }
 
     override fun reportProductFromComponent(componentTrackDataModel: ComponentTrackDataModel?) {

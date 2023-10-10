@@ -32,9 +32,12 @@ class HomeAtfUseCase @Inject constructor(
     private val tickerRepository: TickerRepository,
     private val atfChannelRepository: AtfChannelRepository,
     private val missionWidgetRepository: MissionWidgetRepository,
-    private val todoWidgetRepository: TodoWidgetRepository
+    private val todoWidgetRepository: TodoWidgetRepository,
 ) {
-    var job: Job? = null
+    private val scope = CoroutineScope(homeDispatcher.io)
+    private var workerJob: Job? = null
+    private var positionObserverJob: Job? = null
+    private var atfDataObserverJob: Job? = null
 
     private val _flow: MutableStateFlow<AtfDataList?> = MutableStateFlow(null)
     val flow: StateFlow<AtfDataList?>
@@ -55,7 +58,7 @@ class HomeAtfUseCase @Inject constructor(
     suspend fun fetchAtfDataList() {
         coroutineScope {
             // only fetch dynamic position on first load
-            job = launch(homeDispatcher.io) {
+            workerJob = launch(homeDispatcher.io) {
                 dynamicPositionRepository.getData()
             }
             observeDynamicPositionFlow()
@@ -68,8 +71,10 @@ class HomeAtfUseCase @Inject constructor(
      */
     suspend fun refreshData() {
         coroutineScope {
-            if (job?.isActive != true) {
-                dynamicPositionRepository.getRemoteData(isRefresh = true)
+            if (workerJob?.isActive != true) {
+                workerJob = launch(homeDispatcher.io) {
+                    dynamicPositionRepository.getRemoteData(isRefresh = true)
+                }
             }
         }
     }
@@ -79,7 +84,7 @@ class HomeAtfUseCase @Inject constructor(
      */
     suspend fun refreshData(id: String) {
         coroutineScope {
-            if (job?.isActive != true) {
+            if (workerJob?.isActive != true) {
                 launch(homeDispatcher.io) {
                     flow.value?.let { value ->
                         value.listAtfData.firstOrNull { atfData ->
@@ -100,19 +105,17 @@ class HomeAtfUseCase @Inject constructor(
      * - Fetch each ATF components if needed.
      */
     private fun CoroutineScope.observeDynamicPositionFlow() {
-        launch(homeDispatcher.io) {
+        if (positionObserverJob?.isActive == true) return
+        positionObserverJob = launch(homeDispatcher.io) {
             dynamicPositionRepository.flow.collect { value ->
                 if (value != null) {
-                    if (value.isPositionReady()) {
+                    if (value.isPositionReady() || value.isDataError()) {
                         launch { emit(value) }
                     }
                     if (value.needToFetchComponents) {
                         value.listAtfData.forEach { data ->
                             conditionalFetchAtfData(data.atfMetadata)
                         }
-                    }
-                    if (value.isDataError()) {
-                        launch { _flow.emit(value) }
                     }
                 }
             }
@@ -124,18 +127,19 @@ class HomeAtfUseCase @Inject constructor(
      * Combine all flows into one ATF list, always be updated whenever data changes
      */
     private fun CoroutineScope.observeAtfComponentFlow() {
+        if (atfDataObserverJob?.isActive == true) return
         val allFlows: List<Flow<Any?>> = listOf(dynamicPositionRepository.flow) + atfFlows
-        combine(allFlows) { list ->
+        atfDataObserverJob = combine(allFlows) { list ->
             // first flow is for dynamic position
             val dynamicPos = list[0] as? AtfDataList
             // other flows defined on atfFlows list
             val listAtfData = (list.drop(1) as List<List<AtfData?>>).flatten()
             // if remote dynamic position is ready, populate data to list
-            if (dynamicPos != null && dynamicPos.isPositionReady() && !dynamicPos.isCache) {
+            if (dynamicPos != null && dynamicPos.isPositionReady() && !dynamicPos.isCache && listAtfData.isNotEmpty()) {
                 val latest = dynamicPos.updateAtfContents(listAtfData)
                 launch { emitAndSave(latest) }
             }
-        }.launchIn(this)
+        }.launchIn(scope)
     }
 
     /**

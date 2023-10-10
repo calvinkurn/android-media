@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelStore
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.analytics.performance.perf.BlocksPerformanceTrace
 import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.pdp.fintech.domain.datamodel.FintechRedirectionWidgetDataClass
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
@@ -539,6 +540,8 @@ interface DynamicProductDetailListener {
      */
     fun onToggleAPlus(expanded: Boolean, trackerData: APlusImageUiModel.TrackerData)
     fun onImpressAPlus(trackerData: APlusImageUiModel.TrackerData)
+
+    fun getBlocksPerformanceTrace(): BlocksPerformanceTrace?
 
     // region BMGM
     fun onBMGMClicked(title: String, offerId: String, component: ComponentTrackDataModel)
