@@ -752,15 +752,6 @@ open class HomeAccountUserFragment :
             }
         )
 
-        viewModel.phoneNo.observe(
-            viewLifecycleOwner,
-            Observer {
-                if (it.isNotEmpty()) {
-                    getData()
-                }
-            }
-        )
-
         viewModel.safeModeStatus.observe(
             viewLifecycleOwner,
             Observer {
