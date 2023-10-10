@@ -94,7 +94,7 @@ internal fun PersonSuccessState(
         ) {
             items(items = data.personaList) { persona ->
                 PersonaTypeItemCard(persona) {
-                    onEvent(SelectTypeUiEvent.ClickPersonaCard(persona))
+                    onEvent(SelectTypeUiEvent.ClickPersonaCard(persona.value))
                 }
             }
         }
@@ -116,7 +116,7 @@ internal fun PersonSuccessState(
             text = stringResource(R.string.sp_select),
             variant = ButtonVariant.FILLED,
             onClick = {
-                onEvent(SelectTypeUiEvent.ClickSelectButton)
+                onEvent(SelectTypeUiEvent.ClickSubmitButton)
             }
         )
     }

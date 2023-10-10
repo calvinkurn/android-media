@@ -1,0 +1,19 @@
+package com.tokopedia.sellerpersona.view.compose.viewmodel
+
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.unit.test.rule.UnconfinedTestRule
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.junit.Rule
+
+/**
+ * Created by @ilhamsuaib on 09/10/23.
+ */
+@OptIn(ExperimentalCoroutinesApi::class)
+open class BaseViewModelTest {
+
+    @get:Rule
+    val rule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val coroutineTestRule = UnconfinedTestRule()
+}

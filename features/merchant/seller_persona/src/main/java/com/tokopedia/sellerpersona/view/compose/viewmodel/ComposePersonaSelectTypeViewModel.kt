@@ -46,8 +46,8 @@ class ComposePersonaSelectTypeViewModel @Inject constructor(
             when (event) {
                 is SelectTypeUiEvent.FetchPersonaList -> fetchPersonaList(args = event.arguments)
                 is SelectTypeUiEvent.Reload -> reloadPage()
-                is SelectTypeUiEvent.ClickPersonaCard -> updateSelectedState(event.persona)
-                is SelectTypeUiEvent.ClickSelectButton -> submitSelectedType()
+                is SelectTypeUiEvent.ClickPersonaCard -> updateSelectedState(event.personaName)
+                is SelectTypeUiEvent.ClickSubmitButton -> submitSelectedType()
             }
         }
     }
@@ -86,13 +86,15 @@ class ComposePersonaSelectTypeViewModel @Inject constructor(
         }
     }
 
-    private suspend fun emitOnPersonaChanged(persona: String = "", t: Throwable? = null) {
-        _uiEffect.emit(
-            SelectTypeUiEffect.OnPersonaChanged(
-                persona = persona,
-                throwable = t
+    private fun emitOnPersonaChanged(persona: String = "", t: Throwable? = null) {
+        viewModelScope.launch {
+            _uiEffect.emit(
+                SelectTypeUiEffect.OnPersonaChanged(
+                    persona = persona,
+                    throwable = t
+                )
             )
-        )
+        }
     }
 
     private fun reloadPage() {
@@ -100,17 +102,17 @@ class ComposePersonaSelectTypeViewModel @Inject constructor(
         fetchPersonaList(args)
     }
 
-    private fun updateSelectedState(persona: PersonaUiModel) {
+    private fun updateSelectedState(persona: String) {
         viewModelScope.launch(dispatchers.default) {
             val currentState = _state.value
             val data = currentState.data
 
-            val currentSelected = data.personaList.firstOrNull { it.isSelected }
-            if (persona.value == currentSelected?.value) return@launch
+            val currentSelected = data.personaList.firstOrNull { it.isSelected }?.value.orEmpty()
+            if (persona == currentSelected) return@launch
 
             var selectedIndex = data.ui.selectedIndex
             val personaList = data.personaList.mapIndexed { i, p ->
-                val updatePersona = if (p.value == persona.value) {
+                val updatePersona = if (p.value == persona) {
                     selectedIndex = i
                     p.copy(isSelected = true)
                 } else {
@@ -136,10 +138,9 @@ class ComposePersonaSelectTypeViewModel @Inject constructor(
         val currentSelectedPersona = data.personaList.firstOrNull { it.isSelected }?.value.orEmpty()
         if (currentSelectedPersona == defaultPersona) {
             eventCloseThePage(defaultPersona)
-            return
+        } else {
+            setPersona(currentSelectedPersona)
         }
-
-        setPersona(currentSelectedPersona)
     }
 
     private suspend fun emitSelectButtonLoading(isLoading: Boolean) {
@@ -152,8 +153,10 @@ class ComposePersonaSelectTypeViewModel @Inject constructor(
         _state.emit(selectButtonLoadingState)
     }
 
-    private suspend fun eventCloseThePage(persona: String) {
-        _uiEffect.emit(SelectTypeUiEffect.CloseThePage(persona))
+    private fun eventCloseThePage(persona: String) {
+        viewModelScope.launch {
+            _uiEffect.emit(SelectTypeUiEffect.CloseThePage(persona))
+        }
     }
 
     private suspend fun emitErrorState(t: Throwable) {
@@ -168,7 +171,7 @@ class ComposePersonaSelectTypeViewModel @Inject constructor(
         val currentState = _state.value
 
         val persona = args.paramPersona
-        var selectedIndex = 0
+        var selectedIndex = -1
         val mPersonaList = if (persona.isBlank()) {
             personaList
         } else {
