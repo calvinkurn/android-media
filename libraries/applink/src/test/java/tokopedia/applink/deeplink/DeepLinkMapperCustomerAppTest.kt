@@ -2756,7 +2756,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check LINK_ACCOUNT customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://user/link-account-webview"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://user/account-linking-webview"
         assertEqualsDeepLinkMapper(ApplinkConst.LINK_ACCOUNT, expectedDeepLink)
     }
 
