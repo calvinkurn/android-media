@@ -6,5 +6,7 @@ interface ProductUpdateListner {
 
     fun removeWidget()
     fun showWidget()
-    fun fintechChipClicked(fintechRedirectionWidgetDataClass: FintechRedirectionWidgetDataClass,redirectionUrl:String)
+    fun fintechChipClicked(fintechRedirectionWidgetDataClass: FintechRedirectionWidgetDataClass, redirectionUrl: String)
+
+    fun shouldImpression(): Boolean
 }

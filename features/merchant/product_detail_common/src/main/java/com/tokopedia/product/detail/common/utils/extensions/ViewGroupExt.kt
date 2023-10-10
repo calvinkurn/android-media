@@ -70,12 +70,19 @@ fun globalWidgetAddImpression(
     useHolders: Boolean,
     onView: () -> Unit
 ) {
-    if (useHolders) {
-        if (!holders.contains(name)) {
-            holders.add(name)
-            onView()
-        }
-    } else {
+    if (globalWidgetDoImpression(holders = holders, name = name, useHolders = useHolders)) {
         onView()
     }
+}
+
+fun globalWidgetDoImpression(
+    holders: MutableList<String>,
+    name: String,
+    useHolders: Boolean
+): Boolean {
+    if (!useHolders) return true
+    if (holders.contains(name)) return false
+
+    holders.add(name)
+    return true
 }
