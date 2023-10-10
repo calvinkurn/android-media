@@ -1002,8 +1002,8 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     private fun scrollToWawasanPlus(mWidgetList: MutableList<BaseWidgetUiModel<*>>) {
         val listener = activity as? FragmentListener
 
-        if (selectedWidget.isNotEmpty() ||
-            multiComponentUiInteractor?.alreadyAutoScroll() == true ||
+        if ((selectedWidget.isNotEmpty() ||
+            multiComponentUiInteractor?.alreadyAutoScroll() == true) &&
             listener?.isTabCoachMarkShowing() == true
         ) return
 
