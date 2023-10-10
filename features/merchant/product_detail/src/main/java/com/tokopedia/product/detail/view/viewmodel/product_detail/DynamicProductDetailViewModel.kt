@@ -500,15 +500,13 @@ class DynamicProductDetailViewModel @Inject constructor(
         data: ProductVariant,
         mapOfSelectedVariant: Map<String, String>
     ) {
-        launch(context = dispatcher.io) {
-            runCatching {
-                ProductDetailVariantLogic.determineVariant(
-                    mapOfSelectedOptionIds = mapOfSelectedVariant,
-                    productVariant = data
-                )
-            }.onSuccess {
-                _singleVariantData.postValue(it)
-            }
+        runCatching {
+            ProductDetailVariantLogic.determineVariant(
+                mapOfSelectedOptionIds = mapOfSelectedVariant,
+                productVariant = data
+            )
+        }.onSuccess {
+            _singleVariantData.postValue(it)
         }
     }
 
