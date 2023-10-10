@@ -40,6 +40,7 @@ class MultiComponentTabUiInteractor(context: Context) {
             )
 
             coachMarkView?.showCoachMark(coachMarkList, null, 0)
+            setCoachMarkMultiComponentShown()
         }
     }
 
@@ -47,12 +48,7 @@ class MultiComponentTabUiInteractor(context: Context) {
         coachMarkView?.hideCoachMark()
     }
 
-    fun setCoachMarkMultiComponentShown() {
-        setCoachMarkState(STC_COACHMARK_MULTI_COMPONENT, true)
-        destroy()
-    }
-
-    fun shouldAutoScroll(): Boolean {
+    fun alreadyAutoScroll(): Boolean {
         return sharedPref?.getBoolean(STC_AUTO_SCROLL_MULTI_COMPONENT, false) ?: false
     }
 
@@ -61,8 +57,12 @@ class MultiComponentTabUiInteractor(context: Context) {
         editor?.apply()
     }
 
-    private fun destroy() {
+    fun destroy() {
         coachMarkView = null
+    }
+
+    private fun setCoachMarkMultiComponentShown() {
+        setCoachMarkState(STC_COACHMARK_MULTI_COMPONENT, true)
     }
 
     private fun initCoachMarkView(context: Context) {

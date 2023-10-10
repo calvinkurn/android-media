@@ -278,7 +278,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
     override fun onDestroyView() {
         rejectedOrderRateCoachMark.destroy()
-        multiComponentUiInteractor?.setCoachMarkMultiComponentShown()
+        multiComponentUiInteractor?.destroy()
         mLayoutManager = null
         super.onDestroyView()
     }
@@ -600,7 +600,11 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     override fun showCoachMarkFirstTab(view: View) {
-        multiComponentUiInteractor?.showCoachMarkMultiComponent(view)
+        val listener = activity as? FragmentListener
+
+        if (listener?.isTabCoachMarkShowing() == false) {
+            multiComponentUiInteractor?.showCoachMarkMultiComponent(view)
+        }
     }
 
     override fun clickMultiComponentTab(tabName: String) {
@@ -996,8 +1000,11 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     private fun scrollToWawasanPlus(mWidgetList: MutableList<BaseWidgetUiModel<*>>) {
-        if (selectedWidget.isNotEmpty() &&
-            multiComponentUiInteractor?.shouldAutoScroll() == false
+        val listener = activity as? FragmentListener
+
+        if (selectedWidget.isNotEmpty() ||
+            multiComponentUiInteractor?.alreadyAutoScroll() == true ||
+            listener?.isTabCoachMarkShowing() == true
         ) return
 
         try {
