@@ -1,0 +1,36 @@
+{
+  "digiPersoGetPersonalizedItems": {
+    "items": [
+      {
+        "title": "Detail Paket",
+        "subtitle": "",
+        "iconURL": "https://images.tokopedia.net/img/warning-yellow.png",
+        "mediaURL": "",
+        "label1": "",
+        "textLink": "",
+        "appLink": "",
+        "mediaUrlType": "widget",
+        "campaignLabelText": "Kamu belum punya paket, coba beli dulu yuk!",
+        "campaignLabelTextColor": "warning",
+        "widgets": [
+          {
+            "title": "Internet",
+            "subtitle": "-",
+            "iconURL": "https://images.tokopedia.net/img/internet-icon.png"
+          },
+          {
+            "title": "Telepon",
+            "subtitle": "-",
+            "iconURL": "https://images.tokopedia.net/img/telephone-icon.png"
+          },
+          {
+            "title": "SMS",
+            "subtitle": "-",
+            "iconURL": "https://images.tokopedia.net/img/sms-icon.png"
+          }
+        ],
+        "products": []
+      }
+    ]
+  }
+}

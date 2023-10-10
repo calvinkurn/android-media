@@ -2442,6 +2442,7 @@ class SellerHomeViewModelTest {
             val layoutList: List<BaseWidgetUiModel<*>> = listOf(
                 SectionWidgetUiModel(
                     id = "section",
+                    sectionId = "0",
                     widgetType = WidgetType.SECTION,
                     title = "",
                     subtitle = "",
@@ -2461,6 +2462,7 @@ class SellerHomeViewModelTest {
                 ),
                 CardWidgetUiModel(
                     id = DATA_KEY_CARD,
+                    sectionId = "0",
                     widgetType = WidgetType.CARD,
                     title = "",
                     subtitle = "",
@@ -2480,6 +2482,7 @@ class SellerHomeViewModelTest {
                 ),
                 CardWidgetUiModel(
                     id = DATA_KEY_CARD,
+                    sectionId = "0",
                     widgetType = WidgetType.CARD,
                     title = "",
                     subtitle = "",
@@ -2499,6 +2502,7 @@ class SellerHomeViewModelTest {
                 ),
                 CardWidgetUiModel(
                     id = DATA_KEY_CARD,
+                    sectionId = "0",
                     widgetType = WidgetType.CARD,
                     title = "",
                     subtitle = "",
@@ -2550,6 +2554,7 @@ class SellerHomeViewModelTest {
         val layoutList: List<BaseWidgetUiModel<*>> = listOf(
             SectionWidgetUiModel(
                 id = "section",
+                sectionId = "0",
                 widgetType = WidgetType.SECTION,
                 title = "",
                 subtitle = "",
@@ -2569,6 +2574,7 @@ class SellerHomeViewModelTest {
             ),
             AnnouncementWidgetUiModel(
                 id = DATA_KEY_ANNOUNCEMENT,
+                sectionId = "0",
                 widgetType = WidgetType.ANNOUNCEMENT,
                 title = "",
                 subtitle = "",
@@ -2588,6 +2594,7 @@ class SellerHomeViewModelTest {
             ),
             SectionWidgetUiModel(
                 id = "section_other",
+                sectionId = "0",
                 widgetType = WidgetType.SECTION,
                 title = "",
                 subtitle = "",
@@ -2607,6 +2614,7 @@ class SellerHomeViewModelTest {
             ),
             CarouselWidgetUiModel(
                 id = DATA_KEY_CAROUSEL,
+                sectionId = "0",
                 widgetType = WidgetType.CAROUSEL,
                 title = "",
                 subtitle = "",
@@ -2626,6 +2634,7 @@ class SellerHomeViewModelTest {
             ),
             PostListWidgetUiModel(
                 id = DATA_KEY_POST_LIST,
+                sectionId = "0",
                 widgetType = WidgetType.POST_LIST,
                 title = "",
                 subtitle = "",
@@ -2648,6 +2657,7 @@ class SellerHomeViewModelTest {
             ),
             SectionWidgetUiModel(
                 id = "section_other2",
+                sectionId = "0",
                 widgetType = WidgetType.SECTION,
                 title = "",
                 subtitle = "",
@@ -2667,6 +2677,7 @@ class SellerHomeViewModelTest {
             ),
             ProgressWidgetUiModel(
                 id = DATA_KEY_PROGRESS,
+                sectionId = "0",
                 widgetType = WidgetType.PROGRESS,
                 title = "",
                 subtitle = "",
@@ -2734,6 +2745,7 @@ class SellerHomeViewModelTest {
         val layoutList: List<BaseWidgetUiModel<*>> = listOf(
             ProgressWidgetUiModel(
                 id = DATA_KEY_PROGRESS,
+                sectionId = "0",
                 widgetType = WidgetType.PROGRESS,
                 title = "",
                 subtitle = "",
@@ -2753,6 +2765,7 @@ class SellerHomeViewModelTest {
             ),
             AnnouncementWidgetUiModel(
                 id = DATA_KEY_ANNOUNCEMENT,
+                sectionId = "0",
                 widgetType = WidgetType.ANNOUNCEMENT,
                 title = "",
                 subtitle = "",
@@ -2807,6 +2820,7 @@ class SellerHomeViewModelTest {
         val layoutList: List<BaseWidgetUiModel<*>> = listOf(
             ProgressWidgetUiModel(
                 id = DATA_KEY_PROGRESS,
+                sectionId = "0",
                 widgetType = WidgetType.PROGRESS,
                 title = "",
                 subtitle = "",
@@ -2856,6 +2870,7 @@ class SellerHomeViewModelTest {
         val layoutList: List<BaseWidgetUiModel<*>> = listOf(
             ProgressWidgetUiModel(
                 id = DATA_KEY_PROGRESS,
+                sectionId = "0",
                 widgetType = WidgetType.PROGRESS,
                 title = "",
                 subtitle = "",
@@ -2905,6 +2920,7 @@ class SellerHomeViewModelTest {
         val layoutList: List<BaseWidgetUiModel<*>> = listOf(
             ProgressWidgetUiModel(
                 id = DATA_KEY_PROGRESS,
+                sectionId = "0",
                 widgetType = WidgetType.PROGRESS,
                 title = "",
                 subtitle = "",
@@ -2954,6 +2970,7 @@ class SellerHomeViewModelTest {
         val layoutList: List<BaseWidgetUiModel<*>> = listOf(
             ProgressWidgetUiModel(
                 id = DATA_KEY_PROGRESS,
+                sectionId = "0",
                 widgetType = WidgetType.PROGRESS,
                 title = "",
                 subtitle = "",
@@ -3004,6 +3021,7 @@ class SellerHomeViewModelTest {
         val layoutList: List<BaseWidgetUiModel<*>> = listOf(
             PostListWidgetUiModel(
                 id = DATA_KEY_POST_LIST,
+                sectionId = "0",
                 widgetType = WidgetType.POST_LIST,
                 title = "",
                 subtitle = "",
@@ -3061,6 +3079,7 @@ class SellerHomeViewModelTest {
         val layoutList: List<BaseWidgetUiModel<*>> = listOf(
             TableWidgetUiModel(
                 id = DATA_KEY_TABLE,
+                sectionId = "0",
                 widgetType = WidgetType.TABLE,
                 title = "",
                 subtitle = "",
@@ -3245,6 +3264,7 @@ class SellerHomeViewModelTest {
         return listOf(
             CardWidgetUiModel(
                 id = DATA_KEY_CARD,
+                sectionId = "0",
                 widgetType = WidgetType.CARD,
                 title = "",
                 subtitle = "",
@@ -3264,6 +3284,7 @@ class SellerHomeViewModelTest {
             ),
             ProgressWidgetUiModel(
                 id = DATA_KEY_PROGRESS,
+                sectionId = "0",
                 widgetType = WidgetType.PROGRESS,
                 title = "",
                 subtitle = "",
@@ -3283,6 +3304,7 @@ class SellerHomeViewModelTest {
             ),
             LineGraphWidgetUiModel(
                 id = DATA_KEY_LINE_GRAPH,
+                sectionId = "0",
                 widgetType = WidgetType.LINE_GRAPH,
                 title = "",
                 subtitle = "",
@@ -3302,6 +3324,7 @@ class SellerHomeViewModelTest {
             ),
             AnnouncementWidgetUiModel(
                 id = DATA_KEY_ANNOUNCEMENT,
+                sectionId = "0",
                 widgetType = WidgetType.ANNOUNCEMENT,
                 title = "",
                 subtitle = "",
@@ -3321,6 +3344,7 @@ class SellerHomeViewModelTest {
             ),
             CarouselWidgetUiModel(
                 id = DATA_KEY_CAROUSEL,
+                sectionId = "0",
                 widgetType = WidgetType.CAROUSEL,
                 title = "",
                 subtitle = "",
@@ -3340,6 +3364,7 @@ class SellerHomeViewModelTest {
             ),
             PostListWidgetUiModel(
                 id = DATA_KEY_POST_LIST,
+                sectionId = "0",
                 widgetType = WidgetType.POST_LIST,
                 title = "",
                 subtitle = "",
@@ -3362,6 +3387,7 @@ class SellerHomeViewModelTest {
             ),
             TableWidgetUiModel(
                 id = DATA_KEY_TABLE,
+                sectionId = "0",
                 widgetType = WidgetType.TABLE,
                 title = "",
                 subtitle = "",
@@ -3394,6 +3420,7 @@ class SellerHomeViewModelTest {
             ),
             PieChartWidgetUiModel(
                 id = DATA_KEY_PIE_CHART,
+                sectionId = "0",
                 widgetType = WidgetType.PIE_CHART,
                 title = "",
                 subtitle = "",
@@ -3413,6 +3440,7 @@ class SellerHomeViewModelTest {
             ),
             BarChartWidgetUiModel(
                 id = DATA_KEY_BAR_CHART,
+                sectionId = "0",
                 widgetType = WidgetType.BAR_CHART,
                 title = "",
                 subtitle = "",
@@ -3432,6 +3460,7 @@ class SellerHomeViewModelTest {
             ),
             MultiLineGraphWidgetUiModel(
                 id = DATA_KEY_MULTI_LINE,
+                sectionId = "0",
                 widgetType = WidgetType.MULTI_LINE_GRAPH,
                 title = "",
                 subtitle = "",
@@ -3452,6 +3481,7 @@ class SellerHomeViewModelTest {
             ),
             RecommendationWidgetUiModel(
                 id = DATA_KEY_RECOMMENDATION,
+                sectionId = "0",
                 widgetType = WidgetType.RECOMMENDATION,
                 title = "",
                 subtitle = "",
@@ -3471,6 +3501,7 @@ class SellerHomeViewModelTest {
             ),
             MilestoneWidgetUiModel(
                 id = DATA_KEY_MILESTONE,
+                sectionId = "0",
                 widgetType = WidgetType.MILESTONE,
                 title = "",
                 subtitle = "",
@@ -3551,6 +3582,7 @@ class SellerHomeViewModelTest {
         return listOf(
             UnificationWidgetUiModel(
                 id = "123",
+                sectionId = "0",
                 widgetType = WidgetType.UNIFICATION,
                 title = "unification",
                 subtitle = "",
@@ -3574,6 +3606,7 @@ class SellerHomeViewModelTest {
         return listOf(
             RichListWidgetUiModel(
                 id = "123",
+                sectionId = "0",
                 widgetType = WidgetType.RICH_LIST,
                 title = "richlist",
                 subtitle = "",

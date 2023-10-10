@@ -5,7 +5,6 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.productcard.compact.databinding.LayoutProductCardCompactCarouselViewBinding
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.adapter.ProductCardCompactCarouselAdapter
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.adapter.differ.ProductCardCompactCarouselDiffer

@@ -11,7 +11,5 @@ internal interface DoubleLineLayoutStrategy {
 
     fun bindAdsLabel(adsTypography: Typography, dotImage: AppCompatImageView, item: BaseSuggestionDataView)
 
-    fun bindTitle(titleView: Typography)
-
     fun bindIconImage(iconImage: AppCompatImageView, item: SuggestionDoubleLineDataDataView)
 }

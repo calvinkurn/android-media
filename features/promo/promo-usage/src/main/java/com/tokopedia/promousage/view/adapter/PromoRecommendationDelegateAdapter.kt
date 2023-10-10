@@ -1,22 +1,35 @@
 package com.tokopedia.promousage.view.adapter
 
+import android.animation.Animator
+import android.graphics.Color
+import android.graphics.Matrix
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.Animation.AnimationListener
 import android.view.animation.AnimationUtils
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.airbnb.lottie.LottieCompositionFactory
+import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.promousage.R
 import com.tokopedia.promousage.databinding.PromoUsageItemVoucherRecommendationBinding
+import com.tokopedia.promousage.domain.entity.list.PromoItem
 import com.tokopedia.promousage.domain.entity.list.PromoRecommendationItem
+import com.tokopedia.promousage.util.composite.CompositeAdapter
 import com.tokopedia.promousage.util.composite.DelegateAdapter
 import com.tokopedia.promousage.util.extension.toSpannableHtmlString
 
+
 internal class PromoRecommendationDelegateAdapter(
-    private val onClickUsePromoRecommendation: () -> Unit
+    private val onClickUsePromoRecommendation: () -> Unit,
+    private val onClickPromo: (PromoItem) -> Unit,
+    private val onImpressionPromo: (PromoItem) -> Unit,
+    private val onClickClose: () -> Unit
 ) : DelegateAdapter<PromoRecommendationItem, PromoRecommendationDelegateAdapter.ViewHolder>(
     PromoRecommendationItem::class.java
 ) {
@@ -34,7 +47,46 @@ internal class PromoRecommendationDelegateAdapter(
     inner class ViewHolder(
         private val binding: PromoUsageItemVoucherRecommendationBinding
     ) : RecyclerView.ViewHolder(binding.root) {
+
+        private val adapter: CompositeAdapter by lazy {
+            CompositeAdapter.Builder()
+                .add(PromoAccordionItemDelegateAdapter(onClickPromo, onImpressionPromo))
+                .build()
+        }
+        private val layoutManager by lazy { LinearLayoutManager(itemView.context) }
+
         fun bind(item: PromoRecommendationItem) {
+            binding.rvPromoRecommendation.layoutManager = layoutManager
+            binding.rvPromoRecommendation.adapter = adapter
+            adapter.submit(item.promos)
+            val colorHex = item.backgroundColor
+            if (colorHex.isNotBlank()) {
+                binding.clContainer.setBackgroundColor(
+                    Color.parseColor(colorHex)
+                )
+            }
+            binding.ivPromoRecommendationBackground.loadImage(
+                url = item.backgroundUrl,
+                properties = {
+                    isAnimate(false)
+                    setPlaceHolder(-1)
+                }
+            )
+            binding.ivPromoRecommendationBackground.imageMatrix = Matrix().apply {
+                val screenWidth = getScreenWidth().toFloat()
+                val containerHeight = binding.clContainer.height.toFloat()
+
+                val viewHeight = if (containerHeight > screenWidth) {
+                    screenWidth
+                } else {
+                    containerHeight
+                }
+                val widthScale = screenWidth / screenWidth
+                val heightScale = viewHeight / screenWidth
+                val scale = widthScale.coerceAtLeast(heightScale)
+                postScale(scale, scale)
+            }
+            binding.ivPromoRecommendationBackground.visible()
             binding.btnRecommendationUseVoucher.setOnClickListener {
                 if (!item.isCalculating) {
                     startButtonAnimation {
@@ -72,6 +124,38 @@ internal class PromoRecommendationDelegateAdapter(
                     startMessageAnimation(item.messageSelected)
                 }
             }
+            if (item.showAnimation) {
+                showPromoRecommendationAnimation(item)
+            }
+            binding.btnBottomSheetHeaderClose.setOnClickListener {
+                onClickClose()
+            }
+        }
+
+        private fun showPromoRecommendationAnimation(item: PromoRecommendationItem) {
+            LottieCompositionFactory.fromUrl(binding.lottieAnimationView.context, item.animationUrl)
+                .addListener { result ->
+                    binding.lottieAnimationView.setComposition(result)
+                    binding.lottieAnimationView.addAnimatorListener(object :
+                        Animator.AnimatorListener {
+                        override fun onAnimationStart(animator: Animator) {
+                            // no-op
+                        }
+
+                        override fun onAnimationEnd(animator: Animator) {
+                            // no-op
+                        }
+
+                        override fun onAnimationCancel(animator: Animator) {
+                            // no-op
+                        }
+
+                        override fun onAnimationRepeat(animator: Animator) {
+                            // no-op
+                        }
+                    })
+                    binding.lottieAnimationView.playAnimation()
+                }
         }
 
         private fun startButtonAnimation(onCompleted: (() -> Unit)? = null) {
