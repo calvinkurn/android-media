@@ -14,10 +14,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.cachemanager.PersistentCacheManager;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.GCMHandlerListener;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.kotlin.extensions.view.StringExtKt;
 import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.linker.LinkerUtils;
 import com.tokopedia.linker.interfaces.DefferedDeeplinkCallback;
@@ -32,6 +35,7 @@ import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
+import com.tokopedia.kotlin.extensions.view.StringExtKt.*;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -152,18 +156,26 @@ public class SplashScreen extends AppCompatActivity {
                             // because we need tracking UTM for those notification applink
                             String tokopediaDeeplink = deeplink;
                             Intent intent = new Intent();
-                            if (URLUtil.isNetworkUrl(deeplink)) {
-                                intent.setClassName(SplashScreen.this.getPackageName(),
-                                        com.tokopedia.config.GlobalConfig.DEEPLINK_ACTIVITY_CLASS_NAME);
-                            } else {
-                                if (deeplink.startsWith(ApplinkConst.APPLINK_CUSTOMER_SCHEME + "://")) {
-                                    tokopediaDeeplink = deeplink;
-                                } else {
-                                    tokopediaDeeplink = ApplinkConst.APPLINK_CUSTOMER_SCHEME + "://" + deeplink;
-                                }
+                            Boolean isUnderVersion = isUnderMinVersion(linkerDefferedDeeplinkData.getMinVersion());
+                            if (isUnderVersion) {
+                                tokopediaDeeplink = ApplinkConstInternalGlobal.SHARE_NOT_FOUND;
                                 intent.setClassName(SplashScreen.this.getPackageName(),
                                         com.tokopedia.config.GlobalConfig.DEEPLINK_HANDLER_ACTIVITY_CLASS_NAME);
+                            } else {
+                                if (URLUtil.isNetworkUrl(deeplink)) {
+                                    intent.setClassName(SplashScreen.this.getPackageName(),
+                                            com.tokopedia.config.GlobalConfig.DEEPLINK_ACTIVITY_CLASS_NAME);
+                                } else {
+                                    if (deeplink.startsWith(ApplinkConst.APPLINK_CUSTOMER_SCHEME + "://")) {
+                                        tokopediaDeeplink = deeplink;
+                                    } else {
+                                        tokopediaDeeplink = ApplinkConst.APPLINK_CUSTOMER_SCHEME + "://" + deeplink;
+                                    }
+                                    intent.setClassName(SplashScreen.this.getPackageName(),
+                                            com.tokopedia.config.GlobalConfig.DEEPLINK_HANDLER_ACTIVITY_CLASS_NAME);
+                                }
                             }
+
                             Map<String, String> messageMap = new HashMap<>();
                             messageMap.put("type", "splash_screen");
                             messageMap.put("deeplink", tokopediaDeeplink);
@@ -186,5 +198,27 @@ public class SplashScreen extends AppCompatActivity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         getBranchDefferedDeeplink();
+    }
+
+    private Boolean isUnderMinVersion(String version) {
+        try {
+            String minVersionString = version.replaceAll("[^0-9]", "");
+            String currentVersionString = GlobalConfig.VERSION_NAME.replaceAll("[^0-9]", "");
+            int minVersionInt = StringExtKt.toIntOrZero(minVersionString);
+            int currentVersionInt = StringExtKt.toIntOrZero(currentVersionString);
+            if (minVersionString.length() < currentVersionString.length()) {
+                int differenceLength = currentVersionString.length() - minVersionString.length();
+                minVersionInt = minVersionInt * ((int)Math.pow(10, differenceLength));
+            }
+
+            else if (minVersionString.length() > currentVersionString.length()) {
+                int differenceLength = currentVersionString.length() - minVersionString.length();
+                currentVersionInt = currentVersionInt * ((int)Math.pow(10, differenceLength));
+            }
+            return currentVersionInt < minVersionInt;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

@@ -20,7 +20,6 @@ object InitialStateRequestUtils {
     const val INITIAL_STATE_QUERY = """
         query universe_initial_state(${'$'}params: String!){
           universe_initial_state(param: ${'$'}params) {
-            is_mps
             data{
               id
               header

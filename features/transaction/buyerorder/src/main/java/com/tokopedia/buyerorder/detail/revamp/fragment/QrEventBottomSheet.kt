@@ -59,15 +59,16 @@ class QrEventBottomSheet: BottomSheetUnify() {
             var totalItem = 0
             val voucherList = mutableListOf<RedeemVoucherModel>()
             val indicatorItems = mutableListOf<ImageView>()
-
             if (actionButton.body.body.isNotEmpty()){
                 val voucherCodes = actionButton.body.body.split(DELIMITERS)
-                voucherCodes.forEachIndexed { index, code ->
+                val seatingNumbers = actionButton.body.seatingNumbers.split(DELIMITERS)
+                voucherCodes.zip(seatingNumbers).forEachIndexed { index, voucherDetail ->
                     voucherList.add(
                         RedeemVoucherModel(
                             actionButton.headerObject.powered_by,
                             actionButton.body.appURL,
-                            code,
+                            voucherDetail.first,
+                            voucherDetail.second,
                             actionButton.headerObject.statusLabel)
                     )
 

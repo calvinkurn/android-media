@@ -3,7 +3,7 @@ package com.tokopedia.home.beranda.presentation.viewModel
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.home.beranda.domain.interactor.HomeRecommendationFeedUseCase
+import com.tokopedia.home.beranda.domain.interactor.GetHomeRecommendationUseCase
 import com.tokopedia.home.beranda.helper.copy
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.*
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -21,7 +21,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class HomeRecommendationViewModel @Inject constructor(
-    private val getHomeRecommendationUseCase: HomeRecommendationFeedUseCase,
+    private val getHomeRecommendationUseCase: GetHomeRecommendationUseCase,
     private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
     private val getTopAdsHeadlineUseCase: GetTopAdsHeadlineUseCase,
     private val userSessionInterface: UserSessionInterface,
