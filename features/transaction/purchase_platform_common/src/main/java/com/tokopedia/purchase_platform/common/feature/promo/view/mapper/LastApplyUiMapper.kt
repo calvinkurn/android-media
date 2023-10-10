@@ -68,7 +68,8 @@ object LastApplyUiMapper {
             messageInfo = mapMessageInfo(additionalInfoUiModel.messageInfoUiModel),
             errorDetail = mapErrorInfo(additionalInfoUiModel.errorDetailUiModel),
             emptyCartInfo = mapEmptyCartInfo(additionalInfoUiModel.emptyCartInfoUiModel),
-            usageSummaries = mapUsageSummaries(additionalInfoUiModel.usageSummariesUiModel)
+            usageSummaries = mapUsageSummaries(additionalInfoUiModel.usageSummariesUiModel),
+            bebasOngkirInfo = additionalInfoUiModel.bebasOngkirInfo
         )
     }
 
