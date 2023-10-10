@@ -29,9 +29,8 @@ import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
-import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import com.tokopedia.epharmacy.R as epharmacyR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 object EPharmacyUtils {
 
@@ -288,7 +287,7 @@ object EPharmacyUtils {
     }
 
     fun getTotalAmountFmt(subTotal: Double?): String {
-        return CurrencyFormatUtil.convertPriceValueToIdrFormat(subTotal?.toLong() ?: 0L, false)
+        return CurrencyFormatUtil.convertPriceValueToIdrFormat(subTotal.orZero(), false)
     }
 
     fun getChatDokterNote(context: Context?, operatingSchedule: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ConsultationSource.OperatingSchedule?, note: String?): String {
@@ -302,36 +301,6 @@ object EPharmacyUtils {
             ).orEmpty()
         }
         return note.orEmpty()
-    }
-
-    internal fun mapResponseToOrderDetail(orderData: EPharmacyOrderDetailResponse.GetConsultationOrderDetail.EPharmacyOrderData?): EPharmacyDataModel {
-        val listOfComponents = arrayListOf<BaseEPharmacyDataModel>()
-        listOfComponents.add(EPharmacyOrderDetailHeaderDataModel(
-            ORDER_HEADER_COMPONENT,ORDER_HEADER_COMPONENT,
-            orderData?.orderStatusDesc,
-            orderData?.ticker?.typeInt,
-            orderData?.ticker?.message,
-            orderData?.invoiceNumber,
-            orderData?.invoiceUrl,
-            orderData?.paymentDate,
-            orderData?.orderExpiredDate,
-            orderData?.orderIndicatorColor
-        ))
-        listOfComponents.add(EPharmacyOrderDetailInfoDataModel(
-            ORDER_INFO_COMPONENT, ORDER_INFO_COMPONENT,
-            orderData?.consultationSource?.serviceName,
-            orderData?.consultationSource?.enablerName,
-            orderData?.consultationSource?.operatingSchedule?.duration,
-            orderData?.consultationSource?.priceStr,
-            orderData?.consultationData?.prescription?.firstOrNull()?.expiryDate.orEmpty()
-        ))
-        listOfComponents.add(EPharmacyOrderDetailPaymentDataModel(
-            ORDER_PAYMENT_COMPONENT, ORDER_PAYMENT_COMPONENT,
-            orderData?.paymentMethod,
-            orderData?.paymentAmountStr,
-            orderData?.paymentAmountStr
-        ))
-        return EPharmacyDataModel(listOfComponents)
     }
 
     fun getColoredIndicator(context: Context, colorHex: String): Drawable? {

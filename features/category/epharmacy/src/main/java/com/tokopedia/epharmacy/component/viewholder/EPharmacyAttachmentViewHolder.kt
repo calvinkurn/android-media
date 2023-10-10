@@ -27,6 +27,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.displayTextOrHide
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
@@ -65,7 +66,7 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
     private val bottomView = view.findViewById<View>(R.id.transparent_view_bottom)
     private val ticker = view.findViewById<Ticker>(R.id.ticker)
     private val divisionSingleProduct = view.findViewById<View>(R.id.division_single_card)
-    private val quantityChangedLayout = view.findViewById<ConstraintLayout>(R.id.quantity_change_layout)
+    private val quantityEditorLayout = view.findViewById<ConstraintLayout>(R.id.quantity_editor_layout)
     private val initialProductQuantity = view.findViewById<Typography>(R.id.initial_product_quantity)
     private val quantityChangedEditor = view.findViewById<QuantityEditorUnify>(R.id.quantity_change)
     private val productQuantityType = view.findViewById<Typography>(R.id.quantity_type)
@@ -76,6 +77,7 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
         private const val VIBRATION_ANIMATION_DURATION = 1250
         private const val VIBRATION_ANIMATION_TRANSLATION_X = -10
         private const val VIBRATION_ANIMATION_CYCLE = 4f
+        const val MIN_VALUE_OF_PRODUCT_EDITOR = 1
     }
 
     private val ePharmacyAdapterFactory by lazy(LazyThreadSafetyMode.NONE) { EPharmacyAdapterFactoryImpl(ePharmacyListener) }
@@ -112,56 +114,53 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
         if(!dataModel?.ticker?.title.isNullOrBlank()){
             ticker.show()
             ticker.tickerType = dataModel?.ticker?.tickerType ?: Ticker.TYPE_INFORMATION
-            ticker.setHtmlDescription(dataModel?.ticker?.title ?: "")
+            ticker.setHtmlDescription(dataModel?.ticker?.title.orEmpty())
         }else {
             ticker.hide()
         }
     }
 
-    // TODO Optimize
     private fun renderQuantityChangedLayout() {
         if(dataModel?.quantityChangedModel != null && ePharmacyListener is EPharmacyQuantityChangeFragment){
-            if(dataModel?.quantityChangedModel?.currentQty == 0){
+            if(dataModel?.quantityChangedModel?.currentQty?.orZero().isZero()){
                 dataModel?.quantityChangedModel?.currentQty = dataModel?.quantityChangedModel?.recommendedQty.orZero()
             }
 
-            quantityChangedLayout?.show()
+            quantityEditorLayout?.show()
             initialProductQuantity.text = java.lang.String.format(
                 itemView.context.getString(epharmacyR.string.epharmacy_barang_quantity),
                 dataModel?.quantityChangedModel?.initialQty.toString()
             )
             productQuantityType.text = itemView.context.getString(R.string.epharmacy_barang)
-            val currentEditorValue = quantityChangedEditor.getValue()
-            if(dataModel?.quantityChangedModel?.currentQty != currentEditorValue && currentEditorValue != 1)
-                quantityChangedEditor.setValue(dataModel?.quantityChangedModel?.recommendedQty.orZero())
-            if(quantityChangedEditor.getValue() >= (dataModel?.quantityChangedModel?.recommendedQty.orZero())){
-                quantityChangedEditor.addButton.isEnabled = false
-            }
-            val subtotal = EPharmacyUtils.getTotalAmount(dataModel?.quantityChangedModel?.currentQty, dataModel?.quantityChangedModel?.productPrice)
-            dataModel?.quantityChangedModel?.subTotal = subtotal
-            totalAmount.displayTextOrHide(EPharmacyUtils.getTotalAmountFmt(subtotal))
-            totalQuantity.displayTextOrHide(java.lang.String.format(
-                itemView.context.getString(epharmacyR.string.epharmacy_subtotal_quantity_change),
-                dataModel?.quantityChangedModel?.currentQty.toString()
-            ))
+            reCalculateSubTotal()
+
+            quantityChangedEditor.setValue(dataModel?.quantityChangedModel?.recommendedQty.orZero())
+            quantityChangedEditor.maxValue = dataModel?.quantityChangedModel?.recommendedQty.orZero()
+            quantityChangedEditor.minValue = MIN_VALUE_OF_PRODUCT_EDITOR
+
             quantityChangedEditor.setValueChangedListener { newValue, _, _ ->
-                ePharmacyListener.onQuantityChanged()
-                if(newValue == 1){
+                if(newValue == MIN_VALUE_OF_PRODUCT_EDITOR){
                     ePharmacyListener.onToast(Toaster.TYPE_ERROR,
-                        itemView.context.resources?.getString(epharmacyR.string.epharmacy_minimum_quantity_reached) ?: "")
+                        itemView.context.resources?.getString(epharmacyR.string.epharmacy_minimum_quantity_reached).orEmpty())
                     quantityChangedEditor.subtractButton.isEnabled = false
-                }else if(newValue == dataModel?.quantityChangedModel?.recommendedQty){
-                    quantityChangedEditor.addButton.isEnabled = false
-                } else {
-                    quantityChangedEditor.subtractButton.isEnabled = true
-                    quantityChangedEditor.addButton.isEnabled = true
                 }
                 dataModel?.quantityChangedModel?.currentQty = newValue
-                renderQuantityChangedLayout()
+                reCalculateSubTotal()
+                ePharmacyListener.onQuantityChanged()
             }
         }else {
-            quantityChangedLayout?.hide()
+            quantityEditorLayout?.hide()
         }
+    }
+
+    private fun reCalculateSubTotal() {
+        val subtotal = EPharmacyUtils.getTotalAmount(dataModel?.quantityChangedModel?.currentQty, dataModel?.quantityChangedModel?.productPrice)
+        dataModel?.quantityChangedModel?.subTotal = subtotal
+        totalAmount.displayTextOrHide(EPharmacyUtils.getTotalAmountFmt(subtotal))
+        totalQuantity.displayTextOrHide(java.lang.String.format(
+            itemView.context.getString(epharmacyR.string.epharmacy_subtotal_quantity_change),
+            dataModel?.quantityChangedModel?.currentQty.toString()
+        ))
     }
 
     private fun renderOrderTitle() {
@@ -229,7 +228,7 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
     }
 
     private fun renderShopData() {
-        shopNameText.displayTextOrHide(dataModel?.shopInfo?.shopName ?: "")
+        shopNameText.displayTextOrHide(dataModel?.shopInfo?.shopName.orEmpty())
         shopIcon.show()
         shopIcon.loadImage(dataModel?.shopInfo?.shopLogoUrl)
     }
@@ -258,18 +257,21 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
             }
 
             ePharmacyAdapter.submitList(dataModel?.subProductsDataModel)
-
-            if (dataModel?.productsIsExpanded == true) {
-                productChevronTitle.text = view.context.getString(R.string.epharmacy_show_less)
-                productAccordionRV.show()
-                productAccordionChevron.setImage(IconUnify.CHEVRON_UP, null, null, null, null)
-            } else {
-                productChevronTitle.text = view.context.getString(R.string.epharmacy_show_more)
-                productAccordionChevron.setImage(IconUnify.CHEVRON_DOWN, null, null, null, null)
-                productAccordionRV.hide()
-            }
+            toggleProductListExpansion(dataModel?.productsIsExpanded.orFalse())
         } else {
             productAccordionView.hide()
+        }
+    }
+
+    private fun toggleProductListExpansion(isExpanded : Boolean) {
+        if (isExpanded) {
+            productChevronTitle.text = view.context.getString(R.string.epharmacy_show_less)
+            productAccordionRV.show()
+            productAccordionChevron.setImage(IconUnify.CHEVRON_UP, null, null, null, null)
+        } else {
+            productChevronTitle.text = view.context.getString(R.string.epharmacy_show_more)
+            productAccordionChevron.setImage(IconUnify.CHEVRON_DOWN, null, null, null, null)
+            productAccordionRV.hide()
         }
     }
 

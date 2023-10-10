@@ -73,7 +73,7 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
         )
     }
 
-    private fun onAvailablePrepareProductGroup(source: String, ePharmacyPrepareProductsGroupResponse: EPharmacyPrepareProductsGroupResponse) {
+    private fun onAvailablePrepareProductGroup(ePharmacyPrepareProductsGroupResponse: EPharmacyPrepareProductsGroupResponse, source: String?) {
         ePharmacyPrepareProductsGroupResponseData = ePharmacyPrepareProductsGroupResponse
         ePharmacyPrepareProductsGroupResponse.let { data ->
             if (data.detailData?.groupsData?.epharmacyGroups?.isNotEmpty() == true) {

@@ -12,15 +12,15 @@ class EPharmacyPrepareProductsGroupUseCase @Inject constructor(@ApplicationConte
     GraphqlUseCase<EPharmacyPrepareProductsGroupResponse>(graphqlRepository) {
 
     fun getEPharmacyPrepareProductsGroup(
-        onSuccess: (String, EPharmacyPrepareProductsGroupResponse) -> Unit,
+        onSuccess: (EPharmacyPrepareProductsGroupResponse, String?) -> Unit,
         onError: (Throwable) -> Unit,
-        source: String = EPHARMACY_PPG_SOURCE_PAP
+        source: String? = EPHARMACY_PPG_SOURCE_PAP
     ) {
         try {
             this.setParams()
             this.execute(
                 { result ->
-                    onSuccess(source, result)
+                    onSuccess(result, source)
                 },
                 { error ->
                     onError(error)

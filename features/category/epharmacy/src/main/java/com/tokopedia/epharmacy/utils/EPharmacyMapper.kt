@@ -79,7 +79,7 @@ object EPharmacyMapper {
     }
 
     private fun getQuantityChangedModelProduct(product: EGroup.ProductsInfo.Product?) : EGroup.ProductsInfo.Product.QtyComparison?{
-        return product?.qtyComparison.apply { product?.qtyComparison?.subTotal = product?.price.orZero() *  product?.qtyComparison?.initialQty.orZero()}
+        return product?.qtyComparison.apply { product?.qtyComparison?.subTotal = product?.price.orZero() *  product?.qtyComparison?.initialQty?.toDouble().orZero()}
     }
 
     private fun getUniqueModelName(ePharmacyGroupId: String?, index: Int): String {

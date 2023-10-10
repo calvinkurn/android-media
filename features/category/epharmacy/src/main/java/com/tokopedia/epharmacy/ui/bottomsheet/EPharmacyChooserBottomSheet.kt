@@ -32,9 +32,11 @@ import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.track.builder.Tracker
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class EPharmacyChooserBottomSheet : BottomSheetUnify() {
 
@@ -175,7 +177,7 @@ class EPharmacyChooserBottomSheet : BottomSheetUnify() {
     private fun renderClosingHours() {
         binding?.chooserMiniConsultation?.let {
             with(it) {
-                val disableColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN400)
+                val disableColor = MethodChecker.getColor(context, unifyprinciplesR.color.Unify_NN400)
                 lblPAPTittleOptionBottomsheet.setTextColor(disableColor)
                 lblPAPDescriptionOptionBottomsheet.setTextColor(disableColor)
                 baruLabel.setLabelType(Label.HIGHLIGHT_LIGHT_GREY)

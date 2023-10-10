@@ -7,8 +7,8 @@ import com.tokopedia.epharmacy.component.BaseEPharmacyDataModel
 import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup as EG
 
 data class EPharmacyAttachmentDataModel(
-    val name: String = "",
-    val type: String = "",
+    override val name: String,
+    override val type: String,
     val epharmacyGroupId: String?,
     val orderTitle: String?,
     val enablerName: String?,
@@ -38,7 +38,7 @@ data class EPharmacyAttachmentDataModel(
     var isFirstError: Boolean = false,
     var isAccordionEnable: Boolean = true
 ) :
-    BaseEPharmacyDataModel {
+    BaseEPharmacySimpleDataModelImpl(name, type) {
 
     override fun name(): String = name
 
