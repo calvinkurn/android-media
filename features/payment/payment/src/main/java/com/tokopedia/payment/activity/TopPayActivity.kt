@@ -40,7 +40,7 @@ import com.tokopedia.common.payment.utils.LINK_ACCOUNT_BACK_BUTTON_APPLINK
 import com.tokopedia.common.payment.utils.LINK_ACCOUNT_SOURCE_PAYMENT
 import com.tokopedia.common.payment.utils.LinkStatusMatcher
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.device.info.model.AdditionalInfoModel.Companion.generateJson
+import com.tokopedia.device.info.model.AdditionalDeviceInfo
 import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator
 import com.tokopedia.fingerprint.util.FingerprintConstant
 import com.tokopedia.logger.ServerLogger
@@ -905,7 +905,16 @@ class TopPayActivity :
     }
 
     private fun getFintechFingerprintData(): String {
-        val additionalInfoJson = generateJson(this@TopPayActivity.applicationContext)
+        val isEnableGetWidevineId = remoteConfig.getBoolean(
+            RemoteConfigKey.ANDROID_ENABLE_GENERATE_WIDEVINE_ID,
+            true
+        )
+        val isEnableGetWidevineIdSuspend = remoteConfig.getBoolean(
+            RemoteConfigKey.ANDROID_ENABLE_GENERATE_WIDEVINE_ID_SUSPEND,
+            true
+        )
+
+        val additionalInfoJson = AdditionalDeviceInfo.generateJson(this@TopPayActivity.applicationContext, isEnableGetWidevineId, isEnableGetWidevineIdSuspend)
             .toByteArray(StandardCharsets.UTF_8)
         return Base64.encodeToString(additionalInfoJson, Base64.DEFAULT)
             .replace("\n", "")
