@@ -1428,7 +1428,7 @@ class PromoUsageViewModel @Inject constructor(
         val orders = validateUsePromoRequest.orders.map { order ->
             var newOrder = order.copy()
             items.forEach { item ->
-                val newCodes = ArrayList(order.codes)
+                val newCodes = ArrayList(newOrder.codes)
                 val promoCode: String
                 val uniqueId: String
                 val boAdditionalData: List<BoAdditionalData>
