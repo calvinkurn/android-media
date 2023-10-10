@@ -33,7 +33,7 @@ class StoriesErrorView : ConstraintLayout {
             field = value
             val (title, description, image) =
                 when (value) {
-                    Type.NoStories -> Triple(
+                    Type.NoStories, Type.NoCategory -> Triple(
                         R.string.stories_content_unavailable,
                         null,
                         IconUnify.IMAGE
@@ -56,22 +56,9 @@ class StoriesErrorView : ConstraintLayout {
             binding.storiesErrorIcon.setImage(newIconId = image)
             binding.storiesErrorTitle.text = title?.let { context.getString(it) }
             binding.storiesErrorDesc.text = description?.let { context.getString(it) }
-            binding.btnStoriesNoInetRetry.showWithCondition(value != Type.NoStories)
-            binding.loaderGroup.showWithCondition(value != Type.NoStories)
-        }
-
-    var isFullScreen: Boolean = true
-        set(value) {
-            field = value
-            val layoutParams = if (value) LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
-            ) else
-                LayoutParams(
-                    ViewGroup.LayoutParams.WRAP_CONTENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
-                )
-            binding.root.layoutParams = layoutParams
+            binding.btnStoriesNoInetRetry.showWithCondition(value != Type.NoStories && value != Type.NoCategory)
+            binding.loaderGroup.showWithCondition(value != Type.NoStories && value != Type.NoCategory)
+//            binding.root.translationZ = if (value == Type.NoContent || value == Type.NoCategory) 0f else 1f
         }
 
     fun setAction(action: (View) -> Unit) {
@@ -83,6 +70,6 @@ class StoriesErrorView : ConstraintLayout {
     }
 
     enum class Type {
-        FailedLoad, NoStories, NoContent, NoInternet, Unknown;
+        FailedLoad, NoStories, NoCategory, NoContent, NoInternet, Unknown;
     }
 }

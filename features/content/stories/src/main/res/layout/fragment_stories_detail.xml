@@ -15,26 +15,16 @@
         android:id="@+id/layout_stories_content"
         layout="@layout/layout_stories_content" />
 
-    <!--Rename-->
     <com.tokopedia.stories.view.custom.StoriesErrorView
-        android:id="@+id/layout_stories_no_inet"
+        android:id="@+id/v_stories_error"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:translationZ="1dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:visibility="gone"/>
-
-    <include
-        android:id="@+id/layout_stories_failed"
-        layout="@layout/layout_failed_load"
-        android:visibility="gone" />
-
-    <include
-        android:id="@+id/layout_no_content"
-        layout="@layout/layout_empty_page"
-        android:visibility="gone" />
 
     <View
         android:id="@+id/view_gradient_top"

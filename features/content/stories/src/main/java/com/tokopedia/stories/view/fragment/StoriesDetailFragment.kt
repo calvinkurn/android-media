@@ -40,6 +40,7 @@ import com.tokopedia.stories.uimodel.StoryAuthor
 import com.tokopedia.stories.view.adapter.StoriesGroupAdapter
 import com.tokopedia.stories.view.animation.StoriesProductNudge
 import com.tokopedia.stories.view.components.indicator.StoriesDetailTimer
+import com.tokopedia.stories.view.custom.StoriesErrorView
 import com.tokopedia.stories.view.model.StoriesArgsModel
 import com.tokopedia.stories.view.model.StoriesDetail
 import com.tokopedia.stories.view.model.StoriesDetailItem
@@ -198,16 +199,11 @@ class StoriesDetailFragment @Inject constructor(
                 if (!isEligiblePage) return@collect
                 when (event) {
                     is StoriesUiEvent.EmptyDetailPage -> {
-                        setNoContent(true)
+                        setErrorType(StoriesErrorView.Type.NoCategory)
                     }
 
                     is StoriesUiEvent.ErrorDetailPage -> {
-                        if (event.throwable.isNetworkError) {
-                            setNoInternet(true)
-                        } else {
-                            setFailed(true)
-                            binding.layoutStoriesFailed.btnStoriesFailedLoad.setOnClickListener { run { event.onClick() } }
-                        }
+                        setErrorType(if (event.throwable.isNetworkError) StoriesErrorView.Type.NoInternet else StoriesErrorView.Type.FailedLoad) { event.onClick()}
                     }
 
                     StoriesUiEvent.OpenKebab -> {
@@ -289,8 +285,7 @@ class StoriesDetailFragment @Inject constructor(
             state.detailItems.isEmpty()
         ) return
 
-        setNoInternet(false)
-        setFailed(false)
+        hideError()
 
         val prevItem = prevState?.detailItems?.getOrNull(prevState.selectedDetailPosition)
         val currentItem = state.detailItems.getOrNull(state.selectedDetailPosition) ?: return
@@ -313,36 +308,32 @@ class StoriesDetailFragment @Inject constructor(
                 when (status) {
                     StoryStatus.Active -> {
                         binding.layoutStoriesContent.ivStoriesDetailContent.loadImage(
-                            content.data,
+                            "https://tokopedia.slack.com/archives/D01GU7ZMGSE/p1696842059833269",
                             object : ImageLoaderStateListener {
                                 override fun successLoad() {
                                     contentIsLoaded()
                                     analytic?.sendImpressionStoriesContent(viewModel.storyId)
                                 }
                                 override fun failedLoad() {
-                                    setFailed(true)
-                                    binding.layoutStoriesFailed.btnStoriesFailedLoad.setOnClickListener {
-                                        viewModelAction(StoriesUiAction.SetInitialData) //TODO() adjust error state into one layout
-                                    }
+                                    setErrorType(StoriesErrorView.Type.NoContent) { viewModelAction(StoriesUiAction.RetryDetailPage) }
                                 }
                             }
                         )
                     }
 
                     StoryStatus.Unknown -> {
-                        setNoContent(true)
+                        setErrorType(StoriesErrorView.Type.NoStories)
                         contentIsLoaded()
                     }
                 }
             }
 
             Video -> {
-                // todo
-                setNoContent(false)
+                hideError()
             }
 
             Unknown -> {
-                setNoContent(true)
+                setErrorType(StoriesErrorView.Type.NoStories)
                 contentIsLoaded()
             }
         }
@@ -600,21 +591,15 @@ class StoriesDetailFragment @Inject constructor(
         }
     }
 
-    private fun setNoInternet(isShow: Boolean) = with(binding.layoutStoriesNoInet) {
-        showWithCondition(isShow)
-        setAction { viewModelAction(StoriesUiAction.RetryDetailPage) } //TODO() parse from param
+    private fun setErrorType(errorType: StoriesErrorView.Type, onClick: () -> Unit = {}) = with(binding.vStoriesError) {
+        show()
+        type = errorType
+        setAction { onClick() }
         setCloseAction { activity?.finish() }
+        binding.layoutStoriesContent.root.showWithCondition(errorType != StoriesErrorView.Type.NoCategory && errorType != StoriesErrorView.Type.NoContent)
     }
 
-    private fun setFailed(isShow: Boolean) = with(binding.layoutStoriesFailed) {
-        root.showWithCondition(isShow)
-        icCloseLoading.setOnClickListener { activity?.finish() }
-    }
-
-    private fun setNoContent(isShow: Boolean) = with(binding.layoutNoContent) {
-        binding.layoutStoriesContent.root.showWithCondition(!isShow)
-        root.showWithCondition(isShow)
-    }
+    private fun hideError() = binding.vStoriesError.gone()
 
     override fun onDestroyView() {
         super.onDestroyView()
