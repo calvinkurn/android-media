@@ -522,11 +522,6 @@ object DeeplinkMainApp {
                 ApplinkConstInternalMedia.INTERNAL_MEDIA_EDITOR
             }
         ),
-        "universal-editor" to mutableListOf(
-            DLP.matchPattern("") { _: String ->
-                ApplinkConstInternalMedia.INTERNAL_UNIVERSAL_MEDIA_EDITOR
-            }
-        ),
         "media-picker" to mutableListOf(
             DLP.matchPattern("") { _: String ->
                 ApplinkConstInternalMedia.INTERNAL_MEDIA_PICKER
@@ -1275,6 +1270,11 @@ object DeeplinkMainApp {
         "travelentertainment" to mutableListOf(
             DLP.goTo { context: Context, deeplink: String ->
                 DeeplinkMapperDigital.getRegisteredNavigationDigital(context, deeplink)
+            }
+        ),
+        "universal-editor" to mutableListOf(
+            DLP.matchPattern("") { _: String ->
+                ApplinkConstInternalMedia.INTERNAL_UNIVERSAL_MEDIA_EDITOR
             }
         ),
         "universal-page" to mutableListOf(
