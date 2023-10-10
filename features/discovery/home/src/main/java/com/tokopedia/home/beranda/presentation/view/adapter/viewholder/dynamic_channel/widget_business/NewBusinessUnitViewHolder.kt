@@ -47,13 +47,6 @@ class NewBusinessUnitViewHolder(
         errorView.hide()
         if (recyclerView.adapter == null) {
             adapter = BusinessUnitItemAdapter()
-        } else {
-            adapter?.submitList(
-                model,
-                listenerBusinessUnitItemTrackerListener,
-                cardInteraction,
-                listener.userId
-            )
         }
         recyclerView.adapter = adapter
         adapter?.setPositionWidgetOnHome(positionWidget)
