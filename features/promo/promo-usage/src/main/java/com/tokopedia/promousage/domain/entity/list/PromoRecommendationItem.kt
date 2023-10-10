@@ -12,6 +12,9 @@ data class PromoRecommendationItem(
     val backgroundUrl: String = "",
     val animationUrl: String = "",
     val backgroundColor: String = "",
+    val isCalculating: Boolean = false,
+    val showAnimation: Boolean = false,
 
-    val isCalculating: Boolean = false
+    // Property only for UI
+    val promos: List<PromoItem> = emptyList(),
 ) : DelegateAdapterItem
