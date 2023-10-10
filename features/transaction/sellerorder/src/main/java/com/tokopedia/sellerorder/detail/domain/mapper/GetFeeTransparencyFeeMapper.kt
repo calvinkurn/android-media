@@ -32,9 +32,7 @@ class GetFeeTransparencyFeeMapper @Inject constructor() {
     ): TransparencyFeeUiModelWrapper {
         return TransparencyFeeUiModelWrapper(
             bottomSheetTitle = incomeDetail.title.orEmpty(),
-            transparencyFeeList = mapTransparencyFeeList(
-                sections = incomeDetail.sections
-            ),
+            transparencyFeeList = mapTransparencyFeeList(incomeDetail.sections),
             summary = mapSummary(incomeDetail.summary)
         )
     }
@@ -82,19 +80,28 @@ class GetFeeTransparencyFeeMapper @Inject constructor() {
         headerLabel: String?,
         attributes: List<SomDetailIncomeDetailResponse.GetSomIncomeDetail.Attribute?>?
     ): List<BaseTransparencyFeeAttributes> {
+        val attributeUiModels = mapAttributes(attributes)
         return mutableListOf<BaseTransparencyFeeAttributes>().apply {
-            includeHeaderLabelAttribute(headerLabel)
-            addAll(mapAttributes(attributes))
+            includeHeaderLabelAttribute(
+                text = headerLabel,
+                hasAttributes = attributeUiModels.isNotEmpty()
+            )
+            addAll(attributeUiModels)
         }
     }
 
     private fun MutableList<BaseTransparencyFeeAttributes>.includeHeaderLabelAttribute(
-        text: String?
+        text: String?,
+        hasAttributes: Boolean
     ) {
         if (text == null) return
-        text.split(LABEL_WORD_DIVIDER).forEach { word ->
-            add(TransparencyFeeHeaderLabelUiModel(word))
-            add(TransparencyFeeHeaderLabelUiModel(LABEL_WORD_DIVIDER))
+        if (hasAttributes) {
+            text.split(LABEL_WORD_DIVIDER).forEach { word ->
+                add(TransparencyFeeHeaderLabelUiModel(word))
+                add(TransparencyFeeHeaderLabelUiModel(LABEL_WORD_DIVIDER))
+            }
+        } else {
+            add(TransparencyFeeHeaderLabelUiModel(text))
         }
     }
 
@@ -102,19 +109,28 @@ class GetFeeTransparencyFeeMapper @Inject constructor() {
         componentLabel: String?,
         attributes: List<SomDetailIncomeDetailResponse.GetSomIncomeDetail.Attribute?>?
     ): List<BaseTransparencyFeeAttributes> {
+        val attributeUiModels = mapAttributes(attributes)
         return mutableListOf<BaseTransparencyFeeAttributes>().apply {
-            includeComponentLabelAttribute(componentLabel)
-            addAll(mapAttributes(attributes))
+            includeComponentLabelAttribute(
+                text = componentLabel,
+                hasAttributes = attributeUiModels.isNotEmpty()
+            )
+            addAll(attributeUiModels)
         }
     }
 
     private fun MutableList<BaseTransparencyFeeAttributes>.includeComponentLabelAttribute(
-        text: String?
+        text: String?,
+        hasAttributes: Boolean
     ) {
         if (text == null) return
-        text.split(LABEL_WORD_DIVIDER).forEach { word ->
-            add(TransparencyFeeComponentLabelUiModel(word))
-            add(TransparencyFeeComponentLabelUiModel(LABEL_WORD_DIVIDER))
+        if (hasAttributes) {
+            text.split(LABEL_WORD_DIVIDER).forEach { word ->
+                add(TransparencyFeeComponentLabelUiModel(word))
+                add(TransparencyFeeComponentLabelUiModel(LABEL_WORD_DIVIDER))
+            }
+        } else {
+            add(TransparencyFeeComponentLabelUiModel(text))
         }
     }
 
@@ -122,19 +138,28 @@ class GetFeeTransparencyFeeMapper @Inject constructor() {
         subComponentLabel: String?,
         attributes: List<SomDetailIncomeDetailResponse.GetSomIncomeDetail.Attribute?>?
     ): List<BaseTransparencyFeeAttributes> {
+        val attributeUiModels = mapAttributes(attributes)
         return mutableListOf<BaseTransparencyFeeAttributes>().apply {
-            includeSubComponentLabelAttribute(subComponentLabel)
-            addAll(mapAttributes(attributes))
+            includeSubComponentLabelAttribute(
+                text = subComponentLabel,
+                hasAttributes = attributeUiModels.isNotEmpty()
+            )
+            addAll(attributeUiModels)
         }
     }
 
     private fun MutableList<BaseTransparencyFeeAttributes>.includeSubComponentLabelAttribute(
-        text: String?
+        text: String?,
+        hasAttributes: Boolean
     ) {
         if (text == null) return
-        text.split(LABEL_WORD_DIVIDER).forEach { word ->
-            add(TransparencyFeeSubComponentLabelUiModel(word))
-            add(TransparencyFeeSubComponentLabelUiModel(LABEL_WORD_DIVIDER))
+        if (hasAttributes) {
+            text.split(LABEL_WORD_DIVIDER).forEach { word ->
+                add(TransparencyFeeSubComponentLabelUiModel(word))
+                add(TransparencyFeeSubComponentLabelUiModel(LABEL_WORD_DIVIDER))
+            }
+        } else {
+            add(TransparencyFeeSubComponentLabelUiModel(text))
         }
     }
 
