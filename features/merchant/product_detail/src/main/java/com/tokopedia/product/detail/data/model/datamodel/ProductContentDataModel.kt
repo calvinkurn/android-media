@@ -1,6 +1,8 @@
 package com.tokopedia.product.detail.data.model.datamodel
 
 import android.os.Bundle
+import com.tokopedia.analytics.performance.perf.BlocksLoadableComponent
+import com.tokopedia.analytics.performance.perf.LoadableComponent
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.common.data.model.pdplayout.CampaignModular
 import com.tokopedia.product.detail.common.data.model.pdplayout.Price
@@ -25,7 +27,11 @@ data class ProductContentDataModel(
     // Upcoming Data
     var upcomingNplData: UpcomingNplDataModel = UpcomingNplDataModel(),
     var shouldShowCampaign: Boolean = false
-) : DynamicPdpDataModel {
+) : DynamicPdpDataModel,
+    LoadableComponent by BlocksLoadableComponent(
+        { false },
+        "ProductContentDataModel"
+    ) {
 
     override val impressHolder: ImpressHolder = ImpressHolder()
 
@@ -94,6 +100,10 @@ data class ProductContentDataModel(
         } else {
             null
         }
+    }
+
+    override fun isLoading(): Boolean {
+        return data == null
     }
 }
 
