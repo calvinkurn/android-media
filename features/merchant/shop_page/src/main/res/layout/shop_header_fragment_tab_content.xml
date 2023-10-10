@@ -16,11 +16,11 @@
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appbar_layout"
+            android:background="@color/transparent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/transparent"
-            android:fitsSystemWindows="false"
-            android:visibility="gone">
+            android:visibility="gone"
+            android:fitsSystemWindows="false">
 
             <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:layout_width="match_parent"
@@ -51,20 +51,20 @@
                         android:id="@+id/background_video_shop_header"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
+                        app:use_controller="false"
                         android:visibility="gone"
+                        app:surface_type="texture_view"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:surface_type="texture_view"
-                        app:use_controller="false" />
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <View
                         android:id="@+id/background_color_shop_header"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:background="@color/Unify_NN0"
                         android:visibility="gone"
+                        android:background="@color/Unify_NN0"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintRight_toRightOf="parent"
@@ -113,27 +113,37 @@
                         app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tickerShopStatus">
 
-                        <com.tokopedia.unifycomponents.ImageUnify
-                            android:id="@+id/image_shop_logo"
-                            android:layout_width="64dp"
-                            android:layout_height="64dp"
-                            android:adjustViewBounds="true"
-                            android:background="@drawable/bg_shop_page_profile"
-                            android:contentDescription="@string/content_desc_shop_page_main_profile_image"
-                            android:scaleType="centerCrop"
+                        <com.tokopedia.stories.widget.StoriesWidgetLayout
+                            android:id="@+id/image_shop_container"
+                            android:layout_width="68dp"
+                            android:layout_height="68dp"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
-                            app:unify_image_corner_radius="0"
-                            app:unify_image_type="circle" />
+                            >
+
+                            <com.tokopedia.unifycomponents.ImageUnify
+                                android:id="@+id/image_shop_logo"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_margin="4dp"
+                                android:adjustViewBounds="true"
+                                android:background="@drawable/bg_shop_page_profile"
+                                android:contentDescription="@string/content_desc_shop_page_main_profile_image"
+                                android:scaleType="centerCrop"
+                                app:unify_image_corner_radius="0"
+                                app:unify_image_type="circle"
+                                />
+
+                        </com.tokopedia.stories.widget.StoriesWidgetLayout>
 
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
                             android:orientation="vertical"
-                            app:layout_constraintBottom_toBottomOf="@id/image_shop_logo"
-                            app:layout_constraintLeft_toRightOf="@id/image_shop_logo"
-                            app:layout_constraintTop_toTopOf="@id/image_shop_logo">
+                            android:gravity="center_vertical"
+                            app:layout_constraintBottom_toBottomOf="@id/image_shop_container"
+                            app:layout_constraintLeft_toRightOf="@id/image_shop_container"
+                            app:layout_constraintTop_toTopOf="@id/image_shop_container">
 
                             <androidx.constraintlayout.widget.ConstraintLayout
                                 android:id="@+id/section_shop_basic_info"
@@ -211,14 +221,14 @@
                                 app:layout_constraintVertical_bias="0">
 
                                 <com.tokopedia.iconunify.IconUnify
+                                    app:icon_name="STAR_FILLED"
                                     android:id="@+id/image_shop_rating_icon"
                                     android:layout_width="16dp"
-                                    android:layout_height="16dp"
                                     app:icon_color_light_disabled="@color/dms_static_Unify_Y300_light"
                                     app:icon_color_light_enable="@color/dms_static_Unify_Y300_light"
                                     app:icon_color_night_disabled="@color/dms_static_Unify_Y300_light"
                                     app:icon_color_night_enable="@color/dms_static_Unify_Y300_light"
-                                    app:icon_name="STAR_FILLED"
+                                    android:layout_height="16dp"
                                     app:layout_constraintLeft_toLeftOf="parent"
                                     app:layout_constraintTop_toTopOf="parent"
                                     app:unify_image_corner_radius="0" />
@@ -279,16 +289,16 @@
                                     android:id="@+id/iv_online_icon"
                                     android:layout_width="6dp"
                                     android:layout_height="6dp"
-                                    android:layout_marginEnd="2dp"
                                     android:visibility="gone"
+                                    tools:visibility="visible"
+                                    android:layout_marginEnd="2dp"
                                     app:layout_constraintBottom_toBottomOf="@id/text_online_description"
                                     app:layout_constraintHorizontal_bias="0"
                                     app:layout_constraintHorizontal_chainStyle="packed"
                                     app:layout_constraintLeft_toLeftOf="parent"
                                     app:layout_constraintRight_toLeftOf="@id/text_online_description"
                                     app:layout_constraintTop_toTopOf="@id/text_online_description"
-                                    app:layout_constraintVertical_bias="0.5"
-                                    tools:visibility="visible" />
+                                    app:layout_constraintVertical_bias="0.5" />
 
                                 <com.tokopedia.unifyprinciples.Typography
                                     android:id="@+id/text_online_description"
@@ -347,7 +357,7 @@
                             app:layout_constraintBottom_toTopOf="@id/widget_play_entry_point"
                             app:layout_constraintLeft_toLeftOf="parent"
                             app:layout_constraintRight_toRightOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/image_shop_logo">
+                            app:layout_constraintTop_toBottomOf="@id/image_shop_container">
 
                             <com.tokopedia.unifycomponents.UnifyButton
                                 android:id="@+id/button_chat"
@@ -395,8 +405,8 @@
                     app:contentInsetLeft="0dp"
                     app:contentInsetStart="0dp"
                     app:layout_collapseMode="pin"
-                    app:toolbarInitialFillColor="transparent"
                     app:toolbarInitialTheme="light"
+                    app:toolbarInitialFillColor="transparent"
                     tools:visibility="visible" />
 
             </com.google.android.material.appbar.CollapsingToolbarLayout>
@@ -408,13 +418,13 @@
             android:id="@+id/tab_fragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:clipChildren="false"
-            android:clipToPadding="false"
-            android:paddingBottom="56dp"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
+            android:clipToPadding="false"
+            android:clipChildren="false"
+            android:paddingBottom="56dp"
             app:layout_constraintTop_toBottomOf="@id/appbar_layout" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

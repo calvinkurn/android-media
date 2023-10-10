@@ -159,6 +159,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.exoPlayerCore
     implementation rootProject.ext.miscDependencies.exoPlayer
     implementation rootProject.ext.miscDependencies.exoPlayerRtmp
+    implementation projectOrAar(rootProject.ext.features.storiesWidget)
 
     // UI Test
     androidTestImplementation projectOrAar(rootProject.ext.features.shopShowcase)

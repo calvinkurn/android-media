@@ -54,7 +54,7 @@ class ShopPageHeaderFragmentHeaderViewHolder(
     private val shopPageHeaderActionButtonWidgetNoteButtonComponentListener: ShopPageHeaderActionButtonWidgetNoteButtonComponentViewHolder.Listener,
     private val shopPagePlayWidgetListener: ShopPageHeaderPlayWidgetViewHolder.Listener,
     private val chooseAddressWidgetListener: ChooseAddressWidget.ChooseAddressWidgetListener,
-    private val shopPageHeaderPerformanceWidgetImageTextListener: ShopPageHeaderPerformanceWidgetImageTextComponentViewHolder.Listener
+    private val shopPageHeaderPerformanceWidgetImageTextListener: ShopPageHeaderPerformanceWidgetImageTextComponentViewHolder.Listener,
 ) {
     private var isShopFavorite = false
     private var isUserNeverFollow = false
@@ -100,7 +100,7 @@ class ShopPageHeaderFragmentHeaderViewHolder(
                 shopPageHeaderActionButtonWidgetNoteButtonComponentListener,
                 shopPageTrackingSGCPlayWidget,
                 shopPagePlayWidgetListener,
-                shopPageHeaderPerformanceWidgetImageTextListener
+                shopPageHeaderPerformanceWidgetImageTextListener,
             )
         )
         rvShopPageHeaderWidget?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)

@@ -104,6 +104,8 @@
 /features/merchant/seller_shop_nib                      @tokopedia/android-minionken-dev
 /features/promo/merchant_voucher                        @tokopedia/android-minionken-dev
 /features/merchant/buy_more_get_more                    @tokopedia/android-minionken-dev
+/features/category/catalog				                @tokopedia/android-minionken-dev
+/features/category/catalog_common		                @tokopedia/android-minionken-dev
 
 /features/top_ads/top_ads_dashboard/                    @tokopedia/android-minionsolo-dev
 /features/top_ads/top_ads_management/                   @tokopedia/android-minionsolo-dev
@@ -148,6 +150,8 @@
 /features/content/content_test/                         @tokopedia/android-minionlance-dev
 /features/content/creation_common/                      @tokopedia/android-minionlance-dev
 /features/content/stories/                              @tokopedia/android-minionlance-dev
+/features/content/stories_widget/                       @tokopedia/android-minionlance-dev
+/features/content/stories_internal/                     @tokopedia/android-minionlance-dev
 
 /features/recharge/common_digital                       @tokopedia/android-minionmark-dev
 /features/recharge/common_electronic_money              @tokopedia/android-minionmark-dev
@@ -248,6 +252,7 @@
 /features/user/home_account/                            @tokopedia/android-minionkevin-dev
 /features/user/telephony_masking/                       @tokopedia/android-minionkevin-dev
 /features/user/privacycenter/                           @tokopedia/android-minionkevin-dev
+/features/user/accountlinking/                          @tokopedia/android-minionkevin-dev
 
 /features/communication/attachcommon/                   @tokopedia/android-minionkevin-dev
 /features/communication/attachinvoice/                  @tokopedia/android-minionkevin-dev

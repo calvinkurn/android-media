@@ -66,6 +66,7 @@ import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopPageHeaderW
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopPageHeaderWidgetUiModel.WidgetType.SHOP_BASIC_INFO
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopPageHeaderWidgetUiModel.WidgetType.SHOP_PERFORMANCE
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopPageHeaderWidgetUiModel.WidgetType.SHOP_PLAY
+import com.tokopedia.stories.widget.StoriesWidgetLayout
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -138,6 +139,9 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
         get() = viewBinding?.buttonFollow
     private val widgetPlayRootContainer: ContentCreationEntryPointWidget?
         get() = viewBinding?.widgetPlayEntryPoint
+
+    private val shopLogoContainer: StoriesWidgetLayout?
+        get() = viewBinding?.imageShopContainer
 
     private var coachMark: CoachMark2? = null
     private val tickerShopStatus: Ticker? = viewBinding?.tickerShopStatus
@@ -410,8 +414,14 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
 
     private fun setShopLogoImage(listWidgetShopData: List<ShopPageHeaderWidgetUiModel>) {
         val shopBasicData = getShopBasicInfoData(listWidgetShopData)
-        val shopLogoImageUrl = getShopBasicDataShopLogoComponent(shopBasicData)?.image.orEmpty()
+        val shopBasicDataLogoComponent = getShopBasicDataShopLogoComponent(shopBasicData)
+        val shopLogoImageUrl = shopBasicDataLogoComponent?.image.orEmpty()
         imageShopLogo?.loadImageCircle(shopLogoImageUrl)
+
+        val shopId = shopBasicDataLogoComponent?.shopId.orEmpty()
+        shopLogoContainer?.run {
+            listenerHeader?.getStoriesWidgetManager()?.manage(this, shopId)
+        }
     }
 
     private fun getShopBasicInfoData(listWidgetShopData: List<ShopPageHeaderWidgetUiModel>): ShopPageHeaderWidgetUiModel? {

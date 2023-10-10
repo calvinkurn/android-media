@@ -1756,13 +1756,14 @@ class DigitalPDPPulsaFragment :
             if (requestCode == REQUEST_CODE_DIGITAL_SAVED_NUMBER) {
                 if (data != null) {
                     val orderClientNumber =
-                        data.getParcelableExtra<Parcelable>(EXTRA_CALLBACK_CLIENT_NUMBER) as TopupBillsSavedNumber
-
-                    handleCallbackSavedNumber(
-                        orderClientNumber.clientName,
-                        orderClientNumber.clientNumber,
-                        orderClientNumber.inputNumberActionTypeIndex
-                    )
+                        data.getParcelableExtra<Parcelable>(EXTRA_CALLBACK_CLIENT_NUMBER) as? TopupBillsSavedNumber
+                    orderClientNumber?.let {
+                        handleCallbackSavedNumber(
+                            it.clientName,
+                            it.clientNumber,
+                            it.inputNumberActionTypeIndex
+                        )
+                    }
                 } else {
                     handleCallbackAnySavedNumberCancel()
                 }
