@@ -186,8 +186,6 @@ object AdditionalDeviceInfo {
     private fun processGetWidevineId(): String {
         var widevineMediaDrm: MediaDrm? = null
 
-//        MediaDrm.isCryptoSchemeSupported(UUID(MOST_SIG_BITS, LEAST_SIG_BITS))
-
         val widevineId = try {
             widevineMediaDrm = MediaDrm(UUID(MOST_SIG_BITS, LEAST_SIG_BITS))
             val wideVineId =
