@@ -6,8 +6,6 @@ import com.tokopedia.abstraction.base.service.JobIntentServiceX
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
 import com.tokopedia.localizationchooseaddress.domain.model.GetDefaultChosenAddressParam
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetDefaultChosenAddressUseCase
-import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
-import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.loginregister.login.di.ActivityComponentFactory
@@ -49,8 +47,8 @@ class GetDefaultChosenAddressService : JobIntentServiceX(), CoroutineScope {
                     )
                 ).response
                 if (chosenAddress.error.detail.isEmpty()) {
-                    val address = it.data
-                    val tokonow = it.tokonow
+                    val address = chosenAddress.data
+                    val tokonow = chosenAddress.tokonow
                     if (address.cityId != 0) {
                         ChooseAddressUtils.updateLocalizingAddressDataFromOther(
                             applicationContext,
@@ -93,5 +91,4 @@ class GetDefaultChosenAddressService : JobIntentServiceX(), CoroutineScope {
             }
         }
     }
-
 }
