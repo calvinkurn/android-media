@@ -138,7 +138,7 @@ abstract class BaseTelcoPostpaidScreenShotLoginTest {
         clientNumberWidget_typeNumber(VALID_PHONE_NUMBER)
         Thread.sleep(2000)
         pdp_validateBuyWidgetNotDisplayed()
-        Espresso.onView(ViewMatchers.withId(R.id.telco_enquiry_btn))
+        Espresso.onView(ViewMatchers.withId(R.id.telco_main_btn))
                 .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
                 .perform(ViewActions.click())
 

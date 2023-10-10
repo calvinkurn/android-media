@@ -49,7 +49,6 @@ import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfigKey.HOME_ENABLE_AUTO_REFRESH_WISHLIST
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -220,14 +219,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         super.onViewCreated(view, savedInstanceState)
         prepareLayout()
         observingData()
-    }
-
-    private fun isAutoRefreshEnabled(): Boolean {
-        return try {
-            return getFirebaseRemoteConfig()?.getBoolean(HOME_ENABLE_AUTO_REFRESH_WISHLIST) ?: false
-        } catch (e: Exception) {
-            false
-        }
     }
 
     private fun getFirebaseRemoteConfig(): FirebaseRemoteConfigImpl? {

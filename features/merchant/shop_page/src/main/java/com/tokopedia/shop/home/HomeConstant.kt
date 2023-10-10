@@ -19,12 +19,12 @@ object WidgetType {
     const val CARD = "card"
     const val BUNDLE = "bundle"
     const val VOUCHER_SLIDER = "voucher_slider"
-    const val DIRECT_PURCHASE = "direct_purchase"
-    const val COMPONENT = "component"
+    const val REIMAGINE_DIRECT_PURCHASE = "direct_purchase"
+    const val REIMAGINE_COMPONENT = "component"
 }
 
 /**
- * If you add a new widget name, please also add it to [WidgetNameEnum]
+ * IF YOU ADD A NEW WIDGET NAME, PLEASE ALSO ADD IT TO [WidgetNameEnum]
  */
 object WidgetName {
     const val SLIDER_BANNER = "slider_banner"
@@ -51,7 +51,7 @@ object WidgetName {
     const val BIG_CAMPAIGN_THEMATIC = "big_campaign_thematic"
     const val PERSO_PRODUCT_COMPARISON = "comparison"
     const val BANNER_TIMER = "banner_timer"
-    const val BANNER_PRODUCT_HOTSPOT = "banner_product_hotspot"
+    const val REIMAGINE_BANNER_PRODUCT_HOTSPOT = "banner_product_hotspot"
     const val SLIDER_BANNER_HIGHLIGHT = "slider_banner_highlight"
     const val PRODUCT_HIGHLIGHT = "product_highlight"
     const val VOUCHER = "voucher"
@@ -71,7 +71,7 @@ object WidgetName {
     const val IS_SHOW_ETALASE_NAME = 1
 
     val LIST_SUPPORTED_WIDGET_NAME = listOf<String>(
-        SLIDER_BANNER,
+        SLIDER_BANNER
 
     )
 }
@@ -85,7 +85,7 @@ enum class WidgetNameEnum(val value: String) {
     PLAY_CAROUSEL_WIDGET("play"),
     VIDEO("video"),
     PRODUCT("product"),
-//    PRODUCT_VERTICAL("product_vertical"),
+    PRODUCT_VERTICAL("product_vertical"),
     RECENT_ACTIVITY("recent_activity"),
     BUY_AGAIN("buy_again"),
     REMINDER("reminder"),
@@ -101,15 +101,15 @@ enum class WidgetNameEnum(val value: String) {
     BIG_CAMPAIGN_THEMATIC("big_campaign_thematic"),
     PERSO_PRODUCT_COMPARISON("comparison"),
     BANNER_TIMER("banner_timer"),
-//    BANNER_PRODUCT_HOTSPOT("banner_product_hotspot"),
+    BANNER_PRODUCT_HOTSPOT("banner_product_hotspot"),
     SLIDER_BANNER_HIGHLIGHT("slider_banner_highlight"),
     PRODUCT_HIGHLIGHT("product_highlight"),
     VOUCHER("voucher"),
     BMGM_BANNER("bmgm_banner_group"), // Buy More Get More Widget Banner
-//    SHOWCASE_NAVIGATION_BANNER("showcase_navigation_banner"),
-//    ADVANCED_SLIDER_BANNER("advanced_slider_banner"),
-//    BANNER_PRODUCT_GROUP("banner_product_group"),
-//    DIRECT_PURCHASED_BY_ETALASE("direct_purchased_by_etalase"),
+    SHOWCASE_NAVIGATION_BANNER("showcase_navigation_banner"),
+    ADVANCED_SLIDER_BANNER("advanced_slider_banner"),
+    BANNER_PRODUCT_GROUP("banner_product_group"),
+    DIRECT_PURCHASED_BY_ETALASE("direct_purchased_by_etalase"),
     SHOWCASE_SLIDER_SMALL("etalase_slider_kecil"),
     SHOWCASE_SLIDER_MEDIUM("etalase_slider_medium"),
     SHOWCASE_SLIDER_TWO_ROWS("etalase_slider_kecil_2_baris"),
