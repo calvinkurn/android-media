@@ -30,6 +30,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationPage
+import com.tokopedia.home_component.listener.MixTopComponentListener
 import com.tokopedia.home_component.model.ChannelBanner
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelHeader
@@ -80,7 +81,9 @@ import com.tokopedia.thankyou_native.presentation.views.GyroView
 import com.tokopedia.thankyou_native.presentation.views.RegisterMemberShipListener
 import com.tokopedia.thankyou_native.presentation.views.TopAdsView
 import com.tokopedia.thankyou_native.presentation.views.listener.BannerListener
+import com.tokopedia.thankyou_native.presentation.views.listener.FlashSaleWidgetListener
 import com.tokopedia.thankyou_native.presentation.views.listener.MarketplaceRecommendationListener
+import com.tokopedia.thankyou_native.presentation.views.listener.MixTopComponentListenerCallback
 import com.tokopedia.thankyou_native.recommendation.presentation.view.IRecommendationView
 import com.tokopedia.thankyou_native.recommendation.presentation.view.MarketPlaceRecommendation
 import com.tokopedia.thankyou_native.recommendationdigital.presentation.view.DigitalRecommendation
@@ -108,7 +111,7 @@ abstract class ThankYouBaseFragment :
     RegisterMemberShipListener,
     MarketplaceRecommendationListener,
     BannerListener,
-    ShopFlashSaleWidgetListener {
+    FlashSaleWidgetListener {
 
     abstract fun getRecommendationContainer(): LinearLayout?
     abstract fun getFeatureListingContainer(): GyroView?
@@ -160,10 +163,12 @@ abstract class ThankYouBaseFragment :
     private var gyroTokomemberItemSuccess: GyroTokomemberItem? = null
     private var memberShipCardId: String = ""
 
+    private var trackingQueue: TrackingQueue? = null
+
     private val bottomContentAdapter: BottomContentAdapter by lazy(LazyThreadSafetyMode.NONE) {
         BottomContentAdapter(
             ArrayList(),
-            BottomContentFactory(this, this, this, this)
+            BottomContentFactory(this, this, this, MixTopComponentListenerCallback(this))
         )
     }
 
@@ -699,6 +704,24 @@ abstract class ThankYouBaseFragment :
 
     private fun getOrderListPageIntent(): Intent? {
         return RouteManager.getIntent(context, ApplinkConst.PURCHASE_ORDER)
+    }
+
+    override fun getFlashSaleWidgetPosition(): Int {
+        return thanksPageDataViewModel.widgetOrder.indexOf("flashsale")
+    }
+    override fun getTrackingQueueObj(): TrackingQueue? {
+        if (trackingQueue == null) {
+            activity?.let {
+                trackingQueue = TrackingQueue(it)
+            }
+        }
+        return trackingQueue
+    }
+    override fun getUserId(): String {
+        return userSession.userId
+    }
+    override fun route(applink: String) {
+        RouteManager.route(context, applink)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

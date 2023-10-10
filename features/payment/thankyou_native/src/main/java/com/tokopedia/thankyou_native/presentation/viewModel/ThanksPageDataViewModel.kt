@@ -258,12 +258,12 @@ class ThanksPageDataViewModel @Inject constructor(
         if (groupId.isEmpty()) return
 
         launch(coroutineContext) {
-            val a = dynamicChannelRepository.getRemoteData(Bundle().apply {
+            val homeChannel = dynamicChannelRepository.getRemoteData(Bundle().apply {
                 putString("channelIDs", groupId)
                 putString("location", location)
             })
 
-            a.dynamicHomeChannel.channels.forEachIndexed { index, item ->
+            homeChannel.dynamicHomeChannel.channels.forEachIndexed { index, item ->
                 addBottomContentWidget(
                     MixTopDataModel(
                         item.mapChannelToComponent(index)

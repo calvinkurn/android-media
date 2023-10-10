@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.listener.HomeComponentListener
+import com.tokopedia.home_component.listener.MixTopComponentListener
 import com.tokopedia.home_component.viewholders.MixTopComponentViewHolder
 import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.home_component.visitable.MixTopDataModel
@@ -22,7 +23,7 @@ class BottomContentFactory(
     private val registerMemberShipListener: RegisterMemberShipListener,
     private val marketplaceRecommendationListener: MarketplaceRecommendationListener,
     private val bannerListener: BannerListener,
-    private val shopFlashSaleWidgetListener: ShopFlashSaleWidgetListener,
+    private val mixTopComponentListener: MixTopComponentListener,
 ): BaseAdapterTypeFactory(), HomeComponentTypeFactory {
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
@@ -33,8 +34,7 @@ class BottomContentFactory(
             DigitalRecommendationItemViewHolder.LAYOUT_ID -> return DigitalRecommendationItemViewHolder(parent)
             HeadlineAdsItemViewHolder.LAYOUT_ID -> return HeadlineAdsItemViewHolder(parent)
             BannerItemViewHolder.LAYOUT_ID -> return BannerItemViewHolder(parent, bannerListener)
-            ShopFlashSaleWidgetViewHolder.LAYOUT -> return ShopFlashSaleWidgetViewHolder(parent, shopFlashSaleWidgetListener)
-            MixTopComponentViewHolder.LAYOUT -> return MixTopComponentViewHolder(parent, null, null)
+            MixTopComponentViewHolder.LAYOUT -> return MixTopComponentViewHolder(parent, null, mixTopComponentListener, true)
         }
         return super.createViewHolder(parent, type)
     }
