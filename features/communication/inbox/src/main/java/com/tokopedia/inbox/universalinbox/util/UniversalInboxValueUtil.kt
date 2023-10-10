@@ -106,5 +106,6 @@ object UniversalInboxValueUtil {
     const val WISHLIST_STATUS_IS_WISHLIST = "isWishlist"
 
     // Widget
-    const val WIDGET_PAGE_NAME = "inbox_pre-purchase"
+    const val WIDGET_PAGE_NAME_PRE_PURCHASE = "inbox_pre-purchase"
+    const val WIDGET_PAGE_NAME_POST_PURCHASE = "inbox_post-purchase"
 }

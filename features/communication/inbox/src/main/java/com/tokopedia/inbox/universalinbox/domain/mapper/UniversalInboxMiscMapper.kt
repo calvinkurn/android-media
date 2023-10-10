@@ -17,8 +17,9 @@ open class UniversalInboxMiscMapper @Inject constructor() {
     fun generateMiscMenu(): List<Visitable<in UniversalInboxTypeFactory>> {
         return listOf(
             UniversalInboxMenuSeparatorUiModel(), // Separator line
-            getTopAdsUiModel(), // Top Ads banner
-            generateRecommendationWidgetModel() // Recommendation Widget (pre & post purchase)
+            getTopAdsUiModel(), // Top Ads banner'
+            generateRecommendationPostPurchaseWidgetModel(), // Recommendation Widget (post purchase)
+            generateRecommendationPrePurchaseWidgetModel() // Recommendation Widget (pre purchase)
         )
     }
 
@@ -26,11 +27,29 @@ open class UniversalInboxMiscMapper @Inject constructor() {
         return UniversalInboxTopAdsBannerUiModel()
     }
 
-    private fun generateRecommendationWidgetModel(): UniversalInboxRecommendationWidgetUiModel {
+    private fun generateRecommendationPrePurchaseWidgetModel():
+        UniversalInboxRecommendationWidgetUiModel {
         return UniversalInboxRecommendationWidgetUiModel(
             RecommendationWidgetModel(
                 metadata = RecommendationWidgetMetadata(
-                    pageName = UniversalInboxValueUtil.WIDGET_PAGE_NAME
+                    pageName = UniversalInboxValueUtil.WIDGET_PAGE_NAME_PRE_PURCHASE
+                ),
+                trackingModel = RecommendationWidgetTrackingModel(
+                    androidPageName = RecommendationCarouselTrackingConst.Category.INBOX_PAGE,
+                    eventActionImpression = RecommendationCarouselTrackingConst.Action.IMPRESSION_ON_PRODUCT_RECOMMENDATION_INBOX,
+                    eventActionClick = RecommendationCarouselTrackingConst.Action.CLICK_ON_PRODUCT_RECOMMENDATION_INBOX,
+                    listPageName = RecommendationCarouselTrackingConst.List.INBOX
+                )
+            )
+        )
+    }
+
+    private fun generateRecommendationPostPurchaseWidgetModel():
+        UniversalInboxRecommendationWidgetUiModel {
+        return UniversalInboxRecommendationWidgetUiModel(
+            RecommendationWidgetModel(
+                metadata = RecommendationWidgetMetadata(
+                    pageName = UniversalInboxValueUtil.WIDGET_PAGE_NAME_POST_PURCHASE
                 ),
                 trackingModel = RecommendationWidgetTrackingModel(
                     androidPageName = RecommendationCarouselTrackingConst.Category.INBOX_PAGE,
