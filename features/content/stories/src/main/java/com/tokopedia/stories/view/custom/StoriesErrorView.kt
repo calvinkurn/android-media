@@ -33,7 +33,7 @@ class StoriesErrorView : ConstraintLayout {
             field = value
             val (title, description, image) =
                 when (value) {
-                    Type.NoContent -> Triple(
+                    Type.NoStories -> Triple(
                         R.string.stories_content_unavailable,
                         null,
                         IconUnify.IMAGE
@@ -45,7 +45,7 @@ class StoriesErrorView : ConstraintLayout {
                         IconUnify.SIGNAL_INACTIVE
                     )
 
-                    Type.FailedLoad -> Triple(
+                    Type.FailedLoad, Type.NoContent -> Triple(
                         null,
                         R.string.stories_retry_description,
                         IconUnify.RELOAD
@@ -56,8 +56,8 @@ class StoriesErrorView : ConstraintLayout {
             binding.storiesErrorIcon.setImage(newIconId = image)
             binding.storiesErrorTitle.text = title?.let { context.getString(it) }
             binding.storiesErrorDesc.text = description?.let { context.getString(it) }
-            binding.btnStoriesNoInetRetry.showWithCondition(value != Type.NoContent)
-            binding.loaderGroup.showWithCondition(value != Type.NoContent)
+            binding.btnStoriesNoInetRetry.showWithCondition(value != Type.NoStories)
+            binding.loaderGroup.showWithCondition(value != Type.NoStories)
         }
 
     var isFullScreen: Boolean = true
@@ -83,6 +83,6 @@ class StoriesErrorView : ConstraintLayout {
     }
 
     enum class Type {
-        FailedLoad, NoContent, NoInternet, Unknown;
+        FailedLoad, NoStories, NoContent, NoInternet, Unknown;
     }
 }
