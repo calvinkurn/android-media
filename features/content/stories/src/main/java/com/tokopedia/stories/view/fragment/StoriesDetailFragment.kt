@@ -308,7 +308,7 @@ class StoriesDetailFragment @Inject constructor(
                 when (status) {
                     StoryStatus.Active -> {
                         binding.layoutStoriesContent.ivStoriesDetailContent.loadImage(
-                            "https://tokopedia.slack.com/archives/D01GU7ZMGSE/p1696842059833269",
+                            content.data,
                             object : ImageLoaderStateListener {
                                 override fun successLoad() {
                                     contentIsLoaded()
