@@ -128,10 +128,12 @@ class BlocksPerformanceTrace(
                 perfBlockFlow.collect {
                     if (!ttflMeasured && TTFLperformanceMonitoring != null && it >= FINISHED_LOADING_TTFL_BLOCKS_THRESHOLD) {
                         measureTTFL(performanceBlocks)
+                        endAsyncSystraceSection("PageLoadTime.AsyncTTFL$traceName", COOKIE_TTFL)
                     }
 
                     if (!ttilMeasured && TTILperformanceMonitoring != null && it >= FINISHED_LOADING_TTIL_BLOCKS_THRESHOLD) {
                         measureTTIL(performanceBlocks)
+                        endAsyncSystraceSection("PageLoadTime.AsyncTTIL$traceName", COOKIE_TTIL)
                         scope.launch(Dispatchers.Main) {
                             putFullyDrawnTrace(traceName)
                         }
@@ -306,13 +308,11 @@ class BlocksPerformanceTrace(
     private fun finishTTIL(state: BlocksPerfState, listOfLoadableComponent: Set<String> = setOf()) {
         cancelPerformanceTrace(state, TTILperformanceMonitoring, listOfLoadableComponent)
         ttilMeasured = true
-        endAsyncSystraceSection("PageLoadTime.AsyncTTIL$traceName", COOKIE_TTIL)
     }
 
     private fun finishTTFL(state: BlocksPerfState, listOfLoadableComponent: Set<String> = setOf()) {
         cancelPerformanceTrace(state, TTFLperformanceMonitoring, listOfLoadableComponent)
         ttflMeasured = true
-        endAsyncSystraceSection("PageLoadTime.AsyncTTFL$traceName", COOKIE_TTFL)
     }
 
     private fun createBlocksPerformanceModel() = BlocksPerformanceModel(
