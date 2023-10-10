@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.utils.extensions.globalWidgetAddImpression
 import com.tokopedia.product.detail.data.model.datamodel.GlobalBundling
 import com.tokopedia.product.detail.data.model.datamodel.GlobalBundlingDataModel
 import com.tokopedia.product.detail.databinding.ItemGlobalBundlingBinding
@@ -37,10 +38,11 @@ class GlobalBundlingViewHolder(
     }
 
     private fun initBundlingWidget(data: GlobalBundling) {
-
         val widgetType = if (data.widgetType == -1) {
             GlobalBundlingDataModel.DEFAULT_WIDGET_TYPE
-        } else data.widgetType
+        } else {
+            data.widgetType
+        }
 
         val param = GetBundleParamBuilder()
             .setProductId(data.productId)
@@ -63,11 +65,17 @@ class GlobalBundlingViewHolder(
                 selectedMultipleBundle: BundleDetailUiModel,
                 bundlePosition: Int
             ) {
-                listener.onImpressionProductBundling(
-                    selectedMultipleBundle.bundleId,
-                    BUNDLE_TYPE_MULTIPLE,
-                    componentTrackDataModel
-                )
+                globalWidgetAddImpression(
+                    holders = listener.getImpressionHolders(),
+                    name = element.name().plus(selectedMultipleBundle.bundleName),
+                    useHolders = listener.isCacheable()
+                ) {
+                    listener.onImpressionProductBundling(
+                        selectedMultipleBundle.bundleId,
+                        BUNDLE_TYPE_MULTIPLE,
+                        componentTrackDataModel
+                    )
+                }
             }
 
             override fun impressionSingleBundle(
@@ -76,11 +84,17 @@ class GlobalBundlingViewHolder(
                 bundleName: String,
                 bundlePosition: Int
             ) {
-                listener.onImpressionProductBundling(
-                    selectedBundle.bundleId,
-                    BUNDLE_TYPE_SINGLE,
-                    componentTrackDataModel
-                )
+                globalWidgetAddImpression(
+                    holders = listener.getImpressionHolders(),
+                    name = element.name().plus(selectedBundle.bundleName),
+                    useHolders = listener.isCacheable()
+                ) {
+                    listener.onImpressionProductBundling(
+                        selectedBundle.bundleId,
+                        BUNDLE_TYPE_SINGLE,
+                        componentTrackDataModel
+                    )
+                }
             }
 
             override fun onMultipleBundleActionButtonClicked(

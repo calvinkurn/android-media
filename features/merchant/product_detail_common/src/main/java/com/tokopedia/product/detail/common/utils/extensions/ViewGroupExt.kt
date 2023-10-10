@@ -63,3 +63,19 @@ internal fun View.addOnPdpImpressionListener(
         )
     }
 }
+
+fun globalWidgetAddImpression(
+    holders: MutableList<String>,
+    name: String,
+    useHolders: Boolean,
+    onView: () -> Unit
+) {
+    if (useHolders) {
+        if (!holders.contains(name)) {
+            holders.add(name)
+            onView()
+        }
+    } else {
+        onView()
+    }
+}

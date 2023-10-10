@@ -1,13 +1,11 @@
 package com.tokopedia.product.detail.view.viewholder
 
-import com.tokopedia.imageassets.TokopediaImageUrl
-
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListener
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDiscussionMostHelpfulDataModel
 import com.tokopedia.product.detail.data.model.talk.Question
@@ -15,8 +13,9 @@ import com.tokopedia.product.detail.databinding.ItemDynamicDiscussionMostHelpful
 import com.tokopedia.product.detail.view.adapter.ProductDiscussionQuestionsAdapter
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 
-class ProductDiscussionMostHelpfulViewHolder(private val view: View,
-                                             private val listener: DynamicProductDetailListener
+class ProductDiscussionMostHelpfulViewHolder(
+    private val view: View,
+    private val listener: DynamicProductDetailListener
 ) : AbstractViewHolder<ProductDiscussionMostHelpfulDataModel>(view) {
 
     companion object {
@@ -28,7 +27,7 @@ class ProductDiscussionMostHelpfulViewHolder(private val view: View,
     override fun bind(element: ProductDiscussionMostHelpfulDataModel) {
         with(element) {
             return when {
-                questions == null && !isShimmering-> {
+                questions == null && !isShimmering -> {
                     showLocalLoad()
                     hideEmptyState()
                     hideShimmer()
@@ -58,7 +57,12 @@ class ProductDiscussionMostHelpfulViewHolder(private val view: View,
                     hideLocalLoad()
                 }
             }.also {
-                view.addOnImpressionListener(element.impressHolder) {
+                view.addOnImpressionListener(
+                    holder = element.impressHolder,
+                    holders = listener.getImpressionHolders(),
+                    name = element.name,
+                    useHolders = listener.isCacheable()
+                ) {
                     listener.onImpressComponent(getComponentTrackData(element))
                 }
             }
@@ -141,5 +145,4 @@ class ProductDiscussionMostHelpfulViewHolder(private val view: View,
     private fun getComponentTrackData(
         element: ProductDiscussionMostHelpfulDataModel
     ) = ComponentTrackDataModel(element.type, element.name, adapterPosition + 1)
-
 }
