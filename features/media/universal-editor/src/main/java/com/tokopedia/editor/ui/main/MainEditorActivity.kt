@@ -234,7 +234,7 @@ open class MainEditorActivity : AppCompatActivity()
     private fun navigateBackToPickerAndFinishIntent(filePath: String) {
         val result = PickerResult(
             originalPaths = listOf(viewModel.filePath),
-            editedImages = listOf(filePath)
+            editedPaths = listOf(filePath)
         )
 
         val intent = Intent()
