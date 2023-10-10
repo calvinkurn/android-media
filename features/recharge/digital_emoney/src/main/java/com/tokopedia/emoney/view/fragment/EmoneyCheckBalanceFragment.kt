@@ -32,7 +32,6 @@ import com.tokopedia.common_electronic_money.util.NfcCardErrorTypeDef
 import com.tokopedia.emoney.R
 import com.tokopedia.emoney.di.DaggerDigitalEmoneyComponent
 import com.tokopedia.emoney.domain.request.JakCardStatus
-import com.tokopedia.emoney.domain.response.BCAFlazzResponseMapper
 import com.tokopedia.emoney.integration.BCAConstResult.GEN_1_CARD
 import com.tokopedia.emoney.integration.BCAConstResult.GEN_2_CARD
 import com.tokopedia.emoney.integration.BCALibrary
@@ -52,7 +51,10 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
+import java.text.SimpleDateFormat
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.HashMap
 
 open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
 
@@ -163,7 +165,8 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
             val dataBalance = bcaLibrary.C_BCACheckBalance()
             val isoDep = IsoDep.get(tag)
             if(bcaIsMyCard.strLogRsp.startsWith(GEN_2_CARD) && dataBalance.cardNo.isNotEmpty()) {
-                bcaBalanceViewModel.processBCATagBalance(isoDep, TEMP_M_ID, TEMP_T_ID, bRawPublicKey, bRawPrivateKey)
+                bcaBalanceViewModel.processBCATagBalance(isoDep, TEMP_M_ID, TEMP_T_ID, bRawPublicKey,
+                    bRawPrivateKey, getCurrentBCAFlazzTimeStamp(), TEMP_ATD)
             } else if(bcaIsMyCard.strLogRsp.startsWith(GEN_1_CARD) && dataBalance.cardNo.isNotEmpty()){
                 bcaBalanceViewModel.processBCACheckBalanceGen1(isoDep, bRawPublicKey, bRawPrivateKey)
             } else {
@@ -516,6 +519,12 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
         }
     }
 
+    private fun getCurrentBCAFlazzTimeStamp(): String {
+        val sdfDate = SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault())
+        val now = Date()
+        return sdfDate.format(now)
+    }
+
     companion object {
         const val REQUEST_CODE_LOGIN = 1980
         const val CLASS_NAME = "EmoneyCheckBalanceFragment"
@@ -526,6 +535,7 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
         private const val TAPCASH_NETWORK_ERROR_LOGGER = "TAPCASH_NETWORK_ERROR_LOGGER"
         private const val TEMP_M_ID = "000885000015999"
         private const val TEMP_T_ID = "ETES0067"
+        private const val TEMP_ATD = "01BTESTDEVAOZ5L0LDraBjL9d5JKVhFR0RJ4dlZu0aWBs"
 
         fun newInstance(): Fragment {
             return EmoneyCheckBalanceFragment()

@@ -22,32 +22,32 @@ object BCAFlazzRequestMapper {
         )
     }
 
-    fun createGetBCADataSession1(gson: Gson, cardNumber: String, cardData: String, amount: Int, lastBalance: Int,
-                                 transactionId: String, cardType: String): String {
+    fun createGetBCAGenerateTrxId(gson: Gson, cardNumber: String, lastBalance: Int,
+                                  cardType: String): String {
         return createJsonStringBody(
             createBCAFlazzParam(
                 cardNumber = cardNumber,
-                cardData = cardData,
-                amount = amount,
+                cardData = EMPTY_REQ,
+                amount = EMPTY_AMOUNT,
                 lastBalance = lastBalance,
-                transactionId = transactionId,
+                transactionId = EMPTY_REQ,
                 cardType = cardType,
-                action = BCAFlazzAction.BCA_DATA_SESSION_1.action
+                action = BCAFlazzAction.GENERATE_TRX_ID.action
             ), gson
         )
     }
 
-    fun createGetBCADataBetweenSession(gson: Gson, cardNumber: String, cardData: String, amount: Int, lastBalance: Int,
+    fun createGetBCAGenerateSessionKey(gson: Gson, cardNumber: String, cardData: String, lastBalance: Int,
                                  transactionId: String, cardType: String): String {
         return createJsonStringBody(
             createBCAFlazzParam(
                 cardNumber = cardNumber,
                 cardData = cardData,
-                amount = amount,
+                amount = EMPTY_AMOUNT,
                 lastBalance = lastBalance,
                 transactionId = transactionId,
                 cardType = cardType,
-                action = BCAFlazzAction.BETWEEN_SESSION.action
+                action = BCAFlazzAction.GENERATE_SESSION_KEY.action
             ), gson
         )
     }
@@ -67,14 +67,14 @@ object BCAFlazzRequestMapper {
         )
     }
 
-    fun createGetBCADataACKTopUp(gson: Gson, cardNumber: String, cardData: String, amount: Int, lastBalance: Int,
+    fun createGetBCADataACKTopUp(gson: Gson, cardNumber: String, cardData: String, updatedLastBalance: Int,
                                      transactionId: String, cardType: String): String {
         return createJsonStringBody(
             createBCAFlazzParam(
                 cardNumber = cardNumber,
                 cardData = cardData,
-                amount = amount,
-                lastBalance = lastBalance,
+                amount = EMPTY_AMOUNT,
+                lastBalance = updatedLastBalance,
                 transactionId = transactionId,
                 cardType = cardType,
                 action = BCAFlazzAction.ACK_AFTER_TOP_UP_2.action

@@ -1,6 +1,7 @@
 package com.tokopedia.emoney.viewmodel
 
 import android.nfc.tech.IsoDep
+import android.util.Log
 import androidx.lifecycle.LiveData
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -41,7 +42,10 @@ class BCABalanceViewModel @Inject constructor(
 
     fun processBCATagBalance(isoDep: IsoDep, merchantId: String, terminalId: String,
                              rawPublicKeyString: String,
-                             rawPrivateKeyString: String) {
+                             rawPrivateKeyString: String,
+                             strCurrDateTime: String,
+                             ATD: String,
+    ) {
         val bcaMTId = BCAFlazzResponseMapper.bcaMTId(merchantId, terminalId)
         bcaLibrary.C_BCASetConfig(bcaMTId)
         val bcaGetConfig = bcaLibrary.C_BCAGetConfig()
@@ -49,8 +53,8 @@ class BCABalanceViewModel @Inject constructor(
             run {
                 try {
                     val dataBalance = bcaLibrary.C_BCACheckBalance()
-                    getPendingBalanceProcess(dataBalance.cardNo, dataBalance.balance, rawPublicKeyString,
-                        rawPrivateKeyString, GEN_TWO)
+                    getPendingBalanceProcess(isoDep, dataBalance.cardNo, dataBalance.balance, rawPublicKeyString,
+                        rawPrivateKeyString, GEN_TWO, strCurrDateTime, ATD)
                 } catch (e: IOException) {
                     isoDep.close()
                     errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
@@ -68,8 +72,8 @@ class BCABalanceViewModel @Inject constructor(
             run {
                 try {
                     val dataBalance = bcaLibrary.C_BCACheckBalance()
-                    getPendingBalanceProcess(dataBalance.cardNo, dataBalance.balance, rawPublicKeyString,
-                        rawPrivateKeyString, GEN_ONE)
+                    getPendingBalanceProcess(isoDep, dataBalance.cardNo, dataBalance.balance, rawPublicKeyString,
+                        rawPrivateKeyString, GEN_ONE, "", "")
                 } catch (e: IOException) {
                     isoDep.close()
                     errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
@@ -81,11 +85,14 @@ class BCABalanceViewModel @Inject constructor(
     }
 
     private fun getPendingBalanceProcess(
+        isoDep: IsoDep,
         cardNumber: String,
         lastBalance: Int,
         rawPublicKeyString: String,
         rawPrivateKeyString: String,
         cardType: String,
+        strCurrDateTime: String,
+        ATD: String
     ){
         launchCatchError(block = {
             val payloadGetPendingBalanceQuery = BCAFlazzRequestMapper.createGetPendingBalanceParam(
@@ -98,10 +105,256 @@ class BCABalanceViewModel @Inject constructor(
             val result = decryptPayload(encResult.data, rawPrivateKeyString)
 
             if (result.status == BCAFlazzStatus.WRITE.status) {
-
+                getGenerateTrxIdProcess(isoDep, cardNumber, lastBalance, rawPublicKeyString, rawPrivateKeyString, cardType, strCurrDateTime, ATD)
             } else {
                 bcaInquiryMutable.postValue(BCAFlazzResponseMapper.bcaMapper(cardNumber, lastBalance, result.attributes.imageIssuer, getIsBCAGenOne(cardType), result.attributes.amount))
             }
+        }) {
+            errorCardMessageMutable.postValue(it)
+        }
+    }
+
+    private fun getGenerateTrxIdProcess(
+        isoDep: IsoDep,
+        cardNumber: String,
+        lastBalance: Int,
+        rawPublicKeyString: String,
+        rawPrivateKeyString: String,
+        cardType: String,
+        strCurrDateTime: String,
+        ATD: String,
+    ){
+        launchCatchError(block = {
+           val payloadGetGenerateTrxIdQuery = BCAFlazzRequestMapper.createGetBCAGenerateTrxId(
+               gson, cardNumber, lastBalance, cardType
+           )
+           val encParam = electronicMoneyEncryption.createEncryptedPayload(rawPublicKeyString, payloadGetGenerateTrxIdQuery)
+           val paramGetGenerateTrxIdQuery = BCAFlazzRequestMapper.createEncryptedParam(encParam.first, encParam.second)
+
+            val encResult = bcaFlazzUseCase.execute(paramGetGenerateTrxIdQuery)
+            val result = decryptPayload(encResult.data, rawPrivateKeyString)
+
+            if (result.status == BCAFlazzStatus.WRITE.status && result.attributes.transactionID.isNotEmpty()) {
+                processSDKBCADataSession1(isoDep, cardNumber, lastBalance, rawPublicKeyString, rawPrivateKeyString, cardType, strCurrDateTime, ATD, result.attributes.transactionID)
+            } else {
+                bcaInquiryMutable.postValue(BCAFlazzResponseMapper.bcaMapper(cardNumber, lastBalance, result.attributes.imageIssuer, getIsBCAGenOne(cardType), result.attributes.amount))
+            }
+        }) {
+            errorCardMessageMutable.postValue(it)
+        }
+    }
+
+    private fun processSDKBCADataSession1(
+        isoDep: IsoDep,
+        cardNumber: String,
+        lastBalance: Int,
+        rawPublicKeyString: String,
+        rawPrivateKeyString: String,
+        cardType: String,
+        strCurrDateTime: String,
+        ATD: String,
+        strTransactionId: String
+    ){
+        if (isoDep != null) {
+            run {
+                try {
+                    val bcaSession1 = bcaLibrary.C_BCAdataSession_1(strTransactionId, ATD, strCurrDateTime)
+                    if (bcaSession1.isSuccess == SUCCESS_JNI) {
+                        getSessionKeyProcess(isoDep, cardNumber, lastBalance, rawPublicKeyString,
+                            rawPrivateKeyString, cardType, strCurrDateTime, ATD, strTransactionId, bcaSession1.strLogRsp)
+                    } else {
+                        //TODO Check if sdk process bca session 1 fail
+                        errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
+                    }
+                } catch (e: IOException) {
+                    isoDep.close()
+                    errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
+                }
+            }
+        } else {
+            errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
+        }
+    }
+
+    private fun getSessionKeyProcess(
+        isoDep: IsoDep,
+        cardNumber: String,
+        lastBalance: Int,
+        rawPublicKeyString: String,
+        rawPrivateKeyString: String,
+        cardType: String,
+        strCurrDateTime: String,
+        ATD: String,
+        strTransactionId: String,
+        cardDataSession1Key: String
+    ) {
+        launchCatchError(block = {
+            val payloadGetSessionKeyQuery = BCAFlazzRequestMapper.createGetBCAGenerateSessionKey(
+                gson, cardNumber, cardDataSession1Key, lastBalance, strTransactionId, cardType
+            )
+            val encParam = electronicMoneyEncryption.createEncryptedPayload(rawPublicKeyString, payloadGetSessionKeyQuery)
+            val paramGetSessionKeyQuery = BCAFlazzRequestMapper.createEncryptedParam(encParam.first, encParam.second)
+
+            val encResult = bcaFlazzUseCase.execute(paramGetSessionKeyQuery)
+            val result = decryptPayload(encResult.data, rawPrivateKeyString)
+
+            if (result.status == BCAFlazzStatus.WRITE.status && result.attributes.cardData.isNotEmpty()) {
+                processSDKBCADataSession2(isoDep,cardNumber, lastBalance, rawPublicKeyString, rawPrivateKeyString, cardType, strCurrDateTime, ATD, strTransactionId, result)
+            } else {
+                bcaInquiryMutable.postValue(BCAFlazzResponseMapper.bcaMapper(cardNumber, lastBalance, result.attributes.imageIssuer, getIsBCAGenOne(cardType), result.attributes.amount))
+            }
+        }) {
+            errorCardMessageMutable.postValue(it)
+        }
+    }
+
+    private fun processSDKBCADataSession2(
+        isoDep: IsoDep,
+        cardNumber: String,
+        lastBalance: Int,
+        rawPublicKeyString: String,
+        rawPrivateKeyString: String,
+        cardType: String,
+        strCurrDateTime: String,
+        ATD: String,
+        strTransactionId: String,
+        bcaFlazzData: BCAFlazzData
+    ){
+        if (isoDep != null) {
+            run {
+                try {
+                    val bcaSession2 = bcaLibrary.C_BCAdataSession_2(bcaFlazzData.attributes.cardData)
+                    if (bcaSession2.isSuccess == SUCCESS_JNI) {
+                        processSDKBCATopUp1(isoDep, cardNumber, lastBalance, rawPublicKeyString, rawPrivateKeyString, cardType, strCurrDateTime, ATD, strTransactionId, bcaFlazzData)
+                    } else {
+                        //TODO Check if sdk process bca session 2 fail
+                        errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
+                    }
+                } catch (e: IOException) {
+                    isoDep.close()
+                    errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
+                }
+            }
+        } else {
+            errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
+        }
+    }
+
+    private fun processSDKBCATopUp1(
+        isoDep: IsoDep,
+        cardNumber: String,
+        lastBalance: Int,
+        rawPublicKeyString: String,
+        rawPrivateKeyString: String,
+        cardType: String,
+        strCurrDateTime: String,
+        ATD: String,
+        strTransactionId: String,
+        bcaFlazzData: BCAFlazzData
+    ){
+        if (isoDep != null) {
+            run {
+                try {
+                    val topUp1 = bcaLibrary.BCATopUp_1(strTransactionId, ATD, bcaFlazzData.attributes.accessCardNumber,
+                        bcaFlazzData.attributes.accessCode, strCurrDateTime, bcaFlazzData.attributes.amount.toLong())
+                    if (topUp1.isSuccess == SUCCESS_JNI) {
+                        getBetweenTopUpProcess(isoDep, cardNumber, lastBalance, rawPublicKeyString, rawPrivateKeyString, cardType, strTransactionId, bcaFlazzData, topUp1.strLogRsp)
+                    } else {
+                        //TODO Check if sdk process bca top up 1 fail
+                        errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
+                    }
+                } catch (e: IOException) {
+                    isoDep.close()
+                    errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
+                }
+            }
+        } else {
+            errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
+        }
+    }
+
+    private fun getBetweenTopUpProcess(
+        isoDep: IsoDep,
+        cardNumber: String,
+        lastBalance: Int,
+        rawPublicKeyString: String,
+        rawPrivateKeyString: String,
+        cardType: String,
+        strTransactionId: String,
+        bcaFlazzData: BCAFlazzData,
+        cardDataTopUp1: String,
+    ) {
+        launchCatchError(block = {
+            val payloadGetBetweenTopUpQuery = BCAFlazzRequestMapper.createGetBCADataBetweenTopUp(
+                gson, cardNumber, cardDataTopUp1, bcaFlazzData.attributes.amount, lastBalance, strTransactionId, cardType
+            ) // todo need to update the request?
+            val encParam = electronicMoneyEncryption.createEncryptedPayload(rawPublicKeyString, payloadGetBetweenTopUpQuery)
+            val paramGetBetweenTopUpQuery = BCAFlazzRequestMapper.createEncryptedParam(encParam.first, encParam.second)
+
+            val encResult = bcaFlazzUseCase.execute(paramGetBetweenTopUpQuery)
+            val result = decryptPayload(encResult.data, rawPrivateKeyString)
+
+            if (result.status == BCAFlazzStatus.WRITE.status && result.attributes.cardData.isNotEmpty()) {
+                processSDKBCATopUp2(isoDep, cardNumber, rawPublicKeyString, rawPrivateKeyString, cardType, strTransactionId, bcaFlazzData)
+            } else {
+                bcaInquiryMutable.postValue(BCAFlazzResponseMapper.bcaMapper(cardNumber, lastBalance, result.attributes.imageIssuer, getIsBCAGenOne(cardType), result.attributes.amount))
+            }
+        }) {
+            errorCardMessageMutable.postValue(it)
+        }
+    }
+
+    private fun processSDKBCATopUp2(
+        isoDep: IsoDep,
+        cardNumber: String,
+        rawPublicKeyString: String,
+        rawPrivateKeyString: String,
+        cardType: String,
+        strTransactionId: String,
+        bcaFlazzData: BCAFlazzData
+    ){
+        if (isoDep != null) {
+            run {
+                try {
+                    val topUp2 = bcaLibrary.BCATopUp_2(bcaFlazzData.attributes.cardData)
+                    if (topUp2.isSuccess == SUCCESS_JNI) {
+                        val updatedBalance = bcaLibrary.C_BCACheckBalance()
+                        if (updatedBalance.isSuccess == SUCCESS_JNI) {
+                            getACKProcess(cardNumber, rawPublicKeyString, rawPrivateKeyString, cardType, strTransactionId, topUp2.strLogRsp, updatedBalance.balance)
+                        }
+                    } else {
+                        //TODO Check if sdk process bca top up 2 fail
+                        errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
+                    }
+                } catch (e: IOException) {
+                    isoDep.close()
+                    errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
+                }
+            }
+        } else {
+            errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
+        }
+    }
+
+    private fun getACKProcess(
+        cardNumber: String,
+        rawPublicKeyString: String,
+        rawPrivateKeyString: String,
+        cardType: String,
+        strTransactionId: String,
+        cardDataTopUp2: String,
+        updatedBalance: Int
+    ) {
+        launchCatchError(block = {
+            val payloadGetACKQuery = BCAFlazzRequestMapper.createGetBCADataACKTopUp(
+                gson, cardNumber, cardDataTopUp2, updatedBalance, strTransactionId, cardType
+            )
+            val encParam = electronicMoneyEncryption.createEncryptedPayload(rawPublicKeyString, payloadGetACKQuery)
+            val paramGetACKQuery = BCAFlazzRequestMapper.createEncryptedParam(encParam.first, encParam.second)
+
+            val encResult = bcaFlazzUseCase.execute(paramGetACKQuery)
+            val result = decryptPayload(encResult.data, rawPrivateKeyString)
+            bcaInquiryMutable.postValue(BCAFlazzResponseMapper.bcaMapper(cardNumber, updatedBalance, result.attributes.imageIssuer, getIsBCAGenOne(cardType), result.attributes.amount))
         }) {
             errorCardMessageMutable.postValue(it)
         }
@@ -128,5 +381,6 @@ class BCABalanceViewModel @Inject constructor(
     companion object {
         private const val GEN_ONE = "1"
         private const val GEN_TWO = "2"
+        private const val SUCCESS_JNI = 1
     }
 }

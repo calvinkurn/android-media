@@ -28,8 +28,8 @@ data class BCAFlazzBody(
 
 enum class BCAFlazzAction(val action: Int) {
     GET_PENDING_BALANCE(0),
-    BCA_DATA_SESSION_1(1),
-    BETWEEN_SESSION(2),
+    GENERATE_TRX_ID(1),
+    GENERATE_SESSION_KEY(2),
     BETWEEN_TOP_UP(3),
     ACK_AFTER_TOP_UP_2(4),
     REVERSAL(5)
