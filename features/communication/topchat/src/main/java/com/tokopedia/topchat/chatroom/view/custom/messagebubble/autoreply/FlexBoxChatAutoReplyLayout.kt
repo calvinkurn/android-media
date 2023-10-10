@@ -706,6 +706,18 @@ class FlexBoxChatAutoReplyLayout : ViewGroup {
         this.listener = listener
     }
 
+    fun getCheckMark(): ImageView? {
+        return checkMark
+    }
+
+    fun getInfo(): TextView? {
+        return info
+    }
+
+    fun getMessage(): TextView? {
+        return message
+    }
+
     companion object {
         const val DEFAULT_USE_MAX_WIDTH = false
         const val DEFAULT_SHOW_CHECK_MARK = true

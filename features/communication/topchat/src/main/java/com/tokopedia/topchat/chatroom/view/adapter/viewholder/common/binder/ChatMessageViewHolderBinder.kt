@@ -15,6 +15,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.adapter.util.MessageOnTouchListener
 import com.tokopedia.topchat.chatroom.view.custom.messagebubble.FlexBoxChatLayout
+import com.tokopedia.topchat.chatroom.view.custom.messagebubble.autoreply.FlexBoxChatAutoReplyLayout
 import com.tokopedia.topchat.common.util.ViewUtil
 
 object ChatMessageViewHolderBinder {
@@ -97,8 +98,22 @@ object ChatMessageViewHolderBinder {
         fxChat?.setMessageBody(chat)
     }
 
+    fun bindChatMessage(
+        chat: MessageUiModel,
+        fxChat: FlexBoxChatAutoReplyLayout?
+    ) {
+        fxChat?.setMessageBody(chat)
+    }
+
     fun bindOnTouchMessageListener(
         fxChat: FlexBoxChatLayout?,
+        onTouchListener: MessageOnTouchListener
+    ) {
+        fxChat?.setMessageOnTouchListener(onTouchListener)
+    }
+
+    fun bindOnTouchMessageListener(
+        fxChat: FlexBoxChatAutoReplyLayout?,
         onTouchListener: MessageOnTouchListener
     ) {
         fxChat?.setMessageOnTouchListener(onTouchListener)
@@ -107,6 +122,14 @@ object ChatMessageViewHolderBinder {
     fun bindHour(
         uiModel: MessageUiModel,
         fxChat: FlexBoxChatLayout?
+    ) {
+        val hourTime = getHourTime(uiModel.replyTime)
+        fxChat?.setHourTime(hourTime)
+    }
+
+    fun bindHour(
+        uiModel: MessageUiModel,
+        fxChat: FlexBoxChatAutoReplyLayout?
     ) {
         val hourTime = getHourTime(uiModel.replyTime)
         fxChat?.setHourTime(hourTime)
@@ -132,6 +155,12 @@ object ChatMessageViewHolderBinder {
 
     fun bindChatReadStatus(element: MessageUiModel, messageView: FlexBoxChatLayout?) {
         messageView?.checkMark?.let {
+            bindChatReadStatus(element, it)
+        }
+    }
+
+    fun bindChatReadStatus(element: MessageUiModel, messageView: FlexBoxChatAutoReplyLayout?) {
+        messageView?.getCheckMark()?.let {
             bindChatReadStatus(element, it)
         }
     }

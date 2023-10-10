@@ -35,6 +35,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.ChatMes
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.autoreply.TopChatAutoReplyViewHolder
 import com.tokopedia.topchat.chatroom.view.custom.messagebubble.FlexBoxChatLayout
 import com.tokopedia.topchat.chatroom.view.custom.message.ReplyBubbleAreaMessage
+import com.tokopedia.topchat.chatroom.view.custom.messagebubble.autoreply.FlexBoxChatAutoReplyLayout
 import com.tokopedia.topchat.chatroom.view.listener.DualAnnouncementListener
 import com.tokopedia.topchat.chatroom.view.listener.TopChatVoucherListener
 import com.tokopedia.topchat.chatroom.view.uimodel.*
@@ -65,7 +66,8 @@ open class TopChatTypeFactoryImpl constructor(
     private val listener: ReminderTickerViewHolder.Listener,
     private val productBundlingListener: ProductBundlingListener,
     private val censorListener: BannedChatMessageViewHolder.TopChatMessageCensorListener,
-    private val userSession: UserSessionInterface
+    private val userSession: UserSessionInterface,
+    private val autoReplyMsgListener: FlexBoxChatAutoReplyLayout.Listener,
 ) : BaseChatTypeFactoryImpl(
     imageAnnouncementListener,
     chatLinkHandlerListener,
@@ -258,7 +260,7 @@ open class TopChatTypeFactoryImpl constructor(
             )
             TopChatAutoReplyViewHolder.LAYOUT -> TopChatAutoReplyViewHolder(
                 parent, chatLinkHandlerListener, commonListener, adapterListener,
-                chatMsgListener, replyBubbleListener
+                autoReplyMsgListener, replyBubbleListener
             )
             else -> createViewHolder(parent, type)
         }

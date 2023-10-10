@@ -24,7 +24,6 @@ import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaButtonAttachment
 import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaMessageAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.util.MessageOnTouchListener
-import com.tokopedia.topchat.chatroom.view.uimodel.autoreply.TopChatAutoReplyItemUiModel
 import com.tokopedia.unifyprinciples.Typography
 import kotlin.math.abs
 
@@ -92,10 +91,6 @@ class FlexBoxChatLayout : ViewGroup {
 
     interface Listener {
         fun changeAddress(attachment: HeaderCtaButtonAttachment)
-        fun onClickReadMoreAutoReply(
-            welcomeMessage: TopChatAutoReplyItemUiModel,
-            list: List<TopChatAutoReplyItemUiModel>
-        )
     }
 
     override fun setBackground(background: Drawable?) {

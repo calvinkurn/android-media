@@ -44,11 +44,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <com.tokopedia.topchat.chatroom.view.custom.messagebubble.TopChatChatroomMessageBubbleLayout
+            <com.tokopedia.topchat.chatroom.view.custom.messagebubble.autoreply.TopChatChatroomMessageBubbleAutoReplyLayout
                 android:id="@+id/topchat_chatroom_message_bubble_layout_auto_reply"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:messageBubbleType="auto_reply"
                 app:messageOrientation="LEFT"/>
 
         </LinearLayout>

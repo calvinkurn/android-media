@@ -23,10 +23,9 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewH
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.Payload
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.ChatMessageViewHolderBinder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.getOppositeMargin
-import com.tokopedia.topchat.chatroom.view.custom.messagebubble.FlexBoxChatLayout
-import com.tokopedia.topchat.chatroom.view.custom.messagebubble.TopChatChatroomMessageBubbleLayout
 import com.tokopedia.topchat.chatroom.view.custom.message.ReplyBubbleAreaMessage
 import com.tokopedia.topchat.chatroom.view.custom.messagebubble.autoreply.FlexBoxChatAutoReplyLayout
+import com.tokopedia.topchat.chatroom.view.custom.messagebubble.autoreply.TopChatChatroomMessageBubbleAutoReplyLayout
 import com.tokopedia.unifyprinciples.Typography
 
 class TopChatAutoReplyViewHolder(
@@ -34,13 +33,13 @@ class TopChatAutoReplyViewHolder(
     msgClickLinkListener: ChatLinkHandlerListener,
     private val commonListener: CommonViewHolderListener,
     private val adapterListener: AdapterListener,
-    private val chatMsgListener: FlexBoxChatLayout.Listener,
+    private val chatMsgListener: FlexBoxChatAutoReplyLayout.Listener,
     private val replyBubbleListener: ReplyBubbleAreaMessage.Listener
 ) : BaseChatViewHolder<MessageUiModel>(itemView) {
 
-    private val messageBubble: TopChatChatroomMessageBubbleLayout? = itemView?.findViewById(R.id.topchat_chatroom_message_bubble_layout_auto_reply)
+    private val messageBubble: TopChatChatroomMessageBubbleAutoReplyLayout? = itemView?.findViewById(R.id.topchat_chatroom_message_bubble_layout_auto_reply)
     private val llMsgContainer: LinearLayout? = itemView?.findViewById(R.id.topchat_chatroom_bcl_message_bubble_auto_reply)
-//    private val fxChat: FlexBoxChatAutoReplyLayout? = itemView?.findViewById(R.id.fxChat)
+    private val fxChat: FlexBoxChatAutoReplyLayout? = itemView?.findViewById(R.id.fxChat)
     private val onTouchListener = MessageOnTouchListener(msgClickLinkListener)
     private val headerInfo: LinearLayout? = itemView?.findViewById(R.id.topchat_chatroom_ll_header_info_message_bubble_auto_reply)
 
@@ -56,8 +55,8 @@ class TopChatAutoReplyViewHolder(
         com.tokopedia.unifyprinciples.R.dimen.unify_space_12
     ) ?: 0f
 
-//    private val bgLeft = ChatMessageViewHolderBinder.generateLeftBg(fxChat)
-//    private val bgRight = ChatMessageViewHolderBinder.generateRightBg(fxChat)
+    private val bgLeft = ChatMessageViewHolderBinder.generateLeftBg(fxChat)
+    private val bgRight = ChatMessageViewHolderBinder.generateRightBg(fxChat)
 
     override fun bind(msg: MessageUiModel, payloads: MutableList<Any>) {
         if (payloads.isEmpty()) return
@@ -67,11 +66,11 @@ class TopChatAutoReplyViewHolder(
     }
 
     override fun bind(msg: MessageUiModel) {
-//        fxChat?.setListener(chatMsgListener)
+        fxChat?.setListener(chatMsgListener)
         verifyReplyTime(msg)
-//        ChatMessageViewHolderBinder.bindChatMessage(msg, fxChat)
-//        ChatMessageViewHolderBinder.bindOnTouchMessageListener(fxChat, onTouchListener)
-//        ChatMessageViewHolderBinder.bindHour(msg, fxChat)
+        ChatMessageViewHolderBinder.bindChatMessage(msg, fxChat)
+        ChatMessageViewHolderBinder.bindOnTouchMessageListener(fxChat, onTouchListener)
+        ChatMessageViewHolderBinder.bindHour(msg, fxChat)
         bindReplyBubbleListener()
         bindReplyReference(msg)
         bindAttachment(msg)
@@ -84,43 +83,43 @@ class TopChatAutoReplyViewHolder(
             // Right msg
             bindMsgGravity(Gravity.END)
             paddingRightMsg()
-//            bindBackground(bgRight)
-//            ChatMessageViewHolderBinder.bindChatReadStatus(msg, fxChat)
+            bindBackground(bgRight)
+            ChatMessageViewHolderBinder.bindChatReadStatus(msg, fxChat)
             bindHeader(msg)
-//            hide(fxChat?.info)
+            hide(fxChat?.getInfo())
             hide(headerInfo)
         } else {
             // Left msg
             bindMsgGravity(Gravity.START)
             paddingLeftMsg()
-//            bindBackground(bgLeft)
+            bindBackground(bgLeft)
             bindMessageInfo(msg)
             bindHeaderInfo(msg)
-//            hide(fxChat?.checkMark)
+            hide(fxChat?.getCheckMark())
             hide(header)
         }
     }
 
     private fun bindTextColor(msg: MessageUiModel) {
-//        fxChat?.bindTextColor(msg)
+        fxChat?.bindTextColor(msg)
     }
 
     private fun bindIcon(msg: MessageUiModel) {
-//        fxChat?.bindIcon(msg)
+        fxChat?.bindIcon(msg)
     }
 
     private fun bindLongClick(msg: MessageUiModel) {
-//        if (!msg.isBanned() && !msg.isDeleted()) {
-//            fxChat?.setOnLongClickListener {
-//                val menus = LongClickMenuItemGenerator.createLongClickMenuMsgBubble()
-//                commonListener.showMsgMenu(
-//                    msg, fxChat.message?.text ?: "", menus
-//                )
-//                true
-//            }
-//        } else {
-//            fxChat?.setOnLongClickListener(null)
-//        }
+        if (!msg.isBanned() && !msg.isDeleted()) {
+            fxChat?.setOnLongClickListener {
+                val menus = LongClickMenuItemGenerator.createLongClickMenuMsgBubble()
+                commonListener.showMsgMenu(
+                    msg, fxChat.getMessage()?.text ?: "", menus
+                )
+                true
+            }
+        } else {
+            fxChat?.setOnLongClickListener(null)
+        }
     }
 
     private fun bindMsgGravity(gravity: Int) {
@@ -139,15 +138,15 @@ class TopChatAutoReplyViewHolder(
     }
 
     private fun bindAttachment(msg: MessageUiModel) {
-//        if (msg.hasAttachment()) {
-//            val shouldHideDivider = commonListener.isSeller() && msg.isSender
-//            fxChat?.renderHeaderAttachment(
-//                msg.attachment,
-//                shouldHideDivider
-//            )
-//        } else {
-//            fxChat?.hideAttachmentHeader()
-//        }
+        if (msg.hasAttachment()) {
+            val shouldHideDivider = commonListener.isSeller() && msg.isSender
+            fxChat?.renderHeaderAttachment(
+                msg.attachment,
+                shouldHideDivider
+            )
+        } else {
+            fxChat?.hideAttachmentHeader()
+        }
     }
 
     private fun paddingRightMsg() {
@@ -167,11 +166,11 @@ class TopChatAutoReplyViewHolder(
     }
 
     private fun bindMessageInfo(msg: MessageUiModel) {
-//        if (msg.hasLabel()) {
-//            fxChat?.showInfo(msg.label)
-//        } else {
-//            fxChat?.hideInfo()
-//        }
+        if (msg.hasLabel()) {
+            fxChat?.showInfo(msg.label)
+        } else {
+            fxChat?.hideInfo()
+        }
     }
 
     private fun verifyReplyTime(chat: MessageUiModel) {
@@ -224,7 +223,7 @@ class TopChatAutoReplyViewHolder(
     }
 
     private fun bindBackground(drawable: Drawable?) {
-//        fxChat?.background = drawable
+        fxChat?.background = drawable
     }
 
     private fun bindHeaderInfo(msg: MessageUiModel) {

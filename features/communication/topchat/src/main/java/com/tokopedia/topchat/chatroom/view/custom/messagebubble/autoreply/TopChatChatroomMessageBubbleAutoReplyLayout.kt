@@ -1,4 +1,4 @@
-package com.tokopedia.topchat.chatroom.view.custom.messagebubble
+package com.tokopedia.topchat.chatroom.view.custom.messagebubble.autoreply
 
 import android.content.Context
 import android.util.AttributeSet
@@ -16,11 +16,11 @@ import kotlin.math.max
 import kotlin.math.min
 
 
-class TopChatChatroomMessageBubbleLayout : ViewGroup {
+class TopChatChatroomMessageBubbleAutoReplyLayout : ViewGroup {
 
-    private var fxChat: FlexBoxChatLayout? = null
+    private var fxChat: FlexBoxChatAutoReplyLayout? = null
     private var replyBubbleContainer: ReplyBubbleAreaMessage? = null
-    private var showCheckMark = FlexBoxChatLayout.DEFAULT_SHOW_CHECK_MARK
+    private var showCheckMark = FlexBoxChatAutoReplyLayout.DEFAULT_SHOW_CHECK_MARK
     private var msgOrientation = DEFAULT_MSG_ORIENTATION
     private val radiusMargin = 20f.toPx().toInt()
 
@@ -90,7 +90,7 @@ class TopChatChatroomMessageBubbleLayout : ViewGroup {
             try {
                 showCheckMark = getBoolean(
                     R.styleable.TopChatChatroomMessageBubbleLayout_showCheckMark,
-                    FlexBoxChatLayout.DEFAULT_SHOW_CHECK_MARK
+                    FlexBoxChatAutoReplyLayout.DEFAULT_SHOW_CHECK_MARK
                 )
                 msgOrientation = getInteger(
                     R.styleable.TopChatChatroomMessageBubbleLayout_messageOrientation,
@@ -227,7 +227,7 @@ class TopChatChatroomMessageBubbleLayout : ViewGroup {
     }
 
     companion object {
-        private val LAYOUT = R.layout.topchat_chatroom_partial_chat_messsage_bubble
+        private val LAYOUT = R.layout.topchat_chatroom_partial_chat_message_bubble_auto_reply
         const val LEFT_MSG_ORIENTATION = 0
         const val RIGHT_MSG_ORIENTATION = 1
         const val DEFAULT_MSG_ORIENTATION = LEFT_MSG_ORIENTATION

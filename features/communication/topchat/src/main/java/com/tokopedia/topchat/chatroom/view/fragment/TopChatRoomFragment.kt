@@ -150,6 +150,7 @@ import com.tokopedia.topchat.chatroom.view.custom.SrwFrameLayout
 import com.tokopedia.topchat.chatroom.view.custom.TransactionOrderProgressLayout
 import com.tokopedia.topchat.chatroom.view.custom.message.ReplyBubbleAreaMessage
 import com.tokopedia.topchat.chatroom.view.custom.message.TopchatMessageRecyclerView
+import com.tokopedia.topchat.chatroom.view.custom.messagebubble.autoreply.FlexBoxChatAutoReplyLayout
 import com.tokopedia.topchat.chatroom.view.customview.TopChatRoomDialog
 import com.tokopedia.topchat.chatroom.view.customview.TopChatViewStateImpl
 import com.tokopedia.topchat.chatroom.view.listener.DualAnnouncementListener
@@ -236,7 +237,9 @@ open class TopChatRoomFragment :
     ReplyBubbleAreaMessage.Listener,
     ReminderTickerViewHolder.Listener,
     ProductBundlingListener,
-    BannedChatMessageViewHolder.TopChatMessageCensorListener {
+    BannedChatMessageViewHolder.TopChatMessageCensorListener,
+    FlexBoxChatAutoReplyLayout.Listener
+{
 
     @Inject
     lateinit var topChatRoomDialog: TopChatRoomDialog
@@ -1176,7 +1179,7 @@ open class TopChatRoomFragment :
             this, this, this, this,
             this, this, this, this,
             this, this, this, this,
-            this, this, this, session
+            this, this, this, session, this
         )
     }
 

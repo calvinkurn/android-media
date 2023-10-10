@@ -48,7 +48,6 @@
                 android:id="@+id/topchat_chatroom_message_bubble_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:messageBubbleType="regular"
                 app:messageOrientation="LEFT"/>
 
         </LinearLayout>
