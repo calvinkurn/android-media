@@ -804,20 +804,8 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     }
                 }
 
-                is PinpointAction.LocationInvalid -> {
-                    showInvalidBottomSheet(it)
-                }
-
                 is PinpointAction.MoveMap -> {
                     moveMap(LatLng(it.lat, it.long))
-                }
-                is PinpointAction.UpdatePinpointDetail -> {
-                    showDistrictBottomSheet()
-
-                    binding?.bottomsheetLocation?.run {
-                        tvAddress.text = it.title
-                        tvAddressDesc.text = it.description
-                    }
                 }
             }
         }
@@ -827,7 +815,9 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 is BottomSheetState.LocationDetail -> {
                     showDistrictBottomSheet(it)
                 }
-                is BottomSheetState.LocationInvalid -> TODO()
+                is BottomSheetState.LocationInvalid -> {
+                    showInvalidBottomSheet(it)
+                }
             }
         }
     }
@@ -915,22 +905,26 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
                             // no op
                         }
                     }
+
+                    if (state.buttonPrimary.enable) {
+                        goToAddressForm(true)
+                    }
                 }
             }
         }
     }
 
-    private fun showInvalidBottomSheet(data: PinpointAction.LocationInvalid) {
+    private fun showInvalidBottomSheet(data: BottomSheetState.LocationInvalid) {
         binding?.run {
             if (data.showMapIllustration) {
-                mapsEmpty.visibility = View.VISIBLE
-                mapViews.visibility = View.GONE
+                mapsEmpty.visible()
+                mapViews.gone()
                 imgMapsEmpty.setImageUrl(MAPS_EMPTY)
             }
             bottomsheetLocation.run {
-                invalidLayout.visibility = View.VISIBLE
-                wholeLoadingContainer.visibility = View.GONE
-                districtLayout.visibility = View.GONE
+                invalidLayout.visible()
+                wholeLoadingContainer.gone()
+                districtLayout.gone()
                 if (data.imageUrl.isNotEmpty()) {
                     imgInvalidLoc.setImageUrl(data.imageUrl)
                 }
@@ -942,26 +936,36 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     tvInvalidLocDetail.text = data.detail
                 }
                 btnAnaNegative.run {
-                    if (data.showButton) {
-                        if (data.buttonState?.text?.isNotEmpty() == true) {
-                            buttonVariant = UnifyButton.Variant.GHOST
-                            buttonType = UnifyButton.Type.MAIN
+                    if (data.buttonState.show) {
+                        if (data.buttonState.text.isNotEmpty()) {
                             text = getString(R.string.mismatch_btn_title)
                         }
+
+                        if (data.buttonState.variant != -1) {
+                            buttonVariant = data.buttonState.variant
+                        }
+
+                        if (data.buttonState.type != -1) {
+                            buttonType = data.buttonState.type
+                        }
                         setOnClickListener {
-                            // todo refactor this
                             if (addressUiState.isAdd()) {
-                                if (data.type == BOTTOMSHEET_OUT_OF_INDO) {
-                                    LogisticAddAddressAnalytics.onClickIsiAlamatOutOfIndo(
-                                        userSession.userId
-                                    )
-                                } else {
-                                    LogisticAddAddressAnalytics.onClickIsiAlamatManualUndetectedLocation(
-                                        userSession.userId
-                                    )
+                                when (data.type) {
+                                    BottomSheetState.LocationInvalid.LocationInvalidType.OUT_OF_COVERAGE -> {
+                                        LogisticAddAddressAnalytics.onClickIsiAlamatOutOfIndo(
+                                            userSession.userId
+                                        )
+                                    }
+                                    BottomSheetState.LocationInvalid.LocationInvalidType.LOCATION_NOT_FOUND -> {
+                                        LogisticAddAddressAnalytics.onClickIsiAlamatManualUndetectedLocation(
+                                            userSession.userId
+                                        )
+                                    }
                                 }
                             }
-                            goToAddressForm(false)
+                            if (data.buttonState.enable) {
+                                goToAddressForm(false)
+                            }
                         }
                         visible()
                     } else {

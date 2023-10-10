@@ -92,6 +92,7 @@ class PinpointViewModel @Inject constructor(
     private val _pinpointBottomSheet = MutableLiveData<BottomSheetState>()
     val pinpointBottomSheet: LiveData<BottomSheetState>
         get() = _pinpointBottomSheet
+
     fun onViewCreated(
         districtName: String = "",
         cityName: String = "",
@@ -132,25 +133,7 @@ class PinpointViewModel @Inject constructor(
 
     // batas suci
 
-    fun setPinpointUiModel(
-        districtName: String = "",
-        cityName: String = "",
-        lat: Double = 0.0,
-        long: Double = 0.0,
-        placeId: String = "",
-        districtId: Long = 0L
-    ) {
-        this.uiModel = this.uiModel.copy(
-            districtName = districtName,
-            cityName = cityName,
-            lat = lat,
-            long = long,
-            placeId = placeId,
-            districtId = districtId
-        )
-    }
-
-//    fun setDistrictAndCityName(
+    //    fun setDistrictAndCityName(
 //        districtName: String?,
 //        cityName: String?
 //    ) {
@@ -171,7 +154,7 @@ class PinpointViewModel @Inject constructor(
                     )
                 )
                 if (districtData.keroMapsAutofill.messageError.isEmpty()) {
-                    if (uiState.isAdd() && uiModel.anaNegativeFullFlow && districtData.keroMapsAutofill.data.districtId != uiModel.districtId) {
+                    if (isCoordinateInsideDistrict(districtData.keroMapsAutofill.data)) {
                         // is polygon but coordinate not in selected district
                         _action.value = PinpointAction.InvalidDistrictPinpoint
                         _pinpointBottomSheet.value = BottomSheetState.LocationDetail(
@@ -213,12 +196,22 @@ class PinpointViewModel @Inject constructor(
         return uiState.isAdd() && uiModel.anaNegativeFullFlow && districtData.districtId != uiModel.districtId
     }
 
-    private fun createButtonPrimary(success: Boolean, enable: Boolean): BottomSheetState.LocationDetail.PrimaryButtonUiModel {
+    private fun createButtonPrimary(
+        success: Boolean,
+        enable: Boolean
+    ): BottomSheetState.LocationDetail.PrimaryButtonUiModel {
         return BottomSheetState.LocationDetail.PrimaryButtonUiModel(
             show = true,
-            state = BottomSheetState.LocationDetail.PrimaryButtonUiModel.PrimaryButtonState(addressUiState = uiState, success = success),
+            state = BottomSheetState.LocationDetail.PrimaryButtonUiModel.PrimaryButtonState(
+                addressUiState = uiState,
+                success = success
+            ),
             enable = enable,
-            text = if (uiState.isPinpointOnly()) { "Pilih Lokasi Ini" } else { "Pilih Lokasi & Lanjut Isi Alamat" }
+            text = if (uiState.isPinpointOnly()) {
+                "Pilih Lokasi Ini"
+            } else {
+                "Pilih Lokasi & Lanjut Isi Alamat"
+            }
         )
     }
 
@@ -229,39 +222,40 @@ class PinpointViewModel @Inject constructor(
             } else {
                 "Tenang, kamu bisa pilih ulang lokasimu atau tetap menyimpan alamat tanpa pinpoint."
             }
-        val buttonState: BottomSheetState.LocationInvalid.ButtonInvalidModel = if (uiState.isPinpointOnly()) {
-            BottomSheetState.LocationInvalid.ButtonInvalidModel(
-                show = false,
-                state = BottomSheetState.LocationInvalid.LocationInvalidType.LOCATION_NOT_FOUND
-            )
-        } else if (uiState.isEdit()) {
-            if (uiModel.hasPinpoint()) {
+        val buttonState: BottomSheetState.LocationInvalid.ButtonInvalidModel =
+            if (uiState.isPinpointOnly()) {
                 BottomSheetState.LocationInvalid.ButtonInvalidModel(
                     show = false,
                     state = BottomSheetState.LocationInvalid.LocationInvalidType.LOCATION_NOT_FOUND
                 )
+            } else if (uiState.isEdit()) {
+                if (uiModel.hasPinpoint()) {
+                    BottomSheetState.LocationInvalid.ButtonInvalidModel(
+                        show = false,
+                        state = BottomSheetState.LocationInvalid.LocationInvalidType.LOCATION_NOT_FOUND
+                    )
+                } else {
+                    BottomSheetState.LocationInvalid.ButtonInvalidModel(
+                        variant = UnifyButton.Variant.GHOST,
+                        type = UnifyButton.Type.MAIN,
+                        text = "Mengerti",
+                        show = true,
+                        state = BottomSheetState.LocationInvalid.LocationInvalidType.LOCATION_NOT_FOUND
+                    )
+                }
             } else {
-                BottomSheetState.LocationInvalid.ButtonInvalidModel(
-                    variant = UnifyButton.Variant.GHOST,
-                    type = UnifyButton.Type.MAIN,
-                    text = "Mengerti",
-                    show = true,
-                    state = BottomSheetState.LocationInvalid.LocationInvalidType.LOCATION_NOT_FOUND
-                )
+                if (uiState.isAdd()) {
+                    BottomSheetState.LocationInvalid.ButtonInvalidModel(
+                        show = true,
+                        state = BottomSheetState.LocationInvalid.LocationInvalidType.LOCATION_NOT_FOUND
+                    )
+                } else {
+                    BottomSheetState.LocationInvalid.ButtonInvalidModel(
+                        show = false,
+                        state = BottomSheetState.LocationInvalid.LocationInvalidType.LOCATION_NOT_FOUND
+                    )
+                }
             }
-        } else {
-            if (uiState.isAdd()) {
-                BottomSheetState.LocationInvalid.ButtonInvalidModel(
-                    show = true,
-                    state = BottomSheetState.LocationInvalid.LocationInvalidType.LOCATION_NOT_FOUND
-                )
-            } else {
-                BottomSheetState.LocationInvalid.ButtonInvalidModel(
-                    show = false,
-                    state = BottomSheetState.LocationInvalid.LocationInvalidType.LOCATION_NOT_FOUND
-                )
-            }
-        }
 
         _pinpointBottomSheet.value = BottomSheetState.LocationInvalid(
             type = BottomSheetState.LocationInvalid.LocationInvalidType.LOCATION_NOT_FOUND,
