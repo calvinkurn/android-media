@@ -10,6 +10,20 @@ object ApplinkConstInternalCommunication {
     const val HOST_COMMUNICATION = "communication"
     const val INTERNAL_COMMUNICATION = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_COMMUNICATION"
 
+    /**
+     * Parameters key
+     */
+
+    // General
+    const val SOURCE = "source"
+
+    // Sharing Experience
+    const val PRODUCT_LIST_DATA = "product_list_data"
+
+    /**
+     * Internal applink communication list
+     */
+
     // TokoChatActivity
     const val TOKO_CHAT = "$INTERNAL_COMMUNICATION/tokochat"
 
@@ -18,4 +32,7 @@ object ApplinkConstInternalCommunication {
 
     // UniversalInboxActivity
     const val UNIVERSAL_INBOX = "$INTERNAL_COMMUNICATION/universal-inbox"
+
+    // PostPurchaseSharingActivity
+    const val POST_PURCHASE_SHARING = "$INTERNAL_COMMUNICATION/sharing/post-purchase"
 }

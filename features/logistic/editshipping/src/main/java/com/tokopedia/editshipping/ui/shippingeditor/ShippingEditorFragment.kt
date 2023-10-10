@@ -298,7 +298,7 @@ class ShippingEditorFragment :
             if (dropOffMapsUrl.isNotEmpty()) {
                 setDrawable(getIconUnifyDrawable(context, IconUnify.LOCATION))
                 setOnClickListener {
-                    RouteManager.route(context, generateWebviewApplink(dropOffMapsUrl))
+                    RouteManager.route(context, generateWebviewApplink(dropOffMapsUrl, showHeader = true))
                 }
                 visible()
             } else {
@@ -558,8 +558,8 @@ class ShippingEditorFragment :
         }
     }
 
-    private fun generateWebviewApplink(url: String): String {
-        return "${ApplinkConst.WEBVIEW}?titlebar=false&url=$url"
+    private fun generateWebviewApplink(url: String, showHeader: Boolean = false): String {
+        return "${ApplinkConst.WEBVIEW}?titlebar=$showHeader&url=$url"
     }
 
     private fun setupChildCourierInactive(

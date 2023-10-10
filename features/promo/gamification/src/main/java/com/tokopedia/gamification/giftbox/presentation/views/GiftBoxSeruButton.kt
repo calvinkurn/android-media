@@ -66,4 +66,20 @@ class GiftBoxSeruButton @JvmOverloads constructor(
                 }
             })
     }
+    fun setIcon(url: String?) {
+        Glide.with(context)
+            .asDrawable()
+            .load(url)
+            .into(object : CustomTarget<Drawable>(){
+                override fun onResourceReady(
+                    resource: Drawable,
+                    transition: Transition<in Drawable>?
+                ) {
+                    imageBell.setImageDrawable(resource)
+                }
+
+                override fun onLoadCleared(placeholder: Drawable?) {
+                }
+            })
+    }
 }

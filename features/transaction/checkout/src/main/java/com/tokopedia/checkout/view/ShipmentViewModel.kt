@@ -361,8 +361,6 @@ class ShipmentViewModel @Inject constructor(
         var hasAddOnSelected = false
         var totalAddOnGiftingPrice = 0.0
         var totalAddOnProductServicePrice = 0.0
-        var qtyAddOn: Int
-        var totalPriceAddOn: Double
         val countMapSummaries = hashMapOf<Int, Pair<Double, Int>>()
         val listShipmentAddOnSummary: ArrayList<ShipmentAddOnSummaryModel> = arrayListOf()
         for (shipmentData in shipmentCartItemModelList) {
@@ -397,27 +395,12 @@ class ShipmentViewModel @Inject constructor(
                         if (cartItem.addOnProduct.listAddOnProductData.isNotEmpty()) {
                             for (addOnProductService in cartItem.addOnProduct.listAddOnProductData) {
                                 if (addOnProductService.status == ADD_ON_PRODUCT_STATUS_CHECK || addOnProductService.status == ADD_ON_PRODUCT_STATUS_MANDATORY) {
-                                    totalAddOnProductServicePrice += (addOnProductService.price * cartItem.quantity)
-                                    qtyAddOn =
-                                        if (countMapSummaries.containsKey(addOnProductService.type)) {
-                                            countMapSummaries[addOnProductService.type]?.second?.plus(
-                                                cartItem.quantity
-                                            ) ?: cartItem.quantity
-                                        } else {
-                                            cartItem.quantity
-                                        }
-
-                                    val addOnPrice = cartItem.quantity * addOnProductService.price
-                                    totalPriceAddOn =
-                                        if (countMapSummaries.containsKey(addOnProductService.type)) {
-                                            countMapSummaries[addOnProductService.type]?.first?.plus(
-                                                addOnPrice
-                                            ) ?: addOnPrice
-                                        } else {
-                                            addOnPrice
-                                        }
-                                    countMapSummaries[addOnProductService.type] =
-                                        totalPriceAddOn to qtyAddOn
+                                    val qtyAddOn = if (addOnProductService.fixedQty) 1 else cartItem.quantity
+                                    totalAddOnProductServicePrice += (addOnProductService.price * qtyAddOn)
+                                    val addOnPrice = qtyAddOn * addOnProductService.price
+                                    val existingMapQty = countMapSummaries[addOnProductService.type]?.second ?: 0
+                                    val existingMapPrice = countMapSummaries[addOnProductService.type]?.first ?: 0.0
+                                    countMapSummaries[addOnProductService.type] = (addOnPrice.plus(existingMapPrice)) to (qtyAddOn + existingMapQty)
                                 }
                             }
                         }
