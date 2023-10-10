@@ -3,7 +3,6 @@ package com.tokopedia.creation.common.upload.uploader.manager
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.creation.common.upload.const.CreationUploadConst
 import com.tokopedia.creation.common.upload.domain.usecase.stories.StoriesAddMediaUseCase
 import com.tokopedia.creation.common.upload.domain.usecase.stories.StoriesUpdateStoryUseCase
 import com.tokopedia.creation.common.upload.model.ContentMediaType
@@ -79,7 +78,13 @@ class StoriesUploadManager @Inject constructor(
         withContext(dispatchers.main) {
             uploaderUseCase.trackProgress { progress, progressType ->
                 if (progressType is ProgressType.Upload && isUploadStoryMedia) {
-                    updateProgress(progress)
+                    currentProgress = progress
+
+                    if (progress == CreationUploadManager.MAX_UPLOAD_PROGRESS) {
+                        broadcastProgress(CreationUploadStatus.OtherProcess)
+                    } else {
+                        updateProgress()
+                    }
                 }
             }
         }
@@ -140,8 +145,6 @@ class StoriesUploadManager @Inject constructor(
         val result = uploadMedia(mediaUri, mediaType)
         isUploadStoryMedia = false
 
-        broadcastProgress(currentProgress, CreationUploadStatus.OtherProcess)
-
         return result
     }
 
@@ -200,35 +203,32 @@ class StoriesUploadManager @Inject constructor(
         )
     }
 
-    private fun updateProgress(
-        progress: Int = currentProgress,
-    ) {
-        currentProgress = progress * 99 / 100
-        broadcastProgress(currentProgress, CreationUploadStatus.Upload)
+    private fun updateProgress() {
+        broadcastProgress(CreationUploadStatus.Upload, currentProgress)
         notificationManager.onProgress(currentProgress)
     }
 
     private suspend fun broadcastInit(uploadData: CreationUploadData) {
-        broadcastProgress(CreationUploadConst.PROGRESS_INIT, CreationUploadStatus.Upload)
+        broadcastProgress(CreationUploadStatus.Upload)
         notificationManager.init(uploadData)
         mListener?.setupForegroundNotification(notificationManager.onStart())
     }
 
     private suspend fun broadcastComplete() {
-        broadcastProgress(CreationUploadConst.PROGRESS_COMPLETED, CreationUploadStatus.Success)
+        broadcastProgress(CreationUploadStatus.Success)
         notificationManager.onSuccess()
         delay(CreationUploadManager.UPLOAD_FINISH_DELAY)
     }
 
     private suspend fun broadcastFail() {
-        broadcastProgress(CreationUploadConst.PROGRESS_FAILED, CreationUploadStatus.Failed)
+        broadcastProgress(CreationUploadStatus.Failed)
         notificationManager.onError()
         delay(CreationUploadManager.UPLOAD_FINISH_DELAY)
     }
 
     private fun broadcastProgress(
-        progress: Int,
         uploadStatus: CreationUploadStatus,
+        progress: Int = currentProgress,
     ) {
         mListener?.setProgress(uploadData, progress, uploadStatus)
     }

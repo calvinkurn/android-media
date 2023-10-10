@@ -17,6 +17,7 @@ interface CreationUploadManager {
 
     companion object {
         const val UPLOAD_FINISH_DELAY = 1000L
+        const val MAX_UPLOAD_PROGRESS = 100
     }
 }
 

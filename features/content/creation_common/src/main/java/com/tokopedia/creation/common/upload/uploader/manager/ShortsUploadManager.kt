@@ -79,7 +79,13 @@ class ShortsUploadManager @Inject constructor(
         withContext(dispatchers.main) {
             uploaderUseCase.trackProgress { progress, type ->
                 if (type is ProgressType.Upload && isUploadShortsMedia) {
-                    updateProgress(progress)
+                    currentProgress = progress
+
+                    if (progress == CreationUploadManager.MAX_UPLOAD_PROGRESS) {
+                        broadcastProgress(CreationUploadStatus.OtherProcess)
+                    } else {
+                        updateProgress()
+                    }
                 }
             }
         }
@@ -125,8 +131,6 @@ class ShortsUploadManager @Inject constructor(
         isUploadShortsMedia = true
         val mediaUrl = uploadMedia(mediaUri, ContentMediaType.Video)
         isUploadShortsMedia = false
-
-        broadcastProgress(CreationUploadStatus.OtherProcess)
 
         return mediaUrl
     }
@@ -226,8 +230,7 @@ class ShortsUploadManager @Inject constructor(
         }.executeOnBackground()
     }
 
-    private fun updateProgress(progress: Int) {
-        currentProgress = progress * 99 / 100
+    private fun updateProgress() {
         broadcastProgress(CreationUploadStatus.Upload, currentProgress)
         notificationManager.onProgress(currentProgress)
     }

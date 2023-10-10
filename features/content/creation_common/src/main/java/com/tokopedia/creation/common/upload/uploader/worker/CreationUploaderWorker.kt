@@ -128,7 +128,7 @@ class CreationUploaderWorker(
             )
         )
 
-        queueRepository.updateProgress(data.queueId, progress)
+        queueRepository.updateProgress(data.queueId, progress, uploadStatus.value)
     }
 
     companion object {

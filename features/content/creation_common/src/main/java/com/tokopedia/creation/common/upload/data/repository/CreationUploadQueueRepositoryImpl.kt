@@ -50,9 +50,19 @@ class CreationUploadQueueRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun updateProgress(queueId: Int, progress: Int) {
+    override suspend fun updateProgress(
+        queueId: Int,
+        progress: Int,
+        uploadStatus: String,
+    ) {
         lockAndSwitchContext(dispatchers) {
-            creationUploadQueueDatabase.creationUploadQueueDao().updateProgress(queueId, progress)
+            creationUploadQueueDatabase
+                .creationUploadQueueDao()
+                .updateProgress(
+                    queueId,
+                    progress,
+                    uploadStatus
+                )
         }
     }
 
