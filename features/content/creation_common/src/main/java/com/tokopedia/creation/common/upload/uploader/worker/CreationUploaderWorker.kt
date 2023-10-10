@@ -15,10 +15,12 @@ import com.tokopedia.creation.common.upload.domain.repository.CreationUploadQueu
 import com.tokopedia.creation.common.upload.uploader.manager.CreationUploadManagerProvider
 import com.tokopedia.creation.common.upload.di.worker.DaggerCreationUploadWorkerComponent
 import com.tokopedia.creation.common.upload.model.CreationUploadData
+import com.tokopedia.creation.common.upload.model.CreationUploadStatus
 import com.tokopedia.creation.common.upload.model.exception.NoUploadManagerException
 import com.tokopedia.creation.common.upload.model.exception.UnknownUploadTypeException
 import com.tokopedia.creation.common.upload.uploader.manager.CreationUploadManagerListener
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -75,8 +77,14 @@ class CreationUploaderWorker(
                                 setForegroundAsync(info)
                             }
 
-                            override suspend fun setProgress(uploadData: CreationUploadData, progress: Int) {
-                                emitProgress(progress, uploadData)
+                            override fun setProgress(
+                                uploadData: CreationUploadData,
+                                progress: Int,
+                                uploadStatus: CreationUploadStatus,
+                            ) {
+                                launch {
+                                    emitProgress(progress, uploadData, uploadStatus)
+                                }
                             }
                         }
                     )
@@ -84,7 +92,7 @@ class CreationUploaderWorker(
                     if (uploadResult) {
                         queueRepository.delete(data.queueId)
                     } else {
-                        emitProgress(CreationUploadConst.PROGRESS_FAILED, data)
+                        emitProgress(CreationUploadConst.PROGRESS_FAILED, data, CreationUploadStatus.Failed)
                         break
                     }
                 } catch (throwable: Throwable) {
@@ -107,11 +115,16 @@ class CreationUploaderWorker(
         }
     }
 
-    private suspend fun emitProgress(progress: Int, data: CreationUploadData) {
+    private suspend fun emitProgress(
+        progress: Int,
+        data: CreationUploadData,
+        uploadStatus: CreationUploadStatus,
+    ) {
         setProgress(
             workDataOf(
                 CreationUploadConst.PROGRESS to progress,
-                CreationUploadConst.UPLOAD_DATA to data.mapToJson(gson)
+                CreationUploadConst.UPLOAD_DATA to data.mapToJson(gson),
+                CreationUploadConst.UPLOAD_STATUS to uploadStatus.value,
             )
         )
 

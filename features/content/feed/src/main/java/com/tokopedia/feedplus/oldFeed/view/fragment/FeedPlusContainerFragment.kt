@@ -600,7 +600,7 @@ class FeedPlusContainerFragment :
                             playShortsInFeedAnalytic
                         )
                     }
-                    is CreationUploadResult.Progress -> {
+                    is CreationUploadResult.Upload -> {
                         postProgressUpdateView?.show()
                         postProgressUpdateView?.setIcon(uploadResult.data.notificationCover)
                         postProgressUpdateView?.setProgress(uploadResult.progress)

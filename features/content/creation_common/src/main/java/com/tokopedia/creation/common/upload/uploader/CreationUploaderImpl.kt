@@ -10,6 +10,7 @@ import com.tokopedia.creation.common.upload.const.CreationUploadConst
 import com.tokopedia.creation.common.upload.domain.repository.CreationUploadQueueRepository
 import com.tokopedia.creation.common.upload.model.CreationUploadData
 import com.tokopedia.creation.common.upload.model.CreationUploadResult
+import com.tokopedia.creation.common.upload.model.CreationUploadStatus
 import com.tokopedia.creation.common.upload.uploader.worker.CreationUploaderWorker
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.trySendBlocking
@@ -35,16 +36,23 @@ class CreationUploaderImpl @Inject constructor(
                 try {
                     val progress = workInfo.progress.getInt(CreationUploadConst.PROGRESS, 0)
                     val uploadData = CreationUploadData.parseFromJson(workInfo.progress.getString(CreationUploadConst.UPLOAD_DATA).orEmpty(), gson)
+                    val uploadStatus = CreationUploadStatus.parse(workInfo.progress.getString(CreationUploadConst.UPLOAD_STATUS).orEmpty())
 
-                    return@map when (progress) {
-                        CreationUploadConst.PROGRESS_COMPLETED -> {
+                    return@map when (uploadStatus) {
+                        CreationUploadStatus.Upload -> {
+                            CreationUploadResult.Upload(uploadData, progress)
+                        }
+                        CreationUploadStatus.Success -> {
                             CreationUploadResult.Success(uploadData)
                         }
-                        CreationUploadConst.PROGRESS_FAILED -> {
+                        CreationUploadStatus.Failed -> {
                             CreationUploadResult.Failed(uploadData)
                         }
+                        CreationUploadStatus.OtherProcess -> {
+                            CreationUploadResult.OtherProcess(uploadData, progress)
+                        }
                         else -> {
-                            CreationUploadResult.Progress(uploadData, progress)
+                            CreationUploadResult.Unknown
                         }
                     }
                 } catch (throwable: Throwable) {
@@ -67,16 +75,20 @@ class CreationUploaderImpl @Inject constructor(
             val creationUploadData = creationUploadQueueRepository.getTopQueue()
 
             if (creationUploadData != null) {
-                when (creationUploadData.uploadProgress) {
-                    in CreationUploadConst.PROGRESS_INIT until CreationUploadConst.PROGRESS_COMPLETED -> {
-                        trySendBlocking(CreationUploadResult.Progress(creationUploadData, creationUploadData.uploadProgress))
+                when (creationUploadData.uploadStatus) {
+                    CreationUploadStatus.Upload -> {
+                        trySendBlocking(CreationUploadResult.Upload(creationUploadData, creationUploadData.uploadProgress))
                     }
-                    CreationUploadConst.PROGRESS_COMPLETED -> {
+                    CreationUploadStatus.OtherProcess -> {
+                        trySendBlocking(CreationUploadResult.OtherProcess(creationUploadData, creationUploadData.uploadProgress))
+                    }
+                    CreationUploadStatus.Success -> {
                         trySendBlocking(CreationUploadResult.Success(creationUploadData))
                     }
-                    CreationUploadConst.PROGRESS_FAILED -> {
+                    CreationUploadStatus.Failed -> {
                         trySendBlocking(CreationUploadResult.Failed(creationUploadData))
                     }
+                    else -> {}
                 }
             }
 

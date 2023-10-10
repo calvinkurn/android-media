@@ -10,6 +10,7 @@ import com.tokopedia.createpost.common.view.util.FeedSellerAppReviewHelper
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.creation.common.upload.const.CreationUploadConst
 import com.tokopedia.creation.common.upload.model.CreationUploadData
+import com.tokopedia.creation.common.upload.model.CreationUploadStatus
 import javax.inject.Inject
 
 /**
@@ -28,7 +29,7 @@ class PostUploadManager @Inject constructor(
         if (uploadData !is CreationUploadData.Post) return false
 
         return try {
-            listener.setProgress(uploadData, CreationUploadConst.PROGRESS_INIT)
+            listener.setProgress(uploadData, CreationUploadConst.PROGRESS_INIT, CreationUploadStatus.Upload)
 
             val cacheManager = SaveInstanceCacheManager(appContext, uploadData.draftId)
             val viewModel: CreatePostViewModel = cacheManager.get(
@@ -52,17 +53,21 @@ class PostUploadManager @Inject constructor(
                 mediaHeight = viewModel.mediaHeight,
                 onSuccessUploadPerMedia = {
                     uploadedMedia++
-                    listener.setProgress(uploadData, (uploadedMedia / viewModel.completeImageList.size.toDouble() * 100).toInt())
+                    listener.setProgress(
+                        uploadData,
+                        (uploadedMedia / viewModel.completeImageList.size.toDouble() * 100).toInt(),
+                        CreationUploadStatus.Upload
+                    )
                 }
             )
 
             addFlagOnCreatePostSuccess()
 
-            listener.setProgress(uploadData, CreationUploadConst.PROGRESS_COMPLETED)
+            listener.setProgress(uploadData, CreationUploadConst.PROGRESS_COMPLETED, CreationUploadStatus.Success)
 
             true
         } catch (e: Throwable) {
-            listener.setProgress(uploadData, CreationUploadConst.PROGRESS_FAILED)
+            listener.setProgress(uploadData, CreationUploadConst.PROGRESS_FAILED, CreationUploadStatus.Failed)
             false
         }
     }

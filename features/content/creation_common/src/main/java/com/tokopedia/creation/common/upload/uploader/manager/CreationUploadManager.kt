@@ -3,6 +3,7 @@ package com.tokopedia.creation.common.upload.uploader.manager
 import androidx.work.ForegroundInfo
 import com.tokopedia.creation.common.upload.model.CreationUploadData
 import com.tokopedia.creation.common.upload.model.CreationUploadResult
+import com.tokopedia.creation.common.upload.model.CreationUploadStatus
 
 /**
  * Created By : Jonathan Darwin on September 15, 2023
@@ -13,11 +14,19 @@ interface CreationUploadManager {
         uploadData: CreationUploadData,
         listener: CreationUploadManagerListener,
     ): Boolean
+
+    companion object {
+        const val UPLOAD_FINISH_DELAY = 1000L
+    }
 }
 
 interface CreationUploadManagerListener {
 
     suspend fun setupForegroundNotification(info: ForegroundInfo)
 
-    suspend fun setProgress(uploadData: CreationUploadData, progress: Int)
+    fun setProgress(
+        uploadData: CreationUploadData,
+        progress: Int,
+        uploadStatus: CreationUploadStatus,
+    )
 }

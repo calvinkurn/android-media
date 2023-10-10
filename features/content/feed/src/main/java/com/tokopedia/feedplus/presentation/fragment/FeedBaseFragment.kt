@@ -49,10 +49,6 @@ import com.tokopedia.feedplus.presentation.model.FeedMainEvent
 import com.tokopedia.feedplus.presentation.model.FeedTabModel
 import com.tokopedia.feedplus.presentation.model.MetaModel
 import com.tokopedia.feedplus.presentation.onboarding.ImmersiveFeedOnboarding
-import com.tokopedia.feedplus.presentation.receiver.FeedMultipleSourceUploadReceiver
-import com.tokopedia.feedplus.presentation.receiver.UploadInfo
-import com.tokopedia.feedplus.presentation.receiver.UploadStatus
-import com.tokopedia.feedplus.presentation.receiver.UploadType
 import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
@@ -69,12 +65,9 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.time.DurationUnit
-import kotlin.time.toDuration
 import com.tokopedia.creation.common.R as creationcommonR
 
 /**
@@ -107,9 +100,6 @@ class FeedBaseFragment :
                 index = 0
             )
         }
-
-    @Inject
-    lateinit var uploadReceiverFactory: FeedMultipleSourceUploadReceiver.Factory
 
     @Inject
     lateinit var playShortsUploadAnalytic: PlayShortsUploadAnalytic
@@ -495,9 +485,14 @@ class FeedBaseFragment :
                 .observe()
                 .collect { uploadResult ->
                     when (uploadResult) {
-                        is CreationUploadResult.Progress -> {
+                        is CreationUploadResult.Upload -> {
                             binding.uploadView.show()
-                            binding.uploadView.setProgress(uploadResult.progress)
+                            binding.uploadView.setUploadProgress(uploadResult.progress)
+                            binding.uploadView.setThumbnail(uploadResult.data.notificationCover)
+                        }
+                        is CreationUploadResult.OtherProcess -> {
+                            binding.uploadView.show()
+                            binding.uploadView.setOtherProgress(uploadResult.progress)
                             binding.uploadView.setThumbnail(uploadResult.data.notificationCover)
                         }
                         is CreationUploadResult.Success -> {

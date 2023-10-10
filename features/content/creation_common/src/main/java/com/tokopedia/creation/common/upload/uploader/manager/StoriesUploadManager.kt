@@ -8,16 +8,15 @@ import com.tokopedia.creation.common.upload.domain.usecase.stories.StoriesAddMed
 import com.tokopedia.creation.common.upload.domain.usecase.stories.StoriesUpdateStoryUseCase
 import com.tokopedia.creation.common.upload.model.ContentMediaType
 import com.tokopedia.creation.common.upload.model.CreationUploadData
-import com.tokopedia.creation.common.upload.model.CreationUploadResult
+import com.tokopedia.creation.common.upload.model.CreationUploadStatus
 import com.tokopedia.creation.common.upload.model.dto.stories.StoriesAddMediaRequest
 import com.tokopedia.creation.common.upload.model.dto.stories.StoriesUpdateStoryRequest
 import com.tokopedia.creation.common.upload.model.stories.StoriesStatus
 import com.tokopedia.creation.common.upload.uploader.notification.StoriesUploadNotificationManager
-import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.mediauploader.UploaderUseCase
+import com.tokopedia.mediauploader.common.state.ProgressType
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.play_common.const.PlayUploadSourceIdConst
-import com.tokopedia.play_common.types.PlayChannelStatusType
 import com.tokopedia.play_common.util.VideoSnapshotHelper
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
@@ -43,9 +42,7 @@ class StoriesUploadManager @Inject constructor(
 
     private var mListener: CreationUploadManagerListener? = null
 
-    private val progressPerStep by lazyThreadSafetyNone {
-        PROGRESS_MAX / STORIES_UPLOAD_STEP
-    }
+    private var isUploadStoryMedia = false
 
     /**
      * Upload Flow
@@ -79,14 +76,21 @@ class StoriesUploadManager @Inject constructor(
         this.uploadData = uploadData
         this.mListener = listener
 
+        withContext(dispatchers.main) {
+            uploaderUseCase.trackProgress { progress, progressType ->
+                if (progressType is ProgressType.Upload && isUploadStoryMedia) {
+                    updateProgress(progress)
+                }
+            }
+        }
+
         return withContext(dispatchers.io) {
             try {
                 broadcastInit(uploadData)
 
-                /** TODO JOE: add logic here */
                 updateStoryStatus(uploadData, StoriesStatus.Transcoding)
 
-                val mediaUploadResult = uploadMedia(uploadData.firstMediaUri, uploadData.firstMediaType, uploadData.sourceId)
+                val mediaUploadResult = uploadStoryMedia(uploadData.firstMediaUri, uploadData.firstMediaType)
                 val coverUrl = uploadCover(uploadData).fileUrl
 
                 addMedia(uploadData, mediaUploadResult, coverUrl)
@@ -126,35 +130,19 @@ class StoriesUploadManager @Inject constructor(
                 status = status
             )
         )
-
-        if (status != StoriesStatus.TranscodingFailed) {
-            updateProgress()
-        }
     }
 
-    private suspend fun uploadMedia(
+    private suspend fun uploadStoryMedia(
         mediaUri: String,
         mediaType: ContentMediaType,
-        sourceId: String,
     ): UploadResult.Success {
-        val param = uploaderUseCase.createParams(
-            sourceId = sourceId,
-            filePath = File(mediaUri),
-            withTranscode = true,
-        )
+        isUploadStoryMedia = true
+        val result = uploadMedia(mediaUri, mediaType)
+        isUploadStoryMedia = false
 
-        val result = uploaderUseCase(param)
+        broadcastProgress(currentProgress, CreationUploadStatus.OtherProcess)
 
-        return when (result) {
-            is UploadResult.Success -> {
-                updateProgress()
-
-                result
-            }
-            is UploadResult.Error -> {
-                throw Exception(result.message)
-            }
-        }
+        return result
     }
 
     private suspend fun uploadCover(
@@ -169,7 +157,27 @@ class StoriesUploadManager @Inject constructor(
             uploadData.firstMediaUri
         }
 
-        return uploadMedia(coverFilePath, ContentMediaType.Image, "")
+        return uploadMedia(coverFilePath, ContentMediaType.Image)
+    }
+
+    private suspend fun uploadMedia(
+        mediaUri: String,
+        mediaType: ContentMediaType,
+    ): UploadResult.Success {
+        val param = uploaderUseCase.createParams(
+            sourceId = getSourceId(mediaType),
+            filePath = File(mediaUri),
+            withTranscode = true,
+        )
+
+        return when (val result = uploaderUseCase(param)) {
+            is UploadResult.Success -> {
+                result
+            }
+            is UploadResult.Error -> {
+                throw Exception(result.message)
+            }
+        }
     }
 
     private suspend fun addMedia(
@@ -190,59 +198,46 @@ class StoriesUploadManager @Inject constructor(
                 uploadId = mediaUploadResult.uploadId,
             )
         )
-
-        updateProgress()
     }
 
-    private suspend fun updateProgress(progress: Int = progressPerStep) {
-        currentProgress += progress
-        broadcastProgress(currentProgress)
+    private fun updateProgress(
+        progress: Int = currentProgress,
+    ) {
+        currentProgress = progress * 99 / 100
+        broadcastProgress(currentProgress, CreationUploadStatus.Upload)
         notificationManager.onProgress(currentProgress)
     }
 
     private suspend fun broadcastInit(uploadData: CreationUploadData) {
-        broadcastProgress(CreationUploadConst.PROGRESS_INIT)
+        broadcastProgress(CreationUploadConst.PROGRESS_INIT, CreationUploadStatus.Upload)
         notificationManager.init(uploadData)
         mListener?.setupForegroundNotification(notificationManager.onStart())
     }
 
     private suspend fun broadcastComplete() {
-        broadcastProgress(CreationUploadConst.PROGRESS_COMPLETED)
+        broadcastProgress(CreationUploadConst.PROGRESS_COMPLETED, CreationUploadStatus.Success)
         notificationManager.onSuccess()
-        delay(UPLOAD_FINISH_DELAY)
+        delay(CreationUploadManager.UPLOAD_FINISH_DELAY)
     }
 
     private suspend fun broadcastFail() {
-        broadcastProgress(CreationUploadConst.PROGRESS_FAILED)
+        broadcastProgress(CreationUploadConst.PROGRESS_FAILED, CreationUploadStatus.Failed)
         notificationManager.onError()
-        delay(UPLOAD_FINISH_DELAY)
+        delay(CreationUploadManager.UPLOAD_FINISH_DELAY)
     }
 
-    private suspend fun broadcastProgress(progress: Int) {
-        mListener?.setProgress(uploadData, progress)
-    }
-
-    private fun getSourceId(uploadType: UploadType): String {
-        return when (uploadType) {
-            UploadType.Image -> PlayUploadSourceIdConst.uploadImageSourceId
-            UploadType.Video -> uploadData.sourceId
-        }
-    }
-
-    enum class UploadType(
-        val type: String,
-        val withTranscode: Boolean
+    private fun broadcastProgress(
+        progress: Int,
+        uploadStatus: CreationUploadStatus,
     ) {
-        Image(UPLOAD_TYPE_IMAGE, false),
-        Video(UPLOAD_TYPE_VIDEO, true)
+        mListener?.setProgress(uploadData, progress, uploadStatus)
     }
 
-    companion object {
-        private const val UPLOAD_TYPE_IMAGE = "UPLOAD_TYPE_IMAGE"
-        private const val UPLOAD_TYPE_VIDEO = "UPLOAD_TYPE_VIDEO"
-
-        private const val PROGRESS_MAX = 100
-        private const val STORIES_UPLOAD_STEP = 5
-        private const val UPLOAD_FINISH_DELAY = 1000L
+    private fun getSourceId(contentMediaType: ContentMediaType): String {
+        return when (contentMediaType) {
+            ContentMediaType.Image -> PlayUploadSourceIdConst.uploadImageSourceId
+            ContentMediaType.Video -> uploadData.sourceId
+            else -> ""
+        }
     }
 }
