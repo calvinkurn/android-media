@@ -438,6 +438,10 @@ open class GetPdpLayoutUseCase @Inject constructor(
                       show
                       ctaText
                     }
+                    ... on pdpDataProductListComponent {
+                      queryParam
+                      thematicID
+                    }
                   }
                 }
               }
