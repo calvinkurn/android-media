@@ -88,7 +88,7 @@ dependencies {
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
 
-
+    implementation projectOrAar(rootProject.ext.libraries.keys)
 }
 
 project.ext {
