@@ -42,13 +42,11 @@ class ComposePersonaSelectTypeViewModel @Inject constructor(
         get() = _uiEffect.asSharedFlow()
 
     fun onEvent(event: SelectTypeUiEvent) {
-        viewModelScope.launch {
-            when (event) {
-                is SelectTypeUiEvent.FetchPersonaList -> fetchPersonaList(args = event.arguments)
-                is SelectTypeUiEvent.Reload -> reloadPage()
-                is SelectTypeUiEvent.ClickPersonaCard -> updateSelectedState(event.personaName)
-                is SelectTypeUiEvent.ClickSubmitButton -> submitSelectedType()
-            }
+        when (event) {
+            is SelectTypeUiEvent.FetchPersonaList -> fetchPersonaList(args = event.arguments)
+            is SelectTypeUiEvent.Reload -> reloadPage()
+            is SelectTypeUiEvent.ClickPersonaCard -> updateSelectedState(event.personaName)
+            is SelectTypeUiEvent.ClickSubmitButton -> submitSelectedType()
         }
     }
 
@@ -67,7 +65,7 @@ class ComposePersonaSelectTypeViewModel @Inject constructor(
     }
 
 
-    private suspend fun setPersona(persona: String) {
+    private fun setPersona(persona: String) {
         viewModelScope.launch {
             runCatching {
                 emitSelectButtonLoading(isLoading = true)
@@ -130,7 +128,7 @@ class ComposePersonaSelectTypeViewModel @Inject constructor(
         }
     }
 
-    private suspend fun submitSelectedType() {
+    private fun submitSelectedType() {
         val currentState = _state.value
         val data = currentState.data
         val defaultPersona = data.args.paramPersona
