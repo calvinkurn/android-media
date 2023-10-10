@@ -230,6 +230,7 @@ import com.tokopedia.product.detail.tracking.ProductDetailInfoTracking
 import com.tokopedia.product.detail.tracking.ProductDetailNavigationTracker
 import com.tokopedia.product.detail.tracking.ProductDetailNavigationTracking
 import com.tokopedia.product.detail.tracking.ProductDetailServerLogger
+import com.tokopedia.product.detail.tracking.ProductDetailStoriesWidgetTrackerBuilder
 import com.tokopedia.product.detail.tracking.ProductShopReviewTracking
 import com.tokopedia.product.detail.tracking.ProductSocialProofTracking
 import com.tokopedia.product.detail.tracking.ProductThumbnailVariantTracking
@@ -307,6 +308,11 @@ import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersListener
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersView
+import com.tokopedia.stories.widget.NoAnimateAnimationStrategy
+import com.tokopedia.stories.widget.NoCoachMarkStrategy
+import com.tokopedia.stories.widget.StoriesWidgetManager
+import com.tokopedia.stories.widget.domain.StoriesEntryPoint
+import com.tokopedia.stories.widget.storiesManager
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.ImageUnify
@@ -532,7 +538,7 @@ open class DynamicProductDetailFragment :
             playWidgetCoordinator = PlayWidgetCoordinator(this).apply {
                 setListener(this@DynamicProductDetailFragment)
             },
-            affiliateCookieHelper.get()
+            affiliateCookieHelper.get(),
         )
     }
     private val adapter by lazy {
@@ -575,6 +581,15 @@ open class DynamicProductDetailFragment :
     }
 
     private val compositeSubscription by lazy { CompositeSubscription() }
+
+    private val mStoriesWidgetManager by storiesManager(StoriesEntryPoint.ProductDetail) {
+        setScrollingParent(binding?.rvPdp)
+        setAnimationStrategy(NoAnimateAnimationStrategy())
+        setCoachMarkStrategy(NoCoachMarkStrategy())
+        setTrackerBuilder(
+            ProductDetailStoriesWidgetTrackerBuilder.create(productId.orEmpty(), getUserSession())
+        )
+    }
 
     private val scrollListener by lazy {
         navToolbar?.let {
@@ -2976,6 +2991,8 @@ open class DynamicProductDetailFragment :
                     uuid = uuid,
                     affiliateChannel = affiliateChannel
                 )
+
+                mStoriesWidgetManager.updateStories(listOf(p1.basic.shopID))
             }
             onSuccessGetDataP2(it, boeData, ratesData, shipmentPlus)
             checkAffiliateEligibility(it.shopInfo)
@@ -5836,6 +5853,10 @@ open class DynamicProductDetailFragment :
 
     override fun getTrackingQueueInstance(): TrackingQueue {
         return trackingQueue
+    }
+
+    override fun getStoriesWidgetManager(): StoriesWidgetManager {
+        return mStoriesWidgetManager
     }
 
     override fun getUserSession(): UserSessionInterface {

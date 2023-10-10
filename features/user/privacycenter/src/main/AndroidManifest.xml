@@ -51,23 +51,6 @@
             android:exported="false"
             android:screenOrientation="portrait" />
 
-        <activity android:name=".ui.accountlinking.LinkAccountWebViewActivity"
-            android:theme="@style/Theme.WhiteUnify"
-            android:exported="false"
-            android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="com.tokopedia.internal.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="@string/host_user"
-                    android:pathPattern="@string/path_account_linking_webview"
-                    android:scheme="@string/internal_scheme" />
-            </intent-filter>
-        </activity>
-
         <activity
             android:name=".ui.searchhistory.SearchHistoryActivity"
             android:label="@string/privacy_center_search_history_title"

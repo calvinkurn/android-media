@@ -55,6 +55,8 @@ ext {
 			stories							: ":features:content:stories",
             contentTest                     : ":features:content:content_test",
             playWidget                      : ":features:content:play_widget",
+			storiesWidget					: ":features:content:stories_widget",
+			storiesInternal					: ":features:content:stories_internal",
 			creationCommon					: ":features:content:creation_common",
 			storiesCreation					: ":features:content:stories_creation",
 
@@ -294,6 +296,7 @@ ext {
             otp                             : ":features:user:otp",
             phoneVerification               : ":features:user:phoneverification",
             privacycenter                   : ":features:user:privacycenter",
+			accountlinking                   : ":features:user:accountlinking",
             profileCompletion               : ":features:user:profilecompletion",
             seamlessLoginCommon             : ":features:user:seamless_login_common",
             sessioncommon                   : ":features:user:sessioncommon",
