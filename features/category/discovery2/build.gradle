@@ -101,6 +101,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
+    implementation ("com.google.android.material:material:1.10.0")
+
     // miscDependencies Dependency
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
