@@ -23,11 +23,13 @@ import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.gamification.R
 import com.tokopedia.gamification.audio.AudioFactory
 import com.tokopedia.gamification.di.ActivityContextModule
+import com.tokopedia.gamification.giftbox.Constants
 import com.tokopedia.gamification.giftbox.Constants.REDIRECT
 import com.tokopedia.gamification.giftbox.Constants.SERU_BUTTON
 import com.tokopedia.gamification.giftbox.Constants.SHOP_BUTTON
