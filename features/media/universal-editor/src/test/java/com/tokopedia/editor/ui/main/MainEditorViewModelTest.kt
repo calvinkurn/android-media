@@ -24,10 +24,12 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkStatic
 import io.mockk.runs
+import io.mockk.verify
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -38,7 +40,6 @@ import org.junit.rules.TemporaryFolder
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.shadows.ShadowBitmapFactory
-
 
 @RunWith(RobolectricTestRunner::class)
 class MainEditorViewModelTest {
@@ -72,6 +73,12 @@ class MainEditorViewModelTest {
 
         mockkStatic(::isVideoFormat)
         mockkStatic(::isImageFormat)
+        mockAnalytics()
+    }
+
+    @After
+    fun tearDown() {
+        onEvent(MainEditorEvent.DisposeRemainingTasks)
     }
 
     @Test
@@ -96,7 +103,6 @@ class MainEditorViewModelTest {
         val model = InputTextModel(text = "add a new text")
 
         // Verify
-        mockAnalytics()
         onEvent(MainEditorEvent.AddInputTextPage)
 
         val effects = recordEffect()
@@ -160,7 +166,6 @@ class MainEditorViewModelTest {
         val filePath = tempFolder.newFile("dummy.mp4")
 
         every { isVideoFormat(any()) } returns true
-        mockAnalytics()
         mockParamFetcher()
         mockNavigationTool()
 
@@ -189,7 +194,6 @@ class MainEditorViewModelTest {
         val filePath = tempFolder.newFile("dummy.mp4")
 
         every { resourceProvider.getString(any()) } returns ""
-        mockAnalytics()
         mockParamFetcher()
         mockNavigationTool()
 
@@ -220,7 +224,6 @@ class MainEditorViewModelTest {
 
         every { resourceProvider.getString(any()) } returns ""
         every { isImageFormat(any()) } returns true
-        mockAnalytics()
         mockParamFetcher()
         mockNavigationTool()
 
@@ -266,7 +269,6 @@ class MainEditorViewModelTest {
 
         every { resourceProvider.getString(any()) } returns ""
         every { isImageFormat(any()) } returns true
-        mockAnalytics()
         mockParamFetcher()
         mockNavigationTool()
 
@@ -300,7 +302,6 @@ class MainEditorViewModelTest {
 
         every { resourceProvider.getString(any()) } returns ""
         every { isImageFormat(any()) } returns true
-        mockAnalytics()
         mockParamFetcher()
         mockNavigationTool()
 
@@ -347,12 +348,22 @@ class MainEditorViewModelTest {
     fun `should trigger placement page open sequence`() = runTest {
         // When
         mockParamFetcher()
-        mockAnalytics()
         onEvent(MainEditorEvent.PlacementImagePage)
 
         // Verify
         val effects = recordEffect()
         assertTrue(effects[0] is MainEditorEffect.OpenPlacementPage)
+    }
+
+    @Test
+    fun `should not able to open placement page open with empty file`() = runTest {
+        // When
+        mockNullParamFetcher()
+        onEvent(MainEditorEvent.PlacementImagePage)
+
+        // Verify
+        val effects = recordEffect()
+        assertTrue(effects.isEmpty())
     }
 
     @Test
@@ -438,7 +449,7 @@ class MainEditorViewModelTest {
     @Test
     fun `should close editor home page on close clicked`() = runTest {
         // When
-        mockAnalytics()
+        fakeVideoFlattenRepository.setFlattenStatus(false)
         onEvent(MainEditorEvent.ClickHeaderCloseButton(true))
 
         // Verify
@@ -449,13 +460,66 @@ class MainEditorViewModelTest {
     @Test
     fun `should close editor home page on close clicked with confirmation dialog`() = runTest {
         // When
-        mockAnalytics()
         onEvent(MainEditorEvent.HasTextAdded(true))
         onEvent(MainEditorEvent.ClickHeaderCloseButton())
 
         // Verify
         val effects = recordEffect()
         assertTrue(effects[0] is MainEditorEffect.ShowCloseDialogConfirmation)
+    }
+
+    @Test
+    fun `should close editor home page on close clicked with confirmation dialog during video flatten`() = runTest {
+        // Given
+        mockParamFetcher()
+        mockNavigationTool()
+
+        val filePath = tempFolder.newFile("dummy.mp4")
+
+        every { isVideoFormat(any()) } returns true
+        fakeVideoFlattenRepository.setFlattenStatus(true)
+
+        // When
+        onEvent(
+            MainEditorEvent.SetupView(
+                UniversalEditorParam(
+                    paths = listOf(filePath.path)
+                )
+            )
+        )
+        onEvent(MainEditorEvent.HasTextAdded(true))
+        onEvent(MainEditorEvent.ClickHeaderCloseButton(false))
+
+        // Verify
+        val effects = recordEffect()
+        assertTrue(effects[0] is MainEditorEffect.ShowCloseDialogConfirmation)
+    }
+
+    @Test
+    fun `should close editor home page on close clicked with skip confirmation dialog`() = runTest {
+        // Given
+        mockParamFetcher()
+        mockNavigationTool()
+
+        val filePath = tempFolder.newFile("dummy.mp4")
+
+        every { isVideoFormat(any()) } returns true
+        fakeVideoFlattenRepository.setFlattenStatus(true)
+
+        // When
+        onEvent(
+            MainEditorEvent.SetupView(
+                UniversalEditorParam(
+                    paths = listOf(filePath.path)
+                )
+            )
+        )
+        onEvent(MainEditorEvent.HasTextAdded(true))
+        onEvent(MainEditorEvent.ClickHeaderCloseButton(true))
+
+        // Verify
+        val effects = recordEffect()
+        assertTrue(effects[0] is MainEditorEffect.CloseMainEditorPage)
     }
 
     private fun recordEffect(): List<MainEditorEffect> {
@@ -476,6 +540,13 @@ class MainEditorViewModelTest {
     private fun mockParamFetcher() {
         every { paramFetcher.get() } returns UniversalEditorParam(
             paths = listOf("cache/dummy_path.png")
+        )
+        every { paramFetcher.set(any()) } just Runs
+    }
+
+    private fun mockNullParamFetcher() {
+        every { paramFetcher.get() } returns UniversalEditorParam(
+            paths = listOf()
         )
         every { paramFetcher.set(any()) } just Runs
     }

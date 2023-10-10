@@ -1,10 +1,9 @@
-package com.tokopedia.editor.ui.main
+package com.tokopedia.editor.ui.placement
 
 import android.graphics.BitmapFactory
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.editor.data.repository.ImageSaveRepository
 import com.tokopedia.editor.ui.model.ImagePlacementModel
-import com.tokopedia.editor.ui.placement.PlacementImageViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.ext.getOrAwaitValue
 import io.mockk.every
@@ -20,6 +19,7 @@ import org.robolectric.shadows.ShadowBitmapFactory
 
 @RunWith(RobolectricTestRunner::class)
 class PlacementImageViewModelTest {
+
     @get:Rule
     val instantExecutorRule = InstantTaskExecutorRule()
 
@@ -126,7 +126,7 @@ class PlacementImageViewModelTest {
         )
 
         // When
-        every { imageSaveRepository.saveBitmap(any(), any()) } returns resultPath
+        every { imageSaveRepository.saveBitmap(any(), any() as String) } returns resultPath
         viewModel.savePlacementBitmap(
             resultPath,
             bitmap,
@@ -157,7 +157,8 @@ class PlacementImageViewModelTest {
         )
 
         // When
-        every { imageSaveRepository.saveBitmap(any(), any()) }.throws(Exception())
+        every { imageSaveRepository.saveBitmap(any(), any() as String) } returns ""
+
         viewModel.savePlacementBitmap(
             resultPath,
             bitmap,
@@ -168,6 +169,6 @@ class PlacementImageViewModelTest {
         )
 
         // Then
-        verify { imageSaveRepository.saveBitmap(any(), any()) }
+        verify { imageSaveRepository.saveBitmap(any(), any() as String) }
     }
 }

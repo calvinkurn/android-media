@@ -1,10 +1,9 @@
-package com.tokopedia.editor.ui.main
+package com.tokopedia.editor.ui.text
 
 import android.graphics.Color
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.editor.ui.model.ColorModel
 import com.tokopedia.editor.ui.model.InputTextModel
-import com.tokopedia.editor.ui.text.InputTextViewModel
 import com.tokopedia.editor.util.FontAlignment
 import com.tokopedia.editor.util.FontDetail
 import com.tokopedia.editor.util.provider.ColorProvider
