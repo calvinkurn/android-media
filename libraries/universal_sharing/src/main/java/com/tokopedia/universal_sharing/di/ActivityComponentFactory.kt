@@ -9,8 +9,6 @@ open class ActivityComponentFactory {
     open fun createActivityComponent(context: Context): UniversalShareComponent {
         return DaggerUniversalShareComponent.builder()
             .baseAppComponent((context as BaseMainApplication).baseAppComponent)
-            .universalShareModule(UniversalShareModule())
-            .universalShareUseCaseModule(UniversalShareUseCaseModule())
             .build()
     }
 
