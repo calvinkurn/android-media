@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.editshipping.databinding.ItemShippingEditorCardBinding
-import com.tokopedia.editshipping.util.EditShippingConstant.KURIR_REKOMENDASI_SHIPPER_ID
 import com.tokopedia.logisticCommon.data.model.ShipperCPLModel
 
 class CPLItemAdapter(private val listener: CPLItemAdapterListener) :
@@ -36,7 +35,7 @@ class CPLItemAdapter(private val listener: CPLItemAdapterListener) :
         return cplItem.size
     }
 
-    fun getWhitelabelServicePosition(): Int {
+    fun getSamedayServicePosition(): Int {
         for (i in cplItem.indices) {
             if (cplItem[i].isWhitelabel && cplItem[i].shipperName == "Sameday 8 Jam") {
                 return i

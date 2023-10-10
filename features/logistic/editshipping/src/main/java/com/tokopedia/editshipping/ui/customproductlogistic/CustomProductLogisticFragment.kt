@@ -116,7 +116,7 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
     }
 
     private fun getWhitelabelView(): View? {
-        val whitelabelServiceIndex = cplItemOnDemandAdapter.getWhitelabelServicePosition()
+        val whitelabelServiceIndex = cplItemOnDemandAdapter.getSamedayServicePosition()
         return if (whitelabelServiceIndex != RecyclerView.NO_POSITION) {
             binding?.rvOnDemandCpl?.findViewHolderForAdapterPosition(whitelabelServiceIndex)?.itemView
         } else {
