@@ -275,4 +275,7 @@ public class RemoteConfigKey {
     public static final String HOME_ATF_REFACTORING = "android_home_atf_refactoring";
 
     public static final String HOME_HPB_CACHE_EXPIRY = "android_home_hpb_cache_expiry";
+
+    public static final String ANDROID_ENABLE_GENERATE_WIDEVINE_ID = "android_enable_generate_widevine_id";
+    public static final String ANDROID_ENABLE_GENERATE_WIDEVINE_ID_SUSPEND = "android_enable_generate_widevine_id_suspend";
 }
