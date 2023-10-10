@@ -75,6 +75,7 @@ const val GET_SOM_INCOME_DETAIL_QUERY = """
               value
             }
             data {
+              type:__typename
               ... on SOMIncomeDetailAttributeIconData {
                 icon_url
                 icon_url_dark

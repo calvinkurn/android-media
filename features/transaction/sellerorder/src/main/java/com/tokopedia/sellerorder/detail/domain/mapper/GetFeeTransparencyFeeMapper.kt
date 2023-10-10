@@ -53,7 +53,8 @@ class GetFeeTransparencyFeeMapper @Inject constructor() {
         sections?.forEachIndexed { index, section ->
             includeSectionHeader(
                 section = section,
-                isFirstHeader = index == Int.ZERO
+                isFirstHeader = index == Int.ZERO,
+                hasComponents = !section?.components.isNullOrEmpty()
             )
             includeSectionItems(section?.components)
         }
@@ -61,7 +62,8 @@ class GetFeeTransparencyFeeMapper @Inject constructor() {
 
     private fun MutableList<BaseTransparencyFee>.includeSectionHeader(
         section: SomDetailIncomeDetailResponse.GetSomIncomeDetail.Section?,
-        isFirstHeader: Boolean
+        isFirstHeader: Boolean,
+        hasComponents: Boolean
     ) {
         add(
             TransparencyFeeHeaderUiModel(
@@ -70,7 +72,8 @@ class GetFeeTransparencyFeeMapper @Inject constructor() {
                     headerLabel = "${section?.label.orEmpty()} ${section?.subLabel.orEmpty()}",
                     attributes = section?.attributes
                 ),
-                isFirstHeader = isFirstHeader
+                isFirstHeader = isFirstHeader,
+                hasComponents = hasComponents
             )
         )
     }

@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.databinding.ItemHeaderIncomeDetailSectionBinding
 import com.tokopedia.sellerorder.detail.presentation.adapter.factory.DetailTransparencyFeeAdapterFactoryImpl
@@ -37,6 +38,7 @@ class TransparencyFeeHeaderViewHolder(
     override fun bind(element: TransparencyFeeHeaderUiModel) {
         setupValue(element.value)
         setupPadding(element)
+        setupDivider(element.hasComponents)
         setAttributes(element.attributes)
     }
 
@@ -48,6 +50,10 @@ class TransparencyFeeHeaderViewHolder(
         binding.root.updatePadding(
             top = if (element.isFirstHeader) Int.ZERO else PADDING_VERTICAL.toPx()
         )
+    }
+
+    private fun setupDivider(hasComponents: Boolean) {
+        binding.dividerTransparencyFeeHeader.showWithCondition(!hasComponents)
     }
 
     private fun setAttributes(attributes: List<BaseTransparencyFeeAttributes>) {
