@@ -38,7 +38,8 @@
 
     <string name="shop_info_go_apotik_sia_number_title">Nomor SIA:</string>
     <string name="shop_info_go_apotik_sipa_number_title">Nomor SIPA:</string>
-    <string name="shop_info_go_apotik_apj_title">APJ:</string>
+    <string name="shop_info_go_apotik_apj_title">Apotek Jaga:</string>
+    <string name="shop_info_go_apotik_open_hours">Jadwal Praktek Apoteker:</string>
 
     <string name="shop_info_label_statistic">Statistik Toko</string>
     <string name="shop_info_label_satisfied">Kepuasan Toko</string>
@@ -81,6 +82,8 @@
     <string name="shop_product_empty_title_etalase_desc">Tidak ada produk di etalase ini</string>
     <string name="shop_product_empty_title_desc">Tidak ada produk di toko ini</string>
     <string name="shop_page_label_description">Deskripsi Toko</string>
+    <string name="shop_page_label_nearest_pickup">Lokasi Pickup Terdekat</string>
+    <string name="shop_page_label_see_location">Lihat Lokasi</string>
     <string name="shop_info_label_manage_note">Atur</string>
     <string name="shop_note_title">Catatan Toko</string>
     <string name="shop_info_label_process_time">Waktu Proses</string>

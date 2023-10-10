@@ -10,7 +10,7 @@
     android:paddingTop="24dp"
     android:orientation="vertical">
 
-    <androidx.appcompat.widget.LinearLayoutCompat
+    <LinearLayout
         android:id="@+id/shopInfoTitleContainer"
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -34,7 +34,7 @@
             tools:text="Apotek Berlisensi"
             tools:visibility="visible" />
 
-    </androidx.appcompat.widget.LinearLayoutCompat>
+    </LinearLayout>
     
     <com.tokopedia.unifyprinciples.Typography
         android:layout_marginTop="11dp"
@@ -44,69 +44,6 @@
         android:textColor="@color/Unify_NN950_68"
         android:id="@+id/shopInfoDescription"
         tools:text="@string/text_shop_no_product_description_seller"/>
-
-    <LinearLayout
-        android:id="@+id/go_apotik_info_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:visibility="gone"
-        android:orientation="vertical">
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_sia_title"
-            app:typographyType="body_2"
-            app:typographyWeight="bold"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/Unify_NN600"
-            android:text="@string/shop_info_go_apotik_sia_number_title" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_sia_description"
-            app:typographyType="body_2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/Unify_NN600"
-            tools:text="440/02/SIA-35.79/2017/1.003" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_sipa_title"
-            android:layout_marginTop="16dp"
-            app:typographyType="body_2"
-            app:typographyWeight="bold"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/Unify_NN600"
-            android:text="@string/shop_info_go_apotik_sipa_number_title" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_sipa_description"
-            app:typographyType="body_2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/Unify_NN600"
-            tools:text="19741110/SIPA-35.79/2017/1.003" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_apj_title"
-            android:layout_marginTop="16dp"
-            app:typographyType="body_2"
-            app:typographyWeight="bold"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/Unify_NN600"
-            android:text="@string/shop_info_go_apotik_apj_title" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_apj_description"
-            app:typographyType="body_2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/Unify_NN600"
-            tools:text="Hariyadi S.Si.,Apt" />
-
-    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -163,7 +100,137 @@
         android:layout_height="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
+        android:visibility="gone" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="19dp"
+        android:layout_marginBottom="19dp"
+        android:background="@color/Unify_NN50" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/shopGoApotikContainer"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <com.tokopedia.unifyprinciples.Typography
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:typographyType="body_1"
+            android:textColor="@color/Unify_NN950"
+            android:text="@string/shop_page_label_nearest_pickup" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_GN500"
+            android:text="@string/shop_page_label_see_location" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_marginTop="12dp"
+        app:typographyType="body_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_NN950_68"
+        android:id="@+id/shopInfoNearestPickupLocation"
+        tools:text="Epicentrum Walk, Jl. H. R. Rasuna Said, Karet Kuningan, Setiabudi, Jakarta Selatan, Setiabudi 12940"/>
+
+    <LinearLayout
+        android:id="@+id/go_apotik_info_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
         android:visibility="gone"
-        tools:visibility="visible" />
+        tools:visibility="visible"
+        android:orientation="vertical">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_apj_title"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_NN600"
+            tools:visibility="visible"
+            android:text="@string/shop_info_go_apotik_apj_title" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_apj_description"
+            app:typographyType="body_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_NN600"
+            tools:visibility="visible"
+            tools:text="Hariyadi S.Si.,Apt" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_sia_title"
+            android:layout_marginTop="12dp"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_NN600"
+            tools:visibility="visible"
+            android:text="@string/shop_info_go_apotik_sia_number_title" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_sia_description"
+            app:typographyType="body_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_NN600"
+            tools:visibility="visible"
+            tools:text="440/02/SIA-35.79/2017/1.003" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_sipa_title"
+            android:layout_marginTop="12dp"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_NN600"
+            tools:visibility="visible"
+            android:text="@string/shop_info_go_apotik_sipa_number_title" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_sipa_description"
+            app:typographyType="body_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_NN600"
+            tools:visibility="visible"
+            tools:text="19741110/SIPA-35.79/2017/1.003" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_open_hours_title"
+            android:layout_marginTop="12dp"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_NN600"
+            tools:visibility="visible"
+            android:text="@string/shop_info_go_apotik_open_hours" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_open_hours_description"
+            app:typographyType="body_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_NN600"
+            android:maxLines="7"
+            tools:visibility="visible"
+            tools:text="Senin - Jumat: 09:00 - 18:00" />
+        
+    </LinearLayout>
+
 
 </LinearLayout>
