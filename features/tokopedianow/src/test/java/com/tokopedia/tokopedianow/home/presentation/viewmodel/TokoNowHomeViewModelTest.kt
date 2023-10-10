@@ -19,7 +19,6 @@ import com.tokopedia.play.widget.domain.PlayWidgetUseCase.WidgetType.TokoNowSmal
 import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.play.widget.ui.model.PlayWidgetBannerUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
-import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
@@ -1199,61 +1198,6 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
             )
         )
         val actual = viewModel.getRepurchaseProducts()
-
-        verifyGetHomeLayoutDataUseCaseCalled()
-        verifyGetRepurchaseWidgetUseCaseCalled()
-        assertEquals(expected, actual)
-    }
-
-    @Test
-    fun `given homeLayoutItemList contains old repurchase when getRepurchaseWidgetProducts should product list`() {
-        val channelId = "1001"
-        val productId = "1"
-
-        val homeLayoutResponse = listOf(
-            HomeLayoutResponse(
-                id = "1001",
-                layout = "recent_purchase_tokonow",
-                header = Header(
-                    name = "Kamu pernah beli",
-                    serverTimeUnix = 0
-                )
-            )
-        )
-        val repurchaseProduct = RepurchaseProduct(
-            id = productId,
-            stock = 5,
-            maxOrder = 4,
-            minOrder = 3
-        )
-        val repurchaseResponse = RepurchaseData(
-            title = "Kamu pernah beli",
-            products = listOf(repurchaseProduct)
-        )
-
-        onGetHomeLayoutData_thenReturn(homeLayoutResponse)
-        onGetRepurchaseWidget_thenReturn(repurchaseResponse)
-
-        viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
-        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-        viewModel.onScroll(2, LocalCacheModel(), listOf())
-
-        val expected = listOf(
-            createHomeProductCardUiModel(
-                channelId = channelId,
-                productId = productId,
-                quantity = 0,
-                stock = 5,
-                product = ProductCardModel(
-                    hasAddToCartButton = true,
-                    nonVariant = ProductCardModel.NonVariant(minQuantity = 3, maxQuantity = 4)
-                ),
-                position = 1,
-                headerName = "Kamu pernah beli"
-            )
-        )
-
-        val actual = getOldRepurchaseProduct()
 
         verifyGetHomeLayoutDataUseCaseCalled()
         verifyGetRepurchaseWidgetUseCaseCalled()

@@ -817,7 +817,6 @@ class TokoNowHomeViewModel @Inject constructor(
         when (item) {
             is TokoNowCategoryMenuUiModel -> getCategoryMenuDataAsync(addressData).await()
             is TokoNowRepurchaseUiModel -> getRepurchaseDataAsync(item, addressData).await()
-            is com.tokopedia.tokopedianow.common.model.oldrepurchase.TokoNowRepurchaseUiModel -> getRepurchaseDataAsync(item, addressData).await()
             is TokoNowBundleUiModel -> getProductBundleRecomAsync(item).await()
             else -> removeUnsupportedLayout(item)
         }
@@ -825,23 +824,6 @@ class TokoNowHomeViewModel @Inject constructor(
 
     private suspend fun getRepurchaseDataAsync(
         item: TokoNowRepurchaseUiModel,
-        addressData: LocalCacheModel
-    ): Deferred<Unit?> {
-        return asyncCatchError(block = {
-            val warehouses = AddressMapper.mapToWarehousesData(addressData)
-            val response = getRepurchaseWidgetUseCase.execute(warehouses)
-            if (response.products.isNotEmpty()) {
-                homeLayoutItemList.mapProductPurchaseData(item, response, miniCartData)
-            } else {
-                homeLayoutItemList.removeItem(item.id)
-            }
-        }) {
-            homeLayoutItemList.removeItem(item.id)
-        }
-    }
-
-    private suspend fun getRepurchaseDataAsync(
-        item: com.tokopedia.tokopedianow.common.model.oldrepurchase.TokoNowRepurchaseUiModel,
         addressData: LocalCacheModel
     ): Deferred<Unit?> {
         return asyncCatchError(block = {
@@ -1209,7 +1191,6 @@ class TokoNowHomeViewModel @Inject constructor(
         when (type) {
             REPURCHASE_PRODUCT -> {
                 trackRepurchaseAddToCart(productId, quantity, cartId)
-                trackOldRepurchaseAddToCart(productId, quantity, cartId)
             }
             PRODUCT_RECOM -> trackRecentProductRecomAddToCart(productId, quantity, cartId)
             MIX_LEFT_CAROUSEL_ATC -> trackLeftCarouselAddToCart(productId, quantity, cartId)
@@ -1242,19 +1223,6 @@ class TokoNowHomeViewModel @Inject constructor(
         val homeItem = homeLayoutItemList.filterNotNull()
             .firstOrNull { it.layout is TokoNowRepurchaseUiModel }
         val repurchase = homeItem?.layout as? TokoNowRepurchaseUiModel
-        val productList = repurchase?.productList.orEmpty()
-        val product = productList.firstOrNull { it.productId == productId }
-
-        product?.let {
-            val data = HomeAddToCartTracker(product.position, quantity, cartId, it)
-            _homeAddToCartTracker.postValue(data)
-        }
-    }
-
-    private fun trackOldRepurchaseAddToCart(productId: String, quantity: Int, cartId: String) {
-        val homeItem = homeLayoutItemList.filterNotNull()
-            .firstOrNull { it.layout is com.tokopedia.tokopedianow.common.model.oldrepurchase.TokoNowRepurchaseUiModel }
-        val repurchase = homeItem?.layout as? com.tokopedia.tokopedianow.common.model.oldrepurchase.TokoNowRepurchaseUiModel
         val productList = repurchase?.productList.orEmpty()
         val product = productList.firstOrNull { it.productId == productId }
 
