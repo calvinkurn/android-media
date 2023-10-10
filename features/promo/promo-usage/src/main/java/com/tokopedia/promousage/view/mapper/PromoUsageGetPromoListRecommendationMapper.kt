@@ -205,10 +205,15 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
         recommendedPromoCodes: List<String>,
         selectedPromoCodes: List<String>
     ): PromoItem {
-        val secondaryCoupon: SecondaryCoupon? = if (!recommendedPromoCodes.contains(coupon.code)) {
-            coupon.secondaryCoupon.firstOrNull()
-        } else {
+        val currentPromoCodes = mutableListOf(coupon.code)
+        currentPromoCodes.addAll(coupon.secondaryCoupon.map { it.code })
+
+        val secondaryCoupon: SecondaryCoupon? = if (
+            coupon.isRecommended && !coupon.secondaryCoupon.any { it.isSelected }
+        ) {
             null
+        } else {
+            coupon.secondaryCoupon.firstOrNull()
         }
         val remainingPromoCount = couponSection.couponGroups
             .firstOrNull { it.id == coupon.groupId }?.count ?: 1
@@ -220,10 +225,6 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
                 )
         val isSelected = coupon.isSelected || secondaryCoupon?.isSelected ?: false
 
-        val currentPromoCodes = mutableListOf(coupon.code)
-        if (secondaryCoupon != null) {
-            currentPromoCodes.add(secondaryCoupon.code)
-        }
         val primaryClashingInfos =
             coupon.clashingInfos
                 .filter {
