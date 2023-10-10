@@ -18,6 +18,7 @@ data class CarouselMissionWidgetDataModel(
     val verticalPosition: Int,
     val cardPosition: Int,
     val animateOnPress: Int,
+    val isCache: Boolean,
 ) : Visitable<MissionWidgetTypeFactory>, HomeComponentCarouselDiffUtil, ImpressHolder() {
 
     override fun getId(): String {

@@ -15,6 +15,7 @@ import com.tokopedia.autocompletecomponent.R
 import com.tokopedia.autocompletecomponent.databinding.LayoutAutocompleteProductListItemBinding
 import com.tokopedia.autocompletecomponent.suggestion.BaseSuggestionDataView
 import com.tokopedia.autocompletecomponent.suggestion.SuggestionListener
+import com.tokopedia.autocompletecomponent.util.getBoldStyle
 import com.tokopedia.autocompletecomponent.util.safeSetSpan
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
@@ -109,7 +110,7 @@ class SuggestionProductLineViewHolder(
 
     private fun highlightTitleBeforeKeyword(highlightedTitle: SpannableString) {
         highlightedTitle.safeSetSpan(
-            StyleSpan(Typeface.BOLD),
+            getBoldStyle(itemView.context),
             0,
             searchQueryStartIndexInKeyword,
             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
@@ -124,7 +125,7 @@ class SuggestionProductLineViewHolder(
         val highlightAfterKeywordEndIndex = highlightedTitle.length
 
         highlightedTitle.safeSetSpan(
-            StyleSpan(Typeface.BOLD),
+            getBoldStyle(itemView.context),
             highlightAfterKeywordStartIndex,
             highlightAfterKeywordEndIndex,
             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE

@@ -8,10 +8,10 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.customview.ProductCardCompactCarouselView.ProductCardCompactCarouselListener
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowAdsCarouselUiModel
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.listener.ProductAdsCarouselListener
+import com.tokopedia.tokopedianow.common.model.TokoNowAdsCarouselUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowProductAdsCarouselBinding
 import com.tokopedia.utils.view.binding.viewBinding
@@ -42,7 +42,7 @@ class TokoNowAdsCarouselViewHolder(
     }
 
     override fun bind(uiModel: TokoNowAdsCarouselUiModel, payloads: MutableList<Any>) {
-        if(payloads.firstOrNull() == true) {
+        if (payloads.firstOrNull() == true) {
             binding?.productCardCarousel?.bindItems(uiModel.items)
         }
     }
@@ -64,7 +64,7 @@ class TokoNowAdsCarouselViewHolder(
     }
 
     private fun createProductCardListener(title: String): ProductCardCompactCarouselListener {
-        return object: ProductCardCompactCarouselListener {
+        return object : ProductCardCompactCarouselListener {
             override fun onProductCardClicked(
                 position: Int,
                 product: ProductCardCompactCarouselItemUiModel

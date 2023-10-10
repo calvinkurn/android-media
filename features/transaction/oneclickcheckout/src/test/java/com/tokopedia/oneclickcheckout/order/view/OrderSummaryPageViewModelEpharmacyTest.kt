@@ -27,7 +27,7 @@ class OrderSummaryPageViewModelEpharmacyTest : BaseOrderSummaryPageViewModelTest
     fun `Get Occ Cart Success With Hide Upload Prescription Widget`() {
         // Given
         val response = helper.orderData
-        every { getOccCartUseCase.createRequestParams(any(), any(), any()) } returns emptyMap()
+        every { getOccCartUseCase.createRequestParams(any(), any(), any(), any()) } returns emptyMap()
         coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
         coEvery {
             getPrescriptionIdsUseCase.setParams(any()).executeOnBackground()
@@ -54,7 +54,7 @@ class OrderSummaryPageViewModelEpharmacyTest : BaseOrderSummaryPageViewModelTest
     fun `Get Occ Cart Success With Render Upload Prescription Widget not yet upload prescriptions`() {
         // Given
         val response = helper.orderData.copy(imageUpload = helper.imageUploadDataModel)
-        every { getOccCartUseCase.createRequestParams(any(), any(), any()) } returns emptyMap()
+        every { getOccCartUseCase.createRequestParams(any(), any(), any(), any()) } returns emptyMap()
         coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
         coEvery {
             getPrescriptionIdsUseCase.setParams(any(), any()).executeOnBackground()
@@ -80,7 +80,7 @@ class OrderSummaryPageViewModelEpharmacyTest : BaseOrderSummaryPageViewModelTest
     fun `Get Occ Cart Success With Render Upload Prescription Widget with uploaded prescriptions`() {
         // Given
         val response = helper.orderData.copy(imageUpload = helper.imageUploadDataModel)
-        every { getOccCartUseCase.createRequestParams(any(), any(), any()) } returns emptyMap()
+        every { getOccCartUseCase.createRequestParams(any(), any(), any(), any()) } returns emptyMap()
         coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
         coEvery {
             getPrescriptionIdsUseCase.setParams(any(), any()).executeOnBackground()
@@ -110,7 +110,7 @@ class OrderSummaryPageViewModelEpharmacyTest : BaseOrderSummaryPageViewModelTest
     fun `Get Occ Cart Success With Render Upload Prescription Widget not yet upload prescription then get one prescription id from epharmacy`() {
         // Given
         val response = helper.orderData.copy(imageUpload = helper.imageUploadDataModel)
-        every { getOccCartUseCase.createRequestParams(any(), any(), any()) } returns emptyMap()
+        every { getOccCartUseCase.createRequestParams(any(), any(), any(), any()) } returns emptyMap()
         coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
         coEvery {
             getPrescriptionIdsUseCase.setParams(any(), any()).executeOnBackground()
@@ -169,7 +169,7 @@ class OrderSummaryPageViewModelEpharmacyTest : BaseOrderSummaryPageViewModelTest
     fun `continue to payment without upload prescription but no front end validation`() {
         // Given
         val response = helper.orderData.copy(imageUpload = helper.imageUploadDataModel)
-        every { getOccCartUseCase.createRequestParams(any(), any(), any()) } returns emptyMap()
+        every { getOccCartUseCase.createRequestParams(any(), any(), any(), any()) } returns emptyMap()
         coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderProfile.value = helper.preference
