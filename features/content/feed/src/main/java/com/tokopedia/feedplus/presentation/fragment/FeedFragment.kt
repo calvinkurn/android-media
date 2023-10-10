@@ -92,6 +92,7 @@ import com.tokopedia.feedplus.presentation.util.VideoPlayerManager
 import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
 import com.tokopedia.feedplus.presentation.viewmodel.FeedPostViewModel
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
@@ -119,6 +120,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import com.tokopedia.content.common.R as contentcommonR
@@ -400,7 +402,7 @@ class FeedFragment :
             )
         }
 
-        override fun isMuted(): Boolean = FeedContentManager.muteState.value
+        override fun isMuted(): Boolean = FeedContentManager.muteState.value.orFalse()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -425,11 +427,13 @@ class FeedFragment :
                             setDataEligibleForOnboarding()
                         }
                     }
+
                     Lifecycle.Event.ON_PAUSE -> {
                         pauseCurrentVideo()
 
                         feedFollowRecommendationAnalytics.sendAll()
                     }
+
                     else -> {}
                 }
             }
@@ -538,6 +542,7 @@ class FeedFragment :
             }
         }
     }
+
     override fun onProfileClicked(appLink: String, type: AuthorType) {
         goToProfilePage(appLink, type.isShop)
     }
@@ -683,8 +688,10 @@ class FeedFragment :
         return when (item) {
             is FeedCardVideoContentModel -> videoPlayerManager.getPlayerById(item.id)
                 ?.getExoPlayer()?.currentPosition.orZero()
+
             is FeedCardLivePreviewContentModel -> videoPlayerManager.getPlayerById(item.id)
                 ?.getExoPlayer()?.currentPosition.orZero()
+
             else -> 0
         }
     }
@@ -1044,7 +1051,7 @@ class FeedFragment :
         feedFollowersOnlyBottomSheet?.dismiss()
     }
 
-    override fun isMuted(): Boolean = FeedContentManager.muteState.value
+    override fun isMuted(): Boolean = FeedContentManager.muteState.value.orFalse()
 
     private fun onAttachChildFragment(fragmentManager: FragmentManager, childFragment: Fragment) {
         when (childFragment) {
@@ -1063,6 +1070,7 @@ class FeedFragment :
                     )
                 )
             }
+
             is ContentReportBottomSheet -> {
                 childFragment.setListener(
                     object : ContentReportBottomSheet.Listener {
@@ -1089,6 +1097,7 @@ class FeedFragment :
                     }
                 )
             }
+
             is ContentSubmitReportBottomSheet -> childFragment.setListener(
                 object : ContentSubmitReportBottomSheet.Listener {
                     override fun onBackButtonListener() {
@@ -1119,6 +1128,7 @@ class FeedFragment :
                     }
                 }
             )
+
             is FeedTaggedProductBottomSheet -> {
                 childFragment.listener = this
                 childFragment.tracker = feedMvcAnalytics
@@ -1138,6 +1148,7 @@ class FeedFragment :
                         setFinalView()
                     }
                 }
+
                 is Fail -> {}
             }
         }
@@ -1155,6 +1166,7 @@ class FeedFragment :
                         type = Toaster.TYPE_NORMAL
                     )
                 }
+
                 is Fail -> {
                     val view = menuSheet?.view ?: return@observe
                     Toaster.build(
@@ -1177,6 +1189,7 @@ class FeedFragment :
                         Toaster.TYPE_NORMAL
                     )
                 }
+
                 is Fail -> {
                     showToast(
                         getString(feedplusR.string.toast_delete_post_failed),
@@ -1238,10 +1251,12 @@ class FeedFragment :
                     setDataEligibleForOnboarding()
                     hideLoading()
                 }
+
                 is Fail -> {
                     hideLoading()
                     adapter.showErrorNetwork()
                 }
+
                 else -> {}
             }
         }
@@ -1266,6 +1281,7 @@ class FeedFragment :
                         Toaster.TYPE_NORMAL
                     )
                 }
+
                 is Fail -> {
                     showToast(
                         getString(feedplusR.string.feed_message_failed_follow),
@@ -1285,6 +1301,7 @@ class FeedFragment :
                         Toaster.TYPE_NORMAL
                     )
                 }
+
                 is Fail -> {
                     showToast(
                         getString(feedplusR.string.feed_message_failed_unfollow),
@@ -1309,6 +1326,7 @@ class FeedFragment :
                     }
                     showToast(errorMessage, Toaster.TYPE_ERROR)
                 }
+
                 else -> {}
             }
         }
@@ -1343,6 +1361,7 @@ class FeedFragment :
                         goToCartPage()
                     }
                 )
+
                 is Fail -> productBottomSheet?.doShowToaster(
                     message = it.throwable.localizedMessage.orEmpty(),
                     type = Toaster.TYPE_ERROR
@@ -1376,6 +1395,7 @@ class FeedFragment :
                             if (event.tabKey != data?.key) return@collect
                             binding.rvFeedPost.smoothScrollToPosition(0)
                         }
+
                         else -> {}
                     }
 
@@ -1404,7 +1424,9 @@ class FeedFragment :
     private fun observeMuteUnmute() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                FeedContentManager.muteState.collect { isMuted ->
+                FeedContentManager.muteState.collectLatest { isMuted ->
+                    if (isMuted == null) return@collectLatest
+
                     updateCurrentVideoVolume(isMuted)
                 }
             }
@@ -1459,7 +1481,7 @@ class FeedFragment :
 
     private fun updateThreeDotsMenuItems(menuItems: List<ContentMenuItem>): List<ContentMenuItem> =
         menuItems.map {
-            val isMuted = FeedContentManager.muteState.value
+            val isMuted = FeedContentManager.muteState.value.orFalse()
 
             when (it.type) {
                 ContentMenuIdentifier.Mute, ContentMenuIdentifier.Unmute -> it.copy(
@@ -1467,6 +1489,7 @@ class FeedFragment :
                     type = if (isMuted) ContentMenuIdentifier.Unmute else ContentMenuIdentifier.Mute,
                     name = if (isMuted) feedplusR.string.feed_unmute_label else feedplusR.string.feed_mute_label
                 )
+
                 else -> it
             }
         }
@@ -1684,6 +1707,7 @@ class FeedFragment :
                     feedPostViewModel.addProductToCart(product)
                 }
             }
+
             !userSession.isLoggedIn -> {
                 if (product.showGlobalVariant) {
                     RouteManager.route(context, ApplinkConst.LOGIN)
@@ -1692,6 +1716,7 @@ class FeedFragment :
                     addToCartLoginResult.launch(RouteManager.getIntent(context, ApplinkConst.LOGIN))
                 }
             }
+
             else -> return
         }
     }
@@ -1763,12 +1788,13 @@ class FeedFragment :
         }
     }
 
-    private fun convertToSourceType (type: String) : ContentTaggedProductUiModel.SourceType  =
+    private fun convertToSourceType(type: String): ContentTaggedProductUiModel.SourceType =
         when (type) {
-        FeedXCard.TYPE_FEED_ASGC_RESTOCK, FeedXCard.TYPE_FEED_ASGC_NEW_PRODUCTS, FeedXCard.TYPE_FEED_ASGC_SHOP_DISCOUNT,
-        FeedXCard.TYPE_FEED_ASGC_SHOP_FLASH_SALE, FeedXCard.TYPE_FEED_ASGC_SPECIAL_RELEASE, TYPE_FEED_TOP_ADS -> ContentTaggedProductUiModel.SourceType.NonOrganic
-        else -> ContentTaggedProductUiModel.SourceType.Organic
-    }
+            FeedXCard.TYPE_FEED_ASGC_RESTOCK, FeedXCard.TYPE_FEED_ASGC_NEW_PRODUCTS, FeedXCard.TYPE_FEED_ASGC_SHOP_DISCOUNT,
+            FeedXCard.TYPE_FEED_ASGC_SHOP_FLASH_SALE, FeedXCard.TYPE_FEED_ASGC_SPECIAL_RELEASE, TYPE_FEED_TOP_ADS -> ContentTaggedProductUiModel.SourceType.NonOrganic
+
+            else -> ContentTaggedProductUiModel.SourceType.Organic
+        }
 
     private fun openVariantBottomSheet(product: ContentTaggedProductUiModel) {
         atcVariantViewModel.setAtcBottomSheetParams(
@@ -1797,7 +1823,10 @@ class FeedFragment :
         }
     }
 
-    override fun onBuyProductButtonClicked(product: ContentTaggedProductUiModel, itemPosition: Int) {
+    override fun onBuyProductButtonClicked(
+        product: ContentTaggedProductUiModel,
+        itemPosition: Int
+    ) {
         if (!checkForFollowerBottomSheet(
                 currentTrackerData?.activityId ?: "",
                 itemPosition,
@@ -1864,6 +1893,7 @@ class FeedFragment :
                         getString(feedplusR.string.feed_reminder_unset_success)
                     }
                 }
+
                 is Fail -> it.throwable.message
                 else -> ""
             }
@@ -1885,6 +1915,7 @@ class FeedFragment :
                         Toaster.TYPE_ERROR
                     )
                 }
+
                 else -> {}
             }
         }
@@ -2034,6 +2065,7 @@ class FeedFragment :
                     }
                     containerBottomAction.show()
                 }
+
                 currentItem.data is FeedCardImageContentModel -> {
                     val model = currentItem.data
                     tyBottomAction.text = getString(feedplusR.string.feed_bottom_action_share_label)
@@ -2047,6 +2079,7 @@ class FeedFragment :
                     }
                     containerBottomAction.show()
                 }
+
                 currentItem.data is FeedCardVideoContentModel && !currentItem.data.isTypeProductHighlight -> {
                     val model = currentItem.data
                     tyBottomAction.text =
@@ -2063,6 +2096,7 @@ class FeedFragment :
                     }
                     containerBottomAction.show()
                 }
+
                 currentItem.data is FeedCardVideoContentModel -> {
                     val model = currentItem.data
                     tyBottomAction.text = getString(feedplusR.string.feed_bottom_action_share_label)
@@ -2076,6 +2110,7 @@ class FeedFragment :
                     }
                     containerBottomAction.show()
                 }
+
                 else -> containerBottomAction.hide()
             }
         }

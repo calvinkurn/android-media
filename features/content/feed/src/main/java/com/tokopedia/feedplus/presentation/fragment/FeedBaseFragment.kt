@@ -321,43 +321,43 @@ class FeedBaseFragment :
         binding.vpFeedTabItemsContainer.adapter = adapter
         binding.vpFeedTabItemsContainer.reduceDragSensitivity(3)
         binding.vpFeedTabItemsContainer.registerOnPageChangeCallback(object :
-            OnPageChangeCallback() {
+                OnPageChangeCallback() {
 
-            var shouldSendSwipeTracker = false
+                var shouldSendSwipeTracker = false
 
-            override fun onPageScrolled(
-                position: Int,
-                positionOffset: Float,
-                positionOffsetPixels: Int
-            ) {
-                handleTabTransition(position)
-                if (!userSession.isLoggedIn &&
-                    activeTabSource.tabName == null // not coming from appLink
+                override fun onPageScrolled(
+                    position: Int,
+                    positionOffset: Float,
+                    positionOffsetPixels: Int
                 ) {
-                    if (position == TAB_SECOND_INDEX) {
-                        swipeFollowingLoginResult.launch(
-                            RouteManager.getIntent(context, ApplinkConst.LOGIN)
-                        )
+                    handleTabTransition(position)
+                    if (!userSession.isLoggedIn &&
+                        activeTabSource.tabName == null // not coming from appLink
+                    ) {
+                        if (position == TAB_SECOND_INDEX) {
+                            swipeFollowingLoginResult.launch(
+                                RouteManager.getIntent(context, ApplinkConst.LOGIN)
+                            )
+                        }
+                    }
+
+                    if (shouldSendSwipeTracker) {
+                        if (THRESHOLD_OFFSET_HALF > positionOffset) {
+                            feedNavigationAnalytics.eventSwipeFollowingTab()
+                        } else {
+                            feedNavigationAnalytics.eventSwipeForYouTab()
+                        }
+                        shouldSendSwipeTracker = false
                     }
                 }
 
-                if (shouldSendSwipeTracker) {
-                    if (THRESHOLD_OFFSET_HALF > positionOffset) {
-                        feedNavigationAnalytics.eventSwipeFollowingTab()
-                    } else {
-                        feedNavigationAnalytics.eventSwipeForYouTab()
-                    }
-                    shouldSendSwipeTracker = false
+                override fun onPageSelected(position: Int) {
                 }
-            }
 
-            override fun onPageSelected(position: Int) {
-            }
-
-            override fun onPageScrollStateChanged(state: Int) {
-                shouldSendSwipeTracker = state == ViewPager2.SCROLL_STATE_DRAGGING
-            }
-        })
+                override fun onPageScrollStateChanged(state: Int) {
+                    shouldSendSwipeTracker = state == ViewPager2.SCROLL_STATE_DRAGGING
+                }
+            })
 
         binding.viewVerticalSwipeOnboarding.setText(
             getString(R.string.feed_check_next_content)
@@ -553,6 +553,8 @@ class FeedBaseFragment :
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 FeedContentManager.muteState.collectLatest { isMuted ->
+                    if (isMuted == null) return@collectLatest
+
                     if (isMuted) {
                         binding.ivFeedMuteUnmute.setImageDrawable(muteAnimatedVector)
                         muteAnimatedVector?.start()
