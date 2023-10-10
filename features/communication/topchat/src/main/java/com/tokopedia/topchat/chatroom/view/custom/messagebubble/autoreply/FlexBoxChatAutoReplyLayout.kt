@@ -1,4 +1,4 @@
-package com.tokopedia.topchat.chatroom.view.custom
+package com.tokopedia.topchat.chatroom.view.custom.messagebubble.autoreply
 
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
@@ -12,10 +12,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
-import android.view.ViewStub
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
@@ -31,50 +31,37 @@ import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaMessageA
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatAutoReplyAdapter
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.topchat.chatroom.view.adapter.util.MessageOnTouchListener
-import com.tokopedia.topchat.chatroom.view.uimodel.autoreply.TopChatAutoReplyUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.autoreply.TopChatAutoReplyItemUiModel
 import com.tokopedia.topchat.databinding.TopchatChatroomAutoReplyListBinding
 import timber.log.Timber
 import kotlin.math.abs
 
 
-class FlexBoxChatLayout : ViewGroup {
+class FlexBoxChatAutoReplyLayout : ViewGroup {
 
-//    private val binding = TopchatChatroomPartialFlexboxChatBubbleBinding.inflate(
-//        LayoutInflater.from(context), this
-//    )
-
-    var listener: Listener? = null
-    var checkMark: ImageView? = null
-        private set
+    private var layoutInflater: LayoutInflater? = null
+    private var listener: Listener? = null
+    private var checkMark: ImageView? = null
     private var hourTime: TextView? = null
 
     /**
      * Direct child view
      */
-    var message: TextView? = null
-        private set
-    var status: LinearLayout? = null
-        private set
-    var info: TextView? = null
-        private set
-    var header: LinearLayout? = null
-        private set
-    var icon: IconUnify? = null
-        private set
+    private var message: TextView? = null
+    private var status: LinearLayout? = null
+    private var info: TextView? = null
+    private var header: LinearLayout? = null
+    private var icon: IconUnify? = null
 
-    private var autoReplyViewStub: ViewStub? = null
+    private var autoReplyConstraintLayout: ConstraintLayout? = null
     private var autoReplyBinding: TopchatChatroomAutoReplyListBinding? = null
-    private var isAutoReplyViewStubInflated = false
 
     /**
      * Header direct child
      */
-    var headerTitle: Typography? = null
-        private set
-    var headerCta: Typography? = null
-        private set
-    var headerDivider: View? = null
-        private set
+    private var headerTitle: Typography? = null
+    private var headerCta: Typography? = null
+    private var headerDivider: View? = null
 
     private var showCheckMark = DEFAULT_SHOW_CHECK_MARK
     private var useMaxWidth = DEFAULT_USE_MAX_WIDTH
@@ -108,8 +95,8 @@ class FlexBoxChatLayout : ViewGroup {
     interface Listener {
         fun changeAddress(attachment: HeaderCtaButtonAttachment)
         fun onClickReadMoreAutoReply(
-            welcomeMessage: TopChatAutoReplyUiModel,
-            list: List<TopChatAutoReplyUiModel>
+            welcomeMessage: TopChatAutoReplyItemUiModel,
+            list: List<TopChatAutoReplyItemUiModel>
         )
     }
 
@@ -146,19 +133,22 @@ class FlexBoxChatLayout : ViewGroup {
     }
 
     private fun initView(context: Context?, attrs: AttributeSet?) {
-        LayoutInflater.from(context).inflate(LAYOUT, this, true).also {
-            message = it.findViewById(R.id.tvMessage)
-            status = it.findViewById(R.id.llStatus)
-            checkMark = it.findViewById(R.id.ivCheckMark)
-            hourTime = it.findViewById(R.id.tvTime)
-            info = it.findViewById(R.id.txt_info)
-            header = it.findViewById(R.id.ll_msg_header)
-            icon = it.findViewById(R.id.iu_msg_icon)
-            headerTitle = it.findViewById(R.id.tp_header_title)
-            headerCta = it.findViewById(R.id.tp_header_cta)
-            headerDivider = it.findViewById(R.id.v_header_divider)
-
-            autoReplyViewStub = it.findViewById(R.id.topchat_chatroom_viewstub_auto_reply)
+        layoutInflater = LayoutInflater.from(context)
+        layoutInflater?.let { inflater ->
+            inflater.inflate(LAYOUT, this, true)?.also {
+                message = it.findViewById(R.id.tvMessage)
+                status = it.findViewById(R.id.llStatus)
+                checkMark = it.findViewById(R.id.ivCheckMark)
+                hourTime = it.findViewById(R.id.tvTime)
+                info = it.findViewById(R.id.txt_info)
+                header = it.findViewById(R.id.ll_msg_header)
+                icon = it.findViewById(R.id.iu_msg_icon)
+                headerTitle = it.findViewById(R.id.tp_header_title)
+                headerCta = it.findViewById(R.id.tp_header_cta)
+                headerDivider = it.findViewById(R.id.v_header_divider)
+                autoReplyConstraintLayout = it.findViewById(R.id.topchat_chatroom_cl_auto_reply)
+            }
+            autoReplyBinding = TopchatChatroomAutoReplyListBinding.inflate(inflater, this)
         }
         initCheckMarkVisibility()
     }
@@ -295,13 +285,13 @@ class FlexBoxChatLayout : ViewGroup {
     fun bindIcon(msg: MessageUiModel) {
         icon?.shouldShowWithAction(msg.isDeleted()) {
             val unifyIcon = getIconUnifyDrawable(
+                context,
+                IconUnify.BLOCK,
+                ContextCompat.getColor(
                     context,
-                    IconUnify.BLOCK,
-                    ContextCompat.getColor(
-                        context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_NN500
-                    )
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN500
                 )
+            )
             icon?.setImageDrawable(unifyIcon)
         }
     }
@@ -316,7 +306,7 @@ class FlexBoxChatLayout : ViewGroup {
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        if (message == null || status == null || info == null) {
+        if (message == null || status == null || info == null || autoReplyConstraintLayout == null) {
             super.onMeasure(widthMeasureSpec, heightMeasureSpec)
             return
         }
@@ -344,6 +334,9 @@ class FlexBoxChatLayout : ViewGroup {
         measureChildWithMargins(
             icon, widthMeasureSpec, 0, heightMeasureSpec, 0
         )
+        measureChildWithMargins(
+            autoReplyConstraintLayout, widthMeasureSpec, 0, heightMeasureSpec, 0
+        )
 
         /**
          * calculate each direct child width & height
@@ -363,6 +356,10 @@ class FlexBoxChatLayout : ViewGroup {
         // msg icon
         val iconWidth = getTotalVisibleWidth(icon)
         val iconHeight = getTotalVisibleHeight(icon)
+        // CL Auto Reply
+        val clAutoReplyWidth = getTotalVisibleWidth(autoReplyConstraintLayout)
+        val clAutoReplyHeight = getTotalVisibleHeight(autoReplyConstraintLayout)
+
 
         /**
          * Measure first row dimension
@@ -373,13 +370,19 @@ class FlexBoxChatLayout : ViewGroup {
         /**
          * Measure second row dimension
          */
-        val secondRowWidth = iconWidth + messageWidth + statusWidth
+        val secondRowWidth = maxOf(
+            iconWidth + messageWidth + statusWidth,
+            statusWidth + clAutoReplyWidth
+        )
         val secondRowWidthDiff = totalWidth - secondRowWidth
         if (secondRowWidthDiff < 0) {
             totalWidth += abs(secondRowWidthDiff)
         }
-        val secondRowHeight = maxOf(messageHeight, statusHeight, iconHeight)
-        totalHeight += secondRowHeight
+        val secondRowHeight = maxOf(
+            messageHeight, statusHeight, iconHeight
+        )
+        // Add secondRowHeight and clAutoReplyHeight, clAutoReplyHeight should be 0 when not visible
+        totalHeight += secondRowHeight + clAutoReplyHeight
         // check if icon and message is overlap
         val messageMaxWidth = maxAvailableWidth - iconWidth
         if (messageWidth > messageMaxWidth) {
@@ -490,6 +493,20 @@ class FlexBoxChatLayout : ViewGroup {
         topOffset = maxOf(bottomIcon, bottomMsg)
 
         /**
+         * Auto reply Layout
+         */
+        val leftAutoReply = paddingStart
+        val topAutoReply = bottomMsg + AUTO_REPLY_OFFSET
+        val rightAutoReply = paddingStart + getVisibleMeasuredWidth(autoReplyConstraintLayout)
+        val bottomAutoReply = topAutoReply + getVisibleMeasuredHeight(autoReplyConstraintLayout)
+        autoReplyConstraintLayout!!.layout(
+            leftAutoReply,
+            topAutoReply,
+            rightAutoReply,
+            bottomAutoReply
+        )
+
+        /**
          * Layout info
          */
         if (info!!.isVisible) {
@@ -598,24 +615,17 @@ class FlexBoxChatLayout : ViewGroup {
         val htmlMessage = MethodChecker.fromHtml(messageUiModel.message)
         setMessageTypeFace(messageUiModel)
         setMessage(htmlMessage)
+        autoReplyConstraintLayout?.hide()
     }
 
     private fun setAutoReplyMessageBody(messageUiModel: MessageUiModel) {
         try {
-            val listType = object : TypeToken<List<TopChatAutoReplyUiModel>>() {}.type
-            val result = Gson().fromJson<List<TopChatAutoReplyUiModel>>(
+            val listType = object : TypeToken<List<TopChatAutoReplyItemUiModel>>() {}.type
+            val result = Gson().fromJson<List<TopChatAutoReplyItemUiModel>>(
                 messageUiModel.message, listType
             )
-            if (!isAutoReplyViewStubInflated) {
-                isAutoReplyViewStubInflated = true
-                autoReplyViewStub?.setOnInflateListener { _, view ->
-                    autoReplyBinding = TopchatChatroomAutoReplyListBinding.bind(view)
-                    bindAutoReplyView(messageUiModel, result)
-                }
-                autoReplyViewStub?.inflate()
-            } else {
-                bindAutoReplyView(messageUiModel = messageUiModel, autoReplyList = result)
-            }
+            bindAutoReplyView(messageUiModel = messageUiModel, autoReplyList = result)
+            autoReplyConstraintLayout?.show()
         } catch (throwable: Throwable) {
             /**
              * If fail then the message is history message
@@ -629,7 +639,7 @@ class FlexBoxChatLayout : ViewGroup {
 
     private fun bindAutoReplyView(
         messageUiModel: MessageUiModel,
-        autoReplyList: List<TopChatAutoReplyUiModel>
+        autoReplyList: List<TopChatAutoReplyItemUiModel>
     ) {
         val welcomeMessage = autoReplyList.firstOrNull {
             it.getIcon() == null // Check only for welcome message
@@ -649,7 +659,7 @@ class FlexBoxChatLayout : ViewGroup {
     }
 
     private fun bindAutoReplyMessage(
-        welcomeMessage: TopChatAutoReplyUiModel?,
+        welcomeMessage: TopChatAutoReplyItemUiModel?,
         messageUiModel: MessageUiModel,
         shouldLimitWelcomeMessage: Boolean
     ) {
@@ -662,8 +672,8 @@ class FlexBoxChatLayout : ViewGroup {
     }
 
     private fun bindAutoReplyRecyclerView(
-        welcomeMessage: TopChatAutoReplyUiModel?,
-        autoReplyItemList: List<TopChatAutoReplyUiModel>
+        welcomeMessage: TopChatAutoReplyItemUiModel?,
+        autoReplyItemList: List<TopChatAutoReplyItemUiModel>
     ) {
         if (autoReplyItemList.isNotEmpty()) {
             val adapter = TopChatAutoReplyAdapter()
@@ -681,8 +691,8 @@ class FlexBoxChatLayout : ViewGroup {
     }
 
     private fun bindAutoReplyText(
-        welcomeMessage: TopChatAutoReplyUiModel?,
-        autoReplyItemList: List<TopChatAutoReplyUiModel>
+        welcomeMessage: TopChatAutoReplyItemUiModel?,
+        autoReplyItemList: List<TopChatAutoReplyItemUiModel>
     ) {
         autoReplyBinding?.topchatTvAutoReplyDesc?.setOnClickListener {
             welcomeMessage?.let {
@@ -692,10 +702,16 @@ class FlexBoxChatLayout : ViewGroup {
         autoReplyBinding?.topchatTvAutoReplyDesc?.show()
     }
 
+    fun setListener(listener: Listener) {
+        this.listener = listener
+    }
+
     companion object {
         const val DEFAULT_USE_MAX_WIDTH = false
         const val DEFAULT_SHOW_CHECK_MARK = true
         const val REPLY_WIDTH_OFFSET = 5
-        val LAYOUT = R.layout.topchat_chatroom_partial_flexbox_chat_bubble
+        const val AUTO_REPLY_OFFSET = 10
+        val LAYOUT = R.layout.topchat_chatroom_partial_flexbox_chat_bubble_auto_reply
     }
 }
+

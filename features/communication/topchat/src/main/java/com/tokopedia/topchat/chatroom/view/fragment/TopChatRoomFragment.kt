@@ -144,7 +144,7 @@ import com.tokopedia.topchat.chatroom.view.bottomsheet.TopchatBottomSheetBuilder
 import com.tokopedia.topchat.chatroom.view.custom.ChatMenuStickerView
 import com.tokopedia.topchat.chatroom.view.custom.ChatMenuView
 import com.tokopedia.topchat.chatroom.view.custom.ComposeMessageAreaConstraintLayout
-import com.tokopedia.topchat.chatroom.view.custom.FlexBoxChatLayout
+import com.tokopedia.topchat.chatroom.view.custom.messagebubble.FlexBoxChatLayout
 import com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
 import com.tokopedia.topchat.chatroom.view.custom.SrwFrameLayout
 import com.tokopedia.topchat.chatroom.view.custom.TransactionOrderProgressLayout
@@ -168,7 +168,7 @@ import com.tokopedia.topchat.chatroom.view.uimodel.ReviewUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.uimodel.SendableVoucherPreviewUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.TopchatProductAttachmentPreviewUiModel
-import com.tokopedia.topchat.chatroom.view.uimodel.autoreply.TopChatAutoReplyUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.autoreply.TopChatAutoReplyItemUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundlingUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatRoomWebSocketViewModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatViewModel
@@ -3512,8 +3512,8 @@ open class TopChatRoomFragment :
     }
 
     override fun onClickReadMoreAutoReply(
-        welcomeMessage: TopChatAutoReplyUiModel,
-        list: List<TopChatAutoReplyUiModel>
+        welcomeMessage: TopChatAutoReplyItemUiModel,
+        list: List<TopChatAutoReplyItemUiModel>
     ) {
         view?.hideKeyboard()
         TopChatAutoReplyDetailBottomSheet().show(

@@ -1,4 +1,4 @@
-package com.tokopedia.topchat.chatroom.view.custom
+package com.tokopedia.topchat.chatroom.view.custom.messagebubble
 
 import android.content.Context
 import android.util.AttributeSet
@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.LinearLayout
+import androidx.annotation.LayoutRes
 import com.tokopedia.chat_common.data.BaseChatUiModel
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.toPx
@@ -16,15 +17,18 @@ import kotlin.math.max
 import kotlin.math.min
 
 
-class MessageBubbleLayout : ViewGroup {
+class TopChatChatroomMessageBubbleLayout : ViewGroup {
 
     private var fxChat: FlexBoxChatLayout? = null
+    private var fxChatAutoReply: FlexBoxChatLayout? = null
     private var replyBubbleContainer: ReplyBubbleAreaMessage? = null
     private var showCheckMark = FlexBoxChatLayout.DEFAULT_SHOW_CHECK_MARK
     private var msgOrientation = DEFAULT_MSG_ORIENTATION
     private val radiusMargin = 20f.toPx().toInt()
 
     private var bodyMsgContainer: LinearLayout? = null
+
+    @LayoutRes private var layout = R.layout.topchat_chatroom_partial_chat_messsage_bubble
 
     constructor(context: Context) : super(context) {
         initConfig(context, null)
@@ -83,19 +87,27 @@ class MessageBubbleLayout : ViewGroup {
     private fun initAttrs(context: Context?, attrs: AttributeSet?) {
         context?.theme?.obtainStyledAttributes(
             attrs,
-            R.styleable.MessageBubbleConstraintLayout,
+            R.styleable.TopChatChatroomMessageBubbleLayout,
             0,
             0
         )?.apply {
             try {
                 showCheckMark = getBoolean(
-                    R.styleable.MessageBubbleConstraintLayout_showCheckMark,
+                    R.styleable.TopChatChatroomMessageBubbleLayout_showCheckMark,
                     FlexBoxChatLayout.DEFAULT_SHOW_CHECK_MARK
                 )
                 msgOrientation = getInteger(
-                    R.styleable.MessageBubbleConstraintLayout_messageOrientation,
+                    R.styleable.TopChatChatroomMessageBubbleLayout_messageOrientation,
                     DEFAULT_MSG_ORIENTATION
                 )
+                val layoutEnum = getInteger(
+                    R.styleable.TopChatChatroomMessageBubbleLayout_messageBubbleType,
+                    DEFAULT_MSG_BUBBLE
+                )
+                layout = when (layoutEnum) {
+                    MSG_BUBBLE_AUTO_REPLY ->  R.layout.topchat_chatroom_partial_chat_message_bubble_auto_reply
+                    else ->  R.layout.topchat_chatroom_partial_chat_messsage_bubble // default
+                }
             } finally {
                 recycle()
             }
@@ -103,11 +115,15 @@ class MessageBubbleLayout : ViewGroup {
     }
 
     private fun initViewLayout() {
-        View.inflate(context, LAYOUT, this)
+        View.inflate(context, layout, this)
     }
 
     private fun initViewBinding() {
-        fxChat = findViewById(R.id.fxChat)
+        if (layout == R.layout.topchat_chatroom_partial_chat_messsage_bubble) {
+            fxChat = findViewById(R.id.fxChat)
+        } else {
+            fxChatAutoReply = findViewById(R.id.fxChat)
+        }
         replyBubbleContainer = findViewById(R.id.cl_reply_container)
         bodyMsgContainer = findViewById(R.id.topchat_chatroom_ll_container_message_bubble)
     }
@@ -217,7 +233,7 @@ class MessageBubbleLayout : ViewGroup {
     }
 
     /**
-     * Per-child layout information associated with [MessageBubbleLayout].
+     * Per-child layout information associated with [TopChatChatroomMessageBubbleLayout].
      */
     class LayoutParams : MarginLayoutParams {
         constructor(c: Context?, attrs: AttributeSet?) : super(c, attrs)
@@ -227,10 +243,11 @@ class MessageBubbleLayout : ViewGroup {
     }
 
     companion object {
-        val LAYOUT = R.layout.topchat_chatroom_partial_chat_messsage_bubble
-
         const val LEFT_MSG_ORIENTATION = 0
         const val RIGHT_MSG_ORIENTATION = 1
         const val DEFAULT_MSG_ORIENTATION = LEFT_MSG_ORIENTATION
+
+        private const val DEFAULT_MSG_BUBBLE = 0
+        private const val MSG_BUBBLE_AUTO_REPLY = 1
     }
 }

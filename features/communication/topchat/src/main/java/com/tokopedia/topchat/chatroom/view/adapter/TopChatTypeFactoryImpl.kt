@@ -32,7 +32,8 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.product_bundling.P
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwBubbleViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.BannedChatMessageViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.ChatMessageUnifyViewHolder
-import com.tokopedia.topchat.chatroom.view.custom.FlexBoxChatLayout
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.autoreply.TopChatAutoReplyViewHolder
+import com.tokopedia.topchat.chatroom.view.custom.messagebubble.FlexBoxChatLayout
 import com.tokopedia.topchat.chatroom.view.custom.message.ReplyBubbleAreaMessage
 import com.tokopedia.topchat.chatroom.view.listener.DualAnnouncementListener
 import com.tokopedia.topchat.chatroom.view.listener.TopChatVoucherListener
@@ -181,6 +182,10 @@ open class TopChatTypeFactoryImpl constructor(
         return ProductBundlingCardViewHolder.LAYOUT_SINGLE
     }
 
+    override fun type(autoReplyMessageUiModel: AutoReplyMessageUiModel): Int {
+        return TopChatAutoReplyViewHolder.LAYOUT
+    }
+
     // Check if chat bubble first, if not return default ViewHolder
     override fun createViewHolder(
         parent: ViewGroup,
@@ -250,6 +255,10 @@ open class TopChatTypeFactoryImpl constructor(
             ProductBundlingCardViewHolder.LAYOUT_SINGLE -> ProductBundlingCardViewHolder(
                 parent, productBundlingListener, adapterListener,
                 searchListener, commonListener, deferredAttachment
+            )
+            TopChatAutoReplyViewHolder.LAYOUT -> TopChatAutoReplyViewHolder(
+                parent, chatLinkHandlerListener, commonListener, adapterListener,
+                chatMsgListener, replyBubbleListener
             )
             else -> createViewHolder(parent, type)
         }

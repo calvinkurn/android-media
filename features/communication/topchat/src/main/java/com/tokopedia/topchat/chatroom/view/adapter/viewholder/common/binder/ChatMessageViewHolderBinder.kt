@@ -14,7 +14,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.adapter.util.MessageOnTouchListener
-import com.tokopedia.topchat.chatroom.view.custom.FlexBoxChatLayout
+import com.tokopedia.topchat.chatroom.view.custom.messagebubble.FlexBoxChatLayout
 import com.tokopedia.topchat.common.util.ViewUtil
 
 object ChatMessageViewHolderBinder {

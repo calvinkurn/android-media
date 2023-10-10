@@ -9,6 +9,7 @@ import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_PRODUCT_BUND
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_REVIEW_REMINDER
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_STICKER
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_VOUCHER
+import com.tokopedia.chat_common.data.AutoReplyMessageUiModel
 import com.tokopedia.chat_common.data.BaseChatUiModel
 import com.tokopedia.chat_common.data.ImageAnnouncementUiModel
 import com.tokopedia.chat_common.data.MessageUiModel
@@ -58,7 +59,7 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
                     val nextItem = chatItemPojoByDate.replies.getOrNull(replyIndex + 1)
                     when {
                         chatDateTime.status == BaseChatUiModel.STATUS_DELETED -> {
-                            val textMessage = convertToMessageViewModel(chatDateTime)
+                            val textMessage = convertToMessageUiModel(chatDateTime)
                             listChat.add(textMessage)
                             replyIndex++
                         }
@@ -97,7 +98,7 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
                         }
                         // text message
                         else -> {
-                            val textMessage = convertToMessageViewModel(chatDateTime)
+                            val textMessage = convertToMessageUiModel(chatDateTime)
                             listChat.add(textMessage)
                             replyIndex++
                         }
@@ -108,13 +109,35 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
         return listChat
     }
 
-    override fun convertToMessageViewModel(chatItemPojoByDateByTime: Reply): Visitable<*> {
+    override fun convertToMessageUiModel(chatItemPojoByDateByTime: Reply): Visitable<*> {
+        return if (chatItemPojoByDateByTime.isAutoReply()) {
+            convertToAutoReplyUiModel(chatItemPojoByDateByTime)
+        } else {
+            convertToRegularMessageUiModel(chatItemPojoByDateByTime)
+        }
+    }
+
+    private fun convertToRegularMessageUiModel(chatItemPojoByDateByTime: Reply): Visitable<*> {
         val msg = MessageUiModel.Builder()
             .withResponseFromGQL(chatItemPojoByDateByTime)
         if (chatItemPojoByDateByTime.status == BaseChatUiModel.STATUS_DELETED) {
             msg.withMarkAsDeleted()
         }
         return msg.build()
+    }
+
+    /**
+     * Auto reply message has the same data structure from GQL but different view
+     * As the message itself is Array of JSON String, not regular string
+     * To save some resources (RV in each bubbles message is a waste), the separation is inevitable
+     */
+    private fun convertToAutoReplyUiModel(chatItemPojoByDateByTime: Reply): Visitable<*> {
+        val autoReplyMessage = AutoReplyMessageUiModel.Builder()
+            .withResponseFromGQL(chatItemPojoByDateByTime)
+        if (chatItemPojoByDateByTime.status == BaseChatUiModel.STATUS_DELETED) {
+            autoReplyMessage.withMarkAsDeleted()
+        }
+        return autoReplyMessage.build()
     }
 
     private fun createBroadCastUiModel(
@@ -146,7 +169,7 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
                 val messageItem = if (hasAttachment(reply)) {
                     mapAttachment(reply, attachmentIds)
                 } else {
-                    convertToMessageViewModel(reply)
+                    convertToMessageUiModel(reply)
                 }
                 broadcast[replyType] = messageItem
                 idx++

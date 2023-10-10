@@ -8,7 +8,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatAutoReplyAdapter
-import com.tokopedia.topchat.chatroom.view.uimodel.autoreply.TopChatAutoReplyUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.autoreply.TopChatAutoReplyItemUiModel
 import com.tokopedia.topchat.databinding.TopchatChatroomBottomsheetAutoReplyBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -17,8 +17,8 @@ class TopChatAutoReplyDetailBottomSheet: BottomSheetUnify() {
 
     private var binding by autoClearedNullable<TopchatChatroomBottomsheetAutoReplyBinding>()
     private val adapter = TopChatAutoReplyAdapter()
-    private var welcomeMessage = TopChatAutoReplyUiModel("", "", "")
-    private var list: List<TopChatAutoReplyUiModel> = listOf()
+    private var welcomeMessage = TopChatAutoReplyItemUiModel("", "", "")
+    private var list: List<TopChatAutoReplyItemUiModel> = listOf()
 
     init {
         clearContentPadding = true
@@ -55,8 +55,8 @@ class TopChatAutoReplyDetailBottomSheet: BottomSheetUnify() {
 
     fun show(
         fragmentManager: FragmentManager?,
-        welcomeMessage: TopChatAutoReplyUiModel,
-        list: List<TopChatAutoReplyUiModel>
+        welcomeMessage: TopChatAutoReplyItemUiModel,
+        list: List<TopChatAutoReplyItemUiModel>
     ) {
         this.welcomeMessage = welcomeMessage
         this.list = list

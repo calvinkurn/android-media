@@ -1,10 +1,10 @@
-package com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble
+package com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.autoreply
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.topchat.chatroom.view.uimodel.autoreply.TopChatAutoReplyUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.autoreply.TopChatAutoReplyItemUiModel
 import com.tokopedia.topchat.databinding.TopchatChatroomAutoReplyItemBinding
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -14,13 +14,13 @@ class TopChatAutoReplyItemViewHolder(
 
     private val binding: TopchatChatroomAutoReplyItemBinding? by viewBinding()
 
-    fun bind(uiModel: TopChatAutoReplyUiModel) {
+    fun bind(uiModel: TopChatAutoReplyItemUiModel) {
         bindIcon(uiModel)
         bindTitle(uiModel)
         bindMessage(uiModel)
     }
 
-    private fun bindIcon(uiModel: TopChatAutoReplyUiModel) {
+    private fun bindIcon(uiModel: TopChatAutoReplyItemUiModel) {
         val icon = uiModel.getIcon()
         if (icon != null) {
             binding?.topchatIconAutoReply?.setImage(icon)
@@ -30,11 +30,11 @@ class TopChatAutoReplyItemViewHolder(
         }
     }
 
-    private fun bindTitle(uiModel: TopChatAutoReplyUiModel) {
+    private fun bindTitle(uiModel: TopChatAutoReplyItemUiModel) {
         binding?.topchatTvAutoReplyTitle?.text = uiModel.title
     }
 
-    private fun bindMessage(uiModel: TopChatAutoReplyUiModel) {
+    private fun bindMessage(uiModel: TopChatAutoReplyItemUiModel) {
         binding?.topchatTvAutoReplyDesc?.text = uiModel.getMessage()
     }
 }

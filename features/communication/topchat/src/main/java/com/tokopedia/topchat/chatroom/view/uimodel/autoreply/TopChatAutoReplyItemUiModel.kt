@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import timber.log.Timber
 
-data class TopChatAutoReplyUiModel(
+data class TopChatAutoReplyItemUiModel(
     @SerializedName("type")
     val title: String,
 

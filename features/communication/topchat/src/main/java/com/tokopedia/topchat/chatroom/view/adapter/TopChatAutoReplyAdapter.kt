@@ -3,13 +3,13 @@ package com.tokopedia.topchat.chatroom.view.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.TopChatAutoReplyItemViewHolder
-import com.tokopedia.topchat.chatroom.view.uimodel.autoreply.TopChatAutoReplyUiModel
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.autoreply.TopChatAutoReplyItemViewHolder
+import com.tokopedia.topchat.chatroom.view.uimodel.autoreply.TopChatAutoReplyItemUiModel
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.adapter.util.TopChatAutoReplyDiffUtil
 
 class TopChatAutoReplyAdapter
-    : ListAdapter<TopChatAutoReplyUiModel, TopChatAutoReplyItemViewHolder>(
+    : ListAdapter<TopChatAutoReplyItemUiModel, TopChatAutoReplyItemViewHolder>(
     TopChatAutoReplyDiffUtil()
 ) {
 
@@ -29,7 +29,7 @@ class TopChatAutoReplyAdapter
         holder.bind(currentList[position])
     }
 
-    fun updateItem(list: List<TopChatAutoReplyUiModel>) {
+    fun updateItem(list: List<TopChatAutoReplyItemUiModel>) {
         this.submitList(list)
     }
 }

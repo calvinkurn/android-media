@@ -45,7 +45,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.sticker.StickerResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
 import com.tokopedia.topchat.chatroom.service.UploadImageChatService
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopchatProductAttachmentViewHolder
-import com.tokopedia.topchat.chatroom.view.custom.FlexBoxChatLayout
+import com.tokopedia.topchat.chatroom.view.custom.messagebubble.FlexBoxChatLayout
 import com.tokopedia.topchat.chatroom.view.fragment.TopChatRoomFragment
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatViewModel
 import com.tokopedia.topchat.chattemplate.domain.pojo.GetChatTemplateResponse

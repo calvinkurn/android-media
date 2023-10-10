@@ -62,6 +62,13 @@
         tools:text="@tools:sample/lorem/random"
         tools:maxLines="3"/>
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/topchat_chatroom_cl_auto_reply"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <include layout="@layout/topchat_chatroom_auto_reply_list"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <LinearLayout
         android:id="@+id/llStatus"
         android:layout_width="wrap_content"

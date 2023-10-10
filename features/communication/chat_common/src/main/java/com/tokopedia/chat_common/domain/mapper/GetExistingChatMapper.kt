@@ -80,18 +80,14 @@ open class GetExistingChatMapper @Inject constructor() {
 
     open fun mappingListChat(pojo: GetExistingChatPojo): ArrayList<Visitable<*>> {
         val listChat: ArrayList<Visitable<*>> = ArrayList()
-
         for (chatItemPojo in pojo.chatReplies.list) {
-            val date = chatItemPojo.date
             for (chatItemPojoByDate in chatItemPojo.chats) {
-                val time = chatItemPojoByDate.time
                 for (chatItemPojoByDateByTime in chatItemPojoByDate.replies) {
                     if (hasAttachment(chatItemPojoByDateByTime)) {
                         val attachmentIds = getAttachmentIds(pojo.chatReplies.attachmentIds)
                         listChat.add(mapAttachment(chatItemPojoByDateByTime, attachmentIds))
                     } else {
-                        listChat.add(convertToMessageViewModel(chatItemPojoByDateByTime)
-                        )
+                        listChat.add(convertToMessageUiModel(chatItemPojoByDateByTime))
                     }
                 }
             }
@@ -107,7 +103,7 @@ open class GetExistingChatMapper @Inject constructor() {
         }
     }
 
-    open fun convertToMessageViewModel(chatItemPojoByDateByTime: Reply): Visitable<*> {
+    open fun convertToMessageUiModel(chatItemPojoByDateByTime: Reply): Visitable<*> {
         return MessageUiModel.Builder()
             .withResponseFromGQL(chatItemPojoByDateByTime)
             .build()
@@ -152,10 +148,7 @@ open class GetExistingChatMapper @Inject constructor() {
     }
 
     private fun convertToFallBackModel(chatItemPojoByDateByTime: Reply): Visitable<*> {
-        var fallbackMessage = ""
-        chatItemPojoByDateByTime.attachment?.fallback?.let {
-            fallbackMessage = it.message
-        }
+        val fallbackMessage = chatItemPojoByDateByTime.attachment.fallback.message
         return FallbackAttachmentUiModel.Builder()
             .withResponseFromGQL(chatItemPojoByDateByTime)
             .withMsg(fallbackMessage)
@@ -229,6 +222,6 @@ open class GetExistingChatMapper @Inject constructor() {
     }
 
     open fun hasAttachment(pojo: Reply): Boolean {
-        return (pojo.attachment?.type != null && pojo.attachment.attributes.isNotBlank())
+        return pojo.attachment.attributes.isNotBlank()
     }
 }

@@ -30,7 +30,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.ProductBu
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.TopchatProductAttachmentListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.product_bundling.ProductBundlingCarouselViewHolder
 import com.tokopedia.topchat.chatroom.view.custom.BroadcastCampaignLabelView
-import com.tokopedia.topchat.chatroom.view.custom.FlexBoxChatLayout
+import com.tokopedia.topchat.chatroom.view.custom.messagebubble.FlexBoxChatLayout
 import com.tokopedia.topchat.chatroom.view.custom.ProductCarouselRecyclerView
 import com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
 import com.tokopedia.topchat.chatroom.view.custom.product_bundling.ProductBundlingCardAttachmentContainer

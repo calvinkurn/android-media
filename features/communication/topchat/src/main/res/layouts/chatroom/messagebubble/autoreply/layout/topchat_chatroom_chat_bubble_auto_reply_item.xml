@@ -2,12 +2,12 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/topchat_chatroom_fl_message_bubble"
+    android:id="@+id/topchat_chatroom_fl_message_bubble_auto_reply"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <com.tokopedia.topchat.chatroom.view.custom.messagebubble.TopChatChatroomBubbleContainerLayout
-        android:id="@+id/topchat_chatroom_bcl_message_bubble"
+        android:id="@+id/topchat_chatroom_bcl_message_bubble_auto_reply"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -17,9 +17,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginEnd="4dp"
-            android:paddingTop="2dp"
             android:gravity="end"
             android:orientation="horizontal"
+            android:paddingTop="2dp"
             android:visibility="gone"
             tools:ignore="RtlSymmetry"
             tools:visibility="visible">
@@ -29,7 +29,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/topchat_chatroom_ll_header_info_message_bubble"
+            android:id="@+id/topchat_chatroom_ll_header_info_message_bubble_auto_reply"
             android:layout_width="match_parent"
             android:layout_height="20dp"
             android:layout_marginStart="4dp"
@@ -40,15 +40,15 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/topchat_chatroom_ll_container_message_bubble"
+            android:id="@+id/topchat_chatroom_ll_container_message_bubble_auto_reply"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <com.tokopedia.topchat.chatroom.view.custom.messagebubble.TopChatChatroomMessageBubbleLayout
-                android:id="@+id/topchat_chatroom_message_bubble_layout"
+                android:id="@+id/topchat_chatroom_message_bubble_layout_auto_reply"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:messageBubbleType="regular"
+                app:messageBubbleType="auto_reply"
                 app:messageOrientation="LEFT"/>
 
         </LinearLayout>

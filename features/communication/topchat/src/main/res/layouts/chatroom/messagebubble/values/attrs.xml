@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="showCheckMark" format="boolean" />
+    <declare-styleable name="TopChatChatroomMessageBubbleLayout">
+        <attr name="showCheckMark"/>
+        <attr name="messageOrientation" format="enum">
+            <enum name="LEFT" value="0"/>
+            <enum name="RIGHT" value="1" />
+        </attr>
+        <attr name="messageBubbleType" format="enum">
+            <enum name="regular" value="0"/>
+            <enum name="auto_reply" value="1"/>
+        </attr>
+    </declare-styleable>
+    <declare-styleable name="FlexBoxChatLayout">
+        <attr name="showCheckMark"/>
+        <attr name="useMaxWidth" format="boolean" />
+    </declare-styleable>
+</resources>

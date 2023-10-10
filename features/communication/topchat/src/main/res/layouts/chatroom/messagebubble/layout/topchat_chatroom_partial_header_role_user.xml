@@ -20,8 +20,8 @@
         android:id="@+id/topchat_chatroom_iv_header_role_blue_dot"
         android:layout_width="6dp"
         android:layout_height="6dp"
-        android:layout_gravity="center_vertical"
         android:layout_marginStart="4dp"
+        android:layout_gravity="center_vertical"
         android:visibility="gone"
         app:srcCompat="@drawable/circle_blue_notification"
         tools:visibility="visible" />
@@ -32,13 +32,12 @@
         android:layout_height="match_parent"
         android:layout_marginStart="2dp"
         android:layout_marginEnd="2dp"
-        android:gravity="center_vertical"
-        android:text="●"
-        android:textColor="@color/Unify_NN950_96"
-        android:textStyle="normal"
-        android:visibility="gone"
         app:typographyType="body_3"
         app:typographyWeight="bold"
+        android:gravity="center_vertical"
+        android:textColor="@color/Unify_NN950_96"
+        android:text="●"
+        android:visibility="gone"
         tools:visibility="visible"
         tools:ignore="HardcodedText" />
 
@@ -46,10 +45,10 @@
         android:id="@+id/tvName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/Unify_NN950_68"
         android:visibility="gone"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
+        android:textColor="@color/Unify_NN950_68"
         tools:text="Admin"
         tools:visibility="visible" />
 
