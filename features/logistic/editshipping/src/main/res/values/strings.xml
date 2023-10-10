@@ -71,8 +71,5 @@
     <string name="whitelabel_sameday_title_coachmark">Pilih layanan Same Day 8 Jam di sini</string>
     <string name="whitelabel_sameday_description_coachmark">Opsi Same Day dengan kurir Gojek dan Grab, paket sampai ke pembeli maks. 8 jam.</string>
 
-    <string name="whitelabel_onboarding_title_coachmark">Pilih tipe kurir yang kamu inginkan</string>
-    <string name="whitelabel_onboarding_description_coachmark">Saat memilih kurir, kamu bisa lihat detail informasi untuk mengecek tipe kurir apa saja yang tersedia.</string>
-    <string name="img_courier_content_description">placeholder courier logo</string>
     <string name="dropoff_button_title">Cek Gerai Terdekat</string>
 </resources>
