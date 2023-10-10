@@ -133,8 +133,8 @@ class BlocksPerformanceTrace(
 
                     if (!ttilMeasured && TTILperformanceMonitoring != null && it >= FINISHED_LOADING_TTIL_BLOCKS_THRESHOLD) {
                         measureTTIL(performanceBlocks)
+                        endAsyncSystraceSection("PageLoadTime.AsyncTTIL$traceName", COOKIE_TTIL)
                         scope.launch(Dispatchers.Main) {
-                            endAsyncSystraceSection("PageLoadTime.AsyncTTIL$traceName", COOKIE_TTIL)
                             putFullyDrawnTrace(traceName)
                         }
                     }
