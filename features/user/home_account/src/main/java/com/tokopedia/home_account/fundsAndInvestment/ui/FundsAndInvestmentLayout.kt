@@ -34,6 +34,7 @@ import com.tokopedia.nest.principles.ui.NestTheme
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun FundsAndInvestmentLayout(
+    userId: String,
     uiState: LiveData<FundsAndInvestmentResult>,
     onItemClicked: (WalletUiModel) -> Unit,
     onBackClicked: () -> Unit,
@@ -75,6 +76,7 @@ fun FundsAndInvestmentLayout(
                                 is FundsAndInvestmentResult.Recomposition -> {
                                     Spacer(modifier = Modifier.height(8.dp))
                                     FundsAndInvestmentSection(
+                                        userId = userId,
                                         title = LocalContext.current.getString(R.string.funds_and_investment_balance_and_points),
                                         list = state.listVertical
                                     ) {
@@ -83,6 +85,7 @@ fun FundsAndInvestmentLayout(
 
                                     Spacer(modifier = Modifier.height(16.dp))
                                     FundsAndInvestmentSection(
+                                        userId = userId,
                                         title = LocalContext.current.getString(R.string.funds_and_investment_try_another),
                                         list = state.listHorizontal,
                                         textStyle = NestTheme.typography.heading3.copy(
@@ -118,6 +121,7 @@ fun FundsAndInvestmentLayout(
 @Composable
 fun FundsAndInvestmentLayoutLoadingPreview() {
     FundsAndInvestmentLayout(
+        userId = "12345",
         uiState = MutableLiveData(FundsAndInvestmentResult.Loading(true)),
         onItemClicked = {},
         onBackClicked = {},
@@ -129,6 +133,7 @@ fun FundsAndInvestmentLayoutLoadingPreview() {
 @Composable
 fun FundsAndInvestmentLayoutSuccessPreview() {
     FundsAndInvestmentLayout(
+        userId = "12345",
         uiState = MutableLiveData(
             FundsAndInvestmentResult.Recomposition(
                 listVertical = listOf(
@@ -166,6 +171,7 @@ fun FundsAndInvestmentLayoutSuccessPreview() {
 @Composable
 fun FundsAndInvestmentLayoutFailedPreview() {
     FundsAndInvestmentLayout(
+        userId = "12345",
         uiState = MutableLiveData(FundsAndInvestmentResult.Failed(Throwable())),
         onItemClicked = {},
         onBackClicked = {},

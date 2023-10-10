@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -18,7 +19,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.R
+import com.tokopedia.home_account.analytics.TokopediaCardAnalytics
 import com.tokopedia.home_account.view.adapter.uimodel.WalletUiModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.compose.NestIcon
@@ -31,9 +34,19 @@ import com.tokopedia.nest.principles.utils.ImageSource
 
 @Composable
 fun ItemList(
+    userId: String,
     item: WalletUiModel,
     onItemClicked: (WalletUiModel) -> Unit
 ) {
+    SideEffect {
+        if (!item.isFailed && item.id == AccountConstants.WALLET.CO_BRAND_CC) {
+            TokopediaCardAnalytics.sendViewLihatSemuaPagePyEvent(
+                eventLabel = item.statusName,
+                userId = userId
+            )
+        }
+    }
+
     Column {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -167,7 +180,7 @@ private fun Subtitle(
 fun ListItemPreview() {
     NestTheme {
         ItemList(
-            WalletUiModel(
+            item = WalletUiModel(
                 id = "1",
                 title = "Test Title 1",
                 subtitle = "Test Subtitle 1",
@@ -175,7 +188,8 @@ fun ListItemPreview() {
                 isActive = true,
                 isVertical = true,
                 hideTitle = false
-            )
+            ),
+            userId = "12345"
         ) {
 
         }

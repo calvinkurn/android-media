@@ -9,15 +9,24 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.home_account.AccountConstants
+import com.tokopedia.home_account.analytics.HomeAccountAnalytics
+import com.tokopedia.home_account.analytics.TokopediaCardAnalytics
 import com.tokopedia.home_account.di.HomeAccountUserComponents
 import com.tokopedia.home_account.fundsAndInvestment.ui.FundsAndInvestmentLayout
 import com.tokopedia.home_account.view.adapter.uimodel.WalletUiModel
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class FundsAndInvestmentComposeFragment: BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModel: FundsAndInvestmentComposeViewModel
+
+    @Inject
+    lateinit var homeAccountAnalytic: HomeAccountAnalytics
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -28,6 +37,7 @@ class FundsAndInvestmentComposeFragment: BaseDaggerFragment() {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 FundsAndInvestmentLayout(
+                    userId = userSession.userId,
                     uiState = viewModel.uiState,
                     onItemClicked = {
                         onItemClicked(it)
@@ -43,7 +53,26 @@ class FundsAndInvestmentComposeFragment: BaseDaggerFragment() {
         }
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        homeAccountAnalytic.trackScreen(screenName)
+        homeAccountAnalytic.eventViewAssetPage()
+    }
+
     private fun onItemClicked(item: WalletUiModel) {
+        if (item.id == AccountConstants.WALLET.CO_BRAND_CC) {
+            TokopediaCardAnalytics.sendClickPaymentWidgetOnLihatSemuaPagePyEvent(
+                eventLabel = item.statusName,
+                userId = userSession.userId
+            )
+        }
+
+        homeAccountAnalytic.eventClickAssetPage(
+            item.id,
+            item.isActive,
+            item.isFailed
+        )
+
         if (item.isFailed) {
             viewModel.refreshItem(item)
         } else {

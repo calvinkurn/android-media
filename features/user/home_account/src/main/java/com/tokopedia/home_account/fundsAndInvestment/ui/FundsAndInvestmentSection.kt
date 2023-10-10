@@ -17,6 +17,7 @@ import com.tokopedia.nest.principles.ui.NestTheme
 
 @Composable
 fun FundsAndInvestmentSection(
+    userId: String,
     title: String,
     list: List<WalletUiModel>,
     textStyle: TextStyle = NestTheme.typography.heading2.copy(
@@ -37,7 +38,11 @@ fun FundsAndInvestmentSection(
                     if (item.isLoading) {
                         ItemShimmer()
                     } else {
-                        ItemList(item = item, onItemClicked = {onItemClicked(it)})
+                        ItemList(
+                            userId = userId,
+                            item = item,
+                            onItemClicked = {onItemClicked(it)}
+                        )
                     }
                 }
             }
@@ -50,6 +55,7 @@ fun FundsAndInvestmentSection(
 fun SectionPreview() {
     NestTheme {
         FundsAndInvestmentSection(
+            userId = "12345",
             title = "Saldo & Points",
             list = listOf(
                 WalletUiModel(
