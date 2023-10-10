@@ -642,9 +642,10 @@ class ShipmentMapper @Inject constructor() {
                     name = item.name
                     status = item.status
                     type = item.type
-                    qty = productQuantity
+                    qty = if (item.fixedQuantity) 1 else productQuantity
                     uniqueId = item.uniqueId
                     iconUrl = item.iconUrl
+                    fixedQty = item.fixedQuantity
                 }
             )
         }

@@ -14,6 +14,7 @@ import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
 import com.tokopedia.home.beranda.data.mapper.ReminderWidgetMapper
 import com.tokopedia.home.beranda.data.mapper.ShopFlashSaleMapper
 import com.tokopedia.home.beranda.data.model.*
+import com.tokopedia.home.beranda.data.newatf.AtfDataList
 import com.tokopedia.home.beranda.data.newatf.AtfMapper
 import com.tokopedia.home.beranda.data.newatf.HomeAtfUseCase
 import com.tokopedia.home.beranda.domain.interactor.*
@@ -189,6 +190,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
     }
 
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
+    private var balanceJob: Job? = null
 
     @FlowPreview
     @ExperimentalCoroutinesApi
@@ -198,12 +200,15 @@ class HomeDynamicChannelUseCase @Inject constructor(
                 list = listOf(it)
             )
         }
-        coroutineScope.launch { homeHeaderUseCase.updateBalanceWidget() }
+        if(balanceJob?.isActive != true) {
+            balanceJob = coroutineScope.launch { homeHeaderUseCase.updateBalanceWidget() }
+        }
 
         val atfFlow = homeAtfUseCase.flow.map {
             HomeDynamicChannelModel(
                 list = atfMapper.mapToVisitableList(it),
-                isCache = it?.isCache.orTrue()
+                isCache = it?.isCache.orTrue(),
+                isAtfError = it?.status == AtfDataList.STATUS_ERROR
             )
         }
 
@@ -214,17 +219,14 @@ class HomeDynamicChannelUseCase @Inject constructor(
         return combine(headerFlow, atfFlow, dynamicChannelFlow) { header, atf, dc ->
             val combinedList = header.list + atf.list + dc.list
             val isCache = atf.isCache || dc.isCache
-            Log.d(
-                "atfflow",
-                "RESULT:\n" +
-                    "ATF   : ${atf.list.joinToString(",") { it.javaClass.simpleName }}\n" +
-                    "DC    : ${dc.list.joinToString(", ") { it.javaClass.simpleName }}\n"
-            )
 
             HomeDynamicChannelModel(
                 list = combinedList,
                 isCache = isCache,
-                isAtfError = atf.isAtfError
+                isAtfError = atf.isAtfError,
+                homeChooseAddressData = dc.homeChooseAddressData,
+                flowCompleted = dc.flowCompleted,
+                topadsPage = dc.topadsPage,
             )
         }
     }
@@ -260,7 +262,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
                 )
             }
 
-            if (userSessionInterface.isLoggedIn) {
+            if (userSessionInterface.isLoggedIn && !isNewMechanism) {
                 /**
                  * Get header data
                  */
@@ -978,7 +980,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
      *              Then emit error pagination
      *              Because there is no content that we can show, we showing error page
      */
-    fun updateHomeData(isNewAtfMechanism: Boolean = false): Flow<Result<Any>> = flow {
+    fun updateHomeData(isNewAtfMechanism: Boolean = false, isFirstLoad: Boolean = false): Flow<Result<Any>> = flow {
         coroutineScope {
             /**
              * Remote config to disable pagination by request with param 0
@@ -1010,8 +1012,10 @@ class HomeDynamicChannelUseCase @Inject constructor(
             launch { homeUserStatusRepository.hitHomeStatusThenIgnoreResponse() }
 
             if (isNewAtfMechanism) {
-                launch { homeAtfUseCase.refreshData() }
-                launch { homeHeaderUseCase.updateBalanceWidget(true) }
+                if (!isFirstLoad) {
+                    launch { homeAtfUseCase.refreshData() }
+                    launch { homeHeaderUseCase.updateBalanceWidget(true) }
+                }
             } else {
                 /**
                  * 2. Get above the fold skeleton

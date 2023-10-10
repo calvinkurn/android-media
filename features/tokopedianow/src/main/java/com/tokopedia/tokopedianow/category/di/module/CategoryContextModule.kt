@@ -1,15 +1,12 @@
 package com.tokopedia.tokopedianow.category.di.module
 
 import android.content.Context
-import com.tokopedia.tokopedianow.category.di.scope.CategoryScope
 import dagger.Module
 import dagger.Provides
 
 @Module
-class CategoryContextModule(
-    private val context: Context
-) {
-    @CategoryScope
+class CategoryContextModule(private val context: Context) {
+
     @Provides
     fun provideContext(): Context = context
 }

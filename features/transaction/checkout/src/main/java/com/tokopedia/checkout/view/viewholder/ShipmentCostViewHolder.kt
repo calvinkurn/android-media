@@ -23,6 +23,8 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.utils.currency.CurrencyFormatUtil.convertPriceValueToIdrFormat
+import com.tokopedia.purchase_platform.common.R as purchase_platformcommonR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ShipmentCostViewHolder(
     private val binding: ViewItemShipmentCostDetailsBinding,
@@ -35,7 +37,7 @@ class ShipmentCostViewHolder(
         binding.rlShipmentCost.visibility = View.VISIBLE
         binding.tvTotalItemLabel.text = getTotalItemLabel(binding.tvTotalItemLabel.context, shipmentCost.totalItem)
         binding.tvTotalItemPrice.setTextAndContentDescription(if (shipmentCost.totalItemPrice == 0.0) "-" else convertPriceValueToIdrFormat(shipmentCost.totalItemPrice.toLong(), false).removeDecimalSuffix(), R.string.content_desc_tv_total_item_price_summary)
-        binding.tvShippingFeeLabel.text = binding.tvShippingFeeLabel.context.getString(com.tokopedia.purchase_platform.common.R.string.label_shipment_fee)
+        binding.tvShippingFeeLabel.text = binding.tvShippingFeeLabel.context.getString(purchase_platformcommonR.string.label_shipment_fee)
         binding.tvShippingFee.setTextAndContentDescription(getPriceFormat(binding.tvShippingFeeLabel, binding.tvShippingFee, shipmentCost.shippingFee), R.string.content_desc_tv_shipping_fee_summary)
         binding.tvInsuranceFee.setTextAndContentDescription(getPriceFormat(binding.tvInsuranceFeeLabel, binding.tvInsuranceFee, shipmentCost.insuranceFee), R.string.content_desc_tv_insurance_fee_summary)
         binding.tvPurchaseProtectionLabel.text = getTotalPurchaseProtectionItemLabel(binding.tvPurchaseProtectionLabel.context, shipmentCost.totalPurchaseProtectionItem)
@@ -106,9 +108,9 @@ class ShipmentCostViewHolder(
 
     private fun renderProductDiscount(shipmentCost: ShipmentCostModel) {
         if (shipmentCost.productDiscountAmount > 0) {
-            binding.tvProductDiscountLabel.text = binding.tvProductDiscountLabel.context.getString(com.tokopedia.purchase_platform.common.R.string.label_product_discount)
+            binding.tvProductDiscountLabel.text = binding.tvProductDiscountLabel.context.getString(purchase_platformcommonR.string.label_product_discount)
             binding.tvProductDiscountPrice.text = getPriceFormat(binding.tvProductDiscountLabel, binding.tvProductDiscountPrice, (shipmentCost.productDiscountAmount * -1).toDouble())
-            binding.tvProductDiscountPrice.setTextColor(ContextCompat.getColor(binding.tvProductDiscountPrice.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
+            binding.tvProductDiscountPrice.setTextColor(ContextCompat.getColor(binding.tvProductDiscountPrice.context, unifyprinciplesR.color.Unify_GN500))
         } else {
             binding.tvProductDiscountLabel.visibility = View.GONE
             binding.tvProductDiscountPrice.visibility = View.GONE
@@ -116,7 +118,7 @@ class ShipmentCostViewHolder(
     }
 
     private fun renderShippingDiscount(shipmentCost: ShipmentCostModel) {
-        binding.tvShippingDiscountLabel.text = binding.tvShippingDiscountLabel.context.getString(com.tokopedia.purchase_platform.common.R.string.label_shipping_discount)
+        binding.tvShippingDiscountLabel.text = binding.tvShippingDiscountLabel.context.getString(purchase_platformcommonR.string.label_shipping_discount)
         if (shipmentCost.shippingDiscountAmount > 0) {
             if (shipmentCost.shippingDiscountAmount >= shipmentCost.shippingFee) {
                 binding.tvShippingFee.setTextAndContentDescription(convertPriceValueToIdrFormat(0.0, false).removeDecimalSuffix(), R.string.content_desc_tv_shipping_fee_summary)
@@ -124,7 +126,7 @@ class ShipmentCostViewHolder(
                 binding.tvShippingDiscountLabel.visibility = View.GONE
             } else {
                 binding.tvShippingDiscountPrice.text = getPriceFormat(binding.tvShippingDiscountLabel, binding.tvShippingDiscountPrice, (shipmentCost.shippingDiscountAmount * -1).toDouble())
-                binding.tvShippingDiscountPrice.setTextColor(ContextCompat.getColor(binding.tvShippingDiscountPrice.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
+                binding.tvShippingDiscountPrice.setTextColor(ContextCompat.getColor(binding.tvShippingDiscountPrice.context, unifyprinciplesR.color.Unify_GN500))
             }
         } else {
             binding.tvShippingDiscountLabel.visibility = View.GONE
@@ -135,7 +137,7 @@ class ShipmentCostViewHolder(
     private fun renderGeneralDiscount(shipmentCost: ShipmentCostModel) {
         binding.tvDiscountLabel.text = binding.tvDiscountLabel.context.getString(R.string.label_total_discount)
         binding.tvDiscountPrice.text = getPriceFormat(binding.tvDiscountLabel, binding.tvDiscountPrice, (shipmentCost.discountAmount * -1).toDouble())
-        binding.tvDiscountPrice.setTextColor(ContextCompat.getColor(binding.tvDiscountPrice.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
+        binding.tvDiscountPrice.setTextColor(ContextCompat.getColor(binding.tvDiscountPrice.context, unifyprinciplesR.color.Unify_GN500))
     }
 
     private fun renderAddOnGiftingCost(shipmentCost: ShipmentCostModel) {
@@ -229,11 +231,11 @@ class ShipmentCostViewHolder(
                     binding.tvPlatformSlashedFeeValue.text = convertPriceValueToIdrFormat(platformFeeModel.slashedFee.toLong(), false).removeDecimalSuffix()
 
                     binding.tvPlatformFeeValue.text = convertPriceValueToIdrFormat(platformFeeModel.fee.toLong(), false).removeDecimalSuffix()
-                    binding.tvPlatformFeeValue.setTextColor(ContextCompat.getColor(binding.tvPlatformFeeValue.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
+                    binding.tvPlatformFeeValue.setTextColor(ContextCompat.getColor(binding.tvPlatformFeeValue.context, unifyprinciplesR.color.Unify_GN500))
                 } else {
                     binding.tvPlatformSlashedFeeValue.gone()
                     binding.tvPlatformFeeValue.text = convertPriceValueToIdrFormat(platformFeeModel.fee.toLong(), false).removeDecimalSuffix()
-                    binding.tvPlatformFeeValue.setTextColor(ContextCompat.getColor(binding.tvPlatformFeeValue.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950))
+                    binding.tvPlatformFeeValue.setTextColor(ContextCompat.getColor(binding.tvPlatformFeeValue.context, unifyprinciplesR.color.Unify_NN950))
                 }
 
                 if (platformFeeModel.isShowTooltip) {
