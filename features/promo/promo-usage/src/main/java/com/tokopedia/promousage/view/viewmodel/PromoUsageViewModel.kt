@@ -555,21 +555,20 @@ class PromoUsageViewModel @Inject constructor(
         val initialSelectedCodes = recommendationItem.selectedCodes
         val isRecommendedCodeSelected = clickedItem.state is PromoItemState.Selected &&
             clickedItem.isRecommended
-        val selectedRecommendationCodes = if (isRecommendedCodeSelected) {
-            recommendationItem.selectedCodes.plus(clickedItem.code)
+        val currentSelectedCodes = if (isRecommendedCodeSelected) {
+            initialSelectedCodes.plus(clickedItem.code)
         } else {
-            recommendationItem.selectedCodes.minus(clickedItem.code)
+            initialSelectedCodes.minus(clickedItem.code)
         }
         val updatedRecommendationItem = recommendationItem.copy(
-            selectedCodes = selectedRecommendationCodes
+            selectedCodes = currentSelectedCodes
         )
         val updatedSelectedCodes = updatedRecommendationItem.selectedCodes
         val updatedItems = items.map { item ->
             if (item is PromoRecommendationItem) {
                 val allRecommendationCodeSelected = updatedSelectedCodes
                     .containsAll(recommendationItem.codes)
-                val isSelectedCodesChanged = updatedSelectedCodes
-                    .subtract(initialSelectedCodes.toSet()).isNotEmpty()
+                val isSelectedCodesChanged = updatedSelectedCodes.size != initialSelectedCodes.size
                 return@map updatedRecommendationItem.copy(
                     showAnimation = isSelectedCodesChanged && allRecommendationCodeSelected
                 )
