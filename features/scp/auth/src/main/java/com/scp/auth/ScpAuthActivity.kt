@@ -95,6 +95,7 @@ class ScpAuthActivity : BaseActivity() {
             additionalHeaders = TkpdAdditionalHeaders(this),
             loginSuccessListener = object : LSdkLoginFlowListener {
                 override fun onUserBackPressed(closeLogin: () -> Unit) {
+                    GotoSdk.LSDKINSTANCE?.closeScreenAndExit()
                     finish()
                 }
 
