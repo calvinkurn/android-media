@@ -8,11 +8,18 @@ sealed class PromoItemState : Parcelable {
 
     object Loading : PromoItemState()
 
-    object Normal : PromoItemState()
+    data class Normal(
+        val useSecondaryPromo: Boolean
+    ) : PromoItemState()
 
-    data class Selected(val useSecondaryPromo: Boolean) : PromoItemState()
+    data class Selected(
+        val useSecondaryPromo: Boolean
+    ) : PromoItemState()
 
-    data class Disabled(val message: String) : PromoItemState()
+    data class Disabled(
+        val useSecondaryPromo: Boolean,
+        val message: String
+    ) : PromoItemState()
 
     data class Ineligible(val message: String) : PromoItemState()
 }

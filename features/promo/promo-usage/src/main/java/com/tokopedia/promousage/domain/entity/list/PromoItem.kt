@@ -72,9 +72,18 @@ data class PromoItem(
     val hasSecondaryPromo: Boolean
         get() = secondaryPromo.code.isNotBlank() && secondaryPromo.id.isNotBlank()
 
+    private val isUseSecondaryPromoNormalState
+        get() = hasSecondaryPromo && state is PromoItemState.Normal && state.useSecondaryPromo
+
+    private val isUseSecondaryPromoSelectedState
+        get() = hasSecondaryPromo && state is PromoItemState.Selected && state.useSecondaryPromo
+
+    private val isUseSecondaryPromoDisabledState
+        get() = hasSecondaryPromo && state is PromoItemState.Disabled && state.useSecondaryPromo
+
     val useSecondaryPromo: Boolean
-        get() = hasSecondaryPromo &&
-            state is PromoItemState.Selected && state.useSecondaryPromo
+        get() = isUseSecondaryPromoNormalState ||
+            isUseSecondaryPromoSelectedState || isUseSecondaryPromoDisabledState
 
     override fun getChangePayload(other: Any): Any? {
         if (other is PromoItem && id == other.id) {

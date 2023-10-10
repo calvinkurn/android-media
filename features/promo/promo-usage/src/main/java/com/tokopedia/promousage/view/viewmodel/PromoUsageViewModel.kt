@@ -431,7 +431,7 @@ class PromoUsageViewModel @Inject constructor(
                             state = if (clickedItem.state is PromoItemState.Normal) {
                                 PromoItemState.Selected(useSecondaryPromo = false)
                             } else {
-                                PromoItemState.Normal
+                                PromoItemState.Normal(useSecondaryPromo = false)
                             }
                         )
 
@@ -700,23 +700,33 @@ class PromoUsageViewModel @Inject constructor(
         }
         val primaryClashingInfo = resultItem.clashingInfos
             .firstOrNull { it.code == selectedPromoCode }
-        if (primaryClashingInfo != null) {
+        if (primaryClashingInfo != null &&
+            !resultItem.currentClashingPromoCodes.contains(selectedPromoCode)
+        ) {
             val clashingPrimaryCodes = resultItem.currentClashingPromoCodes
-                .plus(selectedPromoCode).distinct()
+                .plus(selectedPromoCode)
             resultItem = resultItem.copy(
                 currentClashingPromoCodes = clashingPrimaryCodes,
-                state = PromoItemState.Disabled(primaryClashingInfo.message)
+                state = PromoItemState.Disabled(
+                    useSecondaryPromo = false,
+                    message = primaryClashingInfo.message
+                )
             )
             isCausingClash = true
         }
         if (resultItem.hasSecondaryPromo) {
             val secondaryClashingInfo = resultItem.secondaryPromo.clashingInfos
                 .firstOrNull { it.code == selectedPromoCode }
-            if (secondaryClashingInfo != null) {
+            if (secondaryClashingInfo != null &&
+                !resultItem.currentClashingSecondaryPromoCodes.contains(selectedPromoCode)
+            ) {
                 val clashingSecondaryCodes = resultItem.currentClashingSecondaryPromoCodes
-                    .plus(selectedPromoCode).distinct()
+                    .plus(selectedPromoCode)
                 resultItem = resultItem.copy(
-                    state = PromoItemState.Disabled(secondaryClashingInfo.message),
+                    state = PromoItemState.Disabled(
+                        useSecondaryPromo = true,
+                        message = secondaryClashingInfo.message
+                    ),
                     currentClashingSecondaryPromoCodes = clashingSecondaryCodes
                 )
                 isCausingClash = true
@@ -725,7 +735,7 @@ class PromoUsageViewModel @Inject constructor(
                     val isClashingWithCurrentPromoOnly = resultItem.currentClashingPromoCodes.isNotEmpty() &&
                         resultItem.currentClashingPromoCodes.none { it != selectedItem.code }
                     if (isClashingWithCurrentPromoOnly) {
-                        PromoItemState.Normal
+                        PromoItemState.Normal(useSecondaryPromo = true)
                     } else {
                         resultItem.state
                     }
@@ -744,7 +754,7 @@ class PromoUsageViewModel @Inject constructor(
             resultItem.currentClashingSecondaryPromoCodes.isEmpty()
         ) {
             resultItem = resultItem.copy(
-                state = PromoItemState.Normal
+                state = PromoItemState.Normal(useSecondaryPromo = false)
             )
         }
         return Pair(resultItem, isCausingClash)
@@ -777,7 +787,10 @@ class PromoUsageViewModel @Inject constructor(
                 if (otherClashingInfo != null) {
                     resultItem = resultItem.copy(
                         currentClashingPromoCodes = clashingPrimaryCodes,
-                        state = PromoItemState.Disabled(otherClashingInfo.message)
+                        state = PromoItemState.Disabled(
+                            useSecondaryPromo = resultItem.useSecondaryPromo,
+                            message = otherClashingInfo.message
+                        )
                     )
                     isCausingClash = true
                 } else {
@@ -791,12 +804,15 @@ class PromoUsageViewModel @Inject constructor(
                                 it.code == secondaryClashingCode
                             }
                             if (secondaryClashingInfo != null) {
-                                PromoItemState.Disabled(secondaryClashingInfo.message)
+                                PromoItemState.Disabled(
+                                    useSecondaryPromo = true,
+                                    message = secondaryClashingInfo.message
+                                )
                             } else {
                                 resultItem.state
                             }
                         } else {
-                            PromoItemState.Normal
+                            PromoItemState.Normal(useSecondaryPromo = false)
                         }
                     } else {
                         resultItem.state
@@ -818,12 +834,15 @@ class PromoUsageViewModel @Inject constructor(
                             it.code == secondaryClashingCode
                         }
                         if (secondaryClashingInfo != null) {
-                            PromoItemState.Disabled(secondaryClashingInfo.message)
+                            PromoItemState.Disabled(
+                                useSecondaryPromo = true,
+                                message = secondaryClashingInfo.message
+                            )
                         } else {
                             resultItem.state
                         }
                     } else {
-                        PromoItemState.Normal
+                        PromoItemState.Normal(useSecondaryPromo = false)
                     }
                 } else {
                     resultItem.state
@@ -852,7 +871,10 @@ class PromoUsageViewModel @Inject constructor(
                     if (otherClashingInfo != null) {
                         resultItem = resultItem.copy(
                             currentClashingPromoCodes = clashingSecondaryCodes,
-                            state = PromoItemState.Disabled(otherClashingInfo.message)
+                            state = PromoItemState.Disabled(
+                                useSecondaryPromo = true,
+                                message = otherClashingInfo.message
+                            )
                         )
                         isCausingClash = true
                     } else {
@@ -865,12 +887,15 @@ class PromoUsageViewModel @Inject constructor(
                                     it.code == clashingCode
                                 }
                                 if (clashingInfo != null) {
-                                    PromoItemState.Disabled(clashingInfo.message)
+                                    PromoItemState.Disabled(
+                                        useSecondaryPromo = false,
+                                        message = clashingInfo.message
+                                    )
                                 } else {
                                     resultItem.state
                                 }
                             } else {
-                                PromoItemState.Normal
+                                PromoItemState.Normal(useSecondaryPromo = false)
                             }
                         } else {
                             resultItem.state
@@ -891,12 +916,15 @@ class PromoUsageViewModel @Inject constructor(
                                 it.code == clashingCode
                             }
                             if (clashingInfo != null) {
-                                PromoItemState.Disabled(clashingInfo.message)
+                                PromoItemState.Disabled(
+                                    useSecondaryPromo = false,
+                                    message = clashingInfo.message
+                                )
                             } else {
                                 resultItem.state
                             }
                         } else {
-                            PromoItemState.Normal
+                            PromoItemState.Normal(useSecondaryPromo = false)
                         }
                     } else {
                         resultItem.state
@@ -914,7 +942,7 @@ class PromoUsageViewModel @Inject constructor(
             resultItem.currentClashingSecondaryPromoCodes.isEmpty()
         ) {
             resultItem = resultItem.copy(
-                state = PromoItemState.Normal
+                state = PromoItemState.Normal(useSecondaryPromo = false)
             )
         }
         return Pair(resultItem, isCausingClash)
@@ -1336,7 +1364,10 @@ class PromoUsageViewModel @Inject constructor(
                         val errorMessage =
                             redStateMap[item.getPromoCode(redStateMap.keys.toSet())] ?: ""
                         return@map item.copy(
-                            state = PromoItemState.Disabled(errorMessage)
+                            state = PromoItemState.Disabled(
+                                useSecondaryPromo = item.useSecondaryPromo,
+                                message = errorMessage
+                            )
                         )
                     } else {
                         return@map item
@@ -1783,7 +1814,7 @@ class PromoUsageViewModel @Inject constructor(
                             is PromoItem -> {
                                 if (item.state !is PromoItemState.Ineligible) {
                                     return@map item.copy(
-                                        state = PromoItemState.Normal,
+                                        state = PromoItemState.Normal(useSecondaryPromo = false),
                                         currentClashingPromoCodes = emptyList(),
                                         currentClashingSecondaryPromoCodes = emptyList()
                                     )

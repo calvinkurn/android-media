@@ -208,13 +208,7 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
         val currentPromoCodes = mutableListOf(coupon.code)
         currentPromoCodes.addAll(coupon.secondaryCoupon.map { it.code })
 
-        val secondaryCoupon: SecondaryCoupon? = if (
-            coupon.isRecommended && !coupon.secondaryCoupon.any { it.isSelected }
-        ) {
-            null
-        } else {
-            coupon.secondaryCoupon.firstOrNull()
-        }
+        val secondaryCoupon: SecondaryCoupon? = coupon.secondaryCoupon.firstOrNull()
         val remainingPromoCount = couponSection.couponGroups
             .firstOrNull { it.id == coupon.groupId }?.count ?: 1
 
@@ -238,29 +232,41 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
                         selectedPromoCodes.contains(it.code)
                 }
                 ?: emptyList()
-
         var state: PromoItemState = if (secondaryCoupon != null) {
-            if (secondaryClashingInfos.isNotEmpty()) {
-                PromoItemState.Disabled(secondaryClashingInfos.first().message)
-            } else if (primaryClashingInfos.isNotEmpty()) {
-                PromoItemState.Disabled(primaryClashingInfos.first().message)
+            if (coupon.isSelected) {
+                PromoItemState.Selected(useSecondaryPromo = false)
+            } else if (secondaryCoupon.isSelected) {
+                PromoItemState.Selected(useSecondaryPromo = true)
             } else {
-                if (secondaryCoupon.isSelected) {
-                    PromoItemState.Selected(useSecondaryPromo = true)
-                } else if (coupon.isSelected) {
-                    PromoItemState.Selected(useSecondaryPromo = false)
+                if (primaryClashingInfos.isEmpty() && secondaryClashingInfos.isEmpty()) {
+                    PromoItemState.Normal(useSecondaryPromo = false)
+                } else if (primaryClashingInfos.isNotEmpty() && secondaryClashingInfos.isEmpty()) {
+                    PromoItemState.Normal(useSecondaryPromo = true)
                 } else {
-                    PromoItemState.Normal
+                    PromoItemState.Disabled(
+                        useSecondaryPromo = true,
+                        message = secondaryClashingInfos.first().message
+                    )
                 }
             }
         } else {
-            if (primaryClashingInfos.isNotEmpty()) {
-                PromoItemState.Disabled(primaryClashingInfos.first().message)
-            } else {
-                if (coupon.isSelected) {
-                    PromoItemState.Selected(useSecondaryPromo = false)
+            if (coupon.isSelected) {
+                if (primaryClashingInfos.isNotEmpty()) {
+                    PromoItemState.Disabled(
+                        useSecondaryPromo = false,
+                        message = primaryClashingInfos.first().message
+                    )
                 } else {
-                    PromoItemState.Normal
+                    PromoItemState.Selected(useSecondaryPromo = false)
+                }
+            } else {
+                if (primaryClashingInfos.isNotEmpty()) {
+                    PromoItemState.Disabled(
+                        useSecondaryPromo = false,
+                        message = primaryClashingInfos.first().message
+                    )
+                } else {
+                    PromoItemState.Normal(useSecondaryPromo = false)
                 }
             }
         }
