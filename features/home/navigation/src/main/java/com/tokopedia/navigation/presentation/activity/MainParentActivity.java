@@ -88,6 +88,7 @@ import com.tokopedia.navigation.util.MainParentServerLogger;
 import com.tokopedia.navigation_common.listener.AllNotificationListener;
 import com.tokopedia.navigation_common.listener.CartNotifyListener;
 import com.tokopedia.navigation_common.listener.FragmentListener;
+import com.tokopedia.navigation_common.listener.HomeBottomNavListener;
 import com.tokopedia.navigation_common.listener.HomeCoachmarkListener;
 import com.tokopedia.navigation_common.listener.HomePerformanceMonitoringListener;
 import com.tokopedia.navigation_common.listener.MainParentStateListener;
@@ -130,7 +131,8 @@ public class MainParentActivity extends BaseActivity implements
         MainParentStateListener,
         ITelemetryActivity,
         InAppCallback,
-        HomeCoachmarkListener
+        HomeCoachmarkListener,
+        HomeBottomNavListener
 {
 
     public static final String MO_ENGAGE_COUPON_CODE = "coupon_code";
@@ -213,8 +215,6 @@ public class MainParentActivity extends BaseActivity implements
     Lazy<RemoteConfig> remoteConfig;
 
     private ApplicationUpdate appUpdate;
-    private LottieBottomNavbar bottomNavigation;
-
     private View lineBottomNav;
     List<Fragment> fragmentList;
     private Notification notification;
@@ -241,6 +241,8 @@ public class MainParentActivity extends BaseActivity implements
     private PageLoadTimePerformanceCallback mainParentPageLoadTimePerformanceCallback;
 
     private String embracePageName = "";
+
+    private LottieBottomNavbar bottomNavigation;
 
     public static Intent start(Context context) {
         return new Intent(context, MainParentActivity.class)
@@ -660,6 +662,12 @@ public class MainParentActivity extends BaseActivity implements
     private void scrollToTop(Fragment fragment) {
         if (fragment != null && fragment.getUserVisibleHint() && fragment instanceof FragmentListener) {
             ((FragmentListener) fragment).onScrollToTop();
+        }
+    }
+
+    private void scrollToHomeForYou(Fragment fragment) {
+        if (fragment != null && fragment.getUserVisibleHint() && fragment instanceof FragmentListener) {
+            ((FragmentListener) fragment).onScrollToRecommendationForYou();
         }
     }
 
@@ -1258,7 +1266,13 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     public void menuReselected(int position, int id) {
         Fragment fragment = fragmentList.get(getPositionFragmentByMenu(position));
-        scrollToTop(fragment); // enable feature scroll to top for home & feed
+
+        boolean isHomeBottomNavSelected = bottomNavigation.isHomeBottomNavSelected();
+        if (isHomeBottomNavSelected) {
+            scrollToHomeForYou(fragment);
+        } else {
+            scrollToTop(fragment); // enable feature scroll to top for home & feed
+        }
     }
 
     @Override
@@ -1267,7 +1281,8 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     public void populateBottomNavigationView() {
-        menu.add(new BottomMenu(R.id.menu_home, getResources().getString(R.string.home), R.raw.bottom_nav_home, R.raw.bottom_nav_home_to_enabled, R.raw.bottom_nav_home_dark, R.raw.bottom_nav_home_to_enabled_dark, R.drawable.ic_bottom_nav_home_active, R.drawable.ic_bottom_nav_home_enabled, com.tokopedia.unifyprinciples.R.color.Unify_GN500, true, 1f, 1f));
+        menu.add(new BottomMenu(R.id.menu_home, getResources().getString(R.string.home), R.raw.bottom_nav_home, R.raw.bottom_nav_home_to_enabled, R.raw.bottom_nav_home_dark, R.raw.bottom_nav_home_to_enabled_dark, R.drawable.ic_bottom_nav_home_for_you_active, R.drawable.ic_bottom_nav_home_enabled, com.tokopedia.unifyprinciples.R.color.Unify_GN500, true, 1f, 1f));
+//        menu.add(new BottomMenu(R.id.menu_home, getResources().getString(R.string.home), R.raw.bottom_nav_home, R.raw.bottom_nav_home_to_enabled, R.raw.bottom_nav_home_dark, R.raw.bottom_nav_home_to_enabled_dark, R.drawable.ic_bottom_nav_home_active, R.drawable.ic_bottom_nav_home_enabled, com.tokopedia.unifyprinciples.R.color.Unify_GN500, true, 1f, 1f));
         menu.add(new BottomMenu(R.id.menu_feed, getResources().getString(R.string.feed), R.raw.bottom_nav_feed, R.raw.bottom_nav_feed_to_enabled, R.raw.bottom_nav_feed_dark, R.raw.bottom_nav_feed_to_enabled_dark, R.drawable.ic_bottom_nav_feed_active, R.drawable.ic_bottom_nav_feed_enabled, com.tokopedia.unifyprinciples.R.color.Unify_GN500, true, 1f, 1f));
         menu.add(new BottomMenu(R.id.menu_os, getResources().getString(R.string.official), R.raw.bottom_nav_official, R.raw.bottom_nav_os_to_enabled, R.raw.bottom_nav_official_dark, R.raw.bottom_nav_os_to_enabled_dark, R.drawable.ic_bottom_nav_os_active, R.drawable.ic_bottom_nav_os_enabled, com.tokopedia.unifyprinciples.R.color.Unify_GN500, true, 1f, 1f));
         menu.add(new BottomMenu(R.id.menu_wishlist, getResources().getString(R.string.wishlist), R.raw.bottom_nav_wishlist, R.raw.bottom_nav_wishlist_to_enabled, R.raw.bottom_nav_wishlist_dark, R.raw.bottom_nav_wishlist_to_enabled_dark, R.drawable.ic_bottom_nav_wishlist_active, R.drawable.ic_bottom_nav_wishlist_enabled, com.tokopedia.unifyprinciples.R.color.Unify_GN500, true, 1f, 1f));
@@ -1317,5 +1332,15 @@ public class MainParentActivity extends BaseActivity implements
     public void onHomeCoachMarkFinished() {
         View feedIconView = bottomNavigation.findViewById(R.id.menu_feed);
         new FeedCoachMark(this).show(feedIconView);
+    }
+
+    @Override
+    public void setHomeMenuTabSelected() {
+
+    }
+
+    @Override
+    public void setRecommendationForYouTabSelected() {
+
     }
 }

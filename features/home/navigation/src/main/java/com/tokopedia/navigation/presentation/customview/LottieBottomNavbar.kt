@@ -346,6 +346,7 @@ class LottieBottomNavbar : LinearLayout {
                             iconSelected.speed = bottomMenuSelected.animSpeed
                         }
                     } else {
+
                         val bottomMenuSelected = bottomMenu
                         val iconSelected = icon
                         val animToEnabledNameSelected = if (!isDarkMode) bottomMenuSelected.animToEnabledName else bottomMenuSelected.animDarkToEnabledName
@@ -357,6 +358,9 @@ class LottieBottomNavbar : LinearLayout {
                             iconSelected.setAnimation(it)
                             iconSelected.speed = bottomMenuSelected.animToEnabledSpeed
                         }
+
+
+
                     }
 
                     iconList[index] = Pair(icon, false)
@@ -520,6 +524,7 @@ class LottieBottomNavbar : LinearLayout {
 
     private fun changeColor(newPosition: Int) {
         if (selectedItem == newPosition) {
+            //todo will add the change
             listener?.menuReselected(newPosition, menu[newPosition].id)
             return
         }
@@ -602,6 +607,20 @@ class LottieBottomNavbar : LinearLayout {
         invalidate()
     }
 
+    fun updateMenu(homeMenu: BottomMenu) {
+        val homeMenuIndex = this.menu.indexOfFirst { it.id == R.id.menu_home }
+        if (homeMenuIndex != -1) {
+            resizeContainer()
+            this.menu[homeMenuIndex] = homeMenu
+            setupMenuItems(modeAwareContext)
+            invalidate()
+        }
+    }
+
+    fun isHomeBottomNavSelected(): Boolean {
+        return this.menu.firstOrNull { it.animToEnabledName == R.raw.bottom_nav_home } != null
+    }
+
     fun setMenuClickListener(listener: IBottomClickListener) {
         this.listener = listener
     }
@@ -654,6 +673,7 @@ data class BottomMenu(
     val title: String,
     val animName: Int? = null,
     val animToEnabledName: Int? = null,
+    val animToIdleName: Int? = null,
     val animDarkName: Int? = null,
     val animDarkToEnabledName: Int? = null,
     val imageName: Int? = null,

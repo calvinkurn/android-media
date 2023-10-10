@@ -86,6 +86,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackDa
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceCoachmark
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.CarouselPlayWidgetViewHolder
@@ -134,6 +135,7 @@ import com.tokopedia.home.beranda.presentation.view.listener.SpecialReleaseCompo
 import com.tokopedia.home.beranda.presentation.view.listener.SpecialReleaseRevampCallback
 import com.tokopedia.home.beranda.presentation.view.listener.TodoWidgetComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.VpsWidgetComponentCallback
+import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home.constant.BerandaUrl
 import com.tokopedia.home.constant.ConstantKey
@@ -163,6 +165,7 @@ import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.navigation_common.listener.AllNotificationListener
 import com.tokopedia.navigation_common.listener.FragmentListener
+import com.tokopedia.navigation_common.listener.HomeBottomNavListener
 import com.tokopedia.navigation_common.listener.HomeCoachmarkListener
 import com.tokopedia.navigation_common.listener.HomePerformanceMonitoringListener
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener
@@ -1342,8 +1345,32 @@ open class HomeRevampFragment :
 
             performanceTrace?.setBlock(data.take(takeLimit))
 
-            adapter?.submitList(data)
+            adapter?.submitList(data) {
+
+            }
         }
+    }
+
+    private fun setRecyclerViewToPosition() {
+        val homeDataList = viewModel.get().homeLiveDynamicChannel.value?.list
+
+        val balanceWidgetIndex = homeDataList?.indexOfFirst {
+            it is HomeHeaderDataModel
+        }
+
+        val recommendationForYouIndex = homeDataList?.indexOfFirst {
+            it is HomeRecommendationFeedDataModel
+        }
+
+        homeRecyclerView?.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+
+            }
+        })
+    }
+
+    private fun setSwitchHomeOrForYouBottomNav() {
+
     }
 
     private fun <T> containsInstance(list: List<T>, type: Class<*>): Boolean {
@@ -2171,6 +2198,13 @@ open class HomeRevampFragment :
 
     override fun onScrollToTop() {
         homeRecyclerView?.smoothScrollToPosition(0)
+    }
+
+    override fun onScrollToRecommendationForYou() {
+        val recommendationForYouIndex = adapter?.currentList?.indexOfFirst { it is HomeRecommendationFeedDataModel } ?: RecyclerView.NO_POSITION
+        if (recommendationForYouIndex != RecyclerView.NO_POSITION) {
+            homeRecyclerView?.scrollToPosition(recommendationForYouIndex)
+        }
     }
 
     override fun isLightThemeStatusBar(): Boolean {

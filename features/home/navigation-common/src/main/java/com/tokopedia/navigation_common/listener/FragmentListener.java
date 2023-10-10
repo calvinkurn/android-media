@@ -6,6 +6,8 @@ package com.tokopedia.navigation_common.listener;
 
 public interface FragmentListener {
     void onScrollToTop();
+
+    void onScrollToRecommendationForYou();
     boolean isLightThemeStatusBar();
     default boolean isForceDarkModeNavigationBar() {
         return false;
