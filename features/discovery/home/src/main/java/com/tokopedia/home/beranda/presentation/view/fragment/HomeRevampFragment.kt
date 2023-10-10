@@ -86,7 +86,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackDa
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceCoachmark
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.CarouselPlayWidgetViewHolder
@@ -786,6 +785,7 @@ open class HomeRevampFragment :
                 super.onScrolled(recyclerView, dx, dy)
                 scrollPositionY += dy
                 evaluateHomeComponentOnScroll(recyclerView)
+                setHomeBottomNavBasedOnScrolling()
             }
         })
         setupEmbraceBreadcrumbListener()
@@ -1346,31 +1346,8 @@ open class HomeRevampFragment :
             performanceTrace?.setBlock(data.take(takeLimit))
 
             adapter?.submitList(data) {
-
             }
         }
-    }
-
-    private fun setRecyclerViewToPosition() {
-        val homeDataList = viewModel.get().homeLiveDynamicChannel.value?.list
-
-        val balanceWidgetIndex = homeDataList?.indexOfFirst {
-            it is HomeHeaderDataModel
-        }
-
-        val recommendationForYouIndex = homeDataList?.indexOfFirst {
-            it is HomeRecommendationFeedDataModel
-        }
-
-        homeRecyclerView?.addOnScrollListener(object: RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-
-            }
-        })
-    }
-
-    private fun setSwitchHomeOrForYouBottomNav() {
-
     }
 
     private fun <T> containsInstance(list: List<T>, type: Class<*>): Boolean {
@@ -2177,6 +2154,49 @@ open class HomeRevampFragment :
         return true
     }
 
+    private fun goToJumperForYouTab(recommendationFeedDataIndex: Int) {
+        val viewHolder = homeRecyclerView?.findViewHolderForAdapterPosition(recommendationFeedDataIndex)
+        if (viewHolder is HomeRecommendationFeedViewHolder) {
+            viewHolder.selectJumperTab()
+        }
+    }
+
+    private fun setHomeBottomNavBasedOnScrolling() {
+        val mLayoutManager = homeRecyclerView?.layoutManager as? LinearLayoutManager
+        mLayoutManager?.let { lManager ->
+            val firstVisiblePosition = lManager.findFirstVisibleItemPosition()
+            val lastVisiblePosition = lManager.findLastVisibleItemPosition()
+
+            val homeRecommendationFeedIndex = adapter?.currentList?.indexOfFirst { it is HomeRecommendationFeedDataModel }
+
+            if (homeRecommendationFeedIndex in firstVisiblePosition..lastVisiblePosition) {
+                setForYouMenuBottomNav()
+            } else {
+                setHomeMenuBottomNav()
+            }
+        }
+    }
+
+    private fun setForYouMenuBottomNav() {
+        (activity as HomeBottomNavListener?)?.setRecommendationForYouTabSelected()
+    }
+
+    private fun setHomeMenuBottomNav() {
+        (activity as HomeBottomNavListener?)?.setHomeMenuTabSelected()
+    }
+
+    override fun onScrollToTop() {
+        homeRecyclerView?.smoothScrollToPosition(0)
+    }
+
+    override fun onScrollToRecommendationForYou() {
+        val recommendationForYouIndex = adapter?.currentList?.indexOfFirst { it is HomeRecommendationFeedDataModel } ?: RecyclerView.NO_POSITION
+        if (recommendationForYouIndex != RecyclerView.NO_POSITION) {
+            homeRecyclerView?.scrollToPosition(recommendationForYouIndex)
+            goToJumperForYouTab(recommendationForYouIndex)
+        }
+    }
+
     override val isMainViewVisible: Boolean
         get() = userVisibleHint
 
@@ -2194,17 +2214,6 @@ open class HomeRevampFragment :
 
     override fun setActivityStateListener(activityStateListener: ActivityStateListener) {
         this.activityStateListener = activityStateListener
-    }
-
-    override fun onScrollToTop() {
-        homeRecyclerView?.smoothScrollToPosition(0)
-    }
-
-    override fun onScrollToRecommendationForYou() {
-        val recommendationForYouIndex = adapter?.currentList?.indexOfFirst { it is HomeRecommendationFeedDataModel } ?: RecyclerView.NO_POSITION
-        if (recommendationForYouIndex != RecyclerView.NO_POSITION) {
-            homeRecyclerView?.scrollToPosition(recommendationForYouIndex)
-        }
     }
 
     override fun isLightThemeStatusBar(): Boolean {

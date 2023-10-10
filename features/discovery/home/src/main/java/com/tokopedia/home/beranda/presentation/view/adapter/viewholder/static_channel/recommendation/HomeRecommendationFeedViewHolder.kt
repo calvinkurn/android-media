@@ -23,9 +23,10 @@ import java.util.*
  * Created by henrypriyono on 22/03/18.
  */
 
-class HomeRecommendationFeedViewHolder(view: View,
-                                       private val listener: HomeCategoryListener,
-                                       private val cardInteraction: Boolean = false
+class HomeRecommendationFeedViewHolder(
+    view: View,
+    private val listener: HomeCategoryListener,
+    private val cardInteraction: Boolean = false
 ) : AbstractViewHolder<HomeRecommendationFeedDataModel>(view), HomeTabFeedListener {
 
     private val binding = HomeRecommendationFeedViewholderBinding.bind(itemView)
@@ -37,8 +38,8 @@ class HomeRecommendationFeedViewHolder(view: View,
         with(binding) {
             val layoutParams = homeRecommendationFeedContainer.layoutParams
 
-            //we must specify height for viewpager, so it can't scroll up anymore and create
-            //sticky effect
+            // we must specify height for viewpager, so it can't scroll up anymore and create
+            // sticky effect
 
             // 1st dp8 comes from N0 divider in home recommendation feed viewholder
             // 2nd dp8 comes from N50 divider in home recommendation feed viewholder
@@ -63,38 +64,45 @@ class HomeRecommendationFeedViewHolder(view: View,
         }
     }
 
-    private fun initViewPagerAndTablayout(homeFeedsViewPager: ViewPager?, homeFeedsTabLayout: CollapsingTabLayout?) {
+    private fun initViewPagerAndTablayout(
+        homeFeedsViewPager: ViewPager?,
+        homeFeedsTabLayout: CollapsingTabLayout?
+    ) {
         homeFeedPagerAdapter = HomeFeedPagerAdapter(
-                listener,
-                listener.eggListener,
-                this,
-                listener.childsFragmentManager,
-                recommendationTabDataModelList,
-                listener.parentPool)
+            listener,
+            listener.eggListener,
+            this,
+            listener.childsFragmentManager,
+            recommendationTabDataModelList,
+            listener.parentPool
+        )
 
         homeFeedsViewPager?.offscreenPageLimit = DEFAULT_FEED_PAGER_OFFSCREEN_LIMIT
         try {
             homeFeedsViewPager?.adapter = homeFeedPagerAdapter
         } catch (e: IllegalStateException) {
             HomeServerLogger.logWarning(
-                    type = HomeServerLogger.TYPE_RECOM_SET_ADAPTER_ERROR,
-                    throwable = e,
-                    reason = e.message.toString()
+                type = HomeServerLogger.TYPE_RECOM_SET_ADAPTER_ERROR,
+                throwable = e,
+                reason = e.message.toString()
             )
         }
-        homeFeedsTabLayout?.setup(homeFeedsViewPager, convertToTabItemDataList(recommendationTabDataModelList!!), cardInteraction)
+        homeFeedsTabLayout?.setup(
+            homeFeedsViewPager,
+            convertToTabItemDataList(recommendationTabDataModelList!!),
+            cardInteraction
+        )
         homeFeedsTabLayout?.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 if (tab.position < recommendationTabDataModelList!!.size) {
                     val selectedFeedTabModel = recommendationTabDataModelList!![tab.position]
                     HomePageTracking.eventClickOnHomePageRecommendationTab(
-                            selectedFeedTabModel
+                        selectedFeedTabModel
                     )
                 }
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab) {
-
             }
 
             override fun onTabReselected(tab: TabLayout.Tab) {
@@ -105,20 +113,24 @@ class HomeRecommendationFeedViewHolder(view: View,
         })
     }
 
-    fun setAutoSelectTab(homeFeedsViewPager: ViewPager?,
-                         homeFeedsTabLayout: CollapsingTabLayout?) {
-        val tabIndex = recommendationTabDataModelList?.indexOfFirst { it.isJumperTab } ?: RecyclerView.NO_POSITION
+    fun selectJumperTab() {
+        val tabIndex = recommendationTabDataModelList?.indexOfFirst { it.isJumperTab }
+            ?: RecyclerView.NO_POSITION
         if (tabIndex != RecyclerView.NO_POSITION) {
-            val tabToSelect = homeFeedsTabLayout?.getTabAt(tabIndex)
+            val tabToSelect = binding.tabLayoutHomeFeeds.getTabAt(tabIndex)
             tabToSelect?.select()
         }
     }
 
-
     private fun convertToTabItemDataList(recommendationTabDataModelList: List<RecommendationTabDataModel>): List<CollapsingTabLayout.TabItemData> {
         val tabItemDataList = ArrayList<CollapsingTabLayout.TabItemData>()
         for (feedTabModel in recommendationTabDataModelList) {
-            tabItemDataList.add(CollapsingTabLayout.TabItemData(feedTabModel.name, feedTabModel.imageUrl))
+            tabItemDataList.add(
+                CollapsingTabLayout.TabItemData(
+                    feedTabModel.name,
+                    feedTabModel.imageUrl
+                )
+            )
         }
         return tabItemDataList
     }
