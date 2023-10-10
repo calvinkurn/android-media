@@ -1,5 +1,6 @@
 package com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.uimodel
 
+import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.uimodel.AddressUiState
 
 sealed interface PinpointAction {
@@ -69,4 +70,20 @@ sealed interface BottomSheetState {
             data class PrimaryButtonState(val addressUiState: AddressUiState?, val success: Boolean)
         }
     }
+}
+
+sealed interface ChoosePinpoint {
+    object InvalidShopDistrictPinpoint : ChoosePinpoint
+    data class SetPinpointResult(
+        val saveAddressDataModel: SaveAddressDataModel,
+        val pinpointUiModel: PinpointUiModel
+    )
+
+    data class GoToAddressForm(
+        val saveChanges: Boolean,
+        val pinpointUiModel: PinpointUiModel,
+        val gmsAvailability: Boolean,
+        val addressState: AddressUiState,
+        val source: String
+    )
 }

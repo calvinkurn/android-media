@@ -907,7 +907,35 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     }
 
                     if (state.buttonPrimary.enable) {
-                        goToAddressForm(true)
+                        onChoosePinpoint()
+                    }
+                }
+            }
+
+            btnSecondary.run {
+                if (state.buttonSecondary.show) {
+                    visible()
+                } else {
+                    gone()
+                }
+
+                if (state.buttonSecondary.text.isNotEmpty()) {
+                    text = state.buttonSecondary.text
+                }
+
+                if (state.buttonSecondary.type != -1) {
+                    buttonType = state.buttonSecondary.type
+                }
+
+                if (state.buttonSecondary.variant != -1) {
+                    buttonVariant = state.buttonSecondary.variant
+                }
+
+                setOnClickListener {
+                    LogisticAddAddressAnalytics.onClickIsiAlamatManual(userSession.userId)
+
+                    if (state.buttonSecondary.enable) {
+                        goToAddressForm(false)
                     }
                 }
             }
