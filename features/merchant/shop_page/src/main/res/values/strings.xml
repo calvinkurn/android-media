@@ -44,7 +44,7 @@
     <string name="shop_info_label_satisfied">Kepuasan Toko</string>
     <string name="shop_info_label_logistic">Dukungan Pengiriman</string>
 
-    <string name="shop_info_label_open_since_v3">Buka Sejak %1$s</string>
+    <string name="shop_info_label_open_since_v3">Buka Sejak : %1$s</string>
 
     <string name="shop_note_empty_note_title_buyer">Toko ini belum memiliki catatan toko.</string>
     <string name="shop_note_empty_note_title_seller">Toko Anda belum memiliki catatan toko.</string>
