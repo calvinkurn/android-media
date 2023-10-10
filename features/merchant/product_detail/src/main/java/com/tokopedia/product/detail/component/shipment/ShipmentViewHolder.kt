@@ -4,10 +4,15 @@ import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.databinding.ItemShipmentBinding
+import com.tokopedia.product.detail.databinding.ViewShipmentErrorBinding
+import com.tokopedia.product.detail.databinding.ViewShipmentFailedBinding
 import com.tokopedia.product.detail.databinding.ViewShipmentInfoBinding
+import com.tokopedia.product.detail.databinding.ViewShipmentSuccessBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.ProductDetailPageViewHolder
 
@@ -22,19 +27,65 @@ class ShipmentViewHolder(
     private val binding = ItemShipmentBinding.bind(view)
 
     override fun bind(element: ShipmentUiModel) {
-        val data = element.data ?: return
-        binding.apply(data)
+        element.state.render()
     }
 
-    private fun ItemShipmentBinding.apply(data: ShipmentUiModel.Data) {
+    private fun ShipmentUiModel.State.render() {
+        when (this) {
+            is ShipmentUiModel.Success -> render()
+            is ShipmentUiModel.Loading -> render()
+            is ShipmentUiModel.Error -> render()
+            is ShipmentUiModel.Failed -> render()
+        }
+    }
+
+    private fun ShipmentUiModel.Success.render() {
+        val view = binding.pdpShipmentStateSuccess.inflate()
+        ViewShipmentSuccessBinding.bind(view).apply(this)
+
+        binding.pdpShipmentStateSuccess.show()
+        binding.pdpShipmentStateError.hide()
+        binding.pdpShipmentStateLoading.hide()
+        binding.pdpShipmentStateFailed.hide()
+    }
+
+    private fun ShipmentUiModel.Error.render() {
+        val view = binding.pdpShipmentStateError.inflate()
+        ViewShipmentErrorBinding.bind(view).apply(this)
+
+        binding.pdpShipmentStateSuccess.hide()
+        binding.pdpShipmentStateError.show()
+        binding.pdpShipmentStateLoading.hide()
+        binding.pdpShipmentStateFailed.hide()
+    }
+
+    private fun ShipmentUiModel.Loading.render() {
+        binding.pdpShipmentStateLoading.inflate()
+
+        binding.pdpShipmentStateSuccess.hide()
+        binding.pdpShipmentStateError.hide()
+        binding.pdpShipmentStateLoading.show()
+        binding.pdpShipmentStateFailed.hide()
+    }
+
+    private fun ShipmentUiModel.Failed.render() {
+        val view = binding.pdpShipmentStateError.inflate()
+        ViewShipmentFailedBinding.bind(view).apply()
+
+        binding.pdpShipmentStateSuccess.hide()
+        binding.pdpShipmentStateLoading.hide()
+        binding.pdpShipmentStateError.show()
+    }
+
+    private fun ViewShipmentSuccessBinding.apply(data: ShipmentUiModel.Success) {
         val logo = data.logo
         pdpShipmentHeaderLogo.showIfWithBlock(logo.isNotEmpty()) {
             setImageUrl(logo)
         }
 
-        val price = data.price
-        pdpShipmentHeaderPrice.showIfWithBlock(price.isNotEmpty()) {
-            text = price
+        val title = data.title
+        pdpShipmentHeaderPrice.showIfWithBlock(title.isNotEmpty()) {
+            text = title
         }
 
         val slashPrice = data.slashPrice
@@ -69,7 +120,6 @@ class ShipmentViewHolder(
         }
     }
 
-
     private fun ViewShipmentInfoBinding.apply(data: ShipmentUiModel.Info) {
         val logo = data.logo
         pdpShipmentInfoLogo.showIfWithBlock(logo > -1) {
@@ -81,4 +131,32 @@ class ShipmentViewHolder(
             this.text = text
         }
     }
+
+    private fun ViewShipmentErrorBinding.apply(data: ShipmentUiModel.Error) {
+        val title = data.title
+        pdpShipmentErrorTitle.showIfWithBlock(title.isNotEmpty()) {
+            text = title
+        }
+
+        val subtitle = data.subtitle
+        pdpShipmentErrorSubtitle.showIfWithBlock(subtitle.isNotEmpty()) {
+            text = subtitle
+        }
+
+        val background = data.background
+        pdpShipmentBackground.showIfWithBlock(background.isNotEmpty()) {
+            setImageUrl(background)
+        }
+    }
+
+    private fun ViewShipmentFailedBinding.apply() {
+        pdpShipmentLocalLoad.progressState = false
+        pdpShipmentLocalLoad.refreshBtn?.setOnClickListener {
+            if (!pdpShipmentLocalLoad.progressState) {
+                pdpShipmentLocalLoad.progressState = true
+                listener.refreshPage()
+            }
+        }
+    }
+
 }

@@ -30,7 +30,7 @@
         android:id="@+id/pdp_shipment_state_error"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout="@layout/view_shipment_error"
+        android:layout="@layout/view_shipment_error_old"
         tools:visibility="visible" />
 
 </LinearLayout>

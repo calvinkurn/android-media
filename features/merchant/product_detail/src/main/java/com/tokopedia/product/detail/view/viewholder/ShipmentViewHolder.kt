@@ -23,7 +23,7 @@ import com.tokopedia.product.detail.databinding.ItemPdpShimmerShipmentBinding
 import com.tokopedia.product.detail.databinding.ItemShipmentOldBinding
 import com.tokopedia.product.detail.databinding.ItemShipmentOptionBinding
 import com.tokopedia.product.detail.databinding.ViewShipmentBinding
-import com.tokopedia.product.detail.databinding.ViewShipmentErrorBinding
+import com.tokopedia.product.detail.databinding.ViewShipmentErrorOldBinding
 import com.tokopedia.product.detail.databinding.ViewShipmentPlusBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.util.isInflated
@@ -62,7 +62,7 @@ class ShipmentViewHolder(
     }
 
     private val viewErrorDelegate = lazy {
-        ViewShipmentErrorBinding.bind(
+        ViewShipmentErrorOldBinding.bind(
             binding.pdpShipmentStateError.inflate()
         )
     }
@@ -74,7 +74,7 @@ class ShipmentViewHolder(
     }
 
     private val viewMain: ViewShipmentBinding by viewMainDelegate
-    private val viewError: ViewShipmentErrorBinding by viewErrorDelegate
+    private val viewError: ViewShipmentErrorOldBinding by viewErrorDelegate
     private val viewLoading: ItemPdpShimmerShipmentBinding by viewLoadingDelegate
     private val viewShipmentPlus: ViewShipmentPlusBinding by lazyThreadSafetyNone {
         ViewShipmentPlusBinding.bind(viewMain.vsShipmentPlus.inflate())
