@@ -10,7 +10,7 @@ sealed class PromoItemState : Parcelable {
 
     object Normal : PromoItemState()
 
-    object Selected : PromoItemState()
+    data class Selected(val useSecondaryPromo: Boolean) : PromoItemState()
 
     data class Disabled(val message: String) : PromoItemState()
 

@@ -244,8 +244,10 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
             } else if (primaryClashingInfos.isNotEmpty()) {
                 PromoItemState.Disabled(primaryClashingInfos.first().message)
             } else {
-                if (isSelected) {
-                    PromoItemState.Selected
+                if (secondaryCoupon.isSelected) {
+                    PromoItemState.Selected(useSecondaryPromo = true)
+                } else if (coupon.isSelected) {
+                    PromoItemState.Selected(useSecondaryPromo = false)
                 } else {
                     PromoItemState.Normal
                 }
@@ -254,8 +256,8 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
             if (primaryClashingInfos.isNotEmpty()) {
                 PromoItemState.Disabled(primaryClashingInfos.first().message)
             } else {
-                if (isSelected) {
-                    PromoItemState.Selected
+                if (coupon.isSelected) {
+                    PromoItemState.Selected(useSecondaryPromo = false)
                 } else {
                     PromoItemState.Normal
                 }
