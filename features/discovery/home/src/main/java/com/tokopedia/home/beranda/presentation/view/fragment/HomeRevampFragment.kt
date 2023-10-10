@@ -2178,11 +2178,11 @@ open class HomeRevampFragment :
     }
 
     private fun setForYouMenuBottomNav() {
-        (activity as HomeBottomNavListener?)?.setRecommendationForYouTabSelected()
+        (activity as? HomeBottomNavListener?)?.setRecommendationForYouTabSelected()
     }
 
     private fun setHomeMenuBottomNav() {
-        (activity as HomeBottomNavListener?)?.setHomeMenuTabSelected()
+        (activity as? HomeBottomNavListener?)?.setHomeMenuTabSelected()
     }
 
     override fun onScrollToTop() {
