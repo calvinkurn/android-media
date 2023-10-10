@@ -4,6 +4,8 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.home.beranda.domain.interactor.GetHomeRecommendationUseCase
+import com.tokopedia.home.beranda.data.mapper.HomeRecommendationMapper.Companion.TYPE_BANNER_ADS
+import com.tokopedia.home.beranda.data.mapper.HomeRecommendationMapper.Companion.TYPE_VERTICAL_BANNER_ADS
 import com.tokopedia.home.beranda.helper.copy
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.*
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -31,7 +33,9 @@ class HomeRecommendationViewModel @Inject constructor(
 
     companion object {
         private const val TOPADS_TDN_RECOM_SOURCE = "1"
+        private const val TOPADS_TDN_RECOM_VERTICAL_SOURCE = "29"
         private const val TOPADS_TDN_RECOM_DIMEN = 3
+        private const val TOPADS_TDN_RECOM_VERTICAL_DIMEN = 10
         private const val TOPADS_PAGE_DEFAULT = "1"
         private const val SRC_HEADLINE_TOPADS = "homepage_foryou"
         private const val HEADLINE_PRODUCT_COUNT = "2"
@@ -63,19 +67,39 @@ class HomeRecommendationViewModel @Inject constructor(
                 try {
                     val headlineAds = fetchHeadlineAds(tabIndex)
                     val homeBannerTopAds = data.homeRecommendations.filterIsInstance<HomeRecommendationBannerTopAdsDataModel>()
-                    var topAdsBanner = arrayListOf<TopAdsImageViewModel>()
-                    if (homeBannerTopAds.isNotEmpty()) {
-                        topAdsBanner = topAdsImageViewUseCase.getImageData(
-                            topAdsImageViewUseCase.getQueryMap(
-                                query = "",
-                                source = TOPADS_TDN_RECOM_SOURCE,
-                                pageToken = "",
-                                adsCount = homeBannerTopAds.size,
-                                dimenId = TOPADS_TDN_RECOM_DIMEN,
-                                depId = "",
-                                page = topAdsBannerNextPage
-                            )
-                        )
+                    var topAdsBanner = arrayListOf<Pair<String, ArrayList<TopAdsImageViewModel>>>()
+                    homeBannerTopAds.forEach {
+                        if (it.bannerType == TYPE_BANNER_ADS) {
+                            val bannerData = topAdsImageViewUseCase.getImageData(
+                                topAdsImageViewUseCase.getQueryMap(
+                                    query = "",
+                                    source = TOPADS_TDN_RECOM_SOURCE,
+                                    pageToken = "",
+                                    adsCount = homeBannerTopAds.size,
+                                    dimenId = TOPADS_TDN_RECOM_DIMEN,
+                                    depId = "",
+                                    page = topAdsBannerNextPage
+                                ))
+                            if (bannerData.isNotEmpty()) {
+                                topAdsBanner.add(Pair(TYPE_BANNER_ADS, bannerData))
+                            }
+
+                        } else if (it.bannerType == TYPE_VERTICAL_BANNER_ADS) {
+                            val bannerData = topAdsImageViewUseCase.getImageData(
+                                topAdsImageViewUseCase.getQueryMap(
+                                    query = "",
+                                    source = TOPADS_TDN_RECOM_VERTICAL_SOURCE,
+                                    pageToken = "",
+                                    adsCount = homeBannerTopAds.size,
+                                    dimenId = TOPADS_TDN_RECOM_VERTICAL_DIMEN,
+                                    depId = "",
+                                    page = topAdsBannerNextPage
+                                ))
+                            if (bannerData.isNotEmpty()) {
+                                topAdsBanner.add(Pair(TYPE_VERTICAL_BANNER_ADS, bannerData))
+                            }
+                        }
+
                     }
                     handleTopAdsWidgets(data, topAdsBanner, homeBannerTopAds, headlineAds)
                 } catch (e: Exception) {
@@ -95,7 +119,7 @@ class HomeRecommendationViewModel @Inject constructor(
 
     private fun handleTopAdsWidgets(
         data: HomeRecommendationDataModel,
-        topAdsBanner: ArrayList<TopAdsImageViewModel>,
+        topAdsBanner: ArrayList<Pair<String, ArrayList<TopAdsImageViewModel>>>,
         homeBannerTopAds: List<HomeRecommendationBannerTopAdsDataModel>,
         headlineAds: TopAdsHeadlineResponse
     ) {
@@ -106,8 +130,25 @@ class HomeRecommendationViewModel @Inject constructor(
         if (!headlineData.isNullOrEmpty()) {
             position = headlineData.first().cpm.position
         }
+        if (topAdsBanner.size == Int.ONE) {
+            if (topAdsBanner.firstOrNull()?.first == TYPE_BANNER_ADS) {
+                homeBannerTopAds.forEach {
+                    if (it.bannerType == TYPE_VERTICAL_BANNER_ADS) {
+                        newList.remove(it)
+                    }
+                }
+            } else if (topAdsBanner.firstOrNull()?.first == TYPE_VERTICAL_BANNER_ADS) {
+                homeBannerTopAds.forEach {
+                    if (it.bannerType == TYPE_BANNER_ADS) {
+                        newList.remove(it)
+                    }
+                }
+            }
+        }
         if (topAdsBanner.isEmpty()) {
-            homeBannerTopAds.firstOrNull()?.let { newList.remove(it) }
+            homeBannerTopAds.forEach {
+                newList.remove(it)
+            }
             position?.let {
                 if (newList.size >= position) {
                     newList.add(
@@ -116,29 +157,32 @@ class HomeRecommendationViewModel @Inject constructor(
                     )
                 }
             }
-        } else {
-            topAdsBanner.forEachIndexed { index, topAdsImageViewModel ->
-                val visitableBanner = homeBannerTopAds[index]
-                if (position == Int.ZERO) {
-                    newList.add(position, HomeRecommendationHeadlineTopAdsDataModel(headlineAds.displayAds))
+        }else {
+            if (position == Int.ZERO) {
+                newList.add(position, HomeRecommendationHeadlineTopAdsDataModel(headlineAds.displayAds))
+                topAdsBanner.forEachIndexed { index, pair ->
+                    val visitableBanner = homeBannerTopAds[index]
                     if (newList.size > visitableBanner.position + Int.ONE) {
                         newList[visitableBanner.position + Int.ONE] =
-                            HomeRecommendationBannerTopAdsDataModel(topAdsImageViewModel)
+                            HomeRecommendationBannerTopAdsDataModel(pair.second.firstOrNull(), bannerType = pair.first)
                     }
-                } else {
+                }
+
+            } else {
+                topAdsBanner.forEachIndexed { index, pair ->
+                    val visitableBanner = homeBannerTopAds[index]
                     if (newList.size > visitableBanner.position) {
                         newList[visitableBanner.position] =
-                            HomeRecommendationBannerTopAdsDataModel(topAdsImageViewModel)
+                            HomeRecommendationBannerTopAdsDataModel(pair.second.firstOrNull(), bannerType = pair.first)
                     }
-
-                    position?.let {
-                        if (newList.size >= position + Int.ONE) {
-                            newList.add(
-                                it + Int.ONE,
-                                HomeRecommendationHeadlineTopAdsDataModel(headlineAds.displayAds)
-                            )
-                        }
-                    }
+                }
+            }
+            position?.let {
+                if (newList.size >= position + Int.ONE) {
+                    newList.add(
+                        it + Int.ONE,
+                        HomeRecommendationHeadlineTopAdsDataModel(headlineAds.displayAds)
+                    )
                 }
             }
         }
@@ -164,7 +208,8 @@ class HomeRecommendationViewModel @Inject constructor(
     }
 
     fun loadNextData(tabName: String, recomId: Int, count: Int, page: Int, locationParam: String = "", sourceType: String) {
-        val list = _homeRecommendationLiveData.value?.homeRecommendations?.toMutableList() ?: mutableListOf()
+        val list = _homeRecommendationLiveData.value?.homeRecommendations?.toMutableList()
+            ?: mutableListOf()
         list.add(loadMoreModel)
         _homeRecommendationLiveData.postValue(
             _homeRecommendationLiveData.value?.copy(
@@ -212,7 +257,8 @@ class HomeRecommendationViewModel @Inject constructor(
     }
 
     fun updateWishlist(id: String, position: Int, isWishlisted: Boolean) {
-        val list = _homeRecommendationLiveData.value?.homeRecommendations?.toMutableList() ?: mutableListOf()
+        val list = _homeRecommendationLiveData.value?.homeRecommendations?.toMutableList()
+            ?: mutableListOf()
         var recommendationItem: HomeRecommendationItemDataModel? = null
         var recommendationItemPosition: Int = -1
         if (list.getOrNull(position)?.getUniqueIdentity() == id) {
