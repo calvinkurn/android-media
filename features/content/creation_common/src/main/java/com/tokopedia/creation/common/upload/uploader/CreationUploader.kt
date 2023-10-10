@@ -13,7 +13,7 @@ interface CreationUploader {
 
     fun observe(): Flow<CreationUploadResult>
 
-    fun retry()
+    fun retry(removedNotificationId: Int)
 
     suspend fun deleteTopQueue()
 

@@ -1,11 +1,14 @@
 package com.tokopedia.creation.common.upload.uploader
 
+import android.content.Context
+import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import androidx.work.ExistingWorkPolicy
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.google.gson.Gson
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.creation.common.upload.const.CreationUploadConst
 import com.tokopedia.creation.common.upload.domain.repository.CreationUploadQueueRepository
 import com.tokopedia.creation.common.upload.model.CreationUploadData
@@ -22,6 +25,7 @@ import javax.inject.Inject
  * Created By : Jonathan Darwin on September 15, 2023
  */
 class CreationUploaderImpl @Inject constructor(
+    @ApplicationContext private val appContext: Context,
     private val workManager: WorkManager,
     private val creationUploadQueueRepository: CreationUploadQueueRepository,
     private val gson: Gson,
@@ -104,7 +108,9 @@ class CreationUploaderImpl @Inject constructor(
         }
     }
 
-    override fun retry() {
+    override fun retry(removedNotificationId: Int) {
+        NotificationManagerCompat.from(appContext).cancel(removedNotificationId)
+
         startWorkManager()
     }
 

@@ -161,7 +161,7 @@ class PostProgressUpdateView @JvmOverloads constructor(
 
         setProgressUpdate(0, 0)
 
-        uploader.retry()
+        uploader.retry(-1)
     }
 
     private val submitPostReceiver: BroadcastReceiver by lazy {

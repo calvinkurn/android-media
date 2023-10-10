@@ -533,13 +533,13 @@ class FeedBaseFragment :
                             binding.uploadView.setThumbnail(uploadResult.data.notificationCover)
                             binding.uploadView.setListener(object : UploadInfoView.Listener {
                                 override fun onRetryClicked(view: UploadInfoView) {
-                                    creationUploader.retry()
+                                    creationUploader.retry(uploadResult.data.notificationIdAfterUpload)
                                 }
 
                                 override fun onCloseWhenFailedClicked(view: UploadInfoView) {
                                     launch {
                                         creationUploader.deleteTopQueue()
-                                        creationUploader.retry()
+                                        creationUploader.retry(uploadResult.data.notificationIdAfterUpload)
                                         binding.uploadView.hide()
                                     }
 

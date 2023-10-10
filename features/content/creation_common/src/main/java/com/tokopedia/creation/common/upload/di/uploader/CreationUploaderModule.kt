@@ -33,11 +33,13 @@ class CreationUploaderModule {
 
     @Provides
     fun provideCreationUploader(
+        @ApplicationContext appContext: Context,
         workManager: WorkManager,
         creationUploadQueueRepository: CreationUploadQueueRepository,
         gson: Gson,
     ): CreationUploader {
         return CreationUploaderImpl(
+            appContext = appContext,
             workManager = workManager,
             creationUploadQueueRepository = creationUploadQueueRepository,
             gson = gson,

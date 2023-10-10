@@ -46,8 +46,6 @@ class CreationUploadReceiver : BroadcastReceiver() {
         val uploadDataRaw = intent?.getStringExtra(EXTRA_UPLOAD_DATA).orEmpty()
         val uploadData = CreationUploadData.parseFromJson(uploadDataRaw, gson)
 
-        NotificationManagerCompat.from(context).cancel(uploadData.notificationIdAfterUpload)
-
         val action = intent?.getIntExtra(EXTRA_ACTION, 0).orZero()
 
         when(action) {
@@ -56,13 +54,13 @@ class CreationUploadReceiver : BroadcastReceiver() {
                     analytic.clickRetryUpload(uploadData.authorId, uploadData.authorType, uploadData.creationId)
 
                 scope.launch {
-                    creationUploader.retry()
+                    creationUploader.retry(uploadData.notificationIdAfterUpload)
                 }
             }
             Action.RemoveQueue.value -> {
                 scope.launch {
                     uploadQueueRepository.delete(uploadData.queueId)
-                    creationUploader.retry()
+                    creationUploader.retry(uploadData.notificationIdAfterUpload)
                 }
             }
         }
