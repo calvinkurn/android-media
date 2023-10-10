@@ -54,7 +54,6 @@ class UniversalInboxWidgetMetaViewHolder(
             progressState = uiModel.widgetError.isLocalLoadLoading
             refreshBtn?.setOnClickListener {
                 progressState = true
-                uiModel.widgetError.isLocalLoadLoading = true
                 listener.onRefreshWidgetMeta()
             }
             show()

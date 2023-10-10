@@ -7,6 +7,9 @@ import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMap
 import com.tokopedia.localizationchooseaddress.domain.model.GetDefaultChosenAddressParam
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetDefaultChosenAddressUseCase
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.loginregister.login.di.ActivityComponentFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -45,23 +48,32 @@ class GetDefaultChosenAddressService : JobIntentServiceX(), CoroutineScope {
                         isTokonow = true
                     )
                 ).response
-                val address = chosenAddress.data
-                val tokonow = chosenAddress.tokonow
-                ChooseAddressUtils.updateLocalizingAddressDataFromOther(
-                    applicationContext,
-                    addressId = address.addressId.toString(),
-                    cityId = address.cityId.toString(),
-                    districtId = address.districtId.toString(),
-                    lat = address.latitude,
-                    long = address.longitude,
-                    label = "${address.addressName} ${address.receiverName}",
-                    postalCode = address.postalCode,
-                    shopId = tokonow.shopId.toString(),
-                    warehouseId = tokonow.warehouseId.toString(),
-                    warehouses = TokonowWarehouseMapper.mapWarehousesResponseToLocal(tokonow.warehouses),
-                    serviceType = tokonow.serviceType,
-                    lastUpdate = tokonow.tokonowLastUpdate
-                )
+                if (chosenAddress.error.detail.isEmpty()) {
+                    val address = it.data
+                    val tokonow = it.tokonow
+                    if (address.cityId != 0) {
+                        ChooseAddressUtils.updateLocalizingAddressDataFromOther(
+                            applicationContext,
+                            addressId = address.addressId.toString(),
+                            cityId = address.cityId.toString(),
+                            districtId = address.districtId.toString(),
+                            lat = address.latitude,
+                            long = address.longitude,
+                            label = "${address.addressName} ${address.receiverName}",
+                            postalCode = address.postalCode,
+                            shopId = tokonow.shopId.toString(),
+                            warehouseId = tokonow.warehouseId.toString(),
+                            warehouses = TokonowWarehouseMapper.mapWarehousesResponseToLocal(tokonow.warehouses),
+                            serviceType = tokonow.serviceType,
+                            lastUpdate = tokonow.tokonowLastUpdate
+                        )
+                    } else {
+                        ChooseAddressUtils.updateLocalizingAddressDataFromOther(
+                            applicationContext,
+                            ChooseAddressConstant.defaultAddress
+                        )
+                    }
+                }
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -81,4 +93,5 @@ class GetDefaultChosenAddressService : JobIntentServiceX(), CoroutineScope {
             }
         }
     }
+
 }

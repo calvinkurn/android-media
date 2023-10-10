@@ -38,7 +38,7 @@ internal object SaveAddOnStateMapper {
                         if (addOnProductData.id == newAddOnProductData.id) {
                             AddOnDataRequest(
                                 addOnId = newAddOnProductData.id.toLongOrZero(),
-                                addOnQty = SAVE_ADD_ON_STATE_QUANTITY,
+                                addOnQty = if (addOnProductData.fixedQuantity) SAVE_ADD_ON_STATE_QUANTITY else product.orderQuantity,
                                 addOnMetadata = AddOnMetadataRequest(),
                                 addOnUniqueId = newAddOnProductData.uniqueId,
                                 addOnType = newAddOnProductData.type,
@@ -47,7 +47,7 @@ internal object SaveAddOnStateMapper {
                         } else {
                             AddOnDataRequest(
                                 addOnId = addOnProductData.id.toLongOrZero(),
-                                addOnQty = SAVE_ADD_ON_STATE_QUANTITY,
+                                addOnQty = if (addOnProductData.fixedQuantity) SAVE_ADD_ON_STATE_QUANTITY else product.orderQuantity,
                                 addOnMetadata = AddOnMetadataRequest(),
                                 addOnUniqueId = addOnProductData.uniqueId,
                                 addOnType = addOnProductData.type,
@@ -83,7 +83,7 @@ internal object SaveAddOnStateMapper {
                     addOnData = product.addOnsProductData.data.map { addOnProductData ->
                         AddOnDataRequest(
                             addOnId = addOnProductData.id.toLongOrZero(),
-                            addOnQty = product.orderQuantity,
+                            addOnQty = if (addOnProductData.fixedQuantity) SAVE_ADD_ON_STATE_QUANTITY else product.orderQuantity,
                             addOnMetadata = AddOnMetadataRequest(),
                             addOnUniqueId = addOnProductData.uniqueId,
                             addOnType = addOnProductData.type,

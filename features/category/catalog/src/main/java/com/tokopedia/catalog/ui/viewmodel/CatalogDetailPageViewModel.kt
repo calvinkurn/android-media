@@ -11,6 +11,9 @@ import com.tokopedia.searchbar.navigation_component.domain.GetNotificationUseCas
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
 class CatalogDetailPageViewModel @Inject constructor(
@@ -31,6 +34,9 @@ class CatalogDetailPageViewModel @Inject constructor(
     private val _totalCartItem = MutableLiveData<Int>()
     val totalCartItem: LiveData<Int>
         get() = _totalCartItem
+
+    private val _scrollEvents = MutableStateFlow(0)
+    val scrollEvents: Flow<Int> = _scrollEvents.asStateFlow()
 
     fun isUserLoggedIn(): Boolean {
         return getUserId().isNotBlank()
@@ -67,5 +73,9 @@ class CatalogDetailPageViewModel @Inject constructor(
                 _errorsToaster.postValue(it)
             }
         )
+    }
+
+    fun emitScrollEvent(y: Int) {
+        _scrollEvents.value = y
     }
 }

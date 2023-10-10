@@ -59,7 +59,8 @@ open class BaseOrderSummaryPageViewModelTest {
     @MockK(relaxed = true)
     lateinit var getPrescriptionIdsUseCase: GetPrescriptionIdsUseCaseCoroutine
 
-    private val ratesResponseStateConverter: RatesResponseStateConverter = RatesResponseStateConverter()
+    private val ratesResponseStateConverter: RatesResponseStateConverter =
+        RatesResponseStateConverter()
 
     @MockK
     lateinit var setStateChosenAddressFromAddressUseCase: SetStateChosenAddressFromAddressUseCase
@@ -162,7 +163,7 @@ open class BaseOrderSummaryPageViewModelTest {
                 )
             },
             OrderSummaryPageCalculator(orderSummaryAnalytics, testDispatchers),
-            userSessionInterface, orderSummaryAnalytics
+            userSessionInterface, orderSummaryAnalytics, 1000L
         )
 
         coEvery { dynamicPaymentFeeUseCase.invoke(any()) } returns emptyList()

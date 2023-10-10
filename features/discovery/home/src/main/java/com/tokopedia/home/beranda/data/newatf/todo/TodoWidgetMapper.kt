@@ -29,7 +29,7 @@ class TodoWidgetMapper @Inject constructor() {
         data: HomeTodoWidgetData.GetHomeTodoWidget,
         index: Int,
         atfData: AtfData,
-    ): Visitable<*> {
+    ): Visitable<*>? {
         return if(atfData.isCache) {
             TodoWidgetListDataModel(
                 status = TodoWidgetListDataModel.STATUS_LOADING,
@@ -45,6 +45,8 @@ class TodoWidgetMapper @Inject constructor() {
                 showShimmering = atfData.atfMetadata.isShimmer,
                 source = TodoWidgetListDataModel.SOURCE_ATF,
             )
+        } else if(data.todos.isEmpty()) {
+            null
         } else {
             TodoWidgetListDataModel(
                 id = atfData.atfMetadata.id.toString(),

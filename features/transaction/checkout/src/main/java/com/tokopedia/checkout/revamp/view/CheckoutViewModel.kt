@@ -748,6 +748,15 @@ class CheckoutViewModel @Inject constructor(
         }
     }
 
+    private fun cleanPromoFromPromoRequest(promoRequest: PromoRequest): PromoRequest {
+        return promoRequest.copy(
+            codes = arrayListOf(),
+            orders = promoRequest.orders.map {
+                return@map it.copy(codes = mutableListOf())
+            }
+        )
+    }
+
     private suspend fun getEntryPointInfo(
         checkoutItems: List<CheckoutItem>,
         oldCheckoutItems: List<CheckoutItem>
@@ -760,7 +769,7 @@ class CheckoutViewModel @Inject constructor(
 
             if (checkoutModel != null && oldCheckoutModel != null) {
                 val entryPointInfo = promoProcessor
-                    .getEntryPointInfo(generateCouponListRecommendationRequest())
+                    .getEntryPointInfo(cleanPromoFromPromoRequest(generateCouponListRecommendationRequest()))
                 return checkoutItems.map { model ->
                     if (model is CheckoutPromoModel) {
                         return@map model.copy(
@@ -1003,6 +1012,7 @@ class CheckoutViewModel @Inject constructor(
         if (orderModel != null) {
             if (result?.courier != null) {
                 val courierItemData = result.courier
+                orderModel.validationMetadata = order.validationMetadata
                 val shouldValidatePromo =
                     courierItemData.selectedShipper.logPromoCode != null && courierItemData.selectedShipper.logPromoCode!!.isNotEmpty()
                 if (shouldValidatePromo) {
@@ -1306,6 +1316,15 @@ class CheckoutViewModel @Inject constructor(
         )
     }
 
+    fun generateValidateUsePromoRequestForPromoUsage(): ValidateUsePromoRequest {
+        return promoProcessor.generateValidateUsePromoRequestForPromoUsage(
+            listData.value,
+            isTradeIn,
+            isTradeInByDropOff,
+            isOneClickShipment
+        )
+    }
+
     fun generateCouponListRecommendationRequest(): PromoRequest {
         return promoProcessor.generateCouponListRecommendationRequest(
             listData.value,
@@ -1551,7 +1570,11 @@ class CheckoutViewModel @Inject constructor(
                 ordersItem.benefitClass = selectedShipper.benefitClass
                 ordersItem.shippingPrice = selectedShipper.shippingRate.toDouble()
                 ordersItem.etaText = selectedShipper.etaText!!
-                ordersItem.validationMetadata = order.validationMetadata
+                ordersItem.validationMetadata = if (scheduleDeliveryUiModel.isSelected) {
+                    scheduleDeliveryUiModel.deliveryProduct.validationMetadata
+                } else {
+                    ""
+                }
             }
         }
         var newItems = promoProcessor.validateUseLogisticPromo(

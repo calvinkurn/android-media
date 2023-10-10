@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     app:cardCornerRadius="@dimen/layout_lvl1"
     android:padding="@dimen/spacing_lvl3">
 
@@ -13,37 +14,40 @@
 
         <include layout="@layout/view_telco_input_number" />
 
-        <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/telco_enquiry_btn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/spacing_lvl3"
-            android:layout_marginVertical="@dimen/layout_lvl1"
-            android:enabled="true"
-            android:text="@string/digital_btn_check_bill"
-            android:visibility="visible"
-            app:unifyButtonSize="large"
-            app:unifyButtonVariant="filled" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/telco_title_enquiry_result"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:lines="1"
-            android:paddingLeft="@dimen/spacing_lvl3"
-            android:paddingTop="@dimen/layout_lvl2"
-            android:paddingRight="@dimen/spacing_lvl3"
-            android:text="@string/digital_title_details_bills"
-            android:textColor="@color/Unify_NN950_96"
-            app:typographyType="heading_5" />
-
         <LinearLayout
-            android:id="@+id/telco_enquiry_result"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/spacing_lvl4"
-            android:orientation="vertical"
-            android:visibility="gone" />
+            android:orientation="horizontal">
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/telco_secondary_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginHorizontal="8dp"
+                android:layout_marginVertical="8dp"
+                android:enabled="true"
+                android:text="@string/digital_btn_check_bill"
+                android:visibility="gone"
+                tools:visibility="visible"
+                app:unifyButtonSize="large"
+                app:unifyButtonVariant="ghost"
+                />
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/telco_main_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="8dp"
+                android:layout_marginVertical="8dp"
+                android:layout_weight="1"
+                android:enabled="true"
+                android:text="@string/digital_btn_check_bill"
+                android:visibility="visible"
+                app:unifyButtonSize="large"
+                app:unifyButtonVariant="filled" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
