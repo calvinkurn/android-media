@@ -1,6 +1,7 @@
 package com.tokopedia.editor.ui.main
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -10,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.editor.R
 import com.tokopedia.editor.databinding.ActivityMainEditorBinding
 import com.tokopedia.editor.di.ModuleInjector
@@ -117,6 +119,14 @@ open class MainEditorActivity : AppCompatActivity()
 
         setDataParam()
         initObserver()
+    }
+
+    override fun attachBaseContext(newBase: Context?) {
+        super.attachBaseContext(newBase)
+
+        if (isSplitInstallEnabled()) {
+            SplitCompat.installActivity(this)
+        }
     }
 
     override fun onCloseClicked() {
@@ -300,5 +310,18 @@ open class MainEditorActivity : AppCompatActivity()
         ModuleInjector
             .get(this)
             .inject(this)
+    }
+
+    /**
+     * A hansel-able feature toggle.
+     *
+     * If the SplitCompat.install(...) won't work properly,
+     * we are able to disable by patching it through Hansel.
+     *
+     * This temporary method, this LOC will be deleted in
+     * upcoming two versions after this editor got released.
+     */
+    private fun isSplitInstallEnabled(): Boolean {
+        return true
     }
 }
