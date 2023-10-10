@@ -64,6 +64,7 @@ fun mockInitialDataModel(
                                     templateTracker = "1235df8",
                                 ),
                                 productCount = if (isProductCountEmpty) "" else "$productCount",
+                                status = StoriesDetailItem.StoryStatus.Active,
                             ),
                             StoriesDetailItem(
                                 id = "1",
@@ -80,6 +81,7 @@ fun mockInitialDataModel(
                                     templateTracker = "1235df8",
                                 ),
                                 productCount = if (isProductCountEmpty) "" else "$productCount",
+                                status = StoriesDetailItem.StoryStatus.Active,
                             ),
                             StoriesDetailItem(
                                 id = "2",
@@ -96,6 +98,7 @@ fun mockInitialDataModel(
                                     templateTracker = "1235df8",
                                 ),
                                 productCount = if (isProductCountEmpty) "" else "$productCount",
+                                status = StoriesDetailItem.StoryStatus.Active,
                             ),
                         ),
                     )
@@ -125,6 +128,7 @@ fun mockInitialDataModel(
                                     templateTracker = "1235df8",
                                 ),
                                 productCount = if (isProductCountEmpty) "" else "$productCount",
+                                status = StoriesDetailItem.StoryStatus.Active,
                             ),
                             StoriesDetailItem(
                                 id = "1",
@@ -141,6 +145,7 @@ fun mockInitialDataModel(
                                     templateTracker = "1235df8",
                                 ),
                                 productCount = if (isProductCountEmpty) "" else "$productCount",
+                                status = StoriesDetailItem.StoryStatus.Active,
                             ),
                             StoriesDetailItem(
                                 id = "2",
@@ -157,6 +162,7 @@ fun mockInitialDataModel(
                                     templateTracker = "1235df8",
                                 ),
                                 productCount = if (isProductCountEmpty) "" else "$productCount",
+                                status = StoriesDetailItem.StoryStatus.Active,
                             ),
                         ),
                     )
@@ -186,6 +192,7 @@ fun mockInitialDataModel(
                                     templateTracker = "1235df8",
                                 ),
                                 productCount = if (isProductCountEmpty) "" else "$productCount",
+                                status = StoriesDetailItem.StoryStatus.Active,
                             ),
                             StoriesDetailItem(
                                 id = "1",
@@ -202,6 +209,7 @@ fun mockInitialDataModel(
                                     templateTracker = "1235df8",
                                 ),
                                 productCount = if (isProductCountEmpty) "" else "$productCount",
+                                status = StoriesDetailItem.StoryStatus.Active,
                             ),
                             StoriesDetailItem(
                                 id = "2",
@@ -218,6 +226,7 @@ fun mockInitialDataModel(
                                     templateTracker = "1235df8",
                                 ),
                                 productCount = if (isProductCountEmpty) "" else "$productCount",
+                                status = StoriesDetailItem.StoryStatus.Active,
                             ),
                         ),
                     )
@@ -283,6 +292,7 @@ fun mockInitialDataModelForDeleteStories(
                                     templateTracker = "1235df8",
                                 ),
                                 productCount = if (isProductCountEmpty) "" else "$productCount",
+                                status = StoriesDetailItem.StoryStatus.Active,
                             ),
                         ),
                     )
@@ -312,6 +322,7 @@ fun mockInitialDataModelForDeleteStories(
                                     templateTracker = "1235df8",
                                 ),
                                 productCount = if (isProductCountEmpty) "" else "$productCount",
+                                status = StoriesDetailItem.StoryStatus.Active,
                             ),
                         ),
                     )
@@ -341,6 +352,7 @@ fun mockInitialDataModelForDeleteStories(
                                     templateTracker = "1235df8",
                                 ),
                                 productCount = if (isProductCountEmpty) "" else "$productCount",
+                                status = StoriesDetailItem.StoryStatus.Active,
                             ),
                         ),
                     )
@@ -404,6 +416,7 @@ fun mockInitialDataModelFetchPrevAndNext(): StoriesUiModel {
                                 activityTracker = "12345",
                                 templateTracker = "1235df8",
                             ),
+                            status = StoriesDetailItem.StoryStatus.Active,
                         ),
                         StoriesDetailItem(
                             id = "1",
@@ -419,6 +432,7 @@ fun mockInitialDataModelFetchPrevAndNext(): StoriesUiModel {
                                 activityTracker = "12345",
                                 templateTracker = "1235df8",
                             ),
+                            status = StoriesDetailItem.StoryStatus.Active,
                         ),
                         StoriesDetailItem(
                             id = "2",
@@ -434,6 +448,7 @@ fun mockInitialDataModelFetchPrevAndNext(): StoriesUiModel {
                                 activityTracker = "12345",
                                 templateTracker = "1235df8",
                             ),
+                            status = StoriesDetailItem.StoryStatus.Active,
                         ),
                     ),
                 ),
@@ -498,6 +513,7 @@ fun mockInitialDataModelFetchPrev(): StoriesUiModel {
                                 activityTracker = "12345",
                                 templateTracker = "1235df8",
                             ),
+                            status = StoriesDetailItem.StoryStatus.Active,
                         ),
                         StoriesDetailItem(
                             id = "1",
@@ -513,6 +529,7 @@ fun mockInitialDataModelFetchPrev(): StoriesUiModel {
                                 activityTracker = "12345",
                                 templateTracker = "1235df8",
                             ),
+                            status = StoriesDetailItem.StoryStatus.Active,
                         ),
                         StoriesDetailItem(
                             id = "2",
@@ -528,6 +545,7 @@ fun mockInitialDataModelFetchPrev(): StoriesUiModel {
                                 activityTracker = "12345",
                                 templateTracker = "1235df8",
                             ),
+                            status = StoriesDetailItem.StoryStatus.Active,
                         ),
                     ),
                 ),

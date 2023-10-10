@@ -1,6 +1,5 @@
 package com.tokopedia.stories
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
@@ -34,13 +33,11 @@ class StoriesUITest {
         source = "shop-entrypoint",
         sourceId = "123",
     )
-    private val handle: SavedStateHandle = SavedStateHandle()
     private val repository: StoriesRepository = mockk(relaxed = true)
     private val userSession: UserSessionInterface = mockk(relaxed = true)
 
     private fun getStoriesRobot() = StoriesRobotUITest(
         args = args,
-        handle = handle,
         repository = repository,
         userSession = userSession,
     )

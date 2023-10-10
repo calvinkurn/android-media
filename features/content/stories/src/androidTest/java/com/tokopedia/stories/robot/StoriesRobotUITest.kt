@@ -1,9 +1,7 @@
 package com.tokopedia.stories.robot
 
-import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.SavedStateHandle
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions.click
@@ -34,7 +32,6 @@ import com.tokopedia.stories.R as storiesR
 
 internal class StoriesRobotUITest(
     private val args: StoriesArgsModel,
-    private val handle: SavedStateHandle,
     private val repository: StoriesRepository,
     private val userSession: UserSessionInterface,
 ) {
@@ -42,7 +39,6 @@ internal class StoriesRobotUITest(
     private val viewModel: StoriesViewModel by lazy {
         StoriesViewModel(
             args = args,
-            handle = handle,
             repository = repository,
             userSession = userSession,
         )
@@ -50,16 +46,13 @@ internal class StoriesRobotUITest(
 
     private val viewModelFactory = object : StoriesViewModelFactory.Creator {
         override fun create(
-            activity: FragmentActivity,
             args: StoriesArgsModel,
         ): StoriesViewModelFactory {
             return StoriesViewModelFactory(
-                activity = activity,
                 args = args,
                 factory = object : StoriesViewModel.Factory {
                     override fun create(
                         args: StoriesArgsModel,
-                        handle: SavedStateHandle
                     ): StoriesViewModel {
                         return viewModel
                     }
