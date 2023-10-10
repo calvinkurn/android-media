@@ -277,4 +277,7 @@ public class RemoteConfigKey {
     public static final String MAINAPP_DISABLED_STORIES_ENTRY_POINTS = "android_main_app_disabled_stories_entry_points";
 
     public static final String SELLERAPP_DISABLED_STORIES_ENTRY_POINTS = "android_seller_app_disabled_stories_entry_points";
+
+    public static final String ANDROID_ENABLE_GENERATE_WIDEVINE_ID = "android_enable_generate_widevine_id";
+    public static final String ANDROID_ENABLE_GENERATE_WIDEVINE_ID_SUSPEND = "android_enable_generate_widevine_id_suspend";
 }
