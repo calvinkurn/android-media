@@ -222,7 +222,7 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
 
         onGetHomeLayoutData_thenReturn(listOf(createHomeLayoutData()))
 
-        viewModel.onScroll(1, LocalCacheModel(), listOf(), true)
+        viewModel.onScroll(1, LocalCacheModel(), listOf())
 
         val expectedBannerItem = BannerDataModel(
             channelModel = ChannelModel(
@@ -529,7 +529,7 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
         )
 
         // fetch widget one by one
-        viewModel.onScroll(1, localCacheModel, listOf(), true)
+        viewModel.onScroll(1, localCacheModel, listOf())
 
         // set second mock data to replace first mock data category list
         onGetCategoryList_thenReturn(Exception())
@@ -1183,7 +1183,7 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
             removeAbleWidgets = listOf()
         )
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-        viewModel.onScroll(2, LocalCacheModel(), listOf(), true)
+        viewModel.onScroll(2, LocalCacheModel(), listOf())
 
         val expected = listOf(
             createHomeProductCardUiModel(
@@ -1236,7 +1236,7 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
 
         viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-        viewModel.onScroll(2, LocalCacheModel(), listOf(), false)
+        viewModel.onScroll(2, LocalCacheModel(), listOf())
 
         val expected = listOf(
             createHomeProductCardUiModel(
@@ -1400,7 +1400,7 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
             removeAbleWidgets = listOf()
         )
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-        viewModel.onScroll(2, LocalCacheModel(), listOf(), true)
+        viewModel.onScroll(2, LocalCacheModel(), listOf())
 
         val repurchaseUiModel = TokoNowRepurchaseUiModel(
             id = "1001",
@@ -2931,8 +2931,7 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
 
         viewModel.getHomeLayout(
             localCacheModel = LocalCacheModel(),
-            removeAbleWidgets = listOf(),
-            enableNewRepurchase = true
+            removeAbleWidgets = listOf()
         )
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
