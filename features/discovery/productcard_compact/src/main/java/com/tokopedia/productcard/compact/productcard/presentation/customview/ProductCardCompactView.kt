@@ -227,9 +227,8 @@ class ProductCardCompactView @JvmOverloads constructor(
                     }
                 }
             }
+            promoLabel?.show()
         } else {
-            promoLayoutViewStub.hide()
-            slashPriceTypography?.hide()
             promoLabel?.hide()
         }
     }
@@ -561,7 +560,7 @@ class ProductCardCompactView @JvmOverloads constructor(
         if(progressBarViewStub.parent != null) {
             val progressBarView = progressBarViewStub
                 .inflateView(R.layout.layout_product_card_compact_progress_bar)
-            progressBar = progressBarView.findViewById(R.id.progress_bar)
+            progressBar = progressBarView as? ProgressBarUnify
             progressBarViewStub.show()
             progressBar?.show()
         }
@@ -569,7 +568,7 @@ class ProductCardCompactView @JvmOverloads constructor(
         if(progressTypographyViewStub.parent != null) {
             val progressBarTypographyView = progressTypographyViewStub
                 .inflateView(R.layout.layout_product_card_compact_progress_typography)
-            progressTypography = progressBarTypographyView.findViewById(R.id.progress_typography)
+            progressTypography = progressBarTypographyView as? Typography
             progressTypographyViewStub.show()
             progressTypography?.show()
         }
@@ -584,7 +583,6 @@ class ProductCardCompactView @JvmOverloads constructor(
             slashPriceTypography = view.findViewById(R.id.slash_price_typography)
             promoLayoutViewStub.show()
             promoLayout?.show()
-            promoLabel?.show()
         }
     }
 
