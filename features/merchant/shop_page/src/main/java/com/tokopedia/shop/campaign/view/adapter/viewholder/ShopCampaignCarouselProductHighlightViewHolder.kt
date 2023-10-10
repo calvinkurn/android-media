@@ -84,7 +84,8 @@ class ShopCampaignCarouselProductHighlightViewHolder(
                 hasThreeDots = false,
                 shopHomeProductViewModel = it,
                 widgetName = it.name,
-                statusCampaign = uiModel.statusCampaign
+                statusCampaign = uiModel.statusCampaign,
+                forceLightModeColor = false
             ).copy(
                 stockBarLabelColor = stockBarLabelColor
             )

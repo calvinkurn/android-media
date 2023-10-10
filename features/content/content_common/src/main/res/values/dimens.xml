@@ -29,4 +29,7 @@
 
     <!--User Report-->
     <dimen name="content_user_report_list_divider_height">0.5dp</dimen>
+
+    <!--Partner Info-->
+    <dimen name="content_follow_button_width">56dp</dimen>
 </resources>

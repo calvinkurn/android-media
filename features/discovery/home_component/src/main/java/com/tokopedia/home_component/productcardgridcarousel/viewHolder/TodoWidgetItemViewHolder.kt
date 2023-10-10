@@ -1,6 +1,7 @@
 package com.tokopedia.home_component.productcardgridcarousel.viewHolder
 
 import android.graphics.Paint
+import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
@@ -8,9 +9,13 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.databinding.HomeComponentTodoWidgetItemBinding
+import com.tokopedia.home_component.listener.TodoWidgetComponentListener
 import com.tokopedia.home_component.model.HomeComponentCta
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselTodoWidgetDataModel
+import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselTodoWidgetDataModel.Companion.PAYLOAD_ITEM_POSITION
 import com.tokopedia.home_component.util.TodoWidgetUtil
+import com.tokopedia.home_component.viewholders.TodoWidgetDismissListener
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -22,7 +27,9 @@ import com.tokopedia.utils.view.binding.viewBinding
  * Created by frenzel
  */
 class TodoWidgetItemViewHolder(
-    view: View
+    view: View,
+    private val todoWidgetComponentListener: TodoWidgetComponentListener,
+    private val todoWidgetDismissListener: TodoWidgetDismissListener,
 ) : AbstractViewHolder<CarouselTodoWidgetDataModel>(view) {
 
     private var binding: HomeComponentTodoWidgetItemBinding? by viewBinding()
@@ -35,40 +42,50 @@ class TodoWidgetItemViewHolder(
         setLayout(element)
     }
 
+    override fun bind(element: CarouselTodoWidgetDataModel, payloads: MutableList<Any>) {
+        if(payloads.isNotEmpty() && (payloads[0] as? Bundle)?.getBoolean(PAYLOAD_ITEM_POSITION).orFalse()) {
+            setListener(element)
+        }
+    }
+
     private fun setLayout(element: CarouselTodoWidgetDataModel) {
         binding?.run {
             cardContainerTodoWidget.setInteraction(element)
-
-            icCloseTodoWidget.setOnClickListener {
-                element.todoWidgetDismissListener.dismiss(element, element.cardPosition)
-            }
-
-            cardContainerTodoWidget.addOnImpressionListener(element) {
-                element.todoWidgetComponentListener.onTodoImpressed(element)
-            }
-
-            cardContainerTodoWidget.setOnClickListener {
-                element.todoWidgetComponentListener.onTodoCardClicked(element)
-            }
-
+            setListener(element)
             setLayoutWidth(element)
             setTextContent(element)
             mappingCtaButton(element)
         }
     }
 
+    private fun setListener(element: CarouselTodoWidgetDataModel) {
+        binding?.run {
+            cardContainerTodoWidget.addOnImpressionListener(element) {
+                todoWidgetComponentListener.onTodoImpressed(element)
+            }
+
+            cardContainerTodoWidget.setOnClickListener {
+                todoWidgetComponentListener.onTodoCardClicked(element)
+            }
+
+            icCloseTodoWidget.setOnClickListener {
+                todoWidgetDismissListener.dismiss(element, element.cardPosition)
+            }
+        }
+    }
+
     private fun setTextContent(element: CarouselTodoWidgetDataModel) {
         binding?.run {
-            titleTodoWidget.text = element.title
-            imageTodoWidget.setImageUrl(element.imageUrl)
-            dueDateTodoWidget.renderData(element.dueDate)
-            descTodoWidget.renderData(element.contextInfo)
-            priceTodoWidget.renderData(element.price)
+            titleTodoWidget.text = element.data.title
+            imageTodoWidget.setImageUrl(element.data.imageUrl)
+            dueDateTodoWidget.renderData(element.data.dueDate)
+            descTodoWidget.renderData(element.data.contextInfo)
+            priceTodoWidget.renderData(element.data.price)
             slashedPriceTodoWidget.apply {
-                renderData(element.slashedPrice)
+                renderData(element.data.slashedPrice)
                 paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
             }
-            labelDiscountTodoWidget.renderData(element.discountPercentage)
+            labelDiscountTodoWidget.renderData(element.data.discountPercentage)
         }
     }
 
@@ -91,14 +108,14 @@ class TodoWidgetItemViewHolder(
         binding?.ctaTodoWidget?.run {
             isInverse = false
 
-            visibility = if (element.ctaText.isEmpty()) {
+            visibility = if (element.data.ctaText.isEmpty()) {
                 View.GONE
                 return
             } else {
                 View.VISIBLE
             }
-            val mode = element.ctaMode.ifEmpty { HomeComponentCta.CTA_MODE_MAIN }
-            val type = element.ctaType.ifEmpty { HomeComponentCta.CTA_TYPE_FILLED }
+            val mode = element.data.ctaMode.ifEmpty { HomeComponentCta.CTA_MODE_MAIN }
+            val type = element.data.ctaType.ifEmpty { HomeComponentCta.CTA_TYPE_FILLED }
 
             when (type) {
                 HomeComponentCta.CTA_TYPE_FILLED -> buttonVariant = UnifyButton.Variant.FILLED
@@ -114,10 +131,10 @@ class TodoWidgetItemViewHolder(
                 HomeComponentCta.CTA_MODE_INVERTED -> isInverse = true
             }
 
-            text = element.ctaText
+            text = element.data.ctaText
 
             setOnClickListener {
-                element.todoWidgetComponentListener.onTodoCTAClicked(element)
+                todoWidgetComponentListener.onTodoCTAClicked(element)
             }
         }
     }

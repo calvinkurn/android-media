@@ -10,7 +10,7 @@ import com.tokopedia.sellerorder.databinding.ItemLogisticInfoBinding
 import com.tokopedia.sellerorder.detail.data.model.SomDetailOrder
 import com.tokopedia.utils.view.binding.viewBinding
 
-class SomDetailLogisticInfoAdapter(private val logisticInfoAll: ArrayList<SomDetailOrder.Data.GetSomDetail.LogisticInfo.All>) :
+class SomDetailLogisticInfoAdapter(private val logisticInfoAll: ArrayList<SomDetailOrder.GetSomDetail.LogisticInfo.All>) :
     RecyclerView.Adapter<SomDetailLogisticInfoAdapter.SomDetailLogisticInfoViewHolder>() {
 
     override fun onCreateViewHolder(
@@ -35,7 +35,7 @@ class SomDetailLogisticInfoAdapter(private val logisticInfoAll: ArrayList<SomDet
 
         private val binding by viewBinding<ItemLogisticInfoBinding>()
 
-        fun bind(data: SomDetailOrder.Data.GetSomDetail.LogisticInfo.All, position: Int) {
+        fun bind(data: SomDetailOrder.GetSomDetail.LogisticInfo.All, position: Int) {
             binding?.run {
                 tvNumberItemInfo.text = StringBuilder("${position + 1}.")
                 tvContentItemInfo.text = MethodChecker.fromHtml(data.infoTextLong)

@@ -169,6 +169,9 @@ object DeeplinkMainApp {
                 DeeplinkMapperUoh.getRegisteredNavigationUohOrder(c, d)
             }
         ),
+        "buymoresavemore" to mutableListOf(
+            DLP.goTo(DeeplinkMapperMerchant::getRegisteredNavigationForOfferLandingPage)
+        ),
         "cart" to mutableListOf(
             DLP.goTo { deeplink: String ->
                 DeeplinkMapperMarketplace.getRegisteredNavigationMarketplace(deeplink)
@@ -1210,6 +1213,12 @@ object DeeplinkMainApp {
             DLP.startsWith("order") { deeplink: String ->
                 DeeplinkMapperOrder.getSnapshotOrderInternalAppLink(deeplink)
             }
+        ),
+        "stories" to mutableListOf(
+            DLP.matchPattern(
+                "shop/{shop_id}",
+                DeeplinkMapperContent::getRegisteredNavigation
+            )
         ),
         "talk" to mutableListOf(
             DLP.goTo { deeplink: String ->

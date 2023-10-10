@@ -297,7 +297,7 @@ class TokoNowHomeViewModel @Inject constructor(
             )
 
             channelToken = homeLayoutResponse.first().token
-            hasBlockedAddToCart = tickerData?.first.orFalse()
+            hasBlockedAddToCart = tickerData?.blockAddToCart.orFalse()
 
             homeLayoutItemList.mapHomeLayoutList(
                 response = homeLayoutResponse,
@@ -306,7 +306,7 @@ class TokoNowHomeViewModel @Inject constructor(
                 localCacheModel = localCacheModel,
                 isLoggedIn = userSession.isLoggedIn,
                 hasBlockedAddToCart = hasBlockedAddToCart,
-                tickerList = tickerData?.second.orEmpty()
+                tickerList = tickerData?.tickerList.orEmpty()
             )
 
             val data = HomeLayoutListUiModel(
