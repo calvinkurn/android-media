@@ -431,25 +431,11 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                     }
                 )
         }
+        binding?.clBottomSheetHeader?.root?.visible()
     }
 
     private fun renderTransparentHeader() {
-        binding?.clBottomSheetHeader?.root?.background = null
-        binding?.clBottomSheetHeader?.tpgBottomSheetHeaderTitle
-            ?.setTextColorCompat(unifyprinciplesR.color.Unify_Static_White)
-        context?.let {
-            binding?.clBottomSheetHeader?.btnBottomSheetHeaderClose
-                ?.setImageDrawable(
-                    getIconUnifyDrawable(
-                        context = it,
-                        iconId = IconUnify.CLOSE,
-                        assetColor = ContextCompat.getColor(
-                            it,
-                            unifyprinciplesR.color.Unify_Static_White
-                        )
-                    )
-                )
-        }
+        binding?.clBottomSheetHeader?.root?.gone()
     }
 
     private fun observeKeyboardVisibility() {
