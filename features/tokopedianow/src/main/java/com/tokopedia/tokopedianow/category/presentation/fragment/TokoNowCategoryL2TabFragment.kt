@@ -1008,12 +1008,24 @@ class TokoNowCategoryL2TabFragment : Fragment() {
                 data: TokoNowCategoryMenuItemUiModel,
                 itemPosition: Int
             ) {
+                val categoryIdL1 = data.id
+                val categoryIdL2 = getCategoryIdL2()
+                val headerName = data.headerName
+                val warehouseIds = viewModel.getWarehouseIds()
+                categoryL2Analytic.categoryMenuAnalytic
+                    .sendClickCategoryRecomWidgetEvent(categoryIdL1, categoryIdL2, headerName, warehouseIds)
             }
 
             override fun onCategoryMenuItemImpressed(
                 data: TokoNowCategoryMenuItemUiModel,
                 itemPosition: Int
             ) {
+                val categoryIdL1 = data.id
+                val categoryIdL2 = getCategoryIdL2()
+                val headerName = data.headerName
+                val warehouseIds = viewModel.getWarehouseIds()
+                categoryL2Analytic.categoryMenuAnalytic
+                    .sendImpressionCategoryRecomWidgetEvent(categoryIdL1, categoryIdL2, headerName, warehouseIds)
             }
 
             override fun onCategoryMenuWidgetImpression(data: TokoNowCategoryMenuUiModel) {
@@ -1047,4 +1059,6 @@ class TokoNowCategoryL2TabFragment : Fragment() {
             }
         }
     }
+
+    private fun getCategoryIdL2() = data.categoryIdL2
 }
