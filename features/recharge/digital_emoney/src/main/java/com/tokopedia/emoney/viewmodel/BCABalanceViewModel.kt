@@ -53,8 +53,8 @@ class BCABalanceViewModel @Inject constructor(
             run {
                 try {
                     val dataBalance = bcaLibrary.C_BCACheckBalance()
-                    getPendingBalanceProcess(isoDep, dataBalance.cardNo, dataBalance.balance, rawPublicKeyString,
-                        rawPrivateKeyString, GEN_TWO, strCurrDateTime, ATD)
+                    getPendingBalanceProcess(isoDep, dataBalance.cardNo, dataBalance.balance,
+                        rawPublicKeyString, rawPrivateKeyString, GEN_TWO, strCurrDateTime, ATD)
                 } catch (e: IOException) {
                     isoDep.close()
                     errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
@@ -72,8 +72,8 @@ class BCABalanceViewModel @Inject constructor(
             run {
                 try {
                     val dataBalance = bcaLibrary.C_BCACheckBalance()
-                    getPendingBalanceProcess(isoDep, dataBalance.cardNo, dataBalance.balance, rawPublicKeyString,
-                        rawPrivateKeyString, GEN_ONE, "", "")
+                    getPendingBalanceProcess(isoDep, dataBalance.cardNo, dataBalance.balance,
+                        rawPublicKeyString, rawPrivateKeyString, GEN_ONE, "", "")
                 } catch (e: IOException) {
                     isoDep.close()
                     errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
@@ -98,16 +98,21 @@ class BCABalanceViewModel @Inject constructor(
             val payloadGetPendingBalanceQuery = BCAFlazzRequestMapper.createGetPendingBalanceParam(
                 gson, cardNumber, lastBalance, cardType
             )
-            val encParam = electronicMoneyEncryption.createEncryptedPayload(rawPublicKeyString, payloadGetPendingBalanceQuery)
-            val paramGetPendingBalanceQuery = BCAFlazzRequestMapper.createEncryptedParam(encParam.first, encParam.second)
+            val encParam = electronicMoneyEncryption.createEncryptedPayload(rawPublicKeyString,
+                payloadGetPendingBalanceQuery)
+            val paramGetPendingBalanceQuery = BCAFlazzRequestMapper.createEncryptedParam(encParam.first,
+                encParam.second)
 
             val encResult = bcaFlazzUseCase.execute(paramGetPendingBalanceQuery)
             val result = decryptPayload(encResult.data, rawPrivateKeyString)
 
             if (result.status == BCAFlazzStatus.WRITE.status) {
-                getGenerateTrxIdProcess(isoDep, cardNumber, lastBalance, rawPublicKeyString, rawPrivateKeyString, cardType, strCurrDateTime, ATD)
+                getGenerateTrxIdProcess(isoDep, cardNumber, lastBalance, rawPublicKeyString,
+                    rawPrivateKeyString, cardType, strCurrDateTime, ATD)
             } else {
-                bcaInquiryMutable.postValue(BCAFlazzResponseMapper.bcaMapper(cardNumber, lastBalance, result.attributes.imageIssuer, getIsBCAGenOne(cardType), result.attributes.amount))
+                bcaInquiryMutable.postValue(BCAFlazzResponseMapper.bcaMapper(cardNumber,
+                    lastBalance, result.attributes.imageIssuer, getIsBCAGenOne(cardType),
+                    result.attributes.amount))
             }
         }) {
             errorCardMessageMutable.postValue(it)
@@ -128,16 +133,20 @@ class BCABalanceViewModel @Inject constructor(
            val payloadGetGenerateTrxIdQuery = BCAFlazzRequestMapper.createGetBCAGenerateTrxId(
                gson, cardNumber, lastBalance, cardType
            )
-           val encParam = electronicMoneyEncryption.createEncryptedPayload(rawPublicKeyString, payloadGetGenerateTrxIdQuery)
-           val paramGetGenerateTrxIdQuery = BCAFlazzRequestMapper.createEncryptedParam(encParam.first, encParam.second)
+           val encParam = electronicMoneyEncryption.createEncryptedPayload(rawPublicKeyString,
+               payloadGetGenerateTrxIdQuery)
+           val paramGetGenerateTrxIdQuery = BCAFlazzRequestMapper.createEncryptedParam(encParam.first,
+               encParam.second)
 
             val encResult = bcaFlazzUseCase.execute(paramGetGenerateTrxIdQuery)
             val result = decryptPayload(encResult.data, rawPrivateKeyString)
 
             if (result.status == BCAFlazzStatus.WRITE.status && result.attributes.transactionID.isNotEmpty()) {
-                processSDKBCADataSession1(isoDep, cardNumber, lastBalance, rawPublicKeyString, rawPrivateKeyString, cardType, strCurrDateTime, ATD, result.attributes.transactionID)
+                processSDKBCADataSession1(isoDep, cardNumber, lastBalance, rawPublicKeyString,
+                    rawPrivateKeyString, cardType, strCurrDateTime, ATD, result.attributes.transactionID)
             } else {
-                bcaInquiryMutable.postValue(BCAFlazzResponseMapper.bcaMapper(cardNumber, lastBalance, result.attributes.imageIssuer, getIsBCAGenOne(cardType), result.attributes.amount))
+                bcaInquiryMutable.postValue(BCAFlazzResponseMapper.bcaMapper(cardNumber, lastBalance,
+                    result.attributes.imageIssuer, getIsBCAGenOne(cardType), result.attributes.amount))
             }
         }) {
             errorCardMessageMutable.postValue(it)
@@ -158,10 +167,12 @@ class BCABalanceViewModel @Inject constructor(
         if (isoDep != null) {
             run {
                 try {
-                    val bcaSession1 = bcaLibrary.C_BCAdataSession_1(strTransactionId, ATD, strCurrDateTime)
+                    val bcaSession1 = bcaLibrary.C_BCAdataSession_1(strTransactionId, ATD,
+                        strCurrDateTime)
                     if (bcaSession1.isSuccess == SUCCESS_JNI) {
                         getSessionKeyProcess(isoDep, cardNumber, lastBalance, rawPublicKeyString,
-                            rawPrivateKeyString, cardType, strCurrDateTime, ATD, strTransactionId, bcaSession1.strLogRsp)
+                            rawPrivateKeyString, cardType, strCurrDateTime, ATD, strTransactionId,
+                            bcaSession1.strLogRsp)
                     } else {
                         //TODO Check if sdk process bca session 1 fail
                         errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
@@ -192,16 +203,20 @@ class BCABalanceViewModel @Inject constructor(
             val payloadGetSessionKeyQuery = BCAFlazzRequestMapper.createGetBCAGenerateSessionKey(
                 gson, cardNumber, cardDataSession1Key, lastBalance, strTransactionId, cardType
             )
-            val encParam = electronicMoneyEncryption.createEncryptedPayload(rawPublicKeyString, payloadGetSessionKeyQuery)
-            val paramGetSessionKeyQuery = BCAFlazzRequestMapper.createEncryptedParam(encParam.first, encParam.second)
+            val encParam = electronicMoneyEncryption.createEncryptedPayload(rawPublicKeyString,
+                payloadGetSessionKeyQuery)
+            val paramGetSessionKeyQuery = BCAFlazzRequestMapper.createEncryptedParam(encParam.first,
+                encParam.second)
 
             val encResult = bcaFlazzUseCase.execute(paramGetSessionKeyQuery)
             val result = decryptPayload(encResult.data, rawPrivateKeyString)
 
             if (result.status == BCAFlazzStatus.WRITE.status && result.attributes.cardData.isNotEmpty()) {
-                processSDKBCADataSession2(isoDep,cardNumber, lastBalance, rawPublicKeyString, rawPrivateKeyString, cardType, strCurrDateTime, ATD, strTransactionId, result)
+                processSDKBCADataSession2(isoDep,cardNumber, lastBalance, rawPublicKeyString,
+                    rawPrivateKeyString, cardType, strCurrDateTime, ATD, strTransactionId, result)
             } else {
-                bcaInquiryMutable.postValue(BCAFlazzResponseMapper.bcaMapper(cardNumber, lastBalance, result.attributes.imageIssuer, getIsBCAGenOne(cardType), result.attributes.amount))
+                bcaInquiryMutable.postValue(BCAFlazzResponseMapper.bcaMapper(cardNumber, lastBalance,
+                    result.attributes.imageIssuer, getIsBCAGenOne(cardType), result.attributes.amount))
             }
         }) {
             errorCardMessageMutable.postValue(it)
@@ -225,7 +240,9 @@ class BCABalanceViewModel @Inject constructor(
                 try {
                     val bcaSession2 = bcaLibrary.C_BCAdataSession_2(bcaFlazzData.attributes.cardData)
                     if (bcaSession2.isSuccess == SUCCESS_JNI) {
-                        processSDKBCATopUp1(isoDep, cardNumber, lastBalance, rawPublicKeyString, rawPrivateKeyString, cardType, strCurrDateTime, ATD, strTransactionId, bcaFlazzData)
+                        processSDKBCATopUp1(isoDep, cardNumber, lastBalance, rawPublicKeyString,
+                            rawPrivateKeyString, cardType, strCurrDateTime, ATD, strTransactionId,
+                            bcaFlazzData)
                     } else {
                         //TODO Check if sdk process bca session 2 fail
                         errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
@@ -255,10 +272,12 @@ class BCABalanceViewModel @Inject constructor(
         if (isoDep != null) {
             run {
                 try {
-                    val topUp1 = bcaLibrary.BCATopUp_1(strTransactionId, ATD, bcaFlazzData.attributes.accessCardNumber,
-                        bcaFlazzData.attributes.accessCode, strCurrDateTime, bcaFlazzData.attributes.amount.toLong())
+                    val topUp1 = bcaLibrary.BCATopUp_1(strTransactionId, ATD,
+                        bcaFlazzData.attributes.accessCardNumber, bcaFlazzData.attributes.accessCode,
+                        strCurrDateTime, bcaFlazzData.attributes.amount.toLong())
                     if (topUp1.isSuccess == SUCCESS_JNI) {
-                        getBetweenTopUpProcess(isoDep, cardNumber, lastBalance, rawPublicKeyString, rawPrivateKeyString, cardType, strTransactionId, bcaFlazzData, topUp1.strLogRsp)
+                        getBetweenTopUpProcess(isoDep, cardNumber, lastBalance, rawPublicKeyString,
+                            rawPrivateKeyString, cardType, strTransactionId, bcaFlazzData, topUp1.strLogRsp)
                     } else {
                         //TODO Check if sdk process bca top up 1 fail
                         errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
@@ -286,18 +305,24 @@ class BCABalanceViewModel @Inject constructor(
     ) {
         launchCatchError(block = {
             val payloadGetBetweenTopUpQuery = BCAFlazzRequestMapper.createGetBCADataBetweenTopUp(
-                gson, cardNumber, cardDataTopUp1, bcaFlazzData.attributes.amount, lastBalance, strTransactionId, cardType
+                gson, cardNumber, cardDataTopUp1, bcaFlazzData.attributes.amount, lastBalance,
+                strTransactionId, cardType
             ) // todo need to update the request?
-            val encParam = electronicMoneyEncryption.createEncryptedPayload(rawPublicKeyString, payloadGetBetweenTopUpQuery)
-            val paramGetBetweenTopUpQuery = BCAFlazzRequestMapper.createEncryptedParam(encParam.first, encParam.second)
+            val encParam = electronicMoneyEncryption.createEncryptedPayload(rawPublicKeyString,
+                payloadGetBetweenTopUpQuery)
+            val paramGetBetweenTopUpQuery = BCAFlazzRequestMapper.createEncryptedParam(encParam.first,
+                encParam.second)
 
             val encResult = bcaFlazzUseCase.execute(paramGetBetweenTopUpQuery)
             val result = decryptPayload(encResult.data, rawPrivateKeyString)
 
             if (result.status == BCAFlazzStatus.WRITE.status && result.attributes.cardData.isNotEmpty()) {
-                processSDKBCATopUp2(isoDep, cardNumber, rawPublicKeyString, rawPrivateKeyString, cardType, strTransactionId, bcaFlazzData)
+                processSDKBCATopUp2(isoDep, cardNumber, rawPublicKeyString, rawPrivateKeyString,
+                    cardType, strTransactionId, result)
             } else {
-                bcaInquiryMutable.postValue(BCAFlazzResponseMapper.bcaMapper(cardNumber, lastBalance, result.attributes.imageIssuer, getIsBCAGenOne(cardType), result.attributes.amount))
+                bcaInquiryMutable.postValue(BCAFlazzResponseMapper.bcaMapper(cardNumber,
+                    lastBalance, result.attributes.imageIssuer, getIsBCAGenOne(cardType),
+                    result.attributes.amount))
             }
         }) {
             errorCardMessageMutable.postValue(it)
