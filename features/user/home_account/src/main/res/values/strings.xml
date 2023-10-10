@@ -154,6 +154,9 @@
     <string name="funds_and_investment_try_another">Cobain ini juga, yuk</string>
     <string name="funds_and_investment_actiivate">Aktifkan</string>
     <string name="funds_and_investment_failed">Gagal memuat</string>
+    <string name="funds_and_investment_failed_page_title">Oops, konten gagal ditampilkan</string>
+    <string name="funds_and_investment_failed_page_subtitle">Coba lagi untuk tampilkan konten, ya.</string>
+    <string name="funds_and_investment_failed_page_button">Coba Lagi</string>
 
     <!--  Balance and Point  -->
     <string name="home_account_balance_and_point_title">Saldo &amp; Points</string>

@@ -212,6 +212,12 @@ object ApplinkConstInternalUserPlatform {
     const val FUNDS_AND_INVESTMENT = "$NEW_INTERNAL_USER/funds-and-investment"
 
     /**
+     * FundsAndInvestmentActivity
+     * @Applink : tokopedia-android-internal://user/funds-and-investment-compose
+     **/
+    const val FUNDS_AND_INVESTMENT_COMPOSE = "$NEW_INTERNAL_USER/funds-and-investment-compose"
+
+    /**
      * AddNameRegisterPhoneActivity
      * @Applink : tokopedia-android-internal://user/add-name-register
      **/

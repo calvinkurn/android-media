@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
+import com.tokopedia.home_account.fundsAndInvestment.FundsAndInvestmentComposeViewModel
 import com.tokopedia.home_account.view.HomeAccountUserViewModel
 import dagger.Binds
 import dagger.Module
@@ -26,4 +27,9 @@ abstract class HomeAccountUserViewModelModules{
     @IntoMap
     @ViewModelKey(HomeAccountUserViewModel::class)
     internal abstract fun provideHomeAccountUserViewModel(viewModel: HomeAccountUserViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(FundsAndInvestmentComposeViewModel::class)
+    internal abstract fun provideFundsAndInvestmentComposeViewModel(viewModel: FundsAndInvestmentComposeViewModel): ViewModel
 }
