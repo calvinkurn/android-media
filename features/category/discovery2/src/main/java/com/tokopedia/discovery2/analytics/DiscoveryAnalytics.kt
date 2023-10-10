@@ -2715,7 +2715,7 @@ open class DiscoveryAnalytics(
             KEY_EVENT_LABEL to EMPTY_STRING,
             TRACKER_ID to COUPON_IMPRESSION_TRACKER_ID,
             USER_ID to userSession.userId,
-            KEY_E_COMMERCE to constructPromotionsProps(properties)
+            KEY_E_COMMERCE to constructPromotionsProps(EVENT_PROMO_VIEW, properties)
         )
 
         impressionProperties.putAll(generalProps)
@@ -2724,7 +2724,7 @@ open class DiscoveryAnalytics(
 
     override fun trackCouponClickEvent(properties: CouponTrackingProperties) {
         val generalProps = createGeneralCouponEvent(
-            EVENT_CLICK_COUPON,
+            EVENT_PROMO_CLICK,
             ACTION_CLICK_COUPON_BANNER
         )
 
@@ -2732,7 +2732,7 @@ open class DiscoveryAnalytics(
             KEY_EVENT_LABEL to "${properties.componentName} - ${properties.promoCode}",
             TRACKER_ID to COUPON_CLICK_TRACKER_ID,
             USER_ID to userSession.userId,
-            KEY_E_COMMERCE to constructPromotionsProps(listOf(properties))
+            KEY_E_COMMERCE to constructPromotionsProps(EVENT_PROMO_CLICK, listOf(properties))
         )
 
         clickProperties.putAll(generalProps)
@@ -2799,6 +2799,7 @@ open class DiscoveryAnalytics(
     }
 
     private fun constructPromotionsProps(
+        keyEvent: String,
         propsList: List<CouponTrackingProperties>
     ): Map<String, Map<String, ArrayList<Map<String, Any>>>> {
         val list = ArrayList<Map<String, Any>>()
@@ -2812,16 +2813,16 @@ open class DiscoveryAnalytics(
 
             list.add(
                 mapOf(
-                    KEY_CREATIVE_NAME to dataItem.creativeName,
-                    KEY_CREATIVE_SLOT to dataItem.position + 1,
-                    KEY_ITEM_ID to "${dataItem.id} - ${dataItem.promoCode}",
-                    KEY_ITEM_NAME to itemName
+                    KEY_CREATIVE to dataItem.creativeName,
+                    KEY_POSITION to (dataItem.position + 1).toString(),
+                    KEY_ID to "${dataItem.id} - ${dataItem.promoCode}",
+                    KEY_NAME to itemName
                 )
             )
         }
 
         return mapOf(
-            EVENT_PROMO_VIEW to mapOf(
+            keyEvent to mapOf(
                 KEY_PROMOTIONS to list
             )
         )
