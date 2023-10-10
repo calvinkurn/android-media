@@ -166,7 +166,14 @@ data class ComponentData(
     @SerializedName("show")
     val show: Boolean = false,
     @SerializedName("ctaText")
-    val ctaText: String = ""
+    val ctaText: String = "",
+    // endregion
+
+    // region product-list / recommendation
+    @SerializedName("queryParam")
+    val queryParam: String = "",
+    @SerializedName("thematicID")
+    val thematicId: String = ""
     // endregion
 ) {
     companion object {

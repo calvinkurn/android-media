@@ -287,7 +287,8 @@ class ShopPageProductListResultFragment :
             isGridSquareLayout = true,
             deviceWidth = 0,
             shopTrackType = ShopTrackProductTypeDef.PRODUCT,
-            isShowTripleDot = !_isMyShop
+            isShowTripleDot = !_isMyShop,
+            shopProductTabInterface = null
         )
     }
 

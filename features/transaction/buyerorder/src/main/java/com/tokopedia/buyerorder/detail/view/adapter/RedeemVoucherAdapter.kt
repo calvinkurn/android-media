@@ -9,6 +9,7 @@ import com.tokopedia.buyerorder.databinding.LayoutScanQrCodeItemBinding
 import com.tokopedia.buyerorder.detail.data.RedeemVoucherModel
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * created by @bayazidnasir on 25/3/2022
@@ -44,11 +45,13 @@ class RedeemVoucherAdapter( private val items:List<RedeemVoucherModel>): Recycle
                 ivQrCode.loadImage(data.qrCodeUrl)
                 tvIsRedeem.showWithCondition(data.statusLabel.isNotEmpty())
                 tvCopyCode.showWithCondition(data.statusLabel.isEmpty())
+                tvSeatingNumber.text = itemView.context.getString(R.string.event_seating_number, data.seatingNumber)
+                tvSeatingNumber.showWithCondition(data.seatingNumber.isNotEmpty())
 
                 tvCopyCode.setOnClickListener {
                     onCopiedListener?.invoke(data.voucherCode)
                     tvCopyCode.text = itemView.context.getString(R.string.deals_label_copied)
-                    tvCopyCode.setTextColor(ResourcesCompat.getColor(itemView.resources, com.tokopedia.unifyprinciples.R.color.Unify_NN0_68, null))
+                    tvCopyCode.setTextColor(ResourcesCompat.getColor(itemView.resources, unifyprinciplesR.color.Unify_NN0_68, null))
                 }
             }
         }

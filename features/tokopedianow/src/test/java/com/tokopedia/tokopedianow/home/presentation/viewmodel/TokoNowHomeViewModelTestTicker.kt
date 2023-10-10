@@ -100,7 +100,7 @@ class TokoNowHomeViewModelTestTicker : TokoNowHomeViewModelTestFixture() {
         val repurchaseLayout = "recent_purchase_tokonow"
 
         val tickerResponse = createTicker()
-        val tickerList = TickerMapper.mapTickerData(tickerResponse).second
+        val tickerList = TickerMapper.mapTickerData(tickerResponse).tickerList
         val homeLayoutResponse = listOf(
             HomeLayoutResponse(
                 id = repurchaseChannelId,
