@@ -36,7 +36,6 @@ object CartCalculator {
                     cartItemHolderData.quantity
                 }
             totalItemQty += itemQty
-            println("++ totalItemQty = $totalItemQty")
             if (cartItemHolderData.parentId.isNotBlank() && cartItemHolderData.parentId.isNotBlank() && cartItemHolderData.parentId != "0") {
                 for (cartItemHolderDataTmp in allCartItemDataList) {
                     if (cartItemHolderData.productId != cartItemHolderDataTmp.productId &&
@@ -97,7 +96,6 @@ object CartCalculator {
                 cartItemHolderData.addOnsProduct.listData.forEach {
                     if (it.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_MANDATORY || it.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK) {
                         subtotalPrice += (itemQty * it.price)
-                        println("++ subtotalPrice = $subtotalPrice")
                     }
                 }
             }
