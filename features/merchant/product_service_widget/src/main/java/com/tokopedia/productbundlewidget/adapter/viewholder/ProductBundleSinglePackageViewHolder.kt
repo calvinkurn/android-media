@@ -11,6 +11,7 @@ import com.tokopedia.productbundlewidget.model.BundleDetailUiModel
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.ColorMode
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ProductBundleSinglePackageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
@@ -41,10 +42,10 @@ class ProductBundleSinglePackageViewHolder(itemView: View) : RecyclerView.ViewHo
                 }
             } else {
                 if (singleBundleDetailVariant.isSelected) {
-                    background.setTint(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN50))
+                    background.setTint(ContextCompat.getColor(context, unifyprinciplesR.color.Unify_GN50))
                     background.setTintMode(PorterDuff.Mode.MULTIPLY)
                 } else {
-                    val textColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+                    val textColor = ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN950)
                     setTextColor(textColor)
                 }
             }

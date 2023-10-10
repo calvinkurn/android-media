@@ -11,6 +11,7 @@ import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.product_service_widget.R
 import com.tokopedia.unifycomponents.toPx
 import kotlin.math.roundToInt
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class MultipleBundleItemDecoration(context: Context, isOverrideWidgetTheme: Boolean) : RecyclerView.ItemDecoration() {
     private var divider: Drawable?
@@ -26,7 +27,7 @@ class MultipleBundleItemDecoration(context: Context, isOverrideWidgetTheme: Bool
             getIconUnifyDrawable(
                 context,
                 IconUnify.ADD,
-                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN600)
+                ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN600)
             )
         }
     }
