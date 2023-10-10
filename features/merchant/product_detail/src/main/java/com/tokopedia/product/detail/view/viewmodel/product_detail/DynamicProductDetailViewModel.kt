@@ -559,15 +559,15 @@ class DynamicProductDetailViewModel @Inject constructor(
          * refresh page in p1 the isWishlist field value doesn't updated, should updated after hit p2Login.
          * so then, for keep wishlist value didn't replace from p1, so using previous value
          */
-        val p1 = getDynamicProductInfoP1 ?: DynamicProductInfoP1()
+        var p1 = getDynamicProductInfoP1 ?: DynamicProductInfoP1()
         val isWishlist = p1.data.isWishlist.orFalse()
         this.pdpLayout = pdpLayout
         getDynamicProductInfoP1 = pdpLayout.layoutData.run {
             listOfParentMedia = data.media.toMutableList()
             copy(data = data.copy(isWishlist = isWishlist))
-        }
+        }.also { p1 = it }
 
-        variantData = if (getDynamicProductInfoP1?.isProductVariant() == false) {
+        variantData = if (!p1.isProductVariant()) {
             null
         } else {
             pdpLayout.variantData
@@ -1168,7 +1168,8 @@ class DynamicProductDetailViewModel @Inject constructor(
     }
 
     private fun generatePdpSessionWithDeviceId(): String {
-        return if (getDynamicProductInfoP1?.data?.isTradeIn == false) {
+        val p1Data = getDynamicProductInfoP1 ?: return ""
+        return if (!p1Data.data.isTradeIn) {
             ""
         } else {
             deviceId
@@ -1183,20 +1184,22 @@ class DynamicProductDetailViewModel @Inject constructor(
         layoutId: String,
         extParam: String,
         refreshPage: Boolean
-    ) = with(getPdpLayoutUseCase.get()) {
-        this.requestParams = GetPdpLayoutUseCase.createParams(
-            productId,
-            shopDomain,
-            productKey,
-            whId,
-            layoutId,
-            generateUserLocationRequest(userLocationCache),
-            extParam,
-            generateTokoNowRequest(userLocationCache),
-            refreshPage
-        )
+    ): Flow<ProductDetailDataModel> {
+        val useCase = getPdpLayoutUseCase.get().apply {
+            requestParams = GetPdpLayoutUseCase.createParams(
+                productId,
+                shopDomain,
+                productKey,
+                whId,
+                layoutId,
+                generateUserLocationRequest(userLocationCache),
+                extParam,
+                generateTokoNowRequest(userLocationCache),
+                refreshPage
+            )
+        }
 
-        executeOnBackground()
+        return useCase.executeOnBackground()
     }
 
     private fun logP2Login(throwable: Throwable, productId: String) {
@@ -1221,7 +1224,8 @@ class DynamicProductDetailViewModel @Inject constructor(
     }
 
     fun getChildOfVariantSelected(singleVariant: ProductSingleVariantDataModel?): VariantChild? {
-        val mapOfSelectedVariants = singleVariant?.mapOfSelectedVariant ?: mutableMapOf()
+        val singleVariant = singleVariant ?: return null
+        val mapOfSelectedVariants = singleVariant.mapOfSelectedVariant
         val selectedOptionIds = mapOfSelectedVariants.values.toList()
         val variantDataNonNull = variantData ?: ProductVariant()
 
