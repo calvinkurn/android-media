@@ -126,7 +126,8 @@ object AdditionalDeviceInfo {
                     val adId = getLatestWidevineId(context, timeOutInMillis)
                     onSuccessGetWidevineId?.invoke(adId)
                 }
-            } catch (ignored: Exception) {
+            } catch (e: Exception) {
+                Timber.e(e)
             }
         }
     }
@@ -150,6 +151,7 @@ object AdditionalDeviceInfo {
                                 val widevineId = processGetWidevineId()
                                 continuation.resume(widevineId)
                             } catch (e: Exception) {
+                                Timber.e(e)
                                 continuation.resume(null)
                             }
                         }
@@ -163,6 +165,7 @@ object AdditionalDeviceInfo {
                 }
                 finalWidevineId
             } catch (e: Exception) {
+                Timber.e(e)
                 ""
             }
         }
