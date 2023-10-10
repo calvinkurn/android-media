@@ -1,6 +1,7 @@
 package com.tokopedia.editor.data.repository
 
 import android.graphics.Bitmap
+import com.tokopedia.editor.analytics.EditorLogger
 import com.tokopedia.editor.data.model.CanvasSize
 import com.tokopedia.utils.image.ImageProcessingUtil.getTokopediaPhotoPath
 import java.io.File
@@ -41,6 +42,7 @@ class ImageSaveRepositoryImpl @Inject constructor() : ImageSaveRepository {
             bitmap.recycle()
             out.close()
         } catch (t: Throwable) {
+            EditorLogger.saveBitmap(outputPath, t.stackTraceToString())
             return ""
         }
 
