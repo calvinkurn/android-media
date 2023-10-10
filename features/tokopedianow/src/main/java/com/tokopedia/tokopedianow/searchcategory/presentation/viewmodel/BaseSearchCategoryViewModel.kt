@@ -51,6 +51,8 @@ import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.OOC
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.PAGE_NUMBER_RECOM_WIDGET
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.RECOM_WIDGET
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TOKONOW_NO_RESULT
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RollenceKey.TOKOPEDIA_NOW_PAGINATION
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_TOKONOW
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_BUSINESS_UNIT
@@ -141,13 +143,18 @@ abstract class BaseSearchCategoryViewModel(
     protected val cartService: CartService,
     private val getShopAndWarehouseUseCase: GetChosenAddressWarehouseLocUseCase,
     protected val setUserPreferenceUseCase: SetUserPreferenceUseCase,
+    private val remoteConfig: RemoteConfig,
     protected val chooseAddressWrapper: ChooseAddressWrapper,
     private val affiliateService: NowAffiliateService,
-    protected val userSession: UserSessionInterface
+    protected val userSession: UserSessionInterface,
 ) : BaseViewModel(baseDispatcher.io) {
     companion object {
         private const val MIN_PRODUCT_COUNT = 6
         private const val DEFAULT_HEADER_Y_COORDINATE = 0f
+        private const val DEFAULT_ROWS = 15
+        private const val EXPERIMENT_ROWS = 50
+        private const val EXPERIMENT_ENABLED = "experiment_variant"
+        private const val EXPERIMENT_DISABLED = "control_variant"
     }
 
     protected var chooseAddressDataView = ChooseAddressDataView()
@@ -462,7 +469,7 @@ abstract class BaseSearchCategoryViewModel(
     protected open fun appendPaginationParam(tokonowQueryParam: MutableMap<String, Any>) {
         tokonowQueryParam[SearchApiConst.PAGE] = nextPage
         tokonowQueryParam[SearchApiConst.USE_PAGE] = true
-        tokonowQueryParam[SearchApiConst.ROWS] = SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_ROWS_PROFILE
+        tokonowQueryParam[SearchApiConst.ROWS] = if (getPaginationExperiment()) EXPERIMENT_ROWS else DEFAULT_ROWS
     }
 
     private fun appendQueryParam(tokonowQueryParam: MutableMap<String, Any>) {
@@ -1652,5 +1659,10 @@ abstract class BaseSearchCategoryViewModel(
         }) {
 
         }
+    }
+
+    private fun getPaginationExperiment(): Boolean {
+        val experiment = remoteConfig.getString(TOKOPEDIA_NOW_PAGINATION, EXPERIMENT_DISABLED)
+        return experiment == EXPERIMENT_ENABLED
     }
 }

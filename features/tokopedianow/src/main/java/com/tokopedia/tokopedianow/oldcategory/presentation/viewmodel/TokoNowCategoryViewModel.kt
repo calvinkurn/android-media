@@ -13,6 +13,7 @@ import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUse
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TOKONOW_CLP
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TOKONOW_NO_RESULT
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Misc.PREFIX_ALL
 import com.tokopedia.tokopedianow.oldcategory.domain.model.CategoryModel
 import com.tokopedia.tokopedianow.oldcategory.domain.model.CategorySharingModel
@@ -78,6 +79,7 @@ class TokoNowCategoryViewModel @Inject constructor(
     getWarehouseUseCase: GetChosenAddressWarehouseLocUseCase,
     private val getCategoryListUseCase: GetCategoryListUseCase,
     setUserPreferenceUseCase: SetUserPreferenceUseCase,
+    remoteConfig: RemoteConfig,
     chooseAddressWrapper: ChooseAddressWrapper,
     affiliateService: NowAffiliateService,
     userSession: UserSessionInterface
@@ -90,6 +92,7 @@ class TokoNowCategoryViewModel @Inject constructor(
     cartService,
     getWarehouseUseCase,
     setUserPreferenceUseCase,
+    remoteConfig,
     chooseAddressWrapper,
     affiliateService,
     userSession
