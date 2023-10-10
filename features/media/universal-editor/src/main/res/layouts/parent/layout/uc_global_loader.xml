@@ -6,27 +6,25 @@
     android:id="@+id/uc_global_loader"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:elevation="4dp">
+    android:elevation="4dp"
+    android:visibility="gone"
+    tools:visibility="visible">
 
     <View
         android:id="@+id/overlay_loader"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/dms_universal_editor_loader_overlay"
-        android:visibility="gone"
-        tools:visibility="visible" />
+        android:background="@color/dms_universal_editor_loader_overlay" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/global_loader"
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:layout_gravity="center_horizontal"
-        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:loader_type="decorative_white"
-        tools:visibility="visible" />
+        app:loader_type="decorative_white" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
