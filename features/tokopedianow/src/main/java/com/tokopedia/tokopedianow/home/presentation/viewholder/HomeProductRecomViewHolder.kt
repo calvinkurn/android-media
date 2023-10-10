@@ -3,6 +3,7 @@ package com.tokopedia.tokopedianow.home.presentation.viewholder
 import android.content.Context
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
@@ -21,7 +22,8 @@ class HomeProductRecomViewHolder(
     itemView: View,
     private val listener: HomeProductRecomListener? = null,
     private val rtrListener: RealTimeRecommendationListener? = null,
-    private val rtrAnalytics: RealTimeRecommendationAnalytics? = null
+    private val rtrAnalytics: RealTimeRecommendationAnalytics? = null,
+    private val recycledViewPool: RecycledViewPool? = null
 ) : AbstractViewHolder<HomeProductRecomUiModel>(itemView),
     ProductCardCompactCarouselView.ProductCardCompactCarouselListener,
     TokoNowDynamicHeaderView.TokoNowDynamicHeaderListener {
@@ -60,11 +62,16 @@ class HomeProductRecomViewHolder(
     }
 
     private fun renderProductItems(element: HomeProductRecomUiModel) {
-        binding?.productRecommendation?.bind(
-            items = element.productList,
-            seeMoreModel = element.seeMoreModel,
-            header = element.headerModel
-        )
+        binding?.productRecommendation?.apply {
+            bind(
+                items = element.productList,
+                seeMoreModel = element.seeMoreModel,
+                header = element.headerModel
+            )
+            setRecycledViewPool(
+                recycledViewPool = recycledViewPool
+            )
+        }
     }
 
     private fun renderRealTimeRecom(element: HomeProductRecomUiModel) {
