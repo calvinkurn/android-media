@@ -341,10 +341,14 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
             }
         })
 
-        bcaBalanceViewModel.bcaInquiry.observe(viewLifecycleOwner, Observer{ bcaInquiry ->
-            bcaInquiry.attributesEmoneyInquiry?.let {attribute ->
-               //TODO add condition error
-               showCardLastBalance(bcaInquiry)
+        bcaBalanceViewModel.bcaInquiry.observe(viewLifecycleOwner, Observer { bcaInquiry ->
+            bcaInquiry.attributesEmoneyInquiry?.let { attribute ->
+                when(attribute.status) {
+                    JakCardStatus.DONE.status -> showCardLastBalance(bcaInquiry)
+                    JakCardStatus.ERROR.status -> bcaInquiry.error?.let { error ->
+                        showError(error.title)
+                    }
+                }
             }
         })
 
