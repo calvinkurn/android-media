@@ -404,13 +404,21 @@ class OtherMenuViewModel @Inject constructor(
         )
     }
 
+    /** topads enabled if any of the topads type is_used = true */
     fun getIsTopAdsShopUsed(){
         launchCatchError(
             block = {
                 val data = withContext(dispatcher.io) {
                     getTopAdsShopInfoUseCase.execute(userSession.shopId)
                 }
-                _isTopAdsShopUsed.value = data.data.ads.get(0).isUsed
+                var topadsUsage = false
+                for (it in data.data.ads){
+                    if(it.isUsed){
+                        topadsUsage = true
+                        break
+                    }
+                }
+                _isTopAdsShopUsed.value = topadsUsage
             },
             onError = {
                 _isTopAdsShopUsed.value = false
