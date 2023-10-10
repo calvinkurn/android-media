@@ -2336,18 +2336,14 @@ class ShopPageReimagineHeaderFragment :
      */
     override fun onStartLiveStreamingClicked(
         componentModel: ShopPageHeaderPlayWidgetButtonComponentUiModel,
-        shopPageHeaderWidgetUiModel: ShopPageHeaderWidgetUiModel,
-        broadcasterConfig: Broadcaster.Config
+        shopPageHeaderWidgetUiModel: ShopPageHeaderWidgetUiModel
     ) {
         val valueDisplayed = componentModel.label
-        mBroadcasterConfig = broadcasterConfig
         sendClickShopHeaderComponentTracking(
             shopPageHeaderWidgetUiModel,
             componentModel,
             valueDisplayed
         )
-
-        showContentCreationOptionBottomSheet()
     }
 
     override fun onImpressionPlayWidgetComponent(
@@ -2713,6 +2709,8 @@ class ShopPageReimagineHeaderFragment :
     private fun getShopHeaderConfig(): ShopPageHeaderLayoutUiModel.Config? {
         return shopPageHeaderP1Data?.shopHeaderLayoutData?.getShopConfigListByName(ShopPageHeaderLayoutUiModel.ConfigName.SHOP_HEADER)
     }
+
+
 
     fun expandHeader() {
         getSelectedFragmentWrapperInstance()?.let {
