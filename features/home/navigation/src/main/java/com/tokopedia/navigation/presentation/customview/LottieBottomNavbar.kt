@@ -23,8 +23,10 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.animation.addListener
 import androidx.core.content.ContextCompat
+import androidx.core.view.get
 import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.navigation.R
 import com.tokopedia.unifyprinciples.Typography
@@ -59,11 +61,18 @@ class LottieBottomNavbar : LinearLayout {
     private var containerWidth: Int = 0
     private var navbarContainer: LinearLayout? = null
 
-    private var buttonContainerBackgroundLightColor: Int = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
-    private var buttonLightColor: Int = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN500)
+    //this flags to switch between home or for you bottom nav menu
+    private var isHomeSelected: Boolean = false
 
-    private var buttonContainerBackgroundDarkColor: Int = ContextCompat.getColor(mDarkModeContext, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
-    private var buttonDarkColor: Int = ContextCompat.getColor(mDarkModeContext, com.tokopedia.unifyprinciples.R.color.Unify_NN500)
+    private var buttonContainerBackgroundLightColor: Int =
+        ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+    private var buttonLightColor: Int =
+        ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN500)
+
+    private var buttonContainerBackgroundDarkColor: Int =
+        ContextCompat.getColor(mDarkModeContext, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+    private var buttonDarkColor: Int =
+        ContextCompat.getColor(mDarkModeContext, com.tokopedia.unifyprinciples.R.color.Unify_NN500)
 
     private var currentRippleScale = 0f
     private val interpolatorEnter = UnifyMotion.EASE_OVERSHOOT
@@ -130,7 +139,8 @@ class LottieBottomNavbar : LinearLayout {
                 1f.toDpInt()
             )
             badgeText?.text = ""
-            badgeText?.background = ContextCompat.getDrawable(modeAwareContext, R.drawable.bg_badge_circle)
+            badgeText?.background =
+                ContextCompat.getDrawable(modeAwareContext, R.drawable.bg_badge_circle)
         } else {
             badgeText?.layoutParams = badgeLayoutParam
             badgeText?.setPadding(
@@ -140,7 +150,8 @@ class LottieBottomNavbar : LinearLayout {
                 2f.toDpInt()
             )
 
-            badgeText?.background = ContextCompat.getDrawable(modeAwareContext, R.drawable.bg_badge_circular)
+            badgeText?.background =
+                ContextCompat.getDrawable(modeAwareContext, R.drawable.bg_badge_circular)
             badgeText?.text = badgeValue.toString()
         }
 
@@ -150,7 +161,8 @@ class LottieBottomNavbar : LinearLayout {
 
     private fun getDarkModeContext(): Context {
         val newConfig = Configuration(resources.configuration).apply {
-            this.uiMode = Configuration.UI_MODE_NIGHT_YES or (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK.inv())
+            this.uiMode =
+                Configuration.UI_MODE_NIGHT_YES or (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK.inv())
         }
         return context.createConfigurationContext(newConfig)
     }
@@ -160,7 +172,10 @@ class LottieBottomNavbar : LinearLayout {
         val itemWidthSize = containerWidth / menu.size
         val badgeRightMargin = itemWidthSize / menu.size
 
-        badgeLayoutParam = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT)
+        badgeLayoutParam = FrameLayout.LayoutParams(
+            FrameLayout.LayoutParams.WRAP_CONTENT,
+            FrameLayout.LayoutParams.WRAP_CONTENT
+        )
         badgeLayoutParam?.gravity = Gravity.END
         badgeLayoutParam?.setMargins(
             0f.toDpInt(),
@@ -195,7 +210,8 @@ class LottieBottomNavbar : LinearLayout {
         val itemWidth = containerWidth / itemCount
 
         containerList.forEach {
-            val llLayoutParam = LinearLayout.LayoutParams(itemWidth, LinearLayout.LayoutParams.MATCH_PARENT)
+            val llLayoutParam =
+                LinearLayout.LayoutParams(itemWidth, LinearLayout.LayoutParams.MATCH_PARENT)
             it.layoutParams = llLayoutParam
             it.invalidate()
         }
@@ -204,16 +220,41 @@ class LottieBottomNavbar : LinearLayout {
 
     private fun getLayoutAtr(attrs: AttributeSet) {
         val styledAttributes = context.obtainStyledAttributes(attrs, R.styleable.LottieBottomNavbar)
-        val darkModeStyledAttributes = mDarkModeContext.obtainStyledAttributes(attrs, R.styleable.LottieBottomNavbar)
+        val darkModeStyledAttributes =
+            mDarkModeContext.obtainStyledAttributes(attrs, R.styleable.LottieBottomNavbar)
         val defaultButtonHeight = DEFAULT_HEIGHT * context.resources.displayMetrics.density
 
-        buttonsHeight = styledAttributes.getDimension(R.styleable.LottieBottomNavbar_buttonsHeight, defaultButtonHeight)
+        buttonsHeight = styledAttributes.getDimension(
+            R.styleable.LottieBottomNavbar_buttonsHeight,
+            defaultButtonHeight
+        )
 
-        buttonContainerBackgroundLightColor = styledAttributes.getColor(R.styleable.LottieBottomNavbar_buttonContainerBackgroundColor, androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0))
-        buttonContainerBackgroundDarkColor = darkModeStyledAttributes.getColor(R.styleable.LottieBottomNavbar_buttonContainerBackgroundColor, androidx.core.content.ContextCompat.getColor(mDarkModeContext, com.tokopedia.unifyprinciples.R.color.Unify_NN0))
+        buttonContainerBackgroundLightColor = styledAttributes.getColor(
+            R.styleable.LottieBottomNavbar_buttonContainerBackgroundColor,
+            androidx.core.content.ContextCompat.getColor(
+                context,
+                com.tokopedia.unifyprinciples.R.color.Unify_NN0
+            )
+        )
+        buttonContainerBackgroundDarkColor = darkModeStyledAttributes.getColor(
+            R.styleable.LottieBottomNavbar_buttonContainerBackgroundColor,
+            androidx.core.content.ContextCompat.getColor(
+                mDarkModeContext,
+                com.tokopedia.unifyprinciples.R.color.Unify_NN0
+            )
+        )
 
-        buttonLightColor = styledAttributes.getColor(R.styleable.LottieBottomNavbar_buttonColor, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN500))
-        buttonDarkColor = darkModeStyledAttributes.getColor(R.styleable.LottieBottomNavbar_buttonColor, ContextCompat.getColor(mDarkModeContext, com.tokopedia.unifyprinciples.R.color.Unify_NN500))
+        buttonLightColor = styledAttributes.getColor(
+            R.styleable.LottieBottomNavbar_buttonColor,
+            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN500)
+        )
+        buttonDarkColor = darkModeStyledAttributes.getColor(
+            R.styleable.LottieBottomNavbar_buttonColor,
+            ContextCompat.getColor(
+                mDarkModeContext,
+                com.tokopedia.unifyprinciples.R.color.Unify_NN500
+            )
+        )
 
         styledAttributes.recycle()
         darkModeStyledAttributes.recycle()
@@ -233,39 +274,25 @@ class LottieBottomNavbar : LinearLayout {
         containerList.clear()
 
         val rootLayoutParam = FrameLayout.LayoutParams(itemWidth, 28f.toDpInt())
-        val containerLayoutParam = LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+        val containerLayoutParam =
+            LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
         val imgLayoutParam = LinearLayout.LayoutParams(
             LayoutParams.MATCH_PARENT,
             24f.toDpInt()
         )
 
-        badgeLayoutParam = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT)
-        badgeLayoutParam?.gravity = Gravity.END
-        badgeLayoutParam?.setMargins(
-            0f.toDpInt(),
-            1f.toDpInt(),
-            20f.toDpInt(),
-            1f.toDpInt()
+        val txtLayoutParam = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
         )
-
-        emptyBadgeLayoutParam = FrameLayout.LayoutParams(
-            12f.toDpInt(),
-            12f.toDpInt()
-        )
-        emptyBadgeLayoutParam?.gravity = Gravity.END
-        emptyBadgeLayoutParam?.setMargins(
-            0f.toDpInt(),
-            1f.toDpInt(),
-            25f.toDpInt(),
-            1f.toDpInt()
-        )
-
-        val txtLayoutParam = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
 
         // create Button Container
         navbarContainer = LinearLayout(context)
         navbarContainer?.let {
-            it.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, buttonsHeight.toInt())
+            it.layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                buttonsHeight.toInt()
+            )
             it.setBackgroundColor(buttonContainerBackgroundColor)
             it.orientation = HORIZONTAL
         }
@@ -274,235 +301,287 @@ class LottieBottomNavbar : LinearLayout {
         // create item container, draw image icon and title, add click listener if set
         menu.forEachIndexed { index, bottomMenu ->
             // add root layout
-            val rootButtonContainer = FrameLayout(context)
-            rootButtonContainer.layoutParams = rootLayoutParam
-            rootButtonContainer.setBackgroundColor(Color.TRANSPARENT)
-            containerList.add(index, rootButtonContainer)
-
-            // add linear layout as container for image and text
-            val buttonContainer = LinearLayout(context)
-            buttonContainer.layoutParams = containerLayoutParam
-            buttonContainer.orientation = LinearLayout.VERTICAL
-            buttonContainer.gravity = Gravity.CENTER
-            buttonContainer.setBackgroundColor(Color.TRANSPARENT)
-
-            // add image view to display menu icon
-            val icon = LottieAnimationView(context)
-            icon.tag = context.getString(R.string.tag_lottie_animation_view) + bottomMenu.id
-            icon.layoutParams = imgLayoutParam
-            icon.setPadding(DEFAULT_ICON_PADDING, DEFAULT_ICON_PADDING, DEFAULT_ICON_PADDING, 0)
-
-            val animName = if (!isDarkMode) bottomMenu.animName else bottomMenu.animDarkName
-            if (!isDeviceAnimationDisabled()) {
-                animName?.let {
-                    icon.setAnimation(animName)
-                    icon.speed = bottomMenu.animSpeed
-                }
-            } else {
-                bottomMenu.imageEnabledName?.let {
-                    icon.setImageResource(it)
-                }
-            }
-            if (animName == null) {
-                bottomMenu.imageName?.let {
-                    icon.setImageResource(it)
-                }
-            }
-
-            iconList.add(index, Pair(icon, selectedItem == index))
-
-            val imageContainer = FrameLayout(context)
-            val fLayoutParams = FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.MATCH_PARENT,
-                FrameLayout.LayoutParams.WRAP_CONTENT
+            createMenuItemContainer(
+                index, bottomMenu,
+                rootLayoutParam, containerLayoutParam, imgLayoutParam, txtLayoutParam
             )
-            imageContainer.layoutParams = fLayoutParams
+        }
+        layoutContent()
+    }
 
-            val iconPlaceholder = ImageView(context)
-            iconPlaceholder.tag = "iconPlaceholder" + bottomMenu.id
-            iconPlaceholder.setPadding(DEFAULT_ICON_PADDING, DEFAULT_ICON_PADDING, DEFAULT_ICON_PADDING, 0)
-            iconPlaceholder.layoutParams = imgLayoutParam
-            iconPlaceholder.visibility = View.INVISIBLE
-            iconPlaceholderList.add(index, iconPlaceholder)
+    private fun createMenuItemContainer(
+        index: Int,
+        bottomMenu: BottomMenu,
+        rootLayoutParam: FrameLayout.LayoutParams,
+        containerLayoutParam: LinearLayout.LayoutParams,
+        imgLayoutParam: LinearLayout.LayoutParams,
+        txtLayoutParam: LinearLayout.LayoutParams
+    ) {
+        // add root layout
+        val rootButtonContainer = FrameLayout(context)
+        rootButtonContainer.layoutParams = rootLayoutParam
+        rootButtonContainer.setBackgroundColor(Color.TRANSPARENT)
+        containerList.add(index, rootButtonContainer)
 
-            imageContainer.addView(icon)
-            imageContainer.addView(iconPlaceholder)
+        // add linear layout as container for image and text
+        val buttonContainer = LinearLayout(context)
+        buttonContainer.layoutParams = containerLayoutParam
+        buttonContainer.orientation = LinearLayout.VERTICAL
+        buttonContainer.gravity = Gravity.CENTER
+        buttonContainer.setBackgroundColor(Color.TRANSPARENT)
 
-            icon.addAnimatorListener(object : Animator.AnimatorListener {
-                override fun onAnimationRepeat(p0: Animator) {
-                }
+        // add image view to display menu icon
+        val icon = LottieAnimationView(context)
+        icon.tag = context.getString(R.string.tag_lottie_animation_view) + bottomMenu.id
+        icon.layoutParams = imgLayoutParam
+        icon.setPadding(DEFAULT_ICON_PADDING, DEFAULT_ICON_PADDING, DEFAULT_ICON_PADDING, 0)
 
-                override fun onAnimationEnd(p0: Animator) {
-                    if (selectedItem != index) {
-                        val bottomMenuSelected = bottomMenu
-                        val iconSelected = icon
-                        val animNameSelected = if (!isDarkMode) bottomMenuSelected.animName else bottomMenuSelected.animDarkName
+        val animName = if (!isDarkMode) bottomMenu.animName else bottomMenu.animDarkName
+        if (!isDeviceAnimationDisabled()) {
+            animName?.let {
+                icon.setAnimation(animName)
+                icon.speed = bottomMenu.animSpeed
+            }
+        } else {
+            bottomMenu.imageEnabledName?.let {
+                icon.setImageResource(it)
+            }
+        }
+        if (animName == null) {
+            bottomMenu.imageName?.let {
+                icon.setImageResource(it)
+            }
+        }
 
-                        bottomMenuSelected.imageEnabledName?.let {
-                            iconPlaceholder.setImageResource(it)
-                        }
-                        animNameSelected?.let {
-                            iconSelected.setAnimation(it)
-                            iconSelected.speed = bottomMenuSelected.animSpeed
+        iconList.add(index, Pair(icon, selectedItem == index))
+
+        val imageContainer = FrameLayout(context)
+        val fLayoutParams = FrameLayout.LayoutParams(
+            FrameLayout.LayoutParams.MATCH_PARENT,
+            FrameLayout.LayoutParams.WRAP_CONTENT
+        )
+        imageContainer.layoutParams = fLayoutParams
+
+        val iconPlaceholder = ImageView(context)
+        iconPlaceholder.tag = "iconPlaceholder" + bottomMenu.id
+        iconPlaceholder.setPadding(
+            DEFAULT_ICON_PADDING,
+            DEFAULT_ICON_PADDING,
+            DEFAULT_ICON_PADDING,
+            0
+        )
+        iconPlaceholder.layoutParams = imgLayoutParam
+        iconPlaceholder.visibility = View.INVISIBLE
+        iconPlaceholderList.add(index, iconPlaceholder)
+
+        imageContainer.addView(icon)
+        imageContainer.addView(iconPlaceholder)
+
+        icon.addAnimatorListener(object : Animator.AnimatorListener {
+            override fun onAnimationRepeat(p0: Animator) {
+            }
+
+            override fun onAnimationEnd(p0: Animator) {
+                if (selectedItem != index) {
+                    val bottomMenuSelected = bottomMenu
+                    val iconSelected = icon
+                    val animNameSelected =
+                        if (!isDarkMode) bottomMenuSelected.animName else bottomMenuSelected.animDarkName
+
+                    bottomMenuSelected.imageEnabledName?.let {
+                        iconPlaceholder.setImageResource(it)
+                    }
+                    animNameSelected?.let {
+                        iconSelected.setAnimation(it)
+                        iconSelected.speed = bottomMenuSelected.animSpeed
+                    }
+                } else {
+
+                    val bottomMenuSelected = bottomMenu
+                    val iconSelected = icon
+                    val animToEnabledNameSelected =
+                        if (!isDarkMode) bottomMenuSelected.animToEnabledName else bottomMenuSelected.animDarkToEnabledName
+
+                    bottomMenuSelected.imageName?.let {
+                        iconPlaceholder.setImageResource(it)
+                    }
+
+                    if (index == Int.ZERO) {
+                        if (isHomeSelected) {
+                            setAnimToEnabledNameSelected(animToEnabledNameSelected, iconSelected, bottomMenuSelected)
+                        } else {
+                            val animToIdleNameSelected = bottomMenuSelected.homeForYou?.animThumbIdleName
+                            animToIdleNameSelected?.let {
+                                iconSelected.setAnimation(it)
+                                iconSelected.speed = bottomMenuSelected.animToEnabledSpeed
+                            }
                         }
                     } else {
-
-                        val bottomMenuSelected = bottomMenu
-                        val iconSelected = icon
-                        val animToEnabledNameSelected = if (!isDarkMode) bottomMenuSelected.animToEnabledName else bottomMenuSelected.animDarkToEnabledName
-
-                        bottomMenuSelected.imageName?.let {
-                            iconPlaceholder.setImageResource(it)
-                        }
-                        animToEnabledNameSelected?.let {
-                            iconSelected.setAnimation(it)
-                            iconSelected.speed = bottomMenuSelected.animToEnabledSpeed
-                        }
-
-
-
+                        setAnimToEnabledNameSelected(animToEnabledNameSelected, iconSelected, bottomMenuSelected)
                     }
-
-                    iconList[index] = Pair(icon, false)
-                    icon.visibility = View.INVISIBLE
-                    iconPlaceholder.visibility = View.VISIBLE
                 }
 
-                override fun onAnimationCancel(p0: Animator) {
-                }
-
-                override fun onAnimationStart(p0: Animator) {
-                    icon.visibility = View.VISIBLE
-                    iconPlaceholder.visibility = View.INVISIBLE
-                }
-            })
-
-            iconPlaceholder.bringToFront()
-
-            if (bottomMenu.useBadge) {
-                val badge: View = LayoutInflater.from(context)
-                    .inflate(R.layout.badge_layout, imageContainer, false)
-                badge.layoutParams = badgeLayoutParam
-                val badgeTextView = badge.findViewById<TextView>(R.id.notification_badge)
-                badgeTextViewList?.add(badgeTextView)
-                badgeTextView.tag = context.getString(R.string.tag_badge_textview) + bottomMenu.id.toString()
-                badgeTextView.visibility = View.INVISIBLE
-                imageContainer.addView(badge)
-                badge.bringToFront()
+                iconList[index] = Pair(icon, false)
+                icon.visibility = View.INVISIBLE
+                iconPlaceholder.visibility = View.VISIBLE
             }
 
-            buttonContainer.addView(imageContainer)
-
-            // add text view to show title
-            val title = Typography(context)
-            title.maxLines = 1
-            title.ellipsize = TextUtils.TruncateAt.END
-            title.layoutParams = txtLayoutParam
-            title.setPadding(DEFAULT_TITLE_PADDING, 0, DEFAULT_TITLE_PADDING, DEFAULT_TITLE_PADDING_BOTTOM)
-            title.text = bottomMenu.title
-            title.tag = context.getString(R.string.tag_title_textview) + bottomMenu.id
-            title.setType(Typography.SMALL)
-            if (selectedItem != null && selectedItem == index) {
-                title.setTextColor(menu[selectedItem!!].activeButtonColor)
-            } else {
-                title.setTextColor(buttonColor)
+            override fun onAnimationCancel(p0: Animator) {
             }
 
-            titleList.add(index, title)
-            buttonContainer.addView(title)
-
-            // add ripple layer
-            val rippleView = View(context)
-            val rippleLayoutParams = FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.MATCH_PARENT,
-                FrameLayout.LayoutParams.MATCH_PARENT
-            )
-            rippleView.layoutParams = rippleLayoutParams
-            rippleView.setBackgroundResource(R.drawable.bg_ripple_container)
-            rippleView.alpha = INITIAL_ALPHA_RIPPLE
-
-            // add button container and ripple to root layout
-            rootButtonContainer.addView(rippleView)
-            rootButtonContainer.addView(buttonContainer)
-            buttonContainer.bringToFront()
-
-            // handle ripple on touch
-            val longPressHandler = Handler(Looper.getMainLooper())
-            val onLongPress = Runnable {
-                rootButtonContainer.performLongClick()
+            override fun onAnimationStart(p0: Animator) {
+                icon.visibility = View.VISIBLE
+                iconPlaceholder.visibility = View.INVISIBLE
             }
-            val rippleAnimator = ValueAnimator.ofFloat()
-            rootButtonContainer.setOnTouchListener { _, event ->
-                when (event?.action) {
-                    MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                        longPressHandler.removeCallbacks(onLongPress)
-                        Handler(Looper.getMainLooper()).postDelayed(
-                            {
-                                rippleAnimator.addListener(
-                                    onEnd = {
-                                        // if user up before enter animation finished,
-                                        // do exit animation after enter animation finished
-                                        if (currentRippleScale == SCALE_MAX_IMAGE) {
-                                            scalingRipple(
-                                                end = SCALE_MIN_IMAGE,
-                                                duration = durationExit,
-                                                pathInterpolator = interpolatorExit,
-                                                rippleView = rippleView,
-                                                rippleAnimator = rippleAnimator
-                                            )
-                                        }
+        })
+
+        iconPlaceholder.bringToFront()
+
+        if (bottomMenu.useBadge) {
+            val badge: View = LayoutInflater.from(context)
+                .inflate(R.layout.badge_layout, imageContainer, false)
+            badge.layoutParams = badgeLayoutParam
+            val badgeTextView = badge.findViewById<TextView>(R.id.notification_badge)
+            badgeTextViewList?.add(badgeTextView)
+            badgeTextView.tag =
+                context.getString(R.string.tag_badge_textview) + bottomMenu.id.toString()
+            badgeTextView.visibility = View.INVISIBLE
+            imageContainer.addView(badge)
+            badge.bringToFront()
+        }
+
+        buttonContainer.addView(imageContainer)
+
+        // add text view to show title
+        val title = Typography(context)
+        title.maxLines = 1
+        title.ellipsize = TextUtils.TruncateAt.END
+        title.layoutParams = txtLayoutParam
+        title.setPadding(
+            DEFAULT_TITLE_PADDING,
+            0,
+            DEFAULT_TITLE_PADDING,
+            DEFAULT_TITLE_PADDING_BOTTOM
+        )
+        title.text = bottomMenu.title
+        title.tag = context.getString(R.string.tag_title_textview) + bottomMenu.id
+        title.setType(Typography.SMALL)
+        if (selectedItem != null && selectedItem == index) {
+            title.setTextColor(menu[selectedItem!!].activeButtonColor)
+        } else {
+            title.setTextColor(buttonColor)
+        }
+
+        titleList.add(index, title)
+        buttonContainer.addView(title)
+
+        // add ripple layer
+        val rippleView = View(context)
+        val rippleLayoutParams = FrameLayout.LayoutParams(
+            FrameLayout.LayoutParams.MATCH_PARENT,
+            FrameLayout.LayoutParams.MATCH_PARENT
+        )
+        rippleView.layoutParams = rippleLayoutParams
+        rippleView.setBackgroundResource(R.drawable.bg_ripple_container)
+        rippleView.alpha = INITIAL_ALPHA_RIPPLE
+
+        // add button container and ripple to root layout
+        rootButtonContainer.addView(rippleView)
+        rootButtonContainer.addView(buttonContainer)
+        buttonContainer.bringToFront()
+
+        // handle ripple on touch
+        rootButtonTouchListener(rootButtonContainer, rippleView)
+
+        // add click listener
+        rootButtonContainer.setOnClickListener {
+            setSelected(index)
+        }
+        rootButtonContainer.id = bottomMenu.id
+
+        // add view to container
+        navbarContainer?.addView(rootButtonContainer)
+    }
+
+    private fun setAnimToEnabledNameSelected(animToEnabledNameSelected: Int?,
+                                             iconSelected: LottieAnimationView,
+                                             bottomMenuSelected: BottomMenu
+    ) {
+        animToEnabledNameSelected?.let {
+            iconSelected.setAnimation(it)
+            iconSelected.speed = bottomMenuSelected.animToEnabledSpeed
+        }
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun rootButtonTouchListener(rootButtonContainer: FrameLayout, rippleView: View) {
+        val longPressHandler = Handler(Looper.getMainLooper())
+        val onLongPress = Runnable {
+            rootButtonContainer.performLongClick()
+        }
+        val rippleAnimator = ValueAnimator.ofFloat()
+
+        rootButtonContainer.setOnTouchListener { _, event ->
+            when (event?.action) {
+                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                    longPressHandler.removeCallbacks(onLongPress)
+                    Handler(Looper.getMainLooper()).postDelayed(
+                        {
+                            rippleAnimator.addListener(
+                                onEnd = {
+                                    // if user up before enter animation finished,
+                                    // do exit animation after enter animation finished
+                                    if (currentRippleScale == SCALE_MAX_IMAGE) {
+                                        scalingRipple(
+                                            end = SCALE_MIN_IMAGE,
+                                            duration = durationExit,
+                                            pathInterpolator = interpolatorExit,
+                                            rippleView = rippleView,
+                                            rippleAnimator = rippleAnimator
+                                        )
                                     }
-                                )
-                                // if user up/cancel after enter animation finished (ex: long press)
-                                if (currentRippleScale == SCALE_MAX_IMAGE) {
-                                    // do exit animation
-                                    scalingRipple(
-                                        SCALE_MAX_IMAGE,
-                                        SCALE_MIN_IMAGE,
-                                        durationExit,
-                                        interpolatorExit,
-                                        rippleView,
-                                        rippleAnimator
-                                    )
                                 }
-                            },
-                            Int.ZERO.toLong()
-                        )
-                    }
-                    MotionEvent.ACTION_DOWN -> {
-                        longPressHandler.postDelayed(
-                            onLongPress,
-                            ViewConfiguration.getLongPressTimeout().toLong()
-                        )
-                        Handler(Looper.getMainLooper()).postDelayed(
-                            {
-                                // start enter animation ripple
+                            )
+                            // if user up/cancel after enter animation finished (ex: long press)
+                            if (currentRippleScale == SCALE_MAX_IMAGE) {
+                                // do exit animation
                                 scalingRipple(
-                                    SCALE_MIN_IMAGE,
                                     SCALE_MAX_IMAGE,
-                                    durationEnter,
-                                    interpolatorEnter,
+                                    SCALE_MIN_IMAGE,
+                                    durationExit,
+                                    interpolatorExit,
                                     rippleView,
                                     rippleAnimator
                                 )
-                            },
-                            Int.ZERO.toLong()
-                        )
-                    }
+                            }
+                        },
+                        Int.ZERO.toLong()
+                    )
                 }
-                false
-            }
 
-            // add click listener
-            rootButtonContainer.setOnClickListener {
-                setSelected(index)
+                MotionEvent.ACTION_DOWN -> {
+                    longPressHandler.postDelayed(
+                        onLongPress,
+                        ViewConfiguration.getLongPressTimeout().toLong()
+                    )
+                    Handler(Looper.getMainLooper()).postDelayed(
+                        {
+                            // start enter animation ripple
+                            scalingRipple(
+                                SCALE_MIN_IMAGE,
+                                SCALE_MAX_IMAGE,
+                                durationEnter,
+                                interpolatorEnter,
+                                rippleView,
+                                rippleAnimator
+                            )
+                        },
+                        Int.ZERO.toLong()
+                    )
+                }
             }
-            rootButtonContainer.id = bottomMenu.id
-
-            // add view to container
-            navbarContainer?.addView(rootButtonContainer)
+            false
         }
-        layoutContent()
     }
 
     private fun layoutContent() {
@@ -522,10 +601,68 @@ class LottieBottomNavbar : LinearLayout {
         }
     }
 
+    fun updateHomeBottomMenuWhenScrolling(isHomeSelected: Boolean) {
+        this.isHomeSelected = isHomeSelected
+        updateHomeMenuView()
+    }
+
+
+    //changes: switch title, icon, animation based on home or for you bottom nav
+    private fun updateHomeMenuView() {
+
+        selectedItem?.let { position ->
+
+            val selectedIconPair = iconList[position]
+            val selectedIcon = selectedIconPair.first
+
+            //update title based on home header or for you section
+            titleList[position].text = if (isHomeSelected) {
+                menu[position].homeForYou?.homeTitle.orEmpty()
+            } else {
+                menu[position].title
+            }
+            titleList[position].invalidate()
+
+            selectedIcon.invalidate()
+
+            //update image based on home header or for you section
+            //todo will add for dark mode later
+            if (isDeviceAnimationDisabled()) {
+                if (isHomeSelected) {
+                    menu[position].homeForYou?.homeImageName
+                } else {
+                    menu[position].homeForYou?.forYouImageName
+                }?.let {
+                    selectedIcon.setImageResource(it)
+                }
+                return
+            }
+
+            //update animation based on home header or for you section
+            //todo will add for dark mode later
+            selectedIcon.cancelAnimation()
+            val animToEnabledName = if (isHomeSelected) {
+                menu[position].homeForYou?.animHomeToThumbName
+            } else {
+                menu[position].homeForYou?.animThumbToHomeName
+            }
+
+            animToEnabledName?.let {
+                selectedIcon.setAnimation(it)
+                selectedIcon.speed = menu[position].animToEnabledSpeed
+            }
+
+            iconList[position] = Pair(selectedIcon, true)
+
+            selectedIcon.invalidate()
+        }
+    }
+
     private fun changeColor(newPosition: Int) {
         if (selectedItem == newPosition) {
-            //todo will add the change
+            this.isHomeSelected = !this.isHomeSelected
             listener?.menuReselected(newPosition, menu[newPosition].id)
+            updateHomeMenuView()
             return
         }
 
@@ -574,7 +711,8 @@ class LottieBottomNavbar : LinearLayout {
         }
 
         // change currently selected item color
-        val activeSelectedItemColor = ContextCompat.getColor(modeAwareContext, menu[newPosition].activeButtonColor)
+        val activeSelectedItemColor =
+            ContextCompat.getColor(modeAwareContext, menu[newPosition].activeButtonColor)
         val newSelectedItemPair = iconList[newPosition]
         val newSelectedItem = newSelectedItemPair.first
         if (!newSelectedItemPair.second) {
@@ -607,18 +745,8 @@ class LottieBottomNavbar : LinearLayout {
         invalidate()
     }
 
-    fun updateMenu(homeMenu: BottomMenu) {
-        val homeMenuIndex = this.menu.indexOfFirst { it.id == R.id.menu_home }
-        if (homeMenuIndex != -1) {
-            resizeContainer()
-            this.menu[homeMenuIndex] = homeMenu
-            setupMenuItems(modeAwareContext)
-            invalidate()
-        }
-    }
-
     fun isHomeBottomNavSelected(): Boolean {
-        return this.menu.firstOrNull { it.animToEnabledName == R.raw.bottom_nav_home } != null
+        return isHomeSelected
     }
 
     fun setMenuClickListener(listener: IBottomClickListener) {
@@ -671,9 +799,9 @@ class LottieBottomNavbar : LinearLayout {
 data class BottomMenu(
     val id: Int,
     val title: String,
+    val homeForYou: HomeForYouMenu? = null,
     val animName: Int? = null,
     val animToEnabledName: Int? = null,
-    val animToIdleName: Int? = null,
     val animDarkName: Int? = null,
     val animDarkToEnabledName: Int? = null,
     val imageName: Int? = null,
@@ -683,6 +811,16 @@ data class BottomMenu(
     val animSpeed: Float = 1f,
     val animToEnabledSpeed: Float = 1f
 )
+
+data class HomeForYouMenu(
+    val homeTitle: String,
+    val homeImageName: Int? = null,
+    val forYouImageName: Int? = null,
+    val animThumbIdleName: Int? = null,
+    val animHomeToThumbName: Int? = null,
+    val animThumbToHomeName: Int? = null
+)
+
 interface IBottomClickListener {
     fun menuClicked(position: Int, id: Int): Boolean
     fun menuReselected(position: Int, id: Int)
