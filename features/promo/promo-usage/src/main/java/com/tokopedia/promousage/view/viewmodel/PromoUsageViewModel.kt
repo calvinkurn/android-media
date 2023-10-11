@@ -428,10 +428,19 @@ class PromoUsageViewModel @Inject constructor(
                         _promoPageUiState.postValue(updatedState)
                         val useSecondaryPromo = clickedItem.useSecondaryPromo
                         var newClickedItem = clickedItem.copy(
-                            state = if (clickedItem.state is PromoItemState.Normal) {
-                                PromoItemState.Selected(useSecondaryPromo = false)
-                            } else {
-                                PromoItemState.Normal(useSecondaryPromo = false)
+                            state = when (clickedItem.state) {
+                                is PromoItemState.Normal -> {
+                                    PromoItemState.Selected(useSecondaryPromo = clickedItem.state.useSecondaryPromo)
+                                }
+
+                                is PromoItemState.Selected -> {
+                                    PromoItemState.Normal(useSecondaryPromo = clickedItem.state.useSecondaryPromo)
+                                }
+
+                                else -> {
+                                    // Should not process any other state
+                                    return@ifSuccessSuspend
+                                }
                             }
                         )
 
@@ -636,8 +645,7 @@ class PromoUsageViewModel @Inject constructor(
         if (selectedItem.state is PromoItemState.Selected) {
             processedItems = updatedItems.map { item ->
                 if (item is PromoItem && item.code != selectedItem.code &&
-                    item.state !is PromoItemState.Ineligible &&
-                    item.state !is PromoItemState.Selected
+                    item.state !is PromoItemState.Ineligible
                 ) {
                     val (resultItem, isCausingClash) =
                         checkAndSetClashOnSelectionEvent(item, selectedItem, useSecondaryPromo)
@@ -652,8 +660,7 @@ class PromoUsageViewModel @Inject constructor(
         } else if (selectedItem.state is PromoItemState.Normal) {
             processedItems = updatedItems.map { item ->
                 if (item is PromoItem && item.code != selectedItem.code &&
-                    item.state !is PromoItemState.Ineligible &&
-                    item.state !is PromoItemState.Selected
+                    item.state !is PromoItemState.Ineligible
                 ) {
                     val (resultItem, _) =
                         checkAndSetClashOnDeselectionEvent(item, selectedItem, useSecondaryPromo)
@@ -669,8 +676,7 @@ class PromoUsageViewModel @Inject constructor(
                 if (adjustedItem is PromoItem && adjustedItem.state is PromoItemState.Selected) {
                     processedItems = processedItems.map { item ->
                         if (item is PromoItem && item.code != adjustedItem.code &&
-                            item.state !is PromoItemState.Ineligible &&
-                            item.state !is PromoItemState.Selected
+                            item.state !is PromoItemState.Ineligible
                         ) {
                             val (resultItem, _) =
                                 checkAndSetClashOnSelectionEvent(item, adjustedItem, adjustedItem.state.useSecondaryPromo)
@@ -726,6 +732,8 @@ class PromoUsageViewModel @Inject constructor(
                         useSecondaryPromo = true,
                         message = secondaryClashingInfo.message
                     )
+                } else if (resultItem.state is PromoItemState.Selected) {
+                    PromoItemState.Selected(useSecondaryPromo = false)
                 } else {
                     PromoItemState.Normal(useSecondaryPromo = false)
                 }
@@ -848,6 +856,10 @@ class PromoUsageViewModel @Inject constructor(
                     } else {
                         PromoItemState.Normal(useSecondaryPromo = false)
                     }
+                } else if (resultItem.state is PromoItemState.Normal) {
+                    PromoItemState.Normal(useSecondaryPromo = false)
+                } else if (resultItem.state is PromoItemState.Selected) {
+                    PromoItemState.Selected(useSecondaryPromo = false)
                 } else {
                     resultItem.state
                 }
@@ -883,7 +895,8 @@ class PromoUsageViewModel @Inject constructor(
                         isCausingClash = true
                     } else {
                         val state = if (resultItem.state is PromoItemState.Disabled) {
-                            val isClashingWithPromo = resultItem.currentClashingPromoCodes.isNotEmpty()
+                            val isClashingWithPromo =
+                                resultItem.currentClashingPromoCodes.isNotEmpty()
                             if (isClashingWithPromo) {
                                 val clashingCode =
                                     resultItem.currentClashingPromoCodes.first()
@@ -901,6 +914,10 @@ class PromoUsageViewModel @Inject constructor(
                             } else {
                                 PromoItemState.Normal(useSecondaryPromo = false)
                             }
+                        } else if (resultItem.state is PromoItemState.Normal) {
+                            PromoItemState.Normal(useSecondaryPromo = false)
+                        } else if (resultItem.state is PromoItemState.Selected) {
+                            PromoItemState.Selected(useSecondaryPromo = false)
                         } else {
                             resultItem.state
                         }
