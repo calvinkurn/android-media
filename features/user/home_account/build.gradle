@@ -87,6 +87,7 @@ dependencies {
     implementation rootProject.ext.composeDependencies.composeUi
     implementation rootProject.ext.composeDependencies.composeFoundation
     implementation rootProject.ext.composeDependencies.composeLiveData
+    implementation rootProject.ext.composeDependencies.composeActivity
     implementation rootProject.ext.unifyDependencies.header
     debugImplementation rootProject.ext.composeDependencies.composeUiTooling
     debugImplementation rootProject.ext.composeDependencies.composePreview
