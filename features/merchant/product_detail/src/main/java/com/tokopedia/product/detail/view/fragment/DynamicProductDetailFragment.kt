@@ -276,6 +276,7 @@ import com.tokopedia.product.info.util.ProductDetailInfoHelper
 import com.tokopedia.product.info.view.bottomsheet.ProductDetailBottomSheetListener
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
+import com.tokopedia.product.util.processor.ProductDetailViewsBundler
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest
@@ -4361,6 +4362,9 @@ open class DynamicProductDetailFragment :
     }
 
     private fun trackProductView(isElligible: Boolean, boType: Int) {
+        if (viewModel.impressionHolders.contains(ProductDetailViewsBundler.KEY)) return
+        viewModel.impressionHolders.add(ProductDetailViewsBundler.KEY)
+
         DynamicProductDetailTracking.Impression.eventProductView(
             productInfo = viewModel.getDynamicProductInfoP1,
             shopInfo = viewModel.getShopInfo(),
