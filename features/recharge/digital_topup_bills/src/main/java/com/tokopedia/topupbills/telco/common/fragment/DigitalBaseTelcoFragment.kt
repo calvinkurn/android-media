@@ -16,6 +16,7 @@ import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.common.topupbills.analytics.CommonMultiCheckoutAnalytics
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
 import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
 import com.tokopedia.common.topupbills.data.TopupBillsPromo
@@ -57,6 +58,8 @@ import kotlinx.coroutines.Job
 import java.util.regex.Pattern
 import javax.inject.Inject
 import kotlin.math.abs
+import com.tokopedia.abstraction.R as abstractionR
+import com.tokopedia.resources.common.R as resourcescommonR
 
 /**
  * Created by nabillasabbaha on 23/05/19.
@@ -127,6 +130,18 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
                 override fun onClickNextBuyButton() {
                     setupCheckoutData()
                     processTransaction()
+                }
+
+                override fun onClickMultiCheckout() {
+                    addToCartViewModel.setAtcMultiCheckoutParam()
+                    setupCheckoutData()
+                    processTransaction()
+                }
+
+                override fun onCloseCoachMark() {
+                    commonMultiCheckoutAnalytics.onCloseMultiCheckoutCoachmark(
+                        categoryName, loyaltyStatus
+                    )
                 }
             }
         }
@@ -415,7 +430,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
             activity,
             pageContainer,
             errMsg,
-            "${getString(com.tokopedia.abstraction.R.string.msg_network_error_2)}. Kode Error: ($errCode)",
+            "${getString(abstractionR.string.msg_network_error_2)}. Kode Error: ($errCode)",
             null,
             DEFAULT_ICON_RES
         ) {
@@ -476,7 +491,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
                 errorMessage.orEmpty(),
                 Toaster.LENGTH_LONG,
                 Toaster.TYPE_ERROR,
-                getString(com.tokopedia.resources.common.R.string.general_label_ok)
+                getString(resourcescommonR.string.general_label_ok)
             ).show()
         }
     }
@@ -495,7 +510,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
                 errorMessage.orEmpty(),
                 Toaster.LENGTH_LONG,
                 Toaster.TYPE_ERROR,
-                getString(com.tokopedia.resources.common.R.string.general_label_ok)
+                getString(resourcescommonR.string.general_label_ok)
             ).show()
         }
     }

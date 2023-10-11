@@ -6,6 +6,7 @@ import com.tokopedia.mediauploader.common.state.ProgressType
 import com.tokopedia.mediauploader.common.state.ProgressUploader
 import okhttp3.MediaType
 import okhttp3.RequestBody
+import okhttp3.internal.http.CallServerInterceptor
 import okio.BufferedSink
 import java.io.File
 import java.io.FileInputStream
@@ -30,7 +31,15 @@ class UploadRequestBody(
         inputStream.use { stream ->
             var read = 0
             while (read != -1) {
-                handler.post(ProgressUpdater(uploaded, fileLength, uploader))
+                val isCalledByCallServerInterceptor =
+                    Thread.currentThread().stackTrace.any { stackTraceElement ->
+                        stackTraceElement.className == CallServerInterceptor::class.java.canonicalName
+                    }
+
+                if (isCalledByCallServerInterceptor) {
+                    handler.post(ProgressUpdater(uploaded, fileLength, uploader))
+                }
+
                 uploaded += read.toLong()
                 sink.write(buffer, 0, read)
                 read = stream.read(buffer)
@@ -42,7 +51,7 @@ class UploadRequestBody(
         private val uploaded: Long,
         private val total: Long,
         private val uploader: ProgressUploader?
-    ): Runnable {
+    ) : Runnable {
         override fun run() {
             uploader?.onProgress(
                 percentage = (MAX_PROGRESS_LOADER * uploaded / total).toInt(),
