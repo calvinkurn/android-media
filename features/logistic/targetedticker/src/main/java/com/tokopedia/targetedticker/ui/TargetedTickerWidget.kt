@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
-import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewTreeLifecycleOwner
@@ -15,7 +14,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.targetedticker.domain.TargetedTickerHelper.renderTargetedTickerView
 import com.tokopedia.targetedticker.domain.TickerModel
-import com.tokopedia.targetedticker.databinding.TargetedTickerWidgetBinding
+import com.tokopedia.targetedticker.databinding.WidgetTargetedTickerBinding
 import com.tokopedia.targetedticker.di.DaggerTargetedTickerComponent
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -42,8 +41,8 @@ class TargetedTickerWidget : FrameLayout {
         }
     }
 
-    private val binding: TargetedTickerWidgetBinding? =
-        TargetedTickerWidgetBinding.inflate(
+    private val binding: WidgetTargetedTickerBinding =
+        WidgetTargetedTickerBinding.inflate(
             LayoutInflater.from(context)
         ).also {
             addView(it.root)
@@ -63,14 +62,6 @@ class TargetedTickerWidget : FrameLayout {
 
     private fun setupView(attributeSet: AttributeSet? = null) {
         initInjector()
-
-//        if (attributeSet != null) setAttributes(attributeSet)
-
-        binding?.apply {
-
-        }
-
-
     }
 
     private fun observeTickerState() {
@@ -113,9 +104,7 @@ class TargetedTickerWidget : FrameLayout {
     private fun initInjector() {
         context?.let {
             DaggerTargetedTickerComponent.builder()
-                .baseAppComponent(
-                    (context.applicationContext as BaseMainApplication).baseAppComponent
-                ).build().inject(this)
+                .baseAppComponent((context.applicationContext as BaseMainApplication).baseAppComponent).build().inject(this)
         }
     }
 
