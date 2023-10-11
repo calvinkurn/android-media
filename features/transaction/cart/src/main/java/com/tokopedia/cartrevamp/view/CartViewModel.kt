@@ -2019,7 +2019,7 @@ class CartViewModel @Inject constructor(
                             newCartItemHolderData.cartBmGmTickerData.isShowBmGmDivider = false
 
                             newCartGroupHolderData.productUiModelList[lastItemIndex] = newCartItemHolderData
-                            // newCartDataList[index + newCartGroupHolderData.productUiModelList.size] = newCartItemHolderData
+                            newCartDataList[newCartDataList.indexOfFirst { it is CartItemHolderData && it.cartId == newCartItemHolderData.cartId }] = newCartItemHolderData
 
                             updateShopShownByCartGroup(newCartGroupHolderData)
                             newCartGroupHolderData.isAllSelected =
