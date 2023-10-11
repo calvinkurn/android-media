@@ -706,12 +706,15 @@ class LottieBottomNavbar : LinearLayout {
             return
         }
 
-        if (selectedItem == Int.ZERO) {
-            if (!isForYouToHomeSelected) {
-                val oldIcon = iconList[selectedItem ?: 0].first
-                oldIcon.cancelAnimation()
-                oldIcon.visibility = View.INVISIBLE
-                oldIcon.invalidate()
+        selectedItem?.let {
+            if (it == Int.ZERO) {
+                if (!isForYouToHomeSelected) {
+//                    val oldIcon = iconList[selectedItem ?: 0].first
+//                    oldIcon.cancelAnimation()
+//                    oldIcon.visibility = View.INVISIBLE
+//                    oldIcon.invalidate()
+//                    iconList[it] = Pair(oldIcon, true)
+                }
             }
         }
 
