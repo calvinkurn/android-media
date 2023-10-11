@@ -1,163 +1,125 @@
 package com.tokopedia.catalog.ui.fragment
 
+import android.app.Activity
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.Rect
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
-import android.widget.FrameLayout
-import android.widget.LinearLayout
-import android.widget.ScrollView
-import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.youtube.player.YouTubeApiServiceUtil
-import com.google.android.youtube.player.YouTubeInitializationResult
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.catalog.R
-import com.tokopedia.catalog.adapter.CatalogAnimationListener
-import com.tokopedia.catalog.adapter.CatalogDetailAdapter
-import com.tokopedia.catalog.adapter.CatalogDetailDiffUtil
-import com.tokopedia.catalog.adapter.CatalogLinearLayoutManager
-import com.tokopedia.catalog.adapter.decorators.DividerItemDecorator
-import com.tokopedia.catalog.adapter.factory.CatalogDetailAdapterFactoryImpl
-import com.tokopedia.catalog.analytics.CatalogDetailAnalytics
-import com.tokopedia.catalog.analytics.CatalogUniversalShareAnalytics
-import com.tokopedia.catalog.di.CatalogComponent
+import com.tokopedia.applink.UriUtil
+import com.tokopedia.catalog.analytics.CatalogReimagineDetailAnalytics
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_CLICK_FAQ
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_CLICK_NAVIGATION
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_CLICK_VIDEO_EXPERT_REVIEW
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_IMPRESSION_BANNER
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_IMPRESSION_DOUBLE_BANNER
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_IMPRESSION_EXPERT_REVIEW
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_IMPRESSION_FAQ
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_IMPRESSION_HERO_IMAGE
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_IMPRESSION_NAVIGATION
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_IMPRESSION_PRICE_BOTTOM_SHEET
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_IMPRESSION_TEXT_DESCRIPTION
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_IMPRESSION_TOP_FEATURE
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_IMPRESSION_TRUSTMAKER
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_SEE_OPTIONS
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_REVIEW_BANNER_IMPRESSION
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_TOP_FEATURE_IMPRESSION
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_TRUSTMAKER_IMPRESSION
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_VIEW_CLICK_PG
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_VIEW_ITEM
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_VIEW_PG_IRIS
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CLICK_BUTTON_CHOOSE
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CLICK_FAQ
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CLICK_NAVIGATION
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CLICK_VIDEO_EXPERT
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_BANNER_ONE_BY_ONE
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_BANNER_THREE_BY_FOUR
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_BANNER_TWO_BY_ONE
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_DOUBLE_BANNER
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_EXPERT_REVIEW
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_FAQ
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_HERO_BANNER
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_NAVIGATION
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_PRICE
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_TEXT_DESCRIPTION
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_TOP_FEATURE
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_TRUSTMAKER
+import com.tokopedia.catalog.databinding.FragmentCatalogReimagineDetailPageBinding
 import com.tokopedia.catalog.di.DaggerCatalogComponent
-import com.tokopedia.catalog.listener.CatalogDetailListener
-import com.tokopedia.catalog.model.datamodel.BaseCatalogDataModel
-import com.tokopedia.catalog.model.datamodel.CatalogComparisonNewDataModel
-import com.tokopedia.catalog.model.datamodel.CatalogFullSpecificationDataModel
-import com.tokopedia.catalog.model.raw.*
-import com.tokopedia.catalog.model.util.CatalogConstant
-import com.tokopedia.catalog.model.util.CatalogUiUpdater
-import com.tokopedia.catalog.model.util.CatalogUtil
-import com.tokopedia.catalog.model.util.nestedrecyclerview.NestedRecyclerView
-import com.tokopedia.catalog.ui.activity.CatalogGalleryActivity
-import com.tokopedia.catalog.ui.bottomsheet.CatalogComponentBottomSheet
-import com.tokopedia.catalog.ui.bottomsheet.CatalogPreferredProductsBottomSheet
-import com.tokopedia.catalog.ui.bottomsheet.CatalogSpecsAndDetailBottomSheet
-import com.tokopedia.catalog.viewmodel.CatalogDetailPageViewModel
-import com.tokopedia.catalog.viewmodel.CatalogDetailProductListingViewModel
+import com.tokopedia.catalog.ui.activity.CatalogProductListActivity.Companion.EXTRA_CATALOG_URL
+import com.tokopedia.catalog.ui.model.NavigationProperties
+import com.tokopedia.catalog.ui.model.PriceCtaProperties
+import com.tokopedia.catalog.ui.viewmodel.CatalogDetailPageViewModel
+import com.tokopedia.catalogcommon.adapter.CatalogAdapterFactoryImpl
+import com.tokopedia.catalogcommon.adapter.WidgetCatalogAdapter
+import com.tokopedia.catalogcommon.customview.CatalogToolbar
+import com.tokopedia.catalogcommon.listener.AccordionListener
+import com.tokopedia.catalogcommon.listener.BannerListener
+import com.tokopedia.catalogcommon.listener.DoubleBannerListener
+import com.tokopedia.catalogcommon.listener.HeroBannerListener
+import com.tokopedia.catalogcommon.listener.TextDescriptionListener
+import com.tokopedia.catalogcommon.listener.TopFeatureListener
+import com.tokopedia.catalogcommon.listener.TrustMakerListener
+import com.tokopedia.catalogcommon.listener.VideoExpertListener
+import com.tokopedia.catalogcommon.uimodel.AccordionInformationUiModel
+import com.tokopedia.catalogcommon.uimodel.BannerCatalogUiModel
+import com.tokopedia.catalogcommon.uimodel.ExpertReviewUiModel
+import com.tokopedia.catalogcommon.uimodel.TopFeaturesUiModel
+import com.tokopedia.catalogcommon.uimodel.TrustMakerUiModel
+import com.tokopedia.catalogcommon.util.DrawableExtension
+import com.tokopedia.catalogcommon.viewholder.StickyNavigationListener
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.linker.LinkerManager
-import com.tokopedia.linker.LinkerUtils
-import com.tokopedia.linker.interfaces.ShareCallback
-import com.tokopedia.linker.model.LinkerData
-import com.tokopedia.linker.model.LinkerError
-import com.tokopedia.linker.model.LinkerShareData
-import com.tokopedia.linker.model.LinkerShareResult
-import com.tokopedia.searchbar.data.HintData
-import com.tokopedia.searchbar.navigation_component.NavSource
-import com.tokopedia.searchbar.navigation_component.NavToolbar
-import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
-import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
-import com.tokopedia.searchbar.navigation_component.icons.IconList
-import com.tokopedia.trackingoptimizer.TrackingQueue
-import com.tokopedia.unifycomponents.toPx
-import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
-import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
-import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
-import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListener
-import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
-import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
-import com.tokopedia.universal_sharing.view.model.ShareModel
+import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
-import kotlinx.android.synthetic.main.fragment_catalog_detail_page.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.launch
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
-class CatalogDetailPageFragment :
-    Fragment(),
-    HasComponent<CatalogComponent>,
-    CatalogDetailListener,
-    ShareBottomsheetListener,
-    ScreenShotListener,
-    PermissionListener,
-    CatalogAnimationListener {
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    @Inject
-    lateinit var catalogDetailPageViewModel: CatalogDetailPageViewModel
-
-    @Inject
-    lateinit var trackingQueue: TrackingQueue
-
-    @Inject
-    lateinit var sharedViewModel: CatalogDetailProductListingViewModel
-
-    private val widgetTrackingSet = HashSet<String>()
-
-    private var catalogUiUpdater: CatalogUiUpdater = CatalogUiUpdater(mutableMapOf())
-    private var fullSpecificationDataModel = CatalogFullSpecificationDataModel(arrayListOf())
-
-    private var catalogId: String = ""
-    private var catalogUrl: String = ""
-    private var catalogName: String = ""
-    private var catalogBrand: String = ""
-    private var catalogDepartmentId: String = ""
-    private var catalogImages = arrayListOf<CatalogImage>()
-    private var comparisonCatalogId: String = ""
-    private var recommendedCatalogId: String = ""
-
-    private var navToolbar: NavToolbar? = null
-    private var cartLocalCacheHandler: LocalCacheHandler? = null
-
-    private var catalogPageRecyclerView: NestedRecyclerView? = null
-    private var catalogLinearLayoutManager: CatalogLinearLayoutManager? = null
-    private var shimmerLayout: ScrollView? = null
-    private var mBottomSheetBehavior: BottomSheetBehavior<FrameLayout>? = null
-    private var mToBottomLayout: LinearLayout? = null
-    private var mProductsCountText: Typography? = null
-    private var mToTopLayout: LinearLayout ? = null
-
-    private lateinit var userSession: UserSession
-
-    private val catalogAdapterFactory by lazy(LazyThreadSafetyMode.NONE) { CatalogDetailAdapterFactoryImpl(this) }
-
-    private val catalogDetailAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        val asyncDifferConfig: AsyncDifferConfig<BaseCatalogDataModel> = AsyncDifferConfig.Builder(CatalogDetailDiffUtil())
-            .build()
-        CatalogDetailAdapter(
-            requireActivity(),
-            this,
-            catalogId,
-            asyncDifferConfig,
-            catalogAdapterFactory
-        )
-    }
-
-    var isBottomSheetOpen = false
-    private var lastDetachedItemPosition: Int = 0
-    private var lastAttachItemPosition: Int = 0
-    private var isScrollDownButtonClicked = false
+class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
+    StickyNavigationListener, AccordionListener, BannerListener, TrustMakerListener,
+    TextDescriptionListener, VideoExpertListener, TopFeatureListener, DoubleBannerListener {
 
     companion object {
+        private const val QUERY_CATALOG_ID = "catalog_id"
+        private const val QUERY_PRODUCT_SORTING_STATUS = "product_sorting_status"
+
         private const val ARG_EXTRA_CATALOG_ID = "ARG_EXTRA_CATALOG_ID"
+        private const val COLOR_VALUE_MAX = 255
+        private const val LOGIN_REQUEST_CODE = 1001
         const val CATALOG_DETAIL_PAGE_FRAGMENT_TAG = "CATALOG_DETAIL_PAGE_FRAGMENT_TAG"
+        private const val POSITION_THREE_IN_WIDGET_LIST = 3
+        private const val POSITION_TWO_IN_WIDGET_LIST = 2
         fun newInstance(catalogId: String): CatalogDetailPageFragment {
             val fragment = CatalogDetailPageFragment()
             val bundle = Bundle()
@@ -167,8 +129,69 @@ class CatalogDetailPageFragment :
         }
     }
 
-    override fun getComponent(): CatalogComponent {
-        return DaggerCatalogComponent.builder().baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent).build()
+    @Inject
+    lateinit var viewModel: CatalogDetailPageViewModel
+
+    private var binding by autoClearedNullable<FragmentCatalogReimagineDetailPageBinding>()
+    private val widgetAdapter by lazy {
+        WidgetCatalogAdapter(
+            CatalogAdapterFactoryImpl(
+                heroBannerListener = this,
+                navListener = this,
+                accordionListener = this,
+                bannerListener = this,
+                trustMakerListener = this,
+                textDescriptionListener = this,
+                videoExpertListener = this,
+                topFeatureListener = this,
+                doubleBannerListener = this
+            )
+        )
+    }
+
+    var title = ""
+
+    var productSortingStatus = 0
+
+    var catalogId = ""
+
+    var catalogUrl = ""
+
+    private val userSession: UserSession by lazy {
+        UserSession(activity)
+    }
+
+    var selectNavigationFromScroll = true
+
+
+    private val recyclerViewScrollListener: RecyclerView.OnScrollListener by lazy {
+        object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val layoutManager = recyclerView.layoutManager as? LinearLayoutManager
+                binding?.rvContent?.post {
+                    CoroutineScope(Dispatchers.Main).launch {
+                        if (!recyclerView.canScrollVertically(RecyclerView.FOCUS_DOWN)) {
+                            val indexVisible = layoutManager?.findLastVisibleItemPosition().orZero()
+                            viewModel.emitScrollEvent(indexVisible)
+                        } else {
+                            val indexVisible =
+                                layoutManager?.findFirstVisibleItemPosition().orZero()
+                            viewModel.emitScrollEvent(indexVisible)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    override fun getScreenName() = CatalogDetailPageFragment::class.java.canonicalName.orEmpty()
+
+    override fun initInjector() {
+        DaggerCatalogComponent.builder()
+            .baseAppComponent((activity?.applicationContext as? BaseMainApplication)?.baseAppComponent)
+            .build()
+            .inject(this)
     }
 
     override fun onCreateView(
@@ -176,875 +199,452 @@ class CatalogDetailPageFragment :
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_catalog_detail_page, container, false)
+        binding = FragmentCatalogReimagineDetailPageBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        injectComponents()
-        initViews(view)
+        setupObservers(view)
         if (arguments != null) {
             catalogId = requireArguments().getString(ARG_EXTRA_CATALOG_ID, "")
-        }
-        activity?.let { observer ->
-            userSession = UserSession(observer)
-            val viewModelProvider = ViewModelProvider(observer, viewModelFactory)
-            catalogDetailPageViewModel = viewModelProvider.get(CatalogDetailPageViewModel::class.java)
-            catalogDetailPageViewModel.getProductCatalog(catalogId, comparisonCatalogId, userSession.userId, CatalogConstant.DEVICE)
-            catalogDetailPageViewModel.fetchProductListing(CatalogUtil.getProductsParams(catalogId))
-            showShimmer()
+            viewModel.getProductCatalog(catalogId, "")
+            viewModel.refreshNotification()
         }
 
-        setupRecyclerView(view)
-        setObservers()
-        setUpUniversalShare()
-        setUpAnimationViews()
     }
 
-    private fun injectComponents() {
-        component.inject(this)
-        activity?.let { observer ->
-            val viewModelProvider = ViewModelProvider(observer, viewModelFactory)
-            sharedViewModel = viewModelProvider.get(CatalogDetailProductListingViewModel::class.java)
+    override fun onNavBackClicked() {
+        activity?.finish()
+    }
+
+    override fun onNavShareClicked() {
+        // no-op
+    }
+
+    override fun onNavMoreMenuClicked() {
+        // no-op
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.refreshNotification()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == LOGIN_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            viewModel.refreshNotification()
         }
     }
 
-    private fun setUpAnimationViews() {
-        mToBottomLayout?.apply {
-            setOnClickListener {
-                isScrollDownButtonClicked = true
-                val userPressedLastTopPosition = if ((catalogPageRecyclerView?.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition() == RecyclerView.NO_POSITION) {
-                    (catalogPageRecyclerView?.layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
-                } else {
-                    (catalogPageRecyclerView?.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
-                }
-                catalogLinearLayoutManager?.scrollToBottom(userPressedLastTopPosition)
-                CatalogDetailAnalytics.sendEvent(
-                    CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
-                    CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-                    CatalogDetailAnalytics.ActionKeys.CLICK_FLOATING_BUTTON_PRODUCT,
-                    "$catalogName - $catalogId",
-                    userSession.userId,
-                    catalogId
-                )
-                slideDownMoreProductsView()
+    override fun onNavigateWidget(anchorTo: String, tabPosition: Int, tabTitle: String?) {
+        selectNavigationFromScroll = false
+        val smoothScroller: RecyclerView.SmoothScroller = object : LinearSmoothScroller(context) {
+            override fun getVerticalSnapPreference(): Int {
+                return SNAP_TO_START
             }
         }
-
-        mToTopLayout?.apply {
-            setOnClickListener {
-                catalogLinearLayoutManager?.scrollToTop()
-                CatalogDetailAnalytics.sendEvent(
-                    CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
-                    CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-                    CatalogDetailAnalytics.ActionKeys.CLICK_FLOATING_BUTTON_LAST_SCROLL,
-                    "$catalogName - $catalogId",
-                    userSession.userId,
-                    catalogId
-                )
-                slideUpMoreProductsView()
-            }
-        }
-    }
-
-    private fun initViews(parentView: View) {
-        shimmerLayout = view?.findViewById(R.id.shimmer_layout)
-        activity?.let {
-            cartLocalCacheHandler = LocalCacheHandler(it, CatalogConstant.CART_LOCAL_CACHE_NAME)
-        }
-        mToBottomLayout = parentView.findViewById(R.id.toBottomLayout)
-        mProductsCountText = parentView.findViewById(R.id.products_count_text)
-        mToTopLayout = parentView.findViewById(R.id.toTopLayout)
-        initNavToolbar()
-        bottom_sheet_fragment_container.hide()
-    }
-
-    private fun setUpUniversalShare() {
-        context?.let {
-            screenshotDetector = SharingUtil.createAndStartScreenShotDetector(
-                it,
-                this,
-                this,
-                addFragmentLifecycleObserver = true,
-                permissionListener = this
-            )
-        }
-    }
-
-    private fun setUpBottomSheet() {
-        requireActivity().supportFragmentManager.beginTransaction().replace(
-            R.id.bottom_sheet_fragment_container,
-            CatalogPreferredProductsBottomSheet.newInstance(
-                catalogName,
-                catalogId,
-                catalogUrl,
-                catalogDepartmentId,
-                catalogBrand
-            ),
-            CatalogPreferredProductsBottomSheet.PREFFERED_PRODUCT_BOTTOMSHEET_TAG
-        ).commit()
-
-        mBottomSheetBehavior = BottomSheetBehavior.from(bottom_sheet_fragment_container)
-        mBottomSheetBehavior?.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-
-            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
-
-            override fun onStateChanged(bottomSheet: View, newState: Int) {
-                if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
-                    isBottomSheetOpen = false
-                } else if (newState == BottomSheetBehavior.STATE_EXPANDED) {
-                    isBottomSheetOpen = true
-                } else if (newState == BottomSheetBehavior.STATE_DRAGGING) {
-                    if (!isBottomSheetOpen) {
-                        CatalogDetailAnalytics.sendEvent(
-                            CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
-                            CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-                            CatalogDetailAnalytics.ActionKeys.DRAG_IMAGE_KNOB,
-                            "$catalogName - $catalogId",
-                            userSession.userId,
-                            catalogId
-                        )
-                    }
-                }
-            }
-        })
-    }
-
-    private fun setObservers() {
-        catalogDetailPageViewModel.getCatalogResponseData().observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is Success -> {
-                        it.data.listOfComponents.forEach { component ->
-                            catalogUiUpdater.updateModel(component)
-                            if (component is CatalogComparisonNewDataModel && comparisonCatalogId.isBlank()) {
-                                recommendedCatalogId = component.specsList?.firstOrNull()?.subcard?.firstOrNull()?.featureRightData?.id ?: ""
-                            }
-                        }
-
-                        catalogUrl = catalogUiUpdater.productInfoMap?.url ?: ""
-                        fullSpecificationDataModel = it.data.fullSpecificationDataModel
-                        catalogImages = catalogUiUpdater.productInfoMap?.images ?: arrayListOf()
-                        catalogName = catalogUiUpdater.productInfoMap?.productName ?: ""
-                        catalogBrand = catalogUiUpdater.productInfoMap?.productBrand ?: ""
-                        catalogDepartmentId = catalogUiUpdater.productInfoMap?.departmentId ?: ""
-                        if (comparisonCatalogId.isNotBlank()) {
-                            recommendedCatalogId = catalogUiUpdater.productInfoMap?.comparisonInfoCatalogId ?: ""
-                        }
-                        updateUi()
-                        setCatalogUrlForTracking()
-                    }
-                    is Fail -> {
-                        onError(it.throwable)
-                    }
-                }
-            }
-        )
-
-        observerProductCount()
-        observerSharedProductCount()
-    }
-
-    private fun observerProductCount() {
-        catalogDetailPageViewModel.mProductCount.observe(viewLifecycleOwner, { totalProducts ->
-            totalProducts?.let {
-                sharedViewModel.mProductCount.value = it
-            }
-        })
-    }
-
-    private fun observerSharedProductCount() {
-        sharedViewModel.mProductCount.observe(viewLifecycleOwner, { filterProductCount ->
-            filterProductCount?.let {
-                setProductCountText(it)
-            }
-        })
-    }
-
-    private fun setProductCountText(productCount: Int) {
-        if (productCount == CatalogConstant.ZERO_VALUE) {
-            mProductsCountText?.text = getString(
-                com.tokopedia.catalog.R.string.catalog_product_count_view_text_empty
-            )
-            mToBottomLayout?.hide()
-        } else {
-            mProductsCountText?.text = getString(
-                com.tokopedia.catalog.R.string.catalog_product_count_view_text,
-                productCount
-            )
-        }
-    }
-
-    private fun setCatalogUrlForTracking() {
-        activity?.supportFragmentManager?.findFragmentByTag(CatalogPreferredProductsBottomSheet.PREFFERED_PRODUCT_BOTTOMSHEET_TAG)?.let { fragment ->
-            if (fragment is CatalogPreferredProductsBottomSheet) {
-                fragment.setData(catalogName, catalogUrl, catalogId, catalogDepartmentId, catalogBrand)
-            }
-        }
-    }
-
-    private fun onError(e: Throwable) {
-        shimmerLayout?.hide()
-        catalogPageRecyclerView?.hide()
-        bottom_sheet_fragment_container.hide()
-        if (e is UnknownHostException ||
-            e is SocketTimeoutException
-        ) {
-            global_error.setType(GlobalError.NO_CONNECTION)
-        } else {
-            global_error.setType(GlobalError.SERVER_ERROR)
-        }
-
-        global_error.show()
-        global_error.setOnClickListener {
-            catalogPageRecyclerView?.show()
-            shimmerLayout?.show()
-            bottom_sheet_fragment_container.show()
-            global_error.hide()
-            catalogDetailPageViewModel.getProductCatalog(catalogId, comparisonCatalogId, userSession.userId, CatalogConstant.DEVICE)
-        }
-    }
-
-    private fun initNavToolbar() {
-        navToolbar = view?.findViewById(R.id.catalog_navtoolbar)
-        navToolbar?.apply {
-            viewLifecycleOwner.lifecycle.addObserver(this)
-            setIcon(
-                IconBuilder(builderFlags = IconBuilderFlag(pageSource = NavSource.CATALOG))
-                    .addIcon(IconList.ID_SHARE) {
-                        generateCatalogShareData(catalogId, true)
-                    }
-                    .addIcon(IconList.ID_CART) {}
-                    .addIcon(IconList.ID_NAV_GLOBAL) {}
-            )
-            setupSearchbar(listOf(HintData(context.getString(R.string.catalog_nav_bar_search_hint))))
-            setBadgeCounter(IconList.ID_CART, getCartCounter())
-            setOnBackButtonClickListener {
-                CatalogDetailAnalytics.sendEvent(
-                    CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
-                    CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-                    CatalogDetailAnalytics.ActionKeys.CLICK_BACK_BUTTON,
-                    "$catalogName - $catalogId",
-                    userSession.userId,
-                    catalogId
-                )
-                activity?.onBackPressed()
-            }
-            show()
-        }
-    }
-
-    private fun getCartCounter(): Int {
-        return cartLocalCacheHandler?.getInt(CatalogConstant.TOTAL_CART_CACHE_KEY, 0).orZero()
-    }
-
-    private fun showShimmer() {
-        if (catalogUiUpdater.mapOfData.size ?: 0 == 0) {
-            shimmerLayout?.show()
-        }
-    }
-
-    private fun hideShimmer() {
-        if (catalogUiUpdater.mapOfData.size ?: 0 > 0) {
-            shimmerLayout?.hide()
-        }
-    }
-
-    private fun updateUi() {
-        hideShimmer()
-        catalogPageRecyclerView?.show()
-        catalogLinearLayoutManager?.lastComponentIndex = catalogUiUpdater.mapOfData.size - 1
-        val newData = catalogUiUpdater.mapOfData.values.toList()
-        submitList(newData)
-    }
-
-    private fun submitList(visitables: List<BaseCatalogDataModel>) {
-        catalogDetailAdapter.submitList(visitables)
-    }
-
-    private fun setupRecyclerView(view: View) {
-        catalogPageRecyclerView = view.findViewById(R.id.catalog_detail_rv)
-        catalogPageRecyclerView?.apply {
-            CatalogLinearLayoutManager(view.context, LinearLayoutManager.VERTICAL, false).also {
-                catalogLinearLayoutManager = it
-                layoutManager = it
-            }
-            setHasFixedSize(true)
-            setNestedCanScroll(true)
-            itemAnimator = null
-            ContextCompat.getDrawable(context, R.drawable.catalog_divider)?.let {
-                addItemDecoration(DividerItemDecorator(it))
-            }
-            adapter = catalogDetailAdapter
-            addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    super.onScrolled(recyclerView, dx, dy)
-                    if (dy > CatalogLinearLayoutManager.MINIMUM_SCROLL_FOR_ANIMATION.toPx()) {
-                        slideUpMoreProductsView()
-                    }
-                }
-            })
-        }
-        catalogLinearLayoutManager?.setCatalogAnimationListener(this)
-    }
-
-    private fun slideUpMoreProductsView() {
-        if (sharedViewModel.mProductCount.value != 0 && mToTopLayout?.visibility != View.VISIBLE && mToBottomLayout?.visibility != View.VISIBLE) {
-            val slideUp: Animation = AnimationUtils.loadAnimation(context, R.anim.slide_up)
-            mToBottomLayout?.startAnimation(slideUp)
-            mToBottomLayout?.visibility = View.VISIBLE
-        }
-        catalogLinearLayoutManager?.removeOldAnimation { slideDownMoreProductsView() }
-    }
-
-    private fun slideDownMoreProductsView() {
-        if (sharedViewModel.mProductCount.value != 0 && mToTopLayout?.visibility != View.VISIBLE && mToBottomLayout?.visibility != View.INVISIBLE) {
-            mToBottomLayout?.startAnimation(catalogLinearLayoutManager?.getProductCountViewSlideDownAnimation())
-            mToBottomLayout?.visibility = View.INVISIBLE
-        }
-    }
-
-    private fun slideUpToTopView() {
-        mToTopLayout?.startAnimation(catalogLinearLayoutManager?.getSlideUpAnimation())
-        mToTopLayout?.visibility = View.VISIBLE
-    }
-
-    private fun slideDownToTopView() {
-        mToTopLayout?.startAnimation(catalogLinearLayoutManager?.getSlideDownAnimation())
-        mToTopLayout?.visibility = View.INVISIBLE
-    }
-
-    private fun viewMoreClicked(openPage: String, jumpToFullSpecIndex: Int = 0) {
-        val catalogSpecsAndDetailView = CatalogSpecsAndDetailBottomSheet.newInstance(
-            catalogName,
-            catalogId,
-            catalogUiUpdater.productInfoMap?.description ?: "",
-            fullSpecificationDataModel.fullSpecificationsList,
-            openPage,
-            jumpToFullSpecIndex
-        )
-        catalogSpecsAndDetailView.show(childFragmentManager, "")
-    }
-
-    private fun generateCatalogShareData(catalogId: String, isUniversalShare: Boolean = false) {
-        val linkerShareData = linkerDataMapper(catalogId)
-        onCatalogShareButtonClicked(isUniversalShare, linkerShareData)
-    }
-
-    private fun onCatalogShareButtonClicked(isUniversalShare: Boolean = false, linkerShareData: LinkerShareData) {
-        if (isUniversalShare) {
-            CatalogUniversalShareAnalytics.navBarShareButtonClickedGTM(catalogId, userSession.userId)
-            showUniversalShareBottomSheet(catalogImages)
-        } else {
-            CatalogDetailAnalytics.sendEvent(
-                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
-                CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-                CatalogDetailAnalytics.ActionKeys.CLICK_SHARE,
-                "$catalogName - $catalogId",
-                userSession.userId,
-                catalogId
-            )
-            CatalogUtil.shareData(
-                requireActivity(),
-                linkerShareData.linkerData.description,
-                linkerShareData.linkerData.uri
-            )
-        }
-    }
-
-    private var universalShareBottomSheet: UniversalShareBottomSheet? = null
-    private var screenshotDetector: ScreenshotDetector? = null
-    private var shareType: Int = 1
-
-    private fun showUniversalShareBottomSheet(catalogImages: ArrayList<CatalogImage>, path: String? = null) {
-        universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
-            init(this@CatalogDetailPageFragment)
-            path?.let {
-                setImageOnlySharingOption(true)
-                setScreenShotImagePath(path)
-            }
-            setUtmCampaignData(
-                CatalogConstant.CATALOG,
-                if (UserSession(this@CatalogDetailPageFragment.context).userId.isNullOrEmpty()) {
-                    "0"
-                } else {
-                    UserSession(this@CatalogDetailPageFragment.context).userId
-                },
-                catalogId,
-                CatalogConstant.CATALOG_SHARE
-            )
-            setMetaData(
-                "${CatalogConstant.KATALOG} $catalogName",
-                catalogImages.firstOrNull()?.imageURL ?: "",
-                "",
-                CatalogUtil.getImagesFromCatalogImages(catalogImages)
-            )
-            setOgImageUrl(catalogImages.firstOrNull()?.imageURL ?: "")
-        }
-        universalShareBottomSheet?.show(
-            requireActivity().supportFragmentManager,
-            this@CatalogDetailPageFragment,
-            screenshotDetector
-        )
-        shareType = universalShareBottomSheet?.getShareBottomSheetType() ?: 0
-        if (universalShareBottomSheet?.getShareBottomSheetType() == UniversalShareBottomSheet.CUSTOM_SHARE_SHEET) {
-            CatalogUniversalShareAnalytics.shareBottomSheetAppearGTM(catalogId, userSession.userId)
-        }
-    }
-
-    override fun onShareOptionClicked(shareModel: ShareModel) {
-        val linkerShareData = linkerDataMapper(catalogId)
-        linkerShareData.linkerData.apply {
-            feature = shareModel.feature
-            channel = shareModel.channel
-            campaign = shareModel.campaign
-            isThrowOnError = false
-            if (shareModel.ogImgUrl?.isNotEmpty() == true) {
-                ogImageUrl = shareModel.ogImgUrl
-            }
-        }
-        if (universalShareBottomSheet?.getShareBottomSheetType() == UniversalShareBottomSheet.CUSTOM_SHARE_SHEET) {
-            CatalogUniversalShareAnalytics.sharingChannelSelectedGTM(shareModel.channel ?: "", catalogId, userSession.userId)
-        } else {
-            CatalogUniversalShareAnalytics.sharingChannelScreenShotSelectedGTM(shareModel.channel ?: "", catalogId, userSession.userId)
-        }
-
-        LinkerManager.getInstance().executeShareRequest(
-            LinkerUtils.createShareRequest(
-                0,
-                linkerShareData,
-                object : ShareCallback {
-                    override fun urlCreated(linkerShareData: LinkerShareResult?) {
-                        context?.resources?.getString(
-                            com.tokopedia.catalog.R.string.catalog_share_string,
-                            catalogName,
-                            linkerShareData?.url
-                        )?.let { shareString ->
-                            SharingUtil.executeShareIntent(
-                                shareModel,
-                                linkerShareData,
-                                activity,
-                                view,
-                                shareString
-                            )
-                            universalShareBottomSheet?.dismiss()
-                        }
-                    }
-
-                    override fun onError(linkerError: LinkerError?) {
-                        universalShareBottomSheet?.dismiss()
-                        generateCatalogShareData(catalogId, false)
-                    }
-                }
-            )
-        )
-    }
-
-    override fun onCloseOptionClicked() {
-        if (universalShareBottomSheet?.getShareBottomSheetType() == UniversalShareBottomSheet.CUSTOM_SHARE_SHEET) {
-            CatalogUniversalShareAnalytics.dismissShareBottomSheetGTM(catalogId, userSession.userId)
-        } else {
-            CatalogUniversalShareAnalytics.userClosesScreenShotBottomSheetGTM(catalogId, userSession.userId)
-        }
-        universalShareBottomSheet?.dismiss()
-    }
-
-    override fun screenShotTaken(path: String) {
-        CatalogUniversalShareAnalytics.userTakenScreenShotGTM(catalogId, userSession.userId)
-        showUniversalShareBottomSheet(catalogImages, path)
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        screenshotDetector?.onRequestPermissionsResult(requestCode, grantResults, this)
-    }
-
-    override fun permissionAction(action: String, label: String) {
-        CatalogUniversalShareAnalytics.allowPopupGTM(label, catalogId, userSession.userId)
-    }
-
-    private fun linkerDataMapper(catalogId: String): LinkerShareData {
-        val linkerData = LinkerData()
-        linkerData.id = catalogId
-        linkerData.type = LinkerData.CATALOG_TYPE
-        linkerData.name = getString(com.tokopedia.catalog.R.string.catalog_share_link_name, catalogName)
-        linkerData.uri = CatalogUtil.getShareURI(catalogUrl)
-        linkerData.description = getString(com.tokopedia.catalog.R.string.catalog_share_link_description)
-        linkerData.isThrowOnError = true
-        val linkerShareData = LinkerShareData()
-        linkerShareData.linkerData = linkerData
-        return linkerShareData
-    }
-
-    private fun showImage(currentItem: Int) {
-        catalogUiUpdater.run {
-            productInfoMap?.let {
-                if (catalogUiUpdater.productInfoMap?.images?.isNotEmpty() == true) {
-                    context?.startActivity(CatalogGalleryActivity.newIntent(context, catalogName, catalogId, currentItem, catalogUiUpdater.productInfoMap!!.images!!))
-                }
-            }
-        }
-    }
-
-    override fun onProductImageClick(catalogImage: CatalogImage, position: Int) {
-        showImage(position)
-        CatalogDetailAnalytics.sendEvent(
-            CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
-            CatalogDetailAnalytics.EventKeys.EVENT_CATEGORY,
-            CatalogDetailAnalytics.ActionKeys.CLICK_CATALOG_IMAGE,
-            "$catalogName - $catalogId",
-            userSession.userId,
-            catalogId
-        )
-    }
-
-    override fun onViewMoreSpecificationsClick(topModel: TopSpecificationsComponentData?) {
-        CatalogDetailAnalytics.sendEvent(
-            CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
-            CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-            CatalogDetailAnalytics.ActionKeys.CLICK_MORE_SPECIFICATIONS,
-            "$catalogName - $catalogId",
-            userSession.userId,
-            catalogId
-        )
-        var positionInFullSpecs = 0
-        topModel?.let { safeTopModel ->
-            fullSpecificationDataModel.fullSpecificationsList.forEachIndexed {
-                    index, fullSpecificationsComponentData ->
-                if (safeTopModel.key == fullSpecificationsComponentData.name) {
-                    positionInFullSpecs = index
-                }
-            }
-        }
-        viewMoreClicked(CatalogSpecsAndDetailBottomSheet.SPECIFICATION, jumpToFullSpecIndex = positionInFullSpecs)
-    }
-
-    override fun playVideo(catalogVideo: VideoComponentData, position: Int) {
-        context?.let {
-            CatalogDetailAnalytics.sendEvent(
-                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
-                CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-                CatalogDetailAnalytics.ActionKeys.CLICK_VIDEO_WIDGET,
-                "$catalogName - $catalogId",
-                userSession.userId,
-                catalogId
-            )
-            if (YouTubeApiServiceUtil.isYouTubeApiServiceAvailable(it.applicationContext)
-                == YouTubeInitializationResult.SUCCESS
-            ) {
-                catalogVideo.videoId?.let { videoId ->
-                    redirectToYoutubePlayerPage(videoId)
-                }
+        val anchorToPosition = widgetAdapter.findPositionWidget(anchorTo)
+        val layoutManager = binding?.rvContent?.layoutManager as? LinearLayoutManager
+        widgetAdapter.changeNavigationTabActive(tabPosition)
+        if (anchorToPosition >= Int.ZERO) {
+            if (tabPosition == Int.ZERO) {
+                smoothScroller.targetPosition = anchorToPosition - POSITION_THREE_IN_WIDGET_LIST
+                layoutManager?.startSmoothScroll(smoothScroller)
+            } else if (tabPosition == (widgetAdapter.findNavigationCount()-1)) {
+                smoothScroller.targetPosition = anchorToPosition
+                layoutManager?.startSmoothScroll(smoothScroller)
             } else {
-                // Handle if user didn't have any apps to open Youtube * Usually rooted phone
-                try {
-                    startActivity(
-                        Intent(
-                            Intent.ACTION_VIEW,
-                            Uri.parse(CatalogConstant.URL_YOUTUBE + catalogVideo.videoId)
-                        )
-                    )
-                } catch (e: Throwable) {
+                smoothScroller.targetPosition = anchorToPosition - POSITION_TWO_IN_WIDGET_LIST
+                layoutManager?.startSmoothScroll(smoothScroller)
+            }
+            Handler(Looper.getMainLooper()).postDelayed({
+                selectNavigationFromScroll = true
+            }, 500)
+        }
+
+        CatalogReimagineDetailAnalytics.sendEvent(
+            event = EVENT_VIEW_PG_IRIS,
+            action = EVENT_ACTION_CLICK_NAVIGATION,
+            category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
+            labels = "$catalogId - item: {${tabTitle}}",
+            trackerId = TRACKER_ID_CLICK_NAVIGATION
+        )
+
+    }
+
+    private fun setupObservers(view: View) {
+        viewModel.catalogDetailDataModel.observe(viewLifecycleOwner) {
+            if (it is Success) {
+                productSortingStatus = it.data.productSortingStatus
+                catalogUrl = it.data.catalogUrl
+                widgetAdapter.addWidget(it.data.widgets)
+                title = it.data.navigationProperties.title
+                binding?.setupToolbar(it.data.navigationProperties)
+                binding?.setupRvWidgets(it.data.navigationProperties)
+                binding?.setupPriceCtaWidget(it.data.priceCtaProperties)
+                binding?.stickySingleHeaderView?.stickyPosition =
+                    widgetAdapter.findPositionNavigation()
+            } else if (it is Fail) {
+                binding?.showPageError(it.throwable)
+            }
+        }
+        viewModel.totalCartItem.observe(viewLifecycleOwner) {
+            binding?.toolbar?.cartCount = it
+        }
+        viewModel.errorsToaster.observe(viewLifecycleOwner) {
+            val errorMessage = ErrorHandler.getErrorMessage(view.context, it)
+            Toaster.build(
+                view, errorMessage, duration = Toaster.LENGTH_LONG,
+                type = Toaster.TYPE_ERROR
+            ).show()
+        }
+
+        CoroutineScope(Dispatchers.Main).launch {
+            viewModel.scrollEvents.debounce(300).collect {
+                if (selectNavigationFromScroll) {
+                    widgetAdapter.autoSelectNavigation(it)
                 }
             }
         }
     }
 
-    private fun redirectToYoutubePlayerPage(videoId: String) {
-        RouteManager.route(context, ApplinkConst.YOUTUBE_PLAYER, videoId)
+    private fun FragmentCatalogReimagineDetailPageBinding.setupRvWidgets(
+        navigationProperties: NavigationProperties
+    ) {
+        val layoutManager = LinearLayoutManager(context)
+        rvContent.layoutManager = layoutManager
+        rvContent.adapter = widgetAdapter
+        rvContent.addOnScrollListener(recyclerViewScrollListener)
+        rvContent.setBackgroundColor(navigationProperties.bgColor)
+        rvContent.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val bannerHeight = layoutManager.findViewByPosition(Int.ZERO)?.height.orZero()
+                val bannerRect = Rect()
+                layoutManager.findViewByPosition(Int.ZERO)?.getGlobalVisibleRect(bannerRect)
+                val scrollProgress = Int.ONE - if (bannerRect.height()
+                        .isMoreThanZero() && bannerHeight.isMoreThanZero()
+                ) {
+                    bannerRect.height() / bannerHeight.toFloat()
+                } else {
+                    Int.ZERO.toFloat()
+                }
+                toolbar.updateToolbarAppearance(scrollProgress, navigationProperties)
+            }
+        })
     }
 
-    override fun comparisonCatalogClicked(comparisonCatalogId: String) {
-        context?.let {
-            CatalogDetailAnalytics.sendEvent(
-                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
-                CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-                CatalogDetailAnalytics.ActionKeys.CLICK_COMPARISION_CATALOG,
-                "origin: $catalogName - $catalogId - destination: $comparisonCatalogId",
-                userSession.userId,
-                catalogId
-            )
-            RouteManager.route(it, "${CatalogConstant.CATALOG_URL}$comparisonCatalogId")
+    private fun FragmentCatalogReimagineDetailPageBinding.setupToolbar(
+        navigationProperties: NavigationProperties
+    ) {
+        val colorBgGradient = MethodChecker.getColor(
+            context,
+            unifyprinciplesR.color.Unify_Static_Black_44
+        )
+        val colorFontDark = MethodChecker.getColor(
+            context,
+            unifyprinciplesR.color.Unify_Static_White
+        )
+        val colorFontLight = MethodChecker.getColor(
+            context,
+            unifyprinciplesR.color.Unify_Static_White
+        )
+        val colorFont = if (navigationProperties.isDarkMode) colorFontDark else colorFontLight
+
+        toolbarShadow.background =
+            DrawableExtension.createGradientDrawable(colorTop = colorBgGradient)
+        toolbar.setColors(colorFont)
+        toolbarBg.setBackgroundColor(navigationProperties.bgColor)
+        toolbar.title = navigationProperties.title
+        toolbar.setNavigationOnClickListener {
+            activity?.finish()
+        }
+        toolbar.shareButton?.gone()
+        toolbar.cartButton?.setOnClickListener {
+            if (viewModel.isUserLoggedIn()) {
+                RouteManager.route(context, ApplinkConst.CART)
+            } else {
+                goToLoginPage()
+            }
         }
     }
 
-    override fun openComparisonBottomSheet(comparisonCatalog: ComparisionModel?) {
-        CatalogDetailAnalytics.sendEvent(
-            CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
-            CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-            CatalogDetailAnalytics.ActionKeys.CLICK_GANTI_PERBANDINGAN,
-            "catalog page: $catalogId | catalog comparison: ${comparisonCatalog?.id ?: ""}",
-            userSession.userId,
-            catalogId
-        )
-
-        val catalogComparisonBottomSheet = CatalogComponentBottomSheet.newInstance(
-            catalogName,
-            catalogId,
-            catalogBrand,
-            catalogDepartmentId,
-            recommendedCatalogId,
-            CatalogComponentBottomSheet.ORIGIN_ULTIMATE_VERSION,
-            this
-        )
-        catalogComparisonBottomSheet.show(childFragmentManager, "")
+    private fun CatalogToolbar.updateToolbarAppearance(
+        scrollProgress: Float,
+        navigationProperties: NavigationProperties
+    ) {
+        if (!navigationProperties.isDarkMode) {
+            val colorProgress: Int = COLOR_VALUE_MAX - (COLOR_VALUE_MAX * scrollProgress).toInt()
+            setColors(Color.rgb(colorProgress, colorProgress, colorProgress))
+        }
+        binding?.toolbarBg?.alpha = scrollProgress
+        binding?.toolbar?.tpgTitle?.alpha = scrollProgress
     }
 
-    override fun openComparisonNewBottomSheet(comparisonNewModel: ComparisonNewModel?) {
-        CatalogDetailAnalytics.sendEvent(
-            CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
-            CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-            CatalogDetailAnalytics.ActionKeys.CLICK_GANTI_PERBANDINGAN,
-            "catalog page: $catalogId | catalog comparison: ${comparisonNewModel?.id ?: ""}",
-            userSession.userId,
-            catalogId,
-            CatalogDetailAnalytics.TrackerId.OPEN_BOTTOMSHEET
-        )
+    // Call this methods if you want to override the CTA & Price widget's theme
+    private fun FragmentCatalogReimagineDetailPageBinding.setupPriceCtaWidget(properties: PriceCtaProperties) {
+        containerPriceCta.setBackgroundColor(properties.bgColor)
+        tgpCatalogName.setTextColor(properties.textColor)
+        tgpPriceRanges.setTextColor(properties.textColor)
 
-        val catalogComparisonBottomSheet = CatalogComponentBottomSheet.newInstance(
-            catalogName,
-            catalogId,
-            catalogBrand,
-            catalogDepartmentId,
-            recommendedCatalogId,
-            CatalogComponentBottomSheet.ORIGIN_ULTIMATE_VERSION,
-            this
-        )
-        catalogComparisonBottomSheet.show(childFragmentManager, "")
-    }
+        tgpCatalogName.text = properties.productName
+        tgpPriceRanges.text = properties.price
 
-    override fun comparisonNewCatalogClicked(comparisonCatalogId: String) {
-        context.let {
-            CatalogDetailAnalytics.sendEvent(
-                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
-                CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-                CatalogDetailAnalytics.ActionKeys.CLICK_NEXT_CATALOG_PAGE_PERBANDINGAN_PRODUK,
-                "catalog page: $catalogId | next catalog page: $comparisonCatalogId",
-                userSession.userId,
-                catalogId,
-                CatalogDetailAnalytics.TrackerId.CLICK_NEXT_CATALOG_PAGE
+        btnProductList.setOnClickListener {
+            val catalogProductList =
+                Uri.parse(UriUtil.buildUri(ApplinkConst.DISCOVERY_CATALOG_PRODUCT_LIST))
+                    .buildUpon()
+                    .appendQueryParameter(QUERY_CATALOG_ID, catalogId)
+                    .appendQueryParameter(
+                        QUERY_PRODUCT_SORTING_STATUS,
+                        productSortingStatus.toString()
+                    )
+                    .appendPath(title).toString()
+
+            RouteManager.getIntent(context, catalogProductList).apply {
+                putExtra(EXTRA_CATALOG_URL, catalogUrl)
+                startActivity(this)
+            }
+
+            CatalogReimagineDetailAnalytics.sendEvent(
+                event = EVENT_VIEW_CLICK_PG,
+                action = EVENT_ACTION_SEE_OPTIONS,
+                category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
+                labels = catalogId,
+                trackerId = TRACKER_ID_CLICK_BUTTON_CHOOSE
             )
-            RouteManager.route(it, "${CatalogConstant.CATALOG_URL}$comparisonCatalogId")
+        }
+
+        CatalogReimagineDetailAnalytics.sendEvent(
+            event = EVENT_VIEW_PG_IRIS,
+            action = EVENT_ACTION_IMPRESSION_PRICE_BOTTOM_SHEET,
+            category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
+            labels = catalogId,
+            trackerId = TRACKER_ID_IMPRESSION_PRICE
+        )
+    }
+
+    private fun FragmentCatalogReimagineDetailPageBinding.showPageError(throwable: Throwable) {
+        val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
+        when (throwable) {
+            is UnknownHostException, is SocketTimeoutException -> {
+                gePageError.setType(GlobalError.NO_CONNECTION)
+            }
+
+            else -> {
+                gePageError.setType(GlobalError.SERVER_ERROR)
+            }
+        }
+        gePageError.errorDescription.text = errorMessage
+        groupContent.gone()
+        stickySingleHeaderView.show()
+    }
+
+    private fun goToLoginPage() {
+        val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
+        startActivityForResult(intent, LOGIN_REQUEST_CODE)
+    }
+
+    override fun onHeroBannerImpression(
+        currentPositionVisibility: Int,
+        imageDescription: List<String>,
+        brandImageUrl: List<String>
+    ) {
+
+
+        val impressionImageDescription = if (imageDescription.isNotEmpty()) {
+            imageDescription.subList(Int.ZERO, currentPositionVisibility + 1)
+        } else {
+            emptyList()
+        }
+        val impressionbrandImageUrl = brandImageUrl.subList(Int.ZERO, currentPositionVisibility + 1)
+        val list = arrayListOf<HashMap<String, String>>()
+        for (index in impressionbrandImageUrl.indices) {
+            val promotions = hashMapOf<String, String>()
+            promotions[CatalogTrackerConstant.KEY_CREATIVE_NAME] =
+                impressionImageDescription.getOrNull(index).orEmpty()
+            promotions[CatalogTrackerConstant.KEY_CREATIVE_SLOT] = index.toString()
+            promotions[CatalogTrackerConstant.KEY_ITEM_ID] = catalogId
+            promotions[CatalogTrackerConstant.KEY_ITEM_NAME] =
+                CatalogTrackerConstant.EVENT_IMAGE_BANNER_IMPRESSION
+            list.add(promotions)
+        }
+
+        CatalogReimagineDetailAnalytics.sendEventImpressionList(
+            event = EVENT_VIEW_ITEM,
+            action = EVENT_ACTION_IMPRESSION_HERO_IMAGE,
+            category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
+            labels = catalogId,
+            trackerId = TRACKER_ID_IMPRESSION_HERO_BANNER,
+            userId = userSession.userId,
+            promotion = list
+        )
+    }
+
+    override fun onStickyNavigationImpression() {
+        CatalogReimagineDetailAnalytics.sendEvent(
+            event = EVENT_VIEW_CLICK_PG,
+            action = EVENT_ACTION_IMPRESSION_NAVIGATION,
+            category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
+            labels = catalogId,
+            trackerId = TRACKER_ID_IMPRESSION_NAVIGATION
+        )
+    }
+
+    override fun onBannerThreeByFourImpression(ratio: String) {
+        when (ratio) {
+            BannerCatalogUiModel.Ratio.THREE_BY_FOUR.ratioName -> {
+                CatalogReimagineDetailAnalytics.sendEvent(
+                    event = EVENT_VIEW_PG_IRIS,
+                    action = "$EVENT_ACTION_IMPRESSION_BANNER $ratio",
+                    category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
+                    labels = catalogId,
+                    trackerId = TRACKER_ID_IMPRESSION_BANNER_THREE_BY_FOUR
+                )
+            }
+
+            BannerCatalogUiModel.Ratio.TWO_BY_ONE.ratioName -> {
+                CatalogReimagineDetailAnalytics.sendEvent(
+                    event = EVENT_VIEW_PG_IRIS,
+                    action = "$EVENT_ACTION_IMPRESSION_BANNER $ratio",
+                    category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
+                    labels = catalogId,
+                    trackerId = TRACKER_ID_IMPRESSION_BANNER_TWO_BY_ONE
+                )
+            }
+
+            BannerCatalogUiModel.Ratio.ONE_BY_ONE.ratioName -> {
+                CatalogReimagineDetailAnalytics.sendEvent(
+                    event = EVENT_VIEW_PG_IRIS,
+                    action = "$EVENT_ACTION_IMPRESSION_BANNER $ratio",
+                    category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
+                    labels = catalogId,
+                    trackerId = TRACKER_ID_IMPRESSION_BANNER_ONE_BY_ONE
+                )
+            }
         }
     }
 
-    override fun accordionDropUp(tabName: String?) {
-        CatalogDetailAnalytics.sendEvent(
-            CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
-            CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-            CatalogDetailAnalytics.ActionKeys.CLICK_DROP_UP_BUTTON_PERBANDINGAN_PRODUK,
-            "$catalogName - $catalogId - tabName: $tabName",
-            userSession.userId,
-            catalogId,
-            CatalogDetailAnalytics.TrackerId.CLICK_DROP_UP_BUTTON
+    override fun onTextDescriptionImpression() {
+        CatalogReimagineDetailAnalytics.sendEvent(
+            event = EVENT_VIEW_PG_IRIS,
+            action = EVENT_ACTION_IMPRESSION_TEXT_DESCRIPTION,
+            category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
+            labels = catalogId,
+            trackerId = TRACKER_ID_IMPRESSION_TEXT_DESCRIPTION
         )
     }
 
-    override fun accordionDropDown(tabName: String?) {
-        CatalogDetailAnalytics.sendEvent(
-            CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
-            CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-            CatalogDetailAnalytics.ActionKeys.CLICK_DROP_DOWN_BUTTON_PERBANDINGAN_PRODUK,
-            "$catalogName - $catalogId - tabName: $tabName",
-            userSession.userId,
-            catalogId,
-            CatalogDetailAnalytics.TrackerId.CLICK_DROP_DOWN_BUTTON
+    override fun onClickVideoExpert() {
+        CatalogReimagineDetailAnalytics.sendEvent(
+            event = EVENT_VIEW_CLICK_PG,
+            action = EVENT_ACTION_CLICK_VIDEO_EXPERT_REVIEW,
+            category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
+            labels = catalogId,
+            trackerId = TRACKER_ID_CLICK_VIDEO_EXPERT
         )
     }
 
-    override fun changeComparison(comparedCatalogId: String) {
-        comparisonCatalogId = comparedCatalogId
-        recommendedCatalogId = comparedCatalogId
-        catalogDetailPageViewModel.getProductCatalog(catalogId, comparedCatalogId, userSession.userId, CatalogConstant.DEVICE)
+    override fun onVideoExpertImpression(itemHasSaw: List<ExpertReviewUiModel.ItemExpertReviewUiModel>) {
+        val list = arrayListOf<HashMap<String, String>>()
+        for (index in itemHasSaw.indices) {
+            val promotions = hashMapOf<String, String>()
+            promotions[CatalogTrackerConstant.KEY_CREATIVE_NAME] = itemHasSaw[index].title
+            promotions[CatalogTrackerConstant.KEY_CREATIVE_SLOT] = index.toString()
+            promotions[CatalogTrackerConstant.KEY_ITEM_ID] = catalogId
+            promotions[CatalogTrackerConstant.KEY_ITEM_NAME] = EVENT_REVIEW_BANNER_IMPRESSION
+            list.add(promotions)
+        }
+
+        CatalogReimagineDetailAnalytics.sendEventImpressionList(
+            event = EVENT_VIEW_ITEM,
+            action = EVENT_ACTION_IMPRESSION_EXPERT_REVIEW,
+            category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
+            labels = catalogId,
+            trackerId = TRACKER_ID_IMPRESSION_EXPERT_REVIEW,
+            userId = userSession.userId,
+            promotion = list
+        )
     }
 
-    override fun readMoreReviewsClicked(catalogId: String) {
-        CatalogDetailAnalytics.sendEvent(
-            CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
-            CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-            CatalogDetailAnalytics.ActionKeys.CLICK_ON_LIHAT_SEMUA_REVIEW,
-            "$catalogName - $catalogId",
-            userSession.userId,
-            catalogId
+    override fun onImpressionAccordionInformation() {
+        CatalogReimagineDetailAnalytics.sendEvent(
+            event = EVENT_VIEW_PG_IRIS,
+            action = EVENT_ACTION_IMPRESSION_FAQ,
+            category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
+            labels = catalogId,
+            trackerId = TRACKER_ID_IMPRESSION_FAQ
         )
-        val catalogAllReviewBottomSheet = CatalogComponentBottomSheet.newInstance(
-            catalogName,
-            catalogId,
-            "",
-            "",
-            "",
-            CatalogComponentBottomSheet.ORIGIN_ALL_REVIEWS,
-            this
-        )
-        catalogAllReviewBottomSheet.show(childFragmentManager, "")
     }
 
-    override fun onReviewImageClicked(
+    override fun onClickItemAccordionInformation(
         position: Int,
-        items: ArrayList<CatalogImage>,
-        reviewId: String,
-        isFromBottomSheet: Boolean
+        item: AccordionInformationUiModel.ItemAccordionInformationUiModel
     ) {
-        if (isFromBottomSheet) {
-            CatalogDetailAnalytics.sendEvent(
-                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
-                CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-                CatalogDetailAnalytics.ActionKeys.CLICK_IMAGE_ON_LIST_REVIEW,
-                "$catalogName - $catalogId - $reviewId",
-                userSession.userId,
-                catalogId
-            )
-        } else {
-            CatalogDetailAnalytics.sendEvent(
-                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
-                CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-                CatalogDetailAnalytics.ActionKeys.CLICK_IMAGE_ON_REVIEW,
-                "$catalogName - $catalogId - $reviewId",
-                userSession.userId,
-                catalogId
-            )
-        }
-        context?.startActivity(
-            CatalogGalleryActivity.newIntent(
-                context,
-                catalogName,
-                catalogId,
-                position,
-                items,
-                showBottomGallery = false,
-                showNumbering = true,
-                reviewId
-            )
+        val label = "$catalogId - position: $position - question:${item.title}"
+        CatalogReimagineDetailAnalytics.sendEvent(
+            event = EVENT_VIEW_CLICK_PG,
+            action = EVENT_ACTION_CLICK_FAQ,
+            category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
+            labels = label,
+            trackerId = TRACKER_ID_CLICK_FAQ
         )
     }
 
-    override fun hideFloatingLayout() {
-        slideDownMoreProductsView()
-        slideUpToTopView()
-    }
+    override fun onTrustMakerImpression(currentVisibleTrustMaker: List<TrustMakerUiModel.ItemTrustMakerUiModel>) {
+        val list = arrayListOf<HashMap<String, String>>()
+        for (index in currentVisibleTrustMaker.indices) {
+            val promotions = hashMapOf<String, String>()
+            promotions[CatalogTrackerConstant.KEY_CREATIVE_NAME] =
+                currentVisibleTrustMaker[index].title
+            promotions[CatalogTrackerConstant.KEY_CREATIVE_SLOT] = index.toString()
+            promotions[CatalogTrackerConstant.KEY_ITEM_ID] = catalogId
+            promotions[CatalogTrackerConstant.KEY_ITEM_NAME] = EVENT_TRUSTMAKER_IMPRESSION
+            list.add(promotions)
+        }
 
-    override fun showFloatingLayout() {
-        slideDownToTopView()
-        slideUpMoreProductsView()
-    }
-
-    override fun onViewMoreDescriptionClick() {
-        CatalogDetailAnalytics.sendEvent(
-            CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
-            CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-            CatalogDetailAnalytics.ActionKeys.CLICK_MORE_DESCRIPTION,
-            "$catalogName - $catalogId",
-            userSession.userId,
-            catalogId
+        CatalogReimagineDetailAnalytics.sendEventImpressionList(
+            event = EVENT_VIEW_ITEM,
+            action = EVENT_ACTION_IMPRESSION_TRUSTMAKER,
+            category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
+            labels = catalogId,
+            trackerId = TRACKER_ID_IMPRESSION_TRUSTMAKER,
+            userId = userSession.userId,
+            promotion = list
         )
-        viewMoreClicked(CatalogSpecsAndDetailBottomSheet.DESCRIPTION)
     }
 
-    override fun sendWidgetImpressionEvent(
-        widgetImpressionActionName: String,
-        widgetImpressionItemName: String,
-        adapterPosition: Int
-    ) {
-        val uniqueTrackingKey = "$widgetImpressionActionName-$adapterPosition"
-        if (!widgetTrackingSet.contains(uniqueTrackingKey)) {
-            CatalogDetailAnalytics.sendImpressionEventInQueue(
-                trackingQueue,
-                CatalogDetailAnalytics.EventKeys.EVENT_PROMO_VIEW,
-                widgetImpressionActionName,
-                CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-                "$catalogName - $catalogId",
-                catalogId,
-                adapterPosition,
-                userSession.userId,
-                catalogId,
-                catalogName,
-                widgetImpressionItemName,
-                widgetImpressionActionName
-            )
-            widgetTrackingSet.add(uniqueTrackingKey)
+    override fun onTopFeatureImpression(items: List<TopFeaturesUiModel.ItemTopFeatureUiModel>) {
+        val list = arrayListOf<HashMap<String, String>>()
+        for (index in items.indices) {
+            val promotions = hashMapOf<String, String>()
+            promotions[CatalogTrackerConstant.KEY_CREATIVE_NAME] = items[index].name
+            promotions[CatalogTrackerConstant.KEY_CREATIVE_SLOT] = index.toString()
+            promotions[CatalogTrackerConstant.KEY_ITEM_ID] = catalogId
+            promotions[CatalogTrackerConstant.KEY_ITEM_NAME] = EVENT_TOP_FEATURE_IMPRESSION
+            list.add(promotions)
         }
+
+        CatalogReimagineDetailAnalytics.sendEventImpressionList(
+            event = EVENT_VIEW_ITEM,
+            action = EVENT_ACTION_IMPRESSION_TOP_FEATURE,
+            category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
+            labels = catalogId,
+            trackerId = TRACKER_ID_IMPRESSION_TOP_FEATURE,
+            userId = userSession.userId,
+            promotion = list
+        )
     }
 
-    override fun sendWidgetTrackEvent(actionName: String) {
-        if (!widgetTrackingSet.contains(actionName)) {
-            CatalogDetailAnalytics.sendEvent(
-                CatalogDetailAnalytics.EventKeys.EVENT_VIEW_PG_IRIS,
-                CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-                actionName,
-                "$catalogName - $catalogId",
-                userSession.userId,
-                catalogId
-            )
-            widgetTrackingSet.add(actionName)
-        }
-    }
-
-    override fun sendWidgetTrackEvent(actionName: String, trackerId: String) {
-        if (!widgetTrackingSet.contains(actionName)) {
-            CatalogDetailAnalytics.sendWidgetTracking(userSession.userId, catalogId, catalogName, actionName, trackerId)
-            widgetTrackingSet.add(actionName)
-        }
-    }
-
-    fun onBackPressed() {
-        isBottomSheetOpen = false
-        mBottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
-    }
-
-    override fun getChildsFragmentManager(): FragmentManager? {
-        return childFragmentManager
-    }
-
-    override fun getWindowHeight(): Int {
-        return if (activity != null) {
-            catalog_layout.height
-        } else {
-            0
-        }
-    }
-
-    override fun setLastDetachedItemPosition(adapterPosition: Int) {
-        super.setLastDetachedItemPosition(adapterPosition)
-        if (!isScrollDownButtonClicked) {
-            lastDetachedItemPosition = adapterPosition
-        }
-    }
-
-    override fun setLastAttachItemPosition(adapterPosition: Int) {
-        super.setLastDetachedItemPosition(adapterPosition)
-        if (!isScrollDownButtonClicked) {
-            lastAttachItemPosition = adapterPosition
-        }
-    }
-
-    override fun entryPointBannerClicked(categoryName: String) {
-        RouteManager.route(context, "${CatalogConstant.APPLINK_CATALOG_LIBRARY_CATEGORY_LANDING}$catalogDepartmentId")
-        CatalogDetailAnalytics.sendClickCatalogLibraryEntryPointEvent(catalogId, catalogName, userSession.userId)
-    }
-
-    override fun entryPointBannerImageClicked(appLink: String) {
-        super.entryPointBannerImageClicked(appLink)
-        RouteManager.route(context, appLink)
-        CatalogDetailAnalytics.sendClickCatalogLibraryEntryPointEvent(catalogId, catalogName, userSession.userId)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        trackingQueue.sendAll()
-        catalogLinearLayoutManager?.removeAllHandlers()
-    }
-
-    override fun setIsScrollButtonDown(value: Boolean) {
-        isScrollDownButtonClicked = false
-    }
-
-    override fun onReviewClicked(position: Int, productUrl: String, isFromBottomSheet: Boolean) {
-        super.onReviewClicked(position, productUrl, isFromBottomSheet)
-        RouteManager.route(context, productUrl)
+    override fun onDoubleBannerImpression() {
+        CatalogReimagineDetailAnalytics.sendEvent(
+            event = EVENT_VIEW_PG_IRIS,
+            action = EVENT_ACTION_IMPRESSION_DOUBLE_BANNER,
+            category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
+            labels = catalogId,
+            trackerId = TRACKER_ID_IMPRESSION_DOUBLE_BANNER
+        )
     }
 }

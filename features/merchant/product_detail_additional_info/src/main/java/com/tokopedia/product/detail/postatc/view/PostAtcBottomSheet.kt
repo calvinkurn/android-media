@@ -9,6 +9,8 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.updatePadding
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.google.firebase.crashlytics.BuildConfig
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.globalerror.GlobalError
@@ -33,8 +35,6 @@ import com.tokopedia.product.detail.postatc.tracker.PostAtcTracking
 import com.tokopedia.product.detail.postatc.view.component.error.ErrorUiModel
 import com.tokopedia.product.detail.postatc.view.component.fallback.FallbackUiModel
 import com.tokopedia.product.detail.postatc.view.component.loading.LoadingUiModel
-import com.tokopedia.product.detail.postatc.view.component.recommendation.RecommendationUiModel
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.viewutil.doSuccessOrFail
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -165,7 +165,6 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcBottomSheetDelegate {
 
     private fun observeViewModel() = with(viewModel) {
         layouts.observe(viewLifecycleOwner, layoutsObserver)
-        recommendations.observe(viewLifecycleOwner, recommendationsObserver)
     }
 
     private val layoutsObserver = Observer<Result<List<PostAtcUiModel>>> { result ->
@@ -174,6 +173,7 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcBottomSheetDelegate {
             updateFooter()
         }, fail = {
             showError(it)
+            logException(it)
         })
         PostAtcTracking.impressionPostAtcBottomSheet(
             trackingQueue,
@@ -182,22 +182,20 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcBottomSheetDelegate {
         )
     }
 
-    private val recommendationsObserver =
-        Observer<Pair<Int, Result<RecommendationWidget>>> { result ->
-            val uiModelId = result.first
-            result.second.doSuccessOrFail(success = {
-                val data = it.data
-                adapter.updateComponent<RecommendationUiModel>(uiModelId) {
-                    widget = data
-                }
-            }, fail = {
-                adapter.removeComponent(uiModelId)
-            })
-        }
-
     /**
      * End of Observe ViewModel
      */
+
+    private fun logException(t: Throwable) {
+        if (BuildConfig.DEBUG) return t.printStackTrace()
+
+        val errorMessage = String.format(
+            getString(R.string.pdp_post_atc_log_error_get_layout),
+            userSession.userId,
+            t.message
+        )
+        FirebaseCrashlytics.getInstance().recordException(Exception(errorMessage, t))
+    }
 
     private fun updateFooter() {
         val data = viewModel.postAtcInfo.footer

@@ -46,6 +46,12 @@ data class AddOnsProduct(
         val status: Int = -1,
 
         @SerializedName("type")
-        val type: Int = -1
+        val type: Int = -1,
+
+        @SerializedName("icon_url")
+        val iconUrl: String = "",
+
+        @SerializedName("fixed_quantity")
+        val fixedQuantity: Boolean = false
     )
 }
