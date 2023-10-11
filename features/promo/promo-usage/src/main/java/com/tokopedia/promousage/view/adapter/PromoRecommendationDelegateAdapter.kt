@@ -9,10 +9,10 @@ import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.Animation.AnimationListener
 import android.view.animation.AnimationUtils
+import android.widget.ImageView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieCompositionFactory
-import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
@@ -24,7 +24,7 @@ import com.tokopedia.promousage.util.composite.CompositeAdapter
 import com.tokopedia.promousage.util.composite.DelegateAdapter
 import com.tokopedia.promousage.util.composite.DelegatePayload
 import com.tokopedia.promousage.util.extension.toSpannableHtmlString
-
+import timber.log.Timber
 
 internal class PromoRecommendationDelegateAdapter(
     private val onClickUsePromoRecommendation: () -> Unit,
@@ -105,27 +105,7 @@ internal class PromoRecommendationDelegateAdapter(
                     Color.parseColor(colorHex)
                 )
             }
-            binding.ivPromoRecommendationBackground.loadImage(
-                url = item.backgroundUrl,
-                properties = {
-                    isAnimate(false)
-                    setPlaceHolder(-1)
-                }
-            )
-            binding.ivPromoRecommendationBackground.imageMatrix = Matrix().apply {
-                val screenWidth = getScreenWidth().toFloat()
-                val containerHeight = binding.clContainer.height.toFloat()
-
-                val viewHeight = if (containerHeight > screenWidth) {
-                    screenWidth
-                } else {
-                    containerHeight
-                }
-                val widthScale = screenWidth / screenWidth
-                val heightScale = viewHeight / screenWidth
-                val scale = widthScale.coerceAtLeast(heightScale)
-                postScale(scale, scale)
-            }
+            setImageBackground(item.backgroundUrl)
             binding.ivPromoRecommendationBackground.visible()
         }
 
@@ -178,28 +158,77 @@ internal class PromoRecommendationDelegateAdapter(
             }
         }
 
+        private fun setImageBackground(imageUrl: String) {
+            binding.ivPromoRecommendationBackground.loadImage(
+                url = imageUrl,
+                properties = {
+                    isAnimate(false)
+                    setPlaceHolder(-1)
+                    listener(
+                        onSuccess = { bitmap, _ ->
+                            try {
+                                if (bitmap != null) {
+                                    val wScale =
+                                        binding.ivPromoRecommendationBackground.measuredWidth.toFloat() / bitmap.width.toFloat()
+                                    var hScale =
+                                        binding.ivPromoRecommendationBackground.measuredHeight.toFloat() / bitmap.height.toFloat()
+
+                                    hScale = hScale.coerceAtMost(wScale)
+                                    binding.ivPromoRecommendationBackground.scaleType =
+                                        ImageView.ScaleType.MATRIX
+                                    binding.ivPromoRecommendationBackground.imageMatrix =
+                                        Matrix().apply {
+                                            postScale(wScale, hScale)
+                                        }
+                                    binding.ivPromoRecommendationBackground.loadImage(bitmap)
+                                } else {
+                                    setImageBackgroundDefault(imageUrl)
+                                }
+                            } catch (e: Exception) {
+                                Timber.e(e)
+                                setImageBackgroundDefault(imageUrl)
+                            }
+                        },
+                        onError = {
+                            setImageBackgroundDefault(imageUrl)
+                        }
+                    )
+                }
+            )
+        }
+
+        private fun setImageBackgroundDefault(imageUrl: String) {
+            binding.ivPromoRecommendationBackground.loadImage(
+                url = imageUrl,
+                properties = {
+                    isAnimate(false)
+                    setPlaceHolder(-1)
+                }
+            )
+        }
+
         private fun showPromoRecommendationAnimation(item: PromoRecommendationItem) {
             LottieCompositionFactory.fromUrl(binding.lottieAnimationView.context, item.animationUrl)
                 .addListener { result ->
                     binding.lottieAnimationView.setComposition(result)
                     binding.lottieAnimationView.addAnimatorListener(object :
-                        Animator.AnimatorListener {
-                        override fun onAnimationStart(animator: Animator) {
-                            // no-op
-                        }
+                            Animator.AnimatorListener {
+                            override fun onAnimationStart(animator: Animator) {
+                                // no-op
+                            }
 
-                        override fun onAnimationEnd(animator: Animator) {
-                            // no-op
-                        }
+                            override fun onAnimationEnd(animator: Animator) {
+                                // no-op
+                            }
 
-                        override fun onAnimationCancel(animator: Animator) {
-                            // no-op
-                        }
+                            override fun onAnimationCancel(animator: Animator) {
+                                // no-op
+                            }
 
-                        override fun onAnimationRepeat(animator: Animator) {
-                            // no-op
-                        }
-                    })
+                            override fun onAnimationRepeat(animator: Animator) {
+                                // no-op
+                            }
+                        })
                     binding.lottieAnimationView.playAnimation()
                 }
         }
