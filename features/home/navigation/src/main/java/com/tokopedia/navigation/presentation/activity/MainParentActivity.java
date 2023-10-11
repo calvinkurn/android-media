@@ -92,6 +92,7 @@ import com.tokopedia.navigation_common.listener.FragmentListener;
 import com.tokopedia.navigation_common.listener.HomeBottomNavListener;
 import com.tokopedia.navigation_common.listener.HomeCoachmarkListener;
 import com.tokopedia.navigation_common.listener.HomePerformanceMonitoringListener;
+import com.tokopedia.navigation_common.listener.HomeScrollViewListener;
 import com.tokopedia.navigation_common.listener.MainParentStateListener;
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener;
 import com.tokopedia.navigation_common.listener.RefreshNotificationListener;
@@ -667,8 +668,8 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     private void scrollToHomeForYou(Fragment fragment) {
-        if (fragment != null && fragment.getUserVisibleHint() && fragment instanceof FragmentListener) {
-            ((FragmentListener) fragment).onScrollToRecommendationForYou();
+        if (fragment != null && fragment.getUserVisibleHint() && fragment instanceof HomeScrollViewListener) {
+            ((HomeScrollViewListener) fragment).onScrollToRecommendationForYou();
         }
     }
 

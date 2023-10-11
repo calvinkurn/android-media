@@ -134,7 +134,6 @@ import com.tokopedia.home.beranda.presentation.view.listener.SpecialReleaseCompo
 import com.tokopedia.home.beranda.presentation.view.listener.SpecialReleaseRevampCallback
 import com.tokopedia.home.beranda.presentation.view.listener.TodoWidgetComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.VpsWidgetComponentCallback
-import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home.constant.BerandaUrl
 import com.tokopedia.home.constant.ConstantKey
@@ -153,10 +152,12 @@ import com.tokopedia.iris.Iris
 import com.tokopedia.iris.IrisAnalytics.Companion.getInstance
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.iris.util.KEY_SESSION_IRIS
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.encodeToUtf8
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
@@ -167,6 +168,7 @@ import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.navigation_common.listener.HomeBottomNavListener
 import com.tokopedia.navigation_common.listener.HomeCoachmarkListener
 import com.tokopedia.navigation_common.listener.HomePerformanceMonitoringListener
+import com.tokopedia.navigation_common.listener.HomeScrollViewListener
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener
 import com.tokopedia.navigation_common.listener.RefreshNotificationListener
 import com.tokopedia.network.exception.MessageErrorException
@@ -241,6 +243,7 @@ open class HomeRevampFragment :
     HomeCategoryListener,
     AllNotificationListener,
     FragmentListener,
+    HomeScrollViewListener,
     HomeEggListener,
     HomeTabFeedListener,
     HomeFeedsListener,
@@ -2167,9 +2170,9 @@ open class HomeRevampFragment :
             val firstVisiblePosition = lManager.findFirstVisibleItemPosition()
             val lastVisiblePosition = lManager.findLastVisibleItemPosition()
 
-            val homeRecommendationFeedIndex = adapter?.currentList?.indexOfFirst { it is HomeRecommendationFeedDataModel }
+            val recommendationForYouIndex = homeRecyclerView?.adapter?.itemCount.orZero() - Int.ZERO
 
-            if (homeRecommendationFeedIndex in firstVisiblePosition..lastVisiblePosition) {
+            if (recommendationForYouIndex in firstVisiblePosition..lastVisiblePosition) {
                 setForYouMenuBottomNav()
             } else {
                 setHomeMenuBottomNav()
@@ -2190,7 +2193,7 @@ open class HomeRevampFragment :
     }
 
     override fun onScrollToRecommendationForYou() {
-        val recommendationForYouIndex = adapter?.currentList?.indexOfFirst { it is HomeRecommendationFeedDataModel } ?: RecyclerView.NO_POSITION
+        val recommendationForYouIndex = homeRecyclerView?.adapter?.itemCount.orZero() - Int.ZERO
         if (recommendationForYouIndex != RecyclerView.NO_POSITION) {
             homeRecyclerView?.scrollToPosition(recommendationForYouIndex)
             goToJumperForYouTab(recommendationForYouIndex)
