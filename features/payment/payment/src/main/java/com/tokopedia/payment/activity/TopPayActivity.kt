@@ -913,8 +913,18 @@ class TopPayActivity :
             RemoteConfigKey.ANDROID_ENABLE_GENERATE_WIDEVINE_ID_SUSPEND,
             true
         )
+        val whitelistDisableWidevineId = remoteConfig.getString(
+            RemoteConfigKey.ANDROID_WHITELIST_DISABLE_GENERATE_WIDEVINE_ID,
+            ""
+        )
 
-        val additionalInfoJson = AdditionalDeviceInfo.generateJson(this@TopPayActivity.applicationContext, isEnableGetWidevineId, isEnableGetWidevineIdSuspend)
+        val additionalInfoJson = AdditionalDeviceInfo.generateJson(
+            this@TopPayActivity.applicationContext,
+            isEnableGetWidevineId,
+            isEnableGetWidevineIdSuspend,
+            whitelistDisableWidevineId,
+            userSession.userId
+        )
             .toByteArray(StandardCharsets.UTF_8)
         return Base64.encodeToString(additionalInfoJson, Base64.DEFAULT)
             .replace("\n", "")
