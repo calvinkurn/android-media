@@ -93,9 +93,9 @@ class TitleValidationBottomSheet(
         val textPoint2: Typography? = contentView?.findViewById(R.id.textPoint2)
         val textPoint3: Typography? = contentView?.findViewById(R.id.textPoint3)
         val btnDelete: UnifyButton? = contentView?.findViewById(R.id.btnDelete)
-        val redColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R500_96)
-        val yellowColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Y300)
-        val blackColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
+        val redColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_RN500_96)
+        val yellowColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_YN300)
+        val blackColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96)
 
         if (blacklistKeyword) {
             iconPoint1?.setImage(INFORMATION, redColor)

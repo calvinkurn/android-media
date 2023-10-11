@@ -14,7 +14,7 @@
         android:id="@+id/tv_group_code_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         android:textSize="16sp"
         tools:ignore="RelativeOverlap"
         tools:text="CREDIT CARD BANK BRI" />
@@ -41,7 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:textSize="14sp"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             tools:text="Kode 1 untuk LG G6 Plus &amp; Kode 2 untuk LG Q6 Plus" />
 
         <RelativeLayout
@@ -68,7 +68,7 @@
                 android:layout_toEndOf="@id/iv_promo_code_icon"
                 android:layout_toRightOf="@id/iv_promo_code_icon"
                 android:text="@string/label_promo_code_loyalty_module"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN950_68"
                 android:textSize="14sp"
                 tools:ignore="SmallSp" />
 

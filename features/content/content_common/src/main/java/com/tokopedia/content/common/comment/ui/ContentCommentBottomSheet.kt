@@ -39,8 +39,8 @@ import com.tokopedia.content.common.comment.uimodel.CommentUiModel
 import com.tokopedia.content.common.comment.uimodel.isParent
 import com.tokopedia.content.common.databinding.FragmentContentCommentBottomSheetBinding
 import com.tokopedia.content.common.report_content.bottomsheet.ContentThreeDotsMenuBottomSheet
-import com.tokopedia.content.common.report_content.model.FeedMenuIdentifier
-import com.tokopedia.content.common.report_content.model.FeedMenuItem
+import com.tokopedia.content.common.report_content.model.ContentMenuIdentifier
+import com.tokopedia.content.common.report_content.model.ContentMenuItem
 import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.content.common.util.ConnectionHelper
@@ -49,7 +49,6 @@ import com.tokopedia.content.common.view.getImeHeight
 import com.tokopedia.content.common.view.isImeVisible
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.hide
@@ -109,7 +108,7 @@ class ContentCommentBottomSheet @Inject constructor(
     }
 
     private val sheetMenu by lazyThreadSafetyNone {
-        ContentThreeDotsMenuBottomSheet.getFragment(
+        ContentThreeDotsMenuBottomSheet.getOrCreateFragment(
             childFragmentManager,
             requireActivity().classLoader
         )
@@ -139,6 +138,9 @@ class ContentCommentBottomSheet @Inject constructor(
                     if (isBtnDisabled) disabledColor else enabledColor
                 )
                 binding.ivCommentSend.isClickable = !isBtnDisabled
+                binding.ivCommentSend.setOnClickListener(
+                    if (isBtnDisabled) null else handleSendComment()
+                )
 
                 if (txt == null) return
                 binding.newComment.removeTextChangedListener(this)
@@ -157,7 +159,7 @@ class ContentCommentBottomSheet @Inject constructor(
                     prevLength - selEnd // calculate cursor distance from end of text
 
                 val newText =
-                    TagMentionBuilder.spanText(txt.toSpanned(), textLength = newLength.orZero())
+                    TagMentionBuilder.spanText(txt.toSpanned(), textLength = newLength.orZero(), ctx = requireContext())
                 binding.newComment.text?.clear()
                 binding.newComment.append(newText)
 
@@ -177,8 +179,7 @@ class ContentCommentBottomSheet @Inject constructor(
         object : Snackbar.Callback() {
             override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
                 super.onDismissed(transientBottomBar, event)
-
-                viewModel.submitAction(CommentAction.PermanentRemoveComment)
+                if (event == DISMISS_EVENT_TIMEOUT) viewModel.submitAction(CommentAction.PermanentRemoveComment)
             }
         }
     }
@@ -243,9 +244,6 @@ class ContentCommentBottomSheet @Inject constructor(
         binding.rvComment.adapter = commentAdapter
         binding.rvComment.addOnScrollListener(scrollListener)
 
-        binding.ivCommentSend.setOnClickListener {
-            handleSendComment()
-        }
         Toaster.toasterCustomBottomHeight =
             context?.resources?.getDimensionPixelSize(unifyR.dimen.unify_space_48).orZero()
         binding.newComment.addTextChangedListener(textWatcher)
@@ -384,7 +382,7 @@ class ContentCommentBottomSheet @Inject constructor(
             binding.commentGlobalError.setType(GlobalError.NO_CONNECTION)
             binding.commentGlobalError.errorSecondaryAction.show()
             binding.commentGlobalError.errorSecondaryAction.text =
-                getString(R.string.content_comment_error_secondary)
+                getString(R.string.content_global_error_secondary_text)
             binding.commentGlobalError.setSecondaryActionClickListener {
                 val intent = Intent(Settings.ACTION_WIRELESS_SETTINGS)
                 router.route(requireActivity(), intent)
@@ -417,7 +415,6 @@ class ContentCommentBottomSheet @Inject constructor(
     override fun onLongClicked(item: CommentUiModel.Item) {
         analytics?.longClickComment()
 
-        viewModel.submitAction(CommentAction.SelectComment(item))
         sheetMenu.setListener(this@ContentCommentBottomSheet)
         sheetMenu.setData(getMenuItems(item), item.id)
         sheetMenu.show(childFragmentManager)
@@ -496,10 +493,10 @@ class ContentCommentBottomSheet @Inject constructor(
         CommentUiModel.Shimmer
     }
 
-    override fun onMenuItemClick(feedMenuItem: FeedMenuItem, contentId: String) {
-        when (feedMenuItem.type) {
-            FeedMenuIdentifier.Delete -> deleteCommentChecker()
-            FeedMenuIdentifier.Report -> {
+    override fun onMenuItemClick(contentMenuItem: ContentMenuItem, contentId: String) {
+        when (contentMenuItem.type) {
+            ContentMenuIdentifier.Delete -> deleteCommentChecker(contentId)
+            ContentMenuIdentifier.Report -> {
                 viewModel.submitAction(CommentAction.RequestReportAction)
                 analytics?.clickReportComment()
             }
@@ -507,8 +504,9 @@ class ContentCommentBottomSheet @Inject constructor(
         }
     }
 
-    private fun deleteCommentChecker() {
+    private fun deleteCommentChecker(id: String) {
         requireInternet {
+            viewModel.submitAction(CommentAction.SelectComment(id))
             analytics?.clickRemoveComment()
             viewModel.submitAction(CommentAction.DeleteComment(isFromToaster = false))
         }
@@ -529,28 +527,28 @@ class ContentCommentBottomSheet @Inject constructor(
         sheetMenu.dismiss()
     }
 
-    private fun getMenuItems(item: CommentUiModel.Item): List<FeedMenuItem> = buildList {
+    private fun getMenuItems(item: CommentUiModel.Item): List<ContentMenuItem> = buildList {
         if (item.isOwner || viewModel.isCreator) {
             add(
-                FeedMenuItem(
+                ContentMenuItem(
                     name = R.string.content_common_menu_delete,
                     iconUnify = IconUnify.DELETE,
-                    type = FeedMenuIdentifier.Delete
+                    type = ContentMenuIdentifier.Delete
                 )
             )
         }
         if (item.isReportAllowed) {
             add(
-                FeedMenuItem(
+                ContentMenuItem(
                     iconUnify = IconUnify.WARNING,
                     name = R.string.content_common_menu_report,
-                    type = FeedMenuIdentifier.Report
+                    type = ContentMenuIdentifier.Report
                 )
             )
         }
     }
 
-    private fun handleSendComment() {
+    private fun handleSendComment() = View.OnClickListener {
         showKeyboard(false)
         val newLength = binding.newComment.text.toString().getGraphemeLength()
         if (newLength > MAX_CHAR) {

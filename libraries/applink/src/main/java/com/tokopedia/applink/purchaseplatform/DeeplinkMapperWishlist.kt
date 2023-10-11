@@ -4,7 +4,7 @@ import android.content.Context
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform
 
 object DeeplinkMapperWishlist {
-    fun getRegisteredNavigationWishlist(context: Context): String {
+    fun getRegisteredNavigationWishlist(): String {
         return ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION
     }
 }

@@ -8,6 +8,8 @@
     <string name="product_stock_reminder_toaster_failed_desc" tools:keep="@string/product_stock_reminder_toaster_failed_desc">Oops, permintaan kamu tidak dapat diproses.</string>
     <string name="product_manage_stock_description_information_stock_reminder" tools:keep="@string/product_manage_stock_description_information_stock_reminder">Pengingat Stok sudah diaktifkan dan kamu akan menerima notifikasi saat stok produk ini di bawah %d.</string>
     <string name="product_manage_stock_description_information_stock_reminder_active" tools:keep="@string/product_manage_stock_description_information_stock_reminder_active">Stok produk di bawah batas min. stok untuk pengingat (%d). Ayo update stok agar pembeli bisa tetap membeli produk ini.</string>
+    <string name="product_manage_propduct_dilayani_tokopedia">Stok produk ini terdaftar di gudang Dilayani Tokopedia.</string>
+    <string name="product_manage_propduct_dilayani_tokopedia_title">Produk Dilayani Tokopedia</string>
 
     <string name="product_manage_error_description">Oops, ada gangguan yang perlu kami bereskan.</string>
     <string name="product_manage_save">Simpan</string>
@@ -21,6 +23,11 @@
     <string name="product_manage_quick_edit_stock_max_stock">Maks. %s</string>
 
     <string name="product_manage_quick_edit_stock_success" tools:keep="@string/product_manage_quick_edit_stock_success">Ketersediaan produk \"%1$s\" berhasil diubah.</string>
+    <string name="product_manage_quick_edit_status_inactive_success">%1$s berhasil dinonaktifkan.</string>
+    <string name="product_manage_quick_edit_status_variant_inactive_success">%1$s (%2$s) berhasil dinonaktifkan.</string>
+    <string name="product_manage_quick_edit_status_active_success">%1$s berhasil diaktifkan.</string>
+    <string name="product_manage_quick_edit_status_variant_active_success">%1$s (%2$s) berhasil diaktifkan.</string>
+
     <string name="product_manage_quick_edit_price_ticker_info">Kamu akan mengubah harga lokasi utama saja. Untuk mengubah harga lokasi lain, akses Tokopedia Seller melalui desktop.</string>
 
     <string name="product_manage_campaign_stock_success_toast" tools:keep="@string/product_manage_campaign_stock_success_toast">Jumlah stok \"%1$s\" berhasil diubah.</string>
@@ -52,5 +59,16 @@
     <string name="product_manage_stock_alert_active_info_in_edit_stock_variant">Stok produk di bawah batas min. pengingat stok.</string>
     <string name="product_manage_stock_description_information_stock_available" tools:keep="@string/product_manage_stock_description_information_stock_available">"Produk ini dapat tanda “Stok Tersedia” yang bisa dilihat pembeli di halaman produk. "</string>
     <string name="product_manage_stock_available" tools:keep="@string/product_manage_stock_available">"Tanda “Stok Tersedia” "</string>
+
+    <string name="product_manage_deletion_product_dt_title">Produk Dilayani Tokopedia belum bisa dihapus</string>
+    <string name="product_manage_deletion_product_dt_desc">Untuk hapus, buat Surat Penarikan lewat desktop dan pastikan semua stok di gudang Dilayani Tokopedia sudah ditarik.</string>
+
+    <string name="product_manage_deletion_product_dt_bulkedit_title">%s produk Dilayani Tokopedia belum bisa dihapus</string>
+
+    <string name="product_manage_confirm_inactive_dt_product_desc"><![CDATA[Jika menonaktifkan, kamu berpotensi <b>tetap harus membayar biaya Dilayani Tokopedia</b> meski produk dinonaktifkan.<br><a href="https://www.tokopedia.com/help/article/biaya-dilayani-tokopedia"><span style=color:#00AA5B;>Baca Artikel</span></a>]]></string>
+    <string name="product_manage_confirm_inactive_dt_product_title">Produk ini terdaftar dalam gudang Dilayani Tokopedia</string>
+    <string name="product_manage_confirm_inactive_dt_product_positive_button">Tetap Nonaktifkan</string>
+    <string name="product_manage_confirm_dt_product_cancel_button">Batal</string>
+    <string name="oke">OKE</string>
 
 </resources>

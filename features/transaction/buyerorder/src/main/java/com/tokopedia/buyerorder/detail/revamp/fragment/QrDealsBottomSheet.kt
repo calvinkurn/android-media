@@ -11,16 +11,24 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifyprinciples.R as UnifyPrinciplesR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 /**
  * created by @bayazidnasir on 6/9/2022
  */
 
-class QrDealsBottomSheet(private val actionButton: ActionButton) : BottomSheetUnify() {
+class QrDealsBottomSheet : BottomSheetUnify() {
 
     private var binding by autoClearedNullable<DealsQrCodeLayoutBinding>()
+    private var actionButton: ActionButton? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {arguments ->
+            actionButton = arguments.getParcelable(ACTION_BUTTON_EXTRA)
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,7 +43,9 @@ class QrDealsBottomSheet(private val actionButton: ActionButton) : BottomSheetUn
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setData(actionButton)
+        actionButton?.let { actionButton ->
+            setData(actionButton)
+        }
     }
 
     private fun setData(actionButton: ActionButton) {
@@ -47,8 +57,8 @@ class QrDealsBottomSheet(private val actionButton: ActionButton) : BottomSheetUn
             }
 
             it.qrCode.loadImage(actionButton.body.appURL){
-                setPlaceHolder(UnifyPrinciplesR.color.Unify_N50)
-                setErrorDrawable(UnifyPrinciplesR.color.Unify_N50)
+                setPlaceHolder(unifyprinciplesR.color.Unify_NN50)
+                setErrorDrawable(unifyprinciplesR.color.Unify_NN50)
             }
 
             it.redeemDialogShopName.text = actionButton.headerObject.poweredBy
@@ -58,6 +68,19 @@ class QrDealsBottomSheet(private val actionButton: ActionButton) : BottomSheetUn
                 it.redeemDialogShopName.gone()
                 it.redeemDialogPoweredBy.gone()
             }
+        }
+    }
+
+    companion object{
+
+        private const val ACTION_BUTTON_EXTRA = "ACTION_BUTTON_EXTRA"
+
+        fun newInstance(actionButton: ActionButton):  QrDealsBottomSheet {
+            val bottomSheet = QrDealsBottomSheet()
+            val bundle = Bundle()
+            bundle.putParcelable(ACTION_BUTTON_EXTRA, actionButton)
+            bottomSheet.arguments = bundle
+            return bottomSheet
         }
     }
 }

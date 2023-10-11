@@ -1,7 +1,6 @@
 package com.tokopedia.content.common.comment
 
 import android.content.Context
-import android.graphics.Color
 import android.text.Spanned
 import android.text.SpannedString
 import android.text.TextPaint
@@ -10,11 +9,13 @@ import android.text.style.ForegroundColorSpan
 import android.view.View
 import androidx.annotation.ColorInt
 import androidx.core.text.getSpans
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.comment.uimodel.CommentType
 import com.tokopedia.content.common.comment.uimodel.CommentUiModel
 import com.tokopedia.content.common.comment.uimodel.UserType
 import com.tokopedia.content.common.util.buildSpannedString
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * @author by astidhiyaa on 23/02/23
@@ -62,8 +63,8 @@ class MentionedSpanned(
     }
 }
 
-class BaseSpan(val fullText: String, val content: String, val shortName: String) :
-    ForegroundColorSpan(Color.BLACK) {
+class BaseSpan(val fullText: String, val content: String, val shortName: String, val ctx: Context) :
+    ForegroundColorSpan(MethodChecker.getColor(ctx, unifyprinciplesR.color.Unify_NN1000)) {
     val sentText: String get() = fullText + content
 }
 
@@ -73,7 +74,7 @@ object TagMentionBuilder {
     private const val MENTION_VALUE = 3
 
     fun createNewMentionTag(item: CommentUiModel.Item): String {
-        return "{$MENTION_CHAR${item.userId}$MENTION_CHAR|$MENTION_CHAR${item.userType.value}$MENTION_CHAR|$MENTION_CHAR${item.username}$MENTION_CHAR}"
+        return "{$MENTION_CHAR${item.userId}$MENTION_CHAR|$MENTION_CHAR${item.userType.value}$MENTION_CHAR|$MENTION_CHAR${item.username}$MENTION_CHAR} "
     }
 
     fun isChildOrParent(text: Spanned?, commentId: String): CommentType {
@@ -87,7 +88,7 @@ object TagMentionBuilder {
         }
     }
 
-    fun spanText(text: Spanned, textLength: Int): Spanned {
+    fun spanText(text: Spanned, textLength: Int, ctx: Context): Spanned {
         if (text.isBlank()) return buildSpannedString { append(text) }
 
         val find = regex.findAll(text)
@@ -100,7 +101,7 @@ object TagMentionBuilder {
             )
             val restructured =
                 "{${find.elementAt(0).value}|${find.elementAt(1).value}|${find.elementAt(2).value}}"
-            val span = BaseSpan(fullText = restructured, content = comment, shortName = name)
+            val span = BaseSpan(fullText = restructured, content = comment, shortName = name, ctx = ctx)
             buildSpannedString {
                 append(name, span, Spanned.SPAN_EXCLUSIVE_INCLUSIVE)
                 append(comment)
@@ -171,7 +172,7 @@ object TagMentionBuilder {
                         mentionSpanned,
                         Spanned.SPAN_COMPOSING
                     )
-                    append(" $content")
+                    append(content)
                 }
             } else {
                 throw Exception()

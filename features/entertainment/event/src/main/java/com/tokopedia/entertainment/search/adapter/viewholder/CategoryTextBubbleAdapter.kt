@@ -5,10 +5,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.entertainment.R
+import com.tokopedia.entertainment.databinding.EntSearchCategoryTextItemBinding
 import com.tokopedia.entertainment.search.analytics.EventCategoryPageTracking
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.unifycomponents.ChipsUnify
-import kotlinx.android.synthetic.main.ent_search_category_text_item.view.*
 
 class CategoryTextBubbleAdapter(val onClicked: ((String) -> Unit)? ): RecyclerView.Adapter<CategoryTextBubbleAdapter.CategoryTextBubbleViewHolder>() {
 
@@ -23,24 +23,27 @@ class CategoryTextBubbleAdapter(val onClicked: ((String) -> Unit)? ): RecyclerVi
     private val LAST_ITEM = 101
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryTextBubbleViewHolder {
-        val view = CategoryTextBubbleViewHolder(LayoutInflater.from(parent.context)
-                .inflate(R.layout.ent_search_category_text_item, parent, false))
+        val viewholder = CategoryTextBubbleViewHolder(EntSearchCategoryTextItemBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        ), onClicked, hashSet)
 
         //Manually set first and last item margin
         // 18dp = 47
         // 8dp = 21
         if (viewType == FIRST_ITEM) {
-            view.view.setMargin(parent.context.resources.getDimensionPixelSize(R.dimen.dimen_dp_18),
+            viewholder.binding.root.setMargin(parent.context.resources.getDimensionPixelSize(R.dimen.dimen_dp_18),
                     parent.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl0),
                     parent.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1),
                     parent.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl0))
         } else if (viewType == LAST_ITEM) {
-            view.view.setMargin(parent.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl0),
+            viewholder.binding.root.setMargin(parent.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl0),
                     parent.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl0),
                     parent.context.resources.getDimensionPixelSize(R.dimen.dimen_dp_18),
                     parent.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl0))
         }
-        return view
+        return viewholder
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -57,32 +60,34 @@ class CategoryTextBubbleAdapter(val onClicked: ((String) -> Unit)? ): RecyclerVi
     override fun getItemCount(): Int = listCategory.size
 
     override fun onBindViewHolder(holder: CategoryTextBubbleViewHolder, position: Int) {
-        val category = listCategory.get(position)
-        var clicked = false
-        with(holder.view) {
-            category_chip_event.chipText = category.category
-            category_chip_event.setOnClickListener {
-                clicked = setClicked(category_chip_event, clicked)
-                EventCategoryPageTracking.getInstance().onClickCategoryBubble(category)
-                if (onClicked != null) {
-                    onClicked.invoke(category.id)
+        holder.bind(listCategory[position])
+    }
+
+    class CategoryTextBubbleViewHolder(val binding: EntSearchCategoryTextItemBinding, val onClicked: ((String) -> Unit)?, val hashSet: HashSet<String>) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(category: CategoryTextBubble) {
+            var clicked = false
+            with(binding) {
+                categoryChipEvent.chipText = category.category
+                categoryChipEvent.setOnClickListener {
+                    clicked = setClicked(categoryChipEvent, clicked)
+                    EventCategoryPageTracking.getInstance().onClickCategoryBubble(category)
+                    if (onClicked != null) {
+                        onClicked.invoke(category.id)
+                    }
+                }
+                if (hashSet.contains(category.id)) {
+                    clicked = setClicked(categoryChipEvent, clicked)
                 }
             }
-            if (hashSet.contains(category.id)) {
-                clicked = setClicked(category_chip_event, clicked)
+        }
+        private fun setClicked(chipsUnify: ChipsUnify, clicked: Boolean): Boolean {
+            if (clicked) {
+                chipsUnify.chipType = ChipsUnify.TYPE_NORMAL
+                return false
+            } else {
+                chipsUnify.chipType = ChipsUnify.TYPE_SELECTED
+                return true
             }
         }
     }
-
-    private fun setClicked(chipsUnify: ChipsUnify, clicked: Boolean): Boolean {
-        if (clicked) {
-            chipsUnify.chipType = ChipsUnify.TYPE_NORMAL
-            return false
-        } else {
-            chipsUnify.chipType = ChipsUnify.TYPE_SELECTED
-            return true
-        }
-    }
-
-    class CategoryTextBubbleViewHolder(val view: View) : RecyclerView.ViewHolder(view)
 }

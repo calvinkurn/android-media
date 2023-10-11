@@ -59,9 +59,42 @@ class GetVoucherListChildUseCase @Inject constructor(
                         is_lock_to_product
                         total_child
                         target_buyer
+                        label_voucher{
+                        label_quota
+                        label_quota_formatted
+                        label_quota_color_type
+                        label_creator
+                        label_creator_formatted
+                        label_creator_color_type
+                        label_subsidy_info
+                        label_subsidy_info_formatted
+                        label_subsidy_info_color_type
+                        label_budgets_voucher{
+                          label_budget_voucher_formatted
+                          label_budget_voucher
+                          label_budget_voucher_value
+                        }
+                      }
+                      is_editable
+                      subsidy_detail{
+                        quota_subsidized{
+                          voucher_quota
+                          remaining_quota
+                          booked_global_quota
+                          confirmed_global_quota
+                        }
+                        program_detail{
+                          program_name
+                          program_status
+                          program_label
+                          program_label_detail
+                          promotion_status
+                          promotion_label
+                        }
                       }
                     }
-                }
+                  }
+               }
             }
         """
     }
@@ -72,8 +105,8 @@ class GetVoucherListChildUseCase @Inject constructor(
         override fun getTopOperationName(): String = OPERATION_NAME
     }
 
-    suspend fun execute(voucherId: Long, voucherStatus: ArrayList<VoucherStatus>?= null): List<Voucher> {
-        val filterToApply = voucherStatus?.joinToString { it.id.toString() }.orEmpty().replace(" ","")
+    suspend fun execute(voucherId: Long, voucherStatus: ArrayList<VoucherStatus>? = null): List<Voucher> {
+        val filterToApply = voucherStatus?.joinToString { it.id.toString() }.orEmpty().replace(" ", "")
         val request = buildRequest(voucherId, filterToApply)
         val response = repository.response(listOf(request))
         val errors = response.getError(GetMerchantVoucherListResponse::class.java)

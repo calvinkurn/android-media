@@ -5,17 +5,27 @@
     android:layout_height="wrap_content"
     android:background="@drawable/interactive_adapter_template_chat">
 
-    <com.tokopedia.topchat.chatroom.view.customview.TopchatSquareImageView
-        android:id="@+id/thumbnail"
-        android:layout_width="52dp"
-        android:layout_height="52dp"
+    <com.tokopedia.stories.widget.StoriesWidgetLayout
+        android:id="@+id/stories_border"
+        android:layout_width="58dp"
+        android:layout_height="58dp"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/dp_topchat_14"
         android:layout_marginBottom="@dimen/dp_topchat_14"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:src="@color/Unify_Y500" />
+        >
+
+        <com.tokopedia.topchat.chatroom.view.customview.TopchatSquareImageView
+            android:id="@+id/thumbnail"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="4dp"
+            tools:src="@color/Unify_YN500"
+            />
+
+    </com.tokopedia.stories.widget.StoriesWidgetLayout>
 
     <ImageView
         android:id="@+id/ivPin"
@@ -23,8 +33,8 @@
         android:layout_height="@dimen/spacing_lvl4"
         android:layout_gravity="end|bottom"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/thumbnail"
-        app:layout_constraintEnd_toEndOf="@+id/thumbnail"
+        app:layout_constraintBottom_toBottomOf="@+id/stories_border"
+        app:layout_constraintEnd_toEndOf="@+id/stories_border"
         app:srcCompat="@drawable/ic_pinned_blue"
         tools:visibility="visible"
         android:contentDescription="pin"/>
@@ -45,7 +55,7 @@
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/time"
-        app:layout_constraintStart_toEndOf="@+id/thumbnail"
+        app:layout_constraintStart_toEndOf="@+id/stories_border"
         app:layout_constraintTop_toBottomOf="@+id/user_name"
         app:layout_constraintVertical_bias="0.0"
         app:typographyType="body_2"
@@ -57,7 +67,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_topchat_12"
-        app:layout_constraintStart_toEndOf="@+id/thumbnail"
+        app:layout_constraintStart_toEndOf="@+id/stories_border"
         app:layout_constraintTop_toTopOf="@id/message"
         layout="@layout/layout_typing"/>
 
@@ -71,11 +81,11 @@
         android:ellipsize="end"
         android:includeFontPadding="false"
         android:maxLines="1"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:layout_constrainedWidth="true"
         app:layout_constraintEnd_toStartOf="@+id/time"
         app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintStart_toEndOf="@+id/thumbnail"
+        app:layout_constraintStart_toEndOf="@+id/stories_border"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_1"
         app:typographyWeight="bold"
@@ -137,7 +147,7 @@
         android:background="@drawable/bg_red_dot_unread"
         android:gravity="center"
         android:includeFontPadding="false"
-        android:textColor="@color/Unify_N0"
+        android:textColor="@color/Unify_NN0"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="@+id/time"
         app:layout_constraintTop_toBottomOf="@+id/time"

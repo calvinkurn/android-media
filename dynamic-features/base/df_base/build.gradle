@@ -1,7 +1,6 @@
 apply plugin: 'com.android.dynamic-feature'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'io.hansel.preprocessor.feature'
-apply plugin: 'robust'
 
 buildscript {
     repositories {
@@ -15,6 +14,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.df.base'
+    testNamespace 'com.tokopedia.df.base.test'
 
     signingConfigs {
         debug {
@@ -59,6 +60,7 @@ dependencies {
 
     //Base
     implementation projectOrAar(rootProject.ext.features.onboarding)
+    implementation projectOrAar(rootProject.ext.features.buyMoreGetMore)
 
     //Category
     implementation projectOrAar(rootProject.ext.features.exploreCategory)
@@ -66,7 +68,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.catalogLibrary)
     implementation projectOrAar(rootProject.ext.features.kategori)
     implementation projectOrAar(rootProject.ext.features.categoryLevels)
-    implementation projectOrAar(rootProject.ext.features.affiliateToko)
+//    implementation projectOrAar(rootProject.ext.features.affiliateToko)
     implementation projectOrAar(rootProject.ext.features.ePharmacy)
     //implementation projectOrAar(rootProject.ext.features.agerestriction) //Need to fix the structure
 
@@ -74,6 +76,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.play)
     implementation projectOrAar(rootProject.ext.features.kol)
     implementation projectOrAar(rootProject.ext.features.feed)
+    implementation projectOrAar(rootProject.ext.features.stories)
 
     //Digital
     implementation projectOrAar(rootProject.ext.features.digitalTopupBills)
@@ -119,6 +122,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.shopPage)
     implementation projectOrAar(rootProject.ext.features.shopPageWidget)
     implementation projectOrAar(rootProject.ext.features.feedShop)
+    implementation projectOrAar(rootProject.ext.features.sellerShopNib)
 
     //Operational
 
@@ -127,9 +131,11 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.pms)
     implementation projectOrAar(rootProject.ext.features.goPayKyc)
     implementation projectOrAar(rootProject.ext.features.withdraw)
+    implementation projectOrAar(rootProject.ext.features.thankYouNative)
 
     //Promo
     implementation projectOrAar(rootProject.ext.features.promoCheckout)
+    implementation projectOrAar(rootProject.ext.features.promoUsage)
 
     //User
     implementation projectOrAar(rootProject.ext.features.settingnotif)
@@ -161,4 +167,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.buyerorder)
     implementation projectOrAar(rootProject.ext.features.snapshot)
     implementation projectOrAar(rootProject.ext.features.buyercancellationorder)
+
+    implementation projectOrAar(rootProject.ext.features.scpRewardsTouchpoints)
 }

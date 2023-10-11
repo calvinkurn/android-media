@@ -28,102 +28,117 @@ import kotlinx.android.synthetic.main.item_empty_error_state.view.*
 
 class MultiBannerViewHolder(private val customItemView: View, val fragment: Fragment) : AbstractViewHolder(customItemView) {
     private var constraintLayout: ConstraintLayout = customItemView.findViewById(R.id.banner_container_layout)
-    private var context: Context
-    private lateinit var bannerName: String
-    private lateinit var multiBannerViewModel: MultiBannerViewModel
+    private var context: Context = constraintLayout.context
+    private var bannerName: String? = null
+    private var multiBannerViewModel: MultiBannerViewModel? = null
     private var bannersItemList: ArrayList<BannerItem> = arrayListOf()
-
-    init {
-        context = constraintLayout.context
-    }
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         multiBannerViewModel = discoveryBaseViewModel as MultiBannerViewModel
-        getSubComponent().inject(multiBannerViewModel)
-        if (multiBannerViewModel.shouldShowShimmer()) {
-            constraintLayout.removeAllViews()
-            val shimmerView = constraintLayout.inflateLayout(multiBannerViewModel.layoutSelector(), false)
-            constraintLayout.addView(shimmerView)
-        }
-        multiBannerViewModel.checkForDarkMode(itemView.context)
-        multiBannerViewModel.getComponentData().observe(
-            fragment.viewLifecycleOwner,
-            Observer { item ->
-
-                if (!item.data.isNullOrEmpty()) {
-                    constraintLayout.removeAllViews()
-                    bannersItemList = ArrayList()
-                    bannerName = item?.name ?: ""
-                    addBanners(item.data!!, item.properties?.compType)
-                }
-            }
-        )
-
-        multiBannerViewModel.getPushBannerStatusData().observe(
-            fragment.viewLifecycleOwner,
-            Observer {
-                updateImage(it.first)
-                if (it.second.isNotEmpty()) {
-                    Toaster.make(customItemView, it.second, Toast.LENGTH_SHORT, Toaster.TYPE_ERROR)
-                }
-            }
-        )
-
-        multiBannerViewModel.getPushBannerSubscriptionData().observe(
-            fragment.viewLifecycleOwner,
-            Observer {
-                updateImage(it)
-            }
-        )
-        multiBannerViewModel.getShowLoginData().observe(
-            fragment.viewLifecycleOwner,
-            Observer {
-                if (it) context.startActivity(RouteManager.getIntent(context, ApplinkConst.LOGIN))
-            }
-        )
-
-        multiBannerViewModel.checkApplink().observe(
-            fragment.viewLifecycleOwner,
-            Observer { applink ->
-                try {
-                    if (applink.isNotEmpty()) {
-                        Toaster.make(
-                            customItemView,
-                            fragment.getString(R.string.coupon_code_successfully_copied),
-                            Toast.LENGTH_SHORT,
-                            Toaster.TYPE_NORMAL,
-                            customItemView.context.getString(R.string.coupon_code_btn_text),
-                            View.OnClickListener {
-                                multiBannerViewModel.navigate(customItemView.context, applink)
-                            }
-                        )
-                    } else {
-                        Toaster.make(customItemView, fragment.getString(R.string.coupon_code_successfully_copied), Toast.LENGTH_SHORT, Toaster.TYPE_NORMAL)
-                    }
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-        )
-
-        multiBannerViewModel.isPageRefresh().observe(
-            fragment.viewLifecycleOwner,
-            Observer {
-                if (it) fragment.startActivityForResult(RouteManager.getIntent(fragment.context, ApplinkConst.LOGIN), PAGE_REFRESH_LOGIN)
-            }
-        )
-
-        multiBannerViewModel.hideShimmer.observe(fragment.viewLifecycleOwner, { shouldHideShimmer ->
-            if (shouldHideShimmer) {
+        multiBannerViewModel?.let { multiBannerViewModel ->
+            getSubComponent().inject(multiBannerViewModel)
+            if (multiBannerViewModel.shouldShowShimmer()) {
                 constraintLayout.removeAllViews()
+                val shimmerView = constraintLayout.inflateLayout(multiBannerViewModel.layoutSelector(), false)
+                constraintLayout.addView(shimmerView)
             }
-        })
+            multiBannerViewModel.checkForDarkMode(itemView.context)
+            multiBannerViewModel.getComponentData().observe(
+                fragment.viewLifecycleOwner,
+                Observer { item ->
 
-        multiBannerViewModel.showErrorState.observe(fragment.viewLifecycleOwner, { shouldShowError ->
-            if (shouldShowError) {
-                handleError()
+                    if (!item.data.isNullOrEmpty()) {
+                        constraintLayout.removeAllViews()
+                        bannersItemList = ArrayList()
+                        bannerName = item?.name ?: ""
+                        addBanners(item.data!!, item.properties?.compType)
+                    }
+                }
+            )
+
+            multiBannerViewModel.getPushNotificationBannerSubscriptionUpdated().observe(
+                fragment.viewLifecycleOwner
+            ) { model ->
+                if (model.errorMessage.isNotEmpty()) {
+                    Toaster.build(
+                        customItemView,
+                        model.errorMessage,
+                        Toast.LENGTH_SHORT,
+                        Toaster.TYPE_ERROR
+                    ).show()
+                } else {
+                    updateImage(
+                        position = model.position,
+                        isSubscribed = model.isSubscribed
+                    )
+                }
             }
-        })
+
+            multiBannerViewModel.getPushNotificationBannerSubscriptionInit().observe(
+                fragment.viewLifecycleOwner
+            ) { model ->
+                updateImage(
+                    position = model.position,
+                    isSubscribed =  model.isSubscribed
+                )
+            }
+
+            multiBannerViewModel.getShowLoginData().observe(
+                fragment.viewLifecycleOwner,
+                Observer {
+                    if (it) context.startActivity(RouteManager.getIntent(context, ApplinkConst.LOGIN))
+                }
+            )
+
+            multiBannerViewModel.checkApplink().observe(
+                fragment.viewLifecycleOwner,
+                Observer { applink ->
+                    try {
+                        if (applink.isNotEmpty()) {
+                            Toaster.make(
+                                customItemView,
+                                fragment.getString(R.string.coupon_code_successfully_copied),
+                                Toast.LENGTH_SHORT,
+                                Toaster.TYPE_NORMAL,
+                                customItemView.context.getString(R.string.coupon_code_btn_text),
+                                View.OnClickListener {
+                                    multiBannerViewModel.navigate(customItemView.context, applink)
+                                }
+                            )
+                        } else {
+                            Toaster.make(customItemView, fragment.getString(R.string.coupon_code_successfully_copied), Toast.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
+            )
+
+            multiBannerViewModel.isPageRefresh().observe(
+                fragment.viewLifecycleOwner,
+                Observer {
+                    if (it) fragment.startActivityForResult(RouteManager.getIntent(fragment.context, ApplinkConst.LOGIN), PAGE_REFRESH_LOGIN)
+                }
+            )
+
+            multiBannerViewModel.hideShimmer.observe(fragment.viewLifecycleOwner) { shouldHideShimmer ->
+                if (shouldHideShimmer) {
+                    constraintLayout.removeAllViews()
+                }
+            }
+
+            multiBannerViewModel.showErrorState.observe(fragment.viewLifecycleOwner) { shouldShowError ->
+                if (shouldShowError) {
+                    handleError()
+                }
+            }
+
+            multiBannerViewModel.redirectedTab.observe(fragment.viewLifecycleOwner) { redirectedTabValue ->
+                if (!redirectedTabValue.isNullOrEmpty()) {
+                    (fragment as? DiscoveryFragment)?.redirectToOtherTab(redirectedTabValue)
+                }
+            }
+        }
     }
 
     private fun handleError() {
@@ -138,35 +153,38 @@ class MultiBannerViewHolder(private val customItemView: View, val fragment: Frag
             errorLoadUnifyView.refreshBtn?.setOnClickListener {
                 hide()
                 constraintLayout.removeAllViews()
-                val shimmerView = constraintLayout.inflateLayout(multiBannerViewModel.layoutSelector(), false)
+                val shimmerView = multiBannerViewModel?.layoutSelector()?.let { it1 -> constraintLayout.inflateLayout(it1, false) }
                 constraintLayout.addView(shimmerView)
-                multiBannerViewModel.reload()
+                multiBannerViewModel?.reload()
             }
         }
         emptyStateView.isVisible = true
         constraintLayout.addView(emptyStateParentView)
     }
 
-    private fun updateImage(position: Int) {
-        if (bannersItemList.isNotEmpty() && position != Utils.BANNER_SUBSCRIPTION_DEFAULT_STATUS &&
+    private fun updateImage(
+        position: Int,
+        isSubscribed: Boolean
+    ) {
+        if (bannersItemList.isNotEmpty() && position != Utils.BANNER_SUBSCRIPTION_DEFAULT_POSITION &&
             !bannersItemList[position].bannerItemData.registeredImageApp.isNullOrEmpty()
         ) {
             (bannersItemList[position].bannerImageView as ImageUnify).apply {
                 scaleType = ImageView.ScaleType.FIT_CENTER
-                setImageUrl(bannersItemList[position].bannerItemData.registeredImageApp ?: "")
+                setImageUrl(if (isSubscribed) bannersItemList[position].bannerItemData.registeredImageApp.orEmpty() else bannersItemList[position].bannerItemData.imageUrlDynamicMobile.orEmpty())
             }
         }
     }
 
     private fun addBanners(data: List<DataItem>, compType: String?) {
         val constraintSet = ConstraintSet()
-        val height = multiBannerViewModel.getBannerUrlHeight()
-        val width = multiBannerViewModel.getBannerUrlWidth()
+        val height = multiBannerViewModel?.getBannerUrlHeight()
+        val width = multiBannerViewModel?.getBannerUrlWidth()
 
         /*coupons can be there in form of banners so we need to set hardcoded values for component_name
          (i have added componentPromoName key in dataItem for it)*/
         // purpose - we need to send different GTM in case of coupons
-        multiBannerViewModel.setComponentPromoNameForCoupons(bannerName, data)
+        bannerName?.let { multiBannerViewModel?.setComponentPromoNameForCoupons(it, data) }
 
         for ((index, bannerItem) in data.withIndex()) {
             var bannerView: BannerItem
@@ -174,7 +192,9 @@ class MultiBannerViewHolder(private val customItemView: View, val fragment: Frag
             if (bannerItem.parentComponentName.isNullOrEmpty()) {
                 bannerItem.parentComponentName = bannerName
             }
-            bannerItem.positionForParentItem = multiBannerViewModel.position
+            multiBannerViewModel?.let {
+                bannerItem.positionForParentItem = it.position
+            }
             bannerView = if (index == 0) {
                 BannerItem(
                     bannerItem, constraintLayout, constraintSet, width, height, bannerItem.itemWeight, index,
@@ -209,12 +229,16 @@ class MultiBannerViewHolder(private val customItemView: View, val fragment: Frag
     }
 
     private fun checkSubscriptionStatus(position: Int) {
-        multiBannerViewModel.campaignSubscribedStatus(position)
+        multiBannerViewModel?.campaignSubscribedStatus(position)
     }
 
     private fun setClickOnBanners(itemData: DataItem, index: Int) {
         bannersItemList[index].bannerImageView.setOnClickListener {
-            multiBannerViewModel.onBannerClicked(index, context)
+            multiBannerViewModel?.onBannerClicked(
+                position = index,
+                context = context,
+                defaultErrorMessage = context.getString(R.string.discovery_push_notification_banner_subscription_error_toaster_message)
+            )
             if (itemData.action == BANNER_ACTION_CODE) {
                 (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
                     ?.trackPromoBannerClick(itemData, index)

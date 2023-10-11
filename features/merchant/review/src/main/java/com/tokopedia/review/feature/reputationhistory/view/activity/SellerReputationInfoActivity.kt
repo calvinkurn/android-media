@@ -44,7 +44,7 @@ class SellerReputationInfoActivity : BaseSimpleActivity() {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
             window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             window.statusBarColor =
-                ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+                ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
         }
     }
 }

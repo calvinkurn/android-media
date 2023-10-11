@@ -31,7 +31,7 @@ class ShopPageSettingActivity : BaseSimpleActivity(), HasComponent<ShopSettingsC
         super.onCreate(savedInstanceState)
         binding?.toolbar?.apply {
             setSupportActionBar(this)
-            setTitleTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+            setTitleTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96))
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         window?.decorView?.setBackgroundColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background))

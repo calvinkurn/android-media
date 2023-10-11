@@ -6,7 +6,9 @@ import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
+import com.tokopedia.tokopedianow.common.domain.model.GetProductAdsResponse.ProductAdsResponse
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
+import com.tokopedia.tokopedianow.common.util.ProductAdsMapper
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.Product
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.ProductLabelGroup
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.BannerDataView
@@ -20,6 +22,7 @@ import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.CoreMatchers.notNullValue
 import org.hamcrest.CoreMatchers.nullValue
 import org.junit.Assert
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertThat
 import java.io.File
 import org.hamcrest.CoreMatchers.`is` as shouldBe
@@ -68,8 +71,8 @@ fun Visitable<*>.assertCategoryFilterDataView(categoryFilterDataValue: DataValue
 }
 
 fun Visitable<*>.assertQuickFilterDataView(
-        quickFilterDataValue: DataValue,
-        mapParameter: Map<String, String>,
+    quickFilterDataValue: DataValue,
+    mapParameter: Map<String, String>
 ) {
     assertThat(this, instanceOf(QuickFilterDataView::class.java))
 
@@ -99,11 +102,16 @@ fun Visitable<*>.assertProductCountDataView(productCountText: String) {
     assertThat(productCountDataView.totalDataText, shouldBe(productCountText))
 }
 
+fun Visitable<*>.assertProductAdsCarousel(response: ProductAdsResponse) {
+    val expected = ProductAdsMapper.mapProductAdsCarousel(response = response)
+    assertEquals(expected, this)
+}
+
 fun verifyProductItemDataViewList(
-        expectedProductList: List<Product>,
-        actualProductItemDataViewList: List<ProductItemDataView>,
-        startPosition: Int,
-        needToVerifyAtc: Boolean = true
+    expectedProductList: List<Product>,
+    actualProductItemDataViewList: List<ProductItemDataView>,
+    startPosition: Int,
+    needToVerifyAtc: Boolean = true
 ) {
     assertThat(actualProductItemDataViewList.size, shouldBe(expectedProductList.size))
 
@@ -125,8 +133,8 @@ fun verifyProductItemDataViewList(
         assertThat(actualProductDataView.position, shouldBe(expectedPosition))
         if (needToVerifyAtc) assertATCConfiguration(actualProductDataView, expectedProduct)
         assertLabelGroupDataView(
-                actualProductDataView.productCardModel.labelGroupList,
-                expectedProduct.labelGroupList
+            actualProductDataView.productCardModel.labelGroupList,
+            expectedProduct.labelGroupList
         )
     }
 }
@@ -147,8 +155,8 @@ private fun assertLabelGroupDataView(
 }
 
 private fun assertATCConfiguration(
-        actualProductDataView: ProductItemDataView,
-        expectedProduct: Product,
+    actualProductDataView: ProductItemDataView,
+    expectedProduct: Product
 ) {
     val hasVariantATC = actualProductDataView.parentId != "0" && actualProductDataView.parentId != ""
     assertThat(actualProductDataView.parentId, shouldBe(expectedProduct.parentId))
@@ -158,20 +166,21 @@ private fun assertATCConfiguration(
     }
 }
 
-fun Visitable<*>.assertProductFeedbackWidget(){
+fun Visitable<*>.assertProductFeedbackWidget() {
     assertThat(this, instanceOf(TokoNowFeedbackWidgetUiModel::class.java))
 }
 
-fun List<Visitable<*>>.assertNotProductFeedbackWidget(){
-   val tempList = this.filterIsInstance<TokoNowFeedbackWidgetUiModel>()
-    Assert.assertEquals(tempList.size,0)
+fun List<Visitable<*>>.assertNotProductFeedbackWidget() {
+    val tempList = this.filterIsInstance<TokoNowFeedbackWidgetUiModel>()
+    Assert.assertEquals(tempList.size, 0)
 }
 
-fun assertNoProductFeedbackWidget(list:List<Visitable<*>>){
+fun assertNoProductFeedbackWidget(list: List<Visitable<*>>) {
     var found = false
     list.forEach {
-        if(it is TokoNowFeedbackWidgetUiModel)
-           found = true
+        if (it is TokoNowFeedbackWidgetUiModel) {
+            found = true
+        }
     }
-    Assert.assertEquals(found,false)
+    Assert.assertEquals(found, false)
 }

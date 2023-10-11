@@ -1,0 +1,130 @@
+{
+  "readme": "Digital PDP paket data mccm dropdown",
+  "mode": "exact",
+  "query": [
+    {
+      "businessUnit": "recharge",
+      "clientId": ".*",
+      "eventCategory": "digital - homepage",
+      "trackerId": "43964",
+      "currentSite": "tokopediadigitalRecharge",
+      "item_list": ".*",
+      "event": "view_item_list",
+      "userId": ".*",
+      "eventAction": "impression promo cluster",
+      "sessionIris": ".*",
+      "items": [
+        {
+          "item_id": ".*",
+          "price": ".*",
+          "dimension40": ".*",
+          "index": ".*",
+          "item_name": ".*",
+          "item_brand": ".*",
+          "item_variant": "mccm",
+          "item_category": ".+"
+        }
+      ],
+      "eventLabel": ".* - .* - .* - .*"
+    },
+    {
+      "businessUnit": "recharge",
+      "clientId": ".*",
+      "eventCategory": "digital - homepage",
+      "trackerId": "43960",
+      "currentSite": "tokopediadigitalRecharge",
+      "item_list": ".*",
+      "event": "select_content",
+      "userId": ".*",
+      "eventAction": "click chevron in promo card",
+      "sessionIris": ".*",
+      "items": [
+        {
+          "item_id": ".*",
+          "price": ".*",
+          "dimension40": ".*",
+          "index": ".*",
+          "item_name": ".*",
+          "item_brand": ".*",
+          "item_variant": "mccm",
+          "item_category": ".+"
+        }
+      ],
+      "eventLabel": ".* - .* - .*"
+    },
+    {
+      "businessUnit": "recharge",
+      "clientId": ".*",
+      "eventCategory": "digital - homepage",
+      "trackerId": "43961",
+      "currentSite": "tokopediadigitalRecharge",
+      "item_list": ".*",
+      "event": "view_item_list",
+      "userId": ".*",
+      "eventAction": "impression product detail",
+      "sessionIris": ".*",
+      "items": [
+        {
+          "item_id": ".*",
+          "price": ".*",
+          "dimension40": ".*",
+          "index": ".*",
+          "item_name": ".*",
+          "item_brand": ".*",
+          "item_variant": "mccm",
+          "item_category": ".+"
+        }
+      ],
+      "eventLabel": ".* - .* - .* - .*"
+    },
+    {
+      "businessUnit": "recharge",
+      "clientId": ".*",
+      "eventCategory": "digital - homepage",
+      "trackerId": "43963",
+      "currentSite": "tokopediadigitalRecharge",
+      "event": "clickDigital",
+      "userId": ".*",
+      "eventAction": "click close button",
+      "sessionIris": ".*",
+      "eventLabel": ".* - .* - .* - .*"
+    },
+    {
+      "businessUnit": "recharge",
+      "clientId": ".*",
+      "eventCategory": "digital - homepage",
+      "trackerId": "43968",
+      "currentSite": "tokopediadigitalRecharge",
+      "item_list": ".*",
+      "event": "select_content",
+      "userId": ".*",
+      "eventAction": "click promo cluster",
+      "sessionIris": ".*",
+      "items": [
+        {
+          "item_id": ".*",
+          "price": ".*",
+          "dimension40": ".*",
+          "index": ".*",
+          "item_name": ".*",
+          "item_brand": ".*",
+          "item_variant": "mccm",
+          "item_category": ".+"
+        }
+      ],
+      "eventLabel": ".* - .* - .* - .*"
+    },
+    {
+      "businessUnit": "recharge",
+      "clientId": ".*",
+      "eventCategory": "digital - homepage",
+      "trackerId": "43965",
+      "currentSite": "tokopediadigitalRecharge",
+      "event": "clickDigital",
+      "userId": ".*",
+      "eventAction": "click chevron show more",
+      "sessionIris": ".*",
+      "eventLabel": ".* - .* - .*"
+    }
+  ]
+}

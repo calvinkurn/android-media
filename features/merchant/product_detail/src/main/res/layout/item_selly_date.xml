@@ -62,7 +62,7 @@
         android:id="@+id/pdp_selly_expandable_icon"
         android:layout_width="14dp"
         android:layout_height="14dp"
-        app:icon_color_light_enable="@color/Unify_G500"
+        app:icon_color_light_enable="@color/Unify_GN500"
         app:icon_name="CHEVRON_DOWN"
         app:layout_constraintBottom_toBottomOf="@id/pdp_selly_expandable_button"
         app:layout_constraintStart_toEndOf="@id/pdp_selly_expandable_button" />

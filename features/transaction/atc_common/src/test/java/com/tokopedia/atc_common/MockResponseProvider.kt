@@ -16,7 +16,6 @@ object MockResponseProvider {
     fun getResponseAtcError(): AddToCartGqlResponse {
         return Gson().fromJson(responseAtcError, AddToCartGqlResponse::class.java)
     }
-
 }
 
 val responseAtcSuccess = """

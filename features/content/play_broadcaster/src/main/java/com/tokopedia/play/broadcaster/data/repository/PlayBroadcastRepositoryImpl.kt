@@ -1,10 +1,6 @@
 package com.tokopedia.play.broadcaster.data.repository
 
-import com.tokopedia.play.broadcaster.domain.repository.PlayBroProductRepository
-import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastChannelRepository
-import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastInteractiveRepository
-import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastPinnedMessageRepository
-import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
+import com.tokopedia.play.broadcaster.domain.repository.*
 import javax.inject.Inject
 
 /**
@@ -15,8 +11,10 @@ class PlayBroadcastRepositoryImpl @Inject constructor(
     private val pinnedMessageRepo: PlayBroadcastPinnedMessageRepository,
     private val interactiveRepo: PlayBroadcastInteractiveRepository,
     private val productRepository: PlayBroProductRepository,
+    private val beautificationRepository: PlayBroadcastBeautificationRepository,
 ) : PlayBroadcastRepository,
     PlayBroadcastChannelRepository by channelRepo,
     PlayBroadcastPinnedMessageRepository by pinnedMessageRepo,
     PlayBroadcastInteractiveRepository by interactiveRepo,
-    PlayBroProductRepository by productRepository
+    PlayBroProductRepository by productRepository,
+    PlayBroadcastBeautificationRepository by beautificationRepository

@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     android:id="@+id/tokoNowSearchSuggestionText"
     android:background="@color/Unify_Background"
-    android:textColor="@color/Unify_N700_96"
+    android:textColor="@color/Unify_NN950_96"
     app:typographyType="body_2"
     android:paddingTop="6dp"
     android:paddingLeft="16dp"

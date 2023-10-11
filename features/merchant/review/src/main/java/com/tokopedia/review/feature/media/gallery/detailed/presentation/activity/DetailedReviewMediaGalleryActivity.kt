@@ -18,6 +18,7 @@ import androidx.core.view.GestureDetectorCompat
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.play.core.splitcompat.SplitCompat
+import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
@@ -41,6 +42,7 @@ import com.tokopedia.review.feature.media.detail.presentation.fragment.ReviewDet
 import com.tokopedia.review.feature.media.detail.presentation.uimodel.ReviewDetailUiModel
 import com.tokopedia.review.feature.media.gallery.base.presentation.fragment.ReviewMediaGalleryFragment
 import com.tokopedia.review.feature.media.gallery.detailed.di.DetailedReviewMediaGalleryComponentInstance
+import com.tokopedia.review.feature.media.gallery.detailed.di.component.DetailedReviewMediaGalleryComponent
 import com.tokopedia.review.feature.media.gallery.detailed.di.qualifier.DetailedReviewMediaGalleryViewModelFactory
 import com.tokopedia.review.feature.media.gallery.detailed.presentation.bottomsheet.ActionMenuBottomSheet
 import com.tokopedia.review.feature.media.gallery.detailed.presentation.uistate.ActionMenuBottomSheetUiState
@@ -62,7 +64,10 @@ import kotlinx.coroutines.flow.combine
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
+class DetailedReviewMediaGalleryActivity :
+    AppCompatActivity(),
+    CoroutineScope,
+    HasComponent<DetailedReviewMediaGalleryComponent> {
 
     companion object {
         const val TOASTER_KEY_ERROR_GET_REVIEW_MEDIA = "ERROR_GET_REVIEW_MEDIA"
@@ -77,8 +82,13 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
     lateinit var dispatchers: CoroutineDispatchers
 
     @Inject
+    lateinit var reviewDetailTracker: ReviewDetailTracker
+
+    @Inject
     @DetailedReviewMediaGalleryViewModelFactory
     lateinit var detailedReviewMediaGalleryViewModelFactory: ViewModelProvider.Factory
+
+    private var sharedComponent: DetailedReviewMediaGalleryComponent? = null
 
     private var binding by viewBinding(ActivityDetailedReviewMediaGalleryBinding::bind)
 
@@ -185,8 +195,20 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
         }
     }
 
+    override fun getComponent(): DetailedReviewMediaGalleryComponent {
+        return sharedComponent ?: initializeSharedComponent()
+    }
+
+    private fun initializeSharedComponent(): DetailedReviewMediaGalleryComponent {
+        val pageSource = intent.extras?.getInt(ReviewMediaGalleryRouter.EXTRAS_PAGE_SOURCE) ?: ReviewMediaGalleryRouter.PageSource.REVIEW
+        return DetailedReviewMediaGalleryComponentInstance.create(
+            context = this,
+            pageSource = pageSource
+        ).also { sharedComponent = it }
+    }
+
     private fun initInjector() {
-        DetailedReviewMediaGalleryComponentInstance.getInstance(this).inject(this)
+        initializeSharedComponent().inject(this)
     }
 
     private fun initUiState(savedInstanceState: Bundle?) {
@@ -521,7 +543,13 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
 
     private fun finishActivity() {
         if (sharedReviewMediaGalleryViewModel.hasSuccessToggleLikeStatus()) {
-            setResult(Activity.RESULT_OK)
+            setResult(
+                Activity.RESULT_OK,
+                ReviewMediaGalleryRouter.setResultData(
+                    sharedReviewMediaGalleryViewModel.getFeedbackId(),
+                    sharedReviewMediaGalleryViewModel.getLikeStatus(),
+                )
+            )
         }
         finish()
     }
@@ -641,7 +669,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
                     .toString()
             )
             if (routed) {
-                ReviewDetailTracker.trackClickReviewerName(
+                reviewDetailTracker.trackClickReviewerName(
                     sharedReviewMediaGalleryViewModel.isFromGallery(),
                     sharedReviewMediaGalleryViewModel.currentReviewDetail.value?.feedbackID.orEmpty(),
                     userId,

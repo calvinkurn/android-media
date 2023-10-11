@@ -5,15 +5,15 @@ import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.os.Build
 import android.util.AttributeSet
-import android.view.View
+import android.view.LayoutInflater
 import android.widget.RelativeLayout
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.tokopedia.layanan_finansial.R
+import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.tokopedia.layanan_finansial.databinding.LayananSectionViewBinding
 import com.tokopedia.layanan_finansial.view.adapter.LayananAdapter
 import com.tokopedia.layanan_finansial.view.models.LayananSectionModel
-import kotlinx.android.synthetic.main.layanan_section_view.view.*
 
 class LayananSectionView : RelativeLayout {
 
@@ -21,38 +21,37 @@ class LayananSectionView : RelativeLayout {
 
     constructor(context: Context?, attrs: AttributeSet?) : this(context, attrs, 0)
 
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
-        initView()
-    }
+    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes) {
-        initView()
-    }
+    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
 
-    private fun initView() {
-        View.inflate(context, R.layout.layanan_section_view, this)
-    }
+    private val binding = LayananSectionViewBinding.inflate(LayoutInflater.from(context), this, true)
 
     fun setData(it: LayananSectionModel) {
         try {
             if (!it.backgroundColor.isNullOrEmpty()) {
                 val list = it.backgroundColor.split("-")
                 val gradient = GradientDrawable(
-                        GradientDrawable.Orientation.TOP_BOTTOM,
-                        intArrayOf(Color.parseColor(list[0]), Color.parseColor(list[1])))
+                    GradientDrawable.Orientation.TOP_BOTTOM,
+                    intArrayOf(Color.parseColor(list[0]), Color.parseColor(list[1]))
+                )
                 gradient.setCornerRadius(0f)
                 setBackgroundDrawable(gradient)
             }
-        }catch (e: Exception){ }
-        title.text = it.title
-        subTitle.text = it.subtitle
-        if (it.type.equals("vertical")) {
-            recycler_view.layoutManager = GridLayoutManager(context, 2, LinearLayoutManager.VERTICAL, false)
-        } else {
-            recycler_view.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
         }
-        recycler_view.adapter = LayananAdapter(it.list ?: mutableListOf())
-    }
 
+        with(binding) {
+            title.text = it.title
+            subTitle.text = it.subtitle
+            if (it.type.equals("vertical")) {
+                recyclerView.layoutManager = GridLayoutManager(context, 2, LinearLayoutManager.VERTICAL, false)
+            } else {
+                recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            }
+            recyclerView.adapter = LayananAdapter(it.list ?: mutableListOf())
+        }
+    }
 }

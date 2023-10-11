@@ -15,6 +15,7 @@ object AnalyticConstant {
     const val KEY_USER_ID = "userId"
     const val KEY_TRACKER_ID = "trackerId"
     const val KEY_PAGE_SOURCE = "pageSource"
+    const val KEY_SESSION_IRIS = "sessionIris"
 
     const val KEY_EE_CREATIVE_NAME = "creative_name"
     const val KEY_EE_CREATIVE_SLOT = "creative_slot"
@@ -25,6 +26,8 @@ object AnalyticConstant {
 
     const val EVENT_CLICK_PG = "clickPG"
     const val EVENT_CLICK_PDP = "clickPDP"
+    const val EVENT_CLICK_CONTENT = "clickContent"
+    const val EVENT_VIEW_CONTENT_IRIS = "viewContentIris"
     const val EVENT_VIEW_ITEM = "view_item"
     const val EVENT_CATEGORY = "product detail page - review - review image"
     const val EVENT_CATEGORY_SHOP_REVIEW = "shop page - buyer - review"

@@ -39,7 +39,7 @@
             android:layout_marginEnd="12dp"
             android:maxLines="5"
             android:ellipsize="end"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             android:visibility="gone"
             android:gravity="center"
             tools:visibility="visible"

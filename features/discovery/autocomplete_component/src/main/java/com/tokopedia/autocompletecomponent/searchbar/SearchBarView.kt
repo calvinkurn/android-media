@@ -1,14 +1,9 @@
 package com.tokopedia.autocompletecomponent.searchbar
 
-import android.annotation.TargetApi
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Rect
-import android.graphics.drawable.Animatable2
-import android.graphics.drawable.AnimatedVectorDrawable
-import android.graphics.drawable.Drawable
-import android.os.Build
 import android.os.Parcel
 import android.os.Parcelable
 import android.speech.RecognizerIntent
@@ -24,10 +19,9 @@ import android.view.View.OnFocusChangeListener
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.vectordrawable.graphics.drawable.Animatable2Compat
-import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import com.tokopedia.autocompletecomponent.R
 import com.tokopedia.autocompletecomponent.databinding.AutocompleteSearchBarViewBinding
+import com.tokopedia.autocompletecomponent.util.animation.AnimatedDrawableLoopUtil
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.microinteraction.autocomplete.AutoCompleteMicroInteraction
 import com.tokopedia.discovery.common.model.SearchParameter
@@ -87,6 +81,7 @@ class SearchBarView constructor(
     private var isMpsAnimationEnabled: Boolean = false
 
     private var viewListener: SearchBarViewListener? = null
+    private val animatedDrawableLoopUtil = AnimatedDrawableLoopUtil.getInstance()
 
     val addButton : ImageUnify?
         get() = binding?.autocompleteAddButton
@@ -310,58 +305,12 @@ class SearchBarView constructor(
     }
 
     private fun ImageUnify.startAnimationDrawable() {
-        if(!isMpsAnimationEnabled) return
-        when(val drawable = drawable) {
-            is AnimatedVectorDrawableCompat -> drawable.startLoopAnimation()
-            is AnimatedVectorDrawable -> drawable.startLoopAnimation()
-        }
+        if (!isMpsAnimationEnabled) return
+        animatedDrawableLoopUtil.startLoopAnimation(drawable)
     }
 
     private fun ImageUnify.stopAnimationDrawable() {
-        when(val drawable = drawable) {
-            is AnimatedVectorDrawableCompat -> drawable.stopLoopAnimation()
-            is AnimatedVectorDrawable -> drawable.stopLoopAnimation()
-        }
-    }
-
-    @TargetApi(Build.VERSION_CODES.M)
-    private val animatableAnimationCallback = object: Animatable2.AnimationCallback() {
-        override fun onAnimationEnd(drawable: Drawable?) {
-            if(drawable is AnimatedVectorDrawable) {
-                drawable.start()
-            }
-        }
-    }
-
-    @TargetApi(Build.VERSION_CODES.M)
-    private fun AnimatedVectorDrawable.startLoopAnimation() {
-        registerAnimationCallback(animatableAnimationCallback)
-        start()
-    }
-    @TargetApi(Build.VERSION_CODES.M)
-    private fun AnimatedVectorDrawable.stopLoopAnimation() {
-        unregisterAnimationCallback(animatableAnimationCallback)
-        clearAnimationCallbacks()
-        stop()
-    }
-
-
-    private val animatableCompatAnimationCallback = object : Animatable2Compat.AnimationCallback() {
-        override fun onAnimationEnd(drawable: Drawable?) {
-            if (drawable is AnimatedVectorDrawableCompat) {
-                drawable.start()
-            }
-        }
-    }
-
-    private fun AnimatedVectorDrawableCompat.startLoopAnimation() {
-        registerAnimationCallback(animatableCompatAnimationCallback)
-        start()
-    }
-    private fun AnimatedVectorDrawableCompat.stopLoopAnimation() {
-        unregisterAnimationCallback(animatableCompatAnimationCallback)
-        clearAnimationCallbacks()
-        stop()
+        animatedDrawableLoopUtil.stopLoopAnimation(drawable)
     }
 
     fun setMPSEnabled(isMPSEnabled: Boolean) {

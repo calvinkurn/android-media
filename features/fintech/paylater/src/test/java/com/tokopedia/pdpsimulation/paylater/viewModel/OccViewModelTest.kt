@@ -194,6 +194,7 @@ class OccViewModelTest {
             "",
             null,
             null,
+            AdditionalInformation(),
             false,
         )
         val basePayLaterOptimizedModel = PaylaterGetOptimizedModel(listOf(checkoutData), "")
@@ -205,6 +206,8 @@ class OccViewModelTest {
                 "",
                 "",
                 "",
+                "",
+                ""
             )
         } coAnswers {
             firstArg<(PaylaterGetOptimizedModel) -> Unit>().invoke(basePayLaterOptimizedModel)
@@ -228,6 +231,8 @@ class OccViewModelTest {
                 "",
                 "",
                 "",
+                "",
+                ""
             )
         } coAnswers {
             firstArg<(PaylaterGetOptimizedModel) -> Unit>().invoke(basePayLaterOptimizedModel)
@@ -250,6 +255,8 @@ class OccViewModelTest {
                 "",
                 "",
                 "",
+                "",
+                ""
             )
         } coAnswers {
             secondArg<(Throwable) -> Unit>().invoke(mockThrowable)

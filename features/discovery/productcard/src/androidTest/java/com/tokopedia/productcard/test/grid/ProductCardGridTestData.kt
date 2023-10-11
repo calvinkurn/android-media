@@ -4,8 +4,8 @@ import android.view.View
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.ProductCardModel.LabelGroup
+import com.tokopedia.productcard.R
 import com.tokopedia.productcard.test.ProductCardModelMatcher
-import com.tokopedia.productcard.test.R
 import com.tokopedia.productcard.test.getProductCardModelMatcherData
 import com.tokopedia.productcard.test.utils.campaignLabelUrl
 import com.tokopedia.productcard.test.utils.freeOngkirImageUrl
@@ -33,7 +33,6 @@ import com.tokopedia.productcard.utils.TRANSPARENT_BLACK
 import com.tokopedia.productcard.utils.TYPE_VARIANT_COLOR
 import com.tokopedia.productcard.utils.TYPE_VARIANT_CUSTOM
 import com.tokopedia.productcard.utils.TYPE_VARIANT_SIZE
-import com.tokopedia.unifycomponents.CardUnify2
 import org.hamcrest.Matcher
 
 internal val productCardGridTestData =

@@ -17,20 +17,22 @@ import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 
 class ClaimCouponViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
 
-
     private val recyclerView: RecyclerView = itemView.findViewById(R.id.claim_coupon_rv)
     private var discoveryRecycleAdapter: DiscoveryRecycleAdapter = DiscoveryRecycleAdapter(fragment)
     private var spanCount = 1
 
-    private lateinit var claimCouponViewModel: ClaimCouponViewModel
+    private var claimCouponViewModel: ClaimCouponViewModel? = null
 
     init {
         recyclerView.adapter = discoveryRecycleAdapter
     }
 
     private fun addShimmer(isDouble: Boolean) {
-        val height = if (isDouble)
-            200 else 290
+        val height = if (isDouble) {
+            200
+        } else {
+            290
+        }
         val list: ArrayList<ComponentsItem> = ArrayList()
         list.add(ComponentsItem(name = "shimmer", shimmerHeight = height))
         list.add(ComponentsItem(name = "shimmer", shimmerHeight = height))
@@ -38,10 +40,11 @@ class ClaimCouponViewHolder(itemView: View, private val fragment: Fragment) : Ab
     }
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
-
         claimCouponViewModel = discoveryBaseViewModel as ClaimCouponViewModel
-        getSubComponent().inject(claimCouponViewModel)
-        if (claimCouponViewModel.components.properties?.columns == DOUBLE_COLUMNS) {
+        claimCouponViewModel?.let {
+            getSubComponent().inject(it)
+        }
+        if (claimCouponViewModel?.components?.properties?.columns == DOUBLE_COLUMNS) {
             spanCount = 2
             addShimmer(true)
         } else {
@@ -49,21 +52,22 @@ class ClaimCouponViewHolder(itemView: View, private val fragment: Fragment) : Ab
             addShimmer(false)
         }
         recyclerView.layoutManager = GridLayoutManager(itemView.context, spanCount, GridLayoutManager.VERTICAL, false)
-
     }
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
-        claimCouponViewModel.getComponentList().observe(fragment.viewLifecycleOwner, Observer { item ->
-            fragment as DiscoveryFragment
-            fragment.getDiscoveryAnalytics().trackEventImpressionCoupon(item)
-            discoveryRecycleAdapter.setDataList(item)
-        })
+        claimCouponViewModel?.getComponentList()?.observe(
+            fragment.viewLifecycleOwner,
+            Observer { item ->
+                fragment as DiscoveryFragment
+                fragment.getDiscoveryAnalytics().trackEventImpressionCoupon(item)
+                discoveryRecycleAdapter.setDataList(item)
+            }
+        )
     }
 
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
         super.removeObservers(lifecycleOwner)
-        lifecycleOwner?.let { claimCouponViewModel.getComponentList().removeObservers(it) }
+        lifecycleOwner?.let { claimCouponViewModel?.getComponentList()?.removeObservers(it) }
     }
-
 }

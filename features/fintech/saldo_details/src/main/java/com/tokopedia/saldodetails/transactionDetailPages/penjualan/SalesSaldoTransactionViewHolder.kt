@@ -25,12 +25,12 @@ class SalesSaldoTransactionViewHolder (itemView: View, val onClick: (Visitable<*
         tvTitle.text = element.description
         tvNote.text = element.invoice
         if (element.amount > 0) {
-            tvSaldoAmount.setTextColor(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G500))
+            tvSaldoAmount.setTextColor(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_GN500))
             tvSaldoAmount.text = String.format(
                 context.resources.getString(R.string.sp_positive_saldo_balance),
                 CurrencyFormatUtil.convertPriceValueToIdrFormat(element.amount, false))
         } else {
-            tvSaldoAmount.setTextColor(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_R600))
+            tvSaldoAmount.setTextColor(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_RN500))
             tvSaldoAmount.text = String.format(
                 context.resources.getString(R.string.sp_negative_saldo_balance),
                 CurrencyFormatUtil.convertPriceValueToIdrFormat(abs(element.amount), false)

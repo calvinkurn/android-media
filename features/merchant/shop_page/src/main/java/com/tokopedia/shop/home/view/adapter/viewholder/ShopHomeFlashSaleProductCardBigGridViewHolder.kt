@@ -22,7 +22,8 @@ import com.tokopedia.unifycomponents.dpToPx
 class ShopHomeFlashSaleProductCardBigGridViewHolder(
     itemView: View,
     private val listener: ShopHomeFlashSaleWidgetListener,
-    private val parentPosition: Int
+    private val parentPosition: Int,
+    private val isFestivity: Boolean
 ) : RecyclerView.ViewHolder(itemView) {
 
     companion object {
@@ -32,6 +33,7 @@ class ShopHomeFlashSaleProductCardBigGridViewHolder(
         private const val TWO = 2
         private val paddingOffset = 6f.dpToPx()
         private const val RED_STOCK_BAR_LABEL_MATCH_VALUE = "segera habis"
+        private val SHOP_PAGE_RE_IMAGINED_MARGIN = 16f.dpToPx()
     }
 
     private var uiModel: ShopHomeProductUiModel? = null
@@ -101,7 +103,8 @@ class ShopHomeFlashSaleProductCardBigGridViewHolder(
             hasThreeDots = false,
             shopHomeProductViewModel = uiModel,
             widgetName = fsUiModel?.name.orEmpty(),
-            statusCampaign = fsUiModel?.data?.firstOrNull()?.statusCampaign.orEmpty()
+            statusCampaign = fsUiModel?.data?.firstOrNull()?.statusCampaign.orEmpty(),
+            forceLightModeColor = listener.isForceLightModeColorOnShopFlashSaleWidget()
         ).copy(
             stockBarLabelColor = stockBarLabelColor
         )
@@ -162,7 +165,15 @@ class ShopHomeFlashSaleProductCardBigGridViewHolder(
     }
 
     private fun adjustProductCardWidth() {
-        val productCardWidth = (getScreenWidth() - PADDING_AND_MARGIN.toFloat().dpToPx()) / TWO
-        productCardBigGrid?.layoutParams = ViewGroup.LayoutParams(productCardWidth.toInt(), ViewGroup.LayoutParams.WRAP_CONTENT)
+        val productCardBigGrid = productCardBigGrid ?: return
+        val productCardWidth = if(isFestivity){
+            (getScreenWidth() - PADDING_AND_MARGIN.toFloat().dpToPx()) / TWO
+        }else {
+            (getScreenWidth() - PADDING_AND_MARGIN.toFloat().dpToPx()) / TWO - SHOP_PAGE_RE_IMAGINED_MARGIN
+        }
+        val layoutParams = productCardBigGrid.layoutParams
+        layoutParams.width = productCardWidth.toInt()
+        layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+        productCardBigGrid.layoutParams = layoutParams
     }
 }

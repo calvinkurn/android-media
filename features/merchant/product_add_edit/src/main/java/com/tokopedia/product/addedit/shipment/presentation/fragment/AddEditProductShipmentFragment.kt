@@ -601,7 +601,7 @@ class AddEditProductShipmentFragment :
                 inputAllDataInProductInputModel()
                 dataBackPressed = SHIPMENT_DATA
                 shipmentViewModel.productInputModel?.requestCode =
-                    arrayOf(DETAIL_DATA, DESCRIPTION_DATA, SHIPMENT_DATA)
+                    arrayListOf(DETAIL_DATA, DESCRIPTION_DATA, SHIPMENT_DATA)
             }
             setFragmentResultWithBundle(REQUEST_KEY_ADD_MODE, dataBackPressed)
         } else {

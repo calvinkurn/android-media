@@ -373,7 +373,7 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
                 null,
                 newLightEnable = MethodChecker.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
                 )
             )
             findViewById<Typography>(R.id.exchange_price_text).show()
@@ -430,7 +430,7 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
                 null,
                 newLightEnable = MethodChecker.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N700_32
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN950_32
                 )
             )
             findViewById<Typography>(R.id.exchange_price_text).hide()
@@ -529,14 +529,14 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
                     setTopTextColor(
                         MethodChecker.getColor(
                             context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                            com.tokopedia.unifyprinciples.R.color.Unify_NN950_68
                         )
                     )
                     setBottomTextSize(textSize)
                     setBottomTextColor(
                         MethodChecker.getColor(
                             context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+                            com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
                         )
                     )
                     setBottomTextStyle("bold")

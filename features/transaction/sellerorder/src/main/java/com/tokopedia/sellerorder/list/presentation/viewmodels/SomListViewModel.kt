@@ -50,7 +50,7 @@ import com.tokopedia.sellerorder.list.presentation.models.SomListBulkAcceptOrder
 import com.tokopedia.sellerorder.list.presentation.models.SomListBulkRequestPickupUiModel
 import com.tokopedia.sellerorder.list.presentation.models.SomListFilterUiModel
 import com.tokopedia.sellerorder.list.presentation.models.SomListHeaderIconsInfoUiModel
-import com.tokopedia.sellerorder.list.presentation.models.SomListOrderUiModel
+import com.tokopedia.sellerorder.list.presentation.models.SomListOrderWrapperUiModel
 import com.tokopedia.sellerorder.list.presentation.util.SomListFilterUtil
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.shopadmin.common.util.AccessId
@@ -119,9 +119,9 @@ class SomListViewModel @Inject constructor(
     val somListHeaderIconsInfoResult: LiveData<Result<SomListHeaderIconsInfoUiModel>>
         get() = _somListHeaderIconsInfoResult
 
-    private val _orderListResult = MutableLiveData<Result<List<SomListOrderUiModel>>>()
-    val orderListResult: LiveData<Result<List<SomListOrderUiModel>>>
-        get() = _orderListResult
+    private val _orderListWrapperResult = MutableLiveData<Result<SomListOrderWrapperUiModel>>()
+    val orderListWrapperResult: LiveData<Result<SomListOrderWrapperUiModel>>
+        get() = _orderListWrapperResult
 
     private val _refreshOrderResult = MutableLiveData<Result<OptionalOrderData>>()
     val refreshOrderResult: LiveData<Result<OptionalOrderData>>
@@ -209,6 +209,8 @@ class SomListViewModel @Inject constructor(
     }
 
     private var tabActiveFromAppLink: String = ""
+    private var isFirstPageOpened: Boolean = false
+
     private var getOrderListParams = SomListGetOrderListParam()
     private var somFilterUiModelList: MutableList<SomFilterUiModel> = mutableListOf()
 
@@ -491,19 +493,6 @@ class SomListViewModel @Inject constructor(
         }
     }
 
-    private fun getFiltersFromCloud(refreshOrders: Boolean, afterSuccessfulLoadFromCache: Boolean) {
-        launchCatchError(context = dispatcher.main, block = {
-            val newFilterData = somListGetFilterListUseCase.executeOnBackground(
-                useCache = false
-            ).apply { mergeWithCurrent(getOrderListParams, tabActiveFromAppLink) }
-            newFilterData.refreshOrder = refreshOrders && !afterSuccessfulLoadFromCache
-            setTabActiveFromAppLink("")
-            _filterResult.value = Success(newFilterData)
-        }, onError = {
-                _filterResult.value = Fail(it)
-            })
-    }
-
     fun bulkRequestPickup(orderIds: List<String>) {
         launchCatchError(block = {
             delay(DELAY_BULK_REQUEST_PICK_UP)
@@ -543,15 +532,14 @@ class SomListViewModel @Inject constructor(
     fun getFilters(refreshOrders: Boolean) {
         launchCatchError(context = dispatcher.main, block = {
             if (_canShowOrderData.value == true) {
-                val result = somListGetFilterListUseCase.executeOnBackground(true)
-                result.mergeWithCurrent(getOrderListParams, tabActiveFromAppLink)
-                result.refreshOrder = refreshOrders
+                val result = somListGetFilterListUseCase.executeOnBackground()
+                result.mergeWithCurrent(getOrderListParams, tabActiveFromAppLink, isFirstPageOpened)
                 setTabActiveFromAppLink("")
+                result.refreshOrder = refreshOrders
                 _filterResult.value = Success(result)
-                getFiltersFromCloud(refreshOrders, true)
             }
         }, onError = {
-                getFiltersFromCloud(refreshOrders, false)
+                _filterResult.value = Fail(it)
             })
     }
 
@@ -576,10 +564,10 @@ class SomListViewModel @Inject constructor(
                 val params = somListGetOrderListUseCase.composeParams(getOrderListParams)
                 val result = somListGetOrderListUseCase.executeOnBackground(params)
                 getOrderListParams.nextOrderId = result.first.toLongOrZero()
-                _orderListResult.postValue(Success(result.second))
+                _orderListWrapperResult.postValue(Success(SomListOrderWrapperUiModel(result.second, result.third)))
             }
         }, onError = {
-                _orderListResult.postValue(Fail(it))
+                _orderListWrapperResult.postValue(Fail(it))
             }).apply { updateLoadOrderStatus(this) }
     }
 
@@ -596,7 +584,7 @@ class SomListViewModel @Inject constructor(
                 waitForGetFiltersCompleted()
                 withContext(dispatcher.main) {
                     refreshOrderJobs.remove(refreshOrder)
-                    _refreshOrderResult.value = Success(OptionalOrderData(orderId, result.second.firstOrNull()))
+                    _refreshOrderResult.value = Success(OptionalOrderData(orderId, result.second.firstOrNull(), result.third))
                 }
             }, onError = {
                     withContext(dispatcher.main) {
@@ -633,8 +621,9 @@ class SomListViewModel @Inject constructor(
         return (topAdsGetShopInfoSuccess == SomConsts.TOPADS_MANUAL_ADS || topAdsGetShopInfoSuccess == SomConsts.TOPADS_AUTO_ADS)
     }
 
-    fun setStatusOrderFilter(ids: List<Int>) {
+    fun setStatusOrderFilter(ids: List<Int>, statusKey: String) {
         getOrderListParams.statusList = ids
+        getOrderListParams.statusKey = statusKey
         SomListFilterUtil.updateStatusOrderFilter(somFilterUiModelList, ids)
         resetNextOrderId()
     }
@@ -718,6 +707,18 @@ class SomListViewModel @Inject constructor(
 
     fun setTabActiveFromAppLink(tab: String) {
         tabActiveFromAppLink = tab
+    }
+
+    fun getTabActiveFromAppLink(): String {
+        return tabActiveFromAppLink
+    }
+
+    fun setFirstPageOpened(isFirstPageOpened: Boolean) {
+        this.isFirstPageOpened = isFirstPageOpened
+    }
+
+    fun getIsFirstPageOpened(): Boolean {
+        return this.isFirstPageOpened
     }
 
     fun getTabActive(): String {

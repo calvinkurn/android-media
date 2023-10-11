@@ -14,8 +14,9 @@ class AnchorTabsItemViewModel(
     val position: Int
 ) : DiscoveryBaseViewModel() {
 
+    @JvmField
     @Inject
-    lateinit var anchorTabsUseCase: AnchorTabsUseCase
+    var anchorTabsUseCase: AnchorTabsUseCase? = null
     private var dataItem: DataItem? = null
 
     init {
@@ -36,17 +37,19 @@ class AnchorTabsItemViewModel(
     }
 
     fun isSelected(): Boolean {
-        return (dataItem?.targetSectionID == anchorTabsUseCase.selectedId)
+        return (dataItem?.targetSectionID == anchorTabsUseCase?.selectedId)
     }
 
     fun getSectionID(): String {
         return dataItem?.targetSectionID ?: ""
     }
 
-    fun getImageURLForView(isHorizontalTab: Boolean, shouldShowIcon: Boolean):String {
-        return if(isHorizontalTab || shouldShowIcon)
+    fun getImageURLForView(isHorizontalTab: Boolean, shouldShowIcon: Boolean): String {
+        return if (isHorizontalTab || shouldShowIcon) {
             getImageUrl()
-        else ""
+        } else {
+            ""
+        }
     }
 
     fun parentPosition(): Int {

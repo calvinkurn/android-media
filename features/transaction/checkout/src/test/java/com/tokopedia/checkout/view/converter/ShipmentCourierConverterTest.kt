@@ -32,7 +32,7 @@ class ShipmentCourierConverterTest {
             shippingDurationConverter.convertModel(ratesResponse.ratesData)
         shippingRecommendationData.scheduleDeliveryData =
             mockRatesScheduleDeliveryResponse.ongkirGetScheduledDeliveryRates.scheduleDeliveryData
-        val shipmentCartItemModel = ShipmentCartItemModel()
+        val shipmentCartItemModel = ShipmentCartItemModel(cartStringGroup = "")
 
         // When
         val courierItemData = shippingCourierConverter.convertToCourierItemData(
@@ -54,7 +54,7 @@ class ShipmentCourierConverterTest {
             shippingDurationConverter.convertModel(ratesResponse.ratesData)
         shippingRecommendationData.scheduleDeliveryData =
             ratesScheduleDeliveryResponse.ongkirGetScheduledDeliveryRates.scheduleDeliveryData
-        val shipmentCartItemModel = ShipmentCartItemModel()
+        val shipmentCartItemModel = ShipmentCartItemModel(cartStringGroup = "")
 
         // When
         val courierItemData = shippingCourierConverter.convertToCourierItemData(
@@ -81,7 +81,7 @@ class ShipmentCourierConverterTest {
             shippingDurationConverter.convertModel(ratesResponse.ratesData)
         shippingRecommendationData.scheduleDeliveryData =
             mockRatesScheduleDeliveryResponse.ongkirGetScheduledDeliveryRates.scheduleDeliveryData
-        val shipmentCartItemModel = ShipmentCartItemModel()
+        val shipmentCartItemModel = ShipmentCartItemModel(cartStringGroup = "")
 
         // When
         val courierItemData = shippingCourierConverter.convertToCourierItemData(
@@ -104,6 +104,7 @@ class ShipmentCourierConverterTest {
         shippingRecommendationData.scheduleDeliveryData =
             ratesScheduleDeliveryResponse.ongkirGetScheduledDeliveryRates.scheduleDeliveryData
         val shipmentCartItemModel = ShipmentCartItemModel(
+            cartStringGroup = "",
             scheduleDate = "2022-09-20T00:00:00Z",
             timeslotId = 2022092014123,
             validationMetadata = "{\"timeslot_id\":2022092014123,\"schedule_date\":\"2022-09-20T00:00:00Z\",\"shipping_price\":10000}"
@@ -130,6 +131,7 @@ class ShipmentCourierConverterTest {
         shippingRecommendationData.scheduleDeliveryData =
             ratesScheduleDeliveryResponse.ongkirGetScheduledDeliveryRates.scheduleDeliveryData
         val shipmentCartItemModel = ShipmentCartItemModel(
+            cartStringGroup = "",
             scheduleDate = "2022-10-20T00:00:00Z",
             timeslotId = 2022092014124,
             validationMetadata = "{\"timeslot_id\":2022092014124,\"schedule_date\":\"2022-10-20T00:00:00Z\",\"shipping_price\":10000}"
@@ -161,6 +163,7 @@ class ShipmentCourierConverterTest {
         shippingRecommendationData.scheduleDeliveryData =
             mockRatesScheduleDeliveryResponse.ongkirGetScheduledDeliveryRates.scheduleDeliveryData
         val shipmentCartItemModel = ShipmentCartItemModel(
+            cartStringGroup = "",
             scheduleDate = "2022-10-20T00:00:00Z",
             timeslotId = 2022092014124,
             validationMetadata = "{\"timeslot_id\":2022092014124,\"schedule_date\":\"2022-10-20T00:00:00Z\",\"shipping_price\":10000}"
@@ -187,6 +190,7 @@ class ShipmentCourierConverterTest {
         shippingRecommendationData.scheduleDeliveryData =
             ratesScheduleDeliveryResponse.ongkirGetScheduledDeliveryRates.scheduleDeliveryData
         val shipmentCartItemModel = ShipmentCartItemModel(
+            cartStringGroup = "",
             scheduleDate = "2022-09-20T00:00:00Z",
             timeslotId = 2022092014123,
             validationMetadata = "{\"timeslot_id\":2022092014123,\"schedule_date\":\"2022-09-20T00:00:00Z\",\"shipping_price\":10000}"
@@ -226,6 +230,7 @@ class ShipmentCourierConverterTest {
         shippingRecommendationData.scheduleDeliveryData =
             ratesScheduleDeliveryResponse.ongkirGetScheduledDeliveryRates.scheduleDeliveryData
         val shipmentCartItemModel = ShipmentCartItemModel(
+            cartStringGroup = "",
             scheduleDate = "2022-08-20T00:00:00Z",
             timeslotId = 2022092014122,
             validationMetadata = "{\"timeslot_id\":2022092014122,\"schedule_date\":\"2022-08-20T00:00:00Z\",\"shipping_price\":10000}"

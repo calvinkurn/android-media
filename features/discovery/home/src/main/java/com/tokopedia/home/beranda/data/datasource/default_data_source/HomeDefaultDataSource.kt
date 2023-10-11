@@ -9,7 +9,6 @@ class HomeDefaultDataSource {
             dynamicHomeChannel = createDefaultHomeDynamicChannel(),
             banner = createDefaultHomePageBanner(),
             dynamicHomeIcon = createDefaultHomeDynamicIcon(),
-            homeFlag = createHomeFlag()
     )
 
     fun createDefaultHomePageBanner(): BannerDataModel{
@@ -99,15 +98,5 @@ class HomeDefaultDataSource {
                         )
                 )
         )
-    }
-
-    private fun createHomeFlag(): HomeFlag {
-        val homeFlag = HomeFlag()
-        homeFlag.flags = listOf(
-                Flags(HomeFlag.DYNAMIC_ICON_WRAP_STRING, true),
-                Flags(HomeFlag.HAS_TOKOPOINTS_STRING, false),
-                Flags(HomeFlag.HAS_RECOM_NAV_BUTTON_STRING, false)
-        ).toMutableList()
-        return homeFlag
     }
 }

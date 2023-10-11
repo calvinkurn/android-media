@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="play_dms_broadcaster_background">#AD31353B</color>
     <color name="play_dms_broadcaster_error_background">#26292E</color>
     <color name="play_dms_broadcaster_camera_background">#F531353B</color>
 

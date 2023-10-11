@@ -64,5 +64,6 @@ data class ProductHeaderData(
         val productDiscountedPercentage: Float = 0f,
         val isCampaignActive: Boolean = false,
         val productSlashPrice: String = "",
-        val productStockFmt: String = ""
+        val productStockFmt: String = "",
+        val hideGimmick: Boolean = false
 )

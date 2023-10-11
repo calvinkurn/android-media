@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.transition.AutoTransition
+import androidx.transition.TransitionManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -21,6 +23,9 @@ import com.tokopedia.campaign.utils.extension.startLoading
 import com.tokopedia.campaign.utils.extension.stopLoading
 import com.tokopedia.campaign.utils.extension.toDate
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.imageassets.TokopediaImageUrl.ILLUSTRATION_MVC_DETAIL_CARD_PERFORMANCE
+import com.tokopedia.imageassets.TokopediaImageUrl.ILLUSTRATION_MVC_DETAIL_ENDED_VOUCHER
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.formatTo
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
@@ -31,6 +36,7 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.setTextColorCompat
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toCalendar
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.linker.LinkerManager
@@ -46,7 +52,9 @@ import com.tokopedia.mvc.databinding.SmvcVoucherDetailButtonSectionState1Binding
 import com.tokopedia.mvc.databinding.SmvcVoucherDetailButtonSectionState2Binding
 import com.tokopedia.mvc.databinding.SmvcVoucherDetailButtonSectionState3Binding
 import com.tokopedia.mvc.databinding.SmvcVoucherDetailHeaderSectionBinding
+import com.tokopedia.mvc.databinding.SmvcVoucherDetailPerformanceSectionBinding
 import com.tokopedia.mvc.databinding.SmvcVoucherDetailProductSectionBinding
+import com.tokopedia.mvc.databinding.SmvcVoucherDetailRecapSectionBinding
 import com.tokopedia.mvc.databinding.SmvcVoucherDetailVoucherInfoSectionBinding
 import com.tokopedia.mvc.databinding.SmvcVoucherDetailVoucherSettingSectionBinding
 import com.tokopedia.mvc.databinding.SmvcVoucherDetailVoucherTypeSectionBinding
@@ -56,10 +64,14 @@ import com.tokopedia.mvc.domain.entity.VoucherDetailData
 import com.tokopedia.mvc.domain.entity.VoucherDetailWithVoucherCreationMetadata
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
 import com.tokopedia.mvc.domain.entity.enums.PromoType
+import com.tokopedia.mvc.domain.entity.enums.PromotionStatus
+import com.tokopedia.mvc.domain.entity.enums.SubsidyInfo
+import com.tokopedia.mvc.domain.entity.enums.VoucherCreator
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
 import com.tokopedia.mvc.presentation.bottomsheet.ExpenseEstimationBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.moremenu.MoreMenuBottomSheet
+import com.tokopedia.mvc.presentation.detail.bottomsheet.UpdateCouponTipBottomSheet
 import com.tokopedia.mvc.presentation.download.DownloadVoucherImageBottomSheet
 import com.tokopedia.mvc.presentation.list.dialog.CallTokopediaCareDialog
 import com.tokopedia.mvc.presentation.list.dialog.StopVoucherConfirmationDialog
@@ -116,7 +128,9 @@ class VoucherDetailFragment : BaseDaggerFragment() {
 
     // binding
     private var binding by autoClearedNullable<SmvcFragmentVoucherDetailBinding>()
+    private var recapBinding by autoClearedNullable<SmvcVoucherDetailRecapSectionBinding>()
     private var headerBinding by autoClearedNullable<SmvcVoucherDetailHeaderSectionBinding>()
+    private var performanceBinding by autoClearedNullable<SmvcVoucherDetailPerformanceSectionBinding>()
     private var voucherTypeBinding by autoClearedNullable<SmvcVoucherDetailVoucherTypeSectionBinding>()
     private var voucherInfoBinding by autoClearedNullable<SmvcVoucherDetailVoucherInfoSectionBinding>()
     private var voucherSettingBinding by autoClearedNullable<SmvcVoucherDetailVoucherSettingSectionBinding>()
@@ -197,6 +211,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 is Success -> {
                     setupView(result.data)
                 }
+
                 is Fail -> {
                     showGlobalError()
                 }
@@ -209,6 +224,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 is Success -> {
                     redirectToVoucherListPage()
                 }
+
                 is Fail -> {
                     binding?.layoutButtonGroup.showToasterError(result.throwable)
                 }
@@ -223,6 +239,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 is Success -> {
                     displayShareBottomSheet(result.data)
                 }
+
                 is Fail -> {
                     binding?.nsvContent.showToasterError(result.throwable)
                 }
@@ -244,8 +261,14 @@ class VoucherDetailFragment : BaseDaggerFragment() {
 
     private fun setupView(data: VoucherDetailWithVoucherCreationMetadata) {
         binding?.run {
+            layoutRecap.setOnInflateListener { _, view ->
+                recapBinding = SmvcVoucherDetailRecapSectionBinding.bind(view)
+            }
             layoutHeader.setOnInflateListener { _, view ->
                 headerBinding = SmvcVoucherDetailHeaderSectionBinding.bind(view)
+            }
+            layoutPerformance.setOnInflateListener { _, view ->
+                performanceBinding = SmvcVoucherDetailPerformanceSectionBinding.bind(view)
             }
             layoutVoucherType.setOnInflateListener { _, view ->
                 voucherTypeBinding = SmvcVoucherDetailVoucherTypeSectionBinding.bind(view)
@@ -260,13 +283,77 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 voucherProductBinding = SmvcVoucherDetailProductSectionBinding.bind(view)
             }
         }
+        setupTicker(data.voucherDetail)
+        setupRecapSection(data.voucherDetail)
         setupHeaderSection(data.voucherDetail)
+        setupPerformanceSection(data.voucherDetail)
         setupVoucherTypeSection(data.voucherDetail)
         setupVoucherInfoSection(data.voucherDetail)
         setupVoucherSettingSection(data.voucherDetail)
         setupProductListSection(data.voucherDetail)
         setupSpendingEstimationSection(data.voucherDetail)
         setupButtonSection(data.voucherDetail, data.creationMetadata.discountActive)
+    }
+
+    private fun setupTicker(voucherDetail: VoucherDetailData) {
+        binding?.run {
+            ticker.apply {
+                showWithCondition(
+                    voucherDetail.labelVoucher.labelSubsidyInfo != SubsidyInfo.FULL_SUBSIDIZED &&
+                        voucherDetail.labelVoucher.labelCreator != VoucherCreator.VPS &&
+                        voucherDetail.voucherStatus != VoucherStatus.ENDED &&
+                        voucherDetail.subsidyDetail.programDetail.programLabel.isNotEmpty()
+                )
+                tickerTitle = voucherDetail.subsidyDetail.programDetail.programLabel
+                setTextDescription(voucherDetail.subsidyDetail.programDetail.programLabelDetail)
+            }
+        }
+    }
+
+    private fun setupRecapSection(data: VoucherDetailData) {
+        binding?.run {
+            if (data.voucherStatus == VoucherStatus.ENDED &&
+                data.isGetSubsidy() &&
+                data.subsidyDetail.programDetail.promotionStatus != PromotionStatus.REJECTED
+            ) {
+                if (layoutRecap.parent != null) {
+                    layoutRecap.inflate()
+                }
+            }
+        }
+        recapBinding?.run {
+            imageRecapIllustration.setImageUrl(ILLUSTRATION_MVC_DETAIL_ENDED_VOUCHER)
+            recapPerformanceIllustration.setImageUrl(ILLUSTRATION_MVC_DETAIL_CARD_PERFORMANCE)
+            tpgVoucherName.text =
+                getString(R.string.smvc_placeholder_recap_voucher_name, data.voucherName)
+            iconChevron.setOnClickListener {
+                if (clParentExpandedCard.isVisible) {
+                    TransitionManager.beginDelayedTransition(
+                        clParentExpandedCard,
+                        AutoTransition()
+                    )
+                    clParentExpandedCard.gone()
+                    iconChevron.setImage(IconUnify.CHEVRON_DOWN)
+                } else {
+                    TransitionManager.beginDelayedTransition(
+                        cardParentPerformance,
+                        AutoTransition()
+                    )
+                    clParentExpandedCard.visible()
+                    iconChevron.setImage(IconUnify.CHEVRON_UP)
+                }
+            }
+            val usedQuota = data.confirmedGlobalQuota + data.subsidyDetail.quotaSubsidized.confirmedGlobalQuota
+            tpgUsedQuota.text = getString(
+                R.string.smvc_placeholder_total_used_quota,
+                usedQuota,
+                data.voucherQuota
+            )
+            tpgQuotaFromSubsidy.text =
+                data.subsidyDetail.quotaSubsidized.confirmedGlobalQuota.toString()
+            tpgQuotaNonSubsidy.text =
+                data.confirmedGlobalQuota.toString()
+        }
     }
 
     private fun setupHeaderSection(data: VoucherDetailData) {
@@ -287,12 +374,12 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             tpgDateTimeStart.dateTime = data.voucherStartTime
             tpgDateTimeEnd.dateTime = data.voucherFinishTime
             setPackage(data)
-            val availableQuota = data.voucherQuota - data.remainingQuota
-            val usedQuotaPercentage = viewModel.getPercentage(availableQuota, data.remainingQuota)
-            tpgUsedVoucherQuota.text = availableQuota.toString()
+            val usedQuota = data.confirmedGlobalQuota + data.subsidyDetail.quotaSubsidized.confirmedGlobalQuota
+            val usedQuotaPercentage = viewModel.getPercentage(usedQuota, data.remainingQuota)
+            tpgUsedVoucherQuota.text = usedQuota.toString()
             tpgAvailableVoucherQuota.text = getString(
                 R.string.smvc_placeholder_voucher_quota,
-                data.remainingQuota
+                data.voucherQuota
             )
             pgbUsedVoucher.setValue(usedQuotaPercentage, true)
             btnDownloadImageVoucher.apply {
@@ -308,32 +395,36 @@ class VoucherDetailFragment : BaseDaggerFragment() {
 
     private fun setPackage(data: VoucherDetailData) {
         headerBinding?.run {
-            if (data.isVps == FALSE && data.isSubsidy == FALSE) {
-                labelVoucherSource.invisible()
-                tpgVpsPackage.gone()
-            } else {
-                setPackageName(data)
-            }
-        }
-    }
+            when (data.labelVoucher.labelCreator) {
+                VoucherCreator.SELLER -> {
+                    tpgVpsPackage.invisible()
+                }
 
-    private fun setPackageName(data: VoucherDetailData) {
-        headerBinding?.run {
-            if (data.isVps == TRUE) {
-                labelVoucherSource.apply {
-                    visible()
-                    text = getString(R.string.smvc_promotion_package_label)
+                VoucherCreator.INTOOLS -> {
+                    tpgVpsPackage.apply {
+                        showWithCondition(data.subsidyDetail.programDetail.promotionStatus != PromotionStatus.REJECTED)
+                        text =
+                            getString(
+                                R.string.smvc_placeholder_intools_package_name,
+                                data.labelVoucher.labelCreatorFormatted
+                            )
+                    }
                 }
-                tpgVpsPackage.apply {
-                    visible()
-                    text = data.packageName
+
+                VoucherCreator.VPS -> {
+                    tpgVpsPackage.apply {
+                        visible()
+                        text =
+                            getString(R.string.smvc_placeholder_vps_package_name, data.packageName)
+                    }
                 }
-            } else {
-                labelVoucherSource.apply {
-                    visible()
-                    text = getString(R.string.smvc_from_tokopedia_label)
-                }
-                tpgVpsPackage.gone()
+            }
+            labelVoucherSource.apply {
+                showWithCondition(
+                    data.isGetSubsidy() &&
+                        data.subsidyDetail.programDetail.promotionStatus != PromotionStatus.REJECTED
+                )
+                text = data.labelVoucher.labelSubsidyInfoFormatted
             }
         }
     }
@@ -348,6 +439,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                     }
                     imgCampaignStatusIndicator.loadImage(ImageUrlConstant.IMAGE_URL_RIBBON_GREY)
                 }
+
                 VoucherStatus.ONGOING -> {
                     tpgVoucherStatus.apply {
                         text = getString(R.string.smvc_status_ongoing_label)
@@ -355,6 +447,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                     }
                     imgCampaignStatusIndicator.loadImage(ImageUrlConstant.IMAGE_URL_RIBBON_GREEN)
                 }
+
                 VoucherStatus.STOPPED -> {
                     tpgVoucherStatus.apply {
                         text = getString(R.string.smvc_status_stopped_label)
@@ -362,6 +455,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                     }
                     imgCampaignStatusIndicator.loadImage(ImageUrlConstant.IMAGE_URL_RIBBON_RED)
                 }
+
                 else -> {
                     tpgVoucherStatus.apply {
                         text = getString(R.string.smvc_status_ended_label)
@@ -377,21 +471,33 @@ class VoucherDetailFragment : BaseDaggerFragment() {
         headerBinding?.run {
             when (data.voucherStatus) {
                 VoucherStatus.NOT_STARTED -> {
-                    btnUbahKupon.visible()
+                    btnUbahKupon.apply {
+                        if (data.labelVoucher.labelSubsidyInfo == SubsidyInfo.FULL_SUBSIDIZED ||
+                            data.labelVoucher.labelCreator == VoucherCreator.VPS
+                        ) {
+                            invisible()
+                        } else {
+                            visible()
+                            isEditable(data.isEditable)
+                        }
+                    }
                     timer.invisible()
                     tpgPeriodStop.invisible()
                 }
+
                 VoucherStatus.ONGOING -> {
                     btnUbahKupon.invisible()
                     timer.visible()
                     tpgPeriodStop.invisible()
                     startTimer(data.voucherFinishTime.toDate(DateConstant.DATE_WITH_SECOND_PRECISION_ISO_8601))
                 }
+
                 VoucherStatus.ENDED -> {
                     btnUbahKupon.invisible()
                     timer.invisible()
                     tpgPeriodStop.invisible()
                 }
+
                 else -> {
                     val stoppedDate =
                         data.updateTime.toDate(DateConstant.DATE_WITH_SECOND_PRECISION_ISO_8601)
@@ -406,13 +512,17 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                     }
                 }
             }
-            if (data.isVps == TRUE || data.isSubsidy == TRUE || data.isChild == TRUE) {
-                btnUbahKupon.invisible()
-            }
             btnUbahKupon.setOnClickListener {
                 val intent = SummaryActivity.buildEditModeIntent(context, data.voucherId)
                 startActivity(intent)
                 voucherDetailTracker.sendClickEditEvent(data)
+            }
+            iconInfo.setOnClickListener {
+                UpdateCouponTipBottomSheet
+                    .newInstance(
+                        isVoucherApproved = data.subsidyDetail.programDetail.promotionStatus == PromotionStatus.APPROVED
+                    )
+                    .show(childFragmentManager)
             }
         }
     }
@@ -422,6 +532,46 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             timer.timerFormat = TimerUnifySingle.FORMAT_AUTO
             timer.timerVariant = TimerUnifySingle.VARIANT_INFORMATIVE
             timer.targetDate = endDate.toCalendar()
+        }
+    }
+
+    private fun setupPerformanceSection(data: VoucherDetailData) {
+        binding?.run {
+            if (data.voucherStatus == VoucherStatus.ONGOING && data.isGetSubsidy()) {
+                if (layoutPerformance.parent != null) {
+                    layoutPerformance.inflate()
+                }
+            }
+            performanceBinding?.run {
+                illustrationPerformance.setImageUrl(ILLUSTRATION_MVC_DETAIL_CARD_PERFORMANCE)
+                iconChevron.setOnClickListener {
+                    if (clParentExpandedCard.isVisible) {
+                        TransitionManager.beginDelayedTransition(
+                            clParentExpandedCard,
+                            AutoTransition()
+                        )
+                        clParentExpandedCard.gone()
+                        iconChevron.setImage(IconUnify.CHEVRON_DOWN)
+                    } else {
+                        TransitionManager.beginDelayedTransition(
+                            cardParentPerformance,
+                            AutoTransition()
+                        )
+                        clParentExpandedCard.visible()
+                        iconChevron.setImage(IconUnify.CHEVRON_UP)
+                    }
+                }
+                val usedQuota = data.confirmedGlobalQuota + data.subsidyDetail.quotaSubsidized.confirmedGlobalQuota
+                tpgUsedQuota.text = getString(
+                    R.string.smvc_placeholder_total_used_quota,
+                    usedQuota,
+                    data.voucherQuota
+                )
+                tpgQuotaFromSubsidy.text =
+                    data.subsidyDetail.quotaSubsidized.confirmedGlobalQuota.toString()
+                tpgQuotaNonSubsidy.text =
+                    data.confirmedGlobalQuota.toString()
+            }
         }
     }
 
@@ -497,6 +647,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             setDeductionAmount(data)
             setMaxPriceDeduction(data)
             tpgVoucherQuota.text = data.voucherQuota.toString()
+            setSubsidyQuota(data)
             tpgVoucherMinimumBuy.text = data.voucherDiscountAmountMin.getCurrencyFormatted()
             tpgVoucherTargetBuyer.setTargetBuyer(data)
         }
@@ -531,6 +682,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                         getString(R.string.smvc_nominal_free_shipping_label)
                     tpgVoucherNominal.text = data.voucherDiscountAmount.getCurrencyFormatted()
                 }
+
                 PromoType.CASHBACK -> {
                     when (data.voucherDiscountType) {
                         BenefitType.NOMINAL -> {
@@ -539,14 +691,24 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                             tpgVoucherNominal.text =
                                 data.voucherDiscountAmount.getCurrencyFormatted()
                         }
+
                         else -> {
                             tpgVoucherNominalLabel.text =
                                 getString(R.string.smvc_percentage_cashback_label)
                             tpgVoucherNominal.text =
                                 data.voucherDiscountAmount.getPercentFormatted()
+                            if (data.isGetSubsidy() && data.subsidyDetail.programDetail.promotionStatus != PromotionStatus.REJECTED) {
+                                llParentInitialCashback.showWithCondition(data.labelVoucher.labelBudgetsVoucher.isNotEmpty())
+                                llParentAdditionalSubsidy.showWithCondition(data.labelVoucher.labelBudgetsVoucher.isNotEmpty())
+                                tpgInitialCashback.text =
+                                    data.labelVoucher.labelBudgetsVoucher.firstOrNull()?.labelBudgetVoucherValue?.getPercentFormatted()
+                                tpgAdditionalSubsidy.text =
+                                    data.labelVoucher.labelBudgetsVoucher.lastOrNull()?.labelBudgetVoucherValue?.getPercentFormatted()
+                            }
                         }
                     }
                 }
+
                 else -> {
                     when (data.voucherDiscountType) {
                         BenefitType.NOMINAL -> {
@@ -555,6 +717,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                             tpgVoucherNominal.text =
                                 data.voucherDiscountAmount.getCurrencyFormatted()
                         }
+
                         else -> {
                             tpgVoucherNominalLabel.text =
                                 getString(R.string.smvc_percentage_discount_label)
@@ -573,6 +736,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 PromoType.FREE_SHIPPING -> {
                     llVoucherMaxPriceDeduction.gone()
                 }
+
                 else -> {
                     when (data.voucherDiscountType) {
                         BenefitType.PERCENTAGE -> {
@@ -580,11 +744,32 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                             tpgVoucherMaxPriceDeduction.text =
                                 data.voucherDiscountAmountMax.getCurrencyFormatted()
                         }
+
                         else -> {
                             llVoucherMaxPriceDeduction.gone()
                         }
                     }
                 }
+            }
+        }
+    }
+
+    private fun setSubsidyQuota(data: VoucherDetailData) {
+        voucherSettingBinding?.run {
+            if (!data.isGetSubsidy() || data.subsidyDetail.programDetail.promotionStatus != PromotionStatus.REJECTED) return
+            val wording =
+                if (data.labelVoucher.labelSubsidyInfo == SubsidyInfo.FULL_SUBSIDIZED) {
+                    getString(R.string.smvc_all_quota_subsidized_label)
+                } else {
+                    getString(
+                        R.string.smvc_some_quota_subsidized_placeholder,
+                        data.subsidyDetail.quotaSubsidized.voucherQuota,
+                        data.voucherQuota
+                    )
+                }
+            tpgVoucherQuotaSubsidyLabel.apply {
+                visible()
+                text = wording
             }
         }
     }
@@ -623,8 +808,8 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             else -> getString(R.string.smvc_spending_estimation_title_1)
         }
         val description = when {
-            data.isVps == TRUE -> getString(R.string.smvc_spending_estimation_description_2)
-            data.isSubsidy == TRUE -> getString(R.string.smvc_spending_estimation_description_3)
+            data.isFromVps() -> getString(R.string.smvc_spending_estimation_description_2)
+            data.isGetSubsidy() -> getString(R.string.smvc_spending_estimation_description_3)
             else -> getString(R.string.smvc_spending_estimation_description_1)
         }
         binding?.run {
@@ -653,6 +838,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                         layoutButton.inflate()
                     }
                 }
+
                 VoucherStatus.ONGOING -> {
                     layoutButton.setOnInflateListener { _, view ->
                         stateButtonShareBinding =
@@ -664,6 +850,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                         layoutButton.inflate()
                     }
                 }
+
                 else -> {
                     layoutButton.setOnInflateListener { _, view ->
                         stateButtonDuplicateBinding =
@@ -746,6 +933,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 voucherDetailTracker.sendClickTNCEvent(data)
                 openTncPage()
             }
+
             else -> deleteOrStopVoucher(data)
         }
     }
@@ -830,7 +1018,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
 
         val shareComponentParam = ShareComponentInstanceBuilder.Param(
             isVoucherProduct = voucherDetail.isVoucherProduct,
-            voucherId = voucherDetail.voucherId,
+            galadrielVoucherId = voucherDetail.galadrielVoucherId,
             isPublic = voucherDetail.isPublic == TRUE,
             voucherCode = voucherDetail.voucherCode,
             voucherStartDate = voucherStartDate,
@@ -883,7 +1071,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             onShareOptionsClicked = { shareModel ->
                 handleShareOptionSelection(
                     voucherDetail.isVoucherProduct,
-                    shareComponentParam.voucherId,
+                    shareComponentParam.galadrielVoucherId,
                     shareModel,
                     title,
                     description,
@@ -943,7 +1131,8 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             shopDomain,
             shareModel,
             title,
-            outgoingDescription
+            outgoingDescription,
+            isProductVoucher
         )
         LinkerManager.getInstance().executeShareRequest(
             LinkerUtils.createShareRequest(
@@ -986,8 +1175,17 @@ class VoucherDetailFragment : BaseDaggerFragment() {
     }
 
     private fun deleteOrStopVoucher(data: VoucherDetailData) {
-        if (data.isVps == TRUE || data.isSubsidy == TRUE) {
-            showCallTokopediaCareDialog(data.voucherStatus)
+        if (data.isFromVps() ||
+            data.isGetSubsidy() ||
+            !data.isEditable
+        ) {
+            if (data.subsidyDetail.programDetail.promotionStatus == PromotionStatus.APPROVED ||
+                data.subsidyDetail.programDetail.promotionStatus == PromotionStatus.REGISTERED
+            ) {
+                showCallTokopediaCareDialog(data.voucherStatus)
+            } else {
+                showConfirmationStopVoucherDialog(data)
+            }
         } else {
             showConfirmationStopVoucherDialog(data)
         }
@@ -1131,5 +1329,16 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 TokopediaUrl.getInstance().MOBILEWEB.plus(TOKOPEDIA_CARE_PATH)
             )
         )
+    }
+
+    private fun Typography.isEditable(isEditable: Boolean) {
+        this.isEnabled = isEditable
+        if (isEditable) {
+            setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+            headerBinding?.iconInfo?.gone()
+        } else {
+            setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN500)
+            headerBinding?.iconInfo?.visible()
+        }
     }
 }

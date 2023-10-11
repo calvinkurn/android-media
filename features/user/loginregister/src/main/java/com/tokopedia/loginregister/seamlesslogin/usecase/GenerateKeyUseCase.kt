@@ -2,9 +2,8 @@ package com.tokopedia.loginregister.seamlesslogin.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.loginregister.seamlesslogin.data.model.GenerateKeyData
-import com.tokopedia.loginregister.seamlesslogin.data.model.GenerateKeyPojo
-import com.tokopedia.loginregister.seamlesslogin.di.SeamlessLoginQueryConstant
+import com.tokopedia.loginregister.seamlesslogin.data.GenerateKeyData
+import com.tokopedia.loginregister.seamlesslogin.data.GenerateKeyPojo
 import javax.inject.Inject
 
 /**
@@ -13,17 +12,14 @@ import javax.inject.Inject
  */
 
 class GenerateKeyUseCase @Inject constructor(
-        private val rawQueries: Map<String, String>,
         graphqlRepository: GraphqlRepository)
     : GraphqlUseCase<GenerateKeyPojo>(graphqlRepository) {
 
     fun executeCoroutines(onSuccess: (GenerateKeyData) -> kotlin.Unit, onError: (Throwable) -> kotlin.Unit){
-        rawQueries[SeamlessLoginQueryConstant.QUERY_GET_KEY]?.let { query ->
+        getQuery().let { query ->
             setTypeClass(GenerateKeyPojo::class.java)
             setGraphqlQuery(query)
-            setRequestParams(mapOf(
-                    SeamlessLoginQueryConstant.PARAM_MODULE to "seamless_apps"
-            ))
+            setRequestParams(mapOf(PARAM_MODULE to "seamless_apps"))
             execute({
                 onSuccess(it.data)
             }, {
@@ -31,5 +27,19 @@ class GenerateKeyUseCase @Inject constructor(
                 onError(throwable)
             })
         }
+    }
+
+    private fun getQuery(): String = """
+        query generateDummyKey($module: String!) {
+            generate_key(module: $module) {
+            key
+            server_timestamp
+            error
+        }
+    }""".trimIndent()
+
+    companion object {
+        private const val module = "\$module"
+        private const val PARAM_MODULE = "module"
     }
 }

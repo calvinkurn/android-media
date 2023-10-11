@@ -20,11 +20,10 @@ import com.tokopedia.tokofood.databinding.LayoutBottomSheetPurchaseConsentBindin
 import com.tokopedia.tokofood.feature.purchase.purchasepage.di.DaggerTokoFoodPurchaseComponent
 import com.tokopedia.tokofood.feature.purchase.purchasepage.di.TokoFoodPurchaseComponent
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.coroutines.flow.collect
 import timber.log.Timber
 import javax.inject.Inject
 
-class TokoFoodPurchaseConsentBottomSheet : BottomSheetUnify(),
+open class TokoFoodPurchaseConsentBottomSheet : BottomSheetUnify(),
     HasComponent<TokoFoodPurchaseComponent> {
 
     companion object {

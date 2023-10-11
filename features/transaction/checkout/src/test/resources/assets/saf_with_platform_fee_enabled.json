@@ -1,5 +1,5 @@
 {
-  "shipment_address_form_v3": {
+  "shipment_address_form_v4": {
     "status": "OK",
     "error_message": [],
     "data": {
@@ -86,6 +86,13 @@
           },
           "group_shop": [
             {
+              "group_type": 1,
+              "ui_group_type": 0,
+              "group_information": {
+                "name": "POINT99 COMPUTER",
+                "badge_url": "https://images.tokopedia.net/img/newtkpd/powermerchant/ic-powermerchant-130px.png",
+                "description": "Kota Bandung"
+              },
               "add_ons": {
                 "status": 0,
                 "add_on_data": [],
@@ -174,230 +181,235 @@
                 "booking_fee": 0,
                 "is_leasing_product": false
               },
-              "shop": {
-                "shop_id": 6553329,
-                "shop_name": "rizkastagingnol",
-                "shop_image": "https://images.tokopedia.net/img/seller_no_logo_1.png",
-                "shop_url": "https://staging.tokopedia.com/rizkastagingnol",
-                "shop_status": 1,
-                "postal_code": "11610",
-                "latitude": "",
-                "longitude": "",
-                "district_id": 2257,
-                "district_name": "",
-                "origin": 0,
-                "address_street": "",
-                "province_id": 0,
-                "city_id": 174,
-                "city_name": "Jakarta Barat",
-                "shop_alert_message": "",
-                "is_tokonow": false,
-                "is_gold": 1,
-                "is_official": 1,
-                "shop_ticker": "",
-                "shop_ticker_title": "",
-                "shop_type_info": {
-                  "shop_tier": 2,
-                  "shop_grade": 0,
-                  "badge": "https://images.tokopedia.net/img/official_store/badge_os.png",
-                  "badge_svg": "https://images.tokopedia.net/img/official_store/badge_official.svg",
-                  "title": "Official Store"
-                },
-                "enabler_data": {
-                  "label_name": "",
-                  "show_label": false
-                }
-              },
-              "shop_shipments": [
+              "group_shop_v2_saf": [
                 {
-                  "ship_id": 1,
-                  "ship_name": "JNE",
-                  "ship_code": "jne",
-                  "ship_logo": "https://images.tokopedia.net/img/kurir-jne.png",
-                  "is_dropship_enabled": 1,
-                  "ship_prods": [
-                    {
-                      "ship_prod_id": 1,
-                      "ship_prod_name": "Reguler",
-                      "ship_group_name": "regular",
-                      "ship_group_id": 1004,
-                      "additional_fee": 0,
-                      "minimum_weight": 0
+                  "cart_string_order": "2283942-0-1844361-400316431",
+                  "shop": {
+                    "shop_id": 6553329,
+                    "shop_name": "rizkastagingnol",
+                    "shop_image": "https://images.tokopedia.net/img/seller_no_logo_1.png",
+                    "shop_url": "https://staging.tokopedia.com/rizkastagingnol",
+                    "shop_status": 1,
+                    "postal_code": "11610",
+                    "latitude": "",
+                    "longitude": "",
+                    "district_id": 2257,
+                    "district_name": "",
+                    "origin": 0,
+                    "address_street": "",
+                    "province_id": 0,
+                    "city_id": 174,
+                    "city_name": "Jakarta Barat",
+                    "shop_alert_message": "",
+                    "is_tokonow": false,
+                    "is_gold": 1,
+                    "is_official": 1,
+                    "shop_ticker": "",
+                    "shop_ticker_title": "",
+                    "shop_type_info": {
+                      "shop_tier": 2,
+                      "shop_grade": 0,
+                      "badge": "https://images.tokopedia.net/img/official_store/badge_os.png",
+                      "badge_svg": "https://images.tokopedia.net/img/official_store/badge_official.svg",
+                      "title": "Official Store"
                     },
-                    {
-                      "ship_prod_id": 2,
-                      "ship_prod_name": "OKE",
-                      "ship_group_name": "regular",
-                      "ship_group_id": 1004,
-                      "additional_fee": 0,
-                      "minimum_weight": 0
-                    },
-                    {
-                      "ship_prod_id": 6,
-                      "ship_prod_name": "YES",
-                      "ship_group_name": "nextday",
-                      "ship_group_id": 1003,
-                      "additional_fee": 0,
-                      "minimum_weight": 0
-                    },
-                    {
-                      "ship_prod_id": 22,
-                      "ship_prod_name": "Trucking",
-                      "ship_group_name": "regular",
-                      "ship_group_id": 1004,
-                      "additional_fee": 0,
-                      "minimum_weight": 0
+                    "enabler_data": {
+                      "label_name": "",
+                      "show_label": false
                     }
-                  ]
-                }
-              ],
-              "dropshipper": {
-                "name": "",
-                "telp_no": ""
-              },
-              "cart_details": [
-                {
-                  "errors": [],
-                  "bundle_detail": {
-                    "bundle_description": "",
-                    "bundle_group_id": "",
-                    "bundle_id": 0,
-                    "bundle_max_order": 0,
-                    "bundle_min_order": 0,
-                    "bundle_name": "",
-                    "bundle_original_price": 0,
-                    "bundle_original_price_fmt": "",
-                    "bundle_price": 0,
-                    "bundle_price_fmt": "",
-                    "bundle_qty": 0,
-                    "bundle_quota": 0,
-                    "bundle_status": "",
-                    "bundle_type": "",
-                    "slash_price_label": "",
-                    "bundle_icon_url": ""
                   },
-                  "products": [
+                  "shop_shipments": [
                     {
-                      "add_ons": {
-                        "status": 1,
-                        "add_on_data": [],
-                        "add_on_button": {
-                          "title": "Kirim sebagai Hadiah",
-                          "description": "",
-                          "left_icon_url": "https://images.tokopedia.net/img/cartapp/icons/add_on_green_new.png",
-                          "right_icon_url": "https://images.tokopedia.net/img/cartapp/icons/chevron_right_grey.png",
-                          "action": 1
+                      "ship_id": 1,
+                      "ship_name": "JNE",
+                      "ship_code": "jne",
+                      "ship_logo": "https://images.tokopedia.net/img/kurir-jne.png",
+                      "is_dropship_enabled": 1,
+                      "ship_prods": [
+                        {
+                          "ship_prod_id": 1,
+                          "ship_prod_name": "Reguler",
+                          "ship_group_name": "regular",
+                          "ship_group_id": 1004,
+                          "additional_fee": 0,
+                          "minimum_weight": 0
                         },
-                        "add_on_bottomsheet": {
-                          "header_title": "Atur pelengkap produk",
-                          "description": "",
-                          "products": [],
-                          "ticker": {
-                            "text": ""
+                        {
+                          "ship_prod_id": 2,
+                          "ship_prod_name": "OKE",
+                          "ship_group_name": "regular",
+                          "ship_group_id": 1004,
+                          "additional_fee": 0,
+                          "minimum_weight": 0
+                        },
+                        {
+                          "ship_prod_id": 6,
+                          "ship_prod_name": "YES",
+                          "ship_group_name": "nextday",
+                          "ship_group_id": 1003,
+                          "additional_fee": 0,
+                          "minimum_weight": 0
+                        },
+                        {
+                          "ship_prod_id": 22,
+                          "ship_prod_name": "Trucking",
+                          "ship_group_name": "regular",
+                          "ship_group_id": 1004,
+                          "additional_fee": 0,
+                          "minimum_weight": 0
+                        }
+                      ]
+                    }
+                  ],
+                  "dropshipper": {
+                    "name": "",
+                    "telp_no": ""
+                  },
+                  "cart_details": [
+                    {
+                      "errors": [],
+                      "bundle_detail": {
+                        "bundle_description": "",
+                        "bundle_group_id": "",
+                        "bundle_id": 0,
+                        "bundle_max_order": 0,
+                        "bundle_min_order": 0,
+                        "bundle_name": "",
+                        "bundle_original_price": 0,
+                        "bundle_original_price_fmt": "",
+                        "bundle_price": 0,
+                        "bundle_price_fmt": "",
+                        "bundle_qty": 0,
+                        "bundle_quota": 0,
+                        "bundle_status": "",
+                        "bundle_type": "",
+                        "slash_price_label": "",
+                        "bundle_icon_url": ""
+                      },
+                      "products": [
+                        {
+                          "add_ons": {
+                            "status": 1,
+                            "add_on_data": [],
+                            "add_on_button": {
+                              "title": "Kirim sebagai Hadiah",
+                              "description": "",
+                              "left_icon_url": "https://images.tokopedia.net/img/cartapp/icons/add_on_green_new.png",
+                              "right_icon_url": "https://images.tokopedia.net/img/cartapp/icons/chevron_right_grey.png",
+                              "action": 1
+                            },
+                            "add_on_bottomsheet": {
+                              "header_title": "Atur pelengkap produk",
+                              "description": "",
+                              "products": [],
+                              "ticker": {
+                                "text": ""
+                              }
+                            }
+                          },
+                          "errors": [],
+                          "cart_id": "2166600230",
+                          "product_id": 2148814348,
+                          "product_name": "Vitamin_ Natrol_C_150_Kapsul_1650353487356",
+                          "product_price_fmt": "Rp93.000",
+                          "product_price": 93000,
+                          "product_original_price": 0,
+                          "product_wholesale_price": 93000,
+                          "product_wholesale_price_fmt": "Rp93.000",
+                          "product_weight_fmt": "70gr",
+                          "product_weight": 70,
+                          "product_weight_actual": 70,
+                          "product_condition": 1,
+                          "product_url": "https://staging.tokopedia.com/rizkastagingnol/vitamin-natrol-c-150-kapsul-1650353487356",
+                          "product_returnable": 0,
+                          "product_is_free_returns": 0,
+                          "product_is_preorder": 0,
+                          "product_cashback": "",
+                          "product_min_order": 1,
+                          "product_invenage_value": 10,
+                          "product_switch_invenage": 1,
+                          "product_price_currency": 1,
+                          "product_image_src_200_square": "https://images.tokopedia.net/img/cache/200-square/hDjmkQ/2022/4/19/452da83c-b643-46f5-b635-9e9f42e7dcb9.jpg",
+                          "product_notes": "",
+                          "product_quantity": 1,
+                          "product_menu_id": 0,
+                          "product_finsurance": 1,
+                          "product_fcancel_partial": 0,
+                          "product_cat_id": 469,
+                          "product_catalog_id": 0,
+                          "product_category": "Kesehatan / Diet \u0026 Vitamin / Vitamin \u0026 Nutrisi",
+                          "purchase_protection_plan_data": {
+                            "protection_available": false,
+                            "protection_type_id": 0,
+                            "protection_price_per_product": 0,
+                            "protection_price": 0,
+                            "protection_title": "",
+                            "protection_subtitle": "",
+                            "protection_link_text": "",
+                            "protection_link_url": "",
+                            "protection_opt_in": false,
+                            "protection_checkbox_disabled": false
+                          },
+                          "product_variants": {
+                            "parent_id": 0
+                          },
+                          "product_tracker_data": {
+                            "attribution": "none/other",
+                            "tracker_list_name": "none/other"
+                          },
+                          "product_preorder": {
+                            "duration_text": "",
+                            "duration_day": "0"
+                          },
+                          "trade_in_info": {
+                            "is_valid_trade_in": false,
+                            "new_device_price": 0,
+                            "new_device_price_fmt": "",
+                            "old_device_price": 0,
+                            "old_device_price_fmt": "",
+                            "drop_off_enable": false,
+                            "device_model": "",
+                            "diagnostic_id": 0
+                          },
+                          "free_shipping": {
+                            "eligible": true,
+                            "badge_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+                          },
+                          "free_shipping_extra": {
+                            "eligible": false,
+                            "badge_url": ""
+                          },
+                          "free_shipping_general": {
+                            "bo_name": "bebas ongkir",
+                            "bo_type": 1,
+                            "badge_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+                          },
+                          "product_ticker": {
+                            "show_ticker": false,
+                            "message": ""
+                          },
+                          "variant_description_detail": {
+                            "variant_name": [],
+                            "variant_description": ""
+                          },
+                          "product_alert_message": "",
+                          "product_information": [],
+                          "campaign_id": 0,
+                          "ethical_drug": {
+                            "need_prescription": false,
+                            "icon_url": "https://images.tokopedia.net/img/cartapp/icons/ethical_drug.png",
+                            "text": "Butuh Resep"
                           }
                         }
-                      },
-                      "errors": [],
-                      "cart_id": "2166600230",
-                      "product_id": 2148814348,
-                      "product_name": "Vitamin_ Natrol_C_150_Kapsul_1650353487356",
-                      "product_price_fmt": "Rp93.000",
-                      "product_price": 93000,
-                      "product_original_price": 0,
-                      "product_wholesale_price": 93000,
-                      "product_wholesale_price_fmt": "Rp93.000",
-                      "product_weight_fmt": "70gr",
-                      "product_weight": 70,
-                      "product_weight_actual": 70,
-                      "product_condition": 1,
-                      "product_url": "https://staging.tokopedia.com/rizkastagingnol/vitamin-natrol-c-150-kapsul-1650353487356",
-                      "product_returnable": 0,
-                      "product_is_free_returns": 0,
-                      "product_is_preorder": 0,
-                      "product_cashback": "",
-                      "product_min_order": 1,
-                      "product_invenage_value": 10,
-                      "product_switch_invenage": 1,
-                      "product_price_currency": 1,
-                      "product_image_src_200_square": "https://images.tokopedia.net/img/cache/200-square/hDjmkQ/2022/4/19/452da83c-b643-46f5-b635-9e9f42e7dcb9.jpg",
-                      "product_notes": "",
-                      "product_quantity": 1,
-                      "product_menu_id": 0,
-                      "product_finsurance": 1,
-                      "product_fcancel_partial": 0,
-                      "product_cat_id": 469,
-                      "product_catalog_id": 0,
-                      "product_category": "Kesehatan / Diet \u0026 Vitamin / Vitamin \u0026 Nutrisi",
-                      "purchase_protection_plan_data": {
-                        "protection_available": false,
-                        "protection_type_id": 0,
-                        "protection_price_per_product": 0,
-                        "protection_price": 0,
-                        "protection_title": "",
-                        "protection_subtitle": "",
-                        "protection_link_text": "",
-                        "protection_link_url": "",
-                        "protection_opt_in": false,
-                        "protection_checkbox_disabled": false
-                      },
-                      "product_variants": {
-                        "parent_id": 0
-                      },
-                      "product_tracker_data": {
-                        "attribution": "none/other",
-                        "tracker_list_name": "none/other"
-                      },
-                      "product_preorder": {
-                        "duration_text": "",
-                        "duration_day": "0"
-                      },
-                      "trade_in_info": {
-                        "is_valid_trade_in": false,
-                        "new_device_price": 0,
-                        "new_device_price_fmt": "",
-                        "old_device_price": 0,
-                        "old_device_price_fmt": "",
-                        "drop_off_enable": false,
-                        "device_model": "",
-                        "diagnostic_id": 0
-                      },
-                      "free_shipping": {
-                        "eligible": true,
-                        "badge_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
-                      },
-                      "free_shipping_extra": {
-                        "eligible": false,
-                        "badge_url": ""
-                      },
-                      "free_shipping_general": {
-                        "bo_name": "bebas ongkir",
-                        "bo_type": 1,
-                        "badge_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
-                      },
-                      "product_ticker": {
-                        "show_ticker": false,
-                        "message": ""
-                      },
-                      "variant_description_detail": {
-                        "variant_name": [],
-                        "variant_description": ""
-                      },
-                      "product_alert_message": "",
-                      "product_information": [],
-                      "campaign_id": 0,
-                      "ethical_drug": {
-                        "need_prescription": false,
-                        "icon_url": "https://images.tokopedia.net/img/cartapp/icons/ethical_drug.png",
-                        "text": "Butuh Resep"
-                      }
+                      ]
                     }
-                  ]
+                  ],
+                  "warehouse": {
+                    "warehouse_id": 343512,
+                    "city_name": "Jakarta Barat"
+                  }
                 }
-              ],
-              "warehouse": {
-                "warehouse_id": 343512,
-                "city_name": "Jakarta Barat"
-              }
+              ]
             }
           ]
         }

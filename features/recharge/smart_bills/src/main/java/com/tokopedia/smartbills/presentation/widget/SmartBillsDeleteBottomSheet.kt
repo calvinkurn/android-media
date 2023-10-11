@@ -5,10 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.smartbills.R
+import com.tokopedia.smartbills.data.RechargeBills
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.Typography
 
-class SmartBillsDeleteBottomSheet(private val listener: DeleteProductSBMListener): BottomSheetUnify() {
+class SmartBillsDeleteBottomSheet : BottomSheetUnify() {
 
     init {
         isFullpage = false
@@ -17,25 +18,51 @@ class SmartBillsDeleteBottomSheet(private val listener: DeleteProductSBMListener
     }
 
     private lateinit var textDelete: Typography
+    private var listener: DeleteProductSBMListener? = null
+    private var bill: RechargeBills? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let { arguments ->
+            bill = arguments.getParcelable(BILL_EXTRA) ?: RechargeBills()
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val itemView = inflater.inflate(R.layout.bottomsheet_smart_bills_delete, container)
         textDelete = itemView.findViewById(R.id.tg_delete_sbm)
         textDelete.setOnClickListener {
             dismiss()
-            listener.onDeleteProductClicked()
+            bill?.let { bill ->
+                listener?.onDeleteProductClicked(bill)
+            }
         }
         setChild(itemView)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun dismiss() {
-        listener.onCloseBottomSheet()
+        listener?.onCloseBottomSheet()
         super.dismiss()
     }
 
+    fun setListener(listener: DeleteProductSBMListener) {
+        this.listener = listener
+    }
+
     interface DeleteProductSBMListener{
-        fun onDeleteProductClicked()
+        fun onDeleteProductClicked(bill: RechargeBills)
         fun onCloseBottomSheet()
+    }
+
+    companion object {
+        private const val BILL_EXTRA = "BILL_EXTRA"
+        fun newInstance(bill: RechargeBills): SmartBillsDeleteBottomSheet {
+            val bottomsheet = SmartBillsDeleteBottomSheet()
+            val bundle = Bundle()
+            bundle.putParcelable(BILL_EXTRA, bill)
+            bottomsheet.arguments = bundle
+            return bottomsheet
+        }
     }
 }

@@ -45,7 +45,7 @@
                 android:layout_height="1dp"
                 android:layout_marginTop="4dp"
                 app:layout_scrollFlags="scroll"
-                android:background="@color/Unify_N75"
+                android:background="@color/Unify_NN50"
                 />
 
             <com.google.android.material.tabs.TabLayout
@@ -91,7 +91,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:visibility="gone"
-            app:sticky_highlight_color="@color/Unify_G500"
+            app:sticky_highlight_color="@color/Unify_GN500"
             app:sticky_left_icon="@drawable/ic_toped_widget_login"
             tools:visibility="visible" />
 

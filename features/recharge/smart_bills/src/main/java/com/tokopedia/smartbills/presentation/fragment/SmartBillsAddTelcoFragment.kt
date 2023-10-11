@@ -12,6 +12,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -21,6 +22,7 @@ import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.common.topupbills.analytics.CommonTopupBillsAnalytics
 import com.tokopedia.common.topupbills.data.RechargeSBMAddBillRequest
+import com.tokopedia.common.topupbills.data.TopupBillsEnquiryAttribute
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
 import com.tokopedia.common.topupbills.data.prefix_select.RechargeValidation
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoOperator
@@ -55,7 +57,7 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.regex.Pattern
 import javax.inject.Inject
 
-class SmartBillsAddTelcoFragment : BaseDaggerFragment() {
+class SmartBillsAddTelcoFragment : BaseDaggerFragment(), SmartBillsGetNominalCallback, AddSmartBillsInquiryCallBack {
 
     private var binding by autoClearedNullable<FragmentSmartBillsAddTelcoBinding>()
 
@@ -97,6 +99,13 @@ class SmartBillsAddTelcoFragment : BaseDaggerFragment() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        childFragmentManager.addFragmentOnAttachListener { _, fragment ->
+            if (fragment is SmartBillsNominalBottomSheet) {
+                fragment.setCallback(this)
+            } else if (fragment is AddSmartBillsInquiryBottomSheet) {
+                fragment.setCallback(this)
+            }
+        }
         super.onCreate(savedInstanceState)
         activity?.let {
             val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
@@ -312,36 +321,16 @@ class SmartBillsAddTelcoFragment : BaseDaggerFragment() {
                                 ) {
                                     val position = "1"
                                     commonTopUpBillsAnalytic.clickDropDownListTelcoAddBills(CategoryTelcoType.getCategoryString(categoryId), textFieldWrapper.hint.toString(), position)
-                                    SmartBillsNominalBottomSheet.newInstance(
+                                    val bottomSheet = SmartBillsNominalBottomSheet.newInstance(
                                         isRequestNominal,
                                         catalogProduct,
                                         menuId.toIntSafely(),
                                         categoryId.orEmpty(),
                                         operatorActive.id,
-                                        getNumber(),
-                                        object : SmartBillsGetNominalCallback {
-                                            override fun onProductClicked(rechargeProduct: RechargeProduct) {
-                                                renderSelectedProduct(rechargeProduct)
-                                                setErrorNominal(false, "")
-                                                isDisableButton()
-                                            }
-
-                                            override fun onNominalLoaded(isRequesting: Boolean, catalogProductRecharge: RechargeCatalogProductInputMultiTabData, products: List<RechargeProduct>) {
-                                                commonTopUpBillsAnalytic.viewBottomSheetAddBills(
-                                                    userSession.userId,
-                                                    CategoryTelcoType.getCategoryString(categoryId),
-                                                    textFieldWrapper.hint.toString(),
-                                                    viewModel.getProductTracker(products, operatorActive.attributes.name, CategoryTelcoType.getCategoryString(categoryId))
-                                                )
-                                                isRequestNominal = isRequesting
-                                                catalogProduct = catalogProductRecharge
-                                            }
-
-                                            override fun onCloseNominal() {
-                                                commonTopUpBillsAnalytic.clickCloseDropDownListTelcoAddBills(CategoryTelcoType.getCategoryString(categoryId), textFieldWrapper.hint.toString())
-                                            }
-                                        }
-                                    ).show(childFragmentManager)
+                                        getNumber()
+                                    )
+                                    bottomSheet.setCallback(this@SmartBillsAddTelcoFragment)
+                                    bottomSheet.show(childFragmentManager)
                                 } else {
                                     validationNumber()
                                 }
@@ -412,6 +401,27 @@ class SmartBillsAddTelcoFragment : BaseDaggerFragment() {
         }
     }
 
+    override fun onProductClicked(rechargeProduct: RechargeProduct) {
+        renderSelectedProduct(rechargeProduct)
+        setErrorNominal(false, "")
+        isDisableButton()
+    }
+
+    override fun onNominalLoaded(isRequesting: Boolean, catalogProductRecharge: RechargeCatalogProductInputMultiTabData, products: List<RechargeProduct>) {
+        commonTopUpBillsAnalytic.viewBottomSheetAddBills(
+            userSession.userId,
+            CategoryTelcoType.getCategoryString(categoryId),
+            getHint(),
+            viewModel.getProductTracker(products, operatorActive.attributes.name, CategoryTelcoType.getCategoryString(categoryId))
+        )
+        isRequestNominal = isRequesting
+        catalogProduct = catalogProductRecharge
+    }
+
+    override fun onCloseNominal() {
+        commonTopUpBillsAnalytic.clickCloseDropDownListTelcoAddBills(CategoryTelcoType.getCategoryString(categoryId), getHint())
+    }
+
     private fun renderIconOperator(imageUrl: String) {
         binding?.textFieldSbmProductNumber?.run {
             setFirstIcon(imageUrl)
@@ -450,18 +460,18 @@ class SmartBillsAddTelcoFragment : BaseDaggerFragment() {
 
     private fun showInquiryBottomSheet(inquiry: TopupBillsEnquiryData) {
         val attribute = inquiry.enquiry.attributes
-        val inquiryBottomSheet = AddSmartBillsInquiryBottomSheet(object : AddSmartBillsInquiryCallBack {
-            override fun onInquiryClicked() {
-                commonTopUpBillsAnalytic.clickAddInquiry(CategoryTelcoType.getCategoryString(categoryId))
-                addBills(attribute.productId.toIntSafely(), attribute.clientNumber)
-            }
+        val inquiryBottomSheet = AddSmartBillsInquiryBottomSheet.newInstance(attribute)
+        inquiryBottomSheet.setCallback(this)
+        inquiryBottomSheet.show(childFragmentManager, "")
+    }
 
-            override fun onInquiryClose() {
-                commonTopUpBillsAnalytic.clickOnCloseInquiry(CategoryTelcoType.getCategoryString(categoryId))
-            }
-        })
-        inquiryBottomSheet.addSBMInquiry(attribute)
-        inquiryBottomSheet.show(requireFragmentManager(), "")
+    override fun onInquiryClicked(attribute: TopupBillsEnquiryAttribute) {
+        commonTopUpBillsAnalytic.clickAddInquiry(CategoryTelcoType.getCategoryString(categoryId))
+        addBills(attribute.productId.toIntSafely(), attribute.clientNumber)
+    }
+
+    override fun onInquiryClose() {
+        commonTopUpBillsAnalytic.clickOnCloseInquiry(CategoryTelcoType.getCategoryString(categoryId))
     }
 
     private fun setErrorNumber(isError: Boolean, message: String) {
@@ -486,16 +496,20 @@ class SmartBillsAddTelcoFragment : BaseDaggerFragment() {
                     textFieldSbmProductNominal.textFieldInput.setText("")
                     selectedProduct = null
                     show()
-                    textFieldWrapper.hint = if (CategoryTelcoType.isCategoryPacketData(categoryId)) {
-                        context?.resources?.getString(R.string.smart_bills_add_bills_packet_data).orEmpty()
-                    } else {
-                        context?.resources?.getString(R.string.smart_bills_add_bills_product_nominal_label).orEmpty()
-                    }
+                    textFieldWrapper.hint = getHint()
                     textFieldInput.ellipsize = TextUtils.TruncateAt.END
                 }
             } else {
                 textFieldSbmProductNominal.hide()
             }
+        }
+    }
+
+    private fun getHint(): String {
+        return if (CategoryTelcoType.isCategoryPacketData(categoryId)) {
+            context?.resources?.getString(R.string.smart_bills_add_bills_packet_data).orEmpty()
+        } else {
+            context?.resources?.getString(R.string.smart_bills_add_bills_product_nominal_label).orEmpty()
         }
     }
 

@@ -28,6 +28,9 @@ class ProductCardsGQLRepository @Inject constructor() : BaseRepository(), Produc
         val componentsListSize = componentItem?.getComponentsItem()?.size ?: 0
         val list = withContext(Dispatchers.Default) {
             when (productComponentName) {
+            ComponentNames.ProductCardColumnList.componentName -> {
+                DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.ProductCardColumnList.componentName, componentProperties, creativeName, parentListSize = componentsListSize, parentSectionId = componentItem?.parentSectionId)
+            }
             ComponentNames.ProductCardRevamp.componentName -> {
                 if (componentProperties?.template == Constant.ProductTemplate.LIST) {
                     DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.MasterProductCardItemList.componentName, componentProperties, creativeName, parentListSize = componentsListSize, parentSectionId = componentItem?.parentSectionId)

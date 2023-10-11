@@ -459,8 +459,8 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
      */
     override fun onProductClick(item: RecommendationItem, layoutType: String?, vararg position: Int) {
         try {
-            if(recommendationViewModel.isLoggedIn()) SimilarProductRecommendationTracking.eventClick(item, item.position.toString(), ref, internalRef)
-            else SimilarProductRecommendationTracking.eventClickNonLogin(item, item.position.toString(), ref, internalRef)
+            if(recommendationViewModel.isLoggedIn()) SimilarProductRecommendationTracking.eventClick(item, item.position.toString(), ref, internalRef, recommendationViewModel.userId())
+            else SimilarProductRecommendationTracking.eventClickNonLogin(item, item.position.toString(), ref, internalRef, recommendationViewModel.userId())
             RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, item.productId.toString()).run {
                 putExtra(PDP_EXTRA_UPDATED_POSITION, position.first())
                 startActivityForResult(this, REQUEST_FROM_PDP)
@@ -477,8 +477,8 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
      */
     override fun onProductImpression(item: RecommendationItem) {
         trackingQueue?.let { trackingQueue ->
-            if(recommendationViewModel.isLoggedIn()) SimilarProductRecommendationTracking.eventImpression(trackingQueue, item, item.position.toString(), ref, internalRef)
-            else SimilarProductRecommendationTracking.eventImpressionNonLogin(trackingQueue, item, item.position.toString(), ref, internalRef)
+            if(recommendationViewModel.isLoggedIn()) SimilarProductRecommendationTracking.eventImpression(trackingQueue, item, item.position.toString(), ref, internalRef, recommendationViewModel.userId())
+            else SimilarProductRecommendationTracking.eventImpressionNonLogin(trackingQueue, item, item.position.toString(), ref, internalRef, recommendationViewModel.userId())
         }
     }
 

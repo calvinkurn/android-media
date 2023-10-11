@@ -88,7 +88,7 @@
         android:layout_gravity="bottom"
         android:layout_alignParentBottom="true"
         app:canReorder="true"
-        app:backgroundColorPlaceHolder="@color/Unify_N0"
+        app:backgroundColorPlaceHolder="@color/Unify_NN0"
         app:placeholder="@drawable/picker_ic_placeholder_media_preview_debug" />
 
 </RelativeLayout>

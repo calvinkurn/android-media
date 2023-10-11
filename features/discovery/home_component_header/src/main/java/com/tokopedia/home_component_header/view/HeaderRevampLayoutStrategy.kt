@@ -3,6 +3,7 @@ package com.tokopedia.home_component_header.view
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.Color
+import android.text.TextUtils
 import android.view.View
 import android.view.ViewStub
 import android.view.animation.Animation
@@ -12,14 +13,18 @@ import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
+import com.tokopedia.home_component_header.R
 import com.tokopedia.home_component_header.model.ChannelHeader
 import com.tokopedia.home_component_header.util.getLink
-import com.tokopedia.home_component_header.R
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.home_component_header.R as home_component_headerR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class HeaderRevampLayoutStrategy : HeaderLayoutStrategy {
     companion object {
@@ -29,6 +34,10 @@ class HeaderRevampLayoutStrategy : HeaderLayoutStrategy {
         private const val ROTATE_FROM_DEGREES = 0f
         private const val ROTATE_DURATION = 500L
     }
+
+    var ctaButtonRevamp: IconUnify? = null
+    var ctaBorder: ImageView? = null
+    var ctaButtonRevampContainer: ConstraintLayout? = null
 
     private val rotateAnimation by lazy {
         RotateAnimation(ROTATE_FROM_DEGREES, ROTATE_TO_DEGREES, Animation.RELATIVE_TO_SELF, PIVOT_X_VALUE, Animation.RELATIVE_TO_SELF, PIVOT_Y_VALUE)
@@ -53,9 +62,6 @@ class HeaderRevampLayoutStrategy : HeaderLayoutStrategy {
         ctaMode: Int?,
         colorMode: Int?
     ) {
-        var ctaButtonRevamp: IconUnify? = null
-        var ctaBorder: ImageView? = null
-        var ctaButtonRevampContainer: ConstraintLayout? = null
         if (hasSeeMoreApplink || ctaMode != HomeChannelHeaderView.CTA_MODE_SEE_ALL) {
             if (stubCtaButton is ViewStub &&
                 !isViewStubHasBeenInflated(stubCtaButton)
@@ -101,6 +107,28 @@ class HeaderRevampLayoutStrategy : HeaderLayoutStrategy {
         }
     }
 
+    override fun renderIconSubtitle(
+        itemView: View,
+        channelHeader: ChannelHeader,
+        stubChannelIconSubtitle: View?
+    ) {
+        val subtitleIcon: ImageView
+        if (hasIconSubtitle(channelHeader)) {
+            if (stubChannelIconSubtitle is ViewStub &&
+                !isViewStubHasBeenInflated(stubChannelIconSubtitle)
+            ) {
+                stubChannelIconSubtitle.inflate().apply {
+                    subtitleIcon = findViewById(R.id.channel_subtitle_icon)
+                }
+            } else {
+                subtitleIcon = itemView.findViewById(R.id.channel_subtitle_icon)
+            }
+            renderIcon(subtitleIcon, channelHeader)
+        } else {
+            stubChannelIconSubtitle?.gone()
+        }
+    }
+
     private fun setCtaIcon(
         context: Context,
         ctaBorder: ImageView?,
@@ -119,16 +147,16 @@ class HeaderRevampLayoutStrategy : HeaderLayoutStrategy {
                 ctaBorder?.loadImage(ContextCompat.getDrawable(context, R.drawable.bg_channel_header_cta))
                 ctaButtonRevamp?.setImage(
                     newIconId = iconId,
-                    newLightEnable = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN900),
-                    newDarkEnable = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+                    newLightEnable = ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN900),
+                    newDarkEnable = ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN950)
                 )
             }
             HomeChannelHeaderView.COLOR_MODE_INVERTED -> {
                 ctaBorder?.loadImage(ContextCompat.getDrawable(context, R.drawable.bg_channel_header_cta_inverted))
                 ctaButtonRevamp?.setImage(
                     newIconId = iconId,
-                    newLightEnable = ContextCompat.getColor(context, com.tokopedia.home_component_header.R.color.dms_header_cta_inverted_icon),
-                    newDarkEnable = ContextCompat.getColor(context, com.tokopedia.home_component_header.R.color.dms_header_cta_inverted_icon)
+                    newLightEnable = home_component_headerR.color.dms_header_cta_inverted_icon,
+                    newDarkEnable = ContextCompat.getColor(context, home_component_headerR.color.dms_header_cta_inverted_icon)
                 )
             }
         }
@@ -142,11 +170,11 @@ class HeaderRevampLayoutStrategy : HeaderLayoutStrategy {
     ) {
         channelTitle?.setTextColor(
             if (headerColorMode == HomeChannelHeaderView.COLOR_MODE_INVERTED) {
-                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
+                ContextCompat.getColor(context, unifyprinciplesR.color.Unify_Static_White)
             } else if (channelHeader.textColor.isNotEmpty()) {
                 Color.parseColor(channelHeader.textColor).staticIfDarkMode(context)
             } else {
-                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+                ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN950)
             }
         )
     }
@@ -157,15 +185,20 @@ class HeaderRevampLayoutStrategy : HeaderLayoutStrategy {
         channelSubtitle: Typography?,
         headerColorMode: Int?
     ) {
-        channelSubtitle?.setTextColor(
-            if (headerColorMode == HomeChannelHeaderView.COLOR_MODE_INVERTED) {
-                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
-            } else if (channelHeader.textColor.isNotEmpty()) {
-                Color.parseColor(channelHeader.textColor).staticIfDarkMode(context)
-            } else {
-                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN600)
-            }
-        )
+        if (hasSubtitle(channelHeader)) {
+            channelSubtitle?.visible()
+            channelSubtitle?.setTextColor(
+                if (headerColorMode == HomeChannelHeaderView.COLOR_MODE_INVERTED) {
+                    ContextCompat.getColor(context, unifyprinciplesR.color.Unify_Static_White)
+                } else if (channelHeader.textColor.isNotEmpty()) {
+                    Color.parseColor(channelHeader.textColor).staticIfDarkMode(context)
+                } else {
+                    ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN600)
+                }
+            )
+        } else {
+            channelSubtitle?.gone()
+        }
     }
 
     /**
@@ -217,5 +250,22 @@ class HeaderRevampLayoutStrategy : HeaderLayoutStrategy {
         resources: Resources
     ) {
         channelHeaderContainer.setPadding(channelHeaderContainer.paddingLeft, channelHeaderContainer.paddingTop, channelHeaderContainer.paddingRight, resources.getDimensionPixelSize(R.dimen.home_channel_header_bottom_padding))
+    }
+
+    private fun hasIconSubtitle(channelHeader: ChannelHeader): Boolean {
+        return !TextUtils.isEmpty(channelHeader.iconSubtitleUrl)
+    }
+
+    private fun hasSubtitle(channelHeader: ChannelHeader): Boolean {
+        return !TextUtils.isEmpty(channelHeader.subtitle)
+    }
+
+    private fun renderIcon(channelIconSubtitle: ImageView, channelHeader: ChannelHeader) {
+        if (channelHeader.subtitle.isNotEmpty() && channelHeader.iconSubtitleUrl.isNotEmpty()) {
+            channelIconSubtitle.loadImage(channelHeader.iconSubtitleUrl)
+            channelIconSubtitle.visible()
+        } else {
+            channelIconSubtitle.gone()
+        }
     }
 }

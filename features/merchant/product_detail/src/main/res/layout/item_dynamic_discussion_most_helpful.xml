@@ -7,7 +7,7 @@
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/talk_top_separator"
         android:layout_width="match_parent"
-        android:layout_height="2dp"
+        android:layout_height="@dimen/thick_divider_height_component"
         app:layout_constraintTop_toTopOf="parent"/>
 
     <com.tokopedia.unifyprinciples.Typography
@@ -37,7 +37,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/product_detail_discussion_see_all"
-        android:textColor="@color/Unify_G500"
+        android:textColor="@color/Unify_GN500"
         android:visibility="gone"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"

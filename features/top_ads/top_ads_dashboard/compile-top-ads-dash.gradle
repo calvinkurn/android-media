@@ -7,7 +7,6 @@ include 'libraries:analytics'
 include 'libraries:applink'
 include 'libraries:base_list'
 include 'libraries:inappupdate'
-include 'libraries:kotlin_extensions'
 include 'libraries:play_core'
 include 'libraries:promotions_target'
 include 'libraries:remote_config'
@@ -54,7 +53,6 @@ include "features:payment:common_payment"
 include "features:merchant:reputation_common"
 include "features:merchant:product_manage_common"
 include "features:logistic:logisticdata"
-include "features:discovery:category_common"
 include "libraries:fingerprint"
 include "features:user:fcm_common"
 include "libraries:iris"

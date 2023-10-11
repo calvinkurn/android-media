@@ -265,7 +265,7 @@ class ExplicitView constructor(
                 override fun updateDrawState(ds: TextPaint) {
                     ds.color = MethodChecker.getColor(
                         context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_G500
+                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
                     )
                     ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
                 }

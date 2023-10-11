@@ -54,14 +54,8 @@
     <!--Multiple Like-->
     <dimen name="play_like_bubble_original_size">12dp</dimen>
 
-    <!--Partner Info-->
-    <dimen name="play_follow_button_width">56dp</dimen>
-
     <!--Featured Product-->
     <dimen name="play_featured_product_radius">8dp</dimen>
-
-    <!--User Report-->
-    <dimen name="play_user_report_list_divider_height">0.5dp</dimen>
 
     <!--General Dimension-->
     <dimen name="play_offset_6">6dp</dimen>

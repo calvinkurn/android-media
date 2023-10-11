@@ -1,7 +1,6 @@
 package com.tokopedia.topchat.stub.chatlist.di.module
 
 import android.content.Context
-import android.content.SharedPreferences
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
@@ -9,7 +8,9 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.iris.util.Session
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.topchat.FakeTopchatCacheManager
 import com.tokopedia.topchat.common.di.qualifier.TopchatContext
+import com.tokopedia.topchat.common.network.TopchatCacheManager
 import com.tokopedia.topchat.stub.common.UserSessionStub
 import com.tokopedia.topchat.stub.fake.FakeIrisSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -34,8 +35,8 @@ class ChatListModuleStub {
 
     @ActivityScope
     @Provides
-    internal fun provideTopchatSharedPrefs(@TopchatContext context: Context): SharedPreferences {
-        return context.getSharedPreferences("topchat_prefs", Context.MODE_PRIVATE)
+    fun provideTopchatCacheManager(): TopchatCacheManager {
+        return FakeTopchatCacheManager()
     }
 
     @ActivityScope

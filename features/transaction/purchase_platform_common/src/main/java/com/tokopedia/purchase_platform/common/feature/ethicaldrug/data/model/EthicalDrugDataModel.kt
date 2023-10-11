@@ -5,7 +5,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class EthicalDrugDataModel(
-    var needPrescription: Boolean = false,
-    var iconUrl: String = "",
-    var text: String = ""
+    val needPrescription: Boolean = false,
+    val iconUrl: String = "",
+    val text: String = ""
 ) : Parcelable

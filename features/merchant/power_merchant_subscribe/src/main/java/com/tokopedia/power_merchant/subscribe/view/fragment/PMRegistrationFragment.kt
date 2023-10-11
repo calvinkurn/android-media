@@ -13,7 +13,6 @@ import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.data.source.local.model.PMShopInfoUiModel
 import com.tokopedia.gm.common.presentation.model.ShopLevelUiModel
 import com.tokopedia.gm.common.presentation.view.bottomsheet.BottomSheetShopTooltipLevel
-import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
@@ -68,10 +67,13 @@ class PMRegistrationFragment : PowerMerchantSubscriptionFragment() {
         observe(sharedViewModel.powerMerchantBasicInfo) {
             when (it) {
                 is Success -> {
+                    showRegistrationFragment()
+                    reSetupFooterView()
                     initBasicInfo(it.data)
                     renderPmRegistrationWidgets()
                 }
                 is Fail -> {
+                    hideFooterView()
                     showErrorState(it.throwable)
                     logToCrashlytic(
                         PowerMerchantErrorLogger.PM_BASIC_INFO_ERROR,

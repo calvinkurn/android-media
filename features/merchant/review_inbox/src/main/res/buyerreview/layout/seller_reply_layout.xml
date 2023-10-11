@@ -37,7 +37,7 @@
             android:lineSpacingExtra="3sp"
             android:padding="@dimen/dp_10"
             android:text="@string/see_reply"
-            android:textColor="@color/Unify_N700_44"
+            android:textColor="@color/Unify_NN950_44"
             android:visibility="invisible"
             tools:visibility="visible"
             app:typographyType="body_3"
@@ -48,7 +48,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_half"
             android:layout_alignParentBottom="true"
-            android:background="@color/Unify_N100"/>
+            android:background="@color/Unify_NN200"/>
 
     </RelativeLayout>
 
@@ -72,14 +72,14 @@
             android:layout_marginEnd="@dimen/dp_5"
             android:contentDescription="@null"
             app:icon_name="MENU_KEBAB_VERTICAL"
-            app:icon_color_light_enable="@color/Unify_N700_96"/>
+            app:icon_color_light_enable="@color/Unify_NN950_96"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/seller_reply_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:lineSpacingExtra="7sp"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             app:typographyType="body_3"
             tools:text="Oleh Pretty Sugar Shop"
             />
@@ -98,7 +98,7 @@
             android:paddingRight="@dimen/dp_10"
             android:paddingLeft="@dimen/dp_10"
             android:text="@string/seller"
-            android:textColor="@color/Unify_G400"
+            android:textColor="@color/Unify_GN500"
             android:textStyle="normal"
             app:typographyWeight="bold"
             app:typographyType="body_3"
@@ -116,7 +116,7 @@
             android:lineSpacingExtra="4sp"
             android:paddingTop="@dimen/dp_2"
             android:paddingBottom="@dimen/dp_2"
-            android:textColor="@color/Unify_N700_44"
+            android:textColor="@color/Unify_NN950_44"
             tools:text="31 Jul 2016, pukul 11:48"
             app:typographyType="body_3"
             />
@@ -135,7 +135,7 @@
             android:focusable="true"
             android:longClickable="true"
             android:fontFamily="sans-serif"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             app:typographyType="body_3"
             tools:text="Terima kasih sudah mempercayai toko kami. Silahkan melihat-lihat produk” lainnya yang tersedia di toko kami."
             />
@@ -145,5 +145,5 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_half"
         android:layout_alignParentBottom="true"
-        android:background="@color/Unify_N100"/>
+        android:background="@color/Unify_NN200"/>
 </RelativeLayout>

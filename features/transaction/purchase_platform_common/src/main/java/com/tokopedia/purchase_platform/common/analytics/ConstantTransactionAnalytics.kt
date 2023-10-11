@@ -18,6 +18,7 @@ object ConstantTransactionAnalytics {
         const val PROMO_CODE = "promo_code"
         const val BRAND = "brand"
         const val CATEGORY = "category"
+        const val CATEGORY_ID = "category_id"
         const val PRICE = "price"
         const val QUANTITY = "quantity"
         const val SHOP_ID = "shop_id"
@@ -29,6 +30,8 @@ object ConstantTransactionAnalytics {
         const val DIMENSION40 = "dimension40"
         const val ITEM_ID = "item_id"
         const val ITEM_NAME = "item_name"
+        const val ITEM_VARIANT = "item_variant"
+        const val ITEM_BRAND = "item_brand"
     }
 
     object EventName {
@@ -74,6 +77,9 @@ object ConstantTransactionAnalytics {
         const val VIEW_PP_IRIS = "viewPPIris"
         const val CLICK_CX = "clickCX"
         const val SELECT_CONTENT = "select_content"
+        const val REMOVE_FROM_CART_V2 = "remove_from_cart"
+        const val CLICK_PG = "clickPG"
+        const val VIEW_PG_IRIS = "viewPGIris"
     }
 
     object EventCategory {
@@ -356,7 +362,6 @@ object ConstantTransactionAnalytics {
         const val VIEW_ERROR_PAGE_WHEN_LOAD_CART = "view error page when load cart"
         const val CLICK_WISHLIST_ICON_IN_CART_PAGE = "click wishlist icon in cart page"
         const val CLICK_FOLLOW_SHOP_ON_UNAVAILABLE_SECTION = "click follow shop on unavailable section"
-        const val CLICK_BACK_BUTTON_NAV = "click back button nav"
         const val CLICK_GLOBAL_MENU_NAV = "click global menu nav"
 
         // Checkout TokoNow
@@ -402,6 +407,22 @@ object ConstantTransactionAnalytics {
         // Platform Fee
         const val CLICK_INFO_BUTTON_IN_PLATFORM_FEE = "click info button in platform fee"
         const val VIEW_PLATFORM_FEE_IN_CHECKOUT_PAGE = "view platform fee in checkout page"
+
+        // Add Ons Product Service
+        const val VIEW_ADD_ONS_PRODUCT_WIDGET = "view addons product widget"
+        const val CLICK_ADD_ONS_PRODUCT_WIDGET = "click addons product widget"
+        const val CLICK_LIHAT_SEMUA_ON_ADDONS_PRODUCT_WIDGET = "click lihat semua on addons product widget"
+
+        // Cart Revamp
+        const val CLICK_SIMPAN_ON_NOTE_BOTTOMSHEET = "click simpan on note bottomsheet"
+        const val CLICK_NOTE_ICON = "click note icon"
+        const val CLICK_BUTTON_MIN_TO_DELETE_CART = "click button - to delete cart"
+        const val IMPRESSION_CART = "impression cart"
+
+        // BMGM
+        const val CLICK_SNK_BMGM = "click snk bmgm"
+        const val CLICK_BMGM_RECOMMENDATION = "click bmgm recommendation"
+        const val IMPRESSION_BMGM_RECOMMENDATION = "impression bmgm recommendation"
     }
 
     object EventLabel {
@@ -454,6 +475,10 @@ object ConstantTransactionAnalytics {
         const val BUNDLE_TYPE_SINGLE = "single"
         const val BUNDLE_TYPE_MULTIPLE = "multiple"
         const val CART_BUNDLING_BOTTOM_SHEET_BUNDLE_LIST_NAME = "/cart - bundling"
+
+        // Cart Checkout Revamp
+        const val NOTE_SIMPAN = "simpan"
+        const val NOTE_EDIT = "edit"
     }
 
     object ExtraKey {
@@ -473,6 +498,7 @@ object ConstantTransactionAnalytics {
         const val TRACKER_ID = "trackerId"
         const val PROMOTIONS = "promotions"
         const val PLATFORM_FEE = "platformFee"
+        const val ITEMS = "items"
     }
 
     object ScreenName {
@@ -496,6 +522,7 @@ object ConstantTransactionAnalytics {
         const val DIMENSION_BUSINESS_UNIT_HOME_BROWSE = "home & browse"
         const val DIMENSION_BUSINESS_UNIT_FINTECH = "fintech"
         const val DIMENSION_BUSINESS_UNIT_PROMO = "promo"
+        const val DIMENSION_SESSION_IRIS = "sessionIris"
     }
 
     object TrackerId {
@@ -512,6 +539,12 @@ object ConstantTransactionAnalytics {
         const val CLICK_BAYAR_OCC = "15570"
         const val CLICK_INSURANCE_INFO_TOOLTIP = "36048"
 
+        const val STEP_0_VIEW_CART_PAGE = "15458"
+        const val STEP_1_CART_PAGE_LOADED = "15454"
+        const val STEP_2_CHECKOUT_PAGE_LOADED = "15455"
+        const val STEP_3_CLICK_ALL_COURIER_SELECTED = "15456"
+        const val STEP_4_CLICK_PAYMENT_OPTION_BUTTON = "15457"
+
         // Cart Bundling Bottom Sheet
         const val IMPRESSION_CART_BUNDLING_BOTTOM_SHEET_BUNDLE = "41253"
         const val CLICK_CART_BUNDLING_BOTTOM_SHEET_BUNDLE_WIDGET_ACTION = "41254"
@@ -522,5 +555,32 @@ object ConstantTransactionAnalytics {
         // Platform Fee
         const val CLICK_INFO_BUTTON_IN_PLATFORM_FEE = "43346"
         const val VIEW_PLATFORM_FEE_IN_CHECKOUT_PAGE = "43710"
+
+        // AddOns Product Service
+        const val VIEW_ADDONS_PRODUCT_WIDGET = "45171"
+        const val CLICK_ADDONS_PRODUCT_WIDGET = "45173"
+        const val CLICK_LIHAT_SEMUA_ADDONS_PRODUCT_WIDGET = "45174"
+        const val VIEW_ADDONS_PRODUCT_WIDGET_CART = "45176"
+        const val CLICK_ADDONS_PRODUCT_WIDGET_CART = "45177"
+        const val VIEW_ADDONS_PRODUCT_WIDGET_OCC = "45322"
+        const val CLICK_ADDONS_PRODUCT_WIDGET_OCC = "45323"
+        const val CLICK_LIHAT_SEMUA_ADDONS_PRODUCT_WIDGET_OCC = "45324"
+
+        // Gopay Cicil
+        const val IMPRESSION_PROMO_ACTIVATED_GOPAY_CICIL = "45451"
+        const val CLICK_ACTIVATED_GOPAY_CICIL = "45453"
+        const val IMPRESSION_ELIGIBLE_PROMO_SECTION_GOPAY_CICIL = "45454"
+        const val IMPRESSION_INELIGIBLE_PROMO_SECTION_GOPAY_CICIL_PROMO_VALIDATION = "45456"
+
+        // Cart Revamp
+        const val CLICK_SIMPAN_ON_NOTE_BOTTOMSHEET = "46928"
+        const val CLICK_NOTE_ICON = "46929"
+        const val IMPRESSION_CART = "46932"
+        const val CLICK_BUTTON_MIN_TO_DELETE_CART = "46933"
+
+        // BMGM
+        const val CLICK_SNK_BMGM = "46781"
+        const val CLICK_BMGM_RECOMMENDATION = "47209"
+        const val VIEW_BMGM_RECOMMENDATION = "47208"
     }
 }

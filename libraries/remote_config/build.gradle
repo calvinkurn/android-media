@@ -13,6 +13,11 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.remoteconfig'
+    testNamespace 'com.tokopedia.remoteconfig.test'
+}
+
 dependencies {
     implementation rootProject.ext.firebase.config
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig

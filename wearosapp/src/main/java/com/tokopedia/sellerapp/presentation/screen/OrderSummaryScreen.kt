@@ -113,7 +113,7 @@ fun CreateOrderQuantity(totalOrder: Int) {
         ),
         factory = {
             Typography(it).apply {
-                setTextColor(it.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                setTextColor(it.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN0))
                 text = totalOrder.toString()
                 textSize = 30.0f
             }
@@ -129,7 +129,7 @@ private fun CreateOrderTitle(title: String) {
     AndroidView(
         factory = {
             Typography(it).apply {
-                setTextColor(it.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                setTextColor(it.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN0))
                 text = title
             }
         }, update = {

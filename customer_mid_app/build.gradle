@@ -16,6 +16,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.customer_mid_app'
+    testNamespace 'com.tokopedia.customer_mid_app.test'
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
 
@@ -52,7 +54,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.kolCommon)
     implementation projectOrAar(rootProject.ext.features.home)
     implementation projectOrAar(rootProject.ext.features.commonWallet)
-    implementation projectOrAar(rootProject.ext.features.variantCommon)
     implementation projectOrAar(rootProject.ext.features.recommendationWidgetCommon)
     implementation projectOrAar(rootProject.ext.features.topAdsSdk)
     implementation projectOrAar(rootProject.ext.features.reputationCommon)
@@ -76,7 +77,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.promoCheckout)
     implementation projectOrAar(rootProject.ext.features.loyaltyCommon)
     implementation projectOrAar(rootProject.ext.features.promoCheckoutCommon)
-    implementation projectOrAar(rootProject.ext.features.categoryCommon)
     implementation projectOrAar(rootProject.ext.features.playCommon)
     implementation projectOrAar(rootProject.ext.features.productShare)
     implementation projectOrAar(rootProject.ext.libraries.irisSession)
@@ -96,7 +96,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.tokopointsNotification)
     implementation projectOrAar(rootProject.ext.libraries.collapsingTabLayout)
     implementation projectOrAar(rootProject.ext.libraries.websocket)
-    implementation projectOrAar(rootProject.ext.libraries.tokopatch)
     implementation projectOrAar(rootProject.ext.libraries.baseAdapter)
     implementation projectOrAar(rootProject.ext.features.csat_rating)
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
@@ -115,6 +114,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticFirebaseRules
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticParam
     implementation rootProject.ext.composeDependencies.composeActivity
+    implementation rootProject.ext.composeDependencies.composeConstraint
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.nestComponents
     implementation rootProject.ext.unifyDependencies.icons
@@ -158,7 +158,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.commonTravel)
     implementation projectOrAar(rootProject.ext.features.commonEntertainment)
     implementation projectOrAar(rootProject.ext.features.payment)
-    implementation projectOrAar(rootProject.ext.features.thankYouNative)
     implementation projectOrAar(rootProject.ext.features.pdpPaylaterWidget)
     implementation projectOrAar(rootProject.ext.features.explore)
     implementation projectOrAar(rootProject.ext.features.loyalty)
@@ -181,6 +180,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.attachproduct)
     implementation projectOrAar(rootProject.ext.features.basemvvm)
     implementation projectOrAar(rootProject.ext.features.loginregister)
+    implementation projectOrAar(rootProject.ext.features.accountlinking)
     implementation projectOrAar(rootProject.ext.features.homeAccountUser)
     implementation projectOrAar(rootProject.ext.features.logout)
     implementation projectOrAar(rootProject.ext.features.chooseaccount)
@@ -195,6 +195,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.mediauploader)
     implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation projectOrAar(rootProject.ext.features.mediapickerCommon)
+    implementation projectOrAar(rootProject.ext.features.commonEPharmacy)
     implementation projectOrAar(rootProject.ext.libraries.oms)
     implementation projectOrAar(rootProject.ext.libraries.fingerprint)
     implementation projectOrAar(rootProject.ext.libraries.imagePickerCommon)
@@ -205,13 +206,13 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.coreNetwork)
     implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
     implementation projectOrAar(rootProject.ext.libraries.utils)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.devMonitoringTools)
     implementation projectOrAar(rootProject.ext.features.reviewCommon)
     implementation projectOrAar(rootProject.ext.features.reviewInbox)
     implementation projectOrAar(rootProject.ext.features.inboxCommon)
     implementation projectOrAar(rootProject.ext.features.shopCommon)
     implementation projectOrAar(rootProject.ext.features.shopAdminCommon)
+    implementation projectOrAar(rootProject.ext.features.orderManagementCommon)
     implementation projectOrAar(rootProject.ext.features.youtubeCommon)
     implementation projectOrAar(rootProject.ext.features.merchantVoucher)
     implementation projectOrAar(rootProject.ext.features.navigationCommon)
@@ -238,6 +239,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.keys)
     implementation projectOrAar(rootProject.ext.libraries.encryption)
     implementation projectOrAar(rootProject.ext.features.agerestriction)
+    implementation projectOrAar(rootProject.ext.features.scpRewardsCommon)
+    implementation projectOrAar(rootProject.ext.features.scpRewardsWidgets)
     if (rootProject.ext.debugToolsEnabled) {
         implementation projectOrAar(rootProject.ext.features.developerOptions)
     } else {
@@ -274,6 +277,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.playServicesDependencies.measurementApi
+    implementation projectOrAar(rootProject.ext.libraries.youtubePlayer)
 
     // lint checks
     lintChecks rootProject.ext.tkpdInternalLibDependencies.lint
@@ -300,7 +304,6 @@ dependencies {
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
     implementation rootProject.ext.firebase.config
     implementation rootProject.ext.firebase.messaging
-    implementation rootProject.ext.firebase.auth
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation (rootProject.ext.firebase.crashlytics) {
         transitive = true

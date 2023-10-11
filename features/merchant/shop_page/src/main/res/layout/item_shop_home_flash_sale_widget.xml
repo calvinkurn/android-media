@@ -51,20 +51,17 @@
         app:layout_constraintBottom_toBottomOf="@id/tgp_flash_sale_timer_desc"
         app:timer_unify_single_variant="main" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tgp_cta_see_all"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icon_cta_chevron"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:layout_marginEnd="16dp"
-        android:visibility="gone"
-        android:text="@string/shop_page_label_see_all"
-        android:textColor="@color/Unify_G500"
+        app:icon_name="CHEVRON_RIGHT"
+        android:visibility="visible"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="@id/tus_flash_sale_timer"
-        app:layout_constraintTop_toTopOf="@id/tus_flash_sale_timer"
-        app:layout_constraintVertical_bias="0.318"
-        app:typographyType="body_3"
-        app:typographyWeight="bold" />
+        app:layout_constraintTop_toTopOf="@id/tgp_flash_sale_campaign_name"
+        app:layout_constraintVertical_bias="0.5" />
 
     <com.tokopedia.unifycomponents.CardUnify2
         android:id="@+id/flash_sale_reminder_view"
@@ -97,7 +94,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN950_68"
                 app:layout_constraintBottom_toBottomOf="@id/iv_remind_me_bell"
                 app:layout_constraintLeft_toRightOf="@id/iv_remind_me_bell"
                 app:layout_constraintTop_toTopOf="@id/iv_remind_me_bell"
@@ -109,7 +106,7 @@
 
     </com.tokopedia.unifycomponents.CardUnify2>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <FrameLayout
         android:id="@+id/rv_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -117,48 +114,55 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tgp_flash_sale_timer_desc">
 
-        <View
-            android:id="@+id/bg_multiple"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/bg_container"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:visibility="gone"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintVertical_bias="0" />
+            android:layout_height="match_parent">
 
-        <View
-            android:id="@+id/bg_single"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            <View
+                android:id="@+id/bg_multiple"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <View
-            android:id="@+id/bg_double"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:visibility="gone"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            <View
+                android:id="@+id/bg_single"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <View
+                android:id="@+id/bg_double"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_flash_sale_product_carousel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
             android:clipToPadding="false"
             android:paddingStart="12dp"
             android:paddingEnd="12dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginBottom="2dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+    </FrameLayout>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

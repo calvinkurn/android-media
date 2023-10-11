@@ -21,8 +21,6 @@ import com.tokopedia.review.feature.createreputation.presentation.bottomsheet.Cr
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.visitable.CreateReviewTemplateItemUiModel
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewTemplateUiState
 import com.tokopedia.review.feature.createreputation.presentation.viewholder.CreateReviewTemplateItemViewHolder
-import kotlin.coroutines.Continuation
-import kotlin.coroutines.resume
 
 class CreateReviewTemplate @JvmOverloads constructor(
     context: Context,
@@ -61,24 +59,18 @@ class CreateReviewTemplate @JvmOverloads constructor(
         layoutManager.spanCount = if (adapter.itemCount > 1) 2 else 1
     }
 
-    fun updateUi(uiState: CreateReviewTemplateUiState, continuation: Continuation<Unit>) {
+    fun updateUi(uiState: CreateReviewTemplateUiState) {
         when (uiState) {
             is CreateReviewTemplateUiState.Loading -> {
                 showLoading()
-                animateShow(onAnimationEnd = {
-                    continuation.resume(Unit)
-                })
+                animateShow()
             }
             is CreateReviewTemplateUiState.Showing -> {
                 showTemplate(uiState.templates)
-                animateShow(onAnimationEnd = {
-                    continuation.resume(Unit)
-                })
+                animateShow()
             }
             is CreateReviewTemplateUiState.Hidden -> {
-                animateHide(onAnimationEnd = {
-                    continuation.resume(Unit)
-                })
+                animateHide()
             }
         }
     }

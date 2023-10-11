@@ -50,7 +50,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:typographyType="display_3"
-            android:textColor="@color/Unify_N700"
+            android:textColor="@color/Unify_NN950"
             tools:text="Rp350.000 atau 0-2 produk terjual"/>
 
 

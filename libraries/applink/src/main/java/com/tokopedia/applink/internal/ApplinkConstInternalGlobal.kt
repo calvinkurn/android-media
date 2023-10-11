@@ -116,6 +116,8 @@ object ApplinkConstInternalGlobal {
     const val WEBVIEW_DOWNLOAD = "$INTERNAL_GLOBAL/webviewdownload"
     const val WEBVIEW_BACK_HOME = "$INTERNAL_GLOBAL/webviewbackhome"
 
+    const val YOUTUBE_PLAYER = "$INTERNAL_GLOBAL/youtube-player/{video_id}/"
+
     const val IMAGE_PICKER = "$INTERNAL_GLOBAL/image-picker"
     const val IMAGE_PICKER_V2 = "$INTERNAL_GLOBAL/image-picker/v2/"
     const val USER_PROFILE_LANDING = "$INTERNAL_GLOBAL/people/"
@@ -180,7 +182,6 @@ object ApplinkConstInternalGlobal {
     // applink, if provided will launch the applink after the module is installed
     // imageUrl, is the placeholder for the background
     const val DYNAMIC_FEATURE_INSTALL= DYNAMIC_FEATURE_INSTALL_BASE + "{module}/?" +
-        "dfname={moduleTranslate}&" +
         "dfapplink={encodedApplink}&" +
         DFFALLBACKURL_KEY +"={fallbackUrl}"
 
@@ -242,6 +243,8 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/global-sharing
     const val GLOBAL_SHARING = "$INTERNAL_GLOBAL/sharing?text={text}&image={image}&type={type}"
 
+    const val SHARE_NOT_FOUND = "$INTERNAL_GLOBAL/sharing-not-found"
+
     //TkpdYoutubeVideoActivity
     const val YOUTUBE_VIDEO = "$INTERNAL_GLOBAL/youtube-video"
 
@@ -252,4 +255,15 @@ object ApplinkConstInternalGlobal {
 
     //LoginHelperActivity
     const val LOGIN_HELPER = "$INTERNAL_GLOBAL/login-helper"
+
+    //LoginHelperAccountSettingsActivity
+    const val LOGIN_HELPER_ACCOUNTS_SETTINGS = "$INTERNAL_GLOBAL/login-helper-accounts-settings"
+
+    //LoginHelperAddEditAccountActivity
+    const val LOGIN_HELPER_ADD_EDIT_ACCOUNT = "$INTERNAL_GLOBAL/login-helper-add-edit-account"
+
+    //LoginHelperSearchActivity
+    const val LOGIN_HELPER_SEARCH_ACCOUNT = "$INTERNAL_GLOBAL/login-helper-search-account"
+
+    const val BMGM_MINI_CART = "$INTERNAL_GLOBAL/bmgm-mini-cart"
 }

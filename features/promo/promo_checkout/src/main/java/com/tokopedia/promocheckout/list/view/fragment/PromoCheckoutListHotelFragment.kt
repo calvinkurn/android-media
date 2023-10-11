@@ -33,7 +33,7 @@ class PromoCheckoutListHotelFragment : PromoCheckoutListDigitalFragment(), Promo
     override fun onPromoCodeUse(promoCode: String) {
         context?.run {
             if (promoCode.isNotEmpty()) {
-                promoCheckoutListHotelPresenter.checkPromoCode(cartID, promoCode, ColorUtil.getColorFromResToString(this, com.tokopedia.unifyprinciples.R.color.Unify_G200))
+                promoCheckoutListHotelPresenter.checkPromoCode(cartID, promoCode, ColorUtil.getColorFromResToString(this, com.tokopedia.unifyprinciples.R.color.Unify_GN100))
                 hotelPromoCheckoutAnalytics.hotelApplyPromo(this, promoCode, HotelPromoCheckoutAnalytics.HOTEL_BOOKING_SCREEN_NAME)
             }
         }

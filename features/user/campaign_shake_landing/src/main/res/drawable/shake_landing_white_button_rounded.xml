@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android" android:dither="true" android:shape="rectangle">
-    <solid android:color="@color/Unify_N0"/>
+    <solid android:color="@color/Unify_NN0"/>
     <corners android:radius="@dimen/shake_landing_dp_3"/>
     <padding android:bottom="@dimen/spacing_lvl3" android:left="@dimen/spacing_lvl3" android:right="@dimen/spacing_lvl3" android:top="@dimen/spacing_lvl3"/>
-    <stroke android:color="@color/Unify_N700_32" android:width="1px"/>
+    <stroke android:color="@color/Unify_NN950_32" android:width="1px"/>
 </shape>

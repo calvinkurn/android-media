@@ -1,5 +1,6 @@
 package com.tokopedia.navigation_common.listener;
 
+import com.tokopedia.analytics.performance.perf.BlocksPerformanceTrace;
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface;
 
 /**
@@ -9,4 +10,6 @@ public interface HomePerformanceMonitoringListener {
     void startHomePerformanceMonitoring();
     void stopHomePerformanceMonitoring(boolean isCache);
     PageLoadTimePerformanceInterface getPageLoadTimePerformanceInterface();
+
+    BlocksPerformanceTrace getBlocksPerformanceMonitoring();
 }

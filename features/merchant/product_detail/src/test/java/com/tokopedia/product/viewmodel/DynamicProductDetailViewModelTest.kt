@@ -22,6 +22,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirProduct
+import com.tokopedia.product.detail.common.data.model.carttype.AvailableButton
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.pdplayout.BasicInfo
 import com.tokopedia.product.detail.common.data.model.pdplayout.ComponentData
@@ -35,7 +36,6 @@ import com.tokopedia.product.detail.common.data.model.rates.TokoNowParam
 import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product.detail.common.data.model.re.RestrictionData
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
-import com.tokopedia.product.detail.common.data.model.variant.Variant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 import com.tokopedia.product.detail.data.model.ProductInfoP2Login
 import com.tokopedia.product.detail.data.model.ProductInfoP2Other
@@ -55,6 +55,7 @@ import com.tokopedia.product.util.ProductDetailTestUtil
 import com.tokopedia.product.util.ProductDetailTestUtil.generateMiniCartMock
 import com.tokopedia.product.util.ProductDetailTestUtil.generateNotifyMeMock
 import com.tokopedia.product.util.ProductDetailTestUtil.getMockP2Data
+import com.tokopedia.product.util.ProductDetailTestUtil.getMockPdpLayout
 import com.tokopedia.product.util.getOrAwaitValue
 import com.tokopedia.recommendation_widget_common.affiliate.RecommendationNowAffiliateData
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -68,6 +69,8 @@ import com.tokopedia.topads.sdk.domain.model.TopAdsGetDynamicSlottingDataProduct
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.domain.model.TopadsIsAdsQuery
 import com.tokopedia.topads.sdk.domain.model.TopadsStatus
+import com.tokopedia.universal_sharing.view.model.AffiliateInput
+import com.tokopedia.universal_sharing.view.model.GenerateAffiliateLinkEligibility
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -89,12 +92,12 @@ import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.mockito.Matchers.anyString
 import rx.Observable
-import java.util.concurrent.TimeoutException
 
 @ExperimentalCoroutinesApi
 open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
@@ -342,6 +345,102 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         viewModel.updateDynamicProductInfoData(DynamicProductInfoP1())
 
         Assert.assertNotNull(viewModel.getDynamicProductInfoP1)
+    }
+    // endregion
+
+    // region partial action button
+    @Test
+    fun `hide floating button is false when p2data error`() = with(spykViewModel) {
+        every { p2Data.value?.cartRedirection } returns null
+        assertFalse(shouldHideFloatingButton())
+
+        every { p2Data.value } returns null
+        assertFalse(shouldHideFloatingButton())
+    }
+
+    @Test
+    fun `hide floating button is false when p1 error`() = with(spykViewModel) {
+        getDynamicProductInfoP1 = null
+        every { isShopOwner() } returns false
+        every { p2Data.value } returns ProductInfoP2UiData()
+        assertFalse(shouldHideFloatingButton())
+    }
+
+    @Test
+    fun `hide floating button is false when get pid in cartRedirection is error`() = with(spykViewModel) {
+        getDynamicProductInfoP1 = DynamicProductInfoP1(basic = BasicInfo(productID = "123"))
+        every { isShopOwner() } returns false
+        every { p2Data.value } returns ProductInfoP2UiData()
+
+        assertFalse(shouldHideFloatingButton())
+    }
+
+    @Test
+    fun `hide floating button is false when shouldHideFloatingButtonInPdp return false`() = with(spykViewModel) {
+        val pid = "123"
+        val oneOverrideButton = listOf(AvailableButton())
+        getDynamicProductInfoP1 = DynamicProductInfoP1(basic = BasicInfo(productID = pid))
+
+        every { isShopOwner() } returns false
+        // owner false, hide false, override empty
+        every { p2Data.value } returns ProductInfoP2UiData(
+            cartRedirection = mapOf(pid to CartTypeData())
+        )
+        assertFalse(shouldHideFloatingButton())
+
+        // owner false, hide false, override !empty
+        every { p2Data.value } returns ProductInfoP2UiData(
+            cartRedirection = mapOf(
+                pid to CartTypeData(overrideButtons = oneOverrideButton)
+            )
+        )
+        assertFalse(shouldHideFloatingButton())
+
+        // owner false, hide true, override !empty
+        every { p2Data.value } returns ProductInfoP2UiData(
+            cartRedirection = mapOf(
+                pid to CartTypeData(hideFloatingButton = true, overrideButtons = oneOverrideButton)
+            )
+        )
+        assertFalse(shouldHideFloatingButton())
+
+        every { isShopOwner() } returns true
+        // owner true, hide true, override empty
+        every { p2Data.value } returns ProductInfoP2UiData(
+            cartRedirection = mapOf(pid to CartTypeData(hideFloatingButton = true))
+        )
+        assertFalse(shouldHideFloatingButton())
+
+        // owner true, hide true, override !empty
+        every { p2Data.value } returns ProductInfoP2UiData(
+            cartRedirection = mapOf(
+                pid to CartTypeData(hideFloatingButton = true, overrideButtons = oneOverrideButton)
+            )
+        )
+        assertFalse(shouldHideFloatingButton())
+
+        // owner true, hide false, override empty
+        every { p2Data.value } returns ProductInfoP2UiData(
+            cartRedirection = mapOf(pid to CartTypeData())
+        )
+        assertFalse(shouldHideFloatingButton())
+
+        // owner true, hide false, override !empty
+        every { p2Data.value } returns ProductInfoP2UiData(
+            cartRedirection = mapOf(pid to CartTypeData(overrideButtons = oneOverrideButton))
+        )
+        assertFalse(shouldHideFloatingButton())
+    }
+
+    @Test
+    fun `hide floating button is true`() = with(spykViewModel) {
+        val pid = "123"
+        getDynamicProductInfoP1 = DynamicProductInfoP1(basic = BasicInfo(productID = pid))
+        every { isShopOwner() } returns false
+        every { p2Data.value } returns ProductInfoP2UiData(
+            cartRedirection = mapOf(pid to CartTypeData(hideFloatingButton = true))
+        )
+        assertTrue(shouldHideFloatingButton())
     }
     //endregion
 
@@ -1015,17 +1114,15 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
     // ======================================PDP SECTION=============================================//
     // ==============================================================================================//
-    /**
-     * GetProductInfoP1
-     */
+    // region GetProductInfoP1
     @Test
     fun `test correct product id parameter pdplayout`() {
-        val dataP1 = ProductDetailTestUtil.getMockPdpLayout()
+        val dataP1 = getMockPdpLayout()
         val productId = "123"
         val productParams = ProductParams(productId, "", "", "", "", "")
         val userLocation = UserLocationRequest("123")
         val tokoNow = TokoNowParam("456", "789", "now15")
-        `co every p1 success`(dataP1)
+        `co every p1 success`(dataP1, getMockP2Data())
 
         coEvery {
             getPdpLayoutUseCase.requestParams
@@ -1043,6 +1140,8 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         )
 
         viewModel.getProductP1(productParams, true, "", userLocationLocal = getUserLocationCache())
+
+        verify { viewModel.onResetAlreadyRecomHit() }
 
         Assert.assertTrue(
             getPdpLayoutUseCase.requestParams.getString(
@@ -1065,14 +1164,14 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
     @Test
     fun `test correct shop domain and shop key parameter pdplayout`() {
-        val dataP1 = ProductDetailTestUtil.getMockPdpLayout()
+        val dataP1 = getMockPdpLayout()
         val shopDomain = "shopYehez"
         val productKey = "productYehez"
         val productParams = ProductParams("", shopDomain, productKey, "", "", "")
         val userLocation = UserLocationRequest("123")
         val tokoNow = TokoNowParam("456", "789", "now15")
 
-        `co every p1 success`(dataP1)
+        `co every p1 success`(dataP1, getMockP2Data())
         coEvery {
             getPdpLayoutUseCase.requestParams
         } returns GetPdpLayoutUseCase.createParams(
@@ -1089,6 +1188,8 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         )
 
         viewModel.getProductP1(productParams, true, " ", userLocationLocal = getUserLocationCache())
+
+        verify { viewModel.onResetAlreadyRecomHit() }
 
         Assert.assertTrue(
             getPdpLayoutUseCase.requestParams.getString(PARAM_PRODUCT_ID, "").isEmpty()
@@ -1114,13 +1215,13 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
     @Test
     fun `test extParam key parameter pdplayout`() {
-        val dataP1 = ProductDetailTestUtil.getMockPdpLayout()
+        val dataP1 = getMockPdpLayout()
         val productParams = ProductParams("", "", "", "", "", "")
         val userLocation = UserLocationRequest("")
         val extParam = anyString()
         val tokoNow = TokoNowParam("123")
 
-        `co every p1 success`(dataP1)
+        `co every p1 success`(dataP1, getMockP2Data())
         coEvery {
             getPdpLayoutUseCase.requestParams
         } returns GetPdpLayoutUseCase.createParams(
@@ -1152,7 +1253,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
     @Test
     fun `on success get product info login`() {
-        val dataP1 = ProductDetailTestUtil.getMockPdpLayout()
+        val dataP1 = getMockPdpLayout()
         val productParams = ProductParams("518076293", "", "", "", "", "")
 
         every {
@@ -1174,9 +1275,12 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             onError.invoke(Throwable(""))
         }
 
-        `co every p1 success`(dataP1, true)
+        val miniCart = generateMiniCartMock(productId = dataP1.layoutData.basic.productID).toMutableMap()
+        `co every p1 success`(dataP1, getMockP2Data(), miniCart)
 
         viewModel.getProductP1(productParams, true, "", userLocationLocal = getUserLocationCache())
+
+        verify { viewModel.onResetAlreadyRecomHit() }
 
         `co verify p1 success`()
 
@@ -1230,7 +1334,8 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
     private fun `co every p1 success`(
         dataP1: ProductDetailDataModel,
-        hitMiniCart: Boolean = false
+        dataP2: ProductInfoP2UiData,
+        miniCart: MutableMap<String, MiniCartItem.MiniCartItemProduct>? = null
     ) {
         coEvery {
             getPdpLayoutUseCase.executeOnBackground()
@@ -1252,11 +1357,9 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         }.coAnswers {
             val onError = lambda<(Throwable) -> Unit>()
             onError.invoke(Throwable(""))
-            val p2Mock = getMockP2Data()
-            p2Mock.miniCart =
-                if (!hitMiniCart) mutableMapOf() else generateMiniCartMock(dataP1.layoutData.basic.productID).toMutableMap()
-            p2Mock.upcomingCampaigns = generateNotifyMeMock()
-            p2Mock
+            dataP2.miniCart = miniCart ?: mutableMapOf()
+            dataP2.upcomingCampaigns = generateNotifyMeMock()
+            dataP2
         }
 
         coEvery {
@@ -1300,7 +1403,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
     @Test
     fun `on success get product info non login`() {
-        val dataP1 = ProductDetailTestUtil.getMockPdpLayout()
+        val dataP1 = getMockPdpLayout()
         val productParams = ProductParams("", "", "", "", "", "")
 
         every {
@@ -1311,7 +1414,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             viewModel.isUserSessionActive
         } returns false
 
-        `co every p1 success`(dataP1)
+        `co every p1 success`(dataP1, getMockP2Data())
 
         viewModel.getProductP1(productParams, userLocationLocal = getUserLocationCache())
 
@@ -1367,13 +1470,14 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             viewModel.isUserSessionActive
         } returns false
 
-        `co every p1 success`(dataP1)
+        `co every p1 success`(dataP1, getMockP2Data())
 
         viewModel.getProductP1(
             productParams,
             refreshPage = true,
             userLocationLocal = getUserLocationCache()
         )
+        verify { viewModel.onResetAlreadyRecomHit() }
 
         val p1Result = (viewModel.productLayout.value as Success).data
         Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.TRADE_IN })
@@ -1394,7 +1498,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
     @Test
     fun `on success remove unused component when sellerapp`() {
-        val dataP1 = ProductDetailTestUtil.getMockPdpLayout()
+        val dataP1 = getMockPdpLayout()
         val productParams = ProductParams("", "", "", "", "", "")
 
         every {
@@ -1417,13 +1521,14 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             viewModel.isUserSessionActive
         } returns false
 
-        `co every p1 success`(dataP1)
+        `co every p1 success`(dataP1, getMockP2Data())
 
         viewModel.getProductP1(
             productParams,
             refreshPage = true,
             userLocationLocal = getUserLocationCache()
         )
+        verify { viewModel.onResetAlreadyRecomHit() }
 
         val p1Result = (viewModel.productLayout.value as Success).data
         Assert.assertTrue(p1Result.none { it.type() == ProductDetailConstant.PRODUCT_LIST })
@@ -1434,7 +1539,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
     @Test
     fun `remove button_ar when customerapp and os under lollipop`() {
-        val dataP1 = ProductDetailTestUtil.getMockPdpLayout()
+        val dataP1 = getMockPdpLayout()
         val productParams = ProductParams("", "", "", "", "", "")
 
         every {
@@ -1462,16 +1567,19 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             viewModel.isUserSessionActive
         } returns false
 
-        `co every p1 success`(dataP1)
+        `co every p1 success`(dataP1, getMockP2Data())
 
         viewModel.getProductP1(
             productParams,
             refreshPage = true,
             userLocationLocal = getUserLocationCache()
         )
+        verify { viewModel.onResetAlreadyRecomHit() }
+
         val p1Result = (viewModel.productLayout.value as Success).data
         Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.AR_BUTTON })
     }
+    // endregion
 
     // region variant
     @Test
@@ -1580,261 +1688,6 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         Assert.assertTrue(childVariant == null)
     }
 
-    @Test
-    fun `select variant thumbnail is successful when first open pdp`() {
-        val expectLvl1Category = "28323838"
-        val expectLvl1Selected = "94748050"
-        val expectLvl2Category = "28323839"
-        val expectLvl2Selected = "94748052"
-        val singleVariant = ProductSingleVariantDataModel()
-
-        `on success get pdp layout mini variants options`()
-
-        viewModel.onThumbnailVariantSelected(
-            uiData = singleVariant,
-            variantId = expectLvl1Selected,
-            categoryKey = expectLvl1Category
-        )
-
-        val result = viewModel.onThumbnailVariantSelectedData.getOrAwaitValue()
-        val variantLvl1Selected = result?.mapOfSelectedVariant.orEmpty()[expectLvl1Category]
-        val variantLvl2Selected = result?.mapOfSelectedVariant.orEmpty()[expectLvl2Category]
-        Assert.assertTrue(variantLvl1Selected == expectLvl1Selected)
-        Assert.assertTrue(variantLvl2Selected == expectLvl2Selected)
-    }
-
-    @Test
-    fun `change select variant thumbnail is successful when previously selected`() {
-        val expectSelected = "94748050"
-        val expectCategory = "28323838"
-        val singleVariant = ProductSingleVariantDataModel(
-            mapOfSelectedVariant = mutableMapOf(
-                expectCategory to "94748049",
-                "28323839" to "94748052"
-            )
-        )
-
-        `on success get pdp layout mini variants options`()
-
-        viewModel.onThumbnailVariantSelected(
-            uiData = singleVariant,
-            variantId = expectSelected,
-            categoryKey = expectCategory
-        )
-
-        val result = viewModel.onThumbnailVariantSelectedData.getOrAwaitValue()
-        val variantLevelOneSelected = result?.mapOfSelectedVariant.orEmpty()[expectCategory]
-        Assert.assertTrue(variantLevelOneSelected == expectSelected)
-    }
-
-    @Test
-    fun `thumbnail variant selected is success when variant have lvl 1 only`() {
-        val expectSelected = "94748050"
-        val expectCategory = "28323838"
-        val singleVariant = ProductSingleVariantDataModel(
-            mapOfSelectedVariant = mutableMapOf(
-                expectCategory to "94748049",
-                "28323839" to "94748052"
-            )
-        )
-
-        `on success get pdp layout mini variants options`()
-        // give variant one only to variant data
-        val variantLvl1 = viewModel.variantData?.variants?.firstOrNull() ?: Variant()
-        viewModel.variantData = viewModel.variantData?.copy(
-            variants = listOf(variantLvl1)
-        )
-        viewModel.onThumbnailVariantSelected(
-            uiData = singleVariant,
-            variantId = expectSelected,
-            categoryKey = expectCategory
-        )
-
-        val result = viewModel.onThumbnailVariantSelectedData.getOrAwaitValue()
-        val variantLevelOneSelected = result?.mapOfSelectedVariant.orEmpty()[expectCategory]
-        Assert.assertTrue(variantLevelOneSelected == expectSelected)
-    }
-
-    @Test
-    fun `variant lvl 2 is empty on thumbnail variant selected when variant lvl 2 options is empty`() {
-        val variantLvl1 = "94748050"
-        val categoryLvl1 = "28323838"
-        val categoryLvl2 = "28323839"
-        val singleVariant = ProductSingleVariantDataModel(
-            mapOfSelectedVariant = mutableMapOf(
-                categoryLvl1 to "94748049"
-            )
-        )
-
-        `on success get pdp layout mini variants options`()
-
-        // give variant two with variant options is empty
-        val variants = viewModel.variantData?.variants.orEmpty().toMutableList()
-            .map {
-                if (it.pv == categoryLvl2) {
-                    it.copy(options = emptyList())
-                } else {
-                    it
-                }
-            }
-        viewModel.variantData = viewModel.variantData?.copy(
-            variants = variants
-        )
-        viewModel.onThumbnailVariantSelected(
-            uiData = singleVariant,
-            variantId = variantLvl1,
-            categoryKey = categoryLvl1
-        )
-
-        val result = viewModel.onThumbnailVariantSelectedData.getOrAwaitValue()
-        val variantLvl2Selected = result?.mapOfSelectedVariant.orEmpty()[categoryLvl2]
-        Assert.assertTrue(variantLvl2Selected?.isEmpty() == true)
-    }
-
-    @Test
-    fun `don't select variant thumbnail when select variant with variant id is empty`() {
-        val categoryKeyLvl1 = "28323838"
-        val categoryKeyLvl2 = "28323839"
-        val singleVariant = ProductSingleVariantDataModel(
-            mapOfSelectedVariant = mutableMapOf(
-                categoryKeyLvl1 to "94748049",
-                categoryKeyLvl2 to "94748052"
-            )
-        )
-
-        `on success get pdp layout mini variants options`()
-
-        viewModel.onThumbnailVariantSelected(
-            uiData = singleVariant,
-            variantId = "",
-            categoryKey = ""
-        )
-
-        val result = viewModel.onThumbnailVariantSelectedData.getOrAwaitValue()
-        val variantLvl1Selected = result?.mapOfSelectedVariant.orEmpty()[categoryKeyLvl1]
-        val variantLvl2Selected = result?.mapOfSelectedVariant.orEmpty()[categoryKeyLvl2]
-        Assert.assertTrue(variantLvl1Selected.orEmpty().isEmpty())
-        Assert.assertTrue(variantLvl2Selected.orEmpty().isNotEmpty())
-    }
-
-    @Test
-    fun `thumbnail variant not changes when variants is empty`() {
-        val categoryKeyLvl1 = "28323838"
-        val categoryKeyLvl2 = "28323839"
-        val singleVariant = ProductSingleVariantDataModel(
-            mapOfSelectedVariant = mutableMapOf(
-                categoryKeyLvl1 to "94748049",
-                categoryKeyLvl2 to "94748052"
-            )
-        )
-
-        `on success get pdp layout mini variants options`()
-
-        // give empty variant data to be expected
-        viewModel.variantData = viewModel.variantData?.copy(variants = listOf(Variant(pv = null)))
-
-        viewModel.onThumbnailVariantSelected(
-            uiData = singleVariant,
-            variantId = "",
-            categoryKey = ""
-        )
-
-        try {
-            viewModel.onThumbnailVariantSelectedData.getOrAwaitValue()
-        } catch (e: Throwable) {
-            Assert.assertTrue(e is TimeoutException)
-        }
-    }
-
-    @Test
-    fun `thumbnail variant change is success when variant lv2 have pv is null`() {
-        val selectVariant1 = "94748050"
-        val categoryKeyLvl1 = "28323838"
-        val categoryKeyLvl2 = "28323839"
-        val singleVariant = ProductSingleVariantDataModel(
-            mapOfSelectedVariant = mutableMapOf(
-                categoryKeyLvl1 to "94748049"
-            )
-        )
-
-        `on success get pdp layout mini variants options`()
-
-        // give variant two with pv is null
-        val variants = viewModel.variantData?.variants.orEmpty().toMutableList()
-            .map {
-                if (it.pv == categoryKeyLvl2) {
-                    it.copy(pv = null)
-                } else {
-                    it
-                }
-            }
-        viewModel.variantData = viewModel.variantData?.copy(
-            variants = variants
-        )
-
-        viewModel.onThumbnailVariantSelected(
-            uiData = singleVariant,
-            variantId = selectVariant1,
-            categoryKey = categoryKeyLvl1
-        )
-
-        val result = viewModel.onThumbnailVariantSelectedData.getOrAwaitValue()
-        val variantLvl1Selected = result?.mapOfSelectedVariant.orEmpty()[categoryKeyLvl1]
-        val variantLvl2Selected = result?.mapOfSelectedVariant.orEmpty()[categoryKeyLvl2]
-        val variantLvl2Actual = result?.mapOfSelectedVariant.orEmpty()[""]
-        Assert.assertTrue(variantLvl1Selected == selectVariant1)
-        Assert.assertTrue(variantLvl2Selected == null)
-        Assert.assertFalse(variantLvl2Actual.isNullOrEmpty())
-    }
-
-    @Test
-    fun `no impact when select variant thumbnail with variant data is null`() {
-        val categoryKeyLvl1 = "28323838"
-        val categoryKeyLvl2 = "28323839"
-        val singleVariant = ProductSingleVariantDataModel(
-            mapOfSelectedVariant = mutableMapOf(
-                categoryKeyLvl1 to "94748049",
-                categoryKeyLvl2 to "94748052"
-            )
-        )
-
-        `on success get pdp layout mini variants options`()
-
-        // give empty variant data to be expected
-        viewModel.variantData = null
-
-        viewModel.onThumbnailVariantSelected(
-            uiData = singleVariant,
-            variantId = "",
-            categoryKey = ""
-        )
-
-        try {
-            viewModel.onThumbnailVariantSelectedData.getOrAwaitValue()
-        } catch (e: Throwable) {
-            Assert.assertTrue(e is TimeoutException)
-        }
-    }
-
-    @Test
-    fun `no impact when select variant thumbnail with ui-data is null `() {
-        val expectSelected = "94748050"
-        val expectCategory = "28323838"
-        `on success get pdp layout mini variants options`()
-
-        viewModel.onThumbnailVariantSelected(
-            uiData = null,
-            variantId = expectSelected,
-            categoryKey = expectCategory
-        )
-
-        try {
-            viewModel.onThumbnailVariantSelectedData.getOrAwaitValue()
-        } catch (e: Throwable) {
-            Assert.assertTrue(e is TimeoutException)
-        }
-    }
-
     private fun `on success get pdp layout mini variants options`() {
         val dataP1 = ProductDetailTestUtil.getMockPdpLayoutMiniVariant()
         val productParams = ProductParams(productId = "1589853923")
@@ -1858,17 +1711,17 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             onError.invoke(Throwable(""))
         }
 
-        `co every p1 success`(dataP1, true)
+        val miniCart = generateMiniCartMock(dataP1.layoutData.basic.productID).toMutableMap()
+        `co every p1 success`(dataP1, getMockP2Data(), miniCart)
 
         viewModel.getProductP1(productParams, true, "", userLocationLocal = getUserLocationCache())
-
+        verify { viewModel.onResetAlreadyRecomHit() }
         `co verify p1 success`()
     }
 
     //endregion variant
-    /**
-     * Hit Affiliate, most of it do no op call
-     */
+
+    // region Hit Affiliate, most of it do no op call
     @Test
     fun onSuccessHitAffiliateTracker() {
         every {
@@ -1892,6 +1745,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         verify { viewModel.hitAffiliateTracker(anyString(), anyString()) }
     }
+    // endregion
 
     //region affiliate cookie
     @Test
@@ -2020,9 +1874,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
     //endregion
 
-    /**
-     * UpdateCartCounter
-     */
+    // region UpdateCartCounter
     @Test
     fun onSuccessUpdateCartCounter() {
         val data = 10
@@ -2038,10 +1890,9 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             updateCartCounterUseCase.createObservable(RequestParams.EMPTY)
         }
     }
+    // endregion UpdateCartCounter
 
-    /**
-     * ToggleFavorite
-     */
+    // region ToggleFavorite
     @Test
     fun onSuccessToggleFavoriteShop() {
         val shopId = "1234"
@@ -2098,10 +1949,9 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         Assert.assertTrue(viewModel.toggleFavoriteResult.value is Fail)
     }
+    // endregion ToggleFavorite
 
-    /**
-     * Discussion Most Helpful
-     */
+    // region Discussion Most Helpful
     @Test
     fun `on success getDiscussionMostHelpful`() = runBlockingTest {
         val expectedResponse = DiscussionMostHelpfulResponseWrapper()
@@ -2132,8 +1982,9 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         Assert.assertTrue(viewModel.discussionMostHelpful.value is Fail)
     }
+    // endregion Discussion
 
-    // getProductTopadsStatus
+    // region getProductTopadsStatus
     @Test
     fun `when get topads status then verify error response`() = runBlockingTest {
         val productId = "12345"
@@ -2207,10 +2058,9 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         Assert.assertEquals(errorCode.captured, 200)
         Assert.assertEquals(isTopAds.captured, true)
     }
+    // endregion
 
-    /**
-     * tokonow recom section
-     */
+    // region tokonow recom section
     @Test
     fun `test add to cart non variant then return success cart data`() = runBlockingTest {
         val recomItem = RecommendationItem(productId = 12345, shopId = 123)
@@ -2410,6 +2260,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         Assert.assertTrue(viewModel.atcRecom.value is Fail)
     }
 
+    // endregion
     @Test
     fun `verify add to wishlistv2 returns success`() {
         val productId = "123"
@@ -2680,32 +2531,49 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     @Test
     fun `change one time method assign all value`() = runBlockingTest {
         val testResults = mutableListOf<OneTimeMethodState>()
-
+        var currentSize = 1 // increase each first call changeOneTimeMethod
+        val currentIndex = {
+            currentSize - 1
+        }
         val job = launch {
             viewModel.oneTimeMethodState.toList(testResults)
         }
 
         // second assignment, because the first one is default value which OneTimeMethodEvent.Empty
-        Assert.assertEquals(testResults[0].impressRestriction, false)
+        Assert.assertEquals(testResults[currentIndex()].impressRestriction, false)
 
         /**
          * list size still 2 because we don't assign the same hit variant tracker because of this code
          * if (_oneTimeMethod.value.impressRestriction) return
          * This is like verify in stateflow, we dont want to call update again if we assign the same value
          */
-        Assert.assertTrue(testResults.size == 1)
+        Assert.assertTrue(testResults.size == currentSize)
 
         val reData = RestrictionData(productId = "123")
-        // third assignment
+        // region impress restriction
         viewModel.changeOneTimeMethod(event = OneTimeMethodEvent.ImpressRestriction(reData))
-        Assert.assertTrue(testResults[1].event is OneTimeMethodEvent.ImpressRestriction)
-        Assert.assertTrue((testResults[1].event as OneTimeMethodEvent.ImpressRestriction).reData.productId == "123")
-        Assert.assertEquals(testResults[1].impressRestriction, true)
-        Assert.assertEquals(testResults[1].impressRestriction, true)
+        currentSize++
+        Assert.assertTrue(testResults[currentIndex()].event is OneTimeMethodEvent.ImpressRestriction)
+        Assert.assertTrue((testResults[currentIndex()].event as OneTimeMethodEvent.ImpressRestriction).reData.productId == "123")
+        Assert.assertEquals(testResults[currentIndex()].impressRestriction, true)
 
         // re-assign and make sure we dont want to update the data, since we need to run every event exactly once
         viewModel.changeOneTimeMethod(event = OneTimeMethodEvent.ImpressRestriction(reData))
-        Assert.assertTrue(testResults.size == 2)
+        Assert.assertTrue(testResults.size == currentSize)
+        // endregion
+
+        // region validate general edu bs
+        viewModel.changeOneTimeMethod(event = OneTimeMethodEvent.ImpressGeneralEduBs("applink"))
+        currentSize++
+        Assert.assertTrue(testResults.size == currentSize)
+        Assert.assertTrue(testResults[currentIndex()].event is OneTimeMethodEvent.ImpressGeneralEduBs)
+        val edu = testResults[currentIndex()].event as OneTimeMethodEvent.ImpressGeneralEduBs
+        Assert.assertTrue(edu.appLink == "applink")
+
+        // re-assign
+        viewModel.changeOneTimeMethod(event = OneTimeMethodEvent.ImpressGeneralEduBs("applink"))
+        Assert.assertTrue(testResults.size == currentSize)
+        // endregion
 
         job.cancel()
     }
@@ -2804,6 +2672,18 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     @Test
+    fun `should re-fetch recom data when previous recom data is empty as tokonow`() {
+        coEvery {
+            getRecommendationUseCase.getData(any())
+        } returns listOf(RecommendationWidget())
+
+        viewModel.showProductMediaRecomBottomSheet("Dummy", "Dummy", "123", true)
+        viewModel.showProductMediaRecomBottomSheet("Dummy", "Dummy", "123", true)
+
+        coVerify(exactly = 2) { getRecommendationUseCase.getData(any()) }
+    }
+
+    @Test
     fun `product media recom bs state should dismissed when dismiss product media recom bs`() {
         `product media recom bs state should showing when successfully fetch non-empty recom data`()
 
@@ -2816,6 +2696,71 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         return LocalCacheModel("123", "123", "123", "123")
     }
 
+    // region bottom-sheet edu
+    @Test
+    fun `show bottom-sheet edu normally`() {
+        // given
+        val mockP1 = getMockPdpLayout()
+        val mockP2 = getMockP2Data()
+        `co every p1 success`(
+            dataP1 = mockP1,
+            dataP2 = mockP2.copy(
+                bottomSheetEdu = mockP2.bottomSheetEdu.copy(isShow = true)
+            )
+        )
+
+        // when
+        viewModel.getProductP1(ProductParams(), userLocationLocal = getUserLocationCache())
+
+        // then
+        val showEdu = viewModel.showBottomSheetEdu.getOrAwaitValue()
+        Assert.assertTrue(showEdu != null)
+        Assert.assertTrue(showEdu?.isShow == true)
+        Assert.assertTrue(!showEdu?.appLink.isNullOrBlank())
+    }
+
+    @Test
+    fun `bottom-sheet edu not appear when isShow is false`() {
+        // given
+        val mockP1 = getMockPdpLayout()
+        val mockP2 = getMockP2Data()
+        `co every p1 success`(
+            dataP1 = mockP1,
+            dataP2 = mockP2.copy(
+                bottomSheetEdu = mockP2.bottomSheetEdu.copy(isShow = false)
+            )
+        )
+
+        // when
+        viewModel.getProductP1(ProductParams(), userLocationLocal = getUserLocationCache())
+
+        // then
+        val showEdu = viewModel.showBottomSheetEdu.getOrAwaitValue()
+        Assert.assertTrue(showEdu == null)
+    }
+
+    @Test
+    fun `bottom-sheet edu not appear when isShow is true but applink is empty`() {
+        // given
+        val mockP1 = getMockPdpLayout()
+        val mockP2 = getMockP2Data()
+        `co every p1 success`(
+            dataP1 = mockP1,
+            dataP2 = mockP2.copy(
+                bottomSheetEdu = mockP2.bottomSheetEdu.copy(isShow = true, appLink = "")
+            )
+        )
+
+        // when
+        viewModel.getProductP1(ProductParams(), userLocationLocal = getUserLocationCache())
+
+        // then
+        val showEdu = viewModel.showBottomSheetEdu.getOrAwaitValue()
+        Assert.assertTrue(showEdu == null)
+    }
+    // endregion
+
+    // region sub-viewmodel mediator
     @Test
     fun `success get product detail data via mediator`() {
         val p2Expected = ProductInfoP2UiData()
@@ -2833,6 +2778,52 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         Assert.assertTrue(spykViewModel.getP2() == p2Expected)
         Assert.assertTrue(spykViewModel.getP1() == p1Expected)
         Assert.assertTrue(spykViewModel.getVariant() == variantExpected)
+    }
+    // endregion
+
+    @Test
+    fun `success check affiliate eligibility`() {
+        val mockData = GenerateAffiliateLinkEligibility()
+        val mockParam = AffiliateInput()
+
+        coEvery {
+            affiliateEligibilityCheckUseCase.executeOnBackground()
+        } returns mockData
+
+        viewModel.checkAffiliateEligibility(mockParam)
+        coVerify {
+            affiliateEligibilityCheckUseCase.executeOnBackground()
+        }
+        assertTrue(viewModel.resultAffiliate.value is Success)
+    }
+
+    @Test
+    fun `error check affiliate eligibility`() {
+        val mockError = Exception()
+        val mockParam = AffiliateInput()
+
+        coEvery {
+            affiliateEligibilityCheckUseCase.executeOnBackground()
+        } throws mockError
+
+        viewModel.checkAffiliateEligibility(mockParam)
+        coVerify {
+            affiliateEligibilityCheckUseCase.executeOnBackground()
+        }
+        assertTrue(viewModel.resultAffiliate.value is Fail)
+    }
+
+    @Test
+    fun `setAPlusContentCollapseState should update aPlusContentMediaCollapse value`() {
+        val initialValue = viewModel.isAPlusContentExpanded()
+        val expectedValue = !initialValue
+        viewModel.setAPlusContentExpandedState(expectedValue)
+        assertEquals(expectedValue, viewModel.isAPlusContentExpanded())
+    }
+
+    @Test
+    fun `initial aPlusContentExpanded value should be false`() {
+        assertFalse(viewModel.isAPlusContentExpanded())
     }
 
     companion object {

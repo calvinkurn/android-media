@@ -7,13 +7,11 @@ import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.manageaddress.di.*
 import com.tokopedia.manageaddress.ui.manageaddress.ManageAddressActivity
-import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.test.application.annotations.CassavaTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import javax.inject.Inject
 
 @CassavaTest
 @RunWith(AndroidJUnit4::class)
@@ -28,9 +26,6 @@ class DirectShareAddressTest {
 
     @get:Rule
     var cassavaRule = CassavaTestRule(isFromNetwork = true, sendValidationResult = true)
-
-    @Inject
-    lateinit var remoteConfig: RemoteConfig
 
     @Before
     fun setup() {

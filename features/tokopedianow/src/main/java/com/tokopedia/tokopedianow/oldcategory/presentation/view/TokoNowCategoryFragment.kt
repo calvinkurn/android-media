@@ -17,7 +17,9 @@ import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TOKONOW_CLP
+import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking
 import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking.Action.CLICK_ATC_CLP_PRODUCT_TOKONOW
@@ -51,6 +53,7 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemD
 import com.tokopedia.tokopedianow.searchcategory.presentation.view.BaseSearchCategoryFragment
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_DIRECTORY
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
+import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
@@ -58,12 +61,12 @@ import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomshee
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import javax.inject.Inject
 
-class TokoNowCategoryFragment:
-        BaseSearchCategoryFragment(),
-        CategoryAisleListener,
-        ScreenShotListener,
-        ShareBottomsheetListener,
-        PermissionListener {
+class TokoNowCategoryFragment :
+    BaseSearchCategoryFragment(),
+    CategoryAisleListener,
+    ScreenShotListener,
+    ShareBottomsheetListener,
+    PermissionListener {
 
     companion object {
         private const val AR_ORIGIN_TOKONOW_CATEGORY = 5
@@ -90,7 +93,7 @@ class TokoNowCategoryFragment:
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var tokoNowCategoryViewModel: TokoNowCategoryViewModel
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
-    private var screenshotDetector : ScreenshotDetector? = null
+    private var screenshotDetector: ScreenshotDetector? = null
     private var shareCategoryTokonow: ShareTokonow? = null
     private var categoryIdLvl2 = ""
     private var categoryIdLvl3 = ""
@@ -113,20 +116,19 @@ class TokoNowCategoryFragment:
     }
 
     override fun onStop() {
-        UniversalShareBottomSheet.clearState(screenshotDetector)
+        SharingUtil.clearState(screenshotDetector)
         super.onStop()
     }
 
     override fun onDestroy() {
-        UniversalShareBottomSheet.clearState(screenshotDetector)
+        SharingUtil.clearState(screenshotDetector)
         super.onDestroy()
     }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         context?.let {
-            screenshotDetector = UniversalShareBottomSheet.createAndStartScreenShotDetector(
+            screenshotDetector = SharingUtil.createAndStartScreenShotDetector(
                 context = it,
                 screenShotListener = this,
                 fragment = this,
@@ -141,7 +143,7 @@ class TokoNowCategoryFragment:
         }
     }
 
-    override fun createNavToolbarIconBuilder(): IconBuilder = IconBuilder()
+    override fun createNavToolbarIconBuilder(): IconBuilder = IconBuilder(builderFlags = IconBuilderFlag(pageSource = NavSource.TOKONOW))
         .addShare()
         .addCart()
         .addGlobalNav()
@@ -150,8 +152,8 @@ class TokoNowCategoryFragment:
         get() = true
 
     override fun getBaseAutoCompleteApplink() =
-            super.getBaseAutoCompleteApplink() + "?" +
-                    "${SearchApiConst.NAVSOURCE}=$TOKONOW_DIRECTORY"
+        super.getBaseAutoCompleteApplink() + "?" +
+            "${SearchApiConst.NAVSOURCE}=$TOKONOW_DIRECTORY"
 
     override fun onSearchBarClick(hint: String) {
         CategoryTracking.sendSearchBarClickEvent(getViewModel().categoryL1)
@@ -172,28 +174,28 @@ class TokoNowCategoryFragment:
     }
 
     override fun createTypeFactory() = CategoryTypeFactoryImpl(
-            tokoNowEmptyStateOocListener = createTokoNowEmptyStateOocListener(TOKONOW_DASH_CATEGORY_PAGE),
-            chooseAddressListener = this,
-            titleListener = this,
-            bannerListener = this,
-            quickFilterListener = this,
-            categoryFilterListener = this,
-            productItemListener = this,
-            productCardCompactSimilarProductTrackerListener = createSimilarProductCallback(true),
-            switcherWidgetListener = this,
-            tokoNowEmptyStateNoResultListener = this,
-            categoryAisleListener = this,
-            tokoNowCategoryMenuListener = createCategoryMenuCallback(),
-            tokoNowProductCardListener = this,
-            productRecommendationOocBindListener = createProductRecommendationOocCallback(),
-            productRecommendationOocListener = createProductRecommendationOocCallback(),
-            productRecommendationListener = createProductRecommendationCallback().copy(
-                categoryL1 = getViewModel().categoryL1,
-                cdListName = getCDListName(),
-                categoryIdTracking = getViewModel().categoryIdTracking
-            ),
-            feedbackWidgetListener = this,
-            productCardCompactListener = createProductCardCompactCallback()
+        tokoNowEmptyStateOocListener = createTokoNowEmptyStateOocListener(TOKONOW_DASH_CATEGORY_PAGE),
+        chooseAddressListener = this,
+        titleListener = this,
+        bannerListener = this,
+        quickFilterListener = this,
+        categoryFilterListener = this,
+        productItemListener = this,
+        productCardCompactSimilarProductTrackerListener = createSimilarProductCallback(true),
+        switcherWidgetListener = this,
+        tokoNowEmptyStateNoResultListener = this,
+        categoryAisleListener = this,
+        tokoNowCategoryMenuListener = createCategoryMenuCallback(),
+        tokoNowProductCardListener = this,
+        productRecommendationOocBindListener = createProductRecommendationOocCallback(),
+        productRecommendationOocListener = createProductRecommendationOocCallback(),
+        productRecommendationListener = createProductRecommendationCallback().copy(
+            categoryL1 = getViewModel().categoryL1,
+            cdListName = getCDListName(),
+            categoryIdTracking = getViewModel().categoryIdTracking
+        ),
+        feedbackWidgetListener = this,
+        productCardCompactListener = createProductCardCompactCallback()
     )
 
     override fun getViewModel() = tokoNowCategoryViewModel
@@ -221,11 +223,11 @@ class TokoNowCategoryFragment:
         val trackingQueue = trackingQueue ?: return
 
         CategoryTracking.sendProductImpressionEvent(
-                trackingQueue,
-                productItemDataView,
-                getViewModel().categoryL1,
-                getUserId(),
-                getViewModel().categoryIdTracking,
+            trackingQueue,
+            productItemDataView,
+            getViewModel().categoryL1,
+            getUserId(),
+            getViewModel().categoryIdTracking
         )
     }
 
@@ -237,13 +239,12 @@ class TokoNowCategoryFragment:
         type: Int,
         ctaClickListener: (() -> Unit)?
     ) {
-        if(isWishlistSelected) {
+        if (isWishlistSelected) {
             CategoryTracking.trackClickAddToWishlist(
                 getViewModel().warehouseId,
                 productId
             )
-        }
-        else{
+        } else {
             CategoryTracking.trackClickRemoveFromWishlist(
                 getViewModel().warehouseId,
                 productId
@@ -258,25 +259,27 @@ class TokoNowCategoryFragment:
         }
     }
 
-    override fun screenShotTaken() {
+    override fun screenShotTaken(path: String) {
         updateShareHomeData(
             isScreenShot = true,
             thumbNailTitle = context?.resources?.getString(R.string.tokopedianow_share_thumbnail_title_ss).orEmpty()
         )
 
-        showUniversalShareBottomSheet(shareCategoryTokonow)
+        showUniversalShareBottomSheet(shareCategoryTokonow, path)
     }
 
     override fun onShareOptionClicked(shareModel: ShareModel) {
         if (shareCategoryTokonow?.isScreenShot == true) {
-            CategoryTracking.trackClickChannelShareBottomSheetScreenshot(shareModel.channel.orEmpty(),
+            CategoryTracking.trackClickChannelShareBottomSheetScreenshot(
+                shareModel.channel.orEmpty(),
                 userId = userSession.userId,
                 categoryIdLvl1 = tokoNowCategoryViewModel.categoryL1,
                 categoryIdLvl2 = categoryIdLvl2,
                 categoryIdLvl3 = categoryIdLvl3
             )
         } else {
-            CategoryTracking.trackClickChannelShareBottomSheet(channel = shareModel.channel.orEmpty(),
+            CategoryTracking.trackClickChannelShareBottomSheet(
+                channel = shareModel.channel.orEmpty(),
                 userId = userSession.userId,
                 categoryIdLvl1 = tokoNowCategoryViewModel.categoryL1,
                 categoryIdLvl2 = categoryIdLvl2,
@@ -362,16 +365,21 @@ class TokoNowCategoryFragment:
         shareClicked(shareCategoryTokonow)
     }
 
-    private fun shareClicked(shareHomeTokonow: ShareTokonow?){
-        if(UniversalShareBottomSheet.isCustomSharingEnabled(context)){
+    private fun shareClicked(shareHomeTokonow: ShareTokonow?) {
+        if (SharingUtil.isCustomSharingEnabled(context)) {
             showUniversalShareBottomSheet(shareHomeTokonow)
         } else {
             LinkerManager.getInstance().executeShareRequest(shareRequest(context, shareHomeTokonow))
         }
     }
 
-    private fun showUniversalShareBottomSheet(shareHomeTokonow: ShareTokonow?) {
+    private fun showUniversalShareBottomSheet(shareHomeTokonow: ShareTokonow?, path: String? = null) {
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+            setFeatureFlagRemoteConfigKey()
+            path?.let {
+                setImageOnlySharingOption(true)
+                setScreenShotImagePath(path)
+            }
             init(this@TokoNowCategoryFragment)
             setUtmCampaignData(
                 pageName = PAGE_SHARE_NAME,
@@ -381,9 +389,9 @@ class TokoNowCategoryFragment:
             )
             setMetaData(
                 tnTitle = shareHomeTokonow?.thumbNailTitle.orEmpty(),
-                tnImage = shareHomeTokonow?.thumbNailImage.orEmpty(),
+                tnImage = shareHomeTokonow?.thumbNailImage.orEmpty()
             )
-            //set the Image Url of the Image that represents page
+            // set the Image Url of the Image that represents page
             setOgImageUrl(imgUrl = shareHomeTokonow?.ogImageUrl.orEmpty())
         }
 
@@ -405,13 +413,12 @@ class TokoNowCategoryFragment:
         universalShareBottomSheet?.show(childFragmentManager, this, screenshotDetector)
     }
 
-
     override fun onProductClick(productItemDataView: ProductItemDataView) {
         CategoryTracking.sendProductClickEvent(
-                productItemDataView,
-                getViewModel().categoryL1,
-                getUserId(),
-                getViewModel().categoryIdTracking,
+            productItemDataView,
+            getViewModel().categoryL1,
+            getUserId(),
+            getViewModel().categoryIdTracking
         )
 
         super.onProductClick(productItemDataView)
@@ -473,16 +480,15 @@ class TokoNowCategoryFragment:
         val (quantity, cartId, productItemDataView) = atcData
 
         CategoryTracking.sendAddToCartEvent(
-                productItemDataView,
-                getViewModel().categoryL1,
-                getUserId(),
-                quantity,
-                cartId,
+            productItemDataView,
+            getViewModel().categoryL1,
+            getUserId(),
+            quantity,
+            cartId
         )
     }
 
     override fun sendDeleteCartTrackingEvent(productId: String) {
-
     }
 
     override fun onProductChooseVariantClicked(productItemDataView: ProductItemDataView) {
@@ -576,7 +582,7 @@ class TokoNowCategoryFragment:
             repurchaseProduct,
             quantity,
             cartId,
-            userSession.userId,
+            userSession.userId
         )
     }
 
@@ -592,7 +598,8 @@ class TokoNowCategoryFragment:
     }
 
     override fun permissionAction(action: String, label: String) {
-        CategoryTracking.trackClickAccessMediaAndFiles(label,
+        CategoryTracking.trackClickAccessMediaAndFiles(
+            label,
             userId = userSession.userId,
             categoryIdLvl1 = tokoNowCategoryViewModel.categoryL1,
             categoryIdLvl2 = categoryIdLvl2,
@@ -606,8 +613,10 @@ class TokoNowCategoryFragment:
         }
     }
 
-    override fun refreshLayout() {
-        super.refreshLayout()
+    override fun refreshLayout(
+        needToResetQueryParams: Boolean
+    ) {
+        super.refreshLayout(needToResetQueryParams)
         refreshProductRecommendation(TOKONOW_CLP)
     }
 

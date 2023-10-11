@@ -21,9 +21,11 @@ import javax.inject.Inject
  */
 
 @Deprecated("Use coroutine version", replaceWith = ReplaceWith("AddToCartUseCase", imports = ["com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase"]))
-class AddToCartUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase,
-                                           private val addToCartDataMapper: AddToCartDataMapper,
-                                           private val chosenAddressAddToCartRequestHelper: ChosenAddressRequestHelper) : UseCase<AddToCartDataModel>() {
+class AddToCartUseCase @Inject constructor(
+    private val graphqlUseCase: GraphqlUseCase,
+    private val addToCartDataMapper: AddToCartDataMapper,
+    private val chosenAddressAddToCartRequestHelper: ChosenAddressRequestHelper
+) : UseCase<AddToCartDataModel>() {
 
     companion object {
         const val REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST = "REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST"
@@ -43,44 +45,54 @@ class AddToCartUseCase @Inject constructor(private val graphqlUseCase: GraphqlUs
 
         @JvmStatic
         @JvmOverloads
-        fun getMinimumParams(productId: String, shopId: String, quantity: Int = 1, notes: String = "", atcExternalSource: String = AtcFromExternalSource.ATC_FROM_OTHERS,
-                /*tracking data*/ productName: String = "", category: String = "", price: String = "", userId: String = ""): RequestParams {
+        fun getMinimumParams(
+            productId: String,
+            shopId: String,
+            quantity: Int = 1,
+            notes: String = "",
+            atcExternalSource: String = AtcFromExternalSource.ATC_FROM_OTHERS,
+            /*tracking data*/
+            productName: String = "",
+            category: String = "",
+            price: String = "",
+            userId: String = ""
+        ): RequestParams {
             return RequestParams.create()
-                    .apply {
-                        putObject(
-                                REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST,
-                                AddToCartRequestParams(
-                                        productId = productId,
-                                        shopId = shopId,
-                                        quantity = quantity,
-                                        notes = notes,
-                                        atcFromExternalSource = atcExternalSource,
-                                        productName = productName,
-                                        category = category,
-                                        price = price,
-                                        userId = userId
-                                )
+                .apply {
+                    putObject(
+                        REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST,
+                        AddToCartRequestParams(
+                            productId = productId,
+                            shopId = shopId,
+                            quantity = quantity,
+                            notes = notes,
+                            atcFromExternalSource = atcExternalSource,
+                            productName = productName,
+                            category = category,
+                            price = price,
+                            userId = userId
                         )
-                    }
+                    )
+                }
         }
     }
 
     private fun getParams(addToCartRequestParams: AddToCartRequestParams): Map<String, Any?> {
         return mapOf(
-                PARAM_ATC to mapOf(
-                        PARAM_PRODUCT_ID to addToCartRequestParams.productId,
-                        PARAM_SHOP_ID to addToCartRequestParams.shopId,
-                        PARAM_QUANTITY to addToCartRequestParams.quantity,
-                        PARAM_NOTES to addToCartRequestParams.notes,
-                        PARAM_LANG to addToCartRequestParams.lang,
-                        PARAM_ATTRIBUTION to addToCartRequestParams.attribution,
-                        PARAM_LIST_TRACKER to addToCartRequestParams.listTracker,
-                        PARAM_UC_PARAMS to addToCartRequestParams.ucParams,
-                        PARAM_WAREHOUSE_ID to addToCartRequestParams.warehouseId,
-                        PARAM_ATC_FROM_EXTERNAL_SOURCE to addToCartRequestParams.atcFromExternalSource,
-                        PARAM_IS_SCP to addToCartRequestParams.isSCP,
-                        KEY_CHOSEN_ADDRESS to chosenAddressAddToCartRequestHelper.getChosenAddress()
-                )
+            PARAM_ATC to mapOf(
+                PARAM_PRODUCT_ID to addToCartRequestParams.productId,
+                PARAM_SHOP_ID to addToCartRequestParams.shopId,
+                PARAM_QUANTITY to addToCartRequestParams.quantity,
+                PARAM_NOTES to addToCartRequestParams.notes,
+                PARAM_LANG to addToCartRequestParams.lang,
+                PARAM_ATTRIBUTION to addToCartRequestParams.attribution,
+                PARAM_LIST_TRACKER to addToCartRequestParams.listTracker,
+                PARAM_UC_PARAMS to addToCartRequestParams.ucParams,
+                PARAM_WAREHOUSE_ID to addToCartRequestParams.warehouseId,
+                PARAM_ATC_FROM_EXTERNAL_SOURCE to addToCartRequestParams.atcFromExternalSource,
+                PARAM_IS_SCP to addToCartRequestParams.isSCP,
+                KEY_CHOSEN_ADDRESS to chosenAddressAddToCartRequestHelper.getChosenAddress()
+            )
         )
     }
 
@@ -94,12 +106,19 @@ class AddToCartUseCase @Inject constructor(private val graphqlUseCase: GraphqlUs
             val addToCartGqlResponse = it.getData<AddToCartGqlResponse>(AddToCartGqlResponse::class.java)
             val result = addToCartDataMapper.mapAddToCartResponse(addToCartGqlResponse)
             if (!result.isStatusError()) {
-                AddToCartBaseAnalytics.sendAppsFlyerTracking(addToCartRequest.productId.toString(), addToCartRequest.productName, addToCartRequest.price,
-                        addToCartRequest.quantity.toString(), addToCartRequest.category)
-                AddToCartBaseAnalytics.sendBranchIoTracking(addToCartRequest.productId.toString(), addToCartRequest.productName, addToCartRequest.price,
-                        addToCartRequest.quantity.toString(), addToCartRequest.category, addToCartRequest.categoryLevel1Id,
-                        addToCartRequest.categoryLevel1Name, addToCartRequest.categoryLevel2Id, addToCartRequest.categoryLevel2Name,
-                        addToCartRequest.categoryLevel3Id, addToCartRequest.categoryLevel3Name, addToCartRequest.userId)
+                AddToCartBaseAnalytics.sendAppsFlyerTracking(
+                    addToCartRequest.productId.toString(),
+                    addToCartRequest.productName,
+                    addToCartRequest.price,
+                    addToCartRequest.quantity.toString(),
+                    addToCartRequest.category
+                )
+                AddToCartBaseAnalytics.sendBranchIoTracking(
+                    addToCartRequest.productId.toString(), addToCartRequest.productName, addToCartRequest.price,
+                    addToCartRequest.quantity.toString(), addToCartRequest.category, addToCartRequest.categoryLevel1Id,
+                    addToCartRequest.categoryLevel1Name, addToCartRequest.categoryLevel2Id, addToCartRequest.categoryLevel2Name,
+                    addToCartRequest.categoryLevel3Id, addToCartRequest.categoryLevel3Name, addToCartRequest.userId
+                )
             }
             result
         }

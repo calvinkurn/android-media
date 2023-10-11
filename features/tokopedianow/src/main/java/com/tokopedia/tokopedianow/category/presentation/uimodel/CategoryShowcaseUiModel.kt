@@ -10,7 +10,7 @@ data class CategoryShowcaseUiModel(
     val id: String = String.EMPTY,
     val title: String = String.EMPTY,
     val seeAllAppLink: String = String.EMPTY,
-    val productListUiModels: List<CategoryShowcaseItemUiModel>? = null,
+    val productListUiModels: List<CategoryShowcaseItemUiModel> = emptyList(),
     @TokoNowLayoutState val state: Int = TokoNowLayoutState.LOADING
 ): Visitable<CategoryTypeFactory>, ImpressHolder() {
     override fun type(typeFactory: CategoryTypeFactory): Int = typeFactory.type(this)

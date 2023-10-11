@@ -9,7 +9,7 @@ data class CategoryListChildUiModel(
     val imageUrl: String? = null,
     val appLink: String? = null,
     val textWeight: Int = Typography.REGULAR,
-    @ColorRes val textColorId: Int = com.tokopedia.unifyprinciples.R.color.Unify_N700,
+    @ColorRes val textColorId: Int = com.tokopedia.unifyprinciples.R.color.Unify_NN950,
     val type: CategoryType = CategoryType.CHILD_CATEGORY_ITEM
 ) {
     enum class CategoryType {

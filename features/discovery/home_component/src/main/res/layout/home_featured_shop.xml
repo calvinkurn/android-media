@@ -38,7 +38,7 @@
                 android:id="@+id/featured_shop_background"
                 android:layout_width="match_parent"
                 android:layout_height="160dp"
-                android:background="@color/Unify_Y200"
+                android:background="@color/Unify_YN100"
                 android:clickable="true"
                 android:focusable="true"
                 android:visibility="visible"
@@ -75,5 +75,5 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         tools:visibility="visible"
-        tools:background="@color/Unify_B500"/>
+        tools:background="@color/Unify_BN500"/>
 </LinearLayout>

@@ -3,7 +3,6 @@ package com.tokopedia.privacycenter.ui.main
 import android.widget.LinearLayout
 import com.tokopedia.privacycenter.common.PrivacyCenterConst
 import com.tokopedia.privacycenter.ui.main.section.BasePrivacyCenterSection
-import com.tokopedia.privacycenter.ui.main.section.accountlinking.AccountLinkingSection
 import com.tokopedia.privacycenter.ui.main.section.activity.ActivitySection
 import com.tokopedia.privacycenter.ui.main.section.consentwithdrawal.ConsentWithdrawalSection
 import com.tokopedia.privacycenter.ui.main.section.dsar.DSARSection
@@ -18,7 +17,6 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
  */
 
 interface PrivacyCenterSectionDelegate {
-    val accountLinkingSection: AccountLinkingSection
     val activitySection: ActivitySection
     val recommendationSection: RecommendationSection
     val consentWithdrawalSection: ConsentWithdrawalSection
@@ -39,7 +37,6 @@ class PrivacyCenterSection constructor(
     fun privacyCenterSections(): MutableMap<String, BasePrivacyCenterSection> {
         return removeSectionByConfig(
             mutableMapOf(
-                AccountLinkingSection.TAG to delegate.accountLinkingSection,
                 ActivitySection.TAG to delegate.activitySection,
                 RecommendationSection.TAG to delegate.recommendationSection,
                 ConsentWithdrawalSection.TAG to delegate.consentWithdrawalSection,

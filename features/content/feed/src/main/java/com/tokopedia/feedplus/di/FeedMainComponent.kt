@@ -18,7 +18,8 @@ import dagger.Component
         PlayShortsUploaderModule::class,
         FeedFragmentModule::class,
         ContentCommentModule::class
-    ], dependencies = [BaseAppComponent::class]
+    ],
+    dependencies = [BaseAppComponent::class]
 )
 interface FeedMainComponent {
     fun inject(feedBaseFragment: FeedBaseFragment)

@@ -19,7 +19,8 @@ class ProfileWithDataStoreMapper @Inject constructor(
 
     suspend operator fun invoke(accountDataModel: UserAccountDataModel): ProfileDataView {
         var linkStatus = false
-        val isShowLinkAccount = true
+        //force this to false to support SCP Login, remove the account linking
+        val isShowLinkAccount = false
 
         if (accountDataModel.linkStatus.linkStatus.isNotEmpty()) {
             linkStatus = accountDataModel.linkStatus.linkStatus[0].status == "linked"

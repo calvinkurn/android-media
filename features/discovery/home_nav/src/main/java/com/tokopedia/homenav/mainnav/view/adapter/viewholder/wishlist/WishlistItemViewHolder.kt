@@ -4,9 +4,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.homenav.MePage
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.databinding.HolderWishlistBinding
-import com.tokopedia.homenav.mainnav.view.analytics.TrackingTransactionSection
 import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.WishlistModel
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.utils.view.binding.viewBinding
 
+@MePage(MePage.Widget.WISHLIST)
 class WishlistItemViewHolder(itemView: View, val mainNavListener: MainNavListener): AbstractViewHolder<WishlistModel>(itemView) {
     private var binding: HolderWishlistBinding? by viewBinding()
     companion object {
@@ -25,12 +26,9 @@ class WishlistItemViewHolder(itemView: View, val mainNavListener: MainNavListene
         setLayoutFullWidth(element)
 
         itemView.addOnImpressionListener(element) {
-            mainNavListener.putEEToTrackingQueue(
-                TrackingTransactionSection.getImpressionOnWishlist(
-                    userId = mainNavListener.getUserId(),
-                    position = adapterPosition,
-                    wishlistModel = element.navWishlistModel
-                )
+            mainNavListener.onWishlistCardImpressed(
+                element.navWishlistModel,
+                element.position
             )
         }
 
@@ -57,7 +55,7 @@ class WishlistItemViewHolder(itemView: View, val mainNavListener: MainNavListene
         ).format(element.navWishlistModel.totalItem)
 
         binding?.containerWishlistItem?.setOnClickListener {
-            mainNavListener.onWishlistCollectionClicked(element.navWishlistModel, adapterPosition)
+            mainNavListener.onWishlistCardClicked(element.navWishlistModel, adapterPosition)
         }
     }
 

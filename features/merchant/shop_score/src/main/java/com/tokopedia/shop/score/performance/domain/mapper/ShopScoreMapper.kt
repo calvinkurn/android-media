@@ -3,7 +3,21 @@ package com.tokopedia.shop.score.performance.domain.mapper
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.device.info.DeviceScreenInfo
-import com.tokopedia.gm.common.constant.*
+import com.tokopedia.gm.common.constant.NEW_SELLER_DAYS
+import com.tokopedia.gm.common.constant.OSStatus
+import com.tokopedia.gm.common.constant.PMConstant
+import com.tokopedia.gm.common.constant.PMStatusConst
+import com.tokopedia.gm.common.constant.PMTier
+import com.tokopedia.gm.common.constant.SHOP_AGE_NINETY_EIGHT
+import com.tokopedia.gm.common.constant.SHOP_AGE_NINETY_FIVE
+import com.tokopedia.gm.common.constant.SHOP_AGE_NINETY_FOUR
+import com.tokopedia.gm.common.constant.SHOP_AGE_NINETY_NINE
+import com.tokopedia.gm.common.constant.SHOP_AGE_NINETY_ONE
+import com.tokopedia.gm.common.constant.SHOP_AGE_NINETY_SEVEN
+import com.tokopedia.gm.common.constant.SHOP_AGE_NINETY_THREE
+import com.tokopedia.gm.common.constant.SHOP_AGE_NINETY_TWO
+import com.tokopedia.gm.common.constant.SHOP_AGE_ONE_HUNDRED
+import com.tokopedia.gm.common.constant.SHOP_AGE_ONE_HUNDRED_ONE
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.gm.common.utils.GoldMerchantUtil
 import com.tokopedia.kotlin.extensions.orFalse
@@ -11,15 +25,16 @@ import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shop.score.R
-import com.tokopedia.shop.score.common.*
+import com.tokopedia.shop.score.common.SellerTypeConstants
+import com.tokopedia.shop.score.common.ShopScoreConstant
 import com.tokopedia.shop.score.common.ShopScoreConstant.CHAT_DISCUSSION_REPLY_SPEED_KEY
 import com.tokopedia.shop.score.common.ShopScoreConstant.CHAT_DISCUSSION_SPEED_KEY
 import com.tokopedia.shop.score.common.ShopScoreConstant.COUNT_DAYS_NEW_SELLER
 import com.tokopedia.shop.score.common.ShopScoreConstant.ONE_HUNDRED_PERCENT
 import com.tokopedia.shop.score.common.ShopScoreConstant.OPEN_TOKOPEDIA_SELLER_KEY
 import com.tokopedia.shop.score.common.ShopScoreConstant.ORDER_SUCCESS_RATE_KEY
-import com.tokopedia.shop.score.common.ShopScoreConstant.PATTERN_DATE_NEW_SELLER
 import com.tokopedia.shop.score.common.ShopScoreConstant.PATTERN_DATE_TEXT
+import com.tokopedia.shop.score.common.ShopScoreConstant.PATTER_DATE_EDT
 import com.tokopedia.shop.score.common.ShopScoreConstant.PENALTY_IDENTIFIER
 import com.tokopedia.shop.score.common.ShopScoreConstant.PRODUCT_REVIEW_WITH_FOUR_STARS_KEY
 import com.tokopedia.shop.score.common.ShopScoreConstant.READ_TIPS_MORE_INFO_URL
@@ -49,15 +64,46 @@ import com.tokopedia.shop.score.common.ShopScoreConstant.dayText
 import com.tokopedia.shop.score.common.ShopScoreConstant.minuteText
 import com.tokopedia.shop.score.common.ShopScoreConstant.peopleText
 import com.tokopedia.shop.score.common.ShopScoreConstant.percentText
-import com.tokopedia.shop.score.performance.domain.model.*
-import com.tokopedia.shop.score.performance.presentation.model.*
+import com.tokopedia.shop.score.common.ShopScorePrefManager
+import com.tokopedia.shop.score.common.format
+import com.tokopedia.shop.score.common.getLocale
+import com.tokopedia.shop.score.performance.domain.model.GetRecommendationToolsResponse
+import com.tokopedia.shop.score.performance.domain.model.GoldGetPMOStatusResponse
+import com.tokopedia.shop.score.performance.domain.model.ShopScoreLevelResponse
+import com.tokopedia.shop.score.performance.domain.model.ShopScoreWrapperResponse
+import com.tokopedia.shop.score.performance.presentation.model.BaseDetailPerformanceUiModel
+import com.tokopedia.shop.score.performance.presentation.model.BasePeriodDetailUiModel
+import com.tokopedia.shop.score.performance.presentation.model.BaseProtectedParameterSectionUiModel
+import com.tokopedia.shop.score.performance.presentation.model.BaseShopPerformance
+import com.tokopedia.shop.score.performance.presentation.model.CardTooltipLevelUiModel
+import com.tokopedia.shop.score.performance.presentation.model.HeaderShopPerformanceUiModel
+import com.tokopedia.shop.score.performance.presentation.model.ItemDetailPerformanceUiModel
+import com.tokopedia.shop.score.performance.presentation.model.ItemFaqUiModel
+import com.tokopedia.shop.score.performance.presentation.model.ItemLevelScoreProjectUiModel
+import com.tokopedia.shop.score.performance.presentation.model.ItemParameterFaqUiModel
+import com.tokopedia.shop.score.performance.presentation.model.ItemParentBenefitUiModel
+import com.tokopedia.shop.score.performance.presentation.model.ItemProtectedParameterUiModel
+import com.tokopedia.shop.score.performance.presentation.model.ItemReactivatedComebackUiModel
+import com.tokopedia.shop.score.performance.presentation.model.ItemStatusPMProPotentiallyDowngradedUiModel
+import com.tokopedia.shop.score.performance.presentation.model.ItemStatusPMProUiModel
+import com.tokopedia.shop.score.performance.presentation.model.ItemStatusPMUiModel
+import com.tokopedia.shop.score.performance.presentation.model.ItemStatusRMUiModel
+import com.tokopedia.shop.score.performance.presentation.model.ItemTimerNewSellerUiModel
+import com.tokopedia.shop.score.performance.presentation.model.PeriodDetailPerformanceUiModel
+import com.tokopedia.shop.score.performance.presentation.model.ProtectedParameterSectionUiModel
+import com.tokopedia.shop.score.performance.presentation.model.SectionFaqUiModel
+import com.tokopedia.shop.score.performance.presentation.model.SectionRMPotentialPMBenefitUiModel
+import com.tokopedia.shop.score.performance.presentation.model.SectionRMPotentialPMProUiModel
+import com.tokopedia.shop.score.performance.presentation.model.SectionShopRecommendationUiModel
+import com.tokopedia.shop.score.performance.presentation.model.ShopInfoLevelUiModel
+import com.tokopedia.shop.score.performance.presentation.model.ShopPerformanceDetailUiModel
+import com.tokopedia.shop.score.performance.presentation.model.TickerReactivatedUiModel
 import com.tokopedia.shop.score.performance.presentation.model.tablet.BaseParameterDetail
 import com.tokopedia.shop.score.performance.presentation.model.tablet.ItemDetailPerformanceTabletUiModel
 import com.tokopedia.shop.score.performance.presentation.model.tablet.ItemHeaderParameterDetailUiModel
 import com.tokopedia.shop.score.performance.presentation.model.tablet.PeriodDetailTabletUiModel
 import com.tokopedia.shop.score.performance.presentation.model.tablet.ProtectedParameterTabletUiModel
 import com.tokopedia.user.session.UserSessionInterface
-import java.text.ParseException
 import java.util.*
 import javax.inject.Inject
 import kotlin.math.roundToLong
@@ -1122,7 +1168,9 @@ open class ShopScoreMapper @Inject constructor(
         return Pair(
             ItemTimerNewSellerUiModel(
                 effectiveDate = effectiveDate,
-                effectiveDateText = format(effectiveDate.timeInMillis, PATTERN_DATE_NEW_SELLER),
+                effectiveDateText = format(effectiveDate.timeInMillis,
+                    PATTER_DATE_EDT
+                ),
                 isTenureDate = isEndTenure,
                 shopAge = shopAge,
                 shopScore = shopScore

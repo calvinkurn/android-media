@@ -60,6 +60,10 @@ class AddEditProductDescriptionViewModel @Inject constructor(
     private val _videoYoutubeNew = MutableLiveData<Result<YoutubeVideoDetailModel>>()
     val videoYoutube: LiveData<Result<YoutubeVideoDetailModel>> = _videoYoutubeNew
 
+    val hasDTStock = Transformations.map(productInputModel){
+        it.hasDTStock
+    }
+
     private val videoYoutubeLiveData = MutableLiveData<String>()
     private val descriptionFlow = MutableStateFlow("")
 
@@ -87,6 +91,10 @@ class AddEditProductDescriptionViewModel @Inject constructor(
         ENABLED_HAMPERS_CATEGORY_ID.any {
             it == productInputModel.detailInputModel.categoryId
         }
+    }
+
+    val isRemovingSingleVariant = Transformations.map(productInputModel) {
+        it.isRemovingSingleVariant
     }
 
     init {

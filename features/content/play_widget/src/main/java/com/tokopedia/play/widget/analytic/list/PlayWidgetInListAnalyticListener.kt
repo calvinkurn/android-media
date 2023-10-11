@@ -1,5 +1,6 @@
 package com.tokopedia.play.widget.analytic.list
 
+import com.tokopedia.play.widget.analytic.list.carousel.PlayWidgetInListCarouselAnalyticListener
 import com.tokopedia.play.widget.analytic.list.jumbo.PlayWidgetInListJumboAnalyticListener
 import com.tokopedia.play.widget.analytic.list.large.PlayWidgetInListLargeAnalyticListener
 import com.tokopedia.play.widget.analytic.list.medium.PlayWidgetInListMediumAnalyticListener
@@ -14,7 +15,9 @@ interface PlayWidgetInListAnalyticListener :
     PlayWidgetInListSmallAnalyticListener,
     PlayWidgetInListMediumAnalyticListener,
     PlayWidgetInListLargeAnalyticListener,
-    PlayWidgetInListJumboAnalyticListener {
+    PlayWidgetInListJumboAnalyticListener,
+    PlayWidgetInListCarouselAnalyticListener
+{
 
     fun onImpressPlayWidget(
             view: PlayWidgetView,

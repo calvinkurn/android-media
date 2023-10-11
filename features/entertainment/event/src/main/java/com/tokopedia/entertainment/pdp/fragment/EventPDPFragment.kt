@@ -7,6 +7,8 @@ import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
@@ -32,6 +34,12 @@ import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.common.util.EventGlobalError
 import com.tokopedia.entertainment.common.util.EventQuery
 import com.tokopedia.entertainment.common.util.EventQuery.eventContentById
+import com.tokopedia.entertainment.databinding.BottomSheetEventPdpAboutBinding
+import com.tokopedia.entertainment.databinding.BottomSheetEventPdpFacilitiesBinding
+import com.tokopedia.entertainment.databinding.BottomSheetEventPdpHowToGoThereBinding
+import com.tokopedia.entertainment.databinding.BottomSheetEventPdpOpenHourBinding
+import com.tokopedia.entertainment.databinding.FragmentEventPdpBinding
+import com.tokopedia.entertainment.databinding.WidgetEventPdpCalendarBinding
 import com.tokopedia.entertainment.navigation.EventNavigationActivity
 import com.tokopedia.entertainment.pdp.adapter.EventPDPFacilitiesBottomSheetAdapter
 import com.tokopedia.entertainment.pdp.adapter.EventPDPLocationDetailAdapter
@@ -70,30 +78,11 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.lang.ref.WeakReference
 import java.util.TimeZone
 import java.util.Date
 import javax.inject.Inject
-import kotlinx.android.synthetic.main.bottom_sheet_event_pdp_about.view.loader_unify_event_pdp
-import kotlinx.android.synthetic.main.bottom_sheet_event_pdp_about.view.web_event_pdp_about
-import kotlinx.android.synthetic.main.bottom_sheet_event_pdp_facilities.view.rv_event_pdp_facilities_bottom_sheet
-import kotlinx.android.synthetic.main.bottom_sheet_event_pdp_how_to_go_there.view.rv_event_pdp_how_to_got_there_bottom_sheet
-import kotlinx.android.synthetic.main.bottom_sheet_event_pdp_open_hour.view.rv_event_pdp_open_hour
-import kotlinx.android.synthetic.main.fragment_event_pdp.carousel_event_pdp
-import kotlinx.android.synthetic.main.fragment_event_pdp.container_error_event_pdp
-import kotlinx.android.synthetic.main.fragment_event_pdp.event_pdp_app_bar_layout
-import kotlinx.android.synthetic.main.fragment_event_pdp.event_pdp_collapsing_toolbar
-import kotlinx.android.synthetic.main.fragment_event_pdp.event_pdp_pb
-import kotlinx.android.synthetic.main.fragment_event_pdp.event_pdp_toolbar
-import kotlinx.android.synthetic.main.fragment_event_pdp.global_error_pdp_event
-import kotlinx.android.synthetic.main.fragment_event_pdp.rv_event_pdp
-import kotlinx.android.synthetic.main.fragment_event_pdp.widget_event_pdp_tab_section
-import kotlinx.android.synthetic.main.partial_event_pdp_price.btn_event_pdp_cek_tiket
-import kotlinx.android.synthetic.main.partial_event_pdp_price.container_price
-import kotlinx.android.synthetic.main.partial_event_pdp_price.qr_redeem_pdp
-import kotlinx.android.synthetic.main.partial_event_pdp_price.shimmering_price
-import kotlinx.android.synthetic.main.partial_event_pdp_price.tg_event_pdp_price
-import kotlinx.android.synthetic.main.widget_event_pdp_calendar.view.bottom_sheet_calendar
 
 class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(), OnBindItemListener
         ,AppBarLayout.OnOffsetChangedListener {
@@ -116,6 +105,8 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    private var binding by autoClearedNullable<FragmentEventPdpBinding>()
+
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
@@ -126,7 +117,12 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_event_pdp, container, false)
+        binding = FragmentEventPdpBinding.inflate(inflater)
+        return binding?.root
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -172,9 +168,11 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
         eventPDPViewModel.isError.observe(viewLifecycleOwner, Observer {
             it?.let { error ->
                 if (error.error) {
-                    context?.let {
-                        EventGlobalError.errorEventHandlerGlobalError(it, error.throwable, container_error_event_pdp,
-                                global_error_pdp_event, { loadDataAll() })
+                    context?.let { it ->
+                        binding?.run {
+                            EventGlobalError.errorEventHandlerGlobalError(it, error.throwable, containerErrorEventPdp,
+                                globalErrorPdpEvent, { loadDataAll() })
+                        }
                     }
                     performanceMonitoring.stopTrace()
                 }
@@ -199,10 +197,12 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
     }
 
     private fun loadDataAll() {
-        container_error_event_pdp.hide()
-        global_error_pdp_event.hide()
-        eventPDPViewModel.getIntialList()
-        requestData()
+        binding?.run {
+            containerErrorEventPdp.hide()
+            globalErrorPdpEvent.hide()
+            eventPDPViewModel.getIntialList()
+            requestData()
+        }
     }
 
     override fun getAdapterTypeFactory(): EventPDPFactoryImpl = EventPDPFactoryImpl(this)
@@ -223,7 +223,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
 
     override fun onSwipeRefresh() {
         super.onSwipeRefresh()
-        carousel_event_pdp.shimmering()
+        binding?.carouselEventPdp?.shimmering()
         requestData()
     }
 
@@ -242,88 +242,115 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
     }
 
     private fun loadMedia(productDetailData: ProductDetailData) {
-        carousel_event_pdp.setImages(mapperMediaPDP(productDetailData))
-        carousel_event_pdp.imageViewPagerListener = object : WidgetEventPDPCarousel.ImageViewPagerListener {
-            override fun onImageClicked(position: Int) {
-                context?.run {
-                    startActivity(ImagePreviewSliderActivity.getCallingIntent(this, productDetailData.title,
+        binding?.carouselEventPdp?.run {
+            setImages(mapperMediaPDP(productDetailData))
+            imageViewPagerListener = object : WidgetEventPDPCarousel.ImageViewPagerListener {
+                override fun onImageClicked(position: Int) {
+                    context?.run {
+                        startActivity(ImagePreviewSliderActivity.getCallingIntent(this, productDetailData.title,
                             mapperMediaPDP(productDetailData), mapperMediaPDP(productDetailData), position))
+                    }
                 }
             }
+            buildView()
         }
-        carousel_event_pdp.buildView()
     }
 
     private fun loadPrice(productDetailData: ProductDetailData) {
-        val price = productDetailData.salesPrice.toIntSafely()
-        tg_event_pdp_price.apply {
-            text = if(price != ZERO_PRICE) {
-                 CurrencyFormatter.getRupiahFormat(productDetailData.salesPrice.toIntSafely())
-            } else {
-                 context?.resources?.getString(R.string.ent_free_price) ?: ""
+        binding?.run {
+            val price = productDetailData.salesPrice.toIntSafely()
+            containerPdpPrice.tgEventPdpPrice.apply {
+                text = if (price != ZERO_PRICE) {
+                    CurrencyFormatter.getRupiahFormat(productDetailData.salesPrice.toIntSafely())
+                } else {
+                    context?.resources?.getString(R.string.ent_free_price) ?: ""
+                }
             }
         }
-
     }
 
     private fun renderScanner(isValidated: Boolean){
-        if (isValidated && userSession.isLoggedIn){
-            qr_redeem_pdp.show()
-            qr_redeem_pdp.setOnClickListener {
-                RouteManager.route(context, ApplinkConstInternalMarketplace.QR_SCANNEER)
+        binding?.run {
+            if (isValidated && userSession.isLoggedIn){
+                containerPdpPrice.qrRedeemPdp.show()
+                containerPdpPrice.qrRedeemPdp.setOnClickListener {
+                    RouteManager.route(context, ApplinkConstInternalMarketplace.QR_SCANNEER)
+                }
             }
         }
     }
 
     private fun loadCalendar(context: Context, productDetailData: ProductDetailData) {
-        btn_event_pdp_cek_tiket.setOnClickListener {
-            eventPDPTracking.onClickCariTicket(productDetailData)
-            if (isScheduleWithDatePicker(productDetailData)) {
+        binding?.run {
+            containerPdpPrice.btnEventPdpCekTiket.setOnClickListener {
+                eventPDPTracking.onClickCariTicket(productDetailData)
+                if (isScheduleWithDatePicker(productDetailData)) {
 
-                val view = LayoutInflater.from(context).inflate(R.layout.widget_event_pdp_calendar, null)
-                val bottomSheets = BottomSheetUnify()
-                bottomSheets.apply {
-                    setChild(view)
-                    setTitle(context.resources.getString(R.string.ent_pdp_choose_date_bottom_sheet))
-                    setCloseClickListener { bottomSheets.dismiss() }
-                }
-
-                view.bottom_sheet_calendar.apply {
-                    getActiveDate(productDetailData.dates).firstOrNull()?.let {
-                        calendarPickerView?.init(it,Date(productDetailData.maxEndDate.toLong() * DATE_LONG_VALUE), listHoliday, getActiveDate(productDetailData.dates))
-                                ?.inMode(CalendarPickerView.SelectionMode.SINGLE)
+                    val bindingCalendar = WidgetEventPdpCalendarBinding.inflate(
+                        LayoutInflater.from(context)
+                    )
+                    val bottomSheets = BottomSheetUnify()
+                    bottomSheets.apply {
+                        setChild(bindingCalendar.root)
+                        setTitle(context.resources.getString(R.string.ent_pdp_choose_date_bottom_sheet))
+                        setCloseClickListener { bottomSheets.dismiss() }
                     }
 
-                    calendarPickerView?.setOnDateSelectedListener(object : CalendarPickerView.OnDateSelectedListener {
-                        override fun onDateSelected(date: Date) {
-                            selectedDate = (date.time / DATE_LONG_VALUE).toString()
-                            eventPDPTracking.onClickPickDate()
-                            if (userSession.isLoggedIn) { goToTicketPage(productDetailData, selectedDate) }
-                            else {
-                                startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
-                                        REQUEST_CODE_LOGIN_WITH_DATE)
+                    bindingCalendar.bottomSheetCalendar.apply {
+                        getActiveDate(productDetailData.dates).firstOrNull()?.let {
+                            calendarPickerView?.init(
+                                it,
+                                Date(productDetailData.maxEndDate.toLong() * DATE_LONG_VALUE),
+                                listHoliday,
+                                getActiveDate(productDetailData.dates)
+                            )
+                                ?.inMode(CalendarPickerView.SelectionMode.SINGLE)
+                        }
+
+                        calendarPickerView?.setOnDateSelectedListener(object :
+                            CalendarPickerView.OnDateSelectedListener {
+                            override fun onDateSelected(date: Date) {
+                                selectedDate = (date.time / DATE_LONG_VALUE).toString()
+                                eventPDPTracking.onClickPickDate()
+                                if (userSession.isLoggedIn) {
+                                    goToTicketPage(productDetailData, selectedDate)
+                                } else {
+                                    startActivityForResult(
+                                        RouteManager.getIntent(context, ApplinkConst.LOGIN),
+                                        REQUEST_CODE_LOGIN_WITH_DATE
+                                    )
+                                }
+                                bottomSheets.dismiss()
                             }
-                            bottomSheets.dismiss()
-                        }
 
-                        override fun onDateUnselected(date: Date) {
+                            override fun onDateUnselected(date: Date) {
 
-                        }
-                    })
-                }
-                fragmentManager?.let {
-                    bottomSheets.show(it, "")
-                }
-            } else if(isScheduleWithoutDatePicker(productDetailData)) {
-                selectedDate = productDetailData.dates.first()
-                if (userSession.isLoggedIn) { goToTicketPageWithoutDate() }
-                else {
-                    startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
-                            REQUEST_CODE_LOGIN_WITHOUT_DATE)
-                }
-            } else {
-                view?.let {
-                    Toaster.build(it, it.context.getString(R.string.ent_pdp_empty_package), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, it.context.getString(R.string.ent_checkout_error)).show()
+                            }
+                        })
+                    }
+                    childFragmentManager.let {
+                        bottomSheets.show(it, "")
+                    }
+                } else if (isScheduleWithoutDatePicker(productDetailData)) {
+                    selectedDate = productDetailData.dates.first()
+                    if (userSession.isLoggedIn) {
+                        goToTicketPageWithoutDate()
+                    } else {
+                        startActivityForResult(
+                            RouteManager.getIntent(context, ApplinkConst.LOGIN),
+                            REQUEST_CODE_LOGIN_WITHOUT_DATE
+                        )
+                    }
+                } else {
+                    view?.let {
+                        Toaster.build(
+                            it,
+                            it.context.getString(R.string.ent_pdp_empty_package),
+                            Toaster.LENGTH_LONG,
+                            Toaster.TYPE_ERROR,
+                            it.context.getString(R.string.ent_checkout_error)
+                        ).show()
+                    }
                 }
             }
         }
@@ -331,74 +358,99 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
 
     private fun loadTab(productDetailData: ProductDetailData,
                         tabsTitle: List<EventPDPTabEntity>) {
+        binding?.run {
+            containerPdpPrice.containerPrice.show()
+            containerPdpPrice.shimmeringPrice.gone()
 
-        container_price.show()
-        shimmering_price.gone()
+            (activity as EventNavigationActivity).setSupportActionBar(eventPdpToolbar)
+            (activity as EventNavigationActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
+            (activity as EventNavigationActivity).supportActionBar?.title = ""
 
-        (activity as EventNavigationActivity).setSupportActionBar(event_pdp_toolbar)
-        (activity as EventNavigationActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        (activity as EventNavigationActivity).supportActionBar?.title = ""
+            val navIcon = eventPdpToolbar.navigationIcon
 
-        val navIcon = event_pdp_toolbar.navigationIcon
-
-        context?.let { ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0) }?.let {
-            navIcon?.setColorFilter(it, PorterDuff.Mode.SRC_ATOP)
-        }
-        (activity as EventNavigationActivity).supportActionBar?.setHomeAsUpIndicator(navIcon)
-
-        event_pdp_collapsing_toolbar.title = ""
-        context?.let {
-            event_pdp_collapsing_toolbar.setCollapsedTitleTypeface(Typography.getFontType(it, true, Typography.DISPLAY_1))
-        }
-        event_pdp_app_bar_layout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
-            override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
-                context?.let { context ->
-                    var color = 0
-                    if (Math.abs(verticalOffset) - appBarLayout.totalScrollRange == 0) {
-                        event_pdp_collapsing_toolbar.title = productDetailData.title
-                        color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
-                        widget_event_pdp_tab_section.setScrolledMode()
-                        widget_event_pdp_tab_section.show()
-                    } else if (verticalOffset == 0) {
-                        event_pdp_collapsing_toolbar.title = ""
-                        color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
-                        widget_event_pdp_tab_section.setNullMode()
-                        widget_event_pdp_tab_section.hide()
-                    }
-                    setDrawableColorFilter(navIcon, color)
-                    if (event_pdp_toolbar.menu.isNotEmpty()) {
-                        setDrawableColorFilter(event_pdp_toolbar.menu.getItem(0).icon, color)
-                    }
-                }
+            context?.let {
+                ContextCompat.getColor(
+                    it,
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN0
+                )
+            }?.let {
+                navIcon?.setColorFilter(it, PorterDuff.Mode.SRC_ATOP)
             }
-        })
+            (activity as EventNavigationActivity).supportActionBar?.setHomeAsUpIndicator(navIcon)
 
-        if(tabsTitle.isNotEmpty()) {
-            widget_event_pdp_tab_section.setRecycleView(rv_event_pdp)
-            widget_event_pdp_tab_section.setDynamicTitle(tabsTitle)
-
-            rv_event_pdp.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    super.onScrolled(recyclerView, dx, dy)
-                    widget_event_pdp_tab_section.setScrolledSection(checkVisibilityItem())
+            eventPdpCollapsingToolbar.title = ""
+            context?.let {
+                eventPdpCollapsingToolbar.setCollapsedTitleTypeface(
+                    Typography.getFontType(
+                        it,
+                        true,
+                        Typography.DISPLAY_1
+                    )
+                )
+            }
+            eventPdpAppBarLayout.addOnOffsetChangedListener(object :
+                AppBarLayout.OnOffsetChangedListener {
+                override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
+                    context?.let { context ->
+                        var color = 0
+                        if (Math.abs(verticalOffset) - appBarLayout.totalScrollRange == 0) {
+                            eventPdpCollapsingToolbar.title = productDetailData.title
+                            color = ContextCompat.getColor(
+                                context,
+                                com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
+                            )
+                            widgetEventPdpTabSection.setScrolledMode()
+                            widgetEventPdpTabSection.show()
+                        } else if (verticalOffset == 0) {
+                            eventPdpCollapsingToolbar.title = ""
+                            color = ContextCompat.getColor(
+                                context,
+                                com.tokopedia.unifyprinciples.R.color.Unify_NN0
+                            )
+                            widgetEventPdpTabSection.setNullMode()
+                            widgetEventPdpTabSection.hide()
+                        }
+                        setDrawableColorFilter(navIcon, color)
+                        if (eventPdpToolbar.menu.isNotEmpty()) {
+                            setDrawableColorFilter(eventPdpToolbar.menu.getItem(0).icon, color)
+                        }
+                    }
                 }
             })
+
+            if (tabsTitle.isNotEmpty()) {
+                widgetEventPdpTabSection.setRecycleView(rvEventPdp)
+                widgetEventPdpTabSection.setDynamicTitle(tabsTitle)
+
+                rvEventPdp.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                    override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                        super.onScrolled(recyclerView, dx, dy)
+                        widgetEventPdpTabSection.setScrolledSection(checkVisibilityItem())
+                    }
+                })
+            }
         }
     }
 
 
     override fun onOffsetChanged(appBarLayout: AppBarLayout?, verticalOffset: Int) {
-        swipeToRefresh.isEnabled = event_pdp_collapsing_toolbar.height + verticalOffset >= 2 * ViewCompat.getMinimumHeight(event_pdp_collapsing_toolbar)
+        binding?.run {
+            swipeToRefresh.isEnabled = eventPdpCollapsingToolbar.height + verticalOffset >= 2 * ViewCompat.getMinimumHeight(eventPdpCollapsingToolbar)
+        }
     }
 
     override fun onResume() {
         super.onResume()
-        event_pdp_app_bar_layout.addOnOffsetChangedListener(this)
+        binding?.run {
+            eventPdpAppBarLayout.addOnOffsetChangedListener(this@EventPDPFragment)
+        }
     }
 
     override fun onPause() {
         super.onPause()
-        event_pdp_app_bar_layout.removeOnOffsetChangedListener(this)
+        binding?.run {
+            eventPdpAppBarLayout.removeOnOffsetChangedListener(this@EventPDPFragment)
+        }
     }
 
     override fun onStop() {
@@ -424,19 +476,21 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
     override fun seeAllOpenHour(openHour: List<OpenHour>, title: String) {
         val openHourAdapter = EventPDPOpenHourAdapter()
         openHourAdapter.setList(openHour)
-        val view = LayoutInflater.from(context).inflate(R.layout.bottom_sheet_event_pdp_open_hour, null)
+        val bindingOpenHour = BottomSheetEventPdpOpenHourBinding.inflate(
+            LayoutInflater.from(context)
+        )
         val bottomSheets = BottomSheetUnify()
         bottomSheets.apply {
-            setChild(view)
+            setChild(bindingOpenHour.root)
             setTitle(title)
             setCloseClickListener { bottomSheets.dismiss() }
         }
-        view.rv_event_pdp_open_hour.apply {
+        bindingOpenHour.rvEventPdpOpenHour.apply {
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
             this.adapter = openHourAdapter
         }
 
-        fragmentManager?.let {
+        childFragmentManager.let {
             bottomSheets.show(it, "")
         }
     }
@@ -444,18 +498,20 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
     override fun seeAllFacilities(facilities: List<Facilities>, title: String) {
         val facilitiesBottomSheetAdapter = EventPDPFacilitiesBottomSheetAdapter()
         facilitiesBottomSheetAdapter.setList(facilities)
-        val view = LayoutInflater.from(context).inflate(R.layout.bottom_sheet_event_pdp_facilities, null)
+        val bindingFacilities = BottomSheetEventPdpFacilitiesBinding.inflate(
+            LayoutInflater.from(context)
+        )
         val bottomSheets = BottomSheetUnify()
         bottomSheets.apply {
-            setChild(view)
+            setChild(bindingFacilities.root)
             setTitle(title)
             setCloseClickListener { bottomSheets.dismiss() }
         }
-        view.rv_event_pdp_facilities_bottom_sheet.apply {
+        bindingFacilities.rvEventPdpFacilitiesBottomSheet.apply {
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
             this.adapter = facilitiesBottomSheetAdapter
         }
-        fragmentManager?.let {
+        childFragmentManager.let {
             bottomSheets.show(it, "")
         }
     }
@@ -463,14 +519,16 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
     override fun seeAllHowtoGoThere(listBullet: List<ValueBullet>, title: String) {
         val eventPDPLocationDetailAdapter = EventPDPLocationDetailAdapter()
         eventPDPLocationDetailAdapter.setList(listBullet)
-        val view = LayoutInflater.from(context).inflate(R.layout.bottom_sheet_event_pdp_how_to_go_there, null)
+        val bindingHowToGo = BottomSheetEventPdpHowToGoThereBinding.inflate(
+            LayoutInflater.from(context)
+        )
         val bottomSheets = BottomSheetUnify()
         bottomSheets.apply {
-            setChild(view)
+            setChild(bindingHowToGo.root)
             setTitle(title)
             setCloseClickListener { bottomSheets.dismiss() }
         }
-        view.rv_event_pdp_how_to_got_there_bottom_sheet.apply {
+        bindingHowToGo.rvEventPdpHowToGotThereBottomSheet.apply {
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
             this.adapter = eventPDPLocationDetailAdapter
         }
@@ -481,12 +539,12 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
 
     override fun seeAllAbout(value: String, title: String) {
 
-        val viewParent = LayoutInflater.from(context).inflate(R.layout.bottom_sheet_event_pdp_about, null)
+        val bindingAbout = BottomSheetEventPdpAboutBinding.inflate(LayoutInflater.from(context))
         val bottomSheets = BottomSheetUnify()
-        val webView = viewParent.web_event_pdp_about
+        val webView = bindingAbout.webEventPdpAbout
         bottomSheets.apply {
             isFullpage = true
-            setChild(viewParent)
+            setChild(bindingAbout.root)
             setTitle(title)
             setCloseClickListener { bottomSheets.dismiss() }
         }
@@ -496,7 +554,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
         }
 
         bottomSheets.setShowListener {
-            val loader = viewParent.loader_unify_event_pdp
+            val loader = bindingAbout.loaderUnifyEventPdp
 
             webView.loadPartialWebView(value)
             webView.webViewClient = object : WebViewClient(){
@@ -565,15 +623,19 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
     }
 
     fun hideShareLoading() {
-        event_pdp_pb.hide()
+        binding?.run {
+            eventPdpPb.hide()
+        }
     }
 
     fun showShareLoading() {
-        event_pdp_pb.show()
+        binding?.run {
+            eventPdpPb.show()
+        }
     }
 
     private fun checkVisibilityItem(): Int{
-        return (rv_event_pdp.layoutManager
+        return (binding?.rvEventPdp?.layoutManager
                 as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
     }
 

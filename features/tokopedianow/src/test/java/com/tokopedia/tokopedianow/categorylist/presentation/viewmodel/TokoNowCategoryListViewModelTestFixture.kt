@@ -5,6 +5,7 @@ import com.tokopedia.tokopedianow.categorylist.presentation.uimodel.CategoryList
 import com.tokopedia.tokopedianow.common.domain.mapper.CategoryListMapper
 import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse.CategoryListResponse
 import com.tokopedia.tokopedianow.common.domain.usecase.GetCategoryListUseCase
+import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -21,6 +22,9 @@ abstract class TokoNowCategoryListViewModelTestFixture {
     @RelaxedMockK
     lateinit var getCategoryListUseCase: GetCategoryListUseCase
 
+    @RelaxedMockK
+    lateinit var addressData: TokoNowLocalAddress
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
@@ -30,8 +34,9 @@ abstract class TokoNowCategoryListViewModelTestFixture {
     fun setup() {
         MockKAnnotations.init(this)
         viewModelTokoNow = TokoNowCategoryListViewModel(
-                getCategoryListUseCase,
-                CoroutineTestDispatchersProvider
+            getCategoryListUseCase,
+            addressData,
+            CoroutineTestDispatchersProvider
         )
     }
 
@@ -46,15 +51,14 @@ abstract class TokoNowCategoryListViewModelTestFixture {
     }
 
     protected fun verifyGetCategoryListUseCaseCalled() {
-        coVerify { getCategoryListUseCase.execute(warehouseId = any(), depth = any()) }
+        coVerify { getCategoryListUseCase.execute(warehouses = any(), depth = any()) }
     }
 
     protected fun onGetCategoryList_thenReturn(categoryListResponse: CategoryListResponse) {
-        coEvery { getCategoryListUseCase.execute(warehouseId = any(), depth = any()) } returns categoryListResponse
+        coEvery { getCategoryListUseCase.execute(warehouses = any(), depth = any()) } returns categoryListResponse
     }
 
     protected fun onGetCategoryList_thenReturn(errorThrowable: Throwable) {
-        coEvery { getCategoryListUseCase.execute(warehouseId = any(), depth = any()) } throws errorThrowable
+        coEvery { getCategoryListUseCase.execute(warehouses = any(), depth = any()) } throws errorThrowable
     }
-
 }

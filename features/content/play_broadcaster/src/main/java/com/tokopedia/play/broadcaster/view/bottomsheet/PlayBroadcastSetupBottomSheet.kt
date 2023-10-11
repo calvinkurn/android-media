@@ -126,7 +126,13 @@ class PlayBroadcastSetupBottomSheet :
         mListener = null
     }
 
-    override fun <T : Fragment> navigateToFragment(fragmentClass: Class<out T>, extras: Bundle, sharedElements: List<View>, onFragment: (T) -> Unit) {
+    override fun <T : Fragment> navigateToFragment(
+        fragmentClass: Class<out T>,
+        extras: Bundle,
+        sharedElements: List<View>,
+        onFragment: (T) -> Unit,
+        isAddToBackStack: Boolean
+    ) {
         openFragment(fragmentClass, extras, sharedElements)
     }
 

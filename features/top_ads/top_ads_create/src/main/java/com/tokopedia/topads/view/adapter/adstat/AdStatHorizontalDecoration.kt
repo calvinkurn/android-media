@@ -53,7 +53,7 @@ class AdStatHorizontalDecoration(private val offset:Int) : RecyclerView.ItemDeco
     private fun drawDot(c:Canvas,context: Context,rect:RectF){
         val paint = Paint()
         paint.style  = Paint.Style.FILL
-        paint.color = ResourcesCompat.getColor(context.resources,com.tokopedia.unifycomponents.R.color.Unify_NN600,null)
+        paint.color = ResourcesCompat.getColor(context.resources,com.tokopedia.unifyprinciples.R.color.Unify_NN600,null)
         c.drawCircle(rect.left,rect.top, CIRCLE_RADIUS,paint)
     }
 }

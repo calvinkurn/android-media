@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
@@ -32,8 +31,6 @@ import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.dpToPx
-import com.tokopedia.kotlin.extensions.view.observe
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller.active.common.worker.UpdateShopActiveWorker
@@ -56,7 +53,6 @@ import com.tokopedia.sellerhome.settings.view.viewmodel.MenuSettingViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.url.TokopediaUrl.Companion.getInstance
 import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -70,10 +66,10 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
 
         private const val URL_PLAY_STORE_HOST = "https://play.google.com/store/apps/details?id="
         private const val MARKET_DETAIL_HOST = "market://details?id="
-        private const val PATH_TERM_CONDITION = "terms.pl"
-        private const val PATH_PRIVACY_POLICY = "privacy.pl"
+        private const val PATH_TERM_CONDITION = "terms?lang=id"
+        private const val PATH_PRIVACY_POLICY = "privacy?lang=id"
 
-        private var MOBILE_DOMAIN = getInstance().MOBILEWEB
+        private val WEB_DOMAIN = getInstance().WEB
 
         private const val LOGOUT_BUTTON_NAME = "Logout"
         private const val TERM_CONDITION_BUTTON_NAME = "Syarat dan Ketentuan"
@@ -259,7 +255,7 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
             when (result) {
                 is Success -> {
                     menuSettingAdapter?.showSuccessAccessMenus(result.data)
-                    menuSettingViewModel.getShopLocEligible(userSession.shopId.toLongOrZero())
+                    menuSettingAdapter?.showShopSetting()
                 }
                 is Fail -> {
                     menuSettingAdapter?.removeLoading()
@@ -269,22 +265,15 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
         }
     }
 
-    private fun setupLocationSettings(isEligibleMultiloc: Result<Boolean>) {
-        if (isEligibleMultiloc is Success) {
-            menuSettingAdapter?.showShopSetting(isEligibleMultiloc.data)
-        }
-    }
-
     private fun setupView() {
         val menuLayoutManager by getMenuLayoutManager()
         binding?.recyclerView?.layoutManager = menuLayoutManager
         menuSettingAdapter?.populateInitialMenus(userSession.isShopOwner)
         if (userSession.isShopOwner) {
-            menuSettingViewModel.getShopLocEligible(userSession.shopId.toLong())
+            menuSettingAdapter?.showShopSetting()
         } else {
             menuSettingViewModel.checkShopSettingAccess()
         }
-        observe(menuSettingViewModel.shopLocEligible, ::setupLocationSettings)
 
         setupLogoutView()
         setupExtraSettingView()
@@ -476,14 +465,14 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
 
     private fun showTermsAndConditions() {
         val termUrl =
-            String.format(APPLINK_FORMAT, ApplinkConst.WEBVIEW, MOBILE_DOMAIN, PATH_TERM_CONDITION)
+            String.format(APPLINK_FORMAT, ApplinkConst.WEBVIEW, WEB_DOMAIN, PATH_TERM_CONDITION)
         val intent = RouteManager.getIntent(context, termUrl)
         context?.startActivity(intent)
     }
 
     private fun showPrivacyPolicy() {
         val privacyUrl =
-            String.format(APPLINK_FORMAT, ApplinkConst.WEBVIEW, MOBILE_DOMAIN, PATH_PRIVACY_POLICY)
+            String.format(APPLINK_FORMAT, ApplinkConst.WEBVIEW, WEB_DOMAIN, PATH_PRIVACY_POLICY)
         val intent = RouteManager.getIntent(context, privacyUrl)
         context?.startActivity(intent)
     }

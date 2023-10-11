@@ -99,7 +99,16 @@ data class AceSearchProductModel(
 
             @SerializedName("keywordProcess")
             @Expose
-            val keywordProcess: String = "0"
+            val keywordProcess: String = "0",
+
+            @SerializedName("meta")
+            @Expose
+            val meta: Meta = Meta()
+    )
+
+    data class Meta(
+        @SerializedName("categoryId")
+        val categoryId: String = "0"
     )
 
     data class SearchProductData(
@@ -133,7 +142,33 @@ data class AceSearchProductModel(
 
             @SerializedName("products")
             @Expose
-            val productList: List<Product> = listOf()
+            val productList: List<Product> = listOf(),
+
+            @SerializedName("violation")
+            @Expose
+            val violation: Violation = Violation()
+    )
+
+    data class Violation(
+        @SerializedName("headerText")
+        @Expose
+
+        val headerText: String = "",
+        @SerializedName("descriptionText")
+        @Expose
+        val descriptionText: String = "",
+
+        @SerializedName("imageURL")
+        @Expose
+        val imageUrl: String = "",
+
+        @SerializedName("ctaURL")
+        @Expose
+        val ctaUrl: String = "",
+
+        @SerializedName("buttonText")
+        @Expose
+        val buttonText: String = "",
     )
 
     data class Redirection(
@@ -382,6 +417,10 @@ data class AceSearchProductModel(
             @SerializedName("childs")
             @Expose
             val childs: List<String> = listOf(),
+
+            @SerializedName("category_id")
+            @Expose
+            val categoryId: String = "",
 
             @SerializedName("parentId")
             @Expose

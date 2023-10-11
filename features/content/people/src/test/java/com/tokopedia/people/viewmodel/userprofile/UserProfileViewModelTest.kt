@@ -89,7 +89,7 @@ class UserProfileViewModelTest {
             username = mockOwnUsername,
             repo = mockRepo,
             dispatcher = testDispatcher,
-            userSession = mockUserSession,
+            userSession = mockUserSession
         )
 
         robot.use {
@@ -102,6 +102,7 @@ class UserProfileViewModelTest {
                 creationInfo equalTo ProfileCreationInfoUiModel()
                 shopRecom equalTo mockEmptyShopRecom
                 it.viewModel.profileUserEncryptedID equalTo mockOwnProfile.encryptedUserID
+                it.viewModel.badges equalTo mockOwnProfile.badges
             }
         }
     }
@@ -116,7 +117,7 @@ class UserProfileViewModelTest {
             username = mockOwnUsername,
             repo = mockRepo,
             dispatcher = testDispatcher,
-            userSession = mockUserSession,
+            userSession = mockUserSession
         )
 
         robot.use {
@@ -141,7 +142,7 @@ class UserProfileViewModelTest {
             username = mockOwnUsername,
             repo = mockRepo,
             dispatcher = testDispatcher,
-            userSession = mockUserSession,
+            userSession = mockUserSession
         )
 
         robot.use {
@@ -149,6 +150,7 @@ class UserProfileViewModelTest {
                 submitAction(UserProfileAction.LoadProfile(isRefresh = true))
             } andThen {
                 creationInfo.isActive.assertTrue()
+                it.viewModel.isShortVideoEntryPointShow.assertTrue()
             }
         }
     }
@@ -161,7 +163,7 @@ class UserProfileViewModelTest {
             username = mockOtherUsername,
             repo = mockRepo,
             dispatcher = testDispatcher,
-            userSession = mockUserSession,
+            userSession = mockUserSession
         )
 
         robot.use {
@@ -186,7 +188,7 @@ class UserProfileViewModelTest {
             username = mockOtherUsername,
             repo = mockRepo,
             dispatcher = testDispatcher,
-            userSession = mockUserSession,
+            userSession = mockUserSession
         )
 
         robot.use {
@@ -211,7 +213,7 @@ class UserProfileViewModelTest {
             username = mockOtherUsername,
             repo = mockRepo,
             dispatcher = testDispatcher,
-            userSession = mockUserSession,
+            userSession = mockUserSession
         )
 
         robot.use {
@@ -237,7 +239,7 @@ class UserProfileViewModelTest {
             username = mockOtherUsername,
             repo = mockRepo,
             dispatcher = testDispatcher,
-            userSession = mockUserSession,
+            userSession = mockUserSession
         )
 
         robot.use {
@@ -264,7 +266,7 @@ class UserProfileViewModelTest {
             username = mockOtherUsername,
             repo = mockRepo,
             dispatcher = testDispatcher,
-            userSession = mockUserSession,
+            userSession = mockUserSession
         )
 
         robot.use {
@@ -288,7 +290,7 @@ class UserProfileViewModelTest {
             username = mockOtherUsername,
             repo = mockRepo,
             dispatcher = testDispatcher,
-            userSession = mockUserSession,
+            userSession = mockUserSession
         )
 
         robot.use {
@@ -312,7 +314,7 @@ class UserProfileViewModelTest {
             username = mockOtherUsername,
             repo = mockRepo,
             dispatcher = testDispatcher,
-            userSession = mockUserSession,
+            userSession = mockUserSession
         )
 
         robot.use {
@@ -336,7 +338,7 @@ class UserProfileViewModelTest {
             username = mockOtherUsername,
             repo = mockRepo,
             dispatcher = testDispatcher,
-            userSession = mockUserSession,
+            userSession = mockUserSession
         )
 
         robot.use {

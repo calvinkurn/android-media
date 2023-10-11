@@ -16,7 +16,7 @@ public class ImageLoader {
                     .load(url)
                     .fitCenter()
                     .dontAnimate()
-                    .placeholder(R.drawable.ic_loading_image)
+                    .placeholder(com.tokopedia.design.R.drawable.ic_loading_image)
                     .error(R.drawable.error_drawable)
                     .into(imageview);
         }

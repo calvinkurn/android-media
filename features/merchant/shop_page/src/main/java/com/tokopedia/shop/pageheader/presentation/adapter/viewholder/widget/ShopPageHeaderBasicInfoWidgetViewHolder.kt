@@ -16,12 +16,14 @@ import com.tokopedia.shop.pageheader.presentation.uimodel.component.BaseShopPage
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopPageHeaderBadgeTextValueComponentUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopPageHeaderImageOnlyComponentUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopPageHeaderWidgetUiModel
+import com.tokopedia.stories.widget.StoriesWidgetManager
+import com.tokopedia.stories.widget.StoriesWidgetLayout
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopPageHeaderBasicInfoWidgetViewHolder(
     itemView: View,
-    private val shopHeaderBasicInfoWidgetListener: Listener
+    private val shopHeaderBasicInfoWidgetListener: Listener,
 ) : AbstractViewHolder<ShopPageHeaderWidgetUiModel>(itemView) {
 
     companion object {
@@ -38,9 +40,12 @@ class ShopPageHeaderBasicInfoWidgetViewHolder(
             componentModel: ShopPageHeaderBadgeTextValueComponentUiModel?,
             shopPageHeaderWidgetUiModel: ShopPageHeaderWidgetUiModel?
         )
+
+        fun getStoriesWidgetManager(): StoriesWidgetManager
     }
 
     private val viewBinding: LayoutShopHeaderBasicInfoWidgetBinding? by viewBinding()
+    private val shopLogoContainer: StoriesWidgetLayout? = viewBinding?.imageShopContainer
     private val shopLogoImageView: ImageView? = viewBinding?.imageShopLogo
     private val shopBadgeImageView: ImageView? = viewBinding?.imageShopBadge
     private val shopChevronImageView: ImageView? = viewBinding?.shopPageChevronShopInfo
@@ -69,7 +74,11 @@ class ShopPageHeaderBasicInfoWidgetViewHolder(
 
     private fun setShopLogo(component: ShopPageHeaderImageOnlyComponentUiModel?) {
         val shopLogoUrl = component?.image.orEmpty()
+        val shopId = component?.shopId.orEmpty()
         shopLogoImageView?.loadImageCircle(shopLogoUrl)
+        shopLogoContainer?.run {
+            shopHeaderBasicInfoWidgetListener.getStoriesWidgetManager().manage(this, shopId)
+        }
     }
 
     private fun setShopNameAndInfoSection(component: ShopPageHeaderBadgeTextValueComponentUiModel?) {
@@ -104,7 +113,7 @@ class ShopPageHeaderBasicInfoWidgetViewHolder(
 
         // Handle dark mode - last online status
         val lastOnlineColor = ShopUtil.getColorHexString(itemView.context, R.color.clr_dms_31353B)
-        val lastOnlineUnifyColor = ShopUtil.getColorHexString(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700)
+        val lastOnlineUnifyColor = ShopUtil.getColorHexString(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
         val unifiedShopAdditionalInfo = shopAdditionalInfo.replace(lastOnlineColor, lastOnlineUnifyColor)
         shopBasicInfoAdditionalInfoTextView?.text = MethodChecker.fromHtml(unifiedShopAdditionalInfo)
 

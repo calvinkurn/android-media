@@ -26,6 +26,10 @@ data class ShopPageGetDynamicTabResponse(
             var errorMessage: String = "",
             @SerializedName("text")
             var text: String = "",
+            @SerializedName("chipWording")
+            var chipWording: String = "",
+            @SerializedName("shareWording")
+            var shareWording: String = "",
             @SerializedName("icon")
             var icon: String = "",
             @SerializedName("iconFocus")
@@ -40,6 +44,14 @@ data class ShopPageGetDynamicTabResponse(
             var backgroundImage: String = "",
             @SerializedName("imgLottie")
             var lottieUrl: String = "",
+            @SerializedName("bgImages")
+            var bgImages: List<String> = listOf(),
+            @SerializedName("isDark")
+            var isDark: Boolean = false,
+            @SerializedName("widgetHeaderStyle")
+            var widgetHeaderStyle: String = "",
+            @SerializedName("widgetHeaderBgColors")
+            var widgetHeaderBgColors: List<String> = listOf(),
             @SerializedName("shopLayoutFeatures")
             var shopLayoutFeature: List<ShopLayoutFeature> = arrayListOf(),
             @SerializedName("data")

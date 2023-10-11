@@ -12,7 +12,7 @@
         android:id="@+id/toolbarInactivePhoneAccountList"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
-        android:textColor="@color/Unify_N700"
+        android:textColor="@color/Unify_NN950"
         app:unify_header_is_show_back_button="true"
         app:unify_header_is_show_shadow="false"
         app:contentInsetLeft="0dp"

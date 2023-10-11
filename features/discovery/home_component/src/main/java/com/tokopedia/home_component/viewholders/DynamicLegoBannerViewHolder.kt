@@ -29,10 +29,12 @@ import com.tokopedia.home_component.util.ChannelStyleUtil
 import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.util.DynamicChannelTabletConfiguration
 import com.tokopedia.home_component.util.FPM_DYNAMIC_LEGO_BANNER
+import com.tokopedia.home_component.util.HomeComponentRemoteConfigController
 import com.tokopedia.home_component.util.toDpInt
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.toPx
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.DividerUnify
 
@@ -47,6 +49,7 @@ class DynamicLegoBannerViewHolder(
 ) : AbstractViewHolder<DynamicLegoBannerDataModel>(itemView) {
     private var isCacheData = false
     private var isUsingPaddingStyle = false
+    private val remoteConfig by lazy { FirebaseRemoteConfigImpl(itemView.context) }
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_component_lego_banner
@@ -140,6 +143,9 @@ class DynamicLegoBannerViewHolder(
 
     private fun setViewportImpression(element: DynamicLegoBannerDataModel) {
         itemView.addOnImpressionListener(element.channelModel) {
+            if(HomeComponentRemoteConfigController.isUsingNewLegoTracking(remoteConfig)) {
+                legoListener?.onViewportImpression(element.channelModel)
+            }
             when (element.channelModel.channelConfig.layout) {
                 DynamicChannelLayout.LAYOUT_6_IMAGE -> {
                     legoListener?.onChannelImpressionSixImage(element.channelModel, adapterPosition)

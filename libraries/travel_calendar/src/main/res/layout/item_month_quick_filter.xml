@@ -15,6 +15,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:text="January"
-        android:textColor="@color/Unify_N700_68"/>
+        android:textColor="@color/Unify_NN950_68"/>
 
 </LinearLayout>

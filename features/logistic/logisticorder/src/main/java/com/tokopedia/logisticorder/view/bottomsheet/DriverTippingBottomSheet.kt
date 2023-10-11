@@ -173,7 +173,7 @@ class DriverTippingBottomSheet : BottomSheetUnify(), HasComponent<TrackingPageCo
             }
             tippingValue.run {
                 text = MethodChecker.fromHtml(String.format(getString(R.string.payment_value), logisticDriverModel.payment.method, logisticDriverModel.payment.amountFormatted))
-                setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
+                setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950))
             }
         }
     }

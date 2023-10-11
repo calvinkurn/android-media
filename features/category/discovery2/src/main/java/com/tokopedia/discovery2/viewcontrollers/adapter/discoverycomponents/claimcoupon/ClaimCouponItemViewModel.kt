@@ -32,11 +32,13 @@ class ClaimCouponItemViewModel(val application: Application, private val compone
     private val couponCode = MutableLiveData<String>()
     private val componentData = MutableLiveData<ComponentsItem>()
 
+    @JvmField
     @Inject
-    lateinit var claimCouponClickUseCase: ClaimCouponClickUseCase
+    var claimCouponClickUseCase: ClaimCouponClickUseCase? = null
 
+    @JvmField
     @Inject
-    lateinit var userSession: UserSessionInterface
+    var userSession: UserSessionInterface? = null
 
     init {
         componentData.value = components
@@ -58,33 +60,31 @@ class ClaimCouponItemViewModel(val application: Application, private val compone
         return couponCode
     }
 
-
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
 
-    fun redeemCoupon(showToaster: (message : String) -> Unit) {
+    fun redeemCoupon(showToaster: (message: String) -> Unit) {
         launchCatchError(block = {
-            if (userSession.isLoggedIn) {
-                val data = claimCouponClickUseCase.redeemCoupon(getQueryMap())
-                if(!data.hachikoRedeem?.coupons?.firstOrNull()?.appLink.isNullOrEmpty()) {
-                    components.data?.firstOrNull()?.applinks = data.hachikoRedeem?.coupons?.firstOrNull()?.appLink
+            if (userSession?.isLoggedIn == true) {
+                val data = claimCouponClickUseCase?.redeemCoupon(getQueryMap())
+                if (!data?.hachikoRedeem?.coupons?.firstOrNull()?.appLink.isNullOrEmpty()) {
+                    components.data?.firstOrNull()?.applinks = data?.hachikoRedeem?.coupons?.firstOrNull()?.appLink
                 }
-                couponCode.postValue(data.hachikoRedeem?.coupons?.get(0)?.code)
+                couponCode.postValue(data?.hachikoRedeem?.coupons?.get(0)?.code ?: "")
             } else {
                 couponCode.postValue(NOT_LOGGEDIN)
             }
         }, onError = {
-            if(it is MessageErrorException){
-                if(!it.message.isNullOrEmpty()){
-                    showToaster.invoke(it.message!!)
+                if (it is MessageErrorException) {
+                    if (!it.message.isNullOrEmpty()) {
+                        showToaster.invoke(it.message!!)
+                    }
+                } else {
+                    showToaster.invoke(application.applicationContext.resources.getString(R.string.error_message))
                 }
-            }else{
-                showToaster.invoke(application.applicationContext.resources.getString(R.string.error_message))
-            }
-            it.printStackTrace()
-        })
+                it.printStackTrace()
+            })
     }
-
 
     private fun getClaimStatus(item: CatalogWithCouponList?): String {
         item?.let {
@@ -104,15 +104,18 @@ class ClaimCouponItemViewModel(val application: Application, private val compone
     }
 
     private fun getQueryMap(): Map<String, Any> {
-        return mapOf(CATALOG_ID to (try {
-            components.claimCouponList?.firstOrNull()?.id ?: 0
-        } catch (e: NumberFormatException) {
-            0
-        }),
-                IS_GIFT to 0,
-                GIFT_USER_ID to 0,
-                GIFT_EMAIL to "",
-                NOTES to "")
+        return mapOf(
+            CATALOG_ID to (
+                try {
+                    components.claimCouponList?.firstOrNull()?.id ?: 0
+                } catch (e: NumberFormatException) {
+                    0
+                }
+                ),
+            IS_GIFT to 0,
+            GIFT_USER_ID to 0,
+            GIFT_EMAIL to "",
+            NOTES to ""
+        )
     }
-
 }

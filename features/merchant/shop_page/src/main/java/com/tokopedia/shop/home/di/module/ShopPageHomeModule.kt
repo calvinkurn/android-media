@@ -20,6 +20,7 @@ import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.ui.mapper.PlayWidgetUiMapper
 import com.tokopedia.play.widget.util.PlayWidgetConnectionUtil
 import com.tokopedia.play.widget.util.PlayWidgetTools
+import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.shop.analytic.ShopPageHomeTracking
 import com.tokopedia.shop.analytic.ShopPlayWidgetAnalyticListener
 import com.tokopedia.shop.common.di.ShopPageContext
@@ -175,6 +176,13 @@ class ShopPageHomeModule {
             connectionUtil
         )
     }
+
+    @ShopPageHomeScope
+    @Provides
+    fun provideGetCoroutineRecommendationUseCase(
+        @ShopPageContext context: Context,
+        graphqlRepository: GraphqlRepository
+    ): GetRecommendationUseCase = GetRecommendationUseCase(context, graphqlRepository)
 
     @ShopPageHomeScope
     @Provides

@@ -26,7 +26,7 @@
         app:layout_constraintBottom_toBottomOf="@id/ic_bro_preparation_close"
         app:layout_constraintStart_toEndOf="@id/ic_bro_preparation_close"
         app:layout_constraintTop_toTopOf="@id/ic_bro_preparation_close"
-        app:unify_image_placeholder="@color/Unify_N50"
+        app:unify_image_placeholder="@color/Unify_NN50"
         app:unify_image_type="circle" />
 
     <com.tokopedia.unifyprinciples.Typography

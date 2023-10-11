@@ -21,7 +21,6 @@ import com.tokopedia.tokofood.common.presentation.mapper.CustomOrderDetailsMappe
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.common.util.ResourceProvider
 import com.tokopedia.tokofood.feature.merchant.domain.model.response.GetMerchantDataResponse
-import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodCatalogDetail
 import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodCatalogVariantDetail
 import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodCatalogVariantOptionDetail
 import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodCategoryCatalog
@@ -54,7 +53,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
@@ -140,7 +138,7 @@ class MerchantPageViewModel @Inject constructor(
             }
             filterList = result.tokofoodGetMerchantData.filters
             merchantData = result.tokofoodGetMerchantData
-            setProductsWithSameId(result.tokofoodGetMerchantData.categories.flatMap { it.catalogs })
+            sameProductList = result.tokofoodGetMerchantData.getProductsWithSameId()
             getMerchantDataResultLiveData.value = Success(result)
             _mvcLiveData.value = getMvcData(result.tokofoodGetMerchantData.topBanner)
         }, onError = {
@@ -432,11 +430,6 @@ class MerchantPageViewModel @Inject constructor(
                 )
             )
         }
-    }
-
-    private fun setProductsWithSameId(productList: List<TokoFoodCatalogDetail>) {
-        val sameProducts = productList.groupingBy { it.id }.eachCount().filter { it.value > Int.ONE }.keys.toList()
-        sameProductList = sameProducts
     }
 
     fun isTickerDetailEmpty(tickerData: TokoFoodTickerDetail): Boolean {

@@ -1,15 +1,19 @@
 package com.tokopedia.media.editor.analytics.editordetail
 
 import com.tokopedia.kotlin.extensions.view.toZeroStringIfNullOrBlank
-import com.tokopedia.media.editor.analytics.ACTION_CLICK_LOGO_LOAD_RETRY
-import com.tokopedia.media.editor.analytics.ACTION_CLICK_LOGO_UPLOAD
+import com.tokopedia.media.editor.analytics.ACTION_CLICK_ADD_LOGO
+import com.tokopedia.media.editor.analytics.ACTION_VIEW_LOGO_LOAD_RETRY
 import com.tokopedia.media.editor.analytics.ACTION_CLICK_SAVE
+import com.tokopedia.media.editor.analytics.ACTION_CLICK_TEXT_BACKGROUND
+import com.tokopedia.media.editor.analytics.ACTION_CLICK_TEXT_FREE
+import com.tokopedia.media.editor.analytics.ACTION_CLICK_TEXT_TEMPLATE
 import com.tokopedia.media.editor.analytics.ACTION_ROTATION_FLIP
 import com.tokopedia.media.editor.analytics.ACTION_ROTATION_ROTATE
 import com.tokopedia.media.editor.analytics.BUSINESS_UNIT
 import com.tokopedia.media.editor.analytics.CURRENT_SITE
 import com.tokopedia.media.editor.analytics.EVENT
 import com.tokopedia.media.editor.analytics.EVENT_CATEGORY
+import com.tokopedia.media.editor.analytics.EVENT_VIEW
 import com.tokopedia.media.editor.analytics.KEY_BUSINESS_UNIT
 import com.tokopedia.media.editor.analytics.KEY_CURRENT_SITE
 import com.tokopedia.media.editor.analytics.KEY_EVENT
@@ -18,12 +22,16 @@ import com.tokopedia.media.editor.analytics.KEY_EVENT_CATEGORY
 import com.tokopedia.media.editor.analytics.KEY_EVENT_LABEL
 import com.tokopedia.media.editor.analytics.KEY_TRACKER_ID
 import com.tokopedia.media.editor.analytics.KEY_USER_ID
-import com.tokopedia.media.editor.analytics.TRACKER_ID_CLICK_LOGO_LOAD_RETRY
+import com.tokopedia.media.editor.analytics.TRACKER_ID_VIEW_LOGO_LOAD_RETRY
 import com.tokopedia.media.editor.analytics.TRACKER_ID_CLICK_LOGO_UPLOAD
 import com.tokopedia.media.editor.analytics.TRACKER_ID_CLICK_SAVE
+import com.tokopedia.media.editor.analytics.TRACKER_ID_CLICK_TEXT_BACKGROUND
+import com.tokopedia.media.editor.analytics.TRACKER_ID_CLICK_TEXT_FREE
+import com.tokopedia.media.editor.analytics.TRACKER_ID_CLICK_TEXT_TEMPLATE
 import com.tokopedia.media.editor.analytics.TRACKER_ID_ROTATION_FLIP
 import com.tokopedia.media.editor.analytics.TRACKER_ID_ROTATION_ROTATE
 import com.tokopedia.picker.common.cache.PickerCacheManager
+import com.tokopedia.picker.common.types.EditorToolType
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -57,23 +65,50 @@ class EditorDetailAnalyticsImpl @Inject constructor(
         )
     }
 
-    override fun clickAddLogoUpload() {
+    override fun clickAddLogoUpload(logoState: String) {
         sendGeneralEvent(
-            ACTION_CLICK_LOGO_UPLOAD,
-            "$pageSource - $userId - $shopId",
+            ACTION_CLICK_ADD_LOGO,
+            "$pageSource - $userId - $shopId - ${logoState.lowercase()}",
             TRACKER_ID_CLICK_LOGO_UPLOAD
         )
     }
 
-    override fun clickAddLogoLoadRetry() {
+    // add logo failed to load shop logo
+    override fun viewAddLogoLoadRetry() {
         sendGeneralEvent(
-            ACTION_CLICK_LOGO_LOAD_RETRY,
+            ACTION_VIEW_LOGO_LOAD_RETRY,
             "$pageSource - $userId - $shopId",
-            TRACKER_ID_CLICK_LOGO_LOAD_RETRY
+            TRACKER_ID_VIEW_LOGO_LOAD_RETRY,
+            eventName = EVENT_VIEW
+        )
+    }
+
+    override fun clickAddTextFreeText() {
+        sendGeneralEvent(
+            ACTION_CLICK_TEXT_FREE,
+            "$pageSource - $userId - $shopId",
+            TRACKER_ID_CLICK_TEXT_FREE
+        )
+    }
+
+    override fun clickAddTextBackgroundText() {
+        sendGeneralEvent(
+            ACTION_CLICK_TEXT_BACKGROUND,
+            "$pageSource - $userId - $shopId",
+            TRACKER_ID_CLICK_TEXT_BACKGROUND
+        )
+    }
+
+    override fun clickAddTextTemplate() {
+        sendGeneralEvent(
+            ACTION_CLICK_TEXT_TEMPLATE,
+            "$pageSource - $userId - $shopId",
+            TRACKER_ID_CLICK_TEXT_TEMPLATE
         )
     }
 
     override fun clickSave(
+        editorToolType: Int,
         editorText: String,
         brightnessValue: Int,
         contrastValue: Int,
@@ -81,20 +116,24 @@ class EditorDetailAnalyticsImpl @Inject constructor(
         rotateValue: Int,
         watermarkText: String,
         removeBackgroundText: String,
-        addLogoValue: String
+        addLogoValue: String,
+        addTextValue: String
     ) {
-
-        val historyList = "{$brightnessValue}, " +
-                "{$contrastValue}, " +
-                "{$rotateValue}, " +
-                "{$cropText}, " +
-                "{$removeBackgroundText}, " +
-                "{$watermarkText}, " +
-                "{$addLogoValue}"
+        val toolDetail = when(editorToolType) {
+            EditorToolType.BRIGHTNESS -> "{$brightnessValue}"
+            EditorToolType.CONTRAST -> "{$contrastValue}"
+            EditorToolType.ROTATE -> "{$rotateValue}"
+            EditorToolType.CROP -> cropText
+            EditorToolType.REMOVE_BACKGROUND -> removeBackgroundText
+            EditorToolType.WATERMARK -> watermarkText
+            EditorToolType.ADD_LOGO -> addLogoValue
+            EditorToolType.ADD_TEXT -> addTextValue
+            else -> ""
+        }
 
         sendGeneralEvent(
             ACTION_CLICK_SAVE,
-            "$pageSource - $userId - $shopId - $editorText - $historyList",
+            "$pageSource - $userId - $shopId - $editorText - $toolDetail",
             TRACKER_ID_CLICK_SAVE
         )
     }
@@ -103,10 +142,11 @@ class EditorDetailAnalyticsImpl @Inject constructor(
         eventAction: String,
         eventLabel: String,
         trackerID: String,
-        additionalEvent: Map<String, String> = mapOf()
+        additionalEvent: Map<String, String> = mapOf(),
+        eventName: String? = null
     ) {
         val generalEvent = mutableMapOf(
-            KEY_EVENT to EVENT,
+            KEY_EVENT to (eventName ?: EVENT),
             KEY_EVENT_ACTION to eventAction,
             KEY_EVENT_CATEGORY to EVENT_CATEGORY,
             KEY_EVENT_LABEL to eventLabel,

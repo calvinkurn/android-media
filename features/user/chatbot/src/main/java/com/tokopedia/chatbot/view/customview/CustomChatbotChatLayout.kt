@@ -19,6 +19,7 @@ import com.tokopedia.chatbot.util.removeUnderLineFromLinkAndSetText
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 
 class CustomChatbotChatLayout : ViewGroup {
 
@@ -320,6 +321,10 @@ class CustomChatbotChatLayout : ViewGroup {
 
     fun showReadMoreView() {
         readMoreView?.show()
+    }
+
+    fun showTimeStamp(state: Boolean){
+        status?.showWithCondition(state)
     }
 
     companion object {

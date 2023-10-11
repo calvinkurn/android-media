@@ -72,10 +72,10 @@ class FeedbackItemReply : FrameLayout, ReviewReplyListener {
         binding.replyFeedbackState.background = ContextCompat.getDrawable(context, R.drawable.rectangle_8)
         if (feedbackText.isEmpty()) {
             binding.tvFeedbackReview.text = context.getString(R.string.review_not_found)
-            binding.tvFeedbackReview.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
+            binding.tvFeedbackReview.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_44))
         } else {
             binding.tvFeedbackReview.apply {
-                setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+                setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96))
                 text = feedbackText
             }
         }

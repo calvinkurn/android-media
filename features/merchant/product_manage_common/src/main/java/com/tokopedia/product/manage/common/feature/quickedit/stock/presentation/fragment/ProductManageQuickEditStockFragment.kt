@@ -14,6 +14,7 @@ import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.manage.common.ProductManageCommonInstance
@@ -34,6 +35,7 @@ import com.tokopedia.product.manage.common.feature.quickedit.stock.di.ProductMan
 import com.tokopedia.product.manage.common.feature.quickedit.stock.presentation.viewmodel.ProductManageQuickEditStockViewModel
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import javax.inject.Inject
 
@@ -47,17 +49,20 @@ class ProductManageQuickEditStockFragment(
         private const val TOGGLE_NOT_ACTIVE = "not active"
         private const val KEY_CACHE_MANAGER_ID = "product_edit_cache_manager"
         private const val KEY_PRODUCT = "product"
-
         fun createInstance(
             context: Context,
             product: ProductUiModel,
             onFinishedListener: OnFinishedListener,
-            campaignListener: ProductCampaignInfoListener,
+            campaignListener: ProductCampaignInfoListener
+
         ): ProductManageQuickEditStockFragment {
             SaveInstanceCacheManager(context, KEY_CACHE_MANAGER_ID).apply {
                 put(KEY_PRODUCT, product)
             }
-            return ProductManageQuickEditStockFragment(onFinishedListener, campaignListener)
+            return ProductManageQuickEditStockFragment(
+                onFinishedListener,
+                campaignListener
+            )
         }
     }
 
@@ -224,13 +229,44 @@ class ProductManageQuickEditStockFragment(
                 saveStockAndStatus(inputStock, inputStatus)
             }
             shouldSaveStock -> saveProductStock(inputStock)
-            shouldSaveStatus -> saveProductStatus(inputStatus)
+            shouldSaveStatus -> {
+                if (inputStatus == ProductStatus.INACTIVE && product?.isDTInbound.orFalse()) {
+                    showEditProductsInActiveConfirmationDialogDT()
+                } else {
+                    saveProductStatus(inputStatus)
+                }
+            }
         }
 
         removeObservers()
         dismiss()
 
         ProductManageTracking.eventEditStockSave(product.getId())
+    }
+
+    private fun showEditProductsInActiveConfirmationDialogDT() {
+        context?.let { it ->
+            val htmlText = HtmlLinkHelper(
+                it,
+                getString(R.string.product_manage_confirm_inactive_dt_product_desc)
+            )
+
+            DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle(
+                    getString(
+                        R.string.product_manage_confirm_inactive_dt_product_title
+                    )
+                )
+                setDescription(htmlText.spannedString ?: String.EMPTY)
+                setPrimaryCTAText(getString(R.string.product_manage_confirm_inactive_dt_product_positive_button))
+                setSecondaryCTAText(getString(R.string.product_manage_confirm_dt_product_cancel_button))
+                setPrimaryCTAClickListener {
+                    saveProductStatus(ProductStatus.INACTIVE)
+                    dismiss()
+                }
+                setSecondaryCTAClickListener { dismiss() }
+            }.show()
+        }
     }
 
     private fun saveStockAndStatus(stock: Int, status: ProductStatus) {
@@ -275,18 +311,24 @@ class ProductManageQuickEditStockFragment(
     }
 
     private fun observeStock() {
-        viewModel.stock.observe(viewLifecycleOwner, Observer {
-            product = product?.copy(stock = it)
-            setupStockEditor(it)
-        })
+        viewModel.stock.observe(
+            viewLifecycleOwner,
+            Observer {
+                product = product?.copy(stock = it)
+                setupStockEditor(it)
+            }
+        )
     }
 
     private fun observeStatus() {
-        viewModel.status.observe(viewLifecycleOwner, Observer {
-            val isActive = it == ProductStatus.ACTIVE
-            binding?.quickEditStockActivateSwitch?.isChecked = isActive
-            product = product?.copy(status = it)
-        })
+        viewModel.status.observe(
+            viewLifecycleOwner,
+            Observer {
+                val isActive = it == ProductStatus.ACTIVE
+                binding?.quickEditStockActivateSwitch?.isChecked = isActive
+                product = product?.copy(status = it)
+            }
+        )
     }
 
     private fun observeStockTicker() {
@@ -395,7 +437,6 @@ class ProductManageQuickEditStockFragment(
             showWithCondition(!product.suspendAccess())
             setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_warning_oos, 0, 0, 0)
         }
-
     }
 
     private fun setNotifyMeBuyerInfo() {
@@ -508,7 +549,7 @@ class ProductManageQuickEditStockFragment(
                 setZeroStockInfo()
             }
             product?.stockAlertActive.orFalse() ||
-                    (currentStock < product?.stockAlertCount.orZero() && product?.hasStockAlert.orFalse()) -> {
+                (currentStock < product?.stockAlertCount.orZero() && product?.hasStockAlert.orFalse()) -> {
                 setStockAlertActiveInfo()
             }
             product?.hasStockAlert.orFalse() -> {

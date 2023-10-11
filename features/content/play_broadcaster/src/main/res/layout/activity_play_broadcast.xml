@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/play_dms_broadcaster_background"
+    android:background="@color/Unify_Static_Black"
     >
 
     <com.tokopedia.broadcaster.revamp.util.view.AspectFrameLayout
@@ -17,11 +17,19 @@
         app:layout_constraintTop_toTopOf="parent"
         >
 
-        <SurfaceView
-            android:id="@+id/surface_view"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/surface_card_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            />
+            >
+
+            <SurfaceView
+                android:id="@+id/surface_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
+
+        </androidx.cardview.widget.CardView>
 
     </com.tokopedia.broadcaster.revamp.util.view.AspectFrameLayout>
 

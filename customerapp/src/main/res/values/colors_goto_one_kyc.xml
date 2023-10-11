@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="kyc_plus_typography_active">@color/Unify_GN500</color>
+    <color name="kyc_plus_typography_default_body">@color/Unify_NN600</color>
+    <color name="kyc_plus_typography_default_caption">#494A4A</color>
+    <color name="kyc_plus_typography_default_title">@color/Unify_NN950</color>
+    <color name="kyc_plus_typography_error">@color/Unify_RN500</color>
+    <color name="kyc_plus_typography_inactive">#757575</color>
+    <color name="kyc_plus_typography_inverted">#FFFFFF</color>
+    <color name="kyc_plus_typography_static_black">#212121</color>
+    <color name="kyc_plus_typography_static_white">#FFFFFF</color>
+    <color name="kyc_plus_typography_warning">@color/Unify_RN500</color>
+
+    <color name="kyc_plus_color_primary">@color/Unify_NN0</color>
+    <color name="kyc_plus_color_primary_dark">@color/Unify_NN0</color>
+    <color name="kyc_plus_color_accent">@color/Unify_NN900</color>
+    <color name="kyc_plus_color_window_background">@color/Unify_NN0</color>
+    <bool name="kyc_plus_window_light_status_bar">true</bool>
+    <color name="kyc_plus_icon_tint_color">@color/Unify_NN900</color>
+    <color name="kyc_plus_icon_tint_inverted_color">@color/Unify_NN0</color>
+</resources>

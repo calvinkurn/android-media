@@ -35,7 +35,14 @@ class PlayVideoModelBuilder {
                     totalView = PlayWidgetTotalView("33.1 rb", true),
                     promoType = PlayWidgetPromoType.Default("Rilisan Spesial", true),
                     reminderType = reminderType,
-                    partner = PlayWidgetPartnerUiModel("11232713", "Tokopedia Play", PartnerType.Shop),
+                    partner = PlayWidgetPartnerUiModel(
+                        "11232713",
+                        "Tokopedia Play",
+                        PartnerType.Shop,
+                        "",
+                        "",
+                        ""
+                    ),
                     video = PlayWidgetVideoUiModel(
                         id = "123",
                         coverUrl = "https://images.tokopedia.net/img/jJtrdn/2022/1/21/2f1ba9eb-a8d4-4de1-b445-ed66b96f26a9.jpg?b=UaM%25G%23Rjn4WYVBx%5DjFWX%3D~t6bbWB0PkWkqoL",
@@ -53,6 +60,7 @@ class PlayVideoModelBuilder {
                     poolType = "",
                     recommendationType = "",
                     channelTypeTransition = PlayWidgetChannelTypeTransition(null, channelType),
+                    products = emptyList(),
                 )
             },
             nextCursor = nextCursor,

@@ -18,7 +18,7 @@ class DynamicPreparationMenuAdapter(
         oldItem: Item,
         newItem: Item
     ): Boolean {
-        return oldItem.data.menu == newItem.data.menu
+        return oldItem.data.menu.id == newItem.data.menu.id
     }
 
     override fun areContentsTheSame(

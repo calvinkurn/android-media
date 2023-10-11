@@ -60,4 +60,7 @@
     <!-- Play Widget Action Menu Bottom Sheet -->
     <dimen name="play_widget_action_divider_height">0.5dp</dimen>
     <dimen name="play_widget_action_height">56dp</dimen>
+
+    <!--Play Widget Carousel-->
+    <dimen name="play_widget_carousel_distance_before_scale">200dp</dimen>
 </resources>

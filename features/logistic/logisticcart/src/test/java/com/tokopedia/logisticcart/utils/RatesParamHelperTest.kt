@@ -94,7 +94,7 @@ class RatesParamHelperTest {
                 Product(298851813, isFreeShipping = false, isFreeShippingTc = false)
             )
         }
-        val expected = "[{\"product_id\":298851813,\"is_free_shipping\":false,\"is_free_shipping_tc\":false}]"
+        val expected = "[{\"product_id\":298851813,\"is_free_shipping\":false,\"is_free_shipping_tc\":false,\"shop_id\":0}]"
         val actual = RatesParamHelper.generateProducts(data)
         assertEquals(expected, actual)
     }

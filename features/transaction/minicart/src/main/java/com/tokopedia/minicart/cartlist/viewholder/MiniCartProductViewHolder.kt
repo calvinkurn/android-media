@@ -282,7 +282,7 @@ class MiniCartProductViewHolder(
 
     private fun createProductInfoText(it: String): Typography {
         return Typography(itemView.context).apply {
-            setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+            setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
             setType(Typography.BODY_3)
             text = if (viewBinding.layoutProductInfo.childCount > 0) ", $it" else it
         }
@@ -612,7 +612,7 @@ class MiniCartProductViewHolder(
                     }
                 }
                 textProductUnavailableAction.context?.let {
-                    textProductUnavailableAction.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                    textProductUnavailableAction.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
                 }
                 textProductUnavailableAction.show()
             } else {
@@ -748,7 +748,7 @@ class MiniCartProductViewHolder(
                 constraintSet.connect(
                     R.id.text_notes,
                     ConstraintSet.BOTTOM,
-                    R.id.delete_button,
+                    com.tokopedia.design.R.id.delete_button,
                     ConstraintSet.TOP
                 )
                 constraintSet.applyTo(containerProduct)
@@ -795,7 +795,7 @@ class MiniCartProductViewHolder(
     private fun adjustProductPriceConstraint() {
         with(viewBinding) {
             val margin4dp = itemView.context.resources
-                .getDimension(com.tokopedia.abstraction.R.dimen.dp_4).toInt()
+                .getDimension(R.dimen.dp_4).toInt()
             val constraintSet = ConstraintSet()
             constraintSet.clone(containerProduct)
             constraintSet.connect(

@@ -55,7 +55,7 @@ class HashtagLandingItemAdapter(var listener: OnHashtagPostClick? = null)
 
     private val errorModel: ErrorNetworkModel by lazy {
         ErrorNetworkModel().apply {
-            this.iconDrawableRes = R.drawable.unify_globalerrors_connection
+            this.iconDrawableRes = com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection
         }
     }
 
@@ -221,7 +221,7 @@ class HashtagLandingItemAdapter(var listener: OnHashtagPostClick? = null)
                 creatorName.setOnClickListener { listener?.onUserNameClick(item) }
                 val tagHConverter = TagConverter()
                 postDescription.text = tagHConverter.convertToLinkifyHashtag(SpannableString(item.description),
-                        ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400)){
+                        ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)){
                     val encodeHashtag = URLEncoder.encode(it, "UTF-8")
                     RouteManager.route(context, ApplinkConstInternalContent.HASHTAG_PAGE, encodeHashtag)
                 }

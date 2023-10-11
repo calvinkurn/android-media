@@ -5,7 +5,7 @@ import com.tokopedia.play.broadcaster.domain.usecase.GetRecommendedChannelTagsUs
 import com.tokopedia.play.broadcaster.model.UiModelBuilder
 import com.tokopedia.play.broadcaster.robot.PlayBroadcastSummaryViewModelRobot
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastSummaryAction
-import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
+import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagItem
 import com.tokopedia.play.broadcaster.util.assertEqualTo
 import com.tokopedia.play.broadcaster.util.assertFalse
 import com.tokopedia.play.broadcaster.util.assertTrue
@@ -97,7 +97,7 @@ class PlayBroadcastSummaryTagViewModelTest {
         coEvery { mockGetRecommendedChannelTagsUseCase.executeOnBackground() } returns mockTag
 
         val mockTagString = "A"
-        val mockSelectedTag = PlayTagUiModel(mockTagString, false)
+        val mockSelectedTag = PlayTagItem(mockTagString, isChosen = false, isActive = true)
 
         val robot = PlayBroadcastSummaryViewModelRobot(
             dispatcher = testDispatcher,
@@ -126,7 +126,7 @@ class PlayBroadcastSummaryTagViewModelTest {
         coEvery { mockGetRecommendedChannelTagsUseCase.executeOnBackground() } returns mockTag
 
         val mockTagString = "A"
-        val mockSelectedTag = PlayTagUiModel(mockTagString, false)
+        val mockSelectedTag = PlayTagItem(mockTagString, isChosen = false, isActive = true)
 
         val robot = PlayBroadcastSummaryViewModelRobot(
             dispatcher = testDispatcher,

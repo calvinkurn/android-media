@@ -18,7 +18,6 @@ interface EventDetailsListener {
     fun setPassengerEvent(item: Items)
     fun setActionButtonEvent(actionButton: ActionButton, item: Items, orderDetails: OrderDetails)
     fun setDealsBanner(metadata: MetaDataInfo)
-    fun askPermission(uri: String, isDownloadable: Boolean,downloadFileName: String)
     fun sendThankYouEvent(metadata: MetaDataInfo, categoryType: Int, orderDetails: OrderDetails)
     fun sendOpenScreenDeals(isOMP: Boolean)
     fun setActionButtonGql(tapAction: List<ActionButton>, position: Int, flag: Boolean, isCalledFromAdapter: Boolean)

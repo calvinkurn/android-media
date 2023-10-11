@@ -1,8 +1,8 @@
 package com.tokopedia.play.view.uimodel.mapper
 
-import com.tokopedia.play.data.UserReportOptions
+import com.tokopedia.content.common.report_content.model.UserReportOptions
 import com.tokopedia.play.di.PlayScope
-import com.tokopedia.play.view.uimodel.PlayUserReportReasoningUiModel
+import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
 import javax.inject.Inject
 
 /**
@@ -11,7 +11,7 @@ import javax.inject.Inject
 
 @PlayScope
 class PlayUserReportReasoningMapper @Inject constructor(){
-    fun mapUserReportReasoning(reasoning: UserReportOptions) : PlayUserReportReasoningUiModel{
+    fun mapUserReportReasoning(reasoning: UserReportOptions) : PlayUserReportReasoningUiModel {
         return PlayUserReportReasoningUiModel.Reasoning(
             reasoningId = reasoning.id,
             title = reasoning.value,

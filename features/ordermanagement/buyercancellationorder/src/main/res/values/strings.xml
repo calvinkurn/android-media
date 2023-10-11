@@ -40,4 +40,5 @@
         ]]>
     </string>
     <string name="button_order_detail_request_cancel">Ajukan Pembatalan</string>
+    <string name="buyer_cancellation_order_choose_reason">Pilih Alasan</string>
 </resources>

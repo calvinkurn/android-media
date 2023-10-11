@@ -51,4 +51,6 @@ object AddEditProductConstants {
 
     // only applied to CE (Commission Engine) service
     const val GET_COMMISSION_ENGINE_REGULAR_MERCHANT = 999
+
+    const val DRAFT_ERROR_LOG_KEY = "AEP_draft_error"
 }

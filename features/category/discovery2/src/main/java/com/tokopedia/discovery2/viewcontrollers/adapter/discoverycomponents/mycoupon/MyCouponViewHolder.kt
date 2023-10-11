@@ -16,12 +16,11 @@ import com.tokopedia.kotlin.extensions.view.show
 
 class MyCouponViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
 
-
     private val myCouponRecyclerView: RecyclerView = itemView.findViewById(R.id.my_coupon_rv)
     private var discoveryRecycleAdapter: DiscoveryRecycleAdapter = DiscoveryRecycleAdapter(fragment)
     private val myCouponItemDecorator = MyCouponItemDecorator()
 
-    private lateinit var myCouponViewModel: MyCouponViewModel
+    private var myCouponViewModel: MyCouponViewModel? = null
 
     init {
         myCouponRecyclerView.adapter = discoveryRecycleAdapter
@@ -29,45 +28,46 @@ class MyCouponViewHolder(itemView: View, private val fragment: Fragment) : Abstr
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         myCouponViewModel = discoveryBaseViewModel as MyCouponViewModel
-        getSubComponent().inject(myCouponViewModel)
+        myCouponViewModel?.let {
+            getSubComponent().inject(it)
+        }
         addDefaultItemDecorator()
         myCouponRecyclerView.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
-
     }
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
-        myCouponViewModel.getComponentList().observe(fragment.viewLifecycleOwner,  { item ->
-            if(!item.isNullOrEmpty()) {
+        myCouponViewModel?.getComponentList()?.observe(fragment.viewLifecycleOwner) { item ->
+            if (!item.isNullOrEmpty()) {
                 myCouponRecyclerView.show()
                 discoveryRecycleAdapter.setDataList(item)
-            }else{
+            } else {
                 myCouponRecyclerView.hide()
             }
-        })
-        myCouponViewModel.getSyncPageLiveData().observe(fragment.viewLifecycleOwner, {
-            if(it){
+        }
+        myCouponViewModel?.getSyncPageLiveData()?.observe(fragment.viewLifecycleOwner) {
+            if (it) {
                 (fragment as DiscoveryFragment).reSync()
             }
-        })
-        myCouponViewModel.hideSectionLD.observe(fragment.viewLifecycleOwner, { sectionId ->
+        }
+        myCouponViewModel?.hideSectionLD?.observe(fragment.viewLifecycleOwner) { sectionId ->
             (fragment as DiscoveryFragment).handleHideSection(sectionId)
-        })
+        }
     }
 
     private fun addDefaultItemDecorator() {
-        if (myCouponRecyclerView.itemDecorationCount > 0)
+        if (myCouponRecyclerView.itemDecorationCount > 0) {
             myCouponRecyclerView.removeItemDecorationAt(0)
+        }
         myCouponRecyclerView.addItemDecoration(myCouponItemDecorator)
     }
 
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
         super.removeObservers(lifecycleOwner)
         lifecycleOwner?.let {
-            myCouponViewModel.getComponentList().removeObservers(it)
-            myCouponViewModel.getSyncPageLiveData().removeObservers(it)
-            myCouponViewModel.hideSectionLD.removeObservers(it)
+            myCouponViewModel?.getComponentList()?.removeObservers(it)
+            myCouponViewModel?.getSyncPageLiveData()?.removeObservers(it)
+            myCouponViewModel?.hideSectionLD?.removeObservers(it)
         }
     }
-
 }

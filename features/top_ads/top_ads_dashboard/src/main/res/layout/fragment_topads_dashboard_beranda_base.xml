@@ -66,12 +66,19 @@
                     app:layout_constraintTop_toBottomOf="@id/layoutRingkasan" />
 
                 <include
+                    android:id="@+id/layout_insight"
+                    layout="@layout/layout_insight_center_beranda"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/layoutRecommendasi" />
+
+                <include
                     android:id="@+id/layoutLatestReading"
                     layout="@layout/layout_latest_reading"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_lvl4"
-                    app:layout_constraintTop_toBottomOf="@id/layoutRecommendasi" />
+                    app:layout_constraintTop_toBottomOf="@id/layout_insight" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>

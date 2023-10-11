@@ -37,7 +37,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginTop="4dp"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         app:layout_constraintTop_toBottomOf="@id/replyProductHeaderName"
         app:layout_constraintStart_toStartOf="@id/replyProductHeaderName"
         app:layout_constraintEnd_toEndOf="parent"
@@ -53,7 +53,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/replyProductHeaderImage"
         app:icon_name="MENU_KEBAB_VERTICAL"
-        app:icon_color_light_enable="@color/Unify_N200" />
+        app:icon_color_light_enable="@color/Unify_NN500" />
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/reply_product_header_bottom_divider"

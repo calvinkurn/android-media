@@ -8,7 +8,6 @@ import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.DataResponse
 import com.tokopedia.discovery2.data.DiscoveryResponse
-import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.QUERY_PARENT
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.user.session.UserSession
 import javax.inject.Inject
@@ -22,7 +21,7 @@ private const val ACCEPT_SECTION = "accept_section"
 class DiscoveryDataGQLRepository @Inject constructor(val getGQLString: (Int) -> String) : BaseRepository(), DiscoveryPageRepository {
     lateinit var userSession: UserSession
     override suspend fun getDiscoveryPageData(pageIdentifier: String,extraParams:Map<String,Any>?): DiscoveryResponse {
-        return (getGQLData(getGQLString(R.raw.query_discovery_data),
+        return (getGQLData(queryDiscoveryData,
                 DataResponse::class.java, getQueryMap(pageIdentifier,extraParams),
                 "discoveryPageInfo") as DataResponse).data
     }
@@ -47,6 +46,36 @@ class DiscoveryDataGQLRepository @Inject constructor(val getGQLString: (Int) -> 
         }
         return queryMap
     }
+
+    private val queryDiscoveryData: String = """query DiscoPageLayoutQuery(${'$'}identifier: String!, ${'$'}version: String!, ${'$'}device: String!, ${'$'}filters: String) {
+  discoveryPageInfo(identifier: ${'$'}identifier, version: ${'$'}version, device: ${'$'}device,filters: ${'$'}filters) {
+    data {
+      title
+      components
+     page_info {
+            Id
+            Identifier
+            Name
+            Path
+            Type
+            share_config
+            campaign_code
+            search_applink
+            search_title
+            show_choose_address
+            tokonow_has_mini_cart_active
+            is_affiliate
+            thematic_header {
+                  title
+       			  subtitle
+        	      color
+    			  image
+    		}
+          }
+      additional_info
+    }
+  }
+}""".trimIndent()
 }
 
 

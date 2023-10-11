@@ -15,10 +15,11 @@ import androidx.work.Configuration;
 import com.google.android.play.core.splitcompat.SplitCompat;
 import com.tokopedia.abstraction.relic.NewRelicInteractionActCall;
 import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber;
+import com.tokopedia.analytics.performance.fpi.FrameMetricsMonitoring;
+import com.tokopedia.analytics.performance.util.EmbraceMonitoring;
 import com.tokopedia.analyticsdebugger.cassava.Cassava;
 import com.tokopedia.analyticsdebugger.cassava.data.RemoteSpec;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
-import com.tokopedia.analytics.performance.util.EmbraceMonitoring;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.config.GlobalConfig;
@@ -27,6 +28,7 @@ import com.tokopedia.core.analytics.container.GTMAnalytics;
 import com.tokopedia.core.analytics.container.MoengageAnalytics;
 import com.tokopedia.dev_monitoring_tools.DevMonitoring;
 import com.tokopedia.developer_options.DevOptsSubscriber;
+import com.tokopedia.developer_options.notification.DevOptNotificationManager;
 import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.encryption.security.AESEncryptorECB;
 import com.tokopedia.encryption.security.RSA;
@@ -55,9 +57,9 @@ import com.tokopedia.sellerapp.fcm.AppNotificationReceiver;
 import com.tokopedia.sellerapp.utils.SessionActivityLifecycleCallbacks;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
 import com.tokopedia.track.TrackApp;
+import com.tokopedia.trackingoptimizer.activitylifecyclecallback.TrackingQueueActivityLifecycleCallback;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
-import com.tokopedia.tokopatch.TokoPatch;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -73,22 +75,17 @@ import io.embrace.android.embracesdk.Embrace;
 import kotlin.Pair;
 import kotlin.jvm.functions.Function1;
 
-import com.tokopedia.developer_options.notification.DevOptNotificationManager;
-
 /**
  * Created by ricoharisin on 11/11/16.
  */
 
 public class SellerMainApplication extends SellerRouterApplication implements Configuration.Provider{
 
-    public static final String ANDROID_ROBUST_ENABLE = "android_sellerapp_robust_enable";
     private static final String ADD_BROTLI_INTERCEPTOR = "android_add_brotli_interceptor";
     private static final String REMOTE_CONFIG_SCALYR_KEY_LOG = "android_sellerapp_log_config_scalyr";
     private static final String REMOTE_CONFIG_NEW_RELIC_KEY_LOG = "android_sellerapp_log_config_v3_new_relic";
     private static final String REMOTE_CONFIG_EMBRACE_KEY_LOG = "android_sellerapp_log_config_embrace";
     private static final String PARSER_SCALYR_SA = "android-seller-app-p%s";
-    private final String EMBRACE_PRIMARY_CARRIER_KEY = "operatorNameMain";
-    private final String EMBRACE_SECONDARY_CARRIER_KEY = "operatorNameSecondary";
     private final String LEAK_CANARY_TOGGLE_SP_NAME = "mainapp_leakcanary_toggle";
     private final String LEAK_CANARY_TOGGLE_KEY = "key_leakcanary_toggle_seller";
     private final String STRICT_MODE_LEAK_PUBLISHER_TOGGLE_KEY = "key_strict_mode_leak_publisher_toggle_seller";
@@ -127,22 +124,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
         initEmbrace();
 
         if (GlobalConfig.isAllowDebuggingTools()) {
-            new Cassava.Builder(this)
-                    .setRemoteValidator(new RemoteSpec() {
-                        @NonNull
-                        @Override
-                        public String getUrl() {
-                            return TokopediaUrl.getInstance().getAPI();
-                        }
-
-                        @NonNull
-                        @Override
-                        public String getToken() {
-                            return  getString(com.tokopedia.keys.R.string.thanos_token_key);
-                        }
-                    })
-                    .setLocalRootPath("tracker")
-                    .initialize();
+            initCassava();
         }
         TrackApp.initTrackApp(this);
 
@@ -152,7 +134,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
         TrackApp.getInstance().initializeAllApis();
 
         super.onCreate();
-        initRobust();
         initLogManager();
         com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(SellerMainApplication.this);
         GraphqlClient.setContextData(this);
@@ -166,14 +147,29 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
         setEmbraceUserId();
         EmbraceMonitoring.INSTANCE.setCarrierProperties(this);
 
-        showDevOptNotification();
-        initDevMonitoringTools();
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            showDevOptNotification();
+            initDevMonitoringTools();
+        }
     }
 
-    private void initRobust() {
-        if(remoteConfig.getBoolean(com.tokopedia.remoteconfig.RemoteConfigKey.SELLER_ENABLE_ROBUST, true)) {
-            TokoPatch.init(this);
-        }
+    private void initCassava() {
+        new Cassava.Builder(this)
+                .setRemoteValidator(new RemoteSpec() {
+                    @NonNull
+                    @Override
+                    public String getUrl() {
+                        return TokopediaUrl.getInstance().getAPI();
+                    }
+
+                    @NonNull
+                    @Override
+                    public String getToken() {
+                        return  getString(com.tokopedia.keys.R.string.thanos_token_key);
+                    }
+                })
+                .setLocalRootPath("tracker")
+                .initialize();
     }
 
     private TkpdAuthenticatorGql getAuthenticator() {
@@ -313,12 +309,14 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
     }
 
     private void registerActivityLifecycleCallbacks() {
-        registerActivityLifecycleCallbacks(new NewRelicInteractionActCall());
+        registerActivityLifecycleCallbacks(new TrackingQueueActivityLifecycleCallback(this));
+        registerActivityLifecycleCallbacks(new NewRelicInteractionActCall(getUserSession()));
         registerActivityLifecycleCallbacks(new SessionActivityLifecycleCallbacks());
         if (GlobalConfig.isAllowDebuggingTools()) {
             registerActivityLifecycleCallbacks(new ViewInspectorSubscriber());
             registerActivityLifecycleCallbacks(new DevOptsSubscriber());
             registerActivityLifecycleCallbacks(new JourneySubscriber());
+            registerActivityLifecycleCallbacks(new FrameMetricsMonitoring(this));
         }
         registerActivityLifecycleCallbacks(new TwoFactorCheckerSubscriber());
         registerActivityLifecycleCallbacks(new MediaLoaderActivityLifecycle(this));

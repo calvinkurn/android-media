@@ -87,7 +87,7 @@
             android:layout_marginRight="@dimen/spacing_lvl3"
             android:ellipsize="end"
             android:gravity="center_vertical"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             app:layout_constraintLeft_toRightOf="@id/iv_shop_avatar"
             app:layout_constraintRight_toLeftOf="@id/btn_see_shop"
             app:layout_constraintTop_toBottomOf="@id/tv_shop_name"
@@ -100,7 +100,7 @@
         android:id="@+id/cl_shop_status"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/Unify_N700_68"
+        android:background="@color/Unify_NN950_68"
         android:visibility="gone"
         tools:visibility="gone">
 
@@ -113,7 +113,7 @@
             android:paddingTop="6dp"
             android:paddingEnd="12dp"
             android:paddingBottom="6dp"
-            android:textColor="@color/Unify_N0_96"
+            android:textColor="@color/Unify_NN0_96"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -121,7 +121,7 @@
             app:typographyType="body_3"
             app:typographyWeight="bold"
             tools:text="Dalam pengawasan"
-            tools:textColor="@color/Unify_N0_96" />
+            tools:textColor="@color/Unify_NN0_96" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
