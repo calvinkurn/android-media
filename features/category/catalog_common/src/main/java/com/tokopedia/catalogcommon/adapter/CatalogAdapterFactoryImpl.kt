@@ -15,6 +15,7 @@ import com.tokopedia.catalogcommon.uimodel.AccordionInformationUiModel
 import com.tokopedia.catalogcommon.uimodel.BannerCatalogUiModel
 import com.tokopedia.catalogcommon.uimodel.BlankUiModel
 import com.tokopedia.catalogcommon.uimodel.CharacteristicUiModel
+import com.tokopedia.catalogcommon.uimodel.ComparisonUiModel
 import com.tokopedia.catalogcommon.uimodel.DoubleBannerCatalogUiModel
 import com.tokopedia.catalogcommon.uimodel.DummyUiModel
 import com.tokopedia.catalogcommon.uimodel.ExpertReviewUiModel
@@ -30,6 +31,7 @@ import com.tokopedia.catalogcommon.viewholder.AccordionInformationViewHolder
 import com.tokopedia.catalogcommon.viewholder.BannerViewHolder
 import com.tokopedia.catalogcommon.viewholder.BlankViewHolder
 import com.tokopedia.catalogcommon.viewholder.CharacteristicViewHolder
+import com.tokopedia.catalogcommon.viewholder.ComparisonViewHolder
 import com.tokopedia.catalogcommon.viewholder.DoubleBannerViewHolder
 import com.tokopedia.catalogcommon.viewholder.DummyViewHolder
 import com.tokopedia.catalogcommon.viewholder.ExpertReviewViewHolder
@@ -74,6 +76,7 @@ class CatalogAdapterFactoryImpl(
             DoubleBannerViewHolder.LAYOUT -> DoubleBannerViewHolder(view,doubleBannerListener)
             ExpertReviewViewHolder.LAYOUT -> ExpertReviewViewHolder(view, videoExpertListener)
             SupportFeatureViewHolder.LAYOUT -> SupportFeatureViewHolder(view)
+            ComparisonViewHolder.LAYOUT -> ComparisonViewHolder(view)
             BlankViewHolder.LAYOUT -> BlankViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
@@ -137,5 +140,9 @@ class CatalogAdapterFactoryImpl(
 
     override fun type(uiModel: SupportFeaturesUiModel): Int {
         return SupportFeatureViewHolder.LAYOUT
+    }
+
+    override fun type(uiModel: ComparisonUiModel): Int {
+        return ComparisonViewHolder.LAYOUT
     }
 }

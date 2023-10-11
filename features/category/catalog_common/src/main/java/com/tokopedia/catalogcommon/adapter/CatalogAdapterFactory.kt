@@ -4,6 +4,7 @@ import com.tokopedia.catalogcommon.uimodel.AccordionInformationUiModel
 import com.tokopedia.catalogcommon.uimodel.BannerCatalogUiModel
 import com.tokopedia.catalogcommon.uimodel.BlankUiModel
 import com.tokopedia.catalogcommon.uimodel.CharacteristicUiModel
+import com.tokopedia.catalogcommon.uimodel.ComparisonUiModel
 import com.tokopedia.catalogcommon.uimodel.DoubleBannerCatalogUiModel
 import com.tokopedia.catalogcommon.uimodel.DummyUiModel
 import com.tokopedia.catalogcommon.uimodel.ExpertReviewUiModel
@@ -33,6 +34,8 @@ interface CatalogAdapterFactory {
     fun type(uiModel: DoubleBannerCatalogUiModel): Int
     fun type(uiModel: CharacteristicUiModel): Int
     fun type(uiModel: SupportFeaturesUiModel): Int
+
+    fun type(uiModel: ComparisonUiModel): Int
 
 
 }
