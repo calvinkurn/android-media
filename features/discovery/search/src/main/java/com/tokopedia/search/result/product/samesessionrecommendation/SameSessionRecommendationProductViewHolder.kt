@@ -47,7 +47,6 @@ class SameSessionRecommendationProductViewHolder(
             freeOngkir = freeOngkirDataView.toFreeOngkir(),
             cardInteraction = true,
             customVideoURL = customVideoURL,
-            pageSource = ProductCardModel.PageSource.SEARCH,
         )
     }
 
