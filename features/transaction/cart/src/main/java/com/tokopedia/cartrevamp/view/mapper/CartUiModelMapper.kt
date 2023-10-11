@@ -465,6 +465,7 @@ object CartUiModelMapper {
             productId = product.productId
             productInformation = product.productInformation
             productInformationWithIcon = product.productInformationWithIcon
+            productTagInfo = product.productTagInfo
             productAlertMessage = product.productAlertMessage
             productPrice = product.productPrice
             productOriginalPrice = product.productOriginalPrice

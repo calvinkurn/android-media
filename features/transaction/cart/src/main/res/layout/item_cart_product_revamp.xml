@@ -386,6 +386,19 @@
         </com.google.android.flexbox.FlexboxLayout>
 
         <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/text_product_tag_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="@id/layout_product_price"
+            app:layout_constraintTop_toBottomOf="@id/layout_product_price"
+            app:layout_constraintBottom_toTopOf="@id/text_product_variant"
+            android:layout_marginTop="12dp"
+            android:visibility="gone"
+            app:typographyType="small"
+            app:typographyWeight="reguler"
+            android:textColor="@color/Unify_NN950"/>
+
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/text_product_variant"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

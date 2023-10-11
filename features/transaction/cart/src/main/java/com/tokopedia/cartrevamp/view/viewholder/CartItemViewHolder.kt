@@ -106,6 +106,7 @@ class CartItemViewHolder constructor(
         renderQuantity(data, viewHolderListener)
         renderProductAction(data)
         renderBmGmOfferTicker(data)
+        renderProductTagInfo(data)
     }
 
     private fun initCoachMark() {
@@ -1472,6 +1473,17 @@ class CartItemViewHolder constructor(
             }
         } else {
             binding.itemCartBmgm.root.gone()
+        }
+    }
+
+    private fun renderProductTagInfo(data: CartItemHolderData) {
+        if (data.productTagInfo.isNotEmpty()) {
+            binding.textProductTagInfo.apply {
+                visible()
+                text = data.productTagInfo.firstOrNull()?.message ?: ""
+            }
+        } else {
+            binding.textProductTagInfo.gone()
         }
     }
 
