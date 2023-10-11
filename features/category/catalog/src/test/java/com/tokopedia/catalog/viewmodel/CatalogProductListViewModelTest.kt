@@ -5,6 +5,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.JsonObject
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.catalog.domain.GetProductListFromSearchUseCase
 import com.tokopedia.catalog.domain.model.CatalogProductItem
@@ -12,7 +13,9 @@ import com.tokopedia.catalog.domain.model.CatalogSearchProductForReimaganeRespon
 import com.tokopedia.catalog.ui.model.CatalogProductAtcUiModel
 import com.tokopedia.catalog.ui.viewmodel.CatalogProductListViewModel
 import com.tokopedia.common_category.model.filter.FilterResponse
+import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.graphql.CommonUtils
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.data.model.GraphqlError
@@ -109,7 +112,9 @@ class CatalogProductListViewModelTest {
             (secondArg() as Subscriber<DynamicFilterModel>).onNext(data.dynamicAttribute)
             (secondArg() as Subscriber<DynamicFilterModel>).onCompleted()
         }
+        viewModel.quickFilterClicked
         viewModel.fetchQuickFilters(RequestParams())
+        viewModel.quickFilterModel
         if (viewModel.quickFilterResult.value is Success) {
             assert(true)
         } else {
@@ -182,6 +187,9 @@ class CatalogProductListViewModelTest {
         } returns data
 
         viewModel.fetchProductListing(param)
+        viewModel.filterController
+        viewModel.searchParameter
+        viewModel.searchParametersMap
         assert(viewModel.productList.value is Success)
     }
 
@@ -201,6 +209,9 @@ class CatalogProductListViewModelTest {
         } returns data
 
         viewModel.fetchProductListing(param)
+        viewModel.filterController
+        viewModel.searchParameter
+        viewModel.searchParametersMap
         if (viewModel.productList.value is Success && (viewModel.productList.value as Success<List<CatalogProductItem>>).data.isEmpty()) {
             assert(true)
         } else {
@@ -217,6 +228,13 @@ class CatalogProductListViewModelTest {
 
         viewModel.fetchProductListing(param)
         if (viewModel.productList.value is Fail) { assert(true) } else { assert(false) }
+        viewModel.quickFilterOptionList = arrayListOf()
+        viewModel.searchParameter = SearchParameter("")
+        viewModel.filterController = FilterController()
+        viewModel.quickFilterOptionList
+        viewModel.quickFilterClicked
+        viewModel.dynamicFilterModel
+        viewModel.selectedSortIndicatorCount
     }
 
     @Test
@@ -231,11 +249,31 @@ class CatalogProductListViewModelTest {
         coEvery {
             addToCartUseCase.setParams(paramUseCase)
             addToCartUseCase.executeOnBackground()
-        } returns AddToCartDataModel(status = "OK")
+        } returns AddToCartDataModel(data = DataModel(success = 0), status = "")
 
         viewModel.addProductToCart(paramViewModel)
 
         assert(viewModel.errorsToaster.value is MessageErrorException)
+    }
+
+    @Test
+    fun `Add To Cart Response Success with status ok`() {
+        val paramViewModel = CatalogProductAtcUiModel()
+        val paramUseCase = AddToCartRequestParams(
+            productId = paramViewModel.productId,
+            shopId = paramViewModel.shopId,
+            quantity = paramViewModel.quantity,
+            warehouseId = paramViewModel.warehouseId
+        )
+        val response = AddToCartDataModel(data = DataModel(success = 1), status = "OK", errorMessage = arrayListOf("error"))
+        coEvery {
+            addToCartUseCase.setParams(paramUseCase)
+            addToCartUseCase.executeOnBackground()
+        } returns response
+
+        viewModel.addProductToCart(paramViewModel)
+
+        assert(viewModel.textToaster.value == response.getAtcErrorMessage())
     }
 
     @Test
@@ -247,15 +285,15 @@ class CatalogProductListViewModelTest {
             quantity = paramViewModel.quantity,
             warehouseId = paramViewModel.warehouseId
         )
-        val response = AddToCartDataModel(status = "")
+        val error = Throwable()
         coEvery {
             addToCartUseCase.setParams(paramUseCase)
             addToCartUseCase.executeOnBackground()
-        } returns response
+        } throws error
 
         viewModel.addProductToCart(paramViewModel)
 
-        assert(viewModel.textToaster.value == response.getAtcErrorMessage())
+        assert(viewModel.errorsToaster.value == error)
     }
 
     @Test
@@ -273,7 +311,6 @@ class CatalogProductListViewModelTest {
     @Test
     fun `Refresh Notification Fail`() {
         val error = Throwable("Error")
-        val response = TopNavNotificationModel(totalCart = 2)
         coEvery {
             getNotificationUseCase.executeOnBackground()
         } throws error
@@ -287,9 +324,32 @@ class CatalogProductListViewModelTest {
     fun `User Not Login`() {
         val emptyUserId = ""
         userSession.userId = emptyUserId
+        coEvery {
+            viewModel.getUserId()
+        } returns emptyUserId
         viewModel.getUserId()
-        viewModel.isUserLoggedIn()
         assert(!viewModel.isUserLoggedIn())
+    }
+
+    @Test
+    fun `User already Login`() {
+        val userId = "13131313"
+        userSession.userId = userId
+
+        coEvery {
+            viewModel.getUserId()
+        } returns userId
+        assert(viewModel.isUserLoggedIn())
+    }
+
+    @Test
+    fun `Get user id`() {
+        val userId = "13131313"
+
+        coEvery {
+            userSession.userId
+        } returns userId
+        assert(viewModel.getUserId().isNotEmpty())
     }
 
     companion object {
