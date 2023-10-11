@@ -67,6 +67,7 @@ includeIfEnabled("features:logistic:activation")
 includeIfEnabled("features:logistic:manageaddress")
 includeIfEnabled("features:logistic:localizationchooseaddress")
 includeIfEnabled("features:logistic:localizationchooseaddress_common")
+includeIfEnabled("features:logistic:targetedticker")
 
 includeIfEnabled("features:media:mediauploader")
 includeIfEnabled("features:media:medialoader")

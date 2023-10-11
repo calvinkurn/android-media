@@ -137,7 +137,6 @@ ext {
             localizationchooseaddress       : ":features:logistic:localizationchooseaddress",
             localizationchooseaddress_common: ":features:logistic:localizationchooseaddress_common",
 			targetedticker					: ":features:logistic:targetedticker",
-
             mediauploader                   : ":features:media:mediauploader",
             medialoader                     : ":features:media:medialoader",
             liveBroadcaster                 : ":features:media:live-broadcaster",
