@@ -133,7 +133,7 @@ class ShopHomeBannerProductGroupViewPagerViewHolder(
         }
 
         tabTitle?.apply {
-            setTypeface(Typography.getFontType(context, true, Typography.DISPLAY_3))
+            typeface = Typography.getFontType(context, true, Typography.DISPLAY_3)
             setTextColor(highEmphasizeColor)
             invalidate()
         }
@@ -149,7 +149,7 @@ class ShopHomeBannerProductGroupViewPagerViewHolder(
         }
 
         tabTitle?.apply {
-            setTypeface(Typography.getFontType(context, false, Typography.DISPLAY_3))
+            typeface = Typography.getFontType(context, false, Typography.DISPLAY_3)
             setTextColor(disabledTextColor)
             invalidate()
         }
