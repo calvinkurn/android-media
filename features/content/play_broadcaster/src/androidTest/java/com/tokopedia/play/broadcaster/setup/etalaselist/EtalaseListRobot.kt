@@ -18,7 +18,7 @@ import com.tokopedia.play.broadcaster.setup.ProductSetupContainer
 import com.tokopedia.content.product.picker.seller.analytic.manager.EtalaseListAnalyticManager
 import com.tokopedia.content.product.picker.seller.view.bottomsheet.EtalaseListBottomSheet
 import com.tokopedia.content.product.picker.seller.view.viewholder.EtalaseListViewHolder
-import com.tokopedia.content.product.picker.seller.view.viewmodel.ContentProductPickerSGCViewModel
+import com.tokopedia.content.product.picker.seller.view.viewmodel.ContentProductPickerSellerViewModel
 import com.tokopedia.play.broadcaster.setup.productSetupViewModel
 import com.tokopedia.content.test.espresso.delay
 import io.mockk.mockk
@@ -30,7 +30,7 @@ import com.tokopedia.empty_state.R as empty_stateR
  * Created by kenny.hadisaputra on 08/03/22
  */
 class EtalaseListRobot(
-    viewModel: (SavedStateHandle) -> ContentProductPickerSGCViewModel = {
+    viewModel: (SavedStateHandle) -> ContentProductPickerSellerViewModel = {
         productSetupViewModel(handle = it)
     },
 ) {

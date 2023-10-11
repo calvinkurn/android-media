@@ -35,7 +35,7 @@ import com.tokopedia.content.product.picker.seller.model.result.ContentProductPi
 import com.tokopedia.content.product.picker.seller.model.result.PageResultState
 import com.tokopedia.content.product.picker.seller.model.sort.SortUiModel
 import com.tokopedia.content.common.util.bottomsheet.ContentDialogCustomizer
-import com.tokopedia.content.product.picker.databinding.BottomSheetSgcProductChooserBinding
+import com.tokopedia.content.product.picker.databinding.BottomSheetSellerProductChooserBinding
 import com.tokopedia.play_common.lifecycle.lifecycleBound
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.lifecycle.whenLifecycle
@@ -56,8 +56,8 @@ class ProductChooserBottomSheet @Inject constructor(
     private val router: Router,
 ) : BaseProductSetupBottomSheet(), ProductSortBottomSheet.Listener {
 
-    private var _binding: BottomSheetSgcProductChooserBinding? = null
-    private val binding: BottomSheetSgcProductChooserBinding
+    private var _binding: BottomSheetSellerProductChooserBinding? = null
+    private val binding: BottomSheetSellerProductChooserBinding
         get() = _binding!!
 
     private val eventBus by viewLifecycleBound(
@@ -175,7 +175,7 @@ class ProductChooserBottomSheet @Inject constructor(
     }
 
     private fun setupBottomSheet() {
-        _binding = BottomSheetSgcProductChooserBinding.inflate(
+        _binding = BottomSheetSellerProductChooserBinding.inflate(
             LayoutInflater.from(requireContext()),
         )
         clearContentPadding = true

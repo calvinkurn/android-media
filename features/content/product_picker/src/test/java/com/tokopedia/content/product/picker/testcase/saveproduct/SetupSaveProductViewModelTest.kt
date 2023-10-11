@@ -2,8 +2,8 @@ package com.tokopedia.content.product.picker.testcase.saveproduct
 
 import com.tokopedia.content.product.picker.builder.CommonUiModelBuilder
 import com.tokopedia.content.product.picker.builder.ProductSetupUiModelBuilder
-import com.tokopedia.content.product.picker.robot.ContentProductPickerSGCViewModelRobot
-import com.tokopedia.content.product.picker.seller.domain.ContentProductPickerSGCRepository
+import com.tokopedia.content.product.picker.robot.ContentProductPickerSellerViewModelRobot
+import com.tokopedia.content.product.picker.seller.domain.ContentProductPickerSellerRepository
 import com.tokopedia.content.product.picker.seller.model.uimodel.ProductChooserEvent
 import com.tokopedia.content.product.picker.seller.model.uimodel.ProductSetupAction
 import com.tokopedia.content.product.picker.util.assertEqualTo
@@ -23,7 +23,7 @@ class SetupSaveProductViewModelTest {
     val rule: CoroutineTestRule = CoroutineTestRule()
 
     private val testDispatcher = rule.dispatchers
-    private val mockRepo: ContentProductPickerSGCRepository = mockk(relaxed = true)
+    private val mockRepo: ContentProductPickerSellerRepository = mockk(relaxed = true)
 
     /** Mock Response */
     private val productSetupUiModelBuilder = ProductSetupUiModelBuilder()
@@ -38,7 +38,7 @@ class SetupSaveProductViewModelTest {
 
     @Test
     fun `when user wants to save products and success, it should trigger event success`() {
-        val robot = ContentProductPickerSGCViewModelRobot(
+        val robot = ContentProductPickerSellerViewModelRobot(
             productSectionList = mockProductTagSectionList,
             dispatchers = testDispatcher,
             repo = mockRepo
@@ -61,7 +61,7 @@ class SetupSaveProductViewModelTest {
 
     @Test
     fun `when user wants to save products and success, it should load product section tag`() {
-        val robot = ContentProductPickerSGCViewModelRobot(
+        val robot = ContentProductPickerSellerViewModelRobot(
             productSectionList = mockProductTagSectionList,
             dispatchers = testDispatcher,
             repo = mockRepo
@@ -87,7 +87,7 @@ class SetupSaveProductViewModelTest {
 
         coEvery { mockRepo.setProductTags(any(), any()) } throws mockException
 
-        val robot = ContentProductPickerSGCViewModelRobot(
+        val robot = ContentProductPickerSellerViewModelRobot(
             productSectionList = mockProductTagSectionList,
             dispatchers = testDispatcher,
             repo = mockRepo

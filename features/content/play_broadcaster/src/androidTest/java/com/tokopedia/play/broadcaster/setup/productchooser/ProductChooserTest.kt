@@ -1,7 +1,7 @@
 package com.tokopedia.play.broadcaster.setup.productchooser
 
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
-import com.tokopedia.content.product.picker.seller.domain.ContentProductPickerSGCRepository
+import com.tokopedia.content.product.picker.seller.domain.ContentProductPickerSellerRepository
 import com.tokopedia.content.product.picker.seller.view.bottomsheet.ProductChooserBottomSheet
 import com.tokopedia.play.broadcaster.setup.productSetupViewModel
 import com.tokopedia.content.product.picker.seller.model.OriginalPrice
@@ -23,7 +23,7 @@ import org.junit.runner.RunWith
 @UiTest
 class ProductChooserTest {
 
-    private val mockRepo: ContentProductPickerSGCRepository = mockk(relaxed = true)
+    private val mockRepo: ContentProductPickerSellerRepository = mockk(relaxed = true)
     private val mockSection = List(1) {
         ProductTagSectionUiModel("", CampaignStatus.Ongoing, List(2) {
             ProductUiModel(it.toString(), "Product $it", false, "", 0, false,"", 1, OriginalPrice("Rp1000.00", 1000.0), PinProductUiModel.Empty, "")

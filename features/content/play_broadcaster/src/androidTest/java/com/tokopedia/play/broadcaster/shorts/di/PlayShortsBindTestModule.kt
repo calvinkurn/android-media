@@ -9,7 +9,7 @@ import com.tokopedia.byteplus.effect.util.asset.checker.AssetChecker
 import com.tokopedia.byteplus.effect.util.asset.checker.AssetCheckerImpl
 import com.tokopedia.byteplus.effect.util.asset.manager.AssetManager
 import com.tokopedia.byteplus.effect.util.asset.manager.AssetManagerImpl
-import com.tokopedia.content.product.picker.seller.analytic.ContentProductPickerSGCAnalytic
+import com.tokopedia.content.product.picker.seller.analytic.ContentProductPickerSellerAnalytic
 import com.tokopedia.play.broadcaster.analytic.beautification.PlayBroadcastBeautificationAnalytic
 import com.tokopedia.play.broadcaster.analytic.beautification.PlayBroadcastBeautificationAnalyticImpl
 import com.tokopedia.play.broadcaster.analytic.entrypoint.PlayShortsEntryPointAnalytic
@@ -116,7 +116,7 @@ abstract class PlayShortsBindTestModule {
 
     @Binds
     @PlayShortsScope
-    abstract fun bindSetupProductAnalytic(setupProductAnalytic: PlayShortsSetupProductAnalyticImpl): ContentProductPickerSGCAnalytic
+    abstract fun bindSetupProductAnalytic(setupProductAnalytic: PlayShortsSetupProductAnalyticImpl): ContentProductPickerSellerAnalytic
 
     @Binds
     @PlayShortsScope

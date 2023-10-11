@@ -5,7 +5,7 @@ import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 /**
  * Created By : Jonathan Darwin on September 26, 2023
  */
-interface ContentProductPickerSGCAnalytic {
+interface ContentProductPickerSellerAnalytic {
 
     fun setSelectedAccount(account: ContentAccountUiModel)
 

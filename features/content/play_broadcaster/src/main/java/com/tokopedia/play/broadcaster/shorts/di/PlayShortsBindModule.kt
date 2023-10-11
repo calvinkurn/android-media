@@ -76,8 +76,8 @@ import com.tokopedia.byteplus.effect.util.asset.checker.AssetChecker
 import com.tokopedia.byteplus.effect.util.asset.checker.AssetCheckerImpl
 import com.tokopedia.byteplus.effect.util.asset.manager.AssetManager
 import com.tokopedia.byteplus.effect.util.asset.manager.AssetManagerImpl
-import com.tokopedia.content.product.picker.seller.analytic.ContentProductPickerSGCAnalytic
-import com.tokopedia.content.product.picker.seller.domain.ContentProductPickerSGCRepository
+import com.tokopedia.content.product.picker.seller.analytic.ContentProductPickerSellerAnalytic
+import com.tokopedia.content.product.picker.seller.domain.ContentProductPickerSellerRepository
 import com.tokopedia.content.common.util.bottomsheet.NavigationBarColorDialogCustomizer
 import com.tokopedia.content.common.util.bottomsheet.ContentDialogCustomizer
 import com.tokopedia.content.product.picker.seller.analytic.ContentPinnedProductAnalytic
@@ -157,7 +157,7 @@ abstract class PlayShortsBindModule {
     @PlayShortsScope
     abstract fun bindProductRepository(
         repo: PlayBroProductRepositoryImpl
-    ): ContentProductPickerSGCRepository
+    ): ContentProductPickerSellerRepository
 
     @Binds
     @PlayShortsScope
@@ -195,7 +195,7 @@ abstract class PlayShortsBindModule {
 
     @Binds
     @PlayShortsScope
-    abstract fun bindSetupProductAnalytic(setupProductAnalytic: PlayShortsSetupProductAnalyticImpl): ContentProductPickerSGCAnalytic
+    abstract fun bindSetupProductAnalytic(setupProductAnalytic: PlayShortsSetupProductAnalyticImpl): ContentProductPickerSellerAnalytic
 
     @Binds
     @PlayShortsScope

@@ -22,7 +22,7 @@ import com.tokopedia.content.product.picker.seller.model.PriceUnknown
 import com.tokopedia.content.product.picker.seller.model.pinnedproduct.PinProductUiModel
 import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
 import com.tokopedia.content.common.util.bottomsheet.ContentDialogCustomizer
-import com.tokopedia.content.product.picker.databinding.BottomSheetUgcProductPickerBinding
+import com.tokopedia.content.product.picker.databinding.BottomSheetUserProductPickerBinding
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.util.PlayToaster
 import kotlinx.coroutines.flow.collectLatest
@@ -31,15 +31,15 @@ import javax.inject.Inject
 /**
  * Created by kenny.hadisaputra on 29/08/22
  */
-class ProductPickerUGCBottomSheet @Inject constructor(
+class ProductPickerUserBottomSheet @Inject constructor(
     private val dialogCustomizer: ContentDialogCustomizer,
     private val analytic: ContentProductTagAnalytic,
 ) : BaseProductSetupBottomSheet() {
 
     private val offsetToaster by lazy { context?.resources?.getDimensionPixelOffset(R.dimen.content_product_picker_50_dp) ?: 0 }
 
-    private var _binding: BottomSheetUgcProductPickerBinding? = null
-    private val binding: BottomSheetUgcProductPickerBinding
+    private var _binding: BottomSheetUserProductPickerBinding? = null
+    private val binding: BottomSheetUserProductPickerBinding
         get() = _binding!!
 
     private val productTagListener = object : ProductTagParentFragment.Listener {
@@ -190,7 +190,7 @@ class ProductPickerUGCBottomSheet @Inject constructor(
     }
 
     private fun setupBottomSheet() {
-        _binding = BottomSheetUgcProductPickerBinding.inflate(
+        _binding = BottomSheetUserProductPickerBinding.inflate(
             LayoutInflater.from(requireContext())
         )
         clearContentPadding = true
@@ -215,7 +215,7 @@ class ProductPickerUGCBottomSheet @Inject constructor(
             viewModel.uiEvent.collect {
                 when (it) {
                     ProductChooserEvent.SaveProductSuccess -> {
-                        mListener?.onFinished(this@ProductPickerUGCBottomSheet)
+                        mListener?.onFinished(this@ProductPickerUserBottomSheet)
                     }
                     is ProductChooserEvent.ShowError -> {
                         toaster.showError(
@@ -238,22 +238,22 @@ class ProductPickerUGCBottomSheet @Inject constructor(
         private const val TAG = "PlayUGCProductPickerBottomSheet"
         private const val SHEET_HEIGHT_PERCENT = 0.9f // a bit higher than the other bottomsheet to cater for no header height
 
-        fun get(fragmentManager: FragmentManager): ProductPickerUGCBottomSheet? {
-            return fragmentManager.findFragmentByTag(TAG) as? ProductPickerUGCBottomSheet
+        fun get(fragmentManager: FragmentManager): ProductPickerUserBottomSheet? {
+            return fragmentManager.findFragmentByTag(TAG) as? ProductPickerUserBottomSheet
         }
 
         fun getOrCreate(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader
 
-        ): ProductPickerUGCBottomSheet {
+        ): ProductPickerUserBottomSheet {
             val existing = get(fragmentManager)
             if (existing != null) return existing
 
             return fragmentManager.fragmentFactory.instantiate(
                 classLoader,
-                ProductPickerUGCBottomSheet::class.java.name
-            ) as ProductPickerUGCBottomSheet
+                ProductPickerUserBottomSheet::class.java.name
+            ) as ProductPickerUserBottomSheet
         }
     }
 
@@ -263,7 +263,7 @@ class ProductPickerUGCBottomSheet @Inject constructor(
     }
 
     interface Listener {
-        fun onCancelled(bottomSheet: ProductPickerUGCBottomSheet)
-        fun onFinished(bottomSheet: ProductPickerUGCBottomSheet)
+        fun onCancelled(bottomSheet: ProductPickerUserBottomSheet)
+        fun onFinished(bottomSheet: ProductPickerUserBottomSheet)
     }
 }

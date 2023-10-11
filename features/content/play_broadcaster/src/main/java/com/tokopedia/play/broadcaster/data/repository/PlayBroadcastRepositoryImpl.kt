@@ -1,6 +1,6 @@
 package com.tokopedia.play.broadcaster.data.repository
 
-import com.tokopedia.content.product.picker.seller.domain.ContentProductPickerSGCRepository
+import com.tokopedia.content.product.picker.seller.domain.ContentProductPickerSellerRepository
 import com.tokopedia.play.broadcaster.domain.repository.*
 import javax.inject.Inject
 
@@ -11,11 +11,11 @@ class PlayBroadcastRepositoryImpl @Inject constructor(
     private val channelRepo: PlayBroadcastChannelRepository,
     private val pinnedMessageRepo: PlayBroadcastPinnedMessageRepository,
     private val interactiveRepo: PlayBroadcastInteractiveRepository,
-    private val productRepository: ContentProductPickerSGCRepository,
+    private val productRepository: ContentProductPickerSellerRepository,
     private val beautificationRepository: PlayBroadcastBeautificationRepository,
 ) : PlayBroadcastRepository,
     PlayBroadcastChannelRepository by channelRepo,
     PlayBroadcastPinnedMessageRepository by pinnedMessageRepo,
     PlayBroadcastInteractiveRepository by interactiveRepo,
-    ContentProductPickerSGCRepository by productRepository,
+    ContentProductPickerSellerRepository by productRepository,
     PlayBroadcastBeautificationRepository by beautificationRepository

@@ -9,7 +9,7 @@ import com.tokopedia.byteplus.effect.util.asset.checker.AssetChecker
 import com.tokopedia.content.common.analytic.entrypoint.PlayPerformanceDashboardEntryPointAnalytic
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
 import com.tokopedia.content.product.picker.seller.analytic.ContentPinnedProductAnalytic
-import com.tokopedia.content.product.picker.seller.analytic.ContentProductPickerSGCAnalytic
+import com.tokopedia.content.product.picker.seller.analytic.ContentProductPickerSellerAnalytic
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.mediauploader.common.di.MediaUploaderModule
@@ -142,7 +142,7 @@ class PlayBroadcastTestModule(
         setupMenuAnalytic: PlayBroSetupMenuAnalytic,
         setupTitleAnalytic: PlayBroSetupTitleAnalytic,
         setupCoverAnalytic: PlayBroSetupCoverAnalytic,
-        setupProductAnalytic: ContentProductPickerSGCAnalytic,
+        setupProductAnalytic: ContentProductPickerSellerAnalytic,
         summaryAnalytic: PlayBroadcastSummaryAnalytic,
         scheduleAnalytic: PlayBroScheduleAnalytic,
         pinProductAnalytic: ContentPinnedProductAnalytic,

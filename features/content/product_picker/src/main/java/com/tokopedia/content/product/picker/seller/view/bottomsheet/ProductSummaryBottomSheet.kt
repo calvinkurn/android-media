@@ -19,9 +19,9 @@ import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSect
 import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
 import com.tokopedia.content.product.picker.seller.util.productTagSummaryEmpty
 import com.tokopedia.content.common.view.fragment.LoadingDialogFragment
-import com.tokopedia.content.product.picker.databinding.BottomSheetSgcProductSummaryBinding
+import com.tokopedia.content.product.picker.databinding.BottomSheetSellerProductSummaryBinding
 import com.tokopedia.content.product.picker.seller.analytic.ContentPinnedProductAnalytic
-import com.tokopedia.content.product.picker.seller.analytic.ContentProductPickerSGCAnalytic
+import com.tokopedia.content.product.picker.seller.analytic.ContentProductPickerSellerAnalytic
 import com.tokopedia.content.product.picker.seller.model.exception.PinnedProductException
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.util.PlayToaster
@@ -37,15 +37,15 @@ import javax.inject.Inject
  * Created by kenny.hadisaputra on 04/02/22
  */
 class ProductSummaryBottomSheet @Inject constructor(
-    private val analytic: ContentProductPickerSGCAnalytic,
+    private val analytic: ContentProductPickerSellerAnalytic,
     private val pinnedProductAnalytic: ContentPinnedProductAnalytic,
     private val coachMarkSharedPref: ContentCoachMarkSharedPref,
 ) : BaseProductSetupBottomSheet(), ProductSummaryListViewComponent.Listener {
 
     private var mListener: Listener? = null
 
-    private var _binding: BottomSheetSgcProductSummaryBinding? = null
-    private val binding: BottomSheetSgcProductSummaryBinding
+    private var _binding: BottomSheetSellerProductSummaryBinding? = null
+    private val binding: BottomSheetSellerProductSummaryBinding
         get() = _binding!!
 
     private val loadingDialogFragment: LoadingDialogFragment
@@ -105,7 +105,7 @@ class ProductSummaryBottomSheet @Inject constructor(
     }
 
     private fun setupBottomSheet() {
-        _binding = BottomSheetSgcProductSummaryBinding.inflate(
+        _binding = BottomSheetSellerProductSummaryBinding.inflate(
             LayoutInflater.from(requireContext()),
         )
         clearContentPadding = true

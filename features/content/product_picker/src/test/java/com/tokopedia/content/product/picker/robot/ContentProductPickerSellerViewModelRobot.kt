@@ -2,12 +2,12 @@ package com.tokopedia.content.product.picker.robot
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import com.tokopedia.content.product.picker.seller.domain.ContentProductPickerSGCRepository
+import com.tokopedia.content.product.picker.seller.domain.ContentProductPickerSellerRepository
 import com.tokopedia.content.product.picker.seller.model.uimodel.ProductChooserEvent
 import com.tokopedia.content.product.picker.seller.model.uimodel.PlayBroProductSummaryUiState
 import com.tokopedia.content.product.picker.seller.model.uimodel.ProductChooserUiState
 import com.tokopedia.content.product.picker.seller.model.uimodel.ProductSetupAction
-import com.tokopedia.content.product.picker.seller.view.viewmodel.ContentProductPickerSGCViewModel
+import com.tokopedia.content.product.picker.seller.view.viewmodel.ContentProductPickerSellerViewModel
 import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
@@ -19,20 +19,20 @@ import java.io.Closeable
 /**
  * Created By : Jonathan Darwin on February 17, 2022
  */
-internal class ContentProductPickerSGCViewModelRobot(
+internal class ContentProductPickerSellerViewModelRobot(
     creationId: String = "",
     maxProduct: Int = 30,
     productSectionList: List<ProductTagSectionUiModel> = emptyList(),
     handle: SavedStateHandle = SavedStateHandle(),
     isEligibleForPin: Boolean = false,
-    repo: ContentProductPickerSGCRepository = mockk(relaxed = true),
+    repo: ContentProductPickerSellerRepository = mockk(relaxed = true),
     userSession: UserSessionInterface = mockk(relaxed = true),
     isNumerationShown: Boolean = true,
     fetchCommissionProduct: Boolean = false,
     private val dispatchers: CoroutineTestDispatchers = CoroutineTestDispatchers,
 ) : Closeable {
 
-    private val viewModel = ContentProductPickerSGCViewModel(
+    private val viewModel = ContentProductPickerSellerViewModel(
         creationId,
         maxProduct,
         productSectionList,
@@ -45,7 +45,7 @@ internal class ContentProductPickerSGCViewModelRobot(
         dispatchers,
     )
 
-    fun recordState(fn: suspend ContentProductPickerSGCViewModelRobot.() -> Unit): ProductChooserUiState {
+    fun recordState(fn: suspend ContentProductPickerSellerViewModelRobot.() -> Unit): ProductChooserUiState {
         val scope = CoroutineScope(dispatchers.coroutineDispatcher)
         lateinit var uiState: ProductChooserUiState
         scope.launch {
@@ -59,7 +59,7 @@ internal class ContentProductPickerSGCViewModelRobot(
         return uiState
     }
 
-    fun recordStateAsList(fn: suspend ContentProductPickerSGCViewModelRobot.() -> Unit): List<ProductChooserUiState> {
+    fun recordStateAsList(fn: suspend ContentProductPickerSellerViewModelRobot.() -> Unit): List<ProductChooserUiState> {
         val scope = CoroutineScope(dispatchers.coroutineDispatcher)
         val uiStateList = mutableListOf<ProductChooserUiState>()
         scope.launch {
@@ -73,7 +73,7 @@ internal class ContentProductPickerSGCViewModelRobot(
         return uiStateList
     }
 
-    fun recordSummaryState(fn: suspend ContentProductPickerSGCViewModelRobot.() -> Unit): PlayBroProductSummaryUiState {
+    fun recordSummaryState(fn: suspend ContentProductPickerSellerViewModelRobot.() -> Unit): PlayBroProductSummaryUiState {
         val scope = CoroutineScope(dispatchers.coroutineDispatcher)
         lateinit var uiState: PlayBroProductSummaryUiState
         scope.launch {
@@ -87,7 +87,7 @@ internal class ContentProductPickerSGCViewModelRobot(
         return uiState
     }
 
-    fun recordSummaryStateAsList(fn: suspend ContentProductPickerSGCViewModelRobot.() -> Unit): List<PlayBroProductSummaryUiState> {
+    fun recordSummaryStateAsList(fn: suspend ContentProductPickerSellerViewModelRobot.() -> Unit): List<PlayBroProductSummaryUiState> {
         val scope = CoroutineScope(dispatchers.coroutineDispatcher)
         val uiStateList = mutableListOf<PlayBroProductSummaryUiState>()
         scope.launch {
@@ -101,7 +101,7 @@ internal class ContentProductPickerSGCViewModelRobot(
         return uiStateList
     }
 
-    fun recordEvent(fn: suspend ContentProductPickerSGCViewModelRobot.() -> Unit): List<ProductChooserEvent> {
+    fun recordEvent(fn: suspend ContentProductPickerSellerViewModelRobot.() -> Unit): List<ProductChooserEvent> {
         val scope = CoroutineScope(dispatchers.coroutineDispatcher)
         val uiEvents = mutableListOf<ProductChooserEvent>()
         scope.launch {
@@ -115,7 +115,7 @@ internal class ContentProductPickerSGCViewModelRobot(
         return uiEvents
     }
 
-    fun recordStateAndEvent(fn: suspend ContentProductPickerSGCViewModelRobot.() -> Unit): Pair<ProductChooserUiState, List<ProductChooserEvent>> {
+    fun recordStateAndEvent(fn: suspend ContentProductPickerSellerViewModelRobot.() -> Unit): Pair<ProductChooserUiState, List<ProductChooserEvent>> {
         val scope = CoroutineScope(dispatchers.coroutineDispatcher)
         lateinit var uiState: ProductChooserUiState
         val uiEvents = mutableListOf<ProductChooserEvent>()
@@ -135,7 +135,7 @@ internal class ContentProductPickerSGCViewModelRobot(
         return uiState to uiEvents
     }
 
-    fun recordStateAsListAndEvent(fn: suspend ContentProductPickerSGCViewModelRobot.() -> Unit): Pair<List<ProductChooserUiState>, List<ProductChooserEvent>> {
+    fun recordStateAsListAndEvent(fn: suspend ContentProductPickerSellerViewModelRobot.() -> Unit): Pair<List<ProductChooserUiState>, List<ProductChooserEvent>> {
         val scope = CoroutineScope(dispatchers.coroutineDispatcher)
         var uiStates = mutableListOf<ProductChooserUiState>()
         val uiEvents = mutableListOf<ProductChooserEvent>()
@@ -155,7 +155,7 @@ internal class ContentProductPickerSGCViewModelRobot(
         return uiStates to uiEvents
     }
 
-    fun recordSummaryStateAndEvent(fn: suspend ContentProductPickerSGCViewModelRobot.() -> Unit): Pair<PlayBroProductSummaryUiState, List<ProductChooserEvent>> {
+    fun recordSummaryStateAndEvent(fn: suspend ContentProductPickerSellerViewModelRobot.() -> Unit): Pair<PlayBroProductSummaryUiState, List<ProductChooserEvent>> {
         val scope = CoroutineScope(dispatchers.coroutineDispatcher)
         lateinit var uiState: PlayBroProductSummaryUiState
         val uiEvents = mutableListOf<ProductChooserEvent>()

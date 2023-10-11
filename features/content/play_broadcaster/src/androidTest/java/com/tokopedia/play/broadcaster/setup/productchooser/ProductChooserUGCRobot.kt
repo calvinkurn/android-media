@@ -34,11 +34,11 @@ import com.tokopedia.content.test.espresso.delay
 import com.tokopedia.play.broadcaster.analytic.ugc.ProductPickerUGCAnalytic
 import com.tokopedia.play.broadcaster.helper.analyticUserSession
 import com.tokopedia.play.broadcaster.setup.ProductSetupContainer
-import com.tokopedia.content.product.picker.seller.view.viewmodel.ContentProductPickerSGCViewModel
+import com.tokopedia.content.product.picker.seller.view.viewmodel.ContentProductPickerSellerViewModel
 import com.tokopedia.play.broadcaster.setup.productSetupViewModel
 import com.tokopedia.play.broadcaster.setup.productUGCViewModel
 import com.tokopedia.play.broadcaster.ui.state.PlayBroadcastUiState
-import com.tokopedia.content.product.picker.seller.view.bottomsheet.ProductPickerUGCBottomSheet
+import com.tokopedia.content.product.picker.seller.view.bottomsheet.ProductPickerUserBottomSheet
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
 import io.mockk.every
@@ -55,8 +55,8 @@ import com.tokopedia.sortfilter.R as sortfilterR
  * Created by kenny.hadisaputra on 16/09/22
  */
 class ProductChooserUGCRobot(
-    listener: ProductPickerUGCBottomSheet.Listener? = null,
-    viewModel: (SavedStateHandle) -> ContentProductPickerSGCViewModel = {
+    listener: ProductPickerUserBottomSheet.Listener? = null,
+    viewModel: (SavedStateHandle) -> ContentProductPickerSellerViewModel = {
         productSetupViewModel(handle = it)
     },
     productTagViewModel: (source: String, config: ContentProductTagConfig) -> ProductTagViewModel = { source, config ->
@@ -74,7 +74,7 @@ class ProductChooserUGCRobot(
 
     private val onAttach: (Fragment) -> Unit = {
         when (it) {
-            is ProductPickerUGCBottomSheet -> it.setListener(listener)
+            is ProductPickerUserBottomSheet -> it.setListener(listener)
         }
     }
 
@@ -182,7 +182,7 @@ class ProductChooserUGCRobot(
                     LastPurchasedProductFragment()
                 }
                 else -> {
-                    ProductPickerUGCBottomSheet(
+                    ProductPickerUserBottomSheet(
                         mockk(relaxed = true),
                         ProductPickerUGCAnalytic(analyticUserSession)
                     )

@@ -10,7 +10,7 @@ import com.tokopedia.content.product.picker.seller.model.sort.SortUiModel
 /**
  * Created By : Jonathan Darwin on September 26, 2023
  */
-interface ContentProductPickerSGCRepository {
+interface ContentProductPickerSellerRepository {
 
     suspend fun getCampaignList(): List<CampaignUiModel>
 

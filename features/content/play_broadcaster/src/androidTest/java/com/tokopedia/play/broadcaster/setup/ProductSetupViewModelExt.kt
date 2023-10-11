@@ -8,8 +8,8 @@ import com.tokopedia.content.common.producttag.util.preference.ProductTagPrefere
 import com.tokopedia.content.common.producttag.view.uimodel.SelectedProductUiModel
 import com.tokopedia.content.common.producttag.view.uimodel.config.ContentProductTagConfig
 import com.tokopedia.content.common.producttag.view.viewmodel.ProductTagViewModel
-import com.tokopedia.content.product.picker.seller.domain.ContentProductPickerSGCRepository
-import com.tokopedia.content.product.picker.seller.view.viewmodel.ContentProductPickerSGCViewModel
+import com.tokopedia.content.product.picker.seller.domain.ContentProductPickerSellerRepository
+import com.tokopedia.content.product.picker.seller.view.viewmodel.ContentProductPickerSellerViewModel
 import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.mockk
@@ -23,13 +23,13 @@ fun productSetupViewModel(
     productSectionList: List<ProductTagSectionUiModel> = emptyList(),
     handle: SavedStateHandle = SavedStateHandle(),
     isEligibleForPin: Boolean = false,
-    repo: ContentProductPickerSGCRepository = mockk(relaxed = true),
+    repo: ContentProductPickerSellerRepository = mockk(relaxed = true),
     userSession: UserSessionInterface = mockk(relaxed = true),
     dispatchers: CoroutineDispatchers = CoroutineDispatchersProvider,
     isNumerationShown: Boolean = true,
     fetchCommissionProduct: Boolean = false,
-): ContentProductPickerSGCViewModel {
-    return ContentProductPickerSGCViewModel(
+): ContentProductPickerSellerViewModel {
+    return ContentProductPickerSellerViewModel(
         creationId = creationId,
         maxProduct = maxProduct,
         productSectionList = productSectionList,

@@ -17,7 +17,7 @@ import com.tokopedia.content.product.picker.seller.model.uimodel.ProductSetupAct
 import com.tokopedia.content.product.picker.seller.model.ProductListPaging
 import com.tokopedia.content.product.picker.seller.view.viewcomponent.EtalaseListViewComponent
 import com.tokopedia.content.common.util.bottomsheet.ContentDialogCustomizer
-import com.tokopedia.content.product.picker.databinding.BottomSheetSgcEtalaseListBinding
+import com.tokopedia.content.product.picker.databinding.BottomSheetSellerEtalaseListBinding
 import com.tokopedia.play_common.lifecycle.lifecycleBound
 import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.viewcomponent.viewComponent
@@ -32,8 +32,8 @@ class EtalaseListBottomSheet @Inject constructor(
     private val analyticManager: EtalaseListAnalyticManager,
 ) : BaseProductSetupBottomSheet() {
 
-    private var _binding: BottomSheetSgcEtalaseListBinding? = null
-    private val binding: BottomSheetSgcEtalaseListBinding
+    private var _binding: BottomSheetSellerEtalaseListBinding? = null
+    private val binding: BottomSheetSellerEtalaseListBinding
         get() = _binding!!
 
     private var mDataSource: DataSource? = null
@@ -84,7 +84,7 @@ class EtalaseListBottomSheet @Inject constructor(
     }
 
     private fun setupBottomSheet() {
-        _binding = BottomSheetSgcEtalaseListBinding.inflate(
+        _binding = BottomSheetSellerEtalaseListBinding.inflate(
             LayoutInflater.from(requireContext()),
         )
         setChild(binding.root)

@@ -2,8 +2,8 @@ package com.tokopedia.content.product.picker.testcase.campaignEtalase
 
 import com.tokopedia.content.product.picker.builder.CommonUiModelBuilder
 import com.tokopedia.content.product.picker.builder.ProductSetupUiModelBuilder
-import com.tokopedia.content.product.picker.robot.ContentProductPickerSGCViewModelRobot
-import com.tokopedia.content.product.picker.seller.domain.ContentProductPickerSGCRepository
+import com.tokopedia.content.product.picker.robot.ContentProductPickerSellerViewModelRobot
+import com.tokopedia.content.product.picker.seller.domain.ContentProductPickerSellerRepository
 import com.tokopedia.content.product.picker.util.assertEqualTo
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
@@ -20,7 +20,7 @@ internal class SetupCampaignEtalaseViewModelTest {
     val rule: CoroutineTestRule = CoroutineTestRule()
 
     private val testDispatcher = rule.dispatchers
-    private val mockRepo: ContentProductPickerSGCRepository = mockk(relaxed = true)
+    private val mockRepo: ContentProductPickerSellerRepository = mockk(relaxed = true)
 
     /** Mock Response */
     private val productSetupUiModelBuilder = ProductSetupUiModelBuilder()
@@ -38,7 +38,7 @@ internal class SetupCampaignEtalaseViewModelTest {
         coEvery { mockRepo.getEtalaseList() } returns mockEtalaseList
         coEvery { mockRepo.getCampaignList() } returns mockCampaignList
 
-        val robot = ContentProductPickerSGCViewModelRobot(
+        val robot = ContentProductPickerSellerViewModelRobot(
             dispatchers = testDispatcher,
             repo = mockRepo
         )
@@ -57,7 +57,7 @@ internal class SetupCampaignEtalaseViewModelTest {
         coEvery { mockRepo.getEtalaseList() } throws mockException
         coEvery { mockRepo.getCampaignList() } throws mockException
 
-        val robot = ContentProductPickerSGCViewModelRobot(
+        val robot = ContentProductPickerSellerViewModelRobot(
             dispatchers = testDispatcher,
             repo = mockRepo
         )

@@ -1,7 +1,7 @@
 package com.tokopedia.play.broadcaster.shorts.analytic.product
 
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
-import com.tokopedia.content.product.picker.seller.analytic.ContentProductPickerSGCAnalytic
+import com.tokopedia.content.product.picker.seller.analytic.ContentProductPickerSellerAnalytic
 import com.tokopedia.play.broadcaster.shorts.analytic.helper.PlayShortsAnalyticHelper
 import com.tokopedia.play.broadcaster.shorts.analytic.sender.PlayShortsAnalyticSender
 import javax.inject.Inject
@@ -16,7 +16,7 @@ import javax.inject.Inject
  */
 class PlayShortsSetupProductAnalyticImpl @Inject constructor(
     private val analyticSender: PlayShortsAnalyticSender,
-) : ContentProductPickerSGCAnalytic {
+) : ContentProductPickerSellerAnalytic {
 
     private var account = ContentAccountUiModel.Empty
 

@@ -12,7 +12,7 @@ import com.tokopedia.content.product.picker.seller.view.bottomsheet.ProductSumma
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroInteractiveBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroSelectGameBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupCoverBottomSheet
-import com.tokopedia.content.product.picker.seller.view.bottomsheet.ProductPickerUGCBottomSheet
+import com.tokopedia.content.product.picker.seller.view.bottomsheet.ProductPickerUserBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.livetovod.PlayBroLiveToVodBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.*
 import com.tokopedia.play.broadcaster.view.fragment.beautification.BeautificationSetupFragment
@@ -137,8 +137,8 @@ abstract class PlayBroadcastFragmentModule {
 
     @Binds
     @IntoMap
-    @FragmentKey(ProductPickerUGCBottomSheet::class)
-    abstract fun getPlayPlaceholderBottomSheet(bottomSheet: ProductPickerUGCBottomSheet) : Fragment
+    @FragmentKey(ProductPickerUserBottomSheet::class)
+    abstract fun getPlayPlaceholderBottomSheet(bottomSheet: ProductPickerUserBottomSheet) : Fragment
 
     /**
      * Beautification

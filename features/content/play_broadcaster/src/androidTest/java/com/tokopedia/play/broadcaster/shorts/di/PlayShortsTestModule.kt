@@ -16,8 +16,8 @@ import com.tokopedia.content.common.onboarding.domain.repository.UGCOnboardingRe
 import com.tokopedia.content.common.producttag.domain.repository.ProductTagRepository
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.product.picker.seller.analytic.ContentPinnedProductAnalytic
-import com.tokopedia.content.product.picker.seller.analytic.ContentProductPickerSGCAnalytic
-import com.tokopedia.content.product.picker.seller.domain.ContentProductPickerSGCRepository
+import com.tokopedia.content.product.picker.seller.analytic.ContentProductPickerSellerAnalytic
+import com.tokopedia.content.product.picker.seller.domain.ContentProductPickerSellerRepository
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.DebugInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
@@ -57,7 +57,7 @@ class PlayShortsTestModule(
     private val mockBroRepo: PlayBroadcastRepository,
     private val mockProductTagRepo: ProductTagRepository,
     private val mockUgcOnboardingRepo: UGCOnboardingRepository,
-    private val mockContentProductPickerSGCRepo: ContentProductPickerSGCRepository,
+    private val mockContentProductPickerSGCRepo: ContentProductPickerSellerRepository,
     private val mockDataStore: PlayBroadcastDataStore,
     private val mockUserSession: UserSessionInterface,
     private val mockAccountManager: PlayShortsAccountManager,
@@ -86,7 +86,7 @@ class PlayShortsTestModule(
 
     @Provides
     @PlayShortsScope
-    fun provideContentProductPickerSGCRepository(): ContentProductPickerSGCRepository = mockContentProductPickerSGCRepo
+    fun provideContentProductPickerSGCRepository(): ContentProductPickerSellerRepository = mockContentProductPickerSGCRepo
 
     @Provides
     fun provideDataStore(): PlayBroadcastDataStore = mockDataStore
@@ -133,7 +133,7 @@ class PlayShortsTestModule(
         setupMenuAnalytic: PlayBroSetupMenuAnalytic,
         setupTitleAnalytic: PlayBroSetupTitleAnalytic,
         setupCoverAnalytic: PlayBroSetupCoverAnalytic,
-        setupProductAnalytic: ContentProductPickerSGCAnalytic,
+        setupProductAnalytic: ContentProductPickerSellerAnalytic,
         summaryAnalytic: PlayBroadcastSummaryAnalytic,
         scheduleAnalytic: PlayBroScheduleAnalytic,
         pinProductAnalytic: ContentPinnedProductAnalytic,

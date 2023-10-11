@@ -2,8 +2,8 @@ package com.tokopedia.content.product.picker.testcase.summary
 
 import com.tokopedia.content.product.picker.builder.CommonUiModelBuilder
 import com.tokopedia.content.product.picker.builder.ProductSetupUiModelBuilder
-import com.tokopedia.content.product.picker.robot.ContentProductPickerSGCViewModelRobot
-import com.tokopedia.content.product.picker.seller.domain.ContentProductPickerSGCRepository
+import com.tokopedia.content.product.picker.robot.ContentProductPickerSellerViewModelRobot
+import com.tokopedia.content.product.picker.seller.domain.ContentProductPickerSellerRepository
 import com.tokopedia.content.product.picker.seller.model.uimodel.ProductChooserEvent
 import com.tokopedia.content.product.picker.seller.model.uimodel.ProductSetupAction
 import com.tokopedia.content.product.picker.seller.model.uimodel.ProductTagSummaryUiModel
@@ -26,7 +26,7 @@ class SetupProductSummaryViewModelTest {
     val rule: CoroutineTestRule = CoroutineTestRule()
 
     private val testDispatcher = rule.dispatchers
-    private val mockRepo: ContentProductPickerSGCRepository = mockk(relaxed = true)
+    private val mockRepo: ContentProductPickerSellerRepository = mockk(relaxed = true)
 
     /** Mock Response */
     private val productSetupUiModelBuilder = ProductSetupUiModelBuilder()
@@ -42,7 +42,7 @@ class SetupProductSummaryViewModelTest {
         coEvery { mockRepo.getProductTagSummarySection(any()) } returns mockProductTagSectionList
         coEvery { mockRepo.setProductTags(any(), any()) } returns Unit
 
-        val robot = ContentProductPickerSGCViewModelRobot(
+        val robot = ContentProductPickerSellerViewModelRobot(
             dispatchers = testDispatcher,
             repo = mockRepo
         )
@@ -63,7 +63,7 @@ class SetupProductSummaryViewModelTest {
     fun `when user failed delete product, it should emit fail state`() {
         coEvery { mockRepo.setProductTags(any(), any()) } throws mockException
 
-        val robot = ContentProductPickerSGCViewModelRobot(
+        val robot = ContentProductPickerSellerViewModelRobot(
             dispatchers = testDispatcher,
             repo = mockRepo
         )
@@ -81,7 +81,7 @@ class SetupProductSummaryViewModelTest {
     // Product Numeration
     @Test
     fun `when user in live broadcaster, product numeration is shown`() {
-        val vm = ContentProductPickerSGCViewModelRobot(
+        val vm = ContentProductPickerSellerViewModelRobot(
             isNumerationShown = true,
             dispatchers = testDispatcher
         )
@@ -92,7 +92,7 @@ class SetupProductSummaryViewModelTest {
 
     @Test
     fun `when user in short video, product numeration is hidden`() {
-        val vm = ContentProductPickerSGCViewModelRobot(
+        val vm = ContentProductPickerSellerViewModelRobot(
             isNumerationShown = false,
             dispatchers = testDispatcher
         )
@@ -103,7 +103,7 @@ class SetupProductSummaryViewModelTest {
 
     @Test
     fun `when user in unknown video, product numeration is hidden`() {
-        val vm = ContentProductPickerSGCViewModelRobot(
+        val vm = ContentProductPickerSellerViewModelRobot(
             isNumerationShown = false,
             dispatchers = testDispatcher
         )

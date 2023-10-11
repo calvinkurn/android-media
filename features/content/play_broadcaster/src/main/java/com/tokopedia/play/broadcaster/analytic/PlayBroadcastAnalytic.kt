@@ -4,7 +4,7 @@ import com.tokopedia.content.analytic.BusinessUnit
 import com.tokopedia.content.analytic.Key
 import com.tokopedia.content.common.analytic.entrypoint.PlayPerformanceDashboardEntryPointAnalytic
 import com.tokopedia.content.product.picker.seller.analytic.ContentPinnedProductAnalytic
-import com.tokopedia.content.product.picker.seller.analytic.ContentProductPickerSGCAnalytic
+import com.tokopedia.content.product.picker.seller.analytic.ContentProductPickerSellerAnalytic
 import com.tokopedia.play.broadcaster.analytic.beautification.PlayBroadcastBeautificationAnalytic
 import com.tokopedia.play.broadcaster.analytic.entrypoint.PlayShortsEntryPointAnalytic
 import com.tokopedia.play.broadcaster.analytic.interactive.PlayBroadcastInteractiveAnalytic
@@ -31,7 +31,7 @@ class PlayBroadcastAnalytic(
     private val setupMenuAnalytic: PlayBroSetupMenuAnalytic,
     private val setupTitleAnalytic: PlayBroSetupTitleAnalytic,
     private val setupCoverAnalytic: PlayBroSetupCoverAnalytic,
-    private val setupProductAnalytic: ContentProductPickerSGCAnalytic,
+    private val setupProductAnalytic: ContentProductPickerSellerAnalytic,
     private val summaryAnalytic: PlayBroadcastSummaryAnalytic,
     private val scheduleAnalytic: PlayBroScheduleAnalytic,
     private val pinProductAnalytic: ContentPinnedProductAnalytic,
@@ -43,7 +43,7 @@ class PlayBroadcastAnalytic(
     PlayBroSetupMenuAnalytic by setupMenuAnalytic,
     PlayBroSetupTitleAnalytic by setupTitleAnalytic,
     PlayBroSetupCoverAnalytic by setupCoverAnalytic,
-    ContentProductPickerSGCAnalytic by setupProductAnalytic,
+    ContentProductPickerSellerAnalytic by setupProductAnalytic,
     PlayBroadcastSummaryAnalytic by summaryAnalytic,
     PlayBroScheduleAnalytic by scheduleAnalytic,
     ContentPinnedProductAnalytic by pinProductAnalytic,

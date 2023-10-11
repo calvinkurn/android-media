@@ -4,7 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.content.product.picker.seller.domain.ContentProductPickerSGCRepository
+import com.tokopedia.content.product.picker.seller.domain.ContentProductPickerSellerRepository
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.content.product.picker.seller.model.uimodel.CampaignAndEtalaseUiModel
@@ -50,7 +50,7 @@ import kotlin.math.min
 /**
  * Created by kenny.hadisaputra on 26/01/22
  */
-class ContentProductPickerSGCViewModel @AssistedInject constructor(
+class ContentProductPickerSellerViewModel @AssistedInject constructor(
     /** Can be channelId / shortId */
     @Assisted private val creationId: String,
     @Assisted val maxProduct: Int,
@@ -59,7 +59,7 @@ class ContentProductPickerSGCViewModel @AssistedInject constructor(
     @Assisted val isNumerationShown: Boolean,
     @Assisted("isEligibleForPin") isEligibleForPin: Boolean,
     @Assisted("fetchCommissionProduct") private val fetchCommissionProduct: Boolean,
-    private val repo: ContentProductPickerSGCRepository,
+    private val repo: ContentProductPickerSellerRepository,
     userSession: UserSessionInterface,
     private val dispatchers: CoroutineDispatchers
 ) : ViewModel() {
@@ -74,7 +74,7 @@ class ContentProductPickerSGCViewModel @AssistedInject constructor(
             isNumerationShown: Boolean,
             @Assisted("isEligibleForPin") isEligibleForPin: Boolean,
             @Assisted("fetchCommissionProduct") fetchCommissionProduct: Boolean,
-        ): ContentProductPickerSGCViewModel
+        ): ContentProductPickerSellerViewModel
     }
 
     init {

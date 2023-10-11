@@ -1,6 +1,6 @@
 package com.tokopedia.play.broadcaster.domain.repository
 
-import com.tokopedia.content.product.picker.seller.domain.ContentProductPickerSGCRepository
+import com.tokopedia.content.product.picker.seller.domain.ContentProductPickerSellerRepository
 
 /**
  * Created by jegul on 12/10/21
@@ -8,5 +8,5 @@ import com.tokopedia.content.product.picker.seller.domain.ContentProductPickerSG
 interface PlayBroadcastRepository : PlayBroadcastChannelRepository,
     PlayBroadcastPinnedMessageRepository,
     PlayBroadcastInteractiveRepository,
-    ContentProductPickerSGCRepository,
+    ContentProductPickerSellerRepository,
     PlayBroadcastBeautificationRepository

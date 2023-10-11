@@ -24,7 +24,7 @@ import com.tokopedia.content.product.picker.seller.analytic.manager.ProductChoos
 import com.tokopedia.content.product.picker.seller.view.bottomsheet.ProductChooserBottomSheet
 import com.tokopedia.content.product.picker.seller.view.bottomsheet.ProductSortBottomSheet
 import com.tokopedia.content.product.picker.seller.view.viewholder.ProductListViewHolder
-import com.tokopedia.content.product.picker.seller.view.viewmodel.ContentProductPickerSGCViewModel
+import com.tokopedia.content.product.picker.seller.view.viewmodel.ContentProductPickerSellerViewModel
 import com.tokopedia.play.broadcaster.setup.productSetupViewModel
 import com.tokopedia.content.test.espresso.delay
 import io.mockk.mockk
@@ -37,7 +37,7 @@ import com.tokopedia.empty_state.R as empty_stateR
  */
 class ProductChooserRobot(
     listener: ProductChooserBottomSheet.Listener? = null,
-    viewModel: (SavedStateHandle) -> ContentProductPickerSGCViewModel = {
+    viewModel: (SavedStateHandle) -> ContentProductPickerSellerViewModel = {
         productSetupViewModel(handle = it)
     },
 ) {

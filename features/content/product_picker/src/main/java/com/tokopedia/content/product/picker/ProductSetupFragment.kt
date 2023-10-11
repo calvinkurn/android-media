@@ -8,17 +8,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.orUnknown
-import com.tokopedia.content.product.picker.seller.analytic.ContentProductPickerSGCAnalytic
+import com.tokopedia.content.product.picker.seller.analytic.ContentProductPickerSellerAnalytic
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.content.product.picker.seller.view.bottomsheet.EtalaseListBottomSheet
 import com.tokopedia.content.product.picker.seller.view.bottomsheet.ProductChooserBottomSheet
 import com.tokopedia.content.product.picker.seller.view.bottomsheet.ProductSummaryBottomSheet
-import com.tokopedia.content.product.picker.seller.view.viewmodel.ContentProductPickerSGCViewModel
+import com.tokopedia.content.product.picker.seller.view.viewmodel.ContentProductPickerSellerViewModel
 import com.tokopedia.content.product.picker.seller.view.viewmodel.ViewModelFactoryProvider
 import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
-import com.tokopedia.content.product.picker.seller.view.bottomsheet.ProductPickerUGCBottomSheet
+import com.tokopedia.content.product.picker.seller.view.bottomsheet.ProductPickerUserBottomSheet
 import javax.inject.Inject
 
 /**
@@ -26,8 +26,8 @@ import javax.inject.Inject
  */
 @Suppress("LateinitUsage")
 class ProductSetupFragment @Inject constructor(
-    private val productSetupViewModelFactory: ContentProductPickerSGCViewModel.Factory,
-    private val productSetupProductAnalytic: ContentProductPickerSGCAnalytic,
+    private val productSetupViewModelFactory: ContentProductPickerSellerViewModel.Factory,
+    private val productSetupProductAnalytic: ContentProductPickerSellerAnalytic,
 ) : Fragment(), ViewModelFactoryProvider {
 
     private var mDataSource: DataSource? = null
@@ -79,8 +79,8 @@ class ProductSetupFragment @Inject constructor(
         }
     }
 
-    private val productPickerUGCListener = object : ProductPickerUGCBottomSheet.Listener {
-        override fun onCancelled(bottomSheet: ProductPickerUGCBottomSheet) {
+    private val productPickerUGCListener = object : ProductPickerUserBottomSheet.Listener {
+        override fun onCancelled(bottomSheet: ProductPickerUserBottomSheet) {
             bottomSheet.dismiss()
 
             when (chooserSource) {
@@ -89,7 +89,7 @@ class ProductSetupFragment @Inject constructor(
             }
         }
 
-        override fun onFinished(bottomSheet: ProductPickerUGCBottomSheet) {
+        override fun onFinished(bottomSheet: ProductPickerUserBottomSheet) {
             bottomSheet.dismiss()
             openProductSummary()
         }
@@ -118,9 +118,9 @@ class ProductSetupFragment @Inject constructor(
             is ProductSummaryBottomSheet -> {
                 childFragment.setListener(productSummaryListener)
             }
-            is ProductPickerUGCBottomSheet -> {
+            is ProductPickerUserBottomSheet -> {
                 childFragment.setListener(productPickerUGCListener)
-                childFragment.setDataSource(object : ProductPickerUGCBottomSheet.DataSource {
+                childFragment.setDataSource(object : ProductPickerUserBottomSheet.DataSource {
                     override fun getSelectedAccount(): ContentAccountUiModel {
                         return mDataSource?.getSelectedAccount().orUnknown()
                     }
@@ -168,7 +168,7 @@ class ProductSetupFragment @Inject constructor(
     }
 
     private fun openUGCProductChooser() {
-        ProductPickerUGCBottomSheet.getOrCreate(
+        ProductPickerUserBottomSheet.getOrCreate(
             childFragmentManager,
             requireActivity().classLoader
         ).showNow(childFragmentManager)

@@ -25,7 +25,7 @@ import com.tokopedia.content.product.picker.seller.view.bottomsheet.EtalaseListB
 import com.tokopedia.content.product.picker.seller.view.bottomsheet.ProductChooserBottomSheet
 import com.tokopedia.content.product.picker.seller.view.bottomsheet.ProductSortBottomSheet
 import com.tokopedia.content.product.picker.seller.view.bottomsheet.ProductSummaryBottomSheet
-import com.tokopedia.content.product.picker.seller.view.viewmodel.ContentProductPickerSGCViewModel
+import com.tokopedia.content.product.picker.seller.view.viewmodel.ContentProductPickerSellerViewModel
 import com.tokopedia.content.product.picker.seller.model.DiscountedPrice
 import com.tokopedia.content.product.picker.seller.model.campaign.CampaignStatus
 import com.tokopedia.content.product.picker.seller.model.campaign.CampaignStatusUiModel
@@ -109,7 +109,7 @@ class ProductChooserIdGenerator {
     private val repo = mockk<PlayBroadcastRepository>(relaxed = true)
     private val userSession = mockk<UserSessionInterface>(relaxed = true)
 
-    private val mockProductSetupViewModelFactory = object : ContentProductPickerSGCViewModel.Factory {
+    private val mockProductSetupViewModelFactory = object : ContentProductPickerSellerViewModel.Factory {
         override fun create(
             creationId: String,
             maxProduct: Int,
@@ -118,8 +118,8 @@ class ProductChooserIdGenerator {
             isNumerationShown: Boolean,
             isEligibleForPin: Boolean,
             fetchCommissionProduct: Boolean
-        ): ContentProductPickerSGCViewModel {
-            return ContentProductPickerSGCViewModel(
+        ): ContentProductPickerSellerViewModel {
+            return ContentProductPickerSellerViewModel(
                 creationId = creationId,
                 maxProduct = maxProduct,
                 productSectionList = mockProductSections,

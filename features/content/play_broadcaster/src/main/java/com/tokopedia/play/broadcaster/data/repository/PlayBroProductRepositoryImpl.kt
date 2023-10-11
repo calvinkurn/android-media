@@ -1,7 +1,7 @@
 package com.tokopedia.play.broadcaster.data.repository
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.content.product.picker.seller.domain.ContentProductPickerSGCRepository
+import com.tokopedia.content.product.picker.seller.domain.ContentProductPickerSellerRepository
 import com.tokopedia.play.broadcaster.domain.model.addproduct.AddProductTagChannelRequest
 import com.tokopedia.play.broadcaster.domain.usecase.AddProductTagUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetProductsInEtalaseUseCase
@@ -35,7 +35,7 @@ class PlayBroProductRepositoryImpl @Inject constructor(
     private val setPinnedProductUseCase: SetPinnedProductUseCase,
     private val productMapper: PlayBroProductUiMapper,
     private val userSession: UserSessionInterface,
-) : ContentProductPickerSGCRepository {
+) : ContentProductPickerSellerRepository {
 
     override suspend fun getCampaignList(): List<CampaignUiModel> = withContext(dispatchers.io) {
         if (userSession.shopId.isBlank()) error("User does not has shop")

@@ -25,7 +25,7 @@ import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.byteplus.effect.util.asset.checker.AssetChecker
 import com.tokopedia.content.product.picker.seller.analytic.ContentPinnedProductAnalytic
-import com.tokopedia.content.product.picker.seller.analytic.ContentProductPickerSGCAnalytic
+import com.tokopedia.content.product.picker.seller.analytic.ContentProductPickerSellerAnalytic
 import com.tokopedia.play.broadcaster.util.cover.ImageTransformer
 import com.tokopedia.play.broadcaster.util.cover.PlayCoverImageUtil
 import com.tokopedia.play.broadcaster.util.cover.PlayCoverImageUtilImpl
@@ -115,7 +115,7 @@ class PlayBroadcastModule(
         setupMenuAnalytic: PlayBroSetupMenuAnalytic,
         setupTitleAnalytic: PlayBroSetupTitleAnalytic,
         setupCoverAnalytic: PlayBroSetupCoverAnalytic,
-        setupProductAnalytic: ContentProductPickerSGCAnalytic,
+        setupProductAnalytic: ContentProductPickerSellerAnalytic,
         summaryAnalytic: PlayBroadcastSummaryAnalytic,
         scheduleAnalytic: PlayBroScheduleAnalytic,
         pinProductAnalytic: ContentPinnedProductAnalytic,
