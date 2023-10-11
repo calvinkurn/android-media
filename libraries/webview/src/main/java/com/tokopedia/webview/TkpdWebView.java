@@ -154,13 +154,13 @@ public class TkpdWebView extends WebView {
                     AuthHelper.Companion.getMD5Hash(hash + "+" + userSession.getUserId())
             );
 
-            addAdditionalInfoHeader(header);
+            addAdditionalInfoHeader(header, userSession.getUserId());
 
             loadUrl(urlToLoad, header);
         }
     }
 
-    private void addAdditionalInfoHeader(Map<String, String> header) {
+    private void addAdditionalInfoHeader(Map<String, String> header, String userId) {
         if (remoteConfig.getBoolean(RemoteConfigKey.FINTECH_ENABLE_ADDITIONAL_DEVICE_INFO_HEADER, true) && !GlobalConfig.isSellerApp()) {
             boolean isEnableGetWidevineId = remoteConfig.getBoolean(
                     RemoteConfigKey.ANDROID_ENABLE_GENERATE_WIDEVINE_ID,
@@ -170,9 +170,19 @@ public class TkpdWebView extends WebView {
                     RemoteConfigKey.ANDROID_ENABLE_GENERATE_WIDEVINE_ID_SUSPEND,
                     true
             );
+            String whitelistDisableWidevineId = remoteConfig.getString(
+                    RemoteConfigKey.ANDROID_WHITELIST_DISABLE_GENERATE_WIDEVINE_ID,
+                    ""
+            );
 
             byte[] additionalInfoJson = AdditionalDeviceInfo.INSTANCE
-                    .generateJson(getContext().getApplicationContext(), isEnableGetWidevineId, isEnableGetWidevineIdSuspend)
+                    .generateJson(
+                            getContext().getApplicationContext(),
+                            isEnableGetWidevineId,
+                            isEnableGetWidevineIdSuspend,
+                            whitelistDisableWidevineId,
+                            userId
+                    )
                     .getBytes(StandardCharsets.UTF_8);
 
             String additionalInfoBase64 = Base64.encodeToString(additionalInfoJson, Base64.DEFAULT).replace("\n", "").replace("\r", "").trim();

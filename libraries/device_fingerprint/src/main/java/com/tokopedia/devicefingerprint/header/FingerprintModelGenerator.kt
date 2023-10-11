@@ -209,10 +209,16 @@ object FingerprintModelGenerator {
             RemoteConfigKey.ANDROID_ENABLE_GENERATE_WIDEVINE_ID_SUSPEND,
             true
         )
+        val whitelistDisableWidevineId = FirebaseRemoteConfigImpl(context).getString(
+            RemoteConfigKey.ANDROID_WHITELIST_DISABLE_GENERATE_WIDEVINE_ID,
+            ""
+        )
         val additionalInfoModel = AdditionalDeviceInfo.generate(
             context,
             isEnableGetWidevineId,
-            isEnableGetWidevineIdSuspend
+            isEnableGetWidevineIdSuspend,
+            whitelistDisableWidevineId,
+            getUserSession(context).userId
         )
 
         val fp = FingerPrintNew(
