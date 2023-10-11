@@ -225,11 +225,11 @@ class FundsAndInvestmentComposeViewModel @Inject constructor(
     }
 
     companion object {
-        private const val GOPAY_PARTNER_CODE = "PEMUDA"
-        private const val GOPAYLATER_PARTNER_CODE = "PEMUDAPAYLATER"
-        private const val GOPAYLATERCICIL_PARTNER_CODE = "PEMUDACICIL"
-        private const val OVO_PARTNER_CODE = "OVO"
-        private const val ASSET_PAGE = "asset_page"
+        const val GOPAY_PARTNER_CODE = "PEMUDA"
+        const val GOPAYLATER_PARTNER_CODE = "PEMUDAPAYLATER"
+        const val GOPAYLATERCICIL_PARTNER_CODE = "PEMUDACICIL"
+        const val OVO_PARTNER_CODE = "OVO"
+        const val ASSET_PAGE = "asset_page"
     }
 
 }
