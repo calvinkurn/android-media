@@ -31,6 +31,7 @@ import com.tokopedia.common_electronic_money.util.KeyLogEmoney.TAPCASH_TAG
 import com.tokopedia.common_electronic_money.util.NfcCardErrorTypeDef
 import com.tokopedia.emoney.R
 import com.tokopedia.emoney.di.DaggerDigitalEmoneyComponent
+import com.tokopedia.emoney.domain.request.BCAFlazzStatus
 import com.tokopedia.emoney.domain.request.JakCardStatus
 import com.tokopedia.emoney.integration.BCAConstResult.GEN_1_CARD
 import com.tokopedia.emoney.integration.BCAConstResult.GEN_2_CARD
@@ -344,8 +345,8 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
         bcaBalanceViewModel.bcaInquiry.observe(viewLifecycleOwner, Observer { bcaInquiry ->
             bcaInquiry.attributesEmoneyInquiry?.let { attribute ->
                 when(attribute.status) {
-                    JakCardStatus.DONE.status -> showCardLastBalance(bcaInquiry)
-                    JakCardStatus.ERROR.status -> bcaInquiry.error?.let { error ->
+                    BCAFlazzStatus.DONE.status -> showCardLastBalance(bcaInquiry)
+                    BCAFlazzStatus.ERROR.status -> bcaInquiry.error?.let { error ->
                         showError(error.title)
                     }
                 }

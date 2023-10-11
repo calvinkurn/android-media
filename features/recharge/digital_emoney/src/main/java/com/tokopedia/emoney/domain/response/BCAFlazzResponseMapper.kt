@@ -2,12 +2,13 @@ package com.tokopedia.emoney.domain.response
 
 import com.tokopedia.common_electronic_money.data.AttributesEmoneyInquiry
 import com.tokopedia.common_electronic_money.data.EmoneyInquiry
+import com.tokopedia.common_electronic_money.data.EmoneyInquiryError
 import com.tokopedia.common_electronic_money.util.NFCUtils
 
 object BCAFlazzResponseMapper {
     private const val ISSUER_ID_BCA = 5
     fun bcaMapper(cardNo: String, balance: Int, imageUrl: String, isBCAGenOne: Boolean, pendingBalance: Int,
-                  status: Int): EmoneyInquiry {
+                  status: Int, message: String): EmoneyInquiry {
         return EmoneyInquiry(
             attributesEmoneyInquiry = AttributesEmoneyInquiry(
                 buttonText = "Top Up Sekarang",
@@ -20,9 +21,14 @@ object BCAFlazzResponseMapper {
                 issuer_id = ISSUER_ID_BCA,
                 pendingBalance = pendingBalance,
                 extraPendingBalance = pendingBalance > 0,
-                showAdditionalBalance = false
+                showAdditionalBalance = false,
             ),
-            isBCAGenOne = isBCAGenOne
+            isBCAGenOne = isBCAGenOne,
+            error = EmoneyInquiryError(
+                "",
+                message,
+                status
+            )
         )
     }
 
