@@ -1,5 +1,6 @@
 package com.tokopedia.home_account.fundsAndInvestment.ui
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -15,6 +16,7 @@ import com.tokopedia.home_account.view.adapter.uimodel.WalletUiModel
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun FundsAndInvestmentSection(
     userId: String,
@@ -39,6 +41,7 @@ fun FundsAndInvestmentSection(
                         ItemShimmer()
                     } else {
                         ItemList(
+                            modifier = Modifier.animateItemPlacement(),
                             userId = userId,
                             item = item,
                             onItemClicked = {onItemClicked(it)}

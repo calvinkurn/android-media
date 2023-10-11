@@ -34,6 +34,7 @@ import com.tokopedia.nest.principles.utils.ImageSource
 
 @Composable
 fun ItemList(
+    modifier: Modifier,
     userId: String,
     item: WalletUiModel,
     onItemClicked: (WalletUiModel) -> Unit
@@ -47,7 +48,9 @@ fun ItemList(
         }
     }
 
-    Column {
+    Column(
+        modifier = modifier
+    ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.clickable { onItemClicked(item) }
@@ -180,6 +183,7 @@ private fun Subtitle(
 fun ListItemPreview() {
     NestTheme {
         ItemList(
+            modifier = Modifier,
             item = WalletUiModel(
                 id = "1",
                 title = "Test Title 1",

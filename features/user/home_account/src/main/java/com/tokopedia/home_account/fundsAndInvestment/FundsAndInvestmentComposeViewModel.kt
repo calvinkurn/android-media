@@ -6,7 +6,6 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.home_account.AccountConstants
-import com.tokopedia.home_account.data.model.AssetConfig
 import com.tokopedia.home_account.data.model.WalletappGetAccountBalance
 import com.tokopedia.home_account.domain.usecase.GetBalanceAndPointUseCase
 import com.tokopedia.home_account.domain.usecase.GetCentralizedUserAssetConfigUseCase
@@ -47,15 +46,39 @@ class FundsAndInvestmentComposeViewModel @Inject constructor(
                 currentListVertical.clear()
                 currentListHorizontal.clear()
 
-                setUpVerticalList(response.data.assetConfigVertical)
-                setUpHorizontalList(response.data.assetConfigHorizontal)
+                response.data.assetConfigVertical.forEach {
+                    currentListVertical.add(
+                        WalletUiModel(
+                            id = it.id,
+                            title = it.getTitle(),
+                            hideTitle = it.hideTitle,
+                            isLoading = true,
+                            isVertical = true
+                        )
+                    )
+                }
+                response.data.assetConfigHorizontal.forEach {
+                    currentListHorizontal.add(
+                        WalletUiModel(
+                            id = it.id,
+                            title = it.getTitle(),
+                            hideTitle = it.hideTitle,
+                            isLoading = true,
+                            isVertical = false
+                        )
+                    )
+                }
 
+                //trigger recomposition state all item to loading
                 _uiState.postValue(
                     FundsAndInvestmentResult.Recomposition(
                         listVertical = currentListVertical,
                         listHorizontal = currentListHorizontal
                     )
                 )
+
+                setUpVerticalList()
+                setUpHorizontalList()
             },
             onError = {
                 _uiState.postValue(FundsAndInvestmentResult.Failed(it))
@@ -63,32 +86,29 @@ class FundsAndInvestmentComposeViewModel @Inject constructor(
         )
     }
 
-    private suspend fun setUpVerticalList(listVertical: List<AssetConfig>) {
-        if (listVertical.isNotEmpty()) {
-            listVertical.forEach {
-                val title = it.getTitle()
-                currentListVertical.add(
-                    getBalanceAndPoint(
-                        walletId = it.id,
-                        hideTitleText = it.hideTitle,
-                        titleText = title,
-                        isVertical = true
-                    )
+    private fun setUpVerticalList() {
+        if (currentListVertical.isNotEmpty()) {
+            currentListVertical.forEachIndexed { index, assetConfig ->
+                getBalanceAndPoint(
+                    index = index,
+                    walletId = assetConfig.id,
+                    hideTitleText = assetConfig.hideTitle,
+                    titleText = assetConfig.title,
+                    isVertical = true
                 )
             }
         }
     }
 
-    private suspend fun setUpHorizontalList(listHorizontal: List<AssetConfig>) {
-        if (listHorizontal.isNotEmpty()) {
-            listHorizontal.forEach {
-                currentListHorizontal.add(
-                    getBalanceAndPoint(
-                        walletId = it.id,
-                        hideTitleText = it.hideTitle,
-                        titleText = it.title,
-                        isVertical = false
-                    )
+    private fun setUpHorizontalList() {
+        if (currentListHorizontal.isNotEmpty()) {
+            currentListHorizontal.forEachIndexed { index, assetConfig ->
+                getBalanceAndPoint(
+                    index = index,
+                    walletId = assetConfig.id,
+                    hideTitleText = assetConfig.hideTitle,
+                    titleText = assetConfig.title,
+                    isVertical = false
                 )
             }
         }
@@ -96,7 +116,7 @@ class FundsAndInvestmentComposeViewModel @Inject constructor(
 
     fun refreshItem(item: WalletUiModel) {
         val index = getIndex(item = item, verticalList = currentListVertical, horizontalList = currentListHorizontal)
-        var result = setItemLoadingState(item = item, index = index, verticalList = currentListVertical, horizontalList = currentListHorizontal)
+        val result = setItemLoadingState(item = item, index = index, verticalList = currentListVertical, horizontalList = currentListHorizontal)
 
         changeItem(index, result)
 
@@ -106,44 +126,12 @@ class FundsAndInvestmentComposeViewModel @Inject constructor(
             listHorizontal = currentListHorizontal
         )
 
-        launchCatchError(context = dispatcher.io,
-            block = {
-                result = getBalanceAndPoint(
-                    walletId = item.id,
-                    hideTitleText = item.hideTitle,
-                    titleText = item.title,
-                    isVertical = item.isVertical
-                )
-
-                changeItem(index, result)
-
-                //trigger recomposition item to new data
-                _uiState.postValue(
-                    FundsAndInvestmentResult.Recomposition(
-                        listVertical = currentListVertical,
-                        listHorizontal = currentListHorizontal
-                    )
-                )
-            },
-            onError = {
-                result = WalletUiModel(
-                    id = item.id,
-                    title = item.title,
-                    isVertical = item.isVertical,
-                    hideTitle = item.hideTitle,
-                    isFailed = true
-                )
-
-                changeItem(index, result)
-
-                //trigger recomposition state item to failed
-                _uiState.postValue(
-                    FundsAndInvestmentResult.Recomposition(
-                        listVertical = currentListVertical,
-                        listHorizontal = currentListHorizontal
-                    )
-                )
-            }
+        getBalanceAndPoint(
+            index = index,
+            walletId = item.id,
+            hideTitleText = item.hideTitle,
+            titleText = item.title,
+            isVertical = item.isVertical
         )
     }
 
@@ -155,46 +143,67 @@ class FundsAndInvestmentComposeViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getBalanceAndPoint(walletId: String, hideTitleText: Boolean, titleText: String, isVertical: Boolean): WalletUiModel {
-        try {
-            val item: WalletappGetAccountBalance = when (walletId) {
-                AccountConstants.WALLET.TOKOPOINT -> {
-                    val result = getTokoPointsBalanceAndPointUseCase(Unit)
-                    result.data.apply {
-                        title = titleText
-                        hideTitle = hideTitleText
+    private fun getBalanceAndPoint(index: Int, walletId: String, hideTitleText: Boolean, titleText: String, isVertical: Boolean) {
+        launchCatchError(context = dispatcher.io,
+            block = {
+                val item: WalletappGetAccountBalance = when (walletId) {
+                    AccountConstants.WALLET.TOKOPOINT -> {
+                        val result = getTokoPointsBalanceAndPointUseCase(Unit)
+                        result.data.apply {
+                            title = titleText
+                            hideTitle = hideTitleText
+                        }
+                        result.data
                     }
-                    result.data
-                }
-                AccountConstants.WALLET.SALDO -> {
-                    val result = getSaldoBalanceUseCase(Unit)
-                    result.data.apply {
-                        hideTitle = true
+                    AccountConstants.WALLET.SALDO -> {
+                        val result = getSaldoBalanceUseCase(Unit)
+                        result.data.apply {
+                            hideTitle = true
+                        }
+                        result.data
                     }
-                    result.data
-                }
-                AccountConstants.WALLET.CO_BRAND_CC -> {
-                    val result = getCoBrandCCBalanceAndPointUseCase(Unit)
-                    result.data.apply {
-                        titleAsset = titleText
-                        hideTitle = hideTitleText
+                    AccountConstants.WALLET.CO_BRAND_CC -> {
+                        val result = getCoBrandCCBalanceAndPointUseCase(Unit)
+                        result.data.apply {
+                            titleAsset = titleText
+                            hideTitle = hideTitleText
+                        }
+                        result.data
                     }
-                    result.data
+                    else -> {
+                        getOtherBalanceAndPoint(walletId, hideTitleText)
+                    }
                 }
-                else -> {
-                    getOtherBalanceAndPoint(walletId, hideTitleText)
-                }
+                val newData = setBalanceAndPointValue(item, titleText, hideTitleText, isVertical)
+                changeItem(index, newData)
+
+                //trigger recomposition state item to new data
+                _uiState.postValue(
+                    FundsAndInvestmentResult.Recomposition(
+                        listVertical = currentListVertical,
+                        listHorizontal = currentListHorizontal
+                    )
+                )
+            },
+            onError = {
+                val newData = WalletUiModel(
+                    id = walletId,
+                    title = titleText,
+                    isVertical = isVertical,
+                    hideTitle = hideTitleText,
+                    isFailed = true
+                )
+                changeItem(index, newData)
+
+                //trigger recomposition state item to failed
+                _uiState.postValue(
+                    FundsAndInvestmentResult.Recomposition(
+                        listVertical = currentListVertical,
+                        listHorizontal = currentListHorizontal
+                    )
+                )
             }
-            return setBalanceAndPointValue(item, titleText, isVertical)
-        } catch (e: Exception) {
-            return WalletUiModel(
-                id = walletId,
-                title = titleText,
-                isVertical = isVertical,
-                hideTitle = hideTitleText,
-                isFailed = true
-            )
-        }
+        )
     }
 
     private suspend fun getOtherBalanceAndPoint(walletId: String, hideTitleText: Boolean): WalletappGetAccountBalance {
@@ -221,10 +230,11 @@ class FundsAndInvestmentComposeViewModel @Inject constructor(
         return response
     }
 
-    private fun setBalanceAndPointValue(data: WalletappGetAccountBalance, titleText: String, isVertical: Boolean): WalletUiModel {
+    private fun setBalanceAndPointValue(data: WalletappGetAccountBalance, titleText: String, hideTitle: Boolean, isVertical: Boolean): WalletUiModel {
         val wallet = UiModelMapper.getWalletUiModel(data).apply {
             title = titleText
             this.isVertical = isVertical
+            this.hideTitle = hideTitle
         }
 
         return wallet
