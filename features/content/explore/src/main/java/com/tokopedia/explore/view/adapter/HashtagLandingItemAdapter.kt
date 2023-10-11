@@ -33,6 +33,10 @@ import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifyprinciples.Typography
 import java.net.URLEncoder
+import com.tokopedia.affiliatecommon.R as affiliatecommonR
+import com.tokopedia.feedcomponent.R as feedcomponentR
+import com.tokopedia.globalerror.R as globalerrorR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class HashtagLandingItemAdapter(var listener: OnHashtagPostClick? = null)
     : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -48,14 +52,14 @@ class HashtagLandingItemAdapter(var listener: OnHashtagPostClick? = null)
 
     private val emptyModel: EmptyModel by lazy {
         EmptyModel().apply {
-            iconRes = com.tokopedia.affiliatecommon.R.drawable.ic_af_empty
+            iconRes = affiliatecommonR.drawable.ic_af_empty
             contentRes = R.string.af_empty_hashtag_post
         }
     }
 
     private val errorModel: ErrorNetworkModel by lazy {
         ErrorNetworkModel().apply {
-            this.iconDrawableRes = com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection
+            this.iconDrawableRes = globalerrorR.drawable.unify_globalerrors_connection
         }
     }
 
@@ -198,11 +202,11 @@ class HashtagLandingItemAdapter(var listener: OnHashtagPostClick? = null)
                     }
                     when {
                         item.content.size > 1 -> {
-                            badge.loadImageDrawable(com.tokopedia.feedcomponent.R.drawable.ic_affiliate_multi)
+                            badge.loadImageDrawable(feedcomponentR.drawable.ic_affiliate_multi)
                             badge.visible()
                         }
                         thumbnail.type == ExploreCardType.Video.typeString -> {
-                            badge.loadImageDrawable(com.tokopedia.feedcomponent.R.drawable.ic_affiliate_video)
+                            badge.loadImageDrawable(feedcomponentR.drawable.ic_affiliate_video)
                             badge.visible()
                         }
                         else -> badge.gone()
@@ -221,7 +225,7 @@ class HashtagLandingItemAdapter(var listener: OnHashtagPostClick? = null)
                 creatorName.setOnClickListener { listener?.onUserNameClick(item) }
                 val tagHConverter = TagConverter()
                 postDescription.text = tagHConverter.convertToLinkifyHashtag(SpannableString(item.description),
-                        ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)){
+                        ContextCompat.getColor(context, unifyprinciplesR.color.Unify_GN500)){
                     val encodeHashtag = URLEncoder.encode(it, "UTF-8")
                     RouteManager.route(context, ApplinkConstInternalContent.HASHTAG_PAGE, encodeHashtag)
                 }
