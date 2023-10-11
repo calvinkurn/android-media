@@ -7,7 +7,7 @@ import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.custom.messagebubble.base.BaseTopChatFlexBoxChatLayout
 
 
-class FlexBoxChatLayout : BaseTopChatFlexBoxChatLayout {
+class TopChatChatRoomFlexBoxLayout : BaseTopChatFlexBoxChatLayout {
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)

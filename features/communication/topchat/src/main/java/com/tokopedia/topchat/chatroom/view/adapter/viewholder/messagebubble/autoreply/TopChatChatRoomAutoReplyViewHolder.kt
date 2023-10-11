@@ -12,7 +12,7 @@ import com.tokopedia.topchat.chatroom.view.custom.message.ReplyBubbleAreaMessage
 import com.tokopedia.topchat.chatroom.view.custom.messagebubble.base.BaseTopChatChatroomMessageBubbleLayout
 import com.tokopedia.topchat.chatroom.view.custom.messagebubble.base.BaseTopChatFlexBoxChatLayout
 import com.tokopedia.topchat.chatroom.view.custom.messagebubble.base.TopChatChatroomBubbleContainerLayout
-import com.tokopedia.topchat.chatroom.view.custom.messagebubble.base.TopChatFlexBoxListener
+import com.tokopedia.topchat.chatroom.view.custom.messagebubble.base.TopChatChatRoomFlexBoxListener
 
 /**
  * Layout guide:
@@ -21,7 +21,7 @@ import com.tokopedia.topchat.chatroom.view.custom.messagebubble.base.TopChatFlex
  *      { partial_header_info }
  *      { TopChatChatroomMessageBubbleLayout /  partial_chat_message_bubble_auto_reply }
  *          { ReplyBubbleAreaMessage / partial_reply_bubble }
- *          { FlexBoxChatAutoReplyLayout / partial_flexbox_chat_bubble_auto_reply }
+ *          { TopChatChatRoomFlexBoxAutoReplyLayout / partial_flexbox_chat_bubble_auto_reply }
  *              { auto_reply_list }
  *                  { auto_reply_item } -> Auto Reply Text here
  */
@@ -30,7 +30,7 @@ class TopChatChatRoomAutoReplyViewHolder(
     msgClickLinkListener: ChatLinkHandlerListener,
     commonListener: CommonViewHolderListener,
     adapterListener: AdapterListener,
-    chatMsgListener: TopChatFlexBoxListener,
+    chatMsgListener: TopChatChatRoomFlexBoxListener,
     replyBubbleListener: ReplyBubbleAreaMessage.Listener
 ) : BaseTopChatBubbleMessageViewHolder<MessageUiModel>(
     itemView,
@@ -54,6 +54,10 @@ class TopChatChatRoomAutoReplyViewHolder(
 
     override fun getFxChat(): BaseTopChatFlexBoxChatLayout? {
         return itemView.findViewById(R.id.fxChat)
+    }
+
+    override fun getHeaderInfo(): LinearLayout? {
+        return itemView.findViewById(R.id.topchat_chatroom_ll_header_info_message_bubble_auto_reply)
     }
 
     companion object {

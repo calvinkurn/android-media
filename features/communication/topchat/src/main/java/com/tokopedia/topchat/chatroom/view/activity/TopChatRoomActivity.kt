@@ -1,7 +1,6 @@
 package com.tokopedia.topchat.chatroom.view.activity
 
 import android.content.Context
-import android.content.Intent
 import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
@@ -50,7 +49,7 @@ import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
 import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.StickerViewHolder
 import com.tokopedia.topchat.chatroom.view.fragment.StickerFragment
-import com.tokopedia.topchat.chatroom.view.fragment.TopChatRoomFragment
+import com.tokopedia.topchat.chatroom.view.fragment.TopChatChatRoomRoomFragment
 import com.tokopedia.topchat.chatroom.view.listener.TopChatRoomFlexModeListener
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatRoomWebSocketViewModel
 import com.tokopedia.topchat.chattemplate.view.customview.TopChatTemplateSeparatedView
@@ -62,7 +61,6 @@ import com.tokopedia.topchat.common.util.ViewUtil.FLAT_STATE
 import com.tokopedia.topchat.common.util.ViewUtil.HALF_OPEN_STATE
 import com.tokopedia.topchat.common.util.ViewUtil.getFoldingFeatureState
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 open class TopChatRoomActivity :
@@ -80,7 +78,7 @@ open class TopChatRoomActivity :
     private var chatComponent: ChatComponent? = null
 
     private lateinit var windowInfoRepo: WindowInfoTracker
-    private lateinit var chatRoomFragment: TopChatRoomFragment
+    private lateinit var chatRoomFragment: TopChatChatRoomRoomFragment
     private lateinit var chatListFragment: ChatListInboxFragment
 
     var remoteConfig: RemoteConfig? = null
@@ -136,7 +134,7 @@ open class TopChatRoomActivity :
     }
 
     protected open fun createChatRoomFragment(bundle: Bundle): Fragment {
-        return TopChatRoomFragment.createInstance(bundle)
+        return TopChatChatRoomRoomFragment.createInstance(bundle)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -349,7 +347,7 @@ open class TopChatRoomActivity :
         } else {
             setupChatRoomOnlyToolbar()
             decreaseToolbarElevation()
-            chatRoomFragment = newFragment as TopChatRoomFragment
+            chatRoomFragment = newFragment as TopChatChatRoomRoomFragment
             handleNonFlexModeView()
         }
     }
@@ -361,7 +359,7 @@ open class TopChatRoomActivity :
         } else {
             messageId = currentActiveChat ?: ZER0_MESSAGE_ID
         }
-        chatRoomFragment = newFragment as TopChatRoomFragment
+        chatRoomFragment = newFragment as TopChatChatRoomRoomFragment
         chatListFragment = ChatListInboxFragment.createFragment(role, currentActiveChat)
         chatTemplateSeparatedView?.setupSeparatedChatTemplate(chatRoomFragment)
         chatListFragment.chatRoomFlexModeListener = this
@@ -436,7 +434,7 @@ open class TopChatRoomActivity :
         if (isFlexMode()) {
             messageId = msg.msgId
             currentActiveChat = msg.msgId
-            chatRoomFragment = newFragment as TopChatRoomFragment
+            chatRoomFragment = newFragment as TopChatChatRoomRoomFragment
             chatRoomFragment.chatRoomFlexModeListener = this
             chatTemplateSeparatedView?.setupSeparatedChatTemplate(chatRoomFragment)
             attachChatRoomFragment(isFromAnotherChat = true)

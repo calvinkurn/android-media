@@ -34,7 +34,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.messagebubble.bann
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.messagebubble.regular.TopChatChatRoomBubbleMessageViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.messagebubble.autoreply.TopChatChatRoomAutoReplyViewHolder
 import com.tokopedia.topchat.chatroom.view.custom.message.ReplyBubbleAreaMessage
-import com.tokopedia.topchat.chatroom.view.custom.messagebubble.base.TopChatFlexBoxListener
+import com.tokopedia.topchat.chatroom.view.custom.messagebubble.base.TopChatChatRoomFlexBoxListener
 import com.tokopedia.topchat.chatroom.view.listener.DualAnnouncementListener
 import com.tokopedia.topchat.chatroom.view.listener.TopChatVoucherListener
 import com.tokopedia.topchat.chatroom.view.uimodel.*
@@ -60,7 +60,7 @@ open class TopChatTypeFactoryImpl constructor(
     private val fraudAlertListener: RoomSettingFraudAlertViewHolder.Listener,
     private val reviewListener: ReviewViewHolder.Listener,
     private val srwBubbleListener: SrwBubbleViewHolder.Listener,
-    private val chatMsgListener: TopChatFlexBoxListener,
+    private val chatMsgListener: TopChatChatRoomFlexBoxListener,
     private val replyBubbleListener: ReplyBubbleAreaMessage.Listener,
     private val listener: ReminderTickerViewHolder.Listener,
     private val productBundlingListener: ProductBundlingListener,

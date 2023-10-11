@@ -31,7 +31,7 @@ import com.tokopedia.topchat.chatroom.view.custom.message.ReplyBubbleAreaMessage
 import com.tokopedia.topchat.chatroom.view.custom.messagebubble.base.BaseTopChatChatroomMessageBubbleLayout
 import com.tokopedia.topchat.chatroom.view.custom.messagebubble.base.BaseTopChatFlexBoxChatLayout
 import com.tokopedia.topchat.chatroom.view.custom.messagebubble.base.TopChatChatroomBubbleContainerLayout
-import com.tokopedia.topchat.chatroom.view.custom.messagebubble.base.TopChatFlexBoxListener
+import com.tokopedia.topchat.chatroom.view.custom.messagebubble.base.TopChatChatRoomFlexBoxListener
 import com.tokopedia.unifyprinciples.Typography
 
 abstract class BaseTopChatBubbleMessageViewHolder<T: MessageUiModel>(
@@ -39,14 +39,12 @@ abstract class BaseTopChatBubbleMessageViewHolder<T: MessageUiModel>(
     msgClickLinkListener: ChatLinkHandlerListener,
     private val commonListener: CommonViewHolderListener,
     private val adapterListener: AdapterListener,
-    private val chatMsgListener: TopChatFlexBoxListener,
+    private val chatMsgListener: TopChatChatRoomFlexBoxListener,
     private val replyBubbleListener: ReplyBubbleAreaMessage.Listener
 ): BaseChatViewHolder<T>(itemView) {
 
     private val onTouchListener = MessageOnTouchListener(msgClickLinkListener)
 
-    private val headerInfo: LinearLayout? = itemView.findViewById(
-        R.id.topchat_chatroom_ll_header_info_message_bubble_auto_reply)
     private val headerRole: Typography? = itemView.findViewById(R.id.tvRole)
     private val smartReplyBlueDot: ImageView? = itemView.findViewById(
         R.id.topchat_chatroom_iv_header_role_blue_dot)
@@ -62,6 +60,7 @@ abstract class BaseTopChatBubbleMessageViewHolder<T: MessageUiModel>(
     abstract fun getLayoutContainerBubble(): LinearLayout?
     abstract fun getMessageBubbleLayout(): BaseTopChatChatroomMessageBubbleLayout?
     abstract fun getFxChat(): BaseTopChatFlexBoxChatLayout?
+    abstract fun getHeaderInfo(): LinearLayout?
 
     override fun bind(element: T, payloads: MutableList<Any>) {
         if (payloads.isEmpty()) return
@@ -199,7 +198,7 @@ abstract class BaseTopChatBubbleMessageViewHolder<T: MessageUiModel>(
         bindChatReadStatus(uiModel)
         hideMessageInfo()
         bindHeader(uiModel)
-        headerInfo?.gone()
+        getHeaderInfo()?.gone()
     }
 
     private fun bindReceiverBackground(uiModel: T) {
@@ -324,9 +323,9 @@ abstract class BaseTopChatBubbleMessageViewHolder<T: MessageUiModel>(
             msg.source == BaseChatUiModel.SOURCE_REPLIED_BLAST &&
             commonListener.isSeller()
         ) {
-            headerInfo?.show()
+            getHeaderInfo()?.show()
         } else {
-            headerInfo?.hide()
+            getHeaderInfo()?.hide()
         }
     }
 }

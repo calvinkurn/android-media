@@ -21,7 +21,7 @@ import timber.log.Timber
 import kotlin.math.abs
 
 
-class FlexBoxChatAutoReplyLayout : BaseTopChatFlexBoxChatLayout {
+class TopChatChatRoomFlexBoxAutoReplyLayout : BaseTopChatFlexBoxChatLayout {
 
     /**
      * Auto reply child
@@ -306,17 +306,11 @@ class FlexBoxChatAutoReplyLayout : BaseTopChatFlexBoxChatLayout {
         autoReplyConstraintLayout?.hide()
     }
 
-    private fun dummy(): String {
-        return """
-            [{"type":"welcoming_message","title":"","message":"Halo Anggi, selamat datang di iSmile Official Store. Yuk cek info-info ini sebelum belanja 🛍"},{"type":"product_message","title":"Produk","message":"<p>iSmile adalah APPLE ONLINE RESELLER yang khusus menjual produk <u><i>APPLE ORIGINAL dan BERGARANSI RESMI</i></u>.</p><p>iSmile adalah Tokopedia OFFICIAL STORE & REKOMENDASI SELLER APPLE PILIHAN Tokopedia</p>"},{"type":"delivery_message","title":"Pengiriman","message":"<ul><li>Pengiriman setiap hari Senin sampai Jumat.</li><li>Weekend dan libur nasional <b>TIDAK ADA</b> pengiriman.</li><li>Paket selalu <b>DIKIRIM MALAM HARI</b> (jadi yg nanya kok belum dikirim padahal baru bayar kemarin gak akan kita bales ya).</li><li>Transfer hari <b>JUMAT</b> dikirimnya hari SENIN ya, <b>BUKAN</b> hari jumat atau sabtu.</li><li>Berlaku untuk semua pengiriman, termasuk <b>GOSEND/GRAB EXPRESS.</b></li></ul>"},{"type":"operational_message","title":"Jam Operasional","message":"Toko kami buka jam 07.00-24.00."}]
-        """.trimIndent()
-    }
-
     private fun setAutoReplyMessageBody(messageUiModel: MessageUiModel) {
         try {
             val listType = object : TypeToken<List<TopChatAutoReplyItemUiModel>>() {}.type
             val result = Gson().fromJson<List<TopChatAutoReplyItemUiModel>>(
-                dummy(), listType
+                messageUiModel.message, listType
             )
             bindAutoReplyView(messageUiModel = messageUiModel, autoReplyList = result)
             autoReplyConstraintLayout?.show()

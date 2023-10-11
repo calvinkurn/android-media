@@ -149,7 +149,7 @@ import com.tokopedia.topchat.chatroom.view.custom.SrwFrameLayout
 import com.tokopedia.topchat.chatroom.view.custom.TransactionOrderProgressLayout
 import com.tokopedia.topchat.chatroom.view.custom.message.ReplyBubbleAreaMessage
 import com.tokopedia.topchat.chatroom.view.custom.message.TopchatMessageRecyclerView
-import com.tokopedia.topchat.chatroom.view.custom.messagebubble.base.TopChatFlexBoxListener
+import com.tokopedia.topchat.chatroom.view.custom.messagebubble.base.TopChatChatRoomFlexBoxListener
 import com.tokopedia.topchat.chatroom.view.customview.TopChatRoomDialog
 import com.tokopedia.topchat.chatroom.view.customview.TopChatViewStateImpl
 import com.tokopedia.topchat.chatroom.view.listener.DualAnnouncementListener
@@ -208,7 +208,7 @@ import com.tokopedia.localizationchooseaddress.R as localizationchooseaddressR
  * @author : Steven 29/11/18
  */
 
-open class TopChatRoomFragment :
+open class TopChatChatRoomRoomFragment :
     BaseChatFragment(),
     TopChatContract.View,
     TypingListener,
@@ -232,7 +232,7 @@ open class TopChatRoomFragment :
     SrwQuestionViewHolder.Listener,
     ReplyBoxTextListener,
     SrwBubbleViewHolder.Listener,
-    TopChatFlexBoxListener,
+    TopChatChatRoomFlexBoxListener,
     ReplyBubbleAreaMessage.Listener,
     ReminderTickerViewHolder.Listener,
     ProductBundlingListener,
@@ -3544,7 +3544,7 @@ open class TopChatRoomFragment :
         const val ROLLENCE_UPLOAD_SECURE = "chat_upsecure_an"
 
         fun createInstance(bundle: Bundle): BaseChatFragment {
-            return TopChatRoomFragment().apply {
+            return TopChatChatRoomRoomFragment().apply {
                 arguments = bundle
             }
         }
