@@ -15,7 +15,7 @@ import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.domain.model.AddressListModel
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
-import com.tokopedia.targetedticker.GetTargetedTickerUseCase
+import com.tokopedia.targetedticker.domain.GetTargetedTickerUseCase
 import com.tokopedia.manageaddress.TickerDataProvider
 import com.tokopedia.manageaddress.domain.model.ManageAddressState
 import com.tokopedia.manageaddress.domain.response.DefaultPeopleAddressData
@@ -33,7 +33,7 @@ import com.tokopedia.manageaddress.domain.usecase.shareaddress.ValidateShareAddr
 import com.tokopedia.manageaddress.ui.uimodel.ValidateShareAddressState
 import com.tokopedia.manageaddress.util.ManageAddressConstant
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.targetedticker.TargetedTickerMapper
+import com.tokopedia.targetedticker.domain.TargetedTickerMapper
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl

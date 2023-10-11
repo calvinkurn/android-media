@@ -1,4 +1,4 @@
-package com.tokopedia.targetedticker
+package com.tokopedia.targetedticker.domain
 
 import android.content.Context
 import android.view.View

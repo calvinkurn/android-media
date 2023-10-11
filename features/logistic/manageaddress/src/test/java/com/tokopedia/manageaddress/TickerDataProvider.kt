@@ -1,7 +1,7 @@
 package com.tokopedia.manageaddress
 
 import com.google.gson.Gson
-import com.tokopedia.targetedticker.GetTargetedTickerResponse
+import com.tokopedia.targetedticker.domain.GetTargetedTickerResponse
 import java.io.IOException
 import java.nio.charset.Charset
 

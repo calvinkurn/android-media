@@ -14,8 +14,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -29,16 +27,12 @@ import com.tokopedia.manageaddress.ui.manageaddress.mainaddress.MainAddressFragm
 import com.tokopedia.manageaddress.ui.uimodel.ValidateShareAddressState
 import com.tokopedia.manageaddress.util.ManageAddressConstant
 import com.tokopedia.manageaddress.util.ManageAddressConstant.EXTRA_QUERY
-import com.tokopedia.targetedticker.TargetedTickerHelper.renderTargetedTickerView
-import com.tokopedia.targetedticker.TickerModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.setCustomText
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 /**
  * ManageAddressFragment
@@ -71,6 +65,7 @@ class ManageAddressFragment :
     }
 
     private var binding by autoClearedNullable<FragmentManageAddressBinding>()
+
     private var bottomSheetLainnya: BottomSheetUnify? = null
 
     private var manageAddressListener: ManageAddressListener? = null
@@ -103,7 +98,6 @@ class ManageAddressFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.setupDataFromArgument(arguments)
-        observeTickerState()
         if (viewModel.isNeedValidateShareAddress) {
             observerValidateShareAddress()
             showLoading(true)
@@ -125,45 +119,11 @@ class ManageAddressFragment :
         }
     }
 
-    private fun observeTickerState() {
-        viewModel.tickerState.observe(viewLifecycleOwner) {
-            when (it) {
-                is Success -> {
-                    showTicker(it.data)
-                }
-                is Fail -> {
-                    hideTicker()
-                }
-            }
-        }
-    }
 
-    private fun showTicker(tickerItem: TickerModel) {
-        context?.let {
-            binding?.tickerManageAddress?.renderTargetedTickerView(
-                it,
-                tickerItem,
-                onClickUrl = { url ->
-                    RouteManager.route(
-                        context,
-                        "${ApplinkConst.WEBVIEW}?url=$url"
-                    )
-                },
-                onClickApplink = { applink ->
-                    startActivity(
-                        RouteManager.getIntent(
-                            context,
-                            applink
-                        )
-                    )
-                }
-            )
-        }
-    }
 
-    private fun hideTicker() {
-        binding?.tickerManageAddress?.gone()
-    }
+
+
+
 
     private fun observerValidateShareAddress() {
         viewModel.validateShareAddressState.observe(viewLifecycleOwner) {
@@ -274,6 +234,7 @@ class ManageAddressFragment :
     override fun onDestroyView() {
         super.onDestroyView()
         bottomSheetLainnya = null
+        binding?.tickerManageAddress?.onDestroy()
     }
 
     private fun openSoftKeyboard() {
@@ -358,7 +319,7 @@ class ManageAddressFragment :
 
     override fun updateFromFriendsTabText(count: Int) {
         binding?.tlManageAddress?.tabLayout?.getTabAt(FROM_FRIEND_FRAGMENT_POSITION)?.apply {
-            customView?.findViewById<TextView>(com.tokopedia.unifycomponents.R.id.tab_item_text_id)
+            customView?.findViewById<TextView>(unifycomponentsR.id.tab_item_text_id)
                 ?.apply {
                     text = if (count > 0) {
                         getString(R.string.tablayout_label_from_friend_with_value, count.toString())
@@ -377,6 +338,6 @@ class ManageAddressFragment :
     }
 
     override fun setupTicker(firstTicker: String?) {
-        viewModel.getTargetedTicker(firstTicker)
+        binding?.tickerManageAddress?.load()
     }
 }

@@ -1,4 +1,4 @@
-package com.tokopedia.targetedticker
+package com.tokopedia.targetedticker.domain
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers

@@ -30,10 +30,6 @@ import com.tokopedia.manageaddress.ui.uimodel.ValidateShareAddressState
 import com.tokopedia.manageaddress.util.ManageAddressConstant
 import com.tokopedia.manageaddress.util.ManageAddressConstant.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.targetedticker.GetTargetedTickerParam
-import com.tokopedia.targetedticker.GetTargetedTickerUseCase
-import com.tokopedia.targetedticker.TargetedTickerMapper.convertTargetedTickerToUiModel
-import com.tokopedia.targetedticker.TickerModel
 import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
@@ -56,7 +52,6 @@ class ManageAddressViewModel @Inject constructor(
     private val chooseAddressMapper: ChooseAddressMapper,
     private val validateShareAddressAsReceiverUseCase: ValidateShareAddressAsReceiverUseCase,
     private val validateShareAddressAsSenderUseCase: ValidateShareAddressAsSenderUseCase,
-    private val getTargetedTickerUseCase: GetTargetedTickerUseCase,
     private val getUserConsentCollection: GetConsentCollectionUseCase
 ) : ViewModel() {
 
@@ -108,10 +103,6 @@ class ManageAddressViewModel @Inject constructor(
     private val _validateShareAddressState = MutableLiveData<ValidateShareAddressState>()
     val validateShareAddressState: LiveData<ValidateShareAddressState>
         get() = _validateShareAddressState
-
-    private val _tickerState = MutableLiveData<Result<TickerModel>>()
-    val tickerState: LiveData<Result<TickerModel>>
-        get() = _tickerState
 
     val deleteCollectionId: String
         get() = if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
@@ -375,28 +366,5 @@ class ManageAddressViewModel @Inject constructor(
         }
     }
 
-    fun getTargetedTicker(firstTickerContent: String? = null) {
-        viewModelScope.launchCatchError(
-            block = {
-                val response = getTargetedTickerUseCase(GetTargetedTickerParam.ADDRESS_LIST_NON_OCC)
-                _tickerState.value = Success(
-                    convertTargetedTickerToUiModel(
-                        targetedTickerData = response.getTargetedTickerData,
-                        firstTickerContent = firstTickerContent
-                    )
-                )
-            },
-            onError = {
-                if (firstTickerContent?.isNotBlank() == true) {
-                    _tickerState.value = Success(
-                        convertTargetedTickerToUiModel(
-                            firstTickerContent = firstTickerContent
-                        )
-                    )
-                } else {
-                    _tickerState.value = Fail(it)
-                }
-            }
-        )
-    }
+
 }
