@@ -45,7 +45,7 @@
             android:textColor="@color/Unify_NN950_96"
             />
 
-        <com.tokopedia.catalog.model.util.OrientationAwareRecyclerView
+        <com.tokopedia.oldcatalog.model.util.OrientationAwareRecyclerView
             android:id="@+id/catalog_for_you_rv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

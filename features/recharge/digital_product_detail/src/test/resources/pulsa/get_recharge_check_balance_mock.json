@@ -1,0 +1,31 @@
+{
+  "digiPersoGetPersonalizedItems": {
+    "items": [
+      {
+        "title": "",
+        "subtitle": "",
+        "iconURL": "",
+        "mediaURL": "",
+        "label1": "",
+        "textLink": "",
+        "appLink": "",
+        "mediaUrlType": "widget",
+        "campaignLabelText": "",
+        "campaignLabelTextColor": "",
+        "widgets": [
+          {
+            "title": "Sisa Pulsa",
+            "subtitle": "\u003cb\u003eRp206.650\u003c/b\u003e",
+            "iconURL": "https://images.tokopedia.net/img/pulsa-icon.png"
+          },
+          {
+            "title": "Masa Aktif",
+            "subtitle": "\u003cb\u003e18 Agu 24\u003c/b\u003e",
+            "iconURL": "https://images.tokopedia.net/img/calender-icon.png"
+          }
+        ],
+        "products": []
+      }
+    ]
+  }
+}
