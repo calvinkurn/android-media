@@ -505,6 +505,7 @@ class FeedFragment :
     override fun onDestroy() {
         super.onDestroy()
         FeedVideoCache.cleanUp(requireContext())
+        mUiListener = null
     }
 
     override fun initInjector() {
@@ -1989,7 +1990,7 @@ class FeedFragment :
             feedContentUiModel,
             trackerModel,
             this,
-            position,
+            position
         )
     }
 
