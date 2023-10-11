@@ -142,7 +142,8 @@ object GotoSdk {
                 ),
                 appInfo = AppInfo(
                     appType = TOKOPEDIA_APP_TYPE,
-                    isDebug = GlobalConfig.isAllowDebuggingTools(),
+                    // Rama will fix the global config issue
+                    isDebug = false,
                     language = LOCALE_ID
                 ),
                 deviceInfo = DeviceInfo(

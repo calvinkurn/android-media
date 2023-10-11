@@ -35,6 +35,7 @@ class VerificationSdkConfig(val context: Context) : VerificationSDKConfigs {
 //        } else {
 //            VerificationEnvironment.PROD
 //        }
+        // Hardcode for production testing, rama is working on this issue
         return VerificationEnvironment.PROD
     }
 
