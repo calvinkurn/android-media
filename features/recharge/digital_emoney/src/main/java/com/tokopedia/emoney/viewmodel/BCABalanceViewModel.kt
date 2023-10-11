@@ -47,8 +47,7 @@ class BCABalanceViewModel @Inject constructor(
                              ATD: String,
     ) {
         val bcaMTId = BCAFlazzResponseMapper.bcaMTId(merchantId, terminalId)
-        bcaLibrary.C_BCASetConfig(bcaMTId)
-        val bcaGetConfig = bcaLibrary.C_BCAGetConfig()
+        val bcaSetConfig = bcaLibrary.C_BCASetConfig(bcaMTId)
         if (isoDep != null) {
             run {
                 try {
@@ -112,7 +111,7 @@ class BCABalanceViewModel @Inject constructor(
             } else {
                 bcaInquiryMutable.postValue(BCAFlazzResponseMapper.bcaMapper(cardNumber,
                     lastBalance, result.attributes.imageIssuer, getIsBCAGenOne(cardType),
-                    result.attributes.amount))
+                    result.attributes.amount, result.status))
             }
         }) {
             errorCardMessageMutable.postValue(it)
@@ -146,7 +145,7 @@ class BCABalanceViewModel @Inject constructor(
                     rawPrivateKeyString, cardType, strCurrDateTime, ATD, result.attributes.transactionID)
             } else {
                 bcaInquiryMutable.postValue(BCAFlazzResponseMapper.bcaMapper(cardNumber, lastBalance,
-                    result.attributes.imageIssuer, getIsBCAGenOne(cardType), result.attributes.amount))
+                    result.attributes.imageIssuer, getIsBCAGenOne(cardType), result.attributes.amount, result.status))
             }
         }) {
             errorCardMessageMutable.postValue(it)
@@ -170,6 +169,8 @@ class BCABalanceViewModel @Inject constructor(
                     val bcaSession1 = bcaLibrary.C_BCAdataSession_1(strTransactionId, ATD,
                         strCurrDateTime)
                     if (bcaSession1.isSuccess == SUCCESS_JNI) {
+                        val bcaGetConfig = bcaLibrary.C_BCAGetConfig()
+                        Log.d("BCAGetConfigResult", bcaGetConfig.strConfig)
                         getSessionKeyProcess(isoDep, cardNumber, lastBalance, rawPublicKeyString,
                             rawPrivateKeyString, cardType, strCurrDateTime, ATD, strTransactionId,
                             bcaSession1.strLogRsp)
@@ -216,7 +217,7 @@ class BCABalanceViewModel @Inject constructor(
                     rawPrivateKeyString, cardType, strCurrDateTime, ATD, strTransactionId, result)
             } else {
                 bcaInquiryMutable.postValue(BCAFlazzResponseMapper.bcaMapper(cardNumber, lastBalance,
-                    result.attributes.imageIssuer, getIsBCAGenOne(cardType), result.attributes.amount))
+                    result.attributes.imageIssuer, getIsBCAGenOne(cardType), result.attributes.amount, result.status))
             }
         }) {
             errorCardMessageMutable.postValue(it)
@@ -322,7 +323,7 @@ class BCABalanceViewModel @Inject constructor(
             } else {
                 bcaInquiryMutable.postValue(BCAFlazzResponseMapper.bcaMapper(cardNumber,
                     lastBalance, result.attributes.imageIssuer, getIsBCAGenOne(cardType),
-                    result.attributes.amount))
+                    result.attributes.amount, result.status))
             }
         }) {
             errorCardMessageMutable.postValue(it)
@@ -379,7 +380,8 @@ class BCABalanceViewModel @Inject constructor(
 
             val encResult = bcaFlazzUseCase.execute(paramGetACKQuery)
             val result = decryptPayload(encResult.data, rawPrivateKeyString)
-            bcaInquiryMutable.postValue(BCAFlazzResponseMapper.bcaMapper(cardNumber, updatedBalance, result.attributes.imageIssuer, getIsBCAGenOne(cardType), result.attributes.amount))
+            bcaInquiryMutable.postValue(BCAFlazzResponseMapper.bcaMapper(cardNumber, updatedBalance,
+                result.attributes.imageIssuer, getIsBCAGenOne(cardType), result.attributes.amount, result.status))
         }) {
             errorCardMessageMutable.postValue(it)
         }

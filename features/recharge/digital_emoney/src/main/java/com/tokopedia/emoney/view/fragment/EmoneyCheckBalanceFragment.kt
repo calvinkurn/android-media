@@ -165,7 +165,7 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
             val dataBalance = bcaLibrary.C_BCACheckBalance()
             val isoDep = IsoDep.get(tag)
             if(bcaIsMyCard.strLogRsp.startsWith(GEN_2_CARD) && dataBalance.cardNo.isNotEmpty()) {
-                bcaBalanceViewModel.processBCATagBalance(isoDep, TEMP_M_ID, TEMP_T_ID, bRawPublicKey,
+                bcaBalanceViewModel.processBCATagBalance(isoDep, M_ID, T_ID, bRawPublicKey,
                     bRawPrivateKey, getCurrentBCAFlazzTimeStamp(), TEMP_ATD)
             } else if(bcaIsMyCard.strLogRsp.startsWith(GEN_1_CARD) && dataBalance.cardNo.isNotEmpty()){
                 bcaBalanceViewModel.processBCACheckBalanceGen1(isoDep, bRawPublicKey, bRawPrivateKey)
@@ -537,8 +537,8 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
         private const val RC_KEY = "rc"
         private const val TAPCASH_ERROR_LOGGER = "TAPCASH_ERROR_LOGGER"
         private const val TAPCASH_NETWORK_ERROR_LOGGER = "TAPCASH_NETWORK_ERROR_LOGGER"
-        private const val TEMP_M_ID = "000885000015999"
-        private const val TEMP_T_ID = "ETES0067"
+        private const val M_ID = "000885000015999"
+        private const val T_ID = "ETES0067"
         private const val TEMP_ATD = "01BTESTDEVAOZ5L0LDraBjL9d5JKVhFR0RJ4dlZu0aWBs"
 
         fun newInstance(): Fragment {
