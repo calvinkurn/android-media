@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -39,7 +39,7 @@ fun ItemList(
     item: WalletUiModel,
     onItemClicked: (WalletUiModel) -> Unit
 ) {
-    SideEffect {
+    LaunchedEffect(item.id) {
         if (!item.isFailed && item.id == AccountConstants.WALLET.CO_BRAND_CC) {
             TokopediaCardAnalytics.sendViewLihatSemuaPagePyEvent(
                 eventLabel = item.statusName,
