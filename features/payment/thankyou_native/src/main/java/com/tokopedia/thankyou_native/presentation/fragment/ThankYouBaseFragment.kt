@@ -77,6 +77,7 @@ import com.tokopedia.thankyou_native.presentation.adapter.model.*
 import com.tokopedia.thankyou_native.presentation.helper.DialogHelper
 import com.tokopedia.thankyou_native.presentation.helper.OnDialogRedirectListener
 import com.tokopedia.thankyou_native.presentation.viewModel.ThanksPageDataViewModel
+import com.tokopedia.thankyou_native.presentation.viewModel.ThanksPageDataViewModel.Companion.FLASHSALE_TAG
 import com.tokopedia.thankyou_native.presentation.views.GyroView
 import com.tokopedia.thankyou_native.presentation.views.RegisterMemberShipListener
 import com.tokopedia.thankyou_native.presentation.views.TopAdsView
@@ -707,7 +708,7 @@ abstract class ThankYouBaseFragment :
     }
 
     override fun getFlashSaleWidgetPosition(): Int {
-        return thanksPageDataViewModel.widgetOrder.indexOf("flashsale")
+        return thanksPageDataViewModel.widgetOrder.indexOf(FLASHSALE_TAG)
     }
     override fun getTrackingQueueObj(): TrackingQueue? {
         if (trackingQueue == null) {

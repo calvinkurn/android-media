@@ -175,7 +175,7 @@ class ThanksPageDataViewModel @Inject constructor(
                 GyroRecommendationWidgetModel.TAG,
                 MarketplaceRecommendationWidgetModel.TAG,
                 HeadlineAdsWidgetModel.TAG,
-                "flashsale",
+                FLASHSALE_TAG,
                 DigitalRecommendationWidgetModel.TAG,
                 BannerWidgetModel.TAG
             )
@@ -245,10 +245,10 @@ class ThanksPageDataViewModel @Inject constructor(
             _bottomContentVisitableList.value = visitableList
         } else {
             _bottomContentVisitableList.value = visitableList.filter {
-                if (it is MixTopDataModel) widgetOrder.contains("flashsale")
+                if (it is MixTopDataModel) widgetOrder.contains(FLASHSALE_TAG)
                 else widgetOrder.contains((it as WidgetTag).tag)
             }.sortedBy {
-                if (it is MixTopDataModel) widgetOrder.indexOf("flashsale")
+                if (it is MixTopDataModel) widgetOrder.indexOf(FLASHSALE_TAG)
                 else widgetOrder.indexOf((it as WidgetTag).tag)
             }
         }
@@ -283,5 +283,9 @@ class ThanksPageDataViewModel @Inject constructor(
         membershipRegisterUseCase.cancelJobs()
         fetchWalletBalanceUseCase.cancelJobs()
         super.onCleared()
+    }
+
+    companion object {
+        const val FLASHSALE_TAG = "flashsale"
     }
 }
