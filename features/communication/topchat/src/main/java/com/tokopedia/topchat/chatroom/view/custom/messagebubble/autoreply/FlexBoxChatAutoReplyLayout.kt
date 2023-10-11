@@ -364,7 +364,7 @@ class FlexBoxChatAutoReplyLayout : BaseTopChatFlexBoxChatLayout {
         autoReplyItemList: List<TopChatAutoReplyItemUiModel>
     ) {
         if (autoReplyItemList.isNotEmpty()) {
-            val adapter = TopChatAutoReplyAdapter()
+            val adapter = TopChatAutoReplyAdapter(shouldLimitText = true)
             autoReplyBinding?.topchatChatroomRvAutoReply?.adapter = adapter
             autoReplyBinding?.topchatChatroomRvAutoReply?.layoutManager =
                 LinearLayoutManager(context)

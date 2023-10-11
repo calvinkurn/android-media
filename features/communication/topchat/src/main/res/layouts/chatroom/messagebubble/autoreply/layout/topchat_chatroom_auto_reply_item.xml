@@ -48,8 +48,6 @@
         app:layout_constraintLeft_toLeftOf="@id/topchat_icon_auto_reply"
         app:layout_constraintRight_toRightOf="@id/topchat_tv_auto_reply_title"
         app:typographyType="display_1"
-        android:maxLines="3"
-        android:ellipsize="end"
         tools:text="@tools:sample/lorem/random"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

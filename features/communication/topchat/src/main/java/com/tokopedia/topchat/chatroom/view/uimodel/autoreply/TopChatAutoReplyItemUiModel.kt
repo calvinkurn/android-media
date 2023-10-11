@@ -3,15 +3,15 @@ package com.tokopedia.topchat.chatroom.view.uimodel.autoreply
 import android.text.SpannableString
 import android.text.Spanned
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.utils.htmltags.HtmlUtil
 import timber.log.Timber
 
 data class TopChatAutoReplyItemUiModel(
-    @SerializedName("type")
+    @SerializedName("title")
     val title: String,
 
-    @SerializedName("title")
+    @SerializedName("type")
     private val type: String,
 
     @SerializedName("message")
@@ -23,14 +23,13 @@ data class TopChatAutoReplyItemUiModel(
             PRODUCT_MESSAGE -> IconUnify.PRODUCT
             DELIVERY_MESSAGE -> IconUnify.COURIER
             OPERATIONAL_MESSAGE -> IconUnify.CLOCK
-            "Produk" -> IconUnify.PRODUCT // TODO: REMOVE DUMMY
             else -> null
         }
     }
 
     fun getMessage(): Spanned {
         return try {
-            MethodChecker.fromHtml(message)
+            HtmlUtil.fromHtml(message)
         } catch (throwable: Throwable) {
             Timber.d(throwable)
             SpannableString(message) // Return raw string
