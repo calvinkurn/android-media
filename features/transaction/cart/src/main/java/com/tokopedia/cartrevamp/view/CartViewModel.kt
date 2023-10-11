@@ -1,6 +1,7 @@
 package com.tokopedia.cartrevamp.view
 
 import android.os.Bundle
+import android.util.Log
 import androidx.core.os.bundleOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -254,8 +255,10 @@ class CartViewModel @Inject constructor(
     private val _subTotalState: MutableLiveData<SubTotalState> = MutableLiveData()
     val subTotalState: LiveData<SubTotalState> = _subTotalState
 
-    private val _bmGmGroupProductTickerState: MutableLiveData<GetBmGmGroupProductTickerState> = MutableLiveData()
-    val bmGmGroupProductTickerState: LiveData<GetBmGmGroupProductTickerState> = _bmGmGroupProductTickerState
+    private val _bmGmGroupProductTickerState: MutableLiveData<GetBmGmGroupProductTickerState> =
+        MutableLiveData()
+    val bmGmGroupProductTickerState: LiveData<GetBmGmGroupProductTickerState> =
+        _bmGmGroupProductTickerState
 
     private val _tokoNowProductUpdater =
         MutableSharedFlow<Boolean>(replay = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
@@ -668,12 +671,14 @@ class CartViewModel @Inject constructor(
         subtotalPrice += returnValueMarketplaceProduct.second.second
         subtotalCashback += returnValueMarketplaceProduct.third
 
+        val finalSubtotal = subtotalPrice - cartModel.discountAmount
+
         cartModel.latestCartTotalAmount = subtotalPrice
 
         _subTotalState.value = SubTotalState(
             subtotalCashback,
             totalItemQty.toString(),
-            subtotalPrice,
+            finalSubtotal,
             dataList.isEmpty()
         )
     }
@@ -2013,12 +2018,14 @@ class CartViewModel @Inject constructor(
                         } else {
                             // update selection
                             val lastItemIndex = newCartGroupHolderData.productUiModelList.lastIndex
-                            val lastProductItem = newCartGroupHolderData.productUiModelList[lastItemIndex]
+                            val lastProductItem =
+                                newCartGroupHolderData.productUiModelList[lastItemIndex]
                             val newCartItemHolderData = lastProductItem.copy()
                             newCartItemHolderData.isFinalItem = true
                             newCartItemHolderData.cartBmGmTickerData.isShowBmGmDivider = false
 
-                            newCartGroupHolderData.productUiModelList[lastItemIndex] = newCartItemHolderData
+                            newCartGroupHolderData.productUiModelList[lastItemIndex] =
+                                newCartItemHolderData
                             // newCartDataList[index + newCartGroupHolderData.productUiModelList.size] = newCartItemHolderData
 
                             updateShopShownByCartGroup(newCartGroupHolderData)
@@ -2183,7 +2190,8 @@ class CartViewModel @Inject constructor(
     fun updateBmGmTickerData(toBeDeletedProducts: List<CartItemHolderData>) {
         toBeDeletedProducts.forEach { productWillDelete ->
             val offerId = productWillDelete.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId
-            val productListByOfferId = CartDataHelper.getListProductByOfferId(cartDataList.value, offerId)
+            val productListByOfferId =
+                CartDataHelper.getListProductByOfferId(cartDataList.value, offerId)
             if (productListByOfferId.size > 1) {
                 productListByOfferId.forEachIndexed { index, product ->
                     // move ticker to next index if product has ticker will be deleted
@@ -2191,8 +2199,10 @@ class CartViewModel @Inject constructor(
                         productWillDelete.productId == product.productId &&
                         index < productListByOfferId.size - 1
                     ) {
-                        productListByOfferId[index + 1].cartBmGmTickerData = productWillDelete.cartBmGmTickerData
-                        productListByOfferId[index + 1].cartBmGmTickerData.isShowBmGmDivider = (index + 1 < productListByOfferId.size - 1)
+                        productListByOfferId[index + 1].cartBmGmTickerData =
+                            productWillDelete.cartBmGmTickerData
+                        productListByOfferId[index + 1].cartBmGmTickerData.isShowBmGmDivider =
+                            (index + 1 < productListByOfferId.size - 1)
 
                         // move divider to previous product if any
                     } else if (index == productListByOfferId.size - 1 &&
@@ -2773,11 +2783,13 @@ class CartViewModel @Inject constructor(
             try {
                 val result = getGroupProductTickerUseCase(params)
                 withContext(dispatchers.main) {
-                    _bmGmGroupProductTickerState.value = GetBmGmGroupProductTickerState.Success(Pair(offerId, result))
+                    _bmGmGroupProductTickerState.value =
+                        GetBmGmGroupProductTickerState.Success(Pair(offerId, result))
                 }
             } catch (t: Throwable) {
                 withContext(dispatchers.main) {
-                    _bmGmGroupProductTickerState.value = GetBmGmGroupProductTickerState.Failed(Pair(offerId, t))
+                    _bmGmGroupProductTickerState.value =
+                        GetBmGmGroupProductTickerState.Failed(Pair(offerId, t))
                 }
             }
         }
@@ -2821,7 +2833,13 @@ class CartViewModel @Inject constructor(
                 CartUiModelMapper.mapLastApplySimplified(data.promo.lastApplyPromo.lastApplyPromoData)
             }
             lastApplyUiModel?.let {
-                getEntryPointInfoFromLastApply(lastApplyUiModel.copy(additionalInfo = lastApplyUiModel.additionalInfo.copy(usageSummaries = emptyList())))
+                getEntryPointInfoFromLastApply(
+                    lastApplyUiModel.copy(
+                        additionalInfo = lastApplyUiModel.additionalInfo.copy(
+                            usageSummaries = emptyList()
+                        )
+                    )
+                )
             }
         } else {
             _entryPointInfoEvent.postValue(
@@ -2835,5 +2853,14 @@ class CartViewModel @Inject constructor(
         _entryPointInfoEvent.postValue(
             cartPromoEntryPointProcessor.getEntryPointInfoNoItemSelected()
         )
+    }
+
+    fun updatePromoSummaryData(lastApplyUiModel: LastApplyUiModel) {
+        cartModel.discountAmount =
+            lastApplyUiModel.additionalInfo.usageSummaries
+                .filter { it.isDiscount() }
+                .sumOf { it.amount.toLong() }
+
+        reCalculateSubTotal()
     }
 }
