@@ -16,4 +16,5 @@
     <string name="selection_null_product_error">Produk sedang tidak tersedia, silahkan coba beberapa saat lagi.</string>
     <string name="empty_state_paket_data_title">Tidak ada pilihan %s</string>
     <string name="empty_state_paket_data_desc">Yah... %s buat nomor ini sedang tidak tersedia. Tunggu sebentar lalu coba lagi, ya.</string>
+    <string name="check_balance_failed_verification">"Gagal melakukan verifikasi, mohon dicoba lagi nanti"</string>
 </resources>

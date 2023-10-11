@@ -444,6 +444,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                         } else {
                             it.shopInfo.shopLastActive.getRelativeDate(context)
                         }
+                    shopId = it.shopInfo.shopCore.shopID
                     shopName = it.shopInfo.shopCore.name
                     shopAva = it.shopInfo.shopAssets.avatar
                     partnerLabel = it.shopInfo.partnerLabel
@@ -842,7 +843,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             removeComponent(ProductDetailConstant.ORDER_PRIORITY)
         }
 
-        if (it.helpfulReviews?.isEmpty() == true && countReview.toIntOrZero() == 0) {
+        if (!it.rating.showRatingReview) {
             removeComponent(ProductDetailConstant.REVIEW)
         }
 

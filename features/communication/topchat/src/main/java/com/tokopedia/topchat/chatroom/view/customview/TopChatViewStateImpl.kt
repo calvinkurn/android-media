@@ -14,7 +14,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
-import com.tokopedia.chat_common.data.*
+import com.tokopedia.chat_common.data.BaseChatUiModel
+import com.tokopedia.chat_common.data.BlockedStatus
+import com.tokopedia.chat_common.data.ChatroomViewModel
+import com.tokopedia.chat_common.data.ImageUploadUiModel
+import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
 import com.tokopedia.chat_common.util.ChatTimeConverter
 import com.tokopedia.chat_common.view.BaseChatViewStateImpl
@@ -22,8 +26,14 @@ import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderUiModel
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
+import com.tokopedia.stories.widget.StoriesWidgetLayout
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.view.widget.LongClickMenu
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
@@ -34,6 +44,7 @@ import com.tokopedia.topchat.chatroom.view.custom.ChatMenuStickerView
 import com.tokopedia.topchat.chatroom.view.custom.ChatMenuView
 import com.tokopedia.topchat.chatroom.view.listener.HeaderMenuListener
 import com.tokopedia.topchat.chatroom.view.listener.SendButtonListener
+import com.tokopedia.topchat.chatroom.view.listener.StoriesWidgetListener
 import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
 import com.tokopedia.topchat.chatroom.view.uimodel.ReplyParcelableModel
 import com.tokopedia.topchat.chatroom.view.uimodel.SendablePreview
@@ -58,7 +69,10 @@ import com.tokopedia.topchat.common.util.ViewUtil.rotateView
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
-import java.util.Locale
+import java.util.*
+import com.tokopedia.chat_common.R as chat_commonR
+import com.tokopedia.resources.common.R as resourcescommonR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * @author : Steven 29/11/18
@@ -72,6 +86,7 @@ open class TopChatViewStateImpl constructor(
     private val attachmentMenuListener: AttachmentMenu.AttachmentMenuListener,
     private val stickerMenuListener: ChatMenuStickerView.StickerMenuListener,
     private val headerMenuListener: HeaderMenuListener,
+    private val storiesWidgetListener: StoriesWidgetListener,
     toolbar: Toolbar,
     val analytics: TopChatAnalytics,
     private val userSession: UserSessionInterface
@@ -80,7 +95,7 @@ open class TopChatViewStateImpl constructor(
     AttachmentPreviewAdapter.AttachmentPreviewListener {
 
     private var templateRecyclerView: RecyclerView = view.findViewById(R.id.list_template)
-    private var headerMenuButton: ImageButton = toolbar.findViewById(com.tokopedia.chat_common.R.id.header_menu)
+    private var headerMenuButton: ImageButton = toolbar.findViewById(chat_commonR.id.header_menu)
     private var chatBlockLayout: View = view.findViewById(R.id.chat_blocked_layout)
     private var attachmentPreviewContainer: LinearLayout = view.findViewById(R.id.cl_attachment_preview)
     private var attachmentPreviewRecyclerView = view.findViewById<RecyclerView>(R.id.rv_attachment_preview)
@@ -140,9 +155,9 @@ open class TopChatViewStateImpl constructor(
         templateRecyclerView.adapter = templateAdapter
         templateRecyclerView.hide()
 
-        userStatus = toolbar.findViewById(com.tokopedia.chat_common.R.id.subtitle)
-        typingImage = toolbar.findViewById(com.tokopedia.chat_common.R.id.iv_typing)
-        typingText = toolbar.findViewById(com.tokopedia.chat_common.R.id.tv_typing)
+        userStatus = toolbar.findViewById(chat_commonR.id.subtitle)
+        typingImage = toolbar.findViewById(chat_commonR.id.iv_typing)
+        typingText = toolbar.findViewById(chat_commonR.id.tv_typing)
 
         typingImage?.let {
             ImageUtil.setTypingAnimation(it)
@@ -316,7 +331,7 @@ open class TopChatViewStateImpl constructor(
 
     private fun initListPadding(viewModel: ChatroomViewModel) {
         if (!viewModel.replyable) {
-            val bottomPadding = recyclerView.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
+            val bottomPadding = recyclerView.context.resources.getDimension(unifyprinciplesR.dimen.spacing_lvl4)
             recyclerView.setPadding(0, 0, 0, bottomPadding.toInt())
         }
     }
@@ -328,18 +343,25 @@ open class TopChatViewStateImpl constructor(
     override fun updateHeader(chatroomViewModel: ChatroomViewModel, onToolbarClicked: () -> Unit) {
         super.updateHeader(chatroomViewModel, onToolbarClicked)
         bindBadge(chatroomViewModel)
+        bindStories(chatroomViewModel)
     }
 
     private fun bindBadge(chatRoom: ChatroomViewModel) {
-        val badgeView = toolbar.findViewById<ImageView>(com.tokopedia.chat_common.R.id.ivBadge)
+        val badgeView = toolbar.findViewById<ImageView>(chat_commonR.id.ivBadge)
         badgeView?.shouldShowWithAction(chatRoom.hasBadge()) {
             badgeView.loadImageWithoutPlaceholder(chatRoom.badgeUrl)
         }
     }
 
+    private fun bindStories(chatRoom: ChatroomViewModel) {
+        val storiesBorder = toolbar.findViewById<StoriesWidgetLayout>(chat_commonR.id.stories_border)
+        val manager = storiesWidgetListener.getStoriesWidgetManager()
+        manager.manage(storiesBorder, chatRoom.headerModel.shopId)
+    }
+
     private fun showLastTimeOnline(viewModel: ChatroomViewModel) {
-        val onlineDesc = toolbar.findViewById<TextView>(com.tokopedia.chat_common.R.id.subtitle)
-        val onlineStats = toolbar.findViewById<View>(com.tokopedia.chat_common.R.id.online_status)
+        val onlineDesc = toolbar.findViewById<TextView>(chat_commonR.id.subtitle)
+        val onlineStats = toolbar.findViewById<View>(chat_commonR.id.online_status)
         val lastOnlineTimeStamp = getShopLastTimeOnlineTimeStamp(viewModel)
 
         if (isOfficialAccountTokopedia(viewModel)) {
@@ -359,7 +381,7 @@ open class TopChatViewStateImpl constructor(
 
     private fun getOnlineDescStatus(context: Context, viewModel: ChatroomViewModel): String {
         return if (viewModel.headerModel.isOnline) {
-            context.getString(com.tokopedia.chat_common.R.string.online)
+            context.getString(chat_commonR.string.online)
         } else {
             ChatTimeConverter.getRelativeDate(view.context, getShopLastTimeOnlineTimeStamp(viewModel))
         }
@@ -671,7 +693,7 @@ open class TopChatViewStateImpl constructor(
                 setDescription(it.getString(R.string.delete_chat_warning_message))
                 setSecondaryCTAText(
                     it.getString(
-                        com.tokopedia.resources.common.R.string.general_label_cancel
+                        resourcescommonR.string.general_label_cancel
                     )
                 )
                 setPrimaryCTAText(it.getString(R.string.topchat_chat_delete_confirm))
