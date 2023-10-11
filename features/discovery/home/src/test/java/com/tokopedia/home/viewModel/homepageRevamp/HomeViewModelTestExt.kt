@@ -128,7 +128,7 @@ fun createHomeViewModel(
     homeRateLimit: RateLimiter<String> = mockk(relaxed = true),
     homeRemoteConfigController: HomeRemoteConfigController = mockk(relaxed = true),
     homeAtfUseCase: HomeAtfUseCase = mockk(relaxed = true),
-    todoWidgetRepository: TodoWidgetRepository = mockk(relaxed = true)
+    todoWidgetRepository: TodoWidgetRepository = mockk(relaxed = true),
     homeThematicUseCase: HomeThematicUseCase = mockk(relaxed = true),
 ): HomeRevampViewModel {
     homeBalanceWidgetUseCase.givenGetLoadingStateReturn()
@@ -159,7 +159,7 @@ fun createHomeViewModel(
             homeRemoteConfigController = { homeRemoteConfigController },
             homeAtfUseCase = { homeAtfUseCase },
             todoWidgetRepository = { todoWidgetRepository },
-            homeThematicUseCase = { homeThematicUseCase }
+            homeThematicUseCase = { homeThematicUseCase },
         ),
         recordPrivateCalls = true
     )

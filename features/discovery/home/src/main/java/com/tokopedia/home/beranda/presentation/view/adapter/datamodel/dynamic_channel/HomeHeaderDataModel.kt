@@ -38,7 +38,7 @@ data class HomeHeaderDataModel(
         return false
     }
 
-    override fun getChangePayloadFrom(b: Any?): Bundle {
+    override fun getChangePayloadFrom(b: Any?): Bundle? {
         return Bundle()
     }
 

@@ -107,7 +107,7 @@ open class HomeRevampViewModel @Inject constructor(
     private val homeRateLimit: RateLimiter<String>,
     private val homeRemoteConfigController: Lazy<HomeRemoteConfigController>,
     private val homeAtfUseCase: Lazy<HomeAtfUseCase>,
-    private val todoWidgetRepository: Lazy<TodoWidgetRepository>
+    private val todoWidgetRepository: Lazy<TodoWidgetRepository>,
     private val homeThematicUseCase: Lazy<HomeThematicUseCase>,
 ) : BaseCoRoutineScope(homeDispatcher.get().io) {
 
