@@ -49,6 +49,12 @@ data class TrackOrder(
 )
 
 data class Detail(
+    @SerializedName("shipper_id")
+    val shipperId: String = "",
+    @SerializedName("sp_id")
+    val spId: String = "",
+    @SerializedName("is_buyer")
+    val isBuyer: String = "",
     @SerializedName("shipper_city")
     val shipperCity: String = "",
     @SerializedName("shipper_name")
