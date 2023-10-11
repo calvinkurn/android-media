@@ -842,7 +842,7 @@ class PromoUsageViewModel @Inject constructor(
                     if (isClashingWithSecondaryPromo) {
                         val secondaryClashingCode =
                             resultItem.currentClashingSecondaryPromoCodes.first()
-                        val secondaryClashingInfo = resultItem.clashingInfos.firstOrNull {
+                        val secondaryClashingInfo = resultItem.secondaryPromo.clashingInfos.firstOrNull {
                             it.code == secondaryClashingCode
                         }
                         if (secondaryClashingInfo != null) {
@@ -886,7 +886,7 @@ class PromoUsageViewModel @Inject constructor(
                         .firstOrNull { it.code == otherClashingCode }
                     if (otherClashingInfo != null) {
                         resultItem = resultItem.copy(
-                            currentClashingPromoCodes = clashingSecondaryCodes,
+                            currentClashingSecondaryPromoCodes = clashingSecondaryCodes,
                             state = PromoItemState.Disabled(
                                 useSecondaryPromo = true,
                                 message = otherClashingInfo.message
