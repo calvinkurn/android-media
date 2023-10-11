@@ -4,8 +4,6 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.text.TextRange
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -100,9 +98,6 @@ class CampaignListActivity : BaseActivity(), ShareBottomsheetListener {
 
                 val uiState = viewModel.uiState.collectAsState()
 
-                val searchBarKeyword = remember { mutableStateOf("") }
-                val keywordTextRange = remember { mutableStateOf(TextRange(searchBarKeyword.value.length)) }
-
                 CampaignListScreen(
                     uiState = uiState.value,
                     onTapCampaignStatusFilter = { campaignStatuses ->
@@ -126,29 +121,28 @@ class CampaignListActivity : BaseActivity(), ShareBottomsheetListener {
                         )
                     },
                     onClearFilter = { viewModel.onEvent(CampaignListViewModel.UiEvent.ClearFilter) },
-                    searchBarKeyword = searchBarKeyword.value,
+                    searchBarKeyword = viewModel.getCampaignName(),
                     onSearchBarKeywordSubmit = {
-                        viewModel.setCampaignName(searchBarKeyword.value)
                         val campaignTypeId = viewModel.getCampaignTypeId()
                         val campaignStatusId = viewModel.getCampaignStatusId()
                         viewModel.getCampaignList(
-                            campaignName = searchBarKeyword.value,
+                            campaignName = viewModel.getCampaignName(),
                             campaignTypeId = campaignTypeId,
                             statusId = campaignStatusId
                         )
                     },
                     onSearchBarKeywordChanged = { text, textRange ->
-                        keywordTextRange.value = textRange
-                        searchBarKeyword.value = text
+                        viewModel.setCampaignName(text)
+                        viewModel.setCampaignSelection(textRange)
                     },
                     onSearchbarCleared = {
-                        keywordTextRange.value = TextRange.Zero
-                        searchBarKeyword.value = ""
+                        viewModel.setCampaignSelection(TextRange.Zero)
+                        viewModel.setCampaignName("")
                         viewModel.getCampaignList()
                     },
                     onTickerDismissed = { viewModel.onEvent(CampaignListViewModel.UiEvent.DismissTicker) },
                     onToolbarBackIconPressed = { finish() },
-                    textRangeKeyword = keywordTextRange.value,
+                    textRangeKeyword = viewModel.getCampaignSelection(),
                     onCampaignScrolled = { campaign ->
                         tracker.sendCampaignImpressionEvent(campaign.campaignId, userSession.shopId)
                     }
@@ -170,7 +164,7 @@ class CampaignListActivity : BaseActivity(), ShareBottomsheetListener {
                         )
                     )
                     viewModel.setCampaignStatusId(selectedCampaignStatus.statusId)
-                    viewModel.getCampaignList(statusId = selectedCampaignStatus.statusId)
+                    viewModel.getCampaignList(campaignName = viewModel.getCampaignName(), statusId = selectedCampaignStatus.statusId)
                     tracker.sendSelectCampaignStatusClickEvent(
                         selectedCampaignStatus.statusId,
                         userSession.shopId
