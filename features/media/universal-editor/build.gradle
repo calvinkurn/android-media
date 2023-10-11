@@ -82,7 +82,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation (name: 'ffmpeg-mobile-video', ext: 'aar')
+    implementation "com.arthenica:mobileffmpeg:4.4-tkpd"
 
     implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation projectOrAar(rootProject.ext.features.mediapickerCommon)
