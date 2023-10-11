@@ -167,10 +167,10 @@ dependencies {
 }
 
 project.ext {
-    artifactId = 'content_product_picker'
+    artifactId = 'product_picker'
     groupId = 'com.tokopedia.content'
     versionName = "0.0.1"
-    artifactName ="content_product_picker-release"
+    artifactName ="product_picker-release"
 }
 
 apply from: '../../../publish_local.gradle'

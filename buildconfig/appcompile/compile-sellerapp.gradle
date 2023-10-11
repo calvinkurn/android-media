@@ -32,7 +32,7 @@ includeIfEnabled("features:content:play_widget")
 includeIfEnabled("features:content:content_test")
 includeIfEnabled("features:content:stories_widget")
 includeIfEnabled("features:content:stories_internal")
-includeIfEnabled("features:content:content_product_picker")
+includeIfEnabled("features:content:product_picker")
 
 includeIfEnabled("features:discovery:discovery_common")
 includeIfEnabled("features:discovery:productcard")
