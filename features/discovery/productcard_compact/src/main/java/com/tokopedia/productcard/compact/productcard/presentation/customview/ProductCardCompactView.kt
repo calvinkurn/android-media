@@ -172,8 +172,8 @@ class ProductCardCompactView @JvmOverloads constructor(
                 this.onClickAddVariantListener = clickAddVariantListener
                 setQuantity(orderQuantity)
             }
+            quantityEditor?.show()
         } else {
-            quantityEditorViewStub.hide()
             quantityEditor?.hide()
         }
     }
@@ -228,8 +228,10 @@ class ProductCardCompactView @JvmOverloads constructor(
                 }
             }
             promoLabel?.show()
+            promoLayout?.show()
         } else {
             promoLabel?.hide()
+            promoLayout?.hide()
         }
     }
 
@@ -243,8 +245,10 @@ class ProductCardCompactView @JvmOverloads constructor(
                 paintFlags = Paint.STRIKE_THRU_TEXT_FLAG or Paint.ANTI_ALIAS_FLAG
             }
             slashPriceTypography?.show()
+            promoLayout?.show()
         } else {
             slashPriceTypography?.hide()
+            promoLayout?.hide()
         }
     }
 
@@ -337,7 +341,6 @@ class ProductCardCompactView @JvmOverloads constructor(
             wishlistButton?.setListener(wishlistButtonListener)
             wishlistButton?.show()
         } else {
-            wishlistButtonViewStub.hide()
             wishlistButton?.hide()
         }
     }
@@ -380,9 +383,9 @@ class ProductCardCompactView @JvmOverloads constructor(
                     )
                 )
             }
+            progressTypography?.show()
+            progressBar?.show()
         } else {
-            progressTypographyViewStub.hide()
-            progressBarViewStub.hide()
             progressTypography?.hide()
             progressBar?.hide()
         }
@@ -542,7 +545,6 @@ class ProductCardCompactView @JvmOverloads constructor(
                 .inflateView(R.layout.layout_product_card_compact_wishlist_button)
             wishlistButton = view.findViewById(R.id.wishlist_button)
             wishlistButtonViewStub.show()
-            wishlistButton?.show()
         }
     }
 
@@ -552,7 +554,6 @@ class ProductCardCompactView @JvmOverloads constructor(
                 .inflateView(R.layout.layout_product_card_compact_quantity_editor)
             quantityEditor = view.findViewById(R.id.quantity_editor)
             quantityEditorViewStub.show()
-            quantityEditor?.show()
         }
     }
 
@@ -562,7 +563,6 @@ class ProductCardCompactView @JvmOverloads constructor(
                 .inflateView(R.layout.layout_product_card_compact_progress_bar)
             progressBar = progressBarView as? ProgressBarUnify
             progressBarViewStub.show()
-            progressBar?.show()
         }
 
         if(progressTypographyViewStub.parent != null) {
@@ -570,7 +570,6 @@ class ProductCardCompactView @JvmOverloads constructor(
                 .inflateView(R.layout.layout_product_card_compact_progress_typography)
             progressTypography = progressBarTypographyView as? Typography
             progressTypographyViewStub.show()
-            progressTypography?.show()
         }
     }
 
@@ -582,7 +581,6 @@ class ProductCardCompactView @JvmOverloads constructor(
             promoLabel = view.findViewById(R.id.promo_label)
             slashPriceTypography = view.findViewById(R.id.slash_price_typography)
             promoLayoutViewStub.show()
-            promoLayout?.show()
         }
     }
 
