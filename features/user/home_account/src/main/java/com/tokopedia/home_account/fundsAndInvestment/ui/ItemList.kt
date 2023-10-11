@@ -180,7 +180,7 @@ private fun Subtitle(
 
 @Preview(device = Devices.PIXEL_3A_XL, showBackground = true)
 @Composable
-fun ListItemPreview() {
+fun ListItemFailedPreview() {
     NestTheme {
         ItemList(
             modifier = Modifier,
@@ -189,6 +189,28 @@ fun ListItemPreview() {
                 title = "Test Title 1",
                 subtitle = "Test Subtitle 1",
                 isFailed = true,
+                isActive = true,
+                isVertical = true,
+                hideTitle = false
+            ),
+            userId = "12345"
+        ) {
+
+        }
+    }
+}
+
+@Preview(device = Devices.PIXEL_3A_XL, showBackground = true)
+@Composable
+fun ListItemSuccessPreview() {
+    NestTheme {
+        ItemList(
+            modifier = Modifier,
+            item = WalletUiModel(
+                id = "1",
+                title = "Test Title 1",
+                subtitle = "Test Subtitle 1",
+                isFailed = false,
                 isActive = true,
                 isVertical = true,
                 hideTitle = false
