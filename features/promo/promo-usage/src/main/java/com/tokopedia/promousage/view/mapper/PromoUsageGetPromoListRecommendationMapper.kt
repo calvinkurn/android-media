@@ -96,7 +96,8 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
                                         couponSection = couponSection,
                                         coupon = coupon,
                                         recommendedPromoCodes = recommendedPromoCodes,
-                                        selectedPromoCodes = allSelectedPromoCodes
+                                        selectedPromoCodes = selectedPromoCodes,
+                                        selectedSecondaryPromoCodes = selectedSecondaryPromoCodes
                                     )
                                 )
                             }
@@ -123,7 +124,8 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
                                         couponSection = couponSection,
                                         coupon = coupon,
                                         recommendedPromoCodes = recommendedPromoCodes,
-                                        selectedPromoCodes = allSelectedPromoCodes
+                                        selectedPromoCodes = selectedPromoCodes,
+                                        selectedSecondaryPromoCodes = selectedSecondaryPromoCodes
                                     )
                                 )
                             }
@@ -172,7 +174,8 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
                     couponSection = attemptedPromoSection,
                     coupon = coupon,
                     recommendedPromoCodes = recommendedPromoCodes,
-                    selectedPromoCodes = allSelectedPromoCodes
+                    selectedPromoCodes = selectedPromoCodes,
+                    selectedSecondaryPromoCodes = selectedSecondaryPromoCodes
                 )
             )
         }
@@ -203,11 +206,9 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
         couponSection: CouponSection,
         coupon: Coupon,
         recommendedPromoCodes: List<String>,
-        selectedPromoCodes: List<String>
+        selectedPromoCodes: List<String>,
+        selectedSecondaryPromoCodes: List<String>
     ): PromoItem {
-        val currentPromoCodes = mutableListOf(coupon.code)
-        currentPromoCodes.addAll(coupon.secondaryCoupon.map { it.code })
-
         val secondaryCoupon: SecondaryCoupon? = coupon.secondaryCoupon.firstOrNull()
         val remainingPromoCount = couponSection.couponGroups
             .firstOrNull { it.id == coupon.groupId }?.count ?: 1
@@ -222,14 +223,13 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
         val primaryClashingInfos =
             coupon.clashingInfos
                 .filter {
-                    !currentPromoCodes.contains(it.code) &&
-                        selectedPromoCodes.contains(it.code)
+                    coupon.code != it.code && selectedPromoCodes.contains(it.code)
                 }
         val secondaryClashingInfos =
             secondaryCoupon?.clashingInfos
                 ?.filter {
-                    !currentPromoCodes.contains(it.code) &&
-                        selectedPromoCodes.contains(it.code)
+                    secondaryCoupon.code != it.code &&
+                        selectedSecondaryPromoCodes.contains(it.code)
                 }
                 ?: emptyList()
         var state: PromoItemState = if (secondaryCoupon != null) {
