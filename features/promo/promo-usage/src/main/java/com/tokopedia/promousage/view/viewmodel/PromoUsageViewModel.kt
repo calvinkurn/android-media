@@ -1101,6 +1101,7 @@ class PromoUsageViewModel @Inject constructor(
 
     fun onClickAccordionHeader(clickedItem: PromoAccordionHeaderItem) {
         _promoPageUiState.ifSuccess { pageState ->
+            if (pageState.isCalculating) return@ifSuccess
             val currentItems = pageState.items
             val isHeaderExpanded = !clickedItem.isExpanded
             val firstPromoItem = currentItems
@@ -1145,6 +1146,7 @@ class PromoUsageViewModel @Inject constructor(
 
     fun onClickViewAllAccordion(clickedItem: PromoAccordionViewAllItem) {
         _promoPageUiState.ifSuccess { pageState ->
+            if (pageState.isCalculating) return@ifSuccess
             val currentItems = pageState.items
             val updatedItems = currentItems
                 .map { item ->
