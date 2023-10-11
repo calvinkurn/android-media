@@ -17,6 +17,7 @@ import androidx.compose.ui.platform.LocalContext
 class ScreenState(
     val lazyGridState: LazyGridState,
     val lazyListState: LazyListState,
+    val filterListState: LazyListState,
     val pullRefreshState: PullRefreshState,
     val context: Context
 )
@@ -27,6 +28,7 @@ fun rememberScreenState(
     pullRefreshState: PullRefreshState,
     lazyGridState: LazyGridState = rememberLazyGridState(),
     lazyListState: LazyListState = rememberLazyListState(),
+    filterListState: LazyListState = rememberLazyListState(),
     context: Context = LocalContext.current
 ): ScreenState = remember(
     pullRefreshState,
@@ -38,6 +40,7 @@ fun rememberScreenState(
         pullRefreshState = pullRefreshState,
         lazyGridState = lazyGridState,
         lazyListState = lazyListState,
+        filterListState = filterListState,
         context = context
     )
 }

@@ -177,12 +177,6 @@ class CentralizedPromoComposeViewModel @Inject constructor(
                     }
                 }
 
-                if (updatedState.onGoingData is Fail
-                    || updatedState.promoCreationData is Fail
-                ) {
-                    showToasterState()
-                }
-
                 updatedState.copy(isSwipeRefresh = false)
             }
         }
@@ -214,6 +208,7 @@ class CentralizedPromoComposeViewModel @Inject constructor(
                 e,
                 String.format(CentralizedPromoFragment.ERROR_GET_LAYOUT_DATA, ON_GOING_PROMO)
             )
+            showToasterState()
             Fail(e, e.message.toString(), false)
         }
     }
@@ -241,6 +236,7 @@ class CentralizedPromoComposeViewModel @Inject constructor(
                 e,
                 String.format(CentralizedPromoFragment.ERROR_GET_LAYOUT_DATA, PROMO_CREATION)
             )
+            showToasterState()
             Fail(e, e.message.toString(), false)
         }
 

@@ -16,7 +16,7 @@ import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
@@ -195,12 +195,18 @@ private fun onPromoClicked(
             val detailPromoBottomSheet =
                 DetailPromoBottomSheet.createInstance(promoCreationUiModel)
             detailPromoBottomSheet.show((context as FragmentActivity).supportFragmentManager)
-            detailPromoBottomSheet.onCheckBoxListener { _ ->
-                ignoreBottomSheet.invoke(promoCreationUiModel.title)
+            var isCheckedRbac = false
+            detailPromoBottomSheet.onCheckBoxListener { isChecked ->
+                isCheckedRbac = isChecked
                 CentralizedPromoTracking.sendClickCheckboxBottomSheet(
                     selectedTabName,
                     promoCreationUiModel.title
                 )
+            }
+            detailPromoBottomSheet.setOnDismissListener {
+                if (isCheckedRbac) {
+                    ignoreBottomSheet.invoke(promoCreationUiModel.title)
+                }
             }
             detailPromoBottomSheet.onCreateCampaignTracking {
                 CentralizedPromoTracking.sendClickCreateCampaign(
@@ -324,9 +330,11 @@ private fun LazyGridScope.FilterSection(
         }
     }
 
+    val state = LocalScreenStateComposition.current
     NestSortFilter(
         items = result,
-        showClearFilterIcon = false
+        showClearFilterIcon = false,
+        state = state.filterListState
     )
 }
 
@@ -413,12 +421,15 @@ private fun LazyGridScope.OnGoingPromoSection(
     onGoingPromoImpressed: (String) -> Unit
 ) = item(span = { GridItemSpan(2) }) {
     val state = LocalScreenStateComposition.current
-    LazyRow(state = state.lazyListState) {
-        this@LazyRow.items(items = result.items,
-            key = {
-                it.title
+    LazyRow(
+        state = state.lazyListState,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        this@LazyRow.itemsIndexed(items = result.items,
+            key = { idx, it ->
+                it.title + idx.toString()
             }
-        ) { onGoingData ->
+        ) { _, onGoingData ->
             OnGoingCard(
                 title = onGoingData.title,
                 counter = onGoingData.status.count,
