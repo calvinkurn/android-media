@@ -14,6 +14,7 @@ class DigitalAtcMapper @Inject constructor() {
             cartId = atc.id ?: "",
             categoryId = atc.relationships?.category?.data?.id ?: "",
             priceProduct = atc.attributes?.price ?: "",
+            redirectUrl = atc.attributes?.redirectUrl ?: "",
             channelId = atc.attributes?.channelId ?: "",
         )
     }
@@ -24,6 +25,7 @@ class DigitalAtcMapper @Inject constructor() {
             categoryId = atc.categoryId,
             priceProduct = atc.priceText,
             channelId = atc.channelId,
+            redirectUrl = atc.redirectUrl,
             errorAtc = atc.atcError,
         )
     }
