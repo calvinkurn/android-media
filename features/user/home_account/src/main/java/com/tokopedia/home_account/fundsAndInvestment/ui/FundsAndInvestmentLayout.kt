@@ -13,6 +13,7 @@ import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,13 +41,13 @@ fun FundsAndInvestmentLayout(
     onBackClicked: () -> Unit,
     onReloadData: (Boolean) -> Unit
 ) {
-    val uiStateObserver = uiState.observeAsState()
+    val uiStateObserver by uiState.observeAsState()
     NestTheme {
         Surface(
             modifier = Modifier.fillMaxSize()
         ) {
             val pullRefreshState = rememberPullRefreshState(
-                refreshing = uiStateObserver.value.let { it.isRefreshData() },
+                refreshing = uiStateObserver.let { it.isRefreshData() },
                 onRefresh = { onReloadData(true) }
             )
 
@@ -69,7 +70,7 @@ fun FundsAndInvestmentLayout(
                             modifier = Modifier
                                 .fillMaxSize()
                         ) {
-                            when(val state = uiStateObserver.value) {
+                            when(val state = uiStateObserver) {
                                 is FundsAndInvestmentResult.Loading -> {
                                     ShimmerLayout()
                                 }
@@ -105,7 +106,7 @@ fun FundsAndInvestmentLayout(
                         }
 
                         PullRefreshIndicator(
-                            refreshing = uiStateObserver.value.let { it.isRefreshData() },
+                            refreshing = uiStateObserver.let { it.isRefreshData() },
                             state = pullRefreshState,
                             modifier = Modifier.align(Alignment.TopCenter),
                             contentColor = NestTheme.colors.GN._500
