@@ -761,13 +761,18 @@ class PromoUsageViewModel @Inject constructor(
                 isCausingClash = false
             }
         }
-        if (resultItem.state is PromoItemState.Loading &&
-            resultItem.currentClashingPromoCodes.isEmpty() &&
-            resultItem.currentClashingSecondaryPromoCodes.isEmpty()
-        ) {
-            resultItem = resultItem.copy(
-                state = PromoItemState.Normal(useSecondaryPromo = false)
-            )
+        if (resultItem.state is PromoItemState.Loading) {
+            resultItem = if (resultItem.currentClashingPromoCodes.isEmpty() &&
+                resultItem.currentClashingSecondaryPromoCodes.isEmpty()
+            ) {
+                resultItem.copy(
+                    state = PromoItemState.Normal(useSecondaryPromo = false)
+                )
+            } else {
+                resultItem.copy(
+                    state = currentItem.state
+                )
+            }
         }
         return Pair(resultItem, isCausingClash)
     }
@@ -958,13 +963,18 @@ class PromoUsageViewModel @Inject constructor(
                 }
             }
         }
-        if (resultItem.state is PromoItemState.Loading &&
-            resultItem.currentClashingPromoCodes.isEmpty() &&
-            resultItem.currentClashingSecondaryPromoCodes.isEmpty()
-        ) {
-            resultItem = resultItem.copy(
-                state = PromoItemState.Normal(useSecondaryPromo = false)
-            )
+        if (resultItem.state is PromoItemState.Loading) {
+            resultItem = if (resultItem.currentClashingPromoCodes.isEmpty() &&
+                resultItem.currentClashingSecondaryPromoCodes.isEmpty()
+            ) {
+                resultItem.copy(
+                    state = PromoItemState.Normal(useSecondaryPromo = false)
+                )
+            } else {
+                resultItem.copy(
+                    state = currentItem.state
+                )
+            }
         }
         return Pair(resultItem, isCausingClash)
     }
