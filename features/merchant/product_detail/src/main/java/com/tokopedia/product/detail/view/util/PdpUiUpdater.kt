@@ -812,6 +812,9 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
+    fun getVerticalRecommendationPlaceholder(pageName: String) =
+        mapOfData[pageName] as? ProductRecommendationVerticalPlaceholderDataModel
+
     fun getVerticalRecommendationNextPage(pageName: String): Int? {
         val dataModel = (mapOfData[pageName] as? ProductRecommendationVerticalPlaceholderDataModel)
         return dataModel?.recomWidgetData?.nextPage
