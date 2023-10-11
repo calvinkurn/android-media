@@ -11,8 +11,8 @@ data class PlayBroProductSummaryUiState(
     val productTagSummary: ProductTagSummaryUiModel,
 )
 
-sealed class ProductTagSummaryUiModel {
-    object Unknown: ProductTagSummaryUiModel()
-    object Loading: ProductTagSummaryUiModel()
-    object Success: ProductTagSummaryUiModel()
+enum class ProductTagSummaryUiModel {
+    Unknown,
+    Loading,
+    Success
 }

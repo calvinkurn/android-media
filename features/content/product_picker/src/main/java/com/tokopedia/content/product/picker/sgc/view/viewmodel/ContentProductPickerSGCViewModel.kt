@@ -94,8 +94,7 @@ class ContentProductPickerSGCViewModel @AssistedInject constructor(
     private val _focusedProductList = MutableStateFlow(ProductListPaging.Empty)
     private val _saveState = MutableStateFlow(ProductSaveStateUiModel.Empty)
     private val _productTagSectionList = MutableStateFlow(savedStateHandle.getProductSections())
-    private val _productTagSummary = MutableStateFlow<ProductTagSummaryUiModel>(
-        ProductTagSummaryUiModel.Success)
+    private val _productTagSummary = MutableStateFlow(ProductTagSummaryUiModel.Success)
     private val _loadParam = MutableStateFlow(ProductListPaging.Param.Empty)
     private val _config = MutableStateFlow(
         ProductSetupConfig(shopName = userSession.shopName, maxProduct = maxProduct)

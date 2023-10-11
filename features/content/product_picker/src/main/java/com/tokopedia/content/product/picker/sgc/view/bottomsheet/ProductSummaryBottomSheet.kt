@@ -136,11 +136,11 @@ class ProductSummaryBottomSheet @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.summaryUiState.withCache().collectLatest { (prevState, state) ->
                 when (state.productTagSummary) {
-                    is ProductTagSummaryUiModel.Loading -> {
+                    ProductTagSummaryUiModel.Loading -> {
                         showLoading(true)
                         binding.globalError.visibility = View.GONE
                     }
-                    is ProductTagSummaryUiModel.Success -> {
+                    ProductTagSummaryUiModel.Success -> {
                         mListener?.onProductChanged(state.productTagSectionList)
 
                         setTitle(state.productCount)
