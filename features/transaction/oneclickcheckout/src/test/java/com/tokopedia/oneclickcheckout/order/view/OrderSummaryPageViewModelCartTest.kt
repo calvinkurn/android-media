@@ -573,6 +573,8 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
+        val gatewayCode = "gateway 2"
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(gatewayCode = gatewayCode)
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
 
         // When
@@ -587,7 +589,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
                             arrayListOf(
                                 UpdateCartOccCartRequest(cartId = "", quantity = 1, productId = helper.product.productId)
                             ),
-                            UpdateCartOccProfileRequest(serviceId = 1, addressId = "1", gatewayCode = "payment", spId = "1", shippingId = "1"),
+                            UpdateCartOccProfileRequest(serviceId = 1, addressId = "1", gatewayCode = gatewayCode, spId = "1", shippingId = "1"),
                             source = UpdateCartOccRequest.SOURCE_UPDATE_QTY_NOTES
                         ),
                         it
@@ -641,7 +643,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
                     assertEquals(
                         UpdateCartOccRequest(
                             arrayListOf(UpdateCartOccCartRequest(cartId = "", quantity = 1, productId = helper.product.productId)),
-                            UpdateCartOccProfileRequest(serviceId = 0, addressId = "1", gatewayCode = "payment", spId = "0", shippingId = "0"),
+                            UpdateCartOccProfileRequest(serviceId = 0, addressId = "1", gatewayCode = "", spId = "0", shippingId = "0"),
                             skipShippingValidation = true,
                             source = UpdateCartOccRequest.SOURCE_UPDATE_QTY_NOTES
                         ),
