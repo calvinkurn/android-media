@@ -1,13 +1,12 @@
 package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
-import android.view.ViewStub
 import android.widget.ImageView
+import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
@@ -36,7 +35,7 @@ import com.tokopedia.unifyprinciples.Typography
  */
 class ProductShopCredibilityViewHolder(
     private val view: View,
-    private val listener: DynamicProductDetailListener
+    private val listener: DynamicProductDetailListener,
 ) : AbstractViewHolder<ProductShopCredibilityDataModel>(view) {
 
     companion object {
@@ -329,6 +328,7 @@ class ProductShopCredibilityViewHolder(
         }
 
         shopCredibilityAva.loadImageCircle(element.shopAva)
+        listener.getStoriesWidgetManager().manage(storiesBorder, element.shopId)
     }
 
     private fun isNewShopBadgeEnabled() = true

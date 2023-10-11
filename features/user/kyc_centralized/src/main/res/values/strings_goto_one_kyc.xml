@@ -157,8 +157,8 @@
     <string name="onekyc_userdetails_name">Nama</string>
     <string name="onekyc_userdetails_nik">NIK</string>
     <string name="onekyc_userdetails_address">Alamat lengkap</string>
-    <string name="onekyc_userdetails_ojk_title">Data verifikasi diperlukan oleh OJK</string>
-    <string name="onekyc_userdetails_ojk_description_cashloan">PT Multifinance Anak Bangsa akan melindungi kerahasiaan dan keamanan data kamu.</string>
+    <string name="onekyc_userdetails_ojk_title">Verifikasi data sesuai aturan OJK</string>
+    <string name="onekyc_userdetails_ojk_description_cashloan">Data pribadimu aman bersama kami dan akan digunakan untuk verifikasi akunmu.</string>
     <string name="onekyc_userdetails_confirm">Konfirmasi data e-KTP kamu</string>
     <string name="onekyc_userdetails_help">Bukan data e-KTP kamu? Masukin Data Kamu</string>
     <string name="onekyc_userdetails_help_link">Masukin Data Kamu</string>
@@ -172,8 +172,8 @@
     <string name="onekyc_consent_accountlink_point2">Nggak perlu foto selfie lagi</string>
     <string name="onekyc_consent_accountlink_point3">Prosesnya cepat dan gampang</string>
     <string name="onekyc_consent_supervised_title">Diawasi oleh Bank Indonesia</string>
-    <string name="onekyc_consent_supervised_description">Data pribadimu dijamin aman dan digunakan hanya untuk verifikasi.</string>
-    <string name="onekyc_consent_link_gopayplus">Sambungin ke GoPay Plus</string>
+    <string name="onekyc_consent_supervised_description">Infomu dirahasiakan dan akan kami gunakan hanya untuk verifikasi.</string>
+    <string name="onekyc_consent_link_gopayplus">Hubungkan ke GoPay Plus</string>
     <string name="onekyc_consent_help">Bantuan</string>
     <string name="onekyc_consent_terms_and_policy">Dengan melanjutkan, kamu menyetujui Kebijakan Privasi serta Syarat &amp; Ketentuan.</string>
     <string name="onekyc_consent_terms_link">Syarat &amp; Ketentuan</string>

@@ -81,6 +81,7 @@
 /features/ordermanagement/buyercancellationorder/       @tokopedia/android-minionstuart-dev
 /features/ordermanagement/orderhistory/                 @tokopedia/android-minionstuart-dev
 /features/transaction/sellerorder/                      @tokopedia/android-minionstuart-dev
+/features/ordermanagement/order_management_common/      @tokopedia/android-minionstuart-dev
 /features/merchant/shop_score/                          @tokopedia/android-minionstuart-dev
 /features/tokofood/                                     @tokopedia/android-minionstuart-dev
 /features/merchant/shop_admin/                          @tokopedia/android-minionstuart-dev
@@ -113,6 +114,9 @@
 /features/merchant/seller_mvc_creation                  @tokopedia/android-minionken-dev
 /features/merchant/seller_shop_nib                      @tokopedia/android-minionken-dev
 /features/promo/merchant_voucher                        @tokopedia/android-minionken-dev
+/features/merchant/buy_more_get_more                    @tokopedia/android-minionken-dev
+/features/category/catalog				                @tokopedia/android-minionken-dev
+/features/category/catalog_common		                @tokopedia/android-minionken-dev
 
 /features/top_ads/top_ads_dashboard/                    @tokopedia/android-minionsolo-dev
 /features/top_ads/top_ads_management/                   @tokopedia/android-minionsolo-dev
@@ -120,7 +124,6 @@
 /features/top_ads/top_ads_management_sourcetagging/     @tokopedia/android-minionsolo-dev
 /features/top_ads/top_ads_autoads/                      @tokopedia/android-minionsolo-dev
 /features/top_ads/top_ads_create/                       @tokopedia/android-minionsolo-dev
-/features/top_ads/top_ads_detail_sheet/                 @tokopedia/android-minionsolo-dev
 /features/top_ads/top_ads_widget/                       @tokopedia/android-minionsolo-dev
 /features/top_ads/top_ads_headline/                     @tokopedia/android-minionsolo-dev
 /features/top_ads/top_ads_edit/                         @tokopedia/android-minionsolo-dev
@@ -145,6 +148,9 @@
 /features/content/play_common/                          @tokopedia/android-minionlance-dev
 /features/content/play_broadcaster/                     @tokopedia/android-minionlance-dev
 /features/content/play_widget/                          @tokopedia/android-minionlance-dev
+/features/content/stories/                              @tokopedia/android-minionlance-dev
+/features/content/stories_widget/                       @tokopedia/android-minionlance-dev
+/features/content/stories_internal/                     @tokopedia/android-minionlance-dev
 
 /features/recharge/common_digital                       @tokopedia/android-minionmark-dev
 /features/recharge/common_electronic_money              @tokopedia/android-minionmark-dev
@@ -207,6 +213,7 @@
 /features/logistic/localizationchooseaddress_common/    @tokopedia/android-minionbob-dev
 /features/logistic/logisticseller/                      @tokopedia/android-minionbob-dev
 /features/logistic/dilayanitokopedia/                   @tokopedia/android-minionbob-dev
+/features/promo/promo-usage/                            @tokopedia/android-minionbob-dev
 
 /features/media/mediauploader/			                @tokopedia/android-minionkevin-dev
 /features/media/medialoader/                            @tokopedia/android-minionkevin-dev
@@ -244,6 +251,7 @@
 /features/user/home_account/                            @tokopedia/android-minionkevin-dev
 /features/user/telephony_masking/                       @tokopedia/android-minionkevin-dev
 /features/user/privacycenter/                           @tokopedia/android-minionkevin-dev
+/features/user/accountlinking/                          @tokopedia/android-minionkevin-dev
 
 /features/communication/attachcommon/                   @tokopedia/android-minionkevin-dev
 /features/communication/attachinvoice/                  @tokopedia/android-minionkevin-dev
