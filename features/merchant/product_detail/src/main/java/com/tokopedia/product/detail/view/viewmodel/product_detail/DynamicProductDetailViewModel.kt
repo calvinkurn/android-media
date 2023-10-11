@@ -707,14 +707,14 @@ class DynamicProductDetailViewModel @Inject constructor(
                     getProductInfoP2OtherAsync(p1.basic.productID, p1.basic.getShopId())
 
                 p2DataDeffered.await().let { p2 ->
-                    _p2Data.postValue(p2)
+                    this@DynamicProductDetailViewModel._p2Data.postValue(p2)
                 }
 
                 p2LoginDeferred?.let {
-                    _p2Login.postValue(it.await())
+                    this@DynamicProductDetailViewModel._p2Login.postValue(it.await())
                 }
 
-                _p2Other.postValue(p2OtherDeffered.await())
+                this@DynamicProductDetailViewModel._p2Other.postValue(p2OtherDeffered.await())
 
                 getTopAdsImageViewData(p1.basic.productID)
                 getProductTopadsStatus(p1.basic.productID, urlQuery)
