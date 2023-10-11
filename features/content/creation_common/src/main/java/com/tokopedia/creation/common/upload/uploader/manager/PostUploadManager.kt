@@ -20,16 +20,14 @@ class PostUploadManager @Inject constructor(
     @ApplicationContext private val appContext: Context,
     private val submitPostUseCase: SubmitPostUseCase,
     private val sellerAppReviewHelper: FeedSellerAppReviewHelper,
-) : CreationUploadManager {
+) : CreationUploadManager(null) {
 
-    override suspend fun execute(
-        uploadData: CreationUploadData,
-        listener: CreationUploadManagerListener
-    ): Boolean {
+    override suspend fun execute(uploadData: CreationUploadData): Boolean {
+
         if (uploadData !is CreationUploadData.Post) return false
 
         return try {
-            listener.setProgress(uploadData, CreationUploadConst.PROGRESS_INIT, CreationUploadStatus.Upload)
+            broadcastInit(uploadData)
 
             val cacheManager = SaveInstanceCacheManager(appContext, uploadData.draftId)
             val viewModel: CreatePostViewModel = cacheManager.get(
@@ -53,21 +51,20 @@ class PostUploadManager @Inject constructor(
                 mediaHeight = viewModel.mediaHeight,
                 onSuccessUploadPerMedia = {
                     uploadedMedia++
-                    listener.setProgress(
+                    updateProgress(
                         uploadData,
                         (uploadedMedia / viewModel.completeImageList.size.toDouble() * 100).toInt(),
-                        CreationUploadStatus.Upload
                     )
                 }
             )
 
             addFlagOnCreatePostSuccess()
 
-            listener.setProgress(uploadData, CreationUploadConst.PROGRESS_COMPLETED, CreationUploadStatus.Success)
+            broadcastComplete(uploadData)
 
             true
         } catch (e: Throwable) {
-            listener.setProgress(uploadData, CreationUploadConst.PROGRESS_FAILED, CreationUploadStatus.Failed)
+            broadcastFail(uploadData)
             false
         }
     }

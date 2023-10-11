@@ -32,13 +32,9 @@ class ShortsUploadManager @Inject constructor(
     private val addMediaUseCase: BroadcasterAddMediasUseCase,
     private val dispatchers: CoroutineDispatchers,
     private val snapshotHelper: VideoSnapshotHelper,
-) : CreationUploadManager {
-
-    private var currentProgress = 0
+) : CreationUploadManager(notificationManager) {
 
     private lateinit var uploadData: CreationUploadData.Shorts
-
-    private var mListener: CreationUploadManagerListener? = null
 
     private var isUploadShortsMedia = false
 
@@ -66,25 +62,21 @@ class ShortsUploadManager @Inject constructor(
      * 100 : success
      * -1 : failed
      * else : loading
+     *
+     *
      */
-    override suspend fun execute(
-        uploadData: CreationUploadData,
-        listener: CreationUploadManagerListener
-    ): Boolean {
+    override suspend fun execute(uploadData: CreationUploadData): Boolean {
         if (uploadData !is CreationUploadData.Shorts) return false
 
         this.uploadData = uploadData
-        this.mListener = listener
 
         withContext(dispatchers.main) {
             uploaderUseCase.trackProgress { progress, type ->
                 if (type is ProgressType.Upload && isUploadShortsMedia) {
-                    currentProgress = progress
-
-                    if (progress == CreationUploadManager.MAX_UPLOAD_PROGRESS) {
-                        broadcastProgress(CreationUploadStatus.OtherProcess)
+                    if (progress == MAX_UPLOAD_PROGRESS) {
+                        broadcastProgress(uploadData, CreationUploadStatus.OtherProcess)
                     } else {
-                        updateProgress()
+                        updateProgress(uploadData, progress)
                     }
                 }
             }
@@ -104,7 +96,7 @@ class ShortsUploadManager @Inject constructor(
                 val activeMediaId = addMedia(uploadData, mediaUrl)
                 updateChannelStatusWithMedia(activeMediaId, uploadData, PlayChannelStatusType.Active)
 
-                broadcastComplete()
+                broadcastComplete(uploadData)
 
                 true
             } catch (e: Exception) {
@@ -118,7 +110,7 @@ class ShortsUploadManager @Inject constructor(
                 } catch (e: Exception) {
                 }
 
-                broadcastFail()
+                broadcastFail(uploadData)
 
                 false
             }
@@ -228,36 +220,6 @@ class ShortsUploadManager @Inject constructor(
                 )
             )
         }.executeOnBackground()
-    }
-
-    private fun updateProgress() {
-        broadcastProgress(CreationUploadStatus.Upload, currentProgress)
-        notificationManager.onProgress(currentProgress)
-    }
-
-    private suspend fun broadcastInit(uploadData: CreationUploadData) {
-        broadcastProgress(CreationUploadStatus.Upload)
-        notificationManager.init(uploadData)
-        mListener?.setupForegroundNotification(notificationManager.onStart())
-    }
-
-    private suspend fun broadcastComplete() {
-        broadcastProgress(CreationUploadStatus.Success)
-        notificationManager.onSuccess()
-        delay(CreationUploadManager.UPLOAD_FINISH_DELAY)
-    }
-
-    private suspend fun broadcastFail() {
-        broadcastProgress(CreationUploadStatus.Failed)
-        notificationManager.onError()
-        delay(CreationUploadManager.UPLOAD_FINISH_DELAY)
-    }
-
-    private fun broadcastProgress(
-        uploadStatus: CreationUploadStatus,
-        progress: Int = currentProgress,
-    ) {
-        mListener?.setProgress(uploadData, progress, uploadStatus)
     }
 
     private fun getSourceId(mediaType: ContentMediaType): String {

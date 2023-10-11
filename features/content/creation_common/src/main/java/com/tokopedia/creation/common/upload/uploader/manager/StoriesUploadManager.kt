@@ -27,19 +27,15 @@ import javax.inject.Inject
  */
 class StoriesUploadManager @Inject constructor(
     @ApplicationContext private val appContext: Context,
-    private val notificationManager: StoriesUploadNotificationManager,
+    notificationManager: StoriesUploadNotificationManager,
     private val uploaderUseCase: UploaderUseCase,
     private val updateStoryUseCase: StoriesUpdateStoryUseCase,
     private val addMediaUseCase: StoriesAddMediaUseCase,
     private val dispatchers: CoroutineDispatchers,
     private val snapshotHelper: VideoSnapshotHelper,
-) : CreationUploadManager {
-
-    private var currentProgress = 0
+) : CreationUploadManager(notificationManager) {
 
     private lateinit var uploadData: CreationUploadData.Stories
-
-    private var mListener: CreationUploadManagerListener? = null
 
     private var isUploadStoryMedia = false
 
@@ -66,24 +62,18 @@ class StoriesUploadManager @Inject constructor(
      * else : loading
      */
 
-    override suspend fun execute(
-        uploadData: CreationUploadData,
-        listener: CreationUploadManagerListener
-    ): Boolean {
+    override suspend fun execute(uploadData: CreationUploadData): Boolean {
         if (uploadData !is CreationUploadData.Stories) return false
 
         this.uploadData = uploadData
-        this.mListener = listener
 
         withContext(dispatchers.main) {
             uploaderUseCase.trackProgress { progress, progressType ->
                 if (progressType is ProgressType.Upload && isUploadStoryMedia) {
-                    currentProgress = progress
-
-                    if (progress == CreationUploadManager.MAX_UPLOAD_PROGRESS) {
-                        broadcastProgress(CreationUploadStatus.OtherProcess)
+                    if (progress == MAX_UPLOAD_PROGRESS) {
+                        broadcastProgress(uploadData, CreationUploadStatus.OtherProcess)
                     } else {
-                        updateProgress()
+                        updateProgress(uploadData, progress)
                     }
                 }
             }
@@ -102,7 +92,7 @@ class StoriesUploadManager @Inject constructor(
 
                 updateStoryStatus(uploadData, StoriesStatus.Active)
 
-                broadcastComplete()
+                broadcastComplete(uploadData)
 
                 true
             } catch (e: Exception) {
@@ -116,7 +106,7 @@ class StoriesUploadManager @Inject constructor(
                 } catch (e: Exception) {
                 }
 
-                broadcastFail()
+                broadcastFail(uploadData)
 
                 false
             }
@@ -201,36 +191,6 @@ class StoriesUploadManager @Inject constructor(
                 uploadId = mediaUploadResult.uploadId,
             )
         )
-    }
-
-    private fun updateProgress() {
-        broadcastProgress(CreationUploadStatus.Upload, currentProgress)
-        notificationManager.onProgress(currentProgress)
-    }
-
-    private suspend fun broadcastInit(uploadData: CreationUploadData) {
-        broadcastProgress(CreationUploadStatus.Upload)
-        notificationManager.init(uploadData)
-        mListener?.setupForegroundNotification(notificationManager.onStart())
-    }
-
-    private suspend fun broadcastComplete() {
-        broadcastProgress(CreationUploadStatus.Success)
-        notificationManager.onSuccess()
-        delay(CreationUploadManager.UPLOAD_FINISH_DELAY)
-    }
-
-    private suspend fun broadcastFail() {
-        broadcastProgress(CreationUploadStatus.Failed)
-        notificationManager.onError()
-        delay(CreationUploadManager.UPLOAD_FINISH_DELAY)
-    }
-
-    private fun broadcastProgress(
-        uploadStatus: CreationUploadStatus,
-        progress: Int = currentProgress,
-    ) {
-        mListener?.setProgress(uploadData, progress, uploadStatus)
     }
 
     private fun getSourceId(contentMediaType: ContentMediaType): String {

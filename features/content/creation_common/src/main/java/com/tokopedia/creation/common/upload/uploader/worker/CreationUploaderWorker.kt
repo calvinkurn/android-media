@@ -70,8 +70,7 @@ class CreationUploaderWorker(
 
                     val uploadManager = uploadManagerProvider.get(data.uploadType)
 
-                    val uploadResult = uploadManager.execute(
-                        data,
+                    uploadManager.setListener(
                         object : CreationUploadManagerListener {
                             override suspend fun setupForegroundNotification(info: ForegroundInfo) {
                                 setForegroundAsync(info)
@@ -88,6 +87,8 @@ class CreationUploaderWorker(
                             }
                         }
                     )
+
+                    val uploadResult = uploadManager.execute(data)
 
                     if (uploadResult) {
                         queueRepository.delete(data.queueId)
