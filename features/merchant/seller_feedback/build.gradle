@@ -34,11 +34,7 @@ dependencies {
     implementation rootProject.ext.debugToolsDependencies.chuck
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
-    implementation rootProject.ext.ktorDependencies.ktorOkhttp
-    implementation rootProject.ext.ktorDependencies.ktorContentNegotiation
-    implementation rootProject.ext.ktorDependencies.ktorSerializationJson
-    implementation rootProject.ext.ktorDependencies.ktorLogging
-    implementation rootProject.ext.ktorDependencies.kermitLogging
+    implementation rootProject.ext.kmpDependencies.sellerFeedbackKmp
 
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.applink)

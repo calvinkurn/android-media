@@ -475,14 +475,9 @@ ext {
             accompanistPager    : "com.google.accompanist:accompanist-pager:$accompanistPagerVersion"
     ]
 
-    ktorVersion = "2.3.3"
-    kermitVersion = "2.0.0-RC4"
+    selletFeedbackKmpVersion = "1.0.0"
 
-    ktorDependencies = [
-            ktorOkhttp                  : "io.ktor:ktor-client-okhttp:$ktorVersion",
-            ktorContentNegotiation      : "io.ktor:ktor-client-content-negotiation:$ktorVersion",
-            ktorSerializationJson       : "io.ktor:ktor-serialization-kotlinx-json:$ktorVersion",
-            ktorLogging                 : "io.ktor:ktor-client-logging:$ktorVersion",
-            kermitLogging               : "co.touchlab:kermit:$kermitVersion"
+    kmpDependencies = [
+            sellerFeedbackKmp      : "com.tokopedia.multiplatform.seller.feedback:feedback-android:$selletFeedbackKmpVersion",
     ]
 }
