@@ -1,6 +1,5 @@
 package com.tokopedia.product.util.processor
 
-
 import com.tokopedia.analytic.annotation.*
 import com.tokopedia.analytic_constant.Param
 import com.tokopedia.annotation.BundleThis
@@ -11,7 +10,6 @@ import com.tokopedia.util.GTMErrorHandlerImpl
 import com.tokopedia.util.logger.GTMLoggerImpl
 
 private const val KEY_DIMENSION_40 = "dimension40"
-
 
 object ProductTrackingConstant {
 
@@ -42,8 +40,8 @@ object ProductTrackingConstant {
         const val KEY_DIMENSION_98 = "dimension98"
         const val KEY_DIMENSION_113 = "dimension113"
         const val KEY_DIMENSION_120 = "dimension120"
+        const val KEY_DIMENSION_137 = "dimension137"
     }
-
 
     object Label {
         const val PDP = "pdp"
@@ -62,54 +60,57 @@ object ProductTrackingConstant {
 @Logger(GTMLoggerImpl::class)
 @BundleThis(false, true)
 data class Product(
-        @Key(Param.ITEM_NAME)
-        val name: String,
-        @Key(Param.ITEM_ID)
-        val id: String,
-        @CustomChecker(ProductListImpressionProductChecker::class, Level.ERROR, functionName = ["isPriceNotZero"])
-        @Key(Param.PRICE)
-        val price: Double,
-        @DefaultValueString("none")
-        @Key(Param.ITEM_BRAND)
-        val brand: String?,
-        @Key(Param.ITEM_VARIANT)
-        val variant: String,
-        @Key(Param.ITEM_CATEGORY)
-        val category: String,
-        @DefaultValueString("IDR")
-        @Key(Param.CURRENCY)
-        val currency: String?,
-        @Key(ProductTrackingConstant.Tracking.KEY_DIMENSION_10)
-        val dimension10: String,
-        @Key(ProductTrackingConstant.Tracking.KEY_DIMENSION_12)
-        val dimension12: String,
-        @Key(ProductTrackingConstant.Tracking.KEY_DIMENSION_14)
-        val dimension14: String,
-        @Key(ProductTrackingConstant.Tracking.KEY_DIMENSION_16)
-        val dimension16: String,
-        @DefaultValueString(ProductTrackingConstant.Tracking.DEFAULT_VALUE)
-        @Key(ProductTrackingConstant.Tracking.KEY_DIMENSION_38)
-        val dimension38: String,
-        @Key(ProductTrackingConstant.Tracking.KEY_DIMENSION_53)
-        val dimension53: String,
-        @Key(ProductTrackingConstant.Tracking.KEY_DIMENSION_55)
-        val dimension55: String,
-        @Key(ProductTrackingConstant.Tracking.KEY_DIMENSION_54)
-        val dimension54: String,
-        @Key(ProductTrackingConstant.Tracking.KEY_DIMENSION_83)
-        val dimension83: String,
-        @Key(ProductTrackingConstant.Tracking.KEY_DIMENSION_81)
-        val dimension81: String,
-        @Key(ProductTrackingConstant.Tracking.KEY_DIMENSION_90)
-        val dimension90: String?,
-        @Key(ProductTrackingConstant.Tracking.KEY_DIMENSION_98)
-        val dimension98: String,
-        @Key(ProductTrackingConstant.Tracking.KEY_DIMENSION_113)
-        val dimension113: String,
-        @Key(ProductTrackingConstant.Tracking.KEY_DIMENSION_120)
-        val dimension120: String,
-        @CustomChecker(ProductListImpressionProductChecker::class, Level.ERROR, functionName = ["isIndexNotZero"])
-        @DefaultValueLong(1)
-        @Key(Param.INDEX)
-        val index: Long
+    @Key(Param.ITEM_NAME)
+    val name: String,
+    @Key(Param.ITEM_ID)
+    val id: String,
+    @CustomChecker(ProductListImpressionProductChecker::class, Level.ERROR, functionName = ["isPriceNotZero"])
+    @Key(Param.PRICE)
+    val price: Double,
+    @DefaultValueString("none")
+    @Key(Param.ITEM_BRAND)
+    val brand: String?,
+    @Key(Param.ITEM_VARIANT)
+    val variant: String,
+    @Key(Param.ITEM_CATEGORY)
+    val category: String,
+    @DefaultValueString("IDR")
+    @Key(Param.CURRENCY)
+    val currency: String?,
+    @Key(ProductTrackingConstant.Tracking.KEY_DIMENSION_10)
+    val dimension10: String,
+    @Key(ProductTrackingConstant.Tracking.KEY_DIMENSION_12)
+    val dimension12: String,
+    @Key(ProductTrackingConstant.Tracking.KEY_DIMENSION_14)
+    val dimension14: String,
+    @Key(ProductTrackingConstant.Tracking.KEY_DIMENSION_16)
+    val dimension16: String,
+    @DefaultValueString(ProductTrackingConstant.Tracking.DEFAULT_VALUE)
+    @Key(ProductTrackingConstant.Tracking.KEY_DIMENSION_38)
+    val dimension38: String,
+    @Key(ProductTrackingConstant.Tracking.KEY_DIMENSION_53)
+    val dimension53: String,
+    @Key(ProductTrackingConstant.Tracking.KEY_DIMENSION_55)
+    val dimension55: String,
+    @Key(ProductTrackingConstant.Tracking.KEY_DIMENSION_54)
+    val dimension54: String,
+    @Key(ProductTrackingConstant.Tracking.KEY_DIMENSION_83)
+    val dimension83: String,
+    @Key(ProductTrackingConstant.Tracking.KEY_DIMENSION_81)
+    val dimension81: String,
+    @Key(ProductTrackingConstant.Tracking.KEY_DIMENSION_90)
+    val dimension90: String?,
+    @Key(ProductTrackingConstant.Tracking.KEY_DIMENSION_98)
+    val dimension98: String,
+    @Key(ProductTrackingConstant.Tracking.KEY_DIMENSION_113)
+    val dimension113: String,
+    @Key(ProductTrackingConstant.Tracking.KEY_DIMENSION_120)
+    val dimension120: String,
+    @DefaultValueString("")
+    @Key(ProductTrackingConstant.Tracking.KEY_DIMENSION_137)
+    val dimension137: String,
+    @CustomChecker(ProductListImpressionProductChecker::class, Level.ERROR, functionName = ["isIndexNotZero"])
+    @DefaultValueLong(1)
+    @Key(Param.INDEX)
+    val index: Long
 )

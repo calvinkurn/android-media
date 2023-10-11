@@ -23,7 +23,7 @@ class CartPromoEntryPointProcessor @Inject constructor(
     private val chosenAddressRequestHelper: ChosenAddressRequestHelper
 ) {
 
-    private var isPromoRevamp: Boolean? = null
+    internal var isPromoRevamp: Boolean? = null
 
     private fun generatePromoRequest(
         cartModel: CartModel,
@@ -60,6 +60,15 @@ class CartPromoEntryPointProcessor @Inject constructor(
         }
     }
 
+    private fun cleanPromoFromPromoRequest(promoRequest: PromoRequest): PromoRequest {
+        return promoRequest.copy(
+            codes = arrayListOf(),
+            orders = promoRequest.orders.map {
+                return@map it.copy(codes = mutableListOf())
+            }
+        )
+    }
+
     suspend fun getEntryPointInfoFromLastApply(
         lastApply: LastApplyUiModel,
         cartModel: CartModel,
@@ -83,7 +92,7 @@ class CartPromoEntryPointProcessor @Inject constructor(
                 .bebasOngkirInfo.isUseBebasOngkirOnly
             if (!isUsingPromo || isUseBebasOngkirOnly) {
                 val param = GetPromoListRecommendationParam.create(
-                    promoRequest = generatePromoRequest(cartModel, cartDataList),
+                    promoRequest = cleanPromoFromPromoRequest(generatePromoRequest(cartModel, cartDataList)),
                     chosenAddress = chosenAddressRequestHelper.getChosenAddress(),
                     isPromoRevamp = true
                 )
@@ -196,5 +205,9 @@ class CartPromoEntryPointProcessor @Inject constructor(
         return EntryPointInfoEvent.Inactive(
             isNoItemSelected = true
         )
+    }
+
+    fun getEntryPointInfoActiveDefault(codes: List<String>): EntryPointInfoEvent {
+        return EntryPointInfoEvent.ActiveDefault(codes)
     }
 }
