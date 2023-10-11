@@ -1003,7 +1003,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         val listener = activity as? FragmentListener
 
         if ((selectedWidget.isNotEmpty() ||
-            multiComponentUiInteractor?.alreadyAutoScroll() == true) &&
+            multiComponentUiInteractor?.alreadyAutoScroll() == true) ||
             listener?.isTabCoachMarkShowing() == true
         ) return
 

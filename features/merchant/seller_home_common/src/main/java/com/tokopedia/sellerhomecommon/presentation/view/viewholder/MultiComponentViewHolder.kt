@@ -36,7 +36,8 @@ class MultiComponentViewHolder(
         val data = element.data
         when {
             data == null -> setOnLoadingState()
-            !data.showWidget -> listener.removeWidget(absoluteAdapterPosition, element)
+            !data.showWidget || data.isWidgetEmpty() ->
+                listener.removeWidget(absoluteAdapterPosition, element)
             //only happen when muat ulang clicked
             element.showLoadingState -> setOnLoadingComponentDetail()
             data.error.isNotBlank() -> setOnErrorState(element)
