@@ -248,6 +248,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         super.onDestroyView()
         renderLoadingDialog(false)
         binding = null
+        listener = null
     }
 
     private fun applyBottomSheetMaxHeightRule() {
