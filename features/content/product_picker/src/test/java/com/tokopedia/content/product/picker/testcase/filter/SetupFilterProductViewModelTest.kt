@@ -2,10 +2,10 @@ package com.tokopedia.content.product.picker.testcase.filter
 
 import com.tokopedia.content.product.picker.builder.ProductSetupUiModelBuilder
 import com.tokopedia.content.product.picker.robot.ContentProductPickerSGCViewModelRobot
-import com.tokopedia.content.product.picker.sgc.domain.ContentProductPickerSGCRepository
-import com.tokopedia.content.product.picker.sgc.model.uimodel.ProductSetupAction
-import com.tokopedia.content.product.picker.sgc.model.etalase.SelectedEtalaseModel
-import com.tokopedia.content.product.picker.sgc.model.sort.SortUiModel
+import com.tokopedia.content.product.picker.seller.domain.ContentProductPickerSGCRepository
+import com.tokopedia.content.product.picker.seller.model.uimodel.ProductSetupAction
+import com.tokopedia.content.product.picker.seller.model.etalase.SelectedEtalaseModel
+import com.tokopedia.content.product.picker.seller.model.sort.SortUiModel
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.mockk
 import org.junit.Assert.assertEquals

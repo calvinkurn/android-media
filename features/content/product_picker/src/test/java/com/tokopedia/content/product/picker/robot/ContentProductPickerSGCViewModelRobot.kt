@@ -2,13 +2,13 @@ package com.tokopedia.content.product.picker.robot
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import com.tokopedia.content.product.picker.sgc.domain.ContentProductPickerSGCRepository
-import com.tokopedia.content.product.picker.sgc.model.uimodel.ProductChooserEvent
-import com.tokopedia.content.product.picker.sgc.model.uimodel.PlayBroProductSummaryUiState
-import com.tokopedia.content.product.picker.sgc.model.uimodel.ProductChooserUiState
-import com.tokopedia.content.product.picker.sgc.model.uimodel.ProductSetupAction
-import com.tokopedia.content.product.picker.sgc.view.viewmodel.ContentProductPickerSGCViewModel
-import com.tokopedia.content.product.picker.sgc.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.content.product.picker.seller.domain.ContentProductPickerSGCRepository
+import com.tokopedia.content.product.picker.seller.model.uimodel.ProductChooserEvent
+import com.tokopedia.content.product.picker.seller.model.uimodel.PlayBroProductSummaryUiState
+import com.tokopedia.content.product.picker.seller.model.uimodel.ProductChooserUiState
+import com.tokopedia.content.product.picker.seller.model.uimodel.ProductSetupAction
+import com.tokopedia.content.product.picker.seller.view.viewmodel.ContentProductPickerSGCViewModel
+import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.mockk

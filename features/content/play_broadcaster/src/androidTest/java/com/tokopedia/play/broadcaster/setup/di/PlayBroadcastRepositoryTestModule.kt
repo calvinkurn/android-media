@@ -1,6 +1,6 @@
 package com.tokopedia.play.broadcaster.setup.di
 
-import com.tokopedia.content.product.picker.sgc.domain.ContentProductPickerSGCRepository
+import com.tokopedia.content.product.picker.seller.domain.ContentProductPickerSGCRepository
 import com.tokopedia.play.broadcaster.di.ActivityRetainedScope
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import dagger.Module

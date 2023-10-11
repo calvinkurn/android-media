@@ -3,7 +3,7 @@ package com.tokopedia.play.broadcaster.analytic.pinproduct
 import com.tokopedia.content.analytic.BusinessUnit
 import com.tokopedia.content.analytic.Event
 import com.tokopedia.content.analytic.Key
-import com.tokopedia.content.product.picker.sgc.analytic.ContentPinnedProductAnalytic
+import com.tokopedia.content.product.picker.seller.analytic.ContentPinnedProductAnalytic
 import com.tokopedia.play.broadcaster.analytic.*
 import com.tokopedia.play.broadcaster.analytic.KEY_TRACK_CATEGORY_PLAY
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore

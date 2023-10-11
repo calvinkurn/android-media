@@ -13,9 +13,9 @@ import com.tokopedia.content.product.picker.R as contentproductpickerR
 import com.tokopedia.play.broadcaster.databinding.ItemPlayBroPinnedProductCarouselBinding
 import com.tokopedia.play.broadcaster.databinding.ItemPlayBroPlaceholderCarouselBinding
 import com.tokopedia.play.broadcaster.databinding.ItemPlayBroProductCarouselBinding
-import com.tokopedia.content.product.picker.sgc.model.DiscountedPrice
-import com.tokopedia.content.product.picker.sgc.model.OriginalPrice
-import com.tokopedia.content.product.picker.sgc.model.product.ProductUiModel
+import com.tokopedia.content.product.picker.seller.model.DiscountedPrice
+import com.tokopedia.content.product.picker.seller.model.OriginalPrice
+import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
 import com.tokopedia.play_common.view.loadImage
 
 /**

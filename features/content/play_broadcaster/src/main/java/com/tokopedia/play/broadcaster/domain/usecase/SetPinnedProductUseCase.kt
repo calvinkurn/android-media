@@ -6,7 +6,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.play.broadcaster.domain.model.SetPinnedProduct
-import com.tokopedia.content.product.picker.sgc.model.product.ProductUiModel
+import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
 import com.tokopedia.play_common.domain.usecase.RetryableGraphqlUseCase
 import javax.inject.Inject
 

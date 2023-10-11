@@ -123,7 +123,7 @@
             tools:ignore="TextContrastCheck"
             tools:text="Rp349.000" />
 
-        <com.tokopedia.content.product.picker.sgc.view.custom.ContentProductPinnedView
+        <com.tokopedia.content.product.picker.seller.view.custom.ContentProductPinnedView
             android:id="@+id/view_pin_product"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

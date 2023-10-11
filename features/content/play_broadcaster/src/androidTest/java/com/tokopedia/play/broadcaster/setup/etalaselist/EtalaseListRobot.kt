@@ -15,10 +15,10 @@ import com.tokopedia.content.product.picker.R as contentproductpickerR
 import com.tokopedia.play.broadcaster.analytic.setup.product.PlayBroSetupProductAnalyticImpl
 import com.tokopedia.play.broadcaster.helper.analyticUserSession
 import com.tokopedia.play.broadcaster.setup.ProductSetupContainer
-import com.tokopedia.content.product.picker.sgc.analytic.manager.EtalaseListAnalyticManager
-import com.tokopedia.content.product.picker.sgc.view.bottomsheet.EtalaseListBottomSheet
-import com.tokopedia.content.product.picker.sgc.view.viewholder.EtalaseListViewHolder
-import com.tokopedia.content.product.picker.sgc.view.viewmodel.ContentProductPickerSGCViewModel
+import com.tokopedia.content.product.picker.seller.analytic.manager.EtalaseListAnalyticManager
+import com.tokopedia.content.product.picker.seller.view.bottomsheet.EtalaseListBottomSheet
+import com.tokopedia.content.product.picker.seller.view.viewholder.EtalaseListViewHolder
+import com.tokopedia.content.product.picker.seller.view.viewmodel.ContentProductPickerSGCViewModel
 import com.tokopedia.play.broadcaster.setup.productSetupViewModel
 import com.tokopedia.content.test.espresso.delay
 import io.mockk.mockk

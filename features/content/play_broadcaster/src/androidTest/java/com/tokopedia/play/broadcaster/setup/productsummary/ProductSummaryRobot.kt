@@ -14,9 +14,9 @@ import com.tokopedia.content.product.picker.R as contentproductpickerR
 import com.tokopedia.play.broadcaster.analytic.setup.product.PlayBroSetupProductAnalyticImpl
 import com.tokopedia.play.broadcaster.helper.analyticUserSession
 import com.tokopedia.play.broadcaster.setup.ProductSetupContainer
-import com.tokopedia.content.product.picker.sgc.view.bottomsheet.ProductSummaryBottomSheet
-import com.tokopedia.content.product.picker.sgc.view.viewholder.ProductSummaryViewHolder
-import com.tokopedia.content.product.picker.sgc.view.viewmodel.ContentProductPickerSGCViewModel
+import com.tokopedia.content.product.picker.seller.view.bottomsheet.ProductSummaryBottomSheet
+import com.tokopedia.content.product.picker.seller.view.viewholder.ProductSummaryViewHolder
+import com.tokopedia.content.product.picker.seller.view.viewmodel.ContentProductPickerSGCViewModel
 import com.tokopedia.play.broadcaster.setup.productSetupViewModel
 import com.tokopedia.content.common.view.fragment.LoadingDialogFragment
 import com.tokopedia.play.broadcaster.analytic.pinproduct.PlayBroadcastPinProductAnalyticImpl

@@ -1,15 +1,15 @@
 package com.tokopedia.play.broadcaster.setup.productchooser
 
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
-import com.tokopedia.content.product.picker.sgc.domain.ContentProductPickerSGCRepository
-import com.tokopedia.content.product.picker.sgc.view.bottomsheet.ProductChooserBottomSheet
+import com.tokopedia.content.product.picker.seller.domain.ContentProductPickerSGCRepository
+import com.tokopedia.content.product.picker.seller.view.bottomsheet.ProductChooserBottomSheet
 import com.tokopedia.play.broadcaster.setup.productSetupViewModel
-import com.tokopedia.content.product.picker.sgc.model.OriginalPrice
-import com.tokopedia.content.product.picker.sgc.model.campaign.CampaignStatus
-import com.tokopedia.content.product.picker.sgc.model.campaign.ProductTagSectionUiModel
-import com.tokopedia.content.product.picker.sgc.model.paged.PagedDataUiModel
-import com.tokopedia.content.product.picker.sgc.model.pinnedproduct.PinProductUiModel
-import com.tokopedia.content.product.picker.sgc.model.product.ProductUiModel
+import com.tokopedia.content.product.picker.seller.model.OriginalPrice
+import com.tokopedia.content.product.picker.seller.model.campaign.CampaignStatus
+import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.content.product.picker.seller.model.paged.PagedDataUiModel
+import com.tokopedia.content.product.picker.seller.model.pinnedproduct.PinProductUiModel
+import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
 import com.tokopedia.test.application.annotations.UiTest
 import io.mockk.coEvery
 import io.mockk.mockk

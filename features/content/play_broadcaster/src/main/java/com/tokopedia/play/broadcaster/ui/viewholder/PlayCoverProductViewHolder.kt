@@ -5,7 +5,7 @@ import android.widget.ImageView
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.content.product.picker.sgc.model.product.ProductUiModel
+import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
 
 /**
  * @author by furqan on 07/06/2020

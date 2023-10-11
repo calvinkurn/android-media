@@ -15,9 +15,9 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.content.common.onboarding.domain.repository.UGCOnboardingRepository
 import com.tokopedia.content.common.producttag.domain.repository.ProductTagRepository
 import com.tokopedia.content.common.util.Router
-import com.tokopedia.content.product.picker.sgc.analytic.ContentPinnedProductAnalytic
-import com.tokopedia.content.product.picker.sgc.analytic.ContentProductPickerSGCAnalytic
-import com.tokopedia.content.product.picker.sgc.domain.ContentProductPickerSGCRepository
+import com.tokopedia.content.product.picker.seller.analytic.ContentPinnedProductAnalytic
+import com.tokopedia.content.product.picker.seller.analytic.ContentProductPickerSGCAnalytic
+import com.tokopedia.content.product.picker.seller.domain.ContentProductPickerSGCRepository
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.DebugInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor

@@ -1,6 +1,6 @@
 package com.tokopedia.play.broadcaster.domain.repository
 
-import com.tokopedia.content.product.picker.sgc.domain.ContentProductPickerSGCRepository
+import com.tokopedia.content.product.picker.seller.domain.ContentProductPickerSGCRepository
 
 /**
  * Created by jegul on 12/10/21

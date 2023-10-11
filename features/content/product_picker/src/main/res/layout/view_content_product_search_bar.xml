@@ -31,7 +31,7 @@
             app:layout_constraintTop_toTopOf="parent"
             />
 
-        <com.tokopedia.content.product.picker.sgc.view.custom.ContentProductSearchEditText
+        <com.tokopedia.content.product.picker.seller.view.custom.ContentProductSearchEditText
             android:id="@+id/et_search"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"

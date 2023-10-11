@@ -34,8 +34,8 @@ import com.tokopedia.play.broadcaster.data.api.BeautificationAssetApi
 import com.tokopedia.play.broadcaster.shorts.util.PlayShortsVideoControl
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
-import com.tokopedia.content.product.picker.sgc.analytic.ContentPinnedProductAnalytic
-import com.tokopedia.content.product.picker.sgc.analytic.ContentProductPickerSGCAnalytic
+import com.tokopedia.content.product.picker.seller.analytic.ContentPinnedProductAnalytic
+import com.tokopedia.content.product.picker.seller.analytic.ContentProductPickerSGCAnalytic
 import com.tokopedia.play.broadcaster.util.helper.DefaultUriParser
 import com.tokopedia.play.broadcaster.util.helper.UriParser
 import com.tokopedia.play_common.domain.UpdateChannelUseCase

@@ -8,9 +8,9 @@ import com.tokopedia.content.common.producttag.util.preference.ProductTagPrefere
 import com.tokopedia.content.common.producttag.view.uimodel.SelectedProductUiModel
 import com.tokopedia.content.common.producttag.view.uimodel.config.ContentProductTagConfig
 import com.tokopedia.content.common.producttag.view.viewmodel.ProductTagViewModel
-import com.tokopedia.content.product.picker.sgc.domain.ContentProductPickerSGCRepository
-import com.tokopedia.content.product.picker.sgc.view.viewmodel.ContentProductPickerSGCViewModel
-import com.tokopedia.content.product.picker.sgc.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.content.product.picker.seller.domain.ContentProductPickerSGCRepository
+import com.tokopedia.content.product.picker.seller.view.viewmodel.ContentProductPickerSGCViewModel
+import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.mockk
 

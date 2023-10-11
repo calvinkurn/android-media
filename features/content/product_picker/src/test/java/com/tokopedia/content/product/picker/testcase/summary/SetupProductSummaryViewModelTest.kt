@@ -3,10 +3,10 @@ package com.tokopedia.content.product.picker.testcase.summary
 import com.tokopedia.content.product.picker.builder.CommonUiModelBuilder
 import com.tokopedia.content.product.picker.builder.ProductSetupUiModelBuilder
 import com.tokopedia.content.product.picker.robot.ContentProductPickerSGCViewModelRobot
-import com.tokopedia.content.product.picker.sgc.domain.ContentProductPickerSGCRepository
-import com.tokopedia.content.product.picker.sgc.model.uimodel.ProductChooserEvent
-import com.tokopedia.content.product.picker.sgc.model.uimodel.ProductSetupAction
-import com.tokopedia.content.product.picker.sgc.model.uimodel.ProductTagSummaryUiModel
+import com.tokopedia.content.product.picker.seller.domain.ContentProductPickerSGCRepository
+import com.tokopedia.content.product.picker.seller.model.uimodel.ProductChooserEvent
+import com.tokopedia.content.product.picker.seller.model.uimodel.ProductSetupAction
+import com.tokopedia.content.product.picker.seller.model.uimodel.ProductTagSummaryUiModel
 import com.tokopedia.content.product.picker.util.assertEqualTo
 import com.tokopedia.content.product.picker.util.assertFalse
 import com.tokopedia.content.product.picker.util.assertTrue

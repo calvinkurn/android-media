@@ -1,14 +1,14 @@
 package com.tokopedia.play.broadcaster.model.setup.product
 
-import com.tokopedia.content.product.picker.sgc.model.OriginalPrice
-import com.tokopedia.content.product.picker.sgc.model.ProductPrice
-import com.tokopedia.content.product.picker.sgc.model.campaign.CampaignStatus
-import com.tokopedia.content.product.picker.sgc.model.campaign.CampaignStatusUiModel
-import com.tokopedia.content.product.picker.sgc.model.campaign.CampaignUiModel
-import com.tokopedia.content.product.picker.sgc.model.campaign.ProductTagSectionUiModel
-import com.tokopedia.content.product.picker.sgc.model.etalase.EtalaseUiModel
-import com.tokopedia.content.product.picker.sgc.model.pinnedproduct.PinProductUiModel
-import com.tokopedia.content.product.picker.sgc.model.product.ProductUiModel
+import com.tokopedia.content.product.picker.seller.model.OriginalPrice
+import com.tokopedia.content.product.picker.seller.model.ProductPrice
+import com.tokopedia.content.product.picker.seller.model.campaign.CampaignStatus
+import com.tokopedia.content.product.picker.seller.model.campaign.CampaignStatusUiModel
+import com.tokopedia.content.product.picker.seller.model.campaign.CampaignUiModel
+import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.content.product.picker.seller.model.etalase.EtalaseUiModel
+import com.tokopedia.content.product.picker.seller.model.pinnedproduct.PinProductUiModel
+import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
 
 /**
  * Created By : Jonathan Darwin on February 18, 2022

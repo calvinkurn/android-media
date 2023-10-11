@@ -4,15 +4,15 @@ import com.tokopedia.content.common.types.ContentCommonUserType
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsConfigUiModel
-import com.tokopedia.content.product.picker.sgc.model.OriginalPrice
-import com.tokopedia.content.product.picker.sgc.model.campaign.CampaignStatus
-import com.tokopedia.content.product.picker.sgc.model.campaign.CampaignStatusUiModel
-import com.tokopedia.content.product.picker.sgc.model.campaign.CampaignUiModel
-import com.tokopedia.content.product.picker.sgc.model.campaign.ProductTagSectionUiModel
-import com.tokopedia.content.product.picker.sgc.model.etalase.EtalaseUiModel
-import com.tokopedia.content.product.picker.sgc.model.paged.PagedDataUiModel
-import com.tokopedia.content.product.picker.sgc.model.pinnedproduct.PinProductUiModel
-import com.tokopedia.content.product.picker.sgc.model.product.ProductUiModel
+import com.tokopedia.content.product.picker.seller.model.OriginalPrice
+import com.tokopedia.content.product.picker.seller.model.campaign.CampaignStatus
+import com.tokopedia.content.product.picker.seller.model.campaign.CampaignStatusUiModel
+import com.tokopedia.content.product.picker.seller.model.campaign.CampaignUiModel
+import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.content.product.picker.seller.model.etalase.EtalaseUiModel
+import com.tokopedia.content.product.picker.seller.model.paged.PagedDataUiModel
+import com.tokopedia.content.product.picker.seller.model.pinnedproduct.PinProductUiModel
+import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagItem
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 

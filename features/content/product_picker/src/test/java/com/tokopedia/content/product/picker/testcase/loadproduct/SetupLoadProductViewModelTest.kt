@@ -3,11 +3,11 @@ package com.tokopedia.content.product.picker.testcase.loadproduct
 import com.tokopedia.content.product.picker.builder.CommonUiModelBuilder
 import com.tokopedia.content.product.picker.builder.ProductSetupUiModelBuilder
 import com.tokopedia.content.product.picker.robot.ContentProductPickerSGCViewModelRobot
-import com.tokopedia.content.product.picker.sgc.domain.ContentProductPickerSGCRepository
-import com.tokopedia.content.product.picker.sgc.model.uimodel.ProductSetupAction
-import com.tokopedia.content.product.picker.sgc.model.PagingType
-import com.tokopedia.content.product.picker.sgc.model.paged.PagedDataUiModel
-import com.tokopedia.content.product.picker.sgc.model.result.PageResultState
+import com.tokopedia.content.product.picker.seller.domain.ContentProductPickerSGCRepository
+import com.tokopedia.content.product.picker.seller.model.uimodel.ProductSetupAction
+import com.tokopedia.content.product.picker.seller.model.PagingType
+import com.tokopedia.content.product.picker.seller.model.paged.PagedDataUiModel
+import com.tokopedia.content.product.picker.seller.model.result.PageResultState
 import com.tokopedia.content.product.picker.util.assertEqualTo
 import com.tokopedia.content.product.picker.util.assertType
 import com.tokopedia.unit.test.rule.CoroutineTestRule

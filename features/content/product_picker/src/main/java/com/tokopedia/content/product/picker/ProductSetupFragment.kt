@@ -8,17 +8,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.orUnknown
-import com.tokopedia.content.product.picker.sgc.analytic.ContentProductPickerSGCAnalytic
+import com.tokopedia.content.product.picker.seller.analytic.ContentProductPickerSGCAnalytic
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.content.product.picker.sgc.view.bottomsheet.EtalaseListBottomSheet
-import com.tokopedia.content.product.picker.sgc.view.bottomsheet.ProductChooserBottomSheet
-import com.tokopedia.content.product.picker.sgc.view.bottomsheet.ProductSummaryBottomSheet
-import com.tokopedia.content.product.picker.sgc.view.viewmodel.ContentProductPickerSGCViewModel
-import com.tokopedia.content.product.picker.sgc.view.viewmodel.ViewModelFactoryProvider
-import com.tokopedia.content.product.picker.sgc.model.campaign.ProductTagSectionUiModel
-import com.tokopedia.content.product.picker.sgc.view.bottomsheet.ProductPickerUGCBottomSheet
+import com.tokopedia.content.product.picker.seller.view.bottomsheet.EtalaseListBottomSheet
+import com.tokopedia.content.product.picker.seller.view.bottomsheet.ProductChooserBottomSheet
+import com.tokopedia.content.product.picker.seller.view.bottomsheet.ProductSummaryBottomSheet
+import com.tokopedia.content.product.picker.seller.view.viewmodel.ContentProductPickerSGCViewModel
+import com.tokopedia.content.product.picker.seller.view.viewmodel.ViewModelFactoryProvider
+import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.content.product.picker.seller.view.bottomsheet.ProductPickerUGCBottomSheet
 import javax.inject.Inject
 
 /**

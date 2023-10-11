@@ -1,6 +1,6 @@
 package com.tokopedia.play.broadcaster.data.model
 
-import com.tokopedia.content.product.picker.sgc.model.ProductPrice
+import com.tokopedia.content.product.picker.seller.model.ProductPrice
 import com.tokopedia.play.broadcaster.type.ProductStock
 
 /**

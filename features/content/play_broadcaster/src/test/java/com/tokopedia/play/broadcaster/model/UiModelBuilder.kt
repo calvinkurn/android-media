@@ -11,8 +11,8 @@ import com.tokopedia.play.broadcaster.domain.model.CreateLiveStreamChannelRespon
 import com.tokopedia.play.broadcaster.domain.model.GetLiveFollowersResponse
 import com.tokopedia.play.broadcaster.domain.model.GetLiveStatisticsResponse
 import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsConfigUiModel
-import com.tokopedia.content.product.picker.sgc.model.PriceUnknown
-import com.tokopedia.content.product.picker.sgc.model.ProductPrice
+import com.tokopedia.content.product.picker.seller.model.PriceUnknown
+import com.tokopedia.content.product.picker.seller.model.ProductPrice
 import com.tokopedia.play.broadcaster.type.ProductStock
 import com.tokopedia.play.broadcaster.type.StockAvailable
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleConfigUiModel
