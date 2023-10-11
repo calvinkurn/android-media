@@ -148,30 +148,18 @@ class FundsAndInvestmentComposeViewModel @Inject constructor(
             block = {
                 val item: WalletappGetAccountBalance = when (walletId) {
                     AccountConstants.WALLET.TOKOPOINT -> {
-                        val result = getTokoPointsBalanceAndPointUseCase(Unit)
-                        result.data.apply {
-                            title = titleText
-                            hideTitle = hideTitleText
-                        }
-                        result.data
+                        getTokoPointsBalanceAndPointUseCase(Unit).data
                     }
                     AccountConstants.WALLET.SALDO -> {
-                        val result = getSaldoBalanceUseCase(Unit)
-                        result.data.apply {
+                        getSaldoBalanceUseCase(Unit).data.apply {
                             hideTitle = true
                         }
-                        result.data
                     }
                     AccountConstants.WALLET.CO_BRAND_CC -> {
-                        val result = getCoBrandCCBalanceAndPointUseCase(Unit)
-                        result.data.apply {
-                            titleAsset = titleText
-                            hideTitle = hideTitleText
-                        }
-                        result.data
+                        getCoBrandCCBalanceAndPointUseCase(Unit).data
                     }
                     else -> {
-                        getOtherBalanceAndPoint(walletId, hideTitleText)
+                        getOtherBalanceAndPoint(walletId)
                     }
                 }
                 val newData = setBalanceAndPointValue(item, titleText, hideTitleText, isVertical)
@@ -206,7 +194,7 @@ class FundsAndInvestmentComposeViewModel @Inject constructor(
         )
     }
 
-    private suspend fun getOtherBalanceAndPoint(walletId: String, hideTitleText: Boolean): WalletappGetAccountBalance {
+    private suspend fun getOtherBalanceAndPoint(walletId: String): WalletappGetAccountBalance {
         val partnerCode = when (walletId) {
             AccountConstants.WALLET.GOPAY -> {
                 GOPAY_PARTNER_CODE
@@ -223,11 +211,7 @@ class FundsAndInvestmentComposeViewModel @Inject constructor(
             else -> ""
         }
 
-        val response = getBalanceAndPointUseCase(partnerCode).data.apply {
-            hideTitle = hideTitleText
-        }
-
-        return response
+        return getBalanceAndPointUseCase(partnerCode).data
     }
 
     private fun setBalanceAndPointValue(data: WalletappGetAccountBalance, titleText: String, hideTitle: Boolean, isVertical: Boolean): WalletUiModel {
