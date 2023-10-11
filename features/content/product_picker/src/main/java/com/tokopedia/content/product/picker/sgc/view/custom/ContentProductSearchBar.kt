@@ -22,7 +22,7 @@ import com.tokopedia.content.product.picker.sgc.util.transition.ScaleTransition
 /**
  * Created by jegul on 26/05/20
  */
-class ContentProductSearchBar : ConstraintLayout {
+internal class ContentProductSearchBar : ConstraintLayout {
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)

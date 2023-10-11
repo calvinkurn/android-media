@@ -7,7 +7,7 @@ import com.tokopedia.play_common.viewcomponent.ViewComponent
 /**
  * Created by kenny.hadisaputra on 28/01/22
  */
-class SearchBarViewComponent(
+internal class SearchBarViewComponent(
     private val view: ContentProductSearchBar,
     eventBus: EventBus<in Event>,
 ) : ViewComponent(view) {

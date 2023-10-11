@@ -13,7 +13,7 @@ import com.tokopedia.content.product.picker.R
 /**
  * Created by jegul on 16/07/20
  */
-class ContentProductSearchEditText : AppCompatEditText {
+internal class ContentProductSearchEditText : AppCompatEditText {
 
     constructor(context: Context?) : super(context!!)
     constructor(context: Context?, attrs: AttributeSet?) : super(context!!, attrs)
