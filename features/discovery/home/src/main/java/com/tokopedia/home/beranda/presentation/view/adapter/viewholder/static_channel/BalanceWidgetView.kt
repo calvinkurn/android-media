@@ -114,12 +114,12 @@ class BalanceWidgetView : FrameLayout {
         return null
     }
 
-    fun updateTextColor() {
+    fun applyThematicColor() {
         balanceWidgetAdapter?.let { adapter ->
             adapter.list.forEachIndexed { index, visitable ->
                 try {
                     if(visitable is HomeBalanceModel) {
-                        adapter.notifyItemChanged(index, bundleOf(HomeThematicModel.PAYLOAD_CHANGE_TEXT_COLOR to true))
+                        adapter.notifyItemChanged(index, bundleOf(HomeThematicUtil.PAYLOAD_APPLY_THEMATIC_COLOR to true))
                     }
                 } catch (_: Exception) { }
             }

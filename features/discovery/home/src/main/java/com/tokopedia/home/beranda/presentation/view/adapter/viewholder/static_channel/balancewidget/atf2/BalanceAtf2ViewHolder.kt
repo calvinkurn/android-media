@@ -9,7 +9,6 @@ import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.v2.BalanceWidgetTracking
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeThematicModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_REWARDS
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_SUBSCRIPTION
@@ -69,7 +68,7 @@ class BalanceAtf2ViewHolder(
         payloads: MutableList<Any>
     ) {
         if(payloads.isNotEmpty()) {
-            if((payloads[0] as? Bundle)?.getBoolean(HomeThematicModel.PAYLOAD_CHANGE_TEXT_COLOR) == true) {
+            if((payloads[0] as? Bundle)?.getBoolean(HomeThematicUtil.PAYLOAD_APPLY_THEMATIC_COLOR) == true) {
                 model?.let { renderTextColor(it) }
             }
         } else {

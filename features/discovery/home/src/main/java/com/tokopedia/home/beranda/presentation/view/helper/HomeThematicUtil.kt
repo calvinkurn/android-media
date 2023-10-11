@@ -13,6 +13,7 @@ class HomeThematicUtil @Inject constructor() {
         const val COLOR_DARK = "dark"
         const val COLOR_LIGHT = "light"
         const val COLOR_DEFAULT = "default"
+        const val PAYLOAD_APPLY_THEMATIC_COLOR = "payloadApplyThematicColor"
     }
 
     var colorMode: String = COLOR_DEFAULT

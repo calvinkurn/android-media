@@ -9,7 +9,6 @@ import com.tokopedia.home.R
 import com.tokopedia.home.beranda.helper.benchmark.BenchmarkHelper
 import com.tokopedia.home.beranda.helper.benchmark.TRACE_ON_BIND_HEADER_OVO
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeThematicModel.Companion.PAYLOAD_CHANGE_TEXT_COLOR
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.BalanceWidgetView
@@ -111,9 +110,9 @@ class HomeHeaderAtf2ViewHolder(
 
     override fun bind(element: HomeHeaderDataModel, payloads: MutableList<Any>) {
         if(payloads.isNotEmpty()) {
-            if((payloads[0] as? Bundle)?.getBoolean(PAYLOAD_CHANGE_TEXT_COLOR) == true) {
+            if((payloads[0] as? Bundle)?.getBoolean(HomeThematicUtil.PAYLOAD_APPLY_THEMATIC_COLOR) == true) {
                 chooseAddressView?.updateWidget()
-                balanceWidgetView?.updateTextColor()
+                balanceWidgetView?.applyThematicColor()
                 viewPullRefresh?.applyThematicColor(homeThematicUtil.isDarkMode())
             }
         } else {

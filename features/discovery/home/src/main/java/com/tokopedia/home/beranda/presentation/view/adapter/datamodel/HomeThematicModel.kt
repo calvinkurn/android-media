@@ -15,8 +15,4 @@ data class HomeThematicModel(
     val foregroundImageURL: String = "",
 ) {
     fun getActualHeightPx(context: Context) = DeviceScreenInfo.getScreenHeight(context) * heightPercentage / 100
-
-    companion object {
-        const val PAYLOAD_CHANGE_TEXT_COLOR = "payloadChangeTextColor"
-    }
 }
