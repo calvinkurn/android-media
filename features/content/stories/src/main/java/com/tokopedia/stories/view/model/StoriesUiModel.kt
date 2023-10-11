@@ -2,7 +2,7 @@ package com.tokopedia.stories.view.model
 
 import com.tokopedia.content.common.report_content.model.ContentMenuItem
 import com.tokopedia.stories.uimodel.StoryAuthor
-import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContentType.Image
+import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContentType.Unknown
 import com.tokopedia.universal_sharing.view.model.LinkProperties
 
 data class StoriesUiModel(
@@ -52,13 +52,13 @@ data class StoriesDetailItem(
     )
 
     data class StoriesItemContent(
-        val type: StoriesItemContentType = Image,
+        val type: StoriesItemContentType = Unknown,
         val data: String = "",
         val duration: Int = -1
     )
 
     enum class StoriesItemContentType(val value: String) {
-        Image("image"), Video("video"), Unknown("unknown")
+        Image("image"), Video("video"), Unknown("0")
     }
 
     enum class StoriesDetailItemUiEvent {
