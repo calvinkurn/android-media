@@ -475,9 +475,9 @@ ext {
             accompanistPager    : "com.google.accompanist:accompanist-pager:$accompanistPagerVersion"
     ]
 
-    selletFeedbackKmpVersion = "1.0.0"
+    sellerFeedbackKmpVersion = "1.0.0"
 
     kmpDependencies = [
-            sellerFeedbackKmp      : "com.tokopedia.multiplatform.seller.feedback:feedback-android:$selletFeedbackKmpVersion",
+            sellerFeedbackKmp      : "com.tokopedia.multiplatform.seller.feedback:feedback-android:$sellerFeedbackKmpVersion",
     ]
 }
