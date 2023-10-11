@@ -33,7 +33,7 @@ data class StoriesDetail(
 )
 
 data class StoriesDetailItem(
-    val id: String = "",
+    val id: String = "0",
     val event: StoriesDetailItemUiEvent = StoriesDetailItemUiEvent.PAUSE,
     val content: StoriesItemContent = StoriesItemContent(),
     val resetValue: Int = -1,
