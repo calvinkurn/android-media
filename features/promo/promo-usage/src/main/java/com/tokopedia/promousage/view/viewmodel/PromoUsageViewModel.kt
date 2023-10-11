@@ -466,7 +466,7 @@ class PromoUsageViewModel @Inject constructor(
                                             needToShowLoading = true
                                         }
                                         return@map item.copy(
-                                            state = PromoItemState.Loading
+                                            state = PromoItemState.Loading(useSecondaryPromo = item.state.useSecondaryPromo)
                                         )
                                     } else if (isClickedItem) {
                                         return@map newClickedItem.copy(isCalculating = true)
@@ -770,7 +770,7 @@ class PromoUsageViewModel @Inject constructor(
                 )
             } else {
                 resultItem.copy(
-                    state = currentItem.state
+                    state = PromoItemState.Normal(useSecondaryPromo = currentItem.state.useSecondaryPromo)
                 )
             }
         }
@@ -972,7 +972,7 @@ class PromoUsageViewModel @Inject constructor(
                 )
             } else {
                 resultItem.copy(
-                    state = currentItem.state
+                    state = PromoItemState.Normal(useSecondaryPromo = currentItem.state.useSecondaryPromo)
                 )
             }
         }

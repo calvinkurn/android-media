@@ -271,7 +271,7 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
             }
         }
         if (coupon.radioCheckState == "disabled") {
-            state = PromoItemState.Ineligible(coupon.message)
+            state = PromoItemState.Ineligible(message = coupon.message)
         }
 
         val benefitDetail = coupon.benefitDetails.firstOrNull() ?: BenefitDetail()

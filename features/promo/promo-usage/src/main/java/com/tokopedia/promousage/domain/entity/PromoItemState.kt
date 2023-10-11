@@ -6,20 +6,27 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 sealed class PromoItemState : Parcelable {
 
-    object Loading : PromoItemState()
+    open val useSecondaryPromo: Boolean = false
+
+    data class Loading(
+        override val useSecondaryPromo: Boolean
+    ) : PromoItemState()
 
     data class Normal(
-        val useSecondaryPromo: Boolean
+        override val useSecondaryPromo: Boolean
     ) : PromoItemState()
 
     data class Selected(
-        val useSecondaryPromo: Boolean
+        override val useSecondaryPromo: Boolean
     ) : PromoItemState()
 
     data class Disabled(
-        val useSecondaryPromo: Boolean,
+        override val useSecondaryPromo: Boolean,
         val message: String
     ) : PromoItemState()
 
-    data class Ineligible(val message: String) : PromoItemState()
+    data class Ineligible(
+        override val useSecondaryPromo: Boolean = false,
+        val message: String
+    ) : PromoItemState()
 }

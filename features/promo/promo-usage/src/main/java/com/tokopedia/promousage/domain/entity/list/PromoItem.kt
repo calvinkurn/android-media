@@ -41,7 +41,7 @@ data class PromoItem(
 
     val errorMessage: String = "",
 
-    val state: PromoItemState = PromoItemState.Loading,
+    val state: PromoItemState = PromoItemState.Loading(false),
     val currentClashingPromoCodes: List<String> = emptyList(),
     val currentClashingSecondaryPromoCodes: List<String> = emptyList(),
     val isRecommended: Boolean = false,
