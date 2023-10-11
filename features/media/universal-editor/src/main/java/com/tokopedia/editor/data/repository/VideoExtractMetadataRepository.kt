@@ -37,13 +37,13 @@ class VideoExtractMetadataRepositoryImpl @Inject constructor(
     private fun getVideoWidth(retriever: MediaMetadataRetriever): Int {
         return retriever.extractMetadata(
             MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH
-        )?.toIntOrZero() ?: MIN_WIDTH
+        )?.toIntOrNull() ?: MIN_WIDTH
     }
 
     private fun getVideoHeight(retriever: MediaMetadataRetriever): Int {
         return retriever.extractMetadata(
             MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT
-        )?.toIntOrZero() ?: MIN_HEIGHT
+        )?.toIntOrNull() ?: MIN_HEIGHT
     }
 
     companion object {
