@@ -100,7 +100,7 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
     companion object {
         private const val CYCLE_DURATION = 5000L
         private const val MAXIMUM_WIDTH_STATIC_USP = 100
-        private const val DELAY_DURATION_TICKER_MILLIS = 300L
+        private const val DELAY_DURATION_TICKER_MILLIS = 1000L
         private const val NEW_SELLER_TEXT_HTML = "Penjual Baru"
     }
 
@@ -691,6 +691,9 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
         isMyShop: Boolean = false
     ) {
         tickerShopStatus?.show()
+        tickerShopStatus?.tickerTitle =
+            HtmlLinkHelper(context, shopOperationalHourStatus.tickerTitle).spannedString.toString()
+        tickerShopStatus?.setHtmlDescription(shopOperationalHourStatus.tickerMessage)
         tickerShopStatus?.tickerType = if (isMyShop) {
             Ticker.TYPE_WARNING
         } else {
@@ -725,6 +728,14 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
         val shopId = shopInfo.shopCore.shopID
         val isOfficialStore = shopInfo.goldOS.isOfficialStore()
         val isGoldMerchant = shopInfo.goldOS.isGoldMerchant()
+        tickerShopStatus?.tickerTitle = MethodChecker.fromHtml(statusTitle).toString()
+        tickerShopStatus?.setHtmlDescription(
+            if (shopStatus == ShopStatusDef.MODERATED && isMyShop) {
+                generateShopModerateTickerDescription(statusMessage)
+            } else {
+                statusMessage
+            }
+        )
         tickerShopStatus?.show()
         tickerShopStatus?.tickerType = when (shopTickerType) {
             ShopTickerType.INFO -> Ticker.TYPE_ANNOUNCEMENT
