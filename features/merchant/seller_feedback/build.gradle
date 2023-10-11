@@ -24,9 +24,6 @@ buildscript {
 }
 
 dependencies {
-    implementation(name: 'shared-debug', ext: 'aar')
-    implementation(name: 'gql-debug', ext: 'aar')
-    implementation(name: 'feedback-debug', ext: 'aar')
     implementation projectOrAar(rootProject.ext.features.mediauploader)
     implementation projectOrAar(rootProject.ext.features.sellerActiveCommon)
 
