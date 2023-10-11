@@ -12,6 +12,7 @@ import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.airbnb.lottie.LottieComposition
 import com.airbnb.lottie.LottieCompositionFactory
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.visible
@@ -229,8 +230,30 @@ internal class PromoRecommendationDelegateAdapter(
                                 // no-op
                             }
                         })
+                    setLottieScaling(result)
                     binding.lottieAnimationView.playAnimation()
                 }
+        }
+
+        private fun setLottieScaling(composition: LottieComposition) {
+            try {
+                val wScale = binding.lottieAnimationView.width.toFloat() / composition.bounds.width().toFloat()
+                var hScale = binding.lottieAnimationView.height.toFloat() / composition.bounds.height().toFloat()
+                hScale = hScale.coerceAtMost(wScale)
+                binding.lottieAnimationView.scaleType =
+                    ImageView.ScaleType.MATRIX
+                binding.lottieAnimationView.imageMatrix =
+                    Matrix().apply {
+                        postScale(wScale, hScale)
+                    }
+            } catch (e: Exception) {
+                Timber.e(e)
+                setLottieScalingDefault()
+            }
+        }
+
+        private fun setLottieScalingDefault() {
+            binding.lottieAnimationView.scaleType = ImageView.ScaleType.CENTER_CROP
         }
 
         private fun startButtonAnimation(onCompleted: (() -> Unit)? = null) {
