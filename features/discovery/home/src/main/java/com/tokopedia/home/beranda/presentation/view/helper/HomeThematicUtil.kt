@@ -1,16 +1,19 @@
 package com.tokopedia.home.beranda.presentation.view.helper
 
 import androidx.annotation.ColorRes
+import javax.inject.Inject
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import com.tokopedia.home.R as homeR
 
 /**
  * Created by frenzel
  */
-internal object HomeThematicUtil {
-    const val COLOR_DARK = "dark"
-    const val COLOR_LIGHT = "light"
-    const val COLOR_DEFAULT = "default"
+class HomeThematicUtil @Inject constructor() {
+    companion object {
+        const val COLOR_DARK = "dark"
+        const val COLOR_LIGHT = "light"
+        const val COLOR_DEFAULT = "default"
+    }
 
     var colorMode: String = COLOR_DEFAULT
 
@@ -38,12 +41,12 @@ internal object HomeThematicUtil {
     )
 
     @ColorRes
-    internal fun @receiver:ColorRes Int.asThematicColor(colorMode: String): Int {
-        val colorToken = thematicColorMap[this] ?: return this
+    internal fun asThematicColor(actualColorToken: Int): Int {
+        val colorToken = thematicColorMap[actualColorToken] ?: return actualColorToken
         return when(colorMode) {
             COLOR_LIGHT -> colorToken.lightColorToken
             COLOR_DARK -> colorToken.darkColorToken
-            else -> this
+            else -> actualColorToken
         }
     }
 

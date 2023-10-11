@@ -15,7 +15,11 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 /**
  * Created by frenzel
  */
-class BalanceWidgetAtf2ShimmerViewHolder (itemView: View, val listener: HomeCategoryListener?) :
+class BalanceWidgetAtf2ShimmerViewHolder (
+    itemView: View,
+    val listener: HomeCategoryListener?,
+    private val homeThematicUtil: HomeThematicUtil,
+) :
     AbstractViewHolder<BalanceShimmerModel>(itemView) {
     private val binding: LayoutBalanceWidgetShimmerAtf2Binding? by viewBinding()
 
@@ -24,7 +28,7 @@ class BalanceWidgetAtf2ShimmerViewHolder (itemView: View, val listener: HomeCate
     }
 
     override fun bind(element: BalanceShimmerModel) {
-        if ((itemView.context.isDarkMode() && HomeThematicUtil.isDefault()) || HomeThematicUtil.isDarkMode()) {
+        if ((itemView.context.isDarkMode() && homeThematicUtil.isDefault()) || homeThematicUtil.isDarkMode()) {
             binding?.dividerBalance?.setBackgroundColor(
                 ContextCompat.getColor(
                     itemView.context,

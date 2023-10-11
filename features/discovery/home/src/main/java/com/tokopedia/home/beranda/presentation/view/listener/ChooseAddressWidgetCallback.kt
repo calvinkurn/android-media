@@ -5,7 +5,6 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
 import com.tokopedia.home.beranda.presentation.view.helper.HomeThematicUtil
-import com.tokopedia.home.beranda.presentation.view.helper.HomeThematicUtil.asThematicColor
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
@@ -17,6 +16,7 @@ class ChooseAddressWidgetCallback(
     val context: Context?,
     val homeCategoryListener: HomeCategoryListener,
     val fragment: Fragment,
+    val homeThematicUtil: HomeThematicUtil,
 ) : ChooseAddressWidget.ChooseAddressWidgetListener {
     override fun onLocalizingAddressUpdatedFromWidget() {
         homeCategoryListener.onChooseAddressUpdated()
@@ -49,7 +49,7 @@ class ChooseAddressWidgetCallback(
 
     override fun onChangeTextColor(): Int {
         return if (HomeRollenceController.isUsingAtf2Variant()) {
-            unifyprinciplesR.color.Unify_NN1000.asThematicColor(HomeThematicUtil.colorMode)
+            homeThematicUtil.asThematicColor(unifyprinciplesR.color.Unify_NN1000)
         } else {
             unifyprinciplesR.color.Unify_Static_White
         }

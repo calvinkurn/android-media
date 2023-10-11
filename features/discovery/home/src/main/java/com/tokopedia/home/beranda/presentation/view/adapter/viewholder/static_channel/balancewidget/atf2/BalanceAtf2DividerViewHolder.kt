@@ -15,14 +15,17 @@ import com.tokopedia.home.R as homeR
 /**
  * Created by frenzel
  */
-class BalanceAtf2DividerViewHolder(v: View): BaseBalanceViewHolder<BalanceAtf2DividerModel>(v) {
+class BalanceAtf2DividerViewHolder(
+    v: View,
+    private val homeThematicUtil: HomeThematicUtil,
+): BaseBalanceViewHolder<BalanceAtf2DividerModel>(v) {
     companion object {
         val LAYOUT = homeR.layout.item_balance_widget_atf2_divider
     }
     private val binding: ItemBalanceWidgetAtf2DividerBinding? by viewBinding()
 
     override fun bind(model: BalanceAtf2DividerModel?, listener: HomeCategoryListener?) {
-        if ((itemView.context.isDarkMode() && HomeThematicUtil.isDefault()) || HomeThematicUtil.isDarkMode()) {
+        if ((itemView.context.isDarkMode() && homeThematicUtil.isDefault()) || homeThematicUtil.isDarkMode()) {
             binding?.dividerBalance?.setBackgroundColor(
                 ContextCompat.getColor(
                     itemView.context,

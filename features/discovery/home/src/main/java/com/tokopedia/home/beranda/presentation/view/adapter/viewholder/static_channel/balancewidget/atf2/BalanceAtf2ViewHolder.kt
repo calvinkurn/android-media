@@ -17,7 +17,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ba
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_APP_NOT_LINKED
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.BaseBalanceViewHolder
 import com.tokopedia.home.beranda.presentation.view.helper.HomeThematicUtil
-import com.tokopedia.home.beranda.presentation.view.helper.HomeThematicUtil.asThematicColor
 import com.tokopedia.home.databinding.ItemBalanceWidgetAtf2Binding
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
@@ -32,7 +31,11 @@ import com.tokopedia.home.R as homeR
 /**
  * Created by frenzel
  */
-class BalanceAtf2ViewHolder(v: View, private val totalItems: Int) : BaseBalanceViewHolder<BalanceDrawerItemModel>(v) {
+class BalanceAtf2ViewHolder(
+    v: View,
+    private val totalItems: Int,
+    private val homeThematicUtil: HomeThematicUtil,
+) : BaseBalanceViewHolder<BalanceDrawerItemModel>(v) {
     companion object {
         val LAYOUT = R.layout.item_balance_widget_atf2
         private const val TITLE_HEADER_WEBSITE = "Tokopedia"
@@ -180,7 +183,7 @@ class BalanceAtf2ViewHolder(v: View, private val totalItems: Int) : BaseBalanceV
     }
 
     private fun renderTextColor(element: BalanceDrawerItemModel) {
-        val balanceTextColor = unifyprinciplesR.color.Unify_NN950.asThematicColor(HomeThematicUtil.colorMode)
+        val balanceTextColor = homeThematicUtil.asThematicColor(unifyprinciplesR.color.Unify_NN950)
         binding?.homeContainerBalance?.homeTvTitle?.setTextColor(
             ContextCompat.getColor(itemView.context, balanceTextColor)
         )
@@ -203,8 +206,10 @@ class BalanceAtf2ViewHolder(v: View, private val totalItems: Int) : BaseBalanceV
                 binding?.homeContainerBalance?.homeTvSubtitle?.setTextColor(
                     ContextCompat.getColor(
                         itemView.context,
-                        (element.balanceSubTitleTextAttribute?.colourRef
-                            ?: unifyprinciplesR.color.Unify_GN500).asThematicColor(HomeThematicUtil.colorMode)
+                        homeThematicUtil.asThematicColor(
+                            element.balanceSubTitleTextAttribute?.colourRef
+                                ?: unifyprinciplesR.color.Unify_GN500
+                        )
                     )
                 )
             }
@@ -215,8 +220,10 @@ class BalanceAtf2ViewHolder(v: View, private val totalItems: Int) : BaseBalanceV
                 binding?.homeContainerBalance?.homeTvSubtitle?.setTextColor(
                     ContextCompat.getColor(
                         itemView.context,
-                        (element.balanceSubTitleTextAttribute?.colourRef
-                            ?: unifyprinciplesR.color.Unify_NN600).asThematicColor(HomeThematicUtil.colorMode)
+                        homeThematicUtil.asThematicColor(
+                            element.balanceSubTitleTextAttribute?.colourRef
+                                ?: unifyprinciplesR.color.Unify_NN600
+                        )
                     )
                 )
             }
@@ -225,7 +232,7 @@ class BalanceAtf2ViewHolder(v: View, private val totalItems: Int) : BaseBalanceV
                 binding?.homeContainerBalance?.homeTvSubtitle?.setTextColor(
                     ContextCompat.getColor(
                         itemView.context,
-                        unifyprinciplesR.color.Unify_GN500.asThematicColor(HomeThematicUtil.colorMode)
+                        homeThematicUtil.asThematicColor(unifyprinciplesR.color.Unify_GN500)
                     )
                 )
             }
@@ -234,7 +241,7 @@ class BalanceAtf2ViewHolder(v: View, private val totalItems: Int) : BaseBalanceV
                 binding?.homeContainerBalance?.homeTvSubtitle?.setTextColor(
                     ContextCompat.getColor(
                         itemView.context,
-                        unifyprinciplesR.color.Unify_NN600.asThematicColor(HomeThematicUtil.colorMode)
+                        homeThematicUtil.asThematicColor(unifyprinciplesR.color.Unify_NN600)
                     )
                 )
             }
@@ -245,7 +252,7 @@ class BalanceAtf2ViewHolder(v: View, private val totalItems: Int) : BaseBalanceV
         binding?.homeContainerBalance?.homeTvSubtitle?.setTextColor(
             ContextCompat.getColor(
                 itemView.context,
-                unifyprinciplesR.color.Unify_GN500.asThematicColor(HomeThematicUtil.colorMode)
+                homeThematicUtil.asThematicColor(unifyprinciplesR.color.Unify_GN500)
             )
         )
         binding?.homeContainerBalance?.homeTvSubtitle?.setWeight(Typography.BOLD)

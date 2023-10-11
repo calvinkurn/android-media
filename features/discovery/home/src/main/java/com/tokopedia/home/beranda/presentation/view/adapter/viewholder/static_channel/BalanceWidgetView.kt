@@ -19,6 +19,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ho
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.balancewidget.BalanceWidgetTypeFactoryImpl
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.BalanceWidgetAdapter
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
+import com.tokopedia.home.beranda.presentation.view.helper.HomeThematicUtil
 
 /**
  * Created by yfsx on 3/1/21.
@@ -56,17 +57,17 @@ class BalanceWidgetView : FrameLayout {
         this.itemContext = view.context
     }
 
-    fun bind(element: HomeBalanceModel, listener: HomeCategoryListener?) {
+    fun bind(element: HomeBalanceModel, listener: HomeCategoryListener?, homeThematicUtil: HomeThematicUtil = HomeThematicUtil()) {
         BenchmarkHelper.beginSystraceSection(TRACE_ON_BIND_BALANCE_WIDGET_CUSTOMVIEW)
         this.listener = listener
-        renderWidget(element)
+        renderWidget(element, homeThematicUtil)
         BenchmarkHelper.endSystraceSection()
     }
 
-    private fun renderWidget(element: HomeBalanceModel) {
+    private fun renderWidget(element: HomeBalanceModel, homeThematicUtil: HomeThematicUtil) {
         layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.VERTICAL, false)
         if (balanceWidgetAdapter == null || rvBalance?.adapter == null) {
-            balanceWidgetAdapter = BalanceWidgetAdapter(BalanceWidgetTypeFactoryImpl(listener))
+            balanceWidgetAdapter = BalanceWidgetAdapter(BalanceWidgetTypeFactoryImpl(listener, homeThematicUtil))
             rvBalance?.layoutManager = layoutManager
             rvBalance?.adapter = balanceWidgetAdapter
         }

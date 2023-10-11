@@ -2,9 +2,9 @@ package com.tokopedia.home.beranda.presentation.view.adapter.datamodel
 
 import android.content.Context
 import com.tokopedia.device.info.DeviceScreenInfo
-import com.tokopedia.home.beranda.presentation.view.helper.HomeThematicUtil.COLOR_DARK
-import com.tokopedia.home.beranda.presentation.view.helper.HomeThematicUtil.COLOR_DEFAULT
-import com.tokopedia.home.beranda.presentation.view.helper.HomeThematicUtil.COLOR_LIGHT
+import com.tokopedia.home.beranda.presentation.view.helper.HomeThematicUtil.Companion.COLOR_DARK
+import com.tokopedia.home.beranda.presentation.view.helper.HomeThematicUtil.Companion.COLOR_DEFAULT
+import com.tokopedia.home.beranda.presentation.view.helper.HomeThematicUtil.Companion.COLOR_LIGHT
 
 /**
  * Created by frenzel

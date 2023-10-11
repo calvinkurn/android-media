@@ -234,6 +234,9 @@ import java.net.URLEncoder
 import java.util.Date
 import java.util.concurrent.Executors
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.wishlist_common.R as wishlist_commonR
+import com.tokopedia.play.widget.R as playwidgetR
 
 /**
  * @author by yoasfs on 12/14/17.
@@ -424,6 +427,9 @@ open class HomeRevampFragment :
     private val navToolbarMicroInteraction: NavToolbarMicroInteraction? by navToolbarMicroInteraction()
 
     private var performanceTrace: BlocksPerformanceTrace? = null
+
+    @Inject
+    lateinit var homeThematicUtil: HomeThematicUtil
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -821,7 +827,7 @@ open class HomeRevampFragment :
                 homeMainToolbarHeight,
                 getScreenWidth(),
                 getScreenHeight() - resources.getDimensionPixelOffset(
-                    com.tokopedia.unifyprinciples.R.dimen.unify_space_48
+                    unifyprinciplesR.dimen.unify_space_48
                 )
             )
 
@@ -875,7 +881,7 @@ open class HomeRevampFragment :
     private fun setupStatusBar() {
         activity?.let {
             statusBarBackground.background = ColorDrawable(
-                ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+                ContextCompat.getColor(it, unifyprinciplesR.color.Unify_GN500)
             )
         }
         // status bar background compability, we show view background for android >= Kitkat
@@ -894,15 +900,13 @@ open class HomeRevampFragment :
     private fun observeHomeThematic() {
         getHomeViewModel().thematicLiveData.observe(viewLifecycleOwner) { thematic ->
             if(thematic.isShown) {
-//                chooseAddressWidgetCallback?.homeThematicModel = thematic
                 context?.let { ctx ->
                     val thematicImageLoadListener = object: ImageHandler.ImageLoaderStateListener {
                         override fun successLoad(view: ImageView) {
                             view.show()
                             if(view == thematicBackground && thematic.shouldOverrideColor()) {
-                                HomeThematicUtil.colorMode = thematic.colorMode
+                                getThematicUtil().colorMode = thematic.colorMode
                                 adapter?.updateThematicTextColor()
-//                                getHomeViewModel().updateThematicColorMode(thematic.colorMode)
                             }
                         }
 
@@ -1356,14 +1360,14 @@ open class HomeRevampFragment :
                     Result.Status.SUCCESS -> if (it.data != null) {
                         showToaster(
                             if (it.data.reminded) {
-                                getString(com.tokopedia.play.widget.R.string.play_widget_success_add_reminder)
+                                getString(playwidgetR.string.play_widget_success_add_reminder)
                             } else {
-                                getString(com.tokopedia.play.widget.R.string.play_widget_success_remove_reminder)
+                                getString(playwidgetR.string.play_widget_success_remove_reminder)
                             },
                             TYPE_NORMAL
                         )
                     }
-                    Result.Status.ERROR -> showToaster(getErrorString(MessageErrorException(getString(com.tokopedia.play.widget.R.string.play_widget_error_reminder))), TYPE_ERROR)
+                    Result.Status.ERROR -> showToaster(getErrorString(MessageErrorException(getString(playwidgetR.string.play_widget_error_reminder))), TYPE_ERROR)
                     else -> {
                     }
                 }
@@ -1437,9 +1441,9 @@ open class HomeRevampFragment :
     }
 
     private fun setupThematicStatusBar() {
-        if(HomeThematicUtil.isLightMode()) {
+        if(getThematicUtil().isLightMode()) {
             requestStatusBarDark()
-        } else if(HomeThematicUtil.isDarkMode()) {
+        } else if(getThematicUtil().isDarkMode()) {
             requestStatusBarLight()
         } else {
             requestStatusBarDark()
@@ -1554,7 +1558,8 @@ open class HomeRevampFragment :
             CarouselPlayWidgetCallback(getTrackingQueueObj(), userSession, this),
             BestSellerWidgetCallback(context, this, getHomeViewModel()),
             SpecialReleaseRevampCallback(this),
-            ShopFlashSaleWidgetCallback(this, getHomeViewModel())
+            ShopFlashSaleWidgetCallback(this, getHomeViewModel()),
+            homeThematicUtil,
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
             .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
@@ -1806,7 +1811,7 @@ open class HomeRevampFragment :
     }
 
     override fun initializeChooseAddressWidget(chooseAddressWidget: ChooseAddressWidget, needToShowChooseAddress: Boolean) {
-        chooseAddressWidgetCallback = ChooseAddressWidgetCallback(context, this, this)
+        chooseAddressWidgetCallback = ChooseAddressWidgetCallback(context, this, this, getThematicUtil())
         chooseAddressWidgetCallback?.let {
             chooseAddressWidget.bindChooseAddress(it)
             chooseAddressWidget.run {
@@ -2368,7 +2373,7 @@ open class HomeRevampFragment :
                     }
                 }
             } else {
-                var msg = if (wishlistResult.isAddWishlist) getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg) else getString(com.tokopedia.wishlist_common.R.string.on_failed_remove_from_wishlist_msg)
+                var msg = if (wishlistResult.isAddWishlist) getString(wishlist_commonR.string.on_failed_add_to_wishlist_msg) else getString(wishlist_commonR.string.on_failed_remove_from_wishlist_msg)
                 if (wishlistResult.messageV2.isNotEmpty()) msg = wishlistResult.messageV2
 
                 context?.let { context ->
@@ -2802,5 +2807,10 @@ open class HomeRevampFragment :
         view?.let {
             refreshLayout?.setContentChildViewPullRefresh(it)
         }
+    }
+
+    private fun getThematicUtil(): HomeThematicUtil {
+        if(!::homeThematicUtil.isInitialized) initInjectorHome()
+        return homeThematicUtil
     }
 }

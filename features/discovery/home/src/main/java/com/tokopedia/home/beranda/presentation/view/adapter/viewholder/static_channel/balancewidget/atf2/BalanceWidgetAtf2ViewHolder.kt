@@ -1,22 +1,25 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.atf2
 
-import android.os.Bundle
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeThematicModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceAtf2DividerModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.layoutmanager.NpaLinearLayoutManager
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
+import com.tokopedia.home.beranda.presentation.view.helper.HomeThematicUtil
 import com.tokopedia.home.databinding.LayoutBalanceWidgetAtf2Binding
 import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * Created by frenzel
  */
-class BalanceWidgetAtf2ViewHolder(itemView: View, val listener: HomeCategoryListener?) :
+class BalanceWidgetAtf2ViewHolder(
+    itemView: View,
+    val listener: HomeCategoryListener?,
+    private val homeThematicUtil: HomeThematicUtil,
+) :
     AbstractViewHolder<HomeBalanceModel>(itemView) {
     private var binding: LayoutBalanceWidgetAtf2Binding? by viewBinding()
     private var balanceAdapter: BalanceAtf2Adapter? = null
@@ -50,7 +53,7 @@ class BalanceWidgetAtf2ViewHolder(itemView: View, val listener: HomeCategoryList
             balanceAdapter =
                 BalanceAtf2Adapter(
                     listener,
-                    BalanceTypeFactoryImpl(totalData)
+                    BalanceTypeFactoryImpl(totalData, homeThematicUtil)
                 )
             binding?.rvBalanceWidgetData?.adapter = balanceAdapter
         }
