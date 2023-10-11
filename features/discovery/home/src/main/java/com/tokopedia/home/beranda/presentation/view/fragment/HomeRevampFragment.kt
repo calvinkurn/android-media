@@ -904,8 +904,9 @@ open class HomeRevampFragment :
                     val thematicImageLoadListener = object: ImageHandler.ImageLoaderStateListener {
                         override fun successLoad(view: ImageView) {
                             view.show()
-                            if(view == thematicBackground && thematic.shouldOverrideColor()) {
+                            if(view == thematicBackground) {
                                 getThematicUtil().colorMode = thematic.colorMode
+                                setupThematicStatusBar()
                                 adapter?.updateThematicTextColor()
                             }
                         }
