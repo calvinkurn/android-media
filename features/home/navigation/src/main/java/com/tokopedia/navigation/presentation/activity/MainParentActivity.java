@@ -28,6 +28,7 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
@@ -665,8 +666,8 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     private void scrollToTop(Fragment fragment) {
-        if (fragment != null && fragment.getUserVisibleHint() && fragment instanceof FragmentListener) {
-            ((FragmentListener) fragment).onScrollToTop();
+        if (fragment != null && fragment.getUserVisibleHint() && fragment instanceof HomeScrollViewListener) {
+            ((HomeScrollViewListener) fragment).onScrollToHomeHeader();
         }
     }
 
@@ -674,6 +675,13 @@ public class MainParentActivity extends BaseActivity implements
         if (fragment != null && fragment.getUserVisibleHint() && fragment instanceof HomeScrollViewListener) {
             ((HomeScrollViewListener) fragment).onScrollToRecommendationForYou();
         }
+    }
+
+    private Integer getRecommendationForYouIndex(Fragment fragment) {
+        if (fragment != null && fragment.getUserVisibleHint() && fragment instanceof HomeScrollViewListener) {
+           return ((HomeScrollViewListener) fragment).getRecommendationForYouIndex();
+        }
+        return null;
     }
 
     private void setupStatusBarInMarshmallowAbove(Fragment fragment) {
@@ -1278,11 +1286,17 @@ public class MainParentActivity extends BaseActivity implements
     public void homeForYouMenuReselected(int position, int id) {
         Fragment fragment = fragmentList.get(getPositionFragmentByMenu(position));
 
-        boolean isHomeBottomNavSelected = bottomNavigation.isHomeBottomNavSelected();
+        boolean isHomeBottomNavSelected = bottomNavigation.isForYouToHomeBottomNavSelected();
+        boolean isForYouToHomeSelected = !bottomNavigation.getForYouToHomeSelected();
+
         if (isHomeBottomNavSelected) {
-            scrollToHomeForYou(fragment);
-        } else {
             scrollToTop(fragment); // enable feature scroll to top for home
+            bottomNavigation.updateHomeBottomMenuWhenScrolling(isForYouToHomeSelected);
+        } else {
+            if (getRecommendationForYouIndex(fragment) != null) {
+                scrollToHomeForYou(fragment);
+                bottomNavigation.updateHomeBottomMenuWhenScrolling(isForYouToHomeSelected);
+            }
         }
     }
 
@@ -1295,6 +1309,7 @@ public class MainParentActivity extends BaseActivity implements
         menu.add(new BottomMenu(R.id.menu_home, getResources().getString(R.string.for_you),
                 new HomeForYouMenu(
                         getResources().getString(R.string.home),
+                        getResources().getString(R.string.for_you),
                         R.drawable.ic_bottom_nav_home_active,
                         R.drawable.ic_bottom_nav_home_for_you_active,
                         R.raw.bottom_nav_thumb_idle,
@@ -1358,12 +1373,20 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     @Override
-    public void setHomeMenuTabSelected() {
-        bottomNavigation.updateHomeBottomMenuWhenScrolling(true);
+    public void setHomeToForYouTabSelected() {
+        boolean isForYouToHomeMenu = false;
+        boolean isValueSame = bottomNavigation.isForYouToHomeBottomNavSelected() == isForYouToHomeMenu;
+        if (isValueSame)
+            return;
+        bottomNavigation.updateHomeBottomMenuWhenScrolling(isForYouToHomeMenu);
     }
 
     @Override
-    public void setRecommendationForYouTabSelected() {
-        bottomNavigation.updateHomeBottomMenuWhenScrolling(false);
+    public void setForYouToHomeMenuTabSelected() {
+        boolean isForYouToHomeMenu = true;
+        boolean isValueSame = bottomNavigation.isForYouToHomeBottomNavSelected() == isForYouToHomeMenu;
+        if (isValueSame)
+            return;
+        bottomNavigation.updateHomeBottomMenuWhenScrolling(isForYouToHomeMenu);
     }
 }
