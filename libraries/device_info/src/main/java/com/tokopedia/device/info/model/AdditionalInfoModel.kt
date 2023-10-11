@@ -102,7 +102,18 @@ object AdditionalDeviceInfo {
         isEnableGetWidevineIdSuspend: Boolean
     ): String {
         return if (isEnableGetWidevineIdSuspend) {
-            getCacheWidevineId(context)
+            val appContext = context.applicationContext
+            val widevineIdCache: String = getCacheWidevineId(appContext)
+            if (widevineIdCache.isNotBlank()) {
+                widevineIdCache
+            } else {
+                try {
+                    getWidevineIdSuspend(context)
+                } catch (e: Exception) {
+                    Timber.e(e)
+                }
+                ""
+            }
         } else if (isEnableGetWidevineId) {
             processGetWidevineId()
         } else {
