@@ -1809,9 +1809,9 @@ class CheckoutFragment :
 
     override fun onClickPromoCheckout(lastApplyUiModel: LastApplyUiModel) {
         if (!viewModel.isLoading()) {
-            val validateUseRequestParam = viewModel.generateValidateUsePromoRequest()
             val promoRequestParam = viewModel.generateCouponListRecommendationRequest()
             if (viewModel.useNewPromoPage()) {
+                val validateUseRequestParam = viewModel.generateValidateUsePromoRequestForPromoUsage()
                 val totalAmount = viewModel.listData.value.buttonPayment()!!.totalPriceNum
                 val bottomSheetPromo = PromoUsageBottomSheet.newInstance(
                     entryPoint = PromoPageEntryPoint.CHECKOUT_PAGE,
@@ -1823,6 +1823,7 @@ class CheckoutFragment :
                 )
                 bottomSheetPromo.show(childFragmentManager)
             } else {
+                val validateUseRequestParam = viewModel.generateValidateUsePromoRequest()
                 val intent =
                     RouteManager.getIntent(
                         activity,

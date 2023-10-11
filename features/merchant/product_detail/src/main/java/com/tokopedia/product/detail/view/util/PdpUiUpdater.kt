@@ -444,6 +444,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                         } else {
                             it.shopInfo.shopLastActive.getRelativeDate(context)
                         }
+                    shopId = it.shopInfo.shopCore.shopID
                     shopName = it.shopInfo.shopCore.name
                     shopAva = it.shopInfo.shopAssets.avatar
                     partnerLabel = it.shopInfo.partnerLabel
@@ -810,6 +811,9 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             }
         }
     }
+
+    fun getVerticalRecommendationPlaceholder(pageName: String) =
+        mapOfData[pageName] as? ProductRecommendationVerticalPlaceholderDataModel
 
     fun getVerticalRecommendationNextPage(pageName: String): Int? {
         val dataModel = (mapOfData[pageName] as? ProductRecommendationVerticalPlaceholderDataModel)
