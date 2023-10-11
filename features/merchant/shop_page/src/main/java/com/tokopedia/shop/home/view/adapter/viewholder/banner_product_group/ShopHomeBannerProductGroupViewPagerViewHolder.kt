@@ -63,7 +63,7 @@ class ShopHomeBannerProductGroupViewPagerViewHolder(
     private fun setupViewAllChevron(model: BannerProductGroupUiModel) {
         val hasVerticalBanner = model.widgetStyle == BannerProductGroupUiModel.WidgetStyle.VERTICAL.id
 
-        viewBinding?.iconChevron?.isVisible = hasVerticalBanner
+        viewBinding?.iconChevron?.isVisible = hasVerticalBanner && model.viewAllChevronAppLink.isNotEmpty()
         viewBinding?.iconChevron?.setOnClickListener {
             listener.onBannerProductGroupViewAllClick(model.viewAllChevronAppLink)
         }
