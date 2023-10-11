@@ -355,7 +355,7 @@ class ThankYouPageActivity :
         return try {
             val shareRollence: String = getAbTestPlatform()?.getString(
                 key = KEY_ROLLENCE_SHARE,
-                defaultValue = KEY_ROLLENCE_SHARE // todo: remove default
+                defaultValue = ""
             ) ?: ""
             if (shareRollence == KEY_ROLLENCE_SHARE) {
                 getCustomizeIconBuilder()
