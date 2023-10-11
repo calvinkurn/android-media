@@ -108,6 +108,7 @@ import com.tokopedia.shop.common.widget.PartialButtonShopFollowersListener
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersView
 import com.tokopedia.shop.databinding.FragmentShopProductListResultNewBinding
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragment
+import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageReimagineHeaderFragment.Companion.SHOWCASE_ID_USED_TO_HIDE_SHARE_CTA
 import com.tokopedia.shop.pageheader.util.ShopPageHeaderTabName
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent
 import com.tokopedia.shop.product.di.module.ShopProductModule
@@ -317,7 +318,7 @@ class ShopPageProductListResultFragment :
         arguments?.let { attribution = it.getString(ShopParamConstant.EXTRA_ATTRIBUTION, "") }
         sourceRedirection =
             arguments?.getString(ShopParamConstant.EXTRA_SOURCE_REDIRECTION, "").orEmpty()
-        shopSharingInShowCaseUiModel = arguments?.getParcelable(EXTRA_FOR_SHOP_SHARING)     // Potentially null if user comes from search inside shop page
+        shopSharingInShowCaseUiModel = arguments?.getParcelable(EXTRA_FOR_SHOP_SHARING) // Potentially null if user comes from search inside shop page
         if (savedInstanceState == null) {
             selectedEtalaseList = ArrayList()
             arguments?.let {
@@ -2035,7 +2036,7 @@ class ShopPageProductListResultFragment :
             UriUtil.buildUri(
                 ApplinkConst.SHOP_ETALASE,
                 shopId,
-                ShopPageHeaderFragment.SHOWCASE_ID_USED_TO_HIDE_SHARE_CTA
+                SHOWCASE_ID_USED_TO_HIDE_SHARE_CTA
             ),
             "utf-8"
         )

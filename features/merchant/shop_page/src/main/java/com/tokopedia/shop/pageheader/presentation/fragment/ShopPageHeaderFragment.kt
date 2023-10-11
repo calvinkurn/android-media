@@ -189,6 +189,7 @@ import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.Shop
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopPageHeaderPlayWidgetViewHolder
 import com.tokopedia.shop.pageheader.presentation.bottomsheet.ShopPageHeaderContentCreationOptionBottomSheet
 import com.tokopedia.shop.pageheader.presentation.bottomsheet.ShopPageHeaderRequestUnmoderateBottomSheet
+import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageReimagineHeaderFragment.Companion.SHOWCASE_ID_USED_TO_HIDE_SHARE_CTA
 import com.tokopedia.shop.pageheader.presentation.holder.ShopPageHeaderFragmentHeaderViewHolder
 import com.tokopedia.shop.pageheader.presentation.holder.ShopPageHeaderFragmentViewHolderListener
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPageHeaderPerformanceMonitoringListener
@@ -319,7 +320,6 @@ class ShopPageHeaderFragment :
 
         private const val MARGIN_BOTTOM_STICKY_LOGIN = 16
         const val DEFAULT_SHOWCASE_ID = "0"
-        const val SHOWCASE_ID_USED_TO_HIDE_SHARE_CTA = "HIDE_SHARE_CTA"
         const val SHOP_SEARCH_PAGE_NAV_SOURCE = "shop"
         private const val FEED_SHOP_FRAGMENT_SHOP_ID = "PARAM_SHOP_ID"
         private const val FEED_SHOP_FRAGMENT_CREATE_POST_URL = "PARAM_CREATE_POST_URL"
@@ -614,7 +614,7 @@ class ShopPageHeaderFragment :
             this,
             this,
             this,
-            this,
+            this
         )
         initToolbar()
         initAdapter()
@@ -1579,12 +1579,6 @@ class ShopPageHeaderFragment :
         textYourShop?.show()
         searchBarLayout?.hide()
     }
-
-//    private fun initSearchInputView() {
-//        searchBarText?.setOnClickListener {
-//            clickSearch()
-//        }
-//    }
 
     private fun redirectToSearchAutoCompletePage() {
         val shopSrpAppLink = URLEncoder.encode(
