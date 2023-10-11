@@ -33,6 +33,6 @@ class LoginSdkConfigs(val context: Context) : LSdkConfig {
 //            LSdkEnvironment.PROD
 //        }
         // Hardcode for production testing, rama is working on this issue
-        return LSdkEnvironment.PROD
+        return LSdkEnvironment.ALPHA
     }
 }

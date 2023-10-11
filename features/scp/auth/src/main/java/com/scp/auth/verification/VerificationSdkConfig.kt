@@ -36,7 +36,7 @@ class VerificationSdkConfig(val context: Context) : VerificationSDKConfigs {
 //            VerificationEnvironment.PROD
 //        }
         // Hardcode for production testing, rama is working on this issue
-        return VerificationEnvironment.PROD
+        return VerificationEnvironment.ALPHA
     }
 
     private fun isLogEnabled(): Boolean = GlobalConfig.isAllowDebuggingTools()
