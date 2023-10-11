@@ -4,6 +4,10 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.TextRange
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -98,6 +102,14 @@ class CampaignListActivity : BaseActivity(), ShareBottomsheetListener {
 
                 val uiState = viewModel.uiState.collectAsState()
 
+                var campaignName by remember {
+                    mutableStateOf(viewModel.getCampaignName())
+                }
+
+                var campaignSelection by remember {
+                    mutableStateOf(viewModel.getCampaignSelection())
+                }
+
                 CampaignListScreen(
                     uiState = uiState.value,
                     onTapCampaignStatusFilter = { campaignStatuses ->
@@ -121,7 +133,7 @@ class CampaignListActivity : BaseActivity(), ShareBottomsheetListener {
                         )
                     },
                     onClearFilter = { viewModel.onEvent(CampaignListViewModel.UiEvent.ClearFilter) },
-                    searchBarKeyword = viewModel.getCampaignName(),
+                    searchBarKeyword = campaignName,
                     onSearchBarKeywordSubmit = {
                         val campaignTypeId = viewModel.getCampaignTypeId()
                         val campaignStatusId = viewModel.getCampaignStatusId()
@@ -132,12 +144,16 @@ class CampaignListActivity : BaseActivity(), ShareBottomsheetListener {
                         )
                     },
                     onSearchBarKeywordChanged = { text, textRange ->
-                        viewModel.setCampaignName(text)
-                        viewModel.setCampaignSelection(textRange)
+                        campaignName = text
+                        campaignSelection = textRange
+                        viewModel.setCampaignName(campaignName)
+                        viewModel.setCampaignSelection(campaignSelection)
                     },
                     onSearchbarCleared = {
-                        viewModel.setCampaignSelection(TextRange.Zero)
-                        viewModel.setCampaignName("")
+                        campaignName = ""
+                        campaignSelection = TextRange.Zero
+                        viewModel.setCampaignSelection(campaignSelection)
+                        viewModel.setCampaignName(campaignName)
                         viewModel.getCampaignList()
                     },
                     onTickerDismissed = { viewModel.onEvent(CampaignListViewModel.UiEvent.DismissTicker) },
