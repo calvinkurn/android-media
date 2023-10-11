@@ -6,4 +6,6 @@ object ScpConstants {
 
     const val APP_LOCALE = "id-ID"
 
+    const val TOKOPEDIA_CLIENT_ID = "tokopedia:consumer:android"
+
 }

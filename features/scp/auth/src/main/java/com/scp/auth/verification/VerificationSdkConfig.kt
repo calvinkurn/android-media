@@ -24,17 +24,18 @@ class VerificationSdkConfig(val context: Context) : VerificationSDKConfigs {
 
     override fun getAuthConfigs(): VerificationAuthConfig {
         return VerificationAuthConfig(
-            clientID = context.getString(keysR.string.cvsdk_client_id),
+            clientID = ScpConstants.TOKOPEDIA_CLIENT_ID,
             clientSecret = context.getString(keysR.string.cvsdk_client_secret)
         )
     }
 
     private fun getEnvironment(): VerificationEnvironment {
-        return if (GlobalConfig.DEBUG || GlobalConfig.isAllowDebuggingTools()) {
-            VerificationEnvironment.INTEGRATION
-        } else {
-            VerificationEnvironment.PROD
-        }
+//        return if (GlobalConfig.DEBUG) {
+//            VerificationEnvironment.INTEGRATION
+//        } else {
+//            VerificationEnvironment.PROD
+//        }
+        return VerificationEnvironment.PROD
     }
 
     private fun isLogEnabled(): Boolean = GlobalConfig.isAllowDebuggingTools()
