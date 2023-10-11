@@ -167,8 +167,8 @@ object AdditionalDeviceInfo {
                 if (widevineIdCache.isNotBlank()) {
                     onSuccessGetWidevineId?.invoke(widevineIdCache)
                 } else {
-                    val adId = getLatestWidevineId(context, timeOutInMillis)
-                    onSuccessGetWidevineId?.invoke(adId)
+                    val widevineId = getLatestWidevineId(context, timeOutInMillis)
+                    onSuccessGetWidevineId?.invoke(widevineId)
                 }
             } catch (e: Exception) {
                 Timber.e(e)
