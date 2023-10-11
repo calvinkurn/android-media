@@ -5,6 +5,8 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
@@ -16,6 +18,7 @@ import com.tokopedia.tokopedianow.common.view.RealTimeRecommendationCarouselView
 import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowProductRecommendationBinding
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeRealTimeRecomUiModel.RealTimeRecomWidgetState
 import com.tokopedia.utils.view.binding.viewBinding
 
 class HomeProductRecomViewHolder(
@@ -75,12 +78,12 @@ class HomeProductRecomViewHolder(
     }
 
     private fun renderRealTimeRecom(element: HomeProductRecomUiModel) {
-        if(element.realTimeRecom.productList.isNotEmpty()) {
+        if(element.realTimeRecom.widgetState != RealTimeRecomWidgetState.IDLE) {
             binding?.apply {
                 if(realtimeRecommendationView == null) {
                     val view = realTimeRecommendationViewStub
                         .inflateView(R.layout.layout_tokopedianow_rtr_carousel_view)
-                    realtimeRecommendationView = view.findViewById(R.id.real_time_recommendation_carousel)
+                    realtimeRecommendationView = view as? RealTimeRecommendationCarouselView
                 }
 
                 realtimeRecommendationView?.apply {
@@ -88,7 +91,10 @@ class HomeProductRecomViewHolder(
                     analytics = rtrAnalytics
                     bind(element.realTimeRecom)
                 }
+                realtimeRecommendationView?.show()
             }
+        } else {
+            realtimeRecommendationView?.hide()
         }
     }
 

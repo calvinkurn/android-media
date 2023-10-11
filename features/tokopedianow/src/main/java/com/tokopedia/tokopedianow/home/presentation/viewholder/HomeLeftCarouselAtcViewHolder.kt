@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.decoration.ProductCardCarouselDecoration
 import com.tokopedia.productcard.compact.productcardcarousel.helper.ProductCardCompactCarouselLinearLayoutManager
@@ -23,6 +25,7 @@ import com.tokopedia.tokopedianow.home.presentation.adapter.leftcarousel.HomeLef
 import com.tokopedia.tokopedianow.home.presentation.adapter.leftcarousel.HomeLeftCarouselAtcProductCardDiffer
 import com.tokopedia.tokopedianow.home.presentation.adapter.leftcarousel.HomeLeftCarouselAtcProductCardTypeFactoryImplCompact
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeRealTimeRecomUiModel.RealTimeRecomWidgetState
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeLeftCarouselAtcCallback
 import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.CoroutineScope
@@ -174,18 +177,24 @@ class HomeLeftCarouselAtcViewHolder(
     private fun ItemTokopedianowHomeLeftCarouselAtcBinding.setupRealTimeRecommendation(
         element: HomeLeftCarouselAtcUiModel
     ) {
-        if(element.realTimeRecom.productList.isNotEmpty()) {
-            if(realtimeRecommendationView == null) {
-                val view = realTimeRecommendationViewStub
-                    .inflateView(R.layout.layout_tokopedianow_rtr_carousel_view)
-                realtimeRecommendationView = view.findViewById(R.id.real_time_recommendation_carousel)
-            }
+        if(element.realTimeRecom.widgetState != RealTimeRecomWidgetState.IDLE) {
+            binding?.apply {
+                if(realtimeRecommendationView == null) {
+                    val view = realTimeRecommendationViewStub
+                        .inflateView(R.layout.layout_tokopedianow_rtr_carousel_view)
+                    realtimeRecommendationView = view as? RealTimeRecommendationCarouselView
+                }
 
-            realtimeRecommendationView?.apply {
-                listener = rtrListener
-                analytics = rtrAnalytics
-                bind(element.realTimeRecom)
+                realtimeRecommendationView?.apply {
+                    listener = rtrListener
+                    analytics = rtrAnalytics
+                    bind(element.realTimeRecom)
+                }
+
+                realtimeRecommendationView?.show()
             }
+        } else {
+            realtimeRecommendationView?.hide()
         }
     }
 
