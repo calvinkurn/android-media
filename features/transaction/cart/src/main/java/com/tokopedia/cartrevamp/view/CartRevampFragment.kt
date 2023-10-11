@@ -23,8 +23,10 @@ import androidx.annotation.Keep
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
@@ -1355,9 +1357,7 @@ class CartRevampFragment :
             viewModel.doUpdateCartAndGetLastApply(params)
         } else {
             if (cartItemHolderData.isTokoNow) {
-                viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
-                    viewModel.emitTokonowUpdated(true)
-                }
+                viewModel.emitTokonowUpdated()
             }
             viewModel.getEntryPointInfoDefault()
         }
@@ -2132,6 +2132,7 @@ class CartRevampFragment :
                 delay(DELAY_SHOW_PROMO_BUTTON_AFTER_SCROLL)
                 binding?.apply {
                     val initialPosition = bottomLayout.y - llPromoCheckout.height
+                    initialPromoButtonPosition = initialPosition
                     llPromoCheckout.animate().y(initialPosition)
                         .setDuration(PROMO_ANIMATION_DURATION).start()
                 }
@@ -2158,16 +2159,15 @@ class CartRevampFragment :
 
     private fun handlePromoButtonVisibilityOnScroll(dy: Int) {
         val llPromoCheckout = binding?.llPromoCheckout ?: return
-        val valueY = (llPromoCheckout.y + abs(dy))
-            .coerceAtMost(llPromoCheckout.height + initialPromoButtonPosition)
+        val bottomY = binding?.bottomLayout?.y ?: return
 
         promoTranslationLength += dy
         if (dy != 0) {
-            if (initialPromoButtonPosition == 0f && promoTranslationLength - dy == 0f) {
-                // Initial position of View if previous initialization attempt failed
-                val bottomLayoutY = binding?.bottomLayout?.y ?: 0f
-                initialPromoButtonPosition = bottomLayoutY - llPromoCheckout.height
-            }
+            // Always get initial position of View, to prevent jumping in to middle of the screen
+            initialPromoButtonPosition = bottomY - llPromoCheckout.height
+            val valueY = (llPromoCheckout.y + abs(dy))
+                .coerceAtMost(llPromoCheckout.height + initialPromoButtonPosition)
+                .coerceAtLeast(initialPromoButtonPosition)
 
             if (promoTranslationLength != 0f) {
                 if (dy < 0 && valueY < initialPromoButtonPosition) {
@@ -2292,11 +2292,13 @@ class CartRevampFragment :
 
     private fun initViewModel() {
         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
-            viewModel.tokoNowProductUpdater.debounce(TOKONOW_UPDATER_DEBOUNCE).collectLatest {
-                viewModel.processUpdateCartData(
-                    fireAndForget = true,
-                    onlyTokoNowProducts = true
-                )
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.tokoNowProductUpdater.debounce(TOKONOW_UPDATER_DEBOUNCE).collectLatest {
+                    viewModel.processUpdateCartData(
+                        fireAndForget = true,
+                        onlyTokoNowProducts = true
+                    )
+                }
             }
         }
 
@@ -2628,7 +2630,7 @@ class CartRevampFragment :
             when (data) {
                 is LoadRecommendationState.Success -> {
                     hideItemLoading()
-                    if (data.recommendationWidgets[0].recommendationItemList.isNotEmpty()) {
+                    if (data.recommendationWidgets.isNotEmpty() && data.recommendationWidgets[0].recommendationItemList.isNotEmpty()) {
                         renderRecommendation(data.recommendationWidgets[0])
                     }
                     setHasTriedToLoadRecommendation()
@@ -4117,7 +4119,8 @@ class CartRevampFragment :
 
     private fun routeToApplink(appLink: String) {
         activity?.let {
-            RouteManager.route(it, appLink)
+            val intent = RouteManager.getIntent(it, appLink)
+            activityResultLauncher.launch(intent)
         }
     }
 
@@ -4373,21 +4376,25 @@ class CartRevampFragment :
     }
 
     private fun setSelectedAmountVisibility() {
-        val topItemPosition = (binding?.rvCart?.layoutManager as GridLayoutManager).findFirstVisibleItemPosition()
-        if (topItemPosition == RecyclerView.NO_POSITION) return
+        binding?.rvCart?.layoutManager?.let { layoutManager ->
+            if (layoutManager is GridLayoutManager) {
+                val topItemPosition = layoutManager.findFirstVisibleItemPosition()
+                if (topItemPosition == RecyclerView.NO_POSITION) return
 
-        val adapterData = viewModel.cartDataList.value
-        if (topItemPosition >= adapterData.size) return
+                val adapterData = viewModel.cartDataList.value
+                if (topItemPosition >= adapterData.size) return
 
-        val firstVisibleItemData = adapterData[topItemPosition]
+                val firstVisibleItemData = adapterData[topItemPosition]
 
-        if (CartDataHelper.getAllAvailableCartItemData(adapterData).isNotEmpty() &&
-            CartDataHelper.hasSelectedCartItem(adapterData) &&
-            firstVisibleItemData !is CartSelectedAmountHolderData
-        ) {
-            binding?.rlTopLayout?.visible()
-        } else {
-            binding?.rlTopLayout?.invisible()
+                if (CartDataHelper.getAllAvailableCartItemData(adapterData).isNotEmpty() &&
+                    CartDataHelper.hasSelectedCartItem(adapterData) &&
+                    firstVisibleItemData !is CartSelectedAmountHolderData
+                ) {
+                    binding?.rlTopLayout?.visible()
+                } else {
+                    binding?.rlTopLayout?.invisible()
+                }
+            }
         }
     }
 
