@@ -17,7 +17,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
@@ -68,8 +67,8 @@ class GetMultiComponentDetailDataUseCase @Inject constructor(
                             it
                         }
                     }
-                }
-            }.awaitAll()
+                }.await()
+            }
 
             dataDeferred
         }
@@ -96,14 +95,12 @@ class GetMultiComponentDetailDataUseCase @Inject constructor(
         dataKeys: List<String>,
         dynamicParameter: ParamCommonWidgetModel
     ): BaseDataUiModel? {
-        return withContext(dispatcher.io) {
-            try {
-                getPieChartDataUseCase.get().params =
-                    GetPieChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
-                getPieChartDataUseCase.get().executeOnBackground().firstOrNull()
-            } catch (e: Throwable) {
-                null
-            }
+        return try {
+            getPieChartDataUseCase.get().params =
+                GetPieChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+            getPieChartDataUseCase.get().executeOnBackground().firstOrNull()
+        } catch (e: Throwable) {
+            null
         }
     }
 
@@ -111,20 +108,16 @@ class GetMultiComponentDetailDataUseCase @Inject constructor(
         dataKeys: List<String>,
         dynamicParameter: ParamCommonWidgetModel
     ): BaseDataUiModel? {
-        return withContext(
-            dispatcher.io
-        ) {
-            try {
+        return try {
 
-                val useCase = getMultiLineGraphUseCase.get()
-                useCase.params = GetMultiLineGraphUseCase.getRequestParams(
-                    dataKey = dataKeys,
-                    dynamicParam = dynamicParameter
-                )
-                useCase.executeOnBackground().firstOrNull()
-            } catch (e: Throwable) {
-                null
-            }
+            val useCase = getMultiLineGraphUseCase.get()
+            useCase.params = GetMultiLineGraphUseCase.getRequestParams(
+                dataKey = dataKeys,
+                dynamicParam = dynamicParameter
+            )
+            useCase.executeOnBackground().firstOrNull()
+        } catch (e: Throwable) {
+            null
         }
     }
 }
