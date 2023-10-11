@@ -53,6 +53,7 @@ import com.tokopedia.topads.dashboard.recommendation.data.model.local.AdGroupUiM
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.EmptyStateUiListModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.InsightListUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState
+import com.tokopedia.topads.dashboard.recommendation.tracker.RecommendationTracker
 import com.tokopedia.topads.dashboard.recommendation.views.activities.GroupDetailActivity
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.recommendation.InsightListAdapter
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity
@@ -114,6 +115,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
 
     private val onInsightItemClick: (list: ArrayList<AdGroupUiModel>, item: AdGroupUiModel) -> Unit =
         { list, item ->
+            RecommendationTracker.clickGroupListHomepage()
             moveToInsightDetailPage(list, item)
         }
 
@@ -640,6 +642,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
 
     private fun setInsightWidgetBehaviour() {
         binding.layoutInsight.insightWidgetSeeMore.setOnClickListener {
+            RecommendationTracker.clickSelengkapnyaHomepage()
             moveToInsightPage()
         }
 

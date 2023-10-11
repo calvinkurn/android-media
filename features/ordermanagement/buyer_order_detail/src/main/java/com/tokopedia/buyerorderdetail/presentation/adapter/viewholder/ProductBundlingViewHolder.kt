@@ -87,6 +87,11 @@ class ProductBundlingViewHolder(
         }
     }
 
+    override fun onBundleWarrantyClaim(uiModel: ProductListUiModel.ProductUiModel) {
+        navigator.openAppLink(uiModel.button.url, true)
+        BuyerOrderDetailTracker.eventClickWarrantyClaim(uiModel.orderId)
+    }
+
     override fun onBundleItemAddToCart(uiModel: ProductListUiModel.ProductUiModel) {
         listener.onPurchaseAgainButtonClicked(uiModel)
     }

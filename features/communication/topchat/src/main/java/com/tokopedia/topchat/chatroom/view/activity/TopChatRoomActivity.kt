@@ -1,7 +1,6 @@
 package com.tokopedia.topchat.chatroom.view.activity
 
 import android.content.Context
-import android.content.Intent
 import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
@@ -62,7 +61,6 @@ import com.tokopedia.topchat.common.util.ViewUtil.FLAT_STATE
 import com.tokopedia.topchat.common.util.ViewUtil.HALF_OPEN_STATE
 import com.tokopedia.topchat.common.util.ViewUtil.getFoldingFeatureState
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 open class TopChatRoomActivity :

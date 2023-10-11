@@ -6,8 +6,10 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common_digital.atc.data.response.ErrorAtc
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
+import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData.Companion.PARAM_ATC_MULTICHECKOUT
 import com.tokopedia.common_digital.common.DigitalAtcErrorException
 import com.tokopedia.common_digital.common.RechargeAnalytics
+import com.tokopedia.common_digital.common.presentation.model.DigitalAtcTrackingModel
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.usecase.coroutines.Fail
@@ -30,9 +32,15 @@ class DigitalAddToCartViewModel @Inject constructor(
     private val rechargeAnalytics: RechargeAnalytics
 ) : BaseViewModel(dispatcher) {
 
+    private var atcMultiCheckoutParam: String = ""
+
     private val _addToCartResult = MutableLiveData<Result<String>>()
     val addToCartResult: LiveData<Result<String>>
         get() = _addToCartResult
+
+    private val _addToCartMultiCheckoutResult = MutableLiveData<DigitalAtcTrackingModel>()
+    val addToCartMultiCheckoutResult: LiveData<DigitalAtcTrackingModel>
+        get() = _addToCartMultiCheckoutResult
 
     private val _errorAtc = MutableLiveData<ErrorAtc>()
     val errorAtc: LiveData<ErrorAtc>
@@ -50,19 +58,29 @@ class DigitalAddToCartViewModel @Inject constructor(
                     digitalAddToCartUseCase.execute(
                         digitalCheckoutPassData,
                         userSession.userId,
-                        digitalIdentifierParam
+                        digitalIdentifierParam,
+                        atcMultiCheckoutParam
                     )
                 }
-
                 data?.let {
-                    rechargeAnalytics.eventAddToCart(it)
+                    if (atcMultiCheckoutParam.isEmpty()) {
+                        rechargeAnalytics.eventAddToCart(it)
+                    }
                     if (it.atcError != null) {
+                        resetAtcMultiCheckoutParam()
                         _errorAtc.postValue(it.atcError)
                     } else {
-                        if (it.categoryId.isNotEmpty()) {
+                        if (atcMultiCheckoutParam.isNotEmpty()) {
+                            resetAtcMultiCheckoutParam()
+                            _addToCartMultiCheckoutResult.postValue(it)
+                        } else if (it.categoryId.isNotEmpty()) {
                             _addToCartResult.postValue(Success(it.categoryId))
                         } else {
-                            _addToCartResult.postValue(Success(digitalCheckoutPassData.categoryId ?: ""))
+                            _addToCartResult.postValue(
+                                Success(
+                                    digitalCheckoutPassData.categoryId ?: ""
+                                )
+                            )
                         }
                     }
                     return@launchCatchError
@@ -78,6 +96,14 @@ class DigitalAddToCartViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun setAtcMultiCheckoutParam() {
+        atcMultiCheckoutParam = PARAM_ATC_MULTICHECKOUT
+    }
+
+    private fun resetAtcMultiCheckoutParam() {
+        atcMultiCheckoutParam = ""
     }
 
     class DigitalFailGetCartId : Exception()

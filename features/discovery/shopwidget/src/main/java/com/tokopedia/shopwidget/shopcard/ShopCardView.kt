@@ -22,14 +22,20 @@ import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.shopwidget.R
 import com.tokopedia.unifycomponents.BaseCustomView
+import com.tokopedia.unifycomponents.CardUnify2.Companion.TYPE_BORDER
+import com.tokopedia.unifycomponents.CardUnify2
+import com.tokopedia.unifycomponents.CardUnify2.Companion.TYPE_SHADOW
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import kotlin.LazyThreadSafetyMode.NONE
+import com.tokopedia.gm.common.R as gmcommonR
+import com.tokopedia.media.loader.R as medialoaderR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ShopCardView : BaseCustomView {
-    private val shopWidgetCardViewShopCard: CardView? by lazy(NONE) {
+    private val shopWidgetCardViewShopCard: CardUnify2? by lazy(NONE) {
         findViewById(R.id.shopWidgetCardViewShopCard)
     }
     private val shopWidgetConstraintLayoutShopCard: ConstraintLayout? by lazy(NONE) {
@@ -87,6 +93,10 @@ class ShopCardView : BaseCustomView {
         findViewById(R.id.shopWidgetTextViewShopStatus)
     }
 
+    private val shopWidgetImageViewAdsText: Typography? by lazy(NONE) {
+        findViewById(R.id.shopWidgetImageViewAdsText)
+    }
+
     constructor(context: Context) : super(context) {
         init()
     }
@@ -105,10 +115,11 @@ class ShopCardView : BaseCustomView {
 
     fun setShopCardModel(shopCardModel: ShopCardModel?, shopCardListener: ShopCardListener) {
         shopCardModel ?: return
-
+        val isReimagine = shopCardModel.isReimagine
+        initCardStyle(isReimagine)
         initCardViewShopCard(shopCardListener)
         initImageShopAvatar(shopCardModel, shopCardListener)
-        initImageShopBadge(shopCardModel)
+        initImageShopBadge(shopCardModel, isReimagine)
         initShopName(shopCardModel)
         initImageShopReputation(shopCardModel)
         initShopLocation(shopCardModel)
@@ -116,8 +127,16 @@ class ShopCardView : BaseCustomView {
         initProductPreview(shopCardModel, shopCardListener)
         initShopVoucherLabel(shopCardModel)
         initShopStatus(shopCardModel)
+        initShopAdsText(isReimagine)
     }
 
+    private fun initCardStyle(isReimagine: Boolean) {
+        if (isReimagine) {
+            renderShopCardReimagine()
+        } else {
+            renderShopCardControl()
+        }
+    }
     private fun initCardViewShopCard(shopCardListener: ShopCardListener) {
         shopWidgetCardViewShopCard?.setOnClickListener {
             shopCardListener.onItemClicked()
@@ -134,17 +153,25 @@ class ShopCardView : BaseCustomView {
         }
     }
 
-    private fun initImageShopBadge(shopCardModel: ShopCardModel) {
+    private fun initImageShopBadge(shopCardModel: ShopCardModel, isReimagine: Boolean= false) {
         shopWidgetImageViewShopBadge?.let { imageViewShopBadge ->
             val isImageShopBadgeVisible = getIsImageShopBadgeVisible(shopCardModel)
 
             imageViewShopBadge.shouldShowWithAction(isImageShopBadgeVisible) {
                 when {
-                    shopCardModel.isOfficial -> imageViewShopBadge.loadImage(R.drawable.shopwidget_ic_official_store)
+                    shopCardModel.isOfficial -> imageViewShopBadge.renderImageShopBadgeOfficialStore(isReimagine)
                     shopCardModel.isPMPro -> imageViewShopBadge.loadImage(R.drawable.shopwidget_ic_pm_pro)
-                    shopCardModel.isGoldShop -> imageViewShopBadge.loadImage(com.tokopedia.gm.common.R.drawable.ic_power_merchant)
+                    shopCardModel.isGoldShop -> imageViewShopBadge.loadImage(gmcommonR.drawable.ic_power_merchant)
                 }
             }
+        }
+    }
+
+    private fun ImageView.renderImageShopBadgeOfficialStore(isReimagine: Boolean){
+        if (isReimagine) {
+            this.loadImage(gmcommonR.drawable.ic_official_store_product)
+        } else {
+            this.loadImage(R.drawable.shopwidget_ic_official_store)
         }
     }
 
@@ -272,7 +299,7 @@ class ShopCardView : BaseCustomView {
             shopCardListener: ShopCardListener
     ) {
         imageViewShopItemProductImage?.loadImageRounded(productPreviewItem.imageUrl, 6.toPx().toFloat()) {
-            setPlaceHolder(com.tokopedia.media.loader.R.drawable.media_placeholder_grey)
+            setPlaceHolder(medialoaderR.drawable.media_placeholder_grey)
         }
 
         productPreviewItem.impressHolder?.let { impressHolder ->
@@ -292,7 +319,7 @@ class ShopCardView : BaseCustomView {
             imageViewShopItemProductImage: AppCompatImageView?,
             textViewShopItemProductPrice: Typography?,
     ) {
-        imageViewShopItemProductImage?.setImageResource(com.tokopedia.unifyprinciples.R.color.Unify_NN50)
+        imageViewShopItemProductImage?.setImageResource(unifyprinciplesR.color.Unify_NN50)
         textViewShopItemProductPrice?.text = ""
     }
 
@@ -372,4 +399,32 @@ class ShopCardView : BaseCustomView {
     fun getMaxCardElevation() = shopWidgetCardViewShopCard?.maxCardElevation ?: 0f
 
     fun getRadius() = shopWidgetCardViewShopCard?.radius ?: 0f
+
+    private fun renderShopCardReimagine() {
+        shopWidgetCardViewShopCard?.apply {
+            cardType = TYPE_BORDER
+            val rootView = this as CardView
+            rootView.preventCornerOverlap = true
+            rootView.useCompatPadding = false
+        }
+    }
+
+    private fun renderShopCardControl() {
+        shopWidgetCardViewShopCard?.apply {
+            cardType = TYPE_SHADOW
+            val rootView = this as CardView
+            rootView.preventCornerOverlap = false
+            rootView.useCompatPadding = true
+        }
+    }
+
+    private fun initShopAdsText(isReimagine: Boolean) {
+        if (isReimagine) {
+            shopWidgetImageViewAdsText?.visible()
+            shopWidgetTextViewShopLocation?.gone()
+        } else {
+            shopWidgetImageViewAdsText?.gone()
+            shopWidgetTextViewShopLocation?.visible()
+        }
+    }
 }

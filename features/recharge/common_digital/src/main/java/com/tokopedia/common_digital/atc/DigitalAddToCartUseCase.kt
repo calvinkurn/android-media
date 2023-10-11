@@ -15,11 +15,12 @@ class DigitalAddToCartUseCase @Inject constructor(
     suspend fun execute(
         digitalCheckoutPassData: DigitalCheckoutPassData,
         userId: String,
-        digitalIdentifierParam: RequestBodyIdentifier
+        digitalIdentifierParam: RequestBodyIdentifier,
+        atcMultiCheckoutParam: String
     ): DigitalAtcTrackingModel? {
         var returnResult: DigitalAtcTrackingModel? = null
 
-        gqlUseCase.setParams(digitalCheckoutPassData, userId, digitalIdentifierParam)
+        gqlUseCase.setParams(digitalCheckoutPassData, userId, digitalIdentifierParam, atcMultiCheckoutParam)
 
         val result = gqlUseCase.executeOnBackground().atcResponse
 

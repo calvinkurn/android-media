@@ -1,5 +1,6 @@
 package com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk
 
+import android.annotation.SuppressLint
 import android.content.Context
 import com.gojek.kyc.sdk.config.KycSdkAnalyticsConfig
 import com.gojek.kyc.sdk.core.analytics.IKycSdkEventTrackingProvider
@@ -44,6 +45,7 @@ class GotoKycEventTrackingProvider @Inject constructor(
         )
     }
 
+    @SuppressLint("PII Data Exposure")
     private fun sendTracker(eventName: String, eventProperties: Map<String, Any?>) {
         val projectId = kycSharedPreference.getProjectId()
         when (eventName) {

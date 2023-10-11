@@ -805,6 +805,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
                     }
                     if (selectedShippingCourierUiModel != null) {
                         selectedShippingCourierUiModel.isSelected = true
+                        val flagNeedToSetPinpoint = selectedShippingCourierUiModel.productData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED
                         return shipping.copy(
                             shipperProductId = selectedShippingCourierUiModel.productData.shipperProductId,
                             ratesId = selectedShippingCourierUiModel.ratesId,
@@ -818,7 +819,9 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
                             shippingRecommendationData = shippingRecommendationData,
                             logisticPromoShipping = null,
                             isShowLogisticPromoTickerMessage = false,
-                            isApplyLogisticPromo = false
+                            isApplyLogisticPromo = false,
+                            needPinpoint = flagNeedToSetPinpoint,
+                            serviceErrorMessage = if (flagNeedToSetPinpoint) OrderSummaryPageViewModel.NEED_PINPOINT_ERROR_MESSAGE else selectedShippingCourierUiModel.productData.error?.errorMessage
                         )
                     }
                 }

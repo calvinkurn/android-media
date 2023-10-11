@@ -220,7 +220,7 @@ class UniversalInboxMenuWidgetCounterViewModelTest : UniversalInboxViewModelTest
                 // Then updated state
                 val updatedState = awaitItem()
                 assert(!updatedState.isLoading)
-                assert(updatedState.widgetMeta.isError)
+                assert(updatedState.widgetMeta.widgetError.isError)
 
                 cancelAndConsumeRemainingEvents()
             }
@@ -413,7 +413,7 @@ class UniversalInboxMenuWidgetCounterViewModelTest : UniversalInboxViewModelTest
                 val updatedState = awaitItem()
                 assert(!updatedState.isLoading)
                 assert(updatedState.widgetMeta.widgetList.isEmpty())
-                assert(updatedState.widgetMeta.isError)
+                assert(updatedState.widgetMeta.widgetError.isError)
             }
 
             // Then
