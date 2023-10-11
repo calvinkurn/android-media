@@ -63,7 +63,6 @@ import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
-import com.tokopedia.logisticCommon.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheet
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheetListener
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationBottomsheet
@@ -163,6 +162,7 @@ import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotE
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
 import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 import com.tokopedia.purchase_platform.common.utils.removeSingleDecimalSuffix
+import com.tokopedia.targetedticker.domain.GetTargetedTickerUseCase
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface

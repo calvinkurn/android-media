@@ -12,10 +12,10 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.targetedticker.domain.TargetedTickerHelper.renderTargetedTickerView
-import com.tokopedia.targetedticker.domain.TickerModel
 import com.tokopedia.targetedticker.databinding.WidgetTargetedTickerBinding
 import com.tokopedia.targetedticker.di.DaggerTargetedTickerComponent
+import com.tokopedia.targetedticker.domain.TargetedTickerHelper.renderTargetedTickerView
+import com.tokopedia.targetedticker.domain.TickerModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
@@ -24,7 +24,6 @@ import javax.inject.Inject
  * Created by irpan on 09/10/23.
  */
 class TargetedTickerWidget : FrameLayout {
-
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -108,11 +107,9 @@ class TargetedTickerWidget : FrameLayout {
         }
     }
 
-
     /**
      * Public funtion can be used for targeted ticker widget
      */
-
 
     /*
     Call this to get targeted ticker data
@@ -121,7 +118,6 @@ class TargetedTickerWidget : FrameLayout {
         observeTickerState()
         viewModel?.getTargetedTicker()
     }
-
 
     fun setSubmitResultListener(
         onSuccess: (() -> Unit),
@@ -133,7 +129,6 @@ class TargetedTickerWidget : FrameLayout {
         onSubmitLoadingListener = onLoading
     }
 
-
     fun onDestroy() {
         lifecycleOwner = null
     }
@@ -141,6 +136,4 @@ class TargetedTickerWidget : FrameLayout {
     /**
      * end
      */
-
-
 }
