@@ -61,7 +61,7 @@ object ProductDetailServerLogger {
     fun logNewRelicP1Error(error: Throwable) {
         ServerLogger.log(
             Priority.P2,
-            "LOAD_PAGE_FAILED",
+            "PDP_LOAD_PAGE_FAILED",
             mapOf(
                 "type" to "pdp",
                 "desc" to error.message.orEmpty(),
@@ -74,7 +74,7 @@ object ProductDetailServerLogger {
     fun logNewRelicP1Success(productId: String?, cacheState: CacheState?, isCampaign: Boolean?) {
         ServerLogger.log(
             Priority.P2,
-            "LOAD_PAGE_SUCCESS",
+            "PDP_LOAD_PAGE_SUCCESS",
             mapOf(
                 "type" to "pdp",
                 "productId" to productId.orEmpty(),
