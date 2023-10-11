@@ -30,7 +30,16 @@ data class StoriesDetail(
     val selectedDetailPosition: Int = -1,
     val selectedDetailPositionCached: Int = -1,
     val detailItems: List<StoriesDetailItem> = emptyList()
-)
+) {
+    companion object {
+        val Empty get() = StoriesDetail(
+            selectedGroupId = "",
+            selectedDetailPosition = 0,
+            selectedDetailPositionCached = 0,
+            detailItems = listOf(StoriesDetailItem(event = StoriesDetailItem.StoriesDetailItemUiEvent.RESUME, content = StoriesDetailItem.StoriesItemContent(duration = 3000)))
+        )
+    }
+}
 
 data class StoriesDetailItem(
     val id: String = "",

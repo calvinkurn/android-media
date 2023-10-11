@@ -612,6 +612,9 @@ class StoriesDetailFragment @Inject constructor(
     private fun setNoContent(isShow: Boolean) = with(binding.layoutNoContent) {
         binding.layoutStoriesContent.root.showWithCondition(!isShow)
         root.showWithCondition(isShow)
+
+        if(!isShow) return@with
+        renderTimer(StoriesDetail.Empty)
     }
 
     override fun onDestroyView() {
