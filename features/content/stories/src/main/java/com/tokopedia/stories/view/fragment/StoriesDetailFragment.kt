@@ -1,6 +1,7 @@
 package com.tokopedia.stories.view.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -359,6 +360,7 @@ class StoriesDetailFragment @Inject constructor(
 
     private fun renderTimer(state: StoriesDetail) {
         val data = state.detailItems[state.selectedDetailPosition]
+        Log.d("hello", "resume")
 
         showStoriesActionView(data.event == RESUME)
 

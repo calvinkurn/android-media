@@ -1,5 +1,6 @@
 package com.tokopedia.stories.data.mapper
 
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.content.common.report_content.model.ContentMenuIdentifier
 import com.tokopedia.content.common.report_content.model.ContentMenuItem
 import com.tokopedia.iconunify.IconUnify
@@ -144,17 +145,18 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
 
     private fun buildAuthor(author: ContentStoriesDetails.Stories.Author): StoryAuthor {
         val type = AuthorType.convertValue(author.type)
+        val name = MethodChecker.fromHtml(author.name).toString()
 
         return if (type == AuthorType.User) {
             StoryAuthor.Buyer(
-                userName = author.name,
+                userName = name,
                 userId = author.id,
                 avatarUrl = author.thumbnailURL,
                 appLink = author.appLink
             )
         } else {
             StoryAuthor.Shop(
-                shopName = author.name,
+                shopName = name,
                 shopId = author.id,
                 avatarUrl = author.thumbnailURL,
                 badgeUrl = author.badgeURL,
