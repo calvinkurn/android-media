@@ -1,6 +1,7 @@
 package com.scp.auth
 
 import androidx.lifecycle.LiveData
+import com.scp.auth.analytics.AuthAnalyticsMapper
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.network.refreshtoken.EncoderDecoder
@@ -14,7 +15,7 @@ class ScpAuthViewModel @Inject constructor(
     val getUserInfoAndSaveSessionUseCase: GetUserInfoAndSaveSessionUseCase,
     val userSessionInterface: UserSessionInterface,
     dispatcher: CoroutineDispatchers
-): BaseViewModel(dispatcher.main) {
+) : BaseViewModel(dispatcher.main) {
     private val _onLoginSuccess = SingleLiveEvent<Unit>()
     val onLoginSuccess: LiveData<Unit> = _onLoginSuccess
 
@@ -25,9 +26,11 @@ class ScpAuthViewModel @Inject constructor(
                     updateToken()
                 }
                 getUserInfoAndSaveSessionUseCase(Unit)
+                AuthAnalyticsMapper.trackProfileFetch("success")
                 _onLoginSuccess.postValue(Unit)
             } catch (e: Exception) {
                 e.printStackTrace()
+                AuthAnalyticsMapper.trackProfileFetch("failed - ${e.message}")
             }
         }
     }
@@ -39,5 +42,4 @@ class ScpAuthViewModel @Inject constructor(
             EncoderDecoder.Encrypt(GotoSdk.LSDKINSTANCE?.getRefreshToken(), userSessionInterface.refreshTokenIV)
         )
     }
-
 }

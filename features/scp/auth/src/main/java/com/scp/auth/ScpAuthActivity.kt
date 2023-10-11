@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
+import com.scp.auth.analytics.AuthAnalyticsMapper
 import com.scp.auth.di.DaggerScpAuthComponent
 import com.scp.auth.utils.goToChangePIN
 import com.scp.auth.utils.goToForgotPassword
@@ -107,7 +108,7 @@ class ScpAuthActivity : BaseActivity() {
 
                 override fun onLoginSuccessful(activity: Activity?) {
                     GotoSdk.LSDKINSTANCE?.closeScreenAndExit()
-                    viewModel.getUserInfo()
+                    getUserInfo()
                 }
 
                 override fun onUserNotRegistered(credential: UserCredential, activity: Activity?) {
@@ -167,6 +168,11 @@ class ScpAuthActivity : BaseActivity() {
                 }
             }
         )
+    }
+
+    private fun getUserInfo() {
+        viewModel.getUserInfo()
+        AuthAnalyticsMapper.trackProfileFetch("triggered")
     }
 
     private fun goToTokopediaCare() {
