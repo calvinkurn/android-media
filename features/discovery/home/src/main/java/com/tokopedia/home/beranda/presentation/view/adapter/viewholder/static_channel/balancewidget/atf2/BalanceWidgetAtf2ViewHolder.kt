@@ -1,9 +1,11 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.atf2
 
+import android.os.Bundle
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeThematicModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceAtf2DividerModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.layoutmanager.NpaLinearLayoutManager
@@ -25,6 +27,18 @@ class BalanceWidgetAtf2ViewHolder(itemView: View, val listener: HomeCategoryList
 
     override fun bind(element: HomeBalanceModel) {
         setLayout(element)
+    }
+
+    override fun bind(element: HomeBalanceModel, payloads: MutableList<Any>) {
+        if(payloads.isNotEmpty()) {
+            balanceAdapter?.let { adapter ->
+                adapter.currentList.forEachIndexed { index, _ ->
+                    adapter.notifyItemChanged(index, payloads)
+                }
+            }
+        } else {
+            bind(element)
+        }
     }
 
     private fun setLayout(element: HomeBalanceModel) {

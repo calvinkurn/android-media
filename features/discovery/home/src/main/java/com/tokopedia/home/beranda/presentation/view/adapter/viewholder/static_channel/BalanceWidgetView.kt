@@ -5,12 +5,14 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
+import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.helper.benchmark.BenchmarkHelper
 import com.tokopedia.home.beranda.helper.benchmark.TRACE_ON_BIND_BALANCE_WIDGET_CUSTOMVIEW
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeThematicModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceShimmerModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceWidgetFailedModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
@@ -109,5 +111,17 @@ class BalanceWidgetView : FrameLayout {
             }
         }
         return null
+    }
+
+    fun updateTextColor() {
+        balanceWidgetAdapter?.let { adapter ->
+            adapter.list.forEachIndexed { index, visitable ->
+                try {
+                    if(visitable is HomeBalanceModel) {
+                        adapter.notifyItemChanged(index, bundleOf(HomeThematicModel.PAYLOAD_CHANGE_TEXT_COLOR to true))
+                    }
+                } catch (_: Exception) { }
+            }
+        }
     }
 }

@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.atf2
 
+import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -8,12 +9,15 @@ import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.v2.BalanceWidgetTracking
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeThematicModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_REWARDS
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_SUBSCRIPTION
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_APP_LINKED
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_APP_NOT_LINKED
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.BaseBalanceViewHolder
+import com.tokopedia.home.beranda.presentation.view.helper.HomeThematicUtil
+import com.tokopedia.home.beranda.presentation.view.helper.HomeThematicUtil.asThematicColor
 import com.tokopedia.home.databinding.ItemBalanceWidgetAtf2Binding
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
@@ -22,6 +26,8 @@ import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.home.R as homeR
 
 /**
  * Created by frenzel
@@ -52,6 +58,20 @@ class BalanceAtf2ViewHolder(v: View, private val totalItems: Int) : BaseBalanceV
             itemView.context.getString(R.string.tag_balance_widget),
             drawerItem?.drawerItemType.toString()
         )
+    }
+
+    override fun bind(
+        model: BalanceDrawerItemModel?,
+        listener: HomeCategoryListener?,
+        payloads: MutableList<Any>
+    ) {
+        if(payloads.isNotEmpty()) {
+            if((payloads[0] as? Bundle)?.getBoolean(HomeThematicModel.PAYLOAD_CHANGE_TEXT_COLOR) == true) {
+                model?.let { renderTextColor(it) }
+            }
+        } else {
+            bind(model, listener)
+        }
     }
 
     private fun setWidth() {
@@ -87,7 +107,7 @@ class BalanceAtf2ViewHolder(v: View, private val totalItems: Int) : BaseBalanceV
             setCardUnifyBackgroundColor(
                 ContextCompat.getColor(
                     itemView.context,
-                    com.tokopedia.home.R.color.home_dms_color_transparent
+                    homeR.color.home_dms_color_transparent
                 )
             )
         }
@@ -109,16 +129,10 @@ class BalanceAtf2ViewHolder(v: View, private val totalItems: Int) : BaseBalanceV
         binding?.homeContainerBalance?.homeContainerBalance?.show()
         showFailedImage()
         binding?.homeContainerBalance?.homeTvTitle?.text =
-            itemView.context.getString(com.tokopedia.home.R.string.balance_widget_failed_to_load)
-        binding?.homeContainerBalance?.homeTvSubtitle?.setTextColor(
-            ContextCompat.getColor(
-                itemView.context,
-                com.tokopedia.unifyprinciples.R.color.Unify_GN500
-            )
-        )
-        binding?.homeContainerBalance?.homeTvSubtitle?.setWeight(Typography.BOLD)
+            itemView.context.getString(homeR.string.balance_widget_failed_to_load)
         binding?.homeContainerBalance?.homeTvSubtitle?.text =
-            itemView.context.getString(com.tokopedia.home.R.string.text_reload)
+            itemView.context.getString(homeR.string.text_reload)
+        renderTextColor(element)
         binding?.cardContainerBalance?.handleItemClickType(
             element = element,
             rewardsAction = { showLoading(element) },
@@ -132,7 +146,7 @@ class BalanceAtf2ViewHolder(v: View, private val totalItems: Int) : BaseBalanceV
             setImageDrawable(
                 ContextCompat.getDrawable(
                     itemView.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN50
+                    unifyprinciplesR.color.Unify_NN50
                 )
             )
         }
@@ -158,14 +172,29 @@ class BalanceAtf2ViewHolder(v: View, private val totalItems: Int) : BaseBalanceV
         // load subtitle
         val subtitle = element.balanceSubTitleTextAttribute?.text ?: ""
         binding?.homeContainerBalance?.homeTvSubtitle?.text = subtitle
-        setFontSubtitle(element)
 
+        renderTextColor(element)
         handleClickSuccess(element, subtitle)
         binding?.shimmerItemBalanceWidget?.root?.gone()
         binding?.homeContainerBalance?.homeContainerBalance?.show()
     }
 
-    private fun setFontSubtitle(element: BalanceDrawerItemModel) {
+    private fun renderTextColor(element: BalanceDrawerItemModel) {
+        val balanceTextColor = unifyprinciplesR.color.Unify_NN950.asThematicColor(HomeThematicUtil.colorMode)
+        binding?.homeContainerBalance?.homeTvTitle?.setTextColor(
+            ContextCompat.getColor(itemView.context, balanceTextColor)
+        )
+        when (element.state) {
+            BalanceDrawerItemModel.STATE_SUCCESS -> {
+                setSuccessFontSubtitle(element)
+            }
+            BalanceDrawerItemModel.STATE_ERROR -> {
+                setErrorFontSubtitle()
+            }
+        }
+    }
+
+    private fun setSuccessFontSubtitle(element: BalanceDrawerItemModel) {
         when (element.drawerItemType) {
             TYPE_SUBSCRIPTION -> {
                 val typographyWeight = if (element.balanceSubTitleTextAttribute?.isBold == true) Typography.BOLD else Typography.REGULAR
@@ -174,8 +203,8 @@ class BalanceAtf2ViewHolder(v: View, private val totalItems: Int) : BaseBalanceV
                 binding?.homeContainerBalance?.homeTvSubtitle?.setTextColor(
                     ContextCompat.getColor(
                         itemView.context,
-                        element.balanceSubTitleTextAttribute?.colourRef
-                            ?: com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                        (element.balanceSubTitleTextAttribute?.colourRef
+                            ?: unifyprinciplesR.color.Unify_GN500).asThematicColor(HomeThematicUtil.colorMode)
                     )
                 )
             }
@@ -186,8 +215,8 @@ class BalanceAtf2ViewHolder(v: View, private val totalItems: Int) : BaseBalanceV
                 binding?.homeContainerBalance?.homeTvSubtitle?.setTextColor(
                     ContextCompat.getColor(
                         itemView.context,
-                        element.balanceSubTitleTextAttribute?.colourRef
-                            ?: com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                        (element.balanceSubTitleTextAttribute?.colourRef
+                            ?: unifyprinciplesR.color.Unify_NN600).asThematicColor(HomeThematicUtil.colorMode)
                     )
                 )
             }
@@ -196,7 +225,7 @@ class BalanceAtf2ViewHolder(v: View, private val totalItems: Int) : BaseBalanceV
                 binding?.homeContainerBalance?.homeTvSubtitle?.setTextColor(
                     ContextCompat.getColor(
                         itemView.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                        unifyprinciplesR.color.Unify_GN500.asThematicColor(HomeThematicUtil.colorMode)
                     )
                 )
             }
@@ -205,11 +234,21 @@ class BalanceAtf2ViewHolder(v: View, private val totalItems: Int) : BaseBalanceV
                 binding?.homeContainerBalance?.homeTvSubtitle?.setTextColor(
                     ContextCompat.getColor(
                         itemView.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                        unifyprinciplesR.color.Unify_NN600.asThematicColor(HomeThematicUtil.colorMode)
                     )
                 )
             }
         }
+    }
+
+    private fun setErrorFontSubtitle() {
+        binding?.homeContainerBalance?.homeTvSubtitle?.setTextColor(
+            ContextCompat.getColor(
+                itemView.context,
+                unifyprinciplesR.color.Unify_GN500.asThematicColor(HomeThematicUtil.colorMode)
+            )
+        )
+        binding?.homeContainerBalance?.homeTvSubtitle?.setWeight(Typography.BOLD)
     }
 
     private fun showImageSuccess(element: BalanceDrawerItemModel) {

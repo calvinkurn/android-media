@@ -54,6 +54,7 @@ import com.tokopedia.home.beranda.domain.interactor.usecase.HomeRecommendationUs
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeSalamRecommendationUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeSearchUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeSuggestedReviewUseCase
+import com.tokopedia.home.beranda.domain.interactor.usecase.HomeThematicUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeTodoWidgetUseCase
 import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
@@ -128,6 +129,7 @@ fun createHomeViewModel(
     homeRemoteConfigController: HomeRemoteConfigController = mockk(relaxed = true),
     homeAtfUseCase: HomeAtfUseCase = mockk(relaxed = true),
     todoWidgetRepository: TodoWidgetRepository = mockk(relaxed = true),
+    homeThematicUseCase: HomeThematicUseCase = mockk(relaxed = true),
 ): HomeRevampViewModel {
     homeBalanceWidgetUseCase.givenGetLoadingStateReturn()
     return spyk(
@@ -157,6 +159,7 @@ fun createHomeViewModel(
             homeRemoteConfigController = homeRemoteConfigController,
             homeAtfUseCase = homeAtfUseCase,
             todoWidgetRepository = todoWidgetRepository,
+            homeThematicUseCase = { homeThematicUseCase }
         ),
         recordPrivateCalls = true
     )

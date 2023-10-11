@@ -25,10 +25,10 @@ fun ImageView.loadImage(url: String, fpmItemLabel: String = "", listener: ImageH
     this.loadImage(url) {
         listener({ _, mediaDataSource ->
             handleOnResourceReady(mediaDataSource, performanceMonitoring, fpmItemLabel)
-            listener?.successLoad()
+            listener?.successLoad(this@loadImage)
         }, {
             GlideErrorLogHelper().logError(context, it, url)
-            listener?.failedLoad()
+            listener?.failedLoad(this@loadImage)
         })
     }
 }
@@ -64,10 +64,10 @@ fun ImageView.loadMiniImage(url: String, width: Int, height: Int, fpmItemLabel: 
         setPlaceHolder(com.tokopedia.topads.sdk.R.drawable.placeholder_grey)
         fitCenter()
         listener({ _, mediaDataSource ->
-            listener?.successLoad()
+            listener?.successLoad(this@loadMiniImage)
             handleOnResourceReady(mediaDataSource, performanceMonitoring, fpmItemLabel)
         }, {
-            listener?.failedLoad()
+            listener?.failedLoad(this@loadMiniImage)
         })
     }
 }
@@ -89,10 +89,10 @@ fun ImageView.loadImageWithoutPlaceholder(url: String, fpmItemLabel: String = ""
     this.loadImageWithoutPlaceholder(url) {
         listener({ _, mediaDataSource ->
             handleOnResourceReady(mediaDataSource, performanceMonitoring, fpmItemLabel)
-            listener?.successLoad()
+            listener?.successLoad(this@loadImageWithoutPlaceholder)
         }, {
             GlideErrorLogHelper().logError(context, it, url)
-            listener?.failedLoad()
+            listener?.failedLoad(this@loadImageWithoutPlaceholder)
         })
     }
 }
@@ -103,10 +103,10 @@ fun ImageView.loadImageNoRounded(url: String, placeholder: Int = -1, listener: I
         centerCrop()
         if (listener != null) {
             listener({ _, mediaDataSource ->
-                listener.successLoad()
+                listener.successLoad(this@loadImageNoRounded)
             }, {
                 GlideErrorLogHelper().logError(context, it, url)
-                listener.failedLoad()
+                listener.failedLoad(this@loadImageNoRounded)
             })
         }
     }

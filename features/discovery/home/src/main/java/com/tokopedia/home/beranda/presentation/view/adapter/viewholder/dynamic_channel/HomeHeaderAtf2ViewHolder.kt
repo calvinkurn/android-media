@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel
 
+import android.os.Bundle
 import android.view.View
 import android.view.ViewStub
 import androidx.annotation.LayoutRes
@@ -8,6 +9,7 @@ import com.tokopedia.home.R
 import com.tokopedia.home.beranda.helper.benchmark.BenchmarkHelper
 import com.tokopedia.home.beranda.helper.benchmark.TRACE_ON_BIND_HEADER_OVO
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeThematicModel.Companion.PAYLOAD_CHANGE_TEXT_COLOR
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.BalanceWidgetView
@@ -106,6 +108,14 @@ class HomeHeaderAtf2ViewHolder(
     }
 
     override fun bind(element: HomeHeaderDataModel, payloads: MutableList<Any>) {
+        if(payloads.isNotEmpty()) {
+            (payloads[0] as? Bundle)?.getString(PAYLOAD_CHANGE_TEXT_COLOR)?.let {
+                chooseAddressView?.updateWidget()
+                balanceWidgetView?.updateTextColor()
+            }
+        } else {
+            bind(element)
+        }
         bind(element)
     }
 
