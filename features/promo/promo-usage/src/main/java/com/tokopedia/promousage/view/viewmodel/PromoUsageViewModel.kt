@@ -452,14 +452,14 @@ class PromoUsageViewModel @Inject constructor(
                                     return@map item.copy(isCalculating = true)
                                 } else if (item is PromoItem) {
                                     val isClickedItem = item.code == newClickedItem.code
-                                    val isMvcPromo = item.shopId > 0
+                                    val isMvcPromoWithSecondary = item.shopId > 0 && item.hasSecondaryPromo
                                     val isDisabledOrIneligibleOrSelected =
                                         item.state is PromoItemState.Disabled ||
                                             item.state is PromoItemState.Ineligible ||
                                             item.state is PromoItemState.Selected
                                     val isVisibleAndExpanded =
                                         item.isVisible && item.isExpanded
-                                    if (isMvcPromo && isVisibleAndExpanded &&
+                                    if (isMvcPromoWithSecondary && isVisibleAndExpanded &&
                                         !isClickedItem && !isDisabledOrIneligibleOrSelected
                                     ) {
                                         if (!needToShowLoading) {
