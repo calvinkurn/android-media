@@ -32,8 +32,12 @@ class FundsAndInvestmentComposeActivity : BaseSimpleActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initInjector()
+        initAnalytics()
         toolbar.hide()
+        setView()
+    }
 
+    private fun setView() {
         setContent {
             FundsAndInvestmentLayout(
                 userId = userSession.userId,
@@ -77,14 +81,13 @@ class FundsAndInvestmentComposeActivity : BaseSimpleActivity(),
         startActivity(intent)
     }
 
-    override fun onStart() {
-        super.onStart()
-        homeAccountAnalytic.trackScreen(screenName)
-        homeAccountAnalytic.eventViewAssetPage()
-    }
-
     override fun getScreenName(): String {
         return AccountConstants.Analytics.Screen.SCREEN_FUNDS_AND_INVESTMENT
+    }
+
+    private fun initAnalytics() {
+        homeAccountAnalytic.trackScreen(screenName)
+        homeAccountAnalytic.eventViewAssetPage()
     }
 
     private fun initInjector() {
