@@ -6,13 +6,14 @@ import com.tokopedia.discovery2.data.claim_coupon.CatalogWithCouponList
 import com.tokopedia.discovery2.data.claim_coupon.ClaimCouponRequest
 import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.repository.claimCoupon.IClaimCouponGqlRepository
+import com.tokopedia.kotlin.extensions.view.ONE
 import javax.inject.Inject
 
 class ClaimCouponUseCase @Inject constructor(val claimCouponRepository: IClaimCouponGqlRepository) {
 
     suspend fun getClickCouponData(componentId: String, pageIdentifier: String, claimCouponRequest: ClaimCouponRequest): Boolean {
         val component = getComponent(componentId, pageIdentifier)
-        if (component?.noOfPagesLoaded == 1) {
+        if (component?.noOfPagesLoaded == Int.ONE) {
             return false
         }
         component?.let { cmp ->
@@ -28,7 +29,7 @@ class ClaimCouponUseCase @Inject constructor(val claimCouponRepository: IClaimCo
             }
             cmp.setComponentsItem(claimCouponListData, component.tabName)
 
-            cmp.noOfPagesLoaded = 1
+            cmp.noOfPagesLoaded = Int.ONE
             return true
         }
         return false

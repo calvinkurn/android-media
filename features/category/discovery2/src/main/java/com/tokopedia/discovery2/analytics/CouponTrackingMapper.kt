@@ -53,24 +53,22 @@ object CouponTrackingMapper {
 
     //region Claim Coupon
     fun ComponentsItem.toTrackingProps(): List<CouponTrackingProperties> {
-        if (claimCouponList.isNullOrEmpty()) return emptyList()
-
-        return claimCouponList!!.map { item ->
-            toTrackingProperties(item)!!
-        }
+        return claimCouponList?.map { item ->
+            toTrackingProperties(item)
+        } ?: emptyList()
     }
 
     fun ComponentsItem.toTrackingProperties(
-        claimCouponItem: CatalogWithCouponList?
-    ) = claimCouponItem?.let {
+        claimCouponItem: CatalogWithCouponList
+    ) = with(claimCouponItem) {
         CouponTrackingProperties(
             parentComponentName.orEmpty(),
-            it.slug.orEmpty(),
+            slug.orEmpty(),
             parentComponentId,
-            it.couponCode.orEmpty(),
+            couponCode.orEmpty(),
             creativeName.orEmpty(),
             position,
-            it.buttonStr.orEmpty(),
+            buttonStr.orEmpty(),
             getGTMItemName(parentComponentId, pageEndPoint),
             tabName.orEmpty()
         )

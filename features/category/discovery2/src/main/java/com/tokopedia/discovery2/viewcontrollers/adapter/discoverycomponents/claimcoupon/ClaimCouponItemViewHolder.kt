@@ -22,6 +22,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
+import timber.log.Timber
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ClaimCouponItemViewHolder(itemView: View, private val fragment: Fragment) :
@@ -62,7 +63,7 @@ class ClaimCouponItemViewHolder(itemView: View, private val fragment: Fragment) 
         itemView.setOnClickListener {
             claimCouponItemViewModel?.setClick(itemView.context, claimCouponItem?.status)
 
-            trackClickEvent(claimCouponItem)
+            claimCouponItem?.run { trackClickEvent(this) }
         }
 
         claimBtn.setOnClickListener {
@@ -100,38 +101,36 @@ class ClaimCouponItemViewHolder(itemView: View, private val fragment: Fragment) 
                                 actionText = itemView.context.getString(R.string.claim_coupon_lihat_text)
                             ) {
                                 claimCouponItemViewModel?.getCouponAppLink()?.let { appLink ->
-                                    claimCouponItemViewModel?.navigate(
-                                        itemView.context, appLink
-                                    )
+                                    claimCouponItemViewModel?.navigate(itemView.context, appLink)
                                 }
                             }.show()
                         }
                     } catch (e: Exception) {
-                        e.printStackTrace()
+                        Timber.e(e)
                     }
                 }
 
-            trackClaimEvent(claimCouponItem)
+            claimCouponItem?.run { trackClaimEvent(this) }
         }
     }
 
-    private fun trackClickEvent(claimCouponItem: CatalogWithCouponList?) {
+    private fun trackClickEvent(claimCouponItem: CatalogWithCouponList) {
         componentItem?.let { component ->
 
             val analytics = (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
             val properties = component.toTrackingProperties(claimCouponItem)
 
-            if (properties != null) analytics?.trackCouponClickEvent(properties)
+            analytics?.trackCouponClickEvent(properties)
         }
     }
 
-    private fun trackClaimEvent(claimCouponItem: CatalogWithCouponList?) {
+    private fun trackClaimEvent(claimCouponItem: CatalogWithCouponList) {
         componentItem?.let { component ->
 
             val analytics = (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
             val properties = component.toTrackingProperties(claimCouponItem)
 
-            if (properties != null) analytics?.trackCouponCTAClickEvent(properties)
+            analytics?.trackCouponCTAClickEvent(properties)
         }
     }
 
