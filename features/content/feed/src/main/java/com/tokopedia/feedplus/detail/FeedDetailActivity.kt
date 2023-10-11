@@ -3,6 +3,7 @@ package com.tokopedia.feedplus.detail
 import android.graphics.Color
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.ViewGroup.MarginLayoutParams
 import androidx.activity.viewModels
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
@@ -29,6 +30,7 @@ import com.tokopedia.feedplus.presentation.model.type.isPlayContent
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play_common.util.extension.commit
+import com.tokopedia.play_common.util.extension.updateLayoutParams
 import javax.inject.Inject
 
 /**
@@ -68,6 +70,9 @@ class FeedDetailActivity : BaseActivity() {
         ViewCompat.setOnApplyWindowInsetsListener(binding.feedDetailContainer) { view, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
 
+            binding.feedDetailHeader.updateLayoutParams<MarginLayoutParams> {
+                topMargin = insets.top
+            }
             binding.feedDetailBottomBar.updatePadding(bottom = insets.bottom)
 
             windowInsets
