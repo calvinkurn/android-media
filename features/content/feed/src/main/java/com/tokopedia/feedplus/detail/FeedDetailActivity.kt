@@ -168,12 +168,13 @@ class FeedDetailActivity : BaseActivity() {
     ) {
         when (content.contentType) {
             FeedContentType.TopAds, FeedContentType.ProductHighlight -> {
-                binding.feedDetailBottomBar.show()
-                binding.feedDetailBottomBar.text = getString(R.string.feed_bottom_action_share_label)
-                binding.feedDetailBottomBar.setOnClickListener {
-                    val shareUiModel = content.share ?: return@setOnClickListener
-                    val trackerDataModel = trackerModel ?: return@setOnClickListener
-                    uiActionListener.onSharePostClicked(shareUiModel, trackerDataModel)
+                val shareUiModel = content.share
+                if (shareUiModel != null && trackerModel != null) {
+                    binding.feedDetailBottomBar.show()
+                    binding.feedDetailBottomBar.text = getString(R.string.feed_bottom_action_share_label)
+                    binding.feedDetailBottomBar.setOnClickListener {
+                        uiActionListener.onSharePostClicked(shareUiModel, trackerModel)
+                    }
                 }
             }
             FeedContentType.PlayChannel,
