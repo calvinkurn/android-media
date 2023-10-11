@@ -2313,6 +2313,8 @@ class CartRevampFragment :
 
         observeGlobalEvent()
 
+        observeProgressLoading()
+
         observeRecentView()
 
         observeRecommendation()
@@ -2989,14 +2991,6 @@ class CartRevampFragment :
                     }
                 }
 
-                is CartGlobalEvent.ProgressLoading -> {
-                    if (event.isLoading) {
-                        showProgressLoading()
-                    } else {
-                        hideProgressLoading()
-                    }
-                }
-
                 is CartGlobalEvent.LoadGetCartData -> renderLoadGetCartData()
                 is CartGlobalEvent.CartCounterUpdated -> updateCartCounter(event.counter)
                 is CartGlobalEvent.SuccessClearRedPromosThenGoToPromo -> {
@@ -3030,6 +3024,16 @@ class CartRevampFragment :
                     event.wishlistHolderData.wishList.removeAt(event.wishlistIndex)
                     cartAdapter?.cartWishlistAdapter?.updateWishlistItems(event.wishlistHolderData.wishList)
                 }
+            }
+        }
+    }
+
+    private fun observeProgressLoading() {
+        viewModel.cartProgressLoading.observe(viewLifecycleOwner) { isLoading ->
+            if (isLoading) {
+                showProgressLoading()
+            } else {
+                hideProgressLoading()
             }
         }
     }

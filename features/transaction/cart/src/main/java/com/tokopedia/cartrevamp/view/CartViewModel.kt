@@ -1,7 +1,6 @@
 package com.tokopedia.cartrevamp.view
 
 import android.os.Bundle
-import android.util.Log
 import androidx.core.os.bundleOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -190,6 +189,9 @@ class CartViewModel @Inject constructor(
 
     private val _globalEvent: MutableLiveData<CartGlobalEvent> = MutableLiveData()
     val globalEvent: LiveData<CartGlobalEvent> = _globalEvent
+
+    private val _cartProgressLoading: MutableLiveData<Boolean> = MutableLiveData()
+    val cartProgressLoading: LiveData<Boolean> = _cartProgressLoading
 
     private val _loadCartState: MutableLiveData<CartState<CartData>> = MutableLiveData()
     val loadCartState: LiveData<CartState<CartData>> = _loadCartState
@@ -448,7 +450,7 @@ class CartViewModel @Inject constructor(
                     val updateAndReloadCartListData =
                         updateAndReloadCartUseCase(updateCartWrapperRequest)
                     withContext(dispatchers.main) {
-                        _globalEvent.value = CartGlobalEvent.ProgressLoading(false)
+                        _cartProgressLoading.value = false
                         processInitialGetCartData(
                             updateAndReloadCartListData.cartId,
                             initialLoad = false,
@@ -464,7 +466,7 @@ class CartViewModel @Inject constructor(
                 }
             )
         } else {
-            _globalEvent.value = CartGlobalEvent.ProgressLoading(false)
+            _cartProgressLoading.value = false
         }
     }
 
@@ -506,7 +508,7 @@ class CartViewModel @Inject constructor(
         if (initialLoad) {
             _globalEvent.value = CartGlobalEvent.LoadGetCartData
         } else if (!isLoadingTypeRefresh) {
-            _globalEvent.value = CartGlobalEvent.ProgressLoading(true)
+            _cartProgressLoading.value = true
         }
 
         viewModelScope.launch {
@@ -536,7 +538,7 @@ class CartViewModel @Inject constructor(
             recommendationPage = RECOMMENDATION_START_PAGE
         )
         if (!initialLoad) {
-            _globalEvent.value = CartGlobalEvent.ProgressLoading(false)
+            _cartProgressLoading.value = false
         }
 
         _loadCartState.value = CartState.Success(cartData)
@@ -546,7 +548,7 @@ class CartViewModel @Inject constructor(
     private fun onErrorGetCartList(throwable: Throwable, initialLoad: Boolean) {
         Timber.e(throwable)
         if (!initialLoad) {
-            _globalEvent.value = CartGlobalEvent.ProgressLoading(false)
+            _cartProgressLoading.value = false
         }
         _loadCartState.value = CartState.Failed(throwable)
         CartLogger.logOnErrorLoadCartPage(throwable)
@@ -760,7 +762,7 @@ class CartViewModel @Inject constructor(
 
     fun processUpdateCartData(fireAndForget: Boolean, onlyTokoNowProducts: Boolean = false) {
         if (!fireAndForget) {
-            _globalEvent.value = CartGlobalEvent.ProgressLoading(true)
+            _cartProgressLoading.value = true
             CartIdlingResource.increment()
         }
 
@@ -798,7 +800,7 @@ class CartViewModel @Inject constructor(
             }
         } else {
             if (!fireAndForget) {
-                _globalEvent.value = CartGlobalEvent.ProgressLoading(false)
+                _cartProgressLoading.value = false
                 CartLogger.logOnErrorUpdateCartForCheckout(
                     MessageErrorException("update cart empty product"),
                     cartItemDataList
@@ -811,7 +813,7 @@ class CartViewModel @Inject constructor(
         updateCartV2Data: UpdateCartV2Data,
         cartItemDataList: List<CartItemHolderData>
     ) {
-        _globalEvent.value = CartGlobalEvent.ProgressLoading(false)
+        _cartProgressLoading.value = false
         if (updateCartV2Data.data.status) {
             val checklistCondition = getChecklistCondition()
             _updateCartForCheckoutState.value = UpdateCartCheckoutState.Success(
@@ -908,7 +910,7 @@ class CartViewModel @Inject constructor(
     }
 
     fun doUpdateCartForPromo() {
-        _globalEvent.value = CartGlobalEvent.ProgressLoading(true)
+        _cartProgressLoading.value = true
 
         val updateCartRequestList =
             getUpdateCartRequest(CartDataHelper.getSelectedCartItemData(cartDataList.value))
@@ -926,7 +928,7 @@ class CartViewModel @Inject constructor(
                 }
             )
         } else {
-            _globalEvent.value = CartGlobalEvent.ProgressLoading(false)
+            _cartProgressLoading.value = false
         }
     }
 
@@ -1449,7 +1451,7 @@ class CartViewModel @Inject constructor(
                 }
             )
         } else {
-            _globalEvent.value = CartGlobalEvent.ProgressLoading(false)
+            _cartProgressLoading.value = false
         }
     }
 
@@ -1541,7 +1543,7 @@ class CartViewModel @Inject constructor(
     }
 
     fun processAddToCart(productModel: Any) {
-        _globalEvent.value = CartGlobalEvent.ProgressLoading(true)
+        _cartProgressLoading.value = true
 
         var productId = 0L
         var shopId = 0
@@ -2427,7 +2429,7 @@ class CartViewModel @Inject constructor(
         isFromEditBundle: Boolean = false,
         listOfferId: ArrayList<Long> = arrayListOf()
     ) {
-        _globalEvent.value = CartGlobalEvent.ProgressLoading(true)
+        _cartProgressLoading.value = true
         val allCartItemData = CartDataHelper.getAllCartItemData(
             cartDataList.value,
             cartModel
@@ -2462,7 +2464,7 @@ class CartViewModel @Inject constructor(
     }
 
     fun processUndoDeleteCartItem(cartIds: List<String>) {
-        _globalEvent.value = CartGlobalEvent.ProgressLoading(true)
+        _cartProgressLoading.value = true
         undoDeleteCartUseCase.setParams(cartIds)
         undoDeleteCartUseCase.execute(
             onSuccess = {
@@ -2586,7 +2588,7 @@ class CartViewModel @Inject constructor(
     }
 
     fun redirectToLite(url: String, adsId: String) {
-        _globalEvent.value = CartGlobalEvent.ProgressLoading(true)
+        _cartProgressLoading.value = true
         if (adsId.trim { c -> c <= ' ' }.isNotEmpty()) {
             seamlessLoginUsecase.generateSeamlessUrl(
                 url.replace(QUERY_APP_CLIENT_ID, adsId),
@@ -2725,7 +2727,7 @@ class CartViewModel @Inject constructor(
     }
 
     fun processAddToCartExternal(productId: Long) {
-        _globalEvent.value = CartGlobalEvent.ProgressLoading(true)
+        _cartProgressLoading.value = true
         viewModelScope.launchCatchError(
             context = dispatchers.io,
             block = {
@@ -2753,7 +2755,7 @@ class CartViewModel @Inject constructor(
     }
 
     fun followShop(shopId: String) {
-        _globalEvent.value = CartGlobalEvent.ProgressLoading(true)
+        _cartProgressLoading.value = true
         viewModelScope.launchCatchError(
             context = dispatchers.io,
             block = {
