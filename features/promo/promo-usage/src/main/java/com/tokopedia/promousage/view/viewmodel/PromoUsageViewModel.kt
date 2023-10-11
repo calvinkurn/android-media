@@ -721,11 +721,16 @@ class PromoUsageViewModel @Inject constructor(
             ) {
                 val clashingSecondaryCodes = resultItem.currentClashingSecondaryPromoCodes
                     .plus(selectedPromoCode)
-                resultItem = resultItem.copy(
-                    state = PromoItemState.Disabled(
+                val state = if (resultItem.state is PromoItemState.Disabled) {
+                    PromoItemState.Disabled(
                         useSecondaryPromo = true,
                         message = secondaryClashingInfo.message
-                    ),
+                    )
+                } else {
+                    PromoItemState.Normal(useSecondaryPromo = false)
+                }
+                resultItem = resultItem.copy(
+                    state = state,
                     currentClashingSecondaryPromoCodes = clashingSecondaryCodes
                 )
                 isCausingClash = true
