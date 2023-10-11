@@ -23,6 +23,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import kotlin.math.roundToInt
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by dhaba
@@ -98,7 +99,7 @@ class LayoutIconPullRefreshView : ConstraintLayout, LayoutIconPullRefreshListene
             pullRefreshIcon?.setColorFilter(
                 ContextCompat.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+                    unifyprinciplesR.color.Unify_Static_White
                 )
             )
             loaderPullRefresh?.type = LoaderUnify.TYPE_DECORATIVE_WHITE
@@ -107,12 +108,16 @@ class LayoutIconPullRefreshView : ConstraintLayout, LayoutIconPullRefreshListene
             pullRefreshIcon?.setColorFilter(
                 ContextCompat.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                    unifyprinciplesR.color.Unify_GN500
                 )
             )
             loaderPullRefresh?.type = LoaderUnify.TYPE_DECORATIVE
             containerIconPullRefresh?.setMargin(Int.ZERO, paddingTopGreen, Int.ZERO, paddingBottomGreen)
         }
+    }
+
+    fun applyThematicColor(isDark: Boolean) {
+        setColorPullRefresh(if(isDark) TYPE_WHITE else TYPE_GREEN)
     }
 
     override fun maxOffsetTop(maxOffsetTop: Int) {

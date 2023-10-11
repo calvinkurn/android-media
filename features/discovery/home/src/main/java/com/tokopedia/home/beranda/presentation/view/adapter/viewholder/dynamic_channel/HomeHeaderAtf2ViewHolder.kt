@@ -111,14 +111,14 @@ class HomeHeaderAtf2ViewHolder(
 
     override fun bind(element: HomeHeaderDataModel, payloads: MutableList<Any>) {
         if(payloads.isNotEmpty()) {
-            (payloads[0] as? Bundle)?.getString(PAYLOAD_CHANGE_TEXT_COLOR)?.let {
+            if((payloads[0] as? Bundle)?.getBoolean(PAYLOAD_CHANGE_TEXT_COLOR) == true) {
                 chooseAddressView?.updateWidget()
                 balanceWidgetView?.updateTextColor()
+                viewPullRefresh?.applyThematicColor(homeThematicUtil.isDarkMode())
             }
         } else {
             bind(element)
         }
-        bind(element)
     }
 
     @Suppress("UNCHECKED_CAST")
