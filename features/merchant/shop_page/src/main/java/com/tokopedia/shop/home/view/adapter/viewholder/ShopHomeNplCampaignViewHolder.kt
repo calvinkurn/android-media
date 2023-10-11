@@ -2,7 +2,6 @@ package com.tokopedia.shop.home.view.adapter.viewholder
 
 import android.content.Context
 import android.graphics.PorterDuff
-import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
