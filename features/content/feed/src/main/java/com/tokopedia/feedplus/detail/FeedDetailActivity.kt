@@ -49,12 +49,11 @@ class FeedDetailActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
+        setOnAttachFragmentListener()
         super.onCreate(savedInstanceState)
         _binding = ActivityFeedDetailBinding.inflate(layoutInflater)
         setupStatusBar()
         setContentView(binding.root)
-
-        setOnAttachFragmentListener()
 
         observeTitleLiveData()
 
