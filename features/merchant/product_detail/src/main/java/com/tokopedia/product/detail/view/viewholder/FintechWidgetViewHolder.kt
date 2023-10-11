@@ -7,7 +7,6 @@ import com.tokopedia.pdp.fintech.domain.datamodel.FintechRedirectionWidgetDataCl
 import com.tokopedia.pdp.fintech.listner.ProductUpdateListner
 import com.tokopedia.pdp.fintech.view.PdpFintechWidget
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.common.utils.extensions.globalWidgetDoImpression
 import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
@@ -82,10 +81,4 @@ class FintechWidgetViewHolder(val view: View, val listener: DynamicProductDetail
     ) {
         listener.fintechRedirection(fintechRedirectionWidgetDataClass, redirectionUrl)
     }
-
-    override fun shouldImpression() = globalWidgetDoImpression(
-        holders = listener.getImpressionHolders(),
-        name = previousData?.name().orEmpty(),
-        useHolders = listener.isCacheable()
-    )
 }

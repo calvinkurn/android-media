@@ -265,10 +265,7 @@ class PdpFintechWidget @JvmOverloads constructor(
             priceToChip[it]?.let { chipList ->
                 instanceProductUpdateListner?.showWidget()
                 fintechWidgetAdapter?.setData(chipList)
-
-                if (instanceProductUpdateListner?.shouldImpression() == true) {
-                    sendPdpImpression(chipList)
-                }
+                sendPdpImpression(chipList)
             } ?: run {
                 instanceProductUpdateListner?.removeWidget()
             }
