@@ -54,8 +54,8 @@ internal fun View.addOnPdpImpressionListener(
             object : ViewTreeObserver.OnScrollChangedListener {
                 override fun onScrollChanged() {
                     if (!holders.contains(name) && viewIsVisible(this@addOnPdpImpressionListener)) {
-                        holders.add(name)
                         onView.invoke()
+                        holders.add(name)
                         viewTreeObserver.removeOnScrollChangedListener(this)
                     }
                 }

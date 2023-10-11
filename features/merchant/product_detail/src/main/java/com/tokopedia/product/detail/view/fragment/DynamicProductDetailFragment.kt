@@ -101,6 +101,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.mvcwidget.views.MvcView
 import com.tokopedia.mvcwidget.views.activities.TransParentActivity
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.URLGenerator.generateURLSessionLogin
 import com.tokopedia.pdp.fintech.domain.datamodel.FintechRedirectionWidgetDataClass
 import com.tokopedia.pdp.fintech.view.PdpFintechWidget.Companion.ACTIVATION_LINKINING_FLOW
@@ -167,6 +168,7 @@ import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCart
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
+import com.tokopedia.product.detail.data.model.datamodel.PageErrorDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMerchantVoucherSummaryDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
@@ -208,6 +210,7 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant.REMOTE_CONFI
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.REMOVE_WISHLIST
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.WISHLIST_ERROR_TYPE
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.WISHLIST_STATUS_KEY
+import com.tokopedia.product.detail.data.util.TobacoErrorException
 import com.tokopedia.product.detail.data.util.VariantMapper
 import com.tokopedia.product.detail.data.util.VariantMapper.generateVariantString
 import com.tokopedia.product.detail.data.util.roundToIntOrZero
@@ -2941,56 +2944,66 @@ open class DynamicProductDetailFragment :
         ProductDetailServerLogger.logNewRelicP1Error(error = error)
         logException(error)
         val ctx = context ?: return
+        val errorModel = ProductDetailErrorHelper.getErrorType(
+            context = ctx,
+            t = error,
+            fromDeeplink = isFromDeeplink,
+            deeplinkUrl = deeplinkUrl
+        )
 
         if (isPdpCacheableError()) {
-            showToasterP1Error(error = error)
+            preparePageCacheableError(errorModel = errorModel, error = error)
         } else {
-            val errorModel = ProductDetailErrorHelper.getErrorType(
-                ctx,
-                error,
-                isFromDeeplink,
-                deeplinkUrl
-            )
-            val pdpLayout = viewModel.pdpLayout
-            renderPageError(errorModel)
-            ProductDetailServerLogger.logBreadCrumbSuccessGetDataP1(
-                isSuccess = false,
-                errorMessage = errorModel.errorMessage,
-                errorCode = errorModel.errorCode,
-                cacheState = pdpLayout?.cacheState,
-                isCampaign = pdpLayout?.isCampaign.orFalse()
-            )
+            preparePageError(errorModel)
         }
+    }
+
+    private fun preparePageError(errorModel: PageErrorDataModel) {
+        val pdpLayout = viewModel.pdpLayout
+
+        renderPageError(errorModel)
+        ProductDetailServerLogger.logBreadCrumbSuccessGetDataP1(
+            isSuccess = false,
+            errorMessage = errorModel.errorMessage,
+            errorCode = errorModel.errorCode,
+            cacheState = pdpLayout?.cacheState,
+            isCampaign = pdpLayout?.isCampaign.orFalse()
+        )
     }
 
     private fun isPdpCacheableError(): Boolean {
         return isCacheable() && viewModel.pdpLayout?.cacheState?.hasCached.orFalse()
     }
 
-    private fun showToasterP1Error(error: Throwable) {
-        val view = binding?.root ?: return
-        val errorModel = ProductDetailErrorHelper.getErrorType(
-            view.context,
-            error,
-            isFromDeeplink,
-            deeplinkUrl
-        )
-
-        when (errorModel.errorCode.toIntOrZero()) {
-            GlobalError.SERVER_ERROR, GlobalError.NO_CONNECTION -> {
-                binding?.swipeRefreshPdp?.isRefreshing = false
-
-                Toaster.build(
-                    view = view,
-                    text = "Koneksi internetmu terganggu!\nPastikan internetmu lancar dengan cek ulang paket data, WifFi, atau jaringan di tempatmu.",
-                    actionText = "Coba lagi",
-                    duration = LENGTH_INDEFINITE,
-                    type = TYPE_ERROR
-                ) {
-                    onSwipeRefresh()
-                }.show()
+    private fun preparePageCacheableError(errorModel: PageErrorDataModel, error: Throwable) {
+        when (error) {
+            is MessageErrorException,
+            is TobacoErrorException -> { // tobacco on top order, because errorModel.errorCode same when no connection
+                preparePageError(errorModel)
+            }
+            else -> {
+                when (errorModel.errorCode.toIntOrZero()) {
+                    GlobalError.SERVER_ERROR, GlobalError.NO_CONNECTION -> {
+                        showToasterPageError()
+                    }
+                }
             }
         }
+    }
+
+    private fun showToasterPageError() {
+        val view = binding?.root ?: return
+        binding?.swipeRefreshPdp?.isRefreshing = false
+
+        Toaster.build(
+            view = view,
+            text = "Koneksi internetmu terganggu!\nPastikan internetmu lancar dengan cek ulang paket data, WifFi, atau jaringan di tempatmu.",
+            actionText = "Coba lagi",
+            duration = LENGTH_INDEFINITE,
+            type = TYPE_ERROR
+        ) {
+            onSwipeRefresh()
+        }.show()
     }
 
     private fun observeP2Login() {

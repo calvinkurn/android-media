@@ -9,10 +9,8 @@ import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kotlin.extensions.view.encodeToUtf8
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
-import com.tokopedia.product.detail.common.data.model.pdplayout.ComponentData
 import com.tokopedia.product.detail.common.data.model.pdplayout.PdpGetLayout
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailLayout
 import com.tokopedia.product.detail.common.data.model.rates.TokoNowParam
@@ -493,7 +491,8 @@ open class GetPdpLayoutUseCase @Inject constructor(
             ProductDetailConstant.PRODUCT_LIST,
             ProductDetailConstant.VIEW_TO_VIEW,
             ProductDetailConstant.PRODUCT_LIST_VERTICAL,
-            ProductDetailConstant.TOP_ADS
+            ProductDetailConstant.TOP_ADS,
+            ProductDetailConstant.FINTECH_WIDGET_TYPE
         )
     }
 
@@ -602,13 +601,8 @@ open class GetPdpLayoutUseCase @Inject constructor(
         val pdpLayout = layout ?: return false
 
         return pdpLayout.components.any { component ->
-            component.componentData.any { it.isCampaign() }
+            component.componentData.any { it.campaign.isActive }
         }
-    }
-
-    private fun ComponentData.isCampaign(): Boolean {
-        val campaignUpComingId = -10000
-        return campaign.isActive || campaign.campaignID.toIntOrZero() == campaignUpComingId
     }
 
     private fun processResponse(
