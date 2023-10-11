@@ -85,7 +85,7 @@ class ProductRecommSubViewModelTest {
         every { GlobalConfig.isSellerApp() } returns false
         coEvery { getRecommendationUseCase.getData(any()) } returns response
 
-        viewModel.loadViewToView("view_to_view", "", false)
+        viewModel.loadViewToView("view_to_view", "", false, "", "")
 
         coVerify { getRecommendationUseCase.getData(any()) }
         assertTrue(viewModel.loadViewToView.value is Success)
@@ -100,7 +100,7 @@ class ProductRecommSubViewModelTest {
         every { GlobalConfig.isSellerApp() } returns true
         coEvery { getRecommendationUseCase.getData(any()) } returns response
 
-        viewModel.loadViewToView("view_to_view", "", false)
+        viewModel.loadViewToView("view_to_view", "", false, "", "")
 
         runCatching {
             viewModel.loadViewToView.getOrAwaitValue()
@@ -118,9 +118,9 @@ class ProductRecommSubViewModelTest {
         every { GlobalConfig.isSellerApp() } returns false
         coEvery { getRecommendationUseCase.getData(any()) } returns response
 
-        viewModel.loadViewToView("view_to_view", "", false)
+        viewModel.loadViewToView("view_to_view", "", false, "", "")
 
-        viewModel.loadViewToView("view_to_view", "", false)
+        viewModel.loadViewToView("view_to_view", "", false, "", "")
 
         coVerify(exactly = 1) { getRecommendationUseCase.getData(any()) }
     }
@@ -269,10 +269,10 @@ class ProductRecommSubViewModelTest {
             getProductRecommendationUseCase.executeOnBackground(any())
         } returns recomWidget
 
-        viewModel.loadRecommendation("pdp_1", "", false, mutableMapOf())
+        viewModel.loadRecommendation("pdp_1", "", false, mutableMapOf(), "", "")
         Thread.sleep(500)
         // hit again with same page name
-        viewModel.loadRecommendation("pdp_1", "", false, mutableMapOf())
+        viewModel.loadRecommendation("pdp_1", "", false, mutableMapOf(), "", "")
 
         // make sure it will only called once
         coVerify(exactly = 1) {
@@ -286,7 +286,7 @@ class ProductRecommSubViewModelTest {
             GlobalConfig.isSellerApp()
         } returns true
 
-        viewModel.loadRecommendation("pdp_1", "", false, mutableMapOf())
+        viewModel.loadRecommendation("pdp_1", "", false, mutableMapOf(), "", "")
 
         coVerify(inverse = true) {
             getProductRecommendationUseCase.executeOnBackground(any())
@@ -301,7 +301,7 @@ class ProductRecommSubViewModelTest {
             getRecommendationUseCase.getData(any())
         } returns response
 
-        viewModel.loadViewToView("view_to_view", "", false)
+        viewModel.loadViewToView("view_to_view", "", false, "", "")
 
         coVerify { getRecommendationUseCase.getData(any()) }
         assertTrue(viewModel.loadViewToView.value is Fail)
@@ -313,7 +313,7 @@ class ProductRecommSubViewModelTest {
             getRecommendationUseCase.getData(any())
         } throws Exception()
 
-        viewModel.loadViewToView("view_to_view", "", false)
+        viewModel.loadViewToView("view_to_view", "", false, "", "")
 
         coVerify { getRecommendationUseCase.getData(any()) }
         assertTrue(viewModel.loadViewToView.value is Fail)
@@ -327,10 +327,10 @@ class ProductRecommSubViewModelTest {
             getRecommendationUseCase.getData(any())
         } returns recomWidget
 
-        viewModel.loadViewToView("view_to_view", "", false)
+        viewModel.loadViewToView("view_to_view", "", false, "", "")
         Thread.sleep(500)
         // hit again with same page name
-        viewModel.loadViewToView("view_to_view", "", false)
+        viewModel.loadViewToView("view_to_view", "", false, "", "")
 
         // make sure it will only called once
         coVerify(exactly = 1) {
@@ -348,7 +348,9 @@ class ProductRecommSubViewModelTest {
             "pdp_10",
             "123",
             true,
-            mutableMapOf("123" to MiniCartItem.MiniCartItemProduct())
+            mutableMapOf("123" to MiniCartItem.MiniCartItemProduct()),
+            "",
+            ""
         )
 
         val requestParamsSlot = slot<RequestParams>()
@@ -374,7 +376,9 @@ class ProductRecommSubViewModelTest {
             "pdp_10",
             "123",
             false,
-            null
+            null,
+            "",
+            ""
         )
 
         val requestParamsSlot = slot<RequestParams>()
@@ -397,7 +401,7 @@ class ProductRecommSubViewModelTest {
             getProductRecommendationUseCase.executeOnBackground(any())
         } throws Throwable()
 
-        viewModel.loadRecommendation(pageName, "", false, mutableMapOf())
+        viewModel.loadRecommendation(pageName, "", false, mutableMapOf(), "", "")
 
         coVerify {
             getProductRecommendationUseCase.executeOnBackground(any())
@@ -422,7 +426,7 @@ class ProductRecommSubViewModelTest {
             getProductRecommendationUseCase.executeOnBackground(any())
         } returns mockRecomm
 
-        viewModel.loadRecommendation(pageName, "", false, mutableMapOf())
+        viewModel.loadRecommendation(pageName, "", false, mutableMapOf(), "", "")
 
         coVerify {
             getProductRecommendationUseCase.executeOnBackground(any())
@@ -454,7 +458,9 @@ class ProductRecommSubViewModelTest {
             pageName,
             "123",
             false,
-            mutableMapOf()
+            mutableMapOf(),
+            queryParam = "",
+            thematicId = ""
         )
 
         coVerify {
@@ -477,7 +483,9 @@ class ProductRecommSubViewModelTest {
 
         viewModel.getVerticalRecommendationData(
             pageName = pageName,
-            productId = productId
+            productId = productId,
+            queryParam = "",
+            thematicId = ""
         )
 
         assertTrue(viewModel.verticalRecommendation.value is Fail)
@@ -493,7 +501,7 @@ class ProductRecommSubViewModelTest {
             getRecommendationUseCase.getData(any())
         } throws Throwable()
 
-        viewModel.getVerticalRecommendationData(pageName, pageNumber, productId)
+        viewModel.getVerticalRecommendationData(pageName, pageNumber, productId, "", "")
 
         assertTrue(viewModel.verticalRecommendation.value is Fail)
     }
@@ -513,7 +521,7 @@ class ProductRecommSubViewModelTest {
             getRecommendationUseCase.getData(any())
         } returns arrayListOf(mockResponse)
 
-        viewModel.getVerticalRecommendationData(pageName, pageNumber, productId)
+        viewModel.getVerticalRecommendationData(pageName, pageNumber, productId, "", "")
 
         val slotRequestParams = slot<GetRecommendationRequestParam>()
         coVerify {
@@ -544,7 +552,9 @@ class ProductRecommSubViewModelTest {
         viewModel.getVerticalRecommendationData(
             pageName = pageName,
             productId = null,
-            page = null
+            page = null,
+            queryParam = "",
+            thematicId = ""
         )
 
         val slotRequestParams = slot<GetRecommendationRequestParam>()
