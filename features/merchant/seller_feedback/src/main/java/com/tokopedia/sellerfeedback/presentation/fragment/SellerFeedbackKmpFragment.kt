@@ -53,6 +53,7 @@ import com.tokopedia.sellerfeedback.presentation.uimodel.ImageFeedbackUiModel
 import com.tokopedia.sellerfeedback.presentation.uimodel.Score
 import com.tokopedia.sellerfeedback.presentation.util.ScreenShootPageHelper
 import com.tokopedia.sellerfeedback.presentation.util.ScreenshotManager
+import com.tokopedia.sellerfeedback.presentation.util.SellerFeedbackLogger
 import com.tokopedia.sellerfeedback.presentation.view.SellerFeedbackToolbar
 import com.tokopedia.sellerfeedback.presentation.viewholder.BaseImageFeedbackViewHolder
 import com.tokopedia.sellerfeedback.presentation.viewmodel.SellerFeedbackKmpViewModel
@@ -177,6 +178,7 @@ class SellerFeedbackKmpFragment :
         showSettings()
         setDefaultFeedbackResultValue()
         attachScreenshot()
+        SellerFeedbackLogger.sendLogToNewRelic(SellerFeedbackLogger.STATE.OPEN)
     }
 
     override fun onRequestPermissionsResult(
@@ -301,6 +303,7 @@ class SellerFeedbackKmpFragment :
                 isClickable = false
                 isLoading = true
                 SellerFeedbackTracking.Click.eventClickSubmit()
+                SellerFeedbackLogger.sendLogToNewRelic(SellerFeedbackLogger.STATE.SUBMIT)
                 val sellerFeedback = SellerFeedback(
                     feedbackScore = getFeedbackScore(),
                     feedbackType = getFeedbackType(),
@@ -444,6 +447,12 @@ class SellerFeedbackKmpFragment :
     private val observerSubmitFeedbackKmp = Observer<SubmitResultKmp> {
         when (it) {
             is SubmitResultKmp.SubmitFeedbackSuccess -> {
+                val submitFeedback = it.submitFeedbackModel
+                SellerFeedbackLogger.sendLogToNewRelic(
+                    SellerFeedbackLogger.STATE.RESULT,
+                    result = SellerFeedbackLogger.SUCCESS,
+                    detailResult = "state:${submitFeedback?.state.orEmpty()};errorMessage:${submitFeedback?.errorMessage.orEmpty()};isError:${submitFeedback?.isError}"
+                )
                 setOnSuccessFeedbackSaved()
             }
             is SubmitResultKmp.UploadFail -> {
@@ -453,11 +462,21 @@ class SellerFeedbackKmpFragment :
 
             is SubmitResultKmp.SubmitFail -> {
                 logToCrashlytics(it.cause, ERROR_SUBMIT)
+                SellerFeedbackLogger.sendLogToNewRelic(
+                    SellerFeedbackLogger.STATE.RESULT,
+                    result = SellerFeedbackLogger.FAILED,
+                    detailResult = it.cause.stackTraceToString()
+                )
                 showErrorToaster(getString(R.string.feedback_form_toaster_fail_submit))
             }
 
             is SubmitResultKmp.NetworkFail -> {
                 logToCrashlytics(it.cause, ERROR_NETWORK)
+                SellerFeedbackLogger.sendLogToNewRelic(
+                    SellerFeedbackLogger.STATE.RESULT,
+                    result = SellerFeedbackLogger.FAILED,
+                    detailResult = it.cause.stackTraceToString()
+                )
                 showErrorToaster(getString(R.string.feedback_form_toaster_fail_network))
             }
             else -> {
