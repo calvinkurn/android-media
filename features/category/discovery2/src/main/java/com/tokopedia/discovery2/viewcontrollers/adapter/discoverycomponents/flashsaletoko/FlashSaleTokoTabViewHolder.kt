@@ -66,20 +66,21 @@ class FlashSaleTokoTabViewHolder(
         return position
     }
 
-    private fun trackTabClick(position: Int) {
+    private fun trackTabClick(tabPosition: Int) {
         val analytics = (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics() ?: return
 
-        val component = viewModel?.component
-        val parentPosition = viewModel?.position ?: 0
+        viewModel?.run {
+            val parentPosition = position
 
-        component?.data?.let {
-            analytics.trackUnifyTabsClick(
-                component.id,
-                parentPosition,
-                it[position],
-                position,
-                CLICK_UNIFY_TAB
-            )
+            component.data?.let {
+                analytics.trackUnifyTabsClick(
+                    component.id,
+                    parentPosition,
+                    it[tabPosition],
+                    tabPosition,
+                    CLICK_UNIFY_TAB
+                )
+            }
         }
     }
 }
