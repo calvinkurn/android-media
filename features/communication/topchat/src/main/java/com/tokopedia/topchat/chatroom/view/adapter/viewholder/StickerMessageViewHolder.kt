@@ -14,12 +14,13 @@ import com.tokopedia.chat_common.data.SendableUiModel.Companion.PAYLOAD_EVENT_RE
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.attr.StickerProfile
+import com.tokopedia.topchat.chatroom.view.adapter.util.TopChatChatRoomBubbleBackgroundGenerator.generateLeftBg
+import com.tokopedia.topchat.chatroom.view.adapter.util.TopChatChatRoomBubbleBackgroundGenerator.generateRightBg
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.Payload
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.ChatMessageViewHolderBinder.generateLeftBg
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.ChatMessageViewHolderBinder.generateRightBg
 import com.tokopedia.topchat.chatroom.view.custom.message.ReplyBubbleAreaMessage
 import com.tokopedia.topchat.chatroom.view.uimodel.StickerUiModel
 import com.tokopedia.topchat.common.util.ViewUtil
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 class StickerMessageViewHolder(
     itemView: View?,
@@ -38,7 +39,6 @@ class StickerMessageViewHolder(
     private var msgOffsetLine: View? = itemView?.findViewById(
         R.id.v_sticker_offset
     )
-    private var statusFooter: LinearLayout? = itemView?.findViewById(R.id.ll_footer)
     private var stickerImage: ImageView? = itemView?.findViewById(R.id.iv_sticker_message)
     private var loader: AnimatedVectorDrawableCompat? = null
 
@@ -59,16 +59,16 @@ class StickerMessageViewHolder(
         }
     }
 
-    override fun bind(message: StickerUiModel) {
-        super.bind(message)
+    override fun bind(uiModel: StickerUiModel) {
+        super.bind(uiModel)
         initLoader()
-        bindStickerImage(message.sticker)
-        alignLayout(message)
-        bindChatReadStatus(message)
+        bindStickerImage(uiModel.sticker)
+        alignLayout(uiModel)
+        bindChatReadStatus(uiModel)
         bindReplyBubbleListener()
-        bindReplyReference(message)
-        bindBackground(message)
-        bindMsgOffsetLine(message)
+        bindReplyReference(uiModel)
+        bindBackground(uiModel)
+        bindMsgOffsetLine(uiModel)
     }
 
     private fun bindReplyBubbleListener() {
@@ -106,7 +106,7 @@ class StickerMessageViewHolder(
         itemView.context?.let {
             loader = AnimatedVectorDrawableCompat.create(
                 it,
-                com.tokopedia.unifycomponents.R.drawable.unify_loader
+                unifycomponentsR.drawable.unify_loader
             )
             loader?.registerAnimationCallback(object : Animatable2Compat.AnimationCallback() {
                 override fun onAnimationEnd(drawable: Drawable?) {

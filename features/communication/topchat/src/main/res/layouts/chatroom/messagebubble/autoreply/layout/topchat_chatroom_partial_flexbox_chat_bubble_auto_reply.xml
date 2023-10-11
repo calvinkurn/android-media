@@ -2,7 +2,7 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:parentTag="com.tokopedia.topchat.chatroom.view.custom.messagebubble.FlexBoxChatLayout">
+    tools:parentTag="com.tokopedia.topchat.chatroom.view.custom.messagebubble.regular.FlexBoxChatLayout">
 
     <LinearLayout
         android:id="@+id/ll_msg_header"

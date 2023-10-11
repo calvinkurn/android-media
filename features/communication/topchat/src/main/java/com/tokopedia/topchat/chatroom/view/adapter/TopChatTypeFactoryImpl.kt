@@ -30,12 +30,11 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.TopchatPr
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.product_bundling.ProductBundlingCardViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.product_bundling.ProductBundlingCarouselViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwBubbleViewHolder
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.BannedChatMessageViewHolder
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.ChatMessageUnifyViewHolder
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.autoreply.TopChatAutoReplyViewHolder
-import com.tokopedia.topchat.chatroom.view.custom.messagebubble.FlexBoxChatLayout
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.messagebubble.banned.BannedChatMessageViewHolder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.messagebubble.regular.ChatMessageUnifyViewHolder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.messagebubble.autoreply.TopChatAutoReplyViewHolder
 import com.tokopedia.topchat.chatroom.view.custom.message.ReplyBubbleAreaMessage
-import com.tokopedia.topchat.chatroom.view.custom.messagebubble.autoreply.FlexBoxChatAutoReplyLayout
+import com.tokopedia.topchat.chatroom.view.custom.messagebubble.base.TopChatFlexBoxListener
 import com.tokopedia.topchat.chatroom.view.listener.DualAnnouncementListener
 import com.tokopedia.topchat.chatroom.view.listener.TopChatVoucherListener
 import com.tokopedia.topchat.chatroom.view.uimodel.*
@@ -61,13 +60,12 @@ open class TopChatTypeFactoryImpl constructor(
     private val fraudAlertListener: RoomSettingFraudAlertViewHolder.Listener,
     private val reviewListener: ReviewViewHolder.Listener,
     private val srwBubbleListener: SrwBubbleViewHolder.Listener,
-    private val chatMsgListener: FlexBoxChatLayout.Listener,
+    private val chatMsgListener: TopChatFlexBoxListener,
     private val replyBubbleListener: ReplyBubbleAreaMessage.Listener,
     private val listener: ReminderTickerViewHolder.Listener,
     private val productBundlingListener: ProductBundlingListener,
     private val censorListener: BannedChatMessageViewHolder.TopChatMessageCensorListener,
-    private val userSession: UserSessionInterface,
-    private val autoReplyMsgListener: FlexBoxChatAutoReplyLayout.Listener,
+    private val userSession: UserSessionInterface
 ) : BaseChatTypeFactoryImpl(
     imageAnnouncementListener,
     chatLinkHandlerListener,
@@ -260,7 +258,7 @@ open class TopChatTypeFactoryImpl constructor(
             )
             TopChatAutoReplyViewHolder.LAYOUT -> TopChatAutoReplyViewHolder(
                 parent, chatLinkHandlerListener, commonListener, adapterListener,
-                autoReplyMsgListener, replyBubbleListener
+                chatMsgListener, replyBubbleListener
             )
             else -> createViewHolder(parent, type)
         }

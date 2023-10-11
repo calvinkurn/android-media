@@ -1,4 +1,4 @@
-package com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.autoreply
+package com.tokopedia.topchat.chatroom.view.adapter.viewholder.messagebubble.autoreply
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView

@@ -3,7 +3,7 @@ package com.tokopedia.topchat.chatroom.view.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.autoreply.TopChatAutoReplyItemViewHolder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.messagebubble.autoreply.TopChatAutoReplyItemViewHolder
 import com.tokopedia.topchat.chatroom.view.uimodel.autoreply.TopChatAutoReplyItemUiModel
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.adapter.util.TopChatAutoReplyDiffUtil

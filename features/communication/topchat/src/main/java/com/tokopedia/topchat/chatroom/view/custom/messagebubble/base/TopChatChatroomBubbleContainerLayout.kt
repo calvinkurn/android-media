@@ -1,4 +1,4 @@
-package com.tokopedia.topchat.chatroom.view.custom.messagebubble
+package com.tokopedia.topchat.chatroom.view.custom.messagebubble.base
 
 import android.content.Context
 import android.util.AttributeSet

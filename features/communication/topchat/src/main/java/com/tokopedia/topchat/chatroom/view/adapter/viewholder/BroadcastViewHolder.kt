@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.data.DeferredAttachment
 import com.tokopedia.chat_common.data.ImageAnnouncementUiModel
 import com.tokopedia.chat_common.data.MessageUiModel
+import com.tokopedia.chat_common.util.ChatTimeConverter.getHourTime
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageAnnouncementListener
 import com.tokopedia.kotlin.extensions.view.*
@@ -21,7 +22,6 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterList
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewHolderListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.SearchListener
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.ChatMessageViewHolderBinder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.ImageAnnouncementViewHolderBinder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.ProductBundlingViewHolderBinder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.ProductCarouselListAttachmentViewHolderBinder
@@ -30,7 +30,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.ProductBu
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.TopchatProductAttachmentListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.product_bundling.ProductBundlingCarouselViewHolder
 import com.tokopedia.topchat.chatroom.view.custom.BroadcastCampaignLabelView
-import com.tokopedia.topchat.chatroom.view.custom.messagebubble.FlexBoxChatLayout
+import com.tokopedia.topchat.chatroom.view.custom.messagebubble.regular.FlexBoxChatLayout
 import com.tokopedia.topchat.chatroom.view.custom.ProductCarouselRecyclerView
 import com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
 import com.tokopedia.topchat.chatroom.view.custom.product_bundling.ProductBundlingCardAttachmentContainer
@@ -42,6 +42,7 @@ import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.MultipleProd
 import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundlingUiModel
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class BroadcastViewHolder constructor(
     itemView: View?,
@@ -74,7 +75,7 @@ class BroadcastViewHolder constructor(
     private val singleProductBundling: ProductBundlingCardAttachmentContainer? = itemView?.findViewById(
         R.id.product_bundle_card_broadcast
     )
-    private val broadcastText: FlexBoxChatLayout? = itemView?.findViewById(
+    private val fxChat: FlexBoxChatLayout? = itemView?.findViewById(
         R.id.broadcast_fx_chat
     )
     private val cta: ConstraintLayout? = itemView?.findViewById(R.id.ll_cta_container)
@@ -218,14 +219,10 @@ class BroadcastViewHolder constructor(
         (bannerView?.layoutParams as? LinearLayout.LayoutParams)?.apply {
             val productMarginBottom = when {
                 element.hasCampaignLabel() -> 0
-                element.hasVoucher() -> itemView.context.resources.getDimension(
-                    com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2
-                )
-                else -> itemView.context.resources.getDimension(
-                    com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3
-                )
+                element.hasVoucher() -> 4.dpToPx(itemView.resources.displayMetrics)
+                else -> 8.dpToPx(itemView.resources.displayMetrics)
             }
-            bottomMargin = productMarginBottom.toInt()
+            bottomMargin = productMarginBottom
         }
     }
 
@@ -345,13 +342,13 @@ class BroadcastViewHolder constructor(
     private fun bindMessage(element: BroadCastUiModel) {
         val message: MessageUiModel? = element.messageUiModel
         if (message != null) {
-            broadcastText?.show()
-            ChatMessageViewHolderBinder.bindChatMessage(message, broadcastText)
-            ChatMessageViewHolderBinder.bindOnTouchMessageListener(broadcastText, onTouchListener)
-            ChatMessageViewHolderBinder.bindHour(message, broadcastText)
-            ChatMessageViewHolderBinder.bindChatReadStatus(message, broadcastText)
+            fxChat?.show()
+            fxChat?.setMessageBody(message)
+            fxChat?.setMessageOnTouchListener(onTouchListener)
+            fxChat?.setHourTime(getHourTime(message.replyTime))
+            fxChat?.bindChatReadStatus(message)
         } else {
-            broadcastText?.gone()
+            fxChat?.gone()
         }
     }
 
@@ -384,9 +381,9 @@ class BroadcastViewHolder constructor(
 
                 // Change text into disabled color when label show & the user is seller
                 val color = if (shouldShowBroadcastCtaLabel(banner)) {
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN400
+                    unifyprinciplesR.color.Unify_NN400
                 } else {
-                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                    unifyprinciplesR.color.Unify_GN500
                 }
                 it.setTextColor(MethodChecker.getColor(itemView.context, color))
             }
@@ -412,10 +409,10 @@ class BroadcastViewHolder constructor(
     }
 
     companion object {
-        val LAYOUT = R.layout.item_broadcast_message_bubble
+        val LAYOUT = R.layout.topchat_chatroom_broadcast_message_bubble_item
 
         private val paddingWithBanner = 1f.toPx()
         private val paddingWithoutBanner = 6f.toPx()
-        private val paddingWithBroadcastLabelOnly = 0f
+        private const val paddingWithBroadcastLabelOnly = 0f
     }
 }

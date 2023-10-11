@@ -1,4 +1,4 @@
-package com.tokopedia.topchat.chatroom.view.custom.messagebubble.autoreply
+package com.tokopedia.topchat.chatroom.view.custom.messagebubble.regular
 
 import android.content.Context
 import android.util.AttributeSet
@@ -7,9 +7,9 @@ import com.tokopedia.topchat.chatroom.view.custom.messagebubble.base.BaseTopChat
 import com.tokopedia.topchat.chatroom.view.custom.messagebubble.base.BaseTopChatFlexBoxChatLayout
 
 
-class TopChatChatroomMessageBubbleAutoReplyLayout : BaseTopChatChatroomMessageBubbleLayout {
+class TopChatChatroomMessageBubbleLayout : BaseTopChatChatroomMessageBubbleLayout {
 
-    private var fxChat: FlexBoxChatAutoReplyLayout? = null
+    private var fxChat: FlexBoxChatLayout? = null
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -31,6 +31,6 @@ class TopChatChatroomMessageBubbleAutoReplyLayout : BaseTopChatChatroomMessageBu
     }
 
     companion object {
-        private val LAYOUT = R.layout.topchat_chatroom_partial_chat_message_bubble_auto_reply
+        private val LAYOUT = R.layout.topchat_chatroom_partial_chat_messsage_bubble
     }
 }

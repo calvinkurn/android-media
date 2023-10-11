@@ -12,13 +12,13 @@ import com.tokopedia.topchat.chatroom.view.custom.SrwFrameLayout
 import com.tokopedia.topchat.chatroom.view.uimodel.SendablePreview
 
 class SrwBubbleViewHolder constructor(
-    itemView: View?,
+    itemView: View,
     private val listener: Listener?,
     private val adapterListener: AdapterListener?,
 ) : AbstractViewHolder<SrwBubbleUiModel>(itemView) {
 
-    private val srwLayout: SrwFrameLayout? = itemView?.findViewById(R.id.chat_srw_bubble)
-    private val topMarginOpposite: Float = getOppositeMargin(itemView?.context)
+    private val srwLayout: SrwFrameLayout? = itemView.findViewById(R.id.chat_srw_bubble)
+    private val topMarginOpposite: Int = getOppositeMargin(itemView.context)
 
     interface Listener {
         fun trackClickSrwBubbleQuestion(
@@ -55,7 +55,7 @@ class SrwBubbleViewHolder constructor(
     private fun bindTopMargin(element: SrwBubbleUiModel) {
         val lp = srwLayout?.layoutParams as? ViewGroup.MarginLayoutParams ?: return
         if (adapterListener?.isOpposite(adapterPosition, true) == true) {
-            lp.topMargin = topMarginOpposite.toInt()
+            lp.topMargin = topMarginOpposite
         } else {
             lp.topMargin = 0
         }

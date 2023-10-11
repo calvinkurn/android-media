@@ -7,12 +7,12 @@ import com.tokopedia.chat_common.data.MessageUiModel
 import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod
 import com.tokopedia.chat_common.util.ChatTimeConverter
-import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.chatbot.chatbot2.view.uimodel.dynamicattachment.DynamicOwocInvoiceUiModel
 import com.tokopedia.chatbot.view.customview.CustomChatbotChatLayout
 import com.tokopedia.chatbot.view.customview.MessageBubbleLayout
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.chat_common.R as chat_commonR
 
 object ChatbotMessageViewHolderBinder {
 
@@ -67,13 +67,7 @@ object ChatbotMessageViewHolderBinder {
     }
 
     private fun getHourTime(replyTime: String?): String {
-        return try {
-            replyTime?.let {
-                ChatTimeConverter.formatTime(replyTime.toLong() / BaseChatViewHolder.MILISECONDS)
-            } ?: ""
-        } catch (e: NumberFormatException) {
-            replyTime ?: ""
-        }
+        return ChatTimeConverter.getHourTime(replyTime)
     }
 
     fun bindChatReadStatus(element: MessageUiModel, messageView: CustomChatbotChatLayout?) {
@@ -92,8 +86,8 @@ object ChatbotMessageViewHolderBinder {
         if (element.isShowTime && element.isSender) {
             checkMark.show()
             val imageResource = when {
-                element.isDummy -> com.tokopedia.chat_common.R.drawable.ic_chatcommon_check_rounded_grey
-                else -> com.tokopedia.chat_common.R.drawable.ic_chatcommon_check_read_rounded_green
+                element.isDummy -> chat_commonR.drawable.ic_chatcommon_check_rounded_grey
+                else -> chat_commonR.drawable.ic_chatcommon_check_read_rounded_green
             }
             val drawable = MethodChecker.getDrawable(checkMark.context, imageResource)
             checkMark.setImageDrawable(drawable)

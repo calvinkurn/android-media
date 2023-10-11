@@ -132,9 +132,9 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredVie
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.SearchListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.ProductBundlingListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.TopchatProductAttachmentListener
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.messagebubble.banned.BannedChatMessageViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwBubbleViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwQuestionViewHolder
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.BannedChatMessageViewHolder
 import com.tokopedia.topchat.chatroom.view.bottomsheet.TopChatAutoReplyDetailBottomSheet
 import com.tokopedia.topchat.chatroom.view.bottomsheet.TopChatGuideChatBottomSheet
 import com.tokopedia.topchat.chatroom.view.bottomsheet.TopchatBottomSheetBuilder
@@ -144,13 +144,12 @@ import com.tokopedia.topchat.chatroom.view.bottomsheet.TopchatBottomSheetBuilder
 import com.tokopedia.topchat.chatroom.view.custom.ChatMenuStickerView
 import com.tokopedia.topchat.chatroom.view.custom.ChatMenuView
 import com.tokopedia.topchat.chatroom.view.custom.ComposeMessageAreaConstraintLayout
-import com.tokopedia.topchat.chatroom.view.custom.messagebubble.FlexBoxChatLayout
 import com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
 import com.tokopedia.topchat.chatroom.view.custom.SrwFrameLayout
 import com.tokopedia.topchat.chatroom.view.custom.TransactionOrderProgressLayout
 import com.tokopedia.topchat.chatroom.view.custom.message.ReplyBubbleAreaMessage
 import com.tokopedia.topchat.chatroom.view.custom.message.TopchatMessageRecyclerView
-import com.tokopedia.topchat.chatroom.view.custom.messagebubble.autoreply.FlexBoxChatAutoReplyLayout
+import com.tokopedia.topchat.chatroom.view.custom.messagebubble.base.TopChatFlexBoxListener
 import com.tokopedia.topchat.chatroom.view.customview.TopChatRoomDialog
 import com.tokopedia.topchat.chatroom.view.customview.TopChatViewStateImpl
 import com.tokopedia.topchat.chatroom.view.listener.DualAnnouncementListener
@@ -200,10 +199,10 @@ import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
-import java.util.Locale
-import java.util.Stack
+import java.util.*
 import javax.inject.Inject
 import kotlin.math.abs
+import com.tokopedia.localizationchooseaddress.R as localizationchooseaddressR
 
 /**
  * @author : Steven 29/11/18
@@ -233,12 +232,11 @@ open class TopChatRoomFragment :
     SrwQuestionViewHolder.Listener,
     ReplyBoxTextListener,
     SrwBubbleViewHolder.Listener,
-    FlexBoxChatLayout.Listener,
+    TopChatFlexBoxListener,
     ReplyBubbleAreaMessage.Listener,
     ReminderTickerViewHolder.Listener,
     ProductBundlingListener,
-    BannedChatMessageViewHolder.TopChatMessageCensorListener,
-    FlexBoxChatAutoReplyLayout.Listener
+    BannedChatMessageViewHolder.TopChatMessageCensorListener
 {
 
     @Inject
@@ -1179,7 +1177,7 @@ open class TopChatRoomFragment :
             this, this, this, this,
             this, this, this, this,
             this, this, this, this,
-            this, this, this, session, this
+            this, this, this, session
         )
     }
 
@@ -3206,7 +3204,7 @@ open class TopChatRoomFragment :
                 if (changeAddressStack.empty()) return
                 val attachment = changeAddressStack.pop() ?: return
                 val msg = context?.getString(
-                    com.tokopedia.localizationchooseaddress.R.string.toaster_success_chosen_address
+                    localizationchooseaddressR.string.toaster_success_chosen_address
                 ) ?: ""
                 showToasterMsg(msg)
                 initUserLocation()
