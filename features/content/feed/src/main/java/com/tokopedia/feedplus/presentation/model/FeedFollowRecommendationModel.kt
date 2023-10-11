@@ -2,6 +2,7 @@ package com.tokopedia.feedplus.presentation.model
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
+import com.tokopedia.feedplus.presentation.model.type.FeedContentType
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
@@ -9,13 +10,13 @@ import java.net.UnknownHostException
  * Created By : Jonathan Darwin on July 04, 2023
  */
 data class FeedFollowRecommendationModel(
-    val id: String,
+    override val id: String,
     val title: String,
     val description: String,
     val data: List<Profile>,
     val cursor: String,
     val status: Status,
-) : Visitable<FeedAdapterTypeFactory> {
+) : Visitable<FeedAdapterTypeFactory>, FeedContentUiModel {
 
     val hasNext: Boolean
         get() = cursor.isNotEmpty()
@@ -88,4 +89,10 @@ data class FeedFollowRecommendationModel(
                 status = Status.Unknown,
             )
     }
+
+    override val contentType: FeedContentType
+        get() = FeedContentType.FollowRecommendation
+
+    override val share: FeedShareModel?
+        get() = null
 }

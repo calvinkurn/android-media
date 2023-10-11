@@ -59,7 +59,6 @@ import com.tokopedia.feedplus.analytics.FeedMVCAnalytics
 import com.tokopedia.feedplus.data.FeedXCard
 import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_TOP_ADS
 import com.tokopedia.feedplus.databinding.FragmentFeedImmersiveBinding
-import com.tokopedia.feedplus.detail.FeedDetailBottomBarActionListener
 import com.tokopedia.feedplus.di.FeedMainInjector
 import com.tokopedia.feedplus.domain.mapper.MapperFeedModelToTrackerDataModel
 import com.tokopedia.feedplus.domain.mapper.MapperProductsToXProducts
@@ -68,6 +67,8 @@ import com.tokopedia.feedplus.presentation.adapter.FeedContentAdapter
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedFollowRecommendationListener
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
 import com.tokopedia.feedplus.presentation.adapter.util.FeedPostLayoutManager
+import com.tokopedia.feedplus.presentation.callback.FeedUiActionListener
+import com.tokopedia.feedplus.presentation.callback.FeedUiListener
 import com.tokopedia.feedplus.presentation.model.ActiveTabSource
 import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
 import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
@@ -75,6 +76,7 @@ import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
 import com.tokopedia.feedplus.presentation.model.FeedCardLivePreviewContentModel
 import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
 import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
+import com.tokopedia.feedplus.presentation.model.FeedContentUiModel
 import com.tokopedia.feedplus.presentation.model.FeedDataModel
 import com.tokopedia.feedplus.presentation.model.FeedFollowRecommendationModel
 import com.tokopedia.feedplus.presentation.model.FeedMainEvent
@@ -131,7 +133,8 @@ class FeedFragment :
     FeedListener,
     ContentThreeDotsMenuBottomSheet.Listener,
     FeedTaggedProductBottomSheet.Listener,
-    FeedFollowersOnlyBottomSheet.Listener {
+    FeedFollowersOnlyBottomSheet.Listener,
+    FeedUiActionListener {
 
     private var _binding: FragmentFeedImmersiveBinding? = null
     private val binding: FragmentFeedImmersiveBinding
@@ -397,6 +400,12 @@ class FeedFragment :
                 Toaster.TYPE_ERROR
             )
         }
+    }
+
+    private var mUiListener: FeedUiListener? = null
+
+    fun setUiListener(uiListener: FeedUiListener) {
+        mUiListener = uiListener
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -1200,7 +1209,7 @@ class FeedFragment :
                                 )
                             )
                         }
-                        updateBottomActionView(RecyclerView.NO_POSITION)
+                        mUiListener?.onContentFailed()
                     } else {
                         adapter.setList(it.data.items) {
                             if (_binding == null) return@setList
@@ -1217,6 +1226,7 @@ class FeedFragment :
                     hideLoading()
                 }
                 is Fail -> {
+                    mUiListener?.onContentFailed()
                     hideLoading()
                     adapter.showErrorNetwork()
                 }
@@ -1522,6 +1532,7 @@ class FeedFragment :
     }
 
     private fun showLoading() {
+        mUiListener?.onContentLoading()
         binding.feedLoading.show()
         binding.swipeRefreshFeedLayout.hide()
     }
@@ -1953,71 +1964,33 @@ class FeedFragment :
                 null
             }
 
+        val uiListener = mUiListener ?: return
+
         if (currentItem == null || !isCdp) return
 
-        val commentBarActionListener = if (requireActivity() is FeedDetailBottomBarActionListener) {
-            requireActivity() as FeedDetailBottomBarActionListener
-        } else return
+        val feedContentUiModel = (currentItem.data as? FeedContentUiModel) ?: return
 
-        when {
-            currentItem.data is FeedCardImageContentModel && currentItem.data.showComment -> {
-                val model = currentItem.data
-                commentBarActionListener.setBottomBarAction(
-                    feedplusR.string.feed_bottom_action_comment_label
-                ) {
-                    onCommentClick(
-                        trackerModel = trackerModelMapper.transformImageContentToTrackerModel(
-                            model
-                        ),
-                        contentId = model.id,
-                        isPlayContent = false,
-                        rowNumber = position
-                    )
-                }
+        val trackerModel = when (currentItem.data) {
+            is FeedCardImageContentModel -> {
+                trackerModelMapper.transformImageContentToTrackerModel(currentItem.data)
             }
-            currentItem.data is FeedCardImageContentModel -> {
-                val model = currentItem.data
-                commentBarActionListener.setBottomBarAction(
-                    feedplusR.string.feed_bottom_action_share_label
-                ) {
-                    onSharePostClicked(
-                        data = model.share,
-                        trackerModel = trackerModelMapper.transformImageContentToTrackerModel(
-                            model
-                        )
-                    )
-                }
+            is FeedCardVideoContentModel -> {
+                trackerModelMapper.transformVideoContentToTrackerModel(currentItem.data)
             }
-            currentItem.data is FeedCardVideoContentModel && !currentItem.data.isTypeProductHighlight -> {
-                val model = currentItem.data
-                commentBarActionListener.setBottomBarAction(
-                    feedplusR.string.feed_bottom_action_comment_label
-                ) {
-                    onCommentClick(
-                        trackerModel = trackerModelMapper.transformVideoContentToTrackerModel(
-                            model
-                        ),
-                        contentId = model.id,
-                        isPlayContent = model.isPlayContent,
-                        rowNumber = position
-                    )
-                }
+            is FeedCardLivePreviewContentModel -> {
+                trackerModelMapper.transformLiveContentToTrackerModel(currentItem.data)
             }
-            currentItem.data is FeedCardVideoContentModel -> {
-                val model = currentItem.data
-                commentBarActionListener.setBottomBarAction(
-                    feedplusR.string.feed_bottom_action_share_label
-                ) {
-                    onSharePostClicked(
-                        data = model.share,
-                        trackerModel = trackerModelMapper.transformVideoContentToTrackerModel(
-                            model
-                        )
-                    )
-                }
+            else -> {
+                null
             }
-            else -> commentBarActionListener.hideBottomBar()
         }
+
+        uiListener.onContentLoaded(
+            feedContentUiModel,
+            trackerModel,
+            this,
+            position,
+        )
     }
 
     companion object {
