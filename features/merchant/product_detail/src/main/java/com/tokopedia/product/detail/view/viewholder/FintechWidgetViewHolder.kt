@@ -85,7 +85,7 @@ class FintechWidgetViewHolder(val view: View, val listener: DynamicProductDetail
 
     override fun shouldImpression() = globalWidgetDoImpression(
         holders = listener.getImpressionHolders(),
-        name = previousData?.name.orEmpty(),
+        name = previousData?.name().orEmpty(),
         useHolders = listener.isCacheable()
     )
 }

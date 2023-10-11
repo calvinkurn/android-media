@@ -8,10 +8,11 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.encodeToUtf8
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
+import com.tokopedia.product.detail.common.data.model.pdplayout.ComponentData
 import com.tokopedia.product.detail.common.data.model.pdplayout.PdpGetLayout
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailLayout
 import com.tokopedia.product.detail.common.data.model.rates.TokoNowParam
@@ -598,29 +599,16 @@ open class GetPdpLayoutUseCase @Inject constructor(
     }
 
     private fun isProductCampaign(layout: PdpGetLayout?): Boolean {
-        var hasCampaign = false
+        val pdpLayout = layout ?: return false
 
-        for (component in layout?.components.orEmpty()) {
-            if (hasCampaign) return true
-
-            when (component.type) {
-                ProductDetailConstant.ONGOING_CAMPAIGN -> {
-                    hasCampaign = component.componentData.firstOrNull()
-                        ?.campaign
-                        ?.isActive
-                        .orFalse()
-                }
-
-                ProductDetailConstant.PRODUCT_CONTENT -> {
-                    hasCampaign = component.componentData.firstOrNull()
-                        ?.campaign
-                        ?.isActive
-                        .orFalse()
-                }
-            }
+        return pdpLayout.components.any { component ->
+            component.componentData.any { it.isCampaign() }
         }
+    }
 
-        return hasCampaign
+    private fun ComponentData.isCampaign(): Boolean {
+        val campaignUpComingId = -10000
+        return campaign.isActive || campaign.campaignID.toIntOrZero() == campaignUpComingId
     }
 
     private fun processResponse(

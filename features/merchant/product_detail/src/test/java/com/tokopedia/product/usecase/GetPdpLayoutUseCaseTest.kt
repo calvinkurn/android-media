@@ -6,6 +6,7 @@ import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailLayout
@@ -48,6 +49,7 @@ class GetPdpLayoutUseCaseTest {
         const val GQL_GET_PDP_LAYOUT_JSON = "json/gql_get_pdp_layout.json"
         const val GQL_GET_PDP_LAYOUT_USECASE_JSON = "json/gql_get_pdp_layout_usecase_response.json"
         const val GQL_GET_PDP_LAYOUT_NON_CAMPAIGN_USECASE_JSON = "json/gql_get_pdp_layout_non_campaign_usecase_response.json"
+        const val GQL_GET_PDP_LAYOUT_CAMPAIGN_UPCOMING_USECASE_JSON = "json/gql_get_pdp_layout_campaign_upcoming_usecase_response.json"
         const val GQL_GET_PDP_LAYOUT_REMOVE_COMPONENT_JSON = "json/gql_get_pdp_layout_remove_component.json"
         const val GQL_GET_PDP_LAYOUT_ERROR_TOBACCO_JSON = "json/gql_get_pdp_layout_tobacco.json"
         const val GQL_GET_PDP_LAYOUT_MINI_VARIANT_JSON = "json/gql_get_pdp_layout_mini_varaint.json"
@@ -163,7 +165,7 @@ class GetPdpLayoutUseCaseTest {
     fun `given pdp layout from cache and cloud`() = runCoroutineTest {
         val cacheExpected = CacheState(isFromCache = true, cacheFirstThenCloud = false)
         val cloudExpected = CacheState(isFromCache = false, cacheFirstThenCloud = true)
-        val results = getPdpLayoutCacheable(scope = this, refreshPage = false)
+        val results = getPdpLayoutCacheable(scope = this, refreshPage = false, type = ErrorType.NON_CAMPAIGN)
 
         // then
         val actualCacheData = results.firstOrNull()?.cacheState
@@ -175,7 +177,7 @@ class GetPdpLayoutUseCaseTest {
     @Test
     fun `given pdp layout from cloud if it's refresh page`() = runCoroutineTest {
         val cacheStateExpected = CacheState(isFromCache = false, cacheFirstThenCloud = false)
-        val results = getPdpLayoutCacheable(scope = this, refreshPage = true, enableCacheable = true)
+        val results = getPdpLayoutCacheable(scope = this, refreshPage = true, enableCacheable = true, type = ErrorType.NON_CAMPAIGN)
 
         // then
         Assert.assertTrue(results.size == 1)
@@ -186,10 +188,10 @@ class GetPdpLayoutUseCaseTest {
     @Test
     fun `given pdp layout from cloud if cacheable inactive`() = runCoroutineTest {
         val cacheStateExpected = CacheState(isFromCache = false, cacheFirstThenCloud = false)
-        val results = getPdpLayoutCacheable(scope = this, refreshPage = false, enableCacheable = false)
+        val results = getPdpLayoutCacheable(scope = this, refreshPage = false, enableCacheable = false, type = ErrorType.NON_CAMPAIGN)
 
         // then
-        Assert.assertTrue(results.size == 1)
+        Assert.assertTrue(results.size == Int.ONE)
         val actualCacheData = results.firstOrNull()?.cacheState
         Assert.assertEquals(cacheStateExpected, actualCacheData)
     }
@@ -197,7 +199,7 @@ class GetPdpLayoutUseCaseTest {
     @Test
     fun `pdp layout from cache don't have topAds layout`() = runCoroutineTest {
         val ignoreComponentCacheExpected = useCaseTest.ignoreComponentInCache
-        val results = getPdpLayoutCacheable(scope = this, refreshPage = false)
+        val results = getPdpLayoutCacheable(scope = this, refreshPage = false, type = ErrorType.NON_CAMPAIGN)
 
         // then
         val actualCacheLayout = results.firstOrNull()?.listOfLayout.orEmpty().map { it.type() }
@@ -208,7 +210,7 @@ class GetPdpLayoutUseCaseTest {
     @Test
     fun `pdp layout from cloud have topAds layout`() = runCoroutineTest {
         val ignoreComponentCacheExpected = useCaseTest.ignoreComponentInCache
-        val results = getPdpLayoutCacheable(scope = this, refreshPage = false)
+        val results = getPdpLayoutCacheable(scope = this, refreshPage = false, type = ErrorType.NON_CAMPAIGN)
 
         // then
         val actualCacheLayout = results.getOrNull(1)?.listOfLayout.orEmpty().map { it.type() }
@@ -218,10 +220,22 @@ class GetPdpLayoutUseCaseTest {
         Assert.assertTrue(thenCacheLayout)
     }
 
+    @Test
+    fun `given pdp layout from cloud cause campaign upcoming`() = runCoroutineTest {
+        val cloudExpected = CacheState(isFromCache = false, cacheFirstThenCloud = false)
+        val results = getPdpLayoutCacheable(scope = this, refreshPage = false, type = ErrorType.SUCCESS)
+
+        // then
+        Assert.assertTrue(results.size == Int.ONE)
+        val actualCloudData = results.firstOrNull()?.cacheState
+        Assert.assertEquals(cloudExpected, actualCloudData)
+    }
+
     private fun getPdpLayoutCacheable(
         scope: CoroutineScope,
         refreshPage: Boolean = false,
-        enableCacheable: Boolean = true
+        enableCacheable: Boolean = true,
+        type: ErrorType
     ): List<ProductDetailDataModel> {
         // given
         val results = mutableListOf<ProductDetailDataModel>()
@@ -233,7 +247,7 @@ class GetPdpLayoutUseCaseTest {
 
         coEvery {
             gqlUseCase.executeOnBackground()
-        } returns createMockGraphqlResponse(ErrorType.NON_CAMPAIGN)
+        } returns createMockGraphqlResponse(type)
 
         // when
         scope.launch {
@@ -289,6 +303,9 @@ class GetPdpLayoutUseCaseTest {
             ErrorType.NON_CAMPAIGN -> {
                 createMockGraphqlNonCampaignResponse()
             }
+            ErrorType.CAMPAIGN_UPCOMING -> {
+                createMockGraphqlCampaignUpComingResponse()
+            }
             else -> {
                 createMockGraphqlSuccessResponse()
             }
@@ -308,39 +325,26 @@ class GetPdpLayoutUseCaseTest {
     }
 
     private fun createMockGraphqlErrorResponseTobacco(): GraphqlResponse {
-        val result = HashMap<Type, Any>()
-        val errors = HashMap<Type, List<GraphqlError>>()
-        val jsonObject: JsonObject = CommonUtils.fromJson(
-            getJsonFromFile(GQL_GET_PDP_LAYOUT_ERROR_TOBACCO_JSON),
-            JsonObject::class.java
-        )
-
-        val data = jsonObject.get(GraphqlConstant.GqlApiKeys.DATA)
-        val objectType = ProductDetailLayout::class.java
-        val obj: Any = CommonUtils.fromJson(data, objectType)
-        result[objectType] = obj
-        return GraphqlResponse(result, errors, false)
+        return createMockSuccessResponse(jsonPath = GQL_GET_PDP_LAYOUT_ERROR_TOBACCO_JSON)
     }
 
     private fun createMockGraphqlSuccessResponse(): GraphqlResponse {
-        val result = HashMap<Type, Any>()
-        val errors = HashMap<Type, List<GraphqlError>>()
-        val jsonObject: JsonObject = CommonUtils.fromJson(
-            getJsonFromFile(GQL_GET_PDP_LAYOUT_USECASE_JSON),
-            JsonObject::class.java
-        )
-        val data = jsonObject.get(GraphqlConstant.GqlApiKeys.DATA)
-        val objectType = ProductDetailLayout::class.java
-        val obj: Any = CommonUtils.fromJson(data, objectType)
-        result[objectType] = obj
-        return GraphqlResponse(result, errors, false)
+        return createMockSuccessResponse(jsonPath = GQL_GET_PDP_LAYOUT_USECASE_JSON)
     }
 
     private fun createMockGraphqlNonCampaignResponse(): GraphqlResponse {
+        return createMockSuccessResponse(jsonPath = GQL_GET_PDP_LAYOUT_NON_CAMPAIGN_USECASE_JSON)
+    }
+
+    private fun createMockGraphqlCampaignUpComingResponse(): GraphqlResponse {
+        return createMockSuccessResponse(jsonPath = GQL_GET_PDP_LAYOUT_CAMPAIGN_UPCOMING_USECASE_JSON)
+    }
+
+    private fun createMockSuccessResponse(jsonPath: String): GraphqlResponse {
         val result = HashMap<Type, Any>()
         val errors = HashMap<Type, List<GraphqlError>>()
         val jsonObject: JsonObject = CommonUtils.fromJson(
-            getJsonFromFile(GQL_GET_PDP_LAYOUT_NON_CAMPAIGN_USECASE_JSON),
+            getJsonFromFile(jsonPath),
             JsonObject::class.java
         )
         val data = jsonObject.get(GraphqlConstant.GqlApiKeys.DATA)
@@ -364,5 +368,6 @@ internal enum class ErrorType {
     TOBACCO,
     RUNTIME,
     SUCCESS, // campaign
-    NON_CAMPAIGN
+    NON_CAMPAIGN,
+    CAMPAIGN_UPCOMING // upcoming campaign
 }

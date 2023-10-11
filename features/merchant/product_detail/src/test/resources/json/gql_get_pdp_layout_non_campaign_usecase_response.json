@@ -223,10 +223,10 @@
               {
                 "campaign": {
                   "appLinks": "",
-                  "campaignID": "-10000",
+                  "campaignID": "0",
                   "campaignType": "0",
-                  "campaignTypeName": "SlashPrice",
-                  "discountedPrice": 200000000,
+                  "campaignTypeName": "",
+                  "discountedPrice": 0,
                   "endDate": "2020-12-31 20:30:00",
                   "endDateUnix": "1609421400",
                   "hideGimmick": false,
@@ -291,7 +291,7 @@
                   {
                     "campaignInfo": {
                       "appLinks": "",
-                      "campaignID": "-10000",
+                      "campaignID": "0",
                       "campaignType": "0",
                       "campaignTypeName": "SlashPrice",
                       "discountPercentage": 50,
@@ -333,7 +333,7 @@
                   {
                     "campaignInfo": {
                       "appLinks": "",
-                      "campaignID": "-10000",
+                      "campaignID": "0",
                       "campaignType": "0",
                       "campaignTypeName": "SlashPrice",
                       "discountPercentage": 50,
@@ -375,7 +375,7 @@
                   {
                     "campaignInfo": {
                       "appLinks": "",
-                      "campaignID": "-10000",
+                      "campaignID": "0",
                       "campaignType": "0",
                       "campaignTypeName": "SlashPrice",
                       "discountPercentage": 50,
