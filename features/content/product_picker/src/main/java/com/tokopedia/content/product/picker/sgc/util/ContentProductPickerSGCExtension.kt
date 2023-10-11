@@ -7,7 +7,7 @@ import com.tokopedia.content.product.picker.R
 /**
  * Created By : Jonathan Darwin on September 26, 2023
  */
-fun GlobalError.productTagSummaryEmpty(onAction: () -> Unit) {
+internal fun GlobalError.productTagSummaryEmpty(onAction: () -> Unit) {
     errorIllustration.setImageResource(R.drawable.ic_empty_product_etalase)
     errorTitle.text = context.getString(R.string.product_summary_empty_title)
     errorDescription.text = context.getString(R.string.product_summary_empty_description)
