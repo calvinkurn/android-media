@@ -22,23 +22,17 @@ import com.tokopedia.track.TrackApp
 import javax.inject.Inject
 
 class InputTextAnalyticsImpl @Inject constructor(
-    paramFetcher: EditorParamFetcher
+    private val paramFetcher: EditorParamFetcher
 ) : InputTextAnalytics {
-    private val pageSourceString: String
-    private val editorType: String
-    private val customTrackerData: Map<String, String>
-
-    init {
-        paramFetcher.get().let {
-            pageSourceString = it.pageSource.value
-            editorType = getMediaTypeString(it.firstFile)
-            customTrackerData = it.trackerExtra
-        }
-    }
+    private var pageSourceString: String = ""
+    private var editorType: String = ""
+    private var customTrackerData: Map<String, String> = mapOf()
 
     override fun editSaveClick(
         textDetail: InputTextModel
     ) {
+        getParamValue()
+
         val editVariant = if (textDetail.backgroundColor != null) EDIT_VARIANT_STYLE else EDIT_VARIANT_NORMAL
 
         val eventLabel = "$editorType - $pageSourceString - $EDITOR_TOOL_NAME - $editVariant - ${customTrackerData.toImmersiveTrackerData()}"
@@ -72,6 +66,14 @@ class InputTextAnalyticsImpl @Inject constructor(
         TrackApp.getInstance().gtm.sendGeneralEvent(
             generalEvent.toMap()
         )
+    }
+
+    private fun getParamValue() {
+        paramFetcher.get().let {
+            pageSourceString = it.pageSource.value
+            editorType = getMediaTypeString(it.firstFile)
+            customTrackerData = it.trackerExtra
+        }
     }
 
     companion object {
