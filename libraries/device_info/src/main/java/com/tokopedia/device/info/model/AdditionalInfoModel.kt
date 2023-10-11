@@ -19,7 +19,7 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 import timber.log.Timber
-import java.util.UUID
+import java.util.*
 import kotlin.coroutines.resume
 
 data class AdditionalInfoModel(
@@ -73,7 +73,9 @@ object AdditionalDeviceInfo {
     fun generate(
         context: Context,
         isEnableGetWidevineId: Boolean,
-        isEnableGetWidevineIdSuspend: Boolean
+        isEnableGetWidevineIdSuspend: Boolean,
+        whitelistDisableWidevineId: String,
+        userId: String
     ): AdditionalInfoModel {
         return AdditionalInfoModel(
             time = System.currentTimeMillis().toString(),
@@ -84,39 +86,70 @@ object AdditionalDeviceInfo {
             device = Build.DEVICE,
             versionName = GlobalConfig.VERSION_NAME,
             advertisingId = DeviceInfo.getAdsId(context),
-            wideVineId = getWidevineId(context, isEnableGetWidevineId, isEnableGetWidevineIdSuspend)
+            wideVineId = getWidevineId(
+                context,
+                isEnableGetWidevineId,
+                isEnableGetWidevineIdSuspend,
+                whitelistDisableWidevineId,
+                userId
+            )
         )
     }
 
     fun generateJson(
         context: Context,
         isEnableGetWidevineId: Boolean,
-        isEnableGetWidevineIdSuspend: Boolean
+        isEnableGetWidevineIdSuspend: Boolean,
+        whitelistDisableWidevineId: String,
+        userId: String
     ): String {
-        return Gson().toJson(generate(context, isEnableGetWidevineId, isEnableGetWidevineIdSuspend))
+        return Gson().toJson(
+            generate(
+                context,
+                isEnableGetWidevineId,
+                isEnableGetWidevineIdSuspend,
+                whitelistDisableWidevineId,
+                userId
+            )
+        )
     }
 
     private fun getWidevineId(
         context: Context,
         isEnableGetWidevineId: Boolean,
-        isEnableGetWidevineIdSuspend: Boolean
+        isEnableGetWidevineIdSuspend: Boolean,
+        whitelistDisableWidevineId: String,
+        userId: String
     ): String {
         return if (isEnableGetWidevineIdSuspend) {
-            val appContext = context.applicationContext
-            val widevineIdCache: String = getCacheWidevineId(appContext)
-            if (widevineIdCache.isNotBlank()) {
-                widevineIdCache
-            } else {
-                try {
-                    getWidevineIdSuspend(context)
-                } catch (e: Exception) {
-                    Timber.e(e)
-                }
-                ""
-            }
+            validategetWidevineIdSuspend(context)
         } else if (isEnableGetWidevineId) {
-            processGetWidevineId()
+            validateGetWidevineId(whitelistDisableWidevineId, userId)
         } else {
+            ""
+        }
+    }
+
+    private fun validateGetWidevineId(whitelistDisableWidevineId: String, userId: String): String {
+        val userIds = whitelistDisableWidevineId.split(",")
+        return if (userIds.contains(userId)) {
+            ""
+        } else {
+            processGetWidevineId()
+        }
+    }
+
+    private fun validategetWidevineIdSuspend(context: Context): String {
+        val appContext = context.applicationContext
+        val widevineIdCache: String = getCacheWidevineId(appContext)
+        return if (widevineIdCache.isNotBlank()) {
+            widevineIdCache
+        } else {
+            try {
+                getWidevineIdSuspend(context)
+            } catch (e: Exception) {
+                Timber.e(e)
+            }
             ""
         }
     }
