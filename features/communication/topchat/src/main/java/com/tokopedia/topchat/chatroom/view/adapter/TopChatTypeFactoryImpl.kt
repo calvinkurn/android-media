@@ -31,8 +31,8 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.product_bundling.P
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.product_bundling.ProductBundlingCarouselViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwBubbleViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.messagebubble.banned.BannedChatMessageViewHolder
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.messagebubble.regular.ChatMessageUnifyViewHolder
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.messagebubble.autoreply.TopChatAutoReplyViewHolder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.messagebubble.regular.TopChatChatRoomBubbleMessageViewHolder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.messagebubble.autoreply.TopChatChatRoomAutoReplyViewHolder
 import com.tokopedia.topchat.chatroom.view.custom.message.ReplyBubbleAreaMessage
 import com.tokopedia.topchat.chatroom.view.custom.messagebubble.base.TopChatFlexBoxListener
 import com.tokopedia.topchat.chatroom.view.listener.DualAnnouncementListener
@@ -80,14 +80,14 @@ open class TopChatTypeFactoryImpl constructor(
         }
         val chat = visitables[position]
         return if (chat is MessageUiModel && chat.isBanned()) {
-            ChatMessageUnifyViewHolder.TYPE_BANNED
+            TopChatChatRoomBubbleMessageViewHolder.TYPE_BANNED
         } else {
             default
         }
     }
 
     override fun type(messageUiModel: MessageUiModel): Int {
-        return ChatMessageUnifyViewHolder.LAYOUT
+        return TopChatChatRoomBubbleMessageViewHolder.LAYOUT
     }
 
     override fun type(fallbackAttachmentUiModel: FallbackAttachmentUiModel): Int {
@@ -183,7 +183,7 @@ open class TopChatTypeFactoryImpl constructor(
     }
 
     override fun type(autoReplyMessageUiModel: AutoReplyMessageUiModel): Int {
-        return TopChatAutoReplyViewHolder.LAYOUT
+        return TopChatChatRoomAutoReplyViewHolder.LAYOUT
     }
 
     // Check if chat bubble first, if not return default ViewHolder
@@ -195,7 +195,7 @@ open class TopChatTypeFactoryImpl constructor(
         adapterListener: AdapterListener
     ): AbstractViewHolder<*> {
         val layoutRes = when (type) {
-            ChatMessageUnifyViewHolder.TYPE_BANNED -> BannedChatMessageViewHolder.LAYOUT
+            TopChatChatRoomBubbleMessageViewHolder.TYPE_BANNED -> BannedChatMessageViewHolder.LAYOUT
             else -> type
         }
         val view = LayoutInflater.from(parent.context).inflate(layoutRes, parent, false)
@@ -231,7 +231,7 @@ open class TopChatTypeFactoryImpl constructor(
                 commonListener, adapterListener, chatLinkHandlerListener,
                 productBundlingListener, productBundlingCarouselListener
             )
-            ChatMessageUnifyViewHolder.LAYOUT -> ChatMessageUnifyViewHolder(
+            TopChatChatRoomBubbleMessageViewHolder.LAYOUT -> TopChatChatRoomBubbleMessageViewHolder(
                 parent, chatLinkHandlerListener, commonListener, adapterListener,
                 chatMsgListener, replyBubbleListener
             )
@@ -256,7 +256,7 @@ open class TopChatTypeFactoryImpl constructor(
                 parent, productBundlingListener, adapterListener,
                 searchListener, commonListener, deferredAttachment
             )
-            TopChatAutoReplyViewHolder.LAYOUT -> TopChatAutoReplyViewHolder(
+            TopChatChatRoomAutoReplyViewHolder.LAYOUT -> TopChatChatRoomAutoReplyViewHolder(
                 parent, chatLinkHandlerListener, commonListener, adapterListener,
                 chatMsgListener, replyBubbleListener
             )
