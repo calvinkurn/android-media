@@ -1269,9 +1269,13 @@ public class MainParentActivity extends BaseActivity implements
     public void menuReselected(int position, int id) {
         Fragment fragment = fragmentList.get(getPositionFragmentByMenu(position));
 
-        boolean isHomeBottomNavSelected = bottomNavigation.isHomeBottomNavSelected();
-        if (isHomeBottomNavSelected) {
-            scrollToHomeForYou(fragment);
+        if (position == 0) {
+            boolean isHomeBottomNavSelected = bottomNavigation.isHomeBottomNavSelected();
+            if (isHomeBottomNavSelected) {
+                scrollToHomeForYou(fragment);
+            } else {
+                scrollToTop(fragment); // enable feature scroll to top for home & feed
+            }
         } else {
             scrollToTop(fragment); // enable feature scroll to top for home & feed
         }

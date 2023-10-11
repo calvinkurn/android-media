@@ -26,7 +26,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.get
 import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.navigation.R
 import com.tokopedia.unifyprinciples.Typography
@@ -61,7 +60,7 @@ class LottieBottomNavbar : LinearLayout {
     private var containerWidth: Int = 0
     private var navbarContainer: LinearLayout? = null
 
-    //this flags to switch between home or for you bottom nav menu
+    // this flags to switch between home or for you bottom nav menu
     private var isHomeSelected: Boolean = false
 
     private var buttonContainerBackgroundLightColor: Int =
@@ -302,8 +301,12 @@ class LottieBottomNavbar : LinearLayout {
         menu.forEachIndexed { index, bottomMenu ->
             // add root layout
             createMenuItemContainer(
-                index, bottomMenu,
-                rootLayoutParam, containerLayoutParam, imgLayoutParam, txtLayoutParam
+                index,
+                bottomMenu,
+                rootLayoutParam,
+                containerLayoutParam,
+                imgLayoutParam,
+                txtLayoutParam
             )
         }
         layoutContent()
@@ -396,7 +399,6 @@ class LottieBottomNavbar : LinearLayout {
                         iconSelected.speed = bottomMenuSelected.animSpeed
                     }
                 } else {
-
                     val bottomMenuSelected = bottomMenu
                     val iconSelected = icon
                     val animToEnabledNameSelected =
@@ -503,9 +505,10 @@ class LottieBottomNavbar : LinearLayout {
         navbarContainer?.addView(rootButtonContainer)
     }
 
-    private fun setAnimToEnabledNameSelected(animToEnabledNameSelected: Int?,
-                                             iconSelected: LottieAnimationView,
-                                             bottomMenuSelected: BottomMenu
+    private fun setAnimToEnabledNameSelected(
+        animToEnabledNameSelected: Int?,
+        iconSelected: LottieAnimationView,
+        bottomMenuSelected: BottomMenu
     ) {
         animToEnabledNameSelected?.let {
             iconSelected.setAnimation(it)
@@ -606,16 +609,14 @@ class LottieBottomNavbar : LinearLayout {
         updateHomeMenuView()
     }
 
-
-    //changes: switch title, icon, animation based on home or for you bottom nav
+    // changes: switch title, icon, animation based on home or for you bottom nav
     private fun updateHomeMenuView() {
-
         selectedItem?.let { position ->
 
             val selectedIconPair = iconList[position]
             val selectedIcon = selectedIconPair.first
 
-            //update title based on home header or for you section
+            // update title based on home header or for you section
             titleList[position].text = if (isHomeSelected) {
                 menu[position].homeForYou?.homeTitle.orEmpty()
             } else {
@@ -625,8 +626,8 @@ class LottieBottomNavbar : LinearLayout {
 
             selectedIcon.invalidate()
 
-            //update image based on home header or for you section
-            //todo will add for dark mode later
+            // update image based on home header or for you section
+            // todo will add for dark mode later
             if (isDeviceAnimationDisabled()) {
                 if (isHomeSelected) {
                     menu[position].homeForYou?.homeImageName
@@ -638,8 +639,8 @@ class LottieBottomNavbar : LinearLayout {
                 return
             }
 
-            //update animation based on home header or for you section
-            //todo will add for dark mode later
+            // update animation based on home header or for you section
+            // todo will add for dark mode later
             selectedIcon.cancelAnimation()
             val animToEnabledName = if (isHomeSelected) {
                 menu[position].homeForYou?.animHomeToThumbName
@@ -660,9 +661,13 @@ class LottieBottomNavbar : LinearLayout {
 
     private fun changeColor(newPosition: Int) {
         if (selectedItem == newPosition) {
-            this.isHomeSelected = !this.isHomeSelected
-            listener?.menuReselected(newPosition, menu[newPosition].id)
-            updateHomeMenuView()
+            if (newPosition == Int.ZERO) {
+                this.isHomeSelected = !this.isHomeSelected
+                listener?.menuReselected(newPosition, menu[newPosition].id)
+                updateHomeMenuView()
+            } else {
+                listener?.menuReselected(newPosition, menu[newPosition].id)
+            }
             return
         }
 
