@@ -61,8 +61,8 @@ dependencies {
 
 project.ext {
     artifactId = 'targetedticker'
-    groupId = 'com.tokopedia.logistic'
-    versionName = "0.0.2"
+    groupId = 'com.tokopedia.targetedticker'
+    versionName = "0.0.1"
     artifactName ="targetedticker"
 }
 
