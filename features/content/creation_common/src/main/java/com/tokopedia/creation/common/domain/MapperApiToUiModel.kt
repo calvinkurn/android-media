@@ -43,17 +43,19 @@ fun ContentCreationAuthorEntity.toConfigAuthorModel(): ContentCreationConfigAuth
     )
 
 fun ContentCreationAuthorItemEntity.toCreationItemModel(authorTypeEnum: ContentCreationAuthorEnum): ContentCreationItemModel? =
-    this.typeEnum?.let {
-        ContentCreationItemModel(
+    when (this.typeEnum) {
+        ContentCreationTypeEnum.NONE -> null
+        else -> ContentCreationItemModel(
             isActive = this.isActive,
-            type = it,
+            type = this.typeEnum,
             title = this.title,
             applink = this.applink,
             media = this.media.toCreationModel(),
             descriptionApplink = this.descriptionCTA.applink,
-            drawableIconId = getDefaultDrawableForCreationOption(it),
+            drawableIconId = getDefaultDrawableForCreationOption(this.typeEnum),
             authorType = authorTypeEnum
         )
+
     }
 
 fun ContentCreationAuthorItemEntity.ContentCreationMediaEntity.toCreationModel(): ContentCreationMediaModel =
@@ -70,4 +72,5 @@ private fun getDefaultDrawableForCreationOption(type: ContentCreationTypeEnum): 
         ContentCreationTypeEnum.POST -> IconUnify.IMAGE
         ContentCreationTypeEnum.SHORT -> IconUnify.SHORT_VIDEO
         ContentCreationTypeEnum.STORY -> IconUnify.PHONE
+        else -> IconUnify.VIDEO
     }

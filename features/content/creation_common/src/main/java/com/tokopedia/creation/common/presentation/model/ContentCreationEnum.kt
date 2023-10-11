@@ -7,14 +7,15 @@ enum class ContentCreationTypeEnum(val value: String) {
     SHORT(value = "shortvideo"),
     LIVE(value = "livestream"),
     POST(value = "post"),
-    STORY(value = "story");
+    STORY(value = "story"),
+    NONE(value = "");
 
     companion object {
-        fun getTypeByValue(value: String): ContentCreationTypeEnum? =
+        fun getTypeByValue(value: String): ContentCreationTypeEnum =
             ContentCreationTypeEnum.values()
                 .firstOrNull {
                     it.value.equals(value, false)
-                }
+                } ?: NONE
     }
 }
 

@@ -31,9 +31,14 @@ class ContentCreationViewModel @Inject constructor(
         _selectedCreationType.value = item
     }
 
-    fun fetchConfig() {
+    fun fetchConfig(creationConfig: ContentCreationConfigModel = ContentCreationConfigModel.Empty) {
         viewModelScope.launch {
             try {
+                if (creationConfig.isActive) {
+                    _creationConfig.value = Success(creationConfig)
+                    return@launch
+                }
+
                 val response = contentCreationConfigUseCase(Unit)
                 _creationConfig.value = Success(response)
             } catch (t: Throwable) {
