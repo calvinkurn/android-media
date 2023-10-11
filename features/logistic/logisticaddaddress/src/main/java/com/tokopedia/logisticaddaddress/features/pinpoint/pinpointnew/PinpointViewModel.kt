@@ -32,13 +32,16 @@ import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.uimodel.Get
 import com.tokopedia.logisticaddaddress.features.pinpoint.PinpointFragment
 import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.PinpointNewPageFragment.Companion.LOCATION_NOT_FOUND_MESSAGE
 import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.uimodel.BottomSheetState
+import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.uimodel.ChoosePinpoint
 import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.uimodel.MapsGeocodeState
+import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.uimodel.MoveMap
 import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.uimodel.PinpointAction
 import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.uimodel.PinpointUiModel
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -63,7 +66,9 @@ class PinpointViewModel @Inject constructor(
     var uiModel = PinpointUiModel()
     var addressId = ""
     var whDistrictId = 0L
+    var isEditWarehouse = false
     var uiState: AddressUiState? = null
+    var source = ""
 
     private val _autofillDistrictData = MutableLiveData<Result<KeroMapsAutofill>>()
     val autofillDistrictData: LiveData<Result<KeroMapsAutofill>>
@@ -85,13 +90,21 @@ class PinpointViewModel @Inject constructor(
     val mapsGeocodeState: LiveData<MapsGeocodeState>
         get() = _mapsGeocodeState
 
-    private val _action = MutableLiveData<PinpointAction>()
-    val action: LiveData<PinpointAction>
+    private val _action = SingleLiveEvent<PinpointAction>()
+    val action: SingleLiveEvent<PinpointAction>
         get() = _action
+
+    private val _choosePinpoint = SingleLiveEvent<ChoosePinpoint>()
+    val choosePinpoint: SingleLiveEvent<ChoosePinpoint>
+        get() = _choosePinpoint
 
     private val _pinpointBottomSheet = MutableLiveData<BottomSheetState>()
     val pinpointBottomSheet: LiveData<BottomSheetState>
         get() = _pinpointBottomSheet
+
+    private val _map = MutableLiveData<MoveMap>()
+    val map: LiveData<MoveMap>
+        get() = _map
 
     fun onViewCreated(
         districtName: String = "",
@@ -102,7 +115,9 @@ class PinpointViewModel @Inject constructor(
         districtId: Long = 0L,
         whDistrictId: Long = 0L,
         addressId: String = "",
-        uiState: AddressUiState
+        uiState: AddressUiState,
+        isEditWarehouse: Boolean
+        source: String
     ) {
         this.uiModel = this.uiModel.copy(
             districtName = districtName,
@@ -115,6 +130,8 @@ class PinpointViewModel @Inject constructor(
         this.whDistrictId = whDistrictId
         this.addressId = addressId
         this.uiState = uiState
+        this.isEditWarehouse = isEditWarehouse
+        this.source = source
     }
 
     fun fetchData() {
@@ -280,7 +297,7 @@ class PinpointViewModel @Inject constructor(
                         lat = responseModel.latitude.toDoubleOrZero(),
                         long = responseModel.longitude.toDoubleOrZero()
                     )
-                    _action.value = PinpointAction.MoveMap(latitude, longitude)
+                    _map.value = MoveMap(latitude, longitude)
                 }
                 if ((responseModel.postalCode.isEmpty() && uiModel.postalCode.isEmpty()) || responseModel.districtId == 0L) {
                     locationNotFound(false)
@@ -345,7 +362,7 @@ class PinpointViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val data = getDistrictCenter(uiModel.districtId)
-                _action.value = PinpointAction.MoveMap(
+                _map.value = MoveMap(
                     data.keroAddrGetDistrictCenter.district.latitude,
                     data.keroAddrGetDistrictCenter.district.longitude
                 )
@@ -402,6 +419,33 @@ class PinpointViewModel @Inject constructor(
         )
     }
 
+    fun onChoosePinpoint() {
+        if (isEditWarehouse && whDistrictId != 0L && whDistrictId != uiModel.districtId) {
+            _choosePinpoint.value = ChoosePinpoint.InvalidShopDistrictPinpoint
+        } else if (uiState.isPinpointOnly()) {
+            _choosePinpoint.value = ChoosePinpoint.SetPinpointResult(
+                saveAddressDataModel = getAddress(),
+                pinpointUiModel = uiModel
+            )
+        } else {
+            _choosePinpoint.value = ChoosePinpoint.GoToAddressForm(
+                saveChanges = true,
+                pinpointUiModel = uiModel,
+                addressState = uiState,
+                source = source
+            )
+        }
+    }
+
+    fun discardPinpoint() {
+        _choosePinpoint.value = ChoosePinpoint.GoToAddressForm(
+            saveChanges = false,
+            pinpointUiModel = uiModel,
+            addressState = uiState,
+            source = source
+        )
+    }
+
     fun getGeocodeByDistrictAndCityName() {
         viewModelScope.launchCatchError(
             block = {
@@ -414,7 +458,7 @@ class PinpointViewModel @Inject constructor(
                 )
 
                 response.firstLocation?.apply {
-                    _action.value = PinpointAction.MoveMap(
+                    _map.value = MoveMap(
                         lat,
                         lng
                     )

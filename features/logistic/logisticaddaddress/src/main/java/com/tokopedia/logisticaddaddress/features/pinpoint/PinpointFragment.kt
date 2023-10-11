@@ -907,7 +907,7 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     }
 
                     if (state.buttonPrimary.enable) {
-                        onChoosePinpoint()
+                        viewModel.onChoosePinpoint()
                     }
                 }
             }
@@ -935,7 +935,7 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     LogisticAddAddressAnalytics.onClickIsiAlamatManual(userSession.userId)
 
                     if (state.buttonSecondary.enable) {
-                        goToAddressForm(false)
+                        viewModel.discardPinpoint()
                     }
                 }
             }
@@ -992,7 +992,7 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
                                 }
                             }
                             if (data.buttonState.enable) {
-                                goToAddressForm(false)
+                                viewModel.discardPinpoint()
                             }
                         }
                         visible()
@@ -1005,37 +1005,40 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
         }
     }
 
-    private fun hitInvalidLocationImpressionAnalytic(type: Int) {
-        if (type == BOTTOMSHEET_OUT_OF_INDO) {
-            when (addressUiState) {
-                AddressUiState.EditAddress -> {
-                    LogisticEditAddressAnalytics.onImpressBottomSheetOutOfIndo(userSession.userId)
-                }
+    private fun hitInvalidLocationImpressionAnalytic(type: BottomSheetState.LocationInvalid.LocationInvalidType) {
+        when (type) {
+            BottomSheetState.LocationInvalid.LocationInvalidType.OUT_OF_COVERAGE -> {
+                when (addressUiState) {
+                    AddressUiState.EditAddress -> {
+                        LogisticEditAddressAnalytics.onImpressBottomSheetOutOfIndo(userSession.userId)
+                    }
 
-                AddressUiState.AddAddress -> {
-                    LogisticAddAddressAnalytics.onImpressBottomSheetOutOfIndo(userSession.userId)
-                }
+                    AddressUiState.AddAddress -> {
+                        LogisticAddAddressAnalytics.onImpressBottomSheetOutOfIndo(userSession.userId)
+                    }
 
-                else -> {
-                    // no op
+                    else -> {
+                        // no op
+                    }
                 }
             }
-        } else if (type == BOTTOMSHEET_NOT_FOUND_LOC) {
-            when (addressUiState) {
-                AddressUiState.EditAddress -> {
-                    LogisticEditAddressAnalytics.onImpressBottomSheetAlamatTidakTerdeteksi(
-                        userSession.userId
-                    )
-                }
+            BottomSheetState.LocationInvalid.LocationInvalidType.LOCATION_NOT_FOUND -> {
+                when (addressUiState) {
+                    AddressUiState.EditAddress -> {
+                        LogisticEditAddressAnalytics.onImpressBottomSheetAlamatTidakTerdeteksi(
+                            userSession.userId
+                        )
+                    }
 
-                AddressUiState.AddAddress -> {
-                    LogisticAddAddressAnalytics.onImpressBottomSheetAlamatTidakTerdeteksi(
-                        userSession.userId
-                    )
-                }
+                    AddressUiState.AddAddress -> {
+                        LogisticAddAddressAnalytics.onImpressBottomSheetAlamatTidakTerdeteksi(
+                            userSession.userId
+                        )
+                    }
 
-                else -> {
-                    // no op
+                    else -> {
+                        // no op
+                    }
                 }
             }
         }
