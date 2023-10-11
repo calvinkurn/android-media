@@ -78,6 +78,7 @@ import com.tokopedia.navigation.domain.model.Notification;
 import com.tokopedia.navigation.presentation.customview.BottomMenu;
 import com.tokopedia.navigation.presentation.customview.HomeForYouMenu;
 import com.tokopedia.navigation.presentation.customview.IBottomClickListener;
+import com.tokopedia.navigation.presentation.customview.IBottomHomeForYouClickListener;
 import com.tokopedia.navigation.presentation.customview.LottieBottomNavbar;
 import com.tokopedia.navigation.presentation.di.DaggerGlobalNavComponent;
 import com.tokopedia.navigation.presentation.di.GlobalNavComponent;
@@ -130,6 +131,7 @@ public class MainParentActivity extends BaseActivity implements
         MainParentStatusBarListener,
         HomePerformanceMonitoringListener,
         IBottomClickListener,
+        IBottomHomeForYouClickListener,
         MainParentStateListener,
         ITelemetryActivity,
         InAppCallback,
@@ -431,6 +433,7 @@ public class MainParentActivity extends BaseActivity implements
 
         populateBottomNavigationView();
         bottomNavigation.setMenuClickListener(this);
+        bottomNavigation.setHomeForYouMenuClickListener(this);
     }
 
     @NotNull
@@ -1268,16 +1271,18 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     public void menuReselected(int position, int id) {
         Fragment fragment = fragmentList.get(getPositionFragmentByMenu(position));
+        scrollToTop(fragment); // enable feature scroll to top for home & feed
+    }
 
-        if (position == 0) {
-            boolean isHomeBottomNavSelected = bottomNavigation.isHomeBottomNavSelected();
-            if (isHomeBottomNavSelected) {
-                scrollToHomeForYou(fragment);
-            } else {
-                scrollToTop(fragment); // enable feature scroll to top for home & feed
-            }
+    @Override
+    public void homeForYouMenuReselected(int position, int id) {
+        Fragment fragment = fragmentList.get(getPositionFragmentByMenu(position));
+
+        boolean isHomeBottomNavSelected = bottomNavigation.isHomeBottomNavSelected();
+        if (isHomeBottomNavSelected) {
+            scrollToHomeForYou(fragment);
         } else {
-            scrollToTop(fragment); // enable feature scroll to top for home & feed
+            scrollToTop(fragment); // enable feature scroll to top for home
         }
     }
 

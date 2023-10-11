@@ -50,6 +50,7 @@ class LottieBottomNavbar : LinearLayout {
     private var badgeLayoutParam: FrameLayout.LayoutParams? = null
     private var menu: MutableList<BottomMenu> = ArrayList()
     private var listener: IBottomClickListener? = null
+    private var homeForYouListener: IBottomHomeForYouClickListener? = null
     private var iconList: MutableList<Pair<LottieAnimationView, Boolean>> = ArrayList()
     private var iconPlaceholderList: MutableList<ImageView> = ArrayList()
     private var titleList: MutableList<TextView> = ArrayList()
@@ -758,6 +759,10 @@ class LottieBottomNavbar : LinearLayout {
         this.listener = listener
     }
 
+    fun setHomeForYouMenuClickListener(listener: IBottomHomeForYouClickListener) {
+        this.homeForYouListener = listener
+    }
+
     fun setNavbarPositionTop() {
         layoutContent()
         invalidate()
@@ -829,6 +834,10 @@ data class HomeForYouMenu(
 interface IBottomClickListener {
     fun menuClicked(position: Int, id: Int): Boolean
     fun menuReselected(position: Int, id: Int)
+}
+
+interface IBottomHomeForYouClickListener {
+    fun homeForYouMenuReselected(position: Int, id: Int)
 }
 
 fun Float.toDpInt(): Int = this.toPx().toInt()
