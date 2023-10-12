@@ -492,7 +492,9 @@ open class GetPdpLayoutUseCase @Inject constructor(
             ProductDetailConstant.VIEW_TO_VIEW,
             ProductDetailConstant.PRODUCT_LIST_VERTICAL,
             ProductDetailConstant.TOP_ADS,
-            ProductDetailConstant.FINTECH_WIDGET_TYPE
+            ProductDetailConstant.FINTECH_WIDGET_TYPE,
+            ProductDetailConstant.CONTENT_WIDGET,
+            ProductDetailConstant.GLOBAL_BUNDLING
         )
     }
 
@@ -511,7 +513,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
     }.getOrNull()
 
     @GqlQuery("PdpGetLayoutQuery", QUERY)
-    suspend fun executeOnBackground(): Flow<ProductDetailDataModel> {
+    suspend fun executeOnBackground(): Flow<Result<ProductDetailDataModel>> {
         val cacheState = CacheState(remoteCacheableActive = shouldCacheable)
 
         prepareRequest()
@@ -537,21 +539,22 @@ open class GetPdpLayoutUseCase @Inject constructor(
     }
 
     private fun processRequestCacheable(cacheState: CacheState) = flow {
-        val pdpLayoutCache = processRequestCacheOnly(cacheState = cacheState)
-        var cacheState = pdpLayoutCache.cacheState
+        val pdpLayoutStateFromCache = processRequestCacheOnly(cacheState = cacheState)
+        // if from cache is null cause throwable, so that get data from cloud
+        var pdpLayoutCache = pdpLayoutStateFromCache.getOrNull()?.cacheState ?: cacheState
 
-        if (cacheState.isFromCache) {
+        if (pdpLayoutCache.isFromCache) {
             // is from cache, emit for the first
-            emit(pdpLayoutCache)
+            emit(pdpLayoutStateFromCache)
 
-            cacheState = cacheState.copy(cacheFirstThenCloud = true)
+            pdpLayoutCache = pdpLayoutCache.copy(cacheFirstThenCloud = true)
         }
 
-        val pdpLayoutCloud = processRequestAlwaysCloud(cacheState = cacheState)
-        emit(pdpLayoutCloud)
+        val pdpLayoutCloudState = processRequestAlwaysCloud(cacheState = pdpLayoutCache)
+        emit(pdpLayoutCloudState)
     }.flowOn(dispatcher.io)
 
-    private suspend fun processRequestCacheOnly(cacheState: CacheState): ProductDetailDataModel {
+    private suspend fun processRequestCacheOnly(cacheState: CacheState) = runCatching {
         val response = GraphqlCacheStrategy.Builder(CacheType.CACHE_ONLY).build().let {
             gqlUseCase.setCacheStrategy(it)
             gqlUseCase.executeOnBackground()
@@ -562,7 +565,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
         val isCampaign = isProductCampaign(layout = data)
 
         // if cache data available and product non campaign, so emit to VM
-        return if (hasCacheAvailable && !isCampaign) {
+        if (hasCacheAvailable && !isCampaign) {
             // expected cache state is fromCache is true and cacheFirstThenCloud is false
             processResponse(
                 pdpLayout = data,
@@ -574,9 +577,13 @@ open class GetPdpLayoutUseCase @Inject constructor(
             // expected cache state is fromCache is false and cacheFirstThenCloud is false
             ProductDetailDataModel(cacheState = cacheState)
         }
+    }.onSuccess {
+        Result.success(it)
+    }.onFailure {
+        Result.failure<Throwable>(it)
     }
 
-    private suspend fun processRequestAlwaysCloud(cacheState: CacheState): ProductDetailDataModel {
+    private suspend fun processRequestAlwaysCloud(cacheState: CacheState) = runCatching {
         val response = CacheStrategyUtil.getCacheStrategy(forceRefresh = true, cacheAge = cacheAge)
             .let {
                 gqlUseCase.setCacheStrategy(it)
@@ -586,12 +593,16 @@ open class GetPdpLayoutUseCase @Inject constructor(
         val error = response.getPdpLayoutError()
         val isCampaign = isProductCampaign(layout = data)
 
-        return processResponse(
+        processResponse(
             pdpLayout = data,
             error = error,
             cacheState = cacheState.copy(isFromCache = false),
             isCampaign = isCampaign
         )
+    }.onSuccess {
+        Result.success(it)
+    }.onFailure {
+        Result.failure<Throwable>(it)
     }
 
     private fun isProductCampaign(layout: PdpGetLayout?): Boolean {

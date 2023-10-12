@@ -123,6 +123,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
@@ -534,13 +535,18 @@ class DynamicProductDetailViewModel @Inject constructor(
                 layoutId = layoutId,
                 extParam = extParam,
                 refreshPage = refreshPage
-            )
-                .catch {
-                    _productLayout.value = it.asFail()
-                }.collect {
-                    processPdpLayout(pdpLayout = it)
-                    getProductP2(urlQuery)
-                }
+            ).collectLatest {
+                pdpLayoutCollector(urlQuery = urlQuery, data = it)
+            }
+        }.onFailure {
+            _productLayout.value = it.asFail()
+        }
+    }
+
+    private fun pdpLayoutCollector(urlQuery: String, data: kotlin.Result<ProductDetailDataModel>) {
+        data.onSuccess {
+            processPdpLayout(pdpLayout = it)
+            getProductP2(urlQuery)
         }.onFailure {
             _productLayout.value = it.asFail()
         }
@@ -1175,7 +1181,7 @@ class DynamicProductDetailViewModel @Inject constructor(
         layoutId: String,
         extParam: String,
         refreshPage: Boolean
-    ): Flow<ProductDetailDataModel> {
+    ): Flow<kotlin.Result<ProductDetailDataModel>> {
         val useCase = getPdpLayoutUseCase.get().apply {
             requestParams = GetPdpLayoutUseCase.createParams(
                 productId,
