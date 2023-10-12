@@ -5,11 +5,11 @@ import com.tokopedia.inbox.universalinbox.test.base.BaseUniversalInboxTest
 import com.tokopedia.inbox.universalinbox.test.robot.general.GeneralResult.assertInboxRvTotalItem
 import com.tokopedia.inbox.universalinbox.test.robot.generalRobot
 import com.tokopedia.inbox.universalinbox.test.robot.menuRobot
-import com.tokopedia.inbox.universalinbox.test.robot.recommendation.RecommendationResult.assertPrePurchaseRecommendation
-import com.tokopedia.inbox.universalinbox.test.robot.recommendation.RecommendationResult.assertPrePurchaseRecommendationGone
 import com.tokopedia.inbox.universalinbox.test.robot.recommendation.RecommendationResult.assertProductRecommendation
 import com.tokopedia.inbox.universalinbox.test.robot.recommendation.RecommendationResult.assertProductRecommendationName
 import com.tokopedia.inbox.universalinbox.test.robot.recommendation.RecommendationResult.assertProductWidgetRecommendationName
+import com.tokopedia.inbox.universalinbox.test.robot.recommendation.RecommendationResult.assertWidgetRecommendation
+import com.tokopedia.inbox.universalinbox.test.robot.recommendation.RecommendationResult.assertWidgetRecommendationGone
 import com.tokopedia.inbox.universalinbox.test.robot.recommendationRobot
 import com.tokopedia.inbox.universalinbox.test.robot.widgetRobot
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.ROLLENCE_REFRESH_RECOMMENDATION
@@ -21,7 +21,7 @@ import org.junit.Test
 class UniversalInboxRecommendationTest : BaseUniversalInboxTest() {
 
     @Test
-    fun should_show_prepurchase_widget_and_recommendation_items() {
+    fun should_show_recommendation_widget_and_recommendation_items() {
         // When
         launchActivity()
         generalRobot {
@@ -29,9 +29,10 @@ class UniversalInboxRecommendationTest : BaseUniversalInboxTest() {
         }
 
         // Then
-        assertPrePurchaseRecommendation(8)
-        // 9 is title product recommendation
-        assertProductRecommendation(10)
+        assertWidgetRecommendation(8) // Post Purchase
+        assertWidgetRecommendation(9) // Pre Purchase
+        // 10 is title product recommendation
+        assertProductRecommendation(11)
     }
 
     @Test
@@ -42,11 +43,27 @@ class UniversalInboxRecommendationTest : BaseUniversalInboxTest() {
         // When
         launchActivity()
         generalRobot {
+            scrollToPosition(9)
+        }
+
+        // Then
+        assertInboxRvTotalItem(10)
+    }
+
+    @Test
+    fun should_not_show_postpurchase_widget_when_error() {
+        // Given
+        GqlResponseStub.postPurchaseProductRecommendationResponse.isError = true
+
+        // When
+        launchActivity()
+        generalRobot {
             scrollToPosition(8)
         }
 
         // Then
-        assertInboxRvTotalItem(9)
+        assertWidgetRecommendation(8)
+        assertWidgetRecommendationGone(8)
     }
 
     @Test
@@ -57,12 +74,29 @@ class UniversalInboxRecommendationTest : BaseUniversalInboxTest() {
         // When
         launchActivity()
         generalRobot {
+            scrollToPosition(9)
+        }
+
+        // Then
+        assertWidgetRecommendation(9)
+        assertWidgetRecommendationGone(9)
+    }
+
+    @Test
+    fun should_not_show_postpurchase_widget_when_empty() {
+        // Given
+        GqlResponseStub.postPurchaseProductRecommendationResponse
+            .responseObject = RecommendationEntity()
+
+        // When
+        launchActivity()
+        generalRobot {
             scrollToPosition(8)
         }
 
         // Then
-        assertPrePurchaseRecommendation(8)
-        assertPrePurchaseRecommendationGone(8)
+        assertWidgetRecommendation(8)
+        assertWidgetRecommendationGone(8)
     }
 
     @Test
@@ -74,12 +108,12 @@ class UniversalInboxRecommendationTest : BaseUniversalInboxTest() {
         // When
         launchActivity()
         generalRobot {
-            scrollToPosition(8)
+            scrollToPosition(9)
         }
 
         // Then
-        assertPrePurchaseRecommendation(8)
-        assertPrePurchaseRecommendationGone(8)
+        assertWidgetRecommendation(9)
+        assertWidgetRecommendationGone(9)
     }
 
     @Test
@@ -88,12 +122,17 @@ class UniversalInboxRecommendationTest : BaseUniversalInboxTest() {
         launchActivity()
         stubAllIntents()
         generalRobot {
-            scrollToPosition(10)
+            scrollToPosition(8)
+            scrollToPosition(11)
         }
 
         // Given
         GqlResponseStub.productRecommendationResponse.apply {
             filePath = "recommendation/success_get_recommendation_refresh.json"
+            updateResponseObject()
+        }
+        GqlResponseStub.postPurchaseProductRecommendationResponse.apply {
+            filePath = "recommendation/success_get_postpurchase_recommendation_refresh.json"
             updateResponseObject()
         }
         GqlResponseStub.prePurchaseProductRecommendationResponse.apply {
@@ -103,15 +142,16 @@ class UniversalInboxRecommendationTest : BaseUniversalInboxTest() {
 
         // When
         recommendationRobot {
-            clickProductOnPosition(10) // trigger refresh
+            clickProductOnPosition(11) // trigger refresh
         }
         Thread.sleep(300) // wait for rv to populate
         generalRobot {
-            scrollToPosition(10)
+            scrollToPosition(8)
+            scrollToPosition(11)
         }
 
         // Then
-        assertProductRecommendationName(10, "Product Refresh 1")
+        assertProductRecommendationName(11, "Product Refresh 1")
         assertProductWidgetRecommendationName(0, "Pre-purchase Product Refresh")
     }
 
@@ -163,6 +203,10 @@ class UniversalInboxRecommendationTest : BaseUniversalInboxTest() {
             filePath = "recommendation/success_get_recommendation_refresh.json"
             updateResponseObject()
         }
+        GqlResponseStub.postPurchaseProductRecommendationResponse.apply {
+            filePath = "recommendation/success_get_postpurchase_recommendation_refresh.json"
+            updateResponseObject()
+        }
         GqlResponseStub.prePurchaseProductRecommendationResponse.apply {
             filePath = "recommendation/success_get_prepurchase_recommendation_refresh.json"
             updateResponseObject()
@@ -174,11 +218,12 @@ class UniversalInboxRecommendationTest : BaseUniversalInboxTest() {
         }
         Thread.sleep(300) // wait for rv to populate
         generalRobot {
-            scrollToPosition(10)
+            scrollToPosition(8)
+            scrollToPosition(11)
         }
 
         // Then
-        assertProductRecommendationName(10, "Product Refresh 1")
+        assertProductRecommendationName(11, "Product Refresh 1")
         assertProductWidgetRecommendationName(0, "Pre-purchase Product Refresh")
     }
 
@@ -193,6 +238,10 @@ class UniversalInboxRecommendationTest : BaseUniversalInboxTest() {
             filePath = "recommendation/success_get_recommendation_refresh.json"
             updateResponseObject()
         }
+        GqlResponseStub.postPurchaseProductRecommendationResponse.apply {
+            filePath = "recommendation/success_get_postpurchase_recommendation_refresh.json"
+            updateResponseObject()
+        }
         GqlResponseStub.prePurchaseProductRecommendationResponse.apply {
             filePath = "recommendation/success_get_prepurchase_recommendation_refresh.json"
             updateResponseObject()
@@ -204,11 +253,12 @@ class UniversalInboxRecommendationTest : BaseUniversalInboxTest() {
         }
         Thread.sleep(300) // wait for rv to populate
         generalRobot {
-            scrollToPosition(10)
+            scrollToPosition(8)
+            scrollToPosition(11)
         }
 
         // Then
-        assertProductRecommendationName(10, "Product Refresh 1")
+        assertProductRecommendationName(11, "Product Refresh 1")
         assertProductWidgetRecommendationName(0, "Pre-purchase Product Refresh")
     }
 
@@ -223,6 +273,10 @@ class UniversalInboxRecommendationTest : BaseUniversalInboxTest() {
             filePath = "recommendation/success_get_recommendation_refresh.json"
             updateResponseObject()
         }
+        GqlResponseStub.postPurchaseProductRecommendationResponse.apply {
+            filePath = "recommendation/success_get_postpurchase_recommendation_refresh.json"
+            updateResponseObject()
+        }
         GqlResponseStub.prePurchaseProductRecommendationResponse.apply {
             filePath = "recommendation/success_get_prepurchase_recommendation_refresh.json"
             updateResponseObject()
@@ -234,11 +288,12 @@ class UniversalInboxRecommendationTest : BaseUniversalInboxTest() {
         }
         Thread.sleep(300) // wait for rv to populate
         generalRobot {
-            scrollToPosition(10)
+            scrollToPosition(8)
+            scrollToPosition(11)
         }
 
         // Then
-        assertProductRecommendationName(10, "Product Refresh 1")
+        assertProductRecommendationName(11, "Product Refresh 1")
         assertProductWidgetRecommendationName(0, "Pre-purchase Product Refresh")
     }
 
@@ -248,10 +303,18 @@ class UniversalInboxRecommendationTest : BaseUniversalInboxTest() {
         setABValue(ROLLENCE_REFRESH_RECOMMENDATION, "")
         launchActivity()
         stubAllIntents()
+        generalRobot {
+            scrollToPosition(8)
+            scrollToPosition(11)
+        }
 
         // Given
         GqlResponseStub.productRecommendationResponse.apply {
             filePath = "recommendation/success_get_recommendation_refresh.json"
+            updateResponseObject()
+        }
+        GqlResponseStub.postPurchaseProductRecommendationResponse.apply {
+            filePath = "recommendation/success_get_postpurchase_recommendation_refresh.json"
             updateResponseObject()
         }
         GqlResponseStub.prePurchaseProductRecommendationResponse.apply {
@@ -260,17 +323,21 @@ class UniversalInboxRecommendationTest : BaseUniversalInboxTest() {
         }
 
         // When
+        generalRobot {
+            scrollToPosition(1)
+        }
         menuRobot {
             clickMenuOnPosition(1) // trigger refresh
         }
         Thread.sleep(300) // wait for rv to populate
         generalRobot {
-            scrollToPosition(10)
+            scrollToPosition(8)
+            scrollToPosition(11)
         }
 
         // Then
         assertProductRecommendationName(
-            10,
+            11,
             "Tumbler Japan Hook Termos Travel 500 ml"
         )
         assertProductWidgetRecommendationName(

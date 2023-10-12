@@ -26,7 +26,7 @@ object RecommendationResult {
         )
     }
 
-    fun assertPrePurchaseRecommendation(position: Int) {
+    fun assertWidgetRecommendation(position: Int) {
         onView(withId(R.id.inbox_rv)).check(
             atPositionCheckInstanceOf(
                 position = position,
@@ -35,7 +35,7 @@ object RecommendationResult {
         )
     }
 
-    fun assertPrePurchaseRecommendationGone(position: Int) {
+    fun assertWidgetRecommendationGone(position: Int) {
         onView(
             withRecyclerView(R.id.inbox_rv)
                 .atPositionOnView(position, R.id.inbox_recommendation_widget)

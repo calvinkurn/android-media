@@ -1,0 +1,298 @@
+{
+  "productRecommendationWidget" : {
+    "data" : [
+      {
+        "tID" : "Bv74hVXrxd3Mn8l6PETs3wL3Aw4=",
+        "subtitle" : "Yuk, lengkapi produk yang baru kamu beli",
+        "layoutType" : "limit-vertical",
+        "title" : "Banyak orang beli ini juga, lho!",
+        "seeMoreAppLink" : "",
+        "campaign" : {
+          "assets" : {
+            "banner" : {
+              "apps" : ""
+            }
+          },
+          "appLandingPageLink" : ""
+        },
+        "pagination" : {
+          "hasNext" : true
+        },
+        "recommendation" : [
+          {
+            "clickUrl" : "https://ace.tokopedia.com/r3/v2/track?category=1794&event=click&experimentVersion=v1.4&page=1&page_name=inbox_post-purchase&pid=347602415&pos=1&recommendation=top_chat_spr&rectype=top_chat_spr&redirect=https://www.tokopedia.com/jerseybola-id/batik-tulis-sutra-sarimbit-selendang-kencana?catid1794=%26ref=inbox_post-purchase_pa1_po1%26src=r3top_chat_spr&tid=Bv74hVXrxd3Mn8l6PETs3wL3Aw4=&uid=148201295&unique_id=&utime=1697111368&widget=r3_widget&xdevice=ios-2.246.0",
+            "parentID" : 0,
+            "warehouseID" : 301424,
+            "url" : "https://www.tokopedia.com/jerseybola-id/batik-tulis-sutra-sarimbit-selendang-kencana",
+            "wishlistUrl" : "",
+            "trackerImageUrl" : "https://images.tokopedia.net/img/cache/300-square/product-1/2018/10/18/238377/238377_66b0e9f9-f70a-4269-b635-d4e8ce4cc9ed_2048_2048.jpg",
+            "departmentId" : 1794,
+            "isTopads" : false,
+            "discountPercentage" : 0,
+            "recommendationType" : "top_chat_spr",
+            "badges" : [
+            ],
+            "categoryBreadcrumbs" : "Fashion Wanita/Batik Wanita/Batik Couple",
+            "maxOrder" : 0,
+            "isWishlist" : false,
+            "ratingAverage" : "5.0",
+            "name" : "Post-purchase Product Refresh 1",
+            "imageUrl" : "https://images.tokopedia.net/img/cache/300-square/product-1/2018/10/18/238377/238377_66b0e9f9-f70a-4269-b635-d4e8ce4cc9ed_2048_2048.jpg",
+            "freeOngkir" : {
+              "imageUrl" : "",
+              "isActive" : false
+            },
+            "id" : 347602415,
+            "priceInt" : 7750000,
+            "slashedPrice" : "",
+            "labelGroupVariant" : [
+            ],
+            "shop" : {
+              "id" : 238377,
+              "name" : "jerseybola_ID",
+              "city" : "Kota Cirebon",
+              "location" : "Kota Cirebon"
+            },
+            "minOrder" : 1,
+            "labelgroup" : [
+              {
+                "title" : "",
+                "type" : "textDarkGrey",
+                "position" : "eta",
+                "url" : ""
+              },
+              {
+                "title" : "1 terjual",
+                "type" : "textDarkGrey",
+                "position" : "integrity",
+                "url" : ""
+              }
+            ],
+            "appUrl" : "tokopedia://product/347602415",
+            "price" : "Rp7.750.000",
+            "countReview" : 1,
+            "rating" : 5,
+            "specificationLabels" : [
+            ]
+          },
+          {
+            "clickUrl" : "https://ace.tokopedia.com/r3/v2/track?category=36&event=click&experimentVersion=v1.4&page=1&page_name=inbox_post-purchase&pid=336246800&pos=2&recommendation=top_chat_spr&rectype=top_chat_spr&redirect=https://www.tokopedia.com/themeatspecialist/kardus?catid0036=%26ref=inbox_post-purchase_pa1_po2%26src=r3top_chat_spr&tid=Bv74hVXrxd3Mn8l6PETs3wL3Aw4=&uid=148201295&unique_id=&utime=1697111368&widget=r3_widget&xdevice=ios-2.246.0",
+            "parentID" : 0,
+            "warehouseID" : 624696,
+            "url" : "https://www.tokopedia.com/themeatspecialist/kardus",
+            "wishlistUrl" : "",
+            "trackerImageUrl" : "https://images.tokopedia.net/img/cache/300-square/attachment/2018/9/25/153784792754595/153784792754595_3795d89f-53dc-4a1b-be4c-018a0e081e1b.png",
+            "departmentId" : 36,
+            "isTopads" : false,
+            "discountPercentage" : 0,
+            "recommendationType" : "top_chat_spr",
+            "badges" : [
+              {
+                "title" : "Power Merchant Pro",
+                "imageUrl" : "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@2x.png"
+              }
+            ],
+            "categoryBreadcrumbs" : "Produk Lainnya",
+            "maxOrder" : 0,
+            "isWishlist" : false,
+            "ratingAverage" : "5.0",
+            "name" : "Post-purchase Product Refresh 2",
+            "imageUrl" : "https://images.tokopedia.net/img/cache/300-square/attachment/2018/9/25/153784792754595/153784792754595_3795d89f-53dc-4a1b-be4c-018a0e081e1b.png",
+            "freeOngkir" : {
+              "imageUrl" : "",
+              "isActive" : false
+            },
+            "id" : 336246800,
+            "priceInt" : 14500,
+            "slashedPrice" : "",
+            "labelGroupVariant" : [
+            ],
+            "shop" : {
+              "id" : 1333725,
+              "name" : "The Meat Specialist",
+              "city" : "Jakarta Selatan",
+              "location" : "Jakarta Selatan"
+            },
+            "minOrder" : 1,
+            "labelgroup" : [
+              {
+                "title" : "",
+                "type" : "textDarkGrey",
+                "position" : "eta",
+                "url" : ""
+              },
+              {
+                "title" : "7 terjual",
+                "type" : "textDarkGrey",
+                "position" : "integrity",
+                "url" : ""
+              }
+            ],
+            "appUrl" : "tokopedia://product/336246800",
+            "price" : "Rp14.500",
+            "countReview" : 2,
+            "rating" : 5,
+            "specificationLabels" : [
+            ]
+          },
+          {
+            "clickUrl" : "https://ace.tokopedia.com/r3/v2/track?category=1270&event=click&experimentVersion=v1.4&page=1&page_name=inbox_post-purchase&pid=2990546574&pos=3&recommendation=top_chat_spr&rectype=top_chat_spr&redirect=https://www.tokopedia.com/furnituremodernswed/rak-sepatu-dinding-tembok-dua-kotak-minimalis-kea-original-hitam?catid1270=%26ref=inbox_post-purchase_pa1_po3%26src=r3top_chat_spr&tid=Bv74hVXrxd3Mn8l6PETs3wL3Aw4=&uid=148201295&unique_id=&utime=1697111368&widget=r3_widget&xdevice=ios-2.246.0",
+            "parentID" : 0,
+            "warehouseID" : 13129859,
+            "url" : "https://www.tokopedia.com/furnituremodernswed/rak-sepatu-dinding-tembok-dua-kotak-minimalis-kea-original-hitam",
+            "wishlistUrl" : "",
+            "trackerImageUrl" : "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/5/27/7f291c03-4958-42bf-bca4-cd41bd3b2b1f.jpg",
+            "departmentId" : 1270,
+            "isTopads" : false,
+            "discountPercentage" : 0,
+            "recommendationType" : "top_chat_spr",
+            "badges" : [
+              {
+                "title" : "Power Merchant Pro",
+                "imageUrl" : "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@2x.png"
+              }
+            ],
+            "categoryBreadcrumbs" : "Rumah Tangga/Furniture/Rak",
+            "maxOrder" : 0,
+            "isWishlist" : false,
+            "ratingAverage" : "5.0",
+            "name" : "Post-purchase Product Refresh 3",
+            "imageUrl" : "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/5/27/7f291c03-4958-42bf-bca4-cd41bd3b2b1f.jpg",
+            "freeOngkir" : {
+              "imageUrl" : "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png",
+              "isActive" : true
+            },
+            "id" : 2990546574,
+            "priceInt" : 649000,
+            "slashedPrice" : "",
+            "labelGroupVariant" : [
+            ],
+            "shop" : {
+              "id" : 13220439,
+              "name" : "FURNITURE MODERN SWEDIA",
+              "city" : "Kota Tangerang Selatan",
+              "location" : "Kota Tangerang Selatan"
+            },
+            "minOrder" : 1,
+            "labelgroup" : [
+              {
+                "title" : "Cashback 2%",
+                "type" : "lightGreen",
+                "position" : "price",
+                "url" : ""
+              },
+              {
+                "title" : "Gratis Ongkir",
+                "type" : "lightGreen",
+                "position" : "promo",
+                "url" : ""
+              },
+              {
+                "title" : "Cashback",
+                "type" : "lightGreen",
+                "position" : "promo",
+                "url" : ""
+              },
+              {
+                "title" : "Tiba 14 - 17 Oct",
+                "type" : "textDarkGrey",
+                "position" : "eta",
+                "url" : ""
+              },
+              {
+                "title" : "3 terjual",
+                "type" : "textDarkGrey",
+                "position" : "integrity",
+                "url" : ""
+              }
+            ],
+            "appUrl" : "tokopedia://product/2990546574",
+            "price" : "Rp649.000",
+            "countReview" : 2,
+            "rating" : 5,
+            "specificationLabels" : [
+            ]
+          },
+          {
+            "clickUrl" : "https://ace.tokopedia.com/r3/v2/track?category=1270&event=click&experimentVersion=v1.4&page=1&page_name=inbox_post-purchase&pid=2391126184&pos=4&recommendation=top_chat_spr&rectype=top_chat_spr&redirect=https://www.tokopedia.com/homefurnitureoriginal/rak-sepatu-dinding-tembok-dua-kotak-minimalis-78x52cmoriginal-putih?catid1270=%26ref=inbox_post-purchase_pa1_po4%26src=r3top_chat_spr&tid=Bv74hVXrxd3Mn8l6PETs3wL3Aw4=&uid=148201295&unique_id=&utime=1697111368&widget=r3_widget&xdevice=ios-2.246.0",
+            "parentID" : 0,
+            "warehouseID" : 10801364,
+            "url" : "https://www.tokopedia.com/homefurnitureoriginal/rak-sepatu-dinding-tembok-dua-kotak-minimalis-78x52cmoriginal-putih",
+            "wishlistUrl" : "",
+            "trackerImageUrl" : "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/11/8/b513e15a-4544-4155-b085-de4c61e06bd3.jpg",
+            "departmentId" : 1270,
+            "isTopads" : false,
+            "discountPercentage" : 0,
+            "recommendationType" : "top_chat_spr",
+            "badges" : [
+              {
+                "title" : "Power Merchant Pro",
+                "imageUrl" : "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@2x.png"
+              }
+            ],
+            "categoryBreadcrumbs" : "Rumah Tangga/Furniture/Rak",
+            "maxOrder" : 0,
+            "isWishlist" : false,
+            "ratingAverage" : "5.0",
+            "name" : "Post-purchase Product Refresh 4",
+            "imageUrl" : "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/11/8/b513e15a-4544-4155-b085-de4c61e06bd3.jpg",
+            "freeOngkir" : {
+              "imageUrl" : "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png",
+              "isActive" : true
+            },
+            "id" : 2391126184,
+            "priceInt" : 649000,
+            "slashedPrice" : "",
+            "labelGroupVariant" : [
+            ],
+            "shop" : {
+              "id" : 10780931,
+              "name" : "HOME FURNITURE ORIGINAL",
+              "city" : "Kota Tangerang Selatan",
+              "location" : "Kota Tangerang Selatan"
+            },
+            "minOrder" : 1,
+            "labelgroup" : [
+              {
+                "title" : "Cashback 10%",
+                "type" : "lightGreen",
+                "position" : "price",
+                "url" : ""
+              },
+              {
+                "title" : "Gratis Ongkir",
+                "type" : "lightGreen",
+                "position" : "promo",
+                "url" : ""
+              },
+              {
+                "title" : "Cashback",
+                "type" : "lightGreen",
+                "position" : "promo",
+                "url" : ""
+              },
+              {
+                "title" : "Tiba 14 - 17 Oct",
+                "type" : "textDarkGrey",
+                "position" : "eta",
+                "url" : ""
+              },
+              {
+                "title" : "1 terjual",
+                "type" : "textDarkGrey",
+                "position" : "integrity",
+                "url" : ""
+              }
+            ],
+            "appUrl" : "tokopedia://product/2391126184",
+            "price" : "Rp649.000",
+            "countReview" : 1,
+            "rating" : 5,
+            "specificationLabels" : [
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
