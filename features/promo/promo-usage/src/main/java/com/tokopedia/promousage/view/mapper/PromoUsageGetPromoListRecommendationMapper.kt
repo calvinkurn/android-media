@@ -109,11 +109,26 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
                         if (couponSection.coupons.isNotEmpty()) {
                             val coupons = couponSection.coupons.filter { it.isGroupHeader }
                             hasRecommendedOrOtherSection = true
+
+                            val selectedPromoInSection = couponSection.coupons
+                                .filter { it.isSelected }
+                            val selectedSecondaryPromoInSection = couponSection.coupons
+                                .flatMap { it.secondaryCoupon }.filter { it.isSelected }
+
+                            val isExpanded = !couponSection.isCollapsed
+                            val hasSelectedPromoInSection = selectedPromoInSection.isNotEmpty() ||
+                                selectedSecondaryPromoInSection.isNotEmpty()
+
+                            val hiddenPromoCount = if (selectedPromoInSection.isNotEmpty()) {
+                                couponSection.coupons.size - selectedPromoInSection.size
+                            } else {
+                                coupons.size - 1
+                            }
                             items.add(
                                 PromoAccordionHeaderItem(
                                     id = couponSection.id,
                                     title = couponSection.title,
-                                    isExpanded = !couponSection.isCollapsed,
+                                    isExpanded = hiddenPromoCount > 0 && (isExpanded || hasSelectedPromoInSection),
                                     totalPromoCount = coupons.size
                                 )
                             )
@@ -129,25 +144,16 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
                                     )
                                 )
                             }
-                            val selectedPromoInSection = couponSection.coupons.filter { it.isSelected }
-                            val hiddenPromoCount = if (selectedPromoInSection.isNotEmpty()) {
-                                couponSection.coupons.size - selectedPromoInSection.size
-                            } else {
-                                coupons.size - 1
-                            }
-                            if (hiddenPromoCount > 0) {
-                                val isExpanded = !couponSection.isCollapsed
-                                if (isExpanded) {
-                                    items.add(
-                                        PromoAccordionViewAllItem(
-                                            headerId = couponSection.id,
-                                            hiddenPromoCount = hiddenPromoCount,
-                                            totalPromoCount = coupons.size,
-                                            isExpanded = true,
-                                            isVisible = true
-                                        )
+                            if (hiddenPromoCount > 0 && (isExpanded || hasSelectedPromoInSection)) {
+                                items.add(
+                                    PromoAccordionViewAllItem(
+                                        headerId = couponSection.id,
+                                        hiddenPromoCount = hiddenPromoCount,
+                                        totalPromoCount = coupons.size,
+                                        isExpanded = true,
+                                        isVisible = true
                                     )
-                                }
+                                )
                             }
                         }
                     }
