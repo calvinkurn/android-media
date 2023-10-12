@@ -41,7 +41,7 @@ object DeeplinkMapperUser {
     }
 
     private fun getLoginApplink(): String {
-        return if (isGotoLoginEnabled()) {
+        return if (isGotoLoginEnabled() && GlobalConfig.isSellerApp().not()) {
             ApplinkConstInternalUserPlatform.SCP_LOGIN
         } else {
             ApplinkConstInternalUserPlatform.LOGIN

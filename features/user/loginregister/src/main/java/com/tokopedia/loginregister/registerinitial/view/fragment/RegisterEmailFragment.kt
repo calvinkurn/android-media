@@ -19,7 +19,7 @@ import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
-import com.scp.auth.GotoSdk
+import com.scp.auth.ScpUtils
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
@@ -141,7 +141,7 @@ class RegisterEmailFragment : BaseDaggerFragment() {
         userSession.setToken(data.accessToken, data.tokenType, EncoderDecoder.Encrypt(data.refreshToken, userSession.refreshTokenIV))
 
         /* Migrate token to lsdk */
-        GotoSdk.LSDKINSTANCE?.save(data.accessToken, data.refreshToken)
+        ScpUtils.saveTokens(accessToken = data.accessToken, refreshToken = data.refreshToken)
     }
 
     private fun initObserver() {

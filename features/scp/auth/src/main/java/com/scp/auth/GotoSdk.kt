@@ -105,7 +105,7 @@ object GotoSdk {
             LSDKINSTANCE?.getAccessToken()?.isEmpty() == true &&
             LSDKINSTANCE?.getRefreshToken()?.isEmpty() == true
         ) {
-            LSDKINSTANCE?.save(userSession.accessToken, userSession.freshToken)
+            ScpUtils.saveTokens(accessToken = userSession.accessToken, refreshToken = userSession.freshToken)
         }
     }
 
