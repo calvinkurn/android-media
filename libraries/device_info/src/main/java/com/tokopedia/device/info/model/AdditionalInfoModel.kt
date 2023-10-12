@@ -25,39 +25,39 @@ import kotlin.coroutines.resume
 data class AdditionalInfoModel(
     @SerializedName("time")
     @Expose
-    val time: String,
+    val time: String = "",
 
     @SerializedName("brand")
     @Expose
-    val brand: String,
+    val brand: String = "",
 
     @SerializedName("product")
     @Expose
-    val product: String,
+    val product: String = "",
 
     @SerializedName("board")
     @Expose
-    val board: String,
+    val board: String = "",
 
     @SerializedName("cpuAbi")
     @Expose
-    val cpuAbi: String,
+    val cpuAbi: String = "",
 
     @SerializedName("device")
     @Expose
-    val device: String,
+    val device: String = "",
 
     @SerializedName("versionName")
     @Expose
-    val versionName: String,
+    val versionName: String = "",
 
     @SerializedName("advertisingId")
     @Expose
-    val advertisingId: String,
+    val advertisingId: String = "",
 
     @SerializedName("wideVineId")
     @Expose
-    val wideVineId: String
+    val wideVineId: String = ""
 )
 
 object AdditionalDeviceInfo {
