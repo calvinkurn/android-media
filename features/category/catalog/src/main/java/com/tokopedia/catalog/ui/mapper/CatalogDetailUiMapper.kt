@@ -400,22 +400,24 @@ class CatalogDetailUiMapper @Inject constructor(
     }
 
     private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToComparison(): BaseCatalogUiModel {
+        var isFirstData = true
         return ComparisonUiModel(content = data?.comparison.orEmpty().map {
             val comparisonSpecs = mutableListOf<ComparisonUiModel.ComparisonSpec>()
             it.fullSpec.forEach { spec ->
                 comparisonSpecs.add(ComparisonUiModel.ComparisonSpec(
                     isSpecCategoryTitle = true,
-                    specCategoryTitle = spec.name
+                    specCategoryTitle = if (isFirstData) spec.name else ""
                 ))
                 spec.row.forEach { rowItem ->
                     val insertedItem = ComparisonUiModel.ComparisonSpec(
                         isSpecCategoryTitle = false,
-                        specTitle = rowItem.key,
+                        specTitle = if (isFirstData) rowItem.key else "",
                         specValue = rowItem.value,
                     )
                     comparisonSpecs.add(insertedItem)
                 }
             }
+            isFirstData = false
             ComparisonUiModel.ComparisonContent(
                 imageUrl = it.catalogImage.firstOrNull{ it.isPrimary }?.imageUrl.orEmpty(),
                 productTitle = it.name,
