@@ -56,8 +56,7 @@ data class ContentCreationAuthorEntity(
     @SerializedName("items")
     val items: List<ContentCreationAuthorItemEntity> = emptyList()
 ) {
-    val typeEnum: ContentCreationAuthorEnum = ContentCreationAuthorEnum.getTypeByValue(this.type)
-
+    val typeEnum: ContentCreationAuthorEnum by lazy { ContentCreationAuthorEnum.getTypeByValue(this.type) }
 }
 
 data class ContentCreationAuthorItemEntity(
@@ -79,7 +78,7 @@ data class ContentCreationAuthorItemEntity(
     val descriptionCTA: ContentCreationDescriptionEntity = ContentCreationDescriptionEntity()
 ) {
 
-    val typeEnum: ContentCreationTypeEnum? = ContentCreationTypeEnum.getTypeByValue(this.type)
+    val typeEnum: ContentCreationTypeEnum by lazy { ContentCreationTypeEnum.getTypeByValue(this.type) }
 
     data class ContentCreationMediaEntity(
         @SerializedName("type")

@@ -16,6 +16,7 @@ import com.tokopedia.feedplus.presentation.model.FeedTabModel
 import com.tokopedia.feedplus.presentation.model.MetaModel
 import com.tokopedia.feedplus.presentation.model.SwipeOnboardingStateModel
 import com.tokopedia.feedplus.presentation.onboarding.OnBoardingPreferences
+import com.tokopedia.feedplus.presentation.util.FeedContentManager
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted
@@ -126,9 +127,18 @@ class FeedMainViewModel @AssistedInject constructor(
         _isPageResumed.value = false
     }
 
+    fun muteSound() {
+        FeedContentManager.muteState.value = true
+    }
+
+    fun unmuteSound() {
+        FeedContentManager.muteState.value = false
+    }
+
     fun setActiveTab(position: Int) {
         viewModelScope.launch {
-            val tabModel = (_feedTabs.value as? NetworkResult.Success<FeedTabModel>)?.data ?: return@launch
+            val tabModel =
+                (_feedTabs.value as? NetworkResult.Success<FeedTabModel>)?.data ?: return@launch
             if (position < tabModel.data.size) {
                 _feedTabs.value = NetworkResult.Success(
                     tabModel.copy(
@@ -148,7 +158,8 @@ class FeedMainViewModel @AssistedInject constructor(
      */
     fun setActiveTab(type: String) {
         viewModelScope.launch {
-            val tabModel = (_feedTabs.value as? NetworkResult.Success<FeedTabModel>)?.data ?: return@launch
+            val tabModel =
+                (_feedTabs.value as? NetworkResult.Success<FeedTabModel>)?.data ?: return@launch
             _feedTabs.value = NetworkResult.Success(
                 tabModel.copy(
                     data = tabModel.data.map { tab ->

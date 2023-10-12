@@ -84,6 +84,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.nestPrinciples
     implementation rootProject.ext.unifyDependencies.nestComponents
+    implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.dialog
 
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
@@ -99,6 +100,9 @@ dependencies {
     implementation rootProject.ext.miscDependencies.workManager
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
+
+    implementation rootProject.ext.miscDependencies.viewModelKtx
+    implementation rootProject.ext.miscDependencies.fragmentKtx
 
     api rootProject.ext.dbDependencies.dbRoomRuntime
     implementation rootProject.ext.dbDependencies.dbRoomKtx

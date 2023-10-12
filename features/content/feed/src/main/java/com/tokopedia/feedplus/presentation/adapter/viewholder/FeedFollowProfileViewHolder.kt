@@ -10,18 +10,18 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.Player
 import com.tokopedia.feedcomponent.view.widget.FeedExoPlayer
+import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.databinding.ItemFeedFollowProfileBinding
 import com.tokopedia.feedplus.databinding.ItemFeedFollowProfileShimmerBinding
 import com.tokopedia.feedplus.presentation.adapter.FeedFollowProfileAdapter
-import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.feedplus.R
-import com.tokopedia.content.common.R as contentcommonR
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedFollowRecommendationListener
 import com.tokopedia.feedplus.presentation.model.FeedFollowRecommendationModel
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.content.common.R as contentcommonR
 
 /**
  * Created By : Jonathan Darwin on July 04, 2023
@@ -87,7 +87,6 @@ class FeedFollowProfileViewHolder private constructor() {
         }
 
         fun bind(model: FeedFollowProfileAdapter.Model.Profile) {
-
             setupProfile(model)
 
             binding.imgProfile.setImageUrl(model.data.imageUrl)
@@ -118,6 +117,7 @@ class FeedFollowProfileViewHolder private constructor() {
                 player.stop()
                 binding.playerView.hide()
             }
+            player.toggleVideoVolume(followRecommendationListener.isMuted())
 
             setupListener(model)
         }
@@ -179,7 +179,7 @@ class FeedFollowProfileViewHolder private constructor() {
 
         companion object {
             fun create(
-                parent: ViewGroup,
+                parent: ViewGroup
             ) = Loading(
                 ItemFeedFollowProfileShimmerBinding.inflate(
                     LayoutInflater.from(parent.context),
