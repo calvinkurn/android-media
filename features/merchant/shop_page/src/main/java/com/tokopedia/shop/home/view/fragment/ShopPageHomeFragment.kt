@@ -2940,7 +2940,8 @@ open class ShopPageHomeFragment :
             pageSource = VariantPageSource.SHOP_PAGE_REIMAGINED_DIRECT_PURCHASE_WIDGET_PAGESOURCE,
             shopId = shopId,
             startActivitResult = this::startActivityForResult,
-            showQuantityEditor = true
+            showQuantityEditor = true,
+            trackerCdListName = VariantPageSource.SHOP_PAGE_REIMAGINED_DIRECT_PURCHASE_WIDGET_PAGESOURCE.source
         )
     }
 
@@ -5481,10 +5482,11 @@ open class ShopPageHomeFragment :
                 AtcVariantHelper.goToAtcVariant(
                     context = requireContext(),
                     productId = productModel.productId,
-                    pageSource = VariantPageSource.SHOP_PAGE_PAGESOURCE,
+                    pageSource = VariantPageSource.SHOP_PAGE_REIMAGINED_DIRECT_PURCHASE_WIDGET_PAGESOURCE,
                     shopId = shopId,
                     startActivitResult = this::startActivityForResult,
-                    showQuantityEditor = false
+                    showQuantityEditor = false,
+                    trackerCdListName = VariantPageSource.SHOP_PAGE_REIMAGINED_DIRECT_PURCHASE_WIDGET_PAGESOURCE.source
                 )
             } else {
                 if (isLogin) {
