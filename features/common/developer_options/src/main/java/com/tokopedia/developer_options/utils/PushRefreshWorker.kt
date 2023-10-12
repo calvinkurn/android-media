@@ -7,7 +7,6 @@ import androidx.work.WorkerParameters
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import com.google.firebase.messaging.FirebaseMessaging
-import com.tokopedia.developer_options.presentation.service.DeleteFirebaseTokenService
 import com.tokopedia.fcmcommon.service.SyncFcmTokenService.Companion.startService
 
 
@@ -16,12 +15,6 @@ class PushRefreshWorker(appContext: Context, workerParams: WorkerParameters) :
     private val TAG = "DeleteFcmTokenWorker"
 
     override suspend fun doWork(): Result {
-//        val intent = Intent(this.applicationContext, DeleteFirebaseTokenService::class.java)
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//            this.applicationContext.startForegroundService(intent)
-//        } else {
-//            this.applicationContext.startService(intent)
-//        }
         Log.d(TAG, "Worker started")
         FirebaseMessaging.getInstance().deleteToken()
             .addOnCompleteListener { p0 ->
