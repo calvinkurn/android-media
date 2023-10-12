@@ -9,7 +9,8 @@ import androidx.annotation.StringDef
     CategoryComponentType.FEATURED_PRODUCT,
     CategoryComponentType.STATIC_TEXT,
     CategoryComponentType.PRODUCT_LIST_FILTER,
-    CategoryComponentType.PRODUCT_LIST_INFINITE_SCROLL
+    CategoryComponentType.PRODUCT_LIST_INFINITE_SCROLL,
+    CategoryComponentType.CATEGORY_JUMPER
 )
 annotation class CategoryComponentType {
     companion object {
@@ -19,5 +20,6 @@ annotation class CategoryComponentType {
         const val STATIC_TEXT = "static-text"
         const val PRODUCT_LIST_FILTER = "product-list-filter"
         const val PRODUCT_LIST_INFINITE_SCROLL = "product-list-infinite-scroll"
+        const val CATEGORY_JUMPER = "category-jumper"
     }
 }
