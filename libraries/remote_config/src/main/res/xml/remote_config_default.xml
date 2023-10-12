@@ -640,7 +640,7 @@
     </entry>
     <entry>
         <key>android_pdp_p1_should_cacheable</key>
-        <value>false</value>
+        <value>true</value>
     </entry>
     <entry>
         <key>android_pdp_p1_cache_age</key>
