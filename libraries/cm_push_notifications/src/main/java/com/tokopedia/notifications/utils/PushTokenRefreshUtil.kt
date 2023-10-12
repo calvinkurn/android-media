@@ -11,9 +11,14 @@ class PushTokenRefreshUtil {
     private var WORKER_ID = "PUSH_TOKEN_REFRESH_WORKER"
     fun scheduleWorker(appContext: Context, time: Long) {
         try {
+            val constraints = Constraints.Builder().run {
+                setRequiredNetworkType(NetworkType.UNMETERED)    //Wifi
+                setRequiredNetworkType(NetworkType.METERED)      //data
+                build()
+            }
             val periodicWorker = PeriodicWorkRequest
                 .Builder(PushTokenRefreshWorker::class.java, time, TimeUnit.DAYS)
-                .setConstraints(Constraints.NONE)
+                .setConstraints(constraints)
                 .build()
 
             WorkManager.getInstance(appContext).enqueueUniquePeriodicWork(
