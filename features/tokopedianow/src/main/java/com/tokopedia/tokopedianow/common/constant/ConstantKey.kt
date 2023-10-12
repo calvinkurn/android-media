@@ -6,6 +6,8 @@ import com.tokopedia.remoteconfig.RollenceKey
 object ConstantKey {
     //remote config
     const val REMOTE_CONFIG_KEY_FIRST_INSTALL_SEARCH = "android_user_first_install_search"
+    const val EXPERIMENT_ENABLED = "experiment_variant"
+    const val EXPERIMENT_DISABLED = "control_variant"
 
     //shared preferences
     const val SHARED_PREFERENCES_KEY_FIRST_INSTALL_SEARCH = "KEY_FIRST_INSTALL_SEARCH"

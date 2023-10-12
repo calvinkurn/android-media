@@ -5,10 +5,8 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.response.Tokonow
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.emptyAddress
-import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.OOC_TOKONOW
 import com.tokopedia.tokopedianow.searchcategory.assertChooseAddressDataView
 import com.tokopedia.tokopedianow.searchcategory.assertOutOfCoverageDataView
-//import com.tokopedia.tokopedianow.searchcategory.assertRecommendationCarouselDataViewLoadingState
 import com.tokopedia.tokopedianow.util.SearchCategoryDummyUtils.dummyChooseAddressData
 import io.mockk.every
 import io.mockk.verify
@@ -90,6 +88,11 @@ class SearchOutOfCoverageTest: SearchTestFixtures() {
         `When view created`()
 
         `Then verify search API first page is not called`()
+        `Then assert stop performance monitoring is Unit`()
+    }
+
+    private fun `Then assert stop performance monitoring is Unit`() {
+        assertThat(tokoNowSearchViewModel.stopPerformanceMonitoringLiveData.value, shouldBe(Unit))
     }
 
     private fun `Given get warehouse API will fail`() {

@@ -4,6 +4,8 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
+import com.tokopedia.tokopedianow.common.constant.ConstantKey.EXPERIMENT_DISABLED
+import com.tokopedia.tokopedianow.common.constant.ConstantKey.EXPERIMENT_ENABLED
 
 class SearchCategoryPageLoadTimeMonitoring(
 ) {
@@ -29,9 +31,6 @@ class SearchCategoryPageLoadTimeMonitoring(
         private const val TOKONOW_CATEGORY_EXPERIMENT_PLT_PREPARE_METRICS = "tokonow_category_experiment_plt_prepare_metrics"
         private const val TOKONOW_CATEGORY_EXPERIMENT_PLT_NETWORK_METRICS = "tokonow_category_experiment_plt_network_metrics"
         private const val TOKONOW_CATEGORY_EXPERIMENT_PLT_RENDER_METRICS = "tokonow_category_experiment_plt_render_metrics"
-
-        private const val EXPERIMENT_ENABLED = "experiment_variant"
-        private const val EXPERIMENT_DISABLED = "control_variant"
     }
 
     private var pltPerformanceMonitoring: PageLoadTimePerformanceInterface? = null

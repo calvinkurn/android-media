@@ -59,6 +59,8 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_CURRENT_SITE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_PHYSICAL_GOODS
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
+import com.tokopedia.tokopedianow.common.constant.ConstantKey.EXPERIMENT_DISABLED
+import com.tokopedia.tokopedianow.common.constant.ConstantKey.EXPERIMENT_ENABLED
 import com.tokopedia.tokopedianow.common.constant.ServiceType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowStaticLayoutType.Companion.PRODUCT_ADS_CAROUSEL
@@ -153,8 +155,6 @@ abstract class BaseSearchCategoryViewModel(
         private const val DEFAULT_HEADER_Y_COORDINATE = 0f
         private const val DEFAULT_ROWS = 15
         private const val EXPERIMENT_ROWS = 50
-        private const val EXPERIMENT_ENABLED = "experiment_variant"
-        private const val EXPERIMENT_DISABLED = "control_variant"
     }
 
     protected var chooseAddressDataView = ChooseAddressDataView()
@@ -187,8 +187,8 @@ abstract class BaseSearchCategoryViewModel(
     private val startRenderPerformanceMonitoringMutableLiveData = MutableLiveData<Unit>()
     val startRenderPerformanceMonitoringLiveData: LiveData<Unit> = startRenderPerformanceMonitoringMutableLiveData
 
-    private val stopRenderPerformanceMonitoringMutableLiveData = MutableLiveData<Unit>()
-    val stopRenderPerformanceMonitoringLiveData: LiveData<Unit> = stopRenderPerformanceMonitoringMutableLiveData
+    private val stopPerformanceMonitoringMutableLiveData = MutableLiveData<Unit>()
+    val stopPerformanceMonitoringLiveData: LiveData<Unit> = stopPerformanceMonitoringMutableLiveData
 
     private val visitableListMutableLiveData = MutableLiveData<List<Visitable<*>>>(visitableList)
     val visitableListLiveData: LiveData<List<Visitable<*>>> = visitableListMutableLiveData
@@ -404,8 +404,7 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     protected open fun onGetShopAndWarehouseFailed(throwable: Throwable) {
-        startRenderPerformanceMonitoringMutableLiveData.value = Unit
-        stopRenderPerformanceMonitoringMutableLiveData.value = Unit
+        stopPerformanceMonitoringMutableLiveData.value = Unit
     }
 
     protected abstract fun loadFirstPage()
@@ -1029,7 +1028,7 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     protected open fun onGetFirstPageError(throwable: Throwable) {
-        startRenderPerformanceMonitoringMutableLiveData.value = Unit
+        stopPerformanceMonitoringMutableLiveData.value = Unit
         isShowErrorMutableLiveData.value = throwable
     }
 

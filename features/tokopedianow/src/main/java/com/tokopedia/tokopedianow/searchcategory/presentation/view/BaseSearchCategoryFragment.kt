@@ -261,8 +261,8 @@ abstract class BaseSearchCategoryFragment:
         pltMonitoring?.startRenderPerformanceMonitoring()
     }
 
-    private fun stopRenderPerformanceMonitoring(unit: Unit) {
-        pltMonitoring?.stopRenderPerformanceMonitoring()
+    private fun stopPerformanceMonitoring(unit: Unit) {
+        pltMonitoring?.stopPerformanceMonitoring()
     }
 
     protected open fun updateProductRecommendation(needToUpdate: Boolean) { /* override to use this function */ }
@@ -553,7 +553,7 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().needToUpdateProductRecommendationLiveData.observe(::updateProductRecommendation)
         getViewModel().updateAdsCarouselLiveData.observe(::updateAdsProductCarousel)
         getViewModel().startRenderPerformanceMonitoringLiveData.observe(::startRenderPerformanceMonitoring)
-        getViewModel().stopRenderPerformanceMonitoringLiveData.observe(::stopRenderPerformanceMonitoring)
+        getViewModel().stopPerformanceMonitoringLiveData.observe(::stopPerformanceMonitoring)
 
         getViewModel().blockAddToCartLiveData.observe(viewLifecycleOwner) {
             showToasterWhenAddToCartBlocked()
