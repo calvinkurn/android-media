@@ -789,6 +789,16 @@ class PromoUsageViewModel @Inject constructor(
         } else {
             selectedItem.code
         }
+        if (selectedItem.hasSecondaryPromo) {
+            val isClashingWithCurrentPromoSecondary = !useSecondaryPromo &&
+                resultItem.currentClashingPromoCodes.contains(selectedItem.secondaryPromo.code)
+            if (isClashingWithCurrentPromoSecondary) {
+                resultItem = resultItem.copy(
+                    currentClashingPromoCodes = resultItem.currentClashingPromoCodes
+                        .minus(selectedItem.secondaryPromo.code)
+                )
+            }
+        }
         // Check for primary promo
         val primaryClashingInfo = resultItem.clashingInfos
             .firstOrNull { it.code == selectedPromoCode }
