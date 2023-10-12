@@ -162,7 +162,7 @@ class ComposePersonaSelectTypeViewModel @Inject constructor(
         _state.update { errorState }
     }
 
-    private suspend fun emitSuccessState(
+    private fun emitSuccessState(
         personaList: List<PersonaUiModel>,
         args: PersonaArgsUiModel
     ) {

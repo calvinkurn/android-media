@@ -148,7 +148,7 @@ class SellerPersonaActivity : BaseActivity(), HasComponent<SellerPersonaComponen
     }
 
     private fun getDefaultDestination(persona: String): Int {
-        val isComposeEnabled = true
+        val isComposeEnabled = true //todo : will use remote config here
         val hasPersona = persona.isNotBlank()
         return when {
             isComposeEnabled && hasPersona -> R.id.composeResultFragment
