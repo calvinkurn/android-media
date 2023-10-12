@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemParentProduct
@@ -62,9 +63,10 @@ internal object VisitableMapper {
      */
 
     fun MutableList<Visitable<*>>.addChooseAddress(
-        detailResponse: CategoryDetailResponse
-    )  {
-        add(detailResponse.mapToChooseAddress())
+        detailResponse: CategoryDetailResponse,
+        localCacheModel: LocalCacheModel
+    ) {
+        add(detailResponse.mapToChooseAddress(localCacheModel))
     }
 
     /**
@@ -73,13 +75,10 @@ internal object VisitableMapper {
 
     fun MutableList<Visitable<*>>.addTicker(
         detailResponse: CategoryDetailResponse,
-        tickerData: Pair<Boolean, List<TickerData>>?
-    ): Boolean  {
-        return if (tickerData != null) {
-            add(detailResponse.mapToTicker(tickerData))
-            tickerData.first
-        } else {
-            false
+        tickerList: List<TickerData>
+    ) {
+        if (tickerList.isNotEmpty()) {
+            add(detailResponse.mapToTicker(tickerList))
         }
     }
 
@@ -140,9 +139,9 @@ internal object VisitableMapper {
     }
 
     fun MutableList<Visitable<*>>.mapCategoryShowcase(
+        categoryIdL2: String,
         totalData: Int,
         productList: List<AceSearchProductModel.Product>,
-        categoryIdL2: String,
         title: String,
         seeAllAppLink: String,
         miniCartData: MiniCartSimplifiedData?,
@@ -367,9 +366,10 @@ internal object VisitableMapper {
     ) {
         updateItemById(PRODUCT_ADS_CAROUSEL) {
             ProductAdsMapper.mapProductAdsCarousel(
-                response,
-                miniCartData,
-                hasBlockedAddToCart
+                id = PRODUCT_ADS_CAROUSEL,
+                response = response,
+                miniCartData = miniCartData,
+                hasBlockedAddToCart = hasBlockedAddToCart
             )
         }
     }

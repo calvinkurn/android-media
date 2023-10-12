@@ -5,14 +5,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.OrientationHelper
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.carouselproductcard.paging.CarouselPagingModel.Companion.DEFAULT_ITEM_PER_PAGE
 
 class StartPagerSnapHelper(
-    private val pagingPaddingHorizontal: Int,
-    private val itemPerPage: Int,
+    private val pagingPaddingHorizontal: Int
 ): PagerSnapHelper() {
 
     private var mVerticalHelper: OrientationHelper? = null
     private var mHorizontalHelper: OrientationHelper? = null
+
+    var itemPerPage: Int = DEFAULT_ITEM_PER_PAGE
 
     override fun calculateDistanceToFinalSnap(
         layoutManager: RecyclerView.LayoutManager,

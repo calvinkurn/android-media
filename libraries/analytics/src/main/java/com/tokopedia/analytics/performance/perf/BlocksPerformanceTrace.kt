@@ -6,6 +6,7 @@ import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
+import android.util.Log
 import android.os.Trace
 import android.view.Choreographer
 import android.view.View
@@ -94,6 +95,7 @@ class BlocksPerformanceTrace(
             )
         }
         initialize(context, scope, onLaunchTimeFinished)
+        Log.d("BlocksTrace", "Start...")
     }
 
     private fun initialize(
@@ -281,6 +283,7 @@ class BlocksPerformanceTrace(
         this.onLaunchTimeFinished = null
         TTILperformanceMonitoring = null
         performanceTraceJob?.cancel()
+        Log.d("BlocksTrace", "TTIL: " + summaryModel.get().ttil())
     }
 
     private fun trackIris() {

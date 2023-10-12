@@ -8,6 +8,7 @@ interface RechargeAddToCartRepository {
     suspend fun addToCart(
         digitalCheckoutPassData: DigitalCheckoutPassData,
         digitalIdentifierParam: RequestBodyIdentifier,
-        userId: String
+        userId: String,
+        atcMultiCheckoutParam: String
     ): DigitalAtcResult
 }

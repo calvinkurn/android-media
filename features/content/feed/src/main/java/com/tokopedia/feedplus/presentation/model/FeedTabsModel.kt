@@ -25,7 +25,7 @@ data class FeedTabsModel(
 
 data class FeedTabModel(
     val data: List<FeedDataModel>,
-    val activeTabSource: ActiveTabSource
+    val activeTabSource: ActiveTabSource,
 )
 
 @Parcelize
@@ -34,7 +34,8 @@ data class FeedDataModel(
     val key: String,
     val type: String,
     val position: Int,
-    val isActive: Boolean
+    val isActive: Boolean,
+    val isSelected: Boolean,
 ) : Parcelable {
 
     val isFollowingTab = this.type == TAB_TYPE_FOLLOWING
