@@ -367,7 +367,7 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
     private fun onResultFromAddressForm(data: Intent?) {
         val newAddress =
             data?.getParcelableExtra<SaveAddressDataModel>(LogisticConstant.EXTRA_ADDRESS_NEW)
-        newAddress?.let { finishActivity(it, false) }
+        newAddress?.let { finishActivity(it) }
     }
 
     private fun onResultFromGpsRequest() {
@@ -378,7 +378,7 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
         }
     }
 
-    private fun finishActivity(data: SaveAddressDataModel?, isFromAddressForm: Boolean) {
+    private fun finishActivity(data: SaveAddressDataModel?) {
         activity?.run {
             setResult(
                 Activity.RESULT_OK,
