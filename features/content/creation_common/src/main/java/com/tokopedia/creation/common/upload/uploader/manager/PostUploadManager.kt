@@ -22,12 +22,15 @@ class PostUploadManager @Inject constructor(
     private val sellerAppReviewHelper: FeedSellerAppReviewHelper,
 ) : CreationUploadManager(null) {
 
-    override suspend fun execute(uploadData: CreationUploadData): Boolean {
+    override suspend fun execute(
+        uploadData: CreationUploadData,
+        notificationId: Int,
+    ): Boolean {
 
         if (uploadData !is CreationUploadData.Post) return false
 
         return try {
-            broadcastInit(uploadData)
+            broadcastInit(uploadData, notificationId)
 
             val cacheManager = SaveInstanceCacheManager(appContext, uploadData.draftId)
             val viewModel: CreatePostViewModel = cacheManager.get(

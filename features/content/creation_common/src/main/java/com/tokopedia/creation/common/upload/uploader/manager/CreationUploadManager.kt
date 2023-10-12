@@ -20,7 +20,10 @@ abstract class CreationUploadManager(
         mListener = listener
     }
 
-    abstract suspend fun execute(uploadData: CreationUploadData): Boolean
+    abstract suspend fun execute(
+        uploadData: CreationUploadData,
+        notificationId: Int
+    ): Boolean
 
     protected fun updateProgress(
         uploadData: CreationUploadData,
@@ -31,9 +34,12 @@ abstract class CreationUploadManager(
         notificationManager?.onProgress(currentProgress)
     }
 
-    protected suspend fun broadcastInit(uploadData: CreationUploadData) {
+    protected suspend fun broadcastInit(
+        uploadData: CreationUploadData,
+        notificationId: Int,
+    ) {
         broadcastProgress(uploadData, CreationUploadStatus.Upload)
-        notificationManager?.init(uploadData)
+        notificationManager?.init(uploadData, notificationId)
 
         notificationManager?.let {
             mListener?.setupForegroundNotification(notificationManager.onStart())

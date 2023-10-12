@@ -64,6 +64,8 @@ class CreationUploaderWorker(
              * 3. Execute upload manager
              */
 
+            val notificationId = (0..10000000).random()
+
             while(true) {
                 try {
                     val data = queueRepository.getTopQueue() ?: break
@@ -88,7 +90,7 @@ class CreationUploaderWorker(
                         }
                     )
 
-                    val uploadResult = uploadManager.execute(data)
+                    val uploadResult = uploadManager.execute(data, notificationId)
 
                     if (uploadResult) {
                         queueRepository.delete(data.queueId)

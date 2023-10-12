@@ -62,7 +62,10 @@ class StoriesUploadManager @Inject constructor(
      * else : loading
      */
 
-    override suspend fun execute(uploadData: CreationUploadData): Boolean {
+    override suspend fun execute(
+        uploadData: CreationUploadData,
+        notificationId: Int,
+    ): Boolean {
         if (uploadData !is CreationUploadData.Stories) return false
 
         this.uploadData = uploadData
@@ -81,7 +84,7 @@ class StoriesUploadManager @Inject constructor(
 
         return withContext(dispatchers.io) {
             try {
-                broadcastInit(uploadData)
+                broadcastInit(uploadData, notificationId)
 
                 updateStoryStatus(uploadData, StoriesStatus.Transcoding)
 

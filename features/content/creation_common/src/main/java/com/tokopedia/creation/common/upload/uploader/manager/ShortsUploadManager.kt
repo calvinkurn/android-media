@@ -65,7 +65,10 @@ class ShortsUploadManager @Inject constructor(
      *
      *
      */
-    override suspend fun execute(uploadData: CreationUploadData): Boolean {
+    override suspend fun execute(
+        uploadData: CreationUploadData,
+        notificationId: Int,
+    ): Boolean {
         if (uploadData !is CreationUploadData.Shorts) return false
 
         this.uploadData = uploadData
@@ -84,7 +87,7 @@ class ShortsUploadManager @Inject constructor(
 
         return withContext(dispatchers.io) {
             try {
-                broadcastInit(uploadData)
+                broadcastInit(uploadData, notificationId)
                 updateChannelStatus(uploadData, PlayChannelStatusType.Transcoding)
 
                 val mediaUrl = uploadShortsMedia(uploadData.firstMediaUri)
