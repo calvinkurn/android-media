@@ -4,15 +4,15 @@ import com.tokopedia.gql_query_annotation.GqlQueryInterface
 
 object GetEtalaseList : GqlQueryInterface {
 
-    private const val OPERATIOIN_NAME = "shopShowcasesByShopID"
+    private const val OPERATION_NAME = "shopShowcasesByShopID"
 
     override fun getOperationNameList(): List<String> {
-        return listOf(OPERATIOIN_NAME)
+        return listOf(OPERATION_NAME)
     }
 
     override fun getQuery(): String {
         return """query getEtalaseList (${ '$' } shopId : String !){
-            $OPERATIOIN_NAME(shopId:${ '$' } shopId, hideNoCount:true, hideShowcaseGroup:true, isOwner:false) {
+            $OPERATION_NAME(shopId:${ '$' } shopId, hideNoCount:true, hideShowcaseGroup:true, isOwner:false) {
             result {
                 id
                 name
@@ -24,6 +24,6 @@ object GetEtalaseList : GqlQueryInterface {
     }
 
     override fun getTopOperationName(): String {
-        return OPERATIOIN_NAME
+        return ""
     }
 }
