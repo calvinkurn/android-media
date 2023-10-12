@@ -10,6 +10,7 @@ import com.tokopedia.discovery2.databinding.MerchantVoucherGridItemLayoutBinding
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.discovery2.viewcontrollers.customview.MerchantVoucherViewCard
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.user.session.UserSession
@@ -48,10 +49,18 @@ class MerchantVoucherGridItemViewHolder(
     private fun renderVoucher(item: DataItem) {
         binding.merchantVoucherGrid.run {
             setData(item)
-            onClick {
-                RouteManager.route(itemView.context, item.shopInfo?.appLink)
-                trackClickEvent(item)
-            }
+            handleClickAction(item)
+        }
+    }
+
+    private fun MerchantVoucherViewCard.handleClickAction(item: DataItem) {
+        val appLink = item.shopInfo?.appLink ?: return
+
+        if (appLink.isBlank() || appLink.isEmpty()) return
+
+        onClick {
+            RouteManager.route(itemView.context, appLink)
+            trackClickEvent(item)
         }
     }
 
