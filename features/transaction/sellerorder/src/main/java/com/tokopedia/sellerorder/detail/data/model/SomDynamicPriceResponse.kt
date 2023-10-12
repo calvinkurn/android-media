@@ -26,9 +26,9 @@ data class SomDynamicPriceResponse(
         @SerializedName("pof_data")
         val pofData: PofData? = null,
         @SerializedName("note")
-        val note: String? = "Belum termasuk subsidi Tokopedia.",
+        val note: String? = "",
         @SerializedName("income_detail_label")
-        val incomeDetailLabel: String? = "Lihat Rincian Penghasilan"
+        val incomeDetailLabel: String? = ""
     ) {
         data class PaymentMethod(
             @Expose
