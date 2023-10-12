@@ -610,6 +610,7 @@ open class ShopPageHomeFragment :
                     ) {
                         goToCart()
                     }
+                    updateMiniCartWidget()
                 }
                 is Fail -> {
                     showErrorToast(it.throwable.message.orEmpty())
