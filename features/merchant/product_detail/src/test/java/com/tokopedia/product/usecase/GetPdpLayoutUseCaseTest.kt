@@ -198,7 +198,7 @@ class GetPdpLayoutUseCaseTest {
 
     @Test
     fun `pdp layout from cache don't have topAds layout`() = runCoroutineTest {
-        val ignoreComponentCacheExpected = useCaseTest.ignoreComponentInCache
+        val ignoreComponentCacheExpected = useCaseTest.getIgnoreComponentInCache()
         val results = getPdpLayoutCacheable(scope = this, refreshPage = false, type = ErrorType.NON_CAMPAIGN)
 
         // then
@@ -209,7 +209,7 @@ class GetPdpLayoutUseCaseTest {
 
     @Test
     fun `pdp layout from cloud have topAds layout`() = runCoroutineTest {
-        val ignoreComponentCacheExpected = useCaseTest.ignoreComponentInCache
+        val ignoreComponentCacheExpected = useCaseTest.getIgnoreComponentInCache()
         val results = getPdpLayoutCacheable(scope = this, refreshPage = false, type = ErrorType.NON_CAMPAIGN)
 
         // then

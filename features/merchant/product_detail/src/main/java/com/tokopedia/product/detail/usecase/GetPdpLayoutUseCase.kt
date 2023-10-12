@@ -486,7 +486,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
         get() = requestParams.getBoolean(ProductDetailCommonConstant.PARAM_REFRESH_PAGE, false)
 
     // public for unit test only
-    val ignoreComponentInCache by lazy {
+    private val excludeComponentInCache by lazy {
         listOf(
             ProductDetailConstant.PRODUCT_LIST,
             ProductDetailConstant.VIEW_TO_VIEW,
@@ -642,7 +642,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
         val initialLayoutData = DynamicProductDetailMapper.mapIntoVisitable(components)
             .filterNot {
                 if (cacheState.isFromCache) {
-                    ignoreComponentInCache.contains(it.type())
+                    getIgnoreComponentInCache().contains(it.type())
                 } else {
                     false
                 }
@@ -657,4 +657,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
             isCampaign = isCampaign
         )
     }
+
+    // for hansel-able
+    fun getIgnoreComponentInCache() = excludeComponentInCache
 }
