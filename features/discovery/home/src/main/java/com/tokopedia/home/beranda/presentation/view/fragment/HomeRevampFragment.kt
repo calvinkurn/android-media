@@ -1463,7 +1463,7 @@ open class HomeRevampFragment :
 
     private fun requestStatusBarDark() {
         isLightThemeStatusBar = false
-        mainParentStatusBarListener?.requestStatusBarDark()
+        mainParentStatusBarListener?.forceRequestStatusBarDark()
     }
 
     private fun requestStatusBarLight() {
