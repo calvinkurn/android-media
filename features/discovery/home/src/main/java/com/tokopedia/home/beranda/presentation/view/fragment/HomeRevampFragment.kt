@@ -222,6 +222,7 @@ import com.tokopedia.usercomponents.stickylogin.common.helper.saveIsRegisteredFr
 import com.tokopedia.usercomponents.stickylogin.view.StickyLoginAction
 import com.tokopedia.usercomponents.stickylogin.view.StickyLoginView
 import com.tokopedia.utils.permission.PermissionCheckerHelper
+import com.tokopedia.utils.resources.isDarkMode
 import com.tokopedia.weaver.WeaveInterface
 import com.tokopedia.weaver.Weaver
 import com.tokopedia.weaver.Weaver.Companion.executeWeaveCoRoutineWithFirebase
@@ -238,6 +239,7 @@ import javax.inject.Inject
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import com.tokopedia.wishlist_common.R as wishlist_commonR
 import com.tokopedia.play.widget.R as playwidgetR
+import com.tokopedia.searchbar.R as searchbarR
 
 /**
  * @author by yoasfs on 12/14/17.
@@ -439,7 +441,7 @@ open class HomeRevampFragment :
         homePerformanceMonitoringListener = castContextToHomePerformanceMonitoring(context)
         homeCoachmarkListener = castContextToHomeCoachmarkListener(context)
         performanceTrace = homePerformanceMonitoringListener?.blocksPerformanceMonitoring
-        setupThematicStatusBar()
+        setupThematicStatusBarAndToolbar()
     }
 
     private fun createDaggerComponent() {
@@ -609,14 +611,17 @@ open class HomeRevampFragment :
                         override fun onSwitchToDarkToolbar() {
                             navToolbar?.hideShadow()
                             if (HomeRollenceController.isUsingAtf2Variant()) {
-                                setupThematicStatusBar()
+                                setupThematicStatusBarAndToolbar()
                             } else {
                                 requestStatusBarLight()
                             }
                         }
 
                         override fun onSwitchToLightToolbar() {
-                            requestStatusBarDark()
+                            requestStatusBarBasedOnUiMode()
+                            if (HomeRollenceController.isUsingAtf2Variant()) {
+                                navToolbar?.switchToolbarBasedOnUiMode()
+                            }
                         }
 
                         override fun onYposChanged(yOffset: Int) {
@@ -625,6 +630,12 @@ open class HomeRevampFragment :
                     isBackgroundColorDefaultColor = HomeRollenceController.isUsingAtf2Variant()
                 )
             )
+            activity?.let { context ->
+                it.setNavToolbarIconCustomColor(
+                    navToolbarIconCustomLightColor = ContextCompat.getColor(context, searchbarR.color.searchbar_dms_state_light_icon),
+                    navToolbarIconCustomDarkColor = ContextCompat.getColor(context, unifyprinciplesR.color.Unify_Static_White)
+                )
+            }
             val icons = IconBuilder(
                 IconBuilderFlag(pageSource = NavSource.HOME)
             ).addIcon(getInboxIcon()) {}
@@ -953,7 +964,7 @@ open class HomeRevampFragment :
     ) {
         getThematicUtil().thematicModel = thematicModel
         getThematicUtil().isBackgroundLoaded = isBackgroundLoaded
-        setupThematicStatusBar()
+        setupThematicStatusBarAndToolbar()
         adapter?.updateThematicTextColor()
     }
 
@@ -1453,23 +1464,29 @@ open class HomeRevampFragment :
     private fun requestStatusBarDark() {
         isLightThemeStatusBar = false
         mainParentStatusBarListener?.requestStatusBarDark()
-        navToolbar?.switchToLightToolbar()
     }
 
     private fun requestStatusBarLight() {
         isLightThemeStatusBar = true
         mainParentStatusBarListener?.requestStatusBarLight()
-        navToolbar?.switchToDarkToolbar()
     }
 
-    private fun setupThematicStatusBar() {
+    private fun setupThematicStatusBarAndToolbar() {
         if(getThematicUtil().isLightMode()) {
             requestStatusBarDark()
+            navToolbar?.switchToLightToolbar()
         } else if(getThematicUtil().isDarkMode()) {
             requestStatusBarLight()
+            navToolbar?.switchToDarkToolbar()
         } else {
-            requestStatusBarDark()
+            requestStatusBarBasedOnUiMode()
+            navToolbar?.switchToolbarBasedOnUiMode()
         }
+    }
+
+    private fun requestStatusBarBasedOnUiMode() {
+        if(context?.isDarkMode() == true) requestStatusBarLight()
+        else requestStatusBarDark()
     }
 
     private object FixedTheme {
@@ -1581,7 +1598,7 @@ open class HomeRevampFragment :
             BestSellerWidgetCallback(context, this, getHomeViewModel()),
             SpecialReleaseRevampCallback(this),
             ShopFlashSaleWidgetCallback(this, getHomeViewModel()),
-            homeThematicUtil,
+            getThematicUtil(),
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
             .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())

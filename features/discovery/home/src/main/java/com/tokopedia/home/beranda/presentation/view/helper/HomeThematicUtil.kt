@@ -59,7 +59,7 @@ class HomeThematicUtil @Inject constructor() {
 
     fun isLightMode() = getColorMode() == COLOR_LIGHT
 
-    fun isDefault() = getColorMode() != COLOR_DARK || getColorMode() != COLOR_LIGHT
+    fun isDefault() = getColorMode() != COLOR_DARK && getColorMode() != COLOR_LIGHT
 }
 
 /**
