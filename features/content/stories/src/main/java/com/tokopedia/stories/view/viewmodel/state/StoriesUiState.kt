@@ -8,7 +8,6 @@ import com.tokopedia.stories.view.model.StoriesUiModel
 
 data class StoriesUiState(
     val storiesMainData: StoriesUiModel,
-    val bottomSheetStatus: Map<BottomSheetType, Boolean>,
     val productSheet: ProductBottomSheetUiState,
     val timerStatus: TimerStatusInfo,
 ) {
@@ -16,7 +15,6 @@ data class StoriesUiState(
         val Empty
             get() = StoriesUiState(
                 storiesMainData = StoriesUiModel(),
-                bottomSheetStatus = BottomSheetStatusDefault,
                 productSheet = ProductBottomSheetUiState.Empty,
                 timerStatus = TimerStatusInfo.Empty,
             )

@@ -133,13 +133,11 @@ class StoriesViewModel @AssistedInject constructor(
     val storiesState: Flow<StoriesUiState>
         get() = combine(
             _storiesMainDataState,
-            _bottomSheetStatusState,
             _productsState,
             timerState,
-        ) { storiesMainData, sheetStatus, product, timerState ->
+        ) { storiesMainData, product, timerState ->
             StoriesUiState(
                 storiesMainData = storiesMainData,
-                bottomSheetStatus = sheetStatus,
                 productSheet = product,
                 timerStatus = timerState,
             )
