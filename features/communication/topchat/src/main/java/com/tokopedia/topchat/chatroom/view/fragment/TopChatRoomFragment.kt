@@ -236,8 +236,7 @@ open class TopChatRoomFragment :
     ReplyBubbleAreaMessage.Listener,
     ReminderTickerViewHolder.Listener,
     ProductBundlingListener,
-    BannedChatMessageViewHolder.TopChatMessageCensorListener
-{
+    BannedChatMessageViewHolder.TopChatMessageCensorListener {
 
     @Inject
     lateinit var topChatRoomDialog: TopChatRoomDialog
@@ -729,7 +728,7 @@ open class TopChatRoomFragment :
             webSocketViewModel.connectWebSocket()
             viewModel.getOrderProgress(messageId)
         } else {
-            viewModel.getMessageId(toUserId, toShopId, source)
+            viewModel.getMessageId(toUserId, toShopId, sourcePage)
         }
     }
 
@@ -787,7 +786,12 @@ open class TopChatRoomFragment :
     private fun setupArguments(savedInstanceState: Bundle?) {
         customMessage =
             getParamString(ApplinkConst.Chat.CUSTOM_MESSAGE, arguments, savedInstanceState)
-        sourcePage = getParamString(ApplinkConst.Chat.SOURCE_PAGE, arguments, savedInstanceState)
+        sourcePage = getParamString(
+            ApplinkConst.Chat.SOURCE,
+            arguments,
+            savedInstanceState,
+            defaultValue = ApplinkConst.Chat.Source.SOURCE_REGULAR_CHAT
+        )
         indexFromInbox = getParamInt(
             TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_INDEX,
             arguments,
@@ -3516,10 +3520,12 @@ open class TopChatRoomFragment :
         welcomeMessage: TopChatAutoReplyItemUiModel,
         list: List<TopChatAutoReplyItemUiModel>
     ) {
-        TopChatAnalyticsKt.eventClickAutoReply(source, messageId, list)
+        TopChatAnalyticsKt.eventClickAutoReply(sourcePage, messageId, list)
         view?.hideKeyboard()
         TopChatAutoReplyDetailBottomSheet().show(
-            childFragmentManager, welcomeMessage, list
+            childFragmentManager,
+            welcomeMessage,
+            list
         )
     }
 

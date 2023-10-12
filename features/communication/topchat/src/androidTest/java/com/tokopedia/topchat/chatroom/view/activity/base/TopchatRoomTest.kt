@@ -353,7 +353,7 @@ abstract class TopchatRoomTest {
         val intent = Intent().apply {
             putExtra(ApplinkConst.Chat.MESSAGE_ID, MSG_ID)
             sourcePage?.let {
-                putExtra(ApplinkConst.Chat.SOURCE_PAGE, it)
+                putExtra(ApplinkConst.Chat.SOURCE, it)
             }
         }
         intentModifier(intent)

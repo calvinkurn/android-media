@@ -345,7 +345,9 @@ public class TopChatAnalytics {
 
     private String getFrom(ProductAttachmentUiModel product) {
         String blastId = product.getStringBlastId();
-        if (!sourcePage.isEmpty() && sourcePage.equals(ApplinkConst.Chat.SOURCE_CHAT_SEARCH)) {
+        if (!sourcePage.isEmpty() &&
+                sourcePage.equals(ApplinkConst.Chat.Source.SOURCE_CHAT_SEARCH)
+        ) {
             return "/chat - search chat";
         } else {
             return "/" + getField(blastId);

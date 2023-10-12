@@ -799,7 +799,7 @@ class BuyerRequestCancelFragment :
                         ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT,
                         listProduct.firstOrNull()?.productPrice.orEmpty()
                     )
-                    putExtra(ApplinkConst.Chat.SOURCE, ApplinkConst.Chat.SOURCE_ASK_SELLER)
+                    putExtra(ApplinkConst.Chat.SOURCE, ApplinkConst.Chat.Source.SOURCE_ASK_SELLER)
                 }
                 startActivity(intent)
             }

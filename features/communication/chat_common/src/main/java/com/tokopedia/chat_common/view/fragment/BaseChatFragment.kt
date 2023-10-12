@@ -43,7 +43,6 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     protected var shopId: String = "0"
     protected var toShopId = "0"
     protected var toUserId = "0"
-    protected var source = "regularChat"
     protected var amISeller = false
 
     abstract fun onCreateViewState(view: View): BaseChatViewState
@@ -79,7 +78,6 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
         opponentId = getParamString(ApplinkConst.Chat.OPPONENT_ID, arguments, savedInstanceState)
         opponentName = getParamString(ApplinkConst.Chat.OPPONENT_NAME, arguments, savedInstanceState)
         opponentRole = getParamString(ApplinkConst.Chat.OPPONENT_ROLE, arguments, savedInstanceState)
-        source = getParamString(ApplinkConst.Chat.SOURCE, arguments, savedInstanceState)
         toShopId = getParamString(ApplinkConst.Chat.TO_SHOP_ID, arguments, savedInstanceState)
         toUserId = getParamString(ApplinkConst.Chat.TO_USER_ID, arguments, savedInstanceState)
     }
@@ -87,7 +85,8 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     open fun getParamString(
         paramName: String,
         arguments: Bundle?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
+        defaultValue: String = ""
     ): String {
         return when {
             savedInstanceState != null &&
@@ -95,7 +94,7 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
             -> savedInstanceState.getString(paramName, "")
             arguments != null && arguments.getString(paramName, "").isNotEmpty()
             -> arguments.getString(paramName, "")
-            else -> ""
+            else -> defaultValue
         }
     }
 

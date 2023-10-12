@@ -213,11 +213,11 @@ open class ProductAttachmentUiModel protected constructor(
     }
 
     fun getStringProductId(): String {
-        return productId.toString()
+        return productId
     }
 
     fun getIdString(): String {
-        return productId.toString()
+        return productId
     }
 
     final override fun finishLoading() {
@@ -227,7 +227,7 @@ open class ProductAttachmentUiModel protected constructor(
 
     fun getAtcDimension40(sourcePage: String): String {
         return when (sourcePage) {
-            ApplinkConst.Chat.SOURCE_CHAT_SEARCH -> "/chat - search chat"
+            ApplinkConst.Chat.Source.SOURCE_CHAT_SEARCH -> "/chat - search chat"
             else -> getField()
         }
     }
