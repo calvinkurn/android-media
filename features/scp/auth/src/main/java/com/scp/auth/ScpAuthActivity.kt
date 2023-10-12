@@ -8,9 +8,9 @@ import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
 import com.scp.auth.analytics.AuthAnalyticsMapper
 import com.scp.auth.di.DaggerScpAuthComponent
-import com.scp.auth.utils.goToChangePIN
 import com.scp.auth.utils.goToForgotGotoPin
 import com.scp.auth.utils.goToForgotPassword
+import com.scp.auth.utils.goToForgotTokoPinArticle
 import com.scp.auth.utils.goToHelpGotoPIN
 import com.scp.auth.utils.goToInactivePhoneNumber
 import com.scp.login.common.utils.LoginImageLoader
@@ -219,7 +219,7 @@ class ScpAuthActivity : BaseActivity() {
             }
 
             ForgetContext.FORGET_TOKO_PIN.name -> {
-                goToChangePIN(this)
+                goToForgotTokoPinArticle(this)
             }
         }
     }

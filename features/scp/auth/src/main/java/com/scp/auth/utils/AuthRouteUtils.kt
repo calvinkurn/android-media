@@ -39,3 +39,7 @@ internal fun goToForgotGotoPin(context: Context) {
 internal fun goToHelpGotoPIN(context: Context) {
     RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URL_HELP_CTA))
 }
+
+internal fun goToForgotTokoPinArticle(context: Context) {
+    RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URL_FORGOT_GOTOPIN))
+}
