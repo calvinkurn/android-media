@@ -151,6 +151,13 @@ class ComposePersonaResultViewModelTest : BaseViewModelTest<PersonaResultState, 
         }
     }
 
+    @Test
+    fun `when toggle persona active should be success`() {
+        runStateAndUiEffectTest {
+
+        }
+    }
+
     private fun getErrorState(): PersonaResultState {
         return getDefaultState().copy(
             state = PersonaResultState.State.Error
