@@ -70,6 +70,7 @@ class EditAddressRevampTest {
             searchAddressStreet(KEYWORD)
             clickAddressStreetItem()
             onClickChooseLocation()
+            scrollToBottom()
         } submit {
             hasPassedAnalytics(cassavaTestRule, queryPath)
         }
