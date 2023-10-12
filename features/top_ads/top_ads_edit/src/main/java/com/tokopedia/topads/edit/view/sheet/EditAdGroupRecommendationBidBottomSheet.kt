@@ -9,8 +9,13 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.topads.common.domain.model.createedit.CreateEditAdGroupItemAdsPotentialWidgetUiModel
+import com.tokopedia.topads.common.view.sheet.CreatePotentialPerformanceSheet
 import com.tokopedia.topads.common.view.sheet.TopAdsToolTipBottomSheet
 import com.tokopedia.topads.edit.databinding.TopadsEditSheetEditAdGroupRecommendationBidBinding
 import com.tokopedia.topads.edit.di.DaggerTopAdsEditComponent
@@ -22,9 +27,13 @@ import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.utils.text.currency.NumberTextWatcher
 import javax.inject.Inject
 import com.tokopedia.topads.edit.R as topadseditR
+import com.tokopedia.topads.common.R as topadscommonR
 
 class EditAdGroupRecommendationBidBottomSheet : BottomSheetUnify() {
 
+    private var performanceData: MutableList<CreateEditAdGroupItemAdsPotentialWidgetUiModel> = mutableListOf()
+    private var maxBid: String = "0"
+    private var minBid: String = "0"
     private var productListIds: MutableList<String> = mutableListOf()
     private var binding: TopadsEditSheetEditAdGroupRecommendationBidBinding? = null
     private var priceBid: Float? = 0f
@@ -68,12 +77,17 @@ class EditAdGroupRecommendationBidBottomSheet : BottomSheetUnify() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
+        getInitialData()
         setListeners()
         observeLiveData()
     }
 
+    private fun getInitialData() {
+        priceBid?.let { viewModel.getBrowsePerformanceData(productListIds, it, it, 0f) }
+    }
+
     private fun observeLiveData() {
-        viewModel?.browsePerformanceData?.observe(viewLifecycleOwner) {
+        viewModel.browsePerformanceData.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     val data = it.data.umpGetImpressionPrediction.impressionPredictionData.impression
@@ -94,14 +108,38 @@ class EditAdGroupRecommendationBidBottomSheet : BottomSheetUnify() {
         binding?.textField?.editText?.addTextChangedListener(object : NumberTextWatcher(binding?.textField?.editText!!) {
             override fun onNumberChanged(number: Double) {
                 super.onNumberChanged(number)
-                if (number == priceBid?.toDouble()) {
-                    binding?.editAdGroupNameCta?.isEnabled = false
-                } else {
-                    binding?.editAdGroupNameCta?.isEnabled = true
-                    priceBid?.let { viewModel?.getBrowsePerformanceData(productListIds, number.toFloat(), it, 0f) }
+//                if (number == priceBid?.toDouble()) {
+//                    binding?.editAdGroupNameCta?.isEnabled = false
+//                } else {
+//                    binding?.editAdGroupNameCta?.isEnabled = true
+//                    priceBid?.let { viewModel?.getBrowsePerformanceData(productListIds, number.toFloat(), it, 0f) }
+//                }
+                when{
+                number >= maxBid.toDoubleOrZero() -> {
+                        setMessageErrorField(getString(topadscommonR.string.max_bid_error_new), maxBid, true)
+                        binding?.editAdGroupNameCta?.isEnabled = false
+//                     else{
+//                        finalRecomBid = result.toString()
+//                        setMessageErrorField("Biaya optimal ✔️", "0", false)
+//                        stepperModel?.selectedProductIds?.let {
+//                            viewModel?.getPerformanceData(it, result.toFloat(), -1f, -1f)
+//                        }
+//                        binding?.btnNext?.isEnabled = true
+//                    }
                 }
 
-            }
+                number < minBid.toDoubleOrZero() -> {
+                    setMessageErrorField(getString(topadscommonR.string.min_bid_error_new), minBid, true)
+                    binding?.editAdGroupNameCta?.isEnabled = false
+                }
+
+                else -> {
+                    setMessageErrorField("Biaya optimal ✔️", "0", false)
+                    priceBid?.let { viewModel.getBrowsePerformanceData(productListIds, number.toFloat(), it, 0f) }
+                    binding?.editAdGroupNameCta?.isEnabled = true
+                }
+
+            }}
         })
 
         binding?.editAdGroupNameCta?.setOnClickListener {
@@ -121,6 +159,18 @@ class EditAdGroupRecommendationBidBottomSheet : BottomSheetUnify() {
                 )
             }.show(childFragmentManager)
         }
+
+        binding?.icon?.setOnClickListener {
+            CreatePotentialPerformanceSheet.newInstance(
+                performanceData.firstOrNull()?.retention.toIntOrZero(),
+                performanceData?.getOrNull(Int.ONE)?.retention.toIntOrZero()
+            ).show(childFragmentManager)
+        }
+    }
+
+    private fun setMessageErrorField(error: String, bid: String, bool: Boolean) {
+        binding?.textField?.isInputError = bool
+        binding?.textField?.setMessage(MethodChecker.fromHtml(String.format(error, bid)))
     }
 
     private fun initView() {
@@ -140,9 +190,13 @@ class EditAdGroupRecommendationBidBottomSheet : BottomSheetUnify() {
 
     companion object {
         private const val TOPADS_BOTTOM_SHEET_ACTION_TAG = "EDIT_AD_GROUP_RECOMMENDATION_BID_BOTTOM_SHEET_TAG"
-        fun newInstance(priceBid: Float?, productListIds: MutableList<String>): EditAdGroupRecommendationBidBottomSheet = EditAdGroupRecommendationBidBottomSheet().apply {
+        fun newInstance(priceBid: Float?, productListIds: MutableList<String>, minBid: String, maxBid: String, performanceData: MutableList<CreateEditAdGroupItemAdsPotentialWidgetUiModel>): EditAdGroupRecommendationBidBottomSheet = EditAdGroupRecommendationBidBottomSheet().apply {
             this.priceBid = priceBid
             this.productListIds = productListIds
+            this.minBid = minBid
+            this.maxBid = maxBid
+            this.performanceData = performanceData
         }
+
     }
 }

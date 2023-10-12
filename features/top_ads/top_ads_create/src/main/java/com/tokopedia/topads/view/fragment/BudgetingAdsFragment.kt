@@ -523,6 +523,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
                     }
 
                     else -> {
+                        budget.isInputError = false
                         budget.setMessage(getClickableString(suggestBidPerClick))
                         actionEnable(true)
                     }

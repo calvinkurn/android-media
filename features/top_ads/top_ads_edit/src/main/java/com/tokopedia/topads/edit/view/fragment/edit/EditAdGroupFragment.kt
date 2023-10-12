@@ -17,11 +17,13 @@ import com.tokopedia.topads.common.constant.TopAdsCommonConstant.CONST_1
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.internal.ParamObject.SUGGESTION_BID_SETTINGS
 import com.tokopedia.topads.common.data.model.CountDataItem
+import com.tokopedia.topads.common.data.model.DataSuggestions
 import com.tokopedia.topads.common.data.response.GetAdProductResponse
 import com.tokopedia.topads.common.data.response.GetKeywordResponse
 import com.tokopedia.topads.common.data.response.GroupInfoResponse
 import com.tokopedia.topads.common.data.response.ResponseGroupValidateName
 import com.tokopedia.topads.common.data.response.TopAdsBidSettingsModel
+import com.tokopedia.topads.common.data.response.TopadsBidInfo
 import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.databinding.TopadsEditFragmentEditAdGroupBinding
@@ -55,6 +57,8 @@ import kotlin.collections.HashMap
 
 class EditAdGroupFragment : BaseDaggerFragment() {
 
+    private var maxBid: String = "0"
+    private var minBid: String = "0"
     private var editedDailyBudget = "0"
     private var performanceData: MutableList<CreateEditAdGroupItemAdsPotentialWidgetUiModel> = mutableListOf()
     private var editedRecomBid: String = ""
@@ -151,6 +155,8 @@ class EditAdGroupFragment : BaseDaggerFragment() {
             putString("groupId", groupId)
             putString("isAutoBid", Utils.getGroupStrategy(isBidAutomatic))
             putParcelableArrayList("bidList", ArrayList(bidSettingsList))
+            putStringArrayList("potentialPerformanceList", arrayListOf(performanceData.firstOrNull()?.retention,
+                performanceData.getOrNull(1)?.retention))
 
         }
         return BaseEditKeywordFragment.newInstance(bundle)
@@ -206,7 +212,11 @@ class EditAdGroupFragment : BaseDaggerFragment() {
         observeLiveData()
         groupInfoResponse?.strategies?.let { isBidAutomatic = checkBidIsAutomatic(it) }
 
+    }
 
+    private fun onDefaultSuccessSuggestion(dataItems: List<TopadsBidInfo.DataItem>) {
+        this.maxBid = dataItems.firstOrNull()?.maxBid ?: ""
+        this.minBid = dataItems.firstOrNull()?.minBid ?: ""
     }
 
     private fun fetchProductData() {
@@ -222,6 +232,13 @@ class EditAdGroupFragment : BaseDaggerFragment() {
         productListIds.addAll(dataItems.map { it.itemID })
         viewModel.getPerformanceData(productListIds, priceBids, 0f)
         viewModel.getProductBid(productListIds)
+        getDefaultBid()
+    }
+
+    private fun getDefaultBid() {
+        val suggestionsDefault = ArrayList<DataSuggestions>()
+        suggestionsDefault.add(DataSuggestions("product", productListIds))
+        viewModel.getBidInfoDefault(suggestionsDefault, this::onDefaultSuccessSuggestion)
     }
 
     private fun toArrayList(dataItems: List<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem>): ArrayList<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem> {
@@ -455,9 +472,14 @@ class EditAdGroupFragment : BaseDaggerFragment() {
         groupInfoResponse?.let {
             CreateEditAdGroupNameBottomSheet.newInstance(it.groupName, groupId)
                 .show(parentFragmentManager) { groupName ->
-                    viewModel.validateGroup(groupName, ::onValidateNameSuccess)
+                    viewModel.validateGroup(groupName, ::onValidateNameSuccess, ::onValidateNameFailure)
                 }
         }
+    }
+
+    private fun onValidateNameFailure(error: String?) {
+        Toaster.build(requireView(), error
+            ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
     }
 
     private fun onValidateNameSuccess(topAdsGroupValidateNameV2: ResponseGroupValidateName.TopAdsGroupValidateNameV2) {
@@ -578,7 +600,7 @@ class EditAdGroupFragment : BaseDaggerFragment() {
     }
 
     private fun openAdGroupRecommendationBidBottomSheet() {
-        EditAdGroupRecommendationBidBottomSheet.newInstance(groupInfoResponse?.bidSettings?.getOrNull(CONST_1)?.priceBid, productListIds).show(parentFragmentManager) {
+        EditAdGroupRecommendationBidBottomSheet.newInstance(getRecomBid(), productListIds, minBid, maxBid, performanceData).show(parentFragmentManager) {
             dataKeyword.clear()
             dataProduct.clear()
             this.editedRecomBid = it
@@ -591,6 +613,11 @@ class EditAdGroupFragment : BaseDaggerFragment() {
             submitEditGroup(CreateEditAdGroupItemTag.ADS_RECOMMENDATION)
 
         }
+    }
+
+    private fun getRecomBid(): Float? {
+        return if (editedRecomBid.isEmpty()) groupInfoResponse?.bidSettings?.getOrNull(CONST_1)?.priceBid
+        else CurrencyFormatHelper.convertRupiahToDouble(editedRecomBid).toFloat()
     }
 
     private fun openAdGroupDailyBudgetBottomSheet() {

@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.header.HeaderUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -36,6 +37,7 @@ import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
 import com.tokopedia.topads.common.view.TopadsAutoBidSwitchPartialLayout
 import com.tokopedia.topads.common.view.adapter.viewpager.KeywordEditPagerAdapter
 import com.tokopedia.topads.common.view.sheet.BidInfoBottomSheet
+import com.tokopedia.topads.common.view.sheet.CreatePotentialPerformanceSheet
 import com.tokopedia.topads.common.view.sheet.InfoBottomSheet
 import com.tokopedia.topads.common.view.sheet.TopAdsToolTipBottomSheet
 import com.tokopedia.topads.edit.R
@@ -80,13 +82,15 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    val isBidAutomatic: Boolean get() = autoBidSwitch?.isBidAutomatic ?: false
+    private val isBidAutomatic: Boolean get() = autoBidSwitch?.isBidAutomatic ?: false
     private var autoBidSwitch: TopadsAutoBidSwitchPartialLayout? = null
     private var keywordGroup: LinearLayout? = null
     private var autoBidTicker: Ticker? = null
     private var txtInfo: Typography? = null
     private var budget: TextFieldUnify2? = null
     private var btnNextSearch: UnifyButton? = null
+    private var headerUnify: HeaderUnify? = null
+    private var potentialPerformanceIconUnify: IconUnify? = null
 
     private var viewPager: CustomViewPager? = null
 
@@ -146,6 +150,8 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
         impressionPerformanceValueSearch = view.findViewById(R.id.impressionPerformanceValueSearch)
         kataKunciInfo = view.findViewById(R.id.kataKunciInfo)
         kataKunci = view.findViewById(R.id.kataKunci)
+        headerUnify = view.findViewById(R.id.header)
+        potentialPerformanceIconUnify = view.findViewById(R.id.potentialPerformanceIconUnify)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -164,6 +170,18 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
         val suggestionsDefault = java.util.ArrayList<DataSuggestions>()
         suggestionsDefault.add(DataSuggestions("", listOf(groupId.toString())))
         viewModel.getSuggestedBid(productIds, this::onBidSuccessSuggestion)
+        headerUnify?.setNavigationOnClickListener {
+            val fragmentManager = requireActivity().supportFragmentManager
+            fragmentManager.popBackStack()
+        }
+        val performanceList = arguments?.getStringArrayList("potentialPerformanceList")
+        potentialPerformanceIconUnify?.setOnClickListener {
+            CreatePotentialPerformanceSheet.newInstance(
+                performanceList?.firstOrNull().toIntOrZero(),
+                performanceList?.getOrNull(Int.ONE).toIntOrZero()
+            ).show(childFragmentManager)
+
+        }
     }
 
     private fun setViews() {

@@ -20,7 +20,7 @@
             android:id="@+id/toggle_subtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/top_ads_edit_ad_group_daily_budget_bottom_sheet_toggle_title"
+            android:text="@string/top_ads_edit_ad_group_daily_budget_bottom_sheet_toggle_subtitle"
             android:layout_below="@id/toggle_title"
             app:typographyType="paragraph_3" />
 

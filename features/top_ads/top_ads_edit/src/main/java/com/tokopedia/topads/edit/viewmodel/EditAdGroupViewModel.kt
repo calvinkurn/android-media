@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.CONST_1
 import com.tokopedia.topads.common.data.internal.ParamObject
+import com.tokopedia.topads.common.data.model.DataSuggestions
 import com.tokopedia.topads.common.data.model.TopAdsGetTotalAdsAndKeywords
 import com.tokopedia.topads.common.data.response.GetAdProductResponse
 import com.tokopedia.topads.common.data.response.GetKeywordResponse
@@ -15,6 +16,8 @@ import com.tokopedia.topads.common.data.response.GroupInfoResponse
 import com.tokopedia.topads.common.data.response.ImpressionPredictionResponse
 import com.tokopedia.topads.common.data.response.ResponseGroupValidateName
 import com.tokopedia.topads.common.data.response.TopAdsGetBidSuggestionResponse
+import com.tokopedia.topads.common.data.response.TopadsBidInfo
+import com.tokopedia.topads.common.domain.interactor.BidInfoUseCase
 import com.tokopedia.topads.common.domain.model.createedit.CreateEditAdGroupItemAdsPotentialWidgetUiModel
 import com.tokopedia.topads.common.domain.usecase.GetAdKeywordUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsCreateUseCase
@@ -31,6 +34,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import java.util.HashMap
 import javax.inject.Inject
 
@@ -48,6 +52,7 @@ class EditAdGroupViewModel @Inject constructor(
     private val getAdKeywordUseCase: GetAdKeywordUseCase,
     private val getAdsUseCase: GetAdsUseCase,
     private val topAdsCreateUseCase: TopAdsCreateUseCase,
+    private val bidInfoUseCaseDefault: BidInfoUseCase,
     private val userSession: UserSessionInterface
 ) :
     BaseViewModel(dispatchers.main) {
@@ -106,16 +111,24 @@ class EditAdGroupViewModel @Inject constructor(
     fun validateGroup(
         groupName: String,
         onSuccess: ((ResponseGroupValidateName.TopAdsGroupValidateNameV2) -> Unit),
+        onFailure: ((String?) -> Unit)
     ) {
         validateNameAdGroupUseCase.setParams(groupName, Constants.SOURCE_ANDROID_EDIT_GROUP)
         validateNameAdGroupUseCase.execute(
             {
-                onSuccess(it.topAdsGroupValidateName)
+                if (it.topAdsGroupValidateName.errors.isEmpty()){
+                    onSuccess(it.topAdsGroupValidateName)
+                }else{
+                    onFailure.invoke(it.topAdsGroupValidateName.errors.firstOrNull()?.detail)
+                }
             },
             { throwable ->
                 throwable.printStackTrace()
+                onFailure.invoke(throwable.message)
             })
     }
+
+
 
     fun getAds(
         page: Int,
@@ -261,5 +274,16 @@ class EditAdGroupViewModel @Inject constructor(
             { throwable ->
                 throwable.printStackTrace()
             })
+    }
+
+    fun getBidInfoDefault(suggestions: List<DataSuggestions>, onSuccess: (List<TopadsBidInfo.DataItem>) -> Unit) {
+        launch(block = {
+            bidInfoUseCaseDefault.setParams(suggestions, ParamObject.PRODUCT, ParamObject.SOURCE_VALUE)
+            bidInfoUseCaseDefault.executeQuerySafeMode({
+                onSuccess(it.topadsBidInfo.data)
+            }, {
+                it.printStackTrace()
+            })
+        })
     }
 }

@@ -6,10 +6,14 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
+import com.tokopedia.kotlin.extensions.view.toFloatOrZero
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.common.databinding.TopadsCreateEditItemEditAdGroupBinding
 import com.tokopedia.topads.common.domain.model.createedit.CreateEditAdGroupItemUiModel
 import com.tokopedia.topads.common.R
+import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
 import com.tokopedia.topads.common.domain.model.createedit.CreateEditAdGroupItemTag
+import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 
 class CreateEditAdGroupItemViewHolder(private val viewBinding: TopadsCreateEditItemEditAdGroupBinding) : AbstractViewHolder<CreateEditAdGroupItemUiModel>(viewBinding.root) {
 
@@ -29,8 +33,14 @@ class CreateEditAdGroupItemViewHolder(private val viewBinding: TopadsCreateEditI
     }
 
     private fun setSubtitle(element: CreateEditAdGroupItemUiModel) {
-        if (element.tag == CreateEditAdGroupItemTag.DAILY_BUDGET && element.subtitle.toDoubleOrZero() <= Int.ZERO) {
-            viewBinding.editAdItemSubtitle.text = "Tidak dibatasi"
+        if (element.tag == CreateEditAdGroupItemTag.DAILY_BUDGET) {
+            if (element.subtitle.toDoubleOrZero() <= Int.ZERO) {
+                viewBinding.editAdItemSubtitle.text = "Tidak dibatasi"
+            } else {
+                viewBinding.editAdItemSubtitle.text = String.format("Rp. %s", CurrencyFormatHelper.convertToRupiah(element.subtitle.toFloatOrZero().toInt().toString()))
+            }
+        } else if (element.tag == CreateEditAdGroupItemTag.ADS_RECOMMENDATION) {
+            viewBinding.editAdItemSubtitle.text = String.format("Rp. %s", CurrencyFormatHelper.convertToRupiah(element.subtitle.removeCommaRawString().toIntOrZero().toString()))
         } else {
             viewBinding.editAdItemSubtitle.text = element.subtitle
         }

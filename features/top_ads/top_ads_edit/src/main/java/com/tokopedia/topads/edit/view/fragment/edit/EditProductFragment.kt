@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.header.HeaderUnify
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.data.SharedViewModel
@@ -54,6 +55,7 @@ class EditProductFragment : BaseDaggerFragment() {
     private var addImage: ImageUnify? = null
     private var addProduct: Typography? = null
     private var ctaDeleteProduct: UnifyButton? = null
+    private var headerUnify: HeaderUnify? = null
 
     private var buttonStateCallback: SaveButtonStateCallBack? = null
     private var onProductAction: OnProductAction? = null
@@ -112,6 +114,7 @@ class EditProductFragment : BaseDaggerFragment() {
         addImage = view.findViewById(R.id.add_image)
         addProduct = view.findViewById(R.id.add_product)
         ctaDeleteProduct = view.findViewById(R.id.cta_delete_product)
+        headerUnify = view.findViewById(R.id.header)
         setAdapter()
         return view
     }
@@ -199,7 +202,7 @@ class EditProductFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        addImage?.setImageDrawable(AppCompatResources.getDrawable(view.context, com.tokopedia.topads.common.R.drawable.topads_plus_add_keyword))
+        addImage?.setImageDrawable(AppCompatResources.getDrawable(view.context, topadscommonR.drawable.topads_plus_add_keyword))
         addProduct?.setOnClickListener {
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(CLICK_TAMBAH_PRODUK, "")
             val intent = Intent(context, SelectProductActivity::class.java)
@@ -212,6 +215,9 @@ class EditProductFragment : BaseDaggerFragment() {
             val fragmentManager = requireActivity().supportFragmentManager
             fragmentManager.popBackStack()
         }
+        headerUnify?.setNavigationOnClickListener {
+            val fragmentManager = requireActivity().supportFragmentManager
+            fragmentManager.popBackStack() }
     }
 
     private fun onProductListDeleted(pos: Int) {
