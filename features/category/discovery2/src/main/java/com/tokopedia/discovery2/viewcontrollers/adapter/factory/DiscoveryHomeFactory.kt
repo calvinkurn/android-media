@@ -53,6 +53,10 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mast
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvoucher.DiscoMerchantVoucherViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvoucher.DiscoMerchantVoucherViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvouchercarousel.*
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvouchergrid.MerchantVoucherGridItemViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvouchergrid.MerchantVoucherGridItemViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvouchergrid.MerchantVoucherGridViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvouchergrid.MerchantVoucherGridViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mycoupon.MyCouponItemViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mycoupon.MyCouponItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mycoupon.MyCouponViewHolder
@@ -564,6 +568,19 @@ class DiscoveryHomeFactory {
                 ComponentsList.ViewAllCarouselCard,
                 ::ViewAllCarouselViewHolder,
                 ::ViewAllCarouselViewModel
+            )
+
+            // Merchant Voucher Grid
+            initializeComponent(
+                ComponentsList.MerchantVoucherGrid,
+                ::MerchantVoucherGridViewHolder,
+                ::MerchantVoucherGridViewModel
+            )
+
+            initializeComponent(
+                ComponentsList.MerchantVoucherGridItem,
+                ::MerchantVoucherGridItemViewHolder,
+                ::MerchantVoucherGridItemViewModel
             )
         }
 

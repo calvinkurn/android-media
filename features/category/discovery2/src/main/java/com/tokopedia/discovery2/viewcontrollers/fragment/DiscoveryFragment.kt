@@ -33,10 +33,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.appbar.AppBarLayout
-import com.google.android.material.button.MaterialButton
-import com.google.android.material.shape.CornerFamily
-import com.google.android.material.shape.MaterialShapeDrawable
-import com.google.android.material.shape.ShapeAppearanceModel
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -199,7 +195,6 @@ import kotlinx.coroutines.launch
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import com.tokopedia.unifyprinciples.R as RUnify
-import com.tokopedia.design.R as designR
 
 private const val LOGIN_REQUEST_CODE = 35769
 private const val MOBILE_VERIFICATION_REQUEST_CODE = 35770
@@ -210,7 +205,6 @@ private const val DEFAULT_SCROLL_POSITION = 0
 private const val ROTATION = 90f
 const val CUSTOM_SHARE_SHEET = 1
 
-@SuppressLint("RestrictedApi") // also suppressed the warning
 open class DiscoveryFragment :
     BaseDaggerFragment(),
     SwipeRefreshLayout.OnRefreshListener,
@@ -244,7 +238,6 @@ open class DiscoveryFragment :
     private lateinit var coordinatorLayout: CoordinatorLayout
     private lateinit var parentLayout: FrameLayout
     private lateinit var appBarLayout: AppBarLayout
-    private lateinit var materialButton: MaterialButton
     private var parentConstraintLayout: ConstraintLayout? = null
     private var pageInfoHolder: PageInfo? = null
     private var miniCartWidget: MiniCartWidget? = null
@@ -443,39 +436,6 @@ open class DiscoveryFragment :
         appBarLayout = view.findViewById(R.id.appbarLayout)
         miniCartWidget = view.findViewById(R.id.miniCartWidget)
         parentConstraintLayout = view.findViewById(R.id.parent_constraint_container)
-
-
-        materialButton = view.findViewById(R.id.materialButton)
-
-        val rightEdge = NotchEdgeTreatment(
-            horizontalOffset = (75).toFloat(),
-        )
-            .apply {
-                scallopDiameter = (2 * 30).toFloat()
-            }
-
-        val leftEdge = NotchEdgeTreatment(
-            horizontalOffset = (275).toFloat(),
-            isLeftEdge = true
-        )
-            .apply {
-                scallopDiameter = (2 * 30).toFloat()
-            }
-
-        val shapePathModel = ShapeAppearanceModel.builder()
-            .setAllCorners(CornerFamily.ROUNDED, 40.toFloat())
-            .setLeftEdge(leftEdge)
-            .setRightEdge(rightEdge)
-            .build()
-
-        val backgroundDrawable = MaterialShapeDrawable(shapePathModel).apply {
-            fillColor = ContextCompat.getColorStateList(
-                this@DiscoveryFragment.requireContext(),
-                designR.color.background_star_review
-            ) // change color
-        }
-
-        materialButton.background = backgroundDrawable
 
         mProgressBar.show()
         mSwipeRefreshLayout?.setOnRefreshListener(this)

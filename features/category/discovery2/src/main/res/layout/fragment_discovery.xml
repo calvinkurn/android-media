@@ -48,29 +48,6 @@
 
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/materialButton"
-                android:layout_width="wrap_content"
-                android:layout_height="72dp"
-                android:layout_marginTop="16dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/appbarLayout"
-                android:theme="@style/Theme.MaterialComponents.Light"
-                android:text="LOGIN"
-                android:visibility="gone"
-                tools:ignore="HardcodedText" />
-
-            <com.tokopedia.discovery2.viewcontrollers.customview.MerchantVoucherViewCard
-                android:layout_width="160dp"
-                android:layout_height="wrap_content"
-                android:visibility="visible"
-                android:theme="@style/Theme.MaterialComponents.Light"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/appbarLayout"
-                />
-
             <com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
                 android:id="@+id/choose_address_widget"
                 android:layout_width="match_parent"

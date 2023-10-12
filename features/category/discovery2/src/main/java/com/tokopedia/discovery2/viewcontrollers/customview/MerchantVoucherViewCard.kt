@@ -9,16 +9,19 @@ import com.google.android.material.card.MaterialCardView
 import com.google.android.material.shape.CornerFamily
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.shape.ShapeAppearanceModel
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.databinding.ItemMerchantVoucherCarouselLayoutBinding
 import com.tokopedia.discovery2.viewcontrollers.fragment.NotchEdgeTreatment
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 @SuppressLint("RestrictedApi")
 class MerchantVoucherViewCard @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
-): MaterialCardView(context, attrs, defStyleAttr) {
+) : MaterialCardView(context, attrs, defStyleAttr) {
 
     private var binding = ItemMerchantVoucherCarouselLayoutBinding.inflate(LayoutInflater.from(context), this)
 
@@ -28,7 +31,7 @@ class MerchantVoucherViewCard @JvmOverloads constructor(
             val leftPosition = binding.root.height - rightPosition - 95
 
             val rightEdge = NotchEdgeTreatment(
-                horizontalOffset = (rightPosition),
+                horizontalOffset = (rightPosition)
             )
                 .apply {
                     scallopDiameter = (2 * 20).toFloat()
@@ -49,8 +52,32 @@ class MerchantVoucherViewCard @JvmOverloads constructor(
                 .build()
 
             val materialShapeDrawable = MaterialShapeDrawable(shapePathModel)
-            materialShapeDrawable.setTint(Color.WHITE)
+            val defaultColor = MethodChecker.getColor(context, unifyprinciplesR.color.Unify_NN0)
+            materialShapeDrawable.setTint(defaultColor)
             background = materialShapeDrawable
+        }
+    }
+
+    fun setData(item: DataItem) {
+        item.shopInfo?.run {
+            binding.tvShopName.text = name.orEmpty()
+            binding.shopLogo.setImageUrl(iconUrl.orEmpty())
+        }
+
+        binding.cardBackground.setImageUrl(item.backgroundImageUrl.orEmpty())
+        binding.actionBtn.text = item.buttonText.orEmpty()
+        binding.tvTitle.text = item.title
+        binding.tvSubtitle.text = item.subtitle
+        binding.tvMinPurchase.text = item.subtitle_1
+
+        if (!item.fontColor.isNullOrEmpty()) {
+            binding.tvTitle.setTextColor(Color.parseColor(item.fontColor))
+        }
+    }
+
+    fun onClick(action: () -> Unit) {
+        binding.root.setOnClickListener {
+            action.invoke()
         }
     }
 }

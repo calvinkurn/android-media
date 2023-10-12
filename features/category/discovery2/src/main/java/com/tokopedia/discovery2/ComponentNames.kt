@@ -142,4 +142,7 @@ enum class ComponentNames(val componentName: String) {
     FlashSaleTokoTab("tabs_flash_sale_toko"),
 
     ViewAllCardCarousel("view_all_card_carousel"),
+
+    MerchantVoucherGrid("merchant_voucher_grid_infinite"),
+    MerchantVoucherGridItem("merchant_voucher_grid_infinite_item")
 }
