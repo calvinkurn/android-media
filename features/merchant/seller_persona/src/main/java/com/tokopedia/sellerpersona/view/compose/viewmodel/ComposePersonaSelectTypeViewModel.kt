@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -63,7 +64,6 @@ class ComposePersonaSelectTypeViewModel @Inject constructor(
             }
         }
     }
-
 
     private fun setPersona(persona: String) {
         viewModelScope.launch {
@@ -123,7 +123,7 @@ class ComposePersonaSelectTypeViewModel @Inject constructor(
             )
             val selectedState = currentState.copy(data = updatedData, state = currentState.state)
             withContext(dispatchers.main) {
-                _state.emit(selectedState)
+                _state.update { selectedState }
             }
         }
     }
@@ -141,14 +141,14 @@ class ComposePersonaSelectTypeViewModel @Inject constructor(
         }
     }
 
-    private suspend fun emitSelectButtonLoading(isLoading: Boolean) {
+    private fun emitSelectButtonLoading(isLoading: Boolean) {
         val currentState = _state.value
         val data = currentState.data
         val loadingUi = data.ui.copy(isSelectButtonLoading = isLoading)
         val selectButtonLoadingState = currentState.copy(
             data = data.copy(ui = loadingUi)
         )
-        _state.emit(selectButtonLoadingState)
+        _state.update { selectButtonLoadingState }
     }
 
     private fun eventCloseThePage(persona: String) {
@@ -157,9 +157,9 @@ class ComposePersonaSelectTypeViewModel @Inject constructor(
         }
     }
 
-    private suspend fun emitErrorState(t: Throwable) {
+    private fun emitErrorState(t: Throwable) {
         val errorState = _state.value.copy(state = SelectTypeState.State.Error(t))
-        _state.emit(errorState)
+        _state.update { errorState }
     }
 
     private suspend fun emitSuccessState(
@@ -191,13 +191,13 @@ class ComposePersonaSelectTypeViewModel @Inject constructor(
             state = SelectTypeState.State.Success,
             data = data
         )
-        _state.emit(successState)
+        _state.update { successState }
     }
 
-    private suspend fun emitLoadingState() {
+    private fun emitLoadingState() {
         if (_state.value.state is SelectTypeState.State.Loading) return
         val currentState = _state.value
         val loadingState = currentState.copy(state = SelectTypeState.State.Loading)
-        _state.emit(loadingState)
+        _state.update { loadingState }
     }
 }

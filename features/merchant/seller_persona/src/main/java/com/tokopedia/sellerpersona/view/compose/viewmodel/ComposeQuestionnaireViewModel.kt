@@ -49,14 +49,12 @@ class ComposeQuestionnaireViewModel @Inject constructor(
     private var data = QuestionnaireDataUiModel()
 
     fun onEvent(event: QuestionnaireUserEvent) {
-        viewModelScope.launch {
-            when (event) {
-                is QuestionnaireUserEvent.OnOptionItemSelected -> setOnOptionItemSelected(event)
-                is QuestionnaireUserEvent.FetchQuestionnaire -> fetchQuestionnaire()
-                is QuestionnaireUserEvent.OnPagerSwipe -> setOnPagerSwipe(event.page)
-                is QuestionnaireUserEvent.ClickNext -> moveToNextPage()
-                is QuestionnaireUserEvent.ClickPrevious -> moveToPrevPage()
-            }
+        when (event) {
+            is QuestionnaireUserEvent.FetchQuestionnaire -> fetchQuestionnaire()
+            is QuestionnaireUserEvent.OnPagerSwipe -> setOnPagerSwipe(event.page)
+            is QuestionnaireUserEvent.ClickNext -> moveToNextPage()
+            is QuestionnaireUserEvent.ClickPrevious -> moveToPrevPage()
+            is QuestionnaireUserEvent.OnOptionItemSelected -> setOnOptionItemSelected(event)
         }
     }
 
@@ -98,6 +96,8 @@ class ComposeQuestionnaireViewModel @Inject constructor(
             }.onFailure {
                 //dismiss Next Button loading state
                 successSuccessState(data.copy(isNextButtonLoading = false))
+                //show error toaster
+                emitUiEffect(QuestionnaireUiEffect.ShowGeneralErrorToast)
             }
         }
     }
@@ -185,7 +185,9 @@ class ComposeQuestionnaireViewModel @Inject constructor(
         _state.update { state }
     }
 
-    private suspend fun emitUiEffect(uiEffect: QuestionnaireUiEffect) {
-        _uiEffect.emit(uiEffect)
+    private fun emitUiEffect(uiEffect: QuestionnaireUiEffect) {
+        viewModelScope.launch {
+            _uiEffect.emit(uiEffect)
+        }
     }
 }
