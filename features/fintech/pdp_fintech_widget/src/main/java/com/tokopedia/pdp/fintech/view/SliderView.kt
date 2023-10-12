@@ -8,6 +8,7 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.widget.ScrollView
 import com.tokopedia.kotlin.extensions.view.ONE
@@ -37,11 +38,12 @@ class SliderView: ScrollView {
         binding = SliderViewLayoutBinding.inflate(LayoutInflater.from(context), this, true)
     }
 
-    fun setItems(views: List<View>, shouldAnimate: Boolean) {
+    fun setItems(views: List<View>, shouldAnimate: Boolean, onItemClickListener: OnClickListener) {
         if (views.isEmpty()) return
 
         binding?.container?.removeAllViews()
         views.forEachIndexed { index, view ->
+            view.setOnClickListener(onItemClickListener)
             if (index == 0 && shouldAnimate) view.setPadding(0, VERTICAL_PADDING.toPx(), 0, 0)
             if (index == views.size - Int.ONE) view.setPadding(0, 0, 0, VERTICAL_PADDING.toPx())
             binding?.container?.addView(view)
@@ -89,6 +91,10 @@ class SliderView: ScrollView {
                 scrollAnim.start()
             }
         }
+    }
+
+    override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean {
+        return false
     }
 
     override fun onDetachedFromWindow() {

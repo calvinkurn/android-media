@@ -231,7 +231,12 @@ class PdpFintechWidgetV2 @JvmOverloads constructor(
             ellipsize = TextUtils.TruncateAt.END
         }
 
-        binding?.sliderView?.setItems(arrayListOf(firstTextView, secondTextView), messages.size > Int.ONE)
+        binding?.sliderView?.setItems(
+            arrayListOf(firstTextView, secondTextView),
+            messages.size > Int.ONE
+        ) {
+            binding?.sliderContainer?.performClick()
+        }
     }
 
     fun updateIdToPriceMap(
