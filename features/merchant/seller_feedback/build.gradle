@@ -33,6 +33,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
     implementation rootProject.ext.kmpDependencies.sellerFeedbackKmp
+    implementation rootProject.ext.kmpDependencies.gqlKmp
 
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.applink)

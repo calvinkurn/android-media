@@ -8,9 +8,9 @@ import com.tokopedia.gql.Result
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.state.UploadResult
-import com.tokopedia.multiplatform.seller.feedback.data.param.FeedbackParam
-import com.tokopedia.multiplatform.seller.feedback.domain.SubmitFeedbackUseCase
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.seller.feedback.data.param.FeedbackParam
+import com.tokopedia.seller.feedback.domain.SubmitFeedbackUseCase
 import com.tokopedia.sellerfeedback.data.SubmitResultKmp
 import com.tokopedia.sellerfeedback.error.SubmitThrowable
 import com.tokopedia.sellerfeedback.error.UploadThrowable
@@ -90,6 +90,7 @@ class SellerFeedbackKmpViewModel @Inject constructor(
             is Result.Failure.HttpFailure -> {
                 throw MessageErrorException(submitGlobalFeedbackError.errorBody)
             }
+
             is Result.Failure.NetworkFailure -> {
                 throw IOException(submitGlobalFeedbackError.exception)
             }

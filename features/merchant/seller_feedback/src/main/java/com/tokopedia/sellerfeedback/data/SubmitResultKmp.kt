@@ -1,6 +1,6 @@
 package com.tokopedia.sellerfeedback.data
 
-import com.tokopedia.multiplatform.seller.feedback.domain.model.SubmitFeedbackModel
+import com.tokopedia.seller.feedback.domain.model.SubmitFeedbackModel
 
 sealed class SubmitResultKmp {
 

@@ -476,8 +476,10 @@ ext {
     ]
 
     sellerFeedbackKmpVersion = "1.0.0"
+    gqlKmpVersion = "1.0.0"
 
     kmpDependencies = [
-            sellerFeedbackKmp      : "com.tokopedia.multiplatform.seller.feedback:feedback-android:$sellerFeedbackKmpVersion",
+            sellerFeedbackKmp      : "com.tokopedia.seller.feedback:feedback-android:$sellerFeedbackKmpVersion",
+            gqlKmp                 : "com.tokopedia.gql:gql-android:$gqlKmpVersion",
     ]
 }
