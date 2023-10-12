@@ -166,7 +166,7 @@ object GotoSdk {
                     }
                 },
                 analyticDelegate = {
-                    GotoPinAnalyticsMapper(ScpConstants.LOGIN_FLOW, ScpConstants.TOKOPEDIA_CLIENT_ID)
+                    GotoPinAnalyticsMapper.trackEvent(it.eventName, it.properties)
                 }
             )
         )
