@@ -2854,15 +2854,6 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
     /** PDP Cacheable **/
     @Test
-    fun `checkable is true`() {
-        coEvery { getPdpLayoutUseCase.shouldCacheable } returns true
-        assertTrue(viewModel.isCacheable())
-
-        coEvery { getPdpLayoutUseCase.shouldCacheable } returns false
-        assertFalse(viewModel.isCacheable())
-    }
-
-    @Test
     fun `pdp get layout throwable within use-case flow`() {
         val productParams = ProductParams()
 

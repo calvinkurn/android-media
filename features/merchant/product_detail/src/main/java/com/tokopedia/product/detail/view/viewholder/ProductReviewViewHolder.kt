@@ -27,7 +27,7 @@ import com.tokopedia.reviewcommon.feature.reviewer.presentation.listener.ReviewB
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 
 class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetailListener) :
-        AbstractViewHolder<ProductMostHelpfulReviewDataModel>(view) {
+    AbstractViewHolder<ProductMostHelpfulReviewDataModel>(view) {
 
     companion object {
         const val MAX_LINES_REVIEW_DESCRIPTION = 3
@@ -57,7 +57,7 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
                 holder = element.impressHolder,
                 holders = listener.getImpressionHolders(),
                 name = element.name,
-                useHolders = listener.isCacheable()
+                useHolders = listener.isRemoteCacheableActive()
             ) {
                 listener.onImpressComponent(componentData)
             }
@@ -154,15 +154,23 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
         binding.basicInfoMostHelpfulReview.setListeners(
             reviewBasicInfoListener = object : ReviewBasicInfoListener {
                 override fun onUserNameClicked(
-                    feedbackId: String, userId: String, statistics: String, label: String
+                    feedbackId: String,
+                    userId: String,
+                    statistics: String,
+                    label: String
                 ) {
                     element?.let {
                         listener.onSeeReviewCredibility(
-                            feedbackId, userId, statistics, label, getComponentTrackData(it)
+                            feedbackId,
+                            userId,
+                            statistics,
+                            label,
+                            getComponentTrackData(it)
                         )
                     }
                 }
-            }, threeDotsListener = null
+            },
+            threeDotsListener = null
         )
     }
 
@@ -212,7 +220,7 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
             maxLines = MAX_LINES_REVIEW_DESCRIPTION
             val formattingResult = ProductDetailUtil.reviewDescFormatter(context, reviewData.message)
             text = formattingResult.first
-            if(formattingResult.second) {
+            if (formattingResult.second) {
                 setOnClickListener {
                     maxLines = Integer.MAX_VALUE
                     text = HtmlLinkHelper(context, reviewData.message).spannedString
@@ -223,7 +231,7 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
     }
 
     private fun getComponentTrackData(data: ProductMostHelpfulReviewDataModel): ComponentTrackDataModel =
-            ComponentTrackDataModel(data.type, data.name, adapterPosition + 1)
+        ComponentTrackDataModel(data.type, data.name, adapterPosition + 1)
 
     private fun hideAllOtherElements() {
         binding.apply {

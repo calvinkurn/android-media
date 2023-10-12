@@ -5,7 +5,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
@@ -18,8 +17,8 @@ import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.unifycomponents.toPx
 
 class ProductMiniSocialProofStockViewHolder(
-        private val view: View,
-        private val listener: DynamicProductDetailListener
+    private val view: View,
+    private val listener: DynamicProductDetailListener
 ) : AbstractViewHolder<ProductMiniSocialProofStockDataModel>(view) {
 
     companion object {
@@ -55,7 +54,7 @@ class ProductMiniSocialProofStockViewHolder(
                     holder = element.impressHolder,
                     holders = listener.getImpressionHolders(),
                     name = element.name,
-                    useHolders = listener.isCacheable()
+                    useHolders = listener.isRemoteCacheableActive()
                 ) {
                     listener.onImpressComponent(getComponentTrackData(element))
                 }
@@ -74,10 +73,11 @@ class ProductMiniSocialProofStockViewHolder(
     }
 
     private fun setupLoading(shouldShowSingleSocialProof: Boolean) = with(shimmeringBinding) {
-        if (shouldShowSingleSocialProof)
+        if (shouldShowSingleSocialProof) {
             root.setPadding(8.toPx(), 0, 16.toPx(), 14.toPx())
-        else
+        } else {
             root.setPadding(8.toPx(), 8.toPx(), 16.toPx(), 18.toPx())
+        }
     }
 
     private fun getComponentTrackData(element: ProductMiniSocialProofStockDataModel) = ComponentTrackDataModel(element.type, element.name, adapterPosition + 1)

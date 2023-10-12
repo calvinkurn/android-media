@@ -38,7 +38,7 @@ class ProductRecommendationVerticalViewHolder(
             holder = element.impressHolder,
             holders = listener.getImpressionHolders(),
             name = element.name(),
-            useHolders = listener.isCacheable()
+            useHolders = listener.isRemoteCacheableActive()
         ) {
             onImpressRecommendation(item, element.position)
         }

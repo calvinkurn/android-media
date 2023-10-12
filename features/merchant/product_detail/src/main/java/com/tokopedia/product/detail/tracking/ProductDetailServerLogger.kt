@@ -35,6 +35,7 @@ object ProductDetailServerLogger {
     private const val IS_FROM_CACHE = "isFromCache"
     private const val CACHE_FIRST_THEN_CLOUD = "cacheFirstThenCloud"
     private const val IS_CAMPAIGN = "isCampaign"
+    private const val REMOTE_CACHEABLE_ACTIVE = "remoteCacheableActive"
 
     private const val PDP_OPEN_FAIL = "PDP_OPEN_FAIL"
 
@@ -77,10 +78,11 @@ object ProductDetailServerLogger {
             "PDP_LOAD_PAGE_SUCCESS",
             mapOf(
                 "type" to "pdp",
-                "productId" to productId.orEmpty(),
-                "isFromCache" to cacheState?.isFromCache.toString(),
-                "cacheFirstThenCloud" to cacheState?.cacheFirstThenCloud.toString(),
-                "isCampaign" to isCampaign.toString()
+                PRODUCT_ID_KEY to productId.orEmpty(),
+                IS_FROM_CACHE to cacheState?.isFromCache.toString(),
+                CACHE_FIRST_THEN_CLOUD to cacheState?.cacheFirstThenCloud.toString(),
+                IS_CAMPAIGN to isCampaign.toString(),
+                REMOTE_CACHEABLE_ACTIVE to cacheState?.remoteCacheableActive.toString()
             )
         )
     }
@@ -118,6 +120,7 @@ object ProductDetailServerLogger {
             put(IS_FROM_CACHE, cacheState?.isFromCache.toString())
             put(CACHE_FIRST_THEN_CLOUD, cacheState?.cacheFirstThenCloud.toString())
             put(IS_CAMPAIGN, isCampaign)
+            put(REMOTE_CACHEABLE_ACTIVE, cacheState?.remoteCacheableActive.toString())
         }
         logBreadCrumb(PDP_SUCCESS_GET_P1_STATE, jsonObject)
     }

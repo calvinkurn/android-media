@@ -58,7 +58,7 @@ class BMGMViewHolder(
                     )
                 }
 
-                override fun isCacheable() = listener.isCacheable()
+                override fun isCacheable() = listener.isRemoteCacheableActive()
             }
         )
     }

@@ -68,7 +68,7 @@ class GlobalBundlingViewHolder(
                 globalWidgetAddImpression(
                     holders = listener.getImpressionHolders(),
                     name = element.name().plus(selectedMultipleBundle.bundleName),
-                    useHolders = listener.isCacheable()
+                    useHolders = listener.isRemoteCacheableActive()
                 ) {
                     listener.onImpressionProductBundling(
                         selectedMultipleBundle.bundleId,
@@ -87,7 +87,7 @@ class GlobalBundlingViewHolder(
                 globalWidgetAddImpression(
                     holders = listener.getImpressionHolders(),
                     name = element.name().plus(selectedBundle.bundleName),
-                    useHolders = listener.isCacheable()
+                    useHolders = listener.isRemoteCacheableActive()
                 ) {
                     listener.onImpressionProductBundling(
                         selectedBundle.bundleId,

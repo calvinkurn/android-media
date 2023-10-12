@@ -512,16 +512,14 @@ open class GetPdpLayoutUseCase @Inject constructor(
 
     @GqlQuery("PdpGetLayoutQuery", QUERY)
     suspend fun executeOnBackground(): Flow<ProductDetailDataModel> {
+        val cacheState = CacheState(remoteCacheableActive = shouldCacheable)
+
         prepareRequest()
 
         return if (shouldCacheable && !refreshPage) {
-            processRequestCacheable()
+            processRequestCacheable(cacheState = cacheState)
         } else {
-            processRequestAlwaysCloud(
-                cacheState = CacheState(cacheFirstThenCloud = false)
-            ).let {
-                flowOf(it)
-            }
+            flowOf(processRequestAlwaysCloud(cacheState = cacheState))
         }
     }
 
@@ -538,8 +536,8 @@ open class GetPdpLayoutUseCase @Inject constructor(
         )
     }
 
-    private fun processRequestCacheable() = flow {
-        val pdpLayoutCache = processRequestCacheOnly()
+    private fun processRequestCacheable(cacheState: CacheState) = flow {
+        val pdpLayoutCache = processRequestCacheOnly(cacheState = cacheState)
         var cacheState = pdpLayoutCache.cacheState
 
         if (cacheState.isFromCache) {
@@ -553,7 +551,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
         emit(pdpLayoutCloud)
     }.flowOn(dispatcher.io)
 
-    private suspend fun processRequestCacheOnly(): ProductDetailDataModel {
+    private suspend fun processRequestCacheOnly(cacheState: CacheState): ProductDetailDataModel {
         val response = GraphqlCacheStrategy.Builder(CacheType.CACHE_ONLY).build().let {
             gqlUseCase.setCacheStrategy(it)
             gqlUseCase.executeOnBackground()
@@ -562,7 +560,6 @@ open class GetPdpLayoutUseCase @Inject constructor(
         val data = response.getPdpLayout()
         val hasCacheAvailable = error.isNullOrEmpty() && data != null
         val isCampaign = isProductCampaign(layout = data)
-        val cacheState = CacheState(isFromCache = false, cacheFirstThenCloud = false)
 
         // if cache data available and product non campaign, so emit to VM
         return if (hasCacheAvailable && !isCampaign) {

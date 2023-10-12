@@ -76,7 +76,7 @@ class OneLinersViewHolder(
             holder = element.impressHolder,
             holders = listener.getImpressionHolders(),
             name = element.name,
-            useHolders = listener.isCacheable()
+            useHolders = listener.isRemoteCacheableActive()
         ) {
             renderCoachMark(content?.eduLink?.appLink?.isNotBlank() == true)
 

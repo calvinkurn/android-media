@@ -552,5 +552,5 @@ interface DynamicProductDetailListener {
     fun getImpressionHolders(): MutableList<String>
 
     // remote config for pdp cacheable
-    fun isCacheable(): Boolean
+    fun isRemoteCacheableActive(): Boolean
 }

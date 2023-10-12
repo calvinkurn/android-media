@@ -13,7 +13,8 @@ import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.widget.CampaignRibbon
 
 class ProductNotifyMeViewHolder(
-    private val view: View, private val listener: DynamicProductDetailListener
+    private val view: View,
+    private val listener: DynamicProductDetailListener
 ) : AbstractViewHolder<ProductNotifyMeDataModel>(view) {
 
     companion object {
@@ -35,7 +36,7 @@ class ProductNotifyMeViewHolder(
                 holder = element.impressHolder,
                 holders = listener.getImpressionHolders(),
                 name = element.name,
-                useHolders = listener.isCacheable()
+                useHolders = listener.isRemoteCacheableActive()
             ) {
                 listener.onImpressComponent(getComponentTrackData(element))
             }
@@ -49,7 +50,7 @@ class ProductNotifyMeViewHolder(
         upcomingCampaignRibbon.requestLayout()
     }
 
-    private fun hideContainer() = with(binding){
+    private fun hideContainer() = with(binding) {
         upcomingCampaignRibbon.layoutParams?.height = 0
         upcomingCampaignRibbon.requestLayout()
     }

@@ -5,18 +5,16 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListener
 import com.tokopedia.product.detail.data.model.datamodel.ArButtonDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.unifyprinciples.Typography
 
 class ProductArViewHolder(
-        val view: View,
-        private val listener: DynamicProductDetailListener
+    val view: View,
+    private val listener: DynamicProductDetailListener
 ) : ProductDetailPageViewHolder<ArButtonDataModel>(view) {
 
     companion object {
@@ -30,8 +28,12 @@ class ProductArViewHolder(
     override fun bind(element: ArButtonDataModel) {
         showOrHideElement(element.message)
 
-        itemView.setBackgroundColor(ContextCompat.getColor(view.context,
-                com.tokopedia.unifyprinciples.R.color.Unify_GN50))
+        itemView.setBackgroundColor(
+            ContextCompat.getColor(
+                view.context,
+                com.tokopedia.unifyprinciples.R.color.Unify_GN50
+            )
+        )
         imgCustom?.loadImage(element.imageUrl)
         txtMessage?.text = element.message
         itemView.setOnClickListener {
@@ -43,7 +45,7 @@ class ProductArViewHolder(
                 holder = element.impressHolder,
                 holders = listener.getImpressionHolders(),
                 name = element.name,
-                useHolders = listener.isCacheable()
+                useHolders = listener.isRemoteCacheableActive()
             ) {
                 listener.showArCoachMark(containerAr)
             }

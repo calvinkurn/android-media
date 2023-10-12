@@ -22,9 +22,11 @@ import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 /**
  * Created by Yehezkiel on 08/06/20
  */
-class ProductTickerInfoViewHolder(private val view: View,
-                                  private val listener: DynamicProductDetailListener)
-    : AbstractViewHolder<ProductTickerInfoDataModel>(view) {
+class ProductTickerInfoViewHolder(
+    private val view: View,
+    private val listener: DynamicProductDetailListener
+) :
+    AbstractViewHolder<ProductTickerInfoDataModel>(view) {
 
     var componentTrackDataModel: ComponentTrackDataModel? = null
     private val yellowTicker: Ticker? = itemView.findViewById(R.id.shop_ticker_info)
@@ -40,8 +42,13 @@ class ProductTickerInfoViewHolder(private val view: View,
             hideComponent()
         } else {
             val firstData = element.tickerDataResponse.firstOrNull()
-            addImpressionListener(firstData?.title ?: "", firstData?.message
-                    ?: "", element.impressHolder, firstData?.color ?: "")
+            addImpressionListener(
+                firstData?.title ?: "",
+                firstData?.message
+                    ?: "",
+                element.impressHolder,
+                firstData?.color ?: ""
+            )
 
             showComponent()
             componentTrackDataModel = element.getComponentTrackData(adapterPosition)
@@ -68,13 +75,15 @@ class ProductTickerInfoViewHolder(private val view: View,
         yellowTicker?.tickerTitle = tickerResponse.title
         yellowTicker?.setDescriptionClickEvent(object : TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                listener.onTickerShopClicked(yellowTicker.tickerTitle.toString(),
-                        yellowTicker.tickerType,
-                        componentTrackDataModel,
-                        tickerResponse.message,
-                        tickerResponse.actionLink,
-                        tickerResponse.action,
-                        tickerResponse.actionBottomSheet)
+                listener.onTickerShopClicked(
+                    yellowTicker.tickerTitle.toString(),
+                    yellowTicker.tickerType,
+                    componentTrackDataModel,
+                    tickerResponse.message,
+                    tickerResponse.actionLink,
+                    tickerResponse.action,
+                    tickerResponse.actionBottomSheet
+                )
             }
 
             override fun onDismiss() {}
@@ -86,22 +95,27 @@ class ProductTickerInfoViewHolder(private val view: View,
     private fun renderBlueTicker(generalTickerData: List<TickerDataResponse>) {
         val tickerData = generalTickerData.map {
             val title = if (it.title != "") it.title else null
-            TickerData(description = it.message,
-                    type = Ticker.TYPE_ANNOUNCEMENT,
-                    title = title, isFromHtml = true)
+            TickerData(
+                description = it.message,
+                type = Ticker.TYPE_ANNOUNCEMENT,
+                title = title,
+                isFromHtml = true
+            )
         }
         val tickerViewPager = TickerPagerAdapter(view.context, tickerData)
 
         blueTicker?.addPagerView(tickerViewPager, tickerData)
         tickerViewPager.setDescriptionClickEvent(object : TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                listener.onTickerShopClicked(blueTicker?.tickerTitle.toString(),
-                        blueTicker?.tickerType ?: 0,
-                        componentTrackDataModel,
-                        generalTickerData.firstOrNull()?.message ?: "",
-                        linkUrl.toString(),
-                        "applink",
-                        null)
+                listener.onTickerShopClicked(
+                    blueTicker?.tickerTitle.toString(),
+                    blueTicker?.tickerType ?: 0,
+                    componentTrackDataModel,
+                    generalTickerData.firstOrNull()?.message ?: "",
+                    linkUrl.toString(),
+                    "applink",
+                    null
+                )
             }
 
             override fun onDismiss() {}
@@ -110,21 +124,25 @@ class ProductTickerInfoViewHolder(private val view: View,
         blueTicker?.show()
     }
 
-    private fun addImpressionListener(tickerDescription: String,
-                                      tickerTitle: String,
-                                      impressHolder: ImpressHolder,
-                                      tickerType: String) {
+    private fun addImpressionListener(
+        tickerDescription: String,
+        tickerTitle: String,
+        impressHolder: ImpressHolder,
+        tickerType: String
+    ) {
         val tickerTypeInt = if (tickerType == "warning") 0 else 1
         itemView.apply {
             addOnImpressionListener(
                 holder = impressHolder,
                 holders = listener.getImpressionHolders(),
                 name = tickerTitle + tickerDescription + tickerType,
-                useHolders = listener.isCacheable()
+                useHolders = listener.isRemoteCacheableActive()
             ) {
-                DynamicProductDetailTracking.Impression.eventTickerImpression(tickerTypeInt,
-                        tickerTitle,
-                        tickerDescription)
+                DynamicProductDetailTracking.Impression.eventTickerImpression(
+                    tickerTypeInt,
+                    tickerTitle,
+                    tickerDescription
+                )
             }
         }
     }

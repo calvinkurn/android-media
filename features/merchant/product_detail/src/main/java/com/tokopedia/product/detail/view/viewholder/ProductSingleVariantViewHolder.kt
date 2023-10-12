@@ -74,7 +74,7 @@ class ProductSingleVariantViewHolder(
             holder = element.impressHolder,
             holders = pdpListener.getImpressionHolders(),
             name = element.name,
-            useHolders = pdpListener.isCacheable()
+            useHolders = pdpListener.isRemoteCacheableActive()
         ) {
             pdpListener.onImpressComponent(getComponentTrackData(element))
         }

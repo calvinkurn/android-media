@@ -34,7 +34,7 @@ import com.tokopedia.unifyprinciples.Typography
  */
 class ProductShopCredibilityViewHolder(
     private val view: View,
-    private val listener: DynamicProductDetailListener,
+    private val listener: DynamicProductDetailListener
 ) : AbstractViewHolder<ProductShopCredibilityDataModel>(view) {
 
     companion object {
@@ -101,7 +101,7 @@ class ProductShopCredibilityViewHolder(
                 holder = element.impressHolder,
                 holders = listener.getImpressionHolders(),
                 name = element.name,
-                useHolders = listener.isCacheable()
+                useHolders = listener.isRemoteCacheableActive()
             ) {
                 listener.onShopCredibilityImpressed(element.shopWarehouseCount, componentTracker)
             }
@@ -205,7 +205,6 @@ class ProductShopCredibilityViewHolder(
                 override fun onDismiss() {
                     // no op
                 }
-
             })
         }
     }
@@ -214,7 +213,7 @@ class ProductShopCredibilityViewHolder(
         super.bind(element, payloads)
         if (element == null || payloads.isEmpty()) return
         when (payloads[0] as Int) {
-            PAYLOAD_TOOGLE_FAVORITE -> enableButton() //Will only invoke if fail follow shop
+            PAYLOAD_TOOGLE_FAVORITE -> enableButton() // Will only invoke if fail follow shop
             else -> renderFollow(element.isFavorite)
         }
     }
@@ -298,7 +297,9 @@ class ProductShopCredibilityViewHolder(
             if (data1?.iconIsNotEmpty() == true) {
                 shopCredibilityIcon1.show()
                 shopCredibilityIcon1.setImage(data1.icon)
-            } else shopCredibilityIcon1.hide()
+            } else {
+                shopCredibilityIcon1.hide()
+            }
         }
 
         val data2 = infoShopData.getOrNull(1)
@@ -317,7 +318,9 @@ class ProductShopCredibilityViewHolder(
             if (data2?.iconIsNotEmpty() == true) {
                 shopCredibilityIcon2.show()
                 shopCredibilityIcon2.setImage(data2.icon)
-            } else shopCredibilityIcon2.hide()
+            } else {
+                shopCredibilityIcon2.hide()
+            }
         }
     }
 

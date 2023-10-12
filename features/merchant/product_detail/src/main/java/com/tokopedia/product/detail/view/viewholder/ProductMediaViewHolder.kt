@@ -13,15 +13,16 @@ import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 /**
  * Created by Yehezkiel on 04/05/20
  */
-class ProductMediaViewHolder(private val view: View,
-                             private val listener: DynamicProductDetailListener) : AbstractViewHolder<ProductMediaDataModel>(view) {
+class ProductMediaViewHolder(
+    private val view: View,
+    private val listener: DynamicProductDetailListener
+) : AbstractViewHolder<ProductMediaDataModel>(view) {
     companion object {
         val LAYOUT = R.layout.item_dynamic_product_media
     }
     private val binding = ItemDynamicProductMediaBinding.bind(view)
 
     override fun bind(element: ProductMediaDataModel) {
-
         setupViewpager(element)
 
         element.shouldAnimateLabel = false
@@ -31,7 +32,7 @@ class ProductMediaViewHolder(private val view: View,
             holder = element.impressHolder,
             holders = listener.getImpressionHolders(),
             name = element.name,
-            useHolders = listener.isCacheable()
+            useHolders = listener.isRemoteCacheableActive()
         ) {
             listener.onImpressComponent(getComponentTrackData(element))
         }
@@ -76,7 +77,10 @@ class ProductMediaViewHolder(private val view: View,
         listener.getProductVideoCoordinator()?.onPause()
     }
 
-    private fun getComponentTrackData(element: ProductMediaDataModel?) = ComponentTrackDataModel(element?.type
-            ?: "", element?.name ?: "", adapterPosition + 1)
-
+    private fun getComponentTrackData(element: ProductMediaDataModel?) = ComponentTrackDataModel(
+        element?.type
+            ?: "",
+        element?.name ?: "",
+        adapterPosition + 1
+    )
 }

@@ -36,7 +36,6 @@ class ProductMiniShopWidgetViewHolder(
     private val shimmering: View? = view.findViewById(R.id.mini_shop_widget_shimmering)
 
     override fun bind(element: ProductMiniShopWidgetDataModel) = with(view) {
-
         if (element.shopName.isEmpty()) return
 
         val componentTracker = getComponentTrackData(element)
@@ -61,7 +60,7 @@ class ProductMiniShopWidgetViewHolder(
             holder = element.impressHolder,
             holders = listener.getImpressionHolders(),
             name = element.name,
-            useHolders = listener.isCacheable()
+            useHolders = listener.isRemoteCacheableActive()
         ) {
             listener.onImpressComponent(componentTracker)
         }

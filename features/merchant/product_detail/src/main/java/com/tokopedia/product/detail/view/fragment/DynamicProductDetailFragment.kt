@@ -2951,7 +2951,7 @@ open class DynamicProductDetailFragment :
         )
 
         if (isPdpCacheableError()) {
-            preparePageCacheableError(errorModel = errorModel, error = error)
+            preparePageCacheableError(errorModel = errorModel)
         } else {
             preparePageError(errorModel)
         }
@@ -2971,10 +2971,10 @@ open class DynamicProductDetailFragment :
     }
 
     private fun isPdpCacheableError(): Boolean {
-        return isCacheable() && viewModel.pdpLayout?.cacheState?.hasCached.orFalse()
+        return viewModel.pdpLayout?.cacheState?.hasCached.orFalse()
     }
 
-    private fun preparePageCacheableError(errorModel: PageErrorDataModel, error: Throwable) {
+    private fun preparePageCacheableError(errorModel: PageErrorDataModel) {
         val errorCode = errorModel.errorCode.toIntOrNull() ?: run {
             preparePageError(errorModel)
             return
@@ -2984,14 +2984,15 @@ open class DynamicProductDetailFragment :
         val shouldShowToasterError = !errorModel.shouldShowTobacoError && connectionError
 
         if (shouldShowToasterError) {
-            showToasterPageError()
+            showToasterPageError(errorModel)
         } else {
             preparePageError(errorModel)
         }
     }
 
-    private fun showToasterPageError() {
+    private fun showToasterPageError(errorModel: PageErrorDataModel) {
         val view = binding?.root ?: return
+        val pdpLayout = viewModel.pdpLayout
         binding?.swipeRefreshPdp?.isRefreshing = false
 
         Toaster.build(
@@ -3003,6 +3004,14 @@ open class DynamicProductDetailFragment :
         ) {
             onSwipeRefresh()
         }.show()
+
+        ProductDetailServerLogger.logBreadCrumbSuccessGetDataP1(
+            isSuccess = false,
+            errorMessage = errorModel.errorMessage,
+            errorCode = errorModel.errorCode,
+            cacheState = pdpLayout?.cacheState,
+            isCampaign = pdpLayout?.isCampaign.orFalse()
+        )
     }
 
     private fun observeP2Login() {
@@ -3439,7 +3448,7 @@ open class DynamicProductDetailFragment :
     }
 
     private fun submitInitialList() {
-        if (isCacheable()) {
+        if (isRemoteCacheableActive()) {
             // when cache first then cloud is true, we want to keep refresh layout to UI
             // prevent interaction loading state for several component
             val submitInitialList = viewModel.pdpLayout?.cacheState?.cacheFirstThenCloud == false
@@ -3705,7 +3714,8 @@ open class DynamicProductDetailFragment :
         return viewModel.impressionHolders
     }
 
-    override fun isCacheable(): Boolean = viewModel.isCacheable()
+    override fun isRemoteCacheableActive(): Boolean = viewModel.pdpLayout
+        ?.cacheState?.remoteCacheableActive.orFalse()
 
     private fun goToAtcVariant(customCartRedirection: Map<String, CartTypeData>? = null) {
         SingleClick.doSomethingBeforeTime(interval = DEBOUNCE_CLICK) {

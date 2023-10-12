@@ -110,7 +110,7 @@ class TopAdsHeadlineViewHolder(
                 holder = it,
                 holders = listener.getImpressionHolders(),
                 name = cpmModel.data.hashCode().toString(),
-                useHolders = listener.isCacheable()
+                useHolders = listener.isRemoteCacheableActive()
             ) {
                 topadsHeadlineUiModel?.let { element ->
                     listener.onImpressComponent(getComponentTrackData(element))
@@ -131,5 +131,4 @@ class TopAdsHeadlineViewHolder(
     private fun getComponentTrackData(
         element: TopadsHeadlineUiModel
     ) = ComponentTrackDataModel(element.type, element.name, adapterPosition + 1)
-
 }

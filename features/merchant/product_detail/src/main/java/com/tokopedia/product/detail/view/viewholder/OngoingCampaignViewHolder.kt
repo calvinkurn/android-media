@@ -42,7 +42,7 @@ class OngoingCampaignViewHolder(
             holder = element.impressHolder,
             holders = listener.getImpressionHolders(),
             name = element.data?.hashCode().toString(),
-            useHolders = listener.isCacheable()
+            useHolders = listener.isRemoteCacheableActive()
         ) {
             listener.onImpressComponent(getComponentTrackData(element))
         }

@@ -64,7 +64,7 @@ class ProductMiniSocialProofViewHolder(
             holder = element.impressHolder,
             holders = listener.getImpressionHolders(),
             name = element.name,
-            useHolders = listener.isCacheable()
+            useHolders = listener.isRemoteCacheableActive()
         ) {
             listener.onImpressComponent(getComponentTrackData(element))
         }

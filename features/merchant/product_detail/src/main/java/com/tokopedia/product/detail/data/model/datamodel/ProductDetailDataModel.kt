@@ -12,6 +12,7 @@ data class ProductDetailDataModel(
 )
 
 data class CacheState(
+    val remoteCacheableActive: Boolean = false,
     // data source state, true = from cache, false = from cloud
     val isFromCache: Boolean = false,
 
@@ -20,5 +21,5 @@ data class CacheState(
 ) {
 
     val hasCached
-        get() = isFromCache || cacheFirstThenCloud
+        get() = remoteCacheableActive && (isFromCache || cacheFirstThenCloud)
 }

@@ -125,7 +125,7 @@ class ItemProductDetailInfoViewHolder(
                 holder = data.impressionHolder,
                 holders = listener.getImpressionHolders(),
                 name = data.hashCode().toString(),
-                useHolders = listener.isCacheable()
+                useHolders = listener.isRemoteCacheableActive()
             ) {
                 listener.onAnnotationGenericImpression(
                     trackData = annotationTrackData.copy(

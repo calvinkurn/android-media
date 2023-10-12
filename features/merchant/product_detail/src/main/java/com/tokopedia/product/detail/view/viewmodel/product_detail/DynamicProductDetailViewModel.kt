@@ -123,7 +123,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
@@ -535,12 +534,13 @@ class DynamicProductDetailViewModel @Inject constructor(
                 layoutId = layoutId,
                 extParam = extParam,
                 refreshPage = refreshPage
-            ).catch {
-                _productLayout.value = it.asFail()
-            }.collectLatest {
-                processPdpLayout(pdpLayout = it)
-                getProductP2(urlQuery)
-            }
+            )
+                .catch {
+                    _productLayout.value = it.asFail()
+                }.collect {
+                    processPdpLayout(pdpLayout = it)
+                    getProductP2(urlQuery)
+                }
         }.onFailure {
             _productLayout.value = it.asFail()
         }
@@ -1347,6 +1347,4 @@ class DynamicProductDetailViewModel @Inject constructor(
     }
 
     fun isAPlusContentExpanded() = aPlusContentExpanded
-
-    fun isCacheable() = getPdpLayoutUseCase.get().shouldCacheable
 }

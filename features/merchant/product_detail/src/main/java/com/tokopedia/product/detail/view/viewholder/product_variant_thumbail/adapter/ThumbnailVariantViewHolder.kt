@@ -85,7 +85,7 @@ class ThumbnailVariantViewHolder(
             holder = element.impressHolder,
             holders = pdpListener.getImpressionHolders(),
             name = element.variantId,
-            useHolders = pdpListener.isCacheable()
+            useHolders = pdpListener.isRemoteCacheableActive()
         ) {
             pdpListener.onThumbnailVariantImpress(
                 data = element,

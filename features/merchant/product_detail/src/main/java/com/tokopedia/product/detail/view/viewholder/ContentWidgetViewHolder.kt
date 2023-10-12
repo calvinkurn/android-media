@@ -1,7 +1,6 @@
 package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
-import android.view.ViewGroup
 import com.tokopedia.play.widget.PlayWidgetViewHolder
 import com.tokopedia.play.widget.analytic.global.model.PlayWidgetPDPAnalyticModel
 import com.tokopedia.product.detail.R
@@ -28,7 +27,7 @@ class ContentWidgetViewHolder(
             holder = element.impressHolder,
             holders = listener.getImpressionHolders(),
             name = element.name,
-            useHolders = listener.isCacheable()
+            useHolders = listener.isRemoteCacheableActive()
         ) {
             listener.onImpressComponent(getComponentTrackData(element))
         }

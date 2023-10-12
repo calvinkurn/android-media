@@ -56,7 +56,7 @@ class SocialProofChipViewHolder(
             holder = uiModel.impressHolder,
             holders = listener.getImpressionHolders(),
             name = uiModel.hashCode().toString(),
-            useHolders = listener.isCacheable()
+            useHolders = listener.isRemoteCacheableActive()
         ) {
             listener.onSocialProofItemImpression(socialProof = uiModel)
         }
