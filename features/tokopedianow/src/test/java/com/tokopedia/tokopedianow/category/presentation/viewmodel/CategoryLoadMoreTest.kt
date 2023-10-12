@@ -8,11 +8,11 @@ import com.tokopedia.tokopedianow.category.domain.mapper.CategoryNavigationMappe
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryRecommendationMapper.mapToCategoryRecommendation
 import com.tokopedia.tokopedianow.category.domain.mapper.ProductRecommendationMapper
 import com.tokopedia.tokopedianow.common.domain.mapper.TickerMapper
-import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
+import com.tokopedia.tokopedianow.util.TestUtils.mockSuperClassField
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import org.junit.Test
 
-class CategoryLoadMoreTest: TokoNowCategoryMainViewModelTestFixture() {
+class CategoryLoadMoreTest : TokoNowCategoryViewModelTestFixture() {
 
     @Test
     fun `loadMore should load more showcases and not prevent user to scroll more`() {
@@ -32,19 +32,10 @@ class CategoryLoadMoreTest: TokoNowCategoryMainViewModelTestFixture() {
         )
         onCategoryDetail_thenReturns()
         onTargetedTicker_thenReturns()
-        onCategoryProduct_thenReturns(
-            uniqueId = getUniqueId(
-                isLoggedIn = isLoggedIn,
-                userId = userId,
-                deviceId = deviceId
-            )
-        )
+        onCategoryProduct_thenReturns()
 
-        viewModel.onViewCreated(
-            navToolbarHeight = navToolbarHeight
-        )
-        viewModel.getFirstPage()
-        viewModel.loadMore(true)
+        viewModel.onViewCreated()
+        viewModel.onScroll(true)
 
         // map header space
         val headerSpaceUiModel = categoryDetailResponse
@@ -54,17 +45,15 @@ class CategoryLoadMoreTest: TokoNowCategoryMainViewModelTestFixture() {
 
         // map choose address
         val chooseAddressUiModel = categoryDetailResponse
-            .mapToChooseAddress()
+            .mapToChooseAddress(addressData)
 
         // map ticker
         val tickerDataList = TickerMapper.mapTickerData(
-            tickerList = targetedTickerResponse
+            targetedTickerResponse
         )
         val tickerUiModel = categoryDetailResponse
-            .mapToTicker(
-                tickerData = tickerDataList
-            )
-        val hasBlockedAddToCart = tickerDataList.first
+            .mapToTicker(tickerDataList.tickerList)
+        val hasBlockedAddToCart = tickerDataList.blockAddToCart
 
         // map title
         val titleUiModel = categoryDetailResponse
@@ -110,7 +99,7 @@ class CategoryLoadMoreTest: TokoNowCategoryMainViewModelTestFixture() {
         verifyTargetedTicker()
         viewModel.scrollNotNeeded
             .verifyValueEquals(null)
-        viewModel.categoryPage
+        viewModel.visitableListLiveData
             .verifyValueEquals(resultList)
     }
 
@@ -132,20 +121,11 @@ class CategoryLoadMoreTest: TokoNowCategoryMainViewModelTestFixture() {
         )
         onCategoryDetail_thenReturns()
         onTargetedTicker_thenReturns()
-        onCategoryProduct_thenReturns(
-            uniqueId = getUniqueId(
-                isLoggedIn = isLoggedIn,
-                userId = userId,
-                deviceId = deviceId
-            )
-        )
+        onCategoryProduct_thenReturns()
 
-        viewModel.onViewCreated(
-            navToolbarHeight = navToolbarHeight
-        )
-        viewModel.getFirstPage()
-        viewModel.loadMore(true)
-        viewModel.loadMore(true)
+        viewModel.onViewCreated()
+        viewModel.onScroll(true)
+        viewModel.onScroll(true)
 
         // map header space
         val headerSpaceUiModel = categoryDetailResponse
@@ -155,17 +135,15 @@ class CategoryLoadMoreTest: TokoNowCategoryMainViewModelTestFixture() {
 
         // map choose address
         val chooseAddressUiModel = categoryDetailResponse
-            .mapToChooseAddress()
+            .mapToChooseAddress(addressData)
 
         // map ticker
         val tickerDataList = TickerMapper.mapTickerData(
-            tickerList = targetedTickerResponse
+            targetedTickerResponse
         )
         val tickerUiModel = categoryDetailResponse
-            .mapToTicker(
-                tickerData = tickerDataList
-            )
-        val hasBlockedAddToCart = tickerDataList.first
+            .mapToTicker(tickerDataList.tickerList)
+        val hasBlockedAddToCart = tickerDataList.blockAddToCart
 
         // map title
         val titleUiModel = categoryDetailResponse
@@ -182,7 +160,7 @@ class CategoryLoadMoreTest: TokoNowCategoryMainViewModelTestFixture() {
 
         // map category recommendation
         val categoryRecommendationUiModel = categoryDetailResponse
-            .mapToCategoryRecommendation()
+            .mapToCategoryRecommendation(source = "tokonow_category_l1")
 
         val resultList = mutableListOf(
             headerSpaceUiModel,
@@ -190,7 +168,7 @@ class CategoryLoadMoreTest: TokoNowCategoryMainViewModelTestFixture() {
             tickerUiModel,
             titleUiModel,
             categoryNavigationUiModel,
-            productRecommendationUiModel,
+            productRecommendationUiModel
         )
 
         val categoryNavigationList = categoryNavigationUiModel.categoryListUiModel.toMutableList()
@@ -226,14 +204,13 @@ class CategoryLoadMoreTest: TokoNowCategoryMainViewModelTestFixture() {
         verifyTargetedTicker()
         viewModel.scrollNotNeeded
             .verifyValueEquals(Unit)
-        viewModel.categoryPage
+        viewModel.visitableListLiveData
             .verifyValueEquals(resultList)
     }
 
-
     @Test
     fun `loadMore with not being at the bottom of the page should do nothing`() {
-        viewModel.loadMore(false)
+        viewModel.onScroll(false)
 
         viewModel.scrollNotNeeded
             .verifyValueEquals(null)
@@ -241,7 +218,7 @@ class CategoryLoadMoreTest: TokoNowCategoryMainViewModelTestFixture() {
 
     @Test
     fun `loadMore with being at the bottom of the page and categoryL2 model is empty should prevent user to scroll more`() {
-        viewModel.loadMore(true)
+        viewModel.onScroll(true)
 
         viewModel.scrollNotNeeded
             .verifyValueEquals(Unit)
@@ -249,16 +226,16 @@ class CategoryLoadMoreTest: TokoNowCategoryMainViewModelTestFixture() {
 
     @Test
     fun `modify layout while its value is null should make loadMore error and do nothing`() {
-        val privateFieldNameLayout = "layout"
+        val privateFieldNameLayout = "visitableList"
 
-        viewModel.mockPrivateField(
+        viewModel.mockSuperClassField(
             name = privateFieldNameLayout,
             value = null
         )
 
-        viewModel.loadMore(true)
+        viewModel.onScroll(true)
 
-        viewModel.categoryPage
+        viewModel.visitableListLiveData
             .verifyValueEquals(null)
     }
 }

@@ -11,12 +11,14 @@ import com.tokopedia.feedplus.presentation.model.CreateContentType
 import com.tokopedia.feedplus.presentation.model.CreatorType
 import com.tokopedia.feedplus.presentation.model.FeedMainEvent
 import com.tokopedia.feedplus.presentation.onboarding.OnBoardingPreferences
+import com.tokopedia.feedplus.presentation.util.FeedContentManager
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
+import junit.framework.TestCase.fail
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestScope
@@ -117,6 +119,24 @@ class FeedMainViewModelTest {
 
         // then
         assert(viewModel.isPageResumed.value == false)
+    }
+
+    @Test
+    fun onMuteSound_shouldChangeIsMutedToTrue() {
+        // when
+        viewModel.muteSound()
+
+        // then
+        assert(FeedContentManager.muteState.value == true)
+    }
+
+    @Test
+    fun onUnmuteSound_shouldChangeIsMutedToFalse() {
+        // when
+        viewModel.unmuteSound()
+
+        // then
+        assert(FeedContentManager.muteState.value == false)
     }
 
     @Test
@@ -294,9 +314,7 @@ class FeedMainViewModelTest {
 
     @Test
     fun onReadyToShowOnBoarding() {
-        val isLoaded = true
-
-        viewModel.onPostDataLoaded(isLoaded)
+        viewModel.setDataEligibleForOnboarding(true)
         coVerify(exactly = 0) { uiEventManager.emitEvent(FeedMainEvent.ShowSwipeOnboarding) }
 
         viewModel.setReadyToShowOnboarding()
@@ -314,16 +332,16 @@ class FeedMainViewModelTest {
 
         coEvery { uiEventManager.emitEvent(any()) } coAnswers {}
 
-        val expectedValue = mockValue.tab.data[0]
-
         viewModel.setActiveTab(0)
-        coVerify(exactly = 1) {
-            uiEventManager.emitEvent(
-                FeedMainEvent.SelectTab(
-                    expectedValue,
-                    0
-                )
-            )
+
+        val feedTabs = viewModel.feedTabs.value
+        if (feedTabs is NetworkResult.Success) {
+            assert(feedTabs.data.data[0].isSelected)
+            assert(!feedTabs.data.data[1].isSelected)
+
+            assert(viewModel.selectedTab?.type == feedTabs.data.data[0].type)
+        } else {
+            fail("Feed tabs should be NetworkResult.Success")
         }
     }
 
@@ -338,16 +356,15 @@ class FeedMainViewModelTest {
 
         coEvery { uiEventManager.emitEvent(any()) } coAnswers {}
 
-        val expectedValue = mockValue.tab.data[1]
-
         viewModel.setActiveTab(1)
-        coVerify(exactly = 1) {
-            uiEventManager.emitEvent(
-                FeedMainEvent.SelectTab(
-                    expectedValue,
-                    1
-                )
-            )
+
+        val feedTabs = viewModel.feedTabs.value
+        if (feedTabs is NetworkResult.Success) {
+            assert(!feedTabs.data.data[0].isSelected)
+            assert(feedTabs.data.data[1].isSelected)
+            assert(viewModel.selectedTab?.type == feedTabs.data.data[1].type)
+        } else {
+            fail("Feed tabs should be NetworkResult.Success")
         }
     }
 
@@ -363,7 +380,15 @@ class FeedMainViewModelTest {
         coEvery { uiEventManager.emitEvent(any()) } coAnswers {}
 
         viewModel.setActiveTab(2)
-        coVerify(exactly = 0) { uiEventManager.emitEvent(any()) }
+
+        val feedTabs = viewModel.feedTabs.value
+        if (feedTabs is NetworkResult.Success) {
+            assert(!feedTabs.data.data[0].isSelected)
+            assert(!feedTabs.data.data[1].isSelected)
+            assert(viewModel.selectedTab == null)
+        } else {
+            fail("Feed tabs should be NetworkResult.Success")
+        }
     }
 
     @Test
@@ -380,13 +405,15 @@ class FeedMainViewModelTest {
         val expectedValue = mockValue.tab.data[0]
 
         viewModel.setActiveTab(expectedValue.type)
-        coVerify(exactly = 1) {
-            uiEventManager.emitEvent(
-                FeedMainEvent.SelectTab(
-                    expectedValue,
-                    0
-                )
-            )
+
+        val feedTabs = viewModel.feedTabs.value
+        if (feedTabs is NetworkResult.Success) {
+            assert(feedTabs.data.data[0].isSelected)
+            assert(!feedTabs.data.data[1].isSelected)
+
+            assert(viewModel.selectedTab?.type == feedTabs.data.data[0].type)
+        } else {
+            fail("Feed tabs should be NetworkResult.Success")
         }
     }
 
@@ -404,13 +431,15 @@ class FeedMainViewModelTest {
         val expectedValue = mockValue.tab.data[1]
 
         viewModel.setActiveTab(expectedValue.type)
-        coVerify(exactly = 1) {
-            uiEventManager.emitEvent(
-                FeedMainEvent.SelectTab(
-                    expectedValue,
-                    1
-                )
-            )
+
+        val feedTabs = viewModel.feedTabs.value
+        if (feedTabs is NetworkResult.Success) {
+            assert(!feedTabs.data.data[0].isSelected)
+            assert(feedTabs.data.data[1].isSelected)
+
+            assert(viewModel.selectedTab?.type == feedTabs.data.data[1].type)
+        } else {
+            fail("Feed tabs should be NetworkResult.Success")
         }
     }
 
@@ -426,7 +455,14 @@ class FeedMainViewModelTest {
         coEvery { uiEventManager.emitEvent(any()) } coAnswers {}
 
         viewModel.setActiveTab("unknown")
-        coVerify(exactly = 0) { uiEventManager.emitEvent(any()) }
+        val feedTabs = viewModel.feedTabs.value
+        if (feedTabs is NetworkResult.Success) {
+            assert(!feedTabs.data.data[0].isSelected)
+            assert(!feedTabs.data.data[1].isSelected)
+            assert(viewModel.selectedTab == null)
+        } else {
+            fail("Feed tabs should be NetworkResult.Success")
+        }
     }
 
     @Test

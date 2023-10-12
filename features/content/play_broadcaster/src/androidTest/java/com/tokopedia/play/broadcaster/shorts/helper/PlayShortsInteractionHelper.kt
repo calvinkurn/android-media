@@ -5,10 +5,11 @@ import com.tokopedia.content.test.espresso.delay
 import com.tokopedia.content.test.util.click
 import com.tokopedia.content.test.util.clickItemRecyclerView
 import com.tokopedia.content.test.util.type
+import com.tokopedia.content.product.picker.R as contentproductpickerR
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.content.common.R as contentCommonR
+import com.tokopedia.content.common.R as contentcommonR
 import com.tokopedia.dialog.R as dialogR
-import com.tokopedia.unifycomponents.R as unifyR
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 /**
  * Created By : Jonathan Darwin on December 12, 2022
@@ -16,11 +17,11 @@ import com.tokopedia.unifycomponents.R as unifyR
 
 /** General */
 fun clickCloseBottomSheet() {
-    click(unifyR.id.bottom_sheet_close)
+    click(unifycomponentsR.id.bottom_sheet_close)
 }
 
 fun clickClosePreparationPage() {
-    click(contentCommonR.id.img_com_toolbar_nav_icon)
+    click(contentcommonR.id.img_com_toolbar_nav_icon)
 }
 
 fun clickContinueOnLeaveConfirmationPopup() {
@@ -47,15 +48,15 @@ fun clickContinueOnPreparationPage() {
 
 /** Switch Account */
 fun clickToolbar() {
-    click(contentCommonR.id.text_com_toolbar_subtitle)
+    click(contentcommonR.id.text_com_toolbar_subtitle)
 }
 
 fun clickShopAccount() {
-    clickItemRecyclerView(contentCommonR.id.rv_feed_account, 0)
+    clickItemRecyclerView(contentcommonR.id.rv_feed_account, 0)
 }
 
 fun clickUserAccount() {
-    clickItemRecyclerView(contentCommonR.id.rv_feed_account, 1)
+    clickItemRecyclerView(contentcommonR.id.rv_feed_account, 1)
 }
 
 fun clickCancelSwitchAccount() {
@@ -64,20 +65,20 @@ fun clickCancelSwitchAccount() {
 
 /** Ugc Onboarding */
 fun clickTextFieldUsername() {
-    click(unifyR.id.text_field_input)
+    click(unifycomponentsR.id.text_field_input)
 }
 
 fun inputUsername(username: String = "pokemon") {
-    type(unifyR.id.text_field_input, username)
+    type(unifycomponentsR.id.text_field_input, username)
 }
 
 fun clickAcceptTnc() {
     Espresso.closeSoftKeyboard()
-    click(contentCommonR.id.cbx_tnc)
+    click(contentcommonR.id.cbx_tnc)
 }
 
 fun clickSubmitUgcOnboarding() {
-    click(contentCommonR.id.btn_continue)
+    click(contentcommonR.id.btn_continue)
 }
 
 /** Menu */
@@ -95,11 +96,11 @@ fun clickMenuCover() {
 
 /** Title Form */
 fun inputTitle(text: String = "pokemon") {
-    type(unifyR.id.text_field_input, text)
+    type(unifycomponentsR.id.text_field_input, text)
 }
 
 fun clearTitle() {
-    click(unifyR.id.text_field_icon_close)
+    click(unifycomponentsR.id.text_field_icon_close)
 }
 
 fun submitTitle() {
@@ -108,13 +109,13 @@ fun submitTitle() {
 }
 
 fun clickBackTitleForm() {
-    click(unifyR.id.bottom_sheet_close)
+    click(unifycomponentsR.id.bottom_sheet_close)
 }
 
 /** Cover Form */
 fun clickBackCoverForm() {
     delay()
-    click(unifyR.id.bottom_sheet_close)
+    click(unifycomponentsR.id.bottom_sheet_close)
 }
 
 fun clickSelectCover() {
@@ -125,66 +126,66 @@ fun clickSelectCover() {
 /** Product Picker SGC */
 fun selectProduct(idx: Int = 0) {
     delay()
-    clickItemRecyclerView(R.id.rv_products, idx)
+    clickItemRecyclerView(contentproductpickerR.id.rv_products, idx)
 }
 
 fun clickSubmitProductTag() {
     Espresso.closeSoftKeyboard()
-    click(R.id.btn_next)
+    click(contentproductpickerR.id.btn_next)
 }
 
 fun clickCloseProductSummaryBottomSheet() {
-    click(unifyR.id.bottom_sheet_close)
+    click(unifycomponentsR.id.bottom_sheet_close)
 }
 
 fun clickSearchBarProductPickerSGC() {
-    click(R.id.search_bar)
+    click(contentproductpickerR.id.search_bar)
 }
 
 fun clickSortChip() {
-    click(R.id.chips_sort)
+    click(contentproductpickerR.id.chips_sort)
 }
 
 fun clickEtalaseAndCampaignChip() {
-    click(R.id.chips_etalase)
+    click(contentproductpickerR.id.chips_etalase)
 }
 
 fun selectSortType() {
-    clickItemRecyclerView(R.id.rv_sort, 1)
+    clickItemRecyclerView(contentproductpickerR.id.rv_sort, 1)
 }
 
 fun clickSaveSort() {
-    click(unifyR.id.bottom_sheet_action)
+    click(unifycomponentsR.id.bottom_sheet_action)
 }
 
 fun selectEtalaseOrCampaign(idx: Int) {
-    clickItemRecyclerView(R.id.rv_etalase, idx)
+    clickItemRecyclerView(contentproductpickerR.id.rv_etalase, idx)
 }
 
 fun clickAddMoreProduct() {
-    click(unifyR.id.bottom_sheet_action)
+    click(unifycomponentsR.id.bottom_sheet_action)
 }
 
 fun clickDeleteOnFirstProduct() {
-    clickItemRecyclerView(R.id.rv_product_summaries, 1, R.id.ic_product_summary_delete)
+    clickItemRecyclerView(contentproductpickerR.id.rv_product_summaries, 1, contentproductpickerR.id.ic_product_summary_delete)
 }
 
 fun clickNextOnProductPickerSummary() {
-    click(R.id.btn_done)
+    click(contentproductpickerR.id.btn_done)
 }
 
 
 /** Product Picker UGC */
 fun clickBreadcrumb() {
-    click(contentCommonR.id.tv_cc_product_tag_product_source)
+    click(contentcommonR.id.tv_cc_product_tag_product_source)
 }
 
 fun clickCloseBreadcrumb() {
-    click(unifyR.id.bottom_sheet_close)
+    click(unifycomponentsR.id.bottom_sheet_close)
 }
 
 fun clickProductTagSourceTokopedia() {
-    click(contentCommonR.id.cl_global_search)
+    click(contentcommonR.id.cl_global_search)
 }
 
 /** Summary page */
@@ -201,5 +202,5 @@ fun clickUploadVideo() {
 }
 
 fun clickRefreshContentTag() {
-    click(unifyR.id.refreshID)
+    click(unifycomponentsR.id.refreshID)
 }

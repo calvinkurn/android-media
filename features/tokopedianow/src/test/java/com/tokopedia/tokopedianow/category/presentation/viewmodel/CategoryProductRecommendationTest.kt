@@ -6,11 +6,11 @@ import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.ma
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.mapToTicker
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryNavigationMapper.mapToCategoryNavigation
 import com.tokopedia.tokopedianow.common.domain.mapper.TickerMapper
-import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
+import com.tokopedia.tokopedianow.util.TestUtils.mockSuperClassField
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import org.junit.Test
 
-class CategoryProductRecommendationTest: TokoNowCategoryMainViewModelTestFixture() {
+class CategoryProductRecommendationTest : TokoNowCategoryViewModelTestFixture() {
     @Test
     fun `after getFirstPage, call removeProductRecommendation to remove the recommendation in the layout`() {
         val isLoggedIn = true
@@ -29,18 +29,9 @@ class CategoryProductRecommendationTest: TokoNowCategoryMainViewModelTestFixture
         )
         onCategoryDetail_thenReturns()
         onTargetedTicker_thenReturns()
-        onCategoryProduct_thenReturns(
-            uniqueId = getUniqueId(
-                isLoggedIn = isLoggedIn,
-                userId = userId,
-                deviceId = deviceId
-            )
-        )
+        onCategoryProduct_thenReturns()
 
-        viewModel.onViewCreated(
-            navToolbarHeight = navToolbarHeight
-        )
-        viewModel.getFirstPage()
+        viewModel.onViewCreated()
 
         // map header space
         val headerSpaceUiModel = categoryDetailResponse
@@ -50,17 +41,15 @@ class CategoryProductRecommendationTest: TokoNowCategoryMainViewModelTestFixture
 
         // map choose address
         val chooseAddressUiModel = categoryDetailResponse
-            .mapToChooseAddress()
+            .mapToChooseAddress(addressData)
 
         // map ticker
         val tickerDataList = TickerMapper.mapTickerData(
-            tickerList = targetedTickerResponse
+            targetedTickerResponse
         )
         val tickerUiModel = categoryDetailResponse
-            .mapToTicker(
-                tickerData = tickerDataList
-            )
-        val hasBlockedAddToCart = tickerDataList.first
+            .mapToTicker(tickerDataList.tickerList)
+        val hasBlockedAddToCart = tickerDataList.blockAddToCart
 
         // map title
         val titleUiModel = categoryDetailResponse
@@ -75,7 +64,7 @@ class CategoryProductRecommendationTest: TokoNowCategoryMainViewModelTestFixture
             chooseAddressUiModel,
             tickerUiModel,
             titleUiModel,
-            categoryNavigationUiModel,
+            categoryNavigationUiModel
         )
 
         val categoryNavigationList = categoryNavigationUiModel.categoryListUiModel.toMutableList()
@@ -90,22 +79,22 @@ class CategoryProductRecommendationTest: TokoNowCategoryMainViewModelTestFixture
 
         verifyCategoryDetail()
         verifyTargetedTicker()
-        viewModel.categoryPage
+        viewModel.visitableListLiveData
             .verifyValueEquals(resultList)
     }
 
     @Test
-    fun `modify layout while its value is null should make removeProductRecommendation error and do nothing`()  {
-        val privateFieldNameLayout = "layout"
+    fun `modify layout while its value is null should make removeProductRecommendation error and do nothing`() {
+        val privateFieldNameLayout = "visitableList"
 
-        viewModel.mockPrivateField(
+        viewModel.mockSuperClassField(
             name = privateFieldNameLayout,
             value = null
         )
 
         viewModel.removeProductRecommendation()
 
-        viewModel.categoryPage
+        viewModel.visitableListLiveData
             .verifyValueEquals(null)
     }
 }

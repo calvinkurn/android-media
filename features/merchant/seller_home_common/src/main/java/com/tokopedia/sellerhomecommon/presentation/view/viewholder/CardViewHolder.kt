@@ -76,6 +76,7 @@ class CardViewHolder(
                     showShimmer(false)
                     showViewComponent(element, true)
                     setupTag(element)
+                    listener.setCoachMarkView(element.dataKey, binding.root)
                 } else {
                     listener.removeWidget(absoluteAdapterPosition, element)
                 }
@@ -290,5 +291,7 @@ class CardViewHolder(
         fun sendCardImpressionEvent(model: CardWidgetUiModel) {}
 
         fun sendCardClickTracking(model: CardWidgetUiModel) {}
+
+        fun setCoachMarkView(dataKey: String, view: View) {}
     }
 }
