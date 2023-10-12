@@ -3,12 +3,14 @@ package com.tokopedia.stories.view.viewmodel.state
 import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.stories.view.model.StoriesCampaignUiModel
+import com.tokopedia.stories.view.model.StoriesDetailItem
 import com.tokopedia.stories.view.model.StoriesUiModel
 
 data class StoriesUiState(
     val storiesMainData: StoriesUiModel,
     val bottomSheetStatus: Map<BottomSheetType, Boolean>,
     val productSheet: ProductBottomSheetUiState,
+    val timerStatus: TimerStatusInfo,
 ) {
     companion object {
         val Empty
@@ -16,6 +18,7 @@ data class StoriesUiState(
                 storiesMainData = StoriesUiModel(),
                 bottomSheetStatus = BottomSheetStatusDefault,
                 productSheet = ProductBottomSheetUiState.Empty,
+                timerStatus = TimerStatusInfo.Empty,
             )
     }
 }
@@ -48,3 +51,14 @@ val BottomSheetStatusDefault: Map<BottomSheetType, Boolean>
         BottomSheetType.Kebab to false,
         BottomSheetType.GVBS to false,
     )
+
+data class TimerStatusInfo(val event: StoriesDetailItem.StoriesDetailItemUiEvent, val story: StoryTimer) {
+    companion object {
+        data class StoryTimer(val id: String, val itemCount: Int, val resetValue: Int, val duration: Int, val position: Int) {
+            companion object {
+                val Empty get() = StoryTimer(id = "", itemCount = 0, resetValue = -1, duration = 0, position = -1)
+            }
+        }
+        val Empty get() = TimerStatusInfo(StoriesDetailItem.StoriesDetailItemUiEvent.PAUSE, StoryTimer.Empty)
+    }
+}
