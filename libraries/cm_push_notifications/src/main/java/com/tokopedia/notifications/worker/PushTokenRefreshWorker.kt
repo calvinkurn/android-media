@@ -13,11 +13,11 @@ class PushTokenRefreshWorker(appContext: Context, workerParams: WorkerParameters
     private val TAG = "DeleteFcmTokenWorker"
 
     override suspend fun doWork(): Result {
-        Log.d(TAG, "Worker started")
+        Log.d(TAG, "Push Deletion Worker started")
         FirebaseMessaging.getInstance().deleteToken()
             .addOnCompleteListener { p0 ->
-                Log.d(TAG, "Task success: " + p0.isSuccessful)
-                Log.d(TAG, "Token deleted")
+                Log.d(TAG, "Push Deletion Task success: " + p0.isSuccessful)
+                Log.d(TAG, "Push Deletion Token deleted")
                 retrieveNewToken()
             }
         return Result.success()
@@ -26,7 +26,7 @@ class PushTokenRefreshWorker(appContext: Context, workerParams: WorkerParameters
     private fun retrieveNewToken() {
         try {
             FirebaseMessaging.getInstance().token.addOnCompleteListener { p0 ->
-                Log.d(TAG, "Task success: " + p0.isSuccessful)
+                Log.d(TAG, "Push Deletion Task success: " + p0.isSuccessful)
                 SyncFcmTokenService.startService(applicationContext)
             }
         } catch (exception: Exception) {

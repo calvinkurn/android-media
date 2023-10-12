@@ -23,6 +23,8 @@ import com.tokopedia.notifications.inApp.CMInAppManager
 import com.tokopedia.notifications.payloadProcessor.InAppPayloadPreprocessorUseCase
 import com.tokopedia.notifications.payloadProcessor.NotificationPayloadPreProcessorUseCase
 import com.tokopedia.notifications.push.PushController
+import com.tokopedia.notifications.utils.PushAmplificationRefreshUtil
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.CoroutineScope
@@ -78,6 +80,9 @@ class CMPushNotificationManager : CoroutineScope {
             false
         )
 
+    private val ENABLE_PUSH_AMPLIFICATION_WORKER_KEY = "android_enable_push_amplification"
+    private val PUSH_AMPLIFICATION_WORKER_TIME_KEY = "android_push_amplification_worker_time"
+
     /**
      * initialization of push notification library
      * Push Worker is initialisation & scheduled periodic
@@ -118,6 +123,13 @@ class CMPushNotificationManager : CoroutineScope {
         if (getAmplificationRemoteConfig()) {
             try {
                 AmplificationDataSource.invoke(application)
+                if(RemoteConfigInstance.getInstance().abTestPlatform.getBoolean(ENABLE_PUSH_AMPLIFICATION_WORKER_KEY,
+                        false)){
+                    var pushAmplificationRefreshUtil = PushAmplificationRefreshUtil()
+                    PushAmplificationRefreshUtil.application = application
+                    pushAmplificationRefreshUtil.scheduleWorker(applicationContext,
+                        cmRemoteConfigUtils.getLongRemoteConfig(PUSH_AMPLIFICATION_WORKER_TIME_KEY, 24))
+                }
             } catch (e: java.lang.Exception) {
                 val messageMap: MutableMap<String, String> = HashMap()
                 messageMap["type"] = "exception"
