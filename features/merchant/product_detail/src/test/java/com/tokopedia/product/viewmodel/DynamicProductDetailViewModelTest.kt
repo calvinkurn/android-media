@@ -1368,7 +1368,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     ) {
         coEvery {
             getPdpLayoutUseCase.executeOnBackground()
-        } returns flowOf(dataP1)
+        } returns flowOf(Result.success(dataP1))
 
         coEvery {
             getProductInfoP2LoginUseCase.executeOnBackground()
