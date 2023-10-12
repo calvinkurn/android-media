@@ -470,8 +470,7 @@ private fun renderStockLabel(textViewStockLabel: Typography?, productCardModel: 
         it.text = productCardModel.stockBarLabel
 
         val color = getStockLabelColor(productCardModel, it)
-        val textColor: Int = color xor 0x00ffffff
-        it.setTextColor(textColor)
+        it.setTextColor(color)
     }
 }
 
