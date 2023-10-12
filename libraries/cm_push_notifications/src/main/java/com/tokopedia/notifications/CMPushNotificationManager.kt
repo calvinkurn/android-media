@@ -80,7 +80,7 @@ class CMPushNotificationManager : CoroutineScope {
             false
         )
 
-    private val ENABLE_PUSH_AMPLIFICATION_WORKER_KEY = "android_enable_push_amplification"
+    private val ENABLE_PUSH_AMPLIFICATION_WORKER_KEY = "android_enable_push_amplification_rollence"
     private val PUSH_AMPLIFICATION_WORKER_TIME_KEY = "android_push_amplification_worker_time"
 
     /**
