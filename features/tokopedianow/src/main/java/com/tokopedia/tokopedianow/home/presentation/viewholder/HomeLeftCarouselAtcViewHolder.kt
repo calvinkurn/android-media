@@ -178,21 +178,19 @@ class HomeLeftCarouselAtcViewHolder(
         element: HomeLeftCarouselAtcUiModel
     ) {
         if(element.realTimeRecom.widgetState != RealTimeRecomWidgetState.IDLE) {
-            binding?.apply {
-                if(realtimeRecommendationView == null) {
-                    val view = realTimeRecommendationViewStub
-                        .inflateView(R.layout.layout_tokopedianow_rtr_carousel_view)
-                    realtimeRecommendationView = view as? RealTimeRecommendationCarouselView
-                }
-
-                realtimeRecommendationView?.apply {
-                    listener = rtrListener
-                    analytics = rtrAnalytics
-                    bind(element.realTimeRecom)
-                }
-
-                realtimeRecommendationView?.show()
+            if(realtimeRecommendationView == null) {
+                val view = realTimeRecommendationViewStub
+                    .inflateView(R.layout.layout_tokopedianow_rtr_carousel_view)
+                realtimeRecommendationView = view as? RealTimeRecommendationCarouselView
             }
+
+            realtimeRecommendationView?.apply {
+                listener = rtrListener
+                analytics = rtrAnalytics
+                bind(element.realTimeRecom)
+            }
+
+            realtimeRecommendationView?.show()
         } else {
             realtimeRecommendationView?.hide()
         }
