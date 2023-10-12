@@ -105,7 +105,7 @@ class HomeHeaderAtf2ViewHolder(
         }
         balanceWidgetView?.gone()
         loginWidgetView?.visible()
-        loginWidgetView?.bind(listener)
+        loginWidgetView?.bind(listener, homeThematicUtil)
     }
 
     override fun bind(element: HomeHeaderDataModel, payloads: MutableList<Any>) {
@@ -114,6 +114,7 @@ class HomeHeaderAtf2ViewHolder(
                 chooseAddressView?.updateWidget()
                 balanceWidgetView?.applyThematicColor()
                 viewPullRefresh?.applyThematicColor(homeThematicUtil.isDarkMode())
+                loginWidgetView?.renderTextColor(homeThematicUtil)
             }
         } else {
             bind(element)
