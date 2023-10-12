@@ -327,6 +327,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             recapPerformanceIllustration.setImageUrl(ILLUSTRATION_MVC_DETAIL_CARD_PERFORMANCE)
             tpgVoucherName.text =
                 getString(R.string.smvc_placeholder_recap_voucher_name, data.voucherName)
+            iconChevron.gone()
             iconChevron.setOnClickListener {
                 if (clParentExpandedCard.isVisible) {
                     TransitionManager.beginDelayedTransition(
@@ -545,6 +546,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             }
             performanceBinding?.run {
                 illustrationPerformance.setImageUrl(ILLUSTRATION_MVC_DETAIL_CARD_PERFORMANCE)
+                iconChevron.gone()
                 iconChevron.setOnClickListener {
                     if (clParentExpandedCard.isVisible) {
                         TransitionManager.beginDelayedTransition(
