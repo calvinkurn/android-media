@@ -24,17 +24,13 @@ data class FeedCardLivePreviewContentModel(
     val detailScore: List<FeedScoreModel>,
     val hasVoucher: Boolean,
     val campaign: FeedCardCampaignModel,
-    val products: List<FeedCardProductModel>
+    val products: List<FeedCardProductModel>,
+    override val contentType: FeedContentType = FeedContentType.PlayLivePreview,
+    override val share: FeedShareModel? = null
 ) : Visitable<FeedAdapterTypeFactory>, FeedContentUiModel {
     override fun type(typeFactory: FeedAdapterTypeFactory): Int = typeFactory.type(this)
 
     val contentScore = detailScore.firstOrNull { it.isContentScore }?.value ?: ""
 
     val videoUrl: String = media.firstOrNull()?.mediaUrl.orEmpty()
-
-    override val contentType: FeedContentType
-        get() = FeedContentType.PlayLivePreview
-
-    override val share: FeedShareModel?
-        get() = null
 }

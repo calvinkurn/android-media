@@ -16,6 +16,8 @@ data class FeedFollowRecommendationModel(
     val data: List<Profile>,
     val cursor: String,
     val status: Status,
+    override val contentType: FeedContentType = FeedContentType.FollowRecommendation,
+    override val share: FeedShareModel? = null
 ) : Visitable<FeedAdapterTypeFactory>, FeedContentUiModel {
 
     val hasNext: Boolean
@@ -58,7 +60,7 @@ data class FeedFollowRecommendationModel(
         val thumbnailUrl: String,
         val videoUrl: String,
         val applink: String,
-        val isFollowed: Boolean,
+        val isFollowed: Boolean
     ) {
         val isShop: Boolean
             get() = type == ProfileType.Seller
@@ -86,13 +88,7 @@ data class FeedFollowRecommendationModel(
                 description = "",
                 data = emptyList(),
                 cursor = "",
-                status = Status.Unknown,
+                status = Status.Unknown
             )
     }
-
-    override val contentType: FeedContentType
-        get() = FeedContentType.FollowRecommendation
-
-    override val share: FeedShareModel?
-        get() = null
 }

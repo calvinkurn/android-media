@@ -302,6 +302,11 @@ class FeedFragment :
                     if (binding.rvFeedPost.scrollState == RecyclerView.SCROLL_STATE_IDLE) return
                     adapter.onScrolling()
                 }
+
+                override fun onLayoutCompleted(layoutManager: LinearLayoutManager) {
+                    val currentPosition = layoutManager.findFirstVisibleItemPosition()
+                    updateBottomActionView(currentPosition)
+                }
             }
         )
     }
@@ -1212,10 +1217,7 @@ class FeedFragment :
                         }
                         mUiListener?.onContentFailed()
                     } else {
-                        adapter.setList(it.data.items) {
-                            if (_binding == null) return@setList
-                            updateBottomActionView(getCurrentPosition())
-                        }
+                        adapter.setList(it.data.items)
                         context?.let { ctx ->
                             if (feedPostViewModel.shouldShowNoMoreContent && !isCdp) {
                                 adapter.addElement(FeedNoContentModel.getNoMoreContentInstance(ctx))

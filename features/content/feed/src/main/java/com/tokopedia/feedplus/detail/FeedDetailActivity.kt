@@ -3,12 +3,9 @@ package com.tokopedia.feedplus.detail
 import android.graphics.Color
 import android.os.Bundle
 import android.view.MenuItem
-import android.view.ViewGroup.MarginLayoutParams
 import androidx.activity.viewModels
-import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.updatePadding
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
@@ -30,7 +27,10 @@ import com.tokopedia.feedplus.presentation.model.type.isPlayContent
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play_common.util.extension.commit
-import com.tokopedia.play_common.util.extension.updateLayoutParams
+import com.tokopedia.play_common.util.extension.marginLp
+import com.tokopedia.play_common.view.doOnApplyWindowInsets
+import com.tokopedia.play_common.view.updateMargins
+import com.tokopedia.play_common.view.updatePadding
 import javax.inject.Inject
 
 /**
@@ -67,15 +67,19 @@ class FeedDetailActivity : BaseActivity() {
         window.navigationBarColor = Color.TRANSPARENT
         window.statusBarColor = Color.TRANSPARENT
 
-        ViewCompat.setOnApplyWindowInsetsListener(binding.feedDetailContainer) { view, windowInsets ->
-            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+        binding.feedDetailBottomBar.doOnApplyWindowInsets { view, insets, padding, _ ->
+            val systemBarInset = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            view.updatePadding(
+                bottom = padding.bottom + systemBarInset.bottom
+            )
+        }
 
-            binding.feedDetailHeader.updateLayoutParams<MarginLayoutParams> {
-                topMargin = insets.top
+        binding.feedDetailHeader.doOnApplyWindowInsets { view, insets, _, margin ->
+            val systemBarInset = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            view.marginLp.updateMargins(top = margin.top + systemBarInset.top)
+            view.post {
+                view.requestLayout()
             }
-            binding.feedDetailBottomBar.updatePadding(bottom = insets.bottom)
-
-            windowInsets
         }
     }
 

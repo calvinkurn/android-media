@@ -38,7 +38,8 @@ data class FeedCardVideoContentModel(
     val menuItems: List<FeedMenuItem>,
     val detailScore: List<FeedScoreModel>,
     val publishedAt: String,
-    val playChannelId: String
+    val playChannelId: String,
+    override val contentType: FeedContentType
 ) : Visitable<FeedAdapterTypeFactory>, FeedContentUiModel {
 
     val isTypeProductHighlight: Boolean
@@ -61,10 +62,7 @@ data class FeedCardVideoContentModel(
             title = "", subtitle = "", text = "", cta = FeedCardCtaModel(), applink = "", weblink = "", actionButtonLabel = "", campaign = FeedCardCampaignModel(), hasVoucher = false,
             products = emptyList(), totalProducts = 0, media = emptyList(), hashtagApplinkFmt = "", hashtagWeblinkFmt = "", views = FeedViewModel(), like = FeedLikeModel(), comments = FeedCommentModel(),
             share = FeedShareModel(contentId = "", author = FeedAuthorModel(id = "", type = AuthorType.Unknown, name = "", badgeUrl = "", logoUrl = "", appLink = "", encryptedUserId = ""), appLink = "", webLink = "", mediaUrl = ""),
-            followers = FeedFollowModel(), menuItems = emptyList(), detailScore = emptyList(), publishedAt = "", playChannelId = ""
+            followers = FeedFollowModel(), menuItems = emptyList(), detailScore = emptyList(), publishedAt = "", playChannelId = "", contentType = FeedContentType.None
         )
     }
-
-    override val contentType: FeedContentType
-        get() = FeedContentType.getType(typename, type, media.firstOrNull()?.type.orEmpty())
 }
