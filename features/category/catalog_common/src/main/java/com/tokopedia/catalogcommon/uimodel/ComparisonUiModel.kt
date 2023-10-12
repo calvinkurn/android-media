@@ -18,7 +18,16 @@ data class ComparisonUiModel(
     data class ComparisonContent(
         val imageUrl: String,
         val productTitle: String,
-        val price: String
+        val price: String,
+        val comparisonSpecs: List<ComparisonSpec>
+    )
+
+    data class ComparisonSpec(
+        val isSpecCategoryTitle: Boolean = false,
+        val specCategoryTitle: String = "",
+        val specTitle: String = "",
+        val specValue: String = "",
+        var specHeight: Int = -1
     )
 
     override fun type(typeFactory: CatalogAdapterFactory): Int {

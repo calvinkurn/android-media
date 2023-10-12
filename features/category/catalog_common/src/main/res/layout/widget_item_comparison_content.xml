@@ -11,11 +11,11 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="8dp"
         android:layout_marginVertical="16dp"
-        tools:srcCompat="@tools:sample/avatars"
         app:layout_constraintDimensionRatio="V,1:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@tools:sample/avatars" />
 
     <com.tokopedia.unifycomponents.CardUnify2
         android:id="@+id/cardProductAction"
@@ -64,5 +64,15 @@
         app:layout_constraintEnd_toEndOf="@+id/iuProduct"
         app:layout_constraintStart_toStartOf="@+id/iuProduct"
         app:layout_constraintTop_toBottomOf="@+id/tfProductName" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvSpecs"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="75dp"
+        tools:listitem="@layout/widget_item_comparison_content_spec"
+        app:layout_constraintTop_toBottomOf="@+id/iuProduct" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

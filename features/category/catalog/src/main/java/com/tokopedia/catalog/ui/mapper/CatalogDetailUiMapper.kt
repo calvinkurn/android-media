@@ -401,12 +401,28 @@ class CatalogDetailUiMapper @Inject constructor(
 
     private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToComparison(): BaseCatalogUiModel {
         return ComparisonUiModel(content = data?.comparison.orEmpty().map {
+            val comparisonSpecs = mutableListOf<ComparisonUiModel.ComparisonSpec>()
+            it.fullSpec.forEach { spec ->
+                comparisonSpecs.add(ComparisonUiModel.ComparisonSpec(
+                    isSpecCategoryTitle = true,
+                    specCategoryTitle = spec.name
+                ))
+                spec.row.forEach { rowItem ->
+                    val insertedItem = ComparisonUiModel.ComparisonSpec(
+                        isSpecCategoryTitle = false,
+                        specTitle = rowItem.key,
+                        specValue = rowItem.value,
+                    )
+                    comparisonSpecs.add(insertedItem)
+                }
+            }
             ComparisonUiModel.ComparisonContent(
                 imageUrl = it.catalogImage.firstOrNull{ it.isPrimary }?.imageUrl.orEmpty(),
                 productTitle = it.name,
                 price = it.marketPrice.firstOrNull()?.let { marketPrice ->
                     marketPrice.minFmt + " - " + marketPrice.maxFmt
                 }.orEmpty() ,
+                comparisonSpecs = comparisonSpecs
             )
         })
     }
