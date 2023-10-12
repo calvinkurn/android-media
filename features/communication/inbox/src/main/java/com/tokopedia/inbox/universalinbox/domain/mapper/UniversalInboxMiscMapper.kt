@@ -27,23 +27,6 @@ open class UniversalInboxMiscMapper @Inject constructor() {
         return UniversalInboxTopAdsBannerUiModel()
     }
 
-    private fun generateRecommendationPrePurchaseWidgetModel():
-        UniversalInboxRecommendationWidgetUiModel {
-        return UniversalInboxRecommendationWidgetUiModel(
-            RecommendationWidgetModel(
-                metadata = RecommendationWidgetMetadata(
-                    pageName = UniversalInboxValueUtil.WIDGET_PAGE_NAME_PRE_PURCHASE
-                ),
-                trackingModel = RecommendationWidgetTrackingModel(
-                    androidPageName = RecommendationCarouselTrackingConst.Category.INBOX_PAGE,
-                    eventActionImpression = RecommendationCarouselTrackingConst.Action.IMPRESSION_ON_PRODUCT_RECOMMENDATION_INBOX,
-                    eventActionClick = RecommendationCarouselTrackingConst.Action.CLICK_ON_PRODUCT_RECOMMENDATION_INBOX,
-                    listPageName = RecommendationCarouselTrackingConst.List.INBOX
-                )
-            )
-        )
-    }
-
     private fun generateRecommendationPostPurchaseWidgetModel():
         UniversalInboxRecommendationWidgetUiModel {
         return UniversalInboxRecommendationWidgetUiModel(
@@ -57,7 +40,26 @@ open class UniversalInboxMiscMapper @Inject constructor() {
                     eventActionClick = RecommendationCarouselTrackingConst.Action.CLICK_ON_PRODUCT_RECOMMENDATION_INBOX,
                     listPageName = RecommendationCarouselTrackingConst.List.INBOX
                 )
-            )
+            ),
+            UniversalInboxRecommendationWidgetUiModel.Type.POST_PURCHASE
+        )
+    }
+
+    private fun generateRecommendationPrePurchaseWidgetModel():
+        UniversalInboxRecommendationWidgetUiModel {
+        return UniversalInboxRecommendationWidgetUiModel(
+            RecommendationWidgetModel(
+                metadata = RecommendationWidgetMetadata(
+                    pageName = UniversalInboxValueUtil.WIDGET_PAGE_NAME_PRE_PURCHASE
+                ),
+                trackingModel = RecommendationWidgetTrackingModel(
+                    androidPageName = RecommendationCarouselTrackingConst.Category.INBOX_PAGE,
+                    eventActionImpression = RecommendationCarouselTrackingConst.Action.IMPRESSION_ON_PRODUCT_RECOMMENDATION_INBOX,
+                    eventActionClick = RecommendationCarouselTrackingConst.Action.CLICK_ON_PRODUCT_RECOMMENDATION_INBOX,
+                    listPageName = RecommendationCarouselTrackingConst.List.INBOX
+                )
+            ),
+            UniversalInboxRecommendationWidgetUiModel.Type.PRE_PURCHASE
         )
     }
 }

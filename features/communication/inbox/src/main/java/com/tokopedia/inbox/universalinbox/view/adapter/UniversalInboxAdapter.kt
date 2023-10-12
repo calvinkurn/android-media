@@ -71,7 +71,8 @@ class UniversalInboxAdapter(
 
     private var recommendationFirstPosition: Int? = null
     private var recommendationTitlePosition: Int? = null
-    private var recommendationWidgetPosition: Int? = null
+    private var recommendationWidgetPrePurchasePosition: Int? = null
+    private var recommendationWidgetPostPurchasePosition: Int? = null
 
     private val loaderUiModel by lazy {
         LoadingMoreModel()
@@ -107,22 +108,42 @@ class UniversalInboxAdapter(
         } ?: false
     }
 
-    private fun getRecommendationWidgetPosition(): Int? {
-        return if (checkCachedRecommendationWidgetPosition()) {
-            recommendationWidgetPosition
+    private fun getRecommendationWidgetPosition(
+        type: UniversalInboxRecommendationWidgetUiModel.Type
+    ): Int? {
+        return if (checkCachedRecommendationWidgetPosition(type)) {
+            when (type) {
+                UniversalInboxRecommendationWidgetUiModel.Type.POST_PURCHASE -> {
+                    recommendationWidgetPostPurchasePosition
+                }
+                UniversalInboxRecommendationWidgetUiModel.Type.PRE_PURCHASE -> {
+                    recommendationWidgetPrePurchasePosition
+                }
+            }
         } else {
             // get first index or -1
             visitables.indexOfFirst {
-                it is UniversalInboxRecommendationWidgetUiModel
+                it is UniversalInboxRecommendationWidgetUiModel &&
+                    it.type == type
             }.takeIf { it >= 0 }?.also { // get result when it not -1 (found)
-                recommendationWidgetPosition = it
+                when (type) {
+                    UniversalInboxRecommendationWidgetUiModel.Type.POST_PURCHASE -> {
+                        recommendationWidgetPostPurchasePosition = it
+                    }
+                    UniversalInboxRecommendationWidgetUiModel.Type.PRE_PURCHASE -> {
+                        recommendationWidgetPrePurchasePosition = it
+                    }
+                }
             }
         }
     }
 
-    private fun checkCachedRecommendationWidgetPosition(): Boolean {
-        return recommendationWidgetPosition?.let {
-            it < visitables.size && visitables[it] is UniversalInboxRecommendationWidgetUiModel
+    private fun checkCachedRecommendationWidgetPosition(
+        type: UniversalInboxRecommendationWidgetUiModel.Type
+    ): Boolean {
+        return recommendationWidgetPrePurchasePosition?.let {
+            it < visitables.size && visitables[it] is UniversalInboxRecommendationWidgetUiModel &&
+                type == (visitables[it] as UniversalInboxRecommendationWidgetUiModel).type
         } ?: false
     }
 
@@ -277,7 +298,14 @@ class UniversalInboxAdapter(
     }
 
     fun refreshRecommendationWidget() {
-        getRecommendationWidgetPosition()?.let {
+        getRecommendationWidgetPosition(
+            UniversalInboxRecommendationWidgetUiModel.Type.POST_PURCHASE
+        )?.let {
+            notifyItemChanged(it)
+        }
+        getRecommendationWidgetPosition(
+            UniversalInboxRecommendationWidgetUiModel.Type.PRE_PURCHASE
+        )?.let {
             notifyItemChanged(it)
         }
     }
