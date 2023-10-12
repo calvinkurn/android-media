@@ -9,5 +9,5 @@
       android:id="@+id/root"
       layout="@layout/layout_home_revamp"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"/>
+      android:layout_height="match_parent"/>
 </com.tokopedia.home_component.customview.pullrefresh.ParentIconSwipeRefreshLayout>
