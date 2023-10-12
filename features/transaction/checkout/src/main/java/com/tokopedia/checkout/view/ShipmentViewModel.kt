@@ -4577,11 +4577,13 @@ class ShipmentViewModel @Inject constructor(
     }
 
     fun fetchEpharmacyData() {
-        epharmacyUseCase.getEPharmacyPrepareProductsGroup({ ePharmacyPrepareProductsGroupResponse: EPharmacyPrepareProductsGroupResponse ->
-            processEpharmacyData(ePharmacyPrepareProductsGroupResponse)
-        }) { throwable: Throwable? ->
+        epharmacyUseCase.getEPharmacyPrepareProductsGroup(::onAvailablePrepareProductGroup, { throwable: Throwable? ->
             Timber.d(throwable)
-        }
+        }, source = "")
+    }
+
+    private fun onAvailablePrepareProductGroup(ePharmacyPrepareProductsGroupResponse: EPharmacyPrepareProductsGroupResponse, source: String?) {
+        processEpharmacyData(ePharmacyPrepareProductsGroupResponse)
     }
 
     private fun processEpharmacyData(ePharmacyPrepareProductsGroupResponse: EPharmacyPrepareProductsGroupResponse) {
