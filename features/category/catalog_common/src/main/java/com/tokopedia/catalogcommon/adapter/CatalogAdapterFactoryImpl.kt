@@ -56,7 +56,8 @@ class CatalogAdapterFactoryImpl(
     private val trustMakerListener: TrustMakerListener? = null,
     private val videoExpertListener: VideoExpertListener? = null,
     private val topFeatureListener: TopFeatureListener? = null,
-    private val doubleBannerListener: DoubleBannerListener? = null
+    private val doubleBannerListener: DoubleBannerListener? = null,
+    private val comparisonItemListener: ComparisonViewHolder.ComparisonItemListener? = null,
 ) : BaseAdapterTypeFactory(), HomeComponentTypeFactory, CatalogAdapterFactory {
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
@@ -76,7 +77,7 @@ class CatalogAdapterFactoryImpl(
             DoubleBannerViewHolder.LAYOUT -> DoubleBannerViewHolder(view,doubleBannerListener)
             ExpertReviewViewHolder.LAYOUT -> ExpertReviewViewHolder(view, videoExpertListener)
             SupportFeatureViewHolder.LAYOUT -> SupportFeatureViewHolder(view)
-            ComparisonViewHolder.LAYOUT -> ComparisonViewHolder(view)
+            ComparisonViewHolder.LAYOUT -> ComparisonViewHolder(view, comparisonItemListener)
             BlankViewHolder.LAYOUT -> BlankViewHolder(view)
             else -> super.createViewHolder(view, type)
         }

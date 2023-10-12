@@ -9,11 +9,17 @@ data class ComparisonUiModel(
     override var widgetBackgroundColor: Int? = null,
     override var widgetTextColor: Int? = null,
     override var darkMode: Boolean = false,
-    val content: String = ""
+    val content: List<ComparisonContent> = emptyList()
 ) : BaseCatalogUiModel(
     idWidget, widgetType, widgetName, widgetBackgroundColor, widgetTextColor,
     darkMode
 ) {
+
+    data class ComparisonContent(
+        val imageUrl: String,
+        val productTitle: String,
+        val price: String
+    )
 
     override fun type(typeFactory: CatalogAdapterFactory): Int {
         return typeFactory.type(this)

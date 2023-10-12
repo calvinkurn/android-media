@@ -84,9 +84,7 @@ class CatalogDetailUiMapper @Inject constructor(
                 }
 
                 WidgetTypes.CATALOG_ACCORDION.type -> it.mapToAccordion(isDarkMode)
-                WidgetTypes.CATALOG_COMPARISON.type -> {
-                    ComparisonUiModel(content = it.name)
-                }
+                WidgetTypes.CATALOG_COMPARISON.type -> it.mapToComparison()
 
                 WidgetTypes.CATALOG_SIMILAR_PRODUCT.type -> {
                     DummyUiModel(content = it.name)
@@ -411,6 +409,18 @@ class CatalogDetailUiMapper @Inject constructor(
                 )
             }.orEmpty()
         )
+    }
+
+    private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToComparison(): BaseCatalogUiModel {
+        return ComparisonUiModel(content = data?.comparison.orEmpty().map {
+            ComparisonUiModel.ComparisonContent(
+                imageUrl = it.catalogImage.firstOrNull{ it.isPrimary }?.imageUrl.orEmpty(),
+                productTitle = it.name,
+                price = it.marketPrice.firstOrNull()?.let { marketPrice ->
+                    marketPrice.minFmt + " - " + marketPrice.maxFmt
+                }.orEmpty() ,
+            )
+        })
     }
 
     private fun getTextColor(darkMode: Boolean): Int {
