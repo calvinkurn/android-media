@@ -8,8 +8,10 @@ import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
 import com.scp.auth.analytics.AuthAnalyticsMapper
 import com.scp.auth.di.DaggerScpAuthComponent
-import com.scp.auth.utils.goToChangePIN
+import com.scp.auth.utils.goToForgotGotoPin
 import com.scp.auth.utils.goToForgotPassword
+import com.scp.auth.utils.goToForgotTokoPinArticle
+import com.scp.auth.utils.goToHelpGotoPIN
 import com.scp.auth.utils.goToInactivePhoneNumber
 import com.scp.login.common.utils.LoginImageLoader
 import com.scp.login.core.domain.common.UserCredential
@@ -20,6 +22,7 @@ import com.scp.login.core.domain.contracts.listener.LSdkClientFlowListener
 import com.scp.login.core.domain.contracts.listener.LSdkLoginFlowListener
 import com.scp.verification.core.domain.common.entities.Failure
 import com.scp.verification.core.domain.common.listener.ForgetContext
+import com.scp.verification.features.gotopin.CVPinManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.ApplinkConst
@@ -121,7 +124,23 @@ class ScpAuthActivity : BaseActivity() {
                     screenType: String,
                     isGotoPinHelpContext: Boolean
                 ) {
-                    goToTokopediaCare()
+                    if (isGotoPinHelpContext) {
+                        when (screenType) {
+                            CVPinManager.CTA_TYPE_HELP -> {
+                                goToHelpGotoPIN(this@ScpAuthActivity)
+                            }
+
+                            CVPinManager.FORGOT_PIN_HELP_ARTICLE -> {
+                                goToForgotGotoPin(this@ScpAuthActivity)
+                            }
+
+                            else -> {
+                                /* no-op */
+                            }
+                        }
+                    } else {
+                        goToTokopediaCare()
+                    }
                 }
 
                 override fun onAccountRecoverClicked() {
@@ -198,8 +217,9 @@ class ScpAuthActivity : BaseActivity() {
             ForgetContext.FORGET_PASSWORD.name -> {
                 goToForgotPassword(this)
             }
+
             ForgetContext.FORGET_TOKO_PIN.name -> {
-                goToChangePIN(this)
+                goToForgotTokoPinArticle(this)
             }
         }
     }

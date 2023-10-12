@@ -8,6 +8,8 @@ import com.scp.verification.core.domain.common.entities.config.VerificationEnvir
 import com.scp.verification.core.domain.common.listener.VerificationSDKConfigs
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator
+import com.tokopedia.url.Env
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.keys.R as keysR
 
 class VerificationSdkConfig(val context: Context) : VerificationSDKConfigs {
@@ -30,13 +32,11 @@ class VerificationSdkConfig(val context: Context) : VerificationSDKConfigs {
     }
 
     private fun getEnvironment(): VerificationEnvironment {
-//        return if (GlobalConfig.DEBUG) {
-//            VerificationEnvironment.INTEGRATION
-//        } else {
-//            VerificationEnvironment.PROD
-//        }
-        // Hardcode for production testing, rama is working on this issue
-        return VerificationEnvironment.ALPHA
+        return if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
+            VerificationEnvironment.INTEGRATION
+        } else {
+            VerificationEnvironment.PROD
+        }
     }
 
     private fun isLogEnabled(): Boolean = GlobalConfig.isAllowDebuggingTools()

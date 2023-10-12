@@ -33,6 +33,8 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.KEY_SP_TIMESTAMP_AB_TEST
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.SHARED_PREFERENCE_AB_TEST_PLATFORM
+import com.tokopedia.url.Env
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
@@ -106,7 +108,7 @@ object GotoSdk {
             LSDKINSTANCE?.getAccessToken()?.isEmpty() == true &&
             LSDKINSTANCE?.getRefreshToken()?.isEmpty() == true
         ) {
-            LSDKINSTANCE?.save(userSession.accessToken, userSession.freshToken)
+            ScpUtils.saveTokens(accessToken = userSession.accessToken, refreshToken = userSession.freshToken)
         }
     }
 
@@ -144,7 +146,7 @@ object GotoSdk {
                 appInfo = AppInfo(
                     appType = TOKOPEDIA_APP_TYPE,
                     // Rama will fix the global config issue
-                    isDebug = false,
+                    isDebug = TokopediaUrl.getInstance().TYPE == Env.STAGING,
                     language = LOCALE_ID
                 ),
                 deviceInfo = DeviceInfo(

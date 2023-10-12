@@ -19,6 +19,7 @@ import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
+import com.scp.auth.ScpUtils
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
@@ -33,6 +34,7 @@ import com.tokopedia.loginregister.common.analytics.RegisterAnalytics
 import com.tokopedia.loginregister.common.error.getMessage
 import com.tokopedia.loginregister.common.utils.RegisterUtil
 import com.tokopedia.loginregister.common.utils.RegisterUtil.removeErrorCode
+import com.tokopedia.loginregister.forbidden.ForbiddenActivity
 import com.tokopedia.loginregister.registerinitial.di.RegisterInitialComponent
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterRequestData
 import com.tokopedia.loginregister.registerinitial.viewmodel.RegisterInitialViewModel
@@ -42,7 +44,6 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.sessioncommon.constants.SessionConstants
 import com.tokopedia.sessioncommon.util.PasswordUtils
-import com.tokopedia.loginregister.forbidden.ForbiddenActivity
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -135,14 +136,19 @@ class RegisterEmailFragment : BaseDaggerFragment() {
         showNameHint()
     }
 
+    private fun saveTokens(data: RegisterRequestData) {
+        userSession.clearToken()
+        userSession.setToken(data.accessToken, data.tokenType, EncoderDecoder.Encrypt(data.refreshToken, userSession.refreshTokenIV))
+
+        /* Migrate token to lsdk */
+        ScpUtils.saveTokens(accessToken = data.accessToken, refreshToken = data.refreshToken)
+    }
+
     private fun initObserver() {
         registerInitialViewModel.registerRequestResponse.observe(viewLifecycleOwner) { registerRequestDataResult: Result<RegisterRequestData>? ->
             if (registerRequestDataResult is Success) {
                 val data = (registerRequestDataResult).data
-                userSession.clearToken()
-                userSession.setToken(data.accessToken,
-                    data.tokenType,
-                    EncoderDecoder.Encrypt(data.refreshToken, userSession.refreshTokenIV))
+                saveTokens(data)
                 onSuccessRegister()
                 if (activity != null) {
                     val intent = Intent()

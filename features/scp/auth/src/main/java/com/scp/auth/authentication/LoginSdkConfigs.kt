@@ -7,6 +7,8 @@ import com.scp.login.core.domain.contracts.configs.LSdkAuthConfig
 import com.scp.login.core.domain.contracts.configs.LSdkConfig
 import com.scp.login.core.domain.contracts.configs.LSdkEnvironment
 import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator
+import com.tokopedia.url.Env
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.keys.R as keysR
 
 class LoginSdkConfigs(val context: Context) : LSdkConfig {
@@ -27,12 +29,10 @@ class LoginSdkConfigs(val context: Context) : LSdkConfig {
     }
 
     private fun getEnvironment(): LSdkEnvironment {
-//        return if (GlobalConfig.DEBUG || GlobalConfig.isAllowDebuggingTools()) {
-//            LSdkEnvironment.INTEGRATION
-//        } else {
-//            LSdkEnvironment.PROD
-//        }
-        // Hardcode for production testing, rama is working on this issue
-        return LSdkEnvironment.ALPHA
+        return if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
+            LSdkEnvironment.INTEGRATION
+        } else {
+            LSdkEnvironment.ALPHA
+        }
     }
 }
