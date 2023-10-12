@@ -35,12 +35,10 @@ class ComposePersonaSelectTypeViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(SelectTypeState(state = SelectTypeState.State.Loading))
-    val state: StateFlow<SelectTypeState>
-        get() = _state.asStateFlow()
+    val state: StateFlow<SelectTypeState> = _state.asStateFlow()
 
     private val _uiEffect = MutableSharedFlow<SelectTypeUiEffect>()
-    val uiEffect: SharedFlow<SelectTypeUiEffect>
-        get() = _uiEffect.asSharedFlow()
+    val uiEffect: SharedFlow<SelectTypeUiEffect> = _uiEffect.asSharedFlow()
 
     fun onEvent(event: SelectTypeUiEvent) {
         when (event) {

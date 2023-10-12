@@ -8,6 +8,7 @@ import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -65,7 +66,7 @@ private const val SUB_TITLE_FORMAT = "(%s)"
 private val CARD_WIDTH = 300.dp
 private val CARD_SPACE_DP = 16.dp
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalPagerApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 internal fun PersonSuccessState(
     data: SelectTypeState.Data, onEvent: (SelectTypeUiEvent) -> Unit
@@ -74,19 +75,9 @@ internal fun PersonSuccessState(
 
     LaunchScrollToPosition(listState, data.ui.selectedIndex)
 
-    ConstraintLayout(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        val (personaList, divider, selectButton) = createRefs()
+    Column(modifier = Modifier.fillMaxSize()) {
         LazyRow(
-            modifier = Modifier.constrainAs(personaList) {
-                top.linkTo(anchor = parent.top)
-                start.linkTo(anchor = parent.start)
-                end.linkTo(anchor = parent.end)
-                bottom.linkTo(anchor = divider.top)
-                width = Dimension.fillToConstraints
-                height = Dimension.fillToConstraints
-            },
+            modifier = Modifier.weight(1f),
             state = listState,
             flingBehavior = rememberSnapFlingBehavior(lazyListState = listState),
             contentPadding = PaddingValues(all = CARD_SPACE_DP),
@@ -98,20 +89,14 @@ internal fun PersonSuccessState(
                 }
             }
         }
-        Divider(modifier = Modifier.constrainAs(divider) {
-            start.linkTo(anchor = parent.start, margin = 16.dp)
-            end.linkTo(anchor = parent.end, margin = 16.dp)
-            bottom.linkTo(anchor = selectButton.top, margin = 16.dp)
-            width = Dimension.fillToConstraints
-        })
+        Divider(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 16.dp, end = 16.dp)
+        )
         NestButton(modifier = Modifier
             .fillMaxWidth()
-            .constrainAs(selectButton) {
-                start.linkTo(anchor = parent.start, margin = 16.dp)
-                end.linkTo(anchor = parent.end, margin = 16.dp)
-                bottom.linkTo(anchor = parent.bottom, margin = 16.dp)
-                width = Dimension.fillToConstraints
-            },
+            .padding(all = 16.dp),
             isLoading = data.ui.isSelectButtonLoading,
             text = stringResource(R.string.sp_select),
             variant = ButtonVariant.FILLED,

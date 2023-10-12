@@ -39,12 +39,10 @@ class ComposePersonaResultViewModel @Inject constructor(
     private val _personaState = MutableStateFlow(
         PersonaResultState(state = PersonaResultState.State.Loading)
     )
-    val personaState: StateFlow<PersonaResultState>
-        get() = _personaState.asStateFlow()
+    val personaState: StateFlow<PersonaResultState> = _personaState.asStateFlow()
 
     private val _uiEffect = MutableSharedFlow<ResultUiEffect>()
-    val uiEffect: SharedFlow<ResultUiEffect>
-        get() = _uiEffect.asSharedFlow()
+    val uiEffect: SharedFlow<ResultUiEffect> = _uiEffect.asSharedFlow()
 
     fun onEvent(event: ResultUiEvent) {
         when (event) {

@@ -32,6 +32,7 @@ import com.tokopedia.sellerpersona.view.compose.screen.selecttype.SelectTypeErro
 import com.tokopedia.sellerpersona.view.compose.screen.selecttype.SelectTypeLoadingState
 import com.tokopedia.sellerpersona.view.compose.viewmodel.ComposePersonaSelectTypeViewModel
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.utils.lifecycle.collectAsStateWithLifecycle
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
@@ -61,6 +62,7 @@ class ComposeSelectTypeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        // TODO: create extension for this in internal module
         return ComposeView(inflater.context).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
@@ -80,7 +82,7 @@ class ComposeSelectTypeFragment : Fragment() {
                         color = MaterialTheme.colors.background
                     ) {
                         CompositionLocalProvider(LocalOverscrollConfiguration provides null) {
-                            val state = viewModel.state.collectAsState()
+                            val state = viewModel.state.collectAsStateWithLifecycle()
                             val data = state.value
 
                             when (data.state) {

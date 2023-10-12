@@ -24,7 +24,6 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.sellerpersona.R
 import com.tokopedia.sellerpersona.analytics.SellerPersonaTracking
-import com.tokopedia.sellerpersona.data.local.PersonaSharedPref
 import com.tokopedia.sellerpersona.data.local.PersonaSharedPrefInterface
 import com.tokopedia.sellerpersona.view.activity.SellerPersonaActivity
 import com.tokopedia.sellerpersona.view.compose.model.args.PersonaArgsUiModel
@@ -106,8 +105,7 @@ class ComposeResultFragment : Fragment() {
 
                 NestTheme {
                     Surface(
-                        modifier = Modifier.fillMaxSize(),
-                        color = MaterialTheme.colors.background
+                        modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background
                     ) {
                         val state = viewModel.personaState.collectAsStateWithLifecycle()
 

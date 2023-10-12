@@ -39,12 +39,10 @@ class ComposeQuestionnaireViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<QuestionnaireState>(QuestionnaireState.Loading)
-    val state: StateFlow<QuestionnaireState>
-        get() = _state.asStateFlow()
+    val state: StateFlow<QuestionnaireState> = _state.asStateFlow()
 
     private val _uiEffect = MutableSharedFlow<QuestionnaireUiEffect>()
-    val uiEffect: SharedFlow<QuestionnaireUiEffect>
-        get() = _uiEffect.asSharedFlow()
+    val uiEffect: SharedFlow<QuestionnaireUiEffect> = _uiEffect.asSharedFlow()
 
     private var data = QuestionnaireDataUiModel()
 
@@ -185,9 +183,7 @@ class ComposeQuestionnaireViewModel @Inject constructor(
         _state.update { state }
     }
 
-    private fun emitUiEffect(uiEffect: QuestionnaireUiEffect) {
-        viewModelScope.launch {
-            _uiEffect.emit(uiEffect)
-        }
+    private  fun emitUiEffect(uiEffect: QuestionnaireUiEffect) {
+        _uiEffect.tryEmit(uiEffect)
     }
 }

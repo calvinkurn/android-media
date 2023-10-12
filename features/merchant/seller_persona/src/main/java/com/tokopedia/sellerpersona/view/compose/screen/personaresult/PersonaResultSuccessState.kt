@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredHeight
-import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
@@ -254,7 +252,7 @@ private fun ResultHeaderSectionUi(persona: PersonaUiModel) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .requiredHeight(246.dp),
+            .height(246.dp),
         contentAlignment = Alignment.Center
     ) {
         NestImage(
@@ -273,9 +271,9 @@ private fun ResultHeaderSectionUi(persona: PersonaUiModel) {
                 ),
                 contentScale = ContentScale.Crop,
                 type = NestImageType.Circle,
-                modifier = Modifier.requiredSize(120.dp)
+                modifier = Modifier.size(120.dp)
             )
-            Spacer(modifier = Modifier.requiredHeight(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
             NestTypography(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(R.string.sp_result_seller_type),

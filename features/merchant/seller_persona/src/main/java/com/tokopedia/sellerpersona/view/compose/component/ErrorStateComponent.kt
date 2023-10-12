@@ -1,29 +1,30 @@
 package com.tokopedia.sellerpersona.view.compose.component
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredHeight
-import androidx.compose.foundation.layout.requiredWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tokopedia.nest.components.ButtonSize
 import com.tokopedia.nest.components.ButtonVariant
 import com.tokopedia.nest.components.NestButton
+import com.tokopedia.nest.components.NestImage
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
+import com.tokopedia.nest.principles.utils.ImageSource
 import com.tokopedia.globalerror.R as globalerrorR
-
 
 /**
  * Created by @ilhamsuaib on 13/07/23.
@@ -43,16 +44,20 @@ internal fun ErrorStateComponent(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Image(
-            painter = painterResource(id = globalerrorR.drawable.unify_globalerrors_connection),
+        val source = ImageSource.Painter(
+            source = globalerrorR.drawable.unify_globalerrors_connection
+        )
+        NestImage(
+            source = source,
             contentDescription = null,
+            contentScale = ContentScale.Fit,
             modifier = Modifier
-                .requiredWidth(184.dp)
-                .requiredHeight(144.dp)
+                .width(184.dp)
+                .height(144.dp)
         )
         Spacer(
             modifier = Modifier
-                .requiredHeight(16.dp)
+                .height(16.dp)
                 .fillMaxWidth()
         )
         NestTypography(
@@ -65,7 +70,7 @@ internal fun ErrorStateComponent(
         if (description.isNotBlank()) {
             Spacer(
                 modifier = Modifier
-                    .requiredHeight(8.dp)
+                    .height(8.dp)
                     .fillMaxWidth()
             )
             NestTypography(
@@ -78,7 +83,7 @@ internal fun ErrorStateComponent(
         }
         Spacer(
             modifier = Modifier
-                .requiredHeight(24.dp)
+                .height(24.dp)
                 .fillMaxWidth()
         )
         NestButton(modifier = Modifier.wrapContentSize(),
