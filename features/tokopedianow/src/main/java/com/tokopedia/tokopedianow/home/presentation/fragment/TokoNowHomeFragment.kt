@@ -395,6 +395,7 @@ class TokoNowHomeFragment :
 
     override fun onDestroy() {
         SharingUtil.clearState(screenshotDetector)
+        mRecycledViewPool.clear()
         super.onDestroy()
     }
 

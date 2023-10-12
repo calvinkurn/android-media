@@ -233,14 +233,15 @@ class HomeLeftCarouselAtcViewHolder(
         object : TokoNowDynamicHeaderView.TokoNowDynamicHeaderListener {
             override fun onSeeAllClicked(
                 context: Context,
+                channelId: String,
                 headerName: String,
                 appLink: String,
                 widgetId: String
             ) {
                 homeLeftCarouselAtcCallback?.onSeeMoreClicked(
                     appLink = appLink,
-                    channelId = element.id,
-                    headerName = element.header.title
+                    channelId = channelId,
+                    headerName = headerName
                 )
             }
 

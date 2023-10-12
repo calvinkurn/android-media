@@ -40,13 +40,11 @@ class TokoNowDynamicHeaderView @JvmOverloads constructor(context: Context, attrs
         this.itemView = view
     }
 
-    private fun handleHeaderComponent(
-        model: TokoNowDynamicHeaderUiModel
-    ) {
+    private fun handleHeaderComponent(model: TokoNowDynamicHeaderUiModel) {
         setupUi()
         handleTitle(model.title)
         handleSubtitle(model.subTitle, model.expiredTime)
-        handleSeeAllAppLink(model.title, model.ctaText, model.ctaTextLink, model.circleSeeAll, model.widgetId)
+        handleSeeAllAppLink(model)
         handleHeaderExpiredTime(model.expiredTime, model.serverTimeOffset, model.backColor)
     }
 
@@ -81,13 +79,21 @@ class TokoNowDynamicHeaderView @JvmOverloads constructor(context: Context, attrs
         }
     }
 
-    private fun handleSeeAllAppLink(title: String, ctaText: String, ctaTextLink: String, circleSeeAll: Boolean, widgetId: String) {
+    private fun handleSeeAllAppLink(model: TokoNowDynamicHeaderUiModel) {
+        val channelId = model.channelId
+        val title = model.title
+        val ctaText = model.ctaText
+        val ctaTextLink = model.ctaTextLink
+        val circleSeeAll = model.circleSeeAll
+        val widgetId = model.widgetId
+
         if (ctaTextLink.isNotBlank()) {
             if (circleSeeAll) {
                 sivCircleSeeAll?.show()
                 sivCircleSeeAll?.setOnClickListener {
                     listener?.onSeeAllClicked(
                         context = context,
+                        channelId = channelId,
                         headerName = title,
                         appLink =  ctaTextLink,
                         widgetId = widgetId
@@ -104,6 +110,7 @@ class TokoNowDynamicHeaderView @JvmOverloads constructor(context: Context, attrs
                 tpSeeAll?.setOnClickListener {
                     listener?.onSeeAllClicked(
                         context = context,
+                        channelId = channelId,
                         headerName = title,
                         appLink =  ctaTextLink,
                         widgetId = widgetId
@@ -178,6 +185,7 @@ class TokoNowDynamicHeaderView @JvmOverloads constructor(context: Context, attrs
     interface TokoNowDynamicHeaderListener {
         fun onSeeAllClicked(
             context: Context,
+            channelId: String,
             headerName: String,
             appLink: String,
             widgetId: String

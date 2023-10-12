@@ -39,22 +39,10 @@ class HomeProductRecomViewHolder(
     private var binding: ItemTokopedianowProductRecommendationBinding? by viewBinding()
     private var realtimeRecommendationView: RealTimeRecommendationCarouselView? = null
 
-    private var channelId = ""
-    private var headerName = ""
-
     override fun bind(element: HomeProductRecomUiModel) {
-        binding?.apply {
-            channelId = element.id
-            headerName = element.headerModel?.title.orEmpty()
-
-            renderProductItems(element)
-            renderRealTimeRecom(element)
-
-            productRecommendation.setListener(
-                productCardCarouselListener = this@HomeProductRecomViewHolder,
-                headerCarouselListener = this@HomeProductRecomViewHolder
-            )
-        }
+        renderProductItems(element)
+        renderRealTimeRecom(element)
+        setupListener()
     }
 
     override fun bind(element: HomeProductRecomUiModel?, payloads: MutableList<Any>) {
@@ -98,8 +86,16 @@ class HomeProductRecomViewHolder(
         }
     }
 
+    private fun setupListener() {
+        binding?.productRecommendation?.setListener(
+            productCardCarouselListener = this,
+            headerCarouselListener = this
+        )
+    }
+
     override fun onSeeAllClicked(
         context: Context,
+        channelId: String,
         headerName: String,
         appLink: String,
         widgetId: String
@@ -115,7 +111,7 @@ class HomeProductRecomViewHolder(
         seeMoreUiModel: ProductCardCompactCarouselSeeMoreUiModel
     ) {
         listener?.onSeeMoreClicked(
-            channelId = channelId,
+            channelId = seeMoreUiModel.id,
             appLink = seeMoreUiModel.appLink,
             headerName = seeMoreUiModel.headerName
         )
@@ -131,8 +127,8 @@ class HomeProductRecomViewHolder(
     ) {
         listener?.onProductRecomClicked(
             product = product,
-            channelId = channelId,
-            headerName = headerName,
+            channelId = product.channelId,
+            headerName = product.headerName,
             position = layoutPosition
         )
     }
@@ -143,8 +139,8 @@ class HomeProductRecomViewHolder(
     ) {
         listener?.onProductRecomImpressed(
             product = product,
-            channelId = channelId,
-            headerName = headerName,
+            channelId = product.channelId,
+            headerName = product.headerName,
             position = layoutPosition
         )
     }
@@ -157,7 +153,7 @@ class HomeProductRecomViewHolder(
         listener?.onProductRecomQuantityChanged(
             product = product,
             quantity = quantity,
-            channelId = channelId
+            channelId = product.channelId
         )
     }
 

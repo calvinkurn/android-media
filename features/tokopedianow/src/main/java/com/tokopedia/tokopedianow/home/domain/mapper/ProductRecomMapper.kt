@@ -89,6 +89,8 @@ object ProductRecomMapper {
             title = channelModel.channelHeader.name,
             productList = channelModel.channelGrids.map { channelGrid ->
                 ProductCardCompactCarouselItemUiModel(
+                    channelId = channelModel.id,
+                    headerName = channelModel.channelHeader.name,
                     recomType = channelGrid.recommendationType,
                     pageName = channelModel.pageName,
                     productCardModel = mapChannelGridToProductCard(channelGrid, miniCartData, hasBlockedAddToCart),
@@ -102,7 +104,7 @@ object ProductRecomMapper {
                 )
             },
             seeMoreModel = ProductCardCompactCarouselSeeMoreUiModel(
-                id = channelModel.channelHeader.id,
+                id = channelModel.id,
                 headerName = channelModel.channelHeader.name,
                 appLink = channelModel.channelHeader.applink
             ),
