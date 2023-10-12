@@ -11,6 +11,7 @@ import com.tokopedia.feedplus.presentation.model.CreateContentType
 import com.tokopedia.feedplus.presentation.model.CreatorType
 import com.tokopedia.feedplus.presentation.model.FeedMainEvent
 import com.tokopedia.feedplus.presentation.onboarding.OnBoardingPreferences
+import com.tokopedia.feedplus.presentation.util.FeedContentManager
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import com.tokopedia.user.session.UserSessionInterface
@@ -126,7 +127,7 @@ class FeedMainViewModelTest {
         viewModel.muteSound()
 
         // then
-        assert(viewModel.isMuted.value == true)
+        assert(FeedContentManager.muteState.value == true)
     }
 
     @Test
@@ -135,7 +136,7 @@ class FeedMainViewModelTest {
         viewModel.unmuteSound()
 
         // then
-        assert(viewModel.isMuted.value == false)
+        assert(FeedContentManager.muteState.value == false)
     }
 
     @Test
