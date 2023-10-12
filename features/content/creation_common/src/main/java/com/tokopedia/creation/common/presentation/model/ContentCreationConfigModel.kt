@@ -8,7 +8,16 @@ data class ContentCreationConfigModel(
     val statisticApplink: String,
     val authors: List<ContentCreationConfigAuthorModel>,
     val creationItems: List<ContentCreationItemModel>
-)
+) {
+    companion object {
+        val Empty = ContentCreationConfigModel(
+            isActive = false,
+            statisticApplink = "",
+            authors = emptyList(),
+            creationItems = emptyList()
+        )
+    }
+}
 
 data class ContentCreationConfigAuthorModel(
     val id: String,
@@ -16,5 +25,5 @@ data class ContentCreationConfigAuthorModel(
     val type: String,
     val image: String,
     val hasUsername: Boolean,
-    val hasAcceptTnc: Boolean,
+    val hasAcceptTnc: Boolean
 )
