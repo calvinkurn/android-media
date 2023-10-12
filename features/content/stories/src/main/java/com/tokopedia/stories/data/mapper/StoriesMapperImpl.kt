@@ -103,12 +103,12 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
                     menus = buildMenu(stories.interaction, stories.author),
                     share = StoriesDetailItem.Sharing(
                         isShareable = stories.interaction.shareable,
-                        shareText = stories.meta.shareTextDescription,
+                        shareText = MethodChecker.fromHtml(stories.meta.shareTextDescription).toString(),
                         metadata = LinkProperties(
                             linkerType = LinkerData.STORIES_TYPE,
-                            ogTitle = stories.meta.shareTitle,
+                            ogTitle = MethodChecker.fromHtml(stories.meta.shareTitle).toString(),
                             ogImageUrl = stories.meta.shareImage,
-                            ogDescription = stories.meta.shareDescription,
+                            ogDescription = MethodChecker.fromHtml(stories.meta.shareDescription).toString(),
                             deeplink = stories.appLink,
                             desktopUrl = stories.webLink
                         )
