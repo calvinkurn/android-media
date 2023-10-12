@@ -249,6 +249,8 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
                     PromoItemState.Normal(useSecondaryPromo = false)
                 } else if (primaryClashingInfos.isNotEmpty() && secondaryClashingInfos.isEmpty()) {
                     PromoItemState.Normal(useSecondaryPromo = true)
+                } else if (primaryClashingInfos.isEmpty()) {
+                    PromoItemState.Normal(useSecondaryPromo = false)
                 } else {
                     PromoItemState.Disabled(
                         useSecondaryPromo = true,
