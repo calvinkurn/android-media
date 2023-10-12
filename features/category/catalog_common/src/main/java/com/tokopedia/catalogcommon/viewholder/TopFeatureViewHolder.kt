@@ -104,7 +104,6 @@ class TopFeatureViewHolder(
         title.text = text
         title.setType(Typography.SMALL)
         title.setTextColor(textColor.orDefaultColor(itemView.context))
-        title.textSize = 12f
         title.gravity = Gravity.CENTER
         title.maxLines = 3
         title.setLines(3)
