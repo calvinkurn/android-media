@@ -63,6 +63,7 @@ import com.tokopedia.mvc.domain.entity.GenerateVoucherImageMetadata
 import com.tokopedia.mvc.domain.entity.VoucherDetailData
 import com.tokopedia.mvc.domain.entity.VoucherDetailWithVoucherCreationMetadata
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
+import com.tokopedia.mvc.domain.entity.enums.ProgramStatus
 import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.enums.PromotionStatus
 import com.tokopedia.mvc.domain.entity.enums.SubsidyInfo
@@ -327,7 +328,6 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             recapPerformanceIllustration.setImageUrl(ILLUSTRATION_MVC_DETAIL_CARD_PERFORMANCE)
             tpgVoucherName.text =
                 getString(R.string.smvc_placeholder_recap_voucher_name, data.voucherName)
-            iconChevron.gone()
             iconChevron.setOnClickListener {
                 if (clParentExpandedCard.isVisible) {
                     TransitionManager.beginDelayedTransition(
@@ -345,6 +345,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                     iconChevron.setImage(IconUnify.CHEVRON_UP)
                 }
             }
+            iconChevron.gone()
             val usedQuota = data.confirmedGlobalQuota
             tpgUsedQuota.text = getString(
                 R.string.smvc_placeholder_total_used_quota,
@@ -546,7 +547,6 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             }
             performanceBinding?.run {
                 illustrationPerformance.setImageUrl(ILLUSTRATION_MVC_DETAIL_CARD_PERFORMANCE)
-                iconChevron.gone()
                 iconChevron.setOnClickListener {
                     if (clParentExpandedCard.isVisible) {
                         TransitionManager.beginDelayedTransition(
@@ -564,6 +564,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                         iconChevron.setImage(IconUnify.CHEVRON_UP)
                     }
                 }
+                iconChevron.gone()
                 val usedQuota = data.confirmedGlobalQuota
                 tpgUsedQuota.text = getString(
                     R.string.smvc_placeholder_total_used_quota,
@@ -1185,7 +1186,11 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             if (data.subsidyDetail.programDetail.promotionStatus == PromotionStatus.APPROVED ||
                 data.subsidyDetail.programDetail.promotionStatus == PromotionStatus.REGISTERED
             ) {
-                showCallTokopediaCareDialog(data.voucherStatus)
+                if (data.subsidyDetail.programDetail.programStatus == ProgramStatus.FINISHED) {
+                    showConfirmationStopVoucherDialog(data)
+                } else {
+                    showCallTokopediaCareDialog(data.voucherStatus)
+                }
             } else {
                 showConfirmationStopVoucherDialog(data)
             }

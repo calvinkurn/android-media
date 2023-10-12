@@ -28,6 +28,7 @@ import com.tokopedia.campaign.utils.extension.slideDown
 import com.tokopedia.campaign.utils.extension.slideUp
 import com.tokopedia.campaign.utils.extension.toDate
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.iconunify.R.*
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
@@ -53,6 +54,7 @@ import com.tokopedia.mvc.domain.entity.ShareComponentMetaData
 import com.tokopedia.mvc.domain.entity.Voucher
 import com.tokopedia.mvc.domain.entity.VoucherCreationQuota
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
+import com.tokopedia.mvc.domain.entity.enums.ProgramStatus
 import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.enums.PromotionStatus
 import com.tokopedia.mvc.domain.entity.enums.VoucherServiceType
@@ -100,6 +102,7 @@ import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
+import com.tokopedia.unifyprinciples.R.color.*
 import com.tokopedia.universal_sharing.constants.BroadcastChannelType
 import com.tokopedia.universal_sharing.view.bottomsheet.ClipboardHandler
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
@@ -146,7 +149,9 @@ class MvcListFragment :
     private var otherPeriodBottomSheet: OtherPeriodBottomSheet? = null
     private var eduCenterBottomSheet: EduCenterBottomSheet? = null
     private var stopVoucherDialog: StopVoucherConfirmationDialog? = null
-    private val statusFilter by lazy { arguments?.getString(BundleConstant.BUNDLE_KEY_VOUCHER_FILTER).orEmpty() }
+    private val statusFilter by lazy {
+        arguments?.getString(BundleConstant.BUNDLE_KEY_VOUCHER_FILTER).orEmpty()
+    }
 
     @Inject
     lateinit var shareCopyWritingGenerator: ShareCopyWritingGenerator
@@ -247,45 +252,56 @@ class MvcListFragment :
                 showUpdateQuotaBottomSheet(voucher)
                 voucherListActionTracker.sendClickUbahQuotaEvent(voucher)
             }
+
             is MoreMenuUiModel.EditPeriod -> {
                 showEditPeriodBottomSheet(voucher)
                 voucherListActionTracker.sendClickUbahPeriodEvent(voucher)
             }
+
             is MoreMenuUiModel.Edit -> {
                 redirectToEditPage(voucher)
                 voucherListActionTracker.sendClickUbahEvent(voucher)
             }
+
             is MoreMenuUiModel.Clipboard -> {
                 VoucherDetailActivity.start(context ?: return, voucher.id)
                 voucherListActionTracker.sendClickLihatDetailEvent(voucher)
             }
+
             is MoreMenuUiModel.Broadcast -> {
                 SharingUtil.shareToBroadCastChat(context ?: return, voucher.id)
                 voucherListActionTracker.sendClickBroadcastChatEvent(voucher)
             }
+
             is MoreMenuUiModel.Download -> {
                 showDownloadVoucherBottomSheet(voucher)
                 voucherListActionTracker.sendClickDownloadEvent(voucher)
             }
+
             is MoreMenuUiModel.Clear -> {
                 deleteVoucher(voucher)
                 voucherListActionTracker.sendClickBatalkanEvent(voucher)
             }
+
             is MoreMenuUiModel.Share -> {
                 viewModel.generateShareComponentMetaData(voucher)
                 voucherListActionTracker.sendClickBagikanEvent(voucher)
             }
+
             is MoreMenuUiModel.Stop -> {
                 deleteVoucher(voucher)
                 voucherListActionTracker.sendClickHentikanEvent(voucher)
             }
+
             is MoreMenuUiModel.DuplicateVoucher -> {
                 redirectToDuplicatePage(voucher.id)
                 voucherListActionTracker.sendClickDuplikatEvent(voucher)
             }
+
             is MoreMenuUiModel.TermsAndConditions -> {
                 /*no-op*/
             }
+
             else -> {
                 /*no-op*/
             }
@@ -581,7 +597,11 @@ class MvcListFragment :
         val title =
             context?.getString(R.string.smvc_voucherlist_voucher_date_format, startDate, finishDate)
                 .toBlankOrString()
-        showMoreMenuBottomSheet(voucher, title, pageSource = OtherPeriodBottomSheet::class.java.simpleName)
+        showMoreMenuBottomSheet(
+            voucher,
+            title,
+            pageSource = OtherPeriodBottomSheet::class.java.simpleName
+        )
     }
 
     private fun setupInitialFilter() {
@@ -626,6 +646,7 @@ class MvcListFragment :
                 is Success -> {
                     displayShareBottomSheet(result.data)
                 }
+
                 is Fail -> {
                 }
             }
@@ -706,10 +727,10 @@ class MvcListFragment :
     private fun HeaderUnify.setupHeader() {
         val colorIcon = MethodChecker.getColor(
             context,
-            com.tokopedia.unifyprinciples.R.color.Unify_NN950
+            Unify_NN950
         )
         title = context.getString(R.string.smvc_voucherlist_page_title)
-        addRightIcon(com.tokopedia.iconunify.R.drawable.iconunify_menu_kebab_horizontal).apply {
+        addRightIcon(drawable.iconunify_menu_kebab_horizontal).apply {
             setColorFilter(colorIcon, PorterDuff.Mode.MULTIPLY)
             setOnClickListener {
                 eduCenterBottomSheet?.show(childFragmentManager)
@@ -877,6 +898,7 @@ class MvcListFragment :
             URL_MAIN_ARTICLE -> {
                 routeToUrl(menu.urlRoute.toString())
             }
+
             else -> {
                 val introPage = Intent(context, MvcIntroActivity::class.java)
                 startActivity(introPage)
@@ -892,7 +914,11 @@ class MvcListFragment :
             if (voucher.subsidyDetail.programDetail.promotionStatus == PromotionStatus.APPROVED ||
                 voucher.subsidyDetail.programDetail.promotionStatus == PromotionStatus.REGISTERED
             ) {
-                showCallTokopediaCareDialog(voucher.status)
+                if (voucher.subsidyDetail.programDetail.programStatus == ProgramStatus.FINISHED) {
+                    showConfirmationStopVoucherDialog(voucher)
+                } else {
+                    showCallTokopediaCareDialog(voucher.status)
+                }
             } else {
                 showConfirmationStopVoucherDialog(voucher)
             }
@@ -961,7 +987,10 @@ class MvcListFragment :
         }
     }
 
-    private fun getStringDescStopVoucherDialog(voucherStatus: VoucherStatus, voucherName: String): String {
+    private fun getStringDescStopVoucherDialog(
+        voucherStatus: VoucherStatus,
+        voucherName: String
+    ): String {
         return if (voucherStatus == VoucherStatus.NOT_STARTED) {
             getString(R.string.smvc_delete_voucher_confirmation_body_dialog)
         } else {
@@ -997,7 +1026,10 @@ class MvcListFragment :
         }
     }
 
-    private fun getStringSuccessStopVoucher(voucherStatus: VoucherStatus, voucherName: String): String {
+    private fun getStringSuccessStopVoucher(
+        voucherStatus: VoucherStatus,
+        voucherName: String
+    ): String {
         return if (voucherStatus == VoucherStatus.NOT_STARTED) {
             getString(R.string.smvc_success_to_deleted_voucher, voucherName)
         } else {
@@ -1005,7 +1037,10 @@ class MvcListFragment :
         }
     }
 
-    private fun getStringFailedStopVoucher(voucherStatus: VoucherStatus, voucherName: String): String {
+    private fun getStringFailedStopVoucher(
+        voucherStatus: VoucherStatus,
+        voucherName: String
+    ): String {
         return if (voucherStatus == VoucherStatus.NOT_STARTED) {
             getString(R.string.smvc_failed_to_deleted_voucher, voucherName)
         } else {
