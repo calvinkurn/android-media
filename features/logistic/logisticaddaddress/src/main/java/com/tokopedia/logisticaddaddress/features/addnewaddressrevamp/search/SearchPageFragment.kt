@@ -301,15 +301,7 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
         }
 
         isPolygon = false
-        if (!isPositiveFlow) {
-            goToPinpointPage(
-                placeId,
-                null,
-                null
-            )
-        } else {
-            goToPinpointPage(placeId, null, null)
-        }
+        goToPinpointPage(placeId, null, null)
     }
 
     private fun setOnBackPressed() {
@@ -769,10 +761,11 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
 
         pinpointPageContract.launch(
             context?.let {
-                PinpointNewPageActivity.createIntent(
+                val intent = PinpointNewPageActivity.createIntent(
                     it,
                     bundle
                 )
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
             }
         )
     }

@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform.AddressFormViewModel
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.search.SearchPageViewModel
 import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.PinpointNewPageViewModel
+import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.PinpointViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -30,6 +31,12 @@ abstract class AddNewAddressRevampViewModelModule {
     @IntoMap
     @ViewModelKey(PinpointNewPageViewModel::class)
     internal abstract fun providesPinpointNewPageViewModel(viewModel: PinpointNewPageViewModel): ViewModel
+
+    @ActivityScope
+    @Binds
+    @IntoMap
+    @ViewModelKey(PinpointViewModel::class)
+    internal abstract fun providesPinpointViewModel(viewModel: PinpointViewModel): ViewModel
 
     @ActivityScope
     @Binds

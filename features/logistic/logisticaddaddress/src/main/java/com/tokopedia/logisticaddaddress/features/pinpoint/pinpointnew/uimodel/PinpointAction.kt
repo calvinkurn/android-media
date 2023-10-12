@@ -6,7 +6,7 @@ import com.tokopedia.logisticCommon.uimodel.AddressUiState
 sealed interface PinpointAction {
     object GetCurrentLocation : PinpointAction
 
-    object InvalidDistrictPinpoint : PinpointAction
+    data class InvalidDistrictPinpoint(val errorText: String) : PinpointAction
 }
 
 data class MoveMap(val lat: Double, val long: Double)
@@ -73,7 +73,6 @@ sealed interface BottomSheetState {
 }
 
 sealed interface ChoosePinpoint {
-    object InvalidShopDistrictPinpoint : ChoosePinpoint
     data class SetPinpointResult(
         val saveAddressDataModel: SaveAddressDataModel,
         val pinpointUiModel: PinpointUiModel
@@ -83,6 +82,7 @@ sealed interface ChoosePinpoint {
         val saveChanges: Boolean,
         val pinpointUiModel: PinpointUiModel,
         val addressState: AddressUiState?,
-        val source: String
+        val source: String,
+        val isPositiveFlow: Boolean
     ) : ChoosePinpoint
 }

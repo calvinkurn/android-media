@@ -49,7 +49,6 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.constant.AddressConstant.EXTRA_CITY_NAME
 import com.tokopedia.logisticCommon.data.constant.AddressConstant.EXTRA_DISTRICT_NAME
@@ -58,12 +57,10 @@ import com.tokopedia.logisticCommon.data.constant.AddressConstant.EXTRA_WH_DISTR
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant.EXTRA_ADDRESS_NEW
 import com.tokopedia.logisticCommon.data.constant.PinpointSource
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
-import com.tokopedia.logisticCommon.data.entity.response.Data
 import com.tokopedia.logisticCommon.uimodel.AddressUiState
 import com.tokopedia.logisticCommon.uimodel.isAdd
 import com.tokopedia.logisticCommon.uimodel.isEdit
 import com.tokopedia.logisticCommon.uimodel.isEditOrPinpointOnly
-import com.tokopedia.logisticCommon.uimodel.isPinpointOnly
 import com.tokopedia.logisticCommon.uimodel.toAddressUiState
 import com.tokopedia.logisticCommon.util.MapsAvailabilityHelper
 import com.tokopedia.logisticCommon.util.getLatLng
@@ -88,19 +85,15 @@ import com.tokopedia.logisticaddaddress.databinding.BottomsheetLocationUndefined
 import com.tokopedia.logisticaddaddress.databinding.BottomsheetLocationUnmatchedBinding
 import com.tokopedia.logisticaddaddress.databinding.FragmentPinpointNewBinding
 import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.AddNewAddressRevampComponent
-import com.tokopedia.logisticaddaddress.domain.mapper.SaveAddressMapper.map
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.search.SearchPageActivity
-import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.uimodel.GetDistrictDataUiModel
 import com.tokopedia.logisticaddaddress.features.analytics.LogisticAddAddressAnalytics
 import com.tokopedia.logisticaddaddress.features.analytics.LogisticEditAddressAnalytics
 import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.PinpointViewModel
 import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.uimodel.BottomSheetState
-import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.uimodel.MapsGeocodeState
+import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.uimodel.ChoosePinpoint
 import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.uimodel.PinpointAction
-import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.uimodel.PinpointUiModel
 import com.tokopedia.logisticaddaddress.features.pinpoint.webview.PinpointWebviewActivity
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_PLACE_ID
-import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.IMAGE_OUTSIDE_INDONESIA
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.LOCATION_NOT_FOUND
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.MAPS_EMPTY
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.PERMISSION_DENIED
@@ -110,8 +103,6 @@ import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.PERMISSION_NOT_
 import com.tokopedia.logisticaddaddress.utils.AddNewAddressUtils
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -133,8 +124,6 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
 
         const val FOREIGN_COUNTRY_MESSAGE = "Lokasi di luar Indonesia."
         const val LOCATION_NOT_FOUND_MESSAGE = "Lokasi gagal ditemukan"
-        const val BOTTOMSHEET_OUT_OF_INDO = 1
-        const val BOTTOMSHEET_NOT_FOUND_LOC = 2
 
         const val SUCCESS = "success"
         const val NOT_SUCCESS = "not success"
@@ -231,11 +220,10 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
     // google map
     private var composite = CompositeSubscription()
     private var googleMap: GoogleMap? = null
-    private var currentPlaceId: String? = ""
+    private var currentPlaceId: String = ""
 
     // to differentiate positive flow or negative flow
-    private var isPositiveFlow: Boolean = true
-    private var showIllustrationMap: Boolean = false
+//    private var isPositiveFlow: Boolean? = null
     private var isFromAddressForm: Boolean = false
     private var isPolygon: Boolean = false
 
@@ -313,33 +301,31 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
         checkMapsAvailability(savedInstanceState)
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        outState.putString(EXTRA_PLACE_ID, currentPlaceId)
-
-        viewModel.uiModel.let {
-            if (it.lat != 0.0 && it.long != 0.0) {
-                outState.putDouble(EXTRA_LAT, it.lat)
-                outState.putDouble(EXTRA_LONG, it.long)
-            }
-
-            if (it.districtName.isNotBlank() && it.cityName.isNotBlank()) {
-                outState.putString(EXTRA_DISTRICT_NAME, it.districtName)
-                outState.putString(EXTRA_CITY_NAME, it.cityName)
-            }
-
-            outState.putParcelable(EXTRA_SAVE_DATA_UI_MODEL, it)
-        }
-
-        outState.putBoolean(EXTRA_IS_POSITIVE_FLOW, isPositiveFlow)
-        outState.putBoolean(EXTRA_IS_POLYGON, isPolygon)
-        outState.putBoolean(EXTRA_FROM_ADDRESS_FORM, isFromAddressForm)
-        outState.putBoolean(EXTRA_IS_EDIT_WAREHOUSE, isEditWarehouse)
-        outState.putLong(EXTRA_WH_DISTRICT_ID, whDistrictId)
-        outState.putString(EXTRA_ADDRESS_STATE, addressUiState.name)
-        outState.putString(PARAM_SOURCE, source)
-
-        super.onSaveInstanceState(outState)
-    }
+//    override fun onSaveInstanceState(outState: Bundle) {
+//        outState.putString(EXTRA_PLACE_ID, currentPlaceId)
+//
+//        viewModel.uiModel.let {
+//            if (it.lat != 0.0 && it.long != 0.0) {
+//                outState.putDouble(EXTRA_LAT, it.lat)
+//                outState.putDouble(EXTRA_LONG, it.long)
+//            }
+//
+//            if (it.districtName.isNotBlank() && it.cityName.isNotBlank()) {
+//                outState.putString(EXTRA_DISTRICT_NAME, it.districtName)
+//                outState.putString(EXTRA_CITY_NAME, it.cityName)
+//            }
+//
+//            outState.putParcelable(EXTRA_SAVE_DATA_UI_MODEL, it)
+//        }
+//        outState.putBoolean(EXTRA_IS_POLYGON, isPolygon)
+//        outState.putBoolean(EXTRA_FROM_ADDRESS_FORM, isFromAddressForm)
+//        outState.putBoolean(EXTRA_IS_EDIT_WAREHOUSE, isEditWarehouse)
+//        outState.putLong(EXTRA_WH_DISTRICT_ID, whDistrictId)
+//        outState.putString(EXTRA_ADDRESS_STATE, addressUiState.name)
+//        outState.putString(PARAM_SOURCE, source)
+//
+//        super.onSaveInstanceState(outState)
+//    }
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -392,9 +378,7 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
             getLatLng(viewModel.uiModel.lat, viewModel.uiModel.long)
         )
 
-        if (isPolygon) {
-            viewModel.getDistrictBoundaries()
-        }
+        viewModel.getDistrictBoundaries()
 
         this.googleMap?.setOnCameraMoveStartedListener { _ ->
             showLoading()
@@ -524,7 +508,7 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
             }
         } else {
             val source =
-                if (isPositiveFlow) PinpointSource.ADD_ADDRESS_POSITIVE else PinpointSource.ADD_ADDRESS_NEGATIVE
+                if (viewModel.isPositiveFlow) PinpointSource.ADD_ADDRESS_POSITIVE else PinpointSource.ADD_ADDRESS_NEGATIVE
             return PinpointWebviewActivity.getIntent(
                 context = context,
                 saveAddressDataModel = viewModel.getAddress(),
@@ -551,26 +535,17 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
     }
 
     private fun onResultFromSearchPage(data: Intent?) {
-        if (addressUiState.isEditOrPinpointOnly()) {
-            currentPlaceId = data?.getStringExtra(EXTRA_PLACE_ID)
-            val currentLat = data?.getDoubleExtra(EXTRA_LAT, 0.0).orZero()
-            val currentLong = data?.getDoubleExtra(EXTRA_LONG, 0.0).orZero()
-            if (!currentPlaceId.isNullOrEmpty()) {
-                currentPlaceId?.let { viewModel.getDistrictLocation(it) }
-            } else if (currentLong != 0.0 && currentLat != 0.0) {
-                moveMap(getLatLng(currentLat, currentLong))
-                viewModel.getDistrictData(currentLat, currentLong)
-            }
-//            else {
-//                goToAddressForm(true)
-//            }
-        } else {
-            // todo i think this is not reachable ? because extra_address_new source is from address form
-            val newAddress =
-                data?.getParcelableExtra<SaveAddressDataModel>(EXTRA_ADDRESS_NEW)
-            val isFromAddressForm = data?.getBooleanExtra(EXTRA_FROM_ADDRESS_FORM, false)
-            isFromAddressForm?.let { finishActivity(newAddress, it) }
-        }
+        currentPlaceId = data?.getStringExtra(EXTRA_PLACE_ID).orEmpty()
+        val currentLat = data?.getDoubleExtra(EXTRA_LAT, 0.0).orZero()
+        val currentLong = data?.getDoubleExtra(EXTRA_LONG, 0.0).orZero()
+        viewModel.onResultFromSearchAddress(placeId = currentPlaceId, lat = currentLat, long = currentLong)
+    }
+
+    fun onNewIntent(bundle: Bundle) {
+        currentPlaceId = bundle.getString(EXTRA_PLACE_ID).orEmpty()
+        val currentLat = bundle.getDouble(EXTRA_LAT, 0.0).orZero()
+        val currentLong = bundle.getDouble(EXTRA_LONG, 0.0).orZero()
+        viewModel.onResultFromSearchAddress(placeId = currentPlaceId, lat = currentLat, long = currentLong)
     }
 
     private fun handlePinpointLite(data: Intent) {
@@ -580,8 +555,7 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     addressData
                 )
             }
-            // todo
-            onChoosePinpoint()
+            viewModel.validatePinpoint()
         }
     }
 
@@ -607,6 +581,11 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
     private fun initData() {
         arguments?.apply {
             addressUiState = getString(EXTRA_ADDRESS_STATE).toAddressUiState()
+            val isPositiveFlow = if (containsKey(EXTRA_IS_POSITIVE_FLOW)) {
+                getBoolean(EXTRA_IS_POSITIVE_FLOW)
+            } else {
+                null
+            }
             viewModel.onViewCreated(
                 districtName = getString(EXTRA_DISTRICT_NAME).orEmpty(),
                 cityName = getString(EXTRA_CITY_NAME).orEmpty(),
@@ -616,15 +595,11 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 districtId = getLong(EXTRA_DISTRICT_ID),
                 whDistrictId = getLong(EXTRA_WH_DISTRICT_ID, 0),
                 addressId = getString(EXTRA_ADDRESS_ID, ""),
-                uiState = getString(EXTRA_ADDRESS_STATE).toAddressUiState()
+                uiState = getString(EXTRA_ADDRESS_STATE).toAddressUiState(),
+                isEditWarehouse = getBoolean(EXTRA_IS_EDIT_WAREHOUSE, false),
+                source = getString(PARAM_SOURCE, ""),
+                isPositiveFlow = isPositiveFlow
             )
-
-            isEditWarehouse = getBoolean(EXTRA_IS_EDIT_WAREHOUSE, false)
-//            whDistrictId = getLong(EXTRA_WH_DISTRICT_ID, 0)
-//            viewModel.addressId = getString(EXTRA_ADDRESS_ID, "")
-
-            isPositiveFlow = getBoolean(EXTRA_IS_POSITIVE_FLOW, true)
-            isPolygon = getBoolean(EXTRA_IS_POLYGON, false)
             isFromAddressForm = getBoolean(EXTRA_FROM_ADDRESS_FORM)
             source = getString(PARAM_SOURCE, "")
 
@@ -644,17 +619,6 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
     }
 
     private fun fetchData() {
-//        if (viewModel.uiModel.placeId.isNotEmpty()) {
-//            viewModel.getDistrictLocation(viewModel.uiModel.placeId)
-//        } else if (viewModel.uiModel.hasPinpoint()) {
-//            viewModel.getLocationFromLatLong()
-//        } else if (viewModel.uiModel.districtId != 0L) {
-//            viewModel.getDistrictCenter()
-//        } else if (viewModel.uiModel.hasDistrictAndCityName) {
-//            viewModel.getGeocodeByDistrictAndCityName()
-//        } else if (addressUiState.isPinpointOnly()) {
-//            getCurrentLocation()
-//        }
         viewModel.fetchData()
     }
 
@@ -680,76 +644,6 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
     }
 
     private fun initObserver() {
-        viewModel.autofillDistrictData.observe(viewLifecycleOwner) {
-            when (it) {
-                is Success -> {
-                    binding?.mapsEmpty?.visibility = View.GONE
-                    binding?.mapViews?.visibility = View.VISIBLE
-                    if (it.data.messageError.isEmpty()) {
-                        updateAfterOnSuccessAutofill(it.data.data)
-                    } else {
-                        val msg = it.data.messageError.getOrNull(0)
-                        msg?.let { error ->
-                            when {
-                                error.contains(FOREIGN_COUNTRY_MESSAGE) -> showOutOfReachBottomSheet()
-                                error.contains(LOCATION_NOT_FOUND_MESSAGE) -> showNotFoundLocation()
-                            }
-                        }
-                    }
-                }
-
-                is Fail -> {
-                    val msg = it.throwable.message.toString()
-                    when {
-                        msg.contains(FOREIGN_COUNTRY_MESSAGE) -> showOutOfReachBottomSheet()
-                        else -> showNotFoundLocation()
-                    }
-                }
-
-                else -> {
-                    // no-op
-                }
-            }
-        }
-
-        viewModel.districtLocation.observe(viewLifecycleOwner) {
-            when (it) {
-                is Success -> {
-                    binding?.mapsEmpty?.visibility = View.GONE
-                    binding?.mapViews?.visibility = View.VISIBLE
-                    onSuccessPlaceGetDistrict(it.data)
-                }
-
-                is Fail -> {
-                    val msg = it.throwable.message.toString()
-                    when {
-                        msg.contains(FOREIGN_COUNTRY_MESSAGE) -> showOutOfReachBottomSheet()
-                        else -> {
-                            showIllustrationMap = true
-                            showNotFoundLocation()
-                        }
-                    }
-                }
-
-                else -> {
-                    // no-op
-                }
-            }
-        }
-
-        viewModel.districtCenter.observe(viewLifecycleOwner) {
-            when (it) {
-                is Success -> {
-                    moveMap(getLatLng(it.data.latitude, it.data.longitude))
-                    viewModel.getDistrictData(it.data.latitude, it.data.longitude)
-                }
-
-                else -> {
-                    // no-op
-                }
-            }
-        }
-
         viewModel.districtBoundary.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
@@ -762,50 +656,26 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
             }
         }
 
-        viewModel.mapsGeocodeState.observe(viewLifecycleOwner) {
-            when (it) {
-                is MapsGeocodeState.Success -> {
-                    moveMap(getLatLng(it.location.lat, it.location.lng))
-                    viewModel.getLocationFromLatLong()
-                }
-
-                is MapsGeocodeState.Fail -> {
-                    when {
-                        it.errorMessage.orEmpty()
-                            .contains(FOREIGN_COUNTRY_MESSAGE) -> showOutOfReachBottomSheet()
-
-                        else -> {
-                            showIllustrationMap = true
-                            showNotFoundLocation()
-                        }
-                    }
-                }
-            }
-        }
-
         viewModel.action.observe(viewLifecycleOwner) {
             when (it) {
                 PinpointAction.GetCurrentLocation -> {
                     getCurrentLocation()
                 }
 
-                PinpointAction.InvalidDistrictPinpoint -> {
+                is PinpointAction.InvalidDistrictPinpoint -> {
                     if (addressUiState.isAdd()) {
                         LogisticAddAddressAnalytics.onViewToasterPinpointTidakSesuai(userSession.userId)
                     }
-                    setupPrimaryButton(false)
-                    view?.let { view ->
-                        Toaster.build(
-                            view,
-                            getString(R.string.txt_toaster_pinpoint_unmatched),
-                            Toaster.LENGTH_SHORT,
-                            Toaster.TYPE_ERROR
-                        ).show()
+                    if (it.errorText.isNotEmpty()) {
+                        view?.let { view ->
+                            Toaster.build(
+                                view,
+                                getString(R.string.txt_toaster_pinpoint_unmatched),
+                                Toaster.LENGTH_SHORT,
+                                Toaster.TYPE_ERROR
+                            ).show()
+                        }
                     }
-                }
-
-                is PinpointAction.MoveMap -> {
-                    moveMap(LatLng(it.lat, it.long))
                 }
             }
         }
@@ -813,25 +683,63 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
         viewModel.pinpointBottomSheet.observe(viewLifecycleOwner) {
             when (it) {
                 is BottomSheetState.LocationDetail -> {
+                    showMap()
                     showDistrictBottomSheet(it)
                 }
+
                 is BottomSheetState.LocationInvalid -> {
                     showInvalidBottomSheet(it)
                 }
             }
         }
+
+        viewModel.choosePinpoint.observe(viewLifecycleOwner) {
+            when (it) {
+                is ChoosePinpoint.GoToAddressForm -> {
+                    val intent = RouteManager.getIntent(
+                        context,
+                        "${ApplinkConstInternalLogistic.EDIT_ADDRESS_REVAMP}${viewModel.addressId}"
+                    )
+                    intent.apply {
+                        if (it.saveChanges) {
+                            putExtra(EXTRA_PINPOINT_MODEL, viewModel.uiModel)
+                        }
+                        putExtra(EXTRA_IS_POSITIVE_FLOW, it.isPositiveFlow)
+                        putExtra(EXTRA_GMS_AVAILABILITY, isGmsAvailable)
+                        it.addressState?.let { state ->
+                            putExtra(EXTRA_ADDRESS_STATE, state.name)
+                        }
+                        putExtra(PARAM_SOURCE, it.source)
+                        addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or FLAG_ACTIVITY_SINGLE_TOP)
+                    }
+                    addressFormContract.launch(intent)
+                }
+
+                is ChoosePinpoint.SetPinpointResult -> {
+                    activity?.run {
+                        setResult(
+                            Activity.RESULT_OK,
+                            Intent().apply {
+                                putExtra(EXTRA_PINPOINT_MODEL, it.pinpointUiModel)
+                                putExtra(EXTRA_SAVE_DATA_UI_MODEL, it.saveAddressDataModel)
+                            }
+                        )
+                        finish()
+                    }
+                }
+            }
+        }
+
+        viewModel.map.observe(viewLifecycleOwner) {
+            showMap()
+            moveMap(getLatLng(it.lat, it.long))
+        }
     }
 
-    private fun setupPrimaryButton(isSuccess: Boolean) {
-        // todo can this be observed through uiModel.hasPinpoint ?
-        binding?.bottomsheetLocation?.btnPrimary?.setOnClickListener {
-            if (addressUiState.isAdd() && !isPositiveFlow) {
-                LogisticAddAddressAnalytics.onClickPilihLokasiNegative(
-                    userSession.userId,
-                    if (isSuccess) SUCCESS else NOT_SUCCESS
-                )
-                if (isSuccess) goToAddressForm(true)
-            }
+    private fun showMap() {
+        binding?.run {
+            mapViews.visible()
+            mapsEmpty.gone()
         }
     }
 
@@ -891,13 +799,13 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
                         }
 
                         AddressUiState.AddAddress -> {
-                            if (isPositiveFlow) {
-                                LogisticAddAddressAnalytics.onClickPilihLokasiPositive(userSession.userId)
-                            } else {
+                            if (viewModel.isPositiveFlow) {
                                 LogisticAddAddressAnalytics.onClickPilihLokasiNegative(
                                     userSession.userId,
                                     if (state.buttonPrimary.state.success) SUCCESS else NOT_SUCCESS
                                 )
+                            } else {
+                                LogisticAddAddressAnalytics.onClickPilihLokasiPositive(userSession.userId)
                             }
                         }
 
@@ -907,7 +815,7 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     }
 
                     if (state.buttonPrimary.enable) {
-                        viewModel.onChoosePinpoint()
+                        viewModel.validatePinpoint()
                     }
                 }
             }
@@ -1052,46 +960,6 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
         viewModel.getDistrictData(latTarget, longTarget)
     }
 
-    private fun onSuccessPlaceGetDistrict(data: GetDistrictDataUiModel) {
-        if ((data.postalCode.isEmpty() && viewModel.uiModel.postalCode.isEmpty()) || data.districtId == 0L) {
-            viewModel.setLatLong(data.latitude.toDoubleOrZero(), data.longitude.toDoubleOrZero())
-            moveMap(getLatLng(data.latitude, data.longitude))
-            showNotFoundLocation()
-        } else {
-            doAfterSuccessPlaceGetDistrict(data)
-        }
-    }
-
-    private fun doAfterSuccessPlaceGetDistrict(data: GetDistrictDataUiModel) {
-        showDistrictBottomSheet()
-
-        moveMap(getLatLng(data.latitude, data.longitude))
-
-        viewModel.uiModel = viewModel.uiModel.map(data, null)
-
-        with(data.errMessage) {
-            if (this != null && this.contains(LOCATION_NOT_FOUND_MESSAGE)) {
-                showNotFoundLocation()
-            } else {
-                updateGetDistrictBottomSheet(viewModel.uiModel)
-            }
-        }
-    }
-
-    private fun updateGetDistrictBottomSheet(data: PinpointUiModel) {
-//        viewModel.setAddress(data)
-        setDefaultResultGetDistrict(data)
-    }
-
-    private fun setDefaultResultGetDistrict(data: PinpointUiModel) {
-        showDistrictBottomSheet()
-
-        binding?.bottomsheetLocation?.run {
-            tvAddress.text = data.title
-            tvAddressDesc.text = data.formattedAddress
-        }
-    }
-
     private fun prepareMap(savedInstanceState: Bundle?) {
         binding?.mapViews?.onCreate(savedInstanceState)
         binding?.mapViews?.getMapAsync(this)
@@ -1109,50 +977,6 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 }
                 bottomsheetLocation.root.hide()
                 showBottomSheetInfo()
-            }
-
-            bottomsheetLocation.btnPrimary.setOnClickListener {
-                when (addressUiState) {
-                    AddressUiState.EditAddress -> {
-                        LogisticEditAddressAnalytics.onClickPilihLokasiIni(userSession.userId)
-                    }
-
-                    AddressUiState.AddAddress -> {
-                        if (isPositiveFlow) {
-                            LogisticAddAddressAnalytics.onClickPilihLokasiPositive(userSession.userId)
-                        } else {
-                            LogisticAddAddressAnalytics.onClickPilihLokasiNegative(
-                                userSession.userId,
-                                SUCCESS
-                            )
-                        }
-                    }
-
-                    else -> {
-                        // no op
-                    }
-                }
-                isPositiveFlow = true
-                onChoosePinpoint()
-            }
-
-            bottomsheetLocation.btnSecondary.setOnClickListener {
-                LogisticAddAddressAnalytics.onClickIsiAlamatManual(userSession.userId)
-                if (isPositiveFlow) {
-                    isPositiveFlow = false
-                    goToAddressForm(false)
-                } else {
-                    activity?.run {
-                        setResult(
-                            Activity.RESULT_OK,
-                            Intent().apply {
-                                putExtra(EXTRA_NEGATIVE_FULL_FLOW, true)
-                                putExtra(EXTRA_GMS_AVAILABILITY, isGmsAvailable)
-                            }
-                        )
-                        finish()
-                    }
-                }
             }
 
             chipsCurrentLoc.chipImageResource =
@@ -1194,40 +1018,6 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 }
                 goToSearchPage()
             }
-        }
-    }
-
-    private fun onChoosePinpoint() {
-        if (addressUiState.isEditOrPinpointOnly()) {
-            if (isEditWarehouse && whDistrictId != 0L && whDistrictId != viewModel.uiModel.districtId) {
-                view?.let {
-                    Toaster.build(
-                        it,
-                        getString(R.string.toaster_not_avail_shop_loc),
-                        Toaster.LENGTH_SHORT,
-                        type = Toaster.TYPE_ERROR
-                    ).show()
-                }
-            } else {
-                setPinpointResult()
-            }
-        } else {
-            goToAddressForm(true)
-        }
-    }
-
-    private fun setPinpointResult() {
-        val saveModel = viewModel.getAddress()
-        activity?.run {
-            setResult(
-                Activity.RESULT_OK,
-                Intent().apply {
-                    putExtra(EXTRA_PINPOINT_MODEL, viewModel.uiModel)
-                    putExtra(EXTRA_SAVE_DATA_UI_MODEL, saveModel)
-                    putExtra(EXTRA_NEGATIVE_FULL_FLOW, false)
-                }
-            )
-            finish()
         }
     }
 
@@ -1420,178 +1210,14 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
         googleMap?.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
     }
 
-    private fun updateAfterOnSuccessAutofill(data: Data) {
-        showDistrictBottomSheet()
-
-        if (isPolygon) {
-            if (data.districtId != viewModel.uiModel.districtId) {
-                if (addressUiState.isAdd()) {
-                    LogisticAddAddressAnalytics.onViewToasterPinpointTidakSesuai(userSession.userId)
-                }
-                binding?.bottomsheetLocation?.btnPrimary?.setOnClickListener {
-                    if (addressUiState.isAdd()) {
-                        LogisticAddAddressAnalytics.onClickPilihLokasiNegative(
-                            userSession.userId,
-                            NOT_SUCCESS
-                        )
-                    }
-                }
-                view?.let { view ->
-                    Toaster.build(
-                        view,
-                        getString(R.string.txt_toaster_pinpoint_unmatched),
-                        Toaster.LENGTH_SHORT,
-                        Toaster.TYPE_ERROR
-                    ).show()
-                }
-            } else {
-                binding?.bottomsheetLocation?.btnPrimary?.setOnClickListener {
-                    if (addressUiState.isAdd()) {
-                        LogisticAddAddressAnalytics.onClickPilihLokasiNegative(
-                            userSession.userId,
-                            SUCCESS
-                        )
-                    }
-                    onChoosePinpoint()
-                }
-                viewModel.uiModel = viewModel.uiModel.map(data, null)
-                updateGetDistrictBottomSheet(viewModel.uiModel)
-            }
-        } else {
-            viewModel.uiModel = viewModel.uiModel.map(data, null)
-            updateGetDistrictBottomSheet(viewModel.uiModel)
-        }
-    }
-
-    private fun showOutOfReachBottomSheet() {
-        showInvalidBottomSheet()
-        updateInvalidBottomSheetData(BOTTOMSHEET_OUT_OF_INDO)
-    }
-
-    private fun showNotFoundLocation() {
-        showInvalidBottomSheet()
-        updateInvalidBottomSheetData(BOTTOMSHEET_NOT_FOUND_LOC)
-    }
-
-    private fun updateInvalidBottomSheetData(type: Int) {
-        if (type == BOTTOMSHEET_OUT_OF_INDO) {
-            when (addressUiState) {
-                AddressUiState.EditAddress -> {
-                    LogisticEditAddressAnalytics.onImpressBottomSheetOutOfIndo(userSession.userId)
-                }
-
-                AddressUiState.AddAddress -> {
-                    LogisticAddAddressAnalytics.onImpressBottomSheetOutOfIndo(userSession.userId)
-                }
-
-                else -> {
-                    // no op
-                }
-            }
-            binding?.bottomsheetLocation?.run {
-                imgInvalidLoc.setImageUrl(IMAGE_OUTSIDE_INDONESIA)
-                tvInvalidLoc.text = getString(R.string.out_of_indonesia_title)
-                tvInvalidLocDetail.text = getString(R.string.out_of_indonesia_desc_new)
-                if (addressUiState.isEditOrPinpointOnly()) {
-                    btnAnaNegative.visibility = View.GONE
-                }
-            }
-        } else {
-            when (addressUiState) {
-                AddressUiState.EditAddress -> {
-                    LogisticEditAddressAnalytics.onImpressBottomSheetAlamatTidakTerdeteksi(
-                        userSession.userId
-                    )
-                }
-
-                AddressUiState.AddAddress -> {
-                    LogisticAddAddressAnalytics.onImpressBottomSheetAlamatTidakTerdeteksi(
-                        userSession.userId
-                    )
-                }
-
-                else -> {
-                    // no op
-                }
-            }
-            if (showIllustrationMap) {
-                binding?.mapsEmpty?.visibility = View.VISIBLE
-                binding?.mapViews?.visibility = View.GONE
-                binding?.imgMapsEmpty?.setImageUrl(MAPS_EMPTY)
-                showIllustrationMap = false
-            }
-            binding?.bottomsheetLocation?.run {
-                imgInvalidLoc.setImageUrl(LOCATION_NOT_FOUND)
-                if (addressUiState.isEditOrPinpointOnly()) {
-                    tvInvalidLoc.text = getString(R.string.undetected_location_new_edit)
-                    if (viewModel.uiModel.hasPinpoint() || addressUiState.isPinpointOnly()) {
-                        tvInvalidLocDetail.text =
-                            getString(R.string.undetected_location_desc_edit_w_pinpoint)
-                        btnAnaNegative.visibility = View.GONE
-                    } else {
-                        tvInvalidLocDetail.text =
-                            getString(R.string.undetected_location_desc_edit_wo_pinpoint)
-                        btnAnaNegative.let {
-                            it.buttonVariant = UnifyButton.Variant.GHOST
-                            it.buttonType = UnifyButton.Type.MAIN
-                            it.text = getString(R.string.mismatch_btn_title)
-                            it.setOnClickListener {
-                                goToAddressForm(false)
-                            }
-                        }
-                    }
-                } else {
-                    tvInvalidLoc.text = getString(R.string.undetected_location_new)
-                    tvInvalidLocDetail.text = getString(R.string.undetected_location_desc_new)
-                }
-            }
-        }
-
-        binding?.bottomsheetLocation?.btnAnaNegative?.setOnClickListener {
-            if (addressUiState.isAdd()) {
-                if (type == BOTTOMSHEET_OUT_OF_INDO) {
-                    LogisticAddAddressAnalytics.onClickIsiAlamatOutOfIndo(userSession.userId)
-                } else {
-                    LogisticAddAddressAnalytics.onClickIsiAlamatManualUndetectedLocation(
-                        userSession.userId
-                    )
-                }
-            }
-            isPositiveFlow = false
-            goToAddressForm(false)
-        }
-    }
-
     private fun goToSearchPage() {
-        if (addressUiState.isEditOrPinpointOnly() || !isPositiveFlow) {
-            context?.let {
-                searchPageContract.launch(
-                    Intent(it, SearchPageActivity::class.java).apply {
-                        putExtra(EXTRA_GMS_AVAILABILITY, isGmsAvailable)
-                        putExtra(EXTRA_ADDRESS_STATE, addressUiState.name)
-                    }
-                )
-            }
-        } else {
-            activity?.finish()
+        context?.let {
+            searchPageContract.launch(
+                Intent(it, SearchPageActivity::class.java).apply {
+                    putExtra(EXTRA_GMS_AVAILABILITY, isGmsAvailable)
+                    putExtra(EXTRA_ADDRESS_STATE, addressUiState.name)
+                }
+            )
         }
-    }
-
-    private fun goToAddressForm(saveChanges: Boolean) {
-        val intent = RouteManager.getIntent(
-            context,
-            "${ApplinkConstInternalLogistic.EDIT_ADDRESS_REVAMP}${viewModel.addressId}"
-        )
-        intent.apply {
-            if (saveChanges) {
-                putExtra(EXTRA_PINPOINT_MODEL, viewModel.uiModel)
-            }
-            putExtra(EXTRA_IS_POSITIVE_FLOW, isPositiveFlow)
-            putExtra(EXTRA_GMS_AVAILABILITY, isGmsAvailable)
-            putExtra(EXTRA_ADDRESS_STATE, addressUiState.name)
-            putExtra(PARAM_SOURCE, source)
-            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or FLAG_ACTIVITY_SINGLE_TOP)
-        }
-        addressFormContract.launch(intent)
     }
 }
