@@ -233,7 +233,7 @@ class BannerIndicator : LinearLayout {
         return try {
             Settings.Global.getFloat(context.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE) == 0f
         } catch (_: Settings.SettingNotFoundException) {
-            true
+            false
         }
     }
 }

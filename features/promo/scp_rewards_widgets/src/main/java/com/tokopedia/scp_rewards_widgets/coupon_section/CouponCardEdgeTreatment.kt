@@ -5,7 +5,7 @@ import androidx.annotation.FloatRange
 import androidx.annotation.RestrictTo
 import com.google.android.material.shape.EdgeTreatment
 import com.google.android.material.shape.ShapePath
-import com.tokopedia.scp_rewards_common.dpToPx
+import com.tokopedia.scp_rewards_common.utils.dpToPx
 
 /**
  * The code for CouponCardEdgeTreatment is adapted from BottomAppBarTopEdgeTreatment which is a part

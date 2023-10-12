@@ -401,6 +401,73 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                     action_url
                     type
                   }
+                  bmgm_icon
+                  bmgms {
+                    id
+                    bmgm_tier_name
+                    total_price_note
+                    tier_discount_amount
+                    tier_discount_amount_formatted
+                    price_before_benefit
+                    price_before_benefit_formatted
+                    price_after_benefit
+                    price_after_benefit_formatted
+                    order_detail {
+                      order_detail_id
+                      product_id
+                      product_name
+                      thumbnail
+                      price
+                      price_text
+                      quantity
+                      total_price
+                      total_price_text
+                      notes
+                      category_id
+                      category
+                      button {
+                        key
+                        display_name
+                        type
+                        variant
+                        url
+                        popup {
+                          title
+                          body
+                          action_button {
+                            key
+                            display_name
+                            color
+                            type
+                            uri
+                          }
+                        }
+                      }
+                      addon_summary {
+                        addons {
+                          id
+                          name
+                          price_str
+                          subtotal_price_str
+                          quantity
+                          type
+                          image_url
+                          metadata {
+                            add_on_note {
+                              is_custom_note
+                              from
+                              to
+                              notes
+                              short_notes
+                            }
+                          }
+                        }
+                      }
+                      flags {
+                        is_ppp
+                      }
+                    }
+                  }
                 }
                 addon_info {
                   label
@@ -433,6 +500,7 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                     total_quantity
                   }
                 }
+                
                 additional_data {
                   group_order_data {
                     tx_id
