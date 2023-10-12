@@ -16,6 +16,7 @@ import com.gojek.pin.validation.ExtVerificationUiConfig
 import com.gojek.pin.validation.PinSdkValidationListener
 import com.gojek.pin.validation.PinValidationResults
 import com.scp.auth.analytics.AuthAnalyticsMapper
+import com.scp.auth.analytics.GotoPinAnalyticsMapper
 import com.scp.auth.authentication.LoginSdkConfigs
 import com.scp.auth.di.DaggerScpAuthComponent
 import com.scp.auth.di.ScpAuthComponent
@@ -165,6 +166,9 @@ object GotoSdk {
                         callback: (PinValidationResults) -> Unit
                     ) {
                     }
+                },
+                analyticDelegate = {
+                    GotoPinAnalyticsMapper.trackEvent(it.eventName, it.properties)
                 }
             )
         )
