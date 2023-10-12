@@ -216,11 +216,11 @@ class TokoNowRepurchaseViewModel @Inject constructor(
     }
 
     fun getChooseAddress(source: String) {
-        getChooseAddressWarehouseLocUseCase.getStateChosenAddress({
-            _chooseAddress.postValue(Success(it))
-        }, {
+        launchCatchError(block = {
+            _chooseAddress.postValue(Success(getChooseAddressWarehouseLocUseCase(source)))
+        }) {
             _chooseAddress.postValue(Fail(it))
-        }, source)
+        }
     }
 
     fun showEmptyState(@RepurchaseStaticLayoutId id: String) {

@@ -1,16 +1,12 @@
 package com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget
 
 import android.view.View
-import android.widget.FrameLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.creation.common.presentation.bottomsheet.ContentCreationBottomSheet
+import com.tokopedia.creation.common.presentation.customviews.ContentCreationEntryPointWidget
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
-import com.tokopedia.shop.common.graphql.data.shopinfo.Broadcaster
 import com.tokopedia.shop.databinding.LayoutShopHeaderPlayWidgetBinding
-import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopPageHeaderPlayWidgetButtonComponentUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopPageHeaderWidgetUiModel
 import com.tokopedia.utils.view.binding.viewBinding
@@ -30,66 +26,37 @@ class ShopPageHeaderPlayWidgetViewHolder(
         fun onStartLiveStreamingClicked(
             componentModel: ShopPageHeaderPlayWidgetButtonComponentUiModel,
             shopPageHeaderWidgetUiModel: ShopPageHeaderWidgetUiModel,
-            broadcasterConfig: Broadcaster.Config
         )
 
         fun onImpressionPlayWidgetComponent(
             componentModel: ShopPageHeaderPlayWidgetButtonComponentUiModel,
             shopPageHeaderWidgetUiModel: ShopPageHeaderWidgetUiModel
         )
+
+        fun getContentCreationListener(): ContentCreationBottomSheet.ContentCreationBottomSheetListener
     }
 
     private val viewBinding: LayoutShopHeaderPlayWidgetBinding? by viewBinding()
-    private val playSgcWidgetContainer = viewBinding?.playSgcWidgetContainer
-    private val tvStartCreateContentDesc = viewBinding?.tvStartCreateContentDesc
-    private val playSgcBtnStartLive = viewBinding?.playSgcBtnStartLive
-    private val widgetPlayRootContainer: FrameLayout? = viewBinding?.widgetPlayRootContainer
+    private val widgetPlayRootContainer: ContentCreationEntryPointWidget? = viewBinding?.root
 
     override fun bind(shopPageHeaderWidgetUiModel: ShopPageHeaderWidgetUiModel) {
-        val modelComponent = shopPageHeaderWidgetUiModel.componentPages.filterIsInstance<ShopPageHeaderPlayWidgetButtonComponentUiModel>().firstOrNull()
-        modelComponent?.shopPageHeaderDataModel?.let { shopPageHeaderDataModel ->
-            if (allowContentCreation(shopPageHeaderDataModel)) {
-                showPlayWidget()
-                setupTextContentSgcWidget()
-                shopPageTrackingSGCPlayWidget?.onImpressionSGCContent(shopId = shopPageHeaderDataModel.shopId)
-                playSgcBtnStartLive?.setOnClickListener {
-                    shopPageTrackingSGCPlayWidget?.onClickSGCContent(shopId = shopPageHeaderDataModel.shopId)
-                    listener.onStartLiveStreamingClicked(
-                        modelComponent,
-                        shopPageHeaderWidgetUiModel,
-                        shopPageHeaderDataModel.broadcaster
-                    )
-                }
-            } else {
-                hidePlayWidget()
+        val modelComponent =
+            shopPageHeaderWidgetUiModel.componentPages.filterIsInstance<ShopPageHeaderPlayWidgetButtonComponentUiModel>()
+                .firstOrNull()
+
+        modelComponent?.let {
+            widgetPlayRootContainer?.creationBottomSheetListener =
+                listener.getContentCreationListener()
+            widgetPlayRootContainer?.onClickListener = {
+                shopPageTrackingSGCPlayWidget?.onClickSGCContent(shopId = it.shopPageHeaderDataModel?.shopId.orEmpty())
+                listener.onStartLiveStreamingClicked(
+                    modelComponent,
+                    shopPageHeaderWidgetUiModel
+                )
             }
+            widgetPlayRootContainer?.fetchConfig()
+
+            shopPageTrackingSGCPlayWidget?.onImpressionSGCContent(shopId = it.shopPageHeaderDataModel?.shopId.orEmpty())
         }
-    }
-
-    private fun showPlayWidget() {
-        widgetPlayRootContainer?.show()
-        playSgcWidgetContainer?.show()
-    }
-
-    private fun hidePlayWidget() {
-        widgetPlayRootContainer?.hide()
-        playSgcWidgetContainer?.hide()
-    }
-
-    private fun allowContentCreation(dataModel: ShopPageHeaderDataModel): Boolean {
-        return (isStreamAllowed(dataModel) || isShortsVideoAllowed(dataModel))
-    }
-
-    private fun setupTextContentSgcWidget() {
-        if (tvStartCreateContentDesc?.text?.isNotBlank() == true) return
-        tvStartCreateContentDesc?.text = MethodChecker.fromHtml(getString(R.string.shop_page_play_widget_desription))
-    }
-
-    private fun isStreamAllowed(dataModel: ShopPageHeaderDataModel): Boolean {
-        return dataModel.broadcaster.streamAllowed
-    }
-
-    private fun isShortsVideoAllowed(dataModel: ShopPageHeaderDataModel): Boolean {
-        return dataModel.broadcaster.shortVideoAllowed
     }
 }

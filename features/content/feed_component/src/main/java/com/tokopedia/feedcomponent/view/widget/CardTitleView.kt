@@ -4,6 +4,8 @@ import android.content.Context
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.View
+import android.widget.ImageView
+import android.widget.LinearLayout
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Action
@@ -11,7 +13,7 @@ import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Title
 import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateTitle
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
-import kotlinx.android.synthetic.main.partial_card_title.view.*
+import com.tokopedia.unifyprinciples.Typography
 
 /**
  * @author by milhamj on 02/01/19.
@@ -23,23 +25,19 @@ class CardTitleView : BaseCustomView {
         const val ACTION_REDIRECT = "redirectpage"
     }
 
+    private val view = View.inflate(context, R.layout.partial_card_title, this)
     var listener: CardTitleListener? = null
 
-    constructor(context: Context) : super(context) {
-        init()
-    }
+    private val titleLayout: LinearLayout = view.findViewById(R.id.titleLayout)
+    private val text: Typography = view.findViewById(R.id.text)
+    private val badge: ImageView = view.findViewById(R.id.badge)
+    private val cta: Typography = view.findViewById(R.id.cta)
 
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
-        init()
-    }
+    constructor(context: Context) : super(context)
 
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
-        init()
-    }
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
 
-    private fun init() {
-        View.inflate(context, R.layout.partial_card_title, this)
-    }
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     fun bind(title: Title, template: TemplateTitle, adapterPosition: Int) {
         titleLayout.shouldShowWithAction(shouldShowTitle(title, template)) {

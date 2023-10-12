@@ -1,5 +1,6 @@
 package com.tokopedia.creation.common.di
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.creation.common.domain.ContentCreationConfigUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -11,6 +12,10 @@ import dagger.Provides
  */
 @Module(includes = [ContentCreationViewModelModule::class])
 class ContentCreationModule {
+    @Provides
+    fun provideGraphqlRepository(@ApplicationContext graphqlRepository: GraphqlRepository): GraphqlRepository =
+        graphqlRepository
+
     @Provides
     fun provideContentCreationConfigUseCase(
         graphqlRepository: GraphqlRepository,
