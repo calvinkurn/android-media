@@ -4,7 +4,6 @@ import androidx.work.ForegroundInfo
 import com.tokopedia.creation.common.upload.model.CreationUploadData
 import com.tokopedia.creation.common.upload.model.CreationUploadStatus
 import com.tokopedia.creation.common.upload.uploader.notification.CreationUploadNotificationManager
-import kotlinx.coroutines.delay
 
 /**
  * Created By : Jonathan Darwin on September 15, 2023
@@ -41,16 +40,14 @@ abstract class CreationUploadManager(
         }
     }
 
-    protected suspend fun broadcastComplete(uploadData: CreationUploadData) {
+    protected fun broadcastComplete(uploadData: CreationUploadData) {
         broadcastProgress(uploadData, CreationUploadStatus.Success)
         notificationManager?.onSuccess()
-        delay(UPLOAD_FINISH_DELAY)
     }
 
-    protected suspend fun broadcastFail(uploadData: CreationUploadData) {
+    protected fun broadcastFail(uploadData: CreationUploadData) {
         broadcastProgress(uploadData, CreationUploadStatus.Failed)
         notificationManager?.onError()
-        delay(UPLOAD_FINISH_DELAY)
     }
 
     protected fun broadcastProgress(
@@ -62,14 +59,13 @@ abstract class CreationUploadManager(
     }
 
     companion object {
-        private const val UPLOAD_FINISH_DELAY = 1000L
         const val MAX_UPLOAD_PROGRESS = 100
     }
 }
 
 interface CreationUploadManagerListener {
 
-    suspend fun setupForegroundNotification(info: ForegroundInfo)
+    fun setupForegroundNotification(info: ForegroundInfo)
 
     fun setProgress(
         uploadData: CreationUploadData,

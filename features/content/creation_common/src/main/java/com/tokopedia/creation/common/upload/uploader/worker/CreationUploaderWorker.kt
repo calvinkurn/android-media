@@ -72,7 +72,7 @@ class CreationUploaderWorker(
 
                     uploadManager.setListener(
                         object : CreationUploadManagerListener {
-                            override suspend fun setupForegroundNotification(info: ForegroundInfo) {
+                            override fun setupForegroundNotification(info: ForegroundInfo) {
                                 setForegroundAsync(info)
                             }
 
