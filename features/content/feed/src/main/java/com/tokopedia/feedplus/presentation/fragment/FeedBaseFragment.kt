@@ -182,7 +182,6 @@ class FeedBaseFragment :
         childFragmentManager.addFragmentOnAttachListener { _, fragment ->
             when (fragment) {
                 is ContentCreationBottomSheet -> {
-                    fragment.viewModelFactory = viewModelFactory
                     fragment.listener = this
                     fragment.shouldShowPerformanceAction = false
                 }
