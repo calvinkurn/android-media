@@ -9,11 +9,13 @@ import com.tokopedia.discovery2.databinding.MerchantVoucherGridItemLayoutBinding
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
+import com.tokopedia.user.session.UserSession
 
 class MerchantVoucherGridItemViewHolder(
     itemView: View,
     val fragment: Fragment
-): AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
+) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
 
     private val binding = MerchantVoucherGridItemLayoutBinding.bind(itemView)
 
@@ -31,6 +33,7 @@ class MerchantVoucherGridItemViewHolder(
         lifecycleOwner?.let { lifeCycle ->
             viewModel?.getComponentData()?.observe(lifeCycle) {
                 renderVoucher(it)
+                trackImpression()
             }
         }
     }
@@ -46,6 +49,18 @@ class MerchantVoucherGridItemViewHolder(
             onClick {
                 RouteManager.route(itemView.context, item.shopInfo?.appLink)
             }
+        }
+    }
+
+    private fun trackImpression() {
+        val analytics = (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
+
+        viewModel?.run {
+            analytics?.trackMerchantVoucherMultipleImpression(
+                component,
+                UserSession(fragment.context).userId,
+                position
+            )
         }
     }
 }
