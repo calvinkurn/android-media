@@ -79,6 +79,7 @@ object GotoSdk {
                         eventName: ScpAnalyticsEvent,
                         params: Map<String, Any?>
                     ) {
+                        AuthAnalyticsMapper.trackEventLsdk(eventName.eventName, params)
                     }
 
                     override fun trackEvent(
@@ -102,14 +103,16 @@ object GotoSdk {
     fun migrateExistingToken(userSession: UserSessionInterface) {
         if (userSession.isLoggedIn &&
             LSDKINSTANCE?.getAccessToken()?.isEmpty() == true &&
-            LSDKINSTANCE?.getRefreshToken()?.isEmpty() == true) {
-                LSDKINSTANCE?.save(userSession.accessToken, userSession.freshToken)
+            LSDKINSTANCE?.getRefreshToken()?.isEmpty() == true
+        ) {
+            LSDKINSTANCE?.save(userSession.accessToken, userSession.freshToken)
         }
     }
 
     private fun initializeAbTestVariant(application: Application) {
         val sharedPreferences: SharedPreferences = application.getSharedPreferences(
-            SHARED_PREFERENCE_AB_TEST_PLATFORM, Context.MODE_PRIVATE
+            SHARED_PREFERENCE_AB_TEST_PLATFORM,
+            Context.MODE_PRIVATE
         )
         val timestampAbTest = sharedPreferences.getLong(KEY_SP_TIMESTAMP_AB_TEST, 0)
         RemoteConfigInstance.initAbTestPlatform(application)
@@ -120,7 +123,6 @@ object GotoSdk {
         // Init abtest each time we initialize the sdk, for testing purpose
         RemoteConfigInstance.getInstance().abTestPlatform.fetch(null)
         println("gotosdk:No Need Init")
-
     }
 
     private fun getGotoPinSdkProvider(application: Application): PinManager {
@@ -140,7 +142,8 @@ object GotoSdk {
                 ),
                 appInfo = AppInfo(
                     appType = TOKOPEDIA_APP_TYPE,
-                    isDebug = GlobalConfig.isAllowDebuggingTools(),
+                    // Rama will fix the global config issue
+                    isDebug = false,
                     language = LOCALE_ID
                 ),
                 deviceInfo = DeviceInfo(

@@ -2,9 +2,11 @@ package com.scp.auth
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
+import com.scp.auth.analytics.AuthAnalyticsMapper
 import com.scp.auth.di.DaggerScpAuthComponent
 import com.scp.auth.utils.goToChangePIN
 import com.scp.auth.utils.goToForgotGotoPin
@@ -101,6 +103,7 @@ class ScpAuthActivity : BaseActivity() {
             additionalHeaders = TkpdAdditionalHeaders(this),
             loginSuccessListener = object : LSdkLoginFlowListener {
                 override fun onUserBackPressed(closeLogin: () -> Unit) {
+                    GotoSdk.LSDKINSTANCE?.closeScreenAndExit()
                     finish()
                 }
 
@@ -109,15 +112,11 @@ class ScpAuthActivity : BaseActivity() {
 
                 override fun onLoginSuccessful(activity: Activity?) {
                     GotoSdk.LSDKINSTANCE?.closeScreenAndExit()
-                    viewModel.getUserInfo()
+                    getUserInfo()
                 }
 
                 override fun onUserNotRegistered(credential: UserCredential, activity: Activity?) {
-                    val intent = RouteManager.getIntent(this@ScpAuthActivity, ApplinkConstInternalUserPlatform.INIT_REGISTER).apply {
-                        val userCredential = credential.phoneNumber.ifEmpty { credential.email }
-                        putExtra(ApplinkConstInternalUserPlatform.LOGIN_SDK_CREDENTIAL, userCredential)
-                    }
-                    startActivity(intent)
+                    gotoRegisterInitial(credential)
                 }
             },
             clientFlowListener = object : LSdkClientFlowListener {
@@ -185,6 +184,21 @@ class ScpAuthActivity : BaseActivity() {
                 }
             }
         )
+    }
+
+    private fun gotoRegisterInitial(userCredential: UserCredential) {
+        val intent = RouteManager.getIntent(this@ScpAuthActivity, ApplinkConstInternalUserPlatform.INIT_REGISTER).apply {
+            val userCredential = userCredential.phoneNumber.ifEmpty { userCredential.email }
+            putExtra(ApplinkConstInternalUserPlatform.LOGIN_SDK_CREDENTIAL, userCredential)
+            flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
+        }
+        startActivity(intent)
+        finish()
+    }
+
+    private fun getUserInfo() {
+        viewModel.getUserInfo()
+        AuthAnalyticsMapper.trackProfileFetch("triggered")
     }
 
     private fun goToTokopediaCare() {

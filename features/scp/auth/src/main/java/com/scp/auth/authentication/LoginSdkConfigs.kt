@@ -1,6 +1,7 @@
 package com.scp.auth.authentication
 
 import android.content.Context
+import com.scp.auth.ScpConstants
 import com.scp.login.core.domain.contracts.configs.LSdkAppConfig
 import com.scp.login.core.domain.contracts.configs.LSdkAuthConfig
 import com.scp.login.core.domain.contracts.configs.LSdkConfig
@@ -12,16 +13,26 @@ class LoginSdkConfigs(val context: Context) : LSdkConfig {
     override fun getAppConfigs(): LSdkAppConfig {
         val uniqueId = FingerprintModelGenerator.getFCMId(context)
         return LSdkAppConfig(
-            environment = LSdkEnvironment.INTEGRATION,
+            environment = getEnvironment(),
             isLogsEnabled = false,
-            appLocale = "id-ID",
-            userLang = "id-ID",
-            userType = "toko_user",
+            appLocale = ScpConstants.APP_LOCALE,
+            userLang = ScpConstants.APP_LOCALE,
+            userType = ScpConstants.TOKO_USER_TYPE,
             uniqueId = uniqueId
         )
     }
 
     override fun getAuthConfigs(): LSdkAuthConfig {
-        return LSdkAuthConfig(clientID = "tokopedia:consumer:android", clientSecret = "uPu4ieJOyPnf7sAS6ENCrBSvRMhF1g", gotoPinclientID = context.getString(keysR.string.gotopin_client_id))
+        return LSdkAuthConfig(clientID = ScpConstants.TOKOPEDIA_CLIENT_ID, clientSecret = context.getString(keysR.string.lsdk_client_secret), gotoPinclientID = context.getString(keysR.string.goto_pin_client_id))
+    }
+
+    private fun getEnvironment(): LSdkEnvironment {
+//        return if (GlobalConfig.DEBUG || GlobalConfig.isAllowDebuggingTools()) {
+//            LSdkEnvironment.INTEGRATION
+//        } else {
+//            LSdkEnvironment.PROD
+//        }
+        // Hardcode for production testing, rama is working on this issue
+        return LSdkEnvironment.ALPHA
     }
 }

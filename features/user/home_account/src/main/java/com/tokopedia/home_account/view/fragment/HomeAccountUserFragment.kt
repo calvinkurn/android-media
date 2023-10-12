@@ -1469,7 +1469,7 @@ open class HomeAccountUserFragment :
     private fun checkLogoutOffering() {
         if (viewModel.isOclEligible.value == true) {
             showOclBtmSheet()
-        } else if (isEnableBiometricOffering()) {
+        } else if (DeeplinkMapperUser.isGotoLoginDisabled() && isEnableBiometricOffering()) {
             homeAccountAnalytic.trackOnClickLogoutDialog()
             viewModel.getFingerprintStatus()
         } else {
