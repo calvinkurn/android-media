@@ -3516,6 +3516,7 @@ open class TopChatRoomFragment :
         welcomeMessage: TopChatAutoReplyItemUiModel,
         list: List<TopChatAutoReplyItemUiModel>
     ) {
+        TopChatAnalyticsKt.eventClickAutoReply(source, messageId, list)
         view?.hideKeyboard()
         TopChatAutoReplyDetailBottomSheet().show(
             childFragmentManager, welcomeMessage, list

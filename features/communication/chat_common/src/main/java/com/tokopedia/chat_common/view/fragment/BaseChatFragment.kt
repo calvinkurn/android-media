@@ -43,7 +43,7 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     protected var shopId: String = "0"
     protected var toShopId = "0"
     protected var toUserId = "0"
-    protected var source = ""
+    protected var source = "regularChat"
     protected var amISeller = false
 
     abstract fun onCreateViewState(view: View): BaseChatViewState

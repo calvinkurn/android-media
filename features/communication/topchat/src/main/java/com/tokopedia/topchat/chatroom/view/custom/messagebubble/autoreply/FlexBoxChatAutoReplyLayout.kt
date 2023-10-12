@@ -20,7 +20,6 @@ import com.tokopedia.topchat.databinding.TopchatChatroomAutoReplyListBinding
 import timber.log.Timber
 import kotlin.math.abs
 
-
 class FlexBoxChatAutoReplyLayout : BaseTopChatFlexBoxChatLayout {
 
     /**
@@ -364,7 +363,7 @@ class FlexBoxChatAutoReplyLayout : BaseTopChatFlexBoxChatLayout {
         autoReplyItemList: List<TopChatAutoReplyItemUiModel>
     ) {
         if (autoReplyItemList.isNotEmpty()) {
-            val adapter = TopChatAutoReplyAdapter(shouldLimitText = true)
+            val adapter = TopChatAutoReplyAdapter()
             autoReplyBinding?.topchatChatroomRvAutoReply?.adapter = adapter
             autoReplyBinding?.topchatChatroomRvAutoReply?.layoutManager =
                 LinearLayoutManager(context)
