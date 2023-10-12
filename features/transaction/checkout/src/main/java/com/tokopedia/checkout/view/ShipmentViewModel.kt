@@ -76,6 +76,7 @@ import com.tokopedia.checkout.view.uimodel.ShipmentTickerErrorModel
 import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel
 import com.tokopedia.common_epharmacy.EPHARMACY_CONSULTATION_STATUS_APPROVED
 import com.tokopedia.common_epharmacy.EPHARMACY_CONSULTATION_STATUS_REJECTED
+import com.tokopedia.common_epharmacy.EPHARMACY_PPG_SOURCE_CHECKOUT
 import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult
 import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsGroupResponse
 import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
@@ -4579,7 +4580,7 @@ class ShipmentViewModel @Inject constructor(
     fun fetchEpharmacyData() {
         epharmacyUseCase.getEPharmacyPrepareProductsGroup(::onAvailablePrepareProductGroup, { throwable: Throwable? ->
             Timber.d(throwable)
-        }, source = "")
+        }, source = EPHARMACY_PPG_SOURCE_CHECKOUT)
     }
 
     private fun onAvailablePrepareProductGroup(ePharmacyPrepareProductsGroupResponse: EPharmacyPrepareProductsGroupResponse, source: String?) {
