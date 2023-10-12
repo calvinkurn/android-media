@@ -2,6 +2,7 @@ package com.tokopedia.creation.common.upload.uploader
 
 import android.content.Context
 import androidx.core.app.NotificationManagerCompat
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import androidx.work.ExistingWorkPolicy
@@ -33,42 +34,43 @@ class CreationUploaderImpl @Inject constructor(
     private val gson: Gson
 ) : CreationUploader {
 
-    private val uploadLiveData = Transformations.map(
-        workManager
-            .getWorkInfosForUniqueWorkLiveData(CreationUploadConst.CREATION_UPLOAD_WORKER)
-    ) {
-        it.firstOrNull()?.let { workInfo ->
-            if(workInfo.state == WorkInfo.State.RUNNING) {
-                try {
-                    val progress = workInfo.progress.getInt(CreationUploadConst.PROGRESS, 0)
-                    val uploadData = CreationUploadData.parseFromJson(workInfo.progress.getString(CreationUploadConst.UPLOAD_DATA).orEmpty(), gson)
-                    val uploadStatus = CreationUploadStatus.parse(workInfo.progress.getString(CreationUploadConst.UPLOAD_STATUS).orEmpty())
+    private val workManagerLiveData: LiveData<CreationUploadResult>
+        get() = Transformations.map(
+            workManager
+                .getWorkInfosForUniqueWorkLiveData(CreationUploadConst.CREATION_UPLOAD_WORKER)
+        ) {
+            it.firstOrNull()?.let { workInfo ->
+                if(workInfo.state == WorkInfo.State.RUNNING) {
+                    try {
+                        val progress = workInfo.progress.getInt(CreationUploadConst.PROGRESS, 0)
+                        val uploadData = CreationUploadData.parseFromJson(workInfo.progress.getString(CreationUploadConst.UPLOAD_DATA).orEmpty(), gson)
+                        val uploadStatus = CreationUploadStatus.parse(workInfo.progress.getString(CreationUploadConst.UPLOAD_STATUS).orEmpty())
 
-                    return@map when (uploadStatus) {
-                        CreationUploadStatus.Upload -> {
-                            CreationUploadResult.Upload(uploadData, progress)
+                        return@map when (uploadStatus) {
+                            CreationUploadStatus.Upload -> {
+                                CreationUploadResult.Upload(uploadData, progress)
+                            }
+                            CreationUploadStatus.Success -> {
+                                CreationUploadResult.Success(uploadData)
+                            }
+                            CreationUploadStatus.Failed -> {
+                                CreationUploadResult.Failed(uploadData)
+                            }
+                            CreationUploadStatus.OtherProcess -> {
+                                CreationUploadResult.OtherProcess(uploadData, progress)
+                            }
+                            else -> {
+                                CreationUploadResult.Unknown
+                            }
                         }
-                        CreationUploadStatus.Success -> {
-                            CreationUploadResult.Success(uploadData)
-                        }
-                        CreationUploadStatus.Failed -> {
-                            CreationUploadResult.Failed(uploadData)
-                        }
-                        CreationUploadStatus.OtherProcess -> {
-                            CreationUploadResult.OtherProcess(uploadData, progress)
-                        }
-                        else -> {
-                            CreationUploadResult.Unknown
-                        }
+                    } catch (throwable: Throwable) {
+
                     }
-                } catch (throwable: Throwable) {
-
                 }
             }
-        }
 
-        return@map CreationUploadResult.Unknown
-    }
+            return@map CreationUploadResult.Unknown
+        }
 
     private val uploadResultFlow = MutableSharedFlow<CreationUploadResult>()
 
@@ -104,7 +106,7 @@ class CreationUploaderImpl @Inject constructor(
                 trySendBlocking(it)
             }
 
-            uploadLiveData.observeForever(observer)
+            workManagerLiveData.observeForever(observer)
 
             launch {
                 uploadResultFlow.collect {
@@ -113,7 +115,7 @@ class CreationUploaderImpl @Inject constructor(
             }
 
             awaitClose {
-                uploadLiveData.removeObserver(observer)
+                workManagerLiveData.removeObserver(observer)
             }
         }
     }
