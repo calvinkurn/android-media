@@ -829,10 +829,10 @@ class CartItemViewHolder constructor(
     }
 
     private fun renderProductAddOns(data: CartItemHolderData) {
-        if (data.addOnsProduct.listData.isNotEmpty() && data.addOnsProduct.widget.wording.isNotEmpty()) {
+        if (data.addOnsProduct.listData.isNotEmpty() && data.addOnsProduct.widget.title.isNotEmpty()) {
             binding.itemAddonCart.apply {
                 root.show()
-                this.descAddon.text = MethodChecker.fromHtml(data.addOnsProduct.widget.wording)
+                this.descAddon.text = MethodChecker.fromHtml(data.addOnsProduct.widget.title)
                 this.priceAddon.text = MethodChecker.fromHtml(data.addOnsProduct.widget.price)
                 val addOnType = data.addOnsProduct.listData.firstOrNull()?.type ?: 0
                 root.setOnClickListener {

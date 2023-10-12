@@ -2597,7 +2597,7 @@ class CartViewModel @Inject constructor(
 
     fun updateAddOnByCartId(
         cartId: String,
-        newAddOnWording: String,
+        newTitle: String,
         newPrice: String,
         selectedAddons: List<AddOnUIModel>
     ) {
@@ -2606,7 +2606,7 @@ class CartViewModel @Inject constructor(
             if (item is CartItemHolderData) {
                 if (item.cartId == cartId) {
                     position = index
-                    item.addOnsProduct.widget.wording = newAddOnWording
+                    item.addOnsProduct.widget.title = newTitle
                     item.addOnsProduct.widget.price = newPrice
                     item.addOnsProduct.listData.clear()
                     selectedAddons.forEach {

@@ -3372,10 +3372,10 @@ class CartRevampFragment :
                     ?: AddOnPageResult()
 
             if (addOnProductDataResult.aggregatedData.isGetDataSuccess) {
-                var newAddOnWording = ""
+                var newAddOnTitle = ""
                 var newAddOnPrice = ""
                 if (addOnProductDataResult.aggregatedData.title.isNotEmpty()) {
-                    newAddOnWording = addOnProductDataResult.aggregatedData.title
+                    newAddOnTitle = addOnProductDataResult.aggregatedData.title
                     newAddOnPrice = "(${
                     CurrencyFormatUtil.convertPriceValueToIdrFormat(
                         addOnProductDataResult.aggregatedData.price,
@@ -3386,7 +3386,7 @@ class CartRevampFragment :
 
                 viewModel.updateAddOnByCartId(
                     addOnProductDataResult.cartId.toString(),
-                    newAddOnWording,
+                    newAddOnTitle,
                     newAddOnPrice,
                     addOnProductDataResult.aggregatedData.selectedAddons
                 )
