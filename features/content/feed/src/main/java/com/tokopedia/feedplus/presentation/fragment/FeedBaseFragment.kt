@@ -68,8 +68,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.time.DurationUnit
-import kotlin.time.toDuration
 import com.tokopedia.creation.common.R as creationcommonR
 
 /**
@@ -87,10 +85,8 @@ class FeedBaseFragment :
     internal lateinit var userSession: UserSessionInterface
 
     @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    @Inject
     lateinit var viewModelAssistedFactory: FeedMainViewModel.Factory
+
     private val feedMainViewModel: FeedMainViewModel by viewModels {
         FeedMainViewModel.provideFactory(viewModelAssistedFactory, activeTabSource)
     }
@@ -268,6 +264,7 @@ class FeedBaseFragment :
 
                 openAppLink.launch(ApplinkConst.PLAY_BROADCASTER)
             }
+
             ContentCreationTypeEnum.POST -> {
                 feedNavigationAnalytics.eventClickCreatePost()
 
@@ -434,6 +431,7 @@ class FeedBaseFragment :
                             hideErrorView()
                             showLoading()
                         }
+
                         is NetworkResult.Success -> {
                             hideErrorView()
                             hideLoading()
@@ -441,9 +439,11 @@ class FeedBaseFragment :
                             initTabsView(state.data)
                             handleActiveTab(state.data)
                         }
+
                         is NetworkResult.Error -> {
                             showErrorView(state.error)
                         }
+
                         NetworkResult.Unknown -> {
                             // ignore
                         }
@@ -468,9 +468,11 @@ class FeedBaseFragment :
                         FeedMainEvent.HasJustLoggedIn -> {
                             showJustLoggedInToaster()
                         }
+
                         FeedMainEvent.ShowSwipeOnboarding -> {
                             showSwipeOnboarding()
                         }
+
                         else -> {}
                     }
 
@@ -493,6 +495,7 @@ class FeedBaseFragment :
                             binding.uploadView.setProgress(status.progress)
                             binding.uploadView.setThumbnail(status.thumbnailUrl)
                         }
+
                         is UploadStatus.Finished -> {
                             binding.uploadView.hide()
 
@@ -521,6 +524,7 @@ class FeedBaseFragment :
                                 )
                             }
                         }
+
                         is UploadStatus.Failed -> {
                             binding.uploadView.setFailed()
                             binding.uploadView.setListener(object : UploadInfoView.Listener {
@@ -650,9 +654,11 @@ class FeedBaseFragment :
             source.tabName != null -> {
                 feedMainViewModel.setActiveTab(source.tabName)
             }
+
             source.index > -1 && source.index < tab.data.size -> {
                 selectActiveTab(source.index)
             }
+
             else -> selectActiveTab(0)
         }
     }

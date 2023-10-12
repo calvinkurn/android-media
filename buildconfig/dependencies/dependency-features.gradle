@@ -57,7 +57,9 @@ ext {
             playWidget                      : ":features:content:play_widget",
 			storiesWidget					: ":features:content:stories_widget",
 			storiesInternal					: ":features:content:stories_internal",
+			contentProductPicker            : ":features:content:product_picker",
 			creationCommon					: ":features:content:creation_common",
+
             commonTopupBills                : ":features:recharge:common_topup_bills",
             commonDigital                   : ":features:recharge:common_digital",
             digitalRecommendation           : ":features:recharge:digital_recommendation",
