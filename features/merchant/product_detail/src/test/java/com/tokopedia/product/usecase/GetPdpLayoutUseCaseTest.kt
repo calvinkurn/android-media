@@ -6,6 +6,7 @@ import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
@@ -35,7 +36,10 @@ import kotlinx.coroutines.test.TestResult
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
 import okhttp3.internal.filterList
-import org.junit.Assert
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
+import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -83,14 +87,16 @@ class GetPdpLayoutUseCaseTest {
             gqlUseCase.executeOnBackground()
         } returns createMockGraphqlResponse(ErrorType.SUCCESS)
 
-        val result = useCaseTest.executeOnBackground().first()
-        Assert.assertTrue(result.listOfLayout.isNotEmpty())
+        val resultState = useCaseTest.executeOnBackground().first()
 
         coVerify {
             gqlUseCase.clearRequest()
             gqlUseCase.addRequest(any())
             gqlUseCase.executeOnBackground()
         }
+
+        assertTrue(resultState.isSuccess)
+        assertTrue(resultState.getOrNull()?.listOfLayout?.isNotEmpty() == true)
     }
 
     @Test
@@ -102,9 +108,10 @@ class GetPdpLayoutUseCaseTest {
         runCatching {
             useCaseTest.executeOnBackground().first()
         }.onSuccess {
-            Assert.fail()
+            assertFalse(it.isSuccess)
+            assertTrue(it.exceptionOrNull() is MessageErrorException)
         }.onFailure {
-            Assert.assertTrue(it is MessageErrorException)
+            fail()
         }
 
         coVerify {
@@ -123,9 +130,10 @@ class GetPdpLayoutUseCaseTest {
         runCatching {
             useCaseTest.executeOnBackground().first()
         }.onSuccess {
-            Assert.fail()
+            assertFalse(it.isSuccess)
+            assertTrue(it.exceptionOrNull() is TobacoErrorException)
         }.onFailure {
-            Assert.assertTrue(it is TobacoErrorException)
+            fail()
         }
 
         coVerify {
@@ -144,7 +152,7 @@ class GetPdpLayoutUseCaseTest {
         useCaseTestLayoutId.executeOnBackground()
 
         val layoutId = useCaseTestLayoutId.requestParams.getString(ProductDetailCommonConstant.PARAM_LAYOUT_ID, "")
-        Assert.assertEquals(layoutId, "56")
+        assertEquals(layoutId, "56")
     }
 
     @Test
@@ -157,78 +165,130 @@ class GetPdpLayoutUseCaseTest {
         useCaseTestLayoutId.executeOnBackground()
 
         val layoutId = useCaseTestLayoutId.requestParams.getString(ProductDetailCommonConstant.PARAM_LAYOUT_ID, "")
-        Assert.assertEquals(layoutId, "122")
+        assertEquals(layoutId, "122")
     }
 
     // region pdp cacheable
     @Test
     fun `given pdp layout from cache and cloud`() = runCoroutineTest {
-        val cacheExpected = CacheState(isFromCache = true, cacheFirstThenCloud = false)
-        val cloudExpected = CacheState(isFromCache = false, cacheFirstThenCloud = true)
-        val results = getPdpLayoutCacheable(scope = this, refreshPage = false, type = ErrorType.NON_CAMPAIGN)
+        val cacheExpected = CacheState(
+            remoteCacheableActive = true,
+            isFromCache = true,
+            cacheFirstThenCloud = false
+        )
+        val cloudExpected = CacheState(
+            remoteCacheableActive = true,
+            isFromCache = false,
+            cacheFirstThenCloud = true
+        )
+        val results =
+            getPdpLayoutCacheable(scope = this, refreshPage = false, type = ErrorType.NON_CAMPAIGN)
 
         // then
-        val actualCacheData = results.firstOrNull()?.cacheState
-        Assert.assertEquals(cacheExpected, actualCacheData)
-        val actualCloudData = results.getOrNull(1)?.cacheState
-        Assert.assertEquals(cloudExpected, actualCloudData)
+        val actualCacheDataState = results.firstOrNull()
+        val actualCacheData = actualCacheDataState?.getOrNull()?.cacheState
+        assertTrue(actualCacheDataState?.isSuccess.orFalse())
+        assertEquals(cacheExpected, actualCacheData)
+
+        val actualCloudDataState = results.getOrNull(1)
+        val actualCloudData = actualCloudDataState?.getOrNull()?.cacheState
+        assertTrue(actualCloudDataState?.isSuccess.orFalse())
+        assertEquals(cloudExpected, actualCloudData)
     }
 
     @Test
     fun `given pdp layout from cloud if it's refresh page`() = runCoroutineTest {
-        val cacheStateExpected = CacheState(isFromCache = false, cacheFirstThenCloud = false)
-        val results = getPdpLayoutCacheable(scope = this, refreshPage = true, enableCacheable = true, type = ErrorType.NON_CAMPAIGN)
+        val cacheStateExpected = CacheState(
+            remoteCacheableActive = true,
+            isFromCache = false,
+            cacheFirstThenCloud = false
+        )
+        val results = getPdpLayoutCacheable(
+            scope = this,
+            refreshPage = true,
+            enableCacheable = true,
+            type = ErrorType.NON_CAMPAIGN
+        )
 
         // then
-        Assert.assertTrue(results.size == 1)
-        val actualCacheData = results.firstOrNull()?.cacheState
-        Assert.assertEquals(cacheStateExpected, actualCacheData)
+        assertTrue(results.size == 1)
+        val actualCacheDataState = results.firstOrNull()
+        val actualCacheData = actualCacheDataState?.getOrNull()?.cacheState
+        assertTrue(actualCacheDataState?.isSuccess.orFalse())
+        assertEquals(cacheStateExpected, actualCacheData)
     }
 
     @Test
     fun `given pdp layout from cloud if cacheable inactive`() = runCoroutineTest {
-        val cacheStateExpected = CacheState(isFromCache = false, cacheFirstThenCloud = false)
-        val results = getPdpLayoutCacheable(scope = this, refreshPage = false, enableCacheable = false, type = ErrorType.NON_CAMPAIGN)
+        val cacheStateExpected = CacheState(
+            remoteCacheableActive = false,
+            isFromCache = false,
+            cacheFirstThenCloud = false
+        )
+        val results = getPdpLayoutCacheable(
+            scope = this,
+            refreshPage = false,
+            enableCacheable = false,
+            type = ErrorType.NON_CAMPAIGN
+        )
 
         // then
-        Assert.assertTrue(results.size == Int.ONE)
-        val actualCacheData = results.firstOrNull()?.cacheState
-        Assert.assertEquals(cacheStateExpected, actualCacheData)
+        assertTrue(results.size == Int.ONE)
+
+        val actualCacheDataState = results.firstOrNull()
+        val actualCacheData = actualCacheDataState?.getOrNull()?.cacheState
+        assertTrue(actualCacheDataState?.isSuccess.orFalse())
+        assertEquals(cacheStateExpected, actualCacheData)
     }
 
     @Test
     fun `pdp layout from cache don't have topAds layout`() = runCoroutineTest {
         val ignoreComponentCacheExpected = useCaseTest.getIgnoreComponentInCache()
-        val results = getPdpLayoutCacheable(scope = this, refreshPage = false, type = ErrorType.NON_CAMPAIGN)
+        val results =
+            getPdpLayoutCacheable(scope = this, refreshPage = false, type = ErrorType.NON_CAMPAIGN)
 
         // then
-        val actualCacheLayout = results.firstOrNull()?.listOfLayout.orEmpty().map { it.type() }
+        val actualCacheLayoutState = results.firstOrNull()
+        assertTrue(actualCacheLayoutState?.isSuccess.orFalse())
+        val actualCacheLayout =
+            actualCacheLayoutState?.getOrNull()?.listOfLayout.orEmpty().map { it.type() }
         val thenCacheLayout = actualCacheLayout.containsAll(ignoreComponentCacheExpected)
-        Assert.assertFalse(thenCacheLayout)
+        assertFalse(thenCacheLayout)
     }
 
     @Test
     fun `pdp layout from cloud have topAds layout`() = runCoroutineTest {
         val ignoreComponentCacheExpected = useCaseTest.getIgnoreComponentInCache()
-        val results = getPdpLayoutCacheable(scope = this, refreshPage = false, type = ErrorType.NON_CAMPAIGN)
+        val results =
+            getPdpLayoutCacheable(scope = this, refreshPage = false, type = ErrorType.NON_CAMPAIGN)
 
         // then
-        val actualCacheLayout = results.getOrNull(1)?.listOfLayout.orEmpty().map { it.type() }
+        val actualCacheLayoutState = results.getOrNull(1)
+        assertTrue(actualCacheLayoutState?.isSuccess.orFalse())
+        val actualCacheLayout =
+            actualCacheLayoutState?.getOrNull()?.listOfLayout.orEmpty().map { it.type() }
         val thenCacheLayout = ignoreComponentCacheExpected.filterList {
             actualCacheLayout.contains(this)
         }.isNotEmpty()
-        Assert.assertTrue(thenCacheLayout)
+        assertTrue(thenCacheLayout)
     }
 
     @Test
     fun `given pdp layout from cloud cause campaign upcoming`() = runCoroutineTest {
-        val cloudExpected = CacheState(isFromCache = false, cacheFirstThenCloud = false)
-        val results = getPdpLayoutCacheable(scope = this, refreshPage = false, type = ErrorType.SUCCESS)
+        val cloudExpected = CacheState(
+            remoteCacheableActive = true,
+            isFromCache = false,
+            cacheFirstThenCloud = false
+        )
+        val results =
+            getPdpLayoutCacheable(scope = this, refreshPage = false, type = ErrorType.SUCCESS)
 
         // then
-        Assert.assertTrue(results.size == Int.ONE)
-        val actualCloudData = results.firstOrNull()?.cacheState
-        Assert.assertEquals(cloudExpected, actualCloudData)
+        assertTrue(results.size == Int.ONE)
+        val actualCloudDataState = results.firstOrNull()
+        val actualCloudData = actualCloudDataState?.getOrNull()?.cacheState
+        assertTrue(actualCloudDataState?.isSuccess.orFalse())
+        assertEquals(cloudExpected, actualCloudData)
     }
 
     private fun getPdpLayoutCacheable(
@@ -236,10 +296,20 @@ class GetPdpLayoutUseCaseTest {
         refreshPage: Boolean = false,
         enableCacheable: Boolean = true,
         type: ErrorType
-    ): List<ProductDetailDataModel> {
+    ): List<Result<ProductDetailDataModel>> {
         // given
-        val results = mutableListOf<ProductDetailDataModel>()
-        useCaseTest.requestParams = GetPdpLayoutUseCase.createParams("", "", "", "", "122", UserLocationRequest(), "", TokoNowParam(), refreshPage)
+        val results = mutableListOf<Result<ProductDetailDataModel>>()
+        useCaseTest.requestParams = GetPdpLayoutUseCase.createParams(
+            "",
+            "",
+            "",
+            "",
+            "122",
+            UserLocationRequest(),
+            "",
+            TokoNowParam(),
+            refreshPage
+        )
 
         every {
             remoteConfig.getBoolean(RemoteConfigKey.ENABLE_PDP_P1_CACHEABLE)
@@ -263,10 +333,24 @@ class GetPdpLayoutUseCaseTest {
 
     @Test
     fun `given pdp layout from cloud if product campaign`() = runCoroutineTest {
-        val results = mutableListOf<ProductDetailDataModel>()
-        val cacheStateExpected = CacheState(isFromCache = false, cacheFirstThenCloud = false)
+        val results = mutableListOf<Result<ProductDetailDataModel>>()
+        val cacheStateExpected = CacheState(
+            remoteCacheableActive = true,
+            isFromCache = false,
+            cacheFirstThenCloud = false
+        )
         // given
-        useCaseTest.requestParams = GetPdpLayoutUseCase.createParams("", "", "", "", "122", UserLocationRequest(), "", TokoNowParam(), false)
+        useCaseTest.requestParams = GetPdpLayoutUseCase.createParams(
+            "",
+            "",
+            "",
+            "",
+            "122",
+            UserLocationRequest(),
+            "",
+            TokoNowParam(),
+            false
+        )
 
         every {
             remoteConfig.getBoolean(RemoteConfigKey.ENABLE_PDP_P1_CACHEABLE)
@@ -286,9 +370,11 @@ class GetPdpLayoutUseCaseTest {
         coVerify { gqlUseCase.executeOnBackground() }
 
         // then
-        Assert.assertTrue(results.size == 1)
-        val actualCacheData = results.firstOrNull()?.cacheState
-        Assert.assertEquals(cacheStateExpected, actualCacheData)
+        assertTrue(results.size == 1)
+        val actualCacheDataState = results.firstOrNull()
+        val actualCacheData = actualCacheDataState?.getOrNull()?.cacheState
+        assertTrue(actualCacheDataState?.isSuccess.orFalse())
+        assertEquals(cacheStateExpected, actualCacheData)
     }
     // endregion
 

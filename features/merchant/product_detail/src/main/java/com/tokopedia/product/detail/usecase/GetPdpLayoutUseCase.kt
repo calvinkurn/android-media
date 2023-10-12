@@ -473,7 +473,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
 
     var requestParams: RequestParams = RequestParams.EMPTY
 
-    val shouldCacheable
+    private val shouldCacheable
         get() = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_PDP_P1_CACHEABLE)
 
     private val cacheAge
