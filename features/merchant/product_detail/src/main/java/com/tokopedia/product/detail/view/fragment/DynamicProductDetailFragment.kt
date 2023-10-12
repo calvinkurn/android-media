@@ -101,7 +101,6 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.mvcwidget.views.MvcView
 import com.tokopedia.mvcwidget.views.activities.TransParentActivity
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.URLGenerator.generateURLSessionLogin
 import com.tokopedia.pdp.fintech.domain.datamodel.FintechRedirectionWidgetDataClass
 import com.tokopedia.pdp.fintech.view.PdpFintechWidget.Companion.ACTIVATION_LINKINING_FLOW
@@ -210,7 +209,6 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant.REMOTE_CONFI
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.REMOVE_WISHLIST
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.WISHLIST_ERROR_TYPE
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.WISHLIST_STATUS_KEY
-import com.tokopedia.product.detail.data.util.TobacoErrorException
 import com.tokopedia.product.detail.data.util.VariantMapper
 import com.tokopedia.product.detail.data.util.VariantMapper.generateVariantString
 import com.tokopedia.product.detail.data.util.roundToIntOrZero
@@ -2977,18 +2975,18 @@ open class DynamicProductDetailFragment :
     }
 
     private fun preparePageCacheableError(errorModel: PageErrorDataModel, error: Throwable) {
-        when (error) {
-            is MessageErrorException,
-            is TobacoErrorException -> { // tobacco on top order, because errorModel.errorCode same when no connection
-                preparePageError(errorModel)
-            }
-            else -> {
-                when (errorModel.errorCode.toIntOrZero()) {
-                    GlobalError.SERVER_ERROR, GlobalError.NO_CONNECTION -> {
-                        showToasterPageError()
-                    }
-                }
-            }
+        val errorCode = errorModel.errorCode.toIntOrNull() ?: run {
+            preparePageError(errorModel)
+            return
+        }
+        val connectionError = errorCode == GlobalError.SERVER_ERROR ||
+            errorCode == GlobalError.NO_CONNECTION
+        val shouldShowToasterError = !errorModel.shouldShowTobacoError && connectionError
+
+        if (shouldShowToasterError) {
+            showToasterPageError()
+        } else {
+            preparePageError(errorModel)
         }
     }
 
