@@ -56,7 +56,6 @@ import com.tokopedia.dev_monitoring_tools.session.SessionActivityLifecycleCallba
 import com.tokopedia.dev_monitoring_tools.ui.JankyFrameActivityLifecycleCallbacks;
 import com.tokopedia.developer_options.DevOptsSubscriber;
 import com.tokopedia.developer_options.stetho.StethoUtil;
-import com.tokopedia.developer_options.utils.PushTokenRefreshUtil;
 import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.devicefingerprint.datavisor.lifecyclecallback.DataVisorLifecycleCallbacks;
 import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator;
@@ -76,6 +75,7 @@ import com.tokopedia.common.network.cdn.MonitoringActivityLifecycle;
 import com.tokopedia.network.authentication.AuthHelper;
 import com.tokopedia.notifications.inApp.CMInAppManager;
 import com.tokopedia.notifications.settings.NotificationGeneralPromptLifecycleCallbacks;
+import com.tokopedia.notifications.utils.PushTokenRefreshUtil;
 import com.tokopedia.pageinfopusher.PageInfoPusherSubscriber;
 import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
@@ -149,6 +149,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     private final boolean LEAK_CANARY_DEFAULT_TOGGLE = true;
     private final boolean STRICT_MODE_LEAK_PUBLISHER_DEFAULT_TOGGLE = false;
     private final String PUSH_DELETION_TIME_GAP = "android_push_deletion_time_gap";
+    private final String ENABLE_PUSH_TOKEN_DELETION_WORKER = "android_push_token_deletion_rollence";
 
     GratificationSubscriber gratificationSubscriber;
 
@@ -203,7 +204,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         Typography.Companion.setFontTypeOpenSauceOne(true);
 
         showDevOptNotification();
-        if(GlobalConfig.isAllowDebuggingTools()){
+        if(RemoteConfigInstance.getInstance().getABTestPlatform().getBoolean(ENABLE_PUSH_TOKEN_DELETION_WORKER)){
             PushTokenRefreshUtil pushTokenRefreshUtil = new PushTokenRefreshUtil();
             pushTokenRefreshUtil.scheduleWorker(context.getApplicationContext(), remoteConfig.getLong(PUSH_DELETION_TIME_GAP));
         }

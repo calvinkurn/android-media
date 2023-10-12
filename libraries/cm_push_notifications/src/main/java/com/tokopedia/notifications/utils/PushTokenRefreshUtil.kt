@@ -1,7 +1,8 @@
-package com.tokopedia.developer_options.utils
+package com.tokopedia.notifications.utils
 
 import android.content.Context
 import androidx.work.*
+import com.tokopedia.notifications.worker.PushTokenRefreshWorker
 import java.util.concurrent.TimeUnit
 
 
@@ -11,7 +12,7 @@ class PushTokenRefreshUtil {
     fun scheduleWorker(appContext: Context, time: Long) {
         try {
             val periodicWorker = PeriodicWorkRequest
-                .Builder(PushRefreshWorker::class.java, time, TimeUnit.MINUTES)
+                .Builder(PushTokenRefreshWorker::class.java, time, TimeUnit.DAYS)
                 .setConstraints(Constraints.NONE)
                 .build()
 
