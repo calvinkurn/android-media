@@ -166,11 +166,11 @@ class FeedFragment :
         ViewModelProvider(requireActivity())[AtcVariantSharedViewModel::class.java]
     }
 
-    private val muteAnimatedVector by lazy {
+    private val muteAnimatedVector by lazyThreadSafetyNone {
         AnimatedVectorDrawableCompat.create(requireContext(), R.drawable.ic_feed_mute_animated)
     }
 
-    private val unmuteAnimatedVector by lazy {
+    private val unmuteAnimatedVector by lazyThreadSafetyNone {
         AnimatedVectorDrawableCompat.create(requireContext(), R.drawable.ic_feed_unmute_animated)
     }
 
