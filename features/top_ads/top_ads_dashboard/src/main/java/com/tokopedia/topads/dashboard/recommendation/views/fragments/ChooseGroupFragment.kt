@@ -26,6 +26,7 @@ import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecomme
 import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecommendationConstants.IDR_CONST
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupItemUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopadsProductListState
+import com.tokopedia.topads.dashboard.recommendation.tracker.RecommendationTracker
 import com.tokopedia.topads.dashboard.recommendation.viewmodel.ProductRecommendationViewModel
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.recommendation.GroupListAdapter
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsCreditTopUpActivity
@@ -89,7 +90,6 @@ class ChooseGroupFragment : BaseDaggerFragment() {
         viewModel?.getTopAdsDeposit()
         viewModel?.getTopadsGroupList(String.EMPTY, DEFAULT_GROUP_TYPE)
 
-        binding?.btnSubmit?.setOnClickListener { }
         binding?.searchGroup?.let {
             Utils.setSearchListener(it, context, it, ::searchGroups)
         }
@@ -161,6 +161,7 @@ class ChooseGroupFragment : BaseDaggerFragment() {
     private fun attachClickListener() {
         binding?.btnSubmit?.setOnClickListener { btn ->
             if (binding?.btnSubmit?.isLoading != null && !(binding?.btnSubmit?.isLoading!!)) {
+                RecommendationTracker.clickSubmitProductRecommendationExistingGroup()
                 val productIds = mutableListOf<String>()
                 val list = viewModel?.getSelectedProductItems()
                 list?.forEach { productIds.add(it.id()) }
