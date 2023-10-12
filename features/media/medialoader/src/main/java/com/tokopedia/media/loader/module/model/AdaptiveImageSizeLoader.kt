@@ -16,6 +16,7 @@ import com.tokopedia.media.loader.data.HIGH_QUALITY
 import com.tokopedia.media.loader.data.PARAM_ECT
 import com.tokopedia.media.loader.internal.MediaSettingPreferences
 import com.tokopedia.media.loader.internal.NetworkManager
+import com.tokopedia.media.loader.utils.isFromInternalCdnImageUrl
 import timber.log.Timber
 import java.io.InputStream
 
@@ -44,12 +45,8 @@ internal class AdaptiveImageSizeLoader constructor(
         }
     }
 
-    private fun isAdaptiveImageSupported(model: String): Boolean {
-        return model.startsWith("https://images.tokopedia.net/")
-    }
-
     private fun buildUrl(qualitySettings: Int, url: String): String {
-        if (isAdaptiveImageSupported(url).not()) return url
+        if (url.isFromInternalCdnImageUrl().not()) return url
 
         val connectionType = when(qualitySettings) {
             LOW_QUALITY_SETTINGS -> LOW_QUALITY // (2g / 3g)

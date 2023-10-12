@@ -6,10 +6,12 @@ import android.widget.ImageView
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.model.LazyHeaders
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.media.loader.data.HEADER_FMT
 import com.tokopedia.media.loader.data.HEADER_KEY_AUTH
 import com.tokopedia.media.loader.data.HEADER_USER_ID
 import com.tokopedia.media.loader.data.HEADER_X_DEVICE
 import com.tokopedia.media.loader.data.PREFIX_BEARER
+import com.tokopedia.media.loader.data.WEBP_SUPPORT
 import com.tokopedia.media.loader.data.Properties
 import com.tokopedia.media.loader.module.GlideRequest
 
@@ -23,13 +25,31 @@ internal fun String.isValidUrl(): Boolean {
     return this.isNotEmpty() && (this.contains("https") || this.contains("http"))
 }
 
+internal fun String.isFromInternalCdnImageUrl(): Boolean {
+    return this.startsWith("https://images.tokopedia.net/")
+}
+
 internal fun Properties.generateUrl(): Any {
     val data = data.toString()
 
     if (isSecure.not()) {
+        // indicates that the url from our internal CDN, which contains a custom behavior,
+        // such as adaptive delivery, webp support, custom header, etc.
+        if (data.isFromInternalCdnImageUrl()) {
+            return GlideUrl(
+                data,
+                LazyHeaders.Builder()
+                    .addHeader(HEADER_FMT, WEBP_SUPPORT)
+                    .build()
+            )
+        }
+
+        // load non-internal cdn image url;
+        // including external url, ect7, or local file path.
         return data
     }
 
+    // secure image load
     return GlideUrl(
         data,
         LazyHeaders.Builder()

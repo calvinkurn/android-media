@@ -45,6 +45,9 @@ const val DEFAULT_ICON_SIZE = 300
 internal const val HEADER_KEY_AUTH = "Accounts-Authorization"
 internal const val HEADER_USER_ID = "Tkpd-UserId"
 internal const val HEADER_X_DEVICE = "X-Device"
+internal const val HEADER_FMT = "X-Tkp-Fmt"
+
 internal const val PREFIX_BEARER = "Bearer"
+internal const val WEBP_SUPPORT = "image/webp"
 
 internal const val DEBUG_TIMBER_TAG = "media-loader"
