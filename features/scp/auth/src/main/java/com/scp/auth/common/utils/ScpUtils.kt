@@ -1,5 +1,6 @@
-package com.scp.auth
+package com.scp.auth.common.utils
 
+import com.scp.auth.GotoSdk
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 

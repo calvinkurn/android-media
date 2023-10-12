@@ -1,7 +1,7 @@
 package com.scp.auth.di
 
 import android.content.Context
-import com.scp.auth.analytics.VerificationAnalyticsMapper
+import com.scp.auth.common.analytics.VerificationAnalyticsMapper
 import com.scp.auth.verification.VerificationAnalyticsService
 import com.scp.verification.core.data.common.services.contract.ScpAnalyticsService
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext

@@ -1,4 +1,4 @@
-package com.scp.auth.analytics
+package com.scp.auth.common.analytics
 
 import com.gojek.pin.utils.gtpErrorDialogueClicked
 import com.gojek.pin.utils.gtpErrorDialogueSeen
@@ -26,7 +26,7 @@ import com.gojek.pin.utils.keyScope
 import com.gojek.pin.utils.keyScreen
 import com.gojek.pin.utils.keyTnCUrl
 import com.gojek.pin.utils.keyUiElement
-import com.scp.auth.ScpConstants
+import com.scp.auth.common.utils.ScpConstants
 import com.tokopedia.track.TrackAppUtils
 
 object GotoPinAnalyticsMapper {

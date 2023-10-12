@@ -2,7 +2,7 @@ package com.scp.auth.di
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.scp.auth.ScpAuthViewModel
+import com.scp.auth.authentication.ScpAuthViewModel
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import dagger.Binds

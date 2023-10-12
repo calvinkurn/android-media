@@ -1,4 +1,4 @@
-package com.scp.auth.analytics
+package com.scp.auth.common.analytics
 
 import com.scp.verification.core.domain.common.infrastructure.CVEventFieldName
 import com.scp.verification.core.domain.common.infrastructure.CVEventName

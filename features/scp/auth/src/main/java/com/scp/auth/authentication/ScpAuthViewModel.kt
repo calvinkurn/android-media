@@ -1,7 +1,8 @@
-package com.scp.auth
+package com.scp.auth.authentication
 
 import androidx.lifecycle.LiveData
-import com.scp.auth.analytics.AuthAnalyticsMapper
+import com.scp.auth.GotoSdk
+import com.scp.auth.common.analytics.AuthAnalyticsMapper
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.network.refreshtoken.EncoderDecoder

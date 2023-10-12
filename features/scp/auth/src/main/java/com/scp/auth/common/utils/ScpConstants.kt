@@ -1,4 +1,4 @@
-package com.scp.auth
+package com.scp.auth.common.utils
 
 object ScpConstants {
     const val ID_LANGUAGE = "id"

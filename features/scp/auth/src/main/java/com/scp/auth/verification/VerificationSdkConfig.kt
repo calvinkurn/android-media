@@ -1,7 +1,7 @@
 package com.scp.auth.verification
 
 import android.content.Context
-import com.scp.auth.ScpConstants
+import com.scp.auth.common.utils.ScpConstants
 import com.scp.verification.core.domain.common.entities.config.VerificationAppConfig
 import com.scp.verification.core.domain.common.entities.config.VerificationAuthConfig
 import com.scp.verification.core.domain.common.entities.config.VerificationEnvironment

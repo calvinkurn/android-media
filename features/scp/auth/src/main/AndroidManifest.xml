@@ -3,7 +3,7 @@
     <application>
 
         <activity
-            android:name="com.scp.auth.ScpAuthActivity"
+            android:name="com.scp.auth.authentication.ScpAuthActivity"
             android:theme="@style/Theme.AppCompat.Transparent.NoActionBar"
             android:exported="true" >
 

@@ -1,4 +1,4 @@
-package com.scp.auth.utils
+package com.scp.auth.common.utils
 
 import android.content.Context
 import android.content.Intent

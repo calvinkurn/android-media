@@ -10,11 +10,11 @@ import com.gojek.pin.PinManager
 import com.gojek.pin.PinParam
 import com.gojek.pin.Success
 import com.gojek.pin.viewmodel.state.PinFlowType
-import com.scp.auth.TkpdAdditionalHeaders
-import com.scp.auth.utils.goToChangePIN
-import com.scp.auth.utils.goToForgotGotoPin
-import com.scp.auth.utils.goToForgotPassword
-import com.scp.auth.utils.goToHelpGotoPIN
+import com.scp.auth.common.utils.TkpdAdditionalHeaders
+import com.scp.auth.common.utils.goToChangePIN
+import com.scp.auth.common.utils.goToForgotGotoPin
+import com.scp.auth.common.utils.goToForgotPassword
+import com.scp.auth.common.utils.goToHelpGotoPIN
 import com.scp.verification.core.data.network.entities.CVError
 import com.scp.verification.core.domain.common.entities.VerificationData
 import com.scp.verification.core.domain.common.entities.config.VerificationUiConfig
@@ -24,7 +24,6 @@ import com.scp.verification.core.domain.common.listener.OnSuccessValidation
 import com.scp.verification.core.domain.common.listener.PinListener
 import com.scp.verification.core.domain.common.listener.VerificationListener
 import com.scp.verification.features.gotopin.CVPinManager
-import com.tokopedia.user.session.UserSessionInterface
 
 class ScpVerificationManager(private val pinManager: PinManager) {
 

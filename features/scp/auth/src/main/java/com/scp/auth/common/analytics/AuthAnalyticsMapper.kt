@@ -1,4 +1,4 @@
-package com.scp.auth.analytics
+package com.scp.auth.common.analytics
 
 import com.scp.login.core.domain.common.infrastructure.LSdkAnalyticFieldName
 import com.scp.login.core.domain.common.infrastructure.LSdkEventName

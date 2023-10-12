@@ -1,6 +1,6 @@
 package com.scp.auth.verification
 
-import com.scp.auth.analytics.VerificationAnalyticsMapper
+import com.scp.auth.common.analytics.VerificationAnalyticsMapper
 import com.scp.verification.core.data.common.services.VerificationServices
 import com.scp.verification.core.data.common.services.contract.CVSdkAnalyticsEvent
 import com.scp.verification.core.data.common.services.contract.ScpABTestService

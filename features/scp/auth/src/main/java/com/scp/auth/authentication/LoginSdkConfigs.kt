@@ -1,7 +1,7 @@
 package com.scp.auth.authentication
 
 import android.content.Context
-import com.scp.auth.ScpConstants
+import com.scp.auth.common.utils.ScpConstants
 import com.scp.login.core.domain.contracts.configs.LSdkAppConfig
 import com.scp.login.core.domain.contracts.configs.LSdkAuthConfig
 import com.scp.login.core.domain.contracts.configs.LSdkConfig

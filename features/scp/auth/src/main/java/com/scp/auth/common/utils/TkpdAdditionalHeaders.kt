@@ -1,4 +1,4 @@
-package com.scp.auth
+package com.scp.auth.common.utils
 
 import android.content.Context
 import com.akamai.botman.CYFMonitor

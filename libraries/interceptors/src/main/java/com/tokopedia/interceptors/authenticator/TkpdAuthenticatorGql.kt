@@ -5,8 +5,8 @@ import android.content.Intent
 import android.util.Log
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.scp.auth.GotoSdk
-import com.scp.auth.ScpUtils
-import com.scp.auth.TkpdAdditionalHeaders
+import com.scp.auth.common.utils.ScpUtils
+import com.scp.auth.common.utils.TkpdAdditionalHeaders
 import com.scp.login.core.domain.contracts.listener.LSdkRefreshCompleteListener
 import com.tokopedia.interceptors.forcelogout.ForceLogoutData
 import com.tokopedia.interceptors.forcelogout.ForceLogoutUseCase

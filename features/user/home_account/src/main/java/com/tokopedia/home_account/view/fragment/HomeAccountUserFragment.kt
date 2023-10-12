@@ -29,8 +29,8 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.scp.auth.GotoSdk
-import com.scp.auth.ScpUtils
-import com.scp.auth.TkpdAdditionalHeaders
+import com.scp.auth.common.utils.ScpUtils
+import com.scp.auth.common.utils.TkpdAdditionalHeaders
 import com.scp.login.core.domain.contracts.listener.LSdkCheckOneTapStatusListener
 import com.scp.login.core.domain.onetaplogin.mappers.OneTapLoginError
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment

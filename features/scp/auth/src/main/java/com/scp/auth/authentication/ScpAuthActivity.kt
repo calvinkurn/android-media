@@ -1,4 +1,4 @@
-package com.scp.auth
+package com.scp.auth.authentication
 
 import android.app.Activity
 import android.content.Context
@@ -6,13 +6,15 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
-import com.scp.auth.analytics.AuthAnalyticsMapper
+import com.scp.auth.GotoSdk
+import com.scp.auth.common.utils.TkpdAdditionalHeaders
+import com.scp.auth.common.analytics.AuthAnalyticsMapper
 import com.scp.auth.di.DaggerScpAuthComponent
-import com.scp.auth.utils.goToForgotGotoPin
-import com.scp.auth.utils.goToForgotPassword
-import com.scp.auth.utils.goToForgotTokoPinArticle
-import com.scp.auth.utils.goToHelpGotoPIN
-import com.scp.auth.utils.goToInactivePhoneNumber
+import com.scp.auth.common.utils.goToForgotGotoPin
+import com.scp.auth.common.utils.goToForgotPassword
+import com.scp.auth.common.utils.goToForgotTokoPinArticle
+import com.scp.auth.common.utils.goToHelpGotoPIN
+import com.scp.auth.common.utils.goToInactivePhoneNumber
 import com.scp.login.common.utils.LoginImageLoader
 import com.scp.login.core.domain.common.UserCredential
 import com.scp.login.core.domain.contracts.configs.LSdkChooseAccountUiConfigs

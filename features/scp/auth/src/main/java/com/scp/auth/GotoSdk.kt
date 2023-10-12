@@ -15,12 +15,13 @@ import com.gojek.pin.validation.ExtVerificationData
 import com.gojek.pin.validation.ExtVerificationUiConfig
 import com.gojek.pin.validation.PinSdkValidationListener
 import com.gojek.pin.validation.PinValidationResults
-import com.scp.auth.analytics.AuthAnalyticsMapper
-import com.scp.auth.analytics.GotoPinAnalyticsMapper
+import com.scp.auth.common.analytics.AuthAnalyticsMapper
+import com.scp.auth.common.analytics.GotoPinAnalyticsMapper
 import com.scp.auth.authentication.LoginSdkConfigs
 import com.scp.auth.di.DaggerScpAuthComponent
 import com.scp.auth.di.ScpAuthComponent
 import com.scp.auth.verification.VerificationSdk.getCvSdkProvider
+import com.scp.auth.common.utils.ScpUtils
 import com.scp.login.core.domain.contracts.services.LSdkServices
 import com.scp.login.init.GotoLogin
 import com.scp.login.init.contracts.LSdkProvider
