@@ -53,7 +53,6 @@ class GetPdpLayoutUseCaseTest {
         const val GQL_GET_PDP_LAYOUT_JSON = "json/gql_get_pdp_layout.json"
         const val GQL_GET_PDP_LAYOUT_USECASE_JSON = "json/gql_get_pdp_layout_usecase_response.json"
         const val GQL_GET_PDP_LAYOUT_NON_CAMPAIGN_USECASE_JSON = "json/gql_get_pdp_layout_non_campaign_usecase_response.json"
-        const val GQL_GET_PDP_LAYOUT_CAMPAIGN_UPCOMING_USECASE_JSON = "json/gql_get_pdp_layout_campaign_upcoming_usecase_response.json"
         const val GQL_GET_PDP_LAYOUT_REMOVE_COMPONENT_JSON = "json/gql_get_pdp_layout_remove_component.json"
         const val GQL_GET_PDP_LAYOUT_ERROR_TOBACCO_JSON = "json/gql_get_pdp_layout_tobacco.json"
         const val GQL_GET_PDP_LAYOUT_MINI_VARIANT_JSON = "json/gql_get_pdp_layout_mini_varaint.json"
@@ -149,10 +148,10 @@ class GetPdpLayoutUseCaseTest {
             gqlUseCase.executeOnBackground()
         } returns createMockGraphqlResponse(ErrorType.SUCCESS)
 
-        useCaseTestLayoutId.executeOnBackground()
+        useCaseTestLayoutId.executeOnBackground().first()
 
         val layoutId = useCaseTestLayoutId.requestParams.getString(ProductDetailCommonConstant.PARAM_LAYOUT_ID, "")
-        assertEquals(layoutId, "56")
+        assertEquals("56", layoutId)
     }
 
     @Test
@@ -162,7 +161,7 @@ class GetPdpLayoutUseCaseTest {
         } returns createMockGraphqlResponse(ErrorType.SUCCESS)
 
         useCaseTestLayoutId.requestParams = GetPdpLayoutUseCase.createParams("", "", "", "", "122", UserLocationRequest(), "", TokoNowParam(), true)
-        useCaseTestLayoutId.executeOnBackground()
+        useCaseTestLayoutId.executeOnBackground().first()
 
         val layoutId = useCaseTestLayoutId.requestParams.getString(ProductDetailCommonConstant.PARAM_LAYOUT_ID, "")
         assertEquals(layoutId, "122")
@@ -389,9 +388,6 @@ class GetPdpLayoutUseCaseTest {
             ErrorType.NON_CAMPAIGN -> {
                 createMockGraphqlNonCampaignResponse()
             }
-            ErrorType.CAMPAIGN_UPCOMING -> {
-                createMockGraphqlCampaignUpComingResponse()
-            }
             else -> {
                 createMockGraphqlSuccessResponse()
             }
@@ -422,10 +418,6 @@ class GetPdpLayoutUseCaseTest {
         return createMockSuccessResponse(jsonPath = GQL_GET_PDP_LAYOUT_NON_CAMPAIGN_USECASE_JSON)
     }
 
-    private fun createMockGraphqlCampaignUpComingResponse(): GraphqlResponse {
-        return createMockSuccessResponse(jsonPath = GQL_GET_PDP_LAYOUT_CAMPAIGN_UPCOMING_USECASE_JSON)
-    }
-
     private fun createMockSuccessResponse(jsonPath: String): GraphqlResponse {
         val result = HashMap<Type, Any>()
         val errors = HashMap<Type, List<GraphqlError>>()
@@ -454,6 +446,5 @@ internal enum class ErrorType {
     TOBACCO,
     RUNTIME,
     SUCCESS, // campaign
-    NON_CAMPAIGN,
-    CAMPAIGN_UPCOMING // upcoming campaign
+    NON_CAMPAIGN
 }

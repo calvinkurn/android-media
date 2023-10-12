@@ -123,7 +123,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
@@ -520,27 +519,46 @@ class DynamicProductDetailViewModel @Inject constructor(
         extParam: String = ""
     ) = viewModelScope.launch {
         runCatching {
-            impressionHolders.clear()
-            aPlusContentExpanded = ProductDetailConstant.A_PLUS_CONTENT_DEFAULT_EXPANDED_STATE
-            productRecommSubViewModel.onResetAlreadyRecomHit()
-            shopDomain = productParams.shopDomain
-            forceRefresh = refreshPage
-            userLocationCache = userLocationLocal
+            resetVariables(
+                shopDomain = productParams.shopDomain.orEmpty(),
+                forceRefresh = refreshPage,
+                userLocationCache = userLocationLocal
+            )
 
-            getPdpLayout(
+            GetPdpLayoutUseCase.createParams(
                 productId = productParams.productId.orEmpty(),
                 shopDomain = productParams.shopDomain.orEmpty(),
                 productKey = productParams.productName.orEmpty(),
                 whId = productParams.warehouseId.orEmpty(),
                 layoutId = layoutId,
+                userLocationRequest = generateUserLocationRequest(userLocationCache),
                 extParam = extParam,
+                tokonow = generateTokoNowRequest(userLocationCache),
                 refreshPage = refreshPage
-            ).collectLatest {
-                pdpLayoutCollector(urlQuery = urlQuery, data = it)
-            }
+            )
+        }.onSuccess {
+            getPdpLayoutUseCase.get()
+                .apply { requestParams = it }
+                .executeOnBackground()
+                .collect {
+                    pdpLayoutCollector(urlQuery = urlQuery, data = it)
+                }
         }.onFailure {
             _productLayout.value = it.asFail()
         }
+    }
+
+    private fun resetVariables(
+        shopDomain: String,
+        forceRefresh: Boolean,
+        userLocationCache: LocalCacheModel
+    ) {
+        impressionHolders.clear()
+        aPlusContentExpanded = ProductDetailConstant.A_PLUS_CONTENT_DEFAULT_EXPANDED_STATE
+        productRecommSubViewModel.onResetAlreadyRecomHit()
+        this.shopDomain = shopDomain
+        this.forceRefresh = forceRefresh
+        this.userLocationCache = userLocationCache
     }
 
     private fun pdpLayoutCollector(urlQuery: String, data: kotlin.Result<ProductDetailDataModel>) {
@@ -1171,32 +1189,6 @@ class DynamicProductDetailViewModel @Inject constructor(
         } else {
             deviceId
         }
-    }
-
-    private suspend fun getPdpLayout(
-        productId: String,
-        shopDomain: String,
-        productKey: String,
-        whId: String,
-        layoutId: String,
-        extParam: String,
-        refreshPage: Boolean
-    ): Flow<kotlin.Result<ProductDetailDataModel>> {
-        val useCase = getPdpLayoutUseCase.get().apply {
-            requestParams = GetPdpLayoutUseCase.createParams(
-                productId,
-                shopDomain,
-                productKey,
-                whId,
-                layoutId,
-                generateUserLocationRequest(userLocationCache),
-                extParam,
-                generateTokoNowRequest(userLocationCache),
-                refreshPage
-            )
-        }
-
-        return useCase.executeOnBackground()
     }
 
     private fun logP2Login(throwable: Throwable, productId: String) {

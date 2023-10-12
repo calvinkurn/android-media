@@ -26,6 +26,8 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.usecase.RequestParams
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
@@ -513,16 +515,19 @@ open class GetPdpLayoutUseCase @Inject constructor(
     }.getOrNull()
 
     @GqlQuery("PdpGetLayoutQuery", QUERY)
-    suspend fun executeOnBackground(): Flow<Result<ProductDetailDataModel>> {
-        val cacheState = CacheState(remoteCacheableActive = shouldCacheable)
-
+    suspend fun executeOnBackground(): Flow<Result<ProductDetailDataModel>> = flow {
         prepareRequest()
 
-        return if (shouldCacheable && !refreshPage) {
-            processRequestCacheable(cacheState = cacheState)
+        val cache = CacheState(remoteCacheableActive = shouldCacheable)
+        emit(cache)
+    }.flatMapLatest {
+        if (shouldCacheable && !refreshPage) {
+            processRequestCacheable(cacheState = it)
         } else {
-            flowOf(processRequestAlwaysCloud(cacheState = cacheState))
+            flowOf(processRequestAlwaysCloud(cacheState = it))
         }
+    }.catch {
+        Result.failure<Throwable>(it)
     }
 
     private fun prepareRequest() {

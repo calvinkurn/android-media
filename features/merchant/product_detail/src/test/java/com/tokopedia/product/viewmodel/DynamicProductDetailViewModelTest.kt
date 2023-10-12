@@ -89,7 +89,6 @@ import io.mockk.slot
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
@@ -98,7 +97,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import org.mockito.Matchers.anyString
+import org.mockito.ArgumentMatchers.anyString
 import rx.Observable
 
 @ExperimentalCoroutinesApi
@@ -1406,7 +1405,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         coEvery {
             getPdpLayoutUseCase.executeOnBackground()
-        } throws Throwable()
+        } returns flowOf(Result.failure(Throwable()))
 
         viewModel.getProductP1(productParams, userLocationLocal = getUserLocationCache())
         // P1
@@ -1429,6 +1428,20 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         coVerify(inverse = true) {
             getProductInfoP2OtherUseCase.executeOnBackground()
         }
+    }
+
+    @Test
+    fun `on error get product p1`() {
+        val productParams = ProductParams()
+
+        mockkObject(GetPdpLayoutUseCase)
+        every {
+            GetPdpLayoutUseCase.createParams(any(), any(), any(), any(), any(), any(), any(), any(), any())
+        } throws Throwable()
+
+        viewModel.getProductP1(productParams, userLocationLocal = getUserLocationCache())
+
+        assertTrue(viewModel.productLayout.value is Fail)
     }
 
     @Test
@@ -2859,7 +2872,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         coEvery {
             getPdpLayoutUseCase.executeOnBackground()
-        } answers { flow { throw Throwable() } }
+        } answers { flowOf(Result.failure(Throwable())) }
 
         viewModel.getProductP1(productParams, userLocationLocal = getUserLocationCache())
 
