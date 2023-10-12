@@ -20,7 +20,6 @@ import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 
-
 class TopFeatureViewHolder(
     itemView: View,
     val listener: TopFeatureListener? = null
@@ -107,8 +106,8 @@ class TopFeatureViewHolder(
         title.setTextColor(textColor.orDefaultColor(itemView.context))
         title.textSize = 12f
         title.gravity = Gravity.CENTER
-        title.maxLines = 2
-        title.setLines(2)
+        title.maxLines = 3
+        title.setLines(3)
         return title
     }
 
