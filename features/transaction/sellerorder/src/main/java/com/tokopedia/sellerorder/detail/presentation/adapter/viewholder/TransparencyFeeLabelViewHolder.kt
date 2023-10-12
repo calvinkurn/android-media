@@ -21,8 +21,7 @@ class TransparencyFeeLabelViewHolder(view: View?):
 
     private fun setupLabel(element: TransparencyFeeLabelUiModel) {
         binding.detailIncomeLabel.run {
-            text = element.label
-            setLabel(element.labelType)
+            setLabel(element.label)
         }
     }
 
