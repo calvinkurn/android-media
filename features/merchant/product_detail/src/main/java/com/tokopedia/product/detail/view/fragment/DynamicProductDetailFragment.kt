@@ -2996,7 +2996,7 @@ open class DynamicProductDetailFragment :
 
         Toaster.build(
             view = view,
-            text = "Koneksi internetmu terganggu!\nPastikan internetmu lancar dengan cek ulang paket data, WifFi, atau jaringan di tempatmu.",
+            text = "Wah, internet putus. Cek paket data atau WiFi-mu, ya.",
             actionText = "Coba lagi",
             duration = LENGTH_INDEFINITE,
             type = TYPE_ERROR
