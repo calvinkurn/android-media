@@ -48,23 +48,29 @@ class ComparisonViewHolder(
         }
     }
 
-    override fun bind(element: ComparisonUiModel) {
-        val comparisonItems = element.content.subList(Int.ONE, element.content.size)
-        val comparedItem = element.content.firstOrNull()
+    private fun WidgetItemComparisonBinding.setupLayoutComparison(
+        comparedItem: ComparisonUiModel.ComparisonContent?,
+        comparisonItems: List<ComparisonUiModel.ComparisonContent>
+    ) {
         val colorGray = MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_NN500)
-
-        binding?.layoutComparison?.apply {
+        layoutComparison.apply {
             tfProductName.text = comparedItem?.productTitle.orEmpty()
             tfProductPrice.text = comparedItem?.price.orEmpty()
             iuProduct.loadImage(comparedItem?.imageUrl.orEmpty())
             cardProductAction.cardType = TYPE_CLEAR
             iconProductAction.setImage(IconUnify.PUSH_PIN_FILLED, colorGray)
             rvSpecs.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.VERTICAL, false)
-            rvSpecs.adapter = ComparisonSpecItemAdapter(comparedItem?.comparisonSpecs.orEmpty(), true)
+            rvSpecs.adapter = ComparisonSpecItemAdapter(comparedItem?.topComparisonSpecs.orEmpty(), true)
             root.addOneTimeGlobalLayoutListener {
-                binding?.setupComparisonListItem(comparisonItems)
+                setupComparisonListItem(comparisonItems)
             }
         }
+    }
+
+    override fun bind(element: ComparisonUiModel) {
+        val comparisonItems = element.content.subList(Int.ONE, element.content.size)
+        val comparedItem = element.content.firstOrNull()
+        binding?.setupLayoutComparison(comparedItem, comparisonItems)
     }
 
     class ComparisonItemAdapter(
@@ -109,7 +115,7 @@ class ComparisonViewHolder(
                 tfProductName.text = item.productTitle
                 tfProductPrice.text = item.price
                 rvSpecs.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.VERTICAL, false)
-                rvSpecs.adapter = ComparisonSpecItemAdapter(item.comparisonSpecs)
+                rvSpecs.adapter = ComparisonSpecItemAdapter(item.topComparisonSpecs)
             }
         }
     }

@@ -19,7 +19,8 @@ data class ComparisonUiModel(
         val imageUrl: String,
         val productTitle: String,
         val price: String,
-        val comparisonSpecs: List<ComparisonSpec>
+        val comparisonSpecs: List<ComparisonSpec>,
+        val topComparisonSpecs: List<ComparisonSpec>,
     )
 
     data class ComparisonSpec(

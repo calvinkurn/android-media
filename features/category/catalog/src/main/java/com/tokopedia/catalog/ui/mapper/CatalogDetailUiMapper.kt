@@ -55,6 +55,8 @@ class CatalogDetailUiMapper @Inject constructor(
 ) {
     companion object {
         private val LAYOUT_VERSION_4_VALUE = 4
+        private val COMPARISON_COUNT = 2
+        private val TOP_COMPARISON_SPEC_COUNT = 5
     }
 
     fun mapToWidgetVisitables(
@@ -401,7 +403,7 @@ class CatalogDetailUiMapper @Inject constructor(
 
     private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToComparison(): BaseCatalogUiModel {
         var isFirstData = true
-        return ComparisonUiModel(content = data?.comparison.orEmpty().take(2).map {
+        return ComparisonUiModel(content = data?.comparison.orEmpty().take(COMPARISON_COUNT).map {
             val comparisonSpecs = mutableListOf<ComparisonUiModel.ComparisonSpec>()
             it.fullSpec.forEach { spec ->
                 comparisonSpecs.add(ComparisonUiModel.ComparisonSpec(
@@ -419,12 +421,15 @@ class CatalogDetailUiMapper @Inject constructor(
             }
             isFirstData = false
             ComparisonUiModel.ComparisonContent(
-                imageUrl = it.catalogImage.firstOrNull{ it.isPrimary }?.imageUrl.orEmpty(),
+                imageUrl = it.catalogImage.firstOrNull{ image -> image.isPrimary }?.imageUrl.orEmpty(),
                 productTitle = it.name,
                 price = it.marketPrice.firstOrNull()?.let { marketPrice ->
                     marketPrice.minFmt + " - " + marketPrice.maxFmt
                 }.orEmpty() ,
-                comparisonSpecs = comparisonSpecs
+                comparisonSpecs = comparisonSpecs,
+                topComparisonSpecs = comparisonSpecs
+                    .filter { comparisonSpec -> !comparisonSpec.isSpecCategoryTitle }
+                    .take(TOP_COMPARISON_SPEC_COUNT)
             )
         })
     }
