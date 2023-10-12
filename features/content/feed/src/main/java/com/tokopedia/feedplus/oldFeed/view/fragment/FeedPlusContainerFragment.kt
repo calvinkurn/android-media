@@ -597,7 +597,8 @@ class FeedPlusContainerFragment :
                         postProgressUpdateView?.handleShortsUploadFailed(
                             uploadResult.data,
                             creationUploader,
-                            playShortsInFeedAnalytic
+                            playShortsInFeedAnalytic,
+                            scope = this,
                         )
                     }
                     is CreationUploadResult.Upload -> {

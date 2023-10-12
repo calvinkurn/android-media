@@ -24,6 +24,8 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifyprinciples.Typography
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 import com.tokopedia.createpost.common.R as createPostCommonR
 
@@ -97,7 +99,8 @@ class PostProgressUpdateView @JvmOverloads constructor(
     fun handleShortsUploadFailed(
         uploadData: CreationUploadData,
         uploader: CreationUploader,
-        analytic: PlayShortsInFeedAnalytic
+        analytic: PlayShortsInFeedAnalytic,
+        scope: CoroutineScope,
     ) {
         mPostUpdateSwipe?.updateVisibility(true)
         progressBar?.progressBarColorType = ProgressBarUnify.COLOR_RED
@@ -106,7 +109,7 @@ class PostProgressUpdateView @JvmOverloads constructor(
         processingText?.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_RN500))
         retryText?.setOnClickListener {
             analytic.clickRetryUploadShorts(uploadData.authorId, uploadData.authorType)
-            retryPostShorts(uploader)
+            retryPostShorts(uploader, scope)
         }
     }
 
@@ -148,6 +151,7 @@ class PostProgressUpdateView @JvmOverloads constructor(
 
     private fun retryPostShorts(
         uploader: CreationUploader,
+        scope: CoroutineScope,
     ) {
         processingText?.text = context.getString(R.string.cp_common_progress_bar_text)
         processingText?.setTextColor(
@@ -161,7 +165,9 @@ class PostProgressUpdateView @JvmOverloads constructor(
 
         setProgressUpdate(0, 0)
 
-        uploader.retry(-1)
+        scope.launch {
+            uploader.retry(-1)
+        }
     }
 
     private val submitPostReceiver: BroadcastReceiver by lazy {

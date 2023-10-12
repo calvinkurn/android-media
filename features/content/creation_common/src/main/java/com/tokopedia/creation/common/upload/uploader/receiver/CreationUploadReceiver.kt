@@ -3,12 +3,10 @@ package com.tokopedia.creation.common.upload.uploader.receiver
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import androidx.core.app.NotificationManagerCompat
 import com.google.gson.Gson
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.creation.common.upload.analytic.PlayShortsUploadAnalytic
-import com.tokopedia.creation.common.upload.di.uploader.DaggerCreationUploaderComponent
+import com.tokopedia.creation.common.upload.di.uploader.CreationUploaderComponentProvider
 import com.tokopedia.creation.common.upload.domain.repository.CreationUploadQueueRepository
 import com.tokopedia.creation.common.upload.model.CreationUploadData
 import com.tokopedia.creation.common.upload.model.CreationUploadType
@@ -67,9 +65,8 @@ class CreationUploadReceiver : BroadcastReceiver() {
     }
 
     private fun inject(context: Context) {
-        DaggerCreationUploaderComponent.builder()
-            .baseAppComponent((context.applicationContext as BaseMainApplication).baseAppComponent)
-            .build()
+        CreationUploaderComponentProvider
+            .get(context)
             .inject(this)
     }
 

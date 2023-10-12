@@ -18,7 +18,9 @@ import com.tokopedia.creation.common.upload.uploader.worker.CreationUploaderWork
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -28,7 +30,7 @@ class CreationUploaderImpl @Inject constructor(
     @ApplicationContext private val appContext: Context,
     private val workManager: WorkManager,
     private val creationUploadQueueRepository: CreationUploadQueueRepository,
-    private val gson: Gson,
+    private val gson: Gson
 ) : CreationUploader {
 
     private val uploadLiveData = Transformations.map(
@@ -68,6 +70,8 @@ class CreationUploaderImpl @Inject constructor(
         return@map CreationUploadResult.Unknown
     }
 
+    private val uploadResultFlow = MutableSharedFlow<CreationUploadResult>()
+
     override suspend fun upload(data: CreationUploadData) {
         creationUploadQueueRepository.insert(data)
         startWorkManager()
@@ -102,16 +106,26 @@ class CreationUploaderImpl @Inject constructor(
 
             uploadLiveData.observeForever(observer)
 
+            launch {
+                uploadResultFlow.collect {
+                    trySendBlocking(it)
+                }
+            }
+
             awaitClose {
                 uploadLiveData.removeObserver(observer)
             }
         }
     }
 
-    override fun retry(removedNotificationId: Int) {
+    override suspend fun retry(removedNotificationId: Int) {
         NotificationManagerCompat.from(appContext).cancel(removedNotificationId)
 
-        startWorkManager()
+        if (creationUploadQueueRepository.getTopQueue() == null) {
+            uploadResultFlow.emit(CreationUploadResult.Empty)
+        } else {
+            startWorkManager()
+        }
     }
 
     override suspend fun deleteTopQueue() {

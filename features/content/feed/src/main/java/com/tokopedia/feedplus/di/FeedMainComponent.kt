@@ -3,7 +3,7 @@ package com.tokopedia.feedplus.di
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.content.common.comment.di.ContentCommentModule
 import com.tokopedia.creation.common.di.ContentCreationModule
-import com.tokopedia.creation.common.upload.di.uploader.CreationUploaderModule
+import com.tokopedia.creation.common.upload.di.uploader.CreationUploaderComponent
 import com.tokopedia.feedplus.presentation.fragment.FeedBaseFragment
 import com.tokopedia.feedplus.presentation.fragment.FeedFragment
 import dagger.Component
@@ -16,12 +16,14 @@ import dagger.Component
     modules = [
         FeedMainModule::class,
         FeedMainViewModelModule::class,
-        CreationUploaderModule::class,
         FeedFragmentModule::class,
         ContentCommentModule::class,
         ContentCreationModule::class
     ],
-    dependencies = [BaseAppComponent::class]
+    dependencies = [
+        BaseAppComponent::class,
+        CreationUploaderComponent::class,
+    ]
 )
 interface FeedMainComponent {
     fun inject(feedBaseFragment: FeedBaseFragment)

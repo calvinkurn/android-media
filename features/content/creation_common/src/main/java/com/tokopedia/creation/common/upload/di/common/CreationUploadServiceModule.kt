@@ -1,4 +1,4 @@
-package com.tokopedia.creation.common.upload.di
+package com.tokopedia.creation.common.upload.di.common
 
 import android.content.Context
 import androidx.work.WorkManager

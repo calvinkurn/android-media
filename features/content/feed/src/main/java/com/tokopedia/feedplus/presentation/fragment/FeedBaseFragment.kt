@@ -31,6 +31,7 @@ import com.tokopedia.creation.common.presentation.bottomsheet.ContentCreationBot
 import com.tokopedia.creation.common.presentation.model.ContentCreationItemModel
 import com.tokopedia.creation.common.presentation.model.ContentCreationTypeEnum
 import com.tokopedia.creation.common.upload.analytic.PlayShortsUploadAnalytic
+import com.tokopedia.creation.common.upload.model.CreationUploadData
 import com.tokopedia.creation.common.upload.model.CreationUploadResult
 import com.tokopedia.creation.common.upload.model.CreationUploadType
 import com.tokopedia.creation.common.upload.uploader.CreationUploader
@@ -485,6 +486,9 @@ class FeedBaseFragment :
                 .observe()
                 .collect { uploadResult ->
                     when (uploadResult) {
+                        is CreationUploadResult.Empty -> {
+                            binding.uploadView.hide()
+                        }
                         is CreationUploadResult.Upload -> {
                             binding.uploadView.show()
                             binding.uploadView.setUploadProgress(uploadResult.progress)
@@ -533,7 +537,9 @@ class FeedBaseFragment :
                             binding.uploadView.setThumbnail(uploadResult.data.notificationCover)
                             binding.uploadView.setListener(object : UploadInfoView.Listener {
                                 override fun onRetryClicked(view: UploadInfoView) {
-                                    creationUploader.retry(uploadResult.data.notificationIdAfterUpload)
+                                    launch {
+                                        creationUploader.retry(uploadResult.data.notificationIdAfterUpload)
+                                    }
                                 }
 
                                 override fun onCloseWhenFailedClicked(view: UploadInfoView) {

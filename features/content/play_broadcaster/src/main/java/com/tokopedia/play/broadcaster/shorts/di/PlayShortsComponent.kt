@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.content.common.di.ContentCoachMarkSharedPrefModule
 import com.tokopedia.content.common.onboarding.di.UGCOnboardingModule
 import com.tokopedia.content.common.producttag.di.module.ContentCreationProductTagBindModule
-import com.tokopedia.creation.common.upload.di.uploader.CreationUploaderModule
+import com.tokopedia.creation.common.upload.di.uploader.CreationUploaderComponent
 import com.tokopedia.play.broadcaster.shorts.view.activity.PlayShortsActivity
 import dagger.Component
 
@@ -19,10 +19,12 @@ import dagger.Component
         PlayShortsFragmentModule::class,
         ContentCreationProductTagBindModule::class,
         UGCOnboardingModule::class,
-        CreationUploaderModule::class,
         ContentCoachMarkSharedPrefModule::class,
     ],
-    dependencies = [BaseAppComponent::class]
+    dependencies = [
+        BaseAppComponent::class,
+        CreationUploaderComponent::class,
+    ]
 )
 @PlayShortsScope
 interface PlayShortsComponent {

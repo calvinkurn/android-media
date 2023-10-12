@@ -2,6 +2,7 @@ package com.tokopedia.feedplus.oldFeed.view.di
 
 import android.content.Context
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.creation.common.upload.di.uploader.CreationUploaderComponentProvider
 
 /**
  * Created By : Jonathan Darwin on September 22, 2022
@@ -14,6 +15,9 @@ object FeedInjector {
         return customComponent ?: DaggerFeedContainerComponent.builder()
             .baseAppComponent(
                 (context.applicationContext as BaseMainApplication).baseAppComponent
+            )
+            .creationUploaderComponent(
+                CreationUploaderComponentProvider.get(context)
             )
             .feedContainerModule(FeedContainerModule(context))
             .build()
