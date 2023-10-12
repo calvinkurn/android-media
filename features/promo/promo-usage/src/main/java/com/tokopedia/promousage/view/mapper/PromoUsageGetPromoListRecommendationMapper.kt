@@ -229,8 +229,14 @@ class PromoUsageGetPromoListRecommendationMapper @Inject constructor() {
         val secondaryClashingInfos =
             secondaryCoupon?.clashingInfos
                 ?.filter {
-                    coupon.code != it.code && secondaryCoupon.code != it.code &&
-                        (selectedPromoCodes.contains(it.code) || selectedSecondaryPromoCodes.contains(it.code))
+                    if (isRecommended) {
+                        coupon.code != it.code && secondaryCoupon.code != it.code &&
+                            (selectedPromoCodes.contains(it.code) || selectedSecondaryPromoCodes.contains(it.code)) &&
+                            !recommendedPromoCodes.contains(it.code)
+                    } else {
+                        coupon.code != it.code && secondaryCoupon.code != it.code &&
+                            (selectedPromoCodes.contains(it.code) || selectedSecondaryPromoCodes.contains(it.code))
+                    }
                 }
                 ?: emptyList()
         var state: PromoItemState = if (secondaryCoupon != null) {
