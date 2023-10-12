@@ -9,7 +9,7 @@ import com.tokopedia.topchat.chatroom.view.custom.messagebubble.base.BaseTopChat
 
 class TopChatChatroomMessageBubbleAutoReplyLayout : BaseTopChatChatroomMessageBubbleLayout {
 
-    private var fxChat: FlexBoxChatAutoReplyLayout? = null
+    private var fxChat: TopChatChatRoomFlexBoxAutoReplyLayout? = null
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)

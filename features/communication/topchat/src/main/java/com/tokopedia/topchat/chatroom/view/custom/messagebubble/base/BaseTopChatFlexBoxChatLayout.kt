@@ -31,7 +31,7 @@ import com.tokopedia.chat_common.R as chat_commonR
 abstract class BaseTopChatFlexBoxChatLayout : ViewGroup {
 
     protected var layoutInflater: LayoutInflater? = null
-    protected var flexBoxListener: TopChatFlexBoxListener? = null
+    protected var flexBoxListener: TopChatChatRoomFlexBoxListener? = null
     private var checkMark: ImageView? = null
     private var hourTime: TextView? = null
 
@@ -320,7 +320,7 @@ abstract class BaseTopChatFlexBoxChatLayout : ViewGroup {
         message?.setOnTouchListener(onTouchListener)
     }
 
-    fun setListener(listener: TopChatFlexBoxListener) {
+    fun setListener(listener: TopChatChatRoomFlexBoxListener) {
         this.flexBoxListener = listener
     }
 

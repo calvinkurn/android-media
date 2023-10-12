@@ -8,8 +8,9 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topchat.chatroom.view.uimodel.autoreply.TopChatAutoReplyItemUiModel
 import com.tokopedia.topchat.databinding.TopchatChatroomAutoReplyItemBinding
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.unifyprinciples.Typography
 
-class TopChatAutoReplyItemViewHolder(
+class TopChatChatRoomAutoReplyItemViewHolder(
     itemView: View,
     private val shouldLimitText: Boolean
 ): RecyclerView.ViewHolder(itemView) {
@@ -40,6 +41,7 @@ class TopChatAutoReplyItemViewHolder(
         if (shouldLimitText) {
             binding?.topchatTvAutoReplyDesc?.maxLines = 3
             binding?.topchatTvAutoReplyDesc?.ellipsize = TextUtils.TruncateAt.END
+            binding?.topchatTvAutoReplyDesc?.setType(Typography.DISPLAY_1)
         }
         binding?.topchatTvAutoReplyDesc?.text = uiModel.getMessage()
     }

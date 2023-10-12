@@ -13,7 +13,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatroom.view.adapter.TopChatAutoReplyAdapter
+import com.tokopedia.topchat.chatroom.view.adapter.TopChatChatRoomAutoReplyAdapter
 import com.tokopedia.topchat.chatroom.view.custom.messagebubble.base.BaseTopChatFlexBoxChatLayout
 import com.tokopedia.topchat.chatroom.view.uimodel.autoreply.TopChatAutoReplyItemUiModel
 import com.tokopedia.topchat.databinding.TopchatChatroomAutoReplyListBinding
@@ -21,7 +21,7 @@ import timber.log.Timber
 import kotlin.math.abs
 
 
-class FlexBoxChatAutoReplyLayout : BaseTopChatFlexBoxChatLayout {
+class TopChatChatRoomFlexBoxAutoReplyLayout : BaseTopChatFlexBoxChatLayout {
 
     /**
      * Auto reply child
@@ -364,7 +364,7 @@ class FlexBoxChatAutoReplyLayout : BaseTopChatFlexBoxChatLayout {
         autoReplyItemList: List<TopChatAutoReplyItemUiModel>
     ) {
         if (autoReplyItemList.isNotEmpty()) {
-            val adapter = TopChatAutoReplyAdapter(shouldLimitText = true)
+            val adapter = TopChatChatRoomAutoReplyAdapter(shouldLimitText = true)
             autoReplyBinding?.topchatChatroomRvAutoReply?.adapter = adapter
             autoReplyBinding?.topchatChatroomRvAutoReply?.layoutManager =
                 LinearLayoutManager(context)

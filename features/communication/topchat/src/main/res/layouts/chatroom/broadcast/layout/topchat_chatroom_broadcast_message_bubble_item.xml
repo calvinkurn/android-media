@@ -107,7 +107,7 @@
         tools:layout_height="50dp"
         tools:visibility="gone" />
 
-    <com.tokopedia.topchat.chatroom.view.custom.messagebubble.regular.FlexBoxChatLayout
+    <com.tokopedia.topchat.chatroom.view.custom.messagebubble.regular.TopChatChatRoomFlexBoxLayout
         android:id="@+id/broadcast_fx_chat"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
