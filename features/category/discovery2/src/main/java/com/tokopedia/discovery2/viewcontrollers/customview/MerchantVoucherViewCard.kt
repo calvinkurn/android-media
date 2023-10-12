@@ -23,30 +23,29 @@ class MerchantVoucherViewCard @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : MaterialCardView(context, attrs, defStyleAttr) {
 
-    private var binding = ItemMerchantVoucherCarouselLayoutBinding.inflate(LayoutInflater.from(context), this)
+    private var binding =
+        ItemMerchantVoucherCarouselLayoutBinding.inflate(LayoutInflater.from(context), this)
 
     init {
         binding.divider.addOneTimeGlobalLayoutListener {
-            val rightPosition = binding.divider.y - 15
-            val leftPosition = binding.root.height - rightPosition - 95
+            val rightPosition = binding.divider.y - RIGHT_EDGE_OFFSET
+            val leftPosition = binding.root.height - rightPosition - LEFT_EDGE_OFFSET
 
             val rightEdge = NotchEdgeTreatment(
                 horizontalOffset = (rightPosition)
-            )
-                .apply {
-                    scallopDiameter = (2 * 20).toFloat()
-                }
+            ).apply {
+                scallopDiameter = SCALLOP_DIAMETER
+            }
 
             val leftEdge = NotchEdgeTreatment(
                 horizontalOffset = (leftPosition),
                 isLeftEdge = true
-            )
-                .apply {
-                    scallopDiameter = (2 * 20).toFloat()
-                }
+            ).apply {
+                scallopDiameter = SCALLOP_DIAMETER
+            }
 
             val shapePathModel = ShapeAppearanceModel.builder()
-                .setAllCorners(CornerFamily.ROUNDED, 40.toFloat())
+                .setAllCorners(CornerFamily.ROUNDED, CORNER_SIZE)
                 .setLeftEdge(leftEdge)
                 .setRightEdge(rightEdge)
                 .build()
@@ -79,5 +78,12 @@ class MerchantVoucherViewCard @JvmOverloads constructor(
         binding.root.setOnClickListener {
             action.invoke()
         }
+    }
+
+    companion object {
+        private const val SCALLOP_DIAMETER = 40f
+        private const val CORNER_SIZE = 40f
+        private const val LEFT_EDGE_OFFSET = 95
+        private const val RIGHT_EDGE_OFFSET = 15
     }
 }
