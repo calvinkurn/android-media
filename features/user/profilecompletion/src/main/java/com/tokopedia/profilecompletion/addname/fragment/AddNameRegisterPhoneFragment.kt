@@ -16,6 +16,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.google.android.play.core.splitcompat.SplitCompat
+import com.scp.auth.GotoSdk
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
@@ -289,13 +290,19 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
 
     }
 
+    private fun saveTokens(data: RegisterInfo) {
+        userSession.setToken(
+            data.accessToken,
+            "Bearer",
+            EncoderDecoder.Encrypt(data.refreshToken, userSession.refreshTokenIV)
+        )
+        /* Migrate token to lsdk */
+        GotoSdk.LSDKINSTANCE?.save(accessToken = data.accessToken, refreshToken = data.refreshToken)
+    }
+
     override fun onSuccessRegister(registerInfo: RegisterInfo) {
         userSession.clearToken()
-        userSession.setToken(
-            registerInfo.accessToken,
-            "Bearer",
-            EncoderDecoder.Encrypt(registerInfo.refreshToken, userSession.refreshTokenIV)
-        )
+        saveTokens(registerInfo)
 
         activity?.run {
             dismissLoading()
