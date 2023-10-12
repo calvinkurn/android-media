@@ -1066,7 +1066,6 @@ object TopChatAnalyticsKt {
     fun eventImpressionAutoReply(
         source: String,
         messageId: String,
-        type: String,
         contentList: List<TopChatAutoReplyItemUiModel>
     ) {
         val contentHeader = contentList
@@ -1078,7 +1077,7 @@ object TopChatAnalyticsKt {
                 event = Event.VIEW_COMMUNICATION_IRIS,
                 category = Category.CHAT_DETAIL,
                 action = Action.IMPRESSION_BALASAN_OTOMATIS,
-                label = "$source - $messageId - $type - $contentHeader",
+                label = "$source - $messageId - $contentHeader",
                 businessUnit = COMMUNICATION,
                 currentSite = CURRENT_SITE_TOKOPEDIA,
                 trackerId = "47757"
@@ -1089,7 +1088,6 @@ object TopChatAnalyticsKt {
     fun eventClickAutoReply(
         source: String,
         messageId: String,
-//        type: String = sourcePage,
         contentList: List<TopChatAutoReplyItemUiModel>
     ) {
         val contentHeader = contentList

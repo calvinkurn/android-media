@@ -31,7 +31,9 @@ class FlexBoxChatAutoReplyLayout : BaseTopChatFlexBoxChatLayout {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
-        context, attrs, defStyleAttr
+        context,
+        attrs,
+        defStyleAttr
     )
 
     override fun getLayout(): Int {
@@ -64,24 +66,46 @@ class FlexBoxChatAutoReplyLayout : BaseTopChatFlexBoxChatLayout {
          * get measurement and layout params of direct child
          */
         measureChildWithMargins(
-            message, widthMeasureSpec, 0, heightMeasureSpec, 0
+            message,
+            widthMeasureSpec,
+            0,
+            heightMeasureSpec,
+            0
         )
         measureChildWithMargins(
-            info, widthMeasureSpec, 0, heightMeasureSpec, 0
+            info,
+            widthMeasureSpec,
+            0,
+            heightMeasureSpec,
+            0
         )
         measureChildWithMargins(
-            status, widthMeasureSpec, 0, heightMeasureSpec, 0
+            status,
+            widthMeasureSpec,
+            0,
+            heightMeasureSpec,
+            0
         )
         measureChildWithMargins(
-            header, widthMeasureSpec, 0, heightMeasureSpec, 0
+            header,
+            widthMeasureSpec,
+            0,
+            heightMeasureSpec,
+            0
         )
         measureChildWithMargins(
-            icon, widthMeasureSpec, 0, heightMeasureSpec, 0
+            icon,
+            widthMeasureSpec,
+            0,
+            heightMeasureSpec,
+            0
         )
         measureChildWithMargins(
             autoReplyConstraintLayout,
-            widthMeasureSpec, 0,
-            heightMeasureSpec, 0
+            widthMeasureSpec,
+            0,
+            heightMeasureSpec,
+            0
         )
 
         /**
@@ -106,7 +130,6 @@ class FlexBoxChatAutoReplyLayout : BaseTopChatFlexBoxChatLayout {
         val clAutoReplyWidth = getTotalVisibleWidth(autoReplyConstraintLayout)
         val clAutoReplyHeight = getTotalVisibleHeight(autoReplyConstraintLayout)
 
-
         /**
          * Measure first row dimension
          */
@@ -125,7 +148,9 @@ class FlexBoxChatAutoReplyLayout : BaseTopChatFlexBoxChatLayout {
             totalWidth += abs(secondRowWidthDiff)
         }
         val secondRowHeight = maxOf(
-            messageHeight, statusHeight, iconHeight
+            messageHeight,
+            statusHeight,
+            iconHeight
         )
         // Add secondRowHeight and clAutoReplyHeight, clAutoReplyHeight should be 0 when not visible
         totalHeight += secondRowHeight + clAutoReplyHeight
@@ -134,7 +159,8 @@ class FlexBoxChatAutoReplyLayout : BaseTopChatFlexBoxChatLayout {
         if (messageWidth > messageMaxWidth) {
             totalHeight -= messageHeight
             val messageWidthSpec = MeasureSpec.makeMeasureSpec(
-                messageMaxWidth, MeasureSpec.EXACTLY
+                messageMaxWidth,
+                MeasureSpec.EXACTLY
             )
             message!!.measure(messageWidthSpec, heightMeasureSpec)
             messageHeight = getTotalVisibleHeight(message)
@@ -173,7 +199,8 @@ class FlexBoxChatAutoReplyLayout : BaseTopChatFlexBoxChatLayout {
         if (infoWidth > infoMaxWidth) {
             totalHeight -= infoHeight
             val infoWidthSpec = MeasureSpec.makeMeasureSpec(
-                infoMaxWidth, MeasureSpec.EXACTLY
+                infoMaxWidth,
+                MeasureSpec.EXACTLY
             )
             info!!.measure(infoWidthSpec, heightMeasureSpec)
             infoHeight = getTotalVisibleHeight(info)
@@ -185,7 +212,7 @@ class FlexBoxChatAutoReplyLayout : BaseTopChatFlexBoxChatLayout {
 
         setMeasuredDimension(
             resolveSize(totalWidth, widthMeasureSpec),
-            resolveSize(totalHeight, heightMeasureSpec),
+            resolveSize(totalHeight, heightMeasureSpec)
         )
     }
 
@@ -285,7 +312,6 @@ class FlexBoxChatAutoReplyLayout : BaseTopChatFlexBoxChatLayout {
             rightStatus,
             bottomStatus
         )
-
     }
 
     /**
@@ -303,16 +329,19 @@ class FlexBoxChatAutoReplyLayout : BaseTopChatFlexBoxChatLayout {
     private fun setRegularMessageBody(messageUiModel: MessageUiModel) {
         super.setMessageBody(messageUiModel)
         autoReplyConstraintLayout?.hide()
+        flexBoxListener?.onViewAutoReply(listOf()) // Empty list
     }
 
     private fun setAutoReplyMessageBody(messageUiModel: MessageUiModel) {
         try {
             val listType = object : TypeToken<List<TopChatAutoReplyItemUiModel>>() {}.type
             val result = Gson().fromJson<List<TopChatAutoReplyItemUiModel>>(
-                messageUiModel.message, listType
+                messageUiModel.message,
+                listType
             )
             bindAutoReplyView(messageUiModel = messageUiModel, autoReplyList = result)
             autoReplyConstraintLayout?.show()
+            flexBoxListener?.onViewAutoReply(result)
         } catch (throwable: Throwable) {
             /**
              * If fail then the message is history message
@@ -393,4 +422,3 @@ class FlexBoxChatAutoReplyLayout : BaseTopChatFlexBoxChatLayout {
         private val LAYOUT = R.layout.topchat_chatroom_partial_flexbox_chat_bubble_auto_reply
     }
 }
-

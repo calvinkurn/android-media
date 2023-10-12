@@ -3520,11 +3520,25 @@ open class TopChatRoomFragment :
         welcomeMessage: TopChatAutoReplyItemUiModel,
         list: List<TopChatAutoReplyItemUiModel>
     ) {
-        TopChatAnalyticsKt.eventClickAutoReply(sourcePage, messageId, list)
+        TopChatAnalyticsKt.eventClickAutoReply(
+            sourcePage,
+            messageId,
+            listOf(welcomeMessage) + list
+        )
         view?.hideKeyboard()
         TopChatAutoReplyDetailBottomSheet().show(
             childFragmentManager,
             welcomeMessage,
+            list
+        )
+    }
+
+    override fun onViewAutoReply(
+        list: List<TopChatAutoReplyItemUiModel>
+    ) {
+        TopChatAnalyticsKt.eventImpressionAutoReply(
+            sourcePage,
+            messageId,
             list
         )
     }

@@ -5,6 +5,11 @@ import com.tokopedia.topchat.chatroom.view.uimodel.autoreply.TopChatAutoReplyIte
 
 interface TopChatFlexBoxListener {
     fun changeAddress(attachment: HeaderCtaButtonAttachment)
+
+    fun onViewAutoReply(
+        list: List<TopChatAutoReplyItemUiModel>
+    )
+
     fun onClickReadMoreAutoReply(
         welcomeMessage: TopChatAutoReplyItemUiModel,
         list: List<TopChatAutoReplyItemUiModel>
