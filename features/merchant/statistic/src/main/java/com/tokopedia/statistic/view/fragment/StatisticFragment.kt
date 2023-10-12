@@ -603,7 +603,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         val listener = activity as? FragmentListener
 
         if (listener?.isTabCoachMarkShowing() == false) {
-            multiComponentUiInteractor?.showCoachMarkMultiComponent(view)
+            multiComponentUiInteractor?.showCoachMarkMultiComponent(view, userSession.userId)
         }
     }
 
@@ -1003,7 +1003,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         val listener = activity as? FragmentListener
 
         if ((selectedWidget.isNotEmpty() ||
-            multiComponentUiInteractor?.alreadyAutoScroll() == true) ||
+            multiComponentUiInteractor?.alreadyAutoScroll(userSession.userId) == true) ||
             listener?.isTabCoachMarkShowing() == true
         ) return
 
@@ -1018,7 +1018,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
             recyclerView?.post {
                 mLayoutManager?.scrollToPositionWithOffset(wawasanPlusIndex, 100)
-                multiComponentUiInteractor?.setAlreadyAutoScroll()
+                multiComponentUiInteractor?.setAlreadyAutoScroll(userSession.userId)
             }
 
         } catch (e: Throwable) {

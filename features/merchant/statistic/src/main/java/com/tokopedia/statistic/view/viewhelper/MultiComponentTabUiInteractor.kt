@@ -23,9 +23,9 @@ class MultiComponentTabUiInteractor(context: Context) {
 
     private val editor = sharedPref?.edit()
 
-    fun showCoachMarkMultiComponent(targetView: View?) {
+    fun showCoachMarkMultiComponent(targetView: View?, userId: String) {
         val shouldShowCoachMark =
-            getCoachMarkState(STC_COACHMARK_MULTI_COMPONENT) == false
+            getCoachMarkState(STC_COACHMARK_MULTI_COMPONENT + userId) == false
 
         if (targetView != null && shouldShowCoachMark) {
             initCoachMarkView(targetView.context)
@@ -40,7 +40,7 @@ class MultiComponentTabUiInteractor(context: Context) {
             )
 
             coachMarkView?.showCoachMark(coachMarkList, null, 0)
-            setCoachMarkMultiComponentShown()
+            setCoachMarkMultiComponentShown(userId)
         }
     }
 
@@ -48,12 +48,12 @@ class MultiComponentTabUiInteractor(context: Context) {
         coachMarkView?.hideCoachMark()
     }
 
-    fun alreadyAutoScroll(): Boolean {
-        return sharedPref?.getBoolean(STC_AUTO_SCROLL_MULTI_COMPONENT, false) ?: false
+    fun alreadyAutoScroll(userId: String): Boolean {
+        return sharedPref?.getBoolean(STC_AUTO_SCROLL_MULTI_COMPONENT + userId, false) ?: false
     }
 
-    fun setAlreadyAutoScroll() {
-        editor?.putBoolean(STC_AUTO_SCROLL_MULTI_COMPONENT, true)
+    fun setAlreadyAutoScroll(userId: String) {
+        editor?.putBoolean(STC_AUTO_SCROLL_MULTI_COMPONENT + userId, true)
         editor?.apply()
     }
 
@@ -61,8 +61,8 @@ class MultiComponentTabUiInteractor(context: Context) {
         coachMarkView = null
     }
 
-    private fun setCoachMarkMultiComponentShown() {
-        setCoachMarkState(STC_COACHMARK_MULTI_COMPONENT, true)
+    private fun setCoachMarkMultiComponentShown(userId: String) {
+        setCoachMarkState(STC_COACHMARK_MULTI_COMPONENT + userId, true)
     }
 
     private fun initCoachMarkView(context: Context) {
