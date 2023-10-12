@@ -25,6 +25,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.scp.auth.GotoSdk
+import com.scp.auth.common.utils.ScpUtils
 import com.scp.login.core.domain.contracts.listener.LSdkLogoutCompletionListener
 import com.scp.login.core.domain.contracts.listener.LSdkOneTapListener
 import com.scp.login.core.domain.logout.mappers.LogoutError
@@ -116,7 +117,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         showLoading()
         saveLoginReminderData()
 
-        if (isGotoLoginEnabled()) {
+        if (ScpUtils.isGotoLoginEnabled()) {
             if(isSaveSession) {
                 logoutAndEnableOcl()
             } else {
@@ -133,10 +134,6 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
                 }
             }
         }
-    }
-
-    private fun isGotoLoginEnabled(): Boolean {
-        return true
     }
 
     private fun logoutUser() {

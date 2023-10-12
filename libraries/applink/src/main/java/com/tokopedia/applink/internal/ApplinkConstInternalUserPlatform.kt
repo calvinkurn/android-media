@@ -125,7 +125,7 @@ object ApplinkConstInternalUserPlatform {
 
     /**
      * OclChooseAccountActivity
-     * @Applink : tokopedia-android-internal://user/choose-account-fingerprint
+     * @Applink : tokopedia-android-internal://user/choose-account-ocl
      **/
     const val CHOOSE_ACCOUNT_OCL = "$NEW_INTERNAL_USER/choose-account-ocl"
 

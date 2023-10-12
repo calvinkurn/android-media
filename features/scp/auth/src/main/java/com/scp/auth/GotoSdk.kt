@@ -15,13 +15,13 @@ import com.gojek.pin.validation.ExtVerificationData
 import com.gojek.pin.validation.ExtVerificationUiConfig
 import com.gojek.pin.validation.PinSdkValidationListener
 import com.gojek.pin.validation.PinValidationResults
+import com.scp.auth.authentication.LoginSdkConfigs
 import com.scp.auth.common.analytics.AuthAnalyticsMapper
 import com.scp.auth.common.analytics.GotoPinAnalyticsMapper
-import com.scp.auth.authentication.LoginSdkConfigs
+import com.scp.auth.common.utils.ScpUtils
 import com.scp.auth.di.DaggerScpAuthComponent
 import com.scp.auth.di.ScpAuthComponent
 import com.scp.auth.verification.VerificationSdk.getCvSdkProvider
-import com.scp.auth.common.utils.ScpUtils
 import com.scp.login.core.domain.contracts.services.LSdkServices
 import com.scp.login.init.GotoLogin
 import com.scp.login.init.contracts.LSdkProvider
@@ -126,7 +126,6 @@ object GotoSdk {
 //        }
         // Init abtest each time we initialize the sdk, for testing purpose
         RemoteConfigInstance.getInstance().abTestPlatform.fetch(null)
-        println("gotosdk:No Need Init")
     }
 
     private fun getGotoPinSdkProvider(application: Application): PinManager {
@@ -146,7 +145,6 @@ object GotoSdk {
                 ),
                 appInfo = AppInfo(
                     appType = TOKOPEDIA_APP_TYPE,
-                    // Rama will fix the global config issue
                     isDebug = TokopediaUrl.getInstance().TYPE == Env.STAGING,
                     language = LOCALE_ID
                 ),

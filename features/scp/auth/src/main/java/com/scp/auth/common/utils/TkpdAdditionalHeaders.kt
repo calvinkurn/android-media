@@ -29,7 +29,6 @@ class TkpdAdditionalHeaders(val context: Context) : AdditionalHeaders {
             "Fingerprint-Data" to fpHash.fingerprintHash,
             "Fingerprint-Hash" to AuthHelper.Companion.getMD5Hash(fpHash.fingerprintHash + "+" + ""),
             "X-Device" to "android-" + GlobalConfig.VERSION_NAME,
-            "X-Tkpd-Akamai" to "testing_akamai",
             "X-Tkpd-App-Name" to GlobalConfig.getPackageApplicationName(),
             "X-GA-ID" to fpHash.adsId
         )

@@ -149,9 +149,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     private lateinit var mGoogleSignInClient: GoogleSignInClient
 
-//    @Inject
-//    lateinit var lsdkProvider: LSdkProvider
-
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     protected val viewModel by lazy {
