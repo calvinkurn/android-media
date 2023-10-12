@@ -63,7 +63,12 @@ class ProductContentViewHolder(
                 header.renderFreeOngkir(element.freeOngkirImgUrl)
             }
         }
-        view.addOnImpressionListener(element.impressHolder) {
+        view.addOnImpressionListener(
+            holder = element.impressHolder,
+            holders = listener.getImpressionHolders(),
+            name = element.name,
+            useHolders = listener.isCacheable()
+        ) {
             listener.onImpressComponent(getComponentTrackData(element))
         }
     }
