@@ -669,8 +669,8 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         )
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel.orderProfile.value = preference
-        val term1 = OrderPaymentInstallmentTerm(term = 1, isEnable = true, isSelected = true)
-        val term2 = OrderPaymentInstallmentTerm(term = 2, isEnable = true, isSelected = false)
+        val term1 = OrderPaymentInstallmentTerm(term = 1, isEnable = true, isSelected = true, gatewayCode = "term1")
+        val term2 = OrderPaymentInstallmentTerm(term = 2, isEnable = true, isSelected = false, gatewayCode = "term2")
         orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, creditCard = OrderPaymentCreditCard(availableTerms = listOf(term1, term2), selectedTerm = term1))
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
 
@@ -680,6 +680,9 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         // Then
         assertEquals(term2.copy(isSelected = true), orderSummaryPageViewModel.orderPayment.value.creditCard.selectedTerm)
         assertEquals(listOf(term1.copy(isSelected = false), term2.copy(isSelected = true)), orderSummaryPageViewModel.orderPayment.value.creditCard.availableTerms)
+        assertEquals("term2", orderSummaryPageViewModel.orderPayment.value.gatewayCode)
+        coVerify { updateCartOccUseCase.executeSuspend(match { it.profile.gatewayCode == "term2" }) }
+        coVerify(inverse = true) { updateCartOccUseCase.executeSuspend(match { it.profile.gatewayCode != "term2" }) }
     }
 
     @Test
