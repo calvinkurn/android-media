@@ -4,12 +4,14 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.discovery2.analytics.merchantvoucher.DiscoMerchantAnalytics
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.databinding.MerchantVoucherGridItemLayoutBinding
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
+import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.user.session.UserSession
 
 class MerchantVoucherGridItemViewHolder(
@@ -48,19 +50,45 @@ class MerchantVoucherGridItemViewHolder(
             setData(item)
             onClick {
                 RouteManager.route(itemView.context, item.shopInfo?.appLink)
+                trackClickEvent(item)
             }
         }
     }
 
-    private fun trackImpression() {
-        val analytics = (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
+    private fun trackClickEvent(item: DataItem) {
+        val discoveryAnalytics = getAnalytics() ?: return
 
         viewModel?.run {
-            analytics?.trackMerchantVoucherMultipleImpression(
+            val merchantAnalytics = DiscoMerchantAnalytics(
+                discoveryAnalytics,
+                component,
+                component.parentComponentPosition,
+                null,
+                position
+            )
+
+            val shopName = item.shopInfo?.name.orEmpty()
+            val eventAction = "click shop name"
+
+            merchantAnalytics.mvcMultiShopCardClick(
+                shopName,
+                eventAction,
+                MvcSource.DISCO,
+                UserSession(fragment.context).userId,
+                0
+            )
+        }
+    }
+
+    private fun trackImpression() {
+        viewModel?.run {
+            getAnalytics()?.trackMerchantVoucherMultipleImpression(
                 component,
                 UserSession(fragment.context).userId,
                 position
             )
         }
     }
+
+    private fun getAnalytics() = (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
 }
