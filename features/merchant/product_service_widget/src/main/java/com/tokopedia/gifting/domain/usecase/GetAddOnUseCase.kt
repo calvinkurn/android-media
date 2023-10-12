@@ -80,11 +80,7 @@ class GetAddOnUseCase @Inject constructor(
         selectedAddOn: List<AddOnUIModel> = emptyList()
     ) {
         val requestParams = RequestParams.create()
-        val addonRequest = if (selectedAddOn.isEmpty()) {
-            addOnIds.mapToAddonRequest(addOnTypes, addOnWidgetParam, selectedAddOn)
-        } else {
-            selectedAddOn.mapToAddonRequest(addOnTypes, addOnWidgetParam)
-        }
+        val addonRequest = addOnIds.mapToAddonRequest(addOnTypes, addOnWidgetParam, selectedAddOn)
         requestParams.putObject(PARAM_INPUT, GetAddOnRequest(
             addOnRequest = addonRequest,
             source = Source(usecase = USECASE_GIFTING_VALUE, squad = SQUAD_VALUE)
@@ -102,7 +98,7 @@ class GetAddOnUseCase @Inject constructor(
         selectedAddOn: List<AddOnUIModel>
     ) = mapIndexed { index, addOnId ->
         val param = addOnWidgetParam ?: AddOnParam()
-        val addonKey = selectedAddOn.firstOrNull()?.uniqueId.orEmpty()
+        val addonKey = selectedAddOn.getOrNull(index)?.uniqueId.orEmpty()
         AddOnRequest(
             addOnID = addOnId,
             addOnType = addOnTypes.getOrNull(index).orEmpty(),
