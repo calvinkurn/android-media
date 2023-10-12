@@ -79,6 +79,7 @@ class HomeHeaderAtf2ViewHolder(
             viewPullRefresh = getParentLayout(binding?.viewPullRefresh)
         }
         viewPullRefresh?.let {
+            it.setColorPullRefresh(getPullRefreshLoaderColor())
             listener.pullRefreshIconCaptured(it)
         }
     }
@@ -109,13 +110,11 @@ class HomeHeaderAtf2ViewHolder(
     }
 
     override fun bind(element: HomeHeaderDataModel, payloads: MutableList<Any>) {
-        if(payloads.isNotEmpty()) {
-            if((payloads[0] as? Bundle)?.getBoolean(HomeThematicUtil.PAYLOAD_APPLY_THEMATIC_COLOR) == true) {
-                chooseAddressView?.updateWidget()
-                balanceWidgetView?.applyThematicColor()
-                viewPullRefresh?.applyThematicColor(homeThematicUtil.isDarkMode())
-                loginWidgetView?.renderTextColor(homeThematicUtil)
-            }
+        if(payloads.isNotEmpty() && (payloads[0] as? Bundle)?.getBoolean(HomeThematicUtil.PAYLOAD_APPLY_THEMATIC_COLOR) == true) {
+            chooseAddressView?.updateWidget()
+            balanceWidgetView?.applyThematicColor()
+            viewPullRefresh?.setColorPullRefresh(getPullRefreshLoaderColor())
+            loginWidgetView?.renderTextColor(homeThematicUtil)
         } else {
             bind(element)
         }
@@ -139,5 +138,11 @@ class HomeHeaderAtf2ViewHolder(
 
     private fun isViewStubHasBeenInflated(viewStub: ViewStub?): Boolean {
         return viewStub?.parent == null
+    }
+
+    private fun getPullRefreshLoaderColor(): Int {
+        return if(homeThematicUtil.isBackgroundLoaded)
+            LayoutIconPullRefreshView.TYPE_WHITE
+        else LayoutIconPullRefreshView.TYPE_GREEN
     }
 }

@@ -1,6 +1,7 @@
 package com.tokopedia.home.beranda.presentation.view.helper
 
 import androidx.annotation.ColorRes
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeThematicModel
 import javax.inject.Inject
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import com.tokopedia.home.R as homeR
@@ -16,7 +17,10 @@ class HomeThematicUtil @Inject constructor() {
         const val PAYLOAD_APPLY_THEMATIC_COLOR = "payloadApplyThematicColor"
     }
 
-    var colorMode: String = COLOR_DEFAULT
+    var thematicModel: HomeThematicModel = HomeThematicModel()
+    var isBackgroundLoaded: Boolean = false
+
+    private fun getColorMode() = if(thematicModel.isShown && isBackgroundLoaded) thematicModel.colorMode else COLOR_DEFAULT
 
     private val thematicColorMap = mapOf<@receiver:ColorRes Int, HomeThematicColorToken>(
         unifyprinciplesR.color.Unify_NN1000 to HomeThematicColorToken(
@@ -44,18 +48,18 @@ class HomeThematicUtil @Inject constructor() {
     @ColorRes
     internal fun asThematicColor(actualColorToken: Int): Int {
         val colorToken = thematicColorMap[actualColorToken] ?: return actualColorToken
-        return when(colorMode) {
+        return when(getColorMode()) {
             COLOR_LIGHT -> colorToken.lightColorToken
             COLOR_DARK -> colorToken.darkColorToken
             else -> actualColorToken
         }
     }
 
-    fun isDarkMode() = colorMode == COLOR_DARK
+    fun isDarkMode() = getColorMode() == COLOR_DARK
 
-    fun isLightMode() = colorMode == COLOR_LIGHT
+    fun isLightMode() = getColorMode() == COLOR_LIGHT
 
-    fun isDefault() = colorMode != COLOR_DARK || colorMode != COLOR_LIGHT
+    fun isDefault() = getColorMode() != COLOR_DARK || getColorMode() != COLOR_LIGHT
 }
 
 /**

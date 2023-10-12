@@ -45,6 +45,7 @@ class BalanceAtf2Adapter(
         position: Int,
         payloads: MutableList<Any>
     ) {
-        holder.bind(getItem(position), listener, payloads)
+        if(payloads.isEmpty()) onBindViewHolder(holder, position)
+        else holder.bind(getItem(position), listener, payloads)
     }
 }

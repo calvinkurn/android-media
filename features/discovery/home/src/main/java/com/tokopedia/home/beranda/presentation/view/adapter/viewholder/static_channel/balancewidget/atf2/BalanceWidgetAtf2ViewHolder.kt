@@ -36,7 +36,7 @@ class BalanceWidgetAtf2ViewHolder(
         if(payloads.isNotEmpty()) {
             balanceAdapter?.let { adapter ->
                 adapter.currentList.forEachIndexed { index, _ ->
-                    adapter.notifyItemChanged(index, payloads)
+                    adapter.notifyItemChanged(index, payloads[0])
                 }
             }
         } else {

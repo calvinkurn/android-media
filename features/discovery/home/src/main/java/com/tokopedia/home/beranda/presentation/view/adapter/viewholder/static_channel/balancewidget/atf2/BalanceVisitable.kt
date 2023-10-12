@@ -9,6 +9,5 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 interface BalanceVisitable : Visitable<BalanceTypeFactory> {
     fun areContentsTheSame(newItem: BalanceVisitable): Boolean
     fun areItemsTheSame(newItem: BalanceVisitable): Boolean
-    fun getChangePayloadFrom(newItem: BalanceVisitable): Bundle? = null
     override fun type(typeFactory: BalanceTypeFactory): Int
 }

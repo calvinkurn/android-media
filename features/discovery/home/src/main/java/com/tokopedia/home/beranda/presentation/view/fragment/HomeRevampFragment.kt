@@ -85,6 +85,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitableDiffUtil
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeThematicModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceCoachmark
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordDataModel
@@ -905,35 +906,55 @@ open class HomeRevampFragment :
                         override fun successLoad(view: ImageView) {
                             view.show()
                             if(view == thematicBackground) {
-                                getThematicUtil().colorMode = thematic.colorMode
-                                setupThematicStatusBar()
-                                adapter?.updateThematicTextColor()
+                                notifyHomeThematicChanges(thematic, true)
                             }
                         }
 
                         override fun failedLoad(view: ImageView) {
                             view.hide()
+                            if(view == thematicBackground) {
+                                notifyHomeThematicChanges(thematic, false)
+                            }
                         }
                     }
 
-                    thematicBackground?.run {
-                        setLayoutHeight(thematic.getActualHeightPx(ctx))
-                        loadImageWithoutPlaceholder(
-                            thematic.backgroundImageURL,
-                            "thematicBackground",
-                            listener = thematicImageLoadListener
-                        )
+                    if(thematic.backgroundImageURL.isNotEmpty()) {
+                        thematicBackground?.run {
+                            setLayoutHeight(thematic.getActualHeightPx(ctx))
+                            loadImageWithoutPlaceholder(
+                                thematic.backgroundImageURL,
+                                "thematicBackground",
+                                listener = thematicImageLoadListener
+                            )
+                        }
                     }
-                    thematicForeground?.run {
-                        loadImageWithoutPlaceholder(
-                            thematic.foregroundImageURL,
-                            "thematicForeground",
-                            listener = thematicImageLoadListener
-                        )
+
+                    if(thematic.foregroundImageURL.isNotEmpty()) {
+                        thematicForeground?.run {
+                            loadImageWithoutPlaceholder(
+                                thematic.foregroundImageURL,
+                                "thematicForeground",
+                                listener = thematicImageLoadListener
+                            )
+                        }
                     }
                 }
+            } else {
+                thematicBackground?.hide()
+                thematicForeground?.hide()
+                notifyHomeThematicChanges(thematic)
             }
         }
+    }
+
+    private fun notifyHomeThematicChanges(
+        thematicModel: HomeThematicModel,
+        isBackgroundLoaded: Boolean = false
+    ) {
+        getThematicUtil().thematicModel = thematicModel
+        getThematicUtil().isBackgroundLoaded = isBackgroundLoaded
+        setupThematicStatusBar()
+        adapter?.updateThematicTextColor()
     }
 
     private fun evaluateScrollSubscriptionCoachmark() {
