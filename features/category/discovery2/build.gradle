@@ -101,8 +101,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
-    implementation ("com.google.android.material:material:1.10.0")
-
     // miscDependencies Dependency
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
@@ -127,6 +125,7 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.supportLibDependencies.design
     implementation rootProject.ext.firebase.crashlytics
 
 }
