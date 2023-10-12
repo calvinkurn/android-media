@@ -72,6 +72,7 @@
     <string name="title_reply_page">Balas Pertanyaan</string>
     <string name="title_write_page">Kirim Pertanyaan</string>
     <string name="title_seller_settings_page">Pengaturan Diskusi</string>
+    <string name="title_df_seller_pdp">Product Detail</string>
 
 
 </resources>
