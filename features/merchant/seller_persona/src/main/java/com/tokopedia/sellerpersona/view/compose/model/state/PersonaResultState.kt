@@ -16,9 +16,9 @@ data class PersonaResultState(
     val hasImpressed: Boolean = false
 ) {
 
-    sealed class State {
-        object Loading : State()
-        data class Error(val throwable: Throwable) : State()
-        object Success : State()
+    sealed interface State {
+        object Loading : State
+        object Error : State
+        object Success : State
     }
 }

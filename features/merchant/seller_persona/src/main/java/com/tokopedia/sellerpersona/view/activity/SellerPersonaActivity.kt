@@ -24,7 +24,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.sellerpersona.R
-import com.tokopedia.sellerpersona.data.local.PersonaSharedPref
+import com.tokopedia.sellerpersona.data.local.PersonaSharedPrefInterface
 import com.tokopedia.sellerpersona.data.remote.model.PersonaStatusModel
 import com.tokopedia.sellerpersona.databinding.ActivitySellerPersonaBinding
 import com.tokopedia.sellerpersona.di.DaggerSellerPersonaComponent
@@ -46,7 +46,7 @@ class SellerPersonaActivity : BaseActivity(), HasComponent<SellerPersonaComponen
     lateinit var viewModelFactory: ViewModelFactory
 
     @Inject
-    lateinit var sharedPref: PersonaSharedPref
+    lateinit var sharedPref: PersonaSharedPrefInterface
 
     val openingImpressHolder by lazy { ImpressHolder() }
 
@@ -85,7 +85,7 @@ class SellerPersonaActivity : BaseActivity(), HasComponent<SellerPersonaComponen
     }
 
     override fun onDestroy() {
-        if (sharedPref.isFirstVisit) {
+        if (sharedPref.isFirstVisit()) {
             sharedPref.setIsFirstVisit(false)
         }
         super.onDestroy()
@@ -156,6 +156,7 @@ class SellerPersonaActivity : BaseActivity(), HasComponent<SellerPersonaComponen
                 markAsPersonaFirstVisit()
                 R.id.composeOpeningFragment
             }
+
             hasPersona -> R.id.resultFragment
             else -> {
                 markAsPersonaFirstVisit()

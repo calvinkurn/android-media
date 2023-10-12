@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -45,12 +46,12 @@ class ComposePersonaResultViewModel @Inject constructor(
     val uiEffect: SharedFlow<ResultUiEffect>
         get() = _uiEffect.asSharedFlow()
 
-    fun onEvent(event: ResultUiEvent) = viewModelScope.launch {
+    fun onEvent(event: ResultUiEvent) {
         when (event) {
-            is ResultUiEvent.ApplyChanges -> onApplyClicked(event)
-            is ResultUiEvent.OnSwitchCheckChanged -> onCheckedChanged(event)
             is ResultUiEvent.Reload -> reloadPage()
             is ResultUiEvent.FetchPersonaData -> fetchPersonaData(event.arguments)
+            is ResultUiEvent.ApplyChanges -> onApplyClicked(event)
+            is ResultUiEvent.OnSwitchCheckChanged -> onCheckedChanged(event)
             is ResultUiEvent.RetakeQuiz -> setEffect(ResultUiEffect.NavigateToQuestionnaire)
             is ResultUiEvent.SelectPersona -> setEffect(ResultUiEffect.NavigateToSelectPersona(event.currentPersona))
             is ResultUiEvent.OnResultImpressedEvent -> setOnResultImpressedEvent()
@@ -60,13 +61,13 @@ class ComposePersonaResultViewModel @Inject constructor(
     private fun fetchPersonaData(args: PersonaArgsUiModel) {
         viewModelScope.launch {
             runCatching {
-                _personaState.emit(getLoadingState())
+                _personaState.update { getLoadingState() }
                 val result = getPersonaDataUseCase.get().execute(
                     shopId = userSession.get().shopId, page = Constants.PERSONA_PAGE_PARAM
                 )
-                _personaState.emit(getSuccessState(args, result))
+                _personaState.update { getSuccessState(args, result) }
             }.onFailure {
-                _personaState.emit(getErrorState(args, it))
+                _personaState.update { getErrorState(args) }
             }
         }
     }
@@ -89,14 +90,18 @@ class ComposePersonaResultViewModel @Inject constructor(
         }
     }
 
-    private suspend fun setOnResultImpressedEvent() {
+    private fun setOnResultImpressedEvent() {
         setEffect(ResultUiEffect.SendImpressionResultTracking)
-        val state = _personaState.value
-        _personaState.emit(state.copy(hasImpressed = true))
+        _personaState.update {
+            val state = _personaState.value
+            return@update state.copy(hasImpressed = true)
+        }
     }
 
-    private suspend fun setEffect(effect: ResultUiEffect) {
-        _uiEffect.emit(effect)
+    private fun setEffect(effect: ResultUiEffect) {
+        viewModelScope.launch {
+            _uiEffect.emit(effect)
+        }
     }
 
     private fun reloadPage() {
@@ -104,7 +109,7 @@ class ComposePersonaResultViewModel @Inject constructor(
         fetchPersonaData(args)
     }
 
-    private suspend fun onApplyClicked(event: ResultUiEvent.ApplyChanges) {
+    private fun onApplyClicked(event: ResultUiEvent.ApplyChanges) {
         val status = if (event.isActive) {
             PersonaStatus.ACTIVE
         } else {
@@ -119,20 +124,24 @@ class ComposePersonaResultViewModel @Inject constructor(
         )
     }
 
-    private suspend fun emitApplyButtonLoadingState(isLoading: Boolean) {
-        val lastState = _personaState.value
-        val buttonLoadingState = lastState.copy(
-            data = lastState.data.copy(isApplyLoading = isLoading)
-        )
-        _personaState.emit(buttonLoadingState)
+    private fun emitApplyButtonLoadingState(isLoading: Boolean) {
+        _personaState.update {
+            val lastState = _personaState.value
+            val buttonLoadingState = lastState.copy(
+                data = lastState.data.copy(isApplyLoading = isLoading)
+            )
+            buttonLoadingState
+        }
     }
 
-    private suspend fun onCheckedChanged(event: ResultUiEvent.OnSwitchCheckChanged) {
-        val lastState = _personaState.value
-        val checkedChangedState = lastState.copy(
-            data = lastState.data.copy(isSwitchChecked = event.isChecked)
-        )
-        _personaState.emit(checkedChangedState)
+    private fun onCheckedChanged(event: ResultUiEvent.OnSwitchCheckChanged) {
+        _personaState.update {
+            val lastState = _personaState.value
+            val checkedChangedState = lastState.copy(
+                data = lastState.data.copy(isSwitchChecked = event.isChecked)
+            )
+            checkedChangedState
+        }
         setEffect(ResultUiEffect.SendSwitchCheckedChangedTracking)
     }
 
@@ -165,21 +174,23 @@ class ComposePersonaResultViewModel @Inject constructor(
         )
     }
 
-    private fun getErrorState(args: PersonaArgsUiModel, throwable: Throwable): PersonaResultState {
+    private fun getErrorState(args: PersonaArgsUiModel): PersonaResultState {
         val lastState = _personaState.value
         return lastState.copy(
-            state = PersonaResultState.State.Error(throwable),
+            state = PersonaResultState.State.Error,
             data = lastState.data.copy(args = args),
             hasImpressed = false
         )
     }
 
-    private suspend fun updatePersonaLocalData(status: PersonaStatus) {
-        val lastState = _personaState.value
-        val personaStatusState = lastState.copy(
-            data = lastState.data.copy(isApplyLoading = false, personaStatus = status),
-            hasImpressed = false
-        )
-        _personaState.emit(personaStatusState)
+    private fun updatePersonaLocalData(status: PersonaStatus) {
+        _personaState.update {
+            val lastState = _personaState.value
+            val personaStatusState = lastState.copy(
+                data = lastState.data.copy(isApplyLoading = false, personaStatus = status),
+                hasImpressed = false
+            )
+            personaStatusState
+        }
     }
 }

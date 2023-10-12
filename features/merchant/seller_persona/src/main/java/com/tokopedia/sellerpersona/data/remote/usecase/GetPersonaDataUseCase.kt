@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.sellerpersona.data.local.PersonaSharedPref
+import com.tokopedia.sellerpersona.data.local.PersonaSharedPrefInterface
 import com.tokopedia.sellerpersona.data.remote.model.PersonaStatusModel
 import com.tokopedia.sellerpersona.view.model.PersonaDataUiModel
 import com.tokopedia.sellerpersona.view.model.PersonaStatus
@@ -22,7 +22,7 @@ import javax.inject.Inject
 class GetPersonaDataUseCase @Inject constructor(
     private val getPersonaStatusUseCase: GetPersonaStatusUseCase,
     private val getPersonaListUseCase: GetPersonaListUseCase,
-    private val sharedPref: PersonaSharedPref,
+    private val sharedPref: PersonaSharedPrefInterface,
     private val userSession: UserSessionInterface,
     private val dispatchers: CoroutineDispatchers
 ) {
@@ -72,7 +72,7 @@ class GetPersonaDataUseCase @Inject constructor(
             personaData = persona,
             isSwitchChecked = personaStatus.isActive(),
             isShopOwner = userSession.isShopOwner,
-            isFirstVisit = sharedPref.isFirstVisit
+            isFirstVisit = sharedPref.isFirstVisit()
         )
     }
 

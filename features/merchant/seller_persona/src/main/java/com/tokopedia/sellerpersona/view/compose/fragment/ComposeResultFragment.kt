@@ -25,6 +25,7 @@ import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.sellerpersona.R
 import com.tokopedia.sellerpersona.analytics.SellerPersonaTracking
 import com.tokopedia.sellerpersona.data.local.PersonaSharedPref
+import com.tokopedia.sellerpersona.data.local.PersonaSharedPrefInterface
 import com.tokopedia.sellerpersona.view.activity.SellerPersonaActivity
 import com.tokopedia.sellerpersona.view.compose.model.args.PersonaArgsUiModel
 import com.tokopedia.sellerpersona.view.compose.model.state.PersonaResultState
@@ -52,7 +53,7 @@ class ComposeResultFragment : Fragment() {
     lateinit var userSession: UserSessionInterface
 
     @Inject
-    lateinit var sharedPref: PersonaSharedPref
+    lateinit var sharedPref: PersonaSharedPrefInterface
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -202,7 +203,7 @@ class ComposeResultFragment : Fragment() {
                     setSecondaryCTAText(it.getString(R.string.sp_popup_exit_secondary_cta))
                     setSecondaryCTAClickListener {
                         dismiss()
-                        if (sharedPref.isFirstVisit) {
+                        if (sharedPref.isFirstVisit()) {
                             val appLink = ApplinkConstInternalSellerapp.SELLER_HOME
                             RouteManager.route(it, appLink)
                         }

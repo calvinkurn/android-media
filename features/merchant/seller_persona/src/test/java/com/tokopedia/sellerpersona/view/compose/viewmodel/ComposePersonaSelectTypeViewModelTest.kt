@@ -40,7 +40,6 @@ class ComposePersonaSelectTypeViewModelTest :
     private lateinit var viewModel: ComposePersonaSelectTypeViewModel
     private lateinit var privateState: Field
 
-    @Before
     override fun setup() {
         super.setup()
 

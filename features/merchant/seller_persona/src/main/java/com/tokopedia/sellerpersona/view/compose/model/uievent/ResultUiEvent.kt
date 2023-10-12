@@ -11,7 +11,6 @@ sealed class ResultUiEvent {
     data class ApplyChanges(val persona: String, val isActive: Boolean) : ResultUiEvent()
     data class SelectPersona(val currentPersona: String) : ResultUiEvent()
     class FetchPersonaData(val arguments: PersonaArgsUiModel) : ResultUiEvent()
-
     object Reload : ResultUiEvent()
     object RetakeQuiz : ResultUiEvent()
     object OnResultImpressedEvent : ResultUiEvent()
