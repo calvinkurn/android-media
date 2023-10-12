@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.scp.auth.GotoSdk
 import com.scp.auth.ScpUtils
+import com.scp.auth.TkpdAdditionalHeaders
 import com.scp.login.core.domain.contracts.listener.LSdkRefreshCompleteListener
 import com.tokopedia.interceptors.forcelogout.ForceLogoutData
 import com.tokopedia.interceptors.forcelogout.ForceLogoutUseCase
@@ -173,7 +174,7 @@ class TkpdAuthenticatorGql(
     }
 
     private fun refreshWithGotoSdk(): Boolean {
-        return GotoSdk.LSDKINSTANCE?.refreshToken(object : LSdkRefreshCompleteListener {
+        return GotoSdk.LSDKINSTANCE?.refreshToken(additionalHeaders = TkpdAdditionalHeaders(application), refreshCompletionListener = object : LSdkRefreshCompleteListener {
             override fun onRefreshCompleted(accessToken: String?) {}
         }) ?: false
     }
