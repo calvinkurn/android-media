@@ -69,6 +69,9 @@ class FakeResponseFragment : BaseFragment() {
                 is Success -> {
                     handleAllRecordsDeleted()
                 }
+                else -> {
+                    // no-op
+                }
             }
         })
 
@@ -76,6 +79,9 @@ class FakeResponseFragment : BaseFragment() {
             when (it) {
                 is Success -> {
                     handleResetData()
+                }
+                else -> {
+                    // no-op
                 }
             }
         })

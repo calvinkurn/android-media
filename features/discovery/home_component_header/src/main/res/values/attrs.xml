@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="HomeChannelHeaderView">
+        <attr name="color_mode" format="enum">
+            <enum name="normal" value="0" />
+            <enum name="inverted" value="1" />
+        </attr>
+        <attr name="cta_mode" format="enum">
+            <enum name="seeAll" value="0" />
+            <enum name="reload" value="1" />
+            <enum name="close" value="2" />
+        </attr>
+    </declare-styleable>
+</resources>

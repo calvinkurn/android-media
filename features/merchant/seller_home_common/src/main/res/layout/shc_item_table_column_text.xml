@@ -16,7 +16,7 @@
         android:ellipsize="end"
         android:maxLines="2"
         android:padding="4dp"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN900"
         app:typographyType="body_3"
         tools:text="Text Of Table" />
 </LinearLayout>

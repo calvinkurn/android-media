@@ -1,39 +1,31 @@
 package com.tokopedia.discovery2
 
-
 enum class ComponentNames(val componentName: String) {
     Default("default"),
     SingleBanner("banner_image"),
     DoubleBanner("banner_image_double"),
     TripleBanner("banner_image_triple"),
     QuadrupleBanner("banner_image_quadruple"),
-    Share("share"),
-    HorizontalCategoryNavigation("horizontal_category_navigation"),
-    HorizontalCategoryNavigationIem("horizontal_category_navigation_item"),
     BrandRecommendation("brand_recommendation"),
     BrandRecommendationItem("brand_recommendation_item"),
-    CarouselBanner("carousel_banner"),
-    CarouselBannerItemView("carousel_banner_item"),
     SliderBanner("slider_banner"),
     BannerTimer("timer_with_banner"),
-    Tokopoints("tokopoints"),
-    TokopointsItem("tokopoints_item"),
     LihatSemua("lihat_semua"),
     Video("video"),
-    Notifier("notifier"),
     TitleImage("title_image"),
     TextComponent("text_component"),
     ClaimCoupon("claim_coupon"),
     ClaimCouponItem("claim_coupon_item"),
     Margin("margin"),
-    CustomTopchat("custom_topchat"),
-    ChipsFilter("chips_filter"),
-    ChipsFilterItem("chips_filter_item"),
+
+    // Tabs
     Tabs("tabs"),
     TabsItem("tabs_item"),
-    DynamicCategory("dynamic_category"),
-    DynamicCategoryItem("dynamic_category_item"),
-    FlashSaleTimer("flash_sale_timer"),
+
+    // Tabs With Icon
+    TabsIcon("tabs_icon"),
+    TabsIconItem("tabs_icon_item"),
+
     TimerSprintSale("timer_sprint_sale"),
     ShimmerProductCard("shimmer_product_card"),
     Shimmer("shimmer"),
@@ -42,7 +34,6 @@ enum class ComponentNames(val componentName: String) {
     BannerCarousel("banner_carousel"),
     BannerCarouselItemView("banner_carousel_item"),
     BannerCarouselShimmer("banner_carousel_shimmer"),
-    BottomNavigation("bottom_navigation"),
 
     // Product Card Revamp
     ProductCardRevamp("product_card_revamp"),
@@ -72,17 +63,17 @@ enum class ComponentNames(val componentName: String) {
 //    Empty Item for MixLeft
     MixLeftEmptyItem("mix_left_empty_item"),
 
-    //Quick Filter
+    // Quick Filter
     QuickFilter("chips_filter_v2"),
 
-    //Navigation Chips
+    // Navigation Chips
     NavigationChips("navigation_chips"),
     NavigationChipsItem("navigation_chips_item"),
 
-    //Banned View
+    // Banned View
     BannedView("banned_view"),
 
-    //Play Widget View
+    // Play Widget View
     DiscoPlayWidgetView("play_widget"),
 
     DiscoTDNBanner("tdn_banner"),
@@ -93,18 +84,19 @@ enum class ComponentNames(val componentName: String) {
     ProductListErrorLoad("product_list_error_load"),
     ProductListNetworkErrorLoad("product_list_network_error_load"),
 
-    //Category Best Seller
+    // Category Best Seller
     CategoryBestSeller("product-card-horizontal-scroll"),
 
     // Promo Featured Products - CLP
     CLPFeaturedProducts("featured-product"),
 
-    //Topads Headline View
+    // Topads Headline View
     TopadsHeadlineView("topads"),
 
-    //Rilisan Spesial View
+    // Rilisan Spesial View
     ShopCardView("shop_card"),
-    //Rilisan Spesial ItemView
+
+    // Rilisan Spesial ItemView
     ShopCardItemView("shop_card_item"),
 
     MerchantVoucherCarousel("merchant_voucher_carousel"),
@@ -116,7 +108,7 @@ enum class ComponentNames(val componentName: String) {
     AnchorTabs("anchor_tabs"),
     AnchorTabsItem("anchor_tabs_item"),
 
-    //Calendar Widget
+    // Calendar Widget
     CalendarWidgetCarousel("calendar"),
     CalendarWidgetGrid("calendar_grid"),
     CalendarWidgetItem("calendar_item"),
@@ -124,7 +116,7 @@ enum class ComponentNames(val componentName: String) {
 
     TopQuestWidget("top_quest"),
 
-    //my coupon
+    // my coupon
     MyCoupon("my_coupon"),
     MyCouponItem("my_coupon_item"),
 
@@ -139,5 +131,11 @@ enum class ComponentNames(val componentName: String) {
     ExplicitWidget("explicit_widget"),
 
     ContentCard("content_card"),
-    ContentCardItem("content_card_item")
+    ContentCardItem("content_card_item"),
+    ProductHighlight("product_highlight"),
+
+    // Product Card Column List
+    ProductCardColumnList(
+        componentName = "product_card_column_list"
+    )
 }

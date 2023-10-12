@@ -2,6 +2,10 @@ package com.tokopedia.shop.score.penalty.presentation.adapter.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.databinding.ItemSortFilterPenaltyBinding
 import com.tokopedia.shop.score.penalty.presentation.adapter.ItemSortFilterPenaltyListener
@@ -22,12 +26,12 @@ class ItemSortFilterPenaltyViewHolder(
 
     private val binding: ItemSortFilterPenaltyBinding? by viewBinding()
 
-    override fun bind(element: ItemSortFilterPenaltyUiModel?) {
+    override fun bind(element: ItemSortFilterPenaltyUiModel) {
         binding?.run {
             sortFilterDetailPenalty.run {
                 sortFilterItems.removeAllViews()
                 indicatorCounter = 0
-                setupSortFilter(element?.itemSortFilterWrapperList)
+                setupSortFilter(element.itemSortFilterWrapperList, element.isDateFilterApplied)
 
                 parentListener = {
                     itemSortFilterPenaltyListener.onParentSortFilterClicked()
@@ -36,7 +40,10 @@ class ItemSortFilterPenaltyViewHolder(
         }
     }
 
-    private fun SortFilter.setupSortFilter(updateSortFilterItemPeriodList: List<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper>?) {
+    private fun SortFilter.setupSortFilter(
+        updateSortFilterItemPeriodList: List<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper>?,
+        isDateFilterApplied: Boolean
+    ) {
         val sortFilterItemList = ArrayList<SortFilterItem>()
 
         updateSortFilterItemPeriodList?.map {
@@ -49,13 +56,28 @@ class ItemSortFilterPenaltyViewHolder(
             )
         }
 
-        addItem(sortFilterItemList)
+        post {
+            addItem(sortFilterItemList)
 
-        sortFilterItemList.forEach {
-            it.listener = {
-                if (it.type != ChipsUnify.TYPE_DISABLE) {
-                    itemSortFilterPenaltyListener.onChildSortFilterItemClick(it)
+            sortFilterItemList.forEach {
+                it.listener = {
+                    if (it.type != ChipsUnify.TYPE_DISABLE) {
+                        itemSortFilterPenaltyListener.onChildSortFilterItemClick(it)
+                    }
                 }
+            }
+
+            indicatorCounter =
+                if (isDateFilterApplied) {
+                    updateSortFilterItemPeriodList?.count { it.isSelected }.orZero().plus(Int.ONE)
+                } else {
+                    updateSortFilterItemPeriodList?.count { it.isSelected }.orZero()
+                }
+
+            prefixText = if (indicatorCounter > Int.ZERO) {
+                getString(R.string.shop_penalty_filter_applied).orEmpty()
+            } else {
+                String.EMPTY
             }
         }
     }

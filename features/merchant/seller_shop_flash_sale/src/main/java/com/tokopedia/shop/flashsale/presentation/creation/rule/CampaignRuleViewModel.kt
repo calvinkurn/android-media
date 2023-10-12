@@ -6,6 +6,9 @@ import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.campaign.data.response.RollenceGradualRollout
+import com.tokopedia.campaign.usecase.RolloutFeatureVariantsUseCase
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.shop.flashsale.common.extension.removeTimeZone
 import com.tokopedia.shop.flashsale.common.tracker.ShopFlashSaleTracker
 import com.tokopedia.shop.flashsale.domain.entity.CampaignAction
@@ -22,7 +25,6 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import java.util.Calendar
@@ -34,7 +36,7 @@ class CampaignRuleViewModel @Inject constructor(
     private val doSellerCampaignCreationUseCase: DoSellerCampaignCreationUseCase,
     private val validateCampaignCreationEligibilityUseCase: ValidateCampaignCreationEligibilityUseCase,
     private val tracker: ShopFlashSaleTracker,
-    private val dispatchers: CoroutineDispatchers,
+    private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
     companion object {
@@ -53,12 +55,16 @@ class CampaignRuleViewModel @Inject constructor(
         get() = _selectedPaymentType
     private val selectedPaymentTypeFlow = selectedPaymentType.asFlow()
 
-    private val _isUniqueBuyer = MutableLiveData<Boolean?>(null)
+    private val _selectedOosState = MutableLiveData<Boolean>()
+    val selectedOosState: LiveData<Boolean>
+        get() = _selectedOosState
+
+    private val _isUniqueBuyer = MutableLiveData(true)
     val isUniqueBuyer: LiveData<Boolean?>
         get() = _isUniqueBuyer
     private val isUniqueBuyerFlow = isUniqueBuyer.asFlow()
 
-    private val _isCampaignRelation = MutableLiveData<Boolean?>(null)
+    private val _isCampaignRelation = MutableLiveData(true)
     val isCampaignRelation: LiveData<Boolean?>
         get() = _isCampaignRelation
     private val isCampaignRelationFlow = isCampaignRelation.asFlow()
@@ -113,6 +119,7 @@ class CampaignRuleViewModel @Inject constructor(
         get() = _addRelatedCampaignButtonEvent
 
     private var initialPaymentType: PaymentType? = null
+    private var initialOosState: Boolean = true
     private var initialUniqueBuyer: Boolean? = null
     private var initialCampaignRelation: Boolean? = null
     private var initialCampaignRelations: List<RelatedCampaign> = emptyList()
@@ -121,13 +128,15 @@ class CampaignRuleViewModel @Inject constructor(
     private val isInputChanged: Boolean
         get() {
             val paymentTypeValue = selectedPaymentType.value
+            val isOosValue = selectedOosState.value
             val isUniqueBuyerValue = isUniqueBuyer.value
             val isCampaignRelationValue = isCampaignRelation.value
             val relatedCampaignsValue = relatedCampaigns.value
-            return initialPaymentType?.id != paymentTypeValue?.id
-                    || initialUniqueBuyer != isUniqueBuyerValue
-                    || initialCampaignRelation != isCampaignRelationValue
-                    || initialCampaignRelations != relatedCampaignsValue
+            return initialPaymentType?.id != paymentTypeValue?.id ||
+                initialOosState != isOosValue ||
+                initialUniqueBuyer != isUniqueBuyerValue ||
+                initialCampaignRelation != isCampaignRelationValue ||
+                initialCampaignRelations != relatedCampaignsValue
         }
 
     init {
@@ -157,7 +166,9 @@ class CampaignRuleViewModel @Inject constructor(
 
                 if (campaign.isCampaignRuleSubmit) {
                     _selectedPaymentType.postValue(campaign.paymentType)
+                    _selectedOosState.postValue(campaign.isOosImprovement)
                     initialPaymentType = campaign.paymentType
+                    initialOosState = campaign.isOosImprovement
                     _isUniqueBuyer.postValue(campaign.isUniqueBuyer)
                     initialUniqueBuyer = campaign.isUniqueBuyer
                     if (!campaign.isUniqueBuyer) {
@@ -191,8 +202,8 @@ class CampaignRuleViewModel @Inject constructor(
                 isCampaignRelationFlow,
                 relatedCampaignsFlow
             ) { isRelatedCampaign, relatedCampaigns ->
-                isRelatedCampaign == false
-                        && (relatedCampaigns?.size ?: 0) < MAX_RELATED_CAMPAIGN
+                isRelatedCampaign == false &&
+                    (relatedCampaigns?.size ?: 0) < MAX_RELATED_CAMPAIGN
             }
                 .collect { _isRelatedCampaignsButtonActive.postValue(it) }
         }
@@ -212,28 +223,33 @@ class CampaignRuleViewModel @Inject constructor(
 
     private val isSelectedPaymentTypeValid: Boolean
         get() = selectedPaymentType.value != null
+
+    private val isSelectedOosStateTypeValid: Boolean
+        get() = selectedOosState.value != null
+
     private val isUniqueAccountValid: Boolean
         get() = isUniqueBuyer.value != null
 
     private fun isRelatedCampaignValid(
         isUniqueAccountValue: Boolean? = isUniqueBuyer.value,
         isCampaignRelationValue: Boolean? = isCampaignRelation.value,
-        relatedCampaignsValue: List<RelatedCampaign>? = relatedCampaigns.value,
+        relatedCampaignsValue: List<RelatedCampaign>? = relatedCampaigns.value
     ): Boolean {
-        return isUniqueAccountValue == true
-                || isCampaignRelationValue == true
-                || (isCampaignRelationValue == false && relatedCampaignsValue?.isNotEmpty() == true)
+        return isUniqueAccountValue == true ||
+            isCampaignRelationValue == true ||
+            (isCampaignRelationValue == false && relatedCampaignsValue?.isNotEmpty() == true)
     }
 
     private fun initInputValidationCollector() {
-        _isAllInputValid.value = isSelectedPaymentTypeValid
-                && isUniqueAccountValid
-                && isRelatedCampaignValid()
+        _isAllInputValid.value = isSelectedPaymentTypeValid &&
+            isSelectedOosStateTypeValid &&
+            isUniqueAccountValid &&
+            isRelatedCampaignValid()
 
         viewModelScope.launch {
             combine(
-                selectedPaymentTypeFlow,
-                isUniqueBuyerFlow,
+                selectedPaymentTypeFlow,    // Pilih Metode Pembayaran
+                isUniqueBuyerFlow,  // Apakah pembeli yang sama
                 isCampaignRelationFlow,
                 relatedCampaignsFlow,
                 ::validateCampaignRuleInput
@@ -250,22 +266,26 @@ class CampaignRuleViewModel @Inject constructor(
     ): Boolean {
         val validSelectedPayment = selectedPayment != null
         val validUniqueBuyer = isUniqueBuyer != null
-        val validCampaignRelation = isUniqueBuyer == true
-                || isCampaignRelation == true
-                || (isCampaignRelation == false && relatedCampaigns?.isNotEmpty() == true)
+        val validCampaignRelation = isUniqueBuyer == true ||
+            isCampaignRelation == true ||
+            (isCampaignRelation == false && relatedCampaigns?.isNotEmpty() == true)
         resetTNCConfirmationStatusIfDataChanged()
         return validSelectedPayment && validUniqueBuyer && validCampaignRelation
     }
 
     private fun initCampaignCreationAllowedCollector() {
-        _isCampaignCreationAllowed.value = isAllInputValid.value == true
-                && isTNCConfirmed.value == true
+        _isCampaignCreationAllowed.value = isAllInputValid.value == true &&
+            isTNCConfirmed.value == true
 
         viewModelScope.launch {
             combine(isAllInputValidFlow, isTNCConfirmedFlow) { isAllInputValid, isTNCConfirmed ->
                 isAllInputValid && isTNCConfirmed
             }.collect { _isCampaignCreationAllowed.postValue(it) }
         }
+    }
+
+    fun setOosStatus(isEnableTransaction: Boolean) {
+        _selectedOosState.value = isEnableTransaction
     }
 
     fun onRegularPaymentMethodSelected() {
@@ -309,7 +329,7 @@ class CampaignRuleViewModel @Inject constructor(
             campaignId = campaignId,
             isUniqueBuyer = isUniqueBuyer,
             isCampaignRelation = isCampaignRelation,
-            paymentType = paymentType,
+            paymentType = paymentType
         )
     }
 
@@ -340,7 +360,7 @@ class CampaignRuleViewModel @Inject constructor(
     }
 
     private fun validateCampaignRuleInput(
-        campaign: CampaignUiModel,
+        campaign: CampaignUiModel
     ): CampaignRuleValidationResult {
         val currentDate = Calendar.getInstance().time
         val validationResult = when {
@@ -359,7 +379,9 @@ class CampaignRuleViewModel @Inject constructor(
     fun saveCampaignCreationDraft() {
         if (isAlreadyInSaveOrActionAction()) return
         val campaignValue = campaign.value
-        val campaignData = if (campaignValue is Success) campaignValue.data else {
+        val campaignData = if (campaignValue is Success) {
+            campaignValue.data
+        } else {
             _saveDraftActionState.postValue(CampaignRuleActionResult.DetailNotLoaded)
             resetIsInSaveOrCreateAction()
             return
@@ -407,7 +429,9 @@ class CampaignRuleViewModel @Inject constructor(
     ) {
         if (isAlreadyInSaveOrActionAction()) return
         val campaignValue = campaign.value
-        val campaignData = if (campaignValue is Success) campaignValue.data else {
+        val campaignData = if (campaignValue is Success) {
+            campaignValue.data
+        } else {
             _createCampaignActionState.postValue(CampaignRuleActionResult.DetailNotLoaded)
             resetIsInSaveOrCreateAction()
             return
@@ -494,6 +518,7 @@ class CampaignRuleViewModel @Inject constructor(
     ): DoSellerCampaignCreationUseCase.Param {
         val campaignRelations = getCampaignRelationIds(campaignId)
         val selectedPaymentType = selectedPaymentType.value ?: campaignData.paymentType
+        val isEnableOosTransaction = selectedOosState.value ?: true // The default value should assigned to true -> It's aligned with the UI, if the user didn't do anything, the default selection will be true or can transact if the campaign is out of stock
         val isCampaignRuleSubmit = isTNCConfirmed.value == true
         return DoSellerCampaignCreationUseCase.Param(
             action = action,
@@ -507,7 +532,8 @@ class CampaignRuleViewModel @Inject constructor(
             paymentType = selectedPaymentType,
             isCampaignRuleSubmit = isCampaignRuleSubmit,
             showTeaser = campaignData.useUpcomingWidget,
-            packageId = campaignData.packageInfo.packageId
+            packageId = campaignData.packageInfo.packageId,
+            isOosImprovement = isEnableOosTransaction
         )
     }
 

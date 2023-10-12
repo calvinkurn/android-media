@@ -24,6 +24,7 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.minicart.R
 import com.tokopedia.minicart.cartlist.MiniCartListBottomSheet
@@ -650,6 +651,10 @@ class MiniCartWidget @JvmOverloads constructor(
 
     fun hideCoachMark() {
         coachMark?.dismissCoachMark()
+    }
+
+    fun hideTopContentView() {
+        totalAmount?.topContentView?.hide()
     }
 
     companion object {

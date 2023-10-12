@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify2 xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="10dp"
+    app:card_type="border"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/font_selection_item"
+        app:typographyType="display_2"
+        android:background="@color/Unify_NN0"
+        android:paddingTop="7dp"
+        android:paddingBottom="7dp"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:text="Aa"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+</com.tokopedia.unifycomponents.CardUnify2>

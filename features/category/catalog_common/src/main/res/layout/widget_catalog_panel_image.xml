@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/transparent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/catalog_panel_widget_container_1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@color/transparent"
+        android:paddingBottom="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            app:layout_constraintLeft_toLeftOf="@+id/catalog_panel_widget_container_1"
+            app:layout_constraintTop_toTopOf="@+id/catalog_panel_widget_container_1"
+            android:id="@+id/catalog_panel_widget_image_1"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_width="156dp"
+            android:layout_height="155dp" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            app:layout_constraintLeft_toRightOf="@+id/catalog_panel_widget_image_1"
+            app:layout_constraintTop_toTopOf="@+id/catalog_panel_widget_container_1"
+            android:id="@+id/catalog_panel_widget_txt_highlight_1"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="25dp"
+            android:maxLines="1"
+            android:layout_width="205dp"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textColor="@color/Unify_NN600"
+            android:maxLength="20"
+            android:ellipsize="end"
+            app:typographyWeight="reguler"
+            tools:text="Highlight has a max. 1 line" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            app:layout_constraintLeft_toRightOf="@+id/catalog_panel_widget_image_1"
+            app:layout_constraintTop_toBottomOf="@+id/catalog_panel_widget_txt_highlight_1"
+            android:id="@+id/catalog_panel_widget_txt_title_1"
+            android:layout_marginLeft="16dp"
+            android:maxLines="3"
+            android:layout_width="205dp"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textColor="@color/Unify_NN950"
+            android:maxLength="45"
+            android:ellipsize="end"
+            app:typographyWeight="reguler"
+            tools:text="The smart way to access your favorite content for " />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/catalog_panel_widget_txt_description_1"
+            android:layout_width="205dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:ellipsize="end"
+            android:maxLength="95"
+            android:maxLines="3"
+            android:textColor="@color/Unify_NN600"
+            android:textSize="16sp"
+            app:layout_constraintLeft_toRightOf="@+id/catalog_panel_widget_image_1"
+            app:layout_constraintTop_toBottomOf="@+id/catalog_panel_widget_txt_title_1"
+            app:typographyWeight="reguler"
+            tools:text="Discover your favorite movies, TV shows, games and ambient screens" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/catalog_panel_widget_container_2"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/catalog_panel_widget_container_1"
+        android:background="@color/transparent"
+        android:paddingBottom="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            app:layout_constraintRight_toRightOf="@+id/catalog_panel_widget_container_2"
+            app:layout_constraintTop_toTopOf="@+id/catalog_panel_widget_container_2"
+            android:id="@+id/catalog_panel_widget_image_2"
+            android:layout_marginTop="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_width="156dp"
+            android:layout_height="155dp" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            app:layout_constraintRight_toLeftOf="@+id/catalog_panel_widget_image_2"
+            app:layout_constraintTop_toTopOf="@+id/catalog_panel_widget_container_2"
+            android:id="@+id/catalog_panel_widget_txt_highlight_2"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="25dp"
+            android:maxLines="1"
+            android:layout_width="205dp"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textColor="@color/Unify_NN600"
+            android:maxLength="20"
+            android:ellipsize="end"
+            app:typographyWeight="reguler"
+            tools:text="Highlight has a max. 1 line" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            app:layout_constraintRight_toLeftOf="@+id/catalog_panel_widget_image_2"
+            app:layout_constraintTop_toBottomOf="@+id/catalog_panel_widget_txt_highlight_2"
+            android:id="@+id/catalog_panel_widget_txt_title_2"
+            android:layout_marginRight="16dp"
+            android:maxLines="3"
+            android:layout_width="205dp"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textColor="@color/Unify_NN950"
+            android:maxLength="45"
+            android:ellipsize="end"
+            app:typographyWeight="reguler"
+            tools:text="The smart way to access your favorite content for " />
+
+        <com.tokopedia.unifyprinciples.Typography
+            app:layout_constraintRight_toLeftOf="@+id/catalog_panel_widget_image_2"
+            app:layout_constraintTop_toBottomOf="@+id/catalog_panel_widget_txt_title_2"
+            android:id="@+id/catalog_panel_widget_txt_description_2"
+            android:layout_width="205dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="16dp"
+            android:ellipsize="end"
+            android:maxLength="95"
+            android:maxLines="3"
+            android:textColor="@color/Unify_NN600"
+            android:textSize="16sp"
+            app:typographyWeight="reguler"
+            tools:text="Discover your favorite movies, TV shows, games and ambient screens" />
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

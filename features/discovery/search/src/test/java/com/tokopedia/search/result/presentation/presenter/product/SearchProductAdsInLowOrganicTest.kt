@@ -28,6 +28,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 private const val emptyState = "searchproduct/adsloworganic/empty-state.json"
+private const val emptyStateResponseCode1 = "searchproduct/adsloworganic/empty-state-response-code-1.json"
 private const val broadMatchEmptyState = "searchproduct/adsloworganic/broadmatch-empty-state.json"
 private const val topAdsResponse = "searchproduct/topads-response.json"
 private const val searchProductWithTopAdsPage1 = "searchproduct/adsloworganic/page1-with-topads.json"
@@ -40,10 +41,28 @@ internal class SearchProductAdsInLowOrganicTest: ProductListPresenterTestFixture
     private val visitableList by lazy { visitableListSlot.captured }
 
     @Test
-    fun `enable experiment to show ads below no result view`() {
+    fun `response code 0 should show ads below no result view`() {
         val searchProductModel = emptyState.jsonToObject<SearchProductModel>()
 
-        `Given ads in low organic experiment enabled`()
+        `Given search product first page is successful`(searchProductModel)
+        `Given query key will return keyword`()
+        `Given visitable list is captured`()
+
+        `When load data`()
+
+        `Then verify empty state data view`()
+        `Then verify ads in low organic supply title`(keyword)
+        `Then verify product item data view ads`(
+            searchProductModel,
+            searchProductModel.topAdsModel,
+            1
+        )
+        `Then verify recommendation is not called`()
+    }
+    @Test
+    fun `response code 1 should show ads below no result view`() {
+        val searchProductModel = emptyStateResponseCode1.jsonToObject<SearchProductModel>()
+
         `Given search product first page is successful`(searchProductModel)
         `Given query key will return keyword`()
         `Given visitable list is captured`()
@@ -130,13 +149,12 @@ internal class SearchProductAdsInLowOrganicTest: ProductListPresenterTestFixture
     }
 
     @Test
-    fun `experiment enabled to show ads below no result view for next page`() {
+    fun `response code 0 should show ads below no result view for next page`() {
         val searchProductModel = emptyState.jsonToObject<SearchProductModel>()
         val topAdsModelNextPage = topAdsResponse.jsonToObject<ProductTopAdsModel>().topAdsModel
         val requestParamsSlot = slot<RequestParams>()
         val requestParams by lazy { requestParamsSlot.captured }
 
-        `Given ads in low organic experiment enabled`()
         `Given search product first page is successful`(searchProductModel)
         `Given search product top ads next page is successful `(topAdsModelNextPage, requestParamsSlot)
         `Given query key will return keyword`()
@@ -176,13 +194,12 @@ internal class SearchProductAdsInLowOrganicTest: ProductListPresenterTestFixture
     }
 
     @Test
-    fun `experiment enabled to show ads for third page`() {
+    fun `response code 0 should show ads for third page`() {
         val searchProductModel = emptyState.jsonToObject<SearchProductModel>()
         val topAdsModelNextPage = topAdsResponse.jsonToObject<ProductTopAdsModel>().topAdsModel
         val requestParamsSlot = slot<RequestParams>()
         val requestParams by lazy { requestParamsSlot.captured }
 
-        `Given ads in low organic experiment enabled`()
         `Given search product first page is successful`(searchProductModel)
         `Given search product top ads next page is successful `(topAdsModelNextPage, requestParamsSlot)
         `Given view already load data`()
@@ -256,11 +273,10 @@ internal class SearchProductAdsInLowOrganicTest: ProductListPresenterTestFixture
     }
 
     @Test
-    fun `experiment enabled will load more until ads response is empty`() {
+    fun `response code 0 will load more until ads response is empty`() {
         val searchProductModel = searchProductWithTopAdsPage1.jsonToObject<SearchProductModel>()
         val topAdsModelNextPage = emptyTopAdsResponse.jsonToObject<ProductTopAdsModel>().topAdsModel
 
-        `Given ads in low organic experiment enabled`()
         `Given search product first page is successful`(searchProductModel)
         `Given search product top ads next page is successful `(topAdsModelNextPage)
         `Given query key will return keyword`()
@@ -278,10 +294,9 @@ internal class SearchProductAdsInLowOrganicTest: ProductListPresenterTestFixture
     }
 
     @Test
-    fun `experiment enabled will load more until ads response is error`() {
+    fun `response code 0 will load more until ads response is error`() {
         val searchProductModel = searchProductWithTopAdsPage1.jsonToObject<SearchProductModel>()
 
-        `Given ads in low organic experiment enabled`()
         `Given search product first page is successful`(searchProductModel)
         `Given top ads use case will error`()
         `Given query key will return keyword`()

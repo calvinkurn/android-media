@@ -1,5 +1,5 @@
 ---
-title: Edit Shipping: Edit Shop Multilocation Address
+title: "Edit Shipping: Edit Shop Multilocation Address"
 labels:
 - multilocation
 - logistic
@@ -7,19 +7,23 @@ labels:
 ---
 
 <!--left header table-->
-| **Status** | <!--start status:GREEN-->RELEASED<!--end status--> |
-| --- | --- |
-| **Project Contributor** | [Fakhira Devina](https://tokopedia.atlassian.net/wiki/people/61077e53b704b40068e80a8e?ref=confluence) |
-| Product Manager | [Septian Bayu Laksono](https://tokopedia.atlassian.net/wiki/people/5df8541fa0602c0cabdce844?ref=confluence) |
-| Team | [Minion Bob](https://tokopedia.atlassian.net/people/team/2373d8a6-1afc-4f2a-aa7a-63855c273051) |
-| Release date | 19 Mar 2021 / <!--start status:GREY-->MA-3.199<!--end status--> <!--start status:GREY-->SA-2.49<!--end status--> |
-| Module type | <!--start status:YELLOW-->FEATURE<!--end status--> |
-| Product PRD | <https://docs.google.com/document/d/1aYZuy3NFTxXozIhIqdlMSljTknYrKmaHL9G3ozgt4L8/edit#heading=h.2msbh42vwwqv>  |
-| Module Location | `features/logistic/editshipping` |
+| **Status**               | <!--start status:GREEN-->RELEASED<!--end status-->                                                               |
+|--------------------------|------------------------------------------------------------------------------------------------------------------|
+| **Project Contributor**  | [Fakhira Devina](https://tokopedia.atlassian.net/wiki/people/61077e53b704b40068e80a8e?ref=confluence)            |
+| Product Manager          | [Septian Bayu Laksono](https://tokopedia.atlassian.net/wiki/people/5df8541fa0602c0cabdce844?ref=confluence)      |
+| Team                     | [Minion Bob](https://tokopedia.atlassian.net/people/team/2373d8a6-1afc-4f2a-aa7a-63855c273051)                   |
+| Release date             | 19 Mar 2021 / <!--start status:GREY-->MA-3.199<!--end status--> <!--start status:GREY-->SA-2.49<!--end status--> |
+| Module type              | <!--start status:YELLOW-->FEATURE<!--end status-->                                                               |
+| Product PRD              | <https://docs.google.com/document/d/1aYZuy3NFTxXozIhIqdlMSljTknYrKmaHL9G3ozgt4L8/edit#heading=h.2msbh42vwwqv>    |
+| Module Location          | `features/logistic/editshipping`                                                                                 |
 
 <!--toc-->
 
 ## Release Notes
+
+<!--start expand:1 September 2023-->
+Remove Shop Single Location
+<!--end expand-->
 
 <!--start expand:19 March 2021 (MA-3.199/SA-2.49)-->
 [First release](https://tokopedia.atlassian.net/browse/AN-22308)
@@ -41,15 +45,13 @@ Revamp shipping editor to be a place to set up (activate-deactivate) courier onl
 
 ## Navigation
 
-(can be accessed only with seller multi location account) 
-
 MA/SA -> pengaturan toko -> Tambah dan ubah lokasi toko -> edit lokasi
 
 ![](../res/editshopmultilocation/navigation.png) 
 
 ## How-to
 
-To show edit address multi location page you can call `ApplinkConstInternalLogistic.SHOP_EDIT_ADDRESS` with seller account that support multi location warehouse.
+To show edit address multi location page you can call `ApplinkConstInternalLogistic.SHOP_EDIT_ADDRESS` 
 
 
 

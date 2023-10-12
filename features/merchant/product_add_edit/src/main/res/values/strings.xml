@@ -4,6 +4,7 @@
     <string name="colored_asterisk"><![CDATA[<font color=\'#D6001C\'>&#160;*</font>]]></string>
     <string name="label_asterisk">&#160;*</string>
     <string name="action_continue">Lanjut</string>
+    <string name="action_back">Kembali</string>
 
     <!-- add edit product screen name -->
     <string name="product_add_edit_preview">Informasi Produk</string>
@@ -295,6 +296,7 @@
     <string name="label_draft_product_empty">Draft Produk Anda kosong</string>
     <string name="label_draft_product_add_product">Tambah Produk</string>
     <string name="label_draft_has_not_have_product_name_yet">Belum ada nama produk</string>
+    <string name="label_draft_product_corrupt">Draft product rusak</string>
 
     <!--network errors-->
     <string name="error_gql_failed">Terjadi kesalahan koneksi</string>
@@ -394,6 +396,7 @@
     <string name="error_cannot_change_variant_recommendation">Nama varian dari rekomendasi Tokopedia tidak bisa diubah, ya.</string>
     <string name="title_wpv_intro_coachmark">Atur berat per varian, yuk!</string>
     <string name="message_wpv_intro_coachmark">Sekarang kamu bisa atur berat tiap varian.</string>
+    <string name="message_tips_variant_unit_cannot_changed">Tidak bisa ubah satuan varian untuk produk yang memiliki varian dan terdaftar di Dilayani Tokopedia.</string>
 
     <!-- Admin Revamp -->
     <string name="ticker_add_product_main_location_title">Tambah produk untuk di lokasi utama</string>
@@ -536,9 +539,37 @@
     <string name="error_max_weight">Maks. %s g</string>
     <string name="cpl_custom_label">Ubah Pengiriman Custom</string>
 
+    <!-- Product restiction -->
     <string name="label_ineligble_access_warning">Oops, fitur ini belum \ndapat diakses</string>
     <string name="label_body_ineligble_access_warning">Ini karena tokomu sedang ditangguhkan</string>
     <string name="label_back_to_list_product">Kembali ke Daftar Produk</string>
     <string name="label_learn_about_moderation">Pelajari Tentang Penangguhan</string>
     <string name="format_web_page">%s?url=%s</string>
+
+    <!-- DT deletion error message -->
+    <string name="product_add_edit_text_product_dt_can_not_delete">Tidak bisa ubah untuk produk Dilayani Tokopedia</string>
+    <string name="product_add_edit_text_description_product_dt_can_not_delete">Jika mau %s varian, tarik semua stok produk ini di gudang Dilayani Tokopedia &amp; buat Surat Penarikan lewat desktop.</string>
+    <string name="product_add_edit_text_title_product_dt_cannot_deactivate">Varian ini terdaftar dalam gudang Dilayani Tokopedia</string>
+    <string name="product_add_edit_text_description_product_dt_cannot_deactivate"><![CDATA[Jika menonaktifkan, kamu berpotensi <b>tetap harus membayar biaya Dilayani Tokopedia</b> meski varian dinonaktifkan. <br/><b><font color=\'#42b549\'><a href="https://www.tokopedia.com/help/article/biaya-dilayani-tokopedia">Baca Artikel</a></font></b>]]></string>
+    <string name="product_add_edit_text_toaster_campaign_deactivate">Status produk tidak dapat diubah karena sedang dijadwalkan untuk memiliki promosi diskon.</string>
+    <string name="product_add_edit_title_disabled_variant_deactivate_dialog">Tidak bisa ubah untuk produk Dilayani Tokopedia</string>
+    <string name="product_add_edit_text_disabled_variant_deactivate_dialog">Jika mau tambah varian, tarik semua stok produk ini di gudang Dilayani Tokopedia &amp; buat Surat Penarikan lewat desktop.</string>
+    <string name="product_add_edit_text_title_variant_dt_can_not_delete">Varian produk Dilayani Tokopedia belum bisa dihapus</string>
+    <string name="product_add_edit_text_description_variant_dt_can_not_delete">Untuk hapus, buat Surat Penarikan lewat desktop dan pastikan semua stok di gudang Dilayani Tokopedia sudah ditarik.</string>
+    <string name="action_oke_got_it">Oke, Mengerti</string>
+    <string name="product_add_edit_dt_action_remove">hapus</string>
+    <string name="product_add_edit_dt_action_add">tambah</string>
+    <string name="product_add_edit_dt_action_edit">ubah</string>
+    <string name="product_add_edit_dt_action_add_variant_type">buat tipe</string>
+    <string name="product_add_edit_dt_action_edit_variant_type">atur</string>
+    <string name="product_add_edit_success_to_deactivate_format">%s berhasil dinonaktifkan.</string>
+    <string name="product_add_edit_cannot_deactivate_variant_campaign">Status produk tidak dapat diubah karena sedang dijadwalkan untuk memiliki promosi diskon</string>
+
+    <!-- Single Variant Validation-->
+    <string name="product_add_edit_single_product_variant_dialog_title">Oops, produkmu hanya punya satu varian</string>
+    <string name="product_add_edit_single_product_variant_dialog_desc">Masukkan keterangan varian ini ke Nama Produk atau Deskripsi jika memang tidak ada varian lain.</string>
+    <string name="product_add_edit_single_product_variant_dialog_delete">Hapus Varian</string>
+    <string name="product_add_edit_label_coachmark_variant_removed">Harga, Stok, Berat, dan SKU akan mengikuti data dari varian yang sudah kamu hapus. Cek lagi, ya.</string>
+    <string name="product_add_edit_label_toaster_variant_removed">Tipe varian behasil dihapus.</string>
+
 </resources>

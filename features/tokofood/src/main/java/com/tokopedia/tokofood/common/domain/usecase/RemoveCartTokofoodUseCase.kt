@@ -30,18 +30,24 @@ class RemoveCartTokofoodUseCase @Inject constructor(repository: GraphqlRepositor
     }
 
     suspend fun execute(removeCartParam: RemoveCartTokofoodParam): CartGeneralRemoveCartData {
-        val param = generateParams(removeCartParam)
-        setRequestParams(param)
-        val response = executeOnBackground()
-        if (response.isSuccess()) {
-            return response.cartGeneralRemoveCart.data
+        if (removeCartParam.getIsCartIdsEmpty()) {
+            throw MessageErrorException(ERROR_NO_CART_ID_MESSAGE)
         } else {
-            throw MessageErrorException(response.cartGeneralRemoveCart.data.message)
+            val param = generateParams(removeCartParam)
+            setRequestParams(param)
+            val response = executeOnBackground()
+            if (response.isSuccess()) {
+                return response.cartGeneralRemoveCart.data
+            } else {
+                throw MessageErrorException(response.cartGeneralRemoveCart.data.message)
+            }
         }
     }
 
     companion object {
         private const val PARAMS_KEY = "params"
+
+        private const val ERROR_NO_CART_ID_MESSAGE = "Cannot delete product as of now because of empty cart id"
 
         private fun generateParams(params: RemoveCartTokofoodParam): Map<String, Any> {
             return mapOf(PARAMS_KEY to params)

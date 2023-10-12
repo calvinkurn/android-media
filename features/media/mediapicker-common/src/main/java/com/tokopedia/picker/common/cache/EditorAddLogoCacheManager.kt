@@ -12,17 +12,15 @@ interface EditorAddLogoCacheManager {
 
 class EditorAddLogoCacheManagerImpl @Inject constructor(
     @ApplicationContext context: Context
-) : EditorAddLogoCacheManager {
-
-    private val localCacheHandler = LocalCacheHandler(context, PREF_NAME_CACHE_ADD_LOGO)
-
+) : EditorAddLogoCacheManager,
+    LocalCacheHandler(context, PREF_NAME_CACHE_ADD_LOGO) {
     override fun get(): String {
-        return localCacheHandler.getString(KEY_LOCAL_LOGO, "")
+        return getString(KEY_LOCAL_LOGO, "")
     }
 
     override fun set(path: String) {
-        localCacheHandler.putString(KEY_LOCAL_LOGO, path)
-        localCacheHandler.applyEditor()
+        putString(KEY_LOCAL_LOGO, path)
+        applyEditor()
     }
 
     companion object {

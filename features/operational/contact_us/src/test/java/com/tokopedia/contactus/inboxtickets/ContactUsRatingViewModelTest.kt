@@ -31,7 +31,7 @@ class ContactUsRatingViewModelTest {
         val inputCaptions = listOf("as", "ad", "ac", "av", "ad")
         val inputQuestions = listOf("asa", "ada", "aca", "ava", "ada")
         val inputCsatOptions = createBadCsatReasonListItem()
-        val selectedPosition = 1
+        val selectedPosition = 1L
         viewModel.setCaption(inputCaptions)
         viewModel.setQuestion(inputQuestions)
         viewModel.setReasonList(inputCsatOptions)
@@ -51,7 +51,7 @@ class ContactUsRatingViewModelTest {
         val inputCaptions = listOf("as", "ad", "ac", "av", "ad")
         val inputQuestions = listOf("asa", "ada", "aca", "ava", "ada")
         val inputCsatOptions = createBadCsatReasonListItem()
-        val selectedPosition = 2
+        val selectedPosition = 2L
         viewModel.setCaption(inputCaptions)
         viewModel.setQuestion(inputQuestions)
         viewModel.setReasonList(inputCsatOptions)
@@ -71,7 +71,7 @@ class ContactUsRatingViewModelTest {
         val inputCaptions = listOf("as", "ad", "ac", "av", "ad")
         val inputQuestions = listOf("asa", "ada", "aca", "ava", "ada")
         val inputCsatOptions = createBadCsatReasonListItem()
-        val selectedPosition = 3
+        val selectedPosition = 3L
         viewModel.setCaption(inputCaptions)
         viewModel.setQuestion(inputQuestions)
         viewModel.setReasonList(inputCsatOptions)
@@ -91,7 +91,7 @@ class ContactUsRatingViewModelTest {
         val inputCaptions = listOf("as", "ad", "ac", "av", "ad")
         val inputQuestions = listOf("asa", "ada", "aca", "ava", "ada")
         val inputCsatOptions = createBadCsatReasonListItem()
-        val selectedPosition = 4
+        val selectedPosition = 4L
         viewModel.setCaption(inputCaptions)
         viewModel.setQuestion(inputQuestions)
         viewModel.setReasonList(inputCsatOptions)
@@ -111,7 +111,7 @@ class ContactUsRatingViewModelTest {
         val inputCaptions = listOf("as", "ad", "ac", "av", "ad")
         val inputQuestions = listOf("asa", "ada", "aca", "ava", "ada")
         val inputCsatOptions = createBadCsatReasonListItem()
-        val selectedPosition = 5
+        val selectedPosition = 5L
         viewModel.setCaption(inputCaptions)
         viewModel.setQuestion(inputQuestions)
         viewModel.setReasonList(inputCsatOptions)
@@ -131,7 +131,7 @@ class ContactUsRatingViewModelTest {
         val inputCaptions = listOf("as", "ad", "ac", "av", "ad")
         val inputQuestions = listOf("asa", "ada", "aca", "ava", "ada")
         val inputCsatOptions = createBadCsatReasonListItem()
-        val selectedPosition = 0
+        val selectedPosition = 0L
         viewModel.setCaption(inputCaptions)
         viewModel.setQuestion(inputQuestions)
         viewModel.setReasonList(inputCsatOptions)
@@ -151,7 +151,7 @@ class ContactUsRatingViewModelTest {
         val inputCaptions = listOf("as", "ad", "ac", "av", "ad")
         val inputQuestions = listOf("asa", "ada", "aca", "ava", "ada")
         val inputCsatOptions = createBadCsatReasonListItem()
-        val selectedPosition = 6
+        val selectedPosition = 6L
         viewModel.setCaption(inputCaptions)
         viewModel.setQuestion(inputQuestions)
         viewModel.setReasonList(inputCsatOptions)

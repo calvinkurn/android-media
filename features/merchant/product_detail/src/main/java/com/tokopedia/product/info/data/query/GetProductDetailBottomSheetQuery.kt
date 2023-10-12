@@ -74,8 +74,8 @@ object GetProductDetailBottomSheetQuery : GqlQueryInterface {
                   DevMessage
                 }
               }
-            }""".trimIndent()
+            }
+    """.trimIndent()
 
     override fun getTopOperationName() = OPERATION_NAME
-
 }

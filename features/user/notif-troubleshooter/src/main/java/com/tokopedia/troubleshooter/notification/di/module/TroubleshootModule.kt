@@ -11,6 +11,7 @@ import com.tokopedia.troubleshooter.notification.R
 import com.tokopedia.troubleshooter.notification.data.domain.GetTroubleshootStatusUseCase
 import com.tokopedia.troubleshooter.notification.data.service.fcm.FirebaseInstanceManager
 import com.tokopedia.troubleshooter.notification.data.service.fcm.FirebaseInstanceManagerImpl
+import com.tokopedia.troubleshooter.notification.data.service.googleplay.PlayServicesManagerImpl
 import com.tokopedia.troubleshooter.notification.data.service.notification.NotificationChannelManager
 import com.tokopedia.troubleshooter.notification.data.service.notification.NotificationChannelManagerImpl
 import com.tokopedia.troubleshooter.notification.data.service.notification.NotificationCompatManager
@@ -19,6 +20,7 @@ import com.tokopedia.troubleshooter.notification.data.service.ringtone.RingtoneM
 import com.tokopedia.troubleshooter.notification.data.service.ringtone.RingtoneModeServiceImpl
 import com.tokopedia.troubleshooter.notification.di.TroubleshootContext
 import com.tokopedia.troubleshooter.notification.di.TroubleshootScope
+import com.tokopedia.troubleshooter.notification.data.service.googleplay.PlayServicesManager
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -84,7 +86,7 @@ import javax.inject.Named
         repository: SettingRepository,
         @TroubleshootContext context: Context
     ): GetUserSettingUseCase {
-        return getUseSettingUseCase(repository, context, R.raw.query_push_notif_setting)
+        return getUseSettingUseCase(repository, context, com.tokopedia.settingnotif.R.raw.query_push_notif_setting)
     }
 
     @Provides
@@ -93,7 +95,15 @@ import javax.inject.Named
         repository: SettingRepository,
         @TroubleshootContext context: Context
     ): GetUserSettingUseCase {
-        return getUseSettingUseCase(repository, context, R.raw.query_seller_notif_setting)
+        return getUseSettingUseCase(repository, context, com.tokopedia.settingnotif.R.raw.query_seller_notif_setting)
+    }
+
+    @Provides
+    @TroubleshootScope
+    fun providePlayServices(
+        @TroubleshootContext context: Context
+    ): PlayServicesManager {
+        return PlayServicesManagerImpl(context)
     }
 
     @Provides

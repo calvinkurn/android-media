@@ -13,7 +13,7 @@
         android:layout_marginTop="@dimen/unify_space_8"
         android:letterSpacing="0.01"
         android:lineSpacingExtra="4sp"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:typographyType="body_2" />
 
     <com.tokopedia.unifycomponents.UnifyButton

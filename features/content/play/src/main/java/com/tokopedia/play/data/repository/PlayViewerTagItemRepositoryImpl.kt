@@ -16,21 +16,16 @@ import com.tokopedia.play.domain.repository.PlayViewerTagItemRepository
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.PlayUpcomingBellStatus
 import com.tokopedia.play.view.type.ProductSectionType
-import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play.view.uimodel.recom.tagitem.*
 import com.tokopedia.play_common.model.result.ResultState
-import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.variant_common.use_case.GetProductVariantUseCase
-import com.tokopedia.variant_common.util.VariantCommonMapper
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class PlayViewerTagItemRepositoryImpl @Inject constructor(
     private val getProductTagItemsUseCase: GetProductTagItemSectionUseCase,
-    private val getProductVariantUseCase: GetProductVariantUseCase,
     private val addToCartUseCase: AddToCartUseCase,
     private val checkUpcomingCampaignReminderUseCase: CheckUpcomingCampaignReminderUseCase,
     private val postUpcomingCampaignReminderUseCase: PostUpcomingCampaignReminderUseCase,
@@ -95,65 +90,6 @@ class PlayViewerTagItemRepositoryImpl @Inject constructor(
                 )
             }
         } else productSections
-    }
-
-    override suspend fun getVariant(
-        product: PlayProductUiModel.Product,
-        isProductFeatured: Boolean,
-    ): VariantUiModel = withContext(dispatchers.io) {
-        val response = getProductVariantUseCase.apply {
-            params = getProductVariantUseCase.createParams(product.id)
-        }.executeOnBackground()
-
-        val selectedVariants = VariantCommonMapper.mapVariantIdentifierToHashMap(response.data)
-        val categories = VariantCommonMapper.processVariant(
-            variantData = response.data,
-            mapOfSelectedVariant = selectedVariants
-        )
-        VariantUiModel(
-            variantDetail = product,
-            parentVariant = response.data,
-            selectedVariants = selectedVariants,
-            categories = categories.orEmpty(),
-            stockWording = "",
-            isFeatured = isProductFeatured,
-        )
-    }
-
-    override suspend fun selectVariantOption(
-        variant: VariantUiModel,
-        selectedOption: VariantOptionWithAttribute
-    ): VariantUiModel = withContext(dispatchers.computation) {
-        val newSelectedVariants = variant.selectedVariants.toMutableMap()
-        newSelectedVariants[selectedOption.variantCategoryKey] = selectedOption.variantId
-
-        val newCategories = VariantCommonMapper.processVariant(
-            variantData = variant.parentVariant,
-            mapOfSelectedVariant = newSelectedVariants,
-            level = selectedOption.level,
-            isPartialySelected = VariantUiModel.isVariantPartiallySelected(newSelectedVariants),
-        )
-
-        if (newCategories.isNullOrEmpty()) return@withContext variant
-        val selectedChild = VariantCommonMapper.selectedProductData(
-            variantData = variant.parentVariant
-        )?.second
-
-        return@withContext if (selectedChild != null) {
-            val newDetail = mapper.mapVariantChildToProduct(
-                child = selectedChild,
-                prevDetail = variant.variantDetail,
-            )
-            variant.copy(
-                variantDetail = newDetail,
-                selectedVariants = newSelectedVariants,
-                categories = newCategories,
-                stockWording = selectedChild.stock?.stockWordingHTML.orEmpty(),
-            )
-        } else variant.copy(
-            categories = newCategories,
-            selectedVariants = newSelectedVariants,
-        )
     }
 
     override suspend fun addProductToCart(

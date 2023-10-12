@@ -7,26 +7,22 @@ import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.entertainment.R
+import com.tokopedia.entertainment.databinding.EntLayoutViewholderEventCarouselAdapterItemBinding
+import com.tokopedia.entertainment.databinding.EntLayoutViewholderEventCarouselBinding
 import com.tokopedia.entertainment.home.adapter.listener.TrackingListener
 import com.tokopedia.entertainment.home.adapter.viewmodel.EventCarouselModel
 import com.tokopedia.entertainment.home.adapter.viewmodel.EventItemModel
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.ent_layout_viewholder_event_carousel.view.ent_btn_see_more
-import kotlinx.android.synthetic.main.ent_layout_viewholder_event_carousel.view.ent_recycle_view_carousel
-import kotlinx.android.synthetic.main.ent_layout_viewholder_event_carousel_adapter_item.view.event_date
-import kotlinx.android.synthetic.main.ent_layout_viewholder_event_carousel_adapter_item.view.event_image
-import kotlinx.android.synthetic.main.ent_layout_viewholder_event_carousel_adapter_item.view.event_location
-import kotlinx.android.synthetic.main.ent_layout_viewholder_event_carousel_adapter_item.view.event_price
-import kotlinx.android.synthetic.main.ent_layout_viewholder_event_carousel_adapter_item.view.event_title
-import kotlinx.android.synthetic.main.ent_layout_viewholder_event_carousel_adapter_item.view.tg_event_home_start_from
+import com.tokopedia.utils.view.binding.viewBinding
 import java.text.SimpleDateFormat
 import java.util.Date
 import com.tokopedia.unifyprinciples.R.dimen as unifyDimens
@@ -36,19 +32,20 @@ import com.tokopedia.unifyprinciples.R.dimen as unifyDimens
  * Author errysuprayogi on 27,January,2020
  */
 class EventCarouselEventViewHolder(itemView: View,
-                                   val carouselListener: TrackingListener,
-                                   val clickCarouselListener: ClickCarouselListener
+                                   private val carouselListener: TrackingListener,
+                                   private val clickCarouselListener: ClickCarouselListener
 ) : AbstractViewHolder<EventCarouselModel>(itemView) {
 
     var itemAdapter = InnerItemAdapter(carouselListener, clickCarouselListener)
+    private val binding: EntLayoutViewholderEventCarouselBinding? by viewBinding()
 
     init {
-        itemView.ent_recycle_view_carousel.apply {
+        binding?.entRecycleViewCarousel?.run {
             layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL,
                     false)
             adapter = itemAdapter
         }
-        itemView.ent_btn_see_more.setOnClickListener {
+        binding?.entBtnSeeMore?.setOnClickListener {
             carouselListener.clickSeeAllTopEventProduct()
         }
     }
@@ -65,10 +62,12 @@ class EventCarouselEventViewHolder(itemView: View,
         @LayoutRes
         @kotlin.jvm.JvmField
         var LAYOUT: Int = R.layout.ent_layout_viewholder_event_carousel
-        val TAG = EventCarouselEventViewHolder::class.java.simpleName
 
-        const val EMPTY_DATE = "0"
-        const val RESET_SPACE = 0
+        private const val EMPTY_DATE = "0"
+        private const val RESET_SPACE = 0
+        private const val DATE_PATTERN = "dd\nMMM"
+        private const val SECONDS = 1000
+
     }
 
     class InnerItemAdapter(val carouselListener: TrackingListener,
@@ -78,109 +77,119 @@ class EventCarouselEventViewHolder(itemView: View,
 
         lateinit var items: List<EventItemModel>
         var productNames = mutableListOf<String>()
-        var sdf = SimpleDateFormat("dd/MM/yy")
-        var newsdf = SimpleDateFormat("dd\nMMM")
-        var pos: Int = 0
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InnerViewHolder {
-            val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.ent_layout_viewholder_event_carousel_adapter_item, parent,
-                            false)
-            return InnerViewHolder(view)
+            val binding = EntLayoutViewholderEventCarouselAdapterItemBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
+            return InnerViewHolder(binding, carouselListener, clickCarouselListener, productNames)
         }
 
         override fun onBindViewHolder(holder: InnerViewHolder, position: Int) {
-            var item = items.get(position)
-            this.pos = position
-            Glide.with(holder.view).load(item.imageUrl).into(holder.view.event_image)
-            holder.view.event_location.text = item.location
-            holder.view.event_title.text = item.title
-            holder.view.event_date.apply {
-                val dateFormated = formatedSchedule(item.date)
-                if (dateFormated.isNullOrEmpty()){
-                    gone()
-                } else {
-                    show()
-                    text = dateFormated
-                }
-                typeface = Typography.getFontType(context, true, Typography.DISPLAY_2)
-            }
+            holder.bind(items[position])
+        }
 
-            holder.view.event_price.apply {
-                if (item.isFree){
-                    text = resources.getString(R.string.ent_free_price)
-                    holder.view.tg_event_home_start_from.gone()
-                    setMargin(RESET_SPACE, RESET_SPACE, RESET_SPACE, RESET_SPACE)
-                } else {
-                    text = item.price
-                    holder.view.tg_event_home_start_from.show()
+        override fun getItemCount() = items.size
+    }
+
+    class InnerViewHolder(val binding: EntLayoutViewholderEventCarouselAdapterItemBinding, private val carouselListener: TrackingListener,
+                          private val clickCarouselListener: ClickCarouselListener, private val productNames: List<String>) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(item: EventItemModel) {
+            with(binding) {
+                eventImage.loadImage(item.imageUrl)
+                eventLocation.text = item.location
+                eventTitle.text = item.title
+                eventDate.run {
+                    val dateFormated = formatedSchedule(item.date)
+                    if (dateFormated.isNullOrEmpty()){
+                        gone()
+                    } else {
+                        show()
+                        text = dateFormated
+                    }
+                    typeface = Typography.getFontType(context, true, Typography.DISPLAY_2)
                 }
-            }
-            holder.view.setOnClickListener {
-                carouselListener.clickTopEventProduct(item, productNames,
+
+                eventPrice.run {
+                    if (item.isFree){
+                        text = resources.getString(R.string.ent_free_price)
+                        tgEventHomeStartFrom.gone()
+                        setMargin(RESET_SPACE, RESET_SPACE, RESET_SPACE, RESET_SPACE)
+                    } else {
+                        text = item.price
+                        tgEventHomeStartFrom.show()
+                    }
+                }
+                root.setOnClickListener {
+                    carouselListener.clickTopEventProduct(item, productNames,
                         position + 1)
-                clickCarouselListener.redirectCarouselToPDPEvent(item.seoURL)
-            }
-            holder.view.addOnImpressionListener(item, {
-                carouselListener.impressionTopEventProduct(item, productNames,
-                        position + 1)
-            })
-
-            holder.view.event_title.apply {
-                val labelParams = this.layoutParams as ConstraintLayout.LayoutParams
-                if (item.location.isEmpty()) {
-                    labelParams.topToBottom = holder.view.event_image.id
-                    setMargin(
-                        getDimens(unifyDimens.spacing_lvl4),
-                        getDimens(unifyDimens.spacing_lvl3),
-                        getDimens(unifyDimens.unify_space_0),
-                        getDimens(unifyDimens.unify_space_0)
-                    )
-                } else {
-                    labelParams.topToBottom = holder.view.event_location.id
-                    setMargin(
-                        getDimens(unifyDimens.spacing_lvl4),
-                        getDimens(unifyDimens.unify_space_0),
-                        getDimens(unifyDimens.unify_space_0),
-                        getDimens(unifyDimens.unify_space_0)
+                    clickCarouselListener.redirectCarouselToPDPEvent(item.seoURL)
+                }
+                root.addOnImpressionListener(item) {
+                    carouselListener.impressionTopEventProduct(
+                        item, productNames,
+                        position + Int.ONE
                     )
                 }
-                layoutParams = labelParams
-            }
 
-            holder.view.tg_event_home_start_from.apply {
-                if (item.location.isNotEmpty()) {
-                    setMargin(
-                        getDimens(unifyDimens.unify_space_0),
-                        getDimens(unifyDimens.spacing_lvl2),
-                        getDimens(unifyDimens.unify_space_0),
-                        getDimens(unifyDimens.unify_space_0)
-                    )
-                } else {
-                    setMargin(
-                        getDimens(unifyDimens.unify_space_0),
-                        getDimens(unifyDimens.spacing_lvl1),
-                        getDimens(unifyDimens.unify_space_0),
-                        getDimens(unifyDimens.unify_space_0)
-                    )
+                eventTitle.run {
+                    val labelParams = this.layoutParams as ConstraintLayout.LayoutParams
+                    if (item.location.isEmpty()) {
+                        labelParams.topToBottom = binding.eventImage.id
+                        setMargin(
+                            getDimens(unifyDimens.spacing_lvl4),
+                            getDimens(unifyDimens.spacing_lvl3),
+                            getDimens(unifyDimens.unify_space_0),
+                            getDimens(unifyDimens.unify_space_0)
+                        )
+                    } else {
+                        labelParams.topToBottom = binding.eventLocation.id
+                        setMargin(
+                            getDimens(unifyDimens.spacing_lvl4),
+                            getDimens(unifyDimens.unify_space_0),
+                            getDimens(unifyDimens.unify_space_0),
+                            getDimens(unifyDimens.unify_space_0)
+                        )
+                    }
+                    layoutParams = labelParams
                 }
-            }
 
-            holder.view.event_price.apply {
-                if (item.location.isNotEmpty()) {
-                    setMargin(
-                        getDimens(unifyDimens.spacing_lvl2),
-                        getDimens(unifyDimens.unify_space_0),
-                        getDimens(unifyDimens.unify_space_0),
-                        getDimens(unifyDimens.unify_space_0)
-                    )
-                } else {
-                    setMargin(
-                        getDimens(unifyDimens.spacing_lvl2),
-                        getDimens(unifyDimens.unify_space_12),
-                        getDimens(unifyDimens.unify_space_0),
-                        getDimens(unifyDimens.unify_space_0)
-                    )
+                tgEventHomeStartFrom.run {
+                    if (item.location.isNotEmpty()) {
+                        setMargin(
+                            getDimens(unifyDimens.unify_space_0),
+                            getDimens(unifyDimens.spacing_lvl2),
+                            getDimens(unifyDimens.unify_space_0),
+                            getDimens(unifyDimens.unify_space_0)
+                        )
+                    } else {
+                        setMargin(
+                            getDimens(unifyDimens.unify_space_0),
+                            getDimens(unifyDimens.spacing_lvl1),
+                            getDimens(unifyDimens.unify_space_0),
+                            getDimens(unifyDimens.unify_space_0)
+                        )
+                    }
+                }
+
+                eventPrice.run {
+                    if (item.location.isNotEmpty()) {
+                        setMargin(
+                            getDimens(unifyDimens.spacing_lvl2),
+                            getDimens(unifyDimens.unify_space_0),
+                            getDimens(unifyDimens.unify_space_0),
+                            getDimens(unifyDimens.unify_space_0)
+                        )
+                    } else {
+                        setMargin(
+                            getDimens(unifyDimens.spacing_lvl2),
+                            getDimens(unifyDimens.unify_space_12),
+                            getDimens(unifyDimens.unify_space_0),
+                            getDimens(unifyDimens.unify_space_0)
+                        )
+                    }
                 }
             }
         }
@@ -188,18 +197,14 @@ class EventCarouselEventViewHolder(itemView: View,
         private fun formatedSchedule(schedule: String): String? {
             return try {
                 if(!schedule.equals(EMPTY_DATE)) {
-                    val date = Date(schedule.toLong() * 1000)
-                    newsdf.format(date).toUpperCase()
+                    val date = Date(schedule.toLong() * SECONDS)
+                    SimpleDateFormat(DATE_PATTERN).format(date).toUpperCase()
                 } else ""
             } catch (e: Exception) {
                 ""
             }
         }
-
-        override fun getItemCount() = items.size
     }
-
-    class InnerViewHolder(val view: View) : RecyclerView.ViewHolder(view)
 
     interface ClickCarouselListener{
         fun redirectCarouselToPDPEvent(applink: String)

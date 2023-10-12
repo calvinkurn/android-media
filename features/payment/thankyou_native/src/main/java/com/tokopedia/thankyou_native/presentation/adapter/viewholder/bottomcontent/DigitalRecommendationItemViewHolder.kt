@@ -9,7 +9,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class DigitalRecommendationItemViewHolder(
     view: View?
-): AbstractViewHolder<DigitalRecommendationWidgetModel>(view) {
+) : AbstractViewHolder<DigitalRecommendationWidgetModel>(view) {
 
     private var binding: ThankLayoutDigitalRecomBinding? by viewBinding()
 
@@ -18,11 +18,12 @@ class DigitalRecommendationItemViewHolder(
     }
 
     override fun bind(data: DigitalRecommendationWidgetModel) {
-        if (data.thanksPageData.configFlagData?.shouldHideDigitalRecom == true) return
+        if (data.thanksPageData.configFlagData?.shouldHideDigitalRecom == true || data.fragment.isDetached) return
 
         binding?.digitalRecommendationView?.loadRecommendation(
-            data.fragment, data.pgCategoryIds, data.pageType
+            data.fragment,
+            data.pgCategoryIds,
+            data.pageType
         )
     }
-
 }

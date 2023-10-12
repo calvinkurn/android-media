@@ -100,7 +100,7 @@ import com.tokopedia.tokofood.feature.merchant.presentation.mvc.TokofoodMerchant
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.MerchantCarouseItemViewHolder
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.ProductCardViewHolder
 import com.tokopedia.tokofood.feature.merchant.presentation.viewmodel.MerchantPageViewModel
-import com.tokopedia.tokofood.feature.purchase.promopage.presentation.TokoFoodPromoFragment
+import com.tokopedia.tokofood.feature.purchase.promopage.presentation.MerchantTokoFoodPromoFragment
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.TokoFoodPurchaseFragment
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -117,7 +117,6 @@ import com.tokopedia.utils.resources.isDarkMode
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.collect
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
@@ -1275,6 +1274,7 @@ class MerchantPageFragment : BaseMultiFragment(),
         productId: String,
         cardPositions: Pair<Int, Int>
     ) {
+        KeyboardHandler.hideSoftKeyboard(activity)
         viewModel.productMap[productId] = cardPositions
         activityViewModel?.deleteProduct(
             cartId = cartId,
@@ -1666,10 +1666,10 @@ class MerchantPageFragment : BaseMultiFragment(),
     private fun goToPromoPage() {
         merchantPageAnalytics.clickPromoMvc(currentPromoName.orEmpty(), merchantId)
         navigateToNewFragment(
-            TokoFoodPromoFragment.createInstance(
+            MerchantTokoFoodPromoFragment.createInstance(
                 SOURCE,
                 merchantId,
-                viewModel.selectedProducts.map { it.cartId }
+                true
             )
         )
     }
@@ -1711,17 +1711,19 @@ class MerchantPageFragment : BaseMultiFragment(),
                 viewModel.getDataSetPosition(this)
             val adapterPosition =
                 viewModel.getAdapterPosition(this)
-            productListAdapter?.updateCartProductUiModel(
-                cartTokoFood = cartTokoFoodList.firstOrNull { it.cartId == cartId },
-                cartTokoFoodList = cartTokoFoodList,
-                dataSetPosition = dataSetPosition,
-                adapterPosition = adapterPosition
-            )
-            showCustomOrderDetailBottomSheet(
-                productListAdapter?.getProductUiModel(
-                    dataSetPosition
-                ) ?: ProductUiModel(), this
-            )
+            binding?.rvProductList?.post {
+                productListAdapter?.updateCartProductUiModel(
+                    cartTokoFood = cartTokoFoodList.firstOrNull { it.cartId == cartId },
+                    cartTokoFoodList = cartTokoFoodList,
+                    dataSetPosition = dataSetPosition,
+                    adapterPosition = adapterPosition
+                )
+                showCustomOrderDetailBottomSheet(
+                    productListAdapter?.getProductUiModel(
+                        dataSetPosition
+                    ) ?: ProductUiModel(), this
+                )
+            }
         }
     }
 

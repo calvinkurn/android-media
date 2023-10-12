@@ -28,7 +28,6 @@ import com.tokopedia.kyc_centralized.ui.tokoKyc.camera.UserIdentificationCameraA
 import com.tokopedia.kyc_centralized.ui.tokoKyc.camera.UserIdentificationCameraFragment
 import com.tokopedia.kyc_centralized.ui.tokoKyc.form.UserIdentificationFormActivity
 import com.tokopedia.kyc_centralized.ui.tokoKyc.info.UserIdentificationInfoFragment
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifyprinciples.Typography
@@ -48,7 +47,7 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
     private var stepperListener: StepperListener? = null
     private var allowedSelfie = false
 
-    private lateinit var remoteConfig: RemoteConfig
+    abstract var remoteConfig: RemoteConfig
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,8 +71,6 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
                 false
             ) ?: false
         }
-
-        remoteConfig = FirebaseRemoteConfigImpl(context)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -121,6 +118,18 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
                     .orEmpty()
             )
         } else if (resultCode == KYCConstant.NOT_SUPPORT_LIVENESS && requestCode == KYCConstant.REQUEST_CODE_CAMERA_FACE) {
+            handleDeviceIsNotSupported(projectId)
+        }
+        super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    private fun handleDeviceIsNotSupported(projectId: Int) {
+        if (projectId == GOCICIL_PROJECT_ID) {
+            NetworkErrorHelper.showRedSnackbar(
+                activity,
+                context?.resources?.getString(R.string.error_liveness_is_not_supported)
+                    .orEmpty())
+        } else {
             UserIdentificationFormActivity.isSupportedLiveness = false
             val intent = createIntent(
                 requireContext(),
@@ -129,7 +138,6 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
             )
             startActivityForResult(intent, KYCConstant.REQUEST_CODE_CAMERA_FACE)
         }
-        super.onActivityResult(requestCode, resultCode, data)
     }
 
     private fun handleFaceImage(data: Intent) {
@@ -185,7 +193,7 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
                 val margin = DP_8.dpToPx(resources.displayMetrics)
                 val span = SpannableString(text)
                 val color =
-                    MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N100)
+                    MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN200)
 
                 val bulletSpan: BulletSpan = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     BulletSpan(gapWidth, color, radius)
@@ -222,6 +230,9 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
         private const val DP_4 = 4
         private const val DP_8 = 8
         private const val DP_12 = 12
+
+        private val GOCICIL_PROJECT_ID = 21
+
         const val EXTRA_KYC_STEPPER_MODEL = "kyc_stepper_model"
     }
 }

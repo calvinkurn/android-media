@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
@@ -16,17 +18,22 @@ import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_SHO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kyc_centralized.common.KYCConstant
+import com.tokopedia.kyc_centralized.common.KycServerLogger
 import com.tokopedia.kyc_centralized.common.KycUrl
 import com.tokopedia.kyc_centralized.databinding.FragmentUserIdentificationInfoSimpleBinding
 import com.tokopedia.kyc_centralized.di.UserIdentificationCommonComponent
 import com.tokopedia.kyc_centralized.ui.customview.KycOnBoardingViewInflater
+import com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet.FailedSavePreferenceBottomSheet
 import com.tokopedia.kyc_centralized.util.KycSharedPreference
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollectionParam
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import timber.log.Timber
 import javax.inject.Inject
 
 class UserIdentificationInfoSimpleFragment : BaseDaggerFragment() {
@@ -34,12 +41,28 @@ class UserIdentificationInfoSimpleFragment : BaseDaggerFragment() {
     @Inject
     lateinit var kycSharedPreference: KycSharedPreference
 
+    @Inject
+    lateinit var userSessionInterface: UserSessionInterface
+
     private var viewBinding by autoClearedNullable<FragmentUserIdentificationInfoSimpleBinding>()
     private var projectId = 0
     private var defaultStatusBarColor = 0
     private var showWrapperLayout = false
     private var redirectUrl = ""
     private var kycType = ""
+    private var savedInstanceState: Bundle? = null
+
+    private val startLoginForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+        when (result.resultCode) {
+            Activity.RESULT_OK -> {
+                saveInitDataToPreference()
+            }
+            else -> {
+                activity?.setResult(Activity.RESULT_CANCELED)
+                activity?.finish()
+            }
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -52,10 +75,6 @@ class UserIdentificationInfoSimpleFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        kycSharedPreference.saveStringCache(
-            key = KYCConstant.SharedPreference.KEY_KYC_FLOW_TYPE,
-            value = KYCConstant.SharedPreference.VALUE_KYC_FLOW_TYPE_ALA_CARTE
-        )
 
         activity?.intent?.data?.let {
             projectId = it.getQueryParameter(PARAM_PROJECT_ID).toIntOrZero()
@@ -68,6 +87,27 @@ class UserIdentificationInfoSimpleFragment : BaseDaggerFragment() {
             kycType = arguments?.getString(PARAM_KYC_TYPE).orEmpty()
         }
 
+        this.savedInstanceState = savedInstanceState
+        handleRequireLogin()
+    }
+
+    private fun handleRequireLogin() {
+        if (userSessionInterface.isLoggedIn) {
+            saveInitDataToPreference()
+        } else {
+            gotoLogin()
+        }
+    }
+
+    private fun gotoLogin() {
+        val intent = RouteManager.getIntent(
+            context,
+            ApplinkConstInternalUserPlatform.LOGIN
+        )
+        startLoginForResult.launch(intent)
+    }
+
+    private fun initAction() {
         loadUserConsent()
         if (showWrapperLayout) {
             viewBinding?.loader?.hide()
@@ -77,12 +117,50 @@ class UserIdentificationInfoSimpleFragment : BaseDaggerFragment() {
             viewBinding?.uiiSimpleButton?.setOnClickListener { _ ->
                 finishAndRedirectKycResult()
             }
-            setupKycBenefitView(view)
+            setupKycBenefitView(requireView())
         } else {
             viewBinding?.loader?.show()
             //If savedInstanceState is null, then first time open (solve problem in ONE UI 3.1)
             if (savedInstanceState == null) {
                 startKyc()
+            }
+        }
+    }
+
+    private fun saveInitDataToPreference() {
+        viewBinding?.loader?.show()
+        val isSuccessSavePreference = kycSharedPreference.saveStringCache(
+            key = KYCConstant.SharedPreference.KEY_KYC_FLOW_TYPE,
+            value = KYCConstant.SharedPreference.VALUE_KYC_FLOW_TYPE_ALA_CARTE
+        )
+
+        KycServerLogger.sendLogStatusSavePreferenceKyc(
+            flow = KycServerLogger.FLOW_ALA_CARTE,
+            isSuccess = isSuccessSavePreference
+        )
+
+        if (isSuccessSavePreference) {
+            initAction()
+        } else {
+            viewBinding?.loader?.hide()
+            showFailedSavePreferenceBottomSheet()
+        }
+    }
+
+    private fun showFailedSavePreferenceBottomSheet() {
+        val failedSavePreferenceBottomSheet = FailedSavePreferenceBottomSheet()
+
+        failedSavePreferenceBottomSheet.show(
+            childFragmentManager,
+            TAG_BOTTOM_SHEET_FAILED_SAVE_PREFERENCE
+        )
+
+        failedSavePreferenceBottomSheet.setOnDismissWithDataListener { isReload ->
+            if (isReload) {
+                saveInitDataToPreference()
+            } else {
+                activity?.setResult(Activity.RESULT_CANCELED)
+                activity?.finish()
             }
         }
     }
@@ -95,9 +173,7 @@ class UserIdentificationInfoSimpleFragment : BaseDaggerFragment() {
                 KYCConstant.consentCollectionIdProduction
            }
         )
-        viewBinding?.layoutBenefit?.userConsentKyc?.load(
-            viewLifecycleOwner, this, consentParam
-        )
+        viewBinding?.layoutBenefit?.userConsentKyc?.load(consentParam)
 
         viewBinding?.layoutBenefit?.kycBenefitBtn?.setOnClickListener {
             viewBinding?.layoutBenefit?.userConsentKyc?.submitConsent()
@@ -133,6 +209,7 @@ class UserIdentificationInfoSimpleFragment : BaseDaggerFragment() {
             it.setResult(Activity.RESULT_OK, Intent().apply {
                 putExtra(PARAM_REDIRECT_URL, redirectUrl)
             })
+            Timber.d("redirectUrlFinal=$redirectUrl")
             it.finish()
         }
     }
@@ -167,5 +244,6 @@ class UserIdentificationInfoSimpleFragment : BaseDaggerFragment() {
     companion object {
         private const val TAG = "UserIdentificationInfoSimpleFragment"
         private const val KYC_REQUEST_CODE = 9902
+        private const val TAG_BOTTOM_SHEET_FAILED_SAVE_PREFERENCE = "bottom_sheet_failed_save_preference"
     }
 }

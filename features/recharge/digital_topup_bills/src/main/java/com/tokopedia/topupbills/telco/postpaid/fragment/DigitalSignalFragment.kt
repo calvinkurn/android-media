@@ -21,6 +21,7 @@ import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common_digital.atc.DigitalAddToCartViewModel
 import com.tokopedia.common_digital.atc.data.response.ErrorAtc
+import com.tokopedia.common_digital.common.presentation.model.DigitalAtcTrackingModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntSafely
@@ -64,6 +65,14 @@ class DigitalSignalFragment : DigitalBaseTelcoFragment() {
 
     override var menuId = 0
     override var categoryId = 0
+
+    override fun onUpdateMultiCheckout() {
+        //do nothing
+    }
+
+    override fun onTrackMultiCheckoutAtc(atc: DigitalAtcTrackingModel) {
+        //do nothing
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -313,7 +322,7 @@ class DigitalSignalFragment : DigitalBaseTelcoFragment() {
         })
 
         signalClientNumberWidget.setPostpaidListener(object : ClientNumberPostpaidListener {
-            override fun enquiryNumber() {
+            override fun mainButtonClick() {
                 if (signalClientNumberWidget.getInputNumber().isEmpty()) {
                     signalClientNumberWidget.setErrorInputNumber(getString(R.string.telco_number_invalid_empty_string))
                 } else if (userSession.isLoggedIn) {
@@ -322,6 +331,14 @@ class DigitalSignalFragment : DigitalBaseTelcoFragment() {
                 } else {
                     navigateToLoginPage()
                 }
+            }
+
+            override fun secondaryButtonClick() {
+               //do nothing
+            }
+
+            override fun onCloseCoachMark() {
+                //do nothing
             }
         })
     }
@@ -400,14 +417,6 @@ class DigitalSignalFragment : DigitalBaseTelcoFragment() {
     }
 
     override fun onLoadingAtc(showLoading: Boolean) {
-        // do nothing
-    }
-
-    override fun onCollapseAppBar() {
-        // do nothing
-    }
-
-    override fun onExpandAppBar() {
         // do nothing
     }
 

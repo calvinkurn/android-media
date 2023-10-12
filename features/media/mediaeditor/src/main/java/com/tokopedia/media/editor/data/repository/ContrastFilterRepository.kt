@@ -5,29 +5,42 @@ import com.tokopedia.media.editor.ui.component.ContrastToolsUiComponent
 import javax.inject.Inject
 
 interface ContrastFilterRepository {
-    fun contrast(value: Float, source: Bitmap): Bitmap
+    fun contrast(value: Float, source: Bitmap): Bitmap?
 }
 
-class ContrastFilterRepositoryImpl @Inject constructor() : ContrastFilterRepository {
+class ContrastFilterRepositoryImpl @Inject constructor(
+    private val bitmapCreationRepository: BitmapCreationRepository
+) : ContrastFilterRepository {
     /**
      * @param source mutable copy of target bitmap
      * @param value float value for contrast adjustment
      */
-    override fun contrast(value: Float, source: Bitmap): Bitmap {
+    override fun contrast(value: Float, source: Bitmap): Bitmap? {
         val standardContrastValue = ContrastToolsUiComponent.contrastRawToStdValue(value)
-        if (standardContrastValue == 0f) return source
-        val width = source.width
-        val height = source.height
-        val pixels = IntArray(width * height)
-        source.getPixels(pixels, 0, width, 0, 0, width, height)
-        shiftPixel(
-            width = width,
-            height = height,
-            pixels = pixels,
-            tempValue = standardContrastValue
-        )
-        source.setPixels(pixels, 0, width, 0, 0, width, height)
-        return source
+        return if (standardContrastValue == 0f) {
+            source
+        } else {
+            val width = source.width
+            val height = source.height
+
+            if (bitmapCreationRepository.isBitmapOverflow(width, height)) {
+                // return
+                null
+            } else {
+                val pixels = IntArray(width * height)
+                source.getPixels(pixels, 0, width, 0, 0, width, height)
+                shiftPixel(
+                    width = width,
+                    height = height,
+                    pixels = pixels,
+                    tempValue = standardContrastValue
+                )
+                source.setPixels(pixels, 0, width, 0, 0, width, height)
+
+                // return
+                source
+            }
+        }
     }
 
     private fun shiftPixel(width: Int, height: Int, pixels: IntArray, tempValue: Float) {

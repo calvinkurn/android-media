@@ -8,11 +8,10 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.createpost.common.analyics.CreatePostAnalytics
 import com.tokopedia.createpost.common.data.pojo.getcontentform.FeedContentForm
-import com.tokopedia.createpost.common.di.CreatePostCommonModule
-import com.tokopedia.createpost.di.CreatePostModule
 import com.tokopedia.createpost.di.DaggerCreatePostComponent
 import com.tokopedia.createpost.common.view.contract.CreatePostContract
 import com.tokopedia.createpost.view.listener.CreateContentPostCommonListener
@@ -62,9 +61,11 @@ abstract class BaseCreatePostFragmentNew : BaseDaggerFragment(),
 
 
     override fun initInjector() {
-        DaggerCreatePostComponent.builder()
-            .createPostCommonModule(CreatePostCommonModule(requireContext().applicationContext))
-            .createPostModule(CreatePostModule(requireContext().applicationContext)).build()
+        DaggerCreatePostComponent.factory()
+            .create(
+                baseAppComponent = (requireContext().applicationContext as BaseMainApplication).baseAppComponent,
+                context = requireContext()
+            )
             .inject(this)
     }
     override fun onCreate(savedInstanceState: Bundle?) {

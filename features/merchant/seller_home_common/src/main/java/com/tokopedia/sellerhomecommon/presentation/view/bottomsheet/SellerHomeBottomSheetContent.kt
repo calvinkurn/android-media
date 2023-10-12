@@ -69,7 +69,7 @@ class SellerHomeBottomSheetContent : LinearLayout {
                 adapter?.data?.add(BottomSheetContentUiModel(content))
             }
 
-            if (!list.isNullOrEmpty()) {
+            if (list.isNotEmpty()) {
                 adapter?.data?.addAll(list.map { item ->
                     BottomSheetListItemUiModel(
                         item.title,

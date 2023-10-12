@@ -10,55 +10,59 @@ object Utils {
 
     fun safeLet(listOfAllChecker: List<Any?>): Any {
         var counter = 0
-        for(i in listOfAllChecker.indices)
-        {
-            if(listOfAllChecker[i] == null) {
+        for (i in listOfAllChecker.indices) {
+            if (listOfAllChecker[i] == null) {
                 counter = -1
-                break;
+                break
             }
         }
         return counter != -1
-
     }
 
-
-    fun returnRouteObject(chipsData: ChipsData):FintechRedirectionWidgetDataClass{
-      return  FintechRedirectionWidgetDataClass(
-            cta = chipsData.cta?.type?:0,
+    fun returnRouteObject(chipsData: ChipsData): FintechRedirectionWidgetDataClass {
+        return FintechRedirectionWidgetDataClass(
+            cta = chipsData.cta?.type ?: 0,
             redirectionUrl = chipsData.cta?.androidUrl,
-            tenure =  chipsData.tenure?:0,
-            gatewayId = chipsData.gatewayId?:"0",
-            gatewayCode =  chipsData.productCode,
+            tenure = chipsData.tenure ?: 0,
+            gatewayId = chipsData.gatewayId ?: "0",
+            gatewayCode = chipsData.productCode,
             widgetBottomSheet = chipsData.cta?.bottomsheet,
-            userStatus =  chipsData.userStatus,
+            userStatus = chipsData.userStatus,
             linkingStatus = chipsData.linkingStatus,
-            gatewayPartnerName =  chipsData.name,
+            gatewayPartnerName = chipsData.name,
             installmentAmout = chipsData.installmentAmount,
-            promoName = chipsData.promoName
+            promoName = chipsData.promoName,
+            subtitle = chipsData.subheader.orEmpty(),
         )
     }
 
-
-    fun setListOfData(chipsData: ChipsData):List<Any?>{
-      return  listOf( chipsData.cta?.androidUrl,
+    fun setListOfData(chipsData: ChipsData): List<Any?> {
+        return listOf(
+            chipsData.cta?.androidUrl,
             chipsData.cta?.type, chipsData.tenure,
             chipsData.productCode, chipsData.cta?.bottomsheet,
             chipsData.gatewayId, chipsData.userStatus,
-            chipsData.name,  chipsData.linkingStatus,
-            chipsData.installmentAmount)
-
+            chipsData.name, chipsData.linkingStatus,
+            chipsData.installmentAmount
+        )
     }
 
-
-    fun createRedirectionAppLink(fintechRedirectionWidgetDataClass: FintechRedirectionWidgetDataClass,
-                                 productID:String?):String
-    {
+    fun createRedirectionAppLink(
+        fintechRedirectionWidgetDataClass: FintechRedirectionWidgetDataClass,
+        productID: String?
+    ): String {
+        val productIdParam =
+            if (fintechRedirectionWidgetDataClass.redirectionUrl?.contains("?") == true) {
+                "&productID=$productID"
+            } else {
+                "?productID=$productID"
+            }
         return fintechRedirectionWidgetDataClass.redirectionUrl +
-                "?productID=${productID}" +
-                "&tenure=${fintechRedirectionWidgetDataClass.tenure}" +
-                "&gatewayCode=${fintechRedirectionWidgetDataClass.gatewayCode}" +
-                "&gatewayID=${fintechRedirectionWidgetDataClass.gatewayId}" +
-                "&productURL=${setProductUrl(productID)}"
+            productIdParam +
+            "&tenure=${fintechRedirectionWidgetDataClass.tenure}" +
+            "&gatewayCode=${fintechRedirectionWidgetDataClass.gatewayCode}" +
+            "&gatewayID=${fintechRedirectionWidgetDataClass.gatewayId}" +
+            "&productURL=${setProductUrl(productID)}"
     }
 
     private fun setProductUrl(productID: String?): String {

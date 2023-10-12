@@ -16,7 +16,7 @@
         android:paddingLeft="@dimen/flight_dp_20"
         android:paddingRight="@dimen/flight_dp_20"
         android:text="@string/flight_label_detail_order"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         android:textSize="18sp"
         app:typographyType="heading_2" />
 
@@ -39,7 +39,7 @@
             android:paddingRight="@dimen/flight_dp_10"
             android:paddingBottom="@dimen/flight_dp_10"
             android:text="@string/flight_label_passenger_data"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             android:textStyle="normal"
             app:typographyType="heading_4" />
 
@@ -48,8 +48,8 @@
             android:layout_width="wrap_content"
             android:layout_height="@dimen/flight_dp_20"
             android:layout_gravity="center_vertical"
-            app:icon_color_light_enable="@color/Unify_G500"
-            app:icon_color_night_enable="@color/Unify_G500"
+            app:icon_color_light_enable="@color/Unify_GN500"
+            app:icon_color_night_enable="@color/Unify_GN500"
             app:icon_name="CHEVRON_UP" />
     </LinearLayout>
 
@@ -70,13 +70,13 @@
         android:id="@+id/text_view_flight_cek_syarat"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/Unify_N0"
+        android:background="@color/Unify_NN0"
         android:paddingLeft="@dimen/flight_dp_20"
         android:paddingTop="@dimen/flight_dp_20"
         android:paddingRight="@dimen/flight_dp_20"
         android:paddingBottom="@dimen/flight_dp_20"
         android:text="@string/flight_label_cek_t_and_c"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         app:typographyType="body_3" />
 
 </LinearLayout>

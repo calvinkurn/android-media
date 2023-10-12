@@ -2,7 +2,7 @@ package com.tokopedia.tokofood.feature.ordertracking.di.module
 
 import android.content.Context
 import androidx.lifecycle.SavedStateHandle
-import com.tokochat.tokochat_config_common.repository.TokoChatRepository
+import com.tokopedia.tokochat.config.repository.TokoChatRepository
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository

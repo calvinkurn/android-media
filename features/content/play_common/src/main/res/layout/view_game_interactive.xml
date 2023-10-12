@@ -30,7 +30,7 @@
         android:layout_height="@dimen/layout_lvl3"
         android:layout_gravity="center"
         android:layout_marginTop="@dimen/unify_space_2"
-        android:background="@color/Unify_N0"
+        android:background="@color/Unify_NN0"
         android:padding="@dimen/spacing_lvl2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

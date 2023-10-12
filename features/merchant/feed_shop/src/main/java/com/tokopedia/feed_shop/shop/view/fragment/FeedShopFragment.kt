@@ -44,6 +44,8 @@ import com.tokopedia.feed_shop.shop.view.contract.FeedShopContract
 import com.tokopedia.feed_shop.shop.view.model.EmptyFeedShopSellerMigrationUiModel
 import com.tokopedia.feed_shop.shop.view.model.EmptyFeedShopUiModel
 import com.tokopedia.feed_shop.shop.view.model.WhitelistUiModel
+import com.tokopedia.feed_shop.shop.view.util.PostMenuListener
+import com.tokopedia.feed_shop.shop.view.util.createBottomMenu
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
@@ -69,8 +71,6 @@ import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
 import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
-import com.tokopedia.feed_shop.shop.view.util.PostMenuListener
-import com.tokopedia.feed_shop.shop.view.util.createBottomMenu
 import com.tokopedia.kolcommon.view.listener.KolPostLikeListener
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTrackingConstants
@@ -635,7 +635,10 @@ class FeedShopFragment :
         context?.let {
             val menus =
                 createBottomMenu(
-                    it, deletable, reportable, editable,
+                    it,
+                    deletable,
+                    reportable,
+                    editable,
                     object : PostMenuListener {
                         override fun onDeleteClicked() {
                             createDeleteDialog(positionInFeed, postId)?.show()
@@ -743,7 +746,11 @@ class FeedShopFragment :
                     override fun onShareItemClicked(packageName: String) {
                     }
                 },
-                "", imageUrl, url, description, title
+                "",
+                imageUrl,
+                url,
+                description,
+                title
             )
         }.also {
             fragmentManager?.run {
@@ -871,7 +878,8 @@ class FeedShopFragment :
     ) {
     }
 
-    override fun onImageClick(positionInFeed: Int, contentPosition: Int, redirectLink: String) {
+    override fun onImageClick(postId: String, positionInFeed: Int, contentPosition: Int, redirectLink: String) {
+        if (positionInFeed >= adapter.dataSize && positionInFeed <= 0) return
         if (adapter.data[positionInFeed] is DynamicPostModel) {
             val (_, _, _, _, _, _, _, _, trackingPostModel) = adapter.data[positionInFeed] as DynamicPostModel
             feedAnalytics.eventShopPageClickPost(
@@ -882,8 +890,15 @@ class FeedShopFragment :
                 positionInFeed
             )
         }
-        val finaApplink = getUpdatedApplinkForContentDetailPage(redirectLink)
-        onGoToLink(finaApplink)
+
+        /** temporary solution by hardcoding the url to cdp **/
+//        val cdpAppLink = redirectLink
+        val cdpAppLink = UriUtil.buildUri(
+            ApplinkConst.INTERNAL_CONTENT_DETAIL,
+            postId
+        )
+        val finalAppLink = getUpdatedApplinkForContentDetailPage(cdpAppLink)
+        onGoToLink(finalAppLink)
     }
 
     /**
@@ -1006,8 +1021,15 @@ class FeedShopFragment :
                 positionInFeed
             )
         }
-        val finaApplink = getUpdatedApplinkForContentDetailPage(redirectUrl)
-        onGoToLink(finaApplink)
+
+        /** temporary solution by hardcoding the url to cdp **/
+//        val cdpAppLink = redirectLink
+        val cdpAppLink = UriUtil.buildUri(
+            ApplinkConst.INTERNAL_CONTENT_DETAIL,
+            postId
+        )
+        val finalAppLink = getUpdatedApplinkForContentDetailPage(cdpAppLink)
+        onGoToLink(finalAppLink)
     }
 
     override fun onVideoStopTrack(feedXCard: FeedXCard, duration: Long) {
@@ -1204,7 +1226,7 @@ class FeedShopFragment :
         view?.let {
             Toaster.make(
                 it,
-                getString(com.tokopedia.feedcomponent.R.string.feed_content_reported),
+                getString(com.tokopedia.content.common.R.string.feed_content_reported),
                 Snackbar.LENGTH_LONG,
                 Toaster.TYPE_NORMAL,
                 getString(universalSharingR.string.label_close),
@@ -1348,5 +1370,15 @@ class FeedShopFragment :
         positionInFeed: Int,
         feedXCard: FeedXCard
     ) {
+    }
+
+    override fun startActivityForResult(intent: Intent?, requestCode: Int) {
+        if (!isAdded) return
+        super.startActivityForResult(intent, requestCode)
+    }
+
+    override fun startActivity(intent: Intent?) {
+        if (!isAdded) return
+        super.startActivity(intent)
     }
 }

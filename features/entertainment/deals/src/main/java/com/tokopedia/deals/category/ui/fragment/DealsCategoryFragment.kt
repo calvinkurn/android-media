@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -70,11 +71,15 @@ class DealsCategoryFragment : DealsBaseFragment(),
     private var binding by autoCleared<FragmentDealsCategoryBinding>()
     private var additionalSelectedFilterCount = 0
     private var categoryID: String = ""
-    private var filterBottomSheet: DealsCategoryFilterBottomSheet? = null
     private var chips: List<ChipDataView> = listOf()
     private var categories: List<Category> = listOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        childFragmentManager.addFragmentOnAttachListener { _, fragment ->
+            if (fragment is DealsCategoryFilterBottomSheet) {
+                fragment.setListener(this)
+            }
+        }
         super.onCreate(savedInstanceState)
         initViewModel()
     }
@@ -299,10 +304,12 @@ class DealsCategoryFragment : DealsBaseFragment(),
                 val position = parent.getChildAdapterPosition(view)
                 val totalSpanCount = getTotalSpanCount(parent)
 
-                if (position != RecyclerView.NO_POSITION) {
-                    outRect.bottom = if (isInTheFirstRow(position + 2, totalSpanCount)) resources.getInteger(R.integer.sixteen).toPx() else resources.getInteger(R.integer.four).toPx()
-                    outRect.left = if (isFirstInRow(position + 2, totalSpanCount)) resources.getInteger(R.integer.two).toPx() else resources.getInteger(R.integer.sixteen).toPx()
-                    outRect.right = if (isFirstInRow(position + 2, totalSpanCount))resources.getInteger(R.integer.sixteen).toPx() else resources.getInteger(R.integer.two).toPx()
+                context?.let { context->
+                    if (position != RecyclerView.NO_POSITION) {
+                        outRect.bottom = if (isInTheFirstRow(position + ADDITIONAL_POSITION, totalSpanCount)) context.resources.getInteger(R.integer.sixteen).toPx() else context.resources.getInteger(R.integer.four).toPx()
+                        outRect.left = if (isFirstInRow(position + ADDITIONAL_POSITION, totalSpanCount)) context.resources.getInteger(R.integer.two).toPx() else context.resources.getInteger(R.integer.sixteen).toPx()
+                        outRect.right = if (isFirstInRow(position + ADDITIONAL_POSITION, totalSpanCount)) context.resources.getInteger(R.integer.sixteen).toPx() else context.resources.getInteger(R.integer.two).toPx()
+                    }
                 }
             }
         }
@@ -361,11 +368,9 @@ class DealsCategoryFragment : DealsBaseFragment(),
 
     /** DealChipsListActionListener **/
     override fun onFilterChipClicked(chips: List<ChipDataView>) {
-        if (filterBottomSheet == null) {
-            filterBottomSheet = DealsCategoryFilterBottomSheet(this)
-        }
-        filterBottomSheet?.showCategories(DealsChipsDataView(chips))
-        filterBottomSheet?.show(childFragmentManager, "")
+        val filterBottomSheet = DealsCategoryFilterBottomSheet.newInstance(DealsChipsDataView(chips))
+        filterBottomSheet.setListener(this)
+        filterBottomSheet.show(childFragmentManager, "")
     }
 
     override fun onChipClicked(chips: List<ChipDataView>) {
@@ -477,6 +482,8 @@ class DealsCategoryFragment : DealsBaseFragment(),
         const val MAX_SIZE_CHIPS = 5
         const val CHIPS_INITIAL_SUBLIST_INDEX = 0
         const val CHIPS_LAST_SUBLIST_INDEX = 4
+
+        private const val ADDITIONAL_POSITION = 2
 
         private const val EXTRA_TAB_NAME = ""
 

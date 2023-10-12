@@ -21,7 +21,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalTokoFood
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
@@ -39,6 +38,7 @@ import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBotto
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logisticCommon.data.constant.AddEditAddressSource
+import com.tokopedia.logisticCommon.data.constant.AddressConstant
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
@@ -52,7 +52,6 @@ import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.common.util.TokofoodExt.addAndReturnImpressionListener
 import com.tokopedia.tokofood.common.util.TokofoodRouteManager
 import com.tokopedia.tokofood.databinding.FragmentSearchResultBinding
-import com.tokopedia.tokofood.feature.home.presentation.fragment.TokoFoodHomeFragment
 import com.tokopedia.tokofood.feature.search.common.presentation.viewholder.TokofoodSearchErrorStateViewHolder
 import com.tokopedia.tokofood.feature.search.common.util.OnScrollListenerSearch
 import com.tokopedia.tokofood.feature.search.common.util.hideKeyboardOnTouchListener
@@ -80,7 +79,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import kotlinx.coroutines.flow.collect
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -312,9 +310,6 @@ class SearchResultFragment :
 
     override fun onOOCActionButtonClicked(type: Int) {
         when (type) {
-            MerchantSearchOOCUiModel.NO_ADDRESS -> {
-                navigateToAddAddress()
-            }
             MerchantSearchOOCUiModel.NO_ADDRESS_REVAMP -> {
                 navigateToAddAddressRevamp()
             }
@@ -715,8 +710,13 @@ class SearchResultFragment :
             data?.let {
                 val locationPass =
                     it.getParcelableExtra(LogisticConstant.EXTRA_EXISTING_LOCATION) as? LocationPass
-                locationPass?.let { pass ->
-                    viewModel.updatePinpoint(pass.latitude, pass.longitude)
+                if (locationPass == null) {
+                    val addressData = it.getParcelableExtra(AddressConstant.EXTRA_SAVE_DATA_UI_MODEL) as? SaveAddressDataModel
+                    addressData?.let { address ->
+                        viewModel.updatePinpoint(address.latitude, address.longitude)
+                    }
+                } else {
+                    viewModel.updatePinpoint(locationPass.latitude, locationPass.longitude)
                 }
             }
         }
@@ -752,20 +752,6 @@ class SearchResultFragment :
         refreshAddressData()
     }
 
-    private fun navigateToAddAddress() {
-        val intent = RouteManager.getIntent(
-            context,
-            ApplinkConstInternalLogistic.ADD_ADDRESS_V2
-        )
-        intent.putExtra(
-            ChooseAddressBottomSheet.EXTRA_REF,
-            ChooseAddressBottomSheet.SCREEN_NAME_CHOOSE_ADDRESS_NEW_USER
-        )
-        intent.putExtra(ChooseAddressBottomSheet.EXTRA_IS_FULL_FLOW, true)
-        intent.putExtra(ChooseAddressBottomSheet.EXTRA_IS_LOGISTIC_LABEL, false)
-        startActivityForResult(intent, REQUEST_CODE_ADD_ADDRESS)
-    }
-
     private fun navigateToAddAddressRevamp() {
         val intent = RouteManager.getIntent(
             context,
@@ -782,17 +768,18 @@ class SearchResultFragment :
     }
 
     private fun navigateToSetPinpoint() {
-        val locationPass = LocationPass().apply {
-            latitude = TOTO_LATITUDE
-            longitude = TOTO_LONGITUDE
+        activity?.let {
+            // go to pinpoint
+            val bundle = Bundle().apply {
+                putBoolean(AddressConstant.EXTRA_IS_GET_PINPOINT_ONLY, true)
+                putDouble(AddressConstant.EXTRA_LAT, TOTO_LATITUDE.toDouble())
+                putDouble(AddressConstant.EXTRA_LONG, TOTO_LONGITUDE.toDouble())
+            }
+            RouteManager.getIntent(it, ApplinkConstInternalLogistic.PINPOINT).apply {
+                putExtra(AddressConstant.EXTRA_BUNDLE, bundle)
+                startActivityForResult(this, REQUEST_CODE_SET_PINPOINT)
+            }
         }
-        val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.GEOLOCATION)
-        val bundle = Bundle().apply {
-            putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass)
-            putBoolean(LogisticConstant.EXTRA_IS_FROM_MARKETPLACE_CART, true)
-        }
-        intent.putExtras(bundle)
-        startActivityForResult(intent, REQUEST_CODE_SET_PINPOINT)
     }
 
     private fun navigateToChangeAddress() {

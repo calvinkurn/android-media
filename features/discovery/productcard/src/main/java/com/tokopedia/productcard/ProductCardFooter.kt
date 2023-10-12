@@ -4,7 +4,9 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.RelativeLayout
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.productcard.utils.findViewById
 import com.tokopedia.productcard.utils.ViewId
 import com.tokopedia.productcard.utils.ViewStubId
 import com.tokopedia.productcard.utils.showWithCondition
@@ -18,14 +20,16 @@ internal fun View.renderProductCardFooter(
     showWithCondition<UnifyButton?>(
         ViewStubId(R.id.buttonNotifyStub),
         ViewId(R.id.buttonNotify),
-        productCardModel.hasNotifyMeButton)
+        productCardModel.hasNotifyMeButton
+    )
 
     if (isProductCardList) {
         val buttonSimilarProduct = findViewById<UnifyButton?>(R.id.buttonSeeSimilarProduct)
         showWithCondition<UnifyButton?>(
             ViewStubId(R.id.buttonDeleteProductStub),
             ViewId(R.id.buttonDeleteProduct),
-            productCardModel.hasDeleteProductButton)
+            productCardModel.hasDeleteProductButton
+        )
         buttonRemoveFromWishlist?.showWithCondition(productCardModel.hasRemoveFromWishlistButton)
         buttonSimilarProduct?.hide()
     } else {
@@ -34,7 +38,16 @@ internal fun View.renderProductCardFooter(
         buttonRemoveFromWishlist?.hide()
         renderSimilarProductButton(productCardModel)
     }
+
     renderWishlistComponents(productCardModel)
+
+    val buttonSeeOtherProduct = findViewById<UnifyButton?>(
+        ViewStubId(R.id.buttonSeeOtherProductStub),
+        ViewId(R.id.buttonSeeOtherProduct),
+    )
+    buttonSeeOtherProduct?.shouldShowWithAction(productCardModel.willShowButtonSeeOtherProduct()) {
+        buttonSeeOtherProduct.text = productCardModel.seeOtherProductText
+    }
 }
 
 private fun View.renderSimilarProductButton(productCardModel: ProductCardModel) {

@@ -1,0 +1,642 @@
+{
+  "productRecommendationWidget": {
+    "data": [
+      {
+        "tID": "CVpJjdqjQExhRYNQrpPt2HEJp6Y\u003d",
+        "source": "custom",
+        "title": "Rekomendasi untuk Anda",
+        "subtitle": "",
+        "foreignTitle": "Recommendation for you",
+        "widgetUrl": "",
+        "pageName": "comparison_bpc_61",
+        "seeMoreAppLink": "",
+        "layoutType": "comparison-widget-bpc",
+        "pagination": {
+          "currentPage": 1,
+          "nextPage": 2,
+          "prevPage": -1,
+          "hasNext": false
+        },
+        "campaign": {
+          "appLandingPageLink": "",
+          "landingPageLink": "",
+          "thematicID": 0,
+          "assets": {
+            "banner": {
+              "apps": ""
+            }
+          }
+        },
+        "recommendation": [
+          {
+            "id": 1538031268,
+            "name": "SOMETHINC 10% Niacinamide + Moisture Sabi Beet Brightening Serum 20ml",
+            "categoryBreadcrumbs": "Kecantikan/Perawatan Wajah/Serum Wajah",
+            "url": "https://www.tokopedia.com/somethinc/somethinc-10-niacinamide-moisture-sabi-beet-brightening-serum-20ml",
+            "appUrl": "tokopedia://product/1538031268",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d2265\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dcomparison_bpc_61\u0026pid\u003d1538031268\u0026pos\u003d6\u0026recommendation\u003dproduct_detail\u0026rectype\u003dproduct_detail\u0026redirect\u003dhttps://www.tokopedia.com/somethinc/somethinc-10-niacinamide-moisture-sabi-beet-brightening-serum-20ml?catid2265\u003d%26ref\u003dcomparison_bpc_61_pa1_po6%26src\u003dr3product_detail\u0026tid\u003dCVpJjdqjQExhRYNQrpPt2HEJp6Y\u003d\u0026uid\u003d16939915\u0026unique_id\u003d\u0026utime\u003d1684725868\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.221",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/5/10/26143860-2564-40a0-9c50-6a4ecfbb6b5b.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/5/10/26143860-2564-40a0-9c50-6a4ecfbb6b5b.jpg",
+            "price": "Rp 115.500",
+            "priceInt": 115500,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 0,
+            "shop": {
+              "id": 5852874,
+              "name": "SOMETHINC official",
+              "city": "Kota Tangerang",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "departmentId": 2265,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "offers",
+                "title": "Dilayani Tokopedia",
+                "type": "lightGrey",
+                "url": ""
+              },
+              {
+                "position": "price",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "campaign",
+                "title": "Serbu OS",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/phOWBv/2022/12/1/4d3f8e43-a1f7-4b4c-94db-a7b8aa28178d.png"
+              },
+              {
+                "position": "eta",
+                "title": "Tiba 24 - 27 May",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 10 rb+",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Official Store",
+                "imageUrl": "https://images.tokopedia.net/img/official_store_badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/img/promo/targeting/red_bo_20k.png"
+            },
+            "rating": 5,
+            "countReview": 8571,
+            "ratingAverage": "5.0",
+            "recommendationType": "product_detail",
+            "stock": 1311,
+            "isTopads": false,
+            "specificationLabels": [
+              {
+                "key": "Cocok untuk",
+                "value": "Semua jenis kulit"
+              },
+              {
+                "key": "Manfaat utama",
+                "value": ""
+              },
+              {
+                "key": "Kandungan utama",
+                "value": "Niacinamide, Sabiwhite, Beet extract, Centella asiatica, Hydrolyzed algae extract, Anthemis nobilis, Allantoin, Caffeine, Tocopherol"
+              },
+              {
+                "key": "Info lainnya",
+                "value": "Aman Untuk Ibu Hamil dan Menyusui | Tidak mengandung alkohol"
+              }
+            ],
+            "parentID": 0
+          },
+          {
+            "id": 2714168508,
+            "name": "Garnier Men Turbo Bright Spotproof Serum Wajah Pria SPF 50+ 40ml",
+            "categoryBreadcrumbs": "Kecantikan/Perawatan Wajah/Serum Wajah",
+            "url": "https://www.tokopedia.com/klingarage/garnier-men-turbo-bright-spotproof-serum-wajah-pria-spf-50-40ml",
+            "appUrl": "tokopedia://product/2714168508",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d2265\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dcomparison_bpc_61\u0026pid\u003d2714168508\u0026pos\u003d1\u0026recommendation\u003dcatalog_embedding\u0026rectype\u003dcatalog_embedding\u0026redirect\u003dhttps://www.tokopedia.com/klingarage/garnier-men-turbo-bright-spotproof-serum-wajah-pria-spf-50-40ml?catid2265\u003d%26ref\u003dcomparison_bpc_61_pa1_po1%26src\u003dr3catalog_embedding\u0026tid\u003dCVpJjdqjQExhRYNQrpPt2HEJp6Y\u003d\u0026uid\u003d16939915\u0026unique_id\u003d\u0026utime\u003d1684725868\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.221",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/7/14/16cdcf72-bab3-4c8a-8e92-fa6431f1cee7.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/7/14/16cdcf72-bab3-4c8a-8e92-fa6431f1cee7.jpg",
+            "price": "Rp 83.000",
+            "priceInt": 83000,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 0,
+            "shop": {
+              "id": 12901320,
+              "name": "Klin Garage",
+              "city": "Kota Bekasi",
+              "isGold": true,
+              "isOfficial": false
+            },
+            "departmentId": 2265,
+            "labels": [],
+            "labelgroup": [
+              {
+                "position": "gimmick",
+                "title": "Sisa 5",
+                "type": "textDarkRed",
+                "url": ""
+              },
+              {
+                "position": "eta",
+                "title": "Tiba 24 - 27 May",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 100+",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Power Merchant Pro",
+                "imageUrl": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@2x.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/img/promo/targeting/red_bo_20k.png"
+            },
+            "rating": 5,
+            "countReview": 69,
+            "ratingAverage": "4.9",
+            "recommendationType": "catalog_embedding",
+            "stock": 5,
+            "isTopads": false,
+            "specificationLabels": [
+              {
+                "key": "Cocok untuk",
+                "value": "Semua jenis kulit"
+              },
+              {
+                "key": "Manfaat utama",
+                "value": ""
+              },
+              {
+                "key": "Kandungan utama",
+                "value": "Lemon extract, Herba repair"
+              },
+              {
+                "key": "Info lainnya",
+                "value": "Bebas dari kandungan alkohol, Paraben, SLS"
+              }
+            ],
+            "parentID": 0
+          },
+          {
+            "id": 2247277593,
+            "name": "SOMETHINC Dark Spot Reducer Ampoule",
+            "categoryBreadcrumbs": "Kecantikan/Perawatan Wajah/Serum Wajah",
+            "url": "https://www.tokopedia.com/somethinc/somethinc-dark-spot-reducer-ampoule",
+            "appUrl": "tokopedia://product/2247277593",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d2265\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dcomparison_bpc_61\u0026pid\u003d2247277593\u0026pos\u003d2\u0026recommendation\u003dcatalog_embedding\u0026rectype\u003dcatalog_embedding\u0026redirect\u003dhttps://www.tokopedia.com/somethinc/somethinc-dark-spot-reducer-ampoule?catid2265\u003d%26ref\u003dcomparison_bpc_61_pa1_po2%26src\u003dr3catalog_embedding\u0026tid\u003dCVpJjdqjQExhRYNQrpPt2HEJp6Y\u003d\u0026uid\u003d16939915\u0026unique_id\u003d\u0026utime\u003d1684725868\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.221",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/5/7/4f8a1b22-05b6-4d0e-b40e-f160f1aaa5d9.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/5/7/4f8a1b22-05b6-4d0e-b40e-f160f1aaa5d9.jpg",
+            "price": "Rp 129.000",
+            "priceInt": 129000,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 0,
+            "shop": {
+              "id": 5852874,
+              "name": "SOMETHINC official",
+              "city": "Kota Tangerang",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "departmentId": 2265,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "offers",
+                "title": "Dilayani Tokopedia",
+                "type": "lightGrey",
+                "url": ""
+              },
+              {
+                "position": "price",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "campaign",
+                "title": "Winner TBA 2022",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/phOWBv/2023/1/16/10b1b6b7-b143-4d6a-9f43-4498a93c792c.png"
+              },
+              {
+                "position": "eta",
+                "title": "Tiba 24 - 27 May",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 9 rb+",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Official Store",
+                "imageUrl": "https://images.tokopedia.net/img/official_store_badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/img/promo/targeting/red_bo_20k.png"
+            },
+            "rating": 5,
+            "countReview": 4128,
+            "ratingAverage": "5.0",
+            "recommendationType": "catalog_embedding",
+            "stock": 655,
+            "isTopads": false,
+            "specificationLabels": [
+              {
+                "key": "Cocok untuk",
+                "value": "Semua jenis kulit"
+              },
+              {
+                "key": "Manfaat utama",
+                "value": ""
+              },
+              {
+                "key": "Kandungan utama",
+                "value": "Tranexamoyl Dipeptide-23, D-Panthenol, Vitamin B5"
+              },
+              {
+                "key": "Info lainnya",
+                "value": "Aman Untuk Ibu Hamil dan Menyusui | Tidak mengandung alkohol"
+              }
+            ],
+            "parentID": 0
+          },
+          {
+            "id": 1879730244,
+            "name": "SOMETHINC AHA 7%, BHA 1%, PHA 3% Weekly Peeling Solution",
+            "categoryBreadcrumbs": "Kecantikan/Perawatan Wajah/Serum Wajah",
+            "url": "https://www.tokopedia.com/somethinc/somethinc-aha-7-bha-1-pha-3-weekly-peeling-solution",
+            "appUrl": "tokopedia://product/1879730244",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d2265\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dcomparison_bpc_61\u0026pid\u003d1879730244\u0026pos\u003d3\u0026recommendation\u003dcatalog_embedding\u0026rectype\u003dcatalog_embedding\u0026redirect\u003dhttps://www.tokopedia.com/somethinc/somethinc-aha-7-bha-1-pha-3-weekly-peeling-solution?catid2265\u003d%26ref\u003dcomparison_bpc_61_pa1_po3%26src\u003dr3catalog_embedding\u0026tid\u003dCVpJjdqjQExhRYNQrpPt2HEJp6Y\u003d\u0026uid\u003d16939915\u0026unique_id\u003d\u0026utime\u003d1684725868\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.221",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/5/10/0e29aeb7-3c95-4274-8613-c6324084044c.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/5/10/0e29aeb7-3c95-4274-8613-c6324084044c.jpg",
+            "price": "Rp 125.000",
+            "priceInt": 125000,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 0,
+            "shop": {
+              "id": 5852874,
+              "name": "SOMETHINC official",
+              "city": "Kota Tangerang",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "departmentId": 2265,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "offers",
+                "title": "Dilayani Tokopedia",
+                "type": "lightGrey",
+                "url": ""
+              },
+              {
+                "position": "price",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "campaign",
+                "title": "Winner TBA 2022",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/phOWBv/2023/1/16/10b1b6b7-b143-4d6a-9f43-4498a93c792c.png"
+              },
+              {
+                "position": "eta",
+                "title": "Tiba 24 - 27 May",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 5 rb+",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Official Store",
+                "imageUrl": "https://images.tokopedia.net/img/official_store_badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/img/promo/targeting/red_bo_20k.png"
+            },
+            "rating": 5,
+            "countReview": 2343,
+            "ratingAverage": "4.9",
+            "recommendationType": "catalog_embedding",
+            "stock": 884,
+            "isTopads": false,
+            "specificationLabels": [
+              {
+                "key": "Cocok untuk",
+                "value": "Kulit berminyak, Kulit kombinasi"
+              },
+              {
+                "key": "Manfaat utama",
+                "value": ""
+              },
+              {
+                "key": "Kandungan utama",
+                "value": "Aqua, Glycerin, Niacinamide, Lactobionic acid, Salicylic acid, Glycolic acid, Lactic acid, Citric Acid, Hydroxyethylcellulose, Daucus carota leaf extract, Hibiscus sabdariffa extract, Triethanolamine, Panthenol, Sodium hyaluronate, Phenoxyethanol"
+              },
+              {
+                "key": "Info lainnya",
+                "value": "Tidak mengandung paraben"
+              }
+            ],
+            "parentID": 0
+          },
+          {
+            "id": 2171856882,
+            "name": "SOMETHINC Level 1% Encapsulated Retinol",
+            "categoryBreadcrumbs": "Kecantikan/Perawatan Wajah/Serum Wajah",
+            "url": "https://www.tokopedia.com/somethinc/somethinc-level-1-encapsulated-retinol",
+            "appUrl": "tokopedia://product/2171856882",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d2265\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dcomparison_bpc_61\u0026pid\u003d2171856882\u0026pos\u003d4\u0026recommendation\u003dcatalog_embedding\u0026rectype\u003dcatalog_embedding\u0026redirect\u003dhttps://www.tokopedia.com/somethinc/somethinc-level-1-encapsulated-retinol?catid2265\u003d%26ref\u003dcomparison_bpc_61_pa1_po4%26src\u003dr3catalog_embedding\u0026tid\u003dCVpJjdqjQExhRYNQrpPt2HEJp6Y\u003d\u0026uid\u003d16939915\u0026unique_id\u003d\u0026utime\u003d1684725868\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.221",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/4/24/fb045480-5f9e-42c8-82c9-30509e7c3e30.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/4/24/fb045480-5f9e-42c8-82c9-30509e7c3e30.jpg",
+            "price": "Rp 155.000",
+            "priceInt": 155000,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 0,
+            "shop": {
+              "id": 5852874,
+              "name": "SOMETHINC official",
+              "city": "Kota Tangerang",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "departmentId": 2265,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "offers",
+                "title": "Dilayani Tokopedia",
+                "type": "lightGrey",
+                "url": ""
+              },
+              {
+                "position": "price",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "campaign",
+                "title": "Winner TBA 2022",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/phOWBv/2023/1/16/10b1b6b7-b143-4d6a-9f43-4498a93c792c.png"
+              },
+              {
+                "position": "eta",
+                "title": "Tiba 24 - 27 May",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 7 rb+",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Official Store",
+                "imageUrl": "https://images.tokopedia.net/img/official_store_badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/img/promo/targeting/red_bo_20k.png"
+            },
+            "rating": 5,
+            "countReview": 3309,
+            "ratingAverage": "5.0",
+            "recommendationType": "catalog_embedding",
+            "stock": 2041,
+            "isTopads": false,
+            "specificationLabels": [
+              {
+                "key": "Cocok untuk",
+                "value": "Semua jenis kulit"
+              },
+              {
+                "key": "Manfaat utama",
+                "value": ""
+              },
+              {
+                "key": "Kandungan utama",
+                "value": "Retinol 1%, 4-t butylcyclohexol, Hyaluronic Acid, Swualane"
+              },
+              {
+                "key": "Info lainnya",
+                "value": "Tidak mengandung fragrance/parfum"
+              }
+            ],
+            "parentID": 0
+          },
+          {
+            "id": 5467320021,
+            "name": "Somethinc 10% Niacinamide + Moisture Sabi Beet Max Brightening Serum",
+            "categoryBreadcrumbs": "Kecantikan/Perawatan Wajah/Serum Wajah",
+            "url": "https://www.tokopedia.com/gamalmen/somethinc-10-niacinamide-moisture-sabi-beet-max-brightening-serum",
+            "appUrl": "tokopedia://product/5467320021",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d2265\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dcomparison_bpc_61\u0026pid\u003d5467320021\u0026pos\u003d5\u0026recommendation\u003dcatalog_embedding\u0026rectype\u003dcatalog_embedding\u0026redirect\u003dhttps://www.tokopedia.com/gamalmen/somethinc-10-niacinamide-moisture-sabi-beet-max-brightening-serum?catid2265\u003d%26ref\u003dcomparison_bpc_61_pa1_po5%26src\u003dr3catalog_embedding\u0026tid\u003dCVpJjdqjQExhRYNQrpPt2HEJp6Y\u003d\u0026uid\u003d16939915\u0026unique_id\u003d\u0026utime\u003d1684725868\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.221",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/8/16/b95f3c0d-56fa-4491-8e10-fe0199eef43e.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/8/16/b95f3c0d-56fa-4491-8e10-fe0199eef43e.jpg",
+            "price": "Rp 118.000",
+            "priceInt": 118000,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 0,
+            "shop": {
+              "id": 7534274,
+              "name": "Gamal Men",
+              "city": "Jakarta Utara",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "departmentId": 2265,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "price",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "eta",
+                "title": "Tiba 24 - 27 May",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 100+",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Official Store",
+                "imageUrl": "https://images.tokopedia.net/img/official_store_badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/img/promo/targeting/red_bo_20k.png"
+            },
+            "rating": 5,
+            "countReview": 33,
+            "ratingAverage": "4.8",
+            "recommendationType": "catalog_embedding",
+            "stock": 14,
+            "isTopads": false,
+            "specificationLabels": [
+              {
+                "key": "Cocok untuk",
+                "value": "Kulit kusam, Kulit kering"
+              },
+              {
+                "key": "Manfaat utama",
+                "value": ""
+              },
+              {
+                "key": "Kandungan utama",
+                "value": "Niacinamide, Sabiwhite, Beet extract, Centella asiatica, Hydrolyzed algae extract, Anthemis nobilis, Allantoin, Caffeine, Tocopherol"
+              },
+              {
+                "key": "Info lainnya",
+                "value": "Aman Untuk Ibu Hamil dan Menyusui | Tidak mengandung alkohol"
+              }
+            ],
+            "parentID": 0
+          }
+        ]
+      }
+    ]
+}
+}

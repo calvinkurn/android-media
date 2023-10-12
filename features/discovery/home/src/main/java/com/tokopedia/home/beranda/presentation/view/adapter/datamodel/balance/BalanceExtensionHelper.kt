@@ -155,7 +155,12 @@ private fun buildWalletAppBalanceDrawerModel(
 fun TextAttributes.mapToBalanceTextAttributes(): BalanceTextAttribute {
     return BalanceTextAttribute(
         colour = this.colour,
-        colourRef = com.tokopedia.unifyprinciples.R.color.Unify_NN600,
+        colourRef = when (this.colour) {
+            TEXT_COLOR_GREEN -> com.tokopedia.unifyprinciples.R.color.Unify_GN500
+            TEXT_COLOR_GRAY -> com.tokopedia.unifyprinciples.R.color.Unify_NN600
+            TEXT_COLOR_BLACK -> com.tokopedia.unifyprinciples.R.color.Unify_NN950
+            else -> com.tokopedia.unifyprinciples.R.color.Unify_NN600
+        },
         text = text,
         isBold = this.isBold
     )

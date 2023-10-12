@@ -35,6 +35,8 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.view.DarkModeUtil
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import javax.inject.Inject
 
 private const val CLICK_MULAI_IKLAN = "click-mulai iklan otomatis"
@@ -146,7 +148,10 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
                 }
             }
         })
-        imageView7?.setImageDrawable(view.context.getResDrawable(R.drawable.ill_header))
+
+        if(activity?.isDarkMode() == true){
+            imageView7?.setImageDrawable(view.context.getResDrawable(R.drawable.ill_header))
+        }
         context?.let {
             topCornerBg1?.setImageDrawable(AppCompatResources.getDrawable(it,
                 R.drawable.topads_create_bg_top_corner))

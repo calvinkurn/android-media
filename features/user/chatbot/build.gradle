@@ -18,6 +18,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.chatbot'
+    testNamespace 'com.tokopedia.chatbot.test'
 
     defaultConfig {
         multiDexEnabled true
@@ -39,12 +41,12 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.baseList)
     implementation projectOrAar(rootProject.ext.libraries.applink)
+    implementation projectOrAar(rootProject.ext.libraries.universal_sharing)
 
     implementation projectOrAar(rootProject.ext.libraries.imagePreview)
     implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.features.csat_rating)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.features.chatcommon)
     implementation rootProject.ext.networkDependencies.glide
     implementation projectOrAar(rootProject.ext.libraries.remoteResourceRequest)
@@ -68,6 +70,9 @@ dependencies {
     implementation project(rootProject.ext.libraries.logger)
     implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation project(rootProject.ext.libraries.remoteConfig)
+    implementation (rootProject.ext.firebase.crashlytics) {
+        transitive = true
+    }
 
     implementation (rootProject.ext.firebase.crashlytics) {
         transitive = true

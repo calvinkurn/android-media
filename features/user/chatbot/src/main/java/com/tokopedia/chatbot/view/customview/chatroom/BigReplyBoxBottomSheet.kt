@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import com.tokopedia.chatbot.R
-import com.tokopedia.chatbot.databinding.BottomSheetBigReplyBoxBinding
+import com.tokopedia.chatbot.databinding.BottomsheetChatbotBigReplyBoxBinding
 import com.tokopedia.chatbot.view.customview.chatroom.listener.ReplyBoxClickListener
 import com.tokopedia.chatbot.view.listener.ChatbotSendButtonListener
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -23,7 +23,7 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
     private var hintText = ""
     private var shouldShowAddAttachmentButton: Boolean = false
 
-    private var _viewBinding: BottomSheetBigReplyBoxBinding? = null
+    private var _viewBinding: BottomsheetChatbotBigReplyBoxBinding? = null
     private fun getBindingView() = _viewBinding!!
 
     init {
@@ -41,13 +41,13 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _viewBinding = BottomSheetBigReplyBoxBinding.inflate(LayoutInflater.from(context))
+        _viewBinding = BottomsheetChatbotBigReplyBoxBinding.inflate(LayoutInflater.from(context))
         setChild(getBindingView().root)
         setUpTextWatcher()
         disableSendButton()
         bindClickListeners()
         setUpEditText()
-        getBindingView().ivChatMenu.showWithCondition(shouldShowAddAttachmentButton)
+        getBindingView().chatText.icon1.showWithCondition(shouldShowAddAttachmentButton)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -81,7 +81,7 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
                 dismissAllowingStateLoss()
             }
         }
-        getBindingView().ivChatMenu.setOnClickListener {
+        getBindingView().chatText.icon1.setOnClickListener {
             dismissAllowingStateLoss()
             replyBoxClickListener?.onAttachmentMenuClicked()
         }

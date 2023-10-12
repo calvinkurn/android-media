@@ -58,6 +58,12 @@ class DynamicLegoBannerCallback(
     }
 
     override fun onClickGridFourImage(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {
+        RouteManager.route(
+            context,
+            channelGrid.applink.ifEmpty {
+                channelGrid.url
+            }
+        )
         trackClickLego4Banner(channelModel, channelGrid, position, parentPosition)
     }
 

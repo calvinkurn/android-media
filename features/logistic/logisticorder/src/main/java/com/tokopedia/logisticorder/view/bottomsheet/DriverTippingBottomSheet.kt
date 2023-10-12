@@ -173,7 +173,7 @@ class DriverTippingBottomSheet : BottomSheetUnify(), HasComponent<TrackingPageCo
             }
             tippingValue.run {
                 text = MethodChecker.fromHtml(String.format(getString(R.string.payment_value), logisticDriverModel.payment.method, logisticDriverModel.payment.amountFormatted))
-                setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
+                setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950))
             }
         }
     }
@@ -211,27 +211,27 @@ class DriverTippingBottomSheet : BottomSheetUnify(), HasComponent<TrackingPageCo
         }
         binding.etNominalTip.run {
             setMessage(
-                        getString(
-                            R.string.nominal_tip_message,
-                            CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(logisticDriverModel.prepayment.minAmount),
-                            CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(logisticDriverModel.prepayment.maxAmount)
-                        )
-                    )
+                getString(
+                    R.string.nominal_tip_message,
+                    CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(logisticDriverModel.prepayment.minAmount),
+                    CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(logisticDriverModel.prepayment.maxAmount)
+                )
+            )
             editText.addTextChangedListener(
-                        setWrapperWatcherTipping(
-                            binding.etNominalTip.textInputLayout,
-                            logisticDriverModel.prepayment.minAmount,
-                            logisticDriverModel.prepayment.maxAmount
-                        )
-                    )
+                setWrapperWatcherTipping(
+                    binding.etNominalTip.textInputLayout,
+                    logisticDriverModel.prepayment.minAmount,
+                    logisticDriverModel.prepayment.maxAmount
+                )
+            )
             counterView?.visibility = View.GONE
         }
 
         binding.btnTipping.setOnClickListener {
             val paymentApplink = logisticDriverModel.prepayment.paymentLink.replace(
-                        "{{amount}}",
-                        binding.etNominalTip.editText.text.toString()
-                    )
+                "{{amount}}",
+                binding.etNominalTip.editText.text.toString()
+            )
 
             RouteManager.route(
                 context,
@@ -260,7 +260,7 @@ class DriverTippingBottomSheet : BottomSheetUnify(), HasComponent<TrackingPageCo
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 val text = binding.etNominalTip.editText.text.toString()
-                if (s.isNotEmpty() && text.toIntSafely() < minAmount) {
+                if (text.toIntSafely() < minAmount) {
                     setWrapperError(
                         wrapper,
                         getString(

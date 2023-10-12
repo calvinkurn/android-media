@@ -45,7 +45,7 @@ import com.tokopedia.unifyprinciples.getTypeface
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import java.lang.ref.WeakReference
-import com.tokopedia.feedcomponent.R as feedComponentR
+import com.tokopedia.content.common.R as commonR
 import com.tokopedia.unifyprinciples.R as unifyR
 
 class ContentDetailPostTypeViewHolder @JvmOverloads constructor(
@@ -83,7 +83,7 @@ class ContentDetailPostTypeViewHolder @JvmOverloads constructor(
     private val seeAllCommentText: Typography = findViewById(R.id.see_all_comment_text)
     private val userImage: ImageUnify = findViewById(R.id.user_image)
     private val addCommentHint: Typography = findViewById(R.id.comment_hint)
-    private val scrollHostCarousel: NestedScrollableHost = findViewById(R.id.scroll_host_carousel)
+    private val scrollHostCarousel: FeedNestedScrollableHost = findViewById(R.id.scroll_host_carousel)
     private var listener: ContentDetailPostViewHolder.CDPListener? = null
     private val topAdsCard = findViewById<ConstraintLayout>(R.id.top_ads_detail_card)
     private val topAdsProductName = findViewById<Typography>(R.id.top_ads_product_name)
@@ -347,7 +347,7 @@ class ContentDetailPostTypeViewHolder @JvmOverloads constructor(
         val avatarDate = TimeConverter.generateTimeNew(context, publishedAt)
         val spannableString = SpannableString(
             String.format(
-                context.getString(feedComponentR.string.feed_header_time_new),
+                context.getString(commonR.string.feed_header_time_new),
                 avatarDate
             )
         )
@@ -371,23 +371,23 @@ class ContentDetailPostTypeViewHolder @JvmOverloads constructor(
         //region bind content sub info
         val contentSubInfoValue = if (feedXCard.isTypeProductHighlight) {
             when (feedXCard.type) {
-                ASGC_NEW_PRODUCTS -> context.getString(feedComponentR.string.feeds_asgc_new_product_text)
+                ASGC_NEW_PRODUCTS -> context.getString(commonR.string.feeds_asgc_new_product_text)
                 ASGC_RESTOCK_PRODUCTS -> context.getString(
-                    feedComponentR.string.feeds_asgc_restock_text
+                    commonR.string.feeds_asgc_restock_text
                 )
-                ASGC_DISCOUNT_TOKO -> context.getString(feedComponentR.string.feed_asgc_diskon_toko)
-                ASGC_FLASH_SALE_TOKO -> context.getString(feedComponentR.string.feed_asgc_flash_sale_toko)
-                ASGC_RILISAN_SPECIAL -> context.getString(feedComponentR.string.feed_asgc_rilisan_special)
+                ASGC_DISCOUNT_TOKO -> context.getString(commonR.string.feed_asgc_diskon_toko)
+                ASGC_FLASH_SALE_TOKO -> context.getString(commonR.string.feed_asgc_flash_sale_toko)
+                ASGC_RILISAN_SPECIAL -> context.getString(commonR.string.feed_asgc_rilisan_special)
                 else -> String.EMPTY
             }
         } else {
             if (count >= FOLLOW_COUNT_THRESHOLD) {
                 String.format(
-                    context.getString(feedComponentR.string.feed_header_follow_count_text),
+                    context.getString(commonR.string.feed_header_follow_count_text),
                     count.productThousandFormatted()
                 )
             } else {
-                context.getString(feedComponentR.string.feed_header_follow_count_less_text)
+                context.getString(commonR.string.feed_header_follow_count_less_text)
             }
         }
         bindContentSubInfo(
@@ -412,13 +412,13 @@ class ContentDetailPostTypeViewHolder @JvmOverloads constructor(
             this.authorFollowAction.hide()
         } else {
             val textFollowAction = if (followers.isFollowed) {
-                context.getString(feedComponentR.string.kol_action_following_color)
+                context.getString(commonR.string.kol_action_following_color)
             } else {
-                context.getString(feedComponentR.string.kol_action_follow_color)
+                context.getString(commonR.string.kol_action_follow_color)
             }
 
             this.authorFollowAction.text = MethodChecker.fromHtml(
-                "${context.getString(feedComponentR.string.feed_header_separator)}$textFollowAction"
+                "${context.getString(commonR.string.feed_header_separator)}$textFollowAction"
 
             )
             this.authorFollowAction.setOnClickListener {
@@ -505,11 +505,11 @@ class ContentDetailPostTypeViewHolder @JvmOverloads constructor(
         val view = feedXCard.views
         if (feedXCard.like.isLiked) {
             val colorGreen =
-                MethodChecker.getColor(context, unifyR.color.Unify_G500)
+                MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
             likeButton.setImage(IconUnify.THUMB_FILLED, colorGreen, colorGreen)
         } else {
             val colorGrey =
-                MethodChecker.getColor(context, unifyR.color.Unify_N700_96)
+                MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96)
             likeButton.setImage(IconUnify.THUMB, colorGrey, colorGrey)
         }
         if (view.count != 0) {
@@ -518,7 +518,7 @@ class ContentDetailPostTypeViewHolder @JvmOverloads constructor(
             likedText.text =
                 MethodChecker.fromHtml(
                     context.getString(
-                        feedComponentR.string.feed_component_viewed_count_text,
+                        commonR.string.feed_component_viewed_count_text,
                         view.count.productThousandFormatted(1)
                     )
                 )
@@ -539,11 +539,11 @@ class ContentDetailPostTypeViewHolder @JvmOverloads constructor(
 
         if (like.isLiked) {
             val colorGreen =
-                MethodChecker.getColor(context, unifyR.color.Unify_G500)
+                MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
             likeButton.setImage(IconUnify.THUMB_FILLED, colorGreen, colorGreen)
         } else {
             val colorGrey =
-                MethodChecker.getColor(context, unifyR.color.Unify_N700_96)
+                MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96)
             likeButton.setImage(IconUnify.THUMB, colorGrey, colorGrey)
         }
         if (like.likedBy.isNotEmpty() || like.count != 0) {
@@ -552,12 +552,12 @@ class ContentDetailPostTypeViewHolder @JvmOverloads constructor(
                 if (like.isLiked) {
                     if (like.count == 1) {
                         likedText.text =
-                            context.getString(feedComponentR.string.feed_component_liked_count_text_only_me)
+                            context.getString(commonR.string.feed_component_liked_count_text_only_me)
                     } else {
                         likedText.text =
                             MethodChecker.fromHtml(
                                 context.getString(
-                                    feedComponentR.string.feed_component_liked_by_text_me,
+                                    commonR.string.feed_component_liked_by_text_me,
                                     (like.count - 1).productThousandFormatted(1)
                                 )
                             )
@@ -566,7 +566,7 @@ class ContentDetailPostTypeViewHolder @JvmOverloads constructor(
                     likedText.text =
                         MethodChecker.fromHtml(
                             context.getString(
-                                feedComponentR.string.feed_component_liked_count_text,
+                                commonR.string.feed_component_liked_count_text,
                                 like.count.productThousandFormatted(1)
                             )
                         )
@@ -574,7 +574,7 @@ class ContentDetailPostTypeViewHolder @JvmOverloads constructor(
             } else {
                 likedText.text = MethodChecker.fromHtml(
                     context.getString(
-                        feedComponentR.string.feed_component_liked_by_text,
+                        commonR.string.feed_component_liked_by_text,
                         getLikedByText(like.likedBy),
                         like.count.productThousandFormatted(1)
                     )
@@ -619,7 +619,7 @@ class ContentDetailPostTypeViewHolder @JvmOverloads constructor(
             likeButton2.hide()
         }
         userImage.setImageUrl(profilePicture)
-        addCommentHint.hint = context.getString(feedComponentR.string.feed_component_add_comment, name)
+        addCommentHint.hint = context.getString(commonR.string.feed_component_add_comment, name)
 
         commentButton.setOnClickListener {
             listener?.onCommentClicked(mData, positionInCdp)
@@ -868,7 +868,7 @@ class ContentDetailPostTypeViewHolder @JvmOverloads constructor(
     fun setCommentCount(comments: FeedXComments) {
         seeAllCommentText.showWithCondition(comments.count != 0)
         seeAllCommentText.text =
-            context.getString(feedComponentR.string.feed_component_see_all_comments, comments.countFmt)
+            context.getString(commonR.string.feed_component_see_all_comments, comments.countFmt)
     }
     private fun ifProductAlreadyPresent(
         product: FeedXProduct,
@@ -900,7 +900,7 @@ class ContentDetailPostTypeViewHolder @JvmOverloads constructor(
                 name = card.author.name,
                 colorRes = MethodChecker.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N600
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN800
                 ),
                 typeface = getTypeface(
                     context,
@@ -917,7 +917,7 @@ class ContentDetailPostTypeViewHolder @JvmOverloads constructor(
             val tagCaption = FeedCaption.Tag(
                 colorRes = MethodChecker.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_G400
+                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
                 ),
                 clickListener = {
                     onHashtagClicked(it, card)
@@ -930,10 +930,10 @@ class ContentDetailPostTypeViewHolder @JvmOverloads constructor(
 
             val readMoreCaption = FeedCaption.ReadMore(
                 maxTrimChar = MAX_CHAR,
-                label = context.getString(com.tokopedia.feedcomponent.R.string.feed_component_read_more_button),
+                label = context.getString(commonR.string.feed_component_read_more_button),
                 colorRes = MethodChecker.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N400
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN600
                 ),
                 clickListener = {
                     captionText.setText(captionBody, TextView.BufferType.SPANNABLE)
@@ -1007,7 +1007,7 @@ class ContentDetailPostTypeViewHolder @JvmOverloads constructor(
             primaryColor = Color.parseColor(color),
             secondaryColor = MethodChecker.getColor(
                 context,
-                unifyR.color.Unify_N0
+                com.tokopedia.unifyprinciples.R.color.Unify_NN0
             )
         )
     }
@@ -1018,7 +1018,7 @@ class ContentDetailPostTypeViewHolder @JvmOverloads constructor(
                 colorArray = it,
                 secondaryColor = MethodChecker.getColor(
                     context,
-                    unifyR.color.Unify_N0
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN0
                 )
             )
         }
@@ -1057,7 +1057,7 @@ class ContentDetailPostTypeViewHolder @JvmOverloads constructor(
         if (card.isTypeProductHighlight) {
             card.cta.text
         } else {
-            context.getString(feedComponentR.string.feeds_cek_sekarang)
+            context.getString(commonR.string.feeds_cek_sekarang)
         }
 
     private fun getCTAButtonSubtitle(card: FeedXCard) = card.cta.subtitle
@@ -1077,11 +1077,11 @@ class ContentDetailPostTypeViewHolder @JvmOverloads constructor(
         changeCTABtnColor(
             primaryColor = MethodChecker.getColor(
                 context,
-                feedComponentR.color.feed_dms_asgc_discount_toko_btn_bg_color
+                com.tokopedia.feedcomponent.R.color.feed_dms_asgc_discount_toko_btn_bg_color
             ),
             secondaryColor = MethodChecker.getColor(
                 context,
-                unifyR.color.Unify_N0
+                com.tokopedia.unifyprinciples.R.color.Unify_NN0
             )
         )
     }
@@ -1090,11 +1090,11 @@ class ContentDetailPostTypeViewHolder @JvmOverloads constructor(
         changeCTABtnColor(
             primaryColor = MethodChecker.getColor(
                 context,
-                unifyR.color.Unify_G500
+                com.tokopedia.unifyprinciples.R.color.Unify_GN500
             ),
             secondaryColor = MethodChecker.getColor(
                 context,
-                unifyR.color.Unify_N0
+                com.tokopedia.unifyprinciples.R.color.Unify_NN0
             )
         )
     }

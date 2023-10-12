@@ -3,13 +3,12 @@ package com.tokopedia.home_component.customview.header
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.Color
-import android.graphics.drawable.GradientDrawable
 import android.view.View
 import android.view.ViewStub
 import android.view.animation.Animation
 import android.view.animation.LinearInterpolator
 import android.view.animation.RotateAnimation
-import android.widget.LinearLayout
+import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
@@ -22,6 +21,7 @@ import com.tokopedia.home_component.util.getLink
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifyprinciples.Typography
 
 class HeaderRevampLayoutStrategy : HeaderLayoutStrategy {
@@ -32,6 +32,10 @@ class HeaderRevampLayoutStrategy : HeaderLayoutStrategy {
         private const val ROTATE_FROM_DEGREES = 0f
         private const val ROTATE_DURATION = 500L
     }
+
+    var ctaButtonRevamp: IconUnify? = null
+    var ctaBorder: ImageView? = null
+    var ctaButtonRevampContainer: ConstraintLayout? = null
 
     private val rotateAnimation by lazy {
         RotateAnimation(ROTATE_FROM_DEGREES, ROTATE_TO_DEGREES, Animation.RELATIVE_TO_SELF, PIVOT_X_VALUE, Animation.RELATIVE_TO_SELF, PIVOT_Y_VALUE)
@@ -56,24 +60,24 @@ class HeaderRevampLayoutStrategy : HeaderLayoutStrategy {
         ctaMode: Int?,
         colorMode: Int?
     ) {
-        var ctaButtonRevamp: IconUnify? = null
-        var ctaButtonRevampContainer: LinearLayout? = null
         if (hasSeeMoreApplink || ctaMode != DynamicChannelHeaderView.CTA_MODE_SEE_ALL) {
             if (stubCtaButton is ViewStub &&
                 !isViewStubHasBeenInflated(stubCtaButton)
             ) {
                 stubCtaButton.inflate()?.apply {
                     ctaButtonRevamp = findViewById(R.id.cta_button_revamp)
-                    ctaButtonRevampContainer = findViewById(R.id.cta_border_revamp)
+                    ctaButtonRevampContainer = findViewById(R.id.cta_container)
+                    ctaBorder = findViewById(R.id.cta_border_revamp)
                 }
             } else {
                 ctaButtonRevamp = itemView.findViewById(R.id.cta_button_revamp)
-                ctaButtonRevampContainer = itemView.findViewById(R.id.cta_border_revamp)
+                ctaButtonRevampContainer = itemView.findViewById(R.id.cta_container)
+                ctaBorder = itemView.findViewById(R.id.cta_border_revamp)
             }
 
             setCtaIcon(
                 itemView.context,
-                ctaButtonRevampContainer,
+                ctaBorder,
                 ctaButtonRevamp,
                 ctaMode,
                 colorMode
@@ -103,7 +107,7 @@ class HeaderRevampLayoutStrategy : HeaderLayoutStrategy {
 
     private fun setCtaIcon(
         context: Context,
-        ctaButtonRevampContainer: LinearLayout?,
+        ctaBorder: ImageView?,
         ctaButtonRevamp: IconUnify?,
         ctaMode: Int?,
         colorMode: Int?
@@ -116,7 +120,7 @@ class HeaderRevampLayoutStrategy : HeaderLayoutStrategy {
         }
         when (colorMode) {
             DynamicChannelHeaderView.COLOR_MODE_NORMAL -> {
-                (ctaButtonRevampContainer?.background as? GradientDrawable)?.setColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN200))
+                ctaBorder?.loadImage(ContextCompat.getDrawable(context, R.drawable.bg_dynamic_channel_header_cta))
                 ctaButtonRevamp?.setImage(
                     newIconId = iconId,
                     newLightEnable = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN900),
@@ -124,11 +128,11 @@ class HeaderRevampLayoutStrategy : HeaderLayoutStrategy {
                 )
             }
             DynamicChannelHeaderView.COLOR_MODE_INVERTED -> {
-                (ctaButtonRevampContainer?.background as? GradientDrawable)?.setColor(ContextCompat.getColor(context, com.tokopedia.home_component.R.color.home_dms_header_see_all_border_inverted))
+                ctaBorder?.loadImage(ContextCompat.getDrawable(context, R.drawable.bg_dynamic_channel_header_cta_inverted))
                 ctaButtonRevamp?.setImage(
                     newIconId = iconId,
-                    newLightEnable = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White),
-                    newDarkEnable = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
+                    newLightEnable = ContextCompat.getColor(context, com.tokopedia.home_component.R.color.dms_header_cta_inverted_icon),
+                    newDarkEnable = ContextCompat.getColor(context, com.tokopedia.home_component.R.color.dms_header_cta_inverted_icon)
                 )
             }
         }

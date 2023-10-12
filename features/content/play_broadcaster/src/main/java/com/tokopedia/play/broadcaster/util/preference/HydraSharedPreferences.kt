@@ -48,21 +48,6 @@ class HydraSharedPreferences @Inject constructor(
                 ).apply()
     }
 
-    fun isFirstSwitchAccount(): Boolean {
-        return mSharedPrefs.getBoolean(
-            String.format(KEY_FIRST_SWITCH_ACCOUNT, userSession.userId),
-            true
-        )
-    }
-
-    fun setNotFirstSwitchAccount() {
-        mSharedPrefs.edit()
-            .putBoolean(
-                String.format(KEY_FIRST_SWITCH_ACCOUNT, userSession.userId),
-                false
-            ).apply()
-    }
-
     fun isShowSetupCoverCoachMark(): Boolean {
         return mSharedPrefs.getBoolean(
             String.format(KEY_SETUP_COVER_COACH_MARK, userSession.userId),
@@ -168,6 +153,36 @@ class HydraSharedPreferences @Inject constructor(
         )
     }
 
+    fun setLiveToVodBottomSheetPref(page: String, authorId: String) {
+        mSharedPrefs.edit()
+            .putBoolean(
+                String.format(KEY_LIVE_TO_VOD_BOTTOM_SHEET, page, authorId),
+                false,
+            ).apply()
+    }
+
+    fun getLiveToVodBottomSheetPref(page: String, authorId: String): Boolean {
+        return mSharedPrefs.getBoolean(
+            String.format(KEY_LIVE_TO_VOD_BOTTOM_SHEET, page, authorId),
+            true,
+        )
+    }
+
+    fun setLiveToVodTickerPref(page: String, authorId: String) {
+        mSharedPrefs.edit()
+            .putBoolean(
+                String.format(KEY_LIVE_TO_VOD_TICKER, page, authorId),
+                false,
+            ).apply()
+    }
+
+    fun getLiveToVodTickerPref(page: String, authorId: String): Boolean {
+        return mSharedPrefs.getBoolean(
+            String.format(KEY_LIVE_TO_VOD_TICKER, page, authorId),
+            true,
+        )
+    }
+
     companion object {
 
         private const val HYDRA_PREFERENCE_NAME = "hydra_preference"
@@ -177,10 +192,11 @@ class HydraSharedPreferences @Inject constructor(
         private const val KEY_PERMISSION = "permission_%s"
         private const val KEY_FIRST_SELECT_QUIZ_OPTION = "first_select_quiz_option_%s"
         private const val KEY_FIRST_GAME_RESULT = "first_game_result_%s"
-        private const val KEY_FIRST_SWITCH_ACCOUNT = "first_switch_account_%s"
         private const val KEY_SETUP_COVER_COACH_MARK = "setup_cover_coach_mark_%s"
         private const val KEY_LAST_SELECTED_ACCOUNT = "last_selected_account_%s"
         private const val KEY_SAVED_SELECTED_AUTO_GENERATED_COVER = "saved_selected_auto_generated_cover_%s_%s"
         private const val KEY_UPLOADED_COVER_SOURCE = "saved_cover_source_%s_%s"
+        private const val KEY_LIVE_TO_VOD_BOTTOM_SHEET = "live_to_vod_bottom_sheet_%s_%s"
+        private const val KEY_LIVE_TO_VOD_TICKER = "live_to_vod_ticker_%s_%s"
     }
 }

@@ -3,12 +3,13 @@ package com.tokopedia.home_component.visitable
 import android.os.Bundle
 import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.kotlin.model.ImpressHolder
 
 data class DynamicLegoBannerDataModel(
     val channelModel: ChannelModel,
     val isCache: Boolean = false,
     val cardInteraction: Boolean = false
-) : HomeComponentVisitable {
+) : HomeComponentVisitable, ImpressHolder() {
     override fun visitableId(): String? {
         return channelModel.id
     }

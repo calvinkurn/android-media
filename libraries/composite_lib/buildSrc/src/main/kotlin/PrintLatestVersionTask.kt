@@ -32,6 +32,9 @@ open class PrintLatestVersionTask : DefaultTask() {
         }
         outputVersionFile.createNewFile()
 
+        println("module latest version Map")
+        println(moduleLatestVersionMap)
+
         // to sustain the old version in file, we loop from the original and only update for the success module
         for ((key, value) in moduleLatestVersionMap) {
             // because the successModuleList is "projectName", we need to map from id to name

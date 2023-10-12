@@ -1,22 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.play_common.view.RoundedConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.play_common.view.RoundedConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cl_interactive_init"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_play_interactive"
     app:rcl_cornerRadius="@dimen/play_interactive_create_radius"
-    >
+    tools:background="@drawable/bg_play_interactive">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_interactive"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_play_interactive_gift"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        />
+        tools:src="@drawable/ic_play_interactive_gift" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="wrap_content"
@@ -30,7 +28,6 @@
         app:layout_constraintStart_toEndOf="@id/iv_interactive"
         app:layout_constraintTop_toTopOf="@id/iv_interactive"
         app:typographyType="body_3"
-        app:typographyWeight="bold"
-        />
+        app:typographyWeight="bold" />
 
 </com.tokopedia.play_common.view.RoundedConstraintLayout>

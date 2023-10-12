@@ -24,7 +24,5 @@ class CoachMarkProductPref(context: Context, pref_name: String) {
 
     companion object {
         const val PRODUCT_AR_PAGE_COACHMARK = "coach_mark_ar_page"
-        const val PRODUCT_DETAIL_AR_PAGE_COACHMARK = "coach_mark_pdp_ar_page"
-
     }
 }

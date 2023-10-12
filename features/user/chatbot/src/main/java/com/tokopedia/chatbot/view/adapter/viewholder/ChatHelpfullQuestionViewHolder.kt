@@ -87,6 +87,6 @@ class ChatHelpfullQuestionViewHolder(
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.chatbot_helpfull_question_layout
+        val LAYOUT = R.layout.item_chatbot_helpful_question
     }
 }

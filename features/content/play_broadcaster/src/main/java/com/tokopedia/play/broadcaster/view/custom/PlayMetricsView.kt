@@ -1,22 +1,25 @@
 package com.tokopedia.play.broadcaster.view.custom
 
 import android.content.Context
-import android.os.Build
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import androidx.annotation.RequiresApi
 import androidx.transition.Fade
 import androidx.transition.Slide
 import androidx.transition.TransitionManager
 import androidx.transition.TransitionSet
 import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.consumeAsFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * Created by jegul on 10/06/20
@@ -25,10 +28,18 @@ class PlayMetricsView : LinearLayout {
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    )
 
-    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
+    constructor(
+        context: Context,
+        attrs: AttributeSet?,
+        defStyleAttr: Int,
+        defStyleRes: Int
+    ) : super(context, attrs, defStyleAttr, defStyleRes)
 
     private val job = SupervisorJob()
     private val scope = CoroutineScope(Dispatchers.Main + job)
@@ -62,10 +73,14 @@ class PlayMetricsView : LinearLayout {
         nextView.setMetric(metric)
 
         val transition = TransitionSet()
-                .addTransition(Slide(Gravity.BOTTOM)
-                        .addTarget(nextView))
-                .addTransition(Fade(Fade.IN)
-                        .addTarget(nextView))
+            .addTransition(
+                Slide(Gravity.BOTTOM)
+                    .addTarget(nextView)
+            )
+            .addTransition(
+                Fade(Fade.IN)
+                    .addTarget(nextView)
+            )
 
         TransitionManager.beginDelayedTransition(this, transition)
         addView(nextView)
@@ -75,10 +90,14 @@ class PlayMetricsView : LinearLayout {
 
     private fun removeMetric(view: View) {
         val transition = TransitionSet()
-                .addTransition(Slide(Gravity.TOP)
-                        .addTarget(view))
-                .addTransition(Fade(Fade.OUT)
-                        .addTarget(view))
+            .addTransition(
+                Slide(Gravity.TOP)
+                    .addTarget(view)
+            )
+            .addTransition(
+                Fade(Fade.OUT)
+                    .addTarget(view)
+            )
 
         TransitionManager.beginDelayedTransition(this, transition)
         removeView(view)
@@ -93,7 +112,10 @@ class PlayMetricsView : LinearLayout {
 
     private fun getMetricBubbleInstance(): PlayMetricBubble {
         return PlayMetricBubble(context).apply {
-            layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            layoutParams = LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
         }
     }
 
@@ -106,9 +128,10 @@ class PlayMetricsView : LinearLayout {
         }
     }
 
-    private suspend fun onRetrievedNewMetric(newMetric: PlayMetricUiModel) = withContext(Dispatchers.Main) {
-        show(newMetric)
-    }
+    private suspend fun onRetrievedNewMetric(newMetric: PlayMetricUiModel) =
+        withContext(Dispatchers.Main) {
+            show(newMetric)
+        }
 
     private suspend fun removeCurrentMetric() = withContext(Dispatchers.Main) {
         removeMetric(metricBubbleList[currentIndex])

@@ -1,5 +1,5 @@
 ---
-title: Logistic Seller: Return To Shipper
+title: "Logistic Seller: Return To Shipper"
 labels:
 - return-to-shipper
 - logistic
@@ -7,18 +7,16 @@ labels:
 ---
 
 <!--left header table-->
-| **Status** |  <!--start status:GREEN-->RELEASE<!--end status-->  |
-| --- | --- |
-| **Project Contributor** | [Fakhira Devina](https://tokopedia.atlassian.net/wiki/people/61077e53b704b40068e80a8e?ref=confluence) [Eka Desyantoro](https://tokopedia.atlassian.net/wiki/people/6283196bd9ddcc006e9c7a85?ref=confluence)  |
-| Product Manager | [Aulia Rasyid](https://tokopedia.atlassian.net/wiki/people/613e9e61e7c328007069f2b6?ref=confluence)  |
-| Team |  [Minion Bob](https://tokopedia.atlassian.net/people/team/2373d8a6-1afc-4f2a-aa7a-63855c273051)  |
-| Release date |  24 Feb 2023 / <!--start status:GREY-->MA-3.209<!--end status--> <!--start status:GREY-->SA-2.139<!--end status-->  |
-| Module type | <!--start status:YELLOW-->FEATURE<!--end status--> |
-| Product PRD | [PRD: Returned to Shipper Flow Automation](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/2006223361/PRD%3A+Returned+to+Shipper+Flow+Automation)  |
-| Module Location | `features/logistic/logisticseller` |
-| Figma | [Figma](https://www.figma.com/file/1m6rwoPxdL5C3iSn2vDlZi/BOM-%26-SOM---Returned-to-Shipper-Flow-Automation?node-id=2%3A2&t=tgUYlDoXmLiT1nkQ-0) |
-
-## Table of Contents
+| **Status**              | <!--start status:GREEN-->RELEASE<!--end status-->                                                                                                                                                           |
+|-------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Project Contributor** | [Fakhira Devina](https://tokopedia.atlassian.net/wiki/people/61077e53b704b40068e80a8e?ref=confluence) [Eka Desyantoro](https://tokopedia.atlassian.net/wiki/people/6283196bd9ddcc006e9c7a85?ref=confluence) |
+| Product Manager         | [Aulia Rasyid](https://tokopedia.atlassian.net/wiki/people/613e9e61e7c328007069f2b6?ref=confluence)                                                                                                         |
+| Team                    | [Minion Bob](https://tokopedia.atlassian.net/people/team/2373d8a6-1afc-4f2a-aa7a-63855c273051)                                                                                                              |
+| Release date            | 24 Feb 2023 / <!--start status:GREY-->MA-3.209<!--end status--> <!--start status:GREY-->SA-2.139<!--end status-->                                                                                           |
+| Module type             | <!--start status:YELLOW-->FEATURE<!--end status-->                                                                                                                                                          |
+| Product PRD             | [PRD: Returned to Shipper Flow Automation](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/2006223361/PRD%3A+Returned+to+Shipper+Flow+Automation)                                                      |
+| Module Location         | `features/logistic/logisticseller`                                                                                                                                                                          |
+| Figma                   | [Figma](https://www.figma.com/file/1m6rwoPxdL5C3iSn2vDlZi/BOM-%26-SOM---Returned-to-Shipper-Flow-Automation?node-id=2%3A2&t=tgUYlDoXmLiT1nkQ-0)                                                             |
 
 <!--toc-->
 

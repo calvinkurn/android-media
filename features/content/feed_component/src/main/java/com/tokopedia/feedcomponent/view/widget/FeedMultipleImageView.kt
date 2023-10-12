@@ -1,14 +1,16 @@
 package com.tokopedia.feedcomponent.view.widget
 
+import android.annotation.SuppressLint
 import android.content.Context
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.feedcomponent.R
+import com.tokopedia.content.common.R as contentCommonR
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.MediaItem
 import com.tokopedia.feedcomponent.data.pojo.track.Tracking
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingModel
@@ -34,7 +36,7 @@ class FeedMultipleImageView @JvmOverloads constructor(
     private val itemDecoration: RecyclerView.ItemDecoration
 
     init {
-        itemDecoration = ItemOffsetDecoration(context.resources.getDimensionPixelSize(com.tokopedia.feedcomponent.R.dimen.feed_component_dp_4))
+        itemDecoration = ItemOffsetDecoration(context.resources.getDimensionPixelSize(contentCommonR.dimen.content_common_dp_4))
         init()
     }
 
@@ -88,6 +90,7 @@ class FeedMultipleImageView @JvmOverloads constructor(
             setHasStableIds(true)
         }
 
+        @SuppressLint("NotifyDataSetChanged")
         fun updateItem(itemList: List<MediaItem>, feedType: String) {
             this.itemList.clear()
             this.itemList.addAll(itemList)
@@ -131,7 +134,7 @@ class FeedMultipleImageView @JvmOverloads constructor(
 
             fun bind(item: MediaItem, feedType: String) {
                 with(itemView) {
-                    val btnDeleteMargin = context.resources.getDimensionPixelSize(if (itemCount == 1) R.dimen.dp_16 else R.dimen.dp_8)
+                    val btnDeleteMargin = context.resources.getDimensionPixelSize(if (itemCount == 1) com.tokopedia.design.R.dimen.dp_16 else com.tokopedia.design.R.dimen.dp_8)
                     val layoutParams = delete.layoutParams as LayoutParams
                     layoutParams.setMargins(btnDeleteMargin, btnDeleteMargin, btnDeleteMargin, btnDeleteMargin)
                     delete.layoutParams = layoutParams
@@ -141,7 +144,7 @@ class FeedMultipleImageView @JvmOverloads constructor(
                     delete.visibility = if (item.isSelected) View.GONE else View.VISIBLE
                     if (item.videos.isNotEmpty()) {
                         ic_play_vid.shouldShowWithAction(item.type == TYPE_VIDEO) {
-                            val modLength = context.resources.getDimensionPixelSize(if (itemCount == 1) R.dimen.dp_72 else R.dimen.dp_36)
+                            val modLength = context.resources.getDimensionPixelSize(if (itemCount == 1) com.tokopedia.design.R.dimen.dp_72 else com.tokopedia.design.R.dimen.dp_36)
                             ic_play_vid.layoutParams.width = modLength
                             ic_play_vid.layoutParams.height = modLength
                         }
@@ -168,6 +171,7 @@ class FeedMultipleImageView @JvmOverloads constructor(
             }
         }
 
+        @SuppressLint("NotifyDataSetChanged")
         private fun removeItem(media: MediaItem, position: Int) {
             itemList.removeAt(position)
             notifyDataSetChanged()

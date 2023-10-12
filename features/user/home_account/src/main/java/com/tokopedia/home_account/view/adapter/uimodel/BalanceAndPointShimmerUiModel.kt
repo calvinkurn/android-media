@@ -6,5 +6,6 @@ data class BalanceAndPointShimmerUiModel(
     var subtitle: String = "",
     var urlImage: String = "",
     var applink: String = "",
-    var isActive: Boolean = true
+    var isActive: Boolean = true,
+    var type: String = ""
 )

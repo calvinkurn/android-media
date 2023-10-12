@@ -43,7 +43,7 @@
             android:gravity="center"
             android:paddingBottom="20dp"
             android:text="@string/pilih_cara_beriklan_yang_sesuai_kebutuhanmu"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/title"

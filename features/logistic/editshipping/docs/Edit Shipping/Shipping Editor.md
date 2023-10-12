@@ -1,22 +1,25 @@
 ---
 title: Shipping Editor
-labels:
 ---
 
 <!--left header table-->
-| **Status** | <!--start status:GREEN-->RELEASED<!--end status-->                                                             |
-| --- |----------------------------------------------------------------------------------------------------------------|
+| **Status**              | <!--start status:GREEN-->RELEASED<!--end status-->                                                             |
+|-------------------------|----------------------------------------------------------------------------------------------------------------|
 | **Project Contributor** | [Fakhira Devina](https://tokopedia.atlassian.net/wiki/people/61077e53b704b40068e80a8e?ref=confluence)          |
-| Product Manager | [Aditya Rifaldi](https://tokopedia.atlassian.net/wiki/people/603c7cf8333ff40070ba5f3c?ref=confluence)          |
-| Team | [Minion Bob](https://tokopedia.atlassian.net/people/team/2373d8a6-1afc-4f2a-aa7a-63855c273051)                 |
-| Release date | -                                                                                                              |
-| Module type | <!--start status:YELLOW-->FEATURE<!--end status-->                                                             |
-| Product PRD | **Multi-Loc**<br />PRD: <https://docs.google.com/document/d/1aYZuy3NFTxXozIhIqdlMSljTknYrKmaHL9G3ozgt4L8/edit> |
-| Module Location | `features/logistic/editshipping`                                                                               |
+| Product Manager         | [Aditya Rifaldi](https://tokopedia.atlassian.net/wiki/people/603c7cf8333ff40070ba5f3c?ref=confluence)          |
+| Team                    | [Minion Bob](https://tokopedia.atlassian.net/people/team/2373d8a6-1afc-4f2a-aa7a-63855c273051)                 |
+| Release date            | -                                                                                                              |
+| Module type             | <!--start status:YELLOW-->FEATURE<!--end status-->                                                             |
+| Product PRD             | **Multi-Loc**<br />PRD: <https://docs.google.com/document/d/1aYZuy3NFTxXozIhIqdlMSljTknYrKmaHL9G3ozgt4L8/edit> |
+| Module Location         | `features/logistic/editshipping`                                                                               |
 
 <!--toc-->
 
 ## Release Notes
+
+<!--start expand:1 September 2023-->
+Remove Shop Single Location
+<!--end expand-->
 
 <!--start expand:20 Jan 2023 (MA-3.204/SA-2.134)-->
 [Whitelabel Instan](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2104460915/Whitelabel+Instan)
@@ -30,15 +33,13 @@ labels:
 
 ### Background
 
-Tokopedia facilitates seller to set up courier with a feature called `Shipping Editor`. There are 2 different pages for this `Shipping Editor`, the first one is for default seller (only have one warehouse), we called it **Single Location**, other for seller that have multiple warehouse or **Multi-Location**. Before, seller that have multiple warehouse, only can set up their courier through TokoCabang managed by Tokopedia’s partners. But now, all seller can manage their own courier in Tokopedia’s app.
-
-Shipping Editor on **Single-Loc** handle shop edit address and courier selection in one page. Meanwhile, Shipping Editor on **Multi-Loc** only handle courier selection, but having interconnection with shop edit address in another page.
+Tokopedia facilitates seller to set up courier with a feature called `Shipping Editor`.
 
 ![](../res/shippingeditor/loc_shipping_editor.png)
 
 ## Navigation
 
-- Both pages can be accessed with this app link `tokopedia-android-internal://marketplace/shop-settings-shipping`
+- Shipping editor page can be accessed with this app link `tokopedia-android-internal://marketplace/shop-settings-shipping`
 
 ![](../res/shippingeditor/navigation.png)
 
@@ -48,11 +49,6 @@ Shipping Editor on **Single-Loc** handle shop edit address and courier selection
 
 ## Tech Stack
 
-- Shipping Editor (Single - Loc)
-  - MVP
-  - Java - Kotlin
-  - Retrofit
-  - **Still using REST**
 - Shipping Editor (Multi-Loc)
   - MVVM
   - Kotlin
@@ -60,16 +56,6 @@ Shipping Editor on **Single-Loc** handle shop edit address and courier selection
   - Coroutines
 
 ### GQL & API List
-
-- Single Loc
-
-
-
-| **GQL & API Name** | **Documentation Link** | **Description** |
-| --- | --- | --- |
-| `keroMapsAutofill` | [GMaps Autofill District Geocode - /maps/geocode/get-district](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/694818899) | To get district detail from latlong |
-| `get_shipping_info.pl` | - | To get shipping editor info |
-| `shippingEditorMobilePopup` | [BO Deactivation Confirmation Popup](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/862292063/BO+Deactivation+Confirmation+Popup)  | To validate new shipper selection (deactivate Bebas Ongkir) |
 
 - Multi Loc
 

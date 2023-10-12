@@ -2,9 +2,7 @@ package com.tokopedia.play_common.view
 
 import android.content.Context
 import android.graphics.Canvas
-import android.os.Build
 import android.util.AttributeSet
-import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.play_common.R
 
@@ -19,13 +17,19 @@ open class RoundedConstraintLayout : ConstraintLayout {
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
         initAttrs(context, attrs)
     }
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    ) {
         initAttrs(context, attrs)
     }
 
     private fun initAttrs(context: Context, attrs: AttributeSet?) {
         if (attrs == null) return
-        val attributeArray = context.obtainStyledAttributes(attrs, R.styleable.RoundedConstraintLayout)
+        val attributeArray =
+            context.obtainStyledAttributes(attrs, R.styleable.RoundedConstraintLayout)
 
         val wholeRadius = attributeArray.getDimension(
             R.styleable.RoundedConstraintLayout_rcl_cornerRadius, 0f
@@ -76,7 +80,6 @@ open class RoundedConstraintLayout : ConstraintLayout {
         requestLayout()
     }
 
-    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     private fun setRoundedOutlineProvider() {
         outlineProvider = roundedHelper.getOutlineProvider()
         clipToOutline = true

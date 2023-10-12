@@ -32,9 +32,9 @@ class TitleLayoutView : BaseCustomView {
             refreshViews()
         }
 
-    private var titleLayoutViewTitle: Typography? = null
-    private var titleLayoutViewSubtitle: Typography? = null
-    private var titleLayoutViewActionText: Typography? = null
+    var titleLayoutViewTitle: Typography? = null
+    var titleLayoutViewSubtitle: Typography? = null
+    var titleLayoutViewActionText: Typography? = null
 
     constructor(context: Context) : super(context) {
         init(null)

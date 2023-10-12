@@ -7,7 +7,7 @@ import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.getDigits
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.tokopedianow.category.analytics.CategoryTracking
+import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_TOKONOW
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_VIEW_PG_IRIS
@@ -118,6 +118,7 @@ object SearchTracking {
         const val TOKONOW_NO_SEARCH_RESULT = "tokonow - no search result"
         const val TOKOOW_SEARCH_RESULT_PAGE = "tokonow search result page"
         const val TOKONOW_DASH_SEARCH_PAGE = "tokonow - search page"
+        const val TOKONOW_DASH_SEARCH_RESULT_PAGE = "tokonow - search result page"
     }
 
     object Misc {

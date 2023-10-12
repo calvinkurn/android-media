@@ -15,8 +15,10 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.otp.common.di.OtpComponentBuilder.getComponent
 import com.tokopedia.settingbank.R
 import com.tokopedia.settingbank.analytics.BankSettingAnalytics
+import com.tokopedia.settingbank.databinding.FragmentSettingBankNewBinding
 import com.tokopedia.settingbank.di.SettingBankComponent
 import com.tokopedia.settingbank.domain.model.BankAccount
 import com.tokopedia.settingbank.domain.model.KYCInfo
@@ -26,15 +28,15 @@ import com.tokopedia.settingbank.util.DeleteBankAccountException
 import com.tokopedia.settingbank.view.activity.SettingBankCallback
 import com.tokopedia.settingbank.view.adapter.BankAccountClickListener
 import com.tokopedia.settingbank.view.adapter.BankAccountListAdapter
+import com.tokopedia.settingbank.view.decoration.DividerItemDecoration
 import com.tokopedia.settingbank.view.viewModel.SettingBankViewModel
 import com.tokopedia.settingbank.view.widgets.AccountConfirmationBottomSheet
 import com.tokopedia.settingbank.view.widgets.BankTNCBottomSheet
-import com.tokopedia.settingbank.view.decoration.DividerItemDecoration
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_setting_bank_new.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
@@ -44,6 +46,8 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
 
     @Inject
     lateinit var bankSettingAnalytics: BankSettingAnalytics
+
+    private var binding by autoClearedNullable<FragmentSettingBankNewBinding>()
 
     private var settingBankCallback: SettingBankCallback? = null
 
@@ -68,30 +72,35 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
 
     private fun initViewModels() {
         settingBankViewModel = ViewModelProvider(this, viewModelFactory)
-                .get(SettingBankViewModel::class.java)
+            .get(SettingBankViewModel::class.java)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_setting_bank_new, container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentSettingBankNewBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        progress_bar.setOnClickListener { //not required
-        }
+        binding?.progressBar?.setOnClickListener { }
         setHasOptionsMenu(true)
         initBankAccountRecyclerView()
         startObservingViewModels()
         loadUserBankAccountList()
-        add_account_button.gone()
-        add_account_button.setOnClickListener {
-            when (bankAccountListAdapter.getBankAccountListSize()) {
-                Int.ZERO -> bankSettingAnalytics.eventOnAddBankClick()
-                else ->
-                    bankSettingAnalytics.eventOnAddAnotherBankClick()
+        binding?.addAccountButton?.run {
+            setOnClickListener {
+                when (bankAccountListAdapter.getBankAccountListSize()) {
+                    Int.ZERO -> bankSettingAnalytics.eventOnAddBankClick()
+                    else ->
+                        bankSettingAnalytics.eventOnAddAnotherBankClick()
+                }
+                openAddBankAccountPage()
             }
-            openAddBankAccountPage()
+            gone()
         }
     }
 
@@ -108,10 +117,12 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
     }
 
     private fun initBankAccountRecyclerView() {
-        account_list_rv.layoutManager = LinearLayoutManager(activity)
-        account_list_rv.addItemDecoration(DividerItemDecoration())
-        bankAccountListAdapter.bankAccountClickListener = this
-        account_list_rv.adapter = bankAccountListAdapter
+        binding?.accountListRv?.run {
+            layoutManager = LinearLayoutManager(activity)
+            addItemDecoration(DividerItemDecoration())
+            bankAccountListAdapter.bankAccountClickListener = this@SettingBankFragment
+            adapter = bankAccountListAdapter
+        }
     }
 
     private fun openAddBankAccountPage() {
@@ -128,46 +139,61 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
     }
 
     private fun startObservingViewModels() {
-        settingBankViewModel.bankAccountListLiveData.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    if (it.data.isEmpty()) {
-                        showNoBankAccountState()
-                    } else {
-                        populateBankList(it.data)
-                        addTNCNoteInAdapter()
+        settingBankViewModel.bankAccountListLiveData.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> {
+                        if (it.data.isEmpty()) {
+                            showNoBankAccountState()
+                        } else {
+                            populateBankList(it.data)
+                            addTNCNoteInAdapter()
+                        }
+                        configAddAccountButtonText(it.data)
                     }
-                    configAddAccountButtonText(it.data)
+                    is Fail -> {
+                        onBankAccountLoadingFailed(it.throwable)
+                    }
                 }
-                is Fail -> {
-                    onBankAccountLoadingFailed(it.throwable)
+                binding?.progressBar?.gone()
+            }
+        )
+
+        settingBankViewModel.addBankAccountStateLiveData.observe(
+            viewLifecycleOwner,
+            Observer {
+                updateAddBankAccountBtnState(it)
+            }
+        )
+
+        settingBankViewModel.termsAndConditionLiveData.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> openTNCBottomSheet(it.data)
+                    is Fail -> showError(it.throwable, null)
                 }
             }
-            progress_bar.gone()
-        })
+        )
 
-        settingBankViewModel.addBankAccountStateLiveData.observe(viewLifecycleOwner, Observer {
-            updateAddBankAccountBtnState(it)
-        })
-
-        settingBankViewModel.termsAndConditionLiveData.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> openTNCBottomSheet(it.data)
-                is Fail -> showError(it.throwable, null)
+        settingBankViewModel.deleteBankAccountLiveData.observe(
+            viewLifecycleOwner,
+            Observer {
+                handleDeleteBankAccountState(it)
             }
-        })
+        )
 
-        settingBankViewModel.deleteBankAccountLiveData.observe(viewLifecycleOwner, Observer {
-            handleDeleteBankAccountState(it)
-        })
-
-        settingBankViewModel.kycInfoLiveData.observe(viewLifecycleOwner, Observer {
-            progress_bar.gone()
-            when (it) {
-                is Success -> openCheckDataBottomSheet(it.data)
-                is Fail -> showError(it.throwable, null)
+        settingBankViewModel.kycInfoLiveData.observe(
+            viewLifecycleOwner,
+            Observer {
+                binding?.progressBar?.gone()
+                when (it) {
+                    is Success -> openCheckDataBottomSheet(it.data)
+                    is Fail -> showError(it.throwable, null)
+                }
             }
-        })
+        )
     }
 
     private fun onBankAccountLoadingFailed(throwable: Throwable) {
@@ -179,18 +205,20 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
     }
 
     private fun showGlobalError(errorType: Int, retryAction: () -> Unit) {
-        globalError.visible()
-        globalError.setType(errorType)
-        globalError.errorAction.visible()
-        globalError.errorAction.setOnClickListener {
-            showLoadingState(true)
-            retryAction.invoke()
-            globalError.gone()
+        binding?.globalError?.let {
+            it.visible()
+            it.setType(errorType)
+            it.errorAction.visible()
+            it.errorAction.setOnClickListener {
+                showLoadingState(true)
+                retryAction.invoke()
+                it.gone()
+            }
         }
     }
 
     private fun updateAddBankAccountBtnState(isEnable: Boolean) {
-        add_account_button.isEnabled = isEnable
+        binding?.addAccountButton?.isEnabled = isEnable
     }
 
     private fun openCheckDataBottomSheet(kycInfo: KYCInfo) {
@@ -214,12 +242,12 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
                 }
             }
         }
-        progress_bar.gone()
+        binding?.progressBar?.gone()
     }
 
     private fun showErrorToaster(message: String) {
         view?.let {
-            Toaster.toasterCustomBottomHeight = add_account_button.measuredHeight
+            Toaster.toasterCustomBottomHeight = binding?.addAccountButton?.measuredHeight ?: Int.ZERO
             Toaster.build(it, message, Toaster.TYPE_NORMAL).show()
         }
     }
@@ -233,16 +261,24 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
     private fun showError(throwable: Throwable, retry: (() -> Unit)?) {
         context?.let { context ->
             view?.let { view ->
-                Toaster.toasterCustomBottomHeight = add_account_button.measuredHeight
+                Toaster.toasterCustomBottomHeight = binding?.addAccountButton?.measuredHeight ?: Int.ZERO
                 retry?.let {
-                    Toaster.build(view, SettingBankErrorHandler.getErrorMessage(context, throwable),
-                            Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR,
-                            getString(R.string.sbank_promo_coba_lagi), View.OnClickListener { retry.invoke() }).show()
+                    Toaster.build(
+                        view,
+                        SettingBankErrorHandler.getErrorMessage(context, throwable),
+                        Toaster.LENGTH_SHORT,
+                        Toaster.TYPE_ERROR,
+                        getString(R.string.sbank_promo_coba_lagi),
+                        View.OnClickListener { retry.invoke() }
+                    ).show()
                 } ?: run {
-                    Toaster.build(view, SettingBankErrorHandler.getErrorMessage(context, throwable),
-                            Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+                    Toaster.build(
+                        view,
+                        SettingBankErrorHandler.getErrorMessage(context, throwable),
+                        Toaster.LENGTH_SHORT,
+                        Toaster.TYPE_ERROR
+                    ).show()
                 }
-
             }
         }
     }
@@ -250,7 +286,7 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
     fun showToasterOnUI(message: String?) {
         message?.let {
             view?.let {
-                Toaster.toasterCustomBottomHeight = add_account_button.measuredHeight
+                Toaster.toasterCustomBottomHeight = binding?.addAccountButton?.measuredHeight ?: Int.ZERO
                 Toaster.build(it, message, Toaster.LENGTH_SHORT).show()
             }
         }
@@ -258,58 +294,66 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
 
     private fun populateBankList(bankList: List<BankAccount>) {
         showBankAccountDisplayState()
-        account_list_rv.post {
+        binding?.accountListRv?.post {
             bankAccountListAdapter.updateItem(bankList as ArrayList<BankAccount>)
         }
     }
 
     private fun configAddAccountButtonText(bankList: List<BankAccount>) {
         if (bankList.isNotEmpty()) {
-            add_account_button.text = context?.getString(R.string.sbank_add_bank_account)
+            binding?.addAccountButton?.text = context?.getString(R.string.sbank_add_bank_account)
         } else {
-            add_account_button.text = context?.getString(R.string.sbank_no_bank_add_bank_account)
+            binding?.addAccountButton?.text = context?.getString(R.string.sbank_no_bank_add_bank_account)
         }
     }
 
     private fun addTNCNoteInAdapter() {
-        account_list_rv.post {
+        binding?.accountListRv?.post {
             bankAccountListAdapter.addBankTNCNote()
         }
     }
 
     private fun showLoadingState(show: Boolean) {
-        if (show) {
-            account_list_rv.gone()
-            add_account_button.gone()
+        binding?.run {
+            if (show) {
+                accountListRv.gone()
+                addAccountButton.gone()
 
-            iv_noBankAccountAdded.gone()
-            tv_no_save_account.gone()
-            tv_comeOn_AddBankAccount.gone()
+                ivNoBankAccountAdded.gone()
+                tvNoSaveAccount.gone()
+                tvComeOnAddBankAccount.gone()
 
-            progress_bar.visible()
-        } else progress_bar.gone()
+                progressBar.visible()
+            } else {
+                progressBar.gone()
+            }
+        }
     }
 
     private fun showBankAccountDisplayState() {
-        account_list_rv.visible()
-        add_account_button.visible()
+        binding?.run {
+            accountListRv.visible()
+            addAccountButton.visible()
 
-        iv_noBankAccountAdded.gone()
-        tv_no_save_account.gone()
-        tv_comeOn_AddBankAccount.gone()
+            ivNoBankAccountAdded.gone()
+            tvNoSaveAccount.gone()
+            tvComeOnAddBankAccount.gone()
 
-        progress_bar.gone()
+            progressBar.gone()
+        }
     }
 
     private fun showNoBankAccountState() {
-        account_list_rv.gone()
-        add_account_button.visible()
+        binding?.run {
+            accountListRv.gone()
+            addAccountButton.visible()
 
-        iv_noBankAccountAdded.visible()
-        tv_no_save_account.visible()
-        tv_comeOn_AddBankAccount.visible()
+            ivNoBankAccountAdded.visible()
+            tvNoSaveAccount.visible()
+            tvComeOnAddBankAccount.visible()
 
-        progress_bar.gone()
+            progressBar.gone()
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -346,10 +390,17 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
     private fun openDeleteConfirmationPopUp(bankAccount: BankAccount) {
         context?.let { context ->
             deleteBankAccount = bankAccount
-            val description = context.getString(R.string.sbank_delete_bank_confirm,
-                    bankAccount.bankName, bankAccount.accNumber, bankAccount.accName)
-            DialogUnify(context = context, actionType = DialogUnify.HORIZONTAL_ACTION,
-                    imageType = DialogUnify.NO_IMAGE).apply {
+            val description = context.getString(
+                R.string.sbank_delete_bank_confirm,
+                bankAccount.bankName,
+                bankAccount.accNumber,
+                bankAccount.accName
+            )
+            DialogUnify(
+                context = context,
+                actionType = DialogUnify.HORIZONTAL_ACTION,
+                imageType = DialogUnify.NO_IMAGE
+            ).apply {
                 setTitle(getString(R.string.sbank_delete_this_account))
                 setDescription(description)
                 setPrimaryCTAText(getString(R.string.sbank_delete_account))
@@ -369,15 +420,14 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
 
     private fun deleteBankAccount() {
         deleteBankAccount?.let {
-            progress_bar.visible()
+            binding?.progressBar?.visible()
             settingBankViewModel.deleteBankAccount(it)
         }
     }
 
     private fun getKYCInfoForUser(bankAccount: BankAccount) {
         confirmBankAccount = bankAccount
-        progress_bar.visible()
+        binding?.progressBar?.visible()
         settingBankViewModel.getKYCInfo()
     }
-
 }

@@ -15,7 +15,6 @@ import com.tokopedia.content.common.producttag.builder.ProductTagSourceBuilder
 import com.tokopedia.content.common.producttag.container.ContentProductTagTestActivity
 import com.tokopedia.content.common.producttag.domain.repository.ProductTagRepository
 import com.tokopedia.content.common.producttag.helper.*
-import com.tokopedia.content.common.producttag.helper.breadcrumb
 import com.tokopedia.content.common.producttag.view.uimodel.ContentProductTagArgument
 import com.tokopedia.content.common.producttag.view.uimodel.ProductTagSource
 import com.tokopedia.content.common.types.ContentCommonUserType
@@ -196,7 +195,7 @@ class ContentProductTagAnalyticTest {
 
         openTokopediaSection()
 
-        verify { mockAnalytic.clickProductTagSource(ProductTagSource.GlobalSearch) }
+        verify { mockAnalytic.clickProductTagSource(ProductTagSource.GlobalSearch, "123", "3") }
     }
 
     @Test
@@ -208,7 +207,7 @@ class ContentProductTagAnalyticTest {
 
         openLastPurchasedSection()
 
-        verify { mockAnalytic.clickProductTagSource(ProductTagSource.LastPurchase) }
+        verify { mockAnalytic.clickProductTagSource(ProductTagSource.LastPurchase, "123", "3") }
     }
 
     @Test
@@ -220,7 +219,7 @@ class ContentProductTagAnalyticTest {
 
         openMyShopSection()
 
-        verify { mockAnalytic.clickProductTagSource(ProductTagSource.MyShop) }
+        verify { mockAnalytic.clickProductTagSource(ProductTagSource.MyShop, "123", "2") }
     }
 
     /** impressProductCardTest */

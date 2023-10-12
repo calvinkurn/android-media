@@ -9,7 +9,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.catalog_library.model.datamodel.BaseCatalogLibraryDM
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant.SORT_TYPE_CATALOG
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant.TOTAL_ROWS_CATALOG
-import com.tokopedia.catalog_library.viewmodels.CatalogProductsBaseVM
+import com.tokopedia.catalog_library.viewmodel.CatalogProductsBaseViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
@@ -33,7 +33,7 @@ abstract class CatalogProductsBaseFragment : CatalogLibraryBaseFragment() {
     var modelFactory: ViewModelProvider.Factory? = null
     private val productsBaseVM by lazy {
         modelFactory?.let {
-            ViewModelProvider(this, it).get(CatalogProductsBaseVM::class.java)
+            ViewModelProvider(this, it).get(CatalogProductsBaseViewModel::class.java)
         }
     }
 

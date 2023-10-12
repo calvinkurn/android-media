@@ -11,13 +11,11 @@
         <activity
             android:name="com.tokopedia.topads.view.activity.SeePerformanceTopadsActivity"
             android:exported="false"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.TopAds.Transparent"
             android:windowSoftInputMode="adjustPan"
             >
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 

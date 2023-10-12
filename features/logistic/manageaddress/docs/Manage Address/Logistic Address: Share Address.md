@@ -1,5 +1,5 @@
 ---
-title: Logistic Address: Share Address
+title: "Logistic Address: Share Address"
 labels:
 - manageaddress
 - shareaddress
@@ -7,17 +7,15 @@ labels:
 ---
 
 <!--left header table-->
-| **Status** |  <!--start status:GREEN-->RELEASE<!--end status-->  |
-| --- | --- |
-| **Project Contributor** | [Fakhira Devina](https://tokopedia.atlassian.net/wiki/people/61077e53b704b40068e80a8e?ref=confluence) [Eka Desyantoro](https://tokopedia.atlassian.net/wiki/people/6283196bd9ddcc006e9c7a85?ref=confluence) [Irpan .](https://tokopedia.atlassian.net/wiki/people/6253578a3bf0f0007015669c?ref=confluence)  |
-| Product Manager | [Wahyu Ivan Satyagraha](https://tokopedia.atlassian.net/wiki/people/61ad4312c15977006a17ce75?ref=confluence)  |
-| Team |  [Minion Bob](https://tokopedia.atlassian.net/people/team/2373d8a6-1afc-4f2a-aa7a-63855c273051)  |
-| Release date | 16 Dec 2022 / <!--start status:GREY-->MA-3.202<!--end status-->  |
-| Module type | <!--start status:YELLOW-->FEATURE<!--end status--> |
-| Product PRD | [PRD - Share Address](https://docs.google.com/document/d/12WmxwOm3HBdi3PcxbrkeV1DOkqZzLC7bzom_7MRnML8/edit)  |
-| Module Location | `features/logistic/manageaddress` |
-
-## Table of Contents
+| **Status**              | <!--start status:GREEN-->RELEASE<!--end status-->                                                                                                                                                                                                                                                          |
+|-------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Project Contributor** | [Fakhira Devina](https://tokopedia.atlassian.net/wiki/people/61077e53b704b40068e80a8e?ref=confluence) [Eka Desyantoro](https://tokopedia.atlassian.net/wiki/people/6283196bd9ddcc006e9c7a85?ref=confluence) [Irpan .](https://tokopedia.atlassian.net/wiki/people/6253578a3bf0f0007015669c?ref=confluence) |
+| Product Manager         | [Wahyu Ivan Satyagraha](https://tokopedia.atlassian.net/wiki/people/61ad4312c15977006a17ce75?ref=confluence)                                                                                                                                                                                               |
+| Team                    | [Minion Bob](https://tokopedia.atlassian.net/people/team/2373d8a6-1afc-4f2a-aa7a-63855c273051)                                                                                                                                                                                                             |
+| Release date            | 16 Dec 2022 / <!--start status:GREY-->MA-3.202<!--end status-->                                                                                                                                                                                                                                            |
+| Module type             | <!--start status:YELLOW-->FEATURE<!--end status-->                                                                                                                                                                                                                                                         |
+| Product PRD             | [PRD - Share Address](https://docs.google.com/document/d/12WmxwOm3HBdi3PcxbrkeV1DOkqZzLC7bzom_7MRnML8/edit)                                                                                                                                                                                                |
+| Module Location         | `features/logistic/manageaddress`                                                                                                                                                                                                                                                                          |
 
 <!--toc-->
 

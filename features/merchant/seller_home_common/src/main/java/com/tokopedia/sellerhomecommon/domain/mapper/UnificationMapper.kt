@@ -1,7 +1,7 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
 import com.google.gson.Gson
-import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.sellerhomecommon.data.WidgetLastUpdatedSharedPrefInterface
 import com.tokopedia.sellerhomecommon.domain.model.GetUnificationDataResponse
@@ -23,18 +23,22 @@ class UnificationMapper @Inject constructor(
 ) : BaseWidgetMapper(lastUpdatedSharedPref, lastUpdatedEnabled),
     BaseResponseMapper<GetUnificationDataResponse, List<UnificationDataUiModel>> {
 
+    companion object {
+        private const val ERROR_MESSAGE = "Error : got error from backend without message"
+    }
+
     override fun mapRemoteDataToUiData(
         response: GetUnificationDataResponse,
         isFromCache: Boolean
     ): List<UnificationDataUiModel> {
         return response.navigationTab.data.map { data ->
-            UnificationDataUiModel(
+            return@map UnificationDataUiModel(
                 dataKey = data.dataKey,
-                error = data.errorMsg,
+                error = getErrorMessage(data.isError, data.errorMsg),
                 isFromCache = isFromCache,
                 showWidget = data.showWidget,
                 lastUpdated = getLastUpdated(data.dataKey, isFromCache),
-                tabs = data.tabs.map{ tab ->
+                tabs = data.tabs.map { tab ->
                     getTabUiModel(tab)
                 }
             )
@@ -43,6 +47,16 @@ class UnificationMapper @Inject constructor(
 
     fun getLastUpdated(dataKey: String, isFromCache: Boolean): LastUpdatedUiModel {
         return super.getLastUpdatedMillis(dataKey, isFromCache)
+    }
+
+    private fun getErrorMessage(isError: Boolean, errorMsg: String): String {
+        return errorMsg.ifBlank {
+            if (isError) {
+                ERROR_MESSAGE
+            } else {
+                String.EMPTY
+            }
+        }
     }
 
     private fun getTabUiModel(

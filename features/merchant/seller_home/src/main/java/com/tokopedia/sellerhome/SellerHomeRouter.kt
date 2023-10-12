@@ -11,7 +11,6 @@ import androidx.fragment.app.Fragment
 interface SellerHomeRouter {
 
     fun getSomListFragment(
-        context: Context,
         tabPage: String?,
         orderType: String,
         searchKeyword: String,

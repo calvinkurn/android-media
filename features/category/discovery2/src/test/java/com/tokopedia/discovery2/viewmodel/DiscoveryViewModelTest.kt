@@ -12,12 +12,20 @@ import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
+import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.discovery2.CONSTANT_0
 import com.tokopedia.discovery2.CONSTANT_11
+import com.tokopedia.discovery2.Constant
+import com.tokopedia.discovery2.Constant.DISCOVERY_APPLINK
+import com.tokopedia.discovery2.data.AdditionalInfo
+import com.tokopedia.discovery2.data.Category
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DiscoveryResponse
+import com.tokopedia.discovery2.data.NavToolbarConfig
 import com.tokopedia.discovery2.data.PageInfo
+import com.tokopedia.discovery2.data.Properties
+import com.tokopedia.discovery2.data.ThematicHeader
 import com.tokopedia.discovery2.data.customtopchatdatamodel.ChatExistingChat
 import com.tokopedia.discovery2.data.customtopchatdatamodel.CustomChatResponse
 import com.tokopedia.discovery2.data.productcarditem.DiscoATCRequestParams
@@ -34,6 +42,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import junit.framework.TestCase
@@ -45,6 +54,8 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import java.util.*
+import kotlin.collections.HashMap
 
 class DiscoveryViewModelTest {
 
@@ -209,6 +220,8 @@ class DiscoveryViewModelTest {
         every { bundle.getString(DiscoveryActivity.QUERY_PARENT, "") } returns "o"
         every { bundle.getString(DiscoveryActivity.AFFILIATE_UNIQUE_ID, "") } returns "q"
         every { bundle.getString(DiscoveryActivity.CHANNEL, "") } returns "r"
+        every { bundle.getString(DiscoveryActivity.FORCED_NAVIGATION, "") } returns "s"
+        every { bundle.getString(DiscoveryActivity.HIDE_NAV_FEATURES, "") } returns "t"
 
         val discoComponentQuery: MutableMap<String, String?> =
             mutableMapOf(DiscoveryActivity.CATEGORY_ID to "p")
@@ -231,7 +244,9 @@ class DiscoveryViewModelTest {
             DiscoveryActivity.SHOP_ID to "n",
             DiscoveryActivity.QUERY_PARENT to "o",
             DiscoveryActivity.AFFILIATE_UNIQUE_ID to "q",
-            DiscoveryActivity.CHANNEL to "r"
+            DiscoveryActivity.CHANNEL to "r",
+            DiscoveryActivity.FORCED_NAVIGATION to "s",
+            DiscoveryActivity.HIDE_NAV_FEATURES to "t"
         )
 
         viewModel.getQueryParameterMapFromBundle(bundle)
@@ -264,7 +279,9 @@ class DiscoveryViewModelTest {
             DiscoveryActivity.SHOP_ID to null,
             DiscoveryActivity.QUERY_PARENT to null,
             DiscoveryActivity.AFFILIATE_UNIQUE_ID to null,
-            DiscoveryActivity.CHANNEL to null
+            DiscoveryActivity.CHANNEL to null,
+            DiscoveryActivity.FORCED_NAVIGATION to null,
+            DiscoveryActivity.HIDE_NAV_FEATURES to null
         )
 
         viewModel.getQueryParameterMapFromBundle(null)
@@ -293,6 +310,8 @@ class DiscoveryViewModelTest {
         every { bundle.getString(DiscoveryActivity.QUERY_PARENT, "") } returns "o"
         every { bundle.getString(DiscoveryActivity.AFFILIATE_UNIQUE_ID, "") } returns "p"
         every { bundle.getString(DiscoveryActivity.CHANNEL, "") } returns "q"
+        every { bundle.getString(DiscoveryActivity.FORCED_NAVIGATION, "") } returns "r"
+        every { bundle.getString(DiscoveryActivity.HIDE_NAV_FEATURES, "") } returns "s"
 
         val map: MutableMap<String, String?> = mutableMapOf(
             DiscoveryActivity.SOURCE to "a",
@@ -311,7 +330,9 @@ class DiscoveryViewModelTest {
             DiscoveryActivity.SHOP_ID to "n",
             DiscoveryActivity.QUERY_PARENT to "o",
             DiscoveryActivity.AFFILIATE_UNIQUE_ID to "p",
-            DiscoveryActivity.CHANNEL to "q"
+            DiscoveryActivity.CHANNEL to "q",
+            DiscoveryActivity.FORCED_NAVIGATION to "r",
+            DiscoveryActivity.HIDE_NAV_FEATURES to "s"
         )
 
         viewModel.getQueryParameterMapFromBundle(bundle)
@@ -340,6 +361,8 @@ class DiscoveryViewModelTest {
         every { bundle.getString(DiscoveryActivity.QUERY_PARENT, "") } returns "o"
         every { bundle.getString(DiscoveryActivity.AFFILIATE_UNIQUE_ID, "") } returns "p"
         every { bundle.getString(DiscoveryActivity.CHANNEL, "") } returns "q"
+        every { bundle.getString(DiscoveryActivity.FORCED_NAVIGATION, "") } returns "r"
+        every { bundle.getString(DiscoveryActivity.HIDE_NAV_FEATURES, "") } returns "s"
         val map: MutableMap<String, String?> = mutableMapOf(
             DiscoveryActivity.SOURCE to "a",
             DiscoveryActivity.COMPONENT_ID to "b",
@@ -357,7 +380,9 @@ class DiscoveryViewModelTest {
             DiscoveryActivity.SHOP_ID to "n",
             DiscoveryActivity.QUERY_PARENT to "o",
             DiscoveryActivity.AFFILIATE_UNIQUE_ID to "p",
-            DiscoveryActivity.CHANNEL to "q"
+            DiscoveryActivity.CHANNEL to "q",
+            DiscoveryActivity.FORCED_NAVIGATION to "r",
+            DiscoveryActivity.HIDE_NAV_FEATURES to "s"
         )
         val discoComponentQuery: MutableMap<String, String?> = mutableMapOf()
         com.tokopedia.discovery2.datamapper.discoComponentQuery = discoComponentQuery
@@ -389,12 +414,66 @@ class DiscoveryViewModelTest {
             DiscoveryActivity.SHOP_ID to null,
             DiscoveryActivity.QUERY_PARENT to null,
             DiscoveryActivity.AFFILIATE_UNIQUE_ID to null,
-            DiscoveryActivity.CHANNEL to null
+            DiscoveryActivity.CHANNEL to null,
+            DiscoveryActivity.FORCED_NAVIGATION to null,
+            DiscoveryActivity.HIDE_NAV_FEATURES to null
         )
 
         viewModel.getQueryParameterMapFromBundle(null)
 
         TestCase.assertEquals(viewModel.getQueryParameterMapFromBundle(null), map)
+    }
+
+    @Test
+    fun `test for getQueryParameterMapFromBundle when discoApplink is present in bundle`() {
+        val bundle: Bundle = mockk(relaxed = true)
+        com.tokopedia.discovery2.datamapper.discoComponentQuery = null
+        every { bundle.getString(DISCOVERY_APPLINK) } returns "tokopedia://discovery/deals"
+        val uri: Uri = mockk(relaxed = true)
+        every { uri.getQueryParameter(DiscoveryActivity.SOURCE) } returns "a"
+        every { uri.getQueryParameter(DiscoveryActivity.COMPONENT_ID) } returns "b"
+        every { uri.getQueryParameter(DiscoveryActivity.ACTIVE_TAB) } returns "c"
+        every { uri.getQueryParameter(DiscoveryActivity.TARGET_COMP_ID) } returns "d"
+        every { uri.getQueryParameter(DiscoveryActivity.PRODUCT_ID) } returns "e"
+        every { uri.getQueryParameter(DiscoveryActivity.PIN_PRODUCT) } returns "f"
+        every { uri.getQueryParameter(DiscoveryActivity.EMBED_CATEGORY) } returns "g"
+        every { uri.getQueryParameter(DiscoveryActivity.RECOM_PRODUCT_ID) } returns "h"
+        every { uri.getQueryParameter(DiscoveryActivity.CATEGORY_ID) } returns "i"
+        every { uri.getQueryParameter(DiscoveryActivity.DYNAMIC_SUBTITLE) } returns "j"
+        every { uri.getQueryParameter(DiscoveryActivity.TARGET_TITLE_ID) } returns "k"
+        every { uri.getQueryParameter(DiscoveryActivity.CAMPAIGN_ID) } returns "l"
+        every { uri.getQueryParameter(DiscoveryActivity.VARIANT_ID) } returns "m"
+        every { uri.getQueryParameter(DiscoveryActivity.SHOP_ID) } returns "n"
+        every { uri.query } returns "o"
+        every { uri.getQueryParameter(DiscoveryActivity.AFFILIATE_UNIQUE_ID) } returns "p"
+        every { uri.getQueryParameter(DiscoveryActivity.CHANNEL) } returns "q"
+        every { uri.getQueryParameter(DiscoveryActivity.HIDE_NAV_FEATURES) } returns "r"
+        mockkStatic(Uri::class)
+        every { Uri.parse(any()) } returns uri
+
+        val map: MutableMap<String, String?> = mutableMapOf(
+            DiscoveryActivity.SOURCE to "a",
+            DiscoveryActivity.COMPONENT_ID to "b",
+            DiscoveryActivity.ACTIVE_TAB to "c",
+            DiscoveryActivity.TARGET_COMP_ID to "d",
+            DiscoveryActivity.PRODUCT_ID to "e",
+            DiscoveryActivity.PIN_PRODUCT to "f",
+            DiscoveryActivity.EMBED_CATEGORY to "g",
+            DiscoveryActivity.RECOM_PRODUCT_ID to "h",
+            DiscoveryActivity.CATEGORY_ID to "i",
+            DiscoveryActivity.DYNAMIC_SUBTITLE to "j",
+            DiscoveryActivity.TARGET_TITLE_ID to "k",
+            DiscoveryActivity.CAMPAIGN_ID to "l",
+            DiscoveryActivity.VARIANT_ID to "m",
+            DiscoveryActivity.SHOP_ID to "n",
+            DiscoveryActivity.QUERY_PARENT to "o",
+            DiscoveryActivity.AFFILIATE_UNIQUE_ID to "p",
+            DiscoveryActivity.CHANNEL to "q",
+            DiscoveryActivity.HIDE_NAV_FEATURES to "r"
+        )
+
+        TestCase.assertEquals(viewModel.getQueryParameterMapFromBundle(bundle), map)
+        unmockkStatic(Uri::class)
     }
 
     /**************************** test for getDiscoveryData() *******************************************/
@@ -453,6 +532,232 @@ class DiscoveryViewModelTest {
         TestCase.assertEquals(viewModel.getDiscoveryPageInfo().value != null, true)
     }
 
+    @Test
+    fun `when getDiscoveryData is called, isExtendedLayout of NavToolbarConfig should be true because ComponentsItem's properties is atf_banner`() {
+        val url = "tokopedia://discovery/test-campaign-7"
+        val componentsName = "slider_banner"
+        val properties = Properties(type = Constant.PropertyType.ATF_BANNER)
+        val category: Category? = null
+        val categoryData: HashMap<String, String>? = null
+        val isExtendedLayout = true
+
+        mockParamKeyValueMapDecoded(
+            url = url,
+            result = hashMapOf()
+        )
+
+        val discoveryPageData = DiscoveryPageData(
+            pageInfo = PageInfo(),
+            additionalInfo = AdditionalInfo(
+                category = category,
+                categoryData = categoryData
+            )
+        ).apply {
+            components = listOf(
+                ComponentsItem(
+                    name = componentsName,
+                    properties = properties,
+                    searchParameter = SearchParameter(
+                        deepLinkUri = url
+                    )
+                )
+            )
+        }
+
+        mockDiscoveryPageData(discoveryPageData)
+
+        viewModel.getDiscoveryData(
+            queryParameterMap = mutableMapOf(),
+            userAddressData = LocalCacheModel()
+        )
+
+        viewModel
+            .getDiscoveryNavToolbarConfigLiveData()
+            .verifyValueEquals(
+                NavToolbarConfig(
+                    isExtendedLayout = isExtendedLayout
+                )
+            )
+    }
+
+    @Test
+    fun `when getDiscoveryData is called, isExtendedLayout of NavToolbarConfig should be false because ComponentsItem's properties is not atf_banner`() {
+        val url = "tokopedia://discovery/test-campaign-7"
+        val componentsName = "slider_banner"
+        val properties = Properties(type = Constant.PropertyType.TARGETING_BANNER)
+        val category: Category? = null
+        val categoryData: HashMap<String, String>? = null
+        val isExtendedLayout = false
+
+        mockParamKeyValueMapDecoded(
+            url = url,
+            result = hashMapOf()
+        )
+
+        val discoveryPageData = DiscoveryPageData(
+            pageInfo = PageInfo(),
+            additionalInfo = AdditionalInfo(
+                category = category,
+                categoryData = categoryData
+            )
+        ).apply {
+            components = listOf(
+                ComponentsItem(
+                    name = componentsName,
+                    properties = properties,
+                    searchParameter = SearchParameter(
+                        deepLinkUri = url
+                    )
+                )
+            )
+        }
+
+        mockDiscoveryPageData(discoveryPageData)
+
+        viewModel.getDiscoveryData(
+            queryParameterMap = mutableMapOf(),
+            userAddressData = LocalCacheModel()
+        )
+
+        viewModel
+            .getDiscoveryNavToolbarConfigLiveData()
+            .verifyValueEquals(
+                NavToolbarConfig(
+                    isExtendedLayout = isExtendedLayout
+                )
+            )
+    }
+
+    @Test
+    fun `when getDiscoveryData is called, isExtendedLayout of NavToolbarConfig should be false because ComponentsItem's properties is null`() {
+        val url = "tokopedia://discovery/test-campaign-7"
+        val componentsName = "slider_banner"
+        val properties: Properties? = null
+        val category: Category? = null
+        val categoryData: HashMap<String, String>? = null
+        val isExtendedLayout = false
+
+        mockParamKeyValueMapDecoded(
+            url = url,
+            result = hashMapOf()
+        )
+
+        val discoveryPageData = DiscoveryPageData(
+            pageInfo = PageInfo(),
+            additionalInfo = AdditionalInfo(
+                category = category,
+                categoryData = categoryData
+            )
+        ).apply {
+            components = listOf(
+                ComponentsItem(
+                    name = componentsName,
+                    properties = properties,
+                    searchParameter = SearchParameter(
+                        deepLinkUri = url
+                    )
+                )
+            )
+        }
+
+        mockDiscoveryPageData(discoveryPageData)
+
+        viewModel.getDiscoveryData(
+            queryParameterMap = mutableMapOf(),
+            userAddressData = LocalCacheModel()
+        )
+
+        viewModel
+            .getDiscoveryNavToolbarConfigLiveData()
+            .verifyValueEquals(
+                NavToolbarConfig(
+                    isExtendedLayout = isExtendedLayout
+                )
+            )
+    }
+
+    @Test
+    fun `when getDiscoveryData is called, isExtendedLayout of NavToolbarConfig should be false because componentsName is not slider_banner and color of NavToolbarConfig should return expected color`() {
+        val url = "tokopedia://discovery/test-campaign-7"
+        val componentsName = "lihat_semua"
+        val color = "#EF1231"
+        val properties = Properties(type = Constant.PropertyType.ATF_BANNER)
+        val category: Category? = null
+        val categoryData: HashMap<String, String>? = null
+        val isExtendedLayout = false
+
+        mockParamKeyValueMapDecoded(
+            url = url,
+            result = hashMapOf()
+        )
+
+        val discoveryPageData = DiscoveryPageData(
+            pageInfo = PageInfo(
+                thematicHeader = ThematicHeader(
+                    color = color
+                )
+            ),
+            additionalInfo = AdditionalInfo(
+                category = category,
+                categoryData = categoryData
+            )
+        ).apply {
+            components = listOf(
+                ComponentsItem(
+                    name = componentsName,
+                    properties = properties,
+                    searchParameter = SearchParameter(
+                        deepLinkUri = url
+                    )
+                )
+            )
+        }
+
+        mockDiscoveryPageData(discoveryPageData)
+
+        viewModel.getDiscoveryData(
+            queryParameterMap = mutableMapOf(),
+            userAddressData = LocalCacheModel()
+        )
+
+        viewModel
+            .getDiscoveryNavToolbarConfigLiveData()
+            .verifyValueEquals(
+                NavToolbarConfig(
+                    isExtendedLayout = isExtendedLayout,
+                    color = color
+                )
+            )
+    }
+
+    private fun mockDiscoveryPageData(
+        discoveryPageData: DiscoveryPageData
+    ) {
+        coEvery {
+            discoveryDataUseCase.getDiscoveryPageDataUseCase(
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } returns discoveryPageData
+    }
+
+    /**
+     * This mock is used to avoid npe of url parser in SearchParameter of ComponentsItem
+     */
+    private fun mockParamKeyValueMapDecoded(
+        url: String,
+        result: HashMap<String, String>
+    ) {
+        every {
+            URLParser(
+                url
+            ).paramKeyValueMapDecoded
+        } returns result
+    }
+
     /**************************** test for getMapOfQueryParameter() *******************************************/
     @Test
     fun `test for getMapOfQueryParameter`() {
@@ -474,6 +779,7 @@ class DiscoveryViewModelTest {
         every { uri.query } returns "o"
         every { uri.getQueryParameter(DiscoveryActivity.AFFILIATE_UNIQUE_ID) } returns "p"
         every { uri.getQueryParameter(DiscoveryActivity.CHANNEL) } returns "q"
+        every { uri.getQueryParameter(DiscoveryActivity.HIDE_NAV_FEATURES) } returns "t"
 
         val map: MutableMap<String, String?> = mutableMapOf(
             DiscoveryActivity.SOURCE to "a",
@@ -492,7 +798,8 @@ class DiscoveryViewModelTest {
             DiscoveryActivity.SHOP_ID to "n",
             DiscoveryActivity.QUERY_PARENT to "o",
             DiscoveryActivity.AFFILIATE_UNIQUE_ID to "p",
-            DiscoveryActivity.CHANNEL to "q"
+            DiscoveryActivity.CHANNEL to "q",
+            DiscoveryActivity.HIDE_NAV_FEATURES to "t"
         )
 
         viewModel.getMapOfQueryParameter(uri)

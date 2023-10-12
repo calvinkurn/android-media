@@ -1,424 +1,487 @@
 package com.tokopedia.tokopedianow.category.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
-import com.tokopedia.abstraction.base.view.adapter.Visitable
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
-import com.tokopedia.discovery.common.constants.SearchApiConst
-import com.tokopedia.filter.common.data.DynamicFilterModel
-import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper
-import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
+import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
+import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
-import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TOKONOW_CLP
-import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TOKONOW_NO_RESULT
-import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Misc.PREFIX_ALL
-import com.tokopedia.tokopedianow.category.domain.model.CategoryModel
-import com.tokopedia.tokopedianow.category.domain.model.CategorySharingModel
-import com.tokopedia.tokopedianow.category.domain.model.CategoryTrackerModel
-import com.tokopedia.tokopedianow.category.domain.model.TokonowCategoryDetail
-import com.tokopedia.tokopedianow.category.domain.model.TokonowCategoryDetail.NavigationItem
-import com.tokopedia.tokopedianow.category.presentation.model.CategoryAisleDataView
-import com.tokopedia.tokopedianow.category.presentation.model.CategoryAisleItemDataView
-import com.tokopedia.tokopedianow.category.presentation.view.TokoNowCategoryFragment
-import com.tokopedia.tokopedianow.category.presentation.view.TokoNowCategoryFragment.Companion.DEFAULT_CATEGORY_ID
-import com.tokopedia.tokopedianow.category.utils.CATEGORY_FIRST_PAGE_USE_CASE
-import com.tokopedia.tokopedianow.category.utils.CATEGORY_LOAD_MORE_PAGE_USE_CASE
-import com.tokopedia.tokopedianow.category.utils.TOKONOW_CATEGORY_L1
-import com.tokopedia.tokopedianow.category.utils.TOKONOW_CATEGORY_L2
-import com.tokopedia.tokopedianow.category.utils.TOKONOW_CATEGORY_QUERY_PARAM_MAP
-import com.tokopedia.tokopedianow.category.utils.TOKONOW_CATEGORY_SERVICE_TYPE
+import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
+import com.tokopedia.tokopedianow.category.domain.mapper.CategoryNavigationMapper.mapToCategoryNavigation
+import com.tokopedia.tokopedianow.category.domain.mapper.CategoryRecommendationMapper.mapToCategoryRecommendation
+import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.DEFAULT_PRODUCT_QUANTITY
+import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.addCategoryMenu
+import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.addCategoryNavigation
+import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.addCategoryShowcase
+import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.addCategoryTitle
+import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.addChooseAddress
+import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.addHeaderSpace
+import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.addProductRecommendation
+import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.addProgressBar
+import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.addTicker
+import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.findCategoryShowcaseItem
+import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.mapCategoryShowcase
+import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.mapProductAdsCarousel
+import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.removeItem
+import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.updateProductQuantity
+import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.updateWishlistStatus
+import com.tokopedia.tokopedianow.category.domain.response.CategoryDetailResponse
+import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryDetailUseCase
+import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryProductUseCase
+import com.tokopedia.tokopedianow.category.presentation.model.CategoryAtcTrackerModel
+import com.tokopedia.tokopedianow.category.presentation.model.CategoryL2Model
+import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryNavigationUiModel
+import com.tokopedia.tokopedianow.category.presentation.util.CategoryLayoutType
+import com.tokopedia.tokopedianow.category.presentation.util.CategoryLayoutType.CATEGORY_SHOWCASE
+import com.tokopedia.tokopedianow.category.presentation.util.CategoryLayoutType.PRODUCT_RECOMMENDATION
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
-import com.tokopedia.tokopedianow.common.domain.usecase.GetCategoryListUseCase
-import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
+import com.tokopedia.tokopedianow.common.constant.TokoNowStaticLayoutType.Companion.PRODUCT_ADS_CAROUSEL
+import com.tokopedia.tokopedianow.common.domain.mapper.AceSearchParamMapper
+import com.tokopedia.tokopedianow.common.domain.mapper.ProductAdsMapper.addProductAdsCarousel
+import com.tokopedia.tokopedianow.common.domain.mapper.ProductAdsMapper.findAdsProductCarousel
+import com.tokopedia.tokopedianow.common.domain.model.GetTickerData
+import com.tokopedia.tokopedianow.common.domain.param.GetProductAdsParam
+import com.tokopedia.tokopedianow.common.domain.usecase.GetProductAdsUseCase
+import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationUiModel
-import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper
-import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper.APPLINK_PARAM_WAREHOUSE_ID
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
-import com.tokopedia.tokopedianow.searchcategory.cartservice.CartService
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryTitle
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
-import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
-import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_ID
-import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_LIST_DEPTH
-import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
-import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_DIRECTORY
-import com.tokopedia.tokopedianow.searchcategory.utils.WAREHOUSE_ID
-import com.tokopedia.usecase.RequestParams
-import com.tokopedia.usecase.coroutines.UseCase
+import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
+import com.tokopedia.tokopedianow.oldcategory.domain.model.CategorySharingModel
+import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_TOKONOW_DIRECTORY
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
+import kotlinx.coroutines.Deferred
 import javax.inject.Inject
-import javax.inject.Named
 
-class TokoNowCategoryViewModel @Inject constructor (
-    baseDispatcher: CoroutineDispatchers,
-    @param:Named(TOKONOW_CATEGORY_L1)
-    val categoryL1: String,
-    @param:Named(TOKONOW_CATEGORY_L2)
-    val categoryL2: String,
-    @param:Named(TOKONOW_CATEGORY_SERVICE_TYPE)
-    val externalServiceType: String,
-    @Named(TOKONOW_CATEGORY_QUERY_PARAM_MAP)
-    queryParamMap: Map<String, String>,
-    @param:Named(CATEGORY_FIRST_PAGE_USE_CASE)
-    private val getCategoryFirstPageUseCase: UseCase<CategoryModel>,
-    @param:Named(CATEGORY_LOAD_MORE_PAGE_USE_CASE)
-    private val getCategoryLoadMorePageUseCase: UseCase<CategoryModel>,
-    getFilterUseCase: UseCase<DynamicFilterModel>,
-    getProductCountUseCase: UseCase<String>,
-    getMiniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase,
-    cartService: CartService,
-    getWarehouseUseCase: GetChosenAddressWarehouseLocUseCase,
-    private val getCategoryListUseCase: GetCategoryListUseCase,
-    setUserPreferenceUseCase: SetUserPreferenceUseCase,
-    chooseAddressWrapper: ChooseAddressWrapper,
+class TokoNowCategoryViewModel @Inject constructor(
+    private val getCategoryProductUseCase: GetCategoryProductUseCase,
+    private val getCategoryDetailUseCase: GetCategoryDetailUseCase,
+    private val getProductAdsUseCase: GetProductAdsUseCase,
+    private val aceSearchParamMapper: AceSearchParamMapper,
+    private val addressData: TokoNowLocalAddress,
+    getShopAndWarehouseUseCase: GetChosenAddressWarehouseLocUseCase,
+    getTargetedTickerUseCase: GetTargetedTickerUseCase,
+    getMiniCartUseCase: GetMiniCartListSimplifiedUseCase,
+    addToCartUseCase: AddToCartUseCase,
+    updateCartUseCase: UpdateCartUseCase,
+    deleteCartUseCase: DeleteCartUseCase,
     affiliateService: NowAffiliateService,
-    userSession: UserSessionInterface
-): BaseSearchCategoryViewModel(
-    baseDispatcher,
-    queryParamMap,
-    getFilterUseCase,
-    getProductCountUseCase,
-    getMiniCartListSimplifiedUseCase,
-    cartService,
-    getWarehouseUseCase,
-    setUserPreferenceUseCase,
-    chooseAddressWrapper,
-    affiliateService,
-    userSession
+    userSession: UserSessionInterface,
+    dispatchers: CoroutineDispatchers
+) : BaseCategoryViewModel(
+    getShopAndWarehouseUseCase = getShopAndWarehouseUseCase,
+    getTargetedTickerUseCase = getTargetedTickerUseCase,
+    getMiniCartUseCase = getMiniCartUseCase,
+    addToCartUseCase = addToCartUseCase,
+    updateCartUseCase = updateCartUseCase,
+    deleteCartUseCase = deleteCartUseCase,
+    affiliateService = affiliateService,
+    addressData = addressData,
+    userSession = userSession,
+    dispatchers = dispatchers
 ) {
-
-    private val openScreenTrackingUrlMutableLiveData = SingleLiveEvent<CategoryTrackerModel>()
-    val openScreenTrackingUrlLiveData: LiveData<CategoryTrackerModel> = openScreenTrackingUrlMutableLiveData
-
-    private val shareMutableLiveData = SingleLiveEvent<CategorySharingModel>()
-    val shareLiveData: LiveData<CategorySharingModel> = shareMutableLiveData
-
-    val categoryIdTracking: String
-
-    private var navigation: TokonowCategoryDetail.Navigation? = null
+    companion object {
+        const val BATCH_SHOWCASE_TOTAL = 3
+        const val NO_WAREHOUSE_ID = "0"
+        const val PRODUCT_ROWS = 7
+        const val DEFAULT_DEEPLINK_PARAM = "category/l1"
+        const val PAGE_TYPE_CATEGORY = "cat%s"
+        const val CATEGORY_LVL_1 = 1
+    }
 
     init {
-        updateQueryParamWithCategoryIds()
-        categoryIdTracking = getCategoryIdForTracking()
+        miniCartSource = MiniCartSource.TokonowCategoryPage
     }
 
-    private fun updateQueryParamWithCategoryIds() {
-        if (categoryL1.isNotEmpty()) {
-            queryParamMutable[SearchApiConst.SRP_PAGE_ID] = categoryL1
-        }
+    /**
+     * -- private immutable variable section --
+     */
 
-        if (categoryL2.isNotEmpty()) {
-            val categoryFilterKeyWithExclude = "${OptionHelper.EXCLUDE_PREFIX}${SearchApiConst.SC}"
-            queryParamMutable[categoryFilterKeyWithExclude] = categoryL2
-        }
-    }
+    private val categoryL2Models: MutableList<CategoryL2Model> = mutableListOf()
+    private val _atcDataTracker: MutableLiveData<CategoryAtcTrackerModel> = MutableLiveData()
+    private val _scrollNotNeeded = MutableLiveData<Unit>()
+    private val _shareLiveData = SingleLiveEvent<CategorySharingModel>()
 
-    override val tokonowSource: String
-        get() = TOKONOW_DIRECTORY
+    /**
+     * -- private mutable variable section --
+     */
 
-    private fun getCategoryIdForTracking() =
-            if (categoryL2.isNotEmpty()) "$categoryL1/$categoryL2"
-            else categoryL1
+    private var categoryRecommendation: TokoNowCategoryMenuUiModel? = null
 
-    override fun loadFirstPage() {
-        getCategoryFirstPageUseCase.cancelJobs()
-        getCategoryFirstPageUseCase.execute(
-                this::onGetCategoryFirstPageSuccess,
-                this::onGetFirstPageError,
-                createRequestParams(),
-        )
-    }
+    /**
+     * -- public immutable variable section --
+     */
 
-    override fun createRequestParams(): RequestParams {
-        val requestParams = super.createRequestParams()
+    val atcDataTracker: LiveData<CategoryAtcTrackerModel> = _atcDataTracker
+    val scrollNotNeeded: LiveData<Unit> = _scrollNotNeeded
+    val shareLiveData: LiveData<CategorySharingModel> = _shareLiveData
 
-        requestParams.putString(CATEGORY_ID, categoryL1)
-        requestParams.putString(WAREHOUSE_ID, chooseAddressData?.warehouse_id ?: "")
+    /**
+     * -- override function section --
+     */
 
-        return requestParams
-    }
+    override val tickerPage: String
+        get() = GetTargetedTickerUseCase.CATEGORY_PAGE
 
-    private fun onGetCategoryFirstPageSuccess(categoryModel: CategoryModel) {
-        navigation = categoryModel.categoryDetail.data.navigation
-
-        val searchProduct = categoryModel.searchProduct
-        val headerDataView = HeaderDataView(
-                title = categoryModel.categoryDetail.data.name,
-                aceSearchProductHeader = searchProduct.header,
-                categoryFilterDataValue = categoryModel.categoryFilter,
-                quickFilterDataValue = categoryModel.quickFilter,
-                bannerChannel = categoryModel.bannerChannel,
-                targetedTicker = categoryModel.targetedTicker
+    override suspend fun loadFirstPage(tickerData: GetTickerData) {
+        val warehouses = addressData.getWarehousesData()
+        val localCacheModel = addressData.getAddressData()
+        val detailResponse = getCategoryDetailUseCase.execute(
+            categoryIdL1 = categoryIdL1,
+            warehouses = warehouses
         )
 
-        val contentDataView = ContentDataView(
-                aceSearchProductData = searchProduct.data,
-                repurchaseWidget = categoryModel.tokonowRepurchaseWidget,
+        val categoryNavigationUiModel = detailResponse.mapToCategoryNavigation()
+        categoryRecommendation = detailResponse.mapToCategoryRecommendation()
+
+        visitableList.clear()
+
+        visitableList.addHeaderSpace(
+            space = navToolbarHeight,
+            detailResponse = detailResponse
+        )
+        visitableList.addChooseAddress(
+            detailResponse = detailResponse,
+            localCacheModel = localCacheModel
+        )
+        visitableList.addTicker(
+            detailResponse = detailResponse,
+            tickerList = tickerData.tickerList
+        )
+        visitableList.addCategoryTitle(
+            detailResponse = detailResponse
+        )
+        visitableList.addCategoryNavigation(
+            categoryNavigationUiModel = categoryNavigationUiModel
+        )
+        visitableList.addProductRecommendation(
+            categoryId = listOf(categoryIdL1)
+        )
+        visitableList.addProductAdsCarousel()
+
+        addCategoryShowcases(
+            categoryNavigationUiModel = categoryNavigationUiModel
         )
 
-        val isActive = categoryModel.feedbackFieldToggle.tokonowFeedbackFieldToggle.data.isActive
+        hidePageLoading()
+        updateVisitableListLiveData()
+        sendOpenScreenL1Tracker(detailResponse)
+        setSharingModel(detailResponse)
 
-        onGetFirstPageSuccess(headerDataView, contentDataView, searchProduct,isActive)
-
-        sendOpenScreenTrackingUrl(categoryModel)
-        setSharingModel(categoryModel)
+        getFirstPage()
     }
 
-    override fun createTitleDataView(headerDataView: HeaderDataView): TitleDataView {
-        return TitleDataView(
-            titleType = CategoryTitle(headerDataView.title),
-            hasSeeAllCategoryButton = true,
-            chooseAddressData = chooseAddressData
-        )
+    override suspend fun loadNextPage() {
+        getBatchShowcase(hasAdded = false)
     }
 
-    override fun createFooterVisitableList(): List<Visitable<*>> {
-        val recomData = TokoNowProductRecommendationUiModel(
-            requestParam = createProductRecommendationRequestParam(
-                pageName = TOKONOW_CLP
+    override fun onSuccessGetMiniCartData(miniCartData: MiniCartSimplifiedData) {
+        super.onSuccessGetMiniCartData(miniCartData)
+        visitableList.updateProductQuantity(miniCartData)
+        updateVisitableListLiveData()
+    }
+
+    /**
+     * -- private suspend function section --
+     */
+
+    private suspend fun getCategoryShowcaseAsync(
+        categoryL2Model: CategoryL2Model,
+        hasAdded: Boolean
+    ): Deferred<Unit?> = asyncCatchError(block = {
+        val requestParams = createRequestQueryParams(categoryL2Model.id)
+        val categoryPage = getCategoryProductUseCase.execute(requestParams)
+
+        categoryL2Models.remove(categoryL2Model)
+
+        val productList = categoryPage.searchProduct.data.productList.filter { !it.isOos() }
+        if (productList.isEmpty()) {
+            visitableList.removeItem(
+                id = categoryL2Model.id
             )
-        )
-        return listOf(
-            createAisleDataView(),
-            recomData
-        )
+            return@asyncCatchError
+        }
+
+        if (hasAdded) {
+            visitableList.mapCategoryShowcase(
+                totalData = categoryPage.searchProduct.header.totalData,
+                productList = productList,
+                categoryIdL2 = categoryL2Model.id,
+                title = categoryL2Model.title,
+                seeAllAppLink = categoryL2Model.appLink,
+                miniCartData = miniCartData,
+                hasBlockedAddToCart = hasBlockedAddToCart
+            )
+        } else {
+            visitableList.addCategoryShowcase(
+                totalData = categoryPage.searchProduct.header.totalData,
+                productList = productList,
+                categoryIdL2 = categoryL2Model.id,
+                title = categoryL2Model.title,
+                state = TokoNowLayoutState.SHOW,
+                seeAllAppLink = categoryL2Model.appLink,
+                miniCartData = miniCartData,
+                hasBlockedAddToCart = hasBlockedAddToCart
+            )
+        }
+    }) {
+        categoryL2Models.remove(categoryL2Model)
+        removeVisitableItem(categoryL2Model.id)
     }
 
-    private fun createAisleDataView() = CategoryAisleDataView(
-        listOf(
-            createAisleItem(navigation?.prev),
-            createAisleItem(navigation?.next),
-        ),
-        chooseAddressData?.service_type.orEmpty()
-    )
+    private suspend fun getBatchShowcase(hasAdded: Boolean) {
+        visitableList.addProgressBar()
+        updateVisitableListLiveData()
 
-    private fun createAisleItem(navigationItem: NavigationItem?): CategoryAisleItemDataView {
-        return CategoryAisleItemDataView(
-                id = navigationItem?.id ?: "",
-                name = navigationItem?.name ?: "",
-                imgUrl = navigationItem?.imageUrl ?: "",
-                applink = navigationItem?.applinks ?: "",
-        )
+        categoryL2Models.take(BATCH_SHOWCASE_TOTAL).map { categoryL2Model ->
+            getCategoryShowcaseAsync(
+                categoryL2Model = categoryL2Model,
+                hasAdded = hasAdded
+            ).await()
+        }
+
+        visitableList.removeItem(CategoryLayoutType.MORE_PROGRESS_BAR.name)
+
+        addCategoryRecommendation()
+        updateVisitableListLiveData()
     }
 
-    override fun createVisitableListWithEmptyProduct() {
-        super.createVisitableListWithEmptyProduct()
+    private fun getProductAds(categoryId: String) {
+        launchCatchError(block = {
+            val params = GetProductAdsParam(
+                categoryId = categoryId,
+                addressData = addressData.getAddressData(),
+                src = GetProductAdsParam.SRC_DIRECTORY_TOKONOW,
+                userId = getUserId()
+            ).generateQueryParams()
 
-        val categoryMenuIndex = minOf(visitableList.size, 2)
-        val categoryMenuUIModel = TokoNowCategoryMenuUiModel(
+            val response = getProductAdsUseCase.execute(params)
+
+            if (response.productList.isNotEmpty()) {
+                visitableList.mapProductAdsCarousel(
+                    response = response,
+                    miniCartData = miniCartData,
+                    hasBlockedAddToCart = hasBlockedAddToCart
+                )
+            } else {
+                removeVisitableItem(PRODUCT_ADS_CAROUSEL)
+            }
+
+            updateVisitableListLiveData()
+        }) {
+            removeVisitableItem(PRODUCT_ADS_CAROUSEL)
+            updateVisitableListLiveData()
+        }
+    }
+
+    /**
+     * -- private function section --
+     */
+
+    private fun addCategoryShowcases(
+        categoryNavigationUiModel: CategoryNavigationUiModel
+    ) {
+        categoryL2Models.clear()
+
+        categoryL2Models.addAll(
+            categoryNavigationUiModel.categoryListUiModel.map {
+                CategoryL2Model(
+                    id = it.id,
+                    title = it.title,
+                    appLink = it.appLink
+                )
+            }
+        )
+
+        categoryL2Models.take(BATCH_SHOWCASE_TOTAL).forEach { categoryL2Model ->
+            visitableList.addCategoryShowcase(
+                categoryIdL2 = categoryL2Model.id,
                 state = TokoNowLayoutState.LOADING,
-        )
-        visitableList.add(categoryMenuIndex, categoryMenuUIModel)
-    }
-
-    override fun processEmptyState(isEmptyProductList: Boolean) {
-        loadCategoryMenu(isEmptyProductList)
-    }
-
-    override fun onViewCreated(source: MiniCartSource?) {
-        val currentServiceType = chooseAddressData?.getServiceType()
-
-        if (externalServiceType != currentServiceType && externalServiceType.isNotBlank()) {
-            setUserPreference(externalServiceType)
-        } else {
-            super.onViewCreated(source)
+                miniCartData = miniCartData,
+                hasBlockedAddToCart = hasBlockedAddToCart
+            )
         }
     }
 
-    private fun loadCategoryMenu(isEmptyProductList: Boolean) {
+    private fun addCategoryRecommendation() {
+        if (categoryL2Models.isEmpty()) {
+            _scrollNotNeeded.postValue(Unit)
+
+            categoryRecommendation?.let { categoryMenu ->
+                visitableList.addCategoryMenu(categoryMenu)
+                categoryRecommendation = null
+            }
+        }
+    }
+
+    private fun updateProductCartQuantity(
+        productId: String,
+        quantity: Int,
+        layoutType: String
+    ) {
+        visitableList.updateProductQuantity(
+            productId = productId,
+            quantity = quantity,
+            layoutType = layoutType
+        )
+        updateVisitableListLiveData()
+    }
+
+    /**
+     * -- public function section --
+     */
+
+    private fun getFirstPage() {
         launchCatchError(
-                block = { tryLoadCategoryMenu(isEmptyProductList) },
-                onError = { catchLoadCategoryMenuError() }
+            block = {
+                getBatchShowcase(hasAdded = true)
+                getProductAds(categoryIdL1)
+            },
+            onError = { /* nothing to do */ }
         )
     }
 
-    private suspend fun tryLoadCategoryMenu(isEmptyProductList: Boolean) {
-        if (!isEmptyProductList) return
-
-        val categoryList = getCategoryList()
-
-        val seeAllAppLink = ApplinkConstInternalTokopediaNow.SEE_ALL_CATEGORY + APPLINK_PARAM_WAREHOUSE_ID + warehouseId
-
-        updateCategoryUIModel(
-                categoryItemListUIModel = CategoryMenuMapper.mapToCategoryList(
-                    response = categoryList,
-                    seeAllAppLink = seeAllAppLink
-                ),
-                categoryUIModelState = TokoNowLayoutState.SHOW,
-                seeAllAppLink = seeAllAppLink
+    fun removeProductRecommendation() {
+        launchCatchError(
+            block = {
+                removeVisitableItem(PRODUCT_RECOMMENDATION.name)
+                updateVisitableListLiveData()
+            },
+            onError = { /* nothing to do */ }
         )
     }
 
-    private suspend fun getCategoryList() =
-            getCategoryListUseCase.execute(warehouseId, CATEGORY_LIST_DEPTH).data
-
-    private suspend fun updateCategoryUIModel(
-            categoryItemListUIModel: List<Visitable<*>>?,
-            categoryUIModelState: Int,
-            seeAllAppLink: String = ""
+    fun updateWishlistStatus(
+        productId: String,
+        hasBeenWishlist: Boolean
     ) {
-        val currentCategoryUIModel = getCategoryMenuUIModelInVisitableList() ?: return
-
-        val updatedCategoryUiModel = currentCategoryUIModel.copy(
-                categoryListUiModel = categoryItemListUIModel,
-                state = categoryUIModelState,
-                seeAllAppLink = seeAllAppLink
+        launchCatchError(
+            block = {
+                visitableList.updateWishlistStatus(
+                    productId = productId,
+                    hasBeenWishlist = hasBeenWishlist
+                )
+                updateVisitableListLiveData()
+            },
+            onError = { /* nothing to do */ }
         )
-
-        replaceCategoryUIModelInVisitableList(currentCategoryUIModel, updatedCategoryUiModel)
-
-        suspendUpdateVisitableListLiveData()
     }
 
-    private fun getCategoryMenuUIModelInVisitableList(): TokoNowCategoryMenuUiModel? {
-        return visitableList
-                .find { it is TokoNowCategoryMenuUiModel }
-                as? TokoNowCategoryMenuUiModel
-    }
-
-    private fun replaceCategoryUIModelInVisitableList(
-        current: TokoNowCategoryMenuUiModel,
-        updated: TokoNowCategoryMenuUiModel,
+    fun onCartQuantityChanged(
+        product: ProductCardCompactUiModel,
+        shopId: String,
+        quantity: Int,
+        layoutType: String
     ) {
-        val position = visitableList.indexOf(current)
+        val productId = product.productId
+        val isVariant = product.isVariant
+        val stock = product.availableStock
 
-        visitableList.removeAt(position)
-        visitableList.add(position, updated)
-    }
-
-    private suspend fun catchLoadCategoryMenuError() {
-        updateCategoryUIModel(
-                categoryItemListUIModel = null,
-                categoryUIModelState = TokoNowLayoutState.HIDE
+        onCartQuantityChanged(
+            productId = productId,
+            shopId = shopId,
+            quantity = quantity,
+            stock = stock,
+            isVariant = isVariant,
+            onSuccessAddToCart = {
+                updateProductCartQuantity(productId, quantity, layoutType)
+                trackAddToCart(product, quantity, layoutType)
+                updateToolbarNotification()
+            },
+            onSuccessUpdateCart = { _, _ ->
+                updateProductCartQuantity(productId, quantity, layoutType)
+                updateToolbarNotification()
+            },
+            onSuccessDeleteCart = { _, _ ->
+                updateProductCartQuantity(productId, DEFAULT_PRODUCT_QUANTITY, layoutType)
+                updateToolbarNotification()
+            },
+            onError = {
+                updateProductCartQuantity(productId, quantity, layoutType)
+            }
         )
     }
 
-    fun onCategoryMenuRetry() {
-        processEmptyState(true)
+    private fun createRequestQueryParams(categoryId: String): Map<String?, Any?> {
+        return aceSearchParamMapper.createRequestParams(
+            source = CATEGORY_TOKONOW_DIRECTORY,
+            srpPageId = categoryId,
+            rows = PRODUCT_ROWS
+        )
     }
 
-    fun getCurrentCategoryId(categoryIdLvl1: String, categoryIdLvl2: String, categoryIdLvl3: String): String {
-        return when {
-            categoryIdLvl3.isNotBlank() && categoryIdLvl3 != DEFAULT_CATEGORY_ID -> {
-                categoryIdLvl3
-            }
-            categoryIdLvl2.isNotBlank() && categoryIdLvl2 != DEFAULT_CATEGORY_ID -> {
-                categoryIdLvl2
-            }
-            else -> {
-                categoryIdLvl1
-            }
+    private fun trackAddToCart(
+        product: ProductCardCompactUiModel,
+        quantity: Int,
+        layoutType: String
+    ) {
+        when (layoutType) {
+            CATEGORY_SHOWCASE.name -> trackCategoryShowCase(product, quantity)
+            PRODUCT_ADS_CAROUSEL -> trackProductAdsAddToCart(product, quantity)
         }
     }
 
-    private fun sendOpenScreenTrackingUrl(categoryModel: CategoryModel) {
-        openScreenTrackingUrlMutableLiveData.value = CategoryTrackerModel(
-            id = categoryModel.categoryDetail.data.id,
-            name = categoryModel.categoryDetail.data.name,
-            url = categoryModel.categoryDetail.data.url
-        )
+    private fun trackCategoryShowCase(product: ProductCardCompactUiModel, quantity: Int) {
+        visitableList.findCategoryShowcaseItem(product.productId)?.let { item ->
+            _atcDataTracker.postValue(CategoryAtcTrackerModel(
+                categoryIdL1 = categoryIdL1,
+                index = item.index,
+                headerName = item.headerName,
+                quantity = quantity,
+                product = product,
+                layoutType = CATEGORY_SHOWCASE.name
+            ))
+        }
     }
 
-    private fun setSharingModel(categoryModel: CategoryModel) {
-        var categoryIdLvl2 = DEFAULT_CATEGORY_ID
-        var categoryIdLvl3 = DEFAULT_CATEGORY_ID
-
-        queryParam.forEach {
-            when (it.key) {
-                "${OptionHelper.EXCLUDE_PREFIX}${SearchApiConst.SC}" -> categoryIdLvl2 = it.value
-                SearchApiConst.SC -> categoryIdLvl3 = it.value
-            }
+    private fun trackProductAdsAddToCart(product: ProductCardCompactUiModel, quantity: Int) {
+        visitableList.findAdsProductCarousel(product.productId).let { item ->
+            _atcDataTracker.postValue(CategoryAtcTrackerModel(
+                index = item.position,
+                quantity = quantity,
+                shopId = item.shopId,
+                shopName = item.shopName,
+                shopType = item.shopType,
+                categoryBreadcrumbs = item.categoryBreadcrumbs,
+                product = item.productCardModel,
+                layoutType = PRODUCT_ADS_CAROUSEL
+            ))
         }
+    }
 
-        val title = getTitleCategory(categoryIdLvl2, categoryModel)
-        val constructedLink = getConstructedLink(categoryModel.categoryDetail.data.url, categoryIdLvl2, categoryIdLvl3)
-        val utmCampaignList = getUtmCampaignList(categoryIdLvl2, categoryIdLvl3)
+    private fun setSharingModel(getCategoryDetailResponse: CategoryDetailResponse) {
+        val categoryDetail = getCategoryDetailResponse.categoryDetail
 
-        shareMutableLiveData.value = CategorySharingModel(
-            categoryIdLvl2 = categoryIdLvl2,
-            categoryIdLvl3 = categoryIdLvl3,
+        val title = categoryDetail.data.name
+        val url = categoryDetail.data.url
+        val deepLinkParam = "$DEFAULT_DEEPLINK_PARAM/$categoryIdL1"
+        val utmCampaignList = getUtmCampaignList()
+
+        _shareLiveData.postValue(CategorySharingModel(
+            categoryIdLvl2 = "",
+            categoryIdLvl3 = "",
             title = title,
-            deeplinkParam = constructedLink.first,
-            url = constructedLink.second,
+            deeplinkParam = deepLinkParam,
+            url = url,
             utmCampaignList = utmCampaignList
+        ))
+    }
+
+    private fun getUtmCampaignList(): List<String> {
+        return listOf(String.format(PAGE_TYPE_CATEGORY, CATEGORY_LVL_1), categoryIdL1)
+    }
+
+    private fun sendOpenScreenL1Tracker(detailResponse: CategoryDetailResponse) {
+        sendOpenScreenTracker(
+            id = detailResponse.categoryDetail.data.id,
+            name = detailResponse.categoryDetail.data.name,
+            url = detailResponse.categoryDetail.data.url
         )
-    }
-
-    private fun getTitleCategory(categoryIdLvl2: String, categoryModel: CategoryModel): String {
-        return if (categoryIdLvl2.isNotBlank() && categoryIdLvl2 != DEFAULT_CATEGORY_ID) {
-            categoryModel.quickFilter.filter.first().title.removePrefix(PREFIX_ALL).trim()
-        } else {
-            categoryModel.categoryDetail.data.name
-        }
-    }
-
-    private fun getConstructedLink(categoryUrl: String, categoryIdLvl2: String, categoryIdLvl3: String): Pair<String, String> {
-        var deeplinkParam = "${TokoNowCategoryFragment.DEFAULT_DEEPLINK_PARAM}/${categoryL1}"
-        var url = categoryUrl
-        if (categoryIdLvl2.isNotBlank() && categoryIdLvl2 != DEFAULT_CATEGORY_ID) {
-            deeplinkParam += "/$categoryIdLvl2"
-            url += String.format(TokoNowCategoryFragment.URL_PARAM_LVL_2, categoryIdLvl2)
-
-            if (categoryIdLvl3.isNotBlank() && categoryIdLvl3 != DEFAULT_CATEGORY_ID) {
-                deeplinkParam += String.format(TokoNowCategoryFragment.DEEPLINK_PARAM_LVL_3, categoryIdLvl3)
-                url += String.format(TokoNowCategoryFragment.URL_PARAM_LVL_3, categoryIdLvl3)
-            }
-        }
-        return Pair(deeplinkParam, url)
-    }
-
-    private fun getUtmCampaignList(categoryIdLvl2: String, categoryIdLvl3: String): List<String> {
-        val categoryId: String
-        val categoryLvl: Int
-        when {
-            categoryIdLvl3.isNotBlank() && categoryIdLvl3 != DEFAULT_CATEGORY_ID -> {
-                categoryLvl = TokoNowCategoryFragment.CATEGORY_LVL_3
-                categoryId = categoryIdLvl3
-            }
-            categoryIdLvl2.isNotBlank() && categoryIdLvl2 != DEFAULT_CATEGORY_ID -> {
-                categoryLvl = TokoNowCategoryFragment.CATEGORY_LVL_2
-                categoryId = categoryIdLvl2
-            }
-            else -> {
-                categoryLvl = TokoNowCategoryFragment.CATEGORY_LVL_1
-                categoryId = categoryL1
-            }
-        }
-        return listOf(String.format(TokoNowCategoryFragment.PAGE_TYPE_CATEGORY, categoryLvl), categoryId)
-    }
-
-    override fun executeLoadMore() {
-        getCategoryLoadMorePageUseCase.execute(
-                this::onGetCategoryLoadMorePageSuccess,
-                this::onGetCategoryLoadMorePageError,
-                createRequestParams(),
-        )
-    }
-
-    private fun onGetCategoryLoadMorePageSuccess(categoryModel: CategoryModel) {
-        val aceSearchProductData = categoryModel.searchProduct.data
-        val contentDataView = ContentDataView(aceSearchProductData = aceSearchProductData)
-        onGetLoadMorePageSuccess(contentDataView)
-    }
-
-    private fun onGetCategoryLoadMorePageError(throwable: Throwable) {
-
-    }
-
-    override fun getRecomCategoryId(
-        pageName: String
-    ): List<String> {
-        if (pageName == TOKONOW_NO_RESULT) return listOf()
-
-        val tokonowParam = FilterHelper.createParamsWithoutExcludes(queryParam)
-        val categoryFilterId = tokonowParam[SearchApiConst.SC] ?: ""
-
-        return if (categoryFilterId.isNotEmpty()) listOf(categoryFilterId)
-        else listOf(tokonowParam[SearchApiConst.SRP_PAGE_ID] ?: "")
     }
 }

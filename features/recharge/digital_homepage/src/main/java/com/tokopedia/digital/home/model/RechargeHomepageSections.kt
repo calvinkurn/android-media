@@ -689,3 +689,20 @@ class RechargeHomepageMyBillsEntryPointModel(val section: RechargeHomepageSectio
     }
 
 }
+
+class RechargeHomepageMyBillsTripleEntryPointsModel(val section: RechargeHomepageSections.Section, val isTripleEntryPointLoaded: Boolean)
+    : RechargeHomepageSectionModel{
+
+    override fun visitableId(): String = section.id
+
+    override fun equalsWith(b: Any?): Boolean {
+        return if (b is RechargeHomepageMyBillsTripleEntryPointsModel) {
+            section == b.section
+        } else false
+    }
+
+    override fun type(typeFactory: RechargeHomepageAdapterTypeFactory): Int {
+        return typeFactory.type(this)
+    }
+
+}

@@ -1,9 +1,11 @@
 package com.tokopedia.smartbills.data
 
+import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.smartbills.presentation.adapter.SmartBillsAdapterFactory
+import kotlinx.android.parcel.Parcelize
 
 data class RechargeListSmartBills(
         @SerializedName("userID")
@@ -42,6 +44,7 @@ data class RechargeListSmartBills(
     )
 }
 
+@Parcelize
 data class Section(
     @SerializedName("title")
     @Expose
@@ -56,7 +59,7 @@ data class Section(
     @Expose
     val bills: List<RechargeBills> = listOf(),
     val positionAccordion: Int = 0
-): RechargeBillsModel() {
+): RechargeBillsModel(), Parcelable {
     override fun type(typeFactory: SmartBillsAdapterFactory): Int {
         return typeFactory.type(this)
     }

@@ -5,11 +5,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.common.topupbills.R
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
+import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 
 class RechargeCCRecentNumberAdapter(private val digitalRecentNumbers: List<TopupBillsRecommendation>) :
     RecyclerView.Adapter<RechargeCCRecentNumberAdapter.RecentNumbersItemViewHolder>() {
@@ -51,9 +50,9 @@ class RechargeCCRecentNumberAdapter(private val digitalRecentNumbers: List<Topup
 
         fun bind(topupBillsRecommendation: TopupBillsRecommendation) {
             this.topupBillsRecommendation = topupBillsRecommendation
-            ImageHandler.loadImageWithoutPlaceholder(iconOperator, topupBillsRecommendation.iconUrl,
-                ContextCompat.getDrawable(itemView.context, com.tokopedia.abstraction.R.drawable.status_no_result)
-            )
+            iconOperator.loadImageWithoutPlaceholder(topupBillsRecommendation.iconUrl) {
+                setErrorDrawable(com.tokopedia.abstraction.R.drawable.status_no_result)
+            }
             if (topupBillsRecommendation.description.isEmpty()) {
                 textClientNumber.text = topupBillsRecommendation.label
             } else {
@@ -62,7 +61,6 @@ class RechargeCCRecentNumberAdapter(private val digitalRecentNumbers: List<Topup
 
             textProductName.text = topupBillsRecommendation.title
         }
-
     }
 
     interface ActionListener {

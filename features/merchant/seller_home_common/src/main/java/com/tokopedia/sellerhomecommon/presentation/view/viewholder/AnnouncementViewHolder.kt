@@ -81,8 +81,6 @@ class AnnouncementViewHolder(
                 listener.sendAnnouncementImpressionEvent(element)
             }
 
-            listener.showAnnouncementWidgetCoachMark(element.dataKey, itemView)
-
             setupDismissalView(element)
         }
     }
@@ -184,8 +182,6 @@ class AnnouncementViewHolder(
 
     interface Listener : BaseViewHolderListener, WidgetDismissalListener {
         fun sendAnnouncementImpressionEvent(element: AnnouncementWidgetUiModel) {}
-
-        fun showAnnouncementWidgetCoachMark(dataKey: String, view: View) {}
 
         fun setOnAnnouncementWidgetYesClicked(element: AnnouncementWidgetUiModel) {}
 

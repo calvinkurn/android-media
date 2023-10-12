@@ -1,5 +1,6 @@
 package com.tokopedia.explore.view.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -52,6 +53,7 @@ constructor() : RecyclerView.Adapter<ExploreCategoryAdapter.ViewHolder>() {
         return list.size
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun setList(list: List<ExploreCategoryViewModel>) {
         this.list.clear()
         this.list.addAll(list)

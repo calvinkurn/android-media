@@ -21,6 +21,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.df.user.liveness'
+    testNamespace 'com.tokopedia.df.user.liveness.test'
 
     signingConfigs {
         debug {

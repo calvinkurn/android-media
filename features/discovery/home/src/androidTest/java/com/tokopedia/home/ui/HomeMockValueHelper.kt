@@ -16,7 +16,6 @@ object HomeMockValueHelper {
     const val MOCK_HEADER_COUNT = 1
 
     const val MOCK_ATF_COUNT = 5
-    const val MOCK_ATF_ERROR_POSITION_COUNT = 1
     const val MOCK_ATF_ERROR_COUNT = 3
     const val MOCK_DYNAMIC_CHANNEL_COUNT = 39
     const val MOCK_DYNAMIC_CHANNEL_ERROR_COUNT = 2
@@ -46,6 +45,13 @@ object HomeMockValueHelper {
             InstrumentationRegistry.getInstrumentation().context
         )
         remoteConfig.setString(RemoteConfigKey.HOME_REMOVE_PAGINATION, MOCK_DISABLE_REMOVE_PAGINATION)
+    }
+
+    fun setupAtfRefactorConfig(isNewAtfMechanism: Boolean = false) {
+        val remoteConfig = FirebaseRemoteConfigImpl(
+            InstrumentationRegistry.getInstrumentation().context
+        )
+        remoteConfig.setString(RemoteConfigKey.HOME_ATF_REFACTORING, isNewAtfMechanism.toString())
     }
 
     fun setupDynamicChannelQueryRemoteConfig(

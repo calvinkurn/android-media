@@ -1,6 +1,5 @@
 package com.tokopedia.digital.home.presentation.adapter.viewholder
 
-import android.graphics.Color
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -143,14 +142,6 @@ class RechargeHomepageMyBillsWidgetViewHolder(
                 else -> Label.GENERAL_GREY
             }
             setLabelType(type)
-        }
-
-        private fun Typography.setTextColor(color: String) {
-            try {
-                setTextColor(Color.parseColor(color))
-            } catch (t: Throwable) {
-                t.printStackTrace()
-            }
         }
     }
 

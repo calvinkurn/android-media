@@ -4,6 +4,7 @@ import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsConfigUiModel
 import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsMediaUiModel
 import com.tokopedia.play.broadcaster.shorts.view.custom.DynamicPreparationMenu
+import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
@@ -24,8 +25,10 @@ data class PlayShortsUiState(
     val coverForm: PlayShortsCoverFormUiState,
     val productSectionList: List<ProductTagSectionUiModel>,
 
-    val tags: NetworkResult<Set<PlayTagUiModel>>,
+    val tags: NetworkResult<PlayTagUiModel>,
     val uploadState: PlayShortsUploadUiState,
+    val isAffiliate: Boolean,
+    val bannerPreparation: List<PlayBroadcastPreparationBannerModel>,
 )
 
 data class PlayShortsTitleFormUiState(

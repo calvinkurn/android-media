@@ -49,7 +49,7 @@
         android:id="@+id/ph_play_leaderboard_divider"
         android:layout_width="0dp"
         android:layout_height="1dp"
-        android:background="@color/Unify_N75"
+        android:background="@color/Unify_NN50"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/ph_play_leaderboard_avatar"
         app:layout_constraintBottom_toBottomOf="parent"

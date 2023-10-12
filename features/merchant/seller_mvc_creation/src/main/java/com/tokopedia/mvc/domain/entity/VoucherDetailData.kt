@@ -2,7 +2,11 @@ package com.tokopedia.mvc.domain.entity
 
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
+import com.tokopedia.mvc.domain.entity.enums.ProgramStatus
 import com.tokopedia.mvc.domain.entity.enums.PromoType
+import com.tokopedia.mvc.domain.entity.enums.PromotionStatus
+import com.tokopedia.mvc.domain.entity.enums.SubsidyInfo
+import com.tokopedia.mvc.domain.entity.enums.VoucherCreator
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
 import com.tokopedia.utils.date.DateUtil.YYYY_MM_DD_T_HH_MM_SS
@@ -61,15 +65,59 @@ data class VoucherDetailData(
     val totalPeriod: Int = 0,
     val voucherLockType: String = "",
     val voucherLockId: Long = 0,
-    val productIds: List<ProductId> = listOf()
+    val productIds: List<ProductId> = listOf(),
+    val labelVoucher: LabelVoucher = LabelVoucher(),
+    val isEditable: Boolean = false,
+    val subsidyDetail: SubsidyDetail = SubsidyDetail()
 ) {
     data class ProductId(
         val parentProductId: Long = 0,
         val chilProductId: List<Long>? = listOf()
     )
 
+    data class LabelVoucher(
+        val labelQuota: Int = 0,
+        val labelQuotaFormatted: String = "",
+        val labelQuotaColorType: String = "default",
+        val labelCreator: VoucherCreator = VoucherCreator.SELLER,
+        val labelCreatorFormatted: String = "",
+        val labelCreatorColorType: String = "default",
+        val labelSubsidyInfo: SubsidyInfo = SubsidyInfo.NOT_SUBSIDIZED,
+        val labelSubsidyInfoFormatted: String = "",
+        val labelSubsidyInfoColorType: String = "default",
+        val labelBudgetsVoucher: List<LabelBudgetVoucher> = listOf()
+    ) {
+        data class LabelBudgetVoucher(
+            val labelBudgetVoucher: Int = 0,
+            val labelBudgetVoucherFormatted: String = "",
+            val labelBudgetVoucherValue: Int = 0
+        )
+    }
+
+    data class SubsidyDetail(
+        val programDetail: ProgramDetail = ProgramDetail(),
+        val quotaSubsidized: QuotaSubsidized = QuotaSubsidized()
+    ) {
+        data class ProgramDetail(
+            val programName: String = "",
+            val programStatus: ProgramStatus = ProgramStatus.ONGOING,
+            val programLabel: String = "",
+            val programLabelDetail: String = "",
+            val promotionStatus: PromotionStatus = PromotionStatus.REGISTERED,
+            val promotionLabel: String = ""
+        )
+
+        data class QuotaSubsidized(
+            val voucherQuota: Int = 0,
+            val remainingQuota: Int = 0,
+            val bookedGlobalQuota: Int = 0,
+            val confirmedGlobalQuota: Int = 0
+        )
+    }
+
     fun toVoucherConfiguration(): VoucherConfiguration {
-        val selectedParentProductIds = productIds.map { parentProduct -> parentProduct.parentProductId }
+        val selectedParentProductIds =
+            productIds.map { parentProduct -> parentProduct.parentProductId }
 
         return VoucherConfiguration(
             voucherId = voucherId,
@@ -101,5 +149,21 @@ data class VoucherDetailData(
                 parentProduct.chilProductId.orEmpty()
             )
         }
+    }
+
+    fun isGetSubsidy(): Boolean {
+        return when (labelVoucher.labelSubsidyInfo) {
+            SubsidyInfo.NOT_SUBSIDIZED -> {
+                false
+            }
+
+            SubsidyInfo.FULL_SUBSIDIZED, SubsidyInfo.PARTIALLY_SUBSIDIZED -> {
+                true
+            }
+        }
+    }
+
+    fun isFromVps(): Boolean {
+        return labelVoucher.labelCreator == VoucherCreator.VPS
     }
 }

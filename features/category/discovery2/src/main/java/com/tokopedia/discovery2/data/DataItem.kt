@@ -34,6 +34,9 @@ data class DataItem(
     @SerializedName("target_component_id")
     var targetComponentId: String? = "",
 
+    @SerializedName("target_component_ids")
+    var targetComponentIds: List<Int> = emptyList(),
+
     @SerializedName("background_image")
     val backgroundImage: String? = "",
 
@@ -85,6 +88,12 @@ data class DataItem(
     @SerializedName("image_url_mobile")
     var imageUrlMobile: String? = "",
 
+    @SerializedName("product_image")
+    var productImage: String? = "",
+
+    @SerializedName("product_name")
+    var productName: String? = "",
+
     @SerializedName("promo_id")
     var promoId: String? = "",
 
@@ -108,6 +117,9 @@ data class DataItem(
 
     @SerializedName("action")
     val action: String? = "",
+
+    @SerializedName("move_action")
+    val moveAction: MoveAction? = null,
 
     @SerializedName("notification_title")
     val notificationTitle: String? = "",
@@ -286,7 +298,7 @@ data class DataItem(
     @SerializedName("is_topads")
     var isTopads: Boolean? = false,
 
-    @SerializedName("discounted_price")
+    @SerializedName("discounted_price", alternate = ["slashed_price"])
     var discountedPrice: String? = "",
 
     @SerializedName("gold_merchant")
@@ -378,6 +390,9 @@ data class DataItem(
 
     @SerializedName("image")
     val image: String = "",
+
+    @SerializedName("lottie_image")
+    val lottieImage: String = "",
 
     @SerializedName("tracking_fields")
     val trackingFields: TrackingFields? = null,
@@ -483,6 +498,9 @@ data class DataItem(
     @SerializedName("catalog_slugs")
     var catalogSlug: List<String?>? = null,
 
+    @SerializedName("pinned_slugs")
+    var pinnedSlugs: List<String?>? = null,
+
     @SerializedName("bundle_details")
     var bundleDetails: List<BundleDetails?>? = null,
 
@@ -510,6 +528,9 @@ data class DataItem(
     @SerializedName("limit")
     var limit: Int? = 0,
 
+    @SerializedName("is_active")
+    var isActive: Boolean? = null,
+
     @field:SerializedName("products")
     val products: List<ProductsItem?>? = null,
 
@@ -521,6 +542,12 @@ data class DataItem(
 
     @field:SerializedName("target_section_id")
     val targetSectionID: String? = null,
+
+    @field:SerializedName("icon_image_url")
+    val iconImageUrl: String? = null,
+
+    @field:SerializedName("inactive_icon_image_url")
+    val inactiveIconImageUrl: String? = null,
 
     var shopAdsClickURL: String? = "",
 
@@ -556,7 +583,12 @@ data class DataItem(
 
     var wishlistUrl: String? = "",
 
-    var itemWeight: Float? = 1.0f
+    var itemWeight: Float? = 1.0f,
+
+    var typeProductHighlightComponentCard: String? = "",
+
+    @SerializedName("warehouse_id")
+    var warehouseId: Long? = null
 ) {
     val leftMargin: Int
         get() {

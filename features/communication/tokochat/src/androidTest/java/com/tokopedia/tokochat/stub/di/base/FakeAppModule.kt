@@ -6,12 +6,12 @@ import com.tokopedia.abstraction.common.di.module.net.NetModule
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.cachemanager.CacheManager
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.graphql.domain.GraphqlUseCaseInterface
 import com.tokopedia.test.application.datastore.TestUserSessionDataStore
-import com.tokopedia.tokochat.stub.common.CoroutineAndroidTestDispatchersProvider
 import com.tokopedia.tokochat.stub.repository.GraphqlRepositoryStub
 import com.tokopedia.user.session.datastore.UserSessionDataStore
 import dagger.Module
@@ -41,7 +41,7 @@ class FakeAppModule(private val context: Context) {
     @ApplicationScope
     @Provides
     fun provideCoroutineDispatchers(): CoroutineDispatchers {
-        return CoroutineAndroidTestDispatchersProvider
+        return CoroutineDispatchersProvider
     }
 
     @ApplicationScope

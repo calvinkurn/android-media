@@ -63,7 +63,9 @@ class PreviewPagerComponent(
         adapter.getItem(viewPager.currentItem)?.mVideoPlayer?.pause()
     }
 
-    override fun release() {} // no-op
+    override fun release() {
+        adapter.getItem(viewPager.currentItem)?.mVideoPlayer?.release()
+    }
 
     private fun viewPagerListener() = object : ViewPager.OnPageChangeListener {
         override fun onPageScrollStateChanged(state: Int) {}

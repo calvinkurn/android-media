@@ -7,6 +7,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.widget.EditText
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -26,7 +29,7 @@ import com.tokopedia.applink.review.ReviewApplinkConst
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.design.text.SearchInputView
+import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.review.common.ReviewInboxConstants
 import com.tokopedia.review.common.util.ReviewErrorHandler.getErrorMessage
 import com.tokopedia.review.feature.inbox.buyerreview.analytics.AppScreen
@@ -45,6 +48,7 @@ import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.SellerMigrati
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.InboxReputationDetailPassModel
 import com.tokopedia.review.inbox.R
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
+import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.user.session.UserSession
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -53,9 +57,9 @@ import javax.inject.Inject
  * @author by nisie on 8/11/17.
  */
 class InboxReputationFragment : BaseDaggerFragment(), InboxReputation.View,
-    SearchInputView.Listener, SellerMigrationReviewClickListener {
+    SellerMigrationReviewClickListener {
 
-    private var searchView: SearchInputView? = null
+    private var searchView: SearchBarUnify? = null
     private var mainList: RecyclerView? = null
     private var swipeToRefresh: SwipeToRefresh? = null
     private var adapter = InboxReputationAdapter(InboxReputationTypeFactoryImpl(this, this))
@@ -94,7 +98,14 @@ class InboxReputationFragment : BaseDaggerFragment(), InboxReputation.View,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
+        context?.let {
+            activity?.window?.decorView?.setBackgroundColor(
+                ContextCompat.getColor(
+                    it,
+                    com.tokopedia.unifyprinciples.R.color.Unify_Background
+                )
+            )
+        }
         initVar(savedInstanceState)
     }
 
@@ -120,21 +131,7 @@ class InboxReputationFragment : BaseDaggerFragment(), InboxReputation.View,
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        retainInstance = true
-        val parentView: View =
-            inflater.inflate(R.layout.fragment_inbox_reputation, container, false)
-        mainList = parentView.findViewById<View>(R.id.review_list) as RecyclerView?
-        swipeToRefresh =
-            parentView.findViewById<View>(R.id.swipe_refresh_inbox_reputation) as SwipeToRefresh?
-        searchView = parentView.findViewById<View>(R.id.search) as SearchInputView?
-        searchView?.setDelayTextChanged(DEFAULT_DELAY_TEXT_CHANGED)
-        searchView?.setListener(this)
-        filterButton = parentView.findViewById(R.id.filter_button)
-        prepareView()
-        presenter.attachView(this)
-        return parentView
-    }
+    ): View = inflater.inflate(R.layout.fragment_inbox_reputation, container, false)
 
     private fun prepareView() {
         val layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
@@ -149,9 +146,9 @@ class InboxReputationFragment : BaseDaggerFragment(), InboxReputation.View,
     private fun setQueryHint() {
         if (context != null) {
             if (tab == ReviewInboxConstants.TAB_BUYER_REVIEW) {
-                searchView?.setSearchHint(getString(R.string.query_hint_review_seller))
+                searchView?.searchBarPlaceholder = getString(R.string.query_hint_review_seller)
             } else {
-                searchView?.setSearchHint(getString(R.string.query_hint_review_buyer))
+                searchView?.searchBarPlaceholder = getString(R.string.query_hint_review_buyer)
             }
         }
     }
@@ -172,7 +169,7 @@ class InboxReputationFragment : BaseDaggerFragment(), InboxReputation.View,
                 val visibleItem: Int = layoutManager.itemCount - 1
                 if (!adapter.isLoading && !adapter.isEmpty) presenter.getNextPage(
                     lastItemPosition, visibleItem,
-                    searchView?.searchText.toString(), timeFilter, scoreFilter, tab
+                    searchView?.searchBarTextField?.text.toString(), timeFilter, scoreFilter, tab
                 )
             }
         }
@@ -180,7 +177,16 @@ class InboxReputationFragment : BaseDaggerFragment(), InboxReputation.View,
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        retainInstance = true
         KeyboardHandler.hideSoftKeyboard(activity)
+        mainList = view.findViewById<View>(R.id.review_list) as RecyclerView?
+        swipeToRefresh =
+            view.findViewById<View>(R.id.swipe_refresh_inbox_reputation) as SwipeToRefresh?
+        filterButton = view.findViewById(R.id.filter_button)
+        prepareView()
+        presenter.attachView(this)
+        searchView = view.findViewById(R.id.review_search_invoice)
+
         if (savedInstanceState != null) presenter.getFilteredInboxReputation(
             savedInstanceState.getString(ARGS_QUERY, ""),
             savedInstanceState.getString(ARGS_TIME_FILTER, ""),
@@ -188,6 +194,43 @@ class InboxReputationFragment : BaseDaggerFragment(), InboxReputation.View,
             tab
         ) else {
             presenter.getFirstTimeInboxReputation(tab)
+        }
+
+        searchView?.searchBarTextField?.run {
+
+            setupOnTextEmpty(this)
+            setupSearchListener(this)
+        }
+    }
+
+    private fun setupOnTextEmpty(editText: EditText) = with(editText) {
+        afterTextChanged {
+            if (it.isEmpty()) {
+                presenter.getFilteredInboxReputation(
+                    "",
+                    timeFilter,
+                    scoreFilter,
+                    tab
+                )
+            }
+        }
+    }
+
+    private fun setupSearchListener(editText: EditText) = with(editText) {
+        setOnEditorActionListener { textView, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                val query = textView.text.toString()
+
+                presenter.getFilteredInboxReputation(
+                    query,
+                    timeFilter,
+                    scoreFilter,
+                    tab
+                )
+
+                return@setOnEditorActionListener true
+            }
+            return@setOnEditorActionListener false
         }
     }
 
@@ -377,8 +420,7 @@ class InboxReputationFragment : BaseDaggerFragment(), InboxReputation.View,
         ) {
             timeFilter = ""
             scoreFilter = ""
-            onSearchSubmitted("")
-            searchView?.searchText = ""
+            searchView?.searchBarTextField?.setText("")
         }
         adapter.notifyDataSetChanged()
     }
@@ -394,7 +436,8 @@ class InboxReputationFragment : BaseDaggerFragment(), InboxReputation.View,
             timeFilter =
                 data.extras?.getString(InboxReputationFilterFragment.SELECTED_TIME_FILTER, "") ?: ""
             scoreFilter =
-                data.extras?.getString(InboxReputationFilterFragment.SELECTED_SCORE_FILTER, "") ?: ""
+                data.extras?.getString(InboxReputationFilterFragment.SELECTED_SCORE_FILTER, "")
+                    ?: ""
             presenter.getFilteredInboxReputation(
                 query,
                 timeFilter,
@@ -406,7 +449,7 @@ class InboxReputationFragment : BaseDaggerFragment(), InboxReputation.View,
 
     private val query: String
         get() {
-            return if (searchView != null) searchView?.searchText ?: "" else ""
+            return if (searchView != null) searchView?.searchBarTextField?.text.toString() else ""
         }
 
     override fun onResume() {
@@ -426,27 +469,6 @@ class InboxReputationFragment : BaseDaggerFragment(), InboxReputation.View,
         outState.putString(ARGS_QUERY, query)
     }
 
-    override fun onSearchSubmitted(text: String) {
-        presenter.getFilteredInboxReputation(
-            text,
-            timeFilter,
-            scoreFilter,
-            tab
-        )
-    }
-
-    override fun onSearchTextChanged(text: String) {
-        if (text.isEmpty()) {
-            setQueryHint()
-            presenter.getFilteredInboxReputation(
-                "",
-                timeFilter,
-                scoreFilter,
-                tab
-            )
-        }
-    }
-
     override fun onSellerMigrationReviewClicked() {
         val context: Context? = context
         if (context != null) {
@@ -454,9 +476,10 @@ class InboxReputationFragment : BaseDaggerFragment(), InboxReputation.View,
             appLinks.add(ApplinkConstInternalSellerapp.SELLER_HOME)
             appLinks.add(
                 UriUtil.buildUriAppendParam(
-                ApplinkConst.REPUTATION,
-                mapOf(ReviewApplinkConst.PARAM_TAB to ReviewApplinkConst.BUYER_REVIEW_TAB)
-            ))
+                    ApplinkConst.REPUTATION,
+                    mapOf(ReviewApplinkConst.PARAM_TAB to ReviewApplinkConst.BUYER_REVIEW_TAB)
+                )
+            )
             val intent: Intent = SellerMigrationActivity.createIntent(
                 context,
                 SellerMigrationFeatureName.FEATURE_REVIEW_TEMPLATE_AND_STATISTICS,

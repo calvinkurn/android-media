@@ -1,5 +1,8 @@
+@file:SuppressLint("CheckResult")
+
 package com.tokopedia.media.loader.options
 
+import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import com.bumptech.glide.load.MultiTransformation
 import com.bumptech.glide.load.Transformation
@@ -10,7 +13,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.BaseRequestOptions
 import com.tokopedia.media.loader.data.Properties
 
-class MultiTransformationOptions constructor(
+internal class MultiTransformationOptions constructor(
     private val properties: Properties,
     options: BaseRequestOptions<*>
 ) {

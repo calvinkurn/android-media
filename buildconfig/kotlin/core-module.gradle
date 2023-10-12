@@ -48,7 +48,7 @@ android {
     lintOptions {
         abortOnError false
         xmlReport true
-        htmlReport false
+        htmlReport true
     }
 }
 
@@ -59,7 +59,6 @@ dependencies {
         exclude group: 'org.jetbrains', module: 'annotations'
     }
     implementation rootProject.ext.miscDependencies.gson
-    implementation rootProject.ext.miscDependencies.autopatchbase
 
     testImplementation rootProject.ext.testDependencies.junit
     androidTestImplementation(rootProject.ext.testDependencies.androidTestRunner) {

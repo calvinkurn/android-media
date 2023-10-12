@@ -6,13 +6,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
 
-    <ImageView
+    <com.tkpd.remoteresourcerequest.view.DeferredImageView
         android:id="@+id/img_no_data"
         android:layout_width="@dimen/dp_100"
         android:layout_height="@dimen/dp_100"
-        android:src="@drawable/ic_no_product_found"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:completeUrl="https://images.tokopedia.net/img/android/res/singleDpi/ic_category_no_product_found.png"
+        app:imageDpiSupportType="singleDpi"
+        />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txt_no_data_header"
@@ -20,7 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:textColor="@color/Unify_N700"
+        android:textColor="@color/Unify_NN950"
         app:layout_constraintBottom_toTopOf="@+id/txt_no_data_description"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintLeft_toRightOf="@+id/img_no_data"

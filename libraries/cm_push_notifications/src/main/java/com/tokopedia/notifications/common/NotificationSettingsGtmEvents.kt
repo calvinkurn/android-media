@@ -35,6 +35,8 @@ class NotificationSettingsGtmEvents constructor(
     private var frequencyNativePrompt: Int = 0
     private var frequencyGeneralPrompt: Int = 0
     private var isNativePrompt = false
+    private val freqKeyNativePrompt = FREQ_KEY_NATIVE_PROMPT + userSession.userId
+    private val freqKeyGeneralPrompt = FREQ_KEY_GENERAL_PROMPT + userSession.userId
 
     fun sendPromptImpressionEvent(context: Context) {
         isNativePrompt = true
@@ -52,9 +54,9 @@ class NotificationSettingsGtmEvents constructor(
     }
 
     private fun updateNativePromptFrequency() {
-        frequencyNativePrompt = sharedPreference.getInt(FREQ_KEY_NATIVE_PROMPT, 0)
+        frequencyNativePrompt = sharedPreference.getInt(freqKeyNativePrompt, 0)
         val editor = sharedPreference.edit()
-        editor.putInt(FREQ_KEY_NATIVE_PROMPT, frequencyNativePrompt + 1)
+        editor.putInt(freqKeyNativePrompt, frequencyNativePrompt + 1)
         editor.apply()
     }
 
@@ -106,9 +108,9 @@ class NotificationSettingsGtmEvents constructor(
     }
 
     private fun updateGeneralPromptFrequency() {
-        frequencyGeneralPrompt = sharedPreference.getInt(FREQ_KEY_GENERAL_PROMPT, 0)
+        frequencyGeneralPrompt = sharedPreference.getInt(freqKeyGeneralPrompt, 0)
         val editor = sharedPreference.edit()
-        editor.putInt(FREQ_KEY_GENERAL_PROMPT, frequencyGeneralPrompt + 1)
+        editor.putInt(freqKeyGeneralPrompt, frequencyGeneralPrompt + 1)
         editor.apply()
     }
 
@@ -214,9 +216,9 @@ class NotificationSettingsGtmEvents constructor(
             userSession.userId
         }
         val frequency = if (isNativePrompt) {
-            sharedPreference.getInt(FREQ_KEY_NATIVE_PROMPT, 0)
+            sharedPreference.getInt(freqKeyNativePrompt, 0)
         } else {
-            sharedPreference.getInt(FREQ_KEY_GENERAL_PROMPT, 0)
+            sharedPreference.getInt(freqKeyGeneralPrompt, 0)
         }
 
         val adsId = DeviceInfo.getAdsId(context)

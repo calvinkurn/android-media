@@ -1,6 +1,8 @@
 package com.tokopedia.play.model
 
 import com.google.gson.Gson
+import com.tokopedia.content.common.report_content.model.UserReportOptions
+import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
 import com.tokopedia.play.data.*
 import com.tokopedia.play.data.detail.recom.ChannelDetailsWithRecomResponse
 import com.tokopedia.play.ui.chatlist.model.PlayChat
@@ -12,7 +14,6 @@ import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
-import com.tokopedia.variant_common.model.GetProductVariantResponse
 
 /**
  * Created by jegul on 20/02/20
@@ -569,7 +570,11 @@ class ModelBuilder {
                          }
                        ],
                        "rating": "",
-                       "sold_quantity": ""
+                       "sold_quantity": "",
+                       "social_proof_rank": "Diminati",
+                        "social_proof_tag_color": ["#E02954", "#FF7182"],
+                        "social_proof_raw_value": 1,
+                        "social_proof_type_value": "diminati"
                      }
                    ]
                  }
@@ -752,7 +757,11 @@ class ModelBuilder {
                   }
                 ],
                 "rating": "",
-                "sold_quantity": ""
+                "sold_quantity": "",
+                "social_proof_rank": "Diminati",
+                "social_proof_tag_color": ["#E02954", "#FF7182"],
+                "social_proof_raw_value": 1,
+                "social_proof_type_value": "diminati"
               }
             ]
           }
@@ -1282,9 +1291,6 @@ class ModelBuilder {
     fun buildNonPublic(): ProductSection.Response =
         gson.fromJson(channelNoPublicVoucher, ProductSection.Response::class.java)
 
-    fun buildProductVariant(): GetProductVariantResponse =
-        gson.fromJson(productVariant, GetProductVariantResponse::class.java)
-
     fun buildProduct(): Product = gson.fromJson(product, Product::class.java)
 
     fun buildAddToCartModelResponseSuccess() = CartFeedbackResponseModel(
@@ -1366,7 +1372,8 @@ class ModelBuilder {
         isProductNumerationShown: Boolean = false,
         number: String = "0",
         rating: String = "",
-        soldQuantity : String = "",
+        soldQuantity: String = "",
+        label: PlayProductUiModel.Product.Label = PlayProductUiModel.Product.Label(rankColors = emptyList(), rankFmt = "", rankType = ""),
     ) = PlayProductUiModel.Product(
         id = id,
         shopId = shopId,
@@ -1386,6 +1393,7 @@ class ModelBuilder {
         number = number,
         rating = rating,
         soldQuantity = soldQuantity,
+        label = label,
     )
 
     fun buildProductStockAvailable(
@@ -1436,12 +1444,10 @@ class ModelBuilder {
 
     fun buildBottomInsetsMap(
         keyboardState: BottomInsetsState = buildBottomInsetsState(),
-        productSheetState: BottomInsetsState = buildBottomInsetsState(),
-        variantSheetState: BottomInsetsState = buildBottomInsetsState()
+        productSheetState: BottomInsetsState = buildBottomInsetsState()
     ) = mapOf(
         BottomInsetsType.Keyboard to keyboardState,
-        BottomInsetsType.ProductSheet to productSheetState,
-        BottomInsetsType.VariantSheet to variantSheetState
+        BottomInsetsType.ProductSheet to productSheetState
     )
 
     fun buildBottomInsetsState(
@@ -1574,7 +1580,11 @@ class ModelBuilder {
                             ],
                             "product_number": 1,
                             "rating": "",
-                            "sold_quantity": ""
+                            "sold_quantity": "",
+                            "social_proof_rank": "Diminati",
+                            "social_proof_tag_color": ["#E02954", "#FF7182"],
+                            "social_proof_raw_value": 1,
+                            "social_proof_type_value": "diminati"
                           },
                           {
                             "id": "8175013631",
@@ -1610,7 +1620,11 @@ class ModelBuilder {
                             ],
                             "product_number": 2,
                             "rating": "",
-                            "sold_quantity": ""
+                            "sold_quantity": "",
+                            "social_proof_rank": "Diminati",
+                            "social_proof_tag_color": ["#E02954", "#FF7182"],
+                            "social_proof_raw_value": 1,
+                            "social_proof_type_value": "diminati"
                           },
                           {
                             "id": "3325111748",
@@ -1646,7 +1660,11 @@ class ModelBuilder {
                             ],
                             "product_number": 3,
                             "rating": "",
-                            "sold_quantity": ""
+                            "sold_quantity": "",
+                             "social_proof_rank": "Diminati",
+                             "social_proof_tag_color": ["#E02954", "#FF7182"],
+                             "social_proof_raw_value": 1,
+                             "social_proof_type_value": "diminati"
                           },
                           {
                             "id": "7506341076",
@@ -1682,7 +1700,11 @@ class ModelBuilder {
                             ],
                             "product_number": 4,
                             "rating": "",
-                            "sold_quantity": ""
+                            "sold_quantity": "",
+                            "social_proof_rank": "Diminati",
+                            "social_proof_tag_color": ["#E02954", "#FF7182"],
+                            "social_proof_raw_value": 1,
+                            "social_proof_type_value": "diminati"
                           },
                           {
                             "id": "1953633275",
@@ -1718,7 +1740,11 @@ class ModelBuilder {
                             ],
                             "product_number": 5,
                             "rating": "",
-                            "sold_quantity": ""
+                            "sold_quantity": "",
+                            "social_proof_rank": "Diminati",
+                            "social_proof_tag_color": ["#E02954", "#FF7182"],
+                            "social_proof_raw_value": 1,
+                            "social_proof_type_value": "diminati"
                           },
                           {
                             "id": "8584759533",
@@ -1754,7 +1780,11 @@ class ModelBuilder {
                             ],
                             "product_number": 6,
                             "rating": "",
-                            "sold_quantity": ""
+                            "sold_quantity": "",
+                            "social_proof_rank": "Diminati",
+                            "social_proof_tag_color": ["#E02954", "#FF7182"],
+                            "social_proof_raw_value": 1,
+                            "social_proof_type_value": "diminati"
                           },
                           {
                             "id": "2851476971",
@@ -1790,7 +1820,11 @@ class ModelBuilder {
                             ],
                             "product_number": 7,
                             "rating": "",
-                             "sold_quantity": ""
+                             "sold_quantity": "",
+                             "social_proof_rank": "Diminati",
+                             "social_proof_tag_color": ["#E02954", "#FF7182"],
+                             "social_proof_raw_value": 1,
+                             "social_proof_type_value": "diminati"
                           },
                           {
                             "id": "1953652961",
@@ -1826,7 +1860,11 @@ class ModelBuilder {
                             ],
                             "product_number": 8,
                             "rating": "",
-                             "sold_quantity": ""
+                             "sold_quantity": "",
+                             "social_proof_rank": "Diminati",
+                             "social_proof_tag_color": ["#E02954", "#FF7182"],
+                             "social_proof_raw_value": 1,
+                             "social_proof_type_value": "diminati"
                           },
                           {
                             "id": "1953621470",
@@ -1862,7 +1900,11 @@ class ModelBuilder {
                             ],
                             "product_number": 9,
                             "rating": "",
-                            "sold_quantity": ""
+                            "sold_quantity": "",
+                            "social_proof_rank": "Diminati",
+                            "social_proof_tag_color": ["#E02954", "#FF7182"],
+                            "social_proof_raw_value": 1,
+                            "social_proof_type_value": "diminati"
                           },
                           {
                             "id": "6924972249",
@@ -1898,7 +1940,11 @@ class ModelBuilder {
                             ],
                             "product_number": 10,
                             "rating": "",
-                            "sold_quantity": ""
+                            "sold_quantity": "",
+                            "social_proof_rank": "Diminati",
+                            "social_proof_tag_color": ["#E02954", "#FF7182"],
+                            "social_proof_raw_value": 1,
+                            "social_proof_type_value": "diminati"
                           },
                           {
                             "id": "1953600735",
@@ -1934,7 +1980,11 @@ class ModelBuilder {
                             ],
                             "product_number": 11,
                             "rating": "",
-                            "sold_quantity": ""
+                            "sold_quantity": "",
+                            "social_proof_rank": "Diminati",
+                            "social_proof_tag_color": ["#E02954", "#FF7182"],
+                            "social_proof_raw_value": 1,
+                            "social_proof_type_value": "diminati"
                           },
                           {
                             "id": "2671545794",
@@ -1970,7 +2020,11 @@ class ModelBuilder {
                             ],
                             "product_number": 12,
                             "rating": "",
-                            "sold_quantity": ""
+                            "sold_quantity": "",
+                            "social_proof_rank": "Diminati",
+                            "social_proof_tag_color": ["#E02954", "#FF7182"],
+                            "social_proof_raw_value": 1,
+                            "social_proof_type_value": "diminati"
                           },
                           {
                             "id": "1953609394",
@@ -2006,7 +2060,11 @@ class ModelBuilder {
                             ],
                             "product_number": 13,
                             "rating": "",
-                            "sold_quantity": ""
+                            "sold_quantity": "",
+                            "social_proof_rank": "Diminati",
+                            "social_proof_tag_color": ["#E02954", "#FF7182"],
+                            "social_proof_raw_value": 1,
+                            "social_proof_type_value": "diminati"
                           },
                           {
                             "id": "1953658710",
@@ -2042,7 +2100,11 @@ class ModelBuilder {
                             ],
                             "product_number": 14,
                             "rating": "",
-                            "sold_quantity": ""
+                            "sold_quantity": "",
+                            "social_proof_rank": "Diminati",
+                            "social_proof_tag_color": ["#E02954", "#FF7182"],
+                            "social_proof_raw_value": 1,
+                            "social_proof_type_value": "diminati"
                           },
                           {
                             "id": "2373468360",
@@ -2078,7 +2140,11 @@ class ModelBuilder {
                             ],
                             "product_number": 15,
                             "rating": "",
-                            "sold_quantity": ""
+                            "sold_quantity": "",
+                            "social_proof_rank": "Diminati",
+                            "social_proof_tag_color": ["#E02954", "#FF7182"],
+                            "social_proof_raw_value": 1,
+                            "social_proof_type_value": "diminati"
                           }
                         ]
                       }
@@ -2149,7 +2215,11 @@ class ModelBuilder {
                             ],
                             "product_number": 1,
                             "rating": "",
-                            "sold_quantity": ""
+                            "sold_quantity": "",
+                            "social_proof_rank": "Diminati",
+                            "social_proof_tag_color": ["#E02954", "#FF7182"],
+                            "social_proof_raw_value": 1,
+                            "social_proof_type_value": "diminati"
                           },
                           {
                             "id": "8175013631",
@@ -2185,7 +2255,11 @@ class ModelBuilder {
                             ],
                             "product_number": 2,
                             "rating": "",
-                            "sold_quantity": ""
+                            "sold_quantity": "",
+                            "social_proof_rank": "Diminati",
+                            "social_proof_tag_color": ["#E02954", "#FF7182"],
+                            "social_proof_raw_value": 1,
+                            "social_proof_type_value": "diminati"
                           },
                           {
                             "id": "3325111748",
@@ -2221,7 +2295,11 @@ class ModelBuilder {
                             ],
                             "product_number": 3,
                             "rating": "",
-                            "sold_quantity": ""
+                            "sold_quantity": "",
+                            "social_proof_rank": "Diminati",
+                            "social_proof_tag_color": ["#E02954", "#FF7182"],
+                            "social_proof_raw_value": 1,
+                            "social_proof_type_value": "diminati"
                           },
                           {
                             "id": "7506341076",
@@ -2257,7 +2335,11 @@ class ModelBuilder {
                             ],
                             "product_number": 4,
                             "rating": "",
-                            "sold_quantity": ""
+                            "sold_quantity": "",
+                            "social_proof_rank": "Diminati",
+                            "social_proof_tag_color": ["#E02954", "#FF7182"],
+                            "social_proof_raw_value": 1,
+                            "social_proof_type_value": "diminati"
                           },
                           {
                             "id": "1953633275",
@@ -2293,7 +2375,11 @@ class ModelBuilder {
                             ],
                             "product_number": 5,
                             "rating": "",
-                            "sold_quantity": ""
+                            "sold_quantity": "",
+                            "social_proof_rank": "Diminati",
+                            "social_proof_tag_color": ["#E02954", "#FF7182"],
+                            "social_proof_raw_value": 1,
+                            "social_proof_type_value": "diminati"
                           },
                           {
                             "id": "8584759533",
@@ -2329,7 +2415,11 @@ class ModelBuilder {
                             ],
                             "product_number": 6,
                             "rating": "",
-                            "sold_quantity": ""
+                            "sold_quantity": "",
+                            "social_proof_rank": "Diminati",
+                            "social_proof_tag_color": ["#E02954", "#FF7182"],
+                            "social_proof_raw_value": 1,
+                            "social_proof_type_value": "diminati"
                           },
                           {
                             "id": "2851476971",
@@ -2365,7 +2455,11 @@ class ModelBuilder {
                             ],
                             "product_number": 7,
                             "rating": "",
-                            "sold_quantity": ""
+                            "sold_quantity": "",
+                            "social_proof_rank": "Diminati",
+                            "social_proof_tag_color": ["#E02954", "#FF7182"],
+                            "social_proof_raw_value": 1,
+                            "social_proof_type_value": "diminati"
                           },
                           {
                             "id": "1953652961",
@@ -2401,7 +2495,11 @@ class ModelBuilder {
                             ],
                             "product_number": 8,
                             "rating": "",
-                            "sold_quantity": ""
+                            "sold_quantity": "",
+                            "social_proof_rank": "Diminati",
+                            "social_proof_tag_color": ["#E02954", "#FF7182"],
+                            "social_proof_raw_value": 1,
+                            "social_proof_type_value": "diminati"
                           },
                           {
                             "id": "1953621470",
@@ -2437,7 +2535,11 @@ class ModelBuilder {
                             ],
                             "product_number": 9,
                             "rating": "",
-                            "sold_quantity": ""
+                            "sold_quantity": "",
+                            "social_proof_rank": "Diminati",
+                            "social_proof_tag_color": ["#E02954", "#FF7182"],
+                            "social_proof_raw_value": 1,
+                            "social_proof_type_value": "diminati"
                           },
                           {
                             "id": "6924972249",
@@ -2473,7 +2575,11 @@ class ModelBuilder {
                             ],
                             "product_number": 10,
                             "rating": "",
-                            "sold_quantity": ""
+                            "sold_quantity": "",
+                            "social_proof_rank": "Diminati",
+                            "social_proof_tag_color": ["#E02954", "#FF7182"],
+                            "social_proof_raw_value": 1,
+                            "social_proof_type_value": "diminati"
                           },
                           {
                             "id": "1953600735",
@@ -2509,7 +2615,11 @@ class ModelBuilder {
                             ],
                             "product_number": 11,
                             "rating": "",
-                            "sold_quantity": ""
+                            "sold_quantity": "",
+                            "social_proof_rank": "Diminati",
+                            "social_proof_tag_color": ["#E02954", "#FF7182"],
+                            "social_proof_raw_value": 1,
+                            "social_proof_type_value": "diminati"
                           },
                           {
                             "id": "2671545794",
@@ -2545,7 +2655,11 @@ class ModelBuilder {
                             ],
                             "product_number": 12,
                             "rating": "",
-                            "sold_quantity": ""
+                            "sold_quantity": "",
+                            "social_proof_rank": "Diminati",
+                            "social_proof_tag_color": ["#E02954", "#FF7182"],
+                            "social_proof_raw_value": 1,
+                            "social_proof_type_value": "diminati"
                           },
                           {
                             "id": "1953609394",
@@ -2581,7 +2695,11 @@ class ModelBuilder {
                             ],
                             "product_number": 13,
                             "rating": "",
-                            "sold_quantity": ""
+                            "sold_quantity": "",
+                            "social_proof_rank": "Diminati",
+                            "social_proof_tag_color": ["#E02954", "#FF7182"],
+                            "social_proof_raw_value": 1,
+                            "social_proof_type_value": "diminati"
                           },
                           {
                             "id": "1953658710",
@@ -2617,7 +2735,11 @@ class ModelBuilder {
                             ],
                             "product_number": 14,
                             "rating": "",
-                            "sold_quantity": ""
+                            "sold_quantity": "",
+                            "social_proof_rank": "Diminati",
+                            "social_proof_tag_color": ["#E02954", "#FF7182"],
+                            "social_proof_raw_value": 1,
+                            "social_proof_type_value": "diminati"
                           },
                           {
                             "id": "2373468360",
@@ -2653,7 +2775,11 @@ class ModelBuilder {
                             ],
                             "product_number": 15,
                             "rating": "",
-                            "sold_quantity": ""
+                            "sold_quantity": "",
+                            "social_proof_rank": "Diminati",
+                            "social_proof_tag_color": ["#E02954", "#FF7182"],
+                            "social_proof_raw_value": 1,
+                            "social_proof_type_value": "diminati"
                           }
                         ]
                       }

@@ -14,7 +14,7 @@
             <path
                 android:name="_r_g_l_6_g_d_0_p_0"
                 android:pathData="M 1450 850 C 1450 518.63 1181.37 250 850 250 C 518.63 250 250 518.63 250 850 C 250 1181.37 518.63 1450 850 1450 C 1181.37 1450 1450 1181.37 1450 850"
-                android:strokeColor="#2e3137"
+                android:strokeColor="@color/autocomplete_ic_add_color"
                 android:strokeWidth="100"
                 android:strokeLineCap="round"
                 android:strokeLineJoin="round"/>
@@ -29,7 +29,7 @@
             <path
                 android:name="_r_g_l_4_g_d_0_p_0"
                 android:pathData="M 50 50 C 50 50 50 578 50 578"
-                android:strokeColor="#2e3137"
+                android:strokeColor="@color/autocomplete_ic_add_color"
                 android:strokeWidth="100"
                 android:strokeLineCap="round"
                 android:strokeLineJoin="round"/>
@@ -44,7 +44,7 @@
             <path
                 android:name="_r_g_l_5_g_d_0_p_0"
                 android:pathData="M 578 50 C 578 50 50 50 50 50"
-                android:strokeColor="#2e3137"
+                android:strokeColor="@color/autocomplete_ic_add_color"
                 android:strokeWidth="100"
                 android:strokeLineCap="round"
                 android:strokeLineJoin="round"/>

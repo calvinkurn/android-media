@@ -9,7 +9,7 @@ import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 class GetHomeTokopointsListDataUseCase @Inject constructor(
-        private val graphqlUseCase: GraphqlUseCase<TokopointsDrawerListHomeData>
+    private val graphqlUseCase: GraphqlUseCase<TokopointsDrawerListHomeData>
 ) : UseCase<TokopointsDrawerListHomeData>() {
     private val params = RequestParams.create()
 
@@ -24,18 +24,13 @@ class GetHomeTokopointsListDataUseCase @Inject constructor(
         return graphqlUseCase.executeOnBackground()
     }
 
-    fun setParams(useNewBalanceWidget: Boolean = false) {
+    fun setParams() {
         params.parameters.clear()
-        if (useNewBalanceWidget) {
-            params.putString(API_VERSION, API_VERSION_VALUE_4)
-        } else {
-            params.putString(API_VERSION, API_VERSION_VALUE_3)
-        }
+        params.putString(API_VERSION, API_VERSION_VALUE_5)
     }
 
     companion object {
         private const val API_VERSION = "apiVersion"
-        private const val API_VERSION_VALUE_3 = "3.0.0"
-        private const val API_VERSION_VALUE_4 = "4.0.0"
+        private const val API_VERSION_VALUE_5 = "5.0.0"
     }
 }

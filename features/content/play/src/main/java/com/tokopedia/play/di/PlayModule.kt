@@ -19,6 +19,7 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.play.analytic.CastAnalyticHelper
 import com.tokopedia.play.analytic.PlayAnalytic
+import com.tokopedia.play.analytic.PlayDimensionTrackingHelper
 import com.tokopedia.play.util.PlayCastHelper
 import com.tokopedia.play.util.share.PlayShareExperience
 import com.tokopedia.play.util.share.PlayShareExperienceImpl
@@ -43,7 +44,6 @@ import com.tokopedia.play_common.util.ExoPlaybackExceptionParser
 import com.tokopedia.play_common.util.PlayLiveRoomMetricsCommon
 import com.tokopedia.play_common.util.PlayVideoPlayerObserver
 import com.tokopedia.play_common.websocket.KEY_GROUP_CHAT_PREFERENCES
-import com.tokopedia.product.detail.common.VariantConstant.QUERY_VARIANT
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -105,16 +105,6 @@ class PlayModule {
 
     @Provides
     @PlayScope
-    @Named(QUERY_VARIANT)
-    internal fun provideQueryVariant(activity: AppCompatActivity): String {
-        return GraphqlHelper.loadRawString(
-            activity.resources,
-            com.tokopedia.variant_common.R.raw.gql_product_variant
-        )
-    }
-
-    @Provides
-    @PlayScope
     internal fun provideAddToCartUseCase(graphqlUseCase: GraphqlUseCase,
                                          atcMapper: AddToCartDataMapper,
                                          chosenAddressHelper: ChosenAddressRequestHelper): AddToCartUseCase {
@@ -153,8 +143,8 @@ class PlayModule {
 
     @Provides
     @PlayScope
-    fun providePlayAnalytic(userSession: UserSessionInterface, trackingQueue: TrackingQueue): PlayAnalytic {
-        return PlayAnalytic(userSession, trackingQueue)
+    fun providePlayAnalytic(userSession: UserSessionInterface, trackingQueue: TrackingQueue, dimensionTrackingHelper: PlayDimensionTrackingHelper): PlayAnalytic {
+        return PlayAnalytic(userSession, trackingQueue, dimensionTrackingHelper)
     }
 
     @PlayScope

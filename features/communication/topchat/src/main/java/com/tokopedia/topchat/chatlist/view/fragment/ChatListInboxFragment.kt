@@ -1,6 +1,5 @@
 package com.tokopedia.topchat.chatlist.view.fragment
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -15,7 +14,6 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
@@ -32,8 +30,6 @@ import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.imageassets.TokopediaImageUrl
-import com.tokopedia.inboxcommon.InboxFragment
-import com.tokopedia.inboxcommon.InboxFragmentContainer
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -41,8 +37,12 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
+import com.tokopedia.stories.widget.StoriesWidgetManager
+import com.tokopedia.stories.widget.domain.StoriesEntryPoint
+import com.tokopedia.stories.widget.storiesManager
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.analytic.ChatListAnalytic
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_READ
@@ -69,6 +69,9 @@ import com.tokopedia.topchat.chatlist.view.uimodel.IncomingTypingWebSocketModel
 import com.tokopedia.topchat.chatlist.view.viewmodel.ChatItemListViewModel
 import com.tokopedia.topchat.chatlist.view.viewmodel.ChatItemListViewModel.Companion.arrayFilterParam
 import com.tokopedia.topchat.chatlist.view.viewmodel.ChatListWebSocketViewModel
+import com.tokopedia.topchat.chatlist.view.widget.BroadcastButtonLayout
+import com.tokopedia.topchat.chatlist.view.widget.BroadcastButtonLayout.Companion.BROADCAST_FAB_LABEL_PREF_NAME
+import com.tokopedia.topchat.chatlist.view.widget.BroadcastButtonLayout.Companion.BROADCAST_FAB_LABEL_ROLLENCE_KEY
 import com.tokopedia.topchat.chatlist.view.widget.FilterMenu
 import com.tokopedia.topchat.chatlist.view.widget.OperationalInsightBottomSheet
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
@@ -89,6 +92,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import timber.log.Timber
 import java.util.Locale
 import javax.inject.Inject
 
@@ -99,7 +103,6 @@ open class ChatListInboxFragment :
     BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(),
     ChatListItemListener,
     LifecycleOwner,
-    InboxFragment,
     ChatListTickerListener {
 
     @Inject
@@ -114,6 +117,9 @@ open class ChatListInboxFragment :
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    @Inject
+    lateinit var abTestPlatform: AbTestPlatform
+
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy {
         viewModelProvider.get(ChatItemListViewModel::class.java)
@@ -123,6 +129,10 @@ open class ChatListInboxFragment :
     }
 
     private lateinit var performanceMonitoring: PerformanceMonitoring
+
+    private val mStoriesWidgetManager by storiesManager(StoriesEntryPoint.TopChatList) {
+        setScrollingParent(rv)
+    }
 
     @RoleType
     private var role: Int = RoleType.BUYER
@@ -134,8 +144,7 @@ open class ChatListInboxFragment :
     private var rvAdapter: ChatListAdapter? = null
     private var chatFilter: ChatFilterView? = null
     private var emptyUiModel: Visitable<*>? = null
-    private var broadCastButton: FloatingActionButton? = null
-    private var containerListener: InboxFragmentContainer? = null
+    private var broadCastButton: BroadcastButtonLayout? = null
     var chatRoomFlexModeListener: TopChatRoomFlexModeListener? = null
     var stopTryingIndicator = false
 
@@ -145,34 +154,10 @@ open class ChatListInboxFragment :
     override fun getSwipeRefreshLayoutResourceId() = R.id.swipe_refresh_layout
     override fun getScreenName(): String = "chatlist"
 
-    override fun onAttachActivity(context: Context?) {
-        if (context is InboxFragmentContainer) {
-            containerListener = context
-        }
-    }
-
-    override fun onRoleChanged(role: Int) {
-        if (!::viewModelFactory.isInitialized) return
-        if (assignRole(role)) {
-            viewModel.reset()
-            chatFilter?.reset()
-            chatFilter?.onRoleChanged(isTabSeller())
-            webSocket.onRoleChanged(role)
-            if (isResumed) {
-                loadInitialData()
-                setupSellerBroadcast()
-            }
-        }
-    }
-
-    override fun onPageClickedAgain() {
-        rv?.scrollToPosition(0)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         performanceMonitoring = PerformanceMonitoring.start(getFpmKey())
-        initRole()
+        initRoleFromChatRoom()
         initWebSocket()
         setHasOptionsMenu(false)
     }
@@ -194,26 +179,10 @@ open class ChatListInboxFragment :
         }
     }
 
-    private fun initRole() {
-        if (isArgumentUserRoleAvailable()) {
-            initRoleFromChatRoom()
-        } else {
-            initRoleFromInbox()
-        }
-    }
-
-    private fun isArgumentUserRoleAvailable(): Boolean {
-        return arguments?.getInt(Constant.CHAT_USER_ROLE_KEY) != NO_INT_ARGUMENT
-    }
-
     private fun initRoleFromChatRoom() {
         // From ChatRoom with Flex Foldables
         role = arguments?.getInt(Constant.CHAT_USER_ROLE_KEY) ?: RoleType.BUYER
         assignRole(role)
-    }
-
-    private fun initRoleFromInbox() {
-        assignRole(containerListener?.role)
     }
 
     private fun initWebSocket() {
@@ -335,7 +304,7 @@ open class ChatListInboxFragment :
                 when (it) {
                     is Success -> updateChatBannedSellerStatus(it.data)
                     else -> {
-                        //no-op
+                        // no-op
                     }
                 }
             }
@@ -381,16 +350,13 @@ open class ChatListInboxFragment :
 
     private fun setupSellerBroadcastButtonObserver() {
         viewModel.broadCastButtonVisibility.observe(
-            viewLifecycleOwner,
-            Observer { visibility ->
-                when (visibility) {
-                    true -> {
-                        broadCastButton?.show()
-                    }
-                    false -> broadCastButton?.hide()
-                }
-            }
-        )
+            viewLifecycleOwner
+        ) { visibility ->
+            broadCastButton?.toggleBroadcastButton(
+                shouldShow = visibility,
+                shouldShowLabel = shouldShowBroadcastFabNewLabel()
+            )
+        }
         viewModel.broadCastButtonUrl.observe(
             viewLifecycleOwner,
             Observer { applink ->
@@ -414,13 +380,34 @@ open class ChatListInboxFragment :
                         chatListAnalytics.eventClickBroadcastButton()
                         RouteManager.route(context, applink)
                     }
+                    markBroadcastNewLabel()
                 }
             }
         )
     }
 
+    private fun markBroadcastNewLabel() {
+        if (shouldShowBroadcastFabNewLabel()) {
+            viewModel.saveBooleanCache(
+                cacheName = "${BROADCAST_FAB_LABEL_PREF_NAME}_${userSession.userId}",
+                value = false
+            )
+            broadCastButton?.toggleBroadcastLabel(
+                shouldShowLabel = false
+            )
+        }
+    }
+
+    private fun shouldShowBroadcastFabNewLabel(): Boolean {
+        val labelCache = viewModel.getBooleanCache(
+            "${BROADCAST_FAB_LABEL_PREF_NAME}_${userSession.userId}"
+        )
+        val rollenceValue = getRollenceValue(BROADCAST_FAB_LABEL_ROLLENCE_KEY)
+        return labelCache && rollenceValue
+    }
+
     private fun initView(view: View) {
-        broadCastButton = view.findViewById(R.id.fab_broadcast)
+        broadCastButton = view.findViewById(R.id.layout_fab_broadcast)
         chatBannedSellerTicker = view.findViewById(R.id.ticker_ban_status)
         rv = view.findViewById(R.id.recycler_view)
         chatFilter = view.findViewById(R.id.cf_chat_list)
@@ -556,7 +543,10 @@ open class ChatListInboxFragment :
     override fun onDismissTicker(element: ChatListTickerUiModel) {
         adapter?.removeElement(element)
         if (element.sharedPreferenceKey.isNotBlank()) {
-            viewModel.saveTickerPref(ChatItemListViewModel.BUBBLE_TICKER_PREF_NAME)
+            viewModel.saveBooleanCache(
+                cacheName = ChatItemListViewModel.BUBBLE_TICKER_PREF_NAME,
+                value = false
+            )
         }
     }
 
@@ -574,12 +564,12 @@ open class ChatListInboxFragment :
                                 result.data as IncomingTypingWebSocketModel
                             )
                             else -> {
-                                //no-op
+                                // no-op
                             }
                         }
                     }
                     else -> {
-                        //no-op
+                        // no-op
                     }
                 }
             }
@@ -679,6 +669,9 @@ open class ChatListInboxFragment :
 
     private fun onSuccessGetChatList(data: ChatListPojo.ChatListDataPojo) {
         renderList(data.list, data.hasNext)
+        if (role == RoleType.BUYER) {
+            mStoriesWidgetManager?.updateStories(data.list.map { it.id })
+        }
         fpmStopTrace()
         setIndicatorCurrentActiveChat(currentActiveMessageId)
     }
@@ -824,17 +817,7 @@ open class ChatListInboxFragment :
                 )
             }
             webSocket.activeRoom = element.msgId
-            if (context is InboxFragmentContainer) {
-                val intent = RouteManager.getIntent(it, ApplinkConst.TOPCHAT, element.msgId)
-                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-                intent.putExtra(Constant.CHAT_CURRENT_ACTIVE, element.msgId)
-                intent.putExtra(Constant.CHAT_USER_ROLE_KEY, role)
-                startActivityForResult(intent, OPEN_DETAIL_MESSAGE)
-
-                it.overridePendingTransition(0, 0)
-
-                // Handle if activity is ChatRoom & flex mode
-            } else if (isFromTopChatRoom() && chatRoomFlexModeListener?.isFlexMode() == true) {
+            if (isFromTopChatRoom() && chatRoomFlexModeListener?.isFlexMode() == true) {
                 handleChatRoomAndFlexMode(element, itemPosition, lastActiveChat)
             }
         }
@@ -871,13 +854,9 @@ open class ChatListInboxFragment :
         viewModel.markChatAsUnread(msgIds, result)
     }
 
-    override fun increaseNotificationCounter() {
-        containerListener?.increaseChatUnreadCounter()
-    }
+    override fun increaseNotificationCounter() {}
 
-    override fun decreaseNotificationCounter() {
-        containerListener?.decreaseChatUnreadCounter()
-    }
+    override fun decreaseNotificationCounter() {}
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -967,11 +946,6 @@ open class ChatListInboxFragment :
         return EmptyChatModel(title, subtitle, image, ctaText, ctaApplink, isTopAds)
     }
 
-    override fun onSwipeRefresh() {
-        containerListener?.refreshNotificationCounter()
-        super.onSwipeRefresh()
-    }
-
     override fun trackChangeReadStatus(element: ItemChatListPojo) {
         chatListAnalytics.trackChangeReadStatus(element)
     }
@@ -986,6 +960,10 @@ open class ChatListInboxFragment :
 
     override fun getSupportChildFragmentManager(): FragmentManager {
         return childFragmentManager
+    }
+
+    override fun getStoriesWidgetManager(): StoriesWidgetManager? {
+        return mStoriesWidgetManager
     }
 
     override fun pinUnpinChat(element: ItemChatListPojo, position: Int, isPinChat: Boolean) {
@@ -1100,6 +1078,15 @@ open class ChatListInboxFragment :
         }
     }
 
+    private fun getRollenceValue(key: String): Boolean {
+        return try {
+            abTestPlatform.getString(key, "").isNotEmpty()
+        } catch (t: Throwable) {
+            Timber.d(t)
+            false
+        }
+    }
+
     companion object {
         const val OPEN_DETAIL_MESSAGE = 1324
         const val CHAT_SELLER_EMPTY = TokopediaImageUrl.CHAT_SELLER_EMPTY
@@ -1109,8 +1096,8 @@ open class ChatListInboxFragment :
         private const val NO_INT_ARGUMENT = 0
 
         fun createFragment(
-            @RoleType role: Int? = null,
-            currentActiveChat: String? = null
+            @RoleType role: Int?,
+            currentActiveChat: String?
         ): ChatListInboxFragment {
             val fragment = ChatListInboxFragment()
             fragment.arguments = createBundle(role, currentActiveChat)

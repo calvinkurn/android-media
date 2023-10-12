@@ -2,15 +2,21 @@ package com.tokopedia.recharge_pdp_emoney.presentation.fragment
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
@@ -19,8 +25,11 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.common.topupbills.analytics.CommonMultiCheckoutAnalytics
 import com.tokopedia.common.topupbills.data.TopupBillsPromo
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
+import com.tokopedia.common.topupbills.data.constant.multiCheckoutButtonImpressTrackerButtonType
+import com.tokopedia.common.topupbills.data.constant.multiCheckoutButtonPromotionTracker
 import com.tokopedia.common.topupbills.data.prefix_select.RechargePrefix
 import com.tokopedia.common.topupbills.data.product.CatalogProduct
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery
@@ -32,13 +41,18 @@ import com.tokopedia.common_digital.atc.utils.DeviceUtil
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
+import com.tokopedia.common_digital.common.presentation.bottomsheet.DigitalDppoConsentBottomSheet
+import com.tokopedia.common_digital.common.presentation.model.DigitalAtcTrackingModel
 import com.tokopedia.common_digital.common.presentation.model.DigitalCategoryDetailPassData
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.showUnifyError
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
@@ -49,6 +63,7 @@ import com.tokopedia.recharge_pdp_emoney.di.EmoneyPdpComponent
 import com.tokopedia.recharge_pdp_emoney.presentation.activity.EmoneyPdpActivity
 import com.tokopedia.recharge_pdp_emoney.presentation.adapter.EmoneyPdpFragmentPagerAdapter
 import com.tokopedia.recharge_pdp_emoney.presentation.adapter.viewholder.EmoneyPdpProductViewHolder
+import com.tokopedia.recharge_pdp_emoney.presentation.bottomsheet.EmoneyMenuBottomSheets
 import com.tokopedia.recharge_pdp_emoney.presentation.bottomsheet.EmoneyProductDetailBottomSheet
 import com.tokopedia.recharge_pdp_emoney.presentation.viewmodel.EmoneyPdpViewModel
 import com.tokopedia.recharge_pdp_emoney.presentation.widget.EmoneyPdpBottomCheckoutWidget
@@ -70,6 +85,10 @@ import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.utils.lifecycle.autoCleared
 import javax.inject.Inject
 import kotlin.math.abs
+import com.tokopedia.common_digital.R as common_digitalR
+import com.tokopedia.globalerror.R as globalerrorR
+import com.tokopedia.unifycomponents.R as unifycomponentsR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * @author by jessica on 29/03/21
@@ -80,7 +99,9 @@ open class EmoneyPdpFragment :
     EmoneyPdpHeaderViewWidget.ActionListener,
     EmoneyPdpInputCardNumberWidget.ActionListener,
     EmoneyPdpProductViewHolder.ActionListener,
-    EmoneyPdpBottomCheckoutWidget.ActionListener {
+    EmoneyPdpBottomCheckoutWidget.ActionListener,
+    EmoneyMenuBottomSheets.MenuListener
+{
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -98,6 +119,9 @@ open class EmoneyPdpFragment :
     lateinit var rechargeAnalytics: RechargeAnalytics
 
     @Inject
+    lateinit var commonMultiCheckoutAnalytics: CommonMultiCheckoutAnalytics
+
+    @Inject
     lateinit var userSession: UserSessionInterface
 
     private var emoneyCardNumber = ""
@@ -108,6 +132,9 @@ open class EmoneyPdpFragment :
 
     private val coachMark by lazy { CoachMark2(requireContext()) }
     private val coachMarks = arrayListOf<CoachMark2Item>()
+    private var categoryName = ""
+    private var loyaltyStatus = ""
+    private var isAlreadyTrackImpressionMultiButton: Boolean = false
 
     val remoteConfig: RemoteConfig by lazy {
         FirebaseRemoteConfigImpl(context)
@@ -117,6 +144,7 @@ open class EmoneyPdpFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
         arguments?.let {
             detailPassData = it.getParcelable(EXTRA_PARAM_DIGITAL_CATEGORY_DETAIL_PASS_DATA)
                 ?: DigitalCategoryDetailPassData.Builder().build()
@@ -152,8 +180,8 @@ open class EmoneyPdpFragment :
             issuerId = detailPassData.operatorId ?: ""
         }
 
+        emoneyPdpViewModel.getDppoConsent()
         loadData()
-
         renderCardState(detailPassData)
 
         binding.emoneyPdpHeaderView.actionListener = this
@@ -165,6 +193,21 @@ open class EmoneyPdpFragment :
         setAnimationAppBarLayout()
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        menu.clear()
+        val dppoConsentData = emoneyPdpViewModel.dppoConsent.value
+        inflater.inflate(R.menu.menu_emoney, menu)
+        if (dppoConsentData is Success && dppoConsentData.data.description.isNotEmpty()) {
+            menu.showConsentIcon()
+            menu.setupConsentIcon(dppoConsentData.data.description)
+            menu.setupKebabIcon()
+        } else {
+            menu.hideConsentIcon()
+            menu.setupKebabIcon()
+        }
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
@@ -174,9 +217,12 @@ open class EmoneyPdpFragment :
                 binding.emoneyGlobalError.hide()
                 when (it) {
                     is Success -> {
+                        categoryName = it.data.catalog.label
+                        loyaltyStatus = it.data.userPerso.loyaltyStatus
                         trackEventViewPdp(it.data.catalog.label)
                         renderRecommendationsAndPromoList(it.data.recommendations, it.data.promos)
                         renderTicker(EmoneyPdpMapper.mapTopUpBillsTickersToTickersData(it.data.tickers))
+                        topUpBillsViewModel.multiCheckoutButtons  = it.data.multiCheckoutButtons
                     }
                     is Fail -> {
                         renderFullPageError(it.throwable)
@@ -259,6 +305,7 @@ open class EmoneyPdpFragment :
             Observer {
                 when (it) {
                     is Success -> {
+                        showProducts()
                         renderProducts(
                             it.data.product.dataCollections.firstOrNull()?.products
                                 ?: listOf()
@@ -287,11 +334,42 @@ open class EmoneyPdpFragment :
             }
         )
 
+        addToCartViewModel.addToCartMultiCheckoutResult.observe(
+            viewLifecycleOwner
+        ) { data ->
+            context?.let { context ->
+                trackOnClickMultiCheckout(data)
+                RouteManager.route(context, data.redirectUrl)
+            }
+            binding.emoneyFullPageLoadingLayout.hide()
+            binding.emoneyBuyWidget.onBuyButtonMultiCheckoutLoading(false)
+        }
+
         addToCartViewModel.errorAtc.observe(viewLifecycleOwner) {
             renderErrorMessage(MessageErrorException(it.title))
             binding.emoneyFullPageLoadingLayout.hide()
             binding.emoneyBuyWidget.onBuyButtonLoading(false)
+            binding.emoneyBuyWidget.onBuyButtonMultiCheckoutLoading(false)
         }
+
+        emoneyPdpViewModel.dppoConsent.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    activity?.invalidateOptionsMenu()
+                }
+                is Fail -> {}
+            }
+        }
+    }
+
+    private fun trackOnClickMultiCheckout(data: DigitalAtcTrackingModel) {
+        commonMultiCheckoutAnalytics.onClickMultiCheckout(
+            categoryName,
+            getIssuerName(issuerId),
+            data.channelId,
+            userSession.userId,
+            multiCheckoutButtonPromotionTracker(topUpBillsViewModel.multiCheckoutButtons)
+        )
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -520,7 +598,7 @@ open class EmoneyPdpFragment :
         if ((error.message ?: "").contains(EmoneyPdpViewModel.ERROR_GRPC_TIMEOUT, true)) {
             errorThrowable = MessageErrorException(
                 getString(
-                    com.tokopedia.common_digital.R.string.digital_common_grpc_toaster
+                    common_digitalR.string.digital_common_grpc_toaster
                 )
             )
         }
@@ -539,7 +617,7 @@ open class EmoneyPdpFragment :
             renderErrorMessage(throwable)
             binding.emoneyPdpShimmeringLayout.root.hide()
         })
-        binding.emoneyGlobalError.findViewById<GlobalError>(com.tokopedia.globalerror.R.id.globalerror_view)
+        binding.emoneyGlobalError.findViewById<GlobalError>(globalerrorR.id.globalerror_view)
             ?.apply {
                 gravity = Gravity.CENTER
             }
@@ -630,6 +708,7 @@ open class EmoneyPdpFragment :
         issuerId = prefix.key
         binding.emoneyPdpProductWidget.showShimmering()
         binding.emoneyBuyWidgetLayout.hide()
+        binding.emoneyBuyWidget.hideCoachMark()
         emoneyPdpViewModel.getProductFromOperator(detailPassData.menuId.toIntSafely(), prefix.key)
     }
 
@@ -655,10 +734,11 @@ open class EmoneyPdpFragment :
         }
         binding.emoneyPdpViewPager.show()
         binding.emoneyPdpProductWidget.showPaddingBottom(
-            context?.resources?.getDimensionPixelOffset(com.tokopedia.unifycomponents.R.dimen.spacing_lvl6)
+            context?.resources?.getDimensionPixelOffset(unifycomponentsR.dimen.spacing_lvl6)
                 ?: 0
         )
         binding.emoneyBuyWidgetLayout.hide()
+        binding.emoneyBuyWidget.hideCoachMark()
     }
 
     override fun onClickProduct(product: CatalogProduct, position: Int) {
@@ -678,17 +758,27 @@ open class EmoneyPdpFragment :
 
         binding.emoneyBuyWidgetLayout.show()
         binding.emoneyBuyWidget.setVisibilityLayout(true)
+        binding.emoneyBuyWidget.showMulticheckoutButtonSupport(topUpBillsViewModel.multiCheckoutButtons)
         binding.emoneyBuyWidgetLayout.invalidate()
         binding.emoneyPdpProductWidget.showPaddingBottom(
             kotlin.math.max(
-                context?.resources?.getDimensionPixelOffset(com.tokopedia.unifycomponents.R.dimen.unify_space_64)
+                context?.resources?.getDimensionPixelOffset(unifycomponentsR.dimen.unify_space_64)
                     ?: 0,
                 binding.emoneyBuyWidgetLayout.measuredHeight
             ) + (
-                context?.resources?.getDimensionPixelOffset(com.tokopedia.unifycomponents.R.dimen.spacing_lvl6)
+                context?.resources?.getDimensionPixelOffset(unifycomponentsR.dimen.spacing_lvl6)
                     ?: 0
                 )
         )
+
+        if (!isAlreadyTrackImpressionMultiButton) {
+            isAlreadyTrackImpressionMultiButton = true
+            commonMultiCheckoutAnalytics.onImpressMultiCheckoutButtons(
+                categoryName,
+                multiCheckoutButtonImpressTrackerButtonType(topUpBillsViewModel.multiCheckoutButtons),
+                userSession.userId
+            )
+        }
     }
 
     override fun onClickSeeDetailProduct(product: CatalogProduct) {
@@ -697,7 +787,7 @@ open class EmoneyPdpFragment :
             product.attributes.pricePlain,
             userSession.userId
         )
-        val bottomSheet = EmoneyProductDetailBottomSheet(product)
+        val bottomSheet = EmoneyProductDetailBottomSheet.newBottomSheet(product)
         bottomSheet.show(childFragmentManager, TAG)
     }
 
@@ -710,6 +800,22 @@ open class EmoneyPdpFragment :
                 categoryIdFromPDP = detailPassData.categoryId
             )
         )
+    }
+
+    override fun onClickMultiCheckoutButton() {
+        binding.emoneyBuyWidget.onBuyButtonMultiCheckoutLoading(true)
+        addToCartViewModel.setAtcMultiCheckoutParam()
+        proceedAddToCart(
+            emoneyPdpViewModel.generateCheckoutPassData(
+                (requireActivity() as EmoneyPdpActivity).promoCode,
+                binding.emoneyPdpInputCardWidget.getNumber(),
+                categoryIdFromPDP = detailPassData.categoryId
+            )
+        )
+    }
+
+    override fun onCloseCoachMark() {
+        commonMultiCheckoutAnalytics.onCloseMultiCheckoutCoachmark(categoryName, loyaltyStatus)
     }
 
     private fun proceedAddToCart(digitalCheckoutData: DigitalCheckoutPassData) {
@@ -804,6 +910,83 @@ open class EmoneyPdpFragment :
         }
     }
 
+    override fun onOrderListClicked() {
+        context?.let {
+            if (userSession.isLoggedIn) {
+                RouteManager.route(it, ApplinkConst.DIGITAL_ORDER)
+            } else {
+                val intent = RouteManager.getIntent(it, ApplinkConst.LOGIN)
+                startActivityForResult(intent, EmoneyPdpActivity.REQUEST_CODE_LOGIN_EMONEY)
+            }
+        }
+    }
+
+    override fun onHelpClicked() {
+        context?.let {
+            RouteManager.route(it, ApplinkConst.CONTACT_US_NATIVE)
+        }
+    }
+
+    private fun showBottomMenus() {
+        val menuBottomSheet = EmoneyMenuBottomSheets.newInstance()
+        menuBottomSheet.listener = this
+        menuBottomSheet.setShowListener {
+            menuBottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
+        }
+        menuBottomSheet.show(childFragmentManager, EmoneyPdpActivity.TAG_EMONEY_MENU)
+    }
+
+    private fun Menu.hideConsentIcon() {
+        findItem(R.id.emoney_action_dppo_consent).isVisible = false
+    }
+
+    private fun Menu.showConsentIcon() {
+        findItem(R.id.emoney_action_dppo_consent).isVisible = true
+    }
+
+    private fun Menu.setupConsentIcon(description: String) {
+        if (description.isNotEmpty()) {
+            context?.let { ctx ->
+                val iconUnify = getIconUnifyDrawable(
+                    ctx,
+                    IconUnify.INFORMATION,
+                    ContextCompat.getColor(ctx, unifyprinciplesR.color.Unify_NN900)
+                )
+                iconUnify?.toBitmap()?.let {
+                    getItem(0).setOnMenuItemClickListener {
+                        val bottomSheet = DigitalDppoConsentBottomSheet(description)
+                        bottomSheet.show(childFragmentManager)
+                        true
+                    }
+                    getItem(0).icon = BitmapDrawable(
+                        ctx.resources,
+                        Bitmap.createScaledBitmap(it, TOOLBAR_ICON_SIZE, TOOLBAR_ICON_SIZE, true)
+                    )
+                }
+            }
+        }
+    }
+
+    private fun Menu.setupKebabIcon() {
+        context?.let { ctx ->
+            val iconUnify = getIconUnifyDrawable(
+                ctx,
+                IconUnify.MENU_KEBAB_VERTICAL,
+                ContextCompat.getColor(ctx, unifyprinciplesR.color.Unify_NN900)
+            )
+            iconUnify?.toBitmap()?.let {
+                getItem(1).setOnMenuItemClickListener {
+                    showBottomMenus()
+                    true
+                }
+                getItem(1).icon = BitmapDrawable(
+                    ctx.resources,
+                    Bitmap.createScaledBitmap(it, TOOLBAR_ICON_SIZE, TOOLBAR_ICON_SIZE, true)
+                )
+            }
+        }
+    }
+
     companion object {
         private const val TAG = "EmoneyProductDetailBottomSheet"
 
@@ -830,6 +1013,8 @@ open class EmoneyPdpFragment :
         const val ISSUER_NAME_EMONEY = "emoney"
         const val ISSUER_NAME_BRIZZI = "brizzi"
         const val ISSUER_NAME_TAPCASH = "tapcash"
+
+        private const val TOOLBAR_ICON_SIZE = 64
 
         fun newInstance(digitalCategoryDetailPassData: DigitalCategoryDetailPassData): EmoneyPdpFragment {
             val fragment = EmoneyPdpFragment()

@@ -17,6 +17,7 @@ import com.tokopedia.picker.common.utils.isVideoFormat
 import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.feature.bulk_write_review.di.qualifier.BulkReviewGson
 import com.tokopedia.review.feature.bulk_write_review.domain.model.BulkReviewGetBadRatingCategoryRequestState
+import com.tokopedia.review.feature.bulk_write_review.domain.model.BulkReviewGetFormRequestParams
 import com.tokopedia.review.feature.bulk_write_review.domain.model.BulkReviewGetFormRequestState
 import com.tokopedia.review.feature.bulk_write_review.domain.model.BulkReviewSubmitRequestParam
 import com.tokopedia.review.feature.bulk_write_review.domain.model.BulkReviewSubmitRequestState
@@ -79,7 +80,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -143,6 +143,8 @@ class BulkReviewViewModel @Inject constructor(
         private const val TOASTER_ID_REMOVE_REVIEW = 0
     }
 
+    private var defaultReviewItemRating = BulkReviewRatingUiStateMapper.DEFAULT_PRODUCT_RATING
+
     // region stateflow that need to be saved and restored
     private val getFormRequestState = MutableStateFlow<BulkReviewGetFormRequestState>(BulkReviewGetFormRequestState.Requesting())
     private val getBadRatingCategoryRequestState = MutableStateFlow<BulkReviewGetBadRatingCategoryRequestState>(BulkReviewGetBadRatingCategoryRequestState.Requesting())
@@ -174,7 +176,7 @@ class BulkReviewViewModel @Inject constructor(
     private val reviewItemsRatingUiState = combine(
         getFormRequestState,
         reviewItemsRating,
-        bulkReviewRatingUiStateMapper::map
+        ::mapReviewRatingUiState
     ).stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(STATE_FLOW_TIMEOUT_MILLIS),
@@ -322,8 +324,8 @@ class BulkReviewViewModel @Inject constructor(
         handleTrackers()
     }
 
-    fun getData() {
-        getForms()
+    fun getData(invoice: String, utmSource: String) {
+        getForms(invoice, utmSource)
         getBadRatingCategory()
     }
 
@@ -361,7 +363,7 @@ class BulkReviewViewModel @Inject constructor(
                         add(
                             BulkReviewItemRatingUiModel(
                                 inboxID = inboxID,
-                                rating = BulkReviewRatingUiStateMapper.DEFAULT_PRODUCT_RATING,
+                                rating = defaultReviewItemRating,
                                 animate = false
                             )
                         )
@@ -593,7 +595,10 @@ class BulkReviewViewModel @Inject constructor(
         )
     }
 
-    fun onRestoreInstanceState(saveInstanceCacheManager: CacheManager) {
+    fun onRestoreInstanceState(
+        saveInstanceCacheManager: CacheManager,
+        onFailedRestoreState: () -> Unit
+    ) {
         viewModelScope.launch(coroutineDispatchers.io) {
             val savedGetFormRequestState = saveInstanceCacheManager.get<BulkReviewGetFormRequestState>(
                 customId = SAVE_STATE_KEY_GET_FORM_REQUEST_STATE,
@@ -716,7 +721,7 @@ class BulkReviewViewModel @Inject constructor(
                     // noop
                 }
             } else {
-                getData()
+                onFailedRestoreState()
             }
         }
     }
@@ -789,6 +794,10 @@ class BulkReviewViewModel @Inject constructor(
         bulkReviewToasterCtaKeyEvents.tryEmit(data)
     }
 
+    fun setDefaultReviewItemRating(rating: Int) {
+        defaultReviewItemRating = rating
+    }
+
     fun onCancelBadRatingCategoryBottomSheet() {
         val uiState = _badRatingCategoryBottomSheetUiState.value
         if (uiState is BulkReviewBadRatingCategoryBottomSheetUiState.Showing) {
@@ -796,6 +805,17 @@ class BulkReviewViewModel @Inject constructor(
                 enqueueToasterErrorNoBadRatingCategoryReasonSelected()
             }
         }
+    }
+
+    private fun mapReviewRatingUiState(
+        getFormRequestState: BulkReviewGetFormRequestState,
+        reviewItemsRating: List<BulkReviewItemRatingUiModel>
+    ): Map<String, BulkReviewRatingUiState> {
+        return bulkReviewRatingUiStateMapper.map(
+            getFormRequestState = getFormRequestState,
+            reviewItemsRating = reviewItemsRating,
+            defaultReviewItemRating = defaultReviewItemRating
+        )
     }
 
     private fun mapMediaItems(
@@ -1385,7 +1405,7 @@ class BulkReviewViewModel @Inject constructor(
             }
         }.find {
             it.inboxID == inboxID
-        }?.rating ?: BulkReviewRatingUiStateMapper.DEFAULT_PRODUCT_RATING
+        }?.rating ?: defaultReviewItemRating
     }
 
     private fun shouldShowBadRatingCategoryBottomSheet(
@@ -1614,9 +1634,11 @@ class BulkReviewViewModel @Inject constructor(
         }
     }
 
-    private fun getForms() {
+    private fun getForms(invoice: String, utmSource: String) {
         viewModelScope.launch(coroutineDispatchers.io) {
-            getFormUseCase(Unit).collectLatest { requestState ->
+            getFormUseCase(
+                BulkReviewGetFormRequestParams(invoice, utmSource)
+            ).collectLatest { requestState ->
                 getFormRequestState.value = requestState
             }
         }

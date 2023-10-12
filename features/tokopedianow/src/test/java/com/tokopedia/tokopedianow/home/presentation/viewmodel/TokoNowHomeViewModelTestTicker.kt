@@ -3,7 +3,6 @@ package com.tokopedia.tokopedianow.home.presentation.viewmodel
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.domain.mapper.TickerMapper
@@ -18,6 +17,7 @@ import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.DEFAULT_QU
 import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse
 import com.tokopedia.tokopedianow.home.domain.model.Header
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
+import com.tokopedia.tokopedianow.home.mapper.HomeHeaderMapper.createHomeHeaderUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceTimeBy
@@ -56,9 +56,7 @@ class TokoNowHomeViewModelTestTicker : TokoNowHomeViewModelTestFixture() {
 
         val expectedResult = HomeLayoutListUiModel(
             items = listOf(
-                TokoNowChooseAddressWidgetUiModel(
-                    id = CHOOSE_ADDRESS_WIDGET_ID
-                ),
+                createHomeHeaderUiModel(),
                 createDynamicLegoBannerDataModel(
                     id = dynamicLegoBannerId,
                     groupId = String.EMPTY,
@@ -81,7 +79,7 @@ class TokoNowHomeViewModelTestTicker : TokoNowHomeViewModelTestFixture() {
 
         verifyGetTickerUseCaseCalled()
         verifyGetHomeLayoutDataUseCaseCalled()
-        verifyGetHomeLayoutResponseSuccess(expectedResult)
+        verifyGetHomeLayoutListSuccess(expectedResult)
         verifyBlockAddToCartNull()
     }
 
@@ -101,7 +99,7 @@ class TokoNowHomeViewModelTestTicker : TokoNowHomeViewModelTestFixture() {
         val repurchaseLayout = "recent_purchase_tokonow"
 
         val tickerResponse = createTicker()
-        val tickerList = TickerMapper.mapTickerData(tickerResponse).second
+        val tickerList = TickerMapper.mapTickerData(tickerResponse).tickerList
         val homeLayoutResponse = listOf(
             HomeLayoutResponse(
                 id = repurchaseChannelId,
@@ -149,9 +147,7 @@ class TokoNowHomeViewModelTestTicker : TokoNowHomeViewModelTestFixture() {
         advanceTimeBy(CHANGE_QUANTITY_DELAY)
 
         val homeLayoutItems = listOf(
-            TokoNowChooseAddressWidgetUiModel(
-                id = CHOOSE_ADDRESS_WIDGET_ID
-            ),
+            createHomeHeaderUiModel(),
             TokoNowTickerUiModel(
                 id = HomeStaticLayoutId.TICKER_WIDGET_ID,
                 tickers = tickerList
@@ -163,17 +159,12 @@ class TokoNowHomeViewModelTestTicker : TokoNowHomeViewModelTestFixture() {
                     createHomeProductCardUiModel(
                         channelId = repurchaseChannelId,
                         productId = repurchaseProductId,
-                        quantity = repurchaseProductMaxOrder,
+                        quantity = DEFAULT_QUANTITY,
                         stock = repurchaseProductStock,
-                        product = ProductCardModel(
-                            nonVariant = ProductCardModel.NonVariant(
-                                quantity = DEFAULT_QUANTITY,
-                                minQuantity = repurchaseProductMinOrder,
-                                maxQuantity = repurchaseProductMaxOrder
-                            ),
-                            hasAddToCartButton = true
-                        ),
+                        minOrder = repurchaseProductMinOrder,
+                        maxOrder = repurchaseProductMaxOrder,
                         position = repurchaseProductPosition,
+                        originalPosition = repurchaseProductPosition,
                         headerName = repurchaseProductTitle
                     )
                 ),
@@ -189,8 +180,7 @@ class TokoNowHomeViewModelTestTicker : TokoNowHomeViewModelTestFixture() {
         verifyGetTickerUseCaseCalled()
         verifyGetHomeLayoutDataUseCaseCalled()
         verifyGetRepurchaseWidgetUseCaseCalled()
-        verifyGetHomeLayoutResponseSuccess(expectedResult)
+        verifyGetHomeLayoutListSuccess(expectedResult)
         verifyBlockAddToCartNotNull()
     }
-
 }

@@ -1,9 +1,11 @@
 package com.tokopedia.kyc_centralized.ui
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.kyc_centralized.ViewIdGenerator
@@ -11,6 +13,7 @@ import com.tokopedia.kyc_centralized.di.ActivityComponentFactory
 import com.tokopedia.kyc_centralized.di.FakeKycActivityComponentFactory
 import com.tokopedia.kyc_centralized.fakes.FakeKycUploadApi
 import com.tokopedia.kyc_centralized.kycRobot
+import com.tokopedia.kyc_centralized.stubAppGraphqlRepo
 import com.tokopedia.kyc_centralized.ui.tokoKyc.info.UserIdentificationInfoActivity
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.utils.view.binding.internal.findRootView
@@ -25,16 +28,23 @@ class KycFlowGeneratedIdTest {
 
     @get:Rule
     var activityTestRule = IntentsTestRule(
-        UserIdentificationInfoActivity::class.java, false, false
+        UserIdentificationInfoActivity::class.java,
+        false,
+        false
     )
 
-    private val testComponent = FakeKycActivityComponentFactory()
+    private val applicationContext: Context
+        get() = InstrumentationRegistry
+            .getInstrumentation().context.applicationContext
+
+    private val testComponent = FakeKycActivityComponentFactory(applicationContext)
     private val kycApi = testComponent.kycApi
     private val projectId = "22"
     private val url = "https://google.com"
 
     @Before
     fun setup() {
+        stubAppGraphqlRepo()
         ActivityComponentFactory.instance = testComponent
     }
 
@@ -52,4 +62,3 @@ class KycFlowGeneratedIdTest {
         }
     }
 }
-

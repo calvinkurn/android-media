@@ -28,6 +28,7 @@ import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseProductUiModel
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId
 import com.tokopedia.tokopedianow.home.domain.model.Data
 import com.tokopedia.tokopedianow.home.domain.model.GetQuestListResponse
@@ -44,6 +45,7 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcU
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLoadingStateUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeRealTimeRecomUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowTickerUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeHeaderUiModel
 import com.tokopedia.tokopedianow.repurchase.presentation.fragment.TokoNowRepurchaseFragment
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_ANNOUNCEMENT
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -72,6 +74,14 @@ fun createHomeLayoutList(): List<HomeLayoutResponse> {
                     header = Header(
                             name = "Banner Tokonow",
                             serverTimeUnix = 0
+                    )
+            ),
+            HomeLayoutResponse(
+                    id = "222332",
+                    layout = "bundling_widget",
+                    header = Header(
+                        name = "Product Bundling",
+                        serverTimeUnix = 0
                     )
             )
     )
@@ -205,6 +215,7 @@ fun createHomeLayoutData(): HomeLayoutResponse {
 fun createLoadingState(): HomeLayoutListUiModel {
     val mutableList = mutableListOf<Visitable<*>>()
     val loadingStateUiModel = HomeLoadingStateUiModel(id = HomeStaticLayoutId.LOADING_STATE)
+    mutableList.add(HomeHeaderUiModel(id = HomeStaticLayoutId.HOME_HEADER))
     mutableList.add(loadingStateUiModel)
     return HomeLayoutListUiModel(
             items = mutableList,
@@ -471,13 +482,27 @@ fun createHomeProductCardUiModel(
     shopId: String = "",
     quantity: Int = 0,
     stock: Int = 0,
+    minOrder: Int = 0,
+    maxOrder: Int = 0,
     parentId: String = "",
-    product: ProductCardModel = ProductCardModel(),
-    @TokoNowLayoutType type: String = TokoNowLayoutType.REPURCHASE_PRODUCT,
     position: Int = 0,
+    originalPosition: Int = 0,
     headerName: String = ""
-): TokoNowProductCardUiModel {
-    return TokoNowProductCardUiModel(channelId, productId, shopId, quantity, stock, parentId, product, type, position, headerName)
+): TokoNowRepurchaseProductUiModel {
+    return TokoNowRepurchaseProductUiModel(
+        channelId = channelId,
+        productId = productId,
+        shopId = shopId,
+        orderQuantity = quantity,
+        availableStock = stock,
+        minOrder = minOrder,
+        maxOrder = maxOrder,
+        parentId = parentId,
+        position = position,
+        originalPosition = originalPosition,
+        needToShowQuantityEditor = true,
+        headerName = headerName
+    )
 }
 
 fun createLocalCacheModel(
@@ -499,4 +524,19 @@ fun createLocalCacheModel(
         warehouses = warehouses,
         service_type = serviceType
     )
+}
+
+fun createHomeProductCardUiModel(
+    channelId: String = "",
+    productId: String = "",
+    shopId: String = "",
+    quantity: Int = 0,
+    stock: Int = 0,
+    parentId: String = "",
+    product: ProductCardModel = ProductCardModel(),
+    @TokoNowLayoutType type: String = TokoNowLayoutType.REPURCHASE_PRODUCT,
+    position: Int = 0,
+    headerName: String = ""
+): TokoNowProductCardUiModel {
+    return TokoNowProductCardUiModel(channelId, productId, shopId, quantity, stock, parentId, product, type, position, headerName)
 }

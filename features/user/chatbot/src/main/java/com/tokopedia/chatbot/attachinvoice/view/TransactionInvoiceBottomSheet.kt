@@ -17,7 +17,7 @@ import com.tokopedia.chatbot.attachinvoice.domain.model.InvoiceConstants.VALUE_P
 import com.tokopedia.chatbot.attachinvoice.domain.model.InvoiceConstants.VALUE_PENJUALAN
 import com.tokopedia.chatbot.attachinvoice.view.fragment.TransactionInvoiceListFragment
 import com.tokopedia.chatbot.attachinvoice.view.fragment.TransactionInvoiceListFragmentListener
-import com.tokopedia.chatbot.databinding.BottomsheetTransactionInvoiceBinding
+import com.tokopedia.chatbot.databinding.BottomsheetChatbotTransactionInvoiceBinding
 import com.tokopedia.chatbot.view.adapter.ChatBotViewPagerAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.TabsUnify
@@ -34,7 +34,7 @@ class TransactionInvoiceBottomSheet : BottomSheetUnify(), TransactionInvoiceList
     private lateinit var context: FragmentActivity
     private var messageId: Long = 0
     private lateinit var listener: TransactionInvoiceBottomSheetListener
-    private var _viewBinding: BottomsheetTransactionInvoiceBinding? = null
+    private var _viewBinding: BottomsheetChatbotTransactionInvoiceBinding? = null
     private fun getBindingView() = _viewBinding!!
 
     init {
@@ -46,7 +46,8 @@ class TransactionInvoiceBottomSheet : BottomSheetUnify(), TransactionInvoiceList
     companion object {
         @JvmStatic
         fun newInstance(
-            context: FragmentActivity, messageId: Long,
+            context: FragmentActivity,
+            messageId: Long,
             listener: TransactionInvoiceBottomSheetListener
         ): TransactionInvoiceBottomSheet {
             return TransactionInvoiceBottomSheet().apply {
@@ -62,7 +63,7 @@ class TransactionInvoiceBottomSheet : BottomSheetUnify(), TransactionInvoiceList
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _viewBinding = BottomsheetTransactionInvoiceBinding.inflate(LayoutInflater.from(context))
+        _viewBinding = BottomsheetChatbotTransactionInvoiceBinding.inflate(LayoutInflater.from(context))
         setChild(getBindingView().root)
         getBindingView().run {
             tabsUnify = this.transactionInvoiceTabLayout
@@ -104,7 +105,8 @@ class TransactionInvoiceBottomSheet : BottomSheetUnify(), TransactionInvoiceList
         list.add(TransactionInvoiceListFragment.newInstance(messageId, VALUE_PENARIKAN_DANA, this))
         return ChatBotViewPagerAdapter(
             arrayOf(TITLE_PURCHASE, TITLE_SALES, TITLE_WITHDRAWING_FUNDS),
-            childFragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
+            childFragmentManager,
+            BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
         ).apply {
             setData(list)
         }
@@ -119,7 +121,6 @@ class TransactionInvoiceBottomSheet : BottomSheetUnify(), TransactionInvoiceList
         dismissAllowingStateLoss()
     }
 }
-
 
 interface TransactionInvoiceBottomSheetListener {
     fun onBottomSheetDismissListener(data: Intent)

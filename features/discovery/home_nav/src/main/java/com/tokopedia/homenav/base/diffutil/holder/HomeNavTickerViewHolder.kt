@@ -22,15 +22,13 @@ class HomeNavTickerViewHolder(itemView: View,
     }
 
     override fun bind(element: HomeNavTickerDataModel) {
-        val context = itemView.context
         binding?.navTicker?.tickerTitle = element.title
         binding?.navTicker?.setHtmlDescription(element.description)
         binding?.navTicker?.tickerType = element.tickerType
 
         binding?.navTicker?.setDescriptionClickEvent(object: TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                RouteManager.route(context, element.applink)
-                TrackingProfileSection.onClickOpenShopSection(listener.getUserId())
+                listener.onTickerDescClicked(element.applink)
             }
 
             override fun onDismiss() {

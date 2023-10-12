@@ -19,13 +19,15 @@ import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.builder.util.BaseTrackerConst
 import rx.Subscriber
-import java.util.*
+import java.util.Locale
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class RechargeAnalytics(private val rechargePushEventRecommendationUseCase: RechargePushEventRecommendationUseCase) {
 
     fun eventOpenScreen(userId: String, categoryName: String, categoryId: String) {
         val stringScreenName = StringBuilder(RECHARGE_SCREEN_NAME)
-        stringScreenName.append(categoryName.toLowerCase())
+        stringScreenName.append(categoryName.lowercase())
 
         val mapOpenScreen = HashMap<String, String>()
         mapOpenScreen[EVENT_NAME] = OPEN_SCREEN_EVENT
@@ -37,8 +39,8 @@ class RechargeAnalytics(private val rechargePushEventRecommendationUseCase: Rech
         mapOpenScreen[CURRENT_SITE] = CURRENT_SITE_RECHARGE
 
         val mapScreenLaunchData = mapOf(
-                CATEGORY to categoryName,
-                CATEGORY_ID_SCREEN_LAUNCH to categoryId
+            CATEGORY to categoryName,
+            CATEGORY_ID_SCREEN_LAUNCH to categoryId
         )
 
         TrackApp.getInstance().gtm.sendScreenAuthenticated(stringScreenName.toString(), mapOpenScreen)
@@ -47,29 +49,26 @@ class RechargeAnalytics(private val rechargePushEventRecommendationUseCase: Rech
         val groupWiseCategoryId = BranchProductGroup.getGroupWiseProductID(categoryId)
 
         // Branch
-        LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(
-                LinkerConstants.EVENT_DIGITAL_SCREEN_LAUNCH, createScreenLaunchLinkerData(userId, categoryName, groupWiseCategoryId)
-        ))
+        LinkerManager.getInstance().sendEvent(
+            LinkerUtils.createGenericRequest(
+                LinkerConstants.EVENT_DIGITAL_SCREEN_LAUNCH,
+                createScreenLaunchLinkerData(userId, categoryName, groupWiseCategoryId)
+            )
+        )
     }
 
     fun trackVisitRechargePushEventRecommendation(categoryId: Int) {
-        rechargePushEventRecommendationUseCase.execute(rechargePushEventRecommendationUseCase.createRequestParams(categoryId, ACTION_VISIT),
-                getDefaultRechargePushEventRecommendationSubsriber())
-    }
-
-    fun trackVisitRechargePushEventRecommendation(categoryId: Int, subscriber: Subscriber<GraphqlResponse>) {
-        rechargePushEventRecommendationUseCase.execute(rechargePushEventRecommendationUseCase.createRequestParams(categoryId, ACTION_VISIT),
-                subscriber)
+        rechargePushEventRecommendationUseCase.execute(
+            rechargePushEventRecommendationUseCase.createRequestParams(categoryId, ACTION_VISIT),
+            getDefaultRechargePushEventRecommendationSubsriber()
+        )
     }
 
     fun trackAddToCartRechargePushEventRecommendation(categoryId: Int) {
-        rechargePushEventRecommendationUseCase.execute(rechargePushEventRecommendationUseCase.createRequestParams(categoryId, ACTION_ATC),
-                getDefaultRechargePushEventRecommendationSubsriber())
-    }
-
-    fun trackAddToCartRechargePushEventRecommendation(categoryId: Int, subscriber: Subscriber<GraphqlResponse>) {
-        rechargePushEventRecommendationUseCase.execute(rechargePushEventRecommendationUseCase.createRequestParams(categoryId, ACTION_ATC),
-                subscriber)
+        rechargePushEventRecommendationUseCase.execute(
+            rechargePushEventRecommendationUseCase.createRequestParams(categoryId, ACTION_ATC),
+            getDefaultRechargePushEventRecommendationSubsriber()
+        )
     }
 
     private fun createScreenLaunchLinkerData(userId: String, categoryName: String, groupWiseCategoryId: String): RechargeLinkerData {
@@ -84,20 +83,22 @@ class RechargeAnalytics(private val rechargePushEventRecommendationUseCase: Rech
 
     fun eventViewPdpPage(categoryName: String, userId: String) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                DataLayer.mapOf(TrackAppUtils.EVENT, DigitalTrackingConst.Event.VIEW_DIGITAL_IRIS,
-                        TrackAppUtils.EVENT_CATEGORY, DigitalTrackingConst.Category.DIGITAL_HOMEPAGE,
-                        TrackAppUtils.EVENT_ACTION, DigitalTrackingConst.Action.VIEW_PDP_PAGE,
-                        TrackAppUtils.EVENT_LABEL, categoryName,
-                        DigitalTrackingConst.Label.BUSINESS_UNIT, DigitalTrackingConst.Value.RECHARGE_BU,
-                        DigitalTrackingConst.Label.USER_ID, userId,
-                        DigitalTrackingConst.Label.CURRENTSITE, DigitalTrackingConst.Value.RECHARGE_SITE
-                )
+            DataLayer.mapOf(
+                TrackAppUtils.EVENT, DigitalTrackingConst.Event.VIEW_DIGITAL_IRIS,
+                TrackAppUtils.EVENT_CATEGORY, DigitalTrackingConst.Category.DIGITAL_HOMEPAGE,
+                TrackAppUtils.EVENT_ACTION, DigitalTrackingConst.Action.VIEW_PDP_PAGE,
+                TrackAppUtils.EVENT_LABEL, categoryName,
+                DigitalTrackingConst.Label.BUSINESS_UNIT, DigitalTrackingConst.Value.RECHARGE_BU,
+                DigitalTrackingConst.Label.USER_ID, userId,
+                DigitalTrackingConst.Label.CURRENTSITE, DigitalTrackingConst.Value.RECHARGE_SITE
+            )
         )
     }
 
+    @Suppress("SpreadOperator")
     fun eventAddToCart(digitalAtcTrackingModel: DigitalAtcTrackingModel) {
-        val productName: String = "${digitalAtcTrackingModel.operatorName.toLowerCase()} " +
-                "${digitalAtcTrackingModel.priceText.toLowerCase()}"
+        val productName: String = "${digitalAtcTrackingModel.operatorName.lowercase()} " +
+            "${digitalAtcTrackingModel.priceText.lowercase()}"
 
         val products: MutableList<Any> = ArrayList()
 
@@ -106,7 +107,9 @@ class RechargeAnalytics(private val rechargePushEventRecommendationUseCase: Rech
             else -> DigitalTrackingConst.Category.DIGITAL_NATIVE
         }
 
-        val eventLabel = String.format("%s - %s - %s",
+        val eventLabel = String.format(
+            Locale.getDefault(),
+            "%s - %s - %s",
             digitalAtcTrackingModel.categoryName.lowercase(),
             digitalAtcTrackingModel.operatorName,
             digitalAtcTrackingModel.channelId
@@ -115,18 +118,22 @@ class RechargeAnalytics(private val rechargePushEventRecommendationUseCase: Rech
         products.add(constructProductEnhanceEcommerce(digitalAtcTrackingModel, productName))
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                DataLayer.mapOf(TrackAppUtils.EVENT, DigitalTrackingConst.Event.ADD_TO_CART,
-                        TrackAppUtils.EVENT_CATEGORY, eventCategory,
-                        TrackAppUtils.EVENT_ACTION, DigitalTrackingConst.Action.CLICK_BELI,
-                        TrackAppUtils.EVENT_LABEL, eventLabel,
-                        DigitalTrackingConst.Label.BUSINESS_UNIT, DigitalTrackingConst.Value.RECHARGE_BU,
-                        DigitalTrackingConst.Label.USER_ID, digitalAtcTrackingModel.userId,
-                        BaseTrackerConst.Ecommerce.KEY, DataLayer.mapOf(
-                        DigitalTrackingConst.CurrencyCode.KEY, DigitalTrackingConst.CurrencyCode.IDR,
-                        DigitalTrackingConst.Label.ADD,
-                        DataLayer.mapOf(DigitalTrackingConst.Label.PRODUCTS, DataLayer.listOf(*products.toTypedArray()))),
-                        DigitalTrackingConst.Label.CURRENTSITE, DigitalTrackingConst.Value.RECHARGE_SITE
-                )
+            DataLayer.mapOf(
+                TrackAppUtils.EVENT, DigitalTrackingConst.Event.ADD_TO_CART,
+                TrackAppUtils.EVENT_CATEGORY, eventCategory,
+                TrackAppUtils.EVENT_ACTION, DigitalTrackingConst.Action.CLICK_BELI,
+                TrackAppUtils.EVENT_LABEL, eventLabel,
+                DigitalTrackingConst.Label.BUSINESS_UNIT, DigitalTrackingConst.Value.RECHARGE_BU,
+                DigitalTrackingConst.Label.USER_ID, digitalAtcTrackingModel.userId,
+                BaseTrackerConst.Ecommerce.KEY,
+                DataLayer.mapOf(
+                    DigitalTrackingConst.CurrencyCode.KEY,
+                    DigitalTrackingConst.CurrencyCode.IDR,
+                    DigitalTrackingConst.Label.ADD,
+                    DataLayer.mapOf(DigitalTrackingConst.Label.PRODUCTS, DataLayer.listOf(*products.toTypedArray()))
+                ),
+                DigitalTrackingConst.Label.CURRENTSITE, DigitalTrackingConst.Value.RECHARGE_SITE
+            )
         )
 
         val mapScreenLaunchData = mapOf(
@@ -138,36 +145,35 @@ class RechargeAnalytics(private val rechargePushEventRecommendationUseCase: Rech
         TrackApp.getInstance().gtm.pushEvent(EVENT_RECHARGE_PURCHASE_START, mapScreenLaunchData)
     }
 
-    private fun constructProductEnhanceEcommerce(digitalAtcTrackingModel: DigitalAtcTrackingModel,
-                                                 productName: String)
-            : Map<String?, Any?> {
+    private fun constructProductEnhanceEcommerce(
+        digitalAtcTrackingModel: DigitalAtcTrackingModel,
+        productName: String
+    ): Map<String?, Any?> {
         var productId = DigitalTrackingConst.Value.NONE
         if (digitalAtcTrackingModel.productId.isNotEmpty()) productId = digitalAtcTrackingModel.productId
 
         return DataLayer.mapOf(
-                DigitalTrackingConst.Product.KEY_NAME, productName,
-                DigitalTrackingConst.Product.KEY_ID, productId,
-                DigitalTrackingConst.Product.KEY_PRICE, digitalAtcTrackingModel.pricePlain.toString(),
-                DigitalTrackingConst.Product.KEY_BRAND, digitalAtcTrackingModel.operatorName.toLowerCase(),
-                DigitalTrackingConst.Product.KEY_CATEGORY, digitalAtcTrackingModel.categoryName.toLowerCase(),
-                DigitalTrackingConst.Product.KEY_VARIANT, if (digitalAtcTrackingModel.isSpecialProduct) SPECIAL_PROMO else REGULAR_PRODUCT,
-                DigitalTrackingConst.Product.KEY_QUANTITY, "1",
-                DigitalTrackingConst.Product.KEY_CATEGORY_ID, digitalAtcTrackingModel.categoryId,
-                DigitalTrackingConst.Product.KEY_CART_ID, digitalAtcTrackingModel.cartId,
-                DigitalTrackingConst.Product.KEY_SHOP_ID, DigitalTrackingConst.Value.NONE,
-                DigitalTrackingConst.Product.KEY_SHOP_NAME, DigitalTrackingConst.Value.NONE,
-                DigitalTrackingConst.Product.KEY_SHOP_TYPE, DigitalTrackingConst.Value.NONE
+            DigitalTrackingConst.Product.KEY_NAME, productName,
+            DigitalTrackingConst.Product.KEY_ID, productId,
+            DigitalTrackingConst.Product.KEY_PRICE, digitalAtcTrackingModel.pricePlain.toString(),
+            DigitalTrackingConst.Product.KEY_BRAND, digitalAtcTrackingModel.operatorName.lowercase(),
+            DigitalTrackingConst.Product.KEY_CATEGORY, digitalAtcTrackingModel.categoryName.lowercase(),
+            DigitalTrackingConst.Product.KEY_VARIANT, if (digitalAtcTrackingModel.isSpecialProduct) SPECIAL_PROMO else REGULAR_PRODUCT,
+            DigitalTrackingConst.Product.KEY_QUANTITY, "1",
+            DigitalTrackingConst.Product.KEY_CATEGORY_ID, digitalAtcTrackingModel.categoryId,
+            DigitalTrackingConst.Product.KEY_CART_ID, digitalAtcTrackingModel.cartId,
+            DigitalTrackingConst.Product.KEY_SHOP_ID, DigitalTrackingConst.Value.NONE,
+            DigitalTrackingConst.Product.KEY_SHOP_NAME, DigitalTrackingConst.Value.NONE,
+            DigitalTrackingConst.Product.KEY_SHOP_TYPE, DigitalTrackingConst.Value.NONE
         )
     }
 
     private fun getDefaultRechargePushEventRecommendationSubsriber(): Subscriber<GraphqlResponse> {
         return object : Subscriber<GraphqlResponse>() {
             override fun onCompleted() {
-
             }
 
             override fun onError(e: Throwable) {
-
             }
 
             override fun onNext(graphqlResponse: GraphqlResponse) {
@@ -177,7 +183,8 @@ class RechargeAnalytics(private val rechargePushEventRecommendationUseCase: Rech
     }
 
     fun onClickSliceRecharge(userId: String, rechargeProductFromSlice: String) {
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DataLayer.mapOf(
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+            DataLayer.mapOf(
                 EVENT_KEY, "clickGAMain",
                 EVENT_CATEGORY, "ga main app",
                 EVENT_ACTION, "click item transaction",
@@ -185,14 +192,19 @@ class RechargeAnalytics(private val rechargePushEventRecommendationUseCase: Rech
                 BUSINESS_UNIT, "recharge",
                 CURRENT_SITE, "tokopediadigital",
                 USER_ID, userId
-        ))
+            )
+        )
     }
 
     fun onOpenPageFromSlice(page: String) {
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DataLayer.mapOf(
-                EVENT_KEY, "openScreen",
-                EVENT_SCREEN_NAME, "${page} - from voice search - mainapp"
-        ))
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+            DataLayer.mapOf(
+                EVENT_KEY,
+                "openScreen",
+                EVENT_SCREEN_NAME,
+                "$page - from voice search - mainapp"
+            )
+        )
     }
 
     companion object {

@@ -109,7 +109,6 @@ class TwoFactorCheckerSubscriber : Application.ActivityLifecycleCallbacks {
         "BiometricOfferingActivity"
     )
 
-
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
         if (!exceptionPage.contains(activity.javaClass.simpleName)) {
             DaggerAdditionalCheckComponents
@@ -150,7 +149,8 @@ class TwoFactorCheckerSubscriber : Application.ActivityLifecycleCallbacks {
 
     private fun logUserProfileRecovery(isSuccess: Boolean) {
         ServerLogger.log(
-            Priority.P2, DataStoreMigrationWorker.USER_SESSION_LOGGER_TAG,
+            Priority.P2,
+            DataStoreMigrationWorker.USER_SESSION_LOGGER_TAG,
             mapOf(
                 "method" to "recover_user_profile",
                 "is_success" to isSuccess.toString()
@@ -185,7 +185,7 @@ class TwoFactorCheckerSubscriber : Application.ActivityLifecycleCallbacks {
                 activity
             ) == true
         ) {
-            checking(activity)
+            checking(activity, BiometricPromptHelper.isBiometricAvailableActivity(activity))
         }
     }
 
@@ -194,16 +194,14 @@ class TwoFactorCheckerSubscriber : Application.ActivityLifecycleCallbacks {
                 activity
             ) == true
         ) {
-            checking(activity)
+            checking(activity, false)
         }
     }
 
-    private fun checking(activity: Activity) {
-        viewModel.getOffering(BiometricPromptHelper.isBiometricAvailableActivity(activity), {
+    private fun checking(activity: Activity, isBiometricAvailable: Boolean) {
+        viewModel.getOffering(isBiometricAvailable, {
             handleResponseOfferingData(activity, it)
-        }, {
-            it.printStackTrace()
-        })
+        }, {})
     }
 
     override fun onActivityDestroyed(activity: Activity) {}
@@ -272,9 +270,11 @@ class TwoFactorCheckerSubscriber : Application.ActivityLifecycleCallbacks {
         val i =
             RouteManager.getIntent(activity, ApplinkConstInternalUserPlatform.TWO_FACTOR_REGISTER)
                 .apply {
-                    putExtras(Bundle().apply {
-                        putParcelable(TwoFactorFragment.RESULT_POJO_KEY, twoFactorResult)
-                    })
+                    putExtras(
+                        Bundle().apply {
+                            putParcelable(TwoFactorFragment.RESULT_POJO_KEY, twoFactorResult)
+                        }
+                    )
                 }
         activity?.startActivity(i)
     }
@@ -336,6 +336,7 @@ class TwoFactorCheckerSubscriber : Application.ActivityLifecycleCallbacks {
                     )
                 }
                 OfferingType.BIOMETRIC.value -> {
+                    if (GlobalConfig.isSellerApp()) return null
                     if (isFirst) {
                         if (whiteListedPageBiometricOffering.contains(activity.javaClass.simpleName)) {
                             return RouteManager.getIntent(
@@ -352,10 +353,12 @@ class TwoFactorCheckerSubscriber : Application.ActivityLifecycleCallbacks {
                 else -> null
             }
             intent?.apply {
-                putExtras(Bundle().apply {
-                    putBoolean(TwoFactorFragment.IS_FROM_2FA, true)
-                    putParcelable(TwoFactorFragment.RESULT_POJO_KEY, result)
-                })
+                putExtras(
+                    Bundle().apply {
+                        putBoolean(TwoFactorFragment.IS_FROM_2FA, true)
+                        putParcelable(TwoFactorFragment.RESULT_POJO_KEY, result)
+                    }
+                )
             }
             return intent
         }
@@ -376,17 +379,20 @@ class TwoFactorCheckerSubscriber : Application.ActivityLifecycleCallbacks {
 
         // Account linking reminder bottom sheet only showing in this page
         private val whiteListedPageAccountLinkReminder = listOf(
-            "MainParentActivity", "DeveloperOptionActivity"
+            "MainParentActivity",
+            "DeveloperOptionActivity"
         )
 
         // Biometric offering bottom sheet only showing in this page
         private val whiteListedPageBiometricOffering = listOf(
-            "MainParentActivity", "DeveloperOptionActivity"
+            "MainParentActivity",
+            "DeveloperOptionActivity"
         )
 
         // Check encryption status only executed in this pages
         private val whiteListedPageEncryption = listOf(
-            "MainParentActivity", "DeveloperOptionActivity"
+            "MainParentActivity",
+            "DeveloperOptionActivity"
         )
     }
 }

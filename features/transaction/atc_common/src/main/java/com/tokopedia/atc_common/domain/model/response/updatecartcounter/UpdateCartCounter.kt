@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName
  */
 
 data class UpdateCartCounter(
-        @SerializedName("count")
-        @Expose
-        val count: Int
+    @SerializedName("count")
+    @Expose
+    val count: Int
 )

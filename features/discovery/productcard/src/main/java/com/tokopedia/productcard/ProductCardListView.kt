@@ -3,41 +3,46 @@ package com.tokopedia.productcard
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
-import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.Space
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
+import com.tokopedia.productcard.layout.LayoutStrategyBestSeller
+import com.tokopedia.productcard.layout.LayoutStrategyListView
 import com.tokopedia.productcard.utils.ViewId
 import com.tokopedia.productcard.utils.ViewStubId
 import com.tokopedia.productcard.utils.expandTouchArea
 import com.tokopedia.productcard.utils.findViewById
+import com.tokopedia.productcard.utils.forceLightRed
 import com.tokopedia.productcard.utils.getDimensionPixelSize
 import com.tokopedia.productcard.utils.glideClear
 import com.tokopedia.productcard.utils.initLabelGroup
 import com.tokopedia.productcard.utils.loadImageRounded
-import com.tokopedia.productcard.utils.renderLabelBestSeller
-import com.tokopedia.productcard.utils.renderLabelBestSellerCategoryBottom
-import com.tokopedia.productcard.utils.renderLabelBestSellerCategorySide
-import com.tokopedia.productcard.utils.renderLabelCampaign
 import com.tokopedia.productcard.utils.renderStockBar
+import com.tokopedia.productcard.utils.shouldShowWithAction
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.unifycomponents.BaseCustomView
+import com.tokopedia.remoteconfig.RemoteConfigKey.PRODUCT_CARD_ENABLE_INTERACTION
+import com.tokopedia.unifycomponents.CardUnify2
+import com.tokopedia.unifycomponents.CardUnify2.Companion.ANIMATE_OVERLAY
+import com.tokopedia.unifycomponents.CardUnify2.Companion.ANIMATE_OVERLAY_BOUNCE
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.unifycomponents.CardUnify2
-import com.tokopedia.video_widget.VideoPlayerController
+import com.tokopedia.unifyprinciples.ColorMode
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.video_widget.VideoPlayerController
 import kotlin.LazyThreadSafetyMode.NONE
 
-class ProductCardListView: BaseCustomView, IProductCardView {
+class ProductCardListView: ConstraintLayout, IProductCardView {
 
     private val cartExtension = ProductCardCartExtension(this)
     private val video: VideoPlayerController by lazy{
@@ -85,6 +90,9 @@ class ProductCardListView: BaseCustomView, IProductCardView {
     private val textCategoryBottom: Typography? by lazy(NONE) {
         findViewById(R.id.textCategoryBottom)
     }
+    private val mediaAnchorProduct: Space? by lazy(NONE) {
+        findViewById(R.id.mediaAnchorProduct)
+    }
     private val imageProduct: ImageView? by lazy(NONE) {
         findViewById(R.id.productCardImage)
     }
@@ -128,33 +136,83 @@ class ProductCardListView: BaseCustomView, IProductCardView {
     private val remoteConfig : RemoteConfig by lazy(NONE) {
         FirebaseRemoteConfigImpl(context)
     }
-    private val productCardFooterLayoutContainer: FrameLayout by lazy(NONE) {
+    private val productCardFooterLayoutContainer: FrameLayout? by lazy(NONE) {
         findViewById(R.id.productCardFooterLayoutContainer)
     }
+    private val buttonSeeOtherProduct: UnifyButton? by lazy(NONE) {
+        findViewById(R.id.buttonSeeOtherProduct)
+    }
+    private val labelOverlayBackground: ImageView? by lazy(NONE) {
+        findViewById(R.id.labelOverlayBackground)
+    }
+    private val labelOverlay: Typography? by lazy(NONE) {
+        findViewById(R.id.labelOverlay)
+    }
+    private val labelOverlayStatus: Label? by lazy(NONE) {
+        findViewById(R.id.labelOverlayStatus)
+    }
+    private val spaceMediaAnchorToInfo: Space? by lazyThreadSafetyNone {
+        findViewById(R.id.spaceMediaAnchorToProductInfo)
+    }
     private var isUsingViewStub = false
+
+    private val productName: Typography? by lazy(NONE) {
+        findViewById(R.id.textViewProductName)
+    }
+    private val productPrice: Typography? by lazy(NONE) {
+        findViewById(R.id.textViewPrice)
+    }
+    private val labelDiscount: Label? by lazy(NONE) {
+        findViewById(R.id.labelDiscount)
+    }
+    private val productSlashPrice: Typography? by lazy(NONE) {
+        findViewById(R.id.textViewSlashedPrice)
+    }
+    private val soldCount: Typography? by lazy(NONE) {
+        findViewById(R.id.textViewSales)
+    }
+    private val rating: Typography? by lazy(NONE) {
+        findViewById(R.id.salesRatingFloat)
+    }
+    private val gimmick: Typography? by lazy(NONE) {
+        findViewById(R.id.textViewGimmick)
+    }
+    private val salesRatingFloatLine: View? by lazy(NONE) {
+        findViewById(R.id.salesRatingFloatLine)
+    }
+    private val textViewIntegrity: Typography? by lazy(NONE) {
+        findViewById(R.id.textViewIntegrity)
+    }
+    private val textViewFulfillment: Typography? by lazy(NONE) {
+        findViewById(R.id.textViewFulfillment)
+    }
 
     constructor(context: Context) : super(context) {
         init()
     }
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
-        initWithAttrs(attrs)
+        init(attrs)
     }
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
-        initWithAttrs(attrs)
+        init(attrs)
     }
 
-    private fun init() {
+    private fun init(attrs: AttributeSet? = null) {
+        layoutParams = LayoutParams(MATCH_PARENT, WRAP_CONTENT)
+
+        initAttributes(attrs)
+
         View.inflate(context, R.layout.product_card_list_layout, this)
 
-        val footerView = View.inflate(context, R.layout.product_card_footer_layout, null)
-        footerView.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
-
-        productCardFooterLayoutContainer.addView(footerView)
+        val footerView = createFooterView()
+        productCardFooterLayoutContainer?.addView(footerView)
     }
 
-    private fun initWithAttrs(attrs: AttributeSet?){
+    private fun initAttributes(attrs: AttributeSet?){
+        attrs ?: return
+
         val typedArray = context.obtainStyledAttributes(attrs, R.styleable.ProductCardView, 0, 0)
 
         try {
@@ -162,54 +220,67 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         } finally {
             typedArray.recycle()
         }
-
-        View.inflate(context, R.layout.product_card_list_layout, this)
-
-        val footerView = 
-            if (isUsingViewStub)
-                View.inflate(context, R.layout.product_card_footer_with_viewstub_layout, null)
-            else
-                View.inflate(context, R.layout.product_card_footer_layout, null)
-
-        footerView.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
-
-        productCardFooterLayoutContainer.addView(footerView)
     }
 
-    override fun setProductModel(productCardModel: ProductCardModel) {
-        imageProduct?.loadImageRounded(productCardModel.productImageUrl)
+    private fun createFooterView(): View = inflateFooterView().apply {
+        layoutParams = LayoutParams(MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+    }
 
-        val isShowCampaign = productCardModel.isShowLabelCampaign()
-        renderLabelCampaign(
-            isShowCampaign,
+    private fun inflateFooterView(): View =
+        if (isUsingViewStub)
+            inflate(context, R.layout.product_card_footer_with_viewstub_layout, null)
+        else
+            inflate(context, R.layout.product_card_footer_layout, null)
+
+    override fun setProductModel(productCardModel: ProductCardModel) {
+        productCardModel.layoutStrategy.renderProductCardShadow(
+            productCardModel,
+            this,
+            cardViewProductCard,
+            false,
+        )
+
+        renderProductCardRibbon(productCardModel, false)
+
+        imageProduct?.loadImageRounded(
+            productCardModel.productImageUrl,
+            productCardModel.layoutStrategy.imageCornerRadius()
+        )
+
+        productCardModel.layoutStrategy.setImageSizeListView(mediaAnchorProduct)
+
+        productCardModel.layoutStrategy.renderOverlayLabel(
+            labelOverlayBackground,
+            labelOverlay,
+            labelOverlayStatus,
+            productCardModel,
+        )
+
+        productCardModel.layoutStrategy.renderCampaignLabel(
             labelCampaignBackground,
             textViewLabelCampaign,
             productCardModel
         )
 
-        val isShowBestSeller = productCardModel.isShowLabelBestSeller()
-        renderLabelBestSeller(
-            isShowBestSeller,
+        productCardModel.layoutStrategy.renderLabelBestSeller(
             labelBestSeller,
             productCardModel
         )
 
-        val isShowCategorySide = productCardModel.isShowLabelCategorySide()
-        renderLabelBestSellerCategorySide(
-            isShowCategorySide,
+        productCardModel.layoutStrategy.renderLabelBestSellerCategorySide(
             textCategorySide,
             productCardModel
         )
 
-        val isShowCategoryBottom = productCardModel.isShowLabelCategoryBottom()
-        renderLabelBestSellerCategoryBottom(
-            isShowCategoryBottom,
+        productCardModel.layoutStrategy.renderLabelBestSellerCategoryBottom(
             textCategoryBottom,
             productCardModel
         )
 
-        val isShowCampaignOrBestSeller = isShowCampaign || isShowBestSeller
-        spaceCampaignBestSeller?.showWithCondition(isShowCampaignOrBestSeller)
+        productCardModel.layoutStrategy.renderSpaceCampaignBestSeller(
+            spaceCampaignBestSeller,
+            productCardModel,
+        )
 
         outOfStockOverlay?.showWithCondition(productCardModel.isOutOfStock)
 
@@ -219,30 +290,51 @@ class ProductCardListView: BaseCustomView, IProductCardView {
 
         imageVideoIdentifier?.showWithCondition(productCardModel.hasVideo)
 
-        renderProductCardContent(productCardModel, isWideContent = true)
+        setMediaAnchorToInfoSpaceSize(productCardModel)
+
+        renderProductCardContent(
+            productCardModel = productCardModel,
+            isWideContent = true,
+        )
 
         renderStockBar(progressBarStock, textViewStockLabel, productCardModel)
 
         renderProductCardFooter(productCardModel, isProductCardList = true)
 
-        imageThreeDots?.showWithCondition(productCardModel.hasThreeDots)
+        imageThreeDots.shouldShowWithAction(productCardModel.hasThreeDots) {
+            constraintLayoutProductCard?.post {
+                imageThreeDots?.expandTouchArea(
+                    it.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
+                    it.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
+                    it.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
+                    it.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
+                )
+            }
+        }
 
         cartExtension.setProductModel(productCardModel)
         video.setVideoURL(productCardModel.customVideoURL)
 
-        cardViewProductCard?.animateOnPress = if(remoteConfig.getBoolean(RemoteConfigKey.PRODUCT_CARD_ENABLE_INTERACTION, true)
-            && productCardModel.cardInteraction){
-                CardUnify2.ANIMATE_OVERLAY_BOUNCE
-        } else CardUnify2.ANIMATE_OVERLAY
+        cardViewProductCard?.animateOnPress = cardViewAnimationOnPress(productCardModel)
 
-        constraintLayoutProductCard?.post {
-            imageThreeDots?.expandTouchArea(
-                getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
-                getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
-                getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
-                getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
-            )
+        if (productCardModel.forceLightModeColor) {
+            forceLightModeColor()
         }
+    }
+
+    private fun setMediaAnchorToInfoSpaceSize(productCardModel: ProductCardModel) {
+        val layoutParams = spaceMediaAnchorToInfo?.layoutParams ?: return
+        layoutParams.width = productCardModel.layoutStrategy.getMediaAnchorToInfoSpaceSize()
+        spaceMediaAnchorToInfo?.layoutParams = layoutParams
+    }
+
+    private fun cardViewAnimationOnPress(productCardModel: ProductCardModel): Int {
+        return if(productCardModel.cardInteraction != null) {
+            val isOverlayBounce =
+                remoteConfig.getBoolean(PRODUCT_CARD_ENABLE_INTERACTION, true)
+                    && productCardModel.cardInteraction
+            if (isOverlayBounce) ANIMATE_OVERLAY_BOUNCE else ANIMATE_OVERLAY
+        } else productCardModel.animateOnPress
     }
 
     fun setImageProductViewHintListener(impressHolder: ImpressHolder, viewHintListener: ViewHintListener) {
@@ -289,6 +381,10 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         buttonSeeSimilarProductWishlist?.setOnClickListener(seeSimilarProductWishlistClickListener)
     }
 
+    fun setSeeOtherProductOnClickListener(seeOtherProductOnClickListener: (View) -> Unit) {
+        buttonSeeOtherProduct?.setOnClickListener(seeOtherProductOnClickListener)
+    }
+
     override fun getCardMaxElevation() = cardViewProductCard?.maxCardElevation ?: 0f
 
     override fun getCardRadius() = cardViewProductCard?.radius ?: 0f
@@ -300,15 +396,15 @@ class ProductCardListView: BaseCustomView, IProductCardView {
 
     private fun setCardHeightMatchParent() {
         val layoutParams = cardViewProductCard?.layoutParams
-        layoutParams?.height = ViewGroup.LayoutParams.MATCH_PARENT
+        layoutParams?.height = MATCH_PARENT
         cardViewProductCard?.layoutParams = layoutParams
     }
 
     private fun resizeImageProductSize() {
-        val layoutParams = imageProduct?.layoutParams
+        val layoutParams = mediaAnchorProduct?.layoutParams
         layoutParams?.width = getDimensionPixelSize(R.dimen.product_card_carousel_list_image_size)
         layoutParams?.height = getDimensionPixelSize(R.dimen.product_card_carousel_list_image_size)
-        imageProduct?.layoutParams = layoutParams
+        mediaAnchorProduct?.layoutParams = layoutParams
     }
 
     override fun recycle() {
@@ -371,4 +467,24 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         super.setOnLongClickListener(l)
         cardViewProductCard?.setOnLongClickListener(l)
     }
+
+    private fun forceLightModeColor() {
+        val context = context ?: return
+        
+        cardViewProductCard?.setCardUnifyBackgroundColor(ContextCompat.getColor(context, R.color.dms_static_white))
+        productName?.setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_NN950_96))
+        productPrice?.setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_NN950_96))
+        labelDiscount?.forceLightRed()
+        productSlashPrice?.setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_NN950_44))
+        soldCount?.setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_NN950_68))
+        rating?.setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_NN950_68))
+        gimmick?.setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_YN400))
+        salesRatingFloatLine?.setBackgroundColor(ContextCompat.getColor(context, R.color.dms_static_light_NN950_32))
+        textViewIntegrity?.setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_NN950_68))
+        textViewFulfillment?.setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_NN950_68))
+        textViewStockLabel?.setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_NN950_68))
+        progressBarStock?.trackDrawable?.apply { setColor(ContextCompat.getColor(context, R.color.dms_static_light_NN100)) }
+        buttonAddToCart?.applyColorMode(ColorMode.LIGHT_MODE)
+    }
+
 }

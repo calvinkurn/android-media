@@ -51,5 +51,7 @@ data class Url(
     val SSE: String,
     val ONE_TRUST: String,
     val TOKOCHAT: String,
-    val AFFILIATE: String
+    val AFFILIATE: String,
+    val ONE_KYC_CLICKSTREAM: String,
+    val GOTO_ACCOUNTS: String
 )

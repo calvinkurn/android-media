@@ -26,7 +26,9 @@ object UiModelMapper {
             urlImage = walletappGetAccountBalance.icon,
             applink = walletappGetAccountBalance.applink,
             isActive = walletappGetAccountBalance.isActive,
-            hideTitle = walletappGetAccountBalance.hideTitle
+            hideTitle = walletappGetAccountBalance.hideTitle,
+            type = walletappGetAccountBalance.type,
+            statusName = walletappGetAccountBalance.statusName
         )
     }
 
@@ -41,7 +43,8 @@ object UiModelMapper {
             urlImage = shimmerUiModel.urlImage,
             applink = shimmerUiModel.applink,
             isActive = shimmerUiModel.isActive,
-            isFailed = isFailed
+            isFailed = isFailed,
+            type = shimmerUiModel.type
         )
     }
 
@@ -63,7 +66,8 @@ object UiModelMapper {
             subtitle = balanceAndPointUiModel.subtitle,
             urlImage = balanceAndPointUiModel.urlImage,
             applink = balanceAndPointUiModel.applink,
-            isActive = balanceAndPointUiModel.isActive
+            isActive = balanceAndPointUiModel.isActive,
+            type = balanceAndPointUiModel.type
         )
     }
 
@@ -89,7 +93,8 @@ object UiModelMapper {
             subtitle = subTitleWallet,
             urlImage = walletappGetAccountBalance.icon,
             applink = walletappGetAccountBalance.applink,
-            isActive = walletappGetAccountBalance.isActive
+            isActive = walletappGetAccountBalance.isActive,
+            statusName = walletappGetAccountBalance.statusName
         )
     }
 

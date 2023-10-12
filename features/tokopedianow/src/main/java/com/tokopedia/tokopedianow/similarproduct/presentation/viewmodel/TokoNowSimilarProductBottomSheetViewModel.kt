@@ -26,8 +26,8 @@ import javax.inject.Inject
 
 class TokoNowSimilarProductBottomSheetViewModel @Inject constructor(
     private val getSimilarProductUseCase: GetSimilarProductUseCase,
-    private val userSession: UserSessionInterface,
     private val addressData: TokoNowLocalAddress,
+    userSession: UserSessionInterface,
     addToCartUseCase: AddToCartUseCase,
     updateCartUseCase: UpdateCartUseCase,
     deleteCartUseCase: DeleteCartUseCase,
@@ -65,14 +65,6 @@ class TokoNowSimilarProductBottomSheetViewModel @Inject constructor(
     val similarProductList: LiveData<List<RecommendationItem?>>
         get() = _similarProductList
 
-    val userId: String
-        get() = userSession.userId
-    val isLoggedIn: Boolean
-        get() = userSession.isLoggedIn
-
-    var warehouseId: String = ""
-        private set
-
     init {
         miniCartSource = MiniCartSource.TokonowHome
     }
@@ -99,7 +91,6 @@ class TokoNowSimilarProductBottomSheetViewModel @Inject constructor(
     private fun appendChooseAddressParams(): MutableMap<String, Any> {
         val tokonowQueryParam: MutableMap<String, Any> = mutableMapOf()
         val chooseAddressData = addressData.getAddressData()
-        warehouseId = chooseAddressData.warehouse_id
 
         if (chooseAddressData.city_id.isNotEmpty())
             tokonowQueryParam[USER_CITY_ID] = chooseAddressData.city_id
@@ -121,7 +112,7 @@ class TokoNowSimilarProductBottomSheetViewModel @Inject constructor(
 
     fun getSimilarProductList(productIds: String){
         launchCatchError( block = {
-            val response = getSimilarProductUseCase.execute(userId.toIntOrZero(), productIds, appendChooseAddressParams())
+            val response = getSimilarProductUseCase.execute(getUserId().toIntOrZero(), productIds, appendChooseAddressParams())
             _similarProductList.postValue(response.productRecommendationWidgetSingle?.data?.recommendation.orEmpty())
         }, onError = {
 

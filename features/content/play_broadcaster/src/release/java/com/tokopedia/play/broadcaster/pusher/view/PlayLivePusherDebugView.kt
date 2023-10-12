@@ -27,4 +27,7 @@ class PlayLivePusherDebugView : ScrollView {
 
     fun logBroadcastStatistic(metric: BroadcasterMetric) {
     }
+
+    fun logChannelId(channelId: String) {
+    }
 }

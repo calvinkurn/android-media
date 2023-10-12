@@ -14,7 +14,7 @@
         android:layout_marginTop="12dp"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:text="@string/lbl_osp_header"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -40,7 +40,7 @@
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:ellipsize="end"
         android:lines="1"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/iv_shop_badge"
         app:layout_constraintTop_toBottomOf="@+id/tv_header"
@@ -74,7 +74,7 @@
             android:layout_marginTop="@dimen/spacing_lvl2"
             android:layout_marginEnd="@dimen/spacing_lvl2"
             android:gravity="center_vertical"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             app:typographyType="small"
             app:typographyWeight="reguler"
             tools:text="kota" />
@@ -87,7 +87,7 @@
             android:layout_marginEnd="@dimen/spacing_lvl2"
             android:gravity="center_vertical"
             android:text="@string/label_separator_line"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             app:typographyType="small" />
 
         <com.tokopedia.unifycomponents.Label
@@ -108,7 +108,7 @@
             android:layout_marginEnd="@dimen/spacing_lvl2"
             android:gravity="center_vertical"
             android:text="@string/label_separator_line"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             app:typographyType="small" />
 
         <com.tokopedia.unifycomponents.Label
@@ -129,7 +129,7 @@
             android:layout_marginEnd="@dimen/spacing_lvl2"
             android:gravity="center_vertical"
             android:text="@string/label_separator_line"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             app:typographyType="small"
             app:typographyWeight="reguler" />
 
@@ -214,7 +214,7 @@
                 android:layout_marginEnd="@dimen/spacing_lvl4"
                 android:paddingStart="@dimen/spacing_lvl4"
                 android:text="@string/occ_custom_ticker_action"
-                android:textColor="@color/Unify_G500"
+                android:textColor="@color/Unify_GN500"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"

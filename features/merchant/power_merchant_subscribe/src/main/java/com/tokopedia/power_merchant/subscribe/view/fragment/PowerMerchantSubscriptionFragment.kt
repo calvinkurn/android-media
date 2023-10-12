@@ -142,9 +142,11 @@ open class PowerMerchantSubscriptionFragment :
     }
 
     override fun setOnTickerWidgetRemoved(position: Int) {
-        adapter.data.removeAt(position)
-        recyclerView?.post {
-            adapter.notifyItemRemoved(position)
+        if (position != RecyclerView.NO_POSITION) {
+            adapter.data.removeAt(position)
+            recyclerView?.post {
+                adapter.notifyItemRemoved(position)
+            }
         }
     }
 
@@ -302,6 +304,18 @@ open class PowerMerchantSubscriptionFragment :
 
     protected fun showErrorState(throwable: Throwable) {
         (activity as? SubscriptionActivityInterface)?.showErrorState(throwable)
+    }
+
+    protected fun showRegistrationFragment() {
+        (activity as? SubscriptionActivityInterface)?.setViewForRegistrationPage()
+    }
+
+    protected fun reSetupFooterView() {
+        (activity as? SubscriptionActivityInterface)?.renderFooterView()
+    }
+
+    protected fun hideFooterView() {
+        (activity as? SubscriptionActivityInterface)?.hideFooterView()
     }
 
     protected fun startCustomMetricPerformanceMonitoring(tag: String) {

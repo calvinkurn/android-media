@@ -1,5 +1,6 @@
 package com.tokopedia.kol.feature.report.view.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,6 +20,7 @@ class ReportReasonAdapter(val view: ContentReportContract.View) :
 
     private val list: MutableList<ReportReasonUiModel> = ArrayList()
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val model = list[position]
 
@@ -27,7 +29,7 @@ class ReportReasonAdapter(val view: ContentReportContract.View) :
         }
 
         MethodChecker.getDrawable(
-            holder.radio.getContext(),
+            holder.radio.context,
             if (model.isSelected) {
                 com.tokopedia.design.R.drawable.ic_radiobutton_selected
             } else {
@@ -58,12 +60,14 @@ class ReportReasonAdapter(val view: ContentReportContract.View) :
 
     override fun getItemCount(): Int = list.size
 
+    @SuppressLint("NotifyDataSetChanged")
     fun addAll(list: MutableList<ReportReasonUiModel>) {
         this.list.clear()
         this.list.addAll(list)
         notifyDataSetChanged()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun setCustomTypeSelected() {
         list.forEach {
             it.isSelected = it.type == getCustomTypeString()

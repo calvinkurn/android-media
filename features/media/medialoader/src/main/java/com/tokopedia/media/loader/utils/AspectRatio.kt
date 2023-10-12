@@ -6,7 +6,7 @@ package com.tokopedia.media.loader.utils
 * to check the aspect ratio of the existing imageView and will be sent
 * to the BlurHashDecoder as the width and height of the new image blur.
 * */
-object AspectRatio {
+internal object AspectRatio {
 
     // using euclidean algorithm
     private fun euclid(a: Int, b: Int): Int {

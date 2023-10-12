@@ -126,11 +126,15 @@ class ProductCarouselViewHolder private constructor() {
                 listener.onTransactionClicked(this, item, lastButton.type.toAction)
             }
 
-            binding.root.setOnClickListener {
-                listener.onClicked(this, item)
+            binding.cardPlayPinned.setOnClickListener {
+                listener.onClicked(this, item, absoluteAdapterPosition)
             }
             binding.lblProductNumber.showWithCondition(item.isNumerationShown)
             binding.lblProductNumber.text = item.number
+
+            binding.layoutRibbon.showWithCondition(item.label.rankFmt.isNotBlank())
+            binding.layoutRibbon.rankFmt = item.label.rankFmt
+            binding.layoutRibbon.setRibbonColors(item.label.rankColors)
         }
 
         private fun getInfo(item: PlayProductUiModel.Product): CharSequence {
@@ -153,6 +157,10 @@ class ProductCarouselViewHolder private constructor() {
             }
         }
 
+        fun startAnimation() {
+            binding.layoutRibbon.startAnimation()
+        }
+
         companion object {
             private const val MIN_STOCK = 5
 
@@ -170,7 +178,7 @@ class ProductCarouselViewHolder private constructor() {
         }
 
         interface Listener {
-            fun onClicked(viewHolder: PinnedProduct, product: PlayProductUiModel.Product)
+            fun onClicked(viewHolder: PinnedProduct, product: PlayProductUiModel.Product, position: Int)
             fun onTransactionClicked(viewHolder: PinnedProduct, product: PlayProductUiModel.Product, action: ProductAction)
         }
     }

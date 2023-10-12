@@ -18,5 +18,4 @@ interface RecommendationComponent {
     fun inject(application: BaseMainApplication)
 
     fun getViewModelFactory(): ViewModelProvider.Factory
-
 }

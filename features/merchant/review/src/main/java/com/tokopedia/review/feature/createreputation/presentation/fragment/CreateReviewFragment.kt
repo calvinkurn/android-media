@@ -1,7 +1,5 @@
 package com.tokopedia.review.feature.createreputation.presentation.fragment
 
-import com.tokopedia.imageassets.TokopediaImageUrl
-
 import android.animation.Animator
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -27,8 +25,10 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.merchant.DeeplinkMapperMerchant
 import com.tokopedia.device.info.DevicePerformanceInfo
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.imagepicker.common.ImagePickerBuilder
 import com.tokopedia.imagepicker.common.ImagePickerPageSource
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
@@ -66,6 +66,7 @@ import com.tokopedia.review.feature.createreputation.presentation.adapter.ImageR
 import com.tokopedia.review.feature.createreputation.presentation.listener.ImageClickListener
 import com.tokopedia.review.feature.createreputation.presentation.listener.TextAreaListener
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.visitable.CreateReviewMediaUiModel
+import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewRatingUiState
 import com.tokopedia.review.feature.createreputation.presentation.viewholder.old.VideoReviewViewHolder
 import com.tokopedia.review.feature.createreputation.presentation.viewmodel.old.CreateReviewViewModel
 import com.tokopedia.review.feature.createreputation.presentation.widget.old.CreateReviewTextAreaBottomSheet
@@ -81,7 +82,8 @@ class CreateReviewFragment :
     TextAreaListener,
     ReviewScoreClickListener,
     ReviewPerformanceMonitoringContract,
-    VideoReviewViewHolder.Listener {
+    VideoReviewViewHolder.Listener,
+    AnimatedRatingPickerCreateReviewView.AnimatedReputationListener {
 
     companion object {
         const val REQUEST_CODE_IMAGE = 111
@@ -121,7 +123,7 @@ class CreateReviewFragment :
                 putString(REPUTATION_ID, reviewId)
                 putInt(REVIEW_CLICK_AT, reviewClickAt)
                 putString(ReviewConstants.PARAM_FEEDBACK_ID, feedbackId)
-                putString(ReviewConstants.PARAM_SOURCE, utmSource)
+                putString(DeeplinkMapperMerchant.PARAM_UTM_SOURCE, utmSource)
             }
         }
     }
@@ -222,7 +224,7 @@ class CreateReviewFragment :
             reviewClickAt = it.getInt(REVIEW_CLICK_AT, 0)
             reputationId = it.getString(REPUTATION_ID, "")
             feedbackId = it.getString(ReviewConstants.PARAM_FEEDBACK_ID, "")
-            utmSource = it.getString(ReviewConstants.PARAM_SOURCE, "")
+            utmSource = it.getString(DeeplinkMapperMerchant.PARAM_UTM_SOURCE, "")
         }
 
         CreateReviewTracking.openScreen(screenName, productId, reputationId, utmSource)
@@ -269,35 +271,10 @@ class CreateReviewFragment :
         initCreateReviewTextArea()
         initEmptyPhoto()
         initAnonymousText()
+        initRatingWidget()
         hideScoreWidgetAndDivider()
         getReviewDetailData()
-        animatedReviewPicker = view.findViewById(R.id.animatedReview)
         imgAnimationView = view.findViewById(R.id.img_animation_review)
-        animatedReviewPicker.resetStars()
-        animatedReviewPicker.setListener(object :
-                AnimatedRatingPickerCreateReviewView.AnimatedReputationListener {
-                override fun onClick(position: Int) {
-                    CreateReviewTracking.reviewOnRatingChangedTracker(
-                        orderId = "",
-                        productId = productId,
-                        ratingValue = (position).toString(),
-                        isSuccessful = true,
-                        isEditReview = true,
-                        feedbackId = feedbackId
-                    )
-                    reviewClickAt = position
-                    shouldPlayAnimation = true
-                    context?.let {
-                        if (isLowDevice) {
-                            generatePeddieImageByIndex()
-                        } else {
-                            playAnimation()
-                        }
-                    }
-                    updateViewBasedOnSelectedRating(position)
-                    clearFocusAndHideSoftInput(view)
-                }
-            })
 
         imgAnimationView.addAnimatorListener(object : Animator.AnimatorListener {
             override fun onAnimationRepeat(animation: Animator) {
@@ -346,6 +323,17 @@ class CreateReviewFragment :
         )
 
         binding?.createReviewSubmitButton?.setOnClickListener { editReview() }
+    }
+
+    private fun initRatingWidget() {
+        view?.run {
+            animatedReviewPicker = findViewById<AnimatedRatingPickerCreateReviewView>(
+                R.id.animatedReview
+            ).apply {
+                resetStars()
+                setListener(this@CreateReviewFragment)
+            }
+        }
     }
 
     override fun onAddImageClick() {
@@ -459,6 +447,33 @@ class CreateReviewFragment :
         }
     }
 
+    override fun onClick(position: Int) {
+        CreateReviewTracking.reviewOnRatingChangedTracker(
+            CreateReviewRatingUiState.Showing.TrackerData.create(
+                rating = position,
+                orderId = "",
+                productId = productId,
+                editMode = true,
+                feedbackId = feedbackId
+            )
+        )
+        reviewClickAt = position
+        shouldPlayAnimation = true
+        context?.let {
+            if (isLowDevice) {
+                generatePeddieImageByIndex()
+            } else {
+                playAnimation()
+            }
+        }
+        updateViewBasedOnSelectedRating(position)
+        clearFocusAndHideSoftInput(view)
+    }
+
+    override fun onDisabledRatingClicked() {
+        showToasterError(getString(R.string.review_edit_cannot_change_rating))
+    }
+
     private fun getReviewDetailData() {
         showShimmering()
         createReviewViewModel.getReviewDetails(feedbackId)
@@ -506,7 +521,7 @@ class CreateReviewFragment :
         with(review) {
             binding?.apply {
                 createReviewExpandableTextArea.setText(reviewText)
-                animatedReviewPicker.renderInitialReviewWithData(rating)
+                setupRatingWidget(review.rating, review.isRatingEditable)
                 playAnimation()
                 updateViewBasedOnSelectedRating(rating)
                 createReviewAnonymousCheckbox.isChecked = sentAsAnonymous
@@ -518,6 +533,15 @@ class CreateReviewFragment :
                     createReviewAddPhotoEmpty.hide()
                 }
             }
+        }
+    }
+
+    private fun setupRatingWidget(rating: Int, ratingEditable: Boolean) {
+        animatedReviewPicker.renderInitialReviewWithData(rating)
+        if (ratingEditable) {
+            animatedReviewPicker.enable()
+        } else {
+            animatedReviewPicker.disable()
         }
     }
 

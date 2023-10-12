@@ -1,6 +1,7 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddressrevamp
 
 import android.Manifest
+import androidx.test.espresso.Espresso
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -30,7 +31,7 @@ class EditAddressRevampNoPinpointTest {
 
     @get:Rule
     var permissionRule: GrantPermissionRule =
-            GrantPermissionRule.grant(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
+        GrantPermissionRule.grant(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
 
     @get:Rule
     var cassavaTestRule = CassavaTestRule()
@@ -60,17 +61,18 @@ class EditAddressRevampNoPinpointTest {
         val queryPath = "tracker/logistic/editaddress_user_revamp_negative.json"
         editAddressRevamp {
             launchWithParam(context, mActivityTestRule)
+            Espresso.closeSoftKeyboard()
             clickKotaKecamatan()
             searchKotaKecamatan(KEYWORD)
             clickKotaKecamatanItem()
             clickPostalCode()
             clickPostalCodeItem()
             clickChoosePostalCode()
+            scrollToBottom()
         } submit {
             hasPassedAnalytics(cassavaTestRule, queryPath)
         }
     }
-
 
     companion object {
         const val KEYWORD = "Tokopedia"

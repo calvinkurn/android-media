@@ -41,7 +41,7 @@
         android:layout_marginRight="16dp"
         android:gravity="center"
         android:text="@string/tradein_loading_text"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         app:layout_constraintBottom_toTopOf="@id/loader_unify"
         app:layout_constraintTop_toBottomOf="@id/loading_heading"
         app:typographyType="body_2"

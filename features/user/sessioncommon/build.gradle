@@ -13,6 +13,11 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.sessioncommon'
+    testNamespace 'com.tokopedia.sessioncommon.test'
+}
+
 dependencies {
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.imageAssets)
@@ -46,8 +51,8 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.workManager
 
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
-
+    implementation projectOrAar(rootProject.ext.libraries.utils)
+    implementation projectOrAar(rootProject.ext.libraries.track)
     //Test
     testImplementation rootProject.ext.testDependencies.junit
 }

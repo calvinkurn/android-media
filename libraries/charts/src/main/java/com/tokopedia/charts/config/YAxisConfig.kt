@@ -42,15 +42,16 @@ class YAxisConfig : BaseAxisConfig() {
 
     internal fun build(): YAxisConfigModel {
         return YAxisConfigModel(
-                typeface = typeface,
-                isEnabled = isEnabled,
-                isLabelEnabled = isLabelEnabled,
-                isGridEnabled = isGridEnabled,
-                mLabelPosition = labelPosition,
-                axisMinimum = axisMinimum,
-                spaceTop = spaceTop,
-                labelCount = labelCount,
-                labelFormatter = labelFormatter
+            typeface = typeface,
+            isEnabled = isEnabled,
+            isLabelEnabled = isLabelEnabled,
+            isGridEnabled = isGridEnabled,
+            mLabelPosition = labelPosition,
+            axisMinimum = axisMinimum,
+            spaceTop = spaceTop,
+            labelCount = labelCount,
+            labelFormatter = labelFormatter,
+            textColor = textColor
         )
     }
 }

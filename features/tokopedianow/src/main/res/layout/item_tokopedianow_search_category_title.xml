@@ -28,7 +28,7 @@
         android:background="?attr/selectableItemBackground"
         android:layout_marginEnd="16dp"
         android:text="@string/tokopedianow_all_category"
-        android:textColor="@color/Unify_G500"
+        android:textColor="@color/Unify_GN500"
         app:layout_constraintBottom_toBottomOf="@+id/tokoNowSearchCategoryTitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tokoNowSearchCategoryTitle"

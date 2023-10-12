@@ -23,6 +23,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.product.detail.common.extensions.getColorChecker
 import com.tokopedia.product.detail.data.model.datamodel.ProductMediaRecomData
 import com.tokopedia.product.detail.databinding.AutoCollapseLabelBinding
 import com.tokopedia.unifycomponents.BaseCustomView
@@ -47,11 +48,18 @@ class AutoCollapseLabel @JvmOverloads constructor(
         private const val MARGIN_BOTTOM_ICON_ONLY = 4
         private const val BACKGROUND_DRAWABLE_RADIUS_TEXT_WITH_ICON = 6
         private const val BACKGROUND_DRAWABLE_RADIUS_ICON_ONLY = 16
+        private const val BACKGROUND_DRAWABLE_STROKE_WIDTH = 1
         private const val PROPERTY_NAME_ALPHA = "alpha"
         private const val PROPERTY_NAME_MAX_WIDTH = "maxWidth"
     }
 
-    private val binding = AutoCollapseLabelBinding.inflate(LayoutInflater.from(context), this, true)
+    private val binding = AutoCollapseLabelBinding.inflate(
+        LayoutInflater.from(context),
+        this,
+        true
+    ).apply {
+        root.background = createBackgroundDrawable()
+    }
     private val animator = ViewAnimator()
     private var canShow: Boolean = false
 
@@ -77,11 +85,13 @@ class AutoCollapseLabel @JvmOverloads constructor(
             } else {
                 animator.animateShowExpanded()
             }
+        } else {
+            hideView()
         }
     }
 
     fun hideView() {
-        if (canShow) animator.animateHide()
+        animator.animateHide()
     }
 
     private fun bindData(recomData: ProductMediaRecomData) {
@@ -91,6 +101,16 @@ class AutoCollapseLabel @JvmOverloads constructor(
 
     private fun collapsed(): Boolean {
         return binding.tvAutoCollapseLabel.ellipsize == null
+    }
+
+    private fun createBackgroundDrawable() = GradientDrawable().apply {
+        shape = GradientDrawable.RECTANGLE
+        setColor(context.getColorChecker(com.tokopedia.unifyprinciples.R.color.Unify_NN0))
+        cornerRadius = BACKGROUND_DRAWABLE_RADIUS_TEXT_WITH_ICON.toPx().toFloat()
+        setStroke(
+            BACKGROUND_DRAWABLE_STROKE_WIDTH.toPx(),
+            context.getColorChecker(com.tokopedia.unifyprinciples.R.color.Unify_NN300)
+        )
     }
 
     inner class ViewAnimator {

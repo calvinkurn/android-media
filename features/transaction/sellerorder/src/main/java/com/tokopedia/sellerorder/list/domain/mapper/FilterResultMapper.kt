@@ -12,7 +12,8 @@ class FilterResultMapper @Inject constructor() {
             quickFilterList = mapQuickFilterList(resultFilterList.orderFilterSom.quickFilterList),
             statusList = mapStatusList(resultFilterList.orderFilterSom.statusList),
             sortByList = mapSortByList(resultFilterList.orderFilterSom.sortByList),
-            fromCache = fromCache
+            fromCache = fromCache,
+            highLightedStatusKey = resultFilterList.orderFilterSom.highLightedStatusKey.orEmpty()
         )
     }
 

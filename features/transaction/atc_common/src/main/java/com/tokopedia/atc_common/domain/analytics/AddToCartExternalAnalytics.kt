@@ -59,11 +59,14 @@ class AddToCartExternalAnalytics @Inject constructor() {
             putString(EE_PARAM_DIMENSION_38, setValueOrDefault(data.trackerAttribution))
             putString(EE_PARAM_DIMENSION_45, setValueOrDefault(data.cartId))
             putString(EE_PARAM_DIMENSION_54, if (data.isMultiOrigin) EE_VALUE_TOKOPEDIA else EE_VALUE_REGULAR)
-            putString(EE_PARAM_DIMENSION_83, when {
-                data.isFreeOngkirExtra -> EE_VALUE_BEBAS_ONGKIR_EXTRA
-                data.isFreeOngkir -> EE_VALUE_BEBAS_ONGKIR
-                else -> EE_VALUE_NONE_OTHER
-            })
+            putString(
+                EE_PARAM_DIMENSION_83,
+                when {
+                    data.isFreeOngkirExtra -> EE_VALUE_BEBAS_ONGKIR_EXTRA
+                    data.isFreeOngkir -> EE_VALUE_BEBAS_ONGKIR
+                    else -> EE_VALUE_NONE_OTHER
+                }
+            )
         }
 
         val eventDataLayer = Bundle().apply {

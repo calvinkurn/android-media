@@ -1,12 +1,15 @@
+@file:SuppressLint("CheckResult")
+
 package com.tokopedia.media.loader.options
 
+import android.annotation.SuppressLint
 import com.bumptech.glide.request.BaseRequestOptions
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.media.loader.data.Properties
 import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.media.loader.wrapper.MediaDecodeFormat
 
-class CommonOptions constructor(
+internal class CommonOptions constructor(
     private val properties: Properties,
     private val options: BaseRequestOptions<*>
 ) {

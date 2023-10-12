@@ -2,9 +2,9 @@ package com.tokopedia.logout
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import com.tokopedia.logout.LogoutViewModel
 import com.tokopedia.logout.domain.model.LogoutDataModel
 import com.tokopedia.logout.domain.usecase.LogoutUseCase
+import com.tokopedia.sessioncommon.data.ocl.OclPreference
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -27,22 +27,23 @@ class LogoutViewModelTest {
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     private val logoutUseCase = mockk<LogoutUseCase>(relaxed = true)
+    private val oclPref = mockk<OclPreference>(relaxed = true)
     private val observer = mockk<Observer<Result<LogoutDataModel>>>(relaxed = true)
 
     lateinit var viewModel: LogoutViewModel
 
     @Before
     fun setup() {
-        viewModel = LogoutViewModel(logoutUseCase, CoroutineTestDispatchersProvider)
+        viewModel = LogoutViewModel(logoutUseCase, oclPref, CoroutineTestDispatchersProvider)
         viewModel.logoutResult.observeForever(observer)
     }
 
     @Test
     fun `do logout - success`() {
         val mockResponse = LogoutDataModel(LogoutDataModel.Response(success = true))
-        coEvery { logoutUseCase.invoke(Unit) } returns mockResponse
+        coEvery { logoutUseCase.invoke(any()) } returns mockResponse
 
-        viewModel.doLogout()
+        viewModel.doLogout(LogoutUseCase.PARAM_SAVE_SESSION)
 
         verify { observer.onChanged(Success(mockResponse)) }
     }
@@ -57,20 +58,44 @@ class LogoutViewModelTest {
             )
         )
 
-        coEvery { logoutUseCase.invoke(Unit) } returns mockResponseData
+        coEvery { logoutUseCase.invoke(any()) } returns mockResponseData
 
-        viewModel.doLogout()
+        viewModel.doLogout(LogoutUseCase.PARAM_SAVE_SESSION)
 
         verify(exactly = 1) { observer.onChanged(match { it is Fail }) }
     }
 
     @Test
     fun `do logout - error`() {
-        val mockThrowable = Throwable()
-        coEvery { logoutUseCase.invoke(Unit) } throws mockThrowable
+        val mockThrowable = Exception()
+        val token = "123"
+        coEvery { oclPref.getToken() } returns token
+        coEvery { logoutUseCase.invoke(any()) } throws mockThrowable
+
+        viewModel.doLogout(LogoutUseCase.PARAM_SAVE_SESSION)
+
+        verify { observer.onChanged(Fail(mockThrowable)) }
+    }
+
+    @Test
+    fun `do logout - without save token()`() {
+        val mockResponse = LogoutDataModel(LogoutDataModel.Response(success = true))
+        coEvery { logoutUseCase.invoke(any()) } returns mockResponse
 
         viewModel.doLogout()
 
-        verify { observer.onChanged(Fail(mockThrowable)) }
+        verify(exactly = 0) { oclPref.storeToken(any()) }
+        verify { observer.onChanged(Success(mockResponse)) }
+    }
+
+    @Test
+    fun `do logout - with save token()`() {
+        val mockResponse = LogoutDataModel(LogoutDataModel.Response(success = true))
+        coEvery { logoutUseCase.invoke(any()) } returns mockResponse
+
+        viewModel.doLogout(LogoutUseCase.PARAM_SAVE_SESSION)
+
+        verify(exactly = 1) { oclPref.storeToken(any()) }
+        verify { observer.onChanged(Success(mockResponse)) }
     }
 }

@@ -4,7 +4,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalFeed
 import com.tokopedia.people.model.PlayPostContentItem
 import com.tokopedia.people.model.PostPromoLabel
-import com.tokopedia.people.model.UserPostModel
+import com.tokopedia.play.widget.ui.model.PartnerType
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelTypeTransition
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetPartnerUiModel
@@ -58,7 +58,14 @@ object UserProfileVideoMapper {
                 getPromoType(item.configurations.promoLabels).text,
             ),
             reminderType = getReminderType(item.configurations.reminder.isSet),
-            partner = PlayWidgetPartnerUiModel(item.partner.id, item.partner.name),
+            partner = PlayWidgetPartnerUiModel(
+                id = item.partner.id,
+                name = item.partner.name,
+                type = PartnerType.getTypeByValue(item.partner.name),
+                avatarUrl = "",
+                badgeUrl = "",
+                appLink = "",
+            ),
             video = PlayWidgetVideoUiModel(item.id, item.isLive, item.coverUrl, item.webLink),
             channelType = channelType,
             hasGame = mapHasGame(item.configurations.promoLabels),
@@ -67,10 +74,12 @@ object UserProfileVideoMapper {
             poolType = poolType,
             recommendationType = recommendationType,
             hasAction = shouldHaveActionMenu(channelType, item.partner.id, userId),
+            shouldShowPerformanceDashboard = false,
             channelTypeTransition = PlayWidgetChannelTypeTransition(
                 PlayWidgetChannelType.getByValue(channelTypeTransitionPrev),
                 PlayWidgetChannelType.getByValue(channelTypeTransitionNext),
             ),
+            products = emptyList(),
         )
     }
 }

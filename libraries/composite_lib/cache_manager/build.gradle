@@ -22,6 +22,11 @@ project.ext {
 
 
 
+android {
+    namespace 'com.tokopedia.cachemanager'
+    testNamespace 'com.tokopedia.cachemanager.test'
+}
+
 dependencies {
     implementation rootProject.ext.miscDependencies.gson
 

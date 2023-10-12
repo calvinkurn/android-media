@@ -15,7 +15,6 @@ import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.content.common.types.ContentCommonUserType
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
-import com.tokopedia.play.broadcaster.BuildConfig
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.factory.PlayBroTestFragmentFactory
@@ -35,6 +34,7 @@ import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
 import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
 import com.tokopedia.play.broadcaster.ui.model.paged.PagedDataUiModel
+import com.tokopedia.play.broadcaster.ui.model.pinnedproduct.PinProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.util.bottomsheet.NavigationBarColorDialogCustomizer
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
@@ -70,7 +70,13 @@ class ProductChooserIdGenerator {
                 discountPercent = 50,
                 discountedPrice = "500",
                 discountedPriceNumber = 500.0
-            )
+            ),
+            hasCommission = false,
+            commissionFmt = "",
+            commission = 0L,
+            extraCommission = false,
+            pinStatus = PinProductUiModel.Empty,
+            number = "",
         )
     )
 
@@ -109,8 +115,9 @@ class ProductChooserIdGenerator {
             maxProduct: Int,
             productSectionList: List<ProductTagSectionUiModel>,
             savedStateHandle: SavedStateHandle,
+            source: PlayBroPageSource,
             isEligibleForPin: Boolean,
-            source: PlayBroPageSource
+            fetchCommissionProduct: Boolean
         ): PlayBroProductSetupViewModel {
             return PlayBroProductSetupViewModel(
                 creationId = creationId,
@@ -121,7 +128,8 @@ class ProductChooserIdGenerator {
                 repo = repo,
                 userSession = userSession,
                 dispatchers = CoroutineDispatchersProvider,
-                source = source
+                source = source,
+                fetchCommissionProduct = fetchCommissionProduct,
             )
         }
     }
@@ -141,7 +149,7 @@ class ProductChooserIdGenerator {
 
                         override fun getSelectedAccount(): ContentAccountUiModel {
                             return ContentAccountUiModel.Empty.copy(
-                                type = ContentCommonUserType.TYPE_SHOP
+                                type = ContentCommonUserType.TYPE_SHOP,
                             )
                         }
 
@@ -156,12 +164,17 @@ class ProductChooserIdGenerator {
                         override fun getPageSource(): PlayBroPageSource {
                             return PlayBroPageSource.Live
                         }
+
+                        override fun fetchCommissionProduct(): Boolean {
+                            return false
+                        }
                     })
                 }
             },
             ProductSummaryBottomSheet::class.java to {
                 ProductSummaryBottomSheet(
-                    analytic = mockk(relaxed = true)
+                    analytic = mockk(relaxed = true),
+                    coachMarkSharedPref = mockk(relaxed = true),
                 )
             },
             ProductChooserBottomSheet::class.java to {
@@ -186,7 +199,8 @@ class ProductChooserIdGenerator {
             },
             ProductSummaryBottomSheet::class.java to {
                 ProductSummaryBottomSheet(
-                    mockk(relaxed = true)
+                    mockk(relaxed = true),
+                    mockk(relaxed = true),
                 )
             },
             ProductSortBottomSheet::class.java to {
@@ -240,7 +254,7 @@ class ProductChooserIdGenerator {
     fun productChooserBottomSheet() {
         val scenario = launchFragment<ProductSetupFragment>(
             factory = fragmentFactory,
-            themeResId = R.style.AppTheme
+            themeResId = com.tokopedia.empty_state.R.style.AppTheme
         )
 
         scenario.moveToState(Lifecycle.State.RESUMED)
@@ -259,7 +273,7 @@ class ProductChooserIdGenerator {
     fun sortFilterBottomSheet() {
         val scenario = launchFragment<ProductSetupFragment>(
             factory = fragmentFactory,
-            themeResId = R.style.AppTheme
+            themeResId = com.tokopedia.empty_state.R.style.AppTheme
         )
 
         scenario.moveToState(Lifecycle.State.RESUMED)
@@ -282,7 +296,7 @@ class ProductChooserIdGenerator {
     fun etalaseListBottomSheet() {
         val scenario = launchFragment<ProductSetupFragment>(
             factory = fragmentFactory,
-            themeResId = R.style.AppTheme
+            themeResId = com.tokopedia.empty_state.R.style.AppTheme
         )
 
         scenario.moveToState(Lifecycle.State.RESUMED)

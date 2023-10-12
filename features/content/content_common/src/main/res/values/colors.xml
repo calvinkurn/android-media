@@ -4,4 +4,18 @@
     <color name="content_dms_soft_gray">#AAB4C8</color>
     <color name="content_dms_soft_dark">#212121</color>
     <color name="content_dms_bg_label">#B32E3137</color>
+    <color name="content_dms_product_tag_oos_overlay">#802E3137</color>
+
+    <!--Vertical Swipe-->
+    <color name="play_dms_vertical_swipe_overlay">#99212121</color>
+    <color name="play_dms_vertical_swipe_description">#F5FFFFFF</color>
+
+    <!--User Report-->
+    <color name="content_dms_user_report_sheet_divider">#E5E7E9</color>
+
+    <!--Partner Info-->
+    <color name="content_dms_partner_icon_placeholder">#AD31353B</color>
+
+    <color name="content_dms_campaign_progress_0_color">#D6001C</color>
+    <color name="content_dms_campaign_progress_100_color">#FA591D</color>
 </resources>

@@ -10,7 +10,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:lineSpacingExtra="@dimen/shc_line_spacing_6"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:layout_constraintBottom_toBottomOf="@id/tvShcCurrentProgress"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/tvShcCurrentProgress"
@@ -28,7 +28,7 @@
         app:typographyType="display_3"
         app:typographyWeight="bold"
         tools:text="80"
-        tools:textColor="@color/Unify_G500" />
+        tools:textColor="@color/Unify_GN500" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvShcMaxProgress"

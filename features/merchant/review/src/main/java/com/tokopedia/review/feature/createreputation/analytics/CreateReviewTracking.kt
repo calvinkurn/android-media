@@ -8,6 +8,7 @@ import com.tokopedia.picker.common.PageSource
 import com.tokopedia.review.common.analytics.ReviewTrackingConstant
 import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewDialogType
+import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewRatingUiState
 import com.tokopedia.reviewcommon.constant.AnalyticConstant
 import com.tokopedia.reviewcommon.extension.appendBusinessUnit
 import com.tokopedia.reviewcommon.extension.appendCurrentSite
@@ -126,24 +127,18 @@ object CreateReviewTracking {
         )
     }
 
-    fun reviewOnRatingChangedTracker(
-        orderId: String,
-        productId: String,
-        ratingValue: String,
-        isSuccessful: Boolean,
-        isEditReview: Boolean,
-        feedbackId: String
-    ) {
-        val successState = if (isSuccessful) "success" else "unsuccessful"
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-            createEventMap(
-                event = "clickReview",
-                category = "product review detail page" + getEditMarker(isEditReview),
-                action = "click - product star rating - $ratingValue",
-                label = "${if (isEditReview) feedbackId else orderId} - $productId - $successState"
+    fun reviewOnRatingChangedTracker(trackerData: CreateReviewRatingUiState.Showing.TrackerData) =
+        with(trackerData) {
+            val successState = if (successful) "success" else "unsuccessful"
+            TrackApp.getInstance().gtm.sendGeneralEvent(
+                createEventMap(
+                    event = "clickReview",
+                    category = "product review detail page" + getEditMarker(editMode),
+                    action = "click - product star rating - $rating",
+                    label = "${if (editMode) feedbackId else orderId} - $productId - $successState"
+                )
             )
-        )
-    }
+        }
 
     fun onExpandTextBoxClicked(orderId: String, productId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(

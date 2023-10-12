@@ -61,6 +61,7 @@ fun clickSubmit() {
 }
 
 fun clickLewati() {
+    Thread.sleep(1000)
     clickOnText("Lewati")
 }
 
@@ -78,8 +79,8 @@ fun isDialogOfferLoginShowing() {
         "Lanjut masuk dengan nomor ini\n$validPhoneNumber"
     )
     isDisplayed(
-        R.id.dialog_btn_secondary,
-        R.id.dialog_btn_primary
+        com.tokopedia.dialog.R.id.dialog_btn_secondary,
+        com.tokopedia.dialog.R.id.dialog_btn_primary
     )
 }
 
@@ -93,20 +94,21 @@ fun isDialogConfirmPhoneNumberShowing() {
         validPhoneNumber
     )
     isDisplayed(
-        R.id.dialog_btn_secondary,
-        R.id.dialog_btn_primary
+        com.tokopedia.dialog.R.id.dialog_btn_secondary,
+        com.tokopedia.dialog.R.id.dialog_btn_primary
     )
 }
 
 fun isGlobalErrorShowing() {
     Thread.sleep(200)
     isDisplayed(R.id.global_error)
+    Thread.sleep(2000)
 }
 
 fun clickPrimaryButtonDialog() {
-    clickOnButtonDialog(R.id.dialog_btn_primary)
+    clickOnButtonDialog(com.tokopedia.dialog.R.id.dialog_btn_primary)
 }
 
 fun clickSecondaryButtonDialog() {
-    clickOnButtonDialog(R.id.dialog_btn_secondary)
+    clickOnButtonDialog(com.tokopedia.dialog.R.id.dialog_btn_secondary)
 }

@@ -37,10 +37,9 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.math.roundToInt
 
-
 class ChatbotVideoUploadViewHolder(
     itemView: View?,
-    private val listener: VideoUploadListener,
+    private val listener: VideoUploadListener
 ) : BaseChatViewHolder<VideoUploadUiModel>(itemView), VideoDimensionsListener {
 
     override fun alwaysShowTime() = true
@@ -68,12 +67,12 @@ class ChatbotVideoUploadViewHolder(
 
     private val bgSender = ViewUtil.generateBackgroundWithoutShadow(
         chatBalloon,
-        com.tokopedia.unifyprinciples.R.color.Unify_N75,
+        com.tokopedia.unifyprinciples.R.color.Unify_NN50,
         com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
         com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
         com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
         com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-        com.tokopedia.unifyprinciples.R.color.Unify_G200,
+        com.tokopedia.unifyprinciples.R.color.Unify_GN100,
         getStrokeWidthSenderDimenRes()
     )
 
@@ -166,7 +165,7 @@ class ChatbotVideoUploadViewHolder(
         changeHourColor(
             MethodChecker.getColor(
                 itemView.context,
-                com.tokopedia.unifyprinciples.R.color.Unify_N0
+                com.tokopedia.unifyprinciples.R.color.Unify_NN0
             )
         )
         if (element.isDummy) {
@@ -310,8 +309,9 @@ class ChatbotVideoUploadViewHolder(
         chatBalloon?.layoutParams = ConstraintLayout.LayoutParams(width, height)
         val params = chatBalloon?.layoutParams as ConstraintLayout.LayoutParams
         params.rightToRight = ConstraintLayout.LayoutParams.PARENT_ID
-        if (dateContainer != null)
+        if (dateContainer != null) {
             params.topToBottom = dateContainer.id
+        }
         params.topMargin = TOP_MARGIN
         chatBalloon.layoutParams = params
         videoPlayerView?.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FILL
@@ -324,7 +324,7 @@ class ChatbotVideoUploadViewHolder(
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_chatbot_chat_video_upload
+        val LAYOUT = R.layout.item_chatbot_video_upload
         const val HOURS = 24
         const val MINUTES = 60
         const val SECONDS = 60
@@ -333,10 +333,9 @@ class ChatbotVideoUploadViewHolder(
         const val MAX_ALLOWED_WIDTH = 240f
         const val TOP_MARGIN = 16
     }
-
 }
 
 interface VideoDimensionsListener {
-    fun setWidth(width : Int)
-    fun setHeight(height : Int)
+    fun setWidth(width: Int)
+    fun setHeight(height: Int)
 }

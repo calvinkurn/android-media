@@ -5,7 +5,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.recommendation_widget_common.databinding.ItemComparisonWidgetBinding
-import com.tokopedia.recommendation_widget_common.widget.ComparisonWidgetTracking
+import com.tokopedia.recommendation_widget_common.widget.comparison.tracking.ComparisonWidgetTracking
 import com.tokopedia.recommendation_widget_common.widget.ProductRecommendationTracking
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.track.TrackApp
@@ -32,7 +32,7 @@ class ComparisonWidgetItemViewHolder(val view: View): RecyclerView.ViewHolder(vi
     ) {
         binding?.specsView?.setSpecsInfo(comparisonModel.specsModel)
         binding?.productCardView?.setProductModel(comparisonModel.productCardModel)
-        if (!comparisonModel.isCurrentItem) {
+        if (comparisonModel.isClickable) {
             binding?.productCardView?.setOnClickListener {
                 if (comparisonModel.recommendationItem.isTopAds) {
                     val product = comparisonModel.recommendationItem

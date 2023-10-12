@@ -43,6 +43,20 @@ object CommonTopupBillsGqlQuery {
                 rule
                 title
               }
+              items{
+                name
+                text
+                style
+                placeholder
+                help
+                color
+                coachmark
+                validations {
+                    rule
+                    title
+                    message
+                }
+              }
             }
           }
         }
@@ -159,6 +173,13 @@ object CommonTopupBillsGqlQuery {
             }
             express_checkout
             menu_label
+            buttons {
+              text
+              color
+              coachmark
+              position
+              type
+            }
           }
         }
     """.trimIndent()

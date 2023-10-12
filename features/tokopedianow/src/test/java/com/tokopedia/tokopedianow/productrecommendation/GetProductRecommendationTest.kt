@@ -4,6 +4,7 @@ import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendati
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.tokopedianow.common.domain.mapper.ProductRecommendationMapper.mapResponseToProductRecommendation
+import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.unit.test.ext.verifyErrorEquals
 import com.tokopedia.unit.test.ext.verifySuccessEquals
 import com.tokopedia.unit.test.ext.verifyValueEquals
@@ -45,7 +46,7 @@ class GetProductRecommendationTest : TokoNowProductRecommendationViewModelTestFi
     fun `while getting product recommendation, the request should be success with returning empty value`() = runTest {
         onGetRecommendation_thenReturn(listOf())
 
-        viewModel.getFirstRecommendationCarousel(GetRecommendationRequestParam())
+        viewModel.getFirstRecommendationCarousel(GetRecommendationRequestParam(), GetTargetedTickerUseCase.CATEGORY_PAGE)
 
         viewModel.productRecommendation.verifyErrorEquals(Fail(Throwable()))
         viewModel.loadingState.verifyValueEquals(false)
@@ -55,7 +56,7 @@ class GetProductRecommendationTest : TokoNowProductRecommendationViewModelTestFi
     fun `while getting product recommendation, the request should be success with returning the value and an empty recommendation list`() = runTest {
         onGetRecommendation_thenReturn(listOf(RecommendationWidget()))
 
-        viewModel.getFirstRecommendationCarousel(GetRecommendationRequestParam())
+        viewModel.getFirstRecommendationCarousel(GetRecommendationRequestParam(), GetTargetedTickerUseCase.CATEGORY_PAGE)
 
         viewModel.productRecommendation.verifyErrorEquals(Fail(Throwable()))
         viewModel.loadingState.verifyValueEquals(false)
@@ -71,7 +72,7 @@ class GetProductRecommendationTest : TokoNowProductRecommendationViewModelTestFi
 
         onGetRecommendation_thenReturn(listOf(recommendationWidget))
 
-        viewModel.getFirstRecommendationCarousel(GetRecommendationRequestParam())
+        viewModel.getFirstRecommendationCarousel(GetRecommendationRequestParam(), GetTargetedTickerUseCase.CATEGORY_PAGE)
 
         val expectedProductModels = mapResponseToProductRecommendation(
             recommendationWidget = recommendationWidget,
@@ -92,7 +93,7 @@ class GetProductRecommendationTest : TokoNowProductRecommendationViewModelTestFi
 
         onGetRecommendation_thenReturn(listOf(recommendationWidget))
 
-        viewModel.getFirstRecommendationCarousel(GetRecommendationRequestParam())
+        viewModel.getFirstRecommendationCarousel(GetRecommendationRequestParam(), GetTargetedTickerUseCase.CATEGORY_PAGE)
 
         val expectedProductModels = mapResponseToProductRecommendation(
             recommendationWidget = recommendationWidget,
@@ -108,7 +109,7 @@ class GetProductRecommendationTest : TokoNowProductRecommendationViewModelTestFi
     fun `while getting product recommendation, the request should fail`() = runTest {
         onGetRecommendation_thenReturn(Throwable())
 
-        viewModel.getFirstRecommendationCarousel(GetRecommendationRequestParam())
+        viewModel.getFirstRecommendationCarousel(GetRecommendationRequestParam(), GetTargetedTickerUseCase.CATEGORY_PAGE)
 
         viewModel.productRecommendation.verifyErrorEquals(Fail(Throwable()))
         viewModel.loadingState.verifyValueEquals(false)
@@ -134,7 +135,7 @@ class GetProductRecommendationTest : TokoNowProductRecommendationViewModelTestFi
 
         onGetRecommendation_thenReturn(listOf(recommendationWidget))
 
-        viewModel.getFirstRecommendationCarousel(GetRecommendationRequestParam(pageName = "tokonow"))
+        viewModel.getFirstRecommendationCarousel(GetRecommendationRequestParam(pageName = "tokonow"), GetTargetedTickerUseCase.CATEGORY_PAGE)
 
         var expectedProductModels = mapResponseToProductRecommendation(
             recommendationWidget = recommendationWidget,
@@ -180,7 +181,7 @@ class GetProductRecommendationTest : TokoNowProductRecommendationViewModelTestFi
         /**
          * 6. the job is not null but the page name is not in the list, so it should do nothing
          */
-        viewModel.updateProductRecommendation(GetRecommendationRequestParam(pageName = "category"))
+        viewModel.updateProductRecommendation(GetRecommendationRequestParam(pageName = "oldcategory"))
 
         viewModel.productRecommendation.verifySuccessEquals(Success(expectedProductModels))
     }

@@ -27,6 +27,7 @@
         <item>Stok produk harus memadai, dalam kondisi baru, dan tidak terdaftar di campaign lain di dalam periode yang sama.</item>
         <item><![CDATA[Sesuai syarat & ketentuan Tokopedia, susu formula bayi usia 0–12 bulan tidak boleh mengikuti Flash Sale/campaign.]]></item>
         <item>Pastikan produkmu tidak terdaftar lebih dari 2 kali dalam 1 periode campaign yang sama.</item>
+        <item>Pembeli bisa beli produkmu dari stok utama saat stok campaign habis ketika Flash Sale masih berlangsung.</item>
     </string-array>
     <string-array name="criteria_filter_items">
         <item>Memenuhi Kriteria</item>

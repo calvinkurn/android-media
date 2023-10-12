@@ -45,16 +45,19 @@ class MasterProductCardItemViewModel(val application: Application, val component
     private val notifyMeCurrentStatus: MutableLiveData<Boolean> = MutableLiveData()
     private val showNotifyToast: SingleLiveEvent<Pair<Boolean, String?>> = SingleLiveEvent()
     private val scrollToSimilarProductComponentID: SingleLiveEvent<String> = SingleLiveEvent()
-    private var lastQuantity:Int = 0
+    private var lastQuantity: Int = 0
 
+    @JvmField
     @Inject
-    lateinit var discoveryTopAdsTrackingUseCase: TopAdsTrackingUseCase
+    var discoveryTopAdsTrackingUseCase: TopAdsTrackingUseCase? = null
 
+    @JvmField
     @Inject
-    lateinit var campaignNotifyUserCase: CampaignNotifyUserCase
+    var campaignNotifyUserCase: CampaignNotifyUserCase? = null
 
+    @JvmField
     @Inject
-    lateinit var productCardItemUseCase: ProductCardItemUseCase
+    var productCardItemUseCase: ProductCardItemUseCase? = null
 
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
@@ -75,9 +78,9 @@ class MasterProductCardItemViewModel(val application: Application, val component
     private fun setProductStockWording(dataItem: DataItem) {
         if (dataItem.stockWording == null || dataItem.stockWording?.title.isNullOrEmpty()) {
             dataItem.stockWording = getStockWord(dataItem)
-        }else if(dataItem.stockWording?.color.isNullOrEmpty()){
+        } else if (dataItem.stockWording?.color.isNullOrEmpty()) {
             dataItem.stockWording?.let {
-                it.color = getStockColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_20)
+                it.color = getStockColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950_20)
             }
         }
     }
@@ -99,7 +102,7 @@ class MasterProductCardItemViewModel(val application: Application, val component
         return UserSession(application).isLoggedIn
     }
 
-    fun getUserID():String? {
+    fun getUserID(): String? {
         return UserSession(application).userId
     }
 
@@ -110,8 +113,14 @@ class MasterProductCardItemViewModel(val application: Application, val component
         dataItem.value?.let {
             val topAdsClickUrl = it.topadsClickUrl
             if (it.isTopads == true && topAdsClickUrl != null) {
-                discoveryTopAdsTrackingUseCase.hitClick(this::class.qualifiedName, topAdsClickUrl, it.productId
-                        ?: "", it.name ?: "", it.imageUrl ?: "")
+                discoveryTopAdsTrackingUseCase?.hitClick(
+                    this::class.qualifiedName,
+                    topAdsClickUrl,
+                    it.productId
+                        ?: "",
+                    it.name ?: "",
+                    it.imageUrl ?: ""
+                )
             }
         }
     }
@@ -120,8 +129,14 @@ class MasterProductCardItemViewModel(val application: Application, val component
         dataItem.value?.let {
             val topAdsViewUrl = it.topadsViewUrl
             if (it.isTopads == true && topAdsViewUrl != null && !components.topAdsTrackingStatus) {
-                discoveryTopAdsTrackingUseCase.hitImpressions(this::class.qualifiedName, topAdsViewUrl, it.productId
-                        ?: "", it.name ?: "", it.imageUrl ?: "")
+                discoveryTopAdsTrackingUseCase?.hitImpressions(
+                    this::class.qualifiedName,
+                    topAdsViewUrl,
+                    it.productId
+                        ?: "",
+                    it.name ?: "",
+                    it.imageUrl ?: ""
+                )
                 components.topAdsTrackingStatus = true
             }
         }
@@ -129,18 +144,18 @@ class MasterProductCardItemViewModel(val application: Application, val component
 
     fun getProductCardOptionsModel(): ProductCardOptionsModel {
         return components.data?.firstOrNull()?.let {
-             ProductCardOptionsModel(
-                    hasWishlist = true,
-                    isWishlisted = it.isWishList,
-                    productId = it.id.toString(),
-                    isTopAds = it.isTopads ?: false,
-                    topAdsWishlistUrl = it.wishlistUrl ?: "",
-                    productPosition = position
+            ProductCardOptionsModel(
+                hasWishlist = true,
+                isWishlisted = it.isWishList,
+                productId = it.id.toString(),
+                isTopAds = it.isTopads ?: false,
+                topAdsWishlistUrl = it.wishlistUrl ?: "",
+                productPosition = position
             )
         } ?: ProductCardOptionsModel()
     }
 
-    fun getThreeDotsWishlistOptionsModel():ProductCardOptionsModel {
+    fun getThreeDotsWishlistOptionsModel(): ProductCardOptionsModel {
         return components.data?.firstOrNull()?.let {
             ProductCardOptionsModel(
                 hasWishlist = true,
@@ -159,12 +174,11 @@ class MasterProductCardItemViewModel(val application: Application, val component
                 productName = it.name ?: "",
                 productImageUrl = it.imageUrlMobile ?: "",
                 productUrl = it.productURLDesktop ?: "",
-                formattedPrice = it.price ?: "",
+                formattedPrice = it.price ?: ""
 
             )
         } ?: ProductCardOptionsModel()
     }
-
 
     fun getTemplateType() = components.properties?.template ?: GRID
     fun getShowLoginData(): LiveData<Boolean> = showLoginLiveData
@@ -177,22 +191,22 @@ class MasterProductCardItemViewModel(val application: Application, val component
             dataItem.value?.let { productItemData ->
                 productItemData.notifyMe?.let {
                     launchCatchError(block = {
-                        val campaignNotifyResponse = campaignNotifyUserCase.subscribeToCampaignNotifyMe(getNotifyRequestBundle(productItemData))
-                        campaignNotifyResponse.checkCampaignNotifyMeResponse?.let { campaignResponse ->
+                        val campaignNotifyResponse = campaignNotifyUserCase?.subscribeToCampaignNotifyMe(getNotifyRequestBundle(productItemData))
+                        campaignNotifyResponse?.checkCampaignNotifyMeResponse?.let { campaignResponse ->
                             if (campaignResponse.success == true) {
                                 productItemData.notifyMe = !it
                                 dataItem.value = productItemData
                                 notifyMeCurrentStatus.value = productItemData.notifyMe
                                 showNotifyToast.value = Pair(false, campaignResponse.message)
-                                this@MasterProductCardItemViewModel.syncData.value = productCardItemUseCase.notifyProductComponentUpdate(components.parentComponentId, components.pageEndPoint)
+                                this@MasterProductCardItemViewModel.syncData.value = productCardItemUseCase?.notifyProductComponentUpdate(components.parentComponentId, components.pageEndPoint)
                             } else {
                                 showNotifyToast.value = Pair(true, campaignResponse.errorMessage)
                             }
                         }
                     }, onError = {
-                        showNotifyToast.value = Pair(true, "")
-                        it.printStackTrace()
-                    })
+                            showNotifyToast.value = Pair(true, "")
+                            it.printStackTrace()
+                        })
                 }
             }
         } else {
@@ -219,39 +233,39 @@ class MasterProductCardItemViewModel(val application: Application, val component
 
     private fun getStockWord(dataItem: DataItem): StockWording {
         val stockWordData = StockWording(title = "")
-        var stockWordTitleColour = getStockColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_20)
+        var stockWordTitleColour = getStockColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950_20)
         var stockWordTitle = ""
         var stockAvailableCount: String? = ""
         dataItem.let {
-                val campaignSoldCount = it.campaignSoldCount
-                val threshold: Int? = it.threshold?.toIntOrNull()
-                val customStock: Int? = it.customStock?.toIntOrNull()
-                if (campaignSoldCount != null && threshold != null && customStock != null) {
-                    if (campaignSoldCount.toIntOrZero() > 0) {
-                        when {
-                            customStock == 0 -> {
-                                stockWordTitle = getStockText(R.string.terjual_habis)
-                            }
-                            customStock == 1 -> {
-                                stockWordTitle = getStockText(R.string.stok_terakhir_beli_sekarang)
-                            }
-                            customStock <= threshold -> {
-                                stockWordTitle = getStockText(R.string.tersisa)
-                                stockAvailableCount = customStock.toString()
-                                stockWordTitleColour = getStockColor(com.tokopedia.unifyprinciples.R.color.Unify_R500)
-                            }
-                            else -> {
-                                stockWordTitle = getStockText(R.string.terjual)
-                                stockAvailableCount = campaignSoldCount.toString()
-                            }
+            val campaignSoldCount = it.campaignSoldCount
+            val threshold: Int? = it.threshold?.toIntOrNull()
+            val customStock: Int? = it.customStock?.toIntOrNull()
+            if (campaignSoldCount != null && threshold != null && customStock != null) {
+                if (campaignSoldCount.toIntOrZero() > 0) {
+                    when {
+                        customStock == 0 -> {
+                            stockWordTitle = getStockText(R.string.terjual_habis)
                         }
-                        stockWordTitle += stockAvailableCount
-                    } else {
-                        stockWordTitle = getStockText(R.string.masih_tersedia)
+                        customStock == 1 -> {
+                            stockWordTitle = getStockText(R.string.stok_terakhir_beli_sekarang)
+                        }
+                        customStock <= threshold -> {
+                            stockWordTitle = getStockText(R.string.tersisa)
+                            stockAvailableCount = customStock.toString()
+                            stockWordTitleColour = getStockColor(com.tokopedia.unifyprinciples.R.color.Unify_RN500)
+                        }
+                        else -> {
+                            stockWordTitle = getStockText(R.string.terjual)
+                            stockAvailableCount = campaignSoldCount.toString()
+                        }
                     }
+                    stockWordTitle += stockAvailableCount
+                } else {
+                    stockWordTitle = getStockText(R.string.masih_tersedia)
                 }
-                stockWordData.title = stockWordTitle
-                stockWordData.color = stockWordTitleColour
+            }
+            stockWordData.title = stockWordTitle
+            stockWordData.color = stockWordTitleColour
         }
         return stockWordData
     }
@@ -275,14 +289,17 @@ class MasterProductCardItemViewModel(val application: Application, val component
 
     fun getNotifyText(notifyStatus: Boolean?): String {
         notifyStatus?.let {
-            return if (notifyStatus) application.applicationContext
+            return if (notifyStatus) {
+                application.applicationContext
                     .resources.getString(R.string.product_card_module_label_un_subscribe)
-            else application.applicationContext.resources.getString(R.string.product_card_module_label_subscribe)
+            } else {
+                application.applicationContext.resources.getString(R.string.product_card_module_label_subscribe)
+            }
         }
         return ""
     }
 
-    fun updateProductQuantity(quantity: Int){
+    fun updateProductQuantity(quantity: Int) {
         components.data?.firstOrNull()?.quantity = quantity
     }
 
@@ -290,18 +307,19 @@ class MasterProductCardItemViewModel(val application: Application, val component
         return components.data?.firstOrNull()
     }
 
-    fun handleATCFailed(){
+    fun handleATCFailed() {
         components.data?.firstOrNull()?.quantity = lastQuantity
         onAttachToViewHolder()
     }
 
-    fun getParentPositionForCarousel():Int{
-        return if(components.name == ComponentNames.ProductCardSprintSaleCarouselItem.componentName || components.name == ComponentNames.ProductCardCarouselItem.componentName){
-            getComponent(components.parentComponentId,components.pageEndPoint)?.let {
+    fun getParentPositionForCarousel(): Int {
+        return if (components.name == ComponentNames.ProductCardSprintSaleCarouselItem.componentName || components.name == ComponentNames.ProductCardCarouselItem.componentName) {
+            getComponent(components.parentComponentId, components.pageEndPoint)?.let {
                 it.position
-            }?:CAROUSEL_NOT_FOUND
-        }else
+            } ?: CAROUSEL_NOT_FOUND
+        } else {
             CAROUSEL_NOT_FOUND
+        }
     }
 
     fun saveProductCardComponent() {
@@ -312,9 +330,9 @@ class MasterProductCardItemViewModel(val application: Application, val component
 
     fun scrollToTargetSimilarProducts() {
         components.data?.firstOrNull()?.targetComponentId?.let { targetCompId ->
-            if (targetCompId.isNotEmpty())
+            if (targetCompId.isNotEmpty()) {
                 scrollToSimilarProductComponentID.value = targetCompId
+            }
         }
     }
-
 }

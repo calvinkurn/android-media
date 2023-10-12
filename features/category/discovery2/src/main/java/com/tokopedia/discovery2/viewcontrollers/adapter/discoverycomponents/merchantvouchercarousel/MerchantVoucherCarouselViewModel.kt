@@ -26,8 +26,9 @@ class MerchantVoucherCarouselViewModel(
     val position: Int
 ) : DiscoveryBaseViewModel(),
     CoroutineScope {
+    @JvmField
     @Inject
-    lateinit var merchantVoucherUseCase: MerchantVoucherUseCase
+    var merchantVoucherUseCase: MerchantVoucherUseCase? = null
 
     private val _couponList: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
     val couponList: LiveData<ArrayList<ComponentsItem>> = _couponList
@@ -40,21 +41,20 @@ class MerchantVoucherCarouselViewModel(
 
     fun fetchCouponData() {
         launchCatchError(block = {
-            merchantVoucherUseCase.loadFirstPageComponents(components.id, components.pageEndPoint)
+            merchantVoucherUseCase?.loadFirstPageComponents(components.id, components.pageEndPoint)
             components.shouldRefreshComponent = null
             setVoucherList()
         }, onError = {
-            components.noOfPagesLoaded = 1
-            components.shouldRefreshComponent = null
-            _loadError.value = true
-        })
+                components.noOfPagesLoaded = 1
+                components.shouldRefreshComponent = null
+                _loadError.value = true
+            })
     }
-
 
     fun fetchCarouselPaginatedCoupon() {
         isLoading = true
         launchCatchError(block = {
-            if (merchantVoucherUseCase.getCarouselPaginatedData(components.id, components.pageEndPoint)) {
+            if (merchantVoucherUseCase?.getCarouselPaginatedData(components.id, components.pageEndPoint) == true) {
                 getVoucherList()?.let {
                     isLoading = false
                     _couponList.value = addLoadMore(it)
@@ -64,8 +64,8 @@ class MerchantVoucherCarouselViewModel(
                 paginatedErrorData()
             }
         }, onError = {
-            paginatedErrorData()
-        })
+                paginatedErrorData()
+            })
     }
 
     private fun paginatedErrorData() {
@@ -102,13 +102,16 @@ class MerchantVoucherCarouselViewModel(
     fun getLihatSemuaHeader() {
         var lihatSemuaComponentData: ComponentsItem? = null
         components.lihatSemua?.let {
-            if (!(components.noOfPagesLoaded == 1 && components.getComponentsItem()
-                    .isNullOrEmpty())
-            )
+            if (!(
+                components.noOfPagesLoaded == 1 && components.getComponentsItem()
+                    .isNullOrEmpty()
+                )
+            ) {
                 it.run {
                     val lihatSemuaDataItem = DataItem(
                         title = header,
-                        subtitle = subheader, btnApplink = applink
+                        subtitle = subheader,
+                        btnApplink = applink
                     )
                     lihatSemuaComponentData = ComponentsItem(
                         name = ComponentsList.MerchantVoucherCarousel.componentName,
@@ -116,10 +119,10 @@ class MerchantVoucherCarouselViewModel(
                         creativeName = components.creativeName
                     )
                 }
+            }
         }
         _headerData.value = lihatSemuaComponentData
     }
-
 
     fun isLastPage(): Boolean {
         return !Utils.nextPageAvailable(components, VOUCHER_PER_PAGE)
@@ -133,13 +136,15 @@ class MerchantVoucherCarouselViewModel(
         val componentList: ArrayList<ComponentsItem> = ArrayList()
         componentList.addAll(couponDataList)
         if (Utils.nextPageAvailable(components, VOUCHER_PER_PAGE)) {
-            componentList.add(ComponentsItem(name = ComponentNames.LoadMore.componentName).apply {
-                pageEndPoint = components.pageEndPoint
-                parentComponentId = components.id
-                id = ComponentNames.LoadMore.componentName
-                loadForHorizontal = true
-                discoveryPageData[this.pageEndPoint]?.componentMap?.set(this.id, this)
-            })
+            componentList.add(
+                ComponentsItem(name = ComponentNames.LoadMore.componentName).apply {
+                    pageEndPoint = components.pageEndPoint
+                    parentComponentId = components.id
+                    id = ComponentNames.LoadMore.componentName
+                    loadForHorizontal = true
+                    discoveryPageData[this.pageEndPoint]?.componentMap?.set(this.id, this)
+                }
+            )
         }
         return componentList
     }
@@ -147,18 +152,20 @@ class MerchantVoucherCarouselViewModel(
     private fun addErrorReLoadView(couponDataList: ArrayList<ComponentsItem>): ArrayList<ComponentsItem> {
         val componentList: ArrayList<ComponentsItem> = ArrayList()
         componentList.addAll(couponDataList)
-        componentList.add(ComponentsItem(name = ComponentNames.CarouselErrorLoad.componentName).apply {
-            pageEndPoint = components.pageEndPoint
-            parentComponentId = components.id
-            parentComponentName = components.name
-            id = ComponentNames.CarouselErrorLoad.componentName
-            parentComponentPosition = components.position
-            discoveryPageData[this.pageEndPoint]?.componentMap?.set(this.id, this)
-        })
+        componentList.add(
+            ComponentsItem(name = ComponentNames.CarouselErrorLoad.componentName).apply {
+                pageEndPoint = components.pageEndPoint
+                parentComponentId = components.id
+                parentComponentName = components.name
+                id = ComponentNames.CarouselErrorLoad.componentName
+                parentComponentPosition = components.position
+                discoveryPageData[this.pageEndPoint]?.componentMap?.set(this.id, this)
+            }
+        )
         return componentList
     }
 
-    override fun refreshProductCarouselError(){
+    override fun refreshProductCarouselError() {
         getVoucherList()?.let {
             isLoading = false
             _couponList.value = it

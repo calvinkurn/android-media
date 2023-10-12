@@ -41,7 +41,6 @@ class AffiliateEducationTutorialVH(
 
         if (bindingAdapterPosition == 0) {
             tutorialIcon.hide()
-            tutorialContentContainer.setBackgroundResource(R.drawable.affiliate_education_tutorial_cover_gradient)
             tutorialCover.show()
             tutorialTopic.apply {
                 weightType = Typography.BOLD
@@ -50,7 +49,7 @@ class AffiliateEducationTutorialVH(
                 setTextColor(
                     MethodChecker.getColor(
                         itemView.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N0
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN0
                     )
                 )
             }

@@ -1,0 +1,105 @@
+{
+  "displayAdsV3": {
+    "status": {
+      "error_code": 0,
+      "message": "OK"
+    },
+    "header": {
+      "process_time": 0.144549164,
+      "total_data": 8
+    },
+    "data": [
+      {
+        "id": "52738476",
+        "ad_ref_key": "",
+        "redirect": "https://www.tokopedia.com/sayursegardepok",
+        "sticker_id": "0",
+        "sticker_image": "",
+        "product_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEo_URHpK7opyDUMVj9RzNrc1i6sJDUSupg9-wq3ei6iUFUiFiPcBWgZUEH_ydopHaopjRoaFiyRCsUsthHsnFbm-FQRo2PcB5QiUEHZFiy3hSUstirRzW9fFp9fFa9fFhUiFiQSuWyMua9fYM9fVjraUE6mFiQSuWyMua9fVjrOYag9Ji6sKDUMoxPVY2gIHi6BDpoZFOHsUpbAURH_-Pbm-X9foxQMz2gcV7guYxgIHi6sJfHZFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUMoFyOYpqcYF9RuXrZUDUSgBrSo2Qfdi6i-fHiUDUMVj9RosQR-BUst76AeXHpr7H_ra6_eOHsUpoaFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ32tq1OW3MBvzcrF_Vz0HJO139z6zcWd_Mjhqu21qpzHuV1p_BPuHOja39BqzVVd33B-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3OR8BxEZ_oouJtdgjPR83-I6_oMZIxp_uPdPMep8AxsHO-7gjxdqBB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBk_9P68_zE_1zoHjOE3926qBjF_7zSo1NAZ9o-QjNkysoGQVKp_Mhg3J2ky1o-ojBk__uv1peh_92zo1OJgpo68jVN_Oz0oJBXHA7ibm-sQIupPcua9fBj9RyaUstaHpjaoiFiyfV7g3P5rSBwrRuSgfupPVYxPIzaq3-OPc1i6BDiHsrhHiUDUs1aHpribmUOHsHOUiFio_UpoiUDUsURHsri9ZFigR-5P9CwrRzay9zBgRji6BDhbA-Pbm-FrMBsguYiq3ei6sJaHAnDUMP5y3hwq3ei6sUDUMg2QMVD9R-BQI-xQMWwy3zpyfYagZUEHmdfHpepHs17oAHaHprfopjhbm-hP3ua8uYag3hay3N09RosQR-BUstFbsypoAHao_e7HpUpopyR6_VY?management_type=1&pub_unit=0&pub_domain=0&r=https%3A%2F%2Fwww.tokopedia.com%2Fsayursegardepok%2Ftahu-bandung%3FextParam%3Divf%253Dfalse%26src%3Dtopads&pub_id=0&page=1&t=android&dv=android&src=search&keywords=tahu&ob=23&is_search=1",
+        "product_wishlist_url": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEo_URHpK7opyDUMVj9RzNrc1i6sJDUSupg9-wq3ei6iUFUiFiPcBWgZUEH_ydopHaopjRoaFiyRCsUsthHsnFbm-FQRo2PcB5QiUEHZFiy3hSUstirRzW9fFp9fFa9fFhUiFiQSuWyMua9fYM9fVjraUE6mFiQSuWyMua9fVjrOYag9Ji6sKDUMoxPVY2gIHi6BDpoZFOHsUpbAURH_-Pbm-X9foxQMz2gcV7guYxgIHi6sJfHZFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUMoFyOYpqcYF9RuXrZUDUSgBrSo2Qfdi6i-fHiUDUMVj9RosQR-BUst76AeXHpr7H_ra6_eOHsUpoaFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ32tq1OW3MBvzcrF_Vz0HJO139z6zcWd_Mjhqu21qpzHuV1p_BPuHOja39BqzVVd33B-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3OR8BxEZ_oouJtdgjPR83-I6_oMZIxp_uPdPMep8AxsHO-7gjxdqBB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBk_9P68_zE_1zoHjOE3926qBjF_7zSo1NAZ9o-QjNkysoGQVKp_Mhg3J2ky1o-ojBk__uv1peh_92zo1OJgpo68jVN_Oz0oJBXHA7ibm-sQIupPcua9fBj9RyaUstaHpjaoiFiyfV7g3P5rSBwrRuSgfupPVYxPIzaq3-OPc1i6BDiHsrhHiUDUs1aHpribmUOHsHOUiFio_UpoiUDUsURHsri9ZFirI-2yfuwyMBjUsthHsnFbm-SQfVD9fBjUstawe?product_id=646099921&keywords=tahu&pub_domain=0&dv=android&ob=23&t=android&uid=0&pub_id=0&pub_unit=0&management_type=1&is_search=1&r=https%3A%2F%2Fwww.tokopedia.com%2Fsayursegardepok%2Ftahu-bandung%3FextParam%3Divf%253Dfalse%26src%3Dtopads&src=search&page=1",
+        "shop_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEo_URHpK7opyDUMVj9RzNrc1i6sJDUSupg9-wq3ei6iUFUiFiPcBWgZUEH_ydopHaopjRoaFiyRCsUsthHsnFbm-FQRo2PcB5QiUEHZFiy3hSUstirRzW9fFp9fFa9fFhUiFiQSuWyMua9fYM9fVjraUE6mFiQSuWyMua9fVjrOYag9Ji6sKDUMoxPVY2gIHi6BDpoZFOHsUpbAURH_-Pbm-X9foxQMz2gcV7guYxgIHi6sJfHZFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUMoFyOYpqcYF9RuXrZUDUSgBrSo2Qfdi6i-fHiUDUMVj9RosQR-BUst76AeXHpr7H_ra6_eOHsUpoaFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ32tq1OW3MBvzcrF_Vz0HJO139z6zcWd_Mjhqu21qpzHuV1p_BPuHOja39BqzVVd33B-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3OR8BxEZ_oouJtdgjPR83-I6_oMZIxp_uPdPMep8AxsHO-7gjxdqBB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBk_9P68_zE_1zoHjOE3926qBjF_7zSo1NAZ9o-QjNkysoGQVKp_Mhg3J2ky1o-ojBk__uv1peh_92zo1OJgpo68jVN_Oz0oJBXHA7ibm-sQIupPcua9fBj9RyaUstaHpjaoiFiyfV7g3P5rSBwrRuSgfupPVYxPIzaq3-OPc1i6BDiHsrhHiUDUs1aHpribmUOHsHOUiFio_UpoiUDUsURHsri9ZFigR-5P9CwrRzay9zBgRji6BDhbA-Pbm-FrMBsguYiq3ei6sJaHAnDUMP5y3hwq3ei6sUDUMg2QMVD9R-BQI-xQMWwy3zpyfYagZUEHmdfHpepHs17oAHaHprfopjhbm-hP3ua8uYag3hay3N09RosQR-BUstFbsypoAHao_e7HpUpopyR6_VY?pub_id=0&dv=android&pub_unit=0&management_type=1&r=https%3A%2F%2Fwww.tokopedia.com%2Fsayursegardepok&pub_domain=0&ob=23&src=search&is_search=1&page=1&t=android&keywords=tahu",
+        "tag": 111,
+        "product": {
+          "id": "646099921",
+          "name": "TAHU BANDUNG",
+          "category_breadcrumb": "makanan-minuman / sayur / tempe",
+          "wishlist": false,
+          "image": {
+            "m_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6s1aopHdoArfbm-xgVY789CBUsthbm-Orfua9fBjUstiHmUDUSz2Q31i6sJf6ArpHsrNoprDUSCxPcKi6i-2Q3VSg9HXPcY0QRCBgcBxbMNBPmY2Q3r5yfVsqc15HpnFbOghyMoW_Z4aHAUhbpJFbpJhbfHNo3-sHAedb_CigMJWoAjaHZ7dyMojb_ujgsrhy_BjoA1RHaNkrcribm-FQRo2PcB5QiUEHZFiyfhOrRzBrBY2gVYfHiUEHsHNHsyDUMVDgaUEUSo7QuYDHOYDHBYDHZUDUMNOQ3-BrBY5gBYxgIHi6sKDUMNOQ3-BrBYxgIowrMuhUstdbm-X9foxQMz2gcV7guYxgIHi6sJfHZFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUE3a-srcowrfx5rVYOQSJi9ZFiPMuarfB5QiUEUSyaUiFiy3zwrfo5rM1i6sedomdpopehopUNoA1aHsHRbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-P7B2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-qMx2_3Oqq1YJgpCHucDF_uzgPJNJqRx6q_V23Bz0oJh1u_o6uO1p3_-g8u2J19xgq1BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-Q9PE3I2-H7O1ZsxMzRPNyjrNHfgU8IoouRxfgAod6cHp1SzMZIxk33B-r7BX_M2iH72D3A-G83UpgI2q17jfZ32oP7NNoI2ozJ7a_92g8jNk3_CvzcrO_jo-r7BX_M2iH72D3Ao6QVByZM2xe7jfZ32oo1Y_oAVo8BJO_1zSH7NEe9BvucD7Z3dFvZUDUMoxPcuSQR-N9RoOgfPBrRzwy9z7rMBiP9zBUs2QUsURH_UibmUOHsHRUiFio_UpoZUDUs1aHpyibmUaopURUB7DUMPaQRuF9Ro7rMV7g3PNUs2QHZFa9ZFirI-2yfuwyMBjUsthHsnFbm-SQfVD9fBjUstabm-Mq3NxQVYag3hay3N09fVjrfo5rM1i6snXosH7HpUOoAepHsHRosrNHZFir9uBrSBwrMuDrMVXqOYpyfYagZUEHmdfHpepHs17oAHaHprfopjhwe?dv=android&pub_unit=0&t=android&keywords=tahu&src=search&is_search=1&pub_domain=0&management_type=1&page=1&ob=23&pub_id=0",
+            "s_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6s1aopHdoArfbm-xgVY789CBUsthbm-Orfua9fBjUstiHmUDUSz2Q31i6sJf6ArpHsrNoprDUSCxPcKi6i-2Q3VSg9HXPcY0QRCBgcBxbMNBPmY2Q3r5yfVsqc15HsnFb9ohP3VagZY3r3-sQ175HsnaHZ4hHm4hHZYs6_uiypn76m7FyMgxb_eNHsJW6c-sgm7OgcyRH3JNgAeOopHXqSCSUiFircYpq9z2Qfdi6sJDUMoDP9o7g9-wq3zwPsUi6sUp6_Ufbm-xQcri6i-pPcOwQAowQA-wQAJibm-XP3Oig9-wQfgwy3zpUstdbm-XP3Oig9-wy3zp9R-BrZUE6mFiQBYsy3Njq3zxPcuwy3zpUsthosJDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6BDiyRCs9RotQRCwP3NhUB7DUSgBrSo2Qfdi6i-fHiUDUMVj9RosQR-BUst76AeXHpr7H_ra6_eOHsUpoaFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ32tq1OW3MBvzcrF_Vz0HJO139z6zcWd_Mjhqu21qpzHuV1p_BPuHOja39BqzVVd33B-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3OR8BxEZ_oouJtdgjPR83-I6_oMZIxp_uPdPMep8AxsHO-7gjxdqBB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBk_9P68_zE_1zoHjOE3926qBjF_7zSo1NAZ9o-QjNkysoGQVKp_Mhg3J2ky1o-ojBk__uv1peh_92zo1OJgpo68jVN_Oz0oJBXHA7ibm-sy9zBgfYa8uYpP3PSg9o79fV7PI-2ySu7gZUE3aUaopJaUiFio_UpoaUDUs1aHp1ibmUOHsHfUiFiHsraoa-Pbm-SrMYOrVYpPI-xPcuS8ZUE3pJDHB7DUSCaq3oB9f-2gmUEH_UFHmFigfYxQVY2gmUEHiFigMBXy3hwrMuDrMVXqOYxgIosQR-BUstFbsypoAHao_e7HpUpopyR6_JDUSVOg9-N9R-BQI-xQMWwrfo5rM1i6snXosH7HpUOoAepHsHRosrNH97?src=search&pub_id=0&keywords=tahu&page=1&pub_domain=0&management_type=1&ob=23&is_search=1&pub_unit=0&t=android&dv=android",
+            "xs_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6s1aopHdoArfbm-xgVY789CBUsthbm-Orfua9fBjUstiHmUDUSz2Q31i6sJf6ArpHsrNoprDUSCxPcKi6i-2Q3VSg9HXPcY0QRCBgcBxbMNBPmY2Q3r5yfVsqc15H_nFb9ohP3VagZY3r3-sQ175HsnaHZ4hHm4hHZYs6_uiypn76m7FyMgxb_eNHsJW6c-sgm7OgcyRH3JNgAeOopHXqSCSUiFircYpq9z2Qfdi6sJDUMoDP9o7g9-wq3zwPsUi6sUp6_Ufbm-xQcri6i-pPcOwQAowQA-wQAJibm-XP3Oig9-wQfgwy3zpUstdbm-XP3Oig9-wy3zp9R-BrZUE6mFiQBYsy3Njq3zxPcuwy3zpUsthosJDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6BDiyRCs9RotQRCwP3NhUB7DUSgBrSo2Qfdi6i-fHiUDUMVj9RosQR-BUst76AeXHpr7H_ra6_eOHsUpoaFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ32tq1OW3MBvzcrF_Vz0HJO139z6zcWd_Mjhqu21qpzHuV1p_BPuHOja39BqzVVd33B-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3OR8BxEZ_oouJtdgjPR83-I6_oMZIxp_uPdPMep8AxsHO-7gjxdqBB2Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBk_9P68_zE_1zoHjOE3926qBjF_7zSo1NAZ9o-QjNkysoGQVKp_Mhg3J2ky1o-ojBk__uv1peh_92zo1OJgpo68jVN_Oz0oJBXHA7ibm-sy9zBgfYa8uYpP3PSg9o79fV7PI-2ySu7gZUE3aUaopJaUiFio_UpoaUDUs1aHp1ibmUOHsHfUiFiHsraoa-Pbm-SrMYOrVYpPI-xPcuS8ZUE3pJDHB7DUSCaq3oB9f-2gmUEH_UFHmFigfYxQVY2gmUEHiFigMBXy3hwrMuDrMVXqOYxgIosQR-BUstFbsypoAHao_e7HpUpopyR6_JDUSVOg9-N9R-BQI-xQMWwrfo5rM1i6snXosH7HpUOoAepHsHRosrNH97?dv=android&src=search&t=android&management_type=1&is_search=1&ob=23&keywords=tahu&pub_unit=0&page=1&pub_id=0&pub_domain=0",
+            "m_ecs": "https://images.tokopedia.net/img/cache/300/VqbcmM/2021/10/11/c95bc048-0bfa-4921-8bcd-5df71a9d4573.jpg",
+            "s_ecs": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/10/11/c95bc048-0bfa-4921-8bcd-5df71a9d4573.jpg",
+            "xs_ecs": "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2021/10/11/c95bc048-0bfa-4921-8bcd-5df71a9d4573.jpg"
+          },
+          "uri": "https://www.tokopedia.com/sayursegardepok/tahu-bandung?extParam=ivf%3Dfalse&src=topads",
+          "relative_uri": "sayursegardepok/tahu-bandung",
+          "price_format": "Rp8.000",
+          "price_range": "",
+          "wholesale_price": [],
+          "count_talk_format": "3",
+          "count_review_format": "210",
+          "category": {
+            "id": "2712"
+          },
+          "product_preorder": false,
+          "product_wholesale": false,
+          "free_return": "https://images.tokopedia.net/img/blank.gif",
+          "product_cashback": false,
+          "product_new_label": false,
+          "product_cashback_rate": "",
+          "product_rating": 97,
+          "product_rating_format": "4.9",
+          "product_item_sold_payment_verified": "Terjual 716",
+          "product_minimum_order": 1,
+          "free_ongkir": {
+            "is_active": true,
+            "img_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+          },
+          "campaign": {
+            "original_price": "",
+            "discount_percentage": 0
+          },
+          "label_group": [
+            {
+              "position": "integrity",
+              "type": "textDarkGrey",
+              "title": "Terjual 718",
+              "url": ""
+            }
+          ],
+          "customvideo_url": "",
+          "parent_id": "0"
+        },
+        "shop": {
+          "id": "6495119",
+          "name": "SAYUR SEGAR | DEPOK",
+          "domain": "sayursegardepok",
+          "location": "Depok",
+          "city": "Depok",
+          "gold_shop": false,
+          "gold_shop_badge": true,
+          "lucky_shop": "https://clover.tokopedia.com/badges/merchant/v1?shop_id=6495119",
+          "uri": "https://www.tokopedia.com/sayursegardepok",
+          "owner_id": "72026178",
+          "is_owner": false,
+          "shop_is_official": false,
+          "shop_rating_avg": "",
+          "badges": [
+            {
+              "title": "Free Return",
+              "image_url": "https://images.tokopedia.net/img/blank.gif",
+              "show": false
+            },
+            {
+              "title": "Power Merchant Pro",
+              "image_url": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@2x.png",
+              "show": true
+            }
+          ]
+        },
+        "applinks": "tokopedia://product/646099921?extParam=ivf%3Dfalse&src=topads"
+      }
+    ]
+  }
+}

@@ -2,13 +2,11 @@ package com.tokopedia.encryption.security
 
 import android.content.Context
 import android.util.Base64
-import android.util.Log
 import com.google.crypto.tink.Aead
 import com.google.crypto.tink.KeyTemplates
 import com.google.crypto.tink.aead.AeadConfig
 import com.google.crypto.tink.integration.android.AndroidKeysetManager
 import java.security.KeyStore
-import java.security.KeyStoreException
 
 class AeadEncryptorImpl(val context: Context) : AeadEncryptor {
 
@@ -22,11 +20,7 @@ class AeadEncryptorImpl(val context: Context) : AeadEncryptor {
         AeadConfig.register()
     }
 
-    override fun getAead(): Aead {
-        return if (this::aeadInstance.isInitialized) aeadInstance else initAead()
-    }
-
-    override fun initAead(): Aead {
+    private fun initAead(): Aead {
         aeadInstance = AndroidKeysetManager.Builder()
             .withSharedPref(context.applicationContext, KEYSET_NAME, PREFERENCE_FILE)
             .withKeyTemplate(KeyTemplates.get("AES256_GCM"))
@@ -34,6 +28,10 @@ class AeadEncryptorImpl(val context: Context) : AeadEncryptor {
             .keysetHandle
             .getPrimitive(Aead::class.java)
         return aeadInstance
+    }
+
+    override fun getAead(): Aead {
+        return if (this::aeadInstance.isInitialized) aeadInstance else initAead()
     }
 
     override fun encrypt(message: String, associatedData: ByteArray?): String {
@@ -49,6 +47,9 @@ class AeadEncryptorImpl(val context: Context) : AeadEncryptor {
         return String(getAead().decrypt(messageToDecrypt, associatedData), Charsets.UTF_8)
     }
 
+    /**
+     * This is an emergency utility method that should be removed once InvalidProtocolBuffer is resolved
+     * */
     override fun delete() {
         val keyStore: KeyStore = KeyStore.getInstance("AndroidKeyStore")
         keyStore.load(null)
@@ -56,5 +57,4 @@ class AeadEncryptorImpl(val context: Context) : AeadEncryptor {
 
         context.getSharedPreferences(PREFERENCE_FILE, Context.MODE_PRIVATE).edit().clear().apply()
     }
-
 }

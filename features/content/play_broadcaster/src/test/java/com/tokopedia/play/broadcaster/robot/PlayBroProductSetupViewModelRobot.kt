@@ -29,6 +29,7 @@ internal class PlayBroProductSetupViewModelRobot(
     channelRepo: PlayBroadcastRepository = mockk(relaxed = true),
     userSession: UserSessionInterface = mockk(relaxed = true),
     source: PlayBroPageSource = PlayBroPageSource.Live,
+    fetchCommissionProduct: Boolean = false,
     private val dispatchers: CoroutineTestDispatchers = CoroutineTestDispatchers,
 ) : Closeable {
 
@@ -37,8 +38,9 @@ internal class PlayBroProductSetupViewModelRobot(
         maxProduct,
         productSectionList,
         handle,
-        isEligibleForPin,
         source,
+        fetchCommissionProduct,
+        isEligibleForPin,
         channelRepo,
         userSession,
         dispatchers,

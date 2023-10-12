@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.domain.model.pinnedmessage
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 /**
@@ -27,6 +28,7 @@ data class GetPinnedMessageResponse(
     )
 
     data class Status(
+        @SuppressLint("Invalid Data Type")
         @SerializedName("ID")
         val id: Int = 0,
     )

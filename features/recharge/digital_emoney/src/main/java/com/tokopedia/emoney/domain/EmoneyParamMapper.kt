@@ -22,4 +22,19 @@ object EmoneyParamMapper {
             )
         )
     }
+
+    fun mapParamLogErrorNetwork(
+        cardNumber: String,
+        errorMessage: String
+    ): RechargeEmoneyInquiryLogRequest {
+        return RechargeEmoneyInquiryLogRequest(
+            log = EmoneyInquiryLogRequest(
+                issueId = ISSUER_TAPCASH.toLong(),
+                inquiryId = 0,
+                cardNumber = cardNumber,
+                rc = errorMessage,
+                lastBalance = 0.0 //Hardcoded last balance
+            )
+        )
+    }
 }

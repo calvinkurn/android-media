@@ -7,7 +7,6 @@ enum class BottomInsetsType {
 
     Keyboard,
     ProductSheet,
-    VariantSheet,
     LeaderboardSheet,
     CouponSheet,
 }

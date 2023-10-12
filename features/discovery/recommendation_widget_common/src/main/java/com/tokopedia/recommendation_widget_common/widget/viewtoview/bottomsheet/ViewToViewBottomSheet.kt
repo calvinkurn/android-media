@@ -33,7 +33,7 @@ import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 
 class ViewToViewBottomSheet @Inject constructor(
-    private val viewModelFactory: ViewModelProvider.Factory,
+    private val viewModelFactory: ViewModelProvider.Factory
 ) : BottomSheetUnify(), ViewToViewListener {
 
     private val viewModel: ViewToViewViewModel by lazy {
@@ -43,7 +43,7 @@ class ViewToViewBottomSheet @Inject constructor(
     private var recommendationAdapter: ViewToViewAdapter? = null
 
     private val trackingQueue: TrackingQueue? by lazy {
-        activity?.let { TrackingQueue(it) }
+        context?.let { TrackingQueue(it) }
     }
 
     private val queryParams: String
@@ -64,9 +64,14 @@ class ViewToViewBottomSheet @Inject constructor(
         super.onCreate(savedInstanceState)
         viewModel.getViewToViewProductRecommendation(
             queryParams,
-            hasAtcButton,
+            hasAtcButton
         )
         initView()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        trackingQueue?.sendAll()
     }
 
     private fun initView() {
@@ -112,7 +117,7 @@ class ViewToViewBottomSheet @Inject constructor(
             }
             viewModel.retryViewToViewProductRecommendation(
                 queryParams,
-                hasAtcButton,
+                hasAtcButton
             )
         }
     }
@@ -190,12 +195,12 @@ class ViewToViewBottomSheet @Inject constructor(
             atcStatus.product.recommendationItem,
             headerTitle,
             viewModel.getUserId(),
-            productAnchorId,
+            productAnchorId
         )
     }
 
     private fun showATCToaster(
-        message: String,
+        message: String
     ) {
         val view = view?.rootView ?: return
         Toaster.apply { toasterCustomBottomHeight = 40.toPx() }
@@ -203,7 +208,7 @@ class ViewToViewBottomSheet @Inject constructor(
                 view,
                 message,
                 Snackbar.LENGTH_SHORT,
-                Toaster.TYPE_NORMAL,
+                Toaster.TYPE_NORMAL
             )
             .show()
     }
@@ -234,7 +239,7 @@ class ViewToViewBottomSheet @Inject constructor(
     override fun onProductImpressed(
         product: ViewToViewDataModel,
         position: Int,
-        className: String,
+        className: String
     ) {
         if (product.recommendationItem.isTopAds) {
             TopAdsUrlHitter(context).hitImpressionUrl(
@@ -243,7 +248,7 @@ class ViewToViewBottomSheet @Inject constructor(
                 product.recommendationItem.productId.toString(),
                 product.recommendationItem.name,
                 product.recommendationItem.imageUrl,
-                product.componentName,
+                product.componentName
             )
         }
         ViewToViewBottomSheetTracker.eventImpressProduct(
@@ -252,14 +257,14 @@ class ViewToViewBottomSheet @Inject constructor(
             position,
             viewModel.getUserId(),
             productAnchorId,
-            trackingQueue,
+            trackingQueue
         )
     }
 
     override fun onProductClicked(
         product: ViewToViewDataModel,
         position: Int,
-        className: String,
+        className: String
     ) {
         if (product.recommendationItem.isTopAds) {
             TopAdsUrlHitter(context).hitClickUrl(
@@ -268,7 +273,7 @@ class ViewToViewBottomSheet @Inject constructor(
                 product.recommendationItem.productId.toString(),
                 product.recommendationItem.name,
                 product.recommendationItem.imageUrl,
-                product.componentName,
+                product.componentName
             )
         }
         ViewToViewBottomSheetTracker.eventProductClick(
@@ -276,7 +281,7 @@ class ViewToViewBottomSheet @Inject constructor(
             headerTitle,
             viewModel.getUserId(),
             position,
-            productAnchorId,
+            productAnchorId
         )
 
         RouteManager.route(context, ApplinkConst.PRODUCT_INFO, product.id)
@@ -297,7 +302,7 @@ class ViewToViewBottomSheet @Inject constructor(
 
         private fun createBundle(
             data: ViewToViewItemData,
-            productAnchorId: String,
+            productAnchorId: String
         ): Bundle {
             return Bundle().apply {
                 putString(KEY_RECOMMENDATION_NAME, data.name)
@@ -312,11 +317,11 @@ class ViewToViewBottomSheet @Inject constructor(
             classLoader: ClassLoader,
             fragmentFactory: FragmentFactory,
             data: ViewToViewItemData,
-            productAnchorId: String,
+            productAnchorId: String
         ): ViewToViewBottomSheet {
             val fragment = fragmentFactory.instantiate(
                 classLoader,
-                ViewToViewBottomSheet::class.java.name,
+                ViewToViewBottomSheet::class.java.name
             ) as ViewToViewBottomSheet
             fragment.arguments = createBundle(data, productAnchorId)
             return fragment
@@ -328,13 +333,13 @@ class ViewToViewBottomSheet @Inject constructor(
             fragmentFactory: FragmentFactory,
             fragmentManager: FragmentManager,
             data: ViewToViewItemData,
-            productAnchorId: String,
+            productAnchorId: String
         ): ViewToViewBottomSheet {
             val fragment = newInstance(
                 classLoader,
                 fragmentFactory,
                 data,
-                productAnchorId,
+                productAnchorId
             )
             fragment.show(fragmentManager, TAG)
             return fragment

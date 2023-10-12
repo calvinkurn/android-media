@@ -76,7 +76,7 @@
                 android:id="@+id/floating_invoice"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/Unify_N50"
+                android:background="@color/Unify_NN50"
                 android:visibility="gone"
                 tools:visibility="visible"/>
 
@@ -89,19 +89,19 @@
                 tools:visibility="visible">
 
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/list_quick_reply"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="3dp"
-                    android:background="@color/chatbot_dms_quick_reply_bg"
-                    android:paddingLeft="16dp"
-                    android:paddingTop="8dp"
-                    android:visibility="gone"
-                    tools:itemCount="1"
-                    android:paddingBottom="8dp"
-                    tools:listitem="@layout/chatbot_item_quick_reply"
-                    tools:visibility="visible" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/list_quick_reply"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="3dp"
+                android:background="@color/chatbot_dms_quick_reply_bg"
+                android:paddingLeft="16dp"
+                android:paddingTop="8dp"
+                android:visibility="gone"
+                tools:itemCount="1"
+                tools:listitem="@layout/item_chatbot_quick_reply"
+                android:paddingBottom="8dp"
+                tools:visibility="visible" />
 
                 <com.tokopedia.chatbot.view.customview.chatroom.SmallReplyBox
                     android:layout_width="match_parent"
@@ -144,7 +144,7 @@
 
         <include
             android:id="@+id/chatbot_view_help_rate"
-            layout="@layout/chatbot_layout_rating"
+            layout="@layout/customview_chatbot_emoji_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:elevation="8dp"
@@ -228,7 +228,7 @@
             android:id="@+id/notifier"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/Unify_N700"
+            android:background="@color/Unify_NN950"
             android:gravity="center_vertical"
             android:minHeight="56dp"
             android:orientation="horizontal"
@@ -241,7 +241,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textColor="@color/Unify_N0"
+                android:textColor="@color/Unify_NN0"
                 app:typographyType="body_2"
                 tools:text="JJJJ" />
 

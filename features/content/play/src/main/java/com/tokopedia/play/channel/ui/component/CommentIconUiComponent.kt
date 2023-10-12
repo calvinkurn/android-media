@@ -2,11 +2,11 @@ package com.tokopedia.play.channel.ui.component
 
 import androidx.constraintlayout.widget.Group
 import com.tokopedia.play.ui.component.UiComponent
-import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.ui.view.comment.CommentIconUiView
 import com.tokopedia.play.util.CachedState
 import com.tokopedia.play.util.isNotChanged
 import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
+import com.tokopedia.play.widget.ui.model.PartnerType
 import com.tokopedia.play_common.eventbus.EventBus
 
 /**

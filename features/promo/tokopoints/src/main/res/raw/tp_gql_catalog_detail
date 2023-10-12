@@ -32,5 +32,23 @@ query hachikoCatalogDetailQuery($slug: String, $catalog_id: Int , $apiVersion :S
     upper_text_desc
     activePeriod
     activePeriodDate
+    globalPromoCodes {
+      title
+      code
+      dynamicInfos
+      toasters {
+        type
+        message
+      }
+    }
+    actionCTA {
+      icon
+      text
+      url
+      applink
+      type
+      isShown
+      isDisabled
+    }
   }
 }

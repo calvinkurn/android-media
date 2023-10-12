@@ -16,7 +16,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chatbot.ColorUtil
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.analytics.ChatbotAnalytics
-import com.tokopedia.chatbot.databinding.ChatbotFragmentRatingProvideBinding
+import com.tokopedia.chatbot.databinding.FragmentChatbotRatingProvideBinding
 import com.tokopedia.chatbot.di.ChatbotModule
 import com.tokopedia.chatbot.di.DaggerChatbotComponent
 import com.tokopedia.csat_rating.data.BadCsatReasonListItem
@@ -24,7 +24,6 @@ import com.tokopedia.csat_rating.fragment.BaseFragmentProvideRating
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import javax.inject.Inject
-
 
 private const val ACTION_KIRIM_CSAT_SMILEY_BUTTON_CLICKED = "click kirim csat smiley button"
 private const val ACTION_CSAT_SMILEY_REASON_BUTTON_CLICKED = "click csat smiley reason button"
@@ -34,7 +33,7 @@ class ChatBotProvideRatingFragment : BaseFragmentProvideRating() {
     @Inject
     lateinit var chatbotAnalytics: dagger.Lazy<ChatbotAnalytics>
 
-    private var _viewBinding: ChatbotFragmentRatingProvideBinding? = null
+    private var _viewBinding: FragmentChatbotRatingProvideBinding? = null
     private fun getBindingView() = _viewBinding!!
 
     companion object {
@@ -52,13 +51,12 @@ class ChatBotProvideRatingFragment : BaseFragmentProvideRating() {
         }
     }
 
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _viewBinding = ChatbotFragmentRatingProvideBinding.inflate(inflater, container, false)
+        _viewBinding = FragmentChatbotRatingProvideBinding.inflate(inflater, container, false)
         return getBindingView().root
     }
 
@@ -81,46 +79,42 @@ class ChatBotProvideRatingFragment : BaseFragmentProvideRating() {
                 getBindingView().topBotReasonLayout.reasonLayout.hide()
             } else {
                 val firstString = it.getString(OTHER_REASON_TITLE)
-                val finalString =  renderReasonText(firstString)
+                val finalString = renderReasonText(firstString)
                 getBindingView().topBotReasonLayout.botReasonText.text =
                     MethodChecker.fromHtml(finalString)
                 getBindingView().topBotReasonLayout.etState.editText.addTextChangedListener(object :
-                    TextWatcher {
-                    override fun afterTextChanged(s: Editable?) {
-
-                    }
-
-                    override fun beforeTextChanged(
-                        s: CharSequence?,
-                        start: Int,
-                        count: Int,
-                        after: Int
-                    ) {
-
-                    }
-
-                    override fun onTextChanged(
-                        s: CharSequence?,
-                        start: Int,
-                        before: Int,
-                        count: Int
-                    ) {
-                        val reviewLength = s.toString().findLength()
-                        updateReviewLength(reviewLength)
-                        if (reviewLength in minLength..maxLength) {
-                            getBindingView().topBotReasonLayout.etState.setMessage(
-                                context?.getString(
-                                    R.string.minimum_30_character
-                                ) ?: ""
-                            )
-                        } else {
-                            getBindingView().topBotReasonLayout.etState.setMessage("")
+                        TextWatcher {
+                        override fun afterTextChanged(s: Editable?) {
                         }
-                    }
 
-                })
+                        override fun beforeTextChanged(
+                            s: CharSequence?,
+                            start: Int,
+                            count: Int,
+                            after: Int
+                        ) {
+                        }
+
+                        override fun onTextChanged(
+                            s: CharSequence?,
+                            start: Int,
+                            before: Int,
+                            count: Int
+                        ) {
+                            val reviewLength = s.toString().findLength()
+                            updateReviewLength(reviewLength)
+                            if (reviewLength in minLength..maxLength) {
+                                getBindingView().topBotReasonLayout.etState.setMessage(
+                                    context?.getString(
+                                        R.string.minimum_30_character
+                                    ) ?: ""
+                                )
+                            } else {
+                                getBindingView().topBotReasonLayout.etState.setMessage("")
+                            }
+                        }
+                    })
             }
-
         }
     }
 
@@ -134,18 +128,18 @@ class ChatBotProvideRatingFragment : BaseFragmentProvideRating() {
         return finalString
     }
 
-    private fun getOptionalText(secondString: String) : String {
+    private fun getOptionalText(secondString: String): String {
         return "<font color='${
-            context?.let { it1 ->
-                ColorUtil.getColorFromResToString(
-                    it1,
-                    R.color.chatbot_dms_optional_text
-                )
-            }
+        context?.let { it1 ->
+            ColorUtil.getColorFromResToString(
+                it1,
+                R.color.chatbot_dms_optional_text
+            )
+        }
         }'> $secondString </font>"
     }
 
-    //Calculates the length of alphanumeric characters
+    // Calculates the length of alphanumeric characters
     private fun String.findLength(): Int {
         return this.filter {
             it.isLetterOrDigit()
@@ -161,7 +155,6 @@ class ChatBotProvideRatingFragment : BaseFragmentProvideRating() {
         mFilterReview = view.findViewById(getFilterReviewId())
     }
 
-
     override fun getLayoutManager(filterList: List<BadCsatReasonListItem>): RecyclerView.LayoutManager {
         val gridLayoutManager = GridLayoutManager(context, 2)
         gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
@@ -175,7 +168,6 @@ class ChatBotProvideRatingFragment : BaseFragmentProvideRating() {
         }
         return gridLayoutManager
     }
-
 
     override fun getTextHelpTitleId(): Int = getBindingView().txtHelpTitle.id
     override fun getSmilleLayoutId(): Int = getBindingView().smileLayout.id

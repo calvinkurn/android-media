@@ -93,7 +93,7 @@ class BalanceViewHolder(v: View, private val totalItems: Int) : RecyclerView.Vie
         binding?.homeContainerBalance?.homeIvLogoBalance?.setImageDrawable(
             ContextCompat.getDrawable(
                 itemView.context,
-                com.tokopedia.unifyprinciples.R.color.Unify_N75
+                com.tokopedia.unifyprinciples.R.color.Unify_NN50
             )
         )
     }
@@ -138,6 +138,18 @@ class BalanceViewHolder(v: View, private val totalItems: Int) : RecyclerView.Vie
                         itemView.context,
                         element.balanceSubTitleTextAttribute?.colourRef
                             ?: com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                    )
+                )
+            }
+            TYPE_REWARDS -> {
+                val typographyWeight = if (element.balanceSubTitleTextAttribute?.isBold == true) Typography.BOLD else Typography.REGULAR
+                binding?.homeContainerBalance?.homeTvReserveBalance?.setWeight(typographyWeight)
+
+                binding?.homeContainerBalance?.homeTvReserveBalance?.setTextColor(
+                    ContextCompat.getColor(
+                        itemView.context,
+                        element.balanceSubTitleTextAttribute?.colourRef
+                            ?: com.tokopedia.unifyprinciples.R.color.Unify_NN600
                     )
                 )
             }

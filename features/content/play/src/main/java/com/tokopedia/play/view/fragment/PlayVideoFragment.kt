@@ -51,6 +51,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.play.util.logger.PlayLog
 import com.tokopedia.play.util.withCache
+import com.tokopedia.play.view.storage.PlayQueryParamStorage
 import com.tokopedia.play.view.type.ScreenOrientation2
 import com.tokopedia.play.view.uimodel.PlayCastState
 import com.tokopedia.play.view.uimodel.recom.PlayStatusUiModel
@@ -78,6 +79,7 @@ class PlayVideoFragment @Inject constructor(
     private val pipSessionStorage: PiPSessionStorage,
     private val playLog: PlayLog,
     private val router: Router,
+    private val queryParamStorage: PlayQueryParamStorage,
 ) : TkpdBaseV4Fragment(), PlayFragmentContract, VideoViewComponent.DataSource {
 
     private val job = SupervisorJob()
@@ -105,10 +107,10 @@ class PlayVideoFragment @Inject constructor(
 
     private val playViewerPiPCoordinatorListener = object : PlayViewerPiPCoordinator.Listener {
 
-        private fun openDialog(requestHandler: () -> Unit, cancelHandler: () -> Unit, dismissHandler: () -> Unit) {
+        private fun openDialog(requestHandler: () -> Unit, cancelHandler: () -> Unit, dismissHandler: () -> Unit, channelType: PlayChannelType) {
             DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
                     .apply {
-                        setTitle(getString(R.string.play_pip_permission_rationale_title))
+                        setTitle(getString(R.string.play_pip_permission_rationale_title, channelType.value.capitalize()))
                         setDescription(getString(R.string.play_pip_permission_rationale_desc))
                         setPrimaryCTAText(getString(R.string.play_pip_activate))
                         setPrimaryCTAClickListener {
@@ -126,7 +128,8 @@ class PlayVideoFragment @Inject constructor(
                     }.show()
         }
 
-        override fun onShouldRequestPermission(pipMode: PiPMode, requestPermissionFlow: FloatingWindowPermissionManager.RequestPermissionFlow) {
+        override fun onShouldRequestPermission(pipModel: PiPInfoUiModel, requestPermissionFlow: FloatingWindowPermissionManager.RequestPermissionFlow) {
+            val pipMode = pipModel.pipMode
             val dialogHandler = { openDialog(
                     requestHandler = {
                         requestPermissionFlow.requestPermission()
@@ -143,7 +146,8 @@ class PlayVideoFragment @Inject constructor(
                     },
                     dismissHandler = {
                         requestPermissionFlow.cancel()
-                    }
+                    },
+                    channelType = pipModel.channelType,
             ) }
 
             when (pipMode) {
@@ -291,6 +295,7 @@ class PlayVideoFragment @Inject constructor(
                 pipInfoUiModel = PiPInfoUiModel(
                         channelId = channelId,
                         source = playParentViewModel.source,
+                        pageSourceName = queryParamStorage.pageSourceName,
                         partnerId = playViewModel.partnerId,
                         channelType = playViewModel.channelType,
                         videoPlayer = videoMeta.videoPlayer,

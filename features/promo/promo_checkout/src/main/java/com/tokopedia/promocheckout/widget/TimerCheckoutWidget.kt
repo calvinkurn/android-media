@@ -4,8 +4,8 @@ import android.content.Context
 import android.os.CountDownTimer
 import android.util.AttributeSet
 import android.view.View
-import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.promocheckout.R
+import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.timer_checkout_widget.view.*
 
 class TimerCheckoutWidget @JvmOverloads constructor(

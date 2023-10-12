@@ -15,7 +15,7 @@
         android:id="@+id/line_bottom_nav"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/Unify_N75"/>
+        android:background="@color/Unify_NN50"/>
 
     <com.tokopedia.navigation.presentation.customview.LottieBottomNavbar android:id="@+id/bottom_navbar"
         android:layout_width="match_parent"
@@ -23,7 +23,7 @@
         tools:layout_height="100dp"
         android:elevation="15dp"
         android:orientation="vertical"
-        app:buttonColor="@color/Unify_N500"
+        app:buttonColor="@color/Unify_NN600"
         app:buttonContainerBackgroundColor="@color/Unify_Background"
         app:buttonsHeight="@dimen/unify_space_48"
         app:layout_constraintBottom_toBottomOf="parent"

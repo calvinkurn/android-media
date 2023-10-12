@@ -26,6 +26,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.error.getMessage
+import com.tokopedia.loginregister.common.utils.BasicIdlingResource
 import com.tokopedia.loginregister.common.view.dialog.RegisteredDialog
 import com.tokopedia.loginregister.databinding.FragmentRedefineRegisterInputPhoneBinding
 import com.tokopedia.loginregister.redefineregisteremail.common.RedefineRegisterEmailConstants
@@ -65,6 +66,9 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
             RedefineRegisterInputPhoneViewModel::class.java
         )
     }
+
+    @Inject
+    lateinit var idlingResource: BasicIdlingResource
 
     @Inject
     lateinit var firebaseRemoteConfig: RemoteConfig
@@ -262,6 +266,7 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
                     }
                 }
                 is Fail -> {
+                    idlingResource.decrement()
                     val messageError = it.throwable.getMessage(requireActivity())
                     redefineRegisterEmailAnalytics.sendClickOnButtonDaftarEmailEvent(
                         RedefineRegisterEmailAnalytics.ACTION_FAILED,

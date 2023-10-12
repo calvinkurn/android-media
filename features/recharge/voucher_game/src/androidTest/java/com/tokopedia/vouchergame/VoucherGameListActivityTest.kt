@@ -79,18 +79,18 @@ class VoucherGameListActivityTest{
     fun clearSearch(){
         Espresso.onView(withId(R.id.search_input_view)).perform(ViewActions.click())
         Thread.sleep(3000)
-        Espresso.onView(withId(R.id.searchbar_textfield)).perform(ViewActions.typeText(GAME_NAME), ViewActions.closeSoftKeyboard())
+        Espresso.onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)).perform(ViewActions.typeText(GAME_NAME), ViewActions.closeSoftKeyboard())
         Thread.sleep(3000)
-        Espresso.onView(withId(R.id.searchbar_icon)).perform(ViewActions.click())
+        Espresso.onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_icon)).perform(ViewActions.click())
         Thread.sleep(3000)
-        Espresso.onView(withId(R.id.searchbar_textfield)).check(matches(withText("")))
+        Espresso.onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)).check(matches(withText("")))
     }
 
     fun search_ItemIsAvailable(){
         Thread.sleep(3000)
         Espresso.onView(withId(R.id.search_input_view)).check(matches(isDisplayed()))
-        Espresso.onView(withId(R.id.searchbar_textfield)).check(matches(isDisplayed())).perform(ViewActions.click())
-        Espresso.onView(withId(R.id.searchbar_textfield)).check(matches(isDisplayed())).perform(ViewActions.typeText(GAME_NAME))
+        Espresso.onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)).check(matches(isDisplayed())).perform(ViewActions.click())
+        Espresso.onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)).check(matches(isDisplayed())).perform(ViewActions.typeText(GAME_NAME))
         Thread.sleep(3000)
         if (itemCount() > 0) {
             Thread.sleep(3000)

@@ -9,8 +9,8 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
-class TransactionInvoiceEmptyViewHolder(itemView: View, private var emptyViewHolderListener: EmptyViewHolderListener)
-    : AbstractViewHolder<EmptyTransactionInvoiceUiModel>(itemView) {
+class TransactionInvoiceEmptyViewHolder(itemView: View, private var emptyViewHolderListener: EmptyViewHolderListener) :
+    AbstractViewHolder<EmptyTransactionInvoiceUiModel>(itemView) {
     private val ivIcon: DeferredImageView = itemView.findViewById(R.id.icon)
     private val tvTitle: Typography = itemView.findViewById(R.id.title)
     private val tvDescription: Typography = itemView.findViewById(R.id.description)
@@ -27,7 +27,7 @@ class TransactionInvoiceEmptyViewHolder(itemView: View, private var emptyViewHol
     }
 
     companion object {
-        var LAYOUT = R.layout.invoice_transaction_empty_view
+        var LAYOUT = R.layout.customview_chatbot_invoice_transaction_empty_view
     }
 }
 

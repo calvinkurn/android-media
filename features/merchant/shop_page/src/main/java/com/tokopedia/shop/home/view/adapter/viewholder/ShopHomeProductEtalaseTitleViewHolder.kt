@@ -9,15 +9,21 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.shop.R
+import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.ItemShopPageHomeProductEtalaseTitleViewBinding
+import com.tokopedia.shop.home.view.listener.ShopHomeListener
 import com.tokopedia.shop.home.view.model.ShopHomeProductEtalaseTitleUiModel
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by normansyahputa on 2/22/18.
  */
 
-class ShopHomeProductEtalaseTitleViewHolder(itemView: View) : AbstractViewHolder<ShopHomeProductEtalaseTitleUiModel>(itemView) {
+class ShopHomeProductEtalaseTitleViewHolder(
+    itemView: View,
+    private val shopHomeListener: ShopHomeListener
+) : AbstractViewHolder<ShopHomeProductEtalaseTitleUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -41,6 +47,34 @@ class ShopHomeProductEtalaseTitleViewHolder(itemView: View) : AbstractViewHolder
         } else {
             ivBadge?.visibility = View.GONE
         }
+        configColorTheme()
+    }
+
+    private fun configColorTheme() {
+        if (shopHomeListener.isOverrideTheme()) {
+            setReimaginedColorConfig(shopHomeListener.getShopPageColorSchema())
+        } else {
+            setDefaultColorConfig()
+        }
+    }
+
+    private fun setReimaginedColorConfig(colorSchema: ShopPageColorSchema) {
+        val titleColor = colorSchema.getColorIntValue(
+            ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS
+        )
+        setHeaderColor(titleColor)
+    }
+
+    private fun setDefaultColorConfig() {
+        val titleColor = MethodChecker.getColor(
+            itemView.context,
+            unifyprinciplesR.color.Unify_NN950_96
+        )
+        setHeaderColor(titleColor)
+    }
+
+    private fun setHeaderColor(titleColor: Int) {
+        textView?.setTextColor(titleColor)
     }
 
     private fun findViews() {

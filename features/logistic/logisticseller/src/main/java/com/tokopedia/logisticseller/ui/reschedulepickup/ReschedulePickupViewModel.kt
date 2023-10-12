@@ -77,9 +77,6 @@ class ReschedulePickupViewModel @Inject constructor(
                 }
             }
             is ReschedulePickupUiEvent.PressBack -> setAction(ReschedulePickupAction.ClosePage(false))
-            else -> {
-                // no op
-            }
         }
     }
 

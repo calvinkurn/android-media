@@ -51,7 +51,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="9dp"
                 android:layout_marginEnd="16dp"
-                android:textColor="@color/Unify_N700"
+                android:textColor="@color/Unify_NN950"
                 app:typographyType="body_3"
                 app:typographyWeight="reguler"
                 tools:text="Jadi member toko untuk dapat kupon" />
@@ -70,7 +70,7 @@
                     android:layout_marginTop="2dp"
                     android:layout_marginStart="9dp"
                     android:visibility="visible"
-                    android:textColor="@color/Unify_N700"
+                    android:textColor="@color/Unify_NN950"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:typographyType="body_3"
@@ -135,7 +135,7 @@
                     android:gravity="center"
                     android:paddingTop="8dp"
                     android:paddingBottom="8dp"
-                    android:textColor="@color/Unify_G500"
+                    android:textColor="@color/Unify_GN500"
                     app:typographyType="small"
                     app:typographyWeight="bold"
                     android:text="@string/mvc_text_collapse" />

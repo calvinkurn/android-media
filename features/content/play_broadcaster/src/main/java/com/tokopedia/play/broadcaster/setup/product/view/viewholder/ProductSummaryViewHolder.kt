@@ -13,7 +13,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.isLessThanEqualZero
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.unifyprinciples.R as unifyR
 import com.tokopedia.play.broadcaster.databinding.ItemProductSummaryBodyListBinding
 import com.tokopedia.play.broadcaster.databinding.ItemProductSummaryHeaderListBinding
 import com.tokopedia.play.broadcaster.setup.product.view.adapter.ProductSummaryAdapter
@@ -24,6 +23,7 @@ import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play_common.util.extension.buildSpannedString
 import com.tokopedia.play_common.view.loadImage
 import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifyprinciples.R as unifyR
 
 /**
  * Created By : Jonathan Darwin on February 07, 2022
@@ -81,12 +81,16 @@ internal class ProductSummaryViewHolder private constructor() {
             get() = itemView.context
 
         private val fgColor: ForegroundColorSpan
-            get() = ForegroundColorSpan(MethodChecker.getColor(ctx, unifyR.color.Unify_G500))
+            get() = ForegroundColorSpan(MethodChecker.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
 
         @SuppressLint("ResourceType")
         fun bind(item: ProductSummaryAdapter.Model.Body) {
             binding.ivProductSummaryImage.loadImage(item.product.imageUrl)
             binding.tvProductSummaryName.text = item.product.name
+
+            binding.tvCommissionFmt.text = ctx.getString(R.string.play_shorts_affiliate_commission_fmt, item.product.commissionFmt)
+            binding.tvCommissionFmt.showWithCondition(item.product.hasCommission)
+            binding.tvCommissionExtra.showWithCondition(item.product.hasCommission && item.product.extraCommission)
 
             binding.tvPinnedProductCarouselInfo.apply {
                 text = buildSpannedString {

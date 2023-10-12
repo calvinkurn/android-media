@@ -25,7 +25,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
-
 @RunWith(AndroidJUnit4ClassRunner::class)
 class HomeIdGenerator {
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
@@ -50,8 +49,8 @@ class HomeIdGenerator {
             val packageName = parent::class.java.`package`?.name.orEmpty()
             val className = parent::class.java.name
 
-            !packageName.startsWith("com.tokopedia")
-                    || !className.contains("unify", ignoreCase = true)
+            !packageName.startsWith("com.tokopedia") ||
+                !className.contains("unify", ignoreCase = true)
         },
         PrintCondition { view ->
             view.id != View.NO_ID || view is ViewGroup
@@ -69,11 +68,11 @@ class HomeIdGenerator {
     private val parentViewPrinter = ViewHierarchyPrinter(
         parentPrintCondition,
         customIdPrefix = "P",
-        packageName = BuildConfig.APPLICATION_ID
+        packageName = BuildConfig.LIBRARY_PACKAGE_NAME
     )
     private val viewPrinter = ViewHierarchyPrinter(
         printConditions,
-        packageName = BuildConfig.APPLICATION_ID
+        packageName = BuildConfig.LIBRARY_PACKAGE_NAME
     )
     private val fileWriter = FileWriter()
 
@@ -142,7 +141,6 @@ class HomeIdGenerator {
         viewHolder?.let {
             action.invoke(viewHolder)
         }
-
     }
 
     private fun scrollHomeRecyclerViewToPosition(

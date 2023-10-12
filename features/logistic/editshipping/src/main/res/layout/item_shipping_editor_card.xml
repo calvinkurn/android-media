@@ -49,7 +49,7 @@
                 android:layout_marginTop="12dp"
                 android:ellipsize="end"
                 android:singleLine="true"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                 android:textSize="16sp"
                 app:layout_constraintStart_toEndOf="@id/img_shipment_item"
                 app:layout_constraintTop_toBottomOf="@id/ticker_shipper"
@@ -62,7 +62,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/unify_space_2"
                 android:layout_marginEnd="30dp"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                 android:textSize="16sp"
                 app:layout_constraintEnd_toStartOf="@id/cb_shipment_item"
                 app:layout_constraintStart_toStartOf="@id/shipment_name"
@@ -135,7 +135,7 @@
                     android:layout_marginStart="@dimen/unify_space_12"
                     android:layout_marginTop="14dp"
                     android:layout_marginEnd="@dimen/unify_space_12"
-                    android:background="@color/Unify_N75" />
+                    android:background="@color/Unify_NN50" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/shipment_item_list"

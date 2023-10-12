@@ -9,14 +9,15 @@ import com.tokopedia.charts.common.utils.LabelFormatter
  */
 
 data class XAxisConfigModel(
-        override val typeface: Typeface?,
-        override val isEnabled: Boolean,
-        override val isLabelEnabled: Boolean,
-        override val isGridEnabled: Boolean,
-        override val mLabelPosition: Int,
-        override val axisMinimum: Float,
-        override val labelFormatter: LabelFormatter
-): BaseAxisConfigModel {
+    override val typeface: Typeface?,
+    override val isEnabled: Boolean,
+    override val isLabelEnabled: Boolean,
+    override val isGridEnabled: Boolean,
+    override val mLabelPosition: Int,
+    override val axisMinimum: Float,
+    override val labelFormatter: LabelFormatter,
+    override val textColor: Int
+) : BaseAxisConfigModel {
 
     companion object {
         const val LABEL_BOTTOM = 0

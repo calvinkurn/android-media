@@ -1,8 +1,6 @@
 package com.tokopedia.productcard.utils
 
 import androidx.annotation.DimenRes
-import com.tokopedia.productcard.R.dimen.dp_12
-import com.tokopedia.productcard.R.dimen.dp_13
 
 internal const val LIGHT_GREY = "lightGrey"
 internal const val LIGHT_BLUE = "lightBlue"
@@ -24,6 +22,8 @@ internal const val GENERAL_GREEN = "generalGreen"
 internal const val GENERAL_RED = "generalRed"
 internal const val GENERAL_ORANGE = "generalOrange"
 internal const val GENERAL_TEAL = "generalTeal"
+internal const val GOLD = "gold"
+internal const val RED = "red"
 
 internal const val LABEL_PRODUCT_STATUS = "status"
 internal const val LABEL_PRICE = "price"
@@ -39,6 +39,7 @@ internal const val LABEL_COST_PER_UNIT = "costperunit"
 internal const val LABEL_CATEGORY_SIDE = "category_side"
 internal const val LABEL_CATEGORY_BOTTOM = "category_bottom"
 internal const val LABEL_OVERLAY = "overlay"
+internal const val LABEL_RIBBON = "ribbon"
 
 internal const val TEXT_DARK_ORANGE = "textDarkOrange"
 internal const val TEXT_DARK_RED = "textDarkRed"
@@ -66,12 +67,14 @@ internal const val EXTRA_CHAR_SPACE_REPOSITION = 0
 internal const val LABEL_VARIANT_TAG = "label_variant_tag"
 
 internal const val WORDING_SEGERA_HABIS = "Segera Habis"
+internal const val WORDING_LAGI_DIMINATI = "Lagi Diminati"
+internal const val WORDING_TERSEDIA = "Tersedia"
 
 @DimenRes
-internal val FIRE_WIDTH = dp_12
+internal val FIRE_WIDTH = com.tokopedia.abstraction.R.dimen.dp_12
 
 @DimenRes
-internal val FIRE_HEIGHT = dp_13
+internal val FIRE_HEIGHT = com.tokopedia.productcard.R.dimen.dp_13
 
 internal const val QUANTITY_EDITOR_DEBOUNCE_IN_MS: Long = 1000
 
@@ -80,3 +83,6 @@ internal const val MIN_QUANTITY_NON_VARIANT = 1
 
 internal const val SQUARE_IMAGE_RATIO = "1:1"
 internal const val LONG_IMAGE_RATIO = "4:5"
+
+internal const val CARD_MARGIN = 4
+internal const val MEDIA_MARGIN = 1.25f

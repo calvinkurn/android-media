@@ -52,13 +52,6 @@ public class AnalyticsLog {
                     "get invalid request",
                     baseUrl
             );
-        } else if (isRequestDenied) {
-            TrackApp.getInstance().getGTM().sendGeneralEvent(
-                    EVENT_CLICK_LOGOUT,
-                    CATEGORY_FORCE_LOGOUT,
-                    "request denied",
-                    baseUrl
-                    );
         }
     }
 

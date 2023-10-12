@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
 import com.tokopedia.feedcomponent.analytics.topadstracker.SendTopAdsUseCase
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.TrackAffiliateModel
-import com.tokopedia.feedplus.view.presenter.FeedViewModel
+import com.tokopedia.feedplus.oldFeed.view.presenter.FeedViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Success
@@ -57,7 +57,7 @@ class FeedPlusTopAdsShopTestCase {
                 sendTopAdsUseCase = sendTopAdsUseCase,
                 playWidgetTools = mockk(),
                 getDynamicFeedNewUseCase = mockk(),
-                getWhiteListNewUseCase = mockk(),
+                getWhiteListUseCase = mockk(),
                 sendReportUseCase = mockk(),
                 addToWishlistV2UseCase = mockk(),
                 trackVisitChannelBroadcasterUseCase = mockk(),
@@ -83,7 +83,7 @@ class FeedPlusTopAdsShopTestCase {
 
     @Test
     fun testDoTrackAffiliateRun() {
-        //check if the doTrackAffiliate model run once only
+        // check if the doTrackAffiliate model run once only
         coEvery { feedViewModel.doTrackAffiliate(trackUrl) } just Runs
         feedViewModel.doTrackAffiliate(trackUrl)
         verify(exactly = 1) { feedViewModel.doTrackAffiliate(trackUrl) }
@@ -91,7 +91,7 @@ class FeedPlusTopAdsShopTestCase {
 
     @Test
     fun testDoTrackAffiliateSuccessResult() {
-        //check if the result returned by private method trackAffiliate(url) returns the same test url when the result is success
+        // check if the result returned by private method trackAffiliate(url) returns the same test url when the result is success
         mockkStatic(RequestParams::class)
         mockkStatic(TrackAffiliateClickUseCase::class)
         coEvery { RequestParams.create() } returns RequestParams()
@@ -108,7 +108,7 @@ class FeedPlusTopAdsShopTestCase {
 
     @Test
     fun testDoTrackAffiliateFailResult() {
-        //check if the result returned by private method trackAffiliate(url) returns exception
+        // check if the result returned by private method trackAffiliate(url) returns exception
         mockkStatic(RequestParams::class)
         mockkStatic(TrackAffiliateClickUseCase::class)
         coEvery { RequestParams.create() } returns RequestParams()
@@ -130,5 +130,4 @@ class FeedPlusTopAdsShopTestCase {
         feedViewModel.doTopAdsTracker("", "", "", "", false)
         verify(exactly = 1) { sendTopAdsUseCase.hitImpressions(any(), any(), any(), any()) }
     }
-
 }

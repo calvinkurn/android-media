@@ -16,7 +16,7 @@ interface ProvideRatingContract {
         fun setMessage(message: String)
         fun setMessageColor(color: Int)
         fun setQuestion(question: String)
-        fun getSelectedEmoji(): Int
+        fun getSelectedEmoji(): Long
         fun clearEmoji()
         fun showErrorMessage(errorMessage: String)
         fun setFilterList(filterList: List<BadCsatReasonListItem>)
@@ -31,16 +31,5 @@ interface ProvideRatingContract {
         fun showSubmitButton()
         fun disableSubmitButton()
         fun enableSubmitButton()
-    }
-
-    interface ProvideRatingPresenter : CustomerPresenter<ProvideRatingView> {
-
-        fun onFirstEmojiClick()
-        fun onSecondEmojiClick()
-        fun onThirdEmojiClick()
-        fun onFourthEmojiClick()
-        fun onFifthEmojiClick()
-        fun onSubmitClick()
-
     }
 }

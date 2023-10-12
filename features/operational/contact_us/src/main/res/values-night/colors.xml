@@ -1,20 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="contact_us_dms_detail_background">#1D1F22</color>
+    <color name="contact_us_dms_background_filter">#F531353b</color>
     <color name="contact_us_dms_detail_text">#DCE4ED</color>
     <color name="contact_us_dms_detail_date">#808FA1</color>
     <color name="contact_us_dms_detail_divider">#3D444F</color>
-    <color name="contact_us_dms_thumbs_up_down_bg_color">#2D323A</color>
     <color name="contact_us_dms_detail_header_text">#DCE4ED</color>
-    <color name="contact_us_dms_detail_view_txn">#03AC0E</color>
-    <color name="contact_us_dms_detail_header_divider">#3D444F</color>
     <color name="contact_us_dms_complain_text">#808FA1</color>
-    <color name="contact_us_dms_complain_bg">#2ABF70</color>
-    <color name="contact_us_dms_detail_background_dark">#1D2025</color>
-    <color name="contact_us_dms_detail_edit_text_bg">#2D323A</color>
-    <color name="contact_us_dms_detail_hint_bg">#5D6775</color>
     <color name="contact_us_dms_transparent">#00000000</color>
-    <color name="contact_us_dms_filter">#9FA6B0</color>
-    <color name="contact_us_dms_search">#E9EBF5</color>
-    <color name="contact_us_dms_image">#E9EBF5</color>
 </resources>

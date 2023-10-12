@@ -45,8 +45,8 @@ class PlayShortsUploadViewModelTest {
         robot.use {
             val state = it.setUp {
                 submitAction(PlayShortsAction.LoadTag)
-                submitAction(PlayShortsAction.SelectTag(mockTagsSize5.toList()[mockSelectedIdxList.first()]))
-                submitAction(PlayShortsAction.SelectTag(mockTagsSize5.toList()[mockSelectedIdxList.last()]))
+                submitAction(PlayShortsAction.SelectTag(mockTagsSize5.tags.toList()[mockSelectedIdxList.first()]))
+                submitAction(PlayShortsAction.SelectTag(mockTagsSize5.tags.toList()[mockSelectedIdxList.last()]))
             }.recordState {
                 submitAction(PlayShortsAction.ClickUploadVideo)
             }
@@ -88,8 +88,8 @@ class PlayShortsUploadViewModelTest {
         robot.use {
             val (state, events) = it.setUp {
                 submitAction(PlayShortsAction.LoadTag)
-                submitAction(PlayShortsAction.SelectTag(mockTagsSize5.toList()[mockSelectedIdxList.first()]))
-                submitAction(PlayShortsAction.SelectTag(mockTagsSize5.toList()[mockSelectedIdxList.last()]))
+                submitAction(PlayShortsAction.SelectTag(mockTagsSize5.tags.toList()[mockSelectedIdxList.first()]))
+                submitAction(PlayShortsAction.SelectTag(mockTagsSize5.tags.toList()[mockSelectedIdxList.last()]))
             }.recordStateAndEvent {
                 submitAction(PlayShortsAction.ClickUploadVideo)
             }
@@ -115,8 +115,8 @@ class PlayShortsUploadViewModelTest {
         robot.use {
             val (state, events) = it.setUp {
                 submitAction(PlayShortsAction.LoadTag)
-                submitAction(PlayShortsAction.SelectTag(mockTagsSize5.toList()[mockSelectedIdxList.first()]))
-                submitAction(PlayShortsAction.SelectTag(mockTagsSize5.toList()[mockSelectedIdxList.last()]))
+                submitAction(PlayShortsAction.SelectTag(mockTagsSize5.tags.toList()[mockSelectedIdxList.first()]))
+                submitAction(PlayShortsAction.SelectTag(mockTagsSize5.tags.toList()[mockSelectedIdxList.last()]))
             }.recordStateAndEvent {
                 submitAction(PlayShortsAction.ClickUploadVideo)
             }

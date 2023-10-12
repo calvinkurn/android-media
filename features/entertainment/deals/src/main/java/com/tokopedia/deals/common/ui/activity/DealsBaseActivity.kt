@@ -29,7 +29,6 @@ import com.tokopedia.deals.common.utils.DealsLocationUtils
 import com.tokopedia.deals.databinding.ActivityBaseDealsBinding
 import com.tokopedia.deals.location_picker.model.response.Location
 import com.tokopedia.deals.location_picker.ui.customview.SelectLocationBottomSheet
-import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.utils.permission.PermissionCheckerHelper
@@ -66,6 +65,22 @@ abstract class DealsBaseActivity : BaseSimpleActivity(), CurrentLocationCallback
     private lateinit var locationBottomSheet: SelectLocationBottomSheet
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        supportFragmentManager.addFragmentOnAttachListener { _, fragment ->
+            if (fragment is SelectLocationBottomSheet) {
+                val callback = object : CurrentLocationCallback {
+                    override fun setCurrentLocation(location: Location) {
+                        fragment.dismiss()
+                        this@DealsBaseActivity.setCurrentLocation(location)
+                    }
+
+                    override fun setChangedLocation() {
+                        fragment.dismiss()
+                        this@DealsBaseActivity.setCurrentLocation(dealsLocationUtils.getLocation())
+                    }
+                }
+                fragment.setCallback(callback)
+            }
+        }
         super.onCreate(savedInstanceState)
         initInjector()
         initViewModel()
@@ -243,17 +258,7 @@ abstract class DealsBaseActivity : BaseSimpleActivity(), CurrentLocationCallback
     var currentLoc = Location()
 
     private fun onClickLocation() {
-        locationBottomSheet = SelectLocationBottomSheet("", currentLoc, isLandmarkPage, object : CurrentLocationCallback {
-            override fun setCurrentLocation(location: Location) {
-                locationBottomSheet.dismiss()
-                this@DealsBaseActivity.setCurrentLocation(location)
-            }
-
-            override fun setChangedLocation() {
-                locationBottomSheet.dismiss()
-                this@DealsBaseActivity.setCurrentLocation(dealsLocationUtils.getLocation())
-            }
-        })
+        locationBottomSheet = SelectLocationBottomSheet.createInstance("", currentLoc, isLandmarkPage)
         locationBottomSheet.show(supportFragmentManager, "")
     }
 

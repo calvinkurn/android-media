@@ -7,6 +7,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingConstant
 import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
@@ -39,6 +40,7 @@ class OtherMenuAdapter(
     }
 
     private var isShowCentralizedPromoTag: Boolean = false
+    private var isTopAdsShopUsed: Boolean = false
 
     private fun generateSettingList() = listOf(
         SettingTitleUiModel(context?.getString(R.string.setting_menu_improve_sales).orEmpty()),
@@ -48,7 +50,11 @@ class OtherMenuAdapter(
             iconUnify = IconUnify.GRAPH,
             tag = getStatisticNewTag()
         ),
-
+        MenuItemUiModel(
+            title = context?.getString(R.string.setting_menu_iklan_topads).orEmpty(),
+            clickApplink = if(isTopAdsShopUsed) ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL else ApplinkConstInternalTopAds.TOPADS_ONBOARDING,
+            iconUnify = IconUnify.SPEAKER,
+        ),
         MenuItemUiModel(
             title = context?.getString(R.string.setting_menu_ads_and_shop_promotion).orEmpty(),
             clickApplink = ApplinkConstInternalSellerapp.CENTRALIZED_PROMO,
@@ -194,6 +200,11 @@ class OtherMenuAdapter(
         addElement(generateSettingList())
     }
 
+    fun addIklanTopadsMenu(isUsed: Boolean){
+        isTopAdsShopUsed = isUsed
+        clearAllElements()
+        addElement(generateSettingList())
+    }
 
     fun setCentralizedPromoTag(isShow: Boolean = false) {
         this.isShowCentralizedPromoTag = isShow

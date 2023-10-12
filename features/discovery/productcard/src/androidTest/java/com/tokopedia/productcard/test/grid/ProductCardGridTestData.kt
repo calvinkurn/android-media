@@ -4,8 +4,8 @@ import android.view.View
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.ProductCardModel.LabelGroup
+import com.tokopedia.productcard.R
 import com.tokopedia.productcard.test.ProductCardModelMatcher
-import com.tokopedia.productcard.test.R
 import com.tokopedia.productcard.test.getProductCardModelMatcherData
 import com.tokopedia.productcard.test.utils.campaignLabelUrl
 import com.tokopedia.productcard.test.utils.freeOngkirImageUrl
@@ -58,6 +58,7 @@ internal val productCardGridTestData =
             testGimmickOverlay(),
             testStatusOverlay(),
             testBestSellerOverlay(),
+            testTopStockBar(),
         )
 
 internal val productCardGridViewStubTestData =
@@ -725,6 +726,26 @@ private fun testStatusOverlay(): ProductCardModelMatcher {
         R.id.labelOverlay to isNotDisplayed(),
         R.id.labelOverlayStatus to isDisplayedWithText(labelStatusOverlay.title),
         R.id.labelProductStatus to isNotDisplayed()
+    )
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testTopStockBar(): ProductCardModelMatcher {
+    val productCardModel = ProductCardModel(
+        productName = "Product Card With Top Stock Bar",
+        productImageUrl = productImageUrl,
+        stockBarLabel = "Segera Habis",
+        stockBarPercentage = 20,
+        isTopStockBar = true,
+    )
+
+    val productCardMatcher = mapOf(
+        R.id.productCardImage to isDisplayed(),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.textViewTopStockBar to isDisplayedWithText(productCardModel.stockBarLabel),
+        R.id.progressBarTopStockBar to isDisplayed(),
+        R.id.bgTopStockBarView to isDisplayed(),
     )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)

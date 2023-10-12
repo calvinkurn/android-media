@@ -1,25 +1,20 @@
 package com.tokopedia.play.analytic.tagitem
 
+import com.tokopedia.content.analytic.BusinessUnit
+import com.tokopedia.content.analytic.CurrentSite
+import com.tokopedia.content.analytic.Event
+import com.tokopedia.content.analytic.EventCategory
+import com.tokopedia.content.analytic.Key
 import com.tokopedia.play.analytic.KEY_ADD
-import com.tokopedia.play.analytic.KEY_BUSINESS_UNIT
 import com.tokopedia.play.analytic.KEY_CATEGORY_ID
 import com.tokopedia.play.analytic.KEY_CHANNEL
 import com.tokopedia.play.analytic.KEY_CLICK
 import com.tokopedia.play.analytic.KEY_CURRENCY_CODE
-import com.tokopedia.play.analytic.KEY_CURRENT_SITE
 import com.tokopedia.play.analytic.KEY_DIMENSION_40
 import com.tokopedia.play.analytic.KEY_DIMENSION_45
 import com.tokopedia.play.analytic.KEY_ECOMMERCE
-import com.tokopedia.play.analytic.KEY_EVENT
-import com.tokopedia.play.analytic.KEY_EVENT_ACTION
-import com.tokopedia.play.analytic.KEY_EVENT_ADD_TO_CART
-import com.tokopedia.play.analytic.KEY_EVENT_CATEGORY
-import com.tokopedia.play.analytic.KEY_EVENT_LABEL
-import com.tokopedia.play.analytic.KEY_EVENT_PRODUCT_CLICK
-import com.tokopedia.play.analytic.KEY_EVENT_PRODUCT_VIEW
 import com.tokopedia.play.analytic.KEY_IMPRESSIONS
 import com.tokopedia.play.analytic.KEY_INDEX
-import com.tokopedia.play.analytic.KEY_IS_LOGGED_IN_STATUS
 import com.tokopedia.play.analytic.KEY_ITEM_BRAND
 import com.tokopedia.play.analytic.KEY_ITEM_CATEGORY
 import com.tokopedia.play.analytic.KEY_ITEM_ID
@@ -28,20 +23,11 @@ import com.tokopedia.play.analytic.KEY_ITEM_VARIANT
 import com.tokopedia.play.analytic.KEY_PRICE
 import com.tokopedia.play.analytic.KEY_PRODUCTS
 import com.tokopedia.play.analytic.KEY_QUANTITY
-import com.tokopedia.play.analytic.KEY_SESSION_IRIS
 import com.tokopedia.play.analytic.KEY_SHOP_ID
 import com.tokopedia.play.analytic.KEY_SHOP_NAME
 import com.tokopedia.play.analytic.KEY_SHOP_TYPE
-import com.tokopedia.play.analytic.KEY_TRACK_BUSINESS_UNIT
 import com.tokopedia.play.analytic.KEY_TRACK_CLICK
-import com.tokopedia.play.analytic.KEY_TRACK_CLICK_GROUP_CHAT
-import com.tokopedia.play.analytic.KEY_TRACK_CURRENT_SITE
-import com.tokopedia.play.analytic.KEY_TRACK_GROUP_CHAT_ROOM
-import com.tokopedia.play.analytic.KEY_TRACK_VIEW_CONTENT_IRIS
-import com.tokopedia.play.analytic.KEY_USER_ID
-import com.tokopedia.play.analytic.VAL_BUSINESS_UNIT
 import com.tokopedia.play.analytic.VAL_CURRENCY_CODE
-import com.tokopedia.play.analytic.VAL_CURRENT_SITE
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.DiscountedPrice
 import com.tokopedia.play.view.type.OriginalPrice
@@ -69,23 +55,23 @@ import dagger.assisted.AssistedInject
 class PlayTagItemsAnalyticImpl @AssistedInject constructor(
     @Assisted private val trackingQueue: TrackingQueue,
     @Assisted private val channelInfo: PlayChannelInfoUiModel,
-    private val userSession: UserSessionInterface,
+    private val userSession: UserSessionInterface
 ) : PlayTagItemsAnalytic {
-    
+
     @AssistedFactory
     interface Factory : PlayTagItemsAnalytic.Factory {
         override fun create(
             trackingQueue: TrackingQueue,
-            channelInfo: PlayChannelInfoUiModel,
+            channelInfo: PlayChannelInfoUiModel
         ): PlayTagItemsAnalyticImpl
     }
-    
+
     private val channelId: String
         get() = channelInfo.id
-    
+
     private val channelType: PlayChannelType
         get() = channelInfo.channelType
-    
+
     private val channelName: String
         get() = channelInfo.title
 
@@ -104,15 +90,15 @@ class PlayTagItemsAnalyticImpl @AssistedInject constructor(
     ) {
         if (products.isEmpty()) return
 
-        val (eventAction, eventLabel) = when(sectionInfo.config.type){
-            ProductSectionType.Active -> Pair("impression - product in ongoing section",generateBaseEventLabel(productId = products.first().first.id, campaignId = sectionInfo.id))
-            ProductSectionType.Upcoming -> Pair("impression - product in upcoming section",generateBaseEventLabel(productId = products.first().first.id, campaignId = sectionInfo.id))
+        val (eventAction, eventLabel) = when (sectionInfo.config.type) {
+            ProductSectionType.Active -> Pair("impression - product in ongoing section", generateBaseEventLabel(productId = products.first().first.id, campaignId = sectionInfo.id))
+            ProductSectionType.Upcoming -> Pair("impression - product in upcoming section", generateBaseEventLabel(productId = products.first().first.id, campaignId = sectionInfo.id))
             else -> Pair("view product", "$channelId - ${products.first().first.id} - ${channelType.value} - product in bottom sheet")
         }
         trackingQueue.putEETracking(
             EventModel(
                 "productView",
-                KEY_TRACK_GROUP_CHAT_ROOM,
+                EventCategory.groupChatRoom,
                 eventAction,
                 eventLabel
             ),
@@ -127,10 +113,10 @@ class PlayTagItemsAnalyticImpl @AssistedInject constructor(
                 )
             ),
             hashMapOf(
-                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                KEY_USER_ID to userId,
-                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
+                Key.currentSite to CurrentSite.tokopediaMarketplace,
+                Key.sessionIris to TrackApp.getInstance().gtm.irisSessionId,
+                Key.userId to userId,
+                Key.businessUnit to BusinessUnit.play
             )
         )
     }
@@ -143,9 +129,9 @@ class PlayTagItemsAnalyticImpl @AssistedInject constructor(
         trackingQueue.putEETracking(
             EventModel(
                 "productView",
-                KEY_TRACK_GROUP_CHAT_ROOM,
+                EventCategory.groupChatRoom,
                 "view on featured product",
-                "$channelId - ${products.first().first.id} - ${channelType.value} - featured product tagging",
+                "$channelId - ${products.first().first.id} - ${channelType.value} - featured product tagging"
             ),
             hashMapOf(
                 "ecommerce" to hashMapOf(
@@ -158,10 +144,10 @@ class PlayTagItemsAnalyticImpl @AssistedInject constructor(
                 )
             ),
             hashMapOf(
-                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                KEY_USER_ID to userId,
-                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
+                Key.currentSite to CurrentSite.tokopediaMarketplace,
+                Key.sessionIris to TrackApp.getInstance().gtm.irisSessionId,
+                Key.userId to userId,
+                Key.businessUnit to BusinessUnit.play
             )
         )
     }
@@ -172,33 +158,33 @@ class PlayTagItemsAnalyticImpl @AssistedInject constructor(
         position: Int
     ) {
         val (eventAction, eventLabel) = when (sectionInfo.config.type) {
-            ProductSectionType.Upcoming -> Pair("$KEY_TRACK_CLICK - product in upcoming section", generateBaseEventLabel(productId = product.id, campaignId = sectionInfo.id))
-            ProductSectionType.Active -> Pair("$KEY_TRACK_CLICK - product in ongoing section", generateBaseEventLabel(productId = product.id, campaignId = sectionInfo.id))
+            ProductSectionType.Upcoming -> Pair("click - product in upcoming section", generateBaseEventLabel(productId = product.id, campaignId = sectionInfo.id))
+            ProductSectionType.Active -> Pair("click - product in ongoing section", generateBaseEventLabel(productId = product.id, campaignId = sectionInfo.id))
             else -> Pair(KEY_TRACK_CLICK, "$channelId - ${product.id} - ${channelType.value} - product in bottom sheet")
         }
 
         trackingQueue.putEETracking(
             EventModel(
                 "productClick",
-                KEY_TRACK_GROUP_CHAT_ROOM,
+                EventCategory.groupChatRoom,
                 eventAction,
                 eventLabel
             ),
-            hashMapOf (
+            hashMapOf(
                 "ecommerce" to hashMapOf(
                     "click" to hashMapOf(
-                        "actionField" to hashMapOf( "list" to "/groupchat - bottom sheet" ),
-                        "products" to  listOf(convertProductToHashMapWithList(product, position + 1, "bottom sheet"))
+                        "actionField" to hashMapOf("list" to "/groupchat - bottom sheet"),
+                        "products" to listOf(convertProductToHashMapWithList(product, position + 1, "bottom sheet"))
                     )
                 )
             ),
             hashMapOf(
-                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                Key.businessUnit to BusinessUnit.play,
+                Key.currentSite to CurrentSite.tokopediaMarketplace,
                 KEY_ITEM_LIST to "/groupchat - bottom sheet",
-                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                KEY_USER_ID to userId,
-                KEY_IS_LOGGED_IN_STATUS to isLoggedIn,
+                Key.sessionIris to TrackApp.getInstance().gtm.irisSessionId,
+                Key.userId to userId,
+                Key.isLoggedInStatus to isLoggedIn,
                 KEY_PRODUCT_ID to product.id,
                 KEY_PRODUCT_NAME to product.title,
                 KEY_PRODUCT_URL to product.applink.toString(),
@@ -214,25 +200,25 @@ class PlayTagItemsAnalyticImpl @AssistedInject constructor(
         trackingQueue.putEETracking(
             EventModel(
                 "productClick",
-                KEY_TRACK_GROUP_CHAT_ROOM,
+                EventCategory.groupChatRoom,
                 KEY_TRACK_CLICK,
                 "$channelId - ${featuredProduct.id} - ${channelType.value} - featured product tagging"
             ),
             hashMapOf(
                 "ecommerce" to hashMapOf(
                     "click" to hashMapOf(
-                        "actionField" to hashMapOf( "list" to "/groupchat - featured product"),
-                        "products" to  listOf(convertProductToHashMapWithList(featuredProduct, position, "featured product"))
+                        "actionField" to hashMapOf("list" to "/groupchat - featured product"),
+                        "products" to listOf(convertProductToHashMapWithList(featuredProduct, position, "featured product"))
                     )
                 )
             ),
             hashMapOf(
-                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                Key.businessUnit to BusinessUnit.play,
+                Key.currentSite to CurrentSite.tokopediaMarketplace,
                 KEY_ITEM_LIST to "/groupchat - featured product",
-                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                KEY_USER_ID to userId,
-                KEY_IS_LOGGED_IN_STATUS to isLoggedIn,
+                Key.sessionIris to TrackApp.getInstance().gtm.irisSessionId,
+                Key.userId to userId,
+                Key.isLoggedInStatus to isLoggedIn,
                 KEY_PRODUCT_ID to featuredProduct.id,
                 KEY_PRODUCT_NAME to featuredProduct.title,
                 KEY_PRODUCT_URL to featuredProduct.applink.toString(),
@@ -243,19 +229,19 @@ class PlayTagItemsAnalyticImpl @AssistedInject constructor(
 
     override fun scrollMerchantVoucher(lastPositionViewed: Int) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-            KEY_TRACK_CLICK_GROUP_CHAT,
-            KEY_TRACK_GROUP_CHAT_ROOM,
+            Event.clickGroupChat,
+            EventCategory.groupChatRoom,
             "scroll merchant voucher",
             "$channelId - $lastPositionViewed"
         )
     }
 
     override fun clickActionProductWithVariant(productId: String, productAction: ProductAction) {
-        when(productAction) {
+        when (productAction) {
             ProductAction.AddToCart -> clickAtcButtonProductWithVariant(productId)
             ProductAction.Buy, ProductAction.OCC -> clickBeliButtonProductWithVariant(productId)
             else -> {
-                //no-op
+                // no-op
             }
         }
     }
@@ -268,29 +254,23 @@ class PlayTagItemsAnalyticImpl @AssistedInject constructor(
         bottomInsetsType: BottomInsetsType,
         shopInfo: PlayPartnerInfo
     ) {
-        when(productAction) {
+        when (productAction) {
             ProductAction.AddToCart ->
-                when (bottomInsetsType) {
-                    BottomInsetsType.VariantSheet -> clickAtcButtonInVariant(trackingQueue, product, cartId, shopInfo)
-                    else -> clickAtcButtonProductWithNoVariant(trackingQueue, product, sectionInfo, cartId, shopInfo)
-                }
+                clickAtcButtonProductWithNoVariant(trackingQueue, product, sectionInfo, cartId, shopInfo)
             ProductAction.Buy -> {
-                when (bottomInsetsType) {
-                    BottomInsetsType.VariantSheet -> clickBeliButtonInVariant(trackingQueue, product, cartId, shopInfo)
-                    else -> clickBeliButtonProductWithNoVariant(trackingQueue, product, sectionInfo, cartId, shopInfo)
-                }
+                clickBeliButtonProductWithNoVariant(trackingQueue, product, sectionInfo, cartId, shopInfo)
             }
             else -> {
-                //no-op
+                // no-op
             }
         }
     }
 
     override fun clickSeeToasterAfterAtc() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-            KEY_TRACK_CLICK_GROUP_CHAT,
-            KEY_TRACK_GROUP_CHAT_ROOM,
-            "$KEY_TRACK_CLICK lihat in message ticker",
+            Event.clickGroupChat,
+            EventCategory.groupChatRoom,
+            "click lihat in message ticker",
             "$channelId - ${channelType.value}"
         )
     }
@@ -300,15 +280,15 @@ class PlayTagItemsAnalyticImpl @AssistedInject constructor(
         position: Int
     ) {
         val trackerMap = mapOf(
-            KEY_EVENT to KEY_EVENT_PRODUCT_VIEW,
-            KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
-            KEY_EVENT_ACTION to "view on pinned featured product",
-            KEY_EVENT_LABEL to "$channelId - ${product.id} - ${channelType.value} - is rilisan spesial ${product.isRilisanSpesial}",
-            KEY_BUSINESS_UNIT to VAL_BUSINESS_UNIT,
-            KEY_CURRENT_SITE to VAL_CURRENT_SITE,
+            Key.event to Event.productView,
+            Key.eventCategory to EventCategory.groupChatRoom,
+            Key.eventAction to "view on pinned featured product",
+            Key.eventLabel to "$channelId - ${product.id} - ${channelType.value} - is rilisan spesial ${product.isRilisanSpesial}",
+            Key.businessUnit to BusinessUnit.play,
+            Key.currentSite to CurrentSite.tokopediaMarketplace,
             KEY_ITEM_LIST to "/groupchat - featured product",
-            KEY_SESSION_IRIS to irisSessionId,
-            KEY_USER_ID to userId,
+            Key.sessionIris to irisSessionId,
+            Key.userId to userId,
             KEY_ECOMMERCE to getNewImpressionsEcommerce(product, position)
         )
 
@@ -317,15 +297,15 @@ class PlayTagItemsAnalyticImpl @AssistedInject constructor(
 
     override fun clickPinnedProductInCarousel(product: PlayProductUiModel.Product, position: Int) {
         val trackerMap = mapOf(
-            KEY_EVENT to KEY_EVENT_PRODUCT_CLICK,
-            KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
-            KEY_EVENT_ACTION to "click pinned featured product tagging",
-            KEY_EVENT_LABEL to "$channelId - ${product.id} - ${channelType.value} - is rilisan spesial ${product.isRilisanSpesial}",
-            KEY_BUSINESS_UNIT to VAL_BUSINESS_UNIT,
-            KEY_CURRENT_SITE to VAL_CURRENT_SITE,
+            Key.event to Event.productClick,
+            Key.eventCategory to EventCategory.groupChatRoom,
+            Key.eventAction to "click pinned featured product tagging",
+            Key.eventLabel to "$channelId - ${product.id} - ${channelType.value} - is rilisan spesial ${product.isRilisanSpesial}",
+            Key.businessUnit to BusinessUnit.play,
+            Key.currentSite to CurrentSite.tokopediaMarketplace,
             KEY_ITEM_LIST to "/groupchat - featured product",
-            KEY_SESSION_IRIS to irisSessionId,
-            KEY_USER_ID to userId,
+            Key.sessionIris to irisSessionId,
+            Key.userId to userId,
             KEY_ECOMMERCE to getNewClickEcommerce(product, position)
         )
 
@@ -336,17 +316,17 @@ class PlayTagItemsAnalyticImpl @AssistedInject constructor(
         product: PlayProductUiModel.Product,
         cartId: String,
         quantity: Int,
-        action: ProductAction,
+        action: ProductAction
     ) {
         val trackerMap = mapOf(
-            KEY_EVENT to KEY_EVENT_ADD_TO_CART,
-            KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
-            KEY_EVENT_ACTION to "click buy pinned product",
-            KEY_EVENT_LABEL to "$channelId - ${product.id} - ${channelType.value} - is rilisan spesial ${product.isRilisanSpesial} - beli langsung ${action == ProductAction.OCC}",
-            KEY_BUSINESS_UNIT to VAL_BUSINESS_UNIT,
-            KEY_CURRENT_SITE to VAL_CURRENT_SITE,
-            KEY_SESSION_IRIS to irisSessionId,
-            KEY_USER_ID to userId,
+            Key.event to Event.addToCart,
+            Key.eventCategory to EventCategory.groupChatRoom,
+            Key.eventAction to "click buy pinned product",
+            Key.eventLabel to "$channelId - ${product.id} - ${channelType.value} - is rilisan spesial ${product.isRilisanSpesial} - beli langsung ${action == ProductAction.OCC}",
+            Key.businessUnit to BusinessUnit.play,
+            Key.currentSite to CurrentSite.tokopediaMarketplace,
+            Key.sessionIris to irisSessionId,
+            Key.userId to userId,
             KEY_ECOMMERCE to getNewAtcEcommerce(
                 product = product,
                 cartId = cartId,
@@ -361,17 +341,17 @@ class PlayTagItemsAnalyticImpl @AssistedInject constructor(
     override fun atcPinnedProductInCarousel(
         product: PlayProductUiModel.Product,
         cartId: String,
-        quantity: Int,
+        quantity: Int
     ) {
         val trackerMap = mapOf(
-            KEY_EVENT to KEY_EVENT_ADD_TO_CART,
-            KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
-            KEY_EVENT_ACTION to "click atc pinned product",
-            KEY_EVENT_LABEL to "$channelId - ${product.id} - ${channelType.value} - is rilisan spesial ${product.isRilisanSpesial}",
-            KEY_BUSINESS_UNIT to VAL_BUSINESS_UNIT,
-            KEY_CURRENT_SITE to VAL_CURRENT_SITE,
-            KEY_SESSION_IRIS to irisSessionId,
-            KEY_USER_ID to userId,
+            Key.event to Event.addToCart,
+            Key.eventCategory to EventCategory.groupChatRoom,
+            Key.eventAction to "click atc pinned product",
+            Key.eventLabel to "$channelId - ${product.id} - ${channelType.value} - is rilisan spesial ${product.isRilisanSpesial}",
+            Key.businessUnit to BusinessUnit.play,
+            Key.currentSite to CurrentSite.tokopediaMarketplace,
+            Key.sessionIris to irisSessionId,
+            Key.userId to userId,
             KEY_ECOMMERCE to getNewAtcEcommerce(
                 product = product,
                 cartId = cartId,
@@ -385,12 +365,12 @@ class PlayTagItemsAnalyticImpl @AssistedInject constructor(
 
     override fun impressToasterAtcPinnedProductCarousel() {
         Tracker.Builder()
-            .setEvent(KEY_TRACK_VIEW_CONTENT_IRIS)
+            .setEvent(Event.viewContentIris)
             .setEventAction("view - pinned lihat keranjang")
-            .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
+            .setEventCategory(EventCategory.groupChatRoom)
             .setEventLabel("$channelId - ${channelType.value}")
-            .setBusinessUnit(VAL_BUSINESS_UNIT)
-            .setCurrentSite(VAL_CURRENT_SITE)
+            .setBusinessUnit(BusinessUnit.play)
+            .setCurrentSite(CurrentSite.tokopediaMarketplace)
             .build()
             .send()
     }
@@ -405,35 +385,37 @@ class PlayTagItemsAnalyticImpl @AssistedInject constructor(
 
     private fun clickBeliButtonProductWithVariant(productId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-            KEY_TRACK_CLICK_GROUP_CHAT,
-            KEY_TRACK_GROUP_CHAT_ROOM,
-            "$KEY_TRACK_CLICK buy in bottom sheet with varian",
+            Event.clickGroupChat,
+            EventCategory.groupChatRoom,
+            "click buy in bottom sheet with varian",
             "$channelId - $productId - ${channelType.value}"
         )
     }
 
     private fun clickAtcButtonProductWithVariant(productId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-            KEY_TRACK_CLICK_GROUP_CHAT,
-            KEY_TRACK_GROUP_CHAT_ROOM,
-            "$KEY_TRACK_CLICK atc in bottom sheet with varian",
+            Event.clickGroupChat,
+            EventCategory.groupChatRoom,
+            "click atc in bottom sheet with varian",
             "$channelId - $productId - ${channelType.value}"
         )
     }
 
-    private fun clickBeliButtonProductWithNoVariant(trackingQueue: TrackingQueue,
-                                                    product: PlayProductUiModel.Product,
-                                                    sectionInfo: ProductSectionUiModel.Section,
-                                                    cartId: String,
-                                                    shopInfo: PlayPartnerInfo) {
+    private fun clickBeliButtonProductWithNoVariant(
+        trackingQueue: TrackingQueue,
+        product: PlayProductUiModel.Product,
+        sectionInfo: ProductSectionUiModel.Section,
+        cartId: String,
+        shopInfo: PlayPartnerInfo
+    ) {
         val (eventAction, eventLabel) = when (sectionInfo.config.type) {
-            ProductSectionType.Active -> Pair("$KEY_TRACK_CLICK - buy in ongoing section", generateBaseEventLabel(productId = product.id, campaignId = sectionInfo.id))
-            else -> Pair(KEY_TRACK_CLICK + "buy in bottom sheet", "$channelId - ${product.id} - ${channelType.value}")
+            ProductSectionType.Active -> Pair("click - buy in ongoing section", generateBaseEventLabel(productId = product.id, campaignId = sectionInfo.id))
+            else -> Pair("click buy in bottom sheet", "$channelId - ${product.id} - ${channelType.value}")
         }
         trackingQueue.putEETracking(
             EventModel(
                 KEY_TRACK_ADD_TO_CART,
-                KEY_TRACK_GROUP_CHAT_ROOM,
+                EventCategory.groupChatRoom,
                 eventAction,
                 eventLabel
             ),
@@ -446,11 +428,11 @@ class PlayTagItemsAnalyticImpl @AssistedInject constructor(
                 )
             ),
             hashMapOf(
-                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                KEY_USER_ID to userId,
-                KEY_IS_LOGGED_IN_STATUS to isLoggedIn,
+                Key.businessUnit to BusinessUnit.play,
+                Key.currentSite to CurrentSite.tokopediaMarketplace,
+                Key.sessionIris to TrackApp.getInstance().gtm.irisSessionId,
+                Key.userId to userId,
+                Key.isLoggedInStatus to isLoggedIn,
                 KEY_PRODUCT_ID to product.id,
                 KEY_PRODUCT_NAME to product.title,
                 KEY_PRODUCT_URL to product.applink.toString(),
@@ -459,19 +441,21 @@ class PlayTagItemsAnalyticImpl @AssistedInject constructor(
         )
     }
 
-    private fun clickAtcButtonProductWithNoVariant(trackingQueue: TrackingQueue,
-                                                   product: PlayProductUiModel.Product,
-                                                   sectionInfo: ProductSectionUiModel.Section,
-                                                   cartId: String,
-                                                   shopInfo: PlayPartnerInfo) {
+    private fun clickAtcButtonProductWithNoVariant(
+        trackingQueue: TrackingQueue,
+        product: PlayProductUiModel.Product,
+        sectionInfo: ProductSectionUiModel.Section,
+        cartId: String,
+        shopInfo: PlayPartnerInfo
+    ) {
         val (eventAction, eventLabel) = when (sectionInfo.config.type) {
-            ProductSectionType.Active -> Pair("${KEY_TRACK_CLICK} - atc in ongoing section", generateBaseEventLabel(productId = product.id, campaignId = sectionInfo.id))
-            else -> Pair(KEY_TRACK_CLICK + "atc in bottom sheet", "$channelId - ${product.id} - ${channelType.value}")
+            ProductSectionType.Active -> Pair("click - atc in ongoing section", generateBaseEventLabel(productId = product.id, campaignId = sectionInfo.id))
+            else -> Pair("click atc in bottom sheet", "$channelId - ${product.id} - ${channelType.value}")
         }
         trackingQueue.putEETracking(
             EventModel(
                 KEY_TRACK_ADD_TO_CART,
-                KEY_TRACK_GROUP_CHAT_ROOM,
+                EventCategory.groupChatRoom,
                 eventAction,
                 eventLabel
             ),
@@ -484,11 +468,11 @@ class PlayTagItemsAnalyticImpl @AssistedInject constructor(
                 )
             ),
             hashMapOf(
-                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                KEY_USER_ID to userId,
-                KEY_IS_LOGGED_IN_STATUS to isLoggedIn,
+                Key.businessUnit to BusinessUnit.play,
+                Key.currentSite to CurrentSite.tokopediaMarketplace,
+                Key.sessionIris to TrackApp.getInstance().gtm.irisSessionId,
+                Key.userId to userId,
+                Key.isLoggedInStatus to isLoggedIn,
                 KEY_PRODUCT_ID to product.id,
                 KEY_PRODUCT_NAME to product.title,
                 KEY_PRODUCT_URL to product.applink.toString(),
@@ -497,48 +481,17 @@ class PlayTagItemsAnalyticImpl @AssistedInject constructor(
         )
     }
 
-    private fun clickBeliButtonInVariant(trackingQueue: TrackingQueue,
-                                         product: PlayProductUiModel.Product,
-                                         cartId: String,
-                                         shopInfo: PlayPartnerInfo) {
+    private fun clickBeliButtonInVariant(
+        trackingQueue: TrackingQueue,
+        product: PlayProductUiModel.Product,
+        cartId: String,
+        shopInfo: PlayPartnerInfo
+    ) {
         trackingQueue.putEETracking(
             EventModel(
                 KEY_TRACK_ADD_TO_CART,
-                KEY_TRACK_GROUP_CHAT_ROOM,
-                "$KEY_TRACK_CLICK beli in varian page",
-                "$channelId - ${product.id} - ${channelType.value}"
-            ),
-            hashMapOf (
-                "ecommerce" to hashMapOf(
-                    "currencyCode" to "IDR",
-                    "add" to hashMapOf(
-                        "products" to listOf(convertProductAndShopToHashMapWithList(product, shopInfo, "/groupchat - varian page"))
-                    )
-                )
-            ),
-            hashMapOf(
-                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                KEY_USER_ID to userId,
-                KEY_IS_LOGGED_IN_STATUS to isLoggedIn,
-                KEY_PRODUCT_ID to product.id,
-                KEY_PRODUCT_NAME to product.title,
-                KEY_PRODUCT_URL to product.applink.toString(),
-                KEY_CHANNEL to channelName
-            )
-        )
-    }
-
-    private fun clickAtcButtonInVariant(trackingQueue: TrackingQueue,
-                                        product: PlayProductUiModel.Product,
-                                        cartId: String,
-                                        shopInfo: PlayPartnerInfo) {
-        trackingQueue.putEETracking(
-            EventModel(
-                KEY_TRACK_ADD_TO_CART,
-                KEY_TRACK_GROUP_CHAT_ROOM,
-                "$KEY_TRACK_CLICK atc in varian page",
+                EventCategory.groupChatRoom,
+                "click beli in varian page",
                 "$channelId - ${product.id} - ${channelType.value}"
             ),
             hashMapOf(
@@ -550,11 +503,46 @@ class PlayTagItemsAnalyticImpl @AssistedInject constructor(
                 )
             ),
             hashMapOf(
-                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                KEY_USER_ID to userId,
-                KEY_IS_LOGGED_IN_STATUS to isLoggedIn,
+                Key.businessUnit to BusinessUnit.play,
+                Key.currentSite to CurrentSite.tokopediaMarketplace,
+                Key.sessionIris to TrackApp.getInstance().gtm.irisSessionId,
+                Key.userId to userId,
+                Key.isLoggedInStatus to isLoggedIn,
+                KEY_PRODUCT_ID to product.id,
+                KEY_PRODUCT_NAME to product.title,
+                KEY_PRODUCT_URL to product.applink.toString(),
+                KEY_CHANNEL to channelName
+            )
+        )
+    }
+
+    private fun clickAtcButtonInVariant(
+        trackingQueue: TrackingQueue,
+        product: PlayProductUiModel.Product,
+        cartId: String,
+        shopInfo: PlayPartnerInfo
+    ) {
+        trackingQueue.putEETracking(
+            EventModel(
+                KEY_TRACK_ADD_TO_CART,
+                EventCategory.groupChatRoom,
+                "click atc in varian page",
+                "$channelId - ${product.id} - ${channelType.value}"
+            ),
+            hashMapOf(
+                "ecommerce" to hashMapOf(
+                    "currencyCode" to "IDR",
+                    "add" to hashMapOf(
+                        "products" to listOf(convertProductAndShopToHashMapWithList(product, shopInfo, "/groupchat - varian page"))
+                    )
+                )
+            ),
+            hashMapOf(
+                Key.businessUnit to BusinessUnit.play,
+                Key.currentSite to CurrentSite.tokopediaMarketplace,
+                Key.sessionIris to TrackApp.getInstance().gtm.irisSessionId,
+                Key.userId to userId,
+                Key.isLoggedInStatus to isLoggedIn,
                 KEY_PRODUCT_ID to product.id,
                 KEY_PRODUCT_NAME to product.title,
                 KEY_PRODUCT_URL to product.applink.toString(),
@@ -567,7 +555,7 @@ class PlayTagItemsAnalyticImpl @AssistedInject constructor(
         return hashMapOf(
             "name" to product.title,
             "id" to product.id,
-            "price" to when(product.price) {
+            "price" to when (product.price) {
                 is DiscountedPrice -> product.price.discountedPriceNumber
                 is OriginalPrice -> product.price.priceNumber
             },
@@ -583,7 +571,7 @@ class PlayTagItemsAnalyticImpl @AssistedInject constructor(
         return hashMapOf(
             "name" to product.title,
             "id" to product.id,
-            "price" to when(product.price) {
+            "price" to when (product.price) {
                 is DiscountedPrice -> product.price.discountedPriceNumber
                 is OriginalPrice -> product.price.priceNumber
             },
@@ -601,7 +589,7 @@ class PlayTagItemsAnalyticImpl @AssistedInject constructor(
 
     private fun getNewImpressionsEcommerce(
         product: PlayProductUiModel.Product,
-        position: Int,
+        position: Int
     ): Map<String, Any> {
         return mapOf(
             KEY_CURRENCY_CODE to VAL_CURRENCY_CODE,
@@ -611,7 +599,7 @@ class PlayTagItemsAnalyticImpl @AssistedInject constructor(
 
     private fun getNewClickEcommerce(
         product: PlayProductUiModel.Product,
-        position: Int,
+        position: Int
     ): Map<String, Any> {
         return mapOf(
             KEY_CURRENCY_CODE to VAL_CURRENCY_CODE,
@@ -625,7 +613,7 @@ class PlayTagItemsAnalyticImpl @AssistedInject constructor(
         product: PlayProductUiModel.Product,
         cartId: String,
         quantity: Int,
-        dimension40: String,
+        dimension40: String
     ): Map<String, Any> {
         return mapOf(
             KEY_CURRENCY_CODE to VAL_CURRENCY_CODE,
@@ -644,7 +632,7 @@ class PlayTagItemsAnalyticImpl @AssistedInject constructor(
                         KEY_QUANTITY to quantity.toString(),
                         KEY_SHOP_ID to product.shopId,
                         KEY_SHOP_NAME to "",
-                        KEY_SHOP_TYPE to "",
+                        KEY_SHOP_TYPE to ""
                     )
                 )
             )
@@ -653,7 +641,7 @@ class PlayTagItemsAnalyticImpl @AssistedInject constructor(
 
     private fun getNewProductEcommerce(
         product: PlayProductUiModel.Product,
-        position: Int,
+        position: Int
     ) = mapOf(
         KEY_INDEX to (position + 1).toString(),
         KEY_ITEM_BRAND to "",

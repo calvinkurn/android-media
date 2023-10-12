@@ -13,12 +13,10 @@ object BalanceAtf2Util {
         return totalContentWidth / totalItems
     }
 
-    fun getBalanceTextWidth(context: Context, isBalance: Boolean): Int {
-        val containerMaxWidth = if (isBalance) {
-            context.resources.getDimensionPixelSize(com.tokopedia.home.R.dimen.balance_atf2_item_max_width_balance)
-        } else {
-            context.resources.getDimensionPixelSize(com.tokopedia.home.R.dimen.balance_atf2_item_max_width_other)
-        }
+    fun getBalanceTextWidth(context: Context): Int {
+        val containerMaxWidth =
+            context.resources.getDimensionPixelSize(com.tokopedia.home.R.dimen.balance_atf2_item_max_width)
+
         val paddings = context.resources.getDimensionPixelSize(com.tokopedia.home.R.dimen.balance_inner_left_padding) +
             context.resources.getDimensionPixelSize(com.tokopedia.home.R.dimen.balance_inner_right_padding) +
             context.resources.getDimensionPixelSize(com.tokopedia.home.R.dimen.balance_inner_content_padding)

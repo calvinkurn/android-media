@@ -39,6 +39,7 @@ class AffiliateDiscoBannerVH(
                 commison = element?.article?.commission?.percentage.toString(),
                 type = PAGE_TYPE_CAMPAIGN,
                 position = bindingAdapterPosition,
+                appUrl = element?.article?.appUrl.orEmpty(),
                 ssaInfo = AffiliatePromotionBottomSheetParams.SSAInfo(
                     true,
                     "",

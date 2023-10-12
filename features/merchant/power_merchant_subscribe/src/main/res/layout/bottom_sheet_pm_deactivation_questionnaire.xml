@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:paddingBottom="8dp"
         android:text="@string/pm_label_cancellation_questionnaire_intro_title"
-        android:textColor="@color/Unify_N700"
+        android:textColor="@color/Unify_NN950"
         app:typographyType="heading_3" />
 
     <androidx.core.widget.NestedScrollView
@@ -43,7 +43,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="16dp"
-                android:background="@color/Unify_N75" />
+                android:background="@color/Unify_NN50" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvPmQuestionnaireList"

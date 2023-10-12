@@ -2,6 +2,7 @@
     <string name="internal_scheme" translatable="false">tokopedia-android-internal</string>
 
     <string name="main_nav_args_source_key">pageSource</string>
+    <string name="main_nav_args_source_path_key">pageSourcePath</string>
 
     <string name="content_desc_review">review star</string>
 
@@ -17,19 +18,10 @@
 
     <string name="menu_user_menu_wishlist">Wishlist</string>
     <string name="menu_user_menu_favorite_shop">Toko yang Di-follow</string>
-    <string name="menu_user_menu_recent_view">Terakhir Dilihat</string>
     <string name="menu_user_menu_subscription">Langganan</string>
     <string name="menu_user_menu_complain">Pesanan Dikomplain</string>
     <string name="menu_user_menu_tokopedia_care">Bantuan Tokopedia Care</string>
     <string name="menu_user_menu_qr_code">Scan Kode QR</string>
-
-    <string name="menu_user_menu_wishlist_tracker_name">Wishlist</string>
-    <string name="menu_user_menu_favorite_shop_tracker_name">Favorite Shop</string>
-    <string name="menu_user_menu_recent_view_tracker_name">Recent View</string>
-    <string name="menu_user_menu_subscription_tracker_name">Subscription</string>
-    <string name="menu_user_menu_complain_tracker_name">Complain</string>
-    <string name="menu_user_menu_tokopedia_care_tracker_name">Bantuan Tokopedia Care</string>
-    <string name="menu_user_menu_qr_code_tracker_name">Scan QR Code</string>
 
     <string name="title_transaction_section">Aktivitas saya</string>
     <string name="title_all_category_section">Semua Kategori</string>
@@ -76,9 +68,7 @@
 
     <string name="empty_state_wishlist">Punya produk incaran? Tandai pakai ikon 💚, nanti akan muncul disini</string>
 
-    <string name="empty_state_favorite_shop">Follow toko yang kamu suka, biar bisa dicek lagi lewat sini!</string>
     <string name="content_desc_image_empty_wishlist">image empty wishlist</string>
-    <string name="content_desc_image_favorite_shop">image favorite shop</string>
     <string name="content_desc_image_wishlist">image wishlist</string>
     <string name="content_desc_image_shop_badge">image shop badge</string>
 
@@ -91,5 +81,4 @@
     <string name="transaction_view_all_desc">Transaksi lainnya</string>
     <string name="review_view_all_desc">Ulasan lainnya</string>
     <string name="wishlist_view_all_desc">Wishlist lainnya</string>
-    <string name="favorite_shop_view_all_desc">Toko lainnya</string>
 </resources>

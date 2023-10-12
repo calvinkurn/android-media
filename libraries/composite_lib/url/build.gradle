@@ -17,8 +17,13 @@ buildscript {
 project.ext {
     artifactId = 'url'
     groupId = 'com.tokopedia.url'
-    versionName = "1.0.19"
+    versionName = "1.0.22"
     artifactName = "url-debug"
+}
+
+android {
+    namespace 'com.tokopedia.url'
+    testNamespace 'com.tokopedia.url.test'
 }
 
 dependencies {

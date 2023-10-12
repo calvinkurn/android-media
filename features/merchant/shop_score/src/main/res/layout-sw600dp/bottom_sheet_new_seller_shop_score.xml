@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:text="@string/title_new_seller_end_tenure_pop_up"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:layout_constraintStart_toEndOf="@id/guidelineVerticalNewSeller"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/ivNewSellerIllustration"
@@ -45,7 +45,7 @@
         app:layout_constraintStart_toStartOf="@id/tvTitleNewSellerEndTenure"
         app:layout_constraintTop_toBottomOf="@id/tvTitleNewSellerEndTenure"
         app:typographyType="body_2"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         android:text="@string/desc_result_new_seller_end_tenure_pop_up" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -54,7 +54,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         app:typographyType="heading_2"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         tools:text="Level 1"
         app:layout_constraintStart_toStartOf="@id/tvTitleNewSellerEndTenure"
         app:layout_constraintTop_toBottomOf="@id/tvResultNewSellerEndTenure"/>
@@ -85,7 +85,7 @@
         android:id="@+id/separatorLine"
         android:layout_width="@dimen/dp_1"
         android:layout_height="@dimen/dp_28"
-        android:background="@color/Unify_N75"
+        android:background="@color/Unify_NN50"
         app:layout_constraintStart_toEndOf="@id/guidelineNewSeller"
         app:layout_constraintTop_toTopOf="@id/tvShopLevel"
         app:layout_constraintBottom_toBottomOf="@id/tvShopLevel"/>
@@ -95,7 +95,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:layout_constraintStart_toEndOf="@id/guidelineNewSeller"
         app:layout_constraintTop_toTopOf="@id/tvShopLevel"
         app:typographyType="heading_2"
@@ -106,7 +106,7 @@
         android:id="@+id/tvShopScoreValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         android:layout_marginStart="4dp"
         app:layout_constraintStart_toEndOf="@id/tvShopScoreLabel"
         app:layout_constraintTop_toTopOf="@id/tvShopLevel"
@@ -120,7 +120,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="2dp"
         android:text="@string/maximum_score_performance"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         android:layout_marginTop="4dp"
         app:layout_constraintStart_toEndOf="@id/tvShopScoreValue"
         app:layout_constraintTop_toTopOf="@id/tvShopScoreValue"
@@ -148,7 +148,7 @@
         app:layout_constraintEnd_toEndOf="@id/tvTitleNewSellerEndTenure"
         app:typographyType="body_2"
         tools:visibility="gone"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         android:text="@string/title_tips_increase_performance"/>
 
     <com.tokopedia.unifycomponents.ticker.Ticker

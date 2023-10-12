@@ -1,7 +1,5 @@
 package com.tokopedia.chatbot.attachinvoice.view.viewmodel
 
-import com.tokopedia.imageassets.TokopediaImageUrl
-
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -15,14 +13,13 @@ import com.tokopedia.chatbot.attachinvoice.domain.usecase.GetFilteredInvoiceList
 import com.tokopedia.chatbot.attachinvoice.view.model.EmptyTransactionInvoiceUiModel
 import com.tokopedia.chatbot.attachinvoice.view.model.TransactionInvoiceUiModel
 import com.tokopedia.chatbot.domain.pojo.invoicelist.api.GetInvoiceListPojo
+import com.tokopedia.imageassets.TokopediaImageUrl.INVOICE_EMPTY_URL
+import com.tokopedia.imageassets.TokopediaImageUrl.INVOICE_ERROR_URL
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
-
-private const val INVOICE_ERROR_URL = TokopediaImageUrl.INVOICE_ERROR_URL
-private const val INVOICE_EMPTY_URL = TokopediaImageUrl.INVOICE_EMPTY_URL
 
 class TransactionInvoiceListViewModel @Inject constructor(
     private val userSession: UserSessionInterface,
@@ -101,7 +98,9 @@ class TransactionInvoiceListViewModel @Inject constructor(
                     it.attributes.description, it.attributes.createTime, it.attributes.statusId,
                     it.attributes.status, it.attributes.totalAmount, it.attributes.invoiceUrl,
                     it.attributes.imageUrl, userSession.userId, userSession.name, it.attributes.code,
-                    it.typeId, it.type, it.attributes.color))
+                    it.typeId, it.type, it.attributes.color
+                )
+            )
         }
         return result
     }

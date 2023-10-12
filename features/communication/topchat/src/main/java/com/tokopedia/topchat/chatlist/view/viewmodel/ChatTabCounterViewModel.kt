@@ -3,13 +3,14 @@ package com.tokopedia.topchat.chatlist.view.viewmodel
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.topchat.chatlist.domain.pojo.NotificationsPojo
 import com.tokopedia.topchat.chatlist.domain.usecase.GetChatNotificationUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -19,20 +20,20 @@ import javax.inject.Inject
 
 class ChatTabCounterViewModel @Inject constructor(
     private val getChatNotification: GetChatNotificationUseCase,
-    dispatcher: CoroutineDispatcher
-) : BaseViewModel(dispatcher) {
+    dispatcher: CoroutineDispatchers
+) : BaseViewModel(dispatcher.main) {
 
     private val _mutateChatNotification = MutableLiveData<Result<NotificationsPojo>>()
     val chatNotifCounter: LiveData<Result<NotificationsPojo>>
         get() = _mutateChatNotification
 
     fun queryGetNotifCounter(shopId: String) {
-        launch {
+        viewModelScope.launch {
             try {
                 val result = getChatNotification(shopId)
                 _mutateChatNotification.value = Success(result)
-            } catch (e: Exception) {
-                _mutateChatNotification.value = Fail(e)
+            } catch (throwable: Throwable) {
+                _mutateChatNotification.value = Fail(throwable)
             }
         }
     }
@@ -52,7 +53,7 @@ class ChatTabCounterViewModel @Inject constructor(
     }
 
     companion object {
-        private const val PREF_CHAT_LIST_TAB = "chatlist_tab_activity.pref"
-        private const val KEY_LAST_POSITION = "key_last_seen_tab_position"
+        const val PREF_CHAT_LIST_TAB = "chatlist_tab_activity.pref"
+        const val KEY_LAST_POSITION = "key_last_seen_tab_position"
     }
 }

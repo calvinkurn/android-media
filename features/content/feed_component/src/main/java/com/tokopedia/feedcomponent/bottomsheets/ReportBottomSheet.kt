@@ -42,7 +42,7 @@ class ReportBottomSheet : BottomSheetUnify() {
     ): View? {
         val contentView = View.inflate(context, R.layout.bottomsheet_report, null)
         setChild(contentView)
-        setTitle(getString(R.string.feed_report_comment))
+        setTitle(getString(com.tokopedia.content.common.R.string.feed_report_comment))
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -54,16 +54,16 @@ class ReportBottomSheet : BottomSheetUnify() {
     private fun getReason() {
         when (isClicked) {
             TYPE1 -> {
-                reasonType = getString(R.string.feed_common_reason_type_spam)
-                reasonDesc = getString(R.string.feed_common_reason_desc_spam)
+                reasonType = getString(com.tokopedia.content.common.R.string.feed_common_reason_type_spam)
+                reasonDesc = getString(com.tokopedia.content.common.R.string.feed_common_reason_desc_spam)
             }
             TYPE2 -> {
-                reasonType = getString(R.string.feed_common_reason_type_abuse)
-                reasonDesc = getString(R.string.feed_common_reason_desc_abuse)
+                reasonType = getString(com.tokopedia.content.common.R.string.feed_common_reason_type_abuse)
+                reasonDesc = getString(com.tokopedia.content.common.R.string.feed_common_reason_desc_abuse)
             }
             TYPE3 -> {
-                reasonType = getString(R.string.feed_common_reason_type_inappropriate)
-                reasonDesc = getString(R.string.feed_common_reason_desc_inappropriate)
+                reasonType = getString(com.tokopedia.content.common.R.string.feed_common_reason_type_inappropriate)
+                reasonDesc = getString(com.tokopedia.content.common.R.string.feed_common_reason_desc_inappropriate)
             }
         }
     }

@@ -32,9 +32,9 @@ class VideoPictureAdapter(
         diffResult.dispatchUpdatesTo(this)
     }
 
-    fun isFirstPicture(position: Int): Boolean {
+    fun isPicture(position: Int): Boolean {
         val item = currentList.getOrNull(position)
-        return item != null && !item.isVideoType() && position == getFirstPicturePosition()
+        return item != null && !item.isVideoType()
     }
 
     override fun onCreateViewHolder(

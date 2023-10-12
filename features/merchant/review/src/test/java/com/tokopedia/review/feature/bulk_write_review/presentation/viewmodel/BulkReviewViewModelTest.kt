@@ -46,7 +46,7 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
         runCollectingBulkReviewPageUiState { uiStates ->
             mockErrorGetFormResult()
             mockSuccessBadRatingCategoryResult()
-            viewModel.getData()
+            viewModel.getData(SAMPLE_INVOICE, SAMPLE_UTM_SOURCE)
             assertTrue(uiStates.last() is BulkReviewPageUiState.Error)
         }
 
@@ -55,14 +55,14 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
         runCollectingBulkReviewPageUiState { uiStates ->
             mockSuccessGetFormResult()
             mockErrorBadRatingCategoryResult()
-            viewModel.getData()
+            viewModel.getData(SAMPLE_INVOICE, SAMPLE_UTM_SOURCE)
             assertTrue(uiStates.last() is BulkReviewPageUiState.Error)
         }
 
     @Test
     fun `getData should execute getFormUseCase once`() = runCollectingBulkReviewPageUiState {
         doSuccessGetInitialData()
-        coVerify(exactly = 1) { getFormUseCase(Unit) }
+        coVerify(exactly = 1) { getFormUseCase(any()) }
     }
 
     @Test
@@ -1980,7 +1980,11 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
         runCollectingBulkReviewPageUiState {
             mockSuccessGetFormResult()
             mockSuccessBadRatingCategoryResult()
-            doRestoreInstanceState { verify(inverse = true) { it.getData() } }
+            doRestoreInstanceState { verify(inverse = true) { it.getData(
+                SAMPLE_INVOICE,
+                SAMPLE_UTM_SOURCE
+            )
+            } }
         }
 
     @Test
@@ -2001,7 +2005,11 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
             mockSuccessBadRatingCategoryResult()
             doRestoreInstanceState(
                 mockGetFormRequestState = null
-            ) { verify(exactly = 1) { it.getData() } }
+            ) { verify(exactly = 1) { it.getData(
+                SAMPLE_INVOICE,
+                SAMPLE_UTM_SOURCE
+            )
+            } }
         }
 
     @Test
@@ -2011,7 +2019,11 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
             mockSuccessBadRatingCategoryResult()
             doRestoreInstanceState(
                 mockGetBadRatingCategoryRequestState = null
-            ) { verify(exactly = 1) { it.getData() } }
+            ) { verify(exactly = 1) { it.getData(
+                SAMPLE_INVOICE,
+                SAMPLE_UTM_SOURCE
+            )
+            } }
         }
 
     @Test
@@ -2021,7 +2033,11 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
             mockSuccessBadRatingCategoryResult()
             doRestoreInstanceState(
                 mockSubmitBulkReviewRequestState = null
-            ) { verify(exactly = 1) { it.getData() } }
+            ) { verify(exactly = 1) { it.getData(
+                SAMPLE_INVOICE,
+                SAMPLE_UTM_SOURCE
+            )
+            } }
         }
 
     @Test
@@ -2031,7 +2047,11 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
             mockSuccessBadRatingCategoryResult()
             doRestoreInstanceState(
                 mockRemovedReviewItemsInboxID = null
-            ) { verify(exactly = 1) { it.getData() } }
+            ) { verify(exactly = 1) { it.getData(
+                SAMPLE_INVOICE,
+                SAMPLE_UTM_SOURCE
+            )
+            } }
         }
 
     @Test
@@ -2041,7 +2061,11 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
             mockSuccessBadRatingCategoryResult()
             doRestoreInstanceState(
                 mockReviewItemsRating = null
-            ) { verify(exactly = 1) { it.getData() } }
+            ) { verify(exactly = 1) { it.getData(
+                SAMPLE_INVOICE,
+                SAMPLE_UTM_SOURCE
+            )
+            } }
         }
 
     @Test
@@ -2051,7 +2075,11 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
             mockSuccessBadRatingCategoryResult()
             doRestoreInstanceState(
                 mockReviewItemsBadRatingCategory = null
-            ) { verify(exactly = 1) { it.getData() } }
+            ) { verify(exactly = 1) { it.getData(
+                SAMPLE_INVOICE,
+                SAMPLE_UTM_SOURCE
+            )
+            } }
         }
 
     @Test
@@ -2061,7 +2089,11 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
             mockSuccessBadRatingCategoryResult()
             doRestoreInstanceState(
                 mockReviewItemsTestimony = null
-            ) { verify(exactly = 1) { it.getData() } }
+            ) { verify(exactly = 1) { it.getData(
+                SAMPLE_INVOICE,
+                SAMPLE_UTM_SOURCE
+            )
+            } }
         }
 
     @Test
@@ -2071,7 +2103,11 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
             mockSuccessBadRatingCategoryResult()
             doRestoreInstanceState(
                 mockReviewItemsMediaUris = null
-            ) { verify(exactly = 1) { it.getData() } }
+            ) { verify(exactly = 1) { it.getData(
+                SAMPLE_INVOICE,
+                SAMPLE_UTM_SOURCE
+            )
+            } }
         }
 
     @Test
@@ -2081,7 +2117,11 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
             mockSuccessBadRatingCategoryResult()
             doRestoreInstanceState(
                 mockReviewItemsMediaUploadResults = null
-            ) { verify(exactly = 1) { it.getData() } }
+            ) { verify(exactly = 1) { it.getData(
+                SAMPLE_INVOICE,
+                SAMPLE_UTM_SOURCE
+            )
+            } }
         }
 
     @Test
@@ -2091,7 +2131,11 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
             mockSuccessBadRatingCategoryResult()
             doRestoreInstanceState(
                 mockReviewItemsMediaUploadBatchNumber = null
-            ) { verify(exactly = 1) { it.getData() } }
+            ) { verify(exactly = 1) { it.getData(
+                SAMPLE_INVOICE,
+                SAMPLE_UTM_SOURCE
+            )
+            } }
         }
 
     @Test
@@ -2101,7 +2145,11 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
             mockSuccessBadRatingCategoryResult()
             doRestoreInstanceState(
                 mockAnonymous = null
-            ) { verify(exactly = 1) { it.getData() } }
+            ) { verify(exactly = 1) { it.getData(
+                SAMPLE_INVOICE,
+                SAMPLE_UTM_SOURCE
+            )
+            } }
         }
 
     @Test
@@ -2111,7 +2159,11 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
             mockSuccessBadRatingCategoryResult()
             doRestoreInstanceState(
                 mockShouldSubmitReview = null
-            ) { verify(exactly = 1) { it.getData() } }
+            ) { verify(exactly = 1) { it.getData(
+                SAMPLE_INVOICE,
+                SAMPLE_UTM_SOURCE
+            )
+            } }
         }
 
     @Test
@@ -2121,7 +2173,11 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
             mockSuccessBadRatingCategoryResult()
             doRestoreInstanceState(
                 mockActiveMediaPickerInboxID = null
-            ) { verify(exactly = 1) { it.getData() } }
+            ) { verify(exactly = 1) { it.getData(
+                SAMPLE_INVOICE,
+                SAMPLE_UTM_SOURCE
+            )
+            } }
         }
 
     @Test

@@ -7,8 +7,8 @@ import com.tokopedia.play.analytic.PlayAnalytic2
 import com.tokopedia.play.analytic.PlayNewAnalytic
 import com.tokopedia.play.channel.ui.component.KebabIconUiComponent
 import com.tokopedia.play.channel.ui.component.ProductCarouselUiComponent
-import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.view.type.ProductAction
+import com.tokopedia.play.view.uimodel.ExploreWidgetType
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.event.AtcSuccessEvent
 import com.tokopedia.play.view.uimodel.event.BuySuccessEvent
@@ -16,12 +16,12 @@ import com.tokopedia.play.view.uimodel.event.OCCSuccessEvent
 import com.tokopedia.play.view.uimodel.event.PlayViewerNewUiEvent
 import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
 import com.tokopedia.play.view.viewcomponent.ExploreWidgetViewComponent
+import com.tokopedia.play.widget.ui.model.PartnerType
 import com.tokopedia.play_common.eventbus.EventBus
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -79,8 +79,14 @@ class PlayChannelAnalyticManager @Inject constructor(
                     }
                     KebabIconUiComponent.Event.OnClicked -> analytic.clickKebabMenu()
                     KebabIconUiComponent.Event.OnImpressed -> analytic2?.impressKebab()
-                    ExploreWidgetViewComponent.Event.OnImpressed -> analytic2?.impressExploreIcon()
-                    ExploreWidgetViewComponent.Event.OnClicked -> analytic2?.clickExploreIcon()
+                    is ExploreWidgetViewComponent.Event.OnImpressed -> {
+                        val type = if (it.widgetInfo.categoryWidgetConfig.hasCategory) ExploreWidgetType.Category else ExploreWidgetType.Default
+                        analytic2?.impressExploreIcon(it.widgetInfo, type)
+                    }
+                    is ExploreWidgetViewComponent.Event.OnClicked -> {
+                        val type = if (it.widgetInfo.categoryWidgetConfig.hasCategory) ExploreWidgetType.Category else ExploreWidgetType.Default
+                        analytic2?.clickExploreIcon(it.widgetInfo, type)
+                    }
                 }
             }
         }

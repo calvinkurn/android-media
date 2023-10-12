@@ -20,17 +20,21 @@ class SellerMenuTracker(
 
     companion object {
 
+        private const val EVENT_TRACKER_ID_KEYWORD = "trackerID"
+
         // name
         private const val EVENT_CLICK_SHOP_ACCOUNT = "clickShopAccount"
         private const val EVENT_CLICK_SHOP_SETTING = "clickShopSetting"
         private const val EVENT_CLICK_TOP_NAV = "clickTopNav"
         private const val EVENT_VIEW_SHOP_ACCOUNT = "viewShopAccountIris"
+        private const val EVENT_CLICK_TOPADS = "clickTopAds"
 
         // category
         private const val CATEGORY_MA_SHOP_ACCOUNT = "ma - shop account"
         private const val CATEGORY_SETTINGS = "settings"
         private const val CATEGORY_TOP_NAV = "top nav"
         private const val CATEGORY_SHOP_SETTING = "shopSetting"
+        private const val CATEGORY_OTHERS_TAB = "others tab"
 
         // action
         private const val ACTION_CLICK_SHOP_ACCOUNT = "click shop account"
@@ -65,6 +69,7 @@ class SellerMenuTracker(
         private const val ACTION_CLICK_SHIPPING = "click shop settings - atur layanan pengiriman"
         private const val ACTION_CLICK_NOTIFICATION_SETTINGS = "click shop settings - atur notifikasi penjual"
         private const val ACTION_CLICK_POWER_MERCHANT = "clickPowerMerchant"
+        private const val ACTION_CLICK_IKLAN_TOPADS = "click iklan topads"
 
         // label
         private const val LABEL_CREATE_SHOP = "create shop"
@@ -103,6 +108,9 @@ class SellerMenuTracker(
         const val IMPRESSION_SHOP_SCORE_PERFORMANCE = "impression - skor performa toko"
         const val VIEW_SHOP_SCORE_IRIS = "viewShopScoreIris"
         const val NEW_SELLER = "new seller -"
+
+        // event tracker id
+        private const val EVENT_CLICK_IKLAN_TOPADS_TRACKER_ID = "43164"
     }
 
     fun sendEventViewShopAccount(shopInfo: SettingShopInfoUiModel) {
@@ -420,5 +428,16 @@ class SellerMenuTracker(
             is ShopType.OfficialStore -> SHOP_STATUS_OS
             else -> UNDEFINED
         }
+    }
+
+    fun sendEventClickedTopAdsMenu(){
+        val event = TrackAppUtils.gtmData(
+            EVENT_CLICK_TOPADS,
+            CATEGORY_OTHERS_TAB,
+            ACTION_CLICK_IKLAN_TOPADS,
+            ""
+        )
+        event[EVENT_TRACKER_ID_KEYWORD] = EVENT_CLICK_IKLAN_TOPADS_TRACKER_ID
+        analytics.sendGeneralEvent(event)
     }
 }

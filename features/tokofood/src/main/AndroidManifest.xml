@@ -61,44 +61,6 @@
 
             </intent-filter>
         </activity>
-        <activity
-            android:theme="@style/Theme.WhiteUnify"
-            android:exported="false"
-            android:name=".common.presentation.view.BaseTokofoodActivityOld"
-            android:screenOrientation="portrait"
-            android:label="@string/title_tokofood">
-            <intent-filter>
-                <action android:name="com.tokopedia.internal.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="@string/host_food"
-                    android:path="@string/path_tokofood_home_old"
-                    android:scheme="@string/internal_scheme" />
-
-                <data
-                    android:host="@string/host_food"
-                    android:path="@string/path_tokofood_merchant_old"
-                    android:scheme="@string/internal_scheme" />
-
-                <data
-                    android:host="@string/host_food"
-                    android:path="@string/path_tokofood_category_old"
-                    android:scheme="@string/internal_scheme" />
-
-                <data
-                    android:host="@string/host_food"
-                    android:path="@string/path_tokofood_purchase_old"
-                    android:scheme="@string/internal_scheme" />
-
-                <data
-                    android:host="@string/host_food"
-                    android:path="@string/path_tokofood_search_old"
-                    android:scheme="@string/internal_scheme" />
-
-            </intent-filter>
-        </activity>
 
     </application>
 

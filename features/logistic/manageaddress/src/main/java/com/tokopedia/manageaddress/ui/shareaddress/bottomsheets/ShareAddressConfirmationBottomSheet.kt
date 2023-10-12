@@ -84,6 +84,9 @@ class ShareAddressConfirmationBottomSheet : BottomSheetUnify() {
             binding.btnDisagree.isLoading =
                 it is ShareAddressConfirmationViewModel.LoadingState.DisagreeLoading
         }
+        viewModel.leavePageEvent.observe(viewLifecycleOwner) {
+            mListener?.leavePage()
+        }
     }
 
     override fun onCreateView(
@@ -195,7 +198,7 @@ class ShareAddressConfirmationBottomSheet : BottomSheetUnify() {
                         ds.isUnderlineText = false
                         ds.color = ContextCompat.getColor(
                             context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_G500
+                            com.tokopedia.unifyprinciples.R.color.Unify_GN500
                         )
                     }
                 },
@@ -210,6 +213,7 @@ class ShareAddressConfirmationBottomSheet : BottomSheetUnify() {
 
     interface Listener {
         fun showToast(isError: Boolean, msg: String)
+        fun leavePage()
     }
 
     companion object {

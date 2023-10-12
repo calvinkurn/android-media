@@ -14,10 +14,6 @@ public class SnackbarRetry {
 
     private Snackbar snackBar;
 
-    public SnackbarRetry(Snackbar snackbar, final NetworkErrorHelper.RetryClickedListener listener) {
-        this(snackbar, snackbar.getContext().getString(R.string.title_try_again), listener);
-    }
-
     public SnackbarRetry(Snackbar snackbar, String actionText, final NetworkErrorHelper.RetryClickedListener listener) {
         this.snackBar = snackbar;
         snackBar.setAction(actionText, new View.OnClickListener() {

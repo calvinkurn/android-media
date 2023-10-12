@@ -10,6 +10,7 @@ open class ShopScorePrefManager(@ApplicationContext private val context: Context
         private const val HAS_FINISH_COACH_MARK = "finishCoachMarkShopScore"
         private const val IS_SHOW_POP_UP_END_TENURE = "isShowPopupEndTenure"
         private const val IS_NEED_SHOW_TICKER_REACTIVATED = "isNeedShowTickerReactivated"
+        private const val LATEST_ONGOING_PENALTY_ID = "latestOngoingPenaltyId"
     }
 
     private val sharedPref by lazy {
@@ -20,12 +21,21 @@ open class ShopScorePrefManager(@ApplicationContext private val context: Context
         return sharedPref.getBoolean(key, defaultValue)
     }
 
+    private fun getString(key: String): String? {
+        return sharedPref.getString(key, null)
+    }
+
     private fun putBoolean(key: String, value: Boolean) {
         val editor = sharedPref.edit()
         editor.putBoolean(key, value)
         editor.apply()
     }
 
+    private fun putString(key: String, value: String) {
+        val editor = sharedPref.edit()
+        editor.putString(key, value)
+        editor.apply()
+    }
 
     fun setFinishCoachMark(value: Boolean) {
         putBoolean(HAS_FINISH_COACH_MARK, value)
@@ -39,9 +49,15 @@ open class ShopScorePrefManager(@ApplicationContext private val context: Context
         putBoolean(IS_NEED_SHOW_TICKER_REACTIVATED, value)
     }
 
+    fun setLatestOngoingPenaltyId(value: String) {
+        putString(LATEST_ONGOING_PENALTY_ID, value)
+    }
+
     fun getIsShowPopupEndTenure() = getBoolean(IS_SHOW_POP_UP_END_TENURE)
 
     fun getFinishCoachMark() = getBoolean(HAS_FINISH_COACH_MARK, false)
 
     fun getIsNeedShowTickerReactivated() = getBoolean(IS_NEED_SHOW_TICKER_REACTIVATED)
+
+    fun getLatestOngoingPenaltyId() = getString(LATEST_ONGOING_PENALTY_ID)
 }

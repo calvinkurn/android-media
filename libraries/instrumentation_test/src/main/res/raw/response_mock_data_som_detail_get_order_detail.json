@@ -56,14 +56,6 @@
           "awb_text_color": "",
           "awb_upload_url": ""
         },
-        "shipment_change": {
-          "id": 0,
-          "name": "",
-          "product_id": 0,
-          "product_name": "",
-          "is_same_day": 0,
-          "awb": ""
-        },
         "booking_info": {
           "driver": {
             "name": "",

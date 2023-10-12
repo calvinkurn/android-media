@@ -19,17 +19,21 @@ import com.tokopedia.topads.common.constant.TopAdsFeature
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.internal.ParamObject.AD_TYPE_SHOP_ADS
 import com.tokopedia.topads.common.data.model.WhiteListUserResponse
+import com.tokopedia.topads.common.recommendation.RecommendationWidget
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
 import com.tokopedia.topads.dashboard.data.model.DataStatistic
 import com.tokopedia.topads.dashboard.data.model.FragmentTabItem
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsDashboardBasePagerAdapter
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsBaseTabFragment
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsDashDeletedGroupFragment
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsDashStatisticFragment
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsProductIklanFragment
+import com.tokopedia.topads.dashboard.view.listener.RecommendationWidgetCTAListener
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifyprinciples.Typography
@@ -53,8 +57,10 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
     private var hariIni: ConstraintLayout? = null
     private var pager: ViewPager? = null
     private var headlineAdsViePager: ViewPager? = null
-    private var headlineTabLayout: TabsUnify?=null
+    private var headlineTabLayout: TabsUnify? = null
     private var noTabSpace: View? = null
+    private var recommendationWidget: RecommendationWidget? = null
+    private var recommendationWidgetCTAListener: RecommendationWidgetCTAListener? = null
 
     @Inject
     lateinit var presenter: TopAdsDashboardPresenter
@@ -91,6 +97,7 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
         appBarLayout = view.findViewById(R.id.app_bar_layout_2)
         hariIni = view.findViewById(R.id.hari_ini)
         pager = view.findViewById(R.id.pager)
+        recommendationWidget = view.findViewById(R.id.insightCentreEntryPointHeadline)
     }
 
     override fun getChildScreenName(): String {
@@ -111,6 +118,17 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
             }
         }
         loadStatisticsData()
+    }
+
+    private fun setUpObserver() {
+        presenter.groupAdsInsight.observe(viewLifecycleOwner) {
+            if (it is TopAdsListAllInsightState.Success) {
+                recommendationWidget?.renderWidget(it.data.remainingAdsGroup, it.data.totalAdsGroup)
+                recommendationWidget?.binding?.widgetCTAButton?.setOnClickListener {
+                    recommendationWidgetCTAListener?.onWidgetCTAClick()
+                }
+            }
+        }
     }
 
     override fun renderGraph() {
@@ -150,6 +168,8 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
                 }
             }
         })
+        presenter.getAdGroupWithInsight(RecommendationConstants.HEADLINE_KEY)
+        setUpObserver()
     }
 
     private fun onSuccessWhiteListing(response: WhiteListUserResponse.TopAdsGetShopWhitelistedFeature) {
@@ -287,6 +307,10 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
         super.onAttach(context)
         if (context is AppBarActionHeadline)
             collapseStateCallBack = context
+
+        if (context is RecommendationWidgetCTAListener){
+            recommendationWidgetCTAListener = context
+        }
     }
 
     override fun onDetach() {

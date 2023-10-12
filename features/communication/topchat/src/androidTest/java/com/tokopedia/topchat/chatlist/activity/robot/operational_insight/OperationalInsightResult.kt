@@ -12,21 +12,27 @@ import com.tokopedia.topchat.matchers.withRecyclerView
 object OperationalInsightResult {
 
     fun assertOperationalInsightTickerVisible() {
-        withRecyclerView(R.id.recycler_view)
-            .atPositionOnView(0, R.id.layout_ticker_chat_performance)
-            .matches(isDisplayed())
+        onView(
+            withRecyclerView(R.id.recycler_view)
+                .atPositionOnView(0, R.id.layout_ticker_chat_performance)
+        )
+            .check(matches(isDisplayed()))
     }
 
     fun assertOperationalInsightTickerText(message: String) {
-        withRecyclerView(R.id.recycler_view)
-            .atPositionOnView(0, R.id.tv_ticker_chat_performance)
-            .matches(withText(message))
+        onView(
+            withRecyclerView(R.id.recycler_view)
+                .atPositionOnView(0, R.id.tv_ticker_chat_performance)
+        )
+            .check(matches(withText(message)))
     }
 
     fun assertOperationalInsightTickerNotVisible() {
-        withRecyclerView(R.id.recycler_view)
-            .atPositionOnView(0, R.id.layout_ticker_chat_performance)
-            .matches(doesNotExist())
+        onView(
+            withRecyclerView(R.id.recycler_view)
+                .atPositionOnView(0, R.id.layout_ticker_chat_performance)
+        )
+            .check(doesNotExist())
     }
 
     fun assertBottomSheetVisible() {

@@ -36,20 +36,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".view.activity.ProductYoutubePlayerActivity"
-            android:screenOrientation="landscape" />
-        <activity
-            android:name=".view.activity.CourierActivity"
-            android:label="@string/product_detail_courier"
-            android:theme="@style/Theme.White" />
-        <activity
             android:name=".view.activity.WholesaleActivity"
             android:label="@string/label_product_wholesale"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
-        <activity
-            android:name=".imagepreview.view.activity.ImagePreviewPdpActivity"
-            android:label="@string/label_image_preview_pdp"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
     </application>

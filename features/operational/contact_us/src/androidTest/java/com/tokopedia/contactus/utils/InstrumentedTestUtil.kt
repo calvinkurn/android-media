@@ -23,14 +23,6 @@ import org.hamcrest.TypeSafeMatcher
 
 object InstrumentedTestUtil {
 
-    fun performClick(id: Int) {
-        onView(
-            CommonMatcher
-                .firstView(withId(id))
-        )
-            .perform(ViewActions.click())
-    }
-
     fun <T : Activity> ActivityTestRule<T>.scrollRecyclerViewToPosition(
         recyclerView: RecyclerView,
         position: Int
@@ -39,66 +31,12 @@ object InstrumentedTestUtil {
         this.runOnUiThread { layoutManager.scrollToPositionWithOffset(position, 0) }
     }
 
-    fun RecyclerView.clickOnPosition(position: Int) {
-        onView(withId(this.id))
-            .perform(
-                RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
-                    position, ViewActions.click()
-                )
-            )
-    }
-
-    fun isTextDisplayed(vararg texts: String) {
-        texts.forEach {
-            onView(withText(it))
-                .check(matches(ViewMatchers.isDisplayed()))
-        }
-    }
-
     fun isShowToaster(text: String) {
         waitOnView(withText(text)).check(matches(ViewMatchers.isDisplayed()))
     }
 
-    fun isViewChildIsShow(idMainView: Int, childPosition: Int) {
-        onView(
-            nthChildOf(
-                withId(idMainView),
-                childPosition
-            )
-        ).check(matches(ViewMatchers.isDisplayed()))
-    }
-
     fun viewChildPerformClick(idMainView: Int, childPosition: Int) {
         onView(nthChildOf(withId(idMainView), childPosition)).perform(ViewActions.click())
-    }
-
-    fun isGoneView(resId: Int) {
-        onView(withId(resId))
-            .check(matches(ViewMatchers.withEffectiveVisibility(ViewMatchers.Visibility.GONE)))
-    }
-
-    fun isVisible(resId: Int) {
-        onView(withId(resId)).check(matches(ViewMatchers.isDisplayed()))
-    }
-
-    fun RecyclerView.isViewVisibleInItemPosition(position: Int, viewToCheck: Int) {
-        onView(
-            RecyclerViewMatcher(this.id)
-                .atPositionOnView(position, viewToCheck)
-        ).check(matches(ViewMatchers.isDisplayed()))
-    }
-
-    fun RecyclerView.isTextShowedInItemPosition(position: Int, viewToCheck: Int, text: String) {
-        onView(RecyclerViewMatcher(this.id).atPositionOnView(position, viewToCheck)).check(matches(
-            withText(text)
-        ))
-    }
-
-    fun RecyclerView.isViewGoneInItemPosition(position: Int, viewToCheck: Int) {
-        onView(
-            RecyclerViewMatcher(this.id)
-                .atPositionOnView(position, viewToCheck)
-        ).check(matches(ViewMatchers.withEffectiveVisibility(ViewMatchers.Visibility.GONE)))
     }
 
     private fun nthChildOf(parentMatcher: Matcher<View>, childPosition: Int): Matcher<View> {

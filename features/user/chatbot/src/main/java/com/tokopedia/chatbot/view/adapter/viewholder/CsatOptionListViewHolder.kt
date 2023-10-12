@@ -6,7 +6,6 @@ import androidx.annotation.LayoutRes
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.chat_common.data.MessageUiModel
 import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.chatbot.R
@@ -44,7 +43,7 @@ class CsatOptionListViewHolder(
         R.dimen.dp_chatbot_20,
         R.dimen.dp_chatbot_20,
         R.dimen.dp_chatbot_20,
-        com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+        com.tokopedia.unifyprinciples.R.color.Unify_NN950_20,
         R.dimen.dp_chatbot_2,
         R.dimen.dp_chatbot_1,
         Gravity.CENTER
@@ -110,6 +109,6 @@ class CsatOptionListViewHolder(
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.chatbot_csat_option_layout
+        val LAYOUT = R.layout.item_chatbot_csat_option
     }
 }

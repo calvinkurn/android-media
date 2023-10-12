@@ -166,8 +166,9 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
             }
         } else if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_EDITOR_PAGE && data != null) {
             data.parcelableExtra<EditorResult>(RESULT_INTENT_EDITOR)?.let {
+                val selectedIncludeMedia = viewModel.editorParam.value?.first?.selectedIncludeMedia ?: emptyList()
                 onFinishIntent(
-                    PickerResult(it.originalPaths, editedImages = it.editedImages)
+                    PickerResult(it.originalPaths, editedImages = it.editedImages, selectedIncludeMedia = selectedIncludeMedia)
                 )
             }
         }

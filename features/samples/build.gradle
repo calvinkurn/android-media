@@ -14,7 +14,13 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.samples'
+    testNamespace 'com.tokopedia.samples.test'
+}
+
 dependencies {
+	implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.exoPlayerCore
     implementation rootProject.ext.miscDependencies.exoPlayer

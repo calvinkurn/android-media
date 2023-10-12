@@ -37,18 +37,20 @@ class RecomPageUiUpdater(var dataList: MutableList<HomeRecommendationDataModel>)
         val newDataList = mutableListOf<HomeRecommendationDataModel>()
         dataList.filterIsInstance(RecommendationItemDataModel::class.java).forEach {
             val recomItem = it.productItem.copy()
-            if (recomItem.isRecomProductShowVariantAndCart) {
+            if (recomItem.addToCartType == RecommendationItem.AddToCartType.QuantityEditor) {
                 recomItem.setDefaultCurrentStock()
                 miniCart?.let { cartData ->
-                    recomItem.updateItemCurrentStock(when {
-                        recomItem.isProductHasParentID() -> {
-                            cartData.getMiniCartItemParentProduct(recomItem.parentID.toString())?.totalQuantity ?: 0
+                    recomItem.updateItemCurrentStock(
+                        when {
+                            recomItem.isProductHasParentID() -> {
+                                cartData.getMiniCartItemParentProduct(recomItem.parentID.toString())?.totalQuantity ?: 0
+                            }
+                            cartData.containsKey(MiniCartItemKey(recomItem.productId.toString())) -> {
+                                cartData.getMiniCartItemProduct(recomItem.productId.toString())?.quantity ?: 0
+                            }
+                            else -> 0
                         }
-                        cartData.containsKey(MiniCartItemKey(recomItem.productId.toString())) -> {
-                            cartData.getMiniCartItemProduct(recomItem.productId.toString())?.quantity ?: 0
-                        }
-                        else -> 0
-                    })
+                    )
                 }
             }
             newDataList.add(RecommendationItemDataModel(recomItem))

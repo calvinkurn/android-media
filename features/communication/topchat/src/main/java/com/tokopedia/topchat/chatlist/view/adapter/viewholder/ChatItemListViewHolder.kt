@@ -19,8 +19,10 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.stories.widget.StoriesWidgetLayout
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.domain.pojo.ChatStateItem
 import com.tokopedia.topchat.chatlist.domain.pojo.ItemChatListPojo
@@ -46,16 +48,18 @@ class ChatItemListViewHolder constructor(
 
     private val userName: Typography = itemView.findViewById(R.id.user_name)
     private val thumbnail: ImageView = itemView.findViewById(R.id.thumbnail)
+    private val storiesBorder: StoriesWidgetLayout = itemView.findViewById(R.id.stories_border)
     private val message: TextView = itemView.findViewById(R.id.message)
     private val unreadCounter: Typography = itemView.findViewById(R.id.unread_counter)
     private val time: Typography = itemView.findViewById(R.id.time)
     private val label: Label = itemView.findViewById(R.id.user_label)
     private val pin: ImageView = itemView.findViewById(R.id.ivPin)
     private val smartReplyIndicator: View? = itemView.findViewById(R.id.view_smart_reply_indicator)
-    private val unreadSpanColor: Int = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
-    private val readSpanColor: Int = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
+    private val unreadSpanColor: Int = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+    private val readSpanColor: Int = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68)
     private val typingImage: ImageUnify = itemView.findViewById(com.tokopedia.chat_common.R.id.iv_typing)
     private val typingText: Typography = itemView.findViewById(com.tokopedia.chat_common.R.id.tv_typing)
+    private val labelIcon: ImageUnify? = itemView.findViewById(R.id.chatlist_img_label_icon)
 
     private val menu = LongClickMenu()
 
@@ -88,6 +92,7 @@ class ChatItemListViewHolder constructor(
         bindPin(element)
         bindSmartReplyIndicator(element)
         ImageUtil.setTypingAnimation(typingImage)
+        bindLabelIcon(element)
     }
 
     private fun bindSmartReplyIndicator(element: ItemChatListPojo) {
@@ -124,6 +129,7 @@ class ChatItemListViewHolder constructor(
 
     private fun bindProfilePicture(chat: ItemChatListPojo) {
         thumbnail.loadImageCircle(chat.thumbnail)
+        listener.getStoriesWidgetManager()?.manage(storiesBorder, chat.id)
     }
 
     private fun bindPin(chat: ItemChatListPojo) {
@@ -296,10 +302,10 @@ class ChatItemListViewHolder constructor(
         message.setLines(2)
         message.maxLines = 2
         message.setTypeface(null, NORMAL)
-        message.setTextColor(MethodChecker.getColor(message.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+        message.setTextColor(MethodChecker.getColor(message.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
         if (chat.isActive) {
             itemView.setBackgroundColor(
-                MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G100)
+                MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN50)
             )
         } else {
             itemView.setBackgroundColor(
@@ -364,6 +370,17 @@ class ChatItemListViewHolder constructor(
                 label.show()
             }
             else -> label.hide()
+        }
+    }
+
+    private fun bindLabelIcon(chat: ItemChatListPojo) {
+        chat.labelIcon.run {
+            if (isNotEmpty()) {
+                labelIcon?.showWithCondition(!listener.isTabSeller())
+                labelIcon?.loadImage(chat.labelIcon)
+            } else {
+                labelIcon?.hide()
+            }
         }
     }
 

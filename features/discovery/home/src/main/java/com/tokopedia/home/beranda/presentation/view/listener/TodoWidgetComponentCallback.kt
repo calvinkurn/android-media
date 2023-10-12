@@ -5,7 +5,6 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home_component.listener.TodoWidgetComponentListener
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselTodoWidgetDataModel
-import com.tokopedia.home_component.visitable.TodoWidgetListDataModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 
@@ -16,36 +15,36 @@ import kotlinx.coroutines.FlowPreview
 @FlowPreview
 class TodoWidgetComponentCallback(
     val homeCategoryListener: HomeCategoryListener,
-    val homeRevampViewModel: HomeRevampViewModel
+    private val homeRevampViewModel: HomeRevampViewModel
 ) : TodoWidgetComponentListener {
 
-    override fun onTodoCardClicked(element: CarouselTodoWidgetDataModel, horizontalPosition: Int) {
-        if (element.cardApplink.isNotBlank()) {
-            homeCategoryListener.onDynamicChannelClicked(element.cardApplink)
+    override fun onTodoCardClicked(element: CarouselTodoWidgetDataModel) {
+        TodoWidgetTracking.sendTodoWidgetCardClicked(element)
+        if (element.data.cardApplink.isNotBlank()) {
+            homeCategoryListener.onDynamicChannelClicked(element.data.cardApplink)
         }
     }
 
-    override fun onTodoCTAClicked(element: CarouselTodoWidgetDataModel, horizontalPosition: Int) {
-        TodoWidgetTracking.sendTodoWidgetCTAClicked(element, horizontalPosition, homeCategoryListener.userId)
-        homeCategoryListener.onDynamicChannelClicked(element.ctaApplink)
+    override fun onTodoCTAClicked(element: CarouselTodoWidgetDataModel) {
+        TodoWidgetTracking.sendTodoWidgetCTAClicked(element, homeCategoryListener.userId)
+        homeCategoryListener.onDynamicChannelClicked(element.data.ctaApplink)
     }
 
-    override fun onTodoCloseClicked(element: CarouselTodoWidgetDataModel, horizontalPosition: Int) {
+    override fun onTodoCloseClicked(element: CarouselTodoWidgetDataModel) {
         TodoWidgetTracking.sendTodoWidgetCloseClicked(element)
-        homeRevampViewModel.dismissTodoWidget(horizontalPosition, element.dataSource, element.feParam)
+        homeRevampViewModel.dismissTodoWidget(element.cardPosition, element.data.dataSource, element.data.feParam)
     }
 
-    override fun onTodoImpressed(element: CarouselTodoWidgetDataModel, horizontalPosition: Int) {
+    override fun onTodoImpressed(element: CarouselTodoWidgetDataModel) {
         homeCategoryListener.getTrackingQueueObj()?.putEETracking(
             TodoWidgetTracking.getTodoWidgetView(
                 element,
-                horizontalPosition,
                 homeCategoryListener.userId
             ) as HashMap<String, Any>
         )
     }
 
-    override fun refreshTodowidget(element: TodoWidgetListDataModel) {
+    override fun refreshTodowidget() {
         homeRevampViewModel.getTodoWidgetRefresh()
     }
 }

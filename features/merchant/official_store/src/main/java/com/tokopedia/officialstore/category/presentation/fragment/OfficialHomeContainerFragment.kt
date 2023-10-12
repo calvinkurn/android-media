@@ -15,7 +15,6 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
-import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
@@ -52,6 +51,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.searchbar.data.HintData
+import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
@@ -444,9 +444,8 @@ class OfficialHomeContainerFragment
     }
 
     private fun getToolbarIcons(): IconBuilder {
-        val pageSource = if (activityOfficialStore == PARAM_HOME) ApplinkConsInternalNavigation.SOURCE_HOME else ""
         val icons =
-            IconBuilder(IconBuilderFlag(pageSource = pageSource))
+            IconBuilder(IconBuilderFlag(pageSource = NavSource.SOS))
                 .addIcon(getInboxIcon()) {}
         if(activityOfficialStore != PARAM_HOME)
         {

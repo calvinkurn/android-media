@@ -16,6 +16,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.core'
+    testNamespace 'com.tokopedia.core.test'
     if (project.hasProperty("newRelic")) {
         sourceSets.each {
             it.java.srcDirs += "src/main/new_relic"

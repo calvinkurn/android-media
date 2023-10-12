@@ -12,9 +12,13 @@ import kotlinx.android.parcel.Parcelize
 data class ProductUiModel(
     val id: String,
     val name: String,
+    val hasCommission: Boolean,
+    val commissionFmt: String,
+    val commission: Long,
+    val extraCommission: Boolean,
     val imageUrl: String,
     val stock: Long,
     val price: ProductPrice,
-    val pinStatus: PinProductUiModel = PinProductUiModel.Empty,
-    val number: String = "",
+    val pinStatus: PinProductUiModel,
+    val number: String,
 ) : Parcelable

@@ -1,0 +1,30 @@
+{
+  "generateAffiliateLinkEligibility": {
+    "Status": 1,
+    "ShowTicker": false,
+    "TickerType": 0,
+    "Message": "",
+    "AffiliateEligibility": {
+      "IsRegistered": true,
+      "IsEligible": false
+    },
+    "Banner": {
+      "Icon": "",
+      "Title": "",
+      "Message": "",
+      "CtaLink": ""
+    },
+    "EligibleCommission": {
+      "IsEligible": false,
+      "AmountFormatted": "Rp2.290",
+      "Amount": "2290.000000",
+      "Message": "\u003cb style\u003d\"color:#00AA5B;\"\u003e\u003cfont color\u003d\"#00AA5B\"\u003eKomisi hingga Rp2.290\u003c/font\u003e\u003c/b\u003e/barang terjual",
+      "Badge": "",
+      "ExpiredDate": "",
+      "ExpiredDateFormatted": "",
+      "SellerAmount": "0.000000",
+      "SellerAmountFormatted": "Rp0",
+      "SsaStatus": false
+    }
+  }
+}

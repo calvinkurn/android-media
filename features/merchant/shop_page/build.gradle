@@ -19,6 +19,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.shop'
+    testNamespace 'com.tokopedia.shop.test'
     defaultConfig {
         multiDexEnabled true
     }
@@ -26,6 +28,20 @@ android {
     buildFeatures {
         viewBinding true
         buildConfig true
+    }
+
+    sourceSets {
+        main {
+            res {
+                //TODO need to re arrange layout folder in the future so that it will be more readable
+                srcDirs = [
+                        'src/main/res/home_tab_viewholder/directpurchasebyetalase',
+                        'src/main/res/custom_view/directpurchase',
+                        'src/main/res/common',
+                        'src/main/res'
+                ]
+            }
+        }
     }
 }
 
@@ -41,8 +57,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.universal_sharing)
     implementation projectOrAar(rootProject.ext.libraries.analytics)
     implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
-    implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.webview)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.features.shopCommon)
@@ -56,7 +70,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress_common)
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.features.usercomponents)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.features.carouselProductCard)
     implementation projectOrAar(rootProject.ext.features.discoveryCommon)
     implementation projectOrAar(rootProject.ext.features.youtubeCommon)
@@ -85,6 +99,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.empty_state
     implementation rootProject.ext.unifyDependencies.dialog
     implementation rootProject.ext.unifyDependencies.accordion
+    implementation rootProject.ext.unifyDependencies.viewAllCard
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
@@ -107,7 +122,7 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.swipeRefresh
     implementation rootProject.ext.supportLibDependencies.supportV4
     implementation rootProject.ext.miscDependencies.lottie
-    implementation (rootProject.ext.miscDependencies.flexBoxLayout){
+    implementation(rootProject.ext.miscDependencies.flexBoxLayout) {
         exclude group: 'com.android.support'
     }
     implementation rootProject.ext.miscDependencies.dagger
@@ -120,7 +135,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
-    implementation (rootProject.ext.firebase.crashlytics) {
+    implementation(rootProject.ext.firebase.crashlytics) {
         transitive = true
     }
     implementation projectOrAar(rootProject.ext.libraries.track)
@@ -136,6 +151,13 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.cart_common)
     implementation projectOrAar(rootProject.ext.features.productDetailCommon)
     implementation projectOrAar(rootProject.ext.features.affiliateSDK)
+    implementation project(rootProject.ext.libraries.foldable)
+    implementation projectOrAar(rootProject.ext.features.recommendationWidgetCommon)
+    implementation projectOrAar(rootProject.ext.features.playCommon)
+    implementation rootProject.ext.miscDependencies.exoPlayerCore
+    implementation rootProject.ext.miscDependencies.exoPlayer
+    implementation rootProject.ext.miscDependencies.exoPlayerRtmp
+    implementation projectOrAar(rootProject.ext.features.storiesWidget)
 
     // UI Test
     androidTestImplementation projectOrAar(rootProject.ext.features.shopShowcase)
@@ -148,7 +170,7 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
     androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
-    
+
     androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest
 }
 
@@ -156,7 +178,7 @@ project.ext {
     artifactId = 'shop-page'
     groupId = 'com.tokopedia.merchant'
     versionName = "0.0.2"
-    artifactName ="shop_page-release"
+    artifactName = "shop_page-release"
 }
 
 apply from: '../../../publish_local.gradle'

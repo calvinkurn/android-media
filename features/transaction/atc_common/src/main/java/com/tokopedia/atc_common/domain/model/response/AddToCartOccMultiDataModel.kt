@@ -5,9 +5,9 @@ import com.tokopedia.cartcommon.data.response.common.OutOfService
 import com.tokopedia.cartcommon.data.response.updatecart.ToasterAction
 
 data class AddToCartOccMultiDataModel(
-        val errorMessage: List<String> = emptyList(),
-        val status: String = "",
-        val data: AddToCartOccMultiData = AddToCartOccMultiData()
+    val errorMessage: List<String> = emptyList(),
+    val status: String = "",
+    val data: AddToCartOccMultiData = AddToCartOccMultiData()
 ) {
     /**
      * This method is for checking if ATC error without capability of custom error handling when no message provided from backend
@@ -43,19 +43,19 @@ data class AddToCartOccMultiDataModel(
 }
 
 data class AddToCartOccMultiData(
-        val success: Int = 0,
-        val message: List<String> = emptyList(),
-        val cart: List<AddToCartOccMultiCartData> = emptyList(),
-        val outOfService: OutOfService = OutOfService(),
-        val toasterAction: ToasterAction = ToasterAction()
+    val success: Int = 0,
+    val message: List<String> = emptyList(),
+    val cart: List<AddToCartOccMultiCartData> = emptyList(),
+    val outOfService: OutOfService = OutOfService(),
+    val toasterAction: ToasterAction = ToasterAction()
 )
 
 data class AddToCartOccMultiCartData(
-        val cartId: String = "",
-        val productId: String = "",
-        val quantity: Int = 0,
-        val notes: String = "",
-        val shopId: String = "",
-        val customerId: String = "",
-        val warehouseId: String = "",
+    val cartId: String = "",
+    val productId: String = "",
+    val quantity: Int = 0,
+    val notes: String = "",
+    val shopId: String = "",
+    val customerId: String = "",
+    val warehouseId: String = ""
 )

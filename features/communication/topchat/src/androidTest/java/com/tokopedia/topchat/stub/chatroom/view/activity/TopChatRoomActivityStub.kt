@@ -2,7 +2,7 @@ package com.tokopedia.topchat.stub.chatroom.view.activity
 
 import android.os.Bundle
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.chat_common.BaseChatFragment
+import com.tokopedia.chat_common.view.fragment.BaseChatFragment
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.di.ChatComponent
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
@@ -29,8 +29,8 @@ class TopChatRoomActivityStub : TopChatRoomActivity() {
     }
 
     fun getTotalItemInChat(): Int {
-        return findViewById<RecyclerView>(R.id.recycler_view_chatroom).layoutManager?.itemCount ?:
-            throw IllegalStateException("No recyclerview found")
+        return findViewById<RecyclerView>(R.id.recycler_view_chatroom).layoutManager?.itemCount
+            ?: throw IllegalStateException("No recyclerview found")
     }
 
     companion object {

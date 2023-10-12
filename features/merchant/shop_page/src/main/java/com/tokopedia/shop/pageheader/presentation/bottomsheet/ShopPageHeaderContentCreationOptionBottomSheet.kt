@@ -5,7 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
-import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.shop.common.graphql.data.shopinfo.Broadcaster
 import com.tokopedia.shop.databinding.BottomSheetShopContentCreationOptionBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
@@ -15,6 +16,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 class ShopPageHeaderContentCreationOptionBottomSheet : BottomSheetUnify() {
 
     private var mListener: Listener? = null
+    private var mBroadcasterConfig = Broadcaster.Config()
 
     private var _binding: BottomSheetShopContentCreationOptionBinding? = null
     private val binding: BottomSheetShopContentCreationOptionBinding
@@ -53,11 +55,9 @@ class ShopPageHeaderContentCreationOptionBottomSheet : BottomSheetUnify() {
     }
 
     private fun setupView() {
-        /**
-         * Need to set SHORT_VIDEO programatically for now
-         * because SHORT_VIDEO hasn't registered in IconUnify values.xml yet
-         */
-        binding.icShorts.setImage(IconUnify.SHORT_VIDEO)
+        isShowShortsEntryPoint(mBroadcasterConfig.shortVideoAllowed)
+        isShowBroadcasterEntryPoint(mBroadcasterConfig.streamAllowed)
+        isShowPerformanceDashboardEntryPoint(mBroadcasterConfig.hasContent)
     }
 
     private fun setupListener() {
@@ -70,6 +70,11 @@ class ShopPageHeaderContentCreationOptionBottomSheet : BottomSheetUnify() {
             mListener?.onBroadcastCreationClicked()
             dismiss()
         }
+
+        binding.llPerformanceDashboard.setOnClickListener {
+            mListener?.onPerformanceDashboardEntryClicked()
+            dismiss()
+        }
     }
 
     fun show(fragmentManager: FragmentManager) {
@@ -78,6 +83,24 @@ class ShopPageHeaderContentCreationOptionBottomSheet : BottomSheetUnify() {
 
     fun setListener(listener: Listener?) {
         mListener = listener
+    }
+
+    fun setData(broadcasterConfig: Broadcaster.Config) {
+        mBroadcasterConfig = broadcasterConfig
+    }
+
+    private fun isShowShortsEntryPoint(show: Boolean) {
+        binding.llShorts.showWithCondition(show)
+        binding.divider1.showWithCondition(show)
+    }
+
+    private fun isShowBroadcasterEntryPoint(show: Boolean) {
+        binding.llBroadcaster.showWithCondition(show)
+        binding.divider2.showWithCondition(show)
+    }
+
+    private fun isShowPerformanceDashboardEntryPoint(show: Boolean) {
+        binding.llPerformanceDashboard.showWithCondition(show)
     }
 
     companion object {
@@ -96,9 +119,9 @@ class ShopPageHeaderContentCreationOptionBottomSheet : BottomSheetUnify() {
     }
 
     interface Listener {
-        fun onBroadcastCreationClicked()
-
         fun onShortsCreationClicked()
+        fun onBroadcastCreationClicked()
+        fun onPerformanceDashboardEntryClicked()
     }
 
 }

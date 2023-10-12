@@ -1,8 +1,6 @@
 package com.tokopedia.product.detail.common.data.model.variant
 
-import androidx.collection.ArrayMap
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.product.detail.common.data.model.product.PostAtcLayout
 
 /**
  * Created by Yehezkiel on 04/05/21
@@ -19,12 +17,17 @@ data class ProductVariant(
     val defaultChild: String = "",
     @SerializedName("maxFinalPrice")
     val maxFinalPrice: Float = 0F,
-    @SerializedName("postATCLayout")
-    val postAtcLayout: PostAtcLayout = PostAtcLayout(),
     @SerializedName(value = "variants", alternate = ["variant"])
     val variants: List<Variant> = listOf(),
     @SerializedName("children")
-    val children: List<VariantChild> = listOf()
+    val children: List<VariantChild> = listOf(),
+    /**
+     * used when landing on pdp, if it is empty use hardcode FE
+     * and if there’s a user activity for choosing the variant, use children.subText below
+     * Details: https://tokopedia.atlassian.net/wiki/spaces/PDP/pages/2245002923/PDP+P1+Product+Variant+Partial+OOS
+     */
+    @SerializedName("landingSubText")
+    val landingSubText: String = ""
 ) {
     fun isOneOfTheChildBuyablePartial(optionId: String): Boolean {
         var result = false
@@ -108,11 +111,6 @@ data class ProductVariant(
         return children.filter { it.isBuyable }.count()
     }
 
-    val totalStockChilds: Int
-        get() = children.sumOf {
-            it.getVariantFinalStock()
-        }
-
     val hasChildren: Boolean
         get() = with(children) { this.isNotEmpty() }
 
@@ -130,26 +128,8 @@ data class ProductVariant(
         sizeIdentifier: Boolean
     ): String = if (sizeIdentifier && sizeChart.isNotEmpty()) sizeChart else ""
 
-    fun autoSelectedOptionIds(): List<String> {
-        val listOfOptionAutoSelectedId = children.filter {
-            it.isBuyable
-        }
-
-        // If there is only 1 child is available , then auto selected
-        return if (listOfOptionAutoSelectedId.size == 1) {
-            listOfOptionAutoSelectedId.firstOrNull()?.optionIds ?: listOf()
-        } else {
-            listOf()
-        }
-    }
-
     fun getOptionListString(selectedVariantId: String?): List<String>? {
         return getChildByProductId(selectedVariantId)?.getOptionStringList(variants)
-    }
-
-    fun mapSelectedProductVariants(selectedVariantId: String?): ArrayMap<String, ArrayMap<String, String>>? {
-        val child = getChildProductVariant(selectedVariantId)
-        return child?.mapVariant(variants)
     }
 
     private fun getChildProductVariant(selectedVariantId: String?): VariantChild? {

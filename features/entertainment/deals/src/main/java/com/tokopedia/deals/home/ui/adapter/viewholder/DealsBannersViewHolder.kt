@@ -40,7 +40,7 @@ class DealsBannersViewHolder(itemView: View, private val dealsBannerActionListen
                 setOnPromoClickListener { position ->
                     dealsBannerActionListener.onBannerClicked(banners.list, position)
                 }
-                setBannerSeeAllTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                setBannerSeeAllTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
                 setBannerIndicator(Indicator.GREEN)
                 bannerSeeAll.text = getString(R.string.deals_homepage_banner_see_all)
                 bannerSeeAll.setTextSize(TypedValue.COMPLEX_UNIT_SP,12f)

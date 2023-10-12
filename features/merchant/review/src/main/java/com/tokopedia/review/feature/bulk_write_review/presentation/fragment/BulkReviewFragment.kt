@@ -30,6 +30,8 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.merchant.DeeplinkMapperMerchant
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
@@ -61,6 +63,7 @@ import com.tokopedia.review.feature.bulk_write_review.presentation.bottomsheet.B
 import com.tokopedia.review.feature.bulk_write_review.presentation.bottomsheet.BulkReviewExpandedTextAreaBottomSheet
 import com.tokopedia.review.feature.bulk_write_review.presentation.dialog.BulkReviewCancelReviewSubmissionDialog
 import com.tokopedia.review.feature.bulk_write_review.presentation.dialog.BulkReviewRemoveReviewItemDialog
+import com.tokopedia.review.feature.bulk_write_review.presentation.mapper.BulkReviewRatingUiStateMapper
 import com.tokopedia.review.feature.bulk_write_review.presentation.uimodel.BulkReviewBadRatingCategoryUiModel
 import com.tokopedia.review.feature.bulk_write_review.presentation.uimodel.BulkReviewVisitable
 import com.tokopedia.review.feature.bulk_write_review.presentation.uistate.BulkReviewBadRatingCategoryBottomSheetUiState
@@ -105,6 +108,8 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
         private const val SUBMIT_LOADER_MAX_ALPHA = 0.5f
         private const val GLOBAL_ERROR_MIN_ALPHA = 0f
         private const val GLOBAL_ERROR_MAX_ALPHA = 1f
+
+        private const val APP_LINK_PARAM_INVOICE = "invoice"
     }
 
     @Inject
@@ -122,6 +127,7 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
         ViewModelProvider(requireActivity(), viewModelFactory).get(BulkReviewViewModel::class.java)
     }
     private val activityResultHandler by lazy(LazyThreadSafetyMode.NONE) { ActivityResultHandler() }
+    private val appLinkHandler by lazy(LazyThreadSafetyMode.NONE) { AppLinkHandler() }
     private val bottomSheetHandler by lazy(LazyThreadSafetyMode.NONE) { BottomSheetHandler() }
     private val coachMarkHandler by lazy(LazyThreadSafetyMode.NONE) { CoachMarkHandler() }
     private val dialogHandler by lazy(LazyThreadSafetyMode.NONE) { DialogHandler() }
@@ -279,7 +285,7 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
             false
         }
         binding?.globalErrorBulkReview?.setActionClickListener {
-            viewModel.getData()
+            viewModel.getData(appLinkHandler.getInvoiceNumber(), appLinkHandler.getUtmSource())
         }
         binding?.viewOverlay?.setOnClickListener { /* noop, just to block the view behind */ }
     }
@@ -342,12 +348,21 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
     }
 
     private fun initUiState(savedInstanceState: Bundle?) {
+        viewModel.setDefaultReviewItemRating(appLinkHandler.getRating().toIntOrNull() ?: BulkReviewRatingUiStateMapper.DEFAULT_PRODUCT_RATING)
         if (savedInstanceState == null) {
-            viewModel.getData()
+            viewModel.getData(appLinkHandler.getInvoiceNumber(), appLinkHandler.getUtmSource())
         } else {
             val cacheManagerId = savedInstanceState.getString(BULK_REVIEW_KEY_CACHE_MANAGER_ID).orEmpty()
             val cacheManager = SaveInstanceCacheManager(requireContext(), cacheManagerId)
-            viewModel.onRestoreInstanceState(cacheManager)
+            viewModel.onRestoreInstanceState(
+                saveInstanceCacheManager = cacheManager,
+                onFailedRestoreState = {
+                    viewModel.getData(
+                        appLinkHandler.getInvoiceNumber(),
+                        appLinkHandler.getUtmSource()
+                    )
+                }
+            )
         }
     }
 
@@ -612,7 +627,7 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
             } else {
                 val intent = Intent()
                 intent.putExtra(
-                    ReviewInboxConstants.BULK_CREATE_REVIEW_MESSAGE,
+                    ApplinkConstInternalMarketplace.BULK_CREATE_REVIEW_MESSAGE,
                     getString(R.string.bulk_review_submission_success_message, userName)
                 )
                 setResult(Activity.RESULT_OK, intent)
@@ -763,7 +778,10 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
                         source = ReviewInboxConstants.SOURCE_REVIEW_INBOX
                     ).apply {
                         if (message.isNotBlank()) {
-                            putExtra(ReviewInboxConstants.BULK_CREATE_REVIEW_MESSAGE, message)
+                            putExtra(
+                                ApplinkConstInternalMarketplace.BULK_CREATE_REVIEW_MESSAGE,
+                                message
+                            )
                         }
                     }
                 )
@@ -786,6 +804,24 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
                 }
                 else -> super@BulkReviewFragment.onActivityResult(requestCode, resultCode, data)
             }
+        }
+    }
+
+    private inner class AppLinkHandler {
+        fun getInvoiceNumber(): String {
+            return getQueryParameter(APP_LINK_PARAM_INVOICE)
+        }
+
+        fun getUtmSource(): String {
+            return getQueryParameter(DeeplinkMapperMerchant.PARAM_UTM_SOURCE)
+        }
+
+        fun getRating(): String {
+            return getQueryParameter(ApplinkConstInternalMarketplace.CREATE_REVIEW_APP_LINK_PARAM_RATING)
+        }
+
+        private fun getQueryParameter(key: String): String {
+            return activity?.intent?.data?.getQueryParameter(key).orEmpty()
         }
     }
 

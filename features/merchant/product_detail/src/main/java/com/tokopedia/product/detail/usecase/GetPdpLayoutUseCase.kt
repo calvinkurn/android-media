@@ -38,11 +38,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
                 pdpSession
                 basicInfo {
                   shopMultilocation {
-                    isReroute
                     cityName
-                    eduLink {
-                        appLink
-                    }
                   }
                   isGiftable
                   isTokoNow
@@ -100,9 +96,6 @@ open class GetPdpLayoutUseCase @Inject constructor(
                     countTalk
                     rating
                   }
-                  postATCLayout {
-                    layoutID
-                  }
                 }
                 components {
                   name
@@ -133,6 +126,37 @@ open class GetPdpLayoutUseCase @Inject constructor(
                       }
                       containerType
             		}
+                    ... on pdpDataOnGoingCampaign {
+                      campaign {
+                        campaignID
+                        campaignType
+                        campaignTypeName
+                        percentageAmount
+                        originalPrice
+                        discountedPrice
+                        stock
+                        stockSoldPercentage
+                        threshold
+                        startDate
+                        endDate
+                        endDateUnix
+                        appLinks
+                        isAppsOnly
+                        isActive
+                        hideGimmick
+                        isCheckImei
+                        isUsingOvo
+                        background
+                        campaignIdentifier
+                        paymentInfoWording
+                      }
+                      thematicCampaign{
+                        campaignName
+                        icon
+                        background
+                        additionalInfo
+                      }
+                    }
             		... on pdpDataProductContent {
                       name
                       parentName
@@ -208,6 +232,10 @@ open class GetPdpLayoutUseCase @Inject constructor(
                     ... on pdpDataProductDetail {
                       title
                       content {
+                        key
+                        type
+                        action
+                        extParam
                         title
                         subtitle
                         applink
@@ -281,9 +309,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
                       defaultChild
                       sizeChart
                       maxFinalPrice
-                      postATCLayout {
-                        layoutID
-                      }
+                      landingSubText
                       variants {
                         productVariantID
                         variantID
@@ -302,6 +328,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
                       }
                       children {
                         productID
+                        subText
                         price
                         priceFmt
                         sku
@@ -378,6 +405,29 @@ open class GetPdpLayoutUseCase @Inject constructor(
                     ... on pdpDataCustomInfoTitle {
                       title
                       status
+                    },
+                    ... on pdpDataDynamicOneLiner {
+                      name
+                      text
+                      applink
+                      separator
+                      icon
+                      status
+                      chevronPos
+                    }
+                    ... on pdpDataProductDetailMediaComponent {
+                      title
+                      description
+                      contentMedia {
+                        url
+                        ratio
+                      }
+                      show
+                      ctaText
+                    }
+                    ... on pdpDataProductListComponent {
+                      queryParam
+                      thematicID
                     }
                   }
                 }

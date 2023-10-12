@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleCoroutineScope
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.seller_migration_common.listener.SellerHomeFragmentListener
 import com.tokopedia.sellerhome.R
@@ -19,9 +20,13 @@ import com.tokopedia.sellerhome.settings.view.fragment.OtherMenuFragment
 import com.tokopedia.sellerhome.view.fragment.SellerHomeFragment
 import com.tokopedia.shop.common.util.sellerfeedbackutil.SellerFeedbackUtil
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
 class SellerHomeNavigator(
     private val context: Context,
+    private val lifecycleScope: LifecycleCoroutineScope,
     private val fm: FragmentManager,
     private val sellerHomeRouter: SellerHomeRouter?,
     private val userSession: UserSessionInterface,
@@ -37,9 +42,6 @@ class SellerHomeNavigator(
     @FragmentType
     private var currentSelectedPage: Int? = null
     private val pages: MutableMap<Fragment?, String?> = mutableMapOf()
-    private val sellerFeedbackUtil by lazy {
-        SellerFeedbackUtil(context.applicationContext)
-    }
 
     init {
         initFragments()
@@ -142,8 +144,8 @@ class SellerHomeNavigator(
         }
     }
 
-    private fun getHomeFragment(pageFragment: PageFragment): Fragment? {
-        homeFragment = SellerHomeFragment.newInstance(pageFragment.sellerHomeData)
+    private fun getHomeFragment(pageFragment: PageFragment? = null): Fragment? {
+        homeFragment = SellerHomeFragment.newInstance(pageFragment?.sellerHomeData)
         return homeFragment
     }
 
@@ -161,27 +163,41 @@ class SellerHomeNavigator(
 
     private fun initFragments() {
         clearFragments()
-        homeFragment = SellerHomeFragment.newInstance()
-        productManageFragment =
-            sellerHomeRouter?.getProductManageFragment(arrayListOf(), String.EMPTY, String.EMPTY, navigationHomeMenu)
-        chatFragment = sellerHomeRouter?.getChatListFragment()
-        somListFragment = sellerHomeRouter?.getSomListFragment(
-            context,
-            SomTabConst.STATUS_NEW_ORDER,
-            SomTabConst.DEFAULT_ORDER_TYPE_FILTER,
-            "",
-            ""
-        )
-        otherSettingsFragment = OtherMenuFragment.createInstance()
+        lifecycleScope.launch(Dispatchers.Default) {
 
-        addPage(homeFragment, context.getString(R.string.sah_home))
-        addPage(productManageFragment, context.getString(R.string.sah_product_list))
-        addPage(chatFragment, context.getString(R.string.sah_chat))
-        addPage(somListFragment, context.getString(R.string.sah_som_list))
-        addPage(otherSettingsFragment, context.getString(R.string.sah_others))
+            val homeFragmentAsync = async { SellerHomeFragment.newInstance() }
+            val productManageFragmentAsync = async(Dispatchers.Main) {
+                sellerHomeRouter?.getProductManageFragment(
+                    arrayListOf(), String.EMPTY, String.EMPTY, navigationHomeMenu
+                )
+            }
+            val chatFragmentAsync = async { sellerHomeRouter?.getChatListFragment() }
+            val somListFragmentAsync = async(Dispatchers.Main) {
+                sellerHomeRouter?.getSomListFragment(
+                    "",
+                    SomTabConst.DEFAULT_ORDER_TYPE_FILTER,
+                    "",
+                    ""
+                )
+            }
+            val otherSettingsFragmentAsync = async { OtherMenuFragment.createInstance() }
+
+            homeFragment = homeFragmentAsync.await()
+            productManageFragment = productManageFragmentAsync.await()
+            chatFragment = chatFragmentAsync.await()
+            somListFragment = somListFragmentAsync.await()
+            otherSettingsFragment = otherSettingsFragmentAsync.await()
+
+            addPage(homeFragment, context.getString(R.string.sah_home))
+            addPage(productManageFragment, context.getString(R.string.sah_product_list))
+            addPage(chatFragment, context.getString(R.string.sah_chat))
+            addPage(somListFragment, context.getString(R.string.sah_som_list))
+            addPage(otherSettingsFragment, context.getString(R.string.sah_others))
+        }
     }
 
     private fun clearFragments() {
+        if (fm.fragments.isEmpty()) return
         val transaction = fm.beginTransaction()
         for (fragment in fm.fragments) {
             transaction.remove(fragment)
@@ -204,7 +220,7 @@ class SellerHomeNavigator(
 
     private fun getPageFragment(@FragmentType type: Int): Fragment? {
         return when (type) {
-            FragmentType.HOME -> homeFragment
+            FragmentType.HOME -> homeFragment ?: SellerHomeFragment.newInstance()
             FragmentType.PRODUCT -> productManageFragment
             FragmentType.CHAT -> chatFragment
             FragmentType.ORDER -> somListFragment
@@ -247,7 +263,6 @@ class SellerHomeNavigator(
 
     private fun setupSellerOrderPage(page: PageFragment): Fragment? {
         somListFragment = sellerHomeRouter?.getSomListFragment(
-            context,
             page.tabPage,
             page.orderType,
             page.keywordSearch,
@@ -287,14 +302,17 @@ class SellerHomeNavigator(
     }
 
     fun setSelectedPageSellerFeedback() {
-        val selectedPage = when (currentSelectedPage) {
-            FragmentType.HOME -> SellerFeedbackUtil.SELLER_HOME_PAGE
-            FragmentType.PRODUCT -> SellerFeedbackUtil.PRODUCT_MANAGE_PAGE
-            FragmentType.ORDER -> SellerFeedbackUtil.SOM_PAGE
-            FragmentType.CHAT -> SellerFeedbackUtil.CHAT_PAGE
-            else -> SellerHomeConst.EMPTY_STRING
+        lifecycleScope.launch {
+            val selectedPage = when (currentSelectedPage) {
+                FragmentType.HOME -> SellerFeedbackUtil.SELLER_HOME_PAGE
+                FragmentType.PRODUCT -> SellerFeedbackUtil.PRODUCT_MANAGE_PAGE
+                FragmentType.ORDER -> SellerFeedbackUtil.SOM_PAGE
+                FragmentType.CHAT -> SellerFeedbackUtil.CHAT_PAGE
+                else -> SellerHomeConst.EMPTY_STRING
+            }
+            SellerFeedbackUtil(context.applicationContext)
+                .setSelectedPage(selectedPage)
         }
-        sellerFeedbackUtil.setSelectedPage(selectedPage)
     }
 
     private fun isActivityResumed(): Boolean {

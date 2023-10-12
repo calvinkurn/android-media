@@ -46,7 +46,7 @@ class BalanceAtf2ViewHolder(v: View, private val totalItems: Int) : BaseBalanceV
         listener: HomeCategoryListener?
     ) {
         this.listener = listener
-        setWidth(drawerItem)
+        setWidth()
         renderDrawerItem(drawerItem)
         this.itemView.tag = String.format(
             itemView.context.getString(R.string.tag_balance_widget),
@@ -54,14 +54,11 @@ class BalanceAtf2ViewHolder(v: View, private val totalItems: Int) : BaseBalanceV
         )
     }
 
-    private fun setWidth(element: BalanceDrawerItemModel?) {
+    private fun setWidth() {
         if (DeviceScreenInfo.isTablet(itemView.context) || totalItems <= BALANCE_FILL_WIDTH_THRESHOLD) {
             setFillWidth()
         } else {
-            setDynamicWidth(
-                element?.drawerItemType == TYPE_WALLET_APP_LINKED ||
-                    element?.drawerItemType == TYPE_WALLET_APP_NOT_LINKED
-            )
+            setDynamicWidth()
         }
         binding?.containerBalance?.layoutParams = containerLayoutParams
         binding?.homeContainerBalance?.homeContainerBalance?.layoutParams = successContainerLayoutParams
@@ -76,10 +73,10 @@ class BalanceAtf2ViewHolder(v: View, private val totalItems: Int) : BaseBalanceV
         subtitleLayoutParams?.matchConstraintMaxWidth = ConstraintLayout.LayoutParams.MATCH_CONSTRAINT
     }
 
-    private fun setDynamicWidth(isWallet: Boolean) {
+    private fun setDynamicWidth() {
         containerLayoutParams?.width = ViewGroup.LayoutParams.WRAP_CONTENT
         successContainerLayoutParams?.width = ViewGroup.LayoutParams.WRAP_CONTENT
-        val textMaxWidth = BalanceAtf2Util.getBalanceTextWidth(itemView.context, isWallet)
+        val textMaxWidth = BalanceAtf2Util.getBalanceTextWidth(itemView.context)
         titleLayoutParams?.matchConstraintMaxWidth = textMaxWidth
         subtitleLayoutParams?.matchConstraintMaxWidth = textMaxWidth
     }
@@ -135,7 +132,7 @@ class BalanceAtf2ViewHolder(v: View, private val totalItems: Int) : BaseBalanceV
             setImageDrawable(
                 ContextCompat.getDrawable(
                     itemView.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N75
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN50
                 )
             )
         }
@@ -169,25 +166,49 @@ class BalanceAtf2ViewHolder(v: View, private val totalItems: Int) : BaseBalanceV
     }
 
     private fun setFontSubtitle(element: BalanceDrawerItemModel) {
-        if (
-            (element.drawerItemType == TYPE_SUBSCRIPTION && !element.isSubscriberGoToPlus) ||
-            element.drawerItemType == TYPE_WALLET_APP_NOT_LINKED
-        ) {
-            binding?.homeContainerBalance?.homeTvSubtitle?.setWeight(Typography.BOLD)
-            binding?.homeContainerBalance?.homeTvSubtitle?.setTextColor(
-                ContextCompat.getColor(
-                    itemView.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
+        when (element.drawerItemType) {
+            TYPE_SUBSCRIPTION -> {
+                val typographyWeight = if (element.balanceSubTitleTextAttribute?.isBold == true) Typography.BOLD else Typography.REGULAR
+                binding?.homeContainerBalance?.homeTvSubtitle?.setWeight(typographyWeight)
+
+                binding?.homeContainerBalance?.homeTvSubtitle?.setTextColor(
+                    ContextCompat.getColor(
+                        itemView.context,
+                        element.balanceSubTitleTextAttribute?.colourRef
+                            ?: com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                    )
                 )
-            )
-        } else {
-            binding?.homeContainerBalance?.homeTvSubtitle?.setWeight(Typography.REGULAR)
-            binding?.homeContainerBalance?.homeTvSubtitle?.setTextColor(
-                ContextCompat.getColor(
-                    itemView.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN600
+            }
+            TYPE_REWARDS -> {
+                val typographyWeight = if (element.balanceSubTitleTextAttribute?.isBold == true) Typography.BOLD else Typography.REGULAR
+                binding?.homeContainerBalance?.homeTvSubtitle?.setWeight(typographyWeight)
+
+                binding?.homeContainerBalance?.homeTvSubtitle?.setTextColor(
+                    ContextCompat.getColor(
+                        itemView.context,
+                        element.balanceSubTitleTextAttribute?.colourRef
+                            ?: com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                    )
                 )
-            )
+            }
+            TYPE_WALLET_APP_NOT_LINKED -> {
+                binding?.homeContainerBalance?.homeTvSubtitle?.setWeight(Typography.BOLD)
+                binding?.homeContainerBalance?.homeTvSubtitle?.setTextColor(
+                    ContextCompat.getColor(
+                        itemView.context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                    )
+                )
+            }
+            else -> {
+                binding?.homeContainerBalance?.homeTvSubtitle?.setWeight(Typography.REGULAR)
+                binding?.homeContainerBalance?.homeTvSubtitle?.setTextColor(
+                    ContextCompat.getColor(
+                        itemView.context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                    )
+                )
+            }
         }
     }
 

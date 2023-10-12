@@ -16,7 +16,7 @@
             android:id="@+id/smart_bills_item_content_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/Unify_N0"
+            android:background="@color/Unify_NN0"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:paddingTop="@dimen/smart_bills_item_padding"
@@ -111,7 +111,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/spacing_lvl2"
                         android:layout_marginRight="@dimen/spacing_lvl2"
-                        android:textColor="@color/Unify_N700_96"
+                        android:textColor="@color/Unify_NN950_96"
                         app:typographyType="body_2"
                         app:typographyWeight="bold"
                         tools:text="Rp 200.000.000" />
@@ -131,7 +131,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/spacing_lvl2"
-                        android:textColor="@color/Unify_N700_32"
+                        android:textColor="@color/Unify_NN950_32"
                         app:typographyType="body_3"
                         app:typographyWeight="reguler"
                         tools:visibility="visible"
@@ -175,7 +175,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_lvl1"
                     android:text="@string/smart_bills_item_detail"
-                    android:textColor="@color/Unify_G500"
+                    android:textColor="@color/Unify_GN500"
                     app:typographyType="small" />
 
             </LinearLayout>
@@ -194,7 +194,7 @@
             android:id="@+id/smart_bills_item_disabled_overlay"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:background="@color/Unify_N0_32"
+            android:background="@color/Unify_NN0_32"
             app:layout_constraintBottom_toBottomOf="@id/smart_bills_item_content_container"
             app:layout_constraintLeft_toLeftOf="@id/smart_bills_item_content_container"
             app:layout_constraintRight_toRightOf="@id/smart_bills_item_content_container"
@@ -220,6 +220,6 @@
         android:id="@+id/smart_bills_view_disable"
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl8"
-        android:background="@color/Unify_N0_44"
+        android:background="@color/Unify_NN0_44"
         android:visibility="gone" />
 </FrameLayout>

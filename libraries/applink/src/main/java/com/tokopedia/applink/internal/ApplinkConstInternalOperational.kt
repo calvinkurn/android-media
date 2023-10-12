@@ -1,12 +1,11 @@
 package com.tokopedia.applink.internal
 
 import android.net.Uri
-import com.tokopedia.applink.DLP
-import com.tokopedia.applink.DeeplinkMapper
 import com.tokopedia.applink.constant.DeeplinkConstant
 
 object ApplinkConstInternalOperational {
     const val HOST_CONTACT_US = "contactus"
+    const val HOST_CUSTOMERAPP_INBOX_LIST = "customercare-inbox-list"
     const val HOST_TICKET = "customercare"
     const val HOST_RESOLUTION = "resolution"
     const val INTERNAL_INBOX_LIST = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_TICKET/inbox-list"

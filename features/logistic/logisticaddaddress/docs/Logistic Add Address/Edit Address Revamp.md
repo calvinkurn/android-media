@@ -6,17 +6,15 @@ labels:
 ---
 
 <!--left header table-->
-| **Status** | ​<!--start status:GREEN-->RELEASE<!--end status--> |
-| --- | --- |
-| Contributors | [Ivan Fadhila (Unlicensed)](https://tokopedia.atlassian.net/wiki/people/5dd7516d58fc78100710fcea?ref=confluence) [Fakhira Devina](https://tokopedia.atlassian.net/wiki/people/61077e53b704b40068e80a8e?ref=confluence) [Irpan .](https://tokopedia.atlassian.net/wiki/people/6253578a3bf0f0007015669c?ref=confluence) [Eka Desyantoro](https://tokopedia.atlassian.net/wiki/people/6283196bd9ddcc006e9c7a85?ref=confluence) |
-| Product Manager | [Nuringtyas Rahwinarni](https://tokopedia.atlassian.net/wiki/people/5f58b98ed2c77e0075ac9865?ref=confluence)  |
-| Team | [Minion Bob](https://tokopedia.atlassian.net/people/team/2373d8a6-1afc-4f2a-aa7a-63855c273051) |
-| Release date | 27 May 2022 / <!--start status:GREY-->MA-3.177<!--end status-->  |
-| Module type | ​<!--start status:YELLOW-->FEATURE<!--end status--> |
-| Product PRD | [Edit Address Revamp](https://docs.google.com/document/d/1czHKAyEwLIbqWnlmnElAFUX5mtfoDkp__N38JXa1cyA/edit#) |
-| Module Location | `features/logistic/logisticaddress` |
-
-## Table of Contents
+| **Status**      | ​<!--start status:GREEN-->RELEASE<!--end status-->                                                                                                                                                                                                                                                                                                                                                                          |
+|-----------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Contributors    | [Ivan Fadhila (Unlicensed)](https://tokopedia.atlassian.net/wiki/people/5dd7516d58fc78100710fcea?ref=confluence) [Fakhira Devina](https://tokopedia.atlassian.net/wiki/people/61077e53b704b40068e80a8e?ref=confluence) [Irpan .](https://tokopedia.atlassian.net/wiki/people/6253578a3bf0f0007015669c?ref=confluence) [Eka Desyantoro](https://tokopedia.atlassian.net/wiki/people/6283196bd9ddcc006e9c7a85?ref=confluence) |
+| Product Manager | [Nuringtyas Rahwinarni](https://tokopedia.atlassian.net/wiki/people/5f58b98ed2c77e0075ac9865?ref=confluence)                                                                                                                                                                                                                                                                                                                |
+| Team            | [Minion Bob](https://tokopedia.atlassian.net/people/team/2373d8a6-1afc-4f2a-aa7a-63855c273051)                                                                                                                                                                                                                                                                                                                              |
+| Release date    | 27 May 2022 / <!--start status:GREY-->MA-3.177<!--end status-->                                                                                                                                                                                                                                                                                                                                                             |
+| Module type     | ​<!--start status:YELLOW-->FEATURE<!--end status-->                                                                                                                                                                                                                                                                                                                                                                         |
+| Product PRD     | [Edit Address Revamp](https://docs.google.com/document/d/1czHKAyEwLIbqWnlmnElAFUX5mtfoDkp__N38JXa1cyA/edit#)                                                                                                                                                                                                                                                                                                                |
+| Module Location | `features/logistic/logisticaddress`                                                                                                                                                                                                                                                                                                                                                                                         |
 
 <!--toc-->
 
@@ -28,6 +26,10 @@ labels:
 
 <!--start expand:10 Feb 2023 (MA-3.208) (SA-2.138)-->
 [Edit Journey For Huawei Device](https://docs.google.com/document/d/156V7TudzmolCvwQ8MQGoWOTDaHuHGSHxRVu-HqNQ7_E/edit?pli=1#heading=h.w51s9gpss7d9)
+<!--end expand-->
+
+<!--start expand:September 2023-->
+Remove Edit Address V1
 <!--end expand-->
 
 ## Overview
@@ -95,9 +97,6 @@ RouteManager.getIntent(context, "${ApplinkConstInternalLogistic.EDIT_ADDRESS_REV
 | `kero_edit_address` | [Edit Address - /maps/v1/address/edit](https://tokopedia.atlassian.net/wiki/spaces/LG/pages/572194984)  | To edit address |
 
 ## Action Items
-
-- Create applink to get pinpoint only
-- Remove Add Address V1 (still use to edit address from `money in` feature)
 
 ## Useful Links
 

@@ -222,9 +222,7 @@ class ManageAddressFragment :
             vpManageAddress.adapter = tabAdapter
             vpManageAddress.offscreenPageLimit = fragments.size
             vpManageAddress.isUserInputEnabled = false
-            if (viewModel.isEligibleShareAddress.not()) {
-                tlManageAddress.gone()
-            } else if (viewModel.isNeedToShareAddress) {
+            if (viewModel.isNeedToShareAddress) {
                 tlManageAddress.gone()
                 manageAddressListener?.setToolbarTitle(
                     getString(R.string.title_select_share_address),
@@ -296,7 +294,7 @@ class ManageAddressFragment :
     }
 
     private fun fragmentPage(): List<Pair<String, Fragment>> {
-        return if (viewModel.isEligibleShareAddress.not() || viewModel.isNeedToShareAddress) {
+        return if (viewModel.isNeedToShareAddress) {
             listOf(
                 Pair(
                     getString(R.string.tablayout_label_main),

@@ -1,17 +1,15 @@
 package com.tokopedia.applink.merchant
 
-import android.content.Context
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.inbox.DeeplinkMapperInbox
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.startsWithPattern
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfigKey
 
 /**
  * Created by Rafli Syam on 2020-02-04.
@@ -20,6 +18,7 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 object DeeplinkMapperMerchant {
 
     const val PARAM_CREATE_SHOWCASE = "is_create_showcase"
+    const val PARAM_UTM_SOURCE = "utm_source"
     private const val PARAM_RATING = "rating"
     private const val PARAM_SOURCE = "source"
     private const val PRODUCT_SEGMENT = "product"
@@ -42,6 +41,11 @@ object DeeplinkMapperMerchant {
     private const val FLASH_SALE_TOKOPEDIA_LIST_SEGMENT_SIZE = 1
     private const val FLASH_SALE_TOKOPEDIA_DETAIL_SEGMENT_SIZE = 2
     private const val CAMPAIGN_DETAIL_SEGMENT = "campaign-detail"
+
+    private const val URL_SEGMENT_FLASH_SALE_TOKOPEDIA = "manage-campaign/flash-sale"
+    private const val URL_SEGMENT_FLASH_SALE_TOKO = "flash-sale-toko"
+    private const val URL_SEGMENT_SELLER_MVC = "coupon"
+    private const val URL_SEGMENT_SLASH_PRICE = "pengaturan-diskon"
 
     private const val PARAM_URL = "url"
 
@@ -97,7 +101,7 @@ object DeeplinkMapperMerchant {
     fun getRegisteredNavigationProductReview(uri: Uri): String {
         val segments = uri.pathSegments
         val rating = uri.getQueryParameter(PARAM_RATING) ?: "5"
-        val utmSource = uri.getQueryParameter(PARAM_SOURCE) ?: ""
+        val utmSource = uri.getQueryParameter(PARAM_UTM_SOURCE) ?: uri.getQueryParameter(PARAM_SOURCE) ?: ""
 
         val reputationId = segments[segments.size - 2]
         val productId = segments.last()
@@ -106,7 +110,7 @@ object DeeplinkMapperMerchant {
         return Uri.parse(newUri)
             .buildUpon()
             .appendQueryParameter(PARAM_RATING, rating)
-            .appendQueryParameter(PARAM_SOURCE, utmSource)
+            .appendQueryParameter(PARAM_UTM_SOURCE, utmSource)
             .build()
             .toString()
     }
@@ -374,6 +378,10 @@ object DeeplinkMapperMerchant {
         return UriUtil.buildUri(ApplinkConstInternalSellerapp.SELLER_MVC_CREATE, voucherType)
     }
 
+    fun getRegisteredNavigationForOfferLandingPage(deeplink: String): String {
+        return deeplink.replace("${ApplinkConst.APPLINK_CUSTOMER_SCHEME}://", "${ApplinkConstInternalMechant.INTERNAL_MERCHANT}/")
+    }
+
     fun isShopPageSettingSellerApp(deeplink: String): Boolean {
         val uri = Uri.parse(deeplink)
         return deeplink.startsWithPattern(ApplinkConst.SellerApp.SHOP_SETTINGS_SELLER_APP) && uri.lastPathSegment == SHOP_PAGE_SETTING_SEGMENT
@@ -404,6 +412,10 @@ object DeeplinkMapperMerchant {
         return deeplink.startsWith(ApplinkConst.SellerApp.VOUCHER_PRODUCT_DETAIL)
     }
 
+    fun isBuyMoreGetMoreOLPApplink(deeplink: String): Boolean {
+        return deeplink.startsWith(ApplinkConst.BUY_MORE_GET_MORE_OLP)
+    }
+
     fun isSellerShopFlashSaleApplink(deeplink: String): Boolean {
         val path = Uri.parse(deeplink).path.orEmpty()
         val removedPathLink = if (path.isEmpty()) {
@@ -415,14 +427,23 @@ object DeeplinkMapperMerchant {
     }
 
     fun isSellerTokopediaFlashSaleApplink(deeplink: String): Boolean {
-        val path = Uri.parse(deeplink).path.orEmpty()
-        val pathSegmentSize = Uri.parse(deeplink).pathSegments.size
-        val removedPathLink = if (path.isEmpty()) {
-            deeplink // already removed
-        } else {
-            deeplink.split(path).firstOrNull()
-        }
-        return removedPathLink == ApplinkConst.SellerApp.SELLER_TOKOPEDIA_FLASH_SALE && pathSegmentSize <= FLASH_SALE_TOKOPEDIA_LIST_SEGMENT_SIZE
+        return deeplink.startsWith(ApplinkConst.SellerApp.SELLER_TOKOPEDIA_FLASH_SALE)
+    }
+
+    fun isSellerTokopediaUpcomingFlashSaleApplink(deeplink: String): Boolean {
+        return deeplink.startsWith(ApplinkConst.SellerApp.SELLER_TOKOPEDIA_FLASH_SALE_UPCOMING)
+    }
+
+    fun isSellerTokopediaRegisteredFlashSaleApplink(deeplink: String): Boolean {
+        return deeplink.startsWith(ApplinkConst.SellerApp.SELLER_TOKOPEDIA_FLASH_SALE_REGISTERED)
+    }
+
+    fun isSellerTokopediaOngoingFlashSaleApplink(deeplink: String): Boolean {
+        return deeplink.startsWith(ApplinkConst.SellerApp.SELLER_TOKOPEDIA_FLASH_SALE_ONGOING)
+    }
+
+    fun isSellerTokopediaFinishedFlashSaleApplink(deeplink: String): Boolean {
+        return deeplink.startsWith(ApplinkConst.SellerApp.SELLER_TOKOPEDIA_FLASH_SALE_FINISHED)
     }
 
     fun isSellerTokopediaFlashSaleCampaignDetailApplink(deeplink: String): Boolean {
@@ -442,6 +463,10 @@ object DeeplinkMapperMerchant {
     fun isSellerMvcDetailAppLink(deeplink: String): Boolean {
         val appLink = Uri.parse(deeplink)
         return UriUtil.matchWithPattern(ApplinkConst.SellerApp.SELLER_MVC_DETAIL, appLink) != null
+    }
+
+    fun isSellerShopNibAppLink(deeplink: String): Boolean {
+        return deeplink.startsWith(ApplinkConst.SellerApp.SELLER_SHOP_NIB)
     }
 
     fun getRegisteredNavigationForVoucherProductList(deeplink: String): String {
@@ -465,7 +490,23 @@ object DeeplinkMapperMerchant {
     }
 
     fun getRegisteredNavigationForSellerTokopediaFlashSale(): String {
-        return ApplinkConstInternalSellerapp.SELLER_TOKOPEDIA_FLASH_SALE
+        return ApplinkConstInternalSellerapp.SELLER_TOKOPEDIA_FLASH_SALE_UPCOMING
+    }
+
+    fun getRegisteredNavigationForSellerTokopediaFlashSaleUpcoming(): String {
+        return ApplinkConstInternalSellerapp.SELLER_TOKOPEDIA_FLASH_SALE_UPCOMING
+    }
+
+    fun getRegisteredNavigationForSellerTokopediaFlashSaleRegistered(): String {
+        return ApplinkConstInternalSellerapp.SELLER_TOKOPEDIA_FLASH_SALE_REGISTERED
+    }
+
+    fun getRegisteredNavigationForSellerTokopediaFlashSaleOngoing(): String {
+        return ApplinkConstInternalSellerapp.SELLER_TOKOPEDIA_FLASH_SALE_ONGOING
+    }
+
+    fun getRegisteredNavigationForSellerTokopediaFlashSaleFinished(): String {
+        return ApplinkConstInternalSellerapp.SELLER_TOKOPEDIA_FLASH_SALE_FINISHED
     }
 
     fun getRegisteredNavigationForSellerTokopediaFlashSaleCampaignDetail(deeplink: String): String {
@@ -499,6 +540,10 @@ object DeeplinkMapperMerchant {
         )
     }
 
+    fun getRegisteredNavigationForSellerShopNib(): String {
+        return ApplinkConstInternalSellerapp.SELLER_SHOP_NIB
+    }
+
     fun getRegisteredNavigationForCreateShowcase(deeplink: String): String {
         val uri = Uri.parse(deeplink)
         if (deeplink.startsWithPattern(ApplinkConst.SellerApp.SHOP_PAGE_PRODUCTS_CREATE_SHOWCASE) && uri.lastPathSegment == CREATE_SHOWCASE_SEGMENT) {
@@ -507,5 +552,49 @@ object DeeplinkMapperMerchant {
             }.build().toString()
         }
         return deeplink
+    }
+
+    fun getRegisteredNavigationFromHttpForSellerTokopediaFlashSale(uri: Uri, deepLink: String): String {
+        return if (uri.pathSegments
+            .joinToString("/")
+            .startsWith(URL_SEGMENT_FLASH_SALE_TOKOPEDIA, false)
+        ) {
+            ApplinkConstInternalSellerapp.SELLER_TOKOPEDIA_FLASH_SALE_UPCOMING
+        } else {
+            ""
+        }
+    }
+
+    fun getRegisteredNavigationFromHttpForSellerShopFlashSale(uri: Uri, deepLink: String): String {
+        return if (uri.pathSegments
+            .joinToString("/")
+            .startsWith(URL_SEGMENT_FLASH_SALE_TOKO, false)
+        ) {
+            getRegisteredNavigationForSellerShopFlashSale(deepLink)
+        } else {
+            ""
+        }
+    }
+
+    fun getRegisteredNavigationFromHttpForSellerMvc(uri: Uri, deepLink: String): String {
+        return if (uri.pathSegments
+            .joinToString("/")
+            .startsWith(URL_SEGMENT_SELLER_MVC, false)
+        ) {
+            getRegisteredNavigationForVoucherProductList(deepLink)
+        } else {
+            ""
+        }
+    }
+
+    fun getRegisteredNavigationFromHttpForSlashPrice(uri: Uri, deepLink: String): String {
+        return if (uri.pathSegments
+            .joinToString("/")
+            .startsWith(URL_SEGMENT_SLASH_PRICE, false)
+        ) {
+            ApplinkConstInternalSellerapp.SHOP_DISCOUNT
+        } else {
+            ""
+        }
     }
 }

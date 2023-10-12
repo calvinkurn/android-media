@@ -3,19 +3,20 @@ package com.tokopedia.tokofood.feature.ordertracking.presentation.activity
 import android.os.Bundle
 import android.os.PersistableBundle
 import androidx.fragment.app.Fragment
-import com.tokochat.tokochat_config_common.util.TokoChatConnection
+import com.tokopedia.tokochat.config.util.TokoChatConnection
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood
+import com.tokopedia.tokochat.common.util.TokoChatValueUtil
 import com.tokopedia.tokofood.feature.ordertracking.base.presentation.fragment.BaseTokoFoodOrderTrackingFragment
 import com.tokopedia.tokofood.feature.ordertracking.di.component.DaggerTokoFoodOrderTrackingComponent
 import com.tokopedia.tokofood.feature.ordertracking.di.component.TokoFoodOrderTrackingComponent
 import com.tokopedia.tokofood.feature.ordertracking.presentation.viewmodel.TokoFoodOrderTrackingViewModel
 import javax.inject.Inject
 
-class TokoFoodOrderTrackingActivity :
+open class TokoFoodOrderTrackingActivity :
     BaseSimpleActivity(),
     HasComponent<TokoFoodOrderTrackingComponent> {
 
@@ -44,6 +45,11 @@ class TokoFoodOrderTrackingActivity :
                 val orderIdParam = params[DeeplinkMapperTokoFood.PATH_ORDER_ID].orEmpty()
                 putString(DeeplinkMapperTokoFood.PATH_ORDER_ID, orderIdParam)
             }
+        }?.apply {
+            putBoolean(
+                TokoChatValueUtil.IS_FROM_BUBBLE_KEY,
+                intent.getBooleanExtra(TokoChatValueUtil.IS_FROM_BUBBLE_KEY, false)
+            )
         }
         return BaseTokoFoodOrderTrackingFragment.newInstance(bundle)
     }
@@ -56,7 +62,7 @@ class TokoFoodOrderTrackingActivity :
             .build()
     }
 
-    private fun initInjector() {
+    protected open fun initInjector() {
         DaggerTokoFoodOrderTrackingComponent
             .builder()
             .baseAppComponent((this.applicationContext as BaseMainApplication).baseAppComponent)

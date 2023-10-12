@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:text="Untuk kemudahan pembayaran kartu kredit / debit online, simpan informasi kartu kredit / debit online anda,"
             app:typographyType="body_2"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             />
 
 

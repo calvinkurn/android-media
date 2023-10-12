@@ -13,9 +13,9 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.common_compose.ui.NestTheme
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
+import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.report.data.constant.GeneralConstant
 import com.tokopedia.report.data.model.ProductReportReason
 import com.tokopedia.report.data.util.MerchantReportTracking
@@ -58,7 +58,7 @@ class ProductReportActivity : AppCompatActivity() {
 
         setContent {
             NestTheme {
-                LaunchedEffect(key1 = viewModel.uiEffect, block = {
+                LaunchedEffect(key1 = false, block = {
                     viewModel.uiEffect.collectLatest {
                         when (it) {
                             is ProductReportUiEvent.OnFooterClicked -> onFooterClicked()

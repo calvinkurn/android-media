@@ -46,7 +46,7 @@
             android:layout_marginStart="2dp"
             android:layout_marginLeft="2dp"
             app:layout_goneMarginStart="0dp"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             app:layout_constraintStart_toEndOf="@id/labelMyQuestion"
             app:layout_constraintTop_toTopOf="@id/labelMyQuestion"
             app:layout_constraintBottom_toBottomOf="@id/labelMyQuestion"
@@ -60,7 +60,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="2dp"
             android:layout_marginLeft="2dp"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             app:layout_constraintStart_toEndOf="@+id/replyUserName"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -80,7 +80,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/reply_header_user_details_container"
         app:icon_name="MENU_KEBAB_VERTICAL"
-        app:icon_color_light_enable="@color/Unify_N200"
+        app:icon_color_light_enable="@color/Unify_NN500"
         tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -157,7 +157,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        android:textColor="@color/Unify_N700_32"
+        android:textColor="@color/Unify_NN950_32"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

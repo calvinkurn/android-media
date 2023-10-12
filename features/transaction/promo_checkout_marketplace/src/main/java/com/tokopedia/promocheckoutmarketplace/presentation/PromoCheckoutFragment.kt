@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.FrameLayout
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -73,6 +74,9 @@ import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoRecommen
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoSuggestionItemUiModel
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoSuggestionUiModel
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoTabUiModel
+import com.tokopedia.promocheckoutmarketplace.presentation.viewholder.PromoListItemViewHolder.Companion.STATE_DISABLED
+import com.tokopedia.promocheckoutmarketplace.presentation.viewholder.PromoListItemViewHolder.Companion.STATE_ENABLED
+import com.tokopedia.promocheckoutmarketplace.presentation.viewholder.PromoListItemViewHolder.Companion.STATE_SELECTED
 import com.tokopedia.promocheckoutmarketplace.presentation.viewmodel.ApplyPromoResponseAction
 import com.tokopedia.promocheckoutmarketplace.presentation.viewmodel.ClearPromoResponseAction
 import com.tokopedia.promocheckoutmarketplace.presentation.viewmodel.Delete
@@ -155,6 +159,11 @@ class PromoCheckoutFragment :
 
     private var toolbar: ToolbarPromoCheckout? = null
 
+    // Activity result
+    val gopayCicilLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        reloadData()
+    }
+
     companion object {
         const val REQUEST_CODE_PHONE_VERIFICATION = 9999
         const val HAS_ELEVATION = 6
@@ -171,6 +180,8 @@ class PromoCheckoutFragment :
 
         private const val DESTINATION_BACK = "back"
         private const val DESTINATION_REFRESH = "refresh"
+
+        private const val PROMO_GOPAY_LATER = "GoPay Later"
 
         fun createInstance(
             pageSource: Int,
@@ -279,6 +290,9 @@ class PromoCheckoutFragment :
         observeApplyPromoResult()
         observeClearPromoResult()
         observeGetPromoSuggestionResult()
+
+        // Observe ui actions
+        observeActionableCTAApplink()
     }
 
     private fun setBackground() {
@@ -316,7 +330,7 @@ class PromoCheckoutFragment :
 
     private fun initializeSwipeRefreshLayout() {
         activity?.let {
-            viewBinding?.swipeRefreshLayout?.setColorSchemeColors(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G400))
+            viewBinding?.swipeRefreshLayout?.setColorSchemeColors(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
         }
         viewBinding?.swipeRefreshLayout?.setOnRefreshListener {
             reloadData()
@@ -718,6 +732,13 @@ class PromoCheckoutFragment :
         }
     }
 
+    private fun observeActionableCTAApplink() {
+        viewModel.getActionableApplinkNavigation.observe(viewLifecycleOwner) { applink ->
+            val intent = RouteManager.getIntent(context, applink)
+            gopayCicilLauncher.launch(intent)
+        }
+    }
+
     private fun showPromoCheckoutSuggestionBottomSheet(data: PromoSuggestionUiModel) {
         activity?.let {
             snapToPromoInput()
@@ -805,6 +826,20 @@ class PromoCheckoutFragment :
             renderLoadPromoSuccess(fragmentUiModel)
         } else {
             renderLoadPromoFailed(fragmentUiModel)
+        }
+
+        if (fragmentUiModel.uiState.shouldShowToasterBenefitAdjustmentMessage &&
+            fragmentUiModel.uiData.benefitAdjustmentMessage.isNotBlank()
+        ) {
+            view?.let {
+                Toaster.build(
+                    it,
+                    fragmentUiModel.uiData.benefitAdjustmentMessage,
+                    Toaster.LENGTH_SHORT,
+                    Toaster.TYPE_NORMAL
+                ).show()
+                viewModel.setShouldShowToasterBenefitAdjustmentMessage(false)
+            }
         }
     }
 
@@ -945,13 +980,17 @@ class PromoCheckoutFragment :
 
     override fun loadData(page: Int) {
         showLoading()
-        val promoRequest = arguments?.getParcelable(ARGS_PROMO_REQUEST) ?: PromoRequest()
-        val chosenAddress: ChosenAddress? = arguments?.getParcelable(ARGS_CHOSEN_ADDRESS)
-        viewModel.getPromoList(promoRequest, "", chosenAddress)
+        loadPromoData()
     }
 
     override fun isLoadMoreEnabledByDefault(): Boolean {
         return false
+    }
+
+    private fun loadPromoData(promoCode: String = "") {
+        val promoRequest = arguments?.getParcelable(ARGS_PROMO_REQUEST) ?: PromoRequest()
+        val chosenAddress: ChosenAddress? = arguments?.getParcelable(ARGS_CHOSEN_ADDRESS)
+        viewModel.getPromoList(promoRequest, promoCode, chosenAddress)
     }
 
     private fun showToastMessage(message: String) {
@@ -1129,9 +1168,7 @@ class PromoCheckoutFragment :
 
     override fun onClickApplyManualInputPromo(promoCode: String, isFromSuggestion: Boolean) {
         viewModel.updatePromoInputStateBeforeApplyPromo(promoCode, isFromSuggestion)
-        val promoRequest = arguments?.getParcelable(ARGS_PROMO_REQUEST) ?: PromoRequest()
-        val chosenAddress: ChosenAddress? = arguments?.getParcelable(ARGS_CHOSEN_ADDRESS)
-        viewModel.getPromoList(promoRequest, promoCode, chosenAddress)
+        loadPromoData(promoCode)
     }
 
     override fun onCLickClearManualInputPromo() {
@@ -1139,7 +1176,7 @@ class PromoCheckoutFragment :
     }
 
     override fun onClickPromoListItem(element: PromoListItemUiModel, position: Int) {
-        viewModel.updatePromoListAfterClickPromoItem(element)
+        viewModel.handlePromoListAfterClickPromoItem(element, position)
 
         // dismiss coachmark if user click promo with coachmark
         val adapterItems = adapter.list
@@ -1152,12 +1189,21 @@ class PromoCheckoutFragment :
     }
 
     override fun onClickPromoItemDetail(element: PromoListItemUiModel) {
-        analytics.eventClickLihatDetailKupon(viewModel.getPageSource(), element.uiData.promoCode)
+        val promoCode: String
+        val couponAppLink: String
+        if (element.uiData.useSecondaryPromo) {
+            promoCode = element.uiData.secondaryCoupons.first().code
+            couponAppLink = element.uiData.secondaryCoupons.first().couponAppLink
+        } else {
+            promoCode = element.uiData.promoCode
+            couponAppLink = element.uiData.couponAppLink
+        }
+        analytics.eventClickLihatDetailKupon(viewModel.getPageSource(), promoCode)
         if (!element.uiState.isParentEnabled) {
-            analytics.eventClickLihatDetailOnIneligibleCoupon(viewModel.getPageSource(), element.uiData.promoCode, element.uiData.errorMessage)
+            analytics.eventClickLihatDetailOnIneligibleCoupon(viewModel.getPageSource(), promoCode, element.uiData.errorMessage)
         }
         val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_DETAIL_MARKETPLACE).apply {
-            val promoCodeLink = element.uiData.couponAppLink + element.uiData.promoCode
+            val promoCodeLink = couponAppLink + promoCode
             putExtra(EXTRA_KUPON_CODE, promoCodeLink)
             putExtra(EXTRA_IS_USE, true)
             putExtra(ONE_CLICK_SHIPMENT, false)
@@ -1187,6 +1233,15 @@ class PromoCheckoutFragment :
         }
     }
 
+    override fun onShowPromoActionable(element: PromoListItemUiModel, position: Int) {
+        analytics.sendImpressionPromoActivatedGopayCicilEvent(
+            viewModel.getPageSource(),
+            element.uiData.promoCode,
+            element.uiData.benefitAmount,
+            position
+        )
+    }
+
     override fun onTabSelected(element: PromoTabUiModel) {
         selectTab(element)
         analytics.eventClickTabPromoCategory(viewModel.getPageSource(), element.uiData.tabs[element.uiState.selectedTabPosition].title)
@@ -1196,7 +1251,11 @@ class PromoCheckoutFragment :
         viewBinding?.tabsPromoHeader?.tabsPromo?.getUnifyTabLayout()?.getTabAt(element.uiState.selectedTabPosition)?.select()
     }
 
-    override fun onShowPromoItem(element: PromoListItemUiModel, position: Int) {
+    override fun onShowPromoItem(
+        element: PromoListItemUiModel,
+        position: Int,
+        state: Int
+    ) {
         if (element.uiState.isParentEnabled) {
             analytics.eventImpressionEligiblePromoSection(viewModel.getPageSource(), position, element)
         } else {
@@ -1213,6 +1272,29 @@ class PromoCheckoutFragment :
 
         if (element.uiState.isHighlighted) {
             analytics.eventImpressionHighlightedPromoSection(viewModel.getPageSource(), position, element)
+        }
+
+        outerLoop@ for (promoInfo in element.uiData.promoInfos) {
+            for (method in promoInfo.methods) {
+                if (method == PROMO_GOPAY_LATER) {
+                    if (state == STATE_ENABLED || state == STATE_SELECTED) {
+                        analytics.sendImpressionEligiblePromoSectionGopayCicilCartEvent(
+                            viewModel.getPageSource(),
+                            element.uiData.promoCode,
+                            element.uiData.benefitAmount,
+                            position
+                        )
+                        break@outerLoop
+                    } else if (state == STATE_DISABLED) {
+                        analytics.sendImpressionIneligiblePromoSectionGopayCicilPromoValidationEvent(
+                            viewModel.getPageSource(),
+                            element.uiData.promoCode,
+                            element.uiData.errorMessage
+                        )
+                        break@outerLoop
+                    }
+                }
+            }
         }
     }
 

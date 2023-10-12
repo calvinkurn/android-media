@@ -6,10 +6,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewStub
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -30,7 +32,11 @@ import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityRe
 import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery.common.model.SearchParameter
+import com.tokopedia.discovery.common.reimagine.ReimagineRollence
+import com.tokopedia.discovery.common.reimagine.Search2Component
+import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.filter.bottomsheet.filtergeneraldetail.FilterGeneralDetailBottomSheet
+import com.tokopedia.filter.common.data.IOption
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.helper.getSortFilterCount
@@ -82,6 +88,7 @@ import com.tokopedia.search.result.product.emptystate.EmptyStateListenerDelegate
 import com.tokopedia.search.result.product.filter.analytics.SearchSortFilterTracking
 import com.tokopedia.search.result.product.filter.bottomsheetfilter.BottomSheetFilterViewDelegate
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavListenerDelegate
+import com.tokopedia.search.result.product.grid.ProductGridType
 import com.tokopedia.search.result.product.inspirationbundle.InspirationBundleListenerDelegate
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselListenerDelegate
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcListenerDelegate
@@ -91,6 +98,8 @@ import com.tokopedia.search.result.product.onboarding.OnBoardingListenerDelegate
 import com.tokopedia.search.result.product.performancemonitoring.PerformanceMonitoringModule
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationListener
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaListenerDelegate
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordListenerDelegate
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproduct.InspirationProductListenerDelegate
 import com.tokopedia.search.result.product.suggestion.SuggestionListenerDelegate
 import com.tokopedia.search.result.product.tdn.TopAdsImageViewListenerDelegate
 import com.tokopedia.search.result.product.ticker.TickerListenerDelegate
@@ -98,6 +107,7 @@ import com.tokopedia.search.result.product.video.SearchVideoPreference
 import com.tokopedia.search.result.product.videowidget.VideoCarouselListenerDelegate
 import com.tokopedia.search.result.product.violation.ViolationListenerDelegate
 import com.tokopedia.search.result.product.wishlist.WishlistHelper
+import com.tokopedia.search.utils.BackToTopView
 import com.tokopedia.search.utils.FragmentProvider
 import com.tokopedia.search.utils.SearchIdlingResource
 import com.tokopedia.search.utils.SearchLogger
@@ -122,6 +132,9 @@ import com.tokopedia.video_widget.carousel.VideoCarouselWidgetCoordinator
 import com.tokopedia.video_widget.util.networkmonitor.DefaultNetworkMonitor
 import org.json.JSONArray
 import javax.inject.Inject
+import com.tokopedia.filter.quick.SortFilter as SortFilterReimagine
+import com.tokopedia.filter.quick.SortFilter.Listener as SortFilterListener
+import com.tokopedia.filter.quick.SortFilterItem as SortFilterItemReimagine
 
 class ProductListFragment: BaseDaggerFragment(),
     ProductListSectionContract.View,
@@ -134,7 +147,8 @@ class ProductListFragment: BaseDaggerFragment(),
     SearchParameterProvider,
     FragmentProvider,
     ClassNameProvider,
-    ScreenNameProvider {
+    ScreenNameProvider,
+    BackToTopView {
 
     companion object {
         private const val SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab"
@@ -142,6 +156,7 @@ class ProductListFragment: BaseDaggerFragment(),
         private const val SEARCH_RESULT_ENHANCE_ANALYTIC = "SEARCH_RESULT_ENHANCE_ANALYTIC"
         private const val LAST_POSITION_ENHANCE_PRODUCT = "LAST_POSITION_ENHANCE_PRODUCT"
         private const val EXTRA_SEARCH_PARAMETER = "EXTRA_SEARCH_PARAMETER"
+        private const val LABEL_POSITION_VIEW = "view"
 
         fun newInstance(searchParameter: SearchParameter?): ProductListFragment {
             val args = Bundle().apply {
@@ -182,7 +197,10 @@ class ProductListFragment: BaseDaggerFragment(),
     lateinit var onBoardingListenerDelegate: OnBoardingListenerDelegate
 
     @Inject
-    lateinit var staggeredGridLayoutManager: StaggeredGridLayoutManager
+    lateinit var gridLayoutManager: GridLayoutManager
+
+    @Inject
+    lateinit var spanSizeLookup: SpanSizeLookup
 
     @Inject @Suppress("LateinitUsage")
     lateinit var sameSessionRecommendationListener: SameSessionRecommendationListener
@@ -217,14 +235,19 @@ class ProductListFragment: BaseDaggerFragment(),
     @Inject
     lateinit var searchVideoPreference: SearchVideoPreference
 
+    @Suppress("LateinitUsage")
+    @Inject
+    lateinit var reimagineRollence: ReimagineRollence
+
     private var refreshLayout: SwipeRefreshLayout? = null
-    private var staggeredGridLayoutLoadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
+    private var gridLayoutLoadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
     private var searchNavigationListener: SearchNavigationListener? = null
     private var performanceMonitoring: PageLoadTimePerformanceInterface? = null
     private var redirectionListener: RedirectionListener? = null
     private var searchParameter: SearchParameter? = null
     private var irisSession: IrisSession? = null
     private var searchSortFilter: SortFilter? = null
+    private var searchSortFilterReimagine: SortFilterReimagine? = null
     private var shimmeringView: LinearLayout? = null
 
     override var productCardLifecycleObserver: ProductCardLifecycleObserver? = null
@@ -363,7 +386,6 @@ class ProductListFragment: BaseDaggerFragment(),
     private fun initViews(view: View) {
         initSwipeToRefresh(view)
 
-        initSearchQuickSortFilter(view)
         initShimmeringView(view)
 
         initLoadMoreListener()
@@ -375,17 +397,13 @@ class ProductListFragment: BaseDaggerFragment(),
         refreshLayout?.setOnRefreshListener(this::reloadData)
     }
 
-    private fun initSearchQuickSortFilter(rootView: View) {
-        searchSortFilter = rootView.findViewById(R.id.search_product_quick_sort_filter)
-    }
-
     private fun initShimmeringView(view: View) {
         shimmeringView = view.findViewById(R.id.shimmeringView)
     }
 
     private fun initLoadMoreListener() {
-        val layoutManager = staggeredGridLayoutManager ?: return
-        staggeredGridLayoutLoadMoreTriggerListener = getEndlessRecyclerViewListener(layoutManager)
+        val layoutManager = changeView.activeLayoutManager ?: return
+        gridLayoutLoadMoreTriggerListener = getEndlessRecyclerViewListener(layoutManager)
     }
 
     private fun getEndlessRecyclerViewListener(
@@ -401,15 +419,20 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     private fun setupRecyclerView(rootView: View) {
+        val isReimagineSearchComponent =
+            reimagineRollence.search2Component() != Search2Component.CONTROL
+
+        gridLayoutManager.spanSizeLookup = spanSizeLookup
         recyclerViewUpdater.initialize(
             rootView.findViewById(R.id.recyclerview),
-            staggeredGridLayoutManager,
+            changeView.activeLayoutManager,
             listOf(
-                staggeredGridLayoutLoadMoreTriggerListener,
+                gridLayoutLoadMoreTriggerListener,
                 onBoardingListenerDelegate.createScrollListener(),
             ),
             createProductListTypeFactory(),
             viewLifecycleOwner,
+            isReimagineSearchComponent,
         )
 
         recyclerViewUpdater.recyclerView?.let {
@@ -497,6 +520,16 @@ class ProductListFragment: BaseDaggerFragment(),
             sameSessionRecommendationListener = sameSessionRecommendationListener,
             recycledViewPool = recycledViewPool,
             isSneakPeekEnabled = isSneakPeekEnabled,
+            inspirationKeywordListener = InspirationKeywordListenerDelegate(
+                presenter,
+                this,
+            ),
+            inspirationProductListener = InspirationProductListenerDelegate(
+                presenter,
+                this,
+                this
+            ),
+            reimagineSearch2Component = reimagineRollence.search2Component(),
         )
     }
 
@@ -629,6 +662,7 @@ class ProductListFragment: BaseDaggerFragment(),
 
     private fun hideViewOnError() {
         searchSortFilter?.gone()
+        searchSortFilterReimagine?.gone()
         shimmeringView?.gone()
         refreshLayout?.gone()
     }
@@ -692,6 +726,11 @@ class ProductListFragment: BaseDaggerFragment(),
         presenter?.onProductImpressed(item, adapterPosition)
     }
 
+    private val additionalPositionMap: Map<String, String>
+        get() = mapOf(
+            LABEL_POSITION_VIEW to changeView.viewType.trackingLabel,
+        )
+
     override fun sendProductImpressionTrackingEvent(
         item: ProductItemDataView,
         suggestedRelatedKeyword: String,
@@ -710,6 +749,7 @@ class ProductListFragment: BaseDaggerFragment(),
             item.getProductAsObjectDataLayer(
                 filterSortParams,
                 pageComponentId,
+                additionalPositionMap,
             )
         )
         productItemDataViews.add(item)
@@ -745,7 +785,7 @@ class ProductListFragment: BaseDaggerFragment(),
             getUserId(),
             irisSessionId,
             item.topadsTag,
-            item.dimension115,
+            item.getDimension115(additionalPositionMap),
             item.dimension131,
             pageComponentId,
         )
@@ -789,7 +829,7 @@ class ProductListFragment: BaseDaggerFragment(),
             getUserId(),
             item.dimension90,
             item.topadsTag,
-            item.dimension115,
+            item.getDimension115(additionalPositionMap),
             item.dimension131,
             pageComponentId,
         )
@@ -813,7 +853,11 @@ class ProductListFragment: BaseDaggerFragment(),
             componentId = pageComponentId,
         )
         SearchTracking.trackEventClickSearchResultProduct(
-            item.getProductAsObjectDataLayer(filterSortParams, pageComponentId),
+            item.getProductAsObjectDataLayer(
+                filterSortParams,
+                pageComponentId,
+                additionalPositionMap,
+            ),
             eventLabel,
             userId,
             productAnalyticsData,
@@ -1032,6 +1076,9 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun setQuickFilter(items: List<SortFilterItem>) {
+        if (searchSortFilter == null)
+            inflateQuickFilter()
+
         searchSortFilter?.let {
             it.sortFilterItems.removeAllViews()
             it.visibility = View.VISIBLE
@@ -1042,6 +1089,59 @@ class ProductListFragment: BaseDaggerFragment(),
 
             setSortFilterNewNotification(items)
         }
+    }
+
+    private fun inflateQuickFilter() {
+        view?.findViewById<ViewStub?>(R.id.viewStubSortFilter)?.let {
+            searchSortFilter = it.inflate() as? SortFilter
+        }
+    }
+
+    override fun setQuickFilterReimagine(items: List<SortFilterItemReimagine>) {
+        if (searchSortFilterReimagine == null)
+            inflateQuickFilterReimagine()
+
+        searchSortFilterReimagine?.let {
+            it.visible()
+            it.addItem(items)
+            it.scrollToPosition(0)
+            it.setListener(sortFilterListener())
+        }
+    }
+
+    private fun inflateQuickFilterReimagine() {
+        view?.findViewById<ViewStub?>(R.id.viewStubSortFilterReimagine)?.let {
+            searchSortFilterReimagine = it.inflate() as? SortFilterReimagine
+        }
+    }
+
+    private fun sortFilterListener() = object : SortFilterListener {
+        override fun onItemClicked(
+            sortFilterItem: SortFilterItemReimagine,
+            position: Int
+        ) {
+            val filter = presenter?.quickFilterList?.getOrNull(position) ?: return
+            val firstOption = filter.options.firstOrNull() ?: return
+            val searchParameter = getSearchParameter()?.getSearchParameterMap() ?: return
+
+            onQuickFilterSelected(
+                filter = filter,
+                option = firstOption,
+                pageSource = Dimension90Utils.getDimension90(searchParameter)
+            )
+        }
+
+        override fun onItemChevronClicked(
+            sortFilterItem: SortFilterItemReimagine,
+            position: Int
+        ) {
+            val filter = presenter?.quickFilterList?.getOrNull(position) ?: return
+            openBottomsheetMultipleOptionsQuickFilter(filter)
+        }
+
+        override fun onFilterClicked() { openBottomSheetFilterRevamp() }
+
+        override fun onSortClicked() { openBottomSheetSort() }
     }
 
     private fun setSortFilterNewNotification(items: List<SortFilterItem>) {
@@ -1062,20 +1162,38 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun configure(shouldRemove: Boolean) {
+        val sortFilterView = getSortFilterView()
+
         if (shouldRemove)
-            removeQuickFilterElevation(searchSortFilter)
+            removeQuickFilterElevation(sortFilterView)
         else
-            applyQuickFilterElevation(context, searchSortFilter)
+            applyQuickFilterElevation(context, sortFilterView)
     }
 
+    private fun getSortFilterView() =
+        if (isReimagineQuickFilter()) searchSortFilterReimagine
+        else searchSortFilter
+
+    private fun isReimagineQuickFilter() = reimagineRollence.search2Component() == Search2Component.QF_VAR
+
     private fun hideSearchSortFilter() {
+        searchSortFilterReimagine?.gone()
         searchSortFilter?.gone()
         shimmeringView?.visible()
     }
 
     override fun setSortFilterIndicatorCounter() {
         val searchParameter = searchParameter ?: return
-        searchSortFilter?.indicatorCounter = getSortFilterCount(searchParameter.getSearchParameterMap())
+        val sortFilterCount = getSortFilterCount(searchParameter.getSearchParameterMap())
+        val filterCount = sortFilterCount - (if (isAnySortActive) 1 else 0)
+
+        if (isReimagineQuickFilter())
+            searchSortFilterReimagine?.setSortFilterIndicatorCounter(
+                isAnySortActive,
+                filterCount,
+            )
+        else
+            searchSortFilter?.indicatorCounter = sortFilterCount
     }
     //endregion
 
@@ -1098,6 +1216,22 @@ class ProductListFragment: BaseDaggerFragment(),
     //region Change product card layout
     override fun setDefaultLayoutType(defaultView: Int) {
         changeView.change(defaultView)
+    }
+
+    override fun setProductGridType(productGridType: ProductGridType) {
+        changeView.onProductGridTypeChanged(productGridType) {
+            changeRecyclerViewLayoutManager(it)
+        }
+    }
+
+    private fun changeRecyclerViewLayoutManager(layoutManager: RecyclerView.LayoutManager) {
+        val oldLoadMoreListener = gridLayoutLoadMoreTriggerListener
+        initLoadMoreListener()
+        recyclerViewUpdater.changeLayoutManager(
+            layoutManager,
+            listOf(oldLoadMoreListener),
+            listOf(gridLayoutLoadMoreTriggerListener),
+        )
     }
     //endregion
 
@@ -1125,7 +1259,7 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun updateScrollListener() {
-        staggeredGridLayoutLoadMoreTriggerListener?.updateStateAfterGetData()
+        gridLayoutLoadMoreTriggerListener?.updateStateAfterGetData()
 
         tryForceLoadNextPage()
     }
@@ -1135,7 +1269,7 @@ class ProductListFragment: BaseDaggerFragment(),
 
         recyclerView.post {
             if (!recyclerView.canScrollVertically(1))
-                staggeredGridLayoutLoadMoreTriggerListener?.loadMoreNextPage()
+                gridLayoutLoadMoreTriggerListener?.loadMoreNextPage()
         }
     }
 
@@ -1238,13 +1372,22 @@ class ProductListFragment: BaseDaggerFragment(),
 
     //region on boarding / coachmark
     override fun showOnBoarding(firstProductPosition: Int) {
-        onBoardingListenerDelegate.showOnBoarding(firstProductPosition)
+        onBoardingListenerDelegate.showProductWithBOEOnBoarding(firstProductPosition)
     }
+
+    override fun enableProductViewTypeOnBoarding() {
+        onBoardingListenerDelegate.enableProductViewTypeCoachmark()
+    }
+
     //endregion
 
     //region Bottom Sheet Filter
     private fun openBottomSheetFilterRevamp() {
         presenter?.openFilterPage(getSearchParameter()?.getSearchParameterMap())
+    }
+
+    private fun openBottomSheetSort() {
+        presenter?.openSortPage(getSearchParameter()?.getSearchParameterMap())
     }
     //endregion
 
@@ -1254,19 +1397,19 @@ class ProductListFragment: BaseDaggerFragment(),
 
     //region dropdown quick filter
     override fun openBottomsheetMultipleOptionsQuickFilter(filter: Filter) {
-        val filterDetailCallback = object: FilterGeneralDetailBottomSheet.Callback {
-            override fun onApplyButtonClicked(optionList: List<Option>?) {
-                presenter?.onApplyDropdownQuickFilter(optionList)
+        val filterDetailCallback = object: FilterGeneralDetailBottomSheet.OptionCallback {
+            override fun onApplyButtonClicked(optionList: List<IOption>?) {
+                presenter?.onApplyDropdownQuickFilter(optionList?.filterIsInstance<Option>())
             }
         }
 
         setupActiveOptionsQuickFilter(filter)
 
         FilterGeneralDetailBottomSheet().show(
-            parentFragmentManager,
-            filter,
-            filterDetailCallback,
-            getString(R.string.search_quick_filter_dropdown_apply_button_text)
+            fragmentManager = parentFragmentManager,
+            filter = filter,
+            optionCallback = filterDetailCallback,
+            buttonApplyFilterDetailText = getString(R.string.search_quick_filter_dropdown_apply_button_text),
         )
     }
 

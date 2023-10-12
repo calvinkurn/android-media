@@ -7,15 +7,15 @@ labels:
 ---
 
 <!--left header table-->
-| **Status** | <!--start status:GREEN-->RELEASED<!--end status--> |
-| --- | --- |
-| **Project Contributor** | [Fakhira Devina](https://tokopedia.atlassian.net/wiki/people/61077e53b704b40068e80a8e?ref=confluence) |
-| Product Manager | [Nuringtyas Rahwinarni](https://tokopedia.atlassian.net/wiki/people/5f58b98ed2c77e0075ac9865?ref=confluence)  |
-| Team | [Minion Bob](https://tokopedia.atlassian.net/people/team/2373d8a6-1afc-4f2a-aa7a-63855c273051) |
-| Release date | 24 September 2020 / <!--start status:GREY-->SA-2.24<!--end status-->  |
-| Module type | <!--start status:YELLOW-->FEATURE<!--end status--> |
-| Product PRD | **Figma :** <https://www.figma.com/file/Owqs18GACUfIrvClUNm03W/COD-For-All-Users?node-id=112%3A0>  |
-| Module Location | `features/logistic/activation` |
+| **Status**              | <!--start status:GREEN-->RELEASED<!--end status-->                                                           |
+|-------------------------|--------------------------------------------------------------------------------------------------------------|
+| **Project Contributor** | [Fakhira Devina](https://tokopedia.atlassian.net/wiki/people/61077e53b704b40068e80a8e?ref=confluence)        |
+| Product Manager         | [Nuringtyas Rahwinarni](https://tokopedia.atlassian.net/wiki/people/5f58b98ed2c77e0075ac9865?ref=confluence) |
+| Team                    | [Minion Bob](https://tokopedia.atlassian.net/people/team/2373d8a6-1afc-4f2a-aa7a-63855c273051)               |
+| Release date            | 24 September 2020 / <!--start status:GREY-->SA-2.24<!--end status-->                                         |
+| Module type             | <!--start status:YELLOW-->FEATURE<!--end status-->                                                           |
+| Product PRD             | **Figma :** <https://www.figma.com/file/Owqs18GACUfIrvClUNm03W/COD-For-All-Users?node-id=112%3A0>            |
+| Module Location         | `features/logistic/activation`                                                                               |
 
 <!--toc-->
 

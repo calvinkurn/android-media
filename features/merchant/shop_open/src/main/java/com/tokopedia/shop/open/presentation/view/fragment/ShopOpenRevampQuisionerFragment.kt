@@ -22,6 +22,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.logisticCommon.data.constant.AddressConstant
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.open.R
@@ -246,8 +247,7 @@ class ShopOpenRevampQuisionerFragment :
                 is Fail -> {
                     val errorMessage = ErrorHandler.getErrorMessage(context, it.throwable)
                     showErrorNetwork(errorMessage) {
-                        val dataSurveyInput: MutableMap<String, Any> =
-                            viewModel.getDataSurveyInput(questionsAndAnswersId)
+                        val dataSurveyInput: MutableMap<String, Any> = viewModel.getDataSurveyInput(questionsAndAnswersId)
                         viewModel.sendSurveyData(dataSurveyInput)
                     }
                     ShopOpenRevampErrorHandler.logMessage(
@@ -265,15 +265,11 @@ class ShopOpenRevampQuisionerFragment :
             EspressoIdlingResource.decrement()
             when (it) {
                 is Success -> {
-                    val isSuccess =
-                        it.data.ongkirOpenShopShipmentLocation.dataSuccessResponse.success
+                    val isSuccess = it.data.ongkirOpenShopShipmentLocation.dataSuccessResponse.success
                     if (isSuccess) {
                         showLoader()
                         EspressoIdlingResource.increment()
-                        fragmentNavigationInterface?.navigateToNextPage(
-                            FINISH_SPLASH_SCREEN_PAGE,
-                            THREE_FRAGMENT_TAG
-                        )
+                        fragmentNavigationInterface?.navigateToNextPage(FINISH_SPLASH_SCREEN_PAGE, THREE_FRAGMENT_TAG)
                     } else {
                         showLoader()
                         gotoPickLocation()
@@ -284,15 +280,9 @@ class ShopOpenRevampQuisionerFragment :
                     showErrorNetwork(errorMessage) {
                         if (shopId != 0 && postCode != "" && courierOrigin != 0 &&
                             addrStreet != "" && latitude != "" && longitude != ""
+
                         ) {
-                            saveShipmentLocation(
-                                shopId,
-                                postCode,
-                                courierOrigin,
-                                addrStreet,
-                                latitude,
-                                longitude
-                            )
+                            saveShipmentLocation(shopId, postCode, courierOrigin, addrStreet, latitude, longitude)
                         }
                     }
                     ShopOpenRevampErrorHandler.logMessage(
@@ -307,12 +297,16 @@ class ShopOpenRevampQuisionerFragment :
     }
 
     private fun gotoPickLocation() {
-        val intent = RouteManager.getIntent(
-            activity,
-            ApplinkConstInternalLogistic.ADD_ADDRESS_V2
-        )
-        intent.putExtra(EXTRA_IS_FULL_FLOW, false)
-        startActivityForResult(intent, REQUEST_CODE_PINPOINT)
+        activity?.let {
+            // go to pinpoint
+            val bundle = Bundle().apply {
+                putBoolean(AddressConstant.EXTRA_IS_GET_PINPOINT_ONLY, true)
+            }
+            RouteManager.getIntent(activity, ApplinkConstInternalLogistic.PINPOINT).apply {
+                putExtra(AddressConstant.EXTRA_BUNDLE, bundle)
+                startActivityForResult(this, REQUEST_CODE_PINPOINT)
+            }
+        }
     }
 
     private fun showErrorResponse(message: String) {
@@ -402,7 +396,11 @@ class ShopOpenRevampQuisionerFragment :
             REQUEST_CODE_PINPOINT -> if (resultCode == Activity.RESULT_OK) {
                 showLoader()
                 data?.let {
-                    val saveAddressDataModel = it.getParcelableExtra<SaveAddressDataModel>(EXTRA_ADDRESS_MODEL)
+                    val saveAddressDataModel =
+                        it.getParcelableExtra<SaveAddressDataModel>(EXTRA_ADDRESS_MODEL)
+                            ?: it.getParcelableExtra<SaveAddressDataModel>(
+                                AddressConstant.EXTRA_SAVE_DATA_UI_MODEL
+                            )
                     var _latitudeString = ""
                     var _longitudeString = ""
                     var _postalCode = ""

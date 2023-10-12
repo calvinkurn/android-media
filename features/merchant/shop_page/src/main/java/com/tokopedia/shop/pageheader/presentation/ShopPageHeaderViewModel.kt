@@ -55,11 +55,12 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourstatus.ShopOperationalHourStatus
 import com.tokopedia.shop.common.util.ShopAsyncErrorException
 import com.tokopedia.shop.common.util.ShopUtil
+import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.pageheader.data.model.NewShopPageHeaderP1
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderLayoutResponse
 import com.tokopedia.shop.pageheader.data.model.ShopRequestUnmoderateSuccessResponse
-import com.tokopedia.shop.pageheader.domain.interactor.GetBroadcasterShopConfigUseCase
+import com.tokopedia.shop.pageheader.domain.interactor.GetBroadcasterAuthorConfig
 import com.tokopedia.shop.pageheader.domain.interactor.GetShopPageHeaderLayoutUseCase
 import com.tokopedia.shop.pageheader.domain.interactor.GetShopPageP1DataUseCase
 import com.tokopedia.shop.pageheader.domain.interactor.ShopModerateRequestStatusUseCase
@@ -70,6 +71,9 @@ import com.tokopedia.shop.pageheader.util.ShopPageHeaderMapper
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
+import com.tokopedia.universal_sharing.view.model.AffiliateInput
+import com.tokopedia.universal_sharing.view.model.GenerateAffiliateLinkEligibility
+import com.tokopedia.universal_sharing.view.usecase.AffiliateEligibilityCheckUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -77,9 +81,9 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.image.ImageProcessingUtil
 import dagger.Lazy
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
@@ -87,7 +91,7 @@ class ShopPageHeaderViewModel @Inject constructor(
     private val userSessionInterface: UserSessionInterface,
     @GqlGetShopInfoForHeaderUseCaseQualifier
     private val gqlGetShopInfoForHeaderUseCase: Lazy<GQLGetShopInfoUseCase>,
-    private val getBroadcasterShopConfigUseCase: Lazy<GetBroadcasterShopConfigUseCase>,
+    private val getBroadcasterAuthorConfig: Lazy<GetBroadcasterAuthorConfig>,
     @GqlGetShopInfoUseCaseCoreAndAssetsQualifier
     private val gqlGetShopInfobUseCaseCoreAndAssets: Lazy<GQLGetShopInfoUseCase>,
     private val shopQuestGeneralTrackerUseCase: Lazy<ShopQuestGeneralTrackerUseCase>,
@@ -99,6 +103,7 @@ class ShopPageHeaderViewModel @Inject constructor(
     private val getFollowStatusUseCase: Lazy<GetFollowStatusUseCase>,
     private val updateFollowStatusUseCase: Lazy<UpdateFollowStatusUseCase>,
     private val gqlGetShopOperationalHourStatusUseCase: Lazy<GQLGetShopOperationalHourStatusUseCase>,
+    private val affiliateEligibilityCheckUseCase: Lazy<AffiliateEligibilityCheckUseCase>,
     private val sharedPreferences: SharedPreferences,
     private val dispatcherProvider: CoroutineDispatchers,
     private val playShortsEntryPointRemoteConfig: PlayShortsEntryPointRemoteConfig
@@ -157,6 +162,10 @@ class ShopPageHeaderViewModel @Inject constructor(
     val shopPageShopShareData: LiveData<Result<ShopInfo>>
         get() = _shopPageShopShareData
 
+    private val _resultAffiliate = MutableLiveData<Result<GenerateAffiliateLinkEligibility>>()
+    val resultAffiliate: LiveData<Result<GenerateAffiliateLinkEligibility>>
+        get() = _resultAffiliate
+
     /*
     Function getNewShopPageTabData is expected to perform faster than
     older version due to:
@@ -173,7 +182,10 @@ class ShopPageHeaderViewModel @Inject constructor(
         etalaseId: String,
         isRefresh: Boolean,
         widgetUserAddressLocalData: LocalCacheModel,
-        extParam: String
+        extParam: String,
+        tabName: String,
+        shopPageColorSchemaDefaultConfigColor: Map<ShopPageColorSchema.ColorSchemaName, String> = mapOf(),
+        isEnableShopReimagined: Boolean
     ) {
         launchCatchError(block = {
             val shopP1DataAsync = asyncCatchError(
@@ -184,7 +196,8 @@ class ShopPageHeaderViewModel @Inject constructor(
                         shopDomain = shopDomain,
                         isRefresh = isRefresh,
                         extParam = extParam,
-                        widgetUserAddressLocalData = widgetUserAddressLocalData
+                        widgetUserAddressLocalData = widgetUserAddressLocalData,
+                        tabName = tabName
                     )
                 },
                 onError = {
@@ -258,7 +271,9 @@ class ShopPageHeaderViewModel @Inject constructor(
                                 shopInfoCoreData = shopPageHeaderP1Data.shopInfoCoreAndAssetsData,
                                 shopPageGetDynamicTabResponse = shopPageHeaderP1Data.shopPageGetDynamicTabResponse,
                                 feedWhitelistData = shopPageHeaderP1Data.feedWhitelist,
-                                shopPageHeaderLayoutData = shopPageHeaderWidgetData
+                                shopPageHeaderLayoutData = shopPageHeaderWidgetData,
+                                shopPageColorSchemaDefaultConfigColor = shopPageColorSchemaDefaultConfigColor,
+                                isEnableShopReimagined = isEnableShopReimagined
                             )
                         )
                     )
@@ -325,7 +340,8 @@ class ShopPageHeaderViewModel @Inject constructor(
         shopDomain: String,
         isRefresh: Boolean,
         extParam: String,
-        widgetUserAddressLocalData: LocalCacheModel
+        widgetUserAddressLocalData: LocalCacheModel,
+        tabName: String
     ): NewShopPageHeaderP1 {
         val useCase = getShopPageP1DataUseCase.get()
         useCase.isFromCacheFirst = !isRefresh
@@ -333,7 +349,8 @@ class ShopPageHeaderViewModel @Inject constructor(
             shopId = shopId,
             shopDomain = shopDomain,
             extParam = extParam,
-            widgetUserAddressLocalData = widgetUserAddressLocalData
+            widgetUserAddressLocalData = widgetUserAddressLocalData,
+            tabName = tabName
         )
         return useCase.executeOnBackground()
     }
@@ -405,8 +422,8 @@ class ShopPageHeaderViewModel @Inject constructor(
     }
 
     private suspend fun getShopBroadcasterConfig(shopId: String): Broadcaster.Config {
-        getBroadcasterShopConfigUseCase.get().params = GetBroadcasterShopConfigUseCase.createParams(shopId)
-        return getBroadcasterShopConfigUseCase.get().executeOnBackground()
+        getBroadcasterAuthorConfig.get().params = GetBroadcasterAuthorConfig.createParams(shopId)
+        return getBroadcasterAuthorConfig.get().executeOnBackground()
     }
 
     fun getFollowStatusData(shopId: String, followButtonVariantType: String) {
@@ -589,5 +606,18 @@ class ShopPageHeaderViewModel @Inject constructor(
                 affiliateChannel
             ).apply()
         }) {}
+    }
+
+    fun checkAffiliate(affiliateInput: AffiliateInput) {
+        launch {
+            try {
+                val result = affiliateEligibilityCheckUseCase.get().apply {
+                    params = AffiliateEligibilityCheckUseCase.createParam(affiliateInput)
+                }.executeOnBackground()
+                _resultAffiliate.value = Success(result)
+            } catch (e: Exception) {
+                _resultAffiliate.value = Fail(e)
+            }
+        }
     }
 }

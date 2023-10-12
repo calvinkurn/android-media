@@ -13,7 +13,7 @@
       android:clickable="true"
       android:focusable="true"
       android:visibility="visible"
-      android:background="@color/Unify_G100"
+      android:background="@color/Unify_GN50"
       android:orientation="horizontal">
         
         <com.tokopedia.unifycomponents.ImageUnify
@@ -38,7 +38,7 @@
           android:textStyle="bold"
           android:ellipsize="end"
           android:maxLines="1"
-          app:highlight_color="@color/Unify_G500"
+          app:highlight_color="@color/Unify_GN500"
           app:layout_constraintLeft_toRightOf="@id/layout_sticky_image_left"
           app:layout_constraintRight_toLeftOf="@id/layout_sticky_image_right"
           app:layout_constraintTop_toTopOf="parent"

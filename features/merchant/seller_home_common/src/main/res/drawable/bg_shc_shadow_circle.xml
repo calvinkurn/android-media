@@ -71,7 +71,7 @@
     <!-- Background -->
     <item>
         <shape android:shape="oval">
-            <solid android:color="@color/Unify_N0" />
+            <solid android:color="@color/Unify_NN0" />
 
             <corners android:radius="3dp" />
         </shape>

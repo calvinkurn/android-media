@@ -49,7 +49,6 @@
     <string name="menu_account_title_instant_payment">Pembayaran Instan</string>
     <string name="menu_account_title_security">Keamanan Akun</string>
     <string name="menu_account_title_notification">Notifikasi</string>
-    <string name="menu_account_title_account_link">Akun yang Tersambung</string>
     <string name="menu_account_title_privacy_account">Privasi Akun</string>
     <string name="menu_account_title_explicit_profile">Preferensi Belanja</string>
     <string name="menu_account_title_shake">Shake Shake</string>
@@ -77,8 +76,7 @@
     <string name="menu_account_desc_instant_payment">E-wallet, kartu kredit, &amp; debit instan terdaftar</string>
     <string name="menu_account_desc_security">Kata sandi, PIN, &amp; verifikasi data diri</string>
     <string name="menu_account_desc_notification">Atur segala jenis pesan notifikasi</string>
-    <string name="menu_account_desc_account_link">Atur akun yang tersambung ke Tokopedia</string>
-    <string name="menu_account_desc_privacy_account">Atur penggunaan data &amp; akun yang tersambung</string>
+    <string name="menu_account_desc_privacy_account">Atur penggunaan data</string>
     <string name="menu_account_desc_explicit_profile">Atur rekomendasi produk sesuai pilihanmu</string>
     <string name="menu_account_desc_shake">Goyang HP untuk dapat promo menarik</string>
     <string name="menu_account_desc_geolocation">Atur rekomendasi berdasarkan lokasi</string>
@@ -265,20 +263,17 @@
     <string name="opt_failed_enabled_consent">Gagal mengaktifkan penggunaan data</string>
     <string name="opt_failed_disabled_consent">Gagal menonaktifkan penggunaan data</string>
 
-    <!--  CONSENT WITHDRAWAL  -->
-    <string name="consent_withdrawal_primary_data_usage">Penggunaan data utama</string>
-    <string name="consent_withdrawal_secondary_data_usage">Penggunaan data tambahan</string>
-    <string name="consent_withdrawal_dialog_title">Matikan penggunaan datamu?</string>
-    <string name="consent_withdrawal_dialog_body">Kalau dimatikan, kamu nggak bisa pakai fitur atau produk yang butuh data ini.</string>
-    <string name="consent_withdrawal_dialog_primary_cta">Ya, Matikan</string>
-    <string name="consent_withdrawal_dialog_secondary_cta">Batal</string>
-    <string name="consent_withdrawal_section_title">Penggunaan Data</string>
-    <string name="consent_withdrawal_section_description"><![CDATA[Atur penggunaan datamu di fitur & produk Tokopedia.]]></string>
-
     <!-- ADD/VERIFY PHONE -->
     <string name="add_phone_success_message">Yay! Nomor HP berhasil ditambah.</string>
     <string name="verify_phone_success_message">Yay! Nomor HP berhasil diverifikasi.</string>
     <string name="text_add_phone">Tambah Nomor HP</string>
     <string name="text_verify_phone">Verifikasi Nomor HP</string>
 
+    <!-- OCL -->
+    <string name="ocl_btm_sheet_title">Simpan info buat masuk di perangkat ini?</string>
+    <string name="ocl_btm_sheet_subtitle">Nanti kamu bisa masuk lebih cepat tanpa masukin info apa pun lagi. Pastikan kamu sudah membaca Syarat &amp; Ketentuan Tokopedia, ya.</string>
+    <string name="ocl_btm_sheet_negative_btn">Nanti Saja</string>
+    <string name="ocl_btm_sheet_positive_btn">Ya, Simpan</string>
+
+    <string name="ocl_btm_sheet_tnc_index">Syarat &amp; Ketentuan</string>
 </resources>

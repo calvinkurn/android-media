@@ -15,14 +15,18 @@ object DateTimeUtil {
     private const val COUNTRY_ID = "ID"
     private const val LANGUAGE_ID = "in"
     const val FORMAT_DD_MMM_YYYY = "dd MMM yyyy"
-    const val FORMAT_HH_MM = "HH:mm"
+    const val FORMAT_DD_MMM_YY = "dd MMM yy"
+    const val FORMAT_HOUR_24 = "HH:00"
+    const val FORMAT_DD_MMMM_YYYY = "$FORMAT_DD_MMM_YYYY, $FORMAT_HOUR_24"
     const val FORMAT_DD_MM_YYYY = "dd-MM-yyyy"
     const val FORMAT_MMMM_YYYY = "MMMM yyyy"
     const val FORMAT_DD_MMM = "dd MMM"
     const val FORMAT_DD = "dd"
     const val FORMAT_MMM = "MMM"
-    const val FORMAT_HOUR_24 = "HH:00"
+    const val TIME_ZONE = "Asia/Jakarta"
     val ONE_DAY_MILLIS: Long = TimeUnit.DAYS.toMillis(1)
+
+    val localeID = Locale("in", "ID")
 
     fun format(timeMillis: Long, pattern: String, locale: Locale = getLocale()): String {
         val sdf = SimpleDateFormat(pattern, locale)

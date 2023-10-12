@@ -1,43 +1,42 @@
 package com.tokopedia.affiliate.model.response
 
-
 import com.google.gson.annotations.SerializedName
 
 data class AffiliateValidateUserData(
-        @SerializedName("validateAffiliateUserStatus")
-        var validateAffiliateUserStatus: ValidateAffiliateUserStatus
+    @SerializedName("validateAffiliateUserStatus")
+    var validateAffiliateUserStatus: ValidateAffiliateUserStatus
 ) {
     data class ValidateAffiliateUserStatus(
-            @SerializedName("Data")
-            var `data`: Data?
+        @SerializedName("Data")
+        var userStatusData: Data?
     ) {
         data class Data(
-                @SerializedName("Error")
-                var error: Error?,
-                @SerializedName("IsEligible")
-                var isEligible: Boolean?,
-                @SerializedName("IsRegistered")
-                var isRegistered: Boolean?,
-                @SerializedName("IsReviewed")
-                var isReviewed: Boolean?,
-                @SerializedName("IsSystemDown")
-                var isSystemDown: Boolean?,
-                @SerializedName("Status")
-                var status: Int?
+            @SerializedName("Error")
+            var error: Error?,
+            @SerializedName("IsEligible")
+            var isEligible: Boolean?,
+            @SerializedName("IsRegistered")
+            var isRegistered: Boolean?,
+            @SerializedName("IsReviewed")
+            var isReviewed: Boolean?,
+            @SerializedName("IsSystemDown")
+            var isSystemDown: Boolean?,
+            @SerializedName("Status")
+            var status: Int?
         ) {
             class Error(
-                    @SerializedName("ErrorType")
-                    var errorType: Int?,
-                    @SerializedName("Message")
-                    var message: String?,
-                    @SerializedName("CtaText")
-                    var ctaText: String?,
-                    @SerializedName("CtaLink")
-                    var ctaLink : CtaLink
+                @SerializedName("ErrorType")
+                var errorType: Int?,
+                @SerializedName("Message")
+                var message: String?,
+                @SerializedName("CtaText")
+                var ctaText: String?,
+                @SerializedName("CtaLink")
+                var ctaLink: CtaLink
             ) {
 
                 class CtaLink(
-                        @SerializedName("AndroidURL") val androidUrl : String?,
+                    @SerializedName("AndroidURL") val androidUrl: String?
                 )
             }
         }

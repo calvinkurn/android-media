@@ -79,7 +79,7 @@ public class ImageHandler {
             Drawable drawable = AppCompatResources.getDrawable(imageview.getContext(), resId);
             Glide.with(imageview.getContext())
                     .load("")
-                    .placeholder(R.drawable.loading_page)
+                    .placeholder(com.tokopedia.topads.sdk.R.drawable.loading_page)
                     .dontAnimate()
                     .error(drawable)
                     .into(imageview);
@@ -174,8 +174,8 @@ public class ImageHandler {
     public static void loadImageWithoutFit(Context context, ImageView imageview, String url) {
         Glide.with(context)
                 .load(url)
-                .placeholder(R.drawable.loading_page)
-                .error(R.drawable.error_drawable)
+                .placeholder(com.tokopedia.topads.sdk.R.drawable.loading_page)
+                .error(com.tokopedia.topads.sdk.R.drawable.error_drawable)
                 .diskCacheStrategy(DiskCacheStrategy.DATA)
                 .into(imageview);
     }
@@ -184,8 +184,8 @@ public class ImageHandler {
         Glide.with(context)
                 .load(url)
                 .dontAnimate()
-                .placeholder(R.drawable.loading_page)
-                .error(R.drawable.error_drawable)
+                .placeholder(com.tokopedia.topads.sdk.R.drawable.loading_page)
+                .error(com.tokopedia.topads.sdk.R.drawable.error_drawable)
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .into(imageview);
     }
@@ -216,8 +216,8 @@ public class ImageHandler {
                     .load(url)
                     .fitCenter()
                     .dontAnimate()
-                    .placeholder(R.drawable.loading_page)
-                    .error(R.drawable.error_drawable)
+                    .placeholder(com.tokopedia.topads.sdk.R.drawable.loading_page)
+                    .error(com.tokopedia.topads.sdk.R.drawable.error_drawable)
                     .into(imageview);
         }
     }
@@ -229,7 +229,7 @@ public class ImageHandler {
                     .load(url)
                     .centerCrop()
                     .dontAnimate()
-                    .error(R.drawable.error_drawable)
+                    .error(com.tokopedia.topads.sdk.R.drawable.error_drawable)
                     .into(imageview);
         }
     }
@@ -240,7 +240,7 @@ public class ImageHandler {
                     .load(url)
                     .centerCrop()
                     .dontAnimate()
-                    .error(R.drawable.error_drawable)
+                    .error(com.tokopedia.topads.sdk.R.drawable.error_drawable)
                     .addListener(new RequestListener<Drawable>() {
                         @Override
                         public boolean onLoadFailed(@androidx.annotation.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
@@ -274,8 +274,8 @@ public class ImageHandler {
                 .load(url)
                 .fitCenter()
                 .dontAnimate()
-                .placeholder(R.drawable.loading_page)
-                .error(R.drawable.error_drawable)
+                .placeholder(com.tokopedia.topads.sdk.R.drawable.loading_page)
+                .error(com.tokopedia.topads.sdk.R.drawable.error_drawable)
                 .into(simpleTarget);
     }
 
@@ -286,8 +286,8 @@ public class ImageHandler {
                 .fitCenter()
                 .centerCrop()
                 .dontAnimate()
-                .placeholder(R.drawable.loading_page)
-                .error(R.drawable.error_drawable)
+                .placeholder(com.tokopedia.topads.sdk.R.drawable.loading_page)
+                .error(com.tokopedia.topads.sdk.R.drawable.error_drawable)
                 .into(simpleTarget);
     }
 
@@ -296,7 +296,7 @@ public class ImageHandler {
         if (url != null && !TextUtils.isEmpty(url)) {
             Glide.with(imageview.getContext())
                     .load(url)
-                    .placeholder(R.drawable.loading_page)
+                    .placeholder(com.tokopedia.topads.sdk.R.drawable.loading_page)
                     .dontAnimate()
                     .error(error)
                     .into(imageview);
@@ -355,8 +355,8 @@ public class ImageHandler {
                 .asBitmap()
                 .load(url)
                 .dontAnimate()
-                .placeholder(R.drawable.loading_page)
-                .error(R.drawable.error_drawable)
+                .placeholder(com.tokopedia.topads.sdk.R.drawable.loading_page)
+                .error(com.tokopedia.topads.sdk.R.drawable.error_drawable)
                 .diskCacheStrategy(DiskCacheStrategy.DATA)
                 .centerCrop()
                 .into(target);
@@ -369,8 +369,8 @@ public class ImageHandler {
                     .asBitmap()
                     .load(url)
                     .dontAnimate()
-                    .placeholder(R.drawable.loading_page)
-                    .error(R.drawable.error_drawable)
+                    .placeholder(com.tokopedia.topads.sdk.R.drawable.loading_page)
+                    .error(com.tokopedia.topads.sdk.R.drawable.error_drawable)
                     .into(getCircleImageViewTarget(imageView));
         }
     }
@@ -382,16 +382,16 @@ public class ImageHandler {
                     .asBitmap()
                     .load(url)
                     .dontAnimate()
-                    .placeholder(R.drawable.loading_page)
-                    .error(R.drawable.error_drawable)
+                    .placeholder(com.tokopedia.topads.sdk.R.drawable.loading_page)
+                    .error(com.tokopedia.topads.sdk.R.drawable.error_drawable)
                     .into(getCircleImageViewTarget(imageView));
         } else {
             Glide.with(context)
                     .asBitmap()
                     .load(resIdEmpty)
                     .dontAnimate()
-                    .placeholder(R.drawable.loading_page)
-                    .error(R.drawable.error_drawable)
+                    .placeholder(com.tokopedia.topads.sdk.R.drawable.loading_page)
+                    .error(com.tokopedia.topads.sdk.R.drawable.error_drawable)
                     .into(getCircleImageViewTarget(imageView));
         }
     }
@@ -402,8 +402,8 @@ public class ImageHandler {
                     .asBitmap()
                     .load(file)
                     .dontAnimate()
-                    .placeholder(R.drawable.loading_page)
-                    .error(R.drawable.error_drawable)
+                    .placeholder(com.tokopedia.topads.sdk.R.drawable.loading_page)
+                    .error(com.tokopedia.topads.sdk.R.drawable.error_drawable)
                     .into(getCircleImageViewTarget(imageView));
         }
     }
@@ -417,8 +417,8 @@ public class ImageHandler {
                 .asBitmap()
                 .load(resourceDrawable)
                 .dontAnimate()
-                .placeholder(R.drawable.loading_page)
-                .error(R.drawable.error_drawable)
+                .placeholder(com.tokopedia.topads.sdk.R.drawable.loading_page)
+                .error(com.tokopedia.topads.sdk.R.drawable.error_drawable)
                 .into(getRoundedImageViewTarget(imageview, radius));
     }
 
@@ -428,8 +428,8 @@ public class ImageHandler {
                     .asBitmap()
                     .load(url)
                     .dontAnimate()
-                    .placeholder(R.drawable.loading_page)
-                    .error(R.drawable.error_drawable)
+                    .placeholder(com.tokopedia.topads.sdk.R.drawable.loading_page)
+                    .error(com.tokopedia.topads.sdk.R.drawable.error_drawable)
                     .into(getRoundedImageViewTarget(imageview, radius));
         }
     }
@@ -441,8 +441,8 @@ public class ImageHandler {
                     .load(url)
                     .dontAnimate()
                     .centerCrop()
-                    .placeholder(R.drawable.loading_page)
-                    .error(R.drawable.error_drawable)
+                    .placeholder(com.tokopedia.topads.sdk.R.drawable.loading_page)
+                    .error(com.tokopedia.topads.sdk.R.drawable.error_drawable)
                     .into(getRoundedImageViewTarget(imageview, radius));
         }
     }
@@ -451,8 +451,8 @@ public class ImageHandler {
         Glide.with(context)
                 .load(url)
                 .dontAnimate()
-                .placeholder(R.drawable.loading_page)
-                .error(R.drawable.error_drawable)
+                .placeholder(com.tokopedia.topads.sdk.R.drawable.loading_page)
+                .error(com.tokopedia.topads.sdk.R.drawable.error_drawable)
                 .centerCrop()
                 .into(imageView);
     }
@@ -461,8 +461,8 @@ public class ImageHandler {
         Glide.with(context)
                 .load(url)
                 .dontAnimate()
-                .placeholder(R.drawable.loading_page)
-                .error(R.drawable.error_drawable)
+                .placeholder(com.tokopedia.topads.sdk.R.drawable.loading_page)
+                .error(com.tokopedia.topads.sdk.R.drawable.error_drawable)
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .fitCenter()
                 .into(imageView);
@@ -576,7 +576,7 @@ public class ImageHandler {
                 .load(url)
                 .dontAnimate()
                 .placeholder(drawable)
-                .error(R.drawable.error_drawable)
+                .error(com.tokopedia.topads.sdk.R.drawable.error_drawable)
                 .skipMemoryCache(true)
                 .diskCacheStrategy(DiskCacheStrategy.DATA)
                 .into(imageview);
@@ -730,7 +730,7 @@ public class ImageHandler {
                     .dontAnimate()
                     .listener(requestListener)
                     .fitCenter()
-                    .placeholder(R.drawable.loading_page)
+                    .placeholder(com.tokopedia.topads.sdk.R.drawable.loading_page)
                     .into(imageview);
         }
     }
@@ -758,7 +758,7 @@ public class ImageHandler {
                     .override(blurWidth, blurHeight)
                     .listener(listener)
                     .fitCenter()
-                    .placeholder(R.drawable.loading_page)
+                    .placeholder(com.tokopedia.topads.sdk.R.drawable.loading_page)
                     .into(imageView);
         }
     }

@@ -18,14 +18,14 @@
         app:toolbarAlwaysShowShadow="false"
         app:toolbarBackButton="back"
         app:toolbarContentType="typeTitle"
-        app:toolbarInitialFillColor="@color/Unify_N0"
+        app:toolbarInitialFillColor="@color/Unify_NN0"
         app:toolbarInitialTheme="light"/>
     <androidx.constraintlayout.widget.Group
         android:id="@+id/details_view"
         android:visibility="visible"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="transaction_card,transaction_date_header,transaction_date,promotion_link_header,promotion_link,divider"/>
+        app:constraint_referenced_ids="transaction_card,transaction_date_header,transaction_date,promotion_link_header,promotion_link,redirection_link,divider"/>
     <com.tokopedia.unifycomponents.CardUnify
         android:id="@+id/transaction_card"
         android:layout_width="match_parent"
@@ -33,7 +33,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginRight="16dp"
-        app:card_background_color="@color/Unify_N0"
+        app:card_background_color="@color/Unify_NN0"
         app:card_type="shadow"
         app:layout_constraintTop_toBottomOf="@id/transaction_navToolbar">
 
@@ -169,13 +169,27 @@
         app:typographyType="body_2"
         tools:text="Toko" />
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/redirection_link"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:paddingHorizontal="16dp"
+        android:visibility="visible"
+        android:text="@string/affiliate_lihat_semua"
+        android:textColor="@color/Unify_GN500"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/promotion_link"
+        app:typographyType="body_2"
+        app:typographyWeight="bold" />
+
     <View
         android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="8dp"
         android:layout_marginTop="24dp"
         android:background="@color/affiliate_dms_divider"
-        app:layout_constraintTop_toBottomOf="@id/promotion_link_header" />
+        app:layout_constraintTop_toBottomOf="@id/redirection_link" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:paddingBottom="64dp"
@@ -200,7 +214,7 @@
         android:id="@+id/commision_global_error"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@color/Unify_N0"
+        android:background="@color/Unify_NN0"
         android:gravity="center"
         android:visibility="gone"
         app:globalerrors_type="SERVER_ERROR"

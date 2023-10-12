@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/carousel_paging_shimmering_container"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingHorizontal="16dp"
+    android:paddingTop="12dp"
+    android:paddingBottom="8dp">
+
+    <include
+        layout="@layout/carousel_paging_shimmering_single"
+        android:id="@+id/carouselPagingShimmering1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <View
+        android:id="@+id/carouselPagingShimmeringSeparator1"
+        android:layout_width="308dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="16dp"
+        android:background="@color/Unify_NN50"/>
+
+    <include
+        layout="@layout/carousel_paging_shimmering_single"
+        android:id="@+id/carouselPagingShimmering2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"/>
+
+    <View
+        android:id="@+id/carouselPagingShimmeringSeparator2"
+        android:layout_width="308dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="16dp"
+        android:background="@color/Unify_NN50"/>
+
+    <include
+        layout="@layout/carousel_paging_shimmering_single"
+        android:id="@+id/carouselPagingShimmering3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"/>
+
+</LinearLayout>

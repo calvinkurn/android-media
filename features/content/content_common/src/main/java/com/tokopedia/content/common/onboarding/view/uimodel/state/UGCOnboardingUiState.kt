@@ -9,6 +9,7 @@ data class UGCOnboardingUiState(
     val isCheckTnc: Boolean,
     val isSubmit: Boolean,
     val hasAcceptTnc: Boolean,
+    // .....
 )
 
 sealed interface UsernameState {

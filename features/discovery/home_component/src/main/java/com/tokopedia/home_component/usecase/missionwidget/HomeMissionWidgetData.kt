@@ -2,6 +2,8 @@ package com.tokopedia.home_component.usecase.missionwidget
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.home_component.model.AtfContent
+import com.tokopedia.home_component_header.model.ChannelHeader
 
 /**
  * Created by dhaba
@@ -10,13 +12,34 @@ class HomeMissionWidgetData {
     data class HomeMissionWidget(
         @SerializedName("getHomeMissionWidget")
         @Expose
-        val getHomeMissionWidget: GetHomeMissionWidget = GetHomeMissionWidget()
+        val getHomeMissionWidget: GetHomeMissionWidget = GetHomeMissionWidget(),
     )
 
     data class GetHomeMissionWidget(
+        @SerializedName("header")
+        @Expose
+        val header: Header = Header(),
         @SerializedName("missions")
         @Expose
-        val missions: List<Mission> = listOf()
+        val missions: List<Mission> = listOf(),
+        @SerializedName("config")
+        @Expose
+        val config: Config = Config(),
+    ): AtfContent
+
+    data class Header(
+        @SerializedName("title")
+        @Expose
+        val title: String = "",
+    )
+
+    data class Config(
+        @SerializedName("styleParam")
+        @Expose
+        val styleParam: String = "",
+        @SerializedName("dividerType")
+        @Expose
+        val dividerType: Int = 0,
     )
 
     data class Mission(
@@ -59,5 +82,8 @@ class HomeMissionWidgetData {
         @SerializedName("isCarousel")
         @Expose
         val isCarousel: Boolean = false,
+        @SerializedName("shopID")
+        @Expose
+        val shopId: String = "",
     )
 }

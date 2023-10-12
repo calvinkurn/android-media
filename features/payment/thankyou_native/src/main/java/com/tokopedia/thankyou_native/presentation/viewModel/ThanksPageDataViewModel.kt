@@ -14,7 +14,6 @@ import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.domain.model.WalletBalance
 import com.tokopedia.thankyou_native.domain.usecase.*
 import com.tokopedia.thankyou_native.presentation.adapter.model.*
-import com.tokopedia.thankyou_native.presentation.views.widgettag.WidgetTag
 import com.tokopedia.tokomember.model.MembershipRegister
 import com.tokopedia.tokomember.usecase.MembershipRegisterUseCase
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -132,6 +131,7 @@ class ThanksPageDataViewModel @Inject constructor(
         thankYouTopAdsViewModelUseCase.getTopAdsData(topAdsRequestParams, thanksPageData, {
             if (it.isNotEmpty()) {
                 topAdsRequestParams.topAdsUIModelList = it
+                topAdsRequestParams.tag = TopAdsRequestParams.TAG
                 _topAdsDataLiveData.postValue(topAdsRequestParams)
             }
         }, { it.printStackTrace() })
@@ -160,8 +160,8 @@ class ThanksPageDataViewModel @Inject constructor(
             arrayListOf(
                 TopAdsRequestParams.TAG,
                 GyroRecommendationWidgetModel.TAG,
-                HeadlineAdsWidgetModel.TAG,
                 MarketplaceRecommendationWidgetModel.TAG,
+                HeadlineAdsWidgetModel.TAG,
                 DigitalRecommendationWidgetModel.TAG,
                 BannerWidgetModel.TAG
             )
@@ -230,7 +230,9 @@ class ThanksPageDataViewModel @Inject constructor(
         if (widgetOrder.isEmpty()) {
             _bottomContentVisitableList.value = visitableList
         } else {
-            _bottomContentVisitableList.value = visitableList.sortedBy {
+            _bottomContentVisitableList.value = visitableList.filter {
+                widgetOrder.contains((it as WidgetTag).tag)
+            }.sortedBy {
                 widgetOrder.indexOf((it as WidgetTag).tag)
             }
         }

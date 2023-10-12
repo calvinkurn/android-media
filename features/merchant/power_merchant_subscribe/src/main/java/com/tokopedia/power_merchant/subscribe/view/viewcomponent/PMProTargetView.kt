@@ -6,6 +6,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.gm.common.constant.PMConstant
+import com.tokopedia.gm.common.utils.SpannableUtil
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -13,7 +14,6 @@ import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.common.constant.Constant
-import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantSpannableUtil
 import com.tokopedia.power_merchant.subscribe.databinding.ViewPmProTargetBinding
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 
@@ -47,15 +47,15 @@ class PMProTargetView : ConstraintLayout {
         shopLevelInfoClicked: () -> Unit
     ) {
         binding.run {
-            val eligibleColor = PowerMerchantSpannableUtil.getColorHexString(
+            val eligibleColor = SpannableUtil.getColorHexString(
                 context,
                 com.tokopedia.unifyprinciples.R.color.Unify_GN500
             )
-            val notEligibleColor = PowerMerchantSpannableUtil.getColorHexString(
+            val notEligibleColor = SpannableUtil.getColorHexString(
                 context,
                 com.tokopedia.unifyprinciples.R.color.Unify_RN500
             )
-            val defaultIconColor = PowerMerchantSpannableUtil.getColorHexString(
+            val defaultIconColor = SpannableUtil.getColorHexString(
                 context,
                 com.tokopedia.unifyprinciples.R.color.Unify_NN500
             )

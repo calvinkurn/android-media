@@ -6,7 +6,7 @@
       "event": "view_item",
       "eventAction": "impression on banner dynamic channel to do widget",
       "eventCategory": "homepage",
-      "eventLabel": ".* - .*",
+      "eventLabel": ".*",
       "trackerId": "41015",
       "businessUnit": "home & browse",
       "channelId": ".*",
@@ -15,7 +15,7 @@
         {
           "creative_name": ".*",
           "creative_slot": ".*",
-          "item_id": ".*_.*_.*_.*",
+          "item_id": ".*_.*_.*_.*_.*_.*_.*",
           "item_name": "/ - p.* - dynamic channel to do widget - banner - .*"
         }
       ],
@@ -26,7 +26,7 @@
       "event": "select_content",
       "eventAction": "click CTA button on dynamic channel to do widget",
       "eventCategory": "homepage",
-      "eventLabel": ".* - .*",
+      "eventLabel": ".*",
       "trackerId": "41016",
       "businessUnit": "home & browse",
       "campaignCode": ".*",
@@ -36,7 +36,7 @@
         {
           "creative_name": ".*",
           "creative_slot": ".*",
-          "item_id": ".*_.*_.*_.*",
+          "item_id": ".*_.*_.*_.*_.*_.*_.*",
           "item_name": "/ - p.* - dynamic channel to do widget - banner - .*"
         }
       ],
@@ -48,8 +48,19 @@
       "event": "clickHomepage",
       "eventAction": "click close button on dynamic channel to do widget",
       "eventCategory": "homepage",
-      "eventLabel": ".* - .*",
+      "eventLabel": ".*_.*_.*_.*_.*_.*",
       "trackerId": "41017",
+      "businessUnit": "home & browse",
+      "channelId": ".*",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*"
+    },
+    {
+      "event": "clickHomepage",
+      "eventAction": "click on card on dynamic channel to do widget",
+      "eventCategory": "homepage",
+      "eventLabel": ".*_.*_.*_.*_.*_.*",
+      "trackerId": "43721",
       "businessUnit": "home & browse",
       "channelId": ".*",
       "currentSite": "tokopediamarketplace",

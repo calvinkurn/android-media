@@ -22,7 +22,6 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-
 /**
  * Created by Yehezkiel on 13/10/20
  */

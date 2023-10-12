@@ -14,7 +14,7 @@
         android:layout_marginEnd="8dp"
         android:layout_weight="1"
         android:text="@string/oke"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:typographyType="heading_4" />
 
     <com.tokopedia.unifycomponents.ImageUnify

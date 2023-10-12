@@ -5,10 +5,16 @@ import com.tokopedia.product.detail.postatc.base.PostAtcUiModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 
 data class RecommendationUiModel(
-    var widget: RecommendationWidget? = null,
     override val name: String,
     override val type: String,
-    override val impressHolder: ImpressHolder = ImpressHolder()
+    override val impressHolder: ImpressHolder = ImpressHolder(),
+    val productId: String,
+    var widget: RecommendationWidget? = null,
+    val queryParam: String = "",
+    val warehouseId: String = "",
+    val offerId: String = "",
+    val shopId: String = "",
+    val thematicId: String
 ) : PostAtcUiModel {
     override val id = hashCode()
     override fun equalsWith(newItem: PostAtcUiModel): Boolean {

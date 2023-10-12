@@ -1,10 +1,16 @@
 package com.tokopedia.unifyorderhistory.view.adapter.viewholder
 
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.imageassets.TokopediaImageUrl
+import com.tokopedia.imageassets.utils.loadProductImage
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
@@ -20,6 +26,8 @@ import com.tokopedia.unifyorderhistory.util.UohConsts.TICKER_URL
 import com.tokopedia.unifyorderhistory.util.UohConsts.ULAS_LABEL
 import com.tokopedia.unifyorderhistory.util.UohUtils
 import com.tokopedia.unifyorderhistory.view.adapter.UohItemAdapter
+import com.tokopedia.unifyorderhistory.view.widget.review_rating.UohReviewRatingWidget
+import com.tokopedia.unifyorderhistory.view.widget.review_rating.UohReviewRatingWidgetConfig
 
 /**
  * Created by fwidjaja on 25/07/20.
@@ -28,6 +36,7 @@ class UohOrderListViewHolder(
     private val binding: UohListItemBinding,
     private val actionListener: UohItemAdapter.ActionListener?
 ) : RecyclerView.ViewHolder(binding.root) {
+
     fun bind(item: UohTypeData, position: Int) {
         if (item.dataObject is UohListOrder.UohOrders.Order) {
             binding.clDataProduct.visible()
@@ -113,7 +122,11 @@ class UohOrderListViewHolder(
                 binding.tvUohProductDesc.text = item.dataObject.metadata.products.first().inline1.label
                 if (item.dataObject.metadata.products.first().imageURL.isNotEmpty()) {
                     binding.ivUohProduct.visible()
-                    ImageHandler.loadImageRounded2(itemView.context, binding.ivUohProduct, item.dataObject.metadata.products.first().imageURL, 6f.toPx())
+                    binding.ivUohProduct.loadProductImage(
+                        url = item.dataObject.metadata.products.firstOrNull()?.imageURL.orEmpty(),
+                        archivedUrl = TokopediaImageUrl.IMG_ARCHIVED_PRODUCT_SMALL,
+                        cornerRadius = 6f.toPx()
+                    )
                 } else {
                     binding.ivUohProduct.gone()
                 }
@@ -192,7 +205,44 @@ class UohOrderListViewHolder(
                 }
             }
 
+            setupReviewRatingWidget(item.dataObject, item.dataObject.orderUUID)
+
             actionListener?.trackViewOrderCard(item.dataObject, position)
+        }
+    }
+
+    private fun setupReviewRatingWidget(
+        order: UohListOrder.UohOrders.Order,
+        orderUUID: String
+    ) {
+        binding.layoutReviewRating.apply {
+            setContent {
+                val componentData = order.metadata.getReviewRatingComponent()
+                val config = remember(orderUUID, componentData, actionListener) {
+                    mutableStateOf(
+                        if (componentData == null) {
+                            UohReviewRatingWidgetConfig()
+                        } else {
+                            UohReviewRatingWidgetConfig(
+                                show = true,
+                                componentData = componentData,
+                                onRatingChanged = { appLink ->
+                                    actionListener?.onReviewRatingClicked(
+                                        index = bindingAdapterPosition,
+                                        order = order,
+                                        appLink = appLink
+                                    )
+                                }
+                            )
+                        }
+                    )
+                }
+                NestTheme {
+                    UohReviewRatingWidget(config = config.value)
+                }
+            }
+
+            showWithCondition(order.metadata.getReviewRatingComponent() != null)
         }
     }
 

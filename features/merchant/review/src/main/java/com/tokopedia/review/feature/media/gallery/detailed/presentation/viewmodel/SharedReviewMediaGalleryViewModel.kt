@@ -31,7 +31,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChangedBy
@@ -116,6 +115,9 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
             listOf(DetailedReviewActionMenuUiModel(StringRes(R.string.review_action_menu_report)))
         } else emptyList()
     }
+    private val _isReviewOwner = MutableStateFlow(false)
+    val isReviewOwner: Boolean
+        get() = _isReviewOwner.value
 
     val actionMenuBottomSheetUiState = combine(
         _showDetailedReviewActionMenuBottomSheet,
@@ -296,11 +298,17 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
         } else {
             oldResponse.detail.reviewGalleryImages.plus(newResponse.detail.reviewGalleryImages)
         }
+        val mergedReviewGalleryVideos = if (pageToLoad == getPrevPage()) {
+            newResponse.detail.reviewGalleryVideos.plus(oldResponse.detail.reviewGalleryVideos)
+        } else {
+            oldResponse.detail.reviewGalleryVideos.plus(newResponse.detail.reviewGalleryVideos)
+        }
         return oldResponse.copy(
             reviewMedia = mergedReviewImages,
             detail = oldResponse.detail.copy(
                 reviewDetail = mergedReviewDetail,
                 reviewGalleryImages = mergedReviewGalleryImages,
+                reviewGalleryVideos = mergedReviewGalleryVideos,
                 mediaCountFmt = newResponse.detail.mediaCountFmt,
                 mediaCount = newResponse.detail.mediaCount
             ),
@@ -420,6 +428,11 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
             Boolean::class.java,
             _isFromGallery.value
         ) ?: _isFromGallery.value
+        _isReviewOwner.value = cacheManager.get(
+            ReviewMediaGalleryRouter.EXTRAS_IS_REVIEW_OWNER,
+            Boolean::class.java,
+            _isReviewOwner.value
+        ) ?: _isReviewOwner.value
     }
 
     fun updateCurrentMediaItem(mediaItem: MediaItemUiModel?) {
@@ -515,5 +528,17 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
 
     fun getUserID(): String {
         return userSession.userId
+    }
+
+    fun getFeedbackId(): String {
+        return _detailedReviewMediaResult.value?.detail?.reviewDetail?.firstOrNull()?.feedbackId.orEmpty()
+    }
+
+    fun getLikeStatus(): Int {
+        return _toggleLikeRequest.value?.second ?: -1
+    }
+
+    fun getReviewUserID(): String {
+        return _detailedReviewMediaResult.value?.detail?.reviewDetail?.firstOrNull()?.user?.userId.orEmpty()
     }
 }

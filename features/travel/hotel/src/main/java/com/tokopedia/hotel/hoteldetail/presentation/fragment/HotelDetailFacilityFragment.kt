@@ -29,12 +29,14 @@ class HotelDetailFacilityFragment : BaseListFragment<FacilityData, HotelDetailFa
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val recyclerView = getRecyclerView(view) as VerticalRecyclerView
-        recyclerView.clearItemDecoration()
-        recyclerView.setPadding(0, 0, 0,
-                resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2).toInt())
-        recyclerView.clipToPadding = false
-        recyclerView.isFocusable = false
+        context?.let { context ->
+            val recyclerView = getRecyclerView(view) as VerticalRecyclerView
+            recyclerView.clearItemDecoration()
+            recyclerView.setPadding(0, 0, 0,
+                context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2).toInt())
+            recyclerView.clipToPadding = false
+            recyclerView.isFocusable = false
+        }
     }
 
     override fun getAdapterTypeFactory(): HotelDetailFacilityAdapterTypeFactory = HotelDetailFacilityAdapterTypeFactory()

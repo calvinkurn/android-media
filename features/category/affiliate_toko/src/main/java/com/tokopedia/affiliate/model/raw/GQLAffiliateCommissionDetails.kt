@@ -29,6 +29,12 @@ val GQL_Affiliate_Commission: String = """query getAffiliateCommissionDetail(${"
           AndroidURL      
           IosURL         
         }
+        Hyperlink {
+          DesktopURL    
+          MobileURL        
+          AndroidURL        
+          IosURL             
+        }
       }
       DetailTitle             
       Detail {

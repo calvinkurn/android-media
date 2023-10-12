@@ -1,11 +1,11 @@
 package com.tokopedia.play_common.view
 
-import android.os.Build
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.Px
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 
 /**
  * Created by jegul on 02/07/20
@@ -17,10 +17,10 @@ import androidx.core.view.WindowInsetsCompat
  * @see View.setPadding
  */
 fun View.updatePadding(
-        @Px left: Int = paddingLeft,
-        @Px top: Int = paddingTop,
-        @Px right: Int = paddingRight,
-        @Px bottom: Int = paddingBottom
+    @Px left: Int = paddingLeft,
+    @Px top: Int = paddingTop,
+    @Px right: Int = paddingRight,
+    @Px bottom: Int = paddingBottom
 ) {
     setPadding(left, top, right, bottom)
 }
@@ -33,16 +33,16 @@ fun View.updatePadding(
  * @see ViewGroup.MarginLayoutParams.setMargins
  */
 fun ViewGroup.MarginLayoutParams.updateMargins(
-        @Px left: Int = leftMargin,
-        @Px top: Int = topMargin,
-        @Px right: Int = rightMargin,
-        @Px bottom: Int = bottomMargin
+    @Px left: Int = leftMargin,
+    @Px top: Int = topMargin,
+    @Px right: Int = rightMargin,
+    @Px bottom: Int = bottomMargin
 ) {
     setMargins(left, top, right, bottom)
 }
 
 fun View.requestApplyInsetsWhenAttached() {
-    val isAttached = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) isAttachedToWindow else false
+    val isAttached = isAttachedToWindow
     if (isAttached) {
         // We're already attached, just request as normal
         invalidateInsets()
@@ -62,9 +62,11 @@ fun View.requestApplyInsetsWhenAttached() {
 
 fun View.invalidateInsets() {
     try {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) requestApplyInsets()
-        else requestFitSystemWindows()
-    } catch (e: Exception) {}
+        requestApplyInsets()
+    } catch (e: Exception) {
+        FirebaseCrashlytics.getInstance().recordException(e)
+        return
+    }
 }
 
 fun View.doOnApplyWindowInsets(f: (view: View, insets: WindowInsetsCompat, padding: InitialPadding, margin: InitialMargin) -> Unit) {
@@ -79,26 +81,25 @@ fun View.doOnApplyWindowInsets(f: (view: View, insets: WindowInsetsCompat, paddi
     requestApplyInsetsWhenAttached()
 }
 
-data class InitialPadding(val left: Int, val top: Int,
-                          val right: Int, val bottom: Int)
+data class InitialPadding(val left: Int, val top: Int, val right: Int, val bottom: Int)
 
-data class InitialMargin(val left: Int, val top: Int,
-                         val right: Int, val bottom: Int)
+data class InitialMargin(val left: Int, val top: Int, val right: Int, val bottom: Int)
 
 private fun View.recordInitialPadding() = InitialPadding(
-        paddingStart,
-        paddingTop,
-        paddingEnd,
-        paddingBottom)
+    paddingStart,
+    paddingTop,
+    paddingEnd,
+    paddingBottom
+)
 
 private fun View.recordInitialMargin(): InitialMargin {
     val margin = layoutParams as? ViewGroup.MarginLayoutParams
         ?: return InitialMargin(0, 0, 0, 0)
 
     return InitialMargin(
-            margin.marginStart,
-            margin.topMargin,
-            margin.marginEnd,
-            margin.bottomMargin
+        margin.marginStart,
+        margin.topMargin,
+        margin.marginEnd,
+        margin.bottomMargin
     )
 }

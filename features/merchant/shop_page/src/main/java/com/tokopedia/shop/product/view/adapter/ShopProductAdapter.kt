@@ -1,6 +1,7 @@
 package com.tokopedia.shop.product.view.adapter
 
 import android.os.Parcelable
+import android.util.Log
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -555,7 +556,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
 
     fun addEmptyShowcaseResultState() {
         val newList = getNewVisitableItems()
-        visitables.add(ShopProductEmptyShowcaseUiModel())
+        newList.add(ShopProductEmptyShowcaseUiModel())
         submitList(newList)
         mapDataModel()
     }

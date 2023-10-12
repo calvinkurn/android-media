@@ -1,5 +1,5 @@
 ---
-title: Medialoader: An Enhancement of Image Loader
+title: "Medialoader: An Enhancement of Image Loader"
 labels:
 - imageloader
 - mediaplatform
@@ -7,7 +7,7 @@ labels:
 - loader
 ---
 
-
+<!--left header table-->
 | **Status** | <!--start status:GREEN-->RELEASE<!--end status--> |
 | --- | --- |
 | **Project Lead** | [Muh Isfhani Ghiath](https://tokopedia.atlassian.net/wiki/people/5c5b988f0551865e5bc7986c?ref=confluence)  |

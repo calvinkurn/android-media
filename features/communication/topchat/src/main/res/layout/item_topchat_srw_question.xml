@@ -17,7 +17,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_gravity="center_vertical"
         android:layout_weight="1"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:typographyType="body_2"
         tools:text="Ini stoknya masih ada, Min?" />
 
@@ -29,7 +29,7 @@
         android:layout_gravity="center_vertical"
         android:layout_marginEnd="@dimen/unify_space_8"
         android:padding="@dimen/unify_space_4"
-        app:icon_color_light_enable="@color/Unify_N700_96"
+        app:icon_color_light_enable="@color/Unify_NN950_96"
         app:icon_name="SEND_TEXT" />
 
     <com.tokopedia.unifycomponents.Label

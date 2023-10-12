@@ -2,11 +2,9 @@ package com.tokopedia.chatbot.view.customview
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
-import android.widget.LinearLayout
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleAreaMessage
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -14,14 +12,12 @@ import com.tokopedia.kotlin.extensions.view.toPx
 import kotlin.math.max
 import kotlin.math.min
 
-
 class MessageBubbleLayout : ViewGroup {
 
     var fxChat: CustomChatbotChatLayout? = null
     var replyBubbleContainer: ReplyBubbleAreaMessage? = null
     private var msgOrientation = DEFAULT_MSG_ORIENTATION
     private val radiusMargin = 16f.toPx().toInt()
-
 
     constructor(context: Context) : super(context) {
         initConfig(context, null)
@@ -38,7 +34,6 @@ class MessageBubbleLayout : ViewGroup {
     ) {
         initConfig(context, attrs)
     }
-
 
     init {
         initViewLayout()
@@ -60,7 +55,6 @@ class MessageBubbleLayout : ViewGroup {
         fxChat = findViewById(R.id.chat_message)
         replyBubbleContainer = findViewById(R.id.reply_container)
     }
-
 
     /**
      * Measure it's children, take the max width of a child and set it
@@ -107,8 +101,8 @@ class MessageBubbleLayout : ViewGroup {
                 childWidth,
                 MeasureSpec.EXACTLY
             )
-            //This remeasures the width of a child as childWidth has been changed
-           child.measure(widthSpec, heightMeasureSpec)
+            // This remeasures the width of a child as childWidth has been changed
+            child.measure(widthSpec, heightMeasureSpec)
         }
         /**
          * reduce height by border radius value if [replyBubbleContainer]
@@ -136,14 +130,20 @@ class MessageBubbleLayout : ViewGroup {
                 val leftPos = lp.leftMargin
                 val rightPos = leftPos + it.measuredWidth
                 it.layout(
-                    leftPos, 0, rightPos, topOffset
+                    leftPos,
+                    0,
+                    rightPos,
+                    topOffset
                 )
                 topOffset -= radiusMargin
             }
         }
         fxChat?.let {
             it.layout(
-                0, topOffset, it.measuredWidth, topOffset + it.measuredHeight
+                0,
+                topOffset,
+                it.measuredWidth,
+                topOffset + it.measuredHeight
             )
         }
     }
@@ -175,7 +175,7 @@ class MessageBubbleLayout : ViewGroup {
     }
 
     companion object {
-        val LAYOUT = R.layout.message_bubble
+        val LAYOUT = R.layout.customview_chatbot_message_bubble
 
         const val LEFT_MSG_ORIENTATION = 0
         const val RIGHT_MSG_ORIENTATION = 1

@@ -3,38 +3,33 @@ package com.tokopedia.search.result.presentation.view.adapter
 import android.view.ViewGroup
 import androidx.collection.SparseArrayCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentFactory
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
+import androidx.viewpager.widget.PagerAdapter
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchTabPosition.TAB_FIRST_POSITION
 import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.search.result.presentation.view.fragment.ProductListFragment
 import com.tokopedia.search.result.shop.presentation.fragment.ShopListFragment
 
 internal class SearchSectionPagerAdapter(
-        fragmentManager: FragmentManager,
-        private val searchParameter: SearchParameter
-) : FragmentStatePagerAdapter(fragmentManager) {
+    fragmentManager: FragmentManager,
+    private val titleList: List<String>,
+    private val searchParameter: SearchParameter,
+    private val classLoader: ClassLoader,
+    private val fragmentFactory: FragmentFactory,
+) : FragmentStatePagerAdapter(fragmentManager), SearchViewPagerAdapter {
 
     private var productListFragment: ProductListFragment? = null
     private var shopListFragment: ShopListFragment? = null
-    private val titleList = mutableListOf<String>()
     private val registeredFragments = SparseArrayCompat<Fragment>()
 
-    fun updateData(titleList: List<String>) {
-        this.titleList.clear()
-        this.titleList.addAll(titleList)
-        this.registeredFragments.clear()
-        this.notifyDataSetChanged()
-    }
+    override fun asViewPagerAdapter(): PagerAdapter = this
 
     override fun getItem(position: Int): Fragment {
         return when (position) {
-            TAB_FIRST_POSITION -> {
-                createProductFragment()
-            }
-            else -> {
-                createShopFragment()
-            }
+            TAB_FIRST_POSITION -> createProductFragment()
+            else -> createShopFragment()
         }
     }
 
@@ -43,7 +38,7 @@ internal class SearchSectionPagerAdapter(
     }
 
     private fun createShopFragment(): ShopListFragment {
-        return ShopListFragment.newInstance()
+        return ShopListFragment.newInstance(classLoader, fragmentFactory)
     }
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
@@ -85,11 +80,11 @@ internal class SearchSectionPagerAdapter(
         return POSITION_NONE
     }
 
-    fun getProductListFragment(): ProductListFragment? = productListFragment
+    override fun getFirstPageFragment(): Fragment? = productListFragment
 
-    fun getShopListFragment(): ShopListFragment? = shopListFragment
+    override fun getSecondPageFragment(): Fragment? = shopListFragment
 
-    fun getRegisteredFragmentAtPosition(position: Int): Fragment? {
+    override fun getRegisteredFragmentAtPosition(position: Int): Fragment? {
         return registeredFragments.get(position)
     }
 }

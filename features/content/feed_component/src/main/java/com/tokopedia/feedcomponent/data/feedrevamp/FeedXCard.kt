@@ -13,7 +13,7 @@ data class FeedXCard(
 
     // FeedXCardBanners Data Type
     @SerializedName("id")
-    var id: String = "",
+    val id: String = "",
     @SerializedName("publishedAt")
     var publishedAt: String = "",
     @SerializedName("reportable")
@@ -37,7 +37,7 @@ data class FeedXCard(
 
     // FeedXCardPlaceHolder Data Type
     @SerializedName("type")
-    var type: String = "",
+    val type: String = "",
 
     // FeedXCardProductsHighlight Data Type
     @SerializedName("products")
@@ -57,7 +57,7 @@ data class FeedXCard(
     @SerializedName("text")
     var text: String = "",
     @SerializedName("title")
-    var title: String = "",
+    val title: String = "",
     @SerializedName("like")
     var like: FeedXLike = FeedXLike(),
     @SerializedName("comments", alternate = ["comm"])
@@ -118,7 +118,8 @@ data class FeedXCard(
 ) : ImpressHolder() {
 
     val isTypeProductHighlight: Boolean
-        get() = typename == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT
+        get() = typename ==
+            TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT
 
     val isTypeVOD: Boolean
         get() = typename == TYPE_FEED_X_CARD_VOD

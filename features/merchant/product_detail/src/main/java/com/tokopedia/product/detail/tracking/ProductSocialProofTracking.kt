@@ -106,7 +106,7 @@ object ProductSocialProofTracking {
             trackDataModel = null,
             action = action,
             trackerId = trackerId,
-            modify = {
+            modifier = {
                 it[TrackerConstant.EVENT] = ProductTrackingConstant.PDP.EVENT_VIEW_PG_IRIS
             }
         )
@@ -123,7 +123,7 @@ object ProductSocialProofTracking {
             trackDataModel = null,
             action = action,
             trackerId = trackerId,
-            modify = {
+            modifier = {
                 it[TrackerConstant.EVENT] = ProductTrackingConstant.PDP.EVENT_VIEW_PG_IRIS
             }
         )

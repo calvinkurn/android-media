@@ -24,6 +24,6 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
         android:layout_marginStart="16dp"
-        android:background="@color/Unify_N100_96"/>
+        android:background="@color/Unify_NN200_96"/>
 
 </LinearLayout>

@@ -16,12 +16,11 @@ class MediaGalleryAdapter constructor(
     private val selectedMedias: MutableList<MediaUiModel> = mutableListOf()
 
     init {
-        delegatesManager
-            .addDelegate(MediaGalleryDelegate(mediaListener))
+        delegatesManager.addDelegate(MediaGalleryDelegate(mediaListener))
     }
 
     override fun areItemsTheSame(oldItem: MediaUiModel, newItem: MediaUiModel): Boolean {
-        return oldItem.id == newItem.id
+        return oldItem.file == newItem.file
     }
 
     override fun areContentsTheSame(oldItem: MediaUiModel, newItem: MediaUiModel): Boolean {

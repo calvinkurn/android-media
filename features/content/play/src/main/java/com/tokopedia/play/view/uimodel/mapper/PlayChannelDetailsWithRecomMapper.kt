@@ -5,18 +5,47 @@ import com.tokopedia.play.data.detail.recom.ChannelDetailsWithRecomResponse
 import com.tokopedia.play.data.multiplelikes.MultipleLikeConfig
 import com.tokopedia.play.data.realtimenotif.RealTimeNotification
 import com.tokopedia.play.di.PlayScope
-import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play.view.uimodel.PlayUpcomingUiModel
-import com.tokopedia.play.view.uimodel.recom.*
+import com.tokopedia.play.view.uimodel.recom.BannedUiModel
+import com.tokopedia.play.view.uimodel.recom.CategoryWidgetConfig
+import com.tokopedia.play.view.uimodel.recom.ExploreWidgetConfig
+import com.tokopedia.play.view.uimodel.recom.FreezeUiModel
+import com.tokopedia.play.view.uimodel.recom.LikeSource
+import com.tokopedia.play.view.uimodel.recom.PartnerFollowableStatus
+import com.tokopedia.play.view.uimodel.recom.PinnedMessageUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayChannelDetailUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayChannelInfoUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayChannelRecommendationConfig
+import com.tokopedia.play.view.uimodel.recom.PlayChannelReportUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayChannelStatus
+import com.tokopedia.play.view.uimodel.recom.PlayEmptyBottomSheetInfoUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayGeneralVideoPlayerParams
+import com.tokopedia.play.view.uimodel.recom.PlayLikeBubbleConfig
+import com.tokopedia.play.view.uimodel.recom.PlayLikeInfoUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayLikeStatus
+import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowStatus
+import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfo
+import com.tokopedia.play.view.uimodel.recom.PlayPinnedInfoUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayPopUpConfigUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayQuickReplyInfoUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayShareInfoUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayStatusConfig
+import com.tokopedia.play.view.uimodel.recom.PlayStatusSource
+import com.tokopedia.play.view.uimodel.recom.PlayStatusUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayVideoConfigUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayVideoMetaInfoUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayVideoStreamUiModel
 import com.tokopedia.play.view.uimodel.recom.interactive.LeaderboardUiModel
 import com.tokopedia.play.view.uimodel.recom.realtimenotif.PlayRealTimeNotificationConfig
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.VoucherUiModel
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
+import com.tokopedia.play.widget.ui.model.PartnerType
 import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.play_common.model.ui.ArchivedUiModel
@@ -53,7 +82,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
                     videoInfo = mapVideoInfo(it.video),
                     emptyBottomSheetInfo = mapEmptyBottomSheet(it),
                     popupConfig = mapPopUp(it),
-                    exploreWidgetConfig = mapExploreWidgetConfig(it.config.exploreWidgetConfig),
+                    channelRecomConfig = mapChannelRecomConfig(it.config.categoryWidgetConfig, it.config.exploreWidgetConfig),
                     showCart = it.config.showCart,
                 ),
                 partnerInfo = partnerInfo,
@@ -300,9 +329,31 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
     }
 
     private fun mapExploreWidgetConfig(
-        config: ChannelDetailsWithRecomResponse.ExploreWidgetConfig
+        config: ChannelDetailsWithRecomResponse.ExploreWidgetConfig,
     ) = ExploreWidgetConfig(
-       group = config.group, sourceType = config.sourceType, sourceId = config.sourceId,
+       group = config.group,
+        sourceType = config.sourceType,
+        sourceId = config.sourceId,
+    )
+
+    private fun mapCategoryWidgetConfig(
+        categoryConfig: ChannelDetailsWithRecomResponse.ExploreWidgetConfig
+    ) = CategoryWidgetConfig(
+        categoryGroup = categoryConfig.group,
+        hasCategory = categoryConfig.hasCategory,
+        categoryName = categoryConfig.categoryName.ifBlank { "Eksplor" },
+        categorySourceType = categoryConfig.sourceType,
+        categorySourceId = categoryConfig.sourceId,
+        categoryLevel = categoryConfig.categoryLvl,
+        categoryId = categoryConfig.categoryId,
+    )
+
+    private fun mapChannelRecomConfig(
+        categoryConfig: ChannelDetailsWithRecomResponse.ExploreWidgetConfig,
+        exploreConfig: ChannelDetailsWithRecomResponse.ExploreWidgetConfig,
+    ) = PlayChannelRecommendationConfig(
+        categoryWidgetConfig = mapCategoryWidgetConfig(categoryConfig),
+        exploreWidgetConfig = mapExploreWidgetConfig(exploreConfig)
     )
 
     private fun mapArchived(archiveData: ChannelDetailsWithRecomResponse.ArchivedData) = with(archiveData) {

@@ -24,7 +24,9 @@ data class ConfigUIView(
                     ConfigUIView(Notification, R.string.notif_loading_menu_notification),
                     ConfigUIView(Device, R.string.notif_loading_menu_device),
                     ConfigUIView(Ringtone, R.string.notif_loading_menu_ringtone),
-                    ConfigUIView(PushNotification, R.string.notif_loading_menu_push)
+                    ConfigUIView(PushNotification, R.string.notif_loading_menu_push),
+                    ConfigUIView(GooglePlayServices, R.string.notif_loading_menu_play_services)
+
             )
         }
 
@@ -56,6 +58,13 @@ data class ConfigUIView(
                         R.string.notif_menu_push
                     } else {
                         R.string.notif_failed_menu_push
+                    }
+                }
+                is GooglePlayServices -> {
+                    if (view.status == Success || view.status == Warning) {
+                        R.string.notif_loading_menu_play_services
+                    } else {
+                        R.string.notif_failed_menu_play_services
                     }
                 }
                 is Undefined -> 0

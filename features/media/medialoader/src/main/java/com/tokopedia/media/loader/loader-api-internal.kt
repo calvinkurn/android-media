@@ -67,13 +67,27 @@ internal fun ImageView.call(source: Any?, properties: Properties) {
     }
 }
 
+/**
+ * The [clearImage] extension will help you to stop the image pending specifically on [ImageView] gracefully.
+ * You could consider using it to make your page safe to close without any unnecessary bitmap pool that doesn't need to care of.
+ *
+ * Please make sure to call this extension right on the onDestroy state to avoid a broken image.
+ *
+ * <b>Sample Usage</b>
+ *
+ * ```
+ * override fun onDestroyState() {
+ *    imageView.clearImage()
+ * }
+ * ```
+ */
 fun ImageView?.clearImage() {
     if (this != null && context.isValid()) {
         GlideApp.with(this.context).clear(this)
     }
 }
 
-fun Context?.isValid(): Boolean {
+internal fun Context?.isValid(): Boolean {
     return when {
         this == null -> false
         this is Activity -> !(this.isDestroyed || this.isFinishing)

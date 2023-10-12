@@ -11,7 +11,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.buyerorder.R
 import com.tokopedia.buyerorder.detail.data.OrderCategory
 import com.tokopedia.buyerorder.detail.revamp.activity.RevampOrderListDetailActivity
-import com.tokopedia.buyerorder.detail.view.activity.OrderListDetailActivity
 import com.tokopedia.buyerorder.recharge.di.DaggerRechargeOrderDetailComponent
 import com.tokopedia.buyerorder.recharge.di.RechargeOrderDetailComponent
 import com.tokopedia.buyerorder.recharge.presentation.fragment.RechargeOrderDetailFragment
@@ -91,7 +90,7 @@ class RechargeOrderDetailActivity : BaseSimpleActivity(), HasComponent<RechargeO
                                 .add(com.tokopedia.abstraction.R.id.parent_view, RechargeOrderDetailFragment.getInstance(orderId, OrderCategory.DIGITAL))
                                 .commit()
                     } else {
-                        startActivity(OrderListDetailActivity.getIntent(this, orderId, intent.data))
+                        startActivity(RevampOrderListDetailActivity.getIntent(this, orderId, intent.data))
                         finish()
                     }
                 }
