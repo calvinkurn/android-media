@@ -50,7 +50,6 @@ import com.tokopedia.logisticCommon.uimodel.toAddressUiState
 import com.tokopedia.logisticCommon.util.MapsAvailabilityHelper
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_ADDRESS_STATE
-import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_FROM_ADDRESS_FORM
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_FROM_PINPOINT
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_GMS_AVAILABILITY
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_POLYGON
@@ -357,12 +356,11 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
     }
 
     private fun onResultFromPinpoint(data: Intent?) {
-        val isFromAddressForm = data?.getBooleanExtra(EXTRA_FROM_ADDRESS_FORM, false)
         val newAddress =
             data?.getParcelableExtra<SaveAddressDataModel>(LogisticConstant.EXTRA_ADDRESS_NEW)
                 ?: data?.getParcelableExtra(EXTRA_SAVE_DATA_UI_MODEL)
-        if (isFromAddressForm != null && newAddress != null) {
-            finishActivity(newAddress, isFromAddressForm)
+        if (newAddress != null) {
+            finishActivity(newAddress)
         }
     }
 
@@ -386,7 +384,6 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
                 Activity.RESULT_OK,
                 Intent().apply {
                     putExtra(LogisticConstant.EXTRA_ADDRESS_NEW, data)
-                    putExtra(EXTRA_FROM_ADDRESS_FORM, isFromAddressForm)
                 }
             )
             finish()

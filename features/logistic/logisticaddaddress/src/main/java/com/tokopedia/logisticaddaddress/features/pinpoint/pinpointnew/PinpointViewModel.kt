@@ -33,11 +33,13 @@ import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.uimodel.Mo
 import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.uimodel.PinpointAction
 import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.uimodel.PinpointUiModel
 import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.launch
+import java.net.ConnectException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class PinpointViewModel @Inject constructor(
@@ -52,6 +54,7 @@ class PinpointViewModel @Inject constructor(
 
     // only set this for pinpoint webview
     private var saveAddressDataModel: SaveAddressDataModel? = null
+
     var uiModel = PinpointUiModel()
     var addressId = ""
     var whDistrictId = 0L
@@ -59,8 +62,17 @@ class PinpointViewModel @Inject constructor(
     var uiState: AddressUiState? = null
     var source = ""
 
-    // todo
+    // this variable shows the real state of positive / negative flow in add address flow
+    // positive flow means address has pinpoint (search page -> pinpoint page -> accept pinpoint page)
+    // negative flow means address has no pinpoint (search page -> isi alamat manual OR search page -> pinpoint page -> discard pinpoint)
+    // null value means the flow is not decided yet
+    // ex: search page -> pinpoint page (hasn't decided to choose/discard the pinpoint)
+    // this variable is set as nullable because the value can't be changed once it's been set
+    // ex: user already click isi alamat manual, then decide to put pinpoint. this case is still negative flow
     private var _isPositiveFlow: Boolean? = null
+
+    // this getter is used for analytic in the view fragment
+    // the default is true
     val isPositiveFlow: Boolean
         get() = _isPositiveFlow ?: true
 
@@ -77,27 +89,6 @@ class PinpointViewModel @Inject constructor(
         get() = _choosePinpoint
 
     private val _pinpointBottomSheet = MutableLiveData<BottomSheetState>()
-
-    private fun getInitialBottomSheetState(): BottomSheetState {
-        return BottomSheetState.LocationDetail(
-            title = "",
-            description = "",
-            buttonPrimary = BottomSheetState.LocationDetail.PrimaryButtonUiModel(
-                text = if (uiState.isEditOrPinpointOnly()) "Pilih lokasi ini" else "",
-                show = true,
-                enable = false,
-                state = BottomSheetState.LocationDetail.PrimaryButtonUiModel.PrimaryButtonState(
-                    uiState,
-                    false
-                )
-            ),
-            buttonSecondary = BottomSheetState.LocationDetail.LocationDetailButtonUiModel(
-                show = uiState.isAdd(),
-                enable = false,
-                state = uiState
-            )
-        )
-    }
 
     val pinpointBottomSheet: LiveData<BottomSheetState>
         get() = _pinpointBottomSheet
@@ -182,14 +173,231 @@ class PinpointViewModel @Inject constructor(
                     }
                 } else {
                     districtData.keroMapsAutofill.messageError.getOrNull(0)?.run {
-                        checkErrorMessage(this)
+                        checkErrorMessage(this, showIllustationMap = false)
                     }
                 }
             } catch (e: Throwable) {
-                // todo check default error first
+                handleError(e)
+            }
+        }
+    }
+
+    fun getDistrictLocation(placeId: String) {
+        viewModelScope.launch {
+            try {
+                val districtLoc =
+                    getDistrict(GetDistrictParam(placeId = placeId, isManageAddressFlow = true))
+                val responseModel = getDistrictMapper.map(districtLoc)
+                val latitude = responseModel.latitude.toDoubleOrZero()
+                val longitude = responseModel.longitude.toDoubleOrZero()
+                if (latitude != 0.0 && longitude != 0.0) {
+                    uiModel = uiModel.copy(
+                        lat = responseModel.latitude.toDoubleOrZero(),
+                        long = responseModel.longitude.toDoubleOrZero()
+                    )
+                    _map.value = MoveMap(latitude, longitude)
+                }
+                if ((responseModel.postalCode.isEmpty() && uiModel.postalCode.isEmpty()) || responseModel.districtId == 0L) {
+                    locationNotFound(false)
+                } else {
+                    if (validateDistrict(responseModel.districtId)) {
+                        uiModel = uiModel.map(responseModel, null)
+                        if (responseModel.errMessage.isNullOrEmpty()) {
+                            _pinpointBottomSheet.value = BottomSheetState.LocationDetail(
+                                title = uiModel.title,
+                                description = uiModel.formattedAddress,
+                                buttonPrimary = createButtonPrimary(success = true, enable = true),
+                                buttonSecondary = createButtonSecondary(enable = true)
+                            )
+                        } else if (responseModel.errMessage?.contains(LOCATION_NOT_FOUND_MESSAGE) == true) {
+                            locationNotFound(false)
+                        }
+                    } else {
+                        _pinpointBottomSheet.value = BottomSheetState.LocationDetail(
+                            title = responseModel.title,
+                            description = responseModel.formattedAddress,
+                            buttonPrimary = createButtonPrimary(success = false, enable = false),
+                            buttonSecondary = createButtonSecondary(enable = true)
+                        )
+                    }
+                }
+            } catch (e: Throwable) {
+                handleError(e)
+            }
+        }
+    }
+
+    fun getDistrictBoundaries() {
+        viewModelScope.launch {
+            try {
+                if (uiState.isAdd() && uiModel.districtId != 0L) {
+                    val districtBoundary = getDistrictBoundaries(uiModel.districtId)
+                    _districtBoundary.value =
+                        Success(districtBoundaryMapper.mapDistrictBoundaryNew(districtBoundary))
+                }
+            } catch (e: Throwable) {
+                handleError(e)
+            }
+        }
+    }
+
+    fun getDistrictCenter() {
+        viewModelScope.launch {
+            try {
+                val data = getDistrictCenter(uiModel.districtId)
+                _map.value = MoveMap(
+                    data.keroAddrGetDistrictCenter.district.latitude,
+                    data.keroAddrGetDistrictCenter.district.longitude
+                )
+                getDistrictData(
+                    data.keroAddrGetDistrictCenter.district.latitude,
+                    data.keroAddrGetDistrictCenter.district.longitude
+                )
+            } catch (e: Throwable) {
+                handleError(e)
+            }
+        }
+    }
+
+    /*
+    this method is to save pinpoint result from webview pinpoint
+     */
+    fun setAddress(address: SaveAddressDataModel) {
+        this.saveAddressDataModel = address
+    }
+
+    /*
+    By default, SaveAddressDataModel from Pinpoint page only contains data from PinpointUiModel
+    In case of being redirected pinpoint webview (device doesn't support Google Map Service,
+    this method returns the SaveAddressDataModel retrieved from Pinpoint Webview Page
+     */
+    fun getAddress(): SaveAddressDataModel {
+        return saveAddressDataModel ?: SaveAddressDataModel(
+            districtName = uiModel.districtName,
+            cityName = uiModel.cityName,
+            provinceName = uiModel.provinceName,
+            districtId = uiModel.districtId,
+            cityId = uiModel.cityId,
+            provinceId = uiModel.provinceId,
+            postalCode = uiModel.postalCode,
+            latitude = uiModel.lat.toString(),
+            longitude = uiModel.long.toString(),
+            zipCodes = uiModel.postalCodeList,
+            title = uiModel.title
+        )
+    }
+
+    fun getLocationFromLatLong() {
+        getDistrictData(
+            uiModel.lat,
+            uiModel.long
+        )
+    }
+
+    /*
+    Validate pinpoint's district on click save only when caller is shop edit address
+    else, return the pinpoint result
+     */
+    fun validatePinpoint() {
+        if (isEditWarehouse && whDistrictId != 0L && whDistrictId != uiModel.districtId) {
+            _action.value =
+                PinpointAction.InvalidDistrictPinpoint("Lokasi pinpoint (peta) tidak sesuai dengan kota/kecamatan mu. Harap ulangi pinpoint.")
+        } else if (uiState.isPinpointOnly()) {
+            _choosePinpoint.value = ChoosePinpoint.SetPinpointResult(
+                saveAddressDataModel = getAddress(),
+                pinpointUiModel = uiModel
+            )
+        } else {
+            _choosePinpoint.value = ChoosePinpoint.GoToAddressForm(
+                saveChanges = true,
+                pinpointUiModel = uiModel,
+                addressState = uiState,
+                source = source,
+                isPositiveFlow = _isPositiveFlow ?: true
+            )
+        }
+    }
+
+    fun discardPinpoint() {
+        _choosePinpoint.value = ChoosePinpoint.GoToAddressForm(
+            saveChanges = false,
+            pinpointUiModel = uiModel,
+            addressState = uiState,
+            source = source,
+            isPositiveFlow = _isPositiveFlow ?: false
+        )
+    }
+
+    fun getGeocodeByDistrictAndCityName() {
+        viewModelScope.launchCatchError(
+            block = {
+                val response = mapsGeocodeUseCase(
+                    MapsGeocodeParam(
+                        input = MapsGeocodeParam.MapsGeocodeDataParam(
+                            address = "${uiModel.districtName}, ${uiModel.cityName}"
+                        )
+                    )
+                )
+
+                response.firstLocation?.apply {
+                    _map.value = MoveMap(
+                        lat,
+                        lng
+                    )
+                    getDistrictData(
+                        lat,
+                        lng
+                    )
+                } ?: kotlin.run {
+                    locationNotFound(true)
+                }
+            },
+            onError = {
+                checkErrorMessage(it.message.orEmpty())
+            }
+        )
+    }
+
+    fun onResultFromSearchAddress(placeId: String, lat: Double, long: Double) {
+        if (placeId.isNotEmpty()) {
+            this.uiModel = this.uiModel.copy(placeId)
+            getDistrictLocation(placeId)
+        } else if (lat != 0.0 && long != 0.0) {
+            _map.value = MoveMap(lat, long)
+            getDistrictData(lat, long)
+        }
+    }
+
+    private fun handleError(e: Throwable) {
+        when (e) {
+            is UnknownHostException, is SocketTimeoutException, is ConnectException -> {
+                _action.value = PinpointAction.NetworkError(e.message.orEmpty())
+            }
+            else -> {
                 checkErrorMessage(e.message.toString())
             }
         }
+    }
+
+    private fun getInitialBottomSheetState(): BottomSheetState {
+        return BottomSheetState.LocationDetail(
+            title = "",
+            description = "",
+            buttonPrimary = BottomSheetState.LocationDetail.PrimaryButtonUiModel(
+                text = if (uiState.isEditOrPinpointOnly()) "Pilih lokasi ini" else "",
+                show = true,
+                enable = false,
+                state = BottomSheetState.LocationDetail.PrimaryButtonUiModel.PrimaryButtonState(
+                    uiState,
+                    false
+                )
+            ),
+            buttonSecondary = BottomSheetState.LocationDetail.LocationDetailButtonUiModel(
+                show = uiState.isAdd(),
+                enable = false,
+                state = uiState
+            )
+        )
     }
 
     private fun createButtonSecondary(enable: Boolean): BottomSheetState.LocationDetail.LocationDetailButtonUiModel {
@@ -200,6 +408,9 @@ class PinpointViewModel @Inject constructor(
         )
     }
 
+    /*
+    This function only called when user in add address negative case
+     */
     private fun validateDistrict(newDistrictId: Long): Boolean {
         var result = true
         if (uiState.isAdd() && uiModel.districtId != 0L && _isPositiveFlow == false) {
@@ -286,60 +497,12 @@ class PinpointViewModel @Inject constructor(
         )
     }
 
-    fun getDistrictLocation(placeId: String) {
-        viewModelScope.launch {
-            try {
-                val districtLoc =
-                    getDistrict(GetDistrictParam(placeId = placeId, isManageAddressFlow = true))
-                val responseModel = getDistrictMapper.map(districtLoc)
-                val latitude = responseModel.latitude.toDoubleOrZero()
-                val longitude = responseModel.longitude.toDoubleOrZero()
-                if (latitude != 0.0 && longitude != 0.0) {
-                    uiModel = uiModel.copy(
-                        lat = responseModel.latitude.toDoubleOrZero(),
-                        long = responseModel.longitude.toDoubleOrZero()
-                    )
-                    _map.value = MoveMap(latitude, longitude)
-                }
-                if ((responseModel.postalCode.isEmpty() && uiModel.postalCode.isEmpty()) || responseModel.districtId == 0L) {
-                    locationNotFound(false)
-                } else {
-                    if (validateDistrict(responseModel.districtId)) {
-                        uiModel = uiModel.map(responseModel, null)
-                        if (responseModel.errMessage.isNullOrEmpty()) {
-                            _pinpointBottomSheet.value = BottomSheetState.LocationDetail(
-                                title = uiModel.title,
-                                description = uiModel.formattedAddress,
-                                buttonPrimary = createButtonPrimary(success = true, enable = true),
-                                buttonSecondary = createButtonSecondary(enable = true)
-                            )
-                        } else if (responseModel.errMessage?.contains(LOCATION_NOT_FOUND_MESSAGE) == true) {
-                            locationNotFound(false)
-                        }
-                    } else {
-                        _pinpointBottomSheet.value = BottomSheetState.LocationDetail(
-                            title = responseModel.title,
-                            description = responseModel.formattedAddress,
-                            buttonPrimary = createButtonPrimary(success = false, enable = false),
-                            buttonSecondary = createButtonSecondary(enable = true)
-                        )
-                    }
-                }
-//                _districtLocation.value = Success(getDistrictMapper.map(districtLoc))
-            } catch (e: Throwable) {
-//                _districtLocation.value = Fail(e)
-
-                checkErrorMessage(e.message.toString())
-            }
-        }
-    }
-
-    private fun checkErrorMessage(message: String) {
+    private fun checkErrorMessage(message: String, showIllustationMap: Boolean = true) {
         when {
             message.contains(PinpointFragment.FOREIGN_COUNTRY_MESSAGE) -> locationOutOfReach()
-            message.contains(PinpointFragment.LOCATION_NOT_FOUND_MESSAGE) -> locationNotFound(true)
+            message.contains(PinpointFragment.LOCATION_NOT_FOUND_MESSAGE) -> locationNotFound(showIllustationMap)
             else -> {
-                locationNotFound(true)
+                locationNotFound(showIllustationMap)
             }
         }
     }
@@ -356,134 +519,5 @@ class PinpointViewModel @Inject constructor(
                 state = BottomSheetState.LocationInvalid.LocationInvalidType.OUT_OF_COVERAGE
             )
         )
-    }
-
-    fun getDistrictBoundaries() {
-        viewModelScope.launch {
-            try {
-                if (uiState.isAdd() && uiModel.districtId != 0L) {
-                    val districtBoundary = getDistrictBoundaries(uiModel.districtId)
-                    _districtBoundary.value =
-                        Success(districtBoundaryMapper.mapDistrictBoundaryNew(districtBoundary))
-                }
-            } catch (e: Throwable) {
-                _districtBoundary.value = Fail(e)
-            }
-        }
-    }
-
-    fun getDistrictCenter() {
-        viewModelScope.launch {
-            try {
-                val data = getDistrictCenter(uiModel.districtId)
-                _map.value = MoveMap(
-                    data.keroAddrGetDistrictCenter.district.latitude,
-                    data.keroAddrGetDistrictCenter.district.longitude
-                )
-                getDistrictData(
-                    data.keroAddrGetDistrictCenter.district.latitude,
-                    data.keroAddrGetDistrictCenter.district.longitude
-                )
-            } catch (e: Throwable) {
-                // todo show toaster maybe?
-            }
-        }
-    }
-
-    fun setAddress(address: SaveAddressDataModel) {
-        this.saveAddressDataModel = address
-    }
-
-    fun getAddress(): SaveAddressDataModel {
-        return saveAddressDataModel ?: SaveAddressDataModel(
-            districtName = uiModel.districtName,
-            cityName = uiModel.cityName,
-            provinceName = uiModel.provinceName,
-            districtId = uiModel.districtId,
-            cityId = uiModel.cityId,
-            provinceId = uiModel.provinceId,
-            postalCode = uiModel.postalCode,
-            latitude = uiModel.lat.toString(),
-            longitude = uiModel.long.toString(),
-            zipCodes = uiModel.postalCodeList,
-            title = uiModel.title
-        )
-    }
-
-    fun getLocationFromLatLong() {
-        getDistrictData(
-            uiModel.lat,
-            uiModel.long
-        )
-    }
-
-    fun validatePinpoint() {
-        if (isEditWarehouse && whDistrictId != 0L && whDistrictId != uiModel.districtId) {
-            _action.value =
-                PinpointAction.InvalidDistrictPinpoint("Lokasi pinpoint (peta) tidak sesuai dengan kota/kecamatan mu. Harap ulangi pinpoint.")
-        } else if (uiState.isPinpointOnly()) {
-            _choosePinpoint.value = ChoosePinpoint.SetPinpointResult(
-                saveAddressDataModel = getAddress(),
-                pinpointUiModel = uiModel
-            )
-        } else {
-            _choosePinpoint.value = ChoosePinpoint.GoToAddressForm(
-                saveChanges = true,
-                pinpointUiModel = uiModel,
-                addressState = uiState,
-                source = source,
-                isPositiveFlow = _isPositiveFlow ?: true
-            )
-        }
-    }
-
-    fun discardPinpoint() {
-        _choosePinpoint.value = ChoosePinpoint.GoToAddressForm(
-            saveChanges = false,
-            pinpointUiModel = uiModel,
-            addressState = uiState,
-            source = source,
-            isPositiveFlow = _isPositiveFlow ?: false
-        )
-    }
-
-    fun getGeocodeByDistrictAndCityName() {
-        viewModelScope.launchCatchError(
-            block = {
-                val response = mapsGeocodeUseCase(
-                    MapsGeocodeParam(
-                        input = MapsGeocodeParam.MapsGeocodeDataParam(
-                            address = "${uiModel.districtName}, ${uiModel.cityName}"
-                        )
-                    )
-                )
-
-                response.firstLocation?.apply {
-                    _map.value = MoveMap(
-                        lat,
-                        lng
-                    )
-                    getDistrictData(
-                        lat,
-                        lng
-                    )
-                } ?: kotlin.run {
-                    locationNotFound(true)
-                }
-            },
-            onError = {
-                checkErrorMessage(it.message.orEmpty())
-            }
-        )
-    }
-
-    fun onResultFromSearchAddress(placeId: String, lat: Double, long: Double) {
-        if (placeId.isNotEmpty()) {
-            this.uiModel = this.uiModel.copy(placeId)
-            getDistrictLocation(placeId)
-        } else if (lat != 0.0 && long != 0.0) {
-            _map.value = MoveMap(lat, long)
-            getDistrictData(lat, long)
-        }
     }
 }

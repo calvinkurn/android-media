@@ -5,7 +5,6 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP
 import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.location.LocationManager
@@ -73,11 +72,9 @@ import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_DISTRICT_I
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_FROM_ADDRESS_FORM
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_GMS_AVAILABILITY
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_EDIT_WAREHOUSE
-import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_POLYGON
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_POSITIVE_FLOW
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_LAT
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_LONG
-import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_NEGATIVE_FULL_FLOW
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_PINPOINT_MODEL
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_SAVE_DATA_UI_MODEL
 import com.tokopedia.logisticaddaddress.common.AddressConstants.KEY_ADDRESS_DATA
@@ -151,9 +148,6 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     // from search page
                     putString(EXTRA_PLACE_ID, extra.getString(EXTRA_PLACE_ID))
 
-                    // search page
-                    putBoolean(EXTRA_IS_POLYGON, extra.getBoolean(EXTRA_IS_POLYGON))
-
                     // pinpoint only
                     putParcelable(
                         EXTRA_SAVE_DATA_UI_MODEL,
@@ -188,8 +182,6 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
     private var permissionState: Int = PERMISSION_NOT_DEFINED
     private var isAccessAppPermissionFromSettings: Boolean = false
     private var isGmsAvailable: Boolean = true
-    private var isEditWarehouse: Boolean = false
-    private var whDistrictId: Long = 0
 
     private val requiredPermissions: Array<String>
         get() = arrayOf(
@@ -221,11 +213,6 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
     private var composite = CompositeSubscription()
     private var googleMap: GoogleMap? = null
     private var currentPlaceId: String = ""
-
-    // to differentiate positive flow or negative flow
-//    private var isPositiveFlow: Boolean? = null
-    private var isFromAddressForm: Boolean = false
-    private var isPolygon: Boolean = false
 
     // state
     private var addressUiState: AddressUiState = AddressUiState.AddAddress
@@ -300,32 +287,6 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
         setOnBackPressed()
         checkMapsAvailability(savedInstanceState)
     }
-
-//    override fun onSaveInstanceState(outState: Bundle) {
-//        outState.putString(EXTRA_PLACE_ID, currentPlaceId)
-//
-//        viewModel.uiModel.let {
-//            if (it.lat != 0.0 && it.long != 0.0) {
-//                outState.putDouble(EXTRA_LAT, it.lat)
-//                outState.putDouble(EXTRA_LONG, it.long)
-//            }
-//
-//            if (it.districtName.isNotBlank() && it.cityName.isNotBlank()) {
-//                outState.putString(EXTRA_DISTRICT_NAME, it.districtName)
-//                outState.putString(EXTRA_CITY_NAME, it.cityName)
-//            }
-//
-//            outState.putParcelable(EXTRA_SAVE_DATA_UI_MODEL, it)
-//        }
-//        outState.putBoolean(EXTRA_IS_POLYGON, isPolygon)
-//        outState.putBoolean(EXTRA_FROM_ADDRESS_FORM, isFromAddressForm)
-//        outState.putBoolean(EXTRA_IS_EDIT_WAREHOUSE, isEditWarehouse)
-//        outState.putLong(EXTRA_WH_DISTRICT_ID, whDistrictId)
-//        outState.putString(EXTRA_ADDRESS_STATE, addressUiState.name)
-//        outState.putString(PARAM_SOURCE, source)
-//
-//        super.onSaveInstanceState(outState)
-//    }
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -446,138 +407,7 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
         binding?.mapViews?.onLowMemory()
     }
 
-    private fun setOnBackPressed() {
-        activity?.onBackPressedDispatcher?.addCallback(
-            viewLifecycleOwner,
-            object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    when (addressUiState) {
-                        AddressUiState.EditAddress -> {
-                            LogisticEditAddressAnalytics.onClickBackPinpoint(userSession.userId)
-                        }
-
-                        AddressUiState.AddAddress -> {
-                            LogisticAddAddressAnalytics.onClickBackArrowPinpoint(userSession.userId)
-                        }
-
-                        else -> {
-                            // no op
-                        }
-                    }
-                    activity?.finish()
-                }
-            }
-        )
-    }
-
-    private fun checkMapsAvailability(savedInstanceState: Bundle?) {
-        if (isGmsAvailable) {
-            prepareMap(savedInstanceState)
-            setFusedLocationClient()
-            fetchData()
-            initView()
-            setViewListener()
-            initObserver()
-        } else {
-            context?.let { ctx -> goToLitePinpoint(ctx) }
-        }
-    }
-
-    private fun goToLitePinpoint(context: Context) {
-        val intent = getLitePinpointIntent(context)
-        pinpointLiteContract.launch(intent)
-    }
-
-    private fun getLitePinpointIntent(context: Context): Intent {
-        if (addressUiState.isEditOrPinpointOnly()) {
-            if (viewModel.uiModel.hasPinpoint()) {
-                return PinpointWebviewActivity.getIntent(
-                    context = context,
-                    saveAddressDataModel = viewModel.getAddress(),
-                    lat = viewModel.uiModel.lat,
-                    lng = viewModel.uiModel.long,
-                    source = PinpointSource.EDIT_ADDRESS
-                )
-            } else {
-                return PinpointWebviewActivity.getIntent(
-                    context = context,
-                    saveAddressDataModel = viewModel.getAddress(),
-                    districtId = viewModel.uiModel.districtId,
-                    source = PinpointSource.EDIT_ADDRESS
-                )
-            }
-        } else {
-            val source =
-                if (viewModel.isPositiveFlow) PinpointSource.ADD_ADDRESS_POSITIVE else PinpointSource.ADD_ADDRESS_NEGATIVE
-            return PinpointWebviewActivity.getIntent(
-                context = context,
-                saveAddressDataModel = viewModel.getAddress(),
-                districtId = viewModel.uiModel.districtId,
-                lat = viewModel.uiModel.lat,
-                lng = viewModel.uiModel.long,
-                source = source
-            )
-        }
-    }
-
-    private fun initView() {
-        if (addressUiState.isEdit()) {
-            binding?.bottomsheetLocation?.let {
-                it.btnPrimary.text = getString(R.string.choose_this_location)
-                it.btnSecondary.visibility = View.GONE
-            }
-        }
-    }
-
-    private fun onResultFromAddressForm(data: Intent?) {
-        val newAddress = data?.getParcelableExtra<SaveAddressDataModel>(EXTRA_ADDRESS_NEW)
-        finishActivity(newAddress, false)
-    }
-
-    private fun onResultFromSearchPage(data: Intent?) {
-        currentPlaceId = data?.getStringExtra(EXTRA_PLACE_ID).orEmpty()
-        val currentLat = data?.getDoubleExtra(EXTRA_LAT, 0.0).orZero()
-        val currentLong = data?.getDoubleExtra(EXTRA_LONG, 0.0).orZero()
-        viewModel.onResultFromSearchAddress(placeId = currentPlaceId, lat = currentLat, long = currentLong)
-    }
-
-    fun onNewIntent(bundle: Bundle) {
-        currentPlaceId = bundle.getString(EXTRA_PLACE_ID).orEmpty()
-        val currentLat = bundle.getDouble(EXTRA_LAT, 0.0).orZero()
-        val currentLong = bundle.getDouble(EXTRA_LONG, 0.0).orZero()
-        viewModel.onResultFromSearchAddress(placeId = currentPlaceId, lat = currentLat, long = currentLong)
-    }
-
-    private fun handlePinpointLite(data: Intent) {
-        data.run {
-            getParcelableExtra<SaveAddressDataModel>(KEY_ADDRESS_DATA)?.let { addressData ->
-                viewModel.setAddress(
-                    addressData
-                )
-            }
-            viewModel.validatePinpoint()
-        }
-    }
-
-    private fun finishActivity(data: SaveAddressDataModel?, isFromAddressForm: Boolean) {
-        activity?.run {
-            setResult(
-                Activity.RESULT_OK,
-                Intent().apply {
-                    putExtra(EXTRA_ADDRESS_NEW, data)
-                    putExtra(EXTRA_NEGATIVE_FULL_FLOW, true)
-                    putExtra(EXTRA_FROM_ADDRESS_FORM, isFromAddressForm)
-                    putExtra(EXTRA_GMS_AVAILABILITY, isGmsAvailable)
-                }
-            )
-            finish()
-        }
-    }
-
-    private fun stopLocationUpdate() {
-        fusedLocationClient?.removeLocationUpdates(locationCallback)
-    }
-
+    // region init
     private fun initData() {
         arguments?.apply {
             addressUiState = getString(EXTRA_ADDRESS_STATE).toAddressUiState()
@@ -600,7 +430,6 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 source = getString(PARAM_SOURCE, ""),
                 isPositiveFlow = isPositiveFlow
             )
-            isFromAddressForm = getBoolean(EXTRA_FROM_ADDRESS_FORM)
             source = getString(PARAM_SOURCE, "")
 
             getGmsAvailability(this)
@@ -620,27 +449,6 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
 
     private fun fetchData() {
         viewModel.fetchData()
-    }
-
-    private fun getCurrentLocation() {
-        if (allPermissionsGranted()) {
-            permissionState = PERMISSION_GRANTED
-            if (AddNewAddressUtils.isGpsEnabled(context)) {
-                getLocation()
-            } else {
-                showBottomSheetLocUndefined(false)
-            }
-        } else {
-            when (permissionState) {
-                PERMISSION_DENIED, PERMISSION_NOT_DEFINED -> {
-                    requestPermissionLocation()
-                }
-
-                PERMISSION_DONT_ASK_AGAIN -> {
-                    showBottomSheetLocUndefined(true)
-                }
-            }
-        }
     }
 
     private fun initObserver() {
@@ -667,14 +475,13 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
                         LogisticAddAddressAnalytics.onViewToasterPinpointTidakSesuai(userSession.userId)
                     }
                     if (it.errorText.isNotEmpty()) {
-                        view?.let { view ->
-                            Toaster.build(
-                                view,
-                                getString(R.string.txt_toaster_pinpoint_unmatched),
-                                Toaster.LENGTH_SHORT,
-                                Toaster.TYPE_ERROR
-                            ).show()
-                        }
+                        showErrorToaster(it.errorText)
+                    }
+                }
+
+                is PinpointAction.NetworkError -> {
+                    if (it.errorText.isNotEmpty()) {
+                        showErrorToaster(it.errorText)
                     }
                 }
             }
@@ -688,7 +495,7 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 }
 
                 is BottomSheetState.LocationInvalid -> {
-                    showInvalidBottomSheet(it)
+                    showInvalidPinpointBottomSheet(it)
                 }
             }
         }
@@ -696,36 +503,11 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
         viewModel.choosePinpoint.observe(viewLifecycleOwner) {
             when (it) {
                 is ChoosePinpoint.GoToAddressForm -> {
-                    val intent = RouteManager.getIntent(
-                        context,
-                        "${ApplinkConstInternalLogistic.EDIT_ADDRESS_REVAMP}${viewModel.addressId}"
-                    )
-                    intent.apply {
-                        if (it.saveChanges) {
-                            putExtra(EXTRA_PINPOINT_MODEL, viewModel.uiModel)
-                        }
-                        putExtra(EXTRA_IS_POSITIVE_FLOW, it.isPositiveFlow)
-                        putExtra(EXTRA_GMS_AVAILABILITY, isGmsAvailable)
-                        it.addressState?.let { state ->
-                            putExtra(EXTRA_ADDRESS_STATE, state.name)
-                        }
-                        putExtra(PARAM_SOURCE, it.source)
-                        addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or FLAG_ACTIVITY_SINGLE_TOP)
-                    }
-                    addressFormContract.launch(intent)
+                    goToAddressForm(it)
                 }
 
                 is ChoosePinpoint.SetPinpointResult -> {
-                    activity?.run {
-                        setResult(
-                            Activity.RESULT_OK,
-                            Intent().apply {
-                                putExtra(EXTRA_PINPOINT_MODEL, it.pinpointUiModel)
-                                putExtra(EXTRA_SAVE_DATA_UI_MODEL, it.saveAddressDataModel)
-                            }
-                        )
-                        finish()
-                    }
+                    setPinpointResult(it)
                 }
             }
         }
@@ -733,6 +515,250 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
         viewModel.map.observe(viewLifecycleOwner) {
             showMap()
             moveMap(getLatLng(it.lat, it.long))
+        }
+    }
+
+    private fun setOnBackPressed() {
+        activity?.onBackPressedDispatcher?.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    when (addressUiState) {
+                        AddressUiState.EditAddress -> {
+                            LogisticEditAddressAnalytics.onClickBackPinpoint(userSession.userId)
+                        }
+
+                        AddressUiState.AddAddress -> {
+                            LogisticAddAddressAnalytics.onClickBackArrowPinpoint(userSession.userId)
+                        }
+
+                        else -> {
+                            // no op
+                        }
+                    }
+                    activity?.finish()
+                }
+            }
+        )
+    }
+
+    private fun setFusedLocationClient() {
+        fusedLocationClient = FusedLocationProviderClient(requireActivity())
+    }
+
+    private fun checkMapsAvailability(savedInstanceState: Bundle?) {
+        if (isGmsAvailable) {
+            prepareMap(savedInstanceState)
+            setFusedLocationClient()
+            fetchData()
+            setViewListener()
+            initObserver()
+        } else {
+            context?.let { ctx -> goToLitePinpoint(ctx) }
+        }
+    }
+
+    // region maps
+    private fun stopLocationUpdate() {
+        fusedLocationClient?.removeLocationUpdates(locationCallback)
+    }
+
+    private fun getCurrentLocation() {
+        if (allPermissionsGranted()) {
+            permissionState = PERMISSION_GRANTED
+            if (AddNewAddressUtils.isGpsEnabled(context)) {
+                getLocation()
+            } else {
+                showBottomSheetLocUndefined(false)
+            }
+        } else {
+            when (permissionState) {
+                PERMISSION_DENIED, PERMISSION_NOT_DEFINED -> {
+                    requestPermissionLocation()
+                }
+
+                PERMISSION_DONT_ASK_AGAIN -> {
+                    showBottomSheetLocUndefined(true)
+                }
+            }
+        }
+    }
+
+    private fun getAutofill() {
+        val target: LatLng? = this.googleMap?.cameraPosition?.target
+        val latTarget = target?.latitude ?: 0.0
+        val longTarget = target?.longitude ?: 0.0
+
+        viewModel.getDistrictData(latTarget, longTarget)
+    }
+
+    private fun moveMap(latLng: LatLng) {
+        val cameraPosition = CameraPosition.Builder()
+            .target(latLng)
+            .zoom(ZOOM_LEVEL)
+            .build()
+
+        googleMap?.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
+    }
+
+    private fun prepareMap(savedInstanceState: Bundle?) {
+        binding?.mapViews?.onCreate(savedInstanceState)
+        binding?.mapViews?.getMapAsync(this)
+    }
+
+    private fun requestPermissionLocation() {
+        requestPermissions(requiredPermissions, REQUEST_CODE_PERMISSION)
+    }
+
+    private fun allPermissionsGranted(): Boolean {
+        for (permission in requiredPermissions) {
+            if (activity?.let {
+                ContextCompat.checkSelfPermission(
+                        it,
+                        permission
+                    )
+            } != PackageManager.PERMISSION_GRANTED
+            ) {
+                return false
+            }
+        }
+        return true
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun getLocation() {
+        showLoading()
+        fusedLocationClient?.lastLocation?.addOnSuccessListener { data ->
+            if (data != null) {
+                moveMap(getLatLng(data.latitude, data.longitude))
+                viewModel.getDistrictData(data.latitude, data.longitude)
+            } else {
+                fusedLocationClient?.requestLocationUpdates(
+                    AddNewAddressUtils.getLocationRequest(),
+                    locationCallback,
+                    null
+                )
+            }
+        }
+    }
+
+    private fun goToSettingLocationDevice() {
+        context?.let { turnGPSOn(it) }
+    }
+
+    private fun goToSettingLocationApps() {
+        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+        val uri: Uri = Uri.fromParts("package", requireContext().packageName, null)
+        intent.data = uri
+        isAccessAppPermissionFromSettings = true
+        activity?.startActivityForResult(intent, RESULT_PERMISSION_CODE)
+    }
+
+    private fun turnGPSOn(context: Context): Boolean {
+        var isGpsOn = false
+        val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val mSettingsClient = LocationServices.getSettingsClient(context)
+
+        val locationRequest = LocationRequest.create()
+        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        locationRequest.interval = LOCATION_REQUEST_INTERVAL
+        locationRequest.fastestInterval = LOCATION_REQUEST_FASTEST_INTERVAL
+        val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
+        val mLocationSettingsRequest = builder.build()
+        builder.setAlwaysShow(true)
+
+        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            isGpsOn = true
+        } else {
+            mSettingsClient
+                .checkLocationSettings(mLocationSettingsRequest)
+                .addOnSuccessListener(context as Activity) {
+                    //  GPS is already enable, callback GPS status through listener
+                    isGpsOn = true
+                }
+                .addOnFailureListener(
+                    context,
+                    OnFailureListener { e ->
+                        if (e is ApiException) {
+                            when (e.statusCode) {
+                                LocationSettingsStatusCodes.RESOLUTION_REQUIRED ->
+
+                                    try {
+                                        // Show the dialog by calling startResolutionForResult(), and check the
+                                        // result in onActivityResult().
+                                        if (e is ResolvableApiException) {
+                                            val intentSenderRequest = IntentSenderRequest.Builder(
+                                                e.resolution.intentSender
+                                            ).build()
+                                            gpsResultResolutionContract.launch(intentSenderRequest)
+                                        }
+                                    } catch (sie: IntentSender.SendIntentException) {
+                                        sie.printStackTrace()
+                                    }
+
+                                LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE -> {
+                                    val errorMessage =
+                                        "Location settings are inadequate, and cannot be " + "fixed here. Fix in Settings."
+                                    Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
+                                }
+                            }
+                        }
+                    }
+                )
+        }
+        return isGpsOn
+    }
+
+    // region ui
+    private fun setViewListener() {
+        binding?.run {
+            bottomsheetLocation.btnInfo.setOnClickListener {
+                if (addressUiState.isAdd()) {
+                    LogisticAddAddressAnalytics.onClickIconQuestion(userSession.userId)
+                }
+                bottomsheetLocation.root.hide()
+                showBottomSheetInfo()
+            }
+
+            chipsCurrentLoc.chipImageResource =
+                context?.let { getIconUnifyDrawable(it, IconUnify.TARGET) }
+            chipsCurrentLoc.setOnClickListener {
+                when (addressUiState) {
+                    AddressUiState.EditAddress -> {
+                        LogisticEditAddressAnalytics.onClickGunakanLokasiSaatIniPinpoint(userSession.userId)
+                    }
+
+                    AddressUiState.AddAddress -> {
+                        LogisticAddAddressAnalytics.onClickGunakanLokasiSaatIniPinpoint(userSession.userId)
+                    }
+
+                    else -> {
+                        // no op
+                    }
+                }
+                getCurrentLocation()
+            }
+            if (addressUiState.isEdit()) {
+                chipsSearch.chipText = getString(R.string.pinpointpage_chips_search_edit)
+            }
+            chipsSearch.chipImageResource =
+                context?.let { getIconUnifyDrawable(it, IconUnify.SEARCH) }
+            chipsSearch.setOnClickListener {
+                when (addressUiState) {
+                    AddressUiState.EditAddress -> {
+                        LogisticEditAddressAnalytics.onClickCariUlangAlamat(userSession.userId)
+                    }
+
+                    AddressUiState.AddAddress -> {
+                        LogisticAddAddressAnalytics.onClickCariUlangAlamat(userSession.userId)
+                    }
+
+                    else -> {
+                        // no op
+                    }
+                }
+                goToSearchPage()
+            }
         }
     }
 
@@ -756,6 +782,17 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
             wholeLoadingContainer.visibility = View.VISIBLE
             districtLayout.visibility = View.GONE
             invalidLayout.visibility = View.GONE
+        }
+    }
+
+    private fun showErrorToaster(errorMessage: String) {
+        view?.let { view ->
+            Toaster.build(
+                view,
+                errorMessage,
+                Toaster.LENGTH_SHORT,
+                Toaster.TYPE_ERROR
+            ).show()
         }
     }
 
@@ -850,7 +887,7 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
         }
     }
 
-    private fun showInvalidBottomSheet(data: BottomSheetState.LocationInvalid) {
+    private fun showInvalidPinpointBottomSheet(data: BottomSheetState.LocationInvalid) {
         binding?.run {
             if (data.showMapIllustration) {
                 mapsEmpty.visible()
@@ -952,111 +989,6 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
         }
     }
 
-    private fun getAutofill() {
-        val target: LatLng? = this.googleMap?.cameraPosition?.target
-        val latTarget = target?.latitude ?: 0.0
-        val longTarget = target?.longitude ?: 0.0
-
-        viewModel.getDistrictData(latTarget, longTarget)
-    }
-
-    private fun prepareMap(savedInstanceState: Bundle?) {
-        binding?.mapViews?.onCreate(savedInstanceState)
-        binding?.mapViews?.getMapAsync(this)
-    }
-
-    private fun setFusedLocationClient() {
-        fusedLocationClient = FusedLocationProviderClient(requireActivity())
-    }
-
-    private fun setViewListener() {
-        binding?.run {
-            bottomsheetLocation.btnInfo.setOnClickListener {
-                if (addressUiState.isAdd()) {
-                    LogisticAddAddressAnalytics.onClickIconQuestion(userSession.userId)
-                }
-                bottomsheetLocation.root.hide()
-                showBottomSheetInfo()
-            }
-
-            chipsCurrentLoc.chipImageResource =
-                context?.let { getIconUnifyDrawable(it, IconUnify.TARGET) }
-            chipsCurrentLoc.setOnClickListener {
-                when (addressUiState) {
-                    AddressUiState.EditAddress -> {
-                        LogisticEditAddressAnalytics.onClickGunakanLokasiSaatIniPinpoint(userSession.userId)
-                    }
-
-                    AddressUiState.AddAddress -> {
-                        LogisticAddAddressAnalytics.onClickGunakanLokasiSaatIniPinpoint(userSession.userId)
-                    }
-
-                    else -> {
-                        // no op
-                    }
-                }
-                getCurrentLocation()
-            }
-            if (addressUiState.isEdit()) {
-                chipsSearch.chipText = getString(R.string.pinpointpage_chips_search_edit)
-            }
-            chipsSearch.chipImageResource =
-                context?.let { getIconUnifyDrawable(it, IconUnify.SEARCH) }
-            chipsSearch.setOnClickListener {
-                when (addressUiState) {
-                    AddressUiState.EditAddress -> {
-                        LogisticEditAddressAnalytics.onClickCariUlangAlamat(userSession.userId)
-                    }
-
-                    AddressUiState.AddAddress -> {
-                        LogisticAddAddressAnalytics.onClickCariUlangAlamat(userSession.userId)
-                    }
-
-                    else -> {
-                        // no op
-                    }
-                }
-                goToSearchPage()
-            }
-        }
-    }
-
-    private fun requestPermissionLocation() {
-        requestPermissions(requiredPermissions, REQUEST_CODE_PERMISSION)
-    }
-
-    private fun allPermissionsGranted(): Boolean {
-        for (permission in requiredPermissions) {
-            if (activity?.let {
-                ContextCompat.checkSelfPermission(
-                        it,
-                        permission
-                    )
-            } != PackageManager.PERMISSION_GRANTED
-            ) {
-                return false
-            }
-        }
-        return true
-    }
-
-    @SuppressLint("MissingPermission")
-    private fun getLocation() {
-        showLoading()
-        fusedLocationClient?.lastLocation?.addOnSuccessListener { data ->
-            if (data != null) {
-                moveMap(getLatLng(data.latitude, data.longitude))
-                viewModel.getDistrictData(data.latitude, data.longitude)
-            } else {
-                fusedLocationClient?.requestLocationUpdates(
-                    AddNewAddressUtils.getLocationRequest(),
-                    locationCallback,
-                    null
-                )
-            }
-        }
-    }
-
     private fun showBottomSheetLocUndefined(isDontAskAgain: Boolean) {
         bottomSheetLocUndefined = BottomSheetUnify()
         val viewBinding =
@@ -1102,73 +1034,6 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
         }
     }
 
-    private fun goToSettingLocationDevice() {
-        context?.let { turnGPSOn(it) }
-    }
-
-    private fun goToSettingLocationApps() {
-        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-        val uri: Uri = Uri.fromParts("package", requireContext().packageName, null)
-        intent.data = uri
-        isAccessAppPermissionFromSettings = true
-        activity?.startActivityForResult(intent, RESULT_PERMISSION_CODE)
-    }
-
-    private fun turnGPSOn(context: Context): Boolean {
-        var isGpsOn = false
-        val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        val mSettingsClient = LocationServices.getSettingsClient(context)
-
-        val locationRequest = LocationRequest.create()
-        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        locationRequest.interval = LOCATION_REQUEST_INTERVAL
-        locationRequest.fastestInterval = LOCATION_REQUEST_FASTEST_INTERVAL
-        val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
-        val mLocationSettingsRequest = builder.build()
-        builder.setAlwaysShow(true)
-
-        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            isGpsOn = true
-        } else {
-            mSettingsClient
-                .checkLocationSettings(mLocationSettingsRequest)
-                .addOnSuccessListener(context as Activity) {
-                    //  GPS is already enable, callback GPS status through listener
-                    isGpsOn = true
-                }
-                .addOnFailureListener(
-                    context,
-                    OnFailureListener { e ->
-                        if (e is ApiException) {
-                            when (e.statusCode) {
-                                LocationSettingsStatusCodes.RESOLUTION_REQUIRED ->
-
-                                    try {
-                                        // Show the dialog by calling startResolutionForResult(), and check the
-                                        // result in onActivityResult().
-                                        if (e is ResolvableApiException) {
-                                            val intentSenderRequest = IntentSenderRequest.Builder(
-                                                e.resolution.intentSender
-                                            ).build()
-                                            gpsResultResolutionContract.launch(intentSenderRequest)
-                                        }
-                                    } catch (sie: IntentSender.SendIntentException) {
-                                        sie.printStackTrace()
-                                    }
-
-                                LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE -> {
-                                    val errorMessage =
-                                        "Location settings are inadequate, and cannot be " + "fixed here. Fix in Settings."
-                                    Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
-                                }
-                            }
-                        }
-                    }
-                )
-        }
-        return isGpsOn
-    }
-
     private fun showBottomSheetInfo() {
         bottomSheetInfo = BottomSheetUnify()
         val viewBinding =
@@ -1201,13 +1066,100 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
         }
     }
 
-    private fun moveMap(latLng: LatLng) {
-        val cameraPosition = CameraPosition.Builder()
-            .target(latLng)
-            .zoom(ZOOM_LEVEL)
-            .build()
+    // region get result
 
-        googleMap?.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
+    private fun handlePinpointLite(data: Intent) {
+        data.run {
+            getParcelableExtra<SaveAddressDataModel>(KEY_ADDRESS_DATA)?.let { addressData ->
+                viewModel.setAddress(
+                    addressData
+                )
+            }
+            viewModel.validatePinpoint()
+        }
+    }
+
+    private fun onResultFromAddressForm(data: Intent?) {
+        val newAddress = data?.getParcelableExtra<SaveAddressDataModel>(EXTRA_ADDRESS_NEW)
+        finishActivity(newAddress)
+    }
+
+    private fun onResultFromSearchPage(data: Intent?) {
+        currentPlaceId = data?.getStringExtra(EXTRA_PLACE_ID).orEmpty()
+        val currentLat = data?.getDoubleExtra(EXTRA_LAT, 0.0).orZero()
+        val currentLong = data?.getDoubleExtra(EXTRA_LONG, 0.0).orZero()
+        viewModel.onResultFromSearchAddress(placeId = currentPlaceId, lat = currentLat, long = currentLong)
+    }
+
+    fun onNewIntent(bundle: Bundle) {
+        currentPlaceId = bundle.getString(EXTRA_PLACE_ID).orEmpty()
+        val currentLat = bundle.getDouble(EXTRA_LAT, 0.0).orZero()
+        val currentLong = bundle.getDouble(EXTRA_LONG, 0.0).orZero()
+        viewModel.onResultFromSearchAddress(placeId = currentPlaceId, lat = currentLat, long = currentLong)
+    }
+
+    // region navigation
+    private fun goToLitePinpoint(context: Context) {
+        val intent = getLitePinpointIntent(context)
+        pinpointLiteContract.launch(intent)
+    }
+
+    private fun getLitePinpointIntent(context: Context): Intent {
+        if (addressUiState.isEditOrPinpointOnly()) {
+            if (viewModel.uiModel.hasPinpoint()) {
+                return PinpointWebviewActivity.getIntent(
+                    context = context,
+                    saveAddressDataModel = viewModel.getAddress(),
+                    lat = viewModel.uiModel.lat,
+                    lng = viewModel.uiModel.long,
+                    source = PinpointSource.EDIT_ADDRESS
+                )
+            } else {
+                return PinpointWebviewActivity.getIntent(
+                    context = context,
+                    saveAddressDataModel = viewModel.getAddress(),
+                    districtId = viewModel.uiModel.districtId,
+                    source = PinpointSource.EDIT_ADDRESS
+                )
+            }
+        } else {
+            val source =
+                if (viewModel.isPositiveFlow) PinpointSource.ADD_ADDRESS_POSITIVE else PinpointSource.ADD_ADDRESS_NEGATIVE
+            return PinpointWebviewActivity.getIntent(
+                context = context,
+                saveAddressDataModel = viewModel.getAddress(),
+                districtId = viewModel.uiModel.districtId,
+                lat = viewModel.uiModel.lat,
+                lng = viewModel.uiModel.long,
+                source = source
+            )
+        }
+    }
+
+    private fun finishActivity(data: SaveAddressDataModel?) {
+        activity?.run {
+            setResult(
+                Activity.RESULT_OK,
+                Intent().apply {
+                    putExtra(EXTRA_ADDRESS_NEW, data)
+                    putExtra(EXTRA_GMS_AVAILABILITY, isGmsAvailable)
+                }
+            )
+            finish()
+        }
+    }
+
+    private fun setPinpointResult(choosePinpoint: ChoosePinpoint.SetPinpointResult) {
+        activity?.run {
+            setResult(
+                Activity.RESULT_OK,
+                Intent().apply {
+                    putExtra(EXTRA_PINPOINT_MODEL, choosePinpoint.pinpointUiModel)
+                    putExtra(EXTRA_SAVE_DATA_UI_MODEL, choosePinpoint.saveAddressDataModel)
+                }
+            )
+            finish()
+        }
     }
 
     private fun goToSearchPage() {
@@ -1220,4 +1172,25 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
             )
         }
     }
+
+    private fun goToAddressForm(choosePinpoint: ChoosePinpoint.GoToAddressForm) {
+        val intent = RouteManager.getIntent(
+            context,
+            "${ApplinkConstInternalLogistic.EDIT_ADDRESS_REVAMP}${viewModel.addressId}"
+        )
+        intent.apply {
+            if (choosePinpoint.saveChanges) {
+                putExtra(EXTRA_PINPOINT_MODEL, viewModel.uiModel)
+            }
+            putExtra(EXTRA_IS_POSITIVE_FLOW, choosePinpoint.isPositiveFlow)
+            putExtra(EXTRA_GMS_AVAILABILITY, isGmsAvailable)
+            choosePinpoint.addressState?.let { state ->
+                putExtra(EXTRA_ADDRESS_STATE, state.name)
+            }
+            putExtra(PARAM_SOURCE, choosePinpoint.source)
+            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+        }
+        addressFormContract.launch(intent)
+    }
+    // end region
 }

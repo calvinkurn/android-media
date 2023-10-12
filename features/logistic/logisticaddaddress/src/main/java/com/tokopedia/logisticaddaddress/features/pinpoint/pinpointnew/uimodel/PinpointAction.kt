@@ -7,6 +7,8 @@ sealed interface PinpointAction {
     object GetCurrentLocation : PinpointAction
 
     data class InvalidDistrictPinpoint(val errorText: String) : PinpointAction
+
+    data class NetworkError(val errorText: String) : PinpointAction
 }
 
 data class MoveMap(val lat: Double, val long: Double)
