@@ -55,15 +55,16 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:textColor="@color/Unify_NN950"
-        tools:text="Rp5,2jt - Rp5,5jt"
-        android:maxLines="1"
         android:ellipsize="end"
-        app:typographyType="display_2"
-        app:typographyWeight="bold"
+        android:maxLines="2"
+        android:minLines="2"
+        android:textColor="@color/Unify_NN950"
         app:layout_constraintEnd_toEndOf="@+id/iuProduct"
         app:layout_constraintStart_toStartOf="@+id/iuProduct"
-        app:layout_constraintTop_toBottomOf="@+id/tfProductName" />
+        app:layout_constraintTop_toBottomOf="@+id/tfProductName"
+        app:typographyType="display_2"
+        app:typographyWeight="bold"
+        tools:text="Rp5,2jt - Rp5,5jt jjjjjjjjjjjj jjjjj jjjj m m m m m m" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvSpecs"
@@ -71,8 +72,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="68dp"
-        tools:listitem="@layout/widget_item_comparison_content_spec"
-        app:layout_constraintTop_toBottomOf="@+id/iuProduct" />
+        app:layout_constraintTop_toBottomOf="@+id/tfProductPrice"
+        tools:listitem="@layout/widget_item_comparison_content_spec" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

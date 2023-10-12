@@ -16,8 +16,10 @@ import com.tokopedia.catalogcommon.uimodel.ComparisonUiModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
+import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.CardUnify2.Companion.TYPE_CLEAR
 import com.tokopedia.utils.view.binding.viewBinding
@@ -50,12 +52,15 @@ class ComparisonViewHolder(
         val comparisonItems = element.content.subList(Int.ONE, element.content.size)
         val comparedItem = element.content.firstOrNull()
         val colorGray = MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_NN500)
+
         binding?.layoutComparison?.apply {
+            tfProductName.text = comparedItem?.productTitle.orEmpty()
+            tfProductPrice.text = comparedItem?.price.orEmpty()
             iuProduct.loadImage(comparedItem?.imageUrl.orEmpty())
             cardProductAction.cardType = TYPE_CLEAR
             iconProductAction.setImage(IconUnify.PUSH_PIN_FILLED, colorGray)
             rvSpecs.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.VERTICAL, false)
-            rvSpecs.adapter = ComparisonSpecItemAdapter(comparedItem?.comparisonSpecs.orEmpty())
+            rvSpecs.adapter = ComparisonSpecItemAdapter(comparedItem?.comparisonSpecs.orEmpty(), true)
             root.addOneTimeGlobalLayoutListener {
                 binding?.setupComparisonListItem(comparisonItems)
             }
@@ -110,12 +115,13 @@ class ComparisonViewHolder(
     }
 
     class ComparisonSpecItemAdapter(
-        private var items: List<ComparisonUiModel.ComparisonSpec> = listOf(),
+        private val items: List<ComparisonUiModel.ComparisonSpec> = listOf(),
+        private val isComparedItem: Boolean = false
     ) : RecyclerView.Adapter<ComparisonSpecItemViewHolder>() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ComparisonSpecItemViewHolder {
             val rootView = ComparisonSpecItemViewHolder.createRootView(parent)
-            return ComparisonSpecItemViewHolder(rootView)
+            return ComparisonSpecItemViewHolder(rootView, isComparedItem)
         }
 
         override fun onBindViewHolder(holder: ComparisonSpecItemViewHolder, position: Int) {
@@ -126,7 +132,8 @@ class ComparisonViewHolder(
     }
 
     class ComparisonSpecItemViewHolder(
-        itemView: View
+        itemView: View,
+        isComparedItem: Boolean
     ) : RecyclerView.ViewHolder(itemView) {
         companion object {
             fun createRootView(parent: ViewGroup): View = LayoutInflater.from(parent.context)
@@ -134,6 +141,16 @@ class ComparisonViewHolder(
         }
 
         private val binding: WidgetItemComparisonContentSpecBinding? by viewBinding()
+
+        init {
+            if (isComparedItem) {
+                binding?.apply {
+                    val margin = 8.dpToPx(itemView.resources.displayMetrics)
+                    divSpecCategory.setMargin(margin, 0, 0, 0)
+                    divSpecValue.setMargin(margin, 0, 0, 0)
+                }
+            }
+        }
 
         fun bind(item: ComparisonUiModel.ComparisonSpec) {
             binding?.apply {
