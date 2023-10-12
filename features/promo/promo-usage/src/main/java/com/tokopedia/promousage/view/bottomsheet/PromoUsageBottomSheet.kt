@@ -247,6 +247,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         renderLoadingDialog(false)
+        recyclerViewAdapter.clear()
         binding = null
         listener = null
     }

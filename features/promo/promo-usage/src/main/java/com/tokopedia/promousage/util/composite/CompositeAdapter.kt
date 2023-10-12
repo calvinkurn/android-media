@@ -57,6 +57,10 @@ internal class CompositeAdapter(
         return position.toLong()
     }
 
+    fun clear() {
+        delegates.clear()
+    }
+
     fun submit(newItems: List<DelegateAdapterItem>) {
         val diffCallback = DiffCallback(this.items.toList(), newItems)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
