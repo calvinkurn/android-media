@@ -20,6 +20,7 @@ class FlashSaleWidgetTracking: BaseTrackerConst() {
 
         private const val VIEW_ITEM_LIST = "view_item_list"
         private const val CLICK_PAYMENT = "clickPayment"
+        private const val PAYMENT = "payment"
     }
 
     private val LIST_CAROUSEL_PRODUCT = PRODUCT_LIST.format("%s", "dynamic channel thank you page - product", "%s", "%s", "%s", "%s", "%s")
@@ -67,7 +68,7 @@ class FlashSaleWidgetTracking: BaseTrackerConst() {
         )
             .appendChannelId(channel.id)
             .appendCurrentSite(CurrentSite.DEFAULT)
-            .appendBusinessUnit(BusinessUnit.DEFAULT)
+            .appendBusinessUnit(PAYMENT)
             .appendUserId(userId)
             .build()
     }
@@ -116,7 +117,7 @@ class FlashSaleWidgetTracking: BaseTrackerConst() {
             .appendChannelId(channel.id)
             .appendScreen(Screen.DEFAULT)
             .appendCurrentSite(CurrentSite.DEFAULT)
-            .appendBusinessUnit(BusinessUnit.DEFAULT)
+            .appendBusinessUnit(PAYMENT)
             .appendCampaignCode(channel.trackingAttributionModel.campaignCode)
             .appendUserId(userId)
             .build()

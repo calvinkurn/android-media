@@ -66,7 +66,7 @@ class GyroEngineRequestUseCase @Inject constructor(
                 thanksPageData.merchantCode,
                 thanksPageData.profileCode,
                 1,
-                5,
+                LIMIT,
                 concatMap(thanksPageData, mainGatewayCode),
                 FeatureEngineRequestOperators(),
                 FeatureEngineRequestThresholds()
@@ -168,5 +168,6 @@ class GyroEngineRequestUseCase @Inject constructor(
         const val IS_PLUS_TRANSACTION = "is_plus_transaction"
         const val GATEWAY_CODE_PEMUDA = "PEMUDA"
         const val VALUE_FALSE = "false"
+        private const val LIMIT = 15
     }
 }

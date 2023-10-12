@@ -44,6 +44,8 @@ class DynamicChannelRepository @Inject constructor(
         const val PARAMS = "param"
         const val LOCATION = "location"
         const val CHANNEL_IDS = "channelIDs"
+        const val PAGE = "page"
+        const val THANK_YOU = "thank_you"
 
         fun buildParams(
             groupIds: String = "",
@@ -59,6 +61,7 @@ class DynamicChannelRepository @Inject constructor(
             params.putString(TOKEN, token)
             params.putInt(NUM_OF_CHANNEL, numOfChannel)
             params.putString(LOCATION, locationParams)
+            params.putString(PAGE, THANK_YOU)
             return params
         }
 
