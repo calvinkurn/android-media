@@ -12,13 +12,19 @@ import com.gojek.pin.Success
 import com.gojek.pin.viewmodel.state.PinFlowType
 import com.scp.auth.TkpdAdditionalHeaders
 import com.scp.auth.utils.goToChangePIN
+import com.scp.auth.utils.goToForgotGotoPin
 import com.scp.auth.utils.goToForgotPassword
+import com.scp.auth.utils.goToHelpGotoPIN
 import com.scp.verification.core.data.network.entities.CVError
 import com.scp.verification.core.domain.common.entities.VerificationData
 import com.scp.verification.core.domain.common.entities.config.VerificationUiConfig
+import com.scp.verification.core.domain.common.listener.ForgetContext
+import com.scp.verification.core.domain.common.listener.ForgetListener
 import com.scp.verification.core.domain.common.listener.OnSuccessValidation
 import com.scp.verification.core.domain.common.listener.PinListener
 import com.scp.verification.core.domain.common.listener.VerificationListener
+import com.scp.verification.features.gotopin.CVPinManager
+import com.tokopedia.user.session.UserSessionInterface
 
 class ScpVerificationManager(private val pinManager: PinManager) {
 
@@ -84,7 +90,14 @@ class ScpVerificationManager(private val pinManager: PinManager) {
 
                                 is CtaClicked -> {
                                     onCtaClicked(result.pinContext, result.type, result.value) {
-                                        // TODO: handle Help Centre Click
+                                        when (result.type) {
+                                            CVPinManager.CTA_TYPE_HELP -> {
+                                                goToHelpGotoPIN(result.pinContext)
+                                            }
+                                            CVPinManager.FORGOT_PIN_HELP_ARTICLE -> {
+                                                goToForgotGotoPin(result.pinContext)
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -93,20 +106,20 @@ class ScpVerificationManager(private val pinManager: PinManager) {
                 }
             },
             additionalHeaders = TkpdAdditionalHeaders(activity),
-//            forgetListener = getForgetListener()
+            forgetListener = getForgetListener()
         )
     }
 
-//    private fun getForgetListener() = object : ForgetListener {
-//        override fun openForgetFlow(type: ForgetContext, activity: FragmentActivity) {
-//            when (type) {
-//                ForgetContext.FORGET_PASSWORD -> {
-//                    goToForgotPassword(activity)
-//                }
-//                ForgetContext.FORGET_TOKO_PIN -> {
-//                    goToChangePIN(activity)
-//                }
-//            }
-//        }
-//    }
+    private fun getForgetListener() = object : ForgetListener {
+        override fun openForgetFlow(type: ForgetContext, activity: FragmentActivity) {
+            when (type) {
+                ForgetContext.FORGET_PASSWORD -> {
+                    goToForgotPassword(activity)
+                }
+                ForgetContext.FORGET_TOKO_PIN -> {
+                    goToChangePIN(activity)
+                }
+            }
+        }
+    }
 }

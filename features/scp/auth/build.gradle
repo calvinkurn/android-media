@@ -63,6 +63,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation projectOrAar(rootProject.ext.libraries.track)
+    implementation projectOrAar(rootProject.ext.libraries.keys)
 
     // UI Test
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
