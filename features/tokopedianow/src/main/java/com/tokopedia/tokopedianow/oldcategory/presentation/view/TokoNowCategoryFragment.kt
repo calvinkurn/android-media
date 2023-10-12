@@ -104,6 +104,7 @@ class TokoNowCategoryFragment :
         get() = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        initPerformanceMonitoring(true)
         super.onCreate(savedInstanceState)
 
         initViewModel()

@@ -184,6 +184,12 @@ abstract class BaseSearchCategoryViewModel(
     var serviceType = ""
         private set
 
+    private val startRenderPerformanceMonitoringMutableLiveData = MutableLiveData<Unit>()
+    val startRenderPerformanceMonitoringLiveData: LiveData<Unit> = startRenderPerformanceMonitoringMutableLiveData
+
+    private val stopRenderPerformanceMonitoringMutableLiveData = MutableLiveData<Unit>()
+    val stopRenderPerformanceMonitoringLiveData: LiveData<Unit> = stopRenderPerformanceMonitoringMutableLiveData
+
     private val visitableListMutableLiveData = MutableLiveData<List<Visitable<*>>>(visitableList)
     val visitableListLiveData: LiveData<List<Visitable<*>>> = visitableListMutableLiveData
 
@@ -398,6 +404,8 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     protected open fun onGetShopAndWarehouseFailed(throwable: Throwable) {
+        startRenderPerformanceMonitoringMutableLiveData.value = Unit
+        stopRenderPerformanceMonitoringMutableLiveData.value = Unit
     }
 
     protected abstract fun loadFirstPage()
@@ -489,6 +497,8 @@ abstract class BaseSearchCategoryViewModel(
         searchProduct: SearchProduct,
         feedbackFieldIsActive: Boolean = false
     ) {
+        startRenderPerformanceMonitoringMutableLiveData.value = Unit
+
         totalData = headerDataView.aceSearchProductHeader.totalData
         totalFetchedData += contentDataView.aceSearchProductData.productList.size
         autoCompleteApplink = contentDataView.aceSearchProductData.autocompleteApplink
@@ -1019,6 +1029,7 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     protected open fun onGetFirstPageError(throwable: Throwable) {
+        startRenderPerformanceMonitoringMutableLiveData.value = Unit
         isShowErrorMutableLiveData.value = throwable
     }
 

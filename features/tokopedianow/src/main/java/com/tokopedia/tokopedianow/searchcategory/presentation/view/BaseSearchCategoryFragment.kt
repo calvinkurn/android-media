@@ -87,6 +87,7 @@ import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowSearchCategory
 import com.tokopedia.tokopedianow.home.presentation.view.listener.OnBoard20mBottomSheetCallback
 import com.tokopedia.tokopedianow.search.analytics.SearchResultTracker
 import com.tokopedia.tokopedianow.searchcategory.analytics.ProductAdsCarouselAnalytics
+import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryPageLoadTimeMonitoring
 import com.tokopedia.tokopedianow.searchcategory.data.model.QuerySafeModel
 import com.tokopedia.tokopedianow.searchcategory.presentation.adapter.SearchCategoryAdapter
 import com.tokopedia.tokopedianow.searchcategory.presentation.bottomsheet.TokoNowProductFeedbackBottomSheet
@@ -159,6 +160,7 @@ abstract class BaseSearchCategoryFragment:
     @Inject
     lateinit var productRecommendationViewModel: TokoNowProductRecommendationViewModel
 
+    protected var pltMonitoring: SearchCategoryPageLoadTimeMonitoring? = null
     protected var searchCategoryAdapter: SearchCategoryAdapter? = null
     protected var endlessScrollListener: EndlessRecyclerViewScrollListener? = null
     protected var sortFilterBottomSheet: SortFilterBottomSheet? = null
@@ -208,6 +210,7 @@ abstract class BaseSearchCategoryFragment:
         configureRecyclerView()
         observeViewModel()
 
+        pltMonitoring?.startNetworkPerformanceMonitoring()
         getViewModel().onViewCreated(miniCartWidgetSource)
     }
 
@@ -247,6 +250,19 @@ abstract class BaseSearchCategoryFragment:
         val newList = visitables.toMutableList()
         newList[data.first] = data.second
         searchCategoryAdapter?.submitList(newList)
+    }
+
+    protected fun initPerformanceMonitoring(isCategoryPage: Boolean) {
+        pltMonitoring = SearchCategoryPageLoadTimeMonitoring()
+        pltMonitoring?.initPerformanceMonitoring(isCategoryPage)
+    }
+
+    private fun startRenderPerformanceMonitoring(unit: Unit) {
+        pltMonitoring?.startRenderPerformanceMonitoring()
+    }
+
+    private fun stopRenderPerformanceMonitoring(unit: Unit) {
+        pltMonitoring?.stopRenderPerformanceMonitoring()
     }
 
     protected open fun updateProductRecommendation(needToUpdate: Boolean) { /* override to use this function */ }
@@ -536,6 +552,8 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().updateToolbarNotification.observe(::updateToolbarNotification)
         getViewModel().needToUpdateProductRecommendationLiveData.observe(::updateProductRecommendation)
         getViewModel().updateAdsCarouselLiveData.observe(::updateAdsProductCarousel)
+        getViewModel().startRenderPerformanceMonitoringLiveData.observe(::startRenderPerformanceMonitoring)
+        getViewModel().stopRenderPerformanceMonitoringLiveData.observe(::stopRenderPerformanceMonitoring)
 
         getViewModel().blockAddToCartLiveData.observe(viewLifecycleOwner) {
             showToasterWhenAddToCartBlocked()
@@ -618,6 +636,7 @@ abstract class BaseSearchCategoryFragment:
     protected open fun submitList(visitableList: List<Visitable<*>>) {
         if (visitableList.isNotEmpty()) showContent()
         searchCategoryAdapter?.submitList(visitableList)
+        pltMonitoring?.stopRenderPerformanceMonitoring()
     }
 
     private fun showContent() {
@@ -913,6 +932,8 @@ abstract class BaseSearchCategoryFragment:
         NetworkErrorHelper.showEmptyState(context, view, ErrorHandler.getErrorMessage(context, throwable)) {
             getViewModel().onViewReloadPage()
         }
+        pltMonitoring?.stopRenderPerformanceMonitoring()
+        pltMonitoring?.stopPerformanceMonitoring()
     }
 
     protected abstract fun sendTrackingQuickFilter(quickFilterTracking: Pair<Option, Boolean>)

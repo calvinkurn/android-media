@@ -90,6 +90,7 @@ class TokoNowSearchFragment :
     override val toolbarPageName = "TokoNow Search"
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        initPerformanceMonitoring(false)
         super.onCreate(savedInstanceState)
 
         initViewModel()
