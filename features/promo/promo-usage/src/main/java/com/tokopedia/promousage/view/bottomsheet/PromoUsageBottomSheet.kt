@@ -665,7 +665,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
         isEnabled: Boolean = true,
         isLoading: Boolean = false
     ) {
-        binding?.buttonBuy?.apply {
+        binding?.buttonBackToShipment?.apply {
             this.buttonType = UnifyButton.Type.MAIN
             this.buttonVariant = UnifyButton.Variant.FILLED
             this.isEnabled = isEnabled
