@@ -3,12 +3,15 @@ package com.tokopedia.shop.pageheader.presentation.adapter
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
-import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
 import com.tokopedia.shop.pageheader.presentation.adapter.typefactory.widget.ShopPageHeaderAdapterTypeFactory
-import com.tokopedia.shop.pageheader.presentation.uimodel.component.*
+import com.tokopedia.shop.pageheader.presentation.uimodel.component.BaseShopPageHeaderComponentUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.BaseShopPageHeaderComponentUiModel.ComponentName.BUTTON_FOLLOW
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.BaseShopPageHeaderComponentUiModel.ComponentName.BUTTON_PLAY
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.BaseShopPageHeaderComponentUiModel.ComponentName.SHOP_NAME
+import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopPageHeaderActionWidgetFollowButtonComponentUiModel
+import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopPageHeaderBadgeTextValueComponentUiModel
+import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopPageHeaderButtonComponentUiModel
+import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopPageHeaderPlayWidgetButtonComponentUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopPageHeaderWidgetUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopPageHeaderWidgetUiModel.WidgetType.SHOP_ACTION
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopPageHeaderWidgetUiModel.WidgetType.SHOP_BASIC_INFO
@@ -93,10 +96,9 @@ class ShopPageHeaderAdapter(
         }
     }
 
-    fun setPlayWidgetData(shopPageHeaderDataModel: ShopPageHeaderDataModel) {
+    fun setPlayWidgetData() {
         val widgetUiModel = getWidgetUiModel(SHOP_PLAY)
         widgetUiModel?.getComponentUiModel<ShopPageHeaderPlayWidgetButtonComponentUiModel>(BUTTON_PLAY)?.let {
-            it.shopPageHeaderDataModel = shopPageHeaderDataModel
             val playWidgetPosition = visitables.indexOf(widgetUiModel)
             if (playWidgetPosition != -1) {
                 notifyItemChanged(playWidgetPosition)

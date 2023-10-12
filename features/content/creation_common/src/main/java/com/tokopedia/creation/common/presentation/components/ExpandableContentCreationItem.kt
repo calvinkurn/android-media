@@ -97,6 +97,7 @@ fun ExpandableContentCreationItem(
             descriptionTextId = R.string.content_creation_story_description_text,
             clickTextId = R.string.content_creation_story_description_click_label
         )
+        else -> AnnotatedString("")
     }
 
     Column(
