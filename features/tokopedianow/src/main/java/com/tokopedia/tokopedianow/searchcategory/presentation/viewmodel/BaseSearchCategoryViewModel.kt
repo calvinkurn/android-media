@@ -59,13 +59,13 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.common.constant.ServiceType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
+import com.tokopedia.tokopedianow.common.constant.TokoNowStaticLayoutType.Companion.PRODUCT_ADS_CAROUSEL
+import com.tokopedia.tokopedianow.common.domain.mapper.AddressMapper.mapToWarehouses
 import com.tokopedia.tokopedianow.common.domain.mapper.ProductAdsMapper.mapProductAdsCarousel
 import com.tokopedia.tokopedianow.common.domain.mapper.TickerMapper
 import com.tokopedia.tokopedianow.common.domain.model.GetProductAdsResponse.ProductAdsResponse
 import com.tokopedia.tokopedianow.common.domain.model.GetTargetedTickerResponse
-import com.tokopedia.tokopedianow.common.domain.mapper.AddressMapper.mapToWarehouses
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference
-import com.tokopedia.tokopedianow.common.domain.param.GetProductAdsParam
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.common.model.NowAffiliateAtcData
 import com.tokopedia.tokopedianow.common.model.TokoNowAdsCarouselUiModel
@@ -73,9 +73,9 @@ import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateNoResultUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationOocUiModel
-import com.tokopedia.tokopedianow.common.model.oldrepurchase.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowTickerUiModel
+import com.tokopedia.tokopedianow.common.model.oldrepurchase.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.home.domain.mapper.oldrepurchase.HomeRepurchaseMapper
 import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse.RepurchaseData
@@ -340,11 +340,13 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     private fun getShopIdBeforeLoadData() {
-        getShopAndWarehouseUseCase.getStateChosenAddress(
-            ::onGetShopAndWarehouseSuccess,
-            ::onGetShopAndWarehouseFailed,
-            DEFAULT_VALUE_SOURCE_SEARCH
-        )
+        launch {
+            try {
+                onGetShopAndWarehouseSuccess(getShopAndWarehouseUseCase(DEFAULT_VALUE_SOURCE_SEARCH))
+            } catch (e: Exception) {
+                onGetShopAndWarehouseFailed(e)
+            }
+        }
     }
 
     private fun onGetShopAndWarehouseSuccess(state: GetStateChosenAddressResponse) {
@@ -397,8 +399,7 @@ abstract class BaseSearchCategoryViewModel(
 
     protected open fun createRequestParams(): RequestParams {
         val tokonowQueryParam = createTokonowQueryParams()
-        val productAdsParam = createProductAdsParam()
-            .generateQueryParams()
+        val productAdsParam = createGetProductAdsParam()
 
         val requestParams = RequestParams.create()
         requestParams.putObject(TOKONOW_QUERY_PARAMS, tokonowQueryParam)
@@ -418,7 +419,7 @@ abstract class BaseSearchCategoryViewModel(
         return tokonowQueryParam
     }
 
-    protected open fun createProductAdsParam(): GetProductAdsParam = GetProductAdsParam()
+    protected open fun createProductAdsParam(): MutableMap<String?, Any> = mutableMapOf()
 
     protected open fun appendMandatoryParams(tokonowQueryParam: MutableMap<String, Any>) {
         appendDeviceParam(tokonowQueryParam)
@@ -468,6 +469,13 @@ abstract class BaseSearchCategoryViewModel(
 
     private fun appendQueryParam(tokonowQueryParam: MutableMap<String, Any>) {
         tokonowQueryParam.putAll(FilterHelper.createParamsWithoutExcludes(queryParam))
+    }
+
+    private fun createGetProductAdsParam(): Map<String?, Any> {
+        val params = createProductAdsParam().also {
+            it.putAll(FilterHelper.createParamsWithoutExcludes(queryParam))
+        }
+        return params
     }
 
     protected fun onGetFirstPageSuccess(
@@ -802,12 +810,15 @@ abstract class BaseSearchCategoryViewModel(
         contentVisitableList: MutableList<Visitable<*>>,
         response: ProductAdsResponse
     ) {
-        if(response.productList.isNotEmpty()) {
-            contentVisitableList.add(mapProductAdsCarousel(
-                response,
-                miniCartWidgetLiveData.value,
-                hasBlockedAddToCart
-            ))
+        if (response.productList.isNotEmpty()) {
+            contentVisitableList.add(
+                mapProductAdsCarousel(
+                    id = PRODUCT_ADS_CAROUSEL,
+                response =response,
+                    miniCartData =miniCartWidgetLiveData.value,
+                    hasBlockedAddToCart =hasBlockedAddToCart
+                )
+            )
         }
     }
 
@@ -897,11 +908,11 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     private fun createProductCardCompactModel(
-        product: ProductCardCompactCarouselItemUiModel,
+        product: ProductCardCompactCarouselItemUiModel
     ): ProductCardCompactUiModel {
         val quantity = cartService.getProductQuantity(
             product.getProductId(),
-            product.parentId,
+            product.parentId
         )
         return product.productCardModel.copy(orderQuantity = quantity)
     }
@@ -1072,7 +1083,8 @@ abstract class BaseSearchCategoryViewModel(
                 if (needToOpenBottomSheet) {
                     isFilterPageOpenMutableLiveData.postValue(true)
                 }
-            }, onError = { /* do nothing */ }
+            },
+            onError = { /* do nothing */ }
         )
     }
 
@@ -1537,12 +1549,12 @@ abstract class BaseSearchCategoryViewModel(
         }
 
     protected class HeaderDataView(
-            val title: String = "",
-            val aceSearchProductHeader: SearchProductHeader = SearchProductHeader(),
-            categoryFilterDataValue: DataValue = DataValue(),
-            quickFilterDataValue: DataValue = DataValue(),
-            val bannerChannel: Channels = Channels(),
-            val targetedTicker: GetTargetedTickerResponse = GetTargetedTickerResponse()
+        val title: String = "",
+        val aceSearchProductHeader: SearchProductHeader = SearchProductHeader(),
+        categoryFilterDataValue: DataValue = DataValue(),
+        quickFilterDataValue: DataValue = DataValue(),
+        val bannerChannel: Channels = Channels(),
+        val targetedTicker: GetTargetedTickerResponse = GetTargetedTickerResponse()
     ) {
         val categoryFilterDataValue = DataValue(
             filter = FilterHelper.copyFilterWithOptionAsExclude(categoryFilterDataValue.filter)
@@ -1625,7 +1637,6 @@ abstract class BaseSearchCategoryViewModel(
                 affiliateChannel
             )
         }) {
-
         }
     }
 
@@ -1643,7 +1654,6 @@ abstract class BaseSearchCategoryViewModel(
         launchCatchError(block = {
             affiliateService.checkAtcAffiliateCookie(data)
         }) {
-
         }
     }
 }

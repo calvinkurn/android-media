@@ -1,6 +1,7 @@
 package com.tokopedia.tokopedianow.common.domain.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiModel
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
@@ -51,5 +52,47 @@ object CategoryMenuMapper {
         )
        newCategoryList.add(TokoNowCategoryMenuItemSeeAllUiModel(seeAllAppLink))
         return newCategoryList
+    }
+
+    fun MutableList<Visitable<*>>.addCategoryMenu(
+        @TokoNowLayoutState state: Int
+    ) {
+        add(TokoNowCategoryMenuUiModel(state = state))
+    }
+
+    fun MutableList<Visitable<*>>.mapCategoryMenuData(
+        response: List<GetCategoryListResponse.CategoryListResponse.CategoryResponse>?,
+        warehouseId: String = ""
+    ) {
+        getCategoryMenuIndex()?.let { index ->
+            val item = this[index]
+            if (item is TokoNowCategoryMenuUiModel) {
+                val newItem = if (!response.isNullOrEmpty()) {
+                    val seeAllAppLink = ApplinkConstInternalTokopediaNow.SEE_ALL_CATEGORY + APPLINK_PARAM_WAREHOUSE_ID + warehouseId
+                    val categoryList = CategoryMenuMapper.mapToCategoryList(
+                        response = response,
+                        headerName = item.title,
+                        seeAllAppLink = seeAllAppLink
+                    )
+                    item.copy(
+                        categoryListUiModel = categoryList,
+                        state = TokoNowLayoutState.SHOW,
+                        seeAllAppLink = seeAllAppLink
+                    )
+                } else {
+                    item.copy(
+                        categoryListUiModel = null,
+                        state = TokoNowLayoutState.HIDE,
+                        seeAllAppLink = ""
+                    )
+                }
+                removeAt(index)
+                add(index, newItem)
+            }
+        }
+    }
+
+    fun MutableList<Visitable<*>>.getCategoryMenuIndex(): Int? {
+        return firstOrNull { it is TokoNowCategoryMenuUiModel }?.let { indexOf(it) }
     }
 }

@@ -415,6 +415,20 @@ open class GetPdpLayoutUseCase @Inject constructor(
                       status
                       chevronPos
                     }
+                    ... on pdpDataProductDetailMediaComponent {
+                      title
+                      description
+                      contentMedia {
+                        url
+                        ratio
+                      }
+                      show
+                      ctaText
+                    }
+                    ... on pdpDataProductListComponent {
+                      queryParam
+                      thematicID
+                    }
                   }
                 }
               }

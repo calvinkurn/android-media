@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 import com.tokopedia.autocompletecomponent.searchbar.SearchBarKeyword
 import com.tokopedia.autocompletecomponent.suggestion.topshop.SuggestionTopShopCardDataView
+import com.tokopedia.discovery.common.reimagine.Search1InstAuto
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 
 interface SuggestionContract {
@@ -112,9 +113,14 @@ interface SuggestionContract {
         val chooseAddressData: LocalCacheModel?
 
         val className: String
+
+        fun addToMPSKeyword(item: BaseSuggestionDataView)
     }
 
     interface Presenter : CustomerPresenter<View> {
+
+        fun isMPS(): Boolean
+
         fun getSearchParameter(): Map<String, String>
 
         fun getActiveKeyword() : SearchBarKeyword
@@ -135,5 +141,6 @@ interface SuggestionContract {
         )
 
         fun markSuggestionCoachMark()
+
     }
 }

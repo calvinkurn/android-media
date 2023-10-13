@@ -44,6 +44,9 @@ data class AddOnRequest(
     @SerializedName("Additional")
     @Expose
     val additional: Additional = Additional(),
+    @SerializedName("AddOnKey")
+    @Expose
+    val addOnKey: String = ""
 )
 
 data class Source(

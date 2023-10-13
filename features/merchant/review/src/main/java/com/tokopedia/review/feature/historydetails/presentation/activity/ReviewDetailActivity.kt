@@ -13,12 +13,10 @@ class ReviewDetailActivity : BaseSimpleActivity(), ReviewPerformanceMonitoringLi
 
     private var reputationId: String = ""
     private var feedbackId: String = ""
-    private var reviewDetailFragment: ReviewDetailFragment? = null
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getDataFromApplink()
-        reviewDetailFragment = ReviewDetailFragment.createNewInstance(if(feedbackId.isNotBlank()) feedbackId else reputationId)
         super.onCreate(savedInstanceState)
         startPerformanceMonitoring()
         supportActionBar?.hide()
@@ -82,13 +80,8 @@ class ReviewDetailActivity : BaseSimpleActivity(), ReviewPerformanceMonitoringLi
         }
     }
 
-    override fun getNewFragment(): Fragment? {
-        return reviewDetailFragment
-    }
-
-    override fun onBackPressed() {
-        super.onBackPressed()
-        reviewDetailFragment?.onBackPressed()
+    override fun getNewFragment(): Fragment {
+        return ReviewDetailFragment.createNewInstance(feedbackId.ifBlank { reputationId })
     }
 
     private fun getDataFromApplink() {

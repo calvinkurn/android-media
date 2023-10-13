@@ -8,12 +8,12 @@ import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.ma
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryNavigationMapper.mapToCategoryNavigation
 import com.tokopedia.tokopedianow.category.domain.mapper.ProductRecommendationMapper
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryAtcTrackerModel
-import com.tokopedia.tokopedianow.category.presentation.util.AddToCartMapper
-import com.tokopedia.tokopedianow.common.util.ProductAdsMapper
+import com.tokopedia.tokopedianow.category.mapper.AddToCartMapper
 import com.tokopedia.tokopedianow.common.constant.TokoNowStaticLayoutType.Companion.PRODUCT_ADS_CAROUSEL
 import com.tokopedia.tokopedianow.common.domain.mapper.TickerMapper
 import com.tokopedia.tokopedianow.common.domain.param.GetProductAdsParam
-import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
+import com.tokopedia.tokopedianow.common.util.ProductAdsMapper
+import com.tokopedia.tokopedianow.util.TestUtils.mockSuperClassField
 import com.tokopedia.unit.test.ext.getOrAwaitValue
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.usecase.coroutines.Success
@@ -22,7 +22,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class CategoryProductAdsTest : TokoNowCategoryMainViewModelTestFixture() {
+class CategoryProductAdsTest : TokoNowCategoryViewModelTestFixture() {
 
     @Test
     fun `given get product ads success when getFirstPage should add product ads carousel to categoryPage`() {
@@ -58,10 +58,7 @@ class CategoryProductAdsTest : TokoNowCategoryMainViewModelTestFixture() {
         onTargetedTicker_thenReturns()
         onGetProductAds_thenReturn(getProductAdsResponse)
 
-        viewModel.onViewCreated(
-            navToolbarHeight = navToolbarHeight
-        )
-        viewModel.getFirstPage()
+        viewModel.onViewCreated()
 
         // map header space
         val headerSpaceUiModel = categoryDetailResponse
@@ -71,17 +68,15 @@ class CategoryProductAdsTest : TokoNowCategoryMainViewModelTestFixture() {
 
         // map choose address
         val chooseAddressUiModel = categoryDetailResponse
-            .mapToChooseAddress()
+            .mapToChooseAddress(addressData)
 
         // map ticker
         val tickerDataList = TickerMapper.mapTickerData(
-            tickerList = targetedTickerResponse
+            targetedTickerResponse
         )
         val tickerUiModel = categoryDetailResponse
-            .mapToTicker(
-                tickerData = tickerDataList
-            )
-        val hasBlockedAddToCart = tickerDataList.first
+            .mapToTicker(tickerDataList.tickerList)
+        val hasBlockedAddToCart = tickerDataList.blockAddToCart
 
         // map title
         val titleUiModel = categoryDetailResponse
@@ -117,11 +112,11 @@ class CategoryProductAdsTest : TokoNowCategoryMainViewModelTestFixture() {
             page = 1,
             userId = userId,
             addressData = addressData
-        )
+        ).generateQueryParams()
 
         verifyGetProductAdsParam(expectedGetProductAdsParam)
 
-        viewModel.categoryPage
+        viewModel.visitableListLiveData
             .verifyValueEquals(categoryPage)
     }
 
@@ -160,10 +155,7 @@ class CategoryProductAdsTest : TokoNowCategoryMainViewModelTestFixture() {
         onTargetedTicker_thenReturns()
         onGetProductAds_thenReturn(getProductAdsResponse)
 
-        viewModel.onViewCreated(
-            navToolbarHeight = navToolbarHeight
-        )
-        viewModel.getFirstPage()
+        viewModel.onViewCreated()
 
         // map header space
         val headerSpaceUiModel = categoryDetailResponse
@@ -173,16 +165,14 @@ class CategoryProductAdsTest : TokoNowCategoryMainViewModelTestFixture() {
 
         // map choose address
         val chooseAddressUiModel = categoryDetailResponse
-            .mapToChooseAddress()
+            .mapToChooseAddress(addressData)
 
         // map ticker
         val tickerDataList = TickerMapper.mapTickerData(
-            tickerList = targetedTickerResponse
+            targetedTickerResponse
         )
         val tickerUiModel = categoryDetailResponse
-            .mapToTicker(
-                tickerData = tickerDataList
-            )
+            .mapToTicker(tickerDataList.tickerList)
 
         // map title
         val titleUiModel = categoryDetailResponse
@@ -212,11 +202,11 @@ class CategoryProductAdsTest : TokoNowCategoryMainViewModelTestFixture() {
             page = 1,
             userId = userId,
             addressData = addressData
-        )
+        ).generateQueryParams()
 
         verifyGetProductAdsParam(expectedGetProductAdsParam)
 
-        viewModel.categoryPage
+        viewModel.visitableListLiveData
             .verifyValueEquals(categoryPage)
     }
 
@@ -229,11 +219,13 @@ class CategoryProductAdsTest : TokoNowCategoryMainViewModelTestFixture() {
             val addToCartDataModel = AddToCartMapper.mapAddToCartResponse(addToCartGqlResponse)
             onAddToCart_thenReturns(addToCartDataModel)
 
-            val productAdsCarousel = ProductAdsMapper.mapProductAdsCarousel(getProductAdsResponse)
+            val productAdsCarousel = ProductAdsMapper.mapProductAdsCarousel(
+                response = getProductAdsResponse
+            )
             val adsProductItem = productAdsCarousel.items.first()
 
-            viewModel.mockPrivateField(
-                name = "layout",
+            viewModel.mockSuperClassField(
+                name = "visitableList",
                 value = mutableListOf(productAdsCarousel)
             )
 
@@ -263,7 +255,7 @@ class CategoryProductAdsTest : TokoNowCategoryMainViewModelTestFixture() {
             viewModel.addItemToCart.getOrAwaitValue()
             viewModel.updateToolbarNotification.getOrAwaitValue()
             viewModel.atcDataTracker.getOrAwaitValue()
-            viewModel.categoryPage.getOrAwaitValue()
+            viewModel.visitableListLiveData.getOrAwaitValue()
 
             viewModel.addItemToCart
                 .verifyValueEquals(Success(addToCartDataModel))
@@ -274,7 +266,7 @@ class CategoryProductAdsTest : TokoNowCategoryMainViewModelTestFixture() {
             viewModel.atcDataTracker
                 .verifyValueEquals(expectedAtcTrackerData)
 
-            viewModel.categoryPage
+            viewModel.visitableListLiveData
                 .verifyValueEquals(expectedCategoryPage)
         }
     }
@@ -288,11 +280,13 @@ class CategoryProductAdsTest : TokoNowCategoryMainViewModelTestFixture() {
             val addToCartDataModel = AddToCartMapper.mapAddToCartResponse(addToCartGqlResponse)
             onAddToCart_thenReturns(addToCartDataModel)
 
-            val productAdsCarousel = ProductAdsMapper.mapProductAdsCarousel(getProductAdsResponse)
+            val productAdsCarousel = ProductAdsMapper.mapProductAdsCarousel(
+                response = getProductAdsResponse
+            )
             val adsProductItem = productAdsCarousel.items.first()
 
-            viewModel.mockPrivateField(
-                name = "layout",
+            viewModel.mockSuperClassField(
+                name = "visitableList",
                 value = mutableListOf(productAdsCarousel)
             )
 
@@ -318,11 +312,13 @@ class CategoryProductAdsTest : TokoNowCategoryMainViewModelTestFixture() {
             val addToCartDataModel = AddToCartMapper.mapAddToCartResponse(addToCartGqlResponse)
             onAddToCart_thenReturns(addToCartDataModel)
 
-            val productAdsCarousel = ProductAdsMapper.mapProductAdsCarousel(getProductAdsResponse)
+            val productAdsCarousel = ProductAdsMapper.mapProductAdsCarousel(
+                response = getProductAdsResponse
+            )
             val adsProductItem = productAdsCarousel.items.first()
 
-            viewModel.mockPrivateField(
-                name = "layout",
+            viewModel.mockSuperClassField(
+                name = "visitableList",
                 value = mutableListOf(productAdsCarousel)
             )
 

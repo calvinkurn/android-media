@@ -11,8 +11,8 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.inbox.R
 import com.tokopedia.inbox.universalinbox.stub.common.atPositionCheckInstanceOf
 import com.tokopedia.inbox.universalinbox.stub.common.withRecyclerView
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetModel
+import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationUiModel
+import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationWidgetUiModel
 import com.tokopedia.carouselproductcard.R as carouselproductcardR
 import com.tokopedia.productcard.R as productcardR
 
@@ -21,7 +21,7 @@ object RecommendationResult {
         onView(withId(R.id.inbox_rv)).check(
             atPositionCheckInstanceOf(
                 position = position,
-                expectedClass = RecommendationItem::class.java
+                expectedClass = UniversalInboxRecommendationUiModel::class.java
             )
         )
     }
@@ -30,7 +30,7 @@ object RecommendationResult {
         onView(withId(R.id.inbox_rv)).check(
             atPositionCheckInstanceOf(
                 position = position,
-                expectedClass = RecommendationWidgetModel::class.java
+                expectedClass = UniversalInboxRecommendationWidgetUiModel::class.java
             )
         )
     }

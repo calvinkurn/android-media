@@ -7,7 +7,6 @@ import android.widget.Space
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
@@ -129,23 +128,15 @@ internal class LabelLayoutStrategyListView : LabelLayoutStrategy {
         else 0
     }
 
-    override fun moveDiscountConstraint(view: View, productCardModel: ProductCardModel) {
-
-    }
-
-    override fun setDiscountMargin(label: Label) {
-
-    }
-
     override fun renderLabelPrice(view: View, productCardModel: ProductCardModel) {
         val labelPrice = view.findViewById<Label?>(R.id.labelPrice)
-        val labelPriceReposition = view.findViewById<Label?>(R.id.labelPriceReposition)
 
-        if (productCardModel.isShowDiscountOrSlashPrice())
-            labelPrice?.initLabelGroup(null)
-        else
+        if (productCardModel.isShowLabelPrice())
             labelPrice?.initLabelGroup(productCardModel.getLabelPrice())
+        else
+            labelPrice?.initLabelGroup(null)
 
+        val labelPriceReposition = view.findViewById<Label?>(R.id.labelPriceReposition)
         labelPriceReposition?.initLabelGroup(null)
     }
 

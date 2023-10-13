@@ -1,6 +1,7 @@
 package com.tokopedia.topads.dashboard.data.model
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.topads.common.data.model.ErrorsItem
 
 data class KeywordActionResponse(
 

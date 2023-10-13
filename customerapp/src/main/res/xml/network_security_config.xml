@@ -5,6 +5,7 @@
             <!-- Trust user added CAs while debuggable only -->
             <certificates src="system" />
             <certificates src="user" />
+            <certificates src="@raw/selfsigned"/>
         </trust-anchors>
     </debug-overrides>
     <domain-config cleartextTrafficPermitted="true">
@@ -15,6 +16,7 @@
         <domain includeSubdomains="true">gojek.com</domain>
         <domain includeSubdomains="true">grab.com</domain>
         <domain includeSubdomains="true">35.198.223.102</domain>
+        <domain includeSubdomains="true">172.21.56.230</domain>
 
 
         <!--    Need to be whitelisted for silent verification    -->

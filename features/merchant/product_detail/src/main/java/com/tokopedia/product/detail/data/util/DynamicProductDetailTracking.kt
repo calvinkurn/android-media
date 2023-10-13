@@ -38,9 +38,7 @@ import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import org.json.JSONArray
 import org.json.JSONObject
-import java.util.ArrayList
-import java.util.Locale
-import kotlin.collections.HashMap
+import java.util.*
 
 object DynamicProductDetailTracking {
 
@@ -1779,7 +1777,7 @@ object DynamicProductDetailTracking {
             isStockAvailable: String, boType: Int,
             affiliateUniqueId: String, uuid: String,
             ratesEstimateData: P2RatesEstimateData?,
-            buyerDistrictId: String, sellerDistrictId: String ->
+            buyerDistrictId: String, sellerDistrictId: String, offerId: String ->
 
             val dimension10 = productInfo?.data?.isCod ?: false
             val dimension12 = ratesEstimateData?.cheapestShippingPrice?.toLong()?.toString() ?: ""
@@ -1819,6 +1817,7 @@ object DynamicProductDetailTracking {
                     dimension90 = if (affiliateUniqueId.isNotBlank()) "affiliate" else null,
                     dimension113 = dimension113,
                     dimension120 = dimension120,
+                    dimension137 = offerId,
                     index = 1
                 )
             )
@@ -1836,7 +1835,8 @@ object DynamicProductDetailTracking {
             sellerDistrictId: String,
             lcaWarehouseId: String,
             campaignId: String,
-            variantId: String ->
+            variantId: String,
+            offerId: String ->
 
             val categoryIdLevel1 = productInfo?.basic?.category?.detail?.firstOrNull()?.id ?: ""
             val categoryNameLevel1 = productInfo?.basic?.category?.detail?.firstOrNull()?.name ?: ""
@@ -1857,7 +1857,7 @@ object DynamicProductDetailTracking {
                 irisSessionId, trackerListName, productInfo,
                 trackerAttribution, isTradeIn, isDiagnosed, multiOrigin, deeplinkUrl,
                 isStockAvailable, boType, affiliateUniqueId, uuid, ratesEstimateData, buyerDistrictId,
-                sellerDistrictId
+                sellerDistrictId, offerId
             )
 
             ProductDetailViewsBundler
@@ -1931,7 +1931,8 @@ object DynamicProductDetailTracking {
             sellerDistrictId: String,
             lcaWarehouseId: String,
             campaignId: String,
-            variantId: String
+            variantId: String,
+            offerId: String
         ) {
             productInfo?.let {
                 if (shopInfo?.isShopInfoNotEmpty() == true) {
@@ -1939,7 +1940,8 @@ object DynamicProductDetailTracking {
                         irisSessionId, trackerListName, it, shopInfo,
                         trackerAttribution, isTradeIn, isDiagnosed, multiOrigin, deeplinkUrl,
                         isStockAvailable, boType, affiliateUniqueId, uuid, ratesEstimateData,
-                        buyerDistrictId, sellerDistrictId, lcaWarehouseId, campaignId, variantId
+                        buyerDistrictId, sellerDistrictId, lcaWarehouseId, campaignId, variantId,
+                        offerId
                     )
                     sendTrackingBundle(
                         ProductDetailViewsBundler.KEY,

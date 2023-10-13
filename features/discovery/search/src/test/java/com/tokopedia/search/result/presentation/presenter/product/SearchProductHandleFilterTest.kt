@@ -1,6 +1,7 @@
 package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.discovery.common.reimagine.Search2Component
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
@@ -14,12 +15,18 @@ import com.tokopedia.search.utils.createSearchProductDefaultQuickFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.RequestParams
-import io.mockk.*
+import io.mockk.every
+import io.mockk.just
+import io.mockk.runs
+import io.mockk.slot
+import io.mockk.verify
+import io.mockk.verifyOrder
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.Is.`is`
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import rx.Subscriber
-import java.util.*
+import com.tokopedia.filter.quick.SortFilterItem as SortFilterItemReimagine
 
 private const val searchProductModelWithQuickFilter = "searchproduct/quickfilter/with-quick-filter.json"
 private const val searchProductModelNoQuickFilter = "searchproduct/quickfilter/no-quick-filter.json"
@@ -29,6 +36,7 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
     private val requestParamsSlot = slot<RequestParams>()
     private val actualQuickFilterList = slot<List<Filter>>()
     private val listItemSlot = slot<ArrayList<SortFilterItem>>()
+    private val listItemReimagineSlot = slot<List<SortFilterItemReimagine>>()
     private val backendFiltersToggle = slot<String>()
 
     @Test
@@ -358,5 +366,51 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
             productListView.applyDropdownQuickFilter(optionList)
             productListView.trackEventApplyDropdownQuickFilter(optionList, any())
         }
+    }
+    
+    @Test
+    fun `Search Product initialize quick filter reimagine`() {
+        val searchProductModel = searchProductModelWithQuickFilter.jsonToObject<SearchProductModel>()
+
+        every { reimagineRollence.search2Component() } returns Search2Component.QF_VAR
+
+        `Given Search Product API will return SearchProductModel`(searchProductModel)
+
+        `When Load Data`()
+
+        `Then verify setQuickFilterReimagine is called`()
+        `Then verify SortFilterItemReimagine list`(searchProductModel.quickFilterModel)
+    }
+
+    private fun `Then verify setQuickFilterReimagine is called`() {
+        verify {
+            productListView.setQuickFilterReimagine(capture(listItemReimagineSlot))
+        }
+    }
+
+    private fun `Then verify SortFilterItemReimagine list`(quickFilterModel: DataValue) {
+        val sortFilterItemList = listItemReimagineSlot.captured
+        sortFilterItemList.listShouldBe(quickFilterModel.filter) { sortFilterItem, filter ->
+            sortFilterItem.title shouldBe filter.chipName
+        }
+    }
+
+    @Test
+    fun `Drop down quick filter reimagine hasChevron is true`() {
+        val searchProductModel = searchProductModelWithMultipleOptionQuickFilter.jsonToObject<SearchProductModel>()
+
+        every { reimagineRollence.search2Component() } returns Search2Component.QF_VAR
+
+        `Given Search Product API will return SearchProductModel`(searchProductModel)
+
+        `When Load Data`()
+
+        `Then verify setQuickFilterReimagine is called`()
+        `Then verify SortFilterItemReimagine list`(searchProductModel.quickFilterModel)
+
+        val sortFilterItemList = listItemReimagineSlot.captured
+        assertTrue(
+            sortFilterItemList.find { it.title == "Jenis Toko Chip Name" }?.hasChevron == true
+        )
     }
 }

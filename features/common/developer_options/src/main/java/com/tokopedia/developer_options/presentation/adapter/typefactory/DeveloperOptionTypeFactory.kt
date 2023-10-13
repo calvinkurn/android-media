@@ -54,7 +54,8 @@ import com.tokopedia.developer_options.presentation.model.ViewIrisLogUiModel
 import com.tokopedia.developer_options.presentation.model.ViewJourneyLogUiModel
 import com.tokopedia.developer_options.presentation.model.ViewNetworkLogUiModel
 import com.tokopedia.developer_options.presentation.model.ViewTopAdsLogUiModel
-
+import com.tokopedia.developer_options.presentation.model.UserIdUiModel
+import com.tokopedia.developer_options.presentation.model.ShopIdUiModel
 /**
  * @author Said Faisal on 24/11/2021
  *
@@ -116,4 +117,6 @@ interface DeveloperOptionTypeFactory {
     fun type(uiModel: BannerEnvironmentUiModel): Int
     fun type(uiModel: BranchLinkUiModel): Int
     fun type(uiModel: FpiMonitoringUiModel): Int
+    fun type(uiModel: UserIdUiModel): Int
+    fun type(uiModel: ShopIdUiModel): Int
 }

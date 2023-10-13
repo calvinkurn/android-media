@@ -11,11 +11,9 @@ import com.tokopedia.product.detail.postatc.base.PostAtcUiModel
 import com.tokopedia.product.detail.postatc.data.model.PostAtcInfo
 import com.tokopedia.product.detail.postatc.data.model.PostAtcLayout
 import com.tokopedia.product.detail.postatc.mapper.mapToUiModel
+import com.tokopedia.product.detail.postatc.mapper.toPostAtcInfo
 import com.tokopedia.product.detail.postatc.mapper.toUserLocationRequest
 import com.tokopedia.product.detail.postatc.usecase.GetPostAtcLayoutUseCase
-import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
-import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.viewutil.asFail
 import com.tokopedia.recommendation_widget_common.viewutil.asSuccess
 import com.tokopedia.usecase.coroutines.Result
@@ -23,15 +21,11 @@ import javax.inject.Inject
 
 class PostAtcViewModel @Inject constructor(
     private val getPostAtcLayoutUseCase: GetPostAtcLayoutUseCase,
-    private val getRecommendationUseCase: GetRecommendationUseCase,
     dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
     private val _layouts = MutableLiveData<Result<List<PostAtcUiModel>>>()
     val layouts: LiveData<Result<List<PostAtcUiModel>>> = _layouts
-
-    private val _recommendations = MutableLiveData<Pair<Int, Result<RecommendationWidget>>>()
-    val recommendations: LiveData<Pair<Int, Result<RecommendationWidget>>> = _recommendations
 
     var postAtcInfo: PostAtcInfo = PostAtcInfo()
         private set
@@ -82,28 +76,6 @@ class PostAtcViewModel @Inject constructor(
         }, onError = { _layouts.value = it.asFail() })
     }
 
-    fun fetchRecommendation(
-        productId: String,
-        pageName: String,
-        uniqueId: Int
-    ) {
-        launchCatchError(block = {
-            val requestParams = GetRecommendationRequestParam(
-                pageName = pageName,
-                productIds = listOf(productId)
-            )
-            val result = getRecommendationUseCase.getData(requestParams)
-            if (result.isEmpty()) throw Throwable()
-
-            val widget = result.first()
-            if (widget.recommendationItemList.isEmpty()) throw Throwable()
-
-            _recommendations.value = uniqueId to widget.asSuccess()
-        }, onError = {
-                _recommendations.value = uniqueId to it.asFail()
-            })
-    }
-
     private fun updateInfo(data: PostAtcLayout) {
         val basicInfo = data.basicInfo
         val category = basicInfo.category
@@ -122,7 +94,8 @@ class PostAtcViewModel @Inject constructor(
             shopId = basicInfo.shopId,
             price = basicInfo.price,
             originalPrice = basicInfo.originalPrice,
-            condition = basicInfo.condition
+            condition = basicInfo.condition,
+            warehouseInfo = data.warehouseInfo.toPostAtcInfo()
         )
     }
 }

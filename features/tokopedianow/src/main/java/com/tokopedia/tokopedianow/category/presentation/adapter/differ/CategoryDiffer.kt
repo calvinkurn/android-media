@@ -10,25 +10,27 @@ class CategoryDiffer : BaseTokopediaNowDiffer() {
     private var newList: List<Visitable<*>> = emptyList()
 
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        val oldItem = oldList[oldItemPosition]
-        val newItem = newList[newItemPosition]
-
-        return if (oldItem is CategoryShowcaseUiModel && newItem is CategoryShowcaseUiModel) {
-            oldItem.id == newItem.id
-        } else if (oldItem is TokoNowAdsCarouselUiModel && newItem is TokoNowAdsCarouselUiModel) {
-            oldItem.id == newItem.id && oldItem.state == newItem.state
-        } else {
-            oldItem == newItem
+        return checkItemNotNull(oldItemPosition, newItemPosition) { oldItem, newItem ->
+            if (oldItem is CategoryShowcaseUiModel && newItem is CategoryShowcaseUiModel) {
+                oldItem.id == newItem.id
+            } else if (oldItem is TokoNowAdsCarouselUiModel && newItem is TokoNowAdsCarouselUiModel) {
+                oldItem.id == newItem.id && oldItem.state == newItem.state
+            } else {
+                oldItem == newItem
+            }
         }
     }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldList[oldItemPosition] == newList[newItemPosition]
+        return checkItemNotNull(oldItemPosition, newItemPosition) { oldItem, newItem ->
+            oldItem == newItem
+        }
     }
 
     override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any? {
-        val oldItem = oldList[oldItemPosition]
-        val newItem = newList[newItemPosition]
+        val oldItem = oldList.getOrNull(oldItemPosition)
+        val newItem = newList.getOrNull(newItemPosition)
+        if(oldItem == null || newItem == null) return null
 
         return if (oldItem is CategoryShowcaseUiModel && newItem is CategoryShowcaseUiModel) {
             oldItem.getChangePayload(newItem)
@@ -50,5 +52,17 @@ class CategoryDiffer : BaseTokopediaNowDiffer() {
         this.oldList = oldList
         this.newList = newList
         return this
+    }
+
+    private fun checkItemNotNull(
+        oldItemPosition: Int,
+        newItemPosition: Int,
+        compare: (oldItem: Visitable<*>, newItem: Visitable<*>) -> Boolean
+    ): Boolean {
+        val oldItem = oldList.getOrNull(oldItemPosition)
+        val newItem = newList.getOrNull(newItemPosition)
+        if(oldItem == null || newItem == null) return false
+
+        return compare(oldItem, newItem)
     }
 }

@@ -9,11 +9,8 @@
     <string name="path_image_quality_setting" translatable="false">/media-quality-setting</string>
     <string name="path_new_home_account">/new-home-account</string>
     <string name="path_funds_and_investment">/funds-and-investment</string>
-    <string name="path_link_account_webview">/link-account-webview</string>
-    <string name="path_link_account">/link-account</string>
     <string name="path_explicit_profile">/explicit-profile</string>
     <string name="path_privacy_account">/privacy-account</string>
-    <string name="path_consent_withdrawal">/consent/withdrawal</string>
     <string name="path_dsar">/dsar</string>
     <string name="path_dsar_add_email">/dsar/add-email</string>
 
@@ -73,6 +70,7 @@
     <string name="applink_telephony">Telephony Masking</string>
 
     <string name="applink_global_sharing">/sharing</string>
+    <string name="applink_sharing_not_found">/sharing-not-found</string>
 
     <string name="applink_profile_info">/setting-profile</string>
 
@@ -120,10 +118,11 @@
     <string name="path_liveness_detection">/liveness-detection</string>
 
     <string name="path_goto_kyc">/goto-kyc.*</string>
+    <string name="path_goto_kyc_webview">/webview-kyc</string>
 
     <!--Privacy Center-->
     <string name="path_search_history">/search-history</string>
-    <string name="path_new_consent_withdrawal">/consent/withdrawal/new</string>
+    <string name="path_consent_withdrawal">/consent/withdrawal</string>
     <string name="path_sharing_wishlist">/sharing-wishlist</string>
 
 </resources>

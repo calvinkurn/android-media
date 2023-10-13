@@ -63,6 +63,7 @@ import com.tokopedia.home_account.R
 import com.tokopedia.home_account.ResultBalanceAndPoint
 import com.tokopedia.home_account.analytics.AddVerifyPhoneAnalytics
 import com.tokopedia.home_account.analytics.HomeAccountAnalytics
+import com.tokopedia.home_account.analytics.TokopediaCardAnalytics
 import com.tokopedia.home_account.analytics.TokopediaPlusAnalytics
 import com.tokopedia.home_account.data.model.CentralizedUserAssetConfig
 import com.tokopedia.home_account.data.model.CommonDataView
@@ -208,6 +209,7 @@ open class HomeAccountUserFragment :
     private var topAdsHeadlineUiModel: TopadsHeadlineUiModel? = null
     private var isShowDarkModeToggle = false
     private var isShowScreenRecorder = false
+    private var statusNameTokopediaCard = ""
 
     var adapter: HomeAccountUserAdapter? = null
     var balanceAndPointAdapter: HomeAccountBalanceAndPointAdapter? = null
@@ -233,10 +235,10 @@ open class HomeAccountUserFragment :
         return remoteConfig.getBoolean(REMOTE_CONFIG_KEY_PRIVACY_ACCOUNT, false)
     }
 
+    // feature explicit profile for temporary disabled, because Product Manager have not capacity for this.
+    // the rollout will set up back by announce of product team
     private fun isEnableExplicitProfileMenu(): Boolean {
-        return getAbTestPlatform()
-            .getString(EXPLICIT_PROFILE_MENU_ROLLOUT)
-            .contains(EXPLICIT_PROFILE_MENU_ROLLOUT)
+        return false
     }
 
     private fun getAbTestPlatform(): AbTestPlatform {
@@ -629,6 +631,13 @@ open class HomeAccountUserFragment :
     }
 
     override fun onClickBalanceAndPoint(balanceAndPointUiModel: BalanceAndPointUiModel) {
+        if (balanceAndPointUiModel.id == AccountConstants.WALLET.CO_BRAND_CC) {
+            TokopediaCardAnalytics.sendClickOnTokopediaCardPyEvent(
+                eventLabel = balanceAndPointUiModel.statusName,
+                userId = userSession.userId
+            )
+        }
+
         homeAccountAnalytic.eventClickAccountPage(
             balanceAndPointUiModel.id,
             balanceAndPointUiModel.isActive,
@@ -739,15 +748,6 @@ open class HomeAccountUserFragment :
                     is ResultBalanceAndPoint.Fail -> {
                         onFailedGetBalanceAndPoint(it.walletId)
                     }
-                }
-            }
-        )
-
-        viewModel.phoneNo.observe(
-            viewLifecycleOwner,
-            Observer {
-                if (it.isNotEmpty()) {
-                    getData()
                 }
             }
         )
@@ -866,6 +866,14 @@ open class HomeAccountUserFragment :
     }
 
     private fun onSuccessGetBalanceAndPoint(balanceAndPoint: WalletappGetAccountBalance) {
+        if (balanceAndPoint.id == AccountConstants.WALLET.CO_BRAND_CC) {
+            statusNameTokopediaCard = balanceAndPoint.statusName
+            TokopediaCardAnalytics.sendViewTokopediaCardIconPyEvent(
+                eventLabel = balanceAndPoint.statusName,
+                userId = userSession.userId
+            )
+        }
+
         balanceAndPointAdapter?.changeItemToSuccessBySameId(
             UiModelMapper.getBalanceAndPointUiModel(
                 balanceAndPoint
@@ -1283,6 +1291,10 @@ open class HomeAccountUserFragment :
     private fun mapSettingId(item: CommonDataView) {
         when (item.id) {
             AccountConstants.SettingCode.SETTING_VIEW_ALL_BALANCE -> {
+                TokopediaCardAnalytics.sendClickOnLihatSemuaPyEvent(
+                    eventLabel = statusNameTokopediaCard,
+                    userId = userSession.userId
+                )
                 homeAccountAnalytic.eventClickViewMoreWalletAccountPage()
                 goToApplink(item.applink)
             }
@@ -1803,8 +1815,6 @@ open class HomeAccountUserFragment :
 
     override fun onClick(pageSource: String, tokopediaPlusDataModel: TokopediaPlusDataModel) {
         tokopediaAnalytics.sendClickOnTokopediaPlusButtonEvent(tokopediaPlusDataModel.isSubscriber)
-        val intent = RouteManager.getIntent(context, tokopediaPlusDataModel.applink)
-        startActivity(intent)
     }
 
     override fun onAddPhoneClicked() {
@@ -1848,7 +1858,6 @@ open class HomeAccountUserFragment :
         private const val USER_CENTRALIZED_ASSET_CONFIG_USER_PAGE = "user_page"
 
         const val REMOTE_CONFIG_KEY_PRIVACY_ACCOUNT = "android_user_privacy_account_enabled"
-        private const val EXPLICIT_PROFILE_MENU_ROLLOUT = "explicit_android"
         private const val CLICK_TYPE_WISHLIST = "&click_type=wishlist"
 
         private const val COACHMARK_SIZE = 3

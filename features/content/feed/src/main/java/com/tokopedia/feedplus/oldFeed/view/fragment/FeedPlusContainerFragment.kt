@@ -65,6 +65,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play_common.shortsuploader.PlayShortsUploader
 import com.tokopedia.play_common.shortsuploader.analytic.PlayShortsUploadAnalytic
 import com.tokopedia.play_common.shortsuploader.const.PlayShortsUploadConst
+import com.tokopedia.play_common.shortsuploader.model.PlayShortsUploadResult
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -572,11 +573,20 @@ class FeedPlusContainerFragment :
 
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             callbackFlow {
-                val observer = playShortsUploader.observe { progress, uploadData ->
-                    trySendBlocking(progress to uploadData)
+                val uploadLiveData = playShortsUploader.getUploadLiveData()
+
+                val observer = Observer<PlayShortsUploadResult> {
+                    if (it is PlayShortsUploadResult.Success) {
+                        val progress = it.progress
+                        val uploadData = it.data
+
+                        trySendBlocking(progress to uploadData)
+                    }
                 }
 
-                awaitClose { playShortsUploader.cancelObserve(observer) }
+                uploadLiveData.observeForever(observer)
+
+                awaitClose { uploadLiveData.removeObserver(observer) }
 
             }.collect { data ->
                 val (progress, uploadData) = data

@@ -101,6 +101,13 @@ class PlayChannelRecommendationFragment @Inject constructor(
         observeState()
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        val window = dialog?.window ?: return
+        window.setWindowAnimations(playR.style.ExploreWidgetWindowAnim)
+    }
+
     private fun setupTab(categories: List<String>) {
         if (categories.size > 1)
             tabs[categories.first()] = fgCategory

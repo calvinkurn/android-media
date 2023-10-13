@@ -509,31 +509,8 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                 ratingScore
                 totalRating
                 totalReviewTextAndImage
+                showRatingReview
             }
-            bundleInfo {
-              productID
-              bundleID
-              groupID
-              name
-              type
-              status
-              titleComponent
-              finalPriceBundling
-              originalPriceBundling
-              savingPriceBundling
-              preorderString
-              bundleItems {
-                productID
-                name
-                picURL
-                status
-                quantity
-                originalPrice
-                bundlePrice
-                discountPercentage
-                stock
-              }
-  	        }
            arInfo{
               productIDs
               applink
@@ -626,9 +603,28 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                 status
                 chevronPos
             }
+            bmgm {
+              separator
+              data {
+                backgroundColor
+                titleColor
+                iconUrl
+                title
+                action {
+                  type
+                  link
+                }
+                contents {
+                  imageUrl
+                }
+                loadMoreText
+                productIDs
+                offerID
+              }
+            }
           }
         }
-""".trimIndent()
+        """.trimIndent()
     }
 
     private var mCacheManager: GraphqlCacheManager? = null

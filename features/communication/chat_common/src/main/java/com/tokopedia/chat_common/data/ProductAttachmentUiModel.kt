@@ -246,6 +246,11 @@ open class ProductAttachmentUiModel protected constructor(
             "drop alert"
         } else if (blastIdInt > Int.ZERO) {
             "broadcast"
+        } else if (source.contains("smart", true) &&
+            source.contains("reply", true)
+        ) {
+            // If source is smart reply in any form, return smart_reply as source
+            "smart_reply"
         } else {
             "chat"
         }

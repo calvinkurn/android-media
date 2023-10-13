@@ -10,7 +10,6 @@ import com.tokopedia.logisticcart.domain.executor.SchedulerProvider
 import com.tokopedia.purchase_platform.common.analytics.EPharmacyAnalytics
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformBaseModule
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformNetworkModule
-import com.tokopedia.purchase_platform.common.feature.editaddress.di.PeopleAddressNetworkModule
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.view.UploadPrescriptionListener
 import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashbackListener
 import com.tokopedia.purchase_platform.common.schedulers.DefaultSchedulers
@@ -22,7 +21,6 @@ import rx.subscriptions.CompositeSubscription
 
 @Module(
     includes = [
-        PeopleAddressNetworkModule::class,
         PurchasePlatformNetworkModule::class,
         PurchasePlatformBaseModule::class
     ]

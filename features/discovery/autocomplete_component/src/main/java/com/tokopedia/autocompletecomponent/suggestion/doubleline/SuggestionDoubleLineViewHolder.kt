@@ -1,10 +1,12 @@
 package com.tokopedia.autocompletecomponent.suggestion.doubleline
 
 import android.graphics.Typeface
+import android.os.Build
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.TextUtils
 import android.text.style.StyleSpan
+import android.text.style.TypefaceSpan
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -14,26 +16,28 @@ import com.tokopedia.autocompletecomponent.R
 import com.tokopedia.autocompletecomponent.databinding.LayoutAutocompleteDoubleLineItemBinding
 import com.tokopedia.autocompletecomponent.suggestion.BaseSuggestionDataView
 import com.tokopedia.autocompletecomponent.suggestion.SuggestionListener
+import com.tokopedia.autocompletecomponent.util.getBoldStyle
 import com.tokopedia.autocompletecomponent.util.safeSetSpan
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
-import com.tokopedia.media.loader.loadImageCircle
-import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.unifyprinciples.getTypeface
 import com.tokopedia.utils.view.binding.viewBinding
 import java.util.*
 
 class SuggestionDoubleLineViewHolder(
-        itemView: View,
-        private val listener: SuggestionListener
+    itemView: View,
+    private val listener: SuggestionListener,
+    isReimagine: Boolean
 ) : AbstractViewHolder<SuggestionDoubleLineDataDataView>(itemView) {
 
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.layout_autocomplete_double_line_item
     }
+
+    private val layoutStrategy: DoubleLineLayoutStrategy = DoubleLineLayoutStrategyFactory.create(isReimagine)
 
     private var binding: LayoutAutocompleteDoubleLineItemBinding? by viewBinding()
 
@@ -53,17 +57,14 @@ class SuggestionDoubleLineViewHolder(
 
     private fun bindIconImage(item: SuggestionDoubleLineDataDataView) {
         val iconImage = binding?.iconImage ?: return
-        if (item.data.isCircleImage()) {
-            iconImage.loadImageCircle(item.data.imageUrl)
-        } else {
-            iconImage.loadImageRounded(item.data.imageUrl, itemView.context.resources.getDimension(R.dimen.autocomplete_product_suggestion_image_radius))
-        }
+        layoutStrategy.bindIconImage(iconImage, item)
     }
 
     private fun bindIconTitle(item: BaseSuggestionDataView) {
-        binding?.iconTitle?.shouldShowOrHideWithAction(item.iconTitle.isNotEmpty()) {
-            ImageHandler.loadImageWithoutPlaceholderAndError(it, item.iconTitle)
-        }
+        val iconTitle = binding?.iconTitle ?: return
+        val autoCompleteIconTitleReimagine = binding?.autoCompleteIconTitleReimagine ?: return
+
+        layoutStrategy.bindIconTitle(iconTitle, autoCompleteIconTitleReimagine, item)
     }
 
     private fun bindIconSubtitle(item: BaseSuggestionDataView) {
@@ -85,6 +86,7 @@ class SuggestionDoubleLineViewHolder(
             item.data.isBoldAllText() -> {
                 bindAllBoldTextTitle(item.data)
             }
+
             else -> {
                 setSearchQueryStartIndexInKeyword(item.data)
                 bindBoldTextTitle(item.data)
@@ -112,7 +114,7 @@ class SuggestionDoubleLineViewHolder(
         }
     }
 
-    private fun bindAllBoldTextTitle(item: BaseSuggestionDataView){
+    private fun bindAllBoldTextTitle(item: BaseSuggestionDataView) {
         val doubleLineTitle = binding?.doubleLineTitle ?: return
         doubleLineTitle.setWeight(Typography.BOLD)
         doubleLineTitle.text = MethodChecker.fromHtml(item.title)
@@ -130,7 +132,7 @@ class SuggestionDoubleLineViewHolder(
 
     private fun highlightTitleBeforeKeyword(highlightedTitle: SpannableString) {
         highlightedTitle.safeSetSpan(
-            StyleSpan(Typeface.BOLD),
+            getBoldStyle(itemView.context),
             0,
             searchQueryStartIndexInKeyword,
             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
@@ -142,7 +144,7 @@ class SuggestionDoubleLineViewHolder(
         val highlightAfterKeywordEndIndex = highlightedTitle.length
 
         highlightedTitle.safeSetSpan(
-            StyleSpan(Typeface.BOLD),
+            getBoldStyle(itemView.context),
             highlightAfterKeywordStartIndex,
             highlightAfterKeywordEndIndex,
             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
@@ -168,18 +170,20 @@ class SuggestionDoubleLineViewHolder(
             listener.onItemClicked(item)
         }
 
-        binding?.autocompleteDoubleLineItem?.addOnImpressionListener(item, object: ViewHintListener {
-            override fun onViewHint() {
-                listener.onItemImpressed(item)
+        binding?.autocompleteDoubleLineItem?.addOnImpressionListener(
+            item,
+            object : ViewHintListener {
+                override fun onViewHint() {
+                    listener.onItemImpressed(item)
+                }
             }
-        })
+        )
     }
 
     private fun bindAdText(item: BaseSuggestionDataView) {
         val adText = binding?.adText ?: return
-        val isAds = item.shopAdsDataView != null
-
-        adText.showWithCondition(isAds)
+        val dotImage = binding?.autoCompleteDotAds ?: return
+        layoutStrategy.bindAdsLabel(adText, dotImage, item)
     }
 
     private fun <T : View> T?.shouldShowOrHideWithAction(shouldShow: Boolean, action: (T) -> Unit) {

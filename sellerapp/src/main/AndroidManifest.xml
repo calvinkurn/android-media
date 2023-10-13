@@ -988,7 +988,7 @@
             android:launchMode="singleTask"
             android:exported="true"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3.Launcher">
+            android:theme="@style/Theme.Tokopedia3.SellerApp.Launcher">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

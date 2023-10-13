@@ -202,7 +202,7 @@ class ShopPageBuyerAnalyticTest {
         Espresso.onView(
             firstView(
                 AllOf.allOf(
-                    withId(R.id.tvSeeAll),
+                    withId(R.id.icon_cta_chevron),
                     isDisplayed()
                 )
             )

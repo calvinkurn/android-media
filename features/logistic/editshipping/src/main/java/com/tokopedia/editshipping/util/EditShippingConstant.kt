@@ -1,14 +1,10 @@
 package com.tokopedia.editshipping.util
 
 object EditShippingConstant {
-    const val SCREEN_CONFIG_S_SHIPPING = "Shop Edit Shipping"
-    const val ARGUMENT_DATA_TOKEN = "token"
-
-    const val LABEL_VALIDATION_BO = "Yakin mau nonaktifkan?"
-
     const val PARAM_VALIDATE_SHIPPING = "inputShippingEditorMobilePopup"
 
     const val DEFAULT_ERROR_MESSAGE = "Terjadi kesalahan pada server. Ulangi beberapa saat lagi"
+    const val DEFAULT_ERROR_SHIPPING_EDITOR = "Kamu harus pilih minimal 1 layanan pengiriman, ya!"
 
     const val EXTRA_IS_FULL_FLOW = "EXTRA_IS_FULL_FLOW"
     const val EXTRA_LAT = "EXTRA_LAT"
@@ -25,6 +21,6 @@ object EditShippingConstant {
 
     const val BOTTOMSHEET_SHIPPER_DETAIL_TITLE = "Detail Kurir Pengiriman"
 
-    val WHITELABEL_SHIPPER_ID = listOf<Long>(1000, 999, 1003, 1001, 1005, 1002, 1004)
+    val WHITELABEL_SHIPPER_ID = listOf<Long>(1000)
     const val KURIR_REKOMENDASI_SHIPPER_ID = "26"
 }
