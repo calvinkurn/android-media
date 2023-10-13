@@ -8,7 +8,6 @@ import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuSeparat
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationTitleUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationUiModel
-import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationWidgetUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopAdsBannerUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopadsHeadlineUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxWidgetMetaUiModel
@@ -16,7 +15,7 @@ import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxWidgetMetaU
 class UniversalInboxDiffUtilCallBack(
     private val oldList: List<Visitable<in UniversalInboxTypeFactory>>,
     private val newList: List<Visitable<in UniversalInboxTypeFactory>>
-): DiffUtil.Callback() {
+) : DiffUtil.Callback() {
 
     override fun getOldListSize(): Int {
         return oldList.size
@@ -51,13 +50,6 @@ class UniversalInboxDiffUtilCallBack(
                 newItem is UniversalInboxTopadsHeadlineUiModel &&
                     oldItem is UniversalInboxTopadsHeadlineUiModel
                 ) -> true
-
-            // Only one recommendation widget should exist
-            (
-                newItem is UniversalInboxRecommendationWidgetUiModel &&
-                    oldItem is UniversalInboxRecommendationWidgetUiModel
-                ) -> true
-
             (
                 newItem is UniversalInboxWidgetMetaUiModel &&
                     oldItem is UniversalInboxWidgetMetaUiModel
