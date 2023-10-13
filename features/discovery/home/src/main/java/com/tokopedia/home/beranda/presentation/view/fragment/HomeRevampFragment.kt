@@ -935,7 +935,8 @@ open class HomeRevampFragment :
                             loadImageWithoutPlaceholder(
                                 thematic.backgroundImageURL,
                                 "thematicBackground",
-                                listener = thematicImageLoadListener
+                                listener = thematicImageLoadListener,
+                                skipErrorPlaceholder = true,
                             )
                         }
                     }
@@ -945,7 +946,8 @@ open class HomeRevampFragment :
                             loadImageWithoutPlaceholder(
                                 thematic.foregroundImageURL,
                                 "thematicForeground",
-                                listener = thematicImageLoadListener
+                                listener = thematicImageLoadListener,
+                                skipErrorPlaceholder = true,
                             )
                         }
                     }
