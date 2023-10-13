@@ -289,8 +289,34 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
         coVerify(exactly = 0) {
             getShopProductUseCase.executeOnBackground()
         }
+    }
 
-      
+    @Test
+    fun `When product component is exist on widgets but has no data, should return null`() {
+        coEvery { getShopProductUseCase.executeOnBackground() } returns ShopProduct.GetShopProduct(
+            data = listOf(ShopProduct())
+        )
+
+        val widgetStyle = "vertical"
+        val products = BannerProductGroupUiModel.Tab.ComponentList(
+            componentId = 2,
+            componentName = BannerProductGroupUiModel.Tab.ComponentList.ComponentName.PRODUCT,
+            data = listOf() //Has no data
+        )
+        val widgets = listOf(products)
+
+        viewModel.getCarouselWidgets(
+            widgets,
+            shopId,
+            userAddress,
+            widgetStyle,
+            overrideTheme,
+            colorSchema
+        )
+
+        coVerify(exactly = 0) {
+            getShopProductUseCase.executeOnBackground()
+        }
     }
     private fun createFeaturedProducts(): BannerProductGroupUiModel.Tab.ComponentList {
         return BannerProductGroupUiModel.Tab.ComponentList(

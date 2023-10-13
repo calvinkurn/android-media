@@ -117,8 +117,9 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
     ): BannerProductGroupUiModel.Tab.ComponentList.Data? {
         val productComponents = widgets.filter { widget -> widget.componentName == ComponentName.PRODUCT }
 
-        val product = productComponents.getOrNull(0)
-        val productMetadata = product?.data?.getOrNull(0)
+        val product = productComponents.getOrNull(0) ?: return null
+
+        val productMetadata = product.data.getOrNull(0)
         return productMetadata
     }
 
