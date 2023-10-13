@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="stories_widget_dms_seen_all_stories">#80BFC9D9</color>
+    <color name="stories_widget_dms_has_unseen_stories_gradient_first">#FF83ECB2</color>
+    <color name="stories_widget_dms_has_unseen_stories_gradient_second">#FF00AA5B</color>
+</resources>

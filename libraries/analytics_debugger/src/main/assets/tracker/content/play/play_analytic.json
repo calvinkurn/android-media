@@ -34,6 +34,7 @@
       "eventAction": "null",
       "eventCategory": "null",
       "eventLabel": "null",
+      "pageSource": ".*.null.null..*",
       "screenName": "/group-chat-room/\\d+/(live|vod)/is coachmark true",
       "sessionIris": ".*",
       "userId": ".*"
@@ -138,10 +139,14 @@
     },
     {
       "eventAction": "click buy in bottom sheet with varian",
-      "event": "clickGroupChat",
+      "event": "clickContent",
       "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - \\d+ - (live|vod)",
-      "sessionIris": ".*"
+      "eventLabel": "\\d+ - \\d+ - (live|vod) - is pinned product (true|false) - (terlaris|diminati|no ribbon)",
+      "sessionIris": ".*",
+      "trackerId": "46422",
+      "businessUnit": "content",
+      "currentSite": "tokopediamarketplace",
+      "userId": ".*"
     },
     {
       "eventAction": "click buy in bottom sheet",
@@ -162,6 +167,7 @@
           "item_brand": ".*",
           "item_variant": ".*",
           "item_category": ".*",
+          "dimension90": ".*.null.null..*",
           "dimension115": "pinned.(true|false), ribbon.(diminati|terlaris|no ribbon)"
         }
       ],
@@ -173,14 +179,19 @@
       "channel": ".*",
       "productId": ".*",
       "productName": ".*",
-      "productUrl": ".*"
+      "productUrl": ".*",
+      "trackerId": "16347"
     },
     {
       "eventAction": "click atc in bottom sheet with varian",
-      "event": "clickGroupChat",
+      "event": "clickContent",
       "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - \\d+ - (live|vod)",
-      "sessionIris": ".*"
+      "eventLabel": "\\d+ - \\d+ - (live|vod) - is pinned product (true|false) - (terlaris|diminati|no ribbon)",
+      "sessionIris": ".*",
+      "trackerId": "46421",
+      "businessUnit": "content",
+      "currentSite": "tokopediamarketplace",
+      "userId": ".*"
     },
     {
       "eventAction": "click atc in bottom sheet",
@@ -200,7 +211,8 @@
           "shop_name": ".*",
           "item_brand": ".*",
           "item_variant": ".*",
-          "item_category": ".*"
+          "item_category": ".*",
+          "dimension90": ".*.null.null..*"
         }
       ],
       "sessionIris": ".*",
@@ -211,7 +223,8 @@
       "channel": ".*",
       "productId": ".*",
       "productName": ".*",
-      "productUrl": ".*"
+      "productUrl": ".*",
+      "trackerId": "13888"
     },
     {
       "eventAction": "view product",
@@ -222,6 +235,7 @@
       "event": "view_item_list",
       "eventCategory": "groupchat room",
       "eventLabel": "\\d+ - \\d+ - (live|vod) - product in bottom sheet - is pinned product (true|false) - (terlaris|diminati|no ribbon)",
+      "trackerId": "35078",
       "sessionIris": ".*",
       "items": [
         {
@@ -232,7 +246,8 @@
           "price": "\\d+\\..*",
           "item_variant": ".*",
           "index": "\\d+(.\\d+)?",
-          "dimension40": "/groupchat - bottom sheet"
+          "dimension40": "/groupchat - bottom sheet",
+          "dimension90": ".*.null.null..*"
         }
       ],
       "item_list": "/groupchat - bottom sheet"
@@ -253,13 +268,15 @@
           "price": ".*",
           "item_variant": ".*",
           "index": "\\d+(.\\d+)?",
+          "dimension90": ".*.null.null..*",
           "dimension115": "pinned.(true|false), ribbon.(diminati|terlaris|no ribbon)"
         }
       ],
       "item_list": "/groupchat - bottom sheet",
       "currentSite": ".*",
       "userId": ".*",
-      "businessUnit": "play"
+      "businessUnit": "play",
+      "trackerId": "27571"
     },
     {
       "eventAction": "impression - product in upcoming section",
@@ -300,6 +317,7 @@
           "item_variant": ".*",
           "dimension40": "/groupchat - bottom sheet",
           "index": "\\d+(.\\d+)?",
+          "dimension90": ".*.null.null..*",
           "dimension115": "pinned.(true|false), ribbon.(diminati|terlaris|no ribbon)"
         }
       ],
@@ -312,7 +330,8 @@
       "channel": ".*",
       "productId": ".*",
       "productName": ".*",
-      "productUrl": ".*"
+      "productUrl": ".*",
+      "trackerId": "16356"
     },
     {
       "eventAction": "click - product in ongoing section",
@@ -329,6 +348,7 @@
           "item_variant": ".*",
           "dimension40": "/groupchat - bottom sheet",
           "index": "\\d+(.\\d+)?",
+          "dimension90": ".*.null.null..*",
           "dimension115": "pinned.(true|false), ribbon.(diminati|terlaris|no ribbon)"
         }
       ],
@@ -336,7 +356,8 @@
       "sessionIris": ".*",
       "currentSite": "tokopediamarketplace",
       "userId": ".*",
-      "businessUnit": "play"
+      "businessUnit": "play",
+      "trackerId": "27572"
     },
     {
       "eventAction": "click - product in upcoming section",
@@ -381,13 +402,15 @@
           "item_brand": ".*",
           "item_variant": ".*",
           "item_category": ".*",
+          "dimension90": ".*.null.null..*",
           "dimension115": "pinned.(true|false), ribbon.(diminati|terlaris|no ribbon)"
         }
       ],
       "sessionIris": ".*",
       "currentSite": "tokopediamarketplace",
       "userId": ".*",
-      "businessUnit": "play"
+      "businessUnit": "play",
+      "trackerId": "27573"
     },
     {
       "eventAction": "click atc in varian page",
@@ -470,13 +493,15 @@
           "item_brand": ".*",
           "item_variant": ".*",
           "item_category": ".*",
+          "dimension90": ".*.null.null..*",
           "dimension115": "pinned.(true|false), ribbon.(diminati|terlaris|no ribbon)"
         }
       ],
       "sessionIris": ".*",
       "currentSite": "tokopediamarketplace",
       "userId": ".*",
-      "businessUnit": "play"
+      "businessUnit": "play",
+      "trackerId": "27574"
     },
     {
       "eventAction": "click lihat in message ticker",
@@ -535,6 +560,7 @@
           "item_category": ".*",
           "price": "\\d+\\..*",
           "item_variant": ".*",
+          "dimension90": ".*.null.null..*",
           "index": "\\d+(.\\d+)?"
         }
       ],
@@ -542,7 +568,8 @@
       "item_list_name": "/groupchat - featured product",
       "currentSite": ".*",
       "userId": ".*",
-      "businessUnit": "play"
+      "businessUnit": "play",
+      "trackerId": "8074"
     },
     {
       "eventAction": "click featured product tagging",
@@ -557,7 +584,8 @@
           "item_category": ".*",
           "price": "\\d+\\..*",
           "item_variant": ".*",
-          "index": "\\d+(.\\d+)?"
+          "index": "\\d+(.\\d+)?",
+          "dimension90": ".*.null.null..*"
         }
       ],
       "item_list": "/groupchat - featured product",
@@ -569,7 +597,8 @@
       "channel": ".*",
       "productId": ".*",
       "productName": ".*",
-      "productUrl": ".*"
+      "productUrl": ".*",
+      "trackerId": "8075"
     },
     {
       "eventAction": "click copy on private voucher",

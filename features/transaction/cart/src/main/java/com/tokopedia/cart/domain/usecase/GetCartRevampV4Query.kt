@@ -250,6 +250,7 @@ const val CART_REVAMP_V4_QUERY =
                                 status
                                 type
                                 price
+                                fixed_quantity
                             }
                             widget {
                                 wording

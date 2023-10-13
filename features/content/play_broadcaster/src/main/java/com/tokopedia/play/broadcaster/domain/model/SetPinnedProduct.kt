@@ -15,5 +15,3 @@ data class SetPinnedProduct(
         val success: Boolean = false,
     )
 }
-
-data class PinnedProductException(override val message: String = ""): MessageErrorException()

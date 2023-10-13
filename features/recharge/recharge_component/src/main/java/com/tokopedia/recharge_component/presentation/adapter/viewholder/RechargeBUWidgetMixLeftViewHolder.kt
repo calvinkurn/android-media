@@ -20,6 +20,7 @@ import com.tokopedia.home_component.productcardgridcarousel.listener.CommonProdu
 import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.util.GravitySnapHelper
 import com.tokopedia.home_component.util.ServerTimeOffsetUtil
+import com.tokopedia.home_component.util.loadImageCenterCrop
 import com.tokopedia.home_component.util.loadImageFitCenter
 import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.home_component.viewholders.adapter.MixLeftAdapter
@@ -171,7 +172,7 @@ class RechargeBUWidgetMixLeftViewHolder(
                 RESET_IMAGE_LAYOUT_VALUE,
                 RESET_IMAGE_LAYOUT_VALUE
             )
-            image.loadImageFitCenter(imageUrl)
+            image.loadImageCenterCrop(imageUrl)
             if (gradientColor.isNotEmpty()) {
                 parallaxBackground.setGradientBackground(arrayListOf(gradientColor))
             }

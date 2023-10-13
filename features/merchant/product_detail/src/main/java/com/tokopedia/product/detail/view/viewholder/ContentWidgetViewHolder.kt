@@ -17,32 +17,15 @@ class ContentWidgetViewHolder(
 
     companion object {
         val LAYOUT = R.layout.item_pdp_play_widget
-
-        private const val MINIMUM_ITEMS = 3
     }
-
-    private val container: View? = view.findViewById(R.id.pdp_play_widget_container)
-
     init {
         playWidgetViewHolder.coordinator.setAnalyticModel(PlayWidgetPDPAnalyticModel())
     }
 
     override fun bind(element: ContentWidgetDataModel) {
-        val playWidgetState = element.playWidgetState
-        if (playWidgetState.model.items.size < MINIMUM_ITEMS) {
-            hideComponent()
-        } else showComponent()
         playWidgetViewHolder.bind(element.playWidgetState, this)
         itemView.addOnImpressionListener(element.impressHolder) {
             listener.onImpressComponent(getComponentTrackData(element))
         }
-    }
-
-    private fun hideComponent() {
-        container?.layoutParams?.height = 0
-    }
-
-    private fun showComponent() {
-        container?.layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
     }
 }

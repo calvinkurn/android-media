@@ -1,7 +1,7 @@
 package com.tokopedia.play.broadcaster.ui.bridge
 
+import com.tokopedia.content.common.util.eventbus.EventBus
 import com.tokopedia.play.broadcaster.di.ActivityRetainedScope
-import com.tokopedia.play.broadcaster.util.eventbus.EventBus
 import javax.inject.Inject
 
 /**

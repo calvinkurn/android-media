@@ -1,7 +1,10 @@
 package com.tokopedia.buy_more_get_more.olp.presentation
 
+import android.content.Context
+import android.graphics.Bitmap
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.buy_more_get_more.olp.domain.entity.OfferInfoForBuyerUiModel
@@ -15,7 +18,9 @@ import com.tokopedia.buy_more_get_more.olp.domain.entity.enum.Status
 import com.tokopedia.buy_more_get_more.olp.domain.usecase.GetOfferInfoForBuyerUseCase
 import com.tokopedia.buy_more_get_more.olp.domain.usecase.GetOfferProductListUseCase
 import com.tokopedia.buy_more_get_more.olp.domain.usecase.GetSharingDataByOfferIDUseCase
+import com.tokopedia.buy_more_get_more.olp.utils.BmgmUtil
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.searchbar.navigation_component.datamodel.TopNavNotificationModel
 import com.tokopedia.searchbar.navigation_component.domain.GetNotificationUseCase
@@ -25,9 +30,14 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.image.ImageProcessingUtil
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.mockk
+import io.mockk.mockkObject
+import io.mockk.mockkStatic
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
@@ -38,6 +48,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import java.io.File
 
 @ExperimentalCoroutinesApi
 class OfferLandingPageViewModelTest {
@@ -79,6 +90,9 @@ class OfferLandingPageViewModelTest {
 
     @RelaxedMockK
     lateinit var errorObserver: Observer<in Throwable>
+
+    @RelaxedMockK
+    lateinit var context: Context
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
@@ -556,6 +570,46 @@ class OfferLandingPageViewModelTest {
             assertEquals(expected, actual)
             job.cancel()
         }
+    }
+
+    @Test
+    fun `check whether bmsmImagePath value is set when call saveBmsmImageToPhoneStorage`() {
+        val mockBitmap = mockk<Bitmap>()
+        val mockTransition = mockk<Transition<in Bitmap>>()
+        mockkObject(BmgmUtil)
+        every { BmgmUtil.loadImageWithEmptyTarget(any(), any(), any(), any()) } answers {
+            (lastArg() as MediaBitmapEmptyTarget<Bitmap>).onResourceReady(mockBitmap, mockTransition)
+        }
+
+        mockkStatic(ImageProcessingUtil::class)
+        coEvery {
+            ImageProcessingUtil.writeImageToTkpdPath(
+                mockBitmap,
+                Bitmap.CompressFormat.PNG
+            )
+        } returns File("path")
+        viewModel.saveBmgmImageToPhoneStorage(context, "")
+        assert(viewModel.bmgmImagePath.value.orEmpty().isNotEmpty())
+    }
+
+    @Test
+    fun `check whether shopImagePath value is null when savedFile is null`() {
+        val mockBitmap = mockk<Bitmap>()
+        val mockTransition = mockk<Transition<in Bitmap>>()
+        mockkObject(BmgmUtil)
+        every { BmgmUtil.loadImageWithEmptyTarget(any(), any(), any(), any()) } answers {
+            (lastArg() as MediaBitmapEmptyTarget<Bitmap>).onResourceReady(mockBitmap, mockTransition)
+        }
+
+        mockkStatic(ImageProcessingUtil::class)
+        coEvery {
+            ImageProcessingUtil.writeImageToTkpdPath(
+                mockBitmap,
+                Bitmap.CompressFormat.PNG
+            )
+        } returns null
+        viewModel.saveBmgmImageToPhoneStorage(context, "")
+        assert(viewModel.bmgmImagePath.value == null)
     }
 
     private fun getDummyUiStateData(): OlpUiState =
