@@ -6,9 +6,9 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 
 object CacheStrategyUtil {
 
-    private const val EXPIRY_TIME_MULTIPLIER = 5
+    const val EXPIRY_TIME_MULTIPLIER = 30L
 
-    fun getCacheStrategy(forceRefresh: Boolean, cacheAge: Int = EXPIRY_TIME_MULTIPLIER): GraphqlCacheStrategy {
+    fun getCacheStrategy(forceRefresh: Boolean, cacheAge: Long = EXPIRY_TIME_MULTIPLIER): GraphqlCacheStrategy {
         return GraphqlCacheStrategy.Builder(if (forceRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST)
             .setExpiryTime(cacheAge * GraphqlConstant.ExpiryTimes.MINUTE_1.`val`())
             .setSessionIncluded(true)
