@@ -5,21 +5,17 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.home.view.model.banner_product_group.BannerProductGroupUiModel
 import com.tokopedia.shop.home.view.model.banner_product_group.appearance.ProductItemType
-import com.tokopedia.shop.home.view.model.banner_product_group.appearance.ShimmerItemType
-import com.tokopedia.shop.home.view.model.banner_product_group.appearance.ShopHomeBannerProductGroupItemType
 import com.tokopedia.shop.home.view.model.banner_product_group.appearance.VerticalBannerItemType
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.domain.interactor.GetShopFeaturedProductUseCase
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.ext.getOrAwaitValue
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
-import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
@@ -189,6 +185,52 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
         )
         val products = createProducts()
         val widgets = listOf(verticalBanner, products)
+
+        viewModel.getCarouselWidgets(
+            widgets,
+            shopId,
+            userAddress,
+            widgetStyle,
+            overrideTheme,
+            colorSchema
+        )
+
+        coVerify {
+            getShopProductUseCase.executeOnBackground()
+        }
+
+        val actual = viewModel.carouselWidgets.getOrAwaitValue()
+        val expected = ShopBannerProductGroupWidgetTabViewModel.UiState.Success(
+            listOf(
+                ProductItemType(
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    0,
+                    "",
+                    "",
+                    "",
+                    true,
+                    "",
+                    false,
+                    ShopPageColorSchema()
+                )
+            )
+        )
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `When no vertical banner item type exist on widgets, should return product item type only`() {
+        coEvery { getShopProductUseCase.executeOnBackground() } returns ShopProduct.GetShopProduct(
+            data = listOf(ShopProduct())
+        )
+
+        val widgetStyle = "vertical"
+        val products = createProducts()
+        val widgets = listOf(products)
 
         viewModel.getCarouselWidgets(
             widgets,

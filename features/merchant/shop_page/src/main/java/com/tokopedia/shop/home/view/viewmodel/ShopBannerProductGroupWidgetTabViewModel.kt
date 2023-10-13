@@ -96,15 +96,18 @@ class ShopBannerProductGroupWidgetTabViewModel @Inject constructor(
     private fun getVerticalBanner(widgets: List<BannerProductGroupUiModel.Tab.ComponentList>): List<VerticalBannerItemType> {
         val bannerComponents = widgets.filter { widget -> widget.componentName == ComponentName.DISPLAY_SINGLE_COLUMN }
         val banner = bannerComponents.getOrNull(0)
-        val bannerWidgets = banner?.data ?: emptyList()
 
-        return if (bannerWidgets.isEmpty()) {
-            emptyList()
+        return if (banner?.data == null) {
+            listOf()
         } else {
-            val componentId = banner?.componentId
-            val componentName = banner?.componentName
+            val bannerWidgets = banner.data
+            if (bannerWidgets.isEmpty()) return listOf()
+
+            val componentId = banner.componentId
+            val componentName = banner.componentName
             val bannerImageUrl = bannerWidgets[0].imageUrl
             val ctaLink = bannerWidgets[0].ctaLink
+
             listOf(VerticalBannerItemType(componentId, componentName, bannerImageUrl, ctaLink))
         }
     }
