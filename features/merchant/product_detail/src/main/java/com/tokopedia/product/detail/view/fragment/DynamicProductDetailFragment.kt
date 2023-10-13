@@ -5110,7 +5110,7 @@ open class DynamicProductDetailFragment :
                         ApplinkConst.TOPCHAT_ASKSELLER,
                         product.basic.shopID,
                         "",
-                        "product",
+                        ApplinkConst.Chat.Source.SOURCE_PDP,
                         shop.shopCore.name,
                         shop.shopAssets.avatar
                     )

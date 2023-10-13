@@ -12,7 +12,7 @@ data class TopChatAutoReplyItemUiModel(
     val title: String,
 
     @SerializedName("type")
-    private val type: String,
+    val type: String,
 
     @SerializedName("message")
     private val message: String

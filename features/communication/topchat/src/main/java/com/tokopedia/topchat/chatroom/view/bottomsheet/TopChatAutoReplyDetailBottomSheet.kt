@@ -16,7 +16,7 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 class TopChatAutoReplyDetailBottomSheet: BottomSheetUnify() {
 
     private var binding by autoClearedNullable<TopchatChatroomBottomsheetAutoReplyBinding>()
-    private val adapter = TopChatChatRoomAutoReplyAdapter()
+    private val adapter = TopChatChatRoomAutoReplyAdapter(isMessageBubble = false)
     private var welcomeMessage = TopChatAutoReplyItemUiModel("", "", "")
     private var list: List<TopChatAutoReplyItemUiModel> = listOf()
 

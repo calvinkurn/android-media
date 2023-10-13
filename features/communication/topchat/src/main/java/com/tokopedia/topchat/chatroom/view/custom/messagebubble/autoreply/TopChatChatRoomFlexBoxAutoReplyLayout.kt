@@ -329,6 +329,7 @@ class TopChatChatRoomFlexBoxAutoReplyLayout(
     private fun setRegularMessageBody(messageUiModel: MessageUiModel) {
         super.setMessageBody(messageUiModel)
         autoReplyConstraintLayout?.hide()
+        flexBoxListener?.onViewAutoReply(listOf()) // Empty list
     }
 
     private fun setAutoReplyMessageBody(messageUiModel: MessageUiModel) {
@@ -340,6 +341,7 @@ class TopChatChatRoomFlexBoxAutoReplyLayout(
             )
             bindAutoReplyView(messageUiModel = messageUiModel, autoReplyList = result)
             autoReplyConstraintLayout?.show()
+            flexBoxListener?.onViewAutoReply(result)
         } catch (throwable: Throwable) {
             /**
              * If fail then the message is history message
@@ -390,7 +392,7 @@ class TopChatChatRoomFlexBoxAutoReplyLayout(
         autoReplyItemList: List<TopChatAutoReplyItemUiModel>
     ) {
         if (autoReplyItemList.isNotEmpty()) {
-            val adapter = TopChatChatRoomAutoReplyAdapter(shouldLimitText = true)
+            val adapter = TopChatChatRoomAutoReplyAdapter()
             autoReplyBinding?.topchatChatroomRvAutoReply?.adapter = adapter
             autoReplyBinding?.topchatChatroomRvAutoReply?.layoutManager =
                 LinearLayoutManager(context)

@@ -2482,6 +2482,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         intent.putExtra(ApplinkConst.Chat.INVOICE_STATUS_ID, status)
         intent.putExtra(ApplinkConst.Chat.INVOICE_STATUS, order.metadata.status.label)
         intent.putExtra(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, order.metadata.totalPrice.value)
+        intent.putExtra(ApplinkConst.Chat.SOURCE, ApplinkConst.Chat.Source.SOURCE_ASK_SELLER)
         startActivity(intent)
     }
 

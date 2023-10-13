@@ -9,7 +9,7 @@ import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.adapter.util.TopChatChatRoomAutoReplyDiffUtil
 
 class TopChatChatRoomAutoReplyAdapter (
-    private val shouldLimitText: Boolean = false
+    private val isMessageBubble: Boolean = true
 ): ListAdapter<TopChatAutoReplyItemUiModel, TopChatChatRoomAutoReplyItemViewHolder>(
     TopChatChatRoomAutoReplyDiffUtil()
 ) {
@@ -21,7 +21,7 @@ class TopChatChatRoomAutoReplyAdapter (
         val view = LayoutInflater.from(parent.context).inflate(
             R.layout.topchat_chatroom_auto_reply_item, parent, false
         )
-        return TopChatChatRoomAutoReplyItemViewHolder(view, shouldLimitText)
+        return TopChatChatRoomAutoReplyItemViewHolder(view, isMessageBubble)
     }
 
     override fun getItemCount(): Int = this.currentList.size

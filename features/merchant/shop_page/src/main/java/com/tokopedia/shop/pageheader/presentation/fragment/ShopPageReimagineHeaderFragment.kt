@@ -259,7 +259,6 @@ class ShopPageReimagineHeaderFragment :
         private const val VIEW_LOADING = 2
         private const val VIEW_ERROR = 3
         private const val VIEWPAGER_PAGE_LIMIT = 1
-        private const val SOURCE_SHOP = "shop"
         private const val CART_LOCAL_CACHE_NAME = "CART"
         private const val TOTAL_CART_CACHE_KEY = "CACHE_TOTAL_CART"
         private const val PATH_HOME = "home"
@@ -2163,7 +2162,7 @@ class ShopPageReimagineHeaderFragment :
                     ApplinkConst.TOPCHAT_ASKSELLER,
                     shopId,
                     "",
-                    SOURCE_SHOP,
+                    ApplinkConst.Chat.Source.SOURCE_SHOP,
                     shopPageHeaderDataModel?.shopName.orEmpty(),
                     shopPageHeaderDataModel?.avatar.orEmpty()
                 )

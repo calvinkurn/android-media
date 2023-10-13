@@ -240,7 +240,7 @@ open class TopChatChatRoomFragment :
     ReplyBubbleAreaMessage.Listener,
     ReminderTickerViewHolder.Listener,
     ProductBundlingListener,
-    BannedChatMessageViewHolder.TopChatMessageCensorListener,
+    BannedChatMessageViewHolder.TopChatMessageCensorListener ,
     StoriesWidgetListener {
 
     @Inject
@@ -736,7 +736,7 @@ open class TopChatChatRoomFragment :
             webSocketViewModel.connectWebSocket()
             viewModel.getOrderProgress(messageId)
         } else {
-            viewModel.getMessageId(toUserId, toShopId, source)
+            viewModel.getMessageId(toUserId, toShopId, sourcePage)
         }
     }
 
@@ -794,7 +794,12 @@ open class TopChatChatRoomFragment :
     private fun setupArguments(savedInstanceState: Bundle?) {
         customMessage =
             getParamString(ApplinkConst.Chat.CUSTOM_MESSAGE, arguments, savedInstanceState)
-        sourcePage = getParamString(ApplinkConst.Chat.SOURCE_PAGE, arguments, savedInstanceState)
+        sourcePage = getParamString(
+            ApplinkConst.Chat.SOURCE,
+            arguments,
+            savedInstanceState,
+            defaultValue = ApplinkConst.Chat.Source.SOURCE_REGULAR_CHAT
+        )
         indexFromInbox = getParamInt(
             TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_INDEX,
             arguments,
@@ -3528,9 +3533,26 @@ open class TopChatChatRoomFragment :
         welcomeMessage: TopChatAutoReplyItemUiModel,
         list: List<TopChatAutoReplyItemUiModel>
     ) {
+        TopChatAnalyticsKt.eventClickAutoReply(
+            sourcePage,
+            messageId,
+            listOf(welcomeMessage) + list
+        )
         view?.hideKeyboard()
         TopChatAutoReplyDetailBottomSheet().show(
-            childFragmentManager, welcomeMessage, list
+            childFragmentManager,
+            welcomeMessage,
+            list
+        )
+    }
+
+    override fun onViewAutoReply(
+        list: List<TopChatAutoReplyItemUiModel>
+    ) {
+        TopChatAnalyticsKt.eventImpressionAutoReply(
+            sourcePage,
+            messageId,
+            list
         )
     }
 
