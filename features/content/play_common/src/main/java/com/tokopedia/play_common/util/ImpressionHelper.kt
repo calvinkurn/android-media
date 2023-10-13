@@ -23,7 +23,7 @@ fun View.addImpressionListener(onView: () -> Unit): ImpressionListener {
 
         override fun onViewDetachedFromWindow(v: View) {
             if (vto.isAlive) vto.removeOnScrollChangedListener(scrollListener)
-            if (viewTreeObserver.isAlive) vto.removeOnScrollChangedListener(scrollListener)
+            if (viewTreeObserver.isAlive) viewTreeObserver.removeOnScrollChangedListener(scrollListener)
             v.removeOnAttachStateChangeListener(this)
         }
     }

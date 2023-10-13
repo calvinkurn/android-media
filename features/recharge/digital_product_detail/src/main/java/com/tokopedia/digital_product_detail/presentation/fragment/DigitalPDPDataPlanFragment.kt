@@ -20,7 +20,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.common.topupbills.analytics.CommonMultiCheckoutAnalytics
-import com.tokopedia.common.topupbills.analytics.PromotionMultiCheckout
 import com.tokopedia.common.topupbills.data.TopupBillsBanner
 import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
@@ -205,7 +204,7 @@ class DigitalPDPDataPlanFragment :
                         it,
                         getString(digital_product_detailR.string.check_balance_failed_verification),
                         Toaster.LENGTH_LONG,
-                        Toaster.TYPE_NORMAL
+                        Toaster.TYPE_ERROR
                     ).show()
                 }
             }
