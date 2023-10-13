@@ -5,5 +5,6 @@ import com.tokopedia.unifyorderhistory.data.model.UohListOrder
 data class UohReviewRatingWidgetConfig(
     val show: Boolean = false,
     val componentData: UohListOrder.UohOrders.Order.Metadata.ExtraComponent = UohListOrder.UohOrders.Order.Metadata.ExtraComponent(),
-    val onRatingChanged: (appLink: String) -> Unit = {}
+    val onRatingChanged: (appLink: String) -> Unit = {},
+    val onReviewRatingRendered: () -> Unit = {}
 )

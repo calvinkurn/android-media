@@ -196,8 +196,10 @@ private fun SubcomposeMeasureScope.createContentSubCompose(
             if (shouldShowRatingWidget(config.componentData.type)) {
                 Spacer(modifier = Modifier.size(width = SPACER_WIDTH.dp, height = SPACER_HEIGHT.dp))
                 WidgetReviewAnimatedRating(
-                    modifier = Modifier, config = reviewRatingWidgetConfig.value
+                    modifier = Modifier,
+                    config = reviewRatingWidgetConfig.value
                 )
+                config.onReviewRatingRendered()
             }
         }
     }

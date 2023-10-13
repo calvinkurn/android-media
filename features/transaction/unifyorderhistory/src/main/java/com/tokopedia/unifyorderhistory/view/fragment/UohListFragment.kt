@@ -93,6 +93,7 @@ import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyorderhistory.R
 import com.tokopedia.unifyorderhistory.analytics.UohAnalytics
+import com.tokopedia.unifyorderhistory.analytics.UohAnalytics.ULAS_TYPE_STAR
 import com.tokopedia.unifyorderhistory.analytics.data.model.ECommerceAdd
 import com.tokopedia.unifyorderhistory.analytics.data.model.ECommerceAddRecommendation
 import com.tokopedia.unifyorderhistory.analytics.data.model.ECommerceClick
@@ -2451,6 +2452,10 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
             userId = userSession.userId
         )
         handleRouting(appLink, index, order)
+    }
+
+    override fun onReviewRatingRendered() {
+        UohAnalytics.sendViewBeriUlasanButtonEvent(ULAS_TYPE_STAR)
     }
 
     private fun doChatSeller(appUrl: String, order: UohListOrder.UohOrders.Order) {
