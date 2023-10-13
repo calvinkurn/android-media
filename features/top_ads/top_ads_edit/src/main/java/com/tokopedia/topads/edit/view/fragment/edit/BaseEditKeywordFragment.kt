@@ -217,7 +217,7 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
                     result >= suggestBidPerClick -> {
                         setMessageErrorField("Biaya optimal ✔️", "0", false)
                         productIds.let {
-                            viewModel.getPerformanceData(it, result.toFloat(), -1f, -1f)
+                            viewModel.getPerformanceData(it, result.toFloat(), result.toFloat(), 0f)
                         }
                         actionEnable(true)
                     }

@@ -156,7 +156,7 @@ class EditAdGroupViewModel @Inject constructor(
                                  initialBid: Float,
                                  dailyBudget: Float) {
         launchCatchError(block = {
-            val data = topAdsImpressionPredictionSearchUseCase.invoke("test", productIds, finalBid, initialBid, dailyBudget)
+            val data = topAdsImpressionPredictionBrowseUseCase.invoke("test", productIds, finalBid, initialBid, dailyBudget)
             if (data is Success) {
                 _browsePerformanceData.value = Success(data.data)
             }
