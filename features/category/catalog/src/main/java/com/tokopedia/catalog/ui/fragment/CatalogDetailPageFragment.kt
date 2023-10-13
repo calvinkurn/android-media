@@ -82,6 +82,7 @@ import com.tokopedia.catalogcommon.uimodel.ExpertReviewUiModel
 import com.tokopedia.catalogcommon.uimodel.TopFeaturesUiModel
 import com.tokopedia.catalogcommon.uimodel.TrustMakerUiModel
 import com.tokopedia.catalogcommon.util.DrawableExtension
+import com.tokopedia.catalogcommon.viewholder.ComparisonViewHolder
 import com.tokopedia.catalogcommon.viewholder.StickyNavigationListener
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.ONE
@@ -108,7 +109,8 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
     StickyNavigationListener, AccordionListener, BannerListener, TrustMakerListener,
-    TextDescriptionListener, VideoExpertListener, TopFeatureListener, DoubleBannerListener {
+    TextDescriptionListener, VideoExpertListener, TopFeatureListener, DoubleBannerListener,
+    ComparisonViewHolder.ComparisonItemListener {
 
     companion object {
         private const val QUERY_CATALOG_ID = "catalog_id"
@@ -144,7 +146,8 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
                 textDescriptionListener = this,
                 videoExpertListener = this,
                 topFeatureListener = this,
-                doubleBannerListener = this
+                doubleBannerListener = this,
+                comparisonItemListener = this
             )
         )
     }
@@ -646,5 +649,9 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
             labels = catalogId,
             trackerId = TRACKER_ID_IMPRESSION_DOUBLE_BANNER
         )
+    }
+
+    override fun onComparisonSwitchButtonClicked(position: Int) {
+        // TODO: Implement redirection to Bottomsheet Catalog Selection
     }
 }
