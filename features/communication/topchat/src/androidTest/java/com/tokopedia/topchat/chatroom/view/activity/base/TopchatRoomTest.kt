@@ -449,7 +449,7 @@ abstract class TopchatRoomTest {
         (rv.layoutManager as? LinearLayoutManager)?.let {
             val child = it.getChildAt(position)
             val flexBox = child?.findViewById<FlexBoxChatLayout>(flexBoxBubbleId)
-            return flexBox?.message?.text ?: ""
+            return flexBox?.getMessageText() ?: ""
         }
         return ""
     }
