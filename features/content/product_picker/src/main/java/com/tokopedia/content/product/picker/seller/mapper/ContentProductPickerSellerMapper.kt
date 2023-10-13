@@ -14,11 +14,18 @@ import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
 import com.tokopedia.content.product.picker.seller.util.forceToUTCWithoutTimezone
 import com.tokopedia.play_common.util.datetime.PlayDateTimeFormatter
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
+import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
 
 /**
  * Created By : Jonathan Darwin on October 13, 2023
  */
 abstract class ContentProductPickerSellerMapper {
+
+    private val priceFormatSymbol = DecimalFormatSymbols().apply {
+        groupingSeparator = '.'
+    }
+    protected  val priceFormat = DecimalFormat("Rp ###,###", priceFormatSymbol)
 
     /** Campaign */
     fun mapCampaignList(response: GetCampaignListResponse): List<CampaignUiModel> {

@@ -5,8 +5,6 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
-import com.tokopedia.stories.creation.model.GetStoryProductDetailsRequest
-import com.tokopedia.stories.creation.model.GetStoryProductDetailsResponse
 import com.tokopedia.stories.creation.model.GetStoryProductEtalaseRequest
 import com.tokopedia.stories.creation.model.GetStoryProductEtalaseResponse
 import javax.inject.Inject

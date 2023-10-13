@@ -23,11 +23,6 @@ class PlayBroProductUiMapper @Inject constructor(
 
 ) : ContentProductPickerSellerMapper() {
 
-    private val priceFormatSymbol = DecimalFormatSymbols().apply {
-        groupingSeparator = '.'
-    }
-    private val priceFormat = DecimalFormat("Rp ###,###", priceFormatSymbol)
-
     fun mapProductsInEtalase(
         response: GetProductsByEtalaseResponse,
     ): PagedDataUiModel<ProductUiModel> {
