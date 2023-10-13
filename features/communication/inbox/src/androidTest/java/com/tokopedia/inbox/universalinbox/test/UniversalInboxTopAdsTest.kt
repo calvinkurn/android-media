@@ -3,7 +3,7 @@ package com.tokopedia.inbox.universalinbox.test
 import com.tokopedia.inbox.universalinbox.stub.data.response.GqlResponseStub
 import com.tokopedia.inbox.universalinbox.test.base.BaseUniversalInboxTest
 import com.tokopedia.inbox.universalinbox.test.robot.generalRobot
-import com.tokopedia.inbox.universalinbox.test.robot.topads.TopAdsResult.assertHeadline
+import com.tokopedia.inbox.universalinbox.test.robot.topAdsResult
 import com.tokopedia.test.application.annotations.UiTest
 import org.junit.Test
 
@@ -19,7 +19,9 @@ class UniversalInboxTopAdsTest : BaseUniversalInboxTest() {
         }
 
         // Then
-        assertHeadline(46)
+        topAdsResult {
+            assertHeadline(46)
+        }
     }
 
     @Test
@@ -35,6 +37,8 @@ class UniversalInboxTopAdsTest : BaseUniversalInboxTest() {
         }
 
         // Then
-        assertHeadline(46, true)
+        topAdsResult {
+            assertHeadline(46, true)
+        }
     }
 }
