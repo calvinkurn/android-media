@@ -319,7 +319,6 @@ class UniversalInboxFragment @Inject constructor(
             if (it.isLoading && it.productRecommendation.isEmpty()) {
                 adapter.getMenuSeparatorPosition()?.let { position ->
                     binding?.inboxRv?.scrollToPosition(position)
-                    refreshRecommendationWidget()
                 }
             }
 
@@ -892,6 +891,7 @@ class UniversalInboxFragment @Inject constructor(
         // Refresh controlled by rollence
         if (shouldRefreshProductRecommendation(abTestPlatform)) {
             endlessRecyclerViewScrollListener?.resetState()
+            refreshRecommendationWidget()
             loadTopAdsAndRecommendation()
         }
     }
