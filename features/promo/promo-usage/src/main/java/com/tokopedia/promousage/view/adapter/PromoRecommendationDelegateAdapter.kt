@@ -22,6 +22,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.visible
@@ -115,6 +116,7 @@ internal class PromoRecommendationDelegateAdapter(
                     Color.parseColor(colorHex)
                 )
             }
+            setImageBackgroundMaxHeight(getScreenHeight())
             setImageBackground(item.backgroundUrl)
             binding.ivPromoRecommendationBackground.visible()
         }
@@ -197,19 +199,14 @@ internal class PromoRecommendationDelegateAdapter(
                                     .measuredWidth.toFloat()
                                 val containerHeight = binding.ivPromoRecommendationBackground
                                     .measuredHeight.toFloat()
-                                val wScale = containerWidth / resource.intrinsicWidth.toFloat()
-                                var hScale = containerHeight / resource.intrinsicHeight.toFloat()
+                                val wScale = containerWidth.div(resource.intrinsicWidth.toFloat())
+                                var hScale = containerHeight.div(resource.intrinsicHeight.toFloat())
                                 hScale = hScale.coerceAtMost(wScale)
 
-                                val maxHeight = ceil(resource.intrinsicHeight * hScale)
+                                var maxHeight = ceil(resource.intrinsicHeight * hScale)
+                                maxHeight = maxHeight.coerceAtMost(getScreenHeight().toFloat())
                                 if (containerHeight > maxHeight) {
-                                    val constraintSet = ConstraintSet()
-                                    constraintSet.clone(binding.clContainer)
-                                    constraintSet.constrainMaxHeight(
-                                        R.id.ivPromoRecommendationBackground,
-                                        maxHeight.toInt()
-                                    )
-                                    constraintSet.applyTo(binding.clContainer)
+                                    setImageBackgroundMaxHeight(maxHeight.toInt())
                                 }
 
                                 binding.ivPromoRecommendationBackground.scaleType =
@@ -230,7 +227,18 @@ internal class PromoRecommendationDelegateAdapter(
         }
 
         private fun setImageBackgroundDefault(imageUrl: String) {
+            setImageBackgroundMaxHeight(getScreenHeight())
             binding.ivPromoRecommendationBackground.gone()
+        }
+
+        private fun setImageBackgroundMaxHeight(maxHeight: Int) {
+            val constraintSet = ConstraintSet()
+            constraintSet.clone(binding.clContainer)
+            constraintSet.constrainMaxHeight(
+                R.id.ivPromoRecommendationBackground,
+                maxHeight
+            )
+            constraintSet.applyTo(binding.clContainer)
         }
 
         private fun showPromoRecommendationAnimation(item: PromoRecommendationItem) {
@@ -266,11 +274,12 @@ internal class PromoRecommendationDelegateAdapter(
                     .width.toFloat()
                 val containerHeight = binding.lottieAnimationView
                     .height.toFloat()
-                val wScale = containerWidth / composition.bounds.width().toFloat()
-                var hScale = containerHeight / composition.bounds.height().toFloat()
+                val wScale = containerWidth.div(composition.bounds.width().toFloat())
+                var hScale = containerHeight.div(composition.bounds.height().toFloat())
                 hScale = hScale.coerceAtMost(wScale)
 
-                val maxHeight = ceil(composition.bounds.height() * hScale)
+                var maxHeight = ceil(composition.bounds.height() * hScale)
+                maxHeight = maxHeight.coerceAtMost(getScreenHeight().toFloat())
                 if (containerHeight > maxHeight) {
                     val constraintSet = ConstraintSet()
                     constraintSet.clone(binding.clContainer)
