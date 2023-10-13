@@ -2,6 +2,7 @@ package com.tokopedia.stories.creation.view.model.state
 
 import com.tokopedia.creation.common.upload.model.ContentMediaType
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.stories.creation.view.model.StoriesCreationConfiguration
 
 /**
@@ -14,7 +15,7 @@ data class StoriesCreationUiState(
     val config: StoriesCreationConfiguration,
     val accountList: List<ContentAccountUiModel>,
     val selectedAccount: ContentAccountUiModel,
-    val productTags: List<String>, /** TODO JOE: data class is not ready, will use proper data class later */
+    val productTags: List<ProductTagSectionUiModel>,
 ) {
     companion object {
         val Empty: StoriesCreationUiState

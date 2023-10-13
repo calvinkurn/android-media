@@ -1,5 +1,6 @@
 package com.tokopedia.stories.creation.view.model.action
 
+import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.creation.common.upload.model.ContentMediaType
 
 /**
@@ -14,8 +15,8 @@ sealed interface StoriesCreationAction {
         val mediaType: ContentMediaType,
     ) : StoriesCreationAction
 
-    data class ClickAddProduct(
-        val productTags: List<String>,
+    data class SetProduct(
+        val productTags: List<ProductTagSectionUiModel>,
     ) : StoriesCreationAction
 
     object ClickUpload : StoriesCreationAction

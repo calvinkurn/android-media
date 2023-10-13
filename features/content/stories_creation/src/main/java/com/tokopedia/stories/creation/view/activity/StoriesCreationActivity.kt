@@ -8,11 +8,16 @@ import androidx.compose.material.Surface
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.creation.common.upload.model.ContentMediaType
 import com.tokopedia.content.common.util.Router
+import com.tokopedia.content.product.picker.ProductSetupFragment
+import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.picker.common.MediaPicker
 import com.tokopedia.picker.common.PageSource
@@ -42,6 +47,9 @@ class StoriesCreationActivity : BaseActivity() {
     lateinit var videoSnapshotHelper: VideoSnapshotHelper
 
     @Inject
+    lateinit var fragmentFactory: FragmentFactory
+
+    @Inject
     lateinit var router: Router
 
     private val viewModel by viewModels<StoriesCreationViewModel> { viewModelFactory }
@@ -61,15 +69,58 @@ class StoriesCreationActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
+        setupFragmentFactory()
         super.onCreate(savedInstanceState)
         setupAttachFragmentListener()
         setupContentView()
+    }
+
+    override fun onAttachFragment(fragment: Fragment) {
+        super.onAttachFragment(fragment)
+
+        when (fragment) {
+            is ProductSetupFragment -> {
+                fragment.setDataSource(object : ProductSetupFragment.DataSource {
+                        override fun getProductSectionList(): List<ProductTagSectionUiModel> {
+                            return viewModel.productTag
+                        }
+
+                        override fun isEligibleForPin(): Boolean = false
+
+                        override fun getSelectedAccount(): ContentAccountUiModel {
+                            return viewModel.selectedAccount
+                        }
+
+                        override fun creationId(): String {
+                            return viewModel.storyId
+                        }
+
+                        override fun maxProduct(): Int {
+                            return viewModel.maxProductTag
+                        }
+
+                        override fun isNumerationShown(): Boolean = false
+
+                        override fun fetchCommissionProduct(): Boolean = false
+                    }
+                )
+                fragment.setListener(object : ProductSetupFragment.Listener {
+                    override fun onProductChanged(productTagSectionList: List<ProductTagSectionUiModel>) {
+                        viewModel.submitAction(StoriesCreationAction.SetProduct(productTagSectionList))
+                    }
+                })
+            }
+        }
     }
 
     private fun inject() {
         StoriesCreationInjector
             .get(this)
             .inject(this)
+    }
+
+    private fun setupFragmentFactory() {
+        supportFragmentManager.fragmentFactory = fragmentFactory
     }
 
     private fun setupAttachFragmentListener() {
@@ -142,8 +193,9 @@ class StoriesCreationActivity : BaseActivity() {
                             /** Won't handle for now since UGC is not supported yet */
                         },
                         onClickAddProduct = {
-                            /** TODO JOE: handle this later */
-                            viewModel.submitAction(StoriesCreationAction.ClickAddProduct(emptyList()))
+                            supportFragmentManager.beginTransaction()
+                                .add(ProductSetupFragment::class.java, null, null)
+                                .commit()
                         },
                         onClickUpload = {
                             viewModel.submitAction(StoriesCreationAction.ClickUpload)

@@ -5,6 +5,7 @@ import androidx.fragment.app.FragmentFactory
 import com.tokopedia.abstraction.base.view.fragment.FragmentKey
 import com.tokopedia.abstraction.base.view.fragment.TkpdFragmentFactory
 import com.tokopedia.content.product.picker.ProductSetupFragment
+import com.tokopedia.content.product.picker.seller.di.ProductPickerFragmentModule
 import com.tokopedia.content.product.picker.seller.view.bottomsheet.EtalaseListBottomSheet
 import com.tokopedia.content.product.picker.seller.view.bottomsheet.ProductChooserBottomSheet
 import com.tokopedia.content.product.picker.seller.view.bottomsheet.ProductSortBottomSheet
@@ -25,7 +26,9 @@ import dagger.multibindings.IntoMap
 /**
  * Created By : Jonathan Darwin on November 08, 2022
  */
-@Module
+@Module(
+    includes = [ProductPickerFragmentModule::class]
+)
 abstract class PlayShortsFragmentModule {
 
     @Binds
@@ -40,32 +43,6 @@ abstract class PlayShortsFragmentModule {
     @IntoMap
     @FragmentKey(PlayShortsSummaryFragment::class)
     abstract fun bindPlayShortsSummaryFragment(fragment: PlayShortsSummaryFragment): Fragment
-
-    /** Product Picker */
-    @Binds
-    @IntoMap
-    @FragmentKey(ProductSetupFragment::class)
-    abstract fun getPlayBroProductSetupFragment(fragment: ProductSetupFragment): Fragment
-
-    @Binds
-    @IntoMap
-    @FragmentKey(EtalaseListBottomSheet::class)
-    abstract fun getPlayBroEtalaseAndCampaignListBottomSheet(fragment: EtalaseListBottomSheet): Fragment
-
-    @Binds
-    @IntoMap
-    @FragmentKey(ProductChooserBottomSheet::class)
-    abstract fun getPlayBroProductChooserBottomSheet(fragment: ProductChooserBottomSheet): Fragment
-
-    @Binds
-    @IntoMap
-    @FragmentKey(ProductSortBottomSheet::class)
-    abstract fun getPlayBroProductSortBottomSheet(fragment: ProductSortBottomSheet): Fragment
-
-    @Binds
-    @IntoMap
-    @FragmentKey(ProductSummaryBottomSheet::class)
-    abstract fun getPlayBroProductSummaryBottomSheet(fragment: ProductSummaryBottomSheet): Fragment
 
     @Binds
     @IntoMap
