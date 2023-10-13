@@ -708,7 +708,7 @@ class DynamicProductDetailViewModel @Inject constructor(
     private fun getProductP2(cacheState: CacheState, urlQuery: String) = viewModelScope.launch {
         runCatching {
             if (cacheState.isFromCache) {
-                doProductP2WhenCache()
+                doBasicProductP2(isFromCache = true)
             } else {
                 getProductP2WhenCloud(urlQuery = urlQuery)
             }
@@ -718,14 +718,14 @@ class DynamicProductDetailViewModel @Inject constructor(
     }
 
     private suspend fun getProductP2WhenCloud(urlQuery: String) {
-        doProductP2WhenCache()
+        doBasicProductP2(isFromCache = false)
 
         val p1 = getDynamicProductInfoP1 ?: return
         getTopAdsImageViewData(p1.basic.productID)
         getProductTopadsStatus(p1.basic.productID, urlQuery)
     }
 
-    private suspend fun doProductP2WhenCache() {
+    private suspend fun doBasicProductP2(isFromCache: Boolean) {
         val productLayout = (_productLayout.value as? Success)?.data.orEmpty()
         val hasQuantityEditor = productLayout.any {
             it.name().contains(PAGENAME_IDENTIFIER_RECOM_ATC)
@@ -733,22 +733,23 @@ class DynamicProductDetailViewModel @Inject constructor(
         val p1 = getDynamicProductInfoP1 ?: return
         val p2LoginDeferred: Deferred<ProductInfoP2Login>? = if (isUserSessionActive) {
             getProductInfoP2LoginAsync(
-                p1.basic.getShopId(),
-                p1.basic.productID
+                shopId = p1.basic.getShopId(),
+                productId = p1.basic.productID,
+                isFromCache = isFromCache
             )
         } else {
             null
         }
-        val p2DataDeffered: Deferred<ProductInfoP2UiData> = getProductInfoP2DataAsync(
+        val p2DataDeferred: Deferred<ProductInfoP2UiData> = getProductInfoP2DataAsync(
             productId = p1.basic.productID,
             pdpSession = p1.pdpSession,
             shopId = p1.basic.shopID,
             hasQuantityEditor = p1.basic.isTokoNow || hasQuantityEditor
         )
-        val p2OtherDeffered: Deferred<ProductInfoP2Other> =
+        val p2OtherDeferred: Deferred<ProductInfoP2Other> =
             getProductInfoP2OtherAsync(p1.basic.productID, p1.basic.getShopId())
 
-        p2DataDeffered.await().let { p2 ->
+        p2DataDeferred.await().let { p2 ->
             this@DynamicProductDetailViewModel._p2Data.postValue(p2)
         }
 
@@ -756,7 +757,7 @@ class DynamicProductDetailViewModel @Inject constructor(
             this@DynamicProductDetailViewModel._p2Login.postValue(it.await())
         }
 
-        this@DynamicProductDetailViewModel._p2Other.postValue(p2OtherDeffered.await())
+        this@DynamicProductDetailViewModel._p2Other.postValue(p2OtherDeferred.await())
     }
 
     private fun getTopAdsImageViewData(productID: String) {
@@ -1160,11 +1161,17 @@ class DynamicProductDetailViewModel @Inject constructor(
 
     private fun getProductInfoP2LoginAsync(
         shopId: Int,
-        productId: String
+        productId: String,
+        isFromCache: Boolean
     ): Deferred<ProductInfoP2Login> {
         return async(dispatcher.io) {
             getProductInfoP2LoginUseCase.get().requestParams =
-                GetProductInfoP2LoginUseCase.createParams(shopId, productId, isShopOwner())
+                GetProductInfoP2LoginUseCase.createParams(
+                    shopId,
+                    productId,
+                    isShopOwner(),
+                    isFromCache
+                )
             getProductInfoP2LoginUseCase.get().setErrorLogListener { logP2Login(it, productId) }
             getProductInfoP2LoginUseCase.get().executeOnBackground()
         }

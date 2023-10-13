@@ -467,7 +467,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
                 putString(ProductDetailCommonConstant.PARAM_EXT_PARAM, extParam.encodeToUtf8())
                 putObject(ProductDetailCommonConstant.PARAM_USER_LOCATION, userLocationRequest)
                 putObject(ProductDetailCommonConstant.PARAM_TOKONOW, tokonow)
-                putObject(ProductDetailCommonConstant.PARAM_REFRESH_PAGE, refreshPage)
+                putObject(ProductDetailCommonConstant.PARAM_FORCE_REFRESH, refreshPage)
             }
     }
 
@@ -485,8 +485,8 @@ open class GetPdpLayoutUseCase @Inject constructor(
     private val layoutId
         get() = requestParams.getString(ProductDetailCommonConstant.PARAM_LAYOUT_ID, "")
 
-    private val refreshPage
-        get() = requestParams.getBoolean(ProductDetailCommonConstant.PARAM_REFRESH_PAGE, false)
+    private val forceRefresh
+        get() = requestParams.getBoolean(ProductDetailCommonConstant.PARAM_FORCE_REFRESH, false)
 
     // public for unit test only
     private val excludeComponentInCache by lazy {
@@ -522,7 +522,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
         val cache = CacheState(remoteCacheableActive = shouldCacheable)
         emit(cache)
     }.flatMapLatest {
-        if (shouldCacheable && !refreshPage) {
+        if (shouldCacheable && !forceRefresh) {
             processRequestCacheable(cacheState = it)
         } else {
             flowOf(processRequestAlwaysCloud(cacheState = it))
