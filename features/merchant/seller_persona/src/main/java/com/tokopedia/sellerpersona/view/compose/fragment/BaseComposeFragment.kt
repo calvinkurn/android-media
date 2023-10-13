@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
 
 /**
  * Created by @ilhamsuaib on 13/10/23.
@@ -29,7 +30,9 @@ abstract class BaseComposeFragment : Fragment() {
         setupOnBackPressed()
     }
 
-    protected open fun setOnBackPressed() {}
+    protected open fun setOnBackPressed() {
+        view?.findNavController()?.navigateUp()
+    }
 
     protected fun setComposeViewContent(context: Context, content: @Composable () -> Unit): View {
         return ComposeView(context).apply {
