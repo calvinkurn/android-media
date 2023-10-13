@@ -7,6 +7,7 @@ import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.home.view.model.banner_product_group.BannerProductGroupUiModel
 import com.tokopedia.shop.home.view.model.banner_product_group.appearance.ProductItemType
+import com.tokopedia.shop.home.view.model.banner_product_group.appearance.ShopHomeBannerProductGroupItemType
 import com.tokopedia.shop.home.view.model.banner_product_group.appearance.VerticalBannerItemType
 import com.tokopedia.shop.product.data.model.ShopFeaturedProduct
 import com.tokopedia.shop.product.data.model.ShopProduct
@@ -14,13 +15,11 @@ import com.tokopedia.shop.product.domain.interactor.GetShopFeaturedProductUseCas
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.ext.getOrAwaitValue
-import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
-import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
@@ -105,8 +104,7 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
                 )
             )
         )
-        assertEquals(expected, actual)
-        assertEquals(true, actual is ShopBannerProductGroupWidgetTabViewModel.UiState.Success)
+        assertEquals(expected.data, actual.successOrNull())
     }
 
     @Test
@@ -740,7 +738,7 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
         //Then
         val actual = viewModel.carouselWidgets.getOrAwaitValue()
         assertEquals(ShopBannerProductGroupWidgetTabViewModel.UiState.Error(error), actual)
-
+        assertEquals(error, actual.errorOrNull())
         coVerify { getShopProductUseCase.executeOnBackground() }
     }
     
@@ -760,4 +758,19 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
         )
     }
 
+    private fun ShopBannerProductGroupWidgetTabViewModel.UiState.successOrNull(): List<ShopHomeBannerProductGroupItemType>? {
+        return when(this) {
+            is ShopBannerProductGroupWidgetTabViewModel.UiState.Error -> null
+            ShopBannerProductGroupWidgetTabViewModel.UiState.Loading -> null
+            is ShopBannerProductGroupWidgetTabViewModel.UiState.Success -> data
+        }
+    }
+
+    private fun ShopBannerProductGroupWidgetTabViewModel.UiState.errorOrNull(): Throwable? {
+        return when(this) {
+            is ShopBannerProductGroupWidgetTabViewModel.UiState.Error -> error
+            ShopBannerProductGroupWidgetTabViewModel.UiState.Loading -> null
+            is ShopBannerProductGroupWidgetTabViewModel.UiState.Success -> null
+        }
+    }
 }
