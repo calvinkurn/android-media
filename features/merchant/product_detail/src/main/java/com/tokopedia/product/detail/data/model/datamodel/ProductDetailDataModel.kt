@@ -9,7 +9,11 @@ data class ProductDetailDataModel(
     val variantData: ProductVariant? = null,
     val cacheState: CacheState = CacheState(),
     val isCampaign: Boolean = false
-)
+) {
+
+    val isFromCache
+        get() = cacheState.isFromCache
+}
 
 data class CacheState(
     val remoteCacheableActive: Boolean = false,
@@ -18,8 +22,4 @@ data class CacheState(
 
     // caching flow pdp, true = cache first then cloud, false = cache only or cloud only
     val cacheFirstThenCloud: Boolean = false
-) {
-
-    val hasCached
-        get() = remoteCacheableActive && (isFromCache || cacheFirstThenCloud)
-}
+)

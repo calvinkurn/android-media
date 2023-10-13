@@ -2971,7 +2971,10 @@ open class DynamicProductDetailFragment :
     }
 
     private fun isPdpCacheableError(): Boolean {
-        return viewModel.pdpLayout?.cacheState?.hasCached.orFalse()
+        val cacheState = viewModel.pdpLayout?.cacheState ?: return false
+        // ensure toggle remote cacheable is active and data still from cache
+        return cacheState.remoteCacheableActive &&
+            (cacheState.isFromCache || cacheState.cacheFirstThenCloud)
     }
 
     private fun preparePageCacheableError(errorModel: PageErrorDataModel) {
@@ -3037,28 +3040,12 @@ open class DynamicProductDetailFragment :
             shareProductInstance?.updateAffiliate(it.shopInfo.statusInfo.shopStatus)
 
             trackProductView(getTradeinData().isEligible, boeData.boType)
-            viewModel.getDynamicProductInfoP1?.let { p1 ->
-                DynamicProductDetailTracking.Moengage.sendMoEngageOpenProduct(p1)
-                DynamicProductDetailTracking.Moengage.eventAppsFylerOpenProduct(p1)
 
-                DynamicProductDetailTracking.sendScreen(
-                    irisSessionId,
-                    p1.basic.shopID,
-                    p1.shopTypeString,
-                    p1.basic.productID
-                )
-
-                viewModel.hitAffiliateCookie(
-                    productInfo = p1,
-                    affiliateUuid = affiliateUniqueId,
-                    uuid = uuid,
-                    affiliateChannel = affiliateChannel
-                )
-
-                mStoriesWidgetManager.updateStories(listOf(p1.basic.shopID))
+            if (viewModel.pdpLayout?.isFromCache == false) {
+                doP2DataAfterCloud(p2Data = it)
             }
+
             onSuccessGetDataP2(it, boeData, ratesData, shipmentPlus)
-            checkAffiliateEligibility(it.shopInfo)
             getProductDetailActivity()?.stopMonitoringP2Data()
             ProductDetailServerLogger.logBreadCrumbSuccessGetDataP2(
                 isSuccess = it.shopInfo.shopCore.shopID.isNotEmpty()
@@ -3067,6 +3054,41 @@ open class DynamicProductDetailFragment :
             getRecyclerView()?.addOneTimeGlobalLayoutListener {
                 EmbraceMonitoring.stopMoments(ProductDetailConstant.PDP_RESULT_TRACE_P2_DATA)
             }
+        }
+    }
+
+    private fun doP2DataAfterCloud(p2Data: ProductInfoP2UiData) {
+        viewModel.getDynamicProductInfoP1?.let { p1 ->
+            DynamicProductDetailTracking.Moengage.sendMoEngageOpenProduct(p1)
+            DynamicProductDetailTracking.Moengage.eventAppsFylerOpenProduct(p1)
+
+            DynamicProductDetailTracking.sendScreen(
+                irisSessionId,
+                p1.basic.shopID,
+                p1.shopTypeString,
+                p1.basic.productID
+            )
+
+            viewModel.hitAffiliateCookie(
+                productInfo = p1,
+                affiliateUuid = affiliateUniqueId,
+                uuid = uuid,
+                affiliateChannel = affiliateChannel
+            )
+
+            mStoriesWidgetManager.updateStories(listOf(p1.basic.shopID))
+
+            checkAffiliateEligibility(p2Data.shopInfo)
+
+            if (p2Data.productPurchaseProtectionInfo.ppItemDetailPage.isProtectionAvailable) {
+                DynamicProductDetailTracking.Impression.eventPurchaseProtectionAvailable(
+                    viewModel.userId,
+                    viewModel.getDynamicProductInfoP1,
+                    getPPTitleName()
+                )
+            }
+
+            DynamicProductDetailTracking.Branch.eventBranchItemView(p1, viewModel.userId)
         }
     }
 
@@ -3438,13 +3460,19 @@ open class DynamicProductDetailFragment :
             )
         }
 
-        if (affiliateString.hasValue()) {
-            viewModel.hitAffiliateTracker(affiliateString ?: "", viewModel.deviceId)
+        if (viewModel.pdpLayout?.isFromCache == false) {
+            doP1DataAfterCloud()
         }
 
         setupProductVideoCoordinator()
         recommendationWidgetViewModel?.refresh()
         submitInitialList()
+    }
+
+    private fun doP1DataAfterCloud() {
+        if (affiliateString.hasValue()) {
+            viewModel.hitAffiliateTracker(affiliateString ?: "", viewModel.deviceId)
+        }
     }
 
     private fun submitInitialList() {
@@ -3535,18 +3563,6 @@ open class DynamicProductDetailFragment :
             viewModel.getUserLocationCache(),
             shipmentPlus
         )
-
-        if (it.productPurchaseProtectionInfo.ppItemDetailPage.isProtectionAvailable) {
-            DynamicProductDetailTracking.Impression.eventPurchaseProtectionAvailable(
-                viewModel.userId,
-                viewModel.getDynamicProductInfoP1,
-                getPPTitleName()
-            )
-        }
-
-        viewModel.getDynamicProductInfoP1?.run {
-            DynamicProductDetailTracking.Branch.eventBranchItemView(this, viewModel.userId)
-        }
 
         pdpUiUpdater?.updateDataP2(
             context = context,
