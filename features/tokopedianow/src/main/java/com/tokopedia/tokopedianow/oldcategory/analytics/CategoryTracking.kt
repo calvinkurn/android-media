@@ -1205,23 +1205,23 @@ object CategoryTracking {
 
     // Tracker ID: 47895
     fun sendImpressCategoryPageExperimentEvent(
-        categoryId: String,
+        categoryIdLvl1: String,
+        categoryIdLvl2: String,
+        categoryIdLvl3: String,
         numberOfProduct: String,
         warehouseId: String
     ) {
-        if (categoryId.isNotBlank()) {
-            Tracker.Builder()
-                .setEvent(EVENT_VIEW_GROCERIES)
-                .setEventAction(EVENT_ACTION_IMPRESSION_PAGINATION)
-                .setEventCategory(EVENT_CATEGORY_PAGE_L2)
-                .setEventLabel(joinDash(categoryId, numberOfProduct))
-                .setCustomProperty(KEY_TRACKER_ID, TRACKER_ID_IMPRESSION_PAGINATION)
-                .setBusinessUnit(BUSINESS_UNIT_GROCERIES)
-                .setCurrentSite(CURRENT_SITE_TOKOPEDIA_MARKET_PLACE)
-                .setCustomProperty(KEY_WAREHOUSE_ID, warehouseId)
-                .build()
-                .send()
-        }
+        Tracker.Builder()
+            .setEvent(EVENT_VIEW_GROCERIES)
+            .setEventAction(EVENT_ACTION_IMPRESSION_PAGINATION)
+            .setEventCategory(TOKONOW_DASH_CATEGORY_PAGE)
+            .setEventLabel(joinDash(categoryIdLvl1, categoryIdLvl2, categoryIdLvl3, numberOfProduct))
+            .setCustomProperty(KEY_TRACKER_ID, TRACKER_ID_IMPRESSION_PAGINATION)
+            .setBusinessUnit(BUSINESS_UNIT_GROCERIES)
+            .setCurrentSite(CURRENT_SITE_TOKOPEDIA_MARKET_PLACE)
+            .setCustomProperty(KEY_WAREHOUSE_ID, warehouseId)
+            .build()
+            .send()
     }
 
     private fun getCategoryMenuItemName(position: Int, headerName: String): String {

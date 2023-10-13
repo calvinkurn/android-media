@@ -339,15 +339,7 @@ class TokoNowCategoryViewModel @Inject constructor(
     }
 
     private fun setSharingModel(categoryModel: CategoryModel) {
-        var categoryIdLvl2 = DEFAULT_CATEGORY_ID
-        var categoryIdLvl3 = DEFAULT_CATEGORY_ID
-
-        queryParam.forEach {
-            when (it.key) {
-                "${OptionHelper.EXCLUDE_PREFIX}${SearchApiConst.SC}" -> categoryIdLvl2 = it.value
-                SearchApiConst.SC -> categoryIdLvl3 = it.value
-            }
-        }
+        val (categoryIdLvl2, categoryIdLvl3) = getCategorySelectedIdL2L3()
 
         val title = getTitleCategory(categoryIdLvl2, categoryModel)
         val constructedLink = getConstructedLink(categoryModel.categoryDetail.data.url, categoryIdLvl2, categoryIdLvl3)
@@ -361,6 +353,20 @@ class TokoNowCategoryViewModel @Inject constructor(
             url = constructedLink.second,
             utmCampaignList = utmCampaignList
         )
+    }
+
+    fun getCategorySelectedIdL2L3(): Pair<String, String> {
+        var categoryIdLvl2 = DEFAULT_CATEGORY_ID
+        var categoryIdLvl3 = DEFAULT_CATEGORY_ID
+
+        queryParam.forEach {
+            when (it.key) {
+                "${OptionHelper.EXCLUDE_PREFIX}${SearchApiConst.SC}" -> categoryIdLvl2 = it.value
+                SearchApiConst.SC -> categoryIdLvl3 = it.value
+            }
+        }
+
+        return Pair(categoryIdLvl2, categoryIdLvl3)
     }
 
     private fun getTitleCategory(categoryIdLvl2: String, categoryModel: CategoryModel): String {

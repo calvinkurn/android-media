@@ -642,8 +642,11 @@ class TokoNowCategoryFragment :
     }
 
     private fun sendImpressPageExperiment(unit: Unit) {
+        val (categoryIdLvl2, categoryIdLvl3) = getViewModel().getCategorySelectedIdL2L3()
         CategoryTracking.sendImpressCategoryPageExperimentEvent(
-            categoryId = getViewModel().categoryL2,
+            categoryIdLvl1 = getViewModel().categoryL1,
+            categoryIdLvl2 = categoryIdLvl2,
+            categoryIdLvl3 = categoryIdLvl3,
             numberOfProduct = getViewModel().getRows(),
             warehouseId = getViewModel().warehouseId
         )
