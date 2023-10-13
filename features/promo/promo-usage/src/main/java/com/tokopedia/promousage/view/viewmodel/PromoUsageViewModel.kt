@@ -688,6 +688,21 @@ class PromoUsageViewModel @Inject constructor(
                 }
             }
         }
+        // Normalize all disabled promo when there's no selected promo
+        val hasNoSelectedPromo = processedItems.getSelectedPromoCodes().isEmpty()
+        if (hasNoSelectedPromo) {
+            processedItems = processedItems.map { item ->
+                if (item is PromoItem && item.state is PromoItemState.Disabled) {
+                    return@map item.copy(
+                        currentClashingPromoCodes = emptyList(),
+                        currentClashingSecondaryPromoCodes = emptyList(),
+                        state = PromoItemState.Normal(useSecondaryPromo = false)
+                    )
+                } else {
+                    return@map item
+                }
+            }
+        }
         return Pair(processedItems, isSelectedPromoCausingClash)
     }
 
