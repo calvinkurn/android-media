@@ -220,7 +220,7 @@ class PdpFintechWidgetV2 @JvmOverloads constructor(
         val firstTextView = Typography(context).apply {
             layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
             text = Html.fromHtml(messages.getOrNull(Int.ZERO) ?: String.EMPTY)
-            fontType = Typography.DISPLAY_2
+            fontType = Typography.DISPLAY_3
             setSingleLine()
             ellipsize = TextUtils.TruncateAt.END
         }
@@ -228,7 +228,7 @@ class PdpFintechWidgetV2 @JvmOverloads constructor(
         val secondTextView = Typography(context).apply {
             layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
             text = Html.fromHtml(messages.getOrNull(Int.ONE) ?: String.EMPTY)
-            fontType = Typography.DISPLAY_2
+            fontType = Typography.DISPLAY_3
             setSingleLine()
             ellipsize = TextUtils.TruncateAt.END
         }
