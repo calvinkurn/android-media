@@ -328,6 +328,7 @@ class ShopPageReimagineHeaderFragment :
     private var cartLocalCacheHandler: LocalCacheHandler? = null
     var shopPageTracking: ShopPageTrackingBuyer? = null
     var shopPageTrackingSGCPlay: ShopPageTrackingSGCPlayWidget? = null
+    var isShowFeed: Boolean = false
     private var shopId = ""
     private val shopName: String
         get() = shopPageHeaderDataModel?.shopName.orEmpty()
@@ -1982,12 +1983,17 @@ class ShopPageReimagineHeaderFragment :
         val listShopPageTabModel = mutableListOf<ShopPageHeaderTabModel>()
         shopPageHeaderDataModel?.listDynamicTabData?.forEach {
             if (it.name == ShopPageHeaderTabName.FEED && it.isActive != 1) {
+                isShowFeed = it.isActive == 1
                 return@forEach
             }
             val tabContentWrapper = ShopPageHeaderFragmentTabContentWrapper.createInstance().apply {
                 setTabData(it)
                 shopPageHeaderP1Data?.let { headerData ->
-                    setShopPageHeaderP1Data(headerData, getIsEnableDirectPurchase(headerData))
+                    setShopPageHeaderP1Data(
+                        shopPageHeaderP1Data = headerData,
+                        isEnableDirectPurchase = getIsEnableDirectPurchase(headerData),
+                        isShouldShowFeed = isShowFeed
+                    )
                 }
                 shopHeaderViewModel?.productListData?.let { productListData ->
                     setInitialProductListData(productListData)
