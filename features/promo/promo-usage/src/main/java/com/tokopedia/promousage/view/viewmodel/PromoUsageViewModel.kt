@@ -624,7 +624,8 @@ class PromoUsageViewModel @Inject constructor(
         updatedItems = resultItems
             .map { item ->
                 if (item is PromoItem && item.id == newClickedItem.id) {
-                    val updatedState = if (item.currentClashingPromoCodes.isEmpty() &&
+                    val updatedState = if (item.state is PromoItemState.Normal &&
+                        item.currentClashingPromoCodes.isEmpty() &&
                         item.currentClashingSecondaryPromoCodes.isEmpty()
                     ) {
                         PromoItemState.Normal(useSecondaryPromo = false)
