@@ -6,6 +6,7 @@ import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.model.LabelGroup
 import com.tokopedia.home_component.util.getTopadsString
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
 import com.tokopedia.track.builder.util.BaseTrackerConst.Event.PRODUCT_VIEW
@@ -25,11 +26,26 @@ class FlashSaleWidgetTracking: BaseTrackerConst() {
         private const val ANDROID_TRACKER_ID_VIEW = "47651"
         private const val ANDROID_TRACKER_ID_CLICK = "47652"
         private const val ANDROID_TRACKER_ID_VIEW_ALL_CLICK = "47710"
+        private const val MERCHANT_CODE = "merchantCode"
+        private const val PAYMENT_ID = "paymentId"
+        private const val PAYMENT_METHOD = "paymentMethod"
+        private const val ANDROID = "android"
+        private const val ENVIRONMENT = "environment"
+        private const val SCROOGE_ID = "scroogeId"
     }
 
     private val LIST_CAROUSEL_PRODUCT = PRODUCT_LIST.format("%s", "dynamic channel thank you page - product", "%s", "%s", "%s", "%s", "%s")
 
-    fun getMixLeftProductView(channel: ChannelModel, grid: ChannelGrid, position: Int, positionOnTyp: Int, userId: String): Map<String, Any> {
+    fun getMixLeftProductView(
+        channel: ChannelModel,
+        grid: ChannelGrid,
+        position: Int,
+        positionOnTyp: Int,
+        userId: String,
+        merchantCode: String,
+        paymentId: String,
+        paymentMethod: String,
+    ): Map<String, Any> {
         val trackingBuilder = BaseTrackerBuilder()
         return trackingBuilder.constructBasicProductView(
             event = PRODUCT_VIEW,
@@ -83,10 +99,24 @@ class FlashSaleWidgetTracking: BaseTrackerConst() {
                 channel.channelHeader.name
             ))
             .appendCustomKeyValue(TrackerId.KEY, ANDROID_TRACKER_ID_VIEW)
+            .appendCustomKeyValue(ENVIRONMENT, ANDROID)
+            .appendCustomKeyValue(MERCHANT_CODE, merchantCode)
+            .appendCustomKeyValue(PAYMENT_ID, paymentId)
+            .appendCustomKeyValue(PAYMENT_METHOD, paymentMethod)
+            .appendCustomKeyValue(SCROOGE_ID, String.EMPTY)
             .build()
     }
 
-    private fun getProductClick(channel: ChannelModel, grid: ChannelGrid, position: Int, positionOnTyp: Int, userId: String):  Map<String, Any> {
+    private fun getProductClick(
+        channel: ChannelModel,
+        grid: ChannelGrid,
+        position: Int,
+        positionOnTyp: Int,
+        userId: String,
+        merchantCode: String,
+        paymentId: String,
+        paymentMethod: String,
+    ):  Map<String, Any> {
         val trackingBuilder = BaseTrackerBuilder()
         return trackingBuilder.constructBasicProductClick(
             event = Event.PRODUCT_CLICK,
@@ -142,14 +172,35 @@ class FlashSaleWidgetTracking: BaseTrackerConst() {
                 channel.channelHeader.name
             ))
             .appendCustomKeyValue(TrackerId.KEY, ANDROID_TRACKER_ID_CLICK)
+            .appendCustomKeyValue(ENVIRONMENT, ANDROID)
+            .appendCustomKeyValue(MERCHANT_CODE, merchantCode)
+            .appendCustomKeyValue(PAYMENT_ID, paymentId)
+            .appendCustomKeyValue(PAYMENT_METHOD, paymentMethod)
+            .appendCustomKeyValue(SCROOGE_ID, String.EMPTY)
             .build()
     }
 
-    fun sendProductClick(channel: ChannelModel, grid: ChannelGrid, position: Int, positionOnTyp: Int, userId: String) {
-        getTracker().sendEnhanceEcommerceEvent(getProductClick(channel, grid, position, positionOnTyp, userId))
+    fun sendProductClick(
+        channel: ChannelModel,
+        grid: ChannelGrid,
+        position: Int, positionOnTyp: Int,
+        userId: String,
+        merchantCode: String,
+        paymentId: String,
+        paymentMethod: String,
+    ) {
+        getTracker().sendEnhanceEcommerceEvent(
+            getProductClick(channel, grid, position, positionOnTyp, userId, merchantCode, paymentId, paymentMethod)
+        )
     }
 
-    private fun getFlashSaleWidgetLoadMoreCard(channel: ChannelModel, userId: String): HashMap<String, Any> {
+    private fun getFlashSaleWidgetLoadMoreCard(
+        channel: ChannelModel,
+        userId: String,
+        merchantCode: String,
+        paymentId: String,
+        paymentMethod: String,
+    ): HashMap<String, Any> {
         return DataLayer.mapOf(
             Event.KEY, CLICK_PAYMENT,
             Category.KEY, EVENT_CATEGORY_ORDER_COMPLETE,
@@ -160,12 +211,25 @@ class FlashSaleWidgetTracking: BaseTrackerConst() {
             Screen.KEY, Screen.DEFAULT,
             UserId.KEY, userId,
             BusinessUnit.KEY, PAYMENT,
-            TrackerId.KEY, ANDROID_TRACKER_ID_VIEW_ALL_CLICK
+            TrackerId.KEY, ANDROID_TRACKER_ID_VIEW_ALL_CLICK,
+            ENVIRONMENT, ANDROID,
+            MERCHANT_CODE, merchantCode,
+            PAYMENT_ID, paymentId,
+            PAYMENT_METHOD, paymentMethod,
+            SCROOGE_ID, String.EMPTY
         ) as HashMap<String, Any>
     }
 
-    fun sendFlashSaleWidgetLoadMoreCard(channel: ChannelModel, userId: String) {
-        getTracker().sendEnhanceEcommerceEvent(getFlashSaleWidgetLoadMoreCard(channel, userId))
+    fun sendFlashSaleWidgetLoadMoreCard(
+        channel: ChannelModel,
+        userId: String,
+        merchantCode: String,
+        paymentId: String,
+        paymentMethod: String,
+    ) {
+        getTracker().sendEnhanceEcommerceEvent(
+            getFlashSaleWidgetLoadMoreCard(channel, userId, merchantCode, paymentId, paymentMethod)
+        )
     }
 }
 

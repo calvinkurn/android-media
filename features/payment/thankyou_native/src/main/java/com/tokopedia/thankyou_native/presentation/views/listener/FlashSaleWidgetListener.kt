@@ -7,4 +7,7 @@ interface FlashSaleWidgetListener {
     fun getFlashSaleWidgetPosition(): Int
     fun getTrackingQueueObj(): TrackingQueue?
     fun route(applink: String)
+    fun getMerchantCode(): String
+    fun getPaymentId(): String
+    fun getPaymentMethod(): String
 }

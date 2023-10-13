@@ -724,6 +724,10 @@ abstract class ThankYouBaseFragment :
     override fun route(applink: String) {
         RouteManager.route(context, applink)
     }
+    override fun getMerchantCode(): String = thanksPageData.merchantCode
+    override fun getPaymentId(): String = thanksPageData.paymentID
+    override fun getPaymentMethod(): String = thanksPageData.gatewayName
+
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

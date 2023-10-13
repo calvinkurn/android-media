@@ -15,7 +15,10 @@ class MixTopComponentListenerCallback(
     override fun onSeeAllHeaderClicked(channel: ChannelModel, applink: String) {
         FlashSaleWidgetTracking().sendFlashSaleWidgetLoadMoreCard(
             channel,
-            flashSaleWidgetListener.getUserId()
+            flashSaleWidgetListener.getUserId(),
+            flashSaleWidgetListener.getMerchantCode(),
+            flashSaleWidgetListener.getPaymentId(),
+            flashSaleWidgetListener.getPaymentMethod()
         )
         flashSaleWidgetListener.route(applink)
     }
@@ -44,7 +47,10 @@ class MixTopComponentListenerCallback(
                 channelGrid,
                 position,
                 flashSaleWidgetListener.getFlashSaleWidgetPosition(),
-                flashSaleWidgetListener.getUserId()
+                flashSaleWidgetListener.getUserId(),
+                flashSaleWidgetListener.getMerchantCode(),
+                flashSaleWidgetListener.getPaymentId(),
+                flashSaleWidgetListener.getPaymentMethod()
             ) as HashMap<String, Any>
         )
     }
@@ -61,7 +67,10 @@ class MixTopComponentListenerCallback(
             channelGrid,
             position,
             flashSaleWidgetListener.getFlashSaleWidgetPosition(),
-            flashSaleWidgetListener.getUserId()
+            flashSaleWidgetListener.getUserId(),
+            flashSaleWidgetListener.getMerchantCode(),
+            flashSaleWidgetListener.getPaymentId(),
+            flashSaleWidgetListener.getPaymentMethod()
         )
         flashSaleWidgetListener.route(applink)
     }
@@ -69,7 +78,10 @@ class MixTopComponentListenerCallback(
     override fun onSeeMoreCardClicked(channel: ChannelModel, applink: String) {
         FlashSaleWidgetTracking().sendFlashSaleWidgetLoadMoreCard(
             channel,
-            flashSaleWidgetListener.getUserId()
+            flashSaleWidgetListener.getUserId(),
+            flashSaleWidgetListener.getMerchantCode(),
+            flashSaleWidgetListener.getPaymentId(),
+            flashSaleWidgetListener.getPaymentMethod()
         )
         flashSaleWidgetListener.route(applink)
     }
