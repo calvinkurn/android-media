@@ -1,15 +1,15 @@
 package com.tokopedia.play.broadcaster.data.repository
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.content.product.picker.seller.domain.ContentProductPickerSellerRepository
+import com.tokopedia.content.product.picker.seller.domain.repository.ContentProductPickerSellerRepository
 import com.tokopedia.play.broadcaster.domain.model.addproduct.AddProductTagChannelRequest
 import com.tokopedia.play.broadcaster.domain.usecase.AddProductTagUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetProductsInEtalaseUseCase
-import com.tokopedia.play.broadcaster.domain.usecase.GetSelfEtalaseListUseCase
+import com.tokopedia.content.product.picker.seller.domain.usecase.etalase.GetSelfEtalaseListUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.SetPinnedProductUseCase
-import com.tokopedia.play.broadcaster.domain.usecase.campaign.GetCampaignListUseCase
+import com.tokopedia.content.product.picker.seller.domain.usecase.campaign.GetCampaignListUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.campaign.GetProductTagSummarySectionUseCase
-import com.tokopedia.play.broadcaster.domain.usecase.campaign.GetProductsInCampaignUseCase
+import com.tokopedia.content.product.picker.seller.domain.usecase.campaign.GetProductsInCampaignUseCase
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroProductUiMapper
 import com.tokopedia.content.product.picker.seller.model.campaign.CampaignUiModel
 import com.tokopedia.content.product.picker.seller.model.etalase.EtalaseUiModel

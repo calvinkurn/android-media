@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.type
+package com.tokopedia.content.product.picker.seller.model.etalase
 
 import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef
 

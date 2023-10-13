@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.domain.model.campaign
+package com.tokopedia.content.product.picker.seller.domain.model.campaign
 
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName

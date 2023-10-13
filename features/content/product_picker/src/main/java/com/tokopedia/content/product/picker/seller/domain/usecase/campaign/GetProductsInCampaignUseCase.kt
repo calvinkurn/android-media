@@ -1,13 +1,12 @@
-package com.tokopedia.play.broadcaster.domain.usecase.campaign
+package com.tokopedia.content.product.picker.seller.domain.usecase.campaign
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.play.broadcaster.domain.model.campaign.GetCampaignProductResponse
+import com.tokopedia.content.product.picker.seller.domain.model.campaign.GetCampaignProductResponse
 import com.tokopedia.play_common.domain.usecase.RetryableGraphqlUseCase
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -44,17 +43,17 @@ class GetProductsInCampaignUseCase @Inject constructor(
         const val QUERY_NAME = "GetCampaignProductUseCaseQuery"
         const val QUERY = """
             query getFlashSaleProductList(
-                ${"$${PARAM_CAMPAIGN_ID}"}: Int, 
-                ${"$${PARAM_USER_ID}"}: Int!,
-                ${"$${PARAM_PAGE}"}: Int,
-                ${"$${PARAM_PER_PAGE}"}: Int
+                ${"$$PARAM_CAMPAIGN_ID"}: Int, 
+                ${"$$PARAM_USER_ID"}: Int!,
+                ${"$$PARAM_PAGE"}: Int,
+                ${"$$PARAM_PER_PAGE"}: Int
             ) {
               getFlashSaleProductList(params: {
-                $PARAM_USER_ID: ${"$${PARAM_USER_ID}"},
+                $PARAM_USER_ID: ${"$$PARAM_USER_ID"},
                 $PARAM_SOURCE: "broadcaster",
-                $PARAM_CAMPAIGN_ID: ${"$${PARAM_CAMPAIGN_ID}"},
-                $PARAM_PAGE: ${"$${PARAM_PAGE}"},
-                $PARAM_PER_PAGE: ${"$${PARAM_PER_PAGE}"}
+                $PARAM_CAMPAIGN_ID: ${"$$PARAM_CAMPAIGN_ID"},
+                $PARAM_PAGE: ${"$$PARAM_PAGE"},
+                $PARAM_PER_PAGE: ${"$$PARAM_PER_PAGE"}
               }) {
                 Products {
                   ID

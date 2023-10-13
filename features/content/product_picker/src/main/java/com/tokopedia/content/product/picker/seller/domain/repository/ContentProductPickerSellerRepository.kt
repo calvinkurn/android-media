@@ -1,4 +1,4 @@
-package com.tokopedia.content.product.picker.seller.domain
+package com.tokopedia.content.product.picker.seller.domain.repository
 
 import com.tokopedia.content.product.picker.seller.model.campaign.CampaignUiModel
 import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel

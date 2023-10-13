@@ -1,7 +1,7 @@
-package com.tokopedia.play.broadcaster.domain.usecase
+package com.tokopedia.content.product.picker.seller.domain.usecase.etalase
 
-import com.tokopedia.play.broadcaster.type.EtalaseType
-import com.tokopedia.play.broadcaster.util.error.DefaultNetworkException
+import com.tokopedia.content.product.picker.seller.model.etalase.EtalaseType
+import com.tokopedia.content.product.picker.seller.model.exception.DefaultNetworkException
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase

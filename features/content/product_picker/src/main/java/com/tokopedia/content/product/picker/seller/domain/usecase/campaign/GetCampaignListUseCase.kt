@@ -1,11 +1,11 @@
-package com.tokopedia.play.broadcaster.domain.usecase.campaign
+package com.tokopedia.content.product.picker.seller.domain.usecase.campaign
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.play.broadcaster.domain.model.campaign.GetCampaignListResponse
+import com.tokopedia.content.product.picker.seller.domain.model.campaign.GetCampaignListResponse
 import com.tokopedia.play_common.domain.usecase.RetryableGraphqlUseCase
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
