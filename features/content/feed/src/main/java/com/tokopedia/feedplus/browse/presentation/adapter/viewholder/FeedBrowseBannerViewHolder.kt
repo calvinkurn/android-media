@@ -3,13 +3,14 @@ package com.tokopedia.feedplus.browse.presentation.adapter.viewholder
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.BaseViewHolder
+import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiModel
 import com.tokopedia.feedplus.databinding.ItemFeedBrowseBannerItemBinding
 
 /**
  * Created by kenny.hadisaputra on 18/09/23
  */
-class FeedBrowseBannerViewHolder private constructor(
+internal class FeedBrowseBannerViewHolder private constructor(
     private val binding: ItemFeedBrowseBannerItemBinding,
     private val listener: Listener,
 ) : BaseViewHolder(binding.root) {
@@ -21,6 +22,11 @@ class FeedBrowseBannerViewHolder private constructor(
         binding.root.setOnClickListener {
             listener.onBannerClicked(this, item)
         }
+    }
+
+    fun bind(item: FeedBrowseItemListModel.Banner) {
+        binding.imgBanner.setImageUrl(item.banner.imageUrl)
+        binding.tvInspiration.text = item.banner.title
     }
 
     companion object {

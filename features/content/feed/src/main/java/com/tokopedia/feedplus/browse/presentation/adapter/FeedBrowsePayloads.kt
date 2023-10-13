@@ -7,7 +7,7 @@ data class FeedBrowsePayloads(
     val payloads: Set<Int>,
 ) {
 
-    class Builder() {
+    class Builder {
 
         private val payloads = mutableSetOf<Int>()
 
@@ -16,6 +16,8 @@ data class FeedBrowsePayloads(
         fun addChannelChipsChanged() = addPayload(PAYLOAD_CHANNEL_CHIPS_CHANGED)
 
         fun addChannelRefresh() = addPayload(PAYLOAD_CHANNEL_REFRESH)
+
+        fun addSelectedChipChanged() = addPayload(PAYLOAD_SELECTED_CHIP_CHANGED)
 
         fun build(): FeedBrowsePayloads? {
             return if (payloads.isEmpty()) {
@@ -43,6 +45,10 @@ data class FeedBrowsePayloads(
         return payloads.contains(PAYLOAD_CHANNEL_CHIPS_CHANGED)
     }
 
+    fun isSelectedChipChanged(): Boolean {
+        return payloads.contains(PAYLOAD_SELECTED_CHIP_CHANGED)
+    }
+
     fun isChannelRefresh(): Boolean {
         return payloads.contains(PAYLOAD_CHANNEL_REFRESH)
     }
@@ -51,6 +57,7 @@ data class FeedBrowsePayloads(
         private const val PAYLOAD_CHANNEL_CHIPS_CHANGED = 1
         private const val PAYLOAD_CHANNEL_ITEMS_CHANGED = 2
         private const val PAYLOAD_CHANNEL_REFRESH = 3
+        private const val PAYLOAD_SELECTED_CHIP_CHANGED = 4
     }
 }
 

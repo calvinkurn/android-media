@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.unifyprinciples.Typography
+<androidx.recyclerview.widget.RecyclerView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:typographyType="heading_3"
-    tools:text="Sesuai sama kesukaanmu"
+    android:orientation="horizontal"
+    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
     />

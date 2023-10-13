@@ -14,7 +14,7 @@ import javax.inject.Inject
 /**
  * Created by kenny.hadisaputra on 22/09/23
  */
-class FeedCategoryInspirationViewModel @Inject constructor(
+internal class FeedCategoryInspirationViewModel @Inject constructor(
     private val repository: FeedBrowseRepository,
 ) : ViewModel() {
 

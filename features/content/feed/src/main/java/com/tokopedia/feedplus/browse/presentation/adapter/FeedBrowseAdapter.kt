@@ -18,7 +18,7 @@ import kotlinx.coroutines.CoroutineScope
 /**
  * Created by kenny.hadisaputra on 18/09/23
  */
-class FeedBrowseAdapter(
+internal class FeedBrowseAdapter(
     private val channelListener: FeedBrowseChannelViewHolder.Listener,
     private val bannerListener: FeedBrowseBannerViewHolder.Listener,
     private val scope: CoroutineScope,

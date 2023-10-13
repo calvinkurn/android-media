@@ -21,17 +21,19 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.feedplus.browse.data.model.FeedBrowseModel
+import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
 import com.tokopedia.feedplus.browse.data.model.WidgetRequestModel
 import com.tokopedia.feedplus.browse.data.tracker.FeedBrowseTracker
-import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseAdapter
+import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseAdapter2
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseItemDecoration
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseBannerViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseChannelViewHolder
+import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseChipsViewHolder
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseChipUiModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiAction
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiState
-import com.tokopedia.feedplus.browse.presentation.view.FeedBrowsePlaceholderView
 import com.tokopedia.feedplus.databinding.FragmentFeedBrowseBinding
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
@@ -162,8 +164,27 @@ class FeedBrowseFragment @Inject constructor(
         }
     }
 
-//    private val adapter by lazy { FeedBrowseAdapter(channelListener, lifecycleScope, coroutineDispatchers) }
-    private val adapter by lazy { FeedBrowseAdapter(channelListener, bannerListener, lifecycleScope, coroutineDispatchers) }
+    private val chipsListener = object : FeedBrowseChipsViewHolder.Listener {
+        override fun onChipClicked(
+            viewHolder: FeedBrowseChipsViewHolder,
+            slotId: String,
+            chip: WidgetMenuModel
+        ) {
+            viewModel.submitAction(FeedBrowseUiAction.SelectChipWidget(slotId, chip))
+        }
+
+        override fun onChipSelected(
+            viewHolder: FeedBrowseChipsViewHolder,
+            slotId: String,
+            chip: WidgetMenuModel
+        ) {
+            viewModel.submitAction(FeedBrowseUiAction.FetchCardsWidget(slotId, chip))
+        }
+    }
+
+    //    private val adapter by lazy { FeedBrowseAdapter(channelListener, lifecycleScope, coroutineDispatchers) }
+//    private val adapter by lazy { FeedBrowseAdapter(channelListener, bannerListener, lifecycleScope, coroutineDispatchers) }
+    private val adapter by lazy { FeedBrowseAdapter2(chipsListener, bannerListener) }
 
     private val viewModel: FeedBrowseViewModel by viewModels { viewModelFactory }
 
@@ -260,15 +281,15 @@ class FeedBrowseFragment @Inject constructor(
     }
 
     private fun showPlaceholder() {
-        renderContent(
-            listOf(
-                FeedBrowseUiModel.Placeholder(type = FeedBrowsePlaceholderView.Type.Title),
-                FeedBrowseUiModel.Placeholder(type = FeedBrowsePlaceholderView.Type.Chips),
-                FeedBrowseUiModel.Placeholder(type = FeedBrowsePlaceholderView.Type.Cards),
-                FeedBrowseUiModel.Placeholder(type = FeedBrowsePlaceholderView.Type.Title),
-                FeedBrowseUiModel.Placeholder(type = FeedBrowsePlaceholderView.Type.Cards)
-            )
-        )
+//        renderContent(
+//            listOf(
+//                FeedBrowseUiModel.Placeholder(type = FeedBrowsePlaceholderView.Type.Title),
+//                FeedBrowseUiModel.Placeholder(type = FeedBrowsePlaceholderView.Type.Chips),
+//                FeedBrowseUiModel.Placeholder(type = FeedBrowsePlaceholderView.Type.Cards),
+//                FeedBrowseUiModel.Placeholder(type = FeedBrowsePlaceholderView.Type.Title),
+//                FeedBrowseUiModel.Placeholder(type = FeedBrowsePlaceholderView.Type.Cards)
+//            )
+//        )
     }
 
     private fun showError(throwable: Throwable) {
@@ -317,13 +338,13 @@ class FeedBrowseFragment @Inject constructor(
         binding.feedBrowseHeader.title = newTitle
     }
 
-    private fun renderContent(widgets: List<FeedBrowseUiModel>) {
+    private fun renderContent(widgets: List<FeedBrowseModel>) {
         if (binding.feedBrowseList.isComputingLayout ||
             binding.feedBrowseList.scrollState != RecyclerView.SCROLL_STATE_IDLE
         ) {
             return
         }
-        adapter.submitList(widgets)
+        adapter.setList(widgets)
     }
 
     private fun goToPage(appLink: String) {

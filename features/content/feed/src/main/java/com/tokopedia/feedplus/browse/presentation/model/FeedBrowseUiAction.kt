@@ -1,11 +1,12 @@
 package com.tokopedia.feedplus.browse.presentation.model
 
+import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
 import com.tokopedia.feedplus.browse.data.model.WidgetRequestModel
 
 /**
  * Created by meyta.taliti on 11/08/23.
  */
-sealed interface FeedBrowseUiAction {
+internal sealed interface FeedBrowseUiAction {
 
     object LoadInitialPage : FeedBrowseUiAction
 
@@ -14,8 +15,18 @@ sealed interface FeedBrowseUiAction {
         val widgetId: String
     ) : FeedBrowseUiAction
 
+    data class SelectChipWidget(
+        val slotId: String,
+        val model: WidgetMenuModel,
+    ) : FeedBrowseUiAction
+
     data class FetchCards(
         val extraParam: WidgetRequestModel,
         val widgetId: String
+    ) : FeedBrowseUiAction
+
+    data class FetchCardsWidget(
+        val slotId: String,
+        val model: WidgetMenuModel,
     ) : FeedBrowseUiAction
 }

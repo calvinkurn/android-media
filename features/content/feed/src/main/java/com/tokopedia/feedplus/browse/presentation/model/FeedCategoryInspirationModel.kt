@@ -1,15 +1,17 @@
 package com.tokopedia.feedplus.browse.presentation.model
 
+import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
+
 /**
  * Created by kenny.hadisaputra on 21/09/23
  */
-sealed interface FeedCategoryInspirationModel {
+internal sealed interface FeedCategoryInspirationModel {
 
     val modelId: String
 
     data class Chips(
         val id: String,
-        val chipList: List<FeedBrowseChipUiModel>,
+        val chipList: List<WidgetMenuModel>,
     ) : FeedCategoryInspirationModel {
         override val modelId: String = "chips_$id"
     }

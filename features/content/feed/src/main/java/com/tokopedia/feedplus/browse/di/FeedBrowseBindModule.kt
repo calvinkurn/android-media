@@ -8,16 +8,20 @@ import com.tokopedia.feedplus.browse.data.FeedBrowseRepositoryImpl
 import com.tokopedia.feedplus.browse.data.tracker.FeedBrowseChannelTracker
 import com.tokopedia.feedplus.browse.data.tracker.FeedBrowseChannelTrackerImpl
 import com.tokopedia.feedplus.browse.presentation.FeedBrowseFragment
+import com.tokopedia.feedplus.browse.presentation.FeedBrowseModelFetcher
 import com.tokopedia.feedplus.browse.presentation.FeedCategoryInspirationFragment
+import com.tokopedia.feedplus.browse.presentation.FeedContentSlotFetcher
+import com.tokopedia.feedplus.browse.presentation.FeedWidgetRecommendationFetcher
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
+import dagger.multibindings.IntoSet
 
 /**
  * Created by meyta.taliti on 11/08/23.
  */
 @Module
-abstract class FeedBrowseBindModule {
+internal abstract class FeedBrowseBindModule {
 
     /**
      * Repository
@@ -49,4 +53,15 @@ abstract class FeedBrowseBindModule {
     @IntoMap
     @FragmentKey(FeedCategoryInspirationFragment::class)
     abstract fun getFeedCategoryInspirationFragment(fragment: FeedCategoryInspirationFragment): Fragment
+
+    /**
+     * Fetchers
+     */
+    @Binds
+    @IntoSet
+    abstract fun getContentSlotFetcher(fetcher: FeedContentSlotFetcher): FeedBrowseModelFetcher
+
+    @Binds
+    @IntoSet
+    abstract fun getWidgetRecommendationFetcher(fetcher: FeedWidgetRecommendationFetcher): FeedBrowseModelFetcher
 }

@@ -3,6 +3,7 @@ package com.tokopedia.feedplus.browse.presentation.adapter.viewholder
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseChipUiModel
 import com.tokopedia.feedplus.databinding.ItemFeedBrowseChipBinding
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -11,7 +12,7 @@ import com.tokopedia.unifycomponents.ChipsUnify
 /**
  * Created by meyta.taliti on 11/08/23.
  */
-class FeedBrowseChipViewHolder private constructor(
+internal class FeedBrowseChipViewHolder private constructor(
     binding: ItemFeedBrowseChipBinding,
     private val listener: Listener
 ) : RecyclerView.ViewHolder(binding.root) {
@@ -33,7 +34,33 @@ class FeedBrowseChipViewHolder private constructor(
         }
     }
 
+    fun bind(item: WidgetMenuModel) {
+        chipView.chipText = item.label
+
+        onChipSelected(item)
+
+        chipView.setOnClickListener {
+            if (chipView.chipType == ChipsUnify.TYPE_SELECTED) return@setOnClickListener
+            listener.onChipClicked(item)
+        }
+    }
+
     private fun onChipSelected(item: FeedBrowseChipUiModel) {
+        val newChipType = if (item.isSelected) {
+            ChipsUnify.TYPE_SELECTED
+        } else {
+            ChipsUnify.TYPE_NORMAL
+        }
+        if (chipView.chipType != newChipType) {
+            chipView.chipType = newChipType
+        }
+
+        if (item.isSelected) {
+            listener.onChipSelected(item, bindingAdapterPosition)
+        }
+    }
+
+    private fun onChipSelected(item: WidgetMenuModel) {
         val newChipType = if (item.isSelected) {
             ChipsUnify.TYPE_SELECTED
         } else {
@@ -69,6 +96,10 @@ class FeedBrowseChipViewHolder private constructor(
 
         fun onChipClicked(model: FeedBrowseChipUiModel)
 
+        fun onChipClicked(model: WidgetMenuModel) {}
+
         fun onChipSelected(model: FeedBrowseChipUiModel, position: Int)
+
+        fun onChipSelected(model: WidgetMenuModel, position: Int) {}
     }
 }

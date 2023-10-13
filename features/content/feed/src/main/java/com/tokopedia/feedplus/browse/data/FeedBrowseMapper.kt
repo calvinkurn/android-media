@@ -5,6 +5,9 @@ import com.tokopedia.content.common.model.ContentItem
 import com.tokopedia.content.common.model.ContentSlotMeta
 import com.tokopedia.content.common.model.FeedXHeaderResponse
 import com.tokopedia.content.common.model.WidgetSlot
+import com.tokopedia.feedplus.browse.data.model.ContentSlotModel
+import com.tokopedia.feedplus.browse.data.model.FeedBrowseModel
+import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
 import com.tokopedia.feedplus.browse.data.model.WidgetRequestModel
 import com.tokopedia.feedplus.browse.presentation.model.ChannelUiState
 import com.tokopedia.feedplus.browse.presentation.model.ChipUiState
@@ -36,6 +39,32 @@ class FeedBrowseMapper @Inject constructor() {
 
     fun mapTitle(response: FeedXHeaderResponse): String {
         return response.feedXHeaderData.data.browse.title
+    }
+
+    internal fun mapSlotsResponse(response: FeedXHomeEntity): List<FeedBrowseModel> {
+        return response.items.mapNotNull { item ->
+            if (item.typename == FeedXCard.TYPE_FEED_X_CARD_PLACEHOLDER) {
+                if (item.type.startsWith("browse_channel_slot")) {
+                    FeedBrowseModel.ChannelsWithMenus(
+                        slotId = item.id,
+                        title = item.title,
+                        group = item.type,
+                        menus = emptyMap(),
+                    )
+                } else if (item.type.startsWith("browse_widget_recommendation")) {
+                    FeedBrowseModel.InspirationBanner(
+                        slotId = item.id,
+                        title = item.title,
+                        identifier = item.type,
+                        bannerList = emptyList(),
+                    )
+                } else {
+                    null
+                }
+            } else {
+                null
+            }
+        }
     }
 
     fun mapSlots(response: FeedXHomeEntity): List<FeedBrowseUiModel> {
@@ -128,6 +157,31 @@ class FeedBrowseMapper @Inject constructor() {
                 )
             }
             else -> ChannelUiState.Error(IllegalStateException())
+        }
+    }
+
+    internal fun mapWidgetResponse(response: WidgetSlot): ContentSlotModel {
+        val data = response.playGetContentSlot.data
+        val firstWidget = data.firstOrNull()
+        return when (firstWidget?.type) {
+            FEED_TYPE_TAB_MENU -> {
+                ContentSlotModel.TabMenus(
+                    firstWidget.items.mapIndexed { index, item ->
+                        WidgetMenuModel(
+                            id = item.id,
+                            label = item.label,
+                            group = item.group,
+                            sourceType = item.sourceType,
+                            sourceId = item.sourceId,
+                            isSelected = index == 0
+                        )
+                    }
+                )
+            }
+            FEED_TYPE_CHANNEL_BLOCK -> {
+                ContentSlotModel.ChannelBlock(mapChannel(firstWidget))
+            }
+            else -> error("Type ${firstWidget?.type} is not currently supported")
         }
     }
 

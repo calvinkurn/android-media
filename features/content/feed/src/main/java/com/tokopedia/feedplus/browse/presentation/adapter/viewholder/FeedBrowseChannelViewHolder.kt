@@ -34,7 +34,7 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 /**
  * Created by meyta.taliti on 11/08/23.
  */
-class FeedBrowseChannelViewHolder private constructor(
+internal class FeedBrowseChannelViewHolder private constructor(
     private val binding: ItemFeedBrowseChannelBinding,
     private val listener: Listener,
     lifecycleScope: CoroutineScope,
@@ -200,7 +200,7 @@ class FeedBrowseChannelViewHolder private constructor(
     }
 
     private fun setupChips(chip: ChipUiState.Data) {
-        chipAdapter.setItemsAndAnimateChanges(chip.items)
+//        chipAdapter.submitList(chip.items)
         autoScrollChip(chip)
     }
 
@@ -212,7 +212,7 @@ class FeedBrowseChannelViewHolder private constructor(
     }
 
     private fun setupCards(channel: ChannelUiState.Data) {
-        cardAdapter.setItemsAndAnimateChanges(channel.items)
+        cardAdapter.submitList(channel.items)
         configureAutoRefresh(channel.config)
     }
 

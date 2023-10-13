@@ -12,7 +12,7 @@ import com.tokopedia.feedplus.browse.presentation.model.FeedCategoryInspirationM
 /**
  * Created by kenny.hadisaputra on 21/09/23
  */
-class FeedCategoryInspirationAdapter(
+internal class FeedCategoryInspirationAdapter(
 ) : ListAdapter<FeedCategoryInspirationModel, RecyclerView.ViewHolder>(
         object : DiffUtil.ItemCallback<FeedCategoryInspirationModel>() {
             override fun areItemsTheSame(

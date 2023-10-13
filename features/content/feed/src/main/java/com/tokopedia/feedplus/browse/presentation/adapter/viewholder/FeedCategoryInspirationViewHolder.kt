@@ -12,7 +12,7 @@ import com.tokopedia.feedplus.databinding.ItemFeedBrowseInspirationCardBinding
 /**
  * Created by kenny.hadisaputra on 21/09/23
  */
-class FeedCategoryInspirationViewHolder private constructor() {
+internal class FeedCategoryInspirationViewHolder private constructor() {
 
     class Chips private constructor(
         binding: ItemFeedBrowseChipsBinding,
@@ -39,7 +39,7 @@ class FeedCategoryInspirationViewHolder private constructor() {
         }
 
         fun bind(item: FeedCategoryInspirationModel.Chips) {
-            adapter.setItemsAndAnimateChanges(item.chipList)
+            adapter.submitList(item.chipList)
         }
 
         companion object {
