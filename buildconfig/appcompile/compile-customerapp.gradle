@@ -39,6 +39,7 @@ includeIfEnabled("features:content:content_test")
 includeIfEnabled("features:content:stories")
 includeIfEnabled("features:content:stories_widget")
 includeIfEnabled("features:content:stories_internal")
+includeIfEnabled("features:content:product_picker")
 
 includeIfEnabled("features:category:basemvvm")
 includeIfEnabled("features:category:tradein")

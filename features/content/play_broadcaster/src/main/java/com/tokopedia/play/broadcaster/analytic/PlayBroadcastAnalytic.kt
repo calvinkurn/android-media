@@ -3,18 +3,18 @@ package com.tokopedia.play.broadcaster.analytic
 import com.tokopedia.content.analytic.BusinessUnit
 import com.tokopedia.content.analytic.Key
 import com.tokopedia.content.common.analytic.entrypoint.PlayPerformanceDashboardEntryPointAnalytic
+import com.tokopedia.content.product.picker.seller.analytic.ContentPinnedProductAnalytic
+import com.tokopedia.content.product.picker.seller.analytic.ContentProductPickerSellerAnalytic
 import com.tokopedia.play.broadcaster.analytic.beautification.PlayBroadcastBeautificationAnalytic
 import com.tokopedia.play.broadcaster.analytic.entrypoint.PlayShortsEntryPointAnalytic
 import com.tokopedia.play.broadcaster.analytic.interactive.PlayBroadcastInteractiveAnalytic
-import com.tokopedia.play.broadcaster.analytic.pinproduct.PlayBroadcastPinProductAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.cover.PlayBroSetupCoverAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.menu.PlayBroSetupMenuAnalytic
-import com.tokopedia.play.broadcaster.analytic.setup.product.PlayBroSetupProductAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.schedule.PlayBroScheduleAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.title.PlayBroSetupTitleAnalytic
 import com.tokopedia.play.broadcaster.analytic.summary.PlayBroadcastSummaryAnalytic
 import com.tokopedia.play.broadcaster.analytic.ugc.PlayBroadcastAccountAnalytic
-import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
+import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -31,10 +31,10 @@ class PlayBroadcastAnalytic(
     private val setupMenuAnalytic: PlayBroSetupMenuAnalytic,
     private val setupTitleAnalytic: PlayBroSetupTitleAnalytic,
     private val setupCoverAnalytic: PlayBroSetupCoverAnalytic,
-    private val setupProductAnalytic: PlayBroSetupProductAnalytic,
+    private val setupProductAnalytic: ContentProductPickerSellerAnalytic,
     private val summaryAnalytic: PlayBroadcastSummaryAnalytic,
     private val scheduleAnalytic: PlayBroScheduleAnalytic,
-    private val pinProductAnalytic: PlayBroadcastPinProductAnalytic,
+    private val pinProductAnalytic: ContentPinnedProductAnalytic,
     private val accountAnalytic: PlayBroadcastAccountAnalytic,
     private val shortsEntryPointAnalytic: PlayShortsEntryPointAnalytic,
     private val playPerformanceDashboardEntryPointAnalytic: PlayPerformanceDashboardEntryPointAnalytic,
@@ -43,10 +43,10 @@ class PlayBroadcastAnalytic(
     PlayBroSetupMenuAnalytic by setupMenuAnalytic,
     PlayBroSetupTitleAnalytic by setupTitleAnalytic,
     PlayBroSetupCoverAnalytic by setupCoverAnalytic,
-    PlayBroSetupProductAnalytic by setupProductAnalytic,
+    ContentProductPickerSellerAnalytic by setupProductAnalytic,
     PlayBroadcastSummaryAnalytic by summaryAnalytic,
     PlayBroScheduleAnalytic by scheduleAnalytic,
-    PlayBroadcastPinProductAnalytic by pinProductAnalytic,
+    ContentPinnedProductAnalytic by pinProductAnalytic,
     PlayBroadcastAccountAnalytic by accountAnalytic,
     PlayShortsEntryPointAnalytic by shortsEntryPointAnalytic,
     PlayPerformanceDashboardEntryPointAnalytic by playPerformanceDashboardEntryPointAnalytic,

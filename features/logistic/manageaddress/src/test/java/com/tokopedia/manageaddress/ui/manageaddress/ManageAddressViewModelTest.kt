@@ -6,11 +6,12 @@ import android.os.Bundle
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
-import com.tokopedia.localizationchooseaddress.data.repository.ChooseAddressRepository
 import com.tokopedia.localizationchooseaddress.domain.mapper.ChooseAddressMapper
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressQglResponse
 import com.tokopedia.localizationchooseaddress.domain.response.SetStateChosenAddressQqlResponse
+import com.tokopedia.localizationchooseaddress.domain.usecase.GetStateChosenAddressUseCase
+import com.tokopedia.localizationchooseaddress.domain.usecase.SetStateChosenAddressFromAddressUseCase
 import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.domain.model.AddressListModel
@@ -78,7 +79,10 @@ class ManageAddressViewModelTest {
     private val setDefaultPeopleAddressUseCase =
         mockk<SetDefaultPeopleAddressUseCase>(relaxed = true)
     private val getUserConsentCollection: GetConsentCollectionUseCase = mockk(relaxed = true)
-    private val chooseAddressRepo: ChooseAddressRepository = mockk(relaxed = true)
+    private val setStateChosenAddressFromAddressUseCase: SetStateChosenAddressFromAddressUseCase =
+        mockk(relaxed = true)
+    private val getStateChosenAddressUseCase: GetStateChosenAddressUseCase = mockk(relaxed = true)
+
     private val chooseAddressMapper: ChooseAddressMapper = mockk(relaxed = true)
     private val chosenAddressObserver: Observer<Result<ChosenAddressModel>> = mockk(relaxed = true)
     private val validateShareAddressAsReceiverUseCase: ValidateShareAddressAsReceiverUseCase =
@@ -110,12 +114,13 @@ class ManageAddressViewModelTest {
             getPeopleAddressUseCase,
             deletePeopleAddressUseCase,
             setDefaultPeopleAddressUseCase,
-            chooseAddressRepo,
             chooseAddressMapper,
             validateShareAddressAsReceiverUseCase,
             validateShareAddressAsSenderUseCase,
             tickerUseCase,
-            getUserConsentCollection
+            getUserConsentCollection,
+            setStateChosenAddressFromAddressUseCase,
+            getStateChosenAddressUseCase
         )
         manageAddressViewModel.getChosenAddress.observeForever(chosenAddressObserver)
         manageAddressViewModel.setChosenAddress.observeForever(chosenAddressObserver)
@@ -344,8 +349,7 @@ class ManageAddressViewModelTest {
     @Test
     fun `Get Chosen Address Success`() {
         coEvery {
-            chooseAddressRepo.getStateChosenAddress(
-                any(),
+            getStateChosenAddressUseCase(
                 any()
             )
         } returns GetStateChosenAddressQglResponse()
@@ -356,8 +360,7 @@ class ManageAddressViewModelTest {
     @Test
     fun `Get Chosen Address Fail`() {
         coEvery {
-            chooseAddressRepo.getStateChosenAddress(
-                any(),
+            getStateChosenAddressUseCase(
                 any()
             )
         } throws Throwable("test error")
@@ -368,7 +371,7 @@ class ManageAddressViewModelTest {
     @Test
     fun `Set Chosen Address Success`() {
         val model = RecipientAddressModel()
-        coEvery { chooseAddressRepo.setStateChosenAddressFromAddress(any()) } returns SetStateChosenAddressQqlResponse()
+        coEvery { setStateChosenAddressFromAddressUseCase(any()) } returns SetStateChosenAddressQqlResponse()
         manageAddressViewModel.setStateChosenAddress(model)
         verify { chosenAddressObserver.onChanged(match { it is Success }) }
     }
@@ -376,7 +379,7 @@ class ManageAddressViewModelTest {
     @Test
     fun `Set Chosen Address Fail`() {
         val model = RecipientAddressModel()
-        coEvery { chooseAddressRepo.setStateChosenAddressFromAddress(any()) } throws Throwable("test error")
+        coEvery { setStateChosenAddressFromAddressUseCase(any()) } throws Throwable("test error")
         manageAddressViewModel.setStateChosenAddress(model)
         verify { chosenAddressObserver.onChanged(match { it is Fail }) }
     }
