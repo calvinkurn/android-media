@@ -245,13 +245,13 @@ private fun String.isGif(): Boolean {
 private fun extReader(url: String): String {
     val uri: URI? = try {
         URI(url)
-    } catch (e: Exception) {
+    } catch (_: Exception) {
         null
     }
 
     return try {
         File(uri?.path.orEmpty()).extension.lowercase(Locale.ENGLISH)
-    } catch (e: Exception) {
+    } catch (_: Exception) {
         ""
     }
 }

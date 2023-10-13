@@ -141,7 +141,7 @@ class HomeHeaderAtf2ViewHolder(
     }
 
     private fun getPullRefreshLoaderColor(): Int {
-        return if(homeThematicUtil.isBackgroundLoaded)
+        return if(homeThematicUtil.isBackgroundLoaded && !homeThematicUtil.isDefault())
             LayoutIconPullRefreshView.TYPE_WHITE
         else LayoutIconPullRefreshView.TYPE_GREEN
     }
