@@ -29,8 +29,8 @@ import com.tokopedia.catalogcommon.uimodel.BannerCatalogUiModel
 import com.tokopedia.catalogcommon.uimodel.BaseCatalogUiModel
 import com.tokopedia.catalogcommon.uimodel.BlankUiModel
 import com.tokopedia.catalogcommon.uimodel.CharacteristicUiModel
+import com.tokopedia.catalogcommon.uimodel.ComparisonUiModel
 import com.tokopedia.catalogcommon.uimodel.DoubleBannerCatalogUiModel
-import com.tokopedia.catalogcommon.uimodel.DummyUiModel
 import com.tokopedia.catalogcommon.uimodel.ExpertReviewUiModel
 import com.tokopedia.catalogcommon.uimodel.HeroBannerUiModel
 import com.tokopedia.catalogcommon.uimodel.SliderImageTextUiModel
@@ -55,6 +55,8 @@ class CatalogDetailUiMapper @Inject constructor(
 ) {
     companion object {
         private val LAYOUT_VERSION_4_VALUE = 4
+        private val COMPARISON_COUNT = 2
+        private val TOP_COMPARISON_SPEC_COUNT = 5
     }
 
     fun mapToWidgetVisitables(
@@ -68,29 +70,16 @@ class CatalogDetailUiMapper @Inject constructor(
                 WidgetTypes.CATALOG_HERO.type -> it.mapToHeroBanner(isDarkMode)
                 WidgetTypes.CATALOG_FEATURE_TOP.type -> it.mapToTopFeature(remoteModel)
                 WidgetTypes.CATALOG_TRUSTMAKER.type -> it.mapToTrustMaker(isDarkMode)
-                WidgetTypes.CATALOG_CHARACTERISTIC.type -> {
-                    it.mapToCharacteristic(isDarkMode)
-                }
-
+                WidgetTypes.CATALOG_CHARACTERISTIC.type -> it.mapToCharacteristic(isDarkMode)
                 WidgetTypes.CATALOG_BANNER_SINGLE.type -> it.mapToBannerImage(isDarkMode)
                 WidgetTypes.CATALOG_BANNER_DOUBLE.type -> it.mapToDoubleBannerImage(isDarkMode)
                 WidgetTypes.CATALOG_NAVIGATION.type -> it.mapToStickyNavigation(remoteModel)
                 WidgetTypes.CATALOG_SLIDER_IMAGE.type -> it.mapToSliderImageText(isDarkMode)
                 WidgetTypes.CATALOG_TEXT.type -> it.mapToTextDescription(isDarkMode)
                 WidgetTypes.CATALOG_REVIEW_EXPERT.type -> it.mapToExpertReview(isDarkMode)
-                WidgetTypes.CATALOG_FEATURE_SUPPORT.type -> {
-                    it.mapToSupportFeature(remoteModel)
-                }
-
+                WidgetTypes.CATALOG_FEATURE_SUPPORT.type -> it.mapToSupportFeature(remoteModel)
                 WidgetTypes.CATALOG_ACCORDION.type -> it.mapToAccordion(isDarkMode)
-                WidgetTypes.CATALOG_COMPARISON.type -> {
-                    DummyUiModel(content = it.name)
-                }
-
-                WidgetTypes.CATALOG_SIMILAR_PRODUCT.type -> {
-                    DummyUiModel(content = it.name)
-                }
-
+                WidgetTypes.CATALOG_COMPARISON.type -> it.mapToComparison()
                 else -> {
                     BlankUiModel()
                 }
@@ -142,7 +131,7 @@ class CatalogDetailUiMapper @Inject constructor(
 
     private fun mapToNavigationProperties(
         remoteModel: CatalogResponseData.CatalogGetDetailModular,
-        widgets: List<Visitable<*>>,
+        widgets: List<Visitable<*>>
     ): NavigationProperties {
         val heroImage = widgets.firstOrNull { it is HeroBannerUiModel } as? HeroBannerUiModel
         return NavigationProperties(
@@ -182,9 +171,9 @@ class CatalogDetailUiMapper @Inject constructor(
                 heroSlide.subtitle
             }.orEmpty(),
             brandIconUrl = data?.hero?.brandLogoUrl.orEmpty(),
-            widgetTextColor = colorMapping(darkMode, DARK_COLOR_BANNER, LIGHT_COLOR_BANNER),
+            widgetTextColor = colorMapping(darkMode, DARK_COLOR_BANNER, LIGHT_COLOR_BANNER)
 
-            )
+        )
 
     private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToTopFeature(
         remoteModel: CatalogResponseData.CatalogGetDetailModular
@@ -197,7 +186,7 @@ class CatalogDetailUiMapper @Inject constructor(
                     icon = it.iconUrl,
                     name = it.desc,
                     backgroundColor = colorMapping(isDarkMode, DARK_COLOR, LIGHT_COLOR, 20),
-                    textColor = getTextColor(isDarkMode),
+                    textColor = getTextColor(isDarkMode)
                 )
             }.orEmpty()
         )
@@ -375,7 +364,7 @@ class CatalogDetailUiMapper @Inject constructor(
                         background = colorMapping(
                             isDarkMode,
                             catalogcommonR.drawable.bg_circle_border_dark,
-                            catalogcommonR.drawable.bg_circle_border_light,
+                            catalogcommonR.drawable.bg_circle_border_light
                         )
                     )
                 )
@@ -406,10 +395,43 @@ class CatalogDetailUiMapper @Inject constructor(
                         isDarkMode,
                         DARK_COLOR_SUPPORT_FEATURE_01,
                         LIGHT_COLOR_SUPPORT_FEATURE_01
-                    ),
+                    )
                 )
             }.orEmpty()
         )
+    }
+
+    private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToComparison(): BaseCatalogUiModel {
+        var isFirstData = true
+        return ComparisonUiModel(content = data?.comparison.orEmpty().take(COMPARISON_COUNT).map {
+            val comparisonSpecs = mutableListOf<ComparisonUiModel.ComparisonSpec>()
+            it.fullSpec.forEach { spec ->
+                comparisonSpecs.add(ComparisonUiModel.ComparisonSpec(
+                    isSpecCategoryTitle = true,
+                    specCategoryTitle = if (isFirstData) spec.name else ""
+                ))
+                spec.row.forEach { rowItem ->
+                    val insertedItem = ComparisonUiModel.ComparisonSpec(
+                        isSpecCategoryTitle = false,
+                        specTitle = if (isFirstData) rowItem.key else "",
+                        specValue = rowItem.value,
+                    )
+                    comparisonSpecs.add(insertedItem)
+                }
+            }
+            isFirstData = false
+            ComparisonUiModel.ComparisonContent(
+                imageUrl = it.catalogImage.firstOrNull{ image -> image.isPrimary }?.imageUrl.orEmpty(),
+                productTitle = it.name,
+                price = it.marketPrice.firstOrNull()?.let { marketPrice ->
+                    marketPrice.minFmt + " - " + marketPrice.maxFmt
+                }.orEmpty() ,
+                comparisonSpecs = comparisonSpecs,
+                topComparisonSpecs = comparisonSpecs
+                    .filter { comparisonSpec -> !comparisonSpec.isSpecCategoryTitle }
+                    .take(TOP_COMPARISON_SPEC_COUNT)
+            )
+        })
     }
 
     private fun getTextColor(darkMode: Boolean): Int {
@@ -424,5 +446,4 @@ class CatalogDetailUiMapper @Inject constructor(
     fun isUsingAboveV4Layout(version: Int): Boolean {
         return version >= LAYOUT_VERSION_4_VALUE
     }
-
 }

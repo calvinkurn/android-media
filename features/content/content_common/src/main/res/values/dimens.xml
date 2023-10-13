@@ -17,6 +17,7 @@
     <dimen name="content_common_space_24">24dp</dimen>
     <dimen name="content_common_space_32">32dp</dimen>
     <dimen name="content_common_space_36">36dp</dimen>
+    <dimen name="content_common_space_72">72dp</dimen>
     <dimen name="content_common_space_40" tools:ignore="UnusedResources">40dp</dimen>
     <dimen name="feed_bottomsheet_toaster_margin_bottom">48dp</dimen>
     <dimen name="content_common_dp_50">50dp</dimen>

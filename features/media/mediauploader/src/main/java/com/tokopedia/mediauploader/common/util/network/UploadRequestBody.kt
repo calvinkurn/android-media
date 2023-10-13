@@ -31,6 +31,10 @@ class UploadRequestBody(
         inputStream.use { stream ->
             var read = 0
             while (read != -1) {
+                uploaded += read.toLong()
+                sink.write(buffer, 0, read)
+                read = stream.read(buffer)
+
                 val isCalledByCallServerInterceptor =
                     Thread.currentThread().stackTrace.any { stackTraceElement ->
                         stackTraceElement.className == CallServerInterceptor::class.java.canonicalName
@@ -39,10 +43,6 @@ class UploadRequestBody(
                 if (isCalledByCallServerInterceptor) {
                     handler.post(ProgressUpdater(uploaded, fileLength, uploader))
                 }
-
-                uploaded += read.toLong()
-                sink.write(buffer, 0, read)
-                read = stream.read(buffer)
             }
         }
     }

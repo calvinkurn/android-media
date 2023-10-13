@@ -1,9 +1,9 @@
-package com.tokopedia.tokopedianow.category.presentation.model
+package com.tokopedia.tokopedianow.category.presentation.uimodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokopedianow.category.presentation.adapter.typefactory.listener.CategoryL2TabAdapterFactory
 
-data class CategoryEmptyStateDivider(
+data class CategoryDividerUiModel(
     val topMargin: Int = DEFAULT_MARGIN,
     val bottomMargin: Int = DEFAULT_MARGIN
 ): Visitable<CategoryL2TabAdapterFactory> {
