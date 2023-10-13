@@ -46,7 +46,7 @@ object RecommendationResult {
     fun assertApplinkPDP() {
         Intents.intended(
             IntentMatchers.hasData(
-                "tokopedia-android-internal://marketplace/product-detail/2455862417/"
+                "tokopedia-android-internal://marketplace/product-detail/4637526753/"
             )
         )
     }

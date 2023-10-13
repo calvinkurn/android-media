@@ -93,7 +93,7 @@ class UniversalInboxApplinkTest : BaseUniversalInboxTest() {
         launchActivity()
         stubAllIntents()
         generalRobot {
-            scrollToPosition(11) // trigger rv load
+            scrollToPosition(8) // trigger rv load
             scrollToPosition(11)
         }
         recommendationRobot {
