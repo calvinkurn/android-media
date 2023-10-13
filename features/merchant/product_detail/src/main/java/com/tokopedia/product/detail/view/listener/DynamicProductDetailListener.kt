@@ -300,8 +300,8 @@ interface DynamicProductDetailListener {
     /**
      * ProductRecom
      */
-    fun loadTopads(pageName: String)
-    fun loadViewToView(pageName: String)
+    fun loadTopads(pageName: String, queryParam: String, thematicId: String)
+    fun loadViewToView(pageName: String, queryParam: String, thematicId: String)
 
     fun loadPlayWidget()
 
@@ -501,7 +501,7 @@ interface DynamicProductDetailListener {
     fun updateNavigationTabPosition()
 
     fun onImpressRecommendationVertical(componentTrackDataModel: ComponentTrackDataModel)
-    fun startVerticalRecommendation(pageName: String)
+    fun startVerticalRecommendation(pageName: String, queryParam: String, thematicId: String)
     fun getRecommendationVerticalTrackData(): ComponentTrackDataModel?
 
     /**
@@ -519,7 +519,7 @@ interface DynamicProductDetailListener {
         itemPosition: Int,
         adapterPosition: Int
     )
-    fun onViewToViewReload(pageName: String)
+    fun onViewToViewReload(pageName: String, queryParam: String, thematicId: String)
 
     /**
      * Thumbnail Variant

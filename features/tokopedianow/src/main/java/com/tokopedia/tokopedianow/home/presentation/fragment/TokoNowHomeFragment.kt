@@ -258,7 +258,6 @@ class TokoNowHomeFragment :
                 bannerComponentListener = createSlideBannerCallback(),
                 homeProductRecomOocListener = createProductRecomOocCallback(),
                 homeProductRecomListener = createProductRecomCallback(),
-                tokoNowProductCardListener = createProductCardListener(),
                 tokoNowRepurchaseListener = createRepurchaseProductListener(),
                 homeSharingEducationListener = this,
                 homeEducationalInformationListener = this,
@@ -1624,7 +1623,7 @@ class TokoNowHomeFragment :
                 HomeRemoveAbleWidget(SHARING_EDUCATION, SharedPreferencesUtil.isSharingEducationRemoved(activity)),
                 HomeRemoveAbleWidget(MAIN_QUEST, SharedPreferencesUtil.isQuestAllClaimedRemoved(activity))
             )
-            viewModelTokoNow.onScroll(lastVisibleItemIndex, it, removeAbleWidgets, isEnableNewRepurchase())
+            viewModelTokoNow.onScroll(lastVisibleItemIndex, it, removeAbleWidgets)
         }
     }
 
@@ -1634,15 +1633,8 @@ class TokoNowHomeFragment :
                 HomeRemoveAbleWidget(SHARING_EDUCATION, SharedPreferencesUtil.isSharingEducationRemoved(activity)),
                 HomeRemoveAbleWidget(MAIN_QUEST, SharedPreferencesUtil.isQuestAllClaimedRemoved(activity))
             )
-            viewModelTokoNow.getHomeLayout(it, removeAbleWidgets, isEnableNewRepurchase())
+            viewModelTokoNow.getHomeLayout(it, removeAbleWidgets)
         }
-    }
-
-    private fun isEnableNewRepurchase(): Boolean {
-//        val rollence = RemoteConfigInstance.getInstance().abTestPlatform
-//            .getString(RollenceKey.TOKOPEDIA_NOW_REPURCHASE, REPURCHASE_EXPERIMENT_DISABLED)
-//        return rollence == REPURCHASE_EXPERIMENT_ENABLED
-        return true
     }
 
     private fun getMiniCart() {
@@ -2122,7 +2114,8 @@ class TokoNowHomeFragment :
 
     private fun getMiniCartHeight(): Int {
         return miniCartWidget?.height.orZero() - context?.resources?.getDimension(
-            unifyprinciplesR.dimen.unify_space_16)?.toInt().orZero()
+            unifyprinciplesR.dimen.unify_space_16
+        )?.toInt().orZero()
     }
 
     override fun permissionAction(action: String, label: String) {
