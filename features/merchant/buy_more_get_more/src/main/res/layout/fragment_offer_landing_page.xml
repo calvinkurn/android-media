@@ -12,10 +12,11 @@
         android:layout_height="match_parent"
         android:background="@color/Unify_NN0">
 
-        <View
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/header_background"
             android:layout_width="match_parent"
             android:layout_height="190dp"
+            app:unify_image_corner_radius="0"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/status_bar" />

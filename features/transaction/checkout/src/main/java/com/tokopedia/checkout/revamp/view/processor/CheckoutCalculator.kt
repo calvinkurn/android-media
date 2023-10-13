@@ -116,7 +116,6 @@ class CheckoutCalculator @Inject constructor(
         var hasAddOnSelected = false
         var totalAddOnGiftingPrice = 0.0
         var totalAddOnProductServicePrice = 0.0
-        var qtyAddOn = 0
         var totalBmgmDiscount = 0.0
         val countMapSummaries = hashMapOf<Int, Pair<Double, Int>>()
         val listShipmentAddOnSummary: ArrayList<ShipmentAddOnSummaryModel> = arrayListOf()
@@ -158,19 +157,16 @@ class CheckoutCalculator @Inject constructor(
                         if (cartItem.addOnProduct.listAddOnProductData.isNotEmpty()) {
                             for (addOnProductService in cartItem.addOnProduct.listAddOnProductData) {
                                 if (addOnProductService.isChecked) {
-                                    totalAddOnProductServicePrice += (addOnProductService.price * cartItem.quantity)
-                                    if (countMapSummaries.containsKey(addOnProductService.type)) {
-                                        qtyAddOn += cartItem.quantity
-                                    } else {
-                                        qtyAddOn = cartItem.quantity
-                                    }
+                                    val addOnQty = if (addOnProductService.fixedQty) 1 else cartItem.quantity
+                                    totalAddOnProductServicePrice += (addOnProductService.price * addOnQty)
+                                    val totalQtyAddOn = addOnQty + (countMapSummaries[addOnProductService.type]?.second ?: 0)
                                     val totalPriceAddOn =
-                                        (qtyAddOn * addOnProductService.price) + (
+                                        (addOnQty * addOnProductService.price) + (
                                             countMapSummaries[addOnProductService.type]?.first
                                                 ?: 0.0
                                             )
                                     countMapSummaries[addOnProductService.type] =
-                                        totalPriceAddOn to qtyAddOn
+                                        totalPriceAddOn to totalQtyAddOn
                                 }
                             }
                         }

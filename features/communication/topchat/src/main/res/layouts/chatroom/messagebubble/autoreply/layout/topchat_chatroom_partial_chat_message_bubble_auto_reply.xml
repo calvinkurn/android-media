@@ -16,7 +16,7 @@
         app:layout_constraintStart_toStartOf="@id/fxChat"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.tokopedia.topchat.chatroom.view.custom.messagebubble.autoreply.FlexBoxChatAutoReplyLayout
+    <com.tokopedia.topchat.chatroom.view.custom.messagebubble.autoreply.TopChatChatRoomFlexBoxAutoReplyLayout
         android:id="@+id/fxChat"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

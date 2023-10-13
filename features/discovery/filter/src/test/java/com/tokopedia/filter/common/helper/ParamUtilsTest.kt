@@ -62,6 +62,15 @@ class ParamUtilsTest {
                         OptionHelper.EXCLUDE_PREFIX + SearchApiConst.SC to "1234"
                 )
         ) shouldBe 0
+
+        getSortFilterCount(
+            mapOf(
+                SearchApiConst.Q to "samsung",
+                SearchApiConst.OB to 3,
+                SearchApiConst.PMIN to 0,
+                SearchApiConst.DISABLE_AUTO_FILTER_SORT to true.toString()
+            )
+        ) shouldBe 1
     }
 
     @Test

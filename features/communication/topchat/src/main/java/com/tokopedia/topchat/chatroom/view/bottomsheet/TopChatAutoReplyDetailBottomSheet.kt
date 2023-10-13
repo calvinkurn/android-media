@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatroom.view.adapter.TopChatAutoReplyAdapter
+import com.tokopedia.topchat.chatroom.view.adapter.TopChatChatRoomAutoReplyAdapter
 import com.tokopedia.topchat.chatroom.view.uimodel.autoreply.TopChatAutoReplyItemUiModel
 import com.tokopedia.topchat.databinding.TopchatChatroomBottomsheetAutoReplyBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -16,7 +16,7 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 class TopChatAutoReplyDetailBottomSheet: BottomSheetUnify() {
 
     private var binding by autoClearedNullable<TopchatChatroomBottomsheetAutoReplyBinding>()
-    private val adapter = TopChatAutoReplyAdapter(isMessageBubble = false)
+    private val adapter = TopChatChatRoomAutoReplyAdapter(isMessageBubble = false)
     private var welcomeMessage = TopChatAutoReplyItemUiModel("", "", "")
     private var list: List<TopChatAutoReplyItemUiModel> = listOf()
 

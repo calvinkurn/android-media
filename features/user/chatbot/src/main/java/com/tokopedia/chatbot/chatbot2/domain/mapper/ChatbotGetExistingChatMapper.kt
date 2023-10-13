@@ -10,6 +10,8 @@ import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUICK_REPLY_
 import com.tokopedia.chat_common.data.FallbackAttachmentUiModel
 import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.domain.mapper.GetExistingChatMapper
+import com.tokopedia.chat_common.domain.pojo.Chat
+import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chat_common.domain.pojo.Reply
 import com.tokopedia.chatbot.ChatbotConstant
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_CHAT_SEPARATOR
@@ -55,6 +57,44 @@ import javax.inject.Inject
  * @author by nisie on 21/12/18.
  */
 open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatMapper() {
+
+    override fun mappingListChat(pojo: GetExistingChatPojo): ArrayList<Visitable<*>> {
+        val listChat: ArrayList<Visitable<*>> = ArrayList()
+
+        for (chatItemPojo in pojo.chatReplies.list) {
+            for (chatItemPojoByDate in chatItemPojo.chats) {
+                for ((index, chatItemPojoByDateByTime) in chatItemPojoByDate.replies.withIndex()) {
+                    if (hasAttachment(chatItemPojoByDateByTime)) {
+                        val attachmentIds = getAttachmentIds(pojo.chatReplies.attachmentIds)
+                        val hasReplied = validateActionButtonHasBeenReplied(index, chatItemPojoByDateByTime, chatItemPojoByDate)
+                        if (!hasReplied) {
+                            listChat.add(mapAttachment(chatItemPojoByDateByTime, attachmentIds))
+                        }
+                    } else {
+                        listChat.add(convertToMessageViewModel(chatItemPojoByDateByTime))
+                    }
+                }
+            }
+        }
+
+        return listChat
+    }
+
+    private fun validateActionButtonHasBeenReplied(
+        index: Int,
+        chatItemPojoByDateByTime: Reply,
+        chatItemPojoByDate: Chat
+    ): Boolean {
+        val attachmentId = chatItemPojoByDateByTime.attachment.type.toString()
+        if (attachmentId != TYPE_CHAT_BALLOON_ACTION) return false
+
+        return if (index < (chatItemPojoByDate.replies.size - 1)) {
+            val nextItem = chatItemPojoByDate.replies[index + 1]
+            !nextItem.isOpposite
+        } else {
+            false
+        }
+    }
 
     override fun mapAttachment(
         chatItemPojoByDateByTime: Reply,
@@ -296,7 +336,8 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
             pojo.replyTime,
             pojo.msg,
             convertToChatActionBubbleViewModelList(pojoAttribute),
-            status = pojo.status
+            status = pojo.status,
+            isTypingBlocked = pojoAttribute.isTypingBlockedOnButtonSelect
         )
     }
 

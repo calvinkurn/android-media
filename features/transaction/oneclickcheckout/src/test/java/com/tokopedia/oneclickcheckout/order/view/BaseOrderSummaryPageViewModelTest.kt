@@ -4,8 +4,8 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiExternalUseCase
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
-import com.tokopedia.localizationchooseaddress.data.repository.ChooseAddressRepository
 import com.tokopedia.localizationchooseaddress.domain.mapper.ChooseAddressMapper
+import com.tokopedia.localizationchooseaddress.domain.usecase.SetStateChosenAddressFromAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.UpdatePinpointUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
@@ -59,10 +59,11 @@ open class BaseOrderSummaryPageViewModelTest {
     @MockK(relaxed = true)
     lateinit var getPrescriptionIdsUseCase: GetPrescriptionIdsUseCaseCoroutine
 
-    private val ratesResponseStateConverter: RatesResponseStateConverter = RatesResponseStateConverter()
+    private val ratesResponseStateConverter: RatesResponseStateConverter =
+        RatesResponseStateConverter()
 
     @MockK
-    lateinit var chooseAddressRepository: Lazy<ChooseAddressRepository>
+    lateinit var setStateChosenAddressFromAddressUseCase: SetStateChosenAddressFromAddressUseCase
 
     @MockK
     lateinit var chooseAddressMapper: Lazy<ChooseAddressMapper>
@@ -132,10 +133,10 @@ open class BaseOrderSummaryPageViewModelTest {
             OrderSummaryPageLogisticProcessor(
                 ratesUseCase,
                 ratesResponseStateConverter,
-                chooseAddressRepository,
                 chooseAddressMapper,
                 editAddressUseCase,
                 orderSummaryAnalytics,
+                setStateChosenAddressFromAddressUseCase,
                 testDispatchers
             ),
             OrderSummaryPageCheckoutProcessor(
@@ -162,7 +163,7 @@ open class BaseOrderSummaryPageViewModelTest {
                 )
             },
             OrderSummaryPageCalculator(orderSummaryAnalytics, testDispatchers),
-            userSessionInterface, orderSummaryAnalytics
+            userSessionInterface, orderSummaryAnalytics, 1000L
         )
 
         coEvery { dynamicPaymentFeeUseCase.invoke(any()) } returns emptyList()
