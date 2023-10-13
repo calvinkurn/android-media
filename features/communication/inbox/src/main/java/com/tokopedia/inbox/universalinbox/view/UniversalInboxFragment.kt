@@ -317,7 +317,7 @@ class UniversalInboxFragment @Inject constructor(
             // Scroll to top when it is loading & empty product list
             // It means refresh / re-shuffle products
             if (it.isLoading && it.productRecommendation.isEmpty()) {
-                adapter.getProductRecommendationFirstPosition()?.let { position ->
+                adapter.getMenuSeparatorPosition()?.let { position ->
                     binding?.inboxRv?.scrollToPosition(position)
                 }
             }

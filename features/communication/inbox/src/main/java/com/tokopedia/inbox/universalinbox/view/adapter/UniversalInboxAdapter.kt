@@ -19,6 +19,7 @@ import com.tokopedia.inbox.universalinbox.view.adapter.viewholder.UniversalInbox
 import com.tokopedia.inbox.universalinbox.view.adapter.viewholder.UniversalInboxTopAdsBannerViewHolder
 import com.tokopedia.inbox.universalinbox.view.adapter.viewholder.UniversalInboxTopAdsHeadlineViewHolder
 import com.tokopedia.inbox.universalinbox.view.adapter.viewholder.UniversalInboxWidgetMetaViewHolder
+import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuSeparatorUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationTitleUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationWidgetUiModel
@@ -69,6 +70,7 @@ class UniversalInboxAdapter(
         holder.onViewRecycled()
     }
 
+    private var menuSeparatorPosition: Int? = null
     private var recommendationFirstPosition: Int? = null
     private var recommendationTitlePosition: Int? = null
     private var recommendationWidgetPrePurchasePosition: Int? = null
@@ -185,6 +187,25 @@ class UniversalInboxAdapter(
     private fun checkCachedRecommendationTitlePosition(): Boolean {
         return recommendationTitlePosition?.let {
             it < visitables.size && visitables[it] is UniversalInboxRecommendationTitleUiModel
+        } ?: false
+    }
+
+    fun getMenuSeparatorPosition(): Int? {
+        return if (checkCachedMenuSeparatorPosition()) {
+            menuSeparatorPosition
+        } else {
+            // get first index or -1
+            visitables.indexOfFirst {
+                it is UniversalInboxMenuSeparatorUiModel
+            }.takeIf { it >= 0 }?.also { // get result when it not -1 (found)
+                menuSeparatorPosition = it
+            }
+        }
+    }
+
+    private fun checkCachedMenuSeparatorPosition(): Boolean {
+        return menuSeparatorPosition?.let {
+            it < visitables.size && visitables[it] is UniversalInboxMenuSeparatorUiModel
         } ?: false
     }
 
