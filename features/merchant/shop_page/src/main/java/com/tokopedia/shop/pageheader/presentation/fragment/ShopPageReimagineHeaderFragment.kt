@@ -338,7 +338,6 @@ class ShopPageReimagineHeaderFragment :
     var variantId: String = ""
     private var affiliateData: ShopAffiliateData? = null
     var isFirstCreateShop: Boolean = false
-    var isShowFeed: Boolean = false
     private var isTabClickByUser = false
     private var isFollowing: Boolean = false
     private var tabPosition = TAB_POSITION_HOME
@@ -1709,7 +1708,6 @@ class ShopPageReimagineHeaderFragment :
 
     private fun onSuccessGetShopPageP1Data(shopPageHeaderP1Data: ShopPageHeaderP1HeaderData) {
         this.shopPageHeaderP1Data = shopPageHeaderP1Data
-        isShowFeed = shopPageHeaderP1Data.isWhitelist
         shopPageHeaderDataModel = ShopPageHeaderDataModel().apply {
             shopId = this@ShopPageReimagineHeaderFragment.shopId
             isOfficial = shopPageHeaderP1Data.isOfficial
