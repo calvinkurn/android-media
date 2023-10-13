@@ -60,6 +60,9 @@ class TrackingPageMapperNew @Inject constructor() {
 
     private fun mapDetailOrder(detail: Detail): DetailModel {
         return DetailModel().apply {
+            shipperId = detail.shipperId
+            shipperProductId = detail.shipperProductId
+            isBuyer = detail.isBuyer
             shipperCity = detail.shipperCity
             shipperName = detail.shipperName
             receiverCity = detail.receiverCity

@@ -304,18 +304,16 @@
                 app:typographyType="heading_4"
                 tools:text="On Process" />
 
-            <com.tokopedia.unifycomponents.ticker.Ticker
+            <com.tokopedia.targetedticker.ui.TargetedTickerWidget
                 android:id="@+id/ticker_info_courier"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                app:closeButtonVisibility="gone"
                 app:layout_constraintEnd_toStartOf="@id/right_padding"
                 app:layout_constraintLeft_toRightOf="@id/left_padding"
                 app:layout_constraintRight_toLeftOf="@id/right_padding"
                 app:layout_constraintStart_toEndOf="@id/left_padding"
                 app:layout_constraintTop_toBottomOf="@id/current_status"
-                app:tickerShapeType="loose"
                 tools:visibility="gone" />
 
             <View

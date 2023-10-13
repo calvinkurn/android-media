@@ -11,21 +11,11 @@ object TargetedTickerMapper {
 
     private const val HTML_HYPERLINK_FORMAT = "<a href=\"%s\">%s</a>"
 
-
     fun convertTargetedTickerToUiModel(
-        firstTickerContent: String? = null,
         targetedTickerData: GetTargetedTickerResponse.GetTargetedTickerData? = null
     ): TickerModel {
         val tickerItems = arrayListOf<TickerModel.TickerItem>()
 
-        if (firstTickerContent?.isNotBlank() == true) {
-            tickerItems.add(
-                TickerModel.TickerItem(
-                    type = Ticker.TYPE_ANNOUNCEMENT,
-                    content = firstTickerContent
-                )
-            )
-        }
 
         targetedTickerData?.list?.sortedBy { it.priority }?.apply {
             tickerItems.addAll(
@@ -70,13 +60,13 @@ object TargetedTickerMapper {
         }.toString()
     }
 
-    fun StringBuilder.appendHyperlinkText(label: String, url: String) {
+    private fun StringBuilder.appendHyperlinkText(label: String, url: String) {
         if (label.isNotBlank() && url.isNotBlank()) {
             append(String.format(HTML_HYPERLINK_FORMAT, url, label))
         }
     }
 
-    fun StringBuilder.appendEmptySpace() {
+    private fun StringBuilder.appendEmptySpace() {
         append(" ")
     }
 }

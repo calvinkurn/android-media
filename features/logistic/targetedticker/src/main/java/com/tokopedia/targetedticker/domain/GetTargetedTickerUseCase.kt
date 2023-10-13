@@ -22,11 +22,11 @@ class GetTargetedTickerUseCase @Inject constructor(
         return repository.request(graphqlQuery(), createParams(params))
     }
 
-    private fun createParams(page: String): GetTargetedTickerRequest {
+    private fun createParams(page: String, target:List<GetTargetedTickerParam.GetTargetedTickerRequestTarget> = listOf() ): GetTargetedTickerRequest {
         return GetTargetedTickerRequest(
             GetTargetedTickerParam(
                 page = page,
-                target = listOf()
+                target = target
             )
         )
     }

@@ -52,9 +52,9 @@ data class Detail(
     @SerializedName("shipper_id")
     val shipperId: String = "",
     @SerializedName("sp_id")
-    val spId: String = "",
+    val shipperProductId: String = "",
     @SerializedName("is_buyer")
-    val isBuyer: String = "",
+    val isBuyer: Boolean = true,
     @SerializedName("shipper_city")
     val shipperCity: String = "",
     @SerializedName("shipper_name")

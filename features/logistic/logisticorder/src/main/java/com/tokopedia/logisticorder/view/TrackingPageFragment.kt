@@ -49,6 +49,7 @@ import com.tokopedia.logisticorder.view.bottomsheet.DriverInfoBottomSheet
 import com.tokopedia.logisticorder.view.bottomsheet.DriverTippingBottomSheet
 import com.tokopedia.logisticorder.view.livetracking.LiveTrackingActivity
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.targetedticker.domain.TargetedTickerPage
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -67,6 +68,8 @@ import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import com.tokopedia.logisticCommon.R as logisticCommonR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImageClicked {
 
@@ -231,7 +234,7 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
         setHistoryView(model)
         setEmptyHistoryView(model)
         setLiveTrackingButton(model)
-        setTicketInfoCourier(trackingDataModel.page)
+        setTicketInfoCourier(trackingDataModel.trackOrder)
         initClickToCopy(model.shippingRefNum.toHyphenIfEmptyOrNull())
         setHeader(trackingDataModel)
     }
@@ -343,12 +346,12 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
                     tippingLayout.setCardBackgroundColor(
                         MethodChecker.getColor(
                             ctx,
-                            com.tokopedia.unifyprinciples.R.color.Unify_NN0
+                            unifyprinciplesR.color.Unify_NN0
                         )
                     )
                     val textColor = MethodChecker.getColor(
                         ctx,
-                        com.tokopedia.unifyprinciples.R.color.Unify_NN950
+                        unifyprinciplesR.color.Unify_NN950
                     )
                     tippingText.setTextColor(textColor)
                     tippingDescription.setTextColor(textColor)
@@ -464,7 +467,7 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
                 binding?.eta?.setCompoundDrawablesRelativeWithIntrinsicBounds(
                     0,
                     0,
-                    com.tokopedia.logisticCommon.R.drawable.eta_info,
+                    logisticCommonR.drawable.eta_info,
                     0
                 )
                 binding?.eta?.setOnClickListener {
@@ -550,57 +553,21 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
         }
     }
 
-    private fun setTicketInfoCourier(page: PageModel) {
-        if (page.additionalInfo.isEmpty()) {
-            binding?.tickerInfoLayout?.visibility = View.GONE
-        } else {
-            binding?.tickerInfoLayout?.visibility = View.VISIBLE
-            if (page.additionalInfo.size > 1) {
-                val message = ArrayList<TickerData>()
-                for (item in page.additionalInfo) {
-                    val formattedDes = formatTitleHtml(item.notes, item.urlDetail, item.urlText)
-                    message.add(
-                        TickerData(
-                            item.title,
-                            formattedDes,
-                            Ticker.TYPE_ANNOUNCEMENT,
-                            true
-                        )
-                    )
-                }
-                val tickerPageAdapter = TickerPagerAdapter(context, message)
-                tickerPageAdapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
-                    override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
-                        openWebViewFromTicker(linkUrl)
-                    }
-                })
-                binding?.tickerInfoCourier?.addPagerView(tickerPageAdapter, message)
-            } else {
-                val formattedDesc = formatTitleHtml(
-                    page.additionalInfo[0].notes,
-                    page.additionalInfo[0].urlDetail,
-                    page.additionalInfo[0].urlText
-                )
-                binding?.tickerInfoCourier?.setHtmlDescription(formattedDesc)
-                binding?.tickerInfoCourier?.tickerTitle = page.additionalInfo[0].title
-                binding?.tickerInfoCourier?.tickerType = Ticker.TYPE_ANNOUNCEMENT
-                binding?.tickerInfoCourier?.tickerShape = Ticker.SHAPE_LOOSE
-                binding?.tickerInfoCourier?.setDescriptionClickEvent(object : TickerCallback {
-                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                        openWebViewFromTicker(linkUrl)
-                    }
+    private fun setTicketInfoCourier(trackOrder: TrackOrderModel) {
 
-                    override fun onDismiss() {
-                        // no-op
-                    }
-                })
+        binding?.tickerInfoCourier?.let { targetedTicker ->
+
+            targetedTicker.setTickerShape(Ticker.SHAPE_LOOSE)
+
+            if (trackOrder.detail.isBuyer) {
+                targetedTicker.loadAndShow(TargetedTickerPage.TRACKING_PAGE_BUYER)
+            } else {
+                targetedTicker.loadAndShow(TargetedTickerPage.TRACKING_PAGE_SELLER)
+
             }
         }
     }
 
-    private fun openWebViewFromTicker(linkUrl: CharSequence) {
-        RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=$linkUrl")
-    }
 
     private fun setEmptyHistoryView(model: TrackOrderModel) {
         if (model.invalid) {
@@ -640,9 +607,6 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
         startActivityForResult(intent, LIVE_TRACKING_VIEW_REQ)
     }
 
-    private fun formatTitleHtml(desc: String, urlText: String, url: String): String {
-        return String.format("%s <a href=\"%s\">%s</a>", desc, urlText, url)
-    }
 
     // POD: navigate to pod activity
     private fun navigateToPodActivity(imageId: String, orderId: Long, description: String) {

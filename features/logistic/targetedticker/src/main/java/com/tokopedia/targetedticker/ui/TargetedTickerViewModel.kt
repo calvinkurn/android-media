@@ -24,27 +24,18 @@ class TargetedTickerViewModel @Inject constructor(
     val tickerState: LiveData<Result<TickerModel>>
         get() = _tickerState
 
-    fun getTargetedTicker(firstTickerContent: String? = null) {
+    fun getTargetedTicker(page: String) {
         viewModelScope.launchCatchError(
             block = {
-                val response = getTargetedTickerUseCase(GetTargetedTickerParam.ADDRESS_LIST_NON_OCC)
+                val response = getTargetedTickerUseCase(page)
                 _tickerState.value = Success(
                     TargetedTickerMapper.convertTargetedTickerToUiModel(
                         targetedTickerData = response.getTargetedTickerData,
-                        firstTickerContent = firstTickerContent
                     )
                 )
             },
             onError = {
-                if (firstTickerContent?.isNotBlank() == true) {
-                    _tickerState.value = Success(
-                        TargetedTickerMapper.convertTargetedTickerToUiModel(
-                            firstTickerContent = firstTickerContent
-                        )
-                    )
-                } else {
-                    _tickerState.value = Fail(it)
-                }
+                _tickerState.value = Fail(it)
             }
         )
     }

@@ -16,6 +16,7 @@ import com.tokopedia.targetedticker.databinding.WidgetTargetedTickerBinding
 import com.tokopedia.targetedticker.di.DaggerTargetedTickerComponent
 import com.tokopedia.targetedticker.domain.TargetedTickerHelper.renderTargetedTickerView
 import com.tokopedia.targetedticker.domain.TickerModel
+import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
@@ -25,14 +26,18 @@ import javax.inject.Inject
  */
 class TargetedTickerWidget : FrameLayout {
 
+    private var ticker: Ticker? = null
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private var lifecycleOwner: LifecycleOwner? = null
 
-    private var onSubmitSuccessListener: () -> Unit = {}
-    private var onSubmitErrorListener: (Throwable) -> Unit = {}
-    private var onSubmitLoadingListener: () -> Unit = {}
+
+    private var onSubmitSuccessListener: (TickerModel) -> TickerModel = { item -> item }
+    private var onSubmitErrorListener: (Throwable) -> TickerModel? = { item -> null }
+
+    private val binding = WidgetTargetedTickerBinding.inflate(LayoutInflater.from(context)).also { addView(it.root) }
 
     private val viewModel: TargetedTickerViewModel? by lazy {
         findViewTreeViewModelStoreOwner().let { viewModelOwner ->
@@ -40,41 +45,31 @@ class TargetedTickerWidget : FrameLayout {
         }
     }
 
-    private val binding: WidgetTargetedTickerBinding =
-        WidgetTargetedTickerBinding.inflate(
-            LayoutInflater.from(context)
-        ).also {
-            addView(it.root)
-        }
-
-    constructor(context: Context) : super(context) {
-        setupView()
-    }
-
-    constructor(context: Context, attributeSet: AttributeSet) : super(context, attributeSet) {
-        setupView(attributeSet)
-    }
-
-    constructor(context: Context, attributeSet: AttributeSet, defStyleAttr: Int) : super(context, attributeSet, defStyleAttr) {
-        setupView(attributeSet)
-    }
-
     private fun setupView(attributeSet: AttributeSet? = null) {
         initInjector()
+        binding.apply {
+            ticker = this.tickerTargeted
+        }
     }
 
     private fun observeTickerState() {
         lifecycleOwner = ViewTreeLifecycleOwner.get(this)
 
-        lifecycleOwner!!.let {
+        lifecycleOwner?.let {
             viewModel?.tickerState?.observe(it) { tickerResult ->
                 when (tickerResult) {
                     is Success -> {
-                        showTicker(tickerResult.data)
+                        val data = onSubmitSuccessListener(tickerResult.data)
+                        showTicker(data)
                     }
 
                     is Fail -> {
-                        hideTicker()
+                        val data = onSubmitErrorListener(tickerResult.throwable)
+                        if (data != null) {
+                            showTicker(data)
+                        } else {
+                            hideTicker()
+                        }
                     }
                 }
             }
@@ -83,7 +78,7 @@ class TargetedTickerWidget : FrameLayout {
 
     private fun showTicker(tickerItem: TickerModel) {
         context?.let {
-            binding?.tickerTargeted?.renderTargetedTickerView(
+            binding.tickerTargeted.renderTargetedTickerView(
                 it,
                 tickerItem,
                 onClickUrl = { url ->
@@ -97,7 +92,7 @@ class TargetedTickerWidget : FrameLayout {
     }
 
     private fun hideTicker() {
-        binding?.tickerTargeted?.gone()
+        binding.tickerTargeted.gone()
     }
 
     private fun initInjector() {
@@ -107,27 +102,51 @@ class TargetedTickerWidget : FrameLayout {
         }
     }
 
+    constructor(context: Context) : super(context) {
+        setupView()
+    }
+
+    constructor(context: Context, attributeSet: AttributeSet) : super(context, attributeSet) {
+        setupView(attributeSet)
+    }
+
+    constructor(context: Context, attributeSet: AttributeSet, defStyleAttr: Int) : super(context, attributeSet, defStyleAttr) {
+        setupView(attributeSet)
+    }
+
     /**
      * Public funtion can be used for targeted ticker widget
      */
 
     /*
-    Call this to get targeted ticker data
+    Call this to load and show targeted ticker data
      */
-    fun load() {
+    fun loadAndShow(page: String) {
         observeTickerState()
-        viewModel?.getTargetedTicker()
+        viewModel?.getTargetedTicker(page)
     }
 
-    fun setSubmitResultListener(
-        onSuccess: (() -> Unit),
-        onError: ((Throwable) -> Unit),
-        onLoading: (() -> Unit)
+    /*
+    Call this to get listener and adjust the ticker list if you want to add ticker data from backend
+     */
+    fun setResultListener(
+        onSuccess: ((TickerModel) -> TickerModel)? = null,
+        onError: ((Throwable) -> TickerModel?)? = null,
     ) {
-        onSubmitSuccessListener = onSuccess
-        onSubmitErrorListener = onError
-        onSubmitLoadingListener = onLoading
+        if (onSuccess != null) {
+            onSubmitSuccessListener = onSuccess
+        }
+
+        if (onError != null) {
+            onSubmitErrorListener = onError
+        }
+
     }
+
+    fun setTickerShape(tickerShape: Int) {
+        ticker?.tickerShape = tickerShape
+    }
+
 
     fun onDestroy() {
         lifecycleOwner = null

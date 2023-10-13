@@ -27,9 +27,12 @@ import com.tokopedia.manageaddress.ui.manageaddress.mainaddress.MainAddressFragm
 import com.tokopedia.manageaddress.ui.uimodel.ValidateShareAddressState
 import com.tokopedia.manageaddress.util.ManageAddressConstant
 import com.tokopedia.manageaddress.util.ManageAddressConstant.EXTRA_QUERY
+import com.tokopedia.targetedticker.domain.TargetedTickerPage
+import com.tokopedia.targetedticker.domain.TickerModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.setCustomText
+import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 import com.tokopedia.unifycomponents.R as unifycomponentsR
@@ -120,11 +123,6 @@ class ManageAddressFragment :
     }
 
 
-
-
-
-
-
     private fun observerValidateShareAddress() {
         viewModel.validateShareAddressState.observe(viewLifecycleOwner) {
             when (it) {
@@ -138,6 +136,7 @@ class ManageAddressFragment :
                         }
                     bindView()
                 }
+
                 is ValidateShareAddressState.Fail -> {
                     if (viewModel.isNeedToShareAddress) {
                         viewModel.receiverUserId = null
@@ -198,19 +197,19 @@ class ManageAddressFragment :
                 }
 
                 vpManageAddress.registerOnPageChangeCallback(object :
-                        ViewPager2.OnPageChangeCallback() {
-                        override fun onPageSelected(position: Int) {
-                            if (isFirstLoad) {
-                                isFirstLoad = false
+                    ViewPager2.OnPageChangeCallback() {
+                    override fun onPageSelected(position: Int) {
+                        if (isFirstLoad) {
+                            isFirstLoad = false
+                        } else {
+                            if (position == MAIN_ADDRESS_FRAGMENT_POSITION) {
+                                ShareAddressAnalytics.onClickMainTab()
                             } else {
-                                if (position == MAIN_ADDRESS_FRAGMENT_POSITION) {
-                                    ShareAddressAnalytics.onClickMainTab()
-                                } else {
-                                    ShareAddressAnalytics.onClickFromFriendTab()
-                                }
+                                ShareAddressAnalytics.onClickFromFriendTab()
                             }
                         }
-                    })
+                    }
+                })
 
                 if (viewModel.isReceiveShareAddress) {
                     Handler(Looper.getMainLooper()).postDelayed({
@@ -338,6 +337,49 @@ class ManageAddressFragment :
     }
 
     override fun setupTicker(firstTicker: String?) {
-        binding?.tickerManageAddress?.load()
+        binding?.tickerManageAddress?.apply {
+
+            loadAndShow(TargetedTickerPage.ADDRESS_LIST_NON_OCC)
+            setResultListener(
+                onSuccess = { ticker ->
+                    val tickerItems = ticker.item.toMutableList()
+
+                    if (firstTicker?.isNotBlank() == true) {
+                        tickerItems.add(
+                            TickerModel.TickerItem(
+                                type = Ticker.TYPE_ANNOUNCEMENT,
+                                content = firstTicker
+                            )
+                        )
+                    }
+
+                    //return adjusted ticker
+                    ticker.copy(
+                        item = tickerItems.toList()
+                    )
+
+
+                },
+                onError = {
+
+                    val ticker = TickerModel()
+                    val tickerItems = ticker.item.toMutableList()
+
+                    if (firstTicker?.isNotBlank() == true) {
+                        tickerItems.add(
+                            TickerModel.TickerItem(
+                                type = Ticker.TYPE_ANNOUNCEMENT,
+                                content = firstTicker
+                            )
+                        )
+                    }
+
+                    //return adjusted ticker
+                    ticker.copy(
+                        item = tickerItems.toList()
+                    )
+                })
+        }
+
     }
 }

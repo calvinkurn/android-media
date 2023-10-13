@@ -15,10 +15,6 @@ data class GetTargetedTickerParam(
     val target: List<GetTargetedTickerRequestTarget> = listOf()
 ) : GqlParam {
 
-    companion object {
-        val ADDRESS_LIST_OCC = "marketplace.address-list-occ"
-        val ADDRESS_LIST_NON_OCC = "marketplace.address-list-non-occ"
-    }
     data class GetTargetedTickerRequestTarget(
         @SerializedName("Type")
         val type: String = "",
