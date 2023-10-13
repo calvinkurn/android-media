@@ -387,6 +387,134 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
     }
 
     @Test
+    fun `When got featured product linkType with overrideTheme true and showProductInfo false, should return correct product item type with with overrideTheme true and showProductInfo false`() {
+        //Given
+        val overrideTheme = true
+        val showProductInfo = false
+        val productId = "100"
+
+        coEvery { getShopFeaturedProductUseCase.executeOnBackground() } returns listOf(
+            ShopFeaturedProduct(
+                productId = productId,
+                labelGroupList = listOf(LabelGroup(title = "Terjual 2rb"), LabelGroup(title = "Dilayani Tokopedia"))
+            )
+        )
+
+        val widgetStyle = "horizontal"
+        val featuredProduct = BannerProductGroupUiModel.Tab.ComponentList(
+            componentId = 2,
+            componentName = BannerProductGroupUiModel.Tab.ComponentList.ComponentName.PRODUCT,
+            data = listOf(
+                BannerProductGroupUiModel.Tab.ComponentList.Data(
+                    imageUrl = "",
+                    ctaLink = "",
+                    linkId = 8,
+                    linkType = BannerProductGroupUiModel.Tab.ComponentList.Data.LinkType.FEATURED_PRODUCT,
+                    isShowProductInfo = showProductInfo
+                )
+            )
+        )
+        val widgets = listOf(featuredProduct)
+
+        //When
+        viewModel.getCarouselWidgets(
+            widgets,
+            shopId,
+            userAddress,
+            widgetStyle,
+            overrideTheme,
+            colorSchema
+        )
+
+        //Then
+        val actual = viewModel.carouselWidgets.getOrAwaitValue()
+        val expected = ShopBannerProductGroupWidgetTabViewModel.UiState.Success(
+            listOf(
+                ProductItemType(
+                    productId,
+                    "",
+                    "",
+                    "",
+                    "",
+                    0,
+                    "",
+                    "Terjual 2rb",
+                    "tokopedia://product/$productId",
+                    showProductInfo,
+                    productId,
+                    overrideTheme,
+                    ShopPageColorSchema()
+                )
+            )
+        )
+        assertEquals(expected, actual)
+
+        coVerify { getShopFeaturedProductUseCase.executeOnBackground() }
+    }
+
+    @Test
+    fun `When got product linkType with overrideTheme true and showProductInfo false, should return correct product item type with with overrideTheme true and showProductInfo false`() {
+        val overrideTheme = true
+        val showProductInfo = false
+        
+        coEvery { getShopProductUseCase.executeOnBackground() } returns ShopProduct.GetShopProduct(
+            data = listOf(ShopProduct())
+        )
+
+        val widgetStyle = "horizontal"
+        val products = BannerProductGroupUiModel.Tab.ComponentList(
+            componentId = 2,
+            componentName = BannerProductGroupUiModel.Tab.ComponentList.ComponentName.PRODUCT,
+            data = listOf(
+                BannerProductGroupUiModel.Tab.ComponentList.Data(
+                    imageUrl = "",
+                    ctaLink = "",
+                    linkId = 8,
+                    linkType = BannerProductGroupUiModel.Tab.ComponentList.Data.LinkType.PRODUCT,
+                    isShowProductInfo = showProductInfo
+                )
+            )
+        )
+        
+        val widgets = listOf(products)
+
+        viewModel.getCarouselWidgets(
+            widgets,
+            shopId,
+            userAddress,
+            widgetStyle,
+            overrideTheme,
+            colorSchema
+        )
+
+        coVerify {
+            getShopProductUseCase.executeOnBackground()
+        }
+
+        val actual = viewModel.carouselWidgets.getOrAwaitValue()
+        val expected = ShopBannerProductGroupWidgetTabViewModel.UiState.Success(
+            listOf(
+                ProductItemType(
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    0,
+                    "",
+                    "",
+                    "",
+                    showProductInfo,
+                    "",
+                    overrideTheme,
+                    ShopPageColorSchema()
+                )
+            )
+        )
+        assertEquals(expected, actual)
+    }
+    
+    @Test
     fun `When got showcase product linkType, should get data to remote`() {
         //Given
         val overrideTheme = true
@@ -448,37 +576,6 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
     }
     
     //endregion
-    private fun createFeaturedProducts(): BannerProductGroupUiModel.Tab.ComponentList {
-        return BannerProductGroupUiModel.Tab.ComponentList(
-            componentId = 2,
-            componentName = BannerProductGroupUiModel.Tab.ComponentList.ComponentName.PRODUCT,
-            data = listOf(
-                BannerProductGroupUiModel.Tab.ComponentList.Data(
-                    imageUrl = "",
-                    ctaLink = "",
-                    linkId = 8,
-                    linkType = BannerProductGroupUiModel.Tab.ComponentList.Data.LinkType.PRODUCT,
-                    isShowProductInfo = true
-                )
-            )
-        )
-    }
-
-    private fun createShowcaseProducts(): BannerProductGroupUiModel.Tab.ComponentList {
-        return BannerProductGroupUiModel.Tab.ComponentList(
-            componentId = 2,
-            componentName = BannerProductGroupUiModel.Tab.ComponentList.ComponentName.PRODUCT,
-            data = listOf(
-                BannerProductGroupUiModel.Tab.ComponentList.Data(
-                    imageUrl = "",
-                    ctaLink = "",
-                    linkId = 8,
-                    linkType = BannerProductGroupUiModel.Tab.ComponentList.Data.LinkType.PRODUCT,
-                    isShowProductInfo = true
-                )
-            )
-        )
-    }
     
     private fun createProducts(): BannerProductGroupUiModel.Tab.ComponentList {
         return BannerProductGroupUiModel.Tab.ComponentList(
