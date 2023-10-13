@@ -28,13 +28,13 @@ interface ContentProductPickerSellerRepository {
         page: Int,
     ): PagedDataUiModel<ProductUiModel>
 
-    suspend fun setProductTags(channelId: String, productIds: List<String>)
+    suspend fun setProductTags(creationId: String, productIds: List<String>)
 
     suspend fun getProductTagSummarySection(
-        channelID: String,
+        creationId: String,
         fetchCommission: Boolean = false,
     ): List<ProductTagSectionUiModel>
 
-    suspend fun setPinProduct(channelId: String, product: ProductUiModel): Boolean
+    suspend fun setPinProduct(creationId: String, product: ProductUiModel): Boolean
 
 }

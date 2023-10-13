@@ -368,7 +368,7 @@ class ContentProductPickerSellerViewModel @AssistedInject constructor(
 
         viewModelScope.launchCatchError(dispatchers.io, block = {
             repo.setProductTags(
-                channelId = creationId,
+                creationId = creationId,
                 productIds = _selectedProductList.value.map(ProductUiModel::id)
             )
 
@@ -415,7 +415,7 @@ class ContentProductPickerSellerViewModel @AssistedInject constructor(
 
     private suspend fun getProductTagSummary() {
         val response = repo.getProductTagSummarySection(
-            channelID = creationId,
+            creationId = creationId,
             fetchCommission = fetchCommissionProduct,
         )
 

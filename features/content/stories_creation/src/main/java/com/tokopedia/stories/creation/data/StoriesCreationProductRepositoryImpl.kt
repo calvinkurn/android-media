@@ -11,6 +11,12 @@ import com.tokopedia.content.product.picker.seller.model.etalase.EtalaseUiModel
 import com.tokopedia.content.product.picker.seller.model.paged.PagedDataUiModel
 import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
 import com.tokopedia.content.product.picker.seller.model.sort.SortUiModel
+import com.tokopedia.stories.creation.domain.usecase.GetStoryProductDetailsUseCase
+import com.tokopedia.stories.creation.domain.usecase.GetStoryProductEtalaseUseCase
+import com.tokopedia.stories.creation.domain.usecase.SetActiveProductTagUseCase
+import com.tokopedia.stories.creation.model.GetStoryProductDetailsRequest
+import com.tokopedia.stories.creation.model.GetStoryProductEtalaseRequest
+import com.tokopedia.stories.creation.model.SetActiveProductTagRequest
 import com.tokopedia.stories.creation.view.model.mapper.StoriesCreationProductMapper
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
@@ -23,7 +29,10 @@ class StoriesCreationProductRepositoryImpl @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val getCampaignListUseCase: GetCampaignListUseCase,
     private val getProductsInCampaignUseCase: GetProductsInCampaignUseCase,
-//    private val getSelfEtalaseListUseCase: GetSelfEtalaseListUseCase,
+    private val getSelfEtalaseListUseCase: GetSelfEtalaseListUseCase,
+    private val getStoryProductEtalaseUseCase: GetStoryProductEtalaseUseCase,
+    private val setActiveProductTagUseCase: SetActiveProductTagUseCase,
+    private val getStoryProductDetailsUseCase: GetStoryProductDetailsUseCase,
     private val productMapper: StoriesCreationProductMapper,
     private val userSession: UserSessionInterface,
 ) : ContentProductPickerSellerRepository {
@@ -38,8 +47,10 @@ class StoriesCreationProductRepositoryImpl @Inject constructor(
         return@withContext productMapper.mapCampaignList(response)
     }
 
-    override suspend fun getEtalaseList(): List<EtalaseUiModel> {
-        TODO("Not yet implemented")
+    override suspend fun getEtalaseList(): List<EtalaseUiModel> = withContext(dispatchers.io) {
+        val response = getSelfEtalaseListUseCase.executeOnBackground()
+
+        return@withContext productMapper.mapEtalaseList(response)
     }
 
     override suspend fun getProductsInEtalase(
@@ -47,8 +58,22 @@ class StoriesCreationProductRepositoryImpl @Inject constructor(
         cursor: String,
         keyword: String,
         sort: SortUiModel
-    ): PagedDataUiModel<ProductUiModel> {
-        TODO("Not yet implemented")
+    ): PagedDataUiModel<ProductUiModel> = withContext(dispatchers.io) {
+        if (userSession.shopId.isBlank()) error("User does not has shop")
+
+        val response = getStoryProductEtalaseUseCase(
+            GetStoryProductEtalaseRequest(
+                authorId = userSession.shopId,
+                authorType = AUTHOR_TYPE_SELLER,
+                cursor = cursor,
+                limit = PRODUCTS_IN_ETALASE_PER_PAGE,
+                keyword = keyword,
+                sort = sort,
+                etalaseId = etalaseId,
+            )
+        )
+
+        return@withContext productMapper.mapProductEtalase(response)
     }
 
     override suspend fun getProductsInCampaign(
@@ -71,26 +96,35 @@ class StoriesCreationProductRepositoryImpl @Inject constructor(
         return@withContext productMapper.mapProductsInCampaign(response)
     }
 
-    override suspend fun setProductTags(channelId: String, productIds: List<String>) {
-        TODO("Not yet implemented")
+    override suspend fun setProductTags(creationId: String, productIds: List<String>) {
+        withContext(dispatchers.io) {
+            setActiveProductTagUseCase(
+                SetActiveProductTagRequest(
+                    storyId = creationId,
+                    productIds = productIds
+                )
+            )
+        }
     }
 
     override suspend fun getProductTagSummarySection(
-        channelID: String,
+        creationId: String,
         fetchCommission: Boolean
-    ): List<ProductTagSectionUiModel> {
-        TODO("Not yet implemented")
+    ): List<ProductTagSectionUiModel> = withContext(dispatchers.io) {
+        val response = getStoryProductDetailsUseCase(
+            GetStoryProductDetailsRequest(creationId)
+        )
+
+        return@withContext productMapper.mapProductDetails(response)
     }
 
-    override suspend fun setPinProduct(channelId: String, product: ProductUiModel): Boolean {
-        TODO("Not yet implemented")
+    override suspend fun setPinProduct(creationId: String, product: ProductUiModel): Boolean {
+        throw Exception("No Pin Product for Stories Creation")
     }
 
     companion object {
         private const val PRODUCTS_IN_ETALASE_PER_PAGE = 25
         private const val PRODUCTS_IN_CAMPAIGN_PER_PAGE = 25
-
-        private const val DELAY_MS = 5000L
 
         private const val AUTHOR_TYPE_SELLER = 2
     }

@@ -96,16 +96,16 @@ class PlayBroProductRepositoryImpl @Inject constructor(
         return@withContext productMapper.mapProductsInCampaign(response)
     }
 
-    override suspend fun setProductTags(channelId: String, productIds: List<String>) {
+    override suspend fun setProductTags(creationId: String, productIds: List<String>) {
         withContext(dispatchers.io) {
-            addProductTagUseCase(AddProductTagChannelRequest(channelId, productIds))
+            addProductTagUseCase(AddProductTagChannelRequest(creationId, productIds))
         }
     }
 
-    override suspend fun getProductTagSummarySection(channelID: String, fetchCommission: Boolean) =
+    override suspend fun getProductTagSummarySection(creationId: String, fetchCommission: Boolean) =
         withContext(dispatchers.io) {
             val response = getProductTagSummarySectionUseCase.apply {
-                setRequestParams(GetProductTagSummarySectionUseCase.createParams(channelID, fetchCommission))
+                setRequestParams(GetProductTagSummarySectionUseCase.createParams(creationId, fetchCommission))
             }.executeOnBackground()
 
             return@withContext productMapper.mapProductTagSection(response)
@@ -118,11 +118,11 @@ class PlayBroProductRepositoryImpl @Inject constructor(
             return diff >= DELAY_MS
         }
 
-    override suspend fun setPinProduct(channelId: String, product: ProductUiModel): Boolean =
+    override suspend fun setPinProduct(creationId: String, product: ProductUiModel): Boolean =
         withContext(dispatchers.io) {
             return@withContext if (isEligibleForPin || product.pinStatus.isPinned) {
                 setPinnedProductUseCase.apply {
-                    setRequestParams(createParam(channelId, product))
+                    setRequestParams(createParam(creationId, product))
                 }.executeOnBackground().data.success.apply {
                     if (this && !product.pinStatus.isPinned) lastRequestTime = System.currentTimeMillis()
                     else if (!this) throw PinnedProductException(
