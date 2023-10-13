@@ -4,4 +4,6 @@ interface HomeBottomNavListener {
     fun setForYouToHomeMenuTabSelected()
 
     fun setHomeToForYouTabSelected()
+
+    fun isIconJumperEnabled(): Boolean
 }

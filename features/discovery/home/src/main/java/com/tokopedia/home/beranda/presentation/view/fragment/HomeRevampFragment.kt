@@ -2321,27 +2321,30 @@ HomeRevampFragment :
     }
 
     private fun setHomeBottomNavBasedOnScrolling() {
-        val mLayoutManager = homeRecyclerView?.layoutManager as? LinearLayoutManager
-        mLayoutManager?.let { lManager ->
-            val firstVisiblePosition = lManager.findFirstVisibleItemPosition()
-            val lastVisiblePosition = lManager.findLastVisibleItemPosition()
+        val isIconJumperEnabled = (activity as? HomeBottomNavListener)?.isIconJumperEnabled() == true
+        if (isIconJumperEnabled) {
+            val mLayoutManager = homeRecyclerView?.layoutManager as? LinearLayoutManager
+            mLayoutManager?.let { lManager ->
+                val firstVisiblePosition = lManager.findFirstVisibleItemPosition()
+                val lastVisiblePosition = lManager.findLastVisibleItemPosition()
 
-            val recommendationForYouIndex = getRecommendationForYouIndex()
+                val recommendationForYouIndex = getRecommendationForYouIndex()
 
-            recommendationForYouIndex?.let {
-                if (firstVisiblePosition == it ||
-                    lastVisiblePosition == it
-                ) {
-                    setForYouToHomeMenuBottomNav()
-                } else {
-                    setHomeToForYouMenuBottomNav()
+                recommendationForYouIndex?.let {
+                    if (firstVisiblePosition == it ||
+                        lastVisiblePosition == it
+                    ) {
+                        setForYouToHomeMenuBottomNav()
+                    } else {
+                        setHomeToForYouMenuBottomNav()
+                    }
                 }
             }
         }
     }
 
     override fun getRecommendationForYouIndex(): Int? {
-        return viewModel.get().homeDataModel.list.indexOfFirst {
+        return viewModel.get().homeLiveDynamicChannel.value?.list?.indexOfFirst {
             it is HomeRecommendationFeedDataModel
         }.takeIf { it != RecyclerView.NO_POSITION }
     }

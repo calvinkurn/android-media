@@ -28,7 +28,6 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
@@ -666,19 +665,19 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     private void scrollToTop(Fragment fragment) {
-        if (fragment != null && fragment.getUserVisibleHint() && fragment instanceof HomeScrollViewListener) {
+        if (fragment != null && fragment.isVisible() && fragment instanceof HomeScrollViewListener) {
             ((HomeScrollViewListener) fragment).onScrollToHomeHeader();
         }
     }
 
     private void scrollToHomeForYou(Fragment fragment) {
-        if (fragment != null && fragment.getUserVisibleHint() && fragment instanceof HomeScrollViewListener) {
+        if (fragment != null && fragment.isVisible() && fragment instanceof HomeScrollViewListener) {
             ((HomeScrollViewListener) fragment).onScrollToRecommendationForYou();
         }
     }
 
     private Integer getRecommendationForYouIndex(Fragment fragment) {
-        if (fragment != null && fragment.getUserVisibleHint() && fragment instanceof HomeScrollViewListener) {
+        if (fragment != null && fragment.isVisible() && fragment instanceof HomeScrollViewListener) {
            return ((HomeScrollViewListener) fragment).getRecommendationForYouIndex();
         }
         return null;
@@ -1306,21 +1305,30 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     public void populateBottomNavigationView() {
-        menu.add(new BottomMenu(R.id.menu_home, getResources().getString(R.string.for_you),
-                new HomeForYouMenu(
-                        getResources().getString(R.string.home),
-                        getResources().getString(R.string.for_you),
-                        R.drawable.ic_bottom_nav_home_active,
-                        R.drawable.ic_bottom_nav_home_for_you_active,
-                        R.raw.bottom_nav_thumb_idle,
-                        R.raw.bottom_nav_home_to_thumb,
-                        R.raw.bottom_nav_thumb_to_home
-                ),
-                R.raw.bottom_nav_home, R.raw.bottom_nav_home_to_enabled,
-                R.raw.bottom_nav_home_dark, R.raw.bottom_nav_home_to_enabled_dark, R.drawable.ic_bottom_nav_home_for_you_active,
-                R.drawable.ic_bottom_nav_home_enabled, com.tokopedia.unifyprinciples.R.color.Unify_GN500, true, 1f,
-                1f)
-        );
+        BottomMenu homeOrForYouMenu;
+        if (bottomNavigation.isIconJumperEnabled()) {
+            homeOrForYouMenu = new BottomMenu(R.id.menu_home, getResources().getString(R.string.for_you),
+                    new HomeForYouMenu(
+                            getResources().getString(R.string.home),
+                            getResources().getString(R.string.for_you),
+                            R.drawable.ic_bottom_nav_home_active,
+                            R.drawable.ic_bottom_nav_home_for_you_active,
+                            R.raw.bottom_nav_home,
+                            R.raw.bottom_nav_thumb_idle,
+                            R.raw.bottom_nav_home_to_thumb,
+                            R.raw.bottom_nav_thumb_to_home
+                    ),
+                    R.raw.bottom_nav_home,
+                    R.raw.bottom_nav_home_to_enabled,
+                    R.raw.bottom_nav_home_dark,
+                    R.raw.bottom_nav_home_to_enabled_dark,
+                    R.drawable.ic_bottom_nav_home_for_you_active,
+                    R.drawable.ic_bottom_nav_home_enabled, com.tokopedia.unifyprinciples.R.color.Unify_GN500, true, 1f,
+                    1f);
+        } else {
+            homeOrForYouMenu = new BottomMenu(R.id.menu_home, getResources().getString(R.string.home), null, R.raw.bottom_nav_home, R.raw.bottom_nav_home_to_enabled, R.raw.bottom_nav_home_dark, R.raw.bottom_nav_home_to_enabled_dark, R.drawable.ic_bottom_nav_home_active, R.drawable.ic_bottom_nav_home_enabled, com.tokopedia.unifyprinciples.R.color.Unify_GN500, true, 1f, 1f);
+        }
+        menu.add(homeOrForYouMenu);
         menu.add(new BottomMenu(R.id.menu_feed, getResources().getString(R.string.feed),  null, R.raw.bottom_nav_feed, R.raw.bottom_nav_feed_to_enabled, R.raw.bottom_nav_feed_dark, R.raw.bottom_nav_feed_to_enabled_dark, R.drawable.ic_bottom_nav_feed_active, R.drawable.ic_bottom_nav_feed_enabled, com.tokopedia.unifyprinciples.R.color.Unify_GN500, true, 1f, 1f));
         menu.add(new BottomMenu(R.id.menu_os, getResources().getString(R.string.official), null,  R.raw.bottom_nav_official, R.raw.bottom_nav_os_to_enabled, R.raw.bottom_nav_official_dark, R.raw.bottom_nav_os_to_enabled_dark, R.drawable.ic_bottom_nav_os_active, R.drawable.ic_bottom_nav_os_enabled, com.tokopedia.unifyprinciples.R.color.Unify_GN500, true, 1f, 1f));
         menu.add(new BottomMenu(R.id.menu_wishlist, getResources().getString(R.string.wishlist), null, R.raw.bottom_nav_wishlist, R.raw.bottom_nav_wishlist_to_enabled, R.raw.bottom_nav_wishlist_dark, R.raw.bottom_nav_wishlist_to_enabled_dark, R.drawable.ic_bottom_nav_wishlist_active, R.drawable.ic_bottom_nav_wishlist_enabled, com.tokopedia.unifyprinciples.R.color.Unify_GN500, true, 1f, 1f));
@@ -1373,10 +1381,15 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     @Override
+    public boolean isIconJumperEnabled() {
+        return bottomNavigation.isIconJumperEnabled();
+    }
+
+    @Override
     public void setHomeToForYouTabSelected() {
         boolean isForYouToHomeMenu = false;
-        boolean isValueSame = bottomNavigation.isForYouToHomeBottomNavSelected() == isForYouToHomeMenu;
-        if (isValueSame)
+        boolean isSameValue = bottomNavigation.isForYouToHomeBottomNavSelected() == isForYouToHomeMenu;
+        if (isSameValue)
             return;
         bottomNavigation.updateHomeBottomMenuWhenScrolling(isForYouToHomeMenu);
     }
@@ -1384,8 +1397,8 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     public void setForYouToHomeMenuTabSelected() {
         boolean isForYouToHomeMenu = true;
-        boolean isValueSame = bottomNavigation.isForYouToHomeBottomNavSelected() == isForYouToHomeMenu;
-        if (isValueSame)
+        boolean isSameValue = bottomNavigation.isForYouToHomeBottomNavSelected() == isForYouToHomeMenu;
+        if (isSameValue)
             return;
         bottomNavigation.updateHomeBottomMenuWhenScrolling(isForYouToHomeMenu);
     }
