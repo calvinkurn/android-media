@@ -95,7 +95,7 @@ class FundsAndInvestmentComposeViewModelTest {
         viewModel.getCentralizedUserAssetConfig(isRefreshData)
 
         val result = viewModel.uiState.getOrAwaitValue()
-        assertTrue((result as FundsAndInvestmentResult.Recomposition).listVertical.isNotEmpty())
+        assertTrue((result as FundsAndInvestmentResult.Content).listVertical.isNotEmpty())
         assertTrue(result.listHorizontal.isNotEmpty())
         assertEquals(listVertical.size, result.listVertical.size)
         assertEquals(listHorizontal.size, result.listHorizontal.size)
@@ -112,7 +112,7 @@ class FundsAndInvestmentComposeViewModelTest {
         viewModel.getCentralizedUserAssetConfig(isRefreshData)
 
         val result = viewModel.uiState.getOrAwaitValue()
-        assertTrue((result as FundsAndInvestmentResult.Recomposition).listVertical.isNotEmpty())
+        assertTrue((result as FundsAndInvestmentResult.Content).listVertical.isNotEmpty())
         assertTrue(result.listHorizontal.isEmpty())
         assertEquals(listVertical.size, result.listVertical.size)
         assertEquals(expectedTitle, result.listVertical.first().title)
@@ -135,7 +135,7 @@ class FundsAndInvestmentComposeViewModelTest {
         viewModel.getCentralizedUserAssetConfig(isRefreshData)
 
         val result = viewModel.uiState.getOrAwaitValue()
-        assertTrue((result as FundsAndInvestmentResult.Recomposition).listVertical.isNotEmpty())
+        assertTrue((result as FundsAndInvestmentResult.Content).listVertical.isNotEmpty())
         assertTrue(result.listHorizontal.isEmpty())
         assertEquals(listVertical.size, result.listVertical.size)
         assertEquals(expectedTitle, result.listVertical.first().title)
@@ -159,7 +159,7 @@ class FundsAndInvestmentComposeViewModelTest {
         viewModel.getCentralizedUserAssetConfig(isRefreshData)
 
         val result = viewModel.uiState.getOrAwaitValue()
-        assertTrue((result as FundsAndInvestmentResult.Recomposition).listVertical.isNotEmpty())
+        assertTrue((result as FundsAndInvestmentResult.Content).listVertical.isNotEmpty())
         assertTrue(result.listHorizontal.isEmpty())
         assertEquals(listVertical.size, result.listVertical.size)
         assertEquals(expectedSubtitle, result.listVertical.first().title)
@@ -182,7 +182,7 @@ class FundsAndInvestmentComposeViewModelTest {
         viewModel.getCentralizedUserAssetConfig(isRefreshData)
 
         val result = viewModel.uiState.getOrAwaitValue()
-        assertTrue((result as FundsAndInvestmentResult.Recomposition).listVertical.isNotEmpty())
+        assertTrue((result as FundsAndInvestmentResult.Content).listVertical.isNotEmpty())
         assertTrue(result.listHorizontal.isEmpty())
         assertEquals(listVertical.size, result.listVertical.size)
         assertEquals(expectedSubtitle, result.listVertical.first().title)
@@ -206,7 +206,7 @@ class FundsAndInvestmentComposeViewModelTest {
         viewModel.getCentralizedUserAssetConfig(isRefreshData)
 
         val result = viewModel.uiState.getOrAwaitValue()
-        assertTrue((result as FundsAndInvestmentResult.Recomposition).listVertical.isEmpty())
+        assertTrue((result as FundsAndInvestmentResult.Content).listVertical.isEmpty())
         assertTrue(result.listHorizontal.isNotEmpty())
         assertEquals(listHorizontal.size, result.listHorizontal.size)
         assertEquals(expectedTitle, result.listHorizontal.first().title)
@@ -229,7 +229,7 @@ class FundsAndInvestmentComposeViewModelTest {
         viewModel.getCentralizedUserAssetConfig(isRefreshData)
 
         val result = viewModel.uiState.getOrAwaitValue()
-        assertTrue((result as FundsAndInvestmentResult.Recomposition).listVertical.isEmpty())
+        assertTrue((result as FundsAndInvestmentResult.Content).listVertical.isEmpty())
         assertTrue(result.listHorizontal.isNotEmpty())
         assertEquals(listHorizontal.size, result.listHorizontal.size)
         assertEquals(expectedTitle, result.listHorizontal.first().title)
@@ -253,7 +253,7 @@ class FundsAndInvestmentComposeViewModelTest {
         viewModel.getCentralizedUserAssetConfig(isRefreshData)
 
         val result = viewModel.uiState.getOrAwaitValue()
-        assertTrue((result as FundsAndInvestmentResult.Recomposition).listVertical.isNotEmpty())
+        assertTrue((result as FundsAndInvestmentResult.Content).listVertical.isNotEmpty())
         assertTrue(result.listHorizontal.isEmpty())
         assertEquals(listVertical.size, result.listVertical.size)
         assertEquals(expectedTitle, result.listVertical.first().title)
@@ -276,7 +276,7 @@ class FundsAndInvestmentComposeViewModelTest {
         viewModel.getCentralizedUserAssetConfig(isRefreshData)
 
         val result = viewModel.uiState.getOrAwaitValue()
-        assertTrue((result as FundsAndInvestmentResult.Recomposition).listVertical.isNotEmpty())
+        assertTrue((result as FundsAndInvestmentResult.Content).listVertical.isNotEmpty())
         assertTrue(result.listHorizontal.isEmpty())
         assertEquals(listVertical.size, result.listVertical.size)
         assertEquals(expectedTitle, result.listVertical.first().title)
@@ -300,7 +300,7 @@ class FundsAndInvestmentComposeViewModelTest {
         viewModel.getCentralizedUserAssetConfig(isRefreshData)
 
         val result = viewModel.uiState.getOrAwaitValue()
-        assertTrue((result as FundsAndInvestmentResult.Recomposition).listVertical.isNotEmpty())
+        assertTrue((result as FundsAndInvestmentResult.Content).listVertical.isNotEmpty())
         assertTrue(result.listHorizontal.isEmpty())
         assertEquals(listVertical.size, result.listVertical.size)
         assertEquals(expectedTitle, result.listVertical.first().title)
@@ -323,7 +323,7 @@ class FundsAndInvestmentComposeViewModelTest {
         viewModel.getCentralizedUserAssetConfig(isRefreshData)
 
         val result = viewModel.uiState.getOrAwaitValue()
-        assertTrue((result as FundsAndInvestmentResult.Recomposition).listVertical.isNotEmpty())
+        assertTrue((result as FundsAndInvestmentResult.Content).listVertical.isNotEmpty())
         assertTrue(result.listHorizontal.isEmpty())
         assertEquals(listVertical.size, result.listVertical.size)
         assertEquals(expectedTitle, result.listVertical.first().title)
@@ -347,7 +347,7 @@ class FundsAndInvestmentComposeViewModelTest {
         viewModel.getCentralizedUserAssetConfig(isRefreshData)
 
         val result = viewModel.uiState.getOrAwaitValue()
-        assertTrue((result as FundsAndInvestmentResult.Recomposition).listVertical.isNotEmpty())
+        assertTrue((result as FundsAndInvestmentResult.Content).listVertical.isNotEmpty())
         assertTrue(result.listHorizontal.isEmpty())
         assertEquals(listVertical.size, result.listVertical.size)
         assertEquals(expectedTitle, result.listVertical.first().title)
@@ -370,7 +370,7 @@ class FundsAndInvestmentComposeViewModelTest {
         viewModel.getCentralizedUserAssetConfig(isRefreshData)
 
         val result = viewModel.uiState.getOrAwaitValue()
-        assertTrue((result as FundsAndInvestmentResult.Recomposition).listVertical.isNotEmpty())
+        assertTrue((result as FundsAndInvestmentResult.Content).listVertical.isNotEmpty())
         assertTrue(result.listHorizontal.isEmpty())
         assertEquals(listVertical.size, result.listVertical.size)
         assertEquals(expectedTitle, result.listVertical.first().title)
@@ -394,7 +394,7 @@ class FundsAndInvestmentComposeViewModelTest {
         viewModel.getCentralizedUserAssetConfig(isRefreshData)
 
         val result = viewModel.uiState.getOrAwaitValue()
-        assertTrue((result as FundsAndInvestmentResult.Recomposition).listVertical.isNotEmpty())
+        assertTrue((result as FundsAndInvestmentResult.Content).listVertical.isNotEmpty())
         assertTrue(result.listHorizontal.isEmpty())
         assertEquals(listVertical.size, result.listVertical.size)
         assertEquals(expectedTitle, result.listVertical.first().title)
@@ -417,7 +417,7 @@ class FundsAndInvestmentComposeViewModelTest {
         viewModel.getCentralizedUserAssetConfig(isRefreshData)
 
         val result = viewModel.uiState.getOrAwaitValue()
-        assertTrue((result as FundsAndInvestmentResult.Recomposition).listVertical.isNotEmpty())
+        assertTrue((result as FundsAndInvestmentResult.Content).listVertical.isNotEmpty())
         assertTrue(result.listHorizontal.isEmpty())
         assertEquals(listVertical.size, result.listVertical.size)
         assertEquals(expectedTitle, result.listVertical.first().title)
@@ -441,7 +441,7 @@ class FundsAndInvestmentComposeViewModelTest {
         viewModel.getCentralizedUserAssetConfig(isRefreshData)
 
         val result = viewModel.uiState.getOrAwaitValue()
-        assertTrue((result as FundsAndInvestmentResult.Recomposition).listVertical.isNotEmpty())
+        assertTrue((result as FundsAndInvestmentResult.Content).listVertical.isNotEmpty())
         assertTrue(result.listHorizontal.isEmpty())
         assertEquals(listVertical.size, result.listVertical.size)
         assertEquals(expectedTitle, result.listVertical.first().title)
@@ -464,7 +464,7 @@ class FundsAndInvestmentComposeViewModelTest {
         viewModel.getCentralizedUserAssetConfig(isRefreshData)
 
         val result = viewModel.uiState.getOrAwaitValue()
-        assertTrue((result as FundsAndInvestmentResult.Recomposition).listVertical.isNotEmpty())
+        assertTrue((result as FundsAndInvestmentResult.Content).listVertical.isNotEmpty())
         assertTrue(result.listHorizontal.isEmpty())
         assertEquals(listVertical.size, result.listVertical.size)
         assertEquals(expectedTitle, result.listVertical.first().title)
@@ -489,7 +489,7 @@ class FundsAndInvestmentComposeViewModelTest {
         viewModel.refreshItem(itemVertical)
 
         val result = viewModel.uiState.getOrAwaitValue()
-        assertTrue((result as FundsAndInvestmentResult.Recomposition).listVertical.isNotEmpty())
+        assertTrue((result as FundsAndInvestmentResult.Content).listVertical.isNotEmpty())
         assertTrue(result.listHorizontal.isEmpty())
         assertEquals(listVertical.size, result.listVertical.size)
         assertEquals(expectedTitle, result.listVertical.first().title)
@@ -515,7 +515,7 @@ class FundsAndInvestmentComposeViewModelTest {
         viewModel.refreshItem(itemVertical)
 
         val result = viewModel.uiState.getOrAwaitValue()
-        assertTrue((result as FundsAndInvestmentResult.Recomposition).listVertical.isNotEmpty())
+        assertTrue((result as FundsAndInvestmentResult.Content).listVertical.isNotEmpty())
         assertTrue(result.listHorizontal.isEmpty())
         assertEquals(listVertical.size, result.listVertical.size)
         assertEquals(expectedTitle, result.listVertical.first().title)
@@ -540,7 +540,7 @@ class FundsAndInvestmentComposeViewModelTest {
         viewModel.refreshItem(itemHorizontal)
 
         val result = viewModel.uiState.getOrAwaitValue()
-        assertTrue((result as FundsAndInvestmentResult.Recomposition).listVertical.isEmpty())
+        assertTrue((result as FundsAndInvestmentResult.Content).listVertical.isEmpty())
         assertTrue(result.listHorizontal.isNotEmpty())
         assertEquals(listHorizontal.size, result.listHorizontal.size)
         assertEquals(expectedTitle, result.listHorizontal.first().title)
@@ -566,7 +566,7 @@ class FundsAndInvestmentComposeViewModelTest {
         viewModel.refreshItem(itemHorizontal)
 
         val result = viewModel.uiState.getOrAwaitValue()
-        assertTrue((result as FundsAndInvestmentResult.Recomposition).listVertical.isEmpty())
+        assertTrue((result as FundsAndInvestmentResult.Content).listVertical.isEmpty())
         assertTrue(result.listHorizontal.isNotEmpty())
         assertEquals(listHorizontal.size, result.listHorizontal.size)
         assertEquals(expectedTitle, result.listHorizontal.first().title)

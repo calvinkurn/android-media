@@ -33,11 +33,11 @@ class FundsAndInvestmentComposeViewModel @Inject constructor(
     val uiState : LiveData<FundsAndInvestmentResult> get() = _uiState
 
     init {
-        getCentralizedUserAssetConfig(isRefreshData = false)
+        getCentralizedUserAssetConfig(false)
     }
 
     fun getCentralizedUserAssetConfig(isRefreshData: Boolean) {
-        _uiState.value = FundsAndInvestmentResult.Loading(isRefreshData = isRefreshData)
+        _uiState.value = FundsAndInvestmentResult.Loading(isRefreshData)
 
         launchCatchError(context = dispatcher.io,
             block = {
@@ -71,7 +71,7 @@ class FundsAndInvestmentComposeViewModel @Inject constructor(
 
                 //trigger recomposition state all item to loading
                 _uiState.postValue(
-                    FundsAndInvestmentResult.Recomposition(
+                    FundsAndInvestmentResult.Content(
                         listVertical = currentListVertical,
                         listHorizontal = currentListHorizontal
                     )
@@ -81,7 +81,7 @@ class FundsAndInvestmentComposeViewModel @Inject constructor(
                 setUpHorizontalList()
             },
             onError = {
-                _uiState.postValue(FundsAndInvestmentResult.Failed(it))
+                _uiState.postValue(FundsAndInvestmentResult.Failed)
             }
         )
     }
@@ -115,13 +115,13 @@ class FundsAndInvestmentComposeViewModel @Inject constructor(
     }
 
     fun refreshItem(item: WalletUiModel) {
-        val index = getIndex(item = item, verticalList = currentListVertical, horizontalList = currentListHorizontal)
+        val index = getIndexFromId(item = item, verticalList = currentListVertical, horizontalList = currentListHorizontal)
         val result = setItemLoadingState(item = item, index = index, verticalList = currentListVertical, horizontalList = currentListHorizontal)
 
         changeItem(index, result)
 
         //trigger recomposition state item to loading
-        _uiState.value = FundsAndInvestmentResult.Recomposition(
+        _uiState.value = FundsAndInvestmentResult.Content(
             listVertical = currentListVertical,
             listHorizontal = currentListHorizontal
         )
@@ -167,7 +167,7 @@ class FundsAndInvestmentComposeViewModel @Inject constructor(
 
                 //trigger recomposition state item to new data
                 _uiState.postValue(
-                    FundsAndInvestmentResult.Recomposition(
+                    FundsAndInvestmentResult.Content(
                         listVertical = currentListVertical,
                         listHorizontal = currentListHorizontal
                     )
@@ -185,7 +185,7 @@ class FundsAndInvestmentComposeViewModel @Inject constructor(
 
                 //trigger recomposition state item to failed
                 _uiState.postValue(
-                    FundsAndInvestmentResult.Recomposition(
+                    FundsAndInvestmentResult.Content(
                         listVertical = currentListVertical,
                         listHorizontal = currentListHorizontal
                     )
@@ -234,13 +234,13 @@ class FundsAndInvestmentComposeViewModel @Inject constructor(
 
 }
 
-sealed class FundsAndInvestmentResult {
+sealed interface FundsAndInvestmentResult {
     data class Loading(
         val isRefreshData: Boolean
-    ) : FundsAndInvestmentResult()
-    data class Recomposition(
+    ) : FundsAndInvestmentResult
+    data class Content(
         val listVertical: List<WalletUiModel>,
         val listHorizontal: List<WalletUiModel>
-    ) : FundsAndInvestmentResult()
-    data class Failed(val throwable: Throwable) : FundsAndInvestmentResult()
+    ) : FundsAndInvestmentResult
+    object Failed : FundsAndInvestmentResult
 }

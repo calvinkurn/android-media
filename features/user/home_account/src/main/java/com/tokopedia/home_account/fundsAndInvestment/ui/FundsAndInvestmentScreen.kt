@@ -34,7 +34,7 @@ import com.tokopedia.nest.principles.ui.NestTheme
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun FundsAndInvestmentLayout(
+fun FundsAndInvestmentScreen(
     userId: String,
     uiState: LiveData<FundsAndInvestmentResult>,
     onItemClicked: (WalletUiModel) -> Unit,
@@ -61,20 +61,22 @@ fun FundsAndInvestmentLayout(
                     )
                 },
                 content = { padding ->
-                    Box(modifier = Modifier
-                        .fillMaxSize()
-                        .padding(padding)
-                        .pullRefresh(pullRefreshState)
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(padding)
+                            .pullRefresh(pullRefreshState)
                     ) {
                         Column(
                             modifier = Modifier
                                 .fillMaxSize()
                         ) {
-                            when(val state = uiStateObserver) {
+                            when (val state = uiStateObserver) {
                                 is FundsAndInvestmentResult.Loading -> {
                                     ShimmerLayout()
                                 }
-                                is FundsAndInvestmentResult.Recomposition -> {
+
+                                is FundsAndInvestmentResult.Content -> {
                                     Spacer(modifier = Modifier.height(8.dp))
                                     FundsAndInvestmentSection(
                                         userId = userId,
@@ -96,11 +98,13 @@ fun FundsAndInvestmentLayout(
                                         onItemClicked(it)
                                     }
                                 }
+
                                 is FundsAndInvestmentResult.Failed -> {
                                     FailedLayout {
                                         onReloadData(false)
                                     }
                                 }
+
                                 else -> {}
                             }
                         }
@@ -121,7 +125,7 @@ fun FundsAndInvestmentLayout(
 @Preview(device = Devices.PIXEL_3A_XL, showBackground = true)
 @Composable
 fun FundsAndInvestmentLayoutLoadingPreview() {
-    FundsAndInvestmentLayout(
+    FundsAndInvestmentScreen(
         userId = "12345",
         uiState = MutableLiveData(FundsAndInvestmentResult.Loading(true)),
         onItemClicked = {},
@@ -133,10 +137,10 @@ fun FundsAndInvestmentLayoutLoadingPreview() {
 @Preview(device = Devices.PIXEL_3A_XL, showBackground = true)
 @Composable
 fun FundsAndInvestmentLayoutSuccessPreview() {
-    FundsAndInvestmentLayout(
+    FundsAndInvestmentScreen(
         userId = "12345",
         uiState = MutableLiveData(
-            FundsAndInvestmentResult.Recomposition(
+            FundsAndInvestmentResult.Content(
                 listVertical = listOf(
                     WalletUiModel(
                         id = "1",
@@ -171,9 +175,9 @@ fun FundsAndInvestmentLayoutSuccessPreview() {
 @Preview(device = Devices.PIXEL_3A_XL, showBackground = true)
 @Composable
 fun FundsAndInvestmentLayoutFailedPreview() {
-    FundsAndInvestmentLayout(
+    FundsAndInvestmentScreen(
         userId = "12345",
-        uiState = MutableLiveData(FundsAndInvestmentResult.Failed(Throwable())),
+        uiState = MutableLiveData(FundsAndInvestmentResult.Failed),
         onItemClicked = {},
         onBackClicked = {},
         onReloadData = {}

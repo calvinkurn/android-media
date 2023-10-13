@@ -13,7 +13,7 @@ fun FundsAndInvestmentResult?.isRefreshData(): Boolean {
     }
 }
 
-fun List<WalletUiModel>.getIndex(id: String): Int {
+fun List<WalletUiModel>.getIndexFromId(id: String): Int {
     return this.indexOfFirst {
         it.id == id
     }
@@ -27,11 +27,11 @@ fun AssetConfig.getTitle(): String {
     }
 }
 
-fun getIndex(item: WalletUiModel, verticalList: List<WalletUiModel>, horizontalList: List<WalletUiModel>): Int {
+fun getIndexFromId(item: WalletUiModel, verticalList: List<WalletUiModel>, horizontalList: List<WalletUiModel>): Int {
     return if (item.isVertical) {
-        verticalList.getIndex(id = item.id)
+        verticalList.getIndexFromId(id = item.id)
     } else {
-        horizontalList.getIndex(id = item.id)
+        horizontalList.getIndexFromId(id = item.id)
     }
 }
 

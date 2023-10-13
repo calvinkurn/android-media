@@ -11,7 +11,7 @@ import com.tokopedia.home_account.analytics.HomeAccountAnalytics
 import com.tokopedia.home_account.analytics.TokopediaCardAnalytics
 import com.tokopedia.home_account.di.ActivityComponentFactory
 import com.tokopedia.home_account.di.HomeAccountUserComponents
-import com.tokopedia.home_account.fundsAndInvestment.ui.FundsAndInvestmentLayout
+import com.tokopedia.home_account.fundsAndInvestment.ui.FundsAndInvestmentScreen
 import com.tokopedia.home_account.view.adapter.uimodel.WalletUiModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.user.session.UserSessionInterface
@@ -39,7 +39,7 @@ class FundsAndInvestmentComposeActivity : BaseSimpleActivity(),
 
     private fun setView() {
         setContent {
-            FundsAndInvestmentLayout(
+            FundsAndInvestmentScreen(
                 userId = userSession.userId,
                 uiState = viewModel.uiState,
                 onItemClicked = {
@@ -49,7 +49,7 @@ class FundsAndInvestmentComposeActivity : BaseSimpleActivity(),
                     finish()
                 },
                 onReloadData = { isRefreshData ->
-                    viewModel.getCentralizedUserAssetConfig(isRefreshData = isRefreshData)
+                    viewModel.getCentralizedUserAssetConfig(isRefreshData)
                 }
             )
         }
