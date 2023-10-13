@@ -41,7 +41,7 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
  * Created by @ilhamsuaib on 26/01/23.
  */
 
-class ComposeSelectTypeFragment : Fragment() {
+class ComposeSelectTypeFragment : BaseComposeFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -62,37 +62,34 @@ class ComposeSelectTypeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // TODO: create extension for this in internal module
-        return ComposeView(inflater.context).apply {
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-            setContent {
-                LaunchedEffect(key1 = Unit, block = {
-                    viewModel.onEvent(SelectTypeUiEvent.FetchPersonaList(arguments = getSelectTypeArguments()))
-                    viewModel.uiEffect.collectLatest {
-                        when (it) {
-                            is SelectTypeUiEffect.CloseThePage -> closeThePage()
-                            is SelectTypeUiEffect.OnPersonaChanged -> setOnPersonaChanged(it)
-                        }
+        return setComposeViewContent(inflater.context) {
+
+            LaunchedEffect(key1 = Unit, block = {
+                viewModel.onEvent(SelectTypeUiEvent.FetchPersonaList(arguments = getSelectTypeArguments()))
+                viewModel.uiEffect.collectLatest {
+                    when (it) {
+                        is SelectTypeUiEffect.CloseThePage -> closeThePage()
+                        is SelectTypeUiEffect.OnPersonaChanged -> setOnPersonaChanged(it)
                     }
-                })
+                }
+            })
 
-                NestTheme {
-                    Surface(
-                        modifier = Modifier.fillMaxSize(),
-                        color = MaterialTheme.colors.background
-                    ) {
-                        CompositionLocalProvider(LocalOverscrollConfiguration provides null) {
-                            val state = viewModel.state.collectAsStateWithLifecycle()
-                            val data = state.value
+            NestTheme {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colors.background
+                ) {
+                    CompositionLocalProvider(LocalOverscrollConfiguration provides null) {
+                        val state = viewModel.state.collectAsStateWithLifecycle()
+                        val data = state.value
 
-                            when (data.state) {
-                                is SelectTypeState.State.Loading -> SelectTypeLoadingState()
-                                is SelectTypeState.State.Error -> SelectTypeErrorState(viewModel::onEvent)
-                                is SelectTypeState.State.Success -> PersonSuccessState(
-                                    data = data.data,
-                                    onEvent = viewModel::onEvent
-                                )
-                            }
+                        when (data.state) {
+                            is SelectTypeState.State.Loading -> SelectTypeLoadingState()
+                            is SelectTypeState.State.Error -> SelectTypeErrorState(viewModel::onEvent)
+                            is SelectTypeState.State.Success -> PersonSuccessState(
+                                data = data.data,
+                                onEvent = viewModel::onEvent
+                            )
                         }
                     }
                 }

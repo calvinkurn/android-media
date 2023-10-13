@@ -4,15 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.OnBackPressedCallback
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.platform.ViewCompositionStrategy
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.navArgs
@@ -46,7 +42,7 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
  * Created by @ilhamsuaib on 17/01/23.
  */
 
-class ComposeResultFragment : Fragment() {
+class ComposeResultFragment : BaseComposeFragment() {
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -62,13 +58,6 @@ class ComposeResultFragment : Fragment() {
     }
 
     private val args: ComposeResultFragmentArgs by navArgs()
-    private val backPressedCallback by lazy {
-        object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                this@ComposeResultFragment.handleOnBackPressed()
-            }
-        }
-    }
     private var isPersonaActive = false
     private var isAnyChanges = false
 
@@ -80,45 +69,41 @@ class ComposeResultFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        return ComposeView(inflater.context).apply {
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-            setContent {
+        return setComposeViewContent(inflater.context) {
+            LaunchedEffect(key1 = Unit, block = {
+                viewModel.onEvent(ResultUiEvent.FetchPersonaData(getResultArguments()))
+                viewModel.uiEffect.collectLatest {
+                    when (it) {
+                        is ResultUiEffect.NavigateToQuestionnaire -> navigateToQuestionnaire()
+                        is ResultUiEffect.NavigateToSelectPersona -> navigateToSelectPersona(it)
+                        is ResultUiEffect.OnPersonaStatusChanged -> onPersonaStatusChanged(it)
+                        is ResultUiEffect.SendClickApplyTracking -> sendClickApplyTracking(it)
+                        is ResultUiEffect.SendSwitchCheckedChangedTracking -> {
+                            SellerPersonaTracking.sendClickSellerPersonaResultToggleActiveEvent()
+                        }
 
-                LaunchedEffect(key1 = Unit, block = {
-                    viewModel.onEvent(ResultUiEvent.FetchPersonaData(getResultArguments()))
-                    viewModel.uiEffect.collectLatest {
-                        when (it) {
-                            is ResultUiEffect.NavigateToQuestionnaire -> navigateToQuestionnaire()
-                            is ResultUiEffect.NavigateToSelectPersona -> navigateToSelectPersona(it)
-                            is ResultUiEffect.OnPersonaStatusChanged -> onPersonaStatusChanged(it)
-                            is ResultUiEffect.SendClickApplyTracking -> sendClickApplyTracking(it)
-                            is ResultUiEffect.SendSwitchCheckedChangedTracking -> {
-                                SellerPersonaTracking.sendClickSellerPersonaResultToggleActiveEvent()
-                            }
-
-                            is ResultUiEffect.SendImpressionResultTracking -> {
-                                SellerPersonaTracking.sendImpressionSellerPersonaResultEvent()
-                            }
+                        is ResultUiEffect.SendImpressionResultTracking -> {
+                            SellerPersonaTracking.sendImpressionSellerPersonaResultEvent()
                         }
                     }
-                })
+                }
+            })
 
-                NestTheme {
-                    Surface(
-                        modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background
-                    ) {
-                        val state = viewModel.personaState.collectAsStateWithLifecycle()
+            NestTheme {
+                Surface(
+                    modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background
+                ) {
+                    val state = viewModel.personaState.collectAsStateWithLifecycle()
 
-                        when (state.value.state) {
-                            is PersonaResultState.State.Loading -> ResultLoadingState()
-                            is PersonaResultState.State.Error -> ResultErrorState(viewModel::onEvent)
-                            is PersonaResultState.State.Success -> {
-                                updateActiveStatusFlag(state.value.data.personaStatus.isActive())
-                                updateAnyChangesFlag(state.value.data.isSwitchChecked)
-                                ResultSuccessState(
-                                    state = state.value, onEvent = viewModel::onEvent
-                                )
-                            }
+                    when (state.value.state) {
+                        is PersonaResultState.State.Loading -> ResultLoadingState()
+                        is PersonaResultState.State.Error -> ResultErrorState(viewModel::onEvent)
+                        is PersonaResultState.State.Success -> {
+                            updateActiveStatusFlag(state.value.data.personaStatus.isActive())
+                            updateAnyChangesFlag(state.value.data.isSwitchChecked)
+                            ResultSuccessState(
+                                state = state.value, onEvent = viewModel::onEvent
+                            )
                         }
                     }
                 }
@@ -126,10 +111,35 @@ class ComposeResultFragment : Fragment() {
         }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        setupOnBackPressed()
+    override fun setOnBackPressed() {
+        context?.let {
+            val paramPersona = args.paramPersona
+            if (paramPersona.isNotBlank() || (paramPersona.isBlank() && isAnyChanges)) {
+                val dialog = DialogUnify(
+                    it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE
+                )
+                with(dialog) {
+                    setTitle(it.getString(R.string.sp_poup_exit_title))
+                    setDescription(it.getString(R.string.sp_popup_exit_result_description))
+                    setPrimaryCTAText(it.getString(R.string.sp_popup_exit_result_primary_cta))
+                    setPrimaryCTAClickListener {
+                        dismiss()
+                    }
+                    setSecondaryCTAText(it.getString(R.string.sp_popup_exit_secondary_cta))
+                    setSecondaryCTAClickListener {
+                        dismiss()
+                        if (sharedPref.isFirstVisit()) {
+                            val appLink = ApplinkConstInternalSellerapp.SELLER_HOME
+                            RouteManager.route(it, appLink)
+                        }
+                        activity?.finish()
+                    }
+                    show()
+                }
+            } else {
+                activity?.finish()
+            }
+        }
     }
 
     private fun getResultArguments(): PersonaArgsUiModel {
@@ -160,12 +170,6 @@ class ComposeResultFragment : Fragment() {
         )
     }
 
-    private fun setupOnBackPressed() {
-        activity?.onBackPressedDispatcher?.addCallback(
-            viewLifecycleOwner, backPressedCallback
-        )
-    }
-
     private fun navigateToSelectPersona(data: ResultUiEffect.NavigateToSelectPersona) {
         view?.let {
             val action =
@@ -181,37 +185,6 @@ class ComposeResultFragment : Fragment() {
                 ComposeResultFragmentDirections.actionResultFragmentToQuestionnaireFragment()
             Navigation.findNavController(it).navigate(action)
             SellerPersonaTracking.sendClickSellerPersonaResultRetakeQuizEvent()
-        }
-    }
-
-    private fun handleOnBackPressed() {
-        context?.let {
-            val paramPersona = args.paramPersona
-            if (paramPersona.isNotBlank() || (paramPersona.isBlank() && isAnyChanges)) {
-                val dialog = DialogUnify(
-                    it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE
-                )
-                with(dialog) {
-                    setTitle(it.getString(R.string.sp_poup_exit_title))
-                    setDescription(it.getString(R.string.sp_popup_exit_result_description))
-                    setPrimaryCTAText(it.getString(R.string.sp_popup_exit_result_primary_cta))
-                    setPrimaryCTAClickListener {
-                        dismiss()
-                    }
-                    setSecondaryCTAText(it.getString(R.string.sp_popup_exit_secondary_cta))
-                    setSecondaryCTAClickListener {
-                        dismiss()
-                        if (sharedPref.isFirstVisit()) {
-                            val appLink = ApplinkConstInternalSellerapp.SELLER_HOME
-                            RouteManager.route(it, appLink)
-                        }
-                        activity?.finish()
-                    }
-                    show()
-                }
-            } else {
-                activity?.finish()
-            }
         }
     }
 

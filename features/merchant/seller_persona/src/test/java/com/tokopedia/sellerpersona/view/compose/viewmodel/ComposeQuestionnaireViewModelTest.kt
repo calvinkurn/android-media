@@ -300,6 +300,16 @@ class ComposeQuestionnaireViewModelTest :
         }
     }
 
+    @Test
+    fun `when get anyChanges status should return true if any question answered`() {
+
+    }
+
+    @Test
+    fun `when get anyChanges status should return false if no questions answered`() {
+
+    }
+
     private fun TestScope.runTestFetchQuestionnaire(successState: QuestionnaireState.Success) {
         coEvery {
             getPersonaQuestionnaireUseCase.execute()

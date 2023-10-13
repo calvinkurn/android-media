@@ -16,7 +16,7 @@ sealed class BaseOptionUiModel(
     open var isSelected: Boolean
 ) : Visitable<OptionAdapterFactory> {
 
-    abstract fun copyData(): BaseOptionUiModel
+    abstract fun copyData(isSelected: Boolean): BaseOptionUiModel
 
     @Immutable
     data class QuestionOptionSingleUiModel(
@@ -33,7 +33,7 @@ sealed class BaseOptionUiModel(
             return typeFactory.type(this)
         }
 
-        override fun copyData(): BaseOptionUiModel = this.copy()
+        override fun copyData(isSelected: Boolean): BaseOptionUiModel = this.copy(isSelected = isSelected)
 
         fun getFormattedText(): String {
             return String.format(SINGLE_OPTION_TEXT_FORMAT, value.uppercase(), title)
@@ -51,6 +51,6 @@ sealed class BaseOptionUiModel(
             return typeFactory.type(this)
         }
 
-        override fun copyData(): BaseOptionUiModel = this.copy()
+        override fun copyData(isSelected: Boolean): BaseOptionUiModel = this.copy(isSelected = isSelected)
     }
 }

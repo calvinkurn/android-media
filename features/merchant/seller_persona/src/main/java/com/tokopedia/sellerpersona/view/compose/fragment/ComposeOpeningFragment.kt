@@ -4,9 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.platform.ViewCompositionStrategy
-import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.model.ImpressHolder
@@ -18,7 +15,7 @@ import com.tokopedia.sellerpersona.view.compose.screen.PersonaOpeningScreen
  * Created by @ilhamsuaib on 17/01/23.
  */
 
-class ComposeOpeningFragment : Fragment() {
+class ComposeOpeningFragment : BaseComposeFragment() {
 
     private val impressHolder: ImpressHolder? by lazy {
         (activity as? SellerPersonaActivity)?.openingImpressHolder
@@ -27,15 +24,12 @@ class ComposeOpeningFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        return ComposeView(inflater.context).apply {
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-            setContent {
-                PersonaOpeningScreen(
-                    onImpressed = ::sendImpressionEvent,
-                    onNext = ::onNextClicked,
-                    onBack = ::onBackClicked
-                )
-            }
+        return setComposeViewContent(inflater.context) {
+            PersonaOpeningScreen(
+                onImpressed = ::sendImpressionEvent,
+                onNext = ::onNextClicked,
+                onBack = ::onBackClicked
+            )
         }
     }
 

@@ -56,6 +56,10 @@ class ComposeQuestionnaireViewModel @Inject constructor(
         }
     }
 
+    fun isAnyChanges(): Boolean {
+        return data.questionnaireList.any { it.options.any { o -> o.isSelected } }
+    }
+
     private fun fetchQuestionnaire() {
         viewModelScope.launch {
             runCatching {
@@ -130,10 +134,8 @@ class ComposeQuestionnaireViewModel @Inject constructor(
         val selected = event.option
         val pagePosition = event.pagePosition
         val options = data[pagePosition].options.map {
-            val option = it.copyData()
-            val isTheSameOption = option.value == selected.value
-            option.isSelected = isTheSameOption
-            return@map option
+            val isSelected = it.value == selected.value
+            return@map it.copyData(isSelected)
         }
         return data[pagePosition].copy(options = options)
     }
@@ -145,11 +147,12 @@ class ComposeQuestionnaireViewModel @Inject constructor(
         val selected = event.option
         val pagePosition = event.pagePosition
         val options = data[event.pagePosition].options.map {
-            val option = it.copyData()
-            if (option.value == selected.value) {
-                option.isSelected = event.isChecked
+            val isSelected = if (it.value == selected.value) {
+                event.isChecked
+            } else {
+                it.isSelected
             }
-            return@map option
+            return@map it.copyData(isSelected = isSelected)
         }
         return data[pagePosition].copy(options = options)
     }
@@ -183,7 +186,7 @@ class ComposeQuestionnaireViewModel @Inject constructor(
         _state.update { state }
     }
 
-    private  fun emitUiEffect(uiEffect: QuestionnaireUiEffect) {
+    private fun emitUiEffect(uiEffect: QuestionnaireUiEffect) {
         _uiEffect.tryEmit(uiEffect)
     }
 }
