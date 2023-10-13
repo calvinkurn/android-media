@@ -115,6 +115,7 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
 
         private const val BOTTOM_SHEET_MARGIN_TOP_IN_DP = 64
         private const val BOTTOM_SHEET_TICKER_INFO_HEIGHT_IN_DP = 40
+        private const val BOTTOM_SHEET_TICKER_INFO_MARGIN_IN_DP = 12
         private const val BOTTOM_SHEET_HEADER_HEIGHT_IN_DP = 56
         private const val BOTTOM_SHEET_SAVING_INFO_HEIGHT_IN_DP = 56
         private const val BOTTOM_SHEET_TOTAL_AMOUNT_HEIGHT_IN_DP = 56
@@ -699,6 +700,9 @@ class PromoUsageBottomSheet : BottomSheetDialogFragment() {
                     if (hasTickerInfo) {
                         maxPromoHeight = maxPromoHeight
                             .minus(BOTTOM_SHEET_TICKER_INFO_HEIGHT_IN_DP.toPx())
+                    } else {
+                        maxPromoHeight = maxPromoHeight
+                            .minus(BOTTOM_SHEET_TICKER_INFO_MARGIN_IN_DP.toPx())
                     }
                     val hasSavingInfo = state.savingInfo.isVisible
                     if (hasSavingInfo) {
