@@ -231,6 +231,7 @@ open class EmoneyPdpFragment :
         emoneyPdpViewModel.inputViewError.observe(
             viewLifecycleOwner,
             Observer {
+                hideTickerNotSupported()
                 binding.emoneyPdpInputCardWidget.renderError(it)
                 if (it.isNotEmpty()) showRecentNumberAndPromo()
             }
@@ -707,7 +708,7 @@ open class EmoneyPdpFragment :
         if (detailPassData.isBCAGenOne) {
             showTickerNotSupported()
             showRecentNumberAndPromo()
-        } else if (emoneyPdpViewModel.selectedOperatorIsBCA()) {
+        } else if (emoneyPdpViewModel.selectedOperatorIsBCA() && !binding.emoneyPdpInputCardWidget.isShownError) {
             if (this::nfcAdapter.isInitialized && !nfcAdapter.isEnabled) {
                 showTickerNotSupported()
                 showRecentNumberAndPromo()
@@ -723,7 +724,6 @@ open class EmoneyPdpFragment :
                 detailPassData.clientNumber?.let {
                     emoneyPdpViewModel.getBCAGenCheck(it)
                 }
-
             } else {
                 showTickerNotSupported()
                 showRecentNumberAndPromo()
@@ -731,7 +731,7 @@ open class EmoneyPdpFragment :
             }
         } else {
             hideTickerNotSupported()
-            showProducts()
+            //showProducts()
         }
     }
 
