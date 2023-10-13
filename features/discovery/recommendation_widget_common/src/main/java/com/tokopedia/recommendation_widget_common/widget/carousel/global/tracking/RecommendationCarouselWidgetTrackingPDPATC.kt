@@ -6,13 +6,16 @@ import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstant
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Action.PRODUCT_VIEW
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Action.SELECT_CONTENT
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.BUSINESS_UNIT_HOME
+import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.BUSINESS_UNIT_PG
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.CATEGORY_ID
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.CLICK_HOMEPAGE
+import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.CLICK_PG
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.CURRENCY_CODE
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.CURRENT_SITE_MP
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.DEFAULT_VALUE
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.DIMENSION_40
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.DIMENSION_45
+import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.DIMENSION_56
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.DIMENSION_84
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.DIMENSION_90
 import com.tokopedia.recommendation_widget_common.RecommendationTrackingConstants.Tracking.ECOMMERCE
@@ -40,6 +43,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselTrackingConst
 import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselTrackingConst.Action.ADJUST_QTY_PDP_RECOM_WITH_ATC
 import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselTrackingConst.Action.ATC_PDP_RECOM_WITH_ATC
+import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselTrackingConst.Action.CLICK_BMGM_RECOM_SEE_ALL
 import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselTrackingConst.Action.CLICK_PDP_RECOM_SEE_ALL
 import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselTrackingConst.Action.CLICK_PDP_RECOM_WITH_ATC
 import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselTrackingConst.Action.DELETE_PDP_RECOM_WITH_ATC
@@ -52,12 +56,14 @@ import com.tokopedia.recommendation_widget_common.widget.carousel.global.Recomme
 import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselTrackingConst.TrackerId.CLICK_RECOMMENDATION_ITEM_PDP_ATC
 import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselTrackingConst.TrackerId.DELETE_RECOMMENDATION_ITEM_PDP_ATC
 import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselTrackingConst.TrackerId.SEE_ALL_RECOMMENDATION_PDP_ATC
+import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselTrackingConst.TrackerId.SEE_ALL_RECOMMENDATION_PDP_ATC_BMGM
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetSource
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils.EVENT
 import com.tokopedia.track.TrackAppUtils.EVENT_ACTION
 import com.tokopedia.track.TrackAppUtils.EVENT_CATEGORY
 import com.tokopedia.track.TrackAppUtils.EVENT_LABEL
+import com.tokopedia.track.constant.TrackerConstant
 import com.tokopedia.track.constant.TrackerConstant.BUSINESS_UNIT
 import com.tokopedia.track.constant.TrackerConstant.CURRENT_SITE
 import com.tokopedia.track.constant.TrackerConstant.USERID
@@ -65,8 +71,8 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 
 class RecommendationCarouselWidgetTrackingPDPATC(
     private val widget: RecommendationWidget,
-    private val source: RecommendationWidgetSource.PDPAfterATC,
-): RecommendationCarouselWidgetTracking {
+    private val source: RecommendationWidgetSource.PDPAfterATC
+) : RecommendationCarouselWidgetTracking {
 
     private val anchorProductId = source.anchorProductId
     private val userId = source.userId
@@ -79,7 +85,7 @@ class RecommendationCarouselWidgetTrackingPDPATC(
 
     override fun sendEventItemImpression(
         trackingQueue: TrackingQueue,
-        item: RecommendationItem,
+        item: RecommendationItem
     ) {
         trackingQueue.putEETracking(impressionMap(item))
     }
@@ -97,19 +103,22 @@ class RecommendationCarouselWidgetTrackingPDPATC(
             USERID to userId,
             ECOMMERCE to mapOf(
                 CURRENCY_CODE to IDR,
-                IMPRESSIONS to arrayListOf(mapOf(
-                    LIST to listName(item),
-                    KEY_INDEX to item.position + 1,
-                    ITEM_BRAND to VALUE_NONE_OTHER,
-                    ITEM_CATEGORY to item.categoryBreadcrumbs,
-                    ITEM_ID to item.productId,
-                    ITEM_NAME to item.name,
-                    ITEM_VARIANT to VALUE_NONE_OTHER,
-                    PRICE to item.priceInt.toDouble(),
-                    DIMENSION_84 to VALUE_NONE_OTHER,
-                    DIMENSION_90 to "$PDP.${item.recommendationType}",
-                )),
-            ),
+                IMPRESSIONS to arrayListOf(
+                    mapOf(
+                        LIST to listName(item),
+                        KEY_INDEX to item.position + 1,
+                        ITEM_BRAND to VALUE_NONE_OTHER,
+                        ITEM_CATEGORY to item.categoryBreadcrumbs,
+                        ITEM_ID to item.productId,
+                        ITEM_NAME to item.name,
+                        ITEM_VARIANT to VALUE_NONE_OTHER,
+                        PRICE to item.priceInt.toDouble(),
+                        DIMENSION_84 to VALUE_NONE_OTHER,
+                        DIMENSION_90 to "$PDP.${item.recommendationType}",
+                        DIMENSION_56 to source.warehouseId
+                    )
+                )
+            )
         )
     }
 
@@ -120,7 +129,7 @@ class RecommendationCarouselWidgetTrackingPDPATC(
             REKOMENDASI_UNTUK_ANDA,
             item.recommendationType + topAdsListName(item),
             widget.layoutType,
-            anchorProductId,
+            anchorProductId
         ).joinToString(separator = " - ")
 
     private fun topAdsListName(item: RecommendationItem) =
@@ -142,7 +151,8 @@ class RecommendationCarouselWidgetTrackingPDPATC(
             putString(PRODUCT_ID, anchorProductId)
             putString(USERID, userId)
             putParcelableArrayList(
-                ITEMS, arrayListOf(
+                ITEMS,
+                arrayListOf(
                     bundle {
                         putString(DIMENSION_40, listName(item))
                         putInt(KEY_INDEX, item.position + 1)
@@ -154,6 +164,7 @@ class RecommendationCarouselWidgetTrackingPDPATC(
                         putDouble(PRICE, item.priceInt.toDouble())
                         putString(DIMENSION_84, VALUE_NONE_OTHER)
                         putString(DIMENSION_90, "$PDP.${item.recommendationType}")
+                        putString(DIMENSION_56, source.warehouseId)
                     }
                 )
             )
@@ -177,7 +188,8 @@ class RecommendationCarouselWidgetTrackingPDPATC(
             putString(PRODUCT_ID, anchorProductId)
             putString(USERID, userId)
             putParcelableArrayList(
-                ITEMS, arrayListOf(
+                ITEMS,
+                arrayListOf(
                     bundle {
                         putString(CATEGORY_ID, VALUE_NONE_OTHER)
                         putString(DIMENSION_40, listName(item))
@@ -209,7 +221,7 @@ class RecommendationCarouselWidgetTrackingPDPATC(
                 EVENT_LABEL, anchorProductId,
                 TRACKER_ID, ADJUST_QTY_ITEM_PDP_ATC,
                 BUSINESS_UNIT, BUSINESS_UNIT_HOME,
-                CURRENT_SITE, CURRENT_SITE_MP,
+                CURRENT_SITE, CURRENT_SITE_MP
             )
         )
     }
@@ -223,12 +235,22 @@ class RecommendationCarouselWidgetTrackingPDPATC(
                 EVENT_LABEL, anchorProductId,
                 TRACKER_ID, DELETE_RECOMMENDATION_ITEM_PDP_ATC,
                 BUSINESS_UNIT, BUSINESS_UNIT_HOME,
-                CURRENT_SITE, CURRENT_SITE_MP,
+                CURRENT_SITE, CURRENT_SITE_MP
             )
         )
     }
 
     override fun sendEventSeeAll() {
+        if (isBMGM()) {
+            sendEventSeeAllOfBMGM()
+        } else {
+            sendEventSeeAllOfGeneral()
+        }
+    }
+
+    private fun isBMGM() = source.offerId.isNotEmpty()
+
+    private fun sendEventSeeAllOfGeneral() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             DataLayer.mapOf(
                 EVENT, CLICK_HOMEPAGE,
@@ -237,7 +259,24 @@ class RecommendationCarouselWidgetTrackingPDPATC(
                 EVENT_LABEL, anchorProductId,
                 TRACKER_ID, SEE_ALL_RECOMMENDATION_PDP_ATC,
                 BUSINESS_UNIT, BUSINESS_UNIT_HOME,
+                CURRENT_SITE, CURRENT_SITE_MP
+            )
+        )
+    }
+
+    private fun sendEventSeeAllOfBMGM() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            DataLayer.mapOf(
+                EVENT, CLICK_PG,
+                EVENT_ACTION, CLICK_BMGM_RECOM_SEE_ALL,
+                EVENT_CATEGORY, PDP,
+                EVENT_LABEL, source.offerId,
+                TRACKER_ID, SEE_ALL_RECOMMENDATION_PDP_ATC_BMGM,
+                BUSINESS_UNIT, BUSINESS_UNIT_PG,
                 CURRENT_SITE, CURRENT_SITE_MP,
+                PRODUCT_ID, source.anchorProductId,
+                USERID, userId,
+                TrackerConstant.SHOP_ID, source.shopId
             )
         )
     }
@@ -245,7 +284,7 @@ class RecommendationCarouselWidgetTrackingPDPATC(
     object Factory {
         fun create(
             widget: RecommendationWidget,
-            source: RecommendationWidgetSource.PDPAfterATC,
+            source: RecommendationWidgetSource.PDPAfterATC
         ): RecommendationCarouselWidgetTracking =
             RecommendationCarouselWidgetTrackingPDPATC(widget, source)
     }

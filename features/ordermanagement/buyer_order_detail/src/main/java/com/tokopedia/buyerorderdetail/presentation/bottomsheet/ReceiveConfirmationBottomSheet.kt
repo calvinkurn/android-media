@@ -8,19 +8,19 @@ import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTracker
 import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTrackerConstant
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailActionButtonKey
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
-import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiState
 import com.tokopedia.buyerorderdetail.presentation.viewmodel.BuyerOrderDetailViewModel
+import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
 class ReceiveConfirmationBottomSheet(
-        context: Context,
-        private var actionButton: ActionButtonsUiModel.ActionButton,
-        private val bottomSheetManager: BuyerOrderDetailBottomSheetManager,
-        private val viewModel: BuyerOrderDetailViewModel,
-        private val navigator: BuyerOrderDetailNavigator
+    context: Context,
+    private var actionButton: ActionButtonsUiModel.ActionButton,
+    private val bottomSheetManager: BuyerOrderDetailBottomSheetManager,
+    private val viewModel: BuyerOrderDetailViewModel,
+    private val navigator: BuyerOrderDetailNavigator
 ) : View.OnClickListener {
     companion object {
         private const val BUTTON_TYPE_BUY = "buy"

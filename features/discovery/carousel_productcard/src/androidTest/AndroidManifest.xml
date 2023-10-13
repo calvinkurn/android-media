@@ -20,5 +20,9 @@
             android:name=".CarouselPagingProductCardActivityTest"
             android:theme="@style/Theme.White"/>
 
+        <activity
+            android:name=".reimagine.CarouselProductCardActivityTest"
+            android:theme="@style/Theme.White"/>
+
     </application>
 </manifest>

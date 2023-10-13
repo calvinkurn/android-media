@@ -10,4 +10,7 @@ class ChatActionBalloonSelectionAttachmentAttributes {
     @SerializedName("new_button_actions")
     @Expose
     val chatActions: List<ChatActionPojo> = ArrayList()
+
+    @SerializedName("is_typing_blocked_on_button_select")
+    val isTypingBlockedOnButtonSelect: Boolean = false
 }

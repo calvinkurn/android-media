@@ -48,6 +48,7 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.convertToLocationParams
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.media.loader.module.GlideApp
+import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.analytics.GyroRecommendationAnalytics
 import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.CLOSE_MEMBERSHIP
@@ -76,6 +77,7 @@ import com.tokopedia.thankyou_native.presentation.adapter.factory.BottomContentF
 import com.tokopedia.thankyou_native.presentation.adapter.model.*
 import com.tokopedia.thankyou_native.presentation.helper.DialogHelper
 import com.tokopedia.thankyou_native.presentation.helper.OnDialogRedirectListener
+import com.tokopedia.thankyou_native.presentation.helper.PostPurchaseShareHelper
 import com.tokopedia.thankyou_native.presentation.viewModel.ThanksPageDataViewModel
 import com.tokopedia.thankyou_native.presentation.viewModel.ThanksPageDataViewModel.Companion.FLASHSALE_TAG
 import com.tokopedia.thankyou_native.presentation.views.GyroView
@@ -103,6 +105,7 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.thank_activity_thank_you.*
 import kotlinx.android.synthetic.main.thank_fragment_success_payment.*
 import javax.inject.Inject
 
@@ -135,6 +138,9 @@ abstract class ThankYouBaseFragment :
 
     @Inject
     lateinit var gyroRecommendationAnalytics: dagger.Lazy<GyroRecommendationAnalytics>
+
+    @Inject
+    lateinit var postPurchaseShareHelper: dagger.Lazy<PostPurchaseShareHelper>
 
     override var iRecommendationView: IRecommendationView? = null
 
@@ -212,6 +218,8 @@ abstract class ThankYouBaseFragment :
                 this::showTopAdsHeadlineView,
                 this::hideTopAdsHeadlineView
             )
+
+            showOnBoardingShare()
         }
     }
 
@@ -944,6 +952,24 @@ abstract class ThankYouBaseFragment :
                 indicatorPosition = CarouselUnify.INDICATOR_HIDDEN
                 slideToShow =
                     if (banner.items.size > 1) SLIDE_TO_SHOW_MULTIPLE_ITEM else SLIDE_TO_SHOW_1_ITEM
+            }
+        }
+    }
+
+    private fun showOnBoardingShare() {
+        if (isAdded) {
+            activity?.let {
+                val navToolbar: NavToolbar? = it.findViewById(R.id.globalNabToolbar)
+                navToolbar?.let { toolbar ->
+                    toolbar.getShareIconView()?.let { id ->
+                        context?.let { context ->
+                            postPurchaseShareHelper.get().showCoachMarkShare(
+                                context = context,
+                                anchorView = id
+                            )
+                        }
+                    }
+                }
             }
         }
     }

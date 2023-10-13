@@ -41,6 +41,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.baseList)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.libraries.utils)
+    implementation projectOrAar(rootProject.ext.libraries.universal_sharing)
     implementation projectOrAar(rootProject.ext.features.nps)
     implementation projectOrAar(rootProject.ext.features.searchbar)
     implementation projectOrAar(rootProject.ext.features.medialoader)
@@ -66,6 +67,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.dialog
     implementation rootProject.ext.unifyDependencies.header
     implementation rootProject.ext.unifyDependencies.carousel
+    implementation rootProject.ext.unifyDependencies.coach_mark
 
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime

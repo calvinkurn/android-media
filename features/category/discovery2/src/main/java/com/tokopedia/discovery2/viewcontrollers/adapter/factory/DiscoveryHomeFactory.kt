@@ -66,6 +66,8 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.prod
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.MixLeftEmptyViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.ProductCardCarouselViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.ProductCardCarouselViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcolumnlist.ProductCardColumnListViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcolumnlist.ProductCardColumnListViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardliststate.EmptyStateViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardliststate.EmptyStateViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardliststate.ErrorLoadViewHolder
@@ -537,11 +539,15 @@ class DiscoveryHomeFactory {
                 ::ProductHighlightViewHolder,
                 ::ProductHighlightViewModel
             )
-
             initializeComponent(
                 ComponentsList.ThematicHeader,
                 ::ThematicHeaderViewHolder,
                 ::ThematicHeaderViewModel
+            )
+            initializeComponent(
+                component = ComponentsList.ProductCardColumnList,
+                componentViewHolder = ::ProductCardColumnListViewHolder,
+                componentViewModel = ::ProductCardColumnListViewModel
             )
         }
 

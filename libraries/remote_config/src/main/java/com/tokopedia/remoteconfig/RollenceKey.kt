@@ -8,12 +8,18 @@ object RollenceKey {
     const val AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_SMALL = "follow_green_small"
     const val AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_BIG = "follow_green_big"
     const val AB_TEST_SHOP_AFFILIATE_SHARE_ICON = "shareIconShopAff"
+    const val AB_TEST_SHOP_RE_IMAGINED = "shop_page_reimagined"
 
+    // home rollence section
     const val BALANCE_EXP = "Balance Widget"
     const val BALANCE_VARIANT_OLD = "Existing Balance Widget"
     const val BALANCE_VARIANT_NEW = "New Balance Widget"
     const val HOME_COMPONENT_ATF = "revamp_atf"
     const val HOME_COMPONENT_ATF_2 = "home_atf2"
+    const val HOME_LOAD_TIME_KEY = "load_time"
+    const val HOME_LOAD_TIME_CONTROL = "control_variant"
+    const val HOME_LOAD_TIME_EXP = "exp_variant"
+    // end of home rollence section
 
     // home component rollence section
     const val HOME_COMPONENT_DYNAMIC_CHANNEL_HEADER_EXP = "btf_revamp_header"
@@ -83,7 +89,6 @@ object RollenceKey {
 
     // TokopediaNOW
     const val TOKOPEDIA_NOW_AFFILIATE = "aff_now_att"
-    const val TOKOPEDIA_NOW_REPURCHASE = "now_repurchase"
 
     // FS Toko OOS Gradual Rollout
     const val FLASH_SALE_OUT_OF_STOCK_GRADUAL_ROLLOUT = "fst_oosimprovement"
