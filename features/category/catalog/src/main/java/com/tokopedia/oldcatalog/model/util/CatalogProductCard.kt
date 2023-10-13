@@ -29,8 +29,7 @@ class CatalogProductCard {
                 hasThreeDots = true,
                 isWishlisted = item.wishlist,
                 shopName = item.shop.name,
-                shopImageUrl = item.shop.url,
-                hasAddToCartButton = true,
+                shopImageUrl = item.shop.url
             )
         }
 
@@ -47,8 +46,10 @@ class CatalogProductCard {
                 labelGroupList.forEach {
                     add(
                         ProductCardModel.LabelGroup(
-                            title = it.title, position = it.position,
-                            type = it.type, imageUrl = it.url
+                            title = it.title,
+                            position = it.position,
+                            type = it.type,
+                            imageUrl = it.url
                         )
                     )
                 }
