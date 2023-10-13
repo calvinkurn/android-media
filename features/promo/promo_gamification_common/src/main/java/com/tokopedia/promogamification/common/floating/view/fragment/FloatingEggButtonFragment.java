@@ -1,5 +1,7 @@
 package com.tokopedia.promogamification.common.floating.view.fragment;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
@@ -33,6 +35,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.gif.GifDrawable;
@@ -61,15 +64,16 @@ import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.unifycomponents.ImageUnify;
 import com.tokopedia.user.session.UserSession;
 
-import javax.inject.Inject;
-import dagger.Lazy;
-import timber.log.Timber;
-import static android.content.Context.MODE_PRIVATE;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
+
+import javax.inject.Inject;
+
+import dagger.Lazy;
+import timber.log.Timber;
 
 /**
  * Created by hendry on 28/03/18.
@@ -80,6 +84,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     private static final String COORD_X = "x";
     private static final String COORD_Y = "y";
     private static final String PID = "pid";
+    private static final String VISIBLE_COUNT = "vis";
     private static final String TIME_DAY = "timeDay";
     private static final String TIME_MINUTE = "timeMinute";
     private static final String ISRIGHT = "isright";
@@ -90,6 +95,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     public static final float SCALE_NORMAL = 1f;
     public static final int SHORT_ANIMATION_DURATION = 300;
     public static final int LONG_ANIMATION_DURATION = 600;
+    public static final int MAX_VISIBLE = 3;
     public static final long LONG_THIRTY_MINUTE = 1800000;
 
     private View vgRoot;
@@ -314,9 +320,15 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        vgRoot.setVisibility(View.VISIBLE);
-        initDragBound();
-        initEggCoordinate();
+        int visibleCount = getSharedPrefVisibility().getInt(VISIBLE_COUNT, 1);
+        if(visibleCount > MAX_VISIBLE){
+            vgRoot.setVisibility(View.GONE);
+        } else {
+            vgRoot.setVisibility(View.VISIBLE);
+            initDragBound();
+            initEggCoordinate();
+            saveVisblePreference(visibleCount);
+        }
     }
 
     private void initDragBound() {
@@ -425,6 +437,13 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         int id = android.os.Process.myPid();
         SharedPreferences.Editor editor = getSharedPrefVisibility().edit();
         editor.putInt(PID, id);
+        editor.apply();
+    }
+
+    private void saveVisblePreference(int visibleCount) {
+        visibleCount += 1;
+        SharedPreferences.Editor editor = getSharedPrefVisibility().edit();
+        editor.putInt(VISIBLE_COUNT, visibleCount);
         editor.apply();
     }
 

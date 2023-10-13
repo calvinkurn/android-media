@@ -11,7 +11,7 @@
     <dimen name="home_revamp_searchbar_transition_range">16dp</dimen>
     <dimen name="keyboard_min_height">200dp</dimen>
 
-    <dimen name="new_margin_sm">24dp</dimen>
+    <dimen name="new_margin_sm">1dp</dimen>
 
     <!--    default toolbar height + default status bar height + 16 margin-->
     <dimen name="default_toolbar_status_height">96dp</dimen>

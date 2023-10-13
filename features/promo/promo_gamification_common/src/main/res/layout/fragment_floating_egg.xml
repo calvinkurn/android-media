@@ -15,8 +15,9 @@
             android:id="@+id/ivClose"
             android:visibility="gone"
             android:foregroundTint="@color/Unify_NN500"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            tools:src="@drawable/iconunify_clear_small"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_marginBottom="@dimen/gami_core_floating_egg_dp_30"
             android:layout_gravity="top|end"/>
 
