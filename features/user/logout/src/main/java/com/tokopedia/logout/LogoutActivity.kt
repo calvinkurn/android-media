@@ -118,10 +118,17 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         saveLoginReminderData()
 
         if (ScpUtils.isGotoLoginEnabled()) {
-            if(isSaveSession) {
-                logoutAndEnableOcl()
-            } else {
-                logoutUser()
+            try {
+                migrateTokenIfNot()
+                if (isSaveSession) {
+                    logoutAndEnableOcl()
+                } else {
+                    logoutUser()
+                }
+            } catch (e: Exception) {
+                showErrorDialogWithOk("Terjadi kesalahan") {
+                    finish()
+                }
             }
         } else {
             if (isClearDataOnly) {
@@ -146,12 +153,25 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
 
             override fun onLogoutFailed(error: LogoutError) {
                 lifecycleScope.launch {
-                    showErrorDialogWithRetry(error.error.message ?: "") {
+                    showErrorDialogWithRetry(error.error.message ?: "Terjadi kesalahan") {
                         logoutUser()
                     }
                 }
             }
         })
+    }
+
+    /*
+     Edge case: To make sure the token is migrated to login sdk before logout.
+     Example case: User logged in with old flow and then they receive the scp rollence and also the app hasn't restarted,
+     at the logout flow the app will use new logout func from scp and it will fail because the token is not yet migrated.
+     Note: access token is mandatory for login sdk logout flow.
+     We already handle the token migration at app launch (it mean user needs to relaunch the app)
+     */
+    private fun migrateTokenIfNot() {
+        if (GotoSdk.LSDKINSTANCE?.getAccessToken()?.isEmpty() == true) {
+            ScpUtils.saveTokens(userSession.accessToken, userSession.freshToken)
+        }
     }
 
     private fun logoutAndEnableOcl() {
@@ -226,6 +246,20 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
             setOverlayClose(false)
             setPrimaryCTAClickListener {
                 clearData()
+                dismiss()
+            }
+        }.show()
+    }
+
+    private fun showErrorDialogWithOk(errorMessage: String, retryAction: () -> Unit) {
+        DialogUnify(this, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE).apply {
+            setTitle(getString(R.string.logout))
+            setDescription(errorMessage)
+            setPrimaryCTAText("Oke")
+            setCancelable(false)
+            setOverlayClose(false)
+            setPrimaryCTAClickListener {
+                retryAction.invoke()
                 dismiss()
             }
         }.show()
