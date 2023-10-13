@@ -118,6 +118,40 @@ class AddNewAddressRevampNegativeTest {
         }
     }
 
+    @Test
+    fun addAddress_EdgeCase() {
+        val queryPath = "tracker/logistic/addaddress_new_user_revamp_negative.json"
+        val screenName = "/user/address/create/cart"
+        logisticInterceptor.getDistrictRecommendationResponsePath = getRawString(context, R.raw.get_district_recom_jakarta)
+        logisticInterceptor.getDistrictCenterResponsePath = getRawString(context, R.raw.get_district_center_taman_sari)
+        logisticInterceptor.autofillResponsePath = getRawString(context, R.raw.autofill_taman_sari)
+        logisticInterceptor.autoCompleteResponsePath = getRawString(context, R.raw.autocomplete_taman_sari)
+
+        addAddressRevamp {
+            launchWithParam(mActivityTestRule, screenName)
+            clickManualForm()
+            fillReceiver(RECEIVER)
+            fillAddressNegative(ADDRESS)
+            fillPhoneNumber(PHONE)
+            clickKotaKecamatan()
+            searchKotaKecamatan(KEYWORD)
+            clickKotaKecamatanItem()
+            clickPostalCode()
+            clickPostalCodeItem()
+            clickChoosePostalCode()
+            scrollToBottom()
+            clickPinpointWidgetNegative()
+            clickCariUlang()
+            searchAddressStreet(KEYWORD)
+            logisticInterceptor.getDistrictResponsePath = getRawString(context, R.raw.get_district_glodok)
+            clickAddressStreetItem()
+            onClickChooseLocation()
+            checkTermsAndCondition()
+        } submit {
+//            hasPassedAnalytics(cassavaTestRule, queryPath)
+        }
+    }
+
     companion object {
         const val KEYWORD = "Jakarta"
         const val ADDRESS = "Jalan Prof. Dr Satrio 123"

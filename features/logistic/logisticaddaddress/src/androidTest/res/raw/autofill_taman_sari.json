@@ -1,0 +1,62 @@
+[
+  {
+    "data": {
+      "kero_maps_autofill": {
+        "data": {
+          "title": "Mangga Besar",
+          "formatted_address": "Taman Sari, Kota Jakarta Barat, Dki Jakarta",
+          "city_id": 174,
+          "province_id": 13,
+          "province_name": "DKI Jakarta",
+          "district_id": 2259,
+          "district_name": "Taman Sari",
+          "city_name": "Jakarta Barat",
+          "postal_code": "11180",
+          "latitude": "-6.146165654999976",
+          "longitude": "106.81937467200007",
+          "full_data": [
+            {
+              "long_name": "Dki Jakarta",
+              "short_name": "Dki Jakarta",
+              "types": [
+                "administrative_area_level_1",
+                "Province",
+                "GOJEK-ID31"
+              ]
+            },
+            {
+              "long_name": "Kota Jakarta Barat",
+              "short_name": "Kota Jakarta Barat",
+              "types": [
+                "administrative_area_level_2",
+                "City",
+                "GOJEK-ID3174"
+              ]
+            },
+            {
+              "long_name": "Taman Sari",
+              "short_name": "Taman Sari",
+              "types": [
+                "administrative_area_level_3",
+                "Subdistrict",
+                "GOJEK-ID3174060"
+              ]
+            },
+            {
+              "long_name": "Mangga Besar",
+              "short_name": "Mangga Besar",
+              "types": [
+                "administrative_area_level_4",
+                "Village",
+                "GOJEK-ID3174060005"
+              ]
+            }
+          ]
+        },
+        "status": "OK",
+        "message_error": [],
+        "error_code": 0
+      }
+    }
+  }
+]
