@@ -142,7 +142,7 @@ class CategoryL2TabAdapterTypeFactory(
                     itemView = view,
                     listener = productItemListener,
                     productCardCompactListener = productCardCompactListener,
-                    productCardCompactSimilarProductTrackerListener = similarProductTrackerListener
+                    similarProductTrackerListener = similarProductTrackerListener
                 )
             }
             CategoryProductListViewHolder.LAYOUT -> CategoryProductListViewHolder(view)

@@ -7,6 +7,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.productcard.compact.productcard.presentation.customview.ProductCardCompactView.ProductCardCompactListener
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.productcard.compact.productcard.presentation.customview.ProductCardCompactWishlistButtonView
+import com.tokopedia.productcard.compact.productcard.presentation.listener.ProductCardCompactViewListener
 import com.tokopedia.productcard.compact.similarproduct.presentation.listener.ProductCardCompactSimilarProductTrackerListener
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowProductGridCardBinding
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductItemListener
@@ -17,7 +18,7 @@ class ProductItemViewHolder(
     itemView: View,
     private val listener: ProductItemListener?,
     private val productCardCompactListener: ProductCardCompactListener? = null,
-    private val productCardCompactSimilarProductTrackerListener: ProductCardCompactSimilarProductTrackerListener?,
+    private val similarProductTrackerListener: ProductCardCompactSimilarProductTrackerListener?,
 ): AbstractViewHolder<ProductItemDataView>(itemView), ProductCardCompactWishlistButtonView.WishlistButtonListener {
 
     companion object {
@@ -29,37 +30,17 @@ class ProductItemViewHolder(
 
     override fun bind(element: ProductItemDataView) {
         binding?.productCard?.apply {
+            bind(
+                model = element.productCardModel,
+                listener = createProductListener(element)
+            )
+
             setOnClickListener {
                 listener?.onProductClick(
                     productItemDataView = element
                 )
             }
-            setOnClickQuantityEditorListener { quantity ->
-                listener?.onProductNonVariantQuantityChanged(
-                    productItemDataView = element,
-                    quantity = quantity
-                )
-            }
-            setOnClickQuantityEditorVariantListener {
-                listener?.onProductChooseVariantClicked(
-                    productItemDataView = element
-                )
-            }
-            setWishlistButtonListener(
-                wishlistButtonListener = this@ProductItemViewHolder
-            )
-            setSimilarProductTrackerListener(
-                productCardCompactSimilarProductTrackerListener = productCardCompactSimilarProductTrackerListener
-            )
-            setListener(
-                productCardCompactListener = productCardCompactListener
-            )
-            setOnBlockAddToCartListener {
-                listener?.onProductCardAddToCartBlocked()
-            }
-            setData(
-                model = element.productCardModel
-            )
+
             addOnImpressionListener(element) {
                 listener?.onProductImpressed(
                     productItemDataView = element
@@ -70,8 +51,9 @@ class ProductItemViewHolder(
 
     override fun bind(element: ProductItemDataView?, payloads: MutableList<Any>) {
         if (payloads.firstOrNull() == true && element != null) {
-            binding?.productCard?.setData(
-                model = element.productCardModel
+            binding?.productCard?.bind(
+                model = element.productCardModel,
+                listener = createProductListener(element)
             )
         }
     }
@@ -93,4 +75,26 @@ class ProductItemViewHolder(
             ctaClickListener = ctaClickListener
         )
     }
+
+    private fun createProductListener(
+        element: ProductItemDataView
+    ) = ProductCardCompactViewListener(
+        onQuantityChangedListener = { quantity ->
+            listener?.onProductNonVariantQuantityChanged(
+                productItemDataView = element,
+                quantity = quantity
+            )
+        },
+        clickAddVariantListener = {
+            listener?.onProductChooseVariantClicked(
+                productItemDataView = element
+            )
+        },
+        blockAddToCartListener = {
+            listener?.onProductCardAddToCartBlocked()
+        },
+        wishlistButtonListener = this@ProductItemViewHolder,
+        productCardCompactListener = productCardCompactListener,
+        similarProductTrackerListener = similarProductTrackerListener
+    )
 }

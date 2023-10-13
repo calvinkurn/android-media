@@ -38,7 +38,7 @@ import com.tokopedia.productcard.compact.common.util.ViewUtil.getHexColorFromIdC
 import com.tokopedia.productcard.compact.common.util.ViewUtil.inflateView
 import com.tokopedia.productcard.compact.common.util.ViewUtil.safeParseColor
 import com.tokopedia.productcard.compact.databinding.LayoutProductCardCompactViewBinding
-import com.tokopedia.productcard.compact.productcard.presentation.customview.ProductCardCompactWishlistButtonView.WishlistButtonListener
+import com.tokopedia.productcard.compact.productcard.presentation.listener.ProductCardCompactViewListener
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ProductCardCompactView @JvmOverloads constructor(
@@ -58,12 +58,7 @@ class ProductCardCompactView @JvmOverloads constructor(
         private const val PERCENTAGE_CHAR = '%'
     }
 
-    private var productCardCompactSimilarProductTrackerListener: ProductCardCompactSimilarProductTrackerListener? = null
-    private var productCardCompactListener: ProductCardCompactListener? = null
-    private var quantityChangedListener: ((counter: Int) -> Unit)? = null
-    private var blockAddToCartListener: (() -> Unit)? = null
-    private var clickAddVariantListener: ((counter: Int) -> Unit)? = null
-    private var wishlistButtonListener: WishlistButtonListener? = null
+    private var listener: ProductCardCompactViewListener? = null
 
     private var quantityEditor: ProductCardCompactQuantityEditorView? = null
     private var wishlistButton: ProductCardCompactWishlistButtonView? = null
@@ -167,9 +162,9 @@ class ProductCardCompactView @JvmOverloads constructor(
                 this.minQuantity = minOrder
                 this.maxQuantity = maxOrder
                 this.hasBlockedAddToCart = hasBlockedAddToCart
-                this.onQuantityChangedListener = quantityChangedListener
-                this.onBlockAddToCartListener = blockAddToCartListener
-                this.onClickAddVariantListener = clickAddVariantListener
+                this.onQuantityChangedListener = listener?.onQuantityChangedListener
+                this.onBlockAddToCartListener = listener?.blockAddToCartListener
+                this.onClickAddVariantListener = listener?.clickAddVariantListener
                 setQuantity(orderQuantity)
             }
             quantityEditor?.show()
@@ -296,7 +291,9 @@ class ProductCardCompactView @JvmOverloads constructor(
                 )
             )
             setOnClickListener {
-                productCardCompactListener?.onClickSimilarProduct(productId, productCardCompactSimilarProductTrackerListener)
+                val productCardListener = listener?.productCardCompactListener
+                val trackerListener = listener?.similarProductTrackerListener
+                productCardListener?.onClickSimilarProduct(productId, trackerListener)
             }
         }
     }
@@ -338,7 +335,7 @@ class ProductCardCompactView @JvmOverloads constructor(
                 isSelected = hasBeenWishlist,
                 productId = productId
             )
-            wishlistButton?.setListener(wishlistButtonListener)
+            wishlistButton?.setListener(listener?.wishlistButtonListener)
             wishlistButton?.show()
         } else {
             wishlistButton?.hide()
@@ -587,7 +584,12 @@ class ProductCardCompactView @JvmOverloads constructor(
     private fun isDiscountNotBlankOrZero(discount: String, discountInt: Int) =
         (discount.isNotBlank() && discount != NO_DISCOUNT_STRING) || !discountInt.isZero()
 
-    fun setData(model: ProductCardCompactUiModel) {
+    fun bind(
+        model: ProductCardCompactUiModel,
+        listener: ProductCardCompactViewListener
+    ) {
+        this.listener = listener
+
         if (model.usePreDraw) {
             binding.root.doOnPreDraw {
                 binding.setupUi(model)
@@ -595,40 +597,6 @@ class ProductCardCompactView @JvmOverloads constructor(
         } else {
             binding.setupUi(model)
         }
-    }
-
-    fun setOnClickQuantityEditorListener(
-        onClickListener: (Int) -> Unit
-    ) {
-        quantityChangedListener = onClickListener
-    }
-
-    fun setOnClickQuantityEditorVariantListener(
-        onClickVariantListener: (Int) -> Unit
-    ) {
-        clickAddVariantListener = onClickVariantListener
-    }
-
-    fun setSimilarProductTrackerListener(
-        productCardCompactSimilarProductTrackerListener: ProductCardCompactSimilarProductTrackerListener?
-    ){
-        this.productCardCompactSimilarProductTrackerListener = productCardCompactSimilarProductTrackerListener
-    }
-
-    fun setWishlistButtonListener(
-        wishlistButtonListener: WishlistButtonListener
-    ) {
-        this.wishlistButtonListener = wishlistButtonListener
-    }
-
-    fun setOnBlockAddToCartListener(
-        onBlockAddToCartListener: () -> Unit
-    ) {
-        blockAddToCartListener = onBlockAddToCartListener
-    }
-
-    fun setListener(productCardCompactListener: ProductCardCompactListener?) {
-        this.productCardCompactListener = productCardCompactListener
     }
 
     interface ProductCardCompactListener {

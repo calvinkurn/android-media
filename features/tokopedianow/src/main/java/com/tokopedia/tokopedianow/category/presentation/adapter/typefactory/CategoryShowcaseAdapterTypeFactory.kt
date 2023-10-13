@@ -27,7 +27,7 @@ class CategoryShowcaseAdapterTypeFactory(
                 itemView = view,
                 listener = categoryShowcaseItemListener,
                 productCardCompactListener = productCardCompactListener,
-                productCardCompactSimilarProductTrackerListener = productCardCompactSimilarProductTrackerListener,
+                similarProductTrackerListener = productCardCompactSimilarProductTrackerListener,
                 lifecycleOwner = lifecycleOwner
             )
             else -> super.createViewHolder(view, type)
