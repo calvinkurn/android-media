@@ -97,7 +97,7 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
 ) {
 
     companion object {
-        private const val CYCLE_DURATION = 5000L
+        private const val CYCLE_DURATION = 2500L
         private const val MAXIMUM_WIDTH_STATIC_USP = 100
         private const val DELAY_DURATION_TICKER_MILLIS = 1000L
         private const val NEW_SELLER_TEXT_HTML = "Penjual Baru"
