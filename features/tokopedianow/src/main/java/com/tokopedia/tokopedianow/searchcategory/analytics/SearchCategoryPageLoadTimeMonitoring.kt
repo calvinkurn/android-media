@@ -45,6 +45,7 @@ class SearchCategoryPageLoadTimeMonitoring(
             tagNetwork,
             tagRender
         )
+        pltPerformanceMonitoring?.addAttribution(TOKONOW_ATTRIBUTION, getRows())
         pltPerformanceMonitoring?.startMonitoring(traceName)
     }
 
@@ -80,13 +81,8 @@ class SearchCategoryPageLoadTimeMonitoring(
     }
 
     fun stopRenderPerformanceMonitoring() {
-        pltPerformanceMonitoring?.apply {
-            if (!(this as PageLoadTimePerformanceCallback).isRenderDone) {
-                pltPerformanceMonitoring?.addAttribution(TOKONOW_ATTRIBUTION, getRows())
-            }
-            pltPerformanceMonitoring?.stopRenderPerformanceMonitoring()
-            pltPerformanceMonitoring?.stopMonitoring()
-        }
+        pltPerformanceMonitoring?.stopRenderPerformanceMonitoring()
+        pltPerformanceMonitoring?.stopMonitoring()
     }
 
     fun stopPerformanceMonitoring() {
