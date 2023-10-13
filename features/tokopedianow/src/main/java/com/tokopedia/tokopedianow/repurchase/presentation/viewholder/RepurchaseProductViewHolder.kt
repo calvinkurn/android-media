@@ -32,10 +32,7 @@ class RepurchaseProductViewHolder(
         binding?.productCard?.apply {
             setOnClickListener {
                 goToProductDetail(item)
-                listener?.onClickProduct(item, item.position)
-            }
-            setOnClickQuantityEditorListener { quantity ->
-                listener?.onAddToCartNonVariant(item, quantity)
+                listener?.onClickProduct(item)
             }
             setOnClickQuantityEditorVariantListener {
                 listener?.onAddToCartVariant(item)
@@ -94,8 +91,7 @@ class RepurchaseProductViewHolder(
 
     interface RepurchaseProductCardListener {
         fun onClickProduct(
-            item: RepurchaseProductUiModel,
-            position: Int
+            item: RepurchaseProductUiModel
         )
 
         fun onAddToCartVariant(
