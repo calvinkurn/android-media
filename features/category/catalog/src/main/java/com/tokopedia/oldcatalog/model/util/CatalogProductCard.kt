@@ -46,10 +46,8 @@ class CatalogProductCard {
                 labelGroupList.forEach {
                     add(
                         ProductCardModel.LabelGroup(
-                            title = it.title,
-                            position = it.position,
-                            type = it.type,
-                            imageUrl = it.url
+                            title = it.title, position = it.position,
+                            type = it.type, imageUrl = it.url
                         )
                     )
                 }
