@@ -22,7 +22,7 @@ interface BasePinpointButtonUiModel<T> {
     val enable: Boolean
 }
 
-sealed interface BottomSheetState {
+sealed interface PinpointBottomSheetState {
     data class LocationInvalid(
         val type: LocationInvalidType,
         val title: String,
@@ -30,7 +30,7 @@ sealed interface BottomSheetState {
         val imageUrl: String,
         val showMapIllustration: Boolean,
         val buttonState: ButtonInvalidModel
-    ) : BottomSheetState {
+    ) : PinpointBottomSheetState {
 
         enum class LocationInvalidType {
             OUT_OF_COVERAGE, LOCATION_NOT_FOUND
@@ -51,7 +51,7 @@ sealed interface BottomSheetState {
         val description: String,
         val buttonPrimary: PrimaryButtonUiModel,
         val buttonSecondary: LocationDetailButtonUiModel
-    ) : BottomSheetState {
+    ) : PinpointBottomSheetState {
         data class LocationDetailButtonUiModel(
             override val show: Boolean,
             override val state: AddressUiState?,

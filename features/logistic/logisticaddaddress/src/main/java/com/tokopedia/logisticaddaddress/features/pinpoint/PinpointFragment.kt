@@ -86,9 +86,9 @@ import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.search.Sear
 import com.tokopedia.logisticaddaddress.features.analytics.LogisticAddAddressAnalytics
 import com.tokopedia.logisticaddaddress.features.analytics.LogisticEditAddressAnalytics
 import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.PinpointViewModel
-import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.uimodel.BottomSheetState
 import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.uimodel.ChoosePinpoint
 import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.uimodel.PinpointAction
+import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.uimodel.PinpointBottomSheetState
 import com.tokopedia.logisticaddaddress.features.pinpoint.webview.PinpointWebviewActivity
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_PLACE_ID
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.LOCATION_NOT_FOUND
@@ -489,12 +489,12 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
 
         viewModel.pinpointBottomSheet.observe(viewLifecycleOwner) {
             when (it) {
-                is BottomSheetState.LocationDetail -> {
+                is PinpointBottomSheetState.LocationDetail -> {
                     showMap()
                     showDistrictBottomSheet(it)
                 }
 
-                is BottomSheetState.LocationInvalid -> {
+                is PinpointBottomSheetState.LocationInvalid -> {
                     showInvalidPinpointBottomSheet(it)
                 }
             }
@@ -796,7 +796,7 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
         }
     }
 
-    private fun showDistrictBottomSheet(state: BottomSheetState.LocationDetail) {
+    private fun showDistrictBottomSheet(state: PinpointBottomSheetState.LocationDetail) {
         binding?.bottomsheetLocation?.run {
             districtLayout.visible()
             wholeLoadingContainer.gone()
@@ -887,7 +887,7 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
         }
     }
 
-    private fun showInvalidPinpointBottomSheet(data: BottomSheetState.LocationInvalid) {
+    private fun showInvalidPinpointBottomSheet(data: PinpointBottomSheetState.LocationInvalid) {
         binding?.run {
             if (data.showMapIllustration) {
                 mapsEmpty.visible()
@@ -924,12 +924,12 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
                         setOnClickListener {
                             if (addressUiState.isAdd()) {
                                 when (data.type) {
-                                    BottomSheetState.LocationInvalid.LocationInvalidType.OUT_OF_COVERAGE -> {
+                                    PinpointBottomSheetState.LocationInvalid.LocationInvalidType.OUT_OF_COVERAGE -> {
                                         LogisticAddAddressAnalytics.onClickIsiAlamatOutOfIndo(
                                             userSession.userId
                                         )
                                     }
-                                    BottomSheetState.LocationInvalid.LocationInvalidType.LOCATION_NOT_FOUND -> {
+                                    PinpointBottomSheetState.LocationInvalid.LocationInvalidType.LOCATION_NOT_FOUND -> {
                                         LogisticAddAddressAnalytics.onClickIsiAlamatManualUndetectedLocation(
                                             userSession.userId
                                         )
@@ -950,9 +950,9 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
         }
     }
 
-    private fun hitInvalidLocationImpressionAnalytic(type: BottomSheetState.LocationInvalid.LocationInvalidType) {
+    private fun hitInvalidLocationImpressionAnalytic(type: PinpointBottomSheetState.LocationInvalid.LocationInvalidType) {
         when (type) {
-            BottomSheetState.LocationInvalid.LocationInvalidType.OUT_OF_COVERAGE -> {
+            PinpointBottomSheetState.LocationInvalid.LocationInvalidType.OUT_OF_COVERAGE -> {
                 when (addressUiState) {
                     AddressUiState.EditAddress -> {
                         LogisticEditAddressAnalytics.onImpressBottomSheetOutOfIndo(userSession.userId)
@@ -967,7 +967,7 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     }
                 }
             }
-            BottomSheetState.LocationInvalid.LocationInvalidType.LOCATION_NOT_FOUND -> {
+            PinpointBottomSheetState.LocationInvalid.LocationInvalidType.LOCATION_NOT_FOUND -> {
                 when (addressUiState) {
                     AddressUiState.EditAddress -> {
                         LogisticEditAddressAnalytics.onImpressBottomSheetAlamatTidakTerdeteksi(
