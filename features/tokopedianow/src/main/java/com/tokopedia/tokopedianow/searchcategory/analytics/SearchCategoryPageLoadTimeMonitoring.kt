@@ -80,9 +80,13 @@ class SearchCategoryPageLoadTimeMonitoring(
     }
 
     fun stopRenderPerformanceMonitoring() {
-        pltPerformanceMonitoring?.addAttribution(TOKONOW_ATTRIBUTION, getRows())
-        pltPerformanceMonitoring?.stopRenderPerformanceMonitoring()
-        pltPerformanceMonitoring?.stopMonitoring()
+        pltPerformanceMonitoring?.apply {
+            if (!(this as PageLoadTimePerformanceCallback).isRenderDone) {
+                pltPerformanceMonitoring?.addAttribution(TOKONOW_ATTRIBUTION, getRows())
+            }
+            pltPerformanceMonitoring?.stopRenderPerformanceMonitoring()
+            pltPerformanceMonitoring?.stopMonitoring()
+        }
     }
 
     fun stopPerformanceMonitoring() {

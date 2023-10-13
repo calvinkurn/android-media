@@ -927,7 +927,7 @@ abstract class BaseSearchCategoryFragment:
         NetworkErrorHelper.showEmptyState(context, view, ErrorHandler.getErrorMessage(context, throwable)) {
             getViewModel().onViewReloadPage()
         }
-        pltMonitoring?.stopRenderPerformanceMonitoring()
+
         pltMonitoring?.stopPerformanceMonitoring()
     }
 

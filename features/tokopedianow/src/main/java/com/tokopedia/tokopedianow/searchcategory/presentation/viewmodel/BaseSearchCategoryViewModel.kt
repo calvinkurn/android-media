@@ -59,8 +59,10 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_CURRENT_SITE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_PHYSICAL_GOODS
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
+import com.tokopedia.tokopedianow.common.constant.ConstantKey.DEFAULT_ROWS
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.EXPERIMENT_DISABLED
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.EXPERIMENT_ENABLED
+import com.tokopedia.tokopedianow.common.constant.ConstantKey.EXPERIMENT_ROWS
 import com.tokopedia.tokopedianow.common.constant.ServiceType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowStaticLayoutType.Companion.PRODUCT_ADS_CAROUSEL
@@ -153,8 +155,6 @@ abstract class BaseSearchCategoryViewModel(
     companion object {
         private const val MIN_PRODUCT_COUNT = 6
         private const val DEFAULT_HEADER_Y_COORDINATE = 0f
-        private const val DEFAULT_ROWS = "15"
-        private const val EXPERIMENT_ROWS = "50"
     }
 
     protected var chooseAddressDataView = ChooseAddressDataView()
