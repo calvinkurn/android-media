@@ -6,15 +6,12 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.View;
 import android.webkit.URLUtil;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.gcm.GCMHandler;
@@ -35,7 +32,6 @@ import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
-import com.tokopedia.kotlin.extensions.view.StringExtKt.*;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -152,46 +148,61 @@ public class SplashScreen extends AppCompatActivity {
                                 linkerDefferedDeeplinkData.getPromoCode() : "");
                         String deeplink = linkerDefferedDeeplinkData.getDeeplink();
                         if (!TextUtils.isEmpty(deeplink)) {
-                            // Notification will go through DeeplinkActivity and DeeplinkHandlerActivity
-                            // because we need tracking UTM for those notification applink
-                            String tokopediaDeeplink = deeplink;
-                            Intent intent = new Intent();
-                            Boolean isUnderVersion = isUnderMinVersion(linkerDefferedDeeplinkData.getMinVersion());
-                            if (isUnderVersion) {
-                                tokopediaDeeplink = ApplinkConstInternalGlobal.SHARE_NOT_FOUND;
-                                intent.setClassName(SplashScreen.this.getPackageName(),
-                                        com.tokopedia.config.GlobalConfig.DEEPLINK_HANDLER_ACTIVITY_CLASS_NAME);
-                            } else {
-                                if (URLUtil.isNetworkUrl(deeplink)) {
-                                    intent.setClassName(SplashScreen.this.getPackageName(),
-                                            com.tokopedia.config.GlobalConfig.DEEPLINK_ACTIVITY_CLASS_NAME);
-                                } else {
-                                    if (deeplink.startsWith(ApplinkConst.APPLINK_CUSTOMER_SCHEME + "://")) {
-                                        tokopediaDeeplink = deeplink;
-                                    } else {
-                                        tokopediaDeeplink = ApplinkConst.APPLINK_CUSTOMER_SCHEME + "://" + deeplink;
-                                    }
-                                    intent.setClassName(SplashScreen.this.getPackageName(),
-                                            com.tokopedia.config.GlobalConfig.DEEPLINK_HANDLER_ACTIVITY_CLASS_NAME);
-                                }
-                            }
-
-                            Map<String, String> messageMap = new HashMap<>();
-                            messageMap.put("type", "splash_screen");
-                            messageMap.put("deeplink", tokopediaDeeplink);
-                            ServerLogger.log(Priority.P2, "LINKER", messageMap);
-                            intent.setData(Uri.parse(tokopediaDeeplink));
-                            startActivity(intent);
-                            finish();
+                            navigateBranchDeeplink(deeplink, linkerDefferedDeeplinkData.getMinVersion());
                         }
                     }
-
 
                     @Override
                     public void onError(LinkerError linkerError) {
                     }
                 }, SplashScreen.this));
         return true;
+    }
+
+    private void navigateBranchDeeplink(String deeplink, String minVersion) {
+        String tokopediaDeeplink = deeplink;
+        Intent intent = new Intent();
+        boolean isUnderVersion = isUnderMinVersion(minVersion);
+        if (isUnderVersion) {
+            intent = RouteManager.getDeeplinkNotFoundIntent(SplashScreen.this);
+            intent.putExtra("type", "update");
+
+            logLinker(deeplink, "update");
+        } else {
+            // Notification will go through DeeplinkActivity and DeeplinkHandlerActivity
+            // because we need tracking UTM for those notification applink
+            if (URLUtil.isNetworkUrl(deeplink)) {
+                intent.setClassName(SplashScreen.this.getPackageName(),
+                        com.tokopedia.config.GlobalConfig.DEEPLINK_ACTIVITY_CLASS_NAME);
+                logLinker(deeplink, "open");
+            } else {
+                if (deeplink.startsWith(ApplinkConst.APPLINK_CUSTOMER_SCHEME + "://")) {
+                    tokopediaDeeplink = deeplink;
+                } else {
+                    tokopediaDeeplink = ApplinkConst.APPLINK_CUSTOMER_SCHEME + "://" + deeplink;
+                }
+                //check if original url intent can be opened in app
+                Intent intentCheck = RouteManager.getIntentNoFallback(SplashScreen.this, tokopediaDeeplink);
+                if (intentCheck == null) {
+                    intent = RouteManager.getDeeplinkNotFoundIntent(SplashScreen.this);
+                    logLinker(tokopediaDeeplink, "404");
+                } else {
+                    intent.setClassName(SplashScreen.this.getPackageName(),
+                            com.tokopedia.config.GlobalConfig.DEEPLINK_HANDLER_ACTIVITY_CLASS_NAME);
+                    logLinker(tokopediaDeeplink, "open");
+                }
+            }
+        }
+        intent.setData(Uri.parse(tokopediaDeeplink));
+        startActivity(intent);
+        finish();
+    }
+
+    private void logLinker(String deeplink, String reason) {
+        Map<String, String> messageMap = new HashMap<>();
+        messageMap.put("reason", reason);
+        messageMap.put("deeplink", deeplink);
+        ServerLogger.log(Priority.P2, "LINKER", messageMap);
     }
 
     @Override
@@ -208,12 +219,10 @@ public class SplashScreen extends AppCompatActivity {
             int currentVersionInt = StringExtKt.toIntOrZero(currentVersionString);
             if (minVersionString.length() < currentVersionString.length()) {
                 int differenceLength = currentVersionString.length() - minVersionString.length();
-                minVersionInt = minVersionInt * ((int)Math.pow(10, differenceLength));
-            }
-
-            else if (minVersionString.length() > currentVersionString.length()) {
+                minVersionInt = minVersionInt * ((int) Math.pow(10, differenceLength));
+            } else if (minVersionString.length() > currentVersionString.length()) {
                 int differenceLength = currentVersionString.length() - minVersionString.length();
-                currentVersionInt = currentVersionInt * ((int)Math.pow(10, differenceLength));
+                currentVersionInt = currentVersionInt * ((int) Math.pow(10, differenceLength));
             }
             return currentVersionInt < minVersionInt;
         } catch (Exception e) {
