@@ -705,35 +705,27 @@ class DynamicProductDetailViewModel @Inject constructor(
         }
     }
 
-    private fun getProductP2(cacheState: CacheState, urlQuery: String) {
-        if (cacheState.isFromCache) {
-            getProductP2InCache()
-        } else {
-            getProductP2InCloud(urlQuery = urlQuery)
-        }
-    }
-
-    private fun getProductP2InCloud(urlQuery: String) = viewModelScope.launch {
+    private fun getProductP2(cacheState: CacheState, urlQuery: String) = viewModelScope.launch {
         runCatching {
-            doProductP2()
-
-            val p1 = getDynamicProductInfoP1 ?: return@runCatching
-            getTopAdsImageViewData(p1.basic.productID)
-            getProductTopadsStatus(p1.basic.productID, urlQuery)
+            if (cacheState.isFromCache) {
+                doProductP2WhenCache()
+            } else {
+                getProductP2WhenCloud(urlQuery = urlQuery)
+            }
         }.onFailure {
             _productLayout.postValue(it.asFail())
         }
     }
 
-    private fun getProductP2InCache() = viewModelScope.launch {
-        runCatching {
-            doProductP2()
-        }.onFailure {
-            _productLayout.postValue(it.asFail())
-        }
+    private suspend fun getProductP2WhenCloud(urlQuery: String) {
+        doProductP2WhenCache()
+
+        val p1 = getDynamicProductInfoP1 ?: return
+        getTopAdsImageViewData(p1.basic.productID)
+        getProductTopadsStatus(p1.basic.productID, urlQuery)
     }
 
-    private suspend fun doProductP2() {
+    private suspend fun doProductP2WhenCache() {
         val productLayout = (_productLayout.value as? Success)?.data.orEmpty()
         val hasQuantityEditor = productLayout.any {
             it.name().contains(PAGENAME_IDENTIFIER_RECOM_ATC)
