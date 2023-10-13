@@ -89,18 +89,43 @@ class TkpdAuthenticatorGql(
 
     override fun authenticate(route: Route?, response: Response): Request? {
         if (ScpUtils.isGotoLoginEnabled()) {
-            val refreshSuccess = refreshWithGotoSdk()
-            if (refreshSuccess) {
-                val originalRequest = response.request
-                val newAccessToken = GotoSdk.LSDKINSTANCE?.getAccessToken()
-                val newRefreshToken = GotoSdk.LSDKINSTANCE?.getRefreshToken()
-                if (newAccessToken?.isNotEmpty() == true && newRefreshToken?.isNotEmpty() == true) {
-                    onRefreshTokenSuccess(
-                        accessToken = newAccessToken,
-                        refreshToken = newRefreshToken,
-                        tokenType = "Bearer"
-                    )
-                    return updateRequestWithNewToken(originalRequest)
+            if (isNeedRefresh()) {
+                return if (responseCount(response) == 0) {
+                    try {
+                        val refreshSuccess = refreshWithGotoSdk()
+                        if (refreshSuccess) {
+                            val originalRequest = response.request
+                            val newAccessToken = GotoSdk.LSDKINSTANCE?.getAccessToken()
+                            val newRefreshToken = GotoSdk.LSDKINSTANCE?.getRefreshToken()
+                            if (newAccessToken?.isNotEmpty() == true && newRefreshToken?.isNotEmpty() == true) {
+                                onRefreshTokenSuccess(
+                                    accessToken = newAccessToken,
+                                    refreshToken = newRefreshToken,
+                                    tokenType = "Bearer"
+                                )
+                                return updateRequestWithNewToken(originalRequest)
+                            } else {
+                                networkRouter.showForceLogoutTokenDialog("/")
+                                logRefreshTokenEvent("", TYPE_RESPONSE_COUNT, "", "")
+                                return null
+                            }
+                        } else {
+                            networkRouter.showForceLogoutTokenDialog("/")
+                            logRefreshTokenEvent("", TYPE_RESPONSE_COUNT, "", "")
+                            return null
+                        }
+                    } catch (ex: Exception) {
+                        null
+                    }
+                } else {
+                    networkRouter.showForceLogoutTokenDialog("/")
+                    logRefreshTokenEvent("", TYPE_RESPONSE_COUNT, "", "")
+                    return null
+                }
+            } else {
+                if (responseCount(response) != 0) {
+                    logRefreshTokenEvent("", TYPE_RESPONSE_COUNT_NOT_LOGIN, "", "")
+                    return null
                 }
             }
         } else {
