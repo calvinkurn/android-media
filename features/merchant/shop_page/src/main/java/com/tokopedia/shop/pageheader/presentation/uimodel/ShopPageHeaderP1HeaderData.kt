@@ -12,7 +12,6 @@ data class ShopPageHeaderP1HeaderData(
     val shopName: String = "",
     val shopAvatar: String = "",
     val shopDomain: String = "",
-    val isWhitelist: Boolean = false,
     val listShopPageHeaderWidget: List<ShopPageHeaderWidgetUiModel> = listOf(),
     val listDynamicTabData: List<ShopPageGetDynamicTabResponse.ShopPageGetDynamicTab.TabData> = listOf(),
     val shopHeaderLayoutData: ShopPageHeaderLayoutUiModel = ShopPageHeaderLayoutUiModel()

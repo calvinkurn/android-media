@@ -1844,8 +1844,8 @@ class ShopPageHeaderFragment :
     }
 
     private fun onSuccessGetShopPageP1Data(shopPageHeaderP1Data: ShopPageHeaderP1HeaderData) {
-        isShowFeed = shopPageHeaderP1Data.isWhitelist
-        shopPageHeaderDataModel = ShopPageHeaderDataModel().apply {
+        isShowFeed = // shopPageHeaderP1Data.isWhitelist
+            shopPageHeaderDataModel = ShopPageHeaderDataModel().apply {
             shopId = this@ShopPageHeaderFragment.shopId
             isOfficial = shopPageHeaderP1Data.isOfficial
             isGoldMerchant = shopPageHeaderP1Data.isGoldMerchant
