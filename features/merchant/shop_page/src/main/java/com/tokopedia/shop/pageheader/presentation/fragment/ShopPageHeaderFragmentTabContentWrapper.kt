@@ -125,7 +125,6 @@ class ShopPageHeaderFragmentTabContentWrapper :
     private var shopDomain: String? = null
     private var shopAttribution: String? = null
     private var isShowFeed: Boolean = false
-    private var createPostUrl: String = ""
     private var shopPageHeaderFragmentHeaderViewHolder: ShopPageHeaderFragmentHeaderViewHolderV2? = null
     private var isForceNotShowingTab: Boolean = false
 

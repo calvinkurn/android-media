@@ -13,16 +13,17 @@ data class ShopPageHeaderP1HeaderData(
     val shopAvatar: String = "",
     val shopDomain: String = "",
     val isWhitelist: Boolean = false,
-    val feedUrl: String = "",
     val listShopPageHeaderWidget: List<ShopPageHeaderWidgetUiModel> = listOf(),
     val listDynamicTabData: List<ShopPageGetDynamicTabResponse.ShopPageGetDynamicTab.TabData> = listOf(),
-    val shopHeaderLayoutData: ShopPageHeaderLayoutUiModel = ShopPageHeaderLayoutUiModel(),
-){
-    inline fun <reified T: BaseShopPageHeaderComponentUiModel> getShopHeaderComponentByName(widgetType: String, componentName: String): T? {
-        return (listShopPageHeaderWidget.firstOrNull {
-            it.type == widgetType
-        }?.componentPages?.firstOrNull {
-            it.name == componentName
-        }) as? T
+    val shopHeaderLayoutData: ShopPageHeaderLayoutUiModel = ShopPageHeaderLayoutUiModel()
+) {
+    inline fun <reified T : BaseShopPageHeaderComponentUiModel> getShopHeaderComponentByName(widgetType: String, componentName: String): T? {
+        return (
+            listShopPageHeaderWidget.firstOrNull {
+                it.type == widgetType
+            }?.componentPages?.firstOrNull {
+                it.name == componentName
+            }
+            ) as? T
     }
 }

@@ -1,6 +1,5 @@
 package com.tokopedia.shop.pageheader.util
 
-import com.tokopedia.feedcomponent.data.pojo.whitelist.Whitelist
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -30,7 +29,6 @@ object ShopPageHeaderMapper {
         shopInfoOsData: GetIsShopOfficialStore,
         shopInfoGoldData: GetIsShopPowerMerchant,
         shopPageHomeTypeData: ShopPageGetHomeType,
-        feedWhitelistData: Whitelist,
         shopPageHeaderLayoutData: ShopPageHeaderLayoutResponse
     ): ShopPageHeaderP1HeaderData {
         val listShopHeaderWidget = mapToShopPageHeaderLayoutWidgetUiModel(shopPageHeaderLayoutData, shopInfoGoldData.data.shopId)
@@ -45,16 +43,14 @@ object ShopPageHeaderMapper {
             SHOP_LOGO
         )?.image.orEmpty()
         return ShopPageHeaderP1HeaderData(
-            shopInfoOsData.data.isOfficial,
-            shopInfoGoldData.data.powerMerchant.status == SHOP_PAGE_POWER_MERCHANT_ACTIVE,
-            shopInfoGoldData.data.powerMerchant.pmTier,
-            shopPageHomeTypeData.shopHomeType,
-            shopName,
-            shopAvatar,
-            "",
-            feedWhitelistData.isWhitelist,
-            feedWhitelistData.url,
-            listShopHeaderWidget
+            isOfficial = shopInfoOsData.data.isOfficial,
+            isGoldMerchant = shopInfoGoldData.data.powerMerchant.status == SHOP_PAGE_POWER_MERCHANT_ACTIVE,
+            pmTier = shopInfoGoldData.data.powerMerchant.pmTier,
+            shopHomeType = shopPageHomeTypeData.shopHomeType,
+            shopName = shopName,
+            shopAvatar = shopAvatar,
+            shopDomain = "",
+            listShopPageHeaderWidget = listShopHeaderWidget
         )
     }
 
@@ -89,8 +85,6 @@ object ShopPageHeaderMapper {
             shopName = shopName,
             shopAvatar = shopAvatar,
             shopDomain = "",
-            isWhitelist = feedWhitelistData.isWhitelist,
-            feedUrl = feedWhitelistData.url,
             listShopPageHeaderWidget = listShopHeaderWidget,
             listDynamicTabData = shopPageGetDynamicTabResponse.shopPageGetDynamicTab.tabData,
             shopHeaderLayoutData = shopPageHeaderLayoutUiModel
