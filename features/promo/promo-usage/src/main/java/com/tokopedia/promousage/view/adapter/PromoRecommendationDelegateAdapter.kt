@@ -11,6 +11,7 @@ import android.view.animation.Animation
 import android.view.animation.Animation.AnimationListener
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieComposition
@@ -33,6 +34,7 @@ import com.tokopedia.promousage.util.composite.DelegateAdapter
 import com.tokopedia.promousage.util.composite.DelegatePayload
 import com.tokopedia.promousage.util.extension.toSpannableHtmlString
 import timber.log.Timber
+import kotlin.math.ceil
 
 internal class PromoRecommendationDelegateAdapter(
     private val onClickUsePromoRecommendation: () -> Unit,
@@ -191,14 +193,25 @@ internal class PromoRecommendationDelegateAdapter(
                             isFirstResource: Boolean
                         ): Boolean {
                             if (resource != null) {
-                                val wScale =
-                                    binding.ivPromoRecommendationBackground
-                                        .measuredWidth.toFloat() / resource.intrinsicWidth.toFloat()
-                                var hScale =
-                                    binding.ivPromoRecommendationBackground
-                                        .measuredHeight.toFloat() / resource.intrinsicHeight.toFloat()
-
+                                val containerWidth = binding.ivPromoRecommendationBackground
+                                    .measuredWidth.toFloat()
+                                val containerHeight = binding.ivPromoRecommendationBackground
+                                    .measuredHeight.toFloat()
+                                val wScale = containerWidth / resource.intrinsicWidth.toFloat()
+                                var hScale = containerHeight / resource.intrinsicHeight.toFloat()
                                 hScale = hScale.coerceAtMost(wScale)
+
+                                val maxHeight = ceil(resource.intrinsicHeight * hScale)
+                                if (containerHeight > maxHeight) {
+                                    val constraintSet = ConstraintSet()
+                                    constraintSet.clone(binding.clContainer)
+                                    constraintSet.constrainMaxHeight(
+                                        R.id.ivPromoRecommendationBackground,
+                                        maxHeight.toInt()
+                                    )
+                                    constraintSet.applyTo(binding.clContainer)
+                                }
+
                                 binding.ivPromoRecommendationBackground.scaleType =
                                     ImageView.ScaleType.MATRIX
                                 binding.ivPromoRecommendationBackground.imageMatrix =
@@ -249,11 +262,22 @@ internal class PromoRecommendationDelegateAdapter(
 
         private fun setLottieScaling(composition: LottieComposition) {
             try {
-                val wScale = binding.lottieAnimationView
-                    .width.toFloat() / composition.bounds.width().toFloat()
-                var hScale = binding.lottieAnimationView
-                    .height.toFloat() / composition.bounds.height().toFloat()
+                val containerWidth = binding.lottieAnimationView
+                    .width.toFloat()
+                val containerHeight = binding.lottieAnimationView
+                    .height.toFloat()
+                val wScale = containerWidth / composition.bounds.width().toFloat()
+                var hScale = containerHeight / composition.bounds.height().toFloat()
                 hScale = hScale.coerceAtMost(wScale)
+
+                val maxHeight = ceil(composition.bounds.height() * hScale)
+                if (containerHeight > maxHeight) {
+                    val constraintSet = ConstraintSet()
+                    constraintSet.clone(binding.clContainer)
+                    constraintSet.constrainMaxHeight(R.id.lottieAnimationView, maxHeight.toInt())
+                    constraintSet.applyTo(binding.clContainer)
+                }
+
                 binding.lottieAnimationView.scaleType =
                     ImageView.ScaleType.MATRIX
                 binding.lottieAnimationView.imageMatrix =
