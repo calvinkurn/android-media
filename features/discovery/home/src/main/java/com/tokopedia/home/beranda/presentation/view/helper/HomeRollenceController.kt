@@ -50,4 +50,8 @@ object HomeRollenceController {
     fun isUsingAtf2Variant(): Boolean {
         return getAtfRollenceValue() == RollenceKey.HOME_COMPONENT_ATF_2
     }
+
+    fun isOldHome(): Boolean {
+        return getAtfRollenceValue() != RollenceKey.HOME_COMPONENT_ATF_2
+    }
 }

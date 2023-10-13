@@ -6,6 +6,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeThemat
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkObject
@@ -44,7 +45,6 @@ class HomeThematicUnitTest {
     fun setup() {
         Dispatchers.setMain(testDispatcher)
         mockkObject(HomeRollenceController)
-        every { HomeRollenceController.isUsingAtf2Variant() } returns true
     }
 
     @After
@@ -54,19 +54,35 @@ class HomeThematicUnitTest {
     }
 
     @Test
+    fun `given old home rollence then ignore thematic`() {
+        every { HomeRollenceController.isOldHome() } returns true
+        homeViewModel = createHomeViewModel(homeThematicUseCase = homeThematicUseCase)
+
+        coVerify(exactly = 0) { homeThematicUseCase.executeOnBackground() }
+    }
+
+    @Test
+    fun `given new ATF rollence then get thematic data`() {
+        every { HomeRollenceController.isOldHome() } returns false
+        homeViewModel = createHomeViewModel(homeThematicUseCase = homeThematicUseCase)
+
+        coVerify(exactly = 1) { homeThematicUseCase.executeOnBackground() }
+    }
+
+    @Test
     fun `given success when get thematic background then update live data`() {
+        every { HomeRollenceController.isOldHome() } returns false
         coEvery { homeThematicUseCase.executeOnBackground() } returns mockHomeThematicModel
         homeViewModel = createHomeViewModel(homeThematicUseCase = homeThematicUseCase)
-        homeViewModel.getThematicBackground()
 
         assert(homeViewModel.thematicLiveData.value?.isShown == true)
     }
 
     @Test
     fun `given thrown error when get thematic background then do not show thematic`() {
+        every { HomeRollenceController.isOldHome() } returns false
         coEvery { homeThematicUseCase.executeOnBackground() } throws Exception()
         homeViewModel = createHomeViewModel(homeThematicUseCase = homeThematicUseCase)
-        homeViewModel.getThematicBackground()
 
         assert(homeViewModel.thematicLiveData.value?.isShown == false)
     }

@@ -900,8 +900,8 @@ open class HomeRevampViewModel @Inject constructor(
         )
     }
 
-    fun getThematicBackground() {
-        if(HomeRollenceController.isUsingAtf2Variant()) {
+    private fun getThematicBackground() {
+        if(!HomeRollenceController.isOldHome()) {
             launchCatchError(coroutineContext, {
                 val thematic = homeThematicUseCase.get().executeOnBackground()
                 _thematicLiveData.postValue(thematic)
