@@ -153,8 +153,8 @@ abstract class BaseSearchCategoryViewModel(
     companion object {
         private const val MIN_PRODUCT_COUNT = 6
         private const val DEFAULT_HEADER_Y_COORDINATE = 0f
-        private const val DEFAULT_ROWS = 15
-        private const val EXPERIMENT_ROWS = 50
+        private const val DEFAULT_ROWS = "15"
+        private const val EXPERIMENT_ROWS = "50"
     }
 
     protected var chooseAddressDataView = ChooseAddressDataView()
@@ -184,8 +184,11 @@ abstract class BaseSearchCategoryViewModel(
     var serviceType = ""
         private set
 
-    private val startRenderPerformanceMonitoringMutableLiveData = MutableLiveData<Unit>()
-    val startRenderPerformanceMonitoringLiveData: LiveData<Unit> = startRenderPerformanceMonitoringMutableLiveData
+    private val firstPageSuccessTriggerMutableLiveData = MutableLiveData<Unit>()
+    val firstPageSuccessTriggerLiveData: LiveData<Unit> = firstPageSuccessTriggerMutableLiveData
+
+    private val loadMoreSuccessTriggerMutableLiveData = MutableLiveData<Unit>()
+    val loadMoreSuccessTriggerLiveData: LiveData<Unit> = loadMoreSuccessTriggerMutableLiveData
 
     private val stopPerformanceMonitoringMutableLiveData = MutableLiveData<Unit>()
     val stopPerformanceMonitoringLiveData: LiveData<Unit> = stopPerformanceMonitoringMutableLiveData
@@ -372,6 +375,8 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     private fun showOutOfCoverage() {
+        stopPerformanceMonitoringMutableLiveData.value = Unit
+
         updateHeaderBackgroundVisibility(false)
         updateMiniCartVisibility(false)
 
@@ -496,7 +501,7 @@ abstract class BaseSearchCategoryViewModel(
         searchProduct: SearchProduct,
         feedbackFieldIsActive: Boolean = false
     ) {
-        startRenderPerformanceMonitoringMutableLiveData.value = Unit
+        firstPageSuccessTriggerMutableLiveData.value = Unit
 
         totalData = headerDataView.aceSearchProductHeader.totalData
         totalFetchedData += contentDataView.aceSearchProductData.productList.size
@@ -1043,6 +1048,7 @@ abstract class BaseSearchCategoryViewModel(
     abstract fun executeLoadMore()
 
     protected open fun onGetLoadMorePageSuccess(contentDataView: ContentDataView) {
+        loadMoreSuccessTriggerMutableLiveData.value = Unit
         totalFetchedData += contentDataView.aceSearchProductData.productList.size
 
         updateVisitableListForNextPage(contentDataView)
@@ -1670,6 +1676,8 @@ abstract class BaseSearchCategoryViewModel(
 
         }
     }
+
+    fun getRows(): String = if (getPaginationExperiment()) EXPERIMENT_ROWS else DEFAULT_ROWS
 
     private fun getPaginationExperiment(): Boolean {
         val experiment = remoteConfig.getString(TOKOPEDIA_NOW_PAGINATION, EXPERIMENT_DISABLED)

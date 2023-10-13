@@ -55,7 +55,7 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
         `Then assert visitable list does not end with loading more model`(visitableList)
         `Then assert has next page value`(false)
         `Then assert get first page success interactions`(searchModel)
-        `Then assert start render performance monitoring is Unit`()
+        `Then assert first page success trigger is Unit`()
     }
 
     @Test
@@ -81,7 +81,7 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
         `Then assert visitable list does not end with loading more model`(visitableList)
         `Then assert has next page value`(false)
         `Then assert get first page success interactions`(searchModel)
-        `Then assert start render performance monitoring is Unit`()
+        `Then assert first page success trigger is Unit`()
     }
 
     private fun `Then assert first page visitables`(
@@ -221,7 +221,7 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
         `Then assert get first page success interactions`(searchModel)
     }
 
-    private fun `Then assert start render performance monitoring is Unit`() {
-        assertThat(tokoNowSearchViewModel.startRenderPerformanceMonitoringLiveData.value, shouldBe(Unit))
+    private fun `Then assert first page success trigger is Unit`() {
+        assertThat(tokoNowSearchViewModel.firstPageSuccessTriggerLiveData.value, shouldBe(Unit))
     }
 }

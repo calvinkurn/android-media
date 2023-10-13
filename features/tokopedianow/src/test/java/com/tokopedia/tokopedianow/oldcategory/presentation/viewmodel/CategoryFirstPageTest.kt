@@ -41,7 +41,7 @@ class CategoryFirstPageTest: BaseCategoryPageLoadTest() {
         `Then assert visitable list footer`(visitableList, categoryModel.categoryDetail.data.navigation)
         `Then assert has next page value`(false)
         `Then assert get first page success interactions`(categoryModel)
-        `Then assert start render performance monitoring is Unit`()
+        `Then assert first page success trigger is Unit`()
     }
 
     private fun `Then assert first page visitables`(
@@ -108,8 +108,8 @@ class CategoryFirstPageTest: BaseCategoryPageLoadTest() {
         assertThat(tokoNowCategoryViewModel.isContentLoadingLiveData.value, shouldBe(false))
     }
 
-    private fun `Then assert start render performance monitoring is Unit`() {
-        assertThat(tokoNowCategoryViewModel.startRenderPerformanceMonitoringLiveData.value, shouldBe(Unit))
+    private fun `Then assert first page success trigger is Unit`() {
+        assertThat(tokoNowCategoryViewModel.firstPageSuccessTriggerLiveData.value, shouldBe(Unit))
     }
 
     private fun `Then assert product feedback loop not visible`(){

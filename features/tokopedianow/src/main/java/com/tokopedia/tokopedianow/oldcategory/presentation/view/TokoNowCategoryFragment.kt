@@ -206,6 +206,8 @@ class TokoNowCategoryFragment :
 
         getViewModel().openScreenTrackingUrlLiveData.observe(this::sendOpenScreenTracking)
         getViewModel().shareLiveData.observe(this::setCategorySharingModel)
+        getViewModel().firstPageSuccessTriggerLiveData.observe(this::triggerFirstPageExperiment)
+        getViewModel().loadMoreSuccessTriggerLiveData.observe(this::sendImpressPageExperiment)
     }
 
     override val miniCartWidgetPageName: MiniCartAnalytics.Page
@@ -631,6 +633,19 @@ class TokoNowCategoryFragment :
         return CategoryMenuCallback(
             viewModel = tokoNowCategoryViewModel,
             userId = userSession.userId
+        )
+    }
+
+    override fun triggerFirstPageExperiment(unit: Unit) {
+        super.triggerFirstPageExperiment(unit)
+        sendImpressPageExperiment(unit)
+    }
+
+    private fun sendImpressPageExperiment(unit: Unit) {
+        CategoryTracking.sendImpressCategoryPageExperimentEvent(
+            categoryId = getViewModel().categoryL2,
+            numberOfProduct = getViewModel().getRows(),
+            warehouseId = getViewModel().warehouseId
         )
     }
 }

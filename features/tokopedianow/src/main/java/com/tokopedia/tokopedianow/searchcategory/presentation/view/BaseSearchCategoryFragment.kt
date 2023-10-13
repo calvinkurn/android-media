@@ -257,10 +257,6 @@ abstract class BaseSearchCategoryFragment:
         pltMonitoring?.initPerformanceMonitoring(isCategoryPage)
     }
 
-    private fun startRenderPerformanceMonitoring(unit: Unit) {
-        pltMonitoring?.startRenderPerformanceMonitoring()
-    }
-
     private fun stopPerformanceMonitoring(unit: Unit) {
         pltMonitoring?.stopPerformanceMonitoring()
     }
@@ -552,7 +548,6 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().updateToolbarNotification.observe(::updateToolbarNotification)
         getViewModel().needToUpdateProductRecommendationLiveData.observe(::updateProductRecommendation)
         getViewModel().updateAdsCarouselLiveData.observe(::updateAdsProductCarousel)
-        getViewModel().startRenderPerformanceMonitoringLiveData.observe(::startRenderPerformanceMonitoring)
         getViewModel().stopPerformanceMonitoringLiveData.observe(::stopPerformanceMonitoring)
 
         getViewModel().blockAddToCartLiveData.observe(viewLifecycleOwner) {
@@ -1201,6 +1196,10 @@ abstract class BaseSearchCategoryFragment:
     }
 
     override fun onProductCardAddToCartBlocked() = showToasterWhenAddToCartBlocked()
+
+    protected open fun triggerFirstPageExperiment(unit: Unit) {
+        pltMonitoring?.startRenderPerformanceMonitoring()
+    }
 
     protected fun showToasterWhenAddToCartBlocked() {
         showToaster(

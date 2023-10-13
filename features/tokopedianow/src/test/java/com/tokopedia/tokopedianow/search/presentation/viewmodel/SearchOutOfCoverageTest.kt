@@ -160,5 +160,6 @@ class SearchOutOfCoverageTest: SearchTestFixtures() {
         `When view created`()
 
         `Then assert page showing out of coverage`()
+        `Then assert stop performance monitoring is Unit`()
     }
 }
