@@ -112,7 +112,6 @@ class FeedShopFragment :
     override val androidContext: Context
         get() = requireContext()
 
-    private lateinit var createPostUrl: String
     private lateinit var shopId: String
     private var isLoading = false
     private var isForceRefresh = true
@@ -161,8 +160,6 @@ class FeedShopFragment :
         private const val PARAM_ENTRY_POINT = "entry_point"
         private const val SHOP_PAGE = "shop_page"
         private const val WEBVIEW_URL_FORMAT = "%s?url=%s"
-
-        private const val PARAM_CREATE_POST_URL: String = "PARAM_CREATE_POST_URL"
         private const val PARAM_SHOP_ID: String = "PARAM_SHOP_ID"
 
         //region Content Report Param
@@ -188,7 +185,6 @@ class FeedShopFragment :
             val fragment = FeedShopFragment()
             val bundle = Bundle()
             bundle.putString(PARAM_SHOP_ID, shopId)
-            bundle.putString(PARAM_CREATE_POST_URL, createPostUrl)
             fragment.arguments = bundle
             return fragment
         }
@@ -260,7 +256,6 @@ class FeedShopFragment :
     private fun initVar() {
         arguments?.let {
             shopId = it.getString(PARAM_SHOP_ID) ?: ""
-            createPostUrl = it.getString(PARAM_CREATE_POST_URL) ?: ""
         }
         getRecyclerView(view)?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {

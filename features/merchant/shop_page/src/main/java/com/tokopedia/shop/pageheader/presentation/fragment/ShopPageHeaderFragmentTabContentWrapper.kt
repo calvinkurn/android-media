@@ -100,7 +100,6 @@ class ShopPageHeaderFragmentTabContentWrapper :
         private const val DEFAULT_SHOWCASE_ID = "0"
         private const val SHOP_SEARCH_PAGE_NAV_SOURCE = "shop"
         private const val FEED_SHOP_FRAGMENT_SHOP_ID = "PARAM_SHOP_ID"
-        private const val FEED_SHOP_FRAGMENT_CREATE_POST_URL = "PARAM_CREATE_POST_URL"
         private const val ARGS_SHOP_ID_FOR_REVIEW_TAB = "ARGS_SHOP_ID"
         private const val MAX_ALPHA = 255f
         private const val PADDING_TOP_IN_DP = 8
@@ -683,7 +682,6 @@ class ShopPageHeaderFragmentTabContentWrapper :
                             FEED_SHOP_FRAGMENT,
                             Bundle().apply {
                                 putString(FEED_SHOP_FRAGMENT_SHOP_ID, shopId)
-                                putString(FEED_SHOP_FRAGMENT_CREATE_POST_URL, createPostUrl)
                             }
                         )
                         feedFragment
@@ -738,7 +736,6 @@ class ShopPageHeaderFragmentTabContentWrapper :
         isEnableDirectPurchase: Boolean
     ) {
         isShowFeed = shopPageHeaderP1Data.isWhitelist
-        createPostUrl = shopPageHeaderP1Data.feedUrl
         shopPageHeaderDataModel = ShopPageHeaderDataModel().apply {
             shopId = this@ShopPageHeaderFragmentTabContentWrapper.shopId
             isOfficial = shopPageHeaderP1Data.isOfficial

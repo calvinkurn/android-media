@@ -61,7 +61,6 @@ object ShopPageHeaderMapper {
     fun mapToNewShopPageP1HeaderData(
         shopInfoCoreData: ShopInfo,
         shopPageGetDynamicTabResponse: ShopPageGetDynamicTabResponse,
-        feedWhitelistData: Whitelist,
         shopPageHeaderLayoutData: ShopPageHeaderLayoutResponse,
         shopPageColorSchemaDefaultConfigColor: Map<ShopPageColorSchema.ColorSchemaName, String>,
         isEnableShopReimagined: Boolean
@@ -213,7 +212,7 @@ object ShopPageHeaderMapper {
     private var headerComponentPosition: Int = -1
     private fun mapToShopPageHeaderLayoutWidgetUiModel(
         shopPageHeaderLayoutResponseData: ShopPageHeaderLayoutResponse,
-        shopId: String,
+        shopId: String
     ): List<ShopPageHeaderWidgetUiModel> {
         return mutableListOf<ShopPageHeaderWidgetUiModel>().apply {
             headerComponentPosition = 0
@@ -225,7 +224,7 @@ object ShopPageHeaderMapper {
 
     private fun mapShopHeaderWidget(
         widgetResponseData: ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.Widget,
-        shopId: String,
+        shopId: String
     ): ShopPageHeaderWidgetUiModel {
         return ShopPageHeaderWidgetUiModel(
             widgetResponseData.widgetID,
@@ -258,7 +257,7 @@ object ShopPageHeaderMapper {
     private fun mapShopHeaderComponent(
         componentPosition: Int,
         component: ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.Widget.Component,
-        shopId: String,
+        shopId: String
     ): BaseShopPageHeaderComponentUiModel? {
         return when (component.type.toLowerCase()) {
             BaseShopPageHeaderComponentUiModel.ComponentType.IMAGE_ONLY.toLowerCase() -> mapShopHeaderImageOnlyComponent(component, shopId)
@@ -339,7 +338,7 @@ object ShopPageHeaderMapper {
 
     private fun mapShopHeaderImageOnlyComponent(
         component: ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.Widget.Component,
-        shopId: String,
+        shopId: String
     ) = ShopPageHeaderImageOnlyComponentUiModel(
         component.name,
         component.type,

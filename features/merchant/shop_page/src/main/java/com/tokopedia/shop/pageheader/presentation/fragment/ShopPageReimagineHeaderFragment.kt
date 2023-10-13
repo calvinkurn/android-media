@@ -286,7 +286,6 @@ class ShopPageReimagineHeaderFragment :
         private const val DEFAULT_SHOWCASE_ID = "0"
         private const val SHOP_SEARCH_PAGE_NAV_SOURCE = "shop"
         private const val FEED_SHOP_FRAGMENT_SHOP_ID = "PARAM_SHOP_ID"
-        private const val FEED_SHOP_FRAGMENT_CREATE_POST_URL = "PARAM_CREATE_POST_URL"
         private const val ARGS_SHOP_ID_FOR_REVIEW_TAB = "ARGS_SHOP_ID"
         private const val DELAY_MINI_CART_RESUME = 1000L
         private const val IDR_CURRENCY_TO_RAW_STRING_REGEX = "[Rp, .]"

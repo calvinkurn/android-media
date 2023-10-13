@@ -270,7 +270,6 @@ class ShopPageHeaderViewModel @Inject constructor(
                             ShopPageHeaderMapper.mapToNewShopPageP1HeaderData(
                                 shopInfoCoreData = shopPageHeaderP1Data.shopInfoCoreAndAssetsData,
                                 shopPageGetDynamicTabResponse = shopPageHeaderP1Data.shopPageGetDynamicTabResponse,
-                                feedWhitelistData = shopPageHeaderP1Data.feedWhitelist,
                                 shopPageHeaderLayoutData = shopPageHeaderWidgetData,
                                 shopPageColorSchemaDefaultConfigColor = shopPageColorSchemaDefaultConfigColor,
                                 isEnableShopReimagined = isEnableShopReimagined

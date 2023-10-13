@@ -321,7 +321,6 @@ class ShopPageHeaderFragment :
         const val DEFAULT_SHOWCASE_ID = "0"
         const val SHOP_SEARCH_PAGE_NAV_SOURCE = "shop"
         private const val FEED_SHOP_FRAGMENT_SHOP_ID = "PARAM_SHOP_ID"
-        private const val FEED_SHOP_FRAGMENT_CREATE_POST_URL = "PARAM_CREATE_POST_URL"
         private const val ARGS_SHOP_ID_FOR_REVIEW_TAB = "ARGS_SHOP_ID"
         private const val DELAY_MINI_CART_RESUME = 1000L
         private const val IDR_CURRENCY_TO_RAW_STRING_REGEX = "[Rp, .]"
@@ -613,7 +612,7 @@ class ShopPageHeaderFragment :
             this,
             this,
             this,
-            this,
+            this
         )
         initToolbar()
         initAdapter()
@@ -1847,7 +1846,6 @@ class ShopPageHeaderFragment :
 
     private fun onSuccessGetShopPageP1Data(shopPageHeaderP1Data: ShopPageHeaderP1HeaderData) {
         isShowFeed = shopPageHeaderP1Data.isWhitelist
-        createPostUrl = shopPageHeaderP1Data.feedUrl
         shopPageHeaderDataModel = ShopPageHeaderDataModel().apply {
             shopId = this@ShopPageHeaderFragment.shopId
             isOfficial = shopPageHeaderP1Data.isOfficial
@@ -2228,7 +2226,6 @@ class ShopPageHeaderFragment :
                 FEED_SHOP_FRAGMENT,
                 Bundle().apply {
                     putString(FEED_SHOP_FRAGMENT_SHOP_ID, shopId)
-                    putString(FEED_SHOP_FRAGMENT_CREATE_POST_URL, createPostUrl)
                 }
             )
             listShopPageTabModel.add(
@@ -2330,7 +2327,6 @@ class ShopPageHeaderFragment :
                             FEED_SHOP_FRAGMENT,
                             Bundle().apply {
                                 putString(FEED_SHOP_FRAGMENT_SHOP_ID, shopId)
-                                putString(FEED_SHOP_FRAGMENT_CREATE_POST_URL, createPostUrl)
                             }
                         )
                         feedFragment
