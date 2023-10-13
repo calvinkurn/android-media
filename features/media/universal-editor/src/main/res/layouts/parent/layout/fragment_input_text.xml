@@ -34,21 +34,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <EditText
+            <com.tokopedia.editor.ui.widget.EditorEditTextView
                 android:inputType="text|textNoSuggestions|textCapSentences|textMultiLine"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
                 android:textCursorDrawable="@null"
-                android:background="@drawable/bg_text_rounded"
-                android:padding="4dp"
                 android:layout_gravity="center|end"
                 android:id="@+id/add_text_input"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/universal_editor_input_text_hint"
                 android:textColor="@color/white"
-                android:textColorHint="@color/Unify_NN500"
-                android:textSize="16sp"/>
+                android:textColorHint="@color/Unify_NN500"/>
 
         </LinearLayout>
 

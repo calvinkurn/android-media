@@ -3,19 +3,14 @@
 package com.tokopedia.editor.ui.widget
 
 import android.content.Context
-import android.graphics.BlendMode
-import android.graphics.BlendModeColorFilter
 import android.graphics.Color
-import android.graphics.PorterDuff
-import android.os.Build
-import android.text.Editable
-import android.text.TextWatcher
+import android.text.SpannableString
+import android.text.style.LineBackgroundSpan
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.view.setPadding
-import com.tokopedia.editor.R
 import com.tokopedia.editor.ui.model.InputTextModel
 import com.tokopedia.editor.util.FontAlignment.Companion.toGravity
 import com.tokopedia.unifycomponents.toPx
@@ -26,87 +21,58 @@ class EditorEditTextView @JvmOverloads constructor(
     attributeSet: AttributeSet? = null
 ) : AppCompatEditText(context, attributeSet) {
 
-    private var unNormalizeText = ""
-    private var charLimit = 5
-    private var textWatcher: TextWatcher? = null
-    private var isWatcherIgnored = false
+    // var for text background color, set via span
+    private var backgroundColor = Color.TRANSPARENT
+    private var alignment = RoundedSpan.ALIGN_CENTER
 
-    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
-//        checkCharLimit()
-        if (charLimit > 0) {
-            implementTextWatcher()
-        }
-        super.onLayout(changed, left, top, right, bottom)
+    // used for edittext padding & span padding
+    private val padding: Int = 16.toPx()
+    private val roundedPadding = 12.toPx()
+
+    private var listener: (text: String) -> Unit = {}
+
+    init {
+        setPadding(padding)
+        setShadowLayer(padding.toFloat(), 0f, 0f, 0)
+        setLineSpacing(LINE_HEIGHT_EXTRA, LINE_HEIGHT_MULTIPLIER)
+        textSize = DEFAULT_FONT_SIZE
+
+        // set for edittext background color, to remove underline
+        setBackgroundColor(Color.TRANSPARENT)
     }
 
-    private fun checkCharLimit() {
-        var tempString = CHAR_DUMMY
-
-        for (i in 1 until 1000) {
-            val charWidth = this.paint.measureText(tempString)
-            if (charWidth > this.width) {
-                charLimit = i - CHAR_LIMIT_TOLERANCE
-                break
+    override fun setText(text: CharSequence?, type: BufferType?) {
+        this.editableText.let {
+            it?.getSpans(0, text?.length ?: 0, LineBackgroundSpan::class.java)?.apply {
+                it.removeSpan(this.first())
             }
-
-            tempString += CHAR_DUMMY
-        }
-    }
-
-    private fun implementTextWatcher() {
-        textWatcher = object: TextWatcher {
-            override fun afterTextChanged(p0: Editable?) {
-                if (!isWatcherIgnored) {
-                    val isNeedReplace = autoNewLine(p0?.toString() ?: "")
-                    if (isNeedReplace) {
-                        isWatcherIgnored = true
-                        val finalText = normalizeValue(unNormalizeText)
-                        setText(finalText)
-                        setSelection(finalText.length)
-                        isWatcherIgnored = false
-                    }
-                }
-            }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
         }
 
-        this.addTextChangedListener(textWatcher)
-    }
-
-    private fun autoNewLine(textParam: String): Boolean {
-        if (textParam.isEmpty()) return false
-        val textStringBuilder = StringBuilder(textParam)
-
-        return if (textParam.length > charLimit) {
-            val tempText = java.lang.StringBuilder(textParam)
-            var i = charLimit
-            val charCode = "\n"
-
-            while(tempText.indexOf(charCode) != -1) {
-                val indexTarget = tempText.indexOf(charCode)
-                tempText.delete(0, indexTarget + 1)
-                i += indexTarget + 1
-            }
-
-            while(tempText.length > charLimit) {
-                tempText.delete(0, charLimit)
-                textStringBuilder.insert(i, charCode)
-            }
-
-            unNormalizeText = textStringBuilder.toString()
-
-            true
-        } else {
-            false
+        val spanString = SpannableString(text)
+        val roundedSpan = RoundedSpan(backgroundColor, padding = roundedPadding, radius = roundedPadding / 2).apply {
+            this.setAlignment(alignment)
         }
+
+        spanString.setSpan(roundedSpan,0, text?.length ?: 1, SpannableString.SPAN_EXCLUSIVE_INCLUSIVE)
+
+        super.setText(spanString, type)
+        setSelection(spanString.length)
     }
 
-    private fun normalizeValue(text: String): String {
-        return text
+    fun setColor(textColor: Int, backgroundColor: Int){
+        setTextColor(textColor)
+        backgroundColor.let {
+            this.backgroundColor = it
+        }
+
+        setText(text)
     }
 
+    fun setAlignment(alignment: Int) {
+        this.alignment = alignment
+
+        setText(text)
+    }
 
     /**
      * Set default properties for [EditorEditTextView]
@@ -114,9 +80,7 @@ class EditorEditTextView @JvmOverloads constructor(
      * This setter will set the textSize and padding default.
      */
     fun default() {
-        setBackgroundResource(R.drawable.bg_text_rounded)
         setTextSize(TypedValue.COMPLEX_UNIT_SP, DEFAULT_FONT_SIZE)
-        setPadding(DEFAULT_BACKGROUND_PADDING.toPx())
     }
 
     /**
@@ -144,9 +108,8 @@ class EditorEditTextView @JvmOverloads constructor(
         setTypeface(typeface, model.fontDetail.fontStyle)
 
         setText(model.text)
-        setTextColor(model.textColor)
+        setColor(model.textColor, model.backgroundColor ?: Color.TRANSPARENT)
         setGravity(model.textAlign.toGravity())
-        setBackgroundTextColor(model.backgroundColor)
     }
 
     /**
@@ -158,21 +121,10 @@ class EditorEditTextView @JvmOverloads constructor(
         isCursorVisible = false
     }
 
-    private fun setBackgroundTextColor(color: Int?) {
-        val mColor = color ?: Color.TRANSPARENT
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            background.colorFilter = BlendModeColorFilter(mColor, BlendMode.DST_ATOP)
-        } else {
-            background.setColorFilter(mColor, PorterDuff.Mode.DST_ATOP)
-        }
-    }
-
     companion object {
         private const val DEFAULT_FONT_SIZE = 16f
-        private const val DEFAULT_BACKGROUND_PADDING = 4
 
-        private const val CHAR_DUMMY = "W"
-        private const val CHAR_LIMIT_TOLERANCE = 2
+        private const val LINE_HEIGHT_EXTRA = 5f
+        private const val LINE_HEIGHT_MULTIPLIER = 1f
     }
 }

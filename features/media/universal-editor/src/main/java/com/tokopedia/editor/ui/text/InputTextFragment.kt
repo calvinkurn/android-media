@@ -2,34 +2,30 @@
 
 package com.tokopedia.editor.ui.text
 
-import android.graphics.BlendMode
-import android.graphics.BlendModeColorFilter
 import android.graphics.Color
-import android.graphics.PorterDuff
 import android.graphics.Typeface
-import android.os.Build
 import android.view.Gravity
-import android.widget.EditText
-import android.widget.LinearLayout
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.editor.base.BaseEditorFragment
 import com.tokopedia.editor.databinding.FragmentInputTextBinding
+import com.tokopedia.editor.ui.widget.EditorEditTextView
 import com.tokopedia.editor.ui.widget.InputTextColorItemView
 import com.tokopedia.editor.ui.widget.InputTextStyleItemView
 import com.tokopedia.editor.util.FontAlignment
 import com.tokopedia.editor.util.FontDetail
 import com.tokopedia.editor.util.provider.ColorProvider
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
-import com.tokopedia.editor.R as resourceR
+import com.tokopedia.editor.R as editorR
 
 class InputTextFragment @Inject constructor(
     private val colorProvider: ColorProvider,
     private val viewModelFactory: ViewModelProvider.Factory
-) : BaseEditorFragment(resourceR.layout.fragment_input_text) {
+) : BaseEditorFragment(editorR.layout.fragment_input_text) {
 
     private val viewModel: InputTextViewModel by activityViewModels { viewModelFactory }
     private val viewBinding: FragmentInputTextBinding? by viewBinding()
@@ -57,21 +53,13 @@ class InputTextFragment @Inject constructor(
         viewModel.selectedAlignment.observe(viewLifecycleOwner) {
             updateAlignmentIcon(it)
 
-            viewBinding?.addTextInput?.let { viewRef: EditText ->
-                val lp = viewRef.layoutParams as LinearLayout.LayoutParams
-                lp.gravity = when (it) {
-                    FontAlignment.CENTER -> Gravity.CENTER
-                    FontAlignment.LEFT -> Gravity.START
-                    else -> Gravity.END
-                }
-
-                viewRef.layoutParams = lp
-
+            viewBinding?.addTextInput?.let { viewRef: EditorEditTextView ->
                 viewRef.gravity = when (it) {
                     FontAlignment.CENTER -> Gravity.CENTER
                     FontAlignment.LEFT -> Gravity.START
                     else -> Gravity.END
                 }
+                viewRef.setAlignment(it.value)
             }
         }
     }
@@ -119,13 +107,12 @@ class InputTextFragment @Inject constructor(
                 it.addTextInput.requestFocus()
             }
 
-            it.addTextInput.addTextChangedListener { newText ->
-                updateHint(newText?.toString()?.isNotEmpty() == true)
-                viewModel.updateText(newText.toString())
-            }
-
             it.addTextInputWrapper.setOnClickListener {
                 viewModel.saveInputText()
+            }
+
+            it.addTextInput.addTextChangedListener { newText ->
+                viewModel.updateText(newText?.toString() ?: "")
             }
         }
     }
@@ -180,7 +167,7 @@ class InputTextFragment @Inject constructor(
                         tag = colorInt
                         setOnClickListener { colorRefView ->
                             this.setActive()
-                            colorClickListener(colorRefView.tag.toString().toInt())
+                            colorClickListener(colorRefView.tag.toString().toIntOrZero())
                         }
 
                         if (viewModel.getCurrentSelectedColor() == colorInt) setActive()
@@ -221,7 +208,7 @@ class InputTextFragment @Inject constructor(
     private fun updateBackgroundStateIcon(stateEnable: Boolean) {
         viewBinding?.textBackgroundIcon?.let {
             if (stateEnable) {
-                it.setImageResource(resourceR.drawable.text_icon_filled)
+                it.setImageResource(editorR.drawable.text_icon_filled)
             } else {
                 it.setImage(IconUnify.TEXT)
             }
@@ -232,31 +219,10 @@ class InputTextFragment @Inject constructor(
         viewBinding?.addTextInput?.let {
             // config text with background
             viewModel.backgroundColorSet.value?.let { (textColor, backgroundColor) ->
-                updateEditTextDrawable(backgroundColor)
-                it.setTextColor(textColor)
+                it.setColor(textColor, backgroundColor)
             } ?: run {
-                updateEditTextDrawable(Color.TRANSPARENT)
-                it.setTextColor(viewModel.selectedTextColor.value ?: DEFAULT_TEXT_COLOR)
-            }
-        }
-    }
-
-    private fun updateEditTextDrawable(colorInt: Int) {
-        val textInput = viewBinding?.addTextInput
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            textInput?.background?.colorFilter = BlendModeColorFilter(colorInt, BlendMode.DST_ATOP)
-        } else {
-            textInput?.background?.setColorFilter(colorInt, PorterDuff.Mode.DST_ATOP)
-        }
-    }
-
-    private fun updateHint(isClear: Boolean) {
-        viewBinding?.addTextInput?.let {
-            if (isClear) {
-                it.hint = ""
-            } else {
-                it.hint = getString(resourceR.string.universal_editor_input_text_hint)
+                val textColor = viewModel.selectedTextColor.value ?: DEFAULT_TEXT_COLOR
+                it.setColor(textColor, Color.TRANSPARENT)
             }
         }
     }
