@@ -10,6 +10,7 @@ import com.gojek.pin.PinManager
 import com.gojek.pin.PinParam
 import com.gojek.pin.Success
 import com.gojek.pin.viewmodel.state.PinFlowType
+import com.scp.auth.common.utils.ScpConstants
 import com.scp.auth.common.utils.TkpdAdditionalHeaders
 import com.scp.auth.common.utils.goToChangePIN
 import com.scp.auth.common.utils.goToForgotGotoPin
@@ -58,7 +59,7 @@ class ScpVerificationManager(private val pinManager: PinManager) {
                         launchContext = activity,
                         param = PinParam(
                             source = source,
-                            clientId = "tokopedia:consumer:android",
+                            clientId = ScpConstants.TOKOPEDIA_CLIENT_ID,
                             pinFlowType = PinFlowType.VERIFY,
                             challengeId = challengeId
                         ),

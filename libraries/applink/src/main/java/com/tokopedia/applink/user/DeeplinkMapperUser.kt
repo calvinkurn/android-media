@@ -59,7 +59,7 @@ object DeeplinkMapperUser {
     fun isGotoLoginEnabled(): Boolean {
         return RemoteConfigInstance.getInstance()
             .abTestPlatform
-            .getString("exp_scp_goto_login_sdk")
+            .getString(ROLLENCE_GOTO_LOGIN)
             .isNotEmpty()
     }
 
