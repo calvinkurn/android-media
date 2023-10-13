@@ -3,6 +3,7 @@ package com.tokopedia.promousage.view.adapter
 import android.animation.Animator
 import android.graphics.Color
 import android.graphics.Matrix
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,9 +15,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieComposition
 import com.airbnb.lottie.LottieCompositionFactory
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.promousage.R
 import com.tokopedia.promousage.databinding.PromoUsageItemVoucherRecommendationBinding
 import com.tokopedia.promousage.domain.entity.list.PromoItem
@@ -160,52 +167,57 @@ internal class PromoRecommendationDelegateAdapter(
         }
 
         private fun setImageBackground(imageUrl: String) {
-            binding.ivPromoRecommendationBackground.loadImage(
-                url = imageUrl,
-                properties = {
-                    isAnimate(false)
-                    setPlaceHolder(-1)
-                    listener(
-                        onSuccess = { bitmap, _ ->
-                            try {
-                                if (bitmap != null) {
-                                    val wScale =
-                                        binding.ivPromoRecommendationBackground.measuredWidth.toFloat() / bitmap.width.toFloat()
-                                    var hScale =
-                                        binding.ivPromoRecommendationBackground.measuredHeight.toFloat() / bitmap.height.toFloat()
-
-                                    hScale = hScale.coerceAtMost(wScale)
-                                    binding.ivPromoRecommendationBackground.scaleType =
-                                        ImageView.ScaleType.MATRIX
-                                    binding.ivPromoRecommendationBackground.imageMatrix =
-                                        Matrix().apply {
-                                            postScale(wScale, hScale)
-                                        }
-                                    binding.ivPromoRecommendationBackground.loadImage(bitmap)
-                                } else {
-                                    setImageBackgroundDefault(imageUrl)
-                                }
-                            } catch (e: Exception) {
-                                Timber.e(e)
-                                setImageBackgroundDefault(imageUrl)
-                            }
-                        },
-                        onError = {
+            try {
+                Glide.with(binding.ivPromoRecommendationBackground.context)
+                    .load(imageUrl)
+                    .dontAnimate()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .listener(object : RequestListener<Drawable> {
+                        override fun onLoadFailed(
+                            e: GlideException?,
+                            model: Any?,
+                            target: Target<Drawable>?,
+                            isFirstResource: Boolean
+                        ): Boolean {
                             setImageBackgroundDefault(imageUrl)
+                            return false
                         }
-                    )
-                }
-            )
+
+                        override fun onResourceReady(
+                            resource: Drawable?,
+                            model: Any?,
+                            target: Target<Drawable>?,
+                            dataSource: DataSource?,
+                            isFirstResource: Boolean
+                        ): Boolean {
+                            if (resource != null) {
+                                val wScale =
+                                    binding.ivPromoRecommendationBackground
+                                        .measuredWidth.toFloat() / resource.intrinsicWidth.toFloat()
+                                var hScale =
+                                    binding.ivPromoRecommendationBackground
+                                        .measuredHeight.toFloat() / resource.intrinsicHeight.toFloat()
+
+                                hScale = hScale.coerceAtMost(wScale)
+                                binding.ivPromoRecommendationBackground.scaleType =
+                                    ImageView.ScaleType.MATRIX
+                                binding.ivPromoRecommendationBackground.imageMatrix =
+                                    Matrix().apply {
+                                        postScale(wScale, hScale)
+                                    }
+                            }
+                            return false
+                        }
+                    })
+                    .into(binding.ivPromoRecommendationBackground)
+            } catch (e: Exception) {
+                Timber.e(e)
+                setImageBackgroundDefault(imageUrl)
+            }
         }
 
         private fun setImageBackgroundDefault(imageUrl: String) {
-            binding.ivPromoRecommendationBackground.loadImage(
-                url = imageUrl,
-                properties = {
-                    isAnimate(false)
-                    setPlaceHolder(-1)
-                }
-            )
+            binding.ivPromoRecommendationBackground.gone()
         }
 
         private fun showPromoRecommendationAnimation(item: PromoRecommendationItem) {
@@ -237,8 +249,10 @@ internal class PromoRecommendationDelegateAdapter(
 
         private fun setLottieScaling(composition: LottieComposition) {
             try {
-                val wScale = binding.lottieAnimationView.width.toFloat() / composition.bounds.width().toFloat()
-                var hScale = binding.lottieAnimationView.height.toFloat() / composition.bounds.height().toFloat()
+                val wScale = binding.lottieAnimationView
+                    .width.toFloat() / composition.bounds.width().toFloat()
+                var hScale = binding.lottieAnimationView
+                    .height.toFloat() / composition.bounds.height().toFloat()
                 hScale = hScale.coerceAtMost(wScale)
                 binding.lottieAnimationView.scaleType =
                     ImageView.ScaleType.MATRIX
@@ -246,6 +260,7 @@ internal class PromoRecommendationDelegateAdapter(
                     Matrix().apply {
                         postScale(wScale, hScale)
                     }
+                binding.lottieAnimationView.scale = wScale
             } catch (e: Exception) {
                 Timber.e(e)
                 setLottieScalingDefault()
