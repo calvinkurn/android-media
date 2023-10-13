@@ -20,6 +20,7 @@ import com.tokopedia.mvc.domain.entity.enums.PromotionStatus
 import com.tokopedia.mvc.domain.entity.enums.VoucherCreator
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
+import com.tokopedia.unifyprinciples.R.*
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.DateUtil.DEFAULT_VIEW_FORMAT
@@ -47,7 +48,7 @@ class VouchersViewHolder(
             VoucherStatus.DELETED -> {
                 processColor = MethodChecker.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_RN500
+                    color.Unify_RN500
                 )
                 tfStatusTitle.text =
                     context.getString(R.string.smvc_voucherlist_status_deleted_text)
@@ -56,7 +57,7 @@ class VouchersViewHolder(
             VoucherStatus.PROCESSING -> {
                 processColor = MethodChecker.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                    color.Unify_NN600
                 )
                 tfStatusTitle.text =
                     context.getString(R.string.smvc_voucherlist_status_processing_text)
@@ -65,7 +66,7 @@ class VouchersViewHolder(
             VoucherStatus.NOT_STARTED -> {
                 processColor = MethodChecker.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                    color.Unify_NN600
                 )
                 tfStatusTitle.text =
                     context.getString(R.string.smvc_voucherlist_status_notstarted_text)
@@ -74,7 +75,7 @@ class VouchersViewHolder(
             VoucherStatus.ONGOING -> {
                 processColor = MethodChecker.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                    color.Unify_GN500
                 )
                 tfStatusTitle.text =
                     context.getString(R.string.smvc_voucherlist_status_ongoing_text)
@@ -83,7 +84,7 @@ class VouchersViewHolder(
             VoucherStatus.ENDED -> {
                 processColor = MethodChecker.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                    color.Unify_NN600
                 )
                 tfStatusTitle.text = context.getString(R.string.smvc_voucherlist_status_ended_text)
             }
@@ -91,7 +92,7 @@ class VouchersViewHolder(
             VoucherStatus.STOPPED -> {
                 processColor = MethodChecker.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_RN500
+                    color.Unify_RN500
                 )
                 tfStatusTitle.text =
                     context.getString(R.string.smvc_voucherlist_status_stopped_text)
