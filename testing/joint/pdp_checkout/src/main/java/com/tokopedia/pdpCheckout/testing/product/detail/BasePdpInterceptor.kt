@@ -18,16 +18,16 @@ abstract class BasePdpInterceptor : Interceptor {
 
     fun mockResponse(copy: Request, responseString: String): Response {
         return Response.Builder()
-                .request(copy)
-                .code(200)
-                .protocol(Protocol.HTTP_2)
-                .message(responseString)
-                .body(
-                    responseString.toByteArray()
-                        .toResponseBody("application/json".toMediaTypeOrNull())
-                )
-                .addHeader("content-type", "application/json")
-                .build()
+            .request(copy)
+            .code(200)
+            .protocol(Protocol.HTTP_2)
+            .message(responseString)
+            .body(
+                responseString.toByteArray()
+                    .toResponseBody("application/json".toMediaTypeOrNull())
+            )
+            .addHeader("content-type", "application/json")
+            .build()
     }
 
     abstract fun resetInterceptor()

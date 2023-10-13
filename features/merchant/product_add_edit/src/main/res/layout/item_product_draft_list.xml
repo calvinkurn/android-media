@@ -37,7 +37,7 @@
             android:layout_height="wrap_content"
             android:singleLine="true"
             tools:text="Nama Produk"
-            android:textColor="@color/Unify_N700"
+            android:textColor="@color/Unify_NN950"
             android:textSize="14sp" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -47,17 +47,17 @@
             android:layout_marginTop="12dp"
             android:singleLine="true"
             tools:text="38% complete"
-            android:textColor="@color/Unify_N300"
+            android:textColor="@color/Unify_NN500"
             android:textSize="12dp" />
 
         <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
             android:id="@+id/pbCompletion"
             android:layout_width="match_parent"
             android:layout_height="8dp"
-            app:rcBackgroundColor="@color/Unify_N300"
+            app:rcBackgroundColor="@color/Unify_NN500"
             app:rcMax="100"
             app:rcProgress="0"
-            app:rcProgressColor="@color/Unify_G500"
+            app:rcProgressColor="@color/Unify_GN500"
             app:rcRadius="4dp"
             android:layout_marginTop="2dp"/>
 

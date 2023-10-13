@@ -16,6 +16,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse.CategoryListResponse
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference
+import com.tokopedia.tokopedianow.common.domain.model.WarehouseData
 import com.tokopedia.tokopedianow.common.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
@@ -48,8 +49,8 @@ import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.junit.Assert.assertTrue
 import org.junit.Assert
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import java.lang.reflect.Field
@@ -125,6 +126,8 @@ abstract class TokoNowRepurchaseViewModelTestFixture {
         privateLocalCacheModel = viewModel::class.java.getDeclaredField("localCacheModel").apply {
             isAccessible = true
         }
+
+        onGetUserLoggedIn_thenReturn(isLoggedIn = true)
     }
 
     protected fun verifyShowLayoutSuccess(expectedResponse: RepurchaseLayoutUiModel) {
@@ -209,7 +212,7 @@ abstract class TokoNowRepurchaseViewModelTestFixture {
     }
 
     protected fun verifyGetChooseAddress() {
-        coVerify { getChooseAddressWarehouseLocUseCase.getStateChosenAddress(any(), any(), any()) }
+        coVerify { getChooseAddressWarehouseLocUseCase(any()) }
     }
 
     protected fun verifyTrackOpeningScreen() {
@@ -224,26 +227,22 @@ abstract class TokoNowRepurchaseViewModelTestFixture {
 
     protected fun onGetChooseAddress_thenReturn(getStateChosenAddressResponse: GetStateChosenAddressQglResponse) {
         coEvery {
-            getChooseAddressWarehouseLocUseCase.getStateChosenAddress(any(), any(), any())
-        } answers {
-            firstArg<(GetStateChosenAddressResponse) -> Unit>().invoke(getStateChosenAddressResponse.response)
-        }
+            getChooseAddressWarehouseLocUseCase(any())
+        } returns getStateChosenAddressResponse.response
     }
 
     protected fun onGetChooseAddress_thenReturn(errorThrowable: Throwable) {
         coEvery {
-            getChooseAddressWarehouseLocUseCase.getStateChosenAddress(any(), any(), any())
-        } answers {
-            secondArg<(Throwable) -> Unit>().invoke(errorThrowable)
-        }
+            getChooseAddressWarehouseLocUseCase(any())
+        } throws errorThrowable
     }
 
     protected fun onGetCategoryList_thenReturn(categoryListResponse: CategoryListResponse) {
-        coEvery { getCategoryListUseCase.execute(warehouseId = any(), depth = any()) } returns categoryListResponse
+        coEvery { getCategoryListUseCase.execute(warehouses = any(), depth = any()) } returns categoryListResponse
     }
 
     protected fun onGetCategoryList_thenReturn(error: Throwable) {
-        coEvery { getCategoryListUseCase.execute(warehouseId = any(), depth = any()) } throws error
+        coEvery { getCategoryListUseCase.execute(warehouses = any(), depth = any()) } throws error
     }
 
     protected fun onGetRepurchaseProductList_thenReturn(response: GetRepurchaseProductListResponse) {
@@ -326,8 +325,8 @@ abstract class TokoNowRepurchaseViewModelTestFixture {
         coEvery { setUserPreferenceUseCase.execute(any(), any()) } throws error
     }
 
-    protected fun verifyGetCategoryListUseCaseCalled() {
-        coVerify { getCategoryListUseCase.execute(warehouseId = any(), depth = any()) }
+    protected fun verifyGetCategoryListUseCaseCalled(warehouses: List<WarehouseData>, times: Int = 1) {
+        coVerify(exactly = times) { getCategoryListUseCase.execute(warehouses, TokoNowRepurchaseFragment.CATEGORY_LEVEL_DEPTH) }
     }
 
     protected fun onGetLayoutList_thenReturnNull() {

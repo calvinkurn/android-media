@@ -13,6 +13,7 @@ data class VideoPolicy(
     @Expose @SerializedName("big_upload_max_concurrent") var largeMaxConcurrent: Int? = null,
     @Expose @SerializedName("timeout_transcode") var timeOutTranscode: Int? = null,
     @Expose @SerializedName("retry_interval") var retryInterval: Int? = null,
+    @Expose @SerializedName("video_compression") var videoCompression: VideoCompression? = null
 ) {
 
     fun thresholdSizeOfVideo(): Int {

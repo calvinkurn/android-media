@@ -46,7 +46,12 @@ class PlayShortsRepositoryImpl @Inject constructor(
         authorId: String,
         authorType: String
     ): PlayShortsConfigUiModel = withContext(dispatchers.io) {
-        val response = getConfigurationUseCase.execute(authorId, authorType)
+        val response = getConfigurationUseCase(
+            GetConfigurationUseCase.RequestParam(
+                authorId = authorId,
+                authorType = authorType,
+            )
+        )
 
         mapper.mapShortsConfig(response)
     }
@@ -79,7 +84,7 @@ class PlayShortsRepositoryImpl @Inject constructor(
 
     override suspend fun getTagRecommendation(
         creationId: String,
-    ): Set<PlayTagUiModel> = withContext(dispatchers.io) {
+    ): PlayTagUiModel = withContext(dispatchers.io) {
         val response = getRecommendedChannelTagsUseCase.apply {
             setChannelId(creationId)
         }.executeOnBackground()

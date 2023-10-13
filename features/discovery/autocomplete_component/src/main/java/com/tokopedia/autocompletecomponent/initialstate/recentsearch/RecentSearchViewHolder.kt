@@ -11,7 +11,8 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class RecentSearchViewHolder(
     itemView: View,
-    listener: RecentSearchListener
+    listener: RecentSearchListener,
+    isReimagine: Boolean
 ): AbstractViewHolder<RecentSearchDataView>(itemView) {
 
     companion object {
@@ -19,7 +20,7 @@ class RecentSearchViewHolder(
         val LAYOUT = R.layout.layout_recent_search_autocomplete
     }
 
-    private val adapter: RecentSearchItemAdapter = RecentSearchItemAdapter(listener)
+    private val adapter: RecentSearchItemAdapter = RecentSearchItemAdapter(listener, isReimagine)
 
     private var binding: LayoutRecentSearchAutocompleteBinding? by viewBinding()
 

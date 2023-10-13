@@ -23,7 +23,7 @@
                 android:layout_marginTop="@dimen/sd_dp_20"
                 android:gravity="start"
                 android:text="@string/saldo_intro_title_refund"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN950_68"
                 app:typographyWeight="bold"
                 app:typographyType="heading_3"
                 />
@@ -35,7 +35,7 @@
                 android:layout_marginTop="@dimen/sd_dp_10"
                 android:gravity="start"
                 app:typographyType="body_2"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN950_68"
                 android:text="@string/saldo_intro_description_refund" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -45,7 +45,7 @@
                 android:text="@string/sumber_dana_refund"
                 app:typographyType="body_2"
                 app:typographyWeight="bold"
-                android:textColor="@color/Unify_N700_68" />
+                android:textColor="@color/Unify_NN950_68" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/dana_refund"
@@ -56,7 +56,7 @@
                 android:gravity="center_vertical"
                 android:text="@string/dana_refund"
                 app:typographyType="body_2"
-                android:textColor="@color/Unify_N700_68"/>
+                android:textColor="@color/Unify_NN950_68"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/disbursement_fund"
@@ -67,7 +67,7 @@
                 android:gravity="start"
                 android:text="@string/disbursement_fund"
                 app:typographyType="body_2"
-                android:textColor="@color/Unify_N700_68"/>
+                android:textColor="@color/Unify_NN950_68"/>
 
             <com.tokopedia.unifycomponents.DividerUnify
                 android:layout_width="match_parent"
@@ -80,7 +80,7 @@
                 android:layout_marginTop="@dimen/sd_dp_20"
                 android:gravity="start"
                 android:text="@string/saldo_intro_title_seller"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN950_68"
                 app:typographyWeight="bold"
                 app:typographyType="heading_3" />
 
@@ -91,7 +91,7 @@
                 android:gravity="start"
                 android:text="@string/saldo_intro_description_seller"
                 app:typographyType="body_2"
-                android:textColor="@color/Unify_N700_68"/>
+                android:textColor="@color/Unify_NN950_68"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="wrap_content"
@@ -100,7 +100,7 @@
                 android:text="@string/sumber_dana_seller"
                 app:typographyType="body_2"
                 app:typographyWeight="bold"
-                android:textColor="@color/Unify_N700_68"/>
+                android:textColor="@color/Unify_NN950_68"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/hasil_penjualan"
@@ -111,7 +111,7 @@
                 android:gravity="center_vertical"
                 android:text="@string/hasil_penjualan"
                 app:typographyType="body_2"
-                android:textColor="@color/Unify_N700_68"/>
+                android:textColor="@color/Unify_NN950_68"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/disbursement_priority_balance"
@@ -122,7 +122,7 @@
                 android:gravity="start"
                 android:text="@string/disbursement_priority_balance"
                 app:typographyType="body_2"
-                android:textColor="@color/Unify_N700_68"/>
+                android:textColor="@color/Unify_NN950_68"/>
 
 
             <com.tokopedia.unifyprinciples.Typography
@@ -131,7 +131,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/unify_space_24"
                 app:typographyType="body_2"
-                android:textColor="@color/Unify_N700_44" />
+                android:textColor="@color/Unify_NN950_44" />
         </LinearLayout>
     </ScrollView>
 

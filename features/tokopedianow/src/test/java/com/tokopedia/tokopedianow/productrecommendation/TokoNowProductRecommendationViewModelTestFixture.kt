@@ -13,14 +13,14 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
-import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
+import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.model.NowAffiliateAtcData
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
-import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
+import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.common.viewmodel.TokoNowProductRecommendationViewModel
 import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
 import com.tokopedia.tokopedianow.util.TestUtils.mockSuperClassField
@@ -257,14 +257,20 @@ abstract class TokoNowProductRecommendationViewModelTestFixture {
             userSession = userSession,
             dispatchers = coroutineTestRule.dispatchers
         )
+
+        every {
+            userSession.isLoggedIn
+        } answers {
+            true
+        }
     }
 
     @Test
     fun `verify the properties`() {
-        Assert.assertEquals(viewModel.isLoggedIn(), false)
+        Assert.assertEquals(viewModel.isLoggedIn(), true)
         Assert.assertEquals(viewModel.getUserId(), "")
 
-        val isLogin = true
+        val isLogin = false
         val userId = "1222233"
 
         every {

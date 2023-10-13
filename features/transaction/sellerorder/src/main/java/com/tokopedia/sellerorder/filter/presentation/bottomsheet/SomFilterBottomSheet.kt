@@ -10,7 +10,6 @@ import android.widget.LinearLayout
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
@@ -31,6 +30,7 @@ import com.tokopedia.sellerorder.common.util.StatusBarColorUtil
 import com.tokopedia.sellerorder.common.util.Utils.copyInt
 import com.tokopedia.sellerorder.common.util.Utils.copyListParcelable
 import com.tokopedia.sellerorder.common.util.Utils.updateShopActive
+import com.tokopedia.sellerorder.databinding.BottomsheetSomFilterListBinding
 import com.tokopedia.sellerorder.filter.di.DaggerSomFilterComponent
 import com.tokopedia.sellerorder.filter.di.SomFilterComponent
 import com.tokopedia.sellerorder.filter.presentation.activity.SomSubFilterActivity
@@ -46,17 +46,19 @@ import com.tokopedia.sellerorder.filter.presentation.model.SomSubFilterListWrapp
 import com.tokopedia.sellerorder.filter.presentation.viewmodel.SomFilterViewModel
 import com.tokopedia.sellerorder.list.domain.model.SomListGetOrderListParam
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class SomFilterBottomSheet : BottomSheetUnify(),
-        SomFilterListener, SomFilterDateBottomSheet.CalenderListener,
-        HasComponent<SomFilterComponent> {
+class SomFilterBottomSheet :
+    BottomSheetUnify(),
+    SomFilterListener,
+    SomFilterDateBottomSheet.CalenderListener,
+    HasComponent<SomFilterComponent> {
 
     @Inject
     lateinit var somFilterViewModel: SomFilterViewModel
@@ -64,8 +66,6 @@ class SomFilterBottomSheet : BottomSheetUnify(),
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    private var rvSomFilter: RecyclerView? = null
-    private var btnShowOrder: UnifyButton? = null
     private var somFilterAdapter: SomFilterAdapter? = null
     private var isApplyFilter: Boolean = false
     private var statusList = listOf<Int>()
@@ -74,9 +74,9 @@ class SomFilterBottomSheet : BottomSheetUnify(),
     private var somListOrderParam: SomListGetOrderListParam? = null
     private var somFilterUiModelListCopy = listOf<SomFilterUiModel>()
 
-    private var fm: FragmentManager? = null
-
     private var statusBarColorUtil: StatusBarColorUtil? = null
+
+    private var binding by autoClearedNullable<BottomsheetSomFilterListBinding>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -124,11 +124,9 @@ class SomFilterBottomSheet : BottomSheetUnify(),
     }
 
     private fun setChildView(inflater: LayoutInflater, container: ViewGroup?) {
-        val view = inflater.inflate(R.layout.bottomsheet_som_filter_list, container, false)
-        rvSomFilter = view.findViewById(R.id.rvSomFilter)
-        btnShowOrder = view.findViewById(R.id.btnShowOrder)
+        binding = BottomsheetSomFilterListBinding.inflate(inflater, container, false)
         setStyle(DialogFragment.STYLE_NORMAL, R.style.SomFilterDialogStyle)
-        setChild(view)
+        setChild(binding?.root)
         isFullpage = true
         isDragable = true
         setTitle(TITLE_FILTER)
@@ -142,8 +140,13 @@ class SomFilterBottomSheet : BottomSheetUnify(),
         clickDateFilter()
     }
 
-    override fun onFilterChipsClicked(somFilterData: SomFilterChipsUiModel, idFilter: String,
-                                      position: Int, chipType: String, orderStatus: String) {
+    override fun onFilterChipsClicked(
+        somFilterData: SomFilterChipsUiModel,
+        idFilter: String,
+        position: Int,
+        chipType: String,
+        orderStatus: String
+    ) {
         when (idFilter) {
             FILTER_SORT, FILTER_LABEL, FILTER_STATUS_ORDER -> {
                 somFilterViewModel.updateFilterSelected(idFilter, position, chipType)
@@ -158,13 +161,14 @@ class SomFilterBottomSheet : BottomSheetUnify(),
 
     override fun onSeeAllFilter(somFilterData: SomFilterUiModel, position: Int, idFilter: String) {
         val somFilterChipsList = somFilterViewModel.getSomFilterUiModel()
-                .find { it.nameFilter == idFilter }?.somFilterData ?: listOf()
+            .find { it.nameFilter == idFilter }?.somFilterData ?: listOf()
         val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
         cacheManager?.put(KEY_SOM_LIST_GET_ORDER_PARAM, somFilterViewModel.getSomListGetOrderListParam())
         cacheManager?.put(SomSubFilterActivity.KEY_SOM_LIST_FILTER_CHIPS, SomSubFilterListWrapper(somFilterChipsList))
-        val intentSomSubFilter = SomSubFilterActivity.newInstance(requireContext(),
-                idFilter,
-                cacheManager?.id ?: ""
+        val intentSomSubFilter = SomSubFilterActivity.newInstance(
+            requireContext(),
+            idFilter,
+            cacheManager?.id ?: ""
         )
         startActivityForResult(intentSomSubFilter, REQUEST_CODE_FILTER_SEE_ALL)
     }
@@ -179,11 +183,22 @@ class SomFilterBottomSheet : BottomSheetUnify(),
                     somListOrderParam?.let { somFilterViewModel.setSomListGetOrderListParam(it) }
                     val idFilter = data?.getStringExtra(SomSubFilterActivity.KEY_ID_FILTER) ?: ""
                     val somSubFilterList: SomSubFilterListWrapper? = cacheManager?.get(SomSubFilterActivity.KEY_SOM_LIST_FILTER_CHIPS, SomSubFilterListWrapper::class.java)
-                    somFilterViewModel.updateSomFilterSeeAll(idFilter, somSubFilterList?.somSubFilterList
-                            ?: listOf())
+                    somFilterViewModel.updateSomFilterSeeAll(
+                        idFilter,
+                        somSubFilterList?.somSubFilterList
+                            ?: listOf()
+                    )
                 }
             }
         }
+    }
+
+    private fun cleanupResources() {
+        somListOrderParam = null
+        somFilterAdapter = null
+        somFilterFinishListener = null
+        statusList = emptyList()
+        somFilterUiModelListCopy = emptyList()
     }
 
     override fun onBtnSaveCalendarClicked(startDate: Pair<String, String>, endDate: Pair<String, String>) {
@@ -205,9 +220,9 @@ class SomFilterBottomSheet : BottomSheetUnify(),
     override fun getComponent(): SomFilterComponent? {
         return activity?.run {
             DaggerSomFilterComponent
-                    .builder()
-                    .somComponent(SomComponentInstance.getSomComponent(application))
-                    .build()
+                .builder()
+                .somComponent(SomComponentInstance.getSomComponent(application))
+                .build()
         }
     }
 
@@ -223,40 +238,45 @@ class SomFilterBottomSheet : BottomSheetUnify(),
         removeObservers(somFilterViewModel.somFilterOrderListParam)
         removeObservers(somFilterViewModel.resetFilterResult)
         undoStatusBarColor()
+        cleanupResources()
         super.onDestroy()
     }
 
     private fun adjustBottomSheetPadding() {
         bottomSheetWrapper.setPadding(0, 16.toPx(), 0, bottomSheetWrapper.paddingBottom)
-        (bottomSheetHeader.layoutParams as LinearLayout.LayoutParams).setMargins(16.toPx(), 0,
-                16.toPx(), 16.toPx())
+        (bottomSheetHeader.layoutParams as LinearLayout.LayoutParams).setMargins(
+            16.toPx(),
+            0,
+            16.toPx(),
+            16.toPx()
+        )
     }
 
     fun show(fm: FragmentManager?) {
-        this.fm = fm
-        isApplyFilter = false
-        fm?.let {
-            show(it, SOM_FILTER_BOTTOM_SHEET_TAG)
+        if (!isVisible) {
+            isApplyFilter = false
+            fm?.let {
+                show(it, SOM_FILTER_BOTTOM_SHEET_TAG)
+            }
         }
     }
 
     private fun loadSomFilterData() {
         somFilterAdapter?.showLoading()
-        btnShowOrder?.hide()
+        binding?.btnShowOrder?.hide()
         somFilterViewModel.getSomFilterData()
     }
 
     private fun finishSomFilterData() {
         somFilterAdapter?.hideLoading()
-        btnShowOrder?.show()
+        binding?.btnShowOrder?.show()
     }
 
     private fun initRecyclerView() {
-        val somFilterLayoutManager = LinearLayoutManager(requireContext())
         val somFilterAdapterTypeFactory = SomFilterAdapterTypeFactory(this)
         somFilterAdapter = SomFilterAdapter(somFilterAdapterTypeFactory)
-        rvSomFilter?.apply {
-            layoutManager = somFilterLayoutManager
+        binding?.rvSomFilter?.apply {
+            layoutManager = LinearLayoutManager(context)
             adapter = somFilterAdapter
         }
     }
@@ -274,11 +294,12 @@ class SomFilterBottomSheet : BottomSheetUnify(),
 
     private fun undoStatusBarColor() {
         statusBarColorUtil?.undoSetStatusBarColor()
+        statusBarColorUtil?.activityRef?.clear()
         statusBarColorUtil = null
     }
 
     private fun clickShowOrder() {
-        btnShowOrder?.setOnClickListener {
+        binding?.btnShowOrder?.setOnClickListener {
             isApplyFilter = true
             SomAnalytics.eventClickTerapkanOnFilterPage(getFilterTextReset())
             val copySomFilterUiModel = somFilterViewModel.getSomFilterUiModel()
@@ -316,10 +337,7 @@ class SomFilterBottomSheet : BottomSheetUnify(),
             somFilterDateBottomSheet.selectedDates = listOf(startDate, endDate)
         }
         somFilterDateBottomSheet.setCalendarListener(this)
-        somFilterDateBottomSheet.setFragmentManager(childFragmentManager)
-        if (!somFilterDateBottomSheet.isAdded) {
-            somFilterDateBottomSheet.show()
-        }
+        somFilterDateBottomSheet.show(childFragmentManager)
     }
 
     private fun observeSomFilter() = observe(somFilterViewModel.filterResult) {
@@ -365,7 +383,6 @@ class SomFilterBottomSheet : BottomSheetUnify(),
             }
         }
     }
-
 
     private fun observeResetFilter() = observe(somFilterViewModel.resetFilterResult) {
         when (it) {

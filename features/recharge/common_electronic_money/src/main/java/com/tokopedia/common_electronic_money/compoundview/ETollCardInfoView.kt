@@ -7,26 +7,29 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.common_electronic_money.R
 import com.tokopedia.common_electronic_money.data.AttributesEmoneyInquiry
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import org.jetbrains.annotations.NotNull
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
 
 /**
  * Created by Rizky on 15/05/18.
  */
-class ETollCardInfoView @JvmOverloads constructor(@NotNull context: Context, attrs: AttributeSet? = null,
-                                                  defStyleAttr: Int = 0)
-    : BaseCustomView(context, attrs, defStyleAttr) {
+class ETollCardInfoView @JvmOverloads constructor(
+    @NotNull context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) :
+    BaseCustomView(context, attrs, defStyleAttr) {
 
     private lateinit var attributesEmoneyInquiry: AttributesEmoneyInquiry
 
@@ -65,27 +68,28 @@ class ETollCardInfoView @JvmOverloads constructor(@NotNull context: Context, att
         imageIssuerLoader = view.findViewById(R.id.image_issuer_loader)
         textLabelCardNumberLoader = view.findViewById(R.id.text_label_card_number_loader)
         textCardNumberLoader = view.findViewById(R.id.text_card_number_loader)
-
     }
 
     fun showCardInfo(attributesEmoneyInquiry: AttributesEmoneyInquiry) {
         this.attributesEmoneyInquiry = attributesEmoneyInquiry
         viewVisible()
         imageIssuer.visibility = View.VISIBLE
-        ImageHandler.LoadImage(imageIssuer, attributesEmoneyInquiry.imageIssuer)
+        imageIssuer.loadImage(attributesEmoneyInquiry.imageIssuer)
 
         textLabelCardNumber.text = resources.getString(R.string.emoney_nfc_card_info_label_card_number)
         textCardNumber.text = attributesEmoneyInquiry.formattedCardNumber
-        textCardNumber.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700))
+        textCardNumber.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950))
         textCardNumber.setTypeface(textCardNumber.typeface, Typeface.BOLD)
 
         textLabelBalance.text = resources.getString(R.string.emoney_nfc_card_info_label_card_balance)
         textRemainingBalance.text = CurrencyFormatUtil
-                .convertPriceValueToIdrFormat(attributesEmoneyInquiry.lastBalance, true)
-        textRemainingBalance.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+            .convertPriceValueToIdrFormat(attributesEmoneyInquiry.lastBalance, true)
+        textRemainingBalance.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950_96))
 
-        val simpleDateFormat = SimpleDateFormat("dd MMM yyyy, HH:mm",
-                DateFormatUtils.DEFAULT_LOCALE)
+        val simpleDateFormat = SimpleDateFormat(
+            "dd MMM yyyy, HH:mm",
+            DateFormatUtils.DEFAULT_LOCALE
+        )
         val date = Date()
         val result = String.format("(%s)", simpleDateFormat.format(date))
         textDate.text = result
@@ -115,16 +119,16 @@ class ETollCardInfoView @JvmOverloads constructor(@NotNull context: Context, att
         viewVisible()
         textLabelCardNumber.text = resources.getString(R.string.emoney_nfc_card_info_label_card_number)
         textCardNumber.text = resources.getString(R.string.emoney_nfc_card_info_is_not_available_yet)
-        textCardNumber.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700))
+        textCardNumber.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950))
         textCardNumber.typeface = Typeface.DEFAULT
         textLabelBalance.text = resources.getString(R.string.emoney_nfc_card_info_label_card_balance)
         textRemainingBalance.text = resources.getString(R.string.emoney_nfc_card_info_is_not_available_yet)
-        textRemainingBalance.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700))
+        textRemainingBalance.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950))
         textDate.text = ""
         imageIssuer.setImageDrawable(null)
     }
 
-    private fun viewVisible(){
+    private fun viewVisible() {
         imageIssuerLoader.hide()
         imageIssuer.show()
 
@@ -142,10 +146,9 @@ class ETollCardInfoView @JvmOverloads constructor(@NotNull context: Context, att
 
         textRemainingBalanceLoader.hide()
         textRemainingBalance.show()
-
     }
 
-    private fun viewInvisible(){
+    private fun viewInvisible() {
         imageIssuerLoader.show()
         imageIssuer.hide()
 
@@ -171,5 +174,4 @@ class ETollCardInfoView @JvmOverloads constructor(@NotNull context: Context, att
         }
         return ""
     }
-
 }

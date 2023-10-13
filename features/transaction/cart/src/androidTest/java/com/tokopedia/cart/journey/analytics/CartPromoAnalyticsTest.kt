@@ -48,7 +48,7 @@ class CartPromoAnalyticsTest {
         setupGraphqlMockResponse {
             addMockResponse(GET_CART_LIST_KEY, InstrumentationMockHelper.getRawString(context, R.raw.cart_bundle_analytics_promo_response), MockModelConfig.FIND_BY_CONTAINS)
             addMockResponse(UPDATE_CART_KEY, InstrumentationMockHelper.getRawString(context, R.raw.update_cart_response), MockModelConfig.FIND_BY_CONTAINS)
-            addMockResponse(VALIDATE_USE_KEY, InstrumentationMockHelper.getRawString(context, R.raw.validate_use_analytics_default_response), MockModelConfig.FIND_BY_CONTAINS)
+            addMockResponse(GET_LAST_APPLY_PROMO_KEY, InstrumentationMockHelper.getRawString(context, R.raw.get_last_apply_analytics_default_response), MockModelConfig.FIND_BY_CONTAINS)
         }
     }
 
@@ -74,9 +74,9 @@ class CartPromoAnalyticsTest {
     }
 
     companion object {
-        private const val GET_CART_LIST_KEY = "cart_revamp_v3"
+        private const val GET_CART_LIST_KEY = "cart_revamp_v4"
         private const val UPDATE_CART_KEY = "update_cart_v2"
-        private const val VALIDATE_USE_KEY = "validate_use_promo_revamp"
+        private const val GET_LAST_APPLY_PROMO_KEY = "get_last_apply_promo"
 
         private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME = "tracker/transaction/cart_promo.json"
     }

@@ -187,7 +187,7 @@ class HotelBookingFragment : HotelBaseFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentHotelBookingBinding.inflate(inflater, container, false)
-        binding?.root?.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_N0)
+        binding?.root?.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_NN0)
         return binding?.root
     }
 
@@ -599,7 +599,7 @@ class HotelBookingFragment : HotelBaseFragment() {
         }
         binding?.tvRoomEstimatedPriceLabel?.text = getString(priceLabelResId)
         binding?.tvRoomEstimatedPrice?.text = price
-        context?.run { binding?.tvRoomEstimatedPrice?.setTextColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Y500)) }
+        context?.run { binding?.tvRoomEstimatedPrice?.setTextColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_YN500)) }
     }
 
     private fun setupImportantNotes(property: HotelPropertyData) {
@@ -618,7 +618,7 @@ class HotelBookingFragment : HotelBaseFragment() {
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
 
             context?.run {
-                spannableString.setSpan(ForegroundColorSpan(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_G200)),
+                spannableString.setSpan(ForegroundColorSpan(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_GN100)),
                         spannableString.length - expandNotesLabel.length, spannableString.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             }
 

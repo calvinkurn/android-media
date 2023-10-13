@@ -5,7 +5,6 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home_component.listener.TodoWidgetComponentListener
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselTodoWidgetDataModel
-import com.tokopedia.home_component.visitable.TodoWidgetListDataModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 
@@ -21,19 +20,19 @@ class TodoWidgetComponentCallback(
 
     override fun onTodoCardClicked(element: CarouselTodoWidgetDataModel) {
         TodoWidgetTracking.sendTodoWidgetCardClicked(element)
-        if (element.cardApplink.isNotBlank()) {
-            homeCategoryListener.onDynamicChannelClicked(element.cardApplink)
+        if (element.data.cardApplink.isNotBlank()) {
+            homeCategoryListener.onDynamicChannelClicked(element.data.cardApplink)
         }
     }
 
     override fun onTodoCTAClicked(element: CarouselTodoWidgetDataModel) {
         TodoWidgetTracking.sendTodoWidgetCTAClicked(element, homeCategoryListener.userId)
-        homeCategoryListener.onDynamicChannelClicked(element.ctaApplink)
+        homeCategoryListener.onDynamicChannelClicked(element.data.ctaApplink)
     }
 
     override fun onTodoCloseClicked(element: CarouselTodoWidgetDataModel) {
         TodoWidgetTracking.sendTodoWidgetCloseClicked(element)
-        homeRevampViewModel.dismissTodoWidget(element.cardPosition, element.dataSource, element.feParam)
+        homeRevampViewModel.dismissTodoWidget(element.cardPosition, element.data.dataSource, element.data.feParam)
     }
 
     override fun onTodoImpressed(element: CarouselTodoWidgetDataModel) {
@@ -45,7 +44,7 @@ class TodoWidgetComponentCallback(
         )
     }
 
-    override fun refreshTodowidget(element: TodoWidgetListDataModel) {
+    override fun refreshTodowidget() {
         homeRevampViewModel.getTodoWidgetRefresh()
     }
 }

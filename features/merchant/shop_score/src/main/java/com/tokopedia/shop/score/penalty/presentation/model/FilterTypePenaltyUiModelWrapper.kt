@@ -1,5 +1,6 @@
 package com.tokopedia.shop.score.penalty.presentation.model
 
-data class FilterTypePenaltyUiModelWrapper(
-    val penaltyFilterList: List<PenaltyFilterUiModel> = listOf()
+class FilterTypePenaltyUiModelWrapper (
+    val penaltyFilterList: List<PenaltyFilterUiModel> = listOf(),
+    val penaltyDateFilterList: List<PenaltyFilterDateUiModel> = listOf()
 )

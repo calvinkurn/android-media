@@ -9,7 +9,7 @@
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/Unify_N0">
+        android:background="@color/Unify_NN0">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -21,7 +21,7 @@
                 android:layout_height="wrap_content"
                 android:animateLayoutChanges="true"
                 android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-                android:background="@color/Unify_N0"
+                android:background="@color/Unify_NN0"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <androidx.appcompat.widget.Toolbar
@@ -42,7 +42,7 @@
                         android:clickable="true"
                         android:focusable="true"
                         android:background="@drawable/toolbar_bg_corner"
-                        android:textColorHint="@color/Unify_N200"
+                        android:textColorHint="@color/Unify_NN500"
                         android:textSize="@dimen/sp_16"
                         android:layout_margin="8dp"
                         app:search_bar_clearable="true"
@@ -62,7 +62,7 @@
                     android:id="@+id/rv_brandlist_search"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@color/Unify_N0" />
+                    android:background="@color/Unify_NN0" />
 
             </com.tokopedia.brandlist.common.widget.StickySingleHeaderView>
 

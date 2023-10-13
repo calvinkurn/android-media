@@ -5,7 +5,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import com.tokopedia.analyticconstant.DataLayer
-import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.product.detail.common.ProductTrackingConstant
 import com.tokopedia.product.detail.common.ProductTrackingConstant.Category.ITEM_CATEGORY_BUILDER
@@ -17,6 +16,7 @@ import com.tokopedia.product.detail.tracking.TrackingConstant
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.constant.TrackerConstant
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -95,6 +95,9 @@ object TrackingUtil {
 
         return mapEvent as HashMap<String, Any>?
     }
+
+    fun generateLayoutValue(productInfo: DynamicProductInfoP1?) =
+        "layout:${productInfo?.layoutName};catName:${productInfo?.basic?.category?.name};catId:${productInfo?.basic?.category?.id};"
 
     fun getTradeInString(isTradein: Boolean, isDiagnosed: Boolean): String {
         return if (isTradein && isDiagnosed) {

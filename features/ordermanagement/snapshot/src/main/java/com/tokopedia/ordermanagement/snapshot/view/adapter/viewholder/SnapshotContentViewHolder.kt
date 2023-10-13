@@ -7,14 +7,16 @@ import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.viewpager2.widget.ViewPager2
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.imageassets.TokopediaImageUrl
+import com.tokopedia.imageassets.utils.loadProductImage
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.ordermanagement.snapshot.R
 import com.tokopedia.ordermanagement.snapshot.data.model.GetOrderSnapshot
 import com.tokopedia.ordermanagement.snapshot.data.model.SnapshotTypeData
@@ -103,8 +105,8 @@ class SnapshotContentViewHolder(itemView: View, private val actionListener: Snap
                 indicator.apply {
                     visible()
                     setIndicator(productImages.size)
-                    activeColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700)
-                    inactiveColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N400_68)
+                    activeColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+                    inactiveColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN600_68)
                 }
                 val imgViewPagerAdapter = SnapshotImageViewPagerAdapter()
 
@@ -137,7 +139,14 @@ class SnapshotContentViewHolder(itemView: View, private val actionListener: Snap
                     actionListener?.onSnapshotImgClicked(adapterPosition)
                 }
                 productImages.firstOrNull()?.imageUrl?.let {
-                    ivHeader.loadImage(it)
+                    ivHeader.loadProductImage(
+                        url = it,
+                        archivedUrl = TokopediaImageUrl.IMG_ARCHIVED_PRODUCT_LARGE,
+                        cornerRadius = 0f,
+                        onLoaded = { isArchived ->
+                            actionListener?.onProductImageLoaded(isArchived)
+                        }
+                    )
                 }
             }
         }
@@ -189,7 +198,7 @@ class SnapshotContentViewHolder(itemView: View, private val actionListener: Snap
 
     @SuppressLint("SetTextI18n")
     private fun renderShop(dataObject: GetOrderSnapshot) {
-        ImageHandler.loadImageCircle2(itemView.context, shopLogo, dataObject.shopImagePrimaryUrl)
+        shopLogo.loadImageCircle(dataObject.shopImagePrimaryUrl)
 
         if (dataObject.shopSummary.badgeUrl.isBlank()) shopBadge.gone()
         else {

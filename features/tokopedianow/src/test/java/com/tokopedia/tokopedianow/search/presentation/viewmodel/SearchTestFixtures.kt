@@ -21,6 +21,7 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.tokopedianow.searchcategory.cartservice.CartService
+import com.tokopedia.tokopedianow.searchcategory.domain.usecase.GetFilterUseCase
 import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import io.mockk.CapturingSlot
 import io.mockk.every
@@ -41,7 +42,7 @@ open class SearchTestFixtures {
     protected val defaultQueryParamMap = mapOf(SearchApiConst.Q to defaultKeyword)
     protected val getSearchFirstPageUseCase = mockk<UseCase<SearchModel>>(relaxed = true)
     protected val getSearchLoadMorePageUseCase = mockk<UseCase<SearchModel>>(relaxed = true)
-    protected val getFilterUseCase = mockk<UseCase<DynamicFilterModel>>(relaxed = true)
+    protected val getFilterUseCase = mockk<GetFilterUseCase>(relaxed = true)
     protected val getProductCountUseCase = mockk<UseCase<String>>(relaxed = true)
     protected val getMiniCartListSimplifiedUseCase = mockk<GetMiniCartListSimplifiedUseCase>(relaxed = true)
     protected val addToCartUseCase = mockk<AddToCartUseCase>(relaxed = true)
@@ -111,7 +112,6 @@ open class SearchTestFixtures {
     ) = mapOf(
             SearchApiConst.SOURCE to TOKONOW,
             SearchApiConst.DEVICE to SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE,
-            SearchApiConst.USER_WAREHOUSE_ID to chooseAddressData.warehouse_id,
             SearchApiConst.USER_CITY_ID to chooseAddressData.city_id,
             SearchApiConst.USER_ADDRESS_ID to chooseAddressData.address_id,
             SearchApiConst.USER_DISTRICT_ID to chooseAddressData.district_id,

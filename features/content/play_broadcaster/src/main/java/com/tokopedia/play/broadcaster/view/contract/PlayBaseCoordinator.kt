@@ -13,7 +13,8 @@ interface PlayBaseCoordinator {
             fragmentClass: Class<out T>,
             extras: Bundle = Bundle.EMPTY,
             sharedElements: List<View> = emptyList(),
-            onFragment: (T) -> Unit = {}
+            onFragment: (T) -> Unit = {},
+            isAddToBackStack: Boolean = false,
     )
 
 }

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/goto_kyc_onboard_non_progressive_title"
+        android:gravity="center"
+        app:typographyType="heading_3"
+        android:layout_marginHorizontal="16dp"/>
+
+    <include
+        android:id="@+id/layout_account_linking"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginHorizontal="16dp"
+        layout="@layout/item_goto_kyc_onboard_non_progressive"/>
+
+    <include
+        android:id="@+id/layout_ktp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginHorizontal="16dp"
+        layout="@layout/item_goto_kyc_onboard_non_progressive"/>
+
+    <include
+        android:id="@+id/layout_selfie"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginHorizontal="16dp"
+        layout="@layout/item_goto_kyc_onboard_non_progressive"/>
+
+    <com.tokopedia.usercomponents.userconsent.ui.UserConsentWidget
+        android:id="@+id/consent_goto_kyc_non_progressive"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="16dp"/>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_submit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:enabled="false"
+        android:layout_marginHorizontal="16dp"
+        android:text="@string/goto_kyc_start_verification"/>
+
+</LinearLayout>

@@ -6,7 +6,9 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.content.common.onboarding.domain.repository.UGCOnboardingRepository
 import com.tokopedia.content.common.producttag.domain.repository.ProductTagRepository
+import com.tokopedia.content.product.picker.seller.domain.ContentProductPickerSellerRepository
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
+import com.tokopedia.play.broadcaster.helper.PlayBroadcastCassavaValidator
 import com.tokopedia.play.broadcaster.shorts.builder.ShortsUiModelBuilder
 import com.tokopedia.play.broadcaster.shorts.di.DaggerPlayShortsTestComponent
 import com.tokopedia.play.broadcaster.shorts.di.PlayShortsTestModule
@@ -31,7 +33,7 @@ class PlayShortsSummaryAnalyticTest {
 
     private val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
 
-    private val cassavaValidator = PlayShortsCassavaValidator(cassavaTestRule)
+    private val cassavaValidator = PlayBroadcastCassavaValidator.buildForShorts(cassavaTestRule)
 
     private val launcher = PlayShortsLauncher(targetContext)
 
@@ -39,6 +41,7 @@ class PlayShortsSummaryAnalyticTest {
     private val mockBroRepo: PlayBroadcastRepository = mockk(relaxed = true)
     private val mockProductTagRepo: ProductTagRepository = mockk(relaxed = true)
     private val mockUgcOnboardingRepo: UGCOnboardingRepository = mockk(relaxed = true)
+    private val mockContentProductPickerSGCRepo: ContentProductPickerSellerRepository = mockk(relaxed = true)
     private val mockUserSession: UserSessionInterface = mockk(relaxed = true)
     private val mockAccountManager: PlayShortsAccountManager = mockk(relaxed = true)
 
@@ -60,11 +63,11 @@ class PlayShortsSummaryAnalyticTest {
         coEvery { mockUgcOnboardingRepo.validateUsername(any()) } returns Pair(true, "")
         coEvery { mockUgcOnboardingRepo.insertUsername(any()) } returns true
         coEvery { mockUgcOnboardingRepo.acceptTnc() } returns true
-        coEvery { mockBroRepo.getEtalaseList() } returns emptyList()
-        coEvery { mockBroRepo.getCampaignList() } returns emptyList()
-        coEvery { mockBroRepo.getProductsInEtalase(any(), any(), any(), any()) } returns mockEtalaseProducts
-        coEvery { mockBroRepo.setProductTags(any(), any()) } returns Unit
-        coEvery { mockBroRepo.getProductTagSummarySection(any()) } returns mockProductTagSection
+        coEvery { mockContentProductPickerSGCRepo.getEtalaseList() } returns emptyList()
+        coEvery { mockContentProductPickerSGCRepo.getCampaignList() } returns emptyList()
+        coEvery { mockContentProductPickerSGCRepo.getProductsInEtalase(any(), any(), any(), any()) } returns mockEtalaseProducts
+        coEvery { mockContentProductPickerSGCRepo.setProductTags(any(), any()) } returns Unit
+        coEvery { mockContentProductPickerSGCRepo.getProductTagSummarySection(any()) } returns mockProductTagSection
         coEvery { mockShortsRepo.getTagRecommendation(any()) } returns mockTags
         coEvery { mockShortsRepo.saveTag(any(), any()) } returns true
 
@@ -78,6 +81,7 @@ class PlayShortsSummaryAnalyticTest {
                         mockBroRepo = mockBroRepo,
                         mockProductTagRepo = mockProductTagRepo,
                         mockUgcOnboardingRepo = mockUgcOnboardingRepo,
+                        mockContentProductPickerSGCRepo = mockContentProductPickerSGCRepo,
                         mockAccountManager = mockAccountManager,
                         mockUserSession = mockUserSession,
                         mockRouter = mockk(relaxed = true),

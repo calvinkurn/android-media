@@ -6,7 +6,9 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.content.common.onboarding.domain.repository.UGCOnboardingRepository
 import com.tokopedia.content.common.producttag.domain.repository.ProductTagRepository
+import com.tokopedia.content.product.picker.seller.domain.ContentProductPickerSellerRepository
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
+import com.tokopedia.play.broadcaster.helper.PlayBroadcastCassavaValidator
 import com.tokopedia.play.broadcaster.shorts.builder.ShortsUiModelBuilder
 import com.tokopedia.play.broadcaster.shorts.di.DaggerPlayShortsTestComponent
 import com.tokopedia.play.broadcaster.shorts.di.PlayShortsTestModule
@@ -31,7 +33,7 @@ class PlayShortsSwitchAccountAnalyticTest {
     @get:Rule
     var cassavaTestRule = CassavaTestRule(sendValidationResult = false)
 
-    private val cassavaValidator = PlayShortsCassavaValidator(cassavaTestRule)
+    private val cassavaValidator = PlayBroadcastCassavaValidator.buildForShorts(cassavaTestRule)
 
     private val launcher = PlayShortsLauncher(targetContext)
 
@@ -39,6 +41,7 @@ class PlayShortsSwitchAccountAnalyticTest {
     private val mockBroRepo: PlayBroadcastRepository = mockk(relaxed = true)
     private val mockProductTagRepo: ProductTagRepository = mockk(relaxed = true)
     private val mockUgcOnboardingRepo: UGCOnboardingRepository = mockk(relaxed = true)
+    private val mockContentProductPickerSGCRepo: ContentProductPickerSellerRepository = mockk(relaxed = true)
     private val mockUserSession: UserSessionInterface = mockk(relaxed = true)
     private val mockAccountManager: PlayShortsAccountManager = mockk(relaxed = true)
 
@@ -66,6 +69,7 @@ class PlayShortsSwitchAccountAnalyticTest {
                         mockProductTagRepo = mockProductTagRepo,
                         mockUgcOnboardingRepo = mockUgcOnboardingRepo,
                         mockAccountManager = mockAccountManager,
+                        mockContentProductPickerSGCRepo = mockContentProductPickerSGCRepo,
                         mockUserSession = mockUserSession,
                         mockRouter = mockk(relaxed = true),
                         mockIdleManager = mockk(relaxed = true),

@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="fs_tkpd_title">Flash Sale Tokopedia</string>
     <string name="fs_canceled_lable">Batalkan</string>
     <string name="title_detail_category">Detail Category</string>
@@ -57,7 +57,7 @@
     <string name="stfs_empty_search_result_description">Coba ulangi pencarianmu menggunakan pilihan filter yang berbeda, ya.</string>
     <string name="stfs_no_product_sold">Belum ada produkmu yang terjual di campaign ini. Daftarkan produkmu ke campaign lain, yuk!</string>
     <string name="stfs_all_product_rejected_with_hyperlink">Semua produkmu ditolak. Cek Alasan</string>
-    <string name="stfs_multi_location_ticker"><![CDATA[Sekarang kamu bisa mendaftarkan produk dari semua lokasi gudangmu. <a href="https://seller.tokopedia.com/edu/cara-daftar-produk-flash-sale/">Baca Artikel</a>]]></string>
+    <string name="stfs_ticker_description_format" tools:ignore="UnusedResources"><![CDATA[%s <a href="\"%s\"" target="_blank">%s</a>]]></string>
     <string name="stfs_multi_location_ticker_description">Sekarang kamu bisa mendaftarkan produk dari semua lokasi gudangmu.</string>
     <string name="stfs_check_reason">Cek Alasan</string>
     <string name="stfs_missed_reason">Terlewat karena kamu tidak mengajukan produk hingga batas waktu yang ditentukan.</string>

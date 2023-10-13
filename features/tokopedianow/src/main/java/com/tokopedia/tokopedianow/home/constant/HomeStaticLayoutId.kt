@@ -5,6 +5,7 @@ import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.CHO
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_FAILED_TO_FETCH_DATA
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS_AND_LOCAL_CACHE
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_OUT_OF_COVERAGE
+import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.HOME_HEADER
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.LOADING_STATE
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.PRODUCT_RECOM_OOC
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.PROGRESS_BAR
@@ -26,7 +27,8 @@ import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.TIC
         LOADING_STATE,
         PRODUCT_RECOM_OOC,
         PROGRESS_BAR,
-        SWITCH_SERVICE_WIDGET
+        SWITCH_SERVICE_WIDGET,
+        HOME_HEADER
 )
 annotation class HomeStaticLayoutId {
     companion object {
@@ -39,5 +41,6 @@ annotation class HomeStaticLayoutId {
         const val PRODUCT_RECOM_OOC = "6"
         const val PROGRESS_BAR = "7"
         const val SWITCH_SERVICE_WIDGET = "8"
+        const val HOME_HEADER = "9"
     }
 }

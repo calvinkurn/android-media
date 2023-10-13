@@ -2,15 +2,13 @@ package com.tokopedia.mediauploader.image.domain
 
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.mediauploader.common.state.ProgressUploader
-import com.tokopedia.mediauploader.common.internal.MediaUploaderUrl
+import com.tokopedia.mediauploader.common.MediaUploaderUrl
 import com.tokopedia.mediauploader.image.data.ImageUploadServices
 import com.tokopedia.mediauploader.image.data.entity.ImageUploader
 import com.tokopedia.mediauploader.image.data.params.ImageUploadParam
 import kotlinx.coroutines.Dispatchers
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
-import java.util.*
 import javax.inject.Inject
 import kotlin.collections.HashMap
 

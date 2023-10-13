@@ -4,16 +4,16 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.topads.common.data.response.Deposit
+import com.tokopedia.topads.common.data.response.FinalAdResponse
 import com.tokopedia.topads.common.data.response.GetTopAdsDashboardGroupsV3
 import com.tokopedia.topads.common.data.response.GetTopadsDashboardGroupStatisticsV3
 import com.tokopedia.topads.common.data.response.TopAdsGroupsResponse
 import com.tokopedia.topads.common.data.response.TopAdsGroupsStatisticResponseResponse
-import com.tokopedia.topads.common.data.response.TopadsManageGroupAdsResponse
 import com.tokopedia.topads.common.domain.usecase.GetTopAdsGroupsStatisticsUseCase
 import com.tokopedia.topads.common.domain.usecase.GetTopAdsGroupsUseCase
+import com.tokopedia.topads.common.domain.usecase.TopAdsCreateUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsManageGroupAdsUseCase
-import com.tokopedia.topads.common.domain.usecase.TopAdsCreateUseCase
 import com.tokopedia.topads.util.AdGroupTestUtils.PER_PAGE
 import com.tokopedia.topads.util.AdGroupTestUtils.addInfiniteLoadingError
 import com.tokopedia.topads.util.AdGroupTestUtils.chooseAdGroup
@@ -32,6 +32,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.clearAllMocks
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -49,7 +50,7 @@ class MpAdsGroupsViewModelTest {
     @get:Rule
     val rule2 = InstantTaskExecutorRule()
 
-    private var viewModel:MpAdsGroupsViewModel? = null
+    private var viewModel: MpAdsGroupsViewModel? = null
     private val getTopAdsGroupsUseCase: GetTopAdsGroupsUseCase = mockk()
     private val getTopAdsGroupStatsUseCase: GetTopAdsGroupsStatisticsUseCase = mockk()
     private val getTopadsDepositsUseCase: TopAdsGetDepositUseCase = mockk()
@@ -57,14 +58,13 @@ class MpAdsGroupsViewModelTest {
     private val topAdsCreateUseCase: TopAdsCreateUseCase = mockk()
 
     private val productId = ""
-    private val shopId = ""
     private val requestParams = RequestParams()
     private val error = Throwable("error")
 
     private val userSession = mockk<UserSessionInterface>()
 
     @Before
-    fun setup(){
+    fun setup() {
         every { userSession.shopId } returns ""
         viewModel = MpAdsGroupsViewModel(
             getTopAdsGroupsUseCase,
@@ -77,7 +77,7 @@ class MpAdsGroupsViewModelTest {
         )
     }
 
-    private fun manualViewModelSetup(){
+    private fun manualViewModelSetup() {
         viewModel = MpAdsGroupsViewModel(
             getTopAdsGroupsUseCase,
             getTopAdsGroupStatsUseCase,
@@ -90,33 +90,33 @@ class MpAdsGroupsViewModelTest {
     }
 
     @Test
-    fun `load first page success and stats success`(){
+    fun `load first page success and stats success`() {
         fetchFirstPage()
-        val expectedList:MutableList<Visitable<*>> = mutableListOf<Visitable<*>>().apply {
+        val expectedList: MutableList<Visitable<*>> = mutableListOf<Visitable<*>>().apply {
             createAdGroupList()
         }
         viewModel?.mainListLiveData?.value?.assertLists(expectedList)
     }
 
     @Test
-    fun `load first page success and stats success with non empty sort param`(){
+    fun `load first page success and stats success with non empty sort param`() {
         clearAllMocks()
         every { userSession.shopId } returns null
         manualViewModelSetup()
         fetchFirstPage(sort = "tampil")
-        val expectedList:MutableList<Visitable<*>> = mutableListOf<Visitable<*>>().apply {
+        val expectedList: MutableList<Visitable<*>> = mutableListOf<Visitable<*>>().apply {
             createAdGroupList()
         }
         viewModel?.mainListLiveData?.value?.assertLists(expectedList)
     }
 
     @Test
-    fun `load first page null response`(){
+    fun `load first page null response`() {
         val groupResponse = TopAdsGroupsResponse()
-        val expectedList:MutableList<Visitable<*>> = mutableListOf<Visitable<*>>().apply {
+        val expectedList: MutableList<Visitable<*>> = mutableListOf<Visitable<*>>().apply {
             createAdGroupListError(GlobalError.PAGE_NOT_FOUND)
         }
-        every { getTopAdsGroupsUseCase.getAdGroups("","",1,"",any(),any()) } answers {
+        every { getTopAdsGroupsUseCase.getAdGroups("", "", 1, "", any(), any()) } answers {
             arg<(TopAdsGroupsResponse) -> Unit>(4).invoke(groupResponse)
         }
         viewModel?.loadFirstPage()
@@ -124,12 +124,12 @@ class MpAdsGroupsViewModelTest {
     }
 
     @Test
-    fun `load first page null list`(){
+    fun `load first page null list`() {
         val groupResponse = TopAdsGroupsResponse(GetTopAdsDashboardGroupsV3(data = null, page = null))
-        val expectedList:MutableList<Visitable<*>> = mutableListOf<Visitable<*>>().apply {
+        val expectedList: MutableList<Visitable<*>> = mutableListOf<Visitable<*>>().apply {
             createAdGroupListError(GlobalError.PAGE_NOT_FOUND)
         }
-        every { getTopAdsGroupsUseCase.getAdGroups("","",1,"",any(),any()) } answers {
+        every { getTopAdsGroupsUseCase.getAdGroups("", "", 1, "", any(), any()) } answers {
             arg<(TopAdsGroupsResponse) -> Unit>(4).invoke(groupResponse)
         }
         viewModel?.loadFirstPage()
@@ -137,12 +137,12 @@ class MpAdsGroupsViewModelTest {
     }
 
     @Test
-    fun `load first page empty list`(){
+    fun `load first page empty list`() {
         val groupResponse = TopAdsGroupsResponse(GetTopAdsDashboardGroupsV3())
-        val expectedList:MutableList<Visitable<*>> = mutableListOf<Visitable<*>>().apply {
+        val expectedList: MutableList<Visitable<*>> = mutableListOf<Visitable<*>>().apply {
             createAdGroupListError(GlobalError.PAGE_NOT_FOUND)
         }
-        every { getTopAdsGroupsUseCase.getAdGroups("","",1,"",any(),any()) } answers {
+        every { getTopAdsGroupsUseCase.getAdGroups("", "", 1, "", any(), any()) } answers {
             arg<(TopAdsGroupsResponse) -> Unit>(4).invoke(groupResponse)
         }
         viewModel?.loadFirstPage()
@@ -150,11 +150,11 @@ class MpAdsGroupsViewModelTest {
     }
 
     @Test
-    fun `load first page server error`(){
-        val expectedList:MutableList<Visitable<*>> = mutableListOf<Visitable<*>>().apply {
+    fun `load first page server error`() {
+        val expectedList: MutableList<Visitable<*>> = mutableListOf<Visitable<*>>().apply {
             createAdGroupListError(GlobalError.SERVER_ERROR)
         }
-        every { getTopAdsGroupsUseCase.getAdGroups("","",1,"",any(),any()) } answers {
+        every { getTopAdsGroupsUseCase.getAdGroups("", "", 1, "", any(), any()) } answers {
             arg<(Throwable) -> Unit>(5).invoke(error)
         }
         viewModel?.loadFirstPage()
@@ -162,15 +162,15 @@ class MpAdsGroupsViewModelTest {
     }
 
     @Test
-    fun `load first page ad stats failure`(){
+    fun `load first page ad stats failure`() {
         val groupResponse = getAdGroupDummyData()
-        val expectedList:MutableList<Visitable<*>> = mutableListOf<Visitable<*>>().apply {
+        val expectedList: MutableList<Visitable<*>> = mutableListOf<Visitable<*>>().apply {
             createAdGroupListWithStatsLoading()
         }
-        every { getTopAdsGroupsUseCase.getAdGroups("","",1,"",any(),any()) } answers {
+        every { getTopAdsGroupsUseCase.getAdGroups("", "", 1, "", any(), any()) } answers {
             arg<(TopAdsGroupsResponse) -> Unit>(4).invoke(groupResponse)
         }
-        every { getTopAdsGroupStatsUseCase.getAdGroupsStatistics("","",1,"",any(),any(),any()) } answers {
+        every { getTopAdsGroupStatsUseCase.getAdGroupsStatistics("", "", 1, "", any(), any(), any()) } answers {
             arg<(Throwable) -> Unit>(6).invoke(error)
         }
         viewModel?.loadFirstPage()
@@ -178,65 +178,68 @@ class MpAdsGroupsViewModelTest {
     }
 
     @Test
-    fun `load next page success and stats success`(){
+    fun `load next page success and stats success`() {
         fetchMorePages()
-        val expectedList:MutableList<Visitable<*>> = mutableListOf<Visitable<*>>().apply {
+        val expectedList: MutableList<Visitable<*>> = mutableListOf<Visitable<*>>().apply {
             createAdGroupList(2)
         }
         viewModel?.mainListLiveData?.value?.assertLists(expectedList)
     }
 
     @Test
-    fun `load next page success and stats success with non empty sort param`(){
-       fetchMorePages(sort = "tampil")
-        val expectedList:MutableList<Visitable<*>> = mutableListOf<Visitable<*>>().apply {
+    fun `load next page success and stats success with non empty sort param`() {
+        fetchMorePages(sort = "tampil")
+        val expectedList: MutableList<Visitable<*>> = mutableListOf<Visitable<*>>().apply {
             createAdGroupList(2)
         }
         viewModel?.mainListLiveData?.value?.assertLists(expectedList)
     }
 
     @Test
-    fun `load next page with last page`(){
+    fun `load next page with last page`() {
         fetchFirstPage()
-        val groupResponseNextPage = getAdGroupDummyData(2,2 * PER_PAGE)
-        val expectedList:MutableList<Visitable<*>> = mutableListOf<Visitable<*>>().apply {
+        val groupResponseNextPage = getAdGroupDummyData(2, 2 * PER_PAGE)
+        val expectedList: MutableList<Visitable<*>> = mutableListOf<Visitable<*>>().apply {
             createAdGroupList()
         }
-        every { getTopAdsGroupsUseCase.getAdGroups("","",any(),"",any(),any()) } answers {
+        every { getTopAdsGroupsUseCase.getAdGroups("", "", any(), "", any(), any()) } answers {
             arg<(TopAdsGroupsResponse) -> Unit>(4).invoke(groupResponseNextPage)
         }
-        every { getTopAdsGroupStatsUseCase.getAdGroupsStatistics("","",any(),"",any(),any(),any()) } answers {
+        every { getTopAdsGroupStatsUseCase.getAdGroupsStatistics("", "", any(), "", any(), any(), any()) } answers {
             arg<(Throwable) -> Unit>(6).invoke(error)
         }
         viewModel?.loadMorePages()
-        Assert.assertEquals(viewModel?.hasNextLiveData?.value,false)
+        Assert.assertEquals(viewModel?.hasNextLiveData?.value, false)
         viewModel?.mainListLiveData?.value?.assertLists(expectedList)
     }
 
     @Test
-    fun `load next page total greater than 2 pages`(){
-       fetchMorePages(multiplier = 3)
-        val expectedList:MutableList<Visitable<*>> = mutableListOf<Visitable<*>>().apply {
+    fun `load next page total greater than 2 pages`() {
+        fetchMorePages(multiplier = 3)
+        val expectedList: MutableList<Visitable<*>> = mutableListOf<Visitable<*>>().apply {
             createAdGroupList(2)
         }
-        Assert.assertEquals(viewModel?.hasNextLiveData?.value,true)
+        Assert.assertEquals(viewModel?.hasNextLiveData?.value, true)
         viewModel?.mainListLiveData?.value?.assertLists(expectedList)
     }
 
     @Test
-    fun `load next page with empty first page`(){
+    fun `load next page with empty first page`() {
         val groupResponse = TopAdsGroupsResponse()
         val groupStatsResponse = TopAdsGroupsStatisticResponseResponse()
-        val expectedList:MutableList<Visitable<*>> = mutableListOf<Visitable<*>>().apply {
+        val expectedList: MutableList<Visitable<*>> = mutableListOf<Visitable<*>>().apply {
             add(CreateAdGroupUiModel())
             add(ErrorUiModel(GlobalError.PAGE_NOT_FOUND))
             add(ReloadInfiniteUiModel())
         }
-        every { getTopAdsGroupsUseCase.getAdGroups("","",any(),"",any(),any()) } answers {
-            if(arg<Int>(2) == 1) arg<(TopAdsGroupsResponse) -> Unit>(4).invoke(groupResponse)
-            else arg<(Throwable) -> Unit>(5).invoke(error)
+        every { getTopAdsGroupsUseCase.getAdGroups("", "", any(), "", any(), any()) } answers {
+            if (arg<Int>(2) == 1) {
+                arg<(TopAdsGroupsResponse) -> Unit>(4).invoke(groupResponse)
+            } else {
+                arg<(Throwable) -> Unit>(5).invoke(error)
+            }
         }
-        every { getTopAdsGroupStatsUseCase.getAdGroupsStatistics("","",1,"",any(),any(),any()) } answers {
+        every { getTopAdsGroupStatsUseCase.getAdGroupsStatistics("", "", 1, "", any(), any(), any()) } answers {
             arg<(TopAdsGroupsStatisticResponseResponse) -> Unit>(5).invoke(groupStatsResponse)
         }
         viewModel?.loadFirstPage()
@@ -245,25 +248,27 @@ class MpAdsGroupsViewModelTest {
     }
 
     @Test
-    fun `load next page with null response`(){
-        val groupResponseFirstPage = getAdGroupDummyData(total = 2* PER_PAGE)
+    fun `load next page with null response`() {
+        val groupResponseFirstPage = getAdGroupDummyData(total = 2 * PER_PAGE)
         val groupStatsResponseFirstPage = getAdGroupStatsData(total = 2 * PER_PAGE)
         val groupResponseNextPage = TopAdsGroupsResponse()
-        val expectedList:MutableList<Visitable<*>> = mutableListOf<Visitable<*>>().apply {
+        val expectedList: MutableList<Visitable<*>> = mutableListOf<Visitable<*>>().apply {
             createAdGroupList()
         }
 
-        every { getTopAdsGroupsUseCase.getAdGroups("","",any(),"",any(),any()) } answers {
+        every { getTopAdsGroupsUseCase.getAdGroups("", "", any(), "", any(), any()) } answers {
             arg<(TopAdsGroupsResponse) -> Unit>(4).invoke(
-                if(arg<Int>(2) == 1) groupResponseFirstPage
-                else groupResponseNextPage
+                if (arg<Int>(2) == 1) {
+                    groupResponseFirstPage
+                } else {
+                    groupResponseNextPage
+                }
             )
         }
-        every { getTopAdsGroupStatsUseCase.getAdGroupsStatistics("","",any(),"",any(),any(),any()) } answers {
-            if(arg<Int>(2) == 1){
+        every { getTopAdsGroupStatsUseCase.getAdGroupsStatistics("", "", any(), "", any(), any(), any()) } answers {
+            if (arg<Int>(2) == 1) {
                 arg<(TopAdsGroupsStatisticResponseResponse) -> Unit>(5).invoke(groupStatsResponseFirstPage)
-            }
-            else{
+            } else {
                 arg<(Throwable) -> Unit>(6).invoke(error)
             }
         }
@@ -273,25 +278,27 @@ class MpAdsGroupsViewModelTest {
     }
 
     @Test
-    fun `load next page with null list`(){
-        val groupResponseFirstPage = getAdGroupDummyData(total = 2* PER_PAGE)
+    fun `load next page with null list`() {
+        val groupResponseFirstPage = getAdGroupDummyData(total = 2 * PER_PAGE)
         val groupStatsResponseFirstPage = getAdGroupStatsData(total = 2 * PER_PAGE)
         val groupResponseNextPage = TopAdsGroupsResponse(GetTopAdsDashboardGroupsV3(data = null))
-        val expectedList:MutableList<Visitable<*>> = mutableListOf<Visitable<*>>().apply {
+        val expectedList: MutableList<Visitable<*>> = mutableListOf<Visitable<*>>().apply {
             createAdGroupList()
         }
 
-        every { getTopAdsGroupsUseCase.getAdGroups("","",any(),"",any(),any()) } answers {
+        every { getTopAdsGroupsUseCase.getAdGroups("", "", any(), "", any(), any()) } answers {
             arg<(TopAdsGroupsResponse) -> Unit>(4).invoke(
-                if(arg<Int>(2) == 1) groupResponseFirstPage
-                else groupResponseNextPage
+                if (arg<Int>(2) == 1) {
+                    groupResponseFirstPage
+                } else {
+                    groupResponseNextPage
+                }
             )
         }
-        every { getTopAdsGroupStatsUseCase.getAdGroupsStatistics("","",any(),"",any(),any(),any()) } answers {
-            if(arg<Int>(2) == 1){
+        every { getTopAdsGroupStatsUseCase.getAdGroupsStatistics("", "", any(), "", any(), any(), any()) } answers {
+            if (arg<Int>(2) == 1) {
                 arg<(TopAdsGroupsStatisticResponseResponse) -> Unit>(5).invoke(groupStatsResponseFirstPage)
-            }
-            else{
+            } else {
                 arg<(Throwable) -> Unit>(6).invoke(error)
             }
         }
@@ -301,22 +308,23 @@ class MpAdsGroupsViewModelTest {
     }
 
     @Test
-    fun `load next page failure`(){
+    fun `load next page failure`() {
         val groupResponseFirstPage = getAdGroupDummyData(total = 2 * PER_PAGE)
         val groupStatsResponseFirstPage = getAdGroupStatsData(total = 2 * PER_PAGE)
 
-        val expectedList:MutableList<Visitable<*>> = mutableListOf<Visitable<*>>().apply {
+        val expectedList: MutableList<Visitable<*>> = mutableListOf<Visitable<*>>().apply {
             createAdGroupList()
             addInfiniteLoadingError()
         }
 
-        every { getTopAdsGroupsUseCase.getAdGroups("","",any(),"",any(),any()) } answers {
-            if(arg<Int>(2) == 1){
+        every { getTopAdsGroupsUseCase.getAdGroups("", "", any(), "", any(), any()) } answers {
+            if (arg<Int>(2) == 1) {
                 arg<(TopAdsGroupsResponse) -> Unit>(4).invoke(groupResponseFirstPage)
+            } else {
+                arg<(Throwable) -> Unit>(5).invoke(error)
             }
-            else arg<(Throwable) -> Unit>(5).invoke(error)
         }
-        every { getTopAdsGroupStatsUseCase.getAdGroupsStatistics("","",any(),any(),any(),any(),any()) } answers {
+        every { getTopAdsGroupStatsUseCase.getAdGroupsStatistics("", "", any(), any(), any(), any(), any()) } answers {
             arg<(TopAdsGroupsStatisticResponseResponse) -> Unit>(5).invoke(groupStatsResponseFirstPage)
         }
 
@@ -326,33 +334,34 @@ class MpAdsGroupsViewModelTest {
     }
 
     @Test
-    fun `load next page fail but success next try`(){
+    fun `load next page fail but success next try`() {
         val groupResponseFirstPage = getAdGroupDummyData(total = 2 * PER_PAGE)
         val groupStatsResponseFirstPage = getAdGroupStatsData(total = 2 * PER_PAGE)
-        val groupResponseNextPage = getAdGroupDummyData(2,2 * PER_PAGE)
-        val groupStatsResponseNextPage = getAdGroupStatsData(2,2 * PER_PAGE)
+        val groupResponseNextPage = getAdGroupDummyData(2, 2 * PER_PAGE)
+        val groupStatsResponseNextPage = getAdGroupStatsData(2, 2 * PER_PAGE)
 
-        val expectedList:MutableList<Visitable<*>> = mutableListOf<Visitable<*>>().apply {
+        val expectedList: MutableList<Visitable<*>> = mutableListOf<Visitable<*>>().apply {
             createAdGroupList(2)
         }
 
-        every { getTopAdsGroupsUseCase.getAdGroups("","",any(),"",any(),any()) } answers {
-            if(arg<Int>(2) == 1){
+        every { getTopAdsGroupsUseCase.getAdGroups("", "", any(), "", any(), any()) } answers {
+            if (arg<Int>(2) == 1) {
                 arg<(TopAdsGroupsResponse) -> Unit>(4).invoke(groupResponseFirstPage)
+            } else {
+                arg<(Throwable) -> Unit>(5).invoke(error)
             }
-            else arg<(Throwable) -> Unit>(5).invoke(error)
         }
-        every { getTopAdsGroupStatsUseCase.getAdGroupsStatistics("","",any(),any(),any(),any(),any()) } answers {
+        every { getTopAdsGroupStatsUseCase.getAdGroupsStatistics("", "", any(), any(), any(), any(), any()) } answers {
             arg<(TopAdsGroupsStatisticResponseResponse) -> Unit>(5).invoke(groupStatsResponseFirstPage)
         }
 
         viewModel?.loadFirstPage()
         viewModel?.loadMorePages()
         clearAllMocks()
-        every { getTopAdsGroupsUseCase.getAdGroups("","",any(),"",any(),any()) } answers {
+        every { getTopAdsGroupsUseCase.getAdGroups("", "", any(), "", any(), any()) } answers {
             arg<(TopAdsGroupsResponse) -> Unit>(4).invoke(groupResponseNextPage)
         }
-        every { getTopAdsGroupStatsUseCase.getAdGroupsStatistics("","",any(),"",any(),any(),any()) } answers {
+        every { getTopAdsGroupStatsUseCase.getAdGroupsStatistics("", "", any(), "", any(), any(), any()) } answers {
             arg<(TopAdsGroupsStatisticResponseResponse) -> Unit>(5).invoke(groupStatsResponseNextPage)
         }
         viewModel?.loadMorePages()
@@ -360,10 +369,10 @@ class MpAdsGroupsViewModelTest {
     }
 
     @Test
-    fun `choose ad group with no existing selected group`(){
+    fun `choose ad group with no existing selected group`() {
         val selectedIndex = 1
         setupChooseAdGroup()
-        val expectedList:MutableList<Visitable<*>> = mutableListOf<Visitable<*>>().apply {
+        val expectedList: MutableList<Visitable<*>> = mutableListOf<Visitable<*>>().apply {
             createAdGroupList()
             chooseAdGroup(selectedIndex)
         }
@@ -371,11 +380,11 @@ class MpAdsGroupsViewModelTest {
     }
 
     @Test
-    fun `choose ad group with existing selected group`(){
+    fun `choose ad group with existing selected group`() {
         val selectedIndex = 2
         val alreadySelectedIndex = 1
         setupChooseAdGroup(alreadySelectedIndex)
-        val expectedList:MutableList<Visitable<*>> = mutableListOf<Visitable<*>>().apply {
+        val expectedList: MutableList<Visitable<*>> = mutableListOf<Visitable<*>>().apply {
             createAdGroupList()
             chooseAdGroup(alreadySelectedIndex)
             chooseAdGroup(selectedIndex)
@@ -385,21 +394,21 @@ class MpAdsGroupsViewModelTest {
     }
 
     @Test
-    fun `choose out of bounds ad group with no existing selected group`(){
+    fun `choose out of bounds ad group with no existing selected group`() {
         val selectedIndex = 40
         setupChooseAdGroup(selectedIndex)
-        val expectedList:MutableList<Visitable<*>> = mutableListOf<Visitable<*>>().apply {
+        val expectedList: MutableList<Visitable<*>> = mutableListOf<Visitable<*>>().apply {
             createAdGroupList()
         }
         viewModel?.mainListLiveData?.value?.assertLists(expectedList)
     }
 
     @Test
-    fun `choose out of bounds ad group with existing selected group`(){
+    fun `choose out of bounds ad group with existing selected group`() {
         val selectedIndex = 40
         val alreadySelectedIndex = 1
         setupChooseAdGroup(alreadySelectedIndex)
-        val expectedList:MutableList<Visitable<*>> = mutableListOf<Visitable<*>>().apply {
+        val expectedList: MutableList<Visitable<*>> = mutableListOf<Visitable<*>>().apply {
             createAdGroupList()
         }
         viewModel?.chooseAdGroup(selectedIndex)
@@ -407,19 +416,19 @@ class MpAdsGroupsViewModelTest {
     }
 
     @Test
-    fun `choose invalid ad group`(){
+    fun `choose invalid ad group`() {
         setupChooseAdGroup(0)
-        val expectedList:MutableList<Visitable<*>> = mutableListOf<Visitable<*>>().apply {
+        val expectedList: MutableList<Visitable<*>> = mutableListOf<Visitable<*>>().apply {
             createAdGroupList()
         }
         viewModel?.mainListLiveData?.value?.assertLists(expectedList)
     }
 
     @Test
-    fun `unselect ad group`(){
+    fun `unselect ad group`() {
         val selectedIndex = 1
         setupChooseAdGroup(selectedIndex)
-        val expectedList:MutableList<Visitable<*>> = mutableListOf<Visitable<*>>().apply {
+        val expectedList: MutableList<Visitable<*>> = mutableListOf<Visitable<*>>().apply {
             createAdGroupList()
         }
         viewModel?.unChooseAdGroup(selectedIndex)
@@ -428,9 +437,9 @@ class MpAdsGroupsViewModelTest {
     }
 
     @Test
-    fun `unchoose invalid ad group`(){
+    fun `unchoose invalid ad group`() {
         fetchFirstPage()
-        val expectedList:MutableList<Visitable<*>> = mutableListOf<Visitable<*>>().apply {
+        val expectedList: MutableList<Visitable<*>> = mutableListOf<Visitable<*>>().apply {
             createAdGroupList()
         }
         viewModel?.unChooseAdGroup(0)
@@ -438,9 +447,9 @@ class MpAdsGroupsViewModelTest {
     }
 
     @Test
-    fun `unchoose out of bounds ad group`(){
+    fun `unchoose out of bounds ad group`() {
         fetchFirstPage()
-        val expectedList:MutableList<Visitable<*>> = mutableListOf<Visitable<*>>().apply {
+        val expectedList: MutableList<Visitable<*>> = mutableListOf<Visitable<*>>().apply {
             createAdGroupList()
         }
         viewModel?.unChooseAdGroup(50)
@@ -448,55 +457,100 @@ class MpAdsGroupsViewModelTest {
     }
 
     @Test
-    fun `load first page success empty stats`(){
+    fun `load first page success empty stats`() {
         val groupResponse = getAdGroupDummyData()
         val groupStatsResponse = TopAdsGroupsStatisticResponseResponse(
             GetTopadsDashboardGroupStatisticsV3()
         )
-        val expectedList:MutableList<Visitable<*>> = mutableListOf<Visitable<*>>().apply {
+        val expectedList: MutableList<Visitable<*>> = mutableListOf<Visitable<*>>().apply {
             createAdGroupListWithStatsLoading()
         }
-        every { getTopAdsGroupsUseCase.getAdGroups("","",1,"",any(),any()) } answers {
+        every { getTopAdsGroupsUseCase.getAdGroups("", "", 1, "", any(), any()) } answers {
             arg<(TopAdsGroupsResponse) -> Unit>(4).invoke(groupResponse)
         }
-        every { getTopAdsGroupStatsUseCase.getAdGroupsStatistics("","",1,"",any(),any(),any()) } answers {
+        every { getTopAdsGroupStatsUseCase.getAdGroupsStatistics("", "", 1, "", any(), any(), any()) } answers {
             arg<(TopAdsGroupsStatisticResponseResponse) -> Unit>(5).invoke(groupStatsResponse)
         }
         viewModel?.loadFirstPage()
         viewModel?.mainListLiveData?.value?.assertLists(expectedList)
     }
 
-    private fun fetchFirstPage(sort:String = "",search:String = ""){
+    @Test
+    fun `move topads group success`() {
+        setupChooseAdGroup()
+        val finalAdsResponse = FinalAdResponse()
+        val depositResponse = Deposit()
+        every { topAdsCreateUseCase.createRequestParamMoveGroup(any(), any(), any(), any()) } returns requestParams
+        coEvery { topAdsCreateUseCase.execute(any()) } returns finalAdsResponse
+        coEvery { getTopadsDepositsUseCase.execute(any(), any()) } answers {
+            arg<(Deposit) -> Unit>(0).invoke(depositResponse)
+        }
+        viewModel?.moveTopAdsGroup(productId)
+        assert((viewModel?.topadsCreditLiveData?.value as Success<Pair<FinalAdResponse, Deposit>>).data.first == finalAdsResponse)
+        assert((viewModel?.topadsCreditLiveData?.value as Success<Pair<FinalAdResponse, Deposit>>).data.second == depositResponse)
+    }
+
+    @Test
+    fun `move topads group failure`() {
+        setupChooseAdGroup()
+        every { topAdsCreateUseCase.createRequestParamMoveGroup(any(), any(), any(), any()) } returns requestParams
+        coEvery { topAdsCreateUseCase.execute(any()) } answers {
+            throw error
+        }
+        viewModel?.moveTopAdsGroup(productId)
+        assert((viewModel?.topadsCreditLiveData?.value as Fail).throwable == error)
+    }
+
+    @Test
+    fun `move topads group success check deposit failure`() {
+        setupChooseAdGroup()
+        val finalAdsResponse = FinalAdResponse()
+        every { topAdsCreateUseCase.createRequestParamMoveGroup(any(), any(), any(), any()) } returns RequestParams()
+        coEvery { topAdsCreateUseCase.execute(any()) } returns finalAdsResponse
+        coEvery { getTopadsDepositsUseCase.execute(any(), any()) } answers {
+            arg<(Throwable) -> Unit>(1).invoke(error)
+        }
+        viewModel?.moveTopAdsGroup(productId)
+        assert((viewModel?.topadsCreditLiveData?.value as Fail).throwable == error)
+    }
+
+    private fun fetchFirstPage(sort: String = "", search: String = "") {
         val groupResponse = getAdGroupDummyData()
         val groupStatsResponse = getAdGroupStatsData()
         viewModel?.sortParam = sort
         viewModel?.searchKeyword = search
-        every { getTopAdsGroupsUseCase.getAdGroups("",search,1,getSortParam(sort),any(),any()) } answers {
+        every { getTopAdsGroupsUseCase.getAdGroups("", search, 1, getSortParam(sort), any(), any()) } answers {
             arg<(TopAdsGroupsResponse) -> Unit>(4).invoke(groupResponse)
         }
-        every { getTopAdsGroupStatsUseCase.getAdGroupsStatistics("",search,1,getSortParam(sort),any(),any(),any()) } answers {
+        every { getTopAdsGroupStatsUseCase.getAdGroupsStatistics("", search, 1, getSortParam(sort), any(), any(), any()) } answers {
             arg<(TopAdsGroupsStatisticResponseResponse) -> Unit>(5).invoke(groupStatsResponse)
         }
         viewModel?.loadFirstPage()
     }
 
-    private fun fetchMorePages(sort:String = "",search:String = "",nextPage:Int = 2,multiplier:Int = 2){
+    private fun fetchMorePages(sort: String = "", search: String = "", nextPage: Int = 2, multiplier: Int = 2) {
         val groupResponseFirstPage = getAdGroupDummyData(total = multiplier * PER_PAGE)
         val groupStatsResponseFirstPage = getAdGroupStatsData(total = multiplier * PER_PAGE)
-        val groupResponseNextPage = getAdGroupDummyData(nextPage,multiplier * PER_PAGE)
-        val groupStatsResponseNextPage = getAdGroupStatsData(nextPage,multiplier * PER_PAGE)
+        val groupResponseNextPage = getAdGroupDummyData(nextPage, multiplier * PER_PAGE)
+        val groupStatsResponseNextPage = getAdGroupStatsData(nextPage, multiplier * PER_PAGE)
         viewModel?.sortParam = sort
         viewModel?.searchKeyword = search
-        every { getTopAdsGroupsUseCase.getAdGroups("",search,any(),getSortParam(sort),any(),any()) } answers {
+        every { getTopAdsGroupsUseCase.getAdGroups("", search, any(), getSortParam(sort), any(), any()) } answers {
             arg<(TopAdsGroupsResponse) -> Unit>(4).invoke(
-                if(arg<Int>(2) == 1) groupResponseFirstPage
-                else groupResponseNextPage
+                if (arg<Int>(2) == 1) {
+                    groupResponseFirstPage
+                } else {
+                    groupResponseNextPage
+                }
             )
         }
-        every { getTopAdsGroupStatsUseCase.getAdGroupsStatistics("",search,any(),getSortParam(sort),any(),any(),any()) } answers {
+        every { getTopAdsGroupStatsUseCase.getAdGroupsStatistics("", search, any(), getSortParam(sort), any(), any(), any()) } answers {
             arg<(TopAdsGroupsStatisticResponseResponse) -> Unit>(5).invoke(
-                if(arg<Int>(2) == 1) groupStatsResponseFirstPage
-                else groupStatsResponseNextPage
+                if (arg<Int>(2) == 1) {
+                    groupStatsResponseFirstPage
+                } else {
+                    groupStatsResponseNextPage
+                }
             )
         }
 
@@ -504,10 +558,10 @@ class MpAdsGroupsViewModelTest {
         viewModel?.loadMorePages()
     }
 
-    private fun setupChooseAdGroup(index:Int = 1){
+    private fun setupChooseAdGroup(index: Int = 1) {
         fetchFirstPage()
         viewModel?.chooseAdGroup(index)
     }
 
-    private fun getSortParam(sort:String) = if(sort.isEmpty()) "" else "-$sort"
+    private fun getSortParam(sort: String) = if (sort.isEmpty()) "" else "-$sort"
 }

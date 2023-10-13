@@ -1,21 +1,19 @@
 package com.tokopedia.entertainment.pdp.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.entertainment.R
-import kotlinx.android.synthetic.main.item_event_checkout_passenger.view.*
+import com.tokopedia.entertainment.databinding.ItemEventCheckoutPassengerBinding
 
 class EventCheckoutPassengerDataAdapter : RecyclerView.Adapter<EventCheckoutPassengerDataAdapter.EventCheckoutPassengerViewHolder>() {
 
     private var listData = emptyList<String>()
 
-    inner class EventCheckoutPassengerViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    inner class EventCheckoutPassengerViewHolder(val binding: ItemEventCheckoutPassengerBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(name: String) {
-            with(itemView) {
-                tg_event_checkout_passenger.text = name
+            with(binding) {
+                tgEventCheckoutPassenger.text = name
             }
         }
     }
@@ -26,8 +24,12 @@ class EventCheckoutPassengerDataAdapter : RecyclerView.Adapter<EventCheckoutPass
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, p1: Int): EventCheckoutPassengerViewHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_event_checkout_passenger, parent, false)
-        return EventCheckoutPassengerViewHolder(itemView)
+        val binding = ItemEventCheckoutPassengerBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
+        return EventCheckoutPassengerViewHolder(binding)
     }
 
     fun setList(list: List<String>) {

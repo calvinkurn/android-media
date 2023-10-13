@@ -55,9 +55,37 @@ class RelatedProductAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bindData(list[position], type)
 
-        if (list.isEmpty() && type != TYPE_PREVIEW) {
-            list.add(emptyItem)
-            notifyItemInserted(list.size)
+        if (element.id == EMPTY_ITEM_ID) {
+            holder.itemView.thumbnail.loadImageDrawable(com.tokopedia.resources.common.R.drawable.ic_system_action_addimage_grayscale_62)
+            holder.itemView.delete.hide()
+            holder.itemView.separatorBottom.hide()
+            holder.itemView.separatorBottomEmpty.show()
+            holder.itemView.setOnClickListener {
+                listener?.onEmptyProductClick()
+            }
+        } else {
+            holder.itemView.thumbnail.loadImageRounded(element.image, IMAGE_RADIUS)
+            holder.itemView.delete.showWithCondition(type != TYPE_PREVIEW)
+            holder.itemView.separatorBottom.show()
+            holder.itemView.separatorBottomEmpty.hide()
+            holder.itemView.setOnClickListener { }
+        }
+        holder.itemView.name.text = element.name
+        holder.itemView.price.text = element.price
+        holder.itemView.price.setTextColor(
+            MethodChecker.getColor(
+                holder.itemView.context,
+                if (element.type == TYPE_AFFILIATE) com.tokopedia.unifyprinciples.R.color.Unify_BN500
+                else com.tokopedia.unifyprinciples.R.color.Unify_YN500
+            )
+        )
+        holder.itemView.delete.setOnClickListener {
+            listener?.onItemDeleted(holder.adapterPosition)
+
+            if (list.isEmpty() && shouldAddEmpty()) {
+                list.add(emptyItem)
+                notifyItemInserted(list.size)
+            }
         }
     }
 

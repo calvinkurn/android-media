@@ -27,12 +27,13 @@
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/pdp_toolbar_shadow"
         android:layout_width="0dp"
-        android:layout_height="84dp"
+        android:layout_height="0dp"
         android:contentDescription="pdp_toolbar_shadow"
         android:scaleType="fitXY"
+        app:layout_constraintBottom_toBottomOf="@id/pdp_navtoolbar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@id/pdp_navtoolbar"
         app:srcCompat="@drawable/bg_pdp_toolbar_gradient"
         app:unify_image_corner_radius="0"
         tools:ignore="HardcodedText" />
@@ -67,7 +68,7 @@
             android:layout_height="wrap_content"
             android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@id/partial_layout_button_action"
-            app:sticky_highlight_color="@color/Unify_G500"
+            app:sticky_highlight_color="@color/Unify_GN500"
             app:sticky_left_icon="@drawable/ic_toped_widget_login"
             tools:visibility="visible" />
 

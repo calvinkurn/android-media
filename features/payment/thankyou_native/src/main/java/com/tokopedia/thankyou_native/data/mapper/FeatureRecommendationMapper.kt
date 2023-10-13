@@ -1,8 +1,10 @@
 package com.tokopedia.thankyou_native.data.mapper
 
 import com.google.gson.Gson
+import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.graphql.CommonUtils
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.thankyou_native.domain.model.FeatureEngineData
 import com.tokopedia.thankyou_native.domain.model.FeatureEngineItem
@@ -43,8 +45,8 @@ object FeatureRecommendationMapper {
         if (engineData != null && !engineData.featureEngineItem.isNullOrEmpty()) {
             engineData.featureEngineItem.forEach { featureEngineItem ->
                 try {
-                    val jsonObject = JSONObject(featureEngineItem.detail)
-                    if (jsonObject[KEY_TYPE].toString().equals(TYPE_TOKOMEMBER, true)) {
+                    val jsonObject = CommonUtils.fromJson<JsonObject>(featureEngineItem.detail, JsonObject::class.java)
+                    if (jsonObject[KEY_TYPE].asString.equals(TYPE_TOKOMEMBER, true)) {
                         return true
                     }
                 } catch (e: Exception) {
@@ -143,8 +145,8 @@ object FeatureRecommendationMapper {
         if (engineData != null && !engineData.featureEngineItem.isNullOrEmpty()) {
             try {
                 val bannerItem = engineData.featureEngineItem.find {
-                    val a = JsonParser.parseString(it.detail).asJsonObject[KEY_TYPE].asString
-                    a.equals(TYPE_BANNER, true)
+                    val type = JsonParser.parseString(it.detail).asJsonObject[KEY_TYPE].asString
+                    type.equals(TYPE_BANNER, true)
                 } ?: return null
 
                 val bannerDetail = JsonParser.parseString(bannerItem.detail).asJsonObject
@@ -155,7 +157,8 @@ object FeatureRecommendationMapper {
                     bannerItems.add(
                         BannerItem(
                             bannerData[i].asJsonObject[KEY_ASSET_URL].asString,
-                            bannerData[i].asJsonObject[KEY_APPLINK].asString
+                            bannerData[i].asJsonObject[KEY_APPLINK].asString,
+                            bannerItem.id.toString() + " - " + bannerDetail[KEY_TITLE].asString
                         )
                     )
                 }
@@ -210,6 +213,7 @@ object FeatureRecommendationMapper {
     private const val KEY_BANNER_DATA = "banner_data"
     private const val KEY_ASSET_URL = "asset_url"
     private const val KEY_APPLINK = "applink"
+    private const val KEY_ID = "id"
     const val TYPE_TOKOMEMBER = "tokomember"
     const val TYPE_TDN_PRODUCT = "tdn_product"
 }

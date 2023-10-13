@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.broadcaster.revamp.Broadcaster
+import com.tokopedia.content.common.di.ContentCoachMarkSharedPrefModule
 import com.tokopedia.content.common.onboarding.di.UGCOnboardingModule
 import com.tokopedia.content.common.producttag.di.module.ContentCreationProductTagBindModule
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -16,7 +17,7 @@ import com.tokopedia.play.broadcaster.data.config.ProductConfigStore
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.pusher.timer.PlayBroadcastTimer
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
-import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
+import com.tokopedia.content.common.util.bottomsheet.ContentDialogCustomizer
 import com.tokopedia.play.broadcaster.util.logger.PlayLogger
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.util.preference.PermissionSharedPreferences
@@ -35,8 +36,10 @@ import dagger.Component
         PlayBroadcastConfigStoreModule::class,
         PlayBroadcastDataStoreModule::class,
         PlayBroadcastRepositoryModule::class,
+        PlayBroadcastNetworkModule::class,
         PlayBroadcastBindModule::class,
         PlayBroadcastModule::class,
+        ContentCoachMarkSharedPrefModule::class,
         ContentCreationProductTagBindModule::class,
         UGCOnboardingModule::class
     ]
@@ -71,7 +74,7 @@ abstract class ActivityRetainedComponent : ViewModel() {
     /**
      * Util
      */
-    abstract fun navBarDialogCustomizer(): PlayBroadcastDialogCustomizer
+    abstract fun navBarDialogCustomizer(): ContentDialogCustomizer
 
     abstract fun broadcaster(): Broadcaster
 

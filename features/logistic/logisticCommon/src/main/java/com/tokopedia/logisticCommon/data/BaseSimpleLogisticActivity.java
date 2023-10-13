@@ -35,10 +35,6 @@ public abstract class BaseSimpleLogisticActivity extends BaseSimpleActivity impl
         setActionVar();
     }
 
-    protected Fragment getCurrentFragment() {
-        return getSupportFragmentManager().findFragmentById(R.id.parent_view);
-    }
-
     protected abstract void initInjector();
 
     protected void setupVar(Bundle savedInstanceState) { /*leave empty*/ }

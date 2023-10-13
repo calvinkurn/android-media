@@ -131,7 +131,7 @@ class DynamicFeedShopAdapter(private val itemClickListener: LocalAdsClickListene
                 imageLoader.loadImage(imageUrl, imageView)
             } else {
                 imageView.setBackgroundColor(
-                        ContextCompat.getColor(imageView.context, com.tokopedia.unifyprinciples.R.color.Unify_N50)
+                        ContextCompat.getColor(imageView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN50)
                 )
             }
         }
@@ -159,23 +159,23 @@ class DynamicFeedShopAdapter(private val itemClickListener: LocalAdsClickListene
                 shop.isShop_is_official -> {
                     ivBadge.show()
                     ivBadge.setImageDrawable(
-                            ImageLoader.getDrawable(ivBadge.context, R.drawable.ic_badge_shop_official)
+                            ImageLoader.getDrawable(ivBadge.context, com.tokopedia.design.R.drawable.ic_badge_shop_official)
                     )
-                    layoutParams.leftMargin = ivBadge.context.resources.getDimension(R.dimen.dp_4).toInt()
+                    layoutParams.leftMargin = ivBadge.context.resources.getDimension(com.tokopedia.abstraction.R.dimen.dp_4).toInt()
                 }
                 shop.isGoldShopBadge -> {
                     ivBadge.show()
                     ivBadge.setImageDrawable(
                             ImageLoader.getDrawable(
                                     ivBadge.context,
-                                    R.drawable.ic_power_merchant
+                                com.tokopedia.gm.common.R.drawable.ic_power_merchant
                             )
                     )
-                    layoutParams.leftMargin = ivBadge.context.resources.getDimension(R.dimen.dp_4).toInt()
+                    layoutParams.leftMargin = ivBadge.context.resources.getDimension(com.tokopedia.abstraction.R.dimen.dp_4).toInt()
                 }
                 else -> {
                     ivBadge.hide()
-                    layoutParams.leftMargin = ivBadge.context.resources.getDimension(R.dimen.dp_0).toInt()
+                    layoutParams.leftMargin = ivBadge.context.resources.getDimension(com.tokopedia.abstraction.R.dimen.dp_0).toInt()
                 }
             }
         }

@@ -1,6 +1,7 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem
 
 import android.content.res.Resources
+import android.os.SystemClock
 import android.view.View
 import android.view.ViewGroup
 import androidx.cardview.widget.CardView
@@ -28,9 +29,9 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 
 class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
-    AbstractViewHolder(itemView, fragment.viewLifecycleOwner), ATCNonVariantListener{
+    AbstractViewHolder(itemView, fragment.viewLifecycleOwner), ATCNonVariantListener {
 
-    private lateinit var masterProductCardItemViewModel: MasterProductCardItemViewModel
+    private var masterProductCardItemViewModel: MasterProductCardItemViewModel? = null
     private var masterProductCardGridView: ProductCardGridView? = null
     private var masterProductCardListView: ProductCardListView? = null
     private var productCardView: CardView = itemView.findViewById(com.tokopedia.productcard.R.id.cardViewProductCard)
@@ -38,20 +39,30 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
     private var dataItem: DataItem? = null
     private var componentPosition: Int? = null
     private var buttonNotify: UnifyButton? = null
+    private var lastClickTime = 0L
+    private var interval: Int = 500
+    private var isFulFillment: Boolean = false
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         masterProductCardItemViewModel = discoveryBaseViewModel as MasterProductCardItemViewModel
-        getSubComponent().inject(masterProductCardItemViewModel)
+        masterProductCardItemViewModel?.let {
+            getSubComponent().inject(it)
+        }
+        lastClickTime = 0L
         initView()
     }
 
     private fun initView() {
-        if (masterProductCardItemViewModel.getTemplateType() == LIST) {
+        if (masterProductCardItemViewModel?.getTemplateType() == LIST) {
             masterProductCardListView = itemView.findViewById(R.id.master_product_card_list)
             buttonNotify = masterProductCardListView?.getNotifyMeButton()
             masterProductCardListView?.setNotifyMeOnClickListener {
+                if (SystemClock.elapsedRealtime() - lastClickTime < interval) {
+                    return@setNotifyMeOnClickListener
+                }
+                lastClickTime = SystemClock.elapsedRealtime()
                 sentNotifyButtonEvent()
-                masterProductCardItemViewModel.subscribeUser()
+                masterProductCardItemViewModel?.subscribeUser()
             }
 
             masterProductCardListView?.setAddVariantClickListener {
@@ -60,22 +71,26 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
             masterProductCardListView?.setAddToCartNonVariantClickListener(this)
             masterProductCardListView?.setAddToCartWishlistOnClickListener {
                 handleATC(
-                    masterProductCardItemViewModel.getProductDataItem()?.minQuantity ?: 1,
+                    masterProductCardItemViewModel?.getProductDataItem()?.minQuantity ?: 1,
                     true
                 )
             }
             masterProductCardListView?.setAddToCartOnClickListener {
                 handleATC(
-                    masterProductCardItemViewModel.getProductDataItem()?.minQuantity ?: 1,
-                    masterProductCardItemViewModel.getProductDataItem()?.atcButtonCTA == Constant.ATCButtonCTATypes.GENERAL_CART
+                    masterProductCardItemViewModel?.getProductDataItem()?.minQuantity ?: 1,
+                    masterProductCardItemViewModel?.getProductDataItem()?.atcButtonCTA == Constant.ATCButtonCTATypes.GENERAL_CART
                 )
             }
         } else {
             masterProductCardGridView = itemView.findViewById(R.id.master_product_card_grid)
             buttonNotify = masterProductCardGridView?.getNotifyMeButton()
             masterProductCardGridView?.setNotifyMeOnClickListener {
+                if (SystemClock.elapsedRealtime() - lastClickTime < interval) {
+                    return@setNotifyMeOnClickListener
+                }
+                lastClickTime = SystemClock.elapsedRealtime()
                 sentNotifyButtonEvent()
-                masterProductCardItemViewModel.subscribeUser()
+                masterProductCardItemViewModel?.subscribeUser()
                 showNotificationReminderPrompt()
             }
 
@@ -85,8 +100,8 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
             masterProductCardGridView?.setAddToCartNonVariantClickListener(this)
             masterProductCardGridView?.setAddToCartOnClickListener {
                 handleATC(
-                    masterProductCardItemViewModel.getProductDataItem()?.minQuantity ?: 1,
-                    masterProductCardItemViewModel.getProductDataItem()?.atcButtonCTA == Constant.ATCButtonCTATypes.GENERAL_CART
+                    masterProductCardItemViewModel?.getProductDataItem()?.minQuantity ?: 1,
+                    masterProductCardItemViewModel?.getProductDataItem()?.atcButtonCTA == Constant.ATCButtonCTATypes.GENERAL_CART
                 )
             }
         }
@@ -97,7 +112,7 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
 
     private fun showNotificationReminderPrompt() {
         val pageName = "kejarDiskon"
-        masterProductCardItemViewModel.getProductDataItem()?.notifyMe?.let { notifyMeStatus ->
+        masterProductCardItemViewModel?.getProductDataItem()?.notifyMe?.let { notifyMeStatus ->
             if (!notifyMeStatus) {
                 (fragment as DiscoveryFragment).activity?.let {
                     val view = NotificationGeneralPromptLifecycleCallbacks()
@@ -109,70 +124,99 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
     }
 
     private fun openVariantSheet() {
-        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackEventProductATCTokonow(
-            masterProductCardItemViewModel.components,
-            ""
-        )
-        masterProductCardItemViewModel.getProductDataItem()?.let { dataItem ->
-            (fragment as DiscoveryFragment).openVariantBottomSheet(dataItem.productId?:"")
+        masterProductCardItemViewModel?.components?.let {
+            (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackEventProductATCTokonow(
+                it,
+                ""
+            )
+        }
+        masterProductCardItemViewModel?.getProductDataItem()?.let { dataItem ->
+            (fragment as DiscoveryFragment).openVariantBottomSheet(dataItem.productId ?: "")
         }
     }
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
-        productCardName = masterProductCardItemViewModel.getComponentName()
-        lifecycleOwner?.let {lifecycle ->
-            masterProductCardItemViewModel.getDataItemValue().observe(lifecycle, Observer { data ->
-                dataItem = data
-            })
-            masterProductCardItemViewModel.getProductModelValue().observe(lifecycle, Observer { data ->
-                populateData(data)
-            })
-            masterProductCardItemViewModel.getComponentPosition().observe(lifecycle, Observer { position ->
-                componentPosition = position
-            })
-            masterProductCardItemViewModel.getShowLoginData().observe(lifecycle, Observer {
-                if (it == true) {
-                    componentPosition?.let { position -> (fragment as DiscoveryFragment).openLoginScreen(position) }
+        masterProductCardItemViewModel?.let { masterProductCardItemViewModel ->
+            productCardName = masterProductCardItemViewModel.getComponentName()
+        }
+        lifecycleOwner?.let { lifecycle ->
+            masterProductCardItemViewModel?.getDataItemValue()?.observe(
+                lifecycle,
+                Observer { data ->
+                    dataItem = data
                 }
-            })
-            masterProductCardItemViewModel.notifyMeCurrentStatus().observe(lifecycle, Observer {
-                updateNotifyMeState(it)
-            })
-            masterProductCardItemViewModel.showNotifyToastMessage().observe(lifecycle, Observer {
-                showNotifyResultToast(it)
-            })
-            masterProductCardItemViewModel.getComponentPosition().observe(lifecycle, Observer {
-                componentPosition = it
-            })
-            masterProductCardItemViewModel.getSyncPageLiveData().observe(lifecycle, Observer {
-                if (it) (fragment as DiscoveryFragment).reSync()
-            })
-            masterProductCardItemViewModel.getScrollSimilarProductComponentID().observe(lifecycle, {
+            )
+            masterProductCardItemViewModel?.getProductModelValue()?.observe(
+                lifecycle,
+                Observer { data ->
+                    populateData(data)
+                }
+            )
+            masterProductCardItemViewModel?.getComponentPosition()?.observe(
+                lifecycle,
+                Observer { position ->
+                    componentPosition = position
+                }
+            )
+            masterProductCardItemViewModel?.getShowLoginData()?.observe(
+                lifecycle,
+                Observer {
+                    if (it == true) {
+                        componentPosition?.let { position -> (fragment as DiscoveryFragment).openLoginScreen(position) }
+                    }
+                }
+            )
+            masterProductCardItemViewModel?.notifyMeCurrentStatus()?.observe(
+                lifecycle,
+                Observer {
+                    updateNotifyMeState(it)
+                }
+            )
+            masterProductCardItemViewModel?.showNotifyToastMessage()?.observe(
+                lifecycle,
+                Observer {
+                    showNotifyResultToast(it)
+                }
+            )
+            masterProductCardItemViewModel?.getComponentPosition()?.observe(
+                lifecycle,
+                Observer {
+                    componentPosition = it
+                }
+            )
+            masterProductCardItemViewModel?.getSyncPageLiveData()?.observe(
+                lifecycle,
+                Observer {
+                    if (it) (fragment as DiscoveryFragment).reSync()
+                }
+            )
+            masterProductCardItemViewModel?.getScrollSimilarProductComponentID()?.observe(lifecycle) {
                 (fragment as DiscoveryFragment).scrollToComponentWithID(it)
-            })
+            }
         }
     }
 
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
         super.removeObservers(lifecycleOwner)
         lifecycleOwner?.let {
-            masterProductCardItemViewModel.getDataItemValue().removeObservers(it)
-            masterProductCardItemViewModel.getProductModelValue().removeObservers(it)
-            masterProductCardItemViewModel.getComponentPosition().removeObservers(it)
-            masterProductCardItemViewModel.getShowLoginData().removeObservers(it)
-            masterProductCardItemViewModel.notifyMeCurrentStatus().removeObservers(it)
-            masterProductCardItemViewModel.showNotifyToastMessage().removeObservers(it)
-            masterProductCardItemViewModel.getComponentPosition().removeObservers(it)
-            masterProductCardItemViewModel.getSyncPageLiveData().removeObservers(it)
-            masterProductCardItemViewModel.getScrollSimilarProductComponentID().removeObservers(it)
+            masterProductCardItemViewModel?.getDataItemValue()?.removeObservers(it)
+            masterProductCardItemViewModel?.getProductModelValue()?.removeObservers(it)
+            masterProductCardItemViewModel?.getComponentPosition()?.removeObservers(it)
+            masterProductCardItemViewModel?.getShowLoginData()?.removeObservers(it)
+            masterProductCardItemViewModel?.notifyMeCurrentStatus()?.removeObservers(it)
+            masterProductCardItemViewModel?.showNotifyToastMessage()?.removeObservers(it)
+            masterProductCardItemViewModel?.getComponentPosition()?.removeObservers(it)
+            masterProductCardItemViewModel?.getSyncPageLiveData()?.removeObservers(it)
+            masterProductCardItemViewModel?.getScrollSimilarProductComponentID()?.removeObservers(it)
         }
     }
 
     private fun populateData(productCardModel: ProductCardModel) {
-        if (productCardName == ComponentNames.ProductCardCarouselItem.componentName
-                || productCardName == ComponentNames.ProductCardSprintSaleCarouselItem.componentName
-            || productCardName == ComponentNames.ProductCardCarouselItemList.componentName) {
+        if (productCardName == ComponentNames.ProductCardCarouselItem.componentName ||
+            productCardName == ComponentNames.ProductCardSprintSaleCarouselItem.componentName ||
+            productCardName == ComponentNames.ProductCardCarouselItemList.componentName
+        ) {
             masterProductCardGridView?.let {
                 productCardView.layoutParams.width = itemView.context.resources.getDimensionPixelSize(R.dimen.disco_product_card_width)
                 it.applyCarousel()
@@ -195,50 +239,64 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
         setWishlist()
         set3DotsWishlistWithAtc(dataItem)
         setSimilarProductWishlist(dataItem)
+        checkProductIsFulfillment(productCardModel)
+    }
+    private fun checkProductIsFulfillment(productCardModel: ProductCardModel) {
+        productCardModel.labelGroupList.forEach {
+            if (it.position == IS_FULFILLMENT) {
+                isFulFillment = true
+            }
+        }
     }
 
     private fun setSimilarProductWishlist(dataItem: DataItem?) {
-        if(dataItem?.hasSimilarProductWishlist == true)
+        if (dataItem?.hasSimilarProductWishlist == true) {
             masterProductCardListView?.setSeeSimilarProductWishlistOnClickListener {
-                masterProductCardItemViewModel.scrollToTargetSimilarProducts()
+                masterProductCardItemViewModel?.scrollToTargetSimilarProducts()
             }
+        }
     }
 
     private fun set3DotsWishlistWithAtc(dataItem: DataItem?) {
-        if (dataItem?.hasThreeDotsWishlist == true)
+        if (dataItem?.hasThreeDotsWishlist == true) {
             masterProductCardListView?.setThreeDotsWishlistOnClickListener {
-                    masterProductCardItemViewModel.saveProductCardComponent()
+                masterProductCardItemViewModel?.saveProductCardComponent()
+                masterProductCardItemViewModel?.getThreeDotsWishlistOptionsModel()?.let { it1 ->
                     showProductCardOptions(
                         fragment,
-                        masterProductCardItemViewModel.getThreeDotsWishlistOptionsModel()
+                        it1
                     )
+                }
             }
+        }
     }
 
     private fun setWishlist() {
         masterProductCardGridView?.setThreeDotsOnClickListener {
-            masterProductCardItemViewModel.saveProductCardComponent()
-            showProductCardOptions(
-                fragment,
-                masterProductCardItemViewModel.getProductCardOptionsModel()
-            )
+            masterProductCardItemViewModel?.saveProductCardComponent()
+            masterProductCardItemViewModel?.getProductCardOptionsModel()?.let { it1 ->
+                showProductCardOptions(
+                    fragment,
+                    it1
+                )
+            }
         }
     }
 
     private fun updateNotifyMeState(notifyMeStatus: Boolean?) {
-        val notifyText = masterProductCardItemViewModel.getNotifyText(notifyMeStatus)
+        val notifyText = masterProductCardItemViewModel?.getNotifyText(notifyMeStatus)
         buttonNotify?.let {
             if (dataItem?.hasNotifyMe == true) {
                 it.text = notifyText
                 if (notifyMeStatus == true) {
                     it.apply {
-                        setTextColor(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                        setTextColor(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
                         buttonVariant = UnifyButton.Variant.GHOST
                         buttonType = UnifyButton.Type.ALTERNATE
                     }
                 } else {
                     it.apply {
-                        setTextColor(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                        setTextColor(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_GN500))
                         buttonVariant = UnifyButton.Variant.GHOST
                         buttonType = UnifyButton.Type.MAIN
                     }
@@ -261,29 +319,42 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
     private fun handleUIClick(view: View) {
         when (view) {
             productCardView -> {
-                masterProductCardItemViewModel.sendTopAdsClick()
+                masterProductCardItemViewModel?.sendTopAdsClick()
                 var applink = dataItem?.applinks ?: ""
-                if ((fragment as DiscoveryFragment).isAffiliateInitialized)
+                if ((fragment as DiscoveryFragment).isAffiliateInitialized) {
                     applink =
                         fragment.createAffiliateLink(applink)
-                masterProductCardItemViewModel.navigate(fragment.context, applink)
+                }
+                masterProductCardItemViewModel?.navigate(fragment.context, applink)
                 sendClickEvent()
             }
         }
     }
 
     private fun sendClickEvent() {
-        (fragment as DiscoveryFragment).getDiscoveryAnalytics()
-                .trackProductCardClick(masterProductCardItemViewModel.components,
-                        masterProductCardItemViewModel.isUserLoggedIn())
+        masterProductCardItemViewModel?.let {
+            (fragment as DiscoveryFragment).getDiscoveryAnalytics()
+                .trackProductCardClick(
+                    it.components,
+                    it.isUserLoggedIn(),
+                    isFulFillment,
+                    dataItem?.warehouseId ?: 0
+                )
+        }
     }
 
     override fun onViewAttachedToWindow() {
         super.onViewAttachedToWindow()
-        masterProductCardItemViewModel.sendTopAdsView()
-        (fragment as DiscoveryFragment).getDiscoveryAnalytics()
-                .viewProductsList(masterProductCardItemViewModel.components,
-                        masterProductCardItemViewModel.isUserLoggedIn())
+        masterProductCardItemViewModel?.sendTopAdsView()
+        masterProductCardItemViewModel?.let {
+            (fragment as DiscoveryFragment).getDiscoveryAnalytics()
+                .viewProductsList(
+                    it.components,
+                    it.isUserLoggedIn(),
+                    isFulFillment,
+                    dataItem?.warehouseId ?: 0
+                )
+        }
     }
 
     private fun showNotifyResultToast(toastData: Pair<Boolean, String?>) {
@@ -301,36 +372,41 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
     }
 
     private fun sentNotifyButtonEvent() {
-        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackNotifyClick(masterProductCardItemViewModel.components, masterProductCardItemViewModel.isUserLoggedIn(),masterProductCardItemViewModel.getUserID())
+        masterProductCardItemViewModel?.let { (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackNotifyClick(it.components, it.isUserLoggedIn(), it.getUserID()) }
     }
 
     override fun onQuantityChanged(quantity: Int) {
-        handleATC(quantity,false)
+        handleATC(quantity, false)
     }
 
     private fun handleATC(quantity: Int, isGeneralCartATC: Boolean) {
-        masterProductCardItemViewModel.updateProductQuantity(quantity)
-        if (masterProductCardItemViewModel.isUserLoggedIn()) {
-            masterProductCardItemViewModel.getProductDataItem()?.let { productItem ->
-                productItem.productId?.let { productId ->
-                    if (productId.isNotEmpty()) {
-                        (fragment as DiscoveryFragment).addOrUpdateItemCart(
-                            DiscoATCRequestParams(
-                                parentPosition = masterProductCardItemViewModel.getParentPositionForCarousel(),
-                                position = masterProductCardItemViewModel.position,
-                                productId = productId,
-                                quantity = quantity,
-                                shopId = if (isGeneralCartATC) productItem.shopId else null,
-                                isGeneralCartATC = isGeneralCartATC,
-                                requestingComponent = masterProductCardItemViewModel.components
+        masterProductCardItemViewModel?.let { masterProductCardItemViewModel ->
+            masterProductCardItemViewModel.updateProductQuantity(quantity)
+            if (masterProductCardItemViewModel.isUserLoggedIn()) {
+                masterProductCardItemViewModel.getProductDataItem()?.let { productItem ->
+                    productItem.productId?.let { productId ->
+                        if (productId.isNotEmpty()) {
+                            (fragment as DiscoveryFragment).addOrUpdateItemCart(
+                                DiscoATCRequestParams(
+                                    parentPosition = masterProductCardItemViewModel.getParentPositionForCarousel(),
+                                    position = masterProductCardItemViewModel.position,
+                                    productId = productId,
+                                    quantity = quantity,
+                                    shopId = if (isGeneralCartATC) productItem.shopId else null,
+                                    isGeneralCartATC = isGeneralCartATC,
+                                    requestingComponent = masterProductCardItemViewModel.components
+                                )
                             )
-                        )
+                        }
                     }
                 }
+            } else {
+                masterProductCardItemViewModel.handleATCFailed()
+                (fragment as DiscoveryFragment).openLoginScreen()
             }
-        } else {
-            masterProductCardItemViewModel.handleATCFailed()
-            (fragment as DiscoveryFragment).openLoginScreen()
         }
+    }
+    companion object {
+        const val IS_FULFILLMENT = "fulfillment"
     }
 }

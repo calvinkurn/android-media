@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.unifycomponents.TextFieldUnify
+        android:id="@+id/tf_branchlink"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        app:text_field_placeholder="@string/hint_branch_et"
+        app:text_field_label_static="true"
+        app:text_field_label=""
+        app:text_field_input_type="text"/>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/branclink_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:gravity="center"
+        android:text="@string/extract_branch_link"
+        android:layout_marginBottom="15dp"
+        app:unifyButtonType="main"
+        app:unifyButtonSize="medium"/>
+</LinearLayout>

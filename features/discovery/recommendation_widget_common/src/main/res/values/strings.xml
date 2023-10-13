@@ -21,4 +21,6 @@
     <string name="view_to_view_local_load_description">Klik ikon di samping buat coba lagi.</string>
 
     <string name="content_desc_comparison_bpc_spec_bullet">Spec bullet icon</string>
+
+    <string name="recom_vertical_see_more">Lihat Semua</string>
 </resources>

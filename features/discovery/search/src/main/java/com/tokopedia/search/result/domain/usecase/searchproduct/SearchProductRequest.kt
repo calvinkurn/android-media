@@ -62,7 +62,6 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
             header {
                 totalData
                 totalDataText
-                defaultView
                 responseCode
                 errorMessage
                 additionalParams
@@ -118,6 +117,7 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                             wishlist
                             ratingAverage
                             componentId
+                            warehouseIdDefault
                             labelGroups {
                                 title
                                 position
@@ -129,6 +129,7 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                             }
                             badges {
                                 imageUrl
+                                title
                                 show
                             }
                             freeOngkir {

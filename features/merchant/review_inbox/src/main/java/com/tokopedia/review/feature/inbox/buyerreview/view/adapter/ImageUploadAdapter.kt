@@ -66,11 +66,11 @@ class ImageUploadAdapter constructor(var context: Context) :
     private fun setBorder(holder: ViewHolder, position: Int) {
         if (list[position].isSelected) {
             holder.image.setBackgroundColor(
-                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
             )
         } else {
             holder.image.setBackgroundColor(
-                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
             )
         }
     }

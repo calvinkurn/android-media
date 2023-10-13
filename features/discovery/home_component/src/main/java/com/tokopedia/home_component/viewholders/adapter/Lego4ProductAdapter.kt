@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.util.recordCrashlytics
 import com.tokopedia.home_component.viewholders.LegoProductCardViewHolder
 import com.tokopedia.home_component.visitable.LegoProductCardDataModel
 
@@ -27,6 +28,10 @@ class Lego4ProductAdapter(
     }
 
     override fun onBindViewHolder(holder: LegoProductCardViewHolder, position: Int) {
-        holder.bind(itemList[position])
+        try {
+            holder.bind(itemList[position])
+        } catch (e: Exception) {
+            e.recordCrashlytics()
+        }
     }
 }

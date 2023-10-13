@@ -185,7 +185,7 @@ class TwoFactorCheckerSubscriber : Application.ActivityLifecycleCallbacks {
                 activity
             ) == true
         ) {
-            checking(activity)
+            checking(activity, BiometricPromptHelper.isBiometricAvailableActivity(activity))
         }
     }
 
@@ -194,16 +194,14 @@ class TwoFactorCheckerSubscriber : Application.ActivityLifecycleCallbacks {
                 activity
             ) == true
         ) {
-            checking(activity)
+            checking(activity, false)
         }
     }
 
-    private fun checking(activity: Activity) {
-        viewModel.getOffering(BiometricPromptHelper.isBiometricAvailableActivity(activity), {
+    private fun checking(activity: Activity, isBiometricAvailable: Boolean) {
+        viewModel.getOffering(isBiometricAvailable, {
             handleResponseOfferingData(activity, it)
-        }, {
-            it.printStackTrace()
-        })
+        }, {})
     }
 
     override fun onActivityDestroyed(activity: Activity) {}

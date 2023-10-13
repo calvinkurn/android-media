@@ -31,14 +31,14 @@ class SaldoWithdrawalStatusDetailViewHolder(val view: View): RecyclerView.ViewHo
     private fun setColorState(isFirstItem: Boolean) {
         view.apply {
             if (isFirstItem) {
-                tvStatusTitle.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                tvStatusTitle.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
                 ivCircleDot.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.ic_circle_light_green))
-                statusDivider.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                statusDivider.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
             }
             else {
-                tvStatusTitle.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+                tvStatusTitle.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96))
                 ivCircleDot.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.ic_circle_light_grey))
-                statusDivider.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
+                statusDivider.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_32))
             }
         }
     }

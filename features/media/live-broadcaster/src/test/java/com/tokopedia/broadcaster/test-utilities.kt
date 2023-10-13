@@ -1,8 +1,7 @@
 package com.tokopedia.broadcaster
 
 import android.os.Build
-import java.lang.reflect.Field
-import java.lang.reflect.Modifier
+import com.tokopedia.unit.test.TestUtils
 
 data class MockProperty(var name: String, var value: Any) {
     fun afterSet(`do`: (Any) -> Unit = {}) {
@@ -26,17 +25,6 @@ inline fun <reified T> Any.getPrivateProperty(propertyName: String): T? {
         .get(this) as T
 }
 
-fun mockStaticValue(field: Field, value: Any) {
-    field.isAccessible = true
-
-    Field::class.java.getDeclaredField("modifiers").also {
-        it.isAccessible = true
-        it.set(field, field.modifiers and Modifier.FINAL.inv())
-    }
-
-    field.set(null, value)
-}
-
 fun mockArchBuild(isAboveLollipop: Boolean, value: Any) {
     val supportedAbis = "SUPPORTED_ABIS"
     val cpuAbi = "CPU_ABI"
@@ -47,15 +35,15 @@ fun mockArchBuild(isAboveLollipop: Boolean, value: Any) {
         Build::class.java.getField(cpuAbi)
     }
 
-    mockStaticValue(field, value)
+    TestUtils.setFinalStatic(field, value)
 }
 
 fun mockVersionCodeOf(version: String, value: Int) {
     val field = Build.VERSION_CODES::class.java.getField(version)
-    mockStaticValue(field, value)
+    TestUtils.setFinalStatic(field, value)
 }
 
 fun mockSdkInt(value: Int) {
     val field = Build.VERSION::class.java.getField("SDK_INT")
-    mockStaticValue(field, value)
+    TestUtils.setFinalStatic(field, value)
 }

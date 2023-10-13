@@ -39,9 +39,9 @@ class TopAdsImageViewUseCaseTest {
     fun `test getImageData`() {
         val map = mutableMapOf<String, Any>()
         runTest {
-            coEvery { repository.getImageData(map, irisSessionId) } returns mockk()
+            coEvery { repository.getImageData(map) } returns mockk()
             useCase.getImageData(map)
-            coVerify { repository.getImageData(map, irisSessionId) }
+            coVerify { repository.getImageData(map) }
         }
     }
 
@@ -49,29 +49,27 @@ class TopAdsImageViewUseCaseTest {
     fun `test getQueryMap when some values are empty`() {
         val queryMap = useCase.getQueryMap("", "source", "", 2, 3, "", "", "")
         assertEquals(queryMap["user_id"], userId)
-        assertEquals( queryMap["ep"], "banner")
+        assertEquals(queryMap["ep"], "banner")
         assertEquals(queryMap["inventory_id"], "source")
         assertEquals(queryMap["device"], "android")
         assertEquals(queryMap["item"], 2)
-        assertEquals( queryMap["dimen_id"], 3)
+        assertEquals(queryMap["dimen_id"], 3)
     }
 
     @Test
     fun `test getQueryMap when  values are not empty`() {
-
         val queryMap = useCase.getQueryMap("query", "source", "page_token", 2, 3, "dep_01", "prod_02", "0")
         assertEquals(queryMap["user_id"], userId)
-        assertEquals( queryMap["ep"], "banner")
+        assertEquals(queryMap["ep"], "banner")
         assertEquals(queryMap["inventory_id"], "source")
         assertEquals(queryMap["device"], "android")
         assertEquals(queryMap["item"], 2)
-        assertEquals( queryMap["dimen_id"], 3)
+        assertEquals(queryMap["dimen_id"], 3)
         assertEquals(queryMap["page"], "0")
         assertEquals(queryMap["q"], "query")
-        assertEquals( queryMap["page_token"], "page_token")
+        assertEquals(queryMap["page_token"], "page_token")
         assertEquals(queryMap["dep_id"], "dep_01")
         assertEquals(queryMap["product_id"], "prod_02")
-
     }
 
     @After

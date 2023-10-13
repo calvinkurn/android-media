@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.header.HeaderUnify
+        android:id="@+id/unify_toolbar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        tools:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_header_is_show_back_button="true"
+        app:unify_header_is_show_shadow="false" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iv_dob_challenge"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintWidth_max="300dp"
+        android:layout_marginHorizontal="40dp"
+        android:layout_marginTop="16dp"
+        android:visibility="gone"
+        tools:visibility="visible"
+        app:layout_constraintDimensionRatio="4:3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/unify_toolbar"
+        app:unify_image_disable_shimmering_placeholder="true" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_header"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:text="@string/goto_kyc_dob_challenge_title"
+        android:visibility="gone"
+        tools:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_dob_challenge"
+        app:typographyType="heading_2" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_description"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:text="@string/goto_kyc_dob_challenge_subtitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_header"
+        app:typographyType="paragraph_2" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_confirmation"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/goto_kyc_dob_challenge_confirmation"
+        android:enabled="false"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.tokopedia.unifycomponents.TextFieldUnify2
+        android:id="@+id/field_dob"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:unify_text_field_label="@string/goto_kyc_dob_challenge_choose_dob"
+        android:layout_marginTop="16dp"
+        android:layout_marginHorizontal="16dp"
+        android:visibility="gone"
+        tools:visibility="visible"
+        app:unify_text_field_append_drawable_icon_1="@drawable/iconunify_chevron_down"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_description" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

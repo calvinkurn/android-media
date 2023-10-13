@@ -22,7 +22,7 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:unify_image_corner_radius="0"
-            tools:background="@color/Unify_N100" />
+            tools:background="@color/Unify_NN200" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_recharge_home_product_cards_item_category"
@@ -33,7 +33,7 @@
             android:layout_marginEnd="@dimen/spacing_lvl3"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/iv_recharge_home_product_cards_item"
@@ -51,7 +51,7 @@
             android:ellipsize="end"
             android:lines="2"
             android:maxLines="2"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_recharge_home_product_cards_item_category"
@@ -81,7 +81,7 @@
             android:layout_marginRight="@dimen/spacing_lvl3"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"

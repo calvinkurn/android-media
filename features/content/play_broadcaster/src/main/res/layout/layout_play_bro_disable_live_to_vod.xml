@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iv_disable_live_to_vod"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintDimensionRatio="16:12"
+        android:layout_marginTop="20dp"
+        android:layout_marginHorizontal="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_title_disable_live_to_vod"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="8dp"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_disable_live_to_vod"
+        app:typographyType="heading_2"
+        app:typographyWeight="bold"
+        tools:text="Live shopping aja langsung, yuk!" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_description_disable_live_to_vod"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="8dp"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        tools:text="Per 1 Agustus 2023, Live tidak bisa di-posting jadi video. Tapi kamu masih bisa buat video pendek jika mau di-posting di halaman Tokomu."
+        android:typeface="normal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_title_disable_live_to_vod"
+        app:typographyType="body_1" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

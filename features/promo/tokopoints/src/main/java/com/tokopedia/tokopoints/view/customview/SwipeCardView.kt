@@ -117,7 +117,7 @@ class SwipeCardView : FrameLayout,View.OnTouchListener {
                     if (event.x > getMaxSwipeWidth() * .3) {
                         mTextSwipeTitle?.setTextColor(
                             ContextCompat.getColor(
-                                context, com.tokopedia.unifyprinciples.R.color.Unify_N0
+                                context, com.tokopedia.unifyprinciples.R.color.Unify_NN0
                             )
                         )
                         mSwipeIcon?.visibility = GONE
@@ -159,7 +159,7 @@ class SwipeCardView : FrameLayout,View.OnTouchListener {
                         mTextSwipeTitle?.setTextColor(
                             ContextCompat.getColor(
                                 context,
-                                com.tokopedia.unifyprinciples.R.color.Unify_N700_32
+                                com.tokopedia.unifyprinciples.R.color.Unify_NN950_32
                             )
                         )
                         mSwipeIcon?.visibility = VISIBLE
@@ -186,7 +186,7 @@ class SwipeCardView : FrameLayout,View.OnTouchListener {
         mTextSwipeTitle?.setTextColor(
             ContextCompat.getColor(
                 context,
-                com.tokopedia.unifyprinciples.R.color.Unify_N700_32
+                com.tokopedia.unifyprinciples.R.color.Unify_NN950_32
             )
         )
         mCouponContainer?.postDelayed({

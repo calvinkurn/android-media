@@ -13,6 +13,7 @@ import com.tokopedia.sellerorder.list.presentation.adapter.viewholders.tablet.So
 import com.tokopedia.sellerorder.list.presentation.models.OptionalOrderData
 import com.tokopedia.sellerorder.list.presentation.models.SomListFilterUiModel
 import com.tokopedia.sellerorder.list.presentation.models.SomListOrderUiModel
+import com.tokopedia.sellerorder.list.presentation.models.SomListOrderWrapperUiModel
 
 class SomListFragment : com.tokopedia.sellerorder.list.presentation.fragments.SomListFragment() {
 
@@ -136,9 +137,9 @@ class SomListFragment : com.tokopedia.sellerorder.list.presentation.fragments.So
         super.onClickOrderStatusFilterTab(status, shouldScrollToTop)
     }
 
-    override fun renderOrderList(data: List<SomListOrderUiModel>) {
+    override fun renderOrderList(data: SomListOrderWrapperUiModel) {
         if (openedOrderId.isNotEmpty()) {
-            data.find { it.orderId == openedOrderId }.let { openedOrder ->
+            data.somListOrders.find { it.orderId == openedOrderId }.let { openedOrder ->
                 if (openedOrder == null) {
                     updateOrderDetail = false
                 } else {
@@ -177,19 +178,28 @@ class SomListFragment : com.tokopedia.sellerorder.list.presentation.fragments.So
     private fun notifyOpenOrderDetail(order: SomListOrderUiModel) {
         getOpenedOrder().let { openedOrder ->
             if (openedOrder is SomListOrderUiModel && openedOrder.orderId != order.orderId) {
-                adapter.notifyItemChanged(adapter.data.indexOf(openedOrder), Bundle().apply {
-                    openedOrder.isOpen = false
-                    putBoolean(SomListOrderViewHolder.TOGGLE_OPEN, openedOrder.isOpen)
-                })
-                adapter.notifyItemChanged(adapter.data.indexOf(order), Bundle().apply {
-                    order.isOpen = true
-                    putBoolean(SomListOrderViewHolder.TOGGLE_OPEN, order.isOpen)
-                })
+                adapter.notifyItemChanged(
+                    adapter.data.indexOf(openedOrder),
+                    Bundle().apply {
+                        openedOrder.isOpen = false
+                        putBoolean(SomListOrderViewHolder.TOGGLE_OPEN, openedOrder.isOpen)
+                    }
+                )
+                adapter.notifyItemChanged(
+                    adapter.data.indexOf(order),
+                    Bundle().apply {
+                        order.isOpen = true
+                        putBoolean(SomListOrderViewHolder.TOGGLE_OPEN, order.isOpen)
+                    }
+                )
             } else if (openedOrder == null) {
-                adapter.notifyItemChanged(adapter.data.indexOf(order), Bundle().apply {
-                    order.isOpen = true
-                    putBoolean(SomListOrderViewHolder.TOGGLE_OPEN, order.isOpen)
-                })
+                adapter.notifyItemChanged(
+                    adapter.data.indexOf(order),
+                    Bundle().apply {
+                        order.isOpen = true
+                        putBoolean(SomListOrderViewHolder.TOGGLE_OPEN, order.isOpen)
+                    }
+                )
             }
         }
     }

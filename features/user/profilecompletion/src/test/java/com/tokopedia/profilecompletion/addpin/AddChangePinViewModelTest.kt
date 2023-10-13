@@ -465,7 +465,7 @@ class AddChangePinViewModelTest {
         val generateKeyPojo = GenerateKeyPojo(keydata)
 
         /* When */
-        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
+        coEvery { generatePublicKeyUseCase.invoke(any()) } returns generateKeyPojo
         coEvery { checkPinV2UseCase(any()) } returns checkPinV2Response
 
         viewModel.checkPinV2("123456")
@@ -495,7 +495,7 @@ class AddChangePinViewModelTest {
         val generateKeyPojo = GenerateKeyPojo(keydata)
 
         /* When */
-        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
+        coEvery { generatePublicKeyUseCase.invoke(any()) } returns generateKeyPojo
         coEvery { checkPinV2UseCase(any()) } returns checkPinV2Response
 
         viewModel.checkPinV2("123456")
@@ -520,7 +520,7 @@ class AddChangePinViewModelTest {
         val generateKeyPojo = GenerateKeyPojo(keydata)
 
         /* When */
-        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
+        coEvery { generatePublicKeyUseCase.invoke(any()) } returns generateKeyPojo
         coEvery { checkPinV2UseCase(any()) } returns checkPinV2Response
 
         viewModel.checkPinV2("123456")
@@ -534,14 +534,13 @@ class AddChangePinViewModelTest {
     fun `Success get pub key`() {
         val mocKeyData = KeyData("abc", "bca", "aaa")
         val generateKeyResponse = GenerateKeyPojo(mocKeyData)
-        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyResponse
+        coEvery { generatePublicKeyUseCase.invoke(any()) } returns generateKeyResponse
 
         runBlocking {
             assert(viewModel.getPublicKey() == mocKeyData)
         }
         coVerify {
-            generatePublicKeyUseCase.setParams("pinv2")
-            generatePublicKeyUseCase.executeOnBackground()
+            generatePublicKeyUseCase("pinv2")
         }
     }
 
@@ -564,7 +563,7 @@ class AddChangePinViewModelTest {
         every { RsaUtils.encryptWithSalt(any(), any(), any()) } returns hashedPin
 
         /* When */
-        coEvery { generatePublicKeyUseCase.executeOnBackground() } throws mockThrowable
+        coEvery { generatePublicKeyUseCase.invoke(any()) } throws mockThrowable
         coEvery { checkPinV2UseCase(any()) } returns checkPinV2Response
 
         viewModel.checkPinV2("123456")

@@ -11,7 +11,7 @@
         android:id="@+id/image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@color/Unify_G500" />
+        app:srcCompat="@color/Unify_GN500" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tvTitle"

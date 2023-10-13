@@ -4,7 +4,7 @@ import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant.ChooseAddressQueryParams.RPC_PRODUCT_ID
 import com.tokopedia.discovery2.Constant.ChooseAddressQueryParams.RPC_USER_WAREHOUSE_ID
 import com.tokopedia.discovery2.Utils
-import com.tokopedia.discovery2.Utils.Companion.addAddressQueryMap
+import com.tokopedia.discovery2.Utils.Companion.addAddressQueryMapWithWareHouse
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.datamapper.discoComponentQuery
@@ -16,12 +16,15 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Compa
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.EMBED_CATEGORY
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PIN_PRODUCT
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PRODUCT_ID
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import javax.inject.Inject
 
 class ProductCardsUseCase @Inject constructor(private val productCardsRepository: ProductCardsRepository) {
     companion object {
+        const val NO_PRODUCT_PER_PAGE = -1
+
         private const val PRODUCT_PER_PAGE = 20
         private const val RPC_FILTER_KEU = "rpc_"
         private const val PAGE_START = 1
@@ -161,7 +164,7 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
 
         val queryParameterMap = mutableMapOf<String, Any>()
 
-        queryParameterMap[RPC_PAGE__SIZE] = productsPerPage.toString()
+        queryParameterMap[RPC_PAGE__SIZE] = if (productsPerPage == NO_PRODUCT_PER_PAGE) String.EMPTY else productsPerPage
         queryParameterMap[RPC_PAGE_NUMBER] = pageNumber.toString()
 
         chipSelectionData?.let {
@@ -204,7 +207,7 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
 
         queryParameterMap[RPC_NEXT_PAGE] = nextPageKey ?: ""
 
-        queryParameterMap.putAll(addAddressQueryMap(userAddressData))
+        queryParameterMap.putAll(addAddressQueryMapWithWareHouse(userAddressData))
         if (userAddressData?.warehouse_id?.isNotEmpty() == true)
             queryParameterMap[RPC_USER_WAREHOUSE_ID] = userAddressData.warehouse_id
         if (!recomProdId.isNullOrEmpty())

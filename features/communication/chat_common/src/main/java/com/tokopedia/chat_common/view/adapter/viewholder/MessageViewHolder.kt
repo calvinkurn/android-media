@@ -88,13 +88,13 @@ open class MessageViewHolder(
         message.setTextColor(
             MethodChecker.getColor(
                 context,
-                com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                com.tokopedia.unifyprinciples.R.color.Unify_NN950_68
             )
         )
         message.setLinkTextColor(
             MethodChecker.getColor(
                 context,
-                com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                com.tokopedia.unifyprinciples.R.color.Unify_NN950_68
             )
         )
         chatStatus?.visibility = View.GONE
@@ -119,13 +119,13 @@ open class MessageViewHolder(
         message.setTextColor(
             MethodChecker.getColor(
                 context,
-                com.tokopedia.unifyprinciples.R.color.Unify_N0
+                com.tokopedia.unifyprinciples.R.color.Unify_NN0
             )
         )
         message.setLinkTextColor(
             MethodChecker.getColor(
                 context,
-                com.tokopedia.unifyprinciples.R.color.Unify_N0
+                com.tokopedia.unifyprinciples.R.color.Unify_NN0
             )
         )
         chatStatus?.visibility = View.VISIBLE

@@ -30,7 +30,7 @@ class ItemAddTemplateChatViewHolder(
             textView?.setTextColor(
                 MethodChecker.getColor(
                     view.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N700_20
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN950_20
                 )
             )
             layout?.setBackgroundResource(
@@ -46,7 +46,7 @@ class ItemAddTemplateChatViewHolder(
             textView?.setTextColor(
                 MethodChecker.getColor(
                     view.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_G500
+                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
                 )
             )
             layout?.setBackgroundResource(

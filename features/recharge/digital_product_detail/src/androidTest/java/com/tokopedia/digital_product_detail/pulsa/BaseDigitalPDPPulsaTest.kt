@@ -9,6 +9,7 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.ComponentNameMatchers.hasClassName
 import androidx.test.espresso.intent.matcher.IntentMatchers
@@ -24,19 +25,26 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoSavedNumberActivity
 import com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoSavedNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
 import com.tokopedia.common.topupbills.favoritepage.view.model.TopupBillsSavedNumber
-import com.tokopedia.digital_product_detail.R
 import com.tokopedia.digital_product_detail.presentation.activity.DigitalPDPPulsaActivity
-import com.tokopedia.digital_product_detail.pulsa.utils.DigitalPDPPulsaMockConfig
+import com.tokopedia.digital_product_detail.presentation.webview.RechargeCheckBalanceWebViewActivity
+import com.tokopedia.digital_product_detail.utils.CustomViewAction
+import com.tokopedia.digital_product_detail.utils.CustomViewAction.nestedScrollTo
 import com.tokopedia.recharge_component.model.InputNumberActionType
+import com.tokopedia.recharge_component.presentation.adapter.viewholder.RechargeCheckBalanceDetailViewHolder
 import com.tokopedia.recharge_component.presentation.adapter.viewholder.denom.DenomGridViewHolder
+import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.core.AllOf.allOf
 import org.junit.Rule
+import com.tokopedia.analyticsdebugger.R as analyticsdebuggerR
+import com.tokopedia.recharge_component.R as recharge_componentR
+import com.tokopedia.sortfilter.R as sortfilterR
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 abstract class BaseDigitalPDPPulsaTest {
 
     @get:Rule
-    var mActivityRule: IntentsTestRule<DigitalPDPPulsaActivity> = object: IntentsTestRule<DigitalPDPPulsaActivity>(DigitalPDPPulsaActivity::class.java) {
+    var mActivityRule: IntentsTestRule<DigitalPDPPulsaActivity> = object : IntentsTestRule<DigitalPDPPulsaActivity>(DigitalPDPPulsaActivity::class.java) {
         override fun getActivityIntent(): Intent {
             val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
             return RouteManager.getIntent(targetContext, getApplink())
@@ -44,7 +52,7 @@ abstract class BaseDigitalPDPPulsaTest {
 
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
-            setupGraphqlMockResponse(DigitalPDPPulsaMockConfig())
+            setupGraphqlMockResponse(getMockModelConfig())
         }
     }
 
@@ -54,14 +62,23 @@ abstract class BaseDigitalPDPPulsaTest {
 
     protected fun favoriteNumberPage_stubContactNumber() {
         Intents.intending(
-            IntentMatchers.hasComponent(hasClassName(TopupBillsPersoSavedNumberActivity::class.java.name)))
+            IntentMatchers.hasComponent(hasClassName(TopupBillsPersoSavedNumberActivity::class.java.name))
+        )
             .respondWith(intentResult_returnContactNumber())
     }
 
     protected fun favoriteNumberPage_stubFavoriteNumber() {
         Intents.intending(
-            IntentMatchers.hasComponent(hasClassName(TopupBillsPersoSavedNumberActivity::class.java.name)))
+            IntentMatchers.hasComponent(hasClassName(TopupBillsPersoSavedNumberActivity::class.java.name))
+        )
             .respondWith(intentResult_returnFavoriteNumber())
+    }
+
+    protected fun checkBalanceWebView_stubIntentResult() {
+        Intents.intending(
+            IntentMatchers.hasComponent(hasClassName(RechargeCheckBalanceWebViewActivity::class.java.name))
+        )
+            .respondWith(intentResult_returnAccessToken())
     }
 
     private fun intentResult_returnContactNumber(): Instrumentation.ActivityResult {
@@ -93,24 +110,44 @@ abstract class BaseDigitalPDPPulsaTest {
         return Instrumentation.ActivityResult(Activity.RESULT_OK, resultData)
     }
 
+    private fun intentResult_returnAccessToken(): Instrumentation.ActivityResult {
+        val accessToken = "access_token"
+        val resultData = Intent()
+        resultData.putExtra(
+            EXTRA_CALLBACK_CLIENT_NUMBER,
+            accessToken
+        )
+        return Instrumentation.ActivityResult(Activity.RESULT_OK, resultData)
+    }
+
     protected fun clientNumberWidget_typeNumber(number: String) {
-        onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input))
+        onView(withId(unifycomponentsR.id.text_field_input))
             .perform(typeText(number))
     }
 
     protected fun clientNumberWidget_clickClearIcon() {
-        onView(withId(R.id.text_field_icon_close)).perform(click())
+        onView(withId(unifycomponentsR.id.text_field_icon_close)).perform(click())
     }
 
     protected fun clientNumberWidget_clickContactIcon() {
-        onView(withId(R.id.text_field_icon_2)).perform(click())
+        onView(withId(unifycomponentsR.id.text_field_icon_2)).perform(click())
+    }
+
+    protected fun clientNumberWidget_clickCheckBalanceOTPWidget() {
+        onView(withId(recharge_componentR.id.check_balance_otp_title)).perform(click())
+    }
+
+    protected fun clientNumberWidget_clickCheckBalanceWidget() {
+        onView(withId(recharge_componentR.id.check_balance_rv)).perform(click())
     }
 
     protected fun favoriteChips_clickChip_withText(text: String) {
-        onView(allOf(
-            withId(R.id.chip_text),
-            isDescendantOfA(withId(R.id.sort_filter_items)),
-            withText(text))
+        onView(
+            allOf(
+                withId(analyticsdebuggerR.id.chip_text),
+                isDescendantOfA(withId(sortfilterR.id.sort_filter_items)),
+                withText(text)
+            )
         ).perform(click())
     }
 
@@ -122,20 +159,50 @@ abstract class BaseDigitalPDPPulsaTest {
     }
 
     protected fun buyWidget_clickChevron() {
-        onView(withId(R.id.icon_buy_widget_chevron)).perform(click())
+        onView(withId(recharge_componentR.id.icon_buy_widget_chevron)).perform(click())
     }
 
     protected fun recommendations_clickCard() {
-        onView(withId(R.id.tg_title_recharge_recommendation_card_small)).perform(click())
+        onView(withId(recharge_componentR.id.rv_recharge_recommendation_card_title)).perform(click())
     }
 
     protected fun mccm_clickCard_withIndex(index: Int) {
-        onView(withId(R.id.rv_mccm_grid)).perform(RecyclerViewActions.actionOnItemAtPosition<DenomGridViewHolder>(index, click()))
+        onView(withId(recharge_componentR.id.rv_mccm_grid))
+            .perform(
+                scrollToPosition<DenomGridViewHolder>(index),
+                RecyclerViewActions.actionOnItemAtPosition<DenomGridViewHolder>(index, click())
+            )
     }
 
     protected fun denom_clickCard_withIndex(index: Int) {
-        onView(withId(R.id.rv_denom_grid_card)).perform(RecyclerViewActions.actionOnItemAtPosition<DenomGridViewHolder>(index, click()))
+        onView(withId(recharge_componentR.id.tg_denom_grid_widget_title)).perform(nestedScrollTo())
+        onView(withId(recharge_componentR.id.rv_denom_grid_card))
+            .perform(
+                scrollToPosition<DenomGridViewHolder>(index),
+                RecyclerViewActions.actionOnItemAtPosition<DenomGridViewHolder>(index, click())
+            )
+    }
+
+    protected fun checkBalanceOTPBottomSheet_clickButton() {
+        onView(withId(recharge_componentR.id.bottomsheet_otp_button)).perform(click())
+    }
+
+    protected fun checkBalanceBottomSheet_clickItem_withIndex(index: Int) {
+        onView(withId(recharge_componentR.id.recharge_check_balance_detail_rv))
+            .perform(
+                RecyclerViewActions
+                    .actionOnItemAtPosition<RechargeCheckBalanceDetailViewHolder>(
+                        index,
+                        CustomViewAction.clickChildViewWithId(recharge_componentR.id.check_balance_detail_buy_button)
+                    )
+            )
+    }
+
+    protected fun checkBalanceBottomSheet_clickCloseIcon() {
+        onView(withId(unifycomponentsR.id.bottom_sheet_close)).perform(click())
     }
 
     abstract fun getApplink(): String
+
+    abstract fun getMockModelConfig(): MockModelConfig
 }

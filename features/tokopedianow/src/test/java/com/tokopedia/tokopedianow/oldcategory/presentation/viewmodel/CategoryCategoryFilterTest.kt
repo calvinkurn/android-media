@@ -2,6 +2,7 @@ package com.tokopedia.tokopedianow.oldcategory.presentation.viewmodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.tokopedianow.oldcategory.domain.model.CategoryModel
@@ -10,6 +11,7 @@ import com.tokopedia.tokopedianow.searchcategory.jsonToObject
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryFilterDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryFilterItemDataView
 import com.tokopedia.usecase.RequestParams
+import io.mockk.coEvery
 import io.mockk.slot
 import io.mockk.verify
 import org.hamcrest.CoreMatchers.nullValue
@@ -20,6 +22,7 @@ import org.hamcrest.CoreMatchers.`is` as shouldBe
 class CategoryCategoryFilterTest: CategoryTestFixtures() {
 
     private val categoryModel = "oldcategory/first-page-8-products.json".jsonToObject<CategoryModel>()
+    private val dynamicFilterModel = "filter/filter.json".jsonToObject<DynamicFilterModel>()
 
     @Test
     fun `when view created, category filter isSelected should be based on category L2 value`() {
@@ -60,6 +63,7 @@ class CategoryCategoryFilterTest: CategoryTestFixtures() {
         val queryParamWithFilter = defaultQueryParamMap + filterParam
 
         `Given get category first page use case will be successful`(categoryModel, requestParamsSlot)
+        `Given get filter API will be successful`(dynamicFilterModel)
         `Given category view model`(defaultCategoryL1, defaultCategoryL2, defaultExternalServiceType, queryParamWithFilter)
         `Given view already created`()
 
@@ -75,6 +79,7 @@ class CategoryCategoryFilterTest: CategoryTestFixtures() {
                 selectedCategoryFilter
         )
         `Then verify request params reset filter and sort`(requestParams, filterParam)
+        `Then verify success getting filter`()
     }
 
     private fun createMockFilterParam() = mapOf(
@@ -180,5 +185,18 @@ class CategoryCategoryFilterTest: CategoryTestFixtures() {
                 hasCategoryFilter,
                 shouldBe(false)
         )
+    }
+
+    private fun `Then verify success getting filter`() {
+        assert(tokoNowCategoryViewModel.dynamicFilterModelLiveData.value != null)
+        assert(tokoNowCategoryViewModel.isFilterPageOpenLiveData.value != true)
+    }
+
+    private fun `Given get filter API will be successful`(
+        dynamicFilterModel: DynamicFilterModel
+    ) {
+        coEvery {
+            getFilterUseCase.execute(any())
+        } returns dynamicFilterModel
     }
 }

@@ -1,27 +1,25 @@
 package com.tokopedia.entertainment.pdp.adapter.viewholder
 
-import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
-
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.entertainment.R
+import com.tokopedia.entertainment.databinding.PartialEventPdpFacilitiesBinding
 import com.tokopedia.entertainment.pdp.adapter.EventPDPFacilitiesAdapter
 import com.tokopedia.entertainment.pdp.data.pdp.EventPDPFacilitiesEntity
 import com.tokopedia.entertainment.pdp.listener.OnBindItemListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
-import kotlinx.android.synthetic.main.partial_event_pdp_facilities.view.*
 
-class EventPDPFacilitiesViewHolder(view: View, val onBindItemListener: OnBindItemListener)
-    : AbstractViewHolder<EventPDPFacilitiesEntity>(view) {
+class EventPDPFacilitiesViewHolder(val binding: PartialEventPdpFacilitiesBinding, val onBindItemListener: OnBindItemListener)
+    : AbstractViewHolder<EventPDPFacilitiesEntity>(binding.root) {
 
     var eventFacilitiestAdapter = EventPDPFacilitiesAdapter()
 
     override fun bind(element: EventPDPFacilitiesEntity) {
-        with(itemView) {
+        with(binding) {
             if (element.isLoaded) {
                 container.show()
-                shimmering.gone()
+                shimmering.root.gone()
 
                 if(!element.list.isNullOrEmpty()) {
                     if(element.list.size > MAX_SIZE) {
@@ -30,23 +28,23 @@ class EventPDPFacilitiesViewHolder(view: View, val onBindItemListener: OnBindIte
                         eventFacilitiestAdapter.setList(element.list)
                     }
 
-                    rv_event_pdp_facilities.apply {
-                        adapter = eventFacilitiestAdapter
-                        layoutManager = GridLayoutManager(
-                                this@with.context, 2
+                    rvEventPdpFacilities.let {
+                        it.adapter = eventFacilitiestAdapter
+                        it.layoutManager = GridLayoutManager(
+                                root.context, GRID
                         )
                     }
-                    tg_event_pdp_facilities_see_all.setOnClickListener {
-                        onBindItemListener.seeAllFacilities(element.list, resources.getString(R.string.ent_pdp_facilities))
+                    tgEventPdpFacilitiesSeeAll.setOnClickListener {
+                        onBindItemListener.seeAllFacilities(element.list, getString(R.string.ent_pdp_facilities))
                     }
                 } else {
-                    tg_event_pdp_facilities_title.gone()
-                    rv_event_pdp_facilities.gone()
-                    tg_event_pdp_facilities_see_all.gone()
+                    tgEventPdpFacilitiesTitle.gone()
+                    rvEventPdpFacilities.gone()
+                    tgEventPdpFacilitiesSeeAll.gone()
                 }
 
             } else {
-                shimmering.show()
+                shimmering.root.show()
                 container.gone()
             }
         }
@@ -55,5 +53,6 @@ class EventPDPFacilitiesViewHolder(view: View, val onBindItemListener: OnBindIte
     companion object {
         val LAYOUT = R.layout.partial_event_pdp_facilities
         const val MAX_SIZE = 4
+        const val GRID = 2
     }
 }

@@ -31,9 +31,12 @@ class OccPromoTestInterceptor : BaseOccInterceptor() {
             } else if (customClearPromoResponsePath != null) {
                 return mockResponse(copy, getJsonFromResource(customClearPromoResponsePath!!))
             }
-            return mockResponse(copy, getJsonFromResource(
-                CLEAR_CACHE_AUTO_APPLY_STACK_DEFAULT_RESPONSE
-            ))
+            return mockResponse(
+                copy,
+                getJsonFromResource(
+                    CLEAR_CACHE_AUTO_APPLY_STACK_DEFAULT_RESPONSE
+                )
+            )
         }
         return chain.proceed(chain.request())
     }

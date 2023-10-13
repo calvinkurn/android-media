@@ -35,7 +35,7 @@
             android:layout_marginLeft="@dimen/unify_space_12"
             tools:text="Token Listrik 100 ribu"
             app:typographyType="body_2"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -54,7 +54,7 @@
             tools:text="Rp100.000"
             app:typographyType="body_2"
             app:typographyWeight="bold"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             />
 
         <com.tokopedia.unifycomponents.Label
@@ -74,7 +74,7 @@
             android:layout_width="@dimen/unify_space_0"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/spacing_lvl2"
-            android:textColor="@color/Unify_N400"
+            android:textColor="@color/Unify_NN600"
             android:visibility="gone"
             app:layout_constraintLeft_toRightOf="@+id/label_discount_recharge_recommendation_card_small"
             app:layout_constraintTop_toTopOf="@+id/tg_price_recharge_recommendation_card_small"

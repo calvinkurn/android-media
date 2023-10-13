@@ -37,4 +37,11 @@
     <color name="play_widget_dms_bg_giveaway_badge_start">#F36819</color>
     <color name="play_widget_dms_bg_giveaway_badge_end">#EF144A</color>
 
+    <!--Play Widget Carousel-->
+    <color name="play_widget_carousel_dms_top_overlay_start">#802E3137</color>
+    <color name="play_widget_carousel_dms_bottom_overlay_start">#B32E3137</color>
+    <color name="play_widget_carousel_dms_bg_product_card">#A62E3137</color>
+    <color name="play_widget_carousel_dms_bg_product_img">#BFC9D9</color>
+    <color name="play_widget_carousel_dms_bg_action_button">#B32E3137</color>
+
 </resources>

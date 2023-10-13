@@ -5,7 +5,7 @@
     </style>
 
     <style name="TravelWidgetSelectPassengerView">
-        <item name="android:background">@color/Unify_N0</item>
+        <item name="android:background">@color/Unify_NN0</item>
         <item name="android:paddingLeft">@dimen/common_travel_dp_10</item>
         <item name="android:paddingRight">@dimen/common_travel_dp_10</item>
         <item name="android:paddingTop">@dimen/common_travel_dp_20</item>
@@ -18,13 +18,13 @@
     </style>
 
     <style name="TravelInputLabel">
-        <item name="android:textColor">@color/Unify_N700_68</item>
+        <item name="android:textColor">@color/Unify_NN950_68</item>
         <item name="android:textSize">12sp</item>
         <item name="android:paddingLeft">4dp</item>
         <item name="android:paddingRight">4dp</item>
     </style>
 
     <style name="ErrorTextAppearance">
-        <item name="android:textColor">@color/Unify_R500</item>
+        <item name="android:textColor">@color/Unify_RN500</item>
     </style>
 </resources>

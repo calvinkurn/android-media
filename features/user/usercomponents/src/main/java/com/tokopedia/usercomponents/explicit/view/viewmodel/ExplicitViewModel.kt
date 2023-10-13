@@ -16,10 +16,10 @@ import com.tokopedia.usercomponents.explicit.domain.model.Property
 import com.tokopedia.usercomponents.explicit.domain.model.Template
 import com.tokopedia.usercomponents.explicit.domain.model.UpdateStateParam
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
-import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
+import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 class ExplicitViewModel @Inject constructor(
     private val getQuestionUseCase: GetQuestionUseCase,
@@ -113,5 +113,4 @@ class ExplicitViewModel @Inject constructor(
             _statusUpdateState.value = false
         })
     }
-
 }

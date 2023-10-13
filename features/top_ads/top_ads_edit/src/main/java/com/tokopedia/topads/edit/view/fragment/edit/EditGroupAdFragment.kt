@@ -230,7 +230,7 @@ class EditGroupAdFragment : BaseDaggerFragment() {
             dailyBudget?.setError(true)
             dailyBudget?.setMessage(
                 String.format(
-                    getString(com.tokopedia.topads.common.R.string.angarran_harrian_min_bid_error),
+                    getString(com.tokopedia.topads.common.R.string.topads_common_angarran_harrian_min_bid_error),
                     Utils.convertToCurrency(AUTOBID_DEFUALT_BUDGET.toLong())
                 )
             )

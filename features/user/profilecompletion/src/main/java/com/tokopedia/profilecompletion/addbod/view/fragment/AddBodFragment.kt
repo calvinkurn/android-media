@@ -23,13 +23,13 @@ import com.tokopedia.profilecompletion.addbod.view.widget.common.LocaleUtils
 import com.tokopedia.profilecompletion.addbod.view.widget.common.LocaleUtils.getCurrentLocale
 import com.tokopedia.profilecompletion.addbod.viewmodel.AddBodViewModel
 import com.tokopedia.profilecompletion.common.ColorUtils
+import com.tokopedia.profilecompletion.databinding.FragmentAddBodBinding
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.profilecompletion.profileinfo.tracker.ProfileInfoTracker
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_add_bod.*
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -41,6 +41,9 @@ import javax.inject.Inject
  */
 
 class AddBodFragment : BaseDaggerFragment() {
+
+    private var _binding: FragmentAddBodBinding? = null
+    private val binding get() = _binding!!
 
     @Inject
     lateinit var tracker: ProfileInfoTracker
@@ -69,8 +72,8 @@ class AddBodFragment : BaseDaggerFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_add_bod, container, false)
-        return view
+        _binding = FragmentAddBodBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -88,18 +91,18 @@ class AddBodFragment : BaseDaggerFragment() {
     }
 
     private fun initViews() {
-        if (chooseDate.editText.text.isBlank()) btnSave.isEnabled = false
-        chooseDate.editText.setFocusable(false)
+        if (binding?.chooseDate?.editText?.text?.isBlank() == true) binding?.btnSave?.isEnabled = false
+        binding?.chooseDate?.editText?.isFocusable = false
     }
 
     private fun setListener() {
-        chooseDate.editText.setOnClickListener {
+        binding?.chooseDate?.editText?.setOnClickListener {
             fragmentManager?.run {
                 unifyDatePicker?.show(this, TAG)
             }
         }
 
-        chooseDate.editText.addTextChangedListener(object : TextWatcher {
+        binding?.chooseDate?.editText?.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
 
@@ -112,7 +115,7 @@ class AddBodFragment : BaseDaggerFragment() {
 
         })
 
-        btnSave.setOnClickListener {
+        binding?.btnSave?.setOnClickListener {
             if (selectedDate.isNotBlank()) {
                 showLoading()
                 tracker.trackOnBtnSimpanChangeBirthdayClick()
@@ -127,11 +130,11 @@ class AddBodFragment : BaseDaggerFragment() {
         val date = simpleDateFormat.parse(selectedDate)
         val stringDate = simpleDateFormat.format(date)
         val bod = arguments?.getString(ApplinkConstInternalUserPlatform.PARAM_BOD)
-        btnSave.isEnabled = stringDate != bod
+        binding?.btnSave?.isEnabled = stringDate != bod
     }
 
     private fun setChoosenDateFormat(date: String) {
-        chooseDate.editText.setText(
+        binding?.chooseDate?.editText?.setText(
             DateFormatUtils.formatDate(
                 DateFormatUtils.FORMAT_YYYY_MM_DD,
                 DateFormatUtils.FORMAT_DD_MMMM_YYYY,
@@ -221,13 +224,18 @@ class AddBodFragment : BaseDaggerFragment() {
     }
 
     private fun showLoading() {
-        mainView.visibility = View.GONE
-        progressBar.visibility = View.VISIBLE
+        binding?.mainView?.visibility = View.GONE
+        binding?.progressBar?.visibility = View.VISIBLE
     }
 
     private fun dismissLoading() {
-        mainView.visibility = View.VISIBLE
-        progressBar.visibility = View.GONE
+        binding?.mainView?.visibility = View.VISIBLE
+        binding?.progressBar?.visibility = View.GONE
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 
     companion object {

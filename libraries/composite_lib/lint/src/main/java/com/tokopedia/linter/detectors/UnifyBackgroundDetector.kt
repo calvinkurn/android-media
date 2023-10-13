@@ -1,7 +1,7 @@
 package com.tokopedia.linter.detectors
 
+import com.android.AndroidXConstants.CONSTRAINT_LAYOUT
 import com.android.SdkConstants.ATTR_BACKGROUND
-import com.android.SdkConstants.CONSTRAINT_LAYOUT
 import com.android.SdkConstants.FRAME_LAYOUT
 import com.android.SdkConstants.LINEAR_LAYOUT
 import com.android.SdkConstants.RELATIVE_LAYOUT
@@ -13,12 +13,11 @@ import com.android.tools.lint.detector.api.Issue
 import com.android.tools.lint.detector.api.LintFix
 import com.android.tools.lint.detector.api.Scope
 import com.android.tools.lint.detector.api.Severity
-import com.android.tools.lint.detector.api.SourceCodeScanner
 import com.android.tools.lint.detector.api.XmlContext
 import com.android.tools.lint.detector.api.XmlScanner
 import org.w3c.dom.Attr
 
-class UnifyBackgroundDetector: Detector(), XmlScanner {
+class UnifyBackgroundDetector : Detector(), XmlScanner {
 
     companion object {
         val ISSUE = Issue.create(
@@ -57,13 +56,13 @@ class UnifyBackgroundDetector: Detector(), XmlScanner {
 
     override fun visitAttribute(context: XmlContext, attribute: Attr) {
         val ownerName = attribute.ownerElement.nodeName
-        if(layoutNames.contains(ownerName)) {
+        if (layoutNames.contains(ownerName)) {
             scanBackgroundAttr(context, attribute)
         }
     }
 
     private fun scanBackgroundAttr(context: XmlContext, attribute: Attr) {
-        if(attribute.value == UNIFY_N0) {
+        if (attribute.value == UNIFY_N0) {
             reportIssue(context, attribute)
         }
     }

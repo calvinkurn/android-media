@@ -14,6 +14,7 @@ import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParam
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.common.network.util.CommonUtil
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toZeroStringIfNull
@@ -370,13 +371,12 @@ object AtcCommonMapper {
         }
 
         val headerData = ProductHeaderData(
-            productMainPrice = selectedChild?.finalMainPrice?.getCurrencyFormatted()
-                ?: "",
+            productMainPrice = selectedChild?.finalMainPrice?.getCurrencyFormatted().orEmpty(),
             productDiscountedPercentage = selectedChild?.campaign?.discountedPercentage.orZero(),
             isCampaignActive = isCampaignActive,
-            productSlashPrice = selectedChild?.campaign?.discountedPrice?.getCurrencyFormatted()
-                ?: "",
-            productStockFmt = selectedChild?.stock?.stockFmt ?: ""
+            productSlashPrice = selectedChild?.campaign?.discountedPrice?.getCurrencyFormatted().orEmpty(),
+            productStockFmt = selectedChild?.stock?.stockFmt ?: "",
+            hideGimmick = selectedChild?.campaign?.hideGimmick.orFalse()
         )
         return productImage to headerData
     }

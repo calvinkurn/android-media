@@ -16,11 +16,14 @@ import com.tokopedia.tokopedianow.searchcategory.data.createAceSearchProductRequ
 import com.tokopedia.tokopedianow.searchcategory.data.createCategoryFilterRequest
 import com.tokopedia.tokopedianow.searchcategory.data.createDynamicChannelRequest
 import com.tokopedia.tokopedianow.searchcategory.data.createFeedbackFieldToggleRequest
+import com.tokopedia.tokopedianow.searchcategory.data.createGetProductAdsRequest
 import com.tokopedia.tokopedianow.searchcategory.data.createQuickFilterRequest
 import com.tokopedia.tokopedianow.searchcategory.data.getFeedbackFieldToggleData
+import com.tokopedia.tokopedianow.searchcategory.data.getProductAdsQueryParam
 import com.tokopedia.tokopedianow.searchcategory.data.getTokonowQueryParam
 import com.tokopedia.tokopedianow.searchcategory.data.mapper.getBanner
 import com.tokopedia.tokopedianow.searchcategory.data.mapper.getCategoryFilter
+import com.tokopedia.tokopedianow.searchcategory.data.mapper.getProductAds
 import com.tokopedia.tokopedianow.searchcategory.data.mapper.getQuickFilter
 import com.tokopedia.tokopedianow.searchcategory.data.mapper.getSearchProduct
 import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_TOKONOW
@@ -33,7 +36,9 @@ class GetSearchFirstPageUseCase(
 ): UseCase<SearchModel>() {
 
     override suspend fun executeOnBackground(): SearchModel {
+        val parameters = useCaseRequestParams.parameters
         val queryParams = getTokonowQueryParam(useCaseRequestParams)
+        val adsQueryParams = getProductAdsQueryParam(useCaseRequestParams)
         val categoryFilterParams = createCategoryFilterParams(queryParams)
         val quickFilterParams = createQuickFilterParams(queryParams)
 
@@ -41,9 +46,10 @@ class GetSearchFirstPageUseCase(
         graphqlUseCase.addRequest(
             request = createGetTargetedTickerRequest(
                 page = SEARCH_PAGE,
-                warehouseId = queryParams[SearchApiConst.USER_WAREHOUSE_ID].toString()
+                warehouseId = parameters[SearchApiConst.USER_WAREHOUSE_ID].toString()
             )
         )
+        graphqlUseCase.addRequest(createGetProductAdsRequest(adsQueryParams))
         graphqlUseCase.addRequest(createAceSearchProductRequest(queryParams))
         graphqlUseCase.addRequest(createCategoryFilterRequest(categoryFilterParams))
         graphqlUseCase.addRequest(createQuickFilterRequest(quickFilterParams))
@@ -53,13 +59,14 @@ class GetSearchFirstPageUseCase(
 
         val graphqlResponse = graphqlUseCase.executeOnBackground()
         return SearchModel(
-                targetedTicker = getTargetedTickerResponse(graphqlResponse),
-                searchProduct = getSearchProduct(graphqlResponse),
-                categoryFilter = getCategoryFilter(graphqlResponse),
-                quickFilter = getQuickFilter(graphqlResponse),
-                bannerChannel = getBanner(graphqlResponse),
-                searchCategoryJumper = getSearchCategoryJumper(graphqlResponse),
-                feedbackFieldToggle = getFeedbackFieldToggleData(graphqlResponse)
+            targetedTicker = getTargetedTickerResponse(graphqlResponse),
+            productAds = getProductAds(graphqlResponse),
+            searchProduct = getSearchProduct(graphqlResponse),
+            categoryFilter = getCategoryFilter(graphqlResponse),
+            quickFilter = getQuickFilter(graphqlResponse),
+            bannerChannel = getBanner(graphqlResponse),
+            searchCategoryJumper = getSearchCategoryJumper(graphqlResponse),
+            feedbackFieldToggle = getFeedbackFieldToggleData(graphqlResponse)
         )
     }
 

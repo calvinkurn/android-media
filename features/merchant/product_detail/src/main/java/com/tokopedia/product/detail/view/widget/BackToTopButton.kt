@@ -7,10 +7,12 @@ import android.view.View
 import android.widget.FrameLayout
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.product.detail.databinding.WidgetBackToTopBinding
 import com.tokopedia.product.detail.view.widget.ProductDetailNavigation.Companion.calculateFirstVisibleItemPosition
+import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 
 class BackToTopButton : FrameLayout {
 
@@ -34,11 +36,11 @@ class BackToTopButton : FrameLayout {
         private const val BUTTON_LABEL = "back-to-top"
         private const val BUTTON_POSITION = 0
 
-        private const val BUTTON_ANIMATION_DURATION = 265L
         private const val BACK_TO_TOP_SHOW_THRESHOLD = 75f
     }
 
-    private var binding : WidgetBackToTopBinding? = null
+    private var fabContainer: FloatingButtonUnify? = null
+    private var fab: FloatingActionButton? = null
 
     private var recyclerView: RecyclerView? = null
     private var listener: NavigationListener? = null
@@ -54,15 +56,22 @@ class BackToTopButton : FrameLayout {
 
     private fun init() {
         WidgetBackToTopBinding.inflate(LayoutInflater.from(context)).also {
-            binding = it
-            addView(it.root)
+            fabContainer = it.root
+            fab = it.root.circleMainMenu.apply {
+                scaleX = 0f
+                scaleY = 0f
 
-            it.root.setOnClickListener {
-                if (!enableClick) return@setOnClickListener
-                listener?.onClickBackToTop(BUTTON_POSITION, BUTTON_LABEL)
-                smoothScrollToTop()
-                if (enableBlockingTouch) enableClick = false
+                setOnClickListener {
+                    if (!enableClick) return@setOnClickListener
+                    listener?.onClickBackToTop(BUTTON_POSITION, BUTTON_LABEL)
+                    smoothScrollToTop()
+                    if (enableBlockingTouch) enableClick = false
+                }
             }
+
+            addView(fabContainer)
+            isClickable = false
+            isEnabled = false
         }
     }
 
@@ -91,12 +100,14 @@ class BackToTopButton : FrameLayout {
     }
 
     private fun toggle(show: Boolean) {
-
         if (isVisible == show) return
 
-        val scale = if (show) 1f else 0f
+        if (show) {
+            fabContainer?.show()
+        } else {
+            fabContainer?.hide()
+        }
 
-        binding?.root?.animate()?.scaleX(scale)?.scaleY(scale)?.duration = BUTTON_ANIMATION_DURATION
         isVisible = show
 
         if (!impressNavigation && show) {
@@ -108,7 +119,9 @@ class BackToTopButton : FrameLayout {
     private fun enableTouchScroll(isEnable: Boolean) {
         if (enableBlockingTouch) {
             recyclerView?.suppressLayout(!isEnable)
-        } else recyclerView?.suppressLayout(false)
+        } else {
+            recyclerView?.suppressLayout(false)
+        }
     }
 
     private fun smoothScrollToTop() {
@@ -137,7 +150,9 @@ class BackToTopButton : FrameLayout {
             val shouldHide = if (config is ProductDetailNavigation.Configuration.Navbar4) {
                 val scrollOffset = recyclerView.computeVerticalScrollOffset()
                 scrollOffset < threshold
-            } else calculateFirstVisibleItemPosition(recyclerView, config?.offsetY.orZero()) == 0
+            } else {
+                calculateFirstVisibleItemPosition(recyclerView, config?.offsetY.orZero()) == 0
+            }
             toggle(!shouldHide)
         }
     }
@@ -157,6 +172,5 @@ class BackToTopButton : FrameLayout {
             isScroll = false
             enableClick = true
         }
-
     }
 }

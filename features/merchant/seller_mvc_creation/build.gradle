@@ -19,6 +19,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.mvc'
+    testNamespace 'com.tokopedia.mvc.test'
     defaultConfig {
         multiDexEnabled true
     }
@@ -47,7 +49,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.analytics)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.baseList)
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.utils)
@@ -99,6 +100,9 @@ dependencies {
 
     //Campaign Common
     implementation projectOrAar(rootProject.ext.features.campaignCommon)
+
+    //Image assets
+    implementation projectOrAar(rootProject.ext.libraries.imageAssets)
 
     // UI test
     androidTestImplementation rootProject.ext.testDependencies.espressoCore

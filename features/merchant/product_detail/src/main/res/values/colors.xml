@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="product_detail_dms_page_control">@color/Unify_N700</color>
+    <color name="product_detail_dms_page_control">@color/Unify_NN950</color>
     <color name="product_detail_dms_cashback_green">#D6FFDE</color>
     <color name="product_detail_dms_discount_red_background">#FFEAEF</color>
     <color name="product_detail_dms_tradein_blue">#32afff</color>
@@ -15,6 +15,7 @@
     <color name="product_detail_dms_regulatory_info_overlay">#29000000</color>
     <color name="product_detail_dms_label_carousel_background">#AD31353B</color>
     <color name="product_detail_dms_toolbar_gradient_start">#00000000</color>
-    <color name="product_detail_dms_toolbar_gradient_end">#66000000</color>
+    <color name="product_detail_dms_toolbar_gradient_center">#63000000</color>
+    <color name="product_detail_dms_toolbar_gradient_end">#B2000000</color>
     <color name="product_detail_dms_divider_decorator_color">@color/Unify_NN50</color>
 </resources>

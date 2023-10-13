@@ -10,7 +10,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:typographyType="heading_3"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         android:layout_marginTop="8dp"
         android:text="@string/order_extension_title_submission_extends_bottom_sheet"
         app:layout_constraintStart_toStartOf="parent"
@@ -26,7 +26,7 @@
         app:layout_constraintTop_toBottomOf="@id/tvSubmissionExtendsBottomSheetTitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:typographyType="body_2"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         tools:text="@string/order_extension_title_submission_extends" />
 
     <View
@@ -49,7 +49,7 @@
         app:layout_constraintStart_toStartOf="@id/tvSubmissionExtendsTitle"
         app:layout_constraintEnd_toEndOf="@id/tvSubmissionExtendsTitle"
         app:typographyType="body_2"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         android:text="@string/order_extension_reason_submission_extends" />
 
     <View
@@ -72,7 +72,7 @@
         app:layout_constraintStart_toEndOf="@id/submissionExtendsIndicator"
         app:typographyType="body_1"
         app:typographyWeight="bold"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         tools:text="@string/order_extension_reason_submission_extends_value" />
 
     <com.tokopedia.unifycomponents.UnifyButton
@@ -88,7 +88,7 @@
         app:unifyButtonType="alternate"
         app:unifyButtonVariant="ghost"
         app:unifyButtonSize="medium"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         android:text="@string/order_extension_order_cancelled" />
 
     <androidx.constraintlayout.widget.Guideline
@@ -112,7 +112,7 @@
         app:unifyButtonType="main"
         app:unifyButtonVariant="filled"
         app:unifyButtonSize="medium"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         android:text="@string/order_extension_btn_secondary" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

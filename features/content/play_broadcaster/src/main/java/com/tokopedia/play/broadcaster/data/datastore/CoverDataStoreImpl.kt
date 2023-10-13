@@ -3,11 +3,14 @@ package com.tokopedia.play.broadcaster.data.datastore
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import androidx.lifecycle.asLiveData
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.SetupDataState
 import com.tokopedia.play_common.domain.usecase.broadcaster.PlayBroadcastUpdateChannelUseCase
 import com.tokopedia.play_common.model.result.NetworkResult
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -19,23 +22,27 @@ class CoverDataStoreImpl @Inject constructor(
     private val updateChannelUseCase: PlayBroadcastUpdateChannelUseCase,
 ) : CoverDataStore {
 
-    private val _selectedCoverLiveData = MutableLiveData<PlayCoverUiModel>()
+    private val _selectedCover = MutableStateFlow(PlayCoverUiModel.empty())
 
     override fun getObservableSelectedCover(): LiveData<PlayCoverUiModel> {
-        return _selectedCoverLiveData
+        return _selectedCover.asLiveData()
+    }
+
+    override fun getSelectedCoverAsFlow(): Flow<PlayCoverUiModel> {
+        return _selectedCover
     }
 
     override fun getSelectedCover(): PlayCoverUiModel? {
-        return _selectedCoverLiveData.value
+        return _selectedCover.value
     }
 
     override fun setFullCover(cover: PlayCoverUiModel) {
-        _selectedCoverLiveData.value = cover
+        _selectedCover.value = cover
     }
 
     override fun updateCoverState(state: CoverSetupState) {
         val currentCover = getSelectedCover() ?: PlayCoverUiModel.empty()
-        _selectedCoverLiveData.value = currentCover.copy(
+        _selectedCover.value = currentCover.copy(
                 croppedCover = state,
                 state = SetupDataState.Draft
         )

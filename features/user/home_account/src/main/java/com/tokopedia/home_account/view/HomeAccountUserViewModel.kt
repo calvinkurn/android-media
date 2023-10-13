@@ -27,8 +27,6 @@ import com.tokopedia.home_account.domain.usecase.HomeAccountUserUsecase
 import com.tokopedia.home_account.domain.usecase.OfferInterruptUseCase
 import com.tokopedia.home_account.domain.usecase.SaveAttributeOnLocalUseCase
 import com.tokopedia.home_account.domain.usecase.UpdateSafeModeUseCase
-import com.tokopedia.home_account.privacy_account.domain.GetLinkStatusUseCase
-import com.tokopedia.home_account.privacy_account.domain.GetUserProfile
 import com.tokopedia.home_account.view.mapper.ProfileWithDataStoreMapper
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.loginfingerprint.data.model.CheckFingerprintResult
@@ -71,8 +69,6 @@ class HomeAccountUserViewModel @Inject constructor(
     private val getTokopointsBalanceAndPointUseCase: GetTokopointsBalanceAndPointUseCase,
     private val getSaldoBalanceUseCase: GetSaldoBalanceUseCase,
     private val getCoBrandCCBalanceAndPointUseCase: GetCoBrandCCBalanceAndPointUseCase,
-    private val getLinkStatusUseCase: GetLinkStatusUseCase,
-    private val getPhoneUseCase: GetUserProfile,
     private val userProfileSafeModeUseCase: GetSafeModeUseCase,
     private val checkFingerprintToggleStatusUseCase: CheckFingerprintToggleStatusUseCase,
     private val tokopediaPlusUseCase: TokopediaPlusUseCase,
@@ -121,9 +117,6 @@ class HomeAccountUserViewModel @Inject constructor(
     val balanceAndPoint: LiveData<ResultBalanceAndPoint<WalletappGetAccountBalance>>
         get() = _balanceAndPoint
 
-    private val _phoneNo = MutableLiveData<String>()
-    val phoneNo: LiveData<String> get() = _phoneNo
-
     private val _safeModeStatus = MutableLiveData<Boolean>()
     val safeModeStatus: LiveData<Boolean> get() = _safeModeStatus
 
@@ -145,19 +138,6 @@ class HomeAccountUserViewModel @Inject constructor(
                 userProfileAndSaveSessionUseCase(Unit)
             } catch (ignored: Exception) {}
         }
-    }
-
-    fun refreshPhoneNo() {
-        launchCatchError(block = {
-            val profile = getPhoneUseCase(Unit)
-            val phone = profile.profileInfo.phone
-            if (phone.isNotEmpty()) {
-                userSession.phoneNumber = phone
-                _phoneNo.value = phone
-            }
-        }, onError = {
-                _phoneNo.value = ""
-            })
     }
 
     fun getFingerprintStatus() {
@@ -223,7 +203,6 @@ class HomeAccountUserViewModel @Inject constructor(
             try {
                 coroutineScope {
                     val homeAccountUser = async { getHomeAccountUserUseCase(Unit) }
-                    val linkStatus = async { getLinkStatusUseCase(GetLinkStatusUseCase.ACCOUNT_LINKING_TYPE) }
                     val offerInterruption = offerInterruptUseCase(
                         mapOf(
                             OfferInterruptUseCase.PARAM_SUPPORT_BIOMETRIC to isSupportBiometric,
@@ -232,7 +211,6 @@ class HomeAccountUserViewModel @Inject constructor(
                     )
 
                     val accountModel = homeAccountUser.await().apply {
-                        this.linkStatus = linkStatus.await().response
                         this.offerInterrupt = offerInterruption.data
                     }
 

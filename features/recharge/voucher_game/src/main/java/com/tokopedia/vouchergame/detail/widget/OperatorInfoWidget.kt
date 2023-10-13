@@ -7,15 +7,15 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.vouchergame.R
 
 /**
  * @author by resakemal on 22/08/19
  */
-class OperatorInfoWidget: BaseCustomView {
+class OperatorInfoWidget : BaseCustomView {
 
     private lateinit var imageContainer: CardView
     private lateinit var imageView: ImageView
@@ -23,36 +23,36 @@ class OperatorInfoWidget: BaseCustomView {
     private lateinit var infoDescription: TextView
 
     var imageUrl: String = ""
-    set(value) {
-        field = value
-        if (::imageContainer.isInitialized && ::imageView.isInitialized) {
-            if (value.isEmpty()) {
-                imageContainer.visibility = View.GONE
-            } else {
-                imageContainer.visibility = View.VISIBLE
-                ImageHandler.LoadImage(imageView, imageUrl)
+        set(value) {
+            field = value
+            if (::imageContainer.isInitialized && ::imageView.isInitialized) {
+                if (value.isEmpty()) {
+                    imageContainer.visibility = View.GONE
+                } else {
+                    imageContainer.visibility = View.VISIBLE
+                    imageView.loadImage(imageUrl)
+                }
             }
         }
-    }
 
     var title: String = ""
-    set(value) {
-        field = value
-        if (::infoTitle.isInitialized) {
-            if (title.isEmpty()) {
-                infoTitle.visibility = View.GONE
-            } else {
-                infoTitle.visibility = View.VISIBLE
-                infoTitle.text = title
+        set(value) {
+            field = value
+            if (::infoTitle.isInitialized) {
+                if (title.isEmpty()) {
+                    infoTitle.visibility = View.GONE
+                } else {
+                    infoTitle.visibility = View.VISIBLE
+                    infoTitle.text = title
+                }
             }
         }
-    }
 
     var description: String = ""
-    set(value) {
-        field = value
-        infoDescription.text = MethodChecker.fromHtml(value)
-    }
+        set(value) {
+            field = value
+            infoDescription.text = MethodChecker.fromHtml(value)
+        }
 
     constructor(context: Context) : super(context) {
         init(context)
@@ -68,7 +68,7 @@ class OperatorInfoWidget: BaseCustomView {
 
     private fun init(context: Context) {
         val view = LayoutInflater.from(context).inflate(R.layout.bottom_sheets_voucher_game_operator, this, true)
-        with (view) {
+        with(view) {
             imageContainer = findViewById(R.id.image_container)
             imageView = findViewById(R.id.info_image)
             infoTitle = findViewById(R.id.info_title)

@@ -19,7 +19,7 @@ class CardAddressPinpointWidget : ConstraintLayout {
     private var binding: CardAddressNewLocBinding? = null
 
     init {
-        binding = CardAddressNewLocBinding.inflate(LayoutInflater.from(context), this, true)
+        binding = CardAddressNewLocBinding.inflate(LayoutInflater.from(context), this)
     }
 
     fun setAddressDistrict(

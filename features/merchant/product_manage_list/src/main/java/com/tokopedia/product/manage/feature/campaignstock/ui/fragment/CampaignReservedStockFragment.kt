@@ -7,12 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageTicker.*
 import com.tokopedia.product.manage.common.feature.list.view.mapper.ProductManageTickerMapper.mapToTickerData
+import com.tokopedia.product.manage.common.util.ProductManageConfig
 import com.tokopedia.product.manage.databinding.FragmentCampaignStockTabBinding
 import com.tokopedia.product.manage.feature.campaignstock.di.DaggerCampaignStockComponent
 import com.tokopedia.product.manage.feature.campaignstock.ui.adapter.typefactory.CampaignStockAdapterTypeFactory
@@ -115,7 +115,7 @@ class CampaignReservedStockFragment: BaseListFragment<Visitable<CampaignStockTyp
     }
 
     private fun setupAdapterModels(isVariant: Boolean) {
-        if (GlobalConfig.isSellerApp()) {
+        if (ProductManageConfig.IS_SELLER_APP) {
             val tickerUiModel = createTickerUiModel()
             val adapterList = when {
                 isVariant && variantReservedEventInfoList.isNotEmpty() -> {

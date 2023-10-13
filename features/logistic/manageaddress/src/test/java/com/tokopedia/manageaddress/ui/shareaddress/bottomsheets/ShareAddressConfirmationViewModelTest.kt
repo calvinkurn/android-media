@@ -11,7 +11,12 @@ import com.tokopedia.manageaddress.domain.usecase.shareaddress.SelectShareAddres
 import com.tokopedia.manageaddress.domain.usecase.shareaddress.ShareAddressToUserUseCase
 import com.tokopedia.track.TrackApp
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
-import io.mockk.*
+import io.mockk.coEvery
+import io.mockk.justRun
+import io.mockk.mockk
+import io.mockk.mockkStatic
+import io.mockk.spyk
+import io.mockk.verify
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -27,6 +32,7 @@ class ShareAddressConfirmationViewModelTest {
     private val loadingObs =
         mockk<Observer<ShareAddressConfirmationViewModel.LoadingState>>(relaxed = true)
     private val dismissObs = mockk<Observer<Unit>>(relaxed = true)
+    private val finishPageObs = mockk<Observer<Unit>>(relaxed = true)
 
     lateinit var viewModel: ShareAddressConfirmationViewModel
 
@@ -42,6 +48,7 @@ class ShareAddressConfirmationViewModelTest {
         viewModel.toastEvent.observeForever(observer)
         viewModel.dismissEvent.observeForever(dismissObs)
         viewModel.loading.observeForever(loadingObs)
+        viewModel.leavePageEvent.observeForever(finishPageObs)
         mockkStatic(TrackApp::class)
         justRun { TrackApp.getInstance().gtm.sendGeneralEvent(any()) }
     }
@@ -133,8 +140,7 @@ class ShareAddressConfirmationViewModelTest {
 
         verify {
             observer.onChanged(ShareAddressConfirmationViewModel.Toast.Success)
-            dismissObs.onChanged(null)
-            loadingObs.onChanged(ShareAddressConfirmationViewModel.LoadingState.NotLoading)
+            finishPageObs.onChanged(null)
         }
     }
 

@@ -35,8 +35,10 @@ class CustomVariantManageBottomSheet(
     @Inject
     lateinit var userSession: UserSessionInterface
     private var binding by autoClearedNullable<AddEditProductCustomVariantManageBottomSheetContentBinding>()
+    private var hasDTStock: Boolean = false
     private var onVariantTypeEditedListener: ((editedIndex: Int, variantDetail: VariantDetail) -> Unit)? = null
     private var onVariantTypeDeletedListener: ((deletedIndex: Int, variantDetail: VariantDetail) -> Unit)? = null
+    private var onHasDTStockListener: (() -> Unit)? = null
 
     init {
         setCloseClickListener {
@@ -132,21 +134,25 @@ class CustomVariantManageBottomSheet(
     }
 
     private fun showDeleteConfDialog(variantDetail: VariantDetail) {
-        DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
-            setTitle(getString(R.string.label_cvt_delete_conf_title, variantDetail.name))
-            setDescription(getString(R.string.label_cvt_delete_conf_desc))
-            setPrimaryCTAText(getString(R.string.action_cancel))
-            setSecondaryCTAText(getString(R.string.action_variant_delete_all_positive))
-            setPrimaryCTAClickListener {
-                dismiss()
-            }
-            setSecondaryCTAClickListener {
-                dismiss()
-                val position = getVariantDetailPosition(variantDetail)
-                    ?: return@setSecondaryCTAClickListener
-                onVariantTypeDeletedListener?.invoke(position, variantDetail)
-            }
-        }.show()
+        if (hasDTStock) {
+            onHasDTStockListener?.invoke()
+        } else {
+            DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle(getString(R.string.label_cvt_delete_conf_title, variantDetail.name))
+                setDescription(getString(R.string.label_cvt_delete_conf_desc))
+                setPrimaryCTAText(getString(R.string.action_cancel))
+                setSecondaryCTAText(getString(R.string.action_variant_delete_all_positive))
+                setPrimaryCTAClickListener {
+                    dismiss()
+                }
+                setSecondaryCTAClickListener {
+                    dismiss()
+                    val position = getVariantDetailPosition(variantDetail)
+                        ?: return@setSecondaryCTAClickListener
+                    onVariantTypeDeletedListener?.invoke(position, variantDetail)
+                }
+            }.show()
+        }
     }
 
     private fun showEditConfDialog(
@@ -206,6 +212,14 @@ class CustomVariantManageBottomSheet(
         listener: (deletedIndex: Int, variantDetail: VariantDetail) -> Unit
     ) {
         onVariantTypeDeletedListener = listener
+    }
+
+    fun setOnHasDTStockListener(listener: () -> Unit) {
+        onHasDTStockListener = listener
+    }
+
+    fun setHasDTStock(hasDTStock: Boolean) {
+        this.hasDTStock = hasDTStock
     }
 
     fun show(manager: FragmentManager?) {

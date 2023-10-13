@@ -15,7 +15,13 @@ object DataMapper {
         val contentList: MutableList<Content> = ArrayList()
         tenureDetail.installmentDetails?.let {
             tenureDetail.installmentDetails.detailContent.map {
-                Content(it.title.orEmpty(), it.value.orEmpty(), it.type)
+                Content(
+                    it.title.orEmpty(),
+                    it.value.orEmpty(),
+                    it.type,
+                    it.titleFormattedLight,
+                    it.titleFormattedDark
+                )
             }.toCollection(contentList)
             val installmentDetails =
                 InstallmentDetails(tenureDetail.installmentDetails.header.orEmpty(), contentList)

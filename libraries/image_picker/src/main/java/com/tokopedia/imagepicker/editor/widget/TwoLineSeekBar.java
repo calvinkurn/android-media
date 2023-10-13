@@ -104,7 +104,7 @@ public class TwoLineSeekBar extends View {
         mThumbPaint.setAntiAlias(true);
         mThumbPaint.setColor(mThumbColor);
         mThumbPaint.setStyle(Paint.Style.FILL);
-        mThumbPaint.setShadowLayer(SHADOW_RADIUS, 0, 0, androidx.core.content.ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N300));
+        mThumbPaint.setShadowLayer(SHADOW_RADIUS, 0, 0, androidx.core.content.ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_NN500));
 
         // Important for certain APIs
         setLayerType(LAYER_TYPE_SOFTWARE, mThumbPaint);

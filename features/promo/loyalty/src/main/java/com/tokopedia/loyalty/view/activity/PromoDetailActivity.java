@@ -5,21 +5,22 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
-
 import androidx.fragment.app.Fragment;
-
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.linker.share.DefaultShare;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.loyalty.R;
 import com.tokopedia.loyalty.di.component.DaggerPromoDetailComponent;
 import com.tokopedia.loyalty.di.component.PromoDetailComponent;
 import com.tokopedia.loyalty.view.data.PromoData;
 import com.tokopedia.loyalty.view.fragment.PromoDetailFragment;
 import com.tokopedia.track.TrackApp;
+import java.util.HashMap;
 
 /**
  * @author Aghny A. Putra on 23/03/18
@@ -32,6 +33,8 @@ public class PromoDetailActivity extends BaseSimpleActivity implements HasCompon
     private static final String EXTRA_PROMO_SLUG = "slug";
     private static final String EXTRA_PROMO_POSITION = "position";
     private static final String EXTRA_PROMO_PAGE = "page";
+    private static final String TAG_PROMO_DETAIL_SLUG = "PROMO_DETAIL_SLUG";
+    private static final String KEY_SLUG = "slug";
 
     private PromoDetailComponent component;
 
@@ -71,6 +74,7 @@ public class PromoDetailActivity extends BaseSimpleActivity implements HasCompon
         if (uri != null) {
             slug = uri.getQueryParameter(EXTRA_PROMO_SLUG);
         }
+        hitSlugToNewRelic(slug);
         if (!TextUtils.isEmpty(slug)) {
             return PromoDetailFragment.newInstance(slug);
         } else if (promoData != null) {
@@ -80,6 +84,18 @@ public class PromoDetailActivity extends BaseSimpleActivity implements HasCompon
         }
         finish();
         return null;
+    }
+
+    private void hitSlugToNewRelic(String slug) {
+        ServerLogger.log(
+                Priority.P2,
+                TAG_PROMO_DETAIL_SLUG,
+                new HashMap() {
+                    {
+                        put(KEY_SLUG, slug);
+                    }
+                }
+        );
     }
 
     @Override

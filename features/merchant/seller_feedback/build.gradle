@@ -3,6 +3,8 @@ apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 android {
+    namespace 'com.tokopedia.sellerfeedback'
+    testNamespace 'com.tokopedia.sellerfeedback.test'
     buildFeatures {
         viewBinding true
         buildConfig true
@@ -26,7 +28,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.sellerActiveCommon)
 
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.libraries.graphql)

@@ -10,9 +10,12 @@ import android.view.MotionEvent
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.imageassets.TokopediaImageUrl
+import com.tokopedia.imageassets.utils.loadProductImage
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
@@ -20,10 +23,13 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.clearImage
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerorder.R
+import com.tokopedia.sellerorder.common.presenter.model.PopUp
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_ACCEPT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_CHANGE_COURIER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_CONFIRM_SHIPPING
+import com.tokopedia.sellerorder.common.util.SomConsts.KEY_CONFIRM_SHIPPING_AUTO
+import com.tokopedia.sellerorder.common.util.SomConsts.KEY_CONFIRM_SHIPPING_DROP_OFF
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REQUEST_PICKUP
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_RESPOND_TO_CANCELLATION
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_RETURN_TO_SHIPPER
@@ -39,8 +45,8 @@ import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.view.binding.viewBinding
 
 open class SomListOrderViewHolder(
-        itemView: View,
-        protected val listener: SomListOrderItemListener
+    itemView: View,
+    protected val listener: SomListOrderItemListener
 ) : AbstractViewHolder<SomListOrderUiModel>(itemView) {
 
     companion object {
@@ -54,6 +60,12 @@ open class SomListOrderViewHolder(
         private val completedOrderStatusCodes = intArrayOf(690, 691, 695, 698, 699, 700, 701)
         private val cancelledOrderStatusCodes = intArrayOf(0, 4, 6, 10, 11, 15)
         private val endedOrderStatusCode = completedOrderStatusCodes.plus(cancelledOrderStatusCodes)
+        private val requestAndConfirmPickupKeys = mutableListOf(
+            KEY_REQUEST_PICKUP,
+            KEY_CONFIRM_SHIPPING,
+            KEY_CONFIRM_SHIPPING_AUTO,
+            KEY_CONFIRM_SHIPPING_DROP_OFF
+        )
     }
 
     protected val binding by viewBinding<ItemSomListOrderBinding>()
@@ -146,16 +158,41 @@ open class SomListOrderViewHolder(
     }
 
     protected open fun setupQuickActionButton(element: SomListOrderUiModel) {
-        binding?.run{
+        binding?.run {
             val firstButton = element.buttons.firstOrNull()
-            if (firstButton != null && !element.multiSelectEnabled) {
-                btnQuickAction?.text = firstButton.displayName
-                btnQuickAction?.buttonVariant = if (firstButton.type == SomConsts.KEY_PRIMARY_DIALOG_BUTTON) UnifyButton.Variant.FILLED else UnifyButton.Variant.GHOST
-                btnQuickAction?.setOnClickListener { onQuickActionButtonClicked(element) }
-                btnQuickAction?.show()
-            } else {
+            if (firstButton == null) {
                 btnQuickAction?.gone()
+                return@run
             }
+
+            btnQuickAction?.text = firstButton.displayName ?: ""
+            btnQuickAction?.buttonVariant =
+                if (firstButton.type == SomConsts.KEY_PRIMARY_DIALOG_BUTTON) {
+                    UnifyButton.Variant.FILLED
+                } else {
+                    UnifyButton.Variant.GHOST
+                }
+
+            btnQuickAction?.setOnClickListener { onQuickActionButtonClicked(element) }
+
+            if (element.multiSelectEnabled) {
+                showQuickButtonOnBulk(firstButton, btnQuickAction)
+            } else {
+                btnQuickAction?.isEnabled = true
+                btnQuickAction?.show()
+            }
+        }
+    }
+
+    private fun showQuickButtonOnBulk(
+        firstButton: SomListOrderUiModel.Button,
+        buttonView: UnifyButton?
+    ) {
+        if (firstButton.isRequestOrConfirmPickup) {
+            buttonView?.isEnabled = false
+            buttonView?.show()
+        } else {
+            buttonView?.gone()
         }
     }
 
@@ -180,7 +217,10 @@ open class SomListOrderViewHolder(
     private fun setupProductList(element: SomListOrderUiModel) {
         binding?.run {
             ivSomListProduct.apply {
-                loadImageRounded(element.orderProduct.firstOrNull()?.picture.orEmpty())
+                loadProductImage(
+                    url = element.orderProduct.firstOrNull()?.picture.orEmpty(),
+                    archivedUrl = TokopediaImageUrl.IMG_ARCHIVED_PRODUCT_SMALL
+                )
                 if (element.tickerInfo.text.isNotBlank()) {
                     setMargin(12.toPx(), 6.5f.dpToPx().toInt(), Int.ZERO, Int.ZERO)
                 } else {
@@ -236,15 +276,10 @@ open class SomListOrderViewHolder(
     private fun setupDeadline(element: SomListOrderUiModel) {
         binding?.run {
             val deadlineText = element.deadlineText
-            val deadlineBackground = Utils.getColoredDeadlineBackground(
-                context = root.context,
-                colorHex = element.deadlineColor,
-                defaultColor = com.tokopedia.unifyprinciples.R.color.Unify_YN600
-            )
             if (deadlineText.isNotBlank()) {
                 tvSomListDeadline.text = deadlineText
+                setupDeadlineStyleFromRollence(element)
                 tvSomListResponseLabel.text = composeDeadlineLabel(element.preOrderType != 0)
-                layoutSomListDeadline.background = deadlineBackground
                 tvSomListResponseLabel.show()
                 layoutSomListDeadline.show()
             } else {
@@ -252,6 +287,52 @@ open class SomListOrderViewHolder(
                 layoutSomListDeadline.gone()
             }
         }
+    }
+
+    private fun ItemSomListOrderBinding.setupDeadlineStyleFromRollence(element: SomListOrderUiModel) {
+        if (Utils.isEnableOperationalGuideline()) {
+            setupDeadlineStyle(element.deadlineStyle)
+        } else {
+            val deadlineBackground = Utils.getColoredDeadlineBackground(
+                context = root.context,
+                colorHex = element.deadlineColor,
+                defaultColor = com.tokopedia.unifyprinciples.R.color.Unify_YN600
+            )
+            layoutSomListDeadline.background = deadlineBackground
+        }
+    }
+
+    private fun ItemSomListOrderBinding.setupDeadlineStyle(deadlineStyle: Int) {
+        when (deadlineStyle) {
+            SomConsts.DEADLINE_MORE_THAN_24_HOURS -> setDeadlineMoreThan24Hours()
+            SomConsts.DEADLINE_BETWEEN_12_TO_24_HOURS -> setDeadlineBetween12To24Hours()
+            SomConsts.DEADLINE_LOWER_THAN_12_HOURS -> setDeadlineLowerThan12Hours()
+            else -> setDeadlineMoreThan24Hours()
+        }
+    }
+
+    private fun ItemSomListOrderBinding.setDeadlineLowerThan12Hours() {
+        val bgDeadline = Utils.getDeadlineDrawable(root.context, com.tokopedia.unifyprinciples.R.color.Unify_RN600)
+        val colorDeadline = MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+        layoutSomListDeadline.background = bgDeadline
+        icDeadline.setImage(newIconId = IconUnify.CLOCK, newLightEnable = colorDeadline)
+        tvSomListDeadline.setTextColor(colorDeadline)
+    }
+
+    private fun ItemSomListOrderBinding.setDeadlineBetween12To24Hours() {
+        val bgDeadline = Utils.getDeadlineDrawable(root.context, com.tokopedia.unifyprinciples.R.color.Unify_RN50)
+        val colorDeadline = MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_RN600)
+        layoutSomListDeadline.background = bgDeadline
+        icDeadline.setImage(newIconId = IconUnify.CLOCK, newLightEnable = colorDeadline)
+        tvSomListDeadline.setTextColor(colorDeadline)
+    }
+
+    private fun ItemSomListOrderBinding.setDeadlineMoreThan24Hours() {
+        val bgDeadline = Utils.getDeadlineDrawable(root.context, com.tokopedia.sellerorder.R.color._dms_som_operational_more_than_24_hour_color)
+        val colorDeadline = MethodChecker.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+        layoutSomListDeadline.background = bgDeadline
+        icDeadline.setImage(newIconId = IconUnify.CLOCK, newLightEnable = colorDeadline)
+        tvSomListDeadline.setTextColor(colorDeadline)
     }
 
     private fun setupInvoice(element: SomListOrderUiModel) {
@@ -314,6 +395,7 @@ open class SomListOrderViewHolder(
             when (button.key) {
                 KEY_TRACK_SELLER -> listener.onTrackButtonClicked(element.orderId, button.url)
                 KEY_CONFIRM_SHIPPING -> listener.onConfirmShippingButtonClicked(button.displayName, element.orderId, skipValidateOrder(element))
+                KEY_CONFIRM_SHIPPING_AUTO, KEY_CONFIRM_SHIPPING_DROP_OFF -> listener.onConfirmShippingAutoButtonClicked(element.buttons.firstOrNull()?.popUp)
                 KEY_ACCEPT_ORDER -> listener.onAcceptOrderButtonClicked(button.displayName, element.orderId, skipValidateOrder(element))
                 KEY_REQUEST_PICKUP -> listener.onRequestPickupButtonClicked(button.displayName, element.orderId, skipValidateOrder(element))
                 KEY_RESPOND_TO_CANCELLATION -> listener.onRespondToCancellationButtonClicked(element)
@@ -362,8 +444,8 @@ open class SomListOrderViewHolder(
                 listener(onSuccess = { _, _ ->
                     binding?.loaderIcSomListOrderPlusRibbon?.gone()
                 }, onError = {
-                    binding?.loaderIcSomListOrderPlusRibbon?.gone()
-                })
+                        binding?.loaderIcSomListOrderPlusRibbon?.gone()
+                    })
             }
             showWithCondition(showOrderPlusRibbon)
         }
@@ -378,8 +460,11 @@ open class SomListOrderViewHolder(
                 CARD_ALPHA_SELECTABLE
             }
         binding?.root?.setOnClickListener {
-            if (element.multiSelectEnabled) touchCheckBox(element)
-            else listener.onOrderClicked(element)
+            if (element.multiSelectEnabled) {
+                touchCheckBox(element)
+            } else {
+                listener.onOrderClicked(element)
+            }
         }
         binding?.cardSomOrder?.setMargin(
             Int.ZERO,
@@ -397,12 +482,18 @@ open class SomListOrderViewHolder(
         return element.cancelRequest != Int.ZERO && element.cancelRequestStatus == Int.ZERO
     }
 
+    private val SomListOrderUiModel.Button.isRequestOrConfirmPickup: Boolean
+        get() {
+            return this.key in requestAndConfirmPickupKeys
+        }
+
     interface SomListOrderItemListener {
         fun onCheckChanged()
         fun onCheckBoxClickedWhenDisabled()
         fun onOrderClicked(order: SomListOrderUiModel)
         fun onTrackButtonClicked(orderId: String, url: String)
         fun onConfirmShippingButtonClicked(actionName: String, orderId: String, skipValidateOrder: Boolean)
+        fun onConfirmShippingAutoButtonClicked(popUp: PopUp?)
         fun onAcceptOrderButtonClicked(actionName: String, orderId: String, skipValidateOrder: Boolean)
         fun onRequestPickupButtonClicked(actionName: String, orderId: String, skipValidateOrder: Boolean)
         fun onRespondToCancellationButtonClicked(order: SomListOrderUiModel)

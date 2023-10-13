@@ -11,6 +11,6 @@
     android:maxLines="2"
     android:paddingStart="4dp"
     android:paddingEnd="4dp"
-    android:textColor="@color/Unify_N700_96"
+    android:textColor="@color/Unify_NN950_96"
     app:typographyType="body_3"
     tools:text="Header Of Table" />

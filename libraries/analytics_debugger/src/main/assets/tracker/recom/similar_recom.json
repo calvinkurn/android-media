@@ -6,13 +6,12 @@
       "eventCategory": "similar product recommendation page",
       "item_list": ".*",
       "event": "select_content",
-      "eventAction": "click - product recommendation",
+      "eventAction": "click - similar product recommendation|click - similar product recommendation - non login",
       "sessionIris" : ".*",
       "items": [{
         "item_id": ".*",
         "price": "\\d*.\\d*|\\d.\\d+E\\d",
         "dimension40": ".*",
-        "dimension83": ".*",
         "dimension90": ".*",
         "dimension61": ".*",
         "attribution": ".*",
@@ -22,17 +21,21 @@
         "item_variant": ".*",
         "item_category": ".*"
       }],
-      "eventLabel": ".*"
+      "eventLabel": ".*, .*",
+      "pageDestination": ".*",
+      "trackerId": "2151|2152",
+      "userId": ".*",
+      "businessUnit": ".*",
+      "currentSite": ".*"
     },
     {
       "eventCategory": "similar product recommendation page",
       "item_list": ".*",
       "item_list_name": ".*",
       "event": "view_item_list",
-      "eventAction": "impression - product recommendation|impression - product recommendation - non login",
+      "eventAction": "impression - similar product recommendation|impression - similar product recommendation - non login",
       "sessionIris" : ".*",
       "items": [{
-        "dimension83": ".*",
         "item_id": ".*",
         "price": "\\d*.\\d*|\\d.\\d+E\\d",
         "dimension40": ".*",
@@ -44,7 +47,12 @@
         "item_variant": ".*",
         "item_category": ".*"
       }],
-      "eventLabel": ".*"
+      "eventLabel": ".*, .*",
+      "pageDestination": ".*",
+      "trackerId": "2149|2150",
+      "userId": ".*",
+      "businessUnit": ".*",
+      "currentSite": ".*"
     }
   ]
 }

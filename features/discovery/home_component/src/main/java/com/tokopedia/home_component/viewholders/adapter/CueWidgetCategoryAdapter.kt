@@ -62,7 +62,7 @@ class CueWidgetCategoryAdapter(
         holder.binding?.run {
             imageCategory.loadImageNormal(
                 grid.imageUrl,
-                com.tokopedia.home_component.R.drawable.placeholder_grey
+                com.tokopedia.topads.sdk.R.drawable.placeholder_grey
             )
             imageCategory.outlineProvider = object : ViewOutlineProvider() {
                 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)

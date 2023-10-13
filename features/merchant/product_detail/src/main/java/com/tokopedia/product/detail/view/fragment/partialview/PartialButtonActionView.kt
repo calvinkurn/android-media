@@ -7,8 +7,10 @@ import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.onKeyboardVisibleListener
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -112,7 +114,7 @@ class PartialButtonActionView private constructor(
         this.isShopOwner = isShopOwner
         this.isShopModerate = isShopModerate
         this.onSuccessGetCartType =
-            cartTypeData != null && cartTypeData.availableButtons.isNotEmpty()
+            cartTypeData != null && cartTypeData.availableButtonsPriority.isNotEmpty()
         this.tokonowButtonData = tokonowButtonData
         renderButton()
     }
@@ -177,10 +179,24 @@ class PartialButtonActionView private constructor(
         btnTokonowVar.hide()
         txtTotalStockTokonowVar.hide()
         dividerTokonow.hide()
+        keyboardVisibleListener()
+    }
+
+    private fun keyboardVisibleListener() {
+        view.onKeyboardVisibleListener(
+            onShow = { rootView, keyboardHeight ->
+                if (rootView.paddingBottom == keyboardHeight) return@onKeyboardVisibleListener
+                rootView.setPadding(Int.ZERO, Int.ZERO, Int.ZERO, keyboardHeight)
+            },
+            onHide = { rootView, _ ->
+                if (rootView.paddingBottom == Int.ZERO) return@onKeyboardVisibleListener
+                rootView.setPadding(Int.ZERO, Int.ZERO, Int.ZERO, Int.ZERO)
+            }
+        )
     }
 
     private fun renderTokoNowVar() = with(view) {
-        val availableButton = cartTypeData?.availableButtons ?: listOf()
+        val availableButton = cartTypeData?.availableButtonsPriority.orEmpty()
         btnTokonowVar.text = availableButton.getOrNull(0)?.text
             ?: context.getString(com.tokopedia.product.detail.common.R.string.plus_product_to_cart)
         btnTokonowVar.generateTheme(
@@ -223,7 +239,7 @@ class PartialButtonActionView private constructor(
 
     private fun renderNormalButtonCartRedirection() = with(binding) {
         qtyButtonPdp.hide()
-        val availableButton = cartTypeData?.availableButtons ?: listOf()
+        val availableButton = cartTypeData?.availableButtonsPriority.orEmpty()
 
         btnBuyNow.showWithCondition(availableButton.firstOrNull() != null)
         btnAddToCart.showWithCondition(availableButton.getOrNull(1) != null)

@@ -6,5 +6,5 @@ data class ShipmentStateRequestData(
     @SerializedName("address_id")
     var addressId: String = "",
     @SerializedName("shop_products")
-    var shopProductDataList: List<ShipmentStateShopProductData>? = null
+    var shopProductDataList: List<ShipmentStateShopProductData> = emptyList()
 )

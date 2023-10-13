@@ -23,7 +23,15 @@ data class ShopScorePenaltyDetailResponse(
             val hasPrev: Boolean = false,
             @Expose
             @SerializedName("result")
-            val result: List<Result> = listOf()
+            val result: List<Result> = listOf(),
+            @SerializedName("startDate")
+            val startDate: String = String.EMPTY,
+            @SerializedName("endDate")
+            val endDate: String = String.EMPTY,
+            @SerializedName("defaultStartDate")
+            val defaultStartDate: String = String.EMPTY,
+            @SerializedName("defaultEndDate")
+            val defaultEndDate: String = String.EMPTY
     ) {
         data class Result(
                 @Expose

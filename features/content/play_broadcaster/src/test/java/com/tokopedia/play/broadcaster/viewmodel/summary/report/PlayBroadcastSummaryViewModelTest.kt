@@ -5,19 +5,26 @@ import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.domain.model.GetChannelResponse
 import com.tokopedia.play.broadcaster.domain.model.interactive.GetSellerLeaderboardSlotResponse
 import com.tokopedia.play.broadcaster.domain.model.interactive.quiz.GetInteractiveSummaryLivestreamResponse
-import com.tokopedia.play.broadcaster.domain.usecase.*
+import com.tokopedia.play.broadcaster.domain.usecase.GetChannelUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.GetLiveStatisticsUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.GetInteractiveSummaryLivestreamUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.GetSellerLeaderboardUseCase
 import com.tokopedia.play.broadcaster.model.UiModelBuilder
 import com.tokopedia.play.broadcaster.robot.PlayBroadcastSummaryViewModelRobot
+import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastSummaryEvent
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.play.broadcaster.ui.model.TrafficMetricType
 import com.tokopedia.play.broadcaster.ui.model.TrafficMetricUiModel
-import com.tokopedia.play.broadcaster.util.*
+import com.tokopedia.play.broadcaster.util.TestHtmlTextTransformer
+import com.tokopedia.play.broadcaster.util.TestUriParser
+import com.tokopedia.play.broadcaster.util.assertEqualTo
+import com.tokopedia.play.broadcaster.util.assertFalse
+import com.tokopedia.play.broadcaster.util.assertTrue
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.mockk
+import org.assertj.core.api.Assertions
 import org.junit.Rule
 import org.junit.Test
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -33,7 +40,7 @@ class PlayBroadcastSummaryViewModelTest {
 
     private val testDispatcher = rule.dispatchers
 
-    private val playBroadcastMapper = PlayBroadcastUiMapper(TestHtmlTextTransformer(), TestUriParser())
+    private val playBroadcastMapper = PlayBroadcastUiMapper(TestHtmlTextTransformer(), TestUriParser(), mockk(relaxed = true))
 
     private val mockGetChannelUseCase: GetChannelUseCase = mockk(relaxed = true)
     private val mockGetLiveStatisticsUseCase: GetLiveStatisticsUseCase = mockk(relaxed = true)
@@ -179,12 +186,14 @@ class PlayBroadcastSummaryViewModelTest {
         )
 
         robot.use {
-            val state = it.recordState { }
+            val (state, events) = it.recordStateAndEvent { }
 
             with(state.channelSummary) {
                 duration.assertEqualTo(mockLiveStatUnder60Second.duration)
                 isEligiblePostVideo.assertFalse()
             }
+
+            Assertions.assertThat(events.last()).isInstanceOf(PlayBroadcastSummaryEvent.VideoUnder60Seconds::class.java)
         }
     }
 
@@ -241,6 +250,66 @@ class PlayBroadcastSummaryViewModelTest {
                 duration.assertEqualTo(mockLiveStatExact1Hour.duration)
                 isEligiblePostVideo.assertTrue()
             }
+        }
+    }
+
+    @Test
+    fun `when duration is in mmss format and below, it should be eligible to post video`() {
+        val mockLiveStat = mockLiveStats.copy(
+            duration = "00:10"
+        )
+
+        coEvery { mockGetChannelUseCase.executeOnBackground() } returns mockChannel
+        coEvery { mockGetLiveStatisticsUseCase.executeOnBackground() } returns mockLiveStat
+        coEvery { mockGetSellerLeaderboardUseCase.executeOnBackground() } returns mockSlotResponse
+        coEvery { mockGetInteractiveSummaryLivestreamUseCase.executeOnBackground() } returns mockParticipant
+        val robot = PlayBroadcastSummaryViewModelRobot(
+            dispatcher = testDispatcher,
+            getChannelUseCase = mockGetChannelUseCase,
+            getLiveStatisticsUseCase = mockGetLiveStatisticsUseCase,
+            getSellerLeaderboardUseCase = mockGetSellerLeaderboardUseCase,
+            getInteractiveSummaryLivestreamUseCase = mockGetInteractiveSummaryLivestreamUseCase
+        )
+
+        robot.use {
+            val (state, events) = it.recordStateAndEvent { }
+
+            with(state.channelSummary) {
+                duration.assertEqualTo(mockLiveStat.duration)
+                isEligiblePostVideo.assertFalse()
+            }
+
+            Assertions.assertThat(events.last()).isInstanceOf(PlayBroadcastSummaryEvent.VideoUnder60Seconds::class.java)
+        }
+    }
+
+    @Test
+    fun `when duration is in ss format and below, it should be eligible to post video`() {
+        val mockLiveStat = mockLiveStats.copy(
+            duration = "10"
+        )
+
+        coEvery { mockGetChannelUseCase.executeOnBackground() } returns mockChannel
+        coEvery { mockGetLiveStatisticsUseCase.executeOnBackground() } returns mockLiveStat
+        coEvery { mockGetSellerLeaderboardUseCase.executeOnBackground() } returns mockSlotResponse
+        coEvery { mockGetInteractiveSummaryLivestreamUseCase.executeOnBackground() } returns mockParticipant
+        val robot = PlayBroadcastSummaryViewModelRobot(
+            dispatcher = testDispatcher,
+            getChannelUseCase = mockGetChannelUseCase,
+            getLiveStatisticsUseCase = mockGetLiveStatisticsUseCase,
+            getSellerLeaderboardUseCase = mockGetSellerLeaderboardUseCase,
+            getInteractiveSummaryLivestreamUseCase = mockGetInteractiveSummaryLivestreamUseCase
+        )
+
+        robot.use {
+            val (state, events) = it.recordStateAndEvent { }
+
+            with(state.channelSummary) {
+                duration.assertEqualTo(mockLiveStat.duration)
+                isEligiblePostVideo.assertFalse()
+            }
+
+            Assertions.assertThat(events.last()).isInstanceOf(PlayBroadcastSummaryEvent.VideoUnder60Seconds::class.java)
         }
     }
 

@@ -55,7 +55,7 @@ internal class FilterCategoryLevelOneViewHolder(
         val binding = binding ?: return
 
         binding.filterCategoryIcon.clearColorFilter()
-        binding.filterCategoryName.setTextColor(getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+        binding.filterCategoryName.setTextColor(getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950_96))
         binding.root.setBackgroundColor(getColor(com.tokopedia.unifyprinciples.R.color.Unify_Background))
     }
 
@@ -63,8 +63,8 @@ internal class FilterCategoryLevelOneViewHolder(
         val binding = binding ?: return
 
         binding.filterCategoryIcon.colorFilter = colorFilter
-        binding.filterCategoryName.setTextColor(getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
-        binding.root.setBackgroundColor(getColor(com.tokopedia.unifyprinciples.R.color.Unify_N50))
+        binding.filterCategoryName.setTextColor(getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
+        binding.root.setBackgroundColor(getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN50))
     }
 
     internal interface HeaderViewHolderCallback {

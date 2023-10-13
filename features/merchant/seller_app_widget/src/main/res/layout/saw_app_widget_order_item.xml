@@ -22,7 +22,7 @@
             android:layout_toStartOf="@+id/tvSawOrderItemOtherOrder"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textColor="@color/Unify_N700"
+            android:textColor="@color/Unify_NN950"
             android:textSize="@dimen/unify_font_12"
             android:textStyle="bold"
             tools:text="Nike React Element..." />
@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_marginTop="@dimen/spacing_lvl1"
-            android:textColor="@color/Unify_N700_44"
+            android:textColor="@color/Unify_NN950_44"
             android:textSize="@dimen/unify_font_10"
             android:visibility="gone"
             tools:text="Batas response 1 hari"
@@ -47,7 +47,7 @@
             android:layout_marginTop="@dimen/spacing_lvl1"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textColor="@color/Unify_N700_44"
+            android:textColor="@color/Unify_NN950_44"
             android:textSize="@dimen/unify_font_10"
             tools:text="Batas response 1 hari" />
     </RelativeLayout>
@@ -67,5 +67,5 @@
         android:visibility="invisible"
         android:layout_below="@+id/imgSawOrderItemProduct"
         android:layout_marginTop="@dimen/layout_lvl1"
-        android:background="@color/Unify_N50" />
+        android:background="@color/Unify_NN50" />
 </RelativeLayout>

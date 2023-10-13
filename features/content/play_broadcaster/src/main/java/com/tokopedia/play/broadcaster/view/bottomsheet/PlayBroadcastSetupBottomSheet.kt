@@ -27,8 +27,8 @@ import com.tokopedia.play.broadcaster.di.setup.DaggerPlayBroadcastSetupComponent
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
 import com.tokopedia.play.broadcaster.ui.model.page.orUnknown
-import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
-import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
+import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
+import com.tokopedia.content.common.util.bottomsheet.ContentDialogCustomizer
 import com.tokopedia.play.broadcaster.util.delegate.retainedComponent
 import com.tokopedia.play.broadcaster.util.pageflow.FragmentPageNavigator
 import com.tokopedia.play.broadcaster.view.contract.PlayBottomSheetCoordinator
@@ -65,7 +65,7 @@ class PlayBroadcastSetupBottomSheet :
     lateinit var dispatcher: CoroutineDispatchers
 
     @Inject
-    lateinit var dialogCustomizer: PlayBroadcastDialogCustomizer
+    lateinit var dialogCustomizer: ContentDialogCustomizer
 
     private lateinit var flFragment: FrameLayout
     private lateinit var flOverlay: FrameLayout
@@ -126,7 +126,13 @@ class PlayBroadcastSetupBottomSheet :
         mListener = null
     }
 
-    override fun <T : Fragment> navigateToFragment(fragmentClass: Class<out T>, extras: Bundle, sharedElements: List<View>, onFragment: (T) -> Unit) {
+    override fun <T : Fragment> navigateToFragment(
+        fragmentClass: Class<out T>,
+        extras: Bundle,
+        sharedElements: List<View>,
+        onFragment: (T) -> Unit,
+        isAddToBackStack: Boolean
+    ) {
         openFragment(fragmentClass, extras, sharedElements)
     }
 

@@ -1,0 +1,91 @@
+{
+  "readme": "Digital PDP paket data Filter and Buy",
+  "mode": "exact",
+  "query": [
+    {
+      "eventAction": "click filter chip",
+      "eventCategory": "digital - homepage",
+      "eventLabel": ".*_.*_.*",
+      "event": "clickDigital",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigitalRecharge",
+      "userId": ".*",
+      "sessionIris": ".*"
+    },
+    {
+      "eventAction": "impression filter chip",
+      "eventCategory": "digital - homepage",
+      "eventLabel": ".*_.*",
+      "event": "viewDigitalIris",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigitalRecharge",
+      "userId": ".*",
+      "sessionIris": ".*"
+    },
+    {
+      "eventAction": "click chevron on total bayar",
+      "eventCategory": "digital - homepage",
+      "eventLabel": ".*_.*_.*_.*",
+      "event": "clickDigital",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigitalRecharge",
+      "userId": ".*",
+      "sessionIris": ".*"
+    },
+    {
+      "eventAction": "impression product cluster",
+      "eventCategory": "digital - homepage",
+      "eventLabel": ".*_.*_.*",
+      "event": "view_item_list",
+      "clientId": ".*",
+      "userId": ".*",
+      "currentSite": "tokopediadigitalRecharge",
+      "businessUnit": "recharge",
+      "sessionIris": ".*",
+      "items": [
+        {
+          "item_id": ".*",
+          "price": ".*",
+          "index": ".*",
+          "item_name": ".*",
+          "item_brand": ".*",
+          "item_variant": ".*",
+          "item_category": ".*"
+        }
+      ]
+    },
+    {
+      "eventAction": "click product cluster",
+      "eventCategory": "digital - homepage",
+      "eventLabel": ".*_.*_.*",
+      "event": "select_content",
+      "clientId": ".*",
+      "userId": ".*",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigitalRecharge",
+      "item_list": ".*",
+      "sessionIris": ".*",
+      "items": [
+        {
+          "item_id": ".*",
+          "price": ".*",
+          "index": ".*",
+          "item_name": ".*",
+          "item_brand": ".*",
+          "item_variant": ".*",
+          "item_category": ".*"
+        }
+      ]
+    },
+    {
+      "eventAction": "click chevron in product cluster",
+      "eventLabel": ".*_.*_.*",
+      "eventCategory": "digital - homepage",
+      "event": "clickDigital",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigitalRecharge",
+      "userId": ".*",
+      "sessionIris": ".*"
+    }
+  ]
+}

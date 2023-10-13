@@ -3,10 +3,10 @@ package com.tokopedia.tokopedianow.category.domain.mapper
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
-import com.tokopedia.tokopedianow.category.domain.mapper.MiniCartMapper.getAddToCartQuantity
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryShowcaseItemUiModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryShowcaseUiModel
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
+import com.tokopedia.tokopedianow.common.domain.mapper.AddToCartMapper.getAddToCartQuantity
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
 
 internal object CategoryPageMapper {
@@ -19,6 +19,7 @@ internal object CategoryPageMapper {
         hasBlockedAddToCart: Boolean
     ): ProductCardCompactUiModel = ProductCardCompactUiModel(
         productId = product.id,
+        warehouseId = product.warehouseIdDefault,
         imageUrl = product.imageUrl300,
         minOrder = product.minOrder,
         maxOrder = product.maxOrder,
@@ -58,15 +59,17 @@ internal object CategoryPageMapper {
         @TokoNowLayoutState state: Int
     ): CategoryShowcaseUiModel = CategoryShowcaseUiModel(
         id = categoryIdL2,
-        productListUiModels = productList.take(MAX_SHOWCASE_PRODUCT).map { product ->
+        productListUiModels = productList.take(MAX_SHOWCASE_PRODUCT).mapIndexed { index, product ->
             CategoryShowcaseItemUiModel(
+                index = index,
                 productCardModel = mapAceSearchProductToProductCard(
                     product = product,
                     miniCartData = miniCartData,
                     hasBlockedAddToCart = hasBlockedAddToCart
                 ),
                 parentProductId = product.parentId,
-                headerName = title
+                headerName = title,
+                shopId = product.shop.id
             )
         },
         title = title,

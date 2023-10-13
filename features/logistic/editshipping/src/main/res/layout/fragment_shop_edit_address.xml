@@ -53,7 +53,7 @@
                         android:scrollbarStyle="insideInset"
                         android:scrollbars="vertical"
                         android:maxLength="25"
-                        android:textColor="@color/Unify_N700_68"
+                        android:textColor="@color/Unify_NN950_68"
                         android:textSize="14sp"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
@@ -66,7 +66,7 @@
                     android:paddingEnd="2dp"
                     android:text=""
                     android:layout_gravity="end"
-                    android:textColor="@color/Unify_N700_68"
+                    android:textColor="@color/Unify_NN950_68"
                     android:textSize="12sp" />
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -87,7 +87,7 @@
                         android:overScrollMode="always"
                         android:scrollbarStyle="insideInset"
                         android:scrollbars="vertical"
-                        android:textColor="@color/Unify_N700_68"
+                        android:textColor="@color/Unify_NN950_68"
                         android:textSize="14sp"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
@@ -109,7 +109,7 @@
                         android:digits="1234567890"
                         android:inputType="number"
                         android:maxLength="5"
-                        android:textColor="@color/Unify_N700"
+                        android:textColor="@color/Unify_NN950"
                         android:textSize="14sp" />
 
 
@@ -134,7 +134,7 @@
                         android:overScrollMode="always"
                         android:scrollbarStyle="insideInset"
                         android:scrollbars="vertical"
-                        android:textColor="@color/Unify_N700_68"
+                        android:textColor="@color/Unify_NN950_68"
                         android:textSize="14sp"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
@@ -146,7 +146,7 @@
                     android:paddingStart="2dp"
                     android:paddingEnd="2dp"
                     android:text=""
-                    android:textColor="@color/Unify_R500"
+                    android:textColor="@color/Unify_RN500"
                     android:textSize="12sp" />
 
 
@@ -154,7 +154,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/tv_pinpoint_location"
-                        android:textColor="@color/Unify_N700_68"
+                        android:textColor="@color/Unify_NN950_68"
                         app:typographyWeight="bold"
                         android:layout_marginTop="24dp"
                         app:typographyType="body_3" />
@@ -165,7 +165,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
                         android:layout_marginBottom="@dimen/unify_space_8"
-                        android:textColor="@color/Unify_N700_68"
+                        android:textColor="@color/Unify_NN950_68"
                         android:text="@string/tv_pinpoint_desc"
                         app:typographyType="body_3"/>
 
@@ -180,14 +180,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:textColor="@color/Unify_N700_68"
+                    android:textColor="@color/Unify_NN950_68"
                     android:text="@string/tv_transaction_desc"
                     app:typographyType="body_3"/>
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/Unify_N75"
+                    android:background="@color/Unify_NN50"
                     android:layout_marginVertical="8dp" />
 
                 <com.tokopedia.unifyprinciples.Typography
@@ -195,7 +195,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textAlignment="center"
-                    android:textColor="@color/Unify_N700_68"
+                    android:textColor="@color/Unify_NN950_68"
                     app:typographyType="body_3" />
 
                 <com.tokopedia.unifycomponents.UnifyButton

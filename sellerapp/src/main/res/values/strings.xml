@@ -27,6 +27,7 @@
     <string name="title_shop_performance">Performa Toko</string>
     <string name="title_penalty_shop_score">Penalti</string>
     <string name="title_penalty_detail_shop_score">Detail Pelanggaran</string>
+    <string name="title_penalty_not_yet_deducted">Belum Berlangsung</string>
 
     <!-- Dynamic feature Product Add Edit -->
     <string name="label_title_add_product">Tambah Produk</string>
@@ -64,4 +65,13 @@
 
     <string name="centralized_promo_toolbar_title">Iklan dan Promosi</string>
     <string name="centralized_promo_first_voucher_label">First Voucher</string>
+
+
+    <!-- Dynamic Features Talk -->
+    <string name="title_talk_discuss">Diskusi</string>
+    <string name="title_reply_page">Balas Pertanyaan</string>
+    <string name="title_write_page">Kirim Pertanyaan</string>
+    <string name="title_seller_settings_page">Pengaturan Diskusi</string>
+
+
 </resources>

@@ -20,7 +20,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/hotel_1dp"
-        android:background="@color/Unify_N75" />
+        android:background="@color/Unify_NN50" />
 
     <com.tokopedia.common.travel.widget.SelectPassengerView
         android:id="@+id/spv_hotel_adult"
@@ -35,7 +35,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/hotel_1dp"
-        android:background="@color/Unify_N75" />
+        android:background="@color/Unify_NN50" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_hotel_save_guest"

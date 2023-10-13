@@ -73,7 +73,7 @@ class RechargeHomepageSearchAutocompleteInstrumentTest {
         Espresso.onView(ViewMatchers.withId(R.id.digital_homepage_search_view)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
                 .perform(ViewActions.click())
         Thread.sleep(1000)
-        Espresso.onView(ViewMatchers.withId(R.id.searchbar_textfield)).check(ViewAssertions.matches(ViewMatchers.isDisplayed())).perform(ViewActions.typeText("pake"))
+        Espresso.onView(ViewMatchers.withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)).check(ViewAssertions.matches(ViewMatchers.isDisplayed())).perform(ViewActions.typeText("pake"))
         Thread.sleep(1000)
     }
 

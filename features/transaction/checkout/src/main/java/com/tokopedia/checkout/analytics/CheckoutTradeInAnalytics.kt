@@ -11,14 +11,11 @@ import com.tokopedia.purchase_platform.common.analytics.TransactionAnalytics
 class CheckoutTradeInAnalytics constructor(val userId: String) : TransactionAnalytics() {
 
     companion object {
-        const val KEY_EVENT = "event"
-        const val KEY_LOGIN_STATUS = "isLoggedInStatus"
         const val KEY_BUSINESS_UNIT = "businessUnit"
         const val KEY_CURRENT_SITE = "currentSite"
         const val KEY_USER_ID = "userId"
         const val KEY_SCREEN_NAME = "screenName"
 
-        const val VALUE_OPEN_SCREEN = "openScreen"
         const val VALUE_TRADE_IN = "trade-in"
         const val VALUE_TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
 
@@ -62,11 +59,11 @@ class CheckoutTradeInAnalytics constructor(val userId: String) : TransactionAnal
     }
 
     fun eventClickKurirTradeIn(label: String?) {
-        sendEventCategoryActionLabel(
+        sendGeneralEvent(
             CLICK_TRADEIN,
             EventCategory.COURIER_SELECTION_TRADE_IN,
             EventAction.CLICK_KURIR_TRADE_IN,
-            label
+            label ?: ""
         )
     }
 
@@ -105,7 +102,7 @@ class CheckoutTradeInAnalytics constructor(val userId: String) : TransactionAnal
     }
 
     // Trade in revamp (2.0)
-    fun sendTradeInCheckoutTracker(isDropOff: Boolean, gtmData: MutableMap<String, Any>) {
+    private fun sendTradeInCheckoutTracker(isDropOff: Boolean, gtmData: MutableMap<String, Any>) {
         gtmData[KEY_BUSINESS_UNIT] = VALUE_TRADE_IN
         gtmData[KEY_CURRENT_SITE] = VALUE_TOKOPEDIA_MARKETPLACE
         gtmData[KEY_USER_ID] = userId
@@ -125,11 +122,10 @@ class CheckoutTradeInAnalytics constructor(val userId: String) : TransactionAnal
         gtmData[KEY_CURRENT_SITE] = VALUE_TOKOPEDIA_MARKETPLACE
         gtmData[KEY_USER_ID] = userId
 
-        var screenName = ""
-        if (isDropOff) {
-            screenName = SCREEN_NAME_DROP_OFF_ADDRESS
+        val screenName: String = if (isDropOff) {
+            SCREEN_NAME_DROP_OFF_ADDRESS
         } else {
-            screenName = SCREEN_NAME_NORMAL_ADDRESS
+            SCREEN_NAME_NORMAL_ADDRESS
         }
 
         sendScreenName(activity, screenName, gtmData)

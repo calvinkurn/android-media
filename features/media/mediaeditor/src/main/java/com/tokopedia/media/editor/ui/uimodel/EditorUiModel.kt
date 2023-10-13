@@ -111,6 +111,20 @@ class EditorUiModel(
         return searchResult
     }
 
+    fun getOverlayTextValue(): EditorAddTextUiModel? {
+        val maxStateLimit = (editList.size - 1) - backValue
+        var searchResult: EditorAddTextUiModel? = null
+
+        editList.forEachIndexed { index, editorDetailUiModel ->
+            if (index > maxStateLimit) return@forEachIndexed
+            if (editorDetailUiModel.addTextValue?.textImagePath?.isNotEmpty() == true) {
+                searchResult = editorDetailUiModel.addTextValue
+            }
+        }
+
+        return searchResult
+    }
+
     companion object {
         private const val UNDO_LIMIT_NON_CROP = 0
         private const val UNDO_LIMIT_AUTO_CROP = 1

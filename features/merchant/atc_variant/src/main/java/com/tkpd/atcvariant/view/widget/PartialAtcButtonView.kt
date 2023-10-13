@@ -32,7 +32,7 @@ class PartialAtcButtonView private constructor(val view: View,
     val shadowDrawable: Drawable? by lazy {
         view.generateBackgroundWithShadow(
                 backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_Background,
-                shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+                shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_NN950_20,
                 topLeftRadius = com.tokopedia.unifyprinciples.R.dimen.layout_lvl0,
                 topRightRadius = com.tokopedia.unifyprinciples.R.dimen.layout_lvl0,
                 bottomLeftRadius = com.tokopedia.unifyprinciples.R.dimen.layout_lvl0,

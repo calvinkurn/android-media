@@ -100,7 +100,7 @@ internal class UniversalSearchTrackingTest {
                     )
                 )
 
-                CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.carouselProductCardRecyclerView, 1)
+                CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, com.tokopedia.carouselproductcard.R.id.carouselProductCardRecyclerView, 1)
             }
             is DoubleLineViewHolder -> {
                 CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.universalSearchDoubleLineRecyclerView, 1)

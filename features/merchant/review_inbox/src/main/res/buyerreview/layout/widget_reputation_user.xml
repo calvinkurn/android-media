@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="2dp"
         android:gravity="center_vertical"
-        android:textColor="@color/Unify_G400"
+        android:textColor="@color/Unify_GN500"
         android:visibility="visible"
         app:typographyType="body_3"
         app:typographyWeight="reguler"

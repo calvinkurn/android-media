@@ -5,13 +5,11 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.ImageView
 import com.airbnb.lottie.LottieAnimationView
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.common_electronic_money.R
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
@@ -20,9 +18,12 @@ import org.jetbrains.annotations.NotNull
 /**
  * Created by Rizky on 15/05/18.
  */
-class TapETollCardView @JvmOverloads constructor(@NotNull context: Context, attrs: AttributeSet? = null,
-                                                 defStyleAttr: Int = 0)
-    : BaseCustomView(context, attrs, defStyleAttr) {
+class TapETollCardView @JvmOverloads constructor(
+    @NotNull context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) :
+    BaseCustomView(context, attrs, defStyleAttr) {
 
     private val textTitle: Typography
     private val textLabel: Typography
@@ -58,7 +59,7 @@ class TapETollCardView @JvmOverloads constructor(@NotNull context: Context, attr
         textTitle.show()
         textLabel.show()
         textTitle.text = resources.getString(R.string.emoney_nfc_reading_card_label_title)
-        textTitle.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700))
+        textTitle.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950))
         textLabel.text = resources.getString(R.string.emoney_nfc_reading_card_label_message)
         lottieAnimationView.visibility = View.VISIBLE
         lottieAnimationView.clearAnimation()
@@ -73,7 +74,7 @@ class TapETollCardView @JvmOverloads constructor(@NotNull context: Context, attr
         textTitle.show()
         textLabel.show()
         textTitle.text = resources.getString(R.string.emoney_nfc_tap_card_instruction_title)
-        textTitle.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700))
+        textTitle.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950))
         textLabel.text = resources.getString(R.string.emoney_nfc_tap_card_instruction_message)
         lottieAnimationView.visibility = View.VISIBLE
         lottieAnimationView.clearAnimation()
@@ -91,30 +92,35 @@ class TapETollCardView @JvmOverloads constructor(@NotNull context: Context, attr
         }
     }
 
-    fun showErrorState(errorMessageTitle: String, errorMessageLabel: String,
-                       imageUrl:String, isButtonShow: Boolean,
-                       mandiriGetSocketTimeout: Boolean,
-                       tapCashWriteFailed: Boolean
+    fun showErrorState(
+        errorMessageTitle: String,
+        errorMessageLabel: String,
+        imageUrl: String,
+        isButtonShow: Boolean,
+        mandiriGetSocketTimeout: Boolean,
+        tapCashWriteFailed: Boolean
     ) {
         textTitle.text = errorMessageTitle
         textLabel.text = errorMessageLabel
         lottieAnimationView.visibility = View.GONE
         imageviewError.visibility = View.VISIBLE
-        buttonTryAgain.visibility = if(isButtonShow) View.VISIBLE else View.GONE
+        buttonTryAgain.visibility = if (isButtonShow) View.VISIBLE else View.GONE
 
-        if(!imageUrl.isNullOrEmpty()){
-            imageviewError.loadImage(imageUrl, R.drawable.emoney_ic_nfc_inactive_placeholder)
+        if (!imageUrl.isNullOrEmpty()) {
+            imageviewError.loadImage(imageUrl) {
+                setPlaceHolder(R.drawable.emoney_ic_nfc_inactive_placeholder)
+            }
         } else {
-            imageviewError.loadImageDrawable(R.drawable.emoney_revamp_connection_issue)
+            imageviewError.loadImage(R.drawable.emoney_ic_nfc_inactive_placeholder)
         }
 
         buttonTryAgain.apply {
-            if(mandiriGetSocketTimeout){
+            if (mandiriGetSocketTimeout) {
                 text = resources.getString(R.string.emoney_nfc_tap_card_button_socket_label)
                 setOnClickListener {
                     listener.goToHome()
                 }
-            } else if(tapCashWriteFailed){
+            } else if (tapCashWriteFailed) {
                 text = resources.getString(R.string.emoney_nfc_tapcash_complaint)
                 setOnClickListener {
                     listener.goToHelpTapcash()
@@ -133,11 +139,13 @@ class TapETollCardView @JvmOverloads constructor(@NotNull context: Context, attr
         textLabel.text = errorMessage
         lottieAnimationView.visibility = View.GONE
         imageviewError.visibility = View.VISIBLE
-        imageviewError.loadImage(resources.getString(R.string.emoney_nfc_not_found), R.drawable.emoney_ic_nfc_inactive_placeholder)
+        imageviewError.loadImage(resources.getString(R.string.emoney_nfc_not_found)) {
+            setPlaceHolder(R.drawable.emoney_ic_nfc_inactive_placeholder)
+        }
         buttonTryAgain.visibility = View.GONE
     }
 
-    fun showGlobalError(errorMessageTitle: String, errorMessageLabel: String){
+    fun showGlobalError(errorMessageTitle: String, errorMessageLabel: String) {
         textTitle.hide()
         textLabel.hide()
         lottieAnimationView.hide()

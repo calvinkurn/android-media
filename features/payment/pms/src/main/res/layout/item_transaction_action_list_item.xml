@@ -26,7 +26,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_5"
         app:typographyWeight="bold"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         android:text="@string/payment_label_cancel_transaction" />
 
     <com.tokopedia.unifycomponents.DividerUnify

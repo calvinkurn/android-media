@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 
 abstract class BaseQuickSingleFilterAdapter<T : BaseItemFilterViewHolder?> : RecyclerView.Adapter<T>() {
 
-    protected var filterList: MutableList<QuickFilterItem>
+    protected var filterList: MutableList<QuickFilterItem> = ArrayList()
     abstract override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): T
     abstract override fun onBindViewHolder(holder: T, position: Int)
     override fun getItemCount(): Int {
@@ -22,7 +22,4 @@ abstract class BaseQuickSingleFilterAdapter<T : BaseItemFilterViewHolder?> : Rec
     val dataList: List<QuickFilterItem>
         get() = filterList
 
-    init {
-        filterList = ArrayList()
-    }
 }

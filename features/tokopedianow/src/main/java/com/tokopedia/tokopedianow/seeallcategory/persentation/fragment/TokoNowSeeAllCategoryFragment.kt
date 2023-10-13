@@ -1,6 +1,5 @@
 package com.tokopedia.tokopedianow.seeallcategory.persentation.fragment
 
-import com.tokopedia.imageassets.TokopediaImageUrl
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,25 +10,25 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.seeallcategory.persentation.viewmodel.TokoNowSeeAllCategoryViewModel
-import com.tokopedia.tokopedianow.categorylist.presentation.activity.TokoNowCategoryListActivity
 import com.tokopedia.tokopedianow.categorylist.presentation.viewmodel.TokoNowCategoryListViewModel
 import com.tokopedia.tokopedianow.common.domain.mapper.CategoryListMapper.mapToSeeAllCategoryItemUiModel
 import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse
+import com.tokopedia.tokopedianow.common.util.ViewUtil.getDpFromDimen
+import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowSeeAllCategoryBinding
+import com.tokopedia.tokopedianow.seeallcategory.analytic.SeeAllCategoryAnalytics
 import com.tokopedia.tokopedianow.seeallcategory.di.component.DaggerSeeAllCategoryComponent
 import com.tokopedia.tokopedianow.seeallcategory.persentation.adapter.SeeAllCategoryAdapter
 import com.tokopedia.tokopedianow.seeallcategory.persentation.adapter.SeeAllCategoryAdapterTypeFactory
 import com.tokopedia.tokopedianow.seeallcategory.persentation.decoration.SeeAllCategoryDecoration
 import com.tokopedia.tokopedianow.seeallcategory.persentation.uimodel.SeeAllCategoryItemUiModel
-import com.tokopedia.tokopedianow.common.util.ViewUtil.getDpFromDimen
-import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowSeeAllCategoryBinding
-import com.tokopedia.tokopedianow.seeallcategory.analytic.SeeAllCategoryAnalytics
 import com.tokopedia.tokopedianow.seeallcategory.persentation.viewholder.SeeAllCategoryItemViewHolder
+import com.tokopedia.tokopedianow.seeallcategory.persentation.viewmodel.TokoNowSeeAllCategoryViewModel
 import com.tokopedia.unifycomponents.setImage
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -37,18 +36,14 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class TokoNowSeeAllCategoryFragment: Fragment(), SeeAllCategoryItemViewHolder.SeeAllCategoryListener {
+class TokoNowSeeAllCategoryFragment : Fragment(), SeeAllCategoryItemViewHolder.SeeAllCategoryListener {
 
     companion object {
         private const val ERROR_STATE_NOT_FOUND_IMAGE_URL = TokopediaImageUrl.ERROR_STATE_NOT_FOUND_IMAGE_URL
         private const val SPAN_COUNT = 3
 
-        fun newInstance(warehouseId: String): TokoNowSeeAllCategoryFragment {
-            return TokoNowSeeAllCategoryFragment().apply {
-                arguments = Bundle().apply {
-                    putString(TokoNowCategoryListActivity.PARAM_WAREHOUSE_ID, warehouseId)
-                }
-            }
+        fun newInstance(): TokoNowSeeAllCategoryFragment {
+            return TokoNowSeeAllCategoryFragment()
         }
     }
 
@@ -60,9 +55,6 @@ class TokoNowSeeAllCategoryFragment: Fragment(), SeeAllCategoryItemViewHolder.Se
 
     private var binding by autoClearedNullable<FragmentTokopedianowSeeAllCategoryBinding>()
     private var adapter by autoClearedNullable<SeeAllCategoryAdapter>()
-
-    private val warehouseId: String
-        get() = arguments?.getString(TokoNowCategoryListActivity.PARAM_WAREHOUSE_ID).orEmpty()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentTokopedianowSeeAllCategoryBinding.inflate(inflater, container, false)
@@ -88,7 +80,7 @@ class TokoNowSeeAllCategoryFragment: Fragment(), SeeAllCategoryItemViewHolder.Se
         analytics.onCategoryClicked(
             categoryId = data.id,
             categoryName = data.name,
-            warehouseId = warehouseId,
+            warehouseId = getWarehouseId(),
             position = position
         )
     }
@@ -97,7 +89,7 @@ class TokoNowSeeAllCategoryFragment: Fragment(), SeeAllCategoryItemViewHolder.Se
         analytics.onCategoryImpressed(
             categoryId = data.id,
             categoryName = data.name,
-            warehouseId = warehouseId,
+            warehouseId = getWarehouseId(),
             position = position
         )
     }
@@ -130,18 +122,18 @@ class TokoNowSeeAllCategoryFragment: Fragment(), SeeAllCategoryItemViewHolder.Se
         )
         errorState.setType(errorType)
 
-        if(errorCode == TokoNowCategoryListViewModel.ERROR_PAGE_NOT_FOUND){
+        if (errorCode == TokoNowCategoryListViewModel.ERROR_PAGE_NOT_FOUND) {
             setupGlobalErrorPageNotFound()
-        } else if (errorCode == TokoNowCategoryListViewModel.ERROR_SERVER || errorCode == TokoNowCategoryListViewModel.ERROR_MAINTENANCE){
+        } else if (errorCode == TokoNowCategoryListViewModel.ERROR_SERVER || errorCode == TokoNowCategoryListViewModel.ERROR_MAINTENANCE) {
             setupGlobalErrorServerMaintenance()
-        } else if(errorType == GlobalError.NO_CONNECTION){
+        } else if (errorType == GlobalError.NO_CONNECTION) {
             setupGlobalErrorNoConnection()
         } else {
             setActionClickTryAgainListener()
         }
     }
 
-    private fun FragmentTokopedianowSeeAllCategoryBinding.setupGlobalErrorPageNotFound(){
+    private fun FragmentTokopedianowSeeAllCategoryBinding.setupGlobalErrorPageNotFound() {
         errorState.apply {
             errorIllustration.setImage(ERROR_STATE_NOT_FOUND_IMAGE_URL, 0f)
             errorTitle.text = context?.getString(R.string.tokopedianow_category_list_bottom_sheet_error_not_found_title).orEmpty()
@@ -165,15 +157,15 @@ class TokoNowSeeAllCategoryFragment: Fragment(), SeeAllCategoryItemViewHolder.Se
         setActionClickTryAgainListener()
     }
 
-    private fun FragmentTokopedianowSeeAllCategoryBinding.setActionClickTryAgainListener(){
+    private fun FragmentTokopedianowSeeAllCategoryBinding.setActionClickTryAgainListener() {
         errorState.setActionClickListener {
             getCategoryList()
         }
     }
 
-    private fun FragmentTokopedianowSeeAllCategoryBinding.onSuccessGetCategoryListResponse(result : Success<GetCategoryListResponse.CategoryListResponse>) {
+    private fun FragmentTokopedianowSeeAllCategoryBinding.onSuccessGetCategoryListResponse(result: Success<GetCategoryListResponse.CategoryListResponse>) {
         hideLoader()
-        if(result.data.header.errorCode.isNullOrEmpty()){
+        if (result.data.header.errorCode.isNullOrEmpty()) {
             adapter?.submitList(result.data.mapToSeeAllCategoryItemUiModel())
         } else {
             showGlobalError(
@@ -187,7 +179,7 @@ class TokoNowSeeAllCategoryFragment: Fragment(), SeeAllCategoryItemViewHolder.Se
         showGlobalError(result.throwable)
     }
 
-    private fun FragmentTokopedianowSeeAllCategoryBinding.showGlobalError(throwable: Throwable?, errorCode: String = ""){
+    private fun FragmentTokopedianowSeeAllCategoryBinding.showGlobalError(throwable: Throwable?, errorCode: String = "") {
         showError()
         setupGlobalError(
             throwable = throwable,
@@ -207,7 +199,7 @@ class TokoNowSeeAllCategoryFragment: Fragment(), SeeAllCategoryItemViewHolder.Se
         errorState.hide()
     }
 
-    private fun FragmentTokopedianowSeeAllCategoryBinding.showError(){
+    private fun FragmentTokopedianowSeeAllCategoryBinding.showError() {
         rvCategoryMenu.hide()
         errorState.show()
     }
@@ -230,7 +222,7 @@ class TokoNowSeeAllCategoryFragment: Fragment(), SeeAllCategoryItemViewHolder.Se
     private fun observeLiveData() {
         binding?.apply {
             observe(viewModelTokoNow.categoryList) {
-                when(it) {
+                when (it) {
                     is Success -> onSuccessGetCategoryListResponse(it)
                     is Fail -> onFailGetCategoryListResponse(it)
                 }
@@ -239,7 +231,7 @@ class TokoNowSeeAllCategoryFragment: Fragment(), SeeAllCategoryItemViewHolder.Se
     }
 
     private fun getGlobalErrorType(throwable: Throwable?, errorCode: String = ""): Int {
-        return when{
+        return when {
             throwable is UnknownHostException -> GlobalError.NO_CONNECTION
             errorCode == TokoNowCategoryListViewModel.ERROR_PAGE_FULL -> GlobalError.PAGE_FULL
             errorCode == TokoNowCategoryListViewModel.ERROR_SERVER -> GlobalError.SERVER_ERROR
@@ -253,7 +245,10 @@ class TokoNowSeeAllCategoryFragment: Fragment(), SeeAllCategoryItemViewHolder.Se
     }
 
     private fun getCategoryList() {
-        viewModelTokoNow.getCategoryList(warehouseId)
+        viewModelTokoNow.getCategoryList()
     }
 
+    private fun getWarehouseId(): String {
+        return viewModelTokoNow.getWarehouseId()
+    }
 }

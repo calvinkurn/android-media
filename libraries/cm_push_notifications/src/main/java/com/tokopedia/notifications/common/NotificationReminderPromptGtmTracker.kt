@@ -33,12 +33,14 @@ class NotificationReminderPromptGtmTracker constructor(
     }
     private var trackerId = CMConstant.GtmTrackerEvents.VALUE_TRACKER_ID_REMINDER_VIEW
     private var pageType = ""
+    private val frequencyKey = useCase + userSession.userId
 
     fun sendReminderPromptImpressionEvent(context: Context, pagePath: String) {
         if (GlobalConfig.isSellerApp()) {
             trackerId = CMConstant.GtmTrackerEvents.VALUE_TRACKER_ID_REMINDER_VIEW_SA
         }
-        updateReminderPromptFrequency(useCase)
+
+        updateReminderPromptFrequency(frequencyKey)
         createMapAndSendEvent(
             CMConstant.GtmTrackerEvents.VALUE_EVENT_VIEW_CONTENT,
             CMConstant.GtmTrackerEvents.VALUE_ACTION_IMPRESSION,
@@ -97,7 +99,7 @@ class NotificationReminderPromptGtmTracker constructor(
         } else {
             userSession.userId
         }
-        val frequency = sharedPreference.getInt(useCase, 0)
+        val frequency = sharedPreference.getInt(frequencyKey, 0)
 
         val adsId = DeviceInfo.getAdsId(context)
         val useCase = getUseCaseValue()

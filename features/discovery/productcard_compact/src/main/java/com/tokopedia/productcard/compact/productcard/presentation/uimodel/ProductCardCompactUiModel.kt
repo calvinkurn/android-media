@@ -1,7 +1,10 @@
 package com.tokopedia.productcard.compact.productcard.presentation.uimodel
 
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
+
 data class ProductCardCompactUiModel(
     val productId: String = "",
+    val warehouseId: String = "",
     val imageUrl: String = "",
     val minOrder: Int = 0,
     val maxOrder: Int = 0,
@@ -46,6 +49,8 @@ data class ProductCardCompactUiModel(
     fun isOos() = getOosLabelGroup() != null
     fun isFlashSale() = progressBarLabel.isNotBlank() && !isOos()
     fun isNormal() = !isOos() && !isFlashSale()
+
+    fun getPriceLong() = price.filter { it.isDigit() }.toLongOrZero()
 
     data class LabelGroup(
         val position: String = "",

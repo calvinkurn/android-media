@@ -13,7 +13,7 @@
         android:text="@string/title_promote"
         android:textSize="18sp"
         android:textStyle="bold"
-        android:textColor="@color/Unify_N700"
+        android:textColor="@color/Unify_NN950"
         android:layout_marginBottom="5dp" />
 
     <LinearLayout
@@ -41,7 +41,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/learn_more"
-        android:textColor="@color/Unify_G500" />
+        android:textColor="@color/Unify_GN500" />
 
     <Space
         android:layout_width="match_parent"
@@ -53,7 +53,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:padding="10dp"
-        android:background="@color/Unify_G500"
-        android:textColor="@color/Unify_N0"
+        android:background="@color/Unify_GN500"
+        android:textColor="@color/Unify_NN0"
         android:text="@string/close" />
 </LinearLayout>

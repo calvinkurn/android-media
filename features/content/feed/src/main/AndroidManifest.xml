@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tokopedia.feedplus">
 
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <application
         android:allowBackup="true"
         android:supportsRtl="true">
@@ -35,6 +37,39 @@
 
                 <data
                     android:host="@string/host_feed_play_live_detail"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.tokopedia.feedplus.detail.FeedDetailActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_content"
+                    android:pathPattern="@string/path_content_detail_page"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.tokopedia.feedplus.browse.presentation.FeedBrowseActivity"
+            android:exported="false"
+            android:theme="@style/Theme.White">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_feed"
+                    android:pathPattern="@string/path_content_browse"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>

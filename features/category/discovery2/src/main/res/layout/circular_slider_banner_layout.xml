@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="10dp"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:visibility="gone"
@@ -44,5 +44,27 @@
         app:layout_constraintBottom_toBottomOf="@id/circular_slider_banner"
         android:visibility="gone"
         tools:visibility="visible"/>
+
+    <com.tokopedia.unifycomponents.PageControl
+        android:id="@+id/expandable_indicator_banner_turned_off"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@id/circular_slider_banner"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:visibility="visible" />
+
+    <com.tokopedia.home_component.customview.bannerindicator.BannerIndicator
+        android:id="@+id/expandable_indicator_banner_turned_on"
+        android:layout_width="wrap_content"
+        android:layout_height="6dp"
+        android:layout_marginBottom="12dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@id/circular_slider_banner"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
