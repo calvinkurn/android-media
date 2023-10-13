@@ -6,14 +6,15 @@ import android.view.View
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.custom.messagebubble.base.BaseTopChatFlexBoxChatLayout
 
-
-class TopChatChatRoomFlexBoxLayout : BaseTopChatFlexBoxChatLayout {
-
-    constructor(context: Context) : super(context)
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
-    constructor(
-        context: Context, attrs: AttributeSet?, defStyleAttr: Int
-    ) : super(context, attrs, defStyleAttr)
+class TopChatChatRoomFlexBoxLayout(
+    context: Context,
+    attrs: AttributeSet?,
+    defStyleAttr: Int
+) : BaseTopChatFlexBoxChatLayout(
+    context,
+    attrs,
+    defStyleAttr
+) {
 
     override fun getLayout(): Int {
         return LAYOUT

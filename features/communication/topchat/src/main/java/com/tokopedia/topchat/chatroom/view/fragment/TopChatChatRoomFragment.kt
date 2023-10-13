@@ -212,7 +212,7 @@ import com.tokopedia.localizationchooseaddress.R as localizationchooseaddressR
  * @author : Steven 29/11/18
  */
 
-open class TopChatChatRoomRoomFragment :
+open class TopChatChatRoomFragment :
     BaseChatFragment(),
     TopChatContract.View,
     TypingListener,
@@ -3556,7 +3556,7 @@ open class TopChatChatRoomRoomFragment :
         const val ROLLENCE_UPLOAD_SECURE = "chat_upsecure_an"
 
         fun createInstance(bundle: Bundle): BaseChatFragment {
-            return TopChatChatRoomRoomFragment().apply {
+            return TopChatChatRoomFragment().apply {
                 arguments = bundle
             }
         }

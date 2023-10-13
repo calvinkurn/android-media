@@ -25,8 +25,8 @@ import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaMessageA
 import com.tokopedia.topchat.chatroom.view.adapter.util.MessageOnTouchListener
 import com.tokopedia.unifyprinciples.Typography
 import kotlin.math.abs
-import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import com.tokopedia.chat_common.R as chat_commonR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 abstract class BaseTopChatFlexBoxChatLayout : ViewGroup {
 
@@ -66,7 +66,9 @@ abstract class BaseTopChatFlexBoxChatLayout : ViewGroup {
     }
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
-        context, attrs, defStyleAttr
+        context,
+        attrs,
+        defStyleAttr
     ) {
         initConfig(context, attrs)
     }
@@ -339,19 +341,39 @@ abstract class BaseTopChatFlexBoxChatLayout : ViewGroup {
          * get measurement and layout params of direct child
          */
         measureChildWithMargins(
-            message, widthMeasureSpec, 0, heightMeasureSpec, 0
+            message,
+            widthMeasureSpec,
+            0,
+            heightMeasureSpec,
+            0
         )
         measureChildWithMargins(
-            info, widthMeasureSpec, 0, heightMeasureSpec, 0
+            info,
+            widthMeasureSpec,
+            0,
+            heightMeasureSpec,
+            0
         )
         measureChildWithMargins(
-            status, widthMeasureSpec, 0, heightMeasureSpec, 0
+            status,
+            widthMeasureSpec,
+            0,
+            heightMeasureSpec,
+            0
         )
         measureChildWithMargins(
-            header, widthMeasureSpec, 0, heightMeasureSpec, 0
+            header,
+            widthMeasureSpec,
+            0,
+            heightMeasureSpec,
+            0
         )
         measureChildWithMargins(
-            icon, widthMeasureSpec, 0, heightMeasureSpec, 0
+            icon,
+            widthMeasureSpec,
+            0,
+            heightMeasureSpec,
+            0
         )
 
         /**
@@ -394,17 +416,18 @@ abstract class BaseTopChatFlexBoxChatLayout : ViewGroup {
         if (messageWidth > messageMaxWidth) {
             totalHeight -= messageHeight
             val messageWidthSpec = MeasureSpec.makeMeasureSpec(
-                messageMaxWidth, MeasureSpec.EXACTLY
+                messageMaxWidth,
+                MeasureSpec.EXACTLY
             )
-            message!!.measure(messageWidthSpec, heightMeasureSpec)
+            message?.measure(messageWidthSpec, heightMeasureSpec)
             messageHeight = getTotalVisibleHeight(message)
             totalHeight += messageHeight
         }
         // Measure msg last line dimension
         var isOverlapped = false
-        val msgLineCount = message!!.lineCount
+        val msgLineCount = message?.lineCount ?: 0
         val msgLastLineWidth: Float = if (msgLineCount > 0) {
-            message!!.layout.getLineWidth(msgLineCount - 1)
+            message?.layout?.getLineWidth(msgLineCount - 1) ?: 0f
         } else {
             0f
         }
@@ -422,7 +445,7 @@ abstract class BaseTopChatFlexBoxChatLayout : ViewGroup {
         if (thirdRowWidthDiff < 0) {
             totalWidth += abs(thirdRowWidthDiff)
         }
-        val thirdRowHeight = if (isOverlapped && info!!.isVisible) {
+        val thirdRowHeight = if (isOverlapped && info?.isVisible == true) {
             abs(infoHeight - statusHeight)
         } else {
             infoHeight
@@ -433,9 +456,10 @@ abstract class BaseTopChatFlexBoxChatLayout : ViewGroup {
         if (infoWidth > infoMaxWidth) {
             totalHeight -= infoHeight
             val infoWidthSpec = MeasureSpec.makeMeasureSpec(
-                infoMaxWidth, MeasureSpec.EXACTLY
+                infoMaxWidth,
+                MeasureSpec.EXACTLY
             )
-            info!!.measure(infoWidthSpec, heightMeasureSpec)
+            info?.measure(infoWidthSpec, heightMeasureSpec)
             infoHeight = getTotalVisibleHeight(info)
             totalHeight += infoHeight
         }
@@ -445,7 +469,7 @@ abstract class BaseTopChatFlexBoxChatLayout : ViewGroup {
 
         setMeasuredDimension(
             resolveSize(totalWidth, widthMeasureSpec),
-            resolveSize(totalHeight, heightMeasureSpec),
+            resolveSize(totalHeight, heightMeasureSpec)
         )
     }
 
@@ -455,11 +479,11 @@ abstract class BaseTopChatFlexBoxChatLayout : ViewGroup {
         /**
          * Layout Header
          */
-        if (header!!.isVisible) {
+        if (header?.isVisible == true) {
             val leftHeader = paddingStart
             val topHeader = topOffset
-            val rightHeader = paddingStart + header!!.measuredWidth
-            val bottomHeader = topHeader + header!!.measuredHeight
+            val rightHeader = paddingStart + (header?.measuredWidth ?: 0)
+            val bottomHeader = topHeader + (header?.measuredHeight ?: 0)
             header?.layout(
                 leftHeader,
                 topHeader,
@@ -501,12 +525,12 @@ abstract class BaseTopChatFlexBoxChatLayout : ViewGroup {
         /**
          * Layout info
          */
-        if (info!!.isVisible) {
-            val infoLp = info!!.layoutParams as MarginLayoutParams
+        if (info?.isVisible == true) {
+            val infoLp = info?.layoutParams as MarginLayoutParams
             val leftInfo = paddingStart
             val topInfo = topOffset + infoLp.topMargin
-            val rightInfo = paddingStart + info!!.measuredWidth
-            val bottomInfo = topInfo + info!!.measuredHeight
+            val rightInfo = paddingStart + (info?.measuredWidth ?: 0)
+            val bottomInfo = topInfo + (info?.measuredHeight ?: 0)
             info?.layout(
                 leftInfo,
                 topInfo,
@@ -518,17 +542,16 @@ abstract class BaseTopChatFlexBoxChatLayout : ViewGroup {
         /**
          * Layout status
          */
-        val leftStatus = measuredWidth - paddingEnd - status!!.measuredWidth
-        val topStatus = measuredHeight - paddingBottom - status!!.measuredHeight
+        val leftStatus = measuredWidth - paddingEnd - (status?.measuredWidth ?: 0)
+        val topStatus = measuredHeight - paddingBottom - (status?.measuredHeight ?: 0)
         val rightStatus = measuredWidth - paddingEnd
         val bottomStatus = measuredHeight - paddingBottom
-        status!!.layout(
+        status?.layout(
             leftStatus,
             topStatus,
             rightStatus,
             bottomStatus
         )
-
     }
 
     protected fun getTotalVisibleWidth(view: View?): Int {

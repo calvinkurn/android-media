@@ -7,7 +7,7 @@ import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.di.ChatComponent
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
-import com.tokopedia.topchat.stub.chatroom.view.fragment.TopChatChatRoomRoomFragmentStub
+import com.tokopedia.topchat.stub.chatroom.view.fragment.TopChatChatRoomFragmentStub
 
 class TopChatRoomActivityStub : TopChatRoomActivity() {
 
@@ -21,7 +21,7 @@ class TopChatRoomActivityStub : TopChatRoomActivity() {
     }
 
     override fun createChatRoomFragment(bundle: Bundle): BaseChatFragment {
-        return TopChatChatRoomRoomFragmentStub.createInstance(bundle)
+        return TopChatChatRoomFragmentStub.createInstance(bundle)
     }
 
     override fun getTagFragment(): String {

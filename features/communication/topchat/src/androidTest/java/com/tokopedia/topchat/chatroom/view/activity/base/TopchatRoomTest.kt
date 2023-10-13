@@ -46,7 +46,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStic
 import com.tokopedia.topchat.chatroom.service.UploadImageChatService
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopchatProductAttachmentViewHolder
 import com.tokopedia.topchat.chatroom.view.custom.messagebubble.regular.TopChatChatRoomFlexBoxLayout
-import com.tokopedia.topchat.chatroom.view.fragment.TopChatChatRoomRoomFragment
+import com.tokopedia.topchat.chatroom.view.fragment.TopChatChatRoomFragment
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatViewModel
 import com.tokopedia.topchat.chattemplate.domain.pojo.GetChatTemplateResponse
 import com.tokopedia.topchat.common.TopChatInternalRouter
@@ -256,14 +256,14 @@ abstract class TopchatRoomTest {
 
     protected open fun enableUploadSecure() {
         abTestPlatform.setString(
-            TopChatChatRoomRoomFragment.ROLLENCE_UPLOAD_SECURE,
-            TopChatChatRoomRoomFragment.ROLLENCE_UPLOAD_SECURE
+            TopChatChatRoomFragment.ROLLENCE_UPLOAD_SECURE,
+            TopChatChatRoomFragment.ROLLENCE_UPLOAD_SECURE
         )
     }
 
     protected open fun disableUploadSecure() {
         abTestPlatform.setString(
-            TopChatChatRoomRoomFragment.ROLLENCE_UPLOAD_SECURE,
+            TopChatChatRoomFragment.ROLLENCE_UPLOAD_SECURE,
             ""
         )
     }
