@@ -200,7 +200,6 @@ class ThanksPageDataViewModel @Inject constructor(
                 GyroRecommendationWidgetModel.TAG,
                 MarketplaceRecommendationWidgetModel.TAG,
                 HeadlineAdsWidgetModel.TAG,
-                FLASHSALE_TAG,
                 DigitalRecommendationWidgetModel.TAG,
                 BannerWidgetModel.TAG
             )
@@ -282,6 +281,8 @@ class ThanksPageDataViewModel @Inject constructor(
     }
 
     private fun getFlashSaleData(channelID: String, location: String) {
+        if (widgetOrder.indexOf(FLASHSALE_TAG) == -1) return
+
         launch(coroutineContext) {
             val homeChannel = dynamicChannelRepository.getRemoteData(Bundle().apply {
                 putString("channelIDs", channelID)
