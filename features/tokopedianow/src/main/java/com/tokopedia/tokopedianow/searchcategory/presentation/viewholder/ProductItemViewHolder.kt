@@ -29,9 +29,6 @@ class ProductItemViewHolder(
 
     override fun bind(element: ProductItemDataView) {
         binding?.productCard?.apply {
-            setData(
-                model = element.productCardModel
-            )
             setOnClickListener {
                 listener?.onProductClick(
                     productItemDataView = element
@@ -60,6 +57,9 @@ class ProductItemViewHolder(
             setOnBlockAddToCartListener {
                 listener?.onProductCardAddToCartBlocked()
             }
+            setData(
+                model = element.productCardModel
+            )
             addOnImpressionListener(element) {
                 listener?.onProductImpressed(
                     productItemDataView = element

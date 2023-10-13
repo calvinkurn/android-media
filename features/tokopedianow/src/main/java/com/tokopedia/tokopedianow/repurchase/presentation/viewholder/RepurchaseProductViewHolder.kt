@@ -30,9 +30,6 @@ class RepurchaseProductViewHolder(
 
     override fun bind(item: RepurchaseProductUiModel) {
         binding?.productCard?.apply {
-            setData(
-                model = item.productCardModel
-            )
             setOnClickListener {
                 goToProductDetail(item)
                 listener?.onClickProduct(item, item.position)
@@ -51,6 +48,9 @@ class RepurchaseProductViewHolder(
             )
             setListener(
                 productCardCompactListener = productCardCompactListener
+            )
+            setData(
+                model = item.productCardModel
             )
             addOnImpressionListener(item) {
                 listener?.onProductImpressed(item)

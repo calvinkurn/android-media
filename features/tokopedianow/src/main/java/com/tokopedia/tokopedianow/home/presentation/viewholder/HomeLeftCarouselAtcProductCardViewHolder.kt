@@ -23,9 +23,6 @@ class HomeLeftCarouselAtcProductCardViewHolder(
 
     override fun bind(element: HomeLeftCarouselAtcProductCardUiModel) {
         binding?.productCard?.apply {
-            setData(
-                model = element.productCardModel
-            )
             setOnClickListener {
                 listener?.onProductCardClicked(
                     position = layoutPosition,
@@ -46,6 +43,9 @@ class HomeLeftCarouselAtcProductCardViewHolder(
             setOnBlockAddToCartListener {
                 listener?.onProductCardAddToCartBlocked()
             }
+            setData(
+                model = element.productCardModel
+            )
             addOnImpressionListener(element) {
                 listener?.onProductCardImpressed(
                     position = layoutPosition,

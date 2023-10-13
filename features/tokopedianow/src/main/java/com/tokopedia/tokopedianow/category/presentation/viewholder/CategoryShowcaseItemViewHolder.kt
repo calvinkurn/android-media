@@ -38,9 +38,6 @@ class CategoryShowcaseItemViewHolder(
     override fun bind(element: CategoryShowcaseItemUiModel) {
         job = lifecycleOwner?.lifecycleScope?.launch(Dispatchers.Main.immediate) {
             binding?.productCard?.apply {
-                setData(
-                    model = element.productCardModel
-                )
                 setOnClickListener {
                     listener?.onProductCardClicked(
                         context = context,
@@ -74,6 +71,9 @@ class CategoryShowcaseItemViewHolder(
                 setOnBlockAddToCartListener {
                     listener?.onProductCardAddToCartBlocked()
                 }
+                setData(
+                    model = element.productCardModel
+                )
                 addOnImpressionListener(element) {
                     listener?.onProductCardImpressed(
                         position = layoutPosition,

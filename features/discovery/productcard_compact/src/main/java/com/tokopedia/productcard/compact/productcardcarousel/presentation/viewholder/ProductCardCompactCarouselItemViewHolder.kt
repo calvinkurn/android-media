@@ -28,9 +28,6 @@ class ProductCardCompactCarouselItemViewHolder(
 
     override fun bind(element: ProductCardCompactCarouselItemUiModel) {
         binding?.productCard?.apply {
-            setData(
-                model = element.productCardModel
-            )
             setOnClickListener {
                 listener?.onProductCardClicked(
                     position = layoutPosition,
@@ -53,6 +50,9 @@ class ProductCardCompactCarouselItemViewHolder(
             setOnBlockAddToCartListener {
                 listener?.onProductCardAddToCartBlocked()
             }
+            setData(
+                model = element.productCardModel
+            )
             addOnImpressionListener(element.impressHolder) {
                 listener?.onProductCardImpressed(
                     position = layoutPosition,
