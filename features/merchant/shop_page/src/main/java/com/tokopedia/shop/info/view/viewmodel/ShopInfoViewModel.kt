@@ -15,6 +15,7 @@ import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Compani
 import com.tokopedia.shop.common.graphql.data.shopinfo.ChatExistingChat
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopnote.gql.GetShopNoteUseCase
+import com.tokopedia.shop.info.domain.GetEpharmacyShopInfoUseCase
 import com.tokopedia.shop_widget.note.view.model.ShopNoteUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -22,7 +23,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
-import java.net.UnknownHostException
 import javax.inject.Inject
 
 class ShopInfoViewModel @Inject constructor(
@@ -31,7 +31,8 @@ class ShopInfoViewModel @Inject constructor(
     private val getShopInfoUseCase: GQLGetShopInfoUseCase,
     private val getShopReputationUseCase: GetShopReputationUseCase,
     private val getMessageIdChatUseCase: GetMessageIdChatUseCase,
-    private val coroutineDispatcherProvider: CoroutineDispatchers
+    private val coroutineDispatcherProvider: CoroutineDispatchers,
+    private val getEpharmacyShopInfoUseCase: GetEpharmacyShopInfoUseCase
 ) : BaseViewModel(coroutineDispatcherProvider.main) {
 
     fun isMyShop(shopId: String) = userSessionInterface.shopId == shopId
@@ -60,8 +61,8 @@ class ShopInfoViewModel @Inject constructor(
                 shopInfo.postValue(Success(shopInfoData))
             }
         }, onError = { error ->
-            shopInfo.postValue(Fail(error))
-        })
+                shopInfo.postValue(Fail(error))
+            })
     }
 
     fun getShopNotes(shopId: String) {
@@ -86,6 +87,16 @@ class ShopInfoViewModel @Inject constructor(
             }
         }) {
             shopNotesResp.postValue(Fail(it))
+        }
+    }
+
+    fun getShopGoApotikData() {
+        launchCatchError(block = {
+            coroutineScope {
+                val shopData = withContext(coroutineDispatcherProvider.io) {
+                }
+            }
+        }) {
         }
     }
 
