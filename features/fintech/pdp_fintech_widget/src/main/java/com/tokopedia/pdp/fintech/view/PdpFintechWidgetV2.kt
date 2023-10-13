@@ -25,6 +25,7 @@ import com.tokopedia.pdp.fintech.listner.ProductUpdateListner
 import com.tokopedia.pdp.fintech.viewmodel.FintechWidgetViewModel
 import com.tokopedia.pdp_fintech.databinding.PdpFintechWidgetV2LayoutBinding
 import com.tokopedia.unifycomponents.BaseCustomView
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -161,6 +162,10 @@ class PdpFintechWidgetV2 @JvmOverloads constructor(
         }
         productPrice?.let {
             priceToMessages[it]?.let { model ->
+                if (model.messages.firstOrNull()?.equals(String.EMPTY) == true) {
+                    instanceProductUpdateListner?.removeWidget()
+                    return
+                }
                 instanceProductUpdateListner?.showWidget()
                 setMessagesWidget(model.messages)
                 setClickListener(model)
@@ -219,7 +224,7 @@ class PdpFintechWidgetV2 @JvmOverloads constructor(
     private fun setMessagesWidget(messages: List<String>) {
         val firstTextView = Typography(context).apply {
             layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-            text = Html.fromHtml(messages.getOrNull(Int.ZERO) ?: String.EMPTY)
+            text = HtmlLinkHelper(context, messages.getOrNull(Int.ZERO) ?: String.EMPTY).spannedString
             fontType = Typography.DISPLAY_3
             typeface = Typography.getFontType(context, false, Typography.DISPLAY_3)
             setSingleLine()
@@ -228,7 +233,7 @@ class PdpFintechWidgetV2 @JvmOverloads constructor(
 
         val secondTextView = Typography(context).apply {
             layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-            text = Html.fromHtml(messages.getOrNull(Int.ONE) ?: String.EMPTY)
+            text = HtmlLinkHelper(context, messages.getOrNull(Int.ONE) ?: String.EMPTY).spannedString
             fontType = Typography.DISPLAY_3
             typeface = Typography.getFontType(context, false, Typography.DISPLAY_3)
             setSingleLine()
