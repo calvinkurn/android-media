@@ -268,6 +268,30 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
         assertEquals(expected, actual)
     }
     
+    @Test
+    fun `When no vertical banner or product item type exist on widgets, should not fetch data to remote`() {
+        coEvery { getShopProductUseCase.executeOnBackground() } returns ShopProduct.GetShopProduct(
+            data = listOf(ShopProduct())
+        )
+
+        val widgetStyle = "vertical"
+        val widgets = emptyList<BannerProductGroupUiModel.Tab.ComponentList>()
+
+        viewModel.getCarouselWidgets(
+            widgets,
+            shopId,
+            userAddress,
+            widgetStyle,
+            overrideTheme,
+            colorSchema
+        )
+
+        coVerify(exactly = 0) {
+            getShopProductUseCase.executeOnBackground()
+        }
+
+      
+    }
     private fun createFeaturedProducts(): BannerProductGroupUiModel.Tab.ComponentList {
         return BannerProductGroupUiModel.Tab.ComponentList(
             componentId = 2,
