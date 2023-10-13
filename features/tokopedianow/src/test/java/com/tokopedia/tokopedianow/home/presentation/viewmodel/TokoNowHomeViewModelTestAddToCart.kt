@@ -15,7 +15,6 @@ import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimode
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.domain.model.RepurchaseProduct
-import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.data.createHomeProductCardUiModel
@@ -341,6 +340,8 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
 
             val productList = listOf(
                 ProductCardCompactCarouselItemUiModel(
+                    channelId = channelId,
+                    headerName = "Lagi Diskon",
                     productCardModel = ProductCardCompactUiModel(
                         productId = "1",
                         price = "0",
@@ -351,6 +352,8 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
                     shopType = "pm"
                 ),
                 ProductCardCompactCarouselItemUiModel(
+                    channelId = channelId,
+                    headerName = "Lagi Diskon",
                     productCardModel = ProductCardCompactUiModel(
                         productId = "2",
                         price = "0",
@@ -370,6 +373,7 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
                 productList = productList,
                 realTimeRecom = realTimeRecom,
                 seeMoreModel = ProductCardCompactCarouselSeeMoreUiModel(
+                    id = channelId,
                     headerName = "Lagi Diskon"
                 ),
                 headerModel = TokoNowDynamicHeaderUiModel(
@@ -452,6 +456,8 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
 
             val productList = listOf(
                 ProductCardCompactCarouselItemUiModel(
+                    channelId = channelId,
+                    headerName = "Lagi Diskon",
                     productCardModel = ProductCardCompactUiModel(
                         productId = "1",
                         orderQuantity = 4,
@@ -462,6 +468,8 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
                     shopType = "pm"
                 ),
                 ProductCardCompactCarouselItemUiModel(
+                    channelId = channelId,
+                    headerName = "Lagi Diskon",
                     productCardModel = ProductCardCompactUiModel(
                         productId = "2",
                         usePreDraw = true,
@@ -483,6 +491,7 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
                 productList = productList,
                 realTimeRecom = realTimeRecom,
                 seeMoreModel = ProductCardCompactCarouselSeeMoreUiModel(
+                    id = channelId,
                     headerName = "Lagi Diskon"
                 ),
                 headerModel = TokoNowDynamicHeaderUiModel(
@@ -632,6 +641,8 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
 
             val productList = listOf(
                 ProductCardCompactCarouselItemUiModel(
+                    channelId = channelId,
+                    headerName = "Lagi Diskon",
                     productCardModel = ProductCardCompactUiModel(
                         productId = "1",
                         price = "0",
@@ -643,6 +654,8 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
 
                     ),
                 ProductCardCompactCarouselItemUiModel(
+                    channelId = channelId,
+                    headerName = "Lagi Diskon",
                     productCardModel = ProductCardCompactUiModel(
                         productId = "2",
                         price = "0",
@@ -662,6 +675,7 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
                 productList = productList,
                 realTimeRecom = realTimeRecom,
                 seeMoreModel = ProductCardCompactCarouselSeeMoreUiModel(
+                    id = channelId,
                     headerName = "Lagi Diskon"
                 ),
                 headerModel = TokoNowDynamicHeaderUiModel(

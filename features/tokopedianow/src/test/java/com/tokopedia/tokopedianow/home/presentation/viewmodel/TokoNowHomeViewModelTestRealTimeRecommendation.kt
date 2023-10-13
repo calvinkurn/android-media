@@ -97,6 +97,8 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
 
         val productList = listOf(
             ProductCardCompactCarouselItemUiModel(
+                channelId = channelId,
+                headerName = "Lagi Diskon",
                 shopId = "5",
                 shopType = "pm",
                 categoryBreadcrumbs = "Bahan Masak/Sayur",
@@ -145,7 +147,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
             )
 
         val seeMoreUiModel = ProductCardCompactCarouselSeeMoreUiModel(
-            id = "5",
+            id = "1001",
             headerName = "Lagi Diskon",
             appLink = "tokopedia://now"
         )
@@ -263,6 +265,8 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
 
         val productList = listOf(
             ProductCardCompactCarouselItemUiModel(
+                channelId = channelId,
+                headerName = "Lagi Diskon",
                 parentId = "3",
                 shopId = "5",
                 shopType = "pm",
@@ -278,6 +282,8 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
                 )
             ),
             ProductCardCompactCarouselItemUiModel(
+                channelId = channelId,
+                headerName = "Lagi Diskon",
                 parentId = "7",
                 shopId = "2",
                 shopType = "pm",
@@ -327,7 +333,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
             )
 
         val seeMoreUiModel = ProductCardCompactCarouselSeeMoreUiModel(
-            id = "",
+            id = "1001",
             headerName = "Lagi Diskon",
             appLink = ""
         )
@@ -444,6 +450,8 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
 
         val productList = listOf(
             ProductCardCompactCarouselItemUiModel(
+                channelId = channelId,
+                headerName = "Lagi Diskon",
                 shopId = "5",
                 shopType = "pm",
                 categoryBreadcrumbs = "Bahan Masak/Sayur",
@@ -491,7 +499,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
             )
 
         val seeMoreUiModel = ProductCardCompactCarouselSeeMoreUiModel(
-            id = "5",
+            id = "1001",
             headerName = "Lagi Diskon",
             appLink = "tokopedia://now"
         )
@@ -599,6 +607,8 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
 
             val productList = listOf(
                 ProductCardCompactCarouselItemUiModel(
+                    channelId = channelId,
+                    headerName = "Lagi Diskon",
                     shopId = "5",
                     shopType = "pm",
                     categoryBreadcrumbs = "Bahan Masak/Sayur",
@@ -630,7 +640,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
             )
 
             val seeMoreUiModel = ProductCardCompactCarouselSeeMoreUiModel(
-                id = "5",
+                id = "1001",
                 headerName = "Lagi Diskon",
                 appLink = "tokopedia://now"
             )
@@ -787,6 +797,8 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
 
             val productList = listOf(
                 ProductCardCompactCarouselItemUiModel(
+                    channelId = channelId,
+                    headerName = "Lagi Diskon",
                     shopId = "5",
                     shopType = "pm",
                     categoryBreadcrumbs = "Bahan Masak/Sayur",
@@ -818,7 +830,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
             )
 
             val seeMoreUiModel = ProductCardCompactCarouselSeeMoreUiModel(
-                id = "5",
+                id = "1001",
                 headerName = "Lagi Diskon",
                 appLink = "tokopedia://now"
             )
