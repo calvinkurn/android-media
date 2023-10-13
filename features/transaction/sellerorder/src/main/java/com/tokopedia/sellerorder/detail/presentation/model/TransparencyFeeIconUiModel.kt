@@ -14,5 +14,9 @@ class TransparencyFeeIconUiModel(
     data class TransparencyFeeInfo(
         val title: String,
         val desc: String
-    )
+    ) {
+        fun hasTooltip(): Boolean {
+            return title.isNotBlank() || desc.isNotBlank()
+        }
+    }
 }

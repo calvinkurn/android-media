@@ -28,11 +28,13 @@ class TransparencyFeeIconViewHolder(
         val iconUrl = if (itemView.context.isDarkMode()) element.darkIconUrl else element.iconUrl
         binding.detailIncomeIcon.run {
             loadImage(iconUrl)
-            setOnClickListener {
-                actionListener.onTransparencyInfoIconClicked(
-                    element.transparencyFeeInfo.title,
-                    element.transparencyFeeInfo.desc
-                )
+            if (element.transparencyFeeInfo.hasTooltip()) {
+                setOnClickListener {
+                    actionListener.onTransparencyInfoIconClicked(
+                        element.transparencyFeeInfo.title,
+                        element.transparencyFeeInfo.desc
+                    )
+                }
             }
         }
     }
