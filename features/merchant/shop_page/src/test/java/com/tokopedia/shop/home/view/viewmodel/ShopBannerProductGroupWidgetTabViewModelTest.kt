@@ -330,7 +330,7 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
         coEvery { getShopFeaturedProductUseCase.executeOnBackground() } returns listOf(
             ShopFeaturedProduct(
                 productId = productId,
-                labelGroupList = listOf(LabelGroup(title = "Terjual 2rb"))
+                labelGroupList = listOf(LabelGroup(title = "Terjual 2rb"), LabelGroup(title = "Dilayani Tokopedia"))
             )
         )
 
