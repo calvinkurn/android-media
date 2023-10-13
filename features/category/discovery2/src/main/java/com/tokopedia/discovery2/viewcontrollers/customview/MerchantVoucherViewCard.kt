@@ -14,6 +14,7 @@ import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.databinding.ItemMerchantVoucherCarouselLayoutBinding
 import com.tokopedia.discovery2.viewcontrollers.fragment.NotchEdgeTreatment
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
+import com.tokopedia.utils.image.ImageUtils
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 @SuppressLint("RestrictedApi")
@@ -23,8 +24,8 @@ class MerchantVoucherViewCard @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : MaterialCardView(context, attrs, defStyleAttr) {
 
-    private var binding =
-        ItemMerchantVoucherCarouselLayoutBinding.inflate(LayoutInflater.from(context), this)
+    private var binding = ItemMerchantVoucherCarouselLayoutBinding
+        .inflate(LayoutInflater.from(context), this)
 
     init {
         binding.divider.addOneTimeGlobalLayoutListener {
@@ -54,6 +55,8 @@ class MerchantVoucherViewCard @JvmOverloads constructor(
             val defaultColor = MethodChecker.getColor(context, unifyprinciplesR.color.Unify_NN0)
             materialShapeDrawable.setTint(defaultColor)
             background = materialShapeDrawable
+
+            binding.cardBackground.shapeAppearanceModel = shapePathModel
         }
     }
 
@@ -63,7 +66,8 @@ class MerchantVoucherViewCard @JvmOverloads constructor(
             binding.shopLogo.setImageUrl(iconUrl.orEmpty())
         }
 
-        binding.cardBackground.setImageUrl(item.backgroundImageUrl.orEmpty())
+        ImageUtils.loadImage(binding.cardBackground, item.backgroundImageUrl.orEmpty())
+
         binding.actionBtn.text = item.buttonText.orEmpty()
         binding.tvTitle.text = item.title
         binding.tvSubtitle.text = item.subtitle

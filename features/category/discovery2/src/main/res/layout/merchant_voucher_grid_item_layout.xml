@@ -2,7 +2,7 @@
 <com.tokopedia.discovery2.viewcontrollers.customview.MerchantVoucherViewCard xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/merchant_voucher_grid"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:theme="@style/Theme.MaterialComponents.Light"
     android:visibility="visible"
