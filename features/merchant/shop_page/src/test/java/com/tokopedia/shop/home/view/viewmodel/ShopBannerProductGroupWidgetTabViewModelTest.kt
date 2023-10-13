@@ -385,6 +385,68 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
         
         coVerify { getShopFeaturedProductUseCase.executeOnBackground() }
     }
+
+    @Test
+    fun `When got showcase product linkType, should get data to remote`() {
+        //Given
+        val overrideTheme = true
+
+        coEvery { getShopProductUseCase.executeOnBackground() } returns ShopProduct.GetShopProduct(
+            data = listOf(ShopProduct())
+        )
+
+        val widgetStyle = "horizontal"
+        val featuredProduct = BannerProductGroupUiModel.Tab.ComponentList(
+            componentId = 2,
+            componentName = BannerProductGroupUiModel.Tab.ComponentList.ComponentName.PRODUCT,
+            data = listOf(
+                BannerProductGroupUiModel.Tab.ComponentList.Data(
+                    imageUrl = "",
+                    ctaLink = "",
+                    linkId = 8,
+                    linkType = BannerProductGroupUiModel.Tab.ComponentList.Data.LinkType.SHOWCASE,
+                    isShowProductInfo = false
+                )
+            )
+        )
+        val widgets = listOf(featuredProduct)
+
+        //When
+        viewModel.getCarouselWidgets(
+            widgets,
+            shopId,
+            userAddress,
+            widgetStyle,
+            overrideTheme,
+            colorSchema
+        )
+
+        //Then
+        val actual = viewModel.carouselWidgets.getOrAwaitValue()
+        val expected = ShopBannerProductGroupWidgetTabViewModel.UiState.Success(
+            listOf(
+                ProductItemType(
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    0,
+                    "",
+                    "",
+                    "",
+                    false,
+                    "",
+                    true,
+                    ShopPageColorSchema()
+                )
+            )
+        )
+        assertEquals(expected, actual)
+
+        coVerify { getShopProductUseCase.executeOnBackground() }
+    }
+    
     //endregion
     private fun createFeaturedProducts(): BannerProductGroupUiModel.Tab.ComponentList {
         return BannerProductGroupUiModel.Tab.ComponentList(
