@@ -32,14 +32,14 @@ class BalanceWidgetAtf2ShimmerViewHolder (
             binding?.dividerBalance?.setBackgroundColor(
                 ContextCompat.getColor(
                     itemView.context,
-                    unifyprinciplesR.color.Unify_NN100
+                    homeThematicUtil.asThematicColor(unifyprinciplesR.color.Unify_NN100)
                 )
             )
         } else {
             binding?.dividerBalance?.setBackgroundColor(
                 ContextCompat.getColor(
                     itemView.context,
-                    unifyprinciplesR.color.Unify_NN50
+                    homeThematicUtil.asThematicColor(unifyprinciplesR.color.Unify_NN50)
                 )
             )
         }

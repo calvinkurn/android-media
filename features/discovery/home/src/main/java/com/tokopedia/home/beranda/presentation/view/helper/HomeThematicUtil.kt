@@ -43,6 +43,14 @@ class HomeThematicUtil @Inject constructor() {
             homeR.color.home_dms_Unify_NN950_force_light,
             homeR.color.home_dms_Unify_NN950_force_dark,
         ),
+        unifyprinciplesR.color.Unify_NN100 to HomeThematicColorToken(
+            homeR.color.home_dms_Unify_NN100_force_light,
+            homeR.color.home_dms_Unify_NN100_force_dark,
+        ),
+        unifyprinciplesR.color.Unify_NN50 to HomeThematicColorToken(
+            homeR.color.home_dms_Unify_NN50_force_light,
+            homeR.color.home_dms_Unify_NN50_force_dark,
+        ),
     )
 
     @ColorRes
