@@ -146,10 +146,10 @@ class StoriesViewModel @AssistedInject constructor(
     private val timerState: Flow<TimerStatusInfo>
         get() = combine(
             _bottomSheetStatusState,
-            _storiesMainDataState
-        ) { bottomSheet, mainData ->
-            val groupPosition = _groupPos.value
-            val detailPosition = _detailPos.value
+            _storiesMainDataState,
+            _groupPos,
+            _detailPos
+        ) { bottomSheet, mainData, groupPosition, detailPosition ->
             val listOfDetail = mainData.groupItems.getOrNull(groupPosition)?.detail?.detailItems ?: emptyList()
             val detail = listOfDetail.getOrNull(detailPosition) ?: StoriesDetailItem()
             TimerStatusInfo(event = if (bottomSheet.isAnyShown) PAUSE else detail.event, story = TimerStatusInfo.Companion.StoryTimer(id = detail.id, itemCount = listOfDetail.size, resetValue = detail.resetValue, duration = detail.content.duration, position = detailPosition))
