@@ -12,7 +12,6 @@ import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
 import com.tokopedia.feedplus.browse.data.model.WidgetRecommendationModel
 import com.tokopedia.feedplus.browse.data.model.WidgetRequestModel
 import com.tokopedia.feedplus.browse.presentation.model.ChannelUiState
-import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseChipUiModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemUiModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedCategoryInspirationModel
 import com.tokopedia.feedplus.domain.usecase.FeedXHomeUseCase
@@ -66,12 +65,16 @@ internal class FeedBrowseRepositoryImpl @Inject constructor(
     ): ContentSlotModel = withContext(dispatchers.io) {
         val isWifi = connectionUtil.isEligibleForHeavyDataUsage()
         Log.d("FeedBrowse", "Get to gql: ${extraParam.group}")
-        val response = playWidgetSlotUseCase.executeOnBackground(
-            group = extraParam.group,
-            cursor = "",
-            sourceId = extraParam.sourceId,
-            sourceType = extraParam.sourceType,
-            isWifi = isWifi
+        val response = playWidgetSlotUseCase(
+            GetPlayWidgetSlotUseCase.Param(
+                req = GetPlayWidgetSlotUseCase.Param.Request(
+                    group = extraParam.group,
+                    cursor = "",
+                    sourceId = extraParam.sourceId,
+                    sourceType = extraParam.sourceType,
+                    isWifi = isWifi
+                )
+            )
         )
         mapper.mapWidgetResponse(response)
     }
@@ -80,12 +83,16 @@ internal class FeedBrowseRepositoryImpl @Inject constructor(
         val isWifi = connectionUtil.isEligibleForHeavyDataUsage()
         return withContext(dispatchers.io) {
             try {
-                val response = playWidgetSlotUseCase.executeOnBackground(
-                    group = extraParam.group,
-                    cursor = "",
-                    sourceId = extraParam.sourceId,
-                    sourceType = extraParam.sourceType,
-                    isWifi = isWifi
+                val response = playWidgetSlotUseCase(
+                    GetPlayWidgetSlotUseCase.Param(
+                        req = GetPlayWidgetSlotUseCase.Param.Request(
+                            group = extraParam.group,
+                            cursor = "",
+                            sourceId = extraParam.sourceId,
+                            sourceType = extraParam.sourceType,
+                            isWifi = isWifi
+                        )
+                    )
                 )
                 mapper.mapWidget(response)
             } catch (err: Throwable) {
@@ -102,28 +109,28 @@ internal class FeedBrowseRepositoryImpl @Inject constructor(
                 BannerWidgetModel(
                     title = "Buku",
                     imageUrl = "https://t4.ftcdn.net/jpg/01/77/47/67/360_F_177476718_VWfYMWCzK32bfPI308wZljGHvAUYSJcn.jpg",
-                    appLink = "",
+                    appLink = ""
                 ),
                 BannerWidgetModel(
                     title = "Dapur",
                     imageUrl = "https://t3.ftcdn.net/jpg/00/89/98/90/360_F_89989031_L8rIrutZm7gnGsIkkyDEAO9s43BYipqt.jpg",
-                    appLink = "",
+                    appLink = ""
                 ),
                 BannerWidgetModel(
                     title = "Elektronik",
                     imageUrl = "https://t4.ftcdn.net/jpg/00/86/56/65/240_F_86566504_1yU5DuXgM97XOXkZwcsSAvjP9EXtB4v2.jpg",
-                    appLink = "",
+                    appLink = ""
                 ),
                 BannerWidgetModel(
                     title = "Fashion Wanita",
                     imageUrl = "https://t3.ftcdn.net/jpg/03/67/86/38/360_F_367863869_tYibIxEubHFxMl33Ow38JAHYakAZGsNz.jpg",
-                    appLink = "",
+                    appLink = ""
                 ),
                 BannerWidgetModel(
                     title = "Fashion Anak",
                     imageUrl = "https://t3.ftcdn.net/jpg/02/47/59/52/360_F_247595262_LGff0kg2mdraH9DOqPGlftfsZCACc6Fn.jpg",
-                    appLink = "",
-                ),
+                    appLink = ""
+                )
             )
         )
     }
@@ -149,14 +156,14 @@ internal class FeedBrowseRepositoryImpl @Inject constructor(
                 add(
                     FeedCategoryInspirationModel.Chips(
                         id = "chips_mock",
-                        chipList = List (6) {
+                        chipList = List(6) {
                             WidgetMenuModel(
                                 id = it.toString(),
                                 label = "Chips $it",
                                 group = "Group $it",
                                 sourceType = "Source Type $it",
                                 sourceId = "Source Id $it",
-                                isSelected = false,
+                                isSelected = false
                             )
                         }
                     )
@@ -170,7 +177,7 @@ internal class FeedBrowseRepositoryImpl @Inject constructor(
                             partnerName = "Partner $it",
                             avatarUrl = "",
                             badgeUrl = "",
-                            title = "Card $it",
+                            title = "Card $it"
                         )
                     }
                 )

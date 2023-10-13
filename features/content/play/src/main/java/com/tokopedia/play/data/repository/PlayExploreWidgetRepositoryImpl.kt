@@ -31,12 +31,16 @@ class PlayExploreWidgetRepositoryImpl @Inject constructor(
         sourceId: String
     ): List<WidgetUiModel> = withContext(dispatcher.io) {
         mapper.map(
-            getPlayWidgetSlotUseCase.executeOnBackground(
-                group = group,
-                cursor = cursor,
-                sourceId = sourceId,
-                sourceType = sourceType,
-                isWifi = connectionUtil.isEligibleForHeavyDataUsage(),
+            getPlayWidgetSlotUseCase(
+                GetPlayWidgetSlotUseCase.Param(
+                    req = GetPlayWidgetSlotUseCase.Param.Request(
+                        group = group,
+                        cursor = cursor,
+                        sourceId = sourceId,
+                        sourceType = sourceType,
+                        isWifi = connectionUtil.isEligibleForHeavyDataUsage()
+                    )
+                )
             )
         )
     }
