@@ -2,6 +2,7 @@ package com.tokopedia.shop.home.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.home.view.model.banner_product_group.BannerProductGroupUiModel
@@ -13,11 +14,13 @@ import com.tokopedia.shop.product.domain.interactor.GetShopFeaturedProductUseCas
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.ext.getOrAwaitValue
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
@@ -103,6 +106,7 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
             )
         )
         assertEquals(expected, actual)
+        assertEquals(true, actual is ShopBannerProductGroupWidgetTabViewModel.UiState.Success)
     }
 
     @Test
@@ -698,6 +702,47 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
     }
     
     //endregion
+
+    @Test
+    fun `When get shop product error, observer should receive error as well`() {
+        //Given
+        val overrideTheme = true
+        val error = MessageErrorException("Server error")
+
+        coEvery { getShopProductUseCase.executeOnBackground() } throws error
+
+        val widgetStyle = "horizontal"
+        val featuredProduct = BannerProductGroupUiModel.Tab.ComponentList(
+            componentId = 2,
+            componentName = BannerProductGroupUiModel.Tab.ComponentList.ComponentName.PRODUCT,
+            data = listOf(
+                BannerProductGroupUiModel.Tab.ComponentList.Data(
+                    imageUrl = "",
+                    ctaLink = "",
+                    linkId = 8,
+                    linkType = BannerProductGroupUiModel.Tab.ComponentList.Data.LinkType.SHOWCASE,
+                    isShowProductInfo = false
+                )
+            )
+        )
+        val widgets = listOf(featuredProduct)
+
+        //When
+        viewModel.getCarouselWidgets(
+            widgets,
+            shopId,
+            userAddress,
+            widgetStyle,
+            overrideTheme,
+            colorSchema
+        )
+
+        //Then
+        val actual = viewModel.carouselWidgets.getOrAwaitValue()
+        assertEquals(ShopBannerProductGroupWidgetTabViewModel.UiState.Error(error), actual)
+
+        coVerify { getShopProductUseCase.executeOnBackground() }
+    }
     
     private fun createProducts(): BannerProductGroupUiModel.Tab.ComponentList {
         return BannerProductGroupUiModel.Tab.ComponentList(
