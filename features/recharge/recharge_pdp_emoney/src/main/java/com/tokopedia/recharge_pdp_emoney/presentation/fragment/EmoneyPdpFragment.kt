@@ -731,7 +731,6 @@ open class EmoneyPdpFragment :
             }
         } else {
             hideTickerNotSupported()
-            //showProducts()
         }
     }
 
