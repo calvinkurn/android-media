@@ -11,6 +11,7 @@ import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader
 import com.bumptech.glide.load.engine.cache.DiskLruCacheFactory
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.module.AppGlideModule
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.media.loader.module.interceptor.NetworkLogInterceptor
 import com.tokopedia.media.loader.module.model.AdaptiveImageSizeLoader
 import com.tokopedia.media.loader.module.model.M3U8ModelLoaderFactory
@@ -29,7 +30,9 @@ class LoaderGlideModule : AppGlideModule() {
                 (LIMIT_CACHE_SIZE_IN_MB * SIZE_IN_MB * SIZE_IN_MB).toLong()
             )
         )
-        builder.setLogLevel(Log.VERBOSE)
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            builder.setLogLevel(Log.DEBUG)
+        }
         super.applyOptions(context, builder)
     }
 
