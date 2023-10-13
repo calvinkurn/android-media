@@ -40,6 +40,8 @@ class ProjectInfoUseCase @Inject constructor(
                 WaitMessage
                 ErrorMessages
                 ErrorCode
+                ReferComplaint
+                NonEligibleGoToKYCReason
               }
             }
         """.trimIndent()
@@ -52,6 +54,9 @@ class ProjectInfoUseCase @Inject constructor(
                 ProjectInfoResult.Failed(
                     mappingErrorMessage(errorMessages.joinToString(), errorCode)
                 )
+            } else if (referComplaint) {
+                val isMultipleAccount = LIST_REASON_BLOCK_MULTIPLE_ACCOUNT.contains(nonEligibleGoToKYCReason)
+                ProjectInfoResult.Blocked(isMultipleAccount)
             } else if (!isGotoKyc) {
                 ProjectInfoResult.TokoKyc
             } else {
@@ -94,6 +99,8 @@ class ProjectInfoUseCase @Inject constructor(
         const val ACCOUNT_LINKED = 1
         private const val PROJECT_ID = "projectID"
         private val LIST_COMMON_ERROR_CODE = listOf("30004", "30009", "1539", "30003", "900", "1546")
+        private val LIST_REASON_BLOCK_MULTIPLE_ACCOUNT =
+            listOf("ALREADY_REGISTERED_OTHER_PROFILE", "NOT_ELIGIBLE_ACC_LINK")
     }
 }
 
@@ -105,5 +112,6 @@ sealed class ProjectInfoResult {
         val waitMessage: String
     ): ProjectInfoResult()
     data class NotVerified(val isAccountLinked: Boolean) : ProjectInfoResult()
+    data class Blocked(val isMultipleAccount: Boolean) : ProjectInfoResult()
     data class Failed(val throwable: Throwable) : ProjectInfoResult()
 }

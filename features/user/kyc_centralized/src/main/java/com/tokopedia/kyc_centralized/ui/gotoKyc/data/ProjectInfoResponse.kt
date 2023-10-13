@@ -48,7 +48,13 @@ data class KycProjectInfo(
     val errorMessages: List<String> = emptyList(),
 
     @SerializedName("ErrorCode")
-    val errorCode: String = ""
+    val errorCode: String = "",
+
+    @SerializedName("ReferComplaint")
+    val referComplaint: Boolean = false,
+
+    @SerializedName("NonEligibleGoToKYCReason")
+    val nonEligibleGoToKYCReason: String = ""
 )
 
 data class TypeListItem(

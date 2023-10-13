@@ -29,6 +29,7 @@ import com.tokopedia.kyc_centralized.common.KycServerLogger
 import com.tokopedia.kyc_centralized.databinding.FragmentGotoKycLoaderBinding
 import com.tokopedia.kyc_centralized.di.GoToKycComponent
 import com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet.AwaitingApprovalGopayBottomSheet
+import com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet.BlockedKycBottomSheet
 import com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet.DobChallengeExhaustedBottomSheet
 import com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet.FailedSavePreferenceBottomSheet
 import com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet.OnboardNonProgressiveBottomSheet
@@ -232,6 +233,9 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
                     } else {
                         handleNonProgressiveFlow()
                     }
+                }
+                is ProjectInfoResult.Blocked -> {
+                    showBlockedKycBottomSheet(it.isMultipleAccount)
                 }
                 is ProjectInfoResult.Failed -> {
                     showToaster(it.throwable)
@@ -472,6 +476,15 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun showBlockedKycBottomSheet(isMultipleAccount: Boolean) {
+        val blockedKycBottomSheet = BlockedKycBottomSheet.newInstance(isMultipleAccount)
+
+        blockedKycBottomSheet.show(
+            childFragmentManager,
+            TAG_BOTTOM_SHEET_BLOCKED_KYC
+        )
+    }
+
     private fun showToaster(throwable: Throwable?) {
         val message = throwable?.getGotoKycErrorMessage(requireContext())
         Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
@@ -490,6 +503,7 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
         private const val TAG_BOTTOM_SHEET_ONBOARD_PROGRESSIVE = "bottom_sheet_progressive"
         private const val TAG_BOTTOM_SHEET_FAILED_SAVE_PREFERENCE = "bottom_sheet_failed_save_preference"
         private const val TAG_BOTTOM_SHEET_DOB_CHALLENGE_EXHAUSTED = "bottom_sheet_dob_challenge_exhausted"
+        private const val TAG_BOTTOM_SHEET_BLOCKED_KYC = "bottom_sheet_blocked_kyc"
 
         fun createInstance(): Fragment = GotoKycTransparentFragment()
     }
