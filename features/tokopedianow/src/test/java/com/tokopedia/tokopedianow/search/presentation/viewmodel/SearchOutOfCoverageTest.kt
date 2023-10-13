@@ -97,7 +97,7 @@ class SearchOutOfCoverageTest : SearchTestFixtures() {
     private fun `Given get warehouse API will fail`() {
         coEvery {
             getWarehouseUseCase(DEFAULT_VALUE_SOURCE_SEARCH)
-        } throws Throwable()
+        } throws Exception()
     }
 
     private fun `Then verify search API first page is not called`() {
