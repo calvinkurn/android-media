@@ -481,7 +481,7 @@ abstract class BaseSearchCategoryViewModel(
     protected open fun appendPaginationParam(tokonowQueryParam: MutableMap<String, Any>) {
         tokonowQueryParam[SearchApiConst.PAGE] = nextPage
         tokonowQueryParam[SearchApiConst.USE_PAGE] = true
-        tokonowQueryParam[SearchApiConst.ROWS] = if (getPaginationExperiment()) EXPERIMENT_ROWS else DEFAULT_ROWS
+        tokonowQueryParam[SearchApiConst.ROWS] = getRows()
     }
 
     private fun appendQueryParam(tokonowQueryParam: MutableMap<String, Any>) {
