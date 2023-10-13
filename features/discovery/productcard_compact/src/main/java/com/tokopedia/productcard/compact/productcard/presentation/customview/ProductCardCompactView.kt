@@ -543,7 +543,7 @@ class ProductCardCompactView @JvmOverloads constructor(
         if(wishlistButtonViewStub.parent != null) {
             val view = wishlistButtonViewStub
                 .inflateView(R.layout.layout_product_card_compact_wishlist_button)
-            wishlistButton = view.findViewById(R.id.wishlist_button)
+            wishlistButton = view as? ProductCardCompactWishlistButtonView
             wishlistButtonViewStub.show()
         }
     }
@@ -552,7 +552,7 @@ class ProductCardCompactView @JvmOverloads constructor(
         if(quantityEditorViewStub.parent != null) {
             val view = quantityEditorViewStub
                 .inflateView(R.layout.layout_product_card_compact_quantity_editor)
-            quantityEditor = view.findViewById(R.id.quantity_editor)
+            quantityEditor = view as? ProductCardCompactQuantityEditorView
             quantityEditorViewStub.show()
         }
     }
