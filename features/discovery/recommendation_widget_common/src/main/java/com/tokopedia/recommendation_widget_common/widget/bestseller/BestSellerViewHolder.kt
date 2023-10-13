@@ -32,6 +32,7 @@ import com.tokopedia.recommendation_widget_common.widget.bestseller.recommendati
 import com.tokopedia.recommendation_widget_common.widget.bestseller.recommendations.typefactory.RecommendationCarouselTypeFactoryImpl
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.recommendation_widget_common.R as recommendation_widget_commonR
 
 /**
  * Created by Lukas on 05/11/20.
@@ -84,7 +85,7 @@ class BestSellerViewHolder (private val view: View,
                 bestSellerDataModel = element
                 initHeader(element)
                 binding?.bestSellerEmptyState?.root?.run {
-                    findViewById<AppCompatImageView>(com.tokopedia.recommendation_widget_common.R.id.img_best_seller_empty)
+                    findViewById<AppCompatImageView>(recommendation_widget_commonR.id.img_best_seller_empty)
                         .loadImage(EMPTY_IMAGE_URL)
                     show()
                 }
