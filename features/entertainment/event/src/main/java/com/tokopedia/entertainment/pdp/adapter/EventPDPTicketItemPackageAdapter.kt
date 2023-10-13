@@ -2,17 +2,25 @@ package com.tokopedia.entertainment.pdp.adapter
 
 import android.app.Activity
 import android.text.Editable
+import android.text.SpannableStringBuilder
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.MarginLayoutParams
 import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
+import androidx.core.text.bold
+import androidx.core.text.color
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.databinding.EntTicketAdapterItemBinding
 import com.tokopedia.entertainment.pdp.analytic.EventPDPTracking
 import com.tokopedia.entertainment.pdp.common.util.CurrencyFormatter.getRupiahFormat
+import com.tokopedia.entertainment.pdp.common.util.EventConst
+import com.tokopedia.entertainment.pdp.data.AvailabilityStatus
 import com.tokopedia.entertainment.pdp.data.PackageItem
 import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventPackageMapper.getDigit
 import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventDateMapper.checkDate
@@ -22,9 +30,12 @@ import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventDateMapper.getDate
 import com.tokopedia.entertainment.pdp.listener.OnBindItemTicketListener
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.dpToPx
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import java.util.Calendar
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class EventPDPTicketItemPackageAdapter(
         val onBindItemTicketListener: OnBindItemTicketListener,
@@ -52,6 +63,55 @@ class EventPDPTicketItemPackageAdapter(
             }
         }
 
+        private fun renderTicketStatus(
+            availabilityStatus: AvailabilityStatus
+        ) {
+            binding.run {
+                if (availabilityStatus.name.isNotEmpty()) {
+                    txtStatusTicket.text = availabilityStatus.name
+                    txtStatusDescTicket.text = " · ${availabilityStatus.desc}"
+                    txtStatusTicket.show()
+                    txtStatusDescTicket.show()
+                } else {
+                    txtStatusTicket.hide()
+                    txtStatusDescTicket.hide()
+                }
+
+                if (availabilityStatus.code == EventConst.EVENT_TICKET_STATUS_FULL ||
+                    availabilityStatus.code == EventConst.EVENT_TICKET_STATUS_NOT_STARTED
+                ) {
+                    with(txtStatusTicket) {
+                        setTextColor(MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_RN500))
+                        setBackgroundColor(MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_RN50))
+                    }
+                    with(txtStatusDescTicket) {
+                        setTextColor(MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_NN950))
+                        setBackgroundColor(MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_RN50))
+                    }
+                } else {
+                    with(txtStatusTicket) {
+                        setTextColor(MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_NN600))
+                        setBackgroundColor(MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_Static_White))
+                    }
+                    with(txtStatusDescTicket) {
+                        setTextColor(MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_NN950))
+                        setBackgroundColor(MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_Static_White))
+                    }
+                }
+                Log.d("MisaelJonathan", "Ticket Availibility Code: ${availabilityStatus.code}")
+                adjustContainerBottomMargin(availabilityStatus.code != EventConst.EVENT_TICKET_STATUS_AVAILABLE)
+            }
+        }
+
+        private fun adjustContainerBottomMargin(shouldAddMargin: Boolean) {
+            val marginValue = if (shouldAddMargin) {
+                16.dpToPx(itemView.resources.displayMetrics)
+            } else {
+                0.dpToPx(itemView.resources.displayMetrics)
+            }
+            (binding.containerWrapperTicket.layoutParams as? MarginLayoutParams)?.bottomMargin = marginValue
+        }
+
         private fun renderForMainPackage(items: PackageItem) {
             with(binding) {
 
@@ -68,23 +128,9 @@ class EventPDPTicketItemPackageAdapter(
                 txtPriceTicket.text = if(items.salesPrice.toIntSafely() != ZERO_PRICE) getRupiahFormat(items.salesPrice.toIntSafely())
                 else root.context.resources.getString(R.string.ent_free_price)
 
-                val isSaleStarted = checkStartSale(items.startDate, Calendar.getInstance().time)
-                val isNotEnded = checkNotEndSale(items.endDate, Calendar.getInstance().time)
-                val itemIsAvailable = (checkDate(items.dates, onBindItemTicketListener.getSelectedDate()) && items.available.toIntSafely() >= 1)
                 val isRecomended = checkDate(items.dates, onBindItemTicketListener.getSelectedDate())
                 if (isRecomended) {
-                    if (isSaleStarted && isNotEnded) {
-                        if (itemIsAvailable) {
-                            txtPilihTicket.show()
-                        } else {
-                            txtHabisTicket.show()
-                            showSoldOut()
-                        }
-                    } else if (!isSaleStarted && isNotEnded) {
-                        txtNotStarted.show()
-                    } else if (isSaleStarted && !isNotEnded) {
-                        txtAlreadyEnd.show()
-                    }
+                    renderTicketStatus(items.availabilityStatus)
                 } else {
                     txtisRecommeded.show()
                 }
@@ -200,11 +246,11 @@ class EventPDPTicketItemPackageAdapter(
         private fun showSoldOut() {
             with(binding) {
                 bgTicket.background = ContextCompat.getDrawable(root.context, R.drawable.ent_pdp_ticket_sold_out)
-                txtPilihTicket.setTextColor(root.context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950_44))
-                txtTermurahTicket.setTextColor(root.context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950_44))
-                txtSubtitleTicket.setTextColor(root.context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950_44))
+                txtPilihTicket.setTextColor(root.context.resources.getColor(unifyprinciplesR.color.Unify_NN950_44))
+                txtTermurahTicket.setTextColor(root.context.resources.getColor(unifyprinciplesR.color.Unify_NN950_44))
+                txtSubtitleTicket.setTextColor(root.context.resources.getColor(unifyprinciplesR.color.Unify_NN950_44))
                 txtPriceTicket.text = root.context.resources.getString(R.string.ent_pdp_ticket_sold_out)
-                txtPriceTicket.setTextColor(root.context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
+                txtPriceTicket.setTextColor(root.context.resources.getColor(unifyprinciplesR.color.Unify_NN950_68))
             }
         }
     }

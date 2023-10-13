@@ -882,6 +882,20 @@ data class PackageItem(
         @SerializedName("forms_item")
         @Expose
         val formsItems: List<Form> = emptyList(),
+        @SerializedName("availability_status")
+        @Expose
+        val availabilityStatus: AvailabilityStatus = AvailabilityStatus(),
         var isClicked: Boolean = false
+)
 
+data class AvailabilityStatus(
+    @SerializedName("val")
+    @Expose
+    val code: String = "0",
+    @SerializedName("name")
+    @Expose
+    val name: String = "",
+    @SerializedName("desc")
+    @Expose
+    val desc: String = "",
 )

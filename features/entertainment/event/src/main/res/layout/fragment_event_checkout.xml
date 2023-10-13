@@ -22,6 +22,14 @@
             android:orientation="vertical">
 
             <include
+                android:id="@+id/partial_event_checkout_countdown"
+                layout="@layout/partial_event_checkout_countdown"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:visibility="visible"/>
+
+            <include
                 android:id="@+id/partial_event_checkout_desc"
                 layout="@layout/partial_event_checkout_desc"
                 android:layout_width="match_parent"

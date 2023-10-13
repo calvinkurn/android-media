@@ -12,4 +12,7 @@ object EventConst {
     const val MOBILE_TYPE = "mobile"
 
     const val BLANK_LIST = "-1"
+    const val EVENT_TICKET_STATUS_NOT_STARTED= "-1"
+    const val EVENT_TICKET_STATUS_FULL= "-2"
+    const val EVENT_TICKET_STATUS_AVAILABLE= "1"
 }

@@ -33,6 +33,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.common.payment.PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA
+import com.tokopedia.common.payment.PaymentConstant.PAYMENT_CANCELLED
+import com.tokopedia.common.payment.PaymentConstant.PAYMENT_FAILED
 import com.tokopedia.common.payment.PaymentConstant.PAYMENT_SUCCESS
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.entertainment.R
@@ -46,11 +48,13 @@ import com.tokopedia.entertainment.pdp.activity.EventCheckoutActivity
 import com.tokopedia.entertainment.pdp.activity.EventCheckoutActivity.Companion.EXTRA_GATEWAY_CODE
 import com.tokopedia.entertainment.pdp.activity.EventCheckoutActivity.Companion.EXTRA_META_DATA
 import com.tokopedia.entertainment.pdp.activity.EventCheckoutActivity.Companion.EXTRA_PACKAGE_ID
+import com.tokopedia.entertainment.pdp.activity.EventCheckoutActivity.Companion.EXTRA_SOFTBOOK_EXPIRE_TIME
 import com.tokopedia.entertainment.pdp.activity.EventCheckoutActivity.Companion.EXTRA_URL_PDP
 import com.tokopedia.entertainment.pdp.adapter.EventCheckoutAdditionalAdapter
 import com.tokopedia.entertainment.pdp.adapter.EventCheckoutPassengerDataAdapter
 import com.tokopedia.entertainment.pdp.adapter.EventCheckoutPriceAdapter
 import com.tokopedia.entertainment.pdp.analytic.EventPDPTracking
+import com.tokopedia.entertainment.pdp.bottomsheet.EventSoftbookEndedBottomSheet
 import com.tokopedia.entertainment.pdp.common.util.CurrencyFormatter.getRupiahFormat
 import com.tokopedia.entertainment.pdp.common.util.EventDateUtil.getDateString
 import com.tokopedia.entertainment.pdp.data.EventProductDetailEntity
@@ -72,6 +76,7 @@ import com.tokopedia.entertainment.pdp.data.pdp.MetaDataResponse
 import com.tokopedia.entertainment.pdp.di.EventPDPComponent
 import com.tokopedia.entertainment.pdp.listener.OnAdditionalListener
 import com.tokopedia.entertainment.pdp.viewmodel.EventCheckoutViewModel
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
@@ -83,6 +88,9 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.io.Serializable
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.*
 import javax.inject.Inject
 
 class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
@@ -91,6 +99,7 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
     private var metadata = MetaDataResponse()
     private var packageID: String = ""
     private var gatewayCode: String = ""
+    private var softbookExpireTime: String = ""
 
     private var forms: List<Form> = emptyList()
     private var listAdditionalItem: MutableList<EventCheckoutAdditionalData> = mutableListOf()
@@ -154,6 +163,7 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
             metadata = it.getParcelable(EXTRA_META_DATA) ?: MetaDataResponse()
             packageID = it.getString(EXTRA_PACKAGE_ID, "")
             gatewayCode = it.getString(EXTRA_GATEWAY_CODE, "")
+            softbookExpireTime = it.getString(EXTRA_SOFTBOOK_EXPIRE_TIME, "")
         }
     }
 
@@ -303,7 +313,47 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initProgressDialog()
+        initTimerCountdown()
         requestData()
+    }
+
+    private fun initTimerCountdown() {
+        try {
+            // TODO: [Misael] use softbookExpireTime
+            val dateString = "2023-10-12T14:43:00Z07:00"
+            val dateFormat = SimpleDateFormat(COUNTDOWN_DATE_FORMAT, Locale.getDefault())
+            val date = dateFormat.parse(dateString)
+            val nowDate = Date().time
+            val countdownDuration = date.time - nowDate
+
+            if (countdownDuration < Int.ZERO) {
+                binding?.partialEventCheckoutCountdown?.root?.hide()
+                showSoftbookEndedBottomSheet()
+            } else {
+                renderCountdownTimer(countdownDuration)
+            }
+        } catch (e: ParseException) {
+            binding?.partialEventCheckoutCountdown?.root?.hide()
+        }
+    }
+
+    private fun renderCountdownTimer(duration: Long) {
+        binding?.partialEventCheckoutCountdown?.timerEventCheckoutCountdownValue?.run {
+            targetDate = Calendar.getInstance().apply {
+                timeInMillis += duration
+            }
+            onFinish = {
+                showSoftbookEndedBottomSheet()
+            }
+        }
+    }
+
+    private fun showSoftbookEndedBottomSheet() {
+        val bottomSheet = EventSoftbookEndedBottomSheet()
+        bottomSheet.setOnClickSoftbookEndedButton {
+            activity?.finish()
+        }
+        bottomSheet.show(childFragmentManager)
     }
 
     private fun requestData() {
@@ -592,6 +642,9 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
                 taskStackBuilder.addNextIntent(this)
                 taskStackBuilder.startActivities()
             }
+            showSoftbookEndedBottomSheet()
+        } else if (resultCode == PAYMENT_FAILED || resultCode == PAYMENT_CANCELLED) {
+            initTimerCountdown()
         }
 
         super.onActivityResult(requestCode, resultCode, data)
@@ -668,6 +721,7 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
 
     companion object {
         const val DATE_FORMAT = "EEE, d MMM yyyy"
+        const val COUNTDOWN_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'"
         const val REQUEST_CODE_FORM = 100
         const val REQUEST_CODE_ADDITIONAL_ITEM = 101
         const val REQUEST_CODE_ADDITIONAL_PACKAGE = 102
@@ -686,12 +740,19 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
 
         const val ORDER_LIST_EVENT = "/order-list"
 
-        fun newInstance(urlPDP: String, metadata: MetaDataResponse, packageID: String, gatewayCode: String) = EventCheckoutFragment().also {
+        fun newInstance(
+            urlPDP: String,
+            metadata: MetaDataResponse,
+            packageID: String,
+            gatewayCode: String,
+            softbookExpireTime: String
+        ) = EventCheckoutFragment().also {
             it.arguments = Bundle().apply {
                 putString(EXTRA_URL_PDP, urlPDP)
                 putParcelable(EXTRA_META_DATA, metadata)
                 putString(EXTRA_PACKAGE_ID, packageID)
                 putString(EXTRA_GATEWAY_CODE, gatewayCode)
+                putString(EXTRA_SOFTBOOK_EXPIRE_TIME, softbookExpireTime)
             }
         }
     }

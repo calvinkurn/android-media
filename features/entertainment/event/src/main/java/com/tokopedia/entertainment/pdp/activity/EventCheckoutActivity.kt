@@ -36,7 +36,8 @@ class EventCheckoutActivity : BaseSimpleActivity(), HasComponent<EventPDPCompone
             intent.getStringExtra(EXTRA_URL_PDP) ?: "",
             intent.getParcelableExtra(EXTRA_META_DATA) ?: MetaDataResponse(),
             intent.getStringExtra(EXTRA_PACKAGE_ID) ?: "",
-            intent.getStringExtra(EXTRA_GATEWAY_CODE) ?: ""
+            intent.getStringExtra(EXTRA_GATEWAY_CODE) ?: "",
+            intent.getStringExtra(EXTRA_SOFTBOOK_EXPIRE_TIME) ?: ""
     )
 
     companion object{
@@ -44,14 +45,16 @@ class EventCheckoutActivity : BaseSimpleActivity(), HasComponent<EventPDPCompone
         const val EXTRA_META_DATA = "EXTRA_META_DATA"
         const val EXTRA_PACKAGE_ID = "EXTRA_PACKAGE_ID"
         const val EXTRA_GATEWAY_CODE = "EXTRA_GATEWAY_CODE"
+        const val EXTRA_SOFTBOOK_EXPIRE_TIME = "EXTRA_SOFTBOOK_EXPIRE_TIME"
 
         fun createIntent(context: Context, urlPDP : String, metaDataResponse: MetaDataResponse, packageID : String,
-                         gatewayCode : String
+                         gatewayCode : String, softbookExpireTime: String
         ): Intent = Intent(context,EventCheckoutActivity::class.java)
                 .putExtra(EXTRA_META_DATA, metaDataResponse)
                 .putExtra(EXTRA_URL_PDP,urlPDP)
                 .putExtra(EXTRA_PACKAGE_ID, packageID)
                 .putExtra(EXTRA_GATEWAY_CODE, gatewayCode)
+                .putExtra(EXTRA_SOFTBOOK_EXPIRE_TIME, softbookExpireTime)
     }
 
 

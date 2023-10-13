@@ -289,17 +289,6 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicket, PackageTypeFacto
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK) {
-            when (requestCode) {
-                REQUEST_CODE_LOGIN -> context?.let {
-                    startActivity(EventCheckoutActivity.createIntent(it, urlPDP, metaDataResponse, idPackageActive, gatewayCode))
-                }
-            }
-        }
-    }
-
     override fun resetPackage() {
         hashItemMap.clear()
         idPackageActive = ""
@@ -346,15 +335,11 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicket, PackageTypeFacto
         })
 
         viewModel.verifyResponse.observe(viewLifecycleOwner, Observer {
+            val softbookExpireTime = it.eventVerify.metadata.txExpiredTime
             metaDataResponse = it.eventVerify.metadata
             gatewayCode = it.eventVerify.gatewayCode
             context?.let {
-                if (userSession.isLoggedIn) {
-                    startActivity(EventCheckoutActivity.createIntent(it, urlPDP, metaDataResponse, idPackageActive, gatewayCode))
-                } else {
-                    startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
-                            REQUEST_CODE_LOGIN)
-                }
+                startActivity(EventCheckoutActivity.createIntent(it, urlPDP, metaDataResponse, idPackageActive, gatewayCode, softbookExpireTime))
             }
         })
 
@@ -518,13 +503,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicket, PackageTypeFacto
     }
 
     private fun checkAvailableCoachmark():View? {
-        return when{
-            getLayoutCoachmark(R.id.txtPilih_ticket)!=null -> getLayoutCoachmark(R.id.txtPilih_ticket)
-            getLayoutCoachmark(R.id.txtHabis_ticket)!=null -> getLayoutCoachmark(R.id.txtHabis_ticket)
-            getLayoutCoachmark(R.id.txtNotStarted)!=null -> getLayoutCoachmark(R.id.txtNotStarted)
-            getLayoutCoachmark(R.id.txtAlreadyEnd)!=null -> getLayoutCoachmark(R.id.txtAlreadyEnd)
-            else -> null
-        }
+        return getLayoutCoachmark(R.id.txtPilih_ticket)
     }
 
     companion object {
@@ -539,7 +518,6 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicket, PackageTypeFacto
 
         const val EMPTY_QTY = 0
         const val ZERO_PRICE = 0L
-        const val REQUEST_CODE_LOGIN = 100
         const val DATE_MULTIPLICATION = 1000L
         const val DELAY_TIME = 200L
         const val IS_HIBURAN = 8192

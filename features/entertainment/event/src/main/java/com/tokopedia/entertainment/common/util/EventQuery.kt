@@ -464,6 +464,11 @@ object EventQuery {
                            created_at
                            updated_at
                         }
+                        availability_status {
+                           val
+                           name
+                           desc
+                        }
                     }
                 }
                 facilities{
