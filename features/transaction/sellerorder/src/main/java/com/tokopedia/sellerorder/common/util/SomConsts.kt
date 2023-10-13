@@ -90,7 +90,6 @@ object SomConsts {
 
     const val LIST_ORDER_SCREEN_NAME = "/myorder"
     const val DETAIL_ORDER_SCREEN_NAME = "myorder/detail/"
-    const val PARAM_SOURCE_ASK_BUYER = "tx_ask_buyer"
     const val ATTRIBUTE_ID = "id"
 
     const val STATUS_CODE_ORDER_CANCELLED = 0

@@ -49,6 +49,10 @@ abstract class BaseChatTypeFactoryImpl(private val imageAnnouncementListener: Im
         return BannedProductAttachmentViewHolder.LAYOUT
     }
 
+    override fun type(autoReplyMessageUiModel: AutoReplyMessageUiModel): Int {
+        return 0 // Only for TopChat, no implementation in chat bot
+    }
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             TypingChatViewHolder.LAYOUT -> TypingChatViewHolder(parent)

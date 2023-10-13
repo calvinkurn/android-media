@@ -16,13 +16,12 @@
         app:typographyWeight="bold"
         tools:text="Budi Santoso" />
 
-    <ImageView
-        android:id="@+id/img_sr_blue_dot"
-        android:layout_width="@dimen/dp_topchat_6"
-        android:layout_height="@dimen/dp_topchat_6"
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/topchat_chatroom_iv_header_role_blue_dot"
+        android:layout_width="6dp"
+        android:layout_height="6dp"
+        android:layout_marginStart="4dp"
         android:layout_gravity="center_vertical"
-        android:layout_marginStart="@dimen/dp_topchat_4"
-        android:layout_marginLeft="@dimen/dp_topchat_4"
         android:visibility="gone"
         app:srcCompat="@drawable/circle_blue_notification"
         tools:visibility="visible" />
@@ -31,25 +30,25 @@
         android:id="@+id/tvDot"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_marginStart="@dimen/spacing_lvl1"
-        android:layout_marginEnd="@dimen/spacing_lvl1"
-        android:gravity="center_vertical"
-        android:text="●"
-        android:textColor="@color/Unify_NN950_96"
-        android:textStyle="normal"
-        android:visibility="gone"
+        android:layout_marginStart="2dp"
+        android:layout_marginEnd="2dp"
         app:typographyType="body_3"
         app:typographyWeight="bold"
-        tools:visibility="visible" />
+        android:gravity="center_vertical"
+        android:textColor="@color/Unify_NN950_96"
+        android:text="●"
+        android:visibility="gone"
+        tools:visibility="visible"
+        tools:ignore="HardcodedText" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/Unify_NN950_68"
         android:visibility="gone"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
+        android:textColor="@color/Unify_NN950_68"
         tools:text="Admin"
         tools:visibility="visible" />
 

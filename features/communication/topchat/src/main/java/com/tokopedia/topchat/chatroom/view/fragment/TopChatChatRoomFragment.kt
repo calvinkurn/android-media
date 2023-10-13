@@ -135,9 +135,10 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredVie
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.SearchListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.ProductBundlingListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.TopchatProductAttachmentListener
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.messagebubble.banned.BannedChatMessageViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwBubbleViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwQuestionViewHolder
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.BannedChatMessageViewHolder
+import com.tokopedia.topchat.chatroom.view.bottomsheet.TopChatAutoReplyDetailBottomSheet
 import com.tokopedia.topchat.chatroom.view.bottomsheet.TopChatGuideChatBottomSheet
 import com.tokopedia.topchat.chatroom.view.bottomsheet.TopchatBottomSheetBuilder
 import com.tokopedia.topchat.chatroom.view.bottomsheet.TopchatBottomSheetBuilder.MENU_ID_COPY_TO_CLIPBOARD
@@ -146,12 +147,12 @@ import com.tokopedia.topchat.chatroom.view.bottomsheet.TopchatBottomSheetBuilder
 import com.tokopedia.topchat.chatroom.view.custom.ChatMenuStickerView
 import com.tokopedia.topchat.chatroom.view.custom.ChatMenuView
 import com.tokopedia.topchat.chatroom.view.custom.ComposeMessageAreaConstraintLayout
-import com.tokopedia.topchat.chatroom.view.custom.FlexBoxChatLayout
 import com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
 import com.tokopedia.topchat.chatroom.view.custom.SrwFrameLayout
 import com.tokopedia.topchat.chatroom.view.custom.TransactionOrderProgressLayout
 import com.tokopedia.topchat.chatroom.view.custom.message.ReplyBubbleAreaMessage
 import com.tokopedia.topchat.chatroom.view.custom.message.TopchatMessageRecyclerView
+import com.tokopedia.topchat.chatroom.view.custom.messagebubble.base.TopChatChatRoomFlexBoxListener
 import com.tokopedia.topchat.chatroom.view.customview.TopChatRoomDialog
 import com.tokopedia.topchat.chatroom.view.customview.TopChatViewStateImpl
 import com.tokopedia.topchat.chatroom.view.listener.DualAnnouncementListener
@@ -171,6 +172,7 @@ import com.tokopedia.topchat.chatroom.view.uimodel.ReviewUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.uimodel.SendableVoucherPreviewUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.TopchatProductAttachmentPreviewUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.autoreply.TopChatAutoReplyItemUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundlingUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatRoomWebSocketViewModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatViewModel
@@ -201,16 +203,16 @@ import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
-import java.util.Locale
-import java.util.Stack
+import java.util.*
 import javax.inject.Inject
 import kotlin.math.abs
+import com.tokopedia.localizationchooseaddress.R as localizationchooseaddressR
 
 /**
  * @author : Steven 29/11/18
  */
 
-open class TopChatRoomFragment :
+open class TopChatChatRoomFragment :
     BaseChatFragment(),
     TopChatContract.View,
     TypingListener,
@@ -234,11 +236,11 @@ open class TopChatRoomFragment :
     SrwQuestionViewHolder.Listener,
     ReplyBoxTextListener,
     SrwBubbleViewHolder.Listener,
-    FlexBoxChatLayout.Listener,
+    TopChatChatRoomFlexBoxListener,
     ReplyBubbleAreaMessage.Listener,
     ReminderTickerViewHolder.Listener,
     ProductBundlingListener,
-    BannedChatMessageViewHolder.TopChatMessageCensorListener,
+    BannedChatMessageViewHolder.TopChatMessageCensorListener ,
     StoriesWidgetListener {
 
     @Inject
@@ -734,7 +736,7 @@ open class TopChatRoomFragment :
             webSocketViewModel.connectWebSocket()
             viewModel.getOrderProgress(messageId)
         } else {
-            viewModel.getMessageId(toUserId, toShopId, source)
+            viewModel.getMessageId(toUserId, toShopId, sourcePage)
         }
     }
 
@@ -792,7 +794,12 @@ open class TopChatRoomFragment :
     private fun setupArguments(savedInstanceState: Bundle?) {
         customMessage =
             getParamString(ApplinkConst.Chat.CUSTOM_MESSAGE, arguments, savedInstanceState)
-        sourcePage = getParamString(ApplinkConst.Chat.SOURCE_PAGE, arguments, savedInstanceState)
+        sourcePage = getParamString(
+            ApplinkConst.Chat.SOURCE,
+            arguments,
+            savedInstanceState,
+            defaultValue = ApplinkConst.Chat.Source.SOURCE_REGULAR_CHAT
+        )
         indexFromInbox = getParamInt(
             TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_INDEX,
             arguments,
@@ -3214,7 +3221,7 @@ open class TopChatRoomFragment :
                 if (changeAddressStack.empty()) return
                 val attachment = changeAddressStack.pop() ?: return
                 val msg = context?.getString(
-                    com.tokopedia.localizationchooseaddress.R.string.toaster_success_chosen_address
+                    localizationchooseaddressR.string.toaster_success_chosen_address
                 ) ?: ""
                 showToasterMsg(msg)
                 initUserLocation()
@@ -3510,10 +3517,6 @@ open class TopChatRoomFragment :
         return getBooleanArgument(IS_FROM_ANOTHER_CALL, savedInstanceState)
     }
 
-    private fun isSrwNewDesign(): Boolean {
-        return abTestPlatform.getString(AB_TEST_NEW_SRW, AB_TEST_OLD_SRW) == AB_TEST_NEW_SRW
-    }
-
     protected fun isUploadImageSecure(): Boolean {
         return abTestPlatform.getString(
             key = ROLLENCE_UPLOAD_SECURE,
@@ -3524,6 +3527,33 @@ open class TopChatRoomFragment :
     override fun onClickCheckGuide() {
         view?.hideKeyboard()
         TopChatGuideChatBottomSheet().show(childFragmentManager)
+    }
+
+    override fun onClickReadMoreAutoReply(
+        welcomeMessage: TopChatAutoReplyItemUiModel,
+        list: List<TopChatAutoReplyItemUiModel>
+    ) {
+        TopChatAnalyticsKt.eventClickAutoReply(
+            sourcePage,
+            messageId,
+            listOf(welcomeMessage) + list
+        )
+        view?.hideKeyboard()
+        TopChatAutoReplyDetailBottomSheet().show(
+            childFragmentManager,
+            welcomeMessage,
+            list
+        )
+    }
+
+    override fun onViewAutoReply(
+        list: List<TopChatAutoReplyItemUiModel>
+    ) {
+        TopChatAnalyticsKt.eventImpressionAutoReply(
+            sourcePage,
+            messageId,
+            list
+        )
     }
 
     companion object {
@@ -3545,12 +3575,10 @@ open class TopChatRoomFragment :
         private const val ELLIPSIZE_MAX_CHAR = 20
         private const val PREFIX_SELLER_APPLINK = "sellerapp://"
 
-        const val AB_TEST_NEW_SRW = "srw_new_design"
-        const val AB_TEST_OLD_SRW = "control_variant"
         const val ROLLENCE_UPLOAD_SECURE = "chat_upsecure_an"
 
         fun createInstance(bundle: Bundle): BaseChatFragment {
-            return TopChatRoomFragment().apply {
+            return TopChatChatRoomFragment().apply {
                 arguments = bundle
             }
         }

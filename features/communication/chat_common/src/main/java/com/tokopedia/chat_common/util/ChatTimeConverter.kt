@@ -3,6 +3,7 @@ package com.tokopedia.chat_common.util
 import android.content.Context
 import android.text.format.DateUtils
 import com.tokopedia.chat_common.R
+import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -46,12 +47,21 @@ object ChatTimeConverter {
         return currentDay - postDay == 1
     }
 
-    @JvmStatic
-    fun formatTime(unixTime: Long): String {
+    private fun formatTime(unixTime: Long): String {
         val localeID = Locale("in", "ID")
         val postTime = Date(unixTime)
         val sdfHour = SimpleDateFormat("HH:mm", localeID)
         return sdfHour.format(postTime)
+    }
+
+    fun getHourTime(replyTime: String?): String {
+        return try {
+            replyTime?.let {
+                formatTime(replyTime.toLong() / BaseChatViewHolder.MILISECONDS)
+            } ?: ""
+        } catch (e: NumberFormatException) {
+            replyTime ?: ""
+        }
     }
 
     fun formatFullTime(unixTime: Long): String {

@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -49,7 +48,7 @@ import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
 import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.StickerViewHolder
 import com.tokopedia.topchat.chatroom.view.fragment.StickerFragment
-import com.tokopedia.topchat.chatroom.view.fragment.TopChatRoomFragment
+import com.tokopedia.topchat.chatroom.view.fragment.TopChatChatRoomFragment
 import com.tokopedia.topchat.chatroom.view.listener.TopChatRoomFlexModeListener
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatRoomWebSocketViewModel
 import com.tokopedia.topchat.chattemplate.view.customview.TopChatTemplateSeparatedView
@@ -62,7 +61,14 @@ import com.tokopedia.topchat.common.util.ViewUtil.HALF_OPEN_STATE
 import com.tokopedia.topchat.common.util.ViewUtil.getFoldingFeatureState
 import kotlinx.coroutines.*
 import javax.inject.Inject
+import com.tokopedia.abstraction.R as abstractionR
+import com.tokopedia.chat_common.R as chat_commonR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
+/**
+ * Put [ApplinkConst.Chat.SOURCE] in the intent with value [ApplinkConst.Chat.Source]
+ * If no value given, the default is [ApplinkConst.Chat.Source.SOURCE_REGULAR_CHAT]
+ */
 open class TopChatRoomActivity :
     BaseChatToolbarActivity(),
     HasComponent<ChatComponent>,
@@ -78,7 +84,7 @@ open class TopChatRoomActivity :
     private var chatComponent: ChatComponent? = null
 
     private lateinit var windowInfoRepo: WindowInfoTracker
-    private lateinit var chatRoomFragment: TopChatRoomFragment
+    private lateinit var chatRoomFragment: TopChatChatRoomFragment
     private lateinit var chatListFragment: ChatListInboxFragment
 
     var remoteConfig: RemoteConfig? = null
@@ -134,7 +140,7 @@ open class TopChatRoomActivity :
     }
 
     protected open fun createChatRoomFragment(bundle: Bundle): Fragment {
-        return TopChatRoomFragment.createInstance(bundle)
+        return TopChatChatRoomFragment.createInstance(bundle)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -178,14 +184,12 @@ open class TopChatRoomActivity :
     }
 
     private fun initWindowBackground() {
-        val color = MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background)
+        val color = MethodChecker.getColor(this, unifyprinciplesR.color.Unify_Background)
         window.decorView.setBackgroundColor(color)
     }
 
     private fun decreaseToolbarElevation() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            toolbar.elevation = 0f
-        }
+        toolbar.elevation = 0f
     }
 
     private fun scanPathQuery(data: Uri?) {
@@ -200,7 +204,8 @@ open class TopChatRoomActivity :
                         it.getQueryParameter(ApplinkConst.Chat.CUSTOM_MESSAGE).toEmptyStringIfNull()
                     val avatar =
                         it.getQueryParameter(ApplinkConst.Chat.AVATAR).toEmptyStringIfNull()
-                    val source = it.getQueryParameter(ApplinkConst.Chat.SOURCE) ?: "deeplink"
+                    val source = it.getQueryParameter(ApplinkConst.Chat.SOURCE)
+                        ?: ApplinkConst.Chat.Source.SOURCE_ASK_SELLER
                     intent.putExtra(ApplinkConst.Chat.SOURCE, source)
 
                     val model = ChatRoomHeaderUiModel()
@@ -224,7 +229,8 @@ open class TopChatRoomActivity :
                     val shopName = it.getQueryParameter(ApplinkConst.Chat.OPPONENT_NAME).toEmptyStringIfNull()
                     val customMessage = it.getQueryParameter(ApplinkConst.Chat.CUSTOM_MESSAGE).toEmptyStringIfNull()
                     val avatar = it.getQueryParameter(ApplinkConst.Chat.AVATAR).toEmptyStringIfNull()
-                    val source = it.getQueryParameter(ApplinkConst.Chat.SOURCE) ?: SOURCE_ASK_BUYER
+                    val source = it.getQueryParameter(ApplinkConst.Chat.SOURCE)
+                        ?: ApplinkConst.Chat.Source.SOURCE_ASK_BUYER
                     intent.putExtra(ApplinkConst.Chat.SOURCE, source)
 
                     val model = ChatRoomHeaderUiModel()
@@ -278,10 +284,10 @@ open class TopChatRoomActivity :
     }
 
     private fun bindToolbarViews() {
-        chatRoomToolbarTitle = findViewById(com.tokopedia.chat_common.R.id.title)
-        chatRoomToolbarLabel = findViewById(com.tokopedia.chat_common.R.id.label)
-        chatRoomToolbarSubtitle = findViewById(com.tokopedia.chat_common.R.id.subtitle)
-        chatRoomToolbarAvatar = findViewById(com.tokopedia.chat_common.R.id.user_avatar)
+        chatRoomToolbarTitle = findViewById(chat_commonR.id.title)
+        chatRoomToolbarLabel = findViewById(chat_commonR.id.label)
+        chatRoomToolbarSubtitle = findViewById(chat_commonR.id.subtitle)
+        chatRoomToolbarAvatar = findViewById(chat_commonR.id.user_avatar)
     }
 
     private fun setupDummyToolbar() {
@@ -347,7 +353,7 @@ open class TopChatRoomActivity :
         } else {
             setupChatRoomOnlyToolbar()
             decreaseToolbarElevation()
-            chatRoomFragment = newFragment as TopChatRoomFragment
+            chatRoomFragment = newFragment as TopChatChatRoomFragment
             handleNonFlexModeView()
         }
     }
@@ -359,7 +365,7 @@ open class TopChatRoomActivity :
         } else {
             messageId = currentActiveChat ?: ZER0_MESSAGE_ID
         }
-        chatRoomFragment = newFragment as TopChatRoomFragment
+        chatRoomFragment = newFragment as TopChatChatRoomFragment
         chatListFragment = ChatListInboxFragment.createFragment(role, currentActiveChat)
         chatTemplateSeparatedView?.setupSeparatedChatTemplate(chatRoomFragment)
         chatListFragment.chatRoomFlexModeListener = this
@@ -434,7 +440,7 @@ open class TopChatRoomActivity :
         if (isFlexMode()) {
             messageId = msg.msgId
             currentActiveChat = msg.msgId
-            chatRoomFragment = newFragment as TopChatRoomFragment
+            chatRoomFragment = newFragment as TopChatChatRoomFragment
             chatRoomFragment.chatRoomFlexModeListener = this
             chatTemplateSeparatedView?.setupSeparatedChatTemplate(chatRoomFragment)
             attachChatRoomFragment(isFromAnotherChat = true)
@@ -530,7 +536,7 @@ open class TopChatRoomActivity :
                 ColorDrawable(
                     MethodChecker.getColor(
                         this@TopChatRoomActivity,
-                        com.tokopedia.unifyprinciples.R.color.Unify_Background
+                        unifyprinciplesR.color.Unify_Background
                     )
                 )
             )
@@ -538,10 +544,10 @@ open class TopChatRoomActivity :
             setDisplayShowHomeEnabled(true)
             setHomeButtonEnabled(true)
 
-            val upArrow = MethodChecker.getDrawable(applicationContext, com.tokopedia.abstraction.R.drawable.ic_action_back)
+            val upArrow = MethodChecker.getDrawable(applicationContext, abstractionR.drawable.ic_action_back)
             if (upArrow != null) {
                 upArrow.setColorFilter(
-                    MethodChecker.getColor(this@TopChatRoomActivity, com.tokopedia.unifyprinciples.R.color.Unify_NN600),
+                    MethodChecker.getColor(this@TopChatRoomActivity, unifyprinciplesR.color.Unify_NN600),
                     PorterDuff.Mode.SRC_ATOP
                 )
                 this.setHomeAsUpIndicator(upArrow)
@@ -614,7 +620,6 @@ open class TopChatRoomActivity :
     }
 
     companion object {
-        const val SOURCE_ASK_BUYER = "tx_ask_buyer"
         val LABEL_USER = "Pengguna"
         val LABEL_SELLER = "Penjual"
         val ROLE_SELLER = "shop"

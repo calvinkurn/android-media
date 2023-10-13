@@ -1,29 +1,32 @@
-package com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble
+package com.tokopedia.topchat.chatroom.view.adapter.viewholder.messagebubble.banned
 
 import android.view.Gravity
 import android.view.View
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.chat_common.data.MessageUiModel
+import com.tokopedia.chat_common.util.ChatTimeConverter.getHourTime
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatroom.view.adapter.util.TopChatChatRoomBubbleBackgroundGenerator.generateLeftBg
+import com.tokopedia.topchat.chatroom.view.adapter.util.TopChatChatRoomBubbleBackgroundGenerator.generateRightBg
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterListener
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.ChatMessageViewHolderBinder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.getOppositeMargin
-import com.tokopedia.topchat.databinding.ItemTopchatChatBannedBinding
+import com.tokopedia.topchat.databinding.TopchatChatroomChatBubbleBannedItemBinding
 import com.tokopedia.utils.view.binding.viewBinding
 
 class BannedChatMessageViewHolder(
-    itemView: View?,
+    itemView: View,
     private val listener: TopChatMessageCensorListener,
     private val adapterListener: AdapterListener
 ) : BaseChatViewHolder<MessageUiModel>(itemView) {
 
-    private val binding: ItemTopchatChatBannedBinding? by viewBinding()
+    private val binding: TopchatChatroomChatBubbleBannedItemBinding? by viewBinding()
 
-    private val bgLeft = ChatMessageViewHolderBinder.generateLeftBg(binding?.clBanContainer)
-    private val bgRight = ChatMessageViewHolderBinder.generateRightBg(binding?.clBanContainer)
+    private val bgLeft = generateLeftBg(binding?.clBanContainer)
+    private val bgRight = generateRightBg(binding?.clBanContainer)
 
     override fun bind(uiModel: MessageUiModel) {
         verifyReplyTime(uiModel)
@@ -32,7 +35,15 @@ class BannedChatMessageViewHolder(
         bindClickInfo()
         bindBackground(uiModel)
         bindGravity(uiModel)
-        ChatMessageViewHolderBinder.bindHourTextView(uiModel, binding?.tvTime)
+        bindHourTextView(uiModel, binding?.tvTime)
+    }
+
+    private fun bindHourTextView(
+        uiModel: MessageUiModel,
+        hour: TextView?
+    ) {
+        val hourTime = getHourTime(uiModel.replyTime)
+        hour?.text = hourTime
     }
 
     private fun bindGravity(message: MessageUiModel) {
@@ -92,6 +103,6 @@ class BannedChatMessageViewHolder(
     }
 
     companion object {
-        val LAYOUT = R.layout.item_topchat_chat_banned
+        val LAYOUT = R.layout.topchat_chatroom_chat_bubble_banned_item
     }
 }

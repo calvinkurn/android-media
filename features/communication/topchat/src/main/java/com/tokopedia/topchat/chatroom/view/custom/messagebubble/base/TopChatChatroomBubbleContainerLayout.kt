@@ -1,4 +1,4 @@
-package com.tokopedia.topchat.chatroom.view.custom
+package com.tokopedia.topchat.chatroom.view.custom.messagebubble.base
 
 import android.content.Context
 import android.util.AttributeSet
@@ -7,7 +7,7 @@ import android.widget.LinearLayout
 /**
  * [LinearLayout] that only takes 80% of available space
  */
-class BubbleContainerLayout : LinearLayout {
+class TopChatChatroomBubbleContainerLayout : LinearLayout {
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(

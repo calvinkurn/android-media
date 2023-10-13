@@ -17,7 +17,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.R
 import com.tokopedia.chat_common.data.BaseChatUiModel
 import com.tokopedia.chat_common.data.SendableUiModel
-import com.tokopedia.chat_common.util.ChatTimeConverter.formatTime
+import com.tokopedia.chat_common.util.ChatTimeConverter.getHourTime
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderUiModel.Companion.ROLE_USER
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import java.util.*
@@ -42,7 +42,7 @@ open class BaseChatViewHolder<T : Visitable<*>>(
     }
 
     private var roleContainer: LinearLayout? = null
-    protected var roleType: TextView? = null
+    private var roleType: TextView? = null
     private var roleName: TextView? = null
 
     protected fun changeHourColor(@ColorInt color: Int) {
@@ -105,18 +105,6 @@ open class BaseChatViewHolder<T : Visitable<*>>(
 
     protected open fun alwaysShowTime(): Boolean {
         return false
-    }
-
-    protected open fun getHourTime(replyTime: String?): String? {
-        val hourTime: String? = try {
-            val longReplyTime: Long = replyTime?.toLongOrZero()?: 0L
-            formatTime(
-                longReplyTime / MILISECONDS
-            )
-        } catch (e: NumberFormatException) {
-            replyTime
-        }
-        return hourTime
     }
 
     protected open fun setHeaderDate(element: BaseChatUiModel) {

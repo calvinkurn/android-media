@@ -26,5 +26,7 @@ interface BaseChatTypeFactory {
 
     fun type(bannedAttachmentUiModel: BannedProductAttachmentUiModel): Int
 
+    fun type(autoReplyMessageUiModel: AutoReplyMessageUiModel): Int
+
     fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*>
 }

@@ -96,7 +96,6 @@ import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_INVOICE
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_CODE
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_SELLER
-import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_SOURCE_ASK_BUYER
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_ACCEPT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_PROCESS_REQ_PICKUP
@@ -258,7 +257,7 @@ open class SomDetailFragment :
             ApplinkConst.TOPCHAT_ASKBUYER,
             detailResponse?.customer?.id.orEmpty(),
             "",
-            PARAM_SOURCE_ASK_BUYER,
+            ApplinkConst.Chat.Source.SOURCE_ASK_BUYER,
             detailResponse?.customer?.name,
             detailResponse?.customer?.image
         ).apply {
@@ -275,6 +274,10 @@ open class SomDetailFragment :
             putExtra(
                 ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT,
                 dynamicPriceResponse?.paymentData?.value
+            )
+            putExtra(
+                ApplinkConst.Chat.SOURCE,
+                ApplinkConst.Chat.Source.SOURCE_ASK_BUYER
             )
         }
         startActivity(intent)

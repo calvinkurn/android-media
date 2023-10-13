@@ -102,7 +102,7 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
     ): Visitable<*> {
         return when (chatItemPojoByDateByTime.attachment.type.toString()) {
             TYPE_QUICK_REPLY -> convertToQuickReply(chatItemPojoByDateByTime)
-            TYPE_QUICK_REPLY_SEND -> convertToMessageViewModel(chatItemPojoByDateByTime)
+            TYPE_QUICK_REPLY_SEND -> convertToMessageUiModel(chatItemPojoByDateByTime)
             TYPE_CHAT_BALLOON_ACTION -> convertToBalloonAction(chatItemPojoByDateByTime)
             TYPE_INVOICES_SELECTION -> convertToInvoicesSelection(chatItemPojoByDateByTime)
             TYPE_CHAT_SEPARATOR -> convertToChatSeprator(chatItemPojoByDateByTime)
@@ -111,7 +111,7 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
             TYPE_STICKY_BUTTON -> convertToStickyButtonActionsViewModel(
                 chatItemPojoByDateByTime
             )
-            TYPE_CSAT_VIEW -> convertToMessageViewModel(chatItemPojoByDateByTime)
+            TYPE_CSAT_VIEW -> convertToMessageUiModel(chatItemPojoByDateByTime)
             TYPE_SECURE_IMAGE_UPLOAD -> convertToImageUpload(chatItemPojoByDateByTime)
             TYPE_INVOICE_SEND -> convertToInvoiceSentUiModel(
                 chatItemPojoByDateByTime,

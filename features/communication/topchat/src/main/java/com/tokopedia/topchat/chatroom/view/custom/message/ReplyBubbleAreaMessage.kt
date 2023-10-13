@@ -13,9 +13,9 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.ReplyBubbleBinder
-import com.tokopedia.topchat.chatroom.view.custom.MessageBubbleLayout.Companion.DEFAULT_MSG_ORIENTATION
-import com.tokopedia.topchat.chatroom.view.custom.MessageBubbleLayout.Companion.LEFT_MSG_ORIENTATION
-import com.tokopedia.topchat.chatroom.view.custom.MessageBubbleLayout.Companion.RIGHT_MSG_ORIENTATION
+import com.tokopedia.topchat.chatroom.view.custom.messagebubble.base.BaseTopChatChatroomMessageBubbleLayout.Companion.DEFAULT_MSG_ORIENTATION
+import com.tokopedia.topchat.chatroom.view.custom.messagebubble.base.BaseTopChatChatroomMessageBubbleLayout.Companion.LEFT_MSG_ORIENTATION
+import com.tokopedia.topchat.chatroom.view.custom.messagebubble.base.BaseTopChatChatroomMessageBubbleLayout.Companion.RIGHT_MSG_ORIENTATION
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt
 import com.tokopedia.unifycomponents.Toaster
@@ -204,7 +204,7 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
     }
 
     companion object {
-        val LAYOUT = R.layout.partial_text_reply_bubble
+        val LAYOUT = R.layout.topchat_chatroom_partial_reply_bubble
     }
 
 }

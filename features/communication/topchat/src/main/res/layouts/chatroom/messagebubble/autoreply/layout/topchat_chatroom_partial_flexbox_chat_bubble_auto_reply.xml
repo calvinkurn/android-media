@@ -2,14 +2,14 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:parentTag="com.tokopedia.topchat.chatroom.view.custom.FlexBoxChatLayout">
+    tools:parentTag="com.tokopedia.topchat.chatroom.view.custom.messagebubble.regular.TopChatChatRoomFlexBoxLayout">
 
     <LinearLayout
         android:id="@+id/ll_msg_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingBottom="@dimen/unify_space_12"
+        android:paddingBottom="12dp"
         android:visibility="gone"
         tools:visibility="visible">
 
@@ -59,7 +59,15 @@
         android:textIsSelectable="false"
         app:typographyType="body_1"
         tools:ignore="RtlHardcoded"
-        tools:text="Mau cari susu yang bisa buat keker dlm satu malam ada gak ya gan?" />
+        tools:text="@tools:sample/lorem/random"
+        tools:maxLines="3"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/topchat_chatroom_cl_auto_reply"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <include layout="@layout/topchat_chatroom_auto_reply_list"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
         android:id="@+id/llStatus"

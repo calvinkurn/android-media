@@ -1,11 +1,9 @@
-package com.tokopedia.topchat.chatroom.view.custom
+package com.tokopedia.topchat.chatroom.view.custom.messagebubble.base
 
 import android.annotation.SuppressLint
-import android.annotation.TargetApi
 import android.content.Context
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
-import android.os.Build
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +12,7 @@ import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.data.MessageUiModel
@@ -23,45 +22,40 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaButtonAttachment
 import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaMessageAttachment
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.topchat.chatroom.view.adapter.util.MessageOnTouchListener
+import com.tokopedia.unifyprinciples.Typography
 import kotlin.math.abs
+import com.tokopedia.chat_common.R as chat_commonR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
+abstract class BaseTopChatFlexBoxChatLayout : ViewGroup {
 
-class FlexBoxChatLayout : ViewGroup {
-
-    var listener: Listener? = null
-    var checkMark: ImageView? = null
-        private set
-    private var timeStamp: TextView? = null
+    protected var layoutInflater: LayoutInflater? = null
+    protected var flexBoxListener: TopChatChatRoomFlexBoxListener? = null
+    private var checkMark: ImageView? = null
     private var hourTime: TextView? = null
 
     /**
      * Direct child view
      */
-    var message: TextView? = null
-        private set
-    var status: LinearLayout? = null
-        private set
-    var info: TextView? = null
-        private set
-    var header: LinearLayout? = null
-        private set
-    var icon: IconUnify? = null
-        private set
+    protected var message: TextView? = null
+    protected var status: LinearLayout? = null
+    protected var info: TextView? = null
+    protected var header: LinearLayout? = null
+    protected var icon: IconUnify? = null
 
     /**
      * Header direct child
      */
-    var headerTitle: Typography? = null
-        private set
-    var headerCta: Typography? = null
-        private set
-    var headerDivider: View? = null
-        private set
+    private var headerTitle: Typography? = null
+    private var headerCta: Typography? = null
+    private var headerDivider: View? = null
 
     private var showCheckMark = DEFAULT_SHOW_CHECK_MARK
     private var useMaxWidth = DEFAULT_USE_MAX_WIDTH
+
+    @LayoutRes
+    abstract fun getLayout(): Int
 
     constructor(context: Context) : super(context) {
         initConfig(context, null)
@@ -79,20 +73,6 @@ class FlexBoxChatLayout : ViewGroup {
         initConfig(context, attrs)
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    constructor(
-        context: Context,
-        attrs: AttributeSet?,
-        defStyleAttr: Int,
-        defStyleRes: Int
-    ) : super(context, attrs, defStyleAttr, defStyleRes) {
-        initConfig(context, attrs)
-    }
-
-    interface Listener {
-        fun changeAddress(attachment: HeaderCtaButtonAttachment)
-    }
-
     override fun setBackground(background: Drawable?) {
         val pl = paddingLeft
         val pt = paddingTop
@@ -104,7 +84,7 @@ class FlexBoxChatLayout : ViewGroup {
 
     private fun initConfig(context: Context?, attrs: AttributeSet?) {
         initAttr(context, attrs)
-        initView(context, attrs)
+        initView(context)
     }
 
     private fun initAttr(context: Context?, attrs: AttributeSet?) {
@@ -125,27 +105,34 @@ class FlexBoxChatLayout : ViewGroup {
         }
     }
 
-    private fun initView(context: Context?, attrs: AttributeSet?) {
-        LayoutInflater.from(context).inflate(LAYOUT, this, true).also {
-            message = it.findViewById(R.id.tvMessage)
-            status = it.findViewById(R.id.llStatus)
-            checkMark = it.findViewById(R.id.ivCheckMark)
-            hourTime = it.findViewById(R.id.tvTime)
-            info = it.findViewById(R.id.txt_info)
-            header = it.findViewById(R.id.ll_msg_header)
-            icon = it.findViewById(R.id.iu_msg_icon)
-            headerTitle = it.findViewById(R.id.tp_header_title)
-            headerCta = it.findViewById(R.id.tp_header_cta)
-            headerDivider = it.findViewById(R.id.v_header_divider)
+    private fun initView(context: Context?) {
+        layoutInflater = LayoutInflater.from(context)
+        val view = layoutInflater?.inflate(getLayout(), this, true)
+        view?.let {
+            bindInitialView(view)
+            bindAdditionalView(view)
+            initCheckMarkVisibility()
         }
-        initCheckMarkVisibility()
     }
 
-    fun setShowCheckMark(showCheckMark: Boolean) {
-        this.showCheckMark = showCheckMark
-        initCheckMarkVisibility()
+    private fun bindInitialView(view: View) {
+        message = view.findViewById(R.id.tvMessage)
+        status = view.findViewById(R.id.llStatus)
+        checkMark = view.findViewById(R.id.ivCheckMark)
+        hourTime = view.findViewById(R.id.tvTime)
+        info = view.findViewById(R.id.txt_info)
+        header = view.findViewById(R.id.ll_msg_header)
+        icon = view.findViewById(R.id.iu_msg_icon)
+        headerTitle = view.findViewById(R.id.tp_header_title)
+        headerCta = view.findViewById(R.id.tp_header_cta)
+        headerDivider = view.findViewById(R.id.v_header_divider)
     }
 
+    abstract fun bindAdditionalView(view: View)
+
+    /**
+     * Check Mark / Read Status
+     */
     private fun initCheckMarkVisibility() {
         if (!showCheckMark) {
             hideReadStatus()
@@ -154,73 +141,103 @@ class FlexBoxChatLayout : ViewGroup {
         }
     }
 
-    fun setMessage(msg: CharSequence?) {
-        message?.text = msg
+    private fun showReadStatus() {
+        checkMark?.show()
     }
 
-    fun setMessageTypeFace(chat: MessageUiModel) {
+    fun hideReadStatus() {
+        checkMark?.gone()
+    }
+
+    fun setShowCheckMark(showCheckMark: Boolean) {
+        this.showCheckMark = showCheckMark
+        initCheckMarkVisibility()
+    }
+
+    fun bindChatReadStatus(element: MessageUiModel) {
+        if (element.isShowTime && element.isSender && !element.isDeleted()) {
+            showReadStatus()
+            val imageResource = when {
+                element.isDummy -> chat_commonR.drawable.ic_chatcommon_check_rounded_grey
+                !element.isRead -> chat_commonR.drawable.ic_chatcommon_check_sent_rounded_grey
+                else -> chat_commonR.drawable.ic_chatcommon_check_read_rounded_green
+            }
+            val drawable = MethodChecker.getDrawable(context, imageResource)
+            checkMark?.setImageDrawable(drawable)
+        } else {
+            hideReadStatus()
+        }
+    }
+
+    /**
+     * Time / Hour Text
+     */
+    fun setHourTime(time: String) {
+        hourTime?.text = time
+    }
+
+    /**
+     * Message Body
+     */
+
+    protected fun setMessageTypeFace(chat: MessageUiModel) {
         val typeface = if (chat.isDeleted()) {
             Typeface.ITALIC
         } else {
             Typeface.NORMAL
         }
-        message?.let {
-            it.setTypeface(null, typeface)
+        message?.setTypeface(null, typeface)
+    }
+
+    open fun setMessageBody(messageUiModel: MessageUiModel) {
+        val htmlMessage = MethodChecker.fromHtml(messageUiModel.message)
+        setMessageTypeFace(messageUiModel)
+        message?.text = htmlMessage
+    }
+
+    fun getMessageText(): CharSequence? {
+        return message?.text
+    }
+
+    fun bindTextColor(msg: MessageUiModel) {
+        val textColor = if (msg.isDeleted()) {
+            unifyprinciplesR.color.Unify_NN600
+        } else {
+            unifyprinciplesR.color.Unify_NN950_96
+        }
+        message?.setTextColor(MethodChecker.getColor(context, textColor))
+    }
+
+    fun bindIcon(msg: MessageUiModel) {
+        icon?.shouldShowWithAction(msg.isDeleted()) {
+            val unifyIcon = getIconUnifyDrawable(
+                context,
+                IconUnify.BLOCK,
+                ContextCompat.getColor(
+                    context,
+                    unifyprinciplesR.color.Unify_NN500
+                )
+            )
+            icon?.setImageDrawable(unifyIcon)
         }
     }
 
-    fun setHourTime(time: String) {
-        hourTime?.text = time
-    }
-
-    private fun showReadStatus() {
-        checkMark?.show()
-    }
-
-    private fun hideReadStatus() {
-        checkMark?.hide()
-    }
-
-    fun changeReadStatus(readStatus: Drawable?) {
-        checkMark?.setImageDrawable(readStatus)
-    }
-
-    @SuppressLint("ClickableViewAccessibility")
-    fun setMessageOnTouchListener(onTouchListener: MessageOnTouchListener) {
-        message?.setOnTouchListener(onTouchListener)
+    /**
+     * Info / Text Label Gray on Bottom Bubble
+     */
+    fun showInfo(label: String) {
+        info?.text = label
+        info?.show()
     }
 
     fun hideInfo() {
         info?.hide()
     }
 
-    fun showInfo(label: String) {
-        info?.text = label
-        info?.show()
-    }
-
-    fun getMsg(): String {
-        return message?.text.toString()
-    }
-
-    fun renderHeaderAttachment(
-        attachment: Any?,
-        shouldHideDivider: Boolean
-    ) {
-        header?.show()
-        when (attachment) {
-            is HeaderCtaButtonAttachment -> renderCtaHeader(
-                attachment,
-                shouldHideDivider
-            )
-            else -> header?.hide()
-        }
-    }
-
-    fun hideAttachmentHeader() {
-        header?.hide()
-    }
-
+    /**
+     * Header / Additional Text on Top Bubble
+     * It has CTA, ex: User's Address from SRW reply
+     */
     private fun renderCtaHeader(
         attachment: HeaderCtaButtonAttachment,
         shouldHideDivider: Boolean
@@ -242,26 +259,40 @@ class FlexBoxChatLayout : ViewGroup {
         }
     }
 
-    private fun bindHeaderDivider(shouldHideDivider: Boolean) {
-        headerDivider?.showWithCondition(!shouldHideDivider)
+    fun renderHeaderAttachment(
+        attachment: Any?,
+        shouldHideDivider: Boolean
+    ) {
+        header?.show()
+        when (attachment) {
+            is HeaderCtaButtonAttachment -> renderCtaHeader(
+                attachment,
+                shouldHideDivider
+            )
+            else -> header?.hide()
+        }
     }
 
-    private fun bindHeaderBody(attachment: HeaderCtaButtonAttachment) {
-        val htmlMsg = MethodChecker.fromHtml(attachment.ctaButton.body)
-        setMessage(htmlMsg)
+    fun hideAttachmentHeader() {
+        header?.hide()
     }
 
     private fun bindHeaderTitle(attachment: HeaderCtaButtonAttachment) {
         headerTitle?.text = attachment.ctaButton.header
     }
 
+    private fun bindHeaderBody(attachment: HeaderCtaButtonAttachment) {
+        val htmlMsg = MethodChecker.fromHtml(attachment.ctaButton.body)
+        message?.text = htmlMsg
+    }
+
     private fun binDHeaderCtaState(attachment: HeaderCtaButtonAttachment) {
         val ctaColor = when (attachment.ctaButton.status) {
             HeaderCtaMessageAttachment.STATUS_ENABLED ->
-                com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                unifyprinciplesR.color.Unify_GN500
             HeaderCtaMessageAttachment.STATUS_DISABLED ->
-                com.tokopedia.unifyprinciples.R.color.Unify_NN950_32
-            else -> com.tokopedia.unifyprinciples.R.color.Unify_NN950_32
+                unifyprinciplesR.color.Unify_NN950_32
+            else -> unifyprinciplesR.color.Unify_NN950_32
         }
         val color = ContextCompat.getColor(context, ctaColor)
         headerCta?.setTextColor(color)
@@ -273,32 +304,26 @@ class FlexBoxChatLayout : ViewGroup {
 
     private fun bindHeaderCtaClick(attachment: HeaderCtaButtonAttachment) {
         headerCta?.setOnClickListener {
-            listener?.changeAddress(attachment)
+            flexBoxListener?.changeAddress(attachment)
         }
         headerCta?.isEnabled = attachment.ctaButton.isClickable()
     }
 
-    fun bindIcon(msg: MessageUiModel) {
-        icon?.shouldShowWithAction(msg.isDeleted()) {
-            val unifyIcon = getIconUnifyDrawable(
-                    context,
-                    IconUnify.BLOCK,
-                    ContextCompat.getColor(
-                        context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_NN500
-                    )
-                )
-            icon?.setImageDrawable(unifyIcon)
-        }
+    private fun bindHeaderDivider(shouldHideDivider: Boolean) {
+        headerDivider?.showWithCondition(!shouldHideDivider)
     }
 
-    fun bindTextColor(msg: MessageUiModel) {
-        val textColor = if (msg.isDeleted()) {
-            com.tokopedia.unifyprinciples.R.color.Unify_NN600
-        } else {
-            com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
-        }
-        message?.setTextColor(MethodChecker.getColor(context, textColor))
+    /**
+     * Set Touch and Click Listener
+     */
+
+    @SuppressLint("ClickableViewAccessibility")
+    fun setMessageOnTouchListener(onTouchListener: MessageOnTouchListener) {
+        message?.setOnTouchListener(onTouchListener)
+    }
+
+    fun setListener(listener: TopChatChatRoomFlexBoxListener) {
+        this.flexBoxListener = listener
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -316,19 +341,39 @@ class FlexBoxChatLayout : ViewGroup {
          * get measurement and layout params of direct child
          */
         measureChildWithMargins(
-            message, widthMeasureSpec, 0, heightMeasureSpec, 0
+            message,
+            widthMeasureSpec,
+            0,
+            heightMeasureSpec,
+            0
         )
         measureChildWithMargins(
-            info, widthMeasureSpec, 0, heightMeasureSpec, 0
+            info,
+            widthMeasureSpec,
+            0,
+            heightMeasureSpec,
+            0
         )
         measureChildWithMargins(
-            status, widthMeasureSpec, 0, heightMeasureSpec, 0
+            status,
+            widthMeasureSpec,
+            0,
+            heightMeasureSpec,
+            0
         )
         measureChildWithMargins(
-            header, widthMeasureSpec, 0, heightMeasureSpec, 0
+            header,
+            widthMeasureSpec,
+            0,
+            heightMeasureSpec,
+            0
         )
         measureChildWithMargins(
-            icon, widthMeasureSpec, 0, heightMeasureSpec, 0
+            icon,
+            widthMeasureSpec,
+            0,
+            heightMeasureSpec,
+            0
         )
 
         /**
@@ -371,17 +416,18 @@ class FlexBoxChatLayout : ViewGroup {
         if (messageWidth > messageMaxWidth) {
             totalHeight -= messageHeight
             val messageWidthSpec = MeasureSpec.makeMeasureSpec(
-                messageMaxWidth, MeasureSpec.EXACTLY
+                messageMaxWidth,
+                MeasureSpec.EXACTLY
             )
-            message!!.measure(messageWidthSpec, heightMeasureSpec)
+            message?.measure(messageWidthSpec, heightMeasureSpec)
             messageHeight = getTotalVisibleHeight(message)
             totalHeight += messageHeight
         }
         // Measure msg last line dimension
         var isOverlapped = false
-        val msgLineCount = message!!.lineCount
+        val msgLineCount = message?.lineCount ?: 0
         val msgLastLineWidth: Float = if (msgLineCount > 0) {
-            message!!.layout.getLineWidth(msgLineCount - 1)
+            message?.layout?.getLineWidth(msgLineCount - 1) ?: 0f
         } else {
             0f
         }
@@ -399,7 +445,7 @@ class FlexBoxChatLayout : ViewGroup {
         if (thirdRowWidthDiff < 0) {
             totalWidth += abs(thirdRowWidthDiff)
         }
-        val thirdRowHeight = if (isOverlapped && info!!.isVisible) {
+        val thirdRowHeight = if (isOverlapped && info?.isVisible == true) {
             abs(infoHeight - statusHeight)
         } else {
             infoHeight
@@ -410,9 +456,10 @@ class FlexBoxChatLayout : ViewGroup {
         if (infoWidth > infoMaxWidth) {
             totalHeight -= infoHeight
             val infoWidthSpec = MeasureSpec.makeMeasureSpec(
-                infoMaxWidth, MeasureSpec.EXACTLY
+                infoMaxWidth,
+                MeasureSpec.EXACTLY
             )
-            info!!.measure(infoWidthSpec, heightMeasureSpec)
+            info?.measure(infoWidthSpec, heightMeasureSpec)
             infoHeight = getTotalVisibleHeight(info)
             totalHeight += infoHeight
         }
@@ -422,7 +469,7 @@ class FlexBoxChatLayout : ViewGroup {
 
         setMeasuredDimension(
             resolveSize(totalWidth, widthMeasureSpec),
-            resolveSize(totalHeight, heightMeasureSpec),
+            resolveSize(totalHeight, heightMeasureSpec)
         )
     }
 
@@ -432,11 +479,11 @@ class FlexBoxChatLayout : ViewGroup {
         /**
          * Layout Header
          */
-        if (header!!.isVisible) {
+        if (header?.isVisible == true) {
             val leftHeader = paddingStart
             val topHeader = topOffset
-            val rightHeader = paddingStart + header!!.measuredWidth
-            val bottomHeader = topHeader + header!!.measuredHeight
+            val rightHeader = paddingStart + (header?.measuredWidth ?: 0)
+            val bottomHeader = topHeader + (header?.measuredHeight ?: 0)
             header?.layout(
                 leftHeader,
                 topHeader,
@@ -478,12 +525,12 @@ class FlexBoxChatLayout : ViewGroup {
         /**
          * Layout info
          */
-        if (info!!.isVisible) {
-            val infoLp = info!!.layoutParams as MarginLayoutParams
+        if (info?.isVisible == true) {
+            val infoLp = info?.layoutParams as MarginLayoutParams
             val leftInfo = paddingStart
             val topInfo = topOffset + infoLp.topMargin
-            val rightInfo = paddingStart + info!!.measuredWidth
-            val bottomInfo = topInfo + info!!.measuredHeight
+            val rightInfo = paddingStart + (info?.measuredWidth ?: 0)
+            val bottomInfo = topInfo + (info?.measuredHeight ?: 0)
             info?.layout(
                 leftInfo,
                 topInfo,
@@ -495,48 +542,47 @@ class FlexBoxChatLayout : ViewGroup {
         /**
          * Layout status
          */
-        val leftStatus = measuredWidth - paddingEnd - status!!.measuredWidth
-        val topStatus = measuredHeight - paddingBottom - status!!.measuredHeight
+        val leftStatus = measuredWidth - paddingEnd - (status?.measuredWidth ?: 0)
+        val topStatus = measuredHeight - paddingBottom - (status?.measuredHeight ?: 0)
         val rightStatus = measuredWidth - paddingEnd
         val bottomStatus = measuredHeight - paddingBottom
-        status!!.layout(
+        status?.layout(
             leftStatus,
             topStatus,
             rightStatus,
             bottomStatus
         )
-
     }
 
-    private fun getTotalVisibleWidth(view: View?): Int {
+    protected fun getTotalVisibleWidth(view: View?): Int {
         val viewLp = view?.layoutParams as? MarginLayoutParams ?: return 0
         if (!view.isVisible) return 0
         return view.measuredWidth + viewLp.leftMargin + viewLp.rightMargin
     }
 
-    private fun getVisibleMeasuredWidth(view: View?): Int {
+    protected fun getVisibleMeasuredWidth(view: View?): Int {
         if (view?.isVisible == false) return 0
         return view?.measuredWidth ?: 0
     }
 
-    private fun getTotalVisibleHeight(view: View?): Int {
+    protected fun getTotalVisibleHeight(view: View?): Int {
         val viewLp = view?.layoutParams as? MarginLayoutParams ?: return 0
         if (!view.isVisible) return 0
         return view.measuredHeight + viewLp.topMargin + viewLp.bottomMargin
     }
 
-    private fun getVisibleMeasuredHeight(view: View?): Int {
+    protected fun getVisibleMeasuredHeight(view: View?): Int {
         if (view?.isVisible == false) return 0
         return view?.measuredHeight ?: 0
     }
 
-    private fun getVisibleEndMargin(view: View?): Int {
+    protected fun getVisibleEndMargin(view: View?): Int {
         val viewLp = view?.layoutParams as? MarginLayoutParams ?: return 0
         if (!view.isVisible) return 0
         return viewLp.rightMargin
     }
 
-    private fun getVisibleStartMargin(view: View?): Int {
+    protected fun getVisibleStartMargin(view: View?): Int {
         val viewLp = view?.layoutParams as? MarginLayoutParams ?: return 0
         if (!view.isVisible) return 0
         return viewLp.leftMargin
@@ -559,7 +605,7 @@ class FlexBoxChatLayout : ViewGroup {
     }
 
     /**
-     * Per-child layout information associated with [FlexBoxChatLayout].
+     * Per-child layout information associated with [BaseTopChatFlexBoxChatLayout].
      */
     class LayoutParams : MarginLayoutParams {
         constructor(c: Context?, attrs: AttributeSet?) : super(c, attrs)
@@ -569,9 +615,8 @@ class FlexBoxChatLayout : ViewGroup {
     }
 
     companion object {
-        const val DEFAULT_USE_MAX_WIDTH = false
+        private const val DEFAULT_USE_MAX_WIDTH = false
         const val DEFAULT_SHOW_CHECK_MARK = true
         const val REPLY_WIDTH_OFFSET = 5
-        val LAYOUT = R.layout.flexbox_chat_message
     }
 }

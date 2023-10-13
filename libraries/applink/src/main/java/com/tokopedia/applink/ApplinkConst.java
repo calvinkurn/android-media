@@ -706,7 +706,6 @@ public interface ApplinkConst {
         String SHOP_ID = "shop_id";
         String OPPONENT_NAME = "opponent_name";
         String OPPONENT_ROLE = "opponent_role";
-        String SOURCE = "source";
         String TO_USER_ID = "toUserId";
         String TO_SHOP_ID = "toShopId";
         String CUSTOM_MESSAGE = "customMessage";
@@ -729,15 +728,24 @@ public interface ApplinkConst {
         String PATH_ASK_SELLER = "askseller";
         String PATH_ASK_BUYER = "askbuyer";
 
-        String SOURCE_ASK_SELLER = "tx_ask_seller";
-        String SOURCE_PAGE = "source_page";
+
         String SEARCH_CREATE_TIME = "search_create_time_str";
         String SEARCH_PRODUCT_KEYWORD = "search_product_keyword";
 
         String SHOP_FOLLOWERS_CHAT_KEY = "shop_followers_chat_key";
 
         // chat source page
-        String SOURCE_CHAT_SEARCH = "chat_search";
+        String SOURCE = "source";
+        interface Source {
+            String SOURCE_SHOP = "shop";
+            String SOURCE_PDP = "pdp";
+            String SOURCE_ASK_BUYER = "tx_ask_buyer";
+            String SOURCE_ASK_SELLER = "tx_ask_seller";
+            String SOURCE_CHAT_SEARCH = "chatSearch";
+
+            // Default / Unspecified
+            String SOURCE_REGULAR_CHAT = "regularChat";
+        }
     }
 
     interface Tokomember{
