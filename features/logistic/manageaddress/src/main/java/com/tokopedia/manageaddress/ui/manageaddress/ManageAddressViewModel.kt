@@ -53,7 +53,6 @@ class ManageAddressViewModel @Inject constructor(
     private val chooseAddressMapper: ChooseAddressMapper,
     private val validateShareAddressAsReceiverUseCase: ValidateShareAddressAsReceiverUseCase,
     private val validateShareAddressAsSenderUseCase: ValidateShareAddressAsSenderUseCase,
-    private val getTargetedTickerUseCase: GetTargetedTickerUseCase,
     private val getUserConsentCollection: GetConsentCollectionUseCase,
     private val setStateChosenAddressFromAddressUseCase: SetStateChosenAddressFromAddressUseCase,
     private val getStateChosenAddressUseCase: GetStateChosenAddressUseCase
@@ -369,6 +368,4 @@ class ManageAddressViewModel @Inject constructor(
             source
         }
     }
-
-
 }
