@@ -217,7 +217,7 @@ class ShopHomeBannerProductGroupViewPagerViewHolder(
 
     private fun setupColors(overrideTheme: Boolean, colorSchema: ShopPageColorSchema) {
         val chevronColor = if (overrideTheme) {
-            colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.ICON_CTA_LINK_COLOR)
+            colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.ICON_ENABLED_HIGH_COLOR)
         } else {
             ContextCompat.getColor(viewBinding?.iconChevron?.context ?: return, unifycomponentsR.color.Unify_NN950)
         }

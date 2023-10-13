@@ -17,6 +17,7 @@ import android.widget.ImageView
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.PlayerView
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
@@ -78,6 +79,10 @@ import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.ColorMode
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.UnifyMotion
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.*
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
@@ -92,8 +97,9 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
 ) {
 
     companion object {
-        private const val CYCLE_DURATION = 5000L
+        private const val CYCLE_DURATION = 2500L
         private const val MAXIMUM_WIDTH_STATIC_USP = 100
+        private const val DELAY_DURATION_TICKER_MILLIS = 1000L
         private const val NEW_SELLER_TEXT_HTML = "Penjual Baru"
     }
 
@@ -675,14 +681,15 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
         isMyShop: Boolean = false
     ) {
         tickerShopStatus?.show()
+        tickerShopStatus?.tickerTitle =
+            HtmlLinkHelper(context, shopOperationalHourStatus.tickerTitle).spannedString.toString()
+        tickerShopStatus?.setHtmlDescription(shopOperationalHourStatus.tickerMessage)
         tickerShopStatus?.tickerType = if (isMyShop) {
             Ticker.TYPE_WARNING
         } else {
             Ticker.TYPE_ANNOUNCEMENT
         }
-        tickerShopStatus?.tickerTitle =
-            HtmlLinkHelper(context, shopOperationalHourStatus.tickerTitle).spannedString.toString()
-        tickerShopStatus?.setHtmlDescription(shopOperationalHourStatus.tickerMessage)
+  
         tickerShopStatus?.setDescriptionClickEvent(object : TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
                 listenerHeader?.onShopStatusTickerClickableDescriptionClicked(linkUrl)
@@ -695,6 +702,12 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
         } else {
             tickerShopStatus?.closeButtonVisibility = View.VISIBLE
         }
+        
+        doOnDelayFinished(DELAY_DURATION_TICKER_MILLIS) {
+            tickerShopStatus?.tickerTitle =
+                HtmlLinkHelper(context, shopOperationalHourStatus.tickerTitle).spannedString.toString()
+            tickerShopStatus?.setHtmlDescription(shopOperationalHourStatus.tickerMessage)
+        }
     }
 
     private fun showShopStatusTicker(shopInfo: ShopInfo, isMyShop: Boolean = false) {
@@ -705,13 +718,6 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
         val shopId = shopInfo.shopCore.shopID
         val isOfficialStore = shopInfo.goldOS.isOfficialStore()
         val isGoldMerchant = shopInfo.goldOS.isGoldMerchant()
-        tickerShopStatus?.show()
-        tickerShopStatus?.tickerType = when (shopTickerType) {
-            ShopTickerType.INFO -> Ticker.TYPE_ANNOUNCEMENT
-            ShopTickerType.WARNING -> Ticker.TYPE_WARNING
-            ShopTickerType.DANGER -> Ticker.TYPE_ERROR
-            else -> Ticker.TYPE_WARNING
-        }
         tickerShopStatus?.tickerTitle = MethodChecker.fromHtml(statusTitle).toString()
         tickerShopStatus?.setHtmlDescription(
             if (shopStatus == ShopStatusDef.MODERATED && isMyShop) {
@@ -720,6 +726,14 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
                 statusMessage
             }
         )
+        tickerShopStatus?.show()
+        tickerShopStatus?.tickerType = when (shopTickerType) {
+            ShopTickerType.INFO -> Ticker.TYPE_ANNOUNCEMENT
+            ShopTickerType.WARNING -> Ticker.TYPE_WARNING
+            ShopTickerType.DANGER -> Ticker.TYPE_ERROR
+            else -> Ticker.TYPE_WARNING
+        }
+      
         tickerShopStatus?.setDescriptionClickEvent(object : TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
                 // set tracker data based on shop status
@@ -775,8 +789,30 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
                 tickerShopStatus?.closeButtonVisibility = View.VISIBLE
             }
         }
+        
+        doOnDelayFinished(DELAY_DURATION_TICKER_MILLIS) {
+            tickerShopStatus?.tickerTitle = MethodChecker.fromHtml(statusTitle).toString()
+            tickerShopStatus?.setHtmlDescription(
+                if (shopStatus == ShopStatusDef.MODERATED && isMyShop) {
+                    generateShopModerateTickerDescription(statusMessage)
+                } else {
+                    statusMessage
+                }
+            )
+        }
     }
 
+    private fun doOnDelayFinished(delayMillis: Long, block: () -> Unit) {
+        CoroutineScope(Dispatchers.Main).launch {
+            delay(delayMillis)
+            try {
+                block()
+            } catch (e: Exception) {
+                FirebaseCrashlytics.getInstance().recordException(e)
+            }
+        }
+    }
+    
     private fun hideShopStatusTicker() {
         tickerShopStatus?.hide()
     }
