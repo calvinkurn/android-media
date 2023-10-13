@@ -425,11 +425,6 @@ class PromoEntryPointWidget @JvmOverloads constructor(
             errorView?.visibility = View.GONE
             loadingView?.visibility = View.GONE
         }
-        activeViewRightIcon?.setOnClickListener {
-            if (activeViewWording?.visibility == View.VISIBLE) {
-                onClickListener.invoke()
-            }
-        }
         activeView?.setOnClickListener {
             if (activeViewWording?.visibility == View.VISIBLE) {
                 onClickListener.invoke()
@@ -582,7 +577,7 @@ class PromoEntryPointWidget @JvmOverloads constructor(
                 activeViewSummaryLayout?.visibility = View.GONE
                 activeViewDivider?.visibility = View.GONE
             }
-            activeViewRightIcon?.setOnClickListener {
+            activeView?.setOnClickListener {
                 if (activeViewRightIcon?.visibility == View.VISIBLE) {
                     if (activeViewSummaryLayout?.visibility == View.VISIBLE) {
                         activeViewRightIcon?.setImage(IconUnify.CHEVRON_DOWN)
@@ -601,12 +596,9 @@ class PromoEntryPointWidget @JvmOverloads constructor(
         } else {
             activeViewSummaryLayout?.visibility = View.GONE
             activeViewDivider?.visibility = View.GONE
-            activeViewRightIcon?.setOnClickListener {
+            activeView?.setOnClickListener {
                 /* no-op */
             }
-        }
-        activeView?.setOnClickListener {
-            /* no-op */
         }
         activeViewWording?.stopFlipping()
     }

@@ -65,17 +65,17 @@ internal class GroupPaginationOnScrollListener(
     private fun changePaginationInfo(recyclerView: RecyclerView) {
         val layoutManager = recyclerView.layoutManager as? GridLayoutManager ?: return
         val adapter = recyclerView.adapter as? Adapter ?: return
-        val firstVisibleItemPosition = layoutManager.findFirstCompletelyVisibleItemPosition()
+        val lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
 
-        if (firstVisibleItemPosition == RecyclerView.NO_POSITION) return
+        if (lastVisibleItemPosition == RecyclerView.NO_POSITION) return
 
-        val firstVisibleItem = adapter.getItemAt(firstVisibleItemPosition)
+        val lastVisibleItem = adapter.getItemAt(lastVisibleItemPosition)
 
-        if (firstVisibleItem !is HasGroup) return
+        if (lastVisibleItem !is HasGroup) return
 
-        groupObservable = firstVisibleItem.group
-        pageCount = firstVisibleItem.pageCount
-        pageInGroupObservable = firstVisibleItem.pageInGroup
+        groupObservable = lastVisibleItem.group
+        pageCount = lastVisibleItem.pageCount
+        pageInGroupObservable = lastVisibleItem.pageInGroup
     }
 
     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {

@@ -424,7 +424,8 @@ class ChatBotWebSocketMessageMapper @Inject constructor(val gson: Gson) : Websoc
             pojo.message.timeStampUnixNano,
             pojo.message.censoredReply,
             convertToChatActionBubbleViewModelList(pojoAttribute),
-            convertToQuickReplyList(quickReplyPojo)
+            convertToQuickReplyList(quickReplyPojo),
+            isTypingBlocked = pojoAttribute.isTypingBlockedOnButtonSelect
         )
     }
 

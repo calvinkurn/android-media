@@ -83,6 +83,7 @@ import com.tokopedia.cartrevamp.view.uimodel.LoadRecommendationState
 import com.tokopedia.cartrevamp.view.uimodel.LoadWishlistV2State
 import com.tokopedia.cartrevamp.view.uimodel.RemoveFromWishlistEvent
 import com.tokopedia.cartrevamp.view.uimodel.SeamlessLoginEvent
+import com.tokopedia.cartrevamp.view.uimodel.SubTotalState
 import com.tokopedia.cartrevamp.view.uimodel.UndoDeleteEvent
 import com.tokopedia.cartrevamp.view.uimodel.UpdateCartAndGetLastApplyEvent
 import com.tokopedia.cartrevamp.view.uimodel.UpdateCartCheckoutState
@@ -249,6 +250,9 @@ class CartViewModel @Inject constructor(
 
     private val _followShopEvent: MutableLiveData<FollowShopEvent> = MutableLiveData()
     val followShopEvent: LiveData<FollowShopEvent> = _followShopEvent
+
+    private val _subTotalState: MutableLiveData<SubTotalState> = MutableLiveData()
+    val subTotalState: LiveData<SubTotalState> = _subTotalState
 
     private val _bmGmGroupProductTickerState: MutableLiveData<GetBmGmGroupProductTickerState> = MutableLiveData()
     val bmGmGroupProductTickerState: LiveData<GetBmGmGroupProductTickerState> = _bmGmGroupProductTickerState
@@ -666,7 +670,7 @@ class CartViewModel @Inject constructor(
 
         cartModel.latestCartTotalAmount = subtotalPrice
 
-        _globalEvent.value = CartGlobalEvent.SubTotalUpdated(
+        _subTotalState.value = SubTotalState(
             subtotalCashback,
             totalItemQty.toString(),
             subtotalPrice,
@@ -2786,11 +2790,14 @@ class CartViewModel @Inject constructor(
     }
 
     fun isPromoRevamp(): Boolean {
-        cartModel.cartListData?.let { data ->
-            return PromoUsageRollenceManager()
-                .isRevamp(data.promo.lastApplyPromo.lastApplyPromoData.userGroupMetadata)
+        if (cartPromoEntryPointProcessor.isPromoRevamp == null) {
+            val isRevamp = cartModel.cartListData?.let { data ->
+                PromoUsageRollenceManager()
+                    .isRevamp(data.promo.lastApplyPromo.lastApplyPromoData.userGroupMetadata)
+            } ?: false
+            cartPromoEntryPointProcessor.isPromoRevamp = isRevamp
         }
-        return false
+        return cartPromoEntryPointProcessor.isPromoRevamp == true
     }
 
     fun getEntryPointInfoFromLastApply(lastApply: LastApplyUiModel) {
@@ -2808,25 +2815,20 @@ class CartViewModel @Inject constructor(
         )
     }
 
-    fun getEntryPointInfoDefault() {
-        launchCatchError(
-            context = dispatchers.main,
-            block = {
-                _entryPointInfoEvent.postValue(EntryPointInfoEvent.Loading)
-                cartModel.cartListData?.let { data ->
-                    val lastApply = CartUiModelMapper.mapLastApplySimplified(data.promo.lastApplyPromo.lastApplyPromoData)
-                    val entryPointEvent = cartPromoEntryPointProcessor
-                        .getEntryPointInfoFromLastApply(lastApply, cartModel, cartDataList.value)
-                    _entryPointInfoEvent.postValue(entryPointEvent)
-                }
-            },
-            onError = {
-                cartModel.cartListData?.let { data ->
-                    val lastApply = CartUiModelMapper.mapLastApplySimplified(data.promo.lastApplyPromo.lastApplyPromoData)
-                    _entryPointInfoEvent.postValue(EntryPointInfoEvent.Error(lastApply))
-                }
+    fun getEntryPointInfoDefault(appliedPromoCodes: List<String> = emptyList()) {
+        if (isPromoRevamp()) {
+            val lastApplyUiModel = cartModel.cartListData?.let { data ->
+                CartUiModelMapper.mapLastApplySimplified(data.promo.lastApplyPromo.lastApplyPromoData)
             }
-        )
+            lastApplyUiModel?.let {
+                getEntryPointInfoFromLastApply(lastApplyUiModel.copy(additionalInfo = lastApplyUiModel.additionalInfo.copy(usageSummaries = emptyList())))
+            }
+        } else {
+            _entryPointInfoEvent.postValue(
+                cartPromoEntryPointProcessor
+                    .getEntryPointInfoActiveDefault(appliedPromoCodes)
+            )
+        }
     }
 
     fun getEntryPointInfoNoItemSelected() {

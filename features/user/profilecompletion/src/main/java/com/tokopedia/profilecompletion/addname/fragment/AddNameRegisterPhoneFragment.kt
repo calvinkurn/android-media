@@ -45,7 +45,7 @@ import javax.inject.Inject
 open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.View {
 
     private var _binding: FragmentAddNameRegisterBinding? = null
-    private val binding get() = _binding!!
+    private val binding get() = _binding
     var phoneNumber: String? = ""
     var uuid: String? = ""
 
@@ -111,7 +111,7 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
     ): View? {
         splitCompatInstall()
         _binding = FragmentAddNameRegisterBinding.inflate(inflater, container, false)
-        return binding.root
+        return binding?.root
     }
 
     private fun splitCompatInstall() {
@@ -315,8 +315,8 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         _binding = null
     }
 }
