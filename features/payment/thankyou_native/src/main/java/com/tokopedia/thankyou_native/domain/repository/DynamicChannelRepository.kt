@@ -61,7 +61,6 @@ class DynamicChannelRepository @Inject constructor(
             params.putString(TOKEN, token)
             params.putInt(NUM_OF_CHANNEL, numOfChannel)
             params.putString(LOCATION, locationParams)
-            params.putString(PAGE, THANK_YOU)
             return params
         }
 
@@ -69,7 +68,8 @@ class DynamicChannelRepository @Inject constructor(
             groupIds: String = "",
             channelIds: String = "0",
             queryParams: String = "",
-            locationParams: String = ""
+            locationParams: String = "",
+            page: String = ""
         ) : RequestParams {
             val params = RequestParams.create()
             params.parameters.clear()
@@ -77,6 +77,7 @@ class DynamicChannelRepository @Inject constructor(
             params.putString(GROUP_IDS, groupIds)
             params.putString(CHANNEL_IDS, channelIds)
             params.putString(LOCATION, locationParams)
+            params.putString(PAGE, page)
             return params
         }
     }
@@ -91,7 +92,8 @@ class DynamicChannelRepository @Inject constructor(
             groupIds = groupId,
             channelIds = channelIds,
             queryParams = params,
-            locationParams = location
+            locationParams = location,
+            page = THANK_YOU
         )
 
         return getDynamicChannelData(requestParams)

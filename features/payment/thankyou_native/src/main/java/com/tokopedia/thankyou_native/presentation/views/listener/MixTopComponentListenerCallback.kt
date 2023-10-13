@@ -42,7 +42,7 @@ class MixTopComponentListenerCallback(
             FlashSaleWidgetTracking().getMixLeftProductView(
                 channel,
                 channelGrid,
-                position - 1,
+                position,
                 flashSaleWidgetListener.getFlashSaleWidgetPosition(),
                 flashSaleWidgetListener.getUserId()
             ) as HashMap<String, Any>
@@ -59,7 +59,7 @@ class MixTopComponentListenerCallback(
         FlashSaleWidgetTracking().sendProductClick(
             channel,
             channelGrid,
-            position - 1,
+            position,
             flashSaleWidgetListener.getFlashSaleWidgetPosition(),
             flashSaleWidgetListener.getUserId()
         )

@@ -254,12 +254,10 @@ class ThanksPageDataViewModel @Inject constructor(
         }
     }
 
-    private fun getFlashSaleData(groupId: String, location: String) {
-        if (groupId.isEmpty()) return
-
+    private fun getFlashSaleData(channelID: String, location: String) {
         launch(coroutineContext) {
             val homeChannel = dynamicChannelRepository.getRemoteData(Bundle().apply {
-                putString("channelIDs", groupId)
+                putString("channelIDs", channelID)
                 putString("location", location)
             })
 

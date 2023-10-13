@@ -8,6 +8,7 @@ import com.tokopedia.home_component.model.LabelGroup
 import com.tokopedia.home_component.util.getTopadsString
 import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
+import com.tokopedia.track.builder.util.BaseTrackerConst.Event.PRODUCT_VIEW
 
 class FlashSaleWidgetTracking: BaseTrackerConst() {
 
@@ -21,6 +22,9 @@ class FlashSaleWidgetTracking: BaseTrackerConst() {
         private const val VIEW_ITEM_LIST = "view_item_list"
         private const val CLICK_PAYMENT = "clickPayment"
         private const val PAYMENT = "payment"
+        private const val ANDROID_TRACKER_ID_VIEW = "47651"
+        private const val ANDROID_TRACKER_ID_CLICK = "47652"
+        private const val ANDROID_TRACKER_ID_VIEW_ALL_CLICK = "47710"
     }
 
     private val LIST_CAROUSEL_PRODUCT = PRODUCT_LIST.format("%s", "dynamic channel thank you page - product", "%s", "%s", "%s", "%s", "%s")
@@ -28,7 +32,7 @@ class FlashSaleWidgetTracking: BaseTrackerConst() {
     fun getMixLeftProductView(channel: ChannelModel, grid: ChannelGrid, position: Int, positionOnTyp: Int, userId: String): Map<String, Any> {
         val trackingBuilder = BaseTrackerBuilder()
         return trackingBuilder.constructBasicProductView(
-            event = VIEW_ITEM_LIST,
+            event = PRODUCT_VIEW,
             eventCategory = EVENT_CATEGORY_ORDER_COMPLETE,
             eventAction = EVENT_ACTION_IMPRESSION_FLASH_SALE_PRODUCT,
             eventLabel = "",
@@ -70,13 +74,22 @@ class FlashSaleWidgetTracking: BaseTrackerConst() {
             .appendCurrentSite(CurrentSite.DEFAULT)
             .appendBusinessUnit(PAYMENT)
             .appendUserId(userId)
+            .appendCustomKeyValue(ItemList.KEY, LIST_CAROUSEL_PRODUCT.format(
+                positionOnTyp,
+                grid.getTopadsString(),
+                grid.recommendationType,
+                channel.pageName,
+                channel.trackingAttributionModel.galaxyAttribution,
+                channel.channelHeader.name
+            ))
+            .appendCustomKeyValue(TrackerId.KEY, ANDROID_TRACKER_ID_VIEW)
             .build()
     }
 
     private fun getProductClick(channel: ChannelModel, grid: ChannelGrid, position: Int, positionOnTyp: Int, userId: String):  Map<String, Any> {
         val trackingBuilder = BaseTrackerBuilder()
         return trackingBuilder.constructBasicProductClick(
-            event = Event.SELECT_CONTENT,
+            event = Event.PRODUCT_CLICK,
             eventCategory = EVENT_CATEGORY_ORDER_COMPLETE,
             eventAction = EVENT_ACTION_CLICK_FLASH_SALE_PRODUCT,
             eventLabel = channel.id + " - " + channel.channelHeader.name,
@@ -120,6 +133,15 @@ class FlashSaleWidgetTracking: BaseTrackerConst() {
             .appendBusinessUnit(PAYMENT)
             .appendCampaignCode(channel.trackingAttributionModel.campaignCode)
             .appendUserId(userId)
+            .appendCustomKeyValue(ItemList.KEY, LIST_CAROUSEL_PRODUCT.format(
+                positionOnTyp,
+                grid.getTopadsString(),
+                grid.recommendationType,
+                channel.pageName,
+                channel.trackingAttributionModel.galaxyAttribution,
+                channel.channelHeader.name
+            ))
+            .appendCustomKeyValue(TrackerId.KEY, ANDROID_TRACKER_ID_CLICK)
             .build()
     }
 
@@ -137,7 +159,8 @@ class FlashSaleWidgetTracking: BaseTrackerConst() {
             ChannelId.KEY, channel.id,
             Screen.KEY, Screen.DEFAULT,
             UserId.KEY, userId,
-            BusinessUnit.KEY, BusinessUnit.DEFAULT
+            BusinessUnit.KEY, PAYMENT,
+            TrackerId.KEY, ANDROID_TRACKER_ID_VIEW_ALL_CLICK
         ) as HashMap<String, Any>
     }
 
