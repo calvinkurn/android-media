@@ -88,6 +88,7 @@ object RollenceKey {
 
     // TokopediaNOW
     const val TOKOPEDIA_NOW_AFFILIATE = "aff_now_att"
+    const val TOKOPEDIA_NOW_PAGINATION = "now_pagination"
 
     // FS Toko OOS Gradual Rollout
     const val FLASH_SALE_OUT_OF_STOCK_GRADUAL_ROLLOUT = "fst_oosimprovement"
