@@ -7,7 +7,8 @@ import com.tokopedia.inbox.universalinbox.test.robot.generalRobot
 import com.tokopedia.inbox.universalinbox.test.robot.menuRobot
 import com.tokopedia.inbox.universalinbox.test.robot.recommendation.RecommendationResult.assertProductRecommendation
 import com.tokopedia.inbox.universalinbox.test.robot.recommendation.RecommendationResult.assertProductRecommendationName
-import com.tokopedia.inbox.universalinbox.test.robot.recommendation.RecommendationResult.assertProductWidgetRecommendationName
+import com.tokopedia.inbox.universalinbox.test.robot.recommendation.RecommendationResult.assertProductWidgetPostPurchaseRecommendationName
+import com.tokopedia.inbox.universalinbox.test.robot.recommendation.RecommendationResult.assertProductWidgetPrePurchaseRecommendationName
 import com.tokopedia.inbox.universalinbox.test.robot.recommendation.RecommendationResult.assertWidgetRecommendation
 import com.tokopedia.inbox.universalinbox.test.robot.recommendation.RecommendationResult.assertWidgetRecommendationGone
 import com.tokopedia.inbox.universalinbox.test.robot.recommendationRobot
@@ -145,14 +146,18 @@ class UniversalInboxRecommendationTest : BaseUniversalInboxTest() {
             clickProductOnPosition(11) // trigger refresh
         }
         Thread.sleep(300) // wait for rv to populate
-        generalRobot {
-            scrollToPosition(8)
-            scrollToPosition(11)
-        }
 
         // Then
+        generalRobot {
+            scrollToPosition(8)
+        }
+        assertProductWidgetPostPurchaseRecommendationName(0, "Post-purchase Product Refresh 1")
+
+        generalRobot {
+            scrollToPosition(11)
+        }
         assertProductRecommendationName(11, "Product Refresh 1")
-        assertProductWidgetRecommendationName(0, "Pre-purchase Product Refresh")
+        assertProductWidgetPrePurchaseRecommendationName(0, "Pre-purchase Product Refresh")
     }
 
     /**
@@ -165,12 +170,17 @@ class UniversalInboxRecommendationTest : BaseUniversalInboxTest() {
 //        launchActivity()
 //        stubAllIntents()
 //        generalRobot {
-//            scrollToPosition(10)
+//            scrollToPosition(8)
+//            scrollToPosition(11)
 //        }
 //
 //        // Given
 //        GqlResponseStub.productRecommendationResponse.apply {
 //            filePath = "recommendation/success_get_recommendation_refresh.json"
+//            updateResponseObject()
+//        }
+//        GqlResponseStub.postPurchaseProductRecommendationResponse.apply {
+//            filePath = "recommendation/success_get_postpurchase_recommendation_refresh.json"
 //            updateResponseObject()
 //        }
 //        GqlResponseStub.prePurchaseProductRecommendationResponse.apply {
@@ -180,16 +190,21 @@ class UniversalInboxRecommendationTest : BaseUniversalInboxTest() {
 //
 //        // When
 //        recommendationRobot {
-//            clickPrePurchaseProductOnPosition(0) // trigger refresh
+//            RecommendationRobot.clickProductOnPosition(11) // trigger refresh
 //        }
 //        Thread.sleep(300) // wait for rv to populate
-//        generalRobot {
-//            scrollToPosition(10)
-//        }
 //
 //        // Then
-//        assertProductRecommendationName(10, "Product Refresh 1")
-//        assertProductWidgetRecommendationName(0, "Pre-purchase Product Refresh")
+//        generalRobot {
+//            GeneralRobot.scrollToPosition(8)
+//        }
+//        assertProductWidgetPostPurchaseRecommendationName(0, "Post-purchase Product Refresh 1")
+//
+//        generalRobot {
+//            GeneralRobot.scrollToPosition(11)
+//        }
+//        assertProductRecommendationName(11, "Product Refresh 1")
+//        assertProductWidgetPrePurchaseRecommendationName(0, "Pre-purchase Product Refresh")
 //    }
 
     @Test
@@ -217,14 +232,17 @@ class UniversalInboxRecommendationTest : BaseUniversalInboxTest() {
             clickWidgetOnPosition(1) // trigger refresh
         }
         Thread.sleep(300) // wait for rv to populate
-        generalRobot {
-            scrollToPosition(8)
-            scrollToPosition(11)
-        }
 
         // Then
+        generalRobot {
+            scrollToPosition(8)
+        }
+        assertProductWidgetPostPurchaseRecommendationName(0, "Post-purchase Product Refresh 1")
+        generalRobot {
+            scrollToPosition(11)
+        }
         assertProductRecommendationName(11, "Product Refresh 1")
-        assertProductWidgetRecommendationName(0, "Pre-purchase Product Refresh")
+        assertProductWidgetPrePurchaseRecommendationName(0, "Pre-purchase Product Refresh")
     }
 
     @Test
@@ -252,14 +270,17 @@ class UniversalInboxRecommendationTest : BaseUniversalInboxTest() {
             clickMenuOnPosition(1) // trigger refresh
         }
         Thread.sleep(300) // wait for rv to populate
-        generalRobot {
-            scrollToPosition(8)
-            scrollToPosition(11)
-        }
 
         // Then
+        generalRobot {
+            scrollToPosition(8)
+        }
+        assertProductWidgetPostPurchaseRecommendationName(0, "Post-purchase Product Refresh 1")
+        generalRobot {
+            scrollToPosition(11)
+        }
         assertProductRecommendationName(11, "Product Refresh 1")
-        assertProductWidgetRecommendationName(0, "Pre-purchase Product Refresh")
+        assertProductWidgetPrePurchaseRecommendationName(0, "Pre-purchase Product Refresh")
     }
 
     @Test
@@ -287,14 +308,17 @@ class UniversalInboxRecommendationTest : BaseUniversalInboxTest() {
             clickOnBell() // trigger refresh
         }
         Thread.sleep(300) // wait for rv to populate
-        generalRobot {
-            scrollToPosition(8)
-            scrollToPosition(11)
-        }
 
         // Then
+        generalRobot {
+            scrollToPosition(8)
+        }
+        assertProductWidgetPostPurchaseRecommendationName(0, "Post-purchase Product Refresh 1")
+        generalRobot {
+            scrollToPosition(11)
+        }
         assertProductRecommendationName(11, "Product Refresh 1")
-        assertProductWidgetRecommendationName(0, "Pre-purchase Product Refresh")
+        assertProductWidgetPrePurchaseRecommendationName(0, "Pre-purchase Product Refresh")
     }
 
     @Test
@@ -330,17 +354,23 @@ class UniversalInboxRecommendationTest : BaseUniversalInboxTest() {
             clickMenuOnPosition(1) // trigger refresh
         }
         Thread.sleep(300) // wait for rv to populate
-        generalRobot {
-            scrollToPosition(8)
-            scrollToPosition(11)
-        }
 
         // Then
+        generalRobot {
+            scrollToPosition(8)
+        }
+        assertProductWidgetPostPurchaseRecommendationName(
+            0,
+            "Batik Tulis Sutra Sarimbit + Selendang Kencana"
+        )
+        generalRobot {
+            scrollToPosition(11)
+        }
         assertProductRecommendationName(
             11,
             "Tumbler Japan Hook Termos Travel 500 ml"
         )
-        assertProductWidgetRecommendationName(
+        assertProductWidgetPrePurchaseRecommendationName(
             0,
             "Celana Chino Panjang Pria Cinos Slim fit Jumbo Katun Twill Adem Casual"
         )

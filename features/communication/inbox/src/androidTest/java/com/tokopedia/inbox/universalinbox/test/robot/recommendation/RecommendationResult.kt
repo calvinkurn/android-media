@@ -15,6 +15,7 @@ import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendat
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationWidgetUiModel
 import com.tokopedia.carouselproductcard.R as carouselproductcardR
 import com.tokopedia.productcard.R as productcardR
+import com.tokopedia.recommendation_widget_common.R as recommendation_widget_commonR
 
 object RecommendationResult {
     fun assertProductRecommendation(position: Int) {
@@ -57,9 +58,16 @@ object RecommendationResult {
         ).check(matches(withText(name)))
     }
 
-    fun assertProductWidgetRecommendationName(position: Int, name: String) {
+    fun assertProductWidgetPrePurchaseRecommendationName(position: Int, name: String) {
         onView(
             withRecyclerView(carouselproductcardR.id.carouselProductCardRecyclerView)
+                .atPositionOnView(position, productcardR.id.textViewProductName)
+        ).check(matches(withText(name)))
+    }
+
+    fun assertProductWidgetPostPurchaseRecommendationName(position: Int, name: String) {
+        onView(
+            withRecyclerView(recommendation_widget_commonR.id.rv_recommendation_vertical)
                 .atPositionOnView(position, productcardR.id.textViewProductName)
         ).check(matches(withText(name)))
     }
