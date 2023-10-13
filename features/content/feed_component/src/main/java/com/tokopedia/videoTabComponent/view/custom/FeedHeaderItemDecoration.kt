@@ -4,19 +4,18 @@ import android.graphics.Canvas
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.videoTabComponent.viewmodel.VideoTabAdapter
-import kotlinx.android.synthetic.main.feed_sticky_header_recycler_view.view.*
 
 class FeedHeaderItemDecoration(val parent: FeedPlayStickyHeaderRecyclerView,
 private val isHeader: (itemPosition: Int) -> Boolean
 ) : RecyclerView.ItemDecoration() {
     init {
-        parent.recycler_view.adapter?.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+        parent.recyclerView.adapter?.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
             override fun onChanged() {
                 getRecyclerAdapter().setCurrentHeader(null)
             }
         })
     }
-    fun getRecyclerAdapter() = (parent.recycler_view.adapter as VideoTabAdapter)
+    fun getRecyclerAdapter() = (parent.recyclerView.adapter as VideoTabAdapter)
 
     override fun onDrawOver(c: Canvas, parent: RecyclerView) {
         super.onDrawOver(c, parent)

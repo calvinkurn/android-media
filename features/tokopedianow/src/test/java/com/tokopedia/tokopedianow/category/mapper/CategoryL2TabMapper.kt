@@ -13,7 +13,7 @@ import com.tokopedia.tokopedianow.category.presentation.constant.CategoryCompone
 import com.tokopedia.tokopedianow.category.presentation.constant.CategoryComponentType.Companion.PRODUCT_LIST_FILTER
 import com.tokopedia.tokopedianow.category.presentation.constant.CategoryComponentType.Companion.PRODUCT_LIST_INFINITE_SCROLL
 import com.tokopedia.tokopedianow.category.presentation.constant.CategoryStaticLayoutId
-import com.tokopedia.tokopedianow.category.presentation.model.CategoryEmptyStateDivider
+import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryDividerUiModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryProductListUiModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryQuickFilterUiModel
 import com.tokopedia.tokopedianow.category.mapper.CategoryProductMapper.mapResponseToProductItem
@@ -210,7 +210,7 @@ object CategoryL2TabMapper {
     }
 
     fun MutableList<Visitable<*>>.addEmptyStateDivider() {
-        add(CategoryEmptyStateDivider())
+        add(CategoryDividerUiModel())
     }
 
     fun MutableList<Visitable<*>>.addProductRecommendation() {

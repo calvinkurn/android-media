@@ -11,7 +11,7 @@ import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant
 import com.tokopedia.tokopedianow.category.mapper.CategoryL2TabMapper.addProductCardItems
 import com.tokopedia.tokopedianow.category.mapper.CategoryMenuMapper
 import com.tokopedia.tokopedianow.category.presentation.constant.CategoryStaticLayoutId
-import com.tokopedia.tokopedianow.category.presentation.model.CategoryEmptyStateDivider
+import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryDividerUiModel
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryL2TabData
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryQuickFilterUiModel
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
@@ -105,7 +105,7 @@ class TokoNowCategoryL2TabViewModelTestFilter : TokoNowCategoryL2TabViewModelTes
             seeAllAppLink = seeAllAppLink
         )
 
-        val divider = CategoryEmptyStateDivider()
+        val divider = CategoryDividerUiModel()
 
         val productRecommendation = TokoNowProductRecommendationUiModel(
             requestParam = GetRecommendationRequestParam(
