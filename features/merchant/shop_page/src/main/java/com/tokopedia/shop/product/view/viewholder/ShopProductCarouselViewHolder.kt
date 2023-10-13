@@ -5,10 +5,12 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.LayoutRes
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.carouselproductcard.CarouselProductCardView
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.productcard.ProductCardModel
@@ -23,6 +25,7 @@ import com.tokopedia.shop.product.view.listener.ShopCarouselSeeAllClickedListene
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener
 import com.tokopedia.shop.product.view.listener.ShopProductImpressionListener
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.carouselproductcard.R as carouselproductcardR
 
 /**
  * Created by normansyahputa on 2/22/18.
@@ -40,7 +43,7 @@ class ShopProductCarouselViewHolder(
 
     private val viewBinding: ItemNewShopProductCarouselBinding? by viewBinding()
     private var tvTitle: TextView? = null
-    private var tvSeeAll: TextView? = null
+    private var iconCtaChevron: IconUnify? = null
     private var recyclerView: CarouselProductCardView? = null
     private var ivBadge: ImageView? = null
 
@@ -54,7 +57,7 @@ class ShopProductCarouselViewHolder(
             visitable.shopProductFeaturedViewModelList?.let {
                 bindShopProductCarousel(it)
             }
-            tvSeeAll!!.visibility = View.GONE
+            iconCtaChevron?.visibility = View.GONE
         } else if (visitable is EtalaseHighlightCarouselUiModel) {
             visitable.shopProductUiModelList?.let {
                 bindShopProductCarousel(it)
@@ -67,16 +70,17 @@ class ShopProductCarouselViewHolder(
             } else {
                 ivBadge!!.visibility = View.GONE
             }
-            tvSeeAll!!.setOnClickListener {
+            iconCtaChevron?.setOnClickListener {
                 shopEtalaseViewModel?.let {
                     shopCarouselSeeAllClickedListener?.onSeeAllClicked(shopEtalaseViewModel)
                 }
             }
-            tvSeeAll!!.visibility = View.VISIBLE
+            iconCtaChevron?.visibility = View.VISIBLE
         }
     }
 
     private fun bindShopProductCarousel(shopProductUiModelList: List<ShopProductUiModel>) {
+        recyclerView?.findViewById<RecyclerView>(carouselproductcardR.id.carouselProductCardRecyclerView)?.isNestedScrollingEnabled = false
         recyclerView?.bindCarouselProductCardViewGrid(
             productCardModelList = shopProductUiModelList.map {
                 ShopPageProductListMapper.mapToProductCardModel(it, isWideContent = false, isShowThreeDots = false)
@@ -136,7 +140,7 @@ class ShopProductCarouselViewHolder(
     private fun findViews() {
         tvTitle = viewBinding?.layoutShopProductCarouselTitle?.tvTitle
         ivBadge = viewBinding?.layoutShopProductCarouselTitle?.imageViewEtalaseBadge
-        tvSeeAll = viewBinding?.layoutShopProductCarouselTitle?.tvSeeAll
+        iconCtaChevron = viewBinding?.layoutShopProductCarouselTitle?.iconCtaChevron
         recyclerView = viewBinding?.recyclerViewCarousel
     }
 

@@ -58,6 +58,8 @@ class BitmapCropping constructor(
      * @return cropped bitmap
      */
     private fun doCroppingWithFrame(bitmap: Bitmap, frame: View, padding: Int = DEFAULT_PADDING): Bitmap {
+        if (frame.width == Int.ZERO) return bitmap
+
         val framePadding = padding.dpToPx(context.resources.displayMetrics)
 
         val bitmapW = bitmap.width.toFloat()

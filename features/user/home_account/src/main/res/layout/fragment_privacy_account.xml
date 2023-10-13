@@ -66,14 +66,5 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/txt_desc_consent_social_network" />
 
-        <include
-            android:id="@+id/layoutConsentWithdrawal"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            layout="@layout/layout_privacy_account_consent_withdrawal"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/dividerUnify" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

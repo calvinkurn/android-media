@@ -212,6 +212,36 @@ const val CART_REVAMP_V4_QUERY =
                         bundle_icon_url
                         bundle_grayscale_icon_url
                       }
+                      cart_detail_info {
+                        cart_detail_type
+                        bmgm {
+                            offer_id
+                            offer_name
+                            offer_icon
+                            offer_message
+                            offer_landing_page_link
+                            offer_json_data
+                            total_discount
+                            offer_status
+                            tier_product {
+                                tier_id
+                                tier_name
+                                tier_message
+                                tier_discount_text
+                                tier_discount_amount
+                                price_before_benefit
+                                price_after_benefit
+                                list_product {
+                                    product_id
+                                    warehouse_id
+                                    quantity
+                                    price_before_benefit
+                                    price_after_benefit
+                                    cart_id
+                                }
+                            }
+                        }
+                      }
                       products {
                           add_ons_product {
                             data {
@@ -220,6 +250,7 @@ const val CART_REVAMP_V4_QUERY =
                                 status
                                 type
                                 price
+                                fixed_quantity
                             }
                             widget {
                                 wording
@@ -449,6 +480,7 @@ const val CART_REVAMP_V4_QUERY =
                 title
                 selected_unavailable_action_id
                 unavailable_description
+                products_count
                 action {
                   id
                   code
@@ -695,6 +727,10 @@ const val CART_REVAMP_V4_QUERY =
               total_product_count
               total_product_error
               global_checkbox_state
+              show_bundle_price
+              onboarding_data {
+                text
+              }
               tickers {
                 id
                 title
@@ -830,6 +866,14 @@ const val CART_REVAMP_V4_QUERY =
                       }
                       sp_ids
                       poml_auto_applied
+                      bebas_ongkir_info {
+                        is_bo_unstack_enabled
+                        is_use_bebas_ongkir_only
+                      }
+                    }
+                    user_group_metadata {
+                      key
+                      value
                     }
                   }
                   code
