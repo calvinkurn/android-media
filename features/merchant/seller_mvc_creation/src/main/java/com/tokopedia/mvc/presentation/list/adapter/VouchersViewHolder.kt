@@ -181,7 +181,7 @@ class VouchersViewHolder(
     }
 
     private fun SmvcItemVoucherStatsBinding.setupPeriodStats(voucher: Voucher) {
-        val usedQuota = voucher.confirmedQuota + voucher.subsidyDetail.quotaSubsidized.confirmedGlobalQuota
+        val usedQuota = voucher.confirmedQuota
         tfUsedQuota.text = listOf(usedQuota, voucher.quota).joinToString("/")
         tfInCartCoupon.text = voucher.bookedQuota.toString()
         tfCouponTarget.text = getTargetVoucherText(root.context, voucher)
