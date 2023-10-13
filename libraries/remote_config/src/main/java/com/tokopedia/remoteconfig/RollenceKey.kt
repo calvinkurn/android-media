@@ -18,7 +18,9 @@ object RollenceKey {
     const val HOME_COMPONENT_ATF_2 = "home_atf2"
     const val HOME_LOAD_TIME_KEY = "load_time"
     const val HOME_LOAD_TIME_CONTROL = "control_variant"
-    const val HOME_LOAD_TIME_EXP = "exp_variant"
+    const val HOME_LOAD_ATF_CACHE_ROLLENCE_KEY = "loadtime_homepage_an"
+    const val HOME_LOAD_ATF_CACHE_ROLLENCE_CONTROL = "control_variant"
+    const val HOME_LOAD_ATF_CACHE_ROLLENCE_EXP = "experiment_variant"
     // end of home rollence section
 
     // home component rollence section

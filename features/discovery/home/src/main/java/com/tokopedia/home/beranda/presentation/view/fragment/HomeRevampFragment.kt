@@ -565,7 +565,7 @@ open class HomeRevampFragment :
         homeRecyclerView = view.findViewById(R.id.home_fragment_recycler_view)
         homeRecyclerView?.setHasFixedSize(true)
         if (::homeRemoteConfigController.isInitialized) {
-            homeRemoteConfigController.fetchHomeRemoteConfig()
+            getRemoteConfigController().fetchHomeRemoteConfig()
         }
         HomeComponentRollenceController.fetchHomeComponentRollenceValue()
         context?.let {
@@ -2501,6 +2501,11 @@ open class HomeRevampFragment :
         }
         val viewmodel = viewModel.get()
         return viewmodel
+    }
+
+    private fun getRemoteConfigController(): HomeRemoteConfigController {
+        if(!this::homeRemoteConfigController.isInitialized) initInjectorHome()
+        return homeRemoteConfigController
     }
 
     private fun showToasterReviewSuccess() {
