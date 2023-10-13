@@ -319,10 +319,8 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
 
     private fun initTimerCountdown() {
         try {
-            // TODO: [Misael] use softbookExpireTime
-            val dateString = "2023-10-12T14:43:00Z07:00"
             val dateFormat = SimpleDateFormat(COUNTDOWN_DATE_FORMAT, Locale.getDefault())
-            val date = dateFormat.parse(dateString)
+            val date = dateFormat.parse(softbookExpireTime)
             val nowDate = Date().time
             val countdownDuration = date.time - nowDate
 

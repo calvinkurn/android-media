@@ -67,39 +67,78 @@ class EventPDPTicketItemPackageAdapter(
             availabilityStatus: AvailabilityStatus
         ) {
             binding.run {
+                when (availabilityStatus.code) {
+                    EventConst.EVENT_TICKET_STATUS_AVAILABLE -> {
+                        hideTicketStatus()
+                        adjustContainerBottomMargin(true)
+                        txtPilihTicket.show()
+                        txtPriceTicket.show()
+                    }
+                    EventConst.EVENT_TICKET_STATUS_FULL -> {
+                        showTicketStatus(availabilityStatus)
+                        showTicketStatusRedBackground()
+                        showSoldOut()
+                        adjustContainerBottomMargin(false)
+                    }
+                    EventConst.EVENT_TICKET_STATUS_NOT_STARTED -> {
+                        showTicketStatus(availabilityStatus)
+                        showTicketStatusRedBackground()
+                        showSoldOut()
+                        adjustContainerBottomMargin(false)
+                    }
+                    else -> {
+                        showTicketStatus(availabilityStatus)
+                        showTicketStatusSoldOutBackground()
+                        showSoldOut()
+                        adjustContainerBottomMargin(false)
+                    }
+                }
+            }
+        }
+
+        private fun showTicketStatusRedBackground() {
+            binding.run {
+                with(txtStatusTicket) {
+                    setTextColor(MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_RN500))
+                    setBackgroundColor(MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_RN50))
+                }
+                with(txtStatusDescTicket) {
+                    setTextColor(MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_NN950))
+                    setBackgroundColor(MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_RN50))
+                }
+            }
+        }
+
+        private fun hideTicketStatus() {
+            binding.run {
+                txtStatusTicket.hide()
+                txtStatusDescTicket.hide()
+            }
+        }
+
+        private fun showTicketStatus(availabilityStatus: AvailabilityStatus) {
+            binding.run {
                 if (availabilityStatus.name.isNotEmpty()) {
                     txtStatusTicket.text = availabilityStatus.name
                     txtStatusDescTicket.text = " · ${availabilityStatus.desc}"
                     txtStatusTicket.show()
                     txtStatusDescTicket.show()
                 } else {
-                    txtStatusTicket.hide()
-                    txtStatusDescTicket.hide()
+                    hideTicketStatus()
                 }
+            }
+        }
 
-                if (availabilityStatus.code == EventConst.EVENT_TICKET_STATUS_FULL ||
-                    availabilityStatus.code == EventConst.EVENT_TICKET_STATUS_NOT_STARTED
-                ) {
-                    with(txtStatusTicket) {
-                        setTextColor(MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_RN500))
-                        setBackgroundColor(MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_RN50))
-                    }
-                    with(txtStatusDescTicket) {
-                        setTextColor(MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_NN950))
-                        setBackgroundColor(MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_RN50))
-                    }
-                } else {
-                    with(txtStatusTicket) {
-                        setTextColor(MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_NN600))
-                        setBackgroundColor(MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_Static_White))
-                    }
-                    with(txtStatusDescTicket) {
-                        setTextColor(MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_NN950))
-                        setBackgroundColor(MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_Static_White))
-                    }
+        private fun showTicketStatusSoldOutBackground() {
+            binding.run {
+                with(txtStatusTicket) {
+                    setTextColor(MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_NN600))
+                    setBackgroundColor(MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_NN50))
                 }
-                Log.d("MisaelJonathan", "Ticket Availibility Code: ${availabilityStatus.code}")
-                adjustContainerBottomMargin(availabilityStatus.code != EventConst.EVENT_TICKET_STATUS_AVAILABLE)
+                with(txtStatusDescTicket) {
+                    setTextColor(MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_NN950))
+                    setBackgroundColor(MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_NN50))
+                }
             }
         }
 
@@ -133,6 +172,7 @@ class EventPDPTicketItemPackageAdapter(
                     renderTicketStatus(items.availabilityStatus)
                 } else {
                     txtisRecommeded.show()
+                    hideTicketStatus()
                 }
 
                 if (!isListenerRegistered) {
@@ -230,7 +270,7 @@ class EventPDPTicketItemPackageAdapter(
                     }
                 }
 
-                txtPilihTicket.text = items.name
+                txtTitleTicket.text = items.name
                 txtSubtitleTicket.text = items.description
                 txtSubtitleTicket.visibility = if (items.description.isNotEmpty()) View.VISIBLE else View.GONE
                 txtPriceTicket.text = getRupiahFormat(items.salesPrice.toIntSafely())
@@ -240,6 +280,7 @@ class EventPDPTicketItemPackageAdapter(
                 txtisRecommeded.setOnClickListener {
                     onBindItemTicketListener.clickRecommendation(items.dates)
                 }
+                hideTicketStatus()
             }
         }
 
@@ -249,8 +290,7 @@ class EventPDPTicketItemPackageAdapter(
                 txtPilihTicket.setTextColor(root.context.resources.getColor(unifyprinciplesR.color.Unify_NN950_44))
                 txtTermurahTicket.setTextColor(root.context.resources.getColor(unifyprinciplesR.color.Unify_NN950_44))
                 txtSubtitleTicket.setTextColor(root.context.resources.getColor(unifyprinciplesR.color.Unify_NN950_44))
-                txtPriceTicket.text = root.context.resources.getString(R.string.ent_pdp_ticket_sold_out)
-                txtPriceTicket.setTextColor(root.context.resources.getColor(unifyprinciplesR.color.Unify_NN950_68))
+                txtPriceTicket.hide()
             }
         }
     }

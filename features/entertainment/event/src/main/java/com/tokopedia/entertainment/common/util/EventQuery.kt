@@ -154,6 +154,7 @@ object EventQuery {
                 category_name
                 quantity
                 total_price
+                tx_expired_time
                 item_map{
                     id
                     name

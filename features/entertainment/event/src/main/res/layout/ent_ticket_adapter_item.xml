@@ -74,26 +74,14 @@
             app:typographyType="body_3"
             tools:text="Tiket berlaku hingga 60 hari setelah pembelian" />
 
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/txtMulaidari_ticket"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl4"
-            android:paddingLeft="@dimen/spacing_lvl4"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/txtSubtitle_ticket"
-            app:typographyType="small"
-            tools:text="Mulai dari" />
-
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/txtPrice_ticket"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/spacing_lvl4"
-            android:paddingLeft="@dimen/spacing_lvl4"
+            android:layout_marginTop="16dp"
+            android:paddingLeft="16dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/txtMulaidari_ticket"
+            app:layout_constraintTop_toBottomOf="@id/txtSubtitle_ticket"
             app:typographyType="body_2"
             app:typographyWeight="bold"
             tools:text="Rp123.000" />
