@@ -5,11 +5,11 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.common_epharmacy.EPHARMACY_CONSULTATION_ARGS_EXTRA
 import com.tokopedia.epharmacy.R
 import com.tokopedia.epharmacy.di.DaggerEPharmacyComponent
 import com.tokopedia.epharmacy.di.EPharmacyComponent
 import com.tokopedia.epharmacy.ui.fragment.EPharmacyPrescriptionAttachmentPageFragment
-import com.tokopedia.epharmacy.utils.EPHARMACY_GROUP_IDS
 import com.tokopedia.epharmacy.utils.EPHARMACY_TOKO_CONSULTATION_ID
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -48,13 +48,13 @@ class EPharmacyAttachPrescriptionActivity : BaseSimpleActivity(), HasComponent<E
         return EPharmacyPrescriptionAttachmentPageFragment.newInstance(extractBundleForFragment())
     }
 
-    private fun extractBundleForFragment() : Bundle{
+    private fun extractBundleForFragment(): Bundle {
         return Bundle().apply {
             intent?.data?.let { uri ->
                 putLong(EPHARMACY_TOKO_CONSULTATION_ID, uri.getQueryParameter(EPHARMACY_TOKO_CONSULTATION_ID).toLongOrZero())
             }
-            intent?.extras?.getStringArray(EPHARMACY_GROUP_IDS).orEmpty().let { ids->
-                putStringArray(EPHARMACY_GROUP_IDS, ids)
+            intent?.extras?.getStringArrayList(EPHARMACY_CONSULTATION_ARGS_EXTRA)?.let { ids ->
+                putStringArrayList(EPHARMACY_CONSULTATION_ARGS_EXTRA, ids)
             }
         }
     }

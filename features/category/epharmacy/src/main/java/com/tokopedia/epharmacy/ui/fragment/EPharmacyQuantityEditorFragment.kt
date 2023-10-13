@@ -10,7 +10,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.common_epharmacy.EPHARMACY_CONSULTATION_ARGS_EXTRA
 import com.tokopedia.common_epharmacy.EPHARMACY_PPG_QTY_CHANGE
+import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
 import com.tokopedia.epharmacy.R
 import com.tokopedia.epharmacy.adapters.EPharmacyAdapter
 import com.tokopedia.epharmacy.adapters.EPharmacyListener
@@ -49,6 +51,8 @@ class EPharmacyQuantityChangeFragment : BaseDaggerFragment(), EPharmacyListener 
     private var ePharmacyRecyclerView: RecyclerView? = null
     private var ePharmacyGlobalError: GlobalError? = null
     private var qCTotalAmount: TotalAmount? = null
+
+    private var groupIds: ArrayList<String>? = arrayListOf()
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -94,10 +98,15 @@ class EPharmacyQuantityChangeFragment : BaseDaggerFragment(), EPharmacyListener 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initArguments()
         setUpObservers()
         initViews(view)
         initData()
         getData()
+    }
+
+    private fun initArguments() {
+        groupIds = arguments?.getStringArrayList(EPHARMACY_CONSULTATION_ARGS_EXTRA)
     }
 
     private fun setUpObservers() {
@@ -121,7 +130,14 @@ class EPharmacyQuantityChangeFragment : BaseDaggerFragment(), EPharmacyListener 
 
     private fun getData() {
         addShimmer()
-        ePharmacyPrescriptionAttachmentViewModel.getPrepareProductGroup(EPHARMACY_PPG_QTY_CHANGE)
+        ePharmacyPrescriptionAttachmentViewModel.getPrepareProductGroup(EPHARMACY_PPG_QTY_CHANGE, makeRequestParams())
+    }
+
+    private fun makeRequestParams(): MutableMap<String, Any?> {
+        return mutableMapOf(
+            EPharmacyPrepareProductsGroupUseCase.PARAM_SOURCE to EPHARMACY_PPG_QTY_CHANGE,
+            "ePharmaGroupID" to groupIds?.takeIf { it.isNotEmpty() }
+        )
     }
 
     private fun addShimmer() {

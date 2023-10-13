@@ -14,10 +14,11 @@ class EPharmacyPrepareProductsGroupUseCase @Inject constructor(@ApplicationConte
     fun getEPharmacyPrepareProductsGroup(
         onSuccess: (EPharmacyPrepareProductsGroupResponse, String?) -> Unit,
         onError: (Throwable) -> Unit,
-        source: String? = EPHARMACY_PPG_SOURCE_PAP
+        source: String? = EPHARMACY_PPG_SOURCE_PAP,
+        params: MutableMap<String, Any?>
     ) {
         try {
-            this.setParams()
+            this.setParams(params)
             this.execute(
                 { result ->
                     onSuccess(result, source)
@@ -31,19 +32,13 @@ class EPharmacyPrepareProductsGroupUseCase @Inject constructor(@ApplicationConte
         }
     }
 
-    private fun getRequestParams(source: String): MutableMap<String, Any?> {
-        val requestMap = mutableMapOf<String, Any?>()
-        requestMap[PARAM_SOURCE] = source
-        return requestMap
-    }
-
     companion object {
         const val PARAM_SOURCE = "source"
     }
 
-    private fun setParams() {
+    fun setParams(params: Map<String, Any?>) {
         this.setTypeClass(EPharmacyPrepareProductsGroupResponse::class.java)
         this.setGraphqlQuery(GetEPharmacyPrepareProductsGroupQuery)
-        // this.setRequestParams(getRequestParams(source))
+        this.setRequestParams(params)
     }
 }

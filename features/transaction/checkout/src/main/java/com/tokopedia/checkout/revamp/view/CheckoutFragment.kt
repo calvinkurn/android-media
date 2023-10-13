@@ -69,7 +69,6 @@ import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
-import com.tokopedia.common_epharmacy.EPHARMACY_CONSULTATION_ARGS_EXTRA
 import com.tokopedia.common_epharmacy.EPHARMACY_CONSULTATION_RESULT_EXTRA
 import com.tokopedia.common_epharmacy.EPHARMACY_REDIRECT_CART_RESULT_CODE
 import com.tokopedia.common_epharmacy.EPHARMACY_REDIRECT_CHECKOUT_RESULT_CODE
@@ -2090,7 +2089,6 @@ class CheckoutFragment :
                 activity,
                 CheckoutEpharmacyViewHolder.EPharmacyMiniConsultationAppLink
             )
-            uploadPrescriptionIntent.putStringArrayListExtra(EPHARMACY_CONSULTATION_ARGS_EXTRA, uploadPrescriptionUiModel.epharmacyGroupIds)
             startActivityForResult(
                 uploadPrescriptionIntent,
                 ShipmentFragment.REQUEST_CODE_MINI_CONSULTATION

@@ -46,12 +46,13 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
 
     var ePharmacyPrepareProductsGroupResponseData: EPharmacyPrepareProductsGroupResponse ? = null
 
-    fun getPrepareProductGroup(source: String = EPHARMACY_PPG_SOURCE_PAP) {
+    fun getPrepareProductGroup(source: String = EPHARMACY_PPG_SOURCE_PAP, params: MutableMap<String, Any?>) {
         ePharmacyPrepareProductsGroupUseCase.cancelJobs()
         ePharmacyPrepareProductsGroupUseCase.getEPharmacyPrepareProductsGroup(
             ::onAvailablePrepareProductGroup,
             ::onFailPrepareProductGroup,
-            source
+            source,
+            params
         )
     }
 

@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.common_epharmacy.EPHARMACY_CEK_RESEP_REQUEST_CODE
 import com.tokopedia.common_epharmacy.EPHARMACY_CHOOSER_REQUEST_CODE
+import com.tokopedia.common_epharmacy.EPHARMACY_CONSULTATION_ARGS_EXTRA
 import com.tokopedia.common_epharmacy.EPHARMACY_MINI_CONSULTATION_REQUEST_CODE
 import com.tokopedia.common_epharmacy.EPHARMACY_PPG_SOURCE_PAP
 import com.tokopedia.common_epharmacy.EPHARMACY_PPG_UOH
@@ -31,12 +32,11 @@ import com.tokopedia.epharmacy.network.params.InitiateConsultationParam
 import com.tokopedia.epharmacy.network.response.EPharmacyInitiateConsultationResponse
 import com.tokopedia.epharmacy.ui.bottomsheet.EPharmacyReminderScreenBottomSheet
 import com.tokopedia.epharmacy.utils.CategoryKeys.Companion.ATTACH_PRESCRIPTION_PAGE
+import com.tokopedia.epharmacy.utils.DEFAULT_ZERO_VALUE
 import com.tokopedia.epharmacy.utils.EPHARMACY_ANDROID_SOURCE
 import com.tokopedia.epharmacy.utils.EPHARMACY_APPLINK
-import com.tokopedia.epharmacy.utils.EPHARMACY_ENABLER_ID
 import com.tokopedia.epharmacy.utils.EPHARMACY_ENABLER_NAME
 import com.tokopedia.epharmacy.utils.EPHARMACY_GROUP_ID
-import com.tokopedia.epharmacy.utils.EPHARMACY_GROUP_IDS
 import com.tokopedia.epharmacy.utils.EPHARMACY_TOKO_CONSULTATION_ID
 import com.tokopedia.epharmacy.utils.EPharmacyAttachmentUiUpdater
 import com.tokopedia.epharmacy.utils.EPharmacyButtonState
@@ -88,7 +88,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
 
     private var tConsultationId = 0L
     private var source = String.EMPTY
-    private var groupIds : Array<String>? = arrayOf()
+    private var groupIds: ArrayList<String>? = arrayListOf()
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -135,14 +135,16 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
     }
 
     private fun initArguments() {
-        groupIds = arguments?.getStringArray(EPHARMACY_GROUP_IDS)
+        groupIds = arguments?.getStringArrayList(EPHARMACY_CONSULTATION_ARGS_EXTRA)
         tConsultationId = arguments?.getLong(EPHARMACY_TOKO_CONSULTATION_ID).orZero()
 
-        source = if(!groupIds.isNullOrEmpty()){
+        source = if (!groupIds.isNullOrEmpty()) {
             EPHARMACY_PPG_SOURCE_PAP
-        }else if(!tConsultationId.isZero()) {
+        } else if (!tConsultationId.isZero()) {
             EPHARMACY_PPG_UOH
-        }else String.EMPTY
+        } else {
+            String.EMPTY
+        }
     }
 
     private fun setUpObservers() {
@@ -167,7 +169,15 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
 
     private fun getData() {
         addShimmer()
-        ePharmacyPrescriptionAttachmentViewModel.getPrepareProductGroup()
+        ePharmacyPrescriptionAttachmentViewModel.getPrepareProductGroup(source, makeRequestParams())
+    }
+
+    private fun makeRequestParams(): MutableMap<String, Any?> {
+        return mutableMapOf(
+            "source" to source.takeIf { it.isNotBlank() },
+            "ePharmaGroupID" to groupIds?.takeIf { it.isNotEmpty() },
+            "toko_consultation_id" to tConsultationId.takeIf { it != DEFAULT_ZERO_VALUE }
+        )
     }
 
     private fun addShimmer() {
@@ -418,6 +428,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
         submitList(newData)
     }
 
+    // Redirection-Actions
     private fun onDoneButtonClick(appLink: String?) {
         if (hasAnyError()) {
             showToast(TYPE_ERROR, context?.resources?.getString(epharmacyR.string.epharmacy_local_prescription_not_uploaded_error).orEmpty())
