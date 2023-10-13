@@ -1,5 +1,6 @@
 package com.tokopedia.media.loader.internal
 
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.media.loader.data.Header
@@ -26,6 +27,7 @@ class NetworkResponseManager private constructor() {
         return try {
             header.toModel()
         } catch (t: Throwable) {
+            FirebaseCrashlytics.getInstance().recordException(t)
             emptyList()
         }
     }
