@@ -122,7 +122,6 @@ class ManageAddressFragment :
         }
     }
 
-
     private fun observerValidateShareAddress() {
         viewModel.validateShareAddressState.observe(viewLifecycleOwner) {
             when (it) {
@@ -197,19 +196,19 @@ class ManageAddressFragment :
                 }
 
                 vpManageAddress.registerOnPageChangeCallback(object :
-                    ViewPager2.OnPageChangeCallback() {
-                    override fun onPageSelected(position: Int) {
-                        if (isFirstLoad) {
-                            isFirstLoad = false
-                        } else {
-                            if (position == MAIN_ADDRESS_FRAGMENT_POSITION) {
-                                ShareAddressAnalytics.onClickMainTab()
+                        ViewPager2.OnPageChangeCallback() {
+                        override fun onPageSelected(position: Int) {
+                            if (isFirstLoad) {
+                                isFirstLoad = false
                             } else {
-                                ShareAddressAnalytics.onClickFromFriendTab()
+                                if (position == MAIN_ADDRESS_FRAGMENT_POSITION) {
+                                    ShareAddressAnalytics.onClickMainTab()
+                                } else {
+                                    ShareAddressAnalytics.onClickFromFriendTab()
+                                }
                             }
                         }
-                    }
-                })
+                    })
 
                 if (viewModel.isReceiveShareAddress) {
                     Handler(Looper.getMainLooper()).postDelayed({
@@ -338,48 +337,28 @@ class ManageAddressFragment :
 
     override fun setupTicker(firstTicker: String?) {
         binding?.tickerManageAddress?.apply {
-
             loadAndShow(TargetedTickerPage.ADDRESS_LIST_NON_OCC)
+
             setResultListener(
                 onSuccess = { ticker ->
-                    val tickerItems = ticker.item.toMutableList()
-
-                    if (firstTicker?.isNotBlank() == true) {
-                        tickerItems.add(
-                            TickerModel.TickerItem(
-                                type = Ticker.TYPE_ANNOUNCEMENT,
-                                content = firstTicker
-                            )
-                        )
-                    }
-
-                    //return adjusted ticker
-                    ticker.copy(
-                        item = tickerItems.toList()
-                    )
-
-
+                    ticker.addSingleTicker(firstTicker)
                 },
                 onError = {
-
                     val ticker = TickerModel()
-                    val tickerItems = ticker.item.toMutableList()
+                    ticker.addSingleTicker(firstTicker)
+                }
+            )
+        }
+    }
 
-                    if (firstTicker?.isNotBlank() == true) {
-                        tickerItems.add(
-                            TickerModel.TickerItem(
-                                type = Ticker.TYPE_ANNOUNCEMENT,
-                                content = firstTicker
-                            )
-                        )
-                    }
-
-                    //return adjusted ticker
-                    ticker.copy(
-                        item = tickerItems.toList()
-                    )
-                })
+    private fun TickerModel.addSingleTicker(firstTicker: String?): TickerModel {
+        val tickerItems = this.item.toMutableList()
+        if (firstTicker?.isNotBlank() == true) {
+            tickerItems.add(
+                TickerModel.TickerItem(type = Ticker.TYPE_ANNOUNCEMENT, content = firstTicker)
+            )
         }
 
+        return this.copy(item = tickerItems.toList())
     }
 }
