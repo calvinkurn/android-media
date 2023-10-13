@@ -15,11 +15,9 @@ data class PinpointUiModel(
     var lat: Double = 0.0,
     var long: Double = 0.0,
     var placeId: String = "",
-    var postalCodeList: List<String> = emptyList(),
-    var title: String = ""
+    var title: String = "",
+    var formattedAddress: String = ""
 ) : Parcelable {
-    val formattedAddress: String
-        get() = "$districtName, $cityName, $provinceName"
 
     val selectedDistrict: String
         get() = formattedAddress

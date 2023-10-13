@@ -36,8 +36,7 @@ object SaveAddressMapper {
     }
 
     fun PinpointUiModel.map(
-        autoFillModel: Data,
-        zipCodes: MutableList<String>?
+        autoFillModel: Data
     ): PinpointUiModel {
         this.title = autoFillModel.title
         this.districtId = autoFillModel.districtId
@@ -49,9 +48,7 @@ object SaveAddressMapper {
         this.postalCode = autoFillModel.postalCode
         this.lat = autoFillModel.latitude.toDoubleOrZero()
         this.long = autoFillModel.longitude.toDoubleOrZero()
-        if (zipCodes != null) {
-            this.postalCodeList = zipCodes
-        }
+        this.formattedAddress = autoFillModel.formattedAddress
         return this
     }
 
@@ -81,8 +78,7 @@ object SaveAddressMapper {
     }
 
     fun PinpointUiModel.map(
-        getDistrictDataUiModel: GetDistrictDataUiModel,
-        zipCodes: MutableList<String>?
+        getDistrictDataUiModel: GetDistrictDataUiModel
     ): PinpointUiModel {
         this.title = getDistrictDataUiModel.title
         this.districtId = getDistrictDataUiModel.districtId
@@ -94,9 +90,7 @@ object SaveAddressMapper {
         this.postalCode = getDistrictDataUiModel.postalCode
         this.lat = getDistrictDataUiModel.latitude.toDoubleOrZero()
         this.long = getDistrictDataUiModel.longitude.toDoubleOrZero()
-        if (zipCodes != null) {
-            this.postalCodeList = zipCodes
-        }
+        this.formattedAddress = getDistrictDataUiModel.formattedAddress
         return this
     }
 

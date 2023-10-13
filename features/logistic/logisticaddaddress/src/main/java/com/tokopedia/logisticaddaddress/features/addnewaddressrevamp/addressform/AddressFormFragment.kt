@@ -384,7 +384,6 @@ class AddressFormFragment :
                         pinpointUiModel = getParcelable(EXTRA_PINPOINT_MODEL)
                     )
                     viewModel.saveDraftAddress(addressModel)
-//                    isPositiveFlow = getBoolean(EXTRA_IS_POSITIVE_FLOW)
                 }
 
                 else -> {
@@ -404,14 +403,6 @@ class AddressFormFragment :
     }
 
     private fun onPinpointResult(data: Intent?) {
-//        val isResetToSearchPage = data?.getBooleanExtra(EXTRA_RESET_TO_SEARCH_PAGE, false) ?: false
-//        if (isResetToSearchPage) {
-//            activity?.run {
-//                setResult(Activity.RESULT_OK, Intent())
-//                finish()
-//            }
-//        }
-
         val addressDataFromPinpoint =
             data?.getParcelableExtra<PinpointUiModel>(EXTRA_PINPOINT_MODEL)
 
@@ -450,7 +441,6 @@ class AddressFormFragment :
                     postalCode = this.postalCode,
                     latitude = this.lat.toString(),
                     longitude = this.long.toString(),
-                    zipCodes = this.postalCodeList,
                     formattedAddress = this.formattedAddress,
                     selectedDistrict = this.selectedDistrict,
                     address2 = "${this.lat}, ${this.long}"

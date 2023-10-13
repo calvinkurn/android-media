@@ -832,7 +832,7 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
 
         moveMap(getLatLng(data.latitude, data.longitude), ZOOM_LEVEL)
 
-        viewModel.uiModel = viewModel.uiModel.map(data, null)
+        viewModel.uiModel = viewModel.uiModel.map(data)
 
         with(data.errMessage) {
             if (this != null && this.contains(LOCATION_NOT_FOUND_MESSAGE)) {
@@ -1219,11 +1219,11 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     }
                     onChoosePinpoint()
                 }
-                viewModel.uiModel = viewModel.uiModel.map(data, null)
+                viewModel.uiModel = viewModel.uiModel.map(data)
                 updateGetDistrictBottomSheet(viewModel.uiModel)
             }
         } else {
-            viewModel.uiModel = viewModel.uiModel.map(data, null)
+            viewModel.uiModel = viewModel.uiModel.map(data)
             updateGetDistrictBottomSheet(viewModel.uiModel)
         }
     }

@@ -156,7 +156,7 @@ class PinpointViewModel @Inject constructor(
                     val validateDistrict =
                         validateDistrict(districtData.keroMapsAutofill.data.districtId)
                     if (validateDistrict) {
-                        uiModel = uiModel.map(districtData.keroMapsAutofill.data, null)
+                        uiModel = uiModel.map(districtData.keroMapsAutofill.data)
                         _pinpointBottomSheet.value = BottomSheetState.LocationDetail(
                             title = uiModel.title,
                             description = uiModel.formattedAddress,
@@ -201,7 +201,7 @@ class PinpointViewModel @Inject constructor(
                     locationNotFound(false)
                 } else {
                     if (validateDistrict(responseModel.districtId)) {
-                        uiModel = uiModel.map(responseModel, null)
+                        uiModel = uiModel.map(responseModel)
                         if (responseModel.errMessage.isNullOrEmpty()) {
                             _pinpointBottomSheet.value = BottomSheetState.LocationDetail(
                                 title = uiModel.title,
@@ -282,7 +282,6 @@ class PinpointViewModel @Inject constructor(
             postalCode = uiModel.postalCode,
             latitude = uiModel.lat.toString(),
             longitude = uiModel.long.toString(),
-            zipCodes = uiModel.postalCodeList,
             title = uiModel.title
         )
     }

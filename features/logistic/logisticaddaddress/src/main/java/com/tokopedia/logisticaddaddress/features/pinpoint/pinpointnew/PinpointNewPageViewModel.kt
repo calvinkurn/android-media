@@ -168,7 +168,6 @@ class PinpointNewPageViewModel @Inject constructor(
             postalCode = uiModel.postalCode,
             latitude = uiModel.lat.toString(),
             longitude = uiModel.long.toString(),
-            zipCodes = uiModel.postalCodeList,
             title = uiModel.title
         )
     }

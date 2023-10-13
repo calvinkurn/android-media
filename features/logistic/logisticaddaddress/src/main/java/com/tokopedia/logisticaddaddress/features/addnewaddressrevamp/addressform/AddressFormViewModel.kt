@@ -93,7 +93,6 @@ class AddressFormViewModel @Inject constructor(
                 cityName = it.cityName
                 provinceName = it.provinceName
                 formattedAddress = it.formattedAddress
-                zipCodes = it.postalCodeList
                 postalCode = it.postalCode
                 selectedDistrict = it.selectedDistrict
                 address2 = "${it.lat}, ${it.long}"
