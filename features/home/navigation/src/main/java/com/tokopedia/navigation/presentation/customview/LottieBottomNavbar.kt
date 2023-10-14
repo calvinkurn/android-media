@@ -835,7 +835,10 @@ class LottieBottomNavbar : LinearLayout {
                 selectedItem == Int.ZERO -> menu.getOrNull(selectedItem.orZero())?.homeForYou?.homeTitle
                 else -> return
             }
-            textIcon?.text = iconTitle
+
+            if (textIcon?.text != iconTitle) {
+                textIcon?.text = iconTitle
+            }
         }
     }
 
