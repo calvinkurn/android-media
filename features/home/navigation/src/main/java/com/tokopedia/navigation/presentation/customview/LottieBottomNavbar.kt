@@ -26,6 +26,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.get
 import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.navigation.R
 import com.tokopedia.navigation.util.IconJumperUtil
@@ -759,7 +760,7 @@ class LottieBottomNavbar : LinearLayout {
             iconList[selectedItem ?: 0] = Pair(pair.first, false)
         }
 
-        setTitleHomeForYou(newPosition)
+        setTitleIconHomeOrForYou(newPosition)
 
         selectedItem?.let {
             val selectedIconPair = iconList[it]
@@ -819,23 +820,22 @@ class LottieBottomNavbar : LinearLayout {
         selectedItem = newPosition
     }
 
-    private fun setTitleHomeForYou(newPosition: Int) {
+    private fun setTitleIconHomeOrForYou(newPosition: Int) {
         if (isIconJumperEnabled) {
-            if (newPosition == Int.ZERO) {
-                val textIcon = titleList[newPosition]
-
-                if (isForYouToHomeSelected) {
-                    textIcon.text = menu[newPosition].homeForYou?.homeTitle
-                } else {
-                    textIcon.text = menu[newPosition].homeForYou?.forYouTitle
+            val textIcon = titleList.getOrNull(Int.ZERO)
+            val iconTitle = when {
+                newPosition == Int.ZERO -> {
+                    if (isForYouToHomeSelected) {
+                        menu.getOrNull(newPosition)?.homeForYou?.homeTitle
+                    } else {
+                        menu.getOrNull(newPosition)?.homeForYou?.forYouTitle
+                    }
                 }
-            } else if (selectedItem == Int.ZERO) {
-                val selectedItem = selectedItem ?: 0
 
-                val textIcon = titleList[selectedItem]
-
-                textIcon.text = menu[selectedItem].homeForYou?.homeTitle
+                selectedItem == Int.ZERO -> menu.getOrNull(selectedItem.orZero())?.homeForYou?.homeTitle
+                else -> return
             }
+            textIcon?.text = iconTitle
         }
     }
 
