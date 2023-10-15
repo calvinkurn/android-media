@@ -78,16 +78,17 @@
         app:layout_goneMarginTop="0dp"
         tools:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/ivPromoRecommendationBackground"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvPromo"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:contentDescription="@null"
-            android:scaleType="fitStart"
+            android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="@+id/clBottomSheetHeader"
+            tools:itemCount="3"
+            tools:layout_height="match_parent"
+            tools:listitem="@layout/promo_usage_item_promo_accordion_header" />
 
         <!--Bottomsheet Header (Title, Close Icon)-->
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -131,41 +132,6 @@
                 tools:text="Promo" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/lottieAnimationView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:scaleType="centerCrop"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:lottie_autoPlay="false"
-            app:lottie_loop="false" />
-
-        <View
-            android:id="@+id/dummyBackground"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:background="@color/Unify_Background"
-            android:translationY="56dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvPromo"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/clBottomSheetHeader"
-            tools:itemCount="3"
-            tools:layout_height="match_parent"
-            tools:listitem="@layout/promo_usage_item_promo_accordion_header" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <include

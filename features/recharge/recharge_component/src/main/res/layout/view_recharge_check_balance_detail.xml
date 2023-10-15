@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="12dp"
+    android:paddingBottom="12dp"
+    android:layout_marginEnd="16dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/check_balance_detail_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="left"
+        tools:text="Internet"
+        app:typographyType="display_2"
+        app:typographyWeight="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/check_balance_detail_subtitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/check_balance_detail_buy_button"/>
+
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/check_balance_detail_subtitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:gravity="left"
+        tools:text="108 GB"
+        app:typographyType="paragraph_3"
+        app:typographyWeight="reguler"
+        app:layout_constraintTop_toBottomOf="@id/check_balance_detail_title"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/check_balance_detail_buy_button"/>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/check_balance_detail_buy_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        app:unifyButtonVariant="filled"
+        app:unifyButtonSize="micro"
+        app:unifyButtonType="main"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

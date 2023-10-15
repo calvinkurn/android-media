@@ -311,7 +311,7 @@ class OfferLandingPageFragment :
 
     private fun setupHeader(offerInfoForBuyer: OfferInfoForBuyerUiModel) {
         setupToolbar(offerInfoForBuyer)
-        binding?.headerBackground?.setBackgroundResource(R.drawable.olp_header)
+        binding?.headerBackground?.setImageUrl(TokopediaImageUrl.OLP_BMGM_HEADER_ILLUSTRATION)
         binding?.headerOverlay?.visibleWithCondition(activity?.isDarkMode() == true)
         olpAdapter?.submitList(
             newList = listOf(

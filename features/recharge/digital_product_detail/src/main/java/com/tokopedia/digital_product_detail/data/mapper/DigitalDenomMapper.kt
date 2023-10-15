@@ -3,8 +3,8 @@ package com.tokopedia.digital_product_detail.data.mapper
 import com.tokopedia.digital_product_detail.data.model.data.DigitalCatalogProductInputMultiTab
 import com.tokopedia.digital_product_detail.data.model.data.DigitalCustomAttributes
 import com.tokopedia.digital_product_detail.data.model.data.InputMultiTabDenomModel
-import com.tokopedia.digital_product_detail.data.model.data.PersoRecommendationData
-import com.tokopedia.digital_product_detail.data.model.data.PersoRecommendationItem
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPersoData
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPersoItem
 import com.tokopedia.digital_product_detail.data.model.data.RechargeCatalogDataCollection
 import com.tokopedia.digital_product_detail.data.model.data.RechargeProduct
 import com.tokopedia.digital_product_detail.di.DigitalPDPScope
@@ -52,14 +52,14 @@ class DigitalDenomMapper @Inject constructor() {
         return getProductDataCollection(product?.dataCollections)?.firstOrNull()?.products?.firstOrNull()
     }
 
-    fun mapDigiPersoToRecommendation(data: PersoRecommendationData, isBigRecommendation: Boolean): RecommendationWidgetModel {
+    fun mapDigiPersoToRecommendation(data: DigitalPersoData, isBigRecommendation: Boolean): RecommendationWidgetModel {
         return RecommendationWidgetModel(
             title = data.title,
             recommendations = data.items.map { digiPersoToRecommendationCard(it, isBigRecommendation) }
         )
     }
 
-    fun mapDigiPersoToMCCMProducts(data: PersoRecommendationData): DenomWidgetModel {
+    fun mapDigiPersoToMCCMProducts(data: DigitalPersoData): DenomWidgetModel {
         return if (!data.items.isNullOrEmpty()) {
             val firstProduct = data.items.first()
             val denomList: MutableList<DenomData> = mutableListOf()
@@ -201,7 +201,7 @@ class DigitalDenomMapper @Inject constructor() {
     }
 
     private fun digiPersoToRecommendationCard(
-        data: PersoRecommendationItem,
+        data: DigitalPersoItem,
         isBigRecommendation: Boolean
     ): RecommendationCardWidgetModel {
         return data.let {
@@ -226,7 +226,7 @@ class DigitalDenomMapper @Inject constructor() {
         }
     }
 
-    private fun digiPersoToMCCMItems(perso: PersoRecommendationItem): DenomData {
+    private fun digiPersoToMCCMItems(perso: DigitalPersoItem): DenomData {
         return perso.let {
             DenomData(
                 id = it.trackingData.productId,

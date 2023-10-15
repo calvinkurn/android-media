@@ -42,9 +42,13 @@ class TokoNowLocalAddress @Inject constructor(@ApplicationContext private val co
     }
 
     fun updateLocalDataIfAddressHasUpdated() {
-        if (ChooseAddressUtils.isLocalizingAddressHasUpdated(context, localAddressData)) {
+        if (isChoosenAddressUpdated()) {
             localAddressData = ChooseAddressUtils.getLocalizingAddressData(context)
         }
+    }
+
+    fun isChoosenAddressUpdated(): Boolean {
+        return ChooseAddressUtils.isLocalizingAddressHasUpdated(context, localAddressData)
     }
 
     fun isOutOfCoverage(): Boolean {
