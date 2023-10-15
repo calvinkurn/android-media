@@ -34,6 +34,7 @@ import com.tokopedia.applink.DeeplinkDFMapper.DF_PROMO_GAMIFICATION
 import com.tokopedia.applink.DeeplinkDFMapper.DF_PROMO_TOKOPOINTS
 import com.tokopedia.applink.DeeplinkDFMapper.DF_SELLER_FEEDBACK
 import com.tokopedia.applink.DeeplinkDFMapper.DF_SELLER_FRONT_FUNNEL
+import com.tokopedia.applink.DeeplinkDFMapper.DF_SELLER_PDP
 import com.tokopedia.applink.DeeplinkDFMapper.DF_SELLER_TALK
 import com.tokopedia.applink.DeeplinkDFMapper.DF_SHOP_SETTINGS_SELLER_APP
 import com.tokopedia.applink.DeeplinkDFMapper.DF_TOKOCHAT
@@ -183,7 +184,7 @@ object DeeplinkDFApp {
         DF_SELLER_FEEDBACK to getDfSellerFeedback(),
         DF_SELLER_FRONT_FUNNEL to getDfSellerFrontFunnel(),
         DF_SELLER_TALK to getDfSellerTalk(),
-        DF_SHOP_SETTINGS_SELLER_APP to getDfShopSettingsSellerapp()
+        DF_SHOP_SETTINGS_SELLER_APP to getDfShopSettingsSellerapp(),
     )
 
     private fun Map<String, List<DFP>>?.filteredOnDF(context: Context): Map<String, List<DFP>> {
@@ -698,6 +699,11 @@ object DeeplinkDFApp {
         DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/shop-settings-etalase/add"),
         DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATH, "/shop-page-setting"),
         DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/shop-page/.*/settings")
+    )
+
+    private fun getDfSellerPdp() = mutableListOf(
+        DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/product-detail/.*/"),
+        DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/productar/.*")
     )
 
     fun Map<String, List<DFP>>.mapDF(): MutableList<DFPSchemeToDF> {
