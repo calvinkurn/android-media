@@ -1463,8 +1463,11 @@ class ShipmentViewModelBoPromoTest : BaseShipmentViewModelTest() {
         )
         val response = DataProvider.provideRatesV3EnabledBoPromoResponse()
         val shippingRecommendationData = shippingDurationConverter.convertModel(response.ratesData)
-        shippingRecommendationData.shippingDurationUiModels[3].shippingCourierViewModelList.first { it.productData.shipperProductId == 1 }.productData.error =
+        val courier = shippingRecommendationData.shippingDurationUiModels[3].shippingCourierViewModelList.first { it.productData.shipperProductId == 1 }
+        courier.productData = courier.productData.copy(
+            error =
             ErrorProductData().apply { errorMessage = "error" }
+        )
         every { getRatesUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)
         coEvery {
             clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground()

@@ -62,6 +62,7 @@ data class BroadMatchItemDataView(
             "variant", "none / other",
             "list", carouselProductType.getDataLayerList(isOrganicAds, componentId),
             "position", position,
+            "dimension40", carouselProductType.getDataLayerList(isOrganicAds, componentId),
             "dimension90", dimension90,
             "dimension115", labelGroupDataList.getFormattedPositionName(),
             "dimension131", externalReference.orNone(),
@@ -112,6 +113,7 @@ data class BroadMatchItemDataView(
             dimension90 = dimension90,
             componentId = otherRelatedProduct.componentId,
             externalReference = externalReference,
+            warehouseID = otherRelatedProduct.warehouseIdDefault,
         )
 
         fun create(

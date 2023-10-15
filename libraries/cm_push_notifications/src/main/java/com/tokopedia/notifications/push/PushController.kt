@@ -165,7 +165,7 @@ class PushController(val context: Context) : CoroutineScope {
             baseNotificationModel.status = NotificationStatus.ACTIVE
         } else {
             baseNotificationModel.status = NotificationStatus.COMPLETED
-            sendPushExpiryLog(baseNotificationModel)
+            sendPushExpiryEventAndLog(baseNotificationModel)
         }
         updatedBaseNotificationModel?.let {
             PushRepository.getInstance(context)
@@ -174,7 +174,12 @@ class PushController(val context: Context) : CoroutineScope {
                 .insertNotificationModel(baseNotificationModel)
     }
 
-    private fun sendPushExpiryLog(baseNotificationModel: BaseNotificationModel){
+    private fun sendPushExpiryEventAndLog(baseNotificationModel: BaseNotificationModel) {
+        IrisAnalyticsEvents.sendPushEvent(
+            context,
+            IrisAnalyticsEvents.PUSH_EXPIRED,
+            baseNotificationModel
+        )
         try {
             ServerLogger.log(Priority.P2, "CM_VALIDATION",
                 mapOf("type" to "exception",
@@ -221,7 +226,7 @@ class PushController(val context: Context) : CoroutineScope {
         notificationManager.cancel(baseNotificationModel.notificationId)
         baseNotificationModel.status = NotificationStatus.COMPLETED
         PushRepository.getInstance(context).updateNotificationModel(baseNotificationModel)
-        sendPushExpiryLog(baseNotificationModel)
+        sendPushExpiryEventAndLog(baseNotificationModel)
     }
 
     private suspend fun createAndPostNotification(baseNotificationModel: BaseNotificationModel) {
@@ -307,7 +312,7 @@ class PushController(val context: Context) : CoroutineScope {
         context.startActivities(arrayOf(intentHome, intent))
     }
 
-    private fun postEventForLiveNotification(baseNotificationModel: BaseNotificationModel){
+    private fun postEventForLiveNotification(baseNotificationModel: BaseNotificationModel) {
         if (baseNotificationModel.notificationMode == NotificationMode.OFFLINE) return
         if (baseNotificationModel.type == CMConstant.NotificationType.SILENT_PUSH &&
             NotificationManagerCompat.from(context).areNotificationsEnabled()

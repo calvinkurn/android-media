@@ -8,6 +8,7 @@ import com.tokopedia.tokopedianow.common.viewmodel.TokoNowProductRecommendationV
 import com.tokopedia.tokopedianow.search.domain.usecase.GetSearchUseCaseModule
 import com.tokopedia.tokopedianow.search.presentation.viewmodel.TokoNowSearchViewModel
 import com.tokopedia.tokopedianow.searchcategory.di.GraphqlModule
+import com.tokopedia.tokopedianow.searchcategory.di.RemoteConfigModule
 import com.tokopedia.tokopedianow.searchcategory.domain.usecase.GetProductCountUseCaseModule
 import dagger.Binds
 import dagger.Module
@@ -17,6 +18,7 @@ import dagger.multibindings.IntoMap
     GetSearchUseCaseModule::class,
     GetProductCountUseCaseModule::class,
     GraphqlModule::class,
+    RemoteConfigModule::class
 ])
 abstract class SearchViewModelModule {
 

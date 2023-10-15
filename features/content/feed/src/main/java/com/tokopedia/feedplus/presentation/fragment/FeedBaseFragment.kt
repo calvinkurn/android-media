@@ -67,8 +67,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.time.DurationUnit
-import kotlin.time.toDuration
 import com.tokopedia.content.common.R as contentcommonR
 
 /**
@@ -85,7 +83,8 @@ class FeedBaseFragment :
     @Inject
     internal lateinit var userSession: UserSessionInterface
 
-    @Inject lateinit var viewModelAssistedFactory: FeedMainViewModel.Factory
+    @Inject
+    lateinit var viewModelAssistedFactory: FeedMainViewModel.Factory
     private val feedMainViewModel: FeedMainViewModel by viewModels {
         FeedMainViewModel.provideFactory(viewModelAssistedFactory, activeTabSource)
     }
@@ -161,19 +160,21 @@ class FeedBaseFragment :
 
     private val openAppLink = registerForActivityResult(RouteContract()) {}
 
-    private val swipeFollowingLoginResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        // this doesn't work, bcs the viewmodel doen't survive
-        if (userSession.isLoggedIn) {
-            feedMainViewModel.setActiveTab(TAB_TYPE_FOLLOWING)
+    private val swipeFollowingLoginResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            // this doesn't work, bcs the viewmodel doen't survive
+            if (userSession.isLoggedIn) {
+                feedMainViewModel.setActiveTab(TAB_TYPE_FOLLOWING)
+            }
         }
-    }
-    private val openBrowseLoginResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        // this also doesn't work, if the previous `browseAppLink` is empty :(
-        if (userSession.isLoggedIn) {
-            val metaModel = feedMainViewModel.metaData.value
-            RouteManager.route(requireContext(), metaModel.browseApplink)
+    private val openBrowseLoginResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            // this also doesn't work, if the previous `browseAppLink` is empty :(
+            if (userSession.isLoggedIn) {
+                val metaModel = feedMainViewModel.metaData.value
+                RouteManager.route(requireContext(), metaModel.browseApplink)
+            }
         }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         childFragmentManager.addFragmentOnAttachListener { _, fragment ->
@@ -260,6 +261,7 @@ class FeedBaseFragment :
 
                 openAppLink.launch(ApplinkConst.PLAY_BROADCASTER)
             }
+
             CreateContentType.Post -> {
                 feedNavigationAnalytics.eventClickCreatePost()
 
@@ -294,15 +296,13 @@ class FeedBaseFragment :
 
                 openCreateShorts.launch()
             }
+
             else -> {}
         }
     }
 
-    fun showSwipeOnboarding() {
-        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
-            delay(COACHMARK_START_DELAY_IN_SEC.toDuration(DurationUnit.SECONDS))
-            binding.viewVerticalSwipeOnboarding.showAnimated()
-        }
+    private fun showSwipeOnboarding() {
+        binding.viewVerticalSwipeOnboarding.showAnimated()
     }
 
     private fun setupView() {
@@ -340,7 +340,6 @@ class FeedBaseFragment :
                 }
 
                 override fun onPageSelected(position: Int) {
-                    selectActiveTab(position)
                 }
 
                 override fun onPageScrollStateChanged(state: Int) {
@@ -356,16 +355,22 @@ class FeedBaseFragment :
     private fun setupInsets() {
         binding.containerFeedTopNav.vMenuCenter.doOnApplyWindowInsets { _, insets, _, margin ->
 
-            val topInsetsMargin = (insets.systemWindowInsetTop + tabExtraTopOffset24).coerceAtLeast(margin.top)
+            val topInsetsMargin =
+                (insets.systemWindowInsetTop + tabExtraTopOffset24).coerceAtLeast(margin.top)
 
             getAllMotionScene().forEach {
-                it.setMargin(binding.containerFeedTopNav.vMenuCenter.id, ConstraintSet.TOP, topInsetsMargin)
+                it.setMargin(
+                    binding.containerFeedTopNav.vMenuCenter.id,
+                    ConstraintSet.TOP,
+                    topInsetsMargin
+                )
             }
         }
 
         binding.loaderFeedTopNav.root.doOnApplyWindowInsets { v, insets, _, margin ->
 
-            val topInsetsMargin = (insets.systemWindowInsetTop + tabExtraTopOffset16).coerceAtLeast(margin.top)
+            val topInsetsMargin =
+                (insets.systemWindowInsetTop + tabExtraTopOffset16).coerceAtLeast(margin.top)
 
             val marginLayoutParams = v.layoutParams as ViewGroup.MarginLayoutParams
             marginLayoutParams.updateMargins(top = topInsetsMargin)
@@ -414,14 +419,19 @@ class FeedBaseFragment :
                             hideErrorView()
                             showLoading()
                         }
+
                         is NetworkResult.Success -> {
                             hideErrorView()
                             hideLoading()
+
                             initTabsView(state.data)
+                            handleActiveTab(state.data)
                         }
+
                         is NetworkResult.Error -> {
                             showErrorView(state.error)
                         }
+
                         NetworkResult.Unknown -> {
                             // ignore
                         }
@@ -446,12 +456,11 @@ class FeedBaseFragment :
                         FeedMainEvent.HasJustLoggedIn -> {
                             showJustLoggedInToaster()
                         }
+
                         FeedMainEvent.ShowSwipeOnboarding -> {
                             showSwipeOnboarding()
                         }
-                        is FeedMainEvent.SelectTab -> {
-                            handleActiveTab(event.data, event.position)
-                        }
+
                         else -> {}
                     }
 
@@ -474,6 +483,7 @@ class FeedBaseFragment :
                             binding.uploadView.setProgress(status.progress)
                             binding.uploadView.setThumbnail(status.thumbnailUrl)
                         }
+
                         is UploadStatus.Finished -> {
                             binding.uploadView.hide()
 
@@ -502,6 +512,7 @@ class FeedBaseFragment :
                                 )
                             }
                         }
+
                         is UploadStatus.Failed -> {
                             binding.uploadView.setFailed()
                             binding.uploadView.setListener(object : UploadInfoView.Listener {
@@ -621,8 +632,6 @@ class FeedBaseFragment :
 
         if (isJustLoggedIn && userSession.isLoggedIn) {
             showJustLoggedInToaster()
-        } else {
-            setupActiveTab(tab)
         }
         isJustLoggedIn = false
     }
@@ -633,9 +642,11 @@ class FeedBaseFragment :
             source.tabName != null -> {
                 feedMainViewModel.setActiveTab(source.tabName)
             }
+
             source.index > -1 && source.index < tab.data.size -> {
                 selectActiveTab(source.index)
             }
+
             else -> selectActiveTab(0)
         }
     }
@@ -754,10 +765,16 @@ class FeedBaseFragment :
      * - viewModel.setActiveTab(position);
      * - viewModel.setActiveTab(type);
      */
-    private fun handleActiveTab(dataModel: FeedDataModel, position: Int) {
-        // keep active tab updated whenever sending tracker
-        feedNavigationAnalytics.setActiveTab(dataModel)
-        binding.vpFeedTabItemsContainer.setCurrentItem(position, true)
+    private fun handleActiveTab(tab: FeedTabModel) {
+        val selectedTab = feedMainViewModel.selectedTab
+
+        if (selectedTab == null) {
+            setupActiveTab(tab)
+        } else {
+            // keep active tab updated whenever sending tracker
+            feedNavigationAnalytics.setActiveTab(selectedTab)
+            binding.vpFeedTabItemsContainer.setCurrentItem(tab.data.indexOf(selectedTab), true)
+        }
     }
 
     private fun handleTabTransition(position: Int) {
@@ -812,8 +829,6 @@ class FeedBaseFragment :
         private const val PARAM_PUSH_NOTIFICATION = "push"
 
         private const val THRESHOLD_OFFSET_HALF = 0.5f
-
-        private const val COACHMARK_START_DELAY_IN_SEC = 3
 
         private const val ONBOARDING_SHOW_DELAY = 500L
     }

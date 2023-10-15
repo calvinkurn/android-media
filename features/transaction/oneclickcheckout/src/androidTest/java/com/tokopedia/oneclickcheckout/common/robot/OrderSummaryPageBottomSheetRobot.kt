@@ -82,7 +82,7 @@ class OrderPriceSummaryBottomSheetRobot {
             onView(withId(R.id.divider_transaction_fee)).check(matches(isDisplayed()))
             onView(withId(R.id.tv_transaction_fee)).check(matches(isDisplayed()))
             // Wait for bottom sheet window to be focused
-            Thread.sleep(1000)
+            waitForBottomSheet()
             onView(withId(R.id.ll_payment_fee)).check { view, _ ->
                 val llPaymentFee = (view as ViewGroup)
                 for (i in 0 until llPaymentFee.childCount) {
@@ -131,7 +131,7 @@ class OrderPriceSummaryBottomSheetRobot {
             }
         }
         // Wait for bottom sheet to fully appear
-        Thread.sleep(1000)
+        waitForBottomSheet()
         OrderPriceSummaryBottomSheetRobot().apply(func)
     }
 
@@ -149,7 +149,7 @@ class OrderPriceSummaryBottomSheetRobot {
             override fun perform(uiController: UiController?, view: View?) {
                 view?.callOnClick()
                 // Wait for bottom sheet to close
-                Thread.sleep(1000)
+                waitForBottomSheet()
             }
         })
     }
@@ -165,7 +165,7 @@ class InstallmentDetailBottomSheetRobot {
             val radioButtonUnify = parent.findViewById<RadioButtonUnify>(R.id.rb_installment_detail)
             radioButtonUnify.performClick()
             // Wait for bottom sheet to close
-            Thread.sleep(1000)
+            waitForBottomSheet()
         }
     }
 }

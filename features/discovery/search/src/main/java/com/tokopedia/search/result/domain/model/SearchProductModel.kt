@@ -319,6 +319,10 @@ data class SearchProductModel(
             @SerializedName("componentId")
             @Expose
             val componentId: String = "",
+
+            @SerializedName("warehouseIdDefault")
+            @Expose
+            val warehouseIdDefault: String = "",
     ) {
             fun isOrganicAds(): Boolean = ads.id.isNotEmpty()
     }
@@ -333,6 +337,10 @@ data class SearchProductModel(
         @SerializedName("imageUrl")
         @Expose
         val imageUrl: String = "",
+
+        @SerializedName("title")
+        @Expose
+        val title: String = "",
 
         @SerializedName("show")
         @Expose
