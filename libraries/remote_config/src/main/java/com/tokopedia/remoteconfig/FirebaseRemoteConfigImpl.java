@@ -2,7 +2,10 @@ package com.tokopedia.remoteconfig;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -31,9 +34,13 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
     private FirebaseRemoteConfig firebaseRemoteConfig;
     private SharedPreferences sharedPrefs;
 
+    private Context mContext;
+
     public FirebaseRemoteConfigImpl(Context context) {
         try {
             this.firebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+            this.mContext = context.getApplicationContext();
+
         } catch (Exception ignored) { } // FirebaseApp is not intialized, ignoring the error and handle it with default value
 
         if (GlobalConfig.isAllowDebuggingTools() && context != null) {
@@ -202,6 +209,10 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
 
     private void setRealtimeUpdate() {
         try {
+            new Handler(Looper.getMainLooper()).post(() -> {
+                Toast.makeText(mContext, "Init Remote Config Real Time", Toast.LENGTH_SHORT).show();
+            });
+
             if (firebaseRemoteConfig != null) {
                 firebaseRemoteConfig.addOnConfigUpdateListener(getConfigRealtimeUpdateListener());
             }
