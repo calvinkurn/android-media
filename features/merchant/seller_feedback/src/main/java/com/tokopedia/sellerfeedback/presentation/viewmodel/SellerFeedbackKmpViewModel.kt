@@ -69,8 +69,9 @@ class SellerFeedbackKmpViewModel @Inject constructor(
             val submitGlobalFeedbackError = (result as? Result.Failure)
             throwSubmitFeedbackExceptionIfAny(submitGlobalFeedbackError)
 
-            val submitGlobalFeedback = (result as? Result.Success)?.data
-            if (submitGlobalFeedback?.isError == true) {
+            val submitGlobalFeedback = (result as Result.Success).data
+
+            if (submitGlobalFeedback.isError) {
                 throw SubmitThrowable(submitGlobalFeedback.errorMessage)
             }
 
@@ -96,7 +97,7 @@ class SellerFeedbackKmpViewModel @Inject constructor(
             }
 
             is Result.Failure.UnknownFailure -> {
-                throw SubmitThrowable(submitGlobalFeedbackError.exception.localizedMessage.orEmpty())
+                throw SubmitThrowable(submitGlobalFeedbackError.exception.localizedMessage.toString())
             }
 
             else -> {
