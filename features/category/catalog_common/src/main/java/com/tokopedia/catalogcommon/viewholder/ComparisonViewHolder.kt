@@ -1,5 +1,6 @@
 package com.tokopedia.catalogcommon.viewholder
 
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,6 +26,9 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.CardUnify2.Companion.TYPE_CLEAR
 import com.tokopedia.unifyprinciples.ColorMode
 import com.tokopedia.utils.view.binding.viewBinding
+import kotlin.math.ceil
+import kotlin.math.floor
+import kotlin.math.roundToInt
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ComparisonViewHolder(
@@ -66,9 +70,36 @@ class ComparisonViewHolder(
             iuProduct.loadImage(comparedItem?.imageUrl.orEmpty())
             cardProductAction.cardType = TYPE_CLEAR
             iconProductAction.setImage(IconUnify.PUSH_PIN_FILLED, colorGray)
-            rvSpecs.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.VERTICAL, false)
-            rvSpecs.adapter = ComparisonSpecItemAdapter(specs.orEmpty(), true)
             root.addOneTimeGlobalLayoutListener {
+                val heightTemp = List(specs?.size.orZero()) { 1 }.toMutableList()
+                val textAreaWidth: Double = tfProductPrice.measuredWidth.orZero().toDouble()
+                comparisonItems.forEach {
+                    it.topComparisonSpecs.forEachIndexed { index, comparisonSpec ->
+                        val lines = ceil((comparisonSpec.specValue.length * 15)/ textAreaWidth).toInt()
+                        if (lines > heightTemp[index]) heightTemp[index] = lines
+                    }
+                    it.comparisonSpecs.forEachIndexed { index, comparisonSpec ->
+                        val lines = ceil((comparisonSpec.specValue.length * 15)/ textAreaWidth).toInt()
+                        if (lines > heightTemp[index]) heightTemp[index] = lines
+                    }
+                }
+                specs?.forEachIndexed { index, comparisonSpec ->
+                    val lines = ceil((comparisonSpec.specValue.length * 15)/ textAreaWidth).toInt()
+                    if (lines > heightTemp[index]) heightTemp[index] = lines
+                }
+                comparisonItems.forEach {
+                    it.topComparisonSpecs.forEachIndexed { index, comparisonSpec ->
+                        comparisonSpec.specHeight = heightTemp[index]
+                    }
+                    it.comparisonSpecs.forEachIndexed { index, comparisonSpec ->
+                        comparisonSpec.specHeight = heightTemp[index]
+                    }
+                }
+                specs?.forEachIndexed { index, comparisonSpec ->
+                    comparisonSpec.specHeight = heightTemp[index]
+                }
+                rvSpecs.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.VERTICAL, false)
+                rvSpecs.adapter = ComparisonSpecItemAdapter(specs.orEmpty(), true)
                 setupComparisonListItem(comparisonItems)
             }
         }
@@ -185,16 +216,21 @@ class ComparisonViewHolder(
         }
 
         fun bind(item: ComparisonUiModel.ComparisonSpec) {
-            binding?.apply {
-                tfSpecCategoryTitle.text = item.specCategoryTitle
-                tfSpecTitle.text = item.specTitle
-                tfSpecValue.text = item.specValue
+            itemView.post {
+                binding?.apply {
+                    tfSpecValue.ellipsize = TextUtils.TruncateAt.END
+                    tfSpecValue.maxLines = item.specHeight
+                    tfSpecValue.minLines = item.specHeight
+                    tfSpecCategoryTitle.text = item.specCategoryTitle
+                    tfSpecTitle.text = item.specTitle
+                    tfSpecValue.text = item.specValue
 
-                tfSpecCategoryTitle.isVisible = item.isSpecCategoryTitle
-                divSpecCategory.isVisible = item.isSpecCategoryTitle
-                tfSpecTitle.isVisible = !item.isSpecCategoryTitle
-                tfSpecValue.isVisible = !item.isSpecCategoryTitle
-                divSpecValue.isVisible = !item.isSpecCategoryTitle
+                    tfSpecCategoryTitle.isVisible = item.isSpecCategoryTitle
+                    divSpecCategory.isVisible = item.isSpecCategoryTitle
+                    tfSpecTitle.isVisible = !item.isSpecCategoryTitle
+                    tfSpecValue.isVisible = !item.isSpecCategoryTitle
+                    divSpecValue.isVisible = !item.isSpecCategoryTitle
+                }
             }
         }
     }
