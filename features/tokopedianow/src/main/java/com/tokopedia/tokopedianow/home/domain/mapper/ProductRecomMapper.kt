@@ -137,10 +137,17 @@ object ProductRecomMapper {
         item: HomeProductRecomUiModel,
         recomWidget: RecommendationWidget,
         parentProduct: HomeRealTimeRecomProductUiModel,
-        miniCartData: MiniCartSimplifiedData?
+        miniCartData: MiniCartSimplifiedData?,
+        hasBlockedAddToCart: Boolean
     ): HomeLayoutItemUiModel {
         val headerName = item.title
-        val productList = mapRecomWidgetToProductList(headerName, recomWidget, miniCartData, true)
+        val productList = mapRecomWidgetToProductList(
+            headerName = headerName,
+            recomWidget = recomWidget,
+            miniCartData = miniCartData,
+            needToChangeMaxLinesName = true,
+            hasBlockedAddToCart = hasBlockedAddToCart
+        )
         val categoryBreadcrumbs = parentProduct.categoryBreadcrumbs
 
         val realTimeRecom = item.realTimeRecom.copy(
