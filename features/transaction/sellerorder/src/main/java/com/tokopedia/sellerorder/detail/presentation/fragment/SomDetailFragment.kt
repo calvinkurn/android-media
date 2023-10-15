@@ -805,7 +805,7 @@ open class SomDetailFragment :
         }
     }
 
-    private fun setActionGoToTrackShipmentPage(buttonResp: SomDetailOrder.Data.GetSomDetail.Button) {
+    private fun setActionGoToTrackShipmentPage(buttonResp: SomDetailOrder.GetSomDetail.Button) {
         RouteManager.route(context, buttonResp.url)
     }
 
