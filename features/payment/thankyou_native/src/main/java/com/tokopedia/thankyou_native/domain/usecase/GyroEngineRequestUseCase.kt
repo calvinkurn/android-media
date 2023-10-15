@@ -14,6 +14,7 @@ import com.tokopedia.thankyou_native.domain.model.*
 import com.tokopedia.thankyou_native.domain.query.GQL_GYRO_RECOMMENDATION
 import com.tokopedia.user.session.UserSessionInterface
 import org.json.JSONObject
+import timber.log.Timber
 import javax.inject.Inject
 
 @GqlQuery("GyroRecommendationQuery", GQL_GYRO_RECOMMENDATION)
@@ -77,6 +78,7 @@ class GyroEngineRequestUseCase @Inject constructor(
         return try {
             RemoteConfigInstance.getInstance().abTestPlatform
         } catch (e: IllegalStateException) {
+            Timber.e(e)
             null
         }
     }

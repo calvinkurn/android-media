@@ -11,6 +11,7 @@ import com.tokopedia.thankyou_native.domain.model.ThankYouPageChannelData
 import com.tokopedia.thankyou_native.domain.repository.QueryDynamicChannelV2.DYNAMIC_CHANNEL_V2_QUERY
 import com.tokopedia.thankyou_native.domain.repository.QueryDynamicChannelV2.DYNAMIC_CHANNEL_V2_QUERY_NAME
 import com.tokopedia.usecase.RequestParams
+import timber.log.Timber
 import javax.inject.Inject
 
 class DynamicChannelRepository @Inject constructor(
@@ -28,7 +29,7 @@ class DynamicChannelRepository @Inject constructor(
                 return result
             } else throw MessageErrorException(errors.joinToString { it.message })
         } catch (e: Exception) {
-            e.printStackTrace()
+            Timber.e(e)
             throw e
         }
     }
