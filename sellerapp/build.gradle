@@ -420,6 +420,11 @@ dependencies {
     implementation (rootProject.ext.tkpdLibDependencies.ucrop) {
         exclude group: 'com.android.support'
     }
+
+    implementation projectOrAar(rootProject.ext.features.playWidget)
+    implementation projectOrAar(rootProject.ext.features.productShare)
+    implementation projectOrAar(rootProject.ext.features.productServiceWidget)
+    implementation projectOrAar(rootProject.ext.features.promoMvcWidget)
 }
 
 apply plugin: 'com.google.gms.google-services'
