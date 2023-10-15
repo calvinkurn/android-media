@@ -15,6 +15,7 @@ import com.tokopedia.catalogcommon.databinding.WidgetItemComparisonContentSpecBi
 import com.tokopedia.catalogcommon.uimodel.ComparisonUiModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -29,7 +30,7 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 class ComparisonViewHolder(
     itemView: View,
     private val comparisonItemListener: ComparisonItemListener? = null,
-    private val isDisplayingTopSpec: Boolean = false
+    private val isDisplayingTopSpec: Boolean = true
 ) : AbstractViewHolder<ComparisonUiModel>(itemView) {
 
     companion object {
@@ -166,6 +167,7 @@ class ComparisonViewHolder(
         isComparedItem: Boolean
     ) : RecyclerView.ViewHolder(itemView) {
         companion object {
+            private val DIVIDER_MARGIN = 8
             fun createRootView(parent: ViewGroup): View = LayoutInflater.from(parent.context)
                 .inflate(R.layout.widget_item_comparison_content_spec, parent, false)
         }
@@ -175,9 +177,9 @@ class ComparisonViewHolder(
         init {
             if (isComparedItem) {
                 binding?.apply {
-                    val margin = 8.dpToPx(itemView.resources.displayMetrics)
-                    divSpecCategory.setMargin(margin, 0, 0, 0)
-                    divSpecValue.setMargin(margin, 0, 0, 0)
+                    val margin = DIVIDER_MARGIN.dpToPx(itemView.resources.displayMetrics)
+                    divSpecCategory.setMargin(margin, Int.ZERO, Int.ZERO, Int.ZERO)
+                    divSpecValue.setMargin(margin, Int.ZERO, Int.ZERO, Int.ZERO)
                 }
             }
         }
