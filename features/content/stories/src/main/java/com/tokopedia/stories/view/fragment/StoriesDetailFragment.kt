@@ -198,7 +198,7 @@ class StoriesDetailFragment @Inject constructor(
                 if (!isEligiblePage) return@collect
                 when (event) {
                     is StoriesUiEvent.EmptyDetailPage -> {
-                        setErrorType(StoriesErrorView.Type.NoCategory)
+                        setErrorType(StoriesErrorView.Type.EmptyCategory)
                     }
 
                     is StoriesUiEvent.ErrorDetailPage -> {
@@ -319,7 +319,7 @@ class StoriesDetailFragment @Inject constructor(
                     }
 
                     StoryStatus.Unknown -> {
-                        setErrorType(StoriesErrorView.Type.NoStories)
+                        setErrorType(StoriesErrorView.Type.EmptyStories)
                         contentIsLoaded()
                     }
                 }
@@ -330,7 +330,7 @@ class StoriesDetailFragment @Inject constructor(
             }
 
             Unknown -> {
-                setErrorType(StoriesErrorView.Type.NoStories)
+                setErrorType(StoriesErrorView.Type.EmptyStories)
                 contentIsLoaded()
             }
         }
@@ -583,7 +583,7 @@ class StoriesDetailFragment @Inject constructor(
         type = errorType
         setAction { onClick() }
         setCloseAction { activity?.finish() }
-        binding.layoutStoriesContent.root.showWithCondition(errorType != StoriesErrorView.Type.NoCategory && errorType != StoriesErrorView.Type.NoContent)
+        binding.layoutStoriesContent.root.showWithCondition(errorType != StoriesErrorView.Type.EmptyCategory && errorType != StoriesErrorView.Type.NoContent)
     }
 
     private fun hideError() = binding.vStoriesError.gone()

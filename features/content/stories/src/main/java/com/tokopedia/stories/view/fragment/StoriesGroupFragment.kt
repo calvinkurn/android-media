@@ -164,7 +164,7 @@ class StoriesGroupFragment @Inject constructor(
                         setErrorType(if (event.throwable.isNetworkError) StoriesErrorView.Type.NoInternet else StoriesErrorView.Type.FailedLoad) { event.onClick()}
                     }
                     StoriesUiEvent.EmptyGroupPage -> {
-                        setErrorType(StoriesErrorView.Type.NoStories)
+                        setErrorType(StoriesErrorView.Type.EmptyStories)
                         showPageLoading(false)
                     }
                     StoriesUiEvent.FinishedAllStories -> activity?.finish()

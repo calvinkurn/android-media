@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -33,7 +32,7 @@ class StoriesErrorView : ConstraintLayout {
             field = value
             val (title, description, image) =
                 when (value) {
-                    Type.NoStories, Type.NoCategory -> Triple(
+                    Type.EmptyStories, Type.EmptyCategory -> Triple(
                         R.string.stories_content_unavailable,
                         null,
                         IconUnify.IMAGE
@@ -56,9 +55,9 @@ class StoriesErrorView : ConstraintLayout {
             binding.storiesErrorIcon.setImage(newIconId = image)
             binding.storiesErrorTitle.text = title?.let { context.getString(it) }
             binding.storiesErrorDesc.text = description?.let { context.getString(it) }
-            binding.btnStoriesNoInetRetry.showWithCondition(value != Type.NoStories && value != Type.NoCategory)
-            binding.loaderGroup.showWithCondition(value != Type.NoStories && value != Type.NoCategory)
-//            binding.root.translationZ = if (value == Type.NoContent || value == Type.NoCategory) 0f else 1f
+            binding.btnStoriesNoInetRetry.showWithCondition(value != Type.EmptyStories && value != Type.EmptyCategory)
+            binding.loaderGroup.showWithCondition(value != Type.EmptyStories && value != Type.EmptyCategory)
+//            binding.root.translationZ = if (value == Type.NoContent || value == Type.EmptyCategory) 0f else 1f
         }
 
     fun setAction(action: (View) -> Unit) {
@@ -70,6 +69,6 @@ class StoriesErrorView : ConstraintLayout {
     }
 
     enum class Type {
-        FailedLoad, NoStories, NoCategory, NoContent, NoInternet, Unknown;
+        FailedLoad, EmptyStories, EmptyCategory, NoContent, NoInternet, Unknown;
     }
 }
