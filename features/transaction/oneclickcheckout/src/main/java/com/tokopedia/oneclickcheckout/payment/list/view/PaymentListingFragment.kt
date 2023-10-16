@@ -65,6 +65,7 @@ class PaymentListingFragment : BaseDaggerFragment() {
         private const val ARG_PAYMENT_BID = "bid"
         private const val ARG_ORDER_METADATA = "order_metadata"
         private const val ARG_PROMO_PARAM = "promo_param"
+        private const val ARG_CALLBACK_URL = "callback_url"
 
         private const val REQUEST_CODE_LINK_ACCOUNT = 101
         private const val REQUEST_CODE = 191
@@ -76,7 +77,8 @@ class PaymentListingFragment : BaseDaggerFragment() {
             merchantCode: String,
             bid: String,
             orderMetadata: String,
-            promoParam: String
+            promoParam: String,
+            callbackUrl: String
         ): PaymentListingFragment {
             val fragment = PaymentListingFragment()
             fragment.arguments = Bundle().apply {
@@ -87,6 +89,7 @@ class PaymentListingFragment : BaseDaggerFragment() {
                 putString(ARG_PAYMENT_BID, bid)
                 putString(ARG_ORDER_METADATA, orderMetadata)
                 putString(ARG_PROMO_PARAM, promoParam)
+                putString(ARG_CALLBACK_URL, callbackUrl)
             }
             return fragment
         }
@@ -109,6 +112,7 @@ class PaymentListingFragment : BaseDaggerFragment() {
     private var bid = ""
     private var orderMetadata = ""
     private var promoParam = ""
+    private var callbackUrl = ""
 
     private val viewModel: PaymentListingViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[PaymentListingViewModel::class.java]
@@ -163,6 +167,7 @@ class PaymentListingFragment : BaseDaggerFragment() {
         bid = arguments?.getString(ARG_PAYMENT_BID) ?: ""
         orderMetadata = arguments?.getString(ARG_ORDER_METADATA) ?: ""
         promoParam = arguments?.getString(ARG_PROMO_PARAM) ?: ""
+        callbackUrl = arguments?.getString(ARG_CALLBACK_URL) ?: ""
         val parent: Context = activity ?: return
         SplitCompat.installActivity(parent)
     }
@@ -217,15 +222,21 @@ class PaymentListingFragment : BaseDaggerFragment() {
     }
 
     private fun generatePaymentListingRequest(): PaymentListingParamRequest {
-        // todo: change callback url
         return PaymentListingParamRequest(
             merchantCode,
             profileCode,
-            paymentListingUrl,
+            getCallbackUrl(callbackUrl, paymentListingUrl),
             addressId,
             generateAppVersionForPayment(),
             bid
         )
+    }
+
+    private fun getCallbackUrl(callbackUrl: String, paymentListingUrl: String): String {
+        if (callbackUrl.isBlank()) {
+            return paymentListingUrl
+        }
+        return callbackUrl
     }
 
     private fun handleError(throwable: Throwable?) {
