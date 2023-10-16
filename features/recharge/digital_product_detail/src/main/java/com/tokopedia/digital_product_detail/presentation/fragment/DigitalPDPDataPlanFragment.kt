@@ -19,9 +19,12 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
+import com.tokopedia.common.topupbills.analytics.CommonMultiCheckoutAnalytics
 import com.tokopedia.common.topupbills.data.TopupBillsBanner
 import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
+import com.tokopedia.common.topupbills.data.constant.multiCheckoutButtonImpressTrackerButtonType
+import com.tokopedia.common.topupbills.data.constant.multiCheckoutButtonPromotionTracker
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoOperator
 import com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoSavedNumberActivity
 import com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoSavedNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
@@ -42,9 +45,13 @@ import com.tokopedia.common_digital.atc.data.response.ErrorAtc
 import com.tokopedia.common_digital.atc.utils.DeviceUtil
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.digital_product_detail.R
+import com.tokopedia.digital_product_detail.data.model.data.DigitalAtcResult
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.APPLINK_OMNI_DATA_CODE
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.FAVNUM_PERMISSION_CHECKER_IS_DENIED
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.INDOSAT_CHECK_BALANCE_TYPE_ERROR
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.INDOSAT_CHECK_BALANCE_TYPE_OTP
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.INDOSAT_CHECK_BALANCE_TYPE_WIDGET
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.INPUT_ACTION_TRACKING_DELAY
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.LOADER_DIALOG_TEXT
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.MAXIMUM_VALID_NUMBER_LENGTH
@@ -61,9 +68,12 @@ import com.tokopedia.digital_product_detail.data.model.data.TelcoFilterTagCompon
 import com.tokopedia.digital_product_detail.data.model.data.TelcoOtherComponent
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpDataPlanBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
+import com.tokopedia.digital_product_detail.domain.model.DigitalCheckBalanceModel
+import com.tokopedia.digital_product_detail.domain.model.DigitalSaveAccessTokenResultModel
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.FilterPDPBottomsheet
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.ProductDescBottomSheet
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.SummaryTelcoBottomSheet
+import com.tokopedia.digital_product_detail.presentation.custom.activityresult.OpenRechargeCheckBalance
 import com.tokopedia.digital_product_detail.presentation.delegate.DigitalKeyboardDelegate
 import com.tokopedia.digital_product_detail.presentation.delegate.DigitalKeyboardDelegateImpl
 import com.tokopedia.digital_product_detail.presentation.listener.DigitalHistoryIconListener
@@ -73,6 +83,7 @@ import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPWidgetM
 import com.tokopedia.digital_product_detail.presentation.utils.setupDynamicScrollListener
 import com.tokopedia.digital_product_detail.presentation.utils.toggle
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPDataPlanViewModel
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
@@ -80,8 +91,10 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.loaderdialog.LoaderDialog
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recharge_component.listener.ClientNumberAutoCompleteListener
+import com.tokopedia.recharge_component.listener.ClientNumberCheckBalanceListener
 import com.tokopedia.recharge_component.listener.ClientNumberFilterChipListener
 import com.tokopedia.recharge_component.listener.ClientNumberInputFieldListener
 import com.tokopedia.recharge_component.listener.RechargeBuyWidgetListener
@@ -89,6 +102,9 @@ import com.tokopedia.recharge_component.listener.RechargeDenomFullListener
 import com.tokopedia.recharge_component.listener.RechargeProductDescListener
 import com.tokopedia.recharge_component.listener.RechargeRecommendationCardListener
 import com.tokopedia.recharge_component.model.InputNumberActionType
+import com.tokopedia.recharge_component.model.check_balance.RechargeCheckBalanceDetailBottomSheetModel
+import com.tokopedia.recharge_component.model.check_balance.RechargeCheckBalanceDetailModel
+import com.tokopedia.recharge_component.model.check_balance.RechargeCheckBalanceOTPBottomSheetModel
 import com.tokopedia.recharge_component.model.client_number.InputFieldType
 import com.tokopedia.recharge_component.model.client_number.RechargeClientNumberChipModel
 import com.tokopedia.recharge_component.model.denom.DenomData
@@ -96,10 +112,11 @@ import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationWidgetModel
+import com.tokopedia.recharge_component.presentation.adapter.viewholder.RechargeCheckBalanceDetailViewHolder
+import com.tokopedia.recharge_component.presentation.bottomsheet.RechargeCheckBalanceDetailBottomSheet
+import com.tokopedia.recharge_component.presentation.bottomsheet.RechargeCheckBalanceOTPBottomSheet
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import com.tokopedia.recharge_component.widget.RechargeOmniWidget
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -114,6 +131,11 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
 import javax.inject.Inject
+import com.tokopedia.abstraction.R as abstractionR
+import com.tokopedia.common_digital.R as common_digitalR
+import com.tokopedia.digital_product_detail.R as digital_product_detailR
+import com.tokopedia.recharge_component.R as recharge_componentR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * @author by firmanda on 04/01/21
@@ -125,11 +147,15 @@ class DigitalPDPDataPlanFragment :
     RechargeRecommendationCardListener,
     RechargeDenomFullListener,
     RechargeOmniWidget.RechargeOmniWidgetListener,
+    RechargeCheckBalanceOTPBottomSheet.RechargeCheckBalanceOTPBottomSheetListener,
     ClientNumberInputFieldListener,
     ClientNumberFilterChipListener,
     ClientNumberAutoCompleteListener,
+    ClientNumberCheckBalanceListener,
     FilterPDPBottomsheet.FilterBottomSheetListener,
     DigitalHistoryIconListener,
+    RechargeCheckBalanceDetailBottomSheet.RechargeCheckBalanceDetailBottomSheetListener,
+    RechargeCheckBalanceDetailViewHolder.RechargeCheckBalanceDetailViewHolderListener,
     RechargeProductDescListener,
     DigitalKeyboardDelegate by DigitalKeyboardDelegateImpl() {
     @Inject
@@ -145,6 +171,9 @@ class DigitalPDPDataPlanFragment :
     @Inject
     lateinit var digitalPDPAnalytics: DigitalPDPAnalytics
 
+    @Inject
+    lateinit var commonMultiCheckoutAnalytics: CommonMultiCheckoutAnalytics
+
     private var binding by autoClearedNullable<FragmentDigitalPdpDataPlanBinding>()
 
     private var operator = TelcoOperator()
@@ -159,12 +188,33 @@ class DigitalPDPDataPlanFragment :
     private var loader: LoaderDialog? = null
     private var isMCCMEmpty: Boolean = false
     private var isProductListEmpty: Boolean = false
+    private var isAlreadyTrackImpressionMultiButton: Boolean = false
 
     private lateinit var localCacheHandler: LocalCacheHandler
     private lateinit var productDescBottomSheet: ProductDescBottomSheet
 
-    private val remoteConfig: RemoteConfig by lazy {
-        FirebaseRemoteConfigImpl(context)
+    private val indosatCheckBalanceLauncher = registerForActivityResult(OpenRechargeCheckBalance()) { result ->
+        when (result) {
+            is OpenRechargeCheckBalance.CheckBalanceOTPResult.Success -> {
+                saveIndosatAccessToken(result.accessToken)
+            }
+            is OpenRechargeCheckBalance.CheckBalanceOTPResult.EmptyToken -> {
+                view?.let {
+                    Toaster.build(
+                        it,
+                        getString(digital_product_detailR.string.check_balance_failed_verification),
+                        Toaster.LENGTH_LONG,
+                        Toaster.TYPE_ERROR
+                    ).show()
+                }
+            }
+        }
+        digitalPDPAnalytics.clickCloseOtp(
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+            loyaltyStatus,
+            userSession.userId,
+            userSession.isLoggedIn
+        )
     }
 
     override fun getScreenName(): String = ""
@@ -261,6 +311,7 @@ class DigitalPDPDataPlanFragment :
 
     private fun renderProduct() {
         binding?.run {
+            hideCheckBalanceWidget()
             val selectedClientNumber = rechargePdpPaketDataClientNumberWidget.getInputNumber()
             try {
                 /* operator check */
@@ -299,6 +350,7 @@ class DigitalPDPDataPlanFragment :
                     }
                     hideEmptyState()
                     onHideBuyWidget()
+                    getIndosatCheckBalance()
                     getRecommendations()
                     getMCCMProducts()
                     getCatalogProductInputMultiTab(
@@ -315,13 +367,14 @@ class DigitalPDPDataPlanFragment :
                     cancelRecommendationJob()
                     cancelMCCMProductsJob()
                     cancelCatalogProductJob()
+                    cancelCheckBalanceJob()
                 }
                 rechargePdpPaketDataClientNumberWidget.run {
                     setLoading(false)
                     resetContactName()
                     if (selectedClientNumber.length >= MINIMUM_OPERATOR_PREFIX) {
                         setErrorInputField(
-                            getString(com.tokopedia.recharge_component.R.string.client_number_prefix_error),
+                            getString(recharge_componentR.string.client_number_prefix_error),
                             true
                         )
                     }
@@ -487,6 +540,22 @@ class DigitalPDPDataPlanFragment :
             }
         }
 
+        viewModel.indosatCheckBalance.observe(viewLifecycleOwner) { checkBalanceData ->
+            when (checkBalanceData) {
+                is RechargeNetworkResult.Success -> onSuccessGetCheckBalance(checkBalanceData.data)
+                is RechargeNetworkResult.Fail -> onFailedGetCheckBalance(checkBalanceData.error)
+                is RechargeNetworkResult.Loading -> onLoadingGetCheckBalance()
+            }
+        }
+
+        viewModel.saveAccessTokenResult.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is RechargeNetworkResult.Success -> onSuccessSaveAccessToken(result.data)
+                is RechargeNetworkResult.Fail -> onFailedSaveAccessToken(result.error)
+                is RechargeNetworkResult.Loading -> onLoadingSaveAccessToken()
+            }
+        }
+
         viewModel.addToCartResult.observe(viewLifecycleOwner) { atcData ->
             when (atcData) {
                 is RechargeNetworkResult.Success -> {
@@ -517,6 +586,14 @@ class DigitalPDPDataPlanFragment :
             }
         }
 
+        viewModel.addToCartMultiCheckoutResult.observe(viewLifecycleOwner) {
+            hideLoadingDialog()
+            context?.let { context ->
+                trackOnClickMultiCheckout(it)
+                RouteManager.route(context, it.redirectUrl)
+            }
+        }
+
         viewModel.errorAtc.observe(viewLifecycleOwner) {
             hideLoadingDialog()
             if (it.atcErrorPage.isShowErrorPage) {
@@ -540,6 +617,15 @@ class DigitalPDPDataPlanFragment :
         }
     }
 
+    private fun trackOnClickMultiCheckout(atc: DigitalAtcResult) {
+        commonMultiCheckoutAnalytics.onClickMultiCheckout(
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+            operator.attributes.name,
+            atc.channelId,
+            userSession.userId,
+            multiCheckoutButtonPromotionTracker(viewModel.multiCheckoutButtons)
+        )
+    }
     private fun onSuccessOmniChannel(otherComponents: List<TelcoOtherComponent>) {
         otherComponents.forEach {
             if (it.name == OTHER_COMPONENT_APPLINK_OMNI) {
@@ -609,6 +695,22 @@ class DigitalPDPDataPlanFragment :
         viewModel.getMCCMProducts(clientNumbers, listOf(categoryId))
     }
 
+    private fun getIndosatCheckBalance() {
+        if (DigitalPDPCategoryUtil.isOperatorIndosat(operator.id)) {
+            val clientNumbers =
+                listOf(binding?.rechargePdpPaketDataClientNumberWidget?.getInputNumber() ?: "")
+            viewModel.setRechargeCheckBalanceLoading()
+            viewModel.cancelCheckBalanceJob()
+            viewModel.getRechargeCheckBalance(clientNumbers, listOf(categoryId))
+        }
+    }
+
+    private fun saveIndosatAccessToken(accessToken: String) {
+        val msisdn = binding?.rechargePdpPaketDataClientNumberWidget?.getInputNumber() ?: ""
+        viewModel.setRechargeUserAccessTokenLoading()
+        viewModel.saveRechargeUserAccessToken(msisdn, accessToken)
+    }
+
     private fun getCatalogMenuDetail() {
         viewModel.run {
             setMenuDetailLoading()
@@ -640,6 +742,7 @@ class DigitalPDPDataPlanFragment :
     private fun onSuccessGetMenuDetail(data: MenuDetailModel) {
         (activity as BaseSimpleActivity).updateTitle(data.catalog.label)
         loyaltyStatus = data.userPerso.loyaltyStatus
+        viewModel.multiCheckoutButtons = data.multiCheckoutButtons
         getFavoriteNumbers(
             listOf(
                 FavoriteNumberType.CHIP,
@@ -659,7 +762,7 @@ class DigitalPDPDataPlanFragment :
         )
         val errMsgSub = getString(
             R.string.error_message_with_code,
-            getString(com.tokopedia.abstraction.R.string.msg_network_error_2),
+            getString(abstractionR.string.msg_network_error_2),
             errCode
         )
         binding?.run {
@@ -731,6 +834,140 @@ class DigitalPDPDataPlanFragment :
 
     private fun onFailedGetRecommendations() {
         binding?.rechargePdpPaketDataRecommendationWidget?.hide()
+    }
+
+    private fun onSuccessGetCheckBalance(checkBalanceData: DigitalCheckBalanceModel) {
+        binding?.rechargePdpPaketDataClientNumberWidget?.run {
+            hideCheckBalanceWidget()
+            hideCheckBalanceOtpWidget()
+            hideCheckBalanceWidgetShimmering()
+
+            if (checkBalanceData.widgetType.isEmpty()) {
+                setupDynamicScrollViewPadding()
+                return
+            }
+
+            when (checkBalanceData.widgetType.lowercase()) {
+                INDOSAT_CHECK_BALANCE_TYPE_OTP -> {
+                    viewModel.checkBalanceFailCounter = Int.ZERO
+                    renderCheckBalanceOTPWidget(
+                        DigitalPDPWidgetMapper.mapCheckBalanceOTPToWidgetModels(checkBalanceData)
+                    )
+                    showCheckBalanceOtpWidget()
+                    digitalPDPAnalytics.impressionCheckBalanceWidget(
+                        DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                        operator.attributes.name,
+                        loyaltyStatus,
+                        userSession.userId
+                    )
+                }
+                INDOSAT_CHECK_BALANCE_TYPE_WIDGET -> {
+                    viewModel.checkBalanceFailCounter = Int.ZERO
+                    renderCheckBalanceWidget(
+                        DigitalPDPWidgetMapper.mapCheckBalanceToWidgetBalanceInfoModels(checkBalanceData),
+                        DigitalPDPWidgetMapper.mapCheckBalanceToBottomSheetBalanceDetailModels(checkBalanceData)
+                    )
+                    showCheckBalanceWidget()
+                    digitalPDPAnalytics.impressionCheckBalanceInfo(
+                        DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                        operator.attributes.name,
+                        loyaltyStatus,
+                        checkBalanceData.campaignLabelText,
+                        userSession.userId
+                    )
+                }
+                INDOSAT_CHECK_BALANCE_TYPE_ERROR -> {
+                    onFailedGetCheckBalance(checkBalanceData = checkBalanceData)
+                    return
+                }
+                else -> return
+            }
+
+            if (checkBalanceData.campaignLabelText.isNotEmpty()) {
+                showCheckBalanceWarning(
+                    checkBalanceData.campaignLabelText,
+                    checkBalanceData.campaignLabelTextColor,
+                    isClickable = checkBalanceData.products.isNotEmpty()
+                )
+                removeClientNumberBottomPadding()
+            } else {
+                hideCheckBalanceWarning()
+                resetCheckBalanceWarningText()
+                showClientNumberBottomPadding()
+            }
+            setupDynamicScrollViewPadding()
+        }
+    }
+
+    private fun onFailedGetCheckBalance(
+        throwable: Throwable? = null,
+        checkBalanceData: DigitalCheckBalanceModel? = null
+    ) {
+        binding?.rechargePdpPaketDataClientNumberWidget?.run {
+            hideCheckBalanceWidgetShimmering()
+            hideCheckBalanceOtpWidget()
+            hideCheckBalanceWarning()
+            resetCheckBalanceWarningText()
+            setupDynamicScrollViewPadding()
+            showCheckBalanceWidget()
+            showCheckBalanceWidgetLocalLoad {
+                viewModel.checkBalanceFailCounter++
+                if (viewModel.isCheckBalanceFailedMoreThanThreeTimes()) {
+                    hideCheckBalanceWidgetLocalLoad()
+                    removeClientNumberBottomPadding()
+                    checkBalanceData?.let {
+                        if (it.campaignLabelText.isNotEmpty()) {
+                            showCheckBalanceWarning(
+                                it.campaignLabelText,
+                                it.campaignLabelTextColor,
+                                isShowOnlyWarning = true,
+                                isClickable = it.products.isNotEmpty()
+                            )
+                        }
+                    }
+                    setupDynamicScrollViewPadding()
+                } else {
+                    getIndosatCheckBalance()
+                }
+            }
+        }
+    }
+
+    private fun onLoadingGetCheckBalance() {
+        binding?.rechargePdpPaketDataClientNumberWidget?.run {
+            hideCheckBalanceOtpWidget()
+            hideCheckBalanceWidgetLocalLoad()
+            resetCheckBalanceWarningText()
+            showClientNumberBottomPadding()
+            showCheckBalanceWidget()
+            showCheckBalanceWidgetShimmering()
+            setupDynamicScrollViewPadding()
+        }
+    }
+
+    private fun onSuccessSaveAccessToken(data: DigitalSaveAccessTokenResultModel) {
+        if (data.isSuccess) {
+            getIndosatCheckBalance()
+        } else {
+            showErrorToaster(MessageErrorException(data.message))
+        }
+    }
+
+    private fun onFailedSaveAccessToken(throwable: Throwable) {
+        onFailedGetCheckBalance(throwable)
+    }
+
+    private fun onLoadingSaveAccessToken() {
+        onLoadingGetCheckBalance()
+    }
+
+    private fun hideCheckBalanceWidget() {
+        binding?.run {
+            rechargePdpPaketDataClientNumberWidget.hideCheckBalanceWidget()
+            rechargePdpPaketDataClientNumberWidget.hideCheckBalanceOtpWidget()
+            rechargePdpPaketDataClientNumberWidget.showClientNumberBottomPadding()
+            setupDynamicScrollViewPadding()
+        }
     }
 
     private fun onSuccessSortFilter(initialSelectedCounter: Int = 0) {
@@ -880,7 +1117,7 @@ class DigitalPDPDataPlanFragment :
             if (denomFull.listDenomData.isNotEmpty()) {
                 val colorHexInt = ContextCompat.getColor(
                     requireContext(),
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN0
+                    unifyprinciplesR.color.Unify_NN0
                 )
                 val colorHexString = "#${Integer.toHexString(colorHexInt)}"
 
@@ -950,11 +1187,12 @@ class DigitalPDPDataPlanFragment :
             }
             setInputFieldStaticLabel(
                 getString(
-                    com.tokopedia.recharge_component.R.string.label_recharge_client_number_telco
+                    recharge_componentR.string.label_recharge_client_number_telco
                 )
             )
             setInputFieldType(InputFieldType.Telco)
             setListener(
+                this@DigitalPDPDataPlanFragment,
                 this@DigitalPDPDataPlanFragment,
                 this@DigitalPDPDataPlanFragment,
                 this@DigitalPDPDataPlanFragment
@@ -1020,13 +1258,29 @@ class DigitalPDPDataPlanFragment :
     private fun onShowBuyWidget(denomFull: DenomData) {
         binding?.let {
             it.rechargePdpPaketDataBuyWidget.show()
-            it.rechargePdpPaketDataBuyWidget.renderBuyWidget(denomFull, this)
+            it.rechargePdpPaketDataBuyWidget.renderBuyWidget(denomFull, this, viewModel.multiCheckoutButtons) {
+                commonMultiCheckoutAnalytics.onCloseMultiCheckoutCoachmark(
+                    DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                    loyaltyStatus
+                )
+            }
+            it.rechargePdpPaketDataBuyWidget.showCoachMark()
+
+            if (!isAlreadyTrackImpressionMultiButton) {
+                isAlreadyTrackImpressionMultiButton = true
+                commonMultiCheckoutAnalytics.onImpressMultiCheckoutButtons(
+                    DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                    multiCheckoutButtonImpressTrackerButtonType(viewModel.multiCheckoutButtons),
+                    userSession.userId
+                )
+            }
         }
     }
 
     private fun onHideBuyWidget() {
         binding?.let {
             it.rechargePdpPaketDataBuyWidget.hide()
+            it.rechargePdpPaketDataBuyWidget.hideCoachMark()
         }
     }
 
@@ -1288,7 +1542,7 @@ class DigitalPDPDataPlanFragment :
                     error.title,
                     Toaster.LENGTH_LONG,
                     Toaster.TYPE_ERROR,
-                    getString(com.tokopedia.common_digital.R.string.digital_common_button_toaster)
+                    getString(common_digitalR.string.digital_common_button_toaster)
                 ) {
                     redirectError(error)
                 }.show()
@@ -1333,7 +1587,7 @@ class DigitalPDPDataPlanFragment :
                         binding?.run {
                             val defaultPadding: Int = rechargePdpPaketDataClientNumberWidget.height
                             val scrollViewMargin: Int = context?.resources?.let {
-                                it.getDimensionPixelOffset(com.tokopedia.digital_product_detail.R.dimen.nested_scroll_view_margin)
+                                it.getDimensionPixelOffset(digital_product_detailR.dimen.nested_scroll_view_margin)
                             } ?: 0
                             val dynamicPadding = defaultPadding + extraPadding - scrollViewMargin
                             rechargePdpPaketDataSvContainer.setPadding(0, dynamicPadding, 0, 0)
@@ -1372,6 +1626,12 @@ class DigitalPDPDataPlanFragment :
         )
     }
 
+    override fun onCloseCoachmark() {
+        commonMultiCheckoutAnalytics.onCloseMultiCheckoutCoachmark(
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+            loyaltyStatus
+        )
+    }
     //endregion
 
     //region ClientNumberInputFieldListener
@@ -1514,6 +1774,26 @@ class DigitalPDPDataPlanFragment :
             binding?.rechargePdpPaketDataClientNumberWidget?.startShakeAnimation()
             productDescBottomSheet?.dismiss()
         } else {
+            if (userSession.isLoggedIn) {
+                addToCart()
+            } else {
+                navigateToLoginPage()
+            }
+        }
+    }
+
+    override fun onClickedButtonMultiCheckout(denom: DenomData) {
+        viewModel.updateCheckoutPassData(
+            denom,
+            userSession.userId.generateRechargeCheckoutToken(),
+            binding?.rechargePdpPaketDataClientNumberWidget?.getInputNumber() ?: "",
+            operator.id
+        )
+        if (binding?.rechargePdpPaketDataClientNumberWidget?.isErrorMessageShown() == true) {
+            binding?.rechargePdpPaketDataClientNumberWidget?.startShakeAnimation()
+            productDescBottomSheet?.dismiss()
+        } else {
+            viewModel.setAtcMultiCheckoutParam()
             if (userSession.isLoggedIn) {
                 addToCart()
             } else {
@@ -1692,6 +1972,7 @@ class DigitalPDPDataPlanFragment :
         childFragmentManager?.let {
             productDescBottomSheet = ProductDescBottomSheet.getInstance()
             productDescBottomSheet.setDenomData(denomFull)
+            productDescBottomSheet.setMultiCheckoutButtons(viewModel.multiCheckoutButtons)
             productDescBottomSheet.setLayoutType(layoutType)
             productDescBottomSheet.setProductListTitle(productListTitle)
             productDescBottomSheet.setPosition(position)
@@ -1781,6 +2062,114 @@ class DigitalPDPDataPlanFragment :
             userSession.userId
         )
         RouteManager.route(context, applink)
+    }
+    //endregion
+
+    //region ClientNumberCheckBalanceListener
+    override fun onClickCheckBalanceOTPWidget(model: RechargeCheckBalanceOTPBottomSheetModel) {
+        digitalPDPAnalytics.clickCheckBalanceWidget(
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+            operator.attributes.name,
+            loyaltyStatus,
+            userSession.userId
+        )
+        val bottomSheet = RechargeCheckBalanceOTPBottomSheet()
+        bottomSheet.setBottomSheetModel(model)
+        bottomSheet.setListener(this)
+        bottomSheet.show(childFragmentManager)
+    }
+
+    override fun onClickCheckBalanceWidget(model: RechargeCheckBalanceDetailBottomSheetModel) {
+        digitalPDPAnalytics.clickLihatDetailCheckBalance(
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+            operator.attributes.name,
+            loyaltyStatus,
+            userSession.userId
+        )
+        val bottomSheet = RechargeCheckBalanceDetailBottomSheet().apply {
+            setCheckBalanceDetailBottomSheetListener(this@DigitalPDPDataPlanFragment)
+            setCheckBalanceDetailViewHolderListener(this@DigitalPDPDataPlanFragment)
+            setBottomSheetTitle(model.title)
+            setCheckBalanceDetailModels(model.details)
+        }
+        bottomSheet.show(childFragmentManager)
+    }
+    //endregion
+
+    //region RechargeCheckBalanceOTPBottomSheetListener
+    override fun onRenderCheckBalanceOTPBottomSheet() {
+        digitalPDPAnalytics.impressionPdpOtpPopUp(
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+            loyaltyStatus,
+            userSession.userId
+        )
+    }
+
+    override fun onClickButton(applink: String) {
+        digitalPDPAnalytics.clickPdpOtpPopUp(
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+            loyaltyStatus,
+            userSession.userId
+        )
+        indosatCheckBalanceLauncher.launch(applink)
+    }
+    //endregion
+
+    //region RechargeCheckBalanceDetailBottomSheetListener
+    override fun onRenderCheckBalanceDetailBottomSheet() {
+        digitalPDPAnalytics.impressionSheetActivePackage(
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+            operator.attributes.name,
+            loyaltyStatus,
+            userSession.userId
+        )
+    }
+
+    override fun onCloseCheckBalanceDetailBottomSheet() {
+        digitalPDPAnalytics.clickCloseSheetActivePackage(
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+            operator.attributes.name,
+            loyaltyStatus,
+            userSession.userId
+        )
+    }
+    //endregion
+
+    //region RechargeCheckBalanceDetailViewHolderListener
+    override fun onRenderCheckBalanceDetailBuyButton(
+        model: RechargeCheckBalanceDetailModel,
+        position: Int,
+        bottomSheetTitle: String
+    ) {
+        digitalPDPAnalytics.impressionActivePackageCheckBalance(
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+            operator.attributes.name,
+            loyaltyStatus,
+            bottomSheetTitle,
+            model.productId,
+            model.title,
+            position,
+            model.productPrice.toString(),
+            userSession.userId
+        )
+    }
+
+    override fun onClickCheckBalanceDetailBuyButton(
+        model: RechargeCheckBalanceDetailModel,
+        position: Int,
+        bottomSheetTitle: String
+    ) {
+        digitalPDPAnalytics.clickBeliLagiActivePackage(
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+            operator.attributes.name,
+            loyaltyStatus,
+            bottomSheetTitle,
+            model.productId,
+            model.title,
+            position,
+            model.productPrice.toString(),
+            userSession.userId
+        )
     }
     //endregion
 

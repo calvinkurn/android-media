@@ -28,10 +28,11 @@ object HomeRepurchaseMapper {
     fun mapToRepurchaseUiModel(
         item: TokoNowRepurchaseUiModel,
         response: RepurchaseData,
-        miniCartData: MiniCartSimplifiedData? = null
+        miniCartData: MiniCartSimplifiedData? = null,
+        blockAddToCart: Boolean,
     ): TokoNowRepurchaseUiModel {
         val state = TokoNowLayoutState.SHOW
-        val productList = mapToProductCardUiModel(item.id, response, miniCartData)
+        val productList = mapToProductCardUiModel(item.id, response, miniCartData, blockAddToCart)
         val sortedProductList = sortRepurchaseProduct(productList)
         return item.copy(
             title = response.title,
@@ -59,7 +60,8 @@ object HomeRepurchaseMapper {
     private fun mapToProductCardUiModel(
         channelId: String,
         response: RepurchaseData,
-        miniCartData: MiniCartSimplifiedData? = null
+        miniCartData: MiniCartSimplifiedData? = null,
+        blockAddToCart: Boolean
     ): List<TokoNowRepurchaseProductUiModel> {
         return response.products.mapIndexed { index, product ->
             val quantity = getAddToCartQuantity(product.id, miniCartData)
@@ -83,7 +85,8 @@ object HomeRepurchaseMapper {
                 position = index + ADDITIONAL_POSITION,
                 originalPosition = index + ADDITIONAL_POSITION,
                 headerName = response.title,
-                needToShowQuantityEditor = true
+                needToShowQuantityEditor = true,
+                blockAddToCart = blockAddToCart
             )
         }
     }

@@ -1028,6 +1028,10 @@ class ChatbotFragment2 :
                 RouteManager.route(context, applink)
             }
         }
+
+        viewModel.typingBlockedState.observe(viewLifecycleOwner) {
+            handleIsTypingBlocked(it)
+        }
     }
 
     private fun handleAddAttachmentButtonViewState(toShow: Boolean) {
@@ -1945,6 +1949,14 @@ class ChatbotFragment2 :
                 SendableUiModel.generateStartTime(),
                 opponentId
             )
+            handleIsTypingBlocked(model.isTypingBlocked)
+        }
+    }
+
+    private fun handleIsTypingBlocked(isTypingBlocked: Boolean) {
+        if (isTypingBlocked) {
+            hideReplyBox()
+        } else {
             enableTyping()
         }
     }

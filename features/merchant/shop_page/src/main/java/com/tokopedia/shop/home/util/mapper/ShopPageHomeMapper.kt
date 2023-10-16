@@ -19,7 +19,6 @@ import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleItemUi
 import com.tokopedia.shop.home.WidgetName
 import com.tokopedia.shop.home.WidgetName.ADD_ONS
 import com.tokopedia.shop.home.WidgetName.ADVANCED_SLIDER_BANNER
-import com.tokopedia.shop.home.WidgetName.BANNER_PRODUCT_HOTSPOT
 import com.tokopedia.shop.home.WidgetName.BANNER_TIMER
 import com.tokopedia.shop.home.WidgetName.BIG_CAMPAIGN_THEMATIC
 import com.tokopedia.shop.home.WidgetName.BMGM_BANNER
@@ -36,6 +35,7 @@ import com.tokopedia.shop.home.WidgetName.PERSO_PRODUCT_COMPARISON
 import com.tokopedia.shop.home.WidgetName.PRODUCT
 import com.tokopedia.shop.home.WidgetName.PRODUCT_VERTICAL
 import com.tokopedia.shop.home.WidgetName.RECENT_ACTIVITY
+import com.tokopedia.shop.home.WidgetName.REIMAGINE_BANNER_PRODUCT_HOTSPOT
 import com.tokopedia.shop.home.WidgetName.REMINDER
 import com.tokopedia.shop.home.WidgetName.SHOWCASE_NAVIGATION_BANNER
 import com.tokopedia.shop.home.WidgetName.SHOWCASE_SLIDER_TWO_ROWS
@@ -48,11 +48,11 @@ import com.tokopedia.shop.home.WidgetNameEnum
 import com.tokopedia.shop.home.WidgetType.BUNDLE
 import com.tokopedia.shop.home.WidgetType.CAMPAIGN
 import com.tokopedia.shop.home.WidgetType.CARD
-import com.tokopedia.shop.home.WidgetType.DIRECT_PURCHASE
 import com.tokopedia.shop.home.WidgetType.DISPLAY
 import com.tokopedia.shop.home.WidgetType.DYNAMIC
-import com.tokopedia.shop.home.WidgetType.COMPONENT
 import com.tokopedia.shop.home.WidgetType.PERSONALIZATION
+import com.tokopedia.shop.home.WidgetType.REIMAGINE_COMPONENT
+import com.tokopedia.shop.home.WidgetType.REIMAGINE_DIRECT_PURCHASE
 import com.tokopedia.shop.home.WidgetType.SHOWCASE
 import com.tokopedia.shop.home.data.model.GetCampaignNotifyMeModel
 import com.tokopedia.shop.home.data.model.ShopHomeCampaignNplTncModel
@@ -454,7 +454,7 @@ object ShopPageHomeMapper {
                         ShopPageWidgetMapper.mapToHomeShowcaseNavigationWidget(widgetResponse, isOverrideTheme, widgetLayout, colorSchema)
                     }
 
-                    BANNER_PRODUCT_HOTSPOT -> {
+                    REIMAGINE_BANNER_PRODUCT_HOTSPOT -> {
                         ShopPageWidgetMapper.mapToBannerProductHotspotWidget(widgetResponse, widgetLayout, isOverrideTheme, colorSchema)
                     }
                     else -> null
@@ -462,7 +462,7 @@ object ShopPageHomeMapper {
             }
             // Includes V4 Widgets: Terlaris widget
             PRODUCT.toLowerCase() -> {
-                when(widgetResponse.name){
+                when (widgetResponse.name) {
                     PRODUCT -> {
                         mapToProductWidgetUiModel(
                             widgetModel = widgetResponse,
@@ -484,7 +484,6 @@ object ShopPageHomeMapper {
                         )
                     }
                     else -> null
-
                 }
             }
             CAMPAIGN.toLowerCase() -> {
@@ -523,7 +522,7 @@ object ShopPageHomeMapper {
                 }
             }
             DYNAMIC.toLowerCase(Locale.getDefault()) -> mapCarouselPlayWidget(widgetResponse, widgetLayout, isOverrideTheme, colorSchema)
-            COMPONENT.toLowerCase(Locale.getDefault()) -> {
+            REIMAGINE_COMPONENT.toLowerCase(Locale.getDefault()) -> {
                 when (widgetResponse.name) {
                     WidgetName.BANNER_PRODUCT_GROUP -> ShopPageWidgetMapper.mapToHomeBannerProductGroupWidget(widgetResponse, widgetLayout, isOverrideTheme, colorSchema)
                     else -> null
@@ -557,7 +556,7 @@ object ShopPageHomeMapper {
             SHOWCASE.toLowerCase(Locale.getDefault()) -> mapToShowcaseListUiModel(widgetResponse, widgetLayout, isOverrideTheme, colorSchema)
             CARD.lowercase() -> mapToCardDonationUiModel(widgetResponse, widgetLayout, isOverrideTheme, colorSchema)
             BUNDLE.toLowerCase(Locale.getDefault()) -> mapToProductBundleListUiModel(widgetResponse, shopId, widgetLayout, isOverrideTheme, colorSchema)
-            DIRECT_PURCHASE.lowercase() -> mapToDirectPurchaseTypeWidget(widgetResponse, widgetLayout, isOverrideTheme, colorSchema)
+            REIMAGINE_DIRECT_PURCHASE.lowercase() -> mapToDirectPurchaseTypeWidget(widgetResponse, widgetLayout, isOverrideTheme, colorSchema)
             else -> {
                 null
             }
@@ -570,7 +569,7 @@ object ShopPageHomeMapper {
         isOverrideTheme: Boolean,
         colorSchema: ShopPageColorSchema
     ): Visitable<*>? {
-        return when(widgetResponse.name){
+        return when (widgetResponse.name) {
             DIRECT_PURCHASED_BY_ETALASE -> {
                 ShopPageWidgetMapper.mapToDirectPurchaseByEtalase(
                     widgetResponse,
@@ -651,7 +650,7 @@ object ShopPageHomeMapper {
             name = widgetResponse.name,
             type = widgetResponse.type,
             header = mapToHeaderModel(header, widgetLayout, isOverrideTheme, colorSchema),
-            isFestivity = widgetLayout?.isFestivity.orFalse(),
+            isFestivity = widgetLayout?.isFestivity.orFalse()
         )
     }
 

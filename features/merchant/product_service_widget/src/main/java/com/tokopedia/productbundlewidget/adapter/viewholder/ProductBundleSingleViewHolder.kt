@@ -1,6 +1,7 @@
 package com.tokopedia.productbundlewidget.adapter.viewholder
 
 import android.graphics.Paint
+import android.graphics.drawable.GradientDrawable
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -9,6 +10,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.flexbox.FlexboxLayout
+import com.tokopedia.common.forceLightRed
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
@@ -57,6 +59,7 @@ class ProductBundleSingleViewHolder(
     private val bundleDetailAdapter = ProductBundleSingleAdapter()
     private var cardBundling: CardUnify? = null
     private var icBundleDiscount: IconUnify? = null
+    private var tvpographyBundleSinglePackage: Typography? = null
 
     init {
         viewBinding?.apply {
@@ -73,6 +76,7 @@ class ProductBundleSingleViewHolder(
             widgetContainer = bundleWidgetContainer
             cardBundling = container
             icBundleDiscount = bundleWidgetFooter.icBundleDiscount
+            tvpographyBundleSinglePackage = tvBundleSinglePackage
         }
         initBundleDetailsRecyclerView()
     }
@@ -249,10 +253,17 @@ class ProductBundleSingleViewHolder(
 
     private fun overrideWidgetTheme() {
         if (isOverrideWidgetTheme) {
-            viewBinding?.bundleWidgetHeaderContainer?.let {
-                it.tvBundleNameLarge.setTextColor(ContextCompat.getColor(itemView.context, R.color.dms_high_emphasis))
+            viewBinding?.let {
+                it.bundleWidgetHeaderContainer.tvBundleNameLarge.setTextColor(ContextCompat.getColor(itemView.context, R.color.dms_high_emphasis))
+
+                val shapeDrawable = it.bundleWidgetFooter.savingAmountContainer.background as GradientDrawable
+                shapeDrawable.setColor(ContextCompat.getColor(itemView.context, R.color.dms_static_GN100))
+
+                val bgDrawable = ContextCompat.getDrawable(itemView.context, R.drawable.bg_productbundle_image_light_mode)
+                it.layoutBundleImage.background = bgDrawable
             }
-            cardBundling?.setBackgroundColor(ContextCompat.getColor(itemView.context, unifyprinciplesR.color.Unify_Static_White))
+
+            widgetContainer?.setBackgroundColor(ContextCompat.getColor(itemView.context, unifyprinciplesR.color.Unify_Static_White))
             typographyBundleName?.setTextColor(ContextCompat.getColor(itemView.context, R.color.dms_high_emphasis))
             typographyBundlePreOrder?.setTextColor(ContextCompat.getColor(itemView.context, R.color.dms_low_emphasis))
             typographyBundleProductName?.setTextColor(ContextCompat.getColor(itemView.context, R.color.dms_high_emphasis))
@@ -260,8 +271,10 @@ class ProductBundleSingleViewHolder(
             typographyBundleProductOriginalPrice?.setTextColor(ContextCompat.getColor(itemView.context, R.color.dms_low_emphasis))
             typographyBundleProductSavingAmount?.setTextColor(ContextCompat.getColor(itemView.context, R.color.dms_high_emphasis))
             icBundleDiscount?.setImage(newLightEnable = ContextCompat.getColor(itemView.context, R.color.dms_high_emphasis))
-
+            tvpographyBundleSinglePackage?.setTextColor(ContextCompat.getColor(itemView.context, R.color.dms_high_emphasis))
+            labelBundleDiscount?.forceLightRed()
             buttonAtc?.applyColorMode(colorMode = ColorMode.LIGHT_MODE)
         }
+        bundleDetailAdapter.setIsOverrideWidgetTheme(isOverrideWidgetTheme)
     }
 }

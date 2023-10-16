@@ -100,7 +100,7 @@ class TokoNowHomeViewModelTestTicker : TokoNowHomeViewModelTestFixture() {
         val repurchaseLayout = "recent_purchase_tokonow"
 
         val tickerResponse = createTicker()
-        val tickerList = TickerMapper.mapTickerData(tickerResponse).second
+        val tickerList = TickerMapper.mapTickerData(tickerResponse).tickerList
         val homeLayoutResponse = listOf(
             HomeLayoutResponse(
                 id = repurchaseChannelId,
@@ -167,7 +167,8 @@ class TokoNowHomeViewModelTestTicker : TokoNowHomeViewModelTestFixture() {
                         maxOrder = repurchaseProductMaxOrder,
                         position = repurchaseProductPosition,
                         originalPosition = repurchaseProductPosition,
-                        headerName = repurchaseProductTitle
+                        headerName = repurchaseProductTitle,
+                        blockAddToCart = true
                     )
                 ),
                 state = TokoNowLayoutState.SHOW

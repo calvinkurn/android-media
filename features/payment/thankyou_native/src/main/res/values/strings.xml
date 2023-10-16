@@ -137,4 +137,7 @@
     <string name="thank_you_page_success_illustration">Thank you page success illustration</string>
     
     <string name="thanks_va_ticker_description">Tidak disarankan transfer Virtual Account dari bank selain yang dipilih.</string>
+
+    <!-- Share -->
+    <string name="thankyou_postpurchase_share_onboarding">Suka dengan produk yang baru kamu beli? \nBagikan link-nya, yuk~</string>
 </resources>
