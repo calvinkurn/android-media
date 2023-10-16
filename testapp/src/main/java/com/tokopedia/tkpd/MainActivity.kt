@@ -13,7 +13,6 @@ import androidx.compose.runtime.setValue
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.user.session.UserSession
@@ -154,7 +153,7 @@ class MainActivity : BaseActivity() {
         /*
          * Put your default applink here
          */
-        return ApplinkConstInternalSellerapp.SELLER_FEEDBACK_KMP
+        return ""
     }
 
     data class Model(
