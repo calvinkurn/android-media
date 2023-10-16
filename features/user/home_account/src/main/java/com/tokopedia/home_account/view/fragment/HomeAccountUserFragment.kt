@@ -78,7 +78,9 @@ import com.tokopedia.home_account.data.pref.AccountPreference
 import com.tokopedia.home_account.databinding.BottomSheetOclBinding
 import com.tokopedia.home_account.databinding.HomeAccountUserFragmentBinding
 import com.tokopedia.home_account.di.HomeAccountUserComponents
+import com.tokopedia.home_account.fundsAndInvestment.FundsAndInvestmentComposeActivity
 import com.tokopedia.home_account.view.HomeAccountUserViewModel
+import com.tokopedia.home_account.view.activity.FundsAndInvestmentActivity
 import com.tokopedia.home_account.view.activity.HomeAccountUserActivity
 import com.tokopedia.home_account.view.adapter.HomeAccountBalanceAndPointAdapter
 import com.tokopedia.home_account.view.adapter.HomeAccountMemberAdapter
@@ -1218,6 +1220,17 @@ open class HomeAccountUserFragment :
         }
     }
 
+    private fun goToFundsAndInvestment() {
+        val directionActivity = if (DeeplinkMapperUser.isFundsAndInvestmentComposeActivated()) {
+            FundsAndInvestmentComposeActivity::class.java
+        } else {
+            FundsAndInvestmentActivity::class.java
+        }
+
+        val intent = Intent(activity, directionActivity)
+        startActivity(intent)
+    }
+
     private fun goToApplink(applink: String) {
         if (applink.isNotEmpty()) {
             val intent = RouteManager.getIntent(context, applink)
@@ -1296,7 +1309,7 @@ open class HomeAccountUserFragment :
                     userId = userSession.userId
                 )
                 homeAccountAnalytic.eventClickViewMoreWalletAccountPage()
-                goToApplink(item.applink)
+                goToFundsAndInvestment()
             }
 
             AccountConstants.SettingCode.SETTING_MORE_MEMBER -> {

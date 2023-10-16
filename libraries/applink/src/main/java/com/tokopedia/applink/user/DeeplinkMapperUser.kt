@@ -98,16 +98,10 @@ object DeeplinkMapperUser {
             ApplinkConstInternalUserPlatform.NEW_INTERNAL_USER+"/")
     }
 
-    fun getFundsAndInvestmentApplink(): String {
-        val isRollenceActivated = getAbTestPlatform()
+    fun isFundsAndInvestmentComposeActivated(): Boolean {
+        return getAbTestPlatform()
             .getString(ROLLENCE_FUNDS_AND_INVESTMENT_COMPOSE)
             .isNotEmpty()
-
-        return if (isRollenceActivated) {
-            ApplinkConstInternalUserPlatform.FUNDS_AND_INVESTMENT_COMPOSE
-        } else {
-            ApplinkConstInternalUserPlatform.FUNDS_AND_INVESTMENT
-        }
     }
 
     private fun getAbTestPlatform(): AbTestPlatform =

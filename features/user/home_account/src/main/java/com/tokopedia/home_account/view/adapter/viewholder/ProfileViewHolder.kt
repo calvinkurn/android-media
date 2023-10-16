@@ -252,8 +252,7 @@ class ProfileViewHolder(
         binding?.homeAccountProfileBalanceAndPointSection?.homeAccountViewMore?.setOnClickListener {
             listener.onSettingItemClicked(
                 CommonDataView(
-                    id = AccountConstants.SettingCode.SETTING_VIEW_ALL_BALANCE,
-                    applink = DeeplinkMapperUser.getFundsAndInvestmentApplink()
+                    id = AccountConstants.SettingCode.SETTING_VIEW_ALL_BALANCE
                 )
             )
         }

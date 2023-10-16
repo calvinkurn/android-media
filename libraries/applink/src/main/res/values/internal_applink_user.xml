@@ -8,8 +8,6 @@
     <string name="path_account_setting" translatable="false">/account-setting</string>
     <string name="path_image_quality_setting" translatable="false">/media-quality-setting</string>
     <string name="path_new_home_account">/new-home-account</string>
-    <string name="path_funds_and_investment">/funds-and-investment</string>
-    <string name="path_funds_and_investment_compose">/funds-and-investment-compose</string>
     <string name="path_explicit_profile">/explicit-profile</string>
     <string name="path_privacy_account">/privacy-account</string>
     <string name="path_dsar">/dsar</string>
