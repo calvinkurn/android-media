@@ -665,6 +665,12 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     private void scrollToTop(Fragment fragment) {
+        if (fragment != null && fragment.isVisible() && fragment instanceof FragmentListener) {
+            ((FragmentListener) fragment).onScrollToTop();
+        }
+    }
+
+    private void scrollToHomeHeader(Fragment fragment) {
         if (fragment != null && fragment.isVisible() && fragment instanceof HomeScrollViewListener) {
             ((HomeScrollViewListener) fragment).onScrollToHomeHeader();
         }
@@ -1289,7 +1295,7 @@ public class MainParentActivity extends BaseActivity implements
         boolean isForYouToHomeSelected = !bottomNavigation.getForYouToHomeSelected();
 
         if (isHomeBottomNavSelected) {
-            scrollToTop(fragment); // enable feature scroll to top for home
+            scrollToHomeHeader(fragment); // enable feature scroll to top for home
             bottomNavigation.updateHomeBottomMenuWhenScrolling(isForYouToHomeSelected);
         } else {
             if (getRecommendationForYouIndex(fragment) != null) {
