@@ -856,7 +856,7 @@ class BroadcastManager @Inject constructor(
                 return activeCamera
         }
 
-        val frontFacingCamera = cameraList.firstOrNull { it.lensFacing == BroadcasterCamera.LENS_FACING_FRONT }
+        val frontFacingCamera = cameraList.firstOrNull { it.isFront }
         if (frontFacingCamera != null)
             return frontFacingCamera
 
