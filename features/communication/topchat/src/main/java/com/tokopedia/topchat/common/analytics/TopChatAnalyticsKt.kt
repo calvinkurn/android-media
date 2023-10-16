@@ -9,7 +9,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.param.AddToCartParam
 import com.tokopedia.topchat.chatroom.domain.pojo.param.AddToCartParam.Companion.EVENT_ACTION_ATC
 import com.tokopedia.topchat.chatroom.domain.pojo.param.AddToCartParam.Companion.EVENT_ACTION_BUY
 import com.tokopedia.topchat.chatroom.domain.pojo.product_bundling.BundleItem
-import com.tokopedia.topchat.chatroom.view.uimodel.autoreply.TopChatAutoReplyItemUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.autoreply.TopChatRoomAutoReplyItemUiModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.user.session.UserSessionInterface
@@ -1066,7 +1066,7 @@ object TopChatAnalyticsKt {
     fun eventImpressionAutoReply(
         source: String,
         messageId: String,
-        contentList: List<TopChatAutoReplyItemUiModel>
+        contentList: List<TopChatRoomAutoReplyItemUiModel>
     ) {
         val contentHeader = contentList
             .mapNotNull { it.type.takeIf { type -> type.isNotEmpty() } }
@@ -1088,7 +1088,7 @@ object TopChatAnalyticsKt {
     fun eventClickAutoReply(
         source: String,
         messageId: String,
-        contentList: List<TopChatAutoReplyItemUiModel>
+        contentList: List<TopChatRoomAutoReplyItemUiModel>
     ) {
         val contentHeader = contentList
             .mapNotNull { it.type.takeIf { type -> type.isNotEmpty() } }

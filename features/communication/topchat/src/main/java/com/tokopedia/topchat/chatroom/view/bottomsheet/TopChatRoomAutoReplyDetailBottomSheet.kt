@@ -7,18 +7,18 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatroom.view.adapter.TopChatChatRoomAutoReplyAdapter
-import com.tokopedia.topchat.chatroom.view.uimodel.autoreply.TopChatAutoReplyItemUiModel
+import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAutoReplyAdapter
+import com.tokopedia.topchat.chatroom.view.uimodel.autoreply.TopChatRoomAutoReplyItemUiModel
 import com.tokopedia.topchat.databinding.TopchatChatroomBottomsheetAutoReplyBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
-class TopChatChatRoomAutoReplyDetailBottomSheet: BottomSheetUnify() {
+class TopChatRoomAutoReplyDetailBottomSheet: BottomSheetUnify() {
 
     private var binding by autoClearedNullable<TopchatChatroomBottomsheetAutoReplyBinding>()
-    private val adapter = TopChatChatRoomAutoReplyAdapter(isMessageBubble = false)
-    private var welcomeMessage = TopChatAutoReplyItemUiModel("", "", "")
-    private var list: List<TopChatAutoReplyItemUiModel> = listOf()
+    private val adapter = TopChatRoomAutoReplyAdapter(isMessageBubble = false)
+    private var welcomeMessage = TopChatRoomAutoReplyItemUiModel("", "", "")
+    private var list: List<TopChatRoomAutoReplyItemUiModel> = listOf()
 
     init {
         clearContentPadding = true
@@ -56,8 +56,8 @@ class TopChatChatRoomAutoReplyDetailBottomSheet: BottomSheetUnify() {
 
     fun show(
         fragmentManager: FragmentManager?,
-        welcomeMessage: TopChatAutoReplyItemUiModel,
-        list: List<TopChatAutoReplyItemUiModel>
+        welcomeMessage: TopChatRoomAutoReplyItemUiModel,
+        list: List<TopChatRoomAutoReplyItemUiModel>
     ) {
         this.welcomeMessage = welcomeMessage
         this.list = list
@@ -69,6 +69,6 @@ class TopChatChatRoomAutoReplyDetailBottomSheet: BottomSheetUnify() {
     }
 
     companion object {
-        private val TAG = TopChatChatRoomAutoReplyDetailBottomSheet::class.simpleName
+        private val TAG = TopChatRoomAutoReplyDetailBottomSheet::class.simpleName
     }
 }

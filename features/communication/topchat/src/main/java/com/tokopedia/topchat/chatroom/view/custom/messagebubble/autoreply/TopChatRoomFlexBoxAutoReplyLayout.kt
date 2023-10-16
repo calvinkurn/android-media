@@ -15,28 +15,28 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatroom.view.adapter.TopChatChatRoomAutoReplyAdapter
+import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAutoReplyAdapter
 import com.tokopedia.topchat.chatroom.view.custom.messagebubble.base.BaseTopChatFlexBoxChatLayout
-import com.tokopedia.topchat.chatroom.view.uimodel.autoreply.TopChatAutoReplyItemUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.autoreply.TopChatRoomAutoReplyItemUiModel
 import com.tokopedia.topchat.databinding.TopchatChatroomAutoReplyListBinding
 import timber.log.Timber
 import kotlin.math.abs
 
-class TopChatChatRoomFlexBoxAutoReplyLayout(
-    context: Context,
-    attrs: AttributeSet?,
-    defStyleAttr: Int
-) : BaseTopChatFlexBoxChatLayout(
-    context,
-    attrs,
-    defStyleAttr
-) {
+class TopChatRoomFlexBoxAutoReplyLayout : BaseTopChatFlexBoxChatLayout {
 
     /**
      * Auto reply child
      */
     private var autoReplyConstraintLayout: ConstraintLayout? = null
     private var autoReplyBinding: TopchatChatroomAutoReplyListBinding? = null
+
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    )
 
     override fun getLayout(): Int {
         return LAYOUT
@@ -336,8 +336,8 @@ class TopChatChatRoomFlexBoxAutoReplyLayout(
 
     private fun setAutoReplyMessageBody(messageUiModel: AutoReplyMessageUiModel) {
         try {
-            val listType = object : TypeToken<List<TopChatAutoReplyItemUiModel>>() {}.type
-            val result = Gson().fromJson<List<TopChatAutoReplyItemUiModel>>(
+            val listType = object : TypeToken<List<TopChatRoomAutoReplyItemUiModel>>() {}.type
+            val result = Gson().fromJson<List<TopChatRoomAutoReplyItemUiModel>>(
                 messageUiModel.message,
                 listType
             )
@@ -359,7 +359,7 @@ class TopChatChatRoomFlexBoxAutoReplyLayout(
 
     private fun bindAutoReplyView(
         messageUiModel: MessageUiModel,
-        autoReplyList: List<TopChatAutoReplyItemUiModel>
+        autoReplyList: List<TopChatRoomAutoReplyItemUiModel>
     ) {
         val welcomeMessage = autoReplyList.firstOrNull {
             it.getIcon() == null // Check only for welcome message
@@ -379,7 +379,7 @@ class TopChatChatRoomFlexBoxAutoReplyLayout(
     }
 
     private fun bindAutoReplyMessage(
-        welcomeMessage: TopChatAutoReplyItemUiModel?,
+        welcomeMessage: TopChatRoomAutoReplyItemUiModel?,
         messageUiModel: MessageUiModel,
         shouldLimitWelcomeMessage: Boolean
     ) {
@@ -399,11 +399,11 @@ class TopChatChatRoomFlexBoxAutoReplyLayout(
     }
 
     private fun bindAutoReplyRecyclerView(
-        welcomeMessage: TopChatAutoReplyItemUiModel?,
-        autoReplyItemList: List<TopChatAutoReplyItemUiModel>
+        welcomeMessage: TopChatRoomAutoReplyItemUiModel?,
+        autoReplyItemList: List<TopChatRoomAutoReplyItemUiModel>
     ) {
         if (autoReplyItemList.isNotEmpty()) {
-            val adapter = TopChatChatRoomAutoReplyAdapter()
+            val adapter = TopChatRoomAutoReplyAdapter()
             autoReplyBinding?.topchatChatroomRvAutoReply?.adapter = adapter
             autoReplyBinding?.topchatChatroomRvAutoReply?.layoutManager =
                 LinearLayoutManager(context)
@@ -418,8 +418,8 @@ class TopChatChatRoomFlexBoxAutoReplyLayout(
     }
 
     private fun bindAutoReplyText(
-        welcomeMessage: TopChatAutoReplyItemUiModel?,
-        autoReplyItemList: List<TopChatAutoReplyItemUiModel>
+        welcomeMessage: TopChatRoomAutoReplyItemUiModel?,
+        autoReplyItemList: List<TopChatRoomAutoReplyItemUiModel>
     ) {
         autoReplyBinding?.topchatTvAutoReplyReadMore?.setOnClickListener {
             welcomeMessage?.let {

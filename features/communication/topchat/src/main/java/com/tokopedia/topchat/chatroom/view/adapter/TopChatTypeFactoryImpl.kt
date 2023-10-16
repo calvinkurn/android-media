@@ -31,10 +31,10 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.product_bundling.P
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.product_bundling.ProductBundlingCarouselViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwBubbleViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.messagebubble.banned.BannedChatMessageViewHolder
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.messagebubble.regular.TopChatChatRoomBubbleMessageViewHolder
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.messagebubble.autoreply.TopChatChatRoomAutoReplyViewHolder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.messagebubble.regular.TopChatRoomBubbleMessageViewHolder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.messagebubble.autoreply.TopChatRoomAutoReplyViewHolder
 import com.tokopedia.topchat.chatroom.view.custom.message.ReplyBubbleAreaMessage
-import com.tokopedia.topchat.chatroom.view.custom.messagebubble.base.TopChatChatRoomFlexBoxListener
+import com.tokopedia.topchat.chatroom.view.custom.messagebubble.base.TopChatRoomFlexBoxListener
 import com.tokopedia.topchat.chatroom.view.listener.DualAnnouncementListener
 import com.tokopedia.topchat.chatroom.view.listener.TopChatVoucherListener
 import com.tokopedia.topchat.chatroom.view.uimodel.*
@@ -60,7 +60,7 @@ open class TopChatTypeFactoryImpl constructor(
     private val fraudAlertListener: RoomSettingFraudAlertViewHolder.Listener,
     private val reviewListener: ReviewViewHolder.Listener,
     private val srwBubbleListener: SrwBubbleViewHolder.Listener,
-    private val chatMsgListener: TopChatChatRoomFlexBoxListener,
+    private val chatMsgListener: TopChatRoomFlexBoxListener,
     private val replyBubbleListener: ReplyBubbleAreaMessage.Listener,
     private val listener: ReminderTickerViewHolder.Listener,
     private val productBundlingListener: ProductBundlingListener,
@@ -80,14 +80,14 @@ open class TopChatTypeFactoryImpl constructor(
         }
         val chat = visitables[position]
         return if (chat is MessageUiModel && chat.isBanned()) {
-            TopChatChatRoomBubbleMessageViewHolder.TYPE_BANNED
+            TopChatRoomBubbleMessageViewHolder.TYPE_BANNED
         } else {
             default
         }
     }
 
     override fun type(messageUiModel: MessageUiModel): Int {
-        return TopChatChatRoomBubbleMessageViewHolder.LAYOUT
+        return TopChatRoomBubbleMessageViewHolder.LAYOUT
     }
 
     override fun type(fallbackAttachmentUiModel: FallbackAttachmentUiModel): Int {
@@ -183,7 +183,7 @@ open class TopChatTypeFactoryImpl constructor(
     }
 
     override fun type(autoReplyMessageUiModel: AutoReplyMessageUiModel): Int {
-        return TopChatChatRoomAutoReplyViewHolder.LAYOUT
+        return TopChatRoomAutoReplyViewHolder.LAYOUT
     }
 
     // Check if chat bubble first, if not return default ViewHolder
@@ -195,7 +195,7 @@ open class TopChatTypeFactoryImpl constructor(
         adapterListener: AdapterListener
     ): AbstractViewHolder<*> {
         val layoutRes = when (type) {
-            TopChatChatRoomBubbleMessageViewHolder.TYPE_BANNED -> BannedChatMessageViewHolder.LAYOUT
+            TopChatRoomBubbleMessageViewHolder.TYPE_BANNED -> BannedChatMessageViewHolder.LAYOUT
             else -> type
         }
         val view = LayoutInflater.from(parent.context).inflate(layoutRes, parent, false)
@@ -231,7 +231,7 @@ open class TopChatTypeFactoryImpl constructor(
                 commonListener, adapterListener, chatLinkHandlerListener,
                 productBundlingListener, productBundlingCarouselListener
             )
-            TopChatChatRoomBubbleMessageViewHolder.LAYOUT -> TopChatChatRoomBubbleMessageViewHolder(
+            TopChatRoomBubbleMessageViewHolder.LAYOUT -> TopChatRoomBubbleMessageViewHolder(
                 parent, chatLinkHandlerListener, commonListener, adapterListener,
                 chatMsgListener, replyBubbleListener
             )
@@ -256,7 +256,7 @@ open class TopChatTypeFactoryImpl constructor(
                 parent, productBundlingListener, adapterListener,
                 searchListener, commonListener, deferredAttachment
             )
-            TopChatChatRoomAutoReplyViewHolder.LAYOUT -> TopChatChatRoomAutoReplyViewHolder(
+            TopChatRoomAutoReplyViewHolder.LAYOUT -> TopChatRoomAutoReplyViewHolder(
                 parent, chatLinkHandlerListener, commonListener, adapterListener,
                 chatMsgListener, replyBubbleListener
             )

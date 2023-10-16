@@ -28,10 +28,10 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewH
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.Payload
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.getOppositeMargin
 import com.tokopedia.topchat.chatroom.view.custom.message.ReplyBubbleAreaMessage
-import com.tokopedia.topchat.chatroom.view.custom.messagebubble.base.BaseTopChatChatroomMessageBubbleLayout
+import com.tokopedia.topchat.chatroom.view.custom.messagebubble.base.BaseTopChatRoomMessageBubbleLayout
 import com.tokopedia.topchat.chatroom.view.custom.messagebubble.base.BaseTopChatFlexBoxChatLayout
-import com.tokopedia.topchat.chatroom.view.custom.messagebubble.base.TopChatChatroomBubbleContainerLayout
-import com.tokopedia.topchat.chatroom.view.custom.messagebubble.base.TopChatChatRoomFlexBoxListener
+import com.tokopedia.topchat.chatroom.view.custom.messagebubble.base.TopChatRoomBubbleContainerLayout
+import com.tokopedia.topchat.chatroom.view.custom.messagebubble.base.TopChatRoomFlexBoxListener
 import com.tokopedia.unifyprinciples.Typography
 
 abstract class BaseTopChatBubbleMessageViewHolder<T: MessageUiModel>(
@@ -39,7 +39,7 @@ abstract class BaseTopChatBubbleMessageViewHolder<T: MessageUiModel>(
     msgClickLinkListener: ChatLinkHandlerListener,
     private val commonListener: CommonViewHolderListener,
     private val adapterListener: AdapterListener,
-    private val chatMsgListener: TopChatChatRoomFlexBoxListener,
+    private val chatMsgListener: TopChatRoomFlexBoxListener,
     private val replyBubbleListener: ReplyBubbleAreaMessage.Listener
 ): BaseChatViewHolder<T>(itemView) {
 
@@ -56,9 +56,9 @@ abstract class BaseTopChatBubbleMessageViewHolder<T: MessageUiModel>(
     private var bgLeft: Drawable? = null
     private var bgRight: Drawable? = null
 
-    abstract fun getBubbleChatLayout(): TopChatChatroomBubbleContainerLayout?
+    abstract fun getBubbleChatLayout(): TopChatRoomBubbleContainerLayout?
     abstract fun getLayoutContainerBubble(): LinearLayout?
-    abstract fun getMessageBubbleLayout(): BaseTopChatChatroomMessageBubbleLayout?
+    abstract fun getMessageBubbleLayout(): BaseTopChatRoomMessageBubbleLayout?
     abstract fun getFxChat(): BaseTopChatFlexBoxChatLayout?
     abstract fun getHeaderInfo(): LinearLayout?
 

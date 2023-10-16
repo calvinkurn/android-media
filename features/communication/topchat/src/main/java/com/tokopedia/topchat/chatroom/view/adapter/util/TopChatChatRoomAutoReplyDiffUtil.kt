@@ -1,20 +1,20 @@
 package com.tokopedia.topchat.chatroom.view.adapter.util
 
 import androidx.recyclerview.widget.DiffUtil
-import com.tokopedia.topchat.chatroom.view.uimodel.autoreply.TopChatAutoReplyItemUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.autoreply.TopChatRoomAutoReplyItemUiModel
 
-class TopChatChatRoomAutoReplyDiffUtil: DiffUtil.ItemCallback<TopChatAutoReplyItemUiModel>() {
+class TopChatChatRoomAutoReplyDiffUtil: DiffUtil.ItemCallback<TopChatRoomAutoReplyItemUiModel>() {
 
     override fun areItemsTheSame(
-        oldItem: TopChatAutoReplyItemUiModel,
-        newItem: TopChatAutoReplyItemUiModel
+        oldItem: TopChatRoomAutoReplyItemUiModel,
+        newItem: TopChatRoomAutoReplyItemUiModel
     ): Boolean {
         return oldItem == newItem
     }
 
     override fun areContentsTheSame(
-        oldItem: TopChatAutoReplyItemUiModel,
-        newItem: TopChatAutoReplyItemUiModel
+        oldItem: TopChatRoomAutoReplyItemUiModel,
+        newItem: TopChatRoomAutoReplyItemUiModel
     ): Boolean {
         return oldItem == newItem
     }

@@ -13,11 +13,11 @@ import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.custom.message.ReplyBubbleAreaMessage
 import com.tokopedia.topchat.chatroom.view.custom.messagebubble.base.BaseTopChatFlexBoxChatLayout.Companion.DEFAULT_SHOW_CHECK_MARK
-import com.tokopedia.topchat.chatroom.view.custom.messagebubble.regular.TopChatChatroomMessageBubbleLayout
+import com.tokopedia.topchat.chatroom.view.custom.messagebubble.regular.TopChatRoomMessageBubbleLayout
 import kotlin.math.max
 import kotlin.math.min
 
-abstract class BaseTopChatChatroomMessageBubbleLayout: ViewGroup {
+abstract class BaseTopChatRoomMessageBubbleLayout: ViewGroup {
 
     private var replyBubbleContainer: ReplyBubbleAreaMessage? = null
     private var showCheckMark = DEFAULT_SHOW_CHECK_MARK
@@ -213,7 +213,7 @@ abstract class BaseTopChatChatroomMessageBubbleLayout: ViewGroup {
     }
 
     /**
-     * Per-child layout information associated with [TopChatChatroomMessageBubbleLayout].
+     * Per-child layout information associated with [TopChatRoomMessageBubbleLayout].
      */
     class LayoutParams : MarginLayoutParams {
         constructor(c: Context?, attrs: AttributeSet?) : super(c, attrs)

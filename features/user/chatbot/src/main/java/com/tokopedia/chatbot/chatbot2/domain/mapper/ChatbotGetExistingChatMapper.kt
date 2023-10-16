@@ -71,7 +71,7 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
                             listChat.add(mapAttachment(chatItemPojoByDateByTime, attachmentIds))
                         }
                     } else {
-                        listChat.add(convertToMessageViewModel(chatItemPojoByDateByTime))
+                        listChat.add(convertToMessageUiModel(chatItemPojoByDateByTime))
                     }
                 }
             }

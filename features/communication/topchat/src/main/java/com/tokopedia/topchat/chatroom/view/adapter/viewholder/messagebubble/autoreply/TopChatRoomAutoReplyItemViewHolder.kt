@@ -5,25 +5,25 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.topchat.chatroom.view.uimodel.autoreply.TopChatAutoReplyItemUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.autoreply.TopChatRoomAutoReplyItemUiModel
 import com.tokopedia.topchat.databinding.TopchatChatroomAutoReplyItemBinding
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.unifyprinciples.Typography
 
-class TopChatChatRoomAutoReplyItemViewHolder(
+class TopChatRoomAutoReplyItemViewHolder(
     itemView: View,
     private val isMessageBubble: Boolean
 ): RecyclerView.ViewHolder(itemView) {
 
     private val binding: TopchatChatroomAutoReplyItemBinding? by viewBinding()
 
-    fun bind(uiModel: TopChatAutoReplyItemUiModel) {
+    fun bind(uiModel: TopChatRoomAutoReplyItemUiModel) {
         bindIcon(uiModel)
         bindTitle(uiModel)
         bindMessage(uiModel)
     }
 
-    private fun bindIcon(uiModel: TopChatAutoReplyItemUiModel) {
+    private fun bindIcon(uiModel: TopChatRoomAutoReplyItemUiModel) {
         val icon = uiModel.getIcon()
         if (icon != null) {
             binding?.topchatIconAutoReply?.setImage(icon)
@@ -33,11 +33,11 @@ class TopChatChatRoomAutoReplyItemViewHolder(
         }
     }
 
-    private fun bindTitle(uiModel: TopChatAutoReplyItemUiModel) {
+    private fun bindTitle(uiModel: TopChatRoomAutoReplyItemUiModel) {
         binding?.topchatTvAutoReplyTitle?.text = uiModel.title
     }
 
-    private fun bindMessage(uiModel: TopChatAutoReplyItemUiModel) {
+    private fun bindMessage(uiModel: TopChatRoomAutoReplyItemUiModel) {
         if (isMessageBubble) { // Limit the text when in message bubble
             binding?.topchatTvAutoReplyDesc?.maxLines = 3
             binding?.topchatTvAutoReplyDesc?.ellipsize = TextUtils.TruncateAt.END

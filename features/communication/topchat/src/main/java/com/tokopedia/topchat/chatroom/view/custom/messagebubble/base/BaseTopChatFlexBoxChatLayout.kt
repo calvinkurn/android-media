@@ -31,7 +31,7 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 abstract class BaseTopChatFlexBoxChatLayout : ViewGroup {
 
     protected var layoutInflater: LayoutInflater? = null
-    protected var flexBoxListener: TopChatChatRoomFlexBoxListener? = null
+    protected var flexBoxListener: TopChatRoomFlexBoxListener? = null
     private var checkMark: ImageView? = null
     private var hourTime: TextView? = null
 
@@ -322,7 +322,7 @@ abstract class BaseTopChatFlexBoxChatLayout : ViewGroup {
         message?.setOnTouchListener(onTouchListener)
     }
 
-    fun setListener(listener: TopChatChatRoomFlexBoxListener) {
+    fun setListener(listener: TopChatRoomFlexBoxListener) {
         this.flexBoxListener = listener
     }
 

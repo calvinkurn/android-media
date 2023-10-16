@@ -8,7 +8,7 @@
     android:gravity="end"
     android:orientation="vertical">
 
-    <com.tokopedia.topchat.chatroom.view.custom.messagebubble.base.TopChatChatroomBubbleContainerLayout
+    <com.tokopedia.topchat.chatroom.view.custom.messagebubble.base.TopChatRoomBubbleContainerLayout
         android:id="@+id/topchat_chatroom_bcl_message_bubble"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -96,6 +96,6 @@
                 tools:visibility="visible" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </com.tokopedia.topchat.chatroom.view.custom.messagebubble.base.TopChatChatroomBubbleContainerLayout>
+    </com.tokopedia.topchat.chatroom.view.custom.messagebubble.base.TopChatRoomBubbleContainerLayout>
 
 </LinearLayout>

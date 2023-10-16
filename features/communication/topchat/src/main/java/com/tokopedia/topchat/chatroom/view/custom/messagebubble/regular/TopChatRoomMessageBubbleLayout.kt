@@ -3,13 +3,13 @@ package com.tokopedia.topchat.chatroom.view.custom.messagebubble.regular
 import android.content.Context
 import android.util.AttributeSet
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatroom.view.custom.messagebubble.base.BaseTopChatChatroomMessageBubbleLayout
+import com.tokopedia.topchat.chatroom.view.custom.messagebubble.base.BaseTopChatRoomMessageBubbleLayout
 import com.tokopedia.topchat.chatroom.view.custom.messagebubble.base.BaseTopChatFlexBoxChatLayout
 
 
-class TopChatChatroomMessageBubbleLayout : BaseTopChatChatroomMessageBubbleLayout {
+class TopChatRoomMessageBubbleLayout : BaseTopChatRoomMessageBubbleLayout {
 
-    private var fxChat: TopChatChatRoomFlexBoxLayout? = null
+    private var fxChat: TopChatRoomFlexBoxLayout? = null
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
