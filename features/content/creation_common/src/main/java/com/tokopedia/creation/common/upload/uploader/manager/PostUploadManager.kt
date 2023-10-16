@@ -11,6 +11,8 @@ import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.creation.common.upload.const.CreationUploadConst
 import com.tokopedia.creation.common.upload.model.CreationUploadData
 import com.tokopedia.creation.common.upload.model.CreationUploadStatus
+import com.tokopedia.creation.common.upload.uploader.notification.PostUploadNotificationManager
+import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 /**
@@ -18,9 +20,10 @@ import javax.inject.Inject
  */
 class PostUploadManager @Inject constructor(
     @ApplicationContext private val appContext: Context,
+    private val notificationManager: PostUploadNotificationManager,
     private val submitPostUseCase: SubmitPostUseCase,
     private val sellerAppReviewHelper: FeedSellerAppReviewHelper,
-) : CreationUploadManager(null) {
+) : CreationUploadManager(notificationManager) {
 
     override suspend fun execute(
         uploadData: CreationUploadData,
@@ -31,6 +34,11 @@ class PostUploadManager @Inject constructor(
 
         return try {
             broadcastInit(uploadData, notificationId)
+
+            delay(2000)
+            updateProgress(uploadData, 20)
+            delay(2000)
+            throw Exception("")
 
             val cacheManager = SaveInstanceCacheManager(appContext, uploadData.draftId)
             val viewModel: CreatePostViewModel = cacheManager.get(
