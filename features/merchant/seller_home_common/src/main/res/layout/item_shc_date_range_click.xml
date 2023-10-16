@@ -44,9 +44,9 @@
 
     <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
         android:id="@+id/radStcDefaultDateRange"
-        android:layout_width="24dp"
+        android:layout_width="wrap_content"
         android:layout_height="22dp"
-        android:layout_marginEnd="16dp"
+        android:layoutDirection="ltr"
         app:layout_constraintBottom_toBottomOf="@+id/tvStcDefaultDateRange"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tvStcDateRangeLabel" />
