@@ -1214,6 +1214,12 @@ object DeeplinkMainApp {
                 DeeplinkMapperOrder.getSnapshotOrderInternalAppLink(deeplink)
             }
         ),
+        "stories" to mutableListOf(
+            DLP.matchPattern(
+                "shop/{shop_id}",
+                DeeplinkMapperContent::getRegisteredNavigation
+            )
+        ),
         "talk" to mutableListOf(
             DLP.goTo { deeplink: String ->
                 DeeplinkMapper.getRegisteredNavigationTalk(deeplink)

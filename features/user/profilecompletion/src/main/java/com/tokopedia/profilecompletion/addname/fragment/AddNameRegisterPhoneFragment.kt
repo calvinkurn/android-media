@@ -46,7 +46,7 @@ import javax.inject.Inject
 open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.View {
 
     private var _binding: FragmentAddNameRegisterBinding? = null
-    private val binding get() = _binding!!
+    private val binding get() = _binding
     var phoneNumber: String? = ""
     var uuid: String? = ""
 
@@ -70,6 +70,8 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
         private const val SPAN_61 = 61
         private const val SPAN_78 = 78
         private const val FLAG_0 = 0
+
+        private const val BEARER = "Bearer"
 
         fun createInstance(bundle: Bundle): AddNameRegisterPhoneFragment {
             val fragment = AddNameRegisterPhoneFragment()
@@ -112,7 +114,7 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
     ): View? {
         splitCompatInstall()
         _binding = FragmentAddNameRegisterBinding.inflate(inflater, container, false)
-        return binding.root
+        return binding?.root
     }
 
     private fun splitCompatInstall() {
@@ -293,7 +295,7 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
     private fun saveTokens(data: RegisterInfo) {
         userSession.setToken(
             data.accessToken,
-            "Bearer",
+            BEARER,
             EncoderDecoder.Encrypt(data.refreshToken, userSession.refreshTokenIV)
         )
         /* Migrate token to lsdk */
@@ -322,8 +324,8 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         _binding = null
     }
 }

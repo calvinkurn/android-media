@@ -27,7 +27,7 @@ import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayShortsPreparationBinding
-import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
+import com.tokopedia.content.product.picker.ProductSetupFragment
 import com.tokopedia.play.broadcaster.shorts.analytic.PlayShortsAnalytic
 import com.tokopedia.play.broadcaster.shorts.factory.PlayShortsMediaSourceFactory
 import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
@@ -43,8 +43,7 @@ import com.tokopedia.play.broadcaster.shorts.view.viewmodel.PlayShortsViewModel
 import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayBroadcastPreparationBannerItemDecoration
 import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel
 import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel.Companion.TYPE_SHORTS_AFFILIATE
-import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
-import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
+import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.view.adapter.PlayBroadcastPreparationBannerAdapter
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupCoverBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupCoverBottomSheet.DataSource
@@ -190,8 +189,8 @@ class PlayShortsPreparationFragment @Inject constructor(
                         return viewModel.maxProduct
                     }
 
-                    override fun getPageSource(): PlayBroPageSource {
-                        return PlayBroPageSource.Shorts
+                    override fun isNumerationShown(): Boolean {
+                        return false
                     }
 
                     override fun fetchCommissionProduct(): Boolean {

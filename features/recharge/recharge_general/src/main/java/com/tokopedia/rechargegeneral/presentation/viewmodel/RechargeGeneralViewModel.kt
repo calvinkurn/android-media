@@ -78,8 +78,7 @@ class RechargeGeneralViewModel @Inject constructor(
         productListJob?.cancel()
         productListJob = launchCatchError(block = {
             val graphqlRequest = GraphqlRequest(rawQuery, RechargeGeneralDynamicInput.Response::class.java, mapParams)
-            val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST)
-                .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build()
+            val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
             val data = withContext(dispatcher.io) {
                 graphqlRepository.response(listOf(graphqlRequest), graphqlCacheStrategy)
             }.getSuccessData<RechargeGeneralDynamicInput.Response>()

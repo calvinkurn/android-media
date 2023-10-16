@@ -37,6 +37,7 @@ import com.tokopedia.devicefingerprint.integrityapi.IntegrityApiConstant
 import com.tokopedia.devicefingerprint.integrityapi.IntegrityApiWorker
 import com.tokopedia.devicefingerprint.submitdevice.service.SubmitDeviceWorker
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.scp.auth.databinding.ActivityScpAuthBinding
 import com.tokopedia.sessioncommon.util.TwoFactorMluHelper
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
@@ -63,8 +64,9 @@ class ScpAuthActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val binding = ActivityScpAuthBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         initComponents()
-
         isHitRegisterPushNotif = firebaseRemoteConfig.getBoolean(
             "android_user_register_otp_push_notif_login_page",
             false

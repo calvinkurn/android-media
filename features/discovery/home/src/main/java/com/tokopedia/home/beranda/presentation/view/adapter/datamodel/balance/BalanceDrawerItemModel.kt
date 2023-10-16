@@ -43,11 +43,13 @@ data class BalanceDrawerItemModel(
     }
 
     override fun areContentsTheSame(newItem: BalanceVisitable): Boolean {
-        return newItem is BalanceDrawerItemModel && newItem.state == this.state
+        return newItem == this
     }
 
     override fun areItemsTheSame(newItem: BalanceVisitable): Boolean {
-        return newItem == this
+        return newItem is BalanceDrawerItemModel &&
+            newItem.drawerItemType == this.drawerItemType &&
+            newItem.state == this.state
     }
 
     override fun type(typeFactory: BalanceTypeFactory): Int {

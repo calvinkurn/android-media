@@ -1571,6 +1571,8 @@ class ShopHomeViewModel @Inject constructor(
         val totalEtalaseGroup = uiModel.widgetData.titleList.size
         val etalaseId = uiModel.widgetData.titleList.getOrNull(selectedSwitcherIndex)?.etalaseList?.getOrNull(selectedEtalaseIndex)?.etalaseId.orEmpty()
         val cartId = addToCartDataModel.data.cartId
+        val etalaseGroupName = uiModel.widgetData.titleList.getOrNull(selectedSwitcherIndex)?.title.orEmpty()
+        
         _shopPageProductDirectPurchaseWidgetAtcTracker.postValue(
             ShopPageProductDirectPurchaseWidgetAtcTracker(
                 totalEtalaseGroup,
@@ -1580,7 +1582,8 @@ class ShopHomeViewModel @Inject constructor(
                 productModel.name,
                 productModel.price,
                 productModel.isVariant,
-                productModel.minimumOrder
+                productModel.minimumOrder,
+                etalaseGroupName
             )
         )
     }

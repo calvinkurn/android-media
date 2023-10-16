@@ -92,7 +92,7 @@ import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.sessioncommon.network.TkpdOldAuthInterceptor
 import com.tokopedia.unit.test.rule.CoroutineTestRule
-import com.tokopedia.universal_sharing.usecase.ExtractBranchLinkUseCase
+import com.tokopedia.universal_sharing.domain.usecase.ExtractBranchLinkUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery

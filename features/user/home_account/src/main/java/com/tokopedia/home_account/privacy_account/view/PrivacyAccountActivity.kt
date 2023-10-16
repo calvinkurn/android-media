@@ -22,7 +22,7 @@ class PrivacyAccountActivity : BaseSimpleActivity(), HasComponent<LinkAccountCom
     override fun getComponent(): LinkAccountComponent =
         DaggerLinkAccountComponent.builder()
             .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-            .linkAccountModule(LinkAccountModule(this))
+            .linkAccountModule(LinkAccountModule())
             .build()
 
 }

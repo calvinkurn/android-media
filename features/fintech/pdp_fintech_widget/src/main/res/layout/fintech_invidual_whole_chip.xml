@@ -38,7 +38,7 @@
             app:layout_constraintLeft_toRightOf="@id/partnerIcon"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_goneMarginBottom="12dp"
-            app:layout_goneMarginLeft="10dp"
+            app:layout_goneMarginLeft="12dp"
             app:typographyType="display_2"
             tools:text="Rp1.dsf250*10." />
 

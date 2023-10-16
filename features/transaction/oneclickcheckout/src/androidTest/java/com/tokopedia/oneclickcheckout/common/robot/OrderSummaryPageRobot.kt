@@ -20,7 +20,6 @@ import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.common.action.swipeUpTop
-import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel
 import com.tokopedia.oneclickcheckout.order.view.card.OrderInsuranceCard
 import com.tokopedia.oneclickcheckout.order.view.card.OrderPreferenceCard
 import com.tokopedia.oneclickcheckout.order.view.card.OrderProductCard
@@ -44,6 +43,12 @@ import com.tokopedia.purchase_platform.common.R as purchase_platformcommonR
 import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 fun orderSummaryPage(func: OrderSummaryPageRobot.() -> Unit) = OrderSummaryPageRobot().apply(func)
+
+fun waitForBottomSheet() {
+    Thread.sleep(100)
+}
+
+const val DEBOUNCE_TIME = 100L
 
 class OrderSummaryPageRobot {
 
@@ -69,7 +74,7 @@ class OrderSummaryPageRobot {
                 }
             )
         )
-        Thread.sleep(OrderSummaryPageViewModel.DEBOUNCE_TIME)
+        Thread.sleep(DEBOUNCE_TIME)
     }
 
     fun clickMinusProductQuantity(index: Int = 0, times: Int = 1) {
@@ -86,7 +91,7 @@ class OrderSummaryPageRobot {
                         for (i in 0 until times) {
                             minusButton.performClick()
                         }
-                        Thread.sleep(OrderSummaryPageViewModel.DEBOUNCE_TIME)
+                        Thread.sleep(DEBOUNCE_TIME)
                     }
                 }
             )
@@ -117,7 +122,7 @@ class OrderSummaryPageRobot {
             )
         )
         // Wait for bottomsheet to fully open
-        Thread.sleep(1000)
+        waitForBottomSheet()
         if (func != null) {
             AddressBottomSheetRobot().apply(func)
         }
@@ -147,7 +152,7 @@ class OrderSummaryPageRobot {
             )
         )
         // Wait for bottomsheet to fully open
-        Thread.sleep(1000)
+        waitForBottomSheet()
         DurationBottomSheetRobot().apply(func)
     }
 
@@ -200,7 +205,7 @@ class OrderSummaryPageRobot {
             )
         )
         // Wait for bottomsheet to fully open
-        Thread.sleep(1000)
+        waitForBottomSheet()
         CourierBottomSheetRobot().apply(func)
     }
 
@@ -228,7 +233,7 @@ class OrderSummaryPageRobot {
             )
         )
         // Wait for bottomsheet to fully open
-        Thread.sleep(1000)
+        waitForBottomSheet()
         DurationBottomSheetRobot().apply(func)
     }
 
@@ -362,7 +367,7 @@ class OrderSummaryPageRobot {
 
     fun clickChangeInstallmentRevamp(func: InstallmentDetailBottomSheetRobot.() -> Unit) {
         // Wait for espresso
-        Thread.sleep(1000)
+        waitForBottomSheet()
         onView(withId(R.id.rv_order_summary_page)).perform(
             actionOnHolderItem(
                 object : BaseMatcher<RecyclerView.ViewHolder?>() {
@@ -385,7 +390,7 @@ class OrderSummaryPageRobot {
                 }
             )
         )
-        Thread.sleep(1000)
+        waitForBottomSheet()
         onView(withId(unifycomponentsR.id.bottom_sheet_header)).perform(swipeUpTop())
         InstallmentDetailBottomSheetRobot().apply(func)
     }
@@ -413,7 +418,7 @@ class OrderSummaryPageRobot {
                 }
             )
         )
-        Thread.sleep(1000)
+        waitForBottomSheet()
         onView(withId(unifycomponentsR.id.bottom_sheet_header)).perform(swipeUpTop())
         GoCicilInstallmentDetailBottomSheetRobot().apply(func)
     }
@@ -441,7 +446,7 @@ class OrderSummaryPageRobot {
                 }
             )
         )
-        Thread.sleep(1000)
+        waitForBottomSheet()
         onView(withId(unifycomponentsR.id.bottom_sheet_header)).perform(swipeUpTop())
         InstallmentDetailBottomSheetRobot().apply(func)
     }
@@ -495,19 +500,19 @@ class OrderSummaryPageRobot {
             )
         )
         // Wait for bottom sheet to fully appear
-        Thread.sleep(1000)
+        waitForBottomSheet()
         OrderPriceSummaryBottomSheetRobot().apply(func)
     }
 
     fun clickButtonContinueWithRedPromo() {
         // Wait for bottom sheet to fully appear
-        Thread.sleep(1000)
+        waitForBottomSheet()
         onView(withId(purchase_platformcommonR.id.btn_continue)).perform(click())
     }
 
     fun clickDialogPrimaryButton() {
         // Wait for dialog to fully appear
-        Thread.sleep(1000)
+        waitForBottomSheet()
         onView(withId(dialogR.id.dialog_btn_primary)).perform(click())
     }
 
@@ -559,7 +564,7 @@ class OrderSummaryPageRobot {
                 }
             )
         )
-        Thread.sleep(1000)
+        waitForBottomSheet()
         OrderSummaryPageResultRobot().apply(func)
     }
 
@@ -1120,7 +1125,7 @@ class OrderSummaryPageRobot {
 
     fun assertInstallmentRevamp(detail: String?) {
         // Wait for espresso
-        Thread.sleep(1000)
+        waitForBottomSheet()
         onView(withId(R.id.rv_order_summary_page)).perform(
             actionOnHolderItem(
                 object : BaseMatcher<RecyclerView.ViewHolder?>() {

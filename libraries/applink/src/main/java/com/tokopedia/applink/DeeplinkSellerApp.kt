@@ -268,6 +268,9 @@ object DeeplinkSellerApp {
             },
             DLP.matchPattern("dashboard") { _: String ->
                 ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL
+            },
+            DLP.matchPattern("product-recommendation") { _: String ->
+                ApplinkConstInternalTopAds.TOPADS_PRODUCT_RECOMMENDATION
             }
         ),
         "voucher-detail" to mutableListOf(

@@ -7,10 +7,12 @@ import com.tokopedia.logger.utils.Priority
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 
 object ScpUtils {
+
+    private val ROLLENCE_KEY_SCP_LOGIN = "exp_scp_goto_login_sdk"
     fun isGotoLoginEnabled(): Boolean {
         return RemoteConfigInstance.getInstance()
             .abTestPlatform
-            .getString("exp_scp_goto_login_sdk")
+            .getString(ROLLENCE_KEY_SCP_LOGIN)
             .isNotEmpty() && GlobalConfig.isSellerApp().not()
     }
 

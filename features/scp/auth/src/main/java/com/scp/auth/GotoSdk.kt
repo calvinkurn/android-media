@@ -43,6 +43,7 @@ import kotlinx.coroutines.CoroutineScope
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 object GotoSdk {
     var LSDKINSTANCE: LSdkProvider? = null
@@ -53,6 +54,10 @@ object GotoSdk {
     private const val TOKOPEDIA_APP_TYPE = "Tokopedia"
     private const val DEVICE_TYPE = "android"
     private const val LOCALE_ID = "id"
+    private const val X_USER_LOCALE_KEY = "X-User-Locale"
+    private const val ACCEPT_LANGUAGE_KEY = "Accept-Language"
+    private const val X_USER_LOCALE_VALUE = "id-ID"
+    private const val ACCEPT_LANGUAGE_VALUE = "id_ID"
 
     internal fun getVerifComponent(): ScpAuthComponent? = component
 
@@ -125,11 +130,9 @@ object GotoSdk {
         val timestampAbTest = sharedPreferences.getLong(KEY_SP_TIMESTAMP_AB_TEST, 0)
         RemoteConfigInstance.initAbTestPlatform(application)
         val current = Date().time
-//        if (current >= timestampAbTest + TimeUnit.HOURS.toMillis(1)) {
-//            RemoteConfigInstance.getInstance().abTestPlatform.fetch(null)
-//        }
-        // Init abtest each time we initialize the sdk, for testing purpose
-        RemoteConfigInstance.getInstance().abTestPlatform.fetch(null)
+        if (current >= timestampAbTest + TimeUnit.HOURS.toMillis(1)) {
+            RemoteConfigInstance.getInstance().abTestPlatform.fetch(null)
+        }
     }
 
     private fun getGotoPinSdkProvider(application: Application): PinManager {
@@ -141,8 +144,8 @@ object GotoSdk {
                     okHttpClient = OkHttpClient().newBuilder().addInterceptor(
                         Interceptor { chain ->
                             val request = chain.request().newBuilder()
-                            request.addHeader("X-User-Locale", "id-ID")
-                            request.addHeader("Accept-Language", "id_ID")
+                            request.addHeader(X_USER_LOCALE_KEY, X_USER_LOCALE_VALUE)
+                            request.addHeader(ACCEPT_LANGUAGE_KEY, ACCEPT_LANGUAGE_VALUE)
                             chain.proceed(request.build())
                         }
                     ).build()
