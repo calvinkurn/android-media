@@ -19,16 +19,16 @@ class PostUploadNotificationManager @Inject constructor(
 ) : CreationUploadNotificationManager(context, dispatchers, gson){
 
     override val uploadNotificationText: CreationUploadNotificationText = CreationUploadNotificationText(
-    progressTitle = context.getString(R.string.content_creation_upload_notification_post_progress_title),
-    progressDescription = context.getString(R.string.content_creation_upload_notification_post_progress_description),
-    successTitle = context.getString(R.string.content_creation_upload_notification_post_success_title),
-    successDescription = context.getString(R.string.content_creation_upload_notification_post_success_description),
-    failTitle = context.getString(R.string.content_creation_upload_notification_post_fail_title),
-    failDescription = context.getString(R.string.content_creation_upload_notification_post_fail_description),
-    failRetryAction = context.getString(R.string.content_creation_upload_notification_post_fail_retry),
+        progressTitle = context.getString(R.string.content_creation_upload_notification_post_progress_title),
+        progressDescription = context.getString(R.string.content_creation_upload_notification_post_progress_description),
+        successTitle = context.getString(R.string.content_creation_upload_notification_post_success_title),
+        successDescription = context.getString(R.string.content_creation_upload_notification_post_success_description),
+        failTitle = context.getString(R.string.content_creation_upload_notification_post_fail_title),
+        failDescription = context.getString(R.string.content_creation_upload_notification_post_fail_description),
+        failRetryAction = context.getString(R.string.content_creation_upload_notification_post_fail_retry),
     )
 
-    override fun generateSuccessPendingIntent(): PendingIntent {
-        TODO("Not yet implemented")
+    override fun generateSuccessPendingIntent(): PendingIntent? {
+        return null
     }
 }

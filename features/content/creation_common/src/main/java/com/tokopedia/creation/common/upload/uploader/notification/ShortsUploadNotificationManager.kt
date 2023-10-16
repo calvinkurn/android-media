@@ -34,7 +34,7 @@ class ShortsUploadNotificationManager @Inject constructor(
         failRetryAction = context.getString(R.string.content_creation_upload_notification_shorts_fail_retry),
     )
 
-    override fun generateSuccessPendingIntent(): PendingIntent {
+    override fun generateSuccessPendingIntent(): PendingIntent? {
         val intent = PlayShortsPostUploadActivity.getIntent(
             context,
             channelId = uploadData?.creationId.orEmpty(),

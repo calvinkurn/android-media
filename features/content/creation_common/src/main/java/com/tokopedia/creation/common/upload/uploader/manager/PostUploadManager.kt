@@ -35,11 +35,6 @@ class PostUploadManager @Inject constructor(
         return try {
             broadcastInit(uploadData, notificationId)
 
-            delay(2000)
-            updateProgress(uploadData, 20)
-            delay(2000)
-            throw Exception("")
-
             val cacheManager = SaveInstanceCacheManager(appContext, uploadData.draftId)
             val viewModel: CreatePostViewModel = cacheManager.get(
                 CreatePostViewModel.TAG,

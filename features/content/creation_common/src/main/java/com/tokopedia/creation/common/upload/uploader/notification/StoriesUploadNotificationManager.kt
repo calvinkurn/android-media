@@ -31,7 +31,7 @@ class StoriesUploadNotificationManager @Inject constructor(
         failRetryAction = context.getString(R.string.content_creation_upload_notification_stories_fail_retry),
     )
 
-    override fun generateSuccessPendingIntent(): PendingIntent {
+    override fun generateSuccessPendingIntent(): PendingIntent? {
         /** TODO JOE: for mocking purpose */
         val intent = PlayShortsPostUploadActivity.getIntent(
             context,
