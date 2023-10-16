@@ -27,9 +27,10 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
-class CatalogComparisonDetailFragment : BaseDaggerFragment(),
-    ComparisonViewHolder.ComparisonItemListener, CatalogDetailListener {
-
+class CatalogComparisonDetailFragment :
+    BaseDaggerFragment(),
+    ComparisonViewHolder.ComparisonItemListener,
+    CatalogDetailListener {
 
     companion object {
         const val CATALOG_COMPARISON_DETAIL_FRAGMENT_TAG = "CATALOG_COMPARISON_DETAIL_FRAGMENT_TAG"
@@ -89,8 +90,6 @@ class CatalogComparisonDetailFragment : BaseDaggerFragment(),
                 this
             )
         }
-
-
     }
 
     private fun getComparison(catalogId: String, compareCatalogId: String) {
@@ -101,14 +100,12 @@ class CatalogComparisonDetailFragment : BaseDaggerFragment(),
     private fun setupObserver() {
         viewModel.catalogDetailDataModel.observe(viewLifecycleOwner) {
             if (it is Success) {
-
                 val comparison = it.data.widgets.find {
                     it is ComparisonUiModel
                 }
                 if (comparison != null) {
                     widgetAdapter.addWidget(listOf(comparison))
                 }
-
             } else if (it is Fail) {
             }
 
@@ -137,7 +134,8 @@ class CatalogComparisonDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentCatalogComparisonDetailBinding.inflate(inflater, container, false)
@@ -146,7 +144,6 @@ class CatalogComparisonDetailFragment : BaseDaggerFragment(),
 
     override fun getScreenName() =
         CatalogComparisonDetailFragment::class.java.canonicalName.orEmpty()
-
 
     override fun initInjector() {
         DaggerCatalogComponent.builder()
@@ -160,12 +157,10 @@ class CatalogComparisonDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onComparisonSeeMoreButtonClicked() {
-        //no-op
+        // no-op
     }
 
     override fun changeComparison(comparedCatalogId: String) {
-        getComparison(catalogId, "")
-
+        getComparison(catalogId, comparedCatalogId)
     }
-
 }
