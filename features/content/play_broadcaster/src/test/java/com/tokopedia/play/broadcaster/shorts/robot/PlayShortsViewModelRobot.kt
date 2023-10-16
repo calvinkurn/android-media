@@ -11,8 +11,8 @@ import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsUiEvent
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUiState
 import com.tokopedia.play.broadcaster.shorts.view.viewmodel.PlayShortsViewModel
 import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.creation.common.upload.uploader.CreationUploader
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
-import com.tokopedia.play_common.shortsuploader.PlayShortsUploader
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import io.mockk.mockk
 import kotlinx.coroutines.*
@@ -26,7 +26,7 @@ class PlayShortsViewModelRobot(
     repo: PlayShortsRepository = mockk(relaxed = true),
     sharedPref: HydraSharedPreferences = mockk(relaxed = true),
     accountManager: PlayShortsAccountManager = mockk(relaxed = true),
-    playShortsUploader: PlayShortsUploader = mockk(relaxed = true),
+    creationUploader: CreationUploader = mockk(relaxed = true),
     dataStore: PlayBroadcastDataStore = mockk(relaxed = true),
     private val dispatchers: CoroutineTestDispatchers = CoroutineTestDispatchers,
 ) : Closeable {
@@ -35,7 +35,7 @@ class PlayShortsViewModelRobot(
         repo = repo,
         sharedPref = sharedPref,
         accountManager = accountManager,
-        playShortsUploader = playShortsUploader,
+        creationUploader = creationUploader,
         dataStore = dataStore,
     )
 
