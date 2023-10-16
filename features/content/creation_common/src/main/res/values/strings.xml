@@ -42,12 +42,12 @@
     <string name="content_creation_upload_notification_shorts_fail_description">Tenang, kamu masih bisa coba upload videonya lagi.</string>
     <string name="content_creation_upload_notification_shorts_fail_retry">Coba lagi</string>
 
-    <string name="content_creation_upload_notification_stories_progress_title">Tunggu ya, storymu lagi di-upload</string>
-    <string name="content_creation_upload_notification_stories_progress_description">Selagi menunggu story di-upload, kamu bisa cek produk atau konten menarik lainnya di Tokopedia.</string>
-    <string name="content_creation_upload_notification_stories_success_title">Yay, storymu berhasil di-upload!</string>
-    <string name="content_creation_upload_notification_stories_success_description">Lihat storymu di sini, yuk!</string>
-    <string name="content_creation_upload_notification_stories_fail_title">Oops, gagal upload story</string>
-    <string name="content_creation_upload_notification_stories_fail_description">Tenang, kamu masih bisa coba upload storynya lagi.</string>
+    <string name="content_creation_upload_notification_stories_progress_title">Tunggu, ya. Story-mu lagi di-upload</string>
+    <string name="content_creation_upload_notification_stories_progress_description">Selagi menunggu Story di-upload, kamu bisa cek produk atau konten menarik lainnya di Tokopedia.</string>
+    <string name="content_creation_upload_notification_stories_success_title">Yay, Story-mu berhasil di-upload!</string>
+    <string name="content_creation_upload_notification_stories_success_description">Lihat Story-nya di sini, yuk!</string>
+    <string name="content_creation_upload_notification_stories_fail_title">Oops, gagal upload Story</string>
+    <string name="content_creation_upload_notification_stories_fail_description">Klik di sini buat ulangi progres upload Story-nya, ya!</string>
     <string name="content_creation_upload_notification_stories_fail_retry">Coba lagi</string>
 
     <string name="play_widget_watch_title">Tonton videomu di aplikasi Tokopedia, ya!</string>
