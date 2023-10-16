@@ -44,6 +44,12 @@ class ComparisonViewHolder(
 
     private val binding by viewBinding<WidgetItemComparisonBinding>()
 
+    init {
+        binding?.btnSeeMore?.setOnClickListener {
+            comparisonItemListener?.onComparisonSeeMoreButtonClicked()
+        }
+    }
+
     private fun WidgetItemComparisonBinding.setupComparisonListItem(
         contents: List<ComparisonUiModel.ComparisonContent>
     ) {
@@ -256,5 +262,6 @@ class ComparisonViewHolder(
 
     interface ComparisonItemListener {
         fun onComparisonSwitchButtonClicked(position: Int)
+        fun onComparisonSeeMoreButtonClicked()
     }
 }
