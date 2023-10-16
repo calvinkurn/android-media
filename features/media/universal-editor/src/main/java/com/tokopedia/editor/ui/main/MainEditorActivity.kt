@@ -112,7 +112,7 @@ open class MainEditorActivity : AppCompatActivity()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
-        loadNativeLibrary()
+        loadNativeLibrary(this)
         supportFragmentManager.fragmentFactory = fragmentFactory
 
         super.onCreate(savedInstanceState)
@@ -121,6 +121,13 @@ open class MainEditorActivity : AppCompatActivity()
 
         setDataParam()
         initObserver()
+    }
+
+    override fun attachBaseContext(newBase: Context?) {
+        super.attachBaseContext(newBase)
+        if (isSplitInstallEnabled() && newBase != null) {
+            loadNativeLibrary(newBase)
+        }
     }
 
     override fun onCloseClicked() {
@@ -154,24 +161,24 @@ open class MainEditorActivity : AppCompatActivity()
         viewModel.onEvent(MainEditorEvent.SetupView(param))
     }
 
-    private fun loadNativeLibrary() {
+    private fun loadNativeLibrary(context: Context) {
         if (isSplitInstallEnabled()) {
-            safeLoadNativeLibrary(this, "c++_shared")
-            safeLoadNativeLibrary(this, "avfilter")
+            SplitCompat.installActivity(context)
+
+            safeLoadNativeLibrary(context, "c++_shared")
 
             // FFMPEG
-            safeLoadNativeLibrary(this, "mobileffmpeg")
-            safeLoadNativeLibrary(this, "mobileffmpeg_abidetect")
+            safeLoadNativeLibrary(context, "mobileffmpeg")
+            safeLoadNativeLibrary(context, "mobileffmpeg_abidetect")
 
             // Common
-            safeLoadNativeLibrary(this, "avutil")
-            safeLoadNativeLibrary(this, "swscale")
-            safeLoadNativeLibrary(this, "swresample")
-            safeLoadNativeLibrary(this, "avcodec")
-            safeLoadNativeLibrary(this, "avformat")
-            safeLoadNativeLibrary(this, "avdevice")
-
-            SplitCompat.installActivity(this)
+            safeLoadNativeLibrary(context, "avutil")
+            safeLoadNativeLibrary(context, "swscale")
+            safeLoadNativeLibrary(context, "swresample")
+            safeLoadNativeLibrary(context, "avcodec")
+            safeLoadNativeLibrary(context, "avformat")
+            safeLoadNativeLibrary(context, "avdevice")
+            safeLoadNativeLibrary(context, "avfilter")
         }
     }
 
