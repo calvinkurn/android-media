@@ -73,7 +73,7 @@ class ProductRecommendationViewModel @Inject constructor(
     fun loadProductList() {
         launchCatchError(dispatcher.main, {
             val data = topadsGetProductRecommendationV2Usecase(userSession.shopId)
-            if (data.topadsGetProductRecommendation.errors.isNullOrEmpty() && data.topadsGetProductRecommendation.data.products.isNotEmpty()) {
+            if (data.topadsGetProductRecommendation.errors.isNullOrEmpty()) {
                 _productItemsLiveData.value =
                     TopadsProductListState.Success(mapper.convertToProductItemUiModel(data.topadsGetProductRecommendation.data.products))
             } else {

@@ -590,7 +590,6 @@ object DeeplinkDFApp {
         // privacycenter
         DFP(INTERNAL, HOST_USER, PathType.PATTERN, "/privacy-center"),
         DFP(INTERNAL, HOST_USER, PathType.PATTERN, "/consent/withdrawal"),
-        DFP(INTERNAL, HOST_USER, PathType.PATTERN, "/account-linking-webview"),
         DFP(INTERNAL, HOST_USER, PathType.PATTERN, "/search-history"),
         DFP(INTERNAL, HOST_USER, PathType.PATTERN, "/sharing-wishlist"),
         DFP(INTERNAL, HOST_USER, PathType.PATTERN, "/dsar"),

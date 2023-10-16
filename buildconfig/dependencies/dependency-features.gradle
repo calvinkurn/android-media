@@ -55,6 +55,10 @@ ext {
 			stories							: ":features:content:stories",
             contentTest                     : ":features:content:content_test",
             playWidget                      : ":features:content:play_widget",
+			storiesWidget					: ":features:content:stories_widget",
+			storiesInternal					: ":features:content:stories_internal",
+			contentProductPicker            : ":features:content:product_picker",
+
             commonTopupBills                : ":features:recharge:common_topup_bills",
             commonDigital                   : ":features:recharge:common_digital",
             digitalRecommendation           : ":features:recharge:digital_recommendation",
@@ -291,6 +295,7 @@ ext {
             otp                             : ":features:user:otp",
             phoneVerification               : ":features:user:phoneverification",
             privacycenter                   : ":features:user:privacycenter",
+			accountlinking                   : ":features:user:accountlinking",
             profileCompletion               : ":features:user:profilecompletion",
             seamlessLoginCommon             : ":features:user:seamless_login_common",
             sessioncommon                   : ":features:user:sessioncommon",

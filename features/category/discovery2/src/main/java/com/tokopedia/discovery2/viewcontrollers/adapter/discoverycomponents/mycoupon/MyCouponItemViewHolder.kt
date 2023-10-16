@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
+import com.tokopedia.discovery2.analytics.CouponTrackingMapper.toTrackingProps
 import com.tokopedia.discovery2.data.mycoupon.MyCoupon
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
@@ -84,10 +85,34 @@ class MyCouponItemViewHolder(itemView: View, private val fragment: Fragment) : A
 
     override fun onViewAttachedToWindow() {
         super.onViewAttachedToWindow()
-        myCouponItemViewModel?.let { (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackEventViewMyCouponList(it.components, it.getUserId()) }
+        trackImpression()
+    }
+
+    private fun trackImpression() {
+        myCouponItemViewModel?.let { viewModel ->
+            val analytics = (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
+
+            val component = viewModel.getComponentData()
+
+            component.value?.myCouponList?.run {
+                val properties = toTrackingProps(component.value!!)
+
+                analytics?.trackCouponImpression(properties)
+            }
+        }
     }
 
     private fun sendClickEvent() {
-        myCouponItemViewModel?.let { (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackEventClickMyCouponList(it.components, it.getUserId()) }
+        myCouponItemViewModel?.let { viewModel ->
+            val analytics = (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
+
+            val component = viewModel.getComponentData().value
+
+            component?.myCouponList?.run {
+                val properties = toTrackingProps(component).firstOrNull()
+
+                if (properties != null) analytics?.trackCouponClickEvent(properties)
+            }
+        }
     }
 }
