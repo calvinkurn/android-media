@@ -308,6 +308,7 @@ class ShopPageReimagineHeaderFragment :
         private const val CHIPS_NAME_CAMPAIGN = "Launching Eksklusif"
         private const val CHIPS_NAME_TOKO_PAGE = "Halaman Toko"
         private const val VALUE_ROLLENCE_NEW_SHOP_SHARE = "control_variant"
+        const val SHOWCASE_ID_USED_TO_HIDE_SHARE_CTA = "HIDE_SHARE_CTA"
 
         @JvmStatic
         fun createInstance() = ShopPageReimagineHeaderFragment()
@@ -1486,7 +1487,7 @@ class ShopPageReimagineHeaderFragment :
             UriUtil.buildUri(
                 ApplinkConst.SHOP_ETALASE,
                 shopId,
-                DEFAULT_SHOWCASE_ID
+                SHOWCASE_ID_USED_TO_HIDE_SHARE_CTA
             ),
             "utf-8"
         )

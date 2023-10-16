@@ -6,7 +6,8 @@ import com.tokopedia.buy_more_get_more.olp.presentation.adapter.OlpAdapterTypeFa
 data class OfferProductSortingUiModel(
     var productCount: Int = 0,
     var selectedSortId: Int = 0,
-    var selectedSortName: String = "Urutkan"
+    var selectedSortName: String = "Urutkan",
+    var isProductCountVisible: Boolean = false
 ) : Visitable<OlpAdapterTypeFactory> {
 
     override fun type(typeFactory: OlpAdapterTypeFactory): Int {

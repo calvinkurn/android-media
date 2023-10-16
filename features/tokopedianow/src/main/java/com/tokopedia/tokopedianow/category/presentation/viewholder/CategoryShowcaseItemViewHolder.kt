@@ -9,9 +9,7 @@ import com.tokopedia.tokopedianow.R
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.productcard.compact.productcard.presentation.customview.ProductCardCompactView
-import com.tokopedia.productcard.compact.productcard.presentation.customview.ProductCardCompactWishlistButtonView
 import com.tokopedia.productcard.compact.productcard.presentation.listener.ProductCardCompactViewListener
-import com.tokopedia.productcard.compact.similarproduct.presentation.listener.ProductCardCompactSimilarProductTrackerListener
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryShowcaseItemUiModel
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowProductGridCardBinding
 import com.tokopedia.utils.view.binding.viewBinding
@@ -22,10 +20,8 @@ import kotlinx.coroutines.launch
 class CategoryShowcaseItemViewHolder(
     itemView: View,
     private var listener: CategoryShowcaseItemListener? = null,
-    private val productCardCompactListener: ProductCardCompactView.ProductCardCompactListener? = null,
-    private val similarProductTrackerListener: ProductCardCompactSimilarProductTrackerListener? = null,
     private val lifecycleOwner: LifecycleOwner? = null
-) : AbstractViewHolder<CategoryShowcaseItemUiModel>(itemView), ProductCardCompactWishlistButtonView.WishlistButtonListener {
+) : AbstractViewHolder<CategoryShowcaseItemUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -71,24 +67,6 @@ class CategoryShowcaseItemViewHolder(
         }
     }
 
-    override fun onWishlistButtonClicked(
-        productId: String,
-        isWishlistSelected: Boolean,
-        descriptionToaster: String,
-        ctaToaster: String,
-        type: Int,
-        ctaClickListener: (() -> Unit)?
-    ) {
-        listener?.onWishlistButtonClicked(
-            productId = productId,
-            isWishlistSelected = isWishlistSelected,
-            descriptionToaster = descriptionToaster,
-            ctaToaster = ctaToaster,
-            type = type,
-            ctaClickListener = ctaClickListener
-        )
-    }
-
     override fun onViewRecycled() {
         job?.cancel()
         super.onViewRecycled()
@@ -113,10 +91,7 @@ class CategoryShowcaseItemViewHolder(
         },
         blockAddToCartListener = {
             listener?.onProductCardAddToCartBlocked()
-        },
-        wishlistButtonListener = this@CategoryShowcaseItemViewHolder,
-        productCardCompactListener = productCardCompactListener,
-        similarProductTrackerListener = similarProductTrackerListener
+        }
     )
 
     interface CategoryShowcaseItemListener {
@@ -140,13 +115,5 @@ class CategoryShowcaseItemViewHolder(
             product: CategoryShowcaseItemUiModel
         )
         fun onProductCardAddToCartBlocked()
-        fun onWishlistButtonClicked(
-            productId: String,
-            isWishlistSelected: Boolean,
-            descriptionToaster: String,
-            ctaToaster: String,
-            type: Int,
-            ctaClickListener: (() -> Unit)?
-        )
     }
 }
