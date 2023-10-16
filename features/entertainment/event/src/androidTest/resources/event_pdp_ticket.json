@@ -121,7 +121,12 @@
                   "max_qty": "4",
                   "start_date": "1598806800",
                   "end_date": "1900534740",
-                  "provider_custom_text": ""
+                  "provider_custom_text": "",
+                  "availability_status": {
+                    "val": 1,
+                    "name": "Tersedia",
+                    "desc": "Tiket tersedia"
+                  }
                 }
               ]
             }

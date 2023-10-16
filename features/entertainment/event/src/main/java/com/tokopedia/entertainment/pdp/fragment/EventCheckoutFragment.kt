@@ -156,6 +156,12 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
                         forms = it
                     }
                 }
+
+                saveInstanceManager.getString(EXTRA_SAVED_DATA_SOFTBOOK_EXPIRE_TIME, "")?.let {
+                    if (it.isNotEmpty()) {
+                        softbookExpireTime = it
+                    }
+                }
             }
         }
         arguments?.let {
@@ -714,6 +720,7 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
             put(EXTRA_SAVED_DATA_ADDITIONAL_PACKAGE, eventCheckoutAdditionalDataPackage)
             put(EXTRA_SAVED_DATA_FORM, forms)
             put(EXTRA_SAVED_DATA_ADDITIONAL_ITEM, listAdditionalItem)
+            put(EXTRA_SAVED_DATA_SOFTBOOK_EXPIRE_TIME, softbookExpireTime)
         }
     }
 
@@ -733,6 +740,7 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
         const val EXTRA_SAVED_DATA_ADDITIONAL_PACKAGE = "EXTRA_SAVED_DATA_ADDITIONAL_PACKAGE"
         const val EXTRA_SAVED_DATA_ADDITIONAL_ITEM = "EXTRA_SAVED_DATA_ADDITIONAL_ITEM"
         const val EXTRA_SAVED_DATA_FORM = "EXTRA_SAVED_DATA_FORM"
+        const val EXTRA_SAVED_DATA_SOFTBOOK_EXPIRE_TIME = "EXTRA_SAVED_DATA_SOFTBOOK_EXPIRE_TIME"
 
         const val ENT_CHECKOUT_PERFORMANCE = "et_event_checkout"
 
