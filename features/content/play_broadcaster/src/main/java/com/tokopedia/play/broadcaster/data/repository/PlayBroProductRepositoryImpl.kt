@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.data.repository
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.content.product.picker.seller.domain.repository.AbstractProductPickerSellerRepository
 import com.tokopedia.content.product.picker.seller.domain.repository.ContentProductPickerSellerRepository
 import com.tokopedia.play.broadcaster.domain.model.addproduct.AddProductTagChannelRequest
 import com.tokopedia.play.broadcaster.domain.usecase.AddProductTagUseCase
@@ -26,32 +27,23 @@ import javax.inject.Inject
  */
 class PlayBroProductRepositoryImpl @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
-    private val getCampaignListUseCase: GetCampaignListUseCase,
-    private val getProductsInCampaignUseCase: GetProductsInCampaignUseCase,
-    private val getSelfEtalaseListUseCase: GetSelfEtalaseListUseCase,
+    getCampaignListUseCase: GetCampaignListUseCase,
+    getProductsInCampaignUseCase: GetProductsInCampaignUseCase,
+    getSelfEtalaseListUseCase: GetSelfEtalaseListUseCase,
     private val getProductsInEtalaseUseCase: GetProductsInEtalaseUseCase,
     private val addProductTagUseCase: AddProductTagUseCase,
     private val getProductTagSummarySectionUseCase: GetProductTagSummarySectionUseCase,
     private val setPinnedProductUseCase: SetPinnedProductUseCase,
     private val productMapper: PlayBroProductUiMapper,
     private val userSession: UserSessionInterface,
-) : ContentProductPickerSellerRepository {
-
-    override suspend fun getCampaignList(): List<CampaignUiModel> = withContext(dispatchers.io) {
-        if (userSession.shopId.isBlank()) error("User does not has shop")
-
-        val response = getCampaignListUseCase.apply {
-            setRequestParams(GetCampaignListUseCase.createParams(shopId = userSession.shopId))
-        }.executeOnBackground()
-
-        return@withContext productMapper.mapCampaignList(response)
-    }
-
-    override suspend fun getEtalaseList(): List<EtalaseUiModel> = withContext(dispatchers.io) {
-        val response = getSelfEtalaseListUseCase.executeOnBackground()
-
-        return@withContext productMapper.mapEtalaseList(response)
-    }
+) : AbstractProductPickerSellerRepository(
+    dispatchers,
+    getCampaignListUseCase,
+    getProductsInCampaignUseCase,
+    getSelfEtalaseListUseCase,
+    productMapper,
+    userSession
+) {
 
     override suspend fun getProductsInEtalase(
         etalaseId: String,
@@ -74,26 +66,6 @@ class PlayBroProductRepositoryImpl @Inject constructor(
         val response = getProductsInEtalaseUseCase.executeWithParam(param)
 
         return@withContext productMapper.mapProductsInEtalase(response)
-    }
-
-    override suspend fun getProductsInCampaign(
-        campaignId: String,
-        page: Int,
-    ): PagedDataUiModel<ProductUiModel> = withContext(dispatchers.io) {
-        if (userSession.userId.isBlank()) error("User does not exist")
-
-        val response = getProductsInCampaignUseCase.apply {
-            setRequestParams(
-                GetProductsInCampaignUseCase.createParams(
-                    userId = userSession.userId,
-                    campaignId = campaignId,
-                    page = page,
-                    perPage = PRODUCTS_IN_CAMPAIGN_PER_PAGE,
-                )
-            )
-        }.executeOnBackground()
-
-        return@withContext productMapper.mapProductsInCampaign(response)
     }
 
     override suspend fun setProductTags(creationId: String, productIds: List<String>) {
@@ -139,11 +111,6 @@ class PlayBroProductRepositoryImpl @Inject constructor(
         }
 
     companion object {
-        private const val PRODUCTS_IN_ETALASE_PER_PAGE = 25
-        private const val PRODUCTS_IN_CAMPAIGN_PER_PAGE = 25
-
         private const val DELAY_MS = 5000L
-
-        private const val AUTHOR_TYPE_SELLER = 2
     }
 }
