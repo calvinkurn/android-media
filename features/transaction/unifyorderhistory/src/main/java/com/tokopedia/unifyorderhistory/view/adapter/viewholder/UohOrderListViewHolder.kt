@@ -159,8 +159,9 @@ class UohOrderListViewHolder(
                     buttonVariant =
                         UohUtils.getButtonVariant(item.dataObject.metadata.buttons[0].type)
                 }
-                if (item.dataObject.metadata.buttons[0].label == ULAS_LABEL) {
-                    UohAnalytics.sendViewBeriUlasanButtonEvent(ULAS_TYPE_BUTTON)
+                when (item.dataObject.metadata.buttons[0].label) {
+                    ULAS_LABEL -> { UohAnalytics.sendViewBeriUlasanButtonEvent(ULAS_TYPE_BUTTON) }
+                    BELI_LAGI_LABEL -> { UohAnalytics.sendViewBeliLagiButtonEvent() }
                 }
             } else {
                 binding.uohBtnAction1.gone()
@@ -175,8 +176,9 @@ class UohOrderListViewHolder(
                     buttonVariant =
                         UohUtils.getButtonVariant(item.dataObject.metadata.buttons[1].type)
                 }
-                if (item.dataObject.metadata.buttons[1].label == BELI_LAGI_LABEL) {
-                    UohAnalytics.sendViewBeliLagiButtonEvent()
+                when (item.dataObject.metadata.buttons[1].label) {
+                    ULAS_LABEL -> { UohAnalytics.sendViewBeriUlasanButtonEvent(ULAS_TYPE_BUTTON) }
+                    BELI_LAGI_LABEL -> { UohAnalytics.sendViewBeliLagiButtonEvent() }
                 }
             } else {
                 binding.uohBtnAction2.gone()
