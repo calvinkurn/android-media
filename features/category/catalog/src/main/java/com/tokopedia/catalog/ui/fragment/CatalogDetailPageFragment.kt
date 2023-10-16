@@ -61,7 +61,11 @@ import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESS
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_TRUSTMAKER
 import com.tokopedia.catalog.databinding.FragmentCatalogReimagineDetailPageBinding
 import com.tokopedia.catalog.di.DaggerCatalogComponent
+import com.tokopedia.catalog.ui.activity.CatalogComparisonDetailActivity
 import com.tokopedia.catalog.ui.activity.CatalogProductListActivity.Companion.EXTRA_CATALOG_URL
+import com.tokopedia.catalog.ui.fragment.CatalogComparisonDetailFragment.Companion.ARG_PARAM_CATALOG_ID
+import com.tokopedia.catalog.ui.fragment.CatalogComparisonDetailFragment.Companion.ARG_PARAM_CATEGORY_ID
+import com.tokopedia.catalog.ui.fragment.CatalogComparisonDetailFragment.Companion.ARG_PARAM_COMPARE_CATALOG_ID
 import com.tokopedia.catalog.ui.model.NavigationProperties
 import com.tokopedia.catalog.ui.model.PriceCtaProperties
 import com.tokopedia.catalog.ui.viewmodel.CatalogDetailPageViewModel
@@ -158,7 +162,11 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
 
     var catalogId = ""
 
+    var categoryId = ""
+
     var catalogUrl = ""
+
+    var compareCatalogId = ""
 
     private val userSession: UserSession by lazy {
         UserSession(activity)
@@ -255,7 +263,7 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
             if (tabPosition == Int.ZERO) {
                 smoothScroller.targetPosition = anchorToPosition - POSITION_THREE_IN_WIDGET_LIST
                 layoutManager?.startSmoothScroll(smoothScroller)
-            } else if (tabPosition == (widgetAdapter.findNavigationCount()-1)) {
+            } else if (tabPosition == (widgetAdapter.findNavigationCount() - 1)) {
                 smoothScroller.targetPosition = anchorToPosition
                 layoutManager?.startSmoothScroll(smoothScroller)
             } else {
@@ -282,6 +290,7 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
             if (it is Success) {
                 productSortingStatus = it.data.productSortingStatus
                 catalogUrl = it.data.catalogUrl
+                categoryId = it.data.priceCtaProperties.departmentId
                 widgetAdapter.addWidget(it.data.widgets)
                 title = it.data.navigationProperties.title
                 binding?.setupToolbar(it.data.navigationProperties)
@@ -652,10 +661,15 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
     }
 
     override fun onComparisonSwitchButtonClicked(position: Int) {
-        // TODO: Implement redirection to Bottomsheet Catalog Selection
+
     }
 
     override fun onComparisonSeeMoreButtonClicked() {
-        // TODO: ("Not yet implemented")
+        Intent(requireActivity(), CatalogComparisonDetailActivity::class.java).apply {
+            putExtra(ARG_PARAM_CATALOG_ID, catalogId)
+            putExtra(ARG_PARAM_CATEGORY_ID, categoryId)
+            putExtra(ARG_PARAM_COMPARE_CATALOG_ID, compareCatalogId)
+            startActivity(this)
+        }
     }
 }

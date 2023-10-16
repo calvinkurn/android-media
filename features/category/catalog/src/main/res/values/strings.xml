@@ -47,5 +47,6 @@
     <string name="text_empty_state_desc">Coba kurangi filter yang lagi aktif atau reset filter.</string>
     <string name="text_reset_filter">Reset Filter</string>
     <string name="catalog_action_product_list">Lihat Pilihan</string>
+    <string name="text_comparison_title">Detail Perbandingan</string>
 
 </resources>
