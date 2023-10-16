@@ -512,7 +512,7 @@ open class EmoneyPdpFragment :
                         // to handle don't keep activities case, so displayed client number wont be override with client number on detailPassData
                         detailPassData.clientNumber = it.clientNumber
                         detailPassData.additionalETollBalance = ""
-                        detailPassData.isBCAGenOne = false
+                        resetBCAGenOne()
                     }
                 }
 
@@ -633,11 +633,16 @@ open class EmoneyPdpFragment :
         }
     }
 
+    private fun resetBCAGenOne() {
+        detailPassData.isBCAGenOne = false
+    }
+
     override fun onRemoveNumberIconClick() {
         EmoneyPdpAnalyticsUtils.clickClearCardNumber(userSession.userId, getIssuerName(issuerId))
         showCoachMark(false)
         emoneyCardNumber = ""
         showRecentNumberAndPromo()
+        resetBCAGenOne()
         hideTickerNotSupported()
     }
 
@@ -708,7 +713,8 @@ open class EmoneyPdpFragment :
         if (detailPassData.isBCAGenOne) {
             showTickerNotSupported()
             showRecentNumberAndPromo()
-        } else if (emoneyPdpViewModel.selectedOperatorIsBCA() && !binding.emoneyPdpInputCardWidget.isShownError) {
+        } else if (emoneyPdpViewModel.selectedOperatorIsBCA() && !binding.emoneyPdpInputCardWidget.isShownError
+            && binding.emoneyPdpInputCardWidget.getNumber().isNotEmpty()) {
             if (this::nfcAdapter.isInitialized && !nfcAdapter.isEnabled) {
                 showTickerNotSupported()
                 showRecentNumberAndPromo()
