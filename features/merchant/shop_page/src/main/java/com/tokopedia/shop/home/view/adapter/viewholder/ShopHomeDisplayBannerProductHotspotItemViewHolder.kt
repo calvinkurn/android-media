@@ -9,11 +9,10 @@ import com.tokopedia.shop.common.view.model.ImageHotspotData
 import com.tokopedia.shop.databinding.ShopHomeDisplayBannerProductHotspotItemBinding
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerProductHotspotUiModel
 
-
 class ShopHomeDisplayBannerProductHotspotItemViewHolder(
     viewBinding: ShopHomeDisplayBannerProductHotspotItemBinding,
     private val widgetUiModel: ShopWidgetDisplayBannerProductHotspotUiModel?,
-    private val listener: ShopHomeDisplayBannerProductHotspotViewHolder.Listener?,
+    private val listener: ShopHomeReimagineDisplayBannerProductHotspotViewHolder.Listener?,
     private val ratio: String?
 ) : RecyclerView.ViewHolder(viewBinding.root), ImageHotspotView.Listener {
 
@@ -25,7 +24,7 @@ class ShopHomeDisplayBannerProductHotspotItemViewHolder(
     }
 
     private fun addImpressionListener(itemModel: ShopWidgetDisplayBannerProductHotspotUiModel.Data) {
-        itemView.addOnImpressionListener(itemModel){
+        itemView.addOnImpressionListener(itemModel) {
             widgetUiModel?.let {
                 listener?.onImpressionBannerHotspotImage(
                     widgetUiModel,
@@ -46,9 +45,9 @@ class ShopHomeDisplayBannerProductHotspotItemViewHolder(
                         y = productHotspot.hotspotCoordinate.y,
                         productImage = productHotspot.imageUrl,
                         productName = productHotspot.name,
-                        productPrice = productHotspot.displayedPrice,
+                        productPrice = productHotspot.displayedPrice
                     )
-                },
+                }
             ),
             listenerBubbleView = this,
             ratio = ratio
@@ -71,5 +70,4 @@ class ShopHomeDisplayBannerProductHotspotItemViewHolder(
             }
         }
     }
-
 }

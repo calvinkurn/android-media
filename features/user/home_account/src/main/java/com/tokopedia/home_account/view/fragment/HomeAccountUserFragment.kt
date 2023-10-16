@@ -752,15 +752,6 @@ open class HomeAccountUserFragment :
             }
         )
 
-        viewModel.phoneNo.observe(
-            viewLifecycleOwner,
-            Observer {
-                if (it.isNotEmpty()) {
-                    getData()
-                }
-            }
-        )
-
         viewModel.safeModeStatus.observe(
             viewLifecycleOwner,
             Observer {
@@ -1824,8 +1815,6 @@ open class HomeAccountUserFragment :
 
     override fun onClick(pageSource: String, tokopediaPlusDataModel: TokopediaPlusDataModel) {
         tokopediaAnalytics.sendClickOnTokopediaPlusButtonEvent(tokopediaPlusDataModel.isSubscriber)
-        val intent = RouteManager.getIntent(context, tokopediaPlusDataModel.applink)
-        startActivity(intent)
     }
 
     override fun onAddPhoneClicked() {

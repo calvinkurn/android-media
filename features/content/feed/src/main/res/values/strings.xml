@@ -88,6 +88,8 @@ dari Feed.</string>
 
     <!-- New Immersive Feed -->
     <string name="feed_watch_mode">Mode Nonton</string>
+    <string name="feed_mute_label">Heningkan</string>
+    <string name="feed_unmute_label">Bunyikan</string>
     <string name="feed_report_login_success_toaster_text">Kamu berhasil masuk sebagai %s.</string>
     <string name="feeds_tag_product_99_more_text">Cek 99+ Produk</string>
     <string name="feeds_tag_product_text">Cek %d Produk</string>

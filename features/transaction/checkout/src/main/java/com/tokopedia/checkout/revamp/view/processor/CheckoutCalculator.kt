@@ -157,15 +157,16 @@ class CheckoutCalculator @Inject constructor(
                         if (cartItem.addOnProduct.listAddOnProductData.isNotEmpty()) {
                             for (addOnProductService in cartItem.addOnProduct.listAddOnProductData) {
                                 if (addOnProductService.isChecked) {
-                                    totalAddOnProductServicePrice += (addOnProductService.price * cartItem.quantity)
-                                    val qtyAddOn = cartItem.quantity + (countMapSummaries[addOnProductService.type]?.second ?: 0)
+                                    val addOnQty = if (addOnProductService.fixedQty) 1 else cartItem.quantity
+                                    totalAddOnProductServicePrice += (addOnProductService.price * addOnQty)
+                                    val totalQtyAddOn = addOnQty + (countMapSummaries[addOnProductService.type]?.second ?: 0)
                                     val totalPriceAddOn =
-                                        (cartItem.quantity * addOnProductService.price) + (
+                                        (addOnQty * addOnProductService.price) + (
                                             countMapSummaries[addOnProductService.type]?.first
                                                 ?: 0.0
                                             )
                                     countMapSummaries[addOnProductService.type] =
-                                        totalPriceAddOn to qtyAddOn
+                                        totalPriceAddOn to totalQtyAddOn
                                 }
                             }
                         }

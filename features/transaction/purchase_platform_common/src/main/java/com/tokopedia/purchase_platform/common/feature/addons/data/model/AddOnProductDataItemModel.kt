@@ -14,7 +14,8 @@ data class AddOnProductDataItemModel(
     var status: Int = -1,
     var type: Int = -1,
     var qty: Int = -1,
-    var iconUrl: String = ""
+    var iconUrl: String = "",
+    var fixedQty: Boolean = false
 ) : Parcelable {
 
     val isChecked: Boolean
