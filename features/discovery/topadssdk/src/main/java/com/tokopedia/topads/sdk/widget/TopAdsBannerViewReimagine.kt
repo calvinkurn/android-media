@@ -33,9 +33,7 @@ import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductU
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopViewMoreUiModel
 import com.tokopedia.topads.sdk.view.reimagine.BannerAdsAdapterTypeFactoryReimagine
 import com.tokopedia.unifycomponents.toPx
-import kotlinx.android.synthetic.main.layout_ads_banner_digital.view.*
-import kotlinx.android.synthetic.main.layout_ads_banner_shop_a_pager.view.*
-import kotlinx.android.synthetic.main.layout_ads_banner_shop_b_pager.view.*
+import com.tokopedia.unifyprinciples.Typography
 import java.util.*
 
 class TopAdsBannerViewReimagine : TopAdsBannerView {
@@ -70,7 +68,6 @@ class TopAdsBannerViewReimagine : TopAdsBannerView {
             list.adapter = bannerAdsAdapter
             list.addItemDecoratorShopAdsReimagine()
 
-            list.addOnScrollListener(CustomScrollListener(back_view))
             val snapHelper = GravitySnapHelper(Gravity.START)
             snapHelper.attachToRecyclerView(list)
 
@@ -122,8 +119,8 @@ class TopAdsBannerViewReimagine : TopAdsBannerView {
                             shop_badge.hide()
                         }
                     }
-                    shop_name?.text = MethodChecker.fromHtml(cpmData.cpm.cpmShop.name)
-                    description?.text = cpmData.cpm.cpmShop.slogan
+                    findViewById<TextView>(R.id.shop_name)?.text = MethodChecker.fromHtml(cpmData.cpm.cpmShop.name)
+                    findViewById<Typography>(R.id.description)?.text = cpmData.cpm.cpmShop.slogan
 
                     shopDetail.setOnClickListener {
                         if (topAdsBannerViewClickListener != null) {

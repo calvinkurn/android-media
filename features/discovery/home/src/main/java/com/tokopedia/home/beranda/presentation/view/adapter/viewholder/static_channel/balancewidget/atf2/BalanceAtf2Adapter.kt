@@ -39,4 +39,13 @@ class BalanceAtf2Adapter(
     override fun onBindViewHolder(holder: BaseBalanceViewHolder<BalanceVisitable>, position: Int) {
         holder.bind(getItem(position), listener)
     }
+
+    override fun onBindViewHolder(
+        holder: BaseBalanceViewHolder<BalanceVisitable>,
+        position: Int,
+        payloads: MutableList<Any>
+    ) {
+        if(payloads.isEmpty()) onBindViewHolder(holder, position)
+        else holder.bind(getItem(position), listener, payloads)
+    }
 }
