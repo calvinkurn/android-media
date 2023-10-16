@@ -25,6 +25,8 @@ class LogisticTestInterceptor : BaseLogisticInterceptor() {
 
     var getCollectionPointResponsePath: String = ""
 
+    var districtBoundaryResponsePath: String = ""
+
     override fun intercept(chain: Interceptor.Chain): Response {
         val copy = chain.request().newBuilder().build()
         val requestString = readRequestString(copy)
@@ -49,6 +51,8 @@ class LogisticTestInterceptor : BaseLogisticInterceptor() {
             return mockResponse(copy, getDistrictCenterResponsePath)
         } else if (requestString.contains(AUTO_FILL_KEY)) {
             return mockResponse(copy, autofillResponsePath)
+        } else if (requestString.contains(DISTRICT_BOUNDARY_KEY)) {
+            return mockResponse(copy, districtBoundaryResponsePath)
         }
         return chain.proceed(chain.request())
     }
@@ -62,6 +66,9 @@ class LogisticTestInterceptor : BaseLogisticInterceptor() {
         saveAddressResponsePath = ""
         pinPointValidationResponsePath = ""
         getCollectionPointResponsePath = ""
+        getDistrictCenterResponsePath = ""
+        autofillResponsePath = ""
+        districtBoundaryResponsePath = ""
     }
 }
 
@@ -75,3 +82,4 @@ const val EDIT_ADDRESS_KEY = "kero_edit_address"
 const val PINPOINT_VALIDATION_KEY = "pinpoint_validation"
 const val GET_COLLECTION_POINT = "GetCollectionPoint"
 const val AUTO_FILL_KEY = "kero_maps_autofill"
+const val DISTRICT_BOUNDARY_KEY = "keroGetDistrictBoundaryArray"

@@ -120,11 +120,9 @@ class AddNewAddressRevampNegativeTest {
 
     @Test
     fun addAddress_EdgeCase() {
-        val queryPath = "tracker/logistic/addaddress_new_user_revamp_negative.json"
         val screenName = "/user/address/create/cart"
         logisticInterceptor.getDistrictRecommendationResponsePath = getRawString(context, R.raw.get_district_recom_jakarta)
         logisticInterceptor.getDistrictCenterResponsePath = getRawString(context, R.raw.get_district_center_taman_sari)
-        logisticInterceptor.autofillResponsePath = getRawString(context, R.raw.autofill_taman_sari)
         logisticInterceptor.autoCompleteResponsePath = getRawString(context, R.raw.autocomplete_taman_sari)
 
         addAddressRevamp {
@@ -140,6 +138,8 @@ class AddNewAddressRevampNegativeTest {
             clickPostalCodeItem()
             clickChoosePostalCode()
             scrollToBottom()
+            logisticInterceptor.autofillResponsePath = getRawString(context, R.raw.autofill_taman_sari)
+            logisticInterceptor.districtBoundaryResponsePath = getRawString(context, R.raw.district_boundary_taman_sari)
             clickPinpointWidgetNegative()
             clickCariUlang()
             searchAddressStreet(KEYWORD)
