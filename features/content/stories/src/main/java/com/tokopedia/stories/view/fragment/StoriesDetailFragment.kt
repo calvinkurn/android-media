@@ -344,7 +344,7 @@ class StoriesDetailFragment @Inject constructor(
         }
     }
 
-    private fun renderTimer(prevTimer: TimerStatusInfo, timerState: TimerStatusInfo) {
+    private fun renderTimer(prevTimer: TimerStatusInfo?, timerState: TimerStatusInfo) {
         if (prevTimer == timerState) return
 
         showStoriesActionView(timerState.event == RESUME)
@@ -601,7 +601,7 @@ class StoriesDetailFragment @Inject constructor(
         root.showWithCondition(isShow)
 
         if(!isShow) return@with
-        renderTimer(StoriesDetail.Empty)
+        renderTimer(null, TimerStatusInfo.Empty) //will be improved in rendered failed
     }
 
     override fun onDestroyView() {
