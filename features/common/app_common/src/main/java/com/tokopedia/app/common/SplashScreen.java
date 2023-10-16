@@ -197,10 +197,9 @@ public class SplashScreen extends AppCompatActivity {
             }
         }
         intent.setData(Uri.parse(tokopediaDeeplink));
-        WeakReference<Activity> reference = AppUtil.INSTANCE.getCurrentActivityReference();
-        if (reference!=null) {
-            Activity activity = reference.get();
-            activity.startActivity(intent);
+        boolean startFromCurrent = AppUtil.INSTANCE.startActivityFromCurrentActivity(intent);
+        if (!startFromCurrent) {
+            startActivity(intent);
         }
         finish();
     }
