@@ -14,9 +14,12 @@ object HomeRollenceController {
 
     var rollenceLoadTime: String = ""
 
+    var rollenceLoadAtfCache: String = RollenceKey.HOME_LOAD_ATF_CACHE_ROLLENCE_CONTROL
+
     fun fetchHomeRollenceValue(context: Context) {
         fetchAtfRollenceValue(context)
         fetchLoadTimeRollenceValue()
+        fetchAtfCacheRollenceValue()
     }
 
     private fun fetchAtfRollenceValue(context: Context) {
@@ -41,6 +44,21 @@ object HomeRollenceController {
         } catch (_: Exception) {
             RollenceKey.HOME_LOAD_TIME_CONTROL
         }
+    }
+
+    private fun fetchAtfCacheRollenceValue() {
+        rollenceLoadAtfCache = try {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                RollenceKey.HOME_LOAD_ATF_CACHE_ROLLENCE_KEY,
+                RollenceKey.HOME_LOAD_ATF_CACHE_ROLLENCE_CONTROL
+            )
+        } catch (_: Exception) {
+            RollenceKey.HOME_LOAD_ATF_CACHE_ROLLENCE_CONTROL
+        }
+    }
+
+    fun isLoadAtfFromCache(): Boolean {
+        return rollenceLoadAtfCache == RollenceKey.HOME_LOAD_ATF_CACHE_ROLLENCE_EXP
     }
 
     private fun getAtfRollenceValue(): String {
