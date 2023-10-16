@@ -208,6 +208,9 @@ import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity
 import com.tokopedia.shop_widget.favourite.view.activity.ShopFavouriteListActivity
 import com.tokopedia.shop_widget.mvc_locked_to_product.util.MvcLockedToProductUtil
 import com.tokopedia.shop_widget.note.view.bottomsheet.ShopNoteBottomSheet
+import com.tokopedia.stories.widget.StoriesWidgetManager
+import com.tokopedia.stories.widget.domain.StoriesEntryPoint
+import com.tokopedia.stories.widget.storiesManager
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifycomponents.R.id.bottom_sheet_wrapper
@@ -474,6 +477,11 @@ class ShopPageHeaderFragment :
         ShopEtalaseNotFoundBottomSheet.createInstance()
     }
 
+    private val storiesManager by storiesManager(StoriesEntryPoint.ShopPage) {
+        setScrollingParent(viewBindingShopContentLayout?.appBarLayout?.parent as? ViewGroup)
+        setAnimationStrategy(com.tokopedia.stories.widget.OneTimeAnimationStrategy())
+    }
+
     override fun getComponent() = activity?.run {
         DaggerShopPageHeaderComponent.builder().shopPageHeaderModule(ShopPageHeaderModule())
             .shopComponent(ShopComponentHelper().getComponent(application, this)).build()
@@ -605,7 +613,7 @@ class ShopPageHeaderFragment :
             this,
             this,
             this,
-            this
+            this,
         )
         initToolbar()
         initAdapter()
@@ -1262,6 +1270,7 @@ class ShopPageHeaderFragment :
             )
         }
         shopLandingPageInitAffiliateCookie()
+        storiesManager.updateStories(listOf(shopId))
     }
 
     private fun checkAffiliateAppLink(uri: Uri) {
@@ -2475,6 +2484,7 @@ class ShopPageHeaderFragment :
     }
 
     override fun refreshData() {
+        storiesManager.updateStories(listOf(shopId))
         hideShopPageFab()
         val shopProductListFragment: Fragment? =
             viewPagerAdapterHeader?.getRegisteredFragment(if (shopPageHeaderDataModel?.isOfficial == true) TAB_POSITION_HOME + 1 else TAB_POSITION_HOME)
@@ -2986,6 +2996,10 @@ class ShopPageHeaderFragment :
             componentModel,
             valueDisplayed
         )
+    }
+
+    override fun getStoriesWidgetManager(): StoriesWidgetManager {
+        return storiesManager
     }
 
     override fun onShopPerformanceWidgetBadgeTextValueItemClicked(

@@ -2797,6 +2797,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         assertTrue(viewModel.resultAffiliate.value is Success)
     }
 
+    @Test
     fun `error check affiliate eligibility`() {
         val mockError = Exception()
         val mockParam = AffiliateInput()
