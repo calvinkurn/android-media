@@ -1,5 +1,7 @@
 package com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube
 
+import android.widget.ImageView
+import android.widget.ProgressBar
 import com.google.android.youtube.player.YouTubeThumbnailLoader
 import com.google.android.youtube.player.YouTubeThumbnailView
 import com.tokopedia.feedcomponent.R
@@ -9,7 +11,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.youtubeutils.common.YoutubeInitializer
 import com.tokopedia.youtubeutils.common.YoutubePlayerConstant
-import kotlinx.android.synthetic.main.item_post_youtube.view.*
 
 /**
  * @author by milhamj on 14/12/18.
@@ -19,32 +20,36 @@ class YoutubeViewHolder(private val listener: YoutubePostListener) : BasePostVie
 
     private var youTubeThumbnailLoader: YouTubeThumbnailLoader? = null
 
+    private val youtubeThumbnail: YouTubeThumbnailView = itemView.findViewById(R.id.youtubeThumbnail)
+    private val ivPlay: ImageView = itemView.findViewById(R.id.ivPlay)
+    private val progressBar: ProgressBar = itemView.findViewById(R.id.progressBar)
+
     override fun bind(element: YoutubeModel) {
         try {
-            itemView.youtubeThumbnail.initialize(
+            youtubeThumbnail.initialize(
                     YoutubePlayerConstant.GOOGLE_API_KEY,
                     YoutubeInitializer.videoThumbnailInitializer(element.youtubeId, object : YoutubeInitializer.OnVideoThumbnailInitialListener {
                         override fun onSuccessInitializeThumbnail(loader: YouTubeThumbnailLoader, youTubeThumbnailView: YouTubeThumbnailView) {
-                            itemView.youtubeThumbnail.show()
-                            itemView.youtubeThumbnail.setOnClickListener { onThumbnailClicked(element) }
+                            youtubeThumbnail.show()
+                            youtubeThumbnail.setOnClickListener { onThumbnailClicked(element) }
                             youTubeThumbnailLoader = loader
 
                             destroyReleaseProcess()
-                            itemView.ivPlay.show()
-                            itemView.progressBar.hide()
+                            ivPlay.show()
+                            progressBar.hide()
                         }
 
                         override fun onErrorInitializeThumbnail(error: String) {
                             destroyReleaseProcess()
-                            itemView.ivPlay.show()
-                            itemView.ivPlay.setOnClickListener { onThumbnailClicked(element) }
-                            itemView.progressBar.hide()
+                            ivPlay.show()
+                            ivPlay.setOnClickListener { onThumbnailClicked(element) }
+                            progressBar.hide()
                         }
                     })
             )
         } catch (e: Exception) {
-            itemView.progressBar.show()
-            itemView.youtubeThumbnail.hide()
+            progressBar.show()
+            youtubeThumbnail.hide()
         }
     }
 
