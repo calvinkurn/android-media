@@ -21,7 +21,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.withCache
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
-import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -68,7 +67,7 @@ import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.PreviousDetai
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.ResumeStories
 import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
 import com.tokopedia.stories.view.viewmodel.state.BottomSheetType
-import com.tokopedia.stories.view.viewmodel.state.isAnyShown
+import com.tokopedia.stories.view.viewmodel.state.TimerStatusInfo
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import kotlinx.coroutines.Job
@@ -186,8 +185,8 @@ class StoriesDetailFragment @Inject constructor(
                     val curr = currState.storiesMainData.groupItems
                         .getOrNull(currState.storiesMainData.selectedGroupPosition)?.detail
                     renderStoriesDetail(prev, curr)
+                    renderTimer(prevState.timerStatus, currState.timerStatus)
                 }
-                observeBottomSheetStatus(prevState?.bottomSheetStatus, currState.bottomSheetStatus)
             }
         }
     }
@@ -282,7 +281,7 @@ class StoriesDetailFragment @Inject constructor(
 
     private fun renderStoriesDetail(
         prevState: StoriesDetail?,
-        state: StoriesDetail?
+        state: StoriesDetail?,
     ) {
         if (prevState == state ||
             state == StoriesDetail() ||
@@ -297,8 +296,6 @@ class StoriesDetailFragment @Inject constructor(
 
         val prevItem = prevState?.detailItems?.getOrNull(prevState.selectedDetailPosition)
         val currentItem = state.detailItems.getOrNull(state.selectedDetailPosition) ?: return
-
-        renderTimer(state)
 
         if (currentItem.isContentLoaded) return
 
@@ -349,27 +346,17 @@ class StoriesDetailFragment @Inject constructor(
         }
     }
 
-    private fun observeBottomSheetStatus(
-        prevState: Map<BottomSheetType, Boolean>?,
-        state: Map<BottomSheetType, Boolean>
-    ) {
-        if (prevState == state) return
-        if (state.isAnyShown.orFalse()) pauseStories() else resumeStories()
-    }
+    private fun renderTimer(prevTimer: TimerStatusInfo, timerState: TimerStatusInfo) {
+        if (prevTimer == timerState) return
 
-    private fun renderTimer(state: StoriesDetail) {
-        val data = state.detailItems[state.selectedDetailPosition]
-
-        showStoriesActionView(data.event == RESUME)
+        showStoriesActionView(timerState.event == RESUME)
 
         with(binding.cvStoriesDetailTimer) {
             apply {
                 setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
                 setContent {
                     StoriesDetailTimer(
-                        currentPosition = state.selectedDetailPosition,
-                        itemCount = state.detailItems.size,
-                        data = data,
+                        timerInfo = timerState,
                     ) { if (isEligiblePage) viewModelAction(NextDetail) }
                 }
             }

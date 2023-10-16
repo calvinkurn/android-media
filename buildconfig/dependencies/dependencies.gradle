@@ -475,6 +475,12 @@ ext {
             accompanistPager    : "com.google.accompanist:accompanist-pager:$accompanistPagerVersion"
     ]
 
+    kotlinParcelizeRuntimeDependencies = [
+            group: 'org.jetbrains.kotlin',
+            name: 'kotlin-parcelize-runtime',
+            version: '1.7.10'
+    ]
+
     sellerFeedbackKmpVersion = "1.0.0"
     gqlKmpVersion = "1.0.0"
     ktorVersion = "2.3.3"
