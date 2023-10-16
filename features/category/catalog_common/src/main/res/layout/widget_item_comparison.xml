@@ -6,11 +6,27 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tool="http://schemas.android.com/tools">
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tfCatalogTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:layout_marginTop="16dp"
+        android:layout_marginHorizontal="10dp"
+        android:text="@string/catalog_common_text_comparison_title"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="display_1"
+        app:typographyWeight="bold" />
+
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidelineComparison"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:layout_marginTop="16dp"
         app:layout_constraintGuide_percent="0.5" />
 
     <include
@@ -20,17 +36,29 @@
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toStartOf="@+id/guidelineComparison"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/tfCatalogTitle" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvComparisonItems"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        tool:listitem="@layout/widget_item_comparison_content"
-        tool:itemCount="1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guidelineComparison"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/tfCatalogTitle"
+        tool:itemCount="1"
+        tool:listitem="@layout/widget_item_comparison_content" />
 
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnSeeMore"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginHorizontal="8dp"
+        app:unifyButtonVariant="ghost"
+        app:unifyButtonType="alternate"
+        app:unifyButtonSize="small"
+        android:text="@string/text_see_more"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/layoutComparison" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
