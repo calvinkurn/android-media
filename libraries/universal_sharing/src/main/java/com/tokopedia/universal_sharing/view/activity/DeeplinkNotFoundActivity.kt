@@ -1,5 +1,6 @@
 package com.tokopedia.universal_sharing.view.activity
 
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -36,7 +37,11 @@ class DeeplinkNotFoundActivity : BaseActivity() {
                     getString(R.string.description_error_not_found)
                 ge.errorAction.text = getString(R.string.cta_update_app)
                 ge.setActionClickListener {
-                    startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getStoreUrl())))
+                    try {
+                        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(APPLINK_PLAYSTORE + packageName)))
+                    } catch (anfe: ActivityNotFoundException) {
+                        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(URL_PLAYSTORE + packageName)))
+                    }
                 }
             } else {
                 ge.errorTitle.text = getString(R.string.title_deeplink_not_found)
@@ -54,10 +59,9 @@ class DeeplinkNotFoundActivity : BaseActivity() {
         return AppUpdateUtil.needUpdate(this)
     }
 
-    private fun getStoreUrl() =
-        "https://play.google.com/store/apps/details?id=" + applicationContext.packageName
-
     companion object {
+        const val APPLINK_PLAYSTORE = "market://details?id="
+        const val URL_PLAYSTORE = "https://play.google.com/store/apps/details?id="
         const val KEY_TYPE = "type"
         const val TYPE_UPDATE = "update"
     }
