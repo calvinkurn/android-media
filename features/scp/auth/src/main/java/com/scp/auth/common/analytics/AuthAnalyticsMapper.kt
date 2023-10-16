@@ -326,7 +326,7 @@ object AuthAnalyticsMapper {
             }
 
             LSdkEventName.LSDK_POPUP_VIEW -> {
-                if (param[CVEventFieldName.TYPE] == POPUP_TYPE_DIALOG) {
+                if (param[CVEventFieldName.TYPE] == LSdkPopupErrorType.TokoDialog.status) {
                     return "46295"
                 } else {
                     return "46291"
@@ -384,7 +384,7 @@ object AuthAnalyticsMapper {
     private fun getPopupActionType(eventName: String, param: Map<String, Any?>): String {
         return when (eventName) {
             LSdkEventName.LSDK_POPUP_VIEW -> {
-                if (param[CVEventFieldName.TYPE] == POPUP_TYPE_DIALOG) {
+                if (param[CVEventFieldName.TYPE] == LSdkPopupErrorType.TokoDialog.status) {
                     return createScreenAction("error popup")
                 } else {
                     return createScreenAction("error page")
@@ -421,7 +421,7 @@ object AuthAnalyticsMapper {
     private fun getPopupEventLabel(eventName: String, param: Map<String, Any?>): String {
         return when (eventName) {
             LSdkEventName.LSDK_POPUP_VIEW -> {
-                if (param[CVEventFieldName.TYPE] == POPUP_TYPE_DIALOG) {
+                if (param[CVEventFieldName.TYPE] == LSdkPopupErrorType.TokoDialog.status) {
                     return "${setCcuButtonValue(param)} - ${param[CVEventFieldName.ERROR_MESSAGE]} - ${getTransactionId(param)}"
                 } else {
                     return "${param[CVEventFieldName.ERROR_TYPE]} - ${getTransactionId(param)}"
@@ -429,8 +429,14 @@ object AuthAnalyticsMapper {
             }
 
             LSdkEventName.LSDK_POPUP_ACTION -> {
-                if (param[CVEventFieldName.TYPE] == POPUP_TYPE_DIALOG) {
-                    return ""
+                if (param[CVEventFieldName.TYPE] == LSdkPopupErrorType.TokoDialog.status) {
+                    if (param[LSdkAnalyticFieldName.ACTION] == LSdkPopupActionType.Ok.status) {
+                        return "${param[CVEventFieldName.ERROR_MESSAGE]} - ${getTransactionId(param)}"
+                    } else if (param[LSdkAnalyticFieldName.ACTION] == LSdkPopupActionType.Cancelled.status) {
+                        return "${setCcuButtonValue(param)} - ${param[CVEventFieldName.ERROR_MESSAGE]} - ${getTransactionId(param)}"
+                    } else {
+                        return ""
+                    }
                 } else {
                     return "${param[CVEventFieldName.ERROR_TYPE]} - ${getTransactionId(param)}"
                 }
@@ -515,7 +521,6 @@ object AuthAnalyticsMapper {
     private const val SDK_VERSION = "sdkVersion"
     private const val BUSINESS_UNIT = "businessUnit"
     private const val TRACKER_ID = "trackerId"
-    private const val POPUP_TYPE_DIALOG = "dialog"
     private const val CCU_BUTTON_VALUE = "with CCU button"
     private const val WITHOUT_CCU_BUTTON_VALUE = "no CCU button"
 
