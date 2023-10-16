@@ -2,66 +2,159 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/clContainer"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tpgRecommendationTitle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="8dp"
-        android:ellipsize="end"
-        android:gravity="center_vertical"
-        android:lines="2"
-        android:maxLines="2"
-        android:textColor="@color/Unify_Static_White"
+    <ImageView
+        android:id="@+id/ivPromoRecommendationBackground"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:contentDescription="@null"
+        android:scaleType="matrix"
+        app:layout_constrainedHeight="true"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/btnRecommendationUseVoucher"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_3"
-        tools:text="Kamu bisa hemat Rp30.000 dari 2 promo!" />
+        app:layout_constraintVertical_bias="0"
+        app:unify_image_corner_radius="0"
+        app:unify_image_type="rect" />
 
-    <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/btnRecommendationUseVoucher"
-        android:layout_width="96dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="16dp"
-        android:text="@string/promo_usage_label_use"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="@+id/tpgRecommendationTitle"
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottieAnimationView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:scaleType="centerCrop"
+        app:layout_constrainedHeight="true"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tpgRecommendationTitle"
-        app:unifyButtonSize="medium"
-        app:unifyButtonVariant="ghost"
-        tools:visibility="invisible" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0"
+        app:lottie_autoPlay="false"
+        app:lottie_loop="false" />
 
-    <ImageView
-        android:id="@+id/ivCheckmarkOutline"
-        android:layout_width="wrap_content"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clBottomSheetHeader"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="invisible"
-        android:contentDescription="@null"
-        app:layout_constraintBottom_toBottomOf="@+id/ivCheckmark"
-        app:layout_constraintEnd_toEndOf="@+id/ivCheckmark"
-        app:layout_constraintStart_toStartOf="@+id/ivCheckmark"
-        app:layout_constraintTop_toTopOf="@+id/ivCheckmark"
-        app:srcCompat="@drawable/promo_usage_ic_checkmark_outline"
-        tools:visibility="visible" />
-
-    <ImageView
-        android:id="@+id/ivCheckmark"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginEnd="16dp"
-        android:background="@drawable/promo_usage_ic_voucher_recommendation_applied"
-        android:contentDescription="@null"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="@+id/btnRecommendationUseVoucher"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/btnRecommendationUseVoucher"
-        tools:visibility="visible" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/btnBottomSheetHeaderClose"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            app:icon_color_light_enable="@color/Unify_Static_White"
+            app:icon_color_night_enable="@color/Unify_Static_White"
+            app:icon_name="CLOSE"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tpgBottomSheetHeaderTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="16dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:text="@string/promo_usage_label_promo"
+            android:textColor="@color/Unify_Static_White"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/btnBottomSheetHeaderClose"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="heading_3"
+            tools:text="Promo" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clRecommendationContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/clBottomSheetHeader">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tpgRecommendationTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="8dp"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:lines="2"
+            android:maxLines="2"
+            android:textColor="@color/Unify_Static_White"
+            app:layout_constraintBottom_toBottomOf="@+id/ivCheckmarkOutline"
+            app:layout_constraintEnd_toStartOf="@+id/btnRecommendationUseVoucher"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/ivCheckmarkOutline"
+            app:typographyType="heading_3"
+            tools:text="Kamu bisa hemat Rp30.000 dari 2 promo!" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btnRecommendationUseVoucher"
+            android:layout_width="96dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="16dp"
+            android:text="@string/promo_usage_label_use"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@+id/tpgRecommendationTitle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tpgRecommendationTitle"
+            app:unifyButtonSize="medium"
+            app:unifyButtonVariant="ghost"
+            tools:visibility="invisible" />
+
+        <ImageView
+            android:id="@+id/ivCheckmarkOutline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@null"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/ivCheckmark"
+            app:layout_constraintEnd_toEndOf="@+id/ivCheckmark"
+            app:layout_constraintStart_toStartOf="@+id/ivCheckmark"
+            app:layout_constraintTop_toTopOf="@+id/ivCheckmark"
+            app:srcCompat="@drawable/promo_usage_ic_checkmark_outline"
+            app:unify_image_corner_radius="0"
+            app:unify_image_type="rect"
+            tools:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/ivCheckmark"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/promo_usage_ic_voucher_recommendation_applied"
+            android:contentDescription="@null"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@+id/btnRecommendationUseVoucher"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/btnRecommendationUseVoucher"
+            app:unify_image_type="circle"
+            tools:visibility="visible" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvPromoRecommendation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ivCheckmarkOutline" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

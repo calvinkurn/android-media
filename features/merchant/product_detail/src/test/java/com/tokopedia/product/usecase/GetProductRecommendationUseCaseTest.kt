@@ -41,10 +41,10 @@ class GetProductRecommendationUseCaseTest {
 
     private val useCaseTest by lazy {
         GetProductRecommendationUseCase(
-                dispatcher = CoroutineTestDispatchersProvider,
-                getRecommendationFilterChips = getRecommendationFilterChips,
-                getRecommendationUseCase = getRecommendationUseCase,
-                userSessionInterface = userSession
+            dispatcher = CoroutineTestDispatchersProvider,
+            getRecommendationFilterChips = getRecommendationFilterChips,
+            getRecommendationUseCase = getRecommendationUseCase,
+            userSessionInterface = userSession
         )
     }
 
@@ -57,18 +57,20 @@ class GetProductRecommendationUseCaseTest {
     fun `on success get recomm without filter`() {
         runTest {
             val mockResponse = RecommendationWidget(
-                    tid = "1",
-                    recommendationItemList = listOf(RecommendationItem(), RecommendationItem())
+                tid = "1",
+                recommendationItemList = listOf(RecommendationItem(), RecommendationItem())
             )
             coEvery {
                 getRecommendationUseCase.getData(any())
             } returns listOf(mockResponse)
 
             val mockRequestParams = GetProductRecommendationUseCase.createParams(
-                    productId = "123",
-                    pageName = "pdp_4",
-                    isTokoNow = false,
-                    miniCartData = null
+                productId = "123",
+                pageName = "pdp_4",
+                isTokoNow = false,
+                miniCartData = null,
+                queryParam = "",
+                thematicId = ""
             )
             val result = useCaseTest.executeOnBackground(mockRequestParams)
 
@@ -82,7 +84,7 @@ class GetProductRecommendationUseCaseTest {
                 getRecommendationFilterChips.setParams(any())
             }
 
-            //assert request params
+            // assert request params
             val reqParams = slotRecomRequestParams.captured
             Assert.assertEquals(reqParams.pageNumber, 1)
             Assert.assertEquals(reqParams.pageName, "pdp_4")
@@ -100,10 +102,11 @@ class GetProductRecommendationUseCaseTest {
     fun `on success get recomm with filter`() {
         runTest {
             val mockResponse = RecommendationWidget(
-                    tid = "1",
-                    recommendationItemList = listOf(
-                            RecommendationItem(),
-                            RecommendationItem())
+                tid = "1",
+                recommendationItemList = listOf(
+                    RecommendationItem(),
+                    RecommendationItem()
+                )
             )
 
             coEvery {
@@ -111,14 +114,16 @@ class GetProductRecommendationUseCaseTest {
             } returns listOf(mockResponse)
 
             val mockFilter = RecommendationFilterChipsEntity.FilterAndSort(
-                    filterChip = listOf(
-                            RecommendationFilterChipsEntity.RecommendationFilterChip(
-                                    name = "katun chip",
-                                    isActivated = false),
-                            RecommendationFilterChipsEntity.RecommendationFilterChip(
-                                    name = "kulit chip",
-                                    isActivated = false)
+                filterChip = listOf(
+                    RecommendationFilterChipsEntity.RecommendationFilterChip(
+                        name = "katun chip",
+                        isActivated = false
+                    ),
+                    RecommendationFilterChipsEntity.RecommendationFilterChip(
+                        name = "kulit chip",
+                        isActivated = false
                     )
+                )
             )
 
             coEvery {
@@ -126,10 +131,12 @@ class GetProductRecommendationUseCaseTest {
             } returns mockFilter
 
             val mockRequestParams = GetProductRecommendationUseCase.createParams(
-                    productId = "123",
-                    pageName = "pdp_3",
-                    isTokoNow = false,
-                    miniCartData = null
+                productId = "123",
+                pageName = "pdp_3",
+                isTokoNow = false,
+                miniCartData = null,
+                queryParam = "",
+                thematicId = ""
             )
             val result = useCaseTest.executeOnBackground(mockRequestParams)
 
@@ -139,7 +146,7 @@ class GetProductRecommendationUseCaseTest {
                 getRecommendationFilterChips.executeOnBackground()
             }
 
-            //assert request params
+            // assert request params
             val reqParams = slotRecomRequestParams.captured
             Assert.assertEquals(reqParams.pageNumber, 1)
             Assert.assertEquals(reqParams.pageName, "pdp_3")
@@ -159,19 +166,22 @@ class GetProductRecommendationUseCaseTest {
     fun `on success get recomm without filter tokonow`() {
         runTest {
             val mockResponse = RecommendationWidget(
-                    tid = "1",
-                    layoutType = "horizontal-atc",
-                    recommendationItemList = listOf(RecommendationItem(
-                            productId = 1,
-                            parentID= 11,
-                            quantity = 2,
-                            addToCartType = RecommendationItem.AddToCartType.QuantityEditor,
-                    ), RecommendationItem(
-                            productId = 2,
-                            parentID = 22,
-                            quantity = 3,
-                            addToCartType = RecommendationItem.AddToCartType.QuantityEditor,
-                    ))
+                tid = "1",
+                layoutType = "horizontal-atc",
+                recommendationItemList = listOf(
+                    RecommendationItem(
+                        productId = 1,
+                        parentID = 11,
+                        quantity = 2,
+                        addToCartType = RecommendationItem.AddToCartType.QuantityEditor
+                    ),
+                    RecommendationItem(
+                        productId = 2,
+                        parentID = 22,
+                        quantity = 3,
+                        addToCartType = RecommendationItem.AddToCartType.QuantityEditor
+                    )
+                )
             )
 
             coEvery {
@@ -179,17 +189,20 @@ class GetProductRecommendationUseCaseTest {
             } returns listOf(mockResponse)
 
             val mockMiniCart = mutableMapOf(
-                    "1" to MiniCartItem.MiniCartItemProduct(
-                            productId = "1",
-                            productParentId = "11",
-                            quantity = 10)
+                "1" to MiniCartItem.MiniCartItemProduct(
+                    productId = "1",
+                    productParentId = "11",
+                    quantity = 10
+                )
             )
 
             val mockRequestParams = GetProductRecommendationUseCase.createParams(
-                    productId = "1",
-                    pageName = "pdp_4",
-                    isTokoNow = true,
-                    miniCartData = mockMiniCart
+                productId = "1",
+                pageName = "pdp_4",
+                isTokoNow = true,
+                miniCartData = mockMiniCart,
+                queryParam = "",
+                thematicId = ""
             )
             val result = useCaseTest.executeOnBackground(mockRequestParams)
 
@@ -203,7 +216,7 @@ class GetProductRecommendationUseCaseTest {
                 getRecommendationFilterChips.setParams(any())
             }
 
-            //assert request params
+            // assert request params
             val reqParams = slotRecomRequestParams.captured
             Assert.assertEquals(reqParams.pageNumber, 1)
             Assert.assertEquals(reqParams.pageName, "pdp_4")
@@ -218,7 +231,7 @@ class GetProductRecommendationUseCaseTest {
             val existMiniCartProduct = result.recommendationItemList.firstOrNull {
                 it.productId == 1L
             }
-            //make sure updated with minicart
+            // make sure updated with minicart
             Assert.assertNotNull(existMiniCartProduct)
             Assert.assertEquals(existMiniCartProduct!!.quantity, 10)
             Assert.assertEquals(existMiniCartProduct.currentQuantity, 10)
@@ -226,7 +239,7 @@ class GetProductRecommendationUseCaseTest {
             val inexsitMiniCartProduct = result.recommendationItemList.firstOrNull {
                 it.productId == 2L
             }
-            //make sure not update
+            // make sure not update
             Assert.assertNotNull(inexsitMiniCartProduct)
             Assert.assertEquals(inexsitMiniCartProduct!!.quantity, 0)
             Assert.assertEquals(inexsitMiniCartProduct.currentQuantity, 0)
@@ -237,8 +250,8 @@ class GetProductRecommendationUseCaseTest {
     fun `on success get recomm with empty list`() {
         runTest {
             val mockResponse = RecommendationWidget(
-                    tid = "1",
-                    recommendationItemList = emptyList()
+                tid = "1",
+                recommendationItemList = emptyList()
             )
             coEvery {
                 getRecommendationUseCase.getData(any())
@@ -249,10 +262,12 @@ class GetProductRecommendationUseCaseTest {
             } throws Throwable()
 
             val mockRequestParams = GetProductRecommendationUseCase.createParams(
-                    productId = "123",
-                    pageName = "pdp_3",
-                    isTokoNow = false,
-                    miniCartData = null
+                productId = "123",
+                pageName = "pdp_3",
+                isTokoNow = false,
+                miniCartData = null,
+                queryParam = "",
+                thematicId = ""
             )
 
             thrown.expect(MessageErrorException::class.java)
@@ -269,8 +284,8 @@ class GetProductRecommendationUseCaseTest {
     fun `on success get recomm throwable filter`() {
         runTest {
             val mockResponse = RecommendationWidget(
-                    tid = "1",
-                    recommendationItemList = listOf(RecommendationItem(), RecommendationItem())
+                tid = "1",
+                recommendationItemList = listOf(RecommendationItem(), RecommendationItem())
             )
             coEvery {
                 getRecommendationUseCase.getData(any())
@@ -281,10 +296,12 @@ class GetProductRecommendationUseCaseTest {
             } throws Throwable()
 
             val mockRequestParams = GetProductRecommendationUseCase.createParams(
-                    productId = "123",
-                    pageName = "pdp_3",
-                    isTokoNow = false,
-                    miniCartData = null
+                productId = "123",
+                pageName = "pdp_3",
+                isTokoNow = false,
+                miniCartData = null,
+                queryParam = "",
+                thematicId = ""
             )
             val result = useCaseTest.executeOnBackground(mockRequestParams)
 
@@ -294,7 +311,7 @@ class GetProductRecommendationUseCaseTest {
                 getRecommendationFilterChips.executeOnBackground()
             }
 
-            //assert request params
+            // assert request params
             val reqParams = slotRecomRequestParams.captured
             Assert.assertEquals(reqParams.pageNumber, 1)
             Assert.assertEquals(reqParams.pageName, "pdp_3")
@@ -320,10 +337,12 @@ class GetProductRecommendationUseCaseTest {
             } throws Throwable()
 
             val mockRequestParams = GetProductRecommendationUseCase.createParams(
-                    productId = "123",
-                    pageName = "pdp_3",
-                    isTokoNow = false,
-                    miniCartData = null
+                productId = "123",
+                pageName = "pdp_3",
+                isTokoNow = false,
+                miniCartData = null,
+                queryParam = "",
+                thematicId = ""
             )
             thrown.expect(MessageErrorException::class.java)
             useCaseTest.executeOnBackground(mockRequestParams)
