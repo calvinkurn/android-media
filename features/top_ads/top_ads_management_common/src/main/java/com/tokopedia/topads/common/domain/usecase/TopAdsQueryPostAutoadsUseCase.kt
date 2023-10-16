@@ -1,6 +1,5 @@
 package com.tokopedia.topads.common.domain.usecase
 
-import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
@@ -9,13 +8,12 @@ import com.tokopedia.topads.common.data.model.AutoAdsParam
 import com.tokopedia.topads.common.domain.model.TopAdsAutoAdsModel
 import com.tokopedia.topads.common.data.response.TopAdsAutoAdsV2
 import com.tokopedia.topads.common.domain.mapper.TopAdsAutoAdsMapper.mapToDomain
-import com.tokopedia.topads.common.domain.usecase.TopAdsQueryPostAutoadsUseCase.Companion.QUERY
+import com.tokopedia.topads.common.domain.query.GetTopadsPostAutoAdsV2
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-@GqlQuery("TopAdsQueryPostAutoads", QUERY)
 class TopAdsQueryPostAutoadsUseCase @Inject constructor(
     graphqlRepository: GraphqlRepository,
 ) : GraphqlUseCase<TopAdsAutoAdsV2.Response>(graphqlRepository) {
@@ -27,7 +25,7 @@ class TopAdsQueryPostAutoadsUseCase @Inject constructor(
                 .Builder(CacheType.ALWAYS_CLOUD)
                 .build()
         )
-        setGraphqlQuery(TopAdsQueryPostAutoads())
+        setGraphqlQuery(GetTopadsPostAutoAdsV2)
     }
 
     fun executeQuery(param: AutoAdsParam, block: (Result<TopAdsAutoAdsModel>) -> Unit) {
@@ -50,34 +48,5 @@ class TopAdsQueryPostAutoadsUseCase @Inject constructor(
     private fun setParam(input: AutoAdsParam) {
         val param = mapOf("input" to input.input)
         setRequestParams(param)
-    }
-
-    companion object {
-        const val QUERY = """
-            mutation topAdsPostAutoAdsV2(${'$'}input: TopAdsPostAutoAdsParamV2!) {
-              topAdsPostAutoAdsV2(input: ${'$'}input) {
-                data {
-                  shopID
-                  status
-                  statusDesc
-                  dailyUsage
-                  dailyBudget
-                  info {
-                    reason
-                    message
-                  }
-                }
-                errors {
-                  code
-                  detail
-                  object {
-                    type
-                    text
-                  }
-                  title
-                }
-              }
-            }
-        """
     }
 }
