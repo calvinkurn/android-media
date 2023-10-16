@@ -234,7 +234,7 @@ object MacroIntent {
 
         fun getIntent(): Intent {
             val intent = Intent("com.tokopedia.internal.VIEW")
-            intent.data = Uri.parse("tokopedia-android-internal://marketplace/product-detail/6961809872/?layoutID=4")
+            intent.data = Uri.parse("tokopedia-android-internal://marketplace/product-detail/1742093676/?layoutID=4")
             return intent
         }
     }
