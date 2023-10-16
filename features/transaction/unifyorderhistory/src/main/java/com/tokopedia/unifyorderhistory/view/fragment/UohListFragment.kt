@@ -218,6 +218,7 @@ import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
+import com.tokopedia.atc_common.R as atc_commonR
 
 /**
  * Created by fwidjaja on 29/06/20.
@@ -2454,8 +2455,13 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         handleRouting(appLink, index, order)
     }
 
-    override fun onReviewRatingRendered() {
-        UohAnalytics.sendViewBeriUlasanButtonEvent(ULAS_TYPE_STAR)
+    override fun onReviewRatingImpressed(
+        orderUUID: String,
+        componentData: UohListOrder.UohOrders.Order.Metadata.ExtraComponent
+    ) {
+        if (!uohListViewModel.isReviewRatingImpressed(orderUUID)) {
+            UohAnalytics.sendViewBeriUlasanButtonEvent(ULAS_TYPE_STAR)
+        }
     }
 
     private fun doChatSeller(appUrl: String, order: UohListOrder.UohOrders.Order) {
@@ -2515,7 +2521,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                 userSession.userId ?: "",
                 GraphqlHelper.loadRawString(
                     activity?.resources,
-                    com.tokopedia.atc_common.R.raw.mutation_add_to_cart_multi
+                    atc_commonR.raw.mutation_add_to_cart_multi
                 ),
                 _listParamAtcMulti,
                 _atcVerticalCategory

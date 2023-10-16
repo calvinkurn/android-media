@@ -234,8 +234,8 @@ class UohOrderListViewHolder(
                                         appLink = appLink
                                     )
                                 },
-                                onReviewRatingRendered = {
-                                    actionListener?.onReviewRatingRendered()
+                                onImpressed = {
+                                    actionListener?.onReviewRatingImpressed(orderUUID, componentData)
                                 }
                             )
                         }

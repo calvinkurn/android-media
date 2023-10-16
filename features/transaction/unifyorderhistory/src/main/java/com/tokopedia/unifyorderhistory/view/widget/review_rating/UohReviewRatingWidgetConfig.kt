@@ -6,5 +6,5 @@ data class UohReviewRatingWidgetConfig(
     val show: Boolean = false,
     val componentData: UohListOrder.UohOrders.Order.Metadata.ExtraComponent = UohListOrder.UohOrders.Order.Metadata.ExtraComponent(),
     val onRatingChanged: (appLink: String) -> Unit = {},
-    val onReviewRatingRendered: () -> Unit = {}
+    val onImpressed: () -> Unit = {}
 )
