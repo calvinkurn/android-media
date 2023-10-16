@@ -158,6 +158,15 @@ class ComposePersonaResultViewModelTest : BaseViewModelTest<PersonaResultState, 
         }
     }
 
+    @Test
+    fun `when retake quiz should navigate to questionnaire page`() {
+        runStateAndUiEffectTest {
+            viewModel.onEvent(ResultUiEvent.RetakeQuiz)
+
+            assert(uiEffects[0] == ResultUiEffect.NavigateToQuestionnaire)
+        }
+    }
+
     private fun getErrorState(): PersonaResultState {
         return getDefaultState().copy(
             state = PersonaResultState.State.Error

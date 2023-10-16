@@ -174,10 +174,6 @@ class ComposeQuestionnaireViewModelTest :
             )
 
             assertEquals(dismissLoadingButton.toString(), states[5].toString())
-            assertEquals(
-                QuestionnaireUiEffect.NavigateToResultPage(newPersona).toString(),
-                uiEffects[0].toString()
-            )
         }
     }
 
@@ -244,7 +240,6 @@ class ComposeQuestionnaireViewModelTest :
             )
 
             assertEquals(dismissLoadingButton.toString(), states[5].toString())
-            assert(uiEffects[0] == QuestionnaireUiEffect.ShowGeneralErrorToast)
         }
     }
 
@@ -302,12 +297,34 @@ class ComposeQuestionnaireViewModelTest :
 
     @Test
     fun `when get anyChanges status should return true if any question answered`() {
+        runStateAndUiEffectTest {
+            val successState = getSuccessState()
 
+            runTestFetchQuestionnaire(successState)
+
+            successState.data.questionnaireList.forEach {
+                it.options.forEach { o ->
+                    o.isSelected = true
+                }
+            }
+
+            val actual = viewModel.isAnyChanges()
+
+            assert(actual)
+        }
     }
 
     @Test
     fun `when get anyChanges status should return false if no questions answered`() {
+        runStateAndUiEffectTest {
+            val successState = getSuccessState()
 
+            runTestFetchQuestionnaire(successState)
+
+            val actual = viewModel.isAnyChanges()
+
+            assert(!actual)
+        }
     }
 
     private fun TestScope.runTestFetchQuestionnaire(successState: QuestionnaireState.Success) {

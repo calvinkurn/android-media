@@ -80,12 +80,13 @@ class ComposeQuestionnaireViewModel @Inject constructor(
                 //show Next Button loading state
                 successSuccessState(data.copy(isNextButtonLoading = true))
 
-                val answers = data.questionnaireList.map { pager ->
-                    QuestionnaireAnswerParam(id = pager.id.toLongOrZero(),
-                        answers = pager.options.filter { it.isSelected }.map { it.value })
-                }
                 val persona = withContext(dispatchers.io) {
                     val shopId = userSession.get().shopId
+                    val answers = data.questionnaireList.map { pager ->
+                        QuestionnaireAnswerParam(id = pager.id.toLongOrZero(),
+                            answers = pager.options.filter { it.isSelected }.map { it.value })
+                    }
+
                     return@withContext setPersonaUseCase.get()
                         .execute(shopId, String.EMPTY, answers)
                 }
