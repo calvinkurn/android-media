@@ -100,7 +100,7 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
 
     private fun gotoAccountLinking() {
         if (viewModel.accountLinkingStatus.value !is AccountLinkingStatusResult.Linked) {
-            val intent = RouteManager.getIntent(activity, ApplinkConstInternalUserPlatform.ACCOUNT_LINKING_WEBVIEW).apply {
+            val intent = RouteManager.getIntent(activity, ApplinkConstInternalUserPlatform.LINK_ACCOUNT_WEBVIEW).apply {
                 putExtra(
                     ApplinkConstInternalGlobal.PARAM_LD,
                     BACK_BTN_APPLINK
@@ -115,6 +115,10 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
             when (it) {
                 is AccountLinkingStatusResult.Loading -> {
                     showLoadingScreen()
+                }
+                is AccountLinkingStatusResult.TokoKyc -> {
+                    activity?.setResult(KYCConstant.ActivityResult.LAUNCH_TOKO_KYC)
+                    activity?.finish()
                 }
                 is AccountLinkingStatusResult.Linked -> {
                     viewModel.checkEligibility()
