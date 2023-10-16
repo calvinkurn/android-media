@@ -672,8 +672,8 @@ object DeeplinkDFApp {
 
     private fun getDfSellerFeedback() = mutableListOf(
         // seller_feedback
-        DFP(INTERNAL, HOST_SELLERAPP, PathType.PATH, "seller-feedback"),
-        DFP(INTERNAL, HOST_SELLERAPP, PathType.PATH, "seller-feedback-kmp")
+        DFP(INTERNAL, HOST_SELLERAPP, PathType.PATH, "/seller-feedback"),
+        DFP(INTERNAL, HOST_SELLERAPP, PathType.PATH, "/seller-feedback-kmp")
     )
 
     private fun getDfSellerFrontFunnel() = mutableListOf(
