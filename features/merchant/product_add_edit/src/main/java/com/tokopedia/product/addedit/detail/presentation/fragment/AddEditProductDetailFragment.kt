@@ -1835,17 +1835,22 @@ class AddEditProductDetailFragment :
                 priceInput,
                 priceSuggestion
             )
-            priceSuggestionBottomSheet?.setShowListener {
-                (priceSuggestionBottomSheet?.dialog as BottomSheetDialog).behavior.state = BottomSheetBehavior.STATE_EXPANDED
-                priceSuggestionBottomSheet?.bottomSheetWrapper?.parent?.parent?.requestLayout()
+
+            priceSuggestionBottomSheet?.let { bottomSheet ->
+                bottomSheet.setShowListener {
+                    bottomSheet.dialog?.let {
+                        (it as BottomSheetDialog).behavior.state = BottomSheetBehavior.STATE_EXPANDED
+                    }
+                    bottomSheet.bottomSheetWrapper.parent?.parent?.requestLayout()
+                }
+                bottomSheet.setCloseClickListener {
+                    ProductEditMainTracking.sendClickPriceSuggestionPopUpCloseEvent(viewModel.isEditing)
+                    bottomSheet.dismiss()
+                }
+                bottomSheet.setClickListener(this)
+                bottomSheet.show(childFragmentManager)
+                ProductEditMainTracking.sendClickPriceSuggestionEntryPointEvent(viewModel.isEditing, productId)
             }
-            priceSuggestionBottomSheet?.setCloseClickListener {
-                ProductEditMainTracking.sendClickPriceSuggestionPopUpCloseEvent(viewModel.isEditing)
-                priceSuggestionBottomSheet?.dismiss()
-            }
-            priceSuggestionBottomSheet?.setClickListener(this)
-            priceSuggestionBottomSheet?.show(childFragmentManager)
-            ProductEditMainTracking.sendClickPriceSuggestionEntryPointEvent(viewModel.isEditing, productId)
         }
         // setup pelajari selengkapnya etc bottomsheet
         val productId = viewModel.productInputModel.productId.toString()

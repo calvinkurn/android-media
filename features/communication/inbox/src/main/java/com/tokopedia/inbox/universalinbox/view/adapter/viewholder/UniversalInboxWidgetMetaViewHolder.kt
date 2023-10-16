@@ -27,8 +27,8 @@ class UniversalInboxWidgetMetaViewHolder(
         if (uiModel.widgetList.isNotEmpty()) {
             bindWidgetList(uiModel)
         } else {
-            if (uiModel.isError) {
-                bindWidgetLocalLoad()
+            if (uiModel.widgetError.isError) {
+                bindWidgetLocalLoad(uiModel)
             } else {
                 binding?.inboxLocalLoadWidgetMeta?.hide()
             }
@@ -49,9 +49,9 @@ class UniversalInboxWidgetMetaViewHolder(
         binding?.inboxLocalLoadWidgetMeta?.hide()
     }
 
-    private fun bindWidgetLocalLoad() {
+    private fun bindWidgetLocalLoad(uiModel: UniversalInboxWidgetMetaUiModel) {
         binding?.inboxLocalLoadWidgetMeta?.apply {
-            progressState = false
+            progressState = uiModel.widgetError.isLocalLoadLoading
             refreshBtn?.setOnClickListener {
                 progressState = true
                 listener.onRefreshWidgetMeta()

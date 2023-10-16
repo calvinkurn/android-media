@@ -615,7 +615,8 @@ object CartUiModelMapper {
                 uniqueId = it.uniqueId,
                 status = it.status,
                 type = it.type,
-                price = it.price
+                price = it.price,
+                fixedQuantity = it.fixedQuantity
             )
 
             if (it.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK || it.status == ADD_ON_PRODUCT_STATUS_MANDATORY) {
@@ -800,7 +801,6 @@ object CartUiModelMapper {
     private fun mapSummariesAddOns(summariesItemList: List<ShoppingSummary.SummaryAddOn>, availableGroupGroups: List<AvailableGroup>): List<SummaryTransactionUiModel.SummaryAddOns> {
         val countMapSummaries = hashMapOf<Int, Pair<Double, Int>>()
         val summaryAddOnList = ArrayList<SummaryTransactionUiModel.SummaryAddOns>()
-        var qtyAddOn: Int
         var totalPriceAddOn: Double
         shopLoop@ for (groupShop in availableGroupGroups) {
             groupShopCart@ for (groupShopCart in groupShop.groupShopCartData) {
@@ -808,18 +808,19 @@ object CartUiModelMapper {
                     productLoop@ for (product in cartDetail.products) {
                         addOnLoop@ for (addon in product.addOn.addOnData) {
                             if (addon.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK) {
-                                qtyAddOn = if (countMapSummaries.containsKey(addon.type)) {
-                                    countMapSummaries[addon.type]?.second?.plus(product.productQuantity) ?: product.productQuantity
+                                val qtyAddOn = if (addon.fixedQuantity) 1 else product.productQuantity
+                                val finalQtyAddOn = if (countMapSummaries.containsKey(addon.type)) {
+                                    countMapSummaries[addon.type]?.second?.plus(qtyAddOn) ?: qtyAddOn
                                 } else {
-                                    product.productQuantity
+                                    qtyAddOn
                                 }
-                                val addOnPrice = product.productQuantity * addon.price
+                                val addOnPrice = qtyAddOn * addon.price
                                 totalPriceAddOn = if (countMapSummaries.containsKey(addon.type)) {
                                     countMapSummaries[addon.type]?.first?.plus(addOnPrice) ?: addOnPrice
                                 } else {
                                     addOnPrice
                                 }
-                                countMapSummaries[addon.type] = totalPriceAddOn to qtyAddOn
+                                countMapSummaries[addon.type] = totalPriceAddOn to finalQtyAddOn
                             }
                         }
                     }
@@ -886,12 +887,18 @@ object CartUiModelMapper {
         for (cartItemData in selectedCartItemData) {
             for (addOn in cartItemData.addOnsProduct.listData) {
                 if (addOn.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK) {
-                    qtyAddOn = if (countMapSummaries.containsKey(addOn.type)) {
-                        countMapSummaries[addOn.type]?.second?.plus(cartItemData.quantity) ?: cartItemData.quantity
+                    qtyAddOn = if (addOn.fixedQuantity) {
+                        1
                     } else {
-                        cartItemData.quantity
+                        if (countMapSummaries.containsKey(addOn.type)) {
+                            countMapSummaries[addOn.type]?.second?.plus(cartItemData.quantity) ?: cartItemData.quantity
+                        } else {
+                            cartItemData.quantity
+                        }
                     }
-                    val addOnPrice = cartItemData.quantity * addOn.price
+
+                    val qtyFixedAddons = if (addOn.fixedQuantity) 1 else cartItemData.quantity
+                    val addOnPrice = qtyFixedAddons * addOn.price
                     totalPriceAddOn = if (countMapSummaries.containsKey(addOn.type)) {
                         countMapSummaries[addOn.type]?.first?.plus(addOnPrice) ?: addOnPrice
                     } else {

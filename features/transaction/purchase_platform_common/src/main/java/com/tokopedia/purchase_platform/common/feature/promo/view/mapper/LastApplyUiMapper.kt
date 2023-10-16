@@ -30,7 +30,8 @@ object LastApplyUiMapper {
             additionalInfo = mapAdditionalInfo(promoUiModel.additionalInfoUiModel),
             message = mapMessageUiModel(promoUiModel.messageUiModel),
             defaultEmptyPromoMessage = if (promoUiModel.titleDescription.isNotBlank()) promoUiModel.titleDescription else "",
-            benefitSummaryInfo = promoUiModel.benefitSummaryInfoUiModel
+            benefitSummaryInfo = promoUiModel.benefitSummaryInfoUiModel,
+            userGroupMetadata = promoUiModel.userGroupMetadata
         )
     }
 
@@ -67,7 +68,8 @@ object LastApplyUiMapper {
             messageInfo = mapMessageInfo(additionalInfoUiModel.messageInfoUiModel),
             errorDetail = mapErrorInfo(additionalInfoUiModel.errorDetailUiModel),
             emptyCartInfo = mapEmptyCartInfo(additionalInfoUiModel.emptyCartInfoUiModel),
-            usageSummaries = mapUsageSummaries(additionalInfoUiModel.usageSummariesUiModel)
+            usageSummaries = mapUsageSummaries(additionalInfoUiModel.usageSummariesUiModel),
+            bebasOngkirInfo = additionalInfoUiModel.bebasOngkirInfo
         )
     }
 

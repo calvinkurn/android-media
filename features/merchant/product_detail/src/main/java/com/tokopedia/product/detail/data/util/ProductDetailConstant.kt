@@ -107,7 +107,9 @@ object ProductDetailConstant {
     const val CONTENT_WIDGET = "content_widget"
     const val PLAY_CAROUSEL = "play_carousel"
     const val FINTECH_WIDGET_TYPE = "chips_carousel"
+    const val FINTECH_WIDGET_V2_TYPE = "cicil_one_liner"
     const val FINTECH_WIDGET_NAME = "paylater_cicilan"
+    const val FINTECH_WIDGET_V2_NAME = "paylater_cicilan_v2"
     const val DILAYANI_TOKOPEDIA = "dt_info"
     const val AR_BUTTON = "button_ar"
     const val RECOM_VERTICAL = "pdp_vertical"
@@ -118,6 +120,8 @@ object ProductDetailConstant {
 
     // custom info title as component name
     const val OTHER_OFFERS = "other_offers"
+    const val BMGM_TYPE = "bmgm"
+    const val BMGM_SNEAK_PEEK_NAME = "bmgm_sneak_peek"
 
     // Arguments
     const val ARG_PRODUCT_ID = "ARG_PRODUCT_ID"

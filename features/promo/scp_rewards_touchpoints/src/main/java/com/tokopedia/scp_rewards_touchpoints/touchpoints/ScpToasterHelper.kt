@@ -3,7 +3,7 @@ package com.tokopedia.scp_rewards_touchpoints.touchpoints
 import android.view.View
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.scp_rewards_touchpoints.bottomsheet.utils.downloadImage
+import com.tokopedia.scp_rewards_common.utils.downloadImage
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.ScpRewardsToaster.DEFAULT_DURATION
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.analytics.ScpRewardsToasterAnalytics
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.model.ScpToasterData

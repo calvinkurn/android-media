@@ -1,8 +1,7 @@
 package com.tokopedia.play.broadcaster.shorts.ui.model.action
 
-import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagItem
-import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 
 /**
  * Created By : Jonathan Darwin on November 08, 2022

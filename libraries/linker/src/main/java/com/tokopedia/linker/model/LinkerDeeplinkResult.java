@@ -4,6 +4,15 @@ public class LinkerDeeplinkResult {
 
     private String deeplink;
     private String promoCode;
+    private String minVersion;
+
+    public String getMinVersion() {
+        return minVersion;
+    }
+
+    public void setMinVersion(String minVersion) {
+        this.minVersion = minVersion;
+    }
 
     public String getDeeplink() {
         return deeplink;

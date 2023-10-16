@@ -9,15 +9,16 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.buyerorderdetail.R
+import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTracker
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailActionButtonKey
 import com.tokopedia.buyerorderdetail.common.utils.Utils
 import com.tokopedia.buyerorderdetail.presentation.adapter.diffutil.ProductBundlingItemDiffUtilCallback
-import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
@@ -198,6 +199,9 @@ class ProductBundlingItemAdapter(
                     BuyerOrderDetailActionButtonKey.SEE_SIMILAR_PRODUCTS -> {
                         listener.onBundleItemSeeSimilarProducts(it)
                     }
+                    BuyerOrderDetailActionButtonKey.WARRANTY_CLAIM -> {
+                        listener.onBundleWarrantyClaim(it)
+                    }
                     else -> {}
                 }
             }
@@ -207,6 +211,7 @@ class ProductBundlingItemAdapter(
             fun onBundleItemClicked(orderId: String, orderDetailId: String, orderStatusId: String)
             fun onBundleItemAddToCart(uiModel: ProductListUiModel.ProductUiModel)
             fun onBundleItemSeeSimilarProducts(uiModel: ProductListUiModel.ProductUiModel)
+            fun onBundleWarrantyClaim(uiModel: ProductListUiModel.ProductUiModel)
         }
     }
 }
