@@ -108,7 +108,7 @@ ext {
     conversationsVersion = '7.9.1-54af4674'
     gojekCourierVersion = '0.1.5'
     gojekCourierClientVersion = '0.0.8.1@aar'
-    profileInstallerVersion = '1.3.0-alpha01'
+    profileInstallerVersion = '1.3.0-alpha02'
     desugarJdkVersion= '1.2.2'
     laku6SdkVersion = '2.5.20'
 
