@@ -281,6 +281,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
     private lateinit var trackingQueue: TrackingQueue
     private var _buttonAction = ""
     private var _atcOccParams: AddToCartOccMultiRequestParams? = null
+    private val impressedUUIDs = mutableListOf<String>()
 
     private var binding by autoClearedNullable<FragmentUohListBinding>()
 
@@ -2459,7 +2460,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         orderUUID: String,
         componentData: UohListOrder.UohOrders.Order.Metadata.ExtraComponent
     ) {
-        if (!uohListViewModel.isReviewRatingImpressed(orderUUID)) {
+        if (!isReviewRatingImpressed(orderUUID)) {
             UohAnalytics.sendViewBeriUlasanButtonEvent(ULAS_TYPE_STAR)
         }
     }
@@ -2621,6 +2622,15 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         }
     }
 
+    private fun isReviewRatingImpressed(orderUUID: String): Boolean {
+        return if (impressedUUIDs.contains(orderUUID)) {
+            true
+        } else {
+            impressedUUIDs.add(orderUUID)
+            false
+        }
+    }
+
     override fun onPause() {
         super.onPause()
         trackingQueue?.sendAll()
@@ -2628,6 +2638,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
 
     override fun onDestroyView() {
         Toaster.onCTAClick = View.OnClickListener { }
+        impressedUUIDs.clear()
         super.onDestroyView()
     }
 }

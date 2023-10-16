@@ -293,15 +293,4 @@ class UohListViewModel @Inject constructor(
             }
         }
     }
-
-    private val impressedUUIDs = mutableListOf<String>()
-
-    fun isReviewRatingImpressed(orderUUID: String): Boolean {
-        return if (impressedUUIDs.contains(orderUUID)) {
-            true
-        } else {
-            impressedUUIDs.add(orderUUID)
-            false
-        }
-    }
 }
