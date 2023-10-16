@@ -23,7 +23,7 @@ data class TopChatAutoReplyItemUiModel(
             PRODUCT_MESSAGE -> IconUnify.PRODUCT
             DELIVERY_MESSAGE -> IconUnify.COURIER
             OPERATIONAL_MESSAGE -> IconUnify.CLOCK
-            else -> null
+            else -> IconUnify.BELL // default
         }
     }
 

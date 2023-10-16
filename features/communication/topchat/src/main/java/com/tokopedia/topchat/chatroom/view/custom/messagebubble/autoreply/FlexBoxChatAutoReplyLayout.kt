@@ -8,7 +8,9 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.tokopedia.chat_common.data.AutoReplyMessageUiModel
 import com.tokopedia.chat_common.data.MessageUiModel
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
@@ -319,7 +321,7 @@ class FlexBoxChatAutoReplyLayout : BaseTopChatFlexBoxChatLayout {
      * If source is auto_reply, check for JSON
      */
     override fun setMessageBody(messageUiModel: MessageUiModel) {
-        if (messageUiModel.isFromAutoReply()) {
+        if (messageUiModel.isFromAutoReply() && messageUiModel is AutoReplyMessageUiModel) {
             setAutoReplyMessageBody(messageUiModel)
         } else {
             setRegularMessageBody(messageUiModel)
@@ -329,10 +331,10 @@ class FlexBoxChatAutoReplyLayout : BaseTopChatFlexBoxChatLayout {
     private fun setRegularMessageBody(messageUiModel: MessageUiModel) {
         super.setMessageBody(messageUiModel)
         autoReplyConstraintLayout?.hide()
-        flexBoxListener?.onViewAutoReply(listOf()) // Empty list
+        removeMessageEllipsis()
     }
 
-    private fun setAutoReplyMessageBody(messageUiModel: MessageUiModel) {
+    private fun setAutoReplyMessageBody(messageUiModel: AutoReplyMessageUiModel) {
         try {
             val listType = object : TypeToken<List<TopChatAutoReplyItemUiModel>>() {}.type
             val result = Gson().fromJson<List<TopChatAutoReplyItemUiModel>>(
@@ -341,7 +343,9 @@ class FlexBoxChatAutoReplyLayout : BaseTopChatFlexBoxChatLayout {
             )
             bindAutoReplyView(messageUiModel = messageUiModel, autoReplyList = result)
             autoReplyConstraintLayout?.show()
-            flexBoxListener?.onViewAutoReply(result)
+            addOnImpressionListener(messageUiModel.impressHolder) {
+                flexBoxListener?.onViewAutoReply(result)
+            }
         } catch (throwable: Throwable) {
             /**
              * If fail then the message is history message
@@ -384,7 +388,14 @@ class FlexBoxChatAutoReplyLayout : BaseTopChatFlexBoxChatLayout {
         if (shouldLimitWelcomeMessage) {
             message?.maxLines = 3
             message?.ellipsize = TextUtils.TruncateAt.END
+        } else {
+            removeMessageEllipsis()
         }
+    }
+
+    private fun removeMessageEllipsis() {
+        message?.maxLines = Integer.MAX_VALUE
+        message?.ellipsize = null
     }
 
     private fun bindAutoReplyRecyclerView(

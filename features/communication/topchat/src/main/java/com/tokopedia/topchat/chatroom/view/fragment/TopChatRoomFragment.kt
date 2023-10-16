@@ -135,7 +135,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.TopchatPr
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.messagebubble.banned.BannedChatMessageViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwBubbleViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwQuestionViewHolder
-import com.tokopedia.topchat.chatroom.view.bottomsheet.TopChatAutoReplyDetailBottomSheet
+import com.tokopedia.topchat.chatroom.view.bottomsheet.TopChatChatRoomAutoReplyDetailBottomSheet
 import com.tokopedia.topchat.chatroom.view.bottomsheet.TopChatGuideChatBottomSheet
 import com.tokopedia.topchat.chatroom.view.bottomsheet.TopchatBottomSheetBuilder
 import com.tokopedia.topchat.chatroom.view.bottomsheet.TopchatBottomSheetBuilder.MENU_ID_COPY_TO_CLIPBOARD
@@ -3526,7 +3526,7 @@ open class TopChatRoomFragment :
             listOf(welcomeMessage) + list
         )
         view?.hideKeyboard()
-        TopChatAutoReplyDetailBottomSheet().show(
+        TopChatChatRoomAutoReplyDetailBottomSheet().show(
             childFragmentManager,
             welcomeMessage,
             list
@@ -3536,11 +3536,11 @@ open class TopChatRoomFragment :
     override fun onViewAutoReply(
         list: List<TopChatAutoReplyItemUiModel>
     ) {
-        TopChatAnalyticsKt.eventImpressionAutoReply(
-            sourcePage,
-            messageId,
-            list
-        )
+        if (!isSeller()) {
+            TopChatAnalyticsKt.eventImpressionAutoReply(
+                sourcePage, messageId, list
+            )
+        }
     }
 
     companion object {

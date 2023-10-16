@@ -13,7 +13,7 @@ import com.tokopedia.topchat.databinding.TopchatChatroomBottomsheetAutoReplyBind
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
-class TopChatAutoReplyDetailBottomSheet: BottomSheetUnify() {
+class TopChatChatRoomAutoReplyDetailBottomSheet: BottomSheetUnify() {
 
     private var binding by autoClearedNullable<TopchatChatroomBottomsheetAutoReplyBinding>()
     private val adapter = TopChatAutoReplyAdapter(isMessageBubble = false)
@@ -50,6 +50,7 @@ class TopChatAutoReplyDetailBottomSheet: BottomSheetUnify() {
         binding?.topchatChatroomRvAutoReplyBs?.adapter = adapter
         binding?.topchatChatroomRvAutoReplyBs?.layoutManager = LinearLayoutManager(context)
         binding?.topchatChatroomRvAutoReplyBs?.itemAnimator = null
+        binding?.topchatChatroomRvAutoReplyBs?.isNestedScrollingEnabled = false
         adapter.updateItem(list)
     }
 
@@ -68,6 +69,6 @@ class TopChatAutoReplyDetailBottomSheet: BottomSheetUnify() {
     }
 
     companion object {
-        private val TAG = TopChatAutoReplyDetailBottomSheet::class.simpleName
+        private val TAG = TopChatChatRoomAutoReplyDetailBottomSheet::class.simpleName
     }
 }
