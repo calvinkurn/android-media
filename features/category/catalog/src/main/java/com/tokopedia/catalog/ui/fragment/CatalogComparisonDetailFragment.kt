@@ -94,6 +94,7 @@ class CatalogComparisonDetailFragment :
 
     private fun getComparison(catalogId: String, compareCatalogId: String) {
         binding?.loadingLayout?.root?.show()
+        binding?.rvContent?.gone()
         viewModel.getProductCatalog(catalogId, compareCatalogId)
     }
 
@@ -110,6 +111,7 @@ class CatalogComparisonDetailFragment :
             }
 
             binding?.loadingLayout?.root?.gone()
+            binding?.rvContent?.show()
         }
     }
 
