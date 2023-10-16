@@ -654,4 +654,8 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
     override fun onComparisonSwitchButtonClicked(position: Int) {
         // TODO: Implement redirection to Bottomsheet Catalog Selection
     }
+
+    override fun onComparisonSeeMoreButtonClicked() {
+        // TODO: ("Not yet implemented")
+    }
 }
