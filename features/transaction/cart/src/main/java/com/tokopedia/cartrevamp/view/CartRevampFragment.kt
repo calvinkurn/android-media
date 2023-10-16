@@ -178,6 +178,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.validat
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.LastApplyUiMapper
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyAdditionalInfoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
@@ -3898,6 +3899,15 @@ class CartRevampFragment :
 
     private fun renderPromoCheckoutButtonActiveDefault(listPromoApplied: List<String>) {
         viewModel.getEntryPointInfoDefault(listPromoApplied)
+        if (listPromoApplied.isEmpty()) {
+            viewModel.updatePromoSummaryData(
+                LastApplyUiModel(
+                    additionalInfo = LastApplyAdditionalInfoUiModel(
+                        usageSummaries = emptyList()
+                    )
+                )
+            )
+        }
     }
 
     private fun renderPromoCheckoutButtonNoItemIsSelected() {

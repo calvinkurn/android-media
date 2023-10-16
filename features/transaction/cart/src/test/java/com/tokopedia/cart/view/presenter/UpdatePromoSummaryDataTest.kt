@@ -22,7 +22,7 @@ class UpdatePromoSummaryDataTest : BaseCartTest() {
                 )
             )
         )
-        val cartData = CartData(promo = CartPromoData(lastApplyPromo = LastApplyPromo(lastApplyPromoData = LastApplyPromoData(codes = listOf("ABC"), listVoucherOrders = listOf(VoucherOrders())))))
+        val cartData = CartData(promo = CartPromoData(lastApplyPromo = LastApplyPromo(lastApplyPromoData = g )
         cartListPresenter.setCartListData(cartData)
 
         // WHEN
