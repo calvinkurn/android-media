@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
@@ -31,7 +30,6 @@ import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.uimodel.Mo
 import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.uimodel.PinpointAction
 import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.uimodel.PinpointBottomSheetState
 import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.uimodel.PinpointUiModel
-import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
@@ -382,8 +380,8 @@ class PinpointViewModel @Inject constructor(
         )
     }
 
-    private fun createButtonSecondary(enable: Boolean): PinpointBottomSheetState.LocationDetail.LocationDetailButtonUiModel {
-        return PinpointBottomSheetState.LocationDetail.LocationDetailButtonUiModel(
+    private fun createButtonSecondary(enable: Boolean): PinpointBottomSheetState.LocationDetail.SecondaryButtonUiModel {
+        return PinpointBottomSheetState.LocationDetail.SecondaryButtonUiModel(
             show = uiState.isAdd(),
             state = uiState,
             enable = enable
@@ -414,68 +412,28 @@ class PinpointViewModel @Inject constructor(
     ): PinpointBottomSheetState.LocationDetail.PrimaryButtonUiModel {
         return PinpointBottomSheetState.LocationDetail.PrimaryButtonUiModel(
             show = true,
-            state = PinpointBottomSheetState.LocationDetail.PrimaryButtonUiModel.PrimaryButtonState(
-                addressUiState = uiState,
-                success = success
-            ),
+            success = success,
             enable = enable,
-            text = if (uiState.isPinpointOnly()) {
-                "Pilih Lokasi Ini"
-            } else {
-                "Pilih Lokasi & Lanjut Isi Alamat"
-            }
+            addressUiState = uiState
         )
     }
 
-    private fun locationNotFound(showIllustationMap: Boolean) {
-        val invalidLocationDetail =
-            if (uiModel.hasPinpoint() || uiState.isPinpointOnly()) {
-                "Tenang, kamu bisa pilih ulang lokasimu atau pakai lokasimu sebelumnya."
-            } else {
-                "Tenang, kamu bisa pilih ulang lokasimu atau tetap menyimpan alamat tanpa pinpoint."
-            }
-        val buttonState: PinpointBottomSheetState.LocationInvalid.ButtonInvalidModel =
+    private fun locationNotFound(showIllustrationMap: Boolean) {
+        val buttonState: Boolean =
             if (uiState.isPinpointOnly()) {
-                PinpointBottomSheetState.LocationInvalid.ButtonInvalidModel(
-                    show = false,
-                    state = PinpointBottomSheetState.LocationInvalid.LocationInvalidType.LOCATION_NOT_FOUND
-                )
+                false
             } else if (uiState.isEdit()) {
-                if (uiModel.hasPinpoint()) {
-                    PinpointBottomSheetState.LocationInvalid.ButtonInvalidModel(
-                        show = false,
-                        state = PinpointBottomSheetState.LocationInvalid.LocationInvalidType.LOCATION_NOT_FOUND
-                    )
-                } else {
-                    PinpointBottomSheetState.LocationInvalid.ButtonInvalidModel(
-                        variant = UnifyButton.Variant.GHOST,
-                        type = UnifyButton.Type.MAIN,
-                        text = "Mengerti",
-                        show = true,
-                        state = PinpointBottomSheetState.LocationInvalid.LocationInvalidType.LOCATION_NOT_FOUND
-                    )
-                }
+                !uiModel.hasPinpoint()
             } else {
-                if (uiState.isAdd()) {
-                    PinpointBottomSheetState.LocationInvalid.ButtonInvalidModel(
-                        show = true,
-                        state = PinpointBottomSheetState.LocationInvalid.LocationInvalidType.LOCATION_NOT_FOUND
-                    )
-                } else {
-                    PinpointBottomSheetState.LocationInvalid.ButtonInvalidModel(
-                        show = false,
-                        state = PinpointBottomSheetState.LocationInvalid.LocationInvalidType.LOCATION_NOT_FOUND
-                    )
-                }
+                uiState.isAdd()
             }
 
         _pinpointBottomSheet.value = PinpointBottomSheetState.LocationInvalid(
             type = PinpointBottomSheetState.LocationInvalid.LocationInvalidType.LOCATION_NOT_FOUND,
-            title = "Yaah, lokasimu tidak terdeteksi",
-            detail = invalidLocationDetail,
-            imageUrl = TokopediaImageUrl.LOCATION_NOT_FOUND,
-            showMapIllustration = showIllustationMap,
-            buttonState = buttonState
+            showMapIllustration = showIllustrationMap,
+            buttonState = PinpointBottomSheetState.LocationInvalid.ButtonInvalidModel(show = buttonState),
+            uiState = uiState,
+            uiModel = uiModel
         )
     }
 
@@ -492,14 +450,12 @@ class PinpointViewModel @Inject constructor(
     private fun locationOutOfReach() {
         _pinpointBottomSheet.value = PinpointBottomSheetState.LocationInvalid(
             type = PinpointBottomSheetState.LocationInvalid.LocationInvalidType.OUT_OF_COVERAGE,
-            title = "Lokasi di luar jangkauan",
-            detail = "Saat ini Tokopedia hanya melayani pengiriman di Indonesia saja. Pilih ulang lokasimu, ya.",
-            imageUrl = TokopediaImageUrl.LOCATION_NOT_FOUND,
             showMapIllustration = false,
             buttonState = PinpointBottomSheetState.LocationInvalid.ButtonInvalidModel(
-                show = false,
-                state = PinpointBottomSheetState.LocationInvalid.LocationInvalidType.OUT_OF_COVERAGE
-            )
+                show = false
+            ),
+            uiState = uiState,
+            uiModel = uiModel
         )
     }
 }

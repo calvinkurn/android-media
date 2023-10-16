@@ -13,23 +13,13 @@ sealed interface PinpointAction {
 
 data class MoveMap(val lat: Double, val long: Double)
 
-interface BasePinpointButtonUiModel<T> {
-    val show: Boolean
-    val text: String
-    val variant: Int
-    val type: Int
-    val state: T
-    val enable: Boolean
-}
-
 sealed interface PinpointBottomSheetState {
     data class LocationInvalid(
         val type: LocationInvalidType,
-        val title: String,
-        val detail: String,
-        val imageUrl: String,
         val showMapIllustration: Boolean,
-        val buttonState: ButtonInvalidModel
+        val buttonState: ButtonInvalidModel,
+        val uiState: AddressUiState?,
+        val uiModel: PinpointUiModel
     ) : PinpointBottomSheetState {
 
         enum class LocationInvalidType {
@@ -37,40 +27,29 @@ sealed interface PinpointBottomSheetState {
         }
 
         data class ButtonInvalidModel(
-            override val show: Boolean,
-            override val state: LocationInvalidType,
-            override val enable: Boolean = show,
-            override val variant: Int = -1,
-            override val type: Int = -1,
-            override val text: String = ""
-        ) : BasePinpointButtonUiModel<LocationInvalidType>
+            val show: Boolean,
+            val enable: Boolean = show
+        )
     }
 
     data class LocationDetail(
         val title: String,
         val description: String,
         val buttonPrimary: PrimaryButtonUiModel,
-        val buttonSecondary: LocationDetailButtonUiModel
+        val buttonSecondary: SecondaryButtonUiModel
     ) : PinpointBottomSheetState {
-        data class LocationDetailButtonUiModel(
-            override val show: Boolean,
-            override val state: AddressUiState?,
-            override val enable: Boolean,
-            override val variant: Int = -1,
-            override val type: Int = -1,
-            override val text: String = ""
-        ) : BasePinpointButtonUiModel<AddressUiState?>
+        data class SecondaryButtonUiModel(
+            val show: Boolean,
+            val state: AddressUiState?,
+            val enable: Boolean
+        )
 
         data class PrimaryButtonUiModel(
-            override val show: Boolean,
-            override val state: PrimaryButtonState,
-            override val enable: Boolean,
-            override val variant: Int = -1,
-            override val type: Int = -1,
-            override val text: String = ""
-        ) : BasePinpointButtonUiModel<PrimaryButtonUiModel.PrimaryButtonState> {
-            data class PrimaryButtonState(val addressUiState: AddressUiState?, val success: Boolean)
-        }
+            val show: Boolean,
+            val enable: Boolean,
+            val addressUiState: AddressUiState?,
+            val success: Boolean
+        )
     }
 }
 

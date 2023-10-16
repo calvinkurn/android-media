@@ -44,6 +44,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -60,6 +61,7 @@ import com.tokopedia.logisticCommon.uimodel.AddressUiState
 import com.tokopedia.logisticCommon.uimodel.isAdd
 import com.tokopedia.logisticCommon.uimodel.isEdit
 import com.tokopedia.logisticCommon.uimodel.isEditOrPinpointOnly
+import com.tokopedia.logisticCommon.uimodel.isPinpointOnly
 import com.tokopedia.logisticCommon.uimodel.toAddressUiState
 import com.tokopedia.logisticCommon.util.MapsAvailabilityHelper
 import com.tokopedia.logisticCommon.util.getLatLng
@@ -100,6 +102,7 @@ import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.PERMISSION_NOT_
 import com.tokopedia.logisticaddaddress.utils.AddNewAddressUtils
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -816,17 +819,8 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 } else {
                     gone()
                 }
-
                 if (state.buttonPrimary.text.isNotEmpty()) {
                     text = state.buttonPrimary.text
-                }
-
-                if (state.buttonPrimary.type != -1) {
-                    buttonType = state.buttonPrimary.type
-                }
-
-                if (state.buttonPrimary.variant != -1) {
-                    buttonVariant = state.buttonPrimary.variant
                 }
 
                 setOnClickListener {
@@ -839,7 +833,7 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
                             if (viewModel.isPositiveFlow) {
                                 LogisticAddAddressAnalytics.onClickPilihLokasiNegative(
                                     userSession.userId,
-                                    if (state.buttonPrimary.state.success) SUCCESS else NOT_SUCCESS
+                                    if (state.buttonPrimary.success) SUCCESS else NOT_SUCCESS
                                 )
                             } else {
                                 LogisticAddAddressAnalytics.onClickPilihLokasiPositive(userSession.userId)
@@ -864,18 +858,6 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     gone()
                 }
 
-                if (state.buttonSecondary.text.isNotEmpty()) {
-                    text = state.buttonSecondary.text
-                }
-
-                if (state.buttonSecondary.type != -1) {
-                    buttonType = state.buttonSecondary.type
-                }
-
-                if (state.buttonSecondary.variant != -1) {
-                    buttonVariant = state.buttonSecondary.variant
-                }
-
                 setOnClickListener {
                     LogisticAddAddressAnalytics.onClickIsiAlamatManual(userSession.userId)
 
@@ -898,29 +880,17 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 invalidLayout.visible()
                 wholeLoadingContainer.gone()
                 districtLayout.gone()
-                if (data.imageUrl.isNotEmpty()) {
-                    imgInvalidLoc.setImageUrl(data.imageUrl)
-                }
+                imgInvalidLoc.setImageUrl(TokopediaImageUrl.LOCATION_NOT_FOUND)
                 if (data.title.isNotEmpty()) {
                     tvInvalidLoc.text = data.title
                 }
-
-                if (data.detail.isNotEmpty()) {
-                    tvInvalidLocDetail.text = data.detail
+                if (data.description.isNotEmpty()) {
+                    tvInvalidLocDetail.text = data.description
                 }
+
                 btnAnaNegative.run {
                     if (data.buttonState.show) {
-                        if (data.buttonState.text.isNotEmpty()) {
-                            text = getString(R.string.mismatch_btn_title)
-                        }
-
-                        if (data.buttonState.variant != -1) {
-                            buttonVariant = data.buttonState.variant
-                        }
-
-                        if (data.buttonState.type != -1) {
-                            buttonType = data.buttonState.type
-                        }
+                        setInvalidButtonData(data)
                         setOnClickListener {
                             if (addressUiState.isAdd()) {
                                 when (data.type) {
@@ -986,6 +956,44 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     }
                 }
             }
+        }
+    }
+
+    private val PinpointBottomSheetState.LocationInvalid.title: CharSequence
+        get() {
+            return when (this.type) {
+                PinpointBottomSheetState.LocationInvalid.LocationInvalidType.OUT_OF_COVERAGE -> {
+                    getString(R.string.out_of_indonesia_title)
+                }
+                PinpointBottomSheetState.LocationInvalid.LocationInvalidType.LOCATION_NOT_FOUND -> {
+                    getString(R.string.undetected_location_new_edit)
+                }
+            }
+        }
+    private val PinpointBottomSheetState.LocationDetail.PrimaryButtonUiModel.text: CharSequence
+        get() {
+            return if (addressUiState.isPinpointOnly()) {
+                getString(R.string.btn_choose_this_location)
+            } else {
+                getString(R.string.btn_choose_location)
+            }
+        }
+    private val PinpointBottomSheetState.LocationInvalid.description: CharSequence
+        get() {
+            return if (type == PinpointBottomSheetState.LocationInvalid.LocationInvalidType.OUT_OF_COVERAGE) {
+                getString(R.string.out_of_indonesia_desc_new)
+            } else if (uiModel.hasPinpoint() || uiState.isPinpointOnly()) {
+                getString(R.string.undetected_location_desc_edit_w_pinpoint)
+            } else {
+                getString(R.string.undetected_location_desc_edit_wo_pinpoint)
+            }
+        }
+
+    private fun UnifyButton.setInvalidButtonData(data: PinpointBottomSheetState.LocationInvalid) {
+        if (data.uiState.isEdit() && !data.uiModel.hasPinpoint()) {
+            buttonVariant = UnifyButton.Variant.GHOST
+            buttonType = UnifyButton.Type.MAIN
+            text = getString(R.string.mismatch_btn_title)
         }
     }
 
