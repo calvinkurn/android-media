@@ -12,14 +12,13 @@ class NetworkLogInterceptor constructor(
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val url = chain.request().url.toString()
-
         val response = chain.proceed(chain.request())
         val headers = response.headers
 
         try {
             if (context.isValid()) {
                 NetworkResponseManager
-                    .getInstance(context)
+                    .getInstance()
                     .set(url, headers)
             }
         } catch (ignored: Throwable) {}

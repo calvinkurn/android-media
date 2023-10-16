@@ -51,6 +51,7 @@ class GetOfferProductListUseCase @Inject constructor(
                           sold_count
                           stock
                           is_vbs
+                          min_order
                           campaign {
                             name
                             original_price
