@@ -10,6 +10,10 @@ import com.tokopedia.purchase_platform.common.feature.bmgm.data.uimodel.BmgmComm
  */
 sealed interface BmgmMiniCartVisitable : Visitable<BmgmMiniCartAdapterFactory> {
 
+    fun getItemId(): String
+
+    fun getContent(): String
+
     data class TierUiModel(
         val tierId: Long = BmgmCommonDataModel.NON_DISCOUNT_TIER_ID,
         val tierMessage: String = "",
@@ -22,6 +26,12 @@ sealed interface BmgmMiniCartVisitable : Visitable<BmgmMiniCartAdapterFactory> {
 
         override fun type(typeFactory: BmgmMiniCartAdapterFactory): Int {
             return typeFactory.type(this)
+        }
+
+        override fun getItemId(): String = tierId.toString()
+
+        override fun getContent(): String {
+            return toString()
         }
 
         fun isDiscountTier(): Boolean {
@@ -42,11 +52,23 @@ sealed interface BmgmMiniCartVisitable : Visitable<BmgmMiniCartAdapterFactory> {
         override fun type(typeFactory: BmgmMiniCartAdapterFactory): Int {
             return typeFactory.type(this)
         }
+
+        override fun getContent(): String {
+            return toString()
+        }
+
+        override fun getItemId(): String = productId
     }
 
     object PlaceholderUiModel : BmgmMiniCartVisitable {
+
+        private const val PLACEHOLDER_ID = "mini_cart_placeholder"
         override fun type(typeFactory: BmgmMiniCartAdapterFactory): Int {
             return typeFactory.type(this)
         }
+
+        override fun getItemId(): String = PLACEHOLDER_ID
+
+        override fun getContent(): String = PLACEHOLDER_ID
     }
 }

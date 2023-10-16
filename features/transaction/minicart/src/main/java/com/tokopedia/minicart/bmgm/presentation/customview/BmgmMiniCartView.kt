@@ -8,6 +8,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -26,6 +27,7 @@ import com.tokopedia.minicart.bmgm.common.utils.MiniCartUtils
 import com.tokopedia.minicart.bmgm.common.utils.logger.NonFatalIssueLogger
 import com.tokopedia.minicart.bmgm.domain.model.BmgmParamModel
 import com.tokopedia.minicart.bmgm.presentation.adapter.BmgmMiniCartAdapter
+import com.tokopedia.minicart.bmgm.presentation.adapter.diffutil.MiniCartDiffUtilCallback
 import com.tokopedia.minicart.bmgm.presentation.adapter.itemdecoration.BmgmMiniCartItemDecoration
 import com.tokopedia.minicart.bmgm.presentation.model.BmgmMiniCartDataUiModel
 import com.tokopedia.minicart.bmgm.presentation.model.BmgmMiniCartVisitable
@@ -236,9 +238,18 @@ class BmgmMiniCartView : ConstraintLayout, BmgmMiniCartAdapter.Listener {
                 rvBmgmMiniCart.gone()
             }
 
-            miniCartAdapter.clearAllElements()
-            miniCartAdapter.addElement(getProductList(data))
+            val items = getProductList(data)
+            updateItemList(items)
         }
+    }
+
+    private fun updateItemList(items: List<BmgmMiniCartVisitable>) {
+        val oldList = miniCartAdapter.data.toList()
+        val diffCallback = MiniCartDiffUtilCallback(oldList, items)
+        val diffUtil = DiffUtil.calculateDiff(diffCallback)
+        miniCartAdapter.data.clear()
+        miniCartAdapter.data.addAll(items)
+        diffUtil.dispatchUpdatesTo(miniCartAdapter)
     }
 
     private fun setupMessageWithAnimation(messages: List<String>) {
