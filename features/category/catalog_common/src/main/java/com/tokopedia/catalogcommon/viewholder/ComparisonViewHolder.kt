@@ -27,8 +27,6 @@ import com.tokopedia.unifycomponents.CardUnify2.Companion.TYPE_CLEAR
 import com.tokopedia.unifyprinciples.ColorMode
 import com.tokopedia.utils.view.binding.viewBinding
 import kotlin.math.ceil
-import kotlin.math.floor
-import kotlin.math.roundToInt
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ComparisonViewHolder(
@@ -40,6 +38,8 @@ class ComparisonViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.widget_item_comparison
+        private const val DEFAULT_LINE_COUNT = 1
+        private const val DEFAULT_CHAR_WIDTH = 15
     }
 
     private val binding by viewBinding<WidgetItemComparisonBinding>()
@@ -71,37 +71,56 @@ class ComparisonViewHolder(
             cardProductAction.cardType = TYPE_CLEAR
             iconProductAction.setImage(IconUnify.PUSH_PIN_FILLED, colorGray)
             root.addOneTimeGlobalLayoutListener {
-                val heightTemp = List(specs?.size.orZero()) { 1 }.toMutableList()
                 val textAreaWidth: Double = tfProductPrice.measuredWidth.orZero().toDouble()
-                comparisonItems.forEach {
-                    it.topComparisonSpecs.forEachIndexed { index, comparisonSpec ->
-                        val lines = ceil((comparisonSpec.specValue.length * 15)/ textAreaWidth).toInt()
-                        if (lines > heightTemp[index]) heightTemp[index] = lines
-                    }
-                    it.comparisonSpecs.forEachIndexed { index, comparisonSpec ->
-                        val lines = ceil((comparisonSpec.specValue.length * 15)/ textAreaWidth).toInt()
-                        if (lines > heightTemp[index]) heightTemp[index] = lines
-                    }
-                }
-                specs?.forEachIndexed { index, comparisonSpec ->
-                    val lines = ceil((comparisonSpec.specValue.length * 15)/ textAreaWidth).toInt()
-                    if (lines > heightTemp[index]) heightTemp[index] = lines
-                }
-                comparisonItems.forEach {
-                    it.topComparisonSpecs.forEachIndexed { index, comparisonSpec ->
-                        comparisonSpec.specHeight = heightTemp[index]
-                    }
-                    it.comparisonSpecs.forEachIndexed { index, comparisonSpec ->
-                        comparisonSpec.specHeight = heightTemp[index]
-                    }
-                }
-                specs?.forEachIndexed { index, comparisonSpec ->
-                    comparisonSpec.specHeight = heightTemp[index]
-                }
+                configureRowsHeight(textAreaWidth, comparedItem, comparisonItems)
                 rvSpecs.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.VERTICAL, false)
                 rvSpecs.adapter = ComparisonSpecItemAdapter(specs.orEmpty(), true)
                 setupComparisonListItem(comparisonItems)
             }
+        }
+    }
+
+    private fun configureRowsHeight(
+        textAreaWidth: Double,
+        comparedItem: ComparisonUiModel.ComparisonContent?,
+        comparisonItems: List<ComparisonUiModel.ComparisonContent>
+    ) {
+        val specs = if (isDisplayingTopSpec) comparedItem?.topComparisonSpecs else comparedItem?.comparisonSpecs
+        val rowsHeight = List(specs?.size.orZero()) { DEFAULT_LINE_COUNT }.toMutableList()
+
+        // update list
+        comparisonItems.forEach {
+            if (isDisplayingTopSpec)
+                it.topComparisonSpecs.updateRowsHeight(rowsHeight, textAreaWidth)
+            else
+                it.comparisonSpecs.updateRowsHeight(rowsHeight, textAreaWidth)
+        }
+        specs?.updateRowsHeight(rowsHeight, textAreaWidth)
+
+        // apply list to object
+        comparisonItems.forEach {
+            if (isDisplayingTopSpec)
+                it.topComparisonSpecs.applyRowsHeight(rowsHeight)
+            else
+                it.comparisonSpecs.applyRowsHeight(rowsHeight)
+        }
+        specs?.applyRowsHeight(rowsHeight)
+    }
+
+    private fun List<ComparisonUiModel.ComparisonSpec>.updateRowsHeight(
+        rowsHeight: MutableList<Int>,
+        textAreaWidth: Double
+    ) {
+        forEachIndexed { index, comparisonSpec ->
+            val lines = ceil((comparisonSpec.specValue.length * DEFAULT_CHAR_WIDTH)/ textAreaWidth).toInt()
+            if (rowsHeight.getOrNull(index) != null)
+                if (lines > rowsHeight[index]) rowsHeight[index] = lines
+        }
+    }
+
+    private fun List<ComparisonUiModel.ComparisonSpec>.applyRowsHeight(rowsHeight: MutableList<Int>) {
+        forEachIndexed { index, comparisonSpec ->
+            comparisonSpec.specHeight = rowsHeight.getOrNull(index) ?: DEFAULT_LINE_COUNT
         }
     }
 
@@ -198,7 +217,7 @@ class ComparisonViewHolder(
         isComparedItem: Boolean
     ) : RecyclerView.ViewHolder(itemView) {
         companion object {
-            private val DIVIDER_MARGIN = 8
+            private const val DIVIDER_MARGIN = 8
             fun createRootView(parent: ViewGroup): View = LayoutInflater.from(parent.context)
                 .inflate(R.layout.widget_item_comparison_content_spec, parent, false)
         }
