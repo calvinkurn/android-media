@@ -3,6 +3,7 @@ package com.tokopedia.sellerhome.view.viewhelper.lottiebottomnav
 import android.animation.Animator
 import android.content.Context
 import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
 import android.os.Handler
 import android.os.Looper
 import android.util.AttributeSet
@@ -21,6 +22,8 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.sellerhome.R
 import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+
 
 class LottieBottomNav : LinearLayout {
 
@@ -41,13 +44,13 @@ class LottieBottomNav : LinearLayout {
     private var containerList: MutableList<LinearLayout> = ArrayList()
     private var itemCount: Int = 1
     private var buttonContainerBackgroundColor: Int =
-        context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_Background)
+        context.getResColor(unifyprinciplesR.color.Unify_Background)
     private var buttonsHeight: Float = DEFAULT_HEIGHT
     private var selectedItem: Int? = null
     private var containerWidth: Int = 0
     private var navbarContainer: LinearLayout? = null
     private var buttonColor: Int =
-        context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN300)
+        context.getResColor(unifyprinciplesR.color.Unify_NN300)
     private var activeButtonColor: Int = Color.TRANSPARENT
 
     constructor(ctx: Context, attrs: AttributeSet) : super(ctx, attrs) {
@@ -76,19 +79,25 @@ class LottieBottomNav : LinearLayout {
 
     fun setBadge(badgeValue: Int = Int.ZERO, iconPosition: Int, visibility: Int = View.VISIBLE) {
         val badge: View? = navbarContainer?.getChildAt(iconPosition)
-        val badgeText = badge?.findViewById<NotificationUnify>(R.id.notification_badge)
+        val badgeText = badge?.findViewById<TextView>(R.id.notification_badge)
 
-        if (badgeValue > Int.ZERO) {
-            badgeText?.layoutParams = badgeLayoutParam
-            badgeText?.setNotification(
-                badgeValue.toString(),
-                NotificationUnify.COUNTER_TYPE,
-                NotificationUnify.COLOR_PRIMARY
-            )
-            badgeText?.bringToFront()
+        badgeText?.let {
+            if (badgeValue > Int.ZERO) {
+                it.layoutParams = badgeLayoutParam
+                it.background = getNotificationBackground(it.context)
+                it.text = badgeValue.toString()
+                it.bringToFront()
+            }
+            it.visibility = visibility
         }
+    }
 
-        badgeText?.visibility = visibility
+    private fun getNotificationBackground(context: Context): GradientDrawable {
+        val shape = GradientDrawable()
+        shape.shape = GradientDrawable.OVAL
+        shape.cornerRadii = floatArrayOf(0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f)
+        shape.setColor(context.getResColor(unifyprinciplesR.color.Unify_RN600))
+        return shape
     }
 
     private fun adjustBadgePosition() {
@@ -147,14 +156,14 @@ class LottieBottomNav : LinearLayout {
 
         buttonContainerBackgroundColor = a.getColor(
             R.styleable.LottieBottomNav_buttonContainerBackgroundColor,
-            context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_Background)
+            context.getResColor(unifyprinciplesR.color.Unify_Background)
         )
         buttonsHeight =
             a.getDimension(R.styleable.LottieBottomNav_buttonsHeight, defaultButtonHeight)
 
         buttonColor = a.getColor(
             R.styleable.LottieBottomNav_buttonColor,
-            context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN200)
+            context.getResColor(unifyprinciplesR.color.Unify_NN200)
         )
         activeButtonColor =
             a.getColor(R.styleable.LottieBottomNav_activeButtonColor, Color.TRANSPARENT)
@@ -316,7 +325,7 @@ class LottieBottomNav : LinearLayout {
                 val badge: View = LayoutInflater.from(context)
                     .inflate(R.layout.badge_layout, imageContainer, false)
                 badge.layoutParams = badgeLayoutParam
-                val notifBadge = badge.findViewById<NotificationUnify>(R.id.notification_badge)
+                val notifBadge = badge.findViewById<TextView>(R.id.notification_badge)
                 badgeTextViewList.add(notifBadge)
                 notifBadge.tag =
                     context.getString(R.string.tag_badge_textview) + bottomMenu.id.toString()
