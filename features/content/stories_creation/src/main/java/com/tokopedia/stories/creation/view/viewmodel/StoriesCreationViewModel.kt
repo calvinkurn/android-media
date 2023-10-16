@@ -114,19 +114,10 @@ class StoriesCreationViewModel @Inject constructor(
     private fun handleSetProduct(
         productTags: List<ProductTagSectionUiModel>,
     ) {
-        viewModelScope.launchCatchError(block = {
-            repo.setActiveProductTag(
-                storyId = storyId,
-                productIds = productTags.flatMap { it.products.map { product -> product.id } }
+        _uiState.update {
+            it.copy(
+                productTags = productTags
             )
-
-            _uiState.update {
-                it.copy(
-                    productTags = productTags
-                )
-            }
-        }) {
-            /** TODO JOE: handle this */
         }
     }
 
