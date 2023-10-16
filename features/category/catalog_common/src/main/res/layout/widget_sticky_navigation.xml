@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         app:tabTextAppearance="@layout/tab_item_layout"
         app:tabPaddingBottom="-18dp"
+        android:paddingBottom="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
