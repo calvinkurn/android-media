@@ -19,7 +19,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.common.topupbills.analytics.CommonMultiCheckoutAnalytics
-import com.tokopedia.common.topupbills.analytics.PromotionMultiCheckout
 import com.tokopedia.common.topupbills.data.TopupBillsBanner
 import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
@@ -135,7 +134,6 @@ import com.tokopedia.abstraction.R as abstractionR
 import com.tokopedia.common_digital.R as common_digitalR
 import com.tokopedia.digital_product_detail.R as digital_product_detailR
 import com.tokopedia.recharge_component.R as recharge_componentR
-import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * @author by firmanda on 04/01/21
@@ -1095,35 +1093,6 @@ class DigitalPDPDataPlanFragment :
     private fun onClearSelectedDenomFull(position: Int) {
         binding?.let {
             it.rechargePdpPaketDataDenomFullWidget.clearSelectedProduct(position)
-        }
-    }
-
-    private fun onSuccessMCCM(denomFull: DenomWidgetModel, selectedPosition: Int?) {
-        binding?.let {
-            var selectedInitialPosition = selectedPosition
-            if (viewModel.isAutoSelectedProduct(DenomWidgetEnum.MCCM_FULL_TYPE)) {
-                viewModel.updateSelectedPositionId(selectedPosition)
-                onShowBuyWidget(viewModel.selectedFullProduct.denomData)
-            } else {
-                selectedInitialPosition = null
-            }
-            if (denomFull.listDenomData.isNotEmpty()) {
-                val colorHexInt = ContextCompat.getColor(
-                    requireContext(),
-                    unifyprinciplesR.color.Unify_NN0
-                )
-                val colorHexString = "#${Integer.toHexString(colorHexInt)}"
-
-                it.rechargePdpPaketDataPromoWidget.show()
-                it.rechargePdpPaketDataPromoWidget.renderMCCMFull(
-                    this,
-                    denomFull,
-                    colorHexString,
-                    selectedInitialPosition
-                )
-            } else {
-                it.rechargePdpPaketDataPromoWidget.hide()
-            }
         }
     }
 
