@@ -237,7 +237,6 @@ ext {
             analytics  : "com.google.firebase:firebase-analytics-ktx",
             auth       : "com.google.firebase:firebase-auth-ktx",
             dynamicLink: "com.google.firebase:firebase-dynamic-links-ktx",
-            remoteConfig: "com.google.firebase:firebase-config-ktx"
     ]
 
     viewDependencies = [
