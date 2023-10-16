@@ -2636,9 +2636,13 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         trackingQueue?.sendAll()
     }
 
+    override fun onStop() {
+        super.onStop()
+        impressedUUIDs.clear()
+    }
+
     override fun onDestroyView() {
         Toaster.onCTAClick = View.OnClickListener { }
-        impressedUUIDs.clear()
         super.onDestroyView()
     }
 }
