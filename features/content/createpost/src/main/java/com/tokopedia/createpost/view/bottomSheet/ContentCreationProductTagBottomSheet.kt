@@ -14,6 +14,8 @@ import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toDp
+import com.tokopedia.content.common.R as contentcommonR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ContentCreationProductTagBottomSheet : BottomSheetUnify() {
 
@@ -40,7 +42,7 @@ class ContentCreationProductTagBottomSheet : BottomSheetUnify() {
         childView = LayoutInflater.from(context).inflate(childLayoutRes,
             null, false)
         setChild(childView)
-        setTitle(getString(com.tokopedia.content.common.R.string.feed_content_product_bottom_sheet_name))
+        setTitle(getString(contentcommonR.string.feed_content_product_bottom_sheet_name))
     }
 
     private fun setDefaultParams() {
@@ -61,9 +63,9 @@ class ContentCreationProductTagBottomSheet : BottomSheetUnify() {
 
     private fun onDeleteProduct(position: Int) {
         view?.rootView?.let {
-            Toaster.toasterCustomBottomHeight = requireContext().resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl6)
+            Toaster.toasterCustomBottomHeight = requireContext().resources.getDimensionPixelSize(unifyprinciplesR.dimen.layout_lvl6)
             Toaster.build(it,
-                getString(com.tokopedia.content.common.R.string.feed_content_delete_toaster_text),
+                getString(contentcommonR.string.feed_content_delete_toaster_text),
                 Toaster.LENGTH_LONG,
                 Toaster.TYPE_NORMAL).show()
         }

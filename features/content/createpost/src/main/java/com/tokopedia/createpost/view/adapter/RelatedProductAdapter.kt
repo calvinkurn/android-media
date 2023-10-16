@@ -13,6 +13,8 @@ import com.tokopedia.createpost.common.view.viewmodel.RelatedProductItem
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.resources.common.R as resourcescommonR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * @author by milhamj on 21/02/19.
@@ -20,8 +22,7 @@ import com.tokopedia.unifyprinciples.Typography
 class RelatedProductAdapter(
     private val listener: RelatedProductListener? = null,
     val type: String = ""
-) :
-    RecyclerView.Adapter<RelatedProductAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<RelatedProductAdapter.ViewHolder>() {
 
     private val emptyItem: RelatedProductItem = RelatedProductItem(EMPTY_ITEM_ID)
     private var list: MutableList<RelatedProductItem> = arrayListOf()
@@ -54,39 +55,6 @@ class RelatedProductAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bindData(list[position], type)
-
-        if (element.id == EMPTY_ITEM_ID) {
-            holder.itemView.thumbnail.loadImageDrawable(com.tokopedia.resources.common.R.drawable.ic_system_action_addimage_grayscale_62)
-            holder.itemView.delete.hide()
-            holder.itemView.separatorBottom.hide()
-            holder.itemView.separatorBottomEmpty.show()
-            holder.itemView.setOnClickListener {
-                listener?.onEmptyProductClick()
-            }
-        } else {
-            holder.itemView.thumbnail.loadImageRounded(element.image, IMAGE_RADIUS)
-            holder.itemView.delete.showWithCondition(type != TYPE_PREVIEW)
-            holder.itemView.separatorBottom.show()
-            holder.itemView.separatorBottomEmpty.hide()
-            holder.itemView.setOnClickListener { }
-        }
-        holder.itemView.name.text = element.name
-        holder.itemView.price.text = element.price
-        holder.itemView.price.setTextColor(
-            MethodChecker.getColor(
-                holder.itemView.context,
-                if (element.type == TYPE_AFFILIATE) com.tokopedia.unifyprinciples.R.color.Unify_BN500
-                else com.tokopedia.unifyprinciples.R.color.Unify_YN500
-            )
-        )
-        holder.itemView.delete.setOnClickListener {
-            listener?.onItemDeleted(holder.adapterPosition)
-
-            if (list.isEmpty() && shouldAddEmpty()) {
-                list.add(emptyItem)
-                notifyItemInserted(list.size)
-            }
-        }
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -126,7 +94,7 @@ class RelatedProductAdapter(
             type: String,
         ) {
             if (element.id == EMPTY_ITEM_ID) {
-                thumbnail.loadImageDrawable(com.tokopedia.resources.common.R.drawable.ic_system_action_addimage_grayscale_62)
+                thumbnail.loadImageDrawable(resourcescommonR.drawable.ic_system_action_addimage_grayscale_62)
                 delete.hide()
                 separatorBottom.hide()
                 separatorBottomEmpty.show()
@@ -145,8 +113,8 @@ class RelatedProductAdapter(
             price.setTextColor(
                 MethodChecker.getColor(
                     context,
-                    if (element.type == TYPE_AFFILIATE) com.tokopedia.unifyprinciples.R.color.Unify_B500
-                    else com.tokopedia.unifyprinciples.R.color.Unify_Y500
+                    if (element.type == TYPE_AFFILIATE) unifyprinciplesR.color.Unify_BN500
+                    else unifyprinciplesR.color.Unify_YN500
                 )
             )
             delete.setOnClickListener {
