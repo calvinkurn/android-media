@@ -7,6 +7,6 @@ object ScpConstants {
     const val APP_LOCALE = "id-ID"
 
     const val TOKOPEDIA_CLIENT_ID = "tokopedia:consumer:android"
-    const val LOGGER_SCP_AUTH_TAG = "SCP_AUTH"
+    const val LOGGER_SCP_AUTH_TAG = "SCP_AUTH_ERROR"
     const val ERROR_TYPE = "error_type"
 }
