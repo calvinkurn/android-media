@@ -27,10 +27,10 @@ class GetStoryProductEtalaseUseCase @Inject constructor(
         private const val PARAM_REQ = "req"
 
         const val QUERY = """
-            query getStoryProductEtalase(
-                ${"$$PARAM_REQ"}: GetStoryProductEtalaseRequest!
+            query contentCreatorStoryGetProductList(
+                ${"$$PARAM_REQ"}: ContentCreatorStoryGetProductListReq!
             ) {
-                getStoryProductEtalase(
+                contentCreatorStoryGetProductList(
                     $PARAM_REQ: ${"$$PARAM_REQ"}
                 ) {
                     products {
