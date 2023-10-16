@@ -19,5 +19,6 @@ data class DigitalAtcTrackingModel(
         val userId: String = "",
         val isSpecialProduct: Boolean = false,
         val channelId: String = "",
+        val redirectUrl: String = "",
         val atcError: ErrorAtc? = null
 )

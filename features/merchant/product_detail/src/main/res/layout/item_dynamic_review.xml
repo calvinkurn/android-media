@@ -100,21 +100,13 @@
         app:layout_constraintTop_toBottomOf="@id/review_rating"
         tools:visibility="visible" />
 
-    <com.tokopedia.unifycomponents.DividerUnify
-        android:id="@+id/divider_most_helpful_review_thumbnails"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="10dp"
-        app:layout_constraintTop_toBottomOf="@id/review_media_thumbnails" />
-
     <com.tokopedia.reviewcommon.feature.reviewer.presentation.widget.ProductReviewBasicInfoWidget
         android:id="@+id/basic_info_most_helpful_review"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="24dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/divider_most_helpful_review_thumbnails" />
+        app:layout_constraintTop_toBottomOf="@id/review_media_thumbnails" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txt_desc_review_pdp"

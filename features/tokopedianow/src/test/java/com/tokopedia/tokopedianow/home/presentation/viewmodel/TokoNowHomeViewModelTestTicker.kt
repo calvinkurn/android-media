@@ -48,8 +48,7 @@ class TokoNowHomeViewModelTestTicker : TokoNowHomeViewModelTestFixture() {
 
         viewModel.getHomeLayout(
             localCacheModel = LocalCacheModel(),
-            removeAbleWidgets = listOf(),
-            enableNewRepurchase = true
+            removeAbleWidgets = listOf()
         )
         viewModel.getLayoutComponentData(
             localCacheModel = LocalCacheModel()
@@ -100,7 +99,7 @@ class TokoNowHomeViewModelTestTicker : TokoNowHomeViewModelTestFixture() {
         val repurchaseLayout = "recent_purchase_tokonow"
 
         val tickerResponse = createTicker()
-        val tickerList = TickerMapper.mapTickerData(tickerResponse).second
+        val tickerList = TickerMapper.mapTickerData(tickerResponse).tickerList
         val homeLayoutResponse = listOf(
             HomeLayoutResponse(
                 id = repurchaseChannelId,
@@ -131,8 +130,7 @@ class TokoNowHomeViewModelTestTicker : TokoNowHomeViewModelTestFixture() {
 
         viewModel.getHomeLayout(
             localCacheModel = LocalCacheModel(),
-            removeAbleWidgets = listOf(),
-            enableNewRepurchase = true
+            removeAbleWidgets = listOf()
         )
         viewModel.getLayoutComponentData(
             localCacheModel = LocalCacheModel()
@@ -185,5 +183,4 @@ class TokoNowHomeViewModelTestTicker : TokoNowHomeViewModelTestFixture() {
         verifyGetHomeLayoutListSuccess(expectedResult)
         verifyBlockAddToCartNotNull()
     }
-
 }

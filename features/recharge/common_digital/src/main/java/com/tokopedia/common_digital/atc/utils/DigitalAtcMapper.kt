@@ -34,6 +34,7 @@ object DigitalAtcMapper {
                 source = digitalCheckoutPassData.source,
                 userId = userId,
                 isSpecialProduct = digitalCheckoutPassData.isSpecialProduct,
+                redirectUrl = it.attributes?.redirectUrl ?: "",
                 channelId = it.attributes?.channelId ?: "",
             )
         }
@@ -52,6 +53,7 @@ object DigitalAtcMapper {
                 userId = userId,
                 isSpecialProduct = digitalCheckoutPassData.isSpecialProduct,
                 channelId = it.data.attributes.channelId.toString(),
+                redirectUrl = it.data.attributes.redirectUrl ?: "",
                 atcError = error
             )
         }

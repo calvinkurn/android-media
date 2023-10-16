@@ -36,7 +36,8 @@ object ChatbotSendableWebSocketParam {
         messageId: String,
         chatActionBubbleViewModel: ChatActionBubbleUiModel,
         startTime: String,
-        toUid: String
+        toUid: String,
+        isTypingBlocked: Boolean
     ): JsonObject {
         val json = JsonObject().apply {
             addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE)
@@ -64,6 +65,7 @@ object ChatbotSendableWebSocketParam {
             addProperty("action", chatActionBubbleViewModel.action)
         }
         selectedOption.add("button_actions", buttonActions)
+        selectedOption.addProperty("is_typing_blocked", isTypingBlocked)
         payload.add("selected_option", selectedOption)
         data.add("payload", payload)
         data.addProperty("source", ChatbotConstant.SOURCE_CHATBOT)
@@ -209,7 +211,8 @@ object ChatbotSendableWebSocketParam {
         messageId: String,
         quickReplyViewModel: QuickReplyUiModel,
         startTime: String,
-        toUid: String
+        toUid: String,
+        isTypingBlocked: Boolean
     ): JsonObject {
         val json = JsonObject()
         json.addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE)
@@ -238,6 +241,7 @@ object ChatbotSendableWebSocketParam {
         }
 
         selectedOption.add("quick_replies", quickReplies)
+        selectedOption.addProperty("is_typing_blocked", isTypingBlocked)
         payload.add("selected_option", selectedOption)
         data.add("payload", payload)
 
@@ -252,7 +256,8 @@ object ChatbotSendableWebSocketParam {
         quickReplyViewModel: QuickReplyUiModel,
         startTime: String,
         event: String,
-        usedBy: String
+        usedBy: String,
+        isTypingBlocked: Boolean
     ): JsonObject {
         val json = JsonObject()
         json.addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE)
@@ -280,6 +285,7 @@ object ChatbotSendableWebSocketParam {
             add("button_actions", buttonActions)
             addProperty("used_by", usedBy)
             addProperty("event", event)
+            addProperty("is_typing_blocked", isTypingBlocked)
         }
 
         payload.add("selected_option", selectedOption)
