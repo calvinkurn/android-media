@@ -150,6 +150,7 @@ class ImageHotspotView @JvmOverloads constructor(
     }
 
     private fun toggleAllHotspotTagsVisibility() {
+        hideAllBubbleView()
         isAllHotspotTagViewVisible = !isAllHotspotTagViewVisible
         if (isAllHotspotTagViewVisible) {
             showAllHotspotTag()
