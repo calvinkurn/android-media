@@ -1,6 +1,7 @@
 package com.tokopedia.app.common;
 
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -10,6 +11,7 @@ import android.webkit.URLUtil;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.tokopedia.applink.AppUtil;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.cachemanager.PersistentCacheManager;
@@ -35,6 +37,7 @@ import com.tokopedia.weaver.Weaver;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -194,7 +197,11 @@ public class SplashScreen extends AppCompatActivity {
             }
         }
         intent.setData(Uri.parse(tokopediaDeeplink));
-        startActivity(intent);
+        WeakReference<Activity> reference = AppUtil.INSTANCE.getCurrentActivityReference();
+        if (reference!=null) {
+            Activity activity = reference.get();
+            activity.startActivity(intent);
+        }
         finish();
     }
 
