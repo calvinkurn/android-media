@@ -1064,7 +1064,6 @@ object TopChatAnalyticsKt {
     }
 
     fun eventImpressionAutoReply(
-        source: String,
         messageId: String,
         contentList: List<TopChatRoomAutoReplyItemUiModel>
     ) {
@@ -1077,7 +1076,7 @@ object TopChatAnalyticsKt {
                 event = Event.VIEW_COMMUNICATION_IRIS,
                 category = Category.CHAT_DETAIL,
                 action = Action.IMPRESSION_BALASAN_OTOMATIS,
-                label = "$source - $messageId - $contentHeader",
+                label = "$sourcePage - $messageId - $contentHeader",
                 businessUnit = COMMUNICATION,
                 currentSite = CURRENT_SITE_TOKOPEDIA,
                 trackerId = "47757"
@@ -1086,7 +1085,6 @@ object TopChatAnalyticsKt {
     }
 
     fun eventClickAutoReply(
-        source: String,
         messageId: String,
         contentList: List<TopChatRoomAutoReplyItemUiModel>
     ) {
@@ -1099,7 +1097,7 @@ object TopChatAnalyticsKt {
                 event = Event.CLICK_COMMUNICATION,
                 category = Category.CHAT_DETAIL,
                 action = Action.CLICK_BALASAN_OTOMATIS,
-                label = "$source - $messageId - $sourcePage - $contentHeader",
+                label = "$sourcePage - $messageId - $contentHeader",
                 businessUnit = COMMUNICATION,
                 currentSite = CURRENT_SITE_TOKOPEDIA,
                 trackerId = "47758"

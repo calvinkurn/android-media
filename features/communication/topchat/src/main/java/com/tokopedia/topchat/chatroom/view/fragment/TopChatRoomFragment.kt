@@ -138,8 +138,8 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.TopchatPr
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.messagebubble.banned.BannedChatMessageViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwBubbleViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwQuestionViewHolder
-import com.tokopedia.topchat.chatroom.view.bottomsheet.TopChatRoomAutoReplyDetailBottomSheet
 import com.tokopedia.topchat.chatroom.view.bottomsheet.TopChatGuideChatBottomSheet
+import com.tokopedia.topchat.chatroom.view.bottomsheet.TopChatRoomAutoReplyDetailBottomSheet
 import com.tokopedia.topchat.chatroom.view.bottomsheet.TopchatBottomSheetBuilder
 import com.tokopedia.topchat.chatroom.view.bottomsheet.TopchatBottomSheetBuilder.MENU_ID_COPY_TO_CLIPBOARD
 import com.tokopedia.topchat.chatroom.view.bottomsheet.TopchatBottomSheetBuilder.MENU_ID_DELETE_BUBBLE
@@ -240,7 +240,7 @@ open class TopChatRoomFragment :
     ReplyBubbleAreaMessage.Listener,
     ReminderTickerViewHolder.Listener,
     ProductBundlingListener,
-    BannedChatMessageViewHolder.TopChatMessageCensorListener ,
+    BannedChatMessageViewHolder.TopChatMessageCensorListener,
     StoriesWidgetListener {
 
     @Inject
@@ -3534,7 +3534,6 @@ open class TopChatRoomFragment :
         list: List<TopChatRoomAutoReplyItemUiModel>
     ) {
         TopChatAnalyticsKt.eventClickAutoReply(
-            sourcePage,
             messageId,
             listOf(welcomeMessage) + list
         )
@@ -3551,7 +3550,8 @@ open class TopChatRoomFragment :
     ) {
         if (!isSeller()) {
             TopChatAnalyticsKt.eventImpressionAutoReply(
-                sourcePage, messageId, list
+                messageId,
+                list
             )
         }
     }
