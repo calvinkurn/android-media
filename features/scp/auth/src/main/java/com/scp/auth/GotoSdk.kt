@@ -22,6 +22,7 @@ import com.scp.auth.common.utils.ScpUtils
 import com.scp.auth.di.DaggerScpAuthComponent
 import com.scp.auth.di.ScpAuthComponent
 import com.scp.auth.verification.VerificationSdk.getCvSdkProvider
+import com.scp.login.core.domain.common.infrastructure.LSdkEventName
 import com.scp.login.core.domain.contracts.services.LSdkServices
 import com.scp.login.init.GotoLogin
 import com.scp.login.init.contracts.LSdkProvider
@@ -83,6 +84,9 @@ object GotoSdk {
                         eventName: ScpAnalyticsEvent,
                         params: Map<String, Any?>
                     ) {
+                        if (eventName.eventName == LSdkEventName.LSDK_VERIFICATION_FAIL || eventName.eventName == LSdkEventName.LSDK_LOGIN_FAIL) {
+                            ScpUtils.logError(eventName.eventName, params)
+                        }
                         AuthAnalyticsMapper.trackEventLsdk(eventName.eventName, params)
                     }
 
