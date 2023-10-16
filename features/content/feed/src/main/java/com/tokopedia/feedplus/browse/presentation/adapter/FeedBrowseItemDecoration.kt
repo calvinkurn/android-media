@@ -9,7 +9,8 @@ import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseB
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseTitleViewHolder
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import com.tokopedia.feedplus.R
-import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseChannelViewHolder
+import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseChipsViewHolder
+import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseHorizontalChannelsViewHolder
 
 /**
  * Created by kenny.hadisaputra on 19/09/23
@@ -41,7 +42,9 @@ class FeedBrowseItemDecoration(
         when (val viewHolder = parent.getChildViewHolder(view)) {
             is FeedBrowseTitleViewHolder -> outRect.itemOffsetsTitle()
             is FeedBrowseBannerViewHolder -> outRect.itemOffsetsBanner(viewHolder, parent, view)
-            is FeedBrowseChannelViewHolder -> outRect.itemOffsetsChannel()
+            is FeedBrowseChipsViewHolder -> outRect.itemOffsetsChips(viewHolder, parent, view)
+            is FeedBrowseHorizontalChannelsViewHolder -> outRect.itemOffsetsHorizontalChannels()
+            else -> outRect.itemOffsetsElse()
         }
 
         if (parent.getChildAdapterPosition(view) == parent.adapter!!.itemCount - 1) {
@@ -53,6 +56,25 @@ class FeedBrowseItemDecoration(
         left = offset16
         right = offset16
         top = offset16
+    }
+
+    private fun Rect.itemOffsetsChips(
+        viewHolder: FeedBrowseChipsViewHolder,
+        parent: RecyclerView,
+        child: View,
+    ) {
+        val lParams = viewHolder.itemView.layoutParams as? GridLayoutManager.LayoutParams ?: return
+        val spanIndex = lParams.spanIndex
+
+        val currPosition = parent.getChildAdapterPosition(child)
+
+        val prevSpanRowPosition = currPosition - spanIndex - 1
+        if (prevSpanRowPosition < 0) return
+
+        top = when (parent.findViewHolderForAdapterPosition(prevSpanRowPosition)) {
+            is FeedBrowseTitleViewHolder -> offset12
+            else -> offset8
+        }
     }
 
     private fun Rect.itemOffsetsBanner(
@@ -77,7 +99,13 @@ class FeedBrowseItemDecoration(
         }
     }
 
-    private fun Rect.itemOffsetsChannel() {
-        top = offset16
+    private fun Rect.itemOffsetsElse() {
+        top = offset12
+        left = offset16
+    }
+
+    private fun Rect.itemOffsetsHorizontalChannels() {
+        top = offset12
+        bottom = offset16
     }
 }
