@@ -138,6 +138,8 @@ class CheckoutViewModel @Inject constructor(
 
     var isPlusSelected: Boolean = false
 
+    var courierAction: String = "merge"
+
     var checkoutPageSource: String = CheckoutConstant.CHECKOUT_PAGE_SOURCE_PDP
 
     val cornerId: String?
@@ -193,7 +195,8 @@ class CheckoutViewModel @Inject constructor(
                 checkoutLeasingId,
                 isPlusSelected,
                 isReloadData,
-                isReloadAfterPriceChangeHigher
+                isReloadAfterPriceChangeHigher,
+                courierAction
             )
             stopEmbraceTrace()
             when (saf) {

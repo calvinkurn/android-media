@@ -49,7 +49,9 @@ data class GroupShop(
     val groupInfoDescription: String = "",
     val groupInfoDescriptionBadgeUrl: String = "",
 
-    var listSubtotalAddOn: List<ShipmentSubtotalAddOnData> = emptyList()
+    var listSubtotalAddOn: List<ShipmentSubtotalAddOnData> = emptyList(),
+
+    val shipmentAction: HashMap<Long, String> = HashMap()
 ) : Parcelable {
 
     companion object {

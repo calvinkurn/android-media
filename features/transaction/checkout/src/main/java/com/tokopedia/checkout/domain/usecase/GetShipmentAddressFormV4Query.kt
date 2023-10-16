@@ -137,6 +137,8 @@ const val SHIPMENT_ADDRESS_FORM_V4_QUERY =
                     timeslot_id
                     schedule_date
                     validation_metadata
+                    start_date
+                    is_recommend
                   }
                   rates_validation_flow
                   bo_code
@@ -416,6 +418,10 @@ const val SHIPMENT_ADDRESS_FORM_V4_QUERY =
                       additional_fee
                       minimum_weight
                     }
+                  }
+                  shipment_action {
+                    sp_id
+                    action
                   }
                   dropshipper {
                     name

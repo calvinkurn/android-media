@@ -66,5 +66,7 @@ data class GroupShop(
     @SerializedName("rates_validation_flow")
     val ratesValidationFlow: Boolean = false,
     @SerializedName("subtotal_add_ons")
-    val listSubtotalAddOns: List<SubtotalAddOn> = emptyList()
+    val listSubtotalAddOns: List<SubtotalAddOn> = emptyList(),
+    @SerializedName("shipment_action")
+    val shipmentAction: List<ShipmentAction> = emptyList()
 )

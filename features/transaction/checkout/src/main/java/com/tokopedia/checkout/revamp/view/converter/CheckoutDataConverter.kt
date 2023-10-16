@@ -267,7 +267,8 @@ class CheckoutDataConverter @Inject constructor() {
                 hasGeolocation = userAddress.longitude.isNotEmpty() && userAddress.latitude.isNotEmpty(),
                 courierSelectionErrorTitle = groupShop.courierSelectionErrorData.title,
                 courierSelectionErrorDescription = groupShop.courierSelectionErrorData.description,
-                subtotalAddOnMap = mapSubtotalAddons(groupShop.listSubtotalAddOn)
+                subtotalAddOnMap = mapSubtotalAddons(groupShop.listSubtotalAddOn),
+                shipmentAction = groupShop.shipmentAction
             )
             for (cartItemModel in products) {
                 if (cartItemModel.ethicalDrugDataModel.needPrescription && !cartItemModel.isError) {
