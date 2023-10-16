@@ -63,7 +63,7 @@ open class DeepLinkDFMapperTestFixture {
             mockkObject(DeeplinkDFApp)
 
             internalDeeplinkDFPatternListCustomerApp = DeeplinkDFApp.getDfCustomerappMap().mapDF()
-            internalDeeplinkDFPatternListSellerApp = DeeplinkDFApp.getDfSellerappMap(context).mapDF()
+            internalDeeplinkDFPatternListSellerApp = DeeplinkDFApp.getDfSellerappMap().mapDF()
 
             expectedPatternCustomerapp = readExpected("ma_df.txt")
             expectedPatternSellerapp = readExpected("sa_df.txt")

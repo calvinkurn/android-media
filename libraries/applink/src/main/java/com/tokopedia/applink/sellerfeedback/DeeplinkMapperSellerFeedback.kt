@@ -15,7 +15,7 @@ object DeeplinkMapperSellerFeedback {
         }
     }
 
-    fun getIsSellerFeedbackKmp(context: Context): Boolean {
+    private fun getIsSellerFeedbackKmp(context: Context): Boolean {
         val remoteConfigImpl = FirebaseRemoteConfigInstance.get(context)
         return remoteConfigImpl.getBoolean(RemoteConfigKey.SELLER_FEEDBACK_KMP)
     }

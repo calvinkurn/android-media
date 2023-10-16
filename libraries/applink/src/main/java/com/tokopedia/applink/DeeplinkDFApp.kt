@@ -80,7 +80,6 @@ import com.tokopedia.applink.model.DFPHost
 import com.tokopedia.applink.model.DFPPath
 import com.tokopedia.applink.model.DFPSchemeToDF
 import com.tokopedia.applink.model.PathType
-import com.tokopedia.applink.sellerfeedback.DeeplinkMapperSellerFeedback
 import java.io.BufferedReader
 import java.io.FileNotFoundException
 import java.io.InputStreamReader
@@ -99,7 +98,7 @@ object DeeplinkDFApp {
     fun getDeeplinkDFPatternList(isSellerapp: Boolean, context: Context): List<DFPSchemeToDF> {
         val d = getDeeplinkPattern(isSellerapp)
         if (d == null) {
-            getMap(isSellerapp, context).filteredOnDF(context).mapDF().also {
+            getMap(isSellerapp).filteredOnDF(context).mapDF().also {
                 if (isSellerapp) {
                     deeplinkDFPatternListSellerAppv2 = it
                 } else {
@@ -112,8 +111,8 @@ object DeeplinkDFApp {
         }
     }
 
-    private fun getMap(isSellerapp: Boolean, context: Context) = if (isSellerapp) {
-        getDfSellerappMap(context)
+    private fun getMap(isSellerapp: Boolean) = if (isSellerapp) {
+        getDfSellerappMap()
     } else {
         getDfCustomerappMap()
     }
@@ -180,12 +179,12 @@ object DeeplinkDFApp {
         DF_USER_SETTINGS to getDfUserSettings()
     )
 
-    fun getDfSellerappMap(context: Context) = mapOf(
+    fun getDfSellerappMap() = mapOf(
         DF_CAMPAIGN_LIST to getDfCampaignList(),
         DF_CONTENT_PLAY_BROADCASTER to getDfContentPlayBroadcaster(),
         DF_FLASH_SALE_TOKOPEDIA to getDfFlashSaleTokopedia(),
         DF_KYC_SELLERAPP to getDfKycSellerapp(),
-        DF_SELLER_FEEDBACK to getDfSellerFeedback(context),
+        DF_SELLER_FEEDBACK to getDfSellerFeedback(),
         DF_SELLER_FRONT_FUNNEL to getDfSellerFrontFunnel(),
         DF_SELLER_TALK to getDfSellerTalk(),
         DF_SHOP_SETTINGS_SELLER_APP to getDfShopSettingsSellerapp()
@@ -671,18 +670,11 @@ object DeeplinkDFApp {
         DFP(INTERNAL, HOST_USER, PathType.PATTERN, "/liveness-detection")
     )
 
-    private fun getDfSellerFeedback(context: Context): MutableList<DFP> {
-        val pathStringDfSellerFeedback =
-            if (DeeplinkMapperSellerFeedback.getIsSellerFeedbackKmp(context)) {
-                "/seller-feedback-kmp"
-            } else {
-                "/seller-feedback"
-            }
-        return mutableListOf(
-            // seller_feedback
-            DFP(INTERNAL, HOST_SELLERAPP, PathType.PATH, pathStringDfSellerFeedback)
-        )
-    }
+    private fun getDfSellerFeedback() = mutableListOf(
+        // seller_feedback
+        DFP(INTERNAL, HOST_SELLERAPP, PathType.PATH, "seller-feedback"),
+        DFP(INTERNAL, HOST_SELLERAPP, PathType.PATH, "seller-feedback-kmp")
+    )
 
     private fun getDfSellerFrontFunnel() = mutableListOf(
         // seller_persona
