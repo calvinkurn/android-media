@@ -30,6 +30,7 @@ import com.tokopedia.editor.ui.model.InputTextModel
 import com.tokopedia.editor.ui.placement.PlacementImageActivity
 import com.tokopedia.editor.ui.text.InputTextActivity
 import com.tokopedia.editor.ui.widget.DynamicTextCanvasLayout
+import com.tokopedia.editor.util.safeLoadNativeLibrary
 import com.tokopedia.picker.common.EXTRA_UNIVERSAL_EDITOR_PARAM
 import com.tokopedia.picker.common.PickerResult
 import com.tokopedia.picker.common.RESULT_UNIVERSAL_EDITOR
@@ -111,6 +112,7 @@ open class MainEditorActivity : AppCompatActivity()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
+        loadNativeLibrary()
         supportFragmentManager.fragmentFactory = fragmentFactory
 
         super.onCreate(savedInstanceState)
@@ -119,14 +121,6 @@ open class MainEditorActivity : AppCompatActivity()
 
         setDataParam()
         initObserver()
-    }
-
-    override fun attachBaseContext(newBase: Context?) {
-        super.attachBaseContext(newBase)
-
-        if (isSplitInstallEnabled()) {
-            SplitCompat.installActivity(this)
-        }
     }
 
     override fun onCloseClicked() {
@@ -158,6 +152,27 @@ open class MainEditorActivity : AppCompatActivity()
         require(param.pageSource.isUnknown().not()) { "We unable to find the page source." }
 
         viewModel.onEvent(MainEditorEvent.SetupView(param))
+    }
+
+    private fun loadNativeLibrary() {
+        if (isSplitInstallEnabled()) {
+            safeLoadNativeLibrary(this, "c++_shared")
+            safeLoadNativeLibrary(this, "avfilter")
+
+            // FFMPEG
+            safeLoadNativeLibrary(this, "mobileffmpeg")
+            safeLoadNativeLibrary(this, "mobileffmpeg_abidetect")
+
+            // Common
+            safeLoadNativeLibrary(this, "avutil")
+            safeLoadNativeLibrary(this, "swscale")
+            safeLoadNativeLibrary(this, "swresample")
+            safeLoadNativeLibrary(this, "avcodec")
+            safeLoadNativeLibrary(this, "avformat")
+            safeLoadNativeLibrary(this, "avdevice")
+
+            SplitCompat.installActivity(this)
+        }
     }
 
     private fun initObserver() {
