@@ -46,7 +46,6 @@ class RealTimeRecommendationCarouselView @JvmOverloads constructor(
 
     fun bind(data: HomeRealTimeRecomUiModel) {
         setData(data)
-        addImpressionTracker(data)
         renderWidgetView(data)
     }
 
@@ -83,6 +82,7 @@ class RealTimeRecommendationCarouselView @JvmOverloads constructor(
             hideProgressBar()
             setBackgroundColor()
             scrollToFirstPosition()
+            addImpressionTracker(data)
         } else {
             hideContent()
         }

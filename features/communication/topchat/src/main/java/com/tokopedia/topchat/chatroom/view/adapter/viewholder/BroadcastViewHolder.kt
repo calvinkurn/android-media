@@ -30,7 +30,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.ProductBu
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.TopchatProductAttachmentListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.product_bundling.ProductBundlingCarouselViewHolder
 import com.tokopedia.topchat.chatroom.view.custom.BroadcastCampaignLabelView
-import com.tokopedia.topchat.chatroom.view.custom.messagebubble.regular.FlexBoxChatLayout
+import com.tokopedia.topchat.chatroom.view.custom.messagebubble.regular.TopChatChatRoomFlexBoxLayout
 import com.tokopedia.topchat.chatroom.view.custom.ProductCarouselRecyclerView
 import com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
 import com.tokopedia.topchat.chatroom.view.custom.product_bundling.ProductBundlingCardAttachmentContainer
@@ -75,7 +75,7 @@ class BroadcastViewHolder constructor(
     private val singleProductBundling: ProductBundlingCardAttachmentContainer? = itemView?.findViewById(
         R.id.product_bundle_card_broadcast
     )
-    private val fxChat: FlexBoxChatLayout? = itemView?.findViewById(
+    private val fxChat: TopChatChatRoomFlexBoxLayout? = itemView?.findViewById(
         R.id.broadcast_fx_chat
     )
     private val cta: ConstraintLayout? = itemView?.findViewById(R.id.ll_cta_container)

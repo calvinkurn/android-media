@@ -11,7 +11,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifyprinciples.R as UnifyPrinciplesR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 /**
@@ -57,8 +57,8 @@ class QrDealsBottomSheet : BottomSheetUnify() {
             }
 
             it.qrCode.loadImage(actionButton.body.appURL){
-                setPlaceHolder(UnifyPrinciplesR.color.Unify_N50)
-                setErrorDrawable(UnifyPrinciplesR.color.Unify_N50)
+                setPlaceHolder(unifyprinciplesR.color.Unify_NN50)
+                setErrorDrawable(unifyprinciplesR.color.Unify_NN50)
             }
 
             it.redeemDialogShopName.text = actionButton.headerObject.poweredBy

@@ -3,7 +3,6 @@ package com.tokopedia.product.detail.view.viewholder
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.pdp.fintech.domain.datamodel.FintechRedirectionWidgetDataClass
 import com.tokopedia.pdp.fintech.listner.ProductUpdateListner
 import com.tokopedia.pdp.fintech.view.PdpFintechWidget
@@ -21,8 +20,7 @@ class FintechWidgetViewHolder(val view: View, val listener: DynamicProductDetail
 
     private val fintechWidget: PdpFintechWidget = view.findViewById(R.id.pdpBasicFintechWidget)
 
-    private var previousProductId: String = ""
-    private var previousLoginStatus: Boolean = false
+    private var previousData: FintechWidgetDataModel? = null
 
     override fun bind(element: FintechWidgetDataModel) {
         if (isSameSession(element = element)) return
@@ -49,12 +47,11 @@ class FintechWidgetViewHolder(val view: View, val listener: DynamicProductDetail
     }
 
     private fun updateSession(element: FintechWidgetDataModel?) {
-        previousProductId = element?.productId.orEmpty()
-        previousLoginStatus = element?.isLoggedIn.orFalse()
+        previousData = element
     }
 
     private fun isSameSession(element: FintechWidgetDataModel?) =
-        element?.productId == previousProductId && element.isLoggedIn == previousLoginStatus
+        previousData == element
 
     override fun removeWidget() {
         // remove this widget if product non-variant
@@ -74,6 +71,8 @@ class FintechWidgetViewHolder(val view: View, val listener: DynamicProductDetail
         params.height = ViewGroup.LayoutParams.WRAP_CONTENT
         params.width = ViewGroup.LayoutParams.MATCH_PARENT
         itemView.layoutParams = params
+        listener
+            .getBlocksPerformanceTrace()?.addViewPerformanceBlocks(itemView)
     }
 
     override fun fintechChipClicked(

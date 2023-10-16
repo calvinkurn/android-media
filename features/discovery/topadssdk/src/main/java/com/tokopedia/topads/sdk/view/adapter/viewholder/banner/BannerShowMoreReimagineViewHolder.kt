@@ -2,6 +2,7 @@ package com.tokopedia.topads.sdk.view.adapter.viewholder.banner
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.topads.sdk.R
 import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
@@ -17,6 +18,7 @@ class BannerShowMoreReimagineViewHolder(
     override fun bind(element: BannerShopViewMoreUiModel) {
         val viewAll = itemView.findViewById<ViewAllCard>(R.id.viewAllAdsBannerShop)
         viewAll.cardView.cardType = CARD_TYPE_BORDER
+        viewAll.cardView.setMargin(0, 0, 0, 0)
         viewAll.setCta("") {
             invokeClickListener(element)
         }

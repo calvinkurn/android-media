@@ -16,8 +16,6 @@ import com.tokopedia.iconunify.applyIconUnifyColor
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
-import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.unifyprinciples.R.color.Unify_Static_Black

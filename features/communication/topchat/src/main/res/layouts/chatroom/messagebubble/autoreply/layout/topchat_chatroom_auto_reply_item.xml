@@ -47,6 +47,8 @@
         app:layout_constraintTop_toBottomOf="@id/topchat_tv_auto_reply_title"
         app:layout_constraintLeft_toLeftOf="@id/topchat_icon_auto_reply"
         app:layout_constraintRight_toRightOf="@id/topchat_tv_auto_reply_title"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constrainedHeight="true"
         app:typographyType="paragraph_2"
         tools:text="@tools:sample/lorem/random"/>
 

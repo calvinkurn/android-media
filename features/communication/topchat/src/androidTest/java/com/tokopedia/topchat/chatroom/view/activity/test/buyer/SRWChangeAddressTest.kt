@@ -9,7 +9,7 @@ import com.tokopedia.topchat.chatroom.view.activity.robot.msgBubbleResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.msgBubbleRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.replyBubbleResult
 import com.tokopedia.topchat.matchers.isSender
-import com.tokopedia.topchat.stub.chatroom.view.fragment.TopChatRoomFragmentStub
+import com.tokopedia.topchat.stub.chatroom.view.fragment.TopChatChatRoomFragmentStub
 import org.hamcrest.CoreMatchers.not
 import org.junit.Test
 import com.tokopedia.localizationchooseaddress.R as localizationchooseaddressR
@@ -86,7 +86,7 @@ class SRWChangeAddressTest : TopchatRoomTest() {
     fun should_resend_SRW_when_user_success_change_address() {
         // Given
         getChatUseCase.response = getChatUseCase.defaultChangeAddressResponse
-        TopChatRoomFragmentStub.SUCCESS_CHANGE_ADDRESS = true
+        TopChatChatRoomFragmentStub.SUCCESS_CHANGE_ADDRESS = true
         launchChatRoomActivity()
         val totalItemList = activity.getTotalItemInChat()
 
@@ -142,7 +142,7 @@ class SRWChangeAddressTest : TopchatRoomTest() {
     fun should_show_success_toaster_when_success_change_address() {
         // Given
         getChatUseCase.response = getChatUseCase.defaultChangeAddressResponse
-        TopChatRoomFragmentStub.SUCCESS_CHANGE_ADDRESS = true
+        TopChatChatRoomFragmentStub.SUCCESS_CHANGE_ADDRESS = true
         launchChatRoomActivity()
         val expectedMsg = context.getString(
             localizationchooseaddressR.string.toaster_success_chosen_address

@@ -48,7 +48,7 @@ import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
 import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.StickerViewHolder
 import com.tokopedia.topchat.chatroom.view.fragment.StickerFragment
-import com.tokopedia.topchat.chatroom.view.fragment.TopChatRoomFragment
+import com.tokopedia.topchat.chatroom.view.fragment.TopChatChatRoomFragment
 import com.tokopedia.topchat.chatroom.view.listener.TopChatRoomFlexModeListener
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatRoomWebSocketViewModel
 import com.tokopedia.topchat.chattemplate.view.customview.TopChatTemplateSeparatedView
@@ -84,7 +84,7 @@ open class TopChatRoomActivity :
     private var chatComponent: ChatComponent? = null
 
     private lateinit var windowInfoRepo: WindowInfoTracker
-    private lateinit var chatRoomFragment: TopChatRoomFragment
+    private lateinit var chatRoomFragment: TopChatChatRoomFragment
     private lateinit var chatListFragment: ChatListInboxFragment
 
     var remoteConfig: RemoteConfig? = null
@@ -140,7 +140,7 @@ open class TopChatRoomActivity :
     }
 
     protected open fun createChatRoomFragment(bundle: Bundle): Fragment {
-        return TopChatRoomFragment.createInstance(bundle)
+        return TopChatChatRoomFragment.createInstance(bundle)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -353,7 +353,7 @@ open class TopChatRoomActivity :
         } else {
             setupChatRoomOnlyToolbar()
             decreaseToolbarElevation()
-            chatRoomFragment = newFragment as TopChatRoomFragment
+            chatRoomFragment = newFragment as TopChatChatRoomFragment
             handleNonFlexModeView()
         }
     }
@@ -365,7 +365,7 @@ open class TopChatRoomActivity :
         } else {
             messageId = currentActiveChat ?: ZER0_MESSAGE_ID
         }
-        chatRoomFragment = newFragment as TopChatRoomFragment
+        chatRoomFragment = newFragment as TopChatChatRoomFragment
         chatListFragment = ChatListInboxFragment.createFragment(role, currentActiveChat)
         chatTemplateSeparatedView?.setupSeparatedChatTemplate(chatRoomFragment)
         chatListFragment.chatRoomFlexModeListener = this
@@ -440,7 +440,7 @@ open class TopChatRoomActivity :
         if (isFlexMode()) {
             messageId = msg.msgId
             currentActiveChat = msg.msgId
-            chatRoomFragment = newFragment as TopChatRoomFragment
+            chatRoomFragment = newFragment as TopChatChatRoomFragment
             chatRoomFragment.chatRoomFlexModeListener = this
             chatTemplateSeparatedView?.setupSeparatedChatTemplate(chatRoomFragment)
             attachChatRoomFragment(isFromAnotherChat = true)

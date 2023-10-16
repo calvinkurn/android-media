@@ -84,7 +84,7 @@ class ConsentWithdrawalSection constructor(
 
     override fun onItemClicked(data: ConsentGroupDataModel) {
         MainPrivacyCenterAnalytics.sendClickOnConsentSectionEvent(data.groupTitle)
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.CONSENT_WITHDRAWAL_NEW, data.id)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.CONSENT_WITHDRAWAL, data.id)
         intent.putExtra(ConsentWithdrawalFragment.KEY_HEADER_TITLE, data.groupTitle)
         context?.startActivity(intent)
     }
