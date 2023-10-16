@@ -71,6 +71,8 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
         private const val SPAN_78 = 78
         private const val FLAG_0 = 0
 
+        private const val BEARER = "Bearer"
+
         fun createInstance(bundle: Bundle): AddNameRegisterPhoneFragment {
             val fragment = AddNameRegisterPhoneFragment()
             fragment.arguments = bundle
@@ -293,7 +295,7 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
     private fun saveTokens(data: RegisterInfo) {
         userSession.setToken(
             data.accessToken,
-            "Bearer",
+            BEARER,
             EncoderDecoder.Encrypt(data.refreshToken, userSession.refreshTokenIV)
         )
         /* Migrate token to lsdk */
