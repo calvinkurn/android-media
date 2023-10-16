@@ -152,8 +152,6 @@ public class RemoteConfigKey {
     public static final String HOME_REMOVE_PAGINATION = "android_customer_home_remove_pagination";
 
     public static final String HOME_ENABLE_SHARED_PREF_CACHE = "android_customer_home_enable_shared_pref_cache";
-    public static final String HOME_ENABLE_AUTO_REFRESH_WISHLIST = "android_customer_home_auto_refresh_wishlist";
-    public static final String HOME_ENABLE_AUTO_REFRESH_UOH = "android_customer_home_auto_refresh_uoh";
     public static final String HOME_ENABLE_SCROLL_EMBRACE_BREADCRUMB = "android_customer_home_enable_scroll_breadcrumb";
 
     public static final String RECOM_PAGE_DISABLE_VIEWPORT_DS_TOPADS = "android_customer_recom_disable_viewport_ds_topads";
@@ -202,6 +200,8 @@ public class RemoteConfigKey {
     public static final String ENABLE_SHOP_DISCOUNT = "android_enable_shop_discount";
 
     public static final String ENABLE_SHOP_HOME_NPL_WIDGET = "android_enable_shop_home_npl_widget";
+
+    public static final String ENABLE_SHOP_PAGE_REIMAGINED = "android_enable_shop_page_re_imagined";
 
     public static final String ENABLE_OLD_SELLER_MVC_ROUTING_TO_NEW_SELLER_MVC = "android_enable_old_seller_mvc_routing_to_new_seller_mvc";
 
@@ -267,4 +267,16 @@ public class RemoteConfigKey {
     public static final String FINTECH_ENABLE_ADDITIONAL_DEVICE_INFO_HEADER = "android_fintech_enable_additional_device_info";
 
     public static final String ANDROID_ENABLE_NEW_FINGERPRINT_HEADER_DATA = "android_enable_new_fingerprint_header_data";
+
+    public static final String PAYMENT_ENABLE_ADDITIONAL_DEVICE_INFO_HEADER = "android_payment_enable_additional_device_info";
+
+    public static final String CONTENT_EXOPLAYER_CUSTOM_LOAD_CONTROL = "android_content_exoplayer_custom_load_control";
+
+    public static final String HOME_ATF_REFACTORING = "android_home_atf_refactoring";
+
+    public static final String HOME_HPB_CACHE_EXPIRY = "android_home_hpb_cache_expiry";
+
+    public static final String MAINAPP_DISABLED_STORIES_ENTRY_POINTS = "android_main_app_disabled_stories_entry_points";
+
+    public static final String SELLERAPP_DISABLED_STORIES_ENTRY_POINTS = "android_seller_app_disabled_stories_entry_points";
 }

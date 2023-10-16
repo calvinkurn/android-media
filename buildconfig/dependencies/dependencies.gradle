@@ -134,8 +134,8 @@ ext {
 
     unifyIconVersion = '0.0.4'
     unifyIconsVersion = '1.0.30'
-    unifyPrinciplesVersion = '1.4.12'
-    unifyComponentsVersion = '1.2.40'
+    unifyPrinciplesVersion = '1.4.17'
+    unifyComponentsVersion = '1.2.44'
     unifyCoachMarkVersion = '1.2.23'
     unifyCalendarVersion = '1.2.3'
     unifyBannerVersion = '1.0.6.2'
@@ -144,10 +144,10 @@ ext {
     unifyDatePickerVersion = '1.1.2'
     unifyDateFilterVersion = '1.1.1.2'
     unifyPinVersion = '1.0.5'
-    unifyEmptyStateVersion = '1.0.14'
+    unifyEmptyStateVersion = '1.0.16'
     unifyGlobalErrorVersion = '1.0.19'
     unifyHeaderVersion = '1.2.0'
-    unifySortFilterVersion = '1.3.1'
+    unifySortFilterVersion = '1.3.5'
     unifyIconNotificationVersion = '1.0.2.2'
     unifyCarouselVersion = '1.0.10.2'
     unifyListVersion = '1.0.12'
@@ -237,7 +237,6 @@ ext {
             analytics  : "com.google.firebase:firebase-analytics-ktx",
             auth       : "com.google.firebase:firebase-auth-ktx",
             dynamicLink: "com.google.firebase:firebase-dynamic-links-ktx",
-            remoteConfig: "com.google.firebase:firebase-config-ktx"
     ]
 
     viewDependencies = [
@@ -402,7 +401,8 @@ ext {
             robolectric           : "org.robolectric:robolectric:$robolectricVersion",
             orchestrator          : "androidx.test:orchestrator:$orchestratorVersion",
             workManagerTest       : "androidx.work:work-testing:$workManagerVersion",
-            leakCanaryInstrument  : "com.squareup.leakcanary:leakcanary-android-instrumentation:$leakCanaryVersion"
+            leakCanaryInstrument  : "com.squareup.leakcanary:leakcanary-android-instrumentation:$leakCanaryVersion",
+            turbine               : "app.cash.turbine:turbine:0.12.3"
     ]
 
     debugToolsDependencies = [

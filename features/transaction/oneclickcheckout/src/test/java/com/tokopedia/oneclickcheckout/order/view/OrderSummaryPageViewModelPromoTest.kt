@@ -181,7 +181,13 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
                         shippingId = helper.firstCourierFirstDuration.productData.shipperId,
                         spId = helper.firstCourierFirstDuration.productData.shipperProductId,
                         shopId = helper.orderData.cart.shop.shopId.toLongOrZero(),
-                        product_details = listOf(ProductDetail(helper.product.productId.toLongOrZero(), helper.product.orderQuantity))
+                        product_details = listOf(
+                            ProductDetail(
+                                productId = helper.product.productId.toLongOrZero(),
+                                quantity = helper.product.orderQuantity,
+                                isChecked = true
+                            )
+                        )
                     )
                 )
             ),
@@ -252,7 +258,13 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
                         freeShippingMetadata = helper.logisticPromo.freeShippingMetadata,
                         codes = mutableListOf(helper.logisticPromo.promoCode),
                         shopId = helper.orderData.cart.shop.shopId.toLongOrZero(),
-                        product_details = listOf(ProductDetail(helper.product.productId.toLongOrZero(), helper.product.orderQuantity))
+                        product_details = listOf(
+                            ProductDetail(
+                                productId = helper.product.productId.toLongOrZero(),
+                                quantity = helper.product.orderQuantity,
+                                isChecked = true
+                            )
+                        )
                     )
                 )
             ),

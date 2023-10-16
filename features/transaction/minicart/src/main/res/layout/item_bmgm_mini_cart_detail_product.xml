@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="4dp"
+    android:paddingEnd="16dp">
+
+    <View
+        android:id="@+id/dividerBmgmDetailProduct"
+        android:layout_width="2dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="12dp"
+        android:background="@color/Unify_NN50"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imgBmgmDetailProduct"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/dividerBmgmDetailProduct"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvBmgmDetailProductName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:ellipsize="end"
+        android:maxLines="3"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imgBmgmDetailProduct"
+        app:layout_constraintTop_toTopOf="@+id/imgBmgmDetailProduct"
+        app:typographyType="display_3"
+        tools:text="1x New Balance Girls Running Shoes" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvBmgmDetailProductPrice"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="4dp"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imgBmgmDetailProduct"
+        app:layout_constraintTop_toBottomOf="@+id/tvBmgmDetailProductName"
+        app:typographyType="display_3"
+        app:typographyWeight="bold"
+        tools:text="Rp700.000" />
+</androidx.constraintlayout.widget.ConstraintLayout>
