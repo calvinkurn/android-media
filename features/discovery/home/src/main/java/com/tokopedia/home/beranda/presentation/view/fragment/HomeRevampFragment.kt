@@ -871,10 +871,12 @@ open class HomeRevampFragment :
     }
 
     private fun handleThematicBackgroundScrollListener(recyclerView: RecyclerView, dy: Int) {
-        thematicBackground?.let {
-            if (layoutManager?.findFirstCompletelyVisibleItemPosition() == 0 && dy < 0) return
+        val scrollThematic = scrollThematic@{ it: View ->
+            if ((layoutManager?.findFirstCompletelyVisibleItemPosition() ?: 0) <= 0 && dy < 0) return@scrollThematic
             it.translationY = -(dy.toFloat())
         }
+        thematicBackground?.let { scrollThematic.invoke(it) }
+        thematicForeground?.let { scrollThematic.invoke(it) }
     }
 
     private fun trackEmbraceBreadcrumbPosition() {
