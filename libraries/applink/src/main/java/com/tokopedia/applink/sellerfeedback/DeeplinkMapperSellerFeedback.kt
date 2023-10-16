@@ -8,12 +8,15 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 object DeeplinkMapperSellerFeedback {
 
     fun getSellerFeedbackInternalAppLink(context: Context): String {
-        val remoteConfigImpl = FirebaseRemoteConfigInstance.get(context)
-        val isSellerFeedbackKmp = remoteConfigImpl.getBoolean(RemoteConfigKey.SELLER_FEEDBACK_KMP)
-        return if (isSellerFeedbackKmp) {
+        return if (getIsSellerFeedbackKmp(context)) {
             ApplinkConstInternalSellerapp.SELLER_FEEDBACK_KMP
         } else {
             ApplinkConstInternalSellerapp.SELLER_FEEDBACK
         }
+    }
+
+    fun getIsSellerFeedbackKmp(context: Context): Boolean {
+        val remoteConfigImpl = FirebaseRemoteConfigInstance.get(context)
+        return remoteConfigImpl.getBoolean(RemoteConfigKey.SELLER_FEEDBACK_KMP)
     }
 }

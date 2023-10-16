@@ -15,10 +15,10 @@ import com.tokopedia.applink.account.DeeplinkMapperAccount
 import com.tokopedia.applink.communication.DeeplinkMapperCommunication
 import com.tokopedia.applink.home.DeeplinkMapperHome
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant
+import com.tokopedia.applink.model.DFP
 import com.tokopedia.applink.model.DFPHost
 import com.tokopedia.applink.model.DFPPath
 import com.tokopedia.applink.model.DFPSchemeToDF
-import com.tokopedia.applink.model.DFP
 import com.tokopedia.applink.model.PathType
 import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
 import com.tokopedia.applink.purchaseplatform.DeeplinkMapperUoh
@@ -63,7 +63,7 @@ open class DeepLinkDFMapperTestFixture {
             mockkObject(DeeplinkDFApp)
 
             internalDeeplinkDFPatternListCustomerApp = DeeplinkDFApp.getDfCustomerappMap().mapDF()
-            internalDeeplinkDFPatternListSellerApp = DeeplinkDFApp.getDfSellerappMap().mapDF()
+            internalDeeplinkDFPatternListSellerApp = DeeplinkDFApp.getDfSellerappMap(context).mapDF()
 
             expectedPatternCustomerapp = readExpected("ma_df.txt")
             expectedPatternSellerapp = readExpected("sa_df.txt")
@@ -233,8 +233,10 @@ open class DeepLinkDFMapperTestFixture {
                     }
                     listDeeplinkToCheck.add(
                         DeeplinkToCheck(
-                            schemeCheck.scheme + "://" + hostCheck.host + (pathCheck.pattern?.pattern?.toExamplePath()
-                                ?: ""),
+                            schemeCheck.scheme + "://" + hostCheck.host + (
+                                pathCheck.pattern?.pattern?.toExamplePath()
+                                    ?: ""
+                                ),
                             pathCheck.dfTarget
                         )
                     )
