@@ -826,18 +826,9 @@ class ShippingEditorFragment :
     }
 
     private fun getWhitelabelView(): View? {
-        val whitelabelServiceIndex = shippingEditorOnDemandAdapter.getWhitelabelServicePosition()
+        val whitelabelServiceIndex = shippingEditorOnDemandAdapter.getSamedayServicePosition()
         return if (whitelabelServiceIndex != RecyclerView.NO_POSITION) {
             binding?.rvOnDemand?.findViewHolderForAdapterPosition(whitelabelServiceIndex)?.itemView
-        } else {
-            null
-        }
-    }
-
-    private fun getNormalServiceView(): View? {
-        val normalServiceIndex = shippingEditorOnDemandAdapter.getFirstNormalServicePosition()
-        return if (normalServiceIndex != RecyclerView.NO_POSITION) {
-            binding?.rvOnDemand?.findViewHolderForAdapterPosition(normalServiceIndex)?.itemView
         } else {
             null
         }
@@ -858,9 +849,7 @@ class ShippingEditorFragment :
         context?.let {
             val whitelabelView = getWhitelabelView()
             if (whitelabelView != null) {
-                val normalServiceView = getNormalServiceView()
-                val coachMarkItems =
-                    generateOnBoardingCoachMark(it, normalServiceView, whitelabelView)
+                val coachMarkItems = generateOnBoardingCoachMark(it, whitelabelView)
 
                 CoachMark2(it).apply {
                     setOnBoardingListener(coachMarkItems)
@@ -873,27 +862,16 @@ class ShippingEditorFragment :
 
     private fun generateOnBoardingCoachMark(
         context: Context,
-        normalService: View?,
         whitelabelService: View
     ): ArrayList<CoachMark2Item> {
         val coachMarkItems = ArrayList<CoachMark2Item>()
-        normalService?.let { view ->
-            coachMarkItems.add(
-                CoachMark2Item(
-                    view,
-                    context.getString(R.string.whitelabel_onboarding_title_coachmark),
-                    context.getString(R.string.whitelabel_onboarding_description_coachmark),
-                    CoachMark2.POSITION_TOP
-                )
-            )
-        }
 
         whitelabelService.let { view ->
             coachMarkItems.add(
                 CoachMark2Item(
                     view,
-                    context.getString(R.string.whitelabel_instan_title_coachmark),
-                    context.getString(R.string.whitelabel_instan_description_coachmark),
+                    context.getString(R.string.whitelabel_sameday_title_coachmark),
+                    context.getString(R.string.whitelabel_sameday_description_coachmark),
                     CoachMark2.POSITION_TOP
                 )
             )

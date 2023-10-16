@@ -32,7 +32,13 @@ class FeedPostLayoutManager(
         return scrollRange
     }
 
+    override fun onLayoutCompleted(state: RecyclerView.State?) {
+        super.onLayoutCompleted(state)
+        listener.onLayoutCompleted(this)
+    }
+
     interface Listener {
         fun onScrolling(layoutManager: LinearLayoutManager, isOverScroll: Boolean)
+        fun onLayoutCompleted(layoutManager: LinearLayoutManager)
     }
 }

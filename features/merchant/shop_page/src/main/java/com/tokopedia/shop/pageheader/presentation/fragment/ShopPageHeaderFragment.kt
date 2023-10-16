@@ -189,6 +189,7 @@ import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.Shop
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopPageHeaderPlayWidgetViewHolder
 import com.tokopedia.shop.pageheader.presentation.bottomsheet.ShopPageHeaderContentCreationOptionBottomSheet
 import com.tokopedia.shop.pageheader.presentation.bottomsheet.ShopPageHeaderRequestUnmoderateBottomSheet
+import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageReimagineHeaderFragment.Companion.SHOWCASE_ID_USED_TO_HIDE_SHARE_CTA
 import com.tokopedia.shop.pageheader.presentation.holder.ShopPageHeaderFragmentHeaderViewHolder
 import com.tokopedia.shop.pageheader.presentation.holder.ShopPageHeaderFragmentViewHolderListener
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPageHeaderPerformanceMonitoringListener
@@ -612,7 +613,7 @@ class ShopPageHeaderFragment :
             this,
             this,
             this,
-            this,
+            this
         )
         initToolbar()
         initAdapter()
@@ -1509,9 +1510,16 @@ class ShopPageHeaderFragment :
         newNavigationToolbar?.apply {
             viewLifecycleOwner.lifecycle.addObserver(this)
             show()
-            val iconBuilder =
-                IconBuilder(builderFlags = IconBuilderFlag(pageSource = NavSource.SHOP))
-            iconBuilder.addIcon(IconList.ID_SHARE) { clickShopShare() }
+            val iconBuilder = IconBuilder(
+                builderFlags = IconBuilderFlag(
+                    pageSource = NavSource.SHOP
+                )
+            )
+
+            iconBuilder.addIcon(IconList.ID_SHARE) {
+                clickShopShare()
+            }
+
             if (isCartShownInNewNavToolbar()) {
                 iconBuilder.addIcon(IconList.ID_CART) {}
             }
@@ -1571,18 +1579,12 @@ class ShopPageHeaderFragment :
         searchBarLayout?.hide()
     }
 
-    private fun initSearchInputView() {
-        searchBarText?.setOnClickListener {
-            clickSearch()
-        }
-    }
-
     private fun redirectToSearchAutoCompletePage() {
         val shopSrpAppLink = URLEncoder.encode(
             UriUtil.buildUri(
                 ApplinkConst.SHOP_ETALASE,
                 shopId,
-                DEFAULT_SHOWCASE_ID
+                SHOWCASE_ID_USED_TO_HIDE_SHARE_CTA
             ),
             "utf-8"
         )

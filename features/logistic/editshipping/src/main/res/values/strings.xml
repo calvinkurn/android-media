@@ -67,11 +67,9 @@
     <string name="toaster_cpl_error">Harap pilih min. 1 layanan pengiriman untuk produk ini.</string>
     <string name="antar_ke_agen">Antar ke Kantor Agen</string>
 
-    <!--    Whitelabel Instan-->
-    <string name="whitelabel_instan_title_coachmark">Ada yang baru di kurir instan, nih!</string>
-    <string name="whitelabel_instan_description_coachmark">Pengaturan pengiriman kini lebih mudah karena Penjual cukup aktifkan layanan pengiriman saja.</string>
-    <string name="whitelabel_onboarding_title_coachmark">Pilih tipe kurir yang kamu inginkan</string>
-    <string name="whitelabel_onboarding_description_coachmark">Saat memilih kurir, kamu bisa lihat detail informasi untuk mengecek tipe kurir apa saja yang tersedia.</string>
-    <string name="img_courier_content_description">placeholder courier logo</string>
+    <!--    Whitelabel Sameday-->
+    <string name="whitelabel_sameday_title_coachmark">Pilih layanan Same Day 8 Jam di sini</string>
+    <string name="whitelabel_sameday_description_coachmark">Opsi Same Day dengan kurir Gojek dan Grab, paket sampai ke pembeli maks. 8 jam.</string>
+
     <string name="dropoff_button_title">Cek Gerai Terdekat</string>
 </resources>

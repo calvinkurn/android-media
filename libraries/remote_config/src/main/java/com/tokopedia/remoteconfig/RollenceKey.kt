@@ -18,7 +18,9 @@ object RollenceKey {
     const val HOME_COMPONENT_ATF_2 = "home_atf2"
     const val HOME_LOAD_TIME_KEY = "load_time"
     const val HOME_LOAD_TIME_CONTROL = "control_variant"
-    const val HOME_LOAD_TIME_EXP = "exp_variant"
+    const val HOME_LOAD_ATF_CACHE_ROLLENCE_KEY = "loadtime_homepage_an"
+    const val HOME_LOAD_ATF_CACHE_ROLLENCE_CONTROL = "control_variant"
+    const val HOME_LOAD_ATF_CACHE_ROLLENCE_EXP = "experiment_variant"
     // end of home rollence section
 
     // home component rollence section
@@ -85,9 +87,11 @@ object RollenceKey {
 
     // Payment
     const val THANKYOU_PAGE_WIDGET_ORDERING = "android_thankyou_v0"
+    const val THANKYOU_PAGE_WIDGET_VARIANT = "TYP_Exp_PG_DG"
 
     // TokopediaNOW
     const val TOKOPEDIA_NOW_AFFILIATE = "aff_now_att"
+    const val TOKOPEDIA_NOW_PAGINATION = "now_pagination"
 
     // FS Toko OOS Gradual Rollout
     const val FLASH_SALE_OUT_OF_STOCK_GRADUAL_ROLLOUT = "fst_oosimprovement"

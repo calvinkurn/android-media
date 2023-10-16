@@ -30,7 +30,6 @@ import com.tokopedia.catalogcommon.uimodel.BaseCatalogUiModel
 import com.tokopedia.catalogcommon.uimodel.BlankUiModel
 import com.tokopedia.catalogcommon.uimodel.CharacteristicUiModel
 import com.tokopedia.catalogcommon.uimodel.DoubleBannerCatalogUiModel
-import com.tokopedia.catalogcommon.uimodel.DummyUiModel
 import com.tokopedia.catalogcommon.uimodel.ExpertReviewUiModel
 import com.tokopedia.catalogcommon.uimodel.HeroBannerUiModel
 import com.tokopedia.catalogcommon.uimodel.SliderImageTextUiModel
@@ -83,14 +82,6 @@ class CatalogDetailUiMapper @Inject constructor(
                 }
 
                 WidgetTypes.CATALOG_ACCORDION.type -> it.mapToAccordion(isDarkMode)
-                WidgetTypes.CATALOG_COMPARISON.type -> {
-                    DummyUiModel(content = it.name)
-                }
-
-                WidgetTypes.CATALOG_SIMILAR_PRODUCT.type -> {
-                    DummyUiModel(content = it.name)
-                }
-
                 else -> {
                     BlankUiModel()
                 }
@@ -142,7 +133,7 @@ class CatalogDetailUiMapper @Inject constructor(
 
     private fun mapToNavigationProperties(
         remoteModel: CatalogResponseData.CatalogGetDetailModular,
-        widgets: List<Visitable<*>>,
+        widgets: List<Visitable<*>>
     ): NavigationProperties {
         val heroImage = widgets.firstOrNull { it is HeroBannerUiModel } as? HeroBannerUiModel
         return NavigationProperties(
@@ -182,9 +173,9 @@ class CatalogDetailUiMapper @Inject constructor(
                 heroSlide.subtitle
             }.orEmpty(),
             brandIconUrl = data?.hero?.brandLogoUrl.orEmpty(),
-            widgetTextColor = colorMapping(darkMode, DARK_COLOR_BANNER, LIGHT_COLOR_BANNER),
+            widgetTextColor = colorMapping(darkMode, DARK_COLOR_BANNER, LIGHT_COLOR_BANNER)
 
-            )
+        )
 
     private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToTopFeature(
         remoteModel: CatalogResponseData.CatalogGetDetailModular
@@ -197,7 +188,7 @@ class CatalogDetailUiMapper @Inject constructor(
                     icon = it.iconUrl,
                     name = it.desc,
                     backgroundColor = colorMapping(isDarkMode, DARK_COLOR, LIGHT_COLOR, 20),
-                    textColor = getTextColor(isDarkMode),
+                    textColor = getTextColor(isDarkMode)
                 )
             }.orEmpty()
         )
@@ -375,7 +366,7 @@ class CatalogDetailUiMapper @Inject constructor(
                         background = colorMapping(
                             isDarkMode,
                             catalogcommonR.drawable.bg_circle_border_dark,
-                            catalogcommonR.drawable.bg_circle_border_light,
+                            catalogcommonR.drawable.bg_circle_border_light
                         )
                     )
                 )
@@ -406,7 +397,7 @@ class CatalogDetailUiMapper @Inject constructor(
                         isDarkMode,
                         DARK_COLOR_SUPPORT_FEATURE_01,
                         LIGHT_COLOR_SUPPORT_FEATURE_01
-                    ),
+                    )
                 )
             }.orEmpty()
         )
@@ -424,5 +415,4 @@ class CatalogDetailUiMapper @Inject constructor(
     fun isUsingAboveV4Layout(version: Int): Boolean {
         return version >= LAYOUT_VERSION_4_VALUE
     }
-
 }
