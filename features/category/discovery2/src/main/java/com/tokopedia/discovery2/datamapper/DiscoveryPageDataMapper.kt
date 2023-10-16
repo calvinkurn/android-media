@@ -413,8 +413,11 @@ class DiscoveryPageDataMapper(
             if (isForcedRedirection) {
                 val activeTabIndex = queryParameterMapWithoutRpc[ACTIVE_TAB]?.toIntOrNull()
                 if (activeTabIndex != null) {
-                    component.getComponentsItem()?.forEachIndexed { index, it ->
-                        Utils.setTabSelectedBasedOnDataItem(it, activeTabIndex == index + 1)
+                    component.getComponentsItem()?.forEachIndexed { index, componentItem ->
+                        Utils.setTabSelectedBasedOnDataItem(
+                            componentItem,
+                            activeTabIndex == index + 1
+                        )
                     }
                 }
                 queryParameterMap.remove(FORCED_NAVIGATION)

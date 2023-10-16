@@ -11,7 +11,7 @@ class ViewAllCarouselViewModel(
     val application: Application,
     val components: ComponentsItem,
     val position: Int
-): DiscoveryBaseViewModel() {
+) : DiscoveryBaseViewModel() {
 
     private val data: MutableLiveData<DataItem> = MutableLiveData()
 
