@@ -29,6 +29,7 @@ import com.tokopedia.home.beranda.domain.interactor.usecase.HomeRecommendationUs
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeSalamRecommendationUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeSearchUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeSuggestedReviewUseCase
+import com.tokopedia.home.beranda.domain.interactor.usecase.HomeThematicUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeTodoWidgetUseCase
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
 import com.tokopedia.home.beranda.helper.Event
@@ -36,6 +37,7 @@ import com.tokopedia.home.beranda.helper.RateLimiter
 import com.tokopedia.home.beranda.helper.Result
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeThematicModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.CMHomeWidgetDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.CarouselPlayWidgetDataModel
@@ -48,6 +50,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ReviewDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TickerDataModel
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRemoteConfigController
+import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
 import com.tokopedia.home.util.HomeServerLogger
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
@@ -102,9 +105,10 @@ open class HomeRevampViewModel @Inject constructor(
     private val homeTodoWidgetUseCase: Lazy<HomeTodoWidgetUseCase>,
     private val homeDismissTodoWidgetUseCase: Lazy<DismissTodoWidgetUseCase>,
     private val homeRateLimit: RateLimiter<String>,
-    private val homeRemoteConfigController: HomeRemoteConfigController,
-    private val homeAtfUseCase: HomeAtfUseCase,
-    private val todoWidgetRepository: TodoWidgetRepository
+    private val homeRemoteConfigController: Lazy<HomeRemoteConfigController>,
+    private val homeAtfUseCase: Lazy<HomeAtfUseCase>,
+    private val todoWidgetRepository: Lazy<TodoWidgetRepository>,
+    private val homeThematicUseCase: Lazy<HomeThematicUseCase>,
 ) : BaseCoRoutineScope(homeDispatcher.get().io) {
 
     companion object {
@@ -158,6 +162,9 @@ open class HomeRevampViewModel @Inject constructor(
     private val _resetNestedScrolling = MutableLiveData<Event<Boolean>>()
     val resetNestedScrolling: LiveData<Event<Boolean>> get() = _resetNestedScrolling
 
+    val thematicLiveData: LiveData<HomeThematicModel> get() = _thematicLiveData
+    private val _thematicLiveData = MutableLiveData<HomeThematicModel>()
+
     private var fetchFirstData = false
     private var homeFlowStarted = false
     private var homeFlowDataCancelled = false
@@ -169,7 +176,7 @@ open class HomeRevampViewModel @Inject constructor(
     var isFirstLoad = true
 
     private fun homeFlowDynamicChannel(): Flow<HomeDynamicChannelModel?> {
-        return if (homeRemoteConfigController.isUsingNewAtf()) {
+        return if (homeRemoteConfigController.get().isUsingNewAtf()) {
             homeUseCase.get().getNewHomeDataFlow().flowOn(homeDispatcher.get().io)
         } else {
             homeUseCase.get().getHomeDataFlow().flowOn(homeDispatcher.get().io)
@@ -297,8 +304,11 @@ open class HomeRevampViewModel @Inject constructor(
     @FlowPreview
     private fun initFlow() {
         homeFlowStarted = true
-        launch(homeDispatcher.get().io) {
-            homeAtfUseCase.fetchAtfDataList()
+        getThematicBackground()
+        if (homeRemoteConfigController.get().isUsingNewAtf()) {
+            launch(homeDispatcher.get().io) {
+                homeAtfUseCase.get().fetchAtfDataList()
+            }
         }
         launchCatchError(coroutineContext, block = {
             homeFlowDynamicChannel().collect { homeNewDataModel ->
@@ -329,7 +339,7 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     private fun validateAtfError(homeNewDataModel: HomeDynamicChannelModel?) {
-        if (homeRemoteConfigController.isUsingNewAtf() &&
+        if (homeRemoteConfigController.get().isUsingNewAtf() &&
             shouldShowAtfGeneralError(homeNewDataModel)
         ) {
             _updateNetworkLiveData.postValue(
@@ -347,6 +357,7 @@ open class HomeRevampViewModel @Inject constructor(
 
     @FlowPreview
     fun refreshHomeData() {
+        val isFirstLoad = this.isFirstLoad
         if (getHomeDataJob?.isActive == true) {
             _hideShowLoadingLiveData.postValue(Event(true))
             return
@@ -365,7 +376,10 @@ open class HomeRevampViewModel @Inject constructor(
         }
 
         getHomeDataJob = launchCatchError(coroutineContext, block = {
-            homeUseCase.get().updateHomeData(homeRemoteConfigController.isUsingNewAtf()).collect {
+            homeUseCase.get().updateHomeData(
+                homeRemoteConfigController.get().isUsingNewAtf(),
+                isFirstLoad
+            ).collect {
                 _updateNetworkLiveData.postValue(it)
                 if (it.status === Result.Status.ERROR_PAGINATION) {
                     removeDynamicChannelLoadingModel()
@@ -604,9 +618,9 @@ open class HomeRevampViewModel @Inject constructor(
         findWidget<MissionWidgetListDataModel> { missionWidgetListDataModel, position ->
             launch {
                 if (missionWidgetListDataModel.source == MissionWidgetListDataModel.SOURCE_ATF &&
-                    homeRemoteConfigController.isUsingNewAtf()
+                    homeRemoteConfigController.get().isUsingNewAtf()
                 ) {
-                    homeAtfUseCase.refreshData(missionWidgetListDataModel.id)
+                    homeAtfUseCase.get().refreshData(missionWidgetListDataModel.id)
                 } else {
                     updateWidget(
                         missionWidgetListDataModel.copy(status = MissionWidgetListDataModel.STATUS_LOADING),
@@ -626,9 +640,9 @@ open class HomeRevampViewModel @Inject constructor(
         findWidget<TodoWidgetListDataModel> { todoWidgetListDataModel, position ->
             launch {
                 if (todoWidgetListDataModel.source == TodoWidgetListDataModel.SOURCE_ATF &&
-                    homeRemoteConfigController.isUsingNewAtf()
+                    homeRemoteConfigController.get().isUsingNewAtf()
                 ) {
-                    homeAtfUseCase.refreshData(todoWidgetListDataModel.id)
+                    homeAtfUseCase.get().refreshData(todoWidgetListDataModel.id)
                 } else {
                     updateWidget(
                         todoWidgetListDataModel.copy(status = TodoWidgetListDataModel.STATUS_LOADING),
@@ -844,8 +858,8 @@ open class HomeRevampViewModel @Inject constructor(
             )
 
             try {
-                if (homeRemoteConfigController.isUsingNewAtf()) {
-                    todoWidgetRepository.dismissItemAt(horizontalPosition, param)
+                if (homeRemoteConfigController.get().isUsingNewAtf()) {
+                    todoWidgetRepository.get().dismissItemAt(horizontalPosition, param)
                 } else {
                     findWidget<TodoWidgetListDataModel> { item, verticalPosition ->
                         if (item.todoWidgetList.size == 1) {
@@ -884,5 +898,16 @@ open class HomeRevampViewModel @Inject constructor(
                 }
             }
         )
+    }
+
+    private fun getThematicBackground() {
+        if(!HomeRollenceController.isOldHome()) {
+            launchCatchError(coroutineContext, {
+                val thematic = homeThematicUseCase.get().executeOnBackground()
+                _thematicLiveData.postValue(thematic)
+            }) {
+                _thematicLiveData.postValue(HomeThematicModel(isShown = false))
+            }
+        }
     }
 }

@@ -7,11 +7,11 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.shop.databinding.ShopHomeDisplayBannerProductHotspotItemBinding
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeDisplayBannerProductHotspotItemViewHolder
-import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeDisplayBannerProductHotspotViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeReimagineDisplayBannerProductHotspotViewHolder
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerProductHotspotUiModel
 
 class ShopWidgetProductHotspotAdapter(
-    private val listener: ShopHomeDisplayBannerProductHotspotViewHolder.Listener? = null,
+    private val listener: ShopHomeReimagineDisplayBannerProductHotspotViewHolder.Listener? = null,
     private val widgetUiModel: ShopWidgetDisplayBannerProductHotspotUiModel? = null
 ) : RecyclerView.Adapter<ShopHomeDisplayBannerProductHotspotItemViewHolder>() {
 
@@ -67,5 +67,4 @@ class ShopWidgetProductHotspotAdapter(
     fun submit(data: List<ShopWidgetDisplayBannerProductHotspotUiModel.Data>) {
         differ.submitList(data)
     }
-
 }

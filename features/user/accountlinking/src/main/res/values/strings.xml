@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--Account Linking Webview-->
+    <string name="account_linking_skip_for_now">Lewatin Dulu</string>
+    <string name="account_linking_label_link_account_menu_skip">Lewati</string>
+    <string name="account_linking_label_toolbar_verifikasi_akun">Verifikasi Akun</string>
+    <string name="account_linking_label_toolbar_aktifasi_gopay">\u0020\u0020\u0020Aktifin GoPay</string>
+    <string name="account_linking_title_skip_gopay_dialog">Aktifin GoPay lain kali?</string>
+    <string name="account_linking_desc_skip_gopay_dialog">Tenang aja, akun Tokopedia &amp; Gojek kamu tetap kesambung. Kamu bisa aktifin GoPay belakangan.</string>
+    <string name="account_linking_label_primary_btn_gopay_dialog">Iya, Nanti Aja</string>
+    <string name="account_linking_label_secondary_btn_gopay_dialog">Kembali</string>
+
+</resources>

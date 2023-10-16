@@ -9,11 +9,9 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topads.common.data.exception.ResponseErrorException
 import com.tokopedia.topads.common.data.model.ticker.TopAdsTickerResponse
 import com.tokopedia.topads.common.data.response.DepositAmount
-import com.tokopedia.topads.common.domain.usecase.GetWhiteListedUserUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsTickerUseCase
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.INSUFFICIENT_CREDIT
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.IS_TOP_UP_CREDIT_NEW_UI
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TopAdsCreditTopUpConstant.TOP_UP_FREQUENTLY
 import com.tokopedia.topads.dashboard.data.model.GetPersonalisedCopyResponse
 import com.tokopedia.topads.dashboard.data.model.beranda.RecommendationStatistics
@@ -50,7 +48,6 @@ class TopAdsDashboardViewModel @Inject constructor(
     private val topAdsTickerUseCase: TopAdsTickerUseCase,
     private val autoTopUpUSeCase: TopAdsAutoTopUpUSeCase,
     private val topAdsGetSelectedTopUpTypeUseCase: TopAdsGetSelectedTopUpTypeUseCase,
-    private val whiteListedUserUseCase: GetWhiteListedUserUseCase,
     private val topAdsListAllInsightCountsUseCase: TopAdsListAllInsightCountsUseCase,
     private val topAdsGetTotalAdGroupsWithInsightUseCase: TopAdsGetTotalAdGroupsWithInsightUseCase
 ) : BaseViewModel(Dispatchers.Main) {
@@ -189,27 +186,6 @@ class TopAdsDashboardViewModel @Inject constructor(
         }, {
             _getAutoTopUpDefaultSate.value = Fail(it)
         })
-    }
-
-    fun getWhiteListedUser() {
-        whiteListedUserUseCase.setParams()
-        whiteListedUserUseCase.executeQuerySafeMode(
-            onSuccess = {
-                it.data.forEach { data ->
-                    if (data.featureName.equals(
-                            IS_TOP_UP_CREDIT_NEW_UI,
-                            true
-                        )
-                    ) {
-                        _isUserWhitelisted.value =
-                            Success(true)
-                    }
-                }
-            },
-            onError = {
-                _isUserWhitelisted.value = Fail(it)
-            }
-        )
     }
 
     fun fetchInsightItems(

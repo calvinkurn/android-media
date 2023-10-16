@@ -216,21 +216,6 @@ object ApplinkConstInternalUserPlatform {
     const val FUNDS_AND_INVESTMENT = "$NEW_INTERNAL_USER/funds-and-investment"
 
     /**
-     * LinkAccountWebViewActivity
-     * @Applink : tokopedia-android-internal://user/link-account-webview
-     * @param : [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_LD]
-     **/
-    @Deprecated("Remove this class after integrating SCP Login to Tokopedia")
-    const val LINK_ACCOUNT_WEBVIEW = "$NEW_INTERNAL_USER/link-account-webview"
-
-    /**
-     * LinkAccountActivity
-     * @Applink : tokopedia-android-internal://user/link-account
-     **/
-    @Deprecated("Remove this class after integrating SCP Login to Tokopedia")
-    const val LINK_ACCOUNT = "$NEW_INTERNAL_USER/link-account"
-
-    /**
      * AddNameRegisterPhoneActivity
      * @Applink : tokopedia-android-internal://user/add-name-register
      **/
@@ -357,12 +342,11 @@ object ApplinkConstInternalUserPlatform {
 
     /**
      * ConsentWithdrawalActivity
-     * @Applink : tokopedia-android-internal://user/consent/withdrawal?groupId={groupId}
+     * @Applink : tokopedia-android-internal://user/consent/withdrawal/new?groupId={groupId}
      * @param : [GROUP_ID] data type Int
      * */
     const val GROUP_ID = "groupId"
     const val CONSENT_WITHDRAWAL = "$NEW_INTERNAL_USER/consent/withdrawal?$GROUP_ID={groupId}"
-    const val CONSENT_WITHDRAWAL_NEW = "$NEW_INTERNAL_USER/consent/withdrawal/new?$GROUP_ID={groupId}"
 
     /**
      * com.tokopedia.troubleshooter.notification.ui.activity.TroubleshootActivity
@@ -527,7 +511,7 @@ object ApplinkConstInternalUserPlatform {
      * @param : [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_LD]
      **/
     @Deprecated("Remove this class after integrating SCP Login to Tokopedia")
-    const val ACCOUNT_LINKING_WEBVIEW = "$NEW_INTERNAL_USER/account-linking-webview"
+    const val LINK_ACCOUNT_WEBVIEW = "$NEW_INTERNAL_USER/account-linking-webview"
 
     /**
      * com.tokopedia.privacycenter.dsar.ui.DsarActivity
