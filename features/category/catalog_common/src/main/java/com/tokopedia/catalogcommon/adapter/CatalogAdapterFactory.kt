@@ -5,7 +5,6 @@ import com.tokopedia.catalogcommon.uimodel.BannerCatalogUiModel
 import com.tokopedia.catalogcommon.uimodel.BlankUiModel
 import com.tokopedia.catalogcommon.uimodel.CharacteristicUiModel
 import com.tokopedia.catalogcommon.uimodel.DoubleBannerCatalogUiModel
-import com.tokopedia.catalogcommon.uimodel.DummyUiModel
 import com.tokopedia.catalogcommon.uimodel.ExpertReviewUiModel
 import com.tokopedia.catalogcommon.uimodel.HeroBannerUiModel
 import com.tokopedia.catalogcommon.uimodel.PanelImageUiModel
@@ -19,7 +18,6 @@ import com.tokopedia.catalogcommon.uimodel.TrustMakerUiModel
 interface CatalogAdapterFactory {
     fun type(uiModel: TopFeaturesUiModel): Int
     fun type(uiModel: HeroBannerUiModel): Int
-    fun type(uiModel: DummyUiModel): Int
     fun type(uiModel: BlankUiModel): Int
     fun type(uiModel: SliderImageTextUiModel): Int
     fun type(uiModel: StickyNavigationUiModel): Int
@@ -33,6 +31,4 @@ interface CatalogAdapterFactory {
     fun type(uiModel: DoubleBannerCatalogUiModel): Int
     fun type(uiModel: CharacteristicUiModel): Int
     fun type(uiModel: SupportFeaturesUiModel): Int
-
-
 }

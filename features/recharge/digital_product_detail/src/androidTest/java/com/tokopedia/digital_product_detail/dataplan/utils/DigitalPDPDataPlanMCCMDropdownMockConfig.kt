@@ -4,7 +4,7 @@ import android.content.Context
 import com.tokopedia.digital_product_detail.utils.ResourceUtils
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 
-class DigitalPDPDataPlanMCCMDropdownMockConfig  : MockModelConfig() {
+class DigitalPDPDataPlanMCCMDropdownMockConfig : MockModelConfig() {
 
     override fun createMockModel(context: Context): MockModelConfig {
         addMockResponse(

@@ -103,7 +103,8 @@ data class CartItemHolderData(
     var addOnsProduct: CartAddOnData = CartAddOnData(),
 
     // BMGM
-    var cartBmGmTickerData: CartBmGmTickerData = CartBmGmTickerData()
+    var cartBmGmTickerData: CartBmGmTickerData = CartBmGmTickerData(),
+    var showBmGmBottomDivider: Boolean = false
 ) : ImpressHolder() {
     companion object {
         const val BUNDLING_ITEM_DEFAULT = 0
