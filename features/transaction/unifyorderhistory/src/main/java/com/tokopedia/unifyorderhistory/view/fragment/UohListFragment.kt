@@ -736,6 +736,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         uohListViewModel.orderHistoryListResult.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
+                    if (currPage == 1) impressedUUIDs.clear()
                     refreshHandler?.finishRefresh()
                     orderList = it.data
                     if (orderList.orders.isNotEmpty()) {
@@ -2634,11 +2635,6 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
     override fun onPause() {
         super.onPause()
         trackingQueue?.sendAll()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        impressedUUIDs.clear()
     }
 
     override fun onDestroyView() {
