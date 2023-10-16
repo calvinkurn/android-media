@@ -2119,7 +2119,7 @@ class PromoUsageViewModel @Inject constructor(
             return true
         }
         if (!initialSelectedCodes.containsAll(latestSelectedCodes)) {
-            return false
+            return true
         }
         return false
     }
