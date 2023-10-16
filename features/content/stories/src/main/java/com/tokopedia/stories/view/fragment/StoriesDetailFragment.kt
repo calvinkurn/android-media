@@ -284,8 +284,6 @@ class StoriesDetailFragment @Inject constructor(
             state.detailItems.isEmpty()
         ) return
 
-        hideError()
-
         val prevItem = prevState?.detailItems?.getOrNull(prevState.selectedDetailPosition)
         val currentItem = state.detailItems.getOrNull(state.selectedDetailPosition) ?: return
 
@@ -310,6 +308,7 @@ class StoriesDetailFragment @Inject constructor(
                                 override fun successLoad() {
                                     contentIsLoaded()
                                     analytic?.sendImpressionStoriesContent(viewModel.storyId)
+                                    hideError()
                                 }
                                 override fun failedLoad() {
                                     setErrorType(StoriesErrorView.Type.NoContent) { viewModelAction(StoriesUiAction.RetryDetailPage) }
