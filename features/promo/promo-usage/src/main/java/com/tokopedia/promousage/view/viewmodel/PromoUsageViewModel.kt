@@ -2111,26 +2111,15 @@ class PromoUsageViewModel @Inject constructor(
     }
 
     private fun isChangedFromInitialState(): Boolean {
-        // Check if
-        // Case 1: has any promo item unchecked, but exist as pre applied promo item
-        // Case 2: has any promo item checked but have not been applied
-        initialSelectedPromoCodes?.let { selectedCodes ->
-            _promoPageUiState.asSuccessOrNull()
-                ?.items?.filterIsInstance<PromoItem>()?.forEach { item ->
-                    val code = if (item.useSecondaryPromo) {
-                        item.secondaryPromo.code
-                    } else {
-                        item.code
-                    }
-                    // Case 1
-                    if (selectedCodes.contains(code) && item.state !is PromoItemState.Selected) {
-                        return true
-                    }
-                    // Case 2
-                    if (!selectedCodes.contains(code) && item.state is PromoItemState.Selected) {
-                        return true
-                    }
-                }
+        val latestSelectedCodes = _promoPageUiState.asSuccessOrNull()
+            ?.items?.getSelectedPromoCodes() ?: emptyList()
+        val initialSelectedCodes = initialSelectedPromoCodes ?: emptyList()
+
+        if (initialSelectedCodes.count() != latestSelectedCodes.count()) {
+            return true
+        }
+        if (!initialSelectedCodes.containsAll(latestSelectedCodes)) {
+            return false
         }
         return false
     }
