@@ -396,7 +396,7 @@ fun SearchResultNavigationItem(
         )
 
         NestImage(
-            source = ImageSource.Painter(source = com.tokopedia.seller.search.R.drawable.ic_to_top),
+            source = ImageSource.Painter(source = sellersearchR.drawable.ic_to_top),
             modifier = Modifier
                 .constrainAs(ivCloseHistory) {
                     top.linkTo(ivSearchResultNav.top, margin = 4.dp)

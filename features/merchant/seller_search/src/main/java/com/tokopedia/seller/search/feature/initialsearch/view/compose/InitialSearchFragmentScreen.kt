@@ -56,6 +56,7 @@ import com.tokopedia.seller.search.feature.initialsearch.view.viewmodel.InitialS
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
+import com.tokopedia.seller.search.R as sellersearchR
 
 const val OPACITY_68 = 0.68f
 
@@ -155,7 +156,7 @@ fun HistorySearchSectionTitle(
         val (tvLatestSearch, tvClearAll) = createRefs()
 
         NestTypography(
-            text = stringResource(id = com.tokopedia.seller.search.R.string.latest_search_label).toUpperCase(
+            text = stringResource(id = sellersearchR.string.latest_search_label).toUpperCase(
                 Locale.current
             ),
             textStyle = NestTheme.typography.body3.copy(
@@ -173,7 +174,7 @@ fun HistorySearchSectionTitle(
         )
 
         NestTypography(
-            text = stringResource(id = com.tokopedia.seller.search.R.string.clear_all_label),
+            text = stringResource(id = sellersearchR.string.clear_all_label),
             textStyle = NestTheme.typography.body3.copy(
                 fontWeight = FontWeight.Bold,
                 color = NestTheme.colors.GN._500
@@ -208,7 +209,7 @@ fun ItemHistorySearch(
         val (ivHistoryTime, tvTitleHistory, ivCloseHistory) = createRefs()
 
         NestImage(
-            source = ImageSource.Painter(com.tokopedia.seller.search.R.drawable.ic_time_history),
+            source = ImageSource.Painter(sellersearchR.drawable.ic_time_history),
             type = NestImageType.Rect(rounded = 0.dp),
             modifier = Modifier
                 .constrainAs(ivHistoryTime) {
@@ -233,7 +234,7 @@ fun ItemHistorySearch(
         )
 
         NestImage(
-            source = ImageSource.Painter(com.tokopedia.seller.search.R.drawable.ic_close_history),
+            source = ImageSource.Painter(sellersearchR.drawable.ic_close_history),
             type = NestImageType.Rect(rounded = 0.dp),
             modifier = Modifier
                 .constrainAs(ivCloseHistory) {
@@ -258,7 +259,7 @@ fun ItemHistorySearch(
 @Composable
 fun TitleSearchRecommendation() {
     NestTypography(
-        text = stringResource(id = com.tokopedia.seller.search.R.string.highlight_search_label).toUpperCase(
+        text = stringResource(id = sellersearchR.string.highlight_search_label).toUpperCase(
             Locale.current
         ),
         textStyle = NestTheme.typography.display3.copy(
@@ -341,7 +342,7 @@ fun NoHistoryState() {
                     width = Dimension.fillToConstraints
                 },
             textStyle = NestTheme.typography.display3,
-            text = stringResource(id = com.tokopedia.seller.search.R.string.desc_no_history_label)
+            text = stringResource(id = sellersearchR.string.desc_no_history_label)
         )
     }
 }
