@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    tools:parentTag="com.google.android.material.card.MaterialCardView">
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/card_background"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY"
+        app:layout_constraintDimensionRatio="H,1:1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:alpha="0.8"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/progressBarStock">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/ph_product_price"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp"
+            android:layout_marginTop="6dp"
+            android:text="Rp4.199.000"
+            android:textColor="@color/Unify_RN600"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="display_2"
+            app:typographyWeight="bold"
+            tools:text="Rp4.199.000" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/ph_discounted_product_price"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp"
+            android:layout_marginTop="4dp"
+            android:alpha="0.6"
+            android:text="Rp6.499.000"
+            android:textColor="@color/Unify_RN600"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ph_product_price"
+            app:typographyType="small"
+            app:typographyWeight="reguler"
+            tools:text="Rp6.499.000" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/free_text_container"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="6dp"
+            android:background="@drawable/disco_bg_rounded_bottom"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ph_discounted_product_price">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/ph_free_text"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:background="@drawable/disco_bg_rounded_bottom"
+                android:ellipsize="end"
+                android:paddingHorizontal="8dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="8dp"
+                android:text="Gratis Samsung Galaxy Buds"
+                android:textColor="@color/Unify_RN600"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:typographyType="small"
+                tools:text="Gratis Samsung Galaxy Buds" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.tokopedia.discovery2.viewcontrollers.customview.RibbonView
+            android:id="@+id/discount_ribbon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</merge>
