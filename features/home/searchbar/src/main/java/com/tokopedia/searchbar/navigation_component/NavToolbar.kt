@@ -64,7 +64,7 @@ import com.tokopedia.searchbar.navigation_component.viewModel.NavigationViewMode
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
+import com.tokopedia.utils.resources.isDarkMode
 import java.lang.ref.WeakReference
 import javax.inject.Inject
 
@@ -349,6 +349,14 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
             setBackButtonColorBasedOnTheme()
             setTitleTextColorBasedOnTheme()
         }
+    }
+
+    /**
+     * Switch toolbar based on UI mode (light/dark mode)
+     */
+    fun switchToolbarBasedOnUiMode() {
+        if(context?.isDarkMode() == true) switchToDarkToolbar()
+        else switchToLightToolbar()
     }
 
     /**

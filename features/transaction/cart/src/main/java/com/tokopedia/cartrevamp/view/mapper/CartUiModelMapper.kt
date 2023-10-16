@@ -125,10 +125,14 @@ object CartUiModelMapper {
             val productUiModelList = mutableListOf<CartItemHolderData>()
             val groupShopCount = availableGroup.groupShopCartData.count()
             var cartGroupBmGmHolderData = CartGroupBmGmHolderData()
+            var shouldShowBmGmBottomDivider = false
             availableGroup.groupShopCartData.forEachIndexed { shopIndex, availableShop ->
                 val shopUiModel = mapGroupShop(availableShop.shop, availableShop.cartDetails)
                 availableShop.cartDetails.forEachIndexed { cartDetailIndex, cartDetail ->
                     cartDetail.products.forEachIndexed { productIndex, product ->
+                        shouldShowBmGmBottomDivider = productIndex == availableShop.cartDetails.size - 1 &&
+                            cartDetailIndex + 1 < availableShop.cartDetails.size &&
+                            cartDetail.cartDetailInfo.cartDetailType == CART_DETAIL_TYPE_BMGM
                         val productUiModel = mapProductUiModel(
                             cartData = cartData,
                             cartDetail = cartDetail,
@@ -136,7 +140,8 @@ object CartUiModelMapper {
                             group = availableGroup,
                             unavailableSection = null,
                             availableShop = availableShop,
-                            shopData = shopUiModel
+                            shopData = shopUiModel,
+                            shouldShowBmGmBottomDivider
                         ).apply {
                             isShopShown = availableGroup.isUsingOWOCDesign() && cartDetailIndex == 0 && productIndex == 0
                         }
@@ -320,7 +325,8 @@ object CartUiModelMapper {
                             group = unavailableGroup,
                             unavailableSection = unavailableSection,
                             availableShop = null,
-                            shopData = shopUiModel
+                            shopData = shopUiModel,
+                            shouldShowBmGmBottomDivider = false
                         )
                         productUiModelList.add(productUiModel)
                     }
@@ -424,7 +430,8 @@ object CartUiModelMapper {
         group: Any,
         unavailableSection: UnavailableSection?,
         availableShop: GroupShopCart?,
-        shopData: CartShopHolderData
+        shopData: CartShopHolderData,
+        shouldShowBmGmBottomDivider: Boolean
     ): CartItemHolderData {
         return CartItemHolderData().apply {
             when (group) {
@@ -569,6 +576,7 @@ object CartUiModelMapper {
             addOnsProduct = mapCartAddOnData(product.addOn)
             showBundlePrice = cartData.showBundlePrice
             cartBmGmTickerData = mapCartBmGmTickerData(cartDetail, shopData, productId)
+            showBmGmBottomDivider = shouldShowBmGmBottomDivider
         }
     }
 
@@ -803,18 +811,18 @@ object CartUiModelMapper {
         } else {
             false
         }
-        return cartDetail.cartDetailInfo.cartDetailType == CART_DETAIL_TYPE_BMGM
-                && cartDetail.products.size > 1
-                && isLastIndexProduct
+        return cartDetail.cartDetailInfo.cartDetailType == CART_DETAIL_TYPE_BMGM &&
+            cartDetail.products.size > 1 &&
+            isLastIndexProduct
     }
 
     private fun mapCartBmGmTickerData(cartDetail: CartDetail, shopData: CartShopHolderData, productId: String): CartBmGmTickerData {
         return CartBmGmTickerData(
-                bmGmCartInfoData = mapBmGmProductData(cartDetail, shopData),
-                isShowTickerBmGm = checkNeedToShowTickerBmGm(cartDetail, productId),
-                stateTickerBmGm = if (checkNeedToShowTickerBmGm(cartDetail, productId)) CART_BMGM_STATE_TICKER_ACTIVE else CART_BMGM_STATE_TICKER_INACTIVE,
-                isShowBmGmDivider = checkNeedToShowBmGmDivider(cartDetail, productId),
-                isShowBmGmHorizontalDivider = checkNeedToShowBmGmHorizontalDivider(cartDetail, productId)
+            bmGmCartInfoData = mapBmGmProductData(cartDetail, shopData),
+            isShowTickerBmGm = checkNeedToShowTickerBmGm(cartDetail, productId),
+            stateTickerBmGm = if (checkNeedToShowTickerBmGm(cartDetail, productId)) CART_BMGM_STATE_TICKER_ACTIVE else CART_BMGM_STATE_TICKER_INACTIVE,
+            isShowBmGmDivider = checkNeedToShowBmGmDivider(cartDetail, productId),
+            isShowBmGmHorizontalDivider = checkNeedToShowBmGmHorizontalDivider(cartDetail, productId)
         )
     }
 
