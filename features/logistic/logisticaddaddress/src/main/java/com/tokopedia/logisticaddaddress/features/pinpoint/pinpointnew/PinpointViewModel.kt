@@ -23,8 +23,6 @@ import com.tokopedia.logisticaddaddress.domain.mapper.SaveAddressMapper.map
 import com.tokopedia.logisticaddaddress.domain.model.mapsgeocode.MapsGeocodeParam
 import com.tokopedia.logisticaddaddress.domain.usecase.MapsGeocodeUseCase
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.uimodel.DistrictBoundaryResponseUiModel
-import com.tokopedia.logisticaddaddress.features.pinpoint.PinpointFragment
-import com.tokopedia.logisticaddaddress.features.pinpoint.PinpointFragment.Companion.LOCATION_NOT_FOUND_MESSAGE
 import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.uimodel.ChoosePinpoint
 import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.uimodel.MoveMap
 import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.uimodel.PinpointAction
@@ -48,6 +46,11 @@ class PinpointViewModel @Inject constructor(
     private val districtBoundaryMapper: DistrictBoundaryMapper,
     private val mapsGeocodeUseCase: MapsGeocodeUseCase
 ) : ViewModel() {
+
+    companion object {
+        private const val FOREIGN_COUNTRY_MESSAGE = "Lokasi di luar Indonesia."
+        private const val LOCATION_NOT_FOUND_MESSAGE = "Lokasi gagal ditemukan"
+    }
 
     // only set this for pinpoint webview
     private var saveAddressDataModel: SaveAddressDataModel? = null
@@ -293,7 +296,7 @@ class PinpointViewModel @Inject constructor(
     fun validatePinpoint() {
         if (isEditWarehouse && whDistrictId != 0L && whDistrictId != uiModel.districtId) {
             _action.value =
-                PinpointAction.InvalidDistrictPinpoint("Lokasi pinpoint (peta) tidak sesuai dengan kota/kecamatan mu. Harap ulangi pinpoint.")
+                PinpointAction.InvalidDistrictPinpoint(source = PinpointAction.InvalidDistrictPinpoint.InvalidDistrictPinpointSource.SHOP_ADDRESS)
         } else if (uiState.isPinpointOnly()) {
             _choosePinpoint.value = ChoosePinpoint.SetPinpointResult(
                 saveAddressDataModel = getAddress(),
@@ -400,7 +403,7 @@ class PinpointViewModel @Inject constructor(
                 result = false
                 // is polygon but coordinate not in selected district
                 _action.value =
-                    PinpointAction.InvalidDistrictPinpoint("Pastikan pinpoint sesuai kota & kecamatan pilihanmu.")
+                    PinpointAction.InvalidDistrictPinpoint(source = PinpointAction.InvalidDistrictPinpoint.InvalidDistrictPinpointSource.ADD_ADDRESS_BUYER)
             }
         }
         return result
@@ -439,8 +442,8 @@ class PinpointViewModel @Inject constructor(
 
     private fun checkErrorMessage(message: String, showIllustationMap: Boolean = true) {
         when {
-            message.contains(PinpointFragment.FOREIGN_COUNTRY_MESSAGE) -> locationOutOfReach()
-            message.contains(PinpointFragment.LOCATION_NOT_FOUND_MESSAGE) -> locationNotFound(showIllustationMap)
+            message.contains(FOREIGN_COUNTRY_MESSAGE) -> locationOutOfReach()
+            message.contains(LOCATION_NOT_FOUND_MESSAGE) -> locationNotFound(showIllustationMap)
             else -> {
                 locationNotFound(showIllustationMap)
             }

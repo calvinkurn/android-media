@@ -71,7 +71,6 @@ import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_ADDRESS_ID
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_ADDRESS_STATE
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_DISTRICT_ID
-import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_FROM_ADDRESS_FORM
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_GMS_AVAILABILITY
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_EDIT_WAREHOUSE
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_POSITIVE_FLOW
@@ -122,9 +121,6 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
         private const val LOCATION_REQUEST_FASTEST_INTERVAL = 2000L
         private const val GPS_DELAY = 1000L
 
-        const val FOREIGN_COUNTRY_MESSAGE = "Lokasi di luar Indonesia."
-        const val LOCATION_NOT_FOUND_MESSAGE = "Lokasi gagal ditemukan"
-
         const val SUCCESS = "success"
         const val NOT_SUCCESS = "not success"
 
@@ -161,9 +157,6 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     // pinpoint only, shop address use case
                     putBoolean(EXTRA_IS_EDIT_WAREHOUSE, extra.getBoolean(EXTRA_IS_EDIT_WAREHOUSE))
                     putLong(EXTRA_WH_DISTRICT_ID, extra.getLong(EXTRA_WH_DISTRICT_ID))
-
-                    // todo can be removed
-                    putBoolean(EXTRA_FROM_ADDRESS_FORM, extra.getBoolean(EXTRA_FROM_ADDRESS_FORM))
                 }
             }
         }
@@ -477,9 +470,15 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     if (addressUiState.isAdd()) {
                         LogisticAddAddressAnalytics.onViewToasterPinpointTidakSesuai(userSession.userId)
                     }
-                    if (it.errorText.isNotEmpty()) {
-                        showErrorToaster(it.errorText)
+                    val error = when (it.source) {
+                        PinpointAction.InvalidDistrictPinpoint.InvalidDistrictPinpointSource.ADD_ADDRESS_BUYER -> {
+                            getString(R.string.txt_toaster_pinpoint_unmatched)
+                        }
+                        PinpointAction.InvalidDistrictPinpoint.InvalidDistrictPinpointSource.SHOP_ADDRESS -> {
+                            getString(R.string.toaster_not_avail_shop_loc)
+                        }
                     }
+                    showErrorToaster(error)
                 }
 
                 is PinpointAction.NetworkError -> {
