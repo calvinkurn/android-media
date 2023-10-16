@@ -3,6 +3,7 @@ package com.tokopedia.home_component.productcardgridcarousel.viewHolder
 import com.tokopedia.imageassets.TokopediaImageUrl
 
 import android.view.View
+import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
@@ -66,9 +67,9 @@ class CarouselMerchantVoucherViewHolder (
                 element.iconBadge,
                 com.tokopedia.topads.sdk.R.drawable.placeholder_grey,
                 listener = object : ImageHandler.ImageLoaderStateListener {
-                    override fun successLoad() {}
+                    override fun successLoad(view: ImageView?) {}
 
-                    override fun failedLoad() {
+                    override fun failedLoad(view: ImageView?) {
                         failedLoadShopBadge()
                     }
                 })

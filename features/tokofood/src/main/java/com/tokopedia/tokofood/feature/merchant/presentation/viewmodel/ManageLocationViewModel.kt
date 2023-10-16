@@ -48,11 +48,12 @@ class ManageLocationViewModel @Inject constructor(
     }
 
     fun getChooseAddress(source: String) {
-        getChooseAddressWarehouseLocUseCase.getStateChosenAddress({
-            _chooseAddress.postValue(Success(it))
-        }, {
+        launchCatchError(block = {
+            val data = getChooseAddressWarehouseLocUseCase(source)
+            _chooseAddress.postValue(Success(data))
+        }) {
             _chooseAddress.postValue(Fail(it))
-        }, source)
+        }
     }
 
     fun checkDeliveryCoverage(merchantId: String, latlong: String, timezone: String) {

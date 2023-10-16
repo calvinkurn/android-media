@@ -79,7 +79,8 @@ class TokoFoodHomeViewModelTest : TokoFoodHomeViewModelTestFixture() {
 
     @Test
     fun `when getting chooseAddress should throw chooseAddress's exception and get failed result`() {
-        onGetChooseAddress_thenReturn(Throwable())
+        val error = Exception("test error")
+        onGetChooseAddress_thenReturn(error)
 
         var actualResponse: Result<GetStateChosenAddressResponse>? = null
         runTest {

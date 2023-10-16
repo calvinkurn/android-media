@@ -212,7 +212,7 @@ abstract class TokoNowRepurchaseViewModelTestFixture {
     }
 
     protected fun verifyGetChooseAddress() {
-        coVerify { getChooseAddressWarehouseLocUseCase.getStateChosenAddress(any(), any(), any()) }
+        coVerify { getChooseAddressWarehouseLocUseCase(any()) }
     }
 
     protected fun verifyTrackOpeningScreen() {
@@ -227,18 +227,14 @@ abstract class TokoNowRepurchaseViewModelTestFixture {
 
     protected fun onGetChooseAddress_thenReturn(getStateChosenAddressResponse: GetStateChosenAddressQglResponse) {
         coEvery {
-            getChooseAddressWarehouseLocUseCase.getStateChosenAddress(any(), any(), any())
-        } answers {
-            firstArg<(GetStateChosenAddressResponse) -> Unit>().invoke(getStateChosenAddressResponse.response)
-        }
+            getChooseAddressWarehouseLocUseCase(any())
+        } returns getStateChosenAddressResponse.response
     }
 
     protected fun onGetChooseAddress_thenReturn(errorThrowable: Throwable) {
         coEvery {
-            getChooseAddressWarehouseLocUseCase.getStateChosenAddress(any(), any(), any())
-        } answers {
-            secondArg<(Throwable) -> Unit>().invoke(errorThrowable)
-        }
+            getChooseAddressWarehouseLocUseCase(any())
+        } throws errorThrowable
     }
 
     protected fun onGetCategoryList_thenReturn(categoryListResponse: CategoryListResponse) {

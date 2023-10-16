@@ -4,16 +4,26 @@ import android.content.Context
 import android.content.Intent
 import com.tokopedia.abstraction.base.service.JobIntentServiceX
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
+import com.tokopedia.localizationchooseaddress.domain.model.GetDefaultChosenAddressParam
+import com.tokopedia.localizationchooseaddress.domain.usecase.GetDefaultChosenAddressUseCase
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.loginregister.login.di.ActivityComponentFactory
-import com.tokopedia.loginregister.login.domain.GetDefaultChosenAddressUseCase
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
-class GetDefaultChosenAddressService : JobIntentServiceX() {
+class GetDefaultChosenAddressService : JobIntentServiceX(), CoroutineScope {
 
     @Inject
     lateinit var getDefaultChosenAddressUseCase: GetDefaultChosenAddressUseCase
+
+    private val job = SupervisorJob()
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.IO + job
 
     override fun onCreate() {
         super.onCreate()
@@ -27,11 +37,18 @@ class GetDefaultChosenAddressService : JobIntentServiceX() {
     }
 
     override fun onHandleWork(intent: Intent) {
-        try {
-            getDefaultChosenAddressUseCase.getDefaultChosenAddress({
-                if (it.error.detail.isEmpty()) {
-                    val address = it.data
-                    val tokonow = it.tokonow
+        launch {
+            try {
+                val chosenAddress = getDefaultChosenAddressUseCase(
+                    GetDefaultChosenAddressParam(
+                        latLong = null,
+                        source = SOURCE_LOGIN,
+                        isTokonow = true
+                    )
+                ).response
+                if (chosenAddress.error.detail.isEmpty()) {
+                    val address = chosenAddress.data
+                    val tokonow = chosenAddress.tokonow
                     if (address.cityId != 0) {
                         ChooseAddressUtils.updateLocalizingAddressDataFromOther(
                             applicationContext,
@@ -55,16 +72,15 @@ class GetDefaultChosenAddressService : JobIntentServiceX() {
                         )
                     }
                 }
-            }, {
-                it.printStackTrace()
-            })
-        } catch (e: Exception) {
-            e.printStackTrace()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 
     companion object {
         private const val JOB_ID = 998877
+        private const val SOURCE_LOGIN = "login"
 
         fun startService(context: Context) {
             try {

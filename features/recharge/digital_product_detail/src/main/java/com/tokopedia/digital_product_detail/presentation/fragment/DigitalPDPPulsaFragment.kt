@@ -1464,7 +1464,7 @@ class DigitalPDPPulsaFragment :
             if (viewModel.selectedGridProduct.denomWidgetEnum == DenomWidgetEnum.GRID_TYPE) {
                 onClearSelectedDenomGrid(viewModel.selectedGridProduct.position)
             }
-            digitalPDPAnalytics.clickMCCMProduct(
+            digitalPDPAnalytics.clickMCCMGridProduct(
                 productListTitle,
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
@@ -1507,7 +1507,7 @@ class DigitalPDPPulsaFragment :
         position: Int
     ) {
         if (layoutType == DenomWidgetEnum.MCCM_GRID_TYPE || layoutType == DenomWidgetEnum.FLASH_GRID_TYPE) {
-            digitalPDPAnalytics.impressionProductMCCM(
+            digitalPDPAnalytics.impressionProductMCCMGrid(
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
                 loyaltyStatus,
