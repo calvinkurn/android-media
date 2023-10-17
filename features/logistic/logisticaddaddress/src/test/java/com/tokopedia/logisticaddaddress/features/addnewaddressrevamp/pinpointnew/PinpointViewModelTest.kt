@@ -2,9 +2,17 @@ package com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.pinpointne
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
+import com.tokopedia.logisticCommon.data.entity.geolocation.coordinate.CoordinateModel
+import com.tokopedia.logisticCommon.data.entity.geolocation.coordinate.Geometry
+import com.tokopedia.logisticCommon.data.entity.geolocation.coordinate.Location
+import com.tokopedia.logisticCommon.data.entity.response.AutoFillResponse
+import com.tokopedia.logisticCommon.data.entity.response.KeroMapsAutofill
 import com.tokopedia.logisticCommon.data.response.Data
 import com.tokopedia.logisticCommon.data.response.GetDistrictResponse
+import com.tokopedia.logisticCommon.data.response.KeroAddrGetDistrictCenterResponse
 import com.tokopedia.logisticCommon.data.response.KeroPlacesGetDistrict
+import com.tokopedia.logisticCommon.domain.param.GetDistrictGeoCodeParam
 import com.tokopedia.logisticCommon.domain.param.GetDistrictParam
 import com.tokopedia.logisticCommon.domain.usecase.GetDistrictBoundariesUseCase
 import com.tokopedia.logisticCommon.domain.usecase.GetDistrictCenterUseCase
@@ -13,6 +21,9 @@ import com.tokopedia.logisticCommon.domain.usecase.GetDistrictUseCase
 import com.tokopedia.logisticCommon.uimodel.AddressUiState
 import com.tokopedia.logisticaddaddress.domain.mapper.DistrictBoundaryMapper
 import com.tokopedia.logisticaddaddress.domain.mapper.GetDistrictMapper
+import com.tokopedia.logisticaddaddress.domain.model.mapsgeocode.KeroAddressGeocode
+import com.tokopedia.logisticaddaddress.domain.model.mapsgeocode.MapsGeocodeParam
+import com.tokopedia.logisticaddaddress.domain.model.mapsgeocode.MapsGeocodeResponse
 import com.tokopedia.logisticaddaddress.domain.usecase.MapsGeocodeUseCase
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.uimodel.DistrictBoundaryResponseUiModel
 import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.PinpointViewModel
@@ -246,7 +257,11 @@ open class PinpointViewModelTest {
                     isManageAddressFlow = true
                 )
             )
-        } returns createDistrictResponse(districtId = districtId, title = title, description = description)
+        } returns createDistrictResponse(
+            districtId = districtId,
+            title = title,
+            description = description
+        )
 
         viewModel.fetchData()
 
@@ -284,7 +299,13 @@ open class PinpointViewModelTest {
                     isManageAddressFlow = true
                 )
             )
-        } returns createDistrictResponse(title = title, description = description, errorMessage = "Lokasi gagal ditemukan", lat = 11.11, long = 22.22)
+        } returns createDistrictResponse(
+            title = title,
+            description = description,
+            errorMessage = "Lokasi gagal ditemukan",
+            lat = 11.11,
+            long = 22.22
+        )
 
         viewModel.fetchData()
 
@@ -319,7 +340,13 @@ open class PinpointViewModelTest {
                     isManageAddressFlow = true
                 )
             )
-        } returns createDistrictResponse(districtId = districtId, title = title, description = description, lat = lat, long = long)
+        } returns createDistrictResponse(
+            districtId = districtId,
+            title = title,
+            description = description,
+            lat = lat,
+            long = long
+        )
 
         viewModel.fetchData()
 
@@ -361,6 +388,12 @@ open class PinpointViewModelTest {
         viewModel.fetchData()
 
         assert(viewModel.action.value == PinpointAction.NetworkError(""))
+        assert(viewModel.pinpointBottomSheet.value is PinpointBottomSheetState.LocationDetail)
+        assert((viewModel.pinpointBottomSheet.value as PinpointBottomSheetState.LocationDetail).title.isEmpty())
+        assert((viewModel.pinpointBottomSheet.value as PinpointBottomSheetState.LocationDetail).description.isEmpty())
+        assert(!(viewModel.pinpointBottomSheet.value as PinpointBottomSheetState.LocationDetail).buttonPrimary.success)
+        assert(!(viewModel.pinpointBottomSheet.value as PinpointBottomSheetState.LocationDetail).buttonPrimary.enable)
+        assert(!(viewModel.pinpointBottomSheet.value as PinpointBottomSheetState.LocationDetail).buttonSecondary.enable)
     }
 
     @Test
@@ -456,260 +489,647 @@ open class PinpointViewModelTest {
     // region getLocationFromLatLong
     @Test
     fun `WHEN lat long is set THEN hit getDistrictData with respective lat long`() {
-        TODO()
+        val lat = 11.22
+        val lng = 44.55
+        viewModel.onViewCreated(
+            placeId = "",
+            isEditWarehouse = false,
+            isPositiveFlow = false,
+            lat = lat,
+            long = lng,
+            districtId = 3333,
+            source = "source",
+            uiState = AddressUiState.EditAddress
+        )
+
+        viewModel.fetchData()
+
+        coVerify {
+            getDistrictGeoCode(GetDistrictGeoCodeParam("$lat,$lng", isManageAddressFlow = true))
+        }
     }
 
     // region getDistrictData
     @Test
     fun `WHEN getDistrictData success THEN show location detail bottom sheet and enable btn primary`() {
-        TODO()
+        val lat = 11.22
+        val lng = 44.55
+        val title = "title"
+        val districtName = "district name"
+        val cityName = "city name"
+        val provinceName = "province name"
+        val formattedAddress = "$cityName, $districtName, $provinceName"
+        viewModel.onViewCreated(
+            placeId = "",
+            isEditWarehouse = false,
+            isPositiveFlow = false,
+            lat = lat,
+            long = lng,
+            districtId = 0,
+            source = "source",
+            uiState = AddressUiState.EditAddress
+        )
+
+        coEvery {
+            getDistrictGeoCode(GetDistrictGeoCodeParam("$lat,$lng", isManageAddressFlow = true))
+        } returns AutoFillResponse(
+            KeroMapsAutofill(
+                com.tokopedia.logisticCommon.data.entity.response.Data(
+                    title = title,
+                    cityName = cityName,
+                    provinceName = provinceName,
+                    districtName = districtName,
+                    districtId = 333,
+                    latitude = lat.toString(),
+                    longitude = lng.toString(),
+                    formattedAddress = formattedAddress
+                )
+            )
+        )
+
+        viewModel.getDistrictData(lat, lng)
+
+        assert(viewModel.pinpointBottomSheet.value is PinpointBottomSheetState.LocationDetail)
+        assert((viewModel.pinpointBottomSheet.value as PinpointBottomSheetState.LocationDetail).title == title)
+        assert((viewModel.pinpointBottomSheet.value as PinpointBottomSheetState.LocationDetail).description == formattedAddress)
+        assert((viewModel.pinpointBottomSheet.value as PinpointBottomSheetState.LocationDetail).buttonPrimary.enable)
+        assert((viewModel.pinpointBottomSheet.value as PinpointBottomSheetState.LocationDetail).buttonPrimary.show)
+        assert((viewModel.pinpointBottomSheet.value as PinpointBottomSheetState.LocationDetail).buttonPrimary.success)
+        assert(!(viewModel.pinpointBottomSheet.value as PinpointBottomSheetState.LocationDetail).buttonSecondary.show)
+        assert(!(viewModel.pinpointBottomSheet.value as PinpointBottomSheetState.LocationDetail).buttonSecondary.enable)
+        assert(viewModel.uiModel.title == title)
+        assert(viewModel.uiModel.lat == lat)
+        assert(viewModel.uiModel.long == lng)
     }
 
     @Test
     fun `WHEN getDistrictData in ANA negative flow but pinpoint is in different district THEN show location detail bottom sheet and disable btn primary`() {
-        TODO()
+        val lat = 11.22
+        val lng = 44.55
+        val districtId = 1111L
+        val title = "title"
+        val districtName = "district name"
+        val cityName = "city name"
+        val provinceName = "province name"
+        val formattedAddress = "$cityName, $districtName, $provinceName"
+        val returnedDistrictId = 333L
+        viewModel.onViewCreated(
+            placeId = "",
+            isEditWarehouse = false,
+            isPositiveFlow = false,
+            lat = lat,
+            long = lng,
+            districtId = districtId,
+            source = "source",
+            uiState = AddressUiState.AddAddress
+        )
+
+        coEvery {
+            getDistrictGeoCode(GetDistrictGeoCodeParam("$lat,$lng", isManageAddressFlow = true))
+        } returns AutoFillResponse(
+            KeroMapsAutofill(
+                com.tokopedia.logisticCommon.data.entity.response.Data(
+                    title = title,
+                    cityName = cityName,
+                    provinceName = provinceName,
+                    districtName = districtName,
+                    districtId = returnedDistrictId,
+                    latitude = lat.toString(),
+                    longitude = lng.toString(),
+                    formattedAddress = formattedAddress
+                )
+            )
+        )
+
+        viewModel.getDistrictData(lat, lng)
+
+        assert(viewModel.action.value == PinpointAction.InvalidDistrictPinpoint(source = PinpointAction.InvalidDistrictPinpoint.InvalidDistrictPinpointSource.ADD_ADDRESS_BUYER))
+        assert((viewModel.pinpointBottomSheet.value as PinpointBottomSheetState.LocationDetail).title == title)
+        assert((viewModel.pinpointBottomSheet.value as PinpointBottomSheetState.LocationDetail).description == formattedAddress)
+        assert(!(viewModel.pinpointBottomSheet.value as PinpointBottomSheetState.LocationDetail).buttonPrimary.enable)
+        assert((viewModel.pinpointBottomSheet.value as PinpointBottomSheetState.LocationDetail).buttonPrimary.show)
+        assert(!(viewModel.pinpointBottomSheet.value as PinpointBottomSheetState.LocationDetail).buttonPrimary.success)
+        assert((viewModel.pinpointBottomSheet.value as PinpointBottomSheetState.LocationDetail).buttonSecondary.show)
+        assert((viewModel.pinpointBottomSheet.value as PinpointBottomSheetState.LocationDetail).buttonSecondary.enable)
+        assert(viewModel.uiModel.title != title)
+        assert(viewModel.uiModel.districtId != returnedDistrictId)
     }
 
     @Test
     fun `WHEN hit getDistrictData has messageError FOREGIN_COUNTRY_MESSAGE THEN show location out of reach bottom sheet`() {
-        TODO()
-    }
+        val lat = 11.22
+        val lng = 44.55
+        val districtId = 1111L
+        val title = "title"
+        val districtName = "district name"
+        val cityName = "city name"
+        val provinceName = "province name"
+        val formattedAddress = "$cityName, $districtName, $provinceName"
+        viewModel.onViewCreated(
+            placeId = "",
+            isEditWarehouse = false,
+            isPositiveFlow = false,
+            lat = lat,
+            long = lng,
+            districtId = districtId,
+            source = "source",
+            uiState = AddressUiState.AddAddress
+        )
 
-    @Test
-    fun `WHEN hit getDistrictData has messageError LOCATION_NOT_FOUND_MESSAGE THEN show location not found bottom sheet`() {
-        TODO()
-    }
+        coEvery {
+            getDistrictGeoCode(GetDistrictGeoCodeParam("$lat,$lng", isManageAddressFlow = true))
+        } returns AutoFillResponse(
+            KeroMapsAutofill(
+                com.tokopedia.logisticCommon.data.entity.response.Data(
+                    title = title,
+                    cityName = cityName,
+                    provinceName = provinceName,
+                    districtName = districtName,
+                    latitude = lat.toString(),
+                    longitude = lng.toString(),
+                    formattedAddress = formattedAddress
+                ),
+                messageError = listOf("Lokasi di luar Indonesia.")
+            )
+        )
 
-    @Test
-    fun `WHEN hit getDistrictData has messageError THEN show location not found bottom sheet`() {
-        TODO()
+        viewModel.getDistrictData(lat, lng)
+
+        assert(viewModel.pinpointBottomSheet.value is PinpointBottomSheetState.LocationInvalid)
+        assert((viewModel.pinpointBottomSheet.value as PinpointBottomSheetState.LocationInvalid).type == PinpointBottomSheetState.LocationInvalid.LocationInvalidType.OUT_OF_COVERAGE)
+        assert(!(viewModel.pinpointBottomSheet.value as PinpointBottomSheetState.LocationInvalid).showMapIllustration)
+        assert(!(viewModel.pinpointBottomSheet.value as PinpointBottomSheetState.LocationInvalid).buttonState.enable)
     }
 
     @Test
     fun `WHEN hit getDistrictData happens error network THEN show error network toaster`() {
-        TODO()
-    }
+        val lat = 11.22
+        val lng = 44.55
+        val districtId = 1111L
+        viewModel.onViewCreated(
+            placeId = "",
+            isEditWarehouse = false,
+            isPositiveFlow = false,
+            lat = lat,
+            long = lng,
+            districtId = districtId,
+            source = "source",
+            uiState = AddressUiState.AddAddress
+        )
 
-    @Test
-    fun `WHEN hit getDistrictData returns error FOREGIN_COUNTRY_MESSAGE THEN show location out of reach bottom sheet`() {
-        TODO()
-    }
+        coEvery {
+            getDistrictGeoCode(GetDistrictGeoCodeParam("$lat,$lng", isManageAddressFlow = true))
+        } throws UnknownHostException("network error")
 
-    @Test
-    fun `WHEN hit getDistrictData returns error LOCATION_NOT_FOUND_MESSAGE THEN show location not found bottom sheet`() {
-        TODO()
-    }
+        viewModel.getDistrictData(lat, lng)
 
-    @Test
-    fun `WHEN hit getDistrictData returns other error THEN show location not found bottom sheet`() {
-        TODO()
+        assert(viewModel.action.value == PinpointAction.NetworkError("network error"))
     }
 
     // region getDistrictCenter
     @Test
     fun `WHEN district id is set (ANA Revamp Negative Flow) THEN move map to district center's lat long and hit getDistrictData`() {
-        TODO()
-    }
-
-    @Test
-    fun `WHEN hit getDistrictCenter happens error network THEN show error network toaster`() {
-        TODO()
-    }
-
-    @Test
-    fun `WHEN hit getDistrictCenter returns error FOREGIN_COUNTRY_MESSAGE THEN show location out of reach bottom sheet`() {
-        TODO()
-    }
-
-    @Test
-    fun `WHEN hit getDistrictCenter returns error LOCATION_NOT_FOUND_MESSAGE THEN show location not found bottom sheet`() {
-        TODO()
+        val districtId = 111L
+        val lat = 33.44
+        val long = 55.66
+        viewModel.onViewCreated(
+            placeId = "",
+            isEditWarehouse = false,
+            isPositiveFlow = false,
+            districtId = districtId,
+            source = "source",
+            uiState = AddressUiState.AddAddress
+        )
+        coEvery { getDistrictCenter(districtId) } returns KeroAddrGetDistrictCenterResponse.Data(
+            KeroAddrGetDistrictCenterResponse.Data.KeroAddrGetDistrictCenter(
+                KeroAddrGetDistrictCenterResponse.Data.KeroAddrGetDistrictCenter.District(
+                    latitude = lat,
+                    longitude = long,
+                    districtId = districtId
+                )
+            )
+        )
+        viewModel.fetchData()
+        coVerify { getDistrictCenter(districtId) }
+        coVerify { viewModel.getDistrictData(lat, long) }
+        assert(viewModel.map.value == MoveMap(lat, long))
     }
 
     @Test
     fun `WHEN hit getDistrictCenter returns other error THEN show location not found bottom sheet`() {
-        TODO()
+        val districtId = 111L
+        viewModel.onViewCreated(
+            placeId = "",
+            isEditWarehouse = false,
+            isPositiveFlow = false,
+            districtId = districtId,
+            source = "source",
+            uiState = AddressUiState.AddAddress
+        )
+        coEvery { getDistrictCenter(districtId) } throws defaultThrowable
+
+        viewModel.fetchData()
+
+        assert(viewModel.pinpointBottomSheet.value is PinpointBottomSheetState.LocationInvalid)
+        assert((viewModel.pinpointBottomSheet.value as PinpointBottomSheetState.LocationInvalid).type == PinpointBottomSheetState.LocationInvalid.LocationInvalidType.LOCATION_NOT_FOUND)
+        assert((viewModel.pinpointBottomSheet.value as PinpointBottomSheetState.LocationInvalid).showMapIllustration)
+        assert((viewModel.pinpointBottomSheet.value as PinpointBottomSheetState.LocationInvalid).buttonState.enable)
     }
 
     // region getGeocodeByDistrictAndCityName
     @Test
     fun `WHEN city name and district name is set (Pinpoint Only) THEN move map to district center's lat long and hit getDistrictData`() {
-        TODO()
-    }
+        val districtName = "district name"
+        val cityName = "city name"
+        val returnedLat = 11.11
+        val returnedLng = 11.33
+        viewModel.onViewCreated(
+            placeId = "",
+            isEditWarehouse = false,
+            isPositiveFlow = false,
+            districtId = 0,
+            districtName = districtName,
+            cityName = cityName,
+            source = "source",
+            uiState = AddressUiState.PinpointOnly
+        )
+        coEvery {
+            mapsGeocodeUseCase(
+                MapsGeocodeParam(
+                    input = MapsGeocodeParam.MapsGeocodeDataParam(
+                        address = "$districtName, $cityName"
+                    )
+                )
+            )
+        } returns MapsGeocodeResponse(
+            KeroAddressGeocode(
+                data = listOf(
+                    CoordinateModel().apply {
+                        geometry = Geometry().apply {
+                            location = Location().apply {
+                                lat = returnedLat
+                                lng = returnedLng
+                            }
+                        }
+                    }
+                )
+            )
+        )
 
-    @Test
-    fun `WHEN hit getGeocodeByDistrictAndCityName success THEN move map to result's lat long and hit getDistrictData`() {
-        TODO()
+        viewModel.fetchData()
+
+        coVerify {
+            mapsGeocodeUseCase(
+                MapsGeocodeParam(
+                    input = MapsGeocodeParam.MapsGeocodeDataParam(
+                        address = "$districtName, $cityName"
+                    )
+                )
+            )
+        }
+        assert(viewModel.map.value == MoveMap(returnedLat, returnedLng))
+        coVerify { viewModel.getDistrictData(returnedLat, returnedLng) }
     }
 
     @Test
     fun `WHEN hit getGeocodeByDistrictAndCityName doesn't have response THEN show location not found bottom sheet`() {
-        TODO()
-    }
+        val districtName = "district name"
+        val cityName = "city name"
+        viewModel.onViewCreated(
+            placeId = "",
+            isEditWarehouse = false,
+            isPositiveFlow = false,
+            districtId = 0,
+            districtName = districtName,
+            cityName = cityName,
+            source = "source",
+            uiState = AddressUiState.PinpointOnly
+        )
+        coEvery {
+            mapsGeocodeUseCase(
+                MapsGeocodeParam(
+                    input = MapsGeocodeParam.MapsGeocodeDataParam(
+                        address = "$districtName, $cityName"
+                    )
+                )
+            )
+        } returns MapsGeocodeResponse(
+            KeroAddressGeocode(
+                data = listOf()
+            )
+        )
 
-    @Test
-    fun `WHEN hit getGeocodeByDistrictAndCityName happens error network THEN show error network toaster`() {
-        TODO()
-    }
+        viewModel.fetchData()
 
-    @Test
-    fun `WHEN hit getGeocodeByDistrictAndCityName returns error FOREGIN_COUNTRY_MESSAGE THEN show location out of reach bottom sheet`() {
-        TODO()
-    }
-
-    @Test
-    fun `WHEN hit getGeocodeByDistrictAndCityName returns error LOCATION_NOT_FOUND_MESSAGE THEN show location not found bottom sheet`() {
-        TODO()
+        assert(viewModel.pinpointBottomSheet.value is PinpointBottomSheetState.LocationInvalid)
+        assert((viewModel.pinpointBottomSheet.value as PinpointBottomSheetState.LocationInvalid).type == PinpointBottomSheetState.LocationInvalid.LocationInvalidType.LOCATION_NOT_FOUND)
+        assert((viewModel.pinpointBottomSheet.value as PinpointBottomSheetState.LocationInvalid).showMapIllustration)
+        assert(!(viewModel.pinpointBottomSheet.value as PinpointBottomSheetState.LocationInvalid).buttonState.enable)
     }
 
     @Test
     fun `WHEN hit getGeocodeByDistrictAndCityName returns other error THEN show location not found bottom sheet`() {
-        TODO()
+        val districtName = "district name"
+        val cityName = "city name"
+        viewModel.onViewCreated(
+            placeId = "",
+            isEditWarehouse = false,
+            isPositiveFlow = false,
+            districtId = 0,
+            districtName = districtName,
+            cityName = cityName,
+            source = "source",
+            uiState = AddressUiState.PinpointOnly
+        )
+        coEvery {
+            mapsGeocodeUseCase(
+                MapsGeocodeParam(
+                    input = MapsGeocodeParam.MapsGeocodeDataParam(
+                        address = "$districtName, $cityName"
+                    )
+                )
+            )
+        } throws defaultThrowable
+
+        viewModel.fetchData()
+
+        assert(viewModel.pinpointBottomSheet.value is PinpointBottomSheetState.LocationInvalid)
+        assert((viewModel.pinpointBottomSheet.value as PinpointBottomSheetState.LocationInvalid).type == PinpointBottomSheetState.LocationInvalid.LocationInvalidType.LOCATION_NOT_FOUND)
+        assert((viewModel.pinpointBottomSheet.value as PinpointBottomSheetState.LocationInvalid).showMapIllustration)
+        assert(!(viewModel.pinpointBottomSheet.value as PinpointBottomSheetState.LocationInvalid).buttonState.enable)
     }
 
     // region onResultFromSearchAddress
     @Test
     fun `WHEN search address sent place id THEN set place id to ui model and hit getDistrictLocation`() {
-        TODO()
+        viewModel.onResultFromSearchAddress("placeid", lat = 0.0, long = 0.0)
+        coVerify { getDistrict(GetDistrictParam("placeid", isManageAddressFlow = true)) }
     }
 
     @Test
     fun `WHEN search address sent lat long THEN move map and hit getDistrictData`() {
-        TODO()
+        viewModel.onResultFromSearchAddress("", lat = 13.11, long = 88.09)
+        assert(viewModel.map.value == MoveMap(13.11, 88.09))
+        coVerify { viewModel.getDistrictData(13.11, 88.09) }
     }
 
     // region validatePinpoint
     @Test
     fun `WHEN click save pinpoint on shop address use case and pinpoint district doesn't match THEN show error toaster`() {
-        TODO()
+        viewModel.onViewCreated(
+            whDistrictId = 222,
+            isEditWarehouse = true,
+            uiState = AddressUiState.PinpointOnly,
+            isPositiveFlow = null,
+            source = "shop address"
+        )
+
+        viewModel.uiModel = viewModel.uiModel.copy(districtId = 1111L)
+
+        viewModel.validatePinpoint()
+
+        assert(viewModel.action.value == PinpointAction.InvalidDistrictPinpoint(source = PinpointAction.InvalidDistrictPinpoint.InvalidDistrictPinpointSource.SHOP_ADDRESS))
     }
 
     @Test
     fun `WHEN click save pinpoint on pinpoint only THEN set pinpoint result`() {
-        TODO()
+        viewModel.onViewCreated(
+            isEditWarehouse = false,
+            uiState = AddressUiState.PinpointOnly,
+            isPositiveFlow = null,
+            source = "checkout"
+        )
+
+        val result = PinpointUiModel(
+            districtName = "district name",
+            cityName = "city name",
+            provinceName = "province name",
+            districtId = 1111L,
+            cityId = 3333,
+            provinceId = 2222,
+            postalCode = "12048",
+            lat = 22.22,
+            long = 44.44,
+            title = "title",
+            formattedAddress = "formatted address"
+        )
+        val addressModel = SaveAddressDataModel(
+            districtName = result.districtName,
+            cityName = result.cityName,
+            provinceName = result.provinceName,
+            districtId = result.districtId,
+            cityId = result.cityId,
+            provinceId = result.provinceId,
+            postalCode = result.postalCode,
+            latitude = result.lat.toString(),
+            longitude = result.long.toString(),
+            title = result.title
+        )
+        viewModel.uiModel = result
+
+        viewModel.validatePinpoint()
+        assert(
+            viewModel.choosePinpoint.value == ChoosePinpoint.SetPinpointResult(
+                saveAddressDataModel = addressModel,
+                pinpointUiModel = result
+            )
+        )
     }
 
     @Test
     fun `WHEN click save pinpoint on add or edit address THEN go to add address page as positive flow`() {
-        TODO()
+        viewModel.onViewCreated(
+            isEditWarehouse = false,
+            uiState = AddressUiState.AddAddress,
+            isPositiveFlow = null,
+            source = "checkout"
+        )
+
+        val result = PinpointUiModel(
+            districtName = "district name",
+            cityName = "city name",
+            provinceName = "province name",
+            districtId = 1111L,
+            cityId = 3333,
+            provinceId = 2222,
+            postalCode = "12048",
+            lat = 22.22,
+            long = 44.44,
+            title = "title",
+            formattedAddress = "formatted address"
+        )
+        viewModel.uiModel = result
+
+        viewModel.validatePinpoint()
+        assert(
+            viewModel.choosePinpoint.value == ChoosePinpoint.GoToAddressForm(
+                saveChanges = true,
+                pinpointUiModel = result,
+                addressState = AddressUiState.AddAddress,
+                source = "checkout",
+                isPositiveFlow = true
+            )
+        )
     }
 
     @Test
     fun `WHEN click save pinpoint on add or edit address and isPositiveFlow already set THEN go to add address page with current isPositiveFlow value`() {
-        TODO()
+        viewModel.onViewCreated(
+            isEditWarehouse = false,
+            uiState = AddressUiState.AddAddress,
+            isPositiveFlow = false,
+            source = "checkout"
+        )
+
+        val result = PinpointUiModel(
+            districtName = "district name",
+            cityName = "city name",
+            provinceName = "province name",
+            districtId = 1111L,
+            cityId = 3333,
+            provinceId = 2222,
+            postalCode = "12048",
+            lat = 22.22,
+            long = 44.44,
+            title = "title",
+            formattedAddress = "formatted address"
+        )
+        viewModel.uiModel = result
+
+        viewModel.validatePinpoint()
+        assert(
+            viewModel.choosePinpoint.value == ChoosePinpoint.GoToAddressForm(
+                saveChanges = true,
+                pinpointUiModel = result,
+                addressState = AddressUiState.AddAddress,
+                source = "checkout",
+                isPositiveFlow = false
+            )
+        )
     }
 
     // region discardPinpoint
     @Test
-    fun `WHEN click discardPinpoint THEN go to add address page as positive flow`() {
-        TODO()
+    fun `WHEN click discardPinpoint THEN go to add address page as negative flow`() {
+        viewModel.onViewCreated(
+            isEditWarehouse = false,
+            uiState = AddressUiState.AddAddress,
+            isPositiveFlow = null,
+            source = "checkout"
+        )
+
+        viewModel.discardPinpoint()
+        assert(viewModel.choosePinpoint.value is ChoosePinpoint.GoToAddressForm)
+        assert((viewModel.choosePinpoint.value as ChoosePinpoint.GoToAddressForm).saveChanges == false)
+        assert((viewModel.choosePinpoint.value as ChoosePinpoint.GoToAddressForm).isPositiveFlow == false)
     }
 
     @Test
     fun `WHEN click discardPinpoint and isPositiveFlow already set THEN go to add address page with current isPositiveFlow value`() {
-        TODO()
+        viewModel.onViewCreated(
+            isEditWarehouse = false,
+            uiState = AddressUiState.AddAddress,
+            isPositiveFlow = true,
+            source = "checkout"
+        )
+
+        viewModel.discardPinpoint()
+        assert(viewModel.choosePinpoint.value is ChoosePinpoint.GoToAddressForm)
+        assert((viewModel.choosePinpoint.value as ChoosePinpoint.GoToAddressForm).saveChanges == false)
+        assert((viewModel.choosePinpoint.value as ChoosePinpoint.GoToAddressForm).isPositiveFlow == true)
     }
 
-    // region getInitialBottomSheetState
-    @Test
-    fun `WHEN getInitialBottomSheetState on add address THEN show secondary button`() {
-        TODO()
-    }
-
-    @Test
-    fun `WHEN getInitialBottomSheetState on edit address THEN set button primary text and hide secondary button`() {
-        TODO()
-    }
-
-    @Test
-    fun `WHEN getInitialBottomSheetState on pinpoint only THEN set button primary text and hide secondary button`() {
-        TODO()
-    }
-
-    // region createButtonSecondary
-    @Test
-    fun `WHEN createButtonSecondary on add address THEN show secondary button`() {
-        TODO()
-    }
-
-    @Test
-    fun `WHEN createButtonSecondary on edit address THEN hide secondary button`() {
-        TODO()
-    }
-
-    @Test
-    fun `WHEN createButtonSecondary on pinpoint only THEN hide secondary button`() {
-        TODO()
-    }
-
-    // region validateDistrict
-    @Test
-    fun `WHEN validateDistrict on add address and positive flow THEN returns true`() {
-        TODO()
-    }
-
-    @Test
-    fun `WHEN validateDistrict on edit address THEN just pass (returns true)`() {
-        TODO()
-    }
-
-    @Test
-    fun `WHEN validateDistrict on pinpoint only THEN just pass (returns true)`() {
-        TODO()
-    }
-
-    // region createButtonPrimary
-
-    @Test
-    fun `WHEN createButtonPrimary on add address THEN append lanjut isi alamat wording`() {
-        TODO()
-    }
-
-    @Test
-    fun `WHEN createButtonPrimary on edit address THEN append lanjut isi alamat wording`() {
-        TODO()
-    }
-
-    @Test
-    fun `WHEN createButtonPrimary on pinpoint only THEN remove lanjut isi alamat wording`() {
-        TODO()
-    }
-
-    // region locationNotFound
-
-    @Test
-    fun `WHEN create locationNotFound on pinpoint only THEN show invalid location detail wording`() {
-        TODO()
-    }
-
-    @Test
-    fun `WHEN create locationNotFound but has already pinpoint before THEN show invalid location detail wording`() {
-        TODO()
-    }
-
-    @Test
-    fun `WHEN create locationNotFound on pinpoint only THEN hide button`() {
-        TODO()
-    }
-
-    @Test
-    fun `WHEN create locationNotFound on edit address that has pinpoint THEN hide button`() {
-        TODO()
-    }
-
-    @Test
-    fun `WHEN create locationNotFound on edit address that doesnt have pinpoint THEN show button`() {
-        TODO()
-    }
-
-    @Test
-    fun `WHEN create locationNotFound on add address that doesnt have pinpoint THEN show button`() {
-        TODO()
-    }
-
-    // region location out of reach
-    @Test
-    fun `WHEN create locationOutOfReach THEN show invalid location`() {
-        TODO()
-    }
+//    // region createButtonSecondary
+//    @Test
+//    fun `WHEN createButtonSecondary on add address THEN show secondary button`() {
+//        viewModel.onViewCreated(
+//            isEditWarehouse = false,
+//            uiState = AddressUiState.AddAddress,
+//            isPositiveFlow = false,
+//            source = "checkout"
+//        )
+//
+//        viewModel.
+//    }
+//
+//    @Test
+//    fun `WHEN createButtonSecondary on edit address THEN hide secondary button`() {
+//        TODO()
+//    }
+//
+//    @Test
+//    fun `WHEN createButtonSecondary on pinpoint only THEN hide secondary button`() {
+//        TODO()
+//    }
+//
+//    // region validateDistrict
+//    @Test
+//    fun `WHEN validateDistrict on add address and positive flow THEN returns true`() {
+//        TODO()
+//    }
+//
+//    @Test
+//    fun `WHEN validateDistrict on edit address THEN just pass (returns true)`() {
+//        TODO()
+//    }
+//
+//    @Test
+//    fun `WHEN validateDistrict on pinpoint only THEN just pass (returns true)`() {
+//        TODO()
+//    }
+//
+//    // region createButtonPrimary
+//
+//    @Test
+//    fun `WHEN createButtonPrimary on add address THEN append lanjut isi alamat wording`() {
+//        TODO()
+//    }
+//
+//    @Test
+//    fun `WHEN createButtonPrimary on edit address THEN append lanjut isi alamat wording`() {
+//        TODO()
+//    }
+//
+//    @Test
+//    fun `WHEN createButtonPrimary on pinpoint only THEN remove lanjut isi alamat wording`() {
+//        TODO()
+//    }
+//
+//    // region locationNotFound
+//
+//    @Test
+//    fun `WHEN create locationNotFound on pinpoint only THEN show invalid location detail wording`() {
+//        TODO()
+//    }
+//
+//    @Test
+//    fun `WHEN create locationNotFound but has already pinpoint before THEN show invalid location detail wording`() {
+//        TODO()
+//    }
+//
+//    @Test
+//    fun `WHEN create locationNotFound on pinpoint only THEN hide button`() {
+//        TODO()
+//    }
+//
+//    @Test
+//    fun `WHEN create locationNotFound on edit address that has pinpoint THEN hide button`() {
+//        TODO()
+//    }
+//
+//    @Test
+//    fun `WHEN create locationNotFound on edit address that doesnt have pinpoint THEN show button`() {
+//        TODO()
+//    }
+//
+//    @Test
+//    fun `WHEN create locationNotFound on add address that doesnt have pinpoint THEN show button`() {
+//        TODO()
+//    }
+//
+//    // region location out of reach
+//    @Test
+//    fun `WHEN create locationOutOfReach THEN show invalid location`() {
+//        TODO()
+//    }
 }

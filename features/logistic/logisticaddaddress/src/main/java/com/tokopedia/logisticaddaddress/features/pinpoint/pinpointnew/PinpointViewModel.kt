@@ -387,7 +387,7 @@ class PinpointViewModel @Inject constructor(
         return PinpointBottomSheetState.LocationDetail.SecondaryButtonUiModel(
             show = uiState.isAdd(),
             state = uiState,
-            enable = enable
+            enable = uiState.isAdd() && enable
         )
     }
 
