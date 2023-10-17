@@ -81,7 +81,7 @@ internal fun PersonSuccessState(
             contentPadding = PaddingValues(all = CARD_SPACE_DP),
             horizontalArrangement = Arrangement.spacedBy(CARD_SPACE_DP)
         ) {
-            items(items = data.personaList) { persona ->
+            items(items = data.personaList, key = { it.value }) { persona ->
                 PersonaTypeItemCard(persona) {
                     onEvent(SelectTypeUiEvent.ClickPersonaCard(persona.value))
                 }
