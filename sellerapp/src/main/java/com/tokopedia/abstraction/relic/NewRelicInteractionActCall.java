@@ -39,11 +39,10 @@ public class NewRelicInteractionActCall implements Application.ActivityLifecycle
                 return true;
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(weave, ENABLE_ASYNC_NEW_RELIC_TRACE, activity.getApplicationContext(), true);
+        Weaver.Companion.executeWeaveCoRoutineNow(weave);
     }
 
     private void startNewRelicTracing(Activity activity) {
-        long start = System.currentTimeMillis();
         if (userSession != null) {
             NewRelic.setUserId(userSession.getUserId());
         } else {
@@ -52,9 +51,6 @@ public class NewRelicInteractionActCall implements Application.ActivityLifecycle
         NewRelic.startInteraction(activity.getLocalClassName());
         NewRelic.setInteractionName(activity.getLocalClassName());
         setNewRelicAttribute(activity);
-        long end = System.currentTimeMillis();
-        long duration = end - start;
-        System.out.println("startNewRelicTracing : " + duration);
     }
 
     public void onActivityStarted(Activity activity) {
