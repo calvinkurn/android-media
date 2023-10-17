@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.os.Build
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.gojek.pin.AppInfo
 import com.gojek.pin.DeviceInfo
@@ -64,6 +65,8 @@ object GotoSdk {
 
     @JvmStatic
     fun init(application: Application): LSdkProvider? {
+        println("get global config isDebug: ${GlobalConfig.DEBUG} versionName: ${GlobalConfig.VERSION_NAME} allowDebug: ${GlobalConfig.isAllowDebuggingTools()} isSeller: ${GlobalConfig.isSellerApp()} deviceId: ${GlobalConfig.DEVICE_ID} preinstall: ${GlobalConfig.PREINSTALL_NAME}")
+        Log.d("InitGoto", "get global config isDebug: ${GlobalConfig.DEBUG} versionName: ${GlobalConfig.VERSION_NAME} allowDebug: ${GlobalConfig.isAllowDebuggingTools()} isSeller: ${GlobalConfig.isSellerApp()} deviceId: ${GlobalConfig.DEVICE_ID} preinstall: ${GlobalConfig.PREINSTALL_NAME}")
         val appComponent = (application as BaseMainApplication)
             .baseAppComponent
         component = DaggerScpAuthComponent.builder()
@@ -187,7 +190,6 @@ object GotoSdk {
         )
         return GOTOPINSDKINSTANCE!!
     }
-
 
     private fun getDeviceName(): String {
         val manufacturer = Build.MANUFACTURER
