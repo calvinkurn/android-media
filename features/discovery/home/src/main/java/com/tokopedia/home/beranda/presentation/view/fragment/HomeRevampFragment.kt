@@ -226,7 +226,7 @@ import rx.Observable
 import rx.schedulers.Schedulers
 import java.io.UnsupportedEncodingException
 import java.net.URLEncoder
-import java.util.Date
+import java.util.*
 import java.util.concurrent.Executors
 import javax.inject.Inject
 
@@ -775,7 +775,7 @@ HomeRevampFragment :
     }
 
     private fun getSubscriptionBalanceWidgetView(): View? {
-        val view = homeRecyclerView?.findViewHolderForAdapterPosition(HOME_HEADER_POSITION)
+        val view = homeRecyclerView?.findViewHolderForLayoutPosition(HOME_HEADER_POSITION)
         (view as? HomeHeaderOvoViewHolder)?.let {
             val balanceWidgetSubscriptionView =
                 getBalanceWidgetViewSubscriptionOnly(it.itemView.findViewById(R.id.view_balance_widget))
@@ -2313,11 +2313,23 @@ HomeRevampFragment :
     }
 
     private fun goToJumperForYouTab(recommendationFeedDataIndex: Int) {
-        val viewHolder =
-            homeRecyclerView?.findViewHolderForAdapterPosition(recommendationFeedDataIndex)
-        if (viewHolder is HomeRecommendationFeedViewHolder) {
-            viewHolder.selectJumperTab()
-        }
+        homeRecyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    val homeRecommendationFeedViewHolder =
+                        homeRecyclerView?.findViewHolderForLayoutPosition(
+                            recommendationFeedDataIndex
+                        )
+
+                    if (homeRecommendationFeedViewHolder is HomeRecommendationFeedViewHolder) {
+                        homeRecommendationFeedViewHolder.selectJumperTab()
+                    }
+                }
+
+                recyclerView.removeOnScrollListener(this)
+            }
+        })
     }
 
     private fun setHomeBottomNavBasedOnScrolling() {
@@ -2368,8 +2380,8 @@ HomeRevampFragment :
     override fun onScrollToRecommendationForYou() {
         val recommendationForYouIndex = getRecommendationForYouIndex()
         recommendationForYouIndex?.let {
-            homeRecyclerView?.scrollToPosition(it)
             goToJumperForYouTab(it)
+            homeRecyclerView?.scrollToPosition(it)
         }
     }
 
