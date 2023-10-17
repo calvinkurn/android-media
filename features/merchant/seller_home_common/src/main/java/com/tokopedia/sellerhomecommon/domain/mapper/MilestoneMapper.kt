@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -70,6 +71,7 @@ class MilestoneMapper @Inject constructor(
                 "Detail Hadiah",
                 UnifyButton.Variant.FILLED,
                 MilestoneItemRewardUiModel.ButtonStatus.DISABLED,
+                "",
                 ""
             )
         )
@@ -164,18 +166,10 @@ class MilestoneMapper @Inject constructor(
             subtitle = rewardData.rewardSubtitle,
             buttonText = rewardData.button.title,
             buttonStatus = rewardData.button.buttonStatus,
-            buttonVariant = getButtonVariant(rewardData.button.buttonStyleType),
-            buttonApplink = rewardData.button.applink
+            buttonVariant = rewardData.button.buttonStyleType,
+            buttonApplink = rewardData.button.applink,
+            lottieUrl = getRewardLottieUrl(rewardData.rewardStatus)
         )
-    }
-
-    private fun getButtonVariant(buttonType: Int): Int {
-        // TODO: Make value similar to nest library
-        return when(buttonType) {
-            1 -> UnifyButton.Variant.TEXT_ONLY
-            2 -> UnifyButton.Variant.FILLED
-            else -> UnifyButton.Variant.GHOST
-        }
     }
 
     private fun getUrlType(urlType: Int?): BaseMilestoneMissionUiModel.UrlType {
@@ -210,4 +204,16 @@ class MilestoneMapper @Inject constructor(
             totalTask = progressbarData.totalTask.orZero()
         )
     }
+
+    private fun getRewardLottieUrl(rewardStatus: Int): String {
+        val isInitialState =
+            rewardStatus == MilestoneItemRewardUiModel.RewardStatus.NOT_STARTED ||
+                rewardStatus == MilestoneItemRewardUiModel.RewardStatus.ON_GOING
+        return if (isInitialState) {
+            TokopediaImageUrl.SELLER_HOME_REWARD_INITIAL_LOTTIE
+        } else {
+            TokopediaImageUrl.SELLER_HOME_REWARD_ENDING_LOTTIE
+        }
+    }
+
 }

@@ -97,7 +97,7 @@ class MilestoneViewHolder(
     }
 
     override fun onRewardActionClick(reward: MilestoneItemRewardUiModel) {
-//        TODO("Not yet implemented")
+        listener.sendMilestoneRewardActionClickedListener(reward)
     }
 
     private fun initViewBinding() {
@@ -473,5 +473,10 @@ class MilestoneViewHolder(
         fun sendMilestoneWidgetCtaClickEvent() {}
 
         fun sendMilestoneWidgetMinimizeClickEvent() {}
+
+        fun sendMilestoneRewardActionClickedListener(
+            reward: MilestoneItemRewardUiModel
+        )
+
     }
 }

@@ -10,13 +10,21 @@ data class MilestoneItemRewardUiModel(
     val buttonText: String,
     val buttonVariant: Int,
     val buttonStatus: Int,
-    val buttonApplink: String
+    val buttonApplink: String,
+    val lottieUrl: String
 ): Visitable<MilestoneAdapterTypeFactory> {
 
     object ButtonStatus {
         const val HIDDEN = 0
         const val ENABLED = 1
         const val DISABLED = 2
+    }
+
+    object RewardStatus {
+        const val NOT_STARTED = 1
+        const val ON_GOING = 2
+        const val QUEST_FINISH = 3
+        const val REWARD_CLAIMED = 4
     }
 
     override fun type(typeFactory: MilestoneAdapterTypeFactory): Int {

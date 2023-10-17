@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.databinding.ShcItemMissionRewardMilestoneWidgetBinding
 import com.tokopedia.sellerhomecommon.presentation.adapter.MilestoneMissionAdapter
@@ -30,7 +31,15 @@ class MilestoneRewardViewHolder(
             tvShcMissionRewardTitle.text = element.title
             tvShcMissionRewardDesc.text = element.subtitle
         }
+        setupLottieAnimation(element.lottieUrl)
         setupCtaButton(element)
+    }
+
+    private fun setupLottieAnimation(lottieUrl: String) {
+        binding?.imgShcMissionReward?.run {
+            setAnimationFromUrl(lottieUrl)
+            setFailureListener {  } // Run this method to catch the exception without updating views
+        }
     }
 
     private fun setupCtaButton(element: MilestoneItemRewardUiModel) {
