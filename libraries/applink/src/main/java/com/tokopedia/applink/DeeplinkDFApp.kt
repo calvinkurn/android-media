@@ -703,7 +703,10 @@ object DeeplinkDFApp {
 
     private fun getDfSellerPdp() = mutableListOf(
         DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/product-detail/.*/"),
-        DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/productar/.*")
+        DFP(INTERNAL, HOST_MARKETPLACE, PathType.PATTERN, "/product-detail/.*/.*/"),
+        DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/setting-referral-phone-verification"),
+        DFP(TOKOPEDIA, "referral", PathType.NO_PATH, ""),
+        DFP(TOKOPEDIA, "referral", PathType.PATTERN, "/.*\\")
     )
 
     fun Map<String, List<DFP>>.mapDF(): MutableList<DFPSchemeToDF> {

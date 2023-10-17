@@ -421,6 +421,7 @@ dependencies {
         exclude group: 'com.android.support'
     }
 
+    // Requirement to DF product_detail
     implementation projectOrAar(rootProject.ext.features.playWidget)
     implementation projectOrAar(rootProject.ext.features.productShare)
     implementation projectOrAar(rootProject.ext.features.productServiceWidget)
