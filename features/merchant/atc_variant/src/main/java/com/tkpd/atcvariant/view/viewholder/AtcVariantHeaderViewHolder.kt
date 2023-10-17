@@ -22,9 +22,11 @@ import com.tokopedia.product.detail.common.R as productdetailcommonR
  * Created by Yehezkiel on 07/05/21
  */
 
-class AtcVariantHeaderViewHolder(private val view: View,
-                                 private val listener: AtcVariantListener,
-                                 private val atcVarBottomSheetListener: AtcVariantBottomSheetListener) : AbstractViewHolder<VariantHeaderDataModel>(view) {
+class AtcVariantHeaderViewHolder(
+    private val view: View,
+    private val listener: AtcVariantListener,
+    private val atcVarBottomSheetListener: AtcVariantBottomSheetListener
+) : AbstractViewHolder<VariantHeaderDataModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.atc_variant_header_viewholder
@@ -97,6 +99,8 @@ class AtcVariantHeaderViewHolder(private val view: View,
     private fun loadDescription(headerData: ProductHeaderData) = with(view) {
         if (headerData.isCampaignActive) {
             renderCampaignActive(headerData)
+        } else if (headerData.hideGimmick) {
+            renderNoCampaign(headerData.productSlashPrice)
         } else {
             renderNoCampaign(headerData.productMainPrice)
         }
@@ -107,7 +111,6 @@ class AtcVariantHeaderViewHolder(private val view: View,
     }
 
     private fun loadImage(imgUrl: String) {
-
         iconEnlarge.setBackgroundResource(productdetailcommonR.drawable.bg_circle_grey)
 
         productImage?.run {

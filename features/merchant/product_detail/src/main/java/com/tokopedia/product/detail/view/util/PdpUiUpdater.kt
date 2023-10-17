@@ -251,8 +251,12 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                         productName = it.data.name,
                         isProductActive = it.basic.isActive()
                     ).apply {
-                        campaign.slashPriceFmt = campaign.originalPrice.getCurrencyFormatted()
-                        campaign.priceFmt = campaign.discountedPrice.getCurrencyFormatted()
+                        campaign.slashPriceFmt = price.slashPriceFmt.ifNullOrBlank {
+                            campaign.originalPrice.getCurrencyFormatted()
+                        }
+                        campaign.priceFmt = price.priceFmt.ifNullOrBlank {
+                            campaign.discountedPrice.getCurrencyFormatted()
+                        }
                     }
                 }
             }
