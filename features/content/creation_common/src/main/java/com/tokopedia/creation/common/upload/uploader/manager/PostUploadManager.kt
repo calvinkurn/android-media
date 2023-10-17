@@ -8,9 +8,7 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.createpost.common.domain.usecase.SubmitPostUseCase
 import com.tokopedia.createpost.common.view.util.FeedSellerAppReviewHelper
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
-import com.tokopedia.creation.common.upload.const.CreationUploadConst
 import com.tokopedia.creation.common.upload.model.CreationUploadData
-import com.tokopedia.creation.common.upload.model.CreationUploadStatus
 import javax.inject.Inject
 
 /**

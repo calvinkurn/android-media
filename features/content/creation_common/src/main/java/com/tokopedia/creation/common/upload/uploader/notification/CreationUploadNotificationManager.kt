@@ -60,7 +60,7 @@ abstract class CreationUploadNotificationManager(
 
     abstract val uploadNotificationText: CreationUploadNotificationText
 
-    abstract fun generateSuccessPendingIntent(): PendingIntent
+    abstract fun generateSuccessPendingIntent(): PendingIntent?
 
     private fun generatePendingIntentToReceiver(action: CreationUploadReceiver.Action): PendingIntent {
         val intent = CreationUploadReceiver.getIntent(

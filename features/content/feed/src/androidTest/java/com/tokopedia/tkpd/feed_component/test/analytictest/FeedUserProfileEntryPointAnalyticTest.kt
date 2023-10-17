@@ -3,10 +3,9 @@ package com.tokopedia.tkpd.feed_component.test.analytictest
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
-import com.tokopedia.feedplus.domain.repository.FeedPlusRepository
+import com.tokopedia.feedplus.oldFeed.domain.repository.FeedPlusRepository
 import com.tokopedia.tkpd.feed_component.container.FeedContainerTestActivity
 import com.tokopedia.feedplus.R
-import com.tokopedia.feedplus.data.pojo.FeedTabs
 import com.tokopedia.tkpd.feed_component.helper.select
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
