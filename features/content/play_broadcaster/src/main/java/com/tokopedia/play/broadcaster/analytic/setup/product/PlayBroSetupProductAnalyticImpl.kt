@@ -135,6 +135,10 @@ class PlayBroSetupProductAnalyticImpl @Inject constructor(
         /** Not applicable for broadcaster */
     }
 
+    override fun clickSortingTypeItem(sortName: String) {
+        /** Not applicable for broadcaster */
+    }
+
     private fun sendEvent(
         eventAction: String,
         eventLabel: String = shopId
