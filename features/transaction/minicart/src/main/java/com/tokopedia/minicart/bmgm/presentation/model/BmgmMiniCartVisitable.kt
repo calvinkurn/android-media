@@ -12,27 +12,22 @@ sealed interface BmgmMiniCartVisitable : Visitable<BmgmMiniCartAdapterFactory> {
 
     fun getItemId(): String
 
-    fun getContent(): String
-
     data class TierUiModel(
         val tierId: Long = BmgmCommonDataModel.NON_DISCOUNT_TIER_ID,
         val tierMessage: String = "",
         val tierDiscountStr: String = "",
         val priceBeforeBenefit: Double = 0.0,
         val priceAfterBenefit: Double = 0.0,
-        val products: List<ProductUiModel> = emptyList(),
-        val impressHolder: ImpressHolder = ImpressHolder()
+        val products: List<ProductUiModel> = emptyList()
     ) : BmgmMiniCartVisitable {
+
+        val impressHolder: ImpressHolder = ImpressHolder()
 
         override fun type(typeFactory: BmgmMiniCartAdapterFactory): Int {
             return typeFactory.type(this)
         }
 
         override fun getItemId(): String = tierId.toString()
-
-        override fun getContent(): String {
-            return toString()
-        }
 
         fun isDiscountTier(): Boolean {
             return tierId != BmgmCommonDataModel.NON_DISCOUNT_TIER_ID
@@ -53,22 +48,17 @@ sealed interface BmgmMiniCartVisitable : Visitable<BmgmMiniCartAdapterFactory> {
             return typeFactory.type(this)
         }
 
-        override fun getContent(): String {
-            return toString()
-        }
-
         override fun getItemId(): String = productId
     }
 
     object PlaceholderUiModel : BmgmMiniCartVisitable {
 
         private const val PLACEHOLDER_ID = "mini_cart_placeholder"
+
         override fun type(typeFactory: BmgmMiniCartAdapterFactory): Int {
             return typeFactory.type(this)
         }
 
         override fun getItemId(): String = PLACEHOLDER_ID
-
-        override fun getContent(): String = PLACEHOLDER_ID
     }
 }

@@ -25,6 +25,6 @@ class MiniCartDiffUtilCallback(
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         val old = oldList.getOrNull(oldItemPosition)
         val new = newList.getOrNull(newItemPosition)
-        return old?.getContent() == new?.getContent()
+        return old?.toString() == new?.toString()
     }
 }
