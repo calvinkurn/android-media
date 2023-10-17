@@ -51,8 +51,9 @@ object Utils {
         fintechRedirectionWidgetDataClass: FintechRedirectionWidgetDataClass,
         productID: String?
     ): String {
+        val trimmedUrl = fintechRedirectionWidgetDataClass.redirectionUrl?.removePrefix(ApplinkConst.WEBVIEW + "?url=")
         val productIdParam =
-            if (fintechRedirectionWidgetDataClass.redirectionUrl?.contains("?") == true) {
+            if (trimmedUrl?.contains("?") == true) {
                 "&productID=$productID"
             } else {
                 "?productID=$productID"

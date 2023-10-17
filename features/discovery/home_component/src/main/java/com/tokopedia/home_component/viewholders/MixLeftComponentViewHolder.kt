@@ -160,13 +160,13 @@ class MixLeftComponentViewHolder (itemView: View,
                     ContextCompat.getColor(itemView.context, android.R.color.transparent)
             )
             image.loadImageWithoutPlaceholder(channel.channelBanner.imageUrl, FPM_MIX_LEFT, object : ImageHandler.ImageLoaderStateListener{
-                override fun successLoad() {
+                override fun successLoad(view: ImageView?) {
                     parallaxBackground.setGradientBackground(channel.channelBanner.gradientColor)
                     loadingBackground.hide()
                     image.show()
                 }
 
-                override fun failedLoad() {
+                override fun failedLoad(view: ImageView?) {
                     parallaxBackground.setGradientBackground(channel.channelBanner.gradientColor)
                     loadingBackground.hide()
                     image.show()
