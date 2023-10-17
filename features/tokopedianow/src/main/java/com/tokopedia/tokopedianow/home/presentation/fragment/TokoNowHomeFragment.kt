@@ -2013,7 +2013,8 @@ class TokoNowHomeFragment :
             requireContext(),
             viewModelTokoNow,
             chipCarouselAnalytics,
-            ::startActivityForResult
+            ::startActivityForResult,
+            ::showToasterWhenAddToCartBlocked
         )
     }
 
