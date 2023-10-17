@@ -6,7 +6,11 @@ import com.tokopedia.logisticCommon.uimodel.AddressUiState
 sealed interface PinpointAction {
     object GetCurrentLocation : PinpointAction
 
-    data class InvalidDistrictPinpoint(val errorText: String) : PinpointAction
+    data class InvalidDistrictPinpoint(val source: InvalidDistrictPinpointSource) : PinpointAction {
+        enum class InvalidDistrictPinpointSource {
+            ADD_ADDRESS_BUYER, SHOP_ADDRESS
+        }
+    }
 
     data class NetworkError(val errorText: String) : PinpointAction
 }

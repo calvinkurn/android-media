@@ -1158,7 +1158,8 @@ class AddressFormViewModelTest {
         val saveDataModel = addressFormViewModel.generateSaveDataModel(
             saveDataModel = null,
             defaultName = defaultName,
-            defaultPhone = defaultPhone
+            defaultPhone = defaultPhone,
+            pinpointUiModel = null
         )
 
         // Then
@@ -1178,7 +1179,8 @@ class AddressFormViewModelTest {
         val saveDataModel = addressFormViewModel.generateSaveDataModel(
             saveDataModel = spyk(),
             defaultName = defaultName,
-            defaultPhone = defaultPhone
+            defaultPhone = defaultPhone,
+            pinpointUiModel = null
         )
 
         // Then
@@ -1198,7 +1200,8 @@ class AddressFormViewModelTest {
         val saveDataModel = addressFormViewModel.generateSaveDataModel(
             saveDataModel = spyk(),
             defaultName = defaultName,
-            defaultPhone = defaultPhone
+            defaultPhone = defaultPhone,
+            pinpointUiModel = null
         )
 
         // Then

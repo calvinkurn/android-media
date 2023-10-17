@@ -48,7 +48,7 @@ class SearchPageViewModelTest {
         coEvery { repo(any()) } returns AutoCompleteResponse()
 
         // When
-        searchPageViewModel.getAutoCompleteList("Jakarta", "")
+        searchPageViewModel.getAutoCompleteList("Jakarta")
 
         // Then
         verify { autoCompleteListObserver.onChanged(match { it is Success }) }
@@ -60,7 +60,7 @@ class SearchPageViewModelTest {
         coEvery { repo(any()) } throws defaultThrowable
 
         // When
-        searchPageViewModel.getAutoCompleteList("Jakarta", "")
+        searchPageViewModel.getAutoCompleteList("Jakarta")
 
         // Then
         verify { autoCompleteListObserver.onChanged(match { it is Fail }) }
