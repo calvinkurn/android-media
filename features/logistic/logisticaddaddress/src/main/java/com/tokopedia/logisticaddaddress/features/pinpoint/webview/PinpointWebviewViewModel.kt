@@ -7,7 +7,8 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.logisticCommon.data.constant.PinpointSource
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
-import com.tokopedia.logisticCommon.data.repository.KeroRepository
+import com.tokopedia.logisticCommon.domain.param.GetDistrictGeoCodeParam
+import com.tokopedia.logisticCommon.domain.usecase.GetDistrictGeoCodeUseCase
 import com.tokopedia.logisticaddaddress.domain.mapper.SaveAddressMapper
 import com.tokopedia.logisticaddaddress.features.pinpoint.webview.analytics.AddAddressPinpointTracker
 import com.tokopedia.logisticaddaddress.features.pinpoint.webview.analytics.EditAddressPinpointTracker
@@ -15,7 +16,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class PinpointWebviewViewModel @Inject constructor(
-    private val repo: KeroRepository
+    private val getDistrictGeoCode: GetDistrictGeoCodeUseCase
 ) : ViewModel() {
 
     private val _pinpointState = MutableLiveData<PinpointWebviewState>()
@@ -30,9 +31,11 @@ class PinpointWebviewViewModel @Inject constructor(
         val param = "$lat,$long"
         viewModelScope.launch {
             try {
-                val districtData = repo.getDistrictGeocode(
-                    latlong = param,
-                    isManageAddressFlow = source != null
+                val districtData = getDistrictGeoCode(
+                    GetDistrictGeoCodeParam(
+                        latLng = param,
+                        isManageAddressFlow = source != null
+                    )
                 )
                 val data = districtData.keroMapsAutofill.data
                 locationPass?.let {

@@ -34,6 +34,9 @@ data class DataItem(
     @SerializedName("target_component_id")
     var targetComponentId: String? = "",
 
+    @SerializedName("target_component_ids")
+    var targetComponentIds: List<Int> = emptyList(),
+
     @SerializedName("background_image")
     val backgroundImage: String? = "",
 
@@ -442,7 +445,7 @@ data class DataItem(
     @SerializedName("shop_type")
     val shopType: String? = null,
 
-    @SerializedName("shop_badge_image_url")
+    @SerializedName("shop_badge_image_url", alternate = ["shop_badge"])
     val shopBadgeImageUrl: String? = null,
 
     @SerializedName("benefit_title")

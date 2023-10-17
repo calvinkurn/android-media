@@ -7,6 +7,7 @@ import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.iris.util.KEY_SESSION_IRIS
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.ExtraKey
 import com.tokopedia.track.TrackApp
+import com.tokopedia.track.builder.Tracker
 import java.util.*
 
 /**
@@ -1059,5 +1060,104 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
         gtmData[ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
         gtmData[ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
         sendGeneralEvent(gtmData)
+    }
+
+    fun eventClickSaveOnNoteBottomSheet(isPreviousNoteEmpty: Boolean, cartId: String) {
+        val noteStatusLabel = if (isPreviousNoteEmpty) ConstantTransactionAnalytics.EventLabel.NOTE_SIMPAN else ConstantTransactionAnalytics.EventLabel.NOTE_EDIT
+        val gtmData = getGtmData(
+            ConstantTransactionAnalytics.EventName.CLICK_PP,
+            ConstantTransactionAnalytics.EventCategory.CART,
+            ConstantTransactionAnalytics.EventAction.CLICK_SIMPAN_ON_NOTE_BOTTOMSHEET,
+            "$noteStatusLabel - $cartId"
+        )
+        gtmData[ExtraKey.TRACKER_ID] = ConstantTransactionAnalytics.TrackerId.CLICK_SIMPAN_ON_NOTE_BOTTOMSHEET
+        gtmData[ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        gtmData[ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        sendGeneralEvent(gtmData)
+    }
+
+    fun eventClickNoteIcon() {
+        val gtmData = getGtmData(
+            ConstantTransactionAnalytics.EventName.CLICK_PP,
+            ConstantTransactionAnalytics.EventCategory.CART,
+            ConstantTransactionAnalytics.EventAction.CLICK_NOTE_ICON,
+            ""
+        )
+        gtmData[ExtraKey.TRACKER_ID] = ConstantTransactionAnalytics.TrackerId.CLICK_NOTE_ICON
+        gtmData[ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        gtmData[ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        sendGeneralEvent(gtmData)
+    }
+
+    fun sendCartImpressionEvent(data: List<Map<String, Any>>, userId: String) {
+        val bundle = bundleOf(
+            ExtraKey.EVENT to ConstantTransactionAnalytics.EventName.VIEW_ITEM,
+            ExtraKey.EVENT_CATEGORY to ConstantTransactionAnalytics.EventCategory.CART,
+            ExtraKey.EVENT_ACTION to ConstantTransactionAnalytics.EventAction.IMPRESSION_CART,
+            ExtraKey.EVENT_LABEL to "",
+            ExtraKey.CURRENT_SITE to ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE,
+            ExtraKey.BUSINESS_UNIT to ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM,
+            ExtraKey.TRACKER_ID to ConstantTransactionAnalytics.TrackerId.IMPRESSION_CART,
+            ExtraKey.PROMOTIONS to data,
+            ExtraKey.USER_ID to userId
+        )
+
+        sendEnhancedEcommerce(ConstantTransactionAnalytics.EventName.VIEW_ITEM, bundle)
+    }
+
+    fun sendRemoveCartFromSubtractButtonEvent(mapData: Map<String, Any>, userId: String) {
+        val bundle = bundleOf(
+            ExtraKey.EVENT to ConstantTransactionAnalytics.EventName.REMOVE_FROM_CART_V2,
+            ExtraKey.EVENT_CATEGORY to ConstantTransactionAnalytics.EventCategory.CART,
+            ExtraKey.EVENT_ACTION to ConstantTransactionAnalytics.EventAction.CLICK_BUTTON_MIN_TO_DELETE_CART,
+            ExtraKey.EVENT_LABEL to "",
+            ExtraKey.CURRENT_SITE to ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE,
+            ExtraKey.BUSINESS_UNIT to ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM,
+            ExtraKey.TRACKER_ID to ConstantTransactionAnalytics.TrackerId.CLICK_BUTTON_MIN_TO_DELETE_CART,
+            ExtraKey.PROMOTIONS to mapData,
+            ExtraKey.USER_ID to userId
+        )
+
+        sendEnhancedEcommerce(ConstantTransactionAnalytics.EventName.REMOVE_FROM_CART_V2, bundle)
+    }
+
+    fun eventViewBmGmTickerOffer(
+        offerId: Long,
+        widgetCaption: String,
+        shopId: String,
+        userId: String
+    ) {
+        Tracker.Builder()
+            .setEvent(ConstantTransactionAnalytics.EventName.VIEW_PG_IRIS)
+            .setEventAction(ConstantTransactionAnalytics.EventAction.IMPRESSION_BMGM_RECOMMENDATION)
+            .setEventCategory(ConstantTransactionAnalytics.EventCategory.CART)
+            .setEventLabel("$offerId - $widgetCaption")
+            .setCustomProperty(ExtraKey.TRACKER_ID, ConstantTransactionAnalytics.TrackerId.VIEW_BMGM_RECOMMENDATION)
+            .setBusinessUnit(ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM)
+            .setCurrentSite(ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE)
+            .setShopId(shopId)
+            .setUserId(userId)
+            .build()
+            .send()
+    }
+
+    fun eventClickBmGmTickerOffer(
+        offerId: Long,
+        widgetCaption: String,
+        shopId: String,
+        userId: String
+    ) {
+        Tracker.Builder()
+            .setEvent(ConstantTransactionAnalytics.EventName.CLICK_PG)
+            .setEventAction(ConstantTransactionAnalytics.EventAction.CLICK_BMGM_RECOMMENDATION)
+            .setEventCategory(ConstantTransactionAnalytics.EventCategory.CART)
+            .setEventLabel("$offerId - $widgetCaption")
+            .setCustomProperty(ExtraKey.TRACKER_ID, ConstantTransactionAnalytics.TrackerId.CLICK_BMGM_RECOMMENDATION)
+            .setBusinessUnit(ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM)
+            .setCurrentSite(ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE)
+            .setShopId(shopId)
+            .setUserId(userId)
+            .build()
+            .send()
     }
 }

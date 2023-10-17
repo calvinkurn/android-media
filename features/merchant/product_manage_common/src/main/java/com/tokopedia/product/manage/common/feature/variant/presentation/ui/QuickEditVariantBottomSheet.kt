@@ -147,7 +147,7 @@ abstract class QuickEditVariantBottomSheet: BottomSheetUnify(), HasComponent<Qui
     }
 
     private fun setupSaveBtn() {
-        binding?.btnSave?.setOnClickListener {
+        binding?.btnProductManageVariantSave?.setOnClickListener {
             viewModel.saveVariants()
         }
     }

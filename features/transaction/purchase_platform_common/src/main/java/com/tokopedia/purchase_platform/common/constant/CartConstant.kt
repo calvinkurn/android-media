@@ -16,10 +16,13 @@ object CartConstant {
     const val CHECKOUT_LEASING_ID = "vehicle_leasing_id"
     const val CHECKOUT_IS_PLUS_SELECTED = "is_plus_selected"
     const val CART_EMPTY_DEFAULT_IMG_URL = TokopediaImageUrl.CART_EMPTY_DEFAULT_IMG_URL
+    const val CART_EMPTY_NEW_DEFAULT_IMG_URL = TokopediaImageUrl.CART_EMPTY_NEW_DEFAULT_IMG_URL
     const val CART_EMPTY_WITH_PROMO_IMG_URL = TokopediaImageUrl.CART_EMPTY_WITH_PROMO_IMG_URL
     const val STATE_RED = "red"
     const val PARAM_DEFAULT = "default"
     const val PARAM_CART = "cart"
     const val IS_TESTING_FLOW = "isTesting"
     const val QTY_ADDON_REPLACE = "{{qty}}"
+    const val RESULT_OK = "OK"
+    const val ACTION_RELOAD = "RELOAD"
 }

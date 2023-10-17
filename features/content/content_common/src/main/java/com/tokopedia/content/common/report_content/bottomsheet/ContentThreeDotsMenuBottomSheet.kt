@@ -33,8 +33,8 @@ class ContentThreeDotsMenuBottomSheet : BottomSheetUnify(), ContentReportViewHol
 
     private val adapter: FeedMenuAdapter by lazy {
         FeedMenuAdapter(object : FeedMenuViewHolder.Listener {
-            override fun onClick(item: FeedMenuItem) {
-                if (item.type != FeedMenuIdentifier.Report) {
+            override fun onClick(item: ContentMenuItem) {
+                if (item.type != ContentMenuIdentifier.Report) {
                     dismiss()
                 } else {
                     showHeader = true
@@ -48,7 +48,7 @@ class ContentThreeDotsMenuBottomSheet : BottomSheetUnify(), ContentReportViewHol
 
     private val reportAdapter: ContentReportAdapter = ContentReportAdapter(this)
 
-    private val mFeedMenuItemList = mutableListOf<FeedMenuItem>()
+    private val mContentMenuItemList = mutableListOf<ContentMenuItem>()
     private var mListener: Listener? = null
     private var mAnalytic: FeedAccountTypeAnalytic? = null
 
@@ -117,7 +117,7 @@ class ContentThreeDotsMenuBottomSheet : BottomSheetUnify(), ContentReportViewHol
 
     private fun setupView() {
         binding.rvFeedMenu.adapter = adapter
-        adapter.updateData(mFeedMenuItemList)
+        adapter.updateData(mContentMenuItemList)
         bottomSheetClose.visible()
 
         binding.rvReportItem.adapter = reportAdapter
@@ -135,14 +135,14 @@ class ContentThreeDotsMenuBottomSheet : BottomSheetUnify(), ContentReportViewHol
     }
 
     fun setData(
-        feedMenuItemList: List<FeedMenuItem>,
+        contentMenuItemList: List<ContentMenuItem>,
         contentId: String
     ): ContentThreeDotsMenuBottomSheet {
         this.contentId = contentId
-        mFeedMenuItemList.clear()
-        mFeedMenuItemList.addAll(feedMenuItemList)
+        mContentMenuItemList.clear()
+        mContentMenuItemList.addAll(contentMenuItemList)
 
-        if (isAdded) adapter.updateData(mFeedMenuItemList)
+        if (isAdded) adapter.updateData(mContentMenuItemList)
 
         return this
     }
@@ -179,7 +179,7 @@ class ContentThreeDotsMenuBottomSheet : BottomSheetUnify(), ContentReportViewHol
     }
 
     interface Listener {
-        fun onMenuItemClick(feedMenuItem: FeedMenuItem, contentId: String)
+        fun onMenuItemClick(contentMenuItem: ContentMenuItem, contentId: String)
         fun onReportPost(feedReportRequestParamModel: FeedComplaintSubmitReportUseCase.Param)
         fun onMenuBottomSheetCloseClick(contentId: String)
     }

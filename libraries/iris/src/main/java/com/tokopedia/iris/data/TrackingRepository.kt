@@ -219,7 +219,8 @@ class TrackingRepository private constructor(
         try {
             val dataRequest = TrackingMapper().transformSingleEvent(
                 data, session.getSessionId(),
-                userSession.userId, userSession.deviceId
+                userSession.userId, userSession.deviceId,
+                cache
             )
             val requestBody = ApiService.parse(dataRequest)
             val response = apiService.sendSingleEventAsync(requestBody)
@@ -251,7 +252,7 @@ class TrackingRepository private constructor(
             eventName?.let {
                 if (CM_REALTIME_EVENT_LIST.contains(it)) {
                     val transformedEvent =
-                        TrackingMapper.reformatEvent(data, session.getSessionId()).toString()
+                        TrackingMapper.reformatEvent(data, session.getSessionId(), cache).toString()
                     saveEvent(transformedEvent)
                 }
             }
