@@ -196,7 +196,7 @@ private fun LazyListScope.renderResultContentSectionUi(data: PersonaDataUiModel)
             )
         }
     }
-    items(items = data.personaData.itemList, key = { it }) {
+    items(items = data.personaData.itemList) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
