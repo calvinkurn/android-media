@@ -2,6 +2,7 @@ package com.tokopedia.feedplus.browse.presentation.adapter.viewholder
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.doOnLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseCardAdapter
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseHorizontalChannelsItemDecoration
@@ -30,7 +31,6 @@ internal class FeedBrowseHorizontalChannelsViewHolder private constructor(
 
     init {
         binding.root.adapter = adapter
-        binding.root.itemAnimator = null
         binding.root.setHasFixedSize(true)
         binding.root.addItemDecoration(
             FeedBrowseHorizontalChannelsItemDecoration(binding.root.resources)
@@ -39,12 +39,14 @@ internal class FeedBrowseHorizontalChannelsViewHolder private constructor(
 
     fun bind(item: FeedBrowseItemListModel.HorizontalChannels) {
         if (item.itemState.hasContent()) {
-            adapter.submitList(item.itemState.items)
+            adapter.submitList(item.itemState.items) {
+                binding.root.doOnLayout {
+                    binding.root.scrollToPosition(0)
+                }
+            }
         } else {
             adapter.setLoading()
         }
-
-        binding.root.scrollToPosition(0)
     }
 
     fun bindPayloads(item: FeedBrowseItemListModel.HorizontalChannels, payloads: FeedBrowsePayloads) {
@@ -53,7 +55,7 @@ internal class FeedBrowseHorizontalChannelsViewHolder private constructor(
 
     companion object {
         fun create(
-            parent: ViewGroup,
+            parent: ViewGroup
         ): FeedBrowseHorizontalChannelsViewHolder {
             return FeedBrowseHorizontalChannelsViewHolder(
                 ItemFeedBrowseHorizontalChannelsBinding.inflate(

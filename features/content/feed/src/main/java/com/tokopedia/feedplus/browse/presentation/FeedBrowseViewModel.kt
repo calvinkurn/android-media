@@ -30,7 +30,7 @@ import javax.inject.Inject
  */
 private typealias FeedBrowseModelMap = Map<String, FeedBrowseUiModel2>
 internal class FeedBrowseViewModel @Inject constructor(
-    private val repository: FeedBrowseRepository,
+    private val repository: FeedBrowseRepository
 ) : ViewModel() {
 
     private val _title = MutableStateFlow("")
@@ -42,7 +42,7 @@ internal class FeedBrowseViewModel @Inject constructor(
     val uiState: StateFlow<FeedBrowseUiState> = combine(
         _title,
         _slots,
-        _widgets,
+        _widgets
     ) { title, slots, widgets ->
         if (slots is ResultState.Fail) {
             FeedBrowseUiState.Error(
@@ -120,10 +120,13 @@ internal class FeedBrowseViewModel @Inject constructor(
         }
     }
 
-    private fun handleSelectChip(chip: WidgetMenuModel, widgetId: String) {
+    private fun handleSelectChip(chip: WidgetMenuModel, slotId: String) {
         viewModelScope.launch {
-            updateWidget<FeedBrowseModel.ChannelsWithMenus>(widgetId, ResultState.Success) {
-                it.copy(selectedMenuId = chip.id)
+            updateWidget<FeedBrowseModel.ChannelsWithMenus>(slotId, ResultState.Success) {
+                it.copy(
+                    selectedMenuId = chip.id,
+                    menus = it.menus + (chip to ItemListState.Loading)
+                )
             }
         }
     }
@@ -147,7 +150,7 @@ internal class FeedBrowseViewModel @Inject constructor(
             WidgetRequestModel(
                 group = menu.group,
                 sourceType = menu.sourceType,
-                sourceId = menu.sourceId,
+                sourceId = menu.sourceId
             )
         }
 
@@ -170,8 +173,7 @@ internal class FeedBrowseViewModel @Inject constructor(
                                 )
                             )
                         }
-                    }
-                    else {
+                    } else {
                         updateWidget<FeedBrowseModel.ChannelsWithMenus>(slotId, ResultState.Success) {
                             val menu = selectedMenu ?: menuKeys.first()
                             it.copy(
@@ -184,7 +186,7 @@ internal class FeedBrowseViewModel @Inject constructor(
         } catch (e: IllegalStateException) { this }
     }
 
-    private suspend inline fun <reified T: FeedBrowseModel> updateWidget(
+    private suspend inline fun <reified T : FeedBrowseModel> updateWidget(
         slotId: String,
         state: ResultState,
         onUpdate: (T) -> FeedBrowseModel

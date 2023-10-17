@@ -1,6 +1,7 @@
 package com.tokopedia.feedplus.browse.presentation.adapter
 
 import android.annotation.SuppressLint
+import android.util.Log
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -13,7 +14,7 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
  * Created by meyta.taliti on 11/08/23.
  */
 internal class FeedBrowseCardAdapter(
-    private val listener: FeedBrowseChannelViewHolder2.Channel.Listener,
+    private val listener: FeedBrowseChannelViewHolder2.Channel.Listener
 ) : ListAdapter<Any, RecyclerView.ViewHolder>(
     object : DiffUtil.ItemCallback<Any>() {
         override fun areItemsTheSame(
@@ -69,8 +70,10 @@ internal class FeedBrowseCardAdapter(
         payloads: MutableList<Any>
     ) {
         if (payloads.isEmpty()) {
+            Log.d("ON_BIND", "PAYLOAD EMPTY")
             return super.onBindViewHolder(holder, position, payloads)
         }
+        Log.d("ON_BIND", "PAYLOAD NOT EMPTY")
         val payload = payloads.filterIsInstance<FeedBrowsePayloads>().combine()
         val item = getItem(position)
         when {
@@ -81,7 +84,7 @@ internal class FeedBrowseCardAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        return when(val item = getItem(position)) {
+        return when (val item = getItem(position)) {
             LoadingModel -> TYPE_LOADING
             is PlayWidgetChannelUiModel -> TYPE_CHANNEL
             else -> error("Type of item $item is not supported")
