@@ -1708,8 +1708,6 @@ class RechargeGeneralFragment :
 
         const val REQUEST_CODE_DIGITAL_SEARCH_NUMBER = 77
 
-        const val PLATFORM_ID_ADD_SBM = 48
-
         private const val TAG_GENERAL_MENU_BOTTOM_SHEET = "GENERAL_MENU_BOTTOM_SHEET"
         private const val TAG_GENERAL_CONSENT_BOTTOM_SHEET = "GENERAL_CONSENT_BOTTOM_SHEET"
         private const val TOOLBAR_ICON_SIZE = 64
