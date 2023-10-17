@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.sellerorder.detail.domain.usecase.SomGetFeeTransparencyUseCase
-import com.tokopedia.sellerorder.detail.presentation.model.TransparencyFeeUiModelWrapper
+import com.tokopedia.sellerorder.detail.presentation.model.transparency_fee.TransparencyFeeUiModelWrapper
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success

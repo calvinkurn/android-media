@@ -2,7 +2,7 @@ package com.tokopedia.sellerorder.detail
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.sellerorder.detail.domain.usecase.SomGetFeeTransparencyUseCase
-import com.tokopedia.sellerorder.detail.presentation.model.TransparencyFeeUiModelWrapper
+import com.tokopedia.sellerorder.detail.presentation.model.transparency_fee.TransparencyFeeUiModelWrapper
 import com.tokopedia.sellerorder.detail.presentation.viewmodel.SomDetailTransparencyFeeViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.unit.test.rule.UnconfinedTestRule

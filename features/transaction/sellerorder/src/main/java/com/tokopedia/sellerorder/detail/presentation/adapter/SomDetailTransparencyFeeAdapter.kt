@@ -5,9 +5,9 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.sellerorder.detail.presentation.adapter.diffutil.SomDetailTransparencyDiffUtilCallback
 import com.tokopedia.sellerorder.detail.presentation.adapter.factory.DetailTransparencyFeeAdapterFactoryImpl
-import com.tokopedia.sellerorder.detail.presentation.model.BaseTransparencyFee
-import com.tokopedia.sellerorder.detail.presentation.model.TransparencyFeeErrorStateUiModel
-import com.tokopedia.sellerorder.detail.presentation.model.TransparencyFeeLoadingUiModel
+import com.tokopedia.sellerorder.detail.presentation.model.transparency_fee.BaseTransparencyFee
+import com.tokopedia.sellerorder.detail.presentation.model.transparency_fee.TransparencyFeeErrorStateUiModel
+import com.tokopedia.sellerorder.detail.presentation.model.transparency_fee.TransparencyFeeLoadingUiModel
 
 class SomDetailTransparencyFeeAdapter(private val typeFactory: DetailTransparencyFeeAdapterFactoryImpl) :
     BaseAdapter<DetailTransparencyFeeAdapterFactoryImpl>(typeFactory) {

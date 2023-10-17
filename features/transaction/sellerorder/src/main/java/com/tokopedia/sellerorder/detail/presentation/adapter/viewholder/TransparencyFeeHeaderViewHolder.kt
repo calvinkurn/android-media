@@ -1,21 +1,18 @@
 package com.tokopedia.sellerorder.detail.presentation.adapter.viewholder
 
+import android.view.LayoutInflater
 import android.view.View
 import androidx.core.view.updatePadding
-import com.google.android.flexbox.AlignItems
-import com.google.android.flexbox.FlexboxLayoutManager
-import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.databinding.ItemHeaderIncomeDetailSectionBinding
 import com.tokopedia.sellerorder.detail.presentation.adapter.factory.DetailTransparencyFeeAdapterFactoryImpl
 import com.tokopedia.sellerorder.detail.presentation.adapter.factory.TransparencyFeeAttributesAdapterFactoryImpl
-import com.tokopedia.sellerorder.detail.presentation.model.BaseTransparencyFeeAttributes
-import com.tokopedia.sellerorder.detail.presentation.model.TransparencyFeeHeaderUiModel
+import com.tokopedia.sellerorder.detail.presentation.model.transparency_fee.BaseTransparencyFeeAttributes
+import com.tokopedia.sellerorder.detail.presentation.model.transparency_fee.TransparencyFeeHeaderUiModel
+import com.tokopedia.sellerorder.detail.presentation.widget.transparency_fee.BaseWidgetTransparencyFeeAttribute
 import com.tokopedia.unifycomponents.toPx
 
 class TransparencyFeeHeaderViewHolder(
@@ -32,8 +29,6 @@ class TransparencyFeeHeaderViewHolder(
     private val binding = ItemHeaderIncomeDetailSectionBinding.bind(itemView)
 
     private val typeFactory = TransparencyFeeAttributesAdapterFactoryImpl(actionListener)
-
-    private val attributesAdapter = BaseAdapter(typeFactory)
 
     override fun bind(element: TransparencyFeeHeaderUiModel) {
         setupValue(element.value)
@@ -57,29 +52,30 @@ class TransparencyFeeHeaderViewHolder(
     }
 
     private fun setAttributes(attributes: List<BaseTransparencyFeeAttributes>) {
-        if (attributes.isNotEmpty()) {
-            setupRecyclerView()
-            setAttributesData(attributes)
-        } else {
-            hideAttributes()
-        }
-    }
-
-    private fun setupRecyclerView() {
-        binding.rvHeaderIncomeDetailAttributes.run {
-            show()
-            layoutManager = FlexboxLayoutManager(context).apply {
-                alignItems = AlignItems.FLEX_START
-            }
-            adapter = attributesAdapter
-        }
-    }
-
-    private fun hideAttributes() {
-        binding.rvHeaderIncomeDetailAttributes.hide()
+        setAttributesData(attributes)
     }
 
     private fun setAttributesData(attributes: List<BaseTransparencyFeeAttributes>) {
-        attributesAdapter.setElement(attributes)
+        binding.cgHeaderIncomeDetailAttributes.removeAllViews()
+        attributes.map { attribute ->
+            val attributeView = createAttributeView(attribute)
+            val attributeViewHolder = createAttributeViewHolder(attribute, attributeView)
+            binding.cgHeaderIncomeDetailAttributes.addView(attributeView)
+            attributeViewHolder.bind(attribute)
+        }
+    }
+
+    private fun createAttributeView(attribute: BaseTransparencyFeeAttributes): View {
+        return LayoutInflater
+            .from(itemView.context)
+            .inflate(attribute.type(typeFactory), null, false)
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private fun createAttributeViewHolder(
+        attribute: BaseTransparencyFeeAttributes,
+        attributeView: View
+    ): BaseWidgetTransparencyFeeAttribute<BaseTransparencyFeeAttributes> {
+        return typeFactory.createWidget(attributeView, attribute.type(typeFactory)) as BaseWidgetTransparencyFeeAttribute<BaseTransparencyFeeAttributes>
     }
 }

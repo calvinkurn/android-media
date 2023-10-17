@@ -2,7 +2,7 @@ package com.tokopedia.sellerorder.detail.presentation.adapter.diffutil
 
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.sellerorder.detail.presentation.adapter.factory.DetailTransparencyFeeAdapterFactoryImpl
-import com.tokopedia.sellerorder.detail.presentation.model.BaseTransparencyFee
+import com.tokopedia.sellerorder.detail.presentation.model.transparency_fee.BaseTransparencyFee
 
 class SomDetailTransparencyDiffUtilCallback(
     private val oldItems: List<BaseTransparencyFee>,

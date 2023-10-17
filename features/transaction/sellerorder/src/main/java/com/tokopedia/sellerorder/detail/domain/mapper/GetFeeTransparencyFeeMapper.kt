@@ -2,19 +2,19 @@ package com.tokopedia.sellerorder.detail.domain.mapper
 
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.sellerorder.detail.data.model.SomDetailIncomeDetailResponse
-import com.tokopedia.sellerorder.detail.presentation.model.BaseTransparencyFee
-import com.tokopedia.sellerorder.detail.presentation.model.BaseTransparencyFeeAttributes
-import com.tokopedia.sellerorder.detail.presentation.model.TransparencyFeeComponentLabelUiModel
-import com.tokopedia.sellerorder.detail.presentation.model.TransparencyFeeComponentUiModel
-import com.tokopedia.sellerorder.detail.presentation.model.TransparencyFeeHeaderLabelUiModel
-import com.tokopedia.sellerorder.detail.presentation.model.TransparencyFeeHeaderUiModel
-import com.tokopedia.sellerorder.detail.presentation.model.TransparencyFeeIconUiModel
-import com.tokopedia.sellerorder.detail.presentation.model.TransparencyFeeLabelUiModel
-import com.tokopedia.sellerorder.detail.presentation.model.TransparencyFeeSubComponentLabelUiModel
-import com.tokopedia.sellerorder.detail.presentation.model.TransparencyFeeSubComponentUiModel
-import com.tokopedia.sellerorder.detail.presentation.model.TransparencyFeeSummaryLabelUiModel
-import com.tokopedia.sellerorder.detail.presentation.model.TransparencyFeeSummaryUiModel
-import com.tokopedia.sellerorder.detail.presentation.model.TransparencyFeeUiModelWrapper
+import com.tokopedia.sellerorder.detail.presentation.model.transparency_fee.BaseTransparencyFee
+import com.tokopedia.sellerorder.detail.presentation.model.transparency_fee.BaseTransparencyFeeAttributes
+import com.tokopedia.sellerorder.detail.presentation.model.transparency_fee.TransparencyFeeComponentLabelUiModel
+import com.tokopedia.sellerorder.detail.presentation.model.transparency_fee.TransparencyFeeComponentUiModel
+import com.tokopedia.sellerorder.detail.presentation.model.transparency_fee.TransparencyFeeHeaderLabelUiModel
+import com.tokopedia.sellerorder.detail.presentation.model.transparency_fee.TransparencyFeeHeaderUiModel
+import com.tokopedia.sellerorder.detail.presentation.model.transparency_fee.TransparencyFeeIconUiModel
+import com.tokopedia.sellerorder.detail.presentation.model.transparency_fee.TransparencyFeeLabelUiModel
+import com.tokopedia.sellerorder.detail.presentation.model.transparency_fee.TransparencyFeeSubComponentLabelUiModel
+import com.tokopedia.sellerorder.detail.presentation.model.transparency_fee.TransparencyFeeSubComponentUiModel
+import com.tokopedia.sellerorder.detail.presentation.model.transparency_fee.TransparencyFeeSummaryLabelUiModel
+import com.tokopedia.sellerorder.detail.presentation.model.transparency_fee.TransparencyFeeSummaryUiModel
+import com.tokopedia.sellerorder.detail.presentation.model.transparency_fee.TransparencyFeeUiModelWrapper
 import javax.inject.Inject
 
 class GetFeeTransparencyFeeMapper @Inject constructor() {

@@ -1,59 +1,58 @@
 package com.tokopedia.sellerorder.detail.presentation.adapter.factory
 
 import android.view.View
-import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.TransparencyFeeComponentLabelViewHolder
-import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.TransparencyFeeHeaderLabelViewHolder
-import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.TransparencyFeeIconViewHolder
-import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.TransparencyFeeLabelViewHolder
-import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.TransparencyFeeSubComponentLabelViewHolder
-import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.TransparencyFeeSummaryLabelViewHolder
-import com.tokopedia.sellerorder.detail.presentation.model.TransparencyFeeComponentLabelUiModel
-import com.tokopedia.sellerorder.detail.presentation.model.TransparencyFeeHeaderLabelUiModel
-import com.tokopedia.sellerorder.detail.presentation.model.TransparencyFeeIconUiModel
-import com.tokopedia.sellerorder.detail.presentation.model.TransparencyFeeLabelUiModel
-import com.tokopedia.sellerorder.detail.presentation.model.TransparencyFeeSubComponentLabelUiModel
-import com.tokopedia.sellerorder.detail.presentation.model.TransparencyFeeSummaryLabelUiModel
+import com.tokopedia.abstraction.base.view.adapter.exception.TypeNotSupportedException
+import com.tokopedia.sellerorder.detail.presentation.model.transparency_fee.BaseTransparencyFeeAttributes
+import com.tokopedia.sellerorder.detail.presentation.model.transparency_fee.TransparencyFeeComponentLabelUiModel
+import com.tokopedia.sellerorder.detail.presentation.model.transparency_fee.TransparencyFeeHeaderLabelUiModel
+import com.tokopedia.sellerorder.detail.presentation.model.transparency_fee.TransparencyFeeIconUiModel
+import com.tokopedia.sellerorder.detail.presentation.model.transparency_fee.TransparencyFeeLabelUiModel
+import com.tokopedia.sellerorder.detail.presentation.model.transparency_fee.TransparencyFeeSubComponentLabelUiModel
+import com.tokopedia.sellerorder.detail.presentation.model.transparency_fee.TransparencyFeeSummaryLabelUiModel
+import com.tokopedia.sellerorder.detail.presentation.widget.transparency_fee.BaseWidgetTransparencyFeeAttribute
+import com.tokopedia.sellerorder.detail.presentation.widget.transparency_fee.WidgetTransparencyFeeComponentLabel
+import com.tokopedia.sellerorder.detail.presentation.widget.transparency_fee.WidgetTransparencyFeeHeaderLabel
+import com.tokopedia.sellerorder.detail.presentation.widget.transparency_fee.WidgetTransparencyFeeIcon
+import com.tokopedia.sellerorder.detail.presentation.widget.transparency_fee.WidgetTransparencyFeeLabel
+import com.tokopedia.sellerorder.detail.presentation.widget.transparency_fee.WidgetTransparencyFeeSubComponentLabel
+import com.tokopedia.sellerorder.detail.presentation.widget.transparency_fee.WidgetTransparencyFeeSummaryLabel
 
 class TransparencyFeeAttributesAdapterFactoryImpl(
     private val actionListener: DetailTransparencyFeeAdapterFactoryImpl.ActionListener
-) : BaseAdapterTypeFactory(),
-    TransparencyFeeAdapterAttributesFactory {
+) : TransparencyFeeAdapterAttributesFactory {
     override fun type(uiModel: TransparencyFeeLabelUiModel): Int {
-        return TransparencyFeeLabelViewHolder.LAYOUT
+        return WidgetTransparencyFeeLabel.LAYOUT
     }
 
     override fun type(uiModel: TransparencyFeeIconUiModel): Int {
-        return TransparencyFeeIconViewHolder.LAYOUT
+        return WidgetTransparencyFeeIcon.LAYOUT
     }
 
     override fun type(transparencyFeeHeaderLabelUiModel: TransparencyFeeHeaderLabelUiModel): Int {
-        return TransparencyFeeHeaderLabelViewHolder.LAYOUT
+        return WidgetTransparencyFeeHeaderLabel.LAYOUT
     }
 
     override fun type(transparencyFeeComponentLabelUiModel: TransparencyFeeComponentLabelUiModel): Int {
-        return TransparencyFeeComponentLabelViewHolder.LAYOUT
+        return WidgetTransparencyFeeComponentLabel.LAYOUT
     }
 
     override fun type(transparencyFeeSubComponentLabelUiModel: TransparencyFeeSubComponentLabelUiModel): Int {
-        return TransparencyFeeSubComponentLabelViewHolder.LAYOUT
+        return WidgetTransparencyFeeSubComponentLabel.LAYOUT
     }
 
     override fun type(transparencyFeeSummaryLabelUiModel: TransparencyFeeSummaryLabelUiModel): Int {
-        return TransparencyFeeSummaryLabelViewHolder.LAYOUT
+        return WidgetTransparencyFeeSummaryLabel.LAYOUT
     }
 
-    override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
+    fun createWidget(parent: View, type: Int): BaseWidgetTransparencyFeeAttribute<out BaseTransparencyFeeAttributes> {
         return when (type) {
-            TransparencyFeeHeaderLabelViewHolder.LAYOUT -> TransparencyFeeHeaderLabelViewHolder(parent)
-            TransparencyFeeComponentLabelViewHolder.LAYOUT -> TransparencyFeeComponentLabelViewHolder(parent)
-            TransparencyFeeSubComponentLabelViewHolder.LAYOUT -> TransparencyFeeSubComponentLabelViewHolder(parent)
-            TransparencyFeeSummaryLabelViewHolder.LAYOUT -> TransparencyFeeSummaryLabelViewHolder(parent)
-            TransparencyFeeLabelViewHolder.LAYOUT -> TransparencyFeeLabelViewHolder(parent)
-            TransparencyFeeIconViewHolder.LAYOUT -> TransparencyFeeIconViewHolder(parent, actionListener)
-            else -> super.createViewHolder(parent, type)
+            WidgetTransparencyFeeHeaderLabel.LAYOUT -> WidgetTransparencyFeeHeaderLabel(parent)
+            WidgetTransparencyFeeComponentLabel.LAYOUT -> WidgetTransparencyFeeComponentLabel(parent)
+            WidgetTransparencyFeeSubComponentLabel.LAYOUT -> WidgetTransparencyFeeSubComponentLabel(parent)
+            WidgetTransparencyFeeSummaryLabel.LAYOUT -> WidgetTransparencyFeeSummaryLabel(parent)
+            WidgetTransparencyFeeLabel.LAYOUT -> WidgetTransparencyFeeLabel(parent)
+            WidgetTransparencyFeeIcon.LAYOUT -> WidgetTransparencyFeeIcon(parent, actionListener)
+            else -> throw TypeNotSupportedException.create("Layout not supported");
         }
     }
 

@@ -1,6 +1,8 @@
-package com.tokopedia.sellerorder.detail.presentation.model
+package com.tokopedia.sellerorder.detail.presentation.model.transparency_fee
 
 import com.tokopedia.sellerorder.detail.presentation.adapter.factory.DetailTransparencyFeeAdapterFactoryImpl
+import com.tokopedia.sellerorder.detail.presentation.model.transparency_fee.BaseTransparencyFee
+import com.tokopedia.sellerorder.detail.presentation.model.transparency_fee.BaseTransparencyFeeAttributes
 
 data class TransparencyFeeComponentUiModel(
     val value: String,

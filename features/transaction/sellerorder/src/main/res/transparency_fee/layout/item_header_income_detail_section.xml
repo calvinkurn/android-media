@@ -7,23 +7,19 @@
     android:paddingHorizontal="16dp"
     android:paddingTop="12dp">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_header_income_detail_attributes"
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/cg_header_income_detail_attributes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="12dp"
-        android:orientation="horizontal"
-        app:layoutManager="com.google.android.flexbox.FlexboxLayoutManager"
+        app:chipSpacingHorizontal="0dp"
         app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toTopOf="@id/divider_transparency_fee_header"
         app:layout_constraintEnd_toStartOf="@id/tv_header_income_detail_value"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0"
-        tools:itemCount="10"
-        tools:listitem="@layout/item_detail_transparency_fee_label"
-        tools:visibility="visible" />
+        app:layout_constraintVertical_bias="0" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_header_income_detail_value"

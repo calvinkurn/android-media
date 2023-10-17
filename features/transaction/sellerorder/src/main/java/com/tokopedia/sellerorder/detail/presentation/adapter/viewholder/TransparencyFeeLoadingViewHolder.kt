@@ -3,7 +3,7 @@ package com.tokopedia.sellerorder.detail.presentation.adapter.viewholder
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.sellerorder.R
-import com.tokopedia.sellerorder.detail.presentation.model.TransparencyFeeLoadingUiModel
+import com.tokopedia.sellerorder.detail.presentation.model.transparency_fee.TransparencyFeeLoadingUiModel
 
 class TransparencyFeeLoadingViewHolder(view: View?):
     AbstractViewHolder<TransparencyFeeLoadingUiModel>(view) {

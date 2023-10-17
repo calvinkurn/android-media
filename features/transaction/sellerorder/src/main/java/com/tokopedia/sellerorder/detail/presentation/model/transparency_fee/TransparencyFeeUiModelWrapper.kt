@@ -1,4 +1,4 @@
-package com.tokopedia.sellerorder.detail.presentation.model
+package com.tokopedia.sellerorder.detail.presentation.model.transparency_fee
 
 data class TransparencyFeeUiModelWrapper(
     val bottomSheetTitle: String,

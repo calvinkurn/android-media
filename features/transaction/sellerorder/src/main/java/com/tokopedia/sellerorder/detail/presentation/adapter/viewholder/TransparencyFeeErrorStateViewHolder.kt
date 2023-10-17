@@ -5,8 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.Utils.getGlobalErrorType
 import com.tokopedia.sellerorder.databinding.ItemTransparencyFeeErrorStateBinding
-import com.tokopedia.sellerorder.detail.presentation.model.TransparencyFeeErrorStateUiModel
-import com.tokopedia.sellerorder.detail.presentation.model.TransparencyFeeLoadingUiModel
+import com.tokopedia.sellerorder.detail.presentation.model.transparency_fee.TransparencyFeeErrorStateUiModel
 
 class TransparencyFeeErrorStateViewHolder(
     view: View?,

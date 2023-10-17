@@ -6,7 +6,7 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.sellerorder.detail.data.model.SomDetailIncomeDetailRequest
 import com.tokopedia.sellerorder.detail.data.model.SomDetailIncomeDetailResponse
 import com.tokopedia.sellerorder.detail.domain.mapper.GetFeeTransparencyFeeMapper
-import com.tokopedia.sellerorder.detail.presentation.model.TransparencyFeeUiModelWrapper
+import com.tokopedia.sellerorder.detail.presentation.model.transparency_fee.TransparencyFeeUiModelWrapper
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 

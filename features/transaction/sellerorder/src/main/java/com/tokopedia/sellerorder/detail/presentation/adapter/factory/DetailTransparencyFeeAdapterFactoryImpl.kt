@@ -9,11 +9,11 @@ import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.Transpar
 import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.TransparencyFeeHeaderViewHolder
 import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.TransparencyFeeLoadingViewHolder
 import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.TransparencyFeeSubComponentViewHolder
-import com.tokopedia.sellerorder.detail.presentation.model.TransparencyFeeComponentUiModel
-import com.tokopedia.sellerorder.detail.presentation.model.TransparencyFeeErrorStateUiModel
-import com.tokopedia.sellerorder.detail.presentation.model.TransparencyFeeHeaderUiModel
-import com.tokopedia.sellerorder.detail.presentation.model.TransparencyFeeLoadingUiModel
-import com.tokopedia.sellerorder.detail.presentation.model.TransparencyFeeSubComponentUiModel
+import com.tokopedia.sellerorder.detail.presentation.model.transparency_fee.TransparencyFeeComponentUiModel
+import com.tokopedia.sellerorder.detail.presentation.model.transparency_fee.TransparencyFeeErrorStateUiModel
+import com.tokopedia.sellerorder.detail.presentation.model.transparency_fee.TransparencyFeeHeaderUiModel
+import com.tokopedia.sellerorder.detail.presentation.model.transparency_fee.TransparencyFeeLoadingUiModel
+import com.tokopedia.sellerorder.detail.presentation.model.transparency_fee.TransparencyFeeSubComponentUiModel
 
 class DetailTransparencyFeeAdapterFactoryImpl(
     private val actionListener: ActionListener
