@@ -56,10 +56,10 @@ data class EPharmacyPrepareProductsGroupResponse(
 
                 @Parcelize
                 data class Ticker(
-                    @SerializedName("ticker_type")
+                    @SerializedName("type_int")
                     var tickerType: Int?,
-                    @SerializedName("title")
-                    val title: String?
+                    @SerializedName("message")
+                    val message: String?
                 ) : Parcelable
 
                 @Parcelize
@@ -128,6 +128,8 @@ data class EPharmacyPrepareProductsGroupResponse(
                     val pwaLink: String?,
                     @SerializedName("price")
                     val price: String? = "",
+                    @SerializedName("price_str")
+                    val priceStr: String? = "",
                     @SerializedName("note")
                     val note: String?,
                     @SerializedName("status")

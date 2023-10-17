@@ -111,10 +111,10 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
     }
 
     private fun renderTicker() {
-        if(!dataModel?.ticker?.title.isNullOrBlank()){
+        if(!dataModel?.ticker?.message.isNullOrBlank()){
             ticker.show()
             ticker.tickerType = dataModel?.ticker?.tickerType ?: Ticker.TYPE_INFORMATION
-            ticker.setHtmlDescription(dataModel?.ticker?.title.orEmpty())
+            ticker.setHtmlDescription(dataModel?.ticker?.message.orEmpty())
         }else {
             ticker.hide()
         }

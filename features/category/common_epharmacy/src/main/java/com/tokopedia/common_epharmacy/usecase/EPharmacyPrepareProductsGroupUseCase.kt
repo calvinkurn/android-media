@@ -33,12 +33,14 @@ class EPharmacyPrepareProductsGroupUseCase @Inject constructor(@ApplicationConte
     }
 
     companion object {
+        const val PARAM_INPUT = "input"
         const val PARAM_SOURCE = "source"
+        const val PARAM_TOKO_CONSULTATION_ID = "tokoConsultationID"
     }
 
     fun setParams(params: Map<String, Any?>) {
         this.setTypeClass(EPharmacyPrepareProductsGroupResponse::class.java)
         this.setGraphqlQuery(GetEPharmacyPrepareProductsGroupQuery)
-        this.setRequestParams(params)
+        this.setRequestParams(mapOf(PARAM_INPUT to params))
     }
 }

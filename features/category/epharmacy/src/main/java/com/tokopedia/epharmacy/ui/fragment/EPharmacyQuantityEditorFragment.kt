@@ -136,7 +136,6 @@ class EPharmacyQuantityChangeFragment : BaseDaggerFragment(), EPharmacyListener 
     private fun makeRequestParams(): MutableMap<String, Any?> {
         return mutableMapOf(
             EPharmacyPrepareProductsGroupUseCase.PARAM_SOURCE to EPHARMACY_PPG_QTY_CHANGE,
-            "ePharmaGroupID" to groupIds?.takeIf { it.isNotEmpty() }
         )
     }
 

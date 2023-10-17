@@ -27,7 +27,7 @@ object EPharmacyMapper {
             info,
             group.consultationData?.consultationStatus,
             group.consultationData?.consultationString,
-            group.consultationSource?.price,
+            group.consultationSource?.priceStr,
             group.consultationSource?.operatingSchedule,
             group.consultationSource?.note,
             getTickerData(group,shopIndex),
@@ -69,7 +69,7 @@ object EPharmacyMapper {
     }
 
     private fun getTickerData(group: EGroup, shopIndex: Int): EGroup.Ticker? {
-        return if(shopIndex == 0 && group.ticker?.title?.isNotBlank() == true){
+        return if(shopIndex == 0 && group.ticker?.message?.isNotBlank() == true){
             group.ticker
         } else null
     }

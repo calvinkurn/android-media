@@ -13,14 +13,10 @@ import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsG
 import com.tokopedia.epharmacy.component.BaseEPharmacyDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyAttachmentDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyDataModel
-import com.tokopedia.epharmacy.component.model.EPharmacyOrderDetailHeaderDataModel
-import com.tokopedia.epharmacy.component.model.EPharmacyOrderDetailInfoDataModel
-import com.tokopedia.epharmacy.component.model.EPharmacyOrderDetailPaymentDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyTickerDataModel
 import com.tokopedia.epharmacy.network.params.CartGeneralAddToCartInstantParams
 import com.tokopedia.epharmacy.network.params.CheckoutCartGeneralParams
 import com.tokopedia.epharmacy.network.params.EPharmacyCheckoutParams
-import com.tokopedia.epharmacy.network.response.EPharmacyOrderDetailResponse
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.unifyprinciples.stringToUnifyColor
 import com.tokopedia.usecase.BuildConfig

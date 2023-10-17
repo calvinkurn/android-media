@@ -29,6 +29,7 @@ import com.tokopedia.epharmacy.utils.MINI_CONS_CHOOSER_IMAGE_URL_DISABLED
 import com.tokopedia.epharmacy.utils.UPLOAD_CHOOSER_IMAGE_URL
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.displayTextOrHide
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
@@ -163,13 +164,29 @@ class EPharmacyChooserBottomSheet : BottomSheetUnify() {
                     }
                 }
 
+                renderDuration(duration)
+                renderPrice(price)
                 renderNote(note)
+            }
+        }
+    }
 
-                if (duration.isNotBlank() || price.isNotBlank()) {
-                    chooserMiniConsultation.payGroup.show()
-                    chooserMiniConsultation.durationValue.text = duration
-                    chooserMiniConsultation.feeValue.text = price
-                }
+    private fun renderDuration(durationText: String?) {
+        binding?.chooserMiniConsultation?.apply {
+            if(durationText?.isNotBlank().orFalse()){
+                duration.show()
+                durationValue.show()
+                durationValue.text = durationText
+            }
+        }
+    }
+
+    private fun renderPrice(priceText: String?) {
+        binding?.chooserMiniConsultation?.apply {
+            if(priceText?.isNotBlank().orFalse()){
+                fee.show()
+                feeValue.show()
+                feeValue.text = priceText
             }
         }
     }
