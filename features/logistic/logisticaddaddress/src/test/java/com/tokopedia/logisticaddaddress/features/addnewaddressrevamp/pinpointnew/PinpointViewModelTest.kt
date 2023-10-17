@@ -9,6 +9,7 @@ import com.tokopedia.logisticCommon.data.entity.geolocation.coordinate.Location
 import com.tokopedia.logisticCommon.data.entity.response.AutoFillResponse
 import com.tokopedia.logisticCommon.data.entity.response.KeroMapsAutofill
 import com.tokopedia.logisticCommon.data.response.Data
+import com.tokopedia.logisticCommon.data.response.GetDistrictBoundaryResponse
 import com.tokopedia.logisticCommon.data.response.GetDistrictResponse
 import com.tokopedia.logisticCommon.data.response.KeroAddrGetDistrictCenterResponse
 import com.tokopedia.logisticCommon.data.response.KeroPlacesGetDistrict
@@ -33,6 +34,7 @@ import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.uimodel.Pi
 import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.uimodel.PinpointBottomSheetState
 import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.uimodel.PinpointUiModel
 import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -1039,97 +1041,119 @@ open class PinpointViewModelTest {
         assert((viewModel.choosePinpoint.value as ChoosePinpoint.GoToAddressForm).isPositiveFlow == true)
     }
 
-//    // region createButtonSecondary
-//    @Test
-//    fun `WHEN createButtonSecondary on add address THEN show secondary button`() {
-//        viewModel.onViewCreated(
-//            isEditWarehouse = false,
-//            uiState = AddressUiState.AddAddress,
-//            isPositiveFlow = false,
-//            source = "checkout"
-//        )
-//
-//        viewModel.
-//    }
-//
-//    @Test
-//    fun `WHEN createButtonSecondary on edit address THEN hide secondary button`() {
-//        TODO()
-//    }
-//
-//    @Test
-//    fun `WHEN createButtonSecondary on pinpoint only THEN hide secondary button`() {
-//        TODO()
-//    }
-//
-//    // region validateDistrict
-//    @Test
-//    fun `WHEN validateDistrict on add address and positive flow THEN returns true`() {
-//        TODO()
-//    }
-//
-//    @Test
-//    fun `WHEN validateDistrict on edit address THEN just pass (returns true)`() {
-//        TODO()
-//    }
-//
-//    @Test
-//    fun `WHEN validateDistrict on pinpoint only THEN just pass (returns true)`() {
-//        TODO()
-//    }
-//
-//    // region createButtonPrimary
-//
-//    @Test
-//    fun `WHEN createButtonPrimary on add address THEN append lanjut isi alamat wording`() {
-//        TODO()
-//    }
-//
-//    @Test
-//    fun `WHEN createButtonPrimary on edit address THEN append lanjut isi alamat wording`() {
-//        TODO()
-//    }
-//
-//    @Test
-//    fun `WHEN createButtonPrimary on pinpoint only THEN remove lanjut isi alamat wording`() {
-//        TODO()
-//    }
-//
-//    // region locationNotFound
-//
-//    @Test
-//    fun `WHEN create locationNotFound on pinpoint only THEN show invalid location detail wording`() {
-//        TODO()
-//    }
-//
-//    @Test
-//    fun `WHEN create locationNotFound but has already pinpoint before THEN show invalid location detail wording`() {
-//        TODO()
-//    }
-//
-//    @Test
-//    fun `WHEN create locationNotFound on pinpoint only THEN hide button`() {
-//        TODO()
-//    }
-//
-//    @Test
-//    fun `WHEN create locationNotFound on edit address that has pinpoint THEN hide button`() {
-//        TODO()
-//    }
-//
-//    @Test
-//    fun `WHEN create locationNotFound on edit address that doesnt have pinpoint THEN show button`() {
-//        TODO()
-//    }
-//
-//    @Test
-//    fun `WHEN create locationNotFound on add address that doesnt have pinpoint THEN show button`() {
-//        TODO()
-//    }
-//
-//    // region location out of reach
-//    @Test
-//    fun `WHEN create locationOutOfReach THEN show invalid location`() {
-//        TODO()
-//    }
+    // region getDistrictBoundary
+    @Test
+    fun `WHEN getDistrictBoundary in ana revamp negative flow THEN hit getDistrictBoundary BE`() {
+        val districtId = 111L
+        viewModel.onViewCreated(
+            isEditWarehouse = false,
+            uiState = AddressUiState.AddAddress,
+            isPositiveFlow = false,
+            source = "checkout",
+            districtId = districtId
+        )
+
+        coEvery { getDistrictBoundaries(districtId) } returns GetDistrictBoundaryResponse()
+
+        viewModel.getDistrictBoundaries()
+
+        coVerify { getDistrictBoundaries(districtId) }
+        assert(viewModel.districtBoundary.value is Success)
+    }
+
+    @Test
+    fun `WHEN getDistrictBoundary in ana revamp positive flow THEN dont hit getDistrictBoundary BE`() {
+        val districtId = 111L
+        viewModel.onViewCreated(
+            isEditWarehouse = false,
+            uiState = AddressUiState.AddAddress,
+            isPositiveFlow = true,
+            source = "checkout"
+        )
+
+        coEvery { getDistrictBoundaries(districtId) } returns GetDistrictBoundaryResponse()
+
+        viewModel.getDistrictBoundaries()
+
+        coVerify(exactly = 0) { getDistrictBoundaries(districtId) }
+    }
+
+    @Test
+    fun `WHEN getDistrictBoundary in edit address flow THEN dont hit getDistrictBoundary BE`() {
+        val districtId = 111L
+        viewModel.onViewCreated(
+            isEditWarehouse = false,
+            uiState = AddressUiState.EditAddress,
+            isPositiveFlow = true,
+            source = "checkout",
+            districtId = districtId
+        )
+
+        coEvery { getDistrictBoundaries(districtId) } returns GetDistrictBoundaryResponse()
+
+        viewModel.getDistrictBoundaries()
+
+        coVerify(exactly = 0) { getDistrictBoundaries(districtId) }
+    }
+
+    @Test
+    fun `WHEN getDistrictBoundary in pinpoint only THEN dont hit getDistrictBoundary BE`() {
+        val districtId = 111L
+        viewModel.onViewCreated(
+            isEditWarehouse = false,
+            uiState = AddressUiState.PinpointOnly,
+            isPositiveFlow = true,
+            source = "checkout",
+            districtId = districtId
+        )
+
+        coEvery { getDistrictBoundaries(districtId) } returns GetDistrictBoundaryResponse()
+
+        viewModel.getDistrictBoundaries()
+
+        coVerify(exactly = 0) { getDistrictBoundaries(districtId) }
+    }
+
+    @Test
+    fun `WHEN getDistrictBoundary in ANA revamp negative error THEN show error`() {
+        val districtId = 111L
+        viewModel.onViewCreated(
+            isEditWarehouse = false,
+            uiState = AddressUiState.AddAddress,
+            isPositiveFlow = false,
+            source = "checkout",
+            districtId = districtId
+        )
+
+        coEvery { getDistrictBoundaries(districtId) } throws defaultThrowable
+
+        viewModel.getDistrictBoundaries()
+
+        assert(viewModel.pinpointBottomSheet.value is PinpointBottomSheetState.LocationInvalid)
+        assert((viewModel.pinpointBottomSheet.value as PinpointBottomSheetState.LocationInvalid).type == PinpointBottomSheetState.LocationInvalid.LocationInvalidType.LOCATION_NOT_FOUND)
+        assert((viewModel.pinpointBottomSheet.value as PinpointBottomSheetState.LocationInvalid).showMapIllustration)
+        assert((viewModel.pinpointBottomSheet.value as PinpointBottomSheetState.LocationInvalid).buttonState.enable)
+    }
+
+    @Test
+    fun `WHEN set save address data model from pinpoint webview THEN save address data model pinpoint`() {
+        val address = SaveAddressDataModel()
+        viewModel.setAddress(address)
+
+        assert(address == viewModel.getAddress())
+    }
+
+    @Test
+    fun `WHEN on pinpoint only and does not give any data THEN trigger get current location`() {
+        viewModel.onViewCreated(
+            uiState = AddressUiState.PinpointOnly,
+            isEditWarehouse = false,
+            source = "checkout",
+            isPositiveFlow = null
+        )
+
+        viewModel.fetchData()
+
+        assert(viewModel.action.value is PinpointAction.GetCurrentLocation)
+    }
 }
