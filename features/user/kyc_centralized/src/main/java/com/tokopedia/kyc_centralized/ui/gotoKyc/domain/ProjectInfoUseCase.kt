@@ -40,7 +40,7 @@ class ProjectInfoUseCase @Inject constructor(
                 WaitMessage
                 ErrorMessages
                 ErrorCode
-                ReferComplaint
+                IsBlocked
                 NonEligibleGoToKYCReason
               }
             }
