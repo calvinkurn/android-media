@@ -110,17 +110,17 @@ class ShopHomeProductBundleParentWidgetViewHolder(
 
     private fun configFestivity() {
         val festivityTextColorRes = com.tokopedia.unifyprinciples.R.color.Unify_Static_White
-        productBundleWidgetView?.setTitleTextColor(festivityTextColorRes)
+        productBundleWidgetView?.setTitleTextColor(color = festivityTextColorRes)
     }
 
     private fun configNonFestivity() {
         val defaultTitleColorRes = com.tokopedia.unifyprinciples.R.color.Unify_NN950
-        productBundleWidgetView?.setTitleTextColor(defaultTitleColorRes)
+        productBundleWidgetView?.setTitleTextColor(color = defaultTitleColorRes)
     }
 
     private fun configReimaginedColor(colorSchema: ShopPageColorSchema) {
         val titleColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS)
-        productBundleWidgetView?.setTitleTextColor(titleColor)
+        productBundleWidgetView?.setTitleTextColor(intColor = titleColor)
     }
 
     override fun onBundleProductClicked(

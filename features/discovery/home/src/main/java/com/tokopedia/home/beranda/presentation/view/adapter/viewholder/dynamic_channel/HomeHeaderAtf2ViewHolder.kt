@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel
 
+import android.os.Bundle
 import android.view.View
 import android.view.ViewStub
 import androidx.annotation.LayoutRes
@@ -12,6 +13,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ho
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.BalanceWidgetView
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.LoginWidgetView
+import com.tokopedia.home.beranda.presentation.view.helper.HomeThematicUtil
 import com.tokopedia.home.databinding.HomeHeaderAtf2Binding
 import com.tokopedia.home_component.customview.pullrefresh.LayoutIconPullRefreshView
 import com.tokopedia.home_component.util.toDpInt
@@ -27,7 +29,8 @@ import com.tokopedia.utils.view.binding.viewBinding
  */
 class HomeHeaderAtf2ViewHolder(
     itemView: View,
-    private val listener: HomeCategoryListener
+    private val listener: HomeCategoryListener,
+    private val homeThematicUtil: HomeThematicUtil,
 ) : AbstractViewHolder<HomeHeaderDataModel>(itemView) {
 
     private var binding: HomeHeaderAtf2Binding? by viewBinding()
@@ -76,6 +79,7 @@ class HomeHeaderAtf2ViewHolder(
             viewPullRefresh = getParentLayout(binding?.viewPullRefresh)
         }
         viewPullRefresh?.let {
+            it.setColorPullRefresh(getPullRefreshLoaderColor())
             listener.pullRefreshIconCaptured(it)
         }
     }
@@ -93,7 +97,7 @@ class HomeHeaderAtf2ViewHolder(
         }
         loginWidgetView?.gone()
         balanceWidgetView?.visible()
-        balanceWidgetView?.bind(data, listener)
+        balanceWidgetView?.bind(data, listener, homeThematicUtil)
     }
 
     private fun renderLoginWidget() {
@@ -102,11 +106,18 @@ class HomeHeaderAtf2ViewHolder(
         }
         balanceWidgetView?.gone()
         loginWidgetView?.visible()
-        loginWidgetView?.bind(listener)
+        loginWidgetView?.bind(listener, homeThematicUtil)
     }
 
     override fun bind(element: HomeHeaderDataModel, payloads: MutableList<Any>) {
-        bind(element)
+        if(payloads.isNotEmpty() && (payloads[0] as? Bundle)?.getBoolean(HomeThematicUtil.PAYLOAD_APPLY_THEMATIC_COLOR) == true) {
+            chooseAddressView?.updateWidget()
+            balanceWidgetView?.applyThematicColor()
+            viewPullRefresh?.setColorPullRefresh(getPullRefreshLoaderColor())
+            loginWidgetView?.renderTextColor(homeThematicUtil)
+        } else {
+            bind(element)
+        }
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -127,5 +138,11 @@ class HomeHeaderAtf2ViewHolder(
 
     private fun isViewStubHasBeenInflated(viewStub: ViewStub?): Boolean {
         return viewStub?.parent == null
+    }
+
+    private fun getPullRefreshLoaderColor(): Int {
+        return if(homeThematicUtil.isBackgroundLoaded && !homeThematicUtil.isDefault())
+            LayoutIconPullRefreshView.TYPE_WHITE
+        else LayoutIconPullRefreshView.TYPE_GREEN
     }
 }

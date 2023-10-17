@@ -360,8 +360,8 @@ open class TokoNowCategoryL2TabViewModelTestFixture {
         coVerify { getCategoryProductUseCase.execute(queryParams) }
     }
 
-    protected fun verifyGetProductUseCaseCalledTwice() {
-        coVerify(exactly = 2) { getCategoryProductUseCase.execute(any()) }
+    protected fun verifyGetProductUseCaseCalled(times: Int) {
+        coVerify(exactly = times) { getCategoryProductUseCase.execute(any()) }
     }
 
     protected fun verifyGetProductUseCaseNotCalled() {
