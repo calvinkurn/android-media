@@ -17,7 +17,7 @@ class GetEpharmacyShopInfoUseCase @Inject constructor(
     companion object {
         private const val SHOP_ID = "shop_id"
 
-        fun createParams(shopId: String) = mapOf<String, Any>(
+        fun createParams(shopId: Int) = mapOf<String, Any>(
             SHOP_ID to shopId
         )
     }

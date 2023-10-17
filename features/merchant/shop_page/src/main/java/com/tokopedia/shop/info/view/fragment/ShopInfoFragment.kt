@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.LinearLayoutCompat
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
@@ -28,6 +27,7 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImageFitCenter
 import com.tokopedia.network.constant.TkpdBaseURL
@@ -43,6 +43,7 @@ import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.databinding.FragmentShopInfoBinding
 import com.tokopedia.shop.extension.transformToVisitable
+import com.tokopedia.shop.info.data.GetEpharmacyShopInfoResponse
 import com.tokopedia.shop.info.di.component.DaggerShopInfoComponent
 import com.tokopedia.shop.info.di.module.ShopInfoModule
 import com.tokopedia.shop.info.view.activity.ShopInfoActivity.Companion.EXTRA_SHOP_INFO
@@ -203,6 +204,7 @@ class ShopInfoFragment :
     private fun initObservers() {
         observeShopNotes()
         observeShopInfo()
+        observeShopEpharmData()
         observeShopBadgeReputation()
         observerMessageIdOnChatExist()
     }
@@ -296,9 +298,22 @@ class ShopInfoFragment :
     private fun observeShopInfo() {
         shopViewModel?.shopInfo?.let { shopInfo ->
             observe(shopInfo) { result ->
-                when(result) {
+                when (result) {
                     is Success -> renderShopInfo(result.data)
                     is Fail -> showError(result.throwable)
+                }
+            }
+        }
+    }
+
+    private fun observeShopEpharmData() {
+        shopViewModel?.epharmDetailData?.let { epharmData ->
+            observe(epharmData) {
+                when (it) {
+                    is Success -> renderEpharmDetailsData(it.data.data)
+                    is Fail -> {
+                        showToasterError(it.throwable)
+                    }
                 }
             }
         }
@@ -332,6 +347,7 @@ class ShopInfoFragment :
             }
 
             getShopNotes(shopId)
+            getShopEpharmacyData(shopId.toIntOrZero())
             setReportStoreView()
 
             registerGlobalErrorClickListener(shopId)
@@ -342,6 +358,7 @@ class ShopInfoFragment :
         fragmentShopInfoBinding?.globalError?.setActionClickListener {
             getShopInfo(shopId)
             getShopNotes(shopId)
+            getShopEpharmacyData(shopId.toIntOrZero())
             getShopBadgeReputation()
         }
     }
@@ -371,6 +388,10 @@ class ShopInfoFragment :
     private fun getShopNotes(shopId: String) {
         showNoteLoading()
         shopViewModel?.getShopNotes(shopId)
+    }
+
+    private fun getShopEpharmacyData(shopId: Int) {
+        shopViewModel?.getShopGoApotikData(shopId = shopId)
     }
 
     private fun setStatisticsVisibility() {
@@ -452,6 +473,16 @@ class ShopInfoFragment :
             shopInfoOpenSince?.text =
                 getString(R.string.shop_info_label_open_since_v3, shopInfo.openSince)
         }
+    }
+
+    private fun renderEpharmDetailsData(epharmData: GetEpharmacyShopInfoResponse.Data) {
+        if (!isErrorGetEpharmData(epharmData.getEpharmacyShopInfo.header)) {
+        } else {
+        }
+    }
+
+    private fun isErrorGetEpharmData(errData: GetEpharmacyShopInfoResponse.GetEpharmacyShopInfo.Header): Boolean {
+        return errData.errorCode != 0 && errData.errorMessage.isNotEmpty()
     }
 
     private fun renderListNote(notes: List<ShopNoteUiModel>) {
