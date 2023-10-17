@@ -198,7 +198,6 @@ class StoriesDetailFragment @Inject constructor(
                 when (event) {
                     is StoriesUiEvent.EmptyDetailPage -> {
                         setNoContent(true)
-                        showPageLoading(false)
                     }
 
                     is StoriesUiEvent.ErrorDetailPage -> {
@@ -209,7 +208,6 @@ class StoriesDetailFragment @Inject constructor(
                             setFailed(true)
                             binding.layoutStoriesFailed.btnStoriesFailedLoad.setOnClickListener { run { event.onClick() } }
                         }
-                        showPageLoading(false)
                     }
 
                     StoriesUiEvent.OpenKebab -> {
@@ -346,7 +344,7 @@ class StoriesDetailFragment @Inject constructor(
         }
     }
 
-    private fun renderTimer(prevTimer: TimerStatusInfo, timerState: TimerStatusInfo) {
+    private fun renderTimer(prevTimer: TimerStatusInfo?, timerState: TimerStatusInfo) {
         if (prevTimer == timerState) return
 
         showStoriesActionView(timerState.event == RESUME)
@@ -377,6 +375,7 @@ class StoriesDetailFragment @Inject constructor(
                 analytic?.sendClickShopNameEvent(buildEventLabel())
                 viewModelAction(StoriesUiAction.Navigate(state.author.appLink))
             }
+            root.show()
         }
     }
 
@@ -496,6 +495,7 @@ class StoriesDetailFragment @Inject constructor(
         showSwipeProductJob?.cancel()
         binding.storiesComponent.showWithCondition(isShow)
         binding.clSideIcons.showWithCondition(isShow)
+        binding.vStoriesPartner.root.showWithCondition(isShow)
     }
 
     private fun showStoriesActionView(isShow: Boolean) {
@@ -599,6 +599,9 @@ class StoriesDetailFragment @Inject constructor(
     private fun setNoContent(isShow: Boolean) = with(binding.layoutNoContent) {
         binding.layoutStoriesContent.root.showWithCondition(!isShow)
         root.showWithCondition(isShow)
+
+        if(!isShow) return@with
+        renderTimer(null, TimerStatusInfo.Empty) //will be improved in rendered failed
     }
 
     override fun onDestroyView() {

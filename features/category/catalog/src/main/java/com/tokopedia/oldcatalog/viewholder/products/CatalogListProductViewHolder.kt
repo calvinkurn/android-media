@@ -7,9 +7,7 @@ import com.tokopedia.catalog.R
 import com.tokopedia.oldcatalog.listener.CatalogProductCardListener
 import com.tokopedia.oldcatalog.model.raw.CatalogProductItem
 import com.tokopedia.oldcatalog.model.util.CatalogProductCard
-import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.productcard.ProductCardListView
-
 
 open class CatalogListProductViewHolder(itemView: View, private val catalogProductCardListener: CatalogProductCardListener) : AbstractViewHolder<CatalogProductItem>(itemView) {
 
@@ -24,18 +22,11 @@ open class CatalogListProductViewHolder(itemView: View, private val catalogProdu
 
         itemView.findViewById<ProductCardListView>(R.id.product_card).apply {
             setProductModel(
-                    CatalogProductCard.toCatalogProductModel(catalogProductItem))
+                CatalogProductCard.toCatalogProductModel(catalogProductItem)
+            )
             setThreeDotsOnClickListener {
                 catalogProductCardListener.onThreeDotsClicked(catalogProductItem, adapterPosition)
             }
-            setAddToCartOnClickListener {
-
-            }
-            setAddToCartNonVariantClickListener(object : ATCNonVariantListener{
-                override fun onQuantityChanged(quantity: Int) {
-                }
-
-            })
 
             setOnClickListener {
                 catalogProductCardListener.onItemClicked(catalogProductItem, adapterPosition)
