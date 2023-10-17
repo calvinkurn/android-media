@@ -227,9 +227,9 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
 
     void applyAttrs(Context context, AttributeSet attrs, Bundle savedInstanceState) {
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.FloatingEggButtonFragment);
-
         isDraggable = a.getBoolean(R.styleable.FloatingEggButtonFragment_draggable, false);
-        initialEggMarginRight = a.getDimensionPixelOffset(R.styleable.FloatingEggButtonFragment_margin_right, 0);
+        int defaultInitMarginRight = getContext().getResources().getDimensionPixelOffset(R.dimen.gami_core_floating_egg_init_margin_right) / 2 * -1;
+        initialEggMarginRight = a.getDimensionPixelOffset(R.styleable.FloatingEggButtonFragment_margin_right, defaultInitMarginRight);
         initialEggMarginBottom = a.getDimensionPixelOffset(R.styleable.FloatingEggButtonFragment_margin_bottom, 0);
         a.recycle();
     }
@@ -320,15 +320,9 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        int visibleCount = getSharedPrefVisibility().getInt(VISIBLE_COUNT, 1);
-        if(visibleCount > MAX_VISIBLE){
-            vgRoot.setVisibility(View.GONE);
-        } else {
-            vgRoot.setVisibility(View.VISIBLE);
-            initDragBound();
-            initEggCoordinate();
-            saveVisblePreference(visibleCount);
-        }
+        vgRoot.setVisibility(View.VISIBLE);
+        initDragBound();
+        initEggCoordinate();
     }
 
     private void initDragBound() {
@@ -440,8 +434,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         editor.apply();
     }
 
-    private void saveVisblePreference(int visibleCount) {
-        visibleCount += 1;
+    private void saveVisiblePreference(int visibleCount) {
         SharedPreferences.Editor editor = getSharedPrefVisibility().edit();
         editor.putInt(VISIBLE_COUNT, visibleCount);
         editor.apply();
@@ -513,12 +506,24 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
 
         isPermanent = tokenData.getPermanent();
 
-        if (needHideFloatingToken) {
+        if(!isSameDay()) {
+            saveVisiblePreference(0);
+        }
+        int visibleCount = getSharedPrefVisibility().getInt(VISIBLE_COUNT, 0);
+
+        if(visibleCount >= MAX_VISIBLE){
             hideFLoatingEgg();
         } else {
-            showFloatingEgg();
-            floatingEggTracker.trackingEggImpression(tokenData.getId(), tokenData.getName());
+            if (needHideFloatingToken) {
+                hideFLoatingEgg();
+            } else {
+                showFloatingEgg();
+                floatingEggTracker.trackingEggImpression(tokenData.getId(), tokenData.getName());
+            }
+            visibleCount += 1;
+            saveVisiblePreference(visibleCount);
         }
+
 
         vgFloatingEgg.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -629,7 +634,6 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
             minimizeButtonLeft.setVisibility(View.VISIBLE);
             ivClose.setVisibility(View.GONE);
         }
-
     }
 
     @Override
@@ -654,7 +658,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     private void onFloatingEggLoaded(String sumTokenString, boolean isShowTime, long timeRemainingSeconds) {
         int[] coord = getCoordPreference();
         if (coord[0] == -1) {
-            setMinimizeBehaviourHyperParameters(false, true, 0, oldAngleOfMinimizeBtn);
+            setMinimizeBehaviourHyperParameters(true, true, 0, newAngleOfMinimizeBtn);
         } else {
             if (vgFloatingEgg.getX() < 0) {
                 setMinimizeBehaviourHyperParameters(true, false, vgFloatingEgg.getWidth() - minimizeButtonLeft.getWidth(), oldAngleOfMinimizeBtn);

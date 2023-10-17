@@ -10,17 +10,6 @@
         android:id="@+id/vg_floating_egg"
         android:layout_width="@dimen/gami_core_floating_egg_widget_width"
         android:layout_height="@dimen/gami_core_floating_egg_widget_height">
-
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/ivClose"
-            android:visibility="gone"
-            android:foregroundTint="@color/Unify_NN500"
-            tools:src="@drawable/iconunify_clear_small"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginBottom="@dimen/gami_core_floating_egg_dp_30"
-            android:layout_gravity="top|end"/>
-
         <FrameLayout
             android:id="@+id/egg_counter_timer"
             android:layout_width="match_parent"
@@ -74,5 +63,14 @@
             android:visibility="invisible"
             android:layout_marginTop="10dp"
             android:layout_gravity="center_vertical|start"/>
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/ivClose"
+            android:visibility="visible"
+            android:foregroundTint="@color/Unify_NN500"
+            tools:src="@drawable/iconunify_clear_small"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginBottom="@dimen/gami_core_floating_egg_dp_30"
+            android:layout_gravity="top|end"/>
     </FrameLayout>
 </FrameLayout>
