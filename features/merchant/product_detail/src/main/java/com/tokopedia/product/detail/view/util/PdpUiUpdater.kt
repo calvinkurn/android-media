@@ -22,7 +22,6 @@ import com.tokopedia.product.detail.common.data.model.rates.ShipmentPlus
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
-import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.product.detail.data.model.ProductInfoP2Other
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.bmgm.BMGMData
@@ -406,7 +405,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     productIdToPriceURLMap[variantData.children[i].productId] =
                         FintechPriceURLDataModel(
                             variantData.children[i].price.toString(),
-                            variantData.children[i].url.orEmpty(),
+                            variantData.children[i].url.orEmpty()
                         )
                 }
             }
