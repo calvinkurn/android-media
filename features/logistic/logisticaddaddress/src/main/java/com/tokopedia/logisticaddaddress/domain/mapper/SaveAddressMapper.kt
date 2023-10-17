@@ -4,8 +4,8 @@ import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.response.Data
 import com.tokopedia.logisticaddaddress.domain.model.Address
-import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.uimodel.GetDistrictDataUiModel
-import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.uimodel.PinpointUiModel
+import com.tokopedia.logisticaddaddress.features.addeditaddress.uimodel.GetDistrictDataUiModel
+import com.tokopedia.logisticaddaddress.features.pinpoint.uimodel.PinpointUiModel
 
 object SaveAddressMapper {
 

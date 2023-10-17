@@ -3,7 +3,7 @@ package com.tokopedia.logisticaddaddress.di.districtrecommendation
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.logisticaddaddress.di.AddAddressBaseModule
-import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomBottomSheetRevamp
+import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomBottomSheet
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomFragment
 import dagger.Component
 
@@ -18,5 +18,5 @@ import dagger.Component
 interface DistrictRecommendationComponent {
     fun inject(discomFragment: DiscomFragment)
 
-    fun inject(discomBottomSheetRevamp: DiscomBottomSheetRevamp)
+    fun inject(discomBottomSheet: DiscomBottomSheet)
 }

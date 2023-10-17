@@ -3,8 +3,8 @@ package com.tokopedia.logisticaddaddress.domain.mapper
 import com.google.android.gms.maps.model.LatLng
 import com.tokopedia.logisticCommon.data.response.GetDistrictBoundaryResponse
 import com.tokopedia.logisticCommon.util.getLatLng
-import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.uimodel.DistrictBoundaryGeometryUiModel
-import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.uimodel.DistrictBoundaryResponseUiModel
+import com.tokopedia.logisticaddaddress.features.addeditaddress.uimodel.DistrictBoundaryGeometryUiModel
+import com.tokopedia.logisticaddaddress.features.addeditaddress.uimodel.DistrictBoundaryResponseUiModel
 import javax.inject.Inject
 
 /**

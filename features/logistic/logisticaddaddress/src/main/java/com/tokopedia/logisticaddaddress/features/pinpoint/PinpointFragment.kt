@@ -82,14 +82,13 @@ import com.tokopedia.logisticaddaddress.common.AddressConstants.KEY_ADDRESS_DATA
 import com.tokopedia.logisticaddaddress.databinding.BottomsheetLocationUndefinedBinding
 import com.tokopedia.logisticaddaddress.databinding.BottomsheetLocationUnmatchedBinding
 import com.tokopedia.logisticaddaddress.databinding.FragmentPinpointNewBinding
-import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.AddNewAddressRevampComponent
-import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.search.SearchPageActivity
+import com.tokopedia.logisticaddaddress.di.addeditaddress.AddEditAddressComponent
+import com.tokopedia.logisticaddaddress.features.addeditaddress.search.SearchPageActivity
 import com.tokopedia.logisticaddaddress.features.analytics.LogisticAddAddressAnalytics
 import com.tokopedia.logisticaddaddress.features.analytics.LogisticEditAddressAnalytics
-import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.PinpointViewModel
-import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.uimodel.ChoosePinpoint
-import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.uimodel.PinpointAction
-import com.tokopedia.logisticaddaddress.features.pinpoint.pinpointnew.uimodel.PinpointBottomSheetState
+import com.tokopedia.logisticaddaddress.features.pinpoint.uimodel.ChoosePinpoint
+import com.tokopedia.logisticaddaddress.features.pinpoint.uimodel.PinpointAction
+import com.tokopedia.logisticaddaddress.features.pinpoint.uimodel.PinpointBottomSheetState
 import com.tokopedia.logisticaddaddress.features.pinpoint.webview.PinpointWebviewActivity
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_PLACE_ID
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.LOCATION_NOT_FOUND
@@ -261,7 +260,7 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
-        getComponent(AddNewAddressRevampComponent::class.java).inject(this)
+        getComponent(AddEditAddressComponent::class.java).inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
