@@ -35,6 +35,7 @@ class GetShipperListUseCase @Inject constructor(
                   shipper_id
                   shipper_name
                   is_active
+                  is_whitelabel
                   text_promo
                   image
                   feature_info {
@@ -52,6 +53,7 @@ class GetShipperListUseCase @Inject constructor(
                   shipper_id
                   shipper_name
                   is_active
+                  is_whitelabel
                   text_promo
                   image
                   feature_info {

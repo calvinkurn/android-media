@@ -34,6 +34,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
+import com.tokopedia.analytics.performance.perf.BlocksPerformanceTrace
 import com.tokopedia.analytics.performance.util.EmbraceKey
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.applink.ApplinkConst
@@ -853,8 +854,12 @@ open class DynamicProductDetailFragment :
     }
 
     private fun reloadFintechWidget() {
-        if (pdpUiUpdater == null || pdpUiUpdater?.fintechWidgetMap == null) return
-        if (pdpUiUpdater?.fintechWidgetMap?.isLoggedIn != viewModel.isUserSessionActive) {
+        if (pdpUiUpdater == null || (pdpUiUpdater?.fintechWidgetMap == null &&
+                pdpUiUpdater?.fintechWidgetV2Map == null)
+        ) return
+        if (pdpUiUpdater?.fintechWidgetMap?.isLoggedIn != viewModel.isUserSessionActive ||
+            pdpUiUpdater?.fintechWidgetV2Map?.isLoggedIn != viewModel.isUserSessionActive
+        ) {
             productId?.let {
                 pdpUiUpdater?.updateFintechDataWithProductId(
                     it,
@@ -1842,22 +1847,26 @@ open class DynamicProductDetailFragment :
         return recommendationCarouselPositionSavedState
     }
 
-    override fun loadTopads(pageName: String) {
+    override fun loadTopads(pageName: String, queryParam: String, thematicId: String) {
         val p1 = viewModel.getDynamicProductInfoP1 ?: DynamicProductInfoP1()
         viewModel.loadRecommendation(
             pageName = pageName,
             productId = p1.basic.productID,
             isTokoNow = p1.basic.isTokoNow,
-            miniCart = viewModel.p2Data.value?.miniCart
+            miniCart = viewModel.p2Data.value?.miniCart,
+            queryParam = queryParam,
+            thematicId = thematicId
         )
     }
 
-    override fun loadViewToView(pageName: String) {
+    override fun loadViewToView(pageName: String, queryParam: String, thematicId: String) {
         val p1 = viewModel.getDynamicProductInfoP1 ?: DynamicProductInfoP1()
         viewModel.loadViewToView(
             pageName = pageName,
             productId = p1.basic.productID,
-            isTokoNow = p1.basic.isTokoNow
+            isTokoNow = p1.basic.isTokoNow,
+            queryParam = queryParam,
+            thematicId = thematicId
         )
     }
 
@@ -3181,12 +3190,15 @@ open class DynamicProductDetailFragment :
 
         if (recommendationWidget.hasNext) {
             addEndlessScrollListener {
-                val page =
-                    pdpUiUpdater?.getVerticalRecommendationNextPage(recommendationWidget.pageName)
+                val page = pdpUiUpdater?.getVerticalRecommendationNextPage(recommendationWidget.pageName)
+                val placeholderData = pdpUiUpdater?.getVerticalRecommendationPlaceholder(recommendationWidget.pageName)
+
                 viewModel.getVerticalRecommendationData(
                     recommendationWidget.pageName,
                     page,
-                    productId
+                    productId,
+                    queryParam = placeholderData?.queryParam.orEmpty(),
+                    thematicId = placeholderData?.thematicId.orEmpty()
                 )
             }
         } else {
@@ -4150,6 +4162,10 @@ open class DynamicProductDetailFragment :
                 }
             }
         }
+    }
+
+    override fun getBlocksPerformanceTrace(): BlocksPerformanceTrace? {
+        return getProductDetailActivity()?.getBlocksPerformanceMonitoring()
     }
 
     override fun reportProductFromComponent(componentTrackDataModel: ComponentTrackDataModel?) {
@@ -5905,8 +5921,17 @@ open class DynamicProductDetailFragment :
         productKey.orEmpty()
     )
 
-    override fun startVerticalRecommendation(pageName: String) {
-        viewModel.getVerticalRecommendationData(pageName = pageName, productId = productId)
+    override fun startVerticalRecommendation(
+        pageName: String,
+        queryParam: String,
+        thematicId: String
+    ) {
+        viewModel.getVerticalRecommendationData(
+            pageName = pageName,
+            productId = productId,
+            queryParam = queryParam,
+            thematicId = thematicId
+        )
     }
 
     override fun onImpressRecommendationVertical(componentTrackDataModel: ComponentTrackDataModel) {
@@ -5960,8 +5985,8 @@ open class DynamicProductDetailFragment :
         }
     }
 
-    override fun onViewToViewReload(pageName: String) {
-        loadViewToView(pageName)
+    override fun onViewToViewReload(pageName: String, queryParam: String, thematicId: String) {
+        loadViewToView(pageName = pageName, queryParam = queryParam, thematicId = thematicId)
     }
 
     override fun onImpressScheduledDelivery(

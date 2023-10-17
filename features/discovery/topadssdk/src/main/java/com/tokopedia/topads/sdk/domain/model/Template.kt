@@ -2,7 +2,7 @@ package com.tokopedia.topads.sdk.domain.model
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 private const val KEY_NAME = "name"
 private const val KEY_IS_AD = "is_ad"

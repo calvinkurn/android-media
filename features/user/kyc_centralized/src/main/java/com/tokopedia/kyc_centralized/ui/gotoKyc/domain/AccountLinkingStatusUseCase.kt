@@ -16,6 +16,7 @@ class AccountLinkingStatusUseCase @Inject constructor(
         """
             query kycProjectInfo (${'$'}projectID: Int!){
               kycProjectInfo(projectID: ${'$'}projectID) {
+                IsGotoKyc
                 AccountLinked
               }
             }
@@ -25,12 +26,16 @@ class AccountLinkingStatusUseCase @Inject constructor(
         val parameter = mapOf(PROJECT_ID to params)
         val response: ProjectInfoResponse = repository.request(graphqlQuery(), parameter)
 
-        val linkedStatus = response.kycProjectInfo.accountLinked
-
-        return if (linkedStatus == KEY_ACCOUNT_LINKED) {
-            AccountLinkingStatusResult.Linked
-        } else {
-            AccountLinkingStatusResult.NotLinked
+        return when {
+            !response.kycProjectInfo.isGotoKyc -> {
+                AccountLinkingStatusResult.TokoKyc
+            }
+            response.kycProjectInfo.accountLinked == KEY_ACCOUNT_LINKED -> {
+                AccountLinkingStatusResult.Linked
+            }
+            else -> {
+                AccountLinkingStatusResult.NotLinked
+            }
         }
     }
 
@@ -42,6 +47,7 @@ class AccountLinkingStatusUseCase @Inject constructor(
 
 sealed class AccountLinkingStatusResult {
     object Loading : AccountLinkingStatusResult()
+    object TokoKyc : AccountLinkingStatusResult()
     object Linked : AccountLinkingStatusResult()
     object NotLinked : AccountLinkingStatusResult()
     data class Failed(val throwable: Throwable) : AccountLinkingStatusResult()
