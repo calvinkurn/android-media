@@ -3110,7 +3110,7 @@ class CartRevampFragment :
                             showToastMessageRed(data.throwable)
                         }
                     }
-                    renderPromoCheckoutButtonActiveDefault(emptyList())
+                    renderPromoCheckoutButtonActiveDefault(emptyList(), true)
                 }
             }
         }
@@ -3897,8 +3897,8 @@ class CartRevampFragment :
         viewModel.updatePromoSummaryData(lastApplyData)
     }
 
-    private fun renderPromoCheckoutButtonActiveDefault(listPromoApplied: List<String>) {
-        viewModel.getEntryPointInfoDefault(listPromoApplied)
+    private fun renderPromoCheckoutButtonActiveDefault(listPromoApplied: List<String>, isFromError: Boolean = false) {
+        viewModel.getEntryPointInfoDefault(listPromoApplied, isFromError)
         if (listPromoApplied.isEmpty()) {
             viewModel.updatePromoSummaryData(
                 LastApplyUiModel(

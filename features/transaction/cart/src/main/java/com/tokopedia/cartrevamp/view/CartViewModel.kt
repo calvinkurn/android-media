@@ -2829,8 +2829,8 @@ class CartViewModel @Inject constructor(
         )
     }
 
-    fun getEntryPointInfoDefault(appliedPromoCodes: List<String> = emptyList()) {
-        if (isPromoRevamp()) {
+    fun getEntryPointInfoDefault(appliedPromoCodes: List<String> = emptyList(), isFromError: Boolean = false) {
+        if (isPromoRevamp() && !isFromError) {
             val lastApplyUiModel = cartModel.cartListData?.let { data ->
                 CartUiModelMapper.mapLastApplySimplified(data.promo.lastApplyPromo.lastApplyPromoData)
             }
