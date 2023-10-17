@@ -23,6 +23,7 @@ import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.common.CustomViewPager
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
@@ -79,6 +80,8 @@ private const val OTOMATIS_LAYOUT_EVENT_LABEL = "mode pengaturan atur otomatis"
 private const val OTOMATIS_LEARN_MORE_LINK = "https://seller.tokopedia.com/edu/topads-otomatis/"
 
 class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.ButtonAction {
+
+    private var minMaxBids: MutableList<String>? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -182,6 +185,7 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
             ).show(childFragmentManager)
 
         }
+        this.minMaxBids = arguments?.getStringArrayList("minMaxBids")
     }
 
     private fun setViews() {
@@ -213,20 +217,47 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
             override fun onNumberChanged(number: Double) {
                 super.onNumberChanged(number)
                 val result = number.toInt()
+//                when {
+//                    result >= suggestBidPerClick -> {
+//                        setMessageErrorField("Biaya optimal ✔️", "0", false)
+//                        productIds.let {
+//                            viewModel.getPerformanceData(it, result.toFloat(), result.toFloat(), 0f)
+//                        }
+//                        actionEnable(true)
+//                    }
+//
+//                    else -> {
+//                        budget?.setMessage(getClickableString(suggestBidPerClick))
+//                        actionEnable(false)
+//                    }
+//
+//                }
+                val minBid = minMaxBids?.firstOrNull().toDoubleOrZero()
+                val maxBid= minMaxBids?.getOrNull(1).toDoubleOrZero()
                 when {
                     result >= suggestBidPerClick -> {
-                        setMessageErrorField("Biaya optimal ✔️", "0", false)
-                        productIds.let {
-                            viewModel.getPerformanceData(it, result.toFloat(), result.toFloat(), 0f)
+                        if (result > maxBid && maxBid.toInt() != 0) {
+                            setMessageErrorField(getString(topadscommonR.string.max_bid_error_new), maxBid.toString(), true)
+                            actionEnable(false)
+                        } else {
+                            setMessageErrorField("Biaya optimal ✔️", "0", false)
+                            productIds.let {
+                                viewModel.getPerformanceData(it, result.toFloat(), result.toFloat(), 0f)
+                            }
+                            actionEnable(true)
                         }
-                        actionEnable(true)
                     }
 
-                    else -> {
-                        budget?.setMessage(getClickableString(suggestBidPerClick))
+                    result < minBid && maxBid.toInt() != 0 -> {
+                        setMessageErrorField(getString(topadscommonR.string.min_bid_error_new), minBid.toString(), true)
                         actionEnable(false)
                     }
 
+                    else -> {
+                        budget?.isInputError = false
+                        budget?.setMessage(getClickableString(suggestBidPerClick))
+                        actionEnable(true)
+                    }
                 }
 
             }

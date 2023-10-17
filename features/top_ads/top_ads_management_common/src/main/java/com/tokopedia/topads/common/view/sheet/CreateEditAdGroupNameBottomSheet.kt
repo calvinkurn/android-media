@@ -53,7 +53,7 @@ class CreateEditAdGroupNameBottomSheet() : BottomSheetUnify() {
                     dialog?.window?.decorView?.let {
                         Toaster.build(
                             it,
-                            "Grup iklan maksumal 70 karakter",
+                            "Grup iklan maksimal 70 karakter",
                             Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
                     }
                 }

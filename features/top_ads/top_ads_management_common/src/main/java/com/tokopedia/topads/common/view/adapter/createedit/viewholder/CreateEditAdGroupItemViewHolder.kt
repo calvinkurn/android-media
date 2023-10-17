@@ -40,7 +40,7 @@ class CreateEditAdGroupItemViewHolder(private val viewBinding: TopadsCreateEditI
                 viewBinding.editAdItemSubtitle.text = String.format("Rp. %s", CurrencyFormatHelper.convertToRupiah(element.subtitle.toFloatOrZero().toInt().toString()))
             }
         } else if (element.tag == CreateEditAdGroupItemTag.ADS_RECOMMENDATION) {
-            viewBinding.editAdItemSubtitle.text = String.format("Rp. %s", CurrencyFormatHelper.convertToRupiah(element.subtitle.removeCommaRawString().toIntOrZero().toString()))
+            viewBinding.editAdItemSubtitle.text = String.format("Biaya iklan Rp.%s", CurrencyFormatHelper.convertToRupiah(element.subtitle.removeCommaRawString().toIntOrZero().toString()))
         } else {
             viewBinding.editAdItemSubtitle.text = element.subtitle
         }

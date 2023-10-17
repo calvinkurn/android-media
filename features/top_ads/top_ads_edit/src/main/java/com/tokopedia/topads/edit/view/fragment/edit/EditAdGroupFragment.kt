@@ -160,6 +160,7 @@ class EditAdGroupFragment : BaseDaggerFragment() {
             putParcelableArrayList("bidList", ArrayList(bidSettingsList))
             putStringArrayList("potentialPerformanceList", arrayListOf(performanceData.firstOrNull()?.retention,
                 performanceData.getOrNull(1)?.retention))
+            putStringArrayList("minMaxBids", arrayListOf(minBid, maxBid))
 
         }
         return BaseEditKeywordFragment.newInstance(bundle)
@@ -378,7 +379,7 @@ class EditAdGroupFragment : BaseDaggerFragment() {
                     editedRecomBid.ifEmpty { getPriceBid(data.bidSettings, BID_SETTINGS_TYPE_BROWSE) }
                 )
             }
-            updateValue(CreateEditAdGroupItemTag.DAILY_BUDGET, data.dailyBudget.toString())
+            updateValue(CreateEditAdGroupItemTag.DAILY_BUDGET, if (editedDailyBudget == "0") data.dailyBudget.toString() else editedDailyBudget)
 
         }
         priceBids.clear()
@@ -608,6 +609,7 @@ class EditAdGroupFragment : BaseDaggerFragment() {
         val formattedBudget = suggestedDailyBudget.toInt().toString()
         if (dataGroup[Constants.DAILY_BUDGET].toString().toFloatOrZero().toInt() != Int.ZERO){
             dataGroup[Constants.DAILY_BUDGET] = formattedBudget
+            editedDailyBudget = formattedBudget
         }
 
     }
