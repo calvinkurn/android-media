@@ -38,6 +38,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicOneLinerDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetDataModel
+import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetV2DataModel
 import com.tokopedia.product.detail.data.model.datamodel.GlobalBundling
 import com.tokopedia.product.detail.data.model.datamodel.GlobalBundlingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.LoadingDataModel
@@ -299,6 +300,15 @@ object DynamicProductDetailMapper {
                 ProductDetailConstant.FINTECH_WIDGET_TYPE -> {
                     listOfComponent.add(
                         FintechWidgetDataModel(
+                            type = component.type,
+                            name = component.componentName,
+                            widgetSession = System.currentTimeMillis()
+                        )
+                    )
+                }
+                ProductDetailConstant.FINTECH_WIDGET_V2_TYPE -> {
+                    listOfComponent.add(
+                        FintechWidgetV2DataModel(
                             type = component.type,
                             name = component.componentName,
                             widgetSession = System.currentTimeMillis()

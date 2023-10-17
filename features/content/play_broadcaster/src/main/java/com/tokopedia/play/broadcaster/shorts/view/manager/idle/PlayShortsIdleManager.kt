@@ -1,7 +1,6 @@
 package com.tokopedia.play.broadcaster.shorts.view.manager.idle
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.play.broadcaster.util.eventbus.EventBus
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
