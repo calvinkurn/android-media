@@ -25,6 +25,14 @@ internal class PromoAccordionViewAllDelegateAdapter(
         viewHolder.bind(item)
     }
 
+    override fun bindViewHolder(
+        item: PromoAccordionViewAllItem,
+        viewHolder: ViewHolder,
+        payloads: MutableList<Any>
+    ) {
+        viewHolder.bind(item)
+    }
+
     inner class ViewHolder(
         private val binding: PromoUsageItemPromoAccordionViewAllBinding
     ) : RecyclerView.ViewHolder(binding.root) {

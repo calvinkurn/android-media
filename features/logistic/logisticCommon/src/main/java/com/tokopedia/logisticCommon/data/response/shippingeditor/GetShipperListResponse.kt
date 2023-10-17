@@ -41,6 +41,8 @@ data class OnDemand(
     var shipperName: String = "",
     @SerializedName("is_active")
     var isActive: Boolean = false,
+    @SerializedName("is_whitelabel")
+    var isWhitelabel: Boolean = false,
     @SerializedName("text_promo")
     var textPromo: String = "",
     @SerializedName("image")
@@ -59,6 +61,8 @@ data class Conventional(
     var shipperName: String = "",
     @SerializedName("is_active")
     var isActive: Boolean = false,
+    @SerializedName("is_whitelabel")
+    var isWhitelabel: Boolean = false,
     @SerializedName("text_promo")
     var textPromo: String = "",
     @SerializedName("image")

@@ -800,27 +800,21 @@ class StoriesUnitTest {
             }
             robot.getViewModel().isAnyBottomSheetShown.assertTrue()
             stateEventOpen.second.last().assertEqualTo(StoriesUiEvent.OpenKebab)
-            stateEventOpen.first.bottomSheetStatus.mapValues {
+            robot.getBottomSheetState().isAnyShown.assertTrue()
+            robot.getBottomSheetState().mapValues {
                 if (it.key == BottomSheetType.Kebab) it.value.assertTrue()
                 else it.value.assertFalse()
             }
-            stateEventOpen.first.bottomSheetStatus.isAnyShown.assertTrue()
-
-            val stateClose = robot.recordState {
+            robot.recordState {
                 robot.closeBottomSheet(BottomSheetType.Kebab)
             }
-            robot.getViewModel().isAnyBottomSheetShown.assertFalse()
-            stateClose.bottomSheetStatus.mapValues {
-                if (it.key == BottomSheetType.Kebab) it.value.assertFalse()
-                else it.value.assertFalse()
-            }
-            stateClose.bottomSheetStatus.isAnyShown.assertFalse()
+            robot.getBottomSheetState().isAnyShown.assertFalse()
         }
     }
 
     @Test
     fun `when open product bottom sheet and close`() {
-        val expectedData = mockInitialDataModel(productCount = 5)
+    val expectedData = mockInitialDataModel(productCount = 5)
 
         coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
         coEvery { mockRepository.getStoriesDetailData(any()) } returns expectedData.groupItems.first().detail
@@ -831,21 +825,21 @@ class StoriesUnitTest {
             }
             robot.getViewModel().isAnyBottomSheetShown.assertTrue()
             stateEventOpen.second.last().assertEqualTo(StoriesUiEvent.OpenProduct)
-            stateEventOpen.first.bottomSheetStatus.mapValues {
+            robot.getBottomSheetState().mapValues {
                 if (it.key == BottomSheetType.Product) it.value.assertTrue()
                 else it.value.assertFalse()
             }
-            stateEventOpen.first.bottomSheetStatus.isAnyShown.assertTrue()
+            robot.getBottomSheetState().isAnyShown.assertTrue()
 
             val stateClose = robot.recordState {
                 robot.closeBottomSheet(BottomSheetType.Product)
             }
             robot.getViewModel().isAnyBottomSheetShown.assertFalse()
-            stateClose.bottomSheetStatus.mapValues {
+            robot.getBottomSheetState().mapValues {
                 if (it.key == BottomSheetType.Product) it.value.assertFalse()
                 else it.value.assertFalse()
             }
-            stateClose.bottomSheetStatus.isAnyShown.assertFalse()
+            robot.getBottomSheetState().isAnyShown.assertFalse()
         }
     }
 
@@ -863,17 +857,17 @@ class StoriesUnitTest {
             }
             robot.getViewModel().isAnyBottomSheetShown.assertTrue()
             stateEventOpen.second.contains(StoriesUiEvent.OpenKebab)
-            stateEventOpen.first.bottomSheetStatus.mapValues {
+            robot.getBottomSheetState().mapValues {
                 if (it.key == BottomSheetType.Kebab) it.value.assertTrue()
                 else it.value.assertFalse()
             }
-            stateEventOpen.first.bottomSheetStatus.isAnyShown.assertTrue()
+            robot.getBottomSheetState().isAnyShown.assertTrue()
         }
     }
 
     @Test
     fun `when open product bottom sheet and unable to open 2`() {
-        val expectedData = mockInitialDataModel(isProductCountEmpty = true)
+    val expectedData = mockInitialDataModel(isProductCountEmpty = true)
 
         coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
         coEvery { mockRepository.getStoriesDetailData(any()) } returns expectedData.groupItems.first().detail
@@ -884,32 +878,33 @@ class StoriesUnitTest {
             }
             robot.getViewModel().isProductAvailable.assertFalse()
             robot.getViewModel().isAnyBottomSheetShown.assertFalse()
-            state.bottomSheetStatus.mapValues {
+            robot.getBottomSheetState().mapValues {
                 if (it.key == BottomSheetType.Product) it.value.assertFalse()
                 else it.value.assertFalse()
             }
-            state.bottomSheetStatus.isAnyShown.assertFalse()
+            robot.getBottomSheetState().isAnyShown.assertFalse()
+
         }
     }
 
     @Test
     fun `when open product bottom sheet and unable to open 3`() {
-        val expectedData = mockInitialDataModel(isProductCountEmpty = true)
+    val expectedData = mockInitialDataModel(isProductCountEmpty = true)
 
         coEvery { mockRepository.getStoriesInitialData(any()) } returns expectedData
         coEvery { mockRepository.getStoriesDetailData(any()) } returns expectedData.groupItems.first().detail
 
         getStoriesRobot().use { robot ->
-            val state = robot.recordState {
+            robot.recordState {
                 robot.openProductBottomSheet()
             }
             robot.getViewModel().isProductAvailable.assertFalse()
             robot.getViewModel().isAnyBottomSheetShown.assertFalse()
-            state.bottomSheetStatus.mapValues {
+            robot.getBottomSheetState().mapValues {
                 if (it.key == BottomSheetType.Product) it.value.assertFalse()
                 else it.value.assertFalse()
             }
-            state.bottomSheetStatus.isAnyShown.assertFalse()
+            robot.getBottomSheetState().isAnyShown.assertFalse()
         }
     }
 
@@ -922,20 +917,20 @@ class StoriesUnitTest {
                 robot.openShareBottomSheet()
             }
             stateEventOpen.second.last().assertEqualTo(StoriesUiEvent.TapSharing(mockSharingData))
-            stateEventOpen.first.bottomSheetStatus.mapValues {
+            robot.getBottomSheetState().mapValues {
                 if (it.key == BottomSheetType.Sharing) it.value.assertTrue()
                 else it.value.assertFalse()
             }
-            stateEventOpen.first.bottomSheetStatus.isAnyShown.assertTrue()
+            robot.getBottomSheetState().isAnyShown.assertTrue()
 
-            val stateClose = robot.recordState {
+            robot.recordState {
                 robot.closeBottomSheet(BottomSheetType.Sharing)
             }
-            stateClose.bottomSheetStatus.mapValues {
+            robot.getBottomSheetState().mapValues {
                 if (it.key == BottomSheetType.Sharing) it.value.assertFalse()
                 else it.value.assertFalse()
             }
-            stateClose.bottomSheetStatus.isAnyShown.assertFalse()
+            robot.getBottomSheetState().isAnyShown.assertFalse()
         }
     }
 
@@ -949,20 +944,20 @@ class StoriesUnitTest {
             }
             stateEventOpen.second.last()
                 .assertEqualTo(StoriesUiEvent.ShowVariantSheet(mockSharingData))
-            stateEventOpen.first.bottomSheetStatus.mapValues {
+            robot.getBottomSheetState().mapValues {
                 if (it.key == BottomSheetType.GVBS) it.value.assertTrue()
                 else it.value.assertFalse()
             }
-            stateEventOpen.first.bottomSheetStatus.isAnyShown.assertTrue()
+            robot.getBottomSheetState().isAnyShown.assertTrue()
 
-            val stateClose = robot.recordState {
+            robot.recordState {
                 robot.closeBottomSheet(BottomSheetType.GVBS)
             }
-            stateClose.bottomSheetStatus.mapValues {
+            robot.getBottomSheetState().mapValues {
                 if (it.key == BottomSheetType.GVBS) it.value.assertFalse()
                 else it.value.assertFalse()
             }
-            stateClose.bottomSheetStatus.isAnyShown.assertFalse()
+            robot.getBottomSheetState().isAnyShown.assertFalse()
         }
     }
 
@@ -1082,5 +1077,4 @@ class StoriesUnitTest {
             event.last().assertEqualTo(StoriesUiEvent.NavigateEvent(appLink))
         }
     }
-
 }

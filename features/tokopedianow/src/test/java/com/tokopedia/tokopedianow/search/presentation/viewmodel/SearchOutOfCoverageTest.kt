@@ -1,23 +1,22 @@
 package com.tokopedia.tokopedianow.search.presentation.viewmodel
 
+// import com.tokopedia.tokopedianow.searchcategory.assertRecommendationCarouselDataViewLoadingState
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_SOURCE_SEARCH
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.response.Tokonow
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.emptyAddress
-import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.OOC_TOKONOW
 import com.tokopedia.tokopedianow.searchcategory.assertChooseAddressDataView
 import com.tokopedia.tokopedianow.searchcategory.assertOutOfCoverageDataView
-//import com.tokopedia.tokopedianow.searchcategory.assertRecommendationCarouselDataViewLoadingState
 import com.tokopedia.tokopedianow.util.SearchCategoryDummyUtils.dummyChooseAddressData
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.verify
 import org.hamcrest.CoreMatchers.notNullValue
 import org.junit.Assert.assertThat
 import org.junit.Test
 import org.hamcrest.core.Is.`is` as shouldBe
 
-class SearchOutOfCoverageTest: SearchTestFixtures() {
+class SearchOutOfCoverageTest : SearchTestFixtures() {
 
     override fun setUp() { }
 
@@ -52,7 +51,7 @@ class SearchOutOfCoverageTest: SearchTestFixtures() {
         val shopId: Long = 12345
         val warehouseId: Long = 12356
         val warehouseResponse = GetStateChosenAddressResponse(
-                tokonow = Tokonow(shopId = shopId, warehouseId = warehouseId)
+            tokonow = Tokonow(shopId = shopId, warehouseId = warehouseId)
         )
 
         `Given choose address data`(emptyAddress)
@@ -68,11 +67,9 @@ class SearchOutOfCoverageTest: SearchTestFixtures() {
     }
 
     private fun `Given get warehouse API will be successful`(warehouseResponse: GetStateChosenAddressResponse) {
-        every {
-            getWarehouseUseCase.getStateChosenAddress(any(), any(), DEFAULT_VALUE_SOURCE_SEARCH)
-        } answers {
-            firstArg<(GetStateChosenAddressResponse) -> Unit>().invoke(warehouseResponse)
-        }
+        coEvery {
+            getWarehouseUseCase(DEFAULT_VALUE_SOURCE_SEARCH)
+        } returns warehouseResponse
     }
 
     private fun `Then assert get mini cart API is called`() {
@@ -90,14 +87,17 @@ class SearchOutOfCoverageTest: SearchTestFixtures() {
         `When view created`()
 
         `Then verify search API first page is not called`()
+        `Then assert stop performance monitoring is Unit`()
+    }
+
+    private fun `Then assert stop performance monitoring is Unit`() {
+        assertThat(tokoNowSearchViewModel.stopPerformanceMonitoringLiveData.value, shouldBe(Unit))
     }
 
     private fun `Given get warehouse API will fail`() {
-        every {
-            getWarehouseUseCase.getStateChosenAddress(any(), any(), DEFAULT_VALUE_SOURCE_SEARCH)
-        } answers {
-            secondArg<(Throwable) -> Unit>().invoke(Throwable())
-        }
+        coEvery {
+            getWarehouseUseCase(DEFAULT_VALUE_SOURCE_SEARCH)
+        } throws Exception()
     }
 
     private fun `Then verify search API first page is not called`() {
@@ -147,7 +147,7 @@ class SearchOutOfCoverageTest: SearchTestFixtures() {
         val shopId: Long = 12345
         val warehouseId: Long = 0
         val warehouseResponse = GetStateChosenAddressResponse(
-                tokonow = Tokonow(shopId = shopId, warehouseId = warehouseId)
+            tokonow = Tokonow(shopId = shopId, warehouseId = warehouseId)
         )
 
         `Given choose address data`(emptyAddress)
@@ -157,5 +157,6 @@ class SearchOutOfCoverageTest: SearchTestFixtures() {
         `When view created`()
 
         `Then assert page showing out of coverage`()
+        `Then assert stop performance monitoring is Unit`()
     }
 }
