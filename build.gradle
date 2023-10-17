@@ -56,6 +56,7 @@ buildscript {
         classpath "gradle.plugin.org.gradle.android:android-cache-fix-gradle-plugin:2.4.4"
         classpath "org.jetbrains.dokka:dokka-gradle-plugin:1.7.20"
         classpath "org.jetbrains.dokka:dokka-core:1.7.20"
+        classpath "com.tokopedia.plugin:codebasereader:0.0.1"
     }
 }
 
@@ -81,6 +82,10 @@ clean.dependsOn installGitHooks
 // --- Dokka ---
 
 apply plugin: "org.jetbrains.dokka"
+
+// --- Codebase reader ---
+// to read df module in applink unit test
+apply plugin: 'com.tokopedia.codebasereader'
 
 /**
  * Override the default value of Dokka styles.

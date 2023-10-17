@@ -2,8 +2,7 @@ package com.tokopedia.topads.common.data.response
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import kotlinx.android.parcel.Parcelize
-import retrofit2.http.Field
+import kotlinx.parcelize.Parcelize
 
 /**
  * Created by Pika on 14/4/20.

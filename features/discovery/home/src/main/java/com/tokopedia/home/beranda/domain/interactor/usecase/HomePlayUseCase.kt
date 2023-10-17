@@ -68,4 +68,16 @@ class HomePlayUseCase @Inject constructor(
             false
         }
     }
+
+    fun reconstructAppLink(appLink: String, playWidgetId: String): String {
+        return if (playWidgetTools.isAppLinkSourceFromHome(appLink)) {
+            playWidgetTools.reconstructAppLink(appLink, mapOf(KEY_WIDGET_ID to playWidgetId))
+        } else {
+            appLink
+        }
+    }
+
+    companion object {
+        private const val KEY_WIDGET_ID = "widget_id"
+    }
 }

@@ -86,5 +86,7 @@ object KYCConstant {
     object ActivityResult {
         const val RESULT_FINISH = 99
         const val RELOAD = 98
+        const val LAUNCH_CALLBACK = 97
+        const val LAUNCH_TOKO_KYC = 96
     }
 }

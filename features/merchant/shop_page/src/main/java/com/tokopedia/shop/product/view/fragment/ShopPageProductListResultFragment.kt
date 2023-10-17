@@ -108,6 +108,7 @@ import com.tokopedia.shop.common.widget.PartialButtonShopFollowersListener
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersView
 import com.tokopedia.shop.databinding.FragmentShopProductListResultNewBinding
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragment
+import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageReimagineHeaderFragment.Companion.SHOWCASE_ID_USED_TO_HIDE_SHARE_CTA
 import com.tokopedia.shop.pageheader.util.ShopPageHeaderTabName
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent
 import com.tokopedia.shop.product.di.module.ShopProductModule
@@ -287,7 +288,8 @@ class ShopPageProductListResultFragment :
             isGridSquareLayout = true,
             deviceWidth = 0,
             shopTrackType = ShopTrackProductTypeDef.PRODUCT,
-            isShowTripleDot = !_isMyShop
+            isShowTripleDot = !_isMyShop,
+            shopProductTabInterface = null
         )
     }
 
@@ -316,7 +318,7 @@ class ShopPageProductListResultFragment :
         arguments?.let { attribution = it.getString(ShopParamConstant.EXTRA_ATTRIBUTION, "") }
         sourceRedirection =
             arguments?.getString(ShopParamConstant.EXTRA_SOURCE_REDIRECTION, "").orEmpty()
-        shopSharingInShowCaseUiModel = arguments?.getParcelable(EXTRA_FOR_SHOP_SHARING)
+        shopSharingInShowCaseUiModel = arguments?.getParcelable(EXTRA_FOR_SHOP_SHARING) // Potentially null if user comes from search inside shop page
         if (savedInstanceState == null) {
             selectedEtalaseList = ArrayList()
             arguments?.let {
@@ -749,13 +751,16 @@ class ShopPageProductListResultFragment :
             viewLifecycleOwner
         ) { result ->
             if (result is Success) {
-                shopSharingInShowCaseUiModel?.let {
-                    it.shopSnippetUrl = result.data.shopSnippetUrl
-                    it.shopCoreUrl = result.data.shopCore.url
-                    it.location = result.data.location
-                    it.tagline = result.data.shopCore.tagLine
-                    it.shopStatus = result.data.statusInfo.shopStatus
-                }
+                shopSharingInShowCaseUiModel = ShopSharingInShowCaseUiModel(
+                    shopId = result.data.shopCore.shopID,
+                    shopName = result.data.shopCore.name,
+                    tagline = result.data.shopCore.tagLine,
+                    shopCoreUrl = result.data.shopCore.url,
+                    shopStatus = result.data.statusInfo.shopStatus,
+                    avatar = result.data.shopAssets.avatar,
+                    location = result.data.location,
+                    shopSnippetUrl = result.data.shopSnippetUrl
+                )
                 showUniversalShareBottomSheet()
             }
         }
@@ -1805,7 +1810,7 @@ class ShopPageProductListResultFragment :
             "SAVED_IS_SHOP_PRODUCT_SEARCH_RESULT_TRACKER_ALREADY_SENT"
         private const val SELECTED_ETALASE_TYPE_DEFAULT_VALUE = -10
         private const val SEARCH_AUTOCOMPLETE_PAGE_SOURCE = "SEARCH_AUTOCOMPLETE_PAGE_SOURCE"
-        private const val DEFAULT_SHOWCASE_ID = "0"
+
         private const val SHOP_SEARCH_PAGE_NAV_SOURCE = "shop"
         private const val SEMUA_PRODUCT_ETALASE_NAME = "Semua Produk"
         private const val SEMUA_PRODUCT_ETALASE_ALIAS = "etalase"
@@ -2030,7 +2035,7 @@ class ShopPageProductListResultFragment :
             UriUtil.buildUri(
                 ApplinkConst.SHOP_ETALASE,
                 shopId,
-                DEFAULT_SHOWCASE_ID
+                SHOWCASE_ID_USED_TO_HIDE_SHARE_CTA
             ),
             "utf-8"
         )

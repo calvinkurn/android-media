@@ -1,15 +1,19 @@
 package com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll
 
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.BasePostViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentModel
-import kotlinx.android.synthetic.main.item_post_poll.view.*
 
 /**
  * @author by milhamj on 10/12/18.
  */
 class PollViewHolder(private val pollOptionListener: PollAdapter.PollOptionListener)
     : BasePostViewHolder<PollContentModel>() {
+
+    private val optionRv: RecyclerView = itemView.findViewById(R.id.optionRv)
+    private val totalVoter: TextView = itemView.findViewById(R.id.totalVoter)
 
     companion object {
         private const val TOTAL_VOTER = "\${totalVoter}"
@@ -20,11 +24,11 @@ class PollViewHolder(private val pollOptionListener: PollAdapter.PollOptionListe
     override fun bind(element: PollContentModel) {
         val adapter = PollAdapter(pagerPosition, element, pollOptionListener)
         adapter.setList(element.optionList)
-        itemView.optionRv.adapter = adapter
+        optionRv.adapter = adapter
 
         val totalVoterText = element.totalVoter.replace(
                 TOTAL_VOTER, element.totalVoterNumber.toString()
         )
-        itemView.totalVoter.text = totalVoterText
+        totalVoter.text = totalVoterText
     }
 }

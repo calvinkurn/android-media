@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.common.R as topadscommonR
@@ -20,12 +21,12 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.databinding.FragmentTopadsChooseGroupBinding
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecommendationConstants
-import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecommendationConstants.DEFAULT_EMPTY_STRING
 import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecommendationConstants.DEFAULT_GROUP_TYPE
 import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecommendationConstants.DEFAULT_TOPADS_DEPOSITS
 import com.tokopedia.topads.dashboard.recommendation.common.TopAdsProductRecommendationConstants.IDR_CONST
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupItemUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopadsProductListState
+import com.tokopedia.topads.dashboard.recommendation.tracker.RecommendationTracker
 import com.tokopedia.topads.dashboard.recommendation.viewmodel.ProductRecommendationViewModel
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.recommendation.GroupListAdapter
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsCreditTopUpActivity
@@ -35,7 +36,7 @@ import javax.inject.Inject
 class ChooseGroupFragment : BaseDaggerFragment() {
 
     private var binding: FragmentTopadsChooseGroupBinding? = null
-    private var searchGroup: String = DEFAULT_EMPTY_STRING
+    private var searchGroup: String = String.EMPTY
     private var topadsDeposits: Int = DEFAULT_TOPADS_DEPOSITS
 
     private val groupListAdapter by lazy {
@@ -87,9 +88,8 @@ class ChooseGroupFragment : BaseDaggerFragment() {
         binding?.groupsRv?.adapter = groupListAdapter
 
         viewModel?.getTopAdsDeposit()
-        viewModel?.getTopadsGroupList(DEFAULT_EMPTY_STRING, DEFAULT_GROUP_TYPE)
+        viewModel?.getTopadsGroupList(String.EMPTY, DEFAULT_GROUP_TYPE)
 
-        binding?.btnSubmit?.setOnClickListener { }
         binding?.searchGroup?.let {
             Utils.setSearchListener(it, context, it, ::searchGroups)
         }
@@ -98,7 +98,7 @@ class ChooseGroupFragment : BaseDaggerFragment() {
     private fun searchGroups() {
         val searchEditable = binding?.searchGroup?.searchBarTextField?.text
         searchGroup =
-            if (searchEditable.isNullOrEmpty()) DEFAULT_EMPTY_STRING else searchEditable.toString()
+            if (searchEditable.isNullOrEmpty()) String.EMPTY else searchEditable.toString()
         viewModel?.getTopadsGroupList(searchGroup, DEFAULT_GROUP_TYPE)
     }
 
@@ -161,6 +161,7 @@ class ChooseGroupFragment : BaseDaggerFragment() {
     private fun attachClickListener() {
         binding?.btnSubmit?.setOnClickListener { btn ->
             if (binding?.btnSubmit?.isLoading != null && !(binding?.btnSubmit?.isLoading!!)) {
+                RecommendationTracker.clickSubmitProductRecommendationExistingGroup()
                 val productIds = mutableListOf<String>()
                 val list = viewModel?.getSelectedProductItems()
                 list?.forEach { productIds.add(it.id()) }

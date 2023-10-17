@@ -175,6 +175,7 @@ class FeedPostLiveViewHolder(
             absoluteAdapterPosition
         )
 
+        mVideoPlayer?.toggleVideoVolume(listener.isMuted())
         mVideoPlayer?.resume(shouldReset = false)
         onScrolling(false)
     }

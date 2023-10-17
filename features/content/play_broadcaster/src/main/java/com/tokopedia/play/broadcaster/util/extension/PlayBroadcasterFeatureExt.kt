@@ -9,7 +9,6 @@ import com.bumptech.glide.load.model.LazyHeaders
 import com.bumptech.glide.request.RequestListener
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.unifycomponents.ImageUnify
@@ -18,7 +17,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 import com.tokopedia.network.R as networkR
-import com.tokopedia.play_common.R as commonR
+import com.tokopedia.play_common.R as play_commonR
 
 /**
  * Created by jegul on 16/07/20
@@ -28,15 +27,6 @@ internal fun GlobalError.channelNotFound(onAction: () -> Unit) {
     this.errorDescription.setTextColor(ContextCompat.getColor(this.context, R.color.play_dms_white_68))
     this.setType(GlobalError.PAGE_NOT_FOUND)
     this.setActionClickListener { onAction() }
-}
-
-internal fun GlobalError.productTagSummaryEmpty(onAction: () -> Unit) {
-    errorIllustration.setImageResource(R.drawable.ic_empty_product_etalase)
-    errorTitle.text = context.getString(R.string.play_bro_product_summary_empty_title)
-    errorDescription.text = context.getString(R.string.play_bro_product_summary_empty_description)
-    errorAction.text = context.getString(R.string.play_bro_product_summary_empty_action_text)
-    errorSecondaryAction.gone()
-    setActionClickListener { onAction() }
 }
 
 internal fun View.showErrorToaster(
@@ -68,7 +58,7 @@ internal fun View.showErrorToaster(
 
         if (showErrorCode) {
             context.getString(
-                commonR.string.play_custom_error_handler_msg,
+                play_commonR.string.play_custom_error_handler_msg,
                 finalErrMessage,
                 errCode
             )

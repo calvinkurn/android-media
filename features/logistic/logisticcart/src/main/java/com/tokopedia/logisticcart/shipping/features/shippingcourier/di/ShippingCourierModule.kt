@@ -1,5 +1,6 @@
 package com.tokopedia.logisticcart.shipping.features.shippingcourier.di
 
+import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierAdapter
 import dagger.Module
 import dagger.Provides
@@ -10,7 +11,7 @@ import dagger.Provides
 @Module
 class ShippingCourierModule {
     @Provides
-    @ShippingCourierScope
+    @ActivityScope
     fun provideShippingCourierAdapter(): ShippingCourierAdapter {
         return ShippingCourierAdapter()
     }

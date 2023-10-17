@@ -6,6 +6,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ArButtonDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicOneLinerDataModel
 import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetDataModel
+import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetV2DataModel
 import com.tokopedia.product.detail.data.model.datamodel.GlobalBundlingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.LoadingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel
@@ -43,6 +44,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ViewToViewWidgetDataMod
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
 import com.tokopedia.product.detail.data.model.datamodel.review_list.ProductShopReviewDataModel
 import com.tokopedia.product.detail.view.viewholder.a_plus_content.APlusImageUiModel
+import com.tokopedia.product.detail.view.viewholder.bmgm.BMGMUiModel
 
 interface DynamicProductDetailAdapterFactory {
     fun type(data: ProductMostHelpfulReviewDataModel): Int
@@ -73,6 +75,7 @@ interface DynamicProductDetailAdapterFactory {
     fun type(data: TopadsHeadlineUiModel): Int
     fun type(data: ContentWidgetDataModel): Int
     fun type(data: FintechWidgetDataModel): Int
+    fun type(data: FintechWidgetV2DataModel): Int
     fun type(data: ProductRecommendationVerticalDataModel): Int
     fun type(data: ProductRecommendationVerticalPlaceholderDataModel): Int
     fun type(data: LoadingDataModel): Int
@@ -85,6 +88,7 @@ interface DynamicProductDetailAdapterFactory {
     fun type(data: OngoingCampaignDataModel): Int
     fun type(data: DynamicOneLinerDataModel): Int
     fun type(data: APlusImageUiModel): Int
+    fun type(data: BMGMUiModel): Int
 
     // This is the new centralized recom widget model.
     // After migration, all recom widgets will only be mapped into this model
