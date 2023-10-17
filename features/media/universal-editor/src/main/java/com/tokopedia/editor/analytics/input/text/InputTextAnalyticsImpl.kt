@@ -17,7 +17,6 @@ import com.tokopedia.editor.analytics.getMediaTypeString
 import com.tokopedia.editor.analytics.toImmersiveTrackerData
 import com.tokopedia.editor.ui.main.EditorParamFetcher
 import com.tokopedia.editor.ui.model.InputTextModel
-import com.tokopedia.editor.util.provider.ColorProvider
 import com.tokopedia.track.TrackApp
 import javax.inject.Inject
 
