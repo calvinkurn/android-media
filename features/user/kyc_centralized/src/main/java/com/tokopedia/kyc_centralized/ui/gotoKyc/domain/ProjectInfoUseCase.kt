@@ -54,7 +54,7 @@ class ProjectInfoUseCase @Inject constructor(
                 ProjectInfoResult.Failed(
                     mappingErrorMessage(errorMessages.joinToString(), errorCode)
                 )
-            } else if (referComplaint) {
+            } else if (isBlocked) {
                 val isMultipleAccount = LIST_REASON_BLOCK_MULTIPLE_ACCOUNT.contains(nonEligibleGoToKYCReason)
                 ProjectInfoResult.Blocked(isMultipleAccount)
             } else if (!isGotoKyc) {

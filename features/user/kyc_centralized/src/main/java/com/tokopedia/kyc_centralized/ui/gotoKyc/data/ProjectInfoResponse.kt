@@ -50,8 +50,8 @@ data class KycProjectInfo(
     @SerializedName("ErrorCode")
     val errorCode: String = "",
 
-    @SerializedName("ReferComplaint")
-    val referComplaint: Boolean = false,
+    @SerializedName("IsBlocked")
+    val isBlocked: Boolean = false,
 
     @SerializedName("NonEligibleGoToKYCReason")
     val nonEligibleGoToKYCReason: String = ""
