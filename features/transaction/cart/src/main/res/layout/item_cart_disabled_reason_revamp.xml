@@ -11,13 +11,26 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_disabled_title"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textColor="@color/Unify_NN950"
+        app:layout_constraintEnd_toStartOf="@id/text_change_address"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="display_3"
         tools:text="Produk Dilarang (3)" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_change_address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ganti Alamat"
+        android:textColor="@color/Unify_GN500"
+        app:typographyType="display_3"
+        app:typographyWeight="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unifyButtonVariant="text" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_disabled_sub_title"

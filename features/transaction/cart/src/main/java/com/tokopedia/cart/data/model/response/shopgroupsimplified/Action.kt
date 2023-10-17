@@ -20,5 +20,6 @@ data class Action(
         const val ACTION_VERIFICATION = "9"
         const val ACTION_WISHLISTED = "10"
         const val ACTION_FOLLOWSHOP = "11"
+        const val ACTION_CHANGEADRESS = "12"
     }
 }

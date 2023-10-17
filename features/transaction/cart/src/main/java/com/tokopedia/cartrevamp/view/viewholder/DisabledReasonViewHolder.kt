@@ -6,6 +6,7 @@ import com.tokopedia.cart.databinding.ItemCartDisabledReasonRevampBinding
 import com.tokopedia.cartrevamp.view.ActionListener
 import com.tokopedia.cartrevamp.view.uimodel.DisabledReasonHolderData
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 
 class DisabledReasonViewHolder(private val binding: ItemCartDisabledReasonRevampBinding, val actionListener: ActionListener?) : RecyclerView.ViewHolder(binding.root) {
@@ -20,6 +21,9 @@ class DisabledReasonViewHolder(private val binding: ItemCartDisabledReasonRevamp
             data.title,
             data.productsCount
         )
+        binding.textChangeAddress.isVisible = data.isShowOutOfCoverageAction
+        binding.textChangeAddress.text = data.showOutOfCoverageTitle
+        binding.textChangeAddress.setOnClickListener { actionListener?.onChangeAddressClicked() }
         if (data.subTitle.isNotBlank()) {
             binding.textDisabledSubTitle.text = data.subTitle
             binding.textDisabledSubTitle.show()

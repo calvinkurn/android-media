@@ -62,6 +62,7 @@ import com.tokopedia.cart.data.model.response.shopgroupsimplified.LocalizationCh
 import com.tokopedia.cart.databinding.FragmentCartRevampBinding
 import com.tokopedia.cart.view.CartActivity
 import com.tokopedia.cart.view.CartFragment
+import com.tokopedia.cart.view.ICartListPresenter.Companion.GET_CART_STATE_AFTER_CHOOSE_ADDRESS
 import com.tokopedia.cartcommon.data.response.common.Button
 import com.tokopedia.cartcommon.data.response.common.OutOfService
 import com.tokopedia.cartrevamp.view.adapter.cart.CartAdapter
@@ -140,6 +141,7 @@ import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
+import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.navigation_common.listener.CartNotifyListener
@@ -1801,6 +1803,30 @@ class CartRevampFragment :
             else -> {
                 emptyList()
             }
+        }
+    }
+
+    private fun generateParamClearBo(): ClearPromoOrderData? {
+        return when {
+            viewModel.cartModel.isLastApplyResponseStillValid -> {
+                val lastApplyPromo =
+                    viewModel.cartModel.cartListData?.promo?.lastApplyPromo ?: LastApplyPromo()
+                PromoRequestMapper.generateClearBoParam(
+                    lastApplyPromo,
+                    CartDataHelper.getAllAvailableShopGroupDataList(viewModel.cartDataList.value)
+                )
+            }
+
+            viewModel.cartModel.lastValidateUseResponse != null -> {
+                val promoUiModel =
+                    viewModel.cartModel.lastValidateUseResponse?.promoUiModel ?: PromoUiModel()
+                PromoRequestMapper.generateClearBoParam(
+                    promoUiModel,
+                    CartDataHelper.getAllAvailableShopGroupDataList(viewModel.cartDataList.value)
+                )
+            }
+
+            else -> null
         }
     }
 
@@ -5308,5 +5334,36 @@ class CartRevampFragment :
 
     override fun onCartViewBmGmTicker(offerId: Long, widgetCaption: String, shopId: String) {
         cartPageAnalytics.eventViewBmGmTickerOffer(offerId, widgetCaption, shopId, userSession.userId)
+    }
+
+    override fun onChangeAddressClicked() {
+        val chooseAddressBottomSheet = ChooseAddressBottomSheet()
+        chooseAddressBottomSheet.setListener(object :
+            ChooseAddressBottomSheet.ChooseAddressBottomSheetListener{
+            override fun onLocalizingAddressServerDown() {
+                // no-op
+            }
+
+            override fun onAddressDataChanged() {
+                val clearBoPromo = generateParamClearBo()
+                if (clearBoPromo != null) {
+                    viewModel.clearAllBo(clearBoPromo)
+                }
+                refreshCartWithProgressDialog(GET_CART_STATE_AFTER_CHOOSE_ADDRESS)
+            }
+
+            override fun getLocalizingAddressHostSourceBottomSheet(): String {
+                return CART_PAGE
+            }
+
+            override fun onLocalizingAddressLoginSuccessBottomSheet() {
+                // no-op
+            }
+
+            override fun onDismissChooseAddressBottomSheet() {
+                // no-op
+            }
+        })
+        chooseAddressBottomSheet.show(childFragmentManager)
     }
 }
