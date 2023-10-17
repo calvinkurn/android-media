@@ -39,7 +39,7 @@ internal class FeedCategoryInspirationViewHolder private constructor() {
         }
 
         fun bind(item: FeedCategoryInspirationModel.Chips) {
-            adapter.submitList(item.chipList)
+//            adapter.submitList(item.chipList)
         }
 
         companion object {

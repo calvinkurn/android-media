@@ -1,6 +1,5 @@
 package com.tokopedia.feedplus.browse.data
 
-import android.util.Log
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.model.FeedXHeaderRequestFields
 import com.tokopedia.content.common.usecase.FeedXHeaderUseCase
@@ -55,7 +54,7 @@ internal class FeedBrowseRepositoryImpl @Inject constructor(
                 feedXHomeUseCase.createParams(source = FeedXHomeUseCase.SOURCE_BROWSE)
             )
             mapper.mapSlotsResponse(response).ifEmpty {
-                throw IllegalStateException("no slot available")
+                throw IllegalStateException("no slots available")
             }
         }
     }
@@ -64,7 +63,6 @@ internal class FeedBrowseRepositoryImpl @Inject constructor(
         extraParam: WidgetRequestModel
     ): ContentSlotModel = withContext(dispatchers.io) {
         val isWifi = connectionUtil.isEligibleForHeavyDataUsage()
-        Log.d("FeedBrowse", "Get to gql: ${extraParam.group}")
         val response = playWidgetSlotUseCase(
             GetPlayWidgetSlotUseCase.Param(
                 req = GetPlayWidgetSlotUseCase.Param.Request(
@@ -163,7 +161,6 @@ internal class FeedBrowseRepositoryImpl @Inject constructor(
                                 group = "Group $it",
                                 sourceType = "Source Type $it",
                                 sourceId = "Source Id $it",
-                                isSelected = false
                             )
                         }
                     )

@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseChannelItemDecoration
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseChipAdapter
+import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseChipsItemDecoration
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowsePayloads
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseChipUiModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel
@@ -47,14 +48,8 @@ internal class FeedBrowseChipsViewHolder private constructor(
     )
 
     init {
-        binding.root.addItemDecoration(
-            FeedBrowseChannelItemDecoration(
-                context = binding.root.context,
-                spacingHorizontal = unifyprinciplesR.dimen.spacing_lvl2,
-                spacingTop = unifyprinciplesR.dimen.layout_lvl0,
-            )
-        )
         binding.root.adapter = adapter
+        binding.root.addItemDecoration(FeedBrowseChipsItemDecoration(binding.root.resources))
     }
 
     fun bind(item: FeedBrowseItemListModel.Chips) {
@@ -63,7 +58,7 @@ internal class FeedBrowseChipsViewHolder private constructor(
     }
 
     fun bindPayloads(item: FeedBrowseItemListModel.Chips, payloads: FeedBrowsePayloads) {
-        if (payloads.isSelectedChipChanged()) adapter.submitList(item.chips)
+        bind(item)
     }
 
     companion object {

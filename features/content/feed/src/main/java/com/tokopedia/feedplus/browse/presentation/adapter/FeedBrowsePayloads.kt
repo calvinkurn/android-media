@@ -19,6 +19,8 @@ data class FeedBrowsePayloads(
 
         fun addSelectedChipChanged() = addPayload(PAYLOAD_SELECTED_CHIP_CHANGED)
 
+        fun addChannelItemTotalViewChanged() = addPayload(PAYLOAD_CHANNEL_ITEM_TOTAL_VIEW_CHANGED)
+
         fun build(): FeedBrowsePayloads? {
             return if (payloads.isEmpty()) {
                 null
@@ -53,11 +55,17 @@ data class FeedBrowsePayloads(
         return payloads.contains(PAYLOAD_CHANNEL_REFRESH)
     }
 
+    fun isChannelItemTotalViewChanged(): Boolean {
+        return payloads.contains(PAYLOAD_CHANNEL_ITEM_TOTAL_VIEW_CHANGED)
+    }
+
     companion object {
         private const val PAYLOAD_CHANNEL_CHIPS_CHANGED = 1
         private const val PAYLOAD_CHANNEL_ITEMS_CHANGED = 2
         private const val PAYLOAD_CHANNEL_REFRESH = 3
         private const val PAYLOAD_SELECTED_CHIP_CHANGED = 4
+
+        private const val PAYLOAD_CHANNEL_ITEM_TOTAL_VIEW_CHANGED = 10
     }
 }
 

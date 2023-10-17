@@ -86,7 +86,7 @@ internal class FeedBrowseChannelViewHolder private constructor(
         spacingTop = feedplusR.dimen.feed_space_12
     )
 
-    private val cardListener = object : FeedBrowseCardViewHolder.Listener {
+    private val cardListener = object : FeedBrowseChannelViewHolder2.Channel.Listener {
         override fun onCardImpressed(item: PlayWidgetChannelUiModel, position: Int) {
             val widgetData = mData ?: return
             val config = (widgetData.channelUiState as? ChannelUiState.Data)?.config ?: return

@@ -50,6 +50,7 @@ class FeedBrowseMapper @Inject constructor() {
                         title = item.title,
                         group = item.type,
                         menus = emptyMap(),
+                        selectedMenuId = "",
                     )
                 } else if (item.type.startsWith("browse_widget_recommendation")) {
                     FeedBrowseModel.InspirationBanner(
@@ -173,7 +174,6 @@ class FeedBrowseMapper @Inject constructor() {
                             group = item.group,
                             sourceType = item.sourceType,
                             sourceId = item.sourceId,
-                            isSelected = index == 0
                         )
                     }
                 )

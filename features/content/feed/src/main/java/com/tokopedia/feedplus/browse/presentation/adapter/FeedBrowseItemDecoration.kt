@@ -5,12 +5,14 @@ import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseBannerViewHolder
-import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseTitleViewHolder
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import com.tokopedia.feedplus.R
+import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseBannerViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseChipsViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseHorizontalChannelsViewHolder
+import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseTitleViewHolder
+import com.tokopedia.feedplus.presentation.util.findViewHolderByPositionInfo
+import com.tokopedia.feedplus.presentation.util.getChildValidPositionInfo
 
 /**
  * Created by kenny.hadisaputra on 19/09/23
@@ -39,15 +41,17 @@ class FeedBrowseItemDecoration(
         parent: RecyclerView,
         state: RecyclerView.State
     ) {
-        when (val viewHolder = parent.getChildViewHolder(view)) {
+        val adapter = parent.adapter ?: return
+        val positionInfo = parent.getChildValidPositionInfo(view, state)
+        when (parent.findViewHolderByPositionInfo(positionInfo)) {
             is FeedBrowseTitleViewHolder -> outRect.itemOffsetsTitle()
-            is FeedBrowseBannerViewHolder -> outRect.itemOffsetsBanner(viewHolder, parent, view)
-            is FeedBrowseChipsViewHolder -> outRect.itemOffsetsChips(viewHolder, parent, view)
+            is FeedBrowseBannerViewHolder -> outRect.itemOffsetsBanner(adapter, parent, view, state)
+            is FeedBrowseChipsViewHolder -> outRect.itemOffsetsChips(adapter, parent, view, state)
             is FeedBrowseHorizontalChannelsViewHolder -> outRect.itemOffsetsHorizontalChannels()
             else -> outRect.itemOffsetsElse()
         }
 
-        if (parent.getChildAdapterPosition(view) == parent.adapter!!.itemCount - 1) {
+        if (positionInfo.position == state.itemCount - 1) {
             outRect.bottom = offset16
         }
     }
@@ -59,33 +63,39 @@ class FeedBrowseItemDecoration(
     }
 
     private fun Rect.itemOffsetsChips(
-        viewHolder: FeedBrowseChipsViewHolder,
+        adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>,
         parent: RecyclerView,
         child: View,
+        state: RecyclerView.State,
     ) {
+        val viewHolder = parent.getChildViewHolder(child)
         val lParams = viewHolder.itemView.layoutParams as? GridLayoutManager.LayoutParams ?: return
         val spanIndex = lParams.spanIndex
 
-        val currPosition = parent.getChildAdapterPosition(child)
+        val positionInfo = parent.getChildValidPositionInfo(child, state)
+        val currPosition = positionInfo.position
 
         val prevSpanRowPosition = currPosition - spanIndex - 1
         if (prevSpanRowPosition < 0) return
 
-        top = when (parent.findViewHolderForAdapterPosition(prevSpanRowPosition)) {
+        top = when (parent.findViewHolderByPositionInfo(positionInfo)) {
             is FeedBrowseTitleViewHolder -> offset12
             else -> offset8
         }
     }
 
     private fun Rect.itemOffsetsBanner(
-        viewHolder: FeedBrowseBannerViewHolder,
+        adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>,
         parent: RecyclerView,
         child: View,
+        state: RecyclerView.State,
     ) {
+        val viewHolder = parent.getChildViewHolder(child)
         val lParams = viewHolder.itemView.layoutParams as? GridLayoutManager.LayoutParams ?: return
         val spanIndex = lParams.spanIndex
 
-        val currPosition = parent.getChildAdapterPosition(child)
+        val positionInfo = parent.getChildValidPositionInfo(child, state)
+        val currPosition = positionInfo.position
 
         left = if (spanIndex == 0) offset16 else offset4
         right = if (spanIndex == spanCount - 1) offset16 else offset4
@@ -93,7 +103,7 @@ class FeedBrowseItemDecoration(
         val prevSpanRowPosition = currPosition - spanIndex - 1
         if (prevSpanRowPosition < 0) return
 
-        top = when (parent.findViewHolderForAdapterPosition(prevSpanRowPosition)) {
+        top = when (parent.findViewHolderByPositionInfo(positionInfo)) {
             is FeedBrowseBannerViewHolder -> offset8
             else -> offset12
         }

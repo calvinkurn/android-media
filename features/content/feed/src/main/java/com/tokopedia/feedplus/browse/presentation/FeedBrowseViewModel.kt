@@ -5,12 +5,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.feedplus.browse.data.FeedBrowseRepository
+import com.tokopedia.feedplus.browse.data.model.ContentSlotModel
 import com.tokopedia.feedplus.browse.data.model.FeedBrowseModel
 import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
 import com.tokopedia.feedplus.browse.data.model.WidgetRequestModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseChipUiModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiAction
+import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiModel2
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiState
+import com.tokopedia.feedplus.browse.presentation.model.ItemListState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -25,18 +28,22 @@ import javax.inject.Inject
 /**
  * Created by meyta.taliti on 11/08/23.
  */
+private typealias FeedBrowseModelMap = Map<String, FeedBrowseUiModel2>
 internal class FeedBrowseViewModel @Inject constructor(
     private val repository: FeedBrowseRepository,
-    private val modelFetchers: FeedBrowseModelFetchers,
 ) : ViewModel() {
 
     private val _title = MutableStateFlow("")
     private val _slots = MutableStateFlow<ResultState>(ResultState.Loading)
-    private val _widgets = MutableStateFlow<List<FeedBrowseModel>>(emptyList())
+    private val _widgets = MutableStateFlow<FeedBrowseModelMap>(emptyMap())
 
     private val updateMutex = Mutex()
 
-    val uiState: StateFlow<FeedBrowseUiState> = combine(_title, _slots, _widgets) { title, slots, widgets ->
+    val uiState: StateFlow<FeedBrowseUiState> = combine(
+        _title,
+        _slots,
+        _widgets,
+    ) { title, slots, widgets ->
         if (slots is ResultState.Fail) {
             FeedBrowseUiState.Error(
                 slots.error
@@ -44,7 +51,7 @@ internal class FeedBrowseViewModel @Inject constructor(
         } else {
             FeedBrowseUiState.Success(
                 title = title,
-                widgets = widgets
+                widgets = widgets.values.toList()
             )
         }
     }.stateIn(
@@ -85,71 +92,107 @@ internal class FeedBrowseViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val slots = repository.getSlots()
-                _widgets.value = slots
+                _widgets.value = slots.associate {
+                    it.slotId to FeedBrowseUiModel2(ResultState.Loading, it)
+                }
                 _slots.value = ResultState.Success
 
-                slots.forEach { slot ->
-                    launch {
-                        Log.d("FeedBrowse", "Getting slots for Slot Id: ${slot.slotId}, Slot: $slot")
-                        val updatedModel = modelFetchers.call(slot)
-                        Log.d("FeedBrowse", "Updating slots for Slot Id: ${slot.slotId}, Model: $updatedModel")
-                        updateWidget(updatedModel.slotId) { updatedModel }
-                    }
-                }
+                slots.forEach { slot -> launch { getAndUpdateData(slot) } }
             } catch (err: Throwable) {
                 _slots.value = ResultState.Fail(err)
             }
         }
     }
 
-    private fun handleFetchWidget(extraParam: WidgetRequestModel, widgetId: String) {
+    private fun handleFetchWidget(extraParam: WidgetRequestModel, slotId: String) {
         viewModelScope.launch {
             val widgets = _widgets.value
-            val widget = widgets.firstOrNull { it.slotId == widgetId } ?: return@launch
-            val model = modelFetchers.call(widget)
-
-            updateWidget(widgetId) { model }
+            val widget = widgets[slotId]?.model ?: return@launch
+            getAndUpdateData(widget)
         }
     }
 
     private fun handleSelectChip(chip: FeedBrowseChipUiModel, widgetId: String) {
         viewModelScope.launch {
-            updateWidget(widgetId) {
-                if (it !is FeedBrowseModel.ChannelsWithMenus) return@updateWidget it
-                it.copy(
-                    menus = it.menus.mapKeys { entry ->
-                        entry.key.copy(isSelected = chip.id == entry.key.id)
-                    }
-                )
+            updateWidget<FeedBrowseModel.ChannelsWithMenus>(widgetId, ResultState.Success) {
+                it.copy(selectedMenuId = chip.id)
             }
         }
     }
 
     private fun handleSelectChip(chip: WidgetMenuModel, widgetId: String) {
         viewModelScope.launch {
-            updateWidget(widgetId) {
-                if (it !is FeedBrowseModel.ChannelsWithMenus) return@updateWidget it
-                it.copy(
-                    menus = it.menus.mapKeys { entry ->
-                        entry.key.copy(isSelected = chip.id == entry.key.id)
-                    }
-                )
+            updateWidget<FeedBrowseModel.ChannelsWithMenus>(widgetId, ResultState.Success) {
+                it.copy(selectedMenuId = chip.id)
             }
         }
     }
 
-    private suspend fun updateWidget(
-        widgetId: String,
-        onUpdate: (FeedBrowseModel) -> FeedBrowseModel
-    ) = updateMutex.withLock {
-        _widgets.update { existingWidgets ->
-            existingWidgets.map { prevWidget ->
-                if (prevWidget.slotId == widgetId) {
-                    return@map onUpdate(prevWidget)
-                } else {
-                    prevWidget
+    private suspend fun getAndUpdateData(model: FeedBrowseModel) {
+        when (model) {
+            is FeedBrowseModel.ChannelsWithMenus -> model.getAndUpdateData()
+            is FeedBrowseModel.InspirationBanner -> {}
+        }
+    }
+
+    private suspend fun FeedBrowseModel.ChannelsWithMenus.getAndUpdateData() {
+        val menuKeys = menus.keys
+        val selectedMenu = menuKeys.firstOrNull { it.id == selectedMenuId }
+
+        val requestModel = if (menus.isEmpty()) {
+            Log.d("FeedBrowse", "Requesting: Slot $slotId, Group: $group")
+            WidgetRequestModel(group = group)
+        } else {
+            val menu = selectedMenu ?: menuKeys.first()
+            WidgetRequestModel(
+                group = menu.group,
+                sourceType = menu.sourceType,
+                sourceId = menu.sourceId,
+            )
+        }
+
+        try {
+            when (val response = repository.getWidgetContentSlot(requestModel)) {
+                is ContentSlotModel.TabMenus -> {
+                    updateWidget<FeedBrowseModel.ChannelsWithMenus>(slotId, ResultState.Success) {
+                        it.copy(
+                            menus = response.menu.associateWith { ItemListState.Loading },
+                            selectedMenuId = response.menu.firstOrNull()?.id.orEmpty()
+                        )
+                    }
+                }
+                is ContentSlotModel.ChannelBlock -> {
+                    if (menuKeys.isEmpty()) {
+                        updateWidget<FeedBrowseModel.ChannelsWithMenus>(slotId, ResultState.Success) {
+                            it.copy(
+                                menus = mapOf(
+                                    WidgetMenuModel.Default to ItemListState.HasContent(response.channels)
+                                )
+                            )
+                        }
+                    }
+                    else {
+                        updateWidget<FeedBrowseModel.ChannelsWithMenus>(slotId, ResultState.Success) {
+                            val menu = selectedMenu ?: menuKeys.first()
+                            it.copy(
+                                menus = menus + (menu to ItemListState.HasContent(response.channels))
+                            )
+                        }
+                    }
                 }
             }
+        } catch (e: IllegalStateException) { this }
+    }
+
+    private suspend inline fun <reified T: FeedBrowseModel> updateWidget(
+        slotId: String,
+        state: ResultState,
+        onUpdate: (T) -> FeedBrowseModel
+    ) = updateMutex.withLock {
+        _widgets.update {
+            val widget = it[slotId] ?: return@update it
+            if (widget.model !is T) return@update it
+            it + (slotId to FeedBrowseUiModel2(state, onUpdate(widget.model)))
         }
     }
 }

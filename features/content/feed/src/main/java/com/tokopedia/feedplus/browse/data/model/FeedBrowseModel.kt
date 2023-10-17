@@ -1,5 +1,6 @@
 package com.tokopedia.feedplus.browse.data.model
 
+import com.tokopedia.feedplus.browse.presentation.model.ItemListState
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 
 /**
@@ -14,7 +15,8 @@ internal sealed interface FeedBrowseModel {
         override val slotId: String,
         override val title: String,
         val group: String,
-        val menus: Map<WidgetMenuModel, List<PlayWidgetChannelUiModel>>,
+        val menus: Map<WidgetMenuModel, ItemListState<PlayWidgetChannelUiModel>>,
+        val selectedMenuId: String,
     ) : FeedBrowseModel
 
     data class InspirationBanner(
@@ -31,7 +33,6 @@ internal data class WidgetMenuModel(
     val group: String,
     val sourceType: String,
     val sourceId: String,
-    val isSelected: Boolean,
 ) {
 
     val isValid: Boolean = id.isNotBlank()
@@ -43,7 +44,6 @@ internal data class WidgetMenuModel(
                 group = "",
                 sourceType = "",
                 sourceId = "",
-                isSelected = false,
             )
     }
 }

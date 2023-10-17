@@ -17,12 +17,17 @@ internal sealed interface FeedBrowseItemListModel {
     ) : FeedBrowseItemListModel
     data class Chips(
         override val slotId: String,
-        val selectedId: String,
-        val chips: List<WidgetMenuModel>,
-    ) : FeedBrowseItemListModel
+        val chips: List<Model>,
+    ) : FeedBrowseItemListModel {
+
+        data class Model(
+            val menu: WidgetMenuModel,
+            val isSelected: Boolean,
+        )
+    }
     data class HorizontalChannels(
         override val slotId: String,
-        val channels: List<PlayWidgetChannelUiModel>,
+        val itemState: ItemListState<PlayWidgetChannelUiModel>,
     ) : FeedBrowseItemListModel
     data class Banner(
         override val slotId: String,

@@ -17,30 +17,24 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.feedplus.browse.data.model.FeedBrowseModel
 import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
-import com.tokopedia.feedplus.browse.data.model.WidgetRequestModel
 import com.tokopedia.feedplus.browse.data.tracker.FeedBrowseTracker
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseAdapter2
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseItemDecoration
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseBannerViewHolder
-import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseChannelViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseChipsViewHolder
-import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseChipUiModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiAction
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiModel
+import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiModel2
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiState
 import com.tokopedia.feedplus.databinding.FragmentFeedBrowseBinding
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 import com.tokopedia.play_common.util.extension.withCache
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -63,96 +57,96 @@ class FeedBrowseFragment @Inject constructor(
     private var _binding: FragmentFeedBrowseBinding? = null
     private val binding get() = _binding!!
 
-    private val channelListener = object : FeedBrowseChannelViewHolder.Listener {
-        override fun onRetryClicked(
-            extraParam: WidgetRequestModel,
-            widgetModel: FeedBrowseUiModel.Channel
-        ) {
-            viewModel.submitAction(
-                FeedBrowseUiAction.FetchCards(extraParam, widgetModel.id)
-            )
-        }
-
-        override fun onCardImpressed(
-            channelModel: PlayWidgetChannelUiModel,
-            config: PlayWidgetConfigUiModel,
-            widgetModel: FeedBrowseUiModel.Channel,
-            channelPositionInList: Int,
-            verticalWidgetPosition: Int
-        ) {
-            tracker.sendViewChannelCardEvent(
-                item = channelModel,
-                config = config,
-                widget = widgetModel,
-                channelPositionInList = channelPositionInList,
-                verticalWidgetPosition = verticalWidgetPosition
-            )
-        }
-
-        override fun onCardClicked(
-            channelModel: PlayWidgetChannelUiModel,
-            config: PlayWidgetConfigUiModel,
-            widgetModel: FeedBrowseUiModel.Channel,
-            channelPositionInList: Int,
-            verticalWidgetPosition: Int
-        ) {
-            tracker.sendClickChannelCardEvent(
-                item = channelModel,
-                config = config,
-                widget = widgetModel,
-                channelPositionInList = channelPositionInList,
-                verticalWidgetPosition = verticalWidgetPosition
-            )
-            goToPage(channelModel.appLink)
-        }
-
-        override fun onChipImpressed(
-            chipModel: FeedBrowseChipUiModel,
-            widgetModel: FeedBrowseUiModel.Channel,
-            chipPositionInList: Int,
-            verticalWidgetPosition: Int
-        ) {
-            tracker.sendViewChipsWidgetEvent(
-                chipModel,
-                widgetModel,
-                chipPositionInList,
-                verticalWidgetPosition
-            )
-        }
-
-        override fun onChipClicked(
-            chipModel: FeedBrowseChipUiModel,
-            widgetModel: FeedBrowseUiModel.Channel
-        ) {
-            viewModel.submitAction(FeedBrowseUiAction.SelectChip(chipModel, widgetModel.id))
-        }
-
-        override fun onChipSelected(
-            chipModel: FeedBrowseChipUiModel,
-            widgetModel: FeedBrowseUiModel.Channel,
-            chipPositionInList: Int,
-            verticalWidgetPosition: Int
-        ) {
-            tracker.sendClickChipsWidgetEvent(
-                chipModel,
-                widgetModel,
-                chipPositionInList,
-                verticalWidgetPosition
-            )
-            viewModel.submitAction(
-                FeedBrowseUiAction.FetchCards(chipModel.extraParam, widgetModel.id)
-            )
-        }
-
-        override fun onWidgetShouldRefresh(
-            extraParam: WidgetRequestModel,
-            widgetModel: FeedBrowseUiModel.Channel
-        ) {
-            viewModel.submitAction(
-                FeedBrowseUiAction.FetchCards(extraParam, widgetModel.id)
-            )
-        }
-    }
+//    private val channelListener = object : FeedBrowseChannelViewHolder2.Listener {
+//        override fun onRetryClicked(
+//            extraParam: WidgetRequestModel,
+//            widgetModel: FeedBrowseUiModel.Channel
+//        ) {
+//            viewModel.submitAction(
+//                FeedBrowseUiAction.FetchCards(extraParam, widgetModel.id)
+//            )
+//        }
+//
+//        override fun onCardImpressed(
+//            channelModel: PlayWidgetChannelUiModel,
+//            config: PlayWidgetConfigUiModel,
+//            widgetModel: FeedBrowseUiModel.Channel,
+//            channelPositionInList: Int,
+//            verticalWidgetPosition: Int
+//        ) {
+//            tracker.sendViewChannelCardEvent(
+//                item = channelModel,
+//                config = config,
+//                widget = widgetModel,
+//                channelPositionInList = channelPositionInList,
+//                verticalWidgetPosition = verticalWidgetPosition
+//            )
+//        }
+//
+//        override fun onCardClicked(
+//            channelModel: PlayWidgetChannelUiModel,
+//            config: PlayWidgetConfigUiModel,
+//            widgetModel: FeedBrowseUiModel.Channel,
+//            channelPositionInList: Int,
+//            verticalWidgetPosition: Int
+//        ) {
+//            tracker.sendClickChannelCardEvent(
+//                item = channelModel,
+//                config = config,
+//                widget = widgetModel,
+//                channelPositionInList = channelPositionInList,
+//                verticalWidgetPosition = verticalWidgetPosition
+//            )
+//            goToPage(channelModel.appLink)
+//        }
+//
+//        override fun onChipImpressed(
+//            chipModel: FeedBrowseChipUiModel,
+//            widgetModel: FeedBrowseUiModel.Channel,
+//            chipPositionInList: Int,
+//            verticalWidgetPosition: Int
+//        ) {
+//            tracker.sendViewChipsWidgetEvent(
+//                chipModel,
+//                widgetModel,
+//                chipPositionInList,
+//                verticalWidgetPosition
+//            )
+//        }
+//
+//        override fun onChipClicked(
+//            chipModel: FeedBrowseChipUiModel,
+//            widgetModel: FeedBrowseUiModel.Channel
+//        ) {
+//            viewModel.submitAction(FeedBrowseUiAction.SelectChip(chipModel, widgetModel.id))
+//        }
+//
+//        override fun onChipSelected(
+//            chipModel: FeedBrowseChipUiModel,
+//            widgetModel: FeedBrowseUiModel.Channel,
+//            chipPositionInList: Int,
+//            verticalWidgetPosition: Int
+//        ) {
+//            tracker.sendClickChipsWidgetEvent(
+//                chipModel,
+//                widgetModel,
+//                chipPositionInList,
+//                verticalWidgetPosition
+//            )
+//            viewModel.submitAction(
+//                FeedBrowseUiAction.FetchCards(chipModel.extraParam, widgetModel.id)
+//            )
+//        }
+//
+//        override fun onWidgetShouldRefresh(
+//            extraParam: WidgetRequestModel,
+//            widgetModel: FeedBrowseUiModel.Channel
+//        ) {
+//            viewModel.submitAction(
+//                FeedBrowseUiAction.FetchCards(extraParam, widgetModel.id)
+//            )
+//        }
+//    }
 
     private val bannerListener = object : FeedBrowseBannerViewHolder.Listener {
         override fun onBannerClicked(
@@ -182,8 +176,6 @@ class FeedBrowseFragment @Inject constructor(
         }
     }
 
-    //    private val adapter by lazy { FeedBrowseAdapter(channelListener, lifecycleScope, coroutineDispatchers) }
-//    private val adapter by lazy { FeedBrowseAdapter(channelListener, bannerListener, lifecycleScope, coroutineDispatchers) }
     private val adapter by lazy { FeedBrowseAdapter2(chipsListener, bannerListener) }
 
     private val viewModel: FeedBrowseViewModel by viewModels { viewModelFactory }
@@ -271,6 +263,7 @@ class FeedBrowseFragment @Inject constructor(
             spanSizeLookup = adapter.getSpanSizeLookup()
         }
         binding.feedBrowseList.layoutManager = layoutManager
+        binding.feedBrowseList.itemAnimator = null
         binding.feedBrowseList.addItemDecoration(
             FeedBrowseItemDecoration(
                 binding.feedBrowseList.resources,
@@ -338,12 +331,12 @@ class FeedBrowseFragment @Inject constructor(
         binding.feedBrowseHeader.title = newTitle
     }
 
-    private fun renderContent(widgets: List<FeedBrowseModel>) {
-        if (binding.feedBrowseList.isComputingLayout ||
-            binding.feedBrowseList.scrollState != RecyclerView.SCROLL_STATE_IDLE
-        ) {
-            return
-        }
+    private fun renderContent(widgets: List<FeedBrowseUiModel2>) {
+//        if (binding.feedBrowseList.isComputingLayout ||
+//            binding.feedBrowseList.scrollState != RecyclerView.SCROLL_STATE_IDLE
+//        ) {
+//            return
+//        }
         adapter.setList(widgets)
     }
 

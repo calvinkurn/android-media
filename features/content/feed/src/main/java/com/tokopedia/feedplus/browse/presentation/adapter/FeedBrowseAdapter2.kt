@@ -5,12 +5,17 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.feedplus.browse.data.model.FeedBrowseModel
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseBannerViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseChipsViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseHorizontalChannelsViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseTitleViewHolder
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel
+import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiModel2
+import com.tokopedia.feedplus.browse.presentation.model.ItemListState
+import com.tokopedia.feedplus.browse.presentation.model.hasContent
+import com.tokopedia.feedplus.browse.presentation.model.hasContentAndNotEmpty
 
 /**
  * Created by kenny.hadisaputra on 25/09/23
@@ -21,7 +26,7 @@ internal class FeedBrowseAdapter2(
 ) : ListAdapter<FeedBrowseItemListModel, RecyclerView.ViewHolder>(
     object : DiffUtil.ItemCallback<FeedBrowseItemListModel>() {
         override fun areItemsTheSame(oldItem: FeedBrowseItemListModel, newItem: FeedBrowseItemListModel): Boolean {
-            return oldItem.slotId == newItem.slotId
+            return oldItem.slotId == newItem.slotId && oldItem::class == newItem::class
         }
 
         override fun areContentsTheSame(oldItem: FeedBrowseItemListModel, newItem: FeedBrowseItemListModel): Boolean {
@@ -34,8 +39,9 @@ internal class FeedBrowseAdapter2(
         ): Any? {
             val payloadBuilder = FeedBrowsePayloads.Builder()
             if (oldItem is FeedBrowseItemListModel.Chips && newItem is FeedBrowseItemListModel.Chips) {
-                if (oldItem.selectedId != newItem.selectedId) payloadBuilder.addSelectedChipChanged()
-            } else if (oldItem is FeedBrowseItemListModel.HorizontalChannels && newItem is FeedBrowseItemListModel.HorizontalChannels) {
+                payloadBuilder.addChannelChipsChanged()
+            }
+            if (oldItem is FeedBrowseItemListModel.HorizontalChannels && newItem is FeedBrowseItemListModel.HorizontalChannels) {
                 payloadBuilder.addChannelItemsChanged()
             }
 
@@ -114,45 +120,56 @@ internal class FeedBrowseAdapter2(
     }
 
     companion object {
-        private const val TYPE_CHIPS = 0
-        private const val TYPE_HORIZONTAL_CHANNELS = 1
-        private const val TYPE_BANNER = 2
-        private const val TYPE_TITLE = 3
+        internal const val TYPE_CHIPS = 0
+        internal const val TYPE_HORIZONTAL_CHANNELS = 1
+        internal const val TYPE_BANNER = 2
+        internal const val TYPE_TITLE = 3
     }
 
-    fun setList(items: List<FeedBrowseModel>) {
+    fun setList(items: List<FeedBrowseUiModel2>) {
         submitList(items.mapToItems())
     }
 
-    private fun List<FeedBrowseModel>.mapToItems(): List<FeedBrowseItemListModel> {
+    private fun List<FeedBrowseUiModel2>.mapToItems(): List<FeedBrowseItemListModel> {
         return flatMap {
-            when (it) {
-                is FeedBrowseModel.ChannelsWithMenus -> it.mapToItems()
-                is FeedBrowseModel.InspirationBanner -> it.mapToItems()
+            when (it.model) {
+                is FeedBrowseModel.ChannelsWithMenus -> it.model.mapToItems(it.result)
+                is FeedBrowseModel.InspirationBanner -> it.model.mapToItems()
             }
         }
     }
 
-    private fun FeedBrowseModel.ChannelsWithMenus.mapToItems(): List<FeedBrowseItemListModel> {
+    private fun FeedBrowseModel.ChannelsWithMenus.mapToItems(
+        state: ResultState,
+    ): List<FeedBrowseItemListModel> {
         return buildList {
-            val isMenuEmpty = menus.keys.isEmpty() || menus.keys.any { !it.isValid }
-            val selectedMenu = menus.keys.firstOrNull { it.isSelected } ?: menus.keys.firstOrNull()
-            val channelsInSelectedMenu = menus[selectedMenu ?: menus.keys.firstOrNull()].orEmpty()
+            if (state.isLoading) {
+                add(FeedBrowseItemListModel.Title(slotId, title))
+                add(FeedBrowseItemListModel.HorizontalChannels(slotId, ItemListState.Loading))
+                return@buildList
+            }
 
-            if (!isMenuEmpty || channelsInSelectedMenu.isNotEmpty()) add(FeedBrowseItemListModel.Title(slotId, title))
+            val isMenuEmpty = menus.keys.isEmpty() || menus.keys.any { !it.isValid }
+            val selectedMenu = menus.keys.firstOrNull { it.id == selectedMenuId } ?: menus.keys.firstOrNull()
+            val itemsInSelectedMenu = menus[selectedMenu ?: menus.keys.firstOrNull()]
+
+            if (!isMenuEmpty || itemsInSelectedMenu?.hasContentAndNotEmpty() == true) {
+                add(FeedBrowseItemListModel.Title(slotId, title))
+            }
             if (!isMenuEmpty) {
                 add(
                     FeedBrowseItemListModel.Chips(
                         slotId,
-                        selectedMenu?.id.orEmpty(),
-                        menus.keys.toList()
+                        menus.keys.toList().map {
+                            FeedBrowseItemListModel.Chips.Model(it, it == selectedMenu)
+                        }
                     )
                 )
             }
             add(
                 FeedBrowseItemListModel.HorizontalChannels(
                     slotId,
-                    menus[selectedMenu ?: menus.keys.firstOrNull()].orEmpty()
+                    itemsInSelectedMenu ?: ItemListState.Loading
                 )
             )
         }

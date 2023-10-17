@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseChipUiModel
+import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel
 import com.tokopedia.feedplus.databinding.ItemFeedBrowseChipBinding
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -34,14 +35,14 @@ internal class FeedBrowseChipViewHolder private constructor(
         }
     }
 
-    fun bind(item: WidgetMenuModel) {
-        chipView.chipText = item.label
+    fun bind(item: FeedBrowseItemListModel.Chips.Model) {
+        chipView.chipText = item.menu.label
 
-        onChipSelected(item)
+        onChipSelected(item.menu, item.isSelected)
 
         chipView.setOnClickListener {
             if (chipView.chipType == ChipsUnify.TYPE_SELECTED) return@setOnClickListener
-            listener.onChipClicked(item)
+            listener.onChipClicked(item.menu)
         }
     }
 
@@ -60,8 +61,8 @@ internal class FeedBrowseChipViewHolder private constructor(
         }
     }
 
-    private fun onChipSelected(item: WidgetMenuModel) {
-        val newChipType = if (item.isSelected) {
+    private fun onChipSelected(item: WidgetMenuModel, isSelected: Boolean) {
+        val newChipType = if (isSelected) {
             ChipsUnify.TYPE_SELECTED
         } else {
             ChipsUnify.TYPE_NORMAL
@@ -70,7 +71,7 @@ internal class FeedBrowseChipViewHolder private constructor(
             chipView.chipType = newChipType
         }
 
-        if (item.isSelected) {
+        if (isSelected) {
             listener.onChipSelected(item, bindingAdapterPosition)
         }
     }
