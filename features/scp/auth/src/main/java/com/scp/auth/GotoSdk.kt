@@ -3,6 +3,7 @@ package com.scp.auth
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
+import android.content.res.Configuration
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import com.gojek.pin.AppInfo
@@ -82,6 +83,7 @@ object GotoSdk {
                         eventName: ScpAnalyticsEvent,
                         params: Map<String, Any?>
                     ) {
+                        println("trackersdk: $eventName, $params")
                         AuthAnalyticsMapper.trackScreenLsdk(eventName.eventName, params)
                     }
 
@@ -89,6 +91,7 @@ object GotoSdk {
                         eventName: ScpAnalyticsEvent,
                         params: Map<String, Any?>
                     ) {
+                        println("trackersdk: $eventName, $params")
                         if (eventName.eventName == LSdkEventName.LSDK_VERIFICATION_FAIL || eventName.eventName == LSdkEventName.LSDK_LOGIN_FAIL) {
                             ScpUtils.logError(eventName.eventName, params)
                         }
@@ -99,6 +102,7 @@ object GotoSdk {
                         eventName: ScpAnalyticsEvent,
                         params: MutableMap<String, Any?>
                     ) {
+                        println("trackersdk: $eventName, $params")
                         AuthAnalyticsMapper.trackEventLsdk(eventName.eventName, params)
                     }
                 }
@@ -153,7 +157,10 @@ object GotoSdk {
                 appInfo = AppInfo(
                     appType = TOKOPEDIA_APP_TYPE,
                     isDebug = TokopediaUrl.getInstance().TYPE == Env.STAGING,
-                    language = LOCALE_ID
+                    language = LOCALE_ID,
+                    isDarkThemeEnabled = {
+                        application.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
+                    }
                 ),
                 deviceInfo = DeviceInfo(
                     appVersion = GlobalConfig.VERSION_NAME,
@@ -180,6 +187,7 @@ object GotoSdk {
         )
         return GOTOPINSDKINSTANCE!!
     }
+
 
     private fun getDeviceName(): String {
         val manufacturer = Build.MANUFACTURER

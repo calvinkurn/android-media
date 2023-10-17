@@ -34,9 +34,18 @@ object DeeplinkMapperUser {
             deeplink == ApplinkConst.PRIVACY_CENTER -> getApplinkPrivacyCenter()
             deeplink == ApplinkConst.User.DSAR -> ApplinkConstInternalUserPlatform.DSAR
             deeplink == ApplinkConst.LOGIN -> getLoginApplink()
+            deeplink == ApplinkConst.REGISTER_INIT -> getRegisterApplink()
             deeplink.startsWithPattern(ApplinkConst.GOTO_KYC) || deeplink.startsWithPattern(ApplinkConstInternalUserPlatform.GOTO_KYC) -> getApplinkGotoKyc(deeplink)
             deeplink.startsWith(ApplinkConst.GOTO_KYC_WEBVIEW) -> ApplinkConstInternalUserPlatform.GOTO_KYC_WEBVIEW
             else -> deeplink
+        }
+    }
+
+    private fun getRegisterApplink(): String {
+        return if (isGotoLoginEnabled() && GlobalConfig.isSellerApp().not()) {
+            ApplinkConstInternalUserPlatform.SCP_LOGIN
+        } else {
+            ApplinkConstInternalUserPlatform.INIT_REGISTER
         }
     }
 

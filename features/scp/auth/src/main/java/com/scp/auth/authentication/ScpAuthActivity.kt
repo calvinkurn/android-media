@@ -7,14 +7,14 @@ import android.graphics.Bitmap
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
 import com.scp.auth.GotoSdk
-import com.scp.auth.common.utils.TkpdAdditionalHeaders
 import com.scp.auth.common.analytics.AuthAnalyticsMapper
-import com.scp.auth.di.DaggerScpAuthComponent
+import com.scp.auth.common.utils.TkpdAdditionalHeaders
 import com.scp.auth.common.utils.goToForgotGotoPin
 import com.scp.auth.common.utils.goToForgotPassword
 import com.scp.auth.common.utils.goToForgotTokoPinArticle
 import com.scp.auth.common.utils.goToHelpGotoPIN
 import com.scp.auth.common.utils.goToInactivePhoneNumber
+import com.scp.auth.di.DaggerScpAuthComponent
 import com.scp.login.common.utils.LoginImageLoader
 import com.scp.login.core.domain.common.UserCredential
 import com.scp.login.core.domain.contracts.configs.LSdkChooseAccountUiConfigs
@@ -37,6 +37,7 @@ import com.tokopedia.devicefingerprint.integrityapi.IntegrityApiConstant
 import com.tokopedia.devicefingerprint.integrityapi.IntegrityApiWorker
 import com.tokopedia.devicefingerprint.submitdevice.service.SubmitDeviceWorker
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.scp.auth.databinding.ActivityScpAuthBinding
 import com.tokopedia.sessioncommon.util.TwoFactorMluHelper
 import com.tokopedia.url.TokopediaUrl
@@ -175,8 +176,7 @@ class ScpAuthActivity : BaseActivity() {
                     )
                 }
 
-                override fun onLanguageSelectorClicked(activity: Activity) {
-                }
+                override fun onLanguageSelectorClicked(activity: Activity, source: String) {}
             },
             imageLoader = object : LoginImageLoader {
                 override fun loadBitmapFromUrl(
@@ -248,8 +248,8 @@ class ScpAuthActivity : BaseActivity() {
         SubmitDeviceWorker.scheduleWorker(this, true)
         DataVisorWorker.scheduleWorker(this, true)
         TwoFactorMluHelper.clear2FaInterval(this)
-
         getDefaultChosenAddress()
+        RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
         setResult(Activity.RESULT_OK)
         finish()
     }
