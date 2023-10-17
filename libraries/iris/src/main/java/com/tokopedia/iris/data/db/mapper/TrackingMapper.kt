@@ -210,6 +210,7 @@ class TrackingMapper {
                         )
                     )
                 }
+                item.put("os_version", Build.VERSION.RELEASE)
                 item
             } catch (e: JSONException) {
                 JSONObject()
