@@ -14,6 +14,7 @@ import androidx.work.Configuration;
 
 import com.google.android.play.core.splitcompat.SplitCompat;
 import com.tokopedia.abstraction.relic.NewRelicInteractionActCall;
+import com.tokopedia.abstraction.relic.NewRelicInteractionActCallKt;
 import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber;
 import com.tokopedia.analytics.performance.fpi.FrameMetricsMonitoring;
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring;
@@ -310,7 +311,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
 
     private void registerActivityLifecycleCallbacks() {
         registerActivityLifecycleCallbacks(new TrackingQueueActivityLifecycleCallback(this));
-        registerActivityLifecycleCallbacks(new NewRelicInteractionActCall(getUserSession()));
+        registerActivityLifecycleCallbacks(NewRelicInteractionActCallKt.createInstance(getUserSession()));
         registerActivityLifecycleCallbacks(new SessionActivityLifecycleCallbacks());
         if (GlobalConfig.isAllowDebuggingTools()) {
             registerActivityLifecycleCallbacks(new ViewInspectorSubscriber());
