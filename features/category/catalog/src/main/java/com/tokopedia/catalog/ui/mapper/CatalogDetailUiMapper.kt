@@ -435,7 +435,7 @@ class CatalogDetailUiMapper @Inject constructor(
                         .filter { comparisonSpec -> !comparisonSpec.isSpecCategoryTitle }
                         .take(TOP_COMPARISON_SPEC_COUNT)
                 )
-            })
+            }.toMutableList())
     }
 
     private fun getTextColor(darkMode: Boolean): Int {

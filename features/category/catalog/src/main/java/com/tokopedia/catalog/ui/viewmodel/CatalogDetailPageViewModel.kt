@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.catalog.ui.model.CatalogDetailUiModel
+import com.tokopedia.catalogcommon.uimodel.ComparisonUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.oldcatalog.usecase.detail.CatalogDetailUseCase
 import com.tokopedia.searchbar.navigation_component.domain.GetNotificationUseCase
@@ -34,6 +35,10 @@ class CatalogDetailPageViewModel @Inject constructor(
     private val _totalCartItem = MutableLiveData<Int>()
     val totalCartItem: LiveData<Int>
         get() = _totalCartItem
+
+    private val _comparisonUiModel = MutableLiveData<ComparisonUiModel>()
+    val comparisonUiModel: LiveData<ComparisonUiModel>
+        get() = _comparisonUiModel
 
     private val _scrollEvents = MutableStateFlow(0)
     val scrollEvents: Flow<Int> = _scrollEvents.asStateFlow()
@@ -70,7 +75,7 @@ class CatalogDetailPageViewModel @Inject constructor(
                     catalogId,
                     comparedCatalogId
                 )
-                println(result)
+                _comparisonUiModel.postValue(result)
             },
             onError = {
                 _errorsToaster.postValue(it)

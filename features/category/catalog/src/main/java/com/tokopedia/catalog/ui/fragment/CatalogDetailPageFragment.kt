@@ -126,6 +126,7 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
         private const val LOGIN_REQUEST_CODE = 1001
         private const val POSITION_THREE_IN_WIDGET_LIST = 3
         private const val POSITION_TWO_IN_WIDGET_LIST = 2
+        private const val COMPARISON_CHANGED_POSITION = 1
         const val CATALOG_DETAIL_PAGE_FRAGMENT_TAG = "CATALOG_DETAIL_PAGE_FRAGMENT_TAG"
 
         fun newInstance(catalogId: String): CatalogDetailPageFragment {
@@ -320,6 +321,10 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
                 type = Toaster.TYPE_ERROR
             ).show()
         }
+        viewModel.comparisonUiModel.observe(viewLifecycleOwner) {
+            // COMPARISON_CHANGED_POSITION is hardcoded position, will changed at next phase
+            widgetAdapter.changeComparison(COMPARISON_CHANGED_POSITION, it)
+        }
 
         CoroutineScope(Dispatchers.Main).launch {
             viewModel.scrollEvents.debounce(300).collect {
@@ -472,8 +477,6 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
         imageDescription: List<String>,
         brandImageUrl: List<String>
     ) {
-
-
         val impressionImageDescription = if (imageDescription.isNotEmpty()) {
             imageDescription.subList(Int.ZERO, currentPositionVisibility + 1)
         } else {
@@ -683,6 +686,6 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
 
     override fun changeComparison(selectedComparedCatalogId: String) {
         compareCatalogId = selectedComparedCatalogId
-        viewModel.getProductCatalog(catalogId, compareCatalogId)
+        viewModel.getProductCatalogComparisons(catalogId, compareCatalogId)
     }
 }

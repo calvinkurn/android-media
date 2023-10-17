@@ -9,7 +9,7 @@ data class ComparisonUiModel(
     override var widgetBackgroundColor: Int? = null,
     override var widgetTextColor: Int? = null,
     override var darkMode: Boolean = false,
-    val content: List<ComparisonContent> = emptyList()
+    val content: MutableList<ComparisonContent> = mutableListOf()
 ) : BaseCatalogUiModel(
     idWidget, widgetType, widgetName, widgetBackgroundColor, widgetTextColor,
     darkMode
