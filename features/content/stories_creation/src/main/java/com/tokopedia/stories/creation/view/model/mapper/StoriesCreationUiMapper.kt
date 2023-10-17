@@ -35,8 +35,12 @@ class StoriesCreationUiMapper @Inject constructor(
 
         return StoriesCreationConfiguration(
             storiesId = config.draftStoryId,
-            maxProductTag = 30,
-            showDuration = "24 Jam",
+            maxProductTag = config.maxProductTag,
+            showDuration = config.showDuration,
+            minVideoDuration = config.minVideoDuration,
+            maxVideoDuration = config.maxVideoDuration,
+            imageSourceId = config.imageSourceId,
+            videoSourceId = config.videoSourceId,
             maxStoriesConfig = StoriesCreationConfiguration.MaxStoriesConfig(
                 isLimitReached = config.maxStoryBottomSheetConfig.isLimitReached,
                 imageUrl = config.maxStoryBottomSheetConfig.imageUrl,

@@ -11,6 +11,27 @@ data class StoriesCreationConfigResponse(
 
     @SerializedName("draft_story_id")
     val draftStoryId: String = "",
+
+    @SerializedName("min_video_duration")
+    val minVideoDuration: Long = 0L,
+
+    @SerializedName("max_video_duration")
+    val maxVideoDuration: Long = 0L,
+
+    @SerializedName("min_product_tag")
+    val minProductTag: Int = 0,
+
+    @SerializedName("max_product_tag")
+    val maxProductTag: Int = 0,
+
+    @SerializedName("show_duration")
+    val showDuration: String = "",
+
+    @SerializedName("image_source_id")
+    val imageSourceId: String = "",
+
+    @SerializedName("video_source_id")
+    val videoSourceId: String = "",
 ) {
 
     data class MaxStoryBottomSheetConfig(

@@ -36,7 +36,6 @@
 
     <string name="host_play_broadcaster" translatable="false">play-broadcaster</string>
     <string name="host_play_shorts" translatable="false">play-shorts</string>
-    <string name="host_stories" translatable="false">stories</string>
 
     <string name="applink_kol_title_comment">Comments</string>
     <string name="applink_kol_title_post_detail" translatable="false">Post Detail</string>

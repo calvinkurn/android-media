@@ -393,7 +393,7 @@ open class SomListOrderViewHolder(
     private fun onQuickActionButtonClicked(element: SomListOrderUiModel) {
         element.buttons.firstOrNull()?.let { button ->
             when (button.key) {
-                KEY_TRACK_SELLER -> listener.onTrackButtonClicked(element.orderId, button.url)
+                KEY_TRACK_SELLER -> listener.onTrackButtonClicked(button.url)
                 KEY_CONFIRM_SHIPPING -> listener.onConfirmShippingButtonClicked(button.displayName, element.orderId, skipValidateOrder(element))
                 KEY_CONFIRM_SHIPPING_AUTO, KEY_CONFIRM_SHIPPING_DROP_OFF -> listener.onConfirmShippingAutoButtonClicked(element.buttons.firstOrNull()?.popUp)
                 KEY_ACCEPT_ORDER -> listener.onAcceptOrderButtonClicked(button.displayName, element.orderId, skipValidateOrder(element))
@@ -491,7 +491,7 @@ open class SomListOrderViewHolder(
         fun onCheckChanged()
         fun onCheckBoxClickedWhenDisabled()
         fun onOrderClicked(order: SomListOrderUiModel)
-        fun onTrackButtonClicked(orderId: String, url: String)
+        fun onTrackButtonClicked(url: String)
         fun onConfirmShippingButtonClicked(actionName: String, orderId: String, skipValidateOrder: Boolean)
         fun onConfirmShippingAutoButtonClicked(popUp: PopUp?)
         fun onAcceptOrderButtonClicked(actionName: String, orderId: String, skipValidateOrder: Boolean)

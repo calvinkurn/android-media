@@ -87,12 +87,17 @@ class SearchOutOfCoverageTest : SearchTestFixtures() {
         `When view created`()
 
         `Then verify search API first page is not called`()
+        `Then assert stop performance monitoring is Unit`()
+    }
+
+    private fun `Then assert stop performance monitoring is Unit`() {
+        assertThat(tokoNowSearchViewModel.stopPerformanceMonitoringLiveData.value, shouldBe(Unit))
     }
 
     private fun `Given get warehouse API will fail`() {
         coEvery {
             getWarehouseUseCase(DEFAULT_VALUE_SOURCE_SEARCH)
-        } throws Throwable()
+        } throws Exception()
     }
 
     private fun `Then verify search API first page is not called`() {
@@ -152,5 +157,6 @@ class SearchOutOfCoverageTest : SearchTestFixtures() {
         `When view created`()
 
         `Then assert page showing out of coverage`()
+        `Then assert stop performance monitoring is Unit`()
     }
 }

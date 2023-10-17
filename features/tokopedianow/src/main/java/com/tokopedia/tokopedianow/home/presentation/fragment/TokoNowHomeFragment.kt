@@ -209,8 +209,6 @@ class TokoNowHomeFragment :
         private const val WHILE_SCROLLING_VERTICALLY = 1
         private const val PARAM_AFFILIATE_UUID = "aff_unique_id"
         private const val PARAM_AFFILIATE_CHANNEL = "channel"
-        private const val REPURCHASE_EXPERIMENT_ENABLED = "experiment_variant"
-        private const val REPURCHASE_EXPERIMENT_DISABLED = "control_variant"
         private const val VERTICAL_SCROLL_FULL_BOTTOM_OFFSET = 0
 
         const val CATEGORY_LEVEL_DEPTH = 1
@@ -2045,7 +2043,8 @@ class TokoNowHomeFragment :
             userSession = userSession,
             viewModel = viewModelTokoNow,
             analytics = analytics,
-            startActivityForResult = this::startActivityForResult
+            startActivityForResult = this::startActivityForResult,
+            onBlockAddToCartListener = ::showToasterWhenAddToCartBlocked
         )
     }
 
