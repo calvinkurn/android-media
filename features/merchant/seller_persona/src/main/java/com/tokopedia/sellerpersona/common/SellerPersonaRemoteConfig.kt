@@ -16,6 +16,6 @@ class SellerPersonaRemoteConfig @Inject constructor(
     }
 
     companion object {
-        private const val COMPOSE_ENABLED = ""
+        private const val COMPOSE_ENABLED = "android_seller_app_persona_compose_enabled"
     }
 }
