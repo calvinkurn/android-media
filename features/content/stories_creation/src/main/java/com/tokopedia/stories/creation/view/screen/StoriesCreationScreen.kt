@@ -55,6 +55,7 @@ import com.tokopedia.unifycomponents.R as unifycomponentsR
 @Composable
 fun StoriesCreationScreen(
     uiState: StoriesCreationUiState,
+    onImpressScreen: () -> Unit,
     onLoadMediaPreview: suspend (filePath: String) -> Bitmap?,
     onBackPressed: () -> Unit,
     onClickChangeAccount: () -> Unit,
@@ -76,6 +77,10 @@ fun StoriesCreationScreen(
 
     if (uiState.mediaFilePath.isEmpty()) {
         return
+    }
+
+    LaunchedEffect(Unit) {
+        onImpressScreen()
     }
 
     ConstraintLayout(
@@ -393,6 +398,7 @@ private fun StoriesCreationScreenPreview() {
 
             StoriesCreationScreen(
                 uiState = uiState,
+                onImpressScreen = {},
                 onLoadMediaPreview = { null },
                 onBackPressed = {},
                 onClickChangeAccount = {},

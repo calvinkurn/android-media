@@ -5,6 +5,8 @@ import com.tokopedia.content.common.util.bottomsheet.NavigationBarColorDialogCus
 import com.tokopedia.content.product.picker.seller.analytic.ContentPinnedProductAnalytic
 import com.tokopedia.content.product.picker.seller.analytic.ContentProductPickerSellerAnalytic
 import com.tokopedia.content.product.picker.seller.domain.repository.ContentProductPickerSellerRepository
+import com.tokopedia.stories.creation.analytic.StoriesCreationAnalytic
+import com.tokopedia.stories.creation.analytic.StoriesCreationAnalyticImpl
 import com.tokopedia.stories.creation.analytic.product.seller.StoriesCreationPinnedProductAnalytic
 import com.tokopedia.stories.creation.analytic.product.seller.StoriesCreationProductSellerAnalytic
 import com.tokopedia.stories.creation.data.StoriesCreationProductRepositoryImpl
@@ -25,6 +27,10 @@ abstract class StoriesCreationBindModule {
     abstract fun bindStoriesCreationRepository(repository: StoriesCreationRepositoryImpl): StoriesCreationRepository
 
     /** Analytic */
+    @Binds
+    @StoriesCreationScope
+    abstract fun bindStoriesCreationAnalytic(storiesCreationAnalytic: StoriesCreationAnalyticImpl): StoriesCreationAnalytic
+
     @Binds
     @StoriesCreationScope
     abstract fun bindStoriesCreationProductSellerAnalytic(storiesCreationProductSellerAnalytic: StoriesCreationProductSellerAnalytic): ContentProductPickerSellerAnalytic
