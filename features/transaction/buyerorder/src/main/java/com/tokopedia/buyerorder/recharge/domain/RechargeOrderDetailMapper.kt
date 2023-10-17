@@ -101,6 +101,5 @@ class RechargeOrderDetailMapper {
         }
 
         private const val DATE_LABEL = "Tanggal"
-        private const val VOUCHER_CODE_LABEL = "Kode Voucher"
     }
 }
