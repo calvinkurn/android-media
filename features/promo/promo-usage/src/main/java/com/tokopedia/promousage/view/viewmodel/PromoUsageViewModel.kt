@@ -788,8 +788,7 @@ class PromoUsageViewModel @Inject constructor(
                 // When adjusting item after deselection event, revert item state back to normal
                 // with secondary promo if primary is clashing and secondary is empty
                 if (resultItem.state is PromoItemState.Disabled) {
-                    if (resultItem.currentClashingPromoCodes.contains(selectedItem.code) &&
-                        resultItem.currentClashingPromoCodes.count() == 1 &&
+                    if (resultItem.currentClashingPromoCodes.contains(selectedPromoCode) &&
                         resultItem.currentClashingSecondaryPromoCodes.isEmpty()
                     ) {
                         PromoItemState.Normal(useSecondaryPromo = true)
