@@ -8,7 +8,7 @@ object IconJumperUtil {
     fun isEnabledIconJumper(): Boolean {
         return RemoteConfigInstance.getInstance().abTestPlatform.getString(
             RollenceKey.ICON_JUMPER,
-            ""
-        ) == RollenceKey.ICON_JUMPER
+            RollenceKey.ICON_JUMPER_DEFAULT
+        ) == RollenceKey.ICON_JUMPER_EXP
     }
 }
