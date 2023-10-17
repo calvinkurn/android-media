@@ -1,7 +1,6 @@
 package com.tokopedia.createpost.view.adapter
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -76,18 +75,16 @@ class RelatedProductAdapter(
     private fun shouldAddEmpty() = type != TYPE_PREVIEW
 
     class ViewHolder(
-        v: View,
+        private val view: View,
         private val listener: RelatedProductListener?
-    ) : RecyclerView.ViewHolder(v) {
+    ) : RecyclerView.ViewHolder(view) {
 
-        private val rootView: View = v
-        private val context: Context = v.context
-        private val thumbnail: ImageView = v.findViewById(R.id.thumbnail)
-        private val delete: ImageView = v.findViewById(R.id.delete)
-        private val separatorBottom: View = v.findViewById(R.id.separatorBottom)
-        private val separatorBottomEmpty: View = v.findViewById(R.id.separatorBottomEmpty)
-        private val name: Typography = v.findViewById(R.id.name)
-        private val price: Typography = v.findViewById(R.id.price)
+        private val thumbnail: ImageView = view.findViewById(R.id.thumbnail)
+        private val delete: ImageView = view.findViewById(R.id.delete)
+        private val separatorBottom: View = view.findViewById(R.id.separatorBottom)
+        private val separatorBottomEmpty: View = view.findViewById(R.id.separatorBottomEmpty)
+        private val name: Typography = view.findViewById(R.id.name)
+        private val price: Typography = view.findViewById(R.id.price)
 
         fun bindData(
             element: RelatedProductItem,
@@ -98,7 +95,7 @@ class RelatedProductAdapter(
                 delete.hide()
                 separatorBottom.hide()
                 separatorBottomEmpty.show()
-                rootView.setOnClickListener {
+                view.setOnClickListener {
                     listener?.onEmptyProductClick()
                 }
             } else {
@@ -106,13 +103,12 @@ class RelatedProductAdapter(
                 delete.showWithCondition(type != TYPE_PREVIEW)
                 separatorBottom.show()
                 separatorBottomEmpty.hide()
-                rootView.setOnClickListener { }
             }
             name.text = element.name
             price.text = element.price
             price.setTextColor(
                 MethodChecker.getColor(
-                    context,
+                    view.context,
                     if (element.type == TYPE_AFFILIATE) unifyprinciplesR.color.Unify_BN500
                     else unifyprinciplesR.color.Unify_YN500
                 )
