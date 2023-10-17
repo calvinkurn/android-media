@@ -24,6 +24,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.sellerpersona.R
+import com.tokopedia.sellerpersona.common.SellerPersonaRemoteConfig
 import com.tokopedia.sellerpersona.data.local.PersonaSharedPrefInterface
 import com.tokopedia.sellerpersona.data.remote.model.PersonaStatusModel
 import com.tokopedia.sellerpersona.databinding.ActivitySellerPersonaBinding
@@ -35,6 +36,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by @ilhamsuaib on 17/01/23.
@@ -47,6 +49,9 @@ class SellerPersonaActivity : BaseActivity(), HasComponent<SellerPersonaComponen
 
     @Inject
     lateinit var sharedPref: PersonaSharedPrefInterface
+
+    @Inject
+    lateinit var remoteConfig: SellerPersonaRemoteConfig
 
     val openingImpressHolder by lazy { ImpressHolder() }
 
@@ -148,7 +153,7 @@ class SellerPersonaActivity : BaseActivity(), HasComponent<SellerPersonaComponen
     }
 
     private fun getDefaultDestination(persona: String): Int {
-        val isComposeEnabled = true //todo : will use remote config here
+        val isComposeEnabled = remoteConfig.isComposeEnabled()
         val hasPersona = persona.isNotBlank()
         return when {
             isComposeEnabled && hasPersona -> R.id.composeResultFragment
@@ -182,7 +187,7 @@ class SellerPersonaActivity : BaseActivity(), HasComponent<SellerPersonaComponen
 
     private fun setWhiteStatusBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            setStatusBarColor(getResColor(com.tokopedia.unifyprinciples.R.color.Unify_Background))
+            setStatusBarColor(getResColor(unifyprinciplesR.color.Unify_Background))
             setLightStatusBar(!isDarkMode())
         }
     }
