@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.view.util
 
 import android.content.Context
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -20,7 +21,6 @@ import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
 import com.tokopedia.product.detail.common.data.model.rates.ShipmentPlus
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
-import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.product.detail.data.model.ProductInfoP2Other
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.datamodel.ArButtonDataModel
@@ -87,6 +87,7 @@ import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWi
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlin.math.roundToLong
+import com.tokopedia.common_tradein.R as common_tradeinR
 
 /**
  * This class hold all of the ViewHolder data. They have same instance.
@@ -206,12 +207,15 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                         isVariant = it.data.variant.isVariant,
                         productName = it.data.name,
                         isProductActive = it.basic.isActive()
-                    )
-                    data?.campaign?.originalPriceFmt =
-                        it.data.campaign.originalPrice.getCurrencyFormatted()
-                    data?.campaign?.discountedPriceFmt =
-                        it.data.campaign.discountedPrice.getCurrencyFormatted()
-                    data?.price?.priceFmt = it.data.price.value.getCurrencyFormatted()
+                    ).apply {
+                        campaign.originalPriceFmt = campaign.originalPrice.getCurrencyFormatted()
+                        campaign.discountedPriceFmt = campaign.discountedPrice.getCurrencyFormatted()
+                        price = price.copy(
+                            priceFmt = price.priceFmt.ifNullOrBlank {
+                                price.value.getCurrencyFormatted()
+                            }
+                        )
+                    }
 
                     shouldShowCampaign = ongoingCampaignData == null
                     isWishlisted = it.data.isWishlist
@@ -354,14 +358,14 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             productTradeinMap?.run {
                 subtitle = if (tradeinResponse.usedPrice.toIntOrZero() > 0) {
                     context?.getString(
-                        com.tokopedia.common_tradein.R.string.text_price_holder,
+                        common_tradeinR.string.text_price_holder,
                         CurrencyFormatUtil.convertPriceValueToIdrFormat(
                             tradeinResponse.usedPrice.toIntOrZero(),
                             true
                         )
                     ).orEmpty()
                     context?.getString(
-                        com.tokopedia.common_tradein.R.string.text_price_holder,
+                        common_tradeinR.string.text_price_holder,
                         CurrencyFormatUtil.convertPriceValueToIdrFormat(
                             tradeinResponse.usedPrice.toIntOrZero(),
                             true
@@ -370,7 +374,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 } else if (tradeinResponse.widgetString.isNotBlank()) {
                     tradeinResponse.widgetString
                 } else {
-                    context?.getString(com.tokopedia.common_tradein.R.string.trade_in_exchange)
+                    context?.getString(common_tradeinR.string.trade_in_exchange)
                         .orEmpty()
                 }
             }
