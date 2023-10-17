@@ -66,22 +66,31 @@ class DsarViewModel @Inject constructor(
                 selectedDate = CustomDateModel(
                     startDate = startDate.toString(DateUtil.YYYYMMDD),
                     endDate = endDate.toString(DateUtil.YYYYMMDD)
-                )
+                ),
+                isChecked = true
             )
         } else {
             _transactionHistoryModel.value = _transactionHistoryModel.value?.copy(
-                selectedDate = DsarUtils.getDateFromSelectedId(selectedItem)
+                selectedDate = DsarUtils.getDateFromSelectedId(selectedItem),
+                isChecked = true
             )
         }
-    }
-
-    fun onTransactionHistorySelected() {
-        _transactionHistoryModel.value = _transactionHistoryModel.value?.copy(showBottomSheet = true, isChecked = true)
         addFilter(DsarConstants.FILTER_TYPE_TRANSACTION)
     }
 
+    fun onTransactionHistorySelected() {
+        _transactionHistoryModel.value = _transactionHistoryModel.value?.copy(showBottomSheet = true, isChecked = false)
+    }
+
     fun onTransactionHistoryDeselected() {
-        _transactionHistoryModel.value = _transactionHistoryModel.value?.copy(showBottomSheet = false, isChecked = false)
+        _transactionHistoryModel.value = _transactionHistoryModel.value?.copy(
+            showBottomSheet = false,
+            isChecked = false,
+            selectedDate = CustomDateModel(
+                startDate = "",
+                endDate = ""
+            )
+        )
         removeFilter(DsarConstants.FILTER_TYPE_TRANSACTION)
     }
 

@@ -140,6 +140,7 @@ class DsarFragment : BaseDaggerFragment(), OnDateChangedListener {
     }
 
     private fun renderSelectedDateLayout(transactionHistoryModel: TransactionHistoryModel) {
+        binding?.layoutOptions?.itemTransactionHistory?.mainLayout?.isActivated = transactionHistoryModel.isChecked
         binding?.layoutOptions?.itemTransactionHistory?.checkIcon?.showWithCondition(transactionHistoryModel.isChecked)
         if (transactionHistoryModel.isChecked) {
             val shouldShowDate = transactionHistoryModel.selectedDate.startDate.isNotEmpty() && transactionHistoryModel.selectedDate.endDate.isNotEmpty()
@@ -267,8 +268,7 @@ class DsarFragment : BaseDaggerFragment(), OnDateChangedListener {
         }
         binding?.layoutOptions?.itemTransactionHistory?.apply {
             mainLayout.setOnClickListener {
-                it.isActivated = !it.isActivated
-                if (!it.isActivated) {
+                if (it.isActivated) {
                     viewModel.onTransactionHistoryDeselected()
                 } else {
                     viewModel.onTransactionHistorySelected()
@@ -293,13 +293,12 @@ class DsarFragment : BaseDaggerFragment(), OnDateChangedListener {
     private fun showTransactionHistoryBtmSheet() {
         activity?.supportFragmentManager?.let {
             if (rangePickerBottomSheet == null) {
-                rangePickerBottomSheet =
-                    DsarHistoryTransactionBottomSheet(requireActivity()) { item, isChecked, customDate ->
-                        onItemRangeClicked(item, isChecked, customDate)
-                    }
-                rangePickerBottomSheet?.setCloseClickListener { viewModel.onTransactionHistoryDeselected() }
+                rangePickerBottomSheet = DsarHistoryTransactionBottomSheet()
             }
-            rangePickerBottomSheet?.show(fragmentMgr = it)
+            rangePickerBottomSheet?.setOnDismissListener { item, isChecked, customDate ->
+                onItemRangeClicked(item, isChecked, customDate)
+            }
+            rangePickerBottomSheet?.show(childFragmentManager, TAG_CUSTOM_RANGE_BOTTOM_SHEET)
         }
     }
 
@@ -345,11 +344,11 @@ class DsarFragment : BaseDaggerFragment(), OnDateChangedListener {
     }
 
     companion object {
-        const val STATE_START = 0
-        const val STATE_END = 1
         const val REQUEST_SECURITY_QUESTION = 100
         const val REQUEST_ADD_EMAIL = 101
         const val OTP_TYPE = 170
+
+        private const val TAG_CUSTOM_RANGE_BOTTOM_SHEET = "TAG_CUSTOM_RANGE_BOTTOM_SHEET"
 
         fun newInstance() = DsarFragment()
     }
