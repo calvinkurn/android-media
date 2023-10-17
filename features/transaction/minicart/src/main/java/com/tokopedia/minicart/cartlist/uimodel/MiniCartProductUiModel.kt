@@ -1,6 +1,7 @@
 package com.tokopedia.minicart.cartlist.uimodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.cartcommon.data.response.common.ProductTagInfo
 import com.tokopedia.minicart.cartlist.adapter.MiniCartListAdapterTypeFactory
 import com.tokopedia.minicart.common.data.response.minicartlist.Action
 import com.tokopedia.minicart.common.data.response.minicartlist.Action.Companion.ACTION_DELETE
@@ -21,6 +22,7 @@ data class MiniCartProductUiModel(
     var productInitialPriceBeforeDrop: Double = 0.0,
     var productPrice: Double = 0.0,
     var productInformation: List<String> = emptyList(),
+    var productTagInfo: List<ProductTagInfo> = emptyList(),
     var productNotes: String = "",
     var productQty: Int = 0,
     var productWeight: Int = 0,
@@ -87,6 +89,7 @@ data class MiniCartProductUiModel(
             productPrice = this.productPrice,
             productInformation = this.productInformation,
             productNotes = this.productNotes,
+            productTagInfo = this.productTagInfo,
             productQty = this.productQty,
             productWeight = this.productWeight,
             productMinOrder = this.productMinOrder,

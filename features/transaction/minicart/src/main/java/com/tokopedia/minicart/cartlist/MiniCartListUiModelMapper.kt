@@ -387,6 +387,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
             productInitialPriceBeforeDrop = product.initialPrice
             productPrice = product.productPrice
             productInformation = product.productInformation
+            productTagInfo = product.productTagInfo
             productNotes = product.productNotes
             productQty = if (product.productSwitchInvenage == 0) {
                 productQuantity
@@ -548,6 +549,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
                     productParentId = visitable.parentId
                     quantity = visitable.productQty
                     notes = visitable.productNotes
+                    productTagInfo = visitable.productTagInfo
                     cartString = visitable.cartString
                     campaignId = visitable.campaignId
                     attribution = visitable.attribution
