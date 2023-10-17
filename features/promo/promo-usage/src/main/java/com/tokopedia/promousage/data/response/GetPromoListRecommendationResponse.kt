@@ -76,7 +76,7 @@ data class PromoRecommendation(
     @SerializedName("background_color")
     val backgroundColor: String = "",
     @SerializedName("animation_url")
-    val animationUrl: String = "",
+    val animationUrl: String = ""
 )
 
 data class CouponSection(
@@ -89,7 +89,7 @@ data class CouponSection(
     @SerializedName("coupons")
     val coupons: List<Coupon>,
     @SerializedName("coupon_groups")
-    val couponGroups: List<CouponGroup> = emptyList(),
+    val couponGroups: List<CouponGroup> = emptyList()
 )
 
 data class Coupon(
@@ -119,6 +119,8 @@ data class Coupon(
     val isGroupHeader: Boolean = false,
     @SerializedName("group_id")
     val groupId: Long = 0,
+    @SerializedName("is_recommended")
+    val isRecommended: Boolean = false,
     @SerializedName("is_selected")
     val isSelected: Boolean = false,
     @SerializedName("is_attempted")
@@ -225,7 +227,7 @@ data class PromoInfo(
     @SerializedName("title")
     val title: String = "",
     @SerializedName("icon")
-    val icon: String = "",
+    val icon: String = ""
 )
 
 data class Cta(
@@ -291,7 +293,7 @@ data class SecondaryCoupon(
     @SerializedName("promo_infos")
     val promoInfos: List<PromoInfo> = emptyList(),
     @SerializedName("cta")
-    val cta: Cta = Cta(),
+    val cta: Cta = Cta()
 )
 
 data class EntryPointInfo(

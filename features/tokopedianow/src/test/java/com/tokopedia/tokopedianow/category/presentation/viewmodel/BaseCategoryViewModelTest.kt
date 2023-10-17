@@ -14,6 +14,7 @@ import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import com.tokopedia.user.session.UserSessionInterface
+import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
@@ -154,19 +155,15 @@ class BaseCategoryViewModelTest {
     }
 
     private fun onGetShopAndWarehouse_thenReturn(response: GetStateChosenAddressResponse) {
-        every {
-            getShopAndWarehouseUseCase.getStateChosenAddress(any(), any(), any())
-        } answers {
-            firstArg<(GetStateChosenAddressResponse) -> Unit>().invoke(response)
-        }
+        coEvery {
+            getShopAndWarehouseUseCase(any())
+        } returns response
     }
 
     private fun onGetShopAndWarehouse_throwsError() {
-        every {
-            getShopAndWarehouseUseCase.getStateChosenAddress(any(), any(), any())
-        } answers {
-            secondArg<(Throwable) -> Unit>().invoke(NullPointerException())
-        }
+        coEvery {
+            getShopAndWarehouseUseCase(any())
+        } throws NullPointerException()
     }
 
     private fun onGetIsChoosenAddressUpdated_thenReturn(isUpdated: Boolean) {
@@ -190,7 +187,7 @@ class BaseCategoryViewModelTest {
     }
 
     private fun verifyGetShopAndWarehouseUseCaseCalled() {
-        verify { getShopAndWarehouseUseCase.getStateChosenAddress(any(), any(), any()) }
+        coVerify { getShopAndWarehouseUseCase(any()) }
     }
 
     private fun verifyUpdateAddressData(response: GetStateChosenAddressResponse) {

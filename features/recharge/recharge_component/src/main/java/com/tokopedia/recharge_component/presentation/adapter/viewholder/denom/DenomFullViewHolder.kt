@@ -22,6 +22,8 @@ import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifyprinciples.R.dimen as unifyDimens
+import com.tokopedia.resources.common.R as resourcescommonR
+import com.tokopedia.recharge_component.R as recharge_componentR
 
 class DenomFullViewHolder(
     private val denomFullListener: RechargeDenomFullListener,
@@ -157,7 +159,7 @@ class DenomFullViewHolder(
                 if (denomFull.status == DenomConst.DENOM_STATUS_OUT_OF_STOCK) {
 
                     show()
-                    setStatusOutOfStockColor(resources.getString(com.tokopedia.recharge_component.R.string.out_of_stock_label_denom_digital))
+                    setStatusOutOfStockColor(resources.getString(recharge_componentR.string.out_of_stock_label_denom_digital))
 
                     val labelParams = this.layoutParams as ConstraintLayout.LayoutParams
                     labelParams.topToTop = ConstraintLayout.LayoutParams.UNSET
@@ -216,7 +218,7 @@ class DenomFullViewHolder(
                     setProgressIcon(
                         icon = ContextCompat.getDrawable(
                             context,
-                            com.tokopedia.resources.common.R.drawable.ic_fire_filled_product_card
+                            resourcescommonR.drawable.ic_fire_filled_product_card
                         ),
                         width = getDimens(R.dimen.widget_denom_flash_sale_image_width),
                         height = getDimens(R.dimen.widget_denom_flash_sale_image_height)
@@ -247,19 +249,12 @@ class DenomFullViewHolder(
                         ViewGroup.LayoutParams.MATCH_PARENT
                     } else getDimens(R.dimen.widget_denom_full_width)
 
-                    layoutParams.height = if (denomType == DenomWidgetEnum.MCCM_FULL_TYPE){
-                        ViewGroup.LayoutParams.MATCH_PARENT
-                    } else ViewGroup.LayoutParams.WRAP_CONTENT
+                    layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
                 }
 
                 cardType = if(denomFull.status == DenomConst.DENOM_STATUS_OUT_OF_STOCK) CardUnify.TYPE_BORDER_DISABLED
                     else if (isSelectedItem) CardUnify.TYPE_BORDER_ACTIVE
-                    else if (denomType == DenomWidgetEnum.MCCM_FULL_TYPE) CardUnify.TYPE_SHADOW
                     else CardUnify.TYPE_BORDER
-
-                if (denomType == DenomWidgetEnum.MCCM_FULL_TYPE && isOnlyOneSize){
-                    setMargin(0, 0,  getDimens(unifyDimens.spacing_lvl3), 0)
-                }
             }
 
             root.setOnClickListener {
