@@ -2790,11 +2790,14 @@ class CartViewModel @Inject constructor(
     }
 
     fun isPromoRevamp(): Boolean {
-        cartModel.cartListData?.let { data ->
-            return PromoUsageRollenceManager()
-                .isRevamp(data.promo.lastApplyPromo.lastApplyPromoData.userGroupMetadata)
+        if (cartPromoEntryPointProcessor.isPromoRevamp == null) {
+            val isRevamp = cartModel.cartListData?.let { data ->
+                PromoUsageRollenceManager()
+                    .isRevamp(data.promo.lastApplyPromo.lastApplyPromoData.userGroupMetadata)
+            } ?: false
+            cartPromoEntryPointProcessor.isPromoRevamp = isRevamp
         }
-        return false
+        return cartPromoEntryPointProcessor.isPromoRevamp == true
     }
 
     fun getEntryPointInfoFromLastApply(lastApply: LastApplyUiModel) {
@@ -2812,25 +2815,20 @@ class CartViewModel @Inject constructor(
         )
     }
 
-    fun getEntryPointInfoDefault() {
-        launchCatchError(
-            context = dispatchers.main,
-            block = {
-                _entryPointInfoEvent.postValue(EntryPointInfoEvent.Loading)
-                cartModel.cartListData?.let { data ->
-                    val lastApply = CartUiModelMapper.mapLastApplySimplified(data.promo.lastApplyPromo.lastApplyPromoData)
-                    val entryPointEvent = cartPromoEntryPointProcessor
-                        .getEntryPointInfoFromLastApply(lastApply, cartModel, cartDataList.value)
-                    _entryPointInfoEvent.postValue(entryPointEvent)
-                }
-            },
-            onError = {
-                cartModel.cartListData?.let { data ->
-                    val lastApply = CartUiModelMapper.mapLastApplySimplified(data.promo.lastApplyPromo.lastApplyPromoData)
-                    _entryPointInfoEvent.postValue(EntryPointInfoEvent.Error(lastApply))
-                }
+    fun getEntryPointInfoDefault(appliedPromoCodes: List<String> = emptyList()) {
+        if (isPromoRevamp()) {
+            val lastApplyUiModel = cartModel.cartListData?.let { data ->
+                CartUiModelMapper.mapLastApplySimplified(data.promo.lastApplyPromo.lastApplyPromoData)
             }
-        )
+            lastApplyUiModel?.let {
+                getEntryPointInfoFromLastApply(lastApplyUiModel.copy(additionalInfo = lastApplyUiModel.additionalInfo.copy(usageSummaries = emptyList())))
+            }
+        } else {
+            _entryPointInfoEvent.postValue(
+                cartPromoEntryPointProcessor
+                    .getEntryPointInfoActiveDefault(appliedPromoCodes)
+            )
+        }
     }
 
     fun getEntryPointInfoNoItemSelected() {
