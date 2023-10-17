@@ -8,12 +8,15 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.RelativeLayout
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.layanan_finansial.databinding.LayananSectionViewBinding
 import com.tokopedia.layanan_finansial.view.adapter.LayananAdapter
 import com.tokopedia.layanan_finansial.view.models.LayananSectionModel
+import com.tokopedia.utils.resources.isDarkMode
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class LayananSectionView : RelativeLayout {
 
@@ -34,7 +37,9 @@ class LayananSectionView : RelativeLayout {
                 val list = it.backgroundColor.split("-")
                 val gradient = GradientDrawable(
                     GradientDrawable.Orientation.TOP_BOTTOM,
-                    intArrayOf(Color.parseColor(list[0]), Color.parseColor(list[1]))
+                    intArrayOf
+                        (ContextCompat.getColor(context, unifyprinciplesR.color.Unify_Background),
+                        if (context.isDarkMode()) ContextCompat.getColor(context, unifyprinciplesR.color.Unify_GN50) else Color.parseColor(list[1]))
                 )
                 gradient.setCornerRadius(0f)
                 setBackgroundDrawable(gradient)
