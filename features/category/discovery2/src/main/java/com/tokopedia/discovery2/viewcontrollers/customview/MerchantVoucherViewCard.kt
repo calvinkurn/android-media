@@ -82,6 +82,10 @@ class MerchantVoucherViewCard @JvmOverloads constructor(
         binding.root.setOnClickListener {
             action.invoke()
         }
+
+        binding.actionBtn.setOnClickListener {
+            action.invoke()
+        }
     }
 
     companion object {
