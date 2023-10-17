@@ -18,6 +18,7 @@ import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.percentFormatted
 import com.tokopedia.kotlin.extensions.view.toZeroStringIfNull
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregatorUiData
@@ -377,7 +378,7 @@ object AtcCommonMapper {
             selectedChild?.campaign?.discountedPrice?.getCurrencyFormatted().orEmpty()
         }
         val discPercentageFmt = selectedChild?.discPercentage.ifNullOrBlank {
-            String.format("%.0f%s", selectedChild?.campaign?.discountedPercentage.orZero(), "%")
+            selectedChild?.campaign?.discountedPercentage.orZero().percentFormatted()
         }
 
         val headerData = ProductHeaderData(

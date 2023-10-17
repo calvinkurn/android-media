@@ -4,6 +4,7 @@ import android.content.Context
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
+import com.tokopedia.kotlin.extensions.view.percentFormatted
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.model.ImpressHolder
@@ -217,11 +218,13 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                         productName = it.data.name,
                         isProductActive = it.basic.isActive()
                     ).apply {
-                        price = price.copy(priceFmt = price.priceFmt.ifNullOrBlank {
-                            price.value.getCurrencyFormatted()
-                        })
+                        price = price.copy(
+                            priceFmt = price.priceFmt.ifNullOrBlank {
+                                price.value.getCurrencyFormatted()
+                            }
+                        )
                         campaign.discPercentageFmt = price.discPercentage.ifNullOrBlank {
-                            String.format("%.0f%s", campaign.percentageAmount, "%")
+                            campaign.percentageAmount.percentFormatted()
                         }
                         campaign.slashPriceFmt = price.slashPriceFmt.ifNullOrBlank {
                             campaign.originalPrice.getCurrencyFormatted()

@@ -24,9 +24,9 @@ fun Number.numberFormatted(maximumFractionDigits: Int, roundingMode: RoundingMod
 }
 
 fun Number.thousandFormatted(
-        digit: Int = 2,
-        roundingMode: RoundingMode = RoundingMode.HALF_EVEN,
-        hasSpace: Boolean = false
+    digit: Int = 2,
+    roundingMode: RoundingMode = RoundingMode.HALF_EVEN,
+    hasSpace: Boolean = false
 ): String {
     if (toDouble() < 1000) return numberFormatted(digit, roundingMode)
 
@@ -35,21 +35,21 @@ fun Number.thousandFormatted(
 
     if (hasSpace) {
         return "${number.numberFormatted(digit, roundingMode)}${
-            listOf(
-                " rb",
-                " jt",
-                " M",
-                " T"
-            )[exp - 1]
+        listOf(
+            " rb",
+            " jt",
+            " M",
+            " T"
+        )[exp - 1]
         }"
     } else {
         return "${number.numberFormatted(digit, roundingMode)}${
-            listOf(
-                "rb",
-                "jt",
-                "M",
-                "T"
-            )[exp - 1]
+        listOf(
+            "rb",
+            "jt",
+            "M",
+            "T"
+        )[exp - 1]
         }"
     }
 }
@@ -74,4 +74,8 @@ fun Number.splitByThousand(
 
 fun Number.getPercentFormatted(): String {
     return toString() + PERCENT_SYMBOL
+}
+
+fun Float.percentFormatted(format: String = "%.0f%s"): String {
+    return String.format(format, this, PERCENT_SYMBOL)
 }
