@@ -154,7 +154,6 @@ class DeepLinkDFMapperTest : DeepLinkDFMapperTestFixture() {
     @Test
     fun `MA df_digital`() {
         assertEqualDeepLinkMA(ApplinkConsInternalDigital.SMART_BILLS, DF_DIGITAL)
-        assertEqualDeepLinkMA(ApplinkConsInternalDigital.ADD_TELCO, DF_DIGITAL)
     }
 
     @Test
