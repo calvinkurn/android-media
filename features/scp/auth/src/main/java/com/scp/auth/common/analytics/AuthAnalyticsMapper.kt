@@ -191,7 +191,7 @@ object AuthAnalyticsMapper {
                 VIEW_ACCOUNT_EVENT,
                 TRIGGER_PAGE_CATEGORY,
                 SSO_ACCCOUNT_ACTION,
-                TRIGGERED_EVENT_LABEL,
+                "$TRIGGERED_EVENT_LABEL - ${param[CVEventFieldName.TRANSACTION_ID]}",
                 createCustomDimension(getSdkVersion(param))
             )
         )
