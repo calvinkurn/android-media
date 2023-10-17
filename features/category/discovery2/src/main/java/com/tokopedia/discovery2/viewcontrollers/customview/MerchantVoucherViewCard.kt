@@ -30,16 +30,15 @@ class MerchantVoucherViewCard @JvmOverloads constructor(
     init {
         binding.divider.addOneTimeGlobalLayoutListener {
             val rightPosition = binding.divider.y - RIGHT_EDGE_OFFSET
-            val leftPosition = binding.root.height - rightPosition - LEFT_EDGE_OFFSET
+            val leftPosition = binding.divider.y + SCALLOP_DIAMETER - LEFT_EDGE_OFFSET
 
-            val rightEdge = NotchEdgeTreatment(
-                horizontalOffset = (rightPosition)
-            ).apply {
-                scallopDiameter = SCALLOP_DIAMETER
-            }
+            val rightEdge = NotchEdgeTreatment(horizontalOffset = rightPosition)
+                .apply {
+                    scallopDiameter = SCALLOP_DIAMETER
+                }
 
             val leftEdge = NotchEdgeTreatment(
-                horizontalOffset = (leftPosition),
+                horizontalOffset = leftPosition,
                 isLeftEdge = true
             ).apply {
                 scallopDiameter = SCALLOP_DIAMETER
@@ -91,7 +90,7 @@ class MerchantVoucherViewCard @JvmOverloads constructor(
     companion object {
         private const val SCALLOP_DIAMETER = 40f
         private const val CORNER_SIZE = 40f
-        private const val LEFT_EDGE_OFFSET = 95
+        private const val LEFT_EDGE_OFFSET = 5
         private const val RIGHT_EDGE_OFFSET = 15
     }
 }
