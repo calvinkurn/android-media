@@ -37,6 +37,7 @@ class CatalogComparisonDetailFragment :
         const val ARG_PARAM_CATALOG_ID = "catalogId"
         const val ARG_PARAM_CATEGORY_ID = "categoryId"
         const val ARG_PARAM_COMPARE_CATALOG_ID = "compareCatalogId"
+        private const val COMPARISON_CHANGED_POSITION = 1
 
         fun newInstance(
             catalogId: String,
@@ -95,7 +96,10 @@ class CatalogComparisonDetailFragment :
     private fun getComparison(catalogId: String, compareCatalogId: String) {
         binding?.loadingLayout?.root?.show()
         binding?.rvContent?.gone()
-        viewModel.getProductCatalog(catalogId, compareCatalogId)
+        viewModel.getProductCatalog(catalogId, "")
+        if (compareCatalogId.isNotEmpty()) {
+            viewModel.getProductCatalogComparisons(catalogId, compareCatalogId)
+        }
     }
 
     private fun setupObserver() {
@@ -107,11 +111,13 @@ class CatalogComparisonDetailFragment :
                 if (comparison != null) {
                     widgetAdapter.addWidget(listOf(comparison))
                 }
-            } else if (it is Fail) {
             }
-
             binding?.loadingLayout?.root?.gone()
             binding?.rvContent?.show()
+        }
+        viewModel.comparisonUiModel.observe(viewLifecycleOwner) {
+            // COMPARISON_CHANGED_POSITION is hardcoded position, will changed at next phase
+            widgetAdapter.changeComparison(COMPARISON_CHANGED_POSITION, it)
         }
     }
 

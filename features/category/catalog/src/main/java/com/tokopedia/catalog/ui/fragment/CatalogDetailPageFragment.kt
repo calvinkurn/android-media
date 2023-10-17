@@ -676,7 +676,7 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
     }
 
     override fun onComparisonSeeMoreButtonClicked() {
-        Intent(requireActivity(), CatalogComparisonDetailActivity::class.java).apply {
+        Intent(activity ?: return, CatalogComparisonDetailActivity::class.java).apply {
             putExtra(ARG_PARAM_CATALOG_ID, catalogId)
             putExtra(ARG_PARAM_CATEGORY_ID, categoryId)
             putExtra(ARG_PARAM_COMPARE_CATALOG_ID, compareCatalogId)
