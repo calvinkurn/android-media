@@ -2,11 +2,12 @@ package com.tokopedia.sellerhomecommon.presentation.view.viewholder.milestone
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import com.airbnb.lottie.LottieCompositionFactory
+import com.airbnb.lottie.LottieDrawable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.databinding.ShcItemMissionRewardMilestoneWidgetBinding
 import com.tokopedia.sellerhomecommon.presentation.adapter.MilestoneMissionAdapter
@@ -17,7 +18,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 class MilestoneRewardViewHolder(
     itemView: View,
     private val listener: MilestoneMissionAdapter.Listener
-): AbstractViewHolder<MilestoneItemRewardUiModel>(itemView) {
+) : AbstractViewHolder<MilestoneItemRewardUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -35,10 +36,20 @@ class MilestoneRewardViewHolder(
         setupCtaButton(element)
     }
 
+    override fun onViewRecycled() {
+        super.onViewRecycled()
+        clearLottieAnimation()
+    }
+
     private fun setupLottieAnimation(lottieUrl: String) {
-        binding?.imgShcMissionReward?.run {
-            setAnimationFromUrl(lottieUrl)
-            setFailureListener {  } // Run this method to catch the exception without updating views
+        val lottieCompositionTask = LottieCompositionFactory.fromUrl(itemView.context, lottieUrl)
+
+        lottieCompositionTask.addListener { result ->
+            binding?.imgShcMissionReward?.run {
+                setComposition(result)
+                playAnimation()
+                repeatCount = LottieDrawable.INFINITE
+            }
         }
     }
 
@@ -59,22 +70,30 @@ class MilestoneRewardViewHolder(
 
     private fun setupRewardTextCta(element: MilestoneItemRewardUiModel) {
         binding?.tvShcMissionRewardCta?.run {
-            when(element.buttonStatus) {
+            when (element.buttonStatus) {
                 MilestoneItemRewardUiModel.ButtonStatus.HIDDEN -> {
                     gone()
                 }
                 MilestoneItemRewardUiModel.ButtonStatus.ENABLED -> {
                     visible()
-                    setTextColor(MethodChecker.getColor(context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_GN500))
+                    setTextColor(
+                        MethodChecker.getColor(
+                            context,
+                            com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                        )
+                    )
                     setOnClickListener {
                         listener.onRewardActionClick(element)
                     }
                 }
                 MilestoneItemRewardUiModel.ButtonStatus.DISABLED -> {
                     visible()
-                    setTextColor(MethodChecker.getColor(context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_NN300))
+                    setTextColor(
+                        MethodChecker.getColor(
+                            context,
+                            com.tokopedia.unifyprinciples.R.color.Unify_NN300
+                        )
+                    )
                     setOnClickListener(null)
                 }
             }
@@ -92,7 +111,7 @@ class MilestoneRewardViewHolder(
                 } else {
                     UnifyButton.Type.MAIN
                 }
-            when(element.buttonStatus) {
+            when (element.buttonStatus) {
                 MilestoneItemRewardUiModel.ButtonStatus.HIDDEN -> {
                     gone()
                 }
@@ -109,6 +128,13 @@ class MilestoneRewardViewHolder(
                     setOnClickListener(null)
                 }
             }
+        }
+    }
+
+    private fun clearLottieAnimation() {
+        binding?.imgShcMissionReward?.run {
+            cancelAnimation()
+            (drawable as? LottieDrawable)?.clearComposition()
         }
     }
 }

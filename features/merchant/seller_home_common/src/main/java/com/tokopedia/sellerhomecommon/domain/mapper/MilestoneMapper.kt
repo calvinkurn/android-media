@@ -72,7 +72,7 @@ class MilestoneMapper @Inject constructor(
                 UnifyButton.Variant.FILLED,
                 MilestoneItemRewardUiModel.ButtonStatus.DISABLED,
                 "",
-                ""
+                TokopediaImageUrl.SELLER_HOME_REWARD_ENDING_LOTTIE
             )
         )
 
@@ -215,5 +215,4 @@ class MilestoneMapper @Inject constructor(
             TokopediaImageUrl.SELLER_HOME_REWARD_ENDING_LOTTIE
         }
     }
-
 }

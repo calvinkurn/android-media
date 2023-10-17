@@ -392,6 +392,6 @@ object TokopediaImageUrl {
     const val OLP_GLOBAL_ERROR_ILLUSTRATION = "https://images.tokopedia.net/img/frontend/illustration/global_state_page_not_found.png"
     const val OLP_SERVER_ERROR_ILLUSTRATION = "https://images.tokopedia.net/img/frontend/illustration/global_state_server_error.png"
     const val OLP_BMGM_HEADER_ILLUSTRATION = "https://images.tokopedia.net/img/android/bmgm/OLP_Header.png"
-    const val SELLER_HOME_REWARD_INITIAL_LOTTIE = ""
-    const val SELLER_HOME_REWARD_ENDING_LOTTIE = ""
+    const val SELLER_HOME_REWARD_INITIAL_LOTTIE = "https://assets.tokopedia.net/asts/android/seller_home_common/seller_home_common_reward_initial.json"
+    const val SELLER_HOME_REWARD_ENDING_LOTTIE = "https://assets.tokopedia.net/asts/android/seller_home_common/seller_home_common_reward_ending.json"
 }

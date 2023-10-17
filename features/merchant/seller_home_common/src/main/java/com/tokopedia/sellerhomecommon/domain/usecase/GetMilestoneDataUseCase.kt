@@ -17,7 +17,10 @@ class GetMilestoneDataUseCase(
     milestoneMapper: MilestoneMapper,
     dispatchers: CoroutineDispatchers
 ) : CloudAndCacheGraphqlUseCase<GetMilestoneDataResponse, List<MilestoneDataUiModel>>(
-    gqlRepository, milestoneMapper, dispatchers, GetMilestoneDataGqlQuery()
+    gqlRepository,
+    milestoneMapper,
+    dispatchers,
+    GetMilestoneDataGqlQuery()
 ) {
 
     override val classType: Class<GetMilestoneDataResponse>
@@ -92,22 +95,6 @@ class GetMilestoneDataUseCase(
                       url
                       applink
                       buttonStatus
-                    }
-                  }
-                  questStatus
-                  reward {
-                    isHaveReward
-                    rewardTitle
-                    rewardSubtitle
-                    rewardID
-                    rewardStatus
-                    button {
-                      title
-                      urlType
-                      url
-                      applink
-                      buttonStatus
-                      buttonStyleType
                     }
                   }
                   cta {
