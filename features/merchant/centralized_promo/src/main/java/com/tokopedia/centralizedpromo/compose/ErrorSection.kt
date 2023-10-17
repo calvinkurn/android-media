@@ -13,14 +13,14 @@ fun LazyGridScope.CentralizedPromoError(
     onRefreshButtonClicked: () -> Unit
 ) =
     item(span = { GridItemSpan(2) }) {
-        val title = stringResource(string.sah_label_on_going_promotion_retry)
+        val title = stringResource(string.sah_label_on_going_promotion_error)
         val cause = throwable.cause
         val description = if (cause is MessageErrorException
             && !cause.message.isNullOrBlank()
         ) {
             cause.message
         } else {
-            stringResource(string.sah_label_on_going_promotion_error)
+            stringResource(string.sah_label_on_going_promotion_retry)
         }
         NestLocalLoad(
             title = title,
