@@ -30,6 +30,7 @@ import com.tokopedia.editor.ui.model.InputTextModel
 import com.tokopedia.editor.ui.placement.PlacementImageActivity
 import com.tokopedia.editor.ui.text.InputTextActivity
 import com.tokopedia.editor.ui.widget.DynamicTextCanvasLayout
+import com.tokopedia.editor.util.safeLoadNativeLibrary
 import com.tokopedia.picker.common.EXTRA_UNIVERSAL_EDITOR_PARAM
 import com.tokopedia.picker.common.PickerResult
 import com.tokopedia.picker.common.RESULT_UNIVERSAL_EDITOR
@@ -111,6 +112,7 @@ open class MainEditorActivity : AppCompatActivity()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
+        loadNativeLibrary(this)
         supportFragmentManager.fragmentFactory = fragmentFactory
 
         super.onCreate(savedInstanceState)
@@ -123,9 +125,8 @@ open class MainEditorActivity : AppCompatActivity()
 
     override fun attachBaseContext(newBase: Context?) {
         super.attachBaseContext(newBase)
-
-        if (isSplitInstallEnabled()) {
-            SplitCompat.installActivity(this)
+        if (isSplitInstallEnabled() && newBase != null) {
+            loadNativeLibrary(newBase)
         }
     }
 
@@ -158,6 +159,27 @@ open class MainEditorActivity : AppCompatActivity()
         require(param.pageSource.isUnknown().not()) { "We unable to find the page source." }
 
         viewModel.onEvent(MainEditorEvent.SetupView(param))
+    }
+
+    private fun loadNativeLibrary(context: Context) {
+        if (isSplitInstallEnabled()) {
+            SplitCompat.installActivity(context)
+
+            safeLoadNativeLibrary(context, "c++_shared")
+
+            // FFMPEG
+            safeLoadNativeLibrary(context, "mobileffmpeg")
+            safeLoadNativeLibrary(context, "mobileffmpeg_abidetect")
+
+            // Common
+            safeLoadNativeLibrary(context, "avutil")
+            safeLoadNativeLibrary(context, "swscale")
+            safeLoadNativeLibrary(context, "swresample")
+            safeLoadNativeLibrary(context, "avcodec")
+            safeLoadNativeLibrary(context, "avformat")
+            safeLoadNativeLibrary(context, "avdevice")
+            safeLoadNativeLibrary(context, "avfilter")
+        }
     }
 
     private fun initObserver() {
