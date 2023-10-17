@@ -21,6 +21,7 @@ data class ComparisonUiModel(
         val price: String,
         val comparisonSpecs: List<ComparisonSpec>,
         val topComparisonSpecs: List<ComparisonSpec>,
+        var productTextColor: Int? = null
     )
 
     data class ComparisonSpec(
@@ -28,7 +29,8 @@ data class ComparisonUiModel(
         val specCategoryTitle: String = "",
         val specTitle: String = "",
         val specValue: String = "",
-        var specHeight: Int = -1
+        var specHeight: Int = -1,
+        var specTextColor: Int? = null
     )
 
     override fun type(typeFactory: CatalogAdapterFactory): Int {
