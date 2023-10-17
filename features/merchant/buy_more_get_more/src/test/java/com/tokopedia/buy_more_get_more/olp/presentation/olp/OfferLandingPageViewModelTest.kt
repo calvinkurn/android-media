@@ -1,4 +1,4 @@
-package com.tokopedia.buy_more_get_more.olp.presentation
+package com.tokopedia.buy_more_get_more.olp.presentation.olp
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -18,6 +18,7 @@ import com.tokopedia.buy_more_get_more.olp.domain.entity.enum.Status
 import com.tokopedia.buy_more_get_more.olp.domain.usecase.GetOfferInfoForBuyerUseCase
 import com.tokopedia.buy_more_get_more.olp.domain.usecase.GetOfferProductListUseCase
 import com.tokopedia.buy_more_get_more.olp.domain.usecase.GetSharingDataByOfferIDUseCase
+import com.tokopedia.buy_more_get_more.olp.presentation.OfferLandingPageViewModel
 import com.tokopedia.buy_more_get_more.olp.utils.BmgmUtil
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
