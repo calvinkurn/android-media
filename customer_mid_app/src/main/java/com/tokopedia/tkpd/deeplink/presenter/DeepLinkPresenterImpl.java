@@ -466,7 +466,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private Boolean isCanAllowOverride(Uri uri) {
-        if(uri.getQueryParameter(ALLOW_OVERRIDE) != null) {
+        if (uri.getQueryParameter(ALLOW_OVERRIDE) != null) {
             return uri.getQueryParameter(ALLOW_OVERRIDE).equalsIgnoreCase(PARAM_BOOL_FALSE);
         } else {
             return false;
@@ -494,7 +494,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             } else {
                 RouteManager.route(context, bundle, getApplinkWithUriQueryParams(uri, ApplinkConstInternalTravel.DASHBOARD_FLIGHT));
             }
-        }else {
+        } else {
             RouteManager.route(context, bundle, getApplinkWithUriQueryParams(uri, ApplinkConstInternalTravel.DASHBOARD_FLIGHT));
         }
         context.finish();
@@ -673,13 +673,13 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                                     bundle,
                                     ApplinkConst.SHOP_FEED,
                                     shopId);
-                        } else  if(isShopMvcLockedToProduct(linkSegment)) {
-                          String voucherId = linkSegment.get(2);
-                          RouteManager.route(context,
-                                  bundle,
-                                  ApplinkConst.SHOP_MVC_LOCKED_TO_PRODUCT,
-                                  shopId,
-                                  voucherId);
+                        } else if (isShopMvcLockedToProduct(linkSegment)) {
+                            String voucherId = linkSegment.get(2);
+                            RouteManager.route(context,
+                                    bundle,
+                                    ApplinkConst.SHOP_MVC_LOCKED_TO_PRODUCT,
+                                    shopId,
+                                    voucherId);
                         } else {
                             Intent intent = RouteManager.getIntent(context, ApplinkConst.SHOP,
                                     shopId);
@@ -948,21 +948,13 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     @Override
-    public void sendAuthenticatedEvent(Uri uriData, String screenName) {
-        try {
-            URL obtainedURL = new URL(uriData.toString());
-            Map<String, String> customDimension = new HashMap<>();
-            customDimension.put(Authenticated.KEY_DEEPLINK_URL, obtainedURL.toString());
-            TrackApp.getInstance().getGTM().sendScreenAuthenticated(screenName, customDimension);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void sendAuthenticatedEvent(Uri uriData, Campaign campaign, String screenName, Uri extraReferrer) {
+    public void sendOpenScreen(Uri uriData, Campaign campaign, String screenName, Uri extraReferrer) {
         Map<String, Object> campaignMap = campaign.getCampaign();
-        if (!TrackingUtils.isValidCampaign(campaignMap)) return;
+        if (!TrackingUtils.isValidCampaign(campaignMap)) {
+            sendXclidOnly(uriData, screenName);
+            return;
+        }
+        // if campaign is valid, send both UTM and xclientId
         try {
             URL obtainedURL = new URL(uriData.toString());
             Map<String, String> customDimension = new HashMap<>();
@@ -972,17 +964,26 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             customDimension.put("utmSource", utmSource);
             customDimension.put("utmMedium", utmMedium);
 
-            if(extraReferrer!=null)
+            if (extraReferrer != null)
                 customDimension.put("extra_referrer", extraReferrer.toString());
 
-            Object xClid = campaignMap.get(AppEventTracking.GTM.X_CLID);
-            if (xClid != null && xClid instanceof String) {
-                String xClid_ = (String) xClid;
-                customDimension.put(AppEventTracking.GTM.X_CLID, xClid_);
+            String xClid = uriData.getQueryParameter(AppEventTracking.GTM.X_CLID);
+            if (!TextUtils.isEmpty(xClid)) {
+                customDimension.put(AppEventTracking.GTM.X_CLID, xClid);
             }
             TrackApp.getInstance().getGTM().sendScreenAuthenticated(screenName, customDimension);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
+    }
+
+    private void sendXclidOnly(Uri uriData, String screenName) {
+        String xClid = uriData.getQueryParameter(AppEventTracking.GTM.X_CLID);
+        if (TextUtils.isEmpty(xClid)) {
+            return;
+        }
+        Map<String, String> map = new HashMap<>();
+        map.put(AppEventTracking.GTM.X_CLID, xClid);
+        TrackApp.getInstance().getGTM().sendScreenAuthenticated(screenName, map);
     }
 }

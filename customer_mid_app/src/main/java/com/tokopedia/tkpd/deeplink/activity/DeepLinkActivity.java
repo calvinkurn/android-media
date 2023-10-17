@@ -62,14 +62,15 @@ public class DeepLinkActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getIntent().getData() != null) {
-            setupURIPass(getIntent().getData());
-        }
+        Uri uri = getIntent().getData();
         presenter = new DeepLinkPresenterImpl(this);
+        if (uri != null) {
+            setupURIPass(uri);
+            sendAuthenticated(uri, isOriginalUrlAmp);
+        }
         initializationNewRelic();
 
         checkUrlMapToApplink();
-        sendCampaignTrack(uriData, isOriginalUrlAmp);
         initBranchIO(this);
         logDeeplink();
         new FirebaseDLWrapper().getFirebaseDynamicLink(this, getIntent());
@@ -116,10 +117,10 @@ public class DeepLinkActivity extends AppCompatActivity implements
         return uriHaveCampaignData;
     }
 
-    private void sendCampaignTrack(Uri uriData, boolean isOriginalUrlAmp) {
+    private void sendAuthenticated(Uri uriData, boolean isOriginalUrlAmp) {
         Uri extraReferrer = DeeplinkUtils.INSTANCE.getExtraReferrer(this);
         Campaign campaign = DeeplinkUTMUtils.convertUrlCampaign(this, Uri.parse(uriData.toString()), isOriginalUrlAmp);
-        presenter.sendAuthenticatedEvent(uriData, campaign, AppScreen.SCREEN_DEEP_LINK, extraReferrer);
+        presenter.sendOpenScreen(uriData, campaign, AppScreen.SCREEN_DEEP_LINK, extraReferrer);
     }
 
     private void setupURIPass(Uri data) {

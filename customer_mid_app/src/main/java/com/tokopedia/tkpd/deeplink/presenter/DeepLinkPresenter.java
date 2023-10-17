@@ -16,7 +16,5 @@ public interface DeepLinkPresenter extends DeepLinkAnalyticsPresenter {
 
     void actionGotUrlFromApplink(Uri uriData);
 
-    void sendAuthenticatedEvent(Uri uriData, String screenName);
-
-    void sendAuthenticatedEvent(Uri uriData, Campaign campaign, String screenName, Uri extraReferrer);
+    void sendOpenScreen(Uri uriData, Campaign campaign, String screenName, Uri extraReferrer);
 }

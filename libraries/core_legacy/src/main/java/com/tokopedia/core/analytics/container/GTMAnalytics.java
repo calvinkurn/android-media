@@ -335,9 +335,15 @@ public class GTMAnalytics extends ContextAnalytics {
 
     @Override
     public void sendEnhanceEcommerceEvent(String eventName, Bundle value) {
-        Bundle bundle = addWrapperValue(value);
-        bundle = addGclIdIfNeeded(eventName, bundle);
-        pushEventV5(eventName, bundle, context);
+        Observable.fromCallable(() -> {
+                Bundle bundle = addWrapperValue(value);
+                bundle = addGclIdIfNeeded(eventName, bundle);
+                pushEventV5(eventName, bundle, context);
+                return true;
+            })
+            .subscribeOn(Schedulers.io())
+            .unsubscribeOn(Schedulers.io())
+            .subscribe(getDefaultSubscriber());
     }
 
     @SuppressWarnings("unchecked")
@@ -824,7 +830,16 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     public void sendScreen(String screenName, Map<String, String> customDimension) {
+        Observable.fromCallable(() -> {
+                    internalSendScreen(screenName, customDimension);
+                    return true;
+                })
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .subscribe(getDefaultSubscriber());
+    }
 
+    private void internalSendScreen(String screenName, Map<String, String> customDimension) {
         UserSessionInterface userSession = new UserSession(context);
         final String afUniqueId = !TextUtils.isEmpty(getAfUniqueId(context)) ? getAfUniqueId(context) : "none";
 
@@ -889,24 +904,6 @@ public class GTMAnalytics extends ContextAnalytics {
                     return true;
                 })
                 .subscribe(getDefaultSubscriber());
-    }
-
-    @Override
-    public void sendGTMGeneralEvent(String event, String category, String action, String label,
-                                    String shopId, String shopType, String userId,
-                                    @Nullable Map<String, Object> customDimension) {
-        Map<String, Object> map = new HashMap<>();
-        map.put(KEY_EVENT, event);
-        map.put(KEY_CATEGORY, category);
-        map.put(KEY_ACTION, action);
-        map.put(KEY_LABEL, label);
-        map.put(USER_ID, userId);
-        map.put(SHOP_TYPE, shopType);
-        map.put(SHOP_ID, shopId);
-        if (customDimension != null) {
-            map.putAll(customDimension);
-        }
-        pushGeneral(map);
     }
 
     private void logV5(Context context, String eventName, Bundle bundle) {
