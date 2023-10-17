@@ -166,6 +166,9 @@ open class GetPdpLayoutUseCase @Inject constructor(
                       isCOD
                       price {
                         value
+                        priceFmt
+                        slashPriceFmt
+                        discPercentage
                       }
                       campaign {
                         campaignID
@@ -337,6 +340,8 @@ open class GetPdpLayoutUseCase @Inject constructor(
                         subText
                         price
                         priceFmt
+                        slashPriceFmt
+                        discPercentage
                         sku
                         optionID
                         optionName

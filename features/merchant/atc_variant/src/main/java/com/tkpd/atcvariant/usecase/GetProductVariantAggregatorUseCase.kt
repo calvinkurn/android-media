@@ -116,6 +116,8 @@ class GetProductVariantAggregatorUseCase @Inject constructor(
                         productID
                         price
                         priceFmt
+                        slashPriceFmt
+                        discPercentage
                         sku
                         optionID
                         optionName
@@ -298,7 +300,8 @@ class GetProductVariantAggregatorUseCase @Inject constructor(
             cardRedirection = data.cardRedirection.data.associateBy({ it.productId }, { it }),
             nearestWarehouse = data.nearestWarehouse.associateBy(
                 { it.productId },
-                { it.warehouseInfo }),
+                { it.warehouseInfo }
+            ),
             alternateCopy = data.cardRedirection.alternateCopy,
             simpleBasicInfo = data.basicInfo,
             shopType = data.shopInfo.shopType,
