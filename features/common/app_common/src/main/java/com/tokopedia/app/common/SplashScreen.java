@@ -197,6 +197,8 @@ public class SplashScreen extends AppCompatActivity {
             }
         }
         intent.setData(Uri.parse(tokopediaDeeplink));
+        // destroyed activity (SplashScreen) might not launch activity,
+        // so better to use currentActivity instead.
         boolean startFromCurrent = AppUtil.INSTANCE.startActivityFromCurrentActivity(intent);
         if (!startFromCurrent) {
             startActivity(intent);
