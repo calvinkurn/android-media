@@ -35,6 +35,7 @@ object DeeplinkMapperUser {
             deeplink == ApplinkConst.User.DSAR -> ApplinkConstInternalUserPlatform.DSAR
             deeplink == ApplinkConst.LOGIN -> getLoginApplink()
             deeplink == ApplinkConst.REGISTER_INIT -> getRegisterApplink()
+            deeplink == ApplinkConst.REGISTER -> getRegisterApplink()
             deeplink.startsWithPattern(ApplinkConst.GOTO_KYC) || deeplink.startsWithPattern(ApplinkConstInternalUserPlatform.GOTO_KYC) -> getApplinkGotoKyc(deeplink)
             deeplink.startsWith(ApplinkConst.GOTO_KYC_WEBVIEW) -> ApplinkConstInternalUserPlatform.GOTO_KYC_WEBVIEW
             else -> deeplink

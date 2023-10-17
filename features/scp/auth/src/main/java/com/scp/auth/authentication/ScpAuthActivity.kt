@@ -95,6 +95,7 @@ class ScpAuthActivity : BaseActivity() {
         GotoSdk.LSDKINSTANCE?.startLoginFlow(
             activity = this@ScpAuthActivity,
             uiConfig = LSdkUiConfig(
+                shouldOpenLoginScreen = true,
                 isHelpCenterVisible = true,
                 shouldManuallyUpdateLanguage = true,
                 ssoUiConfigs = LSdkSsoUiConfigs(

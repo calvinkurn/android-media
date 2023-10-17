@@ -832,13 +832,13 @@ object DeeplinkMainApp {
             }
         ),
         "register-init" to mutableListOf(
-            DLP.goTo { deeplink: String ->
+            DLP.matchPattern("") { deeplink: String ->
                 DeeplinkMapperUser.getRegisteredNavigationUser(deeplink)
             }
         ),
         "registration" to mutableListOf(
-            DLP.matchPattern("") { _: String ->
-                ApplinkConstInternalUserPlatform.INIT_REGISTER
+            DLP.matchPattern("") { deeplink: String ->
+                DeeplinkMapperUser.getRegisteredNavigationUser(deeplink)
             }
         ),
         "rekomendasi" to mutableListOf(
