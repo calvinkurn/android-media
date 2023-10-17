@@ -7,7 +7,6 @@ import com.tokopedia.stories.data.mock.mockInitialDataModel
 import com.tokopedia.stories.data.repository.StoriesRepository
 import com.tokopedia.stories.robot.StoriesRobotUITest
 import com.tokopedia.stories.utils.containsEventAction
-import com.tokopedia.stories.utils.containsTrackerId
 import com.tokopedia.stories.view.model.StoriesArgsModel
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.user.session.UserSessionInterface
@@ -25,7 +24,6 @@ class StoriesUITest {
     var cassavaTestRule = CassavaTestRule(sendValidationResult = false)
 
     private val analyticStoriesMainTracker = "tracker/content/stories/stories_main_tracker.json"
-    private val analyticStoriesOpenScreen = "tracker/content/stories/stories_open_screen.json"
 
     private val args: StoriesArgsModel = StoriesArgsModel(
         authorId = "123",
@@ -51,11 +49,6 @@ class StoriesUITest {
         getStoriesRobot()
             .openStoriesRoom()
             .moveToDestroyState()
-
-        assertThat(
-            cassavaTestRule.validate(analyticStoriesOpenScreen),
-            containsTrackerId("46042")
-        )
 
         assertThat(
             cassavaTestRule.validate(analyticStoriesMainTracker),

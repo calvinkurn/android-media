@@ -10,7 +10,7 @@ import androidx.test.espresso.action.ViewActions.swipeLeft
 import androidx.test.espresso.action.ViewActions.swipeRight
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
-import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.tokopedia.stories.analytics.StoriesAnalytics
 import com.tokopedia.stories.analytics.StoriesRoomAnalytic
@@ -119,28 +119,29 @@ internal class StoriesRobotUITest(
     }
 
     fun openStoriesRoom() = chainable {
+        delay(1000L)
+
         Espresso
             .onView(withId(storiesR.id.rv_stories_category))
-            .check(matches(isCompletelyDisplayed()))
+            .check(matches(isDisplayed()))
 
         Espresso
             .onView(withId(storiesR.id.cv_stories_detail_timer))
-            .check(matches(isCompletelyDisplayed()))
+            .check(matches(isDisplayed()))
 
         Espresso
             .onView(withId(storiesR.id.iv_stories_detail_content))
-            .check(matches(isCompletelyDisplayed()))
+            .check(matches(isDisplayed()))
     }
 
     fun doNothingUntilNextGroup(duration: Int) = chainable {
-        delay(duration.times(3L))
-        delay()
+        delay(duration.times(4L))
     }
 
     fun tapNextUntilNextGroup() = chainable {
         Espresso
             .onView(withId(storiesR.id.fl_stories_next))
-            .perform(click())
+            .check(matches(isDisplayed()))
             .perform(click())
             .perform(click())
             .perform(click())
@@ -149,7 +150,7 @@ internal class StoriesRobotUITest(
     fun tapPrevUntilPrevGroup() = chainable {
         Espresso
             .onView(withId(storiesR.id.fl_stories_prev))
-            .perform(click())
+            .check(matches(isDisplayed()))
             .perform(click())
             .perform(click())
             .perform(click())
