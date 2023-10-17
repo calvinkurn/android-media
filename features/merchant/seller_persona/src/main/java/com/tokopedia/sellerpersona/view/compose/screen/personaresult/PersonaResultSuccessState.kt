@@ -29,6 +29,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.compose.NestIcon
 import com.tokopedia.nest.components.ButtonVariant
 import com.tokopedia.nest.components.NestButton
 import com.tokopedia.nest.components.NestImage
@@ -194,18 +196,18 @@ private fun LazyListScope.renderResultContentSectionUi(data: PersonaDataUiModel)
             )
         }
     }
-    items(items = data.personaData.itemList) {
+    items(items = data.personaData.itemList, key = { it }) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 12.dp, end = 16.dp)
         ) {
-            Icon(
-                painter = painterResource(iconunifyR.drawable.iconunify_check),
+            NestIcon(
+                iconId = IconUnify.CHECK,
                 contentDescription = null,
-                tint = NestTheme.colors.GN._500,
-                modifier = Modifier.size(24.dp)
+                modifier = Modifier.size(24.dp),
+                colorLightEnable = NestTheme.colors.GN._500
             )
             NestTypography(
                 modifier = Modifier.padding(
