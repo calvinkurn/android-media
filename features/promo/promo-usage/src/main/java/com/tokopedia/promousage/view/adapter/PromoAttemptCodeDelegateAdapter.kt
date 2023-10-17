@@ -46,6 +46,14 @@ internal class PromoAttemptCodeDelegateAdapter(
         viewHolder.bind(item)
     }
 
+    override fun bindViewHolder(
+        item: PromoAttemptItem,
+        viewHolder: ViewHolder,
+        payloads: MutableList<Any>
+    ) {
+        viewHolder.bind(item)
+    }
+
     internal inner class ViewHolder(
         private val binding: PromoUsageItemPromoAttemptBinding
     ) : RecyclerView.ViewHolder(binding.root) {

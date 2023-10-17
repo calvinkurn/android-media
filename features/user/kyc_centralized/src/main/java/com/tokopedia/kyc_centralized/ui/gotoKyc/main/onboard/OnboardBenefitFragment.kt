@@ -146,6 +146,11 @@ class OnboardBenefitFragment: BaseDaggerFragment() {
             TAG_BOTTOM_SHEET_ONBOARD_NON_PROGRESSIVE
         )
 
+        onBoardNonProgressiveBottomSheet.setOnLaunchTokoKycListener {
+            activity?.setResult(KYCConstant.ActivityResult.LAUNCH_TOKO_KYC)
+            activity?.finish()
+        }
+
         onBoardNonProgressiveBottomSheet.setOnDismissWithDataListener { isReload ->
             if (isReload) {
                 activity?.setResult(KYCConstant.ActivityResult.RELOAD)
