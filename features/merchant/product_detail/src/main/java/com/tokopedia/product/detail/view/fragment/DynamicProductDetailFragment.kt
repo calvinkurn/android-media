@@ -2718,7 +2718,7 @@ open class DynamicProductDetailFragment :
                 viewModel.userSessionInterface.isLoggedIn
             )
         }
-        pdpUiUpdater?.updateDataP1(updatedDynamicProductInfo)
+        pdpUiUpdater?.updateDataP1(context, updatedDynamicProductInfo)
 
         pdpUiUpdater?.updateNotifyMeAndContent(
             selectedChild?.productId.toString(),
@@ -3361,7 +3361,7 @@ open class DynamicProductDetailFragment :
         }
         renderVariant(viewModel.variantData)
 
-        pdpUiUpdater?.updateDataP1(productInfo, true)
+        pdpUiUpdater?.updateDataP1(context, productInfo, true)
         pdpUiUpdater?.updateInitialMedia(
             productInfo.data.media,
             productInfo.data.containerType,

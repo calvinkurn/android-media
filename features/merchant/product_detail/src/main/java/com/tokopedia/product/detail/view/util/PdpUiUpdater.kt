@@ -93,6 +93,7 @@ import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlin.math.roundToLong
 import com.tokopedia.common_tradein.R as common_tradeinR
+import com.tokopedia.product.detail.common.R as productdetailcommonR
 
 /**
  * This class hold all of the ViewHolder data. They have same instance.
@@ -200,6 +201,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         get() = mapOfData[ProductDetailConstant.BMGM_SNEAK_PEEK_NAME] as? BMGMUiModel
 
     fun updateDataP1(
+        context: Context?,
         dataP1: DynamicProductInfoP1?,
         loadInitialData: Boolean = false
     ) {
@@ -216,13 +218,21 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                         productName = it.data.name,
                         isProductActive = it.basic.isActive()
                     ).apply {
-                        campaign.originalPriceFmt = campaign.originalPrice.getCurrencyFormatted()
-                        campaign.discountedPriceFmt = campaign.discountedPrice.getCurrencyFormatted()
-                        price = price.copy(
-                            priceFmt = price.priceFmt.ifNullOrBlank {
-                                price.value.getCurrencyFormatted()
-                            }
-                        )
+                        price = price.copy(priceFmt = price.priceFmt.ifNullOrBlank {
+                            price.value.getCurrencyFormatted()
+                        })
+                        campaign.discPercentageFmt = price.discPercentage.ifNullOrBlank {
+                            context?.getString(
+                                productdetailcommonR.string.template_campaign_off,
+                                campaign.percentageAmount
+                            ).orEmpty()
+                        }
+                        campaign.slashPriceFmt = price.slashPriceFmt.ifNullOrBlank {
+                            campaign.originalPrice.getCurrencyFormatted()
+                        }
+                        campaign.priceFmt = price.priceFmt.ifNullOrBlank {
+                            campaign.discountedPrice.getCurrencyFormatted()
+                        }
                     }
 
                     shouldShowCampaign = ongoingCampaignData == null
@@ -242,8 +252,8 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                         productName = it.data.name,
                         isProductActive = it.basic.isActive()
                     ).apply {
-                        campaign.originalPriceFmt = campaign.originalPrice.getCurrencyFormatted()
-                        campaign.discountedPriceFmt = campaign.discountedPrice.getCurrencyFormatted()
+                        campaign.slashPriceFmt = campaign.originalPrice.getCurrencyFormatted()
+                        campaign.priceFmt = campaign.discountedPrice.getCurrencyFormatted()
                     }
                 }
             }

@@ -52,10 +52,13 @@ data class CampaignModular(
     }
 
     @Transient
-    var discountedPriceFmt: String = ""
+    var priceFmt: String = ""
 
     @Transient
-    var originalPriceFmt: String = ""
+    var slashPriceFmt: String = ""
+
+    @Transient
+    var discPercentageFmt: String = ""
 
     private fun timeIsUnder1Day(): Boolean {
         return try {
