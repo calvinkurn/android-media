@@ -123,6 +123,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private static final String KEY_CLEAR_CACHE = "android_webview_clear_cache";
     private static final String LINK_AJA_APP_LINK = "https://linkaja.id/applink/payment";
     private static final String GOJEK_APP_LINK = "https://gojek.link/goclub/membership?source=toko_status_match";
+    private static final String GOFOOD_LINK = "https://gofood.link/";
 
     String mJsHciCallbackFuncName;
     public static final int HCI_CAMERA_REQUEST_CODE = 978;
@@ -143,7 +144,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     public static final String CUST_OVERLAY_URL = "imgurl";
     private static final String CUST_HEADER = "header_text";
     private static final String HELP_URL = "tokopedia.com/help";
-    private static final String HELP_FORM_URL = "tokopedia.com/help/form";
     private static final String ANDROID_PRINT_JS_INTERFACE = "AndroidPrint";
 
     @NonNull
@@ -288,9 +288,10 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         if (isEnablePartnerKycJsInterface) {
             webView.addJavascriptInterface(new PartnerWebAppInterface(this::routeToPartnerKyc), "CameraPicker");
         }
-
+        addJavascriptInterface(webView);
         WebSettings webSettings = webView.getSettings();
-        webSettings.setUserAgentString(webSettings.getUserAgentString() + " Mobile webview ");
+        String identifierUserAgent = getIdentifierUserAgent();
+        webSettings.setUserAgentString(webSettings.getUserAgentString() + identifierUserAgent);
         webSettings.setJavaScriptEnabled(true);
         webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
         webSettings.setDomStorageEnabled(true);
@@ -304,6 +305,20 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             webView.setWebContentsDebuggingEnabled(true);
         }
         return view;
+    }
+
+    private String getIdentifierUserAgent() {
+        String identifierUserAgent;
+        if (GlobalConfig.isSellerApp()) {
+            identifierUserAgent = " Sellerapp Tokopedia Mobile webview ";
+        } else {
+            identifierUserAgent = " Tokopedia Mobile webview ";
+        }
+        return identifierUserAgent;
+    }
+
+    protected void addJavascriptInterface(WebView webView) {
+        // please use this function to bind android code to javascript
     }
 
     protected int getLayout() {
@@ -770,7 +785,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String requestUrl) {
-            if (hasCheckOverrideAtInitialization(requestUrl) && !isHelpUrlAndNotHelpFormUrl(requestUrl)) return false;
+            if (hasCheckOverrideAtInitialization(requestUrl) && !shouldReloadContactUsUrl(requestUrl)) return false;
             boolean overrideUrl = BaseWebViewFragment.this.shouldOverrideUrlLoading(view, requestUrl);
             checkActivityFinish();
             return overrideUrl;
@@ -857,12 +872,12 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         return url.contains(HELP_URL);
     }
 
-    private boolean isHelpFormUrl(String url){
-        return url.contains(HELP_FORM_URL);
-    }
-
-    public Boolean isHelpUrlAndNotHelpFormUrl(String url) {
-        return isHelpUrl(url) && !isHelpFormUrl(url);
+    public Boolean shouldReloadContactUsUrl(String url) {
+        if (!userSession.isLoggedIn()) return false;
+        if (getContext() != null) {
+            return WebViewHelper.shouldReloadContactUsUrl(getContext(), url);
+        }
+        return false;
     }
 
     // to be overridden
@@ -887,7 +902,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             return false;
         }
 
-        if(webView != null && isHelpUrlAndNotHelpFormUrl(url)){
+        if (webView != null && shouldReloadContactUsUrl(url)){
             launchWebviewForNewUrl(url);
             return true;
         }
@@ -1196,7 +1211,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     }
 
     private boolean isExternalAppLink(String url) {
-        return url.contains(LINK_AJA_APP_LINK) || url.contains(GOJEK_APP_LINK);
+        return url.contains(LINK_AJA_APP_LINK) || url.contains(GOJEK_APP_LINK) || url.contains(GOFOOD_LINK);
     }
 
     // If back pressed is disabled and the webview has moved to a native page,
@@ -1232,7 +1247,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         if (globalError != null) {
             globalError.setVisibility(View.GONE);
         }
-        if(isHelpUrlAndNotHelpFormUrl(url)){
+        if (shouldReloadContactUsUrl(url)){
             launchWebviewForNewUrl(url);
             return;
         }

@@ -2,7 +2,7 @@ package com.tokopedia.notifcenter.data.uimodel
 
 import androidx.annotation.IntDef
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.notifcenter.presentation.adapter.typefactory.notification.NotificationTypeFactory
+import com.tokopedia.notifcenter.view.adapter.typefactory.NotificationTypeFactory
 
 class LoadMoreUiModel constructor(
         @LoadMoreType val type: Int

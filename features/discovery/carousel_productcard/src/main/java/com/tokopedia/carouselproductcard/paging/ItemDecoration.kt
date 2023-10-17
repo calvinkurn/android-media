@@ -9,13 +9,11 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.carouselproductcard.paging.list.ProductCardListViewHolder
-import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.productcard.ProductCardListView
 import com.tokopedia.unifycomponents.toPx
 
 internal class ItemDecoration(
-    private val context: Context,
+    context: Context,
     private val paddingHorizontalPx: Int,
     private val itemPerPage: Int,
 ): DividerItemDecoration(context, VERTICAL) {
@@ -29,7 +27,7 @@ internal class ItemDecoration(
         val absolutePosition = parent.getChildAdapterPosition(view)
 
         outRect.left = getLeftPadding(absolutePosition)
-        outRect.right = getRightPadding(parent, absolutePosition)
+        outRect.right = getRightPadding()
         outRect.bottom = BOTTOM_PADDING_DP.toPx()
     }
 
@@ -42,24 +40,7 @@ internal class ItemDecoration(
         return paddingHorizontalPx / divisor
     }
 
-    private fun getRightPadding(parent: RecyclerView, absolutePosition: Int): Int {
-        val defaultRightPadding = paddingHorizontalPx / 2
-        val adapter = parent.adapter ?: return defaultRightPadding
-        val itemCount = adapter.itemCount
-        val viewType = adapter.getItemViewType(absolutePosition)
-
-        val isLastPage = getIsLastItem(viewType, absolutePosition, itemCount)
-
-        return if (isLastPage) getRemainingScreenSize() - paddingHorizontalPx
-        else defaultRightPadding
-    }
-
-    private fun getRemainingScreenSize() =
-        (DeviceScreenInfo.getScreenWidth(context) * REMAINING_SCREEN_SIZE_PERCENTAGE).toInt()
-
-    private fun getIsLastItem(viewType: Int, absolutePosition: Int, itemCount: Int) =
-        if (viewType == ProductCardListViewHolder.LAYOUT) absolutePosition >= itemCount - itemPerPage
-        else absolutePosition == itemCount - 1
+    private fun getRightPadding(): Int = paddingHorizontalPx / 2
 
     override fun onDraw(canvas: Canvas, parent: RecyclerView, state: RecyclerView.State) {
         val drawable = drawable ?: return
@@ -85,14 +66,13 @@ internal class ItemDecoration(
     }
 
     companion object {
-        private const val REMAINING_SCREEN_SIZE_PERCENTAGE = 0.2
         private const val BOTTOM_PADDING_DP = 1
 
         fun createDrawable(context: Context): Drawable {
             return GradientDrawable().apply {
                 shape = GradientDrawable.RECTANGLE
 
-                val colorRes = com.tokopedia.unifycomponents.R.color.Unify_NN50
+                val colorRes = com.tokopedia.unifyprinciples.R.color.Unify_NN50
                 setColor(ContextCompat.getColor(context, colorRes))
                 setSize(1.toPx(), 1.toPx())
             }

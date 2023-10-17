@@ -41,6 +41,7 @@
     <string name="desc_img_email">E-mail</string>
     <string name="desc_img_others">Lainnya</string>
     <string name="img_options_heading">Mau kasih lihat foto yang mana?</string>
+    <string name="chip_options_heading">Mau bagi halaman yang mana?</string>
     <string name="tn_title">Title</string>
     <string name="tokopedia_link">tokopedia.link</string>
     <string name="permission_dialog_title">Boleh minta akses ke galeri kamu?</string>
@@ -65,4 +66,16 @@
     <string name="ongoing_personalized_campaign_info">Berakhir %1$s</string>
     <string name="screenshoot_success_title">Yay, screenshot &amp; link tersimpan!</string>
     <string name="personalized_campaign_message_endweek_discount">Ada diskon %1$s nih jadi %2$s. Cek di Tokopedia, deh. Bentar lagi diskonnya berakhir, lho!</string>
+    <string name="title_update_app">Yuk, Update dulu aplikasimu</string>
+    <string name="description_error_not_found">Untuk membuka halaman ini, kamu perlu update ke aplikasi Tokopedia versi terbaru.</string>
+    <string name="cta_update_app">Update Aplikasi</string>
+
+    <!-- post purchase -->
+    <string name="universal_sharing_post_purchase_bottomsheet_title">Bagikan produk yang kamu beli</string>
+    <string name="universal_sharing_post_purchase_button_text">Bagikan</string>
+    <string name="universal_sharing_post_purchase_error_network">Wah, internet putus. Cek Wi-Fi atau paket datamu, ya.</string>
+    <string name="universal_sharing_post_purchase_try_again">Coba Lagi</string>
+    <string name="universal_sharing_post_purchase_product_unavailable">Yaah, barang ini sudah nggak tersedia. move on ke barang lainnya, yuk!</string>
+    <string name="universal_sharing_post_purchase_ok">Oke</string>
+    <string name="universal_sharing_post_purchase_og_desc">Coba cek ini di Tokopedia, deh. Harganya %1$s.</string>
 </resources>

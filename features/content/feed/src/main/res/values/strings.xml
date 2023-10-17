@@ -88,6 +88,8 @@ dari Feed.</string>
 
     <!-- New Immersive Feed -->
     <string name="feed_watch_mode">Mode Nonton</string>
+    <string name="feed_mute_label">Heningkan</string>
+    <string name="feed_unmute_label">Bunyikan</string>
     <string name="feed_report_login_success_toaster_text">Kamu berhasil masuk sebagai %s.</string>
     <string name="feeds_tag_product_99_more_text">Cek 99+ Produk</string>
     <string name="feeds_tag_product_text">Cek %d Produk</string>
@@ -98,6 +100,7 @@ dari Feed.</string>
 
     <string name="feed_post_sebagai">Post sebagai</string>
     <string name="feed_selengkapnya_label">Selengkapnya</string>
+    <string name="feed_lihat_sedikit_label">Lihat sedikit</string>
 
     <!-- No Content -->
     <string name="feed_label_no_content_title">Yaah, belum ada konten</string>
@@ -112,10 +115,15 @@ dari Feed.</string>
     <string name="feed_label_error_fetch_title">Koneksi internetmu terganggu!</string>
     <string name="feed_label_error_fetch_subtitle">Yuk, pastikan internetmu lancar dengan cek ulang paket data, WiFi, atau jaringan di tempatmu.</string>
     <string name="feed_label_error_fetch_button">Coba Lagi</string>
+    <string name="feed_failed_to_load_content">Yaah, gagal memuat konten</string>
+
     <string name="feed_onboarding_create_content_title">Baru! Bisa buat video pendek 🥳</string>
     <string name="feed_onboarding_create_content_subtitle">Buat video hingga 90 detik tentang pengalaman belanja atau promosi produk yang menginspirasi!</string>
     <string name="feed_onboarding_profile_entry_point_title">Cek profil kamu di sini, yuk!</string>
     <string name="feed_onboarding_profile_entry_point_subtitle">Kamu juga bisa buat profil yang menarik dan bikin banyak orang penasaran dengan kontenmu.</string>
+    <string name="feed_onboarding_browse_entry_point_title">Temukan berbagai konten seru</string>
+    <string name="feed_onboarding_browse_entry_point_subtitle">Dapetin inspirasi belanja dari konten kreatif lainnya, yuk!</string>
+
     <string name="feed_for_you_label">Untuk Kamu</string>
     <string name="feed_following_label">Following</string>
     <string name="feed_live_label">LIVE</string>
@@ -125,6 +133,9 @@ dari Feed.</string>
 
     <string name="feed_message_success_follow">Berhasil follow %s ini!</string>
     <string name="feed_message_failed_follow">Oops, gagal follow akun ini.</string>
+
+    <string name="feed_message_success_unfollow">Berhasil unfollow %s ini!</string>
+    <string name="feed_message_failed_unfollow">Oops, gagal unfollow akun ini.</string>
 
     <!-- Transcoding Livestream to VOD -->
     <string name="feed_transcoding_livestream_to_vod_message">Sedang menyimpan video. Kami akan infokan jika berhasil disimpan.</string>
@@ -156,4 +167,10 @@ dari Feed.</string>
     <string name="feed_cta_almost_sold_label">Segera Habis</string>
     <string name="feed_cta_sold_label">Terjual Habis</string>
     <string name="feed_success_report_video">Video berhasil dilaporkan</string>
+    <string name="feed_bottom_action_comment_label">Ketik komentarmu…</string>
+    <string name="feed_bottom_action_share_label">Bagikan konten</string>
+
+    <!-- Follow Recommendation -->
+    <string name="feed_load_follow_recommendation_error">Yaah, gagal memuat konten</string>
+    <string name="feed_load_follow_recommendation_failed">Gagal memuat rekomendasi akun. Coba lagi, ya</string>
 </resources>

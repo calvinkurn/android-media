@@ -2,6 +2,7 @@ package com.tokopedia.shop_showcase.shop_showcase_tab.presentation.fragment
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.PorterDuff
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,12 +17,14 @@ import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
@@ -30,18 +33,21 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.common.constant.ShopCommonExtraConstant
 import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
+import com.tokopedia.shop.common.view.interfaces.InterfaceShopPageHeader
 import com.tokopedia.shop.common.view.model.ShopEtalaseUiModel
+import com.tokopedia.shop.common.view.model.ShopPageColorSchema
+import com.tokopedia.shop.common.view.model.ShopSharingInShowCaseUiModel
 import com.tokopedia.shop_showcase.R
 import com.tokopedia.shop_showcase.common.ShopShowcaseUtil
 import com.tokopedia.shop_showcase.databinding.FragmentShopPageShowcaseBinding
 import com.tokopedia.shop_showcase.shop_showcase_tab.analytic.ShopShowcaseTabTracking
 import com.tokopedia.shop_showcase.shop_showcase_tab.di.component.DaggerShopPageShowcaseComponent
-import com.tokopedia.shop_showcase.shop_showcase_tab.presentation.adapter.viewholder.ShopShowcaseListImageListener
 import com.tokopedia.shop_showcase.shop_showcase_tab.di.component.ShopPageShowcaseComponent
 import com.tokopedia.shop_showcase.shop_showcase_tab.domain.model.ShopFeaturedShowcaseError
 import com.tokopedia.shop_showcase.shop_showcase_tab.presentation.adapter.ShopPageFeaturedShowcaseAdapter
 import com.tokopedia.shop_showcase.shop_showcase_tab.presentation.adapter.ShopPageShowcaseListAdapter
 import com.tokopedia.shop_showcase.shop_showcase_tab.presentation.adapter.viewholder.ShopPageFeaturedShowcaseListener
+import com.tokopedia.shop_showcase.shop_showcase_tab.presentation.adapter.viewholder.ShopShowcaseListImageListener
 import com.tokopedia.shop_showcase.shop_showcase_tab.presentation.model.FeaturedShowcaseUiModel
 import com.tokopedia.shop_showcase.shop_showcase_tab.presentation.viewmodel.ShopPageShowcaseViewModel
 import com.tokopedia.unifycomponents.LocalLoad
@@ -49,17 +55,19 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.view.binding.viewBinding
-import java.net.URLEncoder
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by Rafli Syam on 05/03/2021
  */
 @Keep
-class ShopPageShowcaseFragment : BaseDaggerFragment(),
-        HasComponent<ShopPageShowcaseComponent>,
+class ShopPageShowcaseFragment :
+    BaseDaggerFragment(),
+    HasComponent<ShopPageShowcaseComponent>,
     ShopPageFeaturedShowcaseListener,
-    ShopShowcaseListImageListener {
+    ShopShowcaseListImageListener,
+    ShopShowcaseTabInterface {
 
     companion object {
 
@@ -72,14 +80,15 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(),
         private const val SHOWCASE_REQUEST_CODE = 201
         const val SHOP_SRP_EXTRA_SHOP_REF = "EXTRA_SHOP_REF"
         const val SHOP_SRP_EXTRA_ATTRIBUTION = "EXTRA_ATTRIBUTION"
+        const val SHOP_SHARING_FOR_SHOW_CASE = "shop_header_for_sharing"
 
         @JvmStatic
         fun createInstance(
-                shopId: String,
-                shopRef: String,
-                shopAttribution: String?,
-                isOfficialStore: Boolean,
-                isGoldMerchant: Boolean
+            shopId: String,
+            shopRef: String,
+            shopAttribution: String?,
+            isOfficialStore: Boolean,
+            isGoldMerchant: Boolean
         ): ShopPageShowcaseFragment = ShopPageShowcaseFragment().apply {
             // set arguments bundle
             arguments = Bundle().apply {
@@ -90,8 +99,11 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(),
                 putBoolean(KEY_IS_GOLD_MERCHANT, isGoldMerchant)
             }
         }
-
     }
+
+    private var featuredShowcaseTitleColor: Int = MethodChecker.getColor(context, unifyprinciplesR.color.Unify_NN950)
+    private var allShowcaseTitleColor: Int = MethodChecker.getColor(context, unifyprinciplesR.color.Unify_NN950)
+    private var icShowcaseSearchColor: Int = MethodChecker.getColor(context, unifyprinciplesR.color.Unify_NN950)
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -121,7 +133,9 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(),
     private var isOfficialStore: Boolean = false
     private var isGoldMerchant: Boolean = false
     private var maxShowcaseList: Int = 0
-    private val viewBinding : FragmentShopPageShowcaseBinding? by viewBinding()
+    private var shopSharingInShowCaseUiModel: ShopSharingInShowCaseUiModel? = null
+
+    private val viewBinding: FragmentShopPageShowcaseBinding? by viewBinding()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -144,11 +158,36 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(),
         initListener()
         observeLiveData()
         loadShowcaseInitialData()
+        configColorTheme()
     }
 
-    override fun onPause() {
-        super.onPause()
-        shopShowcaseTabTracking.sendAllTrackingQueue()
+    private fun configColorTheme() {
+        if (isOverrideTheme()) {
+            configReimaginedColor()
+        } else {
+            configDefaultColor()
+        }
+        tvFeaturedShowcaseTitle?.setTextColor(featuredShowcaseTitleColor)
+        tvAllShowcaseTitle?.setTextColor(allShowcaseTitleColor)
+        icShowcaseSearch?.setColorFilter(icShowcaseSearchColor, PorterDuff.Mode.SRC_ATOP)
+    }
+
+    private fun configDefaultColor() {
+        featuredShowcaseTitleColor = MethodChecker.getColor(context, unifyprinciplesR.color.Unify_NN950)
+        allShowcaseTitleColor = MethodChecker.getColor(context, unifyprinciplesR.color.Unify_NN950)
+        icShowcaseSearchColor = MethodChecker.getColor(context, unifyprinciplesR.color.Unify_NN950)
+    }
+
+    private fun configReimaginedColor() {
+        featuredShowcaseTitleColor = getShopPageColorSchema().getColorIntValue(
+            ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS
+        )
+        allShowcaseTitleColor = getShopPageColorSchema().getColorIntValue(
+            ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS
+        )
+        icShowcaseSearchColor = getShopPageColorSchema().getColorIntValue(
+            ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS
+        )
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -173,9 +212,9 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(),
     override fun getComponent(): ShopPageShowcaseComponent? {
         return activity?.run {
             DaggerShopPageShowcaseComponent
-                    .builder()
-                    .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
-                    .build()
+                .builder()
+                .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
+                .build()
         }
     }
 
@@ -185,12 +224,12 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(),
 
     override fun onFeaturedShowcaseClicked(element: FeaturedShowcaseUiModel, position: Int) {
         // track click featured showcase item
-        if(!shopPageShowcaseViewModel.isMyShop(shopId)) {
+        if (!shopPageShowcaseViewModel.isMyShop(shopId)) {
             shopShowcaseTabTracking.clickFeaturedShowcaseItem(
-                    featuredShowcase = element,
-                    position = position,
-                    shopId = shopId,
-                    userId = shopPageShowcaseViewModel.userId.orEmpty()
+                featuredShowcase = element,
+                position = position,
+                shopId = shopId,
+                userId = shopPageShowcaseViewModel.userId.orEmpty()
             )
         }
 
@@ -200,12 +239,12 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(),
 
     override fun onFeaturedShowcaseImpressed(element: FeaturedShowcaseUiModel, position: Int) {
         // track featured showcase item impression
-        if(!shopPageShowcaseViewModel.isMyShop(shopId)) {
+        if (!shopPageShowcaseViewModel.isMyShop(shopId)) {
             shopShowcaseTabTracking.featuredShowcaseItemImpressed(
-                    featuredShowcase = element,
-                    position = position,
-                    shopId = shopId,
-                    userId = shopPageShowcaseViewModel.userId.orEmpty()
+                featuredShowcase = element,
+                position = position,
+                shopId = shopId,
+                userId = shopPageShowcaseViewModel.userId.orEmpty()
             )
         }
     }
@@ -213,11 +252,11 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(),
     override fun onShowcaseListItemSelected(element: ShopEtalaseUiModel, position: Int) {
         // track click all showcase item
         shopShowcaseTabTracking.clickAllShowcaseItem(
-                allShowcaseItem = element,
-                maxShowcaseList = maxShowcaseList,
-                position = position,
-                shopId = shopId,
-                userId = shopPageShowcaseViewModel.userId.orEmpty()
+            allShowcaseItem = element,
+            maxShowcaseList = maxShowcaseList,
+            position = position,
+            shopId = shopId,
+            userId = shopPageShowcaseViewModel.userId.orEmpty()
         )
 
         // open showcase product result list page
@@ -227,12 +266,12 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(),
 
     override fun onShowcaseListItemImpressed(element: ShopEtalaseUiModel, position: Int) {
         // track featured showcase item impression
-        if(!shopPageShowcaseViewModel.isMyShop(shopId)) {
+        if (!shopPageShowcaseViewModel.isMyShop(shopId)) {
             shopShowcaseTabTracking.showcaseItemImpressed(
-                    showcaseItem = element,
-                    position = position,
-                    shopId = shopId,
-                    userId = shopPageShowcaseViewModel.userId.orEmpty()
+                showcaseItem = element,
+                position = position,
+                shopId = shopId,
+                userId = shopPageShowcaseViewModel.userId.orEmpty()
             )
         }
     }
@@ -255,7 +294,6 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(),
     }
 
     private fun initListener() {
-
         // search showcase icon on click listener
         icShowcaseSearch?.setOnClickListener {
             goToShopShowcaseList()
@@ -282,18 +320,18 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(),
 
     private fun initRecyclerView() {
         featuredShowcaseAdapter = ShopPageFeaturedShowcaseAdapter(this)
-        allShowcaseListAdapter = ShopPageShowcaseListAdapter(this)
+        allShowcaseListAdapter = ShopPageShowcaseListAdapter(this, this)
 
         val featuredShowcaseLayoutManager = LinearLayoutManager(
-                context,
-                LinearLayoutManager.HORIZONTAL,
-                false
+            context,
+            LinearLayoutManager.HORIZONTAL,
+            false
         )
 
         val allShowcaseLayoutManager = LinearLayoutManager(
-                context,
-                LinearLayoutManager.VERTICAL,
-                false
+            context,
+            LinearLayoutManager.VERTICAL,
+            false
         )
 
         // init featured showcase recyclerview
@@ -318,6 +356,7 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(),
             shopAttribution = args.getString(KEY_SHOP_ATTRIBUTION, "")
             isOfficialStore = args.getBoolean(KEY_IS_OS, false)
             isGoldMerchant = args.getBoolean(KEY_IS_GOLD_MERCHANT, false)
+            shopSharingInShowCaseUiModel = args.getParcelable(SHOP_SHARING_FOR_SHOW_CASE)
         }
     }
 
@@ -338,86 +377,91 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(),
     }
 
     private fun observeLiveData() {
-
         // observe initial load showcase
-        shopPageShowcaseViewModel.showcasesBuyerUiModel.observe(viewLifecycleOwner, Observer { result ->
-            shouldShowShimmerView(false)
+        shopPageShowcaseViewModel.showcasesBuyerUiModel.observe(
+            viewLifecycleOwner,
+            Observer { result ->
+                shouldShowShimmerView(false)
 
-            when (result) {
-                is Success -> {
-
-                    val response = result.data
-                    if (response.isFeaturedShowcaseError && response.isAllShowcaseError) {
-                        // both showcases section error, show global error
-                        showGlobalError()
-                    } else {
-                        // check for featured showcase section
-                        if (response.isFeaturedShowcaseError) {
-                            // featured showcase section error, show local load
-                            showFeaturedSectionLocalLoad()
+                when (result) {
+                    is Success -> {
+                        val response = result.data
+                        if (response.isFeaturedShowcaseError && response.isAllShowcaseError) {
+                            // both showcases section error, show global error
+                            showGlobalError()
                         } else {
-                            // render featured showcase section
-                            renderFeaturedShowcaseSection(
+                            // check for featured showcase section
+                            if (response.isFeaturedShowcaseError) {
+                                // featured showcase section error, show local load
+                                showFeaturedSectionLocalLoad()
+                            } else {
+                                // render featured showcase section
+                                renderFeaturedShowcaseSection(
                                     featuredShowcaseList = response.featuredShowcaseUiModelResponse.featuredShowcaseList,
                                     errorResponse = response.featuredShowcaseUiModelResponse.errorResponse
-                            )
-                        }
+                                )
+                            }
 
-                        // check for all showcase section
-                        if (response.isAllShowcaseError) {
-                            // all showcase section error, show local load
-                            showAllShowcaseSectionLocalLoad()
-                        } else {
-                            // render all showcase section
-                            renderAllShowcaseSection(response.allShowcaseList)
+                            // check for all showcase section
+                            if (response.isAllShowcaseError) {
+                                // all showcase section error, show local load
+                                showAllShowcaseSectionLocalLoad()
+                            } else {
+                                // render all showcase section
+                                renderAllShowcaseSection(response.allShowcaseList)
+                            }
                         }
                     }
-
-                }
-                is Fail -> {
-                    // show global error
-                    showGlobalError()
+                    is Fail -> {
+                        // show global error
+                        showGlobalError()
+                    }
                 }
             }
-        })
+        )
 
         // observe only featured showcase data
-        shopPageShowcaseViewModel.featuredShowcaseList.observe(viewLifecycleOwner, Observer {
-            shouldLoadingLocalLoad(localLoadFeaturedShowcase, false)
-            when (it) {
-                is Success -> {
-                    val response = it.data
+        shopPageShowcaseViewModel.featuredShowcaseList.observe(
+            viewLifecycleOwner,
+            Observer {
+                shouldLoadingLocalLoad(localLoadFeaturedShowcase, false)
+                when (it) {
+                    is Success -> {
+                        val response = it.data
 
-                    // render featured showcase section
-                    renderFeaturedShowcaseSection(
+                        // render featured showcase section
+                        renderFeaturedShowcaseSection(
                             featuredShowcaseList = response.featuredShowcaseList,
                             errorResponse = response.errorResponse
-                    )
-                }
-                is Fail -> {
-                    // featured showcase section error, show local load
-                    showFeaturedSectionLocalLoad()
+                        )
+                    }
+                    is Fail -> {
+                        // featured showcase section error, show local load
+                        showFeaturedSectionLocalLoad()
+                    }
                 }
             }
-        })
+        )
 
         // observe only all showcase data
-        shopPageShowcaseViewModel.showcaseList.observe(viewLifecycleOwner, Observer {
-            shouldLoadingLocalLoad(localLoadAllShowcase, false)
-            when (it) {
-                is Success -> {
-                    val response = it.data
+        shopPageShowcaseViewModel.showcaseList.observe(
+            viewLifecycleOwner,
+            Observer {
+                shouldLoadingLocalLoad(localLoadAllShowcase, false)
+                when (it) {
+                    is Success -> {
+                        val response = it.data
 
-                    // render all showcase section
-                    renderAllShowcaseSection(response)
-                }
-                is Fail -> {
-                    // all showcase section error, show local load
-                    showAllShowcaseSectionLocalLoad()
+                        // render all showcase section
+                        renderAllShowcaseSection(response)
+                    }
+                    is Fail -> {
+                        // all showcase section error, show local load
+                        showAllShowcaseSectionLocalLoad()
+                    }
                 }
             }
-        })
-
+        )
     }
 
     private fun renderFeaturedShowcaseSection(
@@ -494,6 +538,7 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(),
             putExtra(ShopCommonExtraConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, isNeedToReloadData)
             putExtra(SHOP_SRP_EXTRA_ATTRIBUTION, shopAttribution)
             putExtra(SHOP_SRP_EXTRA_SHOP_REF, shopRef)
+            putExtra(SHOP_SHARING_FOR_SHOW_CASE, shopSharingInShowCaseUiModel)
         }
         startActivity(intentShopPageSrp)
     }
@@ -559,4 +604,15 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(),
         localLoadFeaturedShowcase?.hide()
     }
 
+    override fun isOverrideTheme(): Boolean {
+        return (parentFragment?.parentFragment as? InterfaceShopPageHeader)?.isOverrideTheme().orFalse()
+    }
+
+    override fun getShopPageColorSchema(): ShopPageColorSchema {
+        return (parentFragment?.parentFragment as? InterfaceShopPageHeader)?.getBodyColorSchema() ?: ShopPageColorSchema()
+    }
+
+    override fun getPatternColorType(): String {
+        return (parentFragment?.parentFragment as? InterfaceShopPageHeader)?.getBodyPatternColorType().orEmpty()
+    }
 }

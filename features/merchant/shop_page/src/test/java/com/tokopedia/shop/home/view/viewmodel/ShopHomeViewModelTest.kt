@@ -71,9 +71,11 @@ import com.tokopedia.shop.common.domain.interactor.GqlShopPageGetDynamicTabUseCa
 import com.tokopedia.shop.common.domain.interactor.GqlShopPageGetHomeType
 import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
 import com.tokopedia.shop.common.graphql.domain.usecase.shopsort.GqlGetShopSortUseCase
+import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
 import com.tokopedia.shop.home.WidgetName
+import com.tokopedia.shop.home.WidgetNameEnum
 import com.tokopedia.shop.home.WidgetType
 import com.tokopedia.shop.home.data.model.CheckCampaignNotifyMeModel
 import com.tokopedia.shop.home.data.model.GetCampaignNotifyMeModel
@@ -272,6 +274,8 @@ class ShopHomeViewModelTest {
         widgetType = PlayWidgetType.Medium,
         isLoading = false
     )
+    private val mockShopPageColorSchema = ShopPageColorSchema()
+
 
     @Before
     fun setup() {
@@ -1589,6 +1593,8 @@ class ShopHomeViewModelTest {
                 false,
                 any(),
                 any(),
+                any(),
+                any(),
                 any()
             ) } returns listOf(
                 ShopHomeCarousellProductUiModel(widgetId = "1")
@@ -1605,7 +1611,9 @@ class ShopHomeViewModelTest {
                 mockShopId,
                 addressWidgetData,
                 false,
-                mockIsDirectPurchaseTrue
+                mockIsDirectPurchaseTrue,
+                false,
+                mockShopPageColorSchema
             )
             assert(shopHomeWidgetContentData.await() is Success)
             assert((shopHomeWidgetContentData.await() as? Success)?.data?.isNotEmpty() == true)
@@ -1650,6 +1658,8 @@ class ShopHomeViewModelTest {
                 false,
                 any(),
                 any(),
+                any(),
+                any(),
                 any()
             ) } returns listOf(
                 resultWidget
@@ -1666,7 +1676,9 @@ class ShopHomeViewModelTest {
                 mockShopId,
                 addressWidgetData,
                 false,
-                mockIsDirectPurchaseTrue
+                mockIsDirectPurchaseTrue,
+                false,
+                mockShopPageColorSchema
             )
             assert((shopHomeWidgetContentData.await() as? Success)?.data?.values?.first() == resultWidget)
         }
@@ -1690,6 +1702,8 @@ class ShopHomeViewModelTest {
                 false,
                 any(),
                 any(),
+                any(),
+                any(),
                 any()
             ) } returns listOf(
                 ProductCardUiModel()
@@ -1706,7 +1720,9 @@ class ShopHomeViewModelTest {
                 mockShopId,
                 addressWidgetData,
                 false,
-                mockIsDirectPurchaseTrue
+                mockIsDirectPurchaseTrue,
+                false,
+                mockShopPageColorSchema
             )
             assert((shopHomeWidgetContentData.await() as? Success)?.data?.values?.first() == null)
         }
@@ -1729,7 +1745,9 @@ class ShopHomeViewModelTest {
                 mockShopId,
                 addressWidgetData,
                 false,
-                mockIsDirectPurchaseTrue
+                mockIsDirectPurchaseTrue,
+                false,
+                mockShopPageColorSchema
             )
             assert(shopHomeWidgetContentData.await() is Fail)
             assert(shopHomeWidgetContentDataError.await().isNotEmpty())
@@ -2198,7 +2216,8 @@ class ShopHomeViewModelTest {
                             homeLayoutData = HomeLayoutData(
                                 widgetIdList = listOf(
                                     WidgetIdList(
-                                        widgetId = "1"
+                                        widgetId = "1",
+                                        widgetName = WidgetNameEnum.SLIDER_BANNER.value
                                     )
                                 )
                             )

@@ -2,6 +2,10 @@ package com.tokopedia.tkpd.flashsale.presentation.manageproductlist
 
 import android.content.SharedPreferences
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.campaign.entity.RemoteTicker
+import com.tokopedia.campaign.usecase.GetTargetedTickerUseCase
+import com.tokopedia.campaign.utils.constant.TickerConstant
+import com.tokopedia.campaign.utils.constant.TickerType
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.tkpd.flashsale.data.mapper.FlashSaleMonitorSubmitProductSseMapper
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleProductSubmissionProgress
@@ -14,7 +18,6 @@ import com.tokopedia.tkpd.flashsale.presentation.detail.DummyDataHelper
 import com.tokopedia.tkpd.flashsale.presentation.manageproductlist.adapter.item.FlashSaleManageProductListItem
 import com.tokopedia.tkpd.flashsale.presentation.manageproductlist.uimodel.FlashSaleManageProductListUiEffect
 import com.tokopedia.tkpd.flashsale.presentation.manageproductlist.uimodel.FlashSaleManageProductListUiEvent
-import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
@@ -55,6 +58,9 @@ class FlashSaleManageProductListViewModelTest {
     @RelaxedMockK
     lateinit var doFlashSaleProductSubmitAcknowledgeUseCase: DoFlashSaleProductSubmitAcknowledgeUseCase
 
+    @RelaxedMockK
+    lateinit var getTargetedTickerUseCase: GetTargetedTickerUseCase
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
@@ -77,6 +83,7 @@ class FlashSaleManageProductListViewModelTest {
             doFlashSaleProductSubmissionUseCase,
             flashSaleTkpdProductSubmissionMonitoringSse,
             sharedPreferences,
+            getTargetedTickerUseCase,
             getFlashSaleProductSubmissionProgressUseCase,
             flashSaleMonitorSubmitProductSseMapper,
             doFlashSaleProductSubmitAcknowledgeUseCase
@@ -200,7 +207,6 @@ class FlashSaleManageProductListViewModelTest {
             assert(viewModel.uiState.first().listDelegateItem.size != mockCurrentReservedProductData.products.size)
         }
     }
-
 
     @Test
     fun `When delete product from reservation success with current product list is not empty and deleted product not matched, then product list should be the same`() {
@@ -415,7 +421,6 @@ class FlashSaleManageProductListViewModelTest {
         }
     }
 
-
     @Test
     fun `When UpdateProductData with empty current product list, then current product list should be empty`() {
         testCoroutineRule.runTest {
@@ -434,10 +439,10 @@ class FlashSaleManageProductListViewModelTest {
         runBlockingTest {
             val mockUpdatedProductData = ReservedProduct.Product(
                 productId = 12352,
-                name = "test",
+                name = "test"
             )
             val mockCurrentReservedProductData = getMockedDiscountedReservedProductDataWithParentAndChild()
-            getReservedProductList( mockCurrentReservedProductData)
+            getReservedProductList(mockCurrentReservedProductData)
             viewModel.processEvent(
                 FlashSaleManageProductListUiEvent.UpdateProductData(
                     mockUpdatedProductData
@@ -450,11 +455,51 @@ class FlashSaleManageProductListViewModelTest {
     }
 
     @Test
+    fun `When rollence value list data is provided, then should get success ticker list result & show ticker`() {
+        runBlockingTest {
+            val tickerListData = listOf(
+                RemoteTicker(
+                    title = "some ticker title",
+                    description = "some ticker description",
+                    type = TickerType.INFO,
+                    actionLabel = "some ticker action label",
+                    actionType = "link",
+                    actionAppUrl = "https://tokopedia.com"
+                )
+            )
+
+            val rollenceValueList: List<String> = listOf("ct_ticker_1", "ct_ticker_2")
+            val targetParams: List<GetTargetedTickerUseCase.Param.Target> = listOf(
+                GetTargetedTickerUseCase.Param.Target(
+                    type = GetTargetedTickerUseCase.KEY_TYPE_ROLLENCE_NAME,
+                    values = rollenceValueList
+                )
+            )
+            val tickerParams = GetTargetedTickerUseCase.Param(
+                page = TickerConstant.REMOTE_TICKER_KEY_FLASH_SALE_TOKOPEDIA_MANAGE_PRODUCT,
+                targets = targetParams
+            )
+
+            coEvery { getTargetedTickerUseCase.execute(tickerParams) } returns tickerListData
+
+            viewModel.processEvent(
+                FlashSaleManageProductListUiEvent.GetTickerData(
+                    rollenceValueList = rollenceValueList
+                )
+            )
+
+            val emittedValue = viewModel.uiState.first()
+            Assert.assertEquals(true, emittedValue.showTicker)
+            assert(emittedValue.tickerList.isNotEmpty())
+        }
+    }
+
+    @Test
     fun `When UpdateProductData and not matched with current product list, then current product list should not be updated`() {
         runBlockingTest {
             val mockUpdatedProductData = ReservedProduct.Product(
                 productId = 5,
-                name = "test",
+                name = "test"
             )
             val mockCurrentReservedProductData = getMockedDiscountedReservedProductDataWithParentAndChild()
             getReservedProductList(mockCurrentReservedProductData)
@@ -759,5 +804,4 @@ class FlashSaleManageProductListViewModelTest {
         )
         advanceUntilIdle()
     }
-
 }

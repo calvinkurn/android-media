@@ -76,8 +76,8 @@
     <include
         android:id="@+id/view_upcoming_share_experience"
         layout="@layout/view_share_experience"
-        android:layout_width="@dimen/unify_space_24"
-        android:layout_height="@dimen/unify_space_24"
+        android:layout_width="@dimen/unify_space_32"
+        android:layout_height="@dimen/unify_space_32"
         android:layout_marginEnd="@dimen/unify_space_16"
         app:layout_constraintBottom_toBottomOf="@id/view_partner_info"
         app:layout_constraintEnd_toEndOf="parent"

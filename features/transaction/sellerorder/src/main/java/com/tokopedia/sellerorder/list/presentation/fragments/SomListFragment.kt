@@ -74,6 +74,7 @@ import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToRequestPickup
 import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToReturnToShipper
 import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToSomOrderDetail
 import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToTrackingPage
+import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomConfirmShippingBottomSheet
 import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomOrderEditAwbBottomSheet
 import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomOrderRequestCancelBottomSheet
 import com.tokopedia.sellerorder.common.presenter.dialogs.SomOrderHasRequestCancellationDialog
@@ -140,7 +141,6 @@ import com.tokopedia.sellerorder.list.presentation.models.SomListOrderWrapperUiM
 import com.tokopedia.sellerorder.list.presentation.models.SomListTickerUiModel
 import com.tokopedia.sellerorder.list.presentation.util.SomListCoachMarkManager
 import com.tokopedia.sellerorder.list.presentation.viewmodels.SomListViewModel
-import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.activity.WaitingPaymentOrderActivity
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -204,6 +204,7 @@ open class SomListFragment :
                     putString(TAB_STATUS, bundle.getString(TAB_STATUS))
                     putString(QUERY_PARAM_SEARCH, bundle.getString(QUERY_PARAM_SEARCH))
                     putString(FILTER_ORDER_TYPE, bundle.getString(FILTER_ORDER_TYPE))
+                    putString(SomConsts.COACHMARK_KEY, bundle.getString(SomConsts.COACHMARK_KEY))
                 }
             }
         }
@@ -259,6 +260,7 @@ open class SomListFragment :
     private var pendingAction: SomPendingAction? = null
     private var tickerIsReady = false
     private var coachMarkManager: SomListCoachMarkManager? = null
+    private var highLightStatusKey: String = ""
 
     protected var somListLoadTimeMonitoring: SomListLoadTimeMonitoring? = null
     protected var selectedOrderId: String = ""
@@ -270,6 +272,11 @@ open class SomListFragment :
         somListBinding?.root?.context?.let {
             CoachMark2(it)
         }
+    }
+
+    // The isEnabledCoachmark allows the EP team to automate tests with coachmark hiding on the SOM Page
+    private val isEnabledCoachmark: Boolean by lazy {
+        arguments?.getString(SomConsts.COACHMARK_KEY).orEmpty() != SomConsts.COACHMARK_DISABLED
     }
 
     protected var somListBinding by autoClearedNullable<FragmentSomListBinding> {
@@ -354,8 +361,10 @@ open class SomListFragment :
         if (!hidden) {
             SomAnalytics.sendScreenName(SomConsts.LIST_ORDER_SCREEN_NAME)
             coachMarkManager?.showCoachMark()
+            showCoachMarkAutoTabbing(highLightStatusKey)
         } else {
             coachMarkManager?.dismissCoachMark()
+            autoTabbingCoachMark?.dismissCoachMark()
         }
     }
 
@@ -389,13 +398,17 @@ open class SomListFragment :
 
     override fun onResume() {
         super.onResume()
-        if (!isHidden) coachMarkManager?.showCoachMark()
+        if (!isHidden) {
+            coachMarkManager?.showCoachMark()
+            showCoachMarkAutoTabbing(highLightStatusKey)
+        }
         updateShopActive()
     }
 
     override fun onPause() {
         dismissBottomSheets()
         coachMarkManager?.dismissCoachMark()
+        autoTabbingCoachMark?.dismissCoachMark()
         super.onPause()
         if (bulkAcceptButtonEnterAnimation?.isRunning == true) bulkAcceptButtonEnterAnimation?.end()
         if (bulkAcceptButtonLeaveAnimation?.isRunning == true) bulkAcceptButtonLeaveAnimation?.end()
@@ -631,8 +644,8 @@ open class SomListFragment :
         SomAnalytics.eventClickOrderCard(order.orderStatusId, order.status)
     }
 
-    override fun onTrackButtonClicked(orderId: String, url: String) {
-        goToTrackingPage(context, orderId, url)
+    override fun onTrackButtonClicked(url: String) {
+        goToTrackingPage(context, url)
     }
 
     override fun onConfirmShippingButtonClicked(
@@ -650,6 +663,14 @@ open class SomListFragment :
         } else {
             selectedOrderId = orderId
             goToConfirmShippingPage(this, orderId)
+        }
+    }
+
+    override fun onConfirmShippingAutoButtonClicked(popUp: PopUp?) {
+        popUp?.apply {
+            if (!popUp.template?.code.isNullOrBlank()) {
+                SomConfirmShippingBottomSheet.show(context, view, popUp)
+            }
         }
     }
 
@@ -771,6 +792,7 @@ open class SomListFragment :
                     SomAnalytics.eventClickBulkPrintAwb(userSession.userId)
                 }
             }
+
             KEY_REQUEST_PICKUP -> {
                 showProgressBulkRequestPickupDialog(getSelectedOrderIds().size.toLong().orZero())
                 viewModel.bulkRequestPickup(getSelectedOrderIds())
@@ -951,7 +973,7 @@ open class SomListFragment :
         setupSearchBar()
         setupListeners()
         setupMasks()
-        coachMarkManager = SomListCoachMarkManager(somListBinding, userSession.userId)
+        coachMarkManager = SomListCoachMarkManager(somListBinding, userSession.userId, isEnabledCoachmark)
     }
 
     private fun setupMasks() {
@@ -1925,10 +1947,8 @@ open class SomListFragment :
                         }
                 }
                 data.hasExtra(SomConsts.RESULT_PROCESS_REQ_PICKUP) -> {
-                    data.getParcelableExtra<SomProcessReqPickup.Data.MpLogisticRequestPickup>(
-                        SomConsts.RESULT_PROCESS_REQ_PICKUP
-                    )?.let { resultProcessReqPickup ->
-                        handleRequestPickUpResult(resultProcessReqPickup.listMessage.firstOrNull())
+                    data.getStringExtra(SomConsts.RESULT_PROCESS_REQ_PICKUP)?.let { message ->
+                        handleRequestPickUpResult(message)
                     }
                 }
                 data.hasExtra(SomConsts.RESULT_REJECT_ORDER) -> {
@@ -1970,10 +1990,9 @@ open class SomListFragment :
 
     private fun handleSomRequestPickUpActivityResult(resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK && data != null) {
-            data.getParcelableExtra<SomProcessReqPickup.Data.MpLogisticRequestPickup>(SomConsts.RESULT_PROCESS_REQ_PICKUP)
-                ?.let { resultProcessReqPickup ->
-                    handleRequestPickUpResult(resultProcessReqPickup.listMessage.firstOrNull())
-                }
+            data.getStringExtra(SomConsts.RESULT_PROCESS_REQ_PICKUP)?.let { message ->
+                handleRequestPickUpResult(message)
+            }
         }
     }
 
@@ -2280,7 +2299,7 @@ open class SomListFragment :
     private fun getOldEmptyState(
         isTopAdsActive: Boolean
     ): SomListEmptyStateUiModel {
-        val isSellerApp = GlobalConfig.isSellerApp()
+        val isSellerApp = true
         val isNewOrderFilterSelected =
             somListOrderStatusFilterTab?.isNewOrderFilterSelected() == true
         val isNonStatusOrderFilterApplied = somListSortFilterTab?.isNonStatusOrderFilterApplied(
@@ -2855,16 +2874,26 @@ open class SomListFragment :
 
     private fun setTabActiveFromAppLink() {
         if (Utils.isEnableOperationalGuideline()) {
-            val tabActive = arguments?.getString(TAB_ACTIVE).orEmpty()
-            val tabActiveFilter =
-                if (tabActive == SomConsts.STATUS_HISTORY || tabActive == STATUS_ALL_ORDER) String.EMPTY else tabActive
-            viewModel.setTabActiveFromAppLink(tabActiveFilter)
-            viewModel.setFirstPageOpened(true)
+            setTabActiveFromAppLinkOg()
         } else {
-            val tabActive = arguments?.getString(TAB_ACTIVE)
-                ?: if (GlobalConfig.isSellerApp()) SomConsts.STATUS_NEW_ORDER else STATUS_ALL_ORDER
-            viewModel.setTabActiveFromAppLink(tabActive)
+            setTabActiveFromApplinkOld()
         }
+    }
+
+    private fun setTabActiveFromAppLinkOg() {
+        val tabActive = arguments?.getString(TAB_ACTIVE).orEmpty()
+        val tabActiveFilter =
+            if (tabActive == SomConsts.STATUS_HISTORY || tabActive == STATUS_ALL_ORDER) String.EMPTY else tabActive
+        viewModel.setTabActiveFromAppLink(tabActiveFilter)
+        if (tabActiveFilter.isBlank()) {
+            viewModel.setFirstPageOpened(true)
+        }
+    }
+
+    private fun setTabActiveFromApplinkOld() {
+        val tabActive = arguments?.getString(TAB_ACTIVE)
+            ?: if (GlobalConfig.isSellerApp()) SomConsts.STATUS_NEW_ORDER else STATUS_ALL_ORDER
+        viewModel.setTabActiveFromAppLink(tabActive)
     }
 
     protected fun dismissBottomSheets(): Boolean {
@@ -2913,13 +2942,9 @@ open class SomListFragment :
             somListGetOrderListParam = viewModel.getDataOrderListParams()
         )
 
-        val highLightStatusKey = somFilterUiModel.highLightedStatusKey
+        this.highLightStatusKey = somFilterUiModel.highLightedStatusKey
 
-        // this case to handle when there is a highlightedStatusKey (all_order, new_order, confirm_shipping) from backend
-        val shouldRefreshOrderAutoTabbing = viewModel.getIsFirstPageOpened() &&
-            highLightStatusKey.isNotBlank() && viewModel.getTabActiveFromAppLink().isBlank()
-
-        if (shouldRefreshOrderAutoTabbing) {
+        if (getShouldRefreshOrderAutoTabbing(highLightStatusKey)) {
             val statusIds = somFilterUiModel.statusList.find { it.key == highLightStatusKey }?.id.orEmpty()
             if (statusIds.isNotEmpty()) {
                 viewModel.setStatusOrderFilter(statusIds, highLightStatusKey)
@@ -2936,8 +2961,15 @@ open class SomListFragment :
         }
     }
 
+    private fun getShouldRefreshOrderAutoTabbing(highLightStatusKey: String): Boolean {
+        // this case to handle when there is a highlightedStatusKey (all_order, new_order, confirm_shipping) from backend
+        return viewModel.getIsFirstPageOpened() &&
+            highLightStatusKey.isNotBlank() &&
+            viewModel.getTabActiveFromAppLink().isBlank()
+    }
+
     private fun showCoachMarkAutoTabbing(highLightStatusKey: String) {
-        if (highLightStatusKey in listOf(STATUS_NEW_ORDER, KEY_CONFIRM_SHIPPING)) {
+        if (isEnabledCoachmark && highLightStatusKey in listOf(STATUS_NEW_ORDER, KEY_CONFIRM_SHIPPING)) {
             context?.let {
                 if (!CoachMarkPreference.hasShown(it, SHARED_PREF_SOM_LIST_TAB_COACH_MARK)) {
                     val coachMarkMessage = getCoachMarkMessageAutoTabbing(it, highLightStatusKey)

@@ -102,6 +102,8 @@ class GqlShopPageGetDynamicTabUseCase @Inject constructor(
                   imgLottie
                   bgImages
                   isDark
+                  chipWording
+                  shareWording
                   widgetHeaderStyle
                   widgetHeaderBgColors
                   shopLayoutFeatures {
@@ -132,6 +134,7 @@ class GqlShopPageGetDynamicTabUseCase @Inject constructor(
                             errMsgBrokenLink
                             etalaseID
                             isShowEtalaseName
+                            widgetStyle
                             data {
                                 linkID
                                 linkType

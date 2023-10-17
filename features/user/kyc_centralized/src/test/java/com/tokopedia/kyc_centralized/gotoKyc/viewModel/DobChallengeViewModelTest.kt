@@ -5,7 +5,7 @@ import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.GetChallengeResult
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.GetChallengeUseCase
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.SubmitChallengeResult
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.SubmitChallengeUseCase
-import com.tokopedia.kyc_centralized.ui.gotoKyc.main.DobChallengeViewModel
+import com.tokopedia.kyc_centralized.ui.gotoKyc.main.challenge.DobChallengeViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.coEvery
 import io.mockk.mockk

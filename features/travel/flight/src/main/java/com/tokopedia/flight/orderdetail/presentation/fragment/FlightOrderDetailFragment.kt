@@ -53,7 +53,8 @@ import javax.inject.Inject
 /**
  * @author by furqan on 19/10/2020
  */
-class FlightOrderDetailFragment : BaseDaggerFragment(),
+class FlightOrderDetailFragment :
+    BaseDaggerFragment(),
     FlightOrderDetailJourneyView.Listener,
     FlightOrderDetailHeaderStatusView.Listener {
 
@@ -109,85 +110,100 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
         super.onViewCreated(view, savedInstanceState)
         showLoading()
 
-        flightOrderDetailViewModel.orderDetailData.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    if (!isOpenTrackSent) {
-                        flightOrderDetailViewModel.trackOpenOrderDetail(it.data.statusString)
-                        isOpenTrackSent = true
+        flightOrderDetailViewModel.orderDetailData.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> {
+                        if (!isOpenTrackSent) {
+                            flightOrderDetailViewModel.trackOpenOrderDetail(it.data.statusString)
+                            isOpenTrackSent = true
+                        }
+                        renderView(it.data)
+                        checkIfShouldGoToCancellation(it.data)
+                        checkIfShouldGoToInvoice()
                     }
-                    renderView(it.data)
-                    checkIfShouldGoToCancellation(it.data)
-                    checkIfShouldGoToInvoice()
-                }
-                is Fail -> {
-                    var title = ""
-                    var message = ""
-                    try {
-                        val gson = Gson()
-                        val itemType =
-                            object : TypeToken<List<FlightOrderDetailErrorModel>>() {}.type
-                        val errorData = gson.fromJson<List<FlightOrderDetailErrorModel>>(
-                            it.throwable.message,
-                            itemType
-                        )
-                        title = errorData[0].title
-                        message = errorData[0].message
-                    } catch (error: Throwable) {
-                        message = ErrorHandler.getErrorMessage(requireContext(), error)
+                    is Fail -> {
+                        var title = ""
+                        var message = ""
+                        try {
+                            val gson = Gson()
+                            val itemType =
+                                object : TypeToken<List<FlightOrderDetailErrorModel>>() {}.type
+                            val errorData = gson.fromJson<List<FlightOrderDetailErrorModel>>(
+                                it.throwable.message,
+                                itemType
+                            )
+                            title = errorData[0].title
+                            message = errorData[0].message
+                        } catch (error: Throwable) {
+                            message = ErrorHandler.getErrorMessage(requireContext(), error)
+                        }
+                        renderErrorView(title, message)
                     }
-                    renderErrorView(title, message)
                 }
             }
-        })
+        )
 
-        flightOrderDetailViewModel.crossSell.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    renderCrossSell(it.data)
-                }
-                is Fail -> {
+        flightOrderDetailViewModel.crossSell.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> {
+                        renderCrossSell(it.data)
+                    }
+                    is Fail -> {
+                    }
                 }
             }
-        })
+        )
 
-        flightOrderDetailViewModel.eticketData.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    navigateToWebview(E_TICKET_TITLE, it.data)
-                }
-                is Fail -> {
-                    showSnackbarError(
-                        String.format(
-                            getString(R.string.flight_order_detail_failed_to_fetch_data),
-                            E_TICKET_TITLE.toLowerCase()
+        flightOrderDetailViewModel.eticketData.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> {
+                        navigateToWebview(E_TICKET_TITLE, it.data)
+                    }
+                    is Fail -> {
+                        showSnackbarError(
+                            String.format(
+                                getString(R.string.flight_order_detail_failed_to_fetch_data),
+                                E_TICKET_TITLE.toLowerCase()
+                            )
                         )
-                    )
+                    }
                 }
             }
-        })
+        )
 
-        flightOrderDetailViewModel.invoiceData.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    navigateToWebview(INVOICE_TITLE, it.data)
-                }
-                is Fail -> {
-                    showSnackbarError(
-                        String.format(
-                            getString(R.string.flight_order_detail_failed_to_fetch_data),
-                            INVOICE_TITLE.toLowerCase()
+        flightOrderDetailViewModel.invoiceData.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> {
+                        navigateToWebview(INVOICE_TITLE, it.data)
+                    }
+                    is Fail -> {
+                        showSnackbarError(
+                            String.format(
+                                getString(R.string.flight_order_detail_failed_to_fetch_data),
+                                INVOICE_TITLE.toLowerCase()
+                            )
                         )
-                    )
+                    }
                 }
             }
-        })
+        )
 
-        flightOrderDetailViewModel.cancellationData.observe(viewLifecycleOwner, Observer {
-            if (it.isNotEmpty()) {
-                navigateToCancellationPage(it)
+        flightOrderDetailViewModel.cancellationData.observe(
+            viewLifecycleOwner,
+            Observer {
+                if (it.isNotEmpty()) {
+                    navigateToCancellationPage(it)
+                }
             }
-        })
+        )
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -195,8 +211,9 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
 
         when (requestCode) {
             REQUEST_CODE_SEND_E_TICKET -> {
-                if (resultCode == Activity.RESULT_OK)
+                if (resultCode == Activity.RESULT_OK) {
                     showSnackbar(getString(R.string.flight_resend_eticket_success))
+                }
             }
             REQUEST_CODE_CANCELLATION -> {
                 if (resultCode == Activity.RESULT_OK) {
@@ -210,9 +227,9 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
                     data?.let {
                         if (it.hasExtra(FlightCancellationPassengerFragment.EXTRA_IS_CANCEL_ERROR) &&
                             it.getBooleanExtra(
-                                FlightCancellationPassengerFragment.EXTRA_IS_CANCEL_ERROR,
-                                false
-                            )
+                                    FlightCancellationPassengerFragment.EXTRA_IS_CANCEL_ERROR,
+                                    false
+                                )
                         ) {
                             showSnackbarError(
                                 String.format(
@@ -296,7 +313,8 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
             flightOrderDetailViewModel.orderId,
             data.createTime,
             data.payment.gatewayName,
-            data.payment.totalAmountStr
+            data.payment.totalAmountStr,
+            data.payment.additionalInfo
         )
         binding?.flightOrderDetailHeaderStatus?.buildView()
 
@@ -330,7 +348,6 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
                     override fun onTopButtonClicked() {}
 
                     override fun onBottomButtonClicked() {}
-
                 }
 
             data.insurances.forEach {
@@ -387,7 +404,6 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
                     flightOrderDetailViewModel.trackClickCancel()
                     flightOrderDetailViewModel.onNavigateToCancellationClicked(data.journeys)
                 }
-
             }
         binding?.flightOrderDetailCheckIn?.setData(
             getString(R.string.flight_order_detail_check_in_title_label),
@@ -430,12 +446,11 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
             binding?.flightOrderDetailCrossSell?.visibility = View.VISIBLE
             binding?.flightOrderDetailCrossSell?.buildView(crossSellData)
             binding?.flightOrderDetailCrossSell?.setListener(object :
-                TravelCrossSellAdapter.OnItemClickListener {
-                override fun onItemClickListener(item: TravelCrossSelling.Item, position: Int) {
-                    RouteManager.route(context, item.uri)
-                }
-
-            })
+                    TravelCrossSellAdapter.OnItemClickListener {
+                    override fun onItemClickListener(item: TravelCrossSelling.Item, position: Int) {
+                        RouteManager.route(context, item.uri)
+                    }
+                })
         } else {
             binding?.flightOrderDetailCrossSell?.visibility = View.GONE
         }
@@ -455,6 +470,7 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
         val bottomSheet = FlightOrderDetailPaymentDetailBottomSheet.getInstance(
             flightOrderDetailViewModel.buildPaymentDetailData(),
             flightOrderDetailViewModel.buildAmenitiesPaymentDetailData(),
+            flightOrderDetailViewModel.buildInsurancePaymentDetailData(),
             flightOrderDetailViewModel.getTotalAmount()
         )
         bottomSheet.setShowListener {

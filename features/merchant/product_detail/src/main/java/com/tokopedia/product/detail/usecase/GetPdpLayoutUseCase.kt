@@ -96,9 +96,6 @@ open class GetPdpLayoutUseCase @Inject constructor(
                     countTalk
                     rating
                   }
-                  postATCLayout {
-                    layoutID
-                  }
                 }
                 components {
                   name
@@ -316,9 +313,6 @@ open class GetPdpLayoutUseCase @Inject constructor(
                       sizeChart
                       maxFinalPrice
                       landingSubText
-                      postATCLayout {
-                        layoutID
-                      }
                       variants {
                         productVariantID
                         variantID
@@ -416,6 +410,29 @@ open class GetPdpLayoutUseCase @Inject constructor(
                     ... on pdpDataCustomInfoTitle {
                       title
                       status
+                    },
+                    ... on pdpDataDynamicOneLiner {
+                      name
+                      text
+                      applink
+                      separator
+                      icon
+                      status
+                      chevronPos
+                    }
+                    ... on pdpDataProductDetailMediaComponent {
+                      title
+                      description
+                      contentMedia {
+                        url
+                        ratio
+                      }
+                      show
+                      ctaText
+                    }
+                    ... on pdpDataProductListComponent {
+                      queryParam
+                      thematicID
                     }
                   }
                 }

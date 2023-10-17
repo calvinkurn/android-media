@@ -87,11 +87,11 @@ fun Ticker.setAnnouncementData(
     context: FragmentActivity?,
     source: Int = PAGE_ANNOUNCEMENT_ALL
 ) {
-    when (announcementData.getAffiliateAnnouncementV2?.data?.type) {
+    when (announcementData.getAffiliateAnnouncementV2?.announcementData?.type) {
         AffiliateBaseFragment.WARNING -> {
             setupTickerView(
                 source,
-                announcementData.getAffiliateAnnouncementV2?.data,
+                announcementData.getAffiliateAnnouncementV2?.announcementData,
                 this,
                 Ticker.TYPE_WARNING,
                 context
@@ -101,7 +101,7 @@ fun Ticker.setAnnouncementData(
         AffiliateBaseFragment.ERROR -> {
             setupTickerView(
                 source,
-                announcementData.getAffiliateAnnouncementV2?.data,
+                announcementData.getAffiliateAnnouncementV2?.announcementData,
                 this,
                 Ticker.TYPE_ERROR,
                 context
@@ -111,7 +111,7 @@ fun Ticker.setAnnouncementData(
         AffiliateBaseFragment.ANNOUNCEMENT -> {
             setupTickerView(
                 source,
-                announcementData.getAffiliateAnnouncementV2?.data,
+                announcementData.getAffiliateAnnouncementV2?.announcementData,
                 this,
                 Ticker.TYPE_ANNOUNCEMENT,
                 context
@@ -121,7 +121,7 @@ fun Ticker.setAnnouncementData(
         else -> {
             setupTickerView(
                 source,
-                announcementData.getAffiliateAnnouncementV2?.data,
+                announcementData.getAffiliateAnnouncementV2?.announcementData,
                 this,
                 Ticker.TYPE_INFORMATION,
                 context

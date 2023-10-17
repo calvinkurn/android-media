@@ -1,6 +1,8 @@
 package com.tokopedia.shop.home.view.adapter.viewholder
 
+import android.graphics.PorterDuff
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -18,18 +20,19 @@ import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.thousandFormatted
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.util.ShopUtil
+import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.ItemShopHomeDisplayBannerTimerBinding
 import com.tokopedia.shop.home.util.DateHelper
 import com.tokopedia.shop.home.util.DateHelper.SHOP_CAMPAIGN_BANNER_TIMER_MORE_THAN_1_DAY_DATE_FORMAT_ENDED
 import com.tokopedia.shop.home.util.DateHelper.SHOP_NPL_CAMPAIGN_WIDGET_MORE_THAT_1_DAY_DATE_FORMAT
 import com.tokopedia.shop.home.util.DateHelper.millisecondsToDays
-import com.tokopedia.shop.home.view.listener.ShopHomeDisplayBannerTimerWidgetListener
+import com.tokopedia.shop.home.view.listener.ShopHomeReimagineDisplayBannerTimerWidgetListener
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
 import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.date.toString
@@ -40,10 +43,13 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import java.math.RoundingMode
 import java.util.*
+import com.tokopedia.shop.common.R as shopcommonR
+import com.tokopedia.shop_widget.R as shop_widgetR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ShopHomeDisplayBannerTimerViewHolder(
     itemView: View,
-    private val listener: ShopHomeDisplayBannerTimerWidgetListener
+    private val listener: ShopHomeReimagineDisplayBannerTimerWidgetListener
 ) : AbstractViewHolder<ShopWidgetDisplayBannerTimerUiModel>(itemView), CoroutineScope {
 
     private val viewBinding: ItemShopHomeDisplayBannerTimerBinding? by viewBinding()
@@ -58,25 +64,29 @@ class ShopHomeDisplayBannerTimerViewHolder(
     private val loaderRemindMe: View? = viewBinding?.loaderRemindMe
     private val remindMeText: Typography? = viewBinding?.textRemindMe
     private val remindMeIcon: IconUnify? = viewBinding?.ivRemindMeBell
-    private val textSeeAll: Typography? = viewBinding?.textSeeAll
+    private var iconCtaChevron: IconUnify? = viewBinding?.iconCtaChevron
     private val imageTnc: ImageView? = viewBinding?.imageTnc
     private val textTitle: Typography? = viewBinding?.textTitle
+    private val containerProductList: View? = viewBinding?.containerProductList
 
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_shop_home_display_banner_timer
         private const val DURATION_TO_HIDE_REMIND_ME_WORDING = 5000L
-        private val TOTAL_NOTIFY_TEXT_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+        private val TOTAL_NOTIFY_TEXT_COLOR = unifyprinciplesR.color.Unify_NN950_68
+        private val SHOP_RE_IMAGINE_MARGIN = 16f.dpToPx()
     }
 
     override fun bind(uiModel: ShopWidgetDisplayBannerTimerUiModel) {
         setHeader(uiModel)
         setTimer(uiModel)
-        if (!GlobalConfig.isSellerApp())
+        if (!GlobalConfig.isSellerApp()) {
             setRemindMe(uiModel)
+        }
         setBannerImage(uiModel)
         setWidgetImpressionListener(uiModel)
-        checkFestivity(uiModel)
+        configColorTheme(uiModel)
+        setShopReimaginedContainerMargin()
     }
 
     private fun setHeader(
@@ -119,12 +129,10 @@ class ShopHomeDisplayBannerTimerViewHolder(
         val ctaText = uiModel.header.ctaText
         val statusCampaign = uiModel.data?.status
         val isShowCta = checkIsShowCta(ctaText, statusCampaign)
-        textSeeAll?.apply {
+        iconCtaChevron?.apply {
             if (!isShowCta) {
-                text = ""
                 hide()
             } else {
-                text = ctaText
                 setOnClickListener {
                     listener.onClickCtaDisplayBannerTimerWidget(bindingAdapterPosition, uiModel)
                 }
@@ -147,26 +155,17 @@ class ShopHomeDisplayBannerTimerViewHolder(
             textTimeDescription?.text = timeDescription
             textTimeDescription?.show()
             val days = model.data?.timeCounter?.millisecondsToDays().orZero()
-            val dateCampaign = when {
-                isStatusCampaignUpcoming(statusCampaign) -> {
-                    DateHelper.getDateFromString(model.data?.startDate.orEmpty())
-                }
-                isStatusCampaignOngoing(statusCampaign) -> {
-                    DateHelper.getDateFromString(model.data?.endDate.orEmpty())
-                }
-                else -> {
-                    Date()
-                }
-            }
             if (days >= Int.ONE) {
-                setTimerNonUnify(dateCampaign)
+                val formattedDate = getFormattedDate(statusCampaign, model, false)
+                setTimerNonUnify(formattedDate)
             } else {
-                setTimerUnify(dateCampaign, timeCounter, model)
+                val formattedDate = getFormattedDate(statusCampaign, model, true)
+                setTimerUnify(formattedDate, timeCounter, model)
             }
         } else {
             timerUnify?.gone()
             timerMoreThanOneDay?.gone()
-            val endDate = DateHelper.getDateFromString(model.data?.endDate.orEmpty())
+            val endDate = DateHelper.getDateFromString(model.data?.endDate.orEmpty(), null)
             val textTimeDescriptionFinished = MethodChecker.fromHtml(
                 itemView.context.getString(
                     R.string.shop_home_tab_banner_timer_finish_date_format,
@@ -176,6 +175,31 @@ class ShopHomeDisplayBannerTimerViewHolder(
             textTimeDescription?.apply {
                 show()
                 text = textTimeDescriptionFinished
+            }
+        }
+    }
+
+    private fun getFormattedDate(
+        statusCampaign: StatusCampaign?,
+        model: ShopWidgetDisplayBannerTimerUiModel,
+        isUseDefaultTimeZone: Boolean
+    ): Date {
+        val timeZone = if (isUseDefaultTimeZone) {
+            DateHelper.getDefaultTimeZone()
+        } else {
+            null
+        }
+        return when {
+            isStatusCampaignUpcoming(statusCampaign) -> {
+                DateHelper.getDateFromString(model.data?.startDate.orEmpty(), timeZone)
+            }
+
+            isStatusCampaignOngoing(statusCampaign) -> {
+                DateHelper.getDateFromString(model.data?.endDate.orEmpty(), timeZone)
+            }
+
+            else -> {
+                Date()
             }
         }
     }
@@ -204,30 +228,52 @@ class ShopHomeDisplayBannerTimerViewHolder(
     private fun setTimerNonUnify(dateCampaign: Date) {
         timerUnify?.gone()
         timerMoreThanOneDay?.apply {
-            text =
-                dateCampaign.toString(SHOP_NPL_CAMPAIGN_WIDGET_MORE_THAT_1_DAY_DATE_FORMAT)
+            val dateFormatted = dateCampaign.toString(SHOP_NPL_CAMPAIGN_WIDGET_MORE_THAT_1_DAY_DATE_FORMAT)
+            text = getString(R.string.shop_widget_date_format_wib, dateFormatted)
             show()
         }
     }
 
-    private fun checkFestivity(
+    private fun configColorTheme(
         model: ShopWidgetDisplayBannerTimerUiModel
     ) {
         if (model.isFestivity) {
             configFestivity()
         } else {
-            configNonFestivity()
+            if (model.header.isOverrideTheme) {
+                configReimaginedColor(model.header.colorSchema)
+            } else {
+                configDefaultColor()
+            }
+        }
+    }
+
+    private fun configReimaginedColor(colorSchema: ShopPageColorSchema) {
+        val titleColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS)
+        val subTitleColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_LOW_EMPHASIS)
+        val ctaColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.ICON_ENABLED_HIGH_COLOR)
+        val informationIconColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.ICON_ENABLED_HIGH_COLOR)
+        
+        textTitle?.setTextColor(titleColor)
+        textTimeDescription?.setTextColor(subTitleColor)
+        iconCtaChevron?.setColorFilter(ctaColor, PorterDuff.Mode.SRC_ATOP)
+        imageTnc?.setColorFilter(informationIconColor)
+        timerUnify?.timerVariant = TimerUnifySingle.VARIANT_MAIN
+        timerMoreThanOneDay?.apply {
+            background =
+                MethodChecker.getDrawable(itemView.context, R.drawable.bg_shop_timer_red_rect)
+            setTextColor(MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_Static_White))
         }
     }
 
     private fun configFestivity() {
         val festivityTextColor = MethodChecker.getColor(
             itemView.context,
-            com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+            unifyprinciplesR.color.Unify_Static_White
         )
         textTitle?.setTextColor(festivityTextColor)
         textTimeDescription?.setTextColor(festivityTextColor)
-        textSeeAll?.setTextColor(festivityTextColor)
+        iconCtaChevron?.setColorFilter(festivityTextColor, PorterDuff.Mode.SRC_ATOP)
         imageTnc?.setColorFilter(festivityTextColor)
         timerUnify?.timerVariant = TimerUnifySingle.VARIANT_ALTERNATE
         timerMoreThanOneDay?.apply {
@@ -236,43 +282,47 @@ class ShopHomeDisplayBannerTimerViewHolder(
             setTextColor(
                 MethodChecker.getColor(
                     itemView.context,
-                    com.tokopedia.shop.common.R.color.dms_shop_festivity_timer_text_color
+                    shopcommonR.color.dms_shop_festivity_timer_text_color
                 )
             )
         }
     }
 
-    private fun configNonFestivity() {
+    private fun configDefaultColor() {
         val defaultTitleColor = MethodChecker.getColor(
             itemView.context,
-            com.tokopedia.unifyprinciples.R.color.Unify_NN950
+            unifyprinciplesR.color.Unify_NN950
         )
         val defaultSubTitleColor = MethodChecker.getColor(
             itemView.context,
-            com.tokopedia.unifyprinciples.R.color.Unify_NN950
+            unifyprinciplesR.color.Unify_NN950
         )
         val defaultCtaColor = MethodChecker.getColor(
             itemView.context,
-            com.tokopedia.unifyprinciples.R.color.Unify_G500
+            unifyprinciplesR.color.Unify_NN900
         )
         val defaultInformationIconColor = MethodChecker.getColor(
             itemView.context,
-            com.tokopedia.unifyprinciples.R.color.Unify_NN900
+            unifyprinciplesR.color.Unify_NN900
         )
         textTitle?.setTextColor(defaultTitleColor)
         textTimeDescription?.setTextColor(defaultSubTitleColor)
-        textSeeAll?.setTextColor(defaultCtaColor)
+        iconCtaChevron?.setColorFilter(defaultCtaColor, PorterDuff.Mode.SRC_ATOP)
         imageTnc?.setColorFilter(defaultInformationIconColor)
         timerUnify?.timerVariant = TimerUnifySingle.VARIANT_MAIN
         timerMoreThanOneDay?.apply {
             background =
                 MethodChecker.getDrawable(itemView.context, R.drawable.bg_shop_timer_red_rect)
-            setTextColor(
-                MethodChecker.getColor(
-                    itemView.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN0
-                )
-            )
+            setTextColor(MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_Static_White))
+        }
+    }
+
+    private fun setShopReimaginedContainerMargin() {
+        containerProductList?.let {
+            it.clipToOutline = true
+            it.background = MethodChecker.getDrawable(itemView.context, shop_widgetR.drawable.bg_shop_reimagined_rounded)
+            (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginStart = SHOP_RE_IMAGINE_MARGIN.toInt()
+            (it.layoutParams as? ViewGroup.MarginLayoutParams)?.marginEnd = SHOP_RE_IMAGINE_MARGIN.toInt()
         }
     }
 
@@ -303,7 +353,7 @@ class ShopHomeDisplayBannerTimerViewHolder(
                 val isHideRemindMeTextAfterXSeconds = uiModel.data?.isHideRemindMeTextAfterXSeconds.orFalse()
                 if (isHideRemindMeTextAfterXSeconds) {
                     hideRemindMeText(uiModel, false)
-                }else{
+                } else {
                     buttonRemindMe?.show()
                     launchCatchError(block = {
                         delay(DURATION_TO_HIDE_REMIND_ME_WORDING)
@@ -366,7 +416,6 @@ class ShopHomeDisplayBannerTimerViewHolder(
         }
     }
 
-
     private fun isStatusCampaignFinished(statusCampaign: StatusCampaign?): Boolean {
         return statusCampaign == StatusCampaign.FINISHED
     }
@@ -377,15 +426,5 @@ class ShopHomeDisplayBannerTimerViewHolder(
 
     private fun isStatusCampaignUpcoming(statusCampaign: StatusCampaign?): Boolean {
         return statusCampaign == StatusCampaign.UPCOMING
-    }
-
-        private fun getIndexRatio(data: ShopWidgetDisplayBannerTimerUiModel, index: Int): Int {
-        return data.header.ratio.split(":").getOrNull(index).toIntOrZero()
-    }
-
-    private fun getHeightRatio(uiModel: ShopWidgetDisplayBannerTimerUiModel): Float {
-        val indexZero = getIndexRatio(uiModel, 0).toFloat()
-        val indexOne = getIndexRatio(uiModel, 1).toFloat()
-        return (indexOne / indexZero)
     }
 }

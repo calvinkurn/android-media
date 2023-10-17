@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.URLUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -34,6 +33,8 @@ import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.content.common.ui.toolbar.ContentColor
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref.Key
+import com.tokopedia.content.common.util.eventbus.EventBus
+import com.tokopedia.content.common.util.throwable.isNetworkError
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify.Companion.CLOSE
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -42,10 +43,10 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
-import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.analytic.beautification.PlayBroadcastBeautificationAnalyticStateHolder
+import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayBroadcastPreparationBinding
-import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
+import com.tokopedia.content.product.picker.ProductSetupFragment
 import com.tokopedia.play.broadcaster.setup.schedule.util.SchedulePicker
 import com.tokopedia.play.broadcaster.shorts.view.custom.DynamicPreparationMenu
 import com.tokopedia.play.broadcaster.shorts.view.custom.isMenuExists
@@ -58,13 +59,12 @@ import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
 import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel
 import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel.Companion.TYPE_DASHBOARD
 import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel.Companion.TYPE_SHORTS
-import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
-import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
-import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
+import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetPage
+import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetType
+import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
 import com.tokopedia.play.broadcaster.ui.state.ScheduleUiModel
-import com.tokopedia.play.broadcaster.util.eventbus.EventBus
-import com.tokopedia.play.broadcaster.util.extension.isNetworkError
 import com.tokopedia.play.broadcaster.view.adapter.PlayBroadcastPreparationBannerAdapter
 import com.tokopedia.play.broadcaster.view.analyticmanager.PreparationAnalyticManager
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupCoverBottomSheet
@@ -72,10 +72,11 @@ import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupCoverBo
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupCoverBottomSheet.Companion.TAB_UPLOAD_IMAGE
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupCoverBottomSheet.DataSource
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupTitleBottomSheet
+import com.tokopedia.play.broadcaster.view.bottomsheet.livetovod.PlayBroLiveToVodBottomSheet
 import com.tokopedia.play.broadcaster.view.custom.PlayTimerLiveCountDown
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.fragment.beautification.BeautificationSetupFragment
-import com.tokopedia.play.broadcaster.view.fragment.loading.LoadingDialogFragment
+import com.tokopedia.content.common.view.fragment.LoadingDialogFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastPrepareViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
@@ -97,8 +98,8 @@ import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.flow.collectLatest
 import java.util.*
 import javax.inject.Inject
-import com.tokopedia.content.common.R as contentCommonR
-import com.tokopedia.unifyprinciples.R as unifyR
+import com.tokopedia.content.common.R as contentcommonR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created By : Jonathan Darwin on January 24, 2022
@@ -193,6 +194,33 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     private val scrollListener by lazy(LazyThreadSafetyMode.NONE) {
         object : RecyclerView.OnScrollListener() {
+
+            var isIdleStateValid = false
+
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+
+                when (newState) {
+                    RecyclerView.SCROLL_STATE_DRAGGING -> {
+                        isIdleStateValid = true
+                    }
+                    RecyclerView.SCROLL_STATE_IDLE -> {
+                        if (isIdleStateValid) {
+                            isIdleStateValid = false
+
+                            val snappedView = snapHelper.findSnapView(mLayoutManager) ?: return
+                            val position = mLayoutManager.getPosition(snappedView)
+
+                            if (position in 0 until parentViewModel.bannerPreparation.size &&
+                                parentViewModel.bannerPreparation[position].type == TYPE_DASHBOARD
+                            ) {
+                                impressPerformanceDashboardBanner(position)
+                            }
+                        }
+                    }
+                }
+            }
+
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 val snappedView = snapHelper.findSnapView(mLayoutManager) ?: return
@@ -274,8 +302,8 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                         return parentViewModel.maxProduct
                     }
 
-                    override fun getPageSource(): PlayBroPageSource {
-                        return PlayBroPageSource.Live
+                    override fun isNumerationShown(): Boolean {
+                        return true
                     }
 
                     override fun fetchCommissionProduct(): Boolean {
@@ -407,6 +435,19 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 val isShowCoachMark = parentViewModel.isShowSetupCoverCoachMark
                 childFragment.needToShowCoachMark(isShowCoachMark)
                 if (isShowCoachMark) parentViewModel.submitAction(PlayBroadcastAction.SetShowSetupCoverCoachMark)
+            }
+            is PlayBroLiveToVodBottomSheet -> {
+                childFragment.setupData(parentViewModel.tickerBottomSheetConfig)
+                childFragment.setupListener(object : PlayBroLiveToVodBottomSheet.Listener {
+                    override fun onButtonActionPressed() {
+                        parentViewModel.submitAction(
+                            PlayBroadcastAction.SetLiveToVodPref(
+                                type = TickerBottomSheetType.BOTTOM_SHEET,
+                                page = TickerBottomSheetPage.LIVE_PREPARATION,
+                            )
+                        )
+                    }
+                })
             }
         }
     }
@@ -604,8 +645,8 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
         val coachMarkSwitchAccount = CoachMark2Item(
             anchorView = binding.toolbarContentCommon,
-            title = getString(contentCommonR.string.sa_coach_mark_title),
-            description = getString(contentCommonR.string.sa_livestream_coach_mark_subtitle),
+            title = getString(contentcommonR.string.sa_coach_mark_title),
+            description = getString(contentcommonR.string.sa_livestream_coach_mark_subtitle),
             position = CoachMark2.POSITION_BOTTOM,
         )
 
@@ -634,8 +675,8 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
         val coachMarkPerformanceDashboard = CoachMark2Item(
             anchorView = binding.rvBannerPreparation,
-            title = getString(contentCommonR.string.performance_dashboard_coachmark_title),
-            description = getString(contentCommonR.string.performance_dashboard_coachmark_subtitle),
+            title = getString(contentcommonR.string.performance_dashboard_coachmark_title),
+            description = getString(contentcommonR.string.performance_dashboard_coachmark_subtitle),
             position = CoachMark2.POSITION_BOTTOM,
         )
 
@@ -676,11 +717,22 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private fun autoScrollToPerformanceDashBoardBanner() {
         coachMark?.setStepListener(object : CoachMark2.OnStepListener {
             override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
-                if (coachMarkItem.title == getString(contentCommonR.string.performance_dashboard_coachmark_title)) {
+
+                val autoScrollPosition = if (coachMarkItem.title == getString(R.string.play_bro_banner_shorts_coachmark_title)) {
+                    val shortsEntryPointPosition = adapterBanner.getShortsEntryPointPosition()
+                    if (shortsEntryPointPosition != -1) shortsEntryPointPosition else return
+
+                } else if (coachMarkItem.title == getString(contentcommonR.string.performance_dashboard_coachmark_title)) {
                     val performanceDashboardPosition = adapterBanner.getPerformanceDashboardPosition()
-                    val autoScrollPosition = if (performanceDashboardPosition != -1) performanceDashboardPosition else return
-                    binding.rvBannerPreparation.smoothScrollToPosition(autoScrollPosition)
+                    if (performanceDashboardPosition != -1) {
+                        analytic.onViewCoachMarkPerformanceDashboardPrepPage(parentViewModel.authorId)
+                        performanceDashboardPosition
+                    } else return
+                } else {
+                    return
                 }
+
+                binding.rvBannerPreparation.smoothScrollToPosition(autoScrollPosition)
             }
         })
     }
@@ -742,6 +794,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 renderSchedulePicker(prevState?.schedule, state.schedule)
                 renderAccountStateInfo(prevState?.accountStateInfo, state.accountStateInfo)
                 renderBannerPreparationPage(prevState?.bannerPreparation, state.bannerPreparation)
+                renderBottomSheetDisableLiveToVod(prevState?.tickerBottomSheetConfig, state.tickerBottomSheetConfig)
             }
         }
     }
@@ -756,7 +809,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                             toasterContainer,
                             event.error,
                             bottomMargin = requireContext().resources.getDimensionPixelOffset(
-                                unifyR.dimen.spacing_lvl3
+                                unifyprinciplesR.dimen.spacing_lvl3
                             )
                         )
                     }
@@ -892,7 +945,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         if (prevState == state) return
 
         with(binding.toolbarContentCommon) {
-            title = getString(contentCommonR.string.feed_content_live_sebagai)
+            title = getString(contentcommonR.string.feed_content_live_sebagai)
             subtitle = state.name
             icon = state.iconUrl
         }
@@ -949,18 +1002,17 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         prev: List<PlayBroadcastPreparationBannerModel>?,
         curr: List<PlayBroadcastPreparationBannerModel>
     ) {
-        if (prev == null || prev == curr) return
+        if (prev == curr) return
 
         adapterBanner.setItemsAndAnimateChanges(curr)
         if (curr.size > 1) binding.pcBannerPreparation.setIndicator(curr.size)
         else binding.pcBannerPreparation.setIndicator(0)
 
-        curr.forEachIndexed { index, model ->
-            if (model.type == TYPE_DASHBOARD) {
-                analytic.onViewPerformanceDashboardEntryPointPrepPage(
-                    parentViewModel.authorId,
-                    creativeSlot = index + 1,
-                )
+        if (curr.isNotEmpty()) {
+            val position = mLayoutManager.findFirstCompletelyVisibleItemPosition().coerceIn(0, curr.size-1)
+
+            if (curr[position].type == TYPE_DASHBOARD) {
+                impressPerformanceDashboardBanner(position)
             }
         }
 
@@ -975,9 +1027,26 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         if (containsDashboard) {
             val coachMark = getCoachMarkPerformanceDashboardEntryPoint()
             if (coachMark != null) {
-                analytic.onViewCoachMarkPerformanceDashboardPrepPage(parentViewModel.authorId)
                 setupCoachMark(coachMark)
+
+                if (coachMarkItems.size == 1 &&
+                    coachMarkItems[0].title == getString(contentcommonR.string.performance_dashboard_coachmark_title)
+                ) {
+                    analytic.onViewCoachMarkPerformanceDashboardPrepPage(parentViewModel.authorId)
+                }
             }
+        }
+    }
+
+    private fun renderBottomSheetDisableLiveToVod(
+        prev: TickerBottomSheetUiModel?,
+        state: TickerBottomSheetUiModel,
+    ) {
+        if (prev == state || state.page != TickerBottomSheetPage.LIVE_PREPARATION) return
+
+        when (state.type) {
+            TickerBottomSheetType.BOTTOM_SHEET -> openDisableLiveToVodBottomSheet()
+            else -> return
         }
     }
 
@@ -1032,6 +1101,12 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     private fun openAccountBottomSheet() {
         ContentAccountTypeBottomSheet
+            .getFragment(childFragmentManager, requireActivity().classLoader)
+            .show(childFragmentManager)
+    }
+
+    private fun openDisableLiveToVodBottomSheet() {
+        PlayBroLiveToVodBottomSheet
             .getFragment(childFragmentManager, requireActivity().classLoader)
             .show(childFragmentManager)
     }
@@ -1285,6 +1360,13 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     private fun startBroadcast(ingestUrl: String) {
         broadcaster.start(ingestUrl)
+    }
+
+    private fun impressPerformanceDashboardBanner(position: Int) {
+        analytic.onViewPerformanceDashboardEntryPointPrepPage(
+            parentViewModel.authorId,
+            creativeSlot = position + 1,
+        )
     }
 
     companion object {

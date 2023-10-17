@@ -35,8 +35,6 @@ import com.tokopedia.home_account.domain.usecase.OfferInterruptUseCase
 import com.tokopedia.home_account.domain.usecase.SaveAttributeOnLocalUseCase
 import com.tokopedia.home_account.domain.usecase.UpdateSafeModeUseCase
 import com.tokopedia.home_account.privacy_account.data.LinkStatusResponse
-import com.tokopedia.home_account.privacy_account.domain.GetLinkStatusUseCase
-import com.tokopedia.home_account.privacy_account.domain.GetUserProfile
 import com.tokopedia.home_account.view.mapper.ProfileWithDataStoreMapper
 import com.tokopedia.loginfingerprint.data.model.CheckFingerprintPojo
 import com.tokopedia.loginfingerprint.data.model.CheckFingerprintResult
@@ -92,8 +90,6 @@ class HomeAccountUserViewModelTest {
     private val tokopointsBalanceAndPointUseCase = mockk<GetTokopointsBalanceAndPointUseCase>(relaxed = true)
     private val saldoBalanceUseCase = mockk<GetSaldoBalanceUseCase>(relaxed = true)
     private val coBrandCCBalanceAndPointUseCase = mockk<GetCoBrandCCBalanceAndPointUseCase>(relaxed = true)
-    private val getLinkStatusUseCase = mockk<GetLinkStatusUseCase>(relaxed = true)
-    private val getPhoneUseCase = mockk<GetUserProfile>(relaxed = true)
     private val topAdsImageViewUseCase = mockk<TopAdsImageViewUseCase>(relaxed = true)
     private val getSafeModeUseCase = mockk<GetSafeModeUseCase>(relaxed = true)
     private val checkFingerprintToggleUseCase = mockk<CheckFingerprintToggleStatusUseCase>(relaxed = true)
@@ -145,8 +141,6 @@ class HomeAccountUserViewModelTest {
             tokopointsBalanceAndPointUseCase,
             saldoBalanceUseCase,
             coBrandCCBalanceAndPointUseCase,
-            getLinkStatusUseCase,
-            getPhoneUseCase,
             getSafeModeUseCase,
             checkFingerprintToggleUseCase,
             tokopediaPlusUseCase,
@@ -166,41 +160,11 @@ class HomeAccountUserViewModelTest {
     }
 
     @Test
-    fun `Execute refreshPhoneNo Success`() {
-        coEvery { getPhoneUseCase(Unit) } returns profilePojo
-
-        viewModel.refreshPhoneNo()
-
-        verify {
-            userSession.phoneNumber = profilePojo.profileInfo.phone
-        }
-        assertEquals(viewModel.phoneNo.value, profilePojo.profileInfo.phone)
-    }
-
-    @Test
-    fun `Execute refreshPhoneNo Success but phone empty`() {
-        coEvery { getPhoneUseCase(Unit) } returns ProfilePojo()
-
-        viewModel.refreshPhoneNo()
-        assertEquals(viewModel.phoneNo.value, null)
-    }
-
-    @Test
-    fun `Execute refreshPhoneNo Failed`() {
-        coEvery { getPhoneUseCase(Unit) } throws throwable.throwable
-
-        viewModel.refreshPhoneNo()
-
-        assertEquals(viewModel.phoneNo.value, "")
-    }
-
-    @Test
     fun `Execute getBuyerData Success`() {
         /* When */
         val profileDataView = ProfileDataView()
         coEvery { homeAccountUserUsecase(Unit) } returns responseResult
         coEvery { homeAccountShortcutUseCase(Unit) } returns shortcut
-        coEvery { getLinkStatusUseCase.invoke(any()) } returns linkStatusResult
         coEvery { offerInterruptUseCase.invoke(any()) } returns offerInterruptResponse
         coEvery { dataStoreMapper.invoke(any()) } returns profileDataView
 
@@ -216,7 +180,6 @@ class HomeAccountUserViewModelTest {
         /* When */
         val exception = Exception("error")
         coEvery { homeAccountUserUsecase.invoke(Unit) } throws exception
-        coEvery { getLinkStatusUseCase.invoke(any()) } throws exception
         coEvery { offerInterruptUseCase.invoke(any()) } returns offerInterruptResponse
 
         viewModel.getBuyerData()

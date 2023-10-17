@@ -12,8 +12,8 @@ class ShippingRecommendationData(
     var shippingDurationUiModels: List<ShippingDurationUiModel> = emptyList(),
     var logisticPromo: LogisticPromoUiModel? = null,
     var listLogisticPromo: List<LogisticPromoUiModel> = emptyList(),
-    var preOrderModel: PreOrderModel? = null,
     var errorMessage: String? = null,
     var errorId: String? = null,
-    var scheduleDeliveryData: ScheduleDeliveryData? = null
+    var scheduleDeliveryData: ScheduleDeliveryData? = null,
+    var productShipmentDetailModel: ProductShipmentDetailModel? = null
 ) : Parcelable

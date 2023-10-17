@@ -44,6 +44,9 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
+import com.tokopedia.stories.widget.StoriesWidgetManager
+import com.tokopedia.stories.widget.domain.StoriesEntryPoint
+import com.tokopedia.stories.widget.storiesManager
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.analytic.ChatListAnalytic
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_READ
@@ -133,6 +136,10 @@ class ChatListFragment :
     private var emptyUiModel: Visitable<*>? = null
     private var menu: Menu? = null
     private var broadCastButton: BroadcastButtonLayout? = null
+
+    private val mStoriesWidgetManager by storiesManager(StoriesEntryPoint.TopChatList) {
+        setScrollingParent(rv)
+    }
 
     override fun getRecyclerViewResourceId() = R.id.recycler_view
     override fun getSwipeRefreshLayoutResourceId() = R.id.swipe_refresh_layout
@@ -322,7 +329,7 @@ class ChatListFragment :
     private fun markBroadcastNewLabel() {
         if (shouldShowBroadcastFabNewLabel()) {
             chatItemListViewModel.saveBooleanCache(
-                cacheName = BROADCAST_FAB_LABEL_PREF_NAME,
+                cacheName = "${BROADCAST_FAB_LABEL_PREF_NAME}_${userSession.userId}",
                 value = false
             )
             broadCastButton?.toggleBroadcastLabel(
@@ -333,7 +340,7 @@ class ChatListFragment :
 
     private fun shouldShowBroadcastFabNewLabel(): Boolean {
         val labelCache = chatItemListViewModel.getBooleanCache(
-            BROADCAST_FAB_LABEL_PREF_NAME
+            "${BROADCAST_FAB_LABEL_PREF_NAME}_${userSession.userId}"
         )
         val rollenceValue = getRollenceValue(BROADCAST_FAB_LABEL_ROLLENCE_KEY)
         return labelCache && rollenceValue
@@ -572,6 +579,9 @@ class ChatListFragment :
 
     private fun onSuccessGetChatList(data: ChatListPojo.ChatListDataPojo) {
         renderList(data.list, data.hasNext)
+        if (sightTag == PARAM_TAB_USER) {
+            mStoriesWidgetManager.updateStories(data.list.map { it.id })
+        }
         fpmStopTrace()
     }
 
@@ -900,6 +910,10 @@ class ChatListFragment :
         return childFragmentManager
     }
 
+    override fun getStoriesWidgetManager(): StoriesWidgetManager? {
+        return mStoriesWidgetManager
+    }
+
     override fun pinUnpinChat(element: ItemChatListPojo, position: Int, isPinChat: Boolean) {
         val msgId = element.msgId
         chatItemListViewModel.pinUnpinChat(
@@ -1024,7 +1038,7 @@ class ChatListFragment :
         }
     }
 
-    override fun getRollenceValue(key: String): Boolean {
+    private fun getRollenceValue(key: String): Boolean {
         return try {
             abTestPlatform.getString(key, "").isNotEmpty()
         } catch (t: Throwable) {

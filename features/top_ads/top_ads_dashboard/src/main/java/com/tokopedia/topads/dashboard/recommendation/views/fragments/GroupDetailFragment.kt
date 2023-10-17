@@ -23,6 +23,8 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.smoothSnapToPosition
 import com.tokopedia.topads.common.data.response.TopadsManagePromoGroupProductInput
 import com.tokopedia.topads.dashboard.R
+import com.tokopedia.abstraction.R as abstractionR
+import com.tokopedia.topads.common.R as topadscommonR
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_2
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.recommendation.common.OnItemSelectChangeListener
@@ -53,6 +55,7 @@ import com.tokopedia.topads.dashboard.recommendation.data.model.local.ListBottom
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.data.ChipsData.chipsList
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.insighttypechips.InsightTypeChipsUiModel
+import com.tokopedia.topads.dashboard.recommendation.tracker.RecommendationTracker
 import com.tokopedia.topads.dashboard.recommendation.viewmodel.GroupDetailViewModel
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.GroupDetailAdapter
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.GroupDetailsChipsAdapter
@@ -167,7 +170,16 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         insightType = arguments?.getInt(INSIGHT_TYPE_KEY) ?: Int.ZERO
         viewModel.loadInsightTypeChips(adType, insightList ?: arrayListOf(), adGroupName)
         viewModel.selectDefaultChips(insightType)
-        if (adType != null && !adGroupId.isNullOrEmpty()) {
+
+        if (insightList?.isEmpty() == true) {
+            loadDetailPageOnAction(
+                utils.convertAdTypeToInt(adType),
+                adGroupId ?: "",
+                DEFAULT_SELECTED_INSIGHT_TYPE,
+                true,
+                adGroupName ?: ""
+            )
+        } else if (adType != null && !adGroupId.isNullOrEmpty()) {
             loadData(
                 utils.convertAdTypeToInt(adType),
                 adGroupId
@@ -328,8 +340,8 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
                 it.dialogPrimaryCTA.isLoading = false
             }
 
-            it.setPrimaryCTAText(getString(R.string.title_try_again))
-            it.setSecondaryCTAText(getString(R.string.label_close))
+            it.setPrimaryCTAText(getString(abstractionR.string.title_try_again))
+            it.setSecondaryCTAText(getString(R.string.topads_label_close))
         }
     }
 
@@ -340,7 +352,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
                 text,
                 Snackbar.LENGTH_SHORT,
                 Toaster.TYPE_NORMAL,
-                getString(com.tokopedia.topads.common.R.string.topads_common_text_ok)
+                getString(topadscommonR.string.topads_common_text_ok)
             ).show()
         }
     }
@@ -435,6 +447,13 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         saveButton?.setOnClickListener {
             val input = viewModel.getInputDataFromMapper(saveButton?.tag as? Int)
             showConfirmationDialog(input)
+            when (saveButton?.tag) {
+                TYPE_POSITIVE_KEYWORD -> RecommendationTracker.clickSubmitPositiveKeyword()
+                TYPE_KEYWORD_BID -> RecommendationTracker.clickSubmitBidKeyword()
+                TYPE_GROUP_BID -> RecommendationTracker.clickSubmitGroupBid()
+                TYPE_DAILY_BUDGET -> RecommendationTracker.clickSubmitDailyBudget()
+                TYPE_NEGATIVE_KEYWORD_BID -> RecommendationTracker.clickSubmitNegativeKeyword()
+            }
         }
     }
 

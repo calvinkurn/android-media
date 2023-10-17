@@ -1,10 +1,16 @@
 package com.tokopedia.entertainment.home.fragment
 
+import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.PorterDuff
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MotionEvent
+import android.view.View
+import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -21,6 +27,7 @@ import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.common_digital.common.presentation.bottomsheet.DigitalDppoConsentBottomSheet
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.common.util.EventGlobalError.errorEventHandlerGlobalError
+import com.tokopedia.entertainment.databinding.FragmentHomeEventBinding
 import com.tokopedia.entertainment.home.adapter.HomeEventItem
 import com.tokopedia.entertainment.home.adapter.factory.HomeTypeFactoryImpl
 import com.tokopedia.entertainment.home.adapter.listener.TrackingListener
@@ -34,22 +41,24 @@ import com.tokopedia.entertainment.home.data.EventHomeDataResponse
 import com.tokopedia.entertainment.home.di.DaggerEventHomeComponent
 import com.tokopedia.entertainment.home.utils.NavigationEventController
 import com.tokopedia.entertainment.home.viewmodel.EventHomeViewModel
-import com.tokopedia.entertainment.home.widget.MenuSheet
+import com.tokopedia.entertainment.home.widget.MenuBottomSheet
 import com.tokopedia.entertainment.navigation.EventNavigationActivity
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_home_event.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class NavEventHomeFragment :
     BaseListFragment<HomeEventItem, HomeTypeFactoryImpl>(),
-    MenuSheet.ItemClickListener,
+    MenuBottomSheet.ItemClickListener,
     TrackingListener,
     EventGridEventViewHolder.ClickGridListener,
     EventCarouselEventViewHolder.ClickCarouselListener {
@@ -66,6 +75,8 @@ class NavEventHomeFragment :
 
     lateinit var performanceMonitoring: PerformanceMonitoring
     lateinit var localCacheHandler: LocalCacheHandler
+
+    private var binding by autoClearedNullable<FragmentHomeEventBinding>()
 
     override fun getScreenName(): String {
         return ""
@@ -90,8 +101,8 @@ class NavEventHomeFragment :
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_home_event, container, false)
-        return view
+        binding = FragmentHomeEventBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -151,62 +162,82 @@ class NavEventHomeFragment :
     }
 
     private fun onSuccessGetData(data: List<HomeEventItem>) {
-        global_error_home_event.hide()
-        container_event_home.show()
-        renderList(data)
-        performanceMonitoring.stopTrace()
-        swipe_refresh_layout_home?.isRefreshing = false
-        startShowCase()
+        binding?.run {
+            globalErrorHomeEvent.hide()
+            containerEventHome.show()
+            renderList(data)
+            performanceMonitoring.stopTrace()
+            swipeRefreshLayoutHome.isRefreshing = false
+            startShowCase()
+        }
     }
 
     private fun onErrorGetData(throwable: Throwable) {
-        container_event_home.hide()
-        swipe_refresh_layout_home?.isRefreshing = false
-        performanceMonitoring.stopTrace()
-        context?.let {
-            errorEventHandlerGlobalError(
-                it,
-                throwable,
-                container_error_home,
-                global_error_home_event,
-                { loadAllData() }
-            )
+        binding?.run {
+            containerEventHome.hide()
+            swipeRefreshLayoutHome.isRefreshing = false
+            performanceMonitoring.stopTrace()
+            context?.let {
+                errorEventHandlerGlobalError(
+                    it,
+                    throwable,
+                    containerEventHome,
+                    globalErrorHomeEvent,
+                    { loadAllData() }
+                )
+            }
         }
     }
 
     private fun startShowCase() {
-        val coachMarkShown = localCacheHandler.getBoolean(SHOW_COACH_MARK_KEY, false)
-        if (coachMarkShown) return
+        binding?.run {
+            val coachMarkShown = localCacheHandler.getBoolean(SHOW_COACH_MARK_KEY, false)
+            if (coachMarkShown) return
 
-        val coachItems = ArrayList<CoachMarkItem>()
-        coachItems.add(CoachMarkItem(txt_search_home, getString(R.string.ent_home_page_coach_mark_title_1), getString(R.string.ent_home_page_coach_mark_desc_1)))
-        val coachMark = CoachMarkBuilder().build()
-        coachMark.show(activity, COACH_MARK_TAG, coachItems)
-        localCacheHandler.apply {
-            putBoolean(SHOW_COACH_MARK_KEY, true)
-            applyEditor()
+            val coachItems = ArrayList<CoachMarkItem>()
+            coachItems.add(
+                CoachMarkItem(
+                    txtSearchHome,
+                    getString(R.string.ent_home_page_coach_mark_title_1),
+                    getString(R.string.ent_home_page_coach_mark_desc_1)
+                )
+            )
+            val coachMark = CoachMarkBuilder().build()
+            coachMark.show(activity, COACH_MARK_TAG, coachItems)
+            localCacheHandler.apply {
+                putBoolean(SHOW_COACH_MARK_KEY, true)
+                applyEditor()
+            }
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun renderToolbar() {
-        (activity as EventNavigationActivity).setSupportActionBar(toolbar_home)
-        (activity as EventNavigationActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        (activity as EventNavigationActivity).supportActionBar?.title =
-            getString(R.string.ent_home_page_event_hiburan)
+        binding?.run {
+            (activity as EventNavigationActivity).setSupportActionBar(toolbarHome)
+            (activity as EventNavigationActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
+            (activity as EventNavigationActivity).supportActionBar?.title =
+                getString(R.string.ent_home_page_event_hiburan)
 
-        val navIcon = toolbar_home.navigationIcon
+            val navIcon = toolbarHome.navigationIcon
 
-        context?.let { ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96) }?.let {
-            navIcon?.setColorFilter(it, PorterDuff.Mode.SRC_ATOP)
-        }
-        (activity as EventNavigationActivity).supportActionBar?.setHomeAsUpIndicator(navIcon)
-
-        txt_search_home.searchBarTextField.inputType = 0
-        txt_search_home.searchBarTextField.setOnTouchListener { v, event ->
-            when (event.action) {
-                MotionEvent.ACTION_DOWN -> openEventSearch()
+            context?.let {
+                ContextCompat.getColor(
+                    it,
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
+                )
+            }?.let {
+                navIcon?.setColorFilter(it, PorterDuff.Mode.SRC_ATOP)
             }
-            return@setOnTouchListener true
+            (activity as EventNavigationActivity).supportActionBar?.setHomeAsUpIndicator(navIcon)
+
+            txtSearchHome.searchBarTextField.inputType = Int.ZERO
+            txtSearchHome.searchBarTextField.setOnTouchListener { v, event ->
+                when (event.action) {
+                    MotionEvent.ACTION_DOWN -> openEventSearch()
+                }
+                return@setOnTouchListener true
+            }
         }
     }
 
@@ -309,7 +340,9 @@ class NavEventHomeFragment :
     }
 
     private fun actionMenuMore() {
-        context?.let { MenuSheet.newInstance(it, this).show() }
+        val bottomSheet = MenuBottomSheet.newInstance()
+        bottomSheet.setListener(this)
+        bottomSheet.show(childFragmentManager, "")
     }
 
     private fun openEventSearch(): Boolean {
@@ -338,12 +371,12 @@ class NavEventHomeFragment :
                     ContextCompat.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_NN900)
                 )
                 iconUnify?.toBitmap()?.let {
-                    getItem(0).setOnMenuItemClickListener {
+                    getItem(Int.ZERO).setOnMenuItemClickListener {
                         val bottomSheet = DigitalDppoConsentBottomSheet(description)
                         bottomSheet.show(childFragmentManager)
                         true
                     }
-                    getItem(0).icon = BitmapDrawable(
+                    getItem(Int.ZERO).icon = BitmapDrawable(
                         ctx.resources,
                         Bitmap.createScaledBitmap(it, TOOLBAR_ICON_SIZE, TOOLBAR_ICON_SIZE, true)
                     )
@@ -360,7 +393,7 @@ class NavEventHomeFragment :
                 ContextCompat.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_NN900)
             )
             iconUnify?.toBitmap()?.let {
-                getItem(1).setOnMenuItemClickListener {
+                getItem(Int.ONE).setOnMenuItemClickListener {
                     actionMenuMore()
                     true
                 }
@@ -373,14 +406,8 @@ class NavEventHomeFragment :
     }
 
     companion object {
-
-        val TAG = NavEventHomeFragment::class.java.simpleName
-
         const val PROMOURL = "https://www.tokopedia.com/promo/tiket/events/"
         const val FAQURL = "https://www.tokopedia.com/bantuan/faq-tiket-event/"
-        const val REQUEST_LOGIN_FAVORITE = 213
-        const val REQUEST_LOGIN_TRANSACTION = 214
-        const val REQUEST_LOGIN_POST_LIKES = 215
         const val COACH_MARK_TAG = "event_home"
         const val ENT_HOME_PAGE_PERFORMANCE = "et_event_homepage"
 

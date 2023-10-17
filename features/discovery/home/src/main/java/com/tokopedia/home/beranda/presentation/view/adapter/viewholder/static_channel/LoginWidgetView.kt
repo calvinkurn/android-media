@@ -8,6 +8,9 @@ import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.R
+import com.tokopedia.home.beranda.helper.glide.loadImage
+import com.tokopedia.home.beranda.presentation.view.helper.HomeThematicUtil
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.user.session.UserSession
@@ -15,6 +18,7 @@ import com.tokopedia.user.session.util.EncoderDecoder
 import com.tokopedia.usercomponents.stickylogin.common.StickyLoginConstant
 import com.tokopedia.usercomponents.stickylogin.common.helper.getPrefLoginReminder
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by Frenzel 06/07/23
@@ -48,34 +52,61 @@ class LoginWidgetView : FrameLayout {
         this.button = itemView.findViewById(R.id.home_login_widget_button)
     }
 
-    fun bind(listener: HomeCategoryListener?) {
+    fun bind(listener: HomeCategoryListener?, homeThematicUtil: HomeThematicUtil = HomeThematicUtil()) {
         this.listener = listener
-        renderWidget()
+        renderWidget(homeThematicUtil)
     }
 
-    private fun renderWidget() {
-        val prefLoginReminder = getPrefLoginReminder(context)
+    private fun renderWidget(homeThematicUtil: HomeThematicUtil) {
+        setClickListener()
+        val (name, profilePicture) = getAccountData()
+        if(!name.isNullOrEmpty() && !profilePicture.isNullOrEmpty()) {
+            renderTitle(name)
+            renderSubtitle(R.string.login_widget_subtitle_saved)
+        } else {
+            renderTitle(context.resources.getString(R.string.login_widget_name_default))
+            renderSubtitle(R.string.login_widget_subtitle_non_saved)
+        }
+        renderImage(profilePicture)
+        renderTextColor(homeThematicUtil)
+    }
 
+    private fun setClickListener() {
+        this.button?.setOnClickListener {
+            listener?.onLoginWidgetClick()
+        }
+    }
+
+    private fun getAccountData(): Pair<String?, String?> {
+        val prefLoginReminder = getPrefLoginReminder(context)
         val name = prefLoginReminder.getString(StickyLoginConstant.KEY_USER_NAME, "")?.let {
             EncoderDecoder.Decrypt(it, UserSession.KEY_IV)
         }
         val profilePicture = prefLoginReminder.getString(StickyLoginConstant.KEY_PROFILE_PICTURE, "")?.let {
             EncoderDecoder.Decrypt(it, UserSession.KEY_IV)
         }
+        return (name to profilePicture)
+    }
 
+    private fun renderTitle(name: String) {
         val titleFormat = context.resources.getString(R.string.login_widget_title)
-        if(!name.isNullOrEmpty() && !profilePicture.isNullOrEmpty()) {
-            this.image?.setImageUrl(profilePicture)
-            this.title?.text = titleFormat.format(name)
-            this.subtitle?.text = context.resources.getString(R.string.login_widget_subtitle_saved)
-        } else {
-            this.image?.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_login_widget_default))
-            this.title?.text = titleFormat.format(context.resources.getString(R.string.login_widget_name_default))
-            this.subtitle?.text = context.resources.getString(R.string.login_widget_subtitle_non_saved)
-        }
+        this.title?.text = titleFormat.format(name.ifEmpty { name })
+    }
 
-        this.button?.setOnClickListener {
-            listener?.onLoginWidgetClick()
+    private fun renderSubtitle(subtitleRes: Int) {
+        this.subtitle?.text = context.resources.getString(subtitleRes)
+    }
+
+    private fun renderImage(profilePicture: String?) {
+        if(profilePicture.isNullOrEmpty()) {
+            this.image?.loadImage(R.drawable.ic_login_widget_default)
+        } else {
+            this.image?.loadImage(profilePicture)
         }
+    }
+
+    fun renderTextColor(homeThematicUtil: HomeThematicUtil) {
+        this.title?.setTextColor(ContextCompat.getColor(context, homeThematicUtil.asThematicColor(unifyprinciplesR.color.Unify_NN950)))
+        this.subtitle?.setTextColor(ContextCompat.getColor(context, homeThematicUtil.asThematicColor(unifyprinciplesR.color.Unify_NN600)))
     }
 }

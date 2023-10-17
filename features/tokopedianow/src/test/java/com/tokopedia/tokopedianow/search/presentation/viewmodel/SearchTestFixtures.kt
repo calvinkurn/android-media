@@ -5,11 +5,11 @@ import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.discovery.common.constants.SearchApiConst
-import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.search.domain.model.SearchModel
@@ -21,6 +21,7 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.tokopedianow.searchcategory.cartservice.CartService
+import com.tokopedia.tokopedianow.searchcategory.domain.usecase.GetFilterUseCase
 import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import io.mockk.CapturingSlot
 import io.mockk.every
@@ -37,11 +38,13 @@ open class SearchTestFixtures {
     @get:Rule
     val coroutineTestRule = UnconfinedTestRule()
 
+    private val remoteConfig = mockk<RemoteConfig>(relaxed = true)
+
     protected val defaultKeyword = "samsung"
     protected val defaultQueryParamMap = mapOf(SearchApiConst.Q to defaultKeyword)
     protected val getSearchFirstPageUseCase = mockk<UseCase<SearchModel>>(relaxed = true)
     protected val getSearchLoadMorePageUseCase = mockk<UseCase<SearchModel>>(relaxed = true)
-    protected val getFilterUseCase = mockk<UseCase<DynamicFilterModel>>(relaxed = true)
+    protected val getFilterUseCase = mockk<GetFilterUseCase>(relaxed = true)
     protected val getProductCountUseCase = mockk<UseCase<String>>(relaxed = true)
     protected val getMiniCartListSimplifiedUseCase = mockk<GetMiniCartListSimplifiedUseCase>(relaxed = true)
     protected val addToCartUseCase = mockk<AddToCartUseCase>(relaxed = true)
@@ -77,6 +80,19 @@ open class SearchTestFixtures {
         } returns chooseAddressData
     }
 
+    protected fun `Given remote config`(
+        defaultValue: String,
+        key: String,
+        value: String
+    ) {
+        every {
+            remoteConfig.getString(
+                key,
+                defaultValue
+            )
+        } returns value
+    }
+
     protected fun `Given search view model`(queryParamMap: Map<String, String> = defaultQueryParamMap) {
         tokoNowSearchViewModel = TokoNowSearchViewModel(
                 CoroutineTestDispatchersProvider,
@@ -89,6 +105,7 @@ open class SearchTestFixtures {
                 cartService,
                 getWarehouseUseCase,
                 setUserPreferenceUseCase,
+                remoteConfig,
                 chooseAddressWrapper,
                 affiliateService,
                 userSession,

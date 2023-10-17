@@ -12,6 +12,7 @@ import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowAdsCarouselT
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowCategoryMenuTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowEmptyStateNoResultTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowEmptyStateOocTypeFactory
+import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowProductItemTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowProductRecommendationOocTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowProductRecommendationTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowTickerTypeFactory
@@ -71,7 +72,8 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
     protected val categoryFilterListener: CategoryFilterListener,
     protected val productItemListener: ProductItemListener,
     protected val switcherWidgetListener: SwitcherWidgetListener,
-    protected val tokoNowEmptyStateNoResultListener: TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener,
+    private val tokoNowEmptyStateNoResultListener: TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener,
+    private val tokoNowEmptyStateNoResultTrackerListener: TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultTrackerListener? = null,
     private val feedbackWidgetListener: TokoNowFeedbackWidgetViewHolder.FeedbackWidgetListener,
     private val productCardCompactListener: ProductCardCompactView.ProductCardCompactListener,
     private val productCardCompactSimilarProductTrackerListener: ProductCardCompactSimilarProductTrackerListener,
@@ -89,7 +91,8 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
     TokoNowFeedbackWidgetTypeFactory,
     TokoNowProductRecommendationTypeFactory ,
     TokoNowTickerTypeFactory,
-    TokoNowAdsCarouselTypeFactory
+    TokoNowAdsCarouselTypeFactory,
+    TokoNowProductItemTypeFactory
 {
 
     override fun type(chooseAddressDataView: ChooseAddressDataView) = BaseChooseAddressViewHolder.LAYOUT
@@ -162,7 +165,8 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
             )
             TokoNowEmptyStateNoResultViewHolder.LAYOUT -> TokoNowEmptyStateNoResultViewHolder(
                 itemView = view,
-                tokoNowEmptyStateNoResultListener = tokoNowEmptyStateNoResultListener
+                tokoNowEmptyStateNoResultListener  = tokoNowEmptyStateNoResultListener,
+                tokoNowEmptyStateNoResultTrackerListener = tokoNowEmptyStateNoResultTrackerListener
             )
             TokoNowEmptyStateOocViewHolder.LAYOUT -> TokoNowEmptyStateOocViewHolder(
                 itemView = view,

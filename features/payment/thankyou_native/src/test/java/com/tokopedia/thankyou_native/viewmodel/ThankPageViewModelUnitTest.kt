@@ -1,17 +1,29 @@
 package com.tokopedia.thankyou_native.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.localizationchooseaddress.domain.response.GetDefaultChosenAddressGqlResponse
 import com.tokopedia.localizationchooseaddress.domain.response.GetDefaultChosenAddressResponse
-import com.tokopedia.thankyou_native.domain.model.*
+import com.tokopedia.localizationchooseaddress.domain.usecase.GetDefaultChosenAddressUseCase
+import com.tokopedia.thankyou_native.domain.model.FeatureEngineData
+import com.tokopedia.thankyou_native.domain.model.FeatureEngineItem
+import com.tokopedia.thankyou_native.domain.model.ThanksPageData
+import com.tokopedia.thankyou_native.domain.model.TopAdsUIModel
+import com.tokopedia.thankyou_native.domain.model.ValidateEngineResponse
+import com.tokopedia.thankyou_native.domain.model.WalletBalance
+import com.tokopedia.thankyou_native.domain.repository.DynamicChannelRepository
 import com.tokopedia.thankyou_native.domain.usecase.FetchWalletBalanceUseCase
-import com.tokopedia.thankyou_native.domain.usecase.GetDefaultAddressUseCase
 import com.tokopedia.thankyou_native.domain.usecase.GyroEngineMapperUseCase
 import com.tokopedia.thankyou_native.domain.usecase.GyroEngineRequestUseCase
 import com.tokopedia.thankyou_native.domain.usecase.ThankYouTopAdsViewModelUseCase
 import com.tokopedia.thankyou_native.domain.usecase.ThanksPageDataUseCase
 import com.tokopedia.thankyou_native.domain.usecase.ThanksPageMapperUseCase
 import com.tokopedia.thankyou_native.domain.usecase.TopTickerUseCase
-import com.tokopedia.thankyou_native.presentation.adapter.model.*
+import com.tokopedia.thankyou_native.presentation.adapter.model.BannerWidgetModel
+import com.tokopedia.thankyou_native.presentation.adapter.model.GyroRecommendation
+import com.tokopedia.thankyou_native.presentation.adapter.model.GyroRecommendationWidgetModel
+import com.tokopedia.thankyou_native.presentation.adapter.model.HeadlineAdsWidgetModel
+import com.tokopedia.thankyou_native.presentation.adapter.model.TokoMemberRequestParam
+import com.tokopedia.thankyou_native.presentation.adapter.model.TopAdsRequestParams
 import com.tokopedia.thankyou_native.presentation.viewModel.ThanksPageDataViewModel
 import com.tokopedia.tokomember.model.MembershipRegister
 import com.tokopedia.tokomember.usecase.MembershipRegisterUseCase
@@ -20,6 +32,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Assert
@@ -42,11 +55,12 @@ class ThankPageViewModelUnitTest {
     private val gyroEngineRequestUseCase = mockk<GyroEngineRequestUseCase>(relaxed = true)
     private val gyroEngineMapperUseCase = mockk<GyroEngineMapperUseCase>(relaxed = true)
     private val topTickerUseCase = mockk<TopTickerUseCase>(relaxed = true)
-    private val defaultAddressUseCase = mockk<GetDefaultAddressUseCase>(relaxed = true)
+    private val defaultAddressUseCase = mockk<GetDefaultChosenAddressUseCase>(relaxed = true)
     private val walletBalanceUseCase = mockk<FetchWalletBalanceUseCase>(relaxed = true)
     private val thankYouTopAdsViewModelUseCase =
         mockk<ThankYouTopAdsViewModelUseCase>(relaxed = true)
     private val membershipRegisterUseCase = mockk<MembershipRegisterUseCase>(relaxed = true)
+    private val dynamicChannelRepository = mockk<DynamicChannelRepository>(relaxed = true)
 
     @Before
     fun setUp() {
@@ -60,6 +74,7 @@ class ThankPageViewModelUnitTest {
             defaultAddressUseCase,
             thankYouTopAdsViewModelUseCase,
             membershipRegisterUseCase,
+            dynamicChannelRepository,
             dispatcher
         )
     }
@@ -207,12 +222,9 @@ class ThankPageViewModelUnitTest {
     fun successDefaultAddressLiveData() {
         val getDefaultChosenAddressResponse = mockk<GetDefaultChosenAddressResponse>(relaxed = true)
         coEvery {
-            defaultAddressUseCase.getDefaultChosenAddress(any(), any())
-        } coAnswers {
-            firstArg<(GetDefaultChosenAddressResponse) -> Unit>().invoke(
-                getDefaultChosenAddressResponse
-            )
-        }
+            defaultAddressUseCase(any())
+        } returns GetDefaultChosenAddressGqlResponse(getDefaultChosenAddressResponse)
+
         viewModel.resetAddressToDefault()
         Assert.assertEquals(
             (viewModel.defaultAddressLiveData.value as Success).data,
@@ -222,15 +234,14 @@ class ThankPageViewModelUnitTest {
 
     @Test
     fun failDefaultAddressLiveData() {
+        val error = Exception()
         coEvery {
-            defaultAddressUseCase.getDefaultChosenAddress(any(), any())
-        } coAnswers {
-            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
-        }
+            defaultAddressUseCase(any())
+        } throws error
         viewModel.resetAddressToDefault()
         Assert.assertEquals(
             (viewModel.defaultAddressLiveData.value as Fail).throwable,
-            mockThrowable
+            error
         )
     }
 
@@ -279,7 +290,7 @@ class ThankPageViewModelUnitTest {
         } coAnswers {
             thirdArg<(ValidateEngineResponse) -> Unit>().invoke(validateEngineResponse)
         }
-        viewModel.checkForGoPayActivation(thankPageData)
+        viewModel.checkForGoPayActivation(thankPageData, "")
         Assert.assertEquals(viewModel.gyroResponseLiveData.value, featureEngineData)
     }
 
@@ -313,7 +324,7 @@ class ThankPageViewModelUnitTest {
         }
 
         // when
-        viewModel.checkForGoPayActivation(thankPageData)
+        viewModel.checkForGoPayActivation(thankPageData, "")
 
         // then
         Assert.assertEquals(viewModel.bannerLiveData.value?.title, expectedTitle)
@@ -358,7 +369,7 @@ class ThankPageViewModelUnitTest {
 
         // when
         viewModel.addBottomContentWidget(bannerWidgetModel)
-        viewModel.checkForGoPayActivation(thankPageData)
+        viewModel.checkForGoPayActivation(thankPageData, "")
         viewModel.addBottomContentWidget(gyroVisitable)
         viewModel.addBottomContentWidget(headlineAdsVisitable)
 
@@ -368,5 +379,47 @@ class ThankPageViewModelUnitTest {
         Assert.assertEquals(viewModel.bottomContentVisitableList.value?.first(), bannerWidgetModel)
         Assert.assertEquals(viewModel.bottomContentVisitableList.value?.get(1), headlineAdsVisitable)
         Assert.assertEquals(viewModel.bottomContentVisitableList.value?.last(), gyroVisitable)
+    }
+
+    @Test
+    fun `Show Tokomember Widget`() {
+        val thankPageData = mockk<ThanksPageData>(relaxed = true)
+        val validateEngineResponse = ValidateEngineResponse(
+            true,
+            "",
+            "",
+            FeatureEngineData(
+                "",
+                "",
+                arrayListOf(
+                    FeatureEngineItem(
+                        id = 67,
+                        detail = "{\"type\":\"tokomember\"}"
+                    )
+                )
+            )
+        )
+        val queryParamTokomember = TokoMemberRequestParam(shopID = 0, amount = 0.0F, pageType = null, paymentID = "", source = 1, orderData = listOf(), sectionTitle = "", sectionSubtitle = "", isFirstElement = false)
+
+        // given
+        `check for wallet activation`()
+        coEvery {
+            gyroEngineRequestUseCase.getFeatureEngineData(thankPageData, any(), any())
+        } coAnswers {
+            thirdArg<(ValidateEngineResponse) -> Unit>().invoke(validateEngineResponse)
+        }
+
+        // when
+        viewModel.checkForGoPayActivation(thankPageData, "")
+
+        // verify
+        verify {
+            gyroEngineMapperUseCase.getFeatureListData(
+                any(),
+                queryParamTokomember,
+                any(),
+                any()
+            )
+        }
     }
 }

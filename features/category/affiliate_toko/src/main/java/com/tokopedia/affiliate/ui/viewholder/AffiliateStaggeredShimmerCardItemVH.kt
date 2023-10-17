@@ -6,8 +6,8 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateStaggeredShimmerModel
 import com.tokopedia.affiliate_toko.R
 
-class AffiliateStaggeredShimmerCardItemVH(itemView: View)
-    : AbstractViewHolder<AffiliateStaggeredShimmerModel>(itemView) {
+class AffiliateStaggeredShimmerCardItemVH(itemView: View) :
+    AbstractViewHolder<AffiliateStaggeredShimmerModel>(itemView) {
 
     companion object {
         @JvmField
@@ -15,7 +15,5 @@ class AffiliateStaggeredShimmerCardItemVH(itemView: View)
         var LAYOUT = R.layout.affiliate_staggered_shimmer_item_layout
     }
 
-    override fun bind(element: AffiliateStaggeredShimmerModel?) {
-
-    }
+    override fun bind(element: AffiliateStaggeredShimmerModel?) = Unit
 }

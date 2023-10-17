@@ -3,10 +3,9 @@ package com.tokopedia.logisticaddaddress.features.userconsent
 import android.os.Bundle
 import android.view.View
 import android.webkit.WebView
+import android.webkit.WebViewClient
 import com.tokopedia.webview.BaseWebViewFragment
 import com.tokopedia.webview.KEY_URL
-import android.webkit.WebViewClient
-
 
 class TncWebViewFragment : BaseWebViewFragment() {
 
@@ -44,5 +43,4 @@ class TncWebViewFragment : BaseWebViewFragment() {
         }
         return super.shouldOverrideUrlLoading(webView, url)
     }
-
 }

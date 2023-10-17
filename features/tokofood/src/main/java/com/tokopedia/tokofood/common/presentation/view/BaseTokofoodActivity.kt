@@ -42,7 +42,7 @@ open class BaseTokofoodActivity : BaseMultiFragActivity(), HasViewModel<Multiple
     }
 
     override fun mapUriToFragment(uri: Uri): Fragment? {
-        return TokofoodRouteManager.mapUriToFragment(this, uri)
+        return TokofoodRouteManager.mapUriToFragment(uri)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

@@ -43,7 +43,7 @@ abstract class BaseChatToolbarActivity : BaseChatActivity() {
             setDisplayShowHomeEnabled(true)
             setHomeButtonEnabled(true)
 
-            val upArrow = MethodChecker.getDrawable(applicationContext, R.drawable.ic_action_back)
+            val upArrow = MethodChecker.getDrawable(applicationContext, com.tokopedia.abstraction.R.drawable.ic_action_back)
             if (upArrow != null) {
                 upArrow.setColorFilter(
                     MethodChecker.getColor(this@BaseChatToolbarActivity, com.tokopedia.unifyprinciples.R.color.Unify_NN600),

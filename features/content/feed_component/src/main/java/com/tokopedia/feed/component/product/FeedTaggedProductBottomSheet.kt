@@ -6,21 +6,28 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelStoreOwner
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.content.common.ui.adapter.ContentTaggedProductBottomSheetAdapter
+import com.tokopedia.content.common.ui.viewholder.ContentTaggedProductBottomSheetViewHolder
+import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.feedcomponent.databinding.BottomSheetFeedTaggedProductBinding
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
+import com.tokopedia.mvcwidget.AnimatedInfos
 import com.tokopedia.mvcwidget.MvcData
 import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummary
+import com.tokopedia.mvcwidget.trackers.DefaultMvcTrackerImpl
 import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.mvcwidget.trackers.MvcTrackerImpl
+import com.tokopedia.mvcwidget.views.bottomsheets.MvcDetailBottomSheet
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlin.math.roundToInt
 
@@ -30,8 +37,7 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
     private val binding: BottomSheetFeedTaggedProductBinding get() = _binding!!
 
     private var activityId: String = ""
-    private var viewModel: FeedTaggedProductViewModel? = null
-    private var isFirst: Boolean = true
+    private var shopId: String = ""
 
     private val maxHeight by lazyThreadSafetyNone {
         (getScreenHeight() * HEIGHT_PERCENT).roundToInt()
@@ -41,34 +47,78 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
         (getScreenHeight() * MIN_HEIGHT_PERCENT).roundToInt()
     }
 
-    private val mAdapterListener = object : FeedTaggedProductBottomSheetViewHolder.Listener {
-        override fun onProductCardClicked(product: FeedTaggedProductUiModel, itemPosition: Int) {
-            mListener?.onProductCardClicked(product, itemPosition)
+    private val mAdapterListener = object : ContentTaggedProductBottomSheetViewHolder.Listener {
+        override fun onProductCardClicked(product: ContentTaggedProductUiModel, itemPosition: Int) {
+            listener?.onProductCardClicked(product, itemPosition)
         }
 
         override fun onAddToCartProductButtonClicked(
-            product: FeedTaggedProductUiModel,
+            product: ContentTaggedProductUiModel,
             itemPosition: Int
         ) {
-            mListener?.onAddToCartProductButtonClicked(product, itemPosition)
+            listener?.onAddToCartProductButtonClicked(product, itemPosition)
         }
 
         override fun onBuyProductButtonClicked(
-            product: FeedTaggedProductUiModel,
+            product: ContentTaggedProductUiModel,
             itemPosition: Int
         ) {
-            mListener?.onBuyProductButtonClicked(product, itemPosition)
+            listener?.onBuyProductButtonClicked(product, itemPosition)
         }
     }
 
-    private val mAdapter: FeedTaggedProductBottomSheetAdapter by lazy {
-        FeedTaggedProductBottomSheetAdapter(mAdapterListener)
+    private val mAdapter: ContentTaggedProductBottomSheetAdapter by lazy {
+        ContentTaggedProductBottomSheetAdapter(mAdapterListener)
     }
 
-    private var mListener: Listener? = null
+    var listener: Listener? = null
+    var tracker: MvcTrackerImpl = DefaultMvcTrackerImpl()
 
-    fun setCustomListener(listener: Listener) {
-        mListener = listener
+    private val productListObserver = Observer<Result<List<ContentTaggedProductUiModel>>?> {
+        when (it) {
+            is Success -> {
+                hideLoading()
+
+                val productShopId =
+                    it.data.firstOrNull { product -> product.shop.id.isNotEmpty() }?.shop?.id.orEmpty()
+                if (productShopId.isNotEmpty()) {
+                    shopId = productShopId
+                }
+
+                mAdapter.setItemsAndAnimateChanges(it.data)
+                binding.root.let { view ->
+                    view.viewTreeObserver.addOnGlobalLayoutListener(object :
+                        OnGlobalLayoutListener {
+                        override fun onGlobalLayout() {
+                            view.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                            view.layoutParams = view.layoutParams.apply {
+                                if (view.measuredHeight > maxHeight) {
+                                    height = maxHeight
+                                } else if (view.measuredHeight < minHeight) {
+                                    height = minHeight
+                                } else if (height != ViewGroup.LayoutParams.WRAP_CONTENT) {
+                                    height = ViewGroup.LayoutParams.WRAP_CONTENT
+                                }
+                            }
+                        }
+                    })
+                }
+            }
+            is Fail -> {
+                hideLoading()
+            }
+        }
+    }
+    private val mvcObserver = Observer<Result<TokopointsCatalogMVCSummary>?> { result ->
+        when (result) {
+            is Success -> {
+                if (!result.data.animatedInfoList.isNullOrEmpty()) {
+                    listener?.sendMvcImpressionTracker(result.data.animatedInfoList!!)
+                }
+                showMerchantVoucherWidget(result.data)
+            }
+            else -> hideMerchantVoucherWidget()
+        }
     }
 
     override fun onCreateView(
@@ -85,6 +135,11 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        showLoading()
+
+        binding.root.layoutParams = binding.root.layoutParams.apply {
+            height = ViewGroup.LayoutParams.WRAP_CONTENT
+        }
         binding.rvTaggedProduct.apply {
             setHasFixedSize(true)
             isNestedScrollingEnabled = false
@@ -92,75 +147,39 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
             adapter = mAdapter
         }
 
-        observeProducts()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        if (isFirst) {
-            showLoading()
-            isFirst = false
-        }
-    }
-
-    private fun observeProducts() {
-        viewModel?.feedTagProductList?.observe(viewLifecycleOwner) {
-            hideLoading()
-            when (it) {
-                is Success -> {
-                    mAdapter.setItemsAndAnimateChanges(it.data)
-                    binding.root.let { view ->
-                        view.viewTreeObserver.addOnGlobalLayoutListener(object :
-                                OnGlobalLayoutListener {
-                                override fun onGlobalLayout() {
-                                    view.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                                    view.layoutParams = view.layoutParams.apply {
-                                        if (view.measuredHeight > maxHeight) {
-                                            height = maxHeight
-                                        } else if (view.measuredHeight < minHeight) {
-                                            height = minHeight
-                                        } else if (height != ViewGroup.LayoutParams.WRAP_CONTENT) {
-                                            height = ViewGroup.LayoutParams.WRAP_CONTENT
-                                        }
-                                    }
-                                }
-                            })
-                    }
-                }
-                is Fail -> {}
-            }
-        }
+        listener?.productListLiveData?.observe(viewLifecycleOwner, productListObserver)
+        listener?.mvcLiveData?.observe(viewLifecycleOwner, mvcObserver)
     }
 
     fun show(
         activityId: String,
-        viewModelOwner: ViewModelStoreOwner,
-        viewModelFactory: ViewModelProvider.Factory,
+        shopId: String,
         manager: FragmentManager,
-        tag: String,
-        products: List<FeedTaggedProductUiModel> = emptyList()
+        tag: String
     ) {
-        this.isFirst = true
         this.activityId = activityId
-        viewModel = ViewModelProvider(
-            viewModelOwner,
-            viewModelFactory
-        )[FeedTaggedProductViewModel::class.java]
-        viewModel?.fetchFeedProduct(activityId, products)
-
+        this.shopId = shopId
         show(manager, tag)
     }
 
-    fun showMerchantVoucherWidget(data: TokopointsCatalogMVCSummary, tracker: MvcTrackerImpl) {
+    private fun showMerchantVoucherWidget(data: TokopointsCatalogMVCSummary) {
         setTitle(getString(com.tokopedia.content.common.R.string.content_product_bs_title_with_promo))
         val info = data.animatedInfoList
         if (info?.isNotEmpty() == true) {
-            val shopId = viewModel?.shopId ?: ""
             binding.mvcTaggedProduct.setData(
                 mvcData = MvcData(info),
                 shopId = shopId,
                 source = MvcSource.FEED_BOTTOM_SHEET,
-                mvcTrackerImpl = tracker
+                mvcTrackerImpl = tracker,
+                startActivityForResultFunction = {
+                    MvcDetailBottomSheet().also {
+                        it.show(
+                            shopId = shopId,
+                            source = MvcSource.FEED_BOTTOM_SHEET,
+                            manager = parentFragmentManager,
+                        )
+                    }
+                }
             )
             binding.mvcTaggedProduct.show()
         } else {
@@ -168,7 +187,7 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
         }
     }
 
-    fun hideMerchantVoucherWidget() {
+    private fun hideMerchantVoucherWidget() {
         binding.mvcTaggedProduct.hide()
     }
 
@@ -191,8 +210,7 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        mListener = null
-        viewModel = null
+        listener = null
     }
 
     private fun showLoading() {
@@ -207,19 +225,24 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
 
     interface Listener {
         fun onProductCardClicked(
-            product: FeedTaggedProductUiModel,
+            product: ContentTaggedProductUiModel,
             itemPosition: Int
         )
 
         fun onAddToCartProductButtonClicked(
-            product: FeedTaggedProductUiModel,
+            product: ContentTaggedProductUiModel,
             itemPosition: Int
         )
 
         fun onBuyProductButtonClicked(
-            product: FeedTaggedProductUiModel,
+            product: ContentTaggedProductUiModel,
             itemPosition: Int
         )
+
+        fun sendMvcImpressionTracker(mvcList: List<AnimatedInfos?>)
+
+        val mvcLiveData: LiveData<Result<TokopointsCatalogMVCSummary>?>
+        val productListLiveData: LiveData<Result<List<ContentTaggedProductUiModel>>?>
     }
 
     companion object {

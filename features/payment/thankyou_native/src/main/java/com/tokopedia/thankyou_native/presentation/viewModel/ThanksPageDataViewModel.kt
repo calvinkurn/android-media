@@ -1,19 +1,48 @@
 package com.tokopedia.thankyou_native.presentation.viewModel
 
+import android.os.Bundle
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+
+import com.tokopedia.home_component.visitable.MixTopDataModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetDefaultChosenAddressResponse
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.convertToLocationParams
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.localizationchooseaddress.domain.model.GetDefaultChosenAddressParam
+import com.tokopedia.localizationchooseaddress.domain.usecase.GetDefaultChosenAddressUseCase
 import com.tokopedia.thankyou_native.data.mapper.FeatureRecommendationMapper
 import com.tokopedia.thankyou_native.data.mapper.PaymentPageMapper
+import com.tokopedia.thankyou_native.data.mapper.ShopFlashSaleMapper
+import com.tokopedia.thankyou_native.data.mapper.ShopFlashSaleMapper.mapShopFlashSaleItemList
+import com.tokopedia.thankyou_native.data.mapper.mapChannelToComponent
 import com.tokopedia.thankyou_native.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.thankyou_native.domain.model.FeatureEngineData
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.domain.model.WalletBalance
+import com.tokopedia.thankyou_native.domain.repository.DynamicChannelRepository
 import com.tokopedia.thankyou_native.domain.usecase.*
 import com.tokopedia.thankyou_native.presentation.adapter.model.*
+import com.tokopedia.thankyou_native.domain.usecase.FetchWalletBalanceUseCase
+import com.tokopedia.thankyou_native.domain.usecase.GyroEngineMapperUseCase
+import com.tokopedia.thankyou_native.domain.usecase.GyroEngineRequestUseCase
+import com.tokopedia.thankyou_native.domain.usecase.ThankYouTopAdsViewModelUseCase
+import com.tokopedia.thankyou_native.domain.usecase.ThanksPageDataUseCase
+import com.tokopedia.thankyou_native.domain.usecase.ThanksPageMapperUseCase
+import com.tokopedia.thankyou_native.domain.usecase.TopTickerUseCase
+import com.tokopedia.thankyou_native.presentation.adapter.model.BannerWidgetModel
+import com.tokopedia.thankyou_native.presentation.adapter.model.DigitalRecommendationWidgetModel
+import com.tokopedia.thankyou_native.presentation.adapter.model.GyroRecommendation
+import com.tokopedia.thankyou_native.presentation.adapter.model.GyroRecommendationWidgetModel
+import com.tokopedia.thankyou_native.presentation.adapter.model.HeadlineAdsWidgetModel
+import com.tokopedia.thankyou_native.presentation.adapter.model.MarketplaceRecommendationWidgetModel
+import com.tokopedia.thankyou_native.presentation.adapter.model.TokoMemberRequestParam
+import com.tokopedia.thankyou_native.presentation.adapter.model.TopAdsRequestParams
+import com.tokopedia.thankyou_native.presentation.adapter.model.WidgetTag
 import com.tokopedia.tokomember.model.MembershipRegister
 import com.tokopedia.tokomember.usecase.MembershipRegisterUseCase
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -21,6 +50,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ThanksPageDataViewModel @Inject constructor(
@@ -30,11 +60,17 @@ class ThanksPageDataViewModel @Inject constructor(
     private val fetchWalletBalanceUseCase: FetchWalletBalanceUseCase,
     private val gyroEngineMapperUseCase: GyroEngineMapperUseCase,
     private val topTickerDataUseCase: TopTickerUseCase,
-    private val getDefaultAddressUseCase: GetDefaultAddressUseCase,
+    private val getDefaultAddressUseCase: GetDefaultChosenAddressUseCase,
     private val thankYouTopAdsViewModelUseCase: ThankYouTopAdsViewModelUseCase,
     private val membershipRegisterUseCase: MembershipRegisterUseCase,
+    private val dynamicChannelRepository: DynamicChannelRepository,
     @CoroutineMainDispatcher dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
+
+    companion object {
+        private const val TYP_SOURCE_ADDRESS = "typ"
+        const val FLASHSALE_TAG = "flashsale"
+    }
 
     private val _thanksPageDataResultLiveData = MutableLiveData<Result<ThanksPageData>>()
     val thanksPageDataResultLiveData: LiveData<Result<ThanksPageData>> =
@@ -81,15 +117,15 @@ class ThanksPageDataViewModel @Inject constructor(
         )
     }
 
-    fun checkForGoPayActivation(thanksPageData: ThanksPageData) {
+    fun checkForGoPayActivation(thanksPageData: ThanksPageData, location: String) {
         fetchWalletBalanceUseCase.cancelJobs()
         fetchWalletBalanceUseCase.getGoPayBalance {
-            getFeatureEngine(thanksPageData, it)
+            getFeatureEngine(thanksPageData, it, location)
         }
     }
 
     @VisibleForTesting
-    fun getFeatureEngine(thanksPageData: ThanksPageData, walletBalance: WalletBalance?) {
+    fun getFeatureEngine(thanksPageData: ThanksPageData, walletBalance: WalletBalance?, location: String) {
         gyroEngineRequestUseCase.cancelJobs()
         var queryParamTokomember: TokoMemberRequestParam ? = null
         gyroEngineRequestUseCase.getFeatureEngineData(
@@ -101,6 +137,8 @@ class ThanksPageDataViewModel @Inject constructor(
                     _gyroResponseLiveData.value = featureEngineData
 
                     widgetOrder = getWidgetOrder(featureEngineData)
+
+                    getFlashSaleData(FeatureRecommendationMapper.getChannelId(featureEngineData), location)
 
                     getFeatureEngineBanner(featureEngineData)?.let { bannerModel ->
                         _bannerLiveData.value = bannerModel
@@ -160,8 +198,8 @@ class ThanksPageDataViewModel @Inject constructor(
             arrayListOf(
                 TopAdsRequestParams.TAG,
                 GyroRecommendationWidgetModel.TAG,
-                HeadlineAdsWidgetModel.TAG,
                 MarketplaceRecommendationWidgetModel.TAG,
+                HeadlineAdsWidgetModel.TAG,
                 DigitalRecommendationWidgetModel.TAG,
                 BannerWidgetModel.TAG
             )
@@ -205,11 +243,13 @@ class ThanksPageDataViewModel @Inject constructor(
     }
 
     fun resetAddressToDefault() {
-        getDefaultAddressUseCase.getDefaultChosenAddress({
-            _defaultAddressLiveData.postValue(Success(it))
-        }, {
+        launchCatchError(block = {
+            val response =
+                getDefaultAddressUseCase(GetDefaultChosenAddressParam(source = TYP_SOURCE_ADDRESS))
+            _defaultAddressLiveData.postValue(Success(response.response))
+        }) {
             _defaultAddressLiveData.postValue(Fail(it))
-        })
+        }
     }
 
     fun registerTokomember(membershipCardID: String) {
@@ -230,8 +270,31 @@ class ThanksPageDataViewModel @Inject constructor(
         if (widgetOrder.isEmpty()) {
             _bottomContentVisitableList.value = visitableList
         } else {
-            _bottomContentVisitableList.value = visitableList.sortedBy {
-                widgetOrder.indexOf((it as WidgetTag).tag)
+            _bottomContentVisitableList.value = visitableList.filter {
+                if (it is MixTopDataModel) widgetOrder.contains(FLASHSALE_TAG)
+                else widgetOrder.contains((it as WidgetTag).tag)
+            }.sortedBy {
+                if (it is MixTopDataModel) widgetOrder.indexOf(FLASHSALE_TAG)
+                else widgetOrder.indexOf((it as WidgetTag).tag)
+            }
+        }
+    }
+
+    private fun getFlashSaleData(channelID: String, location: String) {
+        if (widgetOrder.indexOf(FLASHSALE_TAG) == -1) return
+
+        launch(coroutineContext) {
+            val homeChannel = dynamicChannelRepository.getRemoteData(Bundle().apply {
+                putString("channelIDs", channelID)
+                putString("location", location)
+            })
+
+            homeChannel.dynamicHomeChannel.channels.forEachIndexed { index, item ->
+                addBottomContentWidget(
+                    MixTopDataModel(
+                        item.mapChannelToComponent(index)
+                    )
+                )
             }
         }
     }

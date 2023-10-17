@@ -95,28 +95,35 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@id/tv_feed_caption"
+        app:layout_constraintBottom_toTopOf="@id/layout_feed_caption"
         app:layout_constraintEnd_toStartOf="@id/share_button"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/product_tag_view" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_feed_caption"
+    <com.tokopedia.feedplus.presentation.customview.FeedCaptionFadingLayout
+        android:id="@+id/layout_feed_caption"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        android:ellipsize="end"
-        android:maxHeight="280dp"
-        android:maxLines="2"
-        android:scrollbars="vertical"
-        android:textColor="@color/Unify_Static_White"
         app:layout_constraintBottom_toTopOf="@id/rv_feed_asgc_tags"
         app:layout_constraintEnd_toStartOf="@id/share_button"
         app:layout_constraintStart_toStartOf="@id/layout_author_info"
         app:layout_constraintTop_toBottomOf="@id/layout_author_info"
-        app:typographyType="paragraph_2"
-        tools:text="Post Caption" />
+        >
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_feed_caption"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:ellipsize="end"
+            android:scrollbars="none"
+            android:textColor="@color/Unify_Static_White"
+            app:typographyType="paragraph_2"
+            tools:text="Post Caption"
+            />
+
+    </com.tokopedia.feedplus.presentation.customview.FeedCaptionFadingLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_feed_asgc_tags"
@@ -126,7 +133,7 @@
         app:layout_constraintBottom_toTopOf="@id/feed_campaign_ribbon"
         app:layout_constraintEnd_toEndOf="@id/layout_author_info"
         app:layout_constraintStart_toStartOf="@id/layout_author_info"
-        app:layout_constraintTop_toBottomOf="@id/tv_feed_caption"
+        app:layout_constraintTop_toBottomOf="@id/layout_feed_caption"
         tools:itemCount="3"
         tools:listitem="@layout/item_asgc_label" />
 

@@ -6,20 +6,28 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopUiModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.topads.sdk.domain.model.Data
 import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.topads.sdk.domain.model.Shop
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener
 import com.tokopedia.topads.sdk.view.adapter.DynamicFeedShopAdapter
-import kotlinx.android.synthetic.main.item_topads_shop.view.*
+import com.tokopedia.topads.sdk.widget.TopAdsDynamicFeedShopView
 
 /**
  * @author by milhamj on 08/01/19.
  */
-class TopadsShopViewHolder(v: View, private val topadsShopListener: TopadsShopListener?,
-                           private val cardTitleListener: CardTitleView.CardTitleListener?)
-    : AbstractViewHolder<TopadsShopUiModel>(v), TopAdsItemClickListener, DynamicFeedShopAdapter.TopAdsShopImpressionListener {
+class TopadsShopViewHolder(
+    v: View, private val topadsShopListener: TopadsShopListener?,
+    private val cardTitleListener: CardTitleView.CardTitleListener?
+) : AbstractViewHolder<TopadsShopUiModel>(v), TopAdsItemClickListener,
+    DynamicFeedShopAdapter.TopAdsShopImpressionListener {
+    
+    private val viewPaddingBottom: View = itemView.findViewById(R.id.viewPaddingBottom)
+    private val topadsShop: TopAdsDynamicFeedShopView = itemView.findViewById(R.id.topadsShop)
+    private val cardTitle: CardTitleView = itemView.findViewById(R.id.cardTitle)
 
     companion object {
         @LayoutRes
@@ -33,20 +41,24 @@ class TopadsShopViewHolder(v: View, private val topadsShopListener: TopadsShopLi
         }
 
         if (element.dataList.isNotEmpty()) {
-            itemView.viewPaddingBottom.visibility = View.VISIBLE
-            itemView.topadsShop.bind(element.dataList)
-            itemView.topadsShop.setItemClickListener(this)
-            itemView.topadsShop.setImpressionListener(this)
+            viewPaddingBottom.visible()
+            topadsShop.bind(element.dataList)
+            topadsShop.setItemClickListener(this)
+            topadsShop.setImpressionListener(this)
         } else {
-            itemView.viewPaddingBottom.visibility = View.GONE
+            viewPaddingBottom.gone()
         }
 
         if (element.title.text.isNotEmpty()) {
-            itemView.cardTitle.visibility = View.VISIBLE
-            itemView.cardTitle.bind(element.title, element.template.cardrecom.title, adapterPosition)
-            itemView.cardTitle.listener = cardTitleListener
+            cardTitle.visible()
+            cardTitle.bind(
+                element.title,
+                element.template.cardrecom.title,
+                adapterPosition
+            )
+            cardTitle.listener = cardTitleListener
         } else {
-            itemView.cardTitle.visibility = View.GONE
+            cardTitle.gone()
         }
 
     }
@@ -58,7 +70,7 @@ class TopadsShopViewHolder(v: View, private val topadsShopListener: TopadsShopLi
         }
 
         val position = payloads[0] as Int
-        itemView.topadsShop.notifyItemChanged(position)
+        topadsShop.notifyItemChanged(position)
     }
 
     override fun onProductItemClicked(position: Int, product: Product) {
@@ -73,7 +85,7 @@ class TopadsShopViewHolder(v: View, private val topadsShopListener: TopadsShopLi
     }
 
     override fun onViewRecycled() {
-        itemView.topadsShop.onViewRecycled()
+        topadsShop.onViewRecycled()
     }
 
     interface TopadsShopListener {
@@ -84,7 +96,12 @@ class TopadsShopViewHolder(v: View, private val topadsShopListener: TopadsShopLi
         fun onTopAdsImpression(url: String, shopId: String, shopName: String, imageUrl: String)
     }
 
-    override fun onImpressionShopAds(url: String, shopId: String, shopName: String, imageUrl: String) {
+    override fun onImpressionShopAds(
+        url: String,
+        shopId: String,
+        shopName: String,
+        imageUrl: String
+    ) {
         topadsShopListener?.onTopAdsImpression(url, shopId, shopName, imageUrl)
     }
 }

@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.tokofood.feature.purchase.purchasepage.di.TokoFoodPurchaseScope
 import com.tokopedia.tokofood.stub.purchase.presentation.viewmodel.TokoFoodPurchaseConsentViewModelStub
-import com.tokopedia.tokofood.stub.purchase.presentation.viewmodel.TokoFoodPurchaseViewModelOldStub
 import com.tokopedia.tokofood.stub.purchase.presentation.viewmodel.TokoFoodPurchaseViewModelStub
 import dagger.Binds
 import dagger.Module
@@ -24,12 +23,6 @@ abstract class TokoFoodPurchaseViewModelModuleStub {
     @IntoMap
     @ViewModelKey(TokoFoodPurchaseViewModelStub::class)
     internal abstract fun tokoFoodPurchaseViewModelStub(viewModel: TokoFoodPurchaseViewModelStub): ViewModel
-
-    @TokoFoodPurchaseScope
-    @Binds
-    @IntoMap
-    @ViewModelKey(TokoFoodPurchaseViewModelOldStub::class)
-    internal abstract fun tokoFoodPurchaseViewModelOldStub(viewModel: TokoFoodPurchaseViewModelOldStub): ViewModel
 
     @TokoFoodPurchaseScope
     @Binds

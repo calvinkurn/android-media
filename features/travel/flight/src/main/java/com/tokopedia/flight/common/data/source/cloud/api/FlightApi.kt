@@ -18,8 +18,8 @@ interface FlightApi {
 
     @Multipart
     @POST(FLIGHT_CANCELLATION_UPLOAD)
-    suspend fun uploadCancellationAttachmentCoroutine(@PartMap params: Map<String, @JvmSuppressWildcards RequestBody>,
-                                                      @Part docFile: MultipartBody.Part)
-            : Response<DataResponse<CancellationAttachmentUploadEntity>>
-
+    suspend fun uploadCancellationAttachmentCoroutine(
+        @PartMap params: Map<String, @JvmSuppressWildcards RequestBody>,
+        @Part docFile: MultipartBody.Part
+    ): Response<DataResponse<CancellationAttachmentUploadEntity>>
 }

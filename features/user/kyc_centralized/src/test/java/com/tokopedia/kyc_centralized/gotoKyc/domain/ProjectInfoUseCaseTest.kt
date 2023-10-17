@@ -1,5 +1,6 @@
 package com.tokopedia.kyc_centralized.gotoKyc.domain
 
+import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.kyc_centralized.gotoKyc.utils.createSuccessResponse
@@ -25,11 +26,12 @@ class ProjectInfoUseCaseTest {
     private lateinit var useCase: ProjectInfoUseCase
 
     private val repository = mockk<GraphqlRepository>(relaxed = true)
+    private val context = mockk<Context>(relaxed = true)
     private val dispatcher = CoroutineTestDispatchersProvider
 
     @Before
     fun setup() {
-        useCase = ProjectInfoUseCase(repository, dispatcher)
+        useCase = ProjectInfoUseCase(repository, context, dispatcher)
     }
 
     @Test

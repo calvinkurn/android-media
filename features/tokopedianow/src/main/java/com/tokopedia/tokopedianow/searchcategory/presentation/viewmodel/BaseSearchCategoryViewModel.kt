@@ -51,21 +51,27 @@ import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.OOC
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.PAGE_NUMBER_RECOM_WIDGET
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.RECOM_WIDGET
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TOKONOW_NO_RESULT
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RollenceKey.TOKOPEDIA_NOW_PAGINATION
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_TOKONOW
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_BUSINESS_UNIT
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_CURRENT_SITE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_PHYSICAL_GOODS
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
+import com.tokopedia.tokopedianow.common.constant.ConstantKey.DEFAULT_ROWS
+import com.tokopedia.tokopedianow.common.constant.ConstantKey.EXPERIMENT_DISABLED
+import com.tokopedia.tokopedianow.common.constant.ConstantKey.EXPERIMENT_ENABLED
+import com.tokopedia.tokopedianow.common.constant.ConstantKey.EXPERIMENT_ROWS
 import com.tokopedia.tokopedianow.common.constant.ServiceType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
+import com.tokopedia.tokopedianow.common.constant.TokoNowStaticLayoutType.Companion.PRODUCT_ADS_CAROUSEL
+import com.tokopedia.tokopedianow.common.domain.mapper.AddressMapper.mapToWarehouses
 import com.tokopedia.tokopedianow.common.domain.mapper.ProductAdsMapper.mapProductAdsCarousel
 import com.tokopedia.tokopedianow.common.domain.mapper.TickerMapper
 import com.tokopedia.tokopedianow.common.domain.model.GetProductAdsResponse.ProductAdsResponse
 import com.tokopedia.tokopedianow.common.domain.model.GetTargetedTickerResponse
-import com.tokopedia.tokopedianow.common.domain.mapper.AddressMapper.mapToWarehouses
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference
-import com.tokopedia.tokopedianow.common.domain.param.GetProductAdsParam
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.common.model.NowAffiliateAtcData
 import com.tokopedia.tokopedianow.common.model.TokoNowAdsCarouselUiModel
@@ -73,9 +79,9 @@ import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateNoResultUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationOocUiModel
-import com.tokopedia.tokopedianow.common.model.oldrepurchase.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowTickerUiModel
+import com.tokopedia.tokopedianow.common.model.oldrepurchase.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.home.domain.mapper.oldrepurchase.HomeRepurchaseMapper
 import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse.RepurchaseData
@@ -93,10 +99,12 @@ import com.tokopedia.tokopedianow.searchcategory.data.model.QuerySafeModel
 import com.tokopedia.tokopedianow.searchcategory.domain.mapper.ProductItemMapper.mapResponseToProductItem
 import com.tokopedia.tokopedianow.searchcategory.domain.mapper.VisitableMapper.updateWishlistStatus
 import com.tokopedia.tokopedianow.searchcategory.domain.mapper.mapChooseAddressToQuerySafeModel
+import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.Product
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.SearchProduct
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.SearchProductData
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.SearchProductHeader
+import com.tokopedia.tokopedianow.searchcategory.domain.usecase.GetFilterUseCase
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.BannerDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryFilterDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryFilterItemDataView
@@ -126,21 +134,23 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 abstract class BaseSearchCategoryViewModel(
     private val baseDispatcher: CoroutineDispatchers,
-    queryParamMap: Map<String, String>,
-    protected val getFilterUseCase: UseCase<DynamicFilterModel>,
+    private val queryParamMap: Map<String, String>,
+    protected val getFilterUseCase: GetFilterUseCase,
     protected val getProductCountUseCase: UseCase<String>,
     protected val getMiniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase,
     protected val cartService: CartService,
     private val getShopAndWarehouseUseCase: GetChosenAddressWarehouseLocUseCase,
     protected val setUserPreferenceUseCase: SetUserPreferenceUseCase,
+    private val remoteConfig: RemoteConfig,
     protected val chooseAddressWrapper: ChooseAddressWrapper,
     private val affiliateService: NowAffiliateService,
-    protected val userSession: UserSessionInterface
+    protected val userSession: UserSessionInterface,
 ) : BaseViewModel(baseDispatcher.io) {
     companion object {
         private const val MIN_PRODUCT_COUNT = 6
@@ -162,6 +172,8 @@ abstract class BaseSearchCategoryViewModel(
     private var currentProductPosition: Int = 1
     protected var feedbackFieldToggle = false
     private var isFeedbackFieldVisible = false
+    private var getFilterJob: Job? = null
+    private var excludeFilter: Option? = null
 
     val queryParam: Map<String, String> = queryParamMutable
     val hasGlobalMenu: Boolean
@@ -171,6 +183,15 @@ abstract class BaseSearchCategoryViewModel(
         private set
     var serviceType = ""
         private set
+
+    private val firstPageSuccessTriggerMutableLiveData = MutableLiveData<Unit>()
+    val firstPageSuccessTriggerLiveData: LiveData<Unit> = firstPageSuccessTriggerMutableLiveData
+
+    private val loadMoreSuccessTriggerMutableLiveData = MutableLiveData<Unit>()
+    val loadMoreSuccessTriggerLiveData: LiveData<Unit> = loadMoreSuccessTriggerMutableLiveData
+
+    private val stopPerformanceMonitoringMutableLiveData = MutableLiveData<Unit>()
+    val stopPerformanceMonitoringLiveData: LiveData<Unit> = stopPerformanceMonitoringMutableLiveData
 
     private val visitableListMutableLiveData = MutableLiveData<List<Visitable<*>>>(visitableList)
     val visitableListLiveData: LiveData<List<Visitable<*>>> = visitableListMutableLiveData
@@ -335,11 +356,13 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     private fun getShopIdBeforeLoadData() {
-        getShopAndWarehouseUseCase.getStateChosenAddress(
-            ::onGetShopAndWarehouseSuccess,
-            ::onGetShopAndWarehouseFailed,
-            DEFAULT_VALUE_SOURCE_SEARCH
-        )
+        launch {
+            try {
+                onGetShopAndWarehouseSuccess(getShopAndWarehouseUseCase(DEFAULT_VALUE_SOURCE_SEARCH))
+            } catch (e: Exception) {
+                onGetShopAndWarehouseFailed(e)
+            }
+        }
     }
 
     private fun onGetShopAndWarehouseSuccess(state: GetStateChosenAddressResponse) {
@@ -354,6 +377,8 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     private fun showOutOfCoverage() {
+        stopPerformanceMonitoringMutableLiveData.value = Unit
+
         updateHeaderBackgroundVisibility(false)
         updateMiniCartVisibility(false)
 
@@ -386,14 +411,14 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     protected open fun onGetShopAndWarehouseFailed(throwable: Throwable) {
+        stopPerformanceMonitoringMutableLiveData.value = Unit
     }
 
     protected abstract fun loadFirstPage()
 
     protected open fun createRequestParams(): RequestParams {
         val tokonowQueryParam = createTokonowQueryParams()
-        val productAdsParam = createProductAdsParam()
-            .generateQueryParams()
+        val productAdsParam = createGetProductAdsParam()
 
         val requestParams = RequestParams.create()
         requestParams.putObject(TOKONOW_QUERY_PARAMS, tokonowQueryParam)
@@ -413,7 +438,7 @@ abstract class BaseSearchCategoryViewModel(
         return tokonowQueryParam
     }
 
-    protected open fun createProductAdsParam(): GetProductAdsParam = GetProductAdsParam()
+    protected open fun createProductAdsParam(): MutableMap<String?, Any> = mutableMapOf()
 
     protected open fun appendMandatoryParams(tokonowQueryParam: MutableMap<String, Any>) {
         appendDeviceParam(tokonowQueryParam)
@@ -458,11 +483,18 @@ abstract class BaseSearchCategoryViewModel(
     protected open fun appendPaginationParam(tokonowQueryParam: MutableMap<String, Any>) {
         tokonowQueryParam[SearchApiConst.PAGE] = nextPage
         tokonowQueryParam[SearchApiConst.USE_PAGE] = true
-        tokonowQueryParam[SearchApiConst.ROWS] = SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_ROWS_PROFILE
+        tokonowQueryParam[SearchApiConst.ROWS] = getRows()
     }
 
     private fun appendQueryParam(tokonowQueryParam: MutableMap<String, Any>) {
         tokonowQueryParam.putAll(FilterHelper.createParamsWithoutExcludes(queryParam))
+    }
+
+    private fun createGetProductAdsParam(): Map<String?, Any> {
+        val params = createProductAdsParam().also {
+            it.putAll(FilterHelper.createParamsWithoutExcludes(queryParam))
+        }
+        return params
     }
 
     protected fun onGetFirstPageSuccess(
@@ -471,6 +503,8 @@ abstract class BaseSearchCategoryViewModel(
         searchProduct: SearchProduct,
         feedbackFieldIsActive: Boolean = false
     ) {
+        firstPageSuccessTriggerMutableLiveData.value = Unit
+
         totalData = headerDataView.aceSearchProductHeader.totalData
         totalFetchedData += contentDataView.aceSearchProductData.productList.size
         autoCompleteApplink = contentDataView.aceSearchProductData.autocompleteApplink
@@ -480,7 +514,7 @@ abstract class BaseSearchCategoryViewModel(
         val isEmptyProductList = contentDataView.aceSearchProductData.productList.isEmpty()
 
         initFilterController(headerDataView)
-        createVisitableListFirstPage(headerDataView, contentDataView, isEmptyProductList)
+        createVisitableListFirstPage(headerDataView, contentDataView, isEmptyProductList, searchProduct.data.violation)
         processEmptyState(isEmptyProductList)
         if (getKeywordForGeneralSearchTracking().isNotEmpty()) {
             sendGeneralSearchTracking(searchProduct)
@@ -493,9 +527,9 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     private fun initFilterController(headerDataView: HeaderDataView) {
-        val filterList =
-            headerDataView.quickFilterDataValue.filter +
-                headerDataView.categoryFilterDataValue.filter
+        if (dynamicFilterModelLiveData.value != null) return
+
+        val filterList = headerDataView.quickFilterDataValue.filter + headerDataView.categoryFilterDataValue.filter
 
         filterController.initFilterController(queryParamMutable, filterList)
     }
@@ -503,23 +537,37 @@ abstract class BaseSearchCategoryViewModel(
     private fun createVisitableListFirstPage(
         headerDataView: HeaderDataView,
         contentDataView: ContentDataView,
-        isEmptyProductList: Boolean
+        isEmptyProductList: Boolean,
+        violation: AceSearchProductModel.Violation
     ) {
         visitableList.clear()
 
         if (isEmptyProductList) {
-            createVisitableListWithEmptyProduct()
+            createVisitableListWithEmptyProduct(violation)
         } else {
             createVisitableListWithProduct(headerDataView, contentDataView)
         }
     }
 
-    protected open fun createVisitableListWithEmptyProduct() {
+    protected open fun createVisitableListWithEmptyProduct(
+        violation: AceSearchProductModel.Violation
+    ) {
         val activeFilterList = filterController.getActiveFilterOptionList()
+        val newActiveFilterList = activeFilterList.filter { queryParamMutable.containsValue(it.value) }
         isEmptyResult = true
 
         visitableList.add(chooseAddressDataView)
-        visitableList.add(TokoNowEmptyStateNoResultUiModel(activeFilterList = activeFilterList))
+        visitableList.add(
+            TokoNowEmptyStateNoResultUiModel(
+                activeFilterList = newActiveFilterList,
+                excludeFilter = excludeFilter,
+                defaultTitle = violation.headerText,
+                defaultDescription = violation.descriptionText,
+                defaultImage = violation.imageUrl,
+                defaultTextPrimaryButton = violation.buttonText,
+                defaultUrlPrimaryButton = violation.ctaUrl
+            )
+        )
         visitableList.add(
             TokoNowProductRecommendationUiModel(
                 requestParam = createProductRecommendationRequestParam(
@@ -636,8 +684,8 @@ abstract class BaseSearchCategoryViewModel(
         val sortFilterItem = SortFilterItem(filter.title, chipType)
         sortFilterItem.typeUpdated = false
 
+        val option = filter.options.firstOrNull() ?: Option()
         if (filter.options.size == 1) {
-            val option = filter.options.firstOrNull() ?: Option()
             sortFilterItem.listener = {
                 sendQuickFilterTrackingEvent(option, isSelected)
                 filter(option, !isSelected)
@@ -648,6 +696,9 @@ abstract class BaseSearchCategoryViewModel(
             }
             sortFilterItem.chevronListener = listener
             sortFilterItem.listener = listener
+            if (option.key.startsWith(OptionHelper.EXCLUDE_PREFIX)) {
+                excludeFilter = option
+            }
         }
 
         return sortFilterItem
@@ -686,16 +737,45 @@ abstract class BaseSearchCategoryViewModel(
         queryParamMutable.putAll(filterController.getParameter())
     }
 
-    open fun onViewReloadPage() {
+    open fun onViewReloadPage(
+        needToResetQueryParams: Boolean = true,
+        updateMoreQueryParams: () -> Unit = {}
+    ) {
+        resetQueryParam(
+            needToResetQueryParams = needToResetQueryParams,
+            updateMoreQueryParams = updateMoreQueryParams
+        )
+
         totalData = 0
         totalFetchedData = 0
         nextPage = 1
         chooseAddressData = chooseAddressWrapper.getChooseAddressData()
         chooseAddressDataView = ChooseAddressDataView(chooseAddressData)
-        dynamicFilterModelMutableLiveData.value = null
         isFeedbackFieldVisible = false
         showLoading()
         processLoadDataPage()
+    }
+
+    /**
+     * Reset the query param is needed to ensure the query param will be used is the previous query param,
+     * this reset mechanism will set the dynamic filter to null.
+     *
+     * @param needToResetQueryParams there will be a some cases where it needs to reset to query param,
+     * example case is when trying to pull and refresh the page. Otherwise there will be a few cases reset is not needed,
+     * example case is when reload page after the filter is selected.
+     * @param updateMoreQueryParams is used for child of BaseViewModel to update the query param needed on the page.
+     */
+    private fun resetQueryParam(
+        needToResetQueryParams: Boolean,
+        updateMoreQueryParams: () -> Unit
+    ) {
+        if (!needToResetQueryParams) return
+
+        dynamicFilterModelMutableLiveData.value = null
+        queryParamMutable.clear()
+        queryParamMutable.putAll(queryParamMap)
+        updateQueryParams()
+        updateMoreQueryParams.invoke()
     }
 
     private fun applyFilter() {
@@ -704,7 +784,6 @@ abstract class BaseSearchCategoryViewModel(
         nextPage = 1
         chooseAddressData = chooseAddressWrapper.getChooseAddressData()
         chooseAddressDataView = ChooseAddressDataView(chooseAddressData)
-        dynamicFilterModelMutableLiveData.value = null
 
         showProgressBar()
         processLoadDataPage()
@@ -752,12 +831,15 @@ abstract class BaseSearchCategoryViewModel(
         contentVisitableList: MutableList<Visitable<*>>,
         response: ProductAdsResponse
     ) {
-        if(response.productList.isNotEmpty()) {
-            contentVisitableList.add(mapProductAdsCarousel(
-                response,
-                miniCartWidgetLiveData.value,
-                hasBlockedAddToCart
-            ))
+        if (response.productList.isNotEmpty()) {
+            contentVisitableList.add(
+                mapProductAdsCarousel(
+                    id = PRODUCT_ADS_CAROUSEL,
+                response =response,
+                    miniCartData =miniCartWidgetLiveData.value,
+                    hasBlockedAddToCart =hasBlockedAddToCart
+                )
+            )
         }
     }
 
@@ -847,11 +929,11 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     private fun createProductCardCompactModel(
-        product: ProductCardCompactCarouselItemUiModel,
+        product: ProductCardCompactCarouselItemUiModel
     ): ProductCardCompactUiModel {
         val quantity = cartService.getProductQuantity(
             product.getProductId(),
-            product.parentId,
+            product.parentId
         )
         return product.productCardModel.copy(orderQuantity = quantity)
     }
@@ -955,6 +1037,7 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     protected open fun onGetFirstPageError(throwable: Throwable) {
+        stopPerformanceMonitoringMutableLiveData.value = Unit
         isShowErrorMutableLiveData.value = throwable
     }
 
@@ -969,6 +1052,7 @@ abstract class BaseSearchCategoryViewModel(
     abstract fun executeLoadMore()
 
     protected open fun onGetLoadMorePageSuccess(contentDataView: ContentDataView) {
+        loadMoreSuccessTriggerMutableLiveData.value = Unit
         totalFetchedData += contentDataView.aceSearchProductData.productList.size
 
         updateVisitableListForNextPage(contentDataView)
@@ -988,30 +1072,43 @@ abstract class BaseSearchCategoryViewModel(
         updateVisitableListLiveData()
     }
 
-    open fun onViewOpenFilterPage() {
+    /**
+     * Dynamic filter will have null value when first time user clicks filter to open main bottomsheet.
+     * in that case need to fetch the data, so filter in bottomsheet will be up to date.
+     */
+    fun onViewOpenFilterPage() {
         if (isFilterPageOpenLiveData.value == true) return
 
-        isFilterPageOpenMutableLiveData.value = true
+        if (dynamicFilterModelLiveData.value == null) {
+            getFilter(
+                needToOpenBottomSheet = true
+            )
+        } else {
+            isFilterPageOpenMutableLiveData.value = true
+        }
+    }
 
-        if (dynamicFilterModelLiveData.value != null) return
+    /**
+     * Update filter in main bottomsheet to be up to date
+     *
+     * @param needToOpenBottomSheet is used only when clicking filter chip
+     */
+    private fun getFilter(
+        needToOpenBottomSheet: Boolean
+    ) {
+        getFilterJob?.cancel()
+        getFilterJob = launchCatchError(
+            block = {
+                val dynamicFilterModel = getFilterUseCase.execute(createTokonowQueryParams())
+                filterController.appendFilterList(queryParam, dynamicFilterModel.data.filter)
+                dynamicFilterModelMutableLiveData.postValue(dynamicFilterModel)
 
-        val getFilterRequestParams = RequestParams.create()
-        getFilterRequestParams.putAll(createTokonowQueryParams())
-
-        getFilterUseCase.cancelJobs()
-        getFilterUseCase.execute(
-            ::onGetFilterSuccess,
-            ::onGetFilterFailed,
-            getFilterRequestParams
+                if (needToOpenBottomSheet) {
+                    isFilterPageOpenMutableLiveData.postValue(true)
+                }
+            },
+            onError = { /* do nothing */ }
         )
-    }
-
-    protected open fun onGetFilterSuccess(dynamicFilterModel: DynamicFilterModel) {
-        filterController.appendFilterList(queryParam, dynamicFilterModel.data.filter)
-        dynamicFilterModelMutableLiveData.value = dynamicFilterModel
-    }
-
-    protected open fun onGetFilterFailed(throwable: Throwable) {
     }
 
     open fun onViewDismissFilterPage() {
@@ -1020,7 +1117,12 @@ abstract class BaseSearchCategoryViewModel(
 
     open fun onViewClickCategoryFilterChip(option: Option, isSelected: Boolean) {
         resetSortFilterIfExclude(option)
+        filterController.refreshMapParameter(queryParam)
         filter(option, isSelected)
+
+        getFilter(
+            needToOpenBottomSheet = false
+        )
     }
 
     private fun resetSortFilterIfExclude(option: Option) {
@@ -1031,14 +1133,24 @@ abstract class BaseSearchCategoryViewModel(
         queryParamMutable.remove(option.key)
         queryParamMutable.entries.retainAll { it.isNotFilterAndSortKey() }
         queryParamMutable[SearchApiConst.OB] = DEFAULT_VALUE_OF_PARAMETER_SORT
-        filterController.refreshMapParameter(queryParam)
+    }
+
+    private fun resetSortFilterIfPminPmax(option: Option) {
+        val isOptionKeyHasPminPmax = option.key == SearchApiConst.PMIN || option.key == SearchApiConst.PMAX
+
+        if (!isOptionKeyHasPminPmax) return
+
+        queryParamMutable.remove(SearchApiConst.PMIN)
+        queryParamMutable.remove(SearchApiConst.PMAX)
     }
 
     open fun onViewApplySortFilter(applySortFilterModel: ApplySortFilterModel) {
         filterController.refreshMapParameter(applySortFilterModel.mapParameter)
         refreshQueryParamFromFilterController()
 
-        onViewReloadPage()
+        onViewReloadPage(
+            needToResetQueryParams = false
+        )
     }
 
     open fun onViewGetProductCount(mapParameter: Map<String, String>) {
@@ -1087,6 +1199,10 @@ abstract class BaseSearchCategoryViewModel(
         onViewDismissL3FilterPage()
         removeAllCategoryFilter(chosenCategoryFilter)
         filter(chosenCategoryFilter, true)
+
+        getFilter(
+            needToOpenBottomSheet = false
+        )
     }
 
     private fun removeAllCategoryFilter(chosenCategoryFilter: Option) {
@@ -1314,7 +1430,13 @@ abstract class BaseSearchCategoryViewModel(
 
     fun onViewRemoveFilter(option: Option) {
         resetSortFilterIfExclude(option)
+        resetSortFilterIfPminPmax(option)
+        filterController.refreshMapParameter(queryParam)
         filter(option, false)
+
+        getFilter(
+            needToOpenBottomSheet = false
+        )
     }
 
     fun needToShowOnBoardBottomSheet(has20mBottomSheetBeenShown: Boolean): Boolean {
@@ -1450,12 +1572,12 @@ abstract class BaseSearchCategoryViewModel(
         }
 
     protected class HeaderDataView(
-            val title: String = "",
-            val aceSearchProductHeader: SearchProductHeader = SearchProductHeader(),
-            categoryFilterDataValue: DataValue = DataValue(),
-            quickFilterDataValue: DataValue = DataValue(),
-            val bannerChannel: Channels = Channels(),
-            val targetedTicker: GetTargetedTickerResponse = GetTargetedTickerResponse()
+        val title: String = "",
+        val aceSearchProductHeader: SearchProductHeader = SearchProductHeader(),
+        categoryFilterDataValue: DataValue = DataValue(),
+        quickFilterDataValue: DataValue = DataValue(),
+        val bannerChannel: Channels = Channels(),
+        val targetedTicker: GetTargetedTickerResponse = GetTargetedTickerResponse()
     ) {
         val categoryFilterDataValue = DataValue(
             filter = FilterHelper.copyFilterWithOptionAsExclude(categoryFilterDataValue.filter)
@@ -1538,7 +1660,6 @@ abstract class BaseSearchCategoryViewModel(
                 affiliateChannel
             )
         }) {
-
         }
     }
 
@@ -1556,7 +1677,13 @@ abstract class BaseSearchCategoryViewModel(
         launchCatchError(block = {
             affiliateService.checkAtcAffiliateCookie(data)
         }) {
-
         }
+    }
+
+    fun getRows(): String = if (getPaginationExperiment()) EXPERIMENT_ROWS else DEFAULT_ROWS
+
+    private fun getPaginationExperiment(): Boolean {
+        val experiment = remoteConfig.getString(TOKOPEDIA_NOW_PAGINATION, EXPERIMENT_DISABLED)
+        return experiment == EXPERIMENT_ENABLED
     }
 }

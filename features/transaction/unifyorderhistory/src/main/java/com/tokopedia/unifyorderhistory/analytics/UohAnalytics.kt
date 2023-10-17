@@ -127,6 +127,7 @@ object UohAnalytics {
     private const val CLICK_BELI_LAGI_BUTTON_TRACKER_ID = "40124"
     private const val VIEW_ERROR_TOASTER_BELI_LAGI_TRACKER_ID = "40125"
     private const val VIEW_BERI_ULASAN_BUTTON_TRACKER_ID = "40126"
+    private const val CLICK_PRIMARY_BUTTON = "15422"
 
     private fun uohTrackerBuilder(): Tracker.Builder {
         return Tracker.Builder()
@@ -366,6 +367,7 @@ object UohAnalytics {
         event[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
         event[USER_ID] = userId
         event[BUSINESS_UNIT] = ORDER_MANAGEMENT
+        event[TRACKER_ID] = CLICK_PRIMARY_BUTTON
 
         TrackApp.getInstance().gtm.sendGeneralEvent(event)
     }

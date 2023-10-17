@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
 import com.tokopedia.play.widget.PlayWidgetViewHolder
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
+import com.tokopedia.shop.R
 import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignCarouselPlayWidgetViewHolder
 import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignCarouselProductHighlightViewHolder
 import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignDisplayBannerTimerPlaceholderViewHolder
@@ -42,15 +43,14 @@ import com.tokopedia.shop.home.WidgetName.VIDEO
 import com.tokopedia.shop.home.WidgetName.VOUCHER
 import com.tokopedia.shop.home.view.adapter.ShopWidgetTypeFactory
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopCarouselProductWidgetPlaceholderViewHolder
-import com.tokopedia.shop.home.view.listener.ShopHomeDisplayBannerTimerWidgetListener
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
+import com.tokopedia.shop.home.view.listener.ShopHomeReimagineDisplayBannerTimerWidgetListener
 import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
 import com.tokopedia.shop_widget.common.util.WidgetState
-import com.tokopedia.shop.R
 
 class ShopCampaignTabAdapterTypeFactory(
     private val shopHomeDisplayWidgetListener: ShopHomeDisplayWidgetListener,
-    private val shopCampaignDisplayBannerTimerWidgetListener: ShopHomeDisplayBannerTimerWidgetListener,
+    private val shopCampaignDisplayBannerTimerWidgetListener: ShopHomeReimagineDisplayBannerTimerWidgetListener,
     private val shopCampaignCarouselProductListener: ShopCampaignCarouselProductListener,
     private val playWidgetCoordinator: PlayWidgetCoordinator,
     private val shopPlayWidgetListener: ShopCampaignPlayWidgetListener,
@@ -83,60 +83,67 @@ class ShopCampaignTabAdapterTypeFactory(
     }
 
     private fun getShopCampaignVoucherSliderViewHolder(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
-        return if (isShowWidgetPlaceHolder(baseShopHomeWidgetUiModel))
+        return if (isShowWidgetPlaceHolder(baseShopHomeWidgetUiModel)) {
             ShopCampaignVoucherSliderPlaceholderViewHolder.LAYOUT
-        else
+        } else {
             ShopCampaignVoucherSliderViewHolder.LAYOUT
-
+        }
     }
 
     private fun getShopCampaignSliderSquareViewHolder(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
-        return if (isShowWidgetPlaceHolder(baseShopHomeWidgetUiModel))
+        return if (isShowWidgetPlaceHolder(baseShopHomeWidgetUiModel)) {
             ShopCampaignSliderSquarePlaceholderViewHolder.LAYOUT_RES
-        else
+        } else {
             ShopCampaignSliderSquareViewHolder.LAYOUT_RES
+        }
     }
 
     private fun getShopCampaignSliderBannerViewHolder(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
-        return if (isShowWidgetPlaceHolder(baseShopHomeWidgetUiModel))
+        return if (isShowWidgetPlaceHolder(baseShopHomeWidgetUiModel)) {
             ShopCampaignSliderBannerPlaceholderViewHolder.LAYOUT_RES
-        else
+        } else {
             ShopCampaignSliderBannerViewHolder.LAYOUT_RES
+        }
     }
 
     private fun getShopCampaignDisplaySliderBannerHighlight(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
-        return if (isShowWidgetPlaceHolder(baseShopHomeWidgetUiModel))
+        return if (isShowWidgetPlaceHolder(baseShopHomeWidgetUiModel)) {
             ShopCampaignDisplaySliderBannerHighlightPlaceholderViewHolder.LAYOUT
-        else
+        } else {
             ShopCampaignDisplaySliderBannerHighlightViewHolder.LAYOUT
+        }
     }
 
     private fun getShopCampaignDisplayBannerTimerViewHolder(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
-        return if (isShowWidgetPlaceHolder(baseShopHomeWidgetUiModel))
+        return if (isShowWidgetPlaceHolder(baseShopHomeWidgetUiModel)) {
             ShopCampaignDisplayBannerTimerPlaceholderViewHolder.LAYOUT
-        else
+        } else {
             ShopCampaignDisplayBannerTimerViewHolder.LAYOUT
+        }
     }
 
     private fun getShopCampaignCarouselProductViewHolder(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
-        return if (isShowWidgetPlaceHolder(baseShopHomeWidgetUiModel))
+        return if (isShowWidgetPlaceHolder(baseShopHomeWidgetUiModel)) {
             ShopCarouselProductWidgetPlaceholderViewHolder.LAYOUT
-        else
+        } else {
             ShopCampaignCarouselProductHighlightViewHolder.LAYOUT
+        }
     }
 
     private fun getShopCampaignMultipleImageColumnViewHolder(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
-        return if (isShowWidgetPlaceHolder(baseShopHomeWidgetUiModel))
+        return if (isShowWidgetPlaceHolder(baseShopHomeWidgetUiModel)) {
             ShopCampaignMultipleImageColumnPlaceholderViewHolder.LAYOUT
-        else
+        } else {
             ShopCampaignMultipleImageColumnViewHolder.LAYOUT
+        }
     }
 
     private fun getShopCampaignVideoViewHolder(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
-        return if (isShowWidgetPlaceHolder(baseShopHomeWidgetUiModel))
+        return if (isShowWidgetPlaceHolder(baseShopHomeWidgetUiModel)) {
             ShopCampaignVideoPlaceholderViewHolder.LAYOUT
-        else
+        } else {
             ShopCampaignVideoViewHolder.LAYOUT
+        }
     }
 
     override fun type(viewModel: LoadingModel?): Int {
@@ -210,7 +217,8 @@ class ShopCampaignTabAdapterTypeFactory(
                     parent.findViewById(R.id.play_widget_view),
                     playWidgetCoordinator
                 ),
-                shopPlayWidgetListener, shopCampaignInterface
+                shopPlayWidgetListener,
+                shopCampaignInterface
             )
 
             ShopCampaignVideoPlaceholderViewHolder.LAYOUT -> ShopCampaignVideoPlaceholderViewHolder(
@@ -245,5 +253,4 @@ class ShopCampaignTabAdapterTypeFactory(
     private fun isShowWidgetPlaceHolder(model: BaseShopHomeWidgetUiModel): Boolean {
         return model.widgetState == WidgetState.PLACEHOLDER || model.widgetState == WidgetState.LOADING
     }
-
 }

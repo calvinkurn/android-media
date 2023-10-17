@@ -78,6 +78,21 @@
         app:layout_constraintTop_toBottomOf="@id/tv_label_code"
         app:layout_constraintStart_toStartOf="parent"
         tools:text="X1234XXXXXX" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_seating_number"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:textColor="@color/Unify_NN0"
+        android:visibility="gone"
+        tools:text="Nomor Kursi: 13A"
+        tools:visibility="visible"
+        app:typographyType="body_3"
+        app:layout_constraintTop_toBottomOf="@id/tv_voucher_code"
+        app:layout_constraintStart_toStartOf="parent"/>
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_copy_code"
         android:layout_width="wrap_content"

@@ -25,7 +25,7 @@ android {
     lintOptions {
         checkReleaseBuilds false
         checkDependencies false
-        htmlReport false
+        htmlReport true
         warningsAsErrors false
         abortOnError false
     }
@@ -70,7 +70,7 @@ android {
     lintOptions {
         abortOnError false
         xmlReport true
-        htmlReport false
+        htmlReport true
     }
 }
 

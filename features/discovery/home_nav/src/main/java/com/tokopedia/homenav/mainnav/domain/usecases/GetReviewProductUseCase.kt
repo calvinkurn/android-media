@@ -25,29 +25,15 @@ class GetReviewProductUseCase (
 
     override suspend fun executeOnBackground(): List<NavReviewModel> {
         val responseData = Success(graphqlUseCase.executeOnBackground().productRevWaitForFeedback)
-        val navReviewList = mutableListOf<NavReviewModel>()
 
-        if (responseData.data.list.isNotEmpty()) {
-            responseData.data.list.map {
-                navReviewList.add(
-                    NavReviewModel(
-                        productId = it.product.productIDStr,
-                        productName = it.product.productName,
-                        imageUrl = it.product.productImageURL,
-                        reputationId = it.reputationIDStr
-                    )
-                )
-            }
-
-            /*
-                normally we limit 5 data, has next used for create empty review order
-                to generate 5 data and 1 empty data then show 5 data with view all card
-            */
-            if (responseData.data.hasNext) {
-                navReviewList.add(NavReviewModel())
-            }
+        return responseData.data.list.map {
+            NavReviewModel(
+                productId = it.product.productIDStr,
+                productName = it.product.productName,
+                imageUrl = it.product.productImageURL,
+                reputationId = it.reputationIDStr
+            )
         }
-        return navReviewList
     }
 
     companion object{

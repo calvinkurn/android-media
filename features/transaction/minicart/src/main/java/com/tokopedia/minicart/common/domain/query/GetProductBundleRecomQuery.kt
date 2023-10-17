@@ -52,6 +52,7 @@ internal object GetProductBundleRecomQuery {
                       imageUrl
                       appLink
                       webLink
+                      minOrder
                     }
                   }
                 }

@@ -65,7 +65,6 @@ import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.devicefingerprint.submitdevice.service.SubmitDeviceWorker;
 import com.tokopedia.dynamicfeatures.DFInstaller;
-import com.tokopedia.graphql.interceptor.MockInterceptor;
 import com.tokopedia.home.HomeInternalRouter;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment;
 import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
@@ -268,7 +267,9 @@ public class MainParentActivity extends BaseActivity implements
             performanceTrace = new BlocksPerformanceTrace(
                     this.getContext().getApplicationContext(),
                     PERFORMANCE_TRACE_HOME,
-                    LifecycleOwnerKt.getLifecycleScope(this)
+                    LifecycleOwnerKt.getLifecycleScope(this),
+                    this,
+                    null
             );
         } catch (Exception e) {
             e.printStackTrace();
@@ -574,7 +575,7 @@ public class MainParentActivity extends BaseActivity implements
             Toaster.INSTANCE.showErrorWithAction(this.findViewById(android.R.id.content),
                     intent.getStringExtra(ApplinkConstInternalCategory.PARAM_EXTRA_SUCCESS),
                     Snackbar.LENGTH_INDEFINITE,
-                    getString(com.tokopedia.home.R.string.general_label_ok), (v) -> {
+                    getString(com.tokopedia.resources.common.R.string.general_label_ok), (v) -> {
                     });
         }
     }
@@ -1162,14 +1163,7 @@ public class MainParentActivity extends BaseActivity implements
             //to trigger white text when tokopedia darkmode not on top page
             requestStatusBarLight();
         } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                this.getWindow().getDecorView().setSystemUiVisibility(
-                        View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
-                                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
-                                View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-                setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false);
-                this.getWindow().setStatusBarColor(Color.TRANSPARENT);
-            }
+            forceRequestStatusBarDark();
         }
     }
 
@@ -1180,6 +1174,22 @@ public class MainParentActivity extends BaseActivity implements
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             this.getWindow().getDecorView().setSystemUiVisibility(
                     View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+            setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false);
+            this.getWindow().setStatusBarColor(Color.TRANSPARENT);
+        }
+    }
+
+    /**
+     * Force status bar texts to dark without UI mode checking.
+     * For safe request dark status bar, use requestStatusBarDark()
+     */
+    @Override
+    public void forceRequestStatusBarDark() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            this.getWindow().getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
+                            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
+                            View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false);
             this.getWindow().setStatusBarColor(Color.TRANSPARENT);
         }

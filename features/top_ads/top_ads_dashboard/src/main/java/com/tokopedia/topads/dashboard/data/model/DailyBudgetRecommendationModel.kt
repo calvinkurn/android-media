@@ -4,6 +4,7 @@ package com.tokopedia.topads.dashboard.data.model
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.topads.common.data.model.ErrorsItem
 import kotlinx.android.parcel.Parcelize
 
 data class DailyBudgetRecommendationModel(

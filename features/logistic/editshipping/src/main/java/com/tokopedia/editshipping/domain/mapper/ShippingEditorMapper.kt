@@ -1,8 +1,31 @@
 package com.tokopedia.editshipping.domain.mapper
 
-import com.tokopedia.editshipping.domain.model.shippingEditor.*
-import com.tokopedia.editshipping.util.EditShippingConstant.WHITELABEL_SHIPPER_ID
-import com.tokopedia.logisticCommon.data.response.shippingeditor.*
+import com.tokopedia.editshipping.domain.model.shippingEditor.CourierTickerModel
+import com.tokopedia.editshipping.domain.model.shippingEditor.FeatureInfoModel
+import com.tokopedia.editshipping.domain.model.shippingEditor.HeaderTickerModel
+import com.tokopedia.editshipping.domain.model.shippingEditor.PartnerIdModel
+import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperGroupModel
+import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperListModel
+import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperModel
+import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperProductModel
+import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperProductTickerModel
+import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperTickerModel
+import com.tokopedia.editshipping.domain.model.shippingEditor.ShopIdModel
+import com.tokopedia.editshipping.domain.model.shippingEditor.TickerModel
+import com.tokopedia.editshipping.domain.model.shippingEditor.WarehousesModel
+import com.tokopedia.logisticCommon.data.response.shippingeditor.Conventional
+import com.tokopedia.logisticCommon.data.response.shippingeditor.CourierTicker
+import com.tokopedia.logisticCommon.data.response.shippingeditor.Data
+import com.tokopedia.logisticCommon.data.response.shippingeditor.FeatureInfo
+import com.tokopedia.logisticCommon.data.response.shippingeditor.GetShipperListResponse
+import com.tokopedia.logisticCommon.data.response.shippingeditor.GetShipperTickerResponse
+import com.tokopedia.logisticCommon.data.response.shippingeditor.HeaderTicker
+import com.tokopedia.logisticCommon.data.response.shippingeditor.OnDemand
+import com.tokopedia.logisticCommon.data.response.shippingeditor.PartnerId
+import com.tokopedia.logisticCommon.data.response.shippingeditor.ShipperProduct
+import com.tokopedia.logisticCommon.data.response.shippingeditor.ShipperProductTicker
+import com.tokopedia.logisticCommon.data.response.shippingeditor.ShopId
+import com.tokopedia.logisticCommon.data.response.shippingeditor.Warehouses
 import javax.inject.Inject
 
 class ShippingEditorMapper @Inject constructor() {
@@ -11,6 +34,7 @@ class ShippingEditorMapper @Inject constructor() {
         return ShipperListModel().apply {
             shippers = mapShipper(response.ongkirShippingEditor.data)
             ticker = mapTickerShipperList(response)
+            dropOffMapsUrl = response.ongkirShippingEditor.data.dropOffMapsUrl
         }
     }
 
@@ -32,7 +56,7 @@ class ShippingEditorMapper @Inject constructor() {
     private fun mapShipperOnDemand(response: List<OnDemand>): List<ShipperModel> {
         val onDemandModelList = ArrayList<ShipperModel>()
         response.forEach { data ->
-            val isWhitelabelShipper = isWhitelabelShipper(data.shipperId)
+            val isWhitelabelShipper = data.isWhitelabel
             val shipperDescription =
                 if (isWhitelabelShipper) {
                     data.shipperProduct.firstOrNull()?.description
@@ -43,7 +67,7 @@ class ShippingEditorMapper @Inject constructor() {
             val onDemandUiModel = ShipperModel().apply {
                 shipperId = data.shipperId
                 shipperName = data.shipperName
-                isActive = data.isActive
+                isActive = data.shipperProduct.any { it.isActive }
                 textPromo = data.textPromo
                 image = data.image
                 featureInfo = mapFeatureInfo(data.featureInfo)
@@ -59,7 +83,7 @@ class ShippingEditorMapper @Inject constructor() {
     private fun mapShipperConventional(response: List<Conventional>): List<ShipperModel> {
         val conventionalModelList = ArrayList<ShipperModel>()
         response.forEach { data ->
-            val isWhitelabelShipper = isWhitelabelShipper(data.shipperId)
+            val isWhitelabelShipper = data.isWhitelabel
             val shipperDescription =
                 if (isWhitelabelShipper) {
                     data.shipperProduct.firstOrNull()?.description
@@ -70,7 +94,7 @@ class ShippingEditorMapper @Inject constructor() {
             val conventionalUiModel = ShipperModel().apply {
                 shipperId = data.shipperId
                 shipperName = data.shipperName
-                isActive = data.isActive
+                isActive = data.shipperProduct.any { it.isActive }
                 textPromo = data.textPromo
                 image = data.image
                 featureInfo = mapFeatureInfo(data.featureInfo)
@@ -81,10 +105,6 @@ class ShippingEditorMapper @Inject constructor() {
             conventionalModelList.add(conventionalUiModel)
         }
         return conventionalModelList
-    }
-
-    private fun isWhitelabelShipper(shipperId: Long): Boolean {
-        return WHITELABEL_SHIPPER_ID.contains(shipperId)
     }
 
     private fun mapFeatureInfo(response: List<FeatureInfo>): List<FeatureInfoModel> {

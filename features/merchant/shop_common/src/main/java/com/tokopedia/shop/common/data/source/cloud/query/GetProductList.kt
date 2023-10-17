@@ -55,6 +55,8 @@ internal object GetProductList {
                    isStockGuaranteed
                    isTobacco
                    isDTInbound
+                   isArchived
+                   isInGracePeriod
                 }
             }
         }

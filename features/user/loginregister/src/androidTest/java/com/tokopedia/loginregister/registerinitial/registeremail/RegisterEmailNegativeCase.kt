@@ -49,7 +49,7 @@ class RegisterEmailNegativeCase : RegisterEmailBase() {
             inputPassword("abcdefg123456")
             onView(
                 allOf(
-                    withId(R.id.text_field_input),
+                    withId(com.tokopedia.unifycomponents.R.id.text_field_input),
                     isDescendantOfA(withId(R.id.wrapper_password))
                 )
             ).perform(clearText())
@@ -61,7 +61,7 @@ class RegisterEmailNegativeCase : RegisterEmailBase() {
             inputName("Yoris Prayogo")
             onView(
                 allOf(
-                    withId(R.id.text_field_input),
+                    withId(com.tokopedia.unifycomponents.R.id.text_field_input),
                     isDescendantOfA(withId(R.id.wrapper_name))
                 )
             ).perform(clearText())
@@ -77,7 +77,7 @@ class RegisterEmailNegativeCase : RegisterEmailBase() {
         runTest {
             onView(
                 allOf(
-                    withId(R.id.text_field_icon_1),
+                    withId(com.tokopedia.unifycomponents.R.id.text_field_icon_1),
                     isDescendantOfA(withId(R.id.wrapper_password))
                 )
             ).perform(click())

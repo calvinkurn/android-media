@@ -53,12 +53,12 @@ public class MenuPromoTab extends BaseCustomView {
     }
 
     public void renderNormalState() {
-        tvTitle.setTextColor(getContext().getResources().getColor(R.color.grey_600));
+        tvTitle.setTextColor(getContext().getResources().getColor(com.tokopedia.design.R.color.grey_600));
         ImageHandler.loadImageAndCache(ivIcon, promoMenuData.getIconNormal());
     }
 
     public void renderActiveState() {
-        tvTitle.setTextColor(getContext().getResources().getColor(R.color.tkpd_main_green));
+        tvTitle.setTextColor(getContext().getResources().getColor(com.tokopedia.abstraction.R.color.tkpd_main_green));
         ImageHandler.loadImageAndCache(ivIcon, promoMenuData.getIconActive());
     }
 }

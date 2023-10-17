@@ -1,6 +1,7 @@
 package com.tokopedia.productcard
 
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.productcard.layout.LayoutStrategyFactory
 import com.tokopedia.productcard.utils.LABEL_BEST_SELLER
 import com.tokopedia.productcard.utils.LABEL_CAMPAIGN
@@ -19,9 +20,12 @@ import com.tokopedia.productcard.utils.LABEL_RIBBON
 import com.tokopedia.productcard.utils.LABEL_SHIPPING
 import com.tokopedia.productcard.utils.MIN_LABEL_VARIANT_COUNT
 import com.tokopedia.productcard.utils.MIN_QUANTITY_NON_VARIANT
+import com.tokopedia.productcard.utils.SlashPriceCashbackExperiment
 import com.tokopedia.productcard.utils.TYPE_VARIANT_COLOR
 import com.tokopedia.productcard.utils.TYPE_VARIANT_CUSTOM
 import com.tokopedia.productcard.utils.TYPE_VARIANT_SIZE
+import com.tokopedia.productcard.utils.rollenceRemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.UnifyButton
 
@@ -79,12 +83,17 @@ data class ProductCardModel (
         val hasAddToCartWishlist: Boolean = false,
         val hasSimilarProductWishlist: Boolean = false,
         val customVideoURL : String = "",
-        val cardInteraction: Boolean = false,
+        @Deprecated("replaced with animateOnPress")
+        val cardInteraction: Boolean? = null,
         val productListType: ProductListType = ProductListType.CONTROL,
         val isPortrait: Boolean = false,
         val seeOtherProductText: String = "",
         val isTopStockBar: Boolean = false,
         val cardType: Int = CardUnify2.TYPE_SHADOW,
+        val animateOnPress: Int = CardUnify2.ANIMATE_OVERLAY,
+        val pageSource: PageSource = PageSource.OTHER,
+        val abTestRemoteConfig: Lazy<RemoteConfig?> = rollenceRemoteConfig(),
+        val forceLightModeColor: Boolean = false,
 ) {
     @Deprecated("replace with labelGroupList")
     var isProductSoldOut: Boolean = false
@@ -95,6 +104,13 @@ data class ProductCardModel (
 
     internal val layoutStrategy =
         LayoutStrategyFactory.create(productListType, isTopStockBar, cardType)
+
+    private val slashedPriceCashbackExperiment by lazyThreadSafetyNone {
+        SlashPriceCashbackExperiment.get(abTestRemoteConfig)
+    }
+
+    fun isOnSlashPriceCashbackExperiment() =
+        slashedPriceCashbackExperiment.isUnderExperiment(pageSource)
 
     val showRibbon: Boolean
         get() = getLabelRibbon()?.title?.isNotEmpty() == true
@@ -250,6 +266,11 @@ data class ProductCardModel (
 
     fun isShowDiscountOrSlashPrice() = discountPercentage.isNotEmpty() || slashedPrice.isNotEmpty()
 
+    fun showDiscountAsText(): Boolean = isOnSlashPriceCashbackExperiment()
+
+    fun isShowLabelPrice(): Boolean =
+        !isShowDiscountOrSlashPrice() || isOnSlashPriceCashbackExperiment()
+
     fun isShowFreeOngkirBadge() = freeOngkir.isActive && freeOngkir.imageUrl.isNotEmpty()
 
     fun isShowShopBadge() = shopBadgeList.find { it.isShown && it.imageUrl.isNotEmpty() } != null && shopLocation.isNotEmpty()
@@ -401,6 +422,63 @@ data class ProductCardModel (
         }
     }
 
+    override fun equals(other: Any?): Boolean {
+        return other is ProductCardModel
+            && this.productImageUrl == other.productImageUrl
+            && this.isWishlisted == other.isWishlisted
+            && this.isWishlistVisible == other.isWishlistVisible
+            && this.labelPromo == other.labelPromo
+            && this.shopImageUrl == other.shopImageUrl
+            && this.shopName == other.shopName
+            && this.productName == other.productName
+            && this.discountPercentage == other.discountPercentage
+            && this.slashedPrice == other.slashedPrice
+            && this.priceRange == other.priceRange
+            && this.formattedPrice == other.formattedPrice
+            && this.shopBadgeList == other.shopBadgeList
+            && this.shopLocation == other.shopLocation
+            && this.ratingCount == other.ratingCount
+            && this.reviewCount == other.reviewCount
+            && this.labelCredibility == other.labelCredibility
+            && this.labelOffers == other.labelOffers
+            && this.freeOngkir == other.freeOngkir
+            && this.isTopAds == other.isTopAds
+            && this.ratingString == other.ratingString
+            && this.hasThreeDots == other.hasThreeDots
+            && this.labelGroupList == other.labelGroupList
+            && this.hasDeleteProductButton == other.hasDeleteProductButton
+            && this.hasAddToCartButton == other.hasAddToCartButton
+            && this.hasRemoveFromWishlistButton == other.hasRemoveFromWishlistButton
+            && this.pdpViewCount == other.pdpViewCount
+            && this.stockBarLabel == other.stockBarLabel
+            && this.stockBarLabelColor == other.stockBarLabelColor
+            && this.stockBarPercentage == other.stockBarPercentage
+            && this.isOutOfStock == other.isOutOfStock
+            && this.addToCardText == other.addToCardText
+            && this.shopRating == other.shopRating
+            && this.isShopRatingYellow == other.isShopRatingYellow
+            && this.countSoldRating == other.countSoldRating
+            && this.hasNotifyMeButton == other.hasNotifyMeButton
+            && this.labelGroupVariantList == other.labelGroupVariantList
+            && this.addToCartButtonType == other.addToCartButtonType
+            && this.isWideContent == other.isWideContent
+            && this.variant == other.variant
+            && this.nonVariant == other.nonVariant
+            && this.hasSimilarProductButton == other.hasSimilarProductButton
+            && this.hasButtonThreeDotsWishlist == other.hasButtonThreeDotsWishlist
+            && this.hasAddToCartWishlist == other.hasAddToCartWishlist
+            && this.hasSimilarProductWishlist == other.hasSimilarProductWishlist
+            && this.customVideoURL == other.customVideoURL
+            && this.cardInteraction == other.cardInteraction
+            && this.productListType == other.productListType
+            && this.isPortrait == other.isPortrait
+            && this.seeOtherProductText == other.seeOtherProductText
+            && this.isTopStockBar == other.isTopStockBar
+            && this.cardType == other.cardType
+            && this.animateOnPress == other.animateOnPress
+            && this.pageSource == other.pageSource
+    }
+
     enum class ProductListType {
         CONTROL,
         REPOSITION,
@@ -409,5 +487,12 @@ data class ProductCardModel (
         PORTRAIT,
         ETA,
         BEST_SELLER,
+        FIXED_GRID,
+        LIST_VIEW,
+    }
+
+    enum class PageSource {
+        SEARCH,
+        OTHER,
     }
 }

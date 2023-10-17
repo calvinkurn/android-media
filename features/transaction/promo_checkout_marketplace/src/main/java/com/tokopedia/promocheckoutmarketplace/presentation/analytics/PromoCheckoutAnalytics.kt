@@ -3,7 +3,12 @@ package com.tokopedia.promocheckoutmarketplace.presentation.analytics
 import android.os.Bundle
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.promocheckoutmarketplace.presentation.analytics.PromoCheckoutAnalytics.EventAction.CLICK_ACTIVATED_GOPAY_CICIL
+import com.tokopedia.promocheckoutmarketplace.presentation.analytics.PromoCheckoutAnalytics.EventAction.IMPRESSION_ELIGIBLE_PROMO_SECTION_GOPAY_CICIL
+import com.tokopedia.promocheckoutmarketplace.presentation.analytics.PromoCheckoutAnalytics.EventAction.IMPRESSION_INELIGIBLE_PROMO_SECTION_GOPAY_CICIL_PROMO_VALIDATION
+import com.tokopedia.promocheckoutmarketplace.presentation.analytics.PromoCheckoutAnalytics.EventAction.IMPRESSION_PROMO_ACTIVATED_GOPAY_CICIL
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoListItemUiModel
+import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.CustomDimension
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventCategory
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventLabel
@@ -15,6 +20,7 @@ import com.tokopedia.purchase_platform.common.constant.PAGE_CART
 import com.tokopedia.purchase_platform.common.constant.PAGE_CHECKOUT
 import com.tokopedia.purchase_platform.common.constant.PAGE_OCC
 import com.tokopedia.track.TrackAppUtils
+import com.tokopedia.track.builder.Tracker
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.parcelize.Parcelize
 import javax.inject.Inject
@@ -24,6 +30,8 @@ class PromoCheckoutAnalytics @Inject constructor(private val userSession: UserSe
     companion object {
         val EVENT_NAME_VIEW = "view"
         val EVENT_NAME_CLICK = "click"
+        val EVENT_NAME_VIEW_PG_IRIS = "viewPGIris"
+        val EVENT_CLICK_PG = "clickPG"
     }
 
     @Parcelize
@@ -74,6 +82,10 @@ class PromoCheckoutAnalytics @Inject constructor(private val userSession: UserSe
         const val IMPRESSION_LOCK_TO_PAYMENT_PROMO_SECTION = "impression - lock to payment promo section"
         const val IMPRESSION_ELIGIBLE_PROMO_SECTION = "impression - eligible promo section"
         const val IMPRESSION_HIGHLIGHTED_PROMO_SESSION = "impression - highlighted promo section"
+        const val IMPRESSION_PROMO_ACTIVATED_GOPAY_CICIL = "impression - promo activated gopay cicil"
+        const val CLICK_ACTIVATED_GOPAY_CICIL = "click - activated gopay cicil"
+        const val IMPRESSION_ELIGIBLE_PROMO_SECTION_GOPAY_CICIL = "impression - eligible promo section - gopay cicil"
+        const val IMPRESSION_INELIGIBLE_PROMO_SECTION_GOPAY_CICIL_PROMO_VALIDATION = "impression - ineligible promo section - gopay cicil promo validation"
     }
 
     private fun sendEventByPage(
@@ -653,5 +665,120 @@ class PromoCheckoutAnalytics @Inject constructor(private val userSession: UserSe
             eventLabel = "${promoItem.uiData.promoCode} - ${promoItem.uiData.errorMessage}",
             bundle = bundle
         )
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4088
+    // Tracker ID: 45451
+    fun sendImpressionPromoActivatedGopayCicilEvent(
+        page: Int,
+        promoCode: String,
+        benefitAmount: Int,
+        index: Int
+    ) {
+        val eventLabel = "$promoCode - $benefitAmount - $index"
+        val eventCategory = when (page) {
+            PAGE_CART -> EventCategory.CART
+            PAGE_CHECKOUT -> EventCategory.COURIER_SELECTION
+            PAGE_OCC -> EventCategory.ORDER_SUMMARY
+            else -> ""
+        }
+        Tracker.Builder()
+            .setEvent(EVENT_NAME_VIEW_PG_IRIS)
+            .setEventAction(IMPRESSION_PROMO_ACTIVATED_GOPAY_CICIL)
+            .setEventCategory(eventCategory)
+            .setEventLabel(eventLabel)
+            .setCustomProperty(ExtraKey.TRACKER_ID, ConstantTransactionAnalytics.TrackerId.IMPRESSION_PROMO_ACTIVATED_GOPAY_CICIL)
+            .setBusinessUnit(CustomDimension.DIMENSION_BUSINESS_UNIT_PROMO)
+            .setCurrentSite(CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE)
+            .setCustomProperty(ExtraKey.PROMO_CODE, promoCode)
+            .setUserId(userSession.userId)
+            .build()
+            .send()
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4088
+    // Tracker ID: 45453
+    fun sendClickActivatedGopayCicilEvent(
+        page: Int,
+        promoCode: String,
+        benefitAmount: Int,
+        index: Int
+    ) {
+        val eventLabel = "$promoCode - $benefitAmount - $index"
+        val eventCategory = when (page) {
+            PAGE_CART -> EventCategory.CART
+            PAGE_CHECKOUT -> EventCategory.COURIER_SELECTION
+            PAGE_OCC -> EventCategory.ORDER_SUMMARY
+            else -> ""
+        }
+        Tracker.Builder()
+            .setEvent(EVENT_CLICK_PG)
+            .setEventAction(CLICK_ACTIVATED_GOPAY_CICIL)
+            .setEventCategory(eventCategory)
+            .setEventLabel(eventLabel)
+            .setCustomProperty(ExtraKey.TRACKER_ID, ConstantTransactionAnalytics.TrackerId.CLICK_ACTIVATED_GOPAY_CICIL)
+            .setBusinessUnit(CustomDimension.DIMENSION_BUSINESS_UNIT_PROMO)
+            .setCurrentSite(CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE)
+            .setCustomProperty(ExtraKey.PROMO_CODE, promoCode)
+            .setUserId(userSession.userId)
+            .build()
+            .send()
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4088
+    // Tracker ID: 45454
+    fun sendImpressionEligiblePromoSectionGopayCicilCartEvent(
+        page: Int,
+        promoCode: String,
+        benefitAmount: Int,
+        index: Int
+    ) {
+        val eventLabel = "$promoCode - $benefitAmount - $index"
+        val eventCategory = when (page) {
+            PAGE_CART -> EventCategory.CART
+            PAGE_CHECKOUT -> EventCategory.COURIER_SELECTION
+            PAGE_OCC -> EventCategory.ORDER_SUMMARY
+            else -> ""
+        }
+        Tracker.Builder()
+            .setEvent(EVENT_NAME_VIEW_PG_IRIS)
+            .setEventAction(IMPRESSION_ELIGIBLE_PROMO_SECTION_GOPAY_CICIL)
+            .setEventCategory(eventCategory)
+            .setEventLabel(eventLabel)
+            .setCustomProperty(ExtraKey.TRACKER_ID, ConstantTransactionAnalytics.TrackerId.IMPRESSION_ELIGIBLE_PROMO_SECTION_GOPAY_CICIL)
+            .setBusinessUnit(CustomDimension.DIMENSION_BUSINESS_UNIT_PROMO)
+            .setCurrentSite(CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE)
+            .setCustomProperty(ExtraKey.PROMO_CODE, promoCode)
+            .setUserId(userSession.userId)
+            .build()
+            .send()
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4088
+    // Tracker ID: 45456
+    fun sendImpressionIneligiblePromoSectionGopayCicilPromoValidationEvent(
+        page: Int,
+        promoCode: String,
+        errorMessage: String
+    ) {
+        val eventLabel = "$promoCode - $errorMessage"
+        val eventCategory = when (page) {
+            PAGE_CART -> EventCategory.CART
+            PAGE_CHECKOUT -> EventCategory.COURIER_SELECTION
+            PAGE_OCC -> EventCategory.ORDER_SUMMARY
+            else -> ""
+        }
+        Tracker.Builder()
+            .setEvent(EVENT_NAME_VIEW_PG_IRIS)
+            .setEventAction(IMPRESSION_INELIGIBLE_PROMO_SECTION_GOPAY_CICIL_PROMO_VALIDATION)
+            .setEventCategory(eventCategory)
+            .setEventLabel(eventLabel)
+            .setCustomProperty(ExtraKey.TRACKER_ID, ConstantTransactionAnalytics.TrackerId.IMPRESSION_INELIGIBLE_PROMO_SECTION_GOPAY_CICIL_PROMO_VALIDATION)
+            .setBusinessUnit(CustomDimension.DIMENSION_BUSINESS_UNIT_PROMO)
+            .setCurrentSite(CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE)
+            .setCustomProperty(ExtraKey.PROMO_CODE, promoCode)
+            .setUserId(userSession.userId)
+            .build()
+            .send()
     }
 }

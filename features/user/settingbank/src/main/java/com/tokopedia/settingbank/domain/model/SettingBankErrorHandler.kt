@@ -7,7 +7,7 @@ import com.tokopedia.network.utils.ErrorHandler
 object SettingBankErrorHandler {
     fun getErrorMessage(context: Context, e: Throwable?): String {
         return if (e is com.tokopedia.network.exception.MessageErrorException && e.message?.isNotEmpty() == true) {
-            e.message ?: context.getString(R.string.default_request_error_unknown)
+            e.message ?: context.getString(com.tokopedia.network.R.string.default_request_error_unknown)
         } else {
             ErrorHandler.getErrorMessage(context, e)
         }

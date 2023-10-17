@@ -94,7 +94,7 @@ class RechargeGeneralInstrumentTest {
     fun validate_select_operator_cluster() {
         onView(withId(R.id.operator_cluster_select)).perform(click())
         Thread.sleep(1000)
-        onView(withId(R.id.vg_input_dropdown_recycler_view)).check(matches(isDisplayed())).perform(
+        onView(withId(com.tokopedia.common.topupbills.R.id.vg_input_dropdown_recycler_view)).check(matches(isDisplayed())).perform(
                 RecyclerViewActions.actionOnItemAtPosition<TopupBillsInputDropdownWidget.TopupBillsInputDropdownViewHolder>(
                         1, click()
                 )
@@ -106,7 +106,7 @@ class RechargeGeneralInstrumentTest {
     fun validate_select_operator() {
         onView(withId(R.id.operator_select)).perform(click())
         Thread.sleep(1000)
-        onView(withId(R.id.vg_input_dropdown_recycler_view)).check(matches(isDisplayed())).perform(
+        onView(withId(com.tokopedia.common.topupbills.R.id.vg_input_dropdown_recycler_view)).check(matches(isDisplayed())).perform(
                 RecyclerViewActions.actionOnItemAtPosition<TopupBillsInputDropdownWidget.TopupBillsInputDropdownViewHolder>(
                         1, click()
                 )
@@ -152,7 +152,7 @@ class RechargeGeneralInstrumentTest {
 
     fun validate_recent_transaction() {
         onView(withId(R.id.recent_transaction_widget)).check(matches(isDisplayed()))
-        onView(withId(R.id.recycler_view_menu_component)).check(matches(isDisplayed())).perform(
+        onView(withId(com.tokopedia.common.topupbills.R.id.recycler_view_menu_component)).check(matches(isDisplayed())).perform(
                 RecyclerViewActions.actionOnItemAtPosition<TopupBillsRecentNumbersAdapter.RecentNumbersItemViewHolder>(
                         0, click()
                 )
@@ -165,9 +165,9 @@ class RechargeGeneralInstrumentTest {
 
     fun validate_promo() {
         onView(withId(R.id.promo_list_widget)).check(matches(isDisplayed()))
-        onView(withId(R.id.recycler_view_menu_component)).check(matches(isDisplayed())).perform(
+        onView(withId(com.tokopedia.common.topupbills.R.id.recycler_view_menu_component)).check(matches(isDisplayed())).perform(
                 RecyclerViewActions.actionOnItemAtPosition<TopupBillsPromoListAdapter.PromoItemViewHolder>(
-                        0, CommonActions.clickChildViewWithId(R.id.btn_copy_promo)
+                        0, CommonActions.clickChildViewWithId(com.tokopedia.common.topupbills.R.id.btn_copy_promo)
                 )
         )
         Thread.sleep(1000)
