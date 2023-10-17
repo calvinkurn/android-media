@@ -1,3 +1,8 @@
+---
+labels:
+- product-card-compact
+- tokopedia-now
+---
 <!--left header table-->
 | **Status** | <!--start status:GREEN-->RELEASE<!--end status--> |
 | --- | --- |
