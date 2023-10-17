@@ -335,7 +335,7 @@ class StoriesDetailFragment @Inject constructor(
         }
     }
 
-    private fun renderTimer(prevTimer: TimerStatusInfo, timerState: TimerStatusInfo) {
+    private fun renderTimer(prevTimer: TimerStatusInfo?, timerState: TimerStatusInfo) {
         if (prevTimer == timerState) return
 
         showStoriesActionView(timerState.event == RESUME)
@@ -583,6 +583,9 @@ class StoriesDetailFragment @Inject constructor(
         setAction { onClick() }
         setCloseAction { activity?.finish() }
         translationZ = if (errorType == StoriesErrorView.Type.NoContent || errorType == StoriesErrorView.Type.EmptyCategory) 0f else 1f
+
+        if(errorType != StoriesErrorView.Type.EmptyCategory) return@with
+        renderTimer(null, TimerStatusInfo.Empty)
     }
 
     private fun hideError() = binding.vStoriesError.gone()

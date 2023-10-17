@@ -238,8 +238,7 @@ class StoriesGroupFragment @Inject constructor(
     private fun trackExitRoom() {
         analytic.sendClickExitStoryRoomEvent(
             storiesId = viewModel.mDetail.id,
-            creatorType = "asgc",
-            contentType = viewModel.mDetail.content.type.value,
+            contentType = viewModel.mDetail.content.type,
             currentCircle = viewModel.mGroup.groupName,
         )
     }
