@@ -1,6 +1,7 @@
 package com.tokopedia.logisticcart.shipping.features.shippingcourier.view
 
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData
+import com.tokopedia.logisticcart.scheduledelivery.domain.entity.response.ScheduleDeliveryRatesResponse
 import com.tokopedia.logisticcart.scheduledelivery.domain.model.ScheduleDeliveryData
 import com.tokopedia.logisticcart.shipping.model.CashOnDeliveryProduct
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
@@ -216,6 +217,13 @@ class ShippingCourierConverter @Inject constructor() {
         )
 
         return courierItemData
+    }
+
+    // todo: from logistic
+    fun convertToCourierItemDataFromSchellyOnly(
+        response: ScheduleDeliveryRatesResponse
+    ): CourierItemData {
+        return CourierItemData()
     }
 
     private fun CourierItemData.setScheduleDeliveryUiModel(
