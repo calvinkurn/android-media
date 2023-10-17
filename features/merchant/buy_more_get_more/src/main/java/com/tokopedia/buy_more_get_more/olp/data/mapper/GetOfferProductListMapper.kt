@@ -36,6 +36,7 @@ class GetOfferProductListMapper @Inject constructor() {
                 soldCount = it.soldCount,
                 stock = it.stock,
                 isVbs = it.isVbs,
+                minOrder = it.minOrder,
                 campaign = it.campaign.toCampaignModel(),
                 labelGroup = it.labelGroup.toLabelGroup()
             )

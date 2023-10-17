@@ -135,6 +135,9 @@ class ShopHomeFlashSaleViewHolder(
             startBackGroundColor = flashSaleItem?.firstBackgroundColor,
             endBackGroundColor = flashSaleItem?.secondBackgroundColor
         )
+        flashSaleReminderView?.setCardUnifyBackgroundColor(MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_Static_White))
+        reminderBellView?.setColorFilter(MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_Static_Black_68), PorterDuff.Mode.SRC_IN)
+        reminderCountView?.setTextColor(MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_Static_Black_68))
         configMarginNonFestivity()
     }
 
@@ -189,6 +192,9 @@ class ShopHomeFlashSaleViewHolder(
         singleBackGroundView?.hide()
         doubleBackGroundView?.hide()
         multipleBackGroundView?.hide()
+        flashSaleReminderView?.setCardUnifyBackgroundColor(MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_Static_White))
+        reminderBellView?.setColorFilter(MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_Static_Black_68), PorterDuff.Mode.SRC_IN)
+        reminderCountView?.setTextColor(MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_Static_Black_68))
         configMarginFestivity()
     }
 

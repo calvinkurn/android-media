@@ -7,6 +7,10 @@ data class StoriesCreationConfiguration(
     val storiesId: String,
     val maxProductTag: Int,
     val showDuration: String,
+    val minVideoDuration: Long,
+    val maxVideoDuration: Long,
+    val imageSourceId: String,
+    val videoSourceId: String,
     val maxStoriesConfig: MaxStoriesConfig,
 ) {
 
@@ -37,6 +41,10 @@ data class StoriesCreationConfiguration(
                 storiesId = "",
                 maxProductTag = 0,
                 showDuration = "",
+                minVideoDuration = 0L,
+                maxVideoDuration = 0L,
+                imageSourceId = "",
+                videoSourceId = "",
                 maxStoriesConfig = MaxStoriesConfig.Empty,
             )
     }

@@ -30,11 +30,22 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationPage
+import com.tokopedia.home_component.listener.MixTopComponentListener
+import com.tokopedia.home_component.model.ChannelBanner
+import com.tokopedia.home_component.model.ChannelGrid
+import com.tokopedia.home_component.model.ChannelHeader
+import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleTimerDataModel
+import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetDataModel
+import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetListener
+import com.tokopedia.home_component.widget.shop_flash_sale.item.ShopFlashSaleProductGridShimmerDataModel
+import com.tokopedia.home_component.widget.shop_flash_sale.tab.ShopFlashSaleTabDataModel
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
 import com.tokopedia.localizationchooseaddress.domain.response.GetDefaultChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.convertToLocationParams
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.media.loader.module.GlideApp
 import com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -68,11 +79,14 @@ import com.tokopedia.thankyou_native.presentation.helper.DialogHelper
 import com.tokopedia.thankyou_native.presentation.helper.OnDialogRedirectListener
 import com.tokopedia.thankyou_native.presentation.helper.PostPurchaseShareHelper
 import com.tokopedia.thankyou_native.presentation.viewModel.ThanksPageDataViewModel
+import com.tokopedia.thankyou_native.presentation.viewModel.ThanksPageDataViewModel.Companion.FLASHSALE_TAG
 import com.tokopedia.thankyou_native.presentation.views.GyroView
 import com.tokopedia.thankyou_native.presentation.views.RegisterMemberShipListener
 import com.tokopedia.thankyou_native.presentation.views.TopAdsView
 import com.tokopedia.thankyou_native.presentation.views.listener.BannerListener
+import com.tokopedia.thankyou_native.presentation.views.listener.FlashSaleWidgetListener
 import com.tokopedia.thankyou_native.presentation.views.listener.MarketplaceRecommendationListener
+import com.tokopedia.thankyou_native.presentation.views.listener.MixTopComponentListenerCallback
 import com.tokopedia.thankyou_native.recommendation.presentation.view.IRecommendationView
 import com.tokopedia.thankyou_native.recommendation.presentation.view.MarketPlaceRecommendation
 import com.tokopedia.thankyou_native.recommendationdigital.presentation.view.DigitalRecommendation
@@ -100,7 +114,8 @@ abstract class ThankYouBaseFragment :
     OnDialogRedirectListener,
     RegisterMemberShipListener,
     MarketplaceRecommendationListener,
-    BannerListener {
+    BannerListener,
+    FlashSaleWidgetListener {
 
     abstract fun getRecommendationContainer(): LinearLayout?
     abstract fun getFeatureListingContainer(): GyroView?
@@ -155,10 +170,12 @@ abstract class ThankYouBaseFragment :
     private var gyroTokomemberItemSuccess: GyroTokomemberItem? = null
     private var memberShipCardId: String = ""
 
+    private var trackingQueue: TrackingQueue? = null
+
     private val bottomContentAdapter: BottomContentAdapter by lazy(LazyThreadSafetyMode.NONE) {
         BottomContentAdapter(
             ArrayList(),
-            BottomContentFactory(this, this, this)
+            BottomContentFactory(this, this, this, MixTopComponentListenerCallback(this))
         )
     }
 
@@ -209,7 +226,12 @@ abstract class ThankYouBaseFragment :
     private fun getFeatureRecommendationData() {
         thanksPageData.configFlagData?.apply {
             if (isThanksWidgetEnabled && shouldHideFeatureRecom == false) {
-                thanksPageDataViewModel.checkForGoPayActivation(thanksPageData)
+                thanksPageDataViewModel.checkForGoPayActivation(
+                    thanksPageData,
+                    ChooseAddressUtils
+                        .getLocalizingAddressData(this@ThankYouBaseFragment.requireContext())
+                        .convertToLocationParams()
+                )
             }
         }
     }
@@ -692,6 +714,28 @@ abstract class ThankYouBaseFragment :
     private fun getOrderListPageIntent(): Intent? {
         return RouteManager.getIntent(context, ApplinkConst.PURCHASE_ORDER)
     }
+
+    override fun getFlashSaleWidgetPosition(): Int {
+        return thanksPageDataViewModel.widgetOrder.indexOf(FLASHSALE_TAG)
+    }
+    override fun getTrackingQueueObj(): TrackingQueue? {
+        if (trackingQueue == null) {
+            activity?.let {
+                trackingQueue = TrackingQueue(it)
+            }
+        }
+        return trackingQueue
+    }
+    override fun getUserId(): String {
+        return userSession.userId
+    }
+    override fun route(applink: String) {
+        RouteManager.route(context, applink)
+    }
+    override fun getMerchantCode(): String = thanksPageData.merchantCode
+    override fun getPaymentId(): String = thanksPageData.paymentID
+    override fun getPaymentMethod(): String = thanksPageData.gatewayName
+
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
