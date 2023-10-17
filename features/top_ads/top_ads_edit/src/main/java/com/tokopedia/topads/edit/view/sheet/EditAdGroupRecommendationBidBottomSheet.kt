@@ -134,9 +134,14 @@ class EditAdGroupRecommendationBidBottomSheet : BottomSheetUnify() {
                 }
 
                 else -> {
-                    setMessageErrorField("Biaya optimal ✔️", "0", false)
-                    priceBid?.let { viewModel.getBrowsePerformanceData(productListIds, number.toFloat(), it, 0f) }
-                    binding?.editAdGroupNameCta?.isEnabled = true
+                    if (number % 50 == 0.0) {
+                        setMessageErrorField("Biaya optimal ✔️", "0", false)
+                        priceBid?.let { viewModel.getBrowsePerformanceData(productListIds, number.toFloat(), it, 0f) }
+                        binding?.editAdGroupNameCta?.isEnabled = true
+                    } else {
+                        setMessageErrorField("Biaya harus kelipatan 50", "0", true)
+                        binding?.editAdGroupNameCta?.isEnabled = false
+                    }
                 }
 
             }}

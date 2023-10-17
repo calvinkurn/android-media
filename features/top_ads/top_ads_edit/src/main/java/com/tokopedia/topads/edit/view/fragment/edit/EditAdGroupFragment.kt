@@ -146,13 +146,7 @@ class EditAdGroupFragment : BaseDaggerFragment() {
     }
 
     private fun getSearchFragment(): Fragment {
-        val bidSettingsList: MutableList<TopAdsBidSettingsModel> = mutableListOf()
-        groupInfoResponse?.bidSettings?.forEachIndexed { index, it->
-            val topAdsBidSettingsModel = TopAdsBidSettingsModel()
-            topAdsBidSettingsModel.bidType = it.bidType
-            topAdsBidSettingsModel.priceBid = getPriceBidAfterUpdate(it.priceBid, index)
-            bidSettingsList.add(topAdsBidSettingsModel)
-        }
+        val bidSettingsList = getBidSettingListAfterModeChange()
         val bundle = Bundle(arguments).apply {
             putStringArrayList("productIdList", ArrayList(productListIds))
             putString("groupId", groupId)
@@ -164,6 +158,21 @@ class EditAdGroupFragment : BaseDaggerFragment() {
 
         }
         return BaseEditKeywordFragment.newInstance(bundle)
+    }
+
+    private fun getBidSettingListAfterModeChange(): MutableList<TopAdsBidSettingsModel> {
+        val bidSettingsList: MutableList<TopAdsBidSettingsModel> = mutableListOf()
+        if (groupInfoResponse?.bidSettings?.firstOrNull()?.bidType == "product_auto_search"){
+            bidSettingsList.addAll(bidSettingsListManual)
+        }else{
+            groupInfoResponse?.bidSettings?.forEachIndexed { index, it->
+                val topAdsBidSettingsModel = TopAdsBidSettingsModel()
+                topAdsBidSettingsModel.bidType = it.bidType
+                topAdsBidSettingsModel.priceBid = getPriceBidAfterUpdate(it.priceBid, index)
+                bidSettingsList.add(topAdsBidSettingsModel)
+            }
+        }
+        return bidSettingsList
     }
 
     private fun getPriceBidAfterUpdate(priceBid: Float?, index: Int): Float? {
@@ -657,7 +666,8 @@ class EditAdGroupFragment : BaseDaggerFragment() {
             dataProduct.clear()
             this.editedRecomBid = it
             val bidTypeData: ArrayList<TopAdsBidSettingsModel> = arrayListOf()
-            bidTypeData.add(TopAdsBidSettingsModel(ParamObject.PRODUCT_SEARCH, groupInfoResponse?.bidSettings?.firstOrNull()?.priceBid))
+            bidTypeData.add(TopAdsBidSettingsModel(ParamObject.PRODUCT_SEARCH, if (groupInfoResponse?.bidSettings?.firstOrNull()?.bidType != "product_auto_search")
+                groupInfoResponse?.bidSettings?.firstOrNull()?.priceBid else bidSuggestion.toFloat()))
             bidTypeData.add(
                 TopAdsBidSettingsModel(ParamObject.PRODUCT_BROWSE, it.removeCommaRawString().toFloat())
             )
@@ -669,7 +679,9 @@ class EditAdGroupFragment : BaseDaggerFragment() {
     }
 
     private fun getRecomBid(): Float? {
-        return if (editedRecomBid.isEmpty()) groupInfoResponse?.bidSettings?.getOrNull(CONST_1)?.priceBid
+        return if (groupInfoResponse?.bidSettings?.firstOrNull()?.bidType == "product_auto_search") {
+            bidSuggestion.toFloat()
+        } else if (editedRecomBid.isEmpty()) groupInfoResponse?.bidSettings?.getOrNull(CONST_1)?.priceBid
         else CurrencyFormatHelper.convertRupiahToDouble(editedRecomBid).toFloat()
     }
 

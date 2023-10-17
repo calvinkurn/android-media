@@ -184,12 +184,17 @@ class ProductRecommendationBidAdsFragment : BaseStepperFragment<CreateManualAdsS
                             setMessageErrorField(getString(topadscommonR.string.max_bid_error_new), stepperModel?.maxBid?:"", true)
                             binding?.btnNext?.isEnabled = false
                         } else{
-                            finalRecomBid = result.toString()
-                            setMessageErrorField("Biaya optimal ✔️", "0", false)
-                            stepperModel?.selectedProductIds?.let {
-                                viewModel?.getPerformanceData(it, result.toFloat(), -1f, -1f)
+                            if (number % 50 == 0.0) {
+                                finalRecomBid = result.toString()
+                                setMessageErrorField("Biaya optimal ✔️", "0", false)
+                                stepperModel?.selectedProductIds?.let {
+                                    viewModel?.getPerformanceData(it, result.toFloat(), -1f, -1f)
+                                }
+                                binding?.btnNext?.isEnabled = true
+                            } else {
+                                setMessageErrorField("Biaya harus kelipatan 50", "0", true)
+                                binding?.btnNext?.isEnabled = false
                             }
-                            binding?.btnNext?.isEnabled = true
                         }
                     }
 

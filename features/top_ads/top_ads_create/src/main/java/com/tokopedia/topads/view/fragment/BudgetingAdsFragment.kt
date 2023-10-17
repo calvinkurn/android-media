@@ -509,11 +509,17 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
                             setMessageErrorField(getString(topadscommonR.string.max_bid_error_new), maxBid, true)
                             actionEnable(false)
                         } else{
-                            setMessageErrorField("Biaya optimal ✔️", "0", false)
-                            stepperModel?.selectedProductIds?.let {
-                                viewModel.getPerformanceData(it, result.toFloat(), -1f, -1f)
+                            if (number % 50 == 0.0) {
+                                setMessageErrorField("Biaya optimal ✔️", "0", false)
+                                stepperModel?.selectedProductIds?.let {
+                                    viewModel.getPerformanceData(it, result.toFloat(), -1f, -1f)
+                                }
+                                actionEnable(true)
+                            }else{
+                                setMessageErrorField("Biaya harus kelipatan 50", "0", true)
+                                actionEnable(false)
                             }
-                            actionEnable(true)
+
                         }
                     }
 

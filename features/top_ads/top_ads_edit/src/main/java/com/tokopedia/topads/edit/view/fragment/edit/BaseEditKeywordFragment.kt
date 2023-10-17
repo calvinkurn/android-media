@@ -240,11 +240,16 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
                             setMessageErrorField(getString(topadscommonR.string.max_bid_error_new), maxBid.toString(), true)
                             actionEnable(false)
                         } else {
-                            setMessageErrorField("Biaya optimal ✔️", "0", false)
-                            productIds.let {
-                                viewModel.getPerformanceData(it, result.toFloat(), result.toFloat(), 0f)
+                            if (number % 50 == 0.0) {
+                                setMessageErrorField("Biaya optimal ✔️", "0", false)
+                                productIds.let {
+                                    viewModel.getPerformanceData(it, result.toFloat(), result.toFloat(), 0f)
+                                }
+                                actionEnable(true)
+                            }else{
+                                setMessageErrorField("Biaya harus kelipatan 50", "0", true)
+                                actionEnable(false)
                             }
-                            actionEnable(true)
                         }
                     }
 
