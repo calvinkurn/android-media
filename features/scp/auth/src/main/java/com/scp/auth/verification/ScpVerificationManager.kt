@@ -49,7 +49,13 @@ class ScpVerificationManager(private val pinManager: PinManager) {
                     onFailed.invoke(error)
                 }
 
-                override fun verificationSuccessful(activity: Activity, token: String, transactionId: String, isFromGoToPin: Boolean) {
+                override fun verificationSuccessful(
+                    activity: Activity,
+                    token: String,
+                    transactionId: String,
+                    isFromGoToPin: Boolean,
+                    onClose: () -> Unit
+                ) {
                     onSuccess.invoke(token)
                 }
             },

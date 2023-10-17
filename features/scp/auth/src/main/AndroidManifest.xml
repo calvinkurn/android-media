@@ -4,7 +4,7 @@
 
         <activity
             android:name="com.scp.auth.authentication.ScpAuthActivity"
-            android:theme="@style/Theme.AppCompat.Transparent.NoActionBar"
+            android:theme="@style/Theme.AppCompat.NoActionBar"
             android:exported="false" >
 
             <intent-filter>
