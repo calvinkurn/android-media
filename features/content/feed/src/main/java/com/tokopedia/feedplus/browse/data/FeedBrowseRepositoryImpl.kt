@@ -53,7 +53,14 @@ internal class FeedBrowseRepositoryImpl @Inject constructor(
             val response = feedXHomeUseCase(
                 feedXHomeUseCase.createParams(source = FeedXHomeUseCase.SOURCE_BROWSE)
             )
-            mapper.mapSlotsResponse(response).ifEmpty {
+            listOf(
+                FeedBrowseModel.InspirationBanner(
+                    slotId = "item.id",
+                    title = "Ini Banner",
+                    identifier = "Identifier Banner",
+                    bannerList = emptyList(),
+                )
+            ) + mapper.mapSlotsResponse(response).ifEmpty {
                 throw IllegalStateException("no slots available")
             }
         }

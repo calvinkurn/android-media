@@ -8,6 +8,7 @@ import com.tokopedia.feedplus.browse.data.FeedBrowseRepository
 import com.tokopedia.feedplus.browse.data.model.ContentSlotModel
 import com.tokopedia.feedplus.browse.data.model.FeedBrowseModel
 import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
+import com.tokopedia.feedplus.browse.data.model.WidgetRecommendationModel
 import com.tokopedia.feedplus.browse.data.model.WidgetRequestModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseChipUiModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiAction
@@ -134,7 +135,7 @@ internal class FeedBrowseViewModel @Inject constructor(
     private suspend fun getAndUpdateData(model: FeedBrowseModel) {
         when (model) {
             is FeedBrowseModel.ChannelsWithMenus -> model.getAndUpdateData()
-            is FeedBrowseModel.InspirationBanner -> {}
+            is FeedBrowseModel.InspirationBanner -> model.getAndUpdateData()
         }
     }
 
@@ -184,6 +185,14 @@ internal class FeedBrowseViewModel @Inject constructor(
                 }
             }
         } catch (e: IllegalStateException) { this }
+    }
+
+    private suspend fun FeedBrowseModel.InspirationBanner.getAndUpdateData() {
+        val response = repository.getWidgetRecommendation(identifier)
+        if (response !is WidgetRecommendationModel.Banners) return
+        updateWidget<FeedBrowseModel.InspirationBanner>(slotId, ResultState.Success) {
+            it.copy(bannerList = response.banners)
+        }
     }
 
     private suspend inline fun <reified T : FeedBrowseModel> updateWidget(

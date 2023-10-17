@@ -6,6 +6,7 @@ import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiModel
 import com.tokopedia.feedplus.databinding.ItemFeedBrowseBannerItemBinding
+import com.tokopedia.unifycomponents.CardUnify2
 
 /**
  * Created by kenny.hadisaputra on 18/09/23
@@ -14,6 +15,10 @@ internal class FeedBrowseBannerViewHolder private constructor(
     private val binding: ItemFeedBrowseBannerItemBinding,
     private val listener: Listener,
 ) : BaseViewHolder(binding.root) {
+
+    init {
+        binding.root.animateOnPress = CardUnify2.ANIMATE_BOUNCE
+    }
 
     fun bind(item: FeedBrowseUiModel.Banner) {
         binding.imgBanner.setImageUrl(item.imageUrl)
