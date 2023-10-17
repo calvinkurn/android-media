@@ -10,6 +10,7 @@ import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.domain.model.TopAdsUIModel
 import com.tokopedia.thankyou_native.domain.model.ValidateEngineResponse
 import com.tokopedia.thankyou_native.domain.model.WalletBalance
+import com.tokopedia.thankyou_native.domain.repository.DynamicChannelRepository
 import com.tokopedia.thankyou_native.domain.usecase.FetchWalletBalanceUseCase
 import com.tokopedia.thankyou_native.domain.usecase.GyroEngineMapperUseCase
 import com.tokopedia.thankyou_native.domain.usecase.GyroEngineRequestUseCase
@@ -59,6 +60,7 @@ class ThankPageViewModelUnitTest {
     private val thankYouTopAdsViewModelUseCase =
         mockk<ThankYouTopAdsViewModelUseCase>(relaxed = true)
     private val membershipRegisterUseCase = mockk<MembershipRegisterUseCase>(relaxed = true)
+    private val dynamicChannelRepository = mockk<DynamicChannelRepository>(relaxed = true)
 
     @Before
     fun setUp() {
@@ -72,6 +74,7 @@ class ThankPageViewModelUnitTest {
             defaultAddressUseCase,
             thankYouTopAdsViewModelUseCase,
             membershipRegisterUseCase,
+            dynamicChannelRepository,
             dispatcher
         )
     }
@@ -287,7 +290,7 @@ class ThankPageViewModelUnitTest {
         } coAnswers {
             thirdArg<(ValidateEngineResponse) -> Unit>().invoke(validateEngineResponse)
         }
-        viewModel.checkForGoPayActivation(thankPageData)
+        viewModel.checkForGoPayActivation(thankPageData, "")
         Assert.assertEquals(viewModel.gyroResponseLiveData.value, featureEngineData)
     }
 
@@ -321,7 +324,7 @@ class ThankPageViewModelUnitTest {
         }
 
         // when
-        viewModel.checkForGoPayActivation(thankPageData)
+        viewModel.checkForGoPayActivation(thankPageData, "")
 
         // then
         Assert.assertEquals(viewModel.bannerLiveData.value?.title, expectedTitle)
@@ -366,7 +369,7 @@ class ThankPageViewModelUnitTest {
 
         // when
         viewModel.addBottomContentWidget(bannerWidgetModel)
-        viewModel.checkForGoPayActivation(thankPageData)
+        viewModel.checkForGoPayActivation(thankPageData, "")
         viewModel.addBottomContentWidget(gyroVisitable)
         viewModel.addBottomContentWidget(headlineAdsVisitable)
 
@@ -407,7 +410,7 @@ class ThankPageViewModelUnitTest {
         }
 
         // when
-        viewModel.checkForGoPayActivation(thankPageData)
+        viewModel.checkForGoPayActivation(thankPageData, "")
 
         // verify
         verify {

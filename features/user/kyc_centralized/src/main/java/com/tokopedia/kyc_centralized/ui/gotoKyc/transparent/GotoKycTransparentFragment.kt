@@ -78,6 +78,9 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
             KYCConstant.ActivityResult.LAUNCH_CALLBACK -> {
                 gotoCallbackApplink(viewModel.callback)
             }
+            KYCConstant.ActivityResult.LAUNCH_TOKO_KYC -> {
+                gotoTokoKyc(viewModel.projectId)
+            }
             else -> {
                 finishWithResult(result.resultCode)
             }
@@ -265,6 +268,9 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
                 is AccountLinkingStatusResult.Loading -> {
                     binding?.gotoKycLoader?.show()
                 }
+                is AccountLinkingStatusResult.TokoKyc -> {
+                    gotoTokoKyc(viewModel.projectId)
+                }
                 is AccountLinkingStatusResult.Linked -> {
                     viewModel.checkEligibility()
                 }
@@ -421,6 +427,10 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
             childFragmentManager,
             TAG_BOTTOM_SHEET_ONBOARD_NON_PROGRESSIVE
         )
+
+        onBoardNonProgressiveBottomSheet.setOnLaunchTokoKycListener {
+            gotoTokoKyc(viewModel.projectId)
+        }
 
         onBoardNonProgressiveBottomSheet.setOnDismissWithDataListener { isReload ->
             if (isReload) {

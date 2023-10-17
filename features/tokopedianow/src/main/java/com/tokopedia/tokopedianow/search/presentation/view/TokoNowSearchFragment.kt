@@ -26,6 +26,7 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowStaticLayoutType.Compan
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultTrackerListener
 import com.tokopedia.tokopedianow.search.analytics.SearchEmptyNoResultAdultAnalytics
 import com.tokopedia.tokopedianow.search.analytics.SearchProductAdsAnalytics
+import com.tokopedia.tokopedianow.search.analytics.SearchResultTracker
 import com.tokopedia.tokopedianow.search.analytics.SearchResultTracker.Action.ACTION_CLICK_ATC_SRP_PRODUCT
 import com.tokopedia.tokopedianow.search.analytics.SearchResultTracker.Action.ACTION_CLICK_SRP_PRODUCT
 import com.tokopedia.tokopedianow.search.analytics.SearchResultTracker.Action.ACTION_IMPRESSION_SRP_PRODUCT
@@ -90,6 +91,7 @@ class TokoNowSearchFragment :
     override val toolbarPageName = "TokoNow Search"
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        initPerformanceMonitoring(false)
         super.onCreate(savedInstanceState)
 
         initViewModel()
@@ -140,6 +142,8 @@ class TokoNowSearchFragment :
         getViewModel().generalSearchEventLiveData.observe(this::sendTrackingGeneralEvent)
         getViewModel().addToCartBroadMatchTrackingLiveData.observe(this::sendATCBroadMatchTrackingEvent)
         getViewModel().feedbackLoopTrackingMutableLivedata.observe(this::sendFeedbackLoopImpressionEvent)
+        getViewModel().firstPageSuccessTriggerLiveData.observe(this::triggerFirstPageExperiment)
+        getViewModel().loadMoreSuccessTriggerLiveData.observe(this::sendImpressPageExperiment)
     }
 
     private fun sendTrackingGeneralEvent(dataLayer: Map<String, Any>) {
@@ -588,6 +592,19 @@ class TokoNowSearchFragment :
     override fun trackImpressEmptyStateNoResult() {
         searchEmptyNoResultAdultAnalytics.sendImpressionNoResultForAdultProductEvent(
             keyword = getViewModel().query
+        )
+    }
+
+    override fun triggerFirstPageExperiment(unit: Unit) {
+        super.triggerFirstPageExperiment(unit)
+        sendImpressPageExperiment(unit)
+    }
+
+    private fun sendImpressPageExperiment(unit: Unit) {
+        SearchResultTracker.sendImpressSearchPageExperimentEvent(
+            keyword = getViewModel().query,
+            numberOfProduct = getViewModel().getRows(),
+            warehouseId = getViewModel().warehouseId
         )
     }
 }

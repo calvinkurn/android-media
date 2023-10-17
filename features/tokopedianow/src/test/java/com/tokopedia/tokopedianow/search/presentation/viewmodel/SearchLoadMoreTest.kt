@@ -7,6 +7,7 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemD
 import com.tokopedia.tokopedianow.searchcategory.verifyProductItemDataViewList
 import io.mockk.every
 import io.mockk.verify
+import org.junit.Assert
 import org.junit.Test
 
 class SearchLoadMoreTest: BaseSearchPageLoadTest() {
@@ -102,6 +103,7 @@ class SearchLoadMoreTest: BaseSearchPageLoadTest() {
         `Then assert load more page data`(searchModelPage1, searchModelPage2, visitableList)
         `Then assert visitable list end with loading more model`(visitableList)
         `Then assert has next page value`(true)
+        `Then assert load more success trigger`(Unit)
     }
 
     @Test
@@ -114,11 +116,16 @@ class SearchLoadMoreTest: BaseSearchPageLoadTest() {
         `When view load more`()
 
         `Then verify get search load more use case is not called`()
+        `Then assert load more success trigger`(null)
     }
 
     private fun `Then verify get search load more use case is not called`() {
         verify(exactly = 0) {
             getSearchLoadMorePageUseCase.execute(any(), any(), any())
         }
+    }
+
+    private fun `Then assert load more success trigger`(unit: Unit?) {
+        Assert.assertEquals(tokoNowSearchViewModel.loadMoreSuccessTriggerLiveData.value, unit)
     }
 }
