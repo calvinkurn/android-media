@@ -583,7 +583,6 @@ class StoriesDetailFragment @Inject constructor(
         setAction { onClick() }
         setCloseAction { activity?.finish() }
         translationZ = if (errorType == StoriesErrorView.Type.NoContent || errorType == StoriesErrorView.Type.EmptyCategory) 0f else 1f
-        binding.layoutStoriesContent.root.showWithCondition(errorType != StoriesErrorView.Type.EmptyCategory && errorType != StoriesErrorView.Type.NoContent)
     }
 
     private fun hideError() = binding.vStoriesError.gone()
