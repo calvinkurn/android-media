@@ -1,6 +1,8 @@
 package com.tokopedia.tokopedianow.oldcategory.presentation.viewmodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.remoteconfig.RollenceKey
+import com.tokopedia.tokopedianow.common.constant.ConstantKey
 import com.tokopedia.tokopedianow.oldcategory.domain.model.CategoryModel
 import com.tokopedia.tokopedianow.searchcategory.assertBannerDataView
 import com.tokopedia.tokopedianow.searchcategory.assertCategoryFilterDataView
@@ -24,6 +26,11 @@ class CategoryFirstPageTest: BaseCategoryPageLoadTest() {
     fun `test first page is last page`() {
         val categoryModel = "oldcategory/first-page-8-products.json".jsonToObject<CategoryModel>()
         `Given get category first page use case will be successful`(categoryModel, requestParamsSlot)
+        `Given remote config`(
+            defaultValue = ConstantKey.EXPERIMENT_DISABLED,
+            key = RollenceKey.TOKOPEDIA_NOW_PAGINATION,
+            value = ConstantKey.EXPERIMENT_ENABLED
+        )
 
         `When view created`()
 
@@ -34,6 +41,7 @@ class CategoryFirstPageTest: BaseCategoryPageLoadTest() {
         `Then assert visitable list footer`(visitableList, categoryModel.categoryDetail.data.navigation)
         `Then assert has next page value`(false)
         `Then assert get first page success interactions`(categoryModel)
+        `Then assert first page success trigger is Unit`()
     }
 
     private fun `Then assert first page visitables`(
@@ -98,6 +106,10 @@ class CategoryFirstPageTest: BaseCategoryPageLoadTest() {
 
     private fun `Then assert content is not loading`() {
         assertThat(tokoNowCategoryViewModel.isContentLoadingLiveData.value, shouldBe(false))
+    }
+
+    private fun `Then assert first page success trigger is Unit`() {
+        assertThat(tokoNowCategoryViewModel.firstPageSuccessTriggerLiveData.value, shouldBe(Unit))
     }
 
     private fun `Then assert product feedback loop not visible`(){
