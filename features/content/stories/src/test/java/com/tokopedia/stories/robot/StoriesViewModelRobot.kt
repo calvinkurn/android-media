@@ -17,6 +17,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
 import java.io.Closeable
@@ -230,7 +231,15 @@ internal class StoriesViewModelRobot(
         viewModel.submitAction(StoriesUiAction.Navigate(appLink))
     }
 
+    private fun <T> getPrivateField(name: String): T {
+        val field = viewModel.javaClass.getDeclaredField(name)
+        field.isAccessible = true
+        return field.get(viewModel) as T
+    }
+
     override fun close() {
         cancelRemainingTasks()
     }
+
+    fun getBottomSheetState() : Map<BottomSheetType, Boolean> = getPrivateField<MutableStateFlow<Map<BottomSheetType, Boolean>>>("_bottomSheetStatusState").value
 }

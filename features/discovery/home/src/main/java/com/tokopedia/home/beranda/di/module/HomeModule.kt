@@ -15,6 +15,7 @@ import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactoryImpl
 import com.tokopedia.home.beranda.di.HomeScope
 import com.tokopedia.home.beranda.presentation.view.helper.HomePrefController
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRemoteConfigController
+import com.tokopedia.home.beranda.presentation.view.helper.HomeThematicUtil
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.smart_recycler_helper.SmartExecutors
@@ -90,4 +91,8 @@ class HomeModule {
     fun provideHomeRemoteConfigController(
         remoteConfig: RemoteConfig
     ): HomeRemoteConfigController = HomeRemoteConfigController(remoteConfig)
+
+    @HomeScope
+    @Provides
+    fun provideHomeThematicUtil(): HomeThematicUtil = HomeThematicUtil()
 }
