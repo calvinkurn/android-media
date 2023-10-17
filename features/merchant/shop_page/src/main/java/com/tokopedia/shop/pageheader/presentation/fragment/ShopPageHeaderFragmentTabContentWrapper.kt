@@ -66,6 +66,7 @@ import com.tokopedia.shop.pageheader.di.component.DaggerShopPageHeaderComponent
 import com.tokopedia.shop.pageheader.di.component.ShopPageHeaderComponent
 import com.tokopedia.shop.pageheader.di.module.ShopPageHeaderModule
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopPageHeaderPlayWidgetViewHolder
+import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageReimagineHeaderFragment.Companion.SHOWCASE_ID_USED_TO_HIDE_SHARE_CTA
 import com.tokopedia.shop.pageheader.presentation.holder.ShopPageHeaderFragmentHeaderViewHolderV2
 import com.tokopedia.shop.pageheader.presentation.holder.ShopPageHeaderFragmentViewHolderListener
 import com.tokopedia.shop.pageheader.presentation.uimodel.ShopFollowButtonUiModel
@@ -76,7 +77,6 @@ import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopPageHeaderW
 import com.tokopedia.shop.pageheader.util.ShopPageHeaderTabName
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.view.fragment.ShopPageProductListFragment
-import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.resources.isDarkMode
 import java.net.URLEncoder
@@ -201,11 +201,11 @@ class ShopPageHeaderFragmentTabContentWrapper :
     }
 
     private fun getShopPageTrackingSGCPlay(): ShopPageTrackingSGCPlayWidget? {
-        return (parentFragment as? ShopPageHeaderFragmentV2)?.shopPageTrackingSGCPlay
+        return (parentFragment as? ShopPageReimagineHeaderFragment)?.shopPageTrackingSGCPlay
     }
 
     private fun getShopPageTracking(): ShopPageTrackingBuyer? {
-        return (parentFragment as? ShopPageHeaderFragmentV2)?.shopPageTracking
+        return (parentFragment as? ShopPageReimagineHeaderFragment)?.shopPageTracking
     }
 
     private fun getHeaderListener(): ShopPageHeaderFragmentViewHolderListener? {
@@ -311,7 +311,7 @@ class ShopPageHeaderFragmentTabContentWrapper :
 
     private fun iniSwipeRefreshLayout() {
         refreshLayout?.setOnRefreshListener {
-            (parentFragment as? ShopPageHeaderFragmentV2)?.refreshData()
+            (parentFragment as? ShopPageReimagineHeaderFragment)?.refreshData()
         }
     }
 
@@ -458,7 +458,7 @@ class ShopPageHeaderFragmentTabContentWrapper :
             UriUtil.buildUri(
                 ApplinkConst.SHOP_ETALASE,
                 shopId,
-                DEFAULT_SHOWCASE_ID
+                SHOWCASE_ID_USED_TO_HIDE_SHARE_CTA
             ),
             "utf-8"
         )
@@ -600,15 +600,15 @@ class ShopPageHeaderFragmentTabContentWrapper :
     }
 
     private fun clickShopShare() {
-        (parentFragment as? ShopPageHeaderFragmentV2)?.clickShopShare()
+        (parentFragment as? ShopPageReimagineHeaderFragment)?.clickShopShare()
     }
 
     private fun clickSearch() {
-        (parentFragment as? ShopPageHeaderFragmentV2)?.clickSearch()
+        (parentFragment as? ShopPageReimagineHeaderFragment)?.clickSearch()
     }
 
     private fun clickSettingButton() {
-        (parentFragment as? ShopPageHeaderFragmentV2)?.clickSettingButton()
+        (parentFragment as? ShopPageReimagineHeaderFragment)?.clickSettingButton()
     }
 
     private fun createContentFragment(): Fragment? {
@@ -714,7 +714,7 @@ class ShopPageHeaderFragmentTabContentWrapper :
             }
         }
     }
-    
+
     private fun createCampaignTabFragment(
         tabData: ShopPageGetDynamicTabResponse.ShopPageGetDynamicTab.TabData
     ): Fragment {

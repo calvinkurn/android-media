@@ -94,8 +94,8 @@ import com.tokopedia.statistic.view.bottomsheet.ActionMenuBottomSheet
 import com.tokopedia.statistic.view.bottomsheet.DateFilterBottomSheet
 import com.tokopedia.statistic.view.model.StatisticPageUiModel
 import com.tokopedia.statistic.view.viewhelper.FragmentListener
-import com.tokopedia.statistic.view.viewhelper.MultiComponentTabUiInteractor
 import com.tokopedia.statistic.view.viewhelper.RejectedOrderRateCoachMark
+import com.tokopedia.statistic.view.viewhelper.MultiComponentTabUiInteractor
 import com.tokopedia.statistic.view.viewhelper.StatisticItemDecoration
 import com.tokopedia.statistic.view.viewhelper.StatisticLayoutManager
 import com.tokopedia.statistic.view.viewmodel.StatisticViewModel
@@ -274,6 +274,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         hideTooltipIfExist()
         hideMonthPickerIfExist()
         multiComponentUiInteractor?.hideCoachMark()
+        rejectedOrderRateCoachMark.dismiss()
     }
 
     override fun onDestroyView() {
@@ -621,6 +622,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
     override fun setCoachMarkView(dataKey: String, view: View) {
         rejectedOrderRateCoachMark.setAnchor(dataKey, view)
+        rejectedOrderRateCoachMark.show()
     }
 
     fun setSelectedWidget(widget: String) {
@@ -661,6 +663,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
         swipeRefreshStc.setOnRefreshListener {
             reloadPage()
+            rejectedOrderRateCoachMark.dismiss()
         }
 
         globalErrorStc.setActionClickListener {
@@ -764,6 +767,8 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             val lastVisibleIndex = layoutManager.findLastCompletelyVisibleItemPosition()
             if (cardIndex != RecyclerView.NO_POSITION && cardIndex in firstVisibleIndex..lastVisibleIndex) {
                 rejectedOrderRateCoachMark.show()
+            } else {
+                rejectedOrderRateCoachMark.dismiss()
             }
         }
     }

@@ -76,8 +76,6 @@ class CatalogProductListViewModel @Inject constructor(
         get() = _productList
 
     private val _productList = MutableLiveData<Result<List<CatalogProductItem>>>()
-    private var comparisonCardIsAdded = false
-    private var pageCount = 0
 
     private fun showAtcResult(atcResult: AddToCartDataModel) {
         if (atcResult.isStatusError()) {
@@ -89,43 +87,47 @@ class CatalogProductListViewModel @Inject constructor(
     }
 
     fun fetchQuickFilters(params: RequestParams) {
-        quickFilterUseCase.execute(params, object : Subscriber<DynamicFilterModel>() {
-            override fun onNext(t: DynamicFilterModel?) {
-                quickFilterResult.value = Success(t as DynamicFilterModel)
-            }
+        quickFilterUseCase.execute(
+            params,
+            object : Subscriber<DynamicFilterModel>() {
+                override fun onNext(t: DynamicFilterModel?) {
+                    quickFilterResult.value = Success(t as DynamicFilterModel)
+                }
 
-            override fun onCompleted() {
-            }
+                override fun onCompleted() {
+                }
 
-            override fun onError(e: Throwable) {
-                quickFilterResult.value = Fail(e)
+                override fun onError(e: Throwable) {
+                    quickFilterResult.value = Fail(e)
+                }
             }
-        })
+        )
     }
 
     fun fetchDynamicAttribute(params: RequestParams) {
-        dynamicFilterUseCase.execute(params, object : Subscriber<DynamicFilterModel>() {
-            override fun onNext(t: DynamicFilterModel?) {
-                dynamicFilterResult.value = Success(t as DynamicFilterModel)
-            }
+        dynamicFilterUseCase.execute(
+            params,
+            object : Subscriber<DynamicFilterModel>() {
+                override fun onNext(t: DynamicFilterModel?) {
+                    dynamicFilterResult.value = Success(t as DynamicFilterModel)
+                }
 
-            override fun onCompleted() {
-            }
+                override fun onCompleted() {
+                }
 
-            override fun onError(e: Throwable) {
-                dynamicFilterResult.value = (Fail(e))
+                override fun onError(e: Throwable) {
+                    dynamicFilterResult.value = (Fail(e))
+                }
             }
-        })
+        )
     }
 
     fun fetchProductListing(params: RequestParams) {
-        comparisonCardIsAdded = pageCount != 0
         launchCatchError(
             dispatchers.io,
             block = {
                 val data = getProductListUseCase.execute(params).searchProduct.data.catalogProductItemList
                 _productList.postValue(Success(data))
-
             },
             onError = {
                 _productList.postValue(Fail(it))

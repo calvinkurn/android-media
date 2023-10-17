@@ -12,12 +12,18 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnHolderItem
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.oneclickcheckout.R
-import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel
-import com.tokopedia.oneclickcheckout.order.view.card.*
+import com.tokopedia.oneclickcheckout.order.view.card.OrderInsuranceCard
+import com.tokopedia.oneclickcheckout.order.view.card.OrderPreferenceCard
+import com.tokopedia.oneclickcheckout.order.view.card.OrderProductCard
+import com.tokopedia.oneclickcheckout.order.view.card.OrderPromoCard
+import com.tokopedia.oneclickcheckout.order.view.card.OrderShopCard
+import com.tokopedia.oneclickcheckout.order.view.card.OrderTotalPaymentCard
 import com.tokopedia.pdpCheckout.testing.oneclickcheckout.action.swipeUpTop
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.QuantityEditorUnify
@@ -56,7 +62,7 @@ class OrderSummaryPageRobot {
                 }
             )
         )
-        Thread.sleep(OrderSummaryPageViewModel.DEBOUNCE_TIME)
+        Thread.sleep(1000L)
     }
 
     fun clickMinusProductQuantity(index: Int = 0, times: Int = 1) {
@@ -73,7 +79,7 @@ class OrderSummaryPageRobot {
                         for (i in 0 until times) {
                             minusButton.performClick()
                         }
-                        Thread.sleep(OrderSummaryPageViewModel.DEBOUNCE_TIME)
+                        Thread.sleep(1000L)
                     }
                 }
             )

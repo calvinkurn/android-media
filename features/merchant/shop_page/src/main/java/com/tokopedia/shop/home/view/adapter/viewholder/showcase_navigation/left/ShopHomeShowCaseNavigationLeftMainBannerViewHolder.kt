@@ -14,16 +14,17 @@ import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.ItemShopHomeShowcaseNavigationLeftMainBannerBinding
-import com.tokopedia.shop.home.util.ShopHomeShowcaseNavigationDependencyProvider
+import com.tokopedia.shop.home.util.ShopHomeReimagineShowcaseNavigationDependencyProvider
 import com.tokopedia.shop.home.view.fragment.ShopShowcaseNavigationTabWidgetFragment
-import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseNavigationListener
-import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.LeftMainBannerAppearance
+import com.tokopedia.shop.home.view.listener.ShopHomeReimagineShowcaseNavigationListener
 import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseNavigationUiModel
 import com.tokopedia.shop.home.view.model.showcase_navigation.ShowcaseTab
+import com.tokopedia.shop.home.view.model.showcase_navigation.appearance.LeftMainBannerAppearance
 import com.tokopedia.unifycomponents.TabsUnify
 import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.dpToPx
@@ -33,8 +34,8 @@ import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
     itemView: View,
-    private val listener: ShopHomeShowcaseNavigationListener,
-    private val provider: ShopHomeShowcaseNavigationDependencyProvider
+    private val listener: ShopHomeReimagineShowcaseNavigationListener,
+    private val provider: ShopHomeReimagineShowcaseNavigationDependencyProvider
 ) : AbstractViewHolder<ShowcaseNavigationUiModel>(itemView) {
 
     companion object {
@@ -49,12 +50,11 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
     private val viewBinding: ItemShopHomeShowcaseNavigationLeftMainBannerBinding? by viewBinding()
     private var isShowcaseSuccessfullyLoaded = false
 
-
     override fun bind(model: ShowcaseNavigationUiModel) {
         if (!isShowcaseSuccessfullyLoaded) {
             val tabs = if (model.appearance is LeftMainBannerAppearance) model.appearance.tabs else emptyList()
 
-            //Render tab only if it has 5 showcase or more than 5 showcase
+            // Render tab only if it has 5 showcase or more than 5 showcase
             val validatedTabs = tabs.filter {
                 val showcaseCount = it.showcases.size
                 showcaseCount >= MINIMAL_SHOWCASE_COUNT_ON_A_TAB
@@ -94,10 +94,10 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
 
         val hasTab = tabs.size > ONE_TAB
         val showChevronViewAll = if (hasTab) {
-            //Left main banner have more than 1 tab
+            // Left main banner have more than 1 tab
             model.appearance.viewAllCtaAppLink.isNotEmpty() && model.appearance.title.isNotEmpty() && tabs.isNotEmpty()
         } else {
-            //Left main banner have only 1 tab
+            // Left main banner have only 1 tab
             model.appearance.viewAllCtaAppLink.isNotEmpty() && model.appearance.title.isNotEmpty()
         }
 
@@ -107,7 +107,6 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
     private fun setupTitle(model: ShowcaseNavigationUiModel, tabs: List<ShowcaseTab>) {
         viewBinding?.tpgTitle?.text = model.appearance.title
         viewBinding?.tpgTitle?.isVisible = model.appearance.title.isNotEmpty() && tabs.isNotEmpty()
-
 
         val highEmphasizeColor = if (model.header.isOverrideTheme && model.header.colorSchema.listColorSchema.isNotEmpty()) {
             model.header.colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS)
@@ -138,7 +137,7 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
                 val tabView = LayoutInflater.from(tabsUnify.context).inflate(R.layout.item_viewpager_showcase_navigation_tab, tabsUnify, false)
                 tab.customView = tabView
 
-                val tabTitle : Typography? = tabView.findViewById(R.id.tpgTabTitle)
+                val tabTitle: Typography? = tabView.findViewById(R.id.tpgTabTitle)
                 tabTitle?.text = tabs[currentPosition].text
 
                 if (currentPosition == 0) tab.select(uiModel) else tab.unselect(uiModel)
@@ -148,16 +147,21 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
                 tabTotalWidth += tabWidth
             }
 
-            handleTabChange(tabsUnify, uiModel)
+            handleTabChange(tabsUnify, uiModel, tabs)
             applyTabRuleWidth(tabs, tabsUnify)
         }
-
     }
 
-    private fun handleTabChange(tabsUnify: TabsUnify, model: ShowcaseNavigationUiModel) {
+    private fun handleTabChange(
+        tabsUnify: TabsUnify,
+        model: ShowcaseNavigationUiModel,
+        tabs: List<ShowcaseTab>
+    ) {
         tabsUnify.tabLayout.addOnTabSelectedListener(object : OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                listener.onNavigationBannerTabClick(tab?.text?.toString().orEmpty())
+                val tabPosition = tab?.position.orZero()
+                val tabTitle = tabs.getOrNull(tabPosition)?.text.orEmpty()
+                listener.onNavigationBannerTabClick(tabTitle)
                 tab?.select(model)
             }
 
@@ -166,7 +170,6 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
             }
 
             override fun onTabReselected(tab: TabLayout.Tab?) {}
-
         })
     }
 
@@ -269,5 +272,4 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
 
         return pages
     }
-
 }

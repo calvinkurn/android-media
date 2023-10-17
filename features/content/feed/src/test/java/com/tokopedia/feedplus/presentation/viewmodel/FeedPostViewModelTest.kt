@@ -20,7 +20,7 @@ import com.tokopedia.content.common.usecase.GetUserReportListUseCase
 import com.tokopedia.content.common.usecase.PostUserReportUseCase
 import com.tokopedia.content.common.usecase.TrackVisitChannelBroadcasterUseCase
 import com.tokopedia.content.common.util.UiEventManager
-import com.tokopedia.feed.component.product.FeedTaggedProductUiModel
+import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCampaign
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXGQLResponse
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXGetActivityProductsResponse
@@ -64,6 +64,7 @@ import com.tokopedia.feedplus.presentation.model.FeedShareModel
 import com.tokopedia.feedplus.presentation.model.FeedViewModel
 import com.tokopedia.feedplus.presentation.model.PostSourceModel
 import com.tokopedia.feedplus.presentation.model.type.AuthorType
+import com.tokopedia.feedplus.presentation.model.type.FeedContentType
 import com.tokopedia.feedplus.presentation.uiview.FeedCampaignRibbonType
 import com.tokopedia.feedplus.presentation.util.common.FeedLikeAction
 import com.tokopedia.kolcommon.data.SubmitActionContentResponse
@@ -350,31 +351,31 @@ class FeedPostViewModelTest {
         coEvery { atcUseCase.executeOnBackground() } throws MessageErrorException("Failed")
         coEvery { affiliateCookieHelper.initCookie(any(), any(), any()) } coAnswers {}
 
-        val dummyData = FeedTaggedProductUiModel(
+        val dummyData = ContentTaggedProductUiModel(
             id = "dummyId",
             parentID = "123",
             showGlobalVariant = false,
-            shop = FeedTaggedProductUiModel.Shop(
+            shop = ContentTaggedProductUiModel.Shop(
                 "dummy-shop-id",
                 "dummy Name"
             ),
             title = "dummy title",
             imageUrl = "dummy image url",
-            price = FeedTaggedProductUiModel.NormalPrice(
+            price = ContentTaggedProductUiModel.NormalPrice(
                 "Rp1.000.000",
                 1000000.0
             ),
             appLink = "dummy applink",
-            campaign = FeedTaggedProductUiModel.Campaign(
-                FeedTaggedProductUiModel.CampaignType.NoCampaign,
-                FeedTaggedProductUiModel.CampaignStatus.Unknown,
+            campaign = ContentTaggedProductUiModel.Campaign(
+                ContentTaggedProductUiModel.CampaignType.NoCampaign,
+                ContentTaggedProductUiModel.CampaignStatus.Unknown,
                 false
             ),
-            affiliate = FeedTaggedProductUiModel.Affiliate(
+            affiliate = ContentTaggedProductUiModel.Affiliate(
                 "xxx",
                 "play"
             ),
-            FeedTaggedProductUiModel.Stock.Available
+            ContentTaggedProductUiModel.Stock.Available
         )
 
         // when
@@ -389,31 +390,31 @@ class FeedPostViewModelTest {
     @Test
     fun onAtc_whenFailed() {
         // given
-        val dummyData = FeedTaggedProductUiModel(
+        val dummyData = ContentTaggedProductUiModel(
             id = "dummyId",
             parentID = "123",
             showGlobalVariant = false,
-            shop = FeedTaggedProductUiModel.Shop(
+            shop = ContentTaggedProductUiModel.Shop(
                 "dummy-shop-id",
                 "dummy Name"
             ),
             title = "dummy title",
             imageUrl = "dummy image url",
-            price = FeedTaggedProductUiModel.NormalPrice(
+            price = ContentTaggedProductUiModel.NormalPrice(
                 "Rp1.000.000",
                 1000000.0
             ),
             appLink = "dummy applink",
-            campaign = FeedTaggedProductUiModel.Campaign(
-                FeedTaggedProductUiModel.CampaignType.NoCampaign,
-                FeedTaggedProductUiModel.CampaignStatus.Unknown,
+            campaign = ContentTaggedProductUiModel.Campaign(
+                ContentTaggedProductUiModel.CampaignType.NoCampaign,
+                ContentTaggedProductUiModel.CampaignStatus.Unknown,
                 false
             ),
-            affiliate = FeedTaggedProductUiModel.Affiliate(
+            affiliate = ContentTaggedProductUiModel.Affiliate(
                 "xxx",
                 "play"
             ),
-            FeedTaggedProductUiModel.Stock.Available
+            ContentTaggedProductUiModel.Stock.Available
         )
 
         coEvery { userSession.userId } returns "1"
@@ -439,31 +440,31 @@ class FeedPostViewModelTest {
     @Test
     fun onAtc_whenSuccess() {
         // given
-        val dummyData = FeedTaggedProductUiModel(
+        val dummyData = ContentTaggedProductUiModel(
             id = "dummyId",
             parentID = "123",
             showGlobalVariant = false,
-            shop = FeedTaggedProductUiModel.Shop(
+            shop = ContentTaggedProductUiModel.Shop(
                 "dummy-shop-id",
                 "dummy Name"
             ),
             title = "dummy title",
             imageUrl = "dummy image url",
-            price = FeedTaggedProductUiModel.NormalPrice(
+            price = ContentTaggedProductUiModel.NormalPrice(
                 "Rp1.000.000",
                 1000000.0
             ),
             appLink = "dummy applink",
-            campaign = FeedTaggedProductUiModel.Campaign(
-                FeedTaggedProductUiModel.CampaignType.NoCampaign,
-                FeedTaggedProductUiModel.CampaignStatus.Unknown,
+            campaign = ContentTaggedProductUiModel.Campaign(
+                ContentTaggedProductUiModel.CampaignType.NoCampaign,
+                ContentTaggedProductUiModel.CampaignStatus.Unknown,
                 false
             ),
-            affiliate = FeedTaggedProductUiModel.Affiliate(
+            affiliate = ContentTaggedProductUiModel.Affiliate(
                 "xxx",
                 "play"
             ),
-            FeedTaggedProductUiModel.Stock.Available
+            ContentTaggedProductUiModel.Stock.Available
         )
         val dummyAtcResult = AddToCartDataModel(
             errorMessage = arrayListOf(),
@@ -494,31 +495,31 @@ class FeedPostViewModelTest {
         coEvery { atcUseCase.executeOnBackground() } throws MessageErrorException("Failed")
         coEvery { affiliateCookieHelper.initCookie(any(), any(), any()) } coAnswers {}
 
-        val dummyData = FeedTaggedProductUiModel(
+        val dummyData = ContentTaggedProductUiModel(
             id = "dummyId",
             parentID = "123",
             showGlobalVariant = false,
-            shop = FeedTaggedProductUiModel.Shop(
+            shop = ContentTaggedProductUiModel.Shop(
                 "dummy-shop-id",
                 "dummy Name"
             ),
             title = "dummy title",
             imageUrl = "dummy image url",
-            price = FeedTaggedProductUiModel.NormalPrice(
+            price = ContentTaggedProductUiModel.NormalPrice(
                 "Rp1.000.000",
                 1000000.0
             ),
             appLink = "dummy applink",
-            campaign = FeedTaggedProductUiModel.Campaign(
-                FeedTaggedProductUiModel.CampaignType.NoCampaign,
-                FeedTaggedProductUiModel.CampaignStatus.Unknown,
+            campaign = ContentTaggedProductUiModel.Campaign(
+                ContentTaggedProductUiModel.CampaignType.NoCampaign,
+                ContentTaggedProductUiModel.CampaignStatus.Unknown,
                 false
             ),
-            affiliate = FeedTaggedProductUiModel.Affiliate(
+            affiliate = ContentTaggedProductUiModel.Affiliate(
                 "xxx",
                 "play"
             ),
-            FeedTaggedProductUiModel.Stock.Available
+            ContentTaggedProductUiModel.Stock.Available
         )
 
         // when
@@ -533,31 +534,31 @@ class FeedPostViewModelTest {
     @Test
     fun onBuyProduct_whenFailed() {
         // given
-        val dummyData = FeedTaggedProductUiModel(
+        val dummyData = ContentTaggedProductUiModel(
             id = "dummyId",
             parentID = "123",
             showGlobalVariant = false,
-            shop = FeedTaggedProductUiModel.Shop(
+            shop = ContentTaggedProductUiModel.Shop(
                 "dummy-shop-id",
                 "dummy Name"
             ),
             title = "dummy title",
             imageUrl = "dummy image url",
-            price = FeedTaggedProductUiModel.NormalPrice(
+            price = ContentTaggedProductUiModel.NormalPrice(
                 "Rp1.000.000",
                 1000000.0
             ),
             appLink = "dummy applink",
-            campaign = FeedTaggedProductUiModel.Campaign(
-                FeedTaggedProductUiModel.CampaignType.NoCampaign,
-                FeedTaggedProductUiModel.CampaignStatus.Unknown,
+            campaign = ContentTaggedProductUiModel.Campaign(
+                ContentTaggedProductUiModel.CampaignType.NoCampaign,
+                ContentTaggedProductUiModel.CampaignStatus.Unknown,
                 false
             ),
-            affiliate = FeedTaggedProductUiModel.Affiliate(
+            affiliate = ContentTaggedProductUiModel.Affiliate(
                 "xxx",
                 "play"
             ),
-            FeedTaggedProductUiModel.Stock.Available
+            ContentTaggedProductUiModel.Stock.Available
         )
 
         coEvery { affiliateCookieHelper.initCookie(any(), any(), any()) } coAnswers {}
@@ -583,31 +584,31 @@ class FeedPostViewModelTest {
     @Test
     fun onBuyProduct_whenSuccess() {
         // given
-        val dummyData = FeedTaggedProductUiModel(
+        val dummyData = ContentTaggedProductUiModel(
             id = "dummyId",
             parentID = "123",
             showGlobalVariant = false,
-            shop = FeedTaggedProductUiModel.Shop(
+            shop = ContentTaggedProductUiModel.Shop(
                 "dummy-shop-id",
                 "dummy Name"
             ),
             title = "dummy title",
             imageUrl = "dummy image url",
-            price = FeedTaggedProductUiModel.NormalPrice(
+            price = ContentTaggedProductUiModel.NormalPrice(
                 "Rp1.000.000",
                 1000000.0
             ),
             appLink = "dummy applink",
-            campaign = FeedTaggedProductUiModel.Campaign(
-                FeedTaggedProductUiModel.CampaignType.NoCampaign,
-                FeedTaggedProductUiModel.CampaignStatus.Unknown,
+            campaign = ContentTaggedProductUiModel.Campaign(
+                ContentTaggedProductUiModel.CampaignType.NoCampaign,
+                ContentTaggedProductUiModel.CampaignStatus.Unknown,
                 false
             ),
-            affiliate = FeedTaggedProductUiModel.Affiliate(
+            affiliate = ContentTaggedProductUiModel.Affiliate(
                 "xxx",
                 "play"
             ),
-            FeedTaggedProductUiModel.Stock.Available
+            ContentTaggedProductUiModel.Stock.Available
         )
         val dummyAtcResult = AddToCartDataModel(
             errorMessage = arrayListOf(),
@@ -722,6 +723,30 @@ class FeedPostViewModelTest {
         assert(data.items[13] is FeedCardLivePreviewContentModel)
         assert(data.items[14] is FeedFollowRecommendationModel)
         assert(data.items[15] is FeedNoContentModel)
+
+        assert(viewModel.determinePostDataEligibilityForOnboarding(isFollowingTab = false))
+        assert(viewModel.determinePostDataEligibilityForOnboarding(isFollowingTab = true))
+    }
+
+    @Test
+    fun onFetchFeedPosts_whenSuccessWithOnlyFollowRecomWidget() {
+        // given
+        coEvery { repository.getPost(any(), any(), any()) } returns getDummyFollowRecommendationWidgetOnlyModel()
+        coEvery { feedXRecomWidgetUseCase(any()) } returns getDummyProfileRecommendationList()
+
+        // when
+        viewModel.fetchFeedPosts("", postSource = PostSourceModel("1", FeedBaseFragment.TAB_TYPE_CDP))
+
+        // then
+        assert(!viewModel.shouldShowNoMoreContent)
+        assert(viewModel.feedHome.value is Success)
+
+        val data = (viewModel.feedHome.value as Success).data
+        assert(data.items.size == 1)
+        assert(data.items[0] is FeedFollowRecommendationModel)
+
+        assert(viewModel.determinePostDataEligibilityForOnboarding(isFollowingTab = false))
+        assert(!viewModel.determinePostDataEligibilityForOnboarding(isFollowingTab = true))
     }
 
     @Test
@@ -1168,7 +1193,7 @@ class FeedPostViewModelTest {
         viewModel.fetchFeedProduct(
             activityId,
             emptyList(),
-            FeedTaggedProductUiModel.SourceType.Organic
+            ContentTaggedProductUiModel.SourceType.Organic
         )
 
         // then
@@ -1186,7 +1211,7 @@ class FeedPostViewModelTest {
             ProductMapper.transform(
                 it,
                 dummyData.data.campaign,
-                FeedTaggedProductUiModel.SourceType.Organic
+                ContentTaggedProductUiModel.SourceType.Organic
             )
         }
         coEvery {
@@ -1201,7 +1226,7 @@ class FeedPostViewModelTest {
         viewModel.fetchFeedProduct(
             activityId,
             productList,
-            FeedTaggedProductUiModel.SourceType.Organic
+            ContentTaggedProductUiModel.SourceType.Organic
         )
 
         // then
@@ -1226,7 +1251,7 @@ class FeedPostViewModelTest {
         viewModel.fetchFeedProduct(
             activityId,
             emptyList(),
-            FeedTaggedProductUiModel.SourceType.Organic
+            ContentTaggedProductUiModel.SourceType.Organic
         )
 
         // then
@@ -1949,7 +1974,8 @@ class FeedPostViewModelTest {
                 "",
                 "",
                 false,
-                ""
+                "",
+                FeedContentType.TopAds
             ),
             FeedCardVideoContentModel(
                 "video 1 id",
@@ -1978,7 +2004,8 @@ class FeedPostViewModelTest {
                 emptyList(),
                 emptyList(),
                 "",
-                "1"
+                "1",
+                FeedContentType.PlayShortVideo
             ),
             FeedCardLivePreviewContentModel(
                 "live 1 id",
@@ -2034,7 +2061,8 @@ class FeedPostViewModelTest {
                 "",
                 "",
                 false,
-                ""
+                "",
+                FeedContentType.ProductHighlight
             ),
             FeedCardVideoContentModel(
                 "video 2 id",
@@ -2063,7 +2091,8 @@ class FeedPostViewModelTest {
                 emptyList(),
                 emptyList(),
                 "",
-                ""
+                "",
+                FeedContentType.PlayChannel
             ),
             FeedCardLivePreviewContentModel(
                 "live 2 id",
@@ -2086,6 +2115,17 @@ class FeedPostViewModelTest {
             ),
             FeedFollowRecommendationModel.Empty.copy(id = "follow-recommendation"),
             FeedNoContentModel(0, "", "", "")
+        ),
+        pagination = FeedPaginationModel(
+            "",
+            true,
+            10
+        )
+    )
+
+    private fun getDummyFollowRecommendationWidgetOnlyModel() = FeedModel(
+        items = listOf(
+            FeedFollowRecommendationModel.Empty.copy(id = "follow-recommendation")
         ),
         pagination = FeedPaginationModel(
             "",

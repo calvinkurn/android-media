@@ -151,7 +151,8 @@ class ShopHomeNplCampaignViewHolder(
         val titleColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS)
         val subTitleColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_LOW_EMPHASIS)
         val ctaColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.ICON_ENABLED_HIGH_COLOR)
-        val informationIconColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS)
+        val informationIconColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.ICON_ENABLED_HIGH_COLOR)
+        
         textTitle?.setTextColor(titleColor)
         textTimeDescription?.setTextColor(subTitleColor)
         iconCtaChevron?.setColorFilter(ctaColor, PorterDuff.Mode.SRC_ATOP)
@@ -161,6 +162,9 @@ class ShopHomeNplCampaignViewHolder(
             background = MethodChecker.getDrawable(itemView.context, R.drawable.bg_shop_timer_red_rect)
             setTextColor(MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_Static_White))
         }
+        nplReminderView?.setCardUnifyBackgroundColor(MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_Static_White))
+        imageRemindMeNotification?.setColorFilter(MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_Static_Black_68), PorterDuff.Mode.SRC_IN)
+        remindMeText?.setTextColor(MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_Static_Black_68))
     }
 
     private fun configFestivity() {
@@ -174,6 +178,9 @@ class ShopHomeNplCampaignViewHolder(
             background = MethodChecker.getDrawable(itemView.context, R.drawable.bg_shop_timer_white_rect)
             setTextColor(MethodChecker.getColor(itemView.context, shopcommonR.color.dms_shop_festivity_timer_text_color))
         }
+        nplReminderView?.setCardUnifyBackgroundColor(MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_Static_White))
+        imageRemindMeNotification?.setColorFilter(MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_Static_Black_68), PorterDuff.Mode.SRC_IN)
+        remindMeText?.setTextColor(MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_Static_Black_68))
     }
 
     private fun configDefaultColor() {
