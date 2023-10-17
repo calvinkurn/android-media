@@ -17,8 +17,6 @@ public class NewRelicInteractionActCall implements Application.ActivityLifecycle
         this.userSession = userSession;
     }
 
-    //should be replaced with : android_enable_new_relic_async_trace
-    private static final String ENABLE_ASYNC_NEW_RELIC_TRACE = "android_seller_app_persona_compose_enabled";
     private static final String ATTRIBUTE_ACTIVITY = "activityName";
 
     private final UserSessionInterface userSession;
