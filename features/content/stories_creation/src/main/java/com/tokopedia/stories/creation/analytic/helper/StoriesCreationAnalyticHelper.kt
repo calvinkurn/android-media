@@ -1,5 +1,6 @@
 package com.tokopedia.stories.creation.analytic.helper
 
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.content.analytic.Value
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 
@@ -10,6 +11,14 @@ object StoriesCreationAnalyticHelper {
 
     fun getEventLabelByAccount(account: ContentAccountUiModel): String {
         return "${account.id} - ${getAccountType(account)}"
+    }
+
+    fun getTrackerIdBySite(mainAppTrackerId: String, sellerAppTrackerId: String): String {
+        return if (GlobalConfig.isSellerApp()) {
+            sellerAppTrackerId
+        } else {
+            mainAppTrackerId
+        }
     }
 
     private fun getAccountType(account: ContentAccountUiModel): String {

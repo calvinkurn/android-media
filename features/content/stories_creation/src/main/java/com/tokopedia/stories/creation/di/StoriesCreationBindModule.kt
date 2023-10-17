@@ -9,6 +9,8 @@ import com.tokopedia.stories.creation.analytic.StoriesCreationAnalytic
 import com.tokopedia.stories.creation.analytic.StoriesCreationAnalyticImpl
 import com.tokopedia.stories.creation.analytic.product.seller.StoriesCreationPinnedProductAnalytic
 import com.tokopedia.stories.creation.analytic.product.seller.StoriesCreationProductSellerAnalytic
+import com.tokopedia.stories.creation.analytic.sender.StoriesCreationAnalyticSender
+import com.tokopedia.stories.creation.analytic.sender.StoriesCreationAnalyticSenderImpl
 import com.tokopedia.stories.creation.data.StoriesCreationProductRepositoryImpl
 import com.tokopedia.stories.creation.data.StoriesCreationRepositoryImpl
 import com.tokopedia.stories.creation.domain.repository.StoriesCreationRepository
@@ -38,6 +40,10 @@ abstract class StoriesCreationBindModule {
     @Binds
     @StoriesCreationScope
     abstract fun bindStoriesCreationPinnedProductAnalytic(storiesCreationPinnedProductAnalytic: StoriesCreationPinnedProductAnalytic): ContentPinnedProductAnalytic
+
+    @Binds
+    @StoriesCreationScope
+    abstract fun bindStoriesCreationAnalyticSender(storiesCreationAnalyticSender: StoriesCreationAnalyticSenderImpl): StoriesCreationAnalyticSender
 
     /** Repository */
     @Binds
