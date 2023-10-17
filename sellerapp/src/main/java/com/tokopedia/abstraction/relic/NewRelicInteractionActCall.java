@@ -6,6 +6,10 @@ import android.os.Bundle;
 
 import com.newrelic.agent.android.NewRelic;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.weaver.WeaveInterface;
+import com.tokopedia.weaver.Weaver;
+
+import org.jetbrains.annotations.NotNull;
 
 public class NewRelicInteractionActCall implements Application.ActivityLifecycleCallbacks {
 
@@ -13,11 +17,33 @@ public class NewRelicInteractionActCall implements Application.ActivityLifecycle
         this.userSession = userSession;
     }
 
+    //should be replaced with : android_enable_new_relic_async_trace
+    private static final String ENABLE_ASYNC_NEW_RELIC_TRACE = "android_seller_app_persona_compose_enabled";
     private static final String ATTRIBUTE_ACTIVITY = "activityName";
 
     private final UserSessionInterface userSession;
 
     public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+        startNewRelicOnBackground(activity);
+    }
+
+    private void startNewRelicOnBackground(Activity activity) {
+        WeaveInterface weave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Boolean execute() {
+                try {
+                    startNewRelicTracing(activity);
+                } catch (Throwable ignored) {
+                }
+                return true;
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(weave, ENABLE_ASYNC_NEW_RELIC_TRACE, activity.getApplicationContext(), true);
+    }
+
+    private void startNewRelicTracing(Activity activity) {
+        long start = System.currentTimeMillis();
         if (userSession != null) {
             NewRelic.setUserId(userSession.getUserId());
         } else {
@@ -26,6 +52,9 @@ public class NewRelicInteractionActCall implements Application.ActivityLifecycle
         NewRelic.startInteraction(activity.getLocalClassName());
         NewRelic.setInteractionName(activity.getLocalClassName());
         setNewRelicAttribute(activity);
+        long end = System.currentTimeMillis();
+        long duration = end - start;
+        System.out.println("startNewRelicTracing : " + duration);
     }
 
     public void onActivityStarted(Activity activity) {
