@@ -2313,23 +2313,16 @@ HomeRevampFragment :
     }
 
     private fun goToJumperForYouTab(recommendationFeedDataIndex: Int) {
-        homeRecyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    val homeRecommendationFeedViewHolder =
-                        homeRecyclerView?.findViewHolderForLayoutPosition(
-                            recommendationFeedDataIndex
-                        )
+        homeRecyclerView?.post {
+            val homeRecommendationFeedViewHolder =
+                homeRecyclerView?.findViewHolderForAdapterPosition(
+                    recommendationFeedDataIndex
+                )
 
-                    if (homeRecommendationFeedViewHolder is HomeRecommendationFeedViewHolder) {
-                        homeRecommendationFeedViewHolder.selectJumperTab()
-                    }
-                }
-
-                recyclerView.removeOnScrollListener(this)
+            if (homeRecommendationFeedViewHolder is HomeRecommendationFeedViewHolder) {
+                homeRecommendationFeedViewHolder.selectJumperTab()
             }
-        })
+        }
     }
 
     private fun setHomeBottomNavBasedOnScrolling() {
@@ -2380,8 +2373,8 @@ HomeRevampFragment :
     override fun onScrollToRecommendationForYou() {
         val recommendationForYouIndex = getRecommendationForYouIndex()
         recommendationForYouIndex?.let {
-            goToJumperForYouTab(it)
             homeRecyclerView?.scrollToPosition(it)
+            goToJumperForYouTab(it)
         }
     }
 
