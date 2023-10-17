@@ -791,7 +791,9 @@ class PromoUsageViewModel @Inject constructor(
                     if (resultItem.currentClashingPromoCodes.contains(selectedPromoCode) &&
                         resultItem.currentClashingSecondaryPromoCodes.isEmpty()
                     ) {
-                        PromoItemState.Normal(useSecondaryPromo = true)
+                        resultItem = resultItem.copy(
+                            state = PromoItemState.Normal(useSecondaryPromo = true)
+                        )
                     }
                 }
                 isCausingClash = false
