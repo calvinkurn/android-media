@@ -8,4 +8,6 @@ object EventCategory {
     const val unifiedFeed = "unified feed"
 
     const val browseFeed = "feed browse page"
+
+    const val storyCreation = "play broadcast story"
 }
