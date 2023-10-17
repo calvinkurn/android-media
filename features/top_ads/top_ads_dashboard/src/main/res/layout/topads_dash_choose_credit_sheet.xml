@@ -68,7 +68,8 @@
                 android:textColor="@color/Unify_NN950"
                 app:layout_constraintStart_toEndOf="@id/topUpSwitchRadioButtonGroup"
                 app:layout_constraintTop_toTopOf="@id/topUpSwitchRadioButtonGroup"
-                app:typographyType="paragraph_1" />
+                app:typographyType="paragraph_1"
+                android:layout_marginTop="11dp"/>
 
 
             <com.tokopedia.unifyprinciples.Typography
@@ -79,7 +80,8 @@
                 android:textColor="@color/Unify_NN950"
                 app:layout_constraintBottom_toBottomOf="@+id/topUpSwitchRadioButtonGroup"
                 app:layout_constraintStart_toEndOf="@id/topUpSwitchRadioButtonGroup"
-                app:typographyType="paragraph_1" />
+                app:typographyType="paragraph_1"
+                android:layout_marginBottom="11dp"/>
 
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/toolTipAuto"
@@ -222,7 +224,7 @@
                 android:id="@+id/jarangText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
+                android:layout_marginTop="11dp"
                 android:text="@string/topads_frequency_four_text"
                 android:textColor="@color/Unify_NN950"
                 app:layout_constraintStart_toEndOf="@id/radioGroupAutoTopUpFrequency"
@@ -247,11 +249,12 @@
                 android:id="@+id/normalText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
                 android:text="@string/topads_frequency_six_text"
                 android:textColor="@color/Unify_NN950"
                 app:layout_constraintStart_toEndOf="@id/radioGroupAutoTopUpFrequency"
                 app:layout_constraintTop_toBottomOf="@id/jarangText"
+                app:layout_constraintBottom_toTopOf="@id/seringText"
+                app:layout_constraintVertical_bias="0.5"
                 app:typographyType="display_3"
                 app:typographyWeight="bold" />
 
@@ -272,11 +275,11 @@
                 android:id="@+id/seringText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
                 android:text="@string/topads_frequency_eight_text"
                 android:textColor="@color/Unify_NN950"
                 app:layout_constraintStart_toEndOf="@id/radioGroupAutoTopUpFrequency"
-                app:layout_constraintTop_toBottomOf="@id/normalText"
+                app:layout_constraintBottom_toBottomOf="@id/radioGroupAutoTopUpFrequency"
+                android:layout_marginBottom="11dp"
                 app:typographyType="display_3"
                 app:typographyWeight="bold" />
 
