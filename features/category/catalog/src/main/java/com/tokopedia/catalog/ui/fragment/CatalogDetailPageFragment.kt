@@ -96,6 +96,8 @@ import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.oldcatalog.listener.CatalogDetailListener
+import com.tokopedia.oldcatalog.ui.bottomsheet.CatalogComponentBottomSheet
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -114,18 +116,18 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
     StickyNavigationListener, AccordionListener, BannerListener, TrustMakerListener,
     TextDescriptionListener, VideoExpertListener, TopFeatureListener, DoubleBannerListener,
-    ComparisonViewHolder.ComparisonItemListener {
+    ComparisonViewHolder.ComparisonItemListener, CatalogDetailListener {
 
     companion object {
         private const val QUERY_CATALOG_ID = "catalog_id"
         private const val QUERY_PRODUCT_SORTING_STATUS = "product_sorting_status"
-
         private const val ARG_EXTRA_CATALOG_ID = "ARG_EXTRA_CATALOG_ID"
         private const val COLOR_VALUE_MAX = 255
         private const val LOGIN_REQUEST_CODE = 1001
-        const val CATALOG_DETAIL_PAGE_FRAGMENT_TAG = "CATALOG_DETAIL_PAGE_FRAGMENT_TAG"
         private const val POSITION_THREE_IN_WIDGET_LIST = 3
         private const val POSITION_TWO_IN_WIDGET_LIST = 2
+        const val CATALOG_DETAIL_PAGE_FRAGMENT_TAG = "CATALOG_DETAIL_PAGE_FRAGMENT_TAG"
+
         fun newInstance(catalogId: String): CatalogDetailPageFragment {
             val fragment = CatalogDetailPageFragment()
             val bundle = Bundle()
@@ -156,24 +158,18 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
         )
     }
 
-    var title = ""
-
-    var productSortingStatus = 0
-
-    var catalogId = ""
-
-    var categoryId = ""
-
-    var catalogUrl = ""
-
-    var compareCatalogId = ""
+    private var catalogAllReviewBottomSheet: CatalogComponentBottomSheet? = null
+    private var title = ""
+    private var productSortingStatus = 0
+    private var catalogId = ""
+    private var categoryId = ""
+    private var catalogUrl = ""
+    private var compareCatalogId = ""
+    private var selectNavigationFromScroll = true
 
     private val userSession: UserSession by lazy {
         UserSession(activity)
     }
-
-    var selectNavigationFromScroll = true
-
 
     private val recyclerViewScrollListener: RecyclerView.OnScrollListener by lazy {
         object : RecyclerView.OnScrollListener() {
@@ -222,7 +218,18 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
             viewModel.getProductCatalog(catalogId, "")
             viewModel.refreshNotification()
         }
+    }
 
+    private fun setupSwitchCatalogBottomsheet() {
+        catalogAllReviewBottomSheet = CatalogComponentBottomSheet.newInstance(
+            "",
+            catalogId,
+            "",
+            categoryId,
+            "",
+            CatalogComponentBottomSheet.ORIGIN_ULTIMATE_VERSION,
+            this
+        )
     }
 
     override fun onNavBackClicked() {
@@ -298,6 +305,7 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
                 binding?.setupPriceCtaWidget(it.data.priceCtaProperties)
                 binding?.stickySingleHeaderView?.stickyPosition =
                     widgetAdapter.findPositionNavigation()
+                setupSwitchCatalogBottomsheet()
             } else if (it is Fail) {
                 binding?.showPageError(it.throwable)
             }
@@ -661,7 +669,7 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
     }
 
     override fun onComparisonSwitchButtonClicked(position: Int) {
-
+        catalogAllReviewBottomSheet?.show(childFragmentManager, "")
     }
 
     override fun onComparisonSeeMoreButtonClicked() {
@@ -671,5 +679,10 @@ class CatalogDetailPageFragment : BaseDaggerFragment(), HeroBannerListener,
             putExtra(ARG_PARAM_COMPARE_CATALOG_ID, compareCatalogId)
             startActivity(this)
         }
+    }
+
+    override fun changeComparison(selectedComparedCatalogId: String) {
+        compareCatalogId = selectedComparedCatalogId
+        viewModel.getProductCatalog(catalogId, compareCatalogId)
     }
 }

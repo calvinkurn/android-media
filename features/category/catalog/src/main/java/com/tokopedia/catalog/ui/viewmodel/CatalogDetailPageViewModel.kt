@@ -46,7 +46,7 @@ class CatalogDetailPageViewModel @Inject constructor(
         return userSession.userId
     }
 
-    fun getProductCatalog(catalogId: String, comparedCatalogId : String) {
+    fun getProductCatalog(catalogId: String, comparedCatalogId: String) {
         launchCatchError(
             dispatchers.io,
             block = {
@@ -58,6 +58,22 @@ class CatalogDetailPageViewModel @Inject constructor(
             },
             onError = {
                 _catalogDetailDataModel.postValue(Fail(it))
+            }
+        )
+    }
+
+    fun getProductCatalogComparisons(catalogId: String, comparedCatalogId: String) {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val result = catalogDetailUseCase.getCatalogDetailV4Comparison(
+                    catalogId,
+                    comparedCatalogId
+                )
+                println(result)
+            },
+            onError = {
+                _errorsToaster.postValue(it)
             }
         )
     }
