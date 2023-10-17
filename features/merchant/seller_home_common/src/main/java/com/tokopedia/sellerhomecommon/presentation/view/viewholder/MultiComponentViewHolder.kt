@@ -109,28 +109,19 @@ class MultiComponentViewHolder(
         binding.shimmerShcMultiComponent.root.gone()
         binding.errorShcMultiComponent.gone()
 
+
+        setupTab(element)
+        impressAndShowCoachmark(element)
+    }
+
+    private fun setupTab(element: MultiComponentWidgetUiModel) {
         onTabSelectedListener?.let {
             binding.tabsShcMultiComponent.tabLayout.removeOnTabSelectedListener(it)
         }
 
         onTabSelectedListener = object : OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                tab?.position?.let { selectedIndex ->
-                    val ticker = element.data?.tabs?.getOrNull(selectedIndex)?.ticker.orEmpty()
-                    val tabError = element.data?.tabs?.getOrNull(selectedIndex)?.isError.orFalse()
-                    binding.tvShcMultiComponent.shouldShowWithAction(
-                        ticker.isNotEmpty() && tabError
-                    ) {
-                        binding.tvShcMultiComponent.text = ticker
-                    }
-
-                    element.data?.selectedTabPosition = selectedIndex
-                    binding.vpShcMultiComponent.currentItem = selectedIndex
-                    element.data?.tabs?.getOrNull(selectedIndex)?.let {
-                        listener.multiComponentTabSelected(it)
-                        listener.clickMultiComponentTab(it.title)
-                    }
-                }
+                onTabSelected(element, tab)
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {
@@ -162,7 +153,28 @@ class MultiComponentViewHolder(
         element.data?.tabs?.getOrNull(element.data?.selectedTabPosition.orZero())?.let {
             listener.multiComponentTabSelected(it)
         }
+    }
 
+    private fun onTabSelected(element: MultiComponentWidgetUiModel, tab: TabLayout.Tab?) {
+        tab?.position?.let { selectedIndex ->
+            val ticker = element.data?.tabs?.getOrNull(selectedIndex)?.ticker.orEmpty()
+            val tabError = element.data?.tabs?.getOrNull(selectedIndex)?.isError.orFalse()
+            binding.tvShcMultiComponent.shouldShowWithAction(
+                ticker.isNotEmpty() && tabError
+            ) {
+                binding.tvShcMultiComponent.text = ticker
+            }
+
+            element.data?.selectedTabPosition = selectedIndex
+            binding.vpShcMultiComponent.currentItem = selectedIndex
+            element.data?.tabs?.getOrNull(selectedIndex)?.let {
+                listener.multiComponentTabSelected(it)
+                listener.clickMultiComponentTab(it.title)
+            }
+        }
+    }
+
+    private fun impressAndShowCoachmark(element: MultiComponentWidgetUiModel) {
         binding.tabsShcMultiComponent.addOnImpressionListener(ImpressHolder()) {
             val plusTabPosition = element.data?.tabs?.indexOfFirst {
                 it.id == TAB_PLUS_MULTI_COMPONENT_ID
