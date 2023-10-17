@@ -24,7 +24,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
-import androidx.compose.material.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.NonRestartableComposable
@@ -36,13 +35,13 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import com.google.accompanist.pager.ExperimentalPagerApi
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.compose.NestIcon
 import com.tokopedia.nest.components.ButtonVariant
 import com.tokopedia.nest.components.NestButton
 import com.tokopedia.nest.components.NestImage
@@ -56,7 +55,6 @@ import com.tokopedia.sellerpersona.R
 import com.tokopedia.sellerpersona.view.compose.model.state.SelectTypeState
 import com.tokopedia.sellerpersona.view.compose.model.uievent.SelectTypeUiEvent
 import com.tokopedia.sellerpersona.view.model.PersonaUiModel
-import com.tokopedia.iconunify.R as iconunifyR
 
 /**
  * Created by @ilhamsuaib on 26/07/23.
@@ -257,11 +255,11 @@ private fun PersonaTypeItemCard(persona: PersonaUiModel, onClicked: () -> Unit) 
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Icon(
-                            painter = painterResource(iconunifyR.drawable.iconunify_check),
+                        NestIcon(
+                            iconId = IconUnify.CHECK,
                             contentDescription = null,
-                            tint = NestTheme.colors.GN._500,
-                            modifier = Modifier.size(24.dp)
+                            modifier = Modifier.size(24.dp),
+                            colorLightEnable = NestTheme.colors.GN._500
                         )
                         NestTypography(
                             modifier = Modifier.padding(

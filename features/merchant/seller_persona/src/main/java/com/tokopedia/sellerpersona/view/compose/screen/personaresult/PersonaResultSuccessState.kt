@@ -14,13 +14,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Divider
-import androidx.compose.material.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -46,7 +44,6 @@ import com.tokopedia.sellerpersona.view.model.PersonaDataUiModel
 import com.tokopedia.sellerpersona.view.model.PersonaStatus
 import com.tokopedia.sellerpersona.view.model.PersonaUiModel
 import com.tokopedia.unifycomponents.compose.NestSwitch
-import com.tokopedia.iconunify.R as iconunifyR
 
 /**
  * Created by @ilhamsuaib on 12/07/23.
@@ -231,11 +228,11 @@ private fun LazyListScope.renderResultContentSectionUi(data: PersonaDataUiModel)
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(start = 16.dp, end = 16.dp)
             ) {
-                Icon(
-                    painter = painterResource(iconunifyR.drawable.iconunify_lightbulb),
+                NestIcon(
+                    iconId = IconUnify.LIGHT_BULB,
                     contentDescription = null,
-                    tint = NestTheme.colors.GN._500,
-                    modifier = Modifier.size(20.dp)
+                    modifier = Modifier.size(20.dp),
+                    colorLightEnable = NestTheme.colors.GN._500
                 )
                 NestTypography(
                     modifier = Modifier.padding(start = 8.dp),
