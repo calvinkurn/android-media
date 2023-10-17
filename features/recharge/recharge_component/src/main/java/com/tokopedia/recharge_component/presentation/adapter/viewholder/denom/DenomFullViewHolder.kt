@@ -79,11 +79,12 @@ class DenomFullViewHolder(
                              getDimens(unifyDimens.unify_space_0)
                                 )
 
-                        labelParams.topToBottom = ConstraintLayout.LayoutParams.UNSET
-                        labelParams.leftToLeft = ConstraintLayout.LayoutParams.UNSET
                         labelParams.topToTop = viewSeparatorTypeDenomFull.id
                         labelParams.leftToRight = viewSeparatorTypeDenomFull.id
+                        labelParams.topToBottom = ConstraintLayout.LayoutParams.UNSET
+                        labelParams.leftToLeft = ConstraintLayout.LayoutParams.UNSET
                         labelParams.bottomToBottom = viewSeparatorTypeDenomFull.id
+                        labelParams.bottomToTop = ConstraintLayout.LayoutParams.UNSET
 
                         viewSeparatorTypeDenomFull.run {
                             val viewSeparatorlabelParams = this.layoutParams as ConstraintLayout.LayoutParams
@@ -93,12 +94,25 @@ class DenomFullViewHolder(
                             this.layoutParams = viewSeparatorlabelParams
                         }
 
+                        labelDenomFullSpecial.run {
+                            val labelDenomSpeciallabelParams = this.layoutParams as ConstraintLayout.LayoutParams
+                            labelDenomSpeciallabelParams.topToBottom = tgDenomFullQuota.id
+                            this.layoutParams = labelDenomSpeciallabelParams
+                        }
+
+                        tgDenomFullDesc.run {
+                            val tgDenomFullDesclabelParams = this.layoutParams as ConstraintLayout.LayoutParams
+                            tgDenomFullDesclabelParams.bottomToTop = tgDenomFullQuota.id
+                            this.layoutParams = tgDenomFullDesclabelParams
+                        }
+
                     } else {
 
                         labelParams.topToTop = ConstraintLayout.LayoutParams.UNSET
                         labelParams.leftToRight = ConstraintLayout.LayoutParams.UNSET
                         labelParams.topToBottom = tgDenomFullDesc.id
                         labelParams.leftToLeft = ConstraintLayout.LayoutParams.PARENT_ID
+                        labelParams.bottomToBottom = ConstraintLayout.LayoutParams.UNSET
                         labelParams.bottomToTop = labelDenomFullSpecial.id
 
                         labelDenomFullSpecial.run {
@@ -120,7 +134,7 @@ class DenomFullViewHolder(
                              getDimens(unifyDimens.unify_space_0))
                     }
 
-                    layoutParams = labelParams
+                    this.layoutParams = labelParams
                 } else hide()
             }
 
