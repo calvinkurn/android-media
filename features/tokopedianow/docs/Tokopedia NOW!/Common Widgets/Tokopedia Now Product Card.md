@@ -1,4 +1,5 @@
 ---
+title: "Tokopedia Now Product Card"
 labels:
 - product-card-compact
 - tokopedia-now
