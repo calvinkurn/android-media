@@ -198,8 +198,8 @@ class StoriesUploadManager @Inject constructor(
 
     private fun getSourceId(contentMediaType: ContentMediaType): String {
         return when (contentMediaType) {
-            ContentMediaType.Image -> PlayUploadSourceIdConst.uploadImageSourceId
-            ContentMediaType.Video -> uploadData.sourceId
+            ContentMediaType.Image -> uploadData.imageSourceId
+            ContentMediaType.Video -> uploadData.videoSourceId
             else -> ""
         }
     }

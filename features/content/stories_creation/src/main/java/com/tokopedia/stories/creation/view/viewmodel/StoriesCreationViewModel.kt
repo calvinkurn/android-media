@@ -130,9 +130,10 @@ class StoriesCreationViewModel @Inject constructor(
                 mediaUriList = listOf(state.mediaFilePath),
                 mediaTypeList = listOf(state.mediaType.code),
                 coverUri = "",
-                sourceId = "",
                 authorId = state.selectedAccount.id,
                 authorType = state.selectedAccount.type,
+                imageSourceId = state.config.imageSourceId,
+                videoSourceId = state.config.videoSourceId,
             )
 
             creationUploader.upload(data)
