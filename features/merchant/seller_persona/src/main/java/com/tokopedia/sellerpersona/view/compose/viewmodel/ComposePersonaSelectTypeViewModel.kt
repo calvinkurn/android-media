@@ -120,9 +120,7 @@ class ComposePersonaSelectTypeViewModel @Inject constructor(
                 personaList = personaList, ui = data.ui.copy(selectedIndex = selectedIndex)
             )
             val selectedState = currentState.copy(data = updatedData, state = currentState.state)
-            withContext(dispatchers.main) {
-                _state.update { selectedState }
-            }
+            _state.emit(selectedState)
         }
     }
 
