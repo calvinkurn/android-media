@@ -16,6 +16,7 @@ import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
+import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toZeroStringIfNull
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
@@ -369,12 +370,21 @@ object AtcCommonMapper {
         } else {
             selectedChild?.campaign?.isActive ?: false
         }
+        val priceFmt = selectedChild?.priceFmt.ifNullOrBlank {
+            selectedChild?.finalMainPrice?.getCurrencyFormatted().orEmpty()
+        }
+        val slashPriceFmt = selectedChild?.slashPriceFmt.ifNullOrBlank {
+            selectedChild?.campaign?.discountedPrice?.getCurrencyFormatted().orEmpty()
+        }
+        val discPercentageFmt = selectedChild?.discPercentage.ifNullOrBlank {
+            String.format("%.0f%s", selectedChild?.campaign?.discountedPercentage.orZero(), "%")
+        }
 
         val headerData = ProductHeaderData(
-            productMainPrice = selectedChild?.finalMainPrice?.getCurrencyFormatted().orEmpty(),
-            productDiscountedPercentage = selectedChild?.campaign?.discountedPercentage.orZero(),
+            productMainPrice = priceFmt,
+            productDiscountedPercentage = discPercentageFmt,
             isCampaignActive = isCampaignActive,
-            productSlashPrice = selectedChild?.campaign?.discountedPrice?.getCurrencyFormatted().orEmpty(),
+            productSlashPrice = slashPriceFmt,
             productStockFmt = selectedChild?.stock?.stockFmt ?: "",
             hideGimmick = selectedChild?.campaign?.hideGimmick.orFalse()
         )

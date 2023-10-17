@@ -93,7 +93,6 @@ import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlin.math.roundToLong
 import com.tokopedia.common_tradein.R as common_tradeinR
-import com.tokopedia.product.detail.common.R as productdetailcommonR
 
 /**
  * This class hold all of the ViewHolder data. They have same instance.
@@ -222,10 +221,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                             price.value.getCurrencyFormatted()
                         })
                         campaign.discPercentageFmt = price.discPercentage.ifNullOrBlank {
-                            context?.getString(
-                                productdetailcommonR.string.template_campaign_off,
-                                campaign.percentageAmount
-                            ).orEmpty()
+                            String.format("%.0f%s", campaign.percentageAmount, "%")
                         }
                         campaign.slashPriceFmt = price.slashPriceFmt.ifNullOrBlank {
                             campaign.originalPrice.getCurrencyFormatted()

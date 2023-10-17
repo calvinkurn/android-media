@@ -10,13 +10,13 @@ import com.tkpd.atcvariant.util.PAYLOAD_UPDATE_PRICE_ONLY
 import com.tkpd.atcvariant.view.bottomsheet.AtcVariantBottomSheetListener
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.product.detail.common.R as productdetailcommonR
 
 /**
  * Created by Yehezkiel on 07/05/21
@@ -52,7 +52,7 @@ class AtcVariantHeaderViewHolder(private val view: View,
 
     private fun renderCashback(cashBackPercentage: Int) = with(view) {
         labelCashback.shouldShowWithAction(cashBackPercentage > 0) {
-            labelCashback.text = context.getString(com.tokopedia.product.detail.common.R.string.template_cashback, cashBackPercentage.toString())
+            labelCashback.text = context.getString(productdetailcommonR.string.template_cashback, cashBackPercentage.toString())
         }
     }
 
@@ -97,8 +97,6 @@ class AtcVariantHeaderViewHolder(private val view: View,
     private fun loadDescription(headerData: ProductHeaderData) = with(view) {
         if (headerData.isCampaignActive) {
             renderCampaignActive(headerData)
-        } else if (headerData.hideGimmick) {
-            renderNoCampaign(headerData.productSlashPrice)
         } else {
             renderNoCampaign(headerData.productMainPrice)
         }
@@ -110,7 +108,7 @@ class AtcVariantHeaderViewHolder(private val view: View,
 
     private fun loadImage(imgUrl: String) {
 
-        iconEnlarge.setBackgroundResource(com.tokopedia.product.detail.common.R.drawable.bg_circle_grey)
+        iconEnlarge.setBackgroundResource(productdetailcommonR.drawable.bg_circle_grey)
 
         productImage?.run {
             setImageUrl(imgUrl)
@@ -129,13 +127,13 @@ class AtcVariantHeaderViewHolder(private val view: View,
     private fun renderCampaignActive(headerData: ProductHeaderData) = with(view) {
         productPrice.text = headerData.productSlashPrice
 
-        productSlashPrice.shouldShowWithAction(headerData.productSlashPrice != "") {
+        productSlashPrice.shouldShowWithAction(headerData.productSlashPrice.isNotBlank()) {
             productSlashPrice?.text = headerData.productMainPrice
             productSlashPrice.paintFlags = productSlashPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
         }
 
-        labelDiscount.shouldShowWithAction(headerData.productDiscountedPercentage != Float.ZERO) {
-            labelDiscount.text = context.getString(com.tokopedia.product.detail.common.R.string.template_campaign_off, headerData.productDiscountedPercentage)
+        labelDiscount.shouldShowWithAction(headerData.shouldShowDiscPercentage) {
+            labelDiscount.text = headerData.productDiscountedPercentage
         }
     }
 }

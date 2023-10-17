@@ -28,7 +28,7 @@ data class VariantChild(
 
     @SerializedName("discPercentage")
     @Expose
-    val discPercentage: String? = null, // ex: Rp 100.000.000
+    val discPercentage: String? = null, // ex: 10%
 
     @SerializedName("sku")
     @Expose
