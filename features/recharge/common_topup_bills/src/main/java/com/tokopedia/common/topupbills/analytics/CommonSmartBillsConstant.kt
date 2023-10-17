@@ -1,8 +1,5 @@
 package com.tokopedia.common.topupbills.analytics
 
-import android.os.Bundle
-import com.tokopedia.common.topupbills.analytics.CommonSmartBillsConstant.addGeneralDigitalView
-import com.tokopedia.common.topupbills.analytics.CommonSmartBillsConstant.addListBottomSheet
 import com.tokopedia.track.TrackAppUtils
 
 object CommonSmartBillsConstant {
@@ -22,46 +19,6 @@ object CommonSmartBillsConstant {
         return this
     }
 
-    fun MutableMap<String, Any>.addGeneralView(): MutableMap<String, Any>? {
-        this[TrackAppUtils.EVENT_CATEGORY] = CATEGORY_SMART_BILLS
-        this[TrackAppUtils.EVENT] = VIEW_SMART_BILLS_IRIS
-        this[CURRENT_SITE] = CURRENT_SITE_VALUE
-        this[BUSINESS_UNIT] = BUSINESS_UNIT_VALUE
-        return this
-    }
-
-    fun MutableMap<String, Any>.addGeneralViewAddBills(): MutableMap<String, Any>? {
-        this[TrackAppUtils.EVENT_CATEGORY] = CATEGORY_SMART_BILLS_ADD_BILLS
-        this[TrackAppUtils.EVENT] = VIEW_SMART_BILLS_IRIS
-        this[CURRENT_SITE] = CURRENT_SITE_VALUE
-        this[BUSINESS_UNIT] = BUSINESS_UNIT_VALUE
-        return this
-    }
-
-    fun Bundle.addListBottomSheet(userId: String): Bundle {
-        this.putString(TrackAppUtils.EVENT_CATEGORY,CATEGORY_SMART_BILLS_ADD_BILLS)
-        this.putString(TrackAppUtils.EVENT,SELECT_CONTENT)
-        this.putString(CURRENT_SITE,CURRENT_SITE_VALUE)
-        this.putString(BUSINESS_UNIT,BUSINESS_UNIT_VALUE)
-        this.putString(USER_ID, userId)
-        return this
-    }
-
-    fun Bundle.addGeneralDigitalView(): Bundle {
-        this.putString(TrackAppUtils.EVENT,VIEW_DIGITAL_IRIS)
-        this.putString(TrackAppUtils.EVENT_CATEGORY,CATEGORY_SMART_BILLS)
-        this.putString(CURRENT_SITE,CURRENT_SITE_VALUE)
-        this.putString(BUSINESS_UNIT,BUSINESS_UNIT_VALUE)
-        return this
-    }
-
-    fun Bundle.addGeneralDigitalClick(): Bundle {
-        this.putString(TrackAppUtils.EVENT,CLICK_DIGITAl)
-        this.putString(TrackAppUtils.EVENT_CATEGORY,CATEGORY_SMART_BILLS)
-        this.putString(CURRENT_SITE,CURRENT_SITE_VALUE)
-        this.putString(BUSINESS_UNIT,BUSINESS_UNIT_VALUE)
-        return this
-    }
 
     const val CURRENT_SITE = "currentSite"
     const val BUSINESS_UNIT = "businessUnit"

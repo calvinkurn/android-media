@@ -8,16 +8,14 @@ import com.tokopedia.rechargegeneral.R
 import com.tokopedia.rechargegeneral.model.RechargeGeneralProductInput
 import java.util.regex.Pattern
 
-class RechargeGeneralInputViewHolder(val view: View, val listener: OnInputListener, val isAddSBM: Boolean = false) : AbstractViewHolder<RechargeGeneralProductInput>(view) {
+class RechargeGeneralInputViewHolder(val view: View, val listener: OnInputListener) : AbstractViewHolder<RechargeGeneralProductInput>(view) {
 
     override fun bind(enquiryData: RechargeGeneralProductInput) {
         val inputView = itemView as TopupBillsInputFieldWidget
         inputView.resetState()
         inputView.setLabel(enquiryData.text)
         inputView.setInputType(enquiryData.style)
-        if (!isAddSBM) {
-            inputView.isCustomInput = enquiryData.isFavoriteNumber
-        }
+        inputView.isCustomInput = enquiryData.isFavoriteNumber
         // Add delay to reduce tracking events
         inputView.setDelayTextChanged(1000)
 
@@ -54,7 +52,7 @@ class RechargeGeneralInputViewHolder(val view: View, val listener: OnInputListen
         }
 
         // Set item data
-        if (enquiryData.value.isNotEmpty() && !isAddSBM) {
+        if (enquiryData.value.isNotEmpty()) {
             inputView.setInputText(enquiryData.value, false)
             listener.onFinishInput(enquiryData.name, enquiryData.value, adapterPosition)
         } else inputView.setInputText("", false)
