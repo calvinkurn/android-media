@@ -26,6 +26,8 @@ mutation GamiCrack($campaignSlug:String!,$uniqueCode:String!){
       applink
       type
       backgroundColor
+      identifier
+      iconURL
     }
     recommendation {
       isShow

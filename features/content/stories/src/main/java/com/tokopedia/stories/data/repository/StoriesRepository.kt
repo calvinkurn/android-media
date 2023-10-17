@@ -16,6 +16,10 @@ interface StoriesRepository {
 
     suspend fun deleteStory(storyId: String) : Boolean
 
+    suspend fun setHasSeenAllStories(authorId: String, authorType: String)
+
+    suspend fun setHasAckStoriesFeature()
+
     suspend fun getStoriesProducts(shopId: String, storyId: String, catName: String) : ProductBottomSheetUiState
 
     suspend fun addToCart(productId: String, productName: String, shopId: String, price: Double) : Boolean

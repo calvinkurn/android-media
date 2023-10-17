@@ -8,13 +8,18 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ba
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.layoutmanager.NpaLinearLayoutManager
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
+import com.tokopedia.home.beranda.presentation.view.helper.HomeThematicUtil
 import com.tokopedia.home.databinding.LayoutBalanceWidgetAtf2Binding
 import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * Created by frenzel
  */
-class BalanceWidgetAtf2ViewHolder(itemView: View, val listener: HomeCategoryListener?) :
+class BalanceWidgetAtf2ViewHolder(
+    itemView: View,
+    val listener: HomeCategoryListener?,
+    private val homeThematicUtil: HomeThematicUtil,
+) :
     AbstractViewHolder<HomeBalanceModel>(itemView) {
     private var binding: LayoutBalanceWidgetAtf2Binding? by viewBinding()
     private var balanceAdapter: BalanceAtf2Adapter? = null
@@ -27,6 +32,18 @@ class BalanceWidgetAtf2ViewHolder(itemView: View, val listener: HomeCategoryList
         setLayout(element)
     }
 
+    override fun bind(element: HomeBalanceModel, payloads: MutableList<Any>) {
+        if(payloads.isNotEmpty()) {
+            balanceAdapter?.let { adapter ->
+                adapter.currentList.forEachIndexed { index, _ ->
+                    adapter.notifyItemChanged(index, payloads[0])
+                }
+            }
+        } else {
+            bind(element)
+        }
+    }
+
     private fun setLayout(element: HomeBalanceModel) {
         val itemList = getUiModelList(element)
         val totalData = element.balanceDrawerItemModels.size
@@ -36,7 +53,7 @@ class BalanceWidgetAtf2ViewHolder(itemView: View, val listener: HomeCategoryList
             balanceAdapter =
                 BalanceAtf2Adapter(
                     listener,
-                    BalanceTypeFactoryImpl(totalData)
+                    BalanceTypeFactoryImpl(totalData, homeThematicUtil)
                 )
             binding?.rvBalanceWidgetData?.adapter = balanceAdapter
         }
