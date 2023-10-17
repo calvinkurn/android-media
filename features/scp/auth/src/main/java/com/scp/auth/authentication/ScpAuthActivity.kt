@@ -18,6 +18,7 @@ import com.scp.auth.di.DaggerScpAuthComponent
 import com.scp.login.common.utils.LoginImageLoader
 import com.scp.login.core.domain.common.UserCredential
 import com.scp.login.core.domain.contracts.configs.LSdkChooseAccountUiConfigs
+import com.scp.login.core.domain.contracts.configs.LSdkInputCredentialsUiConfigs
 import com.scp.login.core.domain.contracts.configs.LSdkSsoUiConfigs
 import com.scp.login.core.domain.contracts.configs.LSdkUiConfig
 import com.scp.login.core.domain.contracts.listener.LSdkClientFlowListener
@@ -104,6 +105,9 @@ class ScpAuthActivity : BaseActivity() {
                 ),
                 chooseAccountConfigs = LSdkChooseAccountUiConfigs(
                     title = "Pilih akun untuk lanjut"
+                ),
+                inputCredentialsConfigs = LSdkInputCredentialsUiConfigs(
+                    shouldShowGoogleLogin = true
                 )
             ),
             additionalHeaders = TkpdAdditionalHeaders(this),
