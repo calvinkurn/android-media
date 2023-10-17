@@ -15,6 +15,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductContentMainData
 import com.tokopedia.product.detail.databinding.ItemProductContentBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.widget.CampaignRibbon
+import com.tokopedia.product.detail.common.R as productdetailcommonR
 
 /**
  * Created by Yehezkiel on 25/05/20
@@ -128,7 +129,7 @@ class PartialContentView(
         }
 
         textDiscountRed.run {
-            text = context.getString(com.tokopedia.product.detail.common.R.string.template_campaign_off, campaign.percentageAmount)
+            text = context.getString(productdetailcommonR.string.template_campaign_off, campaign.percentageAmount)
             show()
         }
         hideGimmick(campaign)
