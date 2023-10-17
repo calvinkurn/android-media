@@ -15,7 +15,7 @@ class RoundedSpan(
     backgroundColor: Int,
     private val padding: Int = DEFAULT_PADDING.toPx(),
     private val radius: Int = DEFAULT_CORNER.toPx()
-) : LineBackgroundSpan {
+    ) : LineBackgroundSpan {
 
     private val rect = RectF()
     private val paint = Paint()
@@ -75,10 +75,14 @@ class RoundedSpan(
             }
         }
 
-        rect.set(shiftLeft, top.toFloat() - ADDITIONAL_TOP_GAP, shiftRight, bottom.toFloat() + ADDITIONAL_BOTTOM_GAP)
+        rect.set(shiftLeft, top.toFloat(), shiftRight, bottom.toFloat())
 
+        if(end == text.length) { // last line
+            rect.bottom += ADDITIONAL_BOTTOM_GAP
+        }
 
         if (lnum == 0) {
+            rect.top -= ADDITIONAL_TOP_GAP
             c.drawRoundRect(rect, radius.toFloat(), radius.toFloat(), paint)
         } else {
             path.reset()
@@ -99,11 +103,14 @@ class RoundedSpan(
 
             // check if draw need to skip spike when prev line is empty (only contain new line)
             val isSkipSpike = listOfEmptyLine[lnum - 1] != null
+            if (isSkipSpike) {
+                rect.top -= ADDITIONAL_TOP_GAP
+            }
 
             val difference = width - prevWidth
             val diff = -sign(difference) * (2f * radius).coerceAtMost(abs(difference / 2f)) / 2f
             path.moveTo(
-                prevLeft, prevBottom - (if (isSkipSpike) 0 else padding) - ADDITIONAL_TOP_GAP
+                prevLeft, rect.top
             )
 
             if (align != ALIGN_LEFT) {
@@ -141,6 +148,7 @@ class RoundedSpan(
                 rect.right, rect.bottom,
                 rect.right, rect.bottom - radius
             )
+
             path.lineTo(
                 rect.right, rect.top + radius
             )
@@ -174,7 +182,7 @@ class RoundedSpan(
             }
 
             path.lineTo(
-                prevLeft + radius, prevBottom
+                prevLeft + radius, rect.top
             )
 
             if (!isSkipSpike) {
