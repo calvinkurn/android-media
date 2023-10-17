@@ -56,8 +56,8 @@ class StoriesErrorView : ConstraintLayout {
             binding.storiesErrorTitle.text = title?.let { context.getString(it) }
             binding.storiesErrorDesc.text = description?.let { context.getString(it) }
             binding.btnStoriesNoInetRetry.showWithCondition(value != Type.EmptyStories && value != Type.EmptyCategory)
-            binding.loaderGroup.showWithCondition(value != Type.EmptyStories && value != Type.EmptyCategory)
-            binding.root.translationZ = 1f
+            binding.loaderGroup.showWithCondition(value != Type.EmptyStories && value != Type.EmptyCategory && value != Type.NoContent)
+            binding.icCloseLoading.showWithCondition(value != Type.EmptyCategory && value != Type.NoContent)
         }
 
     fun setAction(action: (View) -> Unit) {
