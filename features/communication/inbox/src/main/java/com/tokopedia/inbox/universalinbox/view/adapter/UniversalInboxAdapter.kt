@@ -1,6 +1,5 @@
 package com.tokopedia.inbox.universalinbox.view.adapter
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -72,6 +71,7 @@ class UniversalInboxAdapter(
     private var menuSeparatorPosition: Int? = null
     private var recommendationFirstPosition: Int? = null
     private var recommendationTitlePosition: Int? = null
+    private var topAdsBannerFirstPosition: Int? = null
 
     private val loaderUiModel by lazy {
         LoadingMoreModel()
@@ -167,17 +167,32 @@ class UniversalInboxAdapter(
         } ?: false
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    fun updateFirstTopAdsBanner(listAds: List<TopAdsImageViewModel>) {
-        visitables.forEach loop@{ item ->
-            if (item is UniversalInboxTopAdsBannerUiModel) {
-                item.ads = listAds
-                return@loop
+    private fun getTopAdsBannerFirstPosition(): Int? {
+        return if (checkCachedTopAdsBannerFirstPosition()) {
+            topAdsBannerFirstPosition
+        } else {
+            // get first index or -1
+            visitables.indexOfFirst {
+                it is UniversalInboxTopAdsBannerUiModel
+            }.takeIf { it >= 0 }?.also { // get result when it not -1 (found)
+                topAdsBannerFirstPosition = it
             }
         }
-        // Need to use notify data set changed, because need to trigger TDN's onAttachedToWindow
-        // onAttachedToWindow is needed to be recalled after we get TDN response
-        notifyDataSetChanged()
+    }
+
+    private fun checkCachedTopAdsBannerFirstPosition(): Boolean {
+        return topAdsBannerFirstPosition?.let {
+            it < visitables.size && visitables[it] is UniversalInboxTopAdsBannerUiModel
+        } ?: false
+    }
+
+    fun updateFirstTopAdsBanner(listAds: List<TopAdsImageViewModel>) {
+        getTopAdsBannerFirstPosition()?.let {
+            if (visitables[it] is UniversalInboxTopAdsBannerUiModel) {
+                (visitables[it] as UniversalInboxTopAdsBannerUiModel).ads = listAds
+                updateItems(visitables)
+            }
+        }
     }
 
     fun isWidgetMetaAdded(): Boolean {

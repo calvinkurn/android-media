@@ -14,17 +14,23 @@ import javax.inject.Inject
 
 open class UniversalInboxMiscMapper @Inject constructor() {
 
+    private var topAdsBannerUiModel = UniversalInboxTopAdsBannerUiModel()
+
     fun generateMiscMenu(): List<Visitable<in UniversalInboxTypeFactory>> {
         return listOf(
             UniversalInboxMenuSeparatorUiModel(), // Separator line
-            getTopAdsUiModel(), // Top Ads banner'
+            getTopAdsUiModel(), // Top Ads banner
             generateRecommendationPostPurchaseWidgetModel(), // Recommendation Widget (post purchase)
             generateRecommendationPrePurchaseWidgetModel() // Recommendation Widget (pre purchase)
         )
     }
 
     protected open fun getTopAdsUiModel(): UniversalInboxTopAdsBannerUiModel {
-        return UniversalInboxTopAdsBannerUiModel()
+        return topAdsBannerUiModel
+    }
+
+    fun resetTopAdsBanner() {
+        topAdsBannerUiModel = UniversalInboxTopAdsBannerUiModel()
     }
 
     private fun generateRecommendationPostPurchaseWidgetModel():

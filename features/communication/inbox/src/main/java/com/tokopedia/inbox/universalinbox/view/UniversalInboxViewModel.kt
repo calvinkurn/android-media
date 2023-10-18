@@ -101,7 +101,7 @@ class UniversalInboxViewModel @Inject constructor(
         observeDriverChannelFlow()
         observeInboxMenuWidgetMetaAndCounterFlow()
         observeProductRecommendationFlow()
-        loadInboxMenuAndWidgetMeta()
+        processAction(UniversalInboxAction.RefreshPage)
     }
 
     fun processAction(action: UniversalInboxAction) {
@@ -127,6 +127,7 @@ class UniversalInboxViewModel @Inject constructor(
 
                 // General process
                 is UniversalInboxAction.RefreshPage -> {
+                    inboxMiscMapper.resetTopAdsBanner()
                     removeAllProductRecommendation(false)
                     loadInboxMenuAndWidgetMeta()
                 }

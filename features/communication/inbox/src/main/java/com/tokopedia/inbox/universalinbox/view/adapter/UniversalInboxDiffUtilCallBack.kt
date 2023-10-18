@@ -39,11 +39,11 @@ class UniversalInboxDiffUtilCallBack(
                     oldItem is UniversalInboxMenuSeparatorUiModel
                 ) -> true
 
-            // TopAds banner won't change without refresh
+            // TopAds banner ads could be changed
             (
                 newItem is UniversalInboxTopAdsBannerUiModel &&
                     oldItem is UniversalInboxTopAdsBannerUiModel
-                ) -> true
+                ) -> newItem.requested == oldItem.requested && newItem.ads == oldItem.ads
 
             // TopAds headline won't change without refresh
             (
@@ -97,6 +97,12 @@ class UniversalInboxDiffUtilCallBack(
                 newItem is UniversalInboxRecommendationUiModel &&
                     oldItem is UniversalInboxRecommendationUiModel
                 ) -> newItem.recommendationItem == oldItem.recommendationItem
+
+            // TopAds contents mark as different to trigger render
+            (
+                newItem is UniversalInboxTopAdsBannerUiModel &&
+                    oldItem is UniversalInboxTopAdsBannerUiModel
+                ) -> false
 
             // Put the contents check above, else default true to skip it
             else -> true
