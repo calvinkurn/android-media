@@ -16,15 +16,17 @@ class GetEpharmacyShopInfoUseCase @Inject constructor(
 
     companion object {
         private const val SHOP_ID = "shop_id"
+        private const val WAREHOUSE_ID = "warehouse_id"
 
-        fun createParams(shopId: Int) = mapOf<String, Any>(
-            SHOP_ID to shopId
+        fun createParams(shopId: Int, warehouseId: Int) = mapOf<String, Any>(
+            SHOP_ID to shopId,
+            WAREHOUSE_ID to warehouseId
         )
     }
 
     private val QUERY = """
-        query getEpharmacyShopInfo(${'$'}shop_id: Int64!) {
-          getEpharmacyShopInfo(shop_id: ${'$'}shop_id) {
+        query getEpharmacyShopInfo(${'$'}shop_id: Int64!, ${'$'}warehouse_id: Int64) {
+          getEpharmacyShopInfo(shop_id: ${'$'}shop_id, warehouse_id: ${'$'}warehouse_id) {
             header {
               process_time
               error_code
@@ -41,7 +43,7 @@ class GetEpharmacyShopInfoUseCase @Inject constructor(
                   close_time
                 }
               }
-              epharmacy_working_hours_fmt      
+              epharmacy_working_hours_fmt
             }
           }
         }

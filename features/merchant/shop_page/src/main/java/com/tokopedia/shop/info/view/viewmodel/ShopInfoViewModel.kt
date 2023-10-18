@@ -96,11 +96,11 @@ class ShopInfoViewModel @Inject constructor(
         }
     }
 
-    fun getShopGoApotikData(shopId: Int) {
+    fun getShopGoApotikData(shopId: Int, warehouseId: Int) {
         launchCatchError(block = {
             coroutineScope {
                 val shopEpharmData = withContext(coroutineDispatcherProvider.io) {
-                    getEpharmacyShopInfoUseCase.params = GetEpharmacyShopInfoUseCase.createParams(shopId)
+                    getEpharmacyShopInfoUseCase.params = GetEpharmacyShopInfoUseCase.createParams(shopId, 0)
                     getEpharmacyShopInfoUseCase.executeOnBackground()
                 }
                 _epharmDetailData.postValue(Success(shopEpharmData))
