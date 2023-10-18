@@ -303,7 +303,7 @@
     <string name="goto_kyc_failed_load_data_title">Oops, gagal memuat data</string>
     <string name="goto_kyc_failed_load_data_subtitle">Datanya gagal dimuat jadi belum bisa lanjut proses verifikasi. Coba lagi, ya.</string>
     <string name="goto_kyc_blocked_title_general">Verifikasi diri belum bisa dilanjutin</string>
-    <string name="goto_kyc_blocked_subtitle_general">Untuk lanjut, pastiin kamu sudah verifikasi data diri. Jika masih berkendala, coba hubungin tim Tokopedia Care, ya.</string>
+    <string name="goto_kyc_blocked_subtitle_general">Proses verifikasi kamu berkendala. Untuk informasi lebih lanjut, coba hubungin tim Tokopedia Care, ya.</string>
     <string name="goto_kyc_blocked_title_multiple_account">Oops, sudah ada akun lain yang verifikasi data pakai nomor HP-mu</string>
     <string name="goto_kyc_blocked_subtitle_multiple_account">Untuk lanjut, kamu perlu hubungin Tokopedia Care untuk konfirmasi identitas.</string>
     <string name="goto_kyc_maybe_later">Nanti Aja</string>
