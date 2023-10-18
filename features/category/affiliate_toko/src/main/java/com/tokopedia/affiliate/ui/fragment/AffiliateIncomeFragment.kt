@@ -29,6 +29,7 @@ import com.tokopedia.affiliate.model.pojo.AffiliateDatePickerData
 import com.tokopedia.affiliate.model.response.AffiliateBalance
 import com.tokopedia.affiliate.model.response.AffiliateKycDetailsData
 import com.tokopedia.affiliate.setAnnouncementData
+import com.tokopedia.affiliate.ui.activity.AffiliateActivity
 import com.tokopedia.affiliate.ui.activity.AffiliateRegistrationActivity
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomDatePicker
 import com.tokopedia.affiliate.ui.custom.AffiliateBaseFragment
@@ -49,14 +50,14 @@ import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImageCircle
-import com.tokopedia.searchbar.navigation_component.NavSource
-import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -137,14 +138,14 @@ class AffiliateIncomeFragment :
     private var lastItem: Visitable<AffiliateAdapterTypeFactory>? = null
 
     private fun setObservers() {
-        affiliateIncomeViewModel?.getAffiliateBalanceData()?.observe(this) { balanceData ->
+        affiliateIncomeViewModel?.getAffiliateBalanceData()?.observe(viewLifecycleOwner) { balanceData ->
             onGetAffiliateBalance(balanceData)
         }
 
-        affiliateIncomeViewModel?.getAffiliateDataItems()?.observe(this) { dataList ->
+        affiliateIncomeViewModel?.getAffiliateDataItems()?.observe(viewLifecycleOwner) { dataList ->
             onGetAffiliateDataItems(dataList)
         }
-        affiliateIncomeViewModel?.getShimmerVisibility()?.observe(this) { visibility ->
+        affiliateIncomeViewModel?.getShimmerVisibility()?.observe(viewLifecycleOwner) { visibility ->
             if (visibility != null) {
                 if (visibility) {
                     adapter.addShimmer()
@@ -154,20 +155,20 @@ class AffiliateIncomeFragment :
                 }
             }
         }
-        affiliateIncomeViewModel?.getErrorMessage()?.observe(this) { error ->
+        affiliateIncomeViewModel?.getErrorMessage()?.observe(viewLifecycleOwner) { error ->
             onGetError(error)
         }
-        affiliateIncomeViewModel?.getRangeChange()?.observe(this) { changed ->
+        affiliateIncomeViewModel?.getRangeChange()?.observe(viewLifecycleOwner) { changed ->
             if (changed) {
                 resetItems()
                 binding?.dateRangeText?.text = affiliateIncomeViewModel?.getSelectedDate()
             }
         }
-        affiliateIncomeViewModel?.getAffiliateKycData()?.observe(this) {
+        affiliateIncomeViewModel?.getAffiliateKycData()?.observe(viewLifecycleOwner) {
             onGetAffiliateKycData(it)
         }
 
-        affiliateIncomeViewModel?.getAffiliateKycLoader()?.observe(this) { show ->
+        affiliateIncomeViewModel?.getAffiliateKycLoader()?.observe(viewLifecycleOwner) { show ->
             if (show) {
                 binding?.saldoButtonAffiliate?.invisible()
                 binding?.tarikSaldoLoader?.show()
@@ -177,7 +178,7 @@ class AffiliateIncomeFragment :
             }
         }
 
-        affiliateIncomeViewModel?.getKycErrorMessage()?.observe(this) {
+        affiliateIncomeViewModel?.getKycErrorMessage()?.observe(viewLifecycleOwner) {
             view?.let {
                 Toaster.build(
                     it,
@@ -187,10 +188,10 @@ class AffiliateIncomeFragment :
                 ).show()
             }
         }
-        affiliateIncomeViewModel?.getValidateUserdata()?.observe(this) { validateUserdata ->
+        (activity as? AffiliateActivity)?.getValidateUserData()?.observe(viewLifecycleOwner) { validateUserdata ->
             onGetValidateUserData(validateUserdata)
         }
-        affiliateIncomeViewModel?.getAffiliateAnnouncement()?.observe(this) { announcementData ->
+        affiliateIncomeViewModel?.getAffiliateAnnouncement()?.observe(viewLifecycleOwner) { announcementData ->
             if (announcementData.getAffiliateAnnouncementV2?.announcementData?.subType != TICKER_BOTTOM_SHEET) {
                 sendTickerImpression(
                     announcementData.getAffiliateAnnouncementV2?.announcementData?.type,
@@ -203,7 +204,7 @@ class AffiliateIncomeFragment :
                 )
             }
         }
-        affiliateIncomeViewModel?.getUnreadNotificationCount()?.observe(this) { count ->
+        affiliateIncomeViewModel?.getUnreadNotificationCount()?.observe(viewLifecycleOwner) { count ->
             binding?.withdrawalNavToolbar?.apply {
                 setCentralizedBadgeCounter(IconList.ID_NOTIFICATION, count)
             }
@@ -238,9 +239,7 @@ class AffiliateIncomeFragment :
                     show()
                 }
 
-                else -> {
-                    setErrorState(error?.message)
-                }
+                else -> setErrorState(error?.message)
             }
             setActionClickListener {
                 hide()
@@ -274,13 +273,12 @@ class AffiliateIncomeFragment :
 
     private fun onGetAffiliateKycData(kycProjectInfo: AffiliateKycDetailsData.KycProjectInfo) {
         when (kycProjectInfo.status) {
-            KYC_DONE -> {
-                if (TokopediaUrl.getInstance().GQL.contains("staging")) {
+            KYC_DONE ->
+                if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
                     RouteManager.route(context, WITHDRAWAL_APPLINK_STAGING)
                 } else {
                     RouteManager.route(context, WITHDRAWAL_APPLINK_PROD)
                 }
-            }
 
             else -> RouteManager.route(context, APP_LINK_KYC)
         }
@@ -407,7 +405,8 @@ class AffiliateIncomeFragment :
             }
         }
         binding?.withdrawalNavToolbar?.run {
-            val iconBuilder = IconBuilder(builderFlags = IconBuilderFlag(pageSource = NavSource.AFFILIATE))
+            val iconBuilder =
+                IconBuilder(builderFlags = IconBuilderFlag(pageSource = NavSource.AFFILIATE))
             if (isAffiliateNCEnabled()) {
                 iconBuilder.addIcon(IconList.ID_NOTIFICATION, disableRouteManager = true) {
                     affiliateIncomeViewModel?.resetNotificationCount()
@@ -426,7 +425,7 @@ class AffiliateIncomeFragment :
                 )
         }
         initDateRangeClickListener()
-        affiliateIncomeViewModel?.getAffiliateValidateUser(userSession?.email.orEmpty())
+        (activity as? AffiliateActivity)?.refreshValidateUserData()
         if (isAffiliateNCEnabled()) {
             affiliateIncomeViewModel?.fetchUnreadNotificationCount()
         }

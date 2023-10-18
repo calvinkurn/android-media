@@ -12,7 +12,6 @@ import com.tokopedia.affiliate.model.response.AffiliateAnnouncementDataV2
 import com.tokopedia.affiliate.model.response.AffiliateBalance
 import com.tokopedia.affiliate.model.response.AffiliateKycDetailsData
 import com.tokopedia.affiliate.model.response.AffiliateTransactionHistoryData
-import com.tokopedia.affiliate.model.response.AffiliateValidateUserData
 import com.tokopedia.affiliate.repository.AffiliateRepository
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomDatePicker
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateTransactionHistoryItemModel
@@ -25,6 +24,7 @@ import com.tokopedia.affiliate.usecase.AffiliateValidateUserStatusUseCase
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -40,8 +40,6 @@ class AffiliateIncomeViewModel : BaseViewModel() {
     private var affiliateDataList =
         MutableLiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>>()
     private var rangeChanged = MutableLiveData<Boolean>()
-    private var validateUserdata = MutableLiveData<AffiliateValidateUserData>()
-    private var progressBar = MutableLiveData<Boolean>()
     private var affiliateAnnouncement = MutableLiveData<AffiliateAnnouncementDataV2>()
     private var isUserBlackListed: Boolean = false
     var hasNext = true
@@ -70,21 +68,6 @@ class AffiliateIncomeViewModel : BaseViewModel() {
             },
             onError = {
                 it.printStackTrace()
-            }
-        )
-    }
-
-    fun getAffiliateValidateUser(email: String) {
-        launchCatchError(
-            block = {
-                validateUserdata.value =
-                    affiliateValidateUseCaseUseCase.validateUserStatus(email)
-                progressBar.value = false
-            },
-            onError = {
-                progressBar.value = false
-                it.printStackTrace()
-                errorMessage.value = it
             }
         )
     }
@@ -125,7 +108,7 @@ class AffiliateIncomeViewModel : BaseViewModel() {
         launchCatchError(
             block = {
                 affiliateTransactionHistoryUseCase.getAffiliateTransactionHistory(
-                    selectedDateValue.toInt(),
+                    selectedDateValue.toIntOrZero(),
                     page
                 ).getAffiliateTransactionHistory?.transactionData?.let {
                     hasNext = it.hasNext
@@ -205,6 +188,5 @@ class AffiliateIncomeViewModel : BaseViewModel() {
     fun getErrorMessage(): LiveData<Throwable> = errorMessage
     fun getKycErrorMessage(): LiveData<String> = affiliateKycError
     fun getRangeChange(): LiveData<Boolean> = rangeChanged
-    fun getValidateUserdata(): LiveData<AffiliateValidateUserData> = validateUserdata
     fun getAffiliateAnnouncement(): LiveData<AffiliateAnnouncementDataV2> = affiliateAnnouncement
 }
