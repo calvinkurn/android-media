@@ -154,7 +154,7 @@ class AddressFormFragment :
         }
 
     // page state
-    private var isPositiveFlow: Boolean = false
+    private var isPositiveFlow: Boolean = true
     private var addressUiState: AddressUiState = AddressUiState.AddAddress
 
     // address validations

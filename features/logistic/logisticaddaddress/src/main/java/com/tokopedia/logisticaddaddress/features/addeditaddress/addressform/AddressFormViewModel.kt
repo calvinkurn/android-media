@@ -436,13 +436,13 @@ class AddressFormViewModel @Inject constructor(
         )
     }
 
+    private fun String.isNotEmptyOrZero(): Boolean {
+        return this.isNotEmpty() && this.toDoubleOrZero() != 0.0
+    }
+
     fun removeUnprintableCharacter(text: String): String {
         return text.filter {
             !it.isIdentifierIgnorable()
         }
     }
-}
-
-private fun String.isNotEmptyOrZero(): Boolean {
-    return this.isNotEmpty() && this.toDoubleOrZero() != 0.0
 }
