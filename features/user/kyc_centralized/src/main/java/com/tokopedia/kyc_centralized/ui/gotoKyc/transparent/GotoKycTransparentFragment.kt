@@ -501,7 +501,7 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
     }
 
     private fun showBlockedKycBottomSheet(isMultipleAccount: Boolean) {
-        val blockedKycBottomSheet = BlockedKycBottomSheet.newInstance(isMultipleAccount)
+        val blockedKycBottomSheet = BlockedKycBottomSheet.newInstance(isMultipleAccount, viewModel.projectId)
 
         blockedKycBottomSheet.show(
             childFragmentManager,
