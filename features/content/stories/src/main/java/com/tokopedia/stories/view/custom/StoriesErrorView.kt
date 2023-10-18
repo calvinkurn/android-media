@@ -60,7 +60,7 @@ class StoriesErrorView : ConstraintLayout {
             binding.storiesErrorIcon.setImage(newIconId = image)
             binding.storiesErrorTitle.text = title?.let { context.getString(it) }
             binding.storiesErrorDesc.text = description?.let { context.getString(it) }
-            binding.btnStoriesNoInetRetry.showWithCondition(value != Type.EmptyStories && value != Type.EmptyCategory)
+            binding.btnStoriesNoInetRetry.showWithCondition(value != Type.EmptyStories && value != Type.EmptyCategory && value != Type.NoContent)
             binding.loaderGroup.showWithCondition(value != Type.EmptyStories && value != Type.EmptyCategory && value != Type.NoContent)
             binding.icCloseLoading.showWithCondition(value != Type.EmptyCategory && value != Type.NoContent)
         }
