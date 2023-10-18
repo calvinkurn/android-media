@@ -26,8 +26,8 @@ import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseAdapter
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseItemDecoration
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseBannerViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseChipsViewHolder
-import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseIntent
+import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiModel2
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseUiState
 import com.tokopedia.feedplus.databinding.FragmentFeedBrowseBinding
@@ -337,7 +337,10 @@ class FeedBrowseFragment @Inject constructor(
 //        ) {
 //            return
 //        }
-        adapter.setList(widgets)
+        adapter.setList(widgets) {
+            if (_binding == null) return@setList
+            binding.feedBrowseList.invalidateItemDecorations()
+        }
     }
 
     private fun goToPage(appLink: String) {

@@ -23,7 +23,7 @@ import com.tokopedia.feedplus.browse.presentation.model.hasContentAndNotEmpty
  */
 internal class FeedBrowseAdapter(
     private val chipsListener: FeedBrowseChipsViewHolder.Listener,
-    private val bannerListener: FeedBrowseBannerViewHolder.Listener,
+    private val bannerListener: FeedBrowseBannerViewHolder.Listener
 ) : ListAdapter<FeedBrowseItemListModel, RecyclerView.ViewHolder>(
     object : DiffUtil.ItemCallback<FeedBrowseItemListModel>() {
         override fun areItemsTheSame(oldItem: FeedBrowseItemListModel, newItem: FeedBrowseItemListModel): Boolean {
@@ -134,8 +134,8 @@ internal class FeedBrowseAdapter(
         internal const val TYPE_INSPIRATION_CARD = 4
     }
 
-    fun setList(items: List<FeedBrowseUiModel2>) {
-        submitList(items.mapToItems())
+    fun setList(items: List<FeedBrowseUiModel2>, onCommit: () -> Unit = {}) {
+        submitList(items.mapToItems(), onCommit)
     }
 
     private fun List<FeedBrowseUiModel2>.mapToItems(): List<FeedBrowseItemListModel> {
@@ -148,7 +148,7 @@ internal class FeedBrowseAdapter(
     }
 
     private fun FeedBrowseModel.ChannelsWithMenus.mapToItems(
-        state: ResultState,
+        state: ResultState
     ): List<FeedBrowseItemListModel> {
         return when (type) {
             FeedBrowseModel.ChannelsWithMenus.Type.ChannelBlock -> mapToChannelBlocks(state)
