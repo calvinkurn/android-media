@@ -89,6 +89,7 @@ class PlayFeedSeeMoreFragment : BaseDaggerFragment(), PlayWidgetListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initVar()
+        retainInstance = true
     }
 
     private fun initVar() {
