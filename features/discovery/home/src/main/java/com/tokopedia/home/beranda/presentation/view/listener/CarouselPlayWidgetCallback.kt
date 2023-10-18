@@ -324,7 +324,7 @@ class CarouselPlayWidgetCallback(
         mapOf(
             Event.KEY to EVENT_PRODUCT_VIEW,
             Category.KEY to model.category,
-            Action.KEY to "view - product card video widget",
+            Action.KEY to "view - product recommendationCard video widget",
             Label.KEY to trackerMultiFields(
                 model.prefix, /** prefix **/
                 item.channelType.toTrackingType(), /** videoType **/
@@ -390,7 +390,7 @@ class CarouselPlayWidgetCallback(
         val trackerMap = mapOf(
             Event.KEY to EVENT_PRODUCT_CLICK,
             Category.KEY to model.category,
-            Action.KEY to "click - product card video widget",
+            Action.KEY to "click - product recommendationCard video widget",
             Label.KEY to trackerMultiFields(
                 model.prefix, /** prefix **/
                 item.channelType.toTrackingType(), /** videoType **/

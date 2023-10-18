@@ -26,7 +26,7 @@ object MixLeftComponentTracking : BaseTrackerConst() {
     private const val PROMOTION_BANNER_NAME = "/ - p%s - dynamic channel left carousel - banner - %s"
 
     private const val CLICK_MIX_LEFT_LOADMORE = "click view all on dynamic channel left carousel"
-    private const val CLICK_MIX_LEFT_LOADMORE_CARD = "click view all card on dynamic channel left carousel"
+    private const val CLICK_MIX_LEFT_LOADMORE_CARD = "click view all recommendationCard on dynamic channel left carousel"
     private val LIST_CAROUSEL_PRODUCT = MIXLEFT_LIST.format("%s", "dynamic channel left carousel - product", "%s", "%s", "%s", "%s", "%s")
 
     private fun getMixLeftClickLoadMore(channel: ChannelModel, userId: String): HashMap<String, Any> {

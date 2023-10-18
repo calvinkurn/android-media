@@ -16,7 +16,7 @@ object CampaignWidgetTracking : BaseTrackerConst() {
     const val FORMAT_NAME = "/ - p%s - dynamic channel campaign - banner - %s"
     const val FORMAT_LABEL_CLICK = "%s - %s"
     const val FORMAT_PROMO_ID = "%s_%s_%s_%s"
-    const val CLICK_SEE_ALL_CARD = "click view all card on dynamic channel campaign"
+    const val CLICK_SEE_ALL_CARD = "click view all recommendationCard on dynamic channel campaign"
     const val CLICK_SEE_ALL_CHANNEL = "click view all on dynamic channel campaign"
 
     fun getCampaignWidgetItemImpressionTracking(
@@ -115,5 +115,4 @@ object CampaignWidgetTracking : BaseTrackerConst() {
             .appendCampaignCode(channel.trackingAttributionModel.campaignCode)
         return trackingBuilder.build()
     }
-
 }

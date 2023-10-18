@@ -7,8 +7,8 @@ data class GetHomeRecommendationCardResponse(
     val getHomeRecommendationCard: GetHomeRecommendationCard = GetHomeRecommendationCard()
 ) {
     data class GetHomeRecommendationCard(
-        @SerializedName("cards")
-        val cards: List<Card> = listOf(),
+        @SerializedName("recommendationCards")
+        val recommendationCards: List<RecommendationCard> = listOf(),
         @SerializedName("hasNextPage")
         val hasNextPage: Boolean = false,
         @SerializedName("layoutName")

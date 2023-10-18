@@ -13,7 +13,7 @@ import com.tokopedia.track.builder.util.BaseTrackerConst
 object TodoWidgetTracking : BaseTrackerConst() {
     private const val DYNAMIC_CHANNEL_TODO_WIDGET = "dynamic channel to do widget"
     private const val EVENT_ACTION_CLICK_CTA = "click CTA button on dynamic channel to do widget"
-    private const val EVENT_ACTION_CLICK_CARD = "click on card on dynamic channel to do widget"
+    private const val EVENT_ACTION_CLICK_CARD = "click on recommendationCard on dynamic channel to do widget"
     private const val EVENT_ACTION_CLICK_CLOSE = "click close button on dynamic channel to do widget"
     private const val EVENT_ACTION_IMPRESSION = "impression on banner dynamic channel to do widget"
     private const val FORMAT_EVENT_LABEL = "%s_%s_%s_%s_%s_%s"

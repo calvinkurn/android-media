@@ -18,7 +18,7 @@ object MerchantVoucherTracking : BaseTrackerConst() {
             const val CLICK_SHOP = "click shop"
             const val SHOP_DETAIL = "shop detail"
             const val CLICK_PRODUCT_DETAIL = "click product detail"
-            const val CLICK_VIEW_ALL_CARD = "click view all card"
+            const val CLICK_VIEW_ALL_CARD = "click view all recommendationCard"
             const val CLICK_VIEW_ALL = "click view all"
             const val CREATIVE_NAME_FORMAT = "%s - %s"
             const val ITEM_ID_FORMAT = "%s_%s"
@@ -115,7 +115,7 @@ object MerchantVoucherTracking : BaseTrackerConst() {
     fun getClickViewAllCard(headerName: String, userId: String, campaignCode: String): Pair<String, Bundle> {
         val bundle = Bundle()
         bundle.putString(Event.KEY, Event.CLICK_HOMEPAGE)
-        bundle.putString(Action.KEY, CustomAction.MERCHANT_VOUCHER_MULTIPLE_FORMAT.format(CustomAction.CLICK_VIEW_ALL_CARD) )
+        bundle.putString(Action.KEY, CustomAction.MERCHANT_VOUCHER_MULTIPLE_FORMAT.format(CustomAction.CLICK_VIEW_ALL_CARD))
         bundle.putString(Category.KEY, Category.HOMEPAGE)
         bundle.putString(Label.KEY, headerName)
         bundle.putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
@@ -129,7 +129,7 @@ object MerchantVoucherTracking : BaseTrackerConst() {
     fun getClickViewAll(headerName: String, userId: String, campaignCode: String): Pair<String, Bundle> {
         val bundle = Bundle()
         bundle.putString(Event.KEY, Event.CLICK_HOMEPAGE)
-        bundle.putString(Action.KEY, CustomAction.MERCHANT_VOUCHER_MULTIPLE_FORMAT.format(CustomAction.CLICK_VIEW_ALL) )
+        bundle.putString(Action.KEY, CustomAction.MERCHANT_VOUCHER_MULTIPLE_FORMAT.format(CustomAction.CLICK_VIEW_ALL))
         bundle.putString(Category.KEY, Category.HOMEPAGE)
         bundle.putString(Label.KEY, headerName)
         bundle.putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
@@ -140,7 +140,7 @@ object MerchantVoucherTracking : BaseTrackerConst() {
         return Pair(Event.CLICK_HOMEPAGE, bundle)
     }
 
-    fun getMerchantVoucherView(element: CarouselMerchantVoucherDataModel, horizontalPosition: Int) : Map<String, Any> {
+    fun getMerchantVoucherView(element: CarouselMerchantVoucherDataModel, horizontalPosition: Int): Map<String, Any> {
         val trackingBuilder = BaseTrackerBuilder()
         val creativeName = CustomAction.CREATIVE_NAME_VIEW_COUPON_FORMAT.format(
             CustomAction.DEFAULT_VALUE,
@@ -165,15 +165,16 @@ object MerchantVoucherTracking : BaseTrackerConst() {
             )
         )
         return trackingBuilder.constructBasicPromotionView(
-                event = Event.PROMO_VIEW,
-                eventCategory = Category.HOMEPAGE,
-                eventAction = CustomAction.MERCHANT_VOUCHER_MULTIPLE_FORMAT.format(CustomAction.VIEW_COUPON),
-                eventLabel = Label.NONE,
-                promotions = listPromotions)
-                .appendBusinessUnit(BusinessUnit.DEFAULT)
-                .appendCurrentSite(CurrentSite.DEFAULT)
-                .appendUserId(element.userId)
-                .appendCustomKeyValue(TrackerId.KEY, TRACKER_ID_PROMO_VIEW)
-                .build()
+            event = Event.PROMO_VIEW,
+            eventCategory = Category.HOMEPAGE,
+            eventAction = CustomAction.MERCHANT_VOUCHER_MULTIPLE_FORMAT.format(CustomAction.VIEW_COUPON),
+            eventLabel = Label.NONE,
+            promotions = listPromotions
+        )
+            .appendBusinessUnit(BusinessUnit.DEFAULT)
+            .appendCurrentSite(CurrentSite.DEFAULT)
+            .appendUserId(element.userId)
+            .appendCustomKeyValue(TrackerId.KEY, TRACKER_ID_PROMO_VIEW)
+            .build()
     }
 }

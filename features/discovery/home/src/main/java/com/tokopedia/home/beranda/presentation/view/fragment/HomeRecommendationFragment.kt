@@ -70,6 +70,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import java.util.*
 import javax.inject.Inject
+import com.tokopedia.abstraction.R as abstractionR
 
 @SuppressLint("SyntheticAccessor")
 @SuppressWarnings("unused")
@@ -224,7 +225,7 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener, 
                                 getString(R.string.home_error_connection),
                                 Snackbar.LENGTH_LONG,
                                 Toaster.TYPE_ERROR,
-                                getString(com.tokopedia.abstraction.R.string.title_try_again),
+                                getString(abstractionR.string.title_try_again),
                                 View.OnClickListener {
                                     endlessRecyclerViewScrollListener?.loadMoreNextPage()
                                 }
@@ -294,13 +295,13 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener, 
         homeRecommendationItemDataModel: HomeRecommendationItemDataModel,
         position: Int
     ) {
-        if (homeRecommendationItemDataModel.product.isTopads) {
+        if (homeRecommendationItemDataModel.recommendationCard.isTopads) {
             TopAdsUrlHitter(className).hitImpressionUrl(
                 context,
-                homeRecommendationItemDataModel.product.trackerImageUrl,
-                homeRecommendationItemDataModel.product.id,
-                homeRecommendationItemDataModel.product.name,
-                homeRecommendationItemDataModel.product.imageUrl,
+                homeRecommendationItemDataModel.recommendationCard.trackerImageUrl,
+                homeRecommendationItemDataModel.recommendationCard.id,
+                homeRecommendationItemDataModel.recommendationCard.name,
+                homeRecommendationItemDataModel.recommendationCard.imageUrl,
                 HOME_RECOMMENDATION_FRAGMENT
             )
             if (userSessionInterface.isLoggedIn) {
@@ -341,13 +342,13 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener, 
         homeRecommendationItemDataModel: HomeRecommendationItemDataModel,
         position: Int
     ) {
-        if (homeRecommendationItemDataModel.product.isTopads) {
+        if (homeRecommendationItemDataModel.recommendationCard.isTopads) {
             TopAdsUrlHitter(className).hitClickUrl(
                 context,
-                homeRecommendationItemDataModel.product.clickUrl,
-                homeRecommendationItemDataModel.product.id,
-                homeRecommendationItemDataModel.product.name,
-                homeRecommendationItemDataModel.product.imageUrl,
+                homeRecommendationItemDataModel.recommendationCard.clickUrl,
+                homeRecommendationItemDataModel.recommendationCard.id,
+                homeRecommendationItemDataModel.recommendationCard.name,
+                homeRecommendationItemDataModel.recommendationCard.imageUrl,
                 HOME_RECOMMENDATION_FRAGMENT
             )
             if (userSessionInterface.isLoggedIn) {
@@ -382,7 +383,7 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener, 
                 )
             }
         }
-        goToProductDetail(homeRecommendationItemDataModel.product.id, position)
+        goToProductDetail(homeRecommendationItemDataModel.recommendationCard.id, position)
     }
 
     override fun onProductThreeDotsClick(
@@ -539,14 +540,14 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener, 
     ): ProductCardOptionsModel {
         val productCardOptionsModel = ProductCardOptionsModel()
         productCardOptionsModel.hasWishlist = true
-        productCardOptionsModel.isWishlisted = homeRecommendationItemDataModel.product.isWishlist
-        productCardOptionsModel.productId = homeRecommendationItemDataModel.product.id
-        productCardOptionsModel.isTopAds = homeRecommendationItemDataModel.product.isTopads
+        productCardOptionsModel.isWishlisted = homeRecommendationItemDataModel.recommendationCard.isWishlist
+        productCardOptionsModel.productId = homeRecommendationItemDataModel.recommendationCard.id
+        productCardOptionsModel.isTopAds = homeRecommendationItemDataModel.recommendationCard.isTopads
         productCardOptionsModel.topAdsWishlistUrl =
-            homeRecommendationItemDataModel.product.wishlistUrl
-        productCardOptionsModel.topAdsClickUrl = homeRecommendationItemDataModel.product.clickUrl
-        productCardOptionsModel.productName = homeRecommendationItemDataModel.product.name
-        productCardOptionsModel.productImageUrl = homeRecommendationItemDataModel.product.imageUrl
+            homeRecommendationItemDataModel.recommendationCard.wishlistUrl
+        productCardOptionsModel.topAdsClickUrl = homeRecommendationItemDataModel.recommendationCard.clickUrl
+        productCardOptionsModel.productName = homeRecommendationItemDataModel.recommendationCard.name
+        productCardOptionsModel.productImageUrl = homeRecommendationItemDataModel.recommendationCard.imageUrl
         productCardOptionsModel.productPosition = position
         return productCardOptionsModel
     }

@@ -3,7 +3,7 @@ package com.tokopedia.home.beranda.domain.gql.recommendationcard
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
-data class Card(
+data class RecommendationCard(
     @SerializedName("applink")
     val applink: String = "",
     @SerializedName("badges")

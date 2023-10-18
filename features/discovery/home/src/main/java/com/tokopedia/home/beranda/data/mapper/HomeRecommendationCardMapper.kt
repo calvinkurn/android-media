@@ -1,7 +1,7 @@
 package com.tokopedia.home.beranda.data.mapper
 
-import com.tokopedia.home.beranda.domain.gql.recommendationcard.Card
 import com.tokopedia.home.beranda.domain.gql.recommendationcard.GetHomeRecommendationCardResponse
+import com.tokopedia.home.beranda.domain.gql.recommendationcard.RecommendationCard
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationBannerTopAdsDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationDataModel
@@ -18,7 +18,7 @@ class HomeRecommendationCardMapper @Inject constructor() {
     ): HomeRecommendationDataModel {
         val homeRecommendationVisitableList = mutableListOf<HomeRecommendationVisitable>()
 
-        getHomeRecommendationCard.cards.forEachIndexed { index, card ->
+        getHomeRecommendationCard.recommendationCards.forEachIndexed { index, card ->
             when (card.layout) {
                 TYPE_PRODUCT -> {
                     homeRecommendationVisitableList.add(
@@ -28,7 +28,7 @@ class HomeRecommendationCardMapper @Inject constructor() {
                             getHomeRecommendationCard.layoutName,
                             pageNumber,
                             index,
-                            getHomeRecommendationCard.cards.size
+                            getHomeRecommendationCard.recommendationCards.size
                         )
                     )
                 }
@@ -39,22 +39,22 @@ class HomeRecommendationCardMapper @Inject constructor() {
             }
         }
 
-        return HomeRecommendationDataModel()
+        return HomeRecommendationDataModel(homeRecommendationVisitableList, getHomeRecommendationCard.hasNextPage)
     }
 
     private fun mapToHomeProductFeedModel(
-        card: Card,
+        recommendationCard: RecommendationCard,
         pageName: String,
         layoutName: String,
         pageNumber: Int,
         index: Int,
         cardTotal: Int
     ): HomeRecommendationItemDataModel {
-        val productCard = mapToProductCardModel(card)
+        val productCard = mapToProductCardModel(recommendationCard)
 
         return HomeRecommendationItemDataModel(
-            product = null,
-            card,
+            null,
+            recommendationCard,
             productCard,
             pageName,
             layoutName,
@@ -62,8 +62,8 @@ class HomeRecommendationCardMapper @Inject constructor() {
         )
     }
 
-    private fun mapToLabelGroupList(card: Card): List<ProductCardModel.LabelGroup> {
-        return card.labelGroup.map {
+    private fun mapToLabelGroupList(recommendationCard: RecommendationCard): List<ProductCardModel.LabelGroup> {
+        return recommendationCard.labelGroup.map {
             ProductCardModel.LabelGroup(
                 position = it.position,
                 type = it.type,
@@ -73,28 +73,28 @@ class HomeRecommendationCardMapper @Inject constructor() {
         }
     }
 
-    private fun mapToProductCardModel(card: Card): ProductCardModel {
-        val labelGroups = mapToLabelGroupList(card)
+    private fun mapToProductCardModel(recommendationCard: RecommendationCard): ProductCardModel {
+        val labelGroups = mapToLabelGroupList(recommendationCard)
 
         return ProductCardModel(
-            slashedPrice = card.slashedPrice,
-            productName = card.name,
-            formattedPrice = card.price,
-            productImageUrl = card.imageUrl,
-            isTopAds = card.isTopads,
-            discountPercentage = if (card.discountPercentage > 0) "${card.discountPercentage}%" else "",
-            ratingCount = card.rating,
-            reviewCount = card.countReview,
-            countSoldRating = card.ratingAverage,
-            shopLocation = card.shop.city,
+            slashedPrice = recommendationCard.slashedPrice,
+            productName = recommendationCard.name,
+            formattedPrice = recommendationCard.price,
+            productImageUrl = recommendationCard.imageUrl,
+            isTopAds = recommendationCard.isTopads,
+            discountPercentage = if (recommendationCard.discountPercentage > 0) "${recommendationCard.discountPercentage}%" else "",
+            ratingCount = recommendationCard.rating,
+            reviewCount = recommendationCard.countReview,
+            countSoldRating = recommendationCard.ratingAverage,
+            shopLocation = recommendationCard.shop.city,
             isWishlistVisible = true,
-            isWishlisted = card.isWishlist,
-            shopBadgeList = card.badges.map {
+            isWishlisted = recommendationCard.isWishlist,
+            shopBadgeList = recommendationCard.badges.map {
                 ProductCardModel.ShopBadge(imageUrl = it.imageUrl)
             },
             freeOngkir = ProductCardModel.FreeOngkir(
-                isActive = card.freeOngkir.isActive,
-                imageUrl = card.freeOngkir.imageUrl
+                isActive = recommendationCard.freeOngkir.isActive,
+                imageUrl = recommendationCard.freeOngkir.imageUrl
             ),
             labelGroupList = labelGroups,
             hasThreeDots = true,

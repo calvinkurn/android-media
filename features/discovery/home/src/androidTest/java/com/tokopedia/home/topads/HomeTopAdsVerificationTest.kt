@@ -60,7 +60,7 @@ class HomeTopAdsVerificationTest {
     companion object {
         private const val LIMIT_COUNT_TO_IDLE = 10
 
-        // min item 3 : blank space item, product item, and see all card item
+        // min item 3 : blank space item, product item, and see all recommendationCard item
         private const val MIX_LEFT_ITEM_COUNT_THRESHOLD = 3
     }
 
@@ -167,7 +167,7 @@ class HomeTopAdsVerificationTest {
 
         val itemList = recomFeedRecyclerView?.getRecomItemList().orEmpty()
 
-        val count = itemList.count { it is HomeRecommendationItemDataModel && it.product.isTopads }
+        val count = itemList.count { it is HomeRecommendationItemDataModel && it.recommendationCard.isTopads }
         topAdsCount += count
     }
 

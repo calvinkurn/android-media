@@ -25,12 +25,12 @@ class BalanceSpacingItemDecoration : RecyclerView.ItemDecoration() {
                 outRect.left = margin
                 outRect.right = Int.ZERO
             }
-            // last position of card
+            // last position of recommendationCard
             state.itemCount - 1 -> {
                 outRect.right = margin
                 outRect.left = Int.ZERO
             }
-            // card between first and last
+            // recommendationCard between first and last
             else -> {
                 outRect.right = Int.ZERO
                 outRect.left = Int.ZERO

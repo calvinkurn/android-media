@@ -9,62 +9,62 @@ import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
 const val GET_HOME_RECOMMENDATION_CARD_QUERY = """
-    query GetBomGroupedOrder(${'$'}productPage: Int!, ${'$'}layouts: String!, ${'$'}param: String!, ${'$'}location: String!) {
+    query GetHomeRecommendationCard(${'$'}productPage: Int!, ${'$'}layouts: String!, ${'$'}param: String!, ${'$'}location: String!) {
         getHomeRecommendationCard(productPage: ${'$'}, layouts: ${'$'}layouts, param: ${'$'}param, location: ${'$'}location) {
-        pageName
-        layoutName
-        hasNextPage
-        cards {
-          id
-          layout
-          url
-          name
-          subtitle
-          price
-          rating
-          applink
-          clickUrl
-          imageUrl
-          iconUrl
-          isTopads
-          priceInt
-          clusterID
-          productKey
-          isWishlist
-          wishlistUrl
-          countReview
-          slashedPrice
-          ratingAverage
-          trackerImageUrl
-          slashedPriceInt
-          discountPercentage
-          recommendationType
-          categoryBreadcrumbs
-          shop {
-            id
-            url
-            city
-            name
-            domain
-            applink
-            imageUrl
-            reputation
-          }
-          badges {
-            title
-            imageUrl
-          }
-          freeOngkir {
-            isActive
-            imageUrl
-          }
-          labelGroup {
-            url
-            type
-            title
-            position
-          }
-        }
+            pageName
+            layoutName
+            hasNextPage
+            recommendationCards {
+              id
+              layout
+              url
+              name
+              subtitle
+              price
+              rating
+              applink
+              clickUrl
+              imageUrl
+              iconUrl
+              isTopads
+              priceInt
+              clusterID
+              productKey
+              isWishlist
+              wishlistUrl
+              countReview
+              slashedPrice
+              ratingAverage
+              trackerImageUrl
+              slashedPriceInt
+              discountPercentage
+              recommendationType
+              categoryBreadcrumbs
+              shop {
+                id
+                url
+                city
+                name
+                domain
+                applink
+                imageUrl
+                reputation
+              }
+              badges {
+                title
+                imageUrl
+              }
+              freeOngkir {
+                isActive
+                imageUrl
+              }
+              labelGroup {
+                url
+                type
+                title
+                position
+              }
+            }
       }
     }
 """
@@ -107,7 +107,7 @@ class GetHomeRecommendationCardUseCase @Inject constructor(
 
     companion object {
         private const val PARAM_LOCATION = "location"
-        private const val PARAM_SOURCE_TYPE = "sourceType"
+        private const val PARAM_SOURCE_TYPE = "param"
         private const val PARAM_PRODUCT_PAGE = "productPage"
         private const val PARAM_LAYOUTS = "layouts"
 

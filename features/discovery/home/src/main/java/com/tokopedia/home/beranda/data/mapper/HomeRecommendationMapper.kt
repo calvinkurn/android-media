@@ -3,6 +3,7 @@ package com.tokopedia.home.beranda.data.mapper
 import com.tokopedia.home.beranda.domain.gql.feed.Banner
 import com.tokopedia.home.beranda.domain.gql.feed.GetHomeRecommendationContent
 import com.tokopedia.home.beranda.domain.gql.feed.Product
+import com.tokopedia.home.beranda.domain.gql.recommendationcard.RecommendationCard
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.BannerRecommendationDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationBannerTopAdsDataModel
@@ -90,7 +91,7 @@ class HomeRecommendationMapper {
             homeFeedViewModels.add(
                 HomeRecommendationItemDataModel(
                     product = product,
-                    card = null,
+                    recommendationCard = RecommendationCard(),
                     productCardModel = productCard,
                     pageName,
                     layoutName,

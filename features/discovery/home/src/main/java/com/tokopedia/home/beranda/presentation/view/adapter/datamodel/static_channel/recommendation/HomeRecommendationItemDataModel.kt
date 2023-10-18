@@ -2,7 +2,7 @@ package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_ch
 
 import android.os.Bundle
 import com.tokopedia.home.beranda.domain.gql.feed.Product
-import com.tokopedia.home.beranda.domain.gql.recommendationcard.Card
+import com.tokopedia.home.beranda.domain.gql.recommendationcard.RecommendationCard
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.homeRecommendation.HomeRecommendationTypeFactory
 import com.tokopedia.kotlin.model.ImpressHolder
@@ -11,7 +11,7 @@ import com.tokopedia.smart_recycler_helper.SmartVisitable
 
 data class HomeRecommendationItemDataModel(
     val product: Product? = null,
-    val card: Card? = null,
+    val recommendationCard: RecommendationCard,
     val productCardModel: ProductCardModel,
     val pageName: String = "",
     val layoutName: String = "",
@@ -26,7 +26,7 @@ data class HomeRecommendationItemDataModel(
     }
 
     override fun getUniqueIdentity(): Any {
-        return card?.id.orEmpty()
+        return recommendationCard?.id.orEmpty()
     }
 
     override fun getChangePayloadFrom(b: Any?): Bundle? {
@@ -39,12 +39,12 @@ data class HomeRecommendationItemDataModel(
 
         other as HomeRecommendationItemDataModel
 
-        if (card != other.card) return false
+        if (recommendationCard != other.recommendationCard) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        return card.hashCode()
+        return recommendationCard.hashCode()
     }
 }

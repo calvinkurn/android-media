@@ -2,11 +2,13 @@ package com.tokopedia.home.viewModel.homeRecommendation
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import com.tokopedia.home.beranda.domain.gql.feed.Product
+import com.tokopedia.home.beranda.domain.gql.recommendationcard.RecommendationCard
 import com.tokopedia.home.beranda.domain.interactor.GetHomeRecommendationUseCase
+import com.tokopedia.home.beranda.domain.interactor.usecase.GetHomeRecommendationCardUseCase
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.*
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRecommendationViewModel
 import com.tokopedia.home.ext.observeOnce
+import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.Cpm
 import com.tokopedia.topads.sdk.domain.model.CpmData
@@ -32,6 +34,7 @@ class HomeRecommendationViewModelTest {
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     private val getHomeRecommendationUseCase = mockk<GetHomeRecommendationUseCase>(relaxed = true)
+    private val getHomeRecommendationCardUseCase = mockk<GetHomeRecommendationCardUseCase>(relaxed = true)
     private val topAdsImageViewUseCase = mockk<TopAdsImageViewUseCase>(relaxed = true)
     private val topAdsUrlHitter = mockk<TopAdsUrlHitter>(relaxed = true)
     private val getTopAdsHeadlineUseCase = mockk<GetTopAdsHeadlineUseCase>(relaxed = true)
@@ -39,12 +42,13 @@ class HomeRecommendationViewModelTest {
     private val userSessionInterface = mockk<UserSessionInterface>(relaxed = true)
 
     private val homeRecommendationViewModel = HomeRecommendationViewModel(
-        getHomeRecommendationUseCase,
-        topAdsImageViewUseCase,
-        getTopAdsHeadlineUseCase,
-        userSessionInterface,
-        topAdsAddressHelper,
-        CoroutineTestDispatchersProvider
+        { getHomeRecommendationUseCase },
+        { getHomeRecommendationCardUseCase },
+        { topAdsImageViewUseCase },
+        { getTopAdsHeadlineUseCase },
+        { userSessionInterface },
+        { topAdsAddressHelper },
+        { CoroutineTestDispatchersProvider }
     )
 
     @Test
@@ -53,7 +57,8 @@ class HomeRecommendationViewModelTest {
         val homeRecommendationDataModel = HomeRecommendationDataModel(
             homeRecommendations = listOf(
                 HomeRecommendationItemDataModel(
-                    Product(),
+                    recommendationCard = RecommendationCard(),
+                    productCardModel = ProductCardModel(),
                     position = 1
                 )
             ),
@@ -148,11 +153,13 @@ class HomeRecommendationViewModelTest {
         val homeRecommendationDataModel = HomeRecommendationDataModel(
             homeRecommendations = listOf(
                 HomeRecommendationItemDataModel(
-                    Product(),
+                    recommendationCard = RecommendationCard(),
+                    productCardModel = ProductCardModel(),
                     position = 1
                 ),
                 HomeRecommendationItemDataModel(
-                    Product(),
+                    recommendationCard = RecommendationCard(),
+                    productCardModel = ProductCardModel(),
                     position = 1
                 )
             ),
@@ -161,11 +168,13 @@ class HomeRecommendationViewModelTest {
         val homeRecommendationDataModel2 = HomeRecommendationDataModel(
             homeRecommendations = listOf(
                 HomeRecommendationItemDataModel(
-                    Product(),
+                    recommendationCard = RecommendationCard(),
+                    productCardModel = ProductCardModel(),
                     position = 1
                 ),
                 HomeRecommendationItemDataModel(
-                    Product(),
+                    recommendationCard = RecommendationCard(),
+                    productCardModel = ProductCardModel(),
                     position = 1
                 )
             ),
@@ -218,11 +227,13 @@ class HomeRecommendationViewModelTest {
         val homeRecommendationDataModel = HomeRecommendationDataModel(
             homeRecommendations = listOf(
                 HomeRecommendationItemDataModel(
-                    Product(),
+                    recommendationCard = RecommendationCard(),
+                    productCardModel = ProductCardModel(),
                     position = 1
                 ),
                 HomeRecommendationItemDataModel(
-                    Product(),
+                    recommendationCard = RecommendationCard(),
+                    productCardModel = ProductCardModel(),
                     position = 1
                 )
             ),
@@ -275,7 +286,8 @@ class HomeRecommendationViewModelTest {
         val homeRecommendationDataModel = HomeRecommendationDataModel(
             homeRecommendations = listOf(
                 HomeRecommendationItemDataModel(
-                    Product(id = "12", isWishlist = false),
+                    recommendationCard = RecommendationCard(id = "12", isTopads = false),
+                    productCardModel = ProductCardModel(),
                     position = 1
                 )
             ),
@@ -307,7 +319,7 @@ class HomeRecommendationViewModelTest {
             observerHomeRecommendation.onChanged(
                 match {
                     it.homeRecommendations.isNotEmpty() && it.homeRecommendations.first() is HomeRecommendationItemDataModel &&
-                        (it.homeRecommendations.first() as HomeRecommendationItemDataModel).product.isWishlist
+                        (it.homeRecommendations.first() as HomeRecommendationItemDataModel).recommendationCard.isWishlist
                 }
             )
         }
@@ -320,7 +332,8 @@ class HomeRecommendationViewModelTest {
         val homeRecommendationDataModel = HomeRecommendationDataModel(
             homeRecommendations = listOf(
                 HomeRecommendationItemDataModel(
-                    Product(id = "12", isWishlist = false),
+                    recommendationCard = RecommendationCard(id = "12", isTopads = false),
+                    productCardModel = ProductCardModel(),
                     position = 1
                 )
             ),
@@ -352,7 +365,7 @@ class HomeRecommendationViewModelTest {
             observerHomeRecommendation.onChanged(
                 match {
                     it.homeRecommendations.isNotEmpty() && it.homeRecommendations.first() is HomeRecommendationItemDataModel &&
-                        (it.homeRecommendations.first() as HomeRecommendationItemDataModel).product.isWishlist
+                        (it.homeRecommendations.first() as HomeRecommendationItemDataModel).recommendationCard.isWishlist
                 }
             )
         }
@@ -365,7 +378,8 @@ class HomeRecommendationViewModelTest {
         val homeRecommendationDataModel = HomeRecommendationDataModel(
             homeRecommendations = listOf(
                 HomeRecommendationItemDataModel(
-                    Product(id = "12", isWishlist = false),
+                    recommendationCard = RecommendationCard(id = "12", isTopads = false),
+                    productCardModel = ProductCardModel(),
                     position = 1
                 )
             ),
@@ -400,9 +414,15 @@ class HomeRecommendationViewModelTest {
     fun `Get Success Data Home Recommendation Initial Page & Send Impression`() {
         val observerHomeRecommendation: Observer<HomeRecommendationDataModel> = mockk(relaxed = true)
         val item = HomeRecommendationItemDataModel(
-                Product(id = "12", isWishlist = false, trackerImageUrl = "coba",
-                        name = "Nama Produk", imageUrl = "https://images.tokopedia.com/blablabla.png"),
-                position = 1
+            recommendationCard = RecommendationCard(
+                id = "12",
+                isWishlist = false,
+                trackerImageUrl = "coba",
+                name = "Nama Produk",
+                imageUrl = "https://images.tokopedia.com/blablabla.png"
+            ),
+            productCardModel = ProductCardModel(),
+            position = 1
         )
         val homeRecommendationDataModel = HomeRecommendationDataModel(
             homeRecommendations = listOf(
@@ -460,23 +480,29 @@ class HomeRecommendationViewModelTest {
 
         topAdsUrlHitter.hitImpressionUrl(
             homeRecommendationViewModel::class.java.simpleName,
-            item.product.trackerImageUrl,
-            item.product.id,
-            item.product.name,
-            item.product.imageUrl
+            item.recommendationCard.trackerImageUrl,
+            item.recommendationCard.id,
+            item.recommendationCard.name,
+            item.recommendationCard.imageUrl
         )
 
-        assert(url == item.product.trackerImageUrl)
-        assert(productId == item.product.id)
-        assert(productName == item.product.name)
-        assert(imageUrl == item.product.imageUrl)
+        assert(url == item.recommendationCard.trackerImageUrl)
+        assert(productId == item.recommendationCard.id)
+        assert(productName == item.recommendationCard.name)
+        assert(imageUrl == item.recommendationCard.imageUrl)
     }
 
     @Test
     fun `Get Success Data Home Recommendation Initial Page & Send Impression & Click`() {
         val observerHomeRecommendation: Observer<HomeRecommendationDataModel> = mockk(relaxed = true)
         val item = HomeRecommendationItemDataModel(
-            Product(id = "12", isWishlist = false, trackerImageUrl = "coba", clickUrl = "clickUrl"),
+            recommendationCard = RecommendationCard(
+                id = "12",
+                isWishlist = false,
+                trackerImageUrl = "coba",
+                clickUrl = "clickUrl"
+            ),
+            productCardModel = ProductCardModel(),
             position = 1
         )
         val homeRecommendationDataModel = HomeRecommendationDataModel(
@@ -558,32 +584,32 @@ class HomeRecommendationViewModelTest {
         // View rendered and impression triggered
         topAdsUrlHitter.hitImpressionUrl(
             homeRecommendationViewModel::class.java.simpleName,
-            item.product.trackerImageUrl,
-            item.product.id,
-            item.product.name,
-            item.product.imageUrl
+            item.recommendationCard.trackerImageUrl,
+            item.recommendationCard.id,
+            item.recommendationCard.name,
+            item.recommendationCard.imageUrl
         )
 
         // Verify impression
-        assert(url == item.product.trackerImageUrl)
-        assert(productId == item.product.id)
-        assert(productName == item.product.name)
-        assert(imageUrl == item.product.imageUrl)
+        assert(url == item.recommendationCard.trackerImageUrl)
+        assert(productId == item.recommendationCard.id)
+        assert(productName == item.recommendationCard.name)
+        assert(imageUrl == item.recommendationCard.imageUrl)
 
         // View clicked
         topAdsUrlHitter.hitClickUrl(
             homeRecommendationViewModel::class.java.simpleName,
-            item.product.clickUrl,
-            item.product.id,
-            item.product.name,
-            item.product.imageUrl
+            item.recommendationCard.clickUrl,
+            item.recommendationCard.id,
+            item.recommendationCard.name,
+            item.recommendationCard.imageUrl
         )
 
         // Verify click
-        assert(url == item.product.clickUrl)
-        assert(productId == item.product.id)
-        assert(productName == item.product.name)
-        assert(imageUrl == item.product.imageUrl)
+        assert(url == item.recommendationCard.clickUrl)
+        assert(productId == item.recommendationCard.id)
+        assert(productName == item.recommendationCard.name)
+        assert(imageUrl == item.recommendationCard.imageUrl)
     }
 
     @Test
@@ -592,7 +618,13 @@ class HomeRecommendationViewModelTest {
         val homeRecommendationDataModel = HomeRecommendationDataModel(
             homeRecommendations = listOf(
                 HomeRecommendationItemDataModel(
-                    Product(),
+                    recommendationCard = RecommendationCard(
+                        id = "12",
+                        isWishlist = false,
+                        trackerImageUrl = "coba",
+                        clickUrl = "clickUrl"
+                    ),
+                    productCardModel = ProductCardModel(),
                     position = 1
                 ),
                 HomeRecommendationBannerTopAdsDataModel(position = 1)
@@ -634,7 +666,13 @@ class HomeRecommendationViewModelTest {
         val homeRecommendationDataModel = HomeRecommendationDataModel(
             homeRecommendations = listOf(
                 HomeRecommendationItemDataModel(
-                    Product(),
+                    recommendationCard = RecommendationCard(
+                        id = "12",
+                        isWishlist = false,
+                        trackerImageUrl = "coba",
+                        clickUrl = "clickUrl"
+                    ),
+                    productCardModel = ProductCardModel(),
                     position = 1
                 ),
                 HomeRecommendationBannerTopAdsDataModel(position = 1)
@@ -674,7 +712,13 @@ class HomeRecommendationViewModelTest {
         val homeRecommendationDataModel = HomeRecommendationDataModel(
             homeRecommendations = listOf(
                 HomeRecommendationItemDataModel(
-                    Product(),
+                    recommendationCard = RecommendationCard(
+                        id = "12",
+                        isWishlist = false,
+                        trackerImageUrl = "coba",
+                        clickUrl = "clickUrl"
+                    ),
+                    productCardModel = ProductCardModel(),
                     position = 1
                 ),
                 HomeRecommendationBannerTopAdsDataModel(position = 1)
@@ -714,7 +758,13 @@ class HomeRecommendationViewModelTest {
         val homeRecommendationDataModel = HomeRecommendationDataModel(
             homeRecommendations = listOf(
                 HomeRecommendationItemDataModel(
-                    Product(),
+                    recommendationCard = RecommendationCard(
+                        id = "12",
+                        isWishlist = false,
+                        trackerImageUrl = "coba",
+                        clickUrl = "clickUrl"
+                    ),
+                    productCardModel = ProductCardModel(),
                     position = 1
                 ),
                 HomeRecommendationBannerTopAdsDataModel(position = 1)
@@ -724,8 +774,14 @@ class HomeRecommendationViewModelTest {
         val homeRecommendationDataModel2 = HomeRecommendationDataModel(
             homeRecommendations = listOf(
                 HomeRecommendationItemDataModel(
-                    Product(),
-                    position = 1
+                    recommendationCard = RecommendationCard(
+                        id = "12",
+                        isWishlist = false,
+                        trackerImageUrl = "coba",
+                        clickUrl = "clickUrl"
+                    ),
+                    productCardModel = ProductCardModel(),
+                    position = 2
                 ),
                 HomeRecommendationBannerTopAdsDataModel(position = 1)
             ),
@@ -784,12 +840,24 @@ class HomeRecommendationViewModelTest {
         val homeRecommendationDataModel = HomeRecommendationDataModel(
             homeRecommendations = listOf(
                 HomeRecommendationItemDataModel(
-                    Product(),
+                    recommendationCard = RecommendationCard(
+                        id = "12",
+                        isWishlist = false,
+                        trackerImageUrl = "coba",
+                        clickUrl = "clickUrl"
+                    ),
+                    productCardModel = ProductCardModel(),
                     position = 1
                 ),
                 HomeRecommendationItemDataModel(
-                    Product(),
-                    position = 1
+                    recommendationCard = RecommendationCard(
+                        id = "12",
+                        isWishlist = false,
+                        trackerImageUrl = "coba",
+                        clickUrl = "clickUrl"
+                    ),
+                    productCardModel = ProductCardModel(),
+                    position = 2
                 ),
                 HomeRecommendationBannerTopAdsDataModel(position = 2)
             ),
@@ -798,12 +866,24 @@ class HomeRecommendationViewModelTest {
         val homeRecommendationDataModel2 = HomeRecommendationDataModel(
             homeRecommendations = listOf(
                 HomeRecommendationItemDataModel(
-                    Product(),
+                    recommendationCard = RecommendationCard(
+                        id = "12",
+                        isWishlist = false,
+                        trackerImageUrl = "coba",
+                        clickUrl = "clickUrl"
+                    ),
+                    productCardModel = ProductCardModel(),
                     position = 1
                 ),
                 HomeRecommendationItemDataModel(
-                    Product(),
-                    position = 1
+                    recommendationCard = RecommendationCard(
+                        id = "12",
+                        isWishlist = false,
+                        trackerImageUrl = "coba",
+                        clickUrl = "clickUrl"
+                    ),
+                    productCardModel = ProductCardModel(),
+                    position = 2
                 ),
                 HomeRecommendationBannerTopAdsDataModel(position = 2)
             ),
@@ -861,12 +941,24 @@ class HomeRecommendationViewModelTest {
         val homeRecommendationDataModel = HomeRecommendationDataModel(
             homeRecommendations = listOf(
                 HomeRecommendationItemDataModel(
-                    Product(),
+                    recommendationCard = RecommendationCard(
+                        id = "12",
+                        isWishlist = false,
+                        trackerImageUrl = "coba",
+                        clickUrl = "clickUrl"
+                    ),
+                    productCardModel = ProductCardModel(),
                     position = 1
                 ),
                 HomeRecommendationItemDataModel(
-                    Product(),
-                    position = 1
+                    recommendationCard = RecommendationCard(
+                        id = "12",
+                        isWishlist = false,
+                        trackerImageUrl = "coba",
+                        clickUrl = "clickUrl"
+                    ),
+                    productCardModel = ProductCardModel(),
+                    position = 2
                 ),
                 HomeRecommendationBannerTopAdsDataModel(position = 2)
             ),
@@ -875,11 +967,23 @@ class HomeRecommendationViewModelTest {
         val homeRecommendationDataModel2 = HomeRecommendationDataModel(
             homeRecommendations = listOf(
                 HomeRecommendationItemDataModel(
-                    Product(),
+                    recommendationCard = RecommendationCard(
+                        id = "12",
+                        isWishlist = false,
+                        trackerImageUrl = "coba",
+                        clickUrl = "clickUrl"
+                    ),
+                    productCardModel = ProductCardModel(),
                     position = 1
                 ),
                 HomeRecommendationItemDataModel(
-                    Product(),
+                    recommendationCard = RecommendationCard(
+                        id = "12",
+                        isWishlist = false,
+                        trackerImageUrl = "coba",
+                        clickUrl = "clickUrl"
+                    ),
+                    productCardModel = ProductCardModel(),
                     position = 1
                 ),
                 HomeRecommendationBannerTopAdsDataModel(position = 2)
@@ -938,7 +1042,13 @@ class HomeRecommendationViewModelTest {
         val homeRecommendationDataModel = HomeRecommendationDataModel(
             homeRecommendations = listOf(
                 HomeRecommendationItemDataModel(
-                    Product(),
+                    recommendationCard = RecommendationCard(
+                        id = "12",
+                        isWishlist = false,
+                        trackerImageUrl = "coba",
+                        clickUrl = "clickUrl"
+                    ),
+                    productCardModel = ProductCardModel(),
                     position = 1
                 )
             ),
@@ -984,7 +1094,13 @@ class HomeRecommendationViewModelTest {
         val homeRecommendationDataModel = HomeRecommendationDataModel(
             homeRecommendations = listOf(
                 HomeRecommendationItemDataModel(
-                    Product(),
+                    recommendationCard = RecommendationCard(
+                        id = "12",
+                        isWishlist = false,
+                        trackerImageUrl = "coba",
+                        clickUrl = "clickUrl"
+                    ),
+                    productCardModel = ProductCardModel(),
                     position = 1
                 )
             ),
@@ -1026,7 +1142,13 @@ class HomeRecommendationViewModelTest {
         val homeRecommendationDataModel = HomeRecommendationDataModel(
             homeRecommendations = listOf(
                 HomeRecommendationItemDataModel(
-                    Product(),
+                    recommendationCard = RecommendationCard(
+                        id = "12",
+                        isWishlist = false,
+                        trackerImageUrl = "coba",
+                        clickUrl = "clickUrl"
+                    ),
+                    productCardModel = ProductCardModel(),
                     position = 1
                 ),
                 HomeRecommendationBannerTopAdsDataModel(position = 1)
@@ -1075,7 +1197,13 @@ class HomeRecommendationViewModelTest {
         val homeRecommendationDataModel = HomeRecommendationDataModel(
             homeRecommendations = listOf(
                 HomeRecommendationItemDataModel(
-                    Product(),
+                    recommendationCard = RecommendationCard(
+                        id = "12",
+                        isWishlist = false,
+                        trackerImageUrl = "coba",
+                        clickUrl = "clickUrl"
+                    ),
+                    productCardModel = ProductCardModel(),
                     position = 1
                 ),
                 HomeRecommendationBannerTopAdsDataModel(position = 1)
@@ -1126,12 +1254,24 @@ class HomeRecommendationViewModelTest {
         val homeRecommendationDataModel = HomeRecommendationDataModel(
             homeRecommendations = listOf(
                 HomeRecommendationItemDataModel(
-                    Product(),
+                    recommendationCard = RecommendationCard(
+                        id = "12",
+                        isWishlist = false,
+                        trackerImageUrl = "coba",
+                        clickUrl = "clickUrl"
+                    ),
+                    productCardModel = ProductCardModel(),
                     position = 1
                 ),
                 HomeRecommendationBannerTopAdsDataModel(position = 1),
                 HomeRecommendationItemDataModel(
-                    Product(),
+                    recommendationCard = RecommendationCard(
+                        id = "12",
+                        isWishlist = false,
+                        trackerImageUrl = "coba",
+                        clickUrl = "clickUrl"
+                    ),
+                    productCardModel = ProductCardModel(),
                     position = 1
                 )
 
@@ -1182,7 +1322,13 @@ class HomeRecommendationViewModelTest {
         val homeRecommendationDataModel = HomeRecommendationDataModel(
             homeRecommendations = listOf(
                 HomeRecommendationItemDataModel(
-                    Product(),
+                    recommendationCard = RecommendationCard(
+                        id = "12",
+                        isWishlist = false,
+                        trackerImageUrl = "coba",
+                        clickUrl = "clickUrl"
+                    ),
+                    productCardModel = ProductCardModel(),
                     position = 1
                 ),
                 HomeRecommendationBannerTopAdsDataModel(position = 4)
@@ -1232,16 +1378,34 @@ class HomeRecommendationViewModelTest {
         val homeRecommendationDataModel = HomeRecommendationDataModel(
             homeRecommendations = listOf(
                 HomeRecommendationItemDataModel(
-                    Product(),
+                    recommendationCard = RecommendationCard(
+                        id = "12",
+                        isWishlist = false,
+                        trackerImageUrl = "coba",
+                        clickUrl = "clickUrl"
+                    ),
+                    productCardModel = ProductCardModel(),
                     position = 1
                 ),
                 HomeRecommendationItemDataModel(
-                    Product(),
+                    recommendationCard = RecommendationCard(
+                        id = "12",
+                        isWishlist = false,
+                        trackerImageUrl = "coba",
+                        clickUrl = "clickUrl"
+                    ),
+                    productCardModel = ProductCardModel(),
                     position = 1
                 ),
                 HomeRecommendationBannerTopAdsDataModel(position = 2),
                 HomeRecommendationItemDataModel(
-                    Product(),
+                    recommendationCard = RecommendationCard(
+                        id = "12",
+                        isWishlist = false,
+                        trackerImageUrl = "coba",
+                        clickUrl = "clickUrl"
+                    ),
+                    productCardModel = ProductCardModel(),
                     position = 1
                 )
             ),
@@ -1281,17 +1445,35 @@ class HomeRecommendationViewModelTest {
         val homeRecommendationDataModel = HomeRecommendationDataModel(
             homeRecommendations = listOf(
                 HomeRecommendationItemDataModel(
-                    Product(),
+                    recommendationCard = RecommendationCard(
+                        id = "12",
+                        isWishlist = false,
+                        trackerImageUrl = "coba",
+                        clickUrl = "clickUrl"
+                    ),
+                    productCardModel = ProductCardModel(),
                     position = 1
                 ),
                 HomeRecommendationItemDataModel(
-                    Product(),
-                    position = 1
+                    recommendationCard = RecommendationCard(
+                        id = "12",
+                        isWishlist = false,
+                        trackerImageUrl = "coba",
+                        clickUrl = "clickUrl"
+                    ),
+                    productCardModel = ProductCardModel(),
+                    position = 2
                 ),
                 HomeRecommendationBannerTopAdsDataModel(position = 7),
                 HomeRecommendationItemDataModel(
-                    Product(),
-                    position = 1
+                    recommendationCard = RecommendationCard(
+                        id = "12",
+                        isWishlist = false,
+                        trackerImageUrl = "coba",
+                        clickUrl = "clickUrl"
+                    ),
+                    productCardModel = ProductCardModel(),
+                    position = 3
                 )
             ),
             isHasNextPage = false

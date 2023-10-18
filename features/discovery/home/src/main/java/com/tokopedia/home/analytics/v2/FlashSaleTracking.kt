@@ -7,10 +7,10 @@ import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
 
-object FlashSaleTracking: BaseTrackerConst() {
+object FlashSaleTracking : BaseTrackerConst() {
     private const val FLASH_SALE = "product dynamic channel flash sale"
     private const val EVENT_ACTION_CLICK_CHEVRON_CTA = "click chevron button on dynamic channel flash sale"
-    private const val EVENT_ACTION_CLICK_VIEW_ALL_CARD = "click view all card on dynamic channel flash sale"
+    private const val EVENT_ACTION_CLICK_VIEW_ALL_CARD = "click view all recommendationCard on dynamic channel flash sale"
     private const val TRACKER_ID_IMPRESSION = "43653"
     private const val TRACKER_ID_CLICK = "43654"
     private const val TRACKER_ID_CLICK_CHEVRON_CTA = "43655"
@@ -35,12 +35,16 @@ object FlashSaleTracking: BaseTrackerConst() {
             Label.KEY, EVENT_LABEL_FORMAT.format(channel.id, channel.channelHeader.name),
             BusinessUnit.KEY, BusinessUnit.DEFAULT,
             CurrentSite.KEY, CurrentSite.DEFAULT,
-            Ecommerce.KEY, DataLayer.mapOf(
-                CURRENCY_CODE, IDR,
-                IMPRESSIONS, arrayListOf(getProductImpression(grid, channel))
+            Ecommerce.KEY,
+            DataLayer.mapOf(
+                CURRENCY_CODE,
+                IDR,
+                IMPRESSIONS,
+                arrayListOf(getProductImpression(grid, channel))
             ),
             UserId.KEY, userId,
-            ItemList.KEY, ITEM_LIST_FORMAT.format(
+            ItemList.KEY,
+            ITEM_LIST_FORMAT.format(
                 channel.verticalPosition,
                 Value.EMPTY,
                 Value.EMPTY,
@@ -56,7 +60,7 @@ object FlashSaleTracking: BaseTrackerConst() {
         return mapOf(
             DIMENSION_40 to ITEM_LIST_FORMAT.format(
                 channel.verticalPosition,
-                if(grid.isTopads) TOPADS else NON_TOPADS,
+                if (grid.isTopads) TOPADS else NON_TOPADS,
                 grid.recommendationType,
                 Value.EMPTY,
                 grid.shopId,
@@ -86,36 +90,50 @@ object FlashSaleTracking: BaseTrackerConst() {
             putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
             putString(CurrentSite.KEY, CurrentSite.DEFAULT)
             putString(UserId.KEY, userId)
-            putString(ItemList.KEY, ITEM_LIST_FORMAT.format(
-                channel.verticalPosition,
-                if(grid.isTopads) TOPADS else NON_TOPADS,
-                grid.recommendationType,
-                Value.EMPTY,
-                grid.shopId,
-                channel.channelHeader.name
-            ))
-            putParcelableArrayList(Items.KEY, arrayListOf(Bundle().apply {
-                putString(DIMENSION_40, ITEM_LIST_FORMAT.format(
+            putString(
+                ItemList.KEY,
+                ITEM_LIST_FORMAT.format(
                     channel.verticalPosition,
-                    if(grid.isTopads) TOPADS else NON_TOPADS,
+                    if (grid.isTopads) TOPADS else NON_TOPADS,
                     grid.recommendationType,
                     Value.EMPTY,
                     grid.shopId,
                     channel.channelHeader.name
-                ))
-                putString(DIMENSION_84, channel.id)
-                putString(DIMENSION_96, DIMENSION_96_FORMAT.format(
-                    channel.trackingAttributionModel.persoType,
-                    channel.trackingAttributionModel.categoryId
-                ))
-                putString(Items.INDEX, (grid.position + 1).toString())
-                putString(Items.ITEM_BRAND, Value.NONE_OTHER)
-                putString(Items.ITEM_CATEGORY, grid.categoryBreadcrumbs)
-                putString(Items.ITEM_ID, grid.id)
-                putString(Items.ITEM_NAME, grid.name)
-                putString(Items.ITEM_VARIANT, Value.NONE_OTHER)
-                putString(Items.PRICE, convertRupiahToInt(grid.price).toFloat().toString())
-            }))
+                )
+            )
+            putParcelableArrayList(
+                Items.KEY,
+                arrayListOf(
+                    Bundle().apply {
+                        putString(
+                            DIMENSION_40,
+                            ITEM_LIST_FORMAT.format(
+                                channel.verticalPosition,
+                                if (grid.isTopads) TOPADS else NON_TOPADS,
+                                grid.recommendationType,
+                                Value.EMPTY,
+                                grid.shopId,
+                                channel.channelHeader.name
+                            )
+                        )
+                        putString(DIMENSION_84, channel.id)
+                        putString(
+                            DIMENSION_96,
+                            DIMENSION_96_FORMAT.format(
+                                channel.trackingAttributionModel.persoType,
+                                channel.trackingAttributionModel.categoryId
+                            )
+                        )
+                        putString(Items.INDEX, (grid.position + 1).toString())
+                        putString(Items.ITEM_BRAND, Value.NONE_OTHER)
+                        putString(Items.ITEM_CATEGORY, grid.categoryBreadcrumbs)
+                        putString(Items.ITEM_ID, grid.id)
+                        putString(Items.ITEM_NAME, grid.name)
+                        putString(Items.ITEM_VARIANT, Value.NONE_OTHER)
+                        putString(Items.PRICE, convertRupiahToInt(grid.price).toFloat().toString())
+                    }
+                )
+            )
             putString(TrackerId.KEY, TRACKER_ID_CLICK)
         }
         getTracker().sendEnhanceEcommerceEvent(Event.SELECT_CONTENT, bundle)

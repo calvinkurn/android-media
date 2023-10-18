@@ -17,7 +17,7 @@ object RecommendationListTracking : BaseTrackerConst() {
     private const val RECOMMENDATION_LIST_CLICK_EVENT_ACTION = "click on product dynamic channel list carousel"
     private const val RECOMMENDATION_LIST_CLICK_ADD_TO_CART_EVENT_ACTION = "click add to cart on dynamic channel list carousel"
     private const val RECOMMENDATION_LIST_SEE_ALL_EVENT_ACTION = "click view all on dynamic channel list carousel"
-    private const val RECOMMENDATION_LIST_SEE_ALL_CARD_EVENT_ACTION = "click view all card on dynamic channel list carousel"
+    private const val RECOMMENDATION_LIST_SEE_ALL_CARD_EVENT_ACTION = "click view all recommendationCard on dynamic channel list carousel"
     private const val RECOMMENDATION_LIST_CLOSE_EVENT_ACTION = "click on close dynamic channel list carousel"
     private const val LIST_DYNAMIC_CHANNEL_LIST_CAROUSEL = "/ - p%s - dynamic channel list carousel - product - %s - carousel - %s - %s - %s - %s"
     // / - p{x} - dynamic channel list carousel - product - {topads/non topads} - {carousel/non carousel} - {recommendation_type} - {recomm_page_name} - {bu_type} - {header name}

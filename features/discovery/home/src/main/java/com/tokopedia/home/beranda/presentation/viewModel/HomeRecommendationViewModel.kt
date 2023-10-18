@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.home.beranda.domain.interactor.GetHomeRecommendationUseCase
+import com.tokopedia.home.beranda.domain.interactor.usecase.GetHomeRecommendationCardUseCase
 import com.tokopedia.home.beranda.helper.copy
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.*
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -23,6 +24,7 @@ import javax.inject.Inject
 
 class HomeRecommendationViewModel @Inject constructor(
     private val getHomeRecommendationUseCase: Lazy<GetHomeRecommendationUseCase>,
+    private val getHomeRecommendationCardUseCase: Lazy<GetHomeRecommendationCardUseCase>,
     private val topAdsImageViewUseCase: Lazy<TopAdsImageViewUseCase>,
     private val getTopAdsHeadlineUseCase: Lazy<GetTopAdsHeadlineUseCase>,
     private val userSessionInterface: Lazy<UserSessionInterface>,
@@ -56,8 +58,9 @@ class HomeRecommendationViewModel @Inject constructor(
     ) {
         _homeRecommendationLiveData.postValue(HomeRecommendationDataModel(homeRecommendations = listOf(loadingModel)))
         launchCatchError(coroutineContext, block = {
-            getHomeRecommendationUseCase.get().setParams(tabName, recommendationId, count, 1, locationParam, sourceType)
-            val data = getHomeRecommendationUseCase.get().executeOnBackground()
+            // todo will remove
+//            getHomeRecommendationUseCase.get().setParams(tabName, recommendationId, count, 1, locationParam, sourceType)
+            val data = getHomeRecommendationCardUseCase.get().execute(Int.ONE, sourceType, locationParam)
             if (data.homeRecommendations.isEmpty()) {
                 _homeRecommendationLiveData.postValue(data.copy(homeRecommendations = listOf(HomeRecommendationEmpty())))
             } else {
@@ -169,12 +172,13 @@ class HomeRecommendationViewModel @Inject constructor(
         list.add(loadMoreModel)
         _homeRecommendationLiveData.postValue(
             _homeRecommendationLiveData.value?.copy(
-                homeRecommendations = list.copy()
+                homeRecommendations = list.toList().copy()
             )
         )
         launchCatchError(coroutineContext, block = {
-            getHomeRecommendationUseCase.get().setParams(tabName, recomId, count, page, locationParam, sourceType)
-            val data = getHomeRecommendationUseCase.get().executeOnBackground()
+            // todo will remove
+//            getHomeRecommendationUseCase.get().setParams(tabName, recomId, count, page, locationParam, sourceType)
+            val data = getHomeRecommendationCardUseCase.get().execute(page, sourceType, locationParam)
             list.remove(loadMoreModel)
             try {
                 val homeBannerTopAds = data.homeRecommendations.filterIsInstance<HomeRecommendationBannerTopAdsDataModel>()
@@ -213,23 +217,29 @@ class HomeRecommendationViewModel @Inject constructor(
     }
 
     fun updateWishlist(id: String, position: Int, isWishlisted: Boolean) {
-        val list = _homeRecommendationLiveData.value?.homeRecommendations?.toMutableList() ?: mutableListOf()
+        val homeRecomendationList = _homeRecommendationLiveData.value?.homeRecommendations?.toMutableList() ?: mutableListOf()
         var recommendationItem: HomeRecommendationItemDataModel? = null
         var recommendationItemPosition: Int = -1
-        if (list.getOrNull(position)?.getUniqueIdentity() == id) {
-            recommendationItem = list[position] as HomeRecommendationItemDataModel
+        if (homeRecomendationList.getOrNull(position)?.getUniqueIdentity() == id) {
+            recommendationItem = homeRecomendationList[position] as HomeRecommendationItemDataModel
             recommendationItemPosition = position
         } else {
-            list.withIndex().find { it.value.getUniqueIdentity() == id && it.value is HomeRecommendationItemDataModel }?.let {
+            homeRecomendationList.withIndex().find { it.value.getUniqueIdentity() == id && it.value is HomeRecommendationItemDataModel }?.let {
                 recommendationItemPosition = it.index
-                recommendationItem = (it.value as HomeRecommendationItemDataModel)
+                recommendationItem = (it.value as? HomeRecommendationItemDataModel)
             }
         }
-        if (recommendationItemPosition != -1 && recommendationItem != null) {
-            list[recommendationItemPosition] = recommendationItem!!.copy(
-                product = recommendationItem!!.product.copy(isWishlist = isWishlisted)
-            )
-            _homeRecommendationLiveData.postValue(_homeRecommendationLiveData.value?.copy(homeRecommendations = list.copy()))
+        if (recommendationItemPosition != -1) {
+            recommendationItem?.let {
+                homeRecomendationList[recommendationItemPosition] = it.copy(
+                    recommendationCard = it.recommendationCard.copy(isWishlist = isWishlisted)
+                )
+                _homeRecommendationLiveData.postValue(
+                    _homeRecommendationLiveData.value?.copy(
+                        homeRecommendations = homeRecomendationList.toList().copy()
+                    )
+                )
+            }
         }
     }
 

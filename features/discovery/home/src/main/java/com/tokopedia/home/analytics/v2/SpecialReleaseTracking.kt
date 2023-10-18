@@ -16,7 +16,7 @@ object SpecialReleaseTracking : BaseTrackerConst() {
     private const val IMPRESSION_ON_BANNER_SPECIAL_RELEASE = "impression on banner dynamic channel feature campaign"
     private const val CLICK_ON_BANNER_SPECIAL_RELEASE = "click on banner dynamic channel feature campaign"
     private const val EVENT_ACTION_CLICK_VIEW_ALL_SPECIAL_RELEASE = "click view all on dynamic channel feature campaign"
-    private const val EVENT_ACTION_CLICK_VIEW_ALL_CARD_SPECIAL_RELEASE = "click view all card on dynamic channel feature campaign"
+    private const val EVENT_ACTION_CLICK_VIEW_ALL_CARD_SPECIAL_RELEASE = "click view all recommendationCard on dynamic channel feature campaign"
 
     // channelID_bannerID_channel.persoType_channel.categoryID
     private const val SPECIAL_RELEASE_PROMO_ID = "%s_%s_%s_%s"
