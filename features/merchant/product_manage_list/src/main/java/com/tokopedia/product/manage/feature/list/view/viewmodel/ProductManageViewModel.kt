@@ -92,6 +92,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import com.tokopedia.product.manage.common.R as productmanagecommonR
 
 class ProductManageViewModel @Inject constructor(
     private val editPriceUseCase: EditPriceUseCase,
@@ -313,10 +314,10 @@ class ProductManageViewModel @Inject constructor(
 
             hideProgressDialog()
         }, onError = {
-                _multiEditProductResult.value = Fail(it)
+            _multiEditProductResult.value = Fail(it)
 
-                hideProgressDialog()
-            })
+            hideProgressDialog()
+        })
     }
 
     fun editProductsEtalase(productIds: List<String>, menuId: String, menuName: String) {
@@ -342,9 +343,9 @@ class ProductManageViewModel @Inject constructor(
             _multiEditProductResult.value = Success(result)
             hideProgressDialog()
         }, onError = {
-                _multiEditProductResult.value = Fail(it)
-                hideProgressDialog()
-            })
+            _multiEditProductResult.value = Fail(it)
+            hideProgressDialog()
+        })
     }
 
     fun getProductList(
@@ -368,7 +369,12 @@ class ProductManageViewModel @Inject constructor(
                                 .orFalse() || filterOptions?.contains(FilterOption.FilterByCondition.ProductPotentialArchivedStatus)
                                 .orFalse()
                         ) {
-                            listOf(ExtraInfo.TOPADS, ExtraInfo.RBAC,ExtraInfo.IS_DT_INBOUND, ExtraInfo.ARCHIVAL)
+                            listOf(
+                                ExtraInfo.TOPADS,
+                                ExtraInfo.RBAC,
+                                ExtraInfo.IS_DT_INBOUND,
+                                ExtraInfo.ARCHIVAL
+                            )
 
                         } else {
                             listOf(ExtraInfo.TOPADS, ExtraInfo.RBAC, ExtraInfo.IS_DT_INBOUND)
@@ -401,12 +407,12 @@ class ProductManageViewModel @Inject constructor(
             showTicker()
             hideProgressDialog()
         }, onError = {
-                if (it is CancellationException) {
-                    return@launchCatchError
-                }
-                hideProgressDialog()
-                _productListResult.value = Fail(it)
-            }).let { getProductListJob = it }
+            if (it is CancellationException) {
+                return@launchCatchError
+            }
+            hideProgressDialog()
+            _productListResult.value = Fail(it)
+        }).let { getProductListJob = it }
     }
 
     fun getProductVariants(productId: String) {
@@ -445,9 +451,9 @@ class ProductManageViewModel @Inject constructor(
 
             hideLoadingDialog()
         }, onError = {
-                _getProductVariantsResult.value = Fail(it)
-                hideLoadingDialog()
-            })
+            _getProductVariantsResult.value = Fail(it)
+            hideLoadingDialog()
+        })
     }
 
     fun getTickerData() {
@@ -462,11 +468,11 @@ class ProductManageViewModel @Inject constructor(
                 result.getTargetedTicker?.tickers.orEmpty()
             )
         }, onError = {
-                _tickerData.value = tickerStaticDataProvider.getTickers(
-                    isMultiLocationShop,
-                    _shopStatus.value?.shopStatus.orEmpty()
-                )
-            })
+            _tickerData.value = tickerStaticDataProvider.getTickers(
+                isMultiLocationShop,
+                _shopStatus.value?.shopStatus.orEmpty()
+            )
+        })
     }
 
     fun getFiltersTab(withDelay: Boolean = false) {
@@ -489,11 +495,11 @@ class ProductManageViewModel @Inject constructor(
                 value = Success(data)
             }
         }, onError = {
-                if (it is CancellationException) {
-                    return@launchCatchError
-                }
-                _productFiltersTab.value = Fail(it)
-            }).let { getFilterTabJob = it }
+            if (it is CancellationException) {
+                return@launchCatchError
+            }
+            _productFiltersTab.value = Fail(it)
+        }).let { getFilterTabJob = it }
     }
 
     fun getProductManageAccess() {
@@ -548,8 +554,8 @@ class ProductManageViewModel @Inject constructor(
 
             productListFeaturedOnly?.let { setProductListFeaturedOnly(it) }
         }, onError = {
-                _productListFeaturedOnlyResult.value = Fail(it)
-            })
+            _productListFeaturedOnlyResult.value = Fail(it)
+        })
     }
 
     fun editPrice(productId: String, price: String, productName: String) {
@@ -596,7 +602,7 @@ class ProductManageViewModel @Inject constructor(
                                 productName,
                                 productId,
                                 price,
-                                NetworkErrorException(com.tokopedia.product.manage.common.R.string.product_stock_reminder_toaster_failed_desc.toString())
+                                NetworkErrorException(productmanagecommonR.string.product_stock_reminder_toaster_failed_desc.toString())
                             )
                         )
                     )
@@ -609,7 +615,7 @@ class ProductManageViewModel @Inject constructor(
                         productName,
                         productId,
                         price,
-                        NetworkErrorException(com.tokopedia.product.manage.common.R.string.product_stock_reminder_toaster_failed_desc.toString())
+                        NetworkErrorException(productmanagecommonR.string.product_stock_reminder_toaster_failed_desc.toString())
                     )
                 )
             )
@@ -627,12 +633,19 @@ class ProductManageViewModel @Inject constructor(
         launchCatchError(block = {
             var result: Result<EditStockResult>? = null
 
-            status?.let {
-                result = editProductStatus(productId, productName, stock, it)
-            }
-
-            stock?.let {
-                result = editProductStock(productId, productName, it, status)
+            if (status != null && stock != null) {
+                result = editProductStock(productId, productName, stock, status)
+                if (result is Success) {
+                    editProductStatus(productId, productName, stock, status)
+                } else {
+                    throw Throwable()
+                }
+            } else if (stock != null) {
+                result = editProductStock(productId, productName, stock, status)
+            } else {
+                status?.let {
+                    result = editProductStatus(productId, productName, stock, status)
+                }
             }
 
             result?.let {
@@ -640,7 +653,7 @@ class ProductManageViewModel @Inject constructor(
             }
         }) {
             val message =
-                com.tokopedia.product.manage.common.R.string.product_stock_reminder_toaster_failed_desc.toString()
+                productmanagecommonR.string.product_stock_reminder_toaster_failed_desc.toString()
             val result = EditStockResult(
                 productName,
                 productId,
@@ -750,7 +763,7 @@ class ProductManageViewModel @Inject constructor(
                             DeleteProductResult(
                                 productName,
                                 productId,
-                                NetworkErrorException(com.tokopedia.product.manage.common.R.string.product_stock_reminder_toaster_failed_desc.toString())
+                                NetworkErrorException(productmanagecommonR.string.product_stock_reminder_toaster_failed_desc.toString())
                             )
                         )
                     )
@@ -762,7 +775,7 @@ class ProductManageViewModel @Inject constructor(
                     DeleteProductResult(
                         productName,
                         productId,
-                        NetworkErrorException(com.tokopedia.product.manage.common.R.string.product_stock_reminder_toaster_failed_desc.toString())
+                        NetworkErrorException(productmanagecommonR.string.product_stock_reminder_toaster_failed_desc.toString())
                     )
                 )
             )
@@ -785,8 +798,8 @@ class ProductManageViewModel @Inject constructor(
                 )
             )
         }, onError = { throwable ->
-                _setFeaturedProductResult.postValue(Fail(throwable))
-            })
+            _setFeaturedProductResult.postValue(Fail(throwable))
+        })
     }
 
     fun showHideOptionsMenu() {
@@ -896,7 +909,7 @@ class ProductManageViewModel @Inject constructor(
 
                 else -> {
                     val message =
-                        com.tokopedia.product.manage.common.R.string.product_stock_reminder_toaster_failed_desc.toString()
+                        productmanagecommonR.string.product_stock_reminder_toaster_failed_desc.toString()
                     Fail(
                         EditStockResult(
                             productName,
@@ -946,7 +959,7 @@ class ProductManageViewModel @Inject constructor(
                 }
 
                 else -> {
-                    val message = com.tokopedia.product.manage.common.R.string
+                    val message = productmanagecommonR.string
                         .product_stock_reminder_toaster_failed_desc.toString()
                     Fail(MessageErrorException(message))
                 }
