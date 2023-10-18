@@ -20,7 +20,6 @@ data class ItemPenaltyUiModel(
     val productName: String? = null,
     @ColorRes val colorPenalty: Int? = null,
     var isSelected: Boolean = false,
-    val isOldPage: Boolean = true,
     @ShopPenaltyPageType val pageType: String = ShopPenaltyPageType.ONGOING
 ) : BasePenaltyPage {
     override fun type(typeFactory: PenaltyPageAdapterFactory): Int {

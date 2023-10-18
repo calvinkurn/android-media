@@ -6,7 +6,6 @@ import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.databinding.ItemDetailPenaltyPeriodDateFilterBinding
 import com.tokopedia.shop.score.penalty.presentation.adapter.ItemPeriodDateFilterListener
 import com.tokopedia.shop.score.penalty.presentation.model.ItemPeriodDetailPenaltyUiModel
-import com.tokopedia.shop.score.penalty.presentation.old.adapter.PenaltyPageAdapterOld.Companion.PAYLOAD_DATE_FILTER
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ItemPeriodDateFilterViewHolder(
@@ -16,6 +15,7 @@ class ItemPeriodDateFilterViewHolder(
 
     companion object {
         val LAYOUT = R.layout.item_detail_penalty_period_date_filter
+        const val PAYLOAD_DATE_FILTER = 408
     }
 
     private val binding: ItemDetailPenaltyPeriodDateFilterBinding? by viewBinding()

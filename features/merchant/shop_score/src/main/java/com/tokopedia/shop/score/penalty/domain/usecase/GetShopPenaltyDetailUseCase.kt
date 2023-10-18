@@ -9,7 +9,7 @@ import com.tokopedia.usecase.coroutines.UseCase
 import java.io.IOException
 import javax.inject.Inject
 
-class GetShopPenaltyDetailUseCase @Inject constructor(
+open class GetShopPenaltyDetailUseCase @Inject constructor(
     private val gqlRepository: GraphqlRepository
 ) : UseCase<ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail>() {
 

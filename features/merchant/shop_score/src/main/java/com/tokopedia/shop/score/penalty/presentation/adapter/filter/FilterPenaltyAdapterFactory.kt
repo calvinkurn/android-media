@@ -11,8 +11,6 @@ import com.tokopedia.shop.score.penalty.presentation.adapter.viewholder.ItemPena
 import com.tokopedia.shop.score.penalty.presentation.adapter.viewholder.ItemPenaltyFilterDateViewHolder
 import com.tokopedia.shop.score.penalty.presentation.model.PenaltyFilterDateUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.PenaltyFilterUiModel
-import com.tokopedia.shop.score.penalty.presentation.old.adapter.viewholder.ItemPenaltyFilterBottomSheetOldViewHolder
-import com.tokopedia.shop.score.penalty.presentation.old.model.PenaltyFilterUiModelOld
 
 class FilterPenaltyAdapterFactory(
     private val itemBottomSheetListener: FilterPenaltyBottomSheetListener,
@@ -21,10 +19,6 @@ class FilterPenaltyAdapterFactory(
 
     override fun type(penaltyFilterUiModel: PenaltyFilterUiModel): Int {
         return ItemPenaltyFilterBottomSheetViewHolder.LAYOUT
-    }
-
-    override fun type(penaltyFilterUiModelOld: PenaltyFilterUiModelOld): Int {
-        return ItemPenaltyFilterBottomSheetOldViewHolder.LAYOUT
     }
 
     override fun type(penaltyFilterDateUiModel: PenaltyFilterDateUiModel): Int {
@@ -38,10 +32,6 @@ class FilterPenaltyAdapterFactory(
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             ItemPenaltyFilterBottomSheetViewHolder.LAYOUT -> ItemPenaltyFilterBottomSheetViewHolder(
-                parent,
-                itemBottomSheetListener
-            )
-            ItemPenaltyFilterBottomSheetOldViewHolder.LAYOUT -> ItemPenaltyFilterBottomSheetOldViewHolder(
                 parent,
                 itemBottomSheetListener
             )

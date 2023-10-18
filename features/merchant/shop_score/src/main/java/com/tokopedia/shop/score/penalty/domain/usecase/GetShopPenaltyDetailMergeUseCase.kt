@@ -11,7 +11,7 @@ import com.tokopedia.usecase.coroutines.UseCase
 import java.io.IOException
 import javax.inject.Inject
 
-class GetShopPenaltyDetailMergeUseCase @Inject constructor(
+open class GetShopPenaltyDetailMergeUseCase @Inject constructor(
     private val graphqlRepository: GraphqlRepository
 ) : UseCase<Pair<ShopPenaltySummaryTypeWrapper, ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail>>() {
 

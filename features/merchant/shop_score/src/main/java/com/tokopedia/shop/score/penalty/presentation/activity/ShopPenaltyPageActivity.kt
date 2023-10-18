@@ -22,7 +22,7 @@ import com.tokopedia.shop.score.penalty.presentation.fragment.ShopPenaltyPageFra
 import com.tokopedia.shop.score.penalty.presentation.fragment.ShopPenaltyPageType
 import javax.inject.Inject
 
-class ShopPenaltyPageActivity: BaseSimpleActivity(), HasComponent<PenaltyComponent> {
+open class ShopPenaltyPageActivity: BaseSimpleActivity(), HasComponent<PenaltyComponent> {
 
     @Inject
     lateinit var shopScorePenaltyTracking: ShopScorePenaltyTracking
