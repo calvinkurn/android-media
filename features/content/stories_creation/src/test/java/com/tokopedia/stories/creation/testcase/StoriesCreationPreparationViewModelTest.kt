@@ -1,7 +1,6 @@
 package com.tokopedia.stories.creation.testcase
 
 import com.tokopedia.creation.common.upload.model.ContentMediaType
-import com.tokopedia.creation.common.upload.model.CreationUploadData
 import com.tokopedia.creation.common.upload.uploader.CreationUploader
 import com.tokopedia.stories.creation.builder.AccountModelBuilder
 import com.tokopedia.stories.creation.builder.CommonModelBuilder
@@ -67,6 +66,9 @@ class StoriesCreationPreparationViewModelTest {
             coVerify(exactly = 1) { mockRepo.getStoryPreparationInfo(any()) }
             coVerify(exactly = 1) { mockRepo.createStory(any()) }
 
+            robot.storyId.assertEqualTo(mockStoryId)
+            robot.selectedAccount.assertEqualTo(mockAccountList[0])
+            robot.maxProductTag.assertEqualTo(mockConfig.maxProductTag)
             state.config.storiesId.assertEqualTo(mockStoryId)
             state.accountList.assertEqualTo(mockAccountList)
 
@@ -97,6 +99,9 @@ class StoriesCreationPreparationViewModelTest {
             coVerify(exactly = 1) { mockRepo.getStoryPreparationInfo(any()) }
             coVerify(exactly = 0) { mockRepo.createStory(any()) }
 
+            robot.storyId.assertEqualTo(mockConfig.storiesId)
+            robot.selectedAccount.assertEqualTo(mockAccountList[0])
+            robot.maxProductTag.assertEqualTo(mockConfig.maxProductTag)
             state.config.assertEqualTo(mockConfig)
             state.accountList.assertEqualTo(mockAccountList)
 
@@ -201,6 +206,7 @@ class StoriesCreationPreparationViewModelTest {
             coVerify(exactly = 1) { mockRepo.getStoryPreparationInfo(any()) }
             coVerify(exactly = 0) { mockRepo.createStory(any()) }
 
+            robot.maxStoriesConfig.assertEqualTo(mockConfig.maxStoriesConfig)
             state.config.assertEqualTo(mockConfig)
             state.accountList.assertEqualTo(mockAccountList)
 
@@ -244,6 +250,7 @@ class StoriesCreationPreparationViewModelTest {
                 submitAction(StoriesCreationAction.SetProduct(mockProductList))
             }
 
+            robot.productTag.assertEqualTo(mockProductList)
             state.productTags.assertEqualTo(mockProductList)
         }
     }

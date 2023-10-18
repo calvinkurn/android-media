@@ -1,8 +1,11 @@
 package com.tokopedia.stories.creation.robot
 
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.creation.common.upload.uploader.CreationUploader
 import com.tokopedia.stories.creation.domain.repository.StoriesCreationRepository
+import com.tokopedia.stories.creation.view.model.StoriesCreationConfiguration
 import com.tokopedia.stories.creation.view.model.action.StoriesCreationAction
 import com.tokopedia.stories.creation.view.model.event.StoriesCreationUiEvent
 import com.tokopedia.stories.creation.view.model.state.StoriesCreationUiState
@@ -30,6 +33,21 @@ class StoriesCreationViewModelRobot(
         repo = repo,
         creationUploader = creationUploader,
     )
+
+    val maxStoriesConfig: StoriesCreationConfiguration.MaxStoriesConfig
+        get() = viewModel.maxStoriesConfig
+
+    val storyId: String
+        get() = viewModel.storyId
+
+    val selectedAccount: ContentAccountUiModel
+        get() = viewModel.selectedAccount
+
+    val productTag: List<ProductTagSectionUiModel>
+        get() = viewModel.productTag
+
+    val maxProductTag: Int
+        get() = viewModel.maxProductTag
 
     fun recordState(fn: suspend StoriesCreationViewModelRobot.() -> Unit): StoriesCreationUiState {
         val scope = CoroutineScope(dispatchers.coroutineDispatcher)
