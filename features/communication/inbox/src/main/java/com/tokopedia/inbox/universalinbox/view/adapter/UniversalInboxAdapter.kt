@@ -22,7 +22,6 @@ import com.tokopedia.inbox.universalinbox.view.adapter.viewholder.UniversalInbox
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuSeparatorUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationTitleUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationUiModel
-import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationWidgetUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopAdsBannerUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxWidgetMetaUiModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
@@ -73,8 +72,6 @@ class UniversalInboxAdapter(
     private var menuSeparatorPosition: Int? = null
     private var recommendationFirstPosition: Int? = null
     private var recommendationTitlePosition: Int? = null
-    private var recommendationWidgetPrePurchasePosition: Int? = null
-    private var recommendationWidgetPostPurchasePosition: Int? = null
 
     private val loaderUiModel by lazy {
         LoadingMoreModel()
@@ -107,45 +104,6 @@ class UniversalInboxAdapter(
     private fun checkCachedRecommendationFirstPosition(): Boolean {
         return recommendationFirstPosition?.let {
             it < visitables.size && visitables[it] is UniversalInboxRecommendationUiModel
-        } ?: false
-    }
-
-    private fun getRecommendationWidgetPosition(
-        type: UniversalInboxRecommendationWidgetUiModel.Type
-    ): Int? {
-        return if (checkCachedRecommendationWidgetPosition(type)) {
-            when (type) {
-                UniversalInboxRecommendationWidgetUiModel.Type.POST_PURCHASE -> {
-                    recommendationWidgetPostPurchasePosition
-                }
-                UniversalInboxRecommendationWidgetUiModel.Type.PRE_PURCHASE -> {
-                    recommendationWidgetPrePurchasePosition
-                }
-            }
-        } else {
-            // get first index or -1
-            visitables.indexOfFirst {
-                it is UniversalInboxRecommendationWidgetUiModel &&
-                    it.type == type
-            }.takeIf { it >= 0 }?.also { // get result when it not -1 (found)
-                when (type) {
-                    UniversalInboxRecommendationWidgetUiModel.Type.POST_PURCHASE -> {
-                        recommendationWidgetPostPurchasePosition = it
-                    }
-                    UniversalInboxRecommendationWidgetUiModel.Type.PRE_PURCHASE -> {
-                        recommendationWidgetPrePurchasePosition = it
-                    }
-                }
-            }
-        }
-    }
-
-    private fun checkCachedRecommendationWidgetPosition(
-        type: UniversalInboxRecommendationWidgetUiModel.Type
-    ): Boolean {
-        return recommendationWidgetPrePurchasePosition?.let {
-            it < visitables.size && visitables[it] is UniversalInboxRecommendationWidgetUiModel &&
-                type == (visitables[it] as UniversalInboxRecommendationWidgetUiModel).type
         } ?: false
     }
 
@@ -315,19 +273,6 @@ class UniversalInboxAdapter(
             updateItems(editedList)
         } catch (throwable: Throwable) {
             Timber.d(throwable)
-        }
-    }
-
-    fun refreshRecommendationWidget() {
-        getRecommendationWidgetPosition(
-            UniversalInboxRecommendationWidgetUiModel.Type.POST_PURCHASE
-        )?.let {
-            notifyItemChanged(it)
-        }
-        getRecommendationWidgetPosition(
-            UniversalInboxRecommendationWidgetUiModel.Type.PRE_PURCHASE
-        )?.let {
-            notifyItemChanged(it)
         }
     }
 
