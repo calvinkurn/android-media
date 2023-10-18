@@ -1,6 +1,7 @@
 package com.tokopedia.stories.creation.testcase
 
 import com.tokopedia.creation.common.upload.model.ContentMediaType
+import com.tokopedia.creation.common.upload.model.CreationUploadData
 import com.tokopedia.creation.common.upload.uploader.CreationUploader
 import com.tokopedia.stories.creation.builder.AccountModelBuilder
 import com.tokopedia.stories.creation.builder.CommonModelBuilder
@@ -244,6 +245,33 @@ class StoriesCreationPreparationViewModelTest {
             }
 
             state.productTags.assertEqualTo(mockProductList)
+        }
+    }
+
+    @Test
+    fun `storiesCreation_clickUpload`() {
+        val mockConfig = configModelBuilder.build()
+        val mockAccountList = accountModelBuilder.build()
+        val mockMediaFilePath = "asdf"
+        val mockMediaType = ContentMediaType.Video
+
+        coEvery { mockRepo.getCreationAccountList() } returns mockAccountList
+        coEvery { mockRepo.getStoryPreparationInfo(any()) } returns mockConfig
+
+        val robot = StoriesCreationViewModelRobot(
+            dispatchers = testDispatcher,
+            repo = mockRepo,
+            creationUploader = mockCreationUploader,
+        )
+
+        robot.use {
+            it.recordState {
+                submitAction(StoriesCreationAction.Prepare)
+                submitAction(StoriesCreationAction.SetMedia(mockMediaFilePath, mockMediaType))
+                submitAction(StoriesCreationAction.ClickUpload)
+            }
+
+            coVerify(exactly = 1) { mockCreationUploader.upload(any()) }
         }
     }
 }
