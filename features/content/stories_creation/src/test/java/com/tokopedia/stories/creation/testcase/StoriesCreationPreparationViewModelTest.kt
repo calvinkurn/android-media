@@ -5,6 +5,7 @@ import com.tokopedia.creation.common.upload.uploader.CreationUploader
 import com.tokopedia.stories.creation.builder.AccountModelBuilder
 import com.tokopedia.stories.creation.builder.CommonModelBuilder
 import com.tokopedia.stories.creation.builder.ConfigurationModelBuilder
+import com.tokopedia.stories.creation.builder.ProductModelBuilder
 import com.tokopedia.stories.creation.domain.repository.StoriesCreationRepository
 import com.tokopedia.stories.creation.robot.StoriesCreationViewModelRobot
 import com.tokopedia.stories.creation.util.assertEmpty
@@ -38,6 +39,7 @@ class StoriesCreationPreparationViewModelTest {
     private val commonModelBuilder = CommonModelBuilder()
     private val accountModelBuilder = AccountModelBuilder()
     private val configModelBuilder = ConfigurationModelBuilder()
+    private val productModelBuilder = ProductModelBuilder()
 
     @Test
     fun `storiesCreation_prepare_success_noDraft`() {
@@ -223,6 +225,25 @@ class StoriesCreationPreparationViewModelTest {
 
             state.mediaFilePath.assertEqualTo(mockMediaFilePath)
             state.mediaType.assertEqualTo(mockMediaType)
+        }
+    }
+
+    @Test
+    fun `storiesCreation_setProduct`() {
+        val mockProductList = productModelBuilder.buildProductTagSectionList()
+
+        val robot = StoriesCreationViewModelRobot(
+            dispatchers = testDispatcher,
+            repo = mockRepo,
+            creationUploader = mockCreationUploader,
+        )
+
+        robot.use {
+            val state = it.recordState {
+                submitAction(StoriesCreationAction.SetProduct(mockProductList))
+            }
+
+            state.productTags.assertEqualTo(mockProductList)
         }
     }
 }
