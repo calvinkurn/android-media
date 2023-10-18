@@ -6,12 +6,10 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
-import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.analytics.performance.PerformanceMonitoring
-import com.tokopedia.analytics.performance.perf.BlocksPerformanceTrace
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.analytics.performance.util.PltPerformanceData
@@ -105,7 +103,6 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
     private var performanceMonitoringP2Other: PerformanceMonitoring? = null
     private var performanceMonitoringP2Login: PerformanceMonitoring? = null
 
-    private var blocksPerformanceTrace: BlocksPerformanceTrace? = null
     var productDetailLoadTimeMonitoringListener: ProductDetailLoadTimeMonitoringListener? = null
 
     @Inject
@@ -155,7 +152,6 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
 
     fun getPltPerformanceResultData(): PltPerformanceData? = pageLoadTimePerformanceMonitoring?.getPltPerformanceData()
 
-    fun getBlocksPerformanceMonitoring(): BlocksPerformanceTrace? = blocksPerformanceTrace
     fun goToHomePageClicked() {
         if (isTaskRoot) {
             RouteManager.route(this, ApplinkConst.HOME)
@@ -248,7 +244,6 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
 
     override fun onCreate(savedInstanceState: Bundle?) {
         try {
-            initBlocksPLTMonitoring()
             userSessionInterface = UserSession(this)
             isFromDeeplink = intent.getBooleanExtra(PARAM_IS_FROM_DEEPLINK, false)
 
@@ -344,14 +339,6 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
         finish()
     }
 
-    private fun initBlocksPLTMonitoring() {
-        blocksPerformanceTrace = BlocksPerformanceTrace(
-            this,
-            "pdp",
-            lifecycleScope,
-            this
-        ) { summaryModel, capturedBlocks -> }
-    }
     private fun initPLTMonitoring() {
         pageLoadTimePerformanceMonitoring = PageLoadTimePerformanceCallback(
             ProductDetailConstant.PDP_RESULT_PLT_PREPARE_METRICS,
