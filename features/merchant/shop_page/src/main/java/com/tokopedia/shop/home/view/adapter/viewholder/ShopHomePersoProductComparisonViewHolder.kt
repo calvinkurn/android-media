@@ -4,14 +4,12 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonColorConfig
 import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonListModel
 import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonWidgetInterface
 import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonWidgetView
 import com.tokopedia.recommendation_widget_common.widget.comparison.RecommendationTrackingModel
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant
-import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.ItemShopHomePersoProductComparisonBinding
 import com.tokopedia.shop.home.view.listener.ShopHomeListener
 import com.tokopedia.shop.home.view.model.ShopHomePersoProductComparisonUiModel
@@ -49,14 +47,6 @@ class ShopHomePersoProductComparisonViewHolder(
     }
 
     private fun setComparisonWidget(uiModel: ShopHomePersoProductComparisonUiModel) {
-        val textColor = uiModel.header.colorSchema.listColorSchema.firstOrNull { it.name ==  ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS.value }?.value
-        val ctaTextColor = uiModel.header.colorSchema.listColorSchema.firstOrNull { it.name ==  ShopPageColorSchema.ColorSchemaName.ICON_ENABLED_HIGH_COLOR.value }?.value
-        val colorConfig = if (shopHomeListener.isOverrideTheme()) {
-            ComparisonColorConfig(textColor = textColor, anchorBackgroundColor = "#e0e0e0", ctaTextColor = ctaTextColor, productCardForceLightMode = true)
-        } else {
-            ComparisonColorConfig()
-        }
-        
         uiModel.recommendationWidget?.let {
             comparisonWidget?.setComparisonWidgetData(
                 it,
@@ -67,9 +57,7 @@ class ShopHomePersoProductComparisonViewHolder(
                     ShopPageTrackingConstant.CLICK_PG,
                     ShopPageTrackingConstant.SHOP_PAGE_BUYER
                 ),
-                shopHomeListener.getFragmentTrackingQueue(),
-                null,
-                colorConfig
+                shopHomeListener.getFragmentTrackingQueue()
             )
         }
     }
