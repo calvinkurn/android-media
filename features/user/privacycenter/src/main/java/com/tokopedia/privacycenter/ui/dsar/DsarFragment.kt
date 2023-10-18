@@ -291,15 +291,13 @@ class DsarFragment : BaseDaggerFragment(), OnDateChangedListener {
     }
 
     private fun showTransactionHistoryBtmSheet() {
-        activity?.supportFragmentManager?.let {
-            if (rangePickerBottomSheet == null) {
-                rangePickerBottomSheet = DsarHistoryTransactionBottomSheet()
-            }
-            rangePickerBottomSheet?.setOnDismissListener { item, isChecked, customDate ->
-                onItemRangeClicked(item, isChecked, customDate)
-            }
-            rangePickerBottomSheet?.show(childFragmentManager, TAG_CUSTOM_RANGE_BOTTOM_SHEET)
+        if (rangePickerBottomSheet == null) {
+            rangePickerBottomSheet = DsarHistoryTransactionBottomSheet()
         }
+        rangePickerBottomSheet?.setOnDismissListener { item, isChecked, customDate ->
+            onItemRangeClicked(item, isChecked, customDate)
+        }
+        rangePickerBottomSheet?.show(childFragmentManager, TAG_CUSTOM_RANGE_BOTTOM_SHEET)
     }
 
     private fun renderOnProgressView(searchResult: GetRequestDetailResponse) {
