@@ -1,4 +1,4 @@
-package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.atf2
+package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget
 
 import androidx.recyclerview.widget.DiffUtil
 

@@ -1,9 +1,9 @@
-package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.atf2
+package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget
 
 import android.content.Context
 import com.tokopedia.device.info.DeviceScreenInfo
 
-object BalanceAtf2Util {
+object BalanceUtil {
     fun getBalanceItemWidth(context: Context, totalItems: Int): Int {
         val screenWidth = DeviceScreenInfo.getScreenWidth(context)
         val dividerCount = totalItems - 1

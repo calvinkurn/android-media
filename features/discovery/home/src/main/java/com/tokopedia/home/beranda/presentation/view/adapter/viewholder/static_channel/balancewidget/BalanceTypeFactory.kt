@@ -1,9 +1,8 @@
-package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.atf2
+package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget
 
 import android.view.ViewGroup
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceAtf2DividerModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.BaseBalanceViewHolder
 
 /**
  * Created by frenzel

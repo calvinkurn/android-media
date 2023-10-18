@@ -1,4 +1,4 @@
-package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.atf2
+package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget
 
 import android.view.View
 import androidx.core.content.ContextCompat
@@ -15,7 +15,7 @@ import com.tokopedia.home.R as homeR
 /**
  * Created by frenzel
  */
-class BalanceAtf2DividerViewHolder(
+class BalanceDividerViewHolder(
     v: View,
     private val homeThematicUtil: HomeThematicUtil,
 ): BaseBalanceViewHolder<BalanceAtf2DividerModel>(v) {

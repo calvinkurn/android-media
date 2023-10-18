@@ -1,6 +1,5 @@
-package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.atf2
+package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget
 
-import android.os.Bundle
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 
 /**

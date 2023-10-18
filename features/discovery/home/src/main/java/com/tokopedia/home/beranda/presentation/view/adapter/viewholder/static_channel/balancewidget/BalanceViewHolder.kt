@@ -1,4 +1,4 @@
-package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.atf2
+package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget
 
 import android.os.Bundle
 import android.view.View
@@ -14,7 +14,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ba
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_SUBSCRIPTION
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_APP_LINKED
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_APP_NOT_LINKED
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.BaseBalanceViewHolder
 import com.tokopedia.home.beranda.presentation.view.helper.HomeThematicUtil
 import com.tokopedia.home.databinding.ItemBalanceWidgetAtf2Binding
 import com.tokopedia.kotlin.extensions.view.gone
@@ -30,7 +29,7 @@ import com.tokopedia.home.R as homeR
 /**
  * Created by frenzel
  */
-class BalanceAtf2ViewHolder(
+class BalanceViewHolder(
     v: View,
     private val totalItems: Int,
     private val homeThematicUtil: HomeThematicUtil,
@@ -89,7 +88,7 @@ class BalanceAtf2ViewHolder(
     }
 
     private fun setFillWidth() {
-        containerLayoutParams?.width = BalanceAtf2Util.getBalanceItemWidth(itemView.context, totalItems)
+        containerLayoutParams?.width = BalanceUtil.getBalanceItemWidth(itemView.context, totalItems)
         successContainerLayoutParams?.width = ViewGroup.LayoutParams.MATCH_PARENT
         titleLayoutParams?.matchConstraintMaxWidth = ConstraintLayout.LayoutParams.MATCH_CONSTRAINT
         subtitleLayoutParams?.matchConstraintMaxWidth = ConstraintLayout.LayoutParams.MATCH_CONSTRAINT
@@ -98,7 +97,7 @@ class BalanceAtf2ViewHolder(
     private fun setDynamicWidth() {
         containerLayoutParams?.width = ViewGroup.LayoutParams.WRAP_CONTENT
         successContainerLayoutParams?.width = ViewGroup.LayoutParams.WRAP_CONTENT
-        val textMaxWidth = BalanceAtf2Util.getBalanceTextWidth(itemView.context)
+        val textMaxWidth = BalanceUtil.getBalanceTextWidth(itemView.context)
         titleLayoutParams?.matchConstraintMaxWidth = textMaxWidth
         subtitleLayoutParams?.matchConstraintMaxWidth = textMaxWidth
     }

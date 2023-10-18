@@ -1,4 +1,4 @@
-package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.atf2
+package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -14,14 +14,14 @@ import com.tokopedia.utils.view.binding.viewBinding
 /**
  * Created by frenzel
  */
-class BalanceWidgetAtf2ViewHolder(
+class BalanceWidgetViewHolder(
     itemView: View,
     val listener: HomeCategoryListener?,
     private val homeThematicUtil: HomeThematicUtil,
 ) :
     AbstractViewHolder<HomeBalanceModel>(itemView) {
     private var binding: LayoutBalanceWidgetAtf2Binding? by viewBinding()
-    private var balanceAdapter: BalanceAtf2Adapter? = null
+    private var balanceAdapter: BalanceAdapter? = null
 
     companion object {
         val LAYOUT = R.layout.layout_balance_widget_atf2
@@ -50,7 +50,7 @@ class BalanceWidgetAtf2ViewHolder(
 
         if (binding?.rvBalanceWidgetData?.adapter == null) {
             balanceAdapter =
-                BalanceAtf2Adapter(
+                BalanceAdapter(
                     listener,
                     BalanceTypeFactoryImpl(totalData, homeThematicUtil)
                 )

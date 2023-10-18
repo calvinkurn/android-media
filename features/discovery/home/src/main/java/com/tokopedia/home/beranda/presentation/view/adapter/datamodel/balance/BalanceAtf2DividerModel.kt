@@ -1,7 +1,7 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance
 
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.atf2.BalanceTypeFactory
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.atf2.BalanceVisitable
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.BalanceTypeFactory
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.BalanceVisitable
 
 /**
  * Created by dhaba

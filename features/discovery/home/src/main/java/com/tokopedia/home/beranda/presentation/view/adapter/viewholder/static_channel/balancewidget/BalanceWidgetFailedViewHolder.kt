@@ -1,4 +1,4 @@
-package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.atf2
+package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -11,7 +11,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 /**
  * Created by frenzel
  */
-class BalanceWidgetAtf2FailedViewHolder (itemView: View, val listener: HomeCategoryListener?) :
+class BalanceWidgetFailedViewHolder (itemView: View, val listener: HomeCategoryListener?) :
     AbstractViewHolder<BalanceWidgetFailedModel>(itemView) {
     private var binding: LayoutBalanceWidgetAtf2FailedBinding? by viewBinding()
 
