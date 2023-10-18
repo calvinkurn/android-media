@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    app:layout_constraintDimensionRatio="H,9:16">
 
     <com.tokopedia.play_common.view.RoundedImageView
         android:id="@+id/iv_stories_detail_content"
