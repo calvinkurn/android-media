@@ -49,9 +49,11 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
     private var isAccountLinked = false
     private var isReload = false
     private var isLaunchCallback = false
+    private var isLaunchTokoKyc = false
 
     private var dismissDialogWithDataListener: (Boolean) -> Unit = {}
     private var dismissDialogLaunchCallBackListener: (Unit) -> Unit = {}
+    private var dismissDialogLaunchTokoKycListener: (Unit) -> Unit = {}
 
     private val startKycForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
         when (result.resultCode) {
@@ -67,6 +69,10 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
             }
             KYCConstant.ActivityResult.LAUNCH_CALLBACK -> {
                 isLaunchCallback = true
+                dismiss()
+            }
+            KYCConstant.ActivityResult.LAUNCH_TOKO_KYC -> {
+                isLaunchTokoKyc = true
                 dismiss()
             }
         }
@@ -263,16 +269,26 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
 
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
-        if (isLaunchCallback) {
-            dismissDialogLaunchCallBackListener(Unit)
-        } else {
-            dismissDialogWithDataListener(isReload)
+        when {
+            isLaunchTokoKyc -> {
+                dismissDialogLaunchTokoKycListener(Unit)
+            }
+            isLaunchCallback -> {
+                dismissDialogLaunchCallBackListener(Unit)
+            }
+            else -> {
+                dismissDialogWithDataListener(isReload)
+            }
         }
 
         GotoKycAnalytics.sendClickOnButtonCloseOnboardingBottomSheet(
             projectId = projectId,
             kycFlowType = KYCConstant.GotoKycFlow.NON_PROGRESSIVE
         )
+    }
+
+    fun setOnLaunchTokoKycListener(isLaunchTokoKyc: (Unit) -> Unit) {
+        dismissDialogLaunchTokoKycListener = isLaunchTokoKyc
     }
 
     fun setOnDismissWithDataListener(isReload: (Boolean) -> Unit) {

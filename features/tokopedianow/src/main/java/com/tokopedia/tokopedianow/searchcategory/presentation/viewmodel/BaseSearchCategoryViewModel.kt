@@ -51,12 +51,18 @@ import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.OOC
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.PAGE_NUMBER_RECOM_WIDGET
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.RECOM_WIDGET
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TOKONOW_NO_RESULT
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RollenceKey.TOKOPEDIA_NOW_PAGINATION
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_TOKONOW
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_BUSINESS_UNIT
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_CURRENT_SITE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_PHYSICAL_GOODS
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
+import com.tokopedia.tokopedianow.common.constant.ConstantKey.DEFAULT_ROWS
+import com.tokopedia.tokopedianow.common.constant.ConstantKey.EXPERIMENT_DISABLED
+import com.tokopedia.tokopedianow.common.constant.ConstantKey.EXPERIMENT_ENABLED
+import com.tokopedia.tokopedianow.common.constant.ConstantKey.EXPERIMENT_ROWS
 import com.tokopedia.tokopedianow.common.constant.ServiceType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowStaticLayoutType.Companion.PRODUCT_ADS_CAROUSEL
@@ -141,9 +147,10 @@ abstract class BaseSearchCategoryViewModel(
     protected val cartService: CartService,
     private val getShopAndWarehouseUseCase: GetChosenAddressWarehouseLocUseCase,
     protected val setUserPreferenceUseCase: SetUserPreferenceUseCase,
+    private val remoteConfig: RemoteConfig,
     protected val chooseAddressWrapper: ChooseAddressWrapper,
     private val affiliateService: NowAffiliateService,
-    protected val userSession: UserSessionInterface
+    protected val userSession: UserSessionInterface,
 ) : BaseViewModel(baseDispatcher.io) {
     companion object {
         private const val MIN_PRODUCT_COUNT = 6
@@ -176,6 +183,15 @@ abstract class BaseSearchCategoryViewModel(
         private set
     var serviceType = ""
         private set
+
+    private val firstPageSuccessTriggerMutableLiveData = MutableLiveData<Unit>()
+    val firstPageSuccessTriggerLiveData: LiveData<Unit> = firstPageSuccessTriggerMutableLiveData
+
+    private val loadMoreSuccessTriggerMutableLiveData = MutableLiveData<Unit>()
+    val loadMoreSuccessTriggerLiveData: LiveData<Unit> = loadMoreSuccessTriggerMutableLiveData
+
+    private val stopPerformanceMonitoringMutableLiveData = MutableLiveData<Unit>()
+    val stopPerformanceMonitoringLiveData: LiveData<Unit> = stopPerformanceMonitoringMutableLiveData
 
     private val visitableListMutableLiveData = MutableLiveData<List<Visitable<*>>>(visitableList)
     val visitableListLiveData: LiveData<List<Visitable<*>>> = visitableListMutableLiveData
@@ -361,6 +377,8 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     private fun showOutOfCoverage() {
+        stopPerformanceMonitoringMutableLiveData.value = Unit
+
         updateHeaderBackgroundVisibility(false)
         updateMiniCartVisibility(false)
 
@@ -393,6 +411,7 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     protected open fun onGetShopAndWarehouseFailed(throwable: Throwable) {
+        stopPerformanceMonitoringMutableLiveData.value = Unit
     }
 
     protected abstract fun loadFirstPage()
@@ -464,7 +483,7 @@ abstract class BaseSearchCategoryViewModel(
     protected open fun appendPaginationParam(tokonowQueryParam: MutableMap<String, Any>) {
         tokonowQueryParam[SearchApiConst.PAGE] = nextPage
         tokonowQueryParam[SearchApiConst.USE_PAGE] = true
-        tokonowQueryParam[SearchApiConst.ROWS] = SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_ROWS_PROFILE
+        tokonowQueryParam[SearchApiConst.ROWS] = getRows()
     }
 
     private fun appendQueryParam(tokonowQueryParam: MutableMap<String, Any>) {
@@ -484,6 +503,8 @@ abstract class BaseSearchCategoryViewModel(
         searchProduct: SearchProduct,
         feedbackFieldIsActive: Boolean = false
     ) {
+        firstPageSuccessTriggerMutableLiveData.value = Unit
+
         totalData = headerDataView.aceSearchProductHeader.totalData
         totalFetchedData += contentDataView.aceSearchProductData.productList.size
         autoCompleteApplink = contentDataView.aceSearchProductData.autocompleteApplink
@@ -1016,6 +1037,7 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     protected open fun onGetFirstPageError(throwable: Throwable) {
+        stopPerformanceMonitoringMutableLiveData.value = Unit
         isShowErrorMutableLiveData.value = throwable
     }
 
@@ -1030,6 +1052,7 @@ abstract class BaseSearchCategoryViewModel(
     abstract fun executeLoadMore()
 
     protected open fun onGetLoadMorePageSuccess(contentDataView: ContentDataView) {
+        loadMoreSuccessTriggerMutableLiveData.value = Unit
         totalFetchedData += contentDataView.aceSearchProductData.productList.size
 
         updateVisitableListForNextPage(contentDataView)
@@ -1655,5 +1678,12 @@ abstract class BaseSearchCategoryViewModel(
             affiliateService.checkAtcAffiliateCookie(data)
         }) {
         }
+    }
+
+    fun getRows(): String = if (getPaginationExperiment()) EXPERIMENT_ROWS else DEFAULT_ROWS
+
+    private fun getPaginationExperiment(): Boolean {
+        val experiment = remoteConfig.getString(TOKOPEDIA_NOW_PAGINATION, EXPERIMENT_DISABLED)
+        return experiment == EXPERIMENT_ENABLED
     }
 }

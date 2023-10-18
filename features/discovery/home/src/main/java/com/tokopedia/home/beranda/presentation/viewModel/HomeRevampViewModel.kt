@@ -29,6 +29,7 @@ import com.tokopedia.home.beranda.domain.interactor.usecase.HomeRecommendationUs
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeSalamRecommendationUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeSearchUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeSuggestedReviewUseCase
+import com.tokopedia.home.beranda.domain.interactor.usecase.HomeThematicUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeTodoWidgetUseCase
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
 import com.tokopedia.home.beranda.helper.Event
@@ -36,6 +37,7 @@ import com.tokopedia.home.beranda.helper.RateLimiter
 import com.tokopedia.home.beranda.helper.Result
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeThematicModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.CMHomeWidgetDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.CarouselPlayWidgetDataModel
@@ -48,6 +50,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ReviewDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TickerDataModel
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRemoteConfigController
+import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
 import com.tokopedia.home.util.HomeServerLogger
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
@@ -104,7 +107,8 @@ open class HomeRevampViewModel @Inject constructor(
     private val homeRateLimit: RateLimiter<String>,
     private val homeRemoteConfigController: Lazy<HomeRemoteConfigController>,
     private val homeAtfUseCase: Lazy<HomeAtfUseCase>,
-    private val todoWidgetRepository: Lazy<TodoWidgetRepository>
+    private val todoWidgetRepository: Lazy<TodoWidgetRepository>,
+    private val homeThematicUseCase: Lazy<HomeThematicUseCase>,
 ) : BaseCoRoutineScope(homeDispatcher.get().io) {
 
     companion object {
@@ -157,6 +161,9 @@ open class HomeRevampViewModel @Inject constructor(
 
     private val _resetNestedScrolling = MutableLiveData<Event<Boolean>>()
     val resetNestedScrolling: LiveData<Event<Boolean>> get() = _resetNestedScrolling
+
+    val thematicLiveData: LiveData<HomeThematicModel> get() = _thematicLiveData
+    private val _thematicLiveData = MutableLiveData<HomeThematicModel>()
 
     private var fetchFirstData = false
     private var homeFlowStarted = false
@@ -297,6 +304,7 @@ open class HomeRevampViewModel @Inject constructor(
     @FlowPreview
     private fun initFlow() {
         homeFlowStarted = true
+        getThematicBackground()
         if (homeRemoteConfigController.get().isUsingNewAtf()) {
             launch(homeDispatcher.get().io) {
                 homeAtfUseCase.get().fetchAtfDataList()
@@ -890,5 +898,16 @@ open class HomeRevampViewModel @Inject constructor(
                 }
             }
         )
+    }
+
+    private fun getThematicBackground() {
+        if(!HomeRollenceController.isOldHome()) {
+            launchCatchError(coroutineContext, {
+                val thematic = homeThematicUseCase.get().executeOnBackground()
+                _thematicLiveData.postValue(thematic)
+            }) {
+                _thematicLiveData.postValue(HomeThematicModel(isShown = false))
+            }
+        }
     }
 }
