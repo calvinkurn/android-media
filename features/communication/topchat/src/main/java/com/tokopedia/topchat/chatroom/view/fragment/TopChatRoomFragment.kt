@@ -3530,17 +3530,17 @@ open class TopChatRoomFragment :
     }
 
     override fun onClickReadMoreAutoReply(
-        welcomeMessage: TopChatRoomAutoReplyItemUiModel,
+        mainMessage: TopChatRoomAutoReplyItemUiModel,
         list: List<TopChatRoomAutoReplyItemUiModel>
     ) {
         TopChatAnalyticsKt.eventClickAutoReply(
             messageId,
-            listOf(welcomeMessage) + list
+            listOf(mainMessage) + list
         )
         view?.hideKeyboard()
         TopChatRoomAutoReplyDetailBottomSheet().show(
             childFragmentManager,
-            welcomeMessage,
+            mainMessage,
             list
         )
     }

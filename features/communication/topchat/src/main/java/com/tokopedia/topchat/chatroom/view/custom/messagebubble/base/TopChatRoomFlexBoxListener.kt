@@ -11,7 +11,7 @@ interface TopChatRoomFlexBoxListener {
     )
 
     fun onClickReadMoreAutoReply(
-        welcomeMessage: TopChatRoomAutoReplyItemUiModel,
+        mainMessage: TopChatRoomAutoReplyItemUiModel,
         list: List<TopChatRoomAutoReplyItemUiModel>
     )
 }

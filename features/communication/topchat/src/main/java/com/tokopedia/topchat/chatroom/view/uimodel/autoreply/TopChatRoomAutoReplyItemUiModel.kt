@@ -23,7 +23,17 @@ data class TopChatRoomAutoReplyItemUiModel(
             PRODUCT_MESSAGE -> IconUnify.PRODUCT
             DELIVERY_MESSAGE -> IconUnify.COURIER
             OPERATIONAL_MESSAGE -> IconUnify.CLOCK
-            else -> IconUnify.BELL // default
+            else -> {
+                /**
+                 * If the title and type is blank,
+                 * it should be treated same as welcome message
+                 */
+                if (title.isNotBlank() && type.isNotBlank()) {
+                    IconUnify.BELL
+                } else {
+                    null
+                }
+            }
         }
     }
 

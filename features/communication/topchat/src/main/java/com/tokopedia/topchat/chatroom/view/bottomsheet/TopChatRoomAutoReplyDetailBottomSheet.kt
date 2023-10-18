@@ -17,7 +17,7 @@ class TopChatRoomAutoReplyDetailBottomSheet: BottomSheetUnify() {
 
     private var binding by autoClearedNullable<TopchatChatroomBottomsheetAutoReplyBinding>()
     private val adapter = TopChatRoomAutoReplyAdapter(isMessageBubble = false)
-    private var welcomeMessage = TopChatRoomAutoReplyItemUiModel("", "", "")
+    private var mainMessage = TopChatRoomAutoReplyItemUiModel("", "", "")
     private var list: List<TopChatRoomAutoReplyItemUiModel> = listOf()
 
     init {
@@ -46,20 +46,21 @@ class TopChatRoomAutoReplyDetailBottomSheet: BottomSheetUnify() {
 
     private fun setupViews() {
         this.setTitle(getString(R.string.topchat_message_auto_reply_bs_title))
-        binding?.topchatChatroomTvWelcomeMessageBs?.text = welcomeMessage.getMessage()
+        binding?.topchatChatroomTvWelcomeMessageBs?.text = mainMessage.getMessage()
         binding?.topchatChatroomRvAutoReplyBs?.adapter = adapter
         binding?.topchatChatroomRvAutoReplyBs?.layoutManager = LinearLayoutManager(context)
         binding?.topchatChatroomRvAutoReplyBs?.itemAnimator = null
         binding?.topchatChatroomRvAutoReplyBs?.isNestedScrollingEnabled = false
+        binding?.topchatChatroomRvAutoReplyBs?.setHasFixedSize(true)
         adapter.updateItem(list)
     }
 
     fun show(
         fragmentManager: FragmentManager?,
-        welcomeMessage: TopChatRoomAutoReplyItemUiModel,
+        mainMessage: TopChatRoomAutoReplyItemUiModel,
         list: List<TopChatRoomAutoReplyItemUiModel>
     ) {
-        this.welcomeMessage = welcomeMessage
+        this.mainMessage = mainMessage
         this.list = list
         fragmentManager?.let {
             if (!isVisible) {

@@ -361,31 +361,43 @@ class TopChatRoomFlexBoxAutoReplyLayout : BaseTopChatFlexBoxChatLayout {
         messageUiModel: MessageUiModel,
         autoReplyList: List<TopChatRoomAutoReplyItemUiModel>
     ) {
-        val welcomeMessage = autoReplyList.firstOrNull {
-            it.getIcon() == null // Check only for welcome message
+        /**
+         * Check if there's only 1 auto reply message
+         * Should set Auto Reply Message Only
+         */
+        if (autoReplyList.size <= 1) {
+            bindAutoReplyMessage(
+                autoReplyMessageBody = autoReplyList.firstOrNull(),
+                messageUiModel = messageUiModel,
+                shouldLimitMessageBody = false
+            )
+        } else {
+            val welcomeMessage = autoReplyList.firstOrNull {
+                it.getIcon() == null // Check only for welcome message / any main message
+            }
+            val autoReplyItemList = autoReplyList.filter {
+                it.getIcon() != null // Check for auto reply item
+            }
+            bindAutoReplyMessage(
+                autoReplyMessageBody = welcomeMessage,
+                messageUiModel = messageUiModel,
+                shouldLimitMessageBody = autoReplyItemList.isNotEmpty()
+            )
+            bindAutoReplyRecyclerView(
+                welcomeMessage = welcomeMessage,
+                autoReplyItemList = autoReplyItemList
+            )
         }
-        val autoReplyItemList = autoReplyList.filter {
-            it.getIcon() != null // Check only for auto reply item
-        }
-        bindAutoReplyMessage(
-            welcomeMessage = welcomeMessage,
-            messageUiModel = messageUiModel,
-            shouldLimitWelcomeMessage = autoReplyItemList.isNotEmpty()
-        )
-        bindAutoReplyRecyclerView(
-            welcomeMessage = welcomeMessage,
-            autoReplyItemList = autoReplyItemList
-        )
     }
 
     private fun bindAutoReplyMessage(
-        welcomeMessage: TopChatRoomAutoReplyItemUiModel?,
+        autoReplyMessageBody: TopChatRoomAutoReplyItemUiModel?,
         messageUiModel: MessageUiModel,
-        shouldLimitWelcomeMessage: Boolean
+        shouldLimitMessageBody: Boolean
     ) {
         setMessageTypeFace(messageUiModel)
-        message?.text = welcomeMessage?.getMessage()
-        if (shouldLimitWelcomeMessage) {
+        message?.text = autoReplyMessageBody?.getMessage()
+        if (shouldLimitMessageBody) {
             message?.maxLines = 3
             message?.ellipsize = TextUtils.TruncateAt.END
         } else {
