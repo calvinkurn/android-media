@@ -566,16 +566,6 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                status
                componentName
             }
-            socialProofComponent {
-                socialProofType
-                socialProofID
-                title
-                subtitle
-                icon
-                applink {
-                    appLink
-                }
-            }
             reviewList {
                 title
                 applink
