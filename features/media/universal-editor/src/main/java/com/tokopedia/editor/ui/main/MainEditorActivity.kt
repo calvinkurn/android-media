@@ -1,5 +1,9 @@
+@file:SuppressLint("DeprecatedMethod")
+@file:Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
+
 package com.tokopedia.editor.ui.main
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -108,7 +112,7 @@ open class MainEditorActivity : AppCompatActivity()
     }
 
     private val viewModel: MainEditorViewModel by viewModels { viewModelFactory }
-    private lateinit var binding: ActivityMainEditorBinding
+    private var binding: ActivityMainEditorBinding? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
@@ -117,10 +121,15 @@ open class MainEditorActivity : AppCompatActivity()
 
         super.onCreate(savedInstanceState)
         binding = ActivityMainEditorBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(binding?.root)
 
         setDataParam()
         initObserver()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        binding = null
     }
 
     override fun attachBaseContext(newBase: Context?) {
@@ -141,16 +150,14 @@ open class MainEditorActivity : AppCompatActivity()
     override fun onTextClick(text: View, model: InputTextModel?) {
         if (model == null) return
 
-        binding.container.setTextVisibility(text.id, false)
+        binding?.container?.setTextVisibility(text.id, false)
         viewModel.onEvent(MainEditorEvent.EditInputTextPage(text.id, model))
     }
 
-    @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         viewModel.onEvent(MainEditorEvent.ClickHeaderCloseButton())
     }
 
-    @Suppress("DEPRECATION")
     private fun setDataParam() {
         val param = intent?.getParcelableExtra<UniversalEditorParam>(
             EXTRA_UNIVERSAL_EDITOR_PARAM
@@ -205,7 +212,7 @@ open class MainEditorActivity : AppCompatActivity()
         navigationTool.setupView(model.tools)
 
         // listeners
-        binding.container.setListener(this)
+        binding?.container?.setListener(this)
 
         isPageInitialize = true
     }
@@ -226,7 +233,7 @@ open class MainEditorActivity : AppCompatActivity()
                 }
             }
             is MainEditorEffect.UpdateTextAddedState -> {
-                val hasTextAdded = binding.container.hasTextAdded()
+                val hasTextAdded = binding?.container?.hasTextAdded() ?: return
                 viewModel.onEvent(MainEditorEvent.HasTextAdded(hasTextAdded))
             }
             is MainEditorEffect.RemoveAudioState -> {
@@ -279,15 +286,15 @@ open class MainEditorActivity : AppCompatActivity()
         val (viewId, model) = state
         if (model == null) return
 
-        binding.container.addOrEditText(viewId, model)
-        binding.container.setTextVisibility(viewId, true)
+        binding?.container?.addOrEditText(viewId, model)
+        binding?.container?.setTextVisibility(viewId, true)
         viewModel.onEvent(MainEditorEvent.ResetActiveInputText)
     }
 
     private fun onShowToastErrorMessage(message: String) {
         if (message.isEmpty()) return
 
-        val parent = binding.container
+        val parent = binding?.container ?: return
         val actionText = getString(R.string.universal_editor_retry)
 
         val toaster = Toaster.build(parent, message, LENGTH_SHORT, TYPE_ERROR, actionText) {
@@ -298,8 +305,12 @@ open class MainEditorActivity : AppCompatActivity()
     }
 
     private fun exportFinalResult() {
-        val bitmap = binding.container.exportAsBitmap()
+        // grid and deletion view are added as Views. thus, we have to ensure
+        // both view are removed before convert it to bitmap.
+        binding?.container?.viewsCleanUp()
+
         val imageBitmap = pagerContainer.getImageBitmap()
+        val bitmap = binding?.container?.exportAsBitmap() ?: return
 
         viewModel.onEvent(MainEditorEvent.ExportMedia(bitmap, imageBitmap))
     }

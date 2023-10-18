@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION", "DeprecatedMethod")
+
 package com.tokopedia.editor.ui.widget
 
 import android.content.Context
@@ -12,7 +14,7 @@ import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.editor.R as editorR
-import com.tokopedia.unifyprinciples.R as principleR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class InputTextStyleItemView(context: Context, attributeSet: AttributeSet?) :
     CardUnify2(context, attributeSet) {
@@ -41,7 +43,7 @@ class InputTextStyleItemView(context: Context, attributeSet: AttributeSet?) :
     fun setActive() {
         textContent?.let {
             it.setBackgroundColor(
-                resources.getColor(principleR.color.Unify_Static_White)
+                resources.getColor(unifyprinciplesR.color.Unify_Static_White)
             )
             it.setTextColorCompat(editorR.color.dms_universal_editor_input_text_style_font_color_active)
         }
@@ -53,7 +55,7 @@ class InputTextStyleItemView(context: Context, attributeSet: AttributeSet?) :
             it.setBackgroundColor(
                 resources.getColor(editorR.color.dms_universal_editor_input_text_style_background_color_inactive)
             )
-            it.setTextColorCompat(principleR.color.Unify_Static_White)
+            it.setTextColorCompat(unifyprinciplesR.color.Unify_Static_White)
         }
         isActive = false
     }

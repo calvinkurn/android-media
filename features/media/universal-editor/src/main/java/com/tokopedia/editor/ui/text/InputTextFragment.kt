@@ -1,4 +1,4 @@
-@file:Suppress("DEPRECATION")
+@file:Suppress("DEPRECATION", "DeprecatedMethod")
 
 package com.tokopedia.editor.ui.text
 
@@ -22,14 +22,15 @@ import com.tokopedia.editor.util.FontAlignment
 import com.tokopedia.editor.util.FontDetail
 import com.tokopedia.editor.util.provider.ColorProvider
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
-import com.tokopedia.editor.R as resourceR
+import com.tokopedia.editor.R as editorR
 
 class InputTextFragment @Inject constructor(
     private val colorProvider: ColorProvider,
     private val viewModelFactory: ViewModelProvider.Factory
-) : BaseEditorFragment(resourceR.layout.fragment_input_text) {
+) : BaseEditorFragment(editorR.layout.fragment_input_text) {
 
     private val viewModel: InputTextViewModel by activityViewModels { viewModelFactory }
     private val viewBinding: FragmentInputTextBinding? by viewBinding()
@@ -180,7 +181,7 @@ class InputTextFragment @Inject constructor(
                         tag = colorInt
                         setOnClickListener { colorRefView ->
                             this.setActive()
-                            colorClickListener(colorRefView.tag.toString().toInt())
+                            colorClickListener(colorRefView.tag.toString().toIntOrZero())
                         }
 
                         if (viewModel.getCurrentSelectedColor() == colorInt) setActive()
@@ -221,7 +222,7 @@ class InputTextFragment @Inject constructor(
     private fun updateBackgroundStateIcon(stateEnable: Boolean) {
         viewBinding?.textBackgroundIcon?.let {
             if (stateEnable) {
-                it.setImageResource(resourceR.drawable.text_icon_filled)
+                it.setImageResource(editorR.drawable.text_icon_filled)
             } else {
                 it.setImage(IconUnify.TEXT)
             }
@@ -256,7 +257,7 @@ class InputTextFragment @Inject constructor(
             if (isClear) {
                 it.hint = ""
             } else {
-                it.hint = getString(resourceR.string.universal_editor_input_text_hint)
+                it.hint = getString(editorR.string.universal_editor_input_text_hint)
             }
         }
     }
