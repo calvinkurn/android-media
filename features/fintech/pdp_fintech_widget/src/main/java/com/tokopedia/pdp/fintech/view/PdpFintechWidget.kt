@@ -38,8 +38,9 @@ import javax.inject.Inject
 class PdpFintechWidget @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
-    @AttrRes defStyleAttr: Int = 0
+    @AttrRes defStyleAttr: Int = 0,
 ) : BaseCustomView(context, attrs, defStyleAttr) {
+
 
     private var idToPriceUrlMap = HashMap<String, FintechPriceURLDataModel>()
     private var priceToChip = HashMap<String, ArrayList<ChipsData>>()
@@ -52,6 +53,9 @@ class PdpFintechWidget @JvmOverloads constructor(
     private var logInStatus = false
     private lateinit var binding: PdpFintechWidgetLayoutBinding
 
+
+
+
     @Inject
     lateinit var pdpWidgetAnalytics: dagger.Lazy<PdpFintechWidgetAnalytics>
 
@@ -61,11 +65,14 @@ class PdpFintechWidget @JvmOverloads constructor(
     private var instanceProductUpdateListner: ProductUpdateListner? = null
     private lateinit var fintechWidgetViewModel: FintechWidgetViewModel
 
+
     init {
         initInjector()
         initView()
         initRecycler()
     }
+
+
 
     fun updateBaseFragmentContext(
         parentViewModelStore: ViewModelStore,
@@ -76,6 +83,7 @@ class PdpFintechWidget @JvmOverloads constructor(
                 FintechWidgetViewModel::class.java
             )
         observeWidgetInfo(parentLifeCycleOwner)
+
     }
 
     private fun observeWidgetInfo(parentLifeCycleOwner: LifecycleOwner) {
@@ -103,20 +111,22 @@ class PdpFintechWidget @JvmOverloads constructor(
                 binding.quickText.text = baseChipResponse.list[0].title
                 setSeeMoreButton(baseChipResponse.list[0].chips)
             }
+
         }
     }
 
     private fun setSeeMoreButton(chips: ArrayList<ChipsData>) {
-        if (chips[chips.size - 1].gatewayId == LIHAT_SEMU_GATEWAY_ID) {
+        if(chips[chips.size-1].gatewayId == LIHAT_SEMU_GATEWAY_ID)
+        {
             binding.pdpFintechWidgetSeeMore.visibility = VISIBLE
-            binding.pdpFintechWidgetSeeMore.text = chips[chips.size - 1].header?.parseAsHtml()
-            setSeeMoreListner(chips[chips.size - 1])
+            binding.pdpFintechWidgetSeeMore.text = chips[chips.size-1].header?.parseAsHtml()
+            setSeeMoreListner(chips[chips.size-1])
         }
     }
 
     private fun setSeeMoreListner(chipsData: ChipsData) {
-        val listOfAllChecker = setListOfData(chipsData)
-        if (Utils.safeLet(listOfAllChecker) == true) {
+        val listOfAllChecker   = setListOfData(chipsData)
+        if(Utils.safeLet(listOfAllChecker) == true) {
             binding.pdpFintechWidgetSeeMore.setOnClickListener {
                 routeToPdp(
                     returnRouteObject(chipsData).also { data ->
@@ -136,6 +146,7 @@ class PdpFintechWidget @JvmOverloads constructor(
         }
     }
 
+
     private fun initInjector() {
         DaggerFintechWidgetComponent.builder()
             .baseAppComponent((context.applicationContext as BaseMainApplication).baseAppComponent)
@@ -143,19 +154,18 @@ class PdpFintechWidget @JvmOverloads constructor(
     }
 
     private fun initRecycler() {
+
         binding.recyclerItems.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
-        fintechWidgetAdapter = FintechWidgetAdapter(
-            context,
-            object : WidgetClickListner {
-                override fun clickedWidget(
-                    fintechRedirectionWidgetDataClass: FintechRedirectionWidgetDataClass
-                ) {
-                    fintechRedirectionWidgetDataClass.categoryId = categoryId.orEmpty()
-                    fintechRedirectionWidgetDataClass.parentId = parentId
-                    routeToPdp(fintechRedirectionWidgetDataClass)
-                }
+        fintechWidgetAdapter = FintechWidgetAdapter(context, object : WidgetClickListner {
+            override fun clickedWidget(
+                fintechRedirectionWidgetDataClass: FintechRedirectionWidgetDataClass
+            ) {
+                fintechRedirectionWidgetDataClass.categoryId = categoryId.orEmpty()
+                fintechRedirectionWidgetDataClass.parentId = parentId
+                routeToPdp(fintechRedirectionWidgetDataClass)
             }
-        )
+
+        })
         binding.recyclerItems.adapter = fintechWidgetAdapter
     }
 
@@ -163,7 +173,8 @@ class PdpFintechWidget @JvmOverloads constructor(
         fintechRedirectionWidgetDataClass: FintechRedirectionWidgetDataClass,
         rediretionLink: String
     ) {
-        if (fintechRedirectionWidgetDataClass.gatewayId == "0") {
+
+        if (fintechRedirectionWidgetDataClass.gatewayId == "0")
             pdpWidgetAnalytics.get().sendAnalyticsEvent(
                 FintechWidgetAnalyticsEvent.PdpWidgetClick(
                     this.productID,
@@ -177,7 +188,7 @@ class PdpFintechWidget @JvmOverloads constructor(
                     fintechRedirectionWidgetDataClass.subtitle
                 )
             )
-        } else {
+        else
             pdpWidgetAnalytics.get().sendAnalyticsEvent(
                 FintechWidgetAnalyticsEvent.PdpWidgetClick(
                     this.productID,
@@ -191,11 +202,11 @@ class PdpFintechWidget @JvmOverloads constructor(
                     fintechRedirectionWidgetDataClass.subtitle
                 )
             )
-        }
     }
 
+
     private fun routeToPdp(fintechRedirectionWidgetDataClass: FintechRedirectionWidgetDataClass) {
-        val redirectionLink = createRedirectionAppLink(fintechRedirectionWidgetDataClass, this.productID)
+        val redirectionLink = createRedirectionAppLink(fintechRedirectionWidgetDataClass,this.productID)
         sendClickEvent(fintechRedirectionWidgetDataClass, redirectionLink)
         instanceProductUpdateListner?.fintechChipClicked(
             fintechRedirectionWidgetDataClass,
@@ -207,13 +218,13 @@ class PdpFintechWidget @JvmOverloads constructor(
         return UriUtil.buildUri(ApplinkConst.PRODUCT_INFO, this.productID).encodeToUtf8()
     }
 
+
     private fun initView() {
-        binding = PdpFintechWidgetLayoutBinding.inflate(
-            LayoutInflater.from(context),
-            this,
-            true
+       binding =  PdpFintechWidgetLayoutBinding.inflate(
+            LayoutInflater.from(context),this,true
         )
     }
+
 
     fun updateProductId(
         productID: String,
@@ -224,12 +235,12 @@ class PdpFintechWidget @JvmOverloads constructor(
     ) {
         try {
             if (this.productID == productID && this.logInStatus == loggedIn && priceToChip.isNotEmpty()) {
-                if (idToPriceUrlMap[productID] != null) {
+                if (idToPriceUrlMap[productID] != null)
                     getChipDataAndUpdate(idToPriceUrlMap[productID]?.price)
-                } else {
+                else
                     getDetailFromApi(productID, fintechWidgetViewHolder, shopID, parentId)
-                }
             } else {
+
                 getDetailFromApi(productID, fintechWidgetViewHolder, shopID, parentId)
             }
         } catch (e: Exception) {
@@ -277,7 +288,7 @@ class PdpFintechWidget @JvmOverloads constructor(
 
     private fun sendPdpImpression(chipList: ArrayList<ChipsData>) {
         for (i in 0 until chipList.size) {
-            if (chipList[i].gatewayId == "0") {
+            if (chipList[i].gatewayId == "0")
                 pdpWidgetAnalytics.get().sendAnalyticsEvent(
                     FintechWidgetAnalyticsEvent.PdpWidgetImpression(
                         productID ?: "",
@@ -289,7 +300,7 @@ class PdpFintechWidget @JvmOverloads constructor(
                         chipList[i].subheader
                     )
                 )
-            } else {
+            else
                 pdpWidgetAnalytics.get().sendAnalyticsEvent(
                     FintechWidgetAnalyticsEvent.PdpWidgetImpression(
                         productID ?: "",
@@ -301,8 +312,9 @@ class PdpFintechWidget @JvmOverloads constructor(
                         chipList[i].subheader
                     )
                 )
-            }
+
         }
+
     }
 
     fun updateIdToPriceMap(
@@ -320,6 +332,7 @@ class PdpFintechWidget @JvmOverloads constructor(
         const val PARAM_PARENT_ID = "parentId"
         const val PARAM_CATEGORY_ID = "categoryId"
     }
+
 }
 
 data class FintechPriceURLDataModel(
