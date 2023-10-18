@@ -261,6 +261,18 @@ class PinpointViewModel @Inject constructor(
      */
     fun setAddress(address: SaveAddressDataModel) {
         this.addressDataFromWebview = address
+        this.uiModel = this.uiModel.copy(
+            districtName = address.districtName,
+            cityName = address.cityName,
+            provinceName = address.provinceName,
+            districtId = address.districtId,
+            cityId = address.cityId,
+            provinceId = address.provinceId,
+            postalCode = address.postalCode,
+            lat = address.latitude.toDoubleOrZero(),
+            long = address.longitude.toDoubleOrZero(),
+            title = uiModel.title
+        )
     }
 
     /*
