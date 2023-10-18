@@ -344,11 +344,7 @@ class HomeAdapterFactory(
     }
 
     override fun type(homeHeaderOvoDataModel: HomeHeaderDataModel): Int {
-        return if (HomeRollenceController.isUsingAtf2Variant()) {
-            HomeHeaderAtf2ViewHolder.LAYOUT
-        } else {
-            HomeHeaderOvoViewHolder.LAYOUT
-        }
+        return HomeHeaderAtf2ViewHolder.LAYOUT
     }
 
     override fun type(homeInitialShimmerDataModel: HomeInitialShimmerDataModel): Int {

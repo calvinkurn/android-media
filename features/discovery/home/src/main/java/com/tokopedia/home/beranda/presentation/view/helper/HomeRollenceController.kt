@@ -9,11 +9,10 @@ import com.tokopedia.remoteconfig.RollenceKey
  * Created by frenzel on 09/05/22.
  */
 object HomeRollenceController {
-    var rollenceAtfValue: String = ""
     private const val EMPTY_VALUE = ""
 
+    var rollenceAtfValue: String = ""
     var rollenceLoadTime: String = ""
-
     var rollenceLoadAtfCache: String = RollenceKey.HOME_LOAD_ATF_CACHE_ROLLENCE_CONTROL
 
     fun fetchHomeRollenceValue(context: Context) {
@@ -25,10 +24,10 @@ object HomeRollenceController {
     private fun fetchAtfRollenceValue(context: Context) {
         rollenceAtfValue = try {
             val rollenceAtf = RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.HOME_COMPONENT_ATF)
-            if (DeviceScreenInfo.isTablet(context) || rollenceAtf != RollenceKey.HOME_COMPONENT_ATF_2) {
-                EMPTY_VALUE
-            } else {
+            if (rollenceAtf == RollenceKey.HOME_COMPONENT_ATF_3) {
                 rollenceAtf
+            } else {
+                RollenceKey.HOME_COMPONENT_ATF_2
             }
         } catch (_: Exception) {
             EMPTY_VALUE
@@ -42,7 +41,7 @@ object HomeRollenceController {
                 RollenceKey.HOME_LOAD_TIME_CONTROL
             )
         } catch (_: Exception) {
-            RollenceKey.HOME_LOAD_TIME_CONTROL
+            EMPTY_VALUE
         }
     }
 
@@ -61,15 +60,11 @@ object HomeRollenceController {
         return rollenceLoadAtfCache == RollenceKey.HOME_LOAD_ATF_CACHE_ROLLENCE_EXP
     }
 
-    private fun getAtfRollenceValue(): String {
-        return rollenceAtfValue
-    }
-
     fun isUsingAtf2Variant(): Boolean {
-        return getAtfRollenceValue() == RollenceKey.HOME_COMPONENT_ATF_2
+        return rollenceAtfValue != RollenceKey.HOME_COMPONENT_ATF_3
     }
 
-    fun isOldHome(): Boolean {
-        return getAtfRollenceValue() != RollenceKey.HOME_COMPONENT_ATF_2
+    fun isUsingAtf3Variant(): Boolean {
+        return rollenceAtfValue == RollenceKey.HOME_COMPONENT_ATF_3
     }
 }

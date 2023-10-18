@@ -7,7 +7,6 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceAtf2DividerModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.layoutmanager.NpaLinearLayoutManager
-import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
 import com.tokopedia.home.beranda.presentation.view.helper.HomeThematicUtil
 import com.tokopedia.home.databinding.LayoutBalanceWidgetAtf2Binding
 import com.tokopedia.utils.view.binding.viewBinding
@@ -75,7 +74,7 @@ class BalanceWidgetAtf2ViewHolder(
         val balanceModelList = mutableListOf<BalanceVisitable>()
         element.balanceDrawerItemModels.forEachIndexed { idx, model ->
             balanceModelList.add(model)
-            if (HomeRollenceController.isUsingAtf2Variant() && idx < element.balanceDrawerItemModels.size - 1) {
+            if (idx < element.balanceDrawerItemModels.size - 1) {
                 balanceModelList.add(BalanceAtf2DividerModel())
             }
         }

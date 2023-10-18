@@ -216,11 +216,6 @@ import com.tokopedia.unifycomponents.Toaster.build
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.usercomponents.stickylogin.common.StickyLoginConstant
-import com.tokopedia.usercomponents.stickylogin.common.helper.isRegisteredFromStickyLogin
-import com.tokopedia.usercomponents.stickylogin.common.helper.saveIsRegisteredFromStickyLogin
-import com.tokopedia.usercomponents.stickylogin.view.StickyLoginAction
-import com.tokopedia.usercomponents.stickylogin.view.StickyLoginView
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.utils.resources.isDarkMode
 import com.tokopedia.weaver.WeaveInterface
@@ -240,6 +235,7 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import com.tokopedia.wishlist_common.R as wishlist_commonR
 import com.tokopedia.play.widget.R as playwidgetR
 import com.tokopedia.searchbar.R as searchbarR
+import com.tokopedia.loyalty.R as loyaltyR
 
 /**
  * @author by yoasfs on 12/14/17.
@@ -374,7 +370,6 @@ open class HomeRevampFragment :
     private lateinit var statusBarBackground: View
     private lateinit var sharedPrefs: SharedPreferences
     private lateinit var remoteConfigInstance: RemoteConfigInstance
-    private var stickyLoginView: StickyLoginView? = null
     private var homeRecyclerView: NestedRecyclerView? = null
     private var navToolbar: NavToolbar? = null
     private var thematicBackground: AppCompatImageView? = null
@@ -610,24 +605,18 @@ open class HomeRevampFragment :
 
                         override fun onSwitchToDarkToolbar() {
                             navToolbar?.hideShadow()
-                            if (HomeRollenceController.isUsingAtf2Variant()) {
-                                setupThematicStatusBarAndToolbar()
-                            } else {
-                                requestStatusBarLight()
-                            }
+                            setupThematicStatusBarAndToolbar()
                         }
 
                         override fun onSwitchToLightToolbar() {
                             requestStatusBarBasedOnUiMode()
-                            if (HomeRollenceController.isUsingAtf2Variant()) {
-                                navToolbar?.switchToolbarBasedOnUiMode()
-                            }
+                            navToolbar?.switchToolbarBasedOnUiMode()
                         }
 
                         override fun onYposChanged(yOffset: Int) {
                         }
                     },
-                    isBackgroundColorDefaultColor = HomeRollenceController.isUsingAtf2Variant()
+                    isBackgroundColorDefaultColor = true
                 )
             )
             activity?.let { context ->
@@ -1035,11 +1024,6 @@ open class HomeRevampFragment :
         initRefreshLayout()
         subscribeHome()
         initEggTokenScrollListener()
-        initStickyLogin()
-
-        context?.let {
-            if (isRegisteredFromStickyLogin(it)) gotoNewUserZone()
-        }
 
         if (isSuccessReset()) showSuccessResetPasswordDialog()
     }
@@ -1061,36 +1045,6 @@ open class HomeRevampFragment :
             val intent = RouteManager.getIntent(it, ApplinkConst.LOGIN)
             startActivityForResult(intent, requestCode)
         }
-    }
-
-    private fun initStickyLogin() {
-        stickyLoginView = if (!HomeRollenceController.isUsingAtf2Variant()) {
-            view?.findViewById(R.id.sticky_login_text)
-        } else {
-            null
-        }
-        if (stickyLoginView == null) return
-        stickyLoginView?.page = StickyLoginConstant.Page.HOME
-        stickyLoginView?.lifecycleOwner = viewLifecycleOwner
-        stickyLoginView?.setStickyAction(object : StickyLoginAction {
-            override fun onClick() {
-                goToLogin(REQUEST_CODE_LOGIN_STICKY_LOGIN)
-            }
-
-            override fun onDismiss() {
-                floatingEggButtonFragment?.let {
-                    updateEggBottomMargin(it)
-                }
-            }
-
-            override fun onViewChange(isShowing: Boolean) {
-                floatingEggButtonFragment?.let {
-                    updateEggBottomMargin(it)
-                }
-            }
-        })
-
-        stickyLoginView?.hide()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -1741,7 +1695,7 @@ open class HomeRevampFragment :
             RouteManager.route(requireActivity(), ApplinkConstInternalPromo.PROMO_LIST)
         } else {
             if (activity != null) {
-                showBannerWebViewOnAllPromoClickFromHomeIntent(BerandaUrl.PROMO_URL + BerandaUrl.FLAG_APP, getString(com.tokopedia.loyalty.R.string.title_activity_promo))
+                showBannerWebViewOnAllPromoClickFromHomeIntent(BerandaUrl.PROMO_URL + BerandaUrl.FLAG_APP, getString(loyaltyR.string.title_activity_promo))
             }
         }
     }
@@ -1835,7 +1789,6 @@ open class HomeRevampFragment :
         if (activity is RefreshNotificationListener) {
             (activity as RefreshNotificationListener?)?.onRefreshNotification()
         }
-        stickyLoginView?.loadContent()
         loadEggData(isPageRefresh)
     }
 
@@ -1889,7 +1842,6 @@ open class HomeRevampFragment :
         if (activity is RefreshNotificationListener) {
             (activity as RefreshNotificationListener?)?.onRefreshNotification()
         }
-        stickyLoginView?.loadContent()
         loadEggData()
     }
 
@@ -1918,7 +1870,6 @@ open class HomeRevampFragment :
     }
 
     private fun onPageLoadTimeEnd() {
-        stickyLoginView?.loadContent()
         pageLoadTimeCallback?.invalidate()
         loadEggData(isPageRefresh)
     }
@@ -2553,18 +2504,7 @@ open class HomeRevampFragment :
 
     private fun updateEggBottomMargin(floatingEggButtonFragment: FloatingEggButtonFragment) {
         val params = floatingEggButtonFragment.view?.layoutParams as FrameLayout.LayoutParams
-        if (stickyLoginView?.isShowing() == true) {
-            stickyLoginView?.height?.let { params.setMargins(DEFAULT_MARGIN_VALUE, DEFAULT_MARGIN_VALUE, DEFAULT_MARGIN_VALUE, it) }
-            val positionEgg = IntArray(POSITION_ARRAY_CONTAINER_SIZE)
-            val eggHeight = floatingEggButtonFragment.egg.height
-            val stickyTopLocation = stickyLoginView?.getLocation()?.get(POSITION_ARRAY_Y) ?: DEFAULT_MARGIN_VALUE
-            floatingEggButtonFragment.egg.getLocationOnScreen(positionEgg)
-            if (positionEgg[POSITION_ARRAY_Y] + eggHeight > stickyTopLocation) {
-                floatingEggButtonFragment.moveEgg(stickyTopLocation - eggHeight)
-            }
-        } else {
-            params.setMargins(DEFAULT_MARGIN_VALUE, DEFAULT_MARGIN_VALUE, DEFAULT_MARGIN_VALUE, DEFAULT_MARGIN_VALUE)
-        }
+        params.setMargins(DEFAULT_MARGIN_VALUE, DEFAULT_MARGIN_VALUE, DEFAULT_MARGIN_VALUE, DEFAULT_MARGIN_VALUE)
     }
 
     override fun getWindowWidth(): Int {
@@ -2729,7 +2669,6 @@ open class HomeRevampFragment :
 
     private fun gotoNewUserZone() {
         context?.let {
-            if (isRegisteredFromStickyLogin(it)) saveIsRegisteredFromStickyLogin(it, false)
             startActivity(RouteManager.getIntent(it, ApplinkConst.DISCOVERY_NEW_USER))
         }
     }

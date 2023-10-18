@@ -25,21 +25,15 @@ class BalanceWidgetTypeFactoryImpl(
     private val homeThematicUtil: HomeThematicUtil,
 ) : BaseAdapterTypeFactory(), BalanceWidgetTypeFactory {
     override fun type(dataModel: HomeBalanceModel): Int {
-        return if(HomeRollenceController.isUsingAtf2Variant()) {
-            BalanceWidgetAtf2ViewHolder.LAYOUT
-        } else BalanceWidgetViewHolder.LAYOUT
+        return BalanceWidgetAtf2ViewHolder.LAYOUT
     }
 
     override fun type(dataModel: BalanceShimmerModel): Int {
-        return if(HomeRollenceController.isUsingAtf2Variant()) {
-            BalanceWidgetAtf2ShimmerViewHolder.LAYOUT
-        } else BalanceWidgetShimmerViewHolder.LAYOUT
+        return BalanceWidgetAtf2ShimmerViewHolder.LAYOUT
     }
 
     override fun type(dataModel: BalanceWidgetFailedModel): Int {
-        return if(HomeRollenceController.isUsingAtf2Variant()) {
-            BalanceWidgetAtf2FailedViewHolder.LAYOUT
-        } else BalanceWidgetFailedViewHolder.LAYOUT
+        return BalanceWidgetAtf2FailedViewHolder.LAYOUT
     }
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {

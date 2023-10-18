@@ -47,9 +47,7 @@ class BalanceWidgetView : FrameLayout {
     }
 
     init {
-        val layout = if(HomeRollenceController.isUsingAtf2Variant())
-            R.layout.layout_item_widget_balance_widget_atf2
-        else R.layout.layout_item_widget_balance_widget
+        val layout = R.layout.layout_item_widget_balance_widget_atf2
         val view = LayoutInflater.from(context).inflate(layout, this)
         rvBalance = view.findViewById(R.id.rv_balance_widget)
         this.itemView = view
