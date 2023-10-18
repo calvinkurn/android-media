@@ -27,8 +27,8 @@ data class DynamicOneLinerDataModel(
         val icon: String = "",
         val status: String = "",
         val chevronPos: String = "",
-        val paddingTop: Int = -1,
-        val paddingBottom: Int = -1
+        val paddingTop: Int = 0,
+        val paddingBottom: Int = 0
     ) {
         val shouldShowSeparatorTop
             get() = separator == ProductCustomInfoDataModel.SEPARATOR_BOTH ||

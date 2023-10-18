@@ -75,9 +75,7 @@ class DynamicOneLinerViewHolder(
                 title.renderHtmlBold(context)
             }
 
-            val paddingTop = data.paddingTop.takeIf { it > -1 }?.toPx() ?: marginTop
-            val paddingBottom = data.paddingBottom.takeIf { it > -1 }?.toPx() ?: marginBottom
-            setMargin(marginLeft, paddingTop, marginRight, paddingBottom)
+            setMargin(marginLeft, data.paddingTop, marginRight, data.paddingBottom)
         }
 
         val iconUrl = data.icon

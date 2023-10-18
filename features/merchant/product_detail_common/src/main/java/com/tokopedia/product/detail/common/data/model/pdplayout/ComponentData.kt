@@ -267,7 +267,7 @@ data class ContentMedia(
 
 data class Padding(
     @SerializedName("t")
-    val top: Int = -1,
+    val top: Int = 0,
     @SerializedName("b")
-    val bottom: Int = -1
+    val bottom: Int = 0
 )
