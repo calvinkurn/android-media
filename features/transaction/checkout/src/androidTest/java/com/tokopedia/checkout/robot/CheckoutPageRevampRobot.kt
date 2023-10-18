@@ -1,6 +1,8 @@
 package com.tokopedia.checkout.robot
 
 import android.view.View
+import android.widget.LinearLayout
+import androidx.core.view.children
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
@@ -16,21 +18,24 @@ import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.RevampShipmentActivity
 import com.tokopedia.checkout.revamp.view.viewholder.CheckoutButtonPaymentViewHolder
+import com.tokopedia.checkout.revamp.view.viewholder.CheckoutCostViewHolder
 import com.tokopedia.checkout.revamp.view.viewholder.CheckoutOrderViewHolder
 import com.tokopedia.checkout.revamp.view.viewholder.CheckoutProductViewHolder
 import com.tokopedia.checkout.revamp.view.viewholder.CheckoutPromoViewHolder
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
+import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
 import com.tokopedia.unifyprinciples.Typography
 import org.hamcrest.Matcher
 import org.hamcrest.MatcherAssert.assertThat
-import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertTrue
 import com.tokopedia.logisticcart.R as logisticcartR
 import com.tokopedia.promocheckout.common.R as promocheckoutcommonR
 
-fun checkoutPageRevamp(func: CheckoutPageRevampRobot.() -> Unit) = CheckoutPageRevampRobot().apply(func)
+fun checkoutPageRevamp(func: CheckoutPageRevampRobot.() -> Unit) =
+    CheckoutPageRevampRobot().apply(func)
 
 class CheckoutPageRevampRobot {
 
@@ -56,7 +61,10 @@ class CheckoutPageRevampRobot {
         return position
     }
 
-    private fun scrollRecyclerViewToShipmentCartItem(activityRule: IntentsTestRule<RevampShipmentActivity>, productIndex: Int): Int {
+    private fun scrollRecyclerViewToShipmentCartItem(
+        activityRule: IntentsTestRule<RevampShipmentActivity>,
+        productIndex: Int
+    ): Int {
         val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.rv_checkout)
         val itemCount = recyclerView.adapter?.itemCount ?: 0
 
@@ -75,12 +83,30 @@ class CheckoutPageRevampRobot {
         return position
     }
 
-    fun scrollRecyclerViewToChoosePaymentButton(activityRule: IntentsTestRule<RevampShipmentActivity>): Int {
+    private fun scrollRecyclerViewToShoppingSummary(activityRule: IntentsTestRule<RevampShipmentActivity>): Int {
         val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.rv_checkout)
-        val itemCount = recyclerView.adapter?.itemCount ?: 0
+        val itemCount = (recyclerView.adapter?.itemCount?.minus(1)) ?: return -1
 
         var position = RecyclerView.NO_POSITION
-        for (i in 0 until itemCount) {
+        for (i in itemCount downTo 0) {
+            scrollRecyclerViewToPosition(activityRule, recyclerView, i)
+            when (recyclerView.findViewHolderForAdapterPosition(i)) {
+                is CheckoutCostViewHolder -> {
+                    position = i
+                    break
+                }
+            }
+        }
+
+        return position
+    }
+
+    fun scrollRecyclerViewToChoosePaymentButton(activityRule: IntentsTestRule<RevampShipmentActivity>): Int {
+        val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.rv_checkout)
+        val itemCount = (recyclerView.adapter?.itemCount?.minus(1)) ?: return -1
+
+        var position = RecyclerView.NO_POSITION
+        for (i in itemCount downTo 0) {
             scrollRecyclerViewToPosition(activityRule, recyclerView, i)
             when (recyclerView.findViewHolderForAdapterPosition(i)) {
                 is CheckoutButtonPaymentViewHolder -> {
@@ -95,10 +121,10 @@ class CheckoutPageRevampRobot {
 
     private fun scrollRecyclerViewToPromoButton(activityRule: IntentsTestRule<RevampShipmentActivity>): Int {
         val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.rv_checkout)
-        val itemCount = recyclerView.adapter?.itemCount ?: 0
+        val itemCount = (recyclerView.adapter?.itemCount?.minus(1)) ?: return -1
 
         var position = RecyclerView.NO_POSITION
-        for (i in 0 until itemCount) {
+        for (i in itemCount downTo 0) {
             scrollRecyclerViewToPosition(activityRule, recyclerView, i)
             when (recyclerView.findViewHolderForAdapterPosition(i)) {
                 is CheckoutPromoViewHolder -> {
@@ -125,7 +151,8 @@ class CheckoutPageRevampRobot {
 
         override fun getDescription() = "Click on a child view with specified id."
 
-        override fun perform(uiController: UiController, view: View) = ViewActions.click().perform(uiController, view.findViewById(viewId))
+        override fun perform(uiController: UiController, view: View) =
+            ViewActions.click().perform(uiController, view.findViewById(viewId))
     }
 
     fun clickChooseDuration(activityRule: IntentsTestRule<RevampShipmentActivity>) {
@@ -136,6 +163,32 @@ class CheckoutPageRevampRobot {
                     RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
                         position,
                         clickOnViewChild(logisticcartR.id.layout_state_no_selected_shipping)
+                    )
+                )
+        }
+    }
+
+    fun click2hrOption(activityRule: IntentsTestRule<RevampShipmentActivity>) {
+        val position = scrollRecyclerViewToFirstOrder(activityRule)
+        if (position != RecyclerView.NO_POSITION) {
+            onView(ViewMatchers.withId(R.id.rv_checkout))
+                .perform(
+                    RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                        position,
+                        object : ViewAction {
+                            override fun getConstraints(): Matcher<View>? = null
+
+                            override fun getDescription(): String =
+                                "Click 2hr option"
+
+                            override fun perform(uiController: UiController?, view: View) {
+                                val linearLayout =
+                                    view.findViewById<LinearLayout>(logisticcartR.id.shipment_time_option_view)
+
+                                val now = linearLayout.children.last()
+                                now.findViewById<RadioButtonUnify>(logisticcartR.id.rb_shipment).isChecked = true
+                            }
+                        }
                     )
                 )
         }
@@ -201,23 +254,47 @@ class CheckoutPageRevampRobot {
                         object : ViewAction {
                             override fun getConstraints(): Matcher<View>? = null
 
-                            override fun getDescription(): String = "Assert Single Shipment Selected UI"
+                            override fun getDescription(): String =
+                                "Assert Single Shipment Selected UI"
 
                             override fun perform(uiController: UiController?, view: View) {
-                                assertEquals(View.VISIBLE, view.findViewById<View>(logisticcartR.id.layout_state_has_selected_single_shipping).visibility)
-                                assertEquals(title, view.findViewById<Typography>(logisticcartR.id.label_selected_single_shipping_title).text.toString())
+                                assertEquals(
+                                    View.VISIBLE,
+                                    view.findViewById<View>(logisticcartR.id.layout_state_has_selected_single_shipping).visibility
+                                )
+                                assertEquals(
+                                    title,
+                                    view.findViewById<Typography>(logisticcartR.id.label_selected_single_shipping_title).text.toString()
+                                )
                                 if (originalPrice != null) {
-                                    Assert.assertTrue((view.findViewById<Typography>(logisticcartR.id.label_selected_single_shipping_title).text).contains(originalPrice))
+                                    assertTrue(
+                                        (view.findViewById<Typography>(logisticcartR.id.label_selected_single_shipping_title).text).contains(
+                                            originalPrice
+                                        )
+                                    )
                                 }
                                 if (discountedPrice != null) {
-                                    Assert.assertTrue((view.findViewById<Typography>(logisticcartR.id.label_selected_single_shipping_title).text).contains(discountedPrice))
+                                    assertTrue(
+                                        (view.findViewById<Typography>(logisticcartR.id.label_selected_single_shipping_title).text).contains(
+                                            discountedPrice
+                                        )
+                                    )
                                 }
 //                                assertEquals(eta, view.findViewById<Typography>(logisticcartR.id.label_single_shipping_eta).text)
                                 if (message != null) {
-                                    assertEquals(message, view.findViewById<Typography>(logisticcartR.id.label_single_shipping_message).text.toString())
-                                    assertEquals(View.VISIBLE, view.findViewById<Typography>(logisticcartR.id.label_single_shipping_message).visibility)
+                                    assertEquals(
+                                        message,
+                                        view.findViewById<Typography>(logisticcartR.id.label_single_shipping_message).text.toString()
+                                    )
+                                    assertEquals(
+                                        View.VISIBLE,
+                                        view.findViewById<Typography>(logisticcartR.id.label_single_shipping_message).visibility
+                                    )
                                 } else {
-                                    assertEquals(View.GONE, view.findViewById<Typography>(logisticcartR.id.label_single_shipping_message).visibility)
+                                    assertEquals(
+                                        View.GONE,
+                                        view.findViewById<Typography>(logisticcartR.id.label_single_shipping_message).visibility
+                                    )
                                 }
                             }
                         }
@@ -226,7 +303,188 @@ class CheckoutPageRevampRobot {
         }
     }
 
-    fun assertNewUiGroupType(activityRule: IntentsTestRule<RevampShipmentActivity>, productIndex: Int) {
+    fun assertHasSellySelected(
+        activityRule: IntentsTestRule<RevampShipmentActivity>,
+        titleSelly: String,
+        originalPriceSelly: String? = null,
+        discountedPriceSelly: String? = null,
+        etaSelly: String,
+        title2hr: String,
+        originalPrice2hr: String? = null,
+        discountedPrice2hr: String? = null
+    ) {
+        val position = scrollRecyclerViewToFirstOrder(activityRule)
+        if (position != RecyclerView.NO_POSITION) {
+            onView(ViewMatchers.withId(R.id.rv_checkout))
+                .perform(
+                    RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                        position,
+                        object : ViewAction {
+                            override fun getConstraints(): Matcher<View>? = null
+
+                            override fun getDescription(): String =
+                                "Assert Selly Shipment Selected UI"
+
+                            override fun perform(uiController: UiController?, view: View) {
+                                assertEquals(
+                                    View.VISIBLE,
+                                    view.findViewById<View>(logisticcartR.id.shipping_now_widget).visibility
+                                )
+                                val linearLayout =
+                                    view.findViewById<LinearLayout>(logisticcartR.id.shipment_time_option_view)
+                                val selly = linearLayout.children.first()
+                                assertTrue(
+                                    (selly.findViewById<Typography>(logisticcartR.id.tv_title_shipment).text).contains(
+                                        titleSelly
+                                    )
+                                )
+                                if (originalPriceSelly != null) {
+                                    assertTrue(
+                                        (selly.findViewById<Typography>(logisticcartR.id.tv_title_shipment).text).contains(
+                                            originalPriceSelly
+                                        )
+                                    )
+                                }
+                                if (discountedPriceSelly != null) {
+                                    assertTrue(
+                                        (selly.findViewById<Typography>(logisticcartR.id.tv_title_shipment).text).contains(
+                                            discountedPriceSelly
+                                        )
+                                    )
+                                }
+                                assertEquals(
+                                    etaSelly,
+                                    selly.findViewById<Typography>(logisticcartR.id.tv_description_shipment).text.toString()
+                                )
+                                assertEquals(
+                                    true,
+                                    selly.findViewById<RadioButtonUnify>(logisticcartR.id.rb_shipment).isChecked
+                                )
+
+                                val now = linearLayout.children.last()
+                                assertTrue(
+                                    (now.findViewById<Typography>(logisticcartR.id.tv_title_shipment).text).contains(
+                                        title2hr
+                                    )
+                                )
+                                if (originalPrice2hr != null) {
+                                    assertTrue(
+                                        (now.findViewById<Typography>(logisticcartR.id.tv_title_shipment).text).contains(
+                                            originalPrice2hr
+                                        )
+                                    )
+                                }
+                                if (discountedPrice2hr != null) {
+                                    assertTrue(
+                                        (now.findViewById<Typography>(logisticcartR.id.tv_title_shipment).text).contains(
+                                            discountedPrice2hr
+                                        )
+                                    )
+                                }
+                                assertEquals(
+                                    false,
+                                    now.findViewById<RadioButtonUnify>(logisticcartR.id.rb_shipment).isChecked
+                                )
+                            }
+                        }
+                    )
+                )
+        }
+    }
+
+    fun assertHas2hrSelected(
+        activityRule: IntentsTestRule<RevampShipmentActivity>,
+        titleSelly: String,
+        originalPriceSelly: String? = null,
+        discountedPriceSelly: String? = null,
+        etaSelly: String,
+        title2hr: String,
+        originalPrice2hr: String? = null,
+        discountedPrice2hr: String? = null
+    ) {
+        val position = scrollRecyclerViewToFirstOrder(activityRule)
+        if (position != RecyclerView.NO_POSITION) {
+            onView(ViewMatchers.withId(R.id.rv_checkout))
+                .perform(
+                    RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                        position,
+                        object : ViewAction {
+                            override fun getConstraints(): Matcher<View>? = null
+
+                            override fun getDescription(): String =
+                                "Assert Selly Shipment Selected UI"
+
+                            override fun perform(uiController: UiController?, view: View) {
+                                assertEquals(
+                                    View.VISIBLE,
+                                    view.findViewById<View>(logisticcartR.id.shipping_now_widget).visibility
+                                )
+                                val linearLayout =
+                                    view.findViewById<LinearLayout>(logisticcartR.id.shipment_time_option_view)
+                                val selly = linearLayout.children.first()
+                                assertTrue(
+                                    (selly.findViewById<Typography>(logisticcartR.id.tv_title_shipment).text).contains(
+                                        titleSelly
+                                    )
+                                )
+                                if (originalPriceSelly != null) {
+                                    assertTrue(
+                                        (selly.findViewById<Typography>(logisticcartR.id.tv_title_shipment).text).contains(
+                                            originalPriceSelly
+                                        )
+                                    )
+                                }
+                                if (discountedPriceSelly != null) {
+                                    assertTrue(
+                                        (selly.findViewById<Typography>(logisticcartR.id.tv_title_shipment).text).contains(
+                                            discountedPriceSelly
+                                        )
+                                    )
+                                }
+                                assertEquals(
+                                    etaSelly,
+                                    selly.findViewById<Typography>(logisticcartR.id.tv_description_shipment).text.toString()
+                                )
+                                assertEquals(
+                                    false,
+                                    selly.findViewById<RadioButtonUnify>(logisticcartR.id.rb_shipment).isChecked
+                                )
+
+                                val now = linearLayout.children.last()
+                                assertTrue(
+                                    (now.findViewById<Typography>(logisticcartR.id.tv_title_shipment).text).contains(
+                                        title2hr
+                                    )
+                                )
+                                if (originalPrice2hr != null) {
+                                    assertTrue(
+                                        (now.findViewById<Typography>(logisticcartR.id.tv_title_shipment).text).contains(
+                                            originalPrice2hr
+                                        )
+                                    )
+                                }
+                                if (discountedPrice2hr != null) {
+                                    assertTrue(
+                                        (now.findViewById<Typography>(logisticcartR.id.tv_title_shipment).text).contains(
+                                            discountedPrice2hr
+                                        )
+                                    )
+                                }
+                                assertEquals(
+                                    true,
+                                    now.findViewById<RadioButtonUnify>(logisticcartR.id.rb_shipment).isChecked
+                                )
+                            }
+                        }
+                    )
+                )
+        }
+    }
+
+    fun assertNewUiGroupType(
+        activityRule: IntentsTestRule<RevampShipmentActivity>,
+        productIndex: Int
+    ) {
         val position = scrollRecyclerViewToShipmentCartItem(activityRule, productIndex)
         if (position != RecyclerView.NO_POSITION) {
             onView(ViewMatchers.withId(R.id.rv_checkout))
@@ -239,8 +497,156 @@ class CheckoutPageRevampRobot {
                             override fun getDescription(): String = "Assert New UI Group Type"
 
                             override fun perform(uiController: UiController?, view: View) {
-                                assertEquals(View.VISIBLE, view.findViewById<Typography>(R.id.tv_checkout_shop_name).visibility)
-                                assertEquals(true, view.findViewById<Typography>(R.id.tv_checkout_shop_name).text.isNotBlank())
+                                assertEquals(
+                                    View.VISIBLE,
+                                    view.findViewById<Typography>(R.id.tv_checkout_shop_name).visibility
+                                )
+                                assertEquals(
+                                    true,
+                                    view.findViewById<Typography>(R.id.tv_checkout_shop_name).text.isNotBlank()
+                                )
+                            }
+                        }
+                    )
+                )
+        }
+    }
+
+    fun assertShoppingSummary(
+        activityRule: IntentsTestRule<RevampShipmentActivity>,
+        itemTotalPrice: String,
+        itemOriginalPrice: String?,
+        shippingTotalPrice: String,
+        shippingOriginalPrice: String?,
+        totalPrice: String
+    ) {
+        val position = scrollRecyclerViewToShoppingSummary(activityRule)
+        if (position != RecyclerView.NO_POSITION) {
+            onView(ViewMatchers.withId(R.id.rv_checkout))
+                .perform(
+                    RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                        position,
+                        object : ViewAction {
+                            override fun getConstraints(): Matcher<View>? = null
+
+                            override fun getDescription(): String =
+                                "Assert Shopping Summary UI"
+
+                            override fun perform(uiController: UiController?, view: View) {
+                                assertEquals(
+                                    View.VISIBLE,
+                                    view.findViewById<View>(R.id.tv_checkout_cost_header).visibility
+                                )
+
+                                assertEquals(
+                                    View.VISIBLE,
+                                    view.findViewById<Typography>(R.id.tv_checkout_cost_item_price_value).visibility
+                                )
+                                assertEquals(
+                                    itemTotalPrice,
+                                    view.findViewById<Typography>(R.id.tv_checkout_cost_item_price_value).text.toString()
+                                )
+                                if (itemOriginalPrice != null) {
+                                    assertEquals(
+                                        View.VISIBLE,
+                                        view.findViewById<Typography>(R.id.tv_checkout_cost_item_price_slashed_value).visibility
+                                    )
+                                    assertEquals(
+                                        itemOriginalPrice,
+                                        view.findViewById<Typography>(R.id.tv_checkout_cost_item_price_slashed_value).text.toString()
+                                    )
+                                } else {
+                                    assertEquals(
+                                        View.GONE,
+                                        view.findViewById<Typography>(R.id.tv_checkout_cost_item_price_slashed_value).visibility
+                                    )
+                                }
+
+                                assertEquals(
+                                    View.VISIBLE,
+                                    view.findViewById<Typography>(R.id.tv_checkout_cost_shipping_value).visibility
+                                )
+                                assertEquals(
+                                    shippingTotalPrice,
+                                    view.findViewById<Typography>(R.id.tv_checkout_cost_shipping_value).text.toString()
+                                )
+                                if (shippingOriginalPrice != null) {
+                                    assertEquals(
+                                        View.VISIBLE,
+                                        view.findViewById<Typography>(R.id.tv_checkout_cost_shipping_slashed_value).visibility
+                                    )
+                                    assertEquals(
+                                        shippingOriginalPrice,
+                                        view.findViewById<Typography>(R.id.tv_checkout_cost_shipping_slashed_value).text.toString()
+                                    )
+                                } else {
+                                    assertEquals(
+                                        View.GONE,
+                                        view.findViewById<Typography>(R.id.tv_checkout_cost_shipping_slashed_value).visibility
+                                    )
+                                }
+
+                                assertEquals(
+                                    View.VISIBLE,
+                                    view.findViewById<Typography>(R.id.tv_checkout_cost_total_value).visibility
+                                )
+                                assertEquals(
+                                    totalPrice,
+                                    view.findViewById<Typography>(R.id.tv_checkout_cost_total_value).text.toString()
+                                )
+                            }
+                        }
+                    )
+                )
+        }
+    }
+
+    fun assertPlatformFee(
+        activityRule: IntentsTestRule<RevampShipmentActivity>,
+        fee: String,
+        originalFee: String?
+    ) {
+        val position = scrollRecyclerViewToShoppingSummary(activityRule)
+        if (position != RecyclerView.NO_POSITION) {
+            onView(ViewMatchers.withId(R.id.rv_checkout))
+                .perform(
+                    RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                        position,
+                        object : ViewAction {
+                            override fun getConstraints(): Matcher<View>? = null
+
+                            override fun getDescription(): String =
+                                "Assert Platform Fee UI"
+
+                            override fun perform(uiController: UiController?, view: View) {
+                                assertEquals(
+                                    View.VISIBLE,
+                                    view.findViewById<View>(R.id.tv_checkout_cost_header).visibility
+                                )
+
+                                assertEquals(
+                                    View.VISIBLE,
+                                    view.findViewById<Typography>(R.id.tv_checkout_cost_platform_fee_value).visibility
+                                )
+                                assertEquals(
+                                    fee,
+                                    view.findViewById<Typography>(R.id.tv_checkout_cost_platform_fee_value).text.toString()
+                                )
+                                if (originalFee != null) {
+                                    assertEquals(
+                                        View.VISIBLE,
+                                        view.findViewById<Typography>(R.id.tv_checkout_cost_platform_fee_slashed_value).visibility
+                                    )
+                                    assertEquals(
+                                        originalFee,
+                                        view.findViewById<Typography>(R.id.tv_checkout_cost_platform_fee_slashed_value).text.toString()
+                                    )
+                                } else {
+                                    assertEquals(
+                                        View.GONE,
+                                        view.findViewById<Typography>(R.id.tv_checkout_cost_platform_fee_slashed_value).visibility
+                                    )
+                                }
                             }
                         }
                     )
@@ -260,7 +666,8 @@ class ResultRevampRobot {
     }
 
     fun assertGoToPayment() {
-        val paymentPassData = Intents.getIntents().last().getParcelableExtra<PaymentPassData>(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA)
+        val paymentPassData = Intents.getIntents().last()
+            .getParcelableExtra<PaymentPassData>(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA)
         assertNotNull(paymentPassData)
     }
 }

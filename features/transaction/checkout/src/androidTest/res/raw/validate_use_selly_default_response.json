@@ -1,0 +1,237 @@
+[
+  {
+    "data": {
+      "validate_use_promo_revamp": {
+        "status": "OK",
+        "message": [],
+        "error_code": "200",
+        "code": "200000",
+        "promo": {
+          "global_success": true,
+          "message": {
+            "state": "",
+            "color": "",
+            "text": ""
+          },
+          "success": true,
+          "codes": [],
+          "promo_code_id": 0,
+          "title_description": "Promo ",
+          "discount_amount": 0,
+          "cashback_wallet_amount": 0,
+          "cashback_advocate_referral_amount": 0,
+          "cashback_voucher_description": "",
+          "invoice_description": "",
+          "gateway_id": "128238017237091319021567",
+          "is_coupon": 0,
+          "coupon_description": "",
+          "is_tokopedia_gerai": false,
+          "voucher_orders": [
+            {
+              "code": "TESTNOWSCHEDULED",
+              "success": true,
+              "unique_id": "11515028-0-11528221-174524131-1-11528221-0",
+              "cart_string_group": "11515028-0-11528221-174524131-1-11528221-0",
+              "shipping_id": 29,
+              "sp_id": 58,
+              "cart_id": 0,
+              "order_id": 0,
+              "shop_id": 11515028,
+              "is_po": 0,
+              "duration": "0",
+              "warehouse_id": 11528221,
+              "address_id": 174524131,
+              "type": "logistic",
+              "cashback_wallet_amount": 0,
+              "discount_amount": 15000,
+              "invoice_description": "",
+              "title_description": "Potongan Ongkir Hingga Rp50.000",
+              "message": {
+                "state": "green",
+                "color": "#ade3af",
+                "text": "Kamu dapat potongan ongkir dari Tokopedia"
+              },
+              "benefit_details": [
+                {
+                  "code": "TESTNOWSCHEDULED",
+                  "type": "",
+                  "order_id": 1,
+                  "unique_id": "11515028-0-11528221-174524131-1-11528221-0",
+                  "cart_string_group": "",
+                  "discount_amount": 15000,
+                  "discount_details": [
+                    {
+                      "amount": 15000,
+                      "data_type": "total_shipping_price"
+                    }
+                  ],
+                  "cashback_amount": 0,
+                  "cashback_details": [],
+                  "promo_type": {
+                    "is_bebas_ongkir": true,
+                    "is_exclusive_shipping": false
+                  },
+                  "benefit_product_details": [
+                    {
+                      "product_id": 5320822952,
+                      "cashback_amount": 0,
+                      "cashback_amount_idr": 0,
+                      "discount_amount": 0,
+                      "is_bebas_ongkir": true
+                    },
+                    {
+                      "product_id": 7029764088,
+                      "cashback_amount": 0,
+                      "cashback_amount_idr": 0,
+                      "discount_amount": 0,
+                      "is_bebas_ongkir": true
+                    },
+                    {
+                      "product_id": 5194296612,
+                      "cashback_amount": 0,
+                      "cashback_amount_idr": 0,
+                      "discount_amount": 0,
+                      "is_bebas_ongkir": true
+                    },
+                    {
+                      "product_id": 3537981183,
+                      "cashback_amount": 0,
+                      "cashback_amount_idr": 0,
+                      "discount_amount": 0,
+                      "is_bebas_ongkir": true
+                    },
+                    {
+                      "product_id": 3525110198,
+                      "cashback_amount": 0,
+                      "cashback_amount_idr": 0,
+                      "discount_amount": 0,
+                      "is_bebas_ongkir": true
+                    },
+                    {
+                      "product_id": 3537981182,
+                      "cashback_amount": 0,
+                      "cashback_amount_idr": 0,
+                      "discount_amount": 0,
+                      "is_bebas_ongkir": true
+                    },
+                    {
+                      "product_id": 3537981175,
+                      "cashback_amount": 0,
+                      "cashback_amount_idr": 0,
+                      "discount_amount": 0,
+                      "is_bebas_ongkir": true
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "benefit_details": [],
+          "benefit_summary_info": {
+            "final_benefit_text": "Total benefit anda: ",
+            "final_benefit_amount": 15000,
+            "final_benefit_amount_str": "Rp15.000",
+            "summaries": [
+              {
+                "description": "Total diskon: ",
+                "type": "discount",
+                "amount_str": "Rp15.000",
+                "amount": 15000,
+                "section_name": "Discount",
+                "section_description": "",
+                "details": [
+                  {
+                    "section_name": "",
+                    "description": "Total Diskon Ongkos Kirim ",
+                    "type": "shipping_discount",
+                    "amount": 15000,
+                    "amount_str": "Rp15.000",
+                    "points": 0,
+                    "points_str": ""
+                  }
+                ]
+              }
+            ]
+          },
+          "clashing_info_detail": {
+            "clash_message": "",
+            "clash_reason": "",
+            "is_clashed_promos": false,
+            "options": []
+          },
+          "tracking_details": [
+            {
+              "product_id": 7029764088,
+              "promo_codes_tracking": "TESTNOWSCHEDULED",
+              "promo_details_tracking": "L:3:2143:green"
+            },
+            {
+              "product_id": 5194296612,
+              "promo_codes_tracking": "TESTNOWSCHEDULED",
+              "promo_details_tracking": "L:3:2143:green"
+            },
+            {
+              "product_id": 3537981183,
+              "promo_codes_tracking": "TESTNOWSCHEDULED",
+              "promo_details_tracking": "L:3:2143:green"
+            },
+            {
+              "product_id": 3525110198,
+              "promo_codes_tracking": "TESTNOWSCHEDULED",
+              "promo_details_tracking": "L:3:2143:green"
+            },
+            {
+              "product_id": 3537981182,
+              "promo_codes_tracking": "TESTNOWSCHEDULED",
+              "promo_details_tracking": "L:3:2143:green"
+            },
+            {
+              "product_id": 3537981175,
+              "promo_codes_tracking": "TESTNOWSCHEDULED",
+              "promo_details_tracking": "L:3:2143:green"
+            },
+            {
+              "product_id": 5320822952,
+              "promo_codes_tracking": "TESTNOWSCHEDULED",
+              "promo_details_tracking": "L:3:2143:green"
+            }
+          ],
+          "tokopoints_detail": {
+            "conversion_rate": {
+              "rate": 0,
+              "points_coefficient": 0,
+              "external_currency_coefficient": 0
+            }
+          },
+          "ticker_info": {
+            "unique_id": "",
+            "status_code": 0,
+            "message": ""
+          },
+          "additional_info": {
+            "message_info": {
+              "message": "Makin hemat pakai promo",
+              "detail": ""
+            },
+            "error_detail": {
+              "message": ""
+            },
+            "empty_cart_info": {
+              "image_url": "",
+              "message": "",
+              "detail": ""
+            },
+            "usage_summaries": [],
+            "sp_ids": [],
+            "promo_sp_ids": [],
+            "poml_auto_applied": false,
+            "bebas_ongkir_info": {
+              "is_bo_unstack_enabled": true,
+              "is_use_bebas_ongkir_only": true
+            }
+          }
+        }
+      }
+    }
+  }
+]
