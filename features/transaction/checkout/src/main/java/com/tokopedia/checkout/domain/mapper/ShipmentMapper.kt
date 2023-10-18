@@ -185,6 +185,7 @@ class ShipmentMapper @Inject constructor() {
             shipmentPlatformFee =
                 mapPlatformFee(shipmentAddressFormDataResponse.shipmentPlatformFee)
             listSummaryAddons = mapSummaryAddOn(shipmentAddressFormDataResponse.listSummaryAddOns)
+            paymentLevelAddOnsPositions = shipmentAddressFormDataResponse.paymentLevelAddOns.map { it.id }
         }
     }
 

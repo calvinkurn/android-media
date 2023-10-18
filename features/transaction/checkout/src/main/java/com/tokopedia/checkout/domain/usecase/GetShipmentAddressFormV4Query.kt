@@ -664,6 +664,9 @@ const val SHIPMENT_ADDRESS_FORM_V4_QUERY =
                 additional_data
                 error_wording
               }
+              payment_level_add_ons {
+                id  
+              }
             }
           }
         }"""

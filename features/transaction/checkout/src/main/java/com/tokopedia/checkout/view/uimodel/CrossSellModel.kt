@@ -6,7 +6,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class CrossSellModel(
     var id: String = "",
-    var checkboxDisabled: Boolean = false,
+    var checkboxDisablexd: Boolean = false,
     var isChecked: Boolean = false,
     var price: Double = 0.0,
     var info: CrossSellInfoModel = CrossSellInfoModel(),
