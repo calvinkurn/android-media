@@ -166,9 +166,11 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
             val dataBalance = bcaLibrary.C_BCACheckBalance()
             val isoDep = IsoDep.get(tag)
             if(bcaIsMyCard.strLogRsp.startsWith(GEN_2_CARD) && dataBalance.cardNo.isNotEmpty()) {
+                showLoading(getOperatorName(issuerActive))
                 bcaBalanceViewModel.processBCATagBalance(isoDep, M_ID, T_ID, bRawPublicKey,
                     bRawPrivateKey, getCurrentBCAFlazzTimeStamp(), TEMP_ATD)
             } else if(bcaIsMyCard.strLogRsp.startsWith(GEN_1_CARD) && dataBalance.cardNo.isNotEmpty()){
+                showLoading(getOperatorName(issuerActive))
                 bcaBalanceViewModel.processBCACheckBalanceGen1(isoDep, bRawPublicKey, bRawPrivateKey)
             } else {
                 context?.let { context ->
