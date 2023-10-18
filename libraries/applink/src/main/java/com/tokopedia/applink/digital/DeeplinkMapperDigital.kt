@@ -39,7 +39,6 @@ object DeeplinkMapperDigital {
     const val PLATFORM_ID_PARAM = "platform_id"
     const val IS_FROM_WIDGET_PARAM = "is_from_widget"
     const val REMOTE_CONFIG_MAINAPP_ENABLE_ELECTRONICMONEY_PDP = "android_customer_enable_digital_emoney_pdp"
-    const val IS_ADD_SBM = "is_add_sbm"
     const val PARAM_PRODUCT_ID = "product_id"
     const val PARAM_CLIENT_NUMBER = "client_number"
 
