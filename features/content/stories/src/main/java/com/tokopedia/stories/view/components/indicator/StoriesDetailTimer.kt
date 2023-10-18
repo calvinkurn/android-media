@@ -40,7 +40,7 @@ fun StoriesDetailTimer(
 
     LaunchedEffect(data) {
         when (data.event) {
-            StoriesDetailItemUiEvent.PAUSE -> anim.stop()
+            StoriesDetailItemUiEvent.PAUSE, StoriesDetailItemUiEvent.BUFFERING -> anim.stop()
             StoriesDetailItemUiEvent.RESUME -> {
                 delay(100)
                 anim.animateTo(
