@@ -22,7 +22,8 @@ data class PinpointUiModel(
         get() = formattedAddress
 
     val formattedAddress: String
-        get() = "$cityName, $districtName, $provinceName"
+        get() = listOf(districtName, cityName, provinceName).filter { it.isNotEmpty() }
+            .joinToString(separator = ", ")
 
     fun hasPinpoint(): Boolean {
         return lat.isValidPinpoint() && long.isValidPinpoint()
