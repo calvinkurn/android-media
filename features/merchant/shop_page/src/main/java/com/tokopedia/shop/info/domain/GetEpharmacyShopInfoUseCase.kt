@@ -23,20 +23,28 @@ class GetEpharmacyShopInfoUseCase @Inject constructor(
     }
 
     private val QUERY = """
-        getEpharmacyShopInfo(shop_id: ${'$'}shop_id) {
+        query getEpharmacyShopInfo(${'$'}shop_id: Int64!) {
+          getEpharmacyShopInfo(shop_id: ${'$'}shop_id) {
             header {
-                process_time
-                error_code
-                error_message
+              process_time
+              error_code
+              error_message
             }
             data {
-                sia_number
-                sipa_number
-                apj
-                epharmacy_working_hours
-                epharmacy_working_hours_fmt      
+              sia_number
+              sipa_number
+              apj
+              epharmacy_working_hours {
+                days
+                opening_hours {
+                  open_time
+                  close_time
+                }
+              }
+              epharmacy_working_hours_fmt      
             }
           }
+        }
     """.trimIndent()
 
     var params = mapOf<String, Any>()

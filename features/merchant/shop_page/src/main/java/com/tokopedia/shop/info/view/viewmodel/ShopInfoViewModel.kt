@@ -33,8 +33,8 @@ class ShopInfoViewModel @Inject constructor(
     private val getShopInfoUseCase: GQLGetShopInfoUseCase,
     private val getShopReputationUseCase: GetShopReputationUseCase,
     private val getMessageIdChatUseCase: GetMessageIdChatUseCase,
-    private val coroutineDispatcherProvider: CoroutineDispatchers,
-    private val getEpharmacyShopInfoUseCase: GetEpharmacyShopInfoUseCase
+    private val getEpharmacyShopInfoUseCase: GetEpharmacyShopInfoUseCase,
+    private val coroutineDispatcherProvider: CoroutineDispatchers
 ) : BaseViewModel(coroutineDispatcherProvider.main) {
 
     fun isMyShop(shopId: String) = userSessionInterface.shopId == shopId
